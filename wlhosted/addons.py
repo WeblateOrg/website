@@ -49,4 +49,4 @@ class UnknownHorizonsTemplateAddon(BaseScriptAddon):
         """Only useful for Unknown Horizons project"""
         if not component.project.slug == 'uh':
             return False
-        return super(DiscoveryAddon, cls).can_install(component, user)
+        return super(UnknownHorizonsTemplateAddon, cls).can_install(component, user)
