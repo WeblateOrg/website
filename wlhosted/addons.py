@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 """
-Example pre commit script
+Custom addons for Hosted Weblate
 """
 
 from __future__ import unicode_literals
@@ -29,7 +29,7 @@ from weblate.addons.events import EVENT_PRE_COMMIT
 from weblate.addons.scripts import BaseScriptAddon
 
 
-class ExamplePreAddon(BaseScriptAddon):
+class UnknownHorizonsTemplateAddon(BaseScriptAddon):
     # Event used to trigger the script
     events = (EVENT_PRE_COMMIT,)
     # Name of the addon, has to be unique
