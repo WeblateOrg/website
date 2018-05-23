@@ -1,0 +1,2 @@
+# hosted
+Hosted Weblate customizations
