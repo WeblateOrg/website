@@ -1,20 +1,20 @@
+{% load i18n %}
+{% load lawlinks %}
+
+{% law_link 679 2016 "EU" as law_679_2016 %}
 <p>
-We comply with the Regulation No. 2016/679, the General Data Protection
-Regulation, also known as GDPR. This document includes necessary
-specifications.
+We comply with the Regulation No. {{ law_679_2016 }}, the General Data Protection Regulation, also known as GDPR. This document includes necessary specifications.
 </p>
 
-<h2>Personal Data Controller</h2>
+<h2>{% blocktrans %}Personal Data Controller{% endblocktrans %}</h2>
 
 <p>
-Ing. Michal Čihař, Zdiměřická 1439/8, 149 00 Praha, Czechia, Reg. No. 04705904
+{% blocktrans with provider="Ing. Michal Čihař, Zdiměřická 1439/8, 149 00 Praha, CZ" reg_no="04705904" %}{{ provider }}, Reg. No. {{ reg_no }}{% endblocktrans %}
 </p>
 
-<p>
-We have appointed a data protection officer who may be reached via privacy@weblate.org.
-</p>
+<p>{% blocktrans with privacy_contact="privacy@weblate.org" %}We have appointed a data protection officer who may be reached via {{privacy_contact}}.{% endblocktrans %}</p>
 
-<h2>Personal Data we process</h2>
+<h2>{% blocktrans %}Personal Data we process{% endblocktrans %}</h2>
 
 <p>
 {% trans "We process only Personal Data User provides us by using our service:" %}
@@ -34,60 +34,46 @@ We have appointed a data protection officer who may be reached via privacy@webla
 
 </dl>
 
-<h2>Purpose and legal basis of processing Personal Data</h2>
+<h2>{% blocktrans %}Purpose and legal basis of processing Personal Data{% endblocktrans %}</h2>
 
-<p>
-Your Personal Data will be used for the purposes of the Service:
-</p>
+<p>{% blocktrans %}Your Personal Data will be used for the purposes of the Service:{% endblocktrans %}</p>
 
 <ul>
-    <li>for providing our services on the Service, to contact you in matters regarding our services (also by means of emails and messaging) and to ensure the technical functionality of our services fulfillment of contractual or pre-contractual obligations (Article 6 (1) b. GDPR)</li>
-    <li>to analyze your use of our services and improve our services (Article 6 (1) b. and f. GDPR)</li>
-    <li>with your express consent or instruction to carry out our business activities or sent you newsletters (Article 6 (1) a. GDPR)</li>
+    <li>{% blocktrans %}for providing our services on the Service, to contact you in matters regarding our services (also by means of emails and messaging) and to ensure the technical functionality of our services fulfillment of contractual or pre-contractual obligations (Article 6 (1) b. GDPR){% endblocktrans %}</li>
+    <li>{% blocktrans %}to analyze your use of our services and improve our services (Article 6 (1) b. and f. GDPR){% endblocktrans %}</li>
+    <li>{% blocktrans %}with your express consent or instruction to carry out our business activities or sent you newsletters (Article 6 (1) a. GDPR){% endblocktrans %}</li>
 </ul>
 
-<h2>Access to the Personal Data</h2>
+<h2>{% blocktrans %}Access to the Personal Data{% endblocktrans %}</h2>
 
-<p>
-Controller has made all reasonable technical means to protect the Personal Data. Only authorized persons can access the Personal Data.
-</p>
+<p>{% blocktrans %}Controller has made all reasonable technical means to protect the Personal Data. Only authorized persons can access the Personal Data.{% endblocktrans %}</p>
 
-<p>
-Third parties which can gain access to the Personal Data when necessary are:
-</p>
+<p>{% blocktrans %}Third parties which can gain access to the Personal Data when necessary are:{% endblocktrans %}</p>
 
 <ul>
-    <li>Persons which are contracted for technical assurance of the service.</li>
-    <li>Payment processors.</li>
+    <li>{% blocktrans %}Persons which are contracted for technical assurance of the service.{% endblocktrans %}</li>
+    <li>{% blocktrans %}Payment processors.{% endblocktrans %}</li>
 </ul>
 
-<p>
-All Personal Data is stored in the European Union.
-</p>
+<p>{% blocktrans %}All Personal Data is stored in the European Union.{% endblocktrans %}</p>
 
-<h2>The Personal Data retention</h2>
+<h2>{% blocktrans %}The Personal Data retention{% endblocktrans %}</h2>
 
-<p>
-The Personal Data is stored in the Service until User deletes his account in the service.
-</p>
+<p>{% blocktrans %}The Personal Data is stored in the Service until User deletes his account in the service.{% endblocktrans %}</p>
 
-<p>
-Access log information might be collected for longer period for the purpose of establishing, exercise or defence of legal claims.
-</p>
+<p>{% blocktrans %}Access log information might be collected for longer period for the purpose of establishing, exercise or defence of legal claims.{% endblocktrans %}</p>
 
-<h2>Your rights</h2>
+<h2>{% blocktrans %}Your rights{% endblocktrans %}</h2>
 
-<p>
-User provides use Personal Data voluntarily. Without this we are not able to provide our services.
-</p>
+<p>{% blocktrans %}User provides use Personal Data voluntarily. Without this we are not able to provide our services.{% endblocktrans %}</p>
 
-<p>We want you to always be in control of your Personal Data. To this end, you have certain rights that allow for it. Under certain conditions, you may:</p>
+<p>{% blocktrans %}We want you to always be in control of your Personal Data. To this end, you have certain rights that allow for it. Under certain conditions, you may:{% endblocktrans %}</p>
 
 <ul>
-    <li>Gain access to all your Personal Data that we use or processing, and even get a copy of all of it (Article 15 GDPR)</li>
-    <li>Correct the Personal Data that we are processing if you think that there are mistakes</li>
-    <li>Order us to delete your Personal Data</li>
-    <li>Restrict the Personal Data processing</li>
-    <li>Object to processing</li>
-    <li>Receive your Personal Data in a commonly used and machine-readable format or to transmit this Personal Data to a different provider.</li>
+    <li>{% blocktrans %}Gain access to all your Personal Data that we use or processing, and even get a copy of all of it (Article 15 GDPR){% endblocktrans %}</li>
+    <li>{% blocktrans %}Correct the Personal Data that we are processing if you think that there are mistakes{% endblocktrans %}</li>
+    <li>{% blocktrans %}Order us to delete your Personal Data{% endblocktrans %}</li>
+    <li>{% blocktrans %}Restrict the Personal Data processing{% endblocktrans %}</li>
+    <li>{% blocktrans %}Object to processing{% endblocktrans %}</li>
+    <li>{% blocktrans %}Receive your Personal Data in a commonly used and machine-readable format or to transmit this Personal Data to a different provider.{% endblocktrans %}</li>
 </ul>
