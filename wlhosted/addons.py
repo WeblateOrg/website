@@ -36,7 +36,7 @@ class UnknownHorizonsTemplateAddon(BaseScriptAddon):
     name = 'weblate.hosted.uh_scenario'
     # Verbose name and long descrption
     verbose = _('Generate Unknown Horizons scenario data')
-    description = _('Generates scenario data for Unknown Horizons.')
+    description = _('Generate Unknown Horizons scenario data')
 
     # Script to execute
     script = '/home/nijel/bin/uh_scenario_yaml'
