@@ -33,19 +33,23 @@ LINKS = {
     (2004, 480): 'https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_org=200156&id_ktg=1155&archiv=0',
 }
 
+EU_LINK = 'https://eur-lex.europa.eu/legal-content/ALL/?uri=celex:3{}R0{}'
+
 
 @register.simple_tag(takes_context=True)
-def law_link(context, coll, year):
+def law_link(context, coll, year, scope=None):
+    if scope == 'EU':
+        url = EU_LINK.format(year, coll)
+    else:
+        # Czech version by default
+        url = 'https://www.zakonyprolidi.cz/cs/{}-{}'.format(
+            year, coll
+        )
 
-    # Czech version by default
-    url = 'https://www.zakonyprolidi.cz/cs/{}-{}'.format(
-        year, coll
-    )
-
-    # Use translation if available
-    key = (year, coll)
-    if context['LANGUAGE_CODE'] != 'cs' and key in LINKS:
-        url = LINKS[key]
+        # Use translation if available
+        key = (year, coll)
+        if context['LANGUAGE_CODE'] != 'cs' and key in LINKS:
+            url = LINKS[key]
 
     return mark_safe(
         '<a href="{}">{}/{}</a>'.format(
