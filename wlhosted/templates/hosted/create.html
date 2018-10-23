@@ -1,18 +1,50 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load translations %}
 
 {% block breadcrumbs %}
 <li><a href="{% url 'create-billing' %}">{% trans "Create billing" %}</a></li>
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid">
+{% trans "Please choose hosting plan fitting size of your project." as message %}
+{% show_message "info" message %}
+
+<div class="row">
 {% for plan in plans %}
-<form action="{% url 'create-billing' %}" method="post">
+<div class="col-md-3">
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ plan.name }}</h3>
+  </div>
+  <table class="table table-striped">
+  <tr><th>{% trans "Strings limit" %}</th>
+  <td>{% if plan.display_limit_strings %}{{ plan.display_limit_strings }}{% else %}{% trans "Unlimited" %}{% endif %}</td>
+  </tr>
+  <tr><th>{% trans "Languages limit" %}</th>
+  <td>{% if plan.display_limit_languages %}{{ plan.display_limit_languages }}{% else %}{% trans "Unlimited" %}{% endif %}</td>
+  </tr>
+  <tr><th>{% trans "Repositories limit" %}</th>
+  <td>{% if plan.display_limit_repositories %}{{ plan.display_limit_repositories }}{% else %}{% trans "Unlimited" %}{% endif %}</td>
+  </tr>
+  <tr><th>{% trans "Projects limit" %}</th>
+  <td>{% if plan.display_limit_projects %}{{ plan.display_limit_projects }}{% else %}{% trans "Unlimited" %}{% endif %}</td>
+  </tr>
+  </table>
+  <div class="panel-footer">
+<form action="{% url 'create-billing' %}" method="post" class="form-inline">
 {% csrf_token %}
-{{ plan.name }} , {{ plan.price }}
 <input type="hidden" name="plan" value="{{ plan.pk }}">
-<input type="hidden" name="period" value="m">
-<input type="submit">
+<button type="submit" class="btn btn-success btn-spaced" name="period" value="m">{% blocktrans with price=plan.price %}{{ price }} EUR monthly{% endblocktrans %}</button>
+<button type="submit" class="btn btn-success btn-spaced" name="period" value="y">{% blocktrans with price=plan.yearly_price %}{{ price }} EUR yearly{% endblocktrans %}</button>
 </form>
+  </div>
+</div>
+</div>
 {% endfor %}
+<p class="help-block">
+{% trans "The pricing is based on number of source strings and number of target languages. The source string is a text unit defined in a translation format, it can be word, sentence or a paragraph." %}
+</p>
+</div>
 {% endblock %}
