@@ -18,6 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
@@ -41,13 +42,15 @@ SUPPORTED_LANGUAGES = frozenset((
 class CreateBillingView(FormView):
     template_name = 'hosted/create.html'
     form_class = ChooseBillingForm
-    success_url = 'https://weblate.org/{}/payment/?uuid={}'
 
     def get_success_url(self, payment):
         language = get_language()
         if language not in SUPPORTED_LANGUAGES:
             language = 'en'
-        return self.success_url.format('en', payment.uuid)
+        return settings.PAYMENT_REDIRECT_URL.format(
+            language=language,
+            uuid=payment.uuid
+        )
 
     def form_valid(self, form):
         payment = form.create_payment(self.request.user)
