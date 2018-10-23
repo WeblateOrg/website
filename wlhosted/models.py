@@ -47,6 +47,8 @@ class Customer(models.Model):
         max_length=190,
         validators=[validate_email],
     )
+    instance = models.CharField(max_length=200, null=True)
+    user_id = models.IntegerField()
 
     def __str__(self):
         if self.name:

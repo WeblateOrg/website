@@ -21,6 +21,7 @@
 from __future__ import unicode_literals
 
 from django import forms
+from django.conf import settings
 
 from weblate.billing.models import Plan
 from wlhosted.models import Payment, Customer
@@ -38,7 +39,14 @@ class ChooseBillingForm(forms.Form):
         ]
 
     def create_payment(self, user):
-        customer = Customer.objects.create(email=user.email)
+        customer = Customer.objects.get_or_create(
+            instance=settings.SITE_TITLE,
+            user_id=user.id,
+            defaults={
+                'email': user.email,
+            }
+        )[0]
+
         plan = Plan.objects.get(pk=self.cleaned_data['plan'])
         period = self.cleaned_data['period']
         description = 'Weblate hosting ({}, {})'.format(
