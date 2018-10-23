@@ -49,7 +49,7 @@ class Customer(models.Model):
         max_length=190,
         validators=[validate_email],
     )
-    instance = models.CharField(max_length=200, null=True)
+    origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
 
     def __str__(self):
@@ -80,6 +80,7 @@ class Payment(models.Model):
     customer = models.ForeignKey(
         Customer, on_delete=models.deletion.CASCADE, blank=True
     )
+    repeat = JSONField(editable=False)
 
 
 class HostedConf(AppConf):
