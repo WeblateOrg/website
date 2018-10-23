@@ -23,6 +23,7 @@ from __future__ import unicode_literals
 import uuid
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 from vies.models import VATINField
 from vies.validators import VATINValidator
@@ -31,6 +32,7 @@ from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
 
 
+@python_2_unicode_compatible
 class Customer(models.Model):
     vat = VATINField(
         validators=[VATINValidator(verify=True, validate=True)],
@@ -45,6 +47,11 @@ class Customer(models.Model):
         max_length=190,
         validators=[validate_email],
     )
+
+    def __str__(self):
+        if self.name:
+            return '{} ({})'.format(self.name, self.email)
+        return self.email
 
 
 class Payment(models.Model):
