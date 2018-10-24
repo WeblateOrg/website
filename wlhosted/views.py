@@ -21,6 +21,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import get_language, ugettext as _
 from django.views.generic.edit import FormView
@@ -29,6 +30,8 @@ from weblate.billing.models import Plan, Billing
 from weblate.utils import messages
 
 from wlhosted.forms import ChooseBillingForm
+from wlhosted.models import Payment
+from wlhosted.utils import get_origin
 
 # List of supported languages on weblate.org
 SUPPORTED_LANGUAGES = frozenset((
@@ -59,9 +62,18 @@ class CreateBillingView(FormView):
     form_class = ChooseBillingForm
 
     def handle_payment(self, request):
+        try:
+            payment = Payment.objects.get(
+                uuid=request.GET['payment'],
+                customer__user_id=request.user.id,
+                customer__origin=get_origin(),
+                paid=True,
+            )
+        except Payment.DoesNotExist:
+            messages.error(request, _('No matching payment found.'))
+            return redirect('create-billing')
+
         # TODO: handle incoming payment confirmation
-        #  - check payment is competed
-        #  - check user matches
         #  - create/update billing
         return None
 

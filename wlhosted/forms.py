@@ -22,12 +22,11 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.conf import settings
-from django.urls import reverse
 
 from weblate.billing.models import Plan
-from weblate.utils.site import get_site_url
 
 from wlhosted.models import Payment, Customer
+from wlhosted.utils import get_origin
 
 
 class ChooseBillingForm(forms.Form):
@@ -43,7 +42,7 @@ class ChooseBillingForm(forms.Form):
 
     def create_payment(self, user):
         customer = Customer.objects.get_or_create(
-            origin=get_site_url(reverse('create-billing')),
+            origin=get_origin(),
             user_id=user.id,
             defaults={
                 'email': user.email,

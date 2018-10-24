@@ -46,34 +46,30 @@ class PaymentTest(TestCase):
         )
 
     @override_settings(PAYMENT_REDIRECT_URL='http://example.com/payment')
+    def create_payment(self, period='y'):
+        response = self.client.post(
+            reverse('create-billing'),
+            {'plan': self.plan_a.id, 'period': period}
+        )
+        self.assertRedirects(
+            response,
+            'http://example.com/payment',
+            fetch_redirect_response=False
+        )
+
     def test_create(self):
+        Payment.objects.all().delete()
         response = self.client.get(reverse('create-billing'))
         self.assertContains(response, 'Plan A')
         self.assertContains(response, 'Plan B')
         self.assertNotContains(response, 'Plan C')
         self.assertNotContains(response, 'Plan D')
-        response = self.client.post(
-            reverse('create-billing'),
-            {'plan': self.plan_a.id, 'period': 'y'}
-        )
-        self.assertRedirects(
-            response,
-            'http://example.com/payment',
-            fetch_redirect_response=False
-        )
+        self.create_payment('y')
         self.assertEqual(Payment.objects.count(), 1)
         self.assertEqual(Customer.objects.count(), 1)
         payment = Payment.objects.all()[0]
         self.assertEqual(payment.amount, self.plan_a.yearly_price)
-        response = self.client.post(
-            reverse('create-billing'),
-            {'plan': self.plan_a.id, 'period': 'm'}
-        )
-        self.assertRedirects(
-            response,
-            'http://example.com/payment',
-            fetch_redirect_response=False
-        )
+        self.create_payment('m')
         self.assertEqual(Payment.objects.count(), 2)
         self.assertEqual(Customer.objects.count(), 1)
         payment = Payment.objects.exclude(uuid=payment.uuid)[0]
@@ -87,3 +83,21 @@ class PaymentTest(TestCase):
         bill.owners.add(self.user)
         response = self.client.get(reverse('create-billing'))
         self.assertContains(response, 'trial')
+
+    def test_complete(self):
+        self.create_payment('m')
+        payment = Payment.objects.all()[0]
+        self.assertRedirects(
+            self.client.get(
+                reverse('create-billing'), {'payment': payment.uuid}
+            ),
+            reverse('create-billing')
+        )
+        payment.paid = True
+        payment.save()
+        self.assertRedirects(
+            self.client.get(
+                reverse('create-billing'), {'payment': payment.uuid}
+            ),
+            reverse('create-billing')
+        )
