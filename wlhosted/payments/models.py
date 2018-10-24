@@ -57,6 +57,12 @@ class Customer(models.Model):
 
 
 class Payment(models.Model):
+    NEW = 1
+    PENDING = 2
+    REJECTED = 3
+    ACCEPTED = 4
+    PROCESSED = 5
+
     uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False
     )
@@ -72,8 +78,17 @@ class Payment(models.Model):
         max_length=10,
     )
     created = models.DateTimeField(auto_now_add=True)
-    paid = models.BooleanField(default=False)
-    handled = models.BooleanField(default=False)
+    state = models.IntegerField(
+        choices=[
+            (NEW, 'New'),
+            (PENDING, 'Pending'),
+            (REJECTED, 'Rejected'),
+            (ACCEPTED, 'Accepted'),
+            (PROCESSED, 'Processed'),
+        ],
+        db_index=True,
+        default=NEW
+    )
     processor = models.CharField(max_length=100, default='')
     details = JSONField(editable=False, default={})
     extra = JSONField(editable=False, default={})

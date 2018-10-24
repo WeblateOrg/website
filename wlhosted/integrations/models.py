@@ -27,6 +27,8 @@ from django.utils import timezone
 from weblate.billing.models import Plan, Billing, Invoice
 from weblate.auth.models import User
 
+from wlhosted.payments.models import Payment
+
 
 def end_interval(payment, start):
     if payment.repeat:
@@ -73,6 +75,9 @@ def handle_received_payment(payment):
         currency=Invoice.CURRENCY_EUR,
         ref=payment.invoice,
     )
+
+    payment.state = Payment.PROCESSED
+    payment.save()
 
     return billing
 

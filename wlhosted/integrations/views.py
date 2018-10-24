@@ -64,19 +64,36 @@ class CreateBillingView(FormView):
                 uuid=request.GET['payment'],
                 customer__user_id=request.user.id,
                 customer__origin=get_origin(),
-                paid=True,
             )
         except Payment.DoesNotExist:
             messages.error(request, _('No matching payment found.'))
             return redirect('create-billing')
 
-        billing = handle_received_payment(payment)
+        if payment.state == Payment.ACCEPTED:
+            billing = handle_received_payment(payment)
 
-        messages.success(
-            request,
-            _('Payment has been processed, your plan is now active.')
-        )
-        return redirect('billing')
+            messages.success(
+                request,
+                _('Thank you for purchasing hosting plan, it is now active.')
+            )
+            return redirect('billing')
+        elif payment.state == Payment.PENDING:
+            messages.info(
+                request,
+                _(
+                    'Thank you for purchasing hosting plan, the payment is '
+                    'pending and will be processed in the background.'
+                )
+            )
+            return redirect('billing')
+        elif payment.state == Payment.REJECTED:
+            messages.error(
+                request,
+                _('The payment was rejected: {}').format(
+                    payment.details.get('reject_reason', _('Unknown reason'))
+                )
+            )
+        return redirect('create-billing')
 
     def get(self, request, *args, **kwargs):
         if 'payment' in request.GET:

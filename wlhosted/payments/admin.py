@@ -31,6 +31,6 @@ class CustomerAdmin(WeblateModelAdmin):
 
 
 class PaymentAdmin(WeblateModelAdmin):
-    list_display = ('amount', 'description', 'customer', 'paid', 'processor')
-    list_filter = ('paid', 'processor')
+    list_display = ('amount', 'description', 'customer', 'state', 'processor')
+    list_filter = ('state', 'processor')
     search_fields = ('description', 'customer__name', 'customer__email')

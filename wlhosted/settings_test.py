@@ -21,7 +21,12 @@
 import os.path
 from weblate.settings_test import *
 
-INSTALLED_APPS += ('wlhosted', 'wlhosted.payments')
+INSTALLED_APPS += (
+    'wlhosted',
+    'wlhosted.payments',
+    'wlhosted.integrations',
+    'wlhosted.legal'
+)
 
 DATABASES['payments_db'] = {
     'ENGINE': 'django.db.backends.sqlite3',

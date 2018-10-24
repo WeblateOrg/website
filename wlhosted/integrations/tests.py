@@ -107,7 +107,7 @@ class PaymentTest(TestCase):
             self.client.get(reverse('create-billing'), params),
             reverse('create-billing')
         )
-        payment.paid = True
+        payment.state = Payment.ACCEPTED
         payment.save()
         self.assertRedirects(
             self.client.get(reverse('create-billing'), params),
