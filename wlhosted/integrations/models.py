@@ -20,6 +20,8 @@
 
 from dateutil import relativedelta
 
+from appconf import AppConf
+
 from django.utils import timezone
 
 from weblate.billing.models import Plan, Billing, Invoice
@@ -73,3 +75,10 @@ def handle_received_payment(payment):
     )
 
     return billing
+
+
+class HostedConf(AppConf):
+    PAYMENT_REDIRECT_URL = 'https://weblate.org/{language}/payment/?uuid={uuid}'
+
+    class Meta(object):
+        prefix = ''

@@ -22,8 +22,6 @@ from __future__ import unicode_literals
 
 import uuid
 
-from appconf import AppConf
-
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -84,10 +82,3 @@ class Payment(models.Model):
     )
     repeat = models.ForeignKey('Payment', null=True, blank=True)
     invoice = models.CharField(max_length=20, blank=True, default='')
-
-
-class HostedConf(AppConf):
-    PAYMENT_REDIRECT_URL = 'https://weblate.org/{language}/payment/?uuid={uuid}'
-
-    class Meta(object):
-        prefix = ''
