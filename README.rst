@@ -1,6 +1,12 @@
 Hosted Weblate customizations
 =============================
 
+.. image:: https://travis-ci.com/WeblateOrg/hosted.svg?branch=master
+   :target: https://travis-ci.com/WeblateOrg/hosted
+
+.. image:: https://codecov.io/gh/WeblateOrg/hosted/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/WeblateOrg/hosted
+
 These customizations are used on the `Hosted Weblate service
 <https://weblate.org/hosting/>`_.
 
