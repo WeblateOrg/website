@@ -75,6 +75,7 @@ class Payment(models.Model):
     )
     created = models.DateTimeField(auto_now_add=True)
     paid = models.BooleanField(default=False)
+    handled = models.BooleanField(default=False)
     processor = models.CharField(max_length=100, default='')
     details = JSONField(editable=False)
     extra = JSONField(editable=False)
