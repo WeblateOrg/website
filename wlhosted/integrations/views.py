@@ -30,18 +30,11 @@ from weblate.billing.models import Plan, Billing
 from weblate.utils import messages
 from weblate.utils.views import show_form_errors
 
+from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.integrations.forms import BillingForm, ChooseBillingForm
 from wlhosted.integrations.models import handle_received_payment
 from wlhosted.payments.models import Payment
 from wlhosted.integrations.utils import get_origin
-
-# List of supported languages on weblate.org
-SUPPORTED_LANGUAGES = frozenset((
-    'ar', 'az', 'be', 'be@latin', 'bg', 'br', 'ca', 'cs', 'da', 'de', 'en',
-    'el', 'en-gb', 'es', 'fi', 'fr', 'gl', 'he', 'hu', 'id', 'it', 'ja', 'ko',
-    'nb', 'nl', 'pl', 'pt', 'pt-br', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr',
-    'uk', 'zh-hans', 'zh-hant',
-))
 
 
 def get_default_billing(user):
