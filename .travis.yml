@@ -13,8 +13,7 @@ install:
   - pip install --upgrade pip wheel
   - pip install -r requirements-test.txt
 script: 
-  - which weblate
-  - coverage weblate test 
+  - coverage `which weblate` test 
   - ./setup.py sdist
   - twine check dist/*
 after_script:
