@@ -77,12 +77,12 @@ class Payment(models.Model):
     paid = models.BooleanField(default=False)
     handled = models.BooleanField(default=False)
     processor = models.CharField(max_length=100, default='')
-    details = JSONField(editable=False)
-    extra = JSONField(editable=False)
+    details = JSONField(editable=False, default={})
+    extra = JSONField(editable=False, default={})
     customer = models.ForeignKey(
         Customer, on_delete=models.deletion.CASCADE, blank=True
     )
-    repeat = JSONField(editable=False)
+    repeat = models.ForeignKey('Payment', null=True, blank=True)
     invoice = models.CharField(max_length=20, blank=True, default='')
 
 

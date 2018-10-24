@@ -77,7 +77,7 @@ class BillingForm(ChooseBillingForm):
         if self.cleaned_data['extra_domain']:
             amount += 100
             description += ' + Custom domain'
-        extra = {}
+        extra = {'plan': plan.pk}
         if self.cleaned_data['billing']:
             extra['billing'] = self.cleaned_data['billing'].pk
         return Payment.objects.create(

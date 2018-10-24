@@ -61,6 +61,14 @@ class PaymentTest(TestCase):
             fetch_redirect_response=False
         )
 
+    def create_trial(self):
+        bill = Billing.objects.create(
+            state=Billing.STATE_TRIAL,
+            plan=self.plan_b,
+        )
+        bill.owners.add(self.user)
+        return bill
+
     def test_create(self):
         response = self.client.get(reverse('create-billing'))
         self.assertContains(response, 'Plan A')
@@ -72,7 +80,7 @@ class PaymentTest(TestCase):
         self.assertEqual(Customer.objects.count(), 1)
         payment = Payment.objects.all()[0]
         self.assertEqual(payment.amount, self.plan_a.yearly_price)
-        self.assertEqual(payment.extra, {})
+        self.assertEqual(payment.extra, {'plan': self.plan_a.pk})
         self.create_payment(period='m')
         self.assertEqual(Payment.objects.count(), 2)
         self.assertEqual(Customer.objects.count(), 1)
@@ -80,31 +88,41 @@ class PaymentTest(TestCase):
         self.assertEqual(payment.amount, self.plan_a.price)
 
     def test_trial(self):
-        bill = Billing.objects.create(
-            state=Billing.STATE_TRIAL,
-            plan=self.plan_b,
-        )
-        bill.owners.add(self.user)
+        bill = self.create_trial()
         response = self.client.get(reverse('create-billing'))
         self.assertContains(response, 'Trial')
         self.create_payment(billing=bill.pk)
         payment = Payment.objects.all()[0]
-        self.assertEqual(payment.extra, {'billing': bill.pk})
+        self.assertEqual(
+            payment.extra,
+            {'billing': bill.pk, 'plan': self.plan_a.pk}
+        )
 
-    def test_complete(self):
-        self.create_payment()
+    def do_complete(self, **kwargs):
+        self.create_payment(**kwargs)
         payment = Payment.objects.all()[0]
+        params = {'payment': payment.uuid}
+        params.update(kwargs)
         self.assertRedirects(
-            self.client.get(
-                reverse('create-billing'), {'payment': payment.uuid}
-            ),
+            self.client.get(reverse('create-billing'), params),
             reverse('create-billing')
         )
         payment.paid = True
         payment.save()
         self.assertRedirects(
-            self.client.get(
-                reverse('create-billing'), {'payment': payment.uuid}
-            ),
-            reverse('create-billing')
+            self.client.get(reverse('create-billing'), params),
+            reverse('billing')
         )
+
+    def test_complete(self):
+        self.do_complete()
+        bill = Billing.objects.all()[0]
+        self.assertEqual(bill.state, Billing.STATE_ACTIVE)
+        self.assertEqual(bill.plan, self.plan_a)
+
+    def test_complete_trial(self):
+        bill = self.create_trial()
+        self.do_complete(billing=bill.pk)
+        bill = Billing.objects.get(pk=bill.pk)
+        self.assertEqual(bill.state, Billing.STATE_ACTIVE)
+        self.assertEqual(bill.plan, self.plan_a)

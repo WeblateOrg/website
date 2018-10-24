@@ -31,6 +31,7 @@ from weblate.utils import messages
 from weblate.utils.views import show_form_errors
 
 from wlhosted.forms import BillingForm, ChooseBillingForm
+from wlhosted.models import handle_received_payment
 from wlhosted.payments.models import Payment
 from wlhosted.utils import get_origin
 
@@ -76,9 +77,13 @@ class CreateBillingView(FormView):
             messages.error(request, _('No matching payment found.'))
             return redirect('create-billing')
 
-        # TODO: handle incoming payment confirmation
-        #  - create/update billing
-        return None
+        billing = handle_received_payment(payment)
+
+        messages.success(
+            request,
+            _('Payment has been processed, your plan is now active.')
+        )
+        return redirect('billing')
 
     def get(self, request, *args, **kwargs):
         if 'payment' in request.GET:
