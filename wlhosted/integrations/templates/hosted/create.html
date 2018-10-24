@@ -51,8 +51,14 @@
 <form action="{% url 'create-billing' %}" method="post" class="form-inline">
 {% csrf_token %}
 <input type="hidden" name="plan" value="{{ plan.pk }}">
-<button type="submit" class="btn btn-success btn-spaced" name="period" value="m">{% blocktrans with price=plan.price %}{{ price }} EUR monthly{% endblocktrans %}</button>
-<button type="submit" class="btn btn-success btn-spaced" name="period" value="y">{% blocktrans with price=plan.yearly_price %}{{ price }} EUR yearly{% endblocktrans %}</button>
+<button type="submit" class="btn btn-success btn-spaced" name="period" value="m">
+<big>{% blocktrans with price=plan.price %}{{ price }} EUR monthly{% endblocktrans %}</big><br>
+<small>{% blocktrans with price=plan.vat_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
+</button>
+<button type="submit" class="btn btn-success btn-spaced" name="period" value="y">
+<big>{% blocktrans with price=plan.yearly_price %}{{ price }} EUR yearly{% endblocktrans %}</big><br>
+<small>{% blocktrans with price=plan.vat_yearly_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
+</button>
 </form>
   </div>
 </div>
@@ -61,5 +67,9 @@
 <p class="help-block">
 {% trans "The pricing is based on number of source strings and number of target languages. The source string is a text unit defined in a translation format, it can be word, sentence or a paragraph." %}
 </p>
+<p class="help-block">
+{% trans "We're located in Czechia and you will be charged price with VAT if you are end user in the EU or Czech resident. Invoices for VAT registered companies in EU countries are issued as a reverse charge." %}
+</p>
+
 </div>
 {% endblock %}
