@@ -27,6 +27,9 @@ from setuptools import setup
 with open('requirements.txt') as requirements:
     REQUIRES = requirements.read().splitlines()
 
+with open(os.path.join(os.path.dirname(__file__), "README.rst")) as readme:
+    LONG_DESCRIPTION = readme.read()
+
 setup(
     name='wlhosted',
     version='0.1',
@@ -65,4 +68,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires=REQUIRES,
+    long_description=LONG_DESCRIPTION,
 )
