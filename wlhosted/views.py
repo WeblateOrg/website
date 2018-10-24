@@ -31,7 +31,7 @@ from weblate.utils import messages
 from weblate.utils.views import show_form_errors
 
 from wlhosted.forms import BillingForm, ChooseBillingForm
-from wlhosted.models import Payment
+from wlhosted.payments.models import Payment
 from wlhosted.utils import get_origin
 
 # List of supported languages on weblate.org

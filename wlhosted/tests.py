@@ -25,7 +25,7 @@ from django.urls import reverse
 from weblate.billing.models import Plan, Billing
 from weblate.trans.tests.utils import create_test_user
 
-from wlhosted.models import Customer, Payment
+from wlhosted.payments.models import Customer, Payment
 
 
 class PaymentTest(TestCase):

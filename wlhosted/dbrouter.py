@@ -20,32 +20,32 @@
 
 class HostedRouter(object):
     """
-    A router to send wlhosted app to separate database and
+    A router to send payments app to separate database and
     block running migrations on that.
     """
     def db_for_read(self, model, **hints):
         """
-        Attempts to read wlhosted models go to hosted_db.
+        Attempts to read payments models go to payments_db.
         """
-        if model._meta.app_label == 'wlhosted':
-            return 'hosted_db'
+        if model._meta.app_label == 'payments':
+            return 'payments_db'
         return None
 
     def db_for_write(self, model, **hints):
         """
-        Attempts to write wlhosted models go to hosted_db.
+        Attempts to write payments models go to payments_db.
         """
-        if model._meta.app_label == 'wlhosted':
-            return 'hosted_db'
+        if model._meta.app_label == 'payments':
+            return 'payments_db'
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """
-        Make sure the auth app only appears in the 'hosted_db'
+        Make sure the auth app only appears in the 'payments_db'
         database.
         """
-        if app_label == 'wlhosted':
-            return db == 'hosted_db'
-        elif db == 'hosted_db':
+        if app_label == 'payments':
+            return db == 'payments_db'
+        elif db == 'payments_db':
             return False
         return None

@@ -21,11 +21,11 @@
 import os.path
 from weblate.settings_test import *
 
-INSTALLED_APPS += ('wlhosted',)
+INSTALLED_APPS += ('wlhosted', 'wlhosted.payments')
 
-DATABASES['hosted_db'] = {
+DATABASES['payments_db'] = {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': os.path.join(DATA_DIR, 'hosted.db'),
+    'NAME': os.path.join(DATA_DIR, 'payments.db'),
 }
 
 DATABASE_ROUTERS = ['wlhosted.dbrouter.HostedRouter']
