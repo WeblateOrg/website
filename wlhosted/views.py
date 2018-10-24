@@ -91,5 +91,7 @@ class CreateBillingView(FormView):
 
     def get_context_data(self, **kwargs):
         kwargs = super(CreateBillingView, self).get_context_data(**kwargs)
-        kwargs['plans'] = Plan.objects.filter(public=True).order_by('price')
+        kwargs['plans'] = Plan.objects.filter(
+            public=True, price__gt=0
+        ).order_by('price')
         return kwargs

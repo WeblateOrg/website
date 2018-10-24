@@ -1,0 +1,24 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+sudo: false
+install: 
+  # Get newer pip and whell for binary caching support
+  - pip install --upgrade pip wheel
+  - pip install -r requirements-test.txt
+script: 
+  - export DJANGO_SETTINGS_MODULE=wlhosted.settings_test
+  - coverage weblate test 
+  - ./setup.py sdist
+  - twine check dist/*
+after_script:
+  - coverage xml
+  - codecov
+  - python-codacy-coverage
+cache: pip
+git:
+  depth: 10
+  submodules: false
