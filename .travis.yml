@@ -5,12 +5,14 @@ python:
   - "3.5"
   - "3.6"
 sudo: false
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=wlhosted.settings_test
 install: 
   # Get newer pip and whell for binary caching support
   - pip install --upgrade pip wheel
   - pip install -r requirements-test.txt
 script: 
-  - export DJANGO_SETTINGS_MODULE=wlhosted.settings_test
   - which weblate
   - coverage weblate test 
   - ./setup.py sdist
