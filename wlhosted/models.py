@@ -51,7 +51,6 @@ class Customer(models.Model):
     )
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
-    invoice = models.CharField(max_length=20, blank=True, default='')
 
     def __str__(self):
         if self.name:
@@ -78,10 +77,12 @@ class Payment(models.Model):
     paid = models.BooleanField(default=False)
     processor = models.CharField(max_length=100, default='')
     details = JSONField(editable=False)
+    extra = JSONField(editable=False)
     customer = models.ForeignKey(
         Customer, on_delete=models.deletion.CASCADE, blank=True
     )
     repeat = JSONField(editable=False)
+    invoice = models.CharField(max_length=20, blank=True, default='')
 
 
 class HostedConf(AppConf):
