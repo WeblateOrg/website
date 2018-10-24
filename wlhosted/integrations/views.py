@@ -30,10 +30,10 @@ from weblate.billing.models import Plan, Billing
 from weblate.utils import messages
 from weblate.utils.views import show_form_errors
 
-from wlhosted.forms import BillingForm, ChooseBillingForm
-from wlhosted.models import handle_received_payment
+from wlhosted.integrations.forms import BillingForm, ChooseBillingForm
+from wlhosted.integrations.models import handle_received_payment
 from wlhosted.payments.models import Payment
-from wlhosted.utils import get_origin
+from wlhosted.integrations.utils import get_origin
 
 # List of supported languages on weblate.org
 SUPPORTED_LANGUAGES = frozenset((

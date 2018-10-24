@@ -27,7 +27,7 @@ from django.utils.translation import ugettext_lazy as _
 from weblate.billing.models import Plan, Billing
 
 from wlhosted.payments.models import Payment, Customer
-from wlhosted.utils import get_origin
+from wlhosted.integrations.utils import get_origin
 
 
 class ChooseBillingForm(forms.Form):
