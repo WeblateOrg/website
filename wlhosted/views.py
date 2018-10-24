@@ -28,8 +28,9 @@ from django.views.generic.edit import FormView
 
 from weblate.billing.models import Plan, Billing
 from weblate.utils import messages
+from weblate.utils.views import show_form_errors
 
-from wlhosted.forms import ChooseBillingForm
+from wlhosted.forms import BillingForm, ChooseBillingForm
 from wlhosted.models import Payment
 from wlhosted.utils import get_origin
 
@@ -42,11 +43,8 @@ SUPPORTED_LANGUAGES = frozenset((
 ))
 
 
-def get_trial_billing(user):
+def get_default_billing(user):
     """Get trial billing for user to be ugpraded.
-
-    We intentionally ignore in case there is more of them (what
-    should not happen) to avoid need for manual selection.
     """
     billings = Billing.objects.for_user(user).filter(
         state=Billing.STATE_TRIAL
@@ -59,7 +57,12 @@ def get_trial_billing(user):
 @method_decorator(login_required, name='dispatch')
 class CreateBillingView(FormView):
     template_name = 'hosted/create.html'
-    form_class = ChooseBillingForm
+    form_class = BillingForm
+
+    def get_form_kwargs(self):
+        result = super(CreateBillingView, self).get_form_kwargs()
+        result['user'] = self.request.user
+        return result
 
     def handle_payment(self, request):
         try:
@@ -80,12 +83,6 @@ class CreateBillingView(FormView):
     def get(self, request, *args, **kwargs):
         if 'payment' in request.GET:
             return self.handle_payment(request)
-        billing = get_trial_billing(request.user)
-        if billing is not None:
-            messages.info(
-                request,
-                _('Choose plan to use for your trial.')
-            )
         return super(CreateBillingView, self).get(request, *args, **kwargs)
 
     def get_success_url(self, payment):
@@ -101,9 +98,28 @@ class CreateBillingView(FormView):
         payment = form.create_payment(self.request.user)
         return HttpResponseRedirect(self.get_success_url(payment))
 
+    def form_invalid(self, form):
+        show_form_errors(self.request, form)
+        return super(CreateBillingView, self).form_invalid(form)
+
     def get_context_data(self, **kwargs):
         kwargs = super(CreateBillingView, self).get_context_data(**kwargs)
-        kwargs['plans'] = Plan.objects.filter(
-            public=True, price__gt=0
-        ).order_by('price')
+        kwargs['plans'] = Plan.objects.public()
+        default_billing = get_default_billing(self.request.user)
+        if 'billing' in self.request.GET:
+            data = self.request.GET
+        else:
+            data = None
+        form = ChooseBillingForm(
+            self.request.user,
+            data,
+            initial={'billing': default_billing},
+        )
+        if form.is_valid():
+            kwargs['billing'] = form.cleaned_data['billing']
+        elif data is None:
+            kwargs['billing'] = default_billing
+        else:
+            kwargs['billing'] = None
+        kwargs['choose_billing'] = form
         return kwargs

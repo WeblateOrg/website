@@ -30,6 +30,8 @@ from wlhosted.models import Customer, Payment
 
 class PaymentTest(TestCase):
     def setUp(self):
+        Payment.objects.all().delete()
+        Customer.objects.all().delete()
         self.user = create_test_user()
         self.client.login(username='testuser', password='testpassword')
         self.plan_a = Plan.objects.create(
@@ -46,11 +48,13 @@ class PaymentTest(TestCase):
         )
 
     @override_settings(PAYMENT_REDIRECT_URL='http://example.com/payment')
-    def create_payment(self, period='y'):
-        response = self.client.post(
-            reverse('create-billing'),
-            {'plan': self.plan_a.id, 'period': period}
-        )
+    def create_payment(self, **kwargs):
+        params = {
+            'plan': self.plan_a.id,
+            'period': 'y',
+        }
+        params.update(kwargs)
+        response = self.client.post(reverse('create-billing'), params)
         self.assertRedirects(
             response,
             'http://example.com/payment',
@@ -58,18 +62,18 @@ class PaymentTest(TestCase):
         )
 
     def test_create(self):
-        Payment.objects.all().delete()
         response = self.client.get(reverse('create-billing'))
         self.assertContains(response, 'Plan A')
         self.assertContains(response, 'Plan B')
         self.assertNotContains(response, 'Plan C')
         self.assertNotContains(response, 'Plan D')
-        self.create_payment('y')
+        self.create_payment(period='y')
         self.assertEqual(Payment.objects.count(), 1)
         self.assertEqual(Customer.objects.count(), 1)
         payment = Payment.objects.all()[0]
         self.assertEqual(payment.amount, self.plan_a.yearly_price)
-        self.create_payment('m')
+        self.assertEqual(payment.extra, {})
+        self.create_payment(period='m')
         self.assertEqual(Payment.objects.count(), 2)
         self.assertEqual(Customer.objects.count(), 1)
         payment = Payment.objects.exclude(uuid=payment.uuid)[0]
@@ -82,10 +86,13 @@ class PaymentTest(TestCase):
         )
         bill.owners.add(self.user)
         response = self.client.get(reverse('create-billing'))
-        self.assertContains(response, 'trial')
+        self.assertContains(response, 'Trial')
+        self.create_payment(billing=bill.pk)
+        payment = Payment.objects.all()[0]
+        self.assertEqual(payment.extra, {'billing': bill.pk})
 
     def test_complete(self):
-        self.create_payment('m')
+        self.create_payment()
         payment = Payment.objects.all()[0]
         self.assertRedirects(
             self.client.get(

@@ -22,23 +22,41 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
-from weblate.billing.models import Plan
+from weblate.billing.models import Plan, Billing
 
 from wlhosted.models import Payment, Customer
 from wlhosted.utils import get_origin
 
 
 class ChooseBillingForm(forms.Form):
-    plan = forms.ChoiceField(choices=[])
-    period = forms.ChoiceField(choices=[('y', 'y'), ('m', 'm')])
-    extra_domain = forms.BooleanField(required=False)
+    billing = forms.ModelChoiceField(
+        queryset=Billing.objects.none(),
+        label=_('Billing'),
+        help_text=_('Choose billing you want to update'),
+        empty_label=_('Create new billing'),
+        required=False,
+    )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super(ChooseBillingForm, self).__init__(*args, **kwargs)
-        self.fields['plan'].choices = [
-            (p, p) for p in Plan.objects.values_list('id', flat=True)
-        ]
+        self.fields['billing'].queryset = Billing.objects.for_user(user)
+
+
+class BillingForm(ChooseBillingForm):
+    plan = forms.ModelChoiceField(
+        queryset=Plan.objects.public(),
+        widget=forms.HiddenInput,
+    )
+    period = forms.ChoiceField(
+        choices=[('y', 'y'), ('m', 'm')],
+        widget=forms.HiddenInput,
+    )
+    extra_domain = forms.BooleanField(
+        required=False,
+        widget=forms.HiddenInput,
+    )
 
     def create_payment(self, user):
         customer = Customer.objects.get_or_create(
@@ -49,7 +67,7 @@ class ChooseBillingForm(forms.Form):
             }
         )[0]
 
-        plan = Plan.objects.get(pk=self.cleaned_data['plan'])
+        plan = self.cleaned_data['plan']
         period = self.cleaned_data['period']
         description = 'Weblate hosting ({}, {})'.format(
             plan.name,
@@ -59,9 +77,13 @@ class ChooseBillingForm(forms.Form):
         if self.cleaned_data['extra_domain']:
             amount += 100
             description += ' + Custom domain'
+        extra = {}
+        if self.cleaned_data['billing']:
+            extra['billing'] = self.cleaned_data['billing'].pk
         return Payment.objects.create(
             amount=amount,
             description=description,
             recurring=self.cleaned_data['period'],
             customer=customer,
+            extra=extra,
         )
