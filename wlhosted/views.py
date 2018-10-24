@@ -22,10 +22,11 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import get_language
+from django.utils.translation import get_language, ugettext as _
 from django.views.generic.edit import FormView
 
-from weblate.billing.models import Plan
+from weblate.billing.models import Plan, Billing
+from weblate.utils import messages
 
 from wlhosted.forms import ChooseBillingForm
 
@@ -38,10 +39,42 @@ SUPPORTED_LANGUAGES = frozenset((
 ))
 
 
+def get_trial_billing(user):
+    """Get trial billing for user to be ugpraded.
+
+    We intentionally ignore in case there is more of them (what
+    should not happen) to avoid need for manual selection.
+    """
+    billings = Billing.objects.for_user(user).filter(
+        state=Billing.STATE_TRIAL
+    )
+    if billings.count() == 1:
+        return billings[0]
+    return None
+
+
 @method_decorator(login_required, name='dispatch')
 class CreateBillingView(FormView):
     template_name = 'hosted/create.html'
     form_class = ChooseBillingForm
+
+    def handle_payment(self, request):
+        # TODO: handle incoming payment confirmation
+        #  - check payment is competed
+        #  - check user matches
+        #  - create/update billing
+        return None
+
+    def get(self, request, *args, **kwargs):
+        if 'payment' in request.GET:
+            return self.handle_payment(request)
+        billing = get_trial_billing(request.user)
+        if billing is not None:
+            messages.info(
+                request,
+                _('Choose plan to use for your trial.')
+            )
+        return super(CreateBillingView, self).get(request, *args, **kwargs)
 
     def get_success_url(self, payment):
         language = get_language()
