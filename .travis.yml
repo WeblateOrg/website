@@ -11,6 +11,7 @@ install:
   - pip install -r requirements-test.txt
 script: 
   - export DJANGO_SETTINGS_MODULE=wlhosted.settings_test
+  - which weblate
   - coverage weblate test 
   - ./setup.py sdist
   - twine check dist/*
