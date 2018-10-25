@@ -159,3 +159,9 @@ class Payment(models.Model):
         null=True, blank=True
     )
     invoice = models.CharField(max_length=20, blank=True, default='')
+
+    @property
+    def vat_amount(self):
+        if self.customer.needs_vat:
+            return round(1.21 * self.amount, 2)
+        return self.amount

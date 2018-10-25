@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase
 
-from wlhosted.payments.models import Customer
+from wlhosted.payments.models import Customer, Payment
 
 
 CUSTOMER = {
@@ -65,3 +65,12 @@ class ModelTest(SimpleTestCase):
         customer.country = 'IE'
         with self.assertRaises(ValidationError):
             customer.clean()
+
+    def test_vat(self):
+        customer = Customer(**CUSTOMER)
+        payment = Payment(customer=customer, amount=100)
+        self.assertEqual(payment.vat_amount, 121)
+
+        customer.vat = 'IE6388047V'
+        payment = Payment(customer=customer, amount=100)
+        self.assertEqual(payment.vat_amount, 100)
