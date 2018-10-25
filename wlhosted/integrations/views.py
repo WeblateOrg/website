@@ -113,6 +113,11 @@ class CreateBillingView(FormView):
         )
 
     def form_valid(self, form):
+        if not settings.PAYMENT_ENABLED:
+            messages.error(
+                self.request, _('Payments are temporarily disabled.')
+            )
+            return redirect('create-billing')
         payment = form.create_payment(self.request.user)
         return HttpResponseRedirect(self.get_success_url(payment))
 

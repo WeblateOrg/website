@@ -116,6 +116,16 @@ class PaymentTest(TestCase):
         response = self.client.post(reverse('create-billing'))
         self.assertContains(response, 'This field is required')
 
+        with override_settings(PAYMENT_ENABLED=False):
+            response = self.client.post(
+                reverse('create-billing'),
+                {
+                    'plan': self.plan_a.id,
+                    'period': 'y',
+                }
+            )
+            self.assertRedirects(response, reverse('create-billing'))
+
     @override_settings(PAYMENT_REDIRECT_URL='http://example.com/payment')
     def test_payment_redirects(self):
         # Invalid UUID

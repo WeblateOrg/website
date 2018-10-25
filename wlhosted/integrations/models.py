@@ -89,6 +89,7 @@ def handle_received_payment(payment):
 
 class HostedConf(AppConf):
     PAYMENT_REDIRECT_URL = 'https://weblate.org/{language}/payment/{uuid}/'
+    PAYMENT_ENABLED = True
 
     class Meta(object):
         prefix = ''
