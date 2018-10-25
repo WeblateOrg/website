@@ -98,7 +98,7 @@ class BackendTest(TestCase):
     @override_settings(PAYMENT_DEBUG=True)
     def test_pay(self):
         backend = get_backend('pay')(self.payment)
-        self.assertIsNone(backend.initiate(None))
+        self.assertIsNone(backend.initiate(None, '', ''))
         self.check_payment(Payment.PENDING)
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
@@ -106,7 +106,7 @@ class BackendTest(TestCase):
     @override_settings(PAYMENT_DEBUG=True)
     def test_reject(self):
         backend = get_backend('reject')(self.payment)
-        self.assertIsNone(backend.initiate(None))
+        self.assertIsNone(backend.initiate(None, '', ''))
         self.check_payment(Payment.PENDING)
         self.assertFalse(backend.complete(None))
         self.check_payment(Payment.REJECTED)
@@ -114,7 +114,7 @@ class BackendTest(TestCase):
     @override_settings(PAYMENT_DEBUG=True)
     def test_pending(self):
         backend = get_backend('pending')(self.payment)
-        self.assertIsNotNone(backend.initiate(None))
+        self.assertIsNotNone(backend.initiate(None, '', ''))
         self.check_payment(Payment.PENDING)
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
@@ -124,7 +124,7 @@ class BackendTest(TestCase):
         backend = get_backend('pending')(self.payment)
         backend.payment.state = Payment.PENDING
         with self.assertRaises(InvalidState):
-            backend.initiate(None)
+            backend.initiate(None, '', '')
         backend.payment.state = Payment.ACCEPTED
         with self.assertRaises(InvalidState):
             backend.complete(None)

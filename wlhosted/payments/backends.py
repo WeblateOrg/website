@@ -62,7 +62,7 @@ class Backend(object):
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
         self.payment = select[0]
 
-    def perform(self, request):
+    def perform(self, request, back_url, complete_url):
         """Performs payment and optionally redirects user."""
         raise NotImplementedError()
 
@@ -70,12 +70,12 @@ class Backend(object):
         """Collects payment information."""
         raise NotImplementedError()
 
-    def initiate(self, request):
+    def initiate(self, request, back_url, complete_url):
         """Initiates payment and optionally redirects user."""
         if self.payment.state != Payment.NEW:
             raise InvalidState()
 
-        result = self.perform(request)
+        result = self.perform(request, back_url, complete_url)
 
         # Update payment state
         self.payment.state = Payment.PENDING
@@ -121,7 +121,7 @@ class DebugPay(Backend):
     debug = True
     verbose = 'Pay'
 
-    def perform(self, request):
+    def perform(self, request, back_url, complete_url):
         return None
 
     def collect(self, request):
@@ -143,8 +143,8 @@ class DebugPending(DebugPay):
     name = 'pending'
     verbose = 'Pending'
 
-    def perform(self, request):
-        return redirect('https://cihar.com/')
+    def perform(self, request, back_url, complete_url):
+        return redirect('https://cihar.com/?url=' + complete_url)
 
     def collect(self, request):
         return True
