@@ -182,6 +182,12 @@ class PaymentTest(TestCase):
         self.assertEqual(bill.state, Billing.STATE_ACTIVE)
         self.assertEqual(bill.plan, self.plan_a)
 
+    def test_complete_monthly(self):
+        self.do_complete(period='m')
+        bill = Billing.objects.all()[0]
+        self.assertEqual(bill.state, Billing.STATE_ACTIVE)
+        self.assertEqual(bill.plan, self.plan_a)
+
     def test_complete_trial(self):
         bill = self.create_trial()
         self.do_complete(billing=bill.pk)
