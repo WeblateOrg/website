@@ -25,6 +25,8 @@ import uuid
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+from django_countries.fields import CountryField
+
 from vies.models import VATINField
 from vies.validators import VATINValidator
 
@@ -41,7 +43,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=200, null=True)
     address = models.CharField(max_length=200, null=True)
     city = models.CharField(max_length=200, null=True)
-    country = models.CharField(max_length=200, null=True)
+    country = CountryField(null=True)
     email = models.EmailField(
         blank=False,
         max_length=190,
