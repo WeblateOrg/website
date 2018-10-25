@@ -35,6 +35,12 @@ from vies.validators import VATINValidator
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
 
+EU_COUNTRIES = frozenset((
+    'BE', 'BG', 'CZ', 'DK', 'DE', 'EE', 'IE', 'EL', 'ES', 'FR', 'HR', 'IT',
+    'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'AT', 'PL', 'PT', 'RO', 'SI',
+    'SK', 'FI', 'SE', 'UK',
+))
+
 
 @python_2_unicode_compatible
 class Customer(models.Model):
@@ -76,15 +82,35 @@ class Customer(models.Model):
             return '{} ({})'.format(self.name, self.email)
         return self.email
 
+    @property
+    def country_code(self):
+        return self.country.code.upper()
+
+    @property
+    def vat_country_code(self):
+        if self.vat:
+            return self.vat[:2].upper()
+        return None
+
     def clean(self):
         if self.vat:
-            if self.vat[:2].lower() != self.country.code.lower():
+            if self.vat_country_code != self.country_code:
                 raise ValidationError(
                     {'country': _('Country has to match your VAT code')}
                 )
 
-    def empty(self):
+    @property
+    def is_empty(self):
         return not (self.name and self.address and self.city and self.country)
+
+    @property
+    def is_eu_enduser(self):
+        return (self.country_code in EU_COUNTRIES and not self.vat)
+
+    @property
+    def needs_vat(self):
+        return self.vat_country_code == 'CZ' or self.is_eu_enduser
+
 
 class Payment(models.Model):
     NEW = 1
