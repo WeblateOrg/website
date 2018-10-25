@@ -30,6 +30,7 @@ from weblate.billing.models import Plan, Billing, Invoice
 from weblate.trans.tests.utils import create_test_user
 
 from wlhosted.payments.models import Customer, Payment
+from wlhosted.integrations.tasks import pending_payments
 
 
 class PaymentTest(TestCase):
@@ -90,6 +91,14 @@ class PaymentTest(TestCase):
         self.assertEqual(Customer.objects.count(), 1)
         payment = Payment.objects.exclude(uuid=payment.uuid)[0]
         self.assertEqual(payment.amount, self.plan_a.price)
+
+    def test_pending_payments(self):
+        self.test_create()
+        Payment.objects.all().update(state=Payment.ACCEPTED)
+        pending_payments()
+        self.assertFalse(
+            Payment.objects.filter(state=Payment.ACCEPTED).exists()
+        )
 
     def test_existing_billing(self):
         bill = self.create_trial()

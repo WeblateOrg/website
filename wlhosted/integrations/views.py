@@ -61,7 +61,7 @@ class CreateBillingView(FormView):
 
     def handle_payment(self, request):
         try:
-            payment = Payment.objects.get(
+            payment = Payment.objects.select_for_update().get(
                 uuid=request.GET['payment'],
                 customer__user_id=request.user.id,
                 customer__origin=get_origin(),
@@ -70,8 +70,9 @@ class CreateBillingView(FormView):
             messages.error(request, _('No matching payment found.'))
             return redirect('create-billing')
 
-        if payment.state == Payment.ACCEPTED:
-            billing = handle_received_payment(payment)
+        if payment.state in (Payment.ACCEPTED, Payment.PROCESSED):
+            if payment.state == Payment.ACCEPTED:
+                billing = handle_received_payment(payment)
 
             messages.success(
                 request,
