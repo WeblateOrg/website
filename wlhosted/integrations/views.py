@@ -20,6 +20,7 @@
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -65,7 +66,7 @@ class CreateBillingView(FormView):
                 customer__user_id=request.user.id,
                 customer__origin=get_origin(),
             )
-        except Payment.DoesNotExist:
+        except (Payment.DoesNotExist, ValidationError):
             messages.error(request, _('No matching payment found.'))
             return redirect('create-billing')
 
@@ -77,7 +78,7 @@ class CreateBillingView(FormView):
                 _('Thank you for purchasing hosting plan, it is now active.')
             )
             return redirect('billing')
-        elif payment.state == Payment.PENDING:
+        elif payment.state in (Payment.PENDING, Payment.PROCESSED):
             messages.info(
                 request,
                 _(
@@ -93,6 +94,8 @@ class CreateBillingView(FormView):
                     payment.details.get('reject_reason', _('Unknown reason'))
                 )
             )
+        elif payment.state == Payment.NEW:
+            return HttpResponseRedirect(self.get_success_url(payment))
         return redirect('create-billing')
 
     def get(self, request, *args, **kwargs):

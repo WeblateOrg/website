@@ -102,19 +102,53 @@ class PaymentTest(TestCase):
             {'billing': bill.pk, 'plan': self.plan_a.pk}
         )
 
+    @override_settings(PAYMENT_REDIRECT_URL='http://example.com/payment')
+    def test_payment_redirects(self):
+        # Invalid UUID
+        self.assertRedirects(
+            self.client.get(reverse('create-billing'), {'payment': 'i'}),
+            reverse('create-billing')
+        )
+        self.create_payment()
+        payment = Payment.objects.all()[0]
+        bill_url = reverse('billing')
+        create_url = reverse('create-billing')
+        pay_url = 'http://example.com/payment'
+        params = create_url, {'payment': payment.uuid}
+        # New should redirect to payment interface
+        self.assertRedirects(
+            self.client.get(*params), pay_url,
+            fetch_redirect_response=False
+        )
+        # Pending should redirect to billings
+        payment.state = Payment.PENDING
+        payment.save()
+        self.assertRedirects(self.client.get(*params), bill_url)
+        # Accepted should redirect to billings
+        payment.state = Payment.ACCEPTED
+        payment.save()
+        self.assertRedirects(self.client.get(*params), bill_url)
+        # Processed should redirect to billings
+        payment.state = Payment.PROCESSED
+        payment.save()
+        self.assertRedirects(self.client.get(*params), bill_url)
+        # Rejected should redirect to create
+        payment.state = Payment.REJECTED
+        payment.save()
+        self.assertRedirects(self.client.get(*params), create_url)
+        # Non existing should redirect to create
+        payment.delete()
+        self.assertRedirects(self.client.get(*params), create_url)
+
     def do_complete(self, **kwargs):
         self.create_payment(**kwargs)
         payment = Payment.objects.all()[0]
-        params = {'payment': payment.uuid}
-        params.update(kwargs)
-        self.assertRedirects(
-            self.client.get(reverse('create-billing'), params),
-            reverse('create-billing')
-        )
         payment.state = Payment.ACCEPTED
         payment.save()
         self.assertRedirects(
-            self.client.get(reverse('create-billing'), params),
+            self.client.get(
+                reverse('create-billing'), {'payment': payment.uuid}
+            ),
             reverse('billing')
         )
 
