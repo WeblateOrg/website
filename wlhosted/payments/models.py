@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 
 import uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
@@ -75,6 +76,15 @@ class Customer(models.Model):
             return '{} ({})'.format(self.name, self.email)
         return self.email
 
+    def clean(self):
+        if self.vat:
+            if self.vat[:2].lower() != self.country.code.lower():
+                raise ValidationError(
+                    {'country': _('Country has to match your VAT code')}
+                )
+
+    def empty(self):
+        return not (self.name and self.address and self.city and self.country)
 
 class Payment(models.Model):
     NEW = 1
