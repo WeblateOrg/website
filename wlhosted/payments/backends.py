@@ -134,7 +134,7 @@ class DebugReject(DebugPay):
     verbose = 'Reject'
 
     def collect(self, request):
-        self.payment.extra['reject_reason'] = 'Debug reject'
+        self.payment.details['reject_reason'] = 'Debug reject'
         return False
 
 
