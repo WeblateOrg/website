@@ -126,6 +126,7 @@ class DebugPay(Backend):
     name = 'pay'
     debug = True
     verbose = 'Pay'
+    recurring = True
 
     def perform(self, request, back_url, complete_url):
         return None
@@ -138,6 +139,7 @@ class DebugPay(Backend):
 class DebugReject(DebugPay):
     name = 'reject'
     verbose = 'Reject'
+    recurring = False
 
     def collect(self, request):
         self.payment.details['reject_reason'] = 'Debug reject'
@@ -148,7 +150,7 @@ class DebugReject(DebugPay):
 class DebugPending(DebugPay):
     name = 'pending'
     verbose = 'Pending'
-    recurring = True
+    recurring = False
 
     def perform(self, request, back_url, complete_url):
         return redirect('https://cihar.com/?url=' + complete_url)

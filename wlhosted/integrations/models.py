@@ -56,9 +56,13 @@ def handle_received_payment(payment):
         billing = Billing.objects.create(**params)
         billing.owners.add(User.objects.get(pk=payment.customer.user_id))
 
-    # Initial payment
+    # Update recurrence information
     if payment.recurring:
         billing.payment['recurring'] = payment.pk
+    elif payment.repeat:
+        billing.payment['recurring'] = payment.repeat.pk
+    elif 'recurring' in billing.payment:
+        del billing.payment['recurring']
     # Store all payment links
     if 'all' not in billing.payment:
         billing.payment['all'] = []

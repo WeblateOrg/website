@@ -24,18 +24,17 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import get_language, ugettext as _
+from django.utils.translation import ugettext as _
 from django.views.generic.edit import FormView
 
 from weblate.billing.models import Plan, Billing
 from weblate.utils import messages
 from weblate.utils.views import show_form_errors
 
-from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.integrations.forms import BillingForm, ChooseBillingForm
 from wlhosted.integrations.models import handle_received_payment
 from wlhosted.payments.models import Payment
-from wlhosted.integrations.utils import get_origin
+from wlhosted.integrations.utils import get_origin, get_payment_url
 
 
 def get_default_billing(user):
@@ -72,7 +71,7 @@ class CreateBillingView(FormView):
 
         if payment.state in (Payment.ACCEPTED, Payment.PROCESSED):
             if payment.state == Payment.ACCEPTED:
-                billing = handle_received_payment(payment)
+                handle_received_payment(payment)
 
             messages.success(
                 request,
@@ -96,22 +95,13 @@ class CreateBillingView(FormView):
                 )
             )
         elif payment.state == Payment.NEW:
-            return HttpResponseRedirect(self.get_success_url(payment))
+            return HttpResponseRedirect(get_payment_url(payment))
         return redirect('create-billing')
 
     def get(self, request, *args, **kwargs):
         if 'payment' in request.GET:
             return self.handle_payment(request)
         return super(CreateBillingView, self).get(request, *args, **kwargs)
-
-    def get_success_url(self, payment):
-        language = get_language()
-        if language not in SUPPORTED_LANGUAGES:
-            language = 'en'
-        return settings.PAYMENT_REDIRECT_URL.format(
-            language=language,
-            uuid=payment.uuid
-        )
 
     def form_valid(self, form):
         if not settings.PAYMENT_ENABLED:
@@ -120,7 +110,7 @@ class CreateBillingView(FormView):
             )
             return redirect('create-billing')
         payment = form.create_payment(self.request.user)
-        return HttpResponseRedirect(self.get_success_url(payment))
+        return HttpResponseRedirect(get_payment_url(payment))
 
     def form_invalid(self, form):
         show_form_errors(self.request, form)

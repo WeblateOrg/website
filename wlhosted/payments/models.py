@@ -172,6 +172,7 @@ class Payment(models.Model):
 
 class PaymentConf(AppConf):
     DEBUG = False
+    SECRET = 'secret'
 
     class Meta(object):
         prefix = 'PAYMENT'

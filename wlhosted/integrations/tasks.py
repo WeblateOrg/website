@@ -20,12 +20,21 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from weblate.accounts.notifications import send_notification_email
+from datetime import timedelta
+
+from django.conf import settings
+from django.utils import timezone
+from django.utils.http import urlencode
+
+from six.moves.urllib.request import Request, urlopen
+
+from weblate import USER_AGENT
+from weblate.billing.models import Billing
 from weblate.celery import app
 
 from wlhosted.payments.models import Payment
 from wlhosted.integrations.models import handle_received_payment
-from wlhosted.integrations.utils import get_origin
+from wlhosted.integrations.utils import get_origin, get_payment_url
 
 
 @app.task
@@ -38,10 +47,57 @@ def pending_payments():
         handle_received_payment(payment)
 
 
+@app.task
+def recurring_payments():
+    cutoff = timezone.now().date() + timedelta(days=1)
+    for billing in Billing.objects.filter(state=Billing.STATE_ACTIVE):
+        if 'recurring' not in billing.payment:
+            continue
+        last_invoice = billing.invoice_set.order_by('-start')[0]
+        if last_invoice.end > cutoff:
+            continue
+
+        original = Payment.objects.get(pk=billing.payment['recurring'])
+
+        # Create new payment object
+        payment = Payment.objects.create(
+            amount=original.amount,
+            description=original.description,
+            recurring='',
+            customer=original.customer,
+            repeat=original,
+            extra={
+                'plan': original.extra['plan'],
+                'billing': billing.pk,
+            }
+        )
+
+        # Trigger payment processing
+        request = Request(get_payment_url(payment))
+        request.add_header('User-Agent', USER_AGENT)
+        handle = urlopen(
+            request,
+            urlencode({
+                'method': original.details['backend'],
+                'secret': settings.PAYMENT_SECRET,
+            })
+        )
+        handle.read()
+        handle.close()
+
+    # We have created bunch of pending payments, process them now
+    pending_payments()
+
+
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         300,
         pending_payments.s(),
         name='pending-payments',
+    )
+    sender.add_periodic_task(
+        86400,
+        recurring_payments.s(),
+        name='recurring-payments',
     )
