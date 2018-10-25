@@ -18,11 +18,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+
+from dateutil.relativedelta import relativedelta
+
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.utils import timezone
 from django.urls import reverse
 
-from weblate.billing.models import Plan, Billing
+from weblate.billing.models import Plan, Billing, Invoice
 from weblate.trans.tests.utils import create_test_user
 
 from wlhosted.payments.models import Customer, Payment
@@ -126,3 +130,20 @@ class PaymentTest(TestCase):
         bill = Billing.objects.get(pk=bill.pk)
         self.assertEqual(bill.state, Billing.STATE_ACTIVE)
         self.assertEqual(bill.plan, self.plan_a)
+
+    def test_complete_second(self):
+        bill = self.create_trial()
+        now = timezone.now()
+        Invoice.objects.create(
+            billing=bill,
+            start=now,
+            end=now + relativedelta(months=1),
+        )
+        old_i = bill.invoice_set.all()[0]
+        self.do_complete(billing=bill.pk)
+        bill = Billing.objects.all()[0]
+        self.assertEqual(bill.state, Billing.STATE_ACTIVE)
+        self.assertEqual(bill.plan, self.plan_a)
+        self.assertEqual(bill.invoice_set.count(), 2)
+        new_i = bill.invoice_set.exclude(pk=old_i.pk)[0]
+        self.assertLess(old_i.end, new_i.start)

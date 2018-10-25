@@ -18,10 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 
 from appconf import AppConf
 
+from django.db.models.aggregates import Max
 from django.utils import timezone
 
 from weblate.billing.models import Plan, Billing, Invoice
@@ -36,9 +37,9 @@ def end_interval(payment, start):
     else:
         period = payment.recurring
     if period == 'y':
-        return start + relativedelta.relativedelta(years=1)
+        return start + relativedelta(years=1)
     elif period == 'm':
-        return start + relativedelta.relativedelta(months=1)
+        return start + relativedelta(months=1)
     raise ValueError('Invalid payment period!')
 
 
@@ -65,7 +66,11 @@ def handle_received_payment(payment):
 
     billing.save()
 
-    start = timezone.now()
+    start = billing.invoice_set.aggregate(Max('end'))['end__max']
+    if start is not None:
+        start += relativedelta(days=1)
+    else:
+        start = timezone.now()
 
     Invoice.objects.create(
         billing=billing,
