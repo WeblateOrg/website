@@ -24,6 +24,7 @@ import uuid
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 
 from django_countries.fields import CountryField
 
@@ -38,12 +39,29 @@ from weblate.utils.validators import validate_email
 class Customer(models.Model):
     vat = VATINField(
         validators=[VATINValidator(verify=True, validate=True)],
-        blank=True, null=True
+        blank=True, null=True,
+        verbose_name=_('European VAT ID'),
+        help_text=_(
+            'Please fill in Europe Union VAT ID, '
+            'keep the field blank if not applicable.'
+        ),
     )
-    name = models.CharField(max_length=200, null=True)
-    address = models.CharField(max_length=200, null=True)
-    city = models.CharField(max_length=200, null=True)
-    country = CountryField(null=True)
+    name = models.CharField(
+        max_length=200, null=True,
+        verbose_name=_('Company name'),
+    )
+    address = models.CharField(
+        max_length=200, null=True,
+        verbose_name=_('Address'),
+    )
+    city = models.CharField(
+        max_length=200, null=True,
+        verbose_name=_('Post code code and city'),
+    )
+    country = CountryField(
+        null=True,
+        verbose_name=_('Country'),
+    )
     email = models.EmailField(
         blank=False,
         max_length=190,
