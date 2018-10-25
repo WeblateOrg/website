@@ -84,7 +84,9 @@ class Customer(models.Model):
 
     @property
     def country_code(self):
-        return self.country.code.upper()
+        if self.country:
+            return self.country.code.upper()
+        return None
 
     @property
     def vat_country_code(self):

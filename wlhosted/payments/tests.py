@@ -37,6 +37,8 @@ CUSTOMER = {
 
 class ModelTest(SimpleTestCase):
     def test_vat(self):
+        customer = Customer()
+        self.assertFalse(customer.needs_vat)
         customer = Customer(**CUSTOMER)
         # Czech customer needs VAT
         self.assertTrue(customer.needs_vat)
