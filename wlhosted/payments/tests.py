@@ -131,5 +131,5 @@ class BackendTest(TestCase):
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_list(self):
-        backends = list(list_backends())
+        backends = list_backends()
         self.assertGreater(len(backends), 0)
