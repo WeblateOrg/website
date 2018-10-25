@@ -22,6 +22,9 @@ from __future__ import unicode_literals
 
 import uuid
 
+from appconf import AppConf
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -163,5 +166,12 @@ class Payment(models.Model):
     @property
     def vat_amount(self):
         if self.customer.needs_vat:
-            return round(1.21 * self.amount, 2)
+            return round(settings.VAT_RATE * self.amount, 2)
         return self.amount
+
+
+class PaymentConf(AppConf):
+    DEBUG = False
+
+    class Meta(object):
+        prefix = 'PAYMENT'

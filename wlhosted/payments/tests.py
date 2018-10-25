@@ -21,9 +21,13 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
+from django.test.utils import override_settings
 
 from wlhosted.payments.models import Customer, Payment
+from wlhosted.payments.backends import (
+    get_backend, InvalidState, list_backends
+)
 
 
 CUSTOMER = {
@@ -32,6 +36,7 @@ CUSTOMER = {
     'city': '149 00 Praha 4',
     'country': 'CZ',
     'vat': 'CZ8003280318',
+    'user_id': 6,
 }
 
 
@@ -74,3 +79,57 @@ class ModelTest(SimpleTestCase):
         customer.vat = 'IE6388047V'
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, 100)
+
+
+class BackendTest(TestCase):
+    def setUp(self):
+        super(BackendTest, self).setUp()
+        self.customer = Customer.objects.create(**CUSTOMER)
+        self.payment = Payment.objects.create(
+            customer=self.customer,
+            amount=100,
+            description='Test Item'
+        )
+
+    def check_payment(self, state):
+        payment = Payment.objects.get(pk=self.payment.pk)
+        self.assertEqual(payment.state, state)
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_pay(self):
+        backend = get_backend('pay')(self.payment)
+        self.assertIsNone(backend.initiate(None))
+        self.check_payment(Payment.PENDING)
+        self.assertTrue(backend.complete(None))
+        self.check_payment(Payment.ACCEPTED)
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_reject(self):
+        backend = get_backend('reject')(self.payment)
+        self.assertIsNone(backend.initiate(None))
+        self.check_payment(Payment.PENDING)
+        self.assertFalse(backend.complete(None))
+        self.check_payment(Payment.REJECTED)
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_pending(self):
+        backend = get_backend('pending')(self.payment)
+        self.assertIsNotNone(backend.initiate(None))
+        self.check_payment(Payment.PENDING)
+        self.assertTrue(backend.complete(None))
+        self.check_payment(Payment.ACCEPTED)
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_assertions(self):
+        backend = get_backend('pending')(self.payment)
+        backend.payment.state = Payment.PENDING
+        with self.assertRaises(InvalidState):
+            backend.initiate(None)
+        backend.payment.state = Payment.ACCEPTED
+        with self.assertRaises(InvalidState):
+            backend.complete(None)
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_list(self):
+        backends = list(list_backends())
+        self.assertGreater(len(backends), 0)
