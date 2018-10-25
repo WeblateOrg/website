@@ -58,7 +58,7 @@ def handle_received_payment(payment):
 
     # Initial payment
     if payment.recurring:
-        billing.payment['initial'] = payment.pk
+        billing.payment['recurring'] = payment.pk
     # Store all payment links
     if 'all' not in billing.payment:
         billing.payment['all'] = []
