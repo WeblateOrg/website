@@ -57,6 +57,7 @@ class Backend(object):
     name = None
     debug = False
     verbose = None
+    recurring = False
 
     def __init__(self, payment):
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
@@ -73,6 +74,9 @@ class Backend(object):
     def initiate(self, request, back_url, complete_url):
         """Initiates payment and optionally redirects user."""
         if self.payment.state != Payment.NEW:
+            raise InvalidState()
+
+        if self.payment.repeat and not self.recurring:
             raise InvalidState()
 
         result = self.perform(request, back_url, complete_url)
@@ -98,16 +102,18 @@ class Backend(object):
     def generate_invoice(self):
         """Generates an invoice."""
         self.payment.invoice = 'XXX'
-        self.payment.save()
 
     def notify_user(self):
         """Send email notification with an invoice."""
 
     def success(self):
         self.payment.state = Payment.ACCEPTED
-        self.payment.save()
+        if not self.recurring:
+            self.payment.recurring = ''
 
         self.generate_invoice()
+        self.payment.save()
+
         self.notify_user()
 
     def failure(self):
@@ -142,6 +148,7 @@ class DebugReject(DebugPay):
 class DebugPending(DebugPay):
     name = 'pending'
     verbose = 'Pending'
+    recurring = True
 
     def perform(self, request, back_url, complete_url):
         return redirect('https://cihar.com/?url=' + complete_url)
