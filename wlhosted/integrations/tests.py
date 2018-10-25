@@ -91,16 +91,30 @@ class PaymentTest(TestCase):
         payment = Payment.objects.exclude(uuid=payment.uuid)[0]
         self.assertEqual(payment.amount, self.plan_a.price)
 
-    def test_trial(self):
+    def test_existing_billing(self):
         bill = self.create_trial()
+        bill_args = {'billing': bill.pk}
+        # Test default selection
         response = self.client.get(reverse('create-billing'))
         self.assertContains(response, 'Trial')
-        self.create_payment(billing=bill.pk)
-        payment = Payment.objects.all()[0]
-        self.assertEqual(
-            payment.extra,
-            {'billing': bill.pk, 'plan': self.plan_a.pk}
+        # Test manual selection
+        response = self.client.get(reverse('create-billing'), bill_args)
+        self.assertContains(response, 'Trial')
+        # Test invalid selection
+        response = self.client.get(
+            reverse('create-billing'), {'billing': 'x'}
         )
+        self.assertNotContains(response, 'Trial')
+        # Create payment for billing
+        self.create_payment(**bill_args)
+        payment = Payment.objects.all()[0]
+        bill_args['plan'] = self.plan_a.pk
+        # The billing should be stored in the payment
+        self.assertEqual(payment.extra, bill_args)
+
+    def test_error_handling(self):
+        response = self.client.post(reverse('create-billing'))
+        self.assertContains(response, 'This field is required')
 
     @override_settings(PAYMENT_REDIRECT_URL='http://example.com/payment')
     def test_payment_redirects(self):
