@@ -47,7 +47,7 @@
   <td>{% if plan.display_limit_projects %}{{ plan.display_limit_projects }}{% else %}{% trans "Unlimited" %}{% endif %}</td>
   </tr>
   </table>
-  <div class="panel-footer">
+  <div class="panel-footer billing-buttons">
 <form action="{% url 'create-billing' %}" method="post" class="form-inline">
 {% csrf_token %}
 <input type="hidden" name="plan" value="{{ plan.pk }}">
