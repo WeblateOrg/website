@@ -85,7 +85,10 @@ class PaymentTest(TestCase):
         self.assertEqual(Customer.objects.count(), 1)
         payment = Payment.objects.all()[0]
         self.assertEqual(payment.amount, self.plan_a.yearly_price)
-        self.assertEqual(payment.extra, {'plan': self.plan_a.pk})
+        self.assertEqual(
+            payment.extra,
+            {'plan': self.plan_a.pk, 'period': 'y'}
+        )
         self.create_payment(period='m')
         self.assertEqual(Payment.objects.count(), 2)
         self.assertEqual(Customer.objects.count(), 1)
@@ -118,6 +121,7 @@ class PaymentTest(TestCase):
         self.create_payment(**bill_args)
         payment = Payment.objects.all()[0]
         bill_args['plan'] = self.plan_a.pk
+        bill_args['period'] = 'y'
         # The billing should be stored in the payment
         self.assertEqual(payment.extra, bill_args)
 
