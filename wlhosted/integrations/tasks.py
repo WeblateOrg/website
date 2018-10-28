@@ -23,6 +23,7 @@ from __future__ import absolute_import, unicode_literals
 from datetime import timedelta
 
 from django.conf import settings
+from django.db import transaction
 from django.utils import timezone
 from django.utils.http import urlencode
 
@@ -39,51 +40,53 @@ from wlhosted.integrations.utils import get_origin, get_payment_url
 
 @app.task
 def pending_payments():
-    payments = Payment.objects.filter(
-        customer__origin=get_origin(),
-        state=Payment.ACCEPTED,
-    ).select_for_update()
-    for payment in payments:
-        handle_received_payment(payment)
+    with transaction.atomic():
+        payments = Payment.objects.filter(
+            customer__origin=get_origin(),
+            state=Payment.ACCEPTED,
+        ).select_for_update()
+        for payment in payments:
+            handle_received_payment(payment)
 
 
 @app.task
 def recurring_payments():
-    cutoff = timezone.now().date() + timedelta(days=1)
-    for billing in Billing.objects.filter(state=Billing.STATE_ACTIVE):
-        if 'recurring' not in billing.payment:
-            continue
-        last_invoice = billing.invoice_set.order_by('-start')[0]
-        if last_invoice.end > cutoff:
-            continue
+    with transaction.atomic():
+        cutoff = timezone.now().date() + timedelta(days=1)
+        for billing in Billing.objects.filter(state=Billing.STATE_ACTIVE):
+            if 'recurring' not in billing.payment:
+                continue
+            last_invoice = billing.invoice_set.order_by('-start')[0]
+            if last_invoice.end > cutoff:
+                continue
 
-        original = Payment.objects.get(pk=billing.payment['recurring'])
+            original = Payment.objects.get(pk=billing.payment['recurring'])
 
-        # Create new payment object
-        payment = Payment.objects.create(
-            amount=original.amount,
-            description=original.description,
-            recurring='',
-            customer=original.customer,
-            repeat=original,
-            extra={
-                'plan': original.extra['plan'],
-                'billing': billing.pk,
-            }
-        )
+            # Create new payment object
+            payment = Payment.objects.create(
+                amount=original.amount,
+                description=original.description,
+                recurring='',
+                customer=original.customer,
+                repeat=original,
+                extra={
+                    'plan': original.extra['plan'],
+                    'billing': billing.pk,
+                }
+            )
 
-        # Trigger payment processing
-        request = Request(get_payment_url(payment))
-        request.add_header('User-Agent', USER_AGENT)
-        handle = urlopen(
-            request,
-            urlencode({
-                'method': original.details['backend'],
-                'secret': settings.PAYMENT_SECRET,
-            })
-        )
-        handle.read()
-        handle.close()
+            # Trigger payment processing
+            request = Request(get_payment_url(payment))
+            request.add_header('User-Agent', USER_AGENT)
+            handle = urlopen(
+                request,
+                urlencode({
+                    'method': original.details['backend'],
+                    'secret': settings.PAYMENT_SECRET,
+                })
+            )
+            handle.read()
+            handle.close()
 
     # We have created bunch of pending payments, process them now
     pending_payments()

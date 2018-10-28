@@ -21,6 +21,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -100,7 +101,8 @@ class CreateBillingView(FormView):
 
     def get(self, request, *args, **kwargs):
         if 'payment' in request.GET:
-            return self.handle_payment(request)
+            with transaction.atomic():
+                return self.handle_payment(request)
         return super(CreateBillingView, self).get(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -109,8 +111,9 @@ class CreateBillingView(FormView):
                 self.request, _('Payments are temporarily disabled.')
             )
             return redirect('create-billing')
-        payment = form.create_payment(self.request.user)
-        return HttpResponseRedirect(get_payment_url(payment))
+        with transaction.atomic():
+            payment = form.create_payment(self.request.user)
+            return HttpResponseRedirect(get_payment_url(payment))
 
     def form_invalid(self, form):
         show_form_errors(self.request, form)
