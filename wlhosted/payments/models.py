@@ -95,7 +95,7 @@ class Customer(models.Model):
     def vat_country_code(self):
         if self.vat:
             if hasattr(self.vat, 'country_code'):
-                return self.vat.country_code.upper
+                return self.vat.country_code.upper()
             return self.vat[:2].upper()
         return None
 
