@@ -136,4 +136,8 @@ class CreateBillingView(FormView):
         else:
             kwargs['billing'] = None
         kwargs['choose_billing'] = form
+        # TODO:
+        # - highlight current or recommended plan
+        # - do not show billing form if user is coming from specific billing
+        #   to simplify upgrade/pay scenario
         return kwargs
