@@ -32,10 +32,7 @@ from wlhosted.payments.models import Payment
 
 
 def end_interval(payment, start):
-    if payment.repeat:
-        period = payment.repeat.recurring
-    else:
-        period = payment.recurring
+    period = payment.extra['period']
     if period == 'y':
         return start + relativedelta(years=1)
     elif period == 'm':
