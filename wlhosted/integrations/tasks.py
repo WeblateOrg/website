@@ -40,7 +40,7 @@ from wlhosted.integrations.utils import get_origin, get_payment_url
 
 @app.task
 def pending_payments():
-    with transaction.atomic():
+    with transaction.atomic(using='payments_db'):
         payments = Payment.objects.filter(
             customer__origin=get_origin(),
             state=Payment.ACCEPTED,
@@ -51,7 +51,7 @@ def pending_payments():
 
 @app.task
 def recurring_payments():
-    with transaction.atomic():
+    with transaction.atomic(using='payments_db'):
         cutoff = timezone.now().date() + timedelta(days=1)
         for billing in Billing.objects.filter(state=Billing.STATE_ACTIVE):
             if 'recurring' not in billing.payment:
