@@ -101,7 +101,7 @@ class CreateBillingView(FormView):
 
     def get(self, request, *args, **kwargs):
         if 'payment' in request.GET:
-            with transaction.atomic():
+            with transaction.atomic(using='payments_db'):
                 return self.handle_payment(request)
         return super(CreateBillingView, self).get(request, *args, **kwargs)
 
@@ -111,7 +111,7 @@ class CreateBillingView(FormView):
                 self.request, _('Payments are temporarily disabled.')
             )
             return redirect('create-billing')
-        with transaction.atomic():
+        with transaction.atomic(using='payments_db'):
             payment = form.create_payment(self.request.user)
             return HttpResponseRedirect(get_payment_url(payment))
 
