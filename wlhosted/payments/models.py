@@ -53,7 +53,7 @@ class Customer(models.Model):
         verbose_name=_('European VAT ID'),
         help_text=_(
             'Please fill in Europe Union VAT ID, '
-            'keep the field blank if not applicable.'
+            'leave blank if not applicable.'
         ),
     )
     name = models.CharField(
