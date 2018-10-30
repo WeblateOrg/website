@@ -108,7 +108,7 @@ class CreateBillingView(FormView):
     def form_valid(self, form):
         if not settings.PAYMENT_ENABLED:
             messages.error(
-                self.request, _('Payments are temporarily disabled.')
+                self.request, _('Payments are temporarily inactive.')
             )
             return redirect('create-billing')
         with transaction.atomic(using='payments_db'):
