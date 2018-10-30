@@ -9,22 +9,33 @@
 
 {% block content %}
 <div class="container-fluid">
-{% trans "Please choose hosting plan fitting size of your project." as message %}
-{% show_message "info" message %}
 
+{% if not choose_billing and not billing %}
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">{% trans "New billing plan" %}</h3>
+  </div>
+  <div class="panel-body">
+  {% trans "Please choose hosting plan fitting size of your project." %}
+  </div>
+</div>
+{% else %}
 <div class="panel panel-primary">
   <div class="panel-heading">
     <h3 class="panel-title">{% trans "Current billing status" %}</h3>
   </div>
+{% if choose_billing %}
   <div class="panel-body">
 <form class="autosubmit">
 {{ choose_billing|crispy }}
 </form>
   </div>
+{% endif %}
   {% if billing %}
   {% include "billing/status.html" %}
   {% endif %}
 </div>
+{% endif %}
 
 <div class="row">
 {% for plan in plans %}

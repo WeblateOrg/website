@@ -123,6 +123,7 @@ class CreateBillingView(FormView):
         kwargs = super(CreateBillingView, self).get_context_data(**kwargs)
         kwargs['plans'] = list(Plan.objects.public())
         default_billing = get_default_billing(self.request.user)
+        has_billing = Billing.objects.for_user(self.request.user).exists()
         if 'billing' in self.request.GET:
             data = self.request.GET
         else:
@@ -138,11 +139,11 @@ class CreateBillingView(FormView):
             kwargs['billing'] = default_billing
         else:
             kwargs['billing'] = None
-        kwargs['choose_billing'] = form
+        # Show billing selection if needed (hide for upgrades and
+        # when user has no billing)
+        if has_billing and 'upgrade' not in self.request.GET:
+            kwargs['choose_billing'] = form
         if kwargs['billing']:
             for plan in kwargs['plans']:
                 plan.would_fit = kwargs['billing'].in_display_limits(plan)
-        # TODO:
-        # - do not show billing form if user is coming from specific billing
-        #   to simplify upgrade/pay scenario
         return kwargs
