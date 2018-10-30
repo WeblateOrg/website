@@ -77,7 +77,7 @@ def handle_received_payment(payment):
         billing=billing,
         start=start,
         end=end_interval(payment, start),
-        payment=payment.amount,
+        payment=payment.vat_amount,
         currency=Invoice.CURRENCY_EUR,
         ref=payment.invoice,
     )
