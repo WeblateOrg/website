@@ -29,9 +29,11 @@
 <div class="row">
 {% for plan in plans %}
 <div class="col-md-3">
-<div class="panel {% if billing.plan == plan %}panel-success{% else %}panel-primary{% endif %}">
+<div class="panel {% if billing and not plan.would_fit %}panel-warning{% elif billing.plan == plan %}panel-success{% else %}panel-primary{% endif %}">
   <div class="panel-heading">
-    {% if billing.plan == plan %}
+    {% if billing and not plan.would_fit %}
+    <span class="badge pull-right flip">{% trans "Too small for your project" %}</span>
+    {% elif billing.plan == plan %}
     <span class="badge pull-right flip">{% trans "Current plan" %}</span>
     {% endif %}
     <h3 class="panel-title">{{ plan.name }}</h3>
@@ -54,11 +56,11 @@
 <form action="{% url 'create-billing' %}" method="post" class="form-inline">
 {% csrf_token %}
 <input type="hidden" name="plan" value="{{ plan.pk }}">
-<button type="submit" class="btn btn-success btn-spaced" name="period" value="m">
+<button type="submit" class="btn btn-success btn-spaced" name="period" value="m" {% if billing and not plan.would_fit %}disabled{% endif %}>
 <big>{% blocktrans with price=plan.price %}{{ price }} EUR / month{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
-<button type="submit" class="btn btn-success btn-spaced" name="period" value="y">
+<button type="submit" class="btn btn-success btn-spaced" name="period" value="y" {% if billing and not plan.would_fit %}disabled{% endif %}>
 <big>{% blocktrans with price=plan.yearly_price %}{{ price }} EUR / year{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_yearly_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
