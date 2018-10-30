@@ -103,7 +103,7 @@ class Customer(models.Model):
         if self.vat:
             if self.vat_country_code != self.country_code:
                 raise ValidationError(
-                    {'country': _('Country has to match your VAT code')}
+                    {'country': _('The country has to match your VAT code')}
                 )
 
     @property
