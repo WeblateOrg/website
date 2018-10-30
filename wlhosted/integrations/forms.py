@@ -34,8 +34,8 @@ class ChooseBillingForm(forms.Form):
     billing = forms.ModelChoiceField(
         queryset=Billing.objects.none(),
         label=_('Billing'),
-        help_text=_('Choose billing you want to update'),
-        empty_label=_('Create new billing'),
+        help_text=_('Choose the billing plan you want to update'),
+        empty_label=_('Create new billing plan'),
         required=False,
     )
 
