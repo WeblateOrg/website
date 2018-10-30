@@ -5,9 +5,9 @@
 # ssantos <ssantos@web.de>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2018-10-20 15:52+0200\n"
+"POT-Creation-Date: 2018-10-30 12:40+0000\n"
 "PO-Revision-Date: 2018-10-24 12:26+0000\n"
 "Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/weblate/"
@@ -23,7 +23,112 @@ msgstr ""
 msgid "Generate Unknown Horizons scenario data"
 msgstr "Gerar dados de cenário Horizontes desconhecidos"
 
-#: wlhosted/templates/legal/documents/privacy.html:6
+#: wlhosted/integrations/forms.py:36
+msgid "Billing"
+msgstr ""
+
+#: wlhosted/integrations/forms.py:37
+msgid "Choose billing you want to update"
+msgstr ""
+
+#: wlhosted/integrations/forms.py:38
+msgid "Create new billing"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:7
+msgid "Create billing"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:12
+msgid "Please choose hosting plan fitting size of your project."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:17
+msgid "Current billing status"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:37
+msgid "Strings limit"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:38
+#: wlhosted/integrations/templates/hosted/create.html:41
+#: wlhosted/integrations/templates/hosted/create.html:44
+#: wlhosted/integrations/templates/hosted/create.html:47
+msgid "Unlimited"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:40
+msgid "Languages limit"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:43
+msgid "Repositories limit"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:46
+#, fuzzy
+#| msgid "Project"
+msgid "Projects limit"
+msgstr "Projeto"
+
+#: wlhosted/integrations/templates/hosted/create.html:55
+#, python-format
+msgid "%(price)s EUR monthly"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:56
+#: wlhosted/integrations/templates/hosted/create.html:60
+#, python-format
+msgid "%(price)s EUR including VAT"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:59
+#, python-format
+msgid "%(price)s EUR yearly"
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:68
+msgid ""
+"The pricing is based on number of source strings and number of target "
+"languages. The source string is a text unit defined in a translation format, "
+"it can be word, sentence or a paragraph."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:71
+msgid ""
+"We're located in Czechia and you will be charged price with VAT if you are "
+"end user in the EU or Czech resident. Invoices for VAT registered companies "
+"in EU countries are issued as a reverse charge."
+msgstr ""
+
+#: wlhosted/integrations/views.py:70
+msgid "No matching payment found."
+msgstr ""
+
+#: wlhosted/integrations/views.py:79
+msgid "Thank you for purchasing hosting plan, it is now active."
+msgstr ""
+
+#: wlhosted/integrations/views.py:86
+msgid ""
+"Thank you for purchasing hosting plan, the payment is pending and will be "
+"processed in the background."
+msgstr ""
+
+#: wlhosted/integrations/views.py:94
+msgid "The payment was rejected: {}"
+msgstr ""
+
+#: wlhosted/integrations/views.py:95
+msgid "Unknown reason"
+msgstr ""
+
+#: wlhosted/integrations/views.py:111
+msgid "Payments are temporarily disabled."
+msgstr ""
+
+#: wlhosted/legal/templates/legal/documents/privacy.html:6
 #, python-format
 msgid ""
 "We comply with the Regulation No. %(law_679_2016)s, the General Data "
@@ -34,16 +139,16 @@ msgstr ""
 "Protecção de Dados, também conhecido como RGPD. Este documento inclui as "
 "necessárias especificações."
 
-#: wlhosted/templates/legal/documents/privacy.html:9
+#: wlhosted/legal/templates/legal/documents/privacy.html:9
 msgid "Personal Data Controller"
 msgstr "Controlador de dados pessoais"
 
-#: wlhosted/templates/legal/documents/privacy.html:12
+#: wlhosted/legal/templates/legal/documents/privacy.html:12
 #, fuzzy, python-format
 msgid "%(provider)s, Reg. No. %(reg_no)s"
 msgstr "%(provider)s, Reg. No. %(reg_no)s"
 
-#: wlhosted/templates/legal/documents/privacy.html:15
+#: wlhosted/legal/templates/legal/documents/privacy.html:15
 #, python-format
 msgid ""
 "We have appointed a data protection officer who may be reached via "
@@ -52,42 +157,42 @@ msgstr ""
 "Nomeámos um agente de protecção de dados, que pode ser contactado via "
 "%(privacy_contact)s."
 
-#: wlhosted/templates/legal/documents/privacy.html:17
+#: wlhosted/legal/templates/legal/documents/privacy.html:17
 msgid "Personal Data we process"
 msgstr "Dados pessoais que processamos"
 
-#: wlhosted/templates/legal/documents/privacy.html:20
+#: wlhosted/legal/templates/legal/documents/privacy.html:20
 msgid "We process only Personal Data User provides us by using our service:"
 msgstr ""
 "Só processamos os dados fornecidos pelo utilizador ao usar os nossos "
 "serviços:"
 
-#: wlhosted/templates/legal/documents/privacy.html:25
+#: wlhosted/legal/templates/legal/documents/privacy.html:25
 msgid "Name and email"
 msgstr "Nome e email"
 
-#: wlhosted/templates/legal/documents/privacy.html:26
+#: wlhosted/legal/templates/legal/documents/privacy.html:26
 msgid "These are used to identify you in the VCS commits"
 msgstr "Estes são usados para identificação nas submissões VCS"
 
-#: wlhosted/templates/legal/documents/privacy.html:27
+#: wlhosted/legal/templates/legal/documents/privacy.html:27
 msgid "Additionally, email is used for notification of watched events"
 msgstr ""
 "Adicionalmente, o email é usado para notificações de eventos observados"
 
-#: wlhosted/templates/legal/documents/privacy.html:29
+#: wlhosted/legal/templates/legal/documents/privacy.html:29
 msgid "Password in hashed form"
 msgstr "Senha em formato hash"
 
-#: wlhosted/templates/legal/documents/privacy.html:30
+#: wlhosted/legal/templates/legal/documents/privacy.html:30
 msgid "Used to authenticate user if configured"
 msgstr "Usado para autenticar o utilizador, se configurado"
 
-#: wlhosted/templates/legal/documents/privacy.html:32
+#: wlhosted/legal/templates/legal/documents/privacy.html:32
 msgid "IP address and browser name"
 msgstr "Endereço IP e nome do navegador"
 
-#: wlhosted/templates/legal/documents/privacy.html:33
+#: wlhosted/legal/templates/legal/documents/privacy.html:33
 msgid ""
 "These are logged in case of important changes to your account (e.g. password "
 "change) to allow diagnosis in case your account is stolen"
@@ -95,15 +200,15 @@ msgstr ""
 "Estes são registados em diário, em caso de alterações importantes (e.g. "
 "mudança de senha) para permitir o diagnóstico se a conta for roubada"
 
-#: wlhosted/templates/legal/documents/privacy.html:37
+#: wlhosted/legal/templates/legal/documents/privacy.html:37
 msgid "Purpose and legal basis of processing Personal Data"
 msgstr "Propósito e bases legais do processamento de dados pessoais"
 
-#: wlhosted/templates/legal/documents/privacy.html:39
+#: wlhosted/legal/templates/legal/documents/privacy.html:39
 msgid "Your Personal Data will be used for the purposes of the Service:"
 msgstr "Os seus dados pessoais serão usados para os propósitos do serviço:"
 
-#: wlhosted/templates/legal/documents/privacy.html:42
+#: wlhosted/legal/templates/legal/documents/privacy.html:42
 msgid ""
 "for providing our services on the Service, to contact you in matters "
 "regarding our services (also by means of emails and messaging) and to ensure "
@@ -115,15 +220,15 @@ msgstr ""
 "a funcionalidade técnica dos nossos serviços e cumprimento de obrigações "
 "contratuais e pré-contratuais (Artigo 6 (1) b. RGPD)"
 
-#: wlhosted/templates/legal/documents/privacy.html:43
+#: wlhosted/legal/templates/legal/documents/privacy.html:43
 msgid ""
 "to analyze your use of our services and improve our services (Article 6 (1) "
 "b. and f. GDPR)"
 msgstr ""
-"para analisar o seu uso dos nossos serviços e melhorar os nossos serviços ("
-"Artigo 6 (1) b. e f. GDPR)"
+"para analisar o seu uso dos nossos serviços e melhorar os nossos serviços "
+"(Artigo 6 (1) b. e f. GDPR)"
 
-#: wlhosted/templates/legal/documents/privacy.html:44
+#: wlhosted/legal/templates/legal/documents/privacy.html:44
 msgid ""
 "with your express consent or instruction to carry out our business "
 "activities or sent you newsletters (Article 6 (1) a. GDPR)"
@@ -132,11 +237,11 @@ msgstr ""
 "actividades empresariais ou para lhe enviar boletins de notícias (Artigo 6 "
 "(1) a. RGPD)"
 
-#: wlhosted/templates/legal/documents/privacy.html:47
+#: wlhosted/legal/templates/legal/documents/privacy.html:47
 msgid "Access to the Personal Data"
 msgstr "Acesso aos dados pessoais"
 
-#: wlhosted/templates/legal/documents/privacy.html:49
+#: wlhosted/legal/templates/legal/documents/privacy.html:49
 msgid ""
 "Controller has made all reasonable technical means to protect the Personal "
 "Data. Only authorized persons can access the Personal Data."
@@ -144,29 +249,30 @@ msgstr ""
 "O controlador fez todos os esforços técnicos necessários para proteger os "
 "dados pessoais. Só pessoal autorizado pode aceder aos dados pessoais."
 
-#: wlhosted/templates/legal/documents/privacy.html:51
+#: wlhosted/legal/templates/legal/documents/privacy.html:51
 msgid ""
 "Third parties which can gain access to the Personal Data when necessary are:"
-msgstr "Os terceiros que podem aceder aos dados pessoais quando necessário são:"
+msgstr ""
+"Os terceiros que podem aceder aos dados pessoais quando necessário são:"
 
-#: wlhosted/templates/legal/documents/privacy.html:54
+#: wlhosted/legal/templates/legal/documents/privacy.html:54
 msgid "Persons which are contracted for technical assurance of the service."
 msgstr ""
 "indivíduos contratados para garantir o funcionamento técnico do serviço;"
 
-#: wlhosted/templates/legal/documents/privacy.html:55
+#: wlhosted/legal/templates/legal/documents/privacy.html:55
 msgid "Payment processors."
 msgstr "processadores de pagamento."
 
-#: wlhosted/templates/legal/documents/privacy.html:58
+#: wlhosted/legal/templates/legal/documents/privacy.html:58
 msgid "All Personal Data is stored in the European Union."
 msgstr "Todos os dados pessoais são armazenados na União Europeia."
 
-#: wlhosted/templates/legal/documents/privacy.html:60
+#: wlhosted/legal/templates/legal/documents/privacy.html:60
 msgid "The Personal Data retention"
 msgstr "A retenção de dados pessoais"
 
-#: wlhosted/templates/legal/documents/privacy.html:62
+#: wlhosted/legal/templates/legal/documents/privacy.html:62
 msgid ""
 "The Personal Data is stored in the Service until User deletes his account in "
 "the service."
@@ -174,7 +280,7 @@ msgstr ""
 "Os dados pessoais são armazenados no serviço até que o utilizador elimine a "
 "sua conta no serviço."
 
-#: wlhosted/templates/legal/documents/privacy.html:64
+#: wlhosted/legal/templates/legal/documents/privacy.html:64
 msgid ""
 "Access log information might be collected for longer period for the purpose "
 "of establishing, exercise or defence of legal claims."
@@ -182,11 +288,11 @@ msgstr ""
 "A informação de acessos pode ser retida mais tempo pelo propósito de "
 "estabelecer, exercer ou defender demandas legais."
 
-#: wlhosted/templates/legal/documents/privacy.html:66
+#: wlhosted/legal/templates/legal/documents/privacy.html:66
 msgid "Your rights"
 msgstr "Os seus direitos"
 
-#: wlhosted/templates/legal/documents/privacy.html:68
+#: wlhosted/legal/templates/legal/documents/privacy.html:68
 msgid ""
 "User provides use Personal Data voluntarily. Without this we are not able to "
 "provide our services."
@@ -194,7 +300,7 @@ msgstr ""
 "O utilizador fornece os dados pessoais voluntariamente. Sem que tal "
 "aconteça, não podemos prestar os nossos serviços."
 
-#: wlhosted/templates/legal/documents/privacy.html:70
+#: wlhosted/legal/templates/legal/documents/privacy.html:70
 msgid ""
 "We want you to always be in control of your Personal Data. To this end, you "
 "have certain rights that allow for it. Under certain conditions, you may:"
@@ -202,7 +308,7 @@ msgstr ""
 "Queremos que tenha sempre o controlo dos seus dados pessoais. Para tal, tem "
 "direitos que o permitem. Sob certas condições, pode:"
 
-#: wlhosted/templates/legal/documents/privacy.html:73
+#: wlhosted/legal/templates/legal/documents/privacy.html:73
 msgid ""
 "Gain access to all your Personal Data that we use or processing, and even "
 "get a copy of all of it (Article 15 GDPR)"
@@ -210,40 +316,40 @@ msgstr ""
 "ter acesso a todos os seus dados pessoais que nós processamos ou usamos e "
 "mesmo receber uma cópia dos mesmos (Artigo 15 RGPD)"
 
-#: wlhosted/templates/legal/documents/privacy.html:74
+#: wlhosted/legal/templates/legal/documents/privacy.html:74
 msgid ""
 "Correct the Personal Data that we are processing if you think that there are "
 "mistakes"
 msgstr "Corrigir os dados pessoais que processamos, se achar que há erros"
 
-#: wlhosted/templates/legal/documents/privacy.html:75
+#: wlhosted/legal/templates/legal/documents/privacy.html:75
 msgid "Order us to delete your Personal Data"
 msgstr "Ordenar a eliminação dos dados"
 
-#: wlhosted/templates/legal/documents/privacy.html:76
+#: wlhosted/legal/templates/legal/documents/privacy.html:76
 msgid "Restrict the Personal Data processing"
 msgstr "Restringir o processamento dos dados pessoais"
 
-#: wlhosted/templates/legal/documents/privacy.html:77
+#: wlhosted/legal/templates/legal/documents/privacy.html:77
 #, fuzzy
 #| msgid "Languages processing"
 msgid "Object to processing"
 msgstr "Processamento de idiomas"
 
-#: wlhosted/templates/legal/documents/privacy.html:78
+#: wlhosted/legal/templates/legal/documents/privacy.html:78
 msgid ""
 "Receive your Personal Data in a commonly used and machine-readable format or "
 "to transmit this Personal Data to a different provider."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/summary.html:4
+#: wlhosted/legal/templates/legal/documents/summary.html:4
 msgid ""
 "The services are provided “as is”, at your own risk, without any warranty."
 msgstr ""
 "Os serviços são prestados \"como estão\", por seu próprio risco e sem "
 "qualquer garantia."
 
-#: wlhosted/templates/legal/documents/summary.html:5
+#: wlhosted/legal/templates/legal/documents/summary.html:5
 msgid ""
 "Additional guarantees might apply to commercial customers, those are "
 "expressed in corresponding contracts."
@@ -251,7 +357,7 @@ msgstr ""
 "Poderá haver garantias adicionais a clientes comerciais, elas serão "
 "expressas nos respectivos contratos."
 
-#: wlhosted/templates/legal/documents/summary.html:6
+#: wlhosted/legal/templates/legal/documents/summary.html:6
 msgid ""
 "We process private data (such as your email address), those will be "
 "discarded from our database as soon as you remove your account."
@@ -259,14 +365,14 @@ msgstr ""
 "Processamos dados privados (tal como o e-mail), que serão removidos da base "
 "de dados assim que fechar a sua conta."
 
-#: wlhosted/templates/legal/documents/summary.html:7
+#: wlhosted/legal/templates/legal/documents/summary.html:7
 msgid ""
 "Your translations are made under license which is specified by each "
 "translation."
 msgstr ""
 "As suas traduções são feitas sob licença especificada em cada tradução."
 
-#: wlhosted/templates/legal/documents/summary.html:8
+#: wlhosted/legal/templates/legal/documents/summary.html:8
 msgid ""
 "Your name and email address is used in VCS commits, it will stay there "
 "indefinitely."
@@ -274,106 +380,106 @@ msgstr ""
 "O seu nome e e-mail são usados em submissões VCS, ficarão lá gravados para "
 "sempre."
 
-#: wlhosted/templates/legal/documents/summary.html:9
+#: wlhosted/legal/templates/legal/documents/summary.html:9
 msgid "We use cookies to deliver our services."
 msgstr "Usamos cookies para fornecer os nossos serviços."
 
-#: wlhosted/templates/legal/documents/tos.html:8
+#: wlhosted/legal/templates/legal/documents/tos.html:8
 msgid ""
 "The Terms of Service document is authoritative in English, translations are "
 "provided for your convenience."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:11
+#: wlhosted/legal/templates/legal/documents/tos.html:11
 msgid ""
 "The rights and obligations of the User and the Provider resulting from the "
 "use of the Service are governed by these Terms of Service."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:14
+#: wlhosted/legal/templates/legal/documents/tos.html:14
 #, fuzzy
 #| msgid "Description"
 msgid "Definitions"
 msgstr "Descrição"
 
-#: wlhosted/templates/legal/documents/tos.html:16
+#: wlhosted/legal/templates/legal/documents/tos.html:16
 #, fuzzy
 #| msgid "Terms of Service"
 msgid "In these Terms of Service:"
 msgstr "Termos do serviço"
 
-#: wlhosted/templates/legal/documents/tos.html:20
+#: wlhosted/legal/templates/legal/documents/tos.html:20
 #, fuzzy
 #| msgid "Advertisement"
 msgid "Agreement"
 msgstr "Anúncio"
 
-#: wlhosted/templates/legal/documents/tos.html:21
+#: wlhosted/legal/templates/legal/documents/tos.html:21
 msgid ""
 "means License Agreement within the meaning of Article 2358 et seq. of the "
 "Civil Code concluded by and between the User and the Provider upon the "
 "Consent"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:23
+#: wlhosted/legal/templates/legal/documents/tos.html:23
 msgid "Civil Code"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:24
+#: wlhosted/legal/templates/legal/documents/tos.html:24
 #, python-format
 msgid "means Act No. %(law_89_2012)s Coll., the Civil Code, as amended"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:26
+#: wlhosted/legal/templates/legal/documents/tos.html:26
 msgid "Consent"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:27
+#: wlhosted/legal/templates/legal/documents/tos.html:27
 msgid ""
 "means the User’s consent with these Terms of Service and other legal "
 "documents expressed by checking the checkbox during the registration"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:29
-#: wlhosted/templates/legal/documents/tos.html:118
+#: wlhosted/legal/templates/legal/documents/tos.html:29
+#: wlhosted/legal/templates/legal/documents/tos.html:118
 msgid "Cookies"
 msgstr "Cookies"
 
-#: wlhosted/templates/legal/documents/tos.html:30
+#: wlhosted/legal/templates/legal/documents/tos.html:30
 msgid ""
 "mean any data file sent by the Service web server to the User’s computer of "
 "other device connected to the Internet, which enable obtaining of unique "
 "identification of the User’s web browser"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:32
+#: wlhosted/legal/templates/legal/documents/tos.html:32
 msgid "License"
 msgstr "Licença"
 
-#: wlhosted/templates/legal/documents/tos.html:33
+#: wlhosted/legal/templates/legal/documents/tos.html:33
 msgid ""
 "means non-exclusive license granted by the Provider to the User for use of "
 "the Service"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:35
+#: wlhosted/legal/templates/legal/documents/tos.html:35
 msgid "Provider"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:36
+#: wlhosted/legal/templates/legal/documents/tos.html:36
 #, python-format
 msgid "means %(provider)s, Reg. No. %(reg_no)s"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:38
-#: wlhosted/templates/legal/documents/tos.html:88
+#: wlhosted/legal/templates/legal/documents/tos.html:38
+#: wlhosted/legal/templates/legal/documents/tos.html:88
 #, fuzzy
 #| msgctxt "Translation memory category"
 #| msgid "Personal: {}"
 msgid "Personal Data"
 msgstr "Pessoal: {}"
 
-#: wlhosted/templates/legal/documents/tos.html:39
+#: wlhosted/legal/templates/legal/documents/tos.html:39
 #, python-format
 msgid ""
 "means personal data within the meaning of Act No. %(law_101_2000)s Coll., on "
@@ -381,19 +487,19 @@ msgid ""
 "and/or Cookies"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:41
+#: wlhosted/legal/templates/legal/documents/tos.html:41
 msgid "Owner"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:42
+#: wlhosted/legal/templates/legal/documents/tos.html:42
 msgid "means the User who can manage Project"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:44
+#: wlhosted/legal/templates/legal/documents/tos.html:44
 msgid "Project"
 msgstr "Projeto"
 
-#: wlhosted/templates/legal/documents/tos.html:45
+#: wlhosted/legal/templates/legal/documents/tos.html:45
 #, fuzzy
 #| msgid ""
 #| "However, the following translation projects are available on this server:"
@@ -401,111 +507,111 @@ msgid "means translation project operated on the Service"
 msgstr ""
 "Contudo, os projectos de tradução seguintes estão disponíveis neste servidor:"
 
-#: wlhosted/templates/legal/documents/tos.html:47
+#: wlhosted/legal/templates/legal/documents/tos.html:47
 msgid "Service"
 msgstr "Serviço"
 
-#: wlhosted/templates/legal/documents/tos.html:48
+#: wlhosted/legal/templates/legal/documents/tos.html:48
 msgid ""
 "means the website and services based on Weblate operated by the Provider"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:50
+#: wlhosted/legal/templates/legal/documents/tos.html:50
 #, fuzzy
 #| msgid "Translation memory"
 msgid "Translation Memory"
 msgstr "Memória de tradução"
 
-#: wlhosted/templates/legal/documents/tos.html:51
+#: wlhosted/legal/templates/legal/documents/tos.html:51
 msgid "means the optional translation memory service provided within Weblate"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:53
+#: wlhosted/legal/templates/legal/documents/tos.html:53
 msgid "User"
 msgstr "Utilizador"
 
-#: wlhosted/templates/legal/documents/tos.html:54
+#: wlhosted/legal/templates/legal/documents/tos.html:54
 msgid ""
 "means any legal entity or an individual other than the Provider, who is "
 "using the Service"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:56
+#: wlhosted/legal/templates/legal/documents/tos.html:56
 #, fuzzy
 #| msgctxt "Per project access control group"
 #| msgid "VCS"
 msgid "VCS"
 msgstr "VCS"
 
-#: wlhosted/templates/legal/documents/tos.html:57
+#: wlhosted/legal/templates/legal/documents/tos.html:57
 msgid ""
 "means distributed version control system used by the Project such as Git or "
 "Mercurial"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:61
+#: wlhosted/legal/templates/legal/documents/tos.html:61
 msgid "License Agreement Conclusion"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:63
+#: wlhosted/legal/templates/legal/documents/tos.html:63
 msgid ""
 "The License Agreement is concluded upon the User’s Acceptance of the "
 "Provider’s Offer."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:66
+#: wlhosted/legal/templates/legal/documents/tos.html:66
 msgid "License Agreement"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:68
+#: wlhosted/legal/templates/legal/documents/tos.html:68
 msgid ""
 "By concluding Agreement under Article 2.1 of this Agreement, the following "
 "provisions of this Article 3 of the Terms of Service come into force."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:70
+#: wlhosted/legal/templates/legal/documents/tos.html:70
 msgid ""
 "The Provider grants the User with an Agreement License and the User accepts "
 "the License, all this under the terms and conditions stated in these Terms "
 "of Service."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:72
+#: wlhosted/legal/templates/legal/documents/tos.html:72
 msgid ""
 "The Provider shall have the right to shut down, adjust, modify or make the "
 "Service unavailable on the web address at any time."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:74
+#: wlhosted/legal/templates/legal/documents/tos.html:74
 msgid ""
 "The User agrees to use the Service only in a manner not jeopardizing "
 "technical software and/or hardware means of the Provider and/or such means "
 "in the Provider’s use."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:76
+#: wlhosted/legal/templates/legal/documents/tos.html:76
 msgid ""
 "The User agrees to refrain from use of the Service in bad faith and/or "
 "deliberately causing any damage to the Service."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:78
+#: wlhosted/legal/templates/legal/documents/tos.html:78
 msgid ""
 "The User agrees to refrain from bypassing the Service’s software and/or "
 "technical hardware means, in particular the security systems."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:81
+#: wlhosted/legal/templates/legal/documents/tos.html:81
 msgid "Liability for Damage"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:83
+#: wlhosted/legal/templates/legal/documents/tos.html:83
 msgid ""
 "The User hereby renders it undisputed that the Provider shall not be liable "
 "for any damage caused to the User resulting from the use of the Service."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:85
+#: wlhosted/legal/templates/legal/documents/tos.html:85
 msgid ""
 "If the User is an entrepreneur, he hereby expressly waives his right to "
 "compensation from the Provider for damage unintentionally caused by the "
@@ -513,7 +619,7 @@ msgid ""
 "Terms of Service and/or resulting from the use of the Service."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:90
+#: wlhosted/legal/templates/legal/documents/tos.html:90
 #, python-format
 msgid ""
 "Within the meaning of Article 5 (2) of Act No. %(law_101_2000)s Coll., on "
@@ -526,7 +632,7 @@ msgid ""
 "from the Service."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:92
+#: wlhosted/legal/templates/legal/documents/tos.html:92
 #, python-format
 msgid ""
 "The purpose of the processing of Personal Data as determined by the Provider "
@@ -538,21 +644,21 @@ msgid ""
 "Provider."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:94
+#: wlhosted/legal/templates/legal/documents/tos.html:94
 msgid ""
 "If the User directly and effectively informs the Provider that he no longer "
 "wishes to receive business information from the Provider, the Provider shall "
 "refrain from sending further unsolicited business communications."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:96
+#: wlhosted/legal/templates/legal/documents/tos.html:96
 msgid ""
 "The User declares that he/she is aware of his/her rights under Article 12 "
 "and Article 21 of the Personal Data Protection Act and declares that all the "
 "Personal Data are accurate and true and have been provided voluntarily."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:98
+#: wlhosted/legal/templates/legal/documents/tos.html:98
 msgid ""
 "The Provider declares that he will collect Personal Data only in the extent "
 "necessary for meeting the above-specified purpose and process the Personal "
@@ -563,57 +669,57 @@ msgid ""
 "business relationship with the Provider."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:100
+#: wlhosted/legal/templates/legal/documents/tos.html:100
 msgid ""
 "The Provider declares that he will process the Personal Data by electronic "
 "means (automatically) via computer programs for which the Provider has "
 "secured the right of use, in particular the Service."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:102
+#: wlhosted/legal/templates/legal/documents/tos.html:102
 msgid ""
 "The User’s consent under this Article 5 of the Terms of Service constitutes "
 "free and informed juridical act which concerns the consent of the subject of "
 "the data (the User) with processing of the Personal Data."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:105
+#: wlhosted/legal/templates/legal/documents/tos.html:105
 msgid "Translations"
 msgstr "Traduções"
 
-#: wlhosted/templates/legal/documents/tos.html:107
+#: wlhosted/legal/templates/legal/documents/tos.html:107
 msgid ""
 "The Service organizes translation into individual Projects, where the Owner "
 "is responsible for managing them and for specifying accurately the Project "
 "license."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:109
+#: wlhosted/legal/templates/legal/documents/tos.html:109
 msgid ""
 "Not specifying translation license means that the translations are available "
 "under same license as project itself."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:111
+#: wlhosted/legal/templates/legal/documents/tos.html:111
 msgid ""
 "Should the Project opt in for the Translation Memory, license to use the "
 "translation is granted to all Translation Memory users."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:113
+#: wlhosted/legal/templates/legal/documents/tos.html:113
 msgid ""
 "The User agrees to the license Project has specified upon contributing to "
 "the Project."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:115
+#: wlhosted/legal/templates/legal/documents/tos.html:115
 msgid ""
 "The User agrees to use his name and email as authorship in the VCS commits. "
 "The User understands that this grant is non revocable due to nature of the "
 "VCS."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:120
+#: wlhosted/legal/templates/legal/documents/tos.html:120
 #, python-format
 msgid ""
 "Within the meaning of Article 89 Act No. %(law_480_2004)s Coll., on "
@@ -621,34 +727,63 @@ msgid ""
 "use cookies."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:122
+#: wlhosted/legal/templates/legal/documents/tos.html:122
 msgid ""
 "The Service uses cookies to personalise content and to analyse our traffic."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:125
+#: wlhosted/legal/templates/legal/documents/tos.html:125
 msgid "Governing Law"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:127
+#: wlhosted/legal/templates/legal/documents/tos.html:127
 msgid ""
 "These Terms of Service shall be governed by the laws of the Czech Republic "
 "with exclusion of conflict rules."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:129
+#: wlhosted/legal/templates/legal/documents/tos.html:129
 msgid ""
 "Any disputes arising on the basis of the Agreement and/or these Terms of "
 "Service shall be resolved by the court of the Czech republic having "
 "substantive and local jurisdiction."
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:132
+#: wlhosted/legal/templates/legal/documents/tos.html:132
 msgid "Effect"
 msgstr ""
 
-#: wlhosted/templates/legal/documents/tos.html:134
+#: wlhosted/legal/templates/legal/documents/tos.html:134
 msgid ""
 "These Terms of Service shall come into force and effect on 1st September "
 "2017."
+msgstr ""
+
+#: wlhosted/payments/models.py:53
+msgid "European VAT ID"
+msgstr ""
+
+#: wlhosted/payments/models.py:55
+msgid ""
+"Please fill in Europe Union VAT ID, keep the field blank if not applicable."
+msgstr ""
+
+#: wlhosted/payments/models.py:61
+msgid "Company name"
+msgstr ""
+
+#: wlhosted/payments/models.py:65
+msgid "Address"
+msgstr ""
+
+#: wlhosted/payments/models.py:69
+msgid "Post code code and city"
+msgstr ""
+
+#: wlhosted/payments/models.py:73
+msgid "Country"
+msgstr ""
+
+#: wlhosted/payments/models.py:106
+msgid "Country has to match your VAT code"
 msgstr ""
