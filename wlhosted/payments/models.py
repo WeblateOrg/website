@@ -52,7 +52,7 @@ class Customer(models.Model):
         blank=True, null=True,
         verbose_name=_('European VAT ID'),
         help_text=_(
-            'Please fill in Europe Union VAT ID, '
+            'Please fill in European Union VAT ID, '
             'leave blank if not applicable.'
         ),
     )
