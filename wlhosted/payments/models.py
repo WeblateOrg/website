@@ -38,11 +38,36 @@ from vies.validators import VATINValidator
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
 
-EU_COUNTRIES = frozenset((
-    'BE', 'BG', 'CZ', 'DK', 'DE', 'EE', 'IE', 'EL', 'ES', 'FR', 'HR', 'IT',
-    'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'AT', 'PL', 'PT', 'RO', 'SI',
-    'SK', 'FI', 'SE', 'UK',
-))
+EU_VAT_RATES = {
+    'BE': 21,
+    'BG': 20,
+    'CZ': 21,
+    'DK': 25,
+    'DE': 19,
+    'EE': 20,
+    'IE': 23,
+    'EL': 24,
+    'ES': 21,
+    'FR': 20,
+    'HR': 25,
+    'IT': 22,
+    'CY': 19,
+    'LV': 21,
+    'LT': 21,
+    'LU': 17,
+    'HU': 27,
+    'MT': 18,
+    'NL': 21,
+    'AT': 20,
+    'PL': 23,
+    'PT': 23,
+    'RO': 19,
+    'SI': 22,
+    'SK': 20,
+    'FI': 24,
+    'SE': 25,
+    'UK': 20,
+}
 
 
 @python_2_unicode_compatible
@@ -112,7 +137,7 @@ class Customer(models.Model):
 
     @property
     def is_eu_enduser(self):
-        return (self.country_code in EU_COUNTRIES and not self.vat)
+        return (self.country_code in EU_VAT_RATES and not self.vat)
 
     @property
     def needs_vat(self):
@@ -168,7 +193,9 @@ class Payment(models.Model):
     @property
     def vat_amount(self):
         if self.customer.needs_vat:
-            return round(settings.VAT_RATE * self.amount, 2)
+            return round(
+                EU_VAT_RATES[self.customer.country_code] * self.amount, 2
+            )
         return self.amount
 
 
