@@ -29,8 +29,11 @@
 <div class="row">
 {% for plan in plans %}
 <div class="col-md-3">
-<div class="panel panel-primary">
+<div class="panel {% if billing.plan == plan %}panel-success{% else %}panel-primary{% endif %}">
   <div class="panel-heading">
+    {% if billing.plan == plan %}
+    <span class="badge pull-right flip">{% trans "Current plan" %}</span>
+    {% endif %}
     <h3 class="panel-title">{{ plan.name }}</h3>
   </div>
   <table class="table table-striped">
