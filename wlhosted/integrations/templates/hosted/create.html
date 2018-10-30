@@ -52,11 +52,11 @@
 {% csrf_token %}
 <input type="hidden" name="plan" value="{{ plan.pk }}">
 <button type="submit" class="btn btn-success btn-spaced" name="period" value="m">
-<big>{% blocktrans with price=plan.price %}{{ price }} EUR monthly{% endblocktrans %}</big><br>
+<big>{% blocktrans with price=plan.price %}{{ price }} EUR / month{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
 <button type="submit" class="btn btn-success btn-spaced" name="period" value="y">
-<big>{% blocktrans with price=plan.yearly_price %}{{ price }} EUR yearly{% endblocktrans %}</big><br>
+<big>{% blocktrans with price=plan.yearly_price %}{{ price }} EUR / year{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_yearly_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
 </form>
