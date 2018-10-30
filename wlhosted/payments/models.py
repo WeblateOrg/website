@@ -193,9 +193,8 @@ class Payment(models.Model):
     @property
     def vat_amount(self):
         if self.customer.needs_vat:
-            return round(
-                EU_VAT_RATES[self.customer.country_code] * self.amount, 2
-            )
+            rate = 100 + EU_VAT_RATES[self.customer.country_code]
+            return round(rate * self.amount / 100, 2)
         return self.amount
 
 
