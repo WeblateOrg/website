@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block breadcrumbs %}
-<li><a href="{% url 'create-billing' %}">{% trans "Create billing" %}</a></li>
+<li><a href="{% url 'create-billing' %}">{% trans "Create billing plan" %}</a></li>
 {% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@
     <h3 class="panel-title">{% trans "New billing plan" %}</h3>
   </div>
   <div class="panel-body">
-  {% trans "Please choose hosting plan fitting size of your project." %}
+  {% trans "Please choose a hosting plan that fits the size of your project." %}
   </div>
 </div>
 {% else %}
@@ -81,10 +81,10 @@
 </div>
 {% endfor %}
 <p class="help-block">
-{% trans "The pricing is based on number of source strings and number of target languages. The source string is a text unit defined in a translation format, it can be word, sentence or a paragraph." %}
+{% trans "The pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}
 </p>
 <p class="help-block">
-{% trans "We're located in Czechia and you will be charged price with VAT if you are end user in the EU or Czech resident. Invoices for VAT registered companies in EU countries are issued as a reverse charge." %}
+{% trans "Weblate is located in Czechia and you will be charged price with VAT if you are an end-user in the EU or a Czech resident. Invoices for VAT registered companies in EU countries are issued as a reverse charges." %}
 </p>
 
 </div>
