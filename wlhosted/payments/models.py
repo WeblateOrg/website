@@ -66,7 +66,7 @@ class Customer(models.Model):
     )
     city = models.CharField(
         max_length=200, null=True,
-        verbose_name=_('Post code code and city'),
+        verbose_name=_('Postcode and city'),
     )
     country = CountryField(
         null=True,
