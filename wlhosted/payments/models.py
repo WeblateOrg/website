@@ -77,8 +77,8 @@ class Customer(models.Model):
         blank=True, null=True,
         verbose_name=_('European VAT ID'),
         help_text=_(
-            'Please fill in Europe Union VAT ID, '
-            'keep the field blank if not applicable.'
+            'Please fill in European Union VAT ID, '
+            'leave blank if not applicable.'
         ),
     )
     name = models.CharField(
@@ -91,7 +91,7 @@ class Customer(models.Model):
     )
     city = models.CharField(
         max_length=200, null=True,
-        verbose_name=_('Post code code and city'),
+        verbose_name=_('Postcode and city'),
     )
     country = CountryField(
         null=True,
@@ -128,7 +128,7 @@ class Customer(models.Model):
         if self.vat:
             if self.vat_country_code != self.country_code:
                 raise ValidationError(
-                    {'country': _('Country has to match your VAT code')}
+                    {'country': _('The country has to match your VAT code')}
                 )
 
     @property

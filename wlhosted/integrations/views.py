@@ -76,14 +76,14 @@ class CreateBillingView(FormView):
 
             messages.success(
                 request,
-                _('Thank you for purchasing hosting plan, it is now active.')
+                _('Thank you for purchasing a hosting plan, it is now active.')
             )
             return redirect('billing')
         elif payment.state in (Payment.PENDING, Payment.PROCESSED):
             messages.info(
                 request,
                 _(
-                    'Thank you for purchasing hosting plan, the payment is '
+                    'Thank you for purchasing a hosting plan, the payment for it is '
                     'pending and will be processed in the background.'
                 )
             )
@@ -108,7 +108,7 @@ class CreateBillingView(FormView):
     def form_valid(self, form):
         if not settings.PAYMENT_ENABLED:
             messages.error(
-                self.request, _('Payments are temporarily disabled.')
+                self.request, _('Payments are temporarily inactive.')
             )
             return redirect('create-billing')
         with transaction.atomic(using='payments_db'):
@@ -140,7 +140,7 @@ class CreateBillingView(FormView):
         else:
             kwargs['billing'] = None
         # Show billing selection if needed (hide for upgrades and
-        # when user has no billing)
+        # when user has no billing plan)
         if has_billing and 'upgrade' not in self.request.GET:
             kwargs['choose_billing'] = form
         if kwargs['billing']:
