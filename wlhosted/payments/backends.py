@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import json
 import subprocess
 
 from django.conf import settings
@@ -131,6 +132,7 @@ class Backend(object):
         invoice = storage.get(invoice_file)
         invoice.write_tex()
         invoice.build_pdf()
+        invoice.mark_paid(json.dumps(self.payment.details, indent=2))
 
         self.payment.invoice = invoice.invoiceid
 
@@ -142,7 +144,8 @@ class Backend(object):
                 contact_file,
                 invoice_file,
                 invoice.tex_path,
-                invoice.pdf_path
+                invoice.pdf_path,
+                invoice.paid_path,
             ],
             check=True,
             cwd=settings.PAYMENT_FAKTURACE,
