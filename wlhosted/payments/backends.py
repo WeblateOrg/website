@@ -106,6 +106,8 @@ class Backend(object):
 
     def generate_invoice(self):
         """Generates an invoice."""
+        if settings.PAYMENT_FAKTURACE is None:
+            return
         storage = WebStorage(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
         customer_id = 'web-{}'.format(customer.pk)
