@@ -174,8 +174,10 @@ class Backend(object):
 Thank you for the payment on weblate.org.
 
 You will find invoice for this payment in the attachment,
-alternatively you can download it from the website.
-'''),
+alternatively you can download it from the website:
+
+%s
+''') % self.payment.customer.origin,
             'billing@weblate.org',
             [self.payment.customer.email],
         )
@@ -187,6 +189,38 @@ alternatively you can download it from the website.
                     'application/pdf'
                 )
         email.send()
+
+    def notify_failure(self):
+        """Send email notification with an failure."""
+        email = EmailMessage(
+            _('Your failed payment on weblate.org'),
+            _('''Hello
+
+The payment on weblate.org has failed.
+
+Failure reason:
+
+%s
+
+You might want to repeat the payment on the website:
+
+%s
+
+If this was a recurring payment it is retried three times
+and if it still fails, recurrence is disabled.
+''') % (self.payment.details.get('reject_reason', 'Uknown'), self.payment.customer.origin),
+            'billing@weblate.org',
+            [self.payment.customer.email],
+        )
+        if self.invoice is not None:
+            with open(self.invoice.pdf_path, 'rb') as handle:
+                email.attach(
+                    os.path.basename(self.invoice.pdf_path),
+                    handle.read(),
+                    'application/pdf'
+                )
+        email.send()
+
 
     def success(self):
         self.payment.state = Payment.ACCEPTED
@@ -201,6 +235,8 @@ alternatively you can download it from the website.
     def failure(self):
         self.payment.state = Payment.REJECTED
         self.payment.save()
+
+        self.notify_failure()
 
 
 @register_backend
