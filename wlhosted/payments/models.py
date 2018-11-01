@@ -81,6 +81,14 @@ class Customer(models.Model):
             'leave blank if not applicable.'
         ),
     )
+    tax = models.CharField(
+        max_length=200, blank=True,
+        verbose_name=_('Tax registration'),
+        help_text=_(
+            'Please fill in your tax registration if it shoud '
+            'appear on the invoice.'
+        )
+    )
     name = models.CharField(
         max_length=200, null=True,
         verbose_name=_('Company name'),
