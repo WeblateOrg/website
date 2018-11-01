@@ -71,7 +71,7 @@ class ModelTest(SimpleTestCase):
         with self.assertRaises(ValidationError):
             customer.clean()
 
-    def test_vat(self):
+    def test_vat_calculation(self):
         customer = Customer(**CUSTOMER)
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, 121)
