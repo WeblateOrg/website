@@ -21,11 +21,13 @@
 from __future__ import unicode_literals
 
 import json
+import os.path
 import subprocess
 
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from fakturace.storage import WebStorage
 
@@ -67,6 +69,7 @@ class Backend(object):
     def __init__(self, payment):
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
         self.payment = select[0]
+        self.invoice = None
 
     def perform(self, request, back_url, complete_url):
         """Performs payment and optionally redirects user."""
@@ -160,9 +163,30 @@ class Backend(object):
             check=True,
             cwd=settings.PAYMENT_FAKTURACE,
         )
+        self.invoice = invoice
 
     def notify_user(self):
         """Send email notification with an invoice."""
+        email = EmailMessage(
+            _('Your payment on weblate.org'),
+            _('''Hello
+
+Thank you for the payment on weblate.org.
+
+You will find invoice for this payment in the attachment,
+alternatively you can download it from the website.
+'''),
+            'billing@weblate.org',
+            [self.payment.customer.email],
+        )
+        if self.invoice is not None:
+            with open(self.invoice.pdf_path, 'rb') as handle:
+                email.attach(
+                    os.path.basename(self.invoice.pdf_path),
+                    handle.read(),
+                    'application/pdf'
+                )
+        email.send()
 
     def success(self):
         self.payment.state = Payment.ACCEPTED
