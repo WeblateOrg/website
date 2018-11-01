@@ -33,6 +33,7 @@ from weblate import USER_AGENT
 from weblate.billing.models import Billing
 from weblate.celery import app
 
+from wlhosted.payments.backends import get_backend
 from wlhosted.payments.models import Payment
 from wlhosted.integrations.models import handle_received_payment
 from wlhosted.integrations.utils import get_origin, get_payment_url
@@ -62,6 +63,12 @@ def recurring_payments():
 
             original = Payment.objects.get(pk=billing.payment['recurring'])
 
+            # Check if backend is still valid
+            try:
+                get_backend(original.details['backend'])
+            except KeyError:
+                continue
+
             # Create new payment object
             payment = Payment.objects.create(
                 amount=original.amount,
@@ -72,6 +79,7 @@ def recurring_payments():
                 extra={
                     'plan': original.extra['plan'],
                     'billing': billing.pk,
+                    'period': original.extra['period'],
                 }
             )
 
@@ -83,7 +91,7 @@ def recurring_payments():
                 urlencode({
                     'method': original.details['backend'],
                     'secret': settings.PAYMENT_SECRET,
-                })
+                }).encode('utf-8')
             )
             handle.read()
             handle.close()

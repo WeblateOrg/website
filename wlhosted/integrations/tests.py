@@ -21,6 +21,8 @@
 
 from dateutil.relativedelta import relativedelta
 
+import httpretty
+
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import timezone
@@ -29,8 +31,9 @@ from django.urls import reverse
 from weblate.billing.models import Plan, Billing, Invoice
 from weblate.trans.tests.utils import create_test_user
 
+from wlhosted.payments.backends import get_backend
 from wlhosted.payments.models import Customer, Payment
-from wlhosted.integrations.tasks import pending_payments
+from wlhosted.integrations.tasks import pending_payments, recurring_payments
 
 
 class PaymentTest(TestCase):
@@ -224,3 +227,54 @@ class PaymentTest(TestCase):
         self.assertEqual(bill.invoice_set.count(), 2)
         new_i = bill.invoice_set.exclude(pk=old_i.pk)[0]
         self.assertLess(old_i.end, new_i.start)
+
+    @override_settings(
+        PAYMENT_DEBUG=True,
+        PAYMENT_REDIRECT_URL='http://example.com/payment',
+    )
+    @httpretty.activate
+    def test_recurring(self, method='pay'):
+        self.create_payment(period='y')
+        payment = Payment.objects.all()[0]
+
+        # Complete the payment
+        backend = get_backend(method)(payment)
+        backend.initiate(None, '', '')
+        backend.complete(None)
+
+        self.assertRedirects(
+            self.client.get(
+                reverse('create-billing'), {'payment': payment.uuid}
+            ),
+            reverse('billing')
+        )
+
+        # Check recurrence is stored
+        bill = Billing.objects.all()[0]
+        self.assertEqual(bill.payment['recurring'], str(payment.pk))
+        invoices = bill.invoice_set.count()
+
+        # Fake end of last invoice
+        last_invoice = bill.invoice_set.order_by('-start')[0]
+        last_invoice.end = timezone.now() - relativedelta(days=7)
+        last_invoice.save()
+
+        # Invoke recurring payment
+        httpretty.register_uri(
+            httpretty.POST,
+            'http://example.com/payment',
+            body='',
+        )
+        recurring_payments()
+
+        # Complete the payment (we've faked the payment server above)
+        recure_payment = Payment.objects.exclude(pk=payment.pk)[0]
+        backend = get_backend(method)(recure_payment)
+        backend.initiate(None, '', '')
+        backend.complete(None)
+
+        # Process pending payments
+        pending_payments()
+
+        # There should be additional invoice on the billing
+        self.assertEqual(invoices + 1, bill.invoice_set.count())
