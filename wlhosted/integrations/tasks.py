@@ -67,7 +67,27 @@ def recurring_payments():
             try:
                 get_backend(original.details['backend'])
             except KeyError:
+                # Remove recurring flag
+                del billing.payment['recurring']
+                billing.save()
                 continue
+
+            # Check for failed payments
+            previous = Payment.objects.filter(repeat=original)
+            if previous.exists():
+                failures = previous.filter(state=Payment.REJECTED)
+                try:
+                    last_good = previous.filter(
+                        state=Payment.PROCESSED
+                    ).order_by('-created')[0]
+                    failures = failures.filter(created__gt=last_good.created)
+                except IndexError:
+                    pass
+                if failures.count() >= 3:
+                    # Remove recurring flag
+                    del billing.payment['recurring']
+                    billing.save()
+                    continue
 
             # Create new payment object
             payment = Payment.objects.create(

@@ -18,6 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from time import sleep
 
 from dateutil.relativedelta import relativedelta
 
@@ -228,12 +229,7 @@ class PaymentTest(TestCase):
         new_i = bill.invoice_set.exclude(pk=old_i.pk)[0]
         self.assertLess(old_i.end, new_i.start)
 
-    @override_settings(
-        PAYMENT_DEBUG=True,
-        PAYMENT_REDIRECT_URL='http://example.com/payment',
-    )
-    @httpretty.activate
-    def test_recurring(self, method='pay'):
+    def prepare_recurring(self, method):
         self.create_payment(period='y')
         payment = Payment.objects.all()[0]
 
@@ -251,7 +247,6 @@ class PaymentTest(TestCase):
 
         # Check recurrence is stored
         bill = Billing.objects.all()[0]
-        self.assertEqual(bill.payment['recurring'], str(payment.pk))
         invoices = bill.invoice_set.count()
 
         # Fake end of last invoice
@@ -259,6 +254,9 @@ class PaymentTest(TestCase):
         last_invoice.end = timezone.now() - relativedelta(days=7)
         last_invoice.save()
 
+        return payment, bill, invoices
+
+    def run_recurring(self):
         # Invoke recurring payment
         httpretty.register_uri(
             httpretty.POST,
@@ -267,9 +265,21 @@ class PaymentTest(TestCase):
         )
         recurring_payments()
 
+    @override_settings(
+        PAYMENT_DEBUG=True,
+        PAYMENT_REDIRECT_URL='http://example.com/payment',
+    )
+    @httpretty.activate
+    def test_recurring(self):
+        """Test recurring payments."""
+        payment, bill, invoices = self.prepare_recurring('pay')
+        self.assertEqual(bill.payment['recurring'], str(payment.pk))
+
+        self.run_recurring()
+
         # Complete the payment (we've faked the payment server above)
         recure_payment = Payment.objects.exclude(pk=payment.pk)[0]
-        backend = get_backend(method)(recure_payment)
+        backend = get_backend('pay')(recure_payment)
         backend.initiate(None, '', '')
         backend.complete(None)
 
@@ -278,3 +288,96 @@ class PaymentTest(TestCase):
 
         # There should be additional invoice on the billing
         self.assertEqual(invoices + 1, bill.invoice_set.count())
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_recurring_none(self):
+        """Test method without support for recurring payments."""
+        # The pending method does not support recurring payments
+        payment, bill, invoices = self.prepare_recurring('pending')
+        self.assertNotIn('recurring', bill.payment)
+
+        self.run_recurring()
+
+        # There should be no new payment
+        self.assertFalse(Payment.objects.exclude(pk=payment.pk).exists())
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_recurring_invalid(self):
+        """Test handling of invalid (removed) method."""
+        payment, bill, invoices = self.prepare_recurring('pay')
+        self.assertEqual(bill.payment['recurring'], str(payment.pk))
+
+        # Fake payment menthod
+        payment.details['backend'] = 'invalid'
+        payment.save()
+
+        self.run_recurring()
+
+        # There should be no new payment
+        self.assertFalse(Payment.objects.exclude(pk=payment.pk).exists())
+        # Recurrence should be disabled
+        bill = Billing.objects.get(pk=bill.pk)
+        self.assertNotIn('recurring', bill.payment)
+
+    @override_settings(
+        PAYMENT_DEBUG=True,
+        PAYMENT_REDIRECT_URL='http://example.com/payment',
+    )
+    @httpretty.activate
+    def test_recurring_one_error(self):
+        """Test handling of single failed recurring payments."""
+        payment, bill, invoices = self.prepare_recurring('pay')
+        self.assertEqual(bill.payment['recurring'], str(payment.pk))
+
+        Payment.objects.create(
+            repeat=payment, customer=payment.customer, state=Payment.REJECTED, amount=1
+        )
+
+        self.run_recurring()
+
+        # Complete the payment (we've faked the payment server above)
+        recure_payment = Payment.objects.exclude(
+            pk=payment.pk
+        ).exclude(
+            amount=1
+        )[0]
+        backend = get_backend('pay')(recure_payment)
+        backend.initiate(None, '', '')
+        backend.complete(None)
+
+        # Process pending payments
+        pending_payments()
+
+        # There should be additional invoice on the billing
+        self.assertEqual(invoices + 1, bill.invoice_set.count())
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_recurring_more_error(self):
+        """Test handling of more failed recurring payments."""
+        payment, bill, invoices = self.prepare_recurring('pay')
+        self.assertEqual(bill.payment['recurring'], str(payment.pk))
+
+        Payment.objects.create(
+            repeat=payment, customer=payment.customer, state=Payment.PROCESSED, amount=1
+        )
+        # Ensure rest is after procesed one
+        sleep(1)
+        Payment.objects.create(
+            repeat=payment, customer=payment.customer, state=Payment.REJECTED, amount=1
+        )
+        Payment.objects.create(
+            repeat=payment, customer=payment.customer, state=Payment.REJECTED, amount=1
+        )
+        Payment.objects.create(
+            repeat=payment, customer=payment.customer, state=Payment.REJECTED, amount=1
+        )
+
+        self.run_recurring()
+
+        # There should be no new payment
+        self.assertFalse(
+            Payment.objects.exclude(pk=payment.pk).exclude(amount=1).exists()
+        )
+        # Recurrence should be disabled
+        bill = Billing.objects.get(pk=bill.pk)
+        self.assertNotIn('recurring', bill.payment)
