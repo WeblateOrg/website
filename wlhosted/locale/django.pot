@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2018-10-30 14:15+0000\n"
+"POT-Creation-Date: 2018-11-01 15:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,15 +26,15 @@ msgid "Billing"
 msgstr ""
 
 #: wlhosted/integrations/forms.py:37
-msgid "Choose billing you want to update"
+msgid "Choose the billing plan you want to update"
 msgstr ""
 
 #: wlhosted/integrations/forms.py:38
-msgid "Create new billing"
+msgid "Create new billing plan"
 msgstr ""
 
 #: wlhosted/integrations/templates/hosted/create.html:7
-msgid "Create billing"
+msgid "Create billing plan"
 msgstr ""
 
 #: wlhosted/integrations/templates/hosted/create.html:16
@@ -42,7 +42,7 @@ msgid "New billing plan"
 msgstr ""
 
 #: wlhosted/integrations/templates/hosted/create.html:19
-msgid "Please choose hosting plan fitting size of your project."
+msgid "Please choose a hosting plan that fits the size of your project."
 msgstr ""
 
 #: wlhosted/integrations/templates/hosted/create.html:25
@@ -50,7 +50,11 @@ msgid "Current billing status"
 msgstr ""
 
 #: wlhosted/integrations/templates/hosted/create.html:46
-msgid "Too small for your project"
+msgid "Too small for your project."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:46
+msgid "Too small"
 msgstr ""
 
 #: wlhosted/integrations/templates/hosted/create.html:48
@@ -80,34 +84,34 @@ msgstr ""
 msgid "Projects limit"
 msgstr ""
 
-#: wlhosted/integrations/templates/hosted/create.html:71
+#: wlhosted/integrations/templates/hosted/create.html:74
 #, python-format
 msgid "%(price)s EUR / month"
 msgstr ""
 
-#: wlhosted/integrations/templates/hosted/create.html:72
-#: wlhosted/integrations/templates/hosted/create.html:76
+#: wlhosted/integrations/templates/hosted/create.html:75
+#: wlhosted/integrations/templates/hosted/create.html:79
 #, python-format
 msgid "%(price)s EUR including VAT"
 msgstr ""
 
-#: wlhosted/integrations/templates/hosted/create.html:75
+#: wlhosted/integrations/templates/hosted/create.html:78
 #, python-format
 msgid "%(price)s EUR / year"
 msgstr ""
 
-#: wlhosted/integrations/templates/hosted/create.html:84
-msgid ""
-"The pricing is based on number of source strings and number of target "
-"languages. The source string is a text unit defined in a translation format, "
-"it can be word, sentence or a paragraph."
-msgstr ""
-
 #: wlhosted/integrations/templates/hosted/create.html:87
 msgid ""
-"We're located in Czechia and you will be charged price with VAT if you are "
-"end user in the EU or Czech resident. Invoices for VAT registered companies "
-"in EU countries are issued as a reverse charge."
+"The pricing is based on number of source strings and target languages. The "
+"source string is a text unit defined in a translation format, it can be a "
+"word, sentence or paragraph."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:90
+msgid ""
+"Weblate is located in Czechia and you will be charged price with VAT if you "
+"are an end-user in the EU or a Czech resident. Invoices for VAT registered "
+"companies in EU countries are issued as a reverse charges."
 msgstr ""
 
 #: wlhosted/integrations/views.py:70
@@ -115,13 +119,13 @@ msgid "No matching payment found."
 msgstr ""
 
 #: wlhosted/integrations/views.py:79
-msgid "Thank you for purchasing hosting plan, it is now active."
+msgid "Thank you for purchasing a hosting plan, it is now active."
 msgstr ""
 
 #: wlhosted/integrations/views.py:86
 msgid ""
-"Thank you for purchasing hosting plan, the payment is pending and will be "
-"processed in the background."
+"Thank you for purchasing a hosting plan, the payment for it is pending and "
+"will be processed in the background."
 msgstr ""
 
 #: wlhosted/integrations/views.py:94
@@ -133,7 +137,7 @@ msgid "Unknown reason"
 msgstr ""
 
 #: wlhosted/integrations/views.py:111
-msgid "Payments are temporarily disabled."
+msgid "Payments are temporarily inactive."
 msgstr ""
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:6
@@ -705,31 +709,78 @@ msgid ""
 "2017."
 msgstr ""
 
-#: wlhosted/payments/models.py:53
+#: wlhosted/payments/backends.py:171
+msgid "Your payment on weblate.org"
+msgstr ""
+
+#: wlhosted/payments/backends.py:172
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"Thank you for the payment on weblate.org.\n"
+"\n"
+"You will find invoice for this payment in the attachment,\n"
+"alternatively you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: wlhosted/payments/backends.py:196
+msgid "Your failed payment on weblate.org"
+msgstr ""
+
+#: wlhosted/payments/backends.py:197
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"The payment on weblate.org has failed.\n"
+"\n"
+"Failure reason:\n"
+"\n"
+"%s\n"
+"\n"
+"You might want to repeat the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If this was a recurring payment it is retried three times\n"
+"and if it still fails, recurrence is disabled.\n"
+msgstr ""
+
+#: wlhosted/payments/models.py:78
 msgid "European VAT ID"
 msgstr ""
 
-#: wlhosted/payments/models.py:55
-msgid ""
-"Please fill in Europe Union VAT ID, keep the field blank if not applicable."
+#: wlhosted/payments/models.py:80
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 
-#: wlhosted/payments/models.py:61
+#: wlhosted/payments/models.py:86
+msgid "Tax registration"
+msgstr ""
+
+#: wlhosted/payments/models.py:88
+msgid "Please fill in your tax registration if it shoud appear on the invoice."
+msgstr ""
+
+#: wlhosted/payments/models.py:94
 msgid "Company name"
 msgstr ""
 
-#: wlhosted/payments/models.py:65
+#: wlhosted/payments/models.py:98
 msgid "Address"
 msgstr ""
 
-#: wlhosted/payments/models.py:69
-msgid "Post code code and city"
-msgstr ""
-
-#: wlhosted/payments/models.py:73
-msgid "Country"
+#: wlhosted/payments/models.py:102
+msgid "Postcode and city"
 msgstr ""
 
 #: wlhosted/payments/models.py:106
-msgid "Country has to match your VAT code"
+msgid "Country"
+msgstr ""
+
+#: wlhosted/payments/models.py:139
+msgid "The country has to match your VAT code"
 msgstr ""

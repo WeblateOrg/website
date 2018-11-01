@@ -5,13 +5,13 @@
 # Pavel Borecki <pavel.borecki@gmail.com>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2018-10-30 14:15+0000\n"
+"POT-Creation-Date: 2018-11-01 15:13+0000\n"
 "PO-Revision-Date: 2018-10-30 20:09+0000\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
-"Language-Team: Czech <https://hosted.weblate.org/projects/weblate/hosted/cs/>"
-"\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/weblate/hosted/cs/"
+">\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,15 +28,21 @@ msgid "Billing"
 msgstr "Předplatné"
 
 #: wlhosted/integrations/forms.py:37
-msgid "Choose billing you want to update"
+#, fuzzy
+#| msgid "Choose billing you want to update"
+msgid "Choose the billing plan you want to update"
 msgstr "Zvolte předplatné, které chcete upravit"
 
 #: wlhosted/integrations/forms.py:38
-msgid "Create new billing"
+#, fuzzy
+#| msgid "Create new billing"
+msgid "Create new billing plan"
 msgstr "Vytvořit nové předplatné"
 
 #: wlhosted/integrations/templates/hosted/create.html:7
-msgid "Create billing"
+#, fuzzy
+#| msgid "Create billing"
+msgid "Create billing plan"
 msgstr "Vytvořit předplatné"
 
 #: wlhosted/integrations/templates/hosted/create.html:16
@@ -44,7 +50,9 @@ msgid "New billing plan"
 msgstr "Nové předplatné"
 
 #: wlhosted/integrations/templates/hosted/create.html:19
-msgid "Please choose hosting plan fitting size of your project."
+#, fuzzy
+#| msgid "Please choose hosting plan fitting size of your project."
+msgid "Please choose a hosting plan that fits the size of your project."
 msgstr "Prosím zvolte si balíček, který nejlépe odpovídá vašemu projektu."
 
 #: wlhosted/integrations/templates/hosted/create.html:25
@@ -52,8 +60,14 @@ msgid "Current billing status"
 msgstr "Současný stav předplatného"
 
 #: wlhosted/integrations/templates/hosted/create.html:46
-msgid "Too small for your project"
+#, fuzzy
+#| msgid "Too small for your project"
+msgid "Too small for your project."
 msgstr "Příliš malý pro váš projekt"
+
+#: wlhosted/integrations/templates/hosted/create.html:46
+msgid "Too small"
+msgstr ""
 
 #: wlhosted/integrations/templates/hosted/create.html:48
 msgid "Current plan"
@@ -82,37 +96,47 @@ msgstr "Počet repozitářů"
 msgid "Projects limit"
 msgstr "Počet projektů"
 
-#: wlhosted/integrations/templates/hosted/create.html:71
+#: wlhosted/integrations/templates/hosted/create.html:74
 #, python-format
 msgid "%(price)s EUR / month"
 msgstr "%(price)s EUR / měsíc"
 
-#: wlhosted/integrations/templates/hosted/create.html:72
-#: wlhosted/integrations/templates/hosted/create.html:76
+#: wlhosted/integrations/templates/hosted/create.html:75
+#: wlhosted/integrations/templates/hosted/create.html:79
 #, python-format
 msgid "%(price)s EUR including VAT"
 msgstr "%(price)s EUR včetně DPH"
 
-#: wlhosted/integrations/templates/hosted/create.html:75
+#: wlhosted/integrations/templates/hosted/create.html:78
 #, python-format
 msgid "%(price)s EUR / year"
 msgstr "%(price)s EUR / rok"
 
-#: wlhosted/integrations/templates/hosted/create.html:84
+#: wlhosted/integrations/templates/hosted/create.html:87
+#, fuzzy
+#| msgid ""
+#| "The pricing is based on number of source strings and number of target "
+#| "languages. The source string is a text unit defined in a translation "
+#| "format, it can be word, sentence or a paragraph."
 msgid ""
-"The pricing is based on number of source strings and number of target "
-"languages. The source string is a text unit defined in a translation format, "
-"it can be word, sentence or a paragraph."
+"The pricing is based on number of source strings and target languages. The "
+"source string is a text unit defined in a translation format, it can be a "
+"word, sentence or paragraph."
 msgstr ""
 "Ceny jsou založeny na počtu zdrojových řetězců a počtu cílových jazyků. "
 "Zdrojový řetězec je jednotka použitá v překladovém formátu, může to být "
 "slovo, věta nebo odstavec."
 
-#: wlhosted/integrations/templates/hosted/create.html:87
+#: wlhosted/integrations/templates/hosted/create.html:90
+#, fuzzy
+#| msgid ""
+#| "We're located in Czechia and you will be charged price with VAT if you "
+#| "are end user in the EU or Czech resident. Invoices for VAT registered "
+#| "companies in EU countries are issued as a reverse charge."
 msgid ""
-"We're located in Czechia and you will be charged price with VAT if you are "
-"end user in the EU or Czech resident. Invoices for VAT registered companies "
-"in EU countries are issued as a reverse charge."
+"Weblate is located in Czechia and you will be charged price with VAT if you "
+"are an end-user in the EU or a Czech resident. Invoices for VAT registered "
+"companies in EU countries are issued as a reverse charges."
 msgstr ""
 "Sídlíme v Česku a proto vám bude vám účtována cena s DPH pokud jste koncový "
 "uživatel v EU nebo sídlíte v Česku. Faktury pro plátce DPH v EU jsou "
@@ -123,13 +147,19 @@ msgid "No matching payment found."
 msgstr "Nenalezena žádná odpovídající platba."
 
 #: wlhosted/integrations/views.py:79
-msgid "Thank you for purchasing hosting plan, it is now active."
+#, fuzzy
+#| msgid "Thank you for purchasing hosting plan, it is now active."
+msgid "Thank you for purchasing a hosting plan, it is now active."
 msgstr "Děkujeme za nákup hostovacího balíčku, právě byl aktivován."
 
 #: wlhosted/integrations/views.py:86
+#, fuzzy
+#| msgid ""
+#| "Thank you for purchasing hosting plan, the payment is pending and will be "
+#| "processed in the background."
 msgid ""
-"Thank you for purchasing hosting plan, the payment is pending and will be "
-"processed in the background."
+"Thank you for purchasing a hosting plan, the payment for it is pending and "
+"will be processed in the background."
 msgstr ""
 "Děkujeme za nákup hostovacího balíčku, platba se ještě zpracovává a poté "
 "bude balíček aktivován."
@@ -143,7 +173,9 @@ msgid "Unknown reason"
 msgstr "Neznámý důvod"
 
 #: wlhosted/integrations/views.py:111
-msgid "Payments are temporarily disabled."
+#, fuzzy
+#| msgid "Payments are temporarily disabled."
+msgid "Payments are temporarily inactive."
 msgstr "Platby jsou dočasně nedostupné."
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:6
@@ -857,32 +889,87 @@ msgstr ""
 "Tyto Všeobecné Smluvní Podmínky nabývají platnosti a účinnosti dne 1.září "
 "2017."
 
-#: wlhosted/payments/models.py:53
+#: wlhosted/payments/backends.py:171
+msgid "Your payment on weblate.org"
+msgstr ""
+
+#: wlhosted/payments/backends.py:172
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"Thank you for the payment on weblate.org.\n"
+"\n"
+"You will find invoice for this payment in the attachment,\n"
+"alternatively you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: wlhosted/payments/backends.py:196
+msgid "Your failed payment on weblate.org"
+msgstr ""
+
+#: wlhosted/payments/backends.py:197
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"The payment on weblate.org has failed.\n"
+"\n"
+"Failure reason:\n"
+"\n"
+"%s\n"
+"\n"
+"You might want to repeat the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If this was a recurring payment it is retried three times\n"
+"and if it still fails, recurrence is disabled.\n"
+msgstr ""
+
+#: wlhosted/payments/models.py:78
 msgid "European VAT ID"
 msgstr "DIČ (jen pro EU)"
 
-#: wlhosted/payments/models.py:55
-msgid ""
-"Please fill in Europe Union VAT ID, keep the field blank if not applicable."
+#: wlhosted/payments/models.py:80
+#, fuzzy
+#| msgid ""
+#| "Please fill in Europe Union VAT ID, keep the field blank if not "
+#| "applicable."
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Prosím zadejte evropské DIČ, ponechte toto pole prázdné, pokud se vás netýká."
 
-#: wlhosted/payments/models.py:61
+#: wlhosted/payments/models.py:86
+msgid "Tax registration"
+msgstr ""
+
+#: wlhosted/payments/models.py:88
+msgid "Please fill in your tax registration if it shoud appear on the invoice."
+msgstr ""
+
+#: wlhosted/payments/models.py:94
 msgid "Company name"
 msgstr "Název společnosti"
 
-#: wlhosted/payments/models.py:65
+#: wlhosted/payments/models.py:98
 msgid "Address"
 msgstr "Adresa"
 
-#: wlhosted/payments/models.py:69
-msgid "Post code code and city"
+#: wlhosted/payments/models.py:102
+#, fuzzy
+#| msgid "Post code code and city"
+msgid "Postcode and city"
 msgstr "PSČ a město"
 
-#: wlhosted/payments/models.py:73
+#: wlhosted/payments/models.py:106
 msgid "Country"
 msgstr "Země"
 
-#: wlhosted/payments/models.py:106
-msgid "Country has to match your VAT code"
+#: wlhosted/payments/models.py:139
+#, fuzzy
+#| msgid "Country has to match your VAT code"
+msgid "The country has to match your VAT code"
 msgstr "Země musí odpovídat DIČ"
