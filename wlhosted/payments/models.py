@@ -151,6 +151,12 @@ class Customer(models.Model):
     def needs_vat(self):
         return self.vat_country_code == 'CZ' or self.is_eu_enduser
 
+    @property
+    def vat_rate(self):
+        if self.needs_vat:
+            return EU_VAT_RATES[self.country_code]
+        return 0
+
 
 class Payment(models.Model):
     NEW = 1
@@ -201,7 +207,7 @@ class Payment(models.Model):
     @property
     def vat_amount(self):
         if self.customer.needs_vat:
-            rate = 100 + EU_VAT_RATES[self.customer.country_code]
+            rate = 100 + self.customer.vat_rate
             return round(rate * self.amount / 100, 2)
         return self.amount
 
