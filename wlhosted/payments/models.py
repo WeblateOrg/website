@@ -215,6 +215,7 @@ class Payment(models.Model):
 class PaymentConf(AppConf):
     DEBUG = False
     SECRET = 'secret'
+    FAKTURACE = None
 
     class Meta(object):
         prefix = 'PAYMENT'

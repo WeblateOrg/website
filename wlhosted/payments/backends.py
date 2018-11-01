@@ -20,9 +20,13 @@
 
 from __future__ import unicode_literals
 
+import subprocess
+
 from django.conf import settings
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
+
+from fakturace.storage import WebStorage
 
 from wlhosted.payments.models import Payment
 
@@ -101,7 +105,56 @@ class Backend(object):
 
     def generate_invoice(self):
         """Generates an invoice."""
-        self.payment.invoice = 'XXX'
+        storage = WebStorage(settings.PAYMENT_FAKTURACE)
+        customer = self.payment.customer
+        customer_id = 'web-{}'.format(customer.pk)
+        contact_file = storage.update_contact(
+            customer_id,
+            customer.name,
+            customer.address,
+            customer.city,
+            customer.country.name,
+            customer.email,
+            customer.tax,
+            customer.vat,
+            'EUR',
+            'weblate',
+        )
+        invoice_file = storage.create(
+            customer_id,
+            0,
+            rate='{:.02f}'.format(self.payment.amount),
+            item=self.payment.description,
+            vat=str(customer.vat_rate),
+            payment_method=self.verbose,
+        )
+        invoice = storage.get(invoice_file)
+        invoice.write_tex()
+        invoice.build_pdf()
+
+        self.payment.invoice = invoice.invoiceid
+
+        # Commit to git
+        subprocess.run(
+            [
+                'git', 'add',
+                '--',
+                contact_file,
+                invoice_file,
+                invoice.tex_path,
+                invoice.pdf_path
+            ],
+            check=True,
+            cwd=settings.PAYMENT_FAKTURACE,
+        )
+        subprocess.run(
+            [
+                'git', 'commit',
+                '-m', 'Invoice {}'.format(self.payment.invoice),
+            ],
+            check=True,
+            cwd=settings.PAYMENT_FAKTURACE,
+        )
 
     def notify_user(self):
         """Send email notification with an invoice."""
