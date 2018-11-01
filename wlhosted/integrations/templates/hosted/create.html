@@ -67,6 +67,9 @@
 <form action="{% url 'create-billing' %}" method="post" class="form-inline">
 {% csrf_token %}
 <input type="hidden" name="plan" value="{{ plan.pk }}">
+{% if billing %}
+<input type="hidden" name="billing" value="{{ billing.pk }}">
+{% endif %}
 <button type="submit" class="btn btn-success btn-spaced" name="period" value="m" {% if billing and not plan.would_fit %}disabled{% endif %}>
 <big>{% blocktrans with price=plan.price %}{{ price }} EUR / month{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
