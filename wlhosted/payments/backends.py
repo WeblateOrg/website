@@ -171,10 +171,10 @@ class Backend(object):
             _('Your payment on weblate.org'),
             _('''Hello
 
-Thank you for the payment on weblate.org.
+Thank you for your payment on weblate.org.
 
-You will find invoice for this payment in the attachment,
-alternatively you can download it from the website:
+You will find an invoice for this payment attached.
+Alternatively you can download it from the website:
 
 %s
 ''') % self.payment.customer.origin,
@@ -191,23 +191,21 @@ alternatively you can download it from the website:
         email.send()
 
     def notify_failure(self):
-        """Send email notification with an failure."""
+        """Send email notification with a failure."""
         email = EmailMessage(
             _('Your failed payment on weblate.org'),
             _('''Hello
 
-The payment on weblate.org has failed.
-
-Failure reason:
+Your payment on weblate.org has failed.
 
 %s
 
-You might want to repeat the payment on the website:
+Retry issuing the payment on the website:
 
 %s
 
-If this was a recurring payment it is retried three times
-and if it still fails, recurrence is disabled.
+If concerning a recurring payment, it is retried three times,
+and if still failing, will be cancelled.
 ''') % (self.payment.details.get('reject_reason', 'Uknown'), self.payment.customer.origin),
             'billing@weblate.org',
             [self.payment.customer.email],
