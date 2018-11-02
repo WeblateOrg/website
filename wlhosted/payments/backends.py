@@ -27,9 +27,12 @@ import subprocess
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from fakturace.storage import WebStorage
+
+import thepay.config
+import thepay.payment
 
 from wlhosted.payments.models import Payment
 
@@ -48,7 +51,7 @@ def list_backends():
     for backend in BACKENDS.values():
         if not backend.debug or settings.PAYMENT_DEBUG:
             result.append(backend)
-    return sorted(result, key=lambda x:x.name)
+    return sorted(result, key=lambda x: x.name)
 
 
 class InvalidState(ValueError):
@@ -219,7 +222,6 @@ and if still failing, will be cancelled.
                 )
         email.send()
 
-
     def success(self):
         self.payment.state = Payment.ACCEPTED
         if not self.recurring:
@@ -273,3 +275,80 @@ class DebugPending(DebugPay):
 
     def collect(self, request):
         return True
+
+
+@register_backend
+class ThePayCard(Backend):
+    name = 'thepay-card'
+    verbose = ugettext_lazy('Payment card')
+    recurring = True
+    thepay_method = 21
+
+    def __init__(self, payment):
+        super().__init__(payment)
+        self.config = thepay.config.Config()
+        if settings.PAYMENT_THEPAY_MERCHANTID:
+            self.config.setcredentials(
+                settings.PAYMENT_THEPAY_MERCHANTID,
+                settings.PAYMENT_THEPAY_ACCOUNTID,
+                settings.PAYMENT_THEPAY_PASSWORD,
+                settings.PAYMENT_THEPAY_DATAAPI
+            )
+
+    def perform(self, request, back_url, complete_url):
+
+        payment = thepay.payment.Payment(self.config)
+
+        payment.setValue(self.payment.vat_amount)
+        payment.setMethodId(self.thepay_method)
+        payment.setCustomerEmail(self.payment.customer.email)
+        payment.setDescription(self.payment.description)
+        payment.setReturnUrl(complete_url)
+        payment.setMerchantData(str(self.payment.pk))
+        if self.payment.recurring:
+            payment.setIsRecurring(1)
+        elif self.payment.repeat:
+            # TODO: invoce recurring payment API
+            pass
+
+        return redirect(payment.getCreateUrl())
+
+    def collect(self, request):
+        return_payment = thepay.payment.ReturnPayment(self.config)
+        return_payment.parseData(request.GET)
+
+        # Check params signature
+        if not return_payment.checkSignature():
+            return False
+
+        # Check we got correct payment
+        if return_payment.getMerchantData() != str(self.payment.pk):
+            return False
+
+        # Store payment details
+        self.payment.details = dict(return_payment.data)
+
+        status = return_payment.getStatus()
+        if status == 2:
+            return True
+        reason = 'Unknown: {}'.format(status)
+        if status == 3:
+            reason = _('Payment cancelled')
+        elif status == 4:
+            reason = _('Error during payment')
+        elif status == 6:
+            reason = 'Underpaid'
+        elif status == 7:
+            reason = _('Waiting for additional confirmation')
+        elif status == 9:
+            reason = 'Deposit confirmed'
+        self.payment.details['reject_reason'] = reason
+        return False
+
+
+@register_backend
+class ThePayBitcoin(ThePayCard):
+    name = 'thepay-bitcoin'
+    verbose = ugettext_lazy('Bitcoin')
+    recurring = False
+    thepay_method = 29

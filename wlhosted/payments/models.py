@@ -216,6 +216,10 @@ class PaymentConf(AppConf):
     DEBUG = False
     SECRET = 'secret'
     FAKTURACE = None
+    THEPAY_MERCHANTID = None
+    THEPAY_ACCOUNTID = None
+    THEPAY_PASSWORD = None
+    THEPAY_DATAAPI = None
 
     class Meta(object):
         prefix = 'PAYMENT'
