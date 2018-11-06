@@ -52,26 +52,26 @@ def pending_payments():
 
 @app.task
 def recurring_payments():
-    with transaction.atomic(using='payments_db'):
-        cutoff = timezone.now().date() + timedelta(days=1)
-        for billing in Billing.objects.filter(state=Billing.STATE_ACTIVE):
-            if 'recurring' not in billing.payment:
-                continue
-            last_invoice = billing.invoice_set.order_by('-start')[0]
-            if last_invoice.end > cutoff:
-                continue
+    cutoff = timezone.now().date() + timedelta(days=1)
+    for billing in Billing.objects.filter(state=Billing.STATE_ACTIVE):
+        if 'recurring' not in billing.payment:
+            continue
+        last_invoice = billing.invoice_set.order_by('-start')[0]
+        if last_invoice.end > cutoff:
+            continue
 
-            original = Payment.objects.get(pk=billing.payment['recurring'])
+        original = Payment.objects.get(pk=billing.payment['recurring'])
 
-            # Check if backend is still valid
-            try:
-                get_backend(original.backend)
-            except KeyError:
-                # Remove recurring flag
-                del billing.payment['recurring']
-                billing.save()
-                continue
+        # Check if backend is still valid
+        try:
+            get_backend(original.backend)
+        except KeyError:
+            # Remove recurring flag
+            del billing.payment['recurring']
+            billing.save()
+            continue
 
+        with transaction.atomic(using='payments_db'):
             # Check for failed payments
             previous = Payment.objects.filter(repeat=original)
             if previous.exists():
@@ -103,18 +103,18 @@ def recurring_payments():
                 }
             )
 
-            # Trigger payment processing
-            request = Request(get_payment_url(payment))
-            request.add_header('User-Agent', USER_AGENT)
-            handle = urlopen(
-                request,
-                urlencode({
-                    'method': original.details['backend'],
-                    'secret': settings.PAYMENT_SECRET,
-                }).encode('utf-8')
-            )
-            handle.read()
-            handle.close()
+        # Trigger payment processing
+        request = Request(get_payment_url(payment))
+        request.add_header('User-Agent', USER_AGENT)
+        handle = urlopen(
+            request,
+            urlencode({
+                'method': original.backend,
+                'secret': settings.PAYMENT_SECRET,
+            }).encode('utf-8')
+        )
+        handle.read()
+        handle.close()
 
     # We have created bunch of pending payments, process them now
     pending_payments()

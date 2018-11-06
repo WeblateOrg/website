@@ -26,13 +26,18 @@ import subprocess
 
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from fakturace.storage import WebStorage
 
 import thepay.config
+import thepay.gateApi
+import thepay.dataApi
 import thepay.payment
+
+from zeep.helpers import serialize_object
 
 from wlhosted.payments.models import Payment
 
@@ -143,7 +148,9 @@ class Backend(object):
         invoice = storage.get(invoice_file)
         invoice.write_tex()
         invoice.build_pdf()
-        invoice.mark_paid(json.dumps(self.payment.details, indent=2))
+        invoice.mark_paid(
+            json.dumps(self.payment.details, indent=2, cls=DjangoJSONEncoder)
+        )
 
         self.payment.invoice = invoice.invoiceid
 
@@ -299,6 +306,14 @@ class ThePayCard(Backend):
             )
 
     def perform(self, request, back_url, complete_url):
+        if self.payment.repeat:
+            api = thepay.gateApi.GateApi(self.config)
+            api.cardCreateRecurrentPayment(
+                str(self.payment.repeat.pk),
+                str(self.payment.pk),
+                self.payment.vat_amount,
+            )
+            return None
 
         payment = thepay.payment.Payment(self.config)
 
@@ -311,13 +326,16 @@ class ThePayCard(Backend):
         payment.setMerchantData(str(self.payment.pk))
         if self.payment.recurring:
             payment.setIsRecurring(1)
-        elif self.payment.repeat:
-            # TODO: invoce recurring payment API
-            pass
-
         return redirect(payment.getCreateUrl())
 
     def collect(self, request):
+        if self.payment.repeat:
+            data = thepay.dataApi.DataApi(self.config)
+            payment = data.getPayments(
+                merchant_data=str(self.payment.pk)
+            ).payments.payment[0]
+            self.payment.details = serialize_object(payment)
+            return True
         return_payment = thepay.payment.ReturnPayment(self.config)
         return_payment.parseData(request.GET)
 
