@@ -135,7 +135,7 @@ class Backend(object):
             rate='{:.02f}'.format(self.payment.amount),
             item=self.payment.description,
             vat=str(customer.vat_rate),
-            payment_method=self.verbose,
+            payment_method=str(self.verbose),
         )
         invoice = storage.get(invoice_file)
         invoice.write_tex()
