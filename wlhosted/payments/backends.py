@@ -299,6 +299,7 @@ class ThePayCard(Backend):
 
         payment = thepay.payment.Payment(self.config)
 
+        payment.setCurrency('EUR')
         payment.setValue(self.payment.vat_amount)
         payment.setMethodId(self.thepay_method)
         payment.setCustomerEmail(self.payment.customer.email)
