@@ -104,7 +104,10 @@ class Backend(object):
         if self.payment.state != Payment.PENDING:
             raise InvalidState()
 
-        if self.collect(request):
+        status = self.collect(request)
+        if status is None:
+            return False
+        if status:
             self.success()
             return True
         self.failure()
@@ -332,6 +335,8 @@ class ThePayCard(Backend):
         status = return_payment.getStatus()
         if status == 2:
             return True
+        if status == 7:
+            return None
         reason = 'Unknown: {}'.format(status)
         if status == 3:
             reason = _('Payment cancelled')
@@ -339,8 +344,6 @@ class ThePayCard(Backend):
             reason = _('Error during payment')
         elif status == 6:
             reason = 'Underpaid'
-        elif status == 7:
-            reason = _('Waiting for additional confirmation')
         elif status == 9:
             reason = 'Deposit confirmed'
         self.payment.details['reject_reason'] = reason
