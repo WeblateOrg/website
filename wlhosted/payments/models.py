@@ -208,7 +208,7 @@ class Payment(models.Model):
     def vat_amount(self):
         if self.customer.needs_vat:
             rate = 100 + self.customer.vat_rate
-            return round(rate * self.amount / 100, 2)
+            return round(1.0 * rate * self.amount / 100, 2)
         return self.amount
 
 
