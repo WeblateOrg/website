@@ -191,9 +191,9 @@ class Payment(models.Model):
         db_index=True,
         default=NEW
     )
-    processor = models.CharField(max_length=100, default='')
-    details = JSONField(editable=False, default={})
-    extra = JSONField(editable=False, default={})
+    backend = models.CharField(max_length=100, default='')
+    details = JSONField(default={})
+    extra = JSONField(default={})
     customer = models.ForeignKey(
         Customer, on_delete=models.deletion.CASCADE, blank=True
     )
@@ -203,6 +203,9 @@ class Payment(models.Model):
         null=True, blank=True
     )
     invoice = models.CharField(max_length=20, blank=True, default='')
+
+    class Meta:
+        ordering = ['-created']
 
     @property
     def vat_amount(self):

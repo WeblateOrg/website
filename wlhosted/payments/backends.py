@@ -94,7 +94,7 @@ class Backend(object):
 
         # Update payment state
         self.payment.state = Payment.PENDING
-        self.payment.details['backend'] = self.name
+        self.payment.backend = self.name
         self.payment.save()
 
         return result

@@ -65,7 +65,7 @@ def recurring_payments():
 
             # Check if backend is still valid
             try:
-                get_backend(original.details['backend'])
+                get_backend(original.backend)
             except KeyError:
                 # Remove recurring flag
                 del billing.payment['recurring']
