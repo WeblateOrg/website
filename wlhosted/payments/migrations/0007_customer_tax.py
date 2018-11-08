@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customer',
             name='tax',
-            field=models.CharField(blank=True, help_text='Please fill in your tax registration if it shoud appear on the invoice.', max_length=200, verbose_name='Tax registration'),
+            field=models.CharField(blank=True, help_text='Please fill in your tax registration if it should appear on the invoice.', max_length=200, verbose_name='Tax registration'),
         ),
     ]
