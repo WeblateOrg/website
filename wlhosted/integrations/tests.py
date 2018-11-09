@@ -219,6 +219,7 @@ class PaymentTest(TestCase):
             billing=bill,
             start=now,
             end=now + relativedelta(months=1),
+            amount=10,
         )
         old_i = bill.invoice_set.all()[0]
         self.do_complete(billing=bill.pk)
