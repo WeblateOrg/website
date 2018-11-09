@@ -9,6 +9,7 @@ env:
 install: 
   # Get newer pip and whell for binary caching support
   - pip install --upgrade pip wheel
+  - pip install https://github.com/nijel/thepay/archive/recurring.zip
   - pip install -r requirements-test.txt
 script: 
   - coverage run `which weblate` test
