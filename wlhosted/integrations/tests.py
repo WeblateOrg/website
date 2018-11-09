@@ -239,6 +239,13 @@ class PaymentTest(TestCase):
         # Complete the payment
         backend = get_backend(method)(payment)
         backend.initiate(None, '', '')
+        Customer.objects.update(
+            name='Michal Čihař',
+            address='Zdiměřická 1439',
+            city='149 00 Praha 4',
+            country='CZ',
+            vat='CZ8003280318',
+        )
         backend.complete(None)
 
         self.assertRedirects(
