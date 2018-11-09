@@ -341,7 +341,7 @@ class ThePayCard(Backend):
 
         # Check params signature
         try:
-            return_payment.checkSignature():
+            return_payment.checkSignature()
         except ReturnPayment.InvalidSignature:
             return False
 
