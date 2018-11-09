@@ -340,7 +340,9 @@ class ThePayCard(Backend):
         return_payment.parseData(request.GET)
 
         # Check params signature
-        if not return_payment.checkSignature():
+        try:
+            return_payment.checkSignature():
+        except ReturnPayment.InvalidSignature:
             return False
 
         # Check we got correct payment
