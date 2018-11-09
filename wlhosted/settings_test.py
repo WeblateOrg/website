@@ -34,3 +34,7 @@ DATABASES['payments_db'] = {
 }
 
 DATABASE_ROUTERS = ['wlhosted.dbrouter.HostedRouter']
+
+PAYMENT_FAKTURACE = os.path.join(
+    os.path.dirname(__file__), 'test-data', 'fakturace'
+)
