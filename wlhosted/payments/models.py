@@ -33,10 +33,11 @@ from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
 
 from vies.models import VATINField
-from vies.validators import VATINValidator
 
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
+
+from wlhosted.payments.validators import validate_vatin
 
 EU_VAT_RATES = {
     'BE': 21,
@@ -73,7 +74,7 @@ EU_VAT_RATES = {
 @python_2_unicode_compatible
 class Customer(models.Model):
     vat = VATINField(
-        validators=[VATINValidator(verify=True, validate=True)],
+        validators=[validate_vatin],
         blank=True, null=True,
         verbose_name=_('European VAT ID'),
         help_text=_(
