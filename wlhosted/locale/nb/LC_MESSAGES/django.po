@@ -7,9 +7,9 @@
 # ButterflyOfFire <ButterflyOfFire@protonmail.com>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2018-11-01 15:13+0000\n"
+"POT-Creation-Date: 2018-11-09 15:22+0000\n"
 "PO-Revision-Date: 2018-11-02 07:01+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/weblate/"
@@ -117,7 +117,7 @@ msgstr "%(price)s EUR inkludert moms"
 msgid "%(price)s EUR / year"
 msgstr "%(price)s EUR / år"
 
-#: wlhosted/integrations/templates/hosted/create.html:87
+#: wlhosted/integrations/templates/hosted/create.html:89
 #, fuzzy
 #| msgid ""
 #| "The pricing is based on number of source strings and number of target "
@@ -132,7 +132,7 @@ msgstr ""
 "et tekstelement definert i oversettelsesformat, det kan være et ord, en "
 "setning, eller et avsnitt."
 
-#: wlhosted/integrations/templates/hosted/create.html:90
+#: wlhosted/integrations/templates/hosted/create.html:92
 #, fuzzy
 #| msgid ""
 #| "We're located in Czechia and you will be charged price with VAT if you "
@@ -951,19 +951,28 @@ msgid ""
 msgstr ""
 "Disse tjenestevilkårene trer i effekt og håndhevelse første september 2017."
 
-#: wlhosted/payments/backends.py:171
+#: wlhosted/payments/backends.py:182
 msgid "Your payment on weblate.org"
 msgstr "Din betaling på weblate.org"
 
-#: wlhosted/payments/backends.py:172
-#, python-format
+#: wlhosted/payments/backends.py:183
+#, fuzzy, python-format
+#| msgid ""
+#| "Hello\n"
+#| "\n"
+#| "Thank you for the payment on weblate.org.\n"
+#| "\n"
+#| "You will find invoice for this payment in the attachment,\n"
+#| "alternatively you can download it from the website:\n"
+#| "\n"
+#| "%s\n"
 msgid ""
 "Hello\n"
 "\n"
-"Thank you for the payment on weblate.org.\n"
+"Thank you for your payment on weblate.org.\n"
 "\n"
-"You will find invoice for this payment in the attachment,\n"
-"alternatively you can download it from the website:\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively you can download it from the website:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -976,27 +985,40 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:196
+#: wlhosted/payments/backends.py:207
 msgid "Your failed payment on weblate.org"
 msgstr ""
 
-#: wlhosted/payments/backends.py:197
-#, python-format
+#: wlhosted/payments/backends.py:208
+#, fuzzy, python-format
+#| msgid ""
+#| "Hello\n"
+#| "\n"
+#| "The payment on weblate.org has failed.\n"
+#| "\n"
+#| "Failure reason:\n"
+#| "\n"
+#| "%s\n"
+#| "\n"
+#| "You might want to repeat the payment on the website:\n"
+#| "\n"
+#| "%s\n"
+#| "\n"
+#| "If this was a recurring payment it is retried three times\n"
+#| "and if it still fails, recurrence is disabled.\n"
 msgid ""
 "Hello\n"
 "\n"
-"The payment on weblate.org has failed.\n"
-"\n"
-"Failure reason:\n"
+"Your payment on weblate.org has failed.\n"
 "\n"
 "%s\n"
 "\n"
-"You might want to repeat the payment on the website:\n"
+"Retry issuing the payment on the website:\n"
 "\n"
 "%s\n"
 "\n"
-"If this was a recurring payment it is retried three times\n"
-"and if it still fails, recurrence is disabled.\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, will be cancelled.\n"
 msgstr ""
 "Hei\n"
 "\n"
@@ -1013,43 +1035,74 @@ msgstr ""
 "Hvis dette var en vedvarende betaling, vil den bli forsøkt gjennomført\n"
 "tre ganger. Hvis den mislykkes, kanselleres planen.\n"
 
-#: wlhosted/payments/models.py:78
+#: wlhosted/payments/backends.py:291
+#, fuzzy
+#| msgid "Failed to process form!"
+msgid "Payment card"
+msgstr "Kunne ikke behandle skjemaet!"
+
+#: wlhosted/payments/backends.py:360
+msgid "Payment cancelled"
+msgstr ""
+
+#: wlhosted/payments/backends.py:362
+msgid "Error during payment"
+msgstr ""
+
+#: wlhosted/payments/backends.py:374
+msgid "Bitcoin"
+msgstr ""
+
+#: wlhosted/payments/models.py:79
 msgid "European VAT ID"
 msgstr "Europeisk moms-ID"
 
-#: wlhosted/payments/models.py:80
+#: wlhosted/payments/models.py:81
 #, fuzzy
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "Fyll inn moms-ID fra EU, la stå tom hvis dette ikke angår deg."
 
-#: wlhosted/payments/models.py:86
+#: wlhosted/payments/models.py:87
 msgid "Tax registration"
 msgstr "Skatteregistrering"
 
-#: wlhosted/payments/models.py:88
-msgid "Please fill in your tax registration if it should appear on the invoice."
+#: wlhosted/payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
 msgstr "Fyll inn din skatteregistrering hvis den skal framtre på fakturaen."
 
-#: wlhosted/payments/models.py:94
+#: wlhosted/payments/models.py:95
 msgid "Company name"
 msgstr "Selskapsnavn"
 
-#: wlhosted/payments/models.py:98
+#: wlhosted/payments/models.py:99
 msgid "Address"
 msgstr "Adresse"
 
-#: wlhosted/payments/models.py:102
+#: wlhosted/payments/models.py:103
 #, fuzzy
 #| msgid "Post code code and city"
 msgid "Postcode and city"
 msgstr "Postnummer og by"
 
-#: wlhosted/payments/models.py:106
+#: wlhosted/payments/models.py:107
 msgid "Country"
 msgstr "Land"
 
-#: wlhosted/payments/models.py:139
+#: wlhosted/payments/models.py:140
 #, fuzzy
 #| msgid "Country has to match your VAT code"
 msgid "The country has to match your VAT code"
 msgstr "Landet må samsvare med momskode."
+
+#: wlhosted/payments/validators.py:34
+msgid "{} is not a value European member country code."
+msgstr ""
+
+#: wlhosted/payments/validators.py:39
+msgid "{} does not match the country's VAT ID specifications."
+msgstr ""
+
+#: wlhosted/payments/validators.py:43
+msgid "{} is not a valid VAT ID."
+msgstr ""
