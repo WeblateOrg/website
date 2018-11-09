@@ -37,8 +37,6 @@ import thepay.gateApi
 import thepay.dataApi
 import thepay.payment
 
-from zeep.helpers import serialize_object
-
 from wlhosted.payments.models import Payment
 
 BACKENDS = {}
@@ -334,7 +332,7 @@ class ThePayCard(Backend):
             payment = data.getPayments(
                 merchant_data=str(self.payment.pk)
             ).payments.payment[0]
-            self.payment.details = serialize_object(payment)
+            self.payment.details = dict(payment)
             return True
         return_payment = thepay.payment.ReturnPayment(self.config)
         return_payment.parseData(request.GET)
