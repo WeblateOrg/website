@@ -28,6 +28,7 @@ from wlhosted.payments.models import Customer, Payment
 from wlhosted.payments.backends import (
     get_backend, InvalidState, list_backends
 )
+from wlhosted.payments.validators import validate_vatin
 
 
 CUSTOMER = {
@@ -133,3 +134,14 @@ class BackendTest(TestCase):
     def test_list(self):
         backends = list_backends()
         self.assertGreater(len(backends), 0)
+
+
+class VATTest(SimpleTestCase):
+    def test_validation(self):
+        with self.assertRaises(ValidationError):
+            validate_vatin('XX123456')
+        with self.assertRaises(ValidationError):
+            validate_vatin('CZ123456')
+        with self.assertRaises(ValidationError):
+            validate_vatin('CZ8003280317')
+        validate_vatin('CZ8003280318')
