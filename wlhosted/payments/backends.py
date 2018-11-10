@@ -204,7 +204,7 @@ Alternatively you can download it from the website:
     def notify_failure(self):
         """Send email notification with a failure."""
         email = EmailMessage(
-            _('Your failed payment on weblate.org'),
+            _('Your payment on weblate.org failed'),
             _('''Hello
 
 Your payment on weblate.org has failed.
@@ -216,7 +216,7 @@ Retry issuing the payment on the website:
 %s
 
 If concerning a recurring payment, it is retried three times,
-and if still failing, will be cancelled.
+and if still failing, cancelled.
 ''') % (self.payment.details.get('reject_reason', 'Uknown'), self.payment.customer.origin),
             'billing@weblate.org',
             [self.payment.customer.email],
@@ -359,7 +359,7 @@ class ThePayCard(Backend):
         if status == 3:
             reason = _('Payment cancelled')
         elif status == 4:
-            reason = _('Error during payment')
+            reason = _('Payment error')
         elif status == 6:
             reason = 'Underpaid'
         elif status == 9:
