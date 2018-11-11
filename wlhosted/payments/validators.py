@@ -31,7 +31,7 @@ def validate_vatin(value):
     try:
         value.verify_country_code()
     except ValidationError:
-        msg = _('{} is not a valid country code of the European Union.')
+        msg = _('{} is not a valid country code for any European Union member.')
         raise ValidationError(msg.format(value.country_code))
     try:
         value.verify_regex()
