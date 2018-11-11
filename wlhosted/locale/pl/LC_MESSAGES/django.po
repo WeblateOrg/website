@@ -6,9 +6,9 @@
 # Stanisław Krukowski <pet209a1@riseup.net>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2018-11-09 15:22+0000\n"
+"POT-Creation-Date: 2018-11-11 20:51+0000\n"
 "PO-Revision-Date: 2018-11-11 12:13+0000\n"
 "Last-Translator: WaldiS <admin@sto.ugu.pl>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/weblate/hosted/pl/"
@@ -901,11 +901,26 @@ msgstr ""
 "%s\n"
 
 #: wlhosted/payments/backends.py:207
-msgid "Your failed payment on weblate.org"
-msgstr "Twoja nieudana płatność na weblate.org"
+#, fuzzy
+#| msgid "Your payment on weblate.org"
+msgid "Your payment on weblate.org failed"
+msgstr "Twoja płatność na weblate.org"
 
 #: wlhosted/payments/backends.py:208
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Hello\n"
+#| "\n"
+#| "Your payment on weblate.org has failed.\n"
+#| "\n"
+#| "%s\n"
+#| "\n"
+#| "Retry issuing the payment on the website:\n"
+#| "\n"
+#| "%s\n"
+#| "\n"
+#| "If concerning a recurring payment, it is retried three times,\n"
+#| "and if still failing, will be cancelled.\n"
 msgid ""
 "Hello\n"
 "\n"
@@ -918,7 +933,7 @@ msgid ""
 "%s\n"
 "\n"
 "If concerning a recurring payment, it is retried three times,\n"
-"and if still failing, will be cancelled.\n"
+"and if still failing, cancelled.\n"
 msgstr ""
 "Witaj\n"
 "\n"
@@ -942,8 +957,10 @@ msgid "Payment cancelled"
 msgstr "Płatność anulowana"
 
 #: wlhosted/payments/backends.py:362
-msgid "Error during payment"
-msgstr "Błąd podczas płatności"
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment error"
+msgstr "Karta płatnicza"
 
 #: wlhosted/payments/backends.py:374
 msgid "Bitcoin"
@@ -990,7 +1007,9 @@ msgid "The country has to match your VAT code"
 msgstr "Kraj musi pasować do Twojego kodu VAT"
 
 #: wlhosted/payments/validators.py:34
-msgid "{} is not a value European member country code."
+#, fuzzy
+#| msgid "{} is not a value European member country code."
+msgid "{} is not a valid country code for any European Union member."
 msgstr "{} nie jest wartościowym europejskim kodem kraju członkowskiego."
 
 #: wlhosted/payments/validators.py:39
@@ -1000,3 +1019,9 @@ msgstr "{} nie pasuje do specyfikacji VAT w kraju."
 #: wlhosted/payments/validators.py:43
 msgid "{} is not a valid VAT ID."
 msgstr "{} nie jest prawidłowym identyfikatorem VAT."
+
+#~ msgid "Your failed payment on weblate.org"
+#~ msgstr "Twoja nieudana płatność na weblate.org"
+
+#~ msgid "Error during payment"
+#~ msgstr "Błąd podczas płatności"

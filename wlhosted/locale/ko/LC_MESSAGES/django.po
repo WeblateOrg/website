@@ -4,9 +4,9 @@
 # 송태섭 <xotjq237@gmail.com>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2018-11-09 15:22+0000\n"
+"POT-Creation-Date: 2018-11-11 20:51+0000\n"
 "PO-Revision-Date: 2018-11-10 11:36+0000\n"
 "Last-Translator: 송태섭 <xotjq237@gmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/weblate/hosted/ko/"
@@ -849,11 +849,26 @@ msgstr ""
 "%s\n"
 
 #: wlhosted/payments/backends.py:207
-msgid "Your failed payment on weblate.org"
-msgstr "weblate.org에 결제 실패"
+#, fuzzy
+#| msgid "Your payment on weblate.org"
+msgid "Your payment on weblate.org failed"
+msgstr "weblate.org에 대한 귀하의 결제"
 
 #: wlhosted/payments/backends.py:208
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Hello\n"
+#| "\n"
+#| "Your payment on weblate.org has failed.\n"
+#| "\n"
+#| "%s\n"
+#| "\n"
+#| "Retry issuing the payment on the website:\n"
+#| "\n"
+#| "%s\n"
+#| "\n"
+#| "If concerning a recurring payment, it is retried three times,\n"
+#| "and if still failing, will be cancelled.\n"
 msgid ""
 "Hello\n"
 "\n"
@@ -866,7 +881,7 @@ msgid ""
 "%s\n"
 "\n"
 "If concerning a recurring payment, it is retried three times,\n"
-"and if still failing, will be cancelled.\n"
+"and if still failing, cancelled.\n"
 msgstr ""
 "안녕하십니까\n"
 "\n"
@@ -890,8 +905,10 @@ msgid "Payment cancelled"
 msgstr "결제 취소됨"
 
 #: wlhosted/payments/backends.py:362
-msgid "Error during payment"
-msgstr "결제 중 오류"
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment error"
+msgstr "결제 카드"
 
 #: wlhosted/payments/backends.py:374
 msgid "Bitcoin"
@@ -936,7 +953,9 @@ msgid "The country has to match your VAT code"
 msgstr "나라는 VAT 코드와 일치해야 합니다"
 
 #: wlhosted/payments/validators.py:34
-msgid "{} is not a value European member country code."
+#, fuzzy
+#| msgid "{} is not a value European member country code."
+msgid "{} is not a valid country code for any European Union member."
 msgstr "{}은(는) 유럽 회원 국가 코드가 아닙니다."
 
 #: wlhosted/payments/validators.py:39
@@ -946,3 +965,9 @@ msgstr "{}이(가) 해당 국가의 VAT ID 명세서와 일치하지 않습니�
 #: wlhosted/payments/validators.py:43
 msgid "{} is not a valid VAT ID."
 msgstr "{}은(는) 유효한 VAT ID가 아닙니다."
+
+#~ msgid "Your failed payment on weblate.org"
+#~ msgstr "weblate.org에 결제 실패"
+
+#~ msgid "Error during payment"
+#~ msgstr "결제 중 오류"
