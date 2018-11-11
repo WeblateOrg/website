@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: Hosted Weblate\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2018-11-09 15:22+0000\n"
-"PO-Revision-Date: 2018-11-10 11:36+0000\n"
-"Last-Translator: István Koren <istvank@gmx.de>\n"
+"PO-Revision-Date: 2018-11-11 12:13+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/weblate/hosted/de/"
 ">\n"
 "Language: de\n"
@@ -169,10 +169,8 @@ msgstr ""
 "erforderlichen Spezifikationen."
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:9
-#, fuzzy
-#| msgid "Version control"
 msgid "Personal Data Controller"
-msgstr "Verwaltung persönlicher Daten"
+msgstr "Verwalter personenbezogener Daten"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:12
 #, python-format
@@ -476,9 +474,11 @@ msgid "Civil Code"
 msgstr "Bürgerliches Gesetzbuch"
 
 #: wlhosted/legal/templates/legal/documents/tos.html:24
-#, python-format
+#, fuzzy, python-format
 msgid "means Act No. %(law_89_2012)s Coll., the Civil Code, as amended"
 msgstr ""
+"bedeutet Gesetz Nr. %(law_89_2012)s Slg., das Bürgerliche Gesetzbuch, in der "
+"jeweils gültigen Fassung."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:26
 msgid "Consent"
@@ -536,12 +536,15 @@ msgid "Personal Data"
 msgstr "Persönliche Daten"
 
 #: wlhosted/legal/templates/legal/documents/tos.html:39
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "means personal data within the meaning of Act No. %(law_101_2000)s Coll., on "
 "personal data protection, as amended, inserted by the User into the Service "
 "and/or Cookies"
 msgstr ""
+"bedeutet personenbezogene Daten im Sinne des Gesetzes Nr. %(Gesetz_101_2000)"
+"s Slg. über den Schutz personenbezogener Daten in der jeweils gültigen "
+"Fassung, die vom Nutzer in den Dienst eingefügt werden und/oder Cookies."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:41
 msgid "Owner"
@@ -605,7 +608,6 @@ msgstr ""
 "wird, wie Git oder Mercurial"
 
 #: wlhosted/legal/templates/legal/documents/tos.html:61
-#, fuzzy
 msgid "License Agreement Conclusion"
 msgstr "Abschluss des Lizenzvertrages"
 
@@ -703,7 +705,7 @@ msgstr ""
 "des Dienstes unbeabsichtigt verursacht hat."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:90
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Within the meaning of Article 5 (2) of Act No. %(law_101_2000)s Coll., on "
 "personal data protection, as amended, the User hereby gives his consent with "
@@ -714,6 +716,16 @@ msgid ""
 "partners. This consent is given as long as User does not remove his account "
 "from the Service."
 msgstr ""
+"Im Sinne von Artikel 5 Absatz 2 des Gesetzes Nr. %(Gesetz_101_2000)s Slg. "
+"über den Schutz personenbezogener Daten in der jeweils gültigen Fassung "
+"erklärt sich der Nutzer hiermit mit der Erhebung, Speicherung und "
+"Verarbeitung der personenbezogenen Daten einverstanden, die der Nutzer dem "
+"Administrator, der gleichzeitig der Anbieter ist, durch die Nutzung des "
+"Dienstes zur Verfügung stellt; der Nutzer stimmt der Verarbeitung und "
+"Nutzung seiner personenbezogenen Daten durch den Anbieter, seiner "
+"Mitarbeiter und/oder seine autorisierten Geschäftspartner zu. Diese "
+"Zustimmung wird erteilt, solange der Nutzer sein Konto nicht aus dem Dienst "
+"entfernt."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:92
 #, fuzzy, python-format
@@ -902,16 +914,7 @@ msgid "Your payment on weblate.org"
 msgstr "Deine Zahlung auf weblate.org"
 
 #: wlhosted/payments/backends.py:183
-#, fuzzy, python-format
-#| msgid ""
-#| "Hello\n"
-#| "\n"
-#| "Thank you for the payment on weblate.org.\n"
-#| "\n"
-#| "You will find invoice for this payment in the attachment,\n"
-#| "alternatively you can download it from the website:\n"
-#| "\n"
-#| "%s\n"
+#, python-format
 msgid ""
 "Hello\n"
 "\n"
@@ -924,7 +927,7 @@ msgid ""
 msgstr ""
 "Hallo\n"
 "\n"
-"Vielen Dank für die Zahlung auf weblate.org.\n"
+"Vielen Dank für Ihre Zahlung auf weblate.org.\n"
 "\n"
 "Die Rechnung für diese Zahlung finden Sie im Anhang.\n"
 "Alternativ können Sie es von der Website herunterladen:\n"
@@ -936,22 +939,7 @@ msgid "Your failed payment on weblate.org"
 msgstr "Ihre fehlgeschlagenen Zahlung auf weblate.org"
 
 #: wlhosted/payments/backends.py:208
-#, fuzzy, python-format
-#| msgid ""
-#| "Hello\n"
-#| "\n"
-#| "The payment on weblate.org has failed.\n"
-#| "\n"
-#| "Failure reason:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "You might want to repeat the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If this was a recurring payment it is retried three times\n"
-#| "and if it still fails, recurrence is disabled.\n"
+#, python-format
 msgid ""
 "Hello\n"
 "\n"
@@ -968,25 +956,21 @@ msgid ""
 msgstr ""
 "Hallo\n"
 "\n"
-"Die Zahlung auf weblate.org ist fehlgeschlagen.\n"
-"\n"
-"Fehlerursache:\n"
+"Ihre Zahlung auf weblate.org ist fehlgeschlagen.\n"
 "\n"
 "%s\n"
 "\n"
-"Möglicherweise möchten Sie die Zahlung auf der Website wiederholen:\n"
+"Versuchen Sie auf der Website, die Zahlung erneut auszulösen:\n"
 "\n"
 "%s\n"
 "\n"
 "Wenn es sich um eine wiederkehrende Zahlung handelt, wird sie dreimal "
-"wiederholt\n"
-"und wenn sie immer noch fehlschlägt, wird die Wiederholung deaktiviert.\n"
+"wiederholt,\n"
+"und wenn sie immer noch fehlschlägt, wird sie beendet.\n"
 
 #: wlhosted/payments/backends.py:291
-#, fuzzy
-#| msgid "Payment processors."
 msgid "Payment card"
-msgstr "Zahlungsabwickler."
+msgstr "Zahlungskarte"
 
 #: wlhosted/payments/backends.py:360
 msgid "Payment cancelled"
@@ -1015,7 +999,6 @@ msgid "Tax registration"
 msgstr "Steuerregistrierung"
 
 #: wlhosted/payments/models.py:89
-#, fuzzy
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr ""
@@ -1044,12 +1027,12 @@ msgstr "Das Land muss mit Ihrem VAT Code übereinstimmen"
 
 #: wlhosted/payments/validators.py:34
 msgid "{} is not a value European member country code."
-msgstr ""
+msgstr "{} ist kein Wert für den Ländercode eines europäischen Mitgliedslandes."
 
 #: wlhosted/payments/validators.py:39
 msgid "{} does not match the country's VAT ID specifications."
-msgstr ""
+msgstr "entspricht nicht den Angaben zur Umsatzsteuer-ID des Landes."
 
 #: wlhosted/payments/validators.py:43
 msgid "{} is not a valid VAT ID."
-msgstr ""
+msgstr "ist keine gültige Umsatzsteuer-ID."
