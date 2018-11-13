@@ -124,17 +124,15 @@ class CreateBillingView(FormView):
         kwargs['plans'] = list(Plan.objects.public())
         default_billing = get_default_billing(self.request.user)
         has_billing = Billing.objects.for_user(self.request.user).exists()
-        if 'billing' in self.request.GET:
+        if 'billing' in self.request.GET or 'plan' in self.request.GET:
             data = self.request.GET
         else:
             data = None
-        form = ChooseBillingForm(
-            self.request.user,
-            data,
-            initial={'billing': default_billing},
-        )
+        form = ChooseBillingForm(self.request.user, data)
+        kwargs['selected_plan'] = None
         if form.is_valid():
             kwargs['billing'] = form.cleaned_data['billing']
+            kwargs['selected_plan'] = form.cleaned_data['plan']
         elif data is None:
             kwargs['billing'] = default_billing
         else:

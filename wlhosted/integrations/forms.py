@@ -38,6 +38,11 @@ class ChooseBillingForm(forms.Form):
         empty_label=_('Create new billing plan'),
         required=False,
     )
+    plan = forms.ModelChoiceField(
+        queryset=Plan.objects.public(),
+        widget=forms.HiddenInput,
+        required=False,
+    )
 
     def __init__(self, user, *args, **kwargs):
         super(ChooseBillingForm, self).__init__(*args, **kwargs)
