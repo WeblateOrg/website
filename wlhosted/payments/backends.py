@@ -296,7 +296,7 @@ class ThePayCard(Backend):
         super().__init__(payment)
         self.config = thepay.config.Config()
         if settings.PAYMENT_THEPAY_MERCHANTID:
-            self.config.setcredentials(
+            self.config.setCredentials(
                 settings.PAYMENT_THEPAY_MERCHANTID,
                 settings.PAYMENT_THEPAY_ACCOUNTID,
                 settings.PAYMENT_THEPAY_PASSWORD,
