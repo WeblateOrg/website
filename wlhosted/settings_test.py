@@ -38,3 +38,5 @@ DATABASE_ROUTERS = ['wlhosted.dbrouter.HostedRouter']
 PAYMENT_FAKTURACE = os.path.join(
     os.path.dirname(__file__), 'test-data', 'fakturace'
 )
+
+LOCALE_PATHS = [os.path.join(os.path.dirname(__file__), 'locale'), ]
