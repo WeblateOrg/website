@@ -70,6 +70,7 @@ class Backend(object):
     name = None
     debug = False
     verbose = None
+    description = ''
     recurring = False
 
     def __init__(self, payment):
@@ -141,7 +142,7 @@ class Backend(object):
             rate='{:.02f}'.format(self.payment.amount),
             item=self.payment.description,
             vat=str(customer.vat_rate),
-            payment_method=str(self.verbose),
+            payment_method=self.description,
         )
         invoice = storage.get(invoice_file)
         invoice.write_tex()
@@ -252,6 +253,7 @@ class DebugPay(Backend):
     name = 'pay'
     debug = True
     verbose = 'Pay'
+    description = 'Paid (TEST)'
     recurring = True
 
     def perform(self, request, back_url, complete_url):
@@ -265,6 +267,7 @@ class DebugPay(Backend):
 class DebugReject(DebugPay):
     name = 'reject'
     verbose = 'Reject'
+    description = 'Reject (TEST)'
     recurring = False
 
     def collect(self, request):
@@ -276,6 +279,7 @@ class DebugReject(DebugPay):
 class DebugPending(DebugPay):
     name = 'pending'
     verbose = 'Pending'
+    description = 'Pending (TEST)'
     recurring = False
 
     def perform(self, request, back_url, complete_url):
@@ -289,6 +293,7 @@ class DebugPending(DebugPay):
 class ThePayCard(Backend):
     name = 'thepay-card'
     verbose = ugettext_lazy('Payment card')
+    description = 'Payment Card (The Pay)'
     recurring = True
     thepay_method = 21
 
@@ -372,5 +377,6 @@ class ThePayCard(Backend):
 class ThePayBitcoin(ThePayCard):
     name = 'thepay-bitcoin'
     verbose = ugettext_lazy('Bitcoin')
+    description = 'Bitcoin (The Pay)'
     recurring = False
     thepay_method = 29
