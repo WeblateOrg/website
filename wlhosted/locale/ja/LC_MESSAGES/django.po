@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Hosted Weblate\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2018-11-13 14:43+0000\n"
-"PO-Revision-Date: 2018-11-15 14:50+0000\n"
-"Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
+"PO-Revision-Date: 2018-11-15 18:19+0000\n"
+"Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/hosted/"
 "ja/>\n"
 "Language: ja\n"
@@ -32,47 +32,47 @@ msgstr "課金"
 
 #: wlhosted/integrations/forms.py:37
 msgid "Choose the billing plan you want to update"
-msgstr ""
+msgstr "更新する請求書の選択"
 
 #: wlhosted/integrations/forms.py:38
 msgid "Create new billing plan"
-msgstr ""
+msgstr "請求書の新規作成"
 
 #: wlhosted/integrations/templates/hosted/create.html:7
 msgid "Create billing plan"
-msgstr ""
+msgstr "請求書の作成"
 
 #: wlhosted/integrations/templates/hosted/create.html:16
 msgid "New billing plan"
-msgstr ""
+msgstr "新しい請求書"
 
 #: wlhosted/integrations/templates/hosted/create.html:19
 msgid "Please choose a hosting plan that fits the size of your project."
-msgstr ""
+msgstr "プロジェクトの規模に合ったホスティング プランを選択してください。"
 
 #: wlhosted/integrations/templates/hosted/create.html:25
 msgid "Current billing status"
-msgstr ""
+msgstr "現在の請求情報"
 
 #: wlhosted/integrations/templates/hosted/create.html:46
 msgid "Too small for your project."
-msgstr ""
+msgstr "プロジェクトは小さすぎます。"
 
 #: wlhosted/integrations/templates/hosted/create.html:46
 msgid "Too small"
-msgstr ""
+msgstr "小さすぎる"
 
 #: wlhosted/integrations/templates/hosted/create.html:48
 msgid "Selected plan"
-msgstr ""
+msgstr "選択したプラン"
 
 #: wlhosted/integrations/templates/hosted/create.html:50
 msgid "Current plan"
-msgstr ""
+msgstr "現在のプラン"
 
 #: wlhosted/integrations/templates/hosted/create.html:55
 msgid "Strings limit"
-msgstr "文字列数の制限"
+msgstr "文字数の制限"
 
 #: wlhosted/integrations/templates/hosted/create.html:56
 #: wlhosted/integrations/templates/hosted/create.html:59
@@ -104,7 +104,7 @@ msgstr "%(price)s ユーロ／月"
 #: wlhosted/integrations/templates/hosted/create.html:81
 #, python-format
 msgid "%(price)s EUR including VAT"
-msgstr ""
+msgstr "%(price)s ユーロ（VAT 込み）"
 
 #: wlhosted/integrations/templates/hosted/create.html:80
 #, python-format
@@ -132,32 +132,34 @@ msgid ""
 "are an end-user in the EU or a Czech resident. Invoices for VAT registered "
 "companies in EU countries are issued as a reverse charges."
 msgstr ""
+"Weblate はチェコ共和国にあり、EU またはチェコ共和国の居住者のエンドユーザーは、VAT 込みで料金を請求されます。EU 加盟国の VAT "
+"登録会社に対する請求書は、逆手数料として発行されます。"
 
 #: wlhosted/integrations/views.py:70
 msgid "No matching payment found."
-msgstr ""
+msgstr "一致する支払いが見つかりませんでした。"
 
 #: wlhosted/integrations/views.py:79
 msgid "Thank you for purchasing a hosting plan, it is now active."
-msgstr ""
+msgstr "ホスティング プランのご購入ありがとうございます。現在、有効です。"
 
 #: wlhosted/integrations/views.py:86
 msgid ""
 "Thank you for purchasing a hosting plan, the payment for it is pending and "
 "will be processed in the background."
-msgstr ""
+msgstr "ホスティング プランのご購入ありがとうございます。プランの支払いは保留中、バックグラウンドで処理します。"
 
 #: wlhosted/integrations/views.py:94
 msgid "The payment was rejected: {}"
-msgstr ""
+msgstr "拒否された支払い： {}"
 
 #: wlhosted/integrations/views.py:95
 msgid "Unknown reason"
-msgstr ""
+msgstr "理由不明"
 
 #: wlhosted/integrations/views.py:111
 msgid "Payments are temporarily inactive."
-msgstr ""
+msgstr "支払いは一時的に無効です。"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:6
 #, python-format
@@ -831,7 +833,7 @@ msgstr "これらの利用規約は、2017年9月1日に発効する。"
 
 #: wlhosted/payments/backends.py:182
 msgid "Your payment on weblate.org"
-msgstr ""
+msgstr "weblate.org への支払い"
 
 #: wlhosted/payments/backends.py:183
 #, python-format
@@ -845,10 +847,18 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
+"こんにちは\n"
+"\n"
+"weblate.org へのお支払い、ありがとうございます。.\n"
+"\n"
+"お支払いの請求書を添付しています。\n"
+"Web サイトからもダウンロードできます：\n"
+"\n"
+"%s\n"
 
 #: wlhosted/payments/backends.py:207
 msgid "Your payment on weblate.org failed"
-msgstr ""
+msgstr "weblate.org へのお支払いに失敗しました"
 
 #: wlhosted/payments/backends.py:208
 #, python-format
@@ -866,6 +876,16 @@ msgid ""
 "If concerning a recurring payment, it is retried three times,\n"
 "and if still failing, cancelled.\n"
 msgstr ""
+"こんにちは\n"
+"weblate.org へのお支払いが失敗しました。\n"
+"\n"
+"%s\n"
+"\n"
+"Web サイトでお支払いを再試行してください：\n"
+"\n"
+"%s\n"
+"\n"
+"定期購入の場合は 3 回再試行し、それでも失敗した場合は解約します。\n"
 
 #: wlhosted/payments/backends.py:291
 #, fuzzy
@@ -875,7 +895,7 @@ msgstr "支払機関。"
 
 #: wlhosted/payments/backends.py:360
 msgid "Payment cancelled"
-msgstr ""
+msgstr "支払いの解約"
 
 #: wlhosted/payments/backends.py:362
 #, fuzzy
@@ -885,53 +905,53 @@ msgstr "支払機関。"
 
 #: wlhosted/payments/backends.py:374
 msgid "Bitcoin"
-msgstr ""
+msgstr "ビットコイン"
 
 #: wlhosted/payments/models.py:79
 msgid "European VAT ID"
-msgstr ""
+msgstr "欧州 VAT ID"
 
 #: wlhosted/payments/models.py:81
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
-msgstr ""
+msgstr "欧州連合（EU）の VAT ID を記入してください。適用しない場合は空欄にしてください。"
 
 #: wlhosted/payments/models.py:87
 msgid "Tax registration"
-msgstr ""
+msgstr "税務登録"
 
 #: wlhosted/payments/models.py:89
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
-msgstr ""
+msgstr "請求書に記載されている場合は税務登録を記入してください。"
 
 #: wlhosted/payments/models.py:95
 msgid "Company name"
-msgstr ""
+msgstr "会社名"
 
 #: wlhosted/payments/models.py:99
 msgid "Address"
-msgstr ""
+msgstr "住所"
 
 #: wlhosted/payments/models.py:103
 msgid "Postcode and city"
-msgstr ""
+msgstr "郵便番号と都市"
 
 #: wlhosted/payments/models.py:107
 msgid "Country"
-msgstr ""
+msgstr "国"
 
 #: wlhosted/payments/models.py:140
 msgid "The country has to match your VAT code"
-msgstr ""
+msgstr "国の VAT コードに一致する必要があります"
 
 #: wlhosted/payments/validators.py:34
 msgid "{} is not a valid country code for any European Union member."
-msgstr ""
+msgstr "{} は、欧州連合加盟国の有効な国コードではありません。"
 
 #: wlhosted/payments/validators.py:39
 msgid "{} does not match the country's VAT ID specifications."
-msgstr ""
+msgstr "{} は、国の VAT ID 仕様と一致しません。"
 
 #: wlhosted/payments/validators.py:43
 msgid "{} is not a valid VAT ID."
-msgstr ""
+msgstr "{} は、有効な VAT ID ではありません。"
