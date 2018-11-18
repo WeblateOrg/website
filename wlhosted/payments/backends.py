@@ -30,7 +30,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 
-from fakturace.storage import WebStorage
+from fakturace.storage import InvoiceStorage
 
 import thepay.config
 import thepay.gateApi
@@ -121,7 +121,7 @@ class Backend(object):
         """Generates an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
             return
-        storage = WebStorage(settings.PAYMENT_FAKTURACE)
+        storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
         customer_id = 'web-{}'.format(customer.pk)
         contact_file = storage.update_contact(
