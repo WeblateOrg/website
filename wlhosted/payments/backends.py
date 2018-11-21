@@ -131,8 +131,8 @@ class Backend(object):
             customer.city,
             customer.country.name,
             customer.email,
-            customer.tax,
-            customer.vat,
+            customer.tax if customer.tax else '',
+            customer.vat if customer.vat else '',
             'EUR',
             'weblate',
         )
