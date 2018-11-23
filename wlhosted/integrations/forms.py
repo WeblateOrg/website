@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from weblate.billing.models import Plan, Billing
@@ -62,6 +63,20 @@ class BillingForm(ChooseBillingForm):
         required=False,
         widget=forms.HiddenInput,
     )
+
+    def __init__(self, user, *args, **kwargs):
+        super(BillingForm, self).__init__(user, *args, **kwargs)
+        self.fields['plan'].queryset = Plan.objects.public(user)
+
+    def clean(self):
+        plan = self.cleaned_data.get('plan')
+        period = self.cleaned_data.get('period')
+        if not plan or not period:
+            return
+        if not plan.yearly_price and period == 'y':
+            raise ValidationError('Plan does not support yearly billing!')
+        if not plan.price and period == 'm':
+            raise ValidationError('Plan does not support monthly billing!')
 
     def create_payment(self, user):
         customer = Customer.objects.get_or_create(

@@ -72,14 +72,18 @@
 {% if billing %}
 <input type="hidden" name="billing" value="{{ billing.pk }}">
 {% endif %}
+{% if plan.price %}
 <button type="submit" class="btn btn-success btn-spaced" name="period" value="m" {% if billing and not plan.would_fit %}disabled{% endif %}>
 <big>{% blocktrans with price=plan.price %}{{ price }} EUR / month{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
+{% endif %}
+{% if plan.yearly_price %}
 <button type="submit" class="btn btn-success btn-spaced" name="period" value="y" {% if billing and not plan.would_fit %}disabled{% endif %}>
 <big>{% blocktrans with price=plan.yearly_price %}{{ price }} EUR / year{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_yearly_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
+{% endif %}
 </form>
   </div>
 </div>

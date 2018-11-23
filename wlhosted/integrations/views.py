@@ -121,7 +121,7 @@ class CreateBillingView(FormView):
 
     def get_context_data(self, **kwargs):
         kwargs = super(CreateBillingView, self).get_context_data(**kwargs)
-        kwargs['plans'] = list(Plan.objects.public())
+        kwargs['plans'] = list(Plan.objects.public(self.request.user))
         default_billing = get_default_billing(self.request.user)
         has_billing = Billing.objects.for_user(self.request.user).exists()
         if 'billing' in self.request.GET or 'plan' in self.request.GET:
