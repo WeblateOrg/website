@@ -20,17 +20,23 @@
 
 from __future__ import unicode_literals
 
+from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from weblate.wladmin.models import WeblateModelAdmin
+from wlhosted.payments.models import Customer, Payment
 
 
-class CustomerAdmin(WeblateModelAdmin):
+class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'country', 'email', 'vat')
+    list_filter = ('country', )
     search_fields = ('name', 'email')
 
 
-class PaymentAdmin(WeblateModelAdmin):
-    list_display = ('amount', 'description', 'customer', 'state', 'backend')
-    list_filter = ('state', 'backend')
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('description', 'amount', 'customer', 'state', 'backend')
+    list_filter = ('state', 'backend', 'customer__name')
     search_fields = ('description', 'customer__name', 'customer__email')
+
+
+admin.site.register(Customer, CustomerAdmin)
+admin.site.register(Payment, PaymentAdmin)
