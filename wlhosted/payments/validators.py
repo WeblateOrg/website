@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext as _
 
+from suds import WebFault
+
 from vies.types import VATIN
 
 
@@ -19,8 +21,11 @@ def cache_vies_data(value):
             value.verify_regex()
         except ValidationError:
             return value
-        data =  dict(value.data)
-        cache.set(key, data, 3600)
+        try:
+            data =  dict(value.data)
+            cache.set(key, data, 3600)
+        except WebFault:
+            data = {'valid': False}
     value.__dict__['vies_data'] = data
 
     return value
