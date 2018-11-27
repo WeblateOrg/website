@@ -70,7 +70,7 @@ EU_VAT_RATES = {
     'GB': 20,
 }
 
-VAT_RATE = 1.21
+VAT_RATE = 21
 
 
 @python_2_unicode_compatible
@@ -157,7 +157,9 @@ class Customer(models.Model):
     @property
     def vat_rate(self):
         if self.needs_vat:
-            return EU_VAT_RATES[self.country_code]
+            return VAT_RATE
+            # Use following for country specific VAT
+            # return EU_VAT_RATES[self.country_code]
         return 0
 
 
@@ -222,7 +224,7 @@ class Payment(models.Model):
     @property
     def amount_without_vat(self):
         if self.customer.needs_vat and self.amount_fixed:
-            return round(self.amount / VAT_RATE, 2)
+            return round(100.0 * self.amount / (100 + self.customer.vat_rate), 2)
         return self.amount
 
 
