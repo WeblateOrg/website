@@ -198,7 +198,9 @@ class Payment(models.Model):
         default=NEW
     )
     backend = models.CharField(max_length=100, default='', blank=True)
+    # Payment details from the gateway
     details = JSONField(default={}, blank=True)
+    # Payment extra information from the origin
     extra = JSONField(default={}, blank=True)
     customer = models.ForeignKey(
         Customer, on_delete=models.deletion.CASCADE, blank=True
