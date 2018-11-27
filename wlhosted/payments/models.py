@@ -70,6 +70,8 @@ EU_VAT_RATES = {
     'GB': 20,
 }
 
+VAT_RATE = 1.21
+
 
 @python_2_unicode_compatible
 class Customer(models.Model):
@@ -205,15 +207,22 @@ class Payment(models.Model):
         null=True, blank=True
     )
     invoice = models.CharField(max_length=20, blank=True, default='')
+    amount_fixed = models.BooleanField(blank=True, default=False)
 
     class Meta:
         ordering = ['-created']
 
     @property
     def vat_amount(self):
-        if self.customer.needs_vat:
+        if self.customer.needs_vat and not self.amount_fixed:
             rate = 100 + self.customer.vat_rate
             return round(1.0 * rate * self.amount / 100, 2)
+        return self.amount
+
+    @property
+    def amount_without_vat(self):
+        if self.customer.needs_vat and self.amount_fixed:
+            return round(self.amount / VAT_RATE, 2)
         return self.amount
 
 

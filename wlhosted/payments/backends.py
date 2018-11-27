@@ -139,7 +139,7 @@ class Backend(object):
         invoice_file = storage.create(
             customer_id,
             0,
-            rate='{:.02f}'.format(self.payment.amount),
+            rate='{:.02f}'.format(self.payment.amount_without_vat),
             item=self.payment.description,
             vat=str(customer.vat_rate),
             payment_method=self.description,

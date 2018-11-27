@@ -87,10 +87,16 @@ class ModelTest(SimpleTestCase):
         customer = Customer(**CUSTOMER)
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, 121)
+        payment = Payment(customer=customer, amount=100, amount_fixed=True)
+        self.assertEqual(payment.vat_amount, 100)
+        self.assertEqual(payment.amount_without_vat, 82.64)
 
         customer.vat = 'IE6388047V'
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, 100)
+        payment = Payment(customer=customer, amount=100, amount_fixed=True)
+        self.assertEqual(payment.vat_amount, 100)
+        self.assertEqual(payment.amount_without_vat, 100)
 
 
 class BackendTest(TestCase):
