@@ -178,6 +178,7 @@ class Payment(models.Model):
             ('', 'None'),
         ],
         default='',
+        blank=True,
         max_length=10,
     )
     created = models.DateTimeField(auto_now_add=True)
@@ -192,9 +193,9 @@ class Payment(models.Model):
         db_index=True,
         default=NEW
     )
-    backend = models.CharField(max_length=100, default='')
-    details = JSONField(default={})
-    extra = JSONField(default={})
+    backend = models.CharField(max_length=100, default='', blank=True)
+    details = JSONField(default={}, blank=True)
+    extra = JSONField(default={}, blank=True)
     customer = models.ForeignKey(
         Customer, on_delete=models.deletion.CASCADE, blank=True
     )
