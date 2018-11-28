@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='payment',
             name='amount_fixed',
-            field=models.BooleanField(default=False),
+            field=models.BooleanField(default=False, blank=True),
         ),
     ]
