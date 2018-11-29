@@ -27,8 +27,8 @@ from wlhosted.payments.models import Customer, Payment
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'country', 'email', 'vat')
-    list_filter = ('country', )
+    list_display = ('email', 'name', 'country', 'vat', 'origin')
+    list_filter = ('country', 'origin')
     search_fields = ('name', 'email')
 
 
