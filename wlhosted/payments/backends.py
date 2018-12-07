@@ -144,7 +144,7 @@ class Backend(object):
             vat=str(customer.vat_rate),
             payment_method=self.description,
             category=self.payment.extra.get('category', 'weblate'),
-            payment_id=self.payment.pk,
+            payment_id=str(self.payment.pk),
         )
         invoice = storage.get(invoice_file)
         invoice.write_tex()
