@@ -321,7 +321,7 @@ class ThePayCard(Backend):
                 )
             except thepay.gateApi.GateError as error:
                 self.payment.details = {'errorDescription': error.args[0]}
-                self.failure()
+                # Failure is handled in collect using API
             return None
 
         payment = thepay.payment.Payment(self.config)
@@ -344,24 +344,26 @@ class ThePayCard(Backend):
                 merchant_data=str(self.payment.pk)
             ).payments.payment[0]
             self.payment.details = dict(payment)
-            return True
-        return_payment = thepay.payment.ReturnPayment(self.config)
-        return_payment.parseData(request.GET)
+            status = payment.state
+        else:
+            return_payment = thepay.payment.ReturnPayment(self.config)
+            return_payment.parseData(request.GET)
 
-        # Check params signature
-        try:
-            return_payment.checkSignature()
-        except thepay.payment.ReturnPayment.InvalidSignature:
-            return False
+            # Check params signature
+            try:
+                return_payment.checkSignature()
+            except thepay.payment.ReturnPayment.InvalidSignature:
+                return False
 
-        # Check we got correct payment
-        if return_payment.getMerchantData() != str(self.payment.pk):
-            return False
+            # Check we got correct payment
+            if return_payment.getMerchantData() != str(self.payment.pk):
+                return False
 
-        # Store payment details
-        self.payment.details = dict(return_payment.data)
+            # Store payment details
+            self.payment.details = dict(return_payment.data)
 
-        status = return_payment.getStatus()
+            status = return_payment.getStatus()
+
         if status == 2:
             return True
         if status == 7:
