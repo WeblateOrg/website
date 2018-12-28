@@ -313,11 +313,15 @@ class ThePayCard(Backend):
     def perform(self, request, back_url, complete_url):
         if self.payment.repeat:
             api = thepay.gateApi.GateApi(self.config)
-            api.cardCreateRecurrentPayment(
-                str(self.payment.repeat.pk),
-                str(self.payment.pk),
-                self.payment.vat_amount,
-            )
+            try:
+                api.cardCreateRecurrentPayment(
+                    str(self.payment.repeat.pk),
+                    str(self.payment.pk),
+                    self.payment.vat_amount,
+                )
+            except thepay.gateApi.GateError as error:
+                self.payment.details = {'errorDescription': error.args[0]}
+                self.failure()
             return None
 
         payment = thepay.payment.Payment(self.config)
