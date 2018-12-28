@@ -351,7 +351,7 @@ class ThePayCard(Backend):
         # Check params signature
         try:
             return_payment.checkSignature()
-        except ReturnPayment.InvalidSignature:
+        except thepay.payment.ReturnPayment.InvalidSignature:
             return False
 
         # Check we got correct payment
