@@ -344,7 +344,7 @@ class ThePayCard(Backend):
                 merchant_data=str(self.payment.pk)
             ).payments.payment[0]
             self.payment.details = dict(payment)
-            status = payment.state
+            status = int(payment.state)
         else:
             return_payment = thepay.payment.ReturnPayment(self.config)
             return_payment.parseData(request.GET)
