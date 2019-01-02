@@ -18,8 +18,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from dateutil.relativedelta import relativedelta
-
 from appconf import AppConf
 
 from django.db.models.aggregates import Max
@@ -28,16 +26,11 @@ from django.utils import timezone
 from weblate.billing.models import Plan, Billing, Invoice
 from weblate.auth.models import User
 
-from wlhosted.payments.models import Payment
+from wlhosted.payments.models import Payment, get_period_delta
 
 
 def end_interval(payment, start):
-    period = payment.extra['period']
-    if period == 'y':
-        return start + relativedelta(years=1)
-    elif period == 'm':
-        return start + relativedelta(months=1)
-    raise ValueError('Invalid payment period!')
+    return start + get_period_delta(payment.extra['period'])
 
 
 def handle_received_payment(payment):

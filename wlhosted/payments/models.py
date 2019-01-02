@@ -24,6 +24,8 @@ import uuid
 
 from appconf import AppConf
 
+from dateutil.relativedelta import relativedelta
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
@@ -307,3 +309,13 @@ class PaymentConf(AppConf):
 
     class Meta(object):
         prefix = 'PAYMENT'
+
+
+def get_period_delta(period):
+    if period == 'y':
+        return relativedelta(years=1)
+    if period == 'b':
+        return relativedelta(months=6)
+    if period == 'm':
+        return relativedelta(months=1)
+    raise ValueError('Invalid payment period!')
