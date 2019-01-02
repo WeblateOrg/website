@@ -41,7 +41,6 @@ from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
 
 from wlhosted.data import SUPPORTED_LANGUAGES
-from wlhosted.payments.backends import get_backend
 from wlhosted.payments.validators import validate_vatin
 
 EU_VAT_RATES = {
@@ -245,6 +244,7 @@ class Payment(models.Model):
 
     def repeat(self, **kwargs):
         # Check if backend is still valid
+        from wlhosted.payments.backends import get_backend
         try:
             get_backend(self.backend)
         except KeyError:
