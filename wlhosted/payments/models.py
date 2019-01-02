@@ -242,7 +242,7 @@ class Payment(models.Model):
             uuid=self.uuid
         )
 
-    def repeat(self, **kwargs):
+    def repeat_payment(self, **kwargs):
         # Check if backend is still valid
         from wlhosted.payments.backends import get_backend
         try:

@@ -56,7 +56,7 @@ def recurring_payments():
 
         original = Payment.objects.get(pk=billing.payment['recurring'])
 
-        if not original.repeat(billing=billing.pk):
+        if not original.repeat_payment(billing=billing.pk):
             # Remove recurring flag
             del billing.payment['recurring']
             billing.save()
