@@ -167,6 +167,14 @@ class Customer(models.Model):
         return 0
 
 
+RECURRENCE_CHOICES = [
+    ('y', _('Annual')),
+    ('b', _('Biannual')),
+    ('m', _('Monthly')),
+    ('', _('Onetime')),
+]
+
+
 class Payment(models.Model):
     NEW = 1
     PENDING = 2
@@ -180,11 +188,7 @@ class Payment(models.Model):
     amount = models.IntegerField()
     description = models.TextField()
     recurring = models.CharField(
-        choices=[
-            ('y', 'Yearly'),
-            ('m', 'Monthly'),
-            ('', 'None'),
-        ],
+        choices=RECURRENCE_CHOICES,
         default='',
         blank=True,
         max_length=10,
