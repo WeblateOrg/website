@@ -20,23 +20,10 @@
 
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.urls import reverse
 
-from django.utils.translation import get_language
 from weblate.utils.site import get_site_url
-from wlhosted.data import SUPPORTED_LANGUAGES
 
 
 def get_origin():
     return get_site_url(reverse('create-billing'))
-
-
-def get_payment_url(payment):
-    language = get_language()
-    if language not in SUPPORTED_LANGUAGES:
-        language = 'en'
-    return settings.PAYMENT_REDIRECT_URL.format(
-        language=language,
-        uuid=payment.uuid
-    )

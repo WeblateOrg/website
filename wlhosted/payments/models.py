@@ -26,17 +26,22 @@ from appconf import AppConf
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.http import urlencode
+from django.utils.translation import ugettext_lazy as _, get_language
 
 from django_countries.fields import CountryField
+
+from six.moves.urllib.request import Request, urlopen
 
 from vies.models import VATINField
 
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
 
+from wlhosted.data import SUPPORTED_LANGUAGES
+from wlhosted.payments.backends import get_backend
 from wlhosted.payments.validators import validate_vatin
 
 EU_VAT_RATES = {
@@ -228,6 +233,63 @@ class Payment(models.Model):
         if self.customer.needs_vat and self.amount_fixed:
             return round(100.0 * self.amount / (100 + self.customer.vat_rate), 2)
         return self.amount
+
+    def get_payment_url(self):
+        language = get_language()
+        if language not in SUPPORTED_LANGUAGES:
+            language = 'en'
+        return settings.PAYMENT_REDIRECT_URL.format(
+            language=language,
+            uuid=self.uuid
+        )
+
+    def repeat(self, **kwargs):
+        # Check if backend is still valid
+        try:
+            get_backend(self.backend)
+        except KeyError:
+            return False
+
+        with transaction.atomic(using='payments_db'):
+            # Check for failed payments
+            previous = Payment.objects.filter(repeat=self)
+            if previous.exists():
+                failures = previous.filter(state=Payment.REJECTED)
+                try:
+                    last_good = previous.filter(
+                        state=Payment.PROCESSED
+                    ).order_by('-created')[0]
+                    failures = failures.filter(created__gt=last_good.created)
+                except IndexError:
+                    pass
+                if failures.count() >= 3:
+                    return False
+
+            # Create new payment object
+            extra = {}
+            extra.update(self.extra)
+            extra.update(kwargs)
+            payment = Payment.objects.create(
+                amount=self.amount,
+                description=self.description,
+                recurring='',
+                customer=self.customer,
+                amount_fixed=self.amount_fixed,
+                repeat=self,
+                extra=extra
+            )
+
+        # Trigger payment processing
+        request = Request(payment.get_payment_url())
+        handle = urlopen(
+            request,
+            urlencode({
+                'method': self.backend,
+                'secret': settings.PAYMENT_SECRET,
+            }).encode('utf-8')
+        )
+        handle.read()
+        handle.close()
 
 
 class PaymentConf(AppConf):

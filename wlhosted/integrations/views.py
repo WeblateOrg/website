@@ -35,7 +35,7 @@ from weblate.utils.views import show_form_errors
 from wlhosted.integrations.forms import BillingForm, ChooseBillingForm
 from wlhosted.integrations.models import handle_received_payment
 from wlhosted.payments.models import Payment
-from wlhosted.integrations.utils import get_origin, get_payment_url
+from wlhosted.integrations.utils import get_origin
 
 
 def get_default_billing(user):
@@ -96,7 +96,7 @@ class CreateBillingView(FormView):
                 )
             )
         elif payment.state == Payment.NEW:
-            return HttpResponseRedirect(get_payment_url(payment))
+            return HttpResponseRedirect(payment.get_payment_url())
         return redirect('create-billing')
 
     def get(self, request, *args, **kwargs):
@@ -113,7 +113,7 @@ class CreateBillingView(FormView):
             return redirect('create-billing')
         with transaction.atomic(using='payments_db'):
             payment = form.create_payment(self.request.user)
-            return HttpResponseRedirect(get_payment_url(payment))
+            return HttpResponseRedirect(payment.get_payment_url())
 
     def form_invalid(self, form):
         show_form_errors(self.request, form)
