@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import os.path
 import uuid
 
 from appconf import AppConf
@@ -30,6 +31,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _, get_language
 
@@ -225,6 +227,20 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+    @cached_property
+    def invoice_filename(self):
+        return '{0}.pdf'.format(self.invoice)
+
+    @cached_property
+    def invoice_full_filename(self):
+        return os.path.join(
+            settings.PAYMENT_FAKTURACE, 'pdf', self.invoice_filename
+        )
+
+    @cached_property
+    def invoice_filename_valid(self):
+        return os.path.exists(self.invoice_full_filename)
 
     @property
     def vat_amount(self):
