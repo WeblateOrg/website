@@ -236,7 +236,7 @@ class Payment(models.Model):
     @property
     def amount_without_vat(self):
         if self.customer.needs_vat and self.amount_fixed:
-            return round(100.0 * self.amount / (100 + self.customer.vat_rate), 2)
+            return 100.0 * self.amount / (100 + self.customer.vat_rate)
         return self.amount
 
     def get_payment_url(self):
