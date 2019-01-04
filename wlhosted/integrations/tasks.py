@@ -56,10 +56,13 @@ def recurring_payments():
 
         original = Payment.objects.get(pk=billing.payment['recurring'])
 
-        if not original.repeat_payment(billing=billing.pk):
+        repeated = original.repeat_payment(billing=billing.pk)
+        if not repeated:
             # Remove recurring flag
             del billing.payment['recurring']
             billing.save()
+        else:
+            repeated.trigger_remotely()
 
     # We have created bunch of pending payments, process them now
     pending_payments()

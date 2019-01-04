@@ -292,6 +292,7 @@ class Payment(models.Model):
             extra.update(kwargs)
             payment = Payment.objects.create(
                 amount=self.amount,
+                backend=self.backend,
                 description=self.description,
                 recurring='',
                 customer=self.customer,
@@ -299,7 +300,9 @@ class Payment(models.Model):
                 repeat=self,
                 extra=extra
             )
+        return payment
 
+    def trigger_remotely(self):
         # Trigger payment processing remotely
         requests.post(
             self.get_payment_url(),
