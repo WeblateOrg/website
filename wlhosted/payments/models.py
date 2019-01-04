@@ -32,12 +32,11 @@ from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _, get_language
 
 from django_countries.fields import CountryField
 
-from six.moves.urllib.request import Request, urlopen
+import requests
 
 from vies.models import VATINField
 
@@ -301,17 +300,15 @@ class Payment(models.Model):
                 extra=extra
             )
 
-        # Trigger payment processing
-        request = Request(payment.get_payment_url())
-        handle = urlopen(
-            request,
-            urlencode({
+        # Trigger payment processing remotely
+        requests.post(
+            self.get_payment_url(),
+            allow_redirects=False,
+            data={
                 'method': self.backend,
                 'secret': settings.PAYMENT_SECRET,
-            }).encode('utf-8')
+            }
         )
-        handle.read()
-        handle.close()
 
 
 class PaymentConf(AppConf):
