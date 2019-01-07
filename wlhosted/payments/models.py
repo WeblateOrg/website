@@ -178,6 +178,7 @@ RECURRENCE_CHOICES = [
 ]
 
 
+@python_2_unicode_compatible
 class Payment(models.Model):
     NEW = 1
     PENDING = 2
@@ -226,6 +227,9 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+    def __str__(self):
+        return 'payment:{}'.format(self.pk)
 
     @cached_property
     def invoice_filename(self):
