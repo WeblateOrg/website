@@ -101,7 +101,7 @@ class Customer(models.Model):
     )
     name = models.CharField(
         max_length=200, null=True,
-        verbose_name=_('Company name'),
+        verbose_name=_('Company or individual name'),
     )
     address = models.CharField(
         max_length=200, null=True,
