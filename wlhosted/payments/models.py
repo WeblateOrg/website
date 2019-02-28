@@ -333,9 +333,9 @@ class PaymentConf(AppConf):
 
 def get_period_delta(period):
     if period == 'y':
-        return relativedelta(years=1)
+        return relativedelta(years=1) - relativedelta(days=1)
     if period == 'b':
-        return relativedelta(months=6)
+        return relativedelta(months=6) - relativedelta(days=1)
     if period == 'm':
-        return relativedelta(months=1)
+        return relativedelta(months=1) - relativedelta(days=1)
     raise ValueError('Invalid payment period!')
