@@ -39,6 +39,7 @@ def handle_received_payment(payment):
     params = {
         'plan': Plan.objects.get(pk=payment.extra['plan']),
         'state': Billing.STATE_ACTIVE,
+        'removal': None,
     }
     if 'billing' in payment.extra:
         billing = Billing.objects.get(pk=payment.extra['billing'])
