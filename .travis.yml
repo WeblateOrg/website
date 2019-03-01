@@ -12,7 +12,6 @@ install:
   - pip install https://github.com/nijel/thepay/archive/weblate.zip
   - pip install -r requirements-test.txt
 script: 
-  - locale
   - coverage run `which weblate` test
   - ./setup.py sdist
   - twine check dist/*
