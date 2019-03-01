@@ -121,8 +121,6 @@ class Backend(object):
         """Generates an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
             return
-        import locale
-        print(locale.getlocale())
         storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
         customer_id = 'web-{}'.format(customer.pk)
