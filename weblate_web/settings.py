@@ -292,6 +292,8 @@ LOGIN_URL = '/sso-login/'
 
 PAYMENT_REDIRECT_URL = 'http://localhost:1234/{language}/payment/{uuid}/'
 
+REGISTRATION_EMAIL_MATCH = '.*'
+
 try:
     from .settings_local import *
 except ImportError:
