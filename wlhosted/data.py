@@ -21,8 +21,7 @@
 # List of supported languages on weblate.org
 SUPPORTED_LANGUAGES = frozenset((
     'ar', 'az', 'be', 'be@latin', 'bg', 'br', 'ca', 'cs', 'da', 'de', 'en',
-    'el', 'en-gb', 'es', 'fi', 'fr', 'gl', 'he', 'hu', 'id', 'it', 'ja', 'ko',
-    'nb', 'nl', 'pl', 'pt', 'pt-br', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr',
-    'uk', 'zh-hans', 'zh-hant',
+    'el', 'en-gb', 'es', 'fi', 'fr', 'gl', 'he', 'hu', 'id', 'it', 'ja', 'kk',
+    'ko', 'nb', 'nl', 'pl', 'pt', 'pt-br', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv',
+    'tr', 'uk', 'zh-hans', 'zh-hant',
 ))
-
