@@ -101,6 +101,7 @@ LANGUAGES = (
     ('id', u'Indonesia'),
     ('it', u'Italiano'),
     ('ja', u'日本語'),
+    ('kk', 'Қазақ тілі'),
     ('ko', u'한국어'),
     ('nb', u'Norsk bokmål'),
     ('nl', u'Nederlands'),
