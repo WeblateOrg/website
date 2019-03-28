@@ -34,6 +34,7 @@ from weblate_web.views import (
     PaymentView, CustomerView, CompleteView, fetch_vat,
     DonateView, DonateRewardView, process_donation,
     EditLinkView, download_invoice, disable_repeat,
+    subscribe,
 )
 
 
@@ -237,6 +238,7 @@ urlpatterns = i18n_patterns(
         fetch_vat
     ),
     url(r'^sso-login/', include(SSO_CLIENT.get_urls())),
+    url(r'^subscribe/(?P<name>hosted|users)/', subscribe, name='subscribe'),
     url(r'^logout/$', LogoutView.as_view(next_page='/'), name='logout'),
     # Admin
     url(r'^admin/', admin.site.urls),

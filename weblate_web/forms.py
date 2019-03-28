@@ -29,6 +29,10 @@ from wlhosted.payments.models import RECURRENCE_CHOICES
 from weblate_web.models import Donation
 
 
+class SubscribeForm(forms.Form):
+    email = forms.EmailField()
+
+
 class MethodForm(forms.Form):
     method = forms.ChoiceField(
         choices=[],

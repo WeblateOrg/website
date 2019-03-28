@@ -21,7 +21,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError, SuspiciousOperation
-from django.core.mail import mail_admins
+from django.core.mail import mail_admins, send_mail
 from django.db import transaction
 from django.http import JsonResponse, HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404
@@ -40,7 +40,9 @@ from wlhosted.payments.models import Payment, Customer
 from wlhosted.payments.forms import CustomerForm
 from wlhosted.payments.validators import cache_vies_data
 
-from weblate_web.forms import MethodForm, DonateForm, EditLinkForm
+from weblate_web.forms import (
+    MethodForm, DonateForm, EditLinkForm, SubscribeForm,
+)
 from weblate_web.models import (
     Donation, Reward, PAYMENTS_ORIGIN, process_payment,
 )
@@ -335,3 +337,34 @@ class EditLinkView(UpdateView):
             )
         )
         return super().form_valid(form)
+
+
+@require_POST
+def subscribe(request, name):
+    addresses = {
+        'hosted': 'hosted-weblate-announce-join@lists.cihar.com',
+        'users': 'weblate-join@lists.cihar.com',
+    }
+    form = SubscribeForm(request.POST)
+    if form.is_valid():
+        send_mail(
+            'subscribe',
+            'subscribe',
+            form.cleaned_data['email'],
+            [addresses[name]],
+            fail_silently=True,
+        )
+        messages.success(
+            request,
+            _(
+                'Subscription was initiated, '
+                'you will shortly receive email to confirm it.'
+            )
+        )
+    else:
+        messages.error(
+            request,
+            _('Failed to process subscription request.')
+        )
+
+    return redirect('support')
