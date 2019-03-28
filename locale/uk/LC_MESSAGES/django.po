@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-02-14 13:40+0100\n"
+"POT-Creation-Date: 2019-03-28 15:53+0100\n"
 "PO-Revision-Date: 2019-03-01 08:36+0000\n"
 "Last-Translator: Андрій Бандура <andriykopanytsia@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/weblate/"
@@ -17,8 +17,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 3.5-dev\n"
 
 #: weblate_web/data.py:33
@@ -126,17 +126,17 @@ msgstr "Ви можете задати рівні доступу для кожн
 msgid "User management"
 msgstr "Керування користувачами"
 
-#: weblate_web/forms.py:47 weblate_web/templates/donate.html:152
+#: weblate_web/forms.py:51 weblate_web/templates/donate.html:152
 #: weblate_web/templates/donate/form.html:25
 msgid "Donation recurrence"
 msgstr "Частота пожертвування"
 
-#: weblate_web/forms.py:54 weblate_web/templates/donate.html:153
+#: weblate_web/forms.py:58 weblate_web/templates/donate.html:153
 #: weblate_web/templates/donate/form.html:26
 msgid "Amount in EUR"
 msgstr "Сума в євро"
 
-#: weblate_web/forms.py:57
+#: weblate_web/forms.py:61
 #, python-format
 msgid "The minimal amount is %d EUR."
 msgstr "Найменша сума %d євро."
@@ -1560,42 +1560,42 @@ msgstr ""
 "weblate@lists.cihar.com\">weblate@lists.cihar.com</a>."
 
 #: weblate_web/templates/support.html:111
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "You can browse mailing list archives"
 msgstr "Можете переглядати архіви списку розсилки"
 
-#: weblate_web/templates/support.html:114
-#: weblate_web/templates/support.html:130
+#: weblate_web/templates/support.html:115
+#: weblate_web/templates/support.html:132
 msgid "Enter your email"
 msgstr "Введіть свою адресу ел. пошти"
 
-#: weblate_web/templates/support.html:116
-#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:134
 msgid "Subscribe"
 msgstr "Підписатися"
 
-#: weblate_web/templates/support.html:123
+#: weblate_web/templates/support.html:124
 msgid "Hosted Weblate Announcements mailing list"
 msgstr "Список розсилки оголошень Hosted Weblate"
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 msgid ""
 "Low traffic mailing list with announcements about Hosted Weblate services."
 msgstr ""
 "Список розсилки із невеликим трафіком, який містить оголошення про послуги "
 "Hosted Weblate."
 
-#: weblate_web/templates/support.html:126
+#: weblate_web/templates/support.html:127
 msgid "This list is moderated, only chosen users can post announcements."
 msgstr ""
 "Цей список перебуває під контролем. Лише обрані користувачі можуть "
 "розміщувати оголошення тут."
 
-#: weblate_web/templates/support.html:139
+#: weblate_web/templates/support.html:141
 msgid "Stack Overflow"
 msgstr "Переповнення стеку"
 
-#: weblate_web/templates/support.html:141
+#: weblate_web/templates/support.html:143
 #, python-format
 msgid ""
 "You can also ask related questions on <a href=\"%(url)s\">Stack Overflow</a>."
@@ -1747,29 +1747,38 @@ msgstr "Заархівований код у xz"
 msgid "Sources, zip compressed"
 msgstr "Вихідний код, стиснутий у zip"
 
-#: weblate_web/views.py:89
+#: weblate_web/views.py:91
 msgid "Please provide your billing information to complete the payment."
 msgstr "Будь ласка, вкажіть інформацію про оплату, щоб здійснити платіж."
 
-#: weblate_web/views.py:100
+#: weblate_web/views.py:102
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Цей номер платника ПДВ вже не дійсний. Оновіть його."
 
-#: weblate_web/views.py:260
+#: weblate_web/views.py:262
 msgid "Payment not yet processed, please retry."
 msgstr "Платіж ще не опрацьований. Будь ласка, повторіть."
 
-#: weblate_web/views.py:265
+#: weblate_web/views.py:267
 msgid "The payment was rejected: {}"
 msgstr "Платіж відхилили: {}"
 
-#: weblate_web/views.py:266
+#: weblate_web/views.py:268
 msgid "Unknown reason"
 msgstr "Невідома причина"
 
-#: weblate_web/views.py:270
+#: weblate_web/views.py:272
 msgid "Thank you for your donation."
 msgstr "Дякуємо за вашу пожертву."
+
+#: weblate_web/views.py:360
+msgid ""
+"Subscription was initiated, you will shortly receive email to confirm it."
+msgstr ""
+
+#: weblate_web/views.py:367
+msgid "Failed to process subscription request."
+msgstr ""
 
 #~ msgid "Tour"
 #~ msgstr "Навчальний тур"
