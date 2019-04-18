@@ -126,7 +126,7 @@ class UtilTestCase(TestCase):
         )
 
 
-class FakuraceTestCase(TestCase):
+class FakturaceTestCase(TestCase):
     def setUp(self):
         super().setUp()
         dirs = ('contacts', 'data', 'pdf', 'tex', 'config')
@@ -156,7 +156,7 @@ class FakuraceTestCase(TestCase):
         )
 
 
-class PaymentsTest(FakuraceTestCase):
+class PaymentsTest(FakturaceTestCase):
     def test_languages(self):
         self.assertEqual(
             set(SUPPORTED_LANGUAGES),
@@ -244,7 +244,7 @@ class PaymentsTest(FakuraceTestCase):
         self.check_payment(payment, Payment.ACCEPTED)
 
 
-class DonationTest(FakuraceTestCase):
+class DonationTest(FakturaceTestCase):
     credentials = {'username': 'testuser', 'password': 'testpassword'}
 
     def setUp(self):
