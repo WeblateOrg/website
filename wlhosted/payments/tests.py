@@ -100,6 +100,8 @@ class ModelTest(SimpleTestCase):
 
 
 class BackendTest(TestCase):
+    databases = '__all__'
+
     def setUp(self):
         super().setUp()
         self.customer = Customer.objects.create(**CUSTOMER)
