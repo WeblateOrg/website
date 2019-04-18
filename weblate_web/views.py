@@ -227,9 +227,9 @@ class DonateView(FormView):
     def post(self, request, *args, **kwargs):
         if 'reward' in request.POST:
             try:
-                reward = self.get_rewards().get(pk=request.POST['reward'])
+                reward = self.get_rewards().get(pk=int(request.POST['reward']))
                 return self.handle_reward(reward)
-            except Reward.DoesNotExist:
+            except (Reward.DoesNotExist, ValueError):
                 pass
         return super().post(request, *args, **kwargs)
 
