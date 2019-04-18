@@ -127,6 +127,8 @@ class UtilTestCase(TestCase):
 
 
 class FakturaceTestCase(TestCase):
+    databases = '__all__'
+
     def setUp(self):
         super().setUp()
         dirs = ('contacts', 'data', 'pdf', 'tex', 'config')
