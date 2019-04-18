@@ -23,8 +23,6 @@
 #
 
 import os
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 
 DEBUG = True
 
@@ -274,11 +272,6 @@ ALLOWED_HOSTS = ('weblate.org', '127.0.0.1', 'localhost')
 EMAIL_SUBJECT_PREFIX = '[weblate.org] '
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
-
-sentry_sdk.init(
-    dsn="",
-    integrations=[DjangoIntegration()]
-)
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
