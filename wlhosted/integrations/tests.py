@@ -39,6 +39,8 @@ from wlhosted.integrations.tasks import pending_payments, recurring_payments
 
 
 class PaymentTest(TestCase):
+    databases = '__all__'
+
     def setUp(self):
         Payment.objects.all().delete()
         Customer.objects.all().delete()
