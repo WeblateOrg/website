@@ -78,6 +78,10 @@ class Backend(object):
         self.payment = select[0]
         self.invoice = None
 
+    @property
+    def image_name(self):
+        return 'payments/{}.png'.format(self.name)
+
     def perform(self, request, back_url, complete_url):
         """Performs payment and optionally redirects user."""
         raise NotImplementedError()
