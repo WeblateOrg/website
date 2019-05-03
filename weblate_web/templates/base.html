@@ -11,12 +11,12 @@
   <meta name="description" content="{% block description %}{% endblock %}" />
   <meta name="keywords" content="weblate,git,gettext,resources,json,po,mo,qts,CAT,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" type="text/css" href={% static "colorbox.css" %}>
+  <link rel="stylesheet" type="text/css" href="{% static "colorbox.css" %}">
   <link rel="author" href="mailto:michal@cihar.com" />
-  <link rel="shortcut icon" href={% static "favicon.ico" %} type="image/x-icon" />
-  <link rel="icon" href={% static "favicon.ico" %} type="image/x-icon" />
-  <link rel="image_src" type="image/png" href={% static "weblate-128.png" %} />
-  <link rel="apple-touch-icon" href={% static "weblate-128.png" %} />
+  <link rel="shortcut icon" href="{% static "favicon.ico" %}" type="image/x-icon" />
+  <link rel="icon" href="{% static "favicon.ico" %}" type="image/x-icon" />
+  <link rel="image_src" type="image/png" href="{% static "weblate-128.png" %}" />
+  <link rel="apple-touch-icon" href="{% static "weblate-128.png" %}" />
   <meta property="og:image" content="https://weblate.org/media/background.png" />
   <title>{% block title %}Weblate{% endblock %}</title>
   <link rel="alternate" type="application/rss+xml" href="https://blog.cihar.com/archives/weblate/index-atom.xml" title="Weblate blog (Atom 1.0)"/>
@@ -26,29 +26,29 @@
   {% for lang in language_urls %}
     {% if lang.code != LANGUAGE_CODE %}<link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}" />{% endif %}
   {% endfor %}
-   <script src={% static "jquery.min.js" %}></script>
+   <script src="{% static "jquery.min.js" %}"></script>
 
 {% if LANGUAGE_BIDI %}
-   <link rel="stylesheet" href={% static "bootstrap-rtl.min.css" %}>
+   <link rel="stylesheet" href="{% static "bootstrap-rtl.min.css" %}">
 {% else %}
-   <link rel="stylesheet" href={% static "bootstrap.min.css" %}>
+   <link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
 {% endif %}
-   <script src={% static "bootstrap.bundle.min.js" %}></script>
-   <link rel="stylesheet" type="text/css" href={% static "custom.css" %}>
-   <script src={% static "fontawesome.js" %} data-auto-add-css="false" async defer></script>
-   <link href={% static "fontawesome.css" %} rel="stylesheet" />
-   <link href={% static "font-ubuntu/ubuntu.css" %} rel="stylesheet" />
+   <script src="{% static "bootstrap.bundle.min.js" %}"></script>
+   <link rel="stylesheet" type="text/css" href="{% static "custom.css" %}">
+   <script src="{% static "fontawesome.js" %}" data-auto-add-css="false" async defer></script>
+   <link href="{% static "fontawesome.css" %}" rel="stylesheet" />
+   <link href="{% static "font-ubuntu/ubuntu.css" %}" rel="stylesheet" />
    
 
-   <script src={% static "jquery.colorbox-min.js" %}></script>
-   <script src={% static "code.js" %}></script>
+   <script src="{% static "jquery.colorbox-min.js" %}"></script>
+   <script src="{% static "code.js" %}"></script>
    <meta name="google-site-verification" content="SSd77ql2j6xSOlvDHT2pO2r3ZMQQyMVTycyse-l9i6A" />
    <meta name="wot-verification" content="b166aac1728babda4ade" />
 </head>
  <body {% if LANGUAGE_BIDI %}class="dir-rtl"{% endif %}>
 <nav class="navbar navbar-default navbar-expand-md navbar-static-top navbar-light bg-light">
   <a class="navbar-brand" href="{% url 'home' %}">
-  <img class="logo" src={% static "weblate-128.png" %} alt="{% trans "Weblate logo" %}" />
+  <img class="logo" src="{% static "weblate-128.png" %}" alt="{% trans "Weblate logo" %}" />
   Weblate
   </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,7 +132,7 @@
 
 <!-- Matomo -->
 <script src="https://stats.cihar.com/piwik.js" async defer></script>
-<script src={% static "tracker.js" %}></script>
+<script src="{% static "tracker.js" %}"></script>
 <noscript><img src="https://stats.cihar.com/piwik.php?idsite=12&amp;rec=1" alt="" /></noscript>
 <!-- End Matomo Code -->
 
