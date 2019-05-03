@@ -66,7 +66,7 @@ class SecurityMiddleware:
         script = ["'self'"]
         connect = ["'self'"]
         image = ["'self'", "data:"]
-        font = ["data:"]
+        font = ["'self'", "data:"]
 
         # Sentry/Raven
         script.append('cdn.ravenjs.com')
