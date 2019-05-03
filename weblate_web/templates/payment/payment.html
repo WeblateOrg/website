@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+
 {% block title %}{% trans "Weblate payment" %}{% endblock %}
 {% block jumbotron %}{% endblock %}
 
@@ -50,7 +51,7 @@
     <form method="POST">
       {% csrf_token %}
       {% for backend in backends %}
-      <button class="btn btn-default" type="submit" name="method" value="{{ backend.name }}"><img src="/media/payment/{{ backend.name }}.png"><br>{{ backend.verbose }}</button>
+      <button class="btn btn-default" type="submit" name="method" value="{{ backend.name }}"><img src="{% static backend.image_name %}"><br>{{ backend.verbose }}</button>
       {% endfor %}
     </form>
   </div>

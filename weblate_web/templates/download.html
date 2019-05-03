@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load downloads %}
+{% load static %}
+
 {% block title %}{% trans "Download Weblate" %}{% endblock %}
 {% block header %}{% trans "Download Weblate" %}{% endblock %}
 {% block description %}
@@ -54,11 +56,11 @@ pip3 install wlc
 <li><a href="https://bitnami.com/stack/weblate">{% trans "BitNami Weblate stack providing native installation for most platforms as well as support for many public cloud providers" %}</a></li>
 </ul>
 
-<a href="https://docs.weblate.org/en/latest/admin/deployments.html#docker"><img src="/media/docker.png" /></a>
-<a href="https://docs.weblate.org/en/latest/admin/deployments.html#openshift"><img src="/media/openshift.png" /></a>
-<a href="https://bitnami.com/stack/weblate/cloud/google"><img src="/media/gcp.png" /></a>
-<a href="https://bitnami.com/stack/weblate/cloud/amazon"><img src="/media/aws.png" /></a>
-<a href="https://bitnami.com/stack/weblate/cloud/azure"><img src="/media/azure.png" /></a>
+<a href="https://docs.weblate.org/en/latest/admin/deployments.html#docker"><img src={% static "docker.png" %} /></a>
+<a href="https://docs.weblate.org/en/latest/admin/deployments.html#openshift"><img src={% static "openshift.png" %} /></a>
+<a href="https://bitnami.com/stack/weblate/cloud/google"><img src={% static "gcp.png" %} /></a>
+<a href="https://bitnami.com/stack/weblate/cloud/amazon"><img src={% static "aws.png" %} /></a>
+<a href="https://bitnami.com/stack/weblate/cloud/azure"><img src={% static "azure.png" %} /></a>
 
 <h2>{% trans "Code" %}</h2>
 

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
+
 {% block title %}{% trans "Weblate - web-based localization" %}{% endblock %}
 {% block header %}{% trans "Bring translators closer to development" %}{% endblock %}
 {% block description %}
@@ -24,7 +26,7 @@
 </p>
 
 <a href="{% url 'try' %}" class="trailer">
-<img src="/media/background.png" class="img-responsive" alt="{% trans "Weblate screenshot" %}">
+<img src={% static "background.png" %} class="img-responsive" alt="{% trans "Weblate screenshot" %}">
 </a>
 
 <div class="row">
@@ -47,55 +49,55 @@
 
     <div class="col-sm-4 userlogo">
     <a href="https://hosted.weblate.org/engage/osmand/">
-    <img src="/media/logos/osmand.png" alt="OsmAnd" />
+    <img src={% static "logos/osmand.png" %} alt="OsmAnd" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://hosted.weblate.org/engage/phpmyadmin/">
-    <img src="/media/logos/phpmyadmin.png" alt="phpMyAdmin" />
+    <img src={% static "logos/phpmyadmin.png" %} alt="phpMyAdmin" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://hosted.weblate.org/engage/turris/">
-    <img src="/media/logos/turris-logo.png" alt="Turris" />
+    <img src={% static "logos/turris-logo.png" %} alt="Turris" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://hosted.weblate.org/engage/mypaint/">
-    <img src="/media/logos/mypaint.png" alt="MyPaint" />
+    <img src={% static "logos/mypaint.png" %} alt="MyPaint" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://hosted.weblate.org/engage/freedombox/">
-    <img src="/media/logos/freedombox.png" alt="FreedomBox" />
+    <img src={% static "logos/freedombox.png" %} alt="FreedomBox" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://hosted.weblate.org/engage/sonic-pi/">
-    <img src="/media/logos/sonic-pi.png" alt="Sonic Pi" />
+    <img src={% static "logos/sonic-pi.png" %} alt="Sonic Pi" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://translation.odoo-community.org/">
-    <img src="/media/logos/oca.png" alt="Odoo Community Association" />
+    <img src={% static "logos/oca.png" %} alt="Odoo Community Association" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://l10n.opensuse.org/">
-    <img src="/media/logos/opensuse.png" alt="openSUSE" />
+    <img src={% static "logos/opensuse.png" %} alt="openSUSE" />
     </a>
     </div>
 
     <div class="col-sm-4 userlogo">
     <a href="https://weblate.securedrop.club/">
-    <img src="/media/logos/securedrop.png" alt="SecureDrop" />
+    <img src={% static "logos/securedrop.png" %} alt="SecureDrop" />
     </a>
     </div>
 

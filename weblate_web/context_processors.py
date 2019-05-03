@@ -51,9 +51,17 @@ def weblate_web(request):
     downloads = [
         'Weblate-{0}.{1}'.format(VERSION, ext) for ext in EXTENSIONS
     ]
+    screenshots = [
+        {
+            'title': title,
+            'description': description,
+            'image': 'screenshots/{}'.format(filename),
+            'thumbnail': 'thumbnails/{}'.format(filename),
+        } for filename, description, title in SCREENSHOTS
+    ]
     return {
         'downloads': downloads,
-        'screenshots': SCREENSHOTS,
+        'screenshots': screenshots,
         'canonical_url': canonical_url,
         'language_urls': language_urls,
         'donate_links': Donation.objects.filter(

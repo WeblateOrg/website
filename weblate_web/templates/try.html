@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
+
 {% block title %}{% trans "Try Weblate" %}{% endblock %}
 {% block header %}{% trans "Try Weblate" %}{% endblock %}
 {% block description %}
@@ -27,9 +29,9 @@
 <h2>{% trans "Screenshots" %}</h2>
 
 {% for screenshot in screenshots %}
-<a href="/media/screenshots/{{ screenshot.0 }}" class="screenshot" title="{{ screenshot.1 }}">
-<img src="/media/thumbnails/{{ screenshot.0 }}">
-{{ screenshot.2 }}
+<a href="{% static screenshot.image %}" class="screenshot" title="{{ screenshot.description }}">
+<img src="{% static screenshot.thumbnail %}">
+{{ screenshot.title }}
 </a>
 {% endfor %}
 
