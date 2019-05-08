@@ -22,20 +22,44 @@ from django.conf.urls import url, include
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
+from django.contrib.syndication.views import Feed
 from django.views.generic import TemplateView, RedirectView
 from django.conf import settings
 from django.contrib.sitemaps import Sitemap
+from django.utils import timezone
+from django.urls import path
 import django.contrib.sitemaps.views
 import django.views.static
 
 from simple_sso.sso_client.client import Client
 
+from weblate_web.models import Post
 from weblate_web.views import (
     PaymentView, CustomerView, CompleteView, fetch_vat,
     DonateView, DonateRewardView, process_donation,
     EditLinkView, download_invoice, disable_repeat,
-    subscribe,
+    subscribe, NewsView, PostView,
 )
+
+
+class LatestEntriesFeed(Feed):
+    title = "Weblate blog"
+    link = "/news/"
+    description = "News about Weblate and localization."
+
+    def items(self):
+        # pylint: disable=no-self-use
+        return Post.objects.filter(
+            timestamp__lt=timezone.now()
+        ).order_by('-timestamp')[:10]
+
+    def item_title(self, item):
+        # pylint: disable=no-self-use
+        return item.title
+
+    def item_description(self, item):
+        # pylint: disable=no-self-use
+        return item.summary
 
 
 class PagesSitemap(Sitemap):
@@ -58,6 +82,7 @@ class PagesSitemap(Sitemap):
             ('/support/', 0.7, 'monthly'),
             ('/thanks/', 0.2, 'monthly'),
             ('/terms/', 0.2, 'monthly'),
+            ('/news/', 0.9, 'daily'),
         )
 
     def location(self, obj):
@@ -69,15 +94,29 @@ class PagesSitemap(Sitemap):
         return obj[1] * 3 / 4
 
     def changefreq(self, obj):
-        # pylint: disable=R0201
+        # pylint: disable=no-self-use
         return obj[2]
+
+
+class NewsSitemap(Sitemap):
+    priority = 0.8
+
+    def items(self):
+        # pylint: disable=no-self-use
+        return Post.objects.filter(
+            timestamp__lt=timezone.now()
+        ).order_by('-timestamp')
+
+    def lastmod(self, item):
+        # pylint: disable=no-self-use
+        return item.timestamp
 
 
 # create each section in all languages
 SITEMAPS = {
-    lang[0]: PagesSitemap(lang[0])
-    for lang in settings.LANGUAGES
+    lang[0]: PagesSitemap(lang[0]) for lang in settings.LANGUAGES
 }
+SITEMAPS['news'] = NewsSitemap()
 UUID = r'(?P<pk>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})'
 
 
@@ -167,6 +206,16 @@ urlpatterns = i18n_patterns(
         name='donate-disable'
     ),
     url(
+        r'^news/$',
+        NewsView.as_view(),
+        name='news'
+    ),
+    url(
+        r'^news/(?P<slug>[-a-zA-Z0-9_]+)/$',
+        PostView.as_view(),
+        name='post'
+    ),
+    url(
         r'^support/$',
         TemplateView.as_view(template_name="support.html"),
         name='support'
@@ -233,6 +282,7 @@ urlpatterns = i18n_patterns(
         django.contrib.sitemaps.views.sitemap,
         {'sitemaps': SITEMAPS}
     ),
+    path('feed/', LatestEntriesFeed(), name='feed'),
     url(
         r'^js/vat/$',
         fetch_vat

@@ -27,6 +27,10 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy, ugettext
 
+from markupfield.fields import MarkupField
+
+import html2text
+
 from wlhosted.payments.models import (
     Payment, RECURRENCE_CHOICES, get_period_delta,
 )
@@ -130,3 +134,43 @@ def process_payment(payment):
     payment.state = Payment.PROCESSED
     payment.save()
     return donation
+
+
+class Image(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    image = models.ImageField(upload_to='images/')
+
+    def __str__(self):
+        return self.name
+
+
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    timestamp = models.DateTimeField(db_index=True)
+    body = MarkupField(default_markup_type='markdown')
+    summary = models.TextField(blank=True)
+    image = models.ForeignKey(
+        Image, on_delete=models.deletion.SET_NULL, blank=True, null=True
+    )
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        # Need to save first as rendered value is available only then
+        super().save(force_insert, force_update, using, update_fields)
+        if not self.summary:
+            h2t = html2text.HTML2Text()
+            h2t.body_width = 0
+            h2t.ignore_images = True
+            h2t.ignore_links = True
+            h2t.ignore_emphasis = True
+            text = h2t.handle(self.body.rendered)  # pylint: disable=no-member
+            self.summary = text.splitlines()[0]
+            if self.summary:
+                super().save(update_fields=['summary'])
+
+    def get_absolute_url(self):
+        return reverse('post', kwargs={'slug': self.slug})
+
+    def __str__(self):
+        return self.title

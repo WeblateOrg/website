@@ -20,7 +20,7 @@
 
 from django.contrib import admin
 
-from weblate_web.models import Reward, Donation
+from weblate_web.models import Reward, Donation, Image, Post
 
 
 class RewardAdmin(admin.ModelAdmin):
@@ -33,5 +33,19 @@ class DonationAdmin(admin.ModelAdmin):
     list_display = ('user', 'reward', 'created', 'expires', 'get_amount')
 
 
+class ImageAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
+
+
+class PostAdmin(admin.ModelAdmin):
+    list_display = ['title', 'timestamp', 'slug', 'image']
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ['title', 'slug']
+    ordering = ('-timestamp',)
+    date_hierarchy = 'timestamp'
+
+
+admin.site.register(Image, ImageAdmin)
+admin.site.register(Post, PostAdmin)
 admin.site.register(Reward, RewardAdmin)
 admin.site.register(Donation, DonationAdmin)

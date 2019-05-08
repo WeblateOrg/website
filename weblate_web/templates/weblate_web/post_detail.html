@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load downloads %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}{{ object.title }}{% endblock %}
+{% block header %}{{ object.title }}{% endblock %}
+{% block og_image %}https://weblate.org{{ object.image.image.url }}{% endblock %}
+{% block description %}
+{{ object.summary }}
+{% endblock %}
+{% block headline %}{{ object.timestamp|naturalday }}{% endblock %}
+{% block jumbofloat %}
+<img class="float-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %} jumboimage" src="{{ object.image.image.url }}" />
+{% endblock %}
+
+{% block content %}
+
+<div lang="en" dir="ltr" class="ltr">
+{{ object.body }}
+</div>
+
+{% endblock %}
+

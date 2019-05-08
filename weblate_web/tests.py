@@ -8,7 +8,8 @@ from dateutil.relativedelta import relativedelta
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.management import call_command
+from django.core.files.storage import default_storage
+from django.core.management import call_command, CommandError
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -21,11 +22,13 @@ from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.payments.models import Customer, Payment
 
 from weblate_web.data import VERSION, EXTENSIONS
-from weblate_web.models import Donation, Reward, PAYMENTS_ORIGIN
+from weblate_web.models import Donation, Reward, PAYMENTS_ORIGIN, Post, Image
 from weblate_web.templatetags.downloads import filesizeformat, downloadlink
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), 'test-data')
 TEST_FAKTURACE = os.path.join(TEST_DATA, 'fakturace')
+TEST_BLOG = os.path.join(TEST_DATA, 'blog.json')
+TEST_IMAGE = os.path.join(TEST_DATA, 'weblate-html.png')
 
 
 class ViewTestCase(TestCase):
@@ -371,3 +374,50 @@ class DonationTest(FakturaceTestCase):
         old = donation.expires
         donation.refresh_from_db()
         self.assertGreater(donation.expires, old)
+
+
+class PostTest(TestCase):
+    @staticmethod
+    def create_post(title='testpost', body='testbody', timestamp=None):
+        if timestamp is None:
+            timestamp = timezone.now() - relativedelta(days=1)
+        return Post.objects.create(
+            title=title,
+            slug=title,
+            body=body,
+            timestamp=timestamp
+        )
+
+    def test_future(self):
+        past = self.create_post()
+        future = self.create_post(
+            'futurepost', 'futurebody', timezone.now() + relativedelta(days=1)
+        )
+        response = self.client.get('/feed/')
+        self.assertContains(response, 'testpost')
+        self.assertNotContains(response, 'futurepost')
+        response = self.client.get('/news/', follow=True)
+        self.assertContains(response, 'testpost')
+        self.assertNotContains(response, 'futurepost')
+        response = self.client.get(past.get_absolute_url(), follow=True)
+        self.assertContains(response, 'testpost')
+        self.assertContains(response, 'testbody')
+        response = self.client.get(future.get_absolute_url(), follow=True)
+        self.assertEqual(response.status_code, 404)
+
+    def test_import(self):
+        self.assertEqual(Post.objects.count(), 0)
+        # It should fail due to missing image
+        with self.assertRaises(CommandError):
+            call_command('import_blog', TEST_BLOG)
+        # Create image
+        filename = 'images/test.png'
+        with open(TEST_IMAGE, 'rb') as handle:
+            default_storage.save(filename, handle)
+        Image.objects.create(
+            image=default_storage.open(filename),
+            name='weblate-html.png'
+        )
+        # Import should now succeed
+        call_command('import_blog', TEST_BLOG)
+        self.assertEqual(Post.objects.count(), 1)

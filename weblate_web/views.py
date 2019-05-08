@@ -26,12 +26,13 @@ from django.db import transaction
 from django.http import JsonResponse, HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.dates import ArchiveIndexView
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.decorators.http import require_POST
-
-from django.views.generic.detail import SingleObjectMixin
 
 from wlhosted.payments.backends import get_backend, list_backends
 from wlhosted.payments.validators import validate_vatin
@@ -44,7 +45,7 @@ from weblate_web.forms import (
     MethodForm, DonateForm, EditLinkForm, SubscribeForm,
 )
 from weblate_web.models import (
-    Donation, Reward, PAYMENTS_ORIGIN, process_payment,
+    Donation, Reward, PAYMENTS_ORIGIN, process_payment, Post,
 )
 
 
@@ -368,3 +369,21 @@ def subscribe(request, name):
         )
 
     return redirect('support')
+
+
+class NewsView(ArchiveIndexView):
+    model = Post
+    date_field = 'timestamp'
+    paginate_by = 10
+    ordering = ('-timestamp',)
+
+
+class PostView(DetailView):
+    model = Post
+
+    def get_object(self, queryset=None):
+        result = super().get_object(queryset)
+        if (not self.request.user.is_superuser
+                and result.timestamp >= timezone.now()):
+            raise Http404('Future entry')
+        return result

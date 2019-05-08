@@ -236,6 +236,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.messages',
     'django.contrib.admin',
+    'django.contrib.humanize',
     'wlhosted',
     'wlhosted.payments',
     'wlhosted.legal',
