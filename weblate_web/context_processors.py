@@ -25,6 +25,7 @@ from django.utils.translation import override
 
 from weblate_web.data import VERSION, EXTENSIONS, SCREENSHOTS
 from weblate_web.models import Donation, Reward
+from weblate_web.remote import get_contributors
 
 
 def weblate_web(request):
@@ -70,4 +71,5 @@ def weblate_web(request):
         'rewards': Reward.objects.filter(
             third_party=False, active=True
         ).order_by('amount'),
+        'contributors': get_contributors(),
     }

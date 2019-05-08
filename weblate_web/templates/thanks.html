@@ -14,7 +14,7 @@
 {% block content %}
 
 <div class="row">
-<div class="col-md-6">
+<div class="col-md-4">
 <h2>{% trans "Technology" %}</h2>
 
 <p>{% trans "The development of Weblate is based on the following technologies:" %}</p>
@@ -44,7 +44,18 @@
 <p>{% trans "Payments are processed by The Pay service." %}</p>
 </div>
 
-<div class="col-md-6">
+<div class="col-md-4">
+<h2>{% trans "Contributors" %}</h2>
+
+<div>
+{% for contributor in contributors %}
+<a class="contributors" href="{{ contributor.author.html_url }}" title="{{ contributor.author.login }}"><img src="{{ contributor.author.avatar_url }}" /></a>
+{% endfor %}
+</div>
+
+</div>
+
+<div class="col-md-4">
 <h2>{% trans "Supporters" %}</h2>
 
 <p>{% trans "Free hosting for free software projects would be impossible without our sponsors." %}</a>
