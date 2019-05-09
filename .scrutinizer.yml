@@ -36,6 +36,8 @@ build:
                         command: mysql -e 'CREATE DATABASE weblate_web CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
                     -
                         command: mysql -e 'CREATE DATABASE payments CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
+                    -
+                        command: mysqldump -u root --databases weblate_web payments
                 override:
                     -
                         command: ./scripts/generate-locales || true
