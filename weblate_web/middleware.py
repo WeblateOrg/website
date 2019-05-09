@@ -82,6 +82,9 @@ class SecurityMiddleware:
         # The Pay
         image.append('www.thepay.cz')
 
+        # GitHub avatars
+        image.append('*.githubusercontent.com')
+
         response['Content-Security-Policy'] = CSP_TEMPLATE.format(
             style=' '.join(style),
             image=' '.join(image),
