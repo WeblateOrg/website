@@ -26,6 +26,7 @@ from django.contrib.syndication.views import Feed
 from django.views.generic import TemplateView, RedirectView
 from django.conf import settings
 from django.contrib.sitemaps import Sitemap
+from django.views.decorators.cache import cache_page
 from django.utils import timezone
 from django.urls import path
 import django.contrib.sitemaps.views
@@ -279,8 +280,15 @@ urlpatterns = i18n_patterns(
 ) + [
     url(
         r'^sitemap\.xml$',
-        django.contrib.sitemaps.views.sitemap,
-        {'sitemaps': SITEMAPS}
+        cache_page(3600)(django.contrib.sitemaps.views.index),
+        {'sitemaps': SITEMAPS, 'sitemap_url_name': 'sitemap'},
+        name='sitemap-index',
+    ),
+    url(
+        r'^sitemap-(?P<section>.+)\.xml$',
+        cache_page(1800)(django.contrib.sitemaps.views.sitemap),
+        {'sitemaps': SITEMAPS},
+        name='sitemap',
     ),
     path('feed/', LatestEntriesFeed(), name='feed'),
     url(

@@ -3,6 +3,7 @@
 import os
 import shutil
 import tempfile
+from xml.etree import ElementTree
 
 from dateutil.relativedelta import relativedelta
 
@@ -31,7 +32,20 @@ TEST_BLOG = os.path.join(TEST_DATA, 'blog.json')
 TEST_IMAGE = os.path.join(TEST_DATA, 'weblate-html.png')
 
 
-class ViewTestCase(TestCase):
+class PostTestCase(TestCase):
+    @staticmethod
+    def create_post(title='testpost', body='testbody', timestamp=None):
+        if timestamp is None:
+            timestamp = timezone.now() - relativedelta(days=1)
+        return Post.objects.create(
+            title=title,
+            slug=title,
+            body=body,
+            timestamp=timestamp
+        )
+
+
+class ViewTestCase(PostTestCase):
     '''
     Views testing.
     '''
@@ -81,9 +95,33 @@ class ViewTestCase(TestCase):
         finally:
             shutil.rmtree(temp_dir)
 
-    def test_sitemap(self):
-        response = self.client.get('/sitemap.xml')
+    def test_sitemap_lang(self):
+        response = self.client.get('/sitemap-es.xml')
         self.assertContains(response, 'http://testserver/es/features/')
+
+    def test_sitemap_news(self):
+        self.create_post()
+        response = self.client.get('/sitemap-news.xml')
+        self.assertContains(response, 'testpost')
+
+    def test_sitemaps(self):
+        # Get root sitemap
+        response = self.client.get('/sitemap.xml')
+        self.assertContains(response, '<sitemapindex')
+
+        # Parse it
+        tree = ElementTree.fromstring(response.content)
+        sitemaps = tree.findall(
+            '{http://www.sitemaps.org/schemas/sitemap/0.9}sitemap'
+        )
+        for sitemap in sitemaps:
+            location = sitemap.find(
+                '{http://www.sitemaps.org/schemas/sitemap/0.9}loc'
+            )
+            response = self.client.get(location.text)
+            self.assertContains(response, '<urlset')
+            # Try if it's a valid XML
+            ElementTree.fromstring(response.content)
 
 
 class UtilTestCase(TestCase):
@@ -376,17 +414,7 @@ class DonationTest(FakturaceTestCase):
         self.assertGreater(donation.expires, old)
 
 
-class PostTest(TestCase):
-    @staticmethod
-    def create_post(title='testpost', body='testbody', timestamp=None):
-        if timestamp is None:
-            timestamp = timezone.now() - relativedelta(days=1)
-        return Post.objects.create(
-            title=title,
-            slug=title,
-            body=body,
-            timestamp=timestamp
-        )
+class PostTest(PostTestCase):
 
     def test_future(self):
         past = self.create_post()
