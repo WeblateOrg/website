@@ -64,6 +64,17 @@ DATABASES = {
 }
 DATABASE_ROUTERS = ['wlhosted.dbrouter.HostedRouter']
 
+# Test execution on Scrutinizer CI
+if 'SCRUTINIZER' in os.environ:
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
+    DATABASES['default']['NAME'] = 'scrutinizer'
+    DATABASES['default']['USER'] = 'scrutinizer'
+    DATABASES['default']['PASSWORD'] = 'scrutinizer'
+    DATABASES['payments_db']['ENGINE'] = 'django.db.backends.postgresql'
+    DATABASES['payments_db']['NAME'] = 'scrutinizer'
+    DATABASES['payments_db']['USER'] = 'scrutinizer'
+    DATABASES['payments_db']['PASSWORD'] = 'scrutinizer'
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Local time zone for this installation. Choices can be found here:
