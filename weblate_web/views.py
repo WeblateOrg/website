@@ -34,6 +34,8 @@ from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.decorators.http import require_POST
 
+from weblate.utils.django_hacks import monkey_patch_translate
+
 from wlhosted.payments.backends import get_backend, list_backends
 from wlhosted.payments.validators import validate_vatin
 
@@ -387,3 +389,6 @@ class PostView(DetailView):
                 and result.timestamp >= timezone.now()):
             raise Http404('Future entry')
         return result
+
+
+monkey_patch_translate()
