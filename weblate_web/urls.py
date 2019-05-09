@@ -241,6 +241,12 @@ urlpatterns = i18n_patterns(
     url(r'^subscribe/(?P<name>hosted|users)/', subscribe, name='subscribe'),
     url(r'^logout/$', LogoutView.as_view(next_page='/'), name='logout'),
     # Admin
+    url(
+        r'^admin/login/$',
+        RedirectView.as_view(
+            pattern_name='simple-sso-login', permanent=True, query_string=True
+        )
+    ),
     url(r'^admin/', admin.site.urls),
 
     # Media files on devel server
