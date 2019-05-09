@@ -33,22 +33,32 @@ build:
             tests:
                 before:
                     -
+                        command: sudo apt-get install -y texlive-latex-recommended
+                    -
+                        command: git config --global user.email "you@example.com"
+                    -
+                        command: git config --global user.name "Your Name"
+                    -
+                        command: git submodule update --init --recursive
+                    -
                         command: mysql -e 'CREATE DATABASE weblate_web CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
                     -
                         command: mysql -e 'CREATE DATABASE payments CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
                     -
-                        command: mysqldump -u root --databases weblate_web payments
+                        command: mysql -e 'CREATE DATABASE test_weblate_web CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
+                    -
+                        command: mysql -e 'CREATE DATABASE test_payments CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
                 override:
                     -
                         command: ./scripts/generate-locales || true
                     -
-                        command: coverage run --source . ./manage.py migrate
+                        command: coverage run --source . --append ./manage.py migrate
                     -
-                        command: coverage run --source . ./manage.py migrate --database payments_db
+                        command: coverage run --source . --append ./manage.py migrate --database payments_db
                     -
-                        command: coverage run --source . ./manage.py test
+                        command: coverage run --source . --append ./manage.py test --noinput --keepdb
                     -
-                        command: coverage combine
+                        command: echo coverage
                         coverage:
                             file: .coverage
                             format: py-cc
