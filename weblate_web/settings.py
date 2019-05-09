@@ -71,11 +71,18 @@ if 'SCRUTINIZER' in os.environ:
     DATABASES['default']['USER'] = 'root'
     DATABASES['default']['PASSWORD'] = ''
     DATABASES['default']['HOST'] = '127.0.0.1'
-    DATABASES['payments_db']['ENGINE'] = 'django.db.backends.mysql'
+    DATABASES['default']['OPTIONS'] = {
+        'init_command': (
+            'SET NAMES utf8, '
+            'wait_timeout=28800, '
+            'default_storage_engine=INNODB, '
+            'sql_mode="STRICT_TRANS_TABLES"'
+        ),
+        'charset': 'utf8',
+        'isolation_level': 'read committed',
+    }
+    DATABASES['payments_db'] = DATABASES['default'].copy()
     DATABASES['payments_db']['NAME'] = 'payments'
-    DATABASES['payments_db']['USER'] = 'root'
-    DATABASES['payments_db']['PASSWORD'] = ''
-    DATABASES['payments_db']['HOST'] = '127.0.0.1'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
