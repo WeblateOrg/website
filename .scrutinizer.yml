@@ -35,6 +35,10 @@ build:
                     -
                         command: ./scripts/generate-locales || true
                     -
+                        command: coverage run --source . ./manage.py migrate
+                    -
+                        command: coverage run --source . ./manage.py migrate --database payments_db
+                    -
                         command: coverage run --source . ./manage.py test
                     -
                         command: coverage combine
