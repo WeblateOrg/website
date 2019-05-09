@@ -1,0 +1,11 @@
+before_commands:
+    - sudo pip3 install -r requirements.txt
+checks:
+    python:
+        code_rating: true
+        duplicate_code: true
+    javascript: true
+tools:
+    pylint:
+        python_version: '3'
+        config_file: pylint.rc
