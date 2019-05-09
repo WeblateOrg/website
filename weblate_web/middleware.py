@@ -79,6 +79,10 @@ class SecurityMiddleware:
         # Hosted Weblate widget
         image.append('hosted.weblate.org')
 
+        # Old blog entries
+        image.append('blog.cihar.com')
+        image.append('l10n.cihar.com')
+
         # The Pay
         image.append('www.thepay.cz')
 
