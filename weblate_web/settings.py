@@ -66,15 +66,15 @@ DATABASE_ROUTERS = ['wlhosted.dbrouter.HostedRouter']
 
 # Test execution on Scrutinizer CI
 if 'SCRUTINIZER' in os.environ:
-    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
-    DATABASES['default']['NAME'] = 'scrutinizer'
-    DATABASES['default']['USER'] = 'scrutinizer'
-    DATABASES['default']['PASSWORD'] = 'scrutinizer'
+    DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+    DATABASES['default']['NAME'] = 'weblate_web'
+    DATABASES['default']['USER'] = 'root'
+    DATABASES['default']['PASSWORD'] = ''
     DATABASES['default']['HOST'] = '127.0.0.1'
-    DATABASES['payments_db']['ENGINE'] = 'django.db.backends.postgresql'
-    DATABASES['payments_db']['NAME'] = 'scrutinizer'
-    DATABASES['payments_db']['USER'] = 'scrutinizer'
-    DATABASES['payments_db']['PASSWORD'] = 'scrutinizer'
+    DATABASES['payments_db']['ENGINE'] = 'django.db.backends.mysql'
+    DATABASES['payments_db']['NAME'] = 'payments'
+    DATABASES['payments_db']['USER'] = 'root'
+    DATABASES['payments_db']['PASSWORD'] = ''
     DATABASES['payments_db']['HOST'] = '127.0.0.1'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

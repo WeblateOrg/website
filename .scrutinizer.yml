@@ -18,7 +18,7 @@ build:
           - pip install https://github.com/WeblateOrg/hosted/archive/master.zip
           - pip install -r requirements.txt
           - pip install -r requirements-test.txt
-          - pip install psycopg2-binary
+          - pip install mysqlclient
     nodes:
         analysis:
             tests:
@@ -29,7 +29,7 @@ build:
                   - py-scrutinizer-run
         tests:
             services:
-                postgres: 10
+                mariadb: 10
             tests:
                 override:
                     -
