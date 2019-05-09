@@ -33,6 +33,8 @@ build:
             tests:
                 override:
                     -
+                        command: ./scripts/generate-locales || true
+                    -
                         command: coverage run --source . ./manage.py test
                     -
                         command: coverage combine
