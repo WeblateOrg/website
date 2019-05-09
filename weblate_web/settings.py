@@ -73,12 +73,12 @@ if 'SCRUTINIZER' in os.environ:
     DATABASES['default']['HOST'] = '127.0.0.1'
     DATABASES['default']['OPTIONS'] = {
         'init_command': (
-            'SET NAMES utf8, '
+            'SET NAMES utf8mb4, '
             'wait_timeout=28800, '
             'default_storage_engine=INNODB, '
             'sql_mode="STRICT_TRANS_TABLES"'
         ),
-        'charset': 'utf8',
+        'charset': 'utf8mb4',
         'isolation_level': 'read committed',
     }
     DATABASES['payments_db'] = DATABASES['default'].copy()

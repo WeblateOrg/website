@@ -31,11 +31,12 @@ build:
             services:
                 mariadb: 10
             tests:
+                before:
+                    -
+                        command: mysql -e 'CREATE DATABASE weblate_web CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
+                    -
+                        command: mysql -e 'CREATE DATABASE payments CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' -uroot
                 override:
-                    -
-                        command: mysql -e 'CREATE DATABASE weblate_web CHARACTER SET utf8 COLLATE utf8_general_ci;' -uroot
-                    -
-                        command: mysql -e 'CREATE DATABASE payments CHARACTER SET utf8 COLLATE utf8_general_ci;' -uroot
                     -
                         command: ./scripts/generate-locales || true
                     -
