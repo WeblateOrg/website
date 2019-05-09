@@ -33,10 +33,6 @@ build:
             tests:
                 override:
                     -
-                        command: ./manage.py compilemessages
-                    -
-                        command: ./manage.py collectstatic --noinput
-                    -
                         command: coverage run --source . ./manage.py test
                     -
                         command: coverage combine
