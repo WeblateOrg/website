@@ -25,8 +25,8 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext_lazy as _
 
-from weblate.addons.events import EVENT_PRE_COMMIT
-from weblate.addons.scripts import BaseScriptAddon
+from weblate.addons.events import EVENT_DAILY, EVENT_PRE_COMMIT
+from weblate.addons.scripts import BaseAddon, BaseScriptAddon
 
 
 class UnknownHorizonsTemplateAddon(BaseScriptAddon):
@@ -49,4 +49,25 @@ class UnknownHorizonsTemplateAddon(BaseScriptAddon):
         """Only useful for Unknown Horizons project"""
         if not component.project.slug == 'uh':
             return False
-        return super(UnknownHorizonsTemplateAddon, cls).can_install(component, user)
+        return super(UnknownHorizonsTemplateAddon, cls).can_install(
+            component, user
+        )
+
+
+class ResetAddon(BaseAddon):
+    # Event used to trigger the script
+    events = (EVENT_DAILY,)
+    # Name of the addon, has to be unique
+    name = 'weblate.hosted.reset'
+    # Verbose name and long descrption
+    verbose = _('Reset repository to upstream')
+    description = _('Reset repository to upstream')
+    repo_scope = True
+
+    @classmethod
+    def can_install(cls, component, user):
+        # Only instalable on the sandbox project
+        return component.project.slug == 'sandbox'
+
+    def daily(self, component):
+        component.do_reset()
