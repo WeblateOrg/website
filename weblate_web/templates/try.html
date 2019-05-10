@@ -11,20 +11,18 @@
 
 {% block extrajumbo %}
 <p>
-<a class="btn btn-info btn-lg" href="https://demo.weblate.org/" role="button"><i class="fas fa-search"></i> {% trans "Try Weblate" %}</a>
+<a class="btn btn-info btn-lg" href="https://hosted.weblate.org/" role="button"><i class="fas fa-search"></i> {% trans "Try Weblate" %}</a>
 </p>
 {% endblock %}
 
 {% block content %}
 {% url 'download' as download_url %}
 
-<h2>{% trans "Demo server" %}</h2>
+<h2>{% trans "Hosted Weblate" %}</h2>
 
 <p>
-{% blocktrans %}Try Weblate on the <a href="https://demo.weblate.org">demo server</a>. Register there and work under your username, or just use username: <code>demo</code> with password: <code>demo</code>.{% endblocktrans %}
+{% blocktrans %}Try Weblate on the <a href="https://hosted.weblate.org/projects/sandbox/">Hosted Weblate server</a>. Register there and work under your username, you can play in the sandbox project.{% endblocktrans %}
 </p>
-
-<p>{% trans "To test the review workflow there, log in with username: <code>review</code>, and password: <code>review</code>." %}</p>
 
 <h2>{% trans "Screenshots" %}</h2>
 
@@ -37,4 +35,3 @@
 
 
 {% endblock %}
-
