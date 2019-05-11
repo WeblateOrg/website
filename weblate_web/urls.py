@@ -212,7 +212,7 @@ urlpatterns = i18n_patterns(
         name='news'
     ),
     url(
-        r'^news/(?P<slug>[-a-zA-Z0-9_]+)/$',
+        r'^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$',
         PostView.as_view(),
         name='post'
     ),
