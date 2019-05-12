@@ -60,7 +60,7 @@ class LatestEntriesFeed(Feed):
 
     def item_description(self, item):
         # pylint: disable=no-self-use
-        return item.summary
+        return item.body.rendered
 
 
 class PagesSitemap(Sitemap):
