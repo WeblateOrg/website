@@ -158,6 +158,7 @@ class Post(models.Model):
             ('release', ugettext_lazy('Release')),
             ('feature', ugettext_lazy('Features')),
             ('announce', ugettext_lazy('Announcement')),
+            ('conferences', ugettext_lazy('Conferences')),
             ('hosting', ugettext_lazy('Hosted Weblate')),
             ('development', ugettext_lazy('Development')),
             ('localization', ugettext_lazy('Localization')),
