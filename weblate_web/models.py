@@ -152,7 +152,10 @@ class Post(models.Model):
         User, editable=False, on_delete=models.deletion.SET_NULL, null=True
     )
     body = MarkupField(default_markup_type='markdown')
-    summary = models.TextField(blank=True)
+    summary = models.TextField(
+        blank=True,
+        help_text='Will be generated from first body paragraph if empty'
+    )
     image = models.ForeignKey(
         Image, on_delete=models.deletion.SET_NULL, blank=True, null=True
     )
