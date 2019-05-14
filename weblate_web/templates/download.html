@@ -17,7 +17,13 @@
 {% endblock %}
 {% block content %}
 
-<h2>{% trans "Download" %}</h2>
+<h2>{% trans "Installing Weblate" %}</h2>
+
+<p>
+{% blocktrans with url='https://docs.weblate.org/en/latest/admin/quick.html' %}Weblate is easiest to install using pip or Docker, please follow the <a href="{{ url }}">Quick setup guide</a> for more detailed instructions.{% endblocktrans %}
+</p>
+
+<h2>{% trans "Download source code" %}</h2>
 
 <p>
 {% blocktrans %}You can download latest release here:{% endblocktrans %}
@@ -28,6 +34,22 @@
 <li>{% downloadlink download %}</li>
 {% endfor %}
 </ul>
+
+<p>
+{% blocktrans with "https://github.com/WeblateOrg/weblate" as url %}Weblate is being developed on <a href="{{ url }}">GitHub</a>, you can fork it there or just:{% endblocktrans %}
+</p>
+
+<pre>
+# Weblate
+git clone https://github.com/WeblateOrg/weblate.git
+
+# {% trans "Weblate command line client" %}
+git clone https://github.com/WeblateOrg/wlc.git
+</pre>
+
+<p>
+{% blocktrans with "https://github.com/WeblateOrg" as url %}You can find more repositories related to Weblate on <a href="{{ url }}">GitHub</a>.{% endblocktrans %}
+</p>
 
 <h2>{% trans "Weblate command line client" %}</h2>
 
@@ -61,19 +83,5 @@ pip3 install wlc
 <a href="https://bitnami.com/stack/weblate/cloud/google"><img src="{% static "gcp.png" %}" /></a>
 <a href="https://bitnami.com/stack/weblate/cloud/amazon"><img src="{% static "aws.png" %}" /></a>
 <a href="https://bitnami.com/stack/weblate/cloud/azure"><img src="{% static "azure.png" %}" /></a>
-
-<h2>{% trans "Code" %}</h2>
-
-<p>
-{% blocktrans %}Weblate is being developed on <a href="https://github.com/WeblateOrg/weblate">GitHub</a>, you can fork it there or just:{% endblocktrans %}
-</p>
-
-<pre>
-# Weblate
-git clone https://github.com/WeblateOrg/weblate.git
-
-# {% trans "Weblate command line client" %}
-git clone https://github.com/WeblateOrg/wlc.git
-</pre>
 
 {% endblock %}
