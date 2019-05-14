@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='topic',
-            field=models.CharField(choices=[('release', 'Release'), ('feature', 'Features'), ('localization', 'Localization')], db_index=True, default='', max_length=100),
+            field=models.CharField(choices=[('release', 'Release'), ('feature', 'Features'), ('announce', 'Announcement'), ('localization', 'Localization')], db_index=True, default='', max_length=100),
             preserve_default=False,
         ),
         migrations.AlterField(

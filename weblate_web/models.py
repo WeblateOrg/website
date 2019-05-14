@@ -157,6 +157,7 @@ class Post(models.Model):
         choices=(
             ('release', ugettext_lazy('Release')),
             ('feature', ugettext_lazy('Features')),
+            ('announce', ugettext_lazy('Announcement')),
             ('localization', ugettext_lazy('Localization')),
         )
     )
