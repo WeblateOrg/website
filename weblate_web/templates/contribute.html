@@ -16,6 +16,9 @@
 <h2>{% trans "Did you find a bug?" %}</h2>
 <ul>
 <li>
+{% blocktrans with url="https://docs.weblate.org/en/latest/contributing.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}In case it is sensitive or <strong>security issue</strong>, please report it to {{ report }}. Alternate ways for reporting security issue can be found in the <a href="{{ url }}">documentation</a>.{% endblocktrans %}
+</li>
+<li>
 {% blocktrans with url='https://github.com/WeblateOrg/weblate/issues' %}<strong>Ensure the bug was not already reported</strong>, by searching through the <a href="{{ url }}">GitHub issues</a>.{% endblocktrans %}
 </li>
 <li>
