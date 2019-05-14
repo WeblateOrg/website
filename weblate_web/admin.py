@@ -39,10 +39,16 @@ class ImageAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'timestamp', 'slug', 'image']
+    list_filter = ['author']
     prepopulated_fields = {'slug': ('title',)}
     search_fields = ['title', 'slug']
     ordering = ('-timestamp',)
     date_hierarchy = 'timestamp'
+
+    def save_model(self, request, obj, form, change):
+        if getattr(obj, 'author', None) is None:
+            obj.author = request.user
+        obj.save()
 
 
 admin.site.register(Image, ImageAdmin)

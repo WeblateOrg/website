@@ -148,6 +148,9 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     timestamp = models.DateTimeField(db_index=True)
+    author = models.ForeignKey(
+        User, editable=False, on_delete=models.deletion.SET_NULL, null=True
+    )
     body = MarkupField(default_markup_type='markdown')
     summary = models.TextField(blank=True)
     image = models.ForeignKey(
