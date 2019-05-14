@@ -390,5 +390,15 @@ class PostView(DetailView):
             raise Http404('Future entry')
         return result
 
+    def get_context_data(self, **kwargs):
+        kwargs['related'] = Post.objects.filter(
+            topic=self.object.topic
+        ).exclude(
+            pk=self.object.pk
+        ).order_by(
+            '-timestamp'
+        )[:3]
+        return kwargs
+
 
 monkey_patch_translate()

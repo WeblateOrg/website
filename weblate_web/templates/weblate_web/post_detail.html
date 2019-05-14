@@ -21,5 +21,13 @@
 {{ object.body }}
 </div>
 
+<h2>{% trans "Related articles" %}</h2>
+
+<ul>
+{% for item in related %}
+<li><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></li>
+{% endfor %}
+</ul>
+
 {% endblock %}
 
