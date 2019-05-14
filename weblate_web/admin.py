@@ -39,7 +39,7 @@ class ImageAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'timestamp', 'slug', 'image']
-    list_filter = ['author']
+    list_filter = ['author', 'topic']
     prepopulated_fields = {'slug': ('title',)}
     search_fields = ['title', 'slug']
     ordering = ('-timestamp',)

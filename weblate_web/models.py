@@ -151,6 +151,15 @@ class Post(models.Model):
     author = models.ForeignKey(
         User, editable=False, on_delete=models.deletion.SET_NULL, null=True
     )
+    topic = models.CharField(
+        max_length=100,
+        db_index=True,
+        choices=(
+            ('release', ugettext_lazy('Release')),
+            ('feature', ugettext_lazy('Features')),
+            ('localization', ugettext_lazy('Localization')),
+        )
+    )
     body = MarkupField(default_markup_type='markdown')
     summary = models.TextField(
         blank=True,
