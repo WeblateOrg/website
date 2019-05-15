@@ -13,29 +13,70 @@
 {% endblock %}
 {% block content %}
 
-<p>
-{% blocktrans %}You can find more detailed information about this topic in <a href="https://docs.weblate.org/en/latest/contributing.html">Contributing chapter</a> of the documentation.{% endblocktrans %}
-</p>
+<h2>{% trans "Did you find a bug?" %}</h2>
+<ul>
+<li>
+{% blocktrans with url="https://docs.weblate.org/en/latest/contributing.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}In case it is sensitive or <strong>security issue</strong>, please report it to {{ report }}. Alternate ways for reporting security issue can be found in the <a href="{{ url }}">documentation</a>.{% endblocktrans %}
+</li>
+<li>
+{% blocktrans with url='https://github.com/WeblateOrg/weblate/issues' %}<strong>Ensure the bug was not already reported</strong>, by searching through the <a href="{{ url }}">GitHub issues</a>.{% endblocktrans %}
+</li>
+<li>
+{% blocktrans with url='https://github.com/WeblateOrg/weblate/issues/new?template=bug_report.md' %}If you're unable to find an open issue addressing the problem, <a href="{{ url }}">open a new one</a>.{% endblocktrans %}
+</li>
+<li>
+{% trans "Be sure to <strong>follow instructions in the issue template</strong> and provide as much relevant information as possible." %}
+</li>
+</ul>
 
-<h2>{% trans "Code" %}</h2>
+<h2 id="patch">{% trans "Did you write a patch that fixes a bug?" %}</h2>
+<ul>
+<li>
+{% blocktrans with url='https://github.com/WeblateOrg/weblate/compare' %}Open a new <a href="{{ url }}">GitHub pull request</a> with the patch.{% endblocktrans %}
+</li>
+<li>
+{% blocktrans %}Ensure the pull request description clearly describes the problem and solution. Include the relevant issue number if applicable.{% endblocktrans %}
+</li>
+</ul>
 
-<p>
-{% blocktrans with "https://github.com/WeblateOrg/weblate" as url %}Weblate is being developed on <a href="{{ url }}">GitHub</a>, you can fork it there or just:{% endblocktrans %}
-</p>
+<h2>{% trans "Do you miss a feature or want to change an existing one?" %}</h2>
+<ul>
+<li>
+{% blocktrans with url="https://github.com/WeblateOrg/weblate/issues/new?template=feature_request.md" %}Suggest your change in the <a href="{{ url }}">GitHub issues</a>.{% endblocktrans %}
+</li>
+<li>
+{% trans "Be sure to <strong>follow instructions in the issue template</strong> and provide as much relevant information as possible." %}
+</li>
+</ul>
 
-<pre>
-git clone https://github.com/WeblateOrg/weblate.git
-</pre>
+<h2>{% trans "Do you have questions about the source code?" %}</h2>
+<ul>
+<li>
+{% blocktrans with url='https://docs.weblate.org/en/latest/contributing.html' %}Please check out our <a href="{{ url }}">contributor documentation</a> for most common topics.{% endblocktrans %}
+<li>
+{% blocktrans with url='https://lists.cihar.com/hyperkitty/list/weblate@lists.cihar.com/' %}Ask any question about about the source code in the <a href="{{ url }}">Weblate mailing list</a>.{% endblocktrans %}
+</li>
+</ul>
 
-<p>
-{% blocktrans with "https://github.com/WeblateOrg" as url %}You can find more repositories related to Weblate on <a href="{{ url }}">GitHub</a>.{% endblocktrans %}
-</p>
+<h2>{% trans "Do you want to contribute to the Weblate documentation?" %}</h2>
+<ul>
+<li>{% blocktrans with url='https://docs.weblate.org/' %}The documentation is part of our main source code repository and you can easilly follow link to edit each page directly from the <a href="{{ url }}">documentation</a>{% endblocktrans %}</li>
+<li>{% blocktrans %}Once you have patch ready, please follow instructions for the <a href="#patch">patch submission</a>.{% endblocktrans %}</li>
+</ul>
 
-<h2 id="translate">{% trans "Translate" %}</h2>
+<h2>{% trans "Do you want to financially support Weblate development?" %}</h2>
 
-<p>
+<ul>
+{% url 'donate' as donate_url %}
+<li>{% blocktrans with url=donate_url %}Please check our <a href="{{ url }}">donate page</a> for options how to donate.{% endblocktrans %}</li>
+</ul>
+
+<h2>{% trans "Do you want to contribute translations?" %}</h2>
+<ul>
+<li>
 {% blocktrans %}You can translate Weblate at <a href="https://hosted.weblate.org/engage/weblate/">hosted.weblate.org</a>.{% endblocktrans %}
-</p>
+</li>
+</ul>
 
 <p>
 <a href="https://hosted.weblate.org/engage/weblate/?utm_source=widget">
