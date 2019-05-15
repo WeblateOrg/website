@@ -19,9 +19,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import io
 import os
-import sys
 from setuptools import setup
 
 with open('requirements.txt') as requirements:
