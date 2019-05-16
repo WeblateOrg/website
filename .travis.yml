@@ -15,6 +15,7 @@ script:
   - coverage run `which weblate` test
   - ./setup.py sdist
   - twine check dist/*
+  - flake8
 after_script:
   - coverage xml
   - codecov
