@@ -27,9 +27,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext, ugettext_lazy
-from wlhosted.payments.models import RECURRENCE_CHOICES, Payment, get_period_delta
-
 from markupfield.fields import MarkupField
+from wlhosted.payments.models import RECURRENCE_CHOICES, Payment, get_period_delta
 
 PAYMENTS_ORIGIN = 'https://weblate.org/donate/process/'
 
