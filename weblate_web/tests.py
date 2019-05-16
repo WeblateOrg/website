@@ -43,9 +43,8 @@ class PostTestCase(TestCase):
 
 
 class ViewTestCase(PostTestCase):
-    '''
-    Views testing.
-    '''
+    """Views testing."""
+
     def test_index_redirect(self):
         response = self.client.get('/')
         self.assertRedirects(response, '/en/', 302)
@@ -122,9 +121,8 @@ class ViewTestCase(PostTestCase):
 
 
 class UtilTestCase(TestCase):
-    '''
-    Helper code testing.
-    '''
+    """Helper code testing."""
+
     def test_format(self):
         self.assertEqual(filesizeformat(0), '0 bytes')
         self.assertEqual(filesizeformat(1000), '1000 bytes')

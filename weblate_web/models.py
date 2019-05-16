@@ -98,6 +98,9 @@ class Donation(models.Model):
     def get_amount(self):
         return self.payment_obj.amount
 
+    def __str__(self):
+        return '{}:{}'.format(self.user.username, self.reward)
+
 
 def process_payment(payment):
     if payment.state != Payment.ACCEPTED:

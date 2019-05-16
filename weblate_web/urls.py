@@ -72,9 +72,8 @@ class LatestEntriesFeed(Feed):
 
 
 class PagesSitemap(Sitemap):
-    '''
-    Sitemap of static pages for one language.
-    '''
+    """Sitemap of static pages for one language."""
+
     def __init__(self, language):
         super().__init__()
         self.language = language

@@ -30,9 +30,9 @@ register = Library()
 
 
 def filesizeformat(num_bytes):
-    """
-    Formats the value like a 'human-readable' file size (i.e. 13 KB, 4.1 MB,
-    102 bytes, etc).
+    """Format the value like a 'human-readable' file size.
+
+    For example 13 KB, 4.1 MB, 102 bytes, etc).
     """
     num_bytes = float(num_bytes)
 
