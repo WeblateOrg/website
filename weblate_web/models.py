@@ -99,7 +99,7 @@ class Donation(models.Model):
         return self.payment_obj.amount
 
     def __str__(self):
-        return '{}:{}'.format(self.user.username, self.reward)
+        return '{}:{}'.format(self.user, self.reward)
 
 
 def process_payment(payment):
