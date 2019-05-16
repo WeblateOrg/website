@@ -27,10 +27,10 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic.edit import FormView
-
 from weblate.billing.models import Billing, Plan
 from weblate.utils import messages
 from weblate.utils.views import show_form_errors
+
 from wlhosted.integrations.forms import BillingForm, ChooseBillingForm
 from wlhosted.integrations.models import handle_received_payment
 from wlhosted.integrations.utils import get_origin

@@ -7,10 +7,9 @@ import uuid
 import django.db.models.deletion
 import vies.models
 import vies.validators
-from django.db import migrations, models
-
 import weblate.utils.fields
 import weblate.utils.validators
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

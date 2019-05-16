@@ -26,9 +26,9 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
-
 from weblate.billing.models import Billing, Invoice, Plan
 from weblate.trans.tests.utils import create_test_user
+
 from wlhosted.integrations.tasks import pending_payments, recurring_payments
 from wlhosted.payments.backends import get_backend
 from wlhosted.payments.models import Customer, Payment

@@ -3,9 +3,8 @@
 from __future__ import unicode_literals
 
 import django.db.models.deletion
-from django.db import migrations, models
-
 import weblate.utils.fields
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

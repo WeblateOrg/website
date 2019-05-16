@@ -34,8 +34,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
-
 from fakturace.storage import InvoiceStorage
+
 from wlhosted.payments.models import Payment
 
 BACKENDS = {}

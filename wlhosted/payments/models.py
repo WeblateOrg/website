@@ -35,9 +35,9 @@ from django.utils.translation import get_language
 from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
 from vies.models import VATINField
-
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
+
 from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.payments.validators import validate_vatin
 
