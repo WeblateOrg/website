@@ -5,26 +5,23 @@ import shutil
 import tempfile
 from xml.etree import ElementTree
 
+import httpretty
 from dateutil.relativedelta import relativedelta
-
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
-from django.core.management import call_command, CommandError
+from django.core.management import CommandError, call_command
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
 
-import httpretty
-
+from weblate_web.data import EXTENSIONS, VERSION
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, Image, Post, Reward
+from weblate_web.templatetags.downloads import downloadlink, filesizeformat
 from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.payments.models import Customer, Payment
-
-from weblate_web.data import VERSION, EXTENSIONS
-from weblate_web.models import Donation, Reward, PAYMENTS_ORIGIN, Post, Image
-from weblate_web.templatetags.downloads import filesizeformat, downloadlink
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), 'test-data')
 TEST_FAKTURACE = os.path.join(TEST_DATA, 'fakturace')

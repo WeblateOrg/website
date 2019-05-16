@@ -18,28 +18,36 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import url, include
+import django.contrib.sitemaps.views
+import django.views.static
+from django.conf import settings
+from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from django.contrib.syndication.views import Feed
-from django.views.generic import TemplateView, RedirectView
-from django.conf import settings
 from django.contrib.sitemaps import Sitemap
-from django.views.decorators.cache import cache_page
-from django.utils import timezone
+from django.contrib.syndication.views import Feed
 from django.urls import path
-import django.contrib.sitemaps.views
-import django.views.static
+from django.utils import timezone
+from django.views.decorators.cache import cache_page
+from django.views.generic import RedirectView, TemplateView
 
 from simple_sso.sso_client.client import Client
-
 from weblate_web.models import Post
 from weblate_web.views import (
-    PaymentView, CustomerView, CompleteView, fetch_vat,
-    DonateView, DonateRewardView, process_donation,
-    EditLinkView, download_invoice, disable_repeat,
-    subscribe, NewsView, PostView,
+    CompleteView,
+    CustomerView,
+    DonateRewardView,
+    DonateView,
+    EditLinkView,
+    NewsView,
+    PaymentView,
+    PostView,
+    disable_repeat,
+    download_invoice,
+    fetch_vat,
+    process_donation,
+    subscribe,
 )
 
 

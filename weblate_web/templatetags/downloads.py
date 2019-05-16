@@ -20,9 +20,11 @@
 from __future__ import unicode_literals
 
 import os
-from django.template import Library
-from django.utils.translation import ugettext as _, ungettext
+
 from django.conf import settings
+from django.template import Library
+from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext
 
 register = Library()
 

@@ -24,9 +24,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, process_payment
 from wlhosted.payments.models import Payment
-
-from weblate_web.models import Donation, PAYMENTS_ORIGIN, process_payment
 
 
 class Command(BaseCommand):

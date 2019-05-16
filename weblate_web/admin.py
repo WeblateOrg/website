@@ -20,7 +20,7 @@
 
 from django.contrib import admin
 
-from weblate_web.models import Reward, Donation, Image, Post
+from weblate_web.models import Donation, Image, Post, Reward
 
 
 class RewardAdmin(admin.ModelAdmin):

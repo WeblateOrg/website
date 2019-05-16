@@ -26,7 +26,7 @@ import dateutil
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from weblate_web.models import Post, Image
+from weblate_web.models import Image, Post
 
 
 class Command(BaseCommand):
