@@ -223,7 +223,10 @@ Retry issuing the payment on the website:
 
 If concerning a recurring payment, it is retried three times,
 and if still failing, cancelled.
-''') % (self.payment.details.get('reject_reason', 'Uknown'), self.payment.customer.origin),
+''') % (
+                self.payment.details.get('reject_reason', 'Uknown'),
+                self.payment.customer.origin
+            ),
             'billing@weblate.org',
             [self.payment.customer.email],
         )

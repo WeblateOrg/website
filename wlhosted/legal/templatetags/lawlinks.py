@@ -30,7 +30,7 @@ LINKS = {
     (2012, 89): 'http://obcanskyzakonik.justice.cz/images/pdf/Civil-Code.pdf',
     (2000, 101): 'https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_ktg=1107',
     (2000, 121): 'http://www.wipo.int/wipolex/en/text.jsp?file_id=126153',
-    (2004, 480): 'https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_org=200156&id_ktg=1155&archiv=0',
+    (2004, 480): 'https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_org=200156&id_ktg=1155&archiv=0',  # noqa:E501
 }
 
 EU_LINK = 'https://eur-lex.europa.eu/legal-content/ALL/?uri=celex:3{}R0{}'

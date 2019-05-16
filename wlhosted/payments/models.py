@@ -160,8 +160,6 @@ class Customer(models.Model):
     def vat_rate(self):
         if self.needs_vat:
             return VAT_RATE
-            # Use following for country specific VAT
-            # return EU_VAT_RATES[self.country_code]
         return 0
 
 
@@ -289,7 +287,7 @@ class Payment(models.Model):
             extra = {}
             extra.update(self.extra)
             extra.update(kwargs)
-            payment = Payment.objects.create(
+            return Payment.objects.create(
                 amount=self.amount,
                 backend=self.backend,
                 description=self.description,
@@ -299,7 +297,6 @@ class Payment(models.Model):
                 repeat=self,
                 extra=extra
             )
-        return payment
 
     def trigger_remotely(self):
         # Trigger payment processing remotely

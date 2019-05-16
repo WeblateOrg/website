@@ -19,7 +19,7 @@ def cache_vies_data(value):
         except ValidationError:
             return value
         try:
-            data =  dict(value.data)
+            data = dict(value.data)
             cache.set(key, data, 3600)
         except WebFault:
             data = {'valid': False}
