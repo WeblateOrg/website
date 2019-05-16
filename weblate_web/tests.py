@@ -16,12 +16,12 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
+from wlhosted.data import SUPPORTED_LANGUAGES
+from wlhosted.payments.models import Customer, Payment
 
 from weblate_web.data import EXTENSIONS, VERSION
 from weblate_web.models import PAYMENTS_ORIGIN, Donation, Image, Post, Reward
 from weblate_web.templatetags.downloads import downloadlink, filesizeformat
-from wlhosted.data import SUPPORTED_LANGUAGES
-from wlhosted.payments.models import Customer, Payment
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), 'test-data')
 TEST_FAKTURACE = os.path.join(TEST_DATA, 'fakturace')

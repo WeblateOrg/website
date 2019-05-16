@@ -23,9 +23,9 @@ from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from wlhosted.payments.models import Payment
 
 from weblate_web.models import PAYMENTS_ORIGIN, Donation, process_payment
-from wlhosted.payments.models import Payment
 
 
 class Command(BaseCommand):

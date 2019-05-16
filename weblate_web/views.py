@@ -34,13 +34,13 @@ from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
 from weblate.utils.django_hacks import monkey_patch_translate
-
-from weblate_web.forms import DonateForm, EditLinkForm, MethodForm, SubscribeForm
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, Reward, process_payment
 from wlhosted.payments.backends import get_backend, list_backends
 from wlhosted.payments.forms import CustomerForm
 from wlhosted.payments.models import Customer, Payment
 from wlhosted.payments.validators import cache_vies_data, validate_vatin
+
+from weblate_web.forms import DonateForm, EditLinkForm, MethodForm, SubscribeForm
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, Reward, process_payment
 
 
 @require_POST
