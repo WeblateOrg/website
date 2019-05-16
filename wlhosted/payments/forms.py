@@ -21,10 +21,9 @@
 from __future__ import unicode_literals
 
 from django import forms
-
-from vies.types import VIES_COUNTRY_CHOICES
 from vies.forms.fields import VATINField
 from vies.forms.widgets import VATINWidget
+from vies.types import VIES_COUNTRY_CHOICES
 
 from wlhosted.payments.models import Customer
 
@@ -64,4 +63,3 @@ class CustomerForm(forms.ModelForm):
         widgets = {
             'country': forms.Select(attrs={'class': 'custom-select'}),
         }
-

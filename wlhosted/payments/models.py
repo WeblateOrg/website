@@ -23,26 +23,21 @@ from __future__ import unicode_literals
 import os.path
 import uuid
 
+import requests
 from appconf import AppConf
-
 from dateutil.relativedelta import relativedelta
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _, get_language
-
+from django.utils.translation import get_language
+from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
-
-import requests
-
 from vies.models import VATINField
 
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
-
 from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.payments.validators import validate_vatin
 

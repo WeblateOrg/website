@@ -19,15 +19,12 @@
 #
 
 from appconf import AppConf
-
 from dateutil.relativedelta import relativedelta
-
 from django.db.models.aggregates import Max
 from django.utils import timezone
 
-from weblate.billing.models import Plan, Billing, Invoice
 from weblate.auth.models import User
-
+from weblate.billing.models import Billing, Invoice, Plan
 from wlhosted.payments.models import Payment, get_period_delta
 
 

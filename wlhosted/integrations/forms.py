@@ -24,10 +24,9 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from weblate.billing.models import Plan, Billing
-
-from wlhosted.payments.models import Payment, Customer
+from weblate.billing.models import Billing, Plan
 from wlhosted.integrations.utils import get_origin
+from wlhosted.payments.models import Customer, Payment
 
 
 class ChooseBillingForm(forms.Form):

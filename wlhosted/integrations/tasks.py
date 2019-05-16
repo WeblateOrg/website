@@ -27,10 +27,9 @@ from django.utils import timezone
 
 from weblate.billing.models import Billing
 from weblate.celery import app
-
-from wlhosted.payments.models import Payment
 from wlhosted.integrations.models import handle_received_payment
 from wlhosted.integrations.utils import get_origin
+from wlhosted.payments.models import Payment
 
 
 @app.task

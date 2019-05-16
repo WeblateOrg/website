@@ -19,6 +19,7 @@
 #
 
 import os.path
+
 from weblate.settings_test import *
 
 INSTALLED_APPS += (

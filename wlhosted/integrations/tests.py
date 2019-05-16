@@ -20,22 +20,19 @@
 
 from time import sleep
 
-from dateutil.relativedelta import relativedelta
-
 import httpretty
-
+from dateutil.relativedelta import relativedelta
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils import timezone
 from django.urls import reverse
+from django.utils import timezone
 
-from weblate.billing.models import Plan, Billing, Invoice
+from weblate.billing.models import Billing, Invoice, Plan
 from weblate.trans.tests.utils import create_test_user
-
+from wlhosted.integrations.tasks import pending_payments, recurring_payments
 from wlhosted.payments.backends import get_backend
 from wlhosted.payments.models import Customer, Payment
 from wlhosted.payments.tests import setup_dirs
-from wlhosted.integrations.tasks import pending_payments, recurring_payments
 
 
 class PaymentTest(TestCase):

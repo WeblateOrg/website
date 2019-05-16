@@ -24,19 +24,18 @@ import json
 import os.path
 import subprocess
 
+import thepay.config
+import thepay.dataApi
+import thepay.gateApi
+import thepay.payment
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
 from fakturace.storage import InvoiceStorage
-
-import thepay.config
-import thepay.gateApi
-import thepay.dataApi
-import thepay.payment
-
 from wlhosted.payments.models import Payment
 
 BACKENDS = {}
