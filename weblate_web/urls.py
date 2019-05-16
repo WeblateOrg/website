@@ -31,8 +31,8 @@ from django.urls import path
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView, TemplateView
-
 from simple_sso.sso_client.client import Client
+
 from weblate_web.models import Post
 from weblate_web.views import (
     CompleteView,
