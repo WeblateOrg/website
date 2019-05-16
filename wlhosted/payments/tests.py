@@ -30,19 +30,19 @@ from wlhosted.payments.models import Customer, Payment
 from wlhosted.payments.validators import validate_vatin
 
 CUSTOMER = {
-    'name': 'Michal Čihař',
-    'address': 'Zdiměřická 1439',
-    'city': '149 00 Praha 4',
-    'country': 'CZ',
-    'vat': 'CZ8003280318',
-    'user_id': 6,
+    "name": "Michal Čihař",
+    "address": "Zdiměřická 1439",
+    "city": "149 00 Praha 4",
+    "country": "CZ",
+    "vat": "CZ8003280318",
+    "user_id": 6,
 }
 
 
 def setup_dirs():
     if settings.PAYMENT_FAKTURACE is None:
         return
-    dirs = ('contacts', 'data', 'pdf', 'tex', 'config')
+    dirs = ("contacts", "data", "pdf", "tex", "config")
     for name in dirs:
         full = os.path.join(settings.PAYMENT_FAKTURACE, name)
         if not os.path.exists(full):
@@ -57,18 +57,18 @@ class ModelTest(SimpleTestCase):
         # Czech customer needs VAT
         self.assertTrue(customer.needs_vat)
         # EU enduser needs VAT
-        customer.vat = ''
+        customer.vat = ""
         self.assertTrue(customer.needs_vat)
         # EU company does not need VAT
-        customer.vat = 'IE6388047V'
+        customer.vat = "IE6388047V"
         self.assertFalse(customer.needs_vat)
         # Non EU customer does not need VAT
-        customer.vat = ''
-        customer.country = 'US'
+        customer.vat = ""
+        customer.country = "US"
         self.assertFalse(customer.needs_vat)
 
     def test_empty(self):
-        customer = Customer(country='CZ')
+        customer = Customer(country="CZ")
         self.assertTrue(customer.is_empty)
         customer = Customer(**CUSTOMER)
         self.assertFalse(customer.is_empty)
@@ -76,7 +76,7 @@ class ModelTest(SimpleTestCase):
     def test_clean(self):
         customer = Customer(**CUSTOMER)
         customer.clean()
-        customer.country = 'IE'
+        customer.country = "IE"
         with self.assertRaises(ValidationError):
             customer.clean()
 
@@ -88,7 +88,7 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.vat_amount, 100)
         self.assertEqual(round(payment.amount_without_vat, 2), 82.64)
 
-        customer.vat = 'IE6388047V'
+        customer.vat = "IE6388047V"
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, 100)
         payment = Payment(customer=customer, amount=100, amount_fixed=True)
@@ -97,15 +97,13 @@ class ModelTest(SimpleTestCase):
 
 
 class BackendTest(TestCase):
-    databases = '__all__'
+    databases = "__all__"
 
     def setUp(self):
         super().setUp()
         self.customer = Customer.objects.create(**CUSTOMER)
         self.payment = Payment.objects.create(
-            customer=self.customer,
-            amount=100,
-            description='Test Item'
+            customer=self.customer, amount=100, description="Test Item"
         )
         setup_dirs()
 
@@ -115,34 +113,34 @@ class BackendTest(TestCase):
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_pay(self):
-        backend = get_backend('pay')(self.payment)
-        self.assertIsNone(backend.initiate(None, '', ''))
+        backend = get_backend("pay")(self.payment)
+        self.assertIsNone(backend.initiate(None, "", ""))
         self.check_payment(Payment.PENDING)
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_reject(self):
-        backend = get_backend('reject')(self.payment)
-        self.assertIsNone(backend.initiate(None, '', ''))
+        backend = get_backend("reject")(self.payment)
+        self.assertIsNone(backend.initiate(None, "", ""))
         self.check_payment(Payment.PENDING)
         self.assertFalse(backend.complete(None))
         self.check_payment(Payment.REJECTED)
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_pending(self):
-        backend = get_backend('pending')(self.payment)
-        self.assertIsNotNone(backend.initiate(None, '', ''))
+        backend = get_backend("pending")(self.payment)
+        self.assertIsNotNone(backend.initiate(None, "", ""))
         self.check_payment(Payment.PENDING)
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_assertions(self):
-        backend = get_backend('pending')(self.payment)
+        backend = get_backend("pending")(self.payment)
         backend.payment.state = Payment.PENDING
         with self.assertRaises(InvalidState):
-            backend.initiate(None, '', '')
+            backend.initiate(None, "", "")
         backend.payment.state = Payment.ACCEPTED
         with self.assertRaises(InvalidState):
             backend.complete(None)
@@ -156,9 +154,9 @@ class BackendTest(TestCase):
 class VATTest(SimpleTestCase):
     def test_validation(self):
         with self.assertRaises(ValidationError):
-            validate_vatin('XX123456')
+            validate_vatin("XX123456")
         with self.assertRaises(ValidationError):
-            validate_vatin('CZ123456')
+            validate_vatin("CZ123456")
         with self.assertRaises(ValidationError):
-            validate_vatin('CZ8003280317')
-        validate_vatin('CZ8003280318')
+            validate_vatin("CZ8003280317")
+        validate_vatin("CZ8003280318")

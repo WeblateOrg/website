@@ -34,10 +34,9 @@ from wlhosted.payments.models import Payment
 
 @app.task
 def pending_payments():
-    with transaction.atomic(using='payments_db'):
+    with transaction.atomic(using="payments_db"):
         payments = Payment.objects.filter(
-            customer__origin=get_origin(),
-            state=Payment.ACCEPTED,
+            customer__origin=get_origin(), state=Payment.ACCEPTED
         ).select_for_update()
         for payment in payments:
             handle_received_payment(payment)
@@ -47,18 +46,18 @@ def pending_payments():
 def recurring_payments():
     cutoff = timezone.now().date() + timedelta(days=1)
     for billing in Billing.objects.filter(state=Billing.STATE_ACTIVE):
-        if 'recurring' not in billing.payment:
+        if "recurring" not in billing.payment:
             continue
-        last_invoice = billing.invoice_set.order_by('-start')[0]
+        last_invoice = billing.invoice_set.order_by("-start")[0]
         if last_invoice.end > cutoff:
             continue
 
-        original = Payment.objects.get(pk=billing.payment['recurring'])
+        original = Payment.objects.get(pk=billing.payment["recurring"])
 
         repeated = original.repeat_payment(billing=billing.pk)
         if not repeated:
             # Remove recurring flag
-            del billing.payment['recurring']
+            del billing.payment["recurring"]
             billing.save()
         else:
             repeated.trigger_remotely()
@@ -69,13 +68,5 @@ def recurring_payments():
 
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(
-        300,
-        pending_payments.s(),
-        name='pending-payments',
-    )
-    sender.add_periodic_task(
-        86400,
-        recurring_payments.s(),
-        name='recurring-payments',
-    )
+    sender.add_periodic_task(300, pending_payments.s(), name="pending-payments")
+    sender.add_periodic_task(86400, recurring_payments.s(), name="recurring-payments")

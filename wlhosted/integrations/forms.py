@@ -32,76 +32,64 @@ from wlhosted.payments.models import Customer, Payment
 class ChooseBillingForm(forms.Form):
     billing = forms.ModelChoiceField(
         queryset=Billing.objects.none(),
-        label=_('Billing'),
-        help_text=_('Choose the billing plan you want to update'),
-        empty_label=_('Create new billing plan'),
+        label=_("Billing"),
+        help_text=_("Choose the billing plan you want to update"),
+        empty_label=_("Create new billing plan"),
         required=False,
     )
     plan = forms.ModelChoiceField(
-        queryset=Plan.objects.public(),
-        widget=forms.HiddenInput,
-        required=False,
+        queryset=Plan.objects.public(), widget=forms.HiddenInput, required=False
     )
 
     def __init__(self, user, *args, **kwargs):
         super(ChooseBillingForm, self).__init__(*args, **kwargs)
-        self.fields['billing'].queryset = Billing.objects.for_user(user)
+        self.fields["billing"].queryset = Billing.objects.for_user(user)
 
 
 class BillingForm(ChooseBillingForm):
     plan = forms.ModelChoiceField(
-        queryset=Plan.objects.public(),
-        widget=forms.HiddenInput,
+        queryset=Plan.objects.public(), widget=forms.HiddenInput
     )
     period = forms.ChoiceField(
-        choices=[('y', 'y'), ('m', 'm')],
-        widget=forms.HiddenInput,
+        choices=[("y", "y"), ("m", "m")], widget=forms.HiddenInput
     )
-    extra_domain = forms.BooleanField(
-        required=False,
-        widget=forms.HiddenInput,
-    )
+    extra_domain = forms.BooleanField(required=False, widget=forms.HiddenInput)
 
     def __init__(self, user, *args, **kwargs):
         super(BillingForm, self).__init__(user, *args, **kwargs)
-        self.fields['plan'].queryset = Plan.objects.public(user)
+        self.fields["plan"].queryset = Plan.objects.public(user)
 
     def clean(self):
-        plan = self.cleaned_data.get('plan')
-        period = self.cleaned_data.get('period')
+        plan = self.cleaned_data.get("plan")
+        period = self.cleaned_data.get("period")
         if not plan or not period:
             return
-        if not plan.yearly_price and period == 'y':
-            raise ValidationError('Plan does not support yearly billing!')
-        if not plan.price and period == 'm':
-            raise ValidationError('Plan does not support monthly billing!')
+        if not plan.yearly_price and period == "y":
+            raise ValidationError("Plan does not support yearly billing!")
+        if not plan.price and period == "m":
+            raise ValidationError("Plan does not support monthly billing!")
 
     def create_payment(self, user):
         customer = Customer.objects.get_or_create(
-            origin=get_origin(),
-            user_id=user.id,
-            defaults={
-                'email': user.email,
-            }
+            origin=get_origin(), user_id=user.id, defaults={"email": user.email}
         )[0]
 
-        plan = self.cleaned_data['plan']
-        period = self.cleaned_data['period']
-        description = 'Weblate hosting ({}, {})'.format(
-            plan.name,
-            'Monthly' if period == 'm' else 'Yearly'
+        plan = self.cleaned_data["plan"]
+        period = self.cleaned_data["period"]
+        description = "Weblate hosting ({}, {})".format(
+            plan.name, "Monthly" if period == "m" else "Yearly"
         )
-        amount = plan.price if period == 'm' else plan.yearly_price
-        if self.cleaned_data['extra_domain']:
+        amount = plan.price if period == "m" else plan.yearly_price
+        if self.cleaned_data["extra_domain"]:
             amount += 100
-            description += ' + Custom domain'
-        extra = {'plan': plan.pk, 'period': period}
-        if self.cleaned_data['billing']:
-            extra['billing'] = self.cleaned_data['billing'].pk
+            description += " + Custom domain"
+        extra = {"plan": plan.pk, "period": period}
+        if self.cleaned_data["billing"]:
+            extra["billing"] = self.cleaned_data["billing"].pk
         return Payment.objects.create(
             amount=amount,
             description=description,
-            recurring=self.cleaned_data['period'],
+            recurring=self.cleaned_data["period"],
             customer=customer,
             extra=extra,
         )

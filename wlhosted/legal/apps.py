@@ -24,6 +24,6 @@ from django.apps import AppConfig
 
 
 class LegalConfig(AppConfig):
-    name = 'wlhosted.legal'
-    label = 'wllegal'
-    verbose_name = 'Hosted Weblate Legal'
+    name = "wlhosted.legal"
+    label = "wllegal"
+    verbose_name = "Hosted Weblate Legal"

@@ -29,17 +29,17 @@ from wlhosted.payments.models import Customer
 
 
 class BootstrapVATINWidget(VATINWidget):
-    template_name = 'widgets/vatin.html'
+    template_name = "widgets/vatin.html"
 
     def __init__(self, choices=VIES_COUNTRY_CHOICES, attrs=None):
-        select_attrs = {'class': 'form-control custom-select'}
-        input_attrs = {'class': 'form-control'}
+        select_attrs = {"class": "form-control custom-select"}
+        input_attrs = {"class": "form-control"}
         if attrs is not None:
             select_attrs.update(attrs)
             input_attrs.update(attrs)
         widgets = (
             forms.Select(choices=choices, attrs=select_attrs),
-            forms.TextInput(attrs=input_attrs)
+            forms.TextInput(attrs=input_attrs),
         )
         # We intentioanlly skip VATINWidget contructor
         super(VATINWidget, self).__init__(widgets, attrs)
@@ -54,12 +54,6 @@ class BootstrapVATINField(VATINField):
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = (
-            'vat', 'tax', 'name', 'address', 'city', 'country',
-        )
-        field_classes = {
-            'vat': BootstrapVATINField,
-        }
-        widgets = {
-            'country': forms.Select(attrs={'class': 'custom-select'}),
-        }
+        fields = ("vat", "tax", "name", "address", "city", "country")
+        field_classes = {"vat": BootstrapVATINField}
+        widgets = {"country": forms.Select(attrs={"class": "custom-select"})}

@@ -27,32 +27,29 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 LINKS = {
-    (2012, 89): 'http://obcanskyzakonik.justice.cz/images/pdf/Civil-Code.pdf',
-    (2000, 101): 'https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_ktg=1107',
-    (2000, 121): 'http://www.wipo.int/wipolex/en/text.jsp?file_id=126153',
-    (2004, 480): 'https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_org=200156&id_ktg=1155&archiv=0',  # noqa:E501
+    (2012, 89): "http://obcanskyzakonik.justice.cz/images/pdf/Civil-Code.pdf",
+    (2000, 101): "https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_ktg=1107",
+    (2000, 121): "http://www.wipo.int/wipolex/en/text.jsp?file_id=126153",
+    (
+        2004,
+        480,
+    ): "https://www.uoou.cz/en/vismo/zobraz_dok.asp?id_org=200156&id_ktg=1155&archiv=0",  # noqa:E501
 }
 
-EU_LINK = 'https://eur-lex.europa.eu/legal-content/ALL/?uri=celex:3{}R0{}'
+EU_LINK = "https://eur-lex.europa.eu/legal-content/ALL/?uri=celex:3{}R0{}"
 
 
 @register.simple_tag(takes_context=True)
 def law_link(context, coll, year, scope=None):
-    if scope == 'EU':
+    if scope == "EU":
         url = EU_LINK.format(year, coll)
     else:
         # Czech version by default
-        url = 'https://www.zakonyprolidi.cz/cs/{}-{}'.format(
-            year, coll
-        )
+        url = "https://www.zakonyprolidi.cz/cs/{}-{}".format(year, coll)
 
         # Use translation if available
         key = (year, coll)
-        if context['LANGUAGE_CODE'] != 'cs' and key in LINKS:
+        if context["LANGUAGE_CODE"] != "cs" and key in LINKS:
             url = LINKS[key]
 
-    return mark_safe(
-        '<a href="{}">{}/{}</a>'.format(
-            escape(url), coll, year
-        )
-    )
+    return mark_safe('<a href="{}">{}/{}</a>'.format(escape(url), coll, year))

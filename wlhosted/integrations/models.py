@@ -29,17 +29,17 @@ from wlhosted.payments.models import Payment, get_period_delta
 
 
 def end_interval(payment, start):
-    return start + get_period_delta(payment.extra['period'])
+    return start + get_period_delta(payment.extra["period"])
 
 
 def handle_received_payment(payment):
     params = {
-        'plan': Plan.objects.get(pk=payment.extra['plan']),
-        'state': Billing.STATE_ACTIVE,
-        'removal': None,
+        "plan": Plan.objects.get(pk=payment.extra["plan"]),
+        "state": Billing.STATE_ACTIVE,
+        "removal": None,
     }
-    if 'billing' in payment.extra:
-        billing = Billing.objects.get(pk=payment.extra['billing'])
+    if "billing" in payment.extra:
+        billing = Billing.objects.get(pk=payment.extra["billing"])
         for key, value in params.items():
             setattr(billing, key, value)
     else:
@@ -48,19 +48,19 @@ def handle_received_payment(payment):
 
     # Update recurrence information
     if payment.recurring:
-        billing.payment['recurring'] = payment.pk
+        billing.payment["recurring"] = payment.pk
     elif payment.repeat:
-        billing.payment['recurring'] = payment.repeat.pk
-    elif 'recurring' in billing.payment:
-        del billing.payment['recurring']
+        billing.payment["recurring"] = payment.repeat.pk
+    elif "recurring" in billing.payment:
+        del billing.payment["recurring"]
     # Store all payment links
-    if 'all' not in billing.payment:
-        billing.payment['all'] = []
-    billing.payment['all'].append(payment.pk)
+    if "all" not in billing.payment:
+        billing.payment["all"] = []
+    billing.payment["all"].append(payment.pk)
 
     billing.save()
 
-    start = billing.invoice_set.aggregate(Max('end'))['end__max']
+    start = billing.invoice_set.aggregate(Max("end"))["end__max"]
     if start is not None:
         start += relativedelta(days=1)
     else:
@@ -73,7 +73,7 @@ def handle_received_payment(payment):
         amount=payment.vat_amount,
         currency=Invoice.CURRENCY_EUR,
         ref=payment.invoice,
-        payment={'pk': str(payment.pk)},
+        payment={"pk": str(payment.pk)},
     )
 
     payment.state = Payment.PROCESSED
@@ -83,8 +83,8 @@ def handle_received_payment(payment):
 
 
 class HostedConf(AppConf):
-    REDIRECT_URL = 'https://weblate.org/{language}/payment/{uuid}/'
+    REDIRECT_URL = "https://weblate.org/{language}/payment/{uuid}/"
     ENABLED = True
 
     class Meta(object):
-        prefix = 'PAYMENT'
+        prefix = "PAYMENT"

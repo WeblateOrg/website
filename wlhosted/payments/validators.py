@@ -10,7 +10,7 @@ from vies.types import VATIN
 def cache_vies_data(value):
     if isinstance(value, str):
         value = VATIN.from_str(value)
-    key = 'VAT-{}'.format(value)
+    key = "VAT-{}".format(value)
     data = cache.get(key)
     if data is None:
         try:
@@ -22,8 +22,8 @@ def cache_vies_data(value):
             data = dict(value.data)
             cache.set(key, data, 3600)
         except WebFault:
-            data = {'valid': False}
-    value.__dict__['vies_data'] = data
+            data = {"valid": False}
+    value.__dict__["vies_data"] = data
 
     return value
 
@@ -33,7 +33,7 @@ def validate_vatin(value):
     try:
         value.verify_country_code()
     except ValidationError:
-        msg = _('{} is not a valid country code for any European Union member.')
+        msg = _("{} is not a valid country code for any European Union member.")
         raise ValidationError(msg.format(value.country_code))
     try:
         value.verify_regex()
@@ -41,6 +41,6 @@ def validate_vatin(value):
         msg = _("{} does not match the country's VAT ID specifications.")
         raise ValidationError(msg.format(value))
 
-    if not value.vies_data['valid']:
+    if not value.vies_data["valid"]:
         msg = _("{} is not a valid VAT ID.")
         raise ValidationError(msg.format(value))

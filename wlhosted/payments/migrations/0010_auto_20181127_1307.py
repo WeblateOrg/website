@@ -6,29 +6,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('payments', '0009_auto_20181113_2339'),
-    ]
+    dependencies = [("payments", "0009_auto_20181113_2339")]
 
     operations = [
         migrations.AlterField(
-            model_name='payment',
-            name='backend',
-            field=models.CharField(blank=True, default='', max_length=100),
+            model_name="payment",
+            name="backend",
+            field=models.CharField(blank=True, default="", max_length=100),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='details',
+            model_name="payment",
+            name="details",
             field=weblate.utils.fields.JSONField(blank=True, default={}),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='extra',
+            model_name="payment",
+            name="extra",
             field=weblate.utils.fields.JSONField(blank=True, default={}),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='recurring',
-            field=models.CharField(blank=True, choices=[('y', 'Yearly'), ('m', 'Monthly'), ('', 'None')], default='', max_length=10),
+            model_name="payment",
+            name="recurring",
+            field=models.CharField(
+                blank=True,
+                choices=[("y", "Yearly"), ("m", "Monthly"), ("", "None")],
+                default="",
+                max_length=10,
+            ),
         ),
     ]

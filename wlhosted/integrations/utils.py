@@ -25,4 +25,4 @@ from weblate.utils.site import get_site_url
 
 
 def get_origin():
-    return get_site_url(reverse('create-billing'))
+    return get_site_url(reverse("create-billing"))

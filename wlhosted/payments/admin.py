@@ -26,17 +26,15 @@ from wlhosted.payments.models import Customer, Payment
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('email', 'name', 'country', 'vat', 'origin')
-    list_filter = ('country', 'origin')
-    search_fields = ('name', 'email')
+    list_display = ("email", "name", "country", "vat", "origin")
+    list_filter = ("country", "origin")
+    search_fields = ("name", "email")
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = (
-        'description', 'amount', 'customer', 'state', 'backend', 'repeat'
-    )
-    list_filter = ('state', 'backend', 'customer__name', 'repeat')
-    search_fields = ('description', 'customer__name', 'customer__email')
+    list_display = ("description", "amount", "customer", "state", "backend", "repeat")
+    list_filter = ("state", "backend", "customer__name", "repeat")
+    search_fields = ("description", "customer__name", "customer__email")
 
 
 admin.site.register(Customer, CustomerAdmin)

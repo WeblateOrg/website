@@ -40,77 +40,72 @@ from wlhosted.payments.models import Payment
 def get_default_billing(user):
     """Get trial billing for user to be ugpraded.
     """
-    billings = Billing.objects.for_user(user).filter(
-        state=Billing.STATE_TRIAL
-    )
+    billings = Billing.objects.for_user(user).filter(state=Billing.STATE_TRIAL)
     if billings.count() == 1:
         return billings[0]
     return None
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class CreateBillingView(FormView):
-    template_name = 'hosted/create.html'
+    template_name = "hosted/create.html"
     form_class = BillingForm
 
     def get_form_kwargs(self):
         result = super(CreateBillingView, self).get_form_kwargs()
-        result['user'] = self.request.user
+        result["user"] = self.request.user
         return result
 
     def handle_payment(self, request):
         try:
             payment = Payment.objects.select_for_update().get(
-                uuid=request.GET['payment'],
+                uuid=request.GET["payment"],
                 customer__user_id=request.user.id,
                 customer__origin=get_origin(),
             )
         except (Payment.DoesNotExist, ValidationError):
-            messages.error(request, _('No matching payment found.'))
-            return redirect('create-billing')
+            messages.error(request, _("No matching payment found."))
+            return redirect("create-billing")
 
         if payment.state in (Payment.ACCEPTED, Payment.PROCESSED):
             if payment.state == Payment.ACCEPTED:
                 handle_received_payment(payment)
 
             messages.success(
-                request,
-                _('Thank you for purchasing a hosting plan, it is now active.')
+                request, _("Thank you for purchasing a hosting plan, it is now active.")
             )
-            return redirect('billing')
+            return redirect("billing")
         elif payment.state in (Payment.PENDING, Payment.PROCESSED):
             messages.info(
                 request,
                 _(
-                    'Thank you for purchasing a hosting plan, the payment for it is '
-                    'pending and will be processed in the background.'
-                )
+                    "Thank you for purchasing a hosting plan, the payment for it is "
+                    "pending and will be processed in the background."
+                ),
             )
-            return redirect('billing')
+            return redirect("billing")
         elif payment.state == Payment.REJECTED:
             messages.error(
                 request,
-                _('The payment was rejected: {}').format(
-                    payment.details.get('reject_reason', _('Unknown reason'))
-                )
+                _("The payment was rejected: {}").format(
+                    payment.details.get("reject_reason", _("Unknown reason"))
+                ),
             )
         elif payment.state == Payment.NEW:
             return HttpResponseRedirect(payment.get_payment_url())
-        return redirect('create-billing')
+        return redirect("create-billing")
 
     def get(self, request, *args, **kwargs):
-        if 'payment' in request.GET:
-            with transaction.atomic(using='payments_db'):
+        if "payment" in request.GET:
+            with transaction.atomic(using="payments_db"):
                 return self.handle_payment(request)
         return super(CreateBillingView, self).get(request, *args, **kwargs)
 
     def form_valid(self, form):
         if not settings.PAYMENT_ENABLED:
-            messages.error(
-                self.request, _('Payments are temporarily inactive.')
-            )
-            return redirect('create-billing')
-        with transaction.atomic(using='payments_db'):
+            messages.error(self.request, _("Payments are temporarily inactive."))
+            return redirect("create-billing")
+        with transaction.atomic(using="payments_db"):
             payment = form.create_payment(self.request.user)
             return HttpResponseRedirect(payment.get_payment_url())
 
@@ -120,27 +115,27 @@ class CreateBillingView(FormView):
 
     def get_context_data(self, **kwargs):
         kwargs = super(CreateBillingView, self).get_context_data(**kwargs)
-        kwargs['plans'] = list(Plan.objects.public(self.request.user))
+        kwargs["plans"] = list(Plan.objects.public(self.request.user))
         default_billing = get_default_billing(self.request.user)
         has_billing = Billing.objects.for_user(self.request.user).exists()
-        if 'billing' in self.request.GET or 'plan' in self.request.GET:
+        if "billing" in self.request.GET or "plan" in self.request.GET:
             data = self.request.GET
         else:
             data = None
         form = ChooseBillingForm(self.request.user, data)
-        kwargs['selected_plan'] = None
+        kwargs["selected_plan"] = None
         if form.is_valid():
-            kwargs['billing'] = form.cleaned_data['billing']
-            kwargs['selected_plan'] = form.cleaned_data['plan']
+            kwargs["billing"] = form.cleaned_data["billing"]
+            kwargs["selected_plan"] = form.cleaned_data["plan"]
         elif data is None:
-            kwargs['billing'] = default_billing
+            kwargs["billing"] = default_billing
         else:
-            kwargs['billing'] = None
+            kwargs["billing"] = None
         # Show billing selection if needed (hide for upgrades and
         # when user has no billing plan)
-        if has_billing and 'upgrade' not in self.request.GET:
-            kwargs['choose_billing'] = form
-        if kwargs['billing']:
-            for plan in kwargs['plans']:
-                plan.would_fit = kwargs['billing'].in_display_limits(plan)
+        if has_billing and "upgrade" not in self.request.GET:
+            kwargs["choose_billing"] = form
+        if kwargs["billing"]:
+            for plan in kwargs["plans"]:
+                plan.would_fit = kwargs["billing"].in_display_limits(plan)
         return kwargs

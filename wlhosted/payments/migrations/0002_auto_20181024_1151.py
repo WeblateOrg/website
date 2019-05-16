@@ -9,24 +9,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('payments', '0001_initial'),
-    ]
+    dependencies = [("payments", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='payment',
-            name='details',
+            model_name="payment",
+            name="details",
             field=weblate.utils.fields.JSONField(default={}, editable=False),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='extra',
+            model_name="payment",
+            name="extra",
             field=weblate.utils.fields.JSONField(default={}, editable=False),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='repeat',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='payments.Payment'),
+            model_name="payment",
+            name="repeat",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="payments.Payment",
+            ),
         ),
     ]

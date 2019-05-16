@@ -8,14 +8,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('payments', '0003_auto_20181024_1604'),
-    ]
+    dependencies = [("payments", "0003_auto_20181024_1604")]
 
     operations = [
         migrations.AlterField(
-            model_name='customer',
-            name='country',
+            model_name="customer",
+            name="country",
             field=django_countries.fields.CountryField(max_length=2, null=True),
-        ),
+        )
     ]

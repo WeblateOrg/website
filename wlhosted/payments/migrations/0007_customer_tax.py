@@ -7,14 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('payments', '0006_auto_20181101_0900'),
-    ]
+    dependencies = [("payments", "0006_auto_20181101_0900")]
 
     operations = [
         migrations.AddField(
-            model_name='customer',
-            name='tax',
-            field=models.CharField(blank=True, help_text='Please fill in your tax registration if it should appear on the invoice.', max_length=200, verbose_name='Tax registration'),
-        ),
+            model_name="customer",
+            name="tax",
+            field=models.CharField(
+                blank=True,
+                help_text="Please fill in your tax registration if it should appear on the invoice.",
+                max_length=200,
+                verbose_name="Tax registration",
+            ),
+        )
     ]

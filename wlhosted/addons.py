@@ -32,41 +32,39 @@ class UnknownHorizonsTemplateAddon(BaseScriptAddon):
     # Event used to trigger the script
     events = (EVENT_PRE_COMMIT,)
     # Name of the addon, has to be unique
-    name = 'weblate.hosted.uh_scenario'
+    name = "weblate.hosted.uh_scenario"
     # Verbose name and long descrption
-    verbose = _('Generate Unknown Horizons scenario data')
-    description = _('Generate Unknown Horizons scenario data')
+    verbose = _("Generate Unknown Horizons scenario data")
+    description = _("Generate Unknown Horizons scenario data")
 
     # Script to execute
-    script = '/home/nijel/bin/uh_scenario_yaml'
+    script = "/home/nijel/bin/uh_scenario_yaml"
     # File to add in commit (for pre commit event)
     # does not have to be set
-    add_file = 'content/scenarios/*_{{ language_code }}.yaml'
+    add_file = "content/scenarios/*_{{ language_code }}.yaml"
 
     @classmethod
     def can_install(cls, component, user):
         """Only useful for Unknown Horizons project"""
-        if not component.project.slug == 'uh':
+        if not component.project.slug == "uh":
             return False
-        return super(UnknownHorizonsTemplateAddon, cls).can_install(
-            component, user
-        )
+        return super(UnknownHorizonsTemplateAddon, cls).can_install(component, user)
 
 
 class ResetAddon(BaseAddon):
     # Event used to trigger the script
     events = (EVENT_DAILY,)
     # Name of the addon, has to be unique
-    name = 'weblate.hosted.reset'
+    name = "weblate.hosted.reset"
     # Verbose name and long descrption
-    verbose = _('Reset repository to upstream')
-    description = _('Reset repository to upstream')
+    verbose = _("Reset repository to upstream")
+    description = _("Reset repository to upstream")
     repo_scope = True
 
     @classmethod
     def can_install(cls, component, user):
         # Only instalable on the sandbox project
-        return component.project.slug == 'sandbox'
+        return component.project.slug == "sandbox"
 
     def daily(self, component):
         component.do_reset()

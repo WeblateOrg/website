@@ -44,7 +44,7 @@ BACKENDS = {}
 def get_backend(name):
     backend = BACKENDS[name]
     if backend.debug and not settings.PAYMENT_DEBUG:
-        raise KeyError('Invalid backend')
+        raise KeyError("Invalid backend")
     return backend
 
 
@@ -69,7 +69,7 @@ class Backend(object):
     name = None
     debug = False
     verbose = None
-    description = ''
+    description = ""
     recurring = False
 
     def __init__(self, payment):
@@ -79,7 +79,7 @@ class Backend(object):
 
     @property
     def image_name(self):
-        return 'payments/{}.png'.format(self.name)
+        return "payments/{}.png".format(self.name)
 
     def perform(self, request, back_url, complete_url):
         """Performs payment and optionally redirects user."""
@@ -126,7 +126,7 @@ class Backend(object):
             return
         storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
-        customer_id = 'web-{}'.format(customer.pk)
+        customer_id = "web-{}".format(customer.pk)
         contact_file = storage.update_contact(
             customer_id,
             customer.name,
@@ -134,19 +134,19 @@ class Backend(object):
             customer.city,
             customer.country.name,
             customer.email,
-            customer.tax if customer.tax else '',
-            customer.vat if customer.vat else '',
-            'EUR',
-            'weblate',
+            customer.tax if customer.tax else "",
+            customer.vat if customer.vat else "",
+            "EUR",
+            "weblate",
         )
         invoice_file = storage.create(
             customer_id,
             0,
-            rate='{:f}'.format(self.payment.amount_without_vat),
+            rate="{:f}".format(self.payment.amount_without_vat),
             item=self.payment.description,
             vat=str(customer.vat_rate),
             payment_method=self.description,
-            category=self.payment.extra.get('category', 'weblate'),
+            category=self.payment.extra.get("category", "weblate"),
             payment_id=str(self.payment.pk),
         )
         invoice = storage.get(invoice_file)
@@ -161,8 +161,9 @@ class Backend(object):
         # Commit to git
         subprocess.run(
             [
-                'git', 'add',
-                '--',
+                "git",
+                "add",
+                "--",
                 contact_file,
                 invoice_file,
                 invoice.tex_path,
@@ -173,10 +174,7 @@ class Backend(object):
             cwd=settings.PAYMENT_FAKTURACE,
         )
         subprocess.run(
-            [
-                'git', 'commit',
-                '-m', 'Invoice {}'.format(self.payment.invoice),
-            ],
+            ["git", "commit", "-m", "Invoice {}".format(self.payment.invoice)],
             check=True,
             cwd=settings.PAYMENT_FAKTURACE,
         )
@@ -185,8 +183,9 @@ class Backend(object):
     def notify_user(self):
         """Send email notification with an invoice."""
         email = EmailMessage(
-            _('Your payment on weblate.org'),
-            _('''Hello
+            _("Your payment on weblate.org"),
+            _(
+                """Hello
 
 Thank you for your payment on weblate.org.
 
@@ -194,24 +193,27 @@ You will find an invoice for this payment attached.
 Alternatively you can download it from the website:
 
 %s
-''') % self.payment.customer.origin,
-            'billing@weblate.org',
+"""
+            )
+            % self.payment.customer.origin,
+            "billing@weblate.org",
             [self.payment.customer.email],
         )
         if self.invoice is not None:
-            with open(self.invoice.pdf_path, 'rb') as handle:
+            with open(self.invoice.pdf_path, "rb") as handle:
                 email.attach(
                     os.path.basename(self.invoice.pdf_path),
                     handle.read(),
-                    'application/pdf'
+                    "application/pdf",
                 )
         email.send()
 
     def notify_failure(self):
         """Send email notification with a failure."""
         email = EmailMessage(
-            _('Your payment on weblate.org failed'),
-            _('''Hello
+            _("Your payment on weblate.org failed"),
+            _(
+                """Hello
 
 Your payment on weblate.org has failed.
 
@@ -223,26 +225,28 @@ Retry issuing the payment on the website:
 
 If concerning a recurring payment, it is retried three times,
 and if still failing, cancelled.
-''') % (
-                self.payment.details.get('reject_reason', 'Uknown'),
-                self.payment.customer.origin
+"""
+            )
+            % (
+                self.payment.details.get("reject_reason", "Uknown"),
+                self.payment.customer.origin,
             ),
-            'billing@weblate.org',
+            "billing@weblate.org",
             [self.payment.customer.email],
         )
         if self.invoice is not None:
-            with open(self.invoice.pdf_path, 'rb') as handle:
+            with open(self.invoice.pdf_path, "rb") as handle:
                 email.attach(
                     os.path.basename(self.invoice.pdf_path),
                     handle.read(),
-                    'application/pdf'
+                    "application/pdf",
                 )
         email.send()
 
     def success(self):
         self.payment.state = Payment.ACCEPTED
         if not self.recurring:
-            self.payment.recurring = ''
+            self.payment.recurring = ""
 
         self.generate_invoice()
         self.payment.save()
@@ -258,10 +262,10 @@ and if still failing, cancelled.
 
 @register_backend
 class DebugPay(Backend):
-    name = 'pay'
+    name = "pay"
     debug = True
-    verbose = 'Pay'
-    description = 'Paid (TEST)'
+    verbose = "Pay"
+    description = "Paid (TEST)"
     recurring = True
 
     def perform(self, request, back_url, complete_url):
@@ -273,25 +277,25 @@ class DebugPay(Backend):
 
 @register_backend
 class DebugReject(DebugPay):
-    name = 'reject'
-    verbose = 'Reject'
-    description = 'Reject (TEST)'
+    name = "reject"
+    verbose = "Reject"
+    description = "Reject (TEST)"
     recurring = False
 
     def collect(self, request):
-        self.payment.details['reject_reason'] = 'Debug reject'
+        self.payment.details["reject_reason"] = "Debug reject"
         return False
 
 
 @register_backend
 class DebugPending(DebugPay):
-    name = 'pending'
-    verbose = 'Pending'
-    description = 'Pending (TEST)'
+    name = "pending"
+    verbose = "Pending"
+    description = "Pending (TEST)"
     recurring = False
 
     def perform(self, request, back_url, complete_url):
-        return redirect('https://cihar.com/?url=' + complete_url)
+        return redirect("https://cihar.com/?url=" + complete_url)
 
     def collect(self, request):
         return True
@@ -299,9 +303,9 @@ class DebugPending(DebugPay):
 
 @register_backend
 class ThePayCard(Backend):
-    name = 'thepay-card'
-    verbose = ugettext_lazy('Payment card')
-    description = 'Payment Card (The Pay)'
+    name = "thepay-card"
+    verbose = ugettext_lazy("Payment card")
+    description = "Payment Card (The Pay)"
     recurring = True
     thepay_method = 21
 
@@ -313,7 +317,7 @@ class ThePayCard(Backend):
                 settings.PAYMENT_THEPAY_MERCHANTID,
                 settings.PAYMENT_THEPAY_ACCOUNTID,
                 settings.PAYMENT_THEPAY_PASSWORD,
-                settings.PAYMENT_THEPAY_DATAAPI
+                settings.PAYMENT_THEPAY_DATAAPI,
             )
 
     def perform(self, request, back_url, complete_url):
@@ -326,13 +330,13 @@ class ThePayCard(Backend):
                     self.payment.vat_amount,
                 )
             except thepay.gateApi.GateError as error:
-                self.payment.details = {'errorDescription': error.args[0]}
+                self.payment.details = {"errorDescription": error.args[0]}
                 # Failure is handled in collect using API
             return None
 
         payment = thepay.payment.Payment(self.config)
 
-        payment.setCurrency('EUR')
+        payment.setCurrency("EUR")
         payment.setValue(self.payment.vat_amount)
         payment.setMethodId(self.thepay_method)
         payment.setCustomerEmail(self.payment.customer.email)
@@ -374,23 +378,23 @@ class ThePayCard(Backend):
             return True
         if status == 7:
             return None
-        reason = 'Unknown: {}'.format(status)
+        reason = "Unknown: {}".format(status)
         if status == 3:
-            reason = _('Payment cancelled')
+            reason = _("Payment cancelled")
         elif status == 4:
-            reason = _('Payment error')
+            reason = _("Payment error")
         elif status == 6:
-            reason = 'Underpaid'
+            reason = "Underpaid"
         elif status == 9:
-            reason = 'Deposit confirmed'
-        self.payment.details['reject_reason'] = reason
+            reason = "Deposit confirmed"
+        self.payment.details["reject_reason"] = reason
         return False
 
 
 @register_backend
 class ThePayBitcoin(ThePayCard):
-    name = 'thepay-bitcoin'
-    verbose = ugettext_lazy('Bitcoin')
-    description = 'Bitcoin (The Pay)'
+    name = "thepay-bitcoin"
+    verbose = ugettext_lazy("Bitcoin")
+    description = "Bitcoin (The Pay)"
     recurring = False
     thepay_method = 29

@@ -23,21 +23,19 @@ import os.path
 from weblate.settings_test import *
 
 INSTALLED_APPS += (
-    'wlhosted',
-    'wlhosted.payments',
-    'wlhosted.integrations',
-    'wlhosted.legal'
+    "wlhosted",
+    "wlhosted.payments",
+    "wlhosted.integrations",
+    "wlhosted.legal",
 )
 
-DATABASES['payments_db'] = {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': os.path.join(DATA_DIR, 'payments.db'),
+DATABASES["payments_db"] = {
+    "ENGINE": "django.db.backends.sqlite3",
+    "NAME": os.path.join(DATA_DIR, "payments.db"),
 }
 
-DATABASE_ROUTERS = ['wlhosted.dbrouter.HostedRouter']
+DATABASE_ROUTERS = ["wlhosted.dbrouter.HostedRouter"]
 
-PAYMENT_FAKTURACE = os.path.join(
-    os.path.dirname(__file__), 'test-data', 'fakturace'
-)
+PAYMENT_FAKTURACE = os.path.join(os.path.dirname(__file__), "test-data", "fakturace")
 
-LOCALE_PATHS = [os.path.join(os.path.dirname(__file__), 'locale'), ]
+LOCALE_PATHS = [os.path.join(os.path.dirname(__file__), "locale")]

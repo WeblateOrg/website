@@ -42,34 +42,34 @@ from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.payments.validators import validate_vatin
 
 EU_VAT_RATES = {
-    'BE': 21,
-    'BG': 20,
-    'CZ': 21,
-    'DK': 25,
-    'DE': 19,
-    'EE': 20,
-    'IE': 23,
-    'GR': 24,
-    'ES': 21,
-    'FR': 20,
-    'HR': 25,
-    'IT': 22,
-    'CY': 19,
-    'LV': 21,
-    'LT': 21,
-    'LU': 17,
-    'HU': 27,
-    'MT': 18,
-    'NL': 21,
-    'AT': 20,
-    'PL': 23,
-    'PT': 23,
-    'RO': 19,
-    'SI': 22,
-    'SK': 20,
-    'FI': 24,
-    'SE': 25,
-    'GB': 20,
+    "BE": 21,
+    "BG": 20,
+    "CZ": 21,
+    "DK": 25,
+    "DE": 19,
+    "EE": 20,
+    "IE": 23,
+    "GR": 24,
+    "ES": 21,
+    "FR": 20,
+    "HR": 25,
+    "IT": 22,
+    "CY": 19,
+    "LV": 21,
+    "LT": 21,
+    "LU": 17,
+    "HU": 27,
+    "MT": 18,
+    "NL": 21,
+    "AT": 20,
+    "PL": 23,
+    "PT": 23,
+    "RO": 19,
+    "SI": 22,
+    "SK": 20,
+    "FI": 24,
+    "SE": 25,
+    "GB": 20,
 }
 
 VAT_RATE = 21
@@ -79,48 +79,37 @@ VAT_RATE = 21
 class Customer(models.Model):
     vat = VATINField(
         validators=[validate_vatin],
-        blank=True, null=True,
-        verbose_name=_('European VAT ID'),
+        blank=True,
+        null=True,
+        verbose_name=_("European VAT ID"),
         help_text=_(
-            'Please fill in European Union VAT ID, '
-            'leave blank if not applicable.'
+            "Please fill in European Union VAT ID, " "leave blank if not applicable."
         ),
     )
     tax = models.CharField(
-        max_length=200, blank=True,
-        verbose_name=_('Tax registration'),
+        max_length=200,
+        blank=True,
+        verbose_name=_("Tax registration"),
         help_text=_(
-            'Please fill in your tax registration if it should '
-            'appear on the invoice.'
-        )
+            "Please fill in your tax registration if it should "
+            "appear on the invoice."
+        ),
     )
     name = models.CharField(
-        max_length=200, null=True,
-        verbose_name=_('Company or individual name'),
+        max_length=200, null=True, verbose_name=_("Company or individual name")
     )
-    address = models.CharField(
-        max_length=200, null=True,
-        verbose_name=_('Address'),
-    )
+    address = models.CharField(max_length=200, null=True, verbose_name=_("Address"))
     city = models.CharField(
-        max_length=200, null=True,
-        verbose_name=_('Postcode and city'),
+        max_length=200, null=True, verbose_name=_("Postcode and city")
     )
-    country = CountryField(
-        null=True,
-        verbose_name=_('Country'),
-    )
-    email = models.EmailField(
-        blank=False,
-        max_length=190,
-        validators=[validate_email],
-    )
+    country = CountryField(null=True, verbose_name=_("Country"))
+    email = models.EmailField(blank=False, max_length=190, validators=[validate_email])
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
 
     def __str__(self):
         if self.name:
-            return '{} ({})'.format(self.name, self.email)
+            return "{} ({})".format(self.name, self.email)
         return self.email
 
     @property
@@ -132,7 +121,7 @@ class Customer(models.Model):
     @property
     def vat_country_code(self):
         if self.vat:
-            if hasattr(self.vat, 'country_code'):
+            if hasattr(self.vat, "country_code"):
                 return self.vat.country_code.upper()
             return self.vat[:2].upper()
         return None
@@ -141,7 +130,7 @@ class Customer(models.Model):
         if self.vat:
             if self.vat_country_code != self.country_code:
                 raise ValidationError(
-                    {'country': _('The country has to match your VAT code')}
+                    {"country": _("The country has to match your VAT code")}
                 )
 
     @property
@@ -150,11 +139,11 @@ class Customer(models.Model):
 
     @property
     def is_eu_enduser(self):
-        return (self.country_code in EU_VAT_RATES and not self.vat)
+        return self.country_code in EU_VAT_RATES and not self.vat
 
     @property
     def needs_vat(self):
-        return self.vat_country_code == 'CZ' or self.is_eu_enduser
+        return self.vat_country_code == "CZ" or self.is_eu_enduser
 
     @property
     def vat_rate(self):
@@ -164,10 +153,10 @@ class Customer(models.Model):
 
 
 RECURRENCE_CHOICES = [
-    ('y', _('Annual')),
-    ('b', _('Biannual')),
-    ('m', _('Monthly')),
-    ('', _('Onetime')),
+    ("y", _("Annual")),
+    ("b", _("Biannual")),
+    ("m", _("Monthly")),
+    ("", _("Onetime")),
 ]
 
 
@@ -179,30 +168,25 @@ class Payment(models.Model):
     ACCEPTED = 4
     PROCESSED = 5
 
-    uuid = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False
-    )
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.IntegerField()
     description = models.TextField()
     recurring = models.CharField(
-        choices=RECURRENCE_CHOICES,
-        default='',
-        blank=True,
-        max_length=10,
+        choices=RECURRENCE_CHOICES, default="", blank=True, max_length=10
     )
     created = models.DateTimeField(auto_now_add=True)
     state = models.IntegerField(
         choices=[
-            (NEW, 'New'),
-            (PENDING, 'Pending'),
-            (REJECTED, 'Rejected'),
-            (ACCEPTED, 'Accepted'),
-            (PROCESSED, 'Processed'),
+            (NEW, "New"),
+            (PENDING, "Pending"),
+            (REJECTED, "Rejected"),
+            (ACCEPTED, "Accepted"),
+            (PROCESSED, "Processed"),
         ],
         db_index=True,
-        default=NEW
+        default=NEW,
     )
-    backend = models.CharField(max_length=100, default='', blank=True)
+    backend = models.CharField(max_length=100, default="", blank=True)
     # Payment details from the gateway
     details = JSONField(default={}, blank=True)
     # Payment extra information from the origin
@@ -211,28 +195,24 @@ class Payment(models.Model):
         Customer, on_delete=models.deletion.CASCADE, blank=True
     )
     repeat = models.ForeignKey(
-        'Payment',
-        on_delete=models.deletion.CASCADE,
-        null=True, blank=True
+        "Payment", on_delete=models.deletion.CASCADE, null=True, blank=True
     )
-    invoice = models.CharField(max_length=20, blank=True, default='')
+    invoice = models.CharField(max_length=20, blank=True, default="")
     amount_fixed = models.BooleanField(blank=True, default=False)
 
     class Meta:
-        ordering = ['-created']
+        ordering = ["-created"]
 
     def __str__(self):
-        return 'payment:{}'.format(self.pk)
+        return "payment:{}".format(self.pk)
 
     @cached_property
     def invoice_filename(self):
-        return '{0}.pdf'.format(self.invoice)
+        return "{0}.pdf".format(self.invoice)
 
     @cached_property
     def invoice_full_filename(self):
-        return os.path.join(
-            settings.PAYMENT_FAKTURACE, 'pdf', self.invoice_filename
-        )
+        return os.path.join(settings.PAYMENT_FAKTURACE, "pdf", self.invoice_filename)
 
     @cached_property
     def invoice_filename_valid(self):
@@ -254,29 +234,27 @@ class Payment(models.Model):
     def get_payment_url(self):
         language = get_language()
         if language not in SUPPORTED_LANGUAGES:
-            language = 'en'
-        return settings.PAYMENT_REDIRECT_URL.format(
-            language=language,
-            uuid=self.uuid
-        )
+            language = "en"
+        return settings.PAYMENT_REDIRECT_URL.format(language=language, uuid=self.uuid)
 
     def repeat_payment(self, **kwargs):
         # Check if backend is still valid
         from wlhosted.payments.backends import get_backend
+
         try:
             get_backend(self.backend)
         except KeyError:
             return False
 
-        with transaction.atomic(using='payments_db'):
+        with transaction.atomic(using="payments_db"):
             # Check for failed payments
             previous = Payment.objects.filter(repeat=self)
             if previous.exists():
                 failures = previous.filter(state=Payment.REJECTED)
                 try:
-                    last_good = previous.filter(
-                        state=Payment.PROCESSED
-                    ).order_by('-created')[0]
+                    last_good = previous.filter(state=Payment.PROCESSED).order_by(
+                        "-created"
+                    )[0]
                     failures = failures.filter(created__gt=last_good.created)
                 except IndexError:
                     pass
@@ -291,11 +269,11 @@ class Payment(models.Model):
                 amount=self.amount,
                 backend=self.backend,
                 description=self.description,
-                recurring='',
+                recurring="",
                 customer=self.customer,
                 amount_fixed=self.amount_fixed,
                 repeat=self,
-                extra=extra
+                extra=extra,
             )
 
     def trigger_remotely(self):
@@ -303,16 +281,13 @@ class Payment(models.Model):
         requests.post(
             self.get_payment_url(),
             allow_redirects=False,
-            data={
-                'method': self.backend,
-                'secret': settings.PAYMENT_SECRET,
-            }
+            data={"method": self.backend, "secret": settings.PAYMENT_SECRET},
         )
 
 
 class PaymentConf(AppConf):
     DEBUG = False
-    SECRET = 'secret'
+    SECRET = "secret"
     FAKTURACE = None
     THEPAY_MERCHANTID = None
     THEPAY_ACCOUNTID = None
@@ -320,14 +295,14 @@ class PaymentConf(AppConf):
     THEPAY_DATAAPI = None
 
     class Meta(object):
-        prefix = 'PAYMENT'
+        prefix = "PAYMENT"
 
 
 def get_period_delta(period):
-    if period == 'y':
+    if period == "y":
         return relativedelta(years=1) - relativedelta(days=1)
-    if period == 'b':
+    if period == "b":
         return relativedelta(months=6) - relativedelta(days=1)
-    if period == 'm':
+    if period == "m":
         return relativedelta(months=1) - relativedelta(days=1)
-    raise ValueError('Invalid payment period!')
+    raise ValueError("Invalid payment period!")

@@ -8,28 +8,23 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('payments', '0007_customer_tax'),
-    ]
+    dependencies = [("payments", "0007_customer_tax")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='payment',
-            options={'ordering': ['-created']},
+            name="payment", options={"ordering": ["-created"]}
         ),
         migrations.RenameField(
-            model_name='payment',
-            old_name='processor',
-            new_name='backend',
+            model_name="payment", old_name="processor", new_name="backend"
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='details',
+            model_name="payment",
+            name="details",
             field=weblate.utils.fields.JSONField(default={}),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='extra',
+            model_name="payment",
+            name="extra",
             field=weblate.utils.fields.JSONField(default={}),
         ),
     ]
