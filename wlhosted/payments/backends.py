@@ -79,7 +79,7 @@ class Backend(object):
 
     @property
     def image_name(self):
-        return "payments/{}.png".format(self.name)
+        return "payment/{}.png".format(self.name)
 
     def perform(self, request, back_url, complete_url):
         """Performs payment and optionally redirects user."""
