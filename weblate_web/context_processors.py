@@ -36,8 +36,13 @@ def weblate_web(request):
         url_name = 'home'
         url_kwargs = {}
 
+    # Get canonical URl, unfortunately there seems to be no clean
+    # way, so just strip /en/ from the URL
+    # See also https://stackoverflow.com/a/27727877/225718
     with override('en'):
         canonical_url = reverse(url_name, kwargs=url_kwargs)
+        if canonical_url.startswith('/en/'):
+            canonical_url = canonical_url[3:]
 
     language_urls = []
     for code, name in settings.LANGUAGES:

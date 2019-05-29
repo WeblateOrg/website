@@ -52,18 +52,22 @@ class ViewTestCase(PostTestCase):
     def test_index_en(self):
         response = self.client.get('/en/')
         self.assertContains(response, 'See more features')
+        self.assertContains(response, '<link rel="canonical" href="/" />')
 
     def test_index_cs(self):
         response = self.client.get('/cs/')
         self.assertContains(response, u'Další vlastnosti')
+        self.assertContains(response, '<link rel="canonical" href="/" />')
 
     def test_index_be(self):
         response = self.client.get('/be/')
         self.assertContains(response, u'Больш функцый')
+        self.assertContains(response, '<link rel="canonical" href="/" />')
 
     def test_index_be_latin(self):
         response = self.client.get('/be@latin/')
         self.assertContains(response, u'Boĺš funkcyj')
+        self.assertContains(response, '<link rel="canonical" href="/" />')
 
     def test_terms(self):
         response = self.client.get('/en/terms/')
