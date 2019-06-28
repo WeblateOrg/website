@@ -1,17 +1,22 @@
 {% load i18n %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" class="no-js">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% if LANGUAGE_BIDI %}{% static "style-rtl.css" %}{% else %}{% static "style.css" %}{% endif %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'font-source/source-sans-pro.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'font-source/source-code-pro.css' %}" />
+
   <meta name="author" content="Michal Čihař" />
   <meta name="dcterms.rightsHolder" content="Michal Čihař">
   <meta name="dcterms.dateCopyrighted" content="2012 - 2019">
   <meta name="robots" content="index, follow" />
   <meta name="description" content="{% block description %}{% endblock %}" />
   <meta name="keywords" content="weblate,git,gettext,resources,json,po,mo,qts,CAT,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" type="text/css" href="{% static "colorbox.css" %}">
+
   <link rel="author" href="mailto:michal@cihar.com" />
   <link rel="shortcut icon" href="{% static "favicon.ico" %}" type="image/x-icon" />
   <link rel="icon" href="{% static "favicon.ico" %}" type="image/x-icon" />
@@ -24,89 +29,26 @@
   {% for lang in language_urls %}
     {% if lang.code != LANGUAGE_CODE %}<link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}" />{% endif %}
   {% endfor %}
-   <script src="{% static "jquery.min.js" %}"></script>
-
-{% if LANGUAGE_BIDI %}
-   <link rel="stylesheet" href="{% static "bootstrap-rtl.min.css" %}">
-{% else %}
-   <link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
-{% endif %}
-   <script src="{% static "bootstrap.bundle.min.js" %}"></script>
-   <link rel="stylesheet" type="text/css" href="{% static "custom.css" %}">
-   <script src="{% static "fontawesome.js" %}" data-auto-add-css="false" async defer></script>
-   <link href="{% static "fontawesome.css" %}" rel="stylesheet" />
-   <link href="{% static "font-ubuntu/ubuntu.css" %}" rel="stylesheet" />
-   
-
-   <script src="{% static "jquery.colorbox-min.js" %}"></script>
-   <script src="{% static "code.js" %}"></script>
    <meta name="google-site-verification" content="SSd77ql2j6xSOlvDHT2pO2r3ZMQQyMVTycyse-l9i6A" />
    <meta name="wot-verification" content="b166aac1728babda4ade" />
 </head>
- <body {% if LANGUAGE_BIDI %}class="dir-rtl"{% endif %}>
-<nav class="navbar navbar-default navbar-expand-md navbar-static-top navbar-light bg-light">
-  <a class="navbar-brand" href="{% url 'home' %}">
-  <img class="logo" src="{% static "weblate-128.png" %}" alt="{% trans "Weblate logo" %}" />
-  Weblate
-  </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>     
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link" href="{% url 'try' %}">{% trans "Try" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'features'%}">{% trans "Features" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'download' %}">{% trans "Download" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'hosting' %}">{% trans "Pricing" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'contribute' %}">{% trans "Develop" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'donate' %}">{% trans "Donate" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'support' %}">{% trans "Support" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'thanks' %}">{% trans "Thanks" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'news' %}">{% trans "Blog" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="https://docs.weblate.org/">{% trans "Docs" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="https://hosted.weblate.org/">{% trans "Hosting" %}</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown"><a href="#" class="nav-link dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="fas fa-language"></span>
-        {% for lang in LANGUAGES %}{% if lang.0 == LANGUAGE_CODE %}{{ lang.1 }}{% endif %}{% endfor %}
-        </a>
-        <div class="dropdown-menu {% if LANGUAGE_BIDI %}dropdown-menu-left{% else %}dropdown-menu-right{% endif %}" aria-labelledby="dropdownMenuLink">
-          {% for lang in language_urls %}
-          <a class="dropdown-item" href="{{ lang.url }}">{{ lang.name }}</a>
-          {% endfor %}
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{% url 'contribute' %}#translate">{% trans "Help with translations!" %}</a>
+<body class="{% block body_class %}page light{% endblock %}">
+	<div class="line"></div>
+    <header>
+        <div class="row">
+            <div class="logo"><a href="{% url 'home' %}">Weblate</a></div>
+            <a href="#" class="user-tab"></a>
+            <a href="https://hosted.weblate.org/" class="button border small app">Weblate App</a>
+            {% include "snippets/main-menu.html" %}
+            <a href="#" class="menu-show"><span></span><span></span><span></span><span></span>Menu</a>
         </div>
-        </li>
-      </ul>
-  </div>
-</nav>
-<header>
+    </header>
 
-{% block jumbotron %}
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    {% block jumbofloat %}
-    {% endblock %}
-    <h1>
-    {% block header %}
-    Weblate
-    {% endblock %}
-    </h1>
-    <p class="headline">
-    {% block headline %}
-    {% endblock %}
-    </p>
-    {% block extrajumbo %}
-    {% endblock %}
-  </div>
-</div>
+{% block box %}
 {% endblock %}
-</header>
-<div class="container">
 
 {% for message in messages %}
+<!-- TODO -->
 <div class="m-4 alert alert-{% if "error" in message.tags %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">
   {{ message }}
 </div>
@@ -114,21 +56,32 @@
 
 {% block content %}
 {% endblock %}
-</div>
 
-{% block bottom %}
-{% endblock %}
+    <footer>
+    	<div class="row">
+        	<a class="f-logo" href="#">weblate</a>
+			<div class="sociable">
+            	<a href="https://www.linkedin.com/company/weblate/" class="icon icon-in" title="LinkedIn"></a>
+            	<a href="https://twitter.com/WeblateOrg" class="icon icon-tw" title="Twitter"></a>
+            	<a href="https://www.facebook.com/WeblateOrg" class="icon icon-fb" title="Facebook"></a>
+            	<a href="https://github.com/WeblateOrg/weblate" class="icon icon-git" title="GitHub"></a>
+                <!--
+            	<a href="#" class="icon icon-yt"></a>
+                -->
+            </div>
+            {% include "snippets/languages.html" %}
+            {% include "snippets/main-menu.html" %}
+            <div class="clear"></div>
+			<div class="footer-left">Copyright © 2012—2019 <a href="https://cihar.com/">Michal Čihař</a>  •  The software is Open Source under XYZ License <a href="https://status.weblate.org/" class="service-status">{% trans "Service status" %}</a></div>
+            <div class="footer-right"><a href="{% url 'terms' %}">{% trans "Terms & Privacy" %}</a>  •  Design by <a href="https://vitavalka.cz/">Vita Valka</a></div>
+		</div>
+    </footer>
+    <section class="mobile-menu">
+        <div class="logo"><a href="#">Weblate</a></div>
+        {% include "snippets/main-menu.html" %}
+        {% include "snippets/languages.html" %}
+    </section>
 
-<footer>
-<ul class="footer">
-<li>Copyright &copy; 2012 - 2019 <a href="https://cihar.com/">Michal Čihař</a></li>
-<li><a href="{% url 'terms' %}">{% trans "Terms of Service and Privacy Policy" %}</a></li>
-<li><a href="https://twitter.com/WeblateOrg" title="Twitter"><i class="fab fa-twitter"></i></a></li>
-<li><a href="https://www.facebook.com/WeblateOrg" title="Facebook"><i class="fab fa-facebook"></i></a></li>
-<li><a href="https://github.com/WeblateOrg/weblate" title="GitHub"><i class="fab fa-github"></i></a></li>
-{% block extrafooter %}{% endblock %}
-</ul>
-</footer>
 
 <!-- Matomo -->
 <script src="https://stats.cihar.com/piwik.js" async defer></script>
@@ -136,5 +89,7 @@
 <noscript><img src="https://stats.cihar.com/piwik.php?idsite=12&amp;rec=1" alt="" /></noscript>
 <!-- End Matomo Code -->
 
-</body>
+	<script type="text/javascript" src="{% static "jquery.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "custom.js" %}"></script>
+  </body>
 </html>

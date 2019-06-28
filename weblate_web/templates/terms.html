@@ -7,22 +7,19 @@
 {% endblock %}
 {% block content %}
 
-<div class="container-fluid">
+<section class="content">
+    <div class="row">
+        <div class="wrap tos">
+            <h1 class="section-title">{% trans "Terms of Service" %}</h1>
+            {% include "legal/documents/tos.html" %}
+        </div>
+    </div>
 
-<div class="card card-primary mb-4">
-<div class="card-header">{% trans "Terms of Service" %}</div>
-<div class="card-body tos">
-{% include "legal/documents/tos.html" %}
-</div>
-</div>
-
-<div class="card card-primary">
-<div class="card-header">{% trans "Privacy Policy" %}</div>
-<div class="card-body tos">
-{% include "legal/documents/privacy.html" %}
-</div>
-</div>
-
-</div>
+    <div class="row">
+        <div class="wrap tos">
+            <h1 class="section-title">{% trans "Privacy Policy" %}</h1>
+            {% include "legal/documents/privacy.html" %}
+        </div>
+    </div>
+</section>
 {% endblock %}
-

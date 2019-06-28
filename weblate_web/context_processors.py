@@ -18,6 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from math import ceil
+
 from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import override
@@ -64,6 +66,8 @@ def weblate_web(request):
             'thumbnail': 'thumbnails/{}'.format(filename),
         } for filename, description, title in SCREENSHOTS
     ]
+    language_col = ceil(len(settings.LANGUAGES) / 3)
+
     return {
         'downloads': downloads,
         'screenshots': screenshots,
@@ -76,4 +80,9 @@ def weblate_web(request):
             third_party=False, active=True
         ).order_by('amount'),
         'contributors': get_contributors(),
+        'language_columns': [
+            language_urls[:language_col],
+            language_urls[language_col:language_col * 2],
+            language_urls[language_col * 2:],
+        ],
     }

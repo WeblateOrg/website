@@ -5,155 +5,310 @@
 {% block title %}{% trans "Weblate - web-based localization" %}{% endblock %}
 {% block header %}{% trans "Web-based <strong>continuous</strong> localization system" %}{% endblock %}
 {% block description %}
-{% block headline %}{% blocktrans with projects=1150 countries=115 %}Weblate is a libre software web-based continuous localization system used by over {{projects}}+ opensource projects &amp; companies in over {{countries}}+ countries around the World.{% endblocktrans %}{% endblock %}
 {% endblock %}
 
+{% block body_class %}{% endblock %}
 
-{% block extrajumbo %}
-<p>
-<a class="btn btn-info btn-lg" href="{% url 'hosting' %}" role="button"><i class="fas fa-server"></i> {% trans "Start using Weblate" %}</a>
-<a class="btn btn-info btn-lg" href="https://hosted.weblate.org/" role="button"><i class="fas fa-search"></i> {% trans "Try Weblate" %}</a>
-<a class="btn btn-info btn-lg" href="{% url 'download' %}" role="button"><i class="fas fa-download"></i> {% trans "Downloads" %}</a>
-</p>
+{% block box %}
+    <section class="main-box">
+    	<div class="row">
+            <div class="box">
+            	<h1>{% trans "Web-based <strong>continuous</strong> localization system" %}</h1>
+                <p>{% blocktrans with projects=1150 countries=115 %}Weblate is a libre software web-based continuous localization system used by over {{projects}}+ opensource projects &amp; companies in over {{countries}}+ countries around the World.{% endblocktrans %}</p>
+            	<a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
+                <div class="inline-info"><a href="{% url 'features' %}">or see all features</a></div>
+            </div>
+    	</div>
+    </section>
 {% endblock %}
-
 
 {% block content %}
-
-
-<p class="description">
-{% blocktrans %}Weblate is a libre web-based localization tool with tight version control integration. It features simple and clean user interface, propagation of translations across components, quality checks and automatic linking to source files.{% endblocktrans %}
-</p>
-
-<a href="{% url 'try' %}" class="trailer">
-<img src="{% static "background.png" %}" class="img-responsive" alt="{% trans "Weblate screenshot" %}">
-</a>
-
-<div class="row">
-
-{% include "base-features.html" %}
-
-</div>
-
-<p><a class="btn btn-info" href="{% url 'features' %}">{% trans "See more features…"%}</a></p>
-
-{% endblock %}
-
-{% block bottom %}
-<div class="jumbotron jumbotron-fluid userlogos" id="users">
-    <h2>
-    {% trans "See who is using Weblate and join them!" %}
-    </h2>
-<div class="container">
-    <div class="row">
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://hosted.weblate.org/engage/osmand/">
-    <img src="{% static "logos/osmand.png" %}" alt="OsmAnd" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://hosted.weblate.org/engage/phpmyadmin/">
-    <img src="{% static "logos/phpmyadmin.png" %}" alt="phpMyAdmin" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://hosted.weblate.org/engage/turris/">
-    <img src="{% static "logos/turris-logo.png" %}" alt="Turris" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://hosted.weblate.org/engage/mypaint/">
-    <img src="{% static "logos/mypaint.png" %}" alt="MyPaint" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://hosted.weblate.org/engage/freedombox/">
-    <img src="{% static "logos/freedombox.png" %}" alt="FreedomBox" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://hosted.weblate.org/engage/sonic-pi/">
-    <img src="{% static "logos/sonic-pi.png" %}" alt="Sonic Pi" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://translation.odoo-community.org/">
-    <img src="{% static "logos/oca.png" %}" alt="Odoo Community Association" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://l10n.opensuse.org/">
-    <img src="{% static "logos/opensuse.png" %}" alt="openSUSE" />
-    </a>
-    </div>
-
-    <div class="col-sm-4 userlogo">
-    <a href="https://weblate.securedrop.club/">
-    <img src="{% static "logos/securedrop.png" %}" alt="SecureDrop" />
-    </a>
-    </div>
-
-
-
-    </div>
-    </div>
-    <a class="btn btn-info btn-lg" href="https://hosted.weblate.org/projects/">{% trans "Browse hundreds of projects on Hosted Weblate" %}</a>
-</div>
-
-    <div class="container">
-      <div class="card-deck mb-3 text-center">
-
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">{% trans "Hosted service" %}</h4>
-          </div>
-          <div class="card-body">
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>{% blocktrans with amount=19 %}From {{ amount }}EUR/month{% endblocktrans %}</li>
-              <li>{% trans "Cloud service" %}</li>
-              <li>{% trans "Priority email support" %}</li>
-            </ul>
-            <a href="{% url "hosting" %}" class="btn btn-lg btn-block btn-info">{% trans "Choose hosting plan" %}</a>
-          </div>
-        </div>
-
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">{% trans "Self hosted" %}</h4>
-          </div>
-          <div class="card-body">
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>{% blocktrans with amount=50 %}From {{ amount }}EUR/month{% endblocktrans %}</li>
-              <li>{% trans "Your infrastructure" %}</li>
-              <li>{% trans "Priority email support" %}</li>
-            </ul>
-            <a href="{% url "support" %}" class="btn btn-lg btn-block btn-info">{% trans "Choose hosting plan" %}</a>
-          </div>
-        </div>
-
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">{% trans "Self supported" %}</h4>
-          </div>
-          <div class="card-body">
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>{% trans "Weblate is free to use" %}</li>
-              <li>{% trans "Maintained by you" %}</li>
-              <li>{% trans "Community support" %}</li>
-            </ul>
-            <a href="{% url "download" %}" class="btn btn-lg btn-block btn-info">{% trans "Download" %}</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
+	<section class="content">
+    	<div class="row">
+            <div class="wrap supporters">
+                <h2 class="section-title">{% trans "Users & Supporters" %}</h2>
+                <a href="#"><img src="{% static "img/logo-turris.svg" %}" alt="#" /></a>
+                <a href="#"><img src="{% static "img/logo-pi.svg" %}" alt="#" /></a>
+                <a href="#"><img src="{% static "img/logo-opensuse.svg" %}" alt="#" /></a>
+                <a href="#"><img src="{% static "img/logo-pma.svg" %}" alt="#" /></a>
+                <a href="#"><img src="{% static "img/logo-freedombox.svg" %}" alt="#" /></a>
+                <div class="clear"></div>
+                <a href="https://hosted.weblate.org/projects/" class="button border small green inline">{% trans "See all projects" %}</a>
+            </div>            
+            <div class="wrap countries">
+            	<div class="half half-text">
+                	<div class="countries-number">115+ Countries</div>
+                	<h2>{% trans "Weblate translates the world of software applications" %}</h2>
+                    <p>{% trans "Weblate is a libre web-based localization tool with tight version control integration. It features simple and clean user interface, propagation of translations across components, quality checks and automatic linking to source files." %}</p>
+                </div>
+                <!-- TODO: content -->
+            	<div class="half half-translations">
+                	<div class="trans-item">
+                        <div class="trans-title">12 strings translated just recently</div>
+                        <div class="trans-project">project <span>opensuse</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">3 strings translated recently</div>
+                        <div class="trans-project">project <span>opensuse</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">37 strings translated recently</div>
+                        <div class="trans-project">project <span>turris</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">9 strings translated just recently</div>
+                        <div class="trans-project">project <span>php my admin</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">12 strings translated just recently</div>
+                        <div class="trans-project">project <span>opensuse</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">12 strings translated just recently</div>
+                        <div class="trans-project">project <span>opensuse</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">3 strings translated recently</div>
+                        <div class="trans-project">project <span>opensuse</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">37 strings translated recently</div>
+                        <div class="trans-project">project <span>turris</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">9 strings translated just recently</div>
+                        <div class="trans-project">project <span>php my admin</span></div>
+                    </div>
+                	<div class="trans-item">
+                        <div class="trans-title">12 strings translated just recently</div>
+                        <div class="trans-project">project <span>opensuse</span></div>
+                    </div>
+                	<div class="trans-bottom">
+                        <div class="trans-number">1.328 translations</div>
+                        <div class="trans-days">in last 7 days</div>
+                    </div>
+                </div>
+            </div>    
+            <div class="clear"></div>        
+			<div class="wrap features">
+                <h2 class="section-title">{% trans "Robust set of features" %}</h2>
+                <div class="f-box">
+                    <div class="icon"><span><img src="{% static "img/icon-localization.svg" %}" alt="#" /></span></div>
+                    <h3>Continuous Localization</h3>
+                    <p>Automated localization workflow closely follows the development of your project.</p>
+                </div>            
+                <div class="f-box">
+                    <div class="icon"><span><img src="{% static "img/icon-checks.svg" %}" alt="#" /></span></div>
+                    <h3>Quality Checks</h3>
+                    <p>Customizable quality checks helps improve translation quality.</p>
+                </div>            
+                <div class="f-box">
+                    <div class="icon"><span><img src="{% static "img/icon-attribution.svg" %}" alt="#" /></span></div>
+                    <h3>Attribution</h3>
+                    <p>All translators are properly credited in the version control system.</p>
+                </div>            
+                <div class="f-box">
+                    <div class="icon"><span><img src="{% static "img/icon-hosting.svg" %}" alt="#" /></span></div>
+                    <h3>Hosting Plans</h3>
+                    <p>Hosting plans for Weblate as a service starting at 19 EUR.</p>
+                </div>            
+                <div class="f-box">
+                    <div class="icon"><span><img src="{% static "img/icon-cloud.svg" %}" alt="#" /></span></div>
+                    <h3>Cloud Ready</h3>
+                    <p>Weblate comes with appliances, ready to deploy in your cloud.</p>
+                </div>            
+                <div class="f-box">
+                    <div class="icon"><span><img src="{% static "img/icon-software.svg" %}" alt="#" /></span></div>
+                    <h3>Libre Software</h3>
+                    <p>Weblate is copylefted; use, see, modify and share at will, and with everyone.</p>
+                </div>            
+            	<a href="{% url 'hosting' %}" class="button inline">{% trans "See pricing" %}</a>
+                <div class="inline-info"><a href="{% url 'features' %}">or explore complete features</a></div>
+            </div>            
+    	</div>
+    </section>
+	<section class="pricing">
+    	<div class="row">
+            <h2 class="section-title">{% trans "<strong>Free</strong> or <strong>Premium</strong> — it’s up to you" %}</h2>
+            <div class="box box-tabs">
+                <h3>{% trans "Premium Cloud" %}</h3>
+                <p>{% trans "for ease & comfort" %}</p>
+                <ul class="pricing-tabs">
+                    <li class="current" data-tab="basic">Basic</li>
+                    <li data-tab="medium">Medium</li>
+                    <li data-tab="advanced">Advanced</li>
+                    <li data-tab="enterprise">Enterprise</li>
+                </ul>
+                <div id="basic" class="tab-content current">
+                    <table>
+                        <tr>
+                            <td>Source strings</td>
+                            <td>1 000</td>
+                        </tr>
+                        <tr>
+                            <td>Languages</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>Projects</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Components</td>
+                            <td>Unlimited</td>
+                        </tr>
+                    </table>
+                    <div class="half first">
+                        <div class="box-price"><strong>€19</strong><br />monthly</div>
+                    </div>
+                    <div class="half">
+                        <div class="box-price"><span>Save 17%</span><strong>€199</strong><br />yearly</div>
+                    </div>
+                </div>
+                <div id="medium" class="tab-content">
+                    <table>
+                        <tr>
+                            <td>Source strings</td>
+                            <td>5 000</td>
+                        </tr>
+                        <tr>
+                            <td>Languages</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>Projects</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Components</td>
+                            <td>Unlimited</td>
+                        </tr>
+                    </table>
+                    <div class="half first">
+                        <div class="box-price"><strong>€19</strong><br />monthly</div>
+                    </div>
+                    <div class="half">
+                        <div class="box-price"><span>Save 17%</span><strong>€199</strong><br />yearly</div>
+                    </div>
+                </div>                
+                <div id="advanced" class="tab-content">
+                    <table>
+                        <tr>
+                            <td>Source strings</td>
+                            <td>10 000</td>
+                        </tr>
+                        <tr>
+                            <td>Languages</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>Projects</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Components</td>
+                            <td>Unlimited</td>
+                        </tr>
+                    </table>
+                    <div class="half first">
+                        <div class="box-price"><strong>€19</strong><br />monthly</div>
+                    </div>
+                    <div class="half">
+                        <div class="box-price"><span>Save 17%</span><strong>€199</strong><br />yearly</div>
+                    </div>
+                </div>                
+                <div id="enterprise" class="tab-content">
+                    <table>
+                        <tr>
+                            <td>Source strings</td>
+                            <td>Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td>Languages</td>
+                            <td>Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td>Projects</td>
+                            <td>Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td>Components</td>
+                            <td>Unlimited</td>
+                        </tr>
+                    </table>
+                    <div class="half first">
+                        <div class="box-price"><strong>€19</strong><br />monthly</div>
+                    </div>
+                    <div class="half">
+                        <div class="box-price"><span>Save 17%</span><strong>€199</strong><br />yearly</div>
+                    </div>
+                </div>                
+            </div>            
+            <div class="box">
+                <h3>Self Hosted</h3>
+                <p>for complete control</p>
+                
+                <table>
+                	<tr>
+                    	<td>Source strings</td>
+                    	<td>Unlimited</td>
+                    </tr>
+                	<tr>
+                    	<td>Languages</td>
+                    	<td>Unlimited</td>
+                    </tr>
+                	<tr>
+                    	<td>Projects</td>
+                    	<td>Unlimited</td>
+                    </tr>
+                	<tr>
+                    	<td>Components</td>
+                    	<td>Unlimited</td>
+                    </tr>
+                </table>
+                <div class="box-price"><strong>Free</strong><br />with paid <a href="#">support</a></div>
+            </div>            
+            <div class="box">
+                <h3 class="green">Free Weblate</h3>
+                <p>for non-profit projects</p>
+                
+                <table>
+                	<tr>
+                    	<td>Source strings</td>
+                    	<td>Negotiable</td>
+                    </tr>
+                	<tr>
+                    	<td>Languages</td>
+                    	<td>Negotiable</td>
+                    </tr>
+                	<tr>
+                    	<td>Projects</td>
+                    	<td>1</td>
+                    </tr>
+                	<tr>
+                    	<td>Components</td>
+                    	<td>25</td>
+                    </tr>
+                </table>
+                <div class="box-price"><strong>Free</strong><br />upon <a href="#">request</a></div>
+            </div>  
+            <div class="clear"></div>
+            <a href="#" class="button">Compare all plans</a>          
+    	</div>
+    </section>
+    <section class="bottom hp">
+    	<div class="row">
+            <div class="box join">
+            	<div class="title"><strong>Join the community</strong> & contribute by development</div>
+                <p>Weblate is a platform for one of the most positive and empowering communities of open source software. We learn and grow together and we connect the world.</p>
+                <a href="#" class="button">Contribute with us</a>
+            </div>
+            <div class="box donate">
+            	<div class="title"><strong>Donate</strong> — to change the World to become a better place</div>
+                <p>Give yourself a happy moment. Help us build Weblate by small or bigger donation. We would use the funds wisely on hosting and manpower. Drive the change.</p>
+                <a href="#" class="button">Donations welcome</a>
+            </div>
+    	</div>
+    </section>
 
 {% endblock %}
