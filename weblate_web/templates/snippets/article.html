@@ -1,0 +1,10 @@
+{% load humanize %}
+
+{% if object.image %}
+<div class="img"><a href="{{ object.get_absolute_url }}"><img src="{{ object.image.image.url }}" alt="#" /></a></div>
+{% endif %}
+<div class="content">
+    <div class="date">{{ object.timestamp|naturalday }}</div>
+    <h2><a href="{{ object.get_absolute_url }}">{{ object.title }}</a></h2>
+    <p>{{ object.summary }}</p>
+</div>

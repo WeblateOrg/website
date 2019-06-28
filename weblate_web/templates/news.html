@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Weblate blog" %}{% endblock %}
+{% block description %}{% trans "News about Weblate and localization." %}{% endblock %}
+
+{% block content %}
+	<section class="content">
+    	<div class="row">
+            <div class="wrap">
+                <h1 class="section-title">{% trans "Weblate Blog" %}</h1>
+				<div class="articles">
+                    {% for object in object_list %}
+                    <div class="article{% if forloop.counter == 1 %} big{% endif %}">
+                        {% include "snippets/article.html" %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'news-archive' %}" class="button center">{% trans "View older articles" %}</a>
+            </div>            
+    	</div>
+    </section>
+
+    {% include "snippets/bottom.html" with extra_css="hp" %}
+{% endblock %}
