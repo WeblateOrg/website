@@ -28,9 +28,8 @@
                             <a href="#" class="icon icon-fb"></a>
                         </div>
                     	<div class="author">
-                            <!-- TODO user and avatars -->
-                        	<div class="avatar"><img src="tmp/avatar.jpg" alt="#" /></div>
-                            Michal Čihař
+                        	<div class="avatar"><img src="https://hosted.weblate.org/avatar/80/{{ object.author.username }}.png" alt="#" /></div>
+                            {{ object.author.last_name }}
                             <!-- TODO topic archives? -->
                             <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="#">{{ object.get_topic_display }}</a>
                             {{ object.timestamp|naturalday }}
