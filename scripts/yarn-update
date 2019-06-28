@@ -7,29 +7,18 @@ cd scripts/yarn/
 yarn install --check-files
 yarn upgrade-interactive
 
-# Bootstrap
-cp node_modules/bootstrap/dist/css/bootstrap.min.css ../../weblate_web/static/bootstrap.min.css
-cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js ../../weblate_web/static/bootstrap.bundle.min.js
-
-# Font Awesome
-cp node_modules/@fortawesome/fontawesome-free/js/all.min.js ../../weblate_web/static/fontawesome.js
-cp node_modules/@fortawesome/fontawesome-free/css/svg-with-js.min.css ../../weblate_web/static/fontawesome.css
-
 # jQuery
 cp node_modules/jquery/dist/jquery.min.js ../../weblate_web/static/jquery.min.js
 
-# jQuery colorbox
-cp node_modules/jquery-colorbox/jquery.colorbox-min.js ../../weblate_web/static/jquery.colorbox-min.js
-cp node_modules/jquery-colorbox/example5/colorbox.css ../../weblate_web/static/colorbox.css
-cp node_modules/jquery-colorbox/example5/images/* ../../weblate_web/static/images/
-
-# Ubuntu font
-cp node_modules/ubuntu-fontface/ubuntu.css ../../weblate_web/static/font-ubuntu/
-cp node_modules/ubuntu-fontface/fonts/ubuntu-regular-webfont.* ../../weblate_web/static/font-ubuntu/fonts/
-cp node_modules/ubuntu-fontface/fonts/ubuntu-regular-italic-webfont.* ../../weblate_web/static/font-ubuntu/fonts/
-cp node_modules/ubuntu-fontface/fonts/ubuntu-medium-webfont.* ../../weblate_web/static/font-ubuntu/fonts/
-cp node_modules/ubuntu-fontface/fonts/ubuntu-bold-webfont.* ../../weblate_web/static/font-ubuntu/fonts/
-cp node_modules/ubuntu-fontface/fonts/ubuntumono-regular-webfont.* ../../weblate_web/static/font-ubuntu/fonts/
-
-# Not in yarn (no package?)
-curl https://raw.githubusercontent.com/PerseusTheGreat/bootstrap-4-rtl/v4-dev/dist/css/bootstrap-rtl.min.css > ../../weblate_web/static/bootstrap-rtl.min.css
+# Source Sans/Code Pro fonts
+mkdir -p ../../weblate_web/static/font-source
+cp node_modules/source-sans-pro/source-sans-pro.css ../../weblate_web/static/font-source
+cp node_modules/source-code-pro/source-code-pro.css ../../weblate_web/static/font-source
+find node_modules/source-sans-pro/ node_modules/source-code-pro/ -name SourceSansPro-Semibold.* -o -name SourceSansPro-Black.* -o -name SourceSansPro-Bold.* -o -name SourceSansPro-Regular.* -o -name SourceSansPro-It.* -o -name SourceSansPro-BoldIt.* -o -name SourceCodePro-Regular.* -o -name SourceCodePro-Bold.* | while read name ; do
+    target=`echo $name | sed 's@node_modules/source-\(sans\|code\)-pro/@../../weblate_web/static/font-source/@'`
+    dir=`dirname $target`
+    if [ ! -d $dir ] ; then
+        mkdir -p $dir
+    fi
+    cp $name $target
+done
