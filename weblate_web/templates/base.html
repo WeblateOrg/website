@@ -37,7 +37,11 @@
     <header>
         <div class="row">
             <div class="logo"><a href="{% url 'home' %}">Weblate</a></div>
+            {% if user.is_authenticated %}
             <a href="#" class="user-tab"></a>
+            {% else %}
+            <a href="{% url 'simple-sso-login' %}?next={{ request.path }}" class="user-tab"></a>
+            {% endif %}
             <a href="https://hosted.weblate.org/" class="button border small app">Weblate App</a>
             {% include "snippets/main-menu.html" %}
             <a href="#" class="menu-show"><span></span><span></span><span></span><span></span>Menu</a>
