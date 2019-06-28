@@ -365,11 +365,16 @@ def subscribe(request, name):
     return redirect('support')
 
 
-class NewsView(ArchiveIndexView):
+class NewsArchiveView(ArchiveIndexView):
     model = Post
     date_field = 'timestamp'
     paginate_by = 10
     ordering = ('-timestamp',)
+
+
+class NewsView(NewsArchiveView):
+    paginate_by = 5
+    template_name = 'news.html'
 
 
 class PostView(DetailView):

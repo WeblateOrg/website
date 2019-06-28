@@ -99,19 +99,5 @@
     	</div>
     </section>
     {% include "snippets/pricing.html" %}
-    <section class="bottom hp">
-    	<div class="row">
-            <div class="box join">
-            	<div class="title">{% trans "<strong>Join the community</strong> & contribute by development" %}</div>
-                <p>{% trans "Weblate is a platform for one of the most positive and empowering communities of open source software. We learn and grow together and we connect the world" %}.</p>
-                <a href="#" class="button">{% trans "Contribute with us" %}</a>
-            </div>
-            <div class="box donate">
-            	<div class="title">{% trans "<strong>Donate</strong> — to change the World to become a better place" %}</div>
-                <p>{% trans "Give yourself a happy moment. Help us build Weblate by small or bigger donation. We would use the funds wisely on hosting and manpower. Drive the change." %}</p>
-                <a href="#" class="button">{% trans "Donations welcome" %}</a>
-            </div>
-    	</div>
-    </section>
-
+    {% include "snippets/bottom.html" with extra_css="hp" %}
 {% endblock %}

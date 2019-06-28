@@ -5,17 +5,56 @@
 {% load humanize %}
 
 {% block title %}{{ object.title }}{% endblock %}
-{% block header %}{{ object.title }}{% endblock %}
 {% block og_image %}https://weblate.org{{ object.image.image.url }}{% endblock %}
 {% block description %}
 {{ object.summary }}
 {% endblock %}
-{% block headline %}{{ object.timestamp|naturalday }}{% endblock %}
-{% block jumbofloat %}
-<img class="float-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %} jumboimage" src="{{ object.image.image.url }}" />
-{% endblock %}
 
 {% block content %}
+	<section class="content">
+    	<div class="row">
+            <div class="wrap">
+                <h1 class="section-title bold">{{ object.title }}</h1>
+                <div class="article big post">
+                    {% if object.image %}
+                    <div class="img"><a href="{{ object.get_absolute_url }}"><img src="{{ object.image.image.url }}" alt="#" /></a></div>
+                    {% endif %}
+                    <div class="content">
+                    	<div class="post-sociable">
+                        	<span>{% trans "Share" %}</span>
+                            <!-- TODO -->
+                            <a href="#" class="icon icon-in"></a>
+                            <a href="#" class="icon icon-tw"></a>
+                            <a href="#" class="icon icon-fb"></a>
+                        </div>
+                    	<div class="author">
+                            <!-- TODO user and avatars -->
+                        	<div class="avatar"><img src="tmp/avatar.jpg" alt="#" /></div>
+                            Michal Čihař
+                            <!-- TODO topic archives? -->
+                            <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="#">{{ object.get_topic_display }}</a>
+                            {{ object.timestamp|naturalday }}
+                        </div>
+                        <div lang="en" dir="ltr" class="entry">
+                        {{ object.body }}
+                        </div>
+                    </div>
+                </div>
+                <div class="related-posts">
+                    <div class="section-title">{% trans "Related Articles" %}</div>
+                    {% for item in related %}
+                    <div class="article">
+                        {% include "snippets/article.html" with object=item %}
+                    </div>
+                    {% endfor %}
+                    <div class="clear"></div>
+                    <a href="{% url 'news' %}" class="button center">{% trans "Back to blog" %}</a>
+                </div>
+            </div>            
+    	</div>
+    </section>
+
+
 
 <div lang="en" dir="ltr" class="ltr">
 {{ object.body }}
