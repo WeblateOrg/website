@@ -1,166 +1,208 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 {% block title %}{% trans "Weblate features" %}{% endblock %}
 {% block header %}{% trans "Weblate features" %}{% endblock %}
 {% block description %}{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time.{% endblocktrans %}{% endblock %}
-{% block headline %}{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time. View the <a href="https://docs.weblate.org/">complete documentation</a> to learn more, and make your users happier!{% endblocktrans %}{% endblock %}
 
-{% block extrajumbo %}
-<p>
-<a class="btn btn-info btn-lg" href="https://docs.weblate.org/" role="button"><i class="fas fa-book-open"></i> {% trans "View documentation" %}</a>
-</p>
-{% endblock %}
 {% block content %}
-
-<div class="row">
-
-{% include "base-features.html" %}
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/admin/auth.html">
-<div class="fas fa-lock fa-4x"></div>
-<h4>{% trans "Access control" %}</h4>
-<p>{% trans "Access rights can be fine-tuned to suit your environment." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/user/profile.html#subscriptions">
-<div class="fas fa-envelope fa-4x"></div>
-<h4>{% trans "Notifications" %}</h4>
-<p>{% trans "Translators can be notified of new strings, or any other events." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/api.html">
-<div class="fas fa-wrench fa-4x"></div>
-<h4>{% trans "Integration API" %}</h4>
-<p>{% trans "Integrate with third party services." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/formats.html">
-<div class="fas fa-archive fa-4x"></div>
-<h4>{% trans "File formats" %}</h4>
-<p>{% trans "Use all widely used localization fileformats, like gettext, JSON, XLIFF or resource strings." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/faq.html#how-do-i-translate-several-branches-at-once">
-<div class="fas fa-code-branch fa-4x"></div>
-<h4>{% trans "Branches support" %}</h4>
-<p>{% trans "Maintain different versions of a translation by pushing to different branches automatically." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/user/translating.html">
-<div class="fas fa-medkit fa-4x"></div>
-<h4>{% trans "Translation context" %}</h4>
-<p>{% trans "Any translator can always see contextual info, like comments, or the corresponding source code." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/user/translating.html#glossary">
-<div class="fas fa-book fa-4x"></div>
-<h4>{% trans "Glossary" %}</h4>
-<p>{% trans "Translators can define their own glossary to stay consistent with frequently used terminology." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/faq.html#how-do-i-provide-feedback-on-source-string">
-<div class="fas fa-comments fa-4x"></div>
-<h4>{% trans "Acquiring feedback" %}</h4>
-<p>{% trans "Use comments to ask for feedback on source strings to improve them." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/user/translating.html#export-and-import">
-<div class="fas fa-download fa-4x"></div>
-<h4>{% trans "Export and import" %}</h4>
-<p>{% trans "Downloaded translations for offline use, and merge them back in." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/about.html#project-goals">
-<div class="fas fa-bullseye fa-4x"></div>
-<h4>{% trans "Integrated" %}</h4>
-<p>{% trans "Translations are managed within the same version control system as the code." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/">
-<div class="fas fa-book-open fa-4x"></div>
-<h4>{% trans "Documentation" %}</h4>
-<p>{% trans "Comprehensive documentation covering both setup and usage." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/faq.html#how-do-i-review-others-translations">
-<div class="fas fa-eye fa-4x"></div>
-<h4>{% trans "Review" %}</h4>
-<p>{% trans "Several options of reviewing contributions." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/faq.html#where-do-language-definition-come-from-and-how-can-i-add-own">
-<div class="fas fa-language fa-4x"></div>
-<h4>{% trans "Languages" %}</h4>
-<p>{% trans "Over 150 languages out of the box, others can be defined with administrator rights." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/devel/index.html#promotion">
-<div class="fas fa-share fa-4x"></div>
-<h4>{% trans "Promotion" %}</h4>
-<p>{% trans "The platforms provides various ways to promote your translation project." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/devel/index.html#reports">
-<div class="fas fa-chart-bar fa-4x"></div>
-<h4>{% trans "Reporting" %}</h4>
-<p>{% trans "Reports are generated to provide info on project activity." %}</p>
-</a>
-</div>
-
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/faq.html#faq-vcs">
-<div class="fab fa-git fa-4x"></div>
-<h4>{% trans "Version control" %}</h4>
-<p>{% trans "Talks directly with your version control system, currently Git and Mercurial are supported." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://docs.weblate.org/en/latest/faq.html#faq-vcs">
-<div class="fab fa-github fa-4x"></div>
-<h4>{% trans "Collaboration sites" %}</h4>
-<p>{% trans "Native support for many software development sites, such as GitLab, GitHub, or Bitbucket." %}</p>
-</a>
-</div>
-
-<div class="col-lg-4 col-sm-6 feature">
-<a class="text-info" href="https://hosted.weblate.org/">
-<div class="fas fa-tablet fa-4x"></div>
-<h4>{% trans "Responsive UI" %}</h4>
-<p>{% trans "Works nicely on your desktop, tablet, or phone." %}</p>
-</a>
-</div>
-
-</div>
-
+	<section class="content">
+    	<div class="row">
+            <div class="wrap">
+                <h1 class="section-title min-m">Weblate features</h1>
+                <div class="page-desc"><p>{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time. View the <a href="https://docs.weblate.org/">complete documentation</a> to learn more, and make your users happier!{% endblocktrans %}</p></div>
+                <div class="wrap features">
+                {% include "snippets/features-1.html" %}
+                </div>            
+            </div>
+    	</div>
+    </section>
+    <section class="interface">
+    	<div class="row">
+        	<div class="inter-title">Easy to use interface</div>
+            <img src="{% static "img/BigScreenshot.png" %}" class="photo" alt="#" />
+            <div class="inter-checks">Customizable <br />quality checks</div>
+            <div class="inter-context">
+            	<div class="title">Detailed context</div>
+            	<p>{% trans "Translators are provided detailed information about translation context from the translation files or enriched within Weblate." %}</p>
+                <img src="{% static "img/source-info.png" %}" alt="#" />
+            </div>
+            <div class="inter-fluent">
+            	<div class="title">Fluent <br />communication</div>
+            	<p>All translations are tracked <br />and can be commented.</p>
+                <img src="{% static "img/comment-new.png" %}" alt="#" />
+            </div>
+    	</div>
+    </section>
+	<section class="content no-mar">
+    	<div class="row">
+            <div class="wrap features">
+                {% include "snippets/features-2.html" %}
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/admin/access.html">
+                    <div class="icon"><span><img src="{% static "img/icon-control.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Access Control" %}</h3>
+                    <p>{% trans "Access rights can be fine tuned depending on your environment." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/user/profile.html#subscriptions">
+                    <div class="icon"><span><img src="{% static "img/icon-notifications.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Smart Notifications" %}</h3>
+                    <p>{% trans "Translators can be notified on new strings to translate or other events." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/api.html">
+                    <div class="icon"><span><img src="{% static "img/icon-api.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Integration API" %}</h3>
+                    <p>{% trans "Thanks to the API you can integrate Weblate with third party services." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/formats.html">
+                    <div class="icon"><span><img src="{% static "img/icon-formats.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Multiple File Formats" %}</h3>
+                    <p>{% trans "Weblate supports all widely used file formats for localization, like gettext, JSON, XLIFF or resource strings." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/faq.html#how-do-i-translate-several-branches-at-once">
+                    <div class="icon"><span><img src="{% static "img/icon-branches.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Branches Support" %}</h3>
+                    <p>{% trans "Weblate can handle different versions of the translation by pushing them to different branches automatically." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/user/translating.html">
+                    <div class="icon"><span><img src="{% static "img/icon-context.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Translation Context" %}</h3>
+                    <p>{% trans "Translator can always see important context information like comments or corresponding source code." %}</p>
+                </a>
+                </div>            
+            </div>
+    	</div>
+    </section>
+    <section class="formats">
+    	<div class="row">
+        	<a class="format-item" href="#">Gettext <span>.po, .pot, .mo</span></a>
+        	<a class="format-item" href="#">XLIFF <span>.xliff</span></a>
+        	<a class="format-item" href="#">Java <span>.properties</span></a>
+        	<a class="format-item" href="#">Joomla <span>.ini</span></a>
+        	<a class="format-item" href="#">Qt <span>.ts</span></a>
+        	<a class="format-item" href="#">Android <span>.xml</span></a>
+        	<a class="format-item" href="#">i18next <span>.json</span></a>
+        	<a class="format-item" href="#">WebExtension <span>.json</span></a>
+        	<a class="format-item" href="#">Key value <span>.json</span></a>
+        	<a class="format-item" href="#">PHP <span>.php</span></a>
+        	<a class="format-item" href="#">iOS <span>.strings</span></a>
+        	<a class="format-item" href="#">Excel <span>.xslx</span></a>
+        	<a class="format-item" href="#">Mozilla DTD <span>.dtd</span></a>
+        	<a class="format-item" href="#">.Net resource files <span>.resx, .resw</span></a>
+        	<a class="format-item" href="#">CSV <span>.csv</span></a>
+        	<a class="format-item" href="#">YAML <span>.yaml</span></a>
+        	<a class="format-item" href="#">Ruby <span>.yaml</span></a>
+        	<a class="format-item" href="#">App store metadatada <span>.txt</span></a>
+        	<a class="format-item" href="#">Subtitles <span>.srt</span></a>
+    	</div>
+    </section>
+	<section class="content no-mar">
+    	<div class="row">
+            <div class="wrap features">
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/user/translating.html#glossary">
+                    <div class="icon"><span><img src="{% static "img/icon-glossary.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Glossary" %}</h3>
+                    <p>{% trans "Translators can define their own glossary to stay consistent in frequently used terminology." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/faq.html#how-do-i-provide-feedback-on-source-string">
+                    <div class="icon"><span><img src="{% static "img/icon-feedback.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Feedback Acquisition" %}</h3>
+                    <p>{% trans "You can also use Weblate to acquire feedback on source strings and thus improve them." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/user/translating.html#export-and-import">
+                    <div class="icon"><span><img src="{% static "img/icon-export.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Export & Import" %}</h3>
+                    <p>{% trans "Translations can be downloaded for offline translation and merged back." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/about.html#project-goals">
+                    <div class="icon"><span><img src="{% static "img/icon-integrated.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Fully Integrated" %}</h3>
+                    <p>{% trans "Translations are managed within same version control system as code." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/">
+                    <div class="icon"><span><img src="{% static "img/icon-documentation.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Documentation" %}</h3>
+                    <p>{% trans "Weblate comes with comprehensive documentation covering both setup and usage." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/faq.html#how-do-i-review-others-translations">
+                    <div class="icon"><span><img src="{% static "img/icon-reviews.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Easy Reviews" %}</h3>
+                    <p>{% trans "Translators have several options to review contributions made by peers." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/faq.html#where-do-language-definition-come-from-and-how-can-i-add-own">
+                    <div class="icon"><span><img src="{% static "img/icon-languages.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "300 languages" %}</h3>
+                    <p>{% trans "Weblate supports over 300 languages out of the box, others can be defined by administrator." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/devel/index.html#promotion">
+                    <div class="icon"><span><img src="{% static "img/icon-promotion.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Promotion" %}</h3>
+                    <p>{% trans "Weblate provides you various ways to promote your translation project." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/devel/index.html#reports">
+                    <div class="icon"><span><img src="{% static "img/icon-reporting.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Reporting" %}</h3>
+                    <p>{% trans "Weblate generates various reports to provide information about project activity." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/faq.html#faq-vcs">
+                    <div class="icon"><span><img src="{% static "img/icon-versioncontrol.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Version Control" %}</h3>
+                    <p>{% trans "Weblate talks directly with your version control system, currently Git and Mercurial are supported." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://docs.weblate.org/en/latest/faq.html#faq-vcs">
+                    <div class="icon"><span><img src="{% static "img/icon-collaboration.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Collaboration Sites" %}</h3>
+                    <p>{% trans "Weblate has native support for many software development sites such as GitHub, Bitbucket or Gitlab." %}</p>
+                </a>
+                </div>            
+                <div class="f-box">
+                <a href="https://hosted.weblate.org/">
+                    <div class="icon"><span><img src="{% static "img/icon-responsiveui.svg" %}" alt="#" /></span></div>
+                    <h3>{% trans "Responsive UI" %}</h3>
+                    <p>{% trans "Weblate has responsive UI which will work nicely on your desktop, tablet or phone." %}</p>
+                </a>
+                </div>            
+            </div>
+    	</div>
+    </section>
+{% include "snippets/pricing.html" %}
+    <section class="about">
+    	<div class="row">
+            <div class="section-title">Know more about Weblate</div>
+            <p>{% trans "Dive into Weblate for free, or connect with our team of professionals for a more focused advice on your exact needs. We have extensive skills & experience with over 150+ languages." %}</p>
+            <a href="#" class="button inline black">Try Weblate free</a>
+            <a href="#" class="button inline border rev">See a demo</a>
+    	</div>
+    </section>
 {% endblock %}

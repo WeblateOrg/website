@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load static %}
+
+<div class="f-box">
+<a href="{% url 'hosting' %}">
+    <div class="icon"><span><img src="{% static "img/icon-hosting.svg" %}" alt="#" /></span></div>
+    <h3>{% trans "Hosting Plans" %}</h3>
+    <p>{% trans "Hosting plans for Weblate as a service starting at 19 EUR." %}</p>
+</a>
+</div>            
+<div class="f-box">
+<a href="{% url 'download' %}">
+    <div class="icon"><span><img src="{% static "img/icon-cloud.svg" %}" alt="#" /></span></div>
+    <h3>{% trans "Cloud Ready" %}</h3>
+    <p>{% trans "Weblate comes with appliances, ready to deploy in your cloud." %}</p>
+</a>
+</div>            
+<div class="f-box">
+<a href="https://github.com/WeblateOrg/weblate">
+    <div class="icon"><span><img src="{% static "img/icon-software.svg" %}" alt="#" /></span></div>
+    <h3>{% trans "Libre Software" %}</h3>
+    <p>{% trans "Weblate is copylefted; use, see, modify and share at will, and with everyone." %}</p>
+</a>
+</div>            
