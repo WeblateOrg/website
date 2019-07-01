@@ -38,7 +38,9 @@
         <div class="row">
             <div class="logo"><a href="{% url 'home' %}">Weblate</a></div>
             {% if user.is_authenticated %}
-            <a href="{% url 'user' %}" class="user-tab"></a>
+            <a href="{% url 'user' %}" class="user-tab">
+            <img src="https://hosted.weblate.org/avatar/16/{{ user.username }}.png" alt="#" />
+            </a>
             {% else %}
             <a href="{% url 'simple-sso-login' %}?next={{ request.path }}" class="user-tab"></a>
             {% endif %}
