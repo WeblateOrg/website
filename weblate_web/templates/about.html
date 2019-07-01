@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Weblate features" %}{% endblock %}
+{% block description %}{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time.{% endblocktrans %}{% endblock %}
+
+{% block body_class %}page contribute light{% endblock %}
+
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "About Weblate" %}</h1>
+            <div class="page-desc">
+                <p>{% trans "We simply love localization & free software. That's why we're building the best localization tool and provide it as a free software. It all started in 2012 when we faced a lucky moment." %}</p>
+            </div>
+            
+            <div class="aboutus-list">
+                <div class="box">
+                    <div class="avatar"><img src="{% static "img/MichalPhoto.png" %}" alt="#" /></div>
+                    <div class="date">{% trans "February 2012" %} — Michal Čihař</div>
+                    <h2><a href="{% url 'post' slug='looking-pootle-alternative' %}">Looking for Pootle alternative</a></h2>
+                    <p>{% trans "…The key feature I want from such system is full integration with git. This means that whatever is changed should be committed to local git branch and merging translations back should be as easy as merging remote branch. I've hacked such thing into Pootle (in quite dirty way), so this is basically workflow we have right now and I'm pretty much happy with that…" %}</p>
+                </div>
+                <div class="box blue">
+                    <div class="date">{% trans "March 2012" %} — Michal Čihař</div>
+                    <h2><a href="{% url 'post' slug='announcing-weblate' %}">Announcing Weblate</a></h2>
+                    <p>{% trans "…After about week of development, I can announce availability of Weblate - web based translation tool with tight Git integration…" %}</p>
+                </div>
+                <div class="box blue">
+                    <div class="date">{% trans "April 2012" %} — Michal Čihař</div>
+                    <h2><a href="{% url 'post' slug='why-weblate' %}">Why weblate?</a></h2>
+                    <p>
+                        {% trans "…I still get lot of questions why I wrote Weblate instead of staying with some existing solution. Let’s summarize the reasons:" %}<br />
+                        — {% trans "Git integration" %}<br />
+                        — {% trans "Attribution to translator" %}<br />
+                        — {% trans "Handling of several branches" %}<br />
+                        — {% trans "Displaying context" %}<br />
+                        — {% trans "Sane merging of translations" %}<br />
+                        — {% trans "Consistency checks" %}
+                    </p>
+                </div>
+                <div class="box">
+                    <div class="date">{% trans "Today" %} — Michal Čihař</div>
+                    <h2>{% trans "Weblate grows & the future is open to new opportunities!" %}</h2>
+                </div>
+            </div>
+            
+            <h2 class="section-title crypto">{% trans "Contributors & translators united" %}</h2>
+            <div class="suporters-items">
+                {% for contributor in contributors %}
+                <a href="{{ contributor.author.html_url }}" title="{{ contributor.author.login }}"><img src="{{ contributor.author.avatar_url }}" class="suporters" /></a>
+                {% endfor %}
+            </div>
+
+            <h2 class="section-title crypto">{% trans "The Weblate history.log" %}</h2>
+            <div class="half half-translations history">
+                <div class="trans-item">
+                    <div class="trans-title">{% trans "January 2019" %} — Weblate 3.4</div>
+                    <div class="trans-project">{% trans "Weblate can now automatically detect translation files in a repository" %}</div>
+                </div>
+                <div class="trans-item">
+                    <div class="trans-title">{% trans "June 2018" %} — Weblate 3.0</div>
+                    <div class="trans-project">{% trans "Weblate 3.0 is released with rewritten and more flexible access control" %}</div>
+                </div>
+                <div class="trans-item">
+                    <div class="trans-title">{% trans "April 2017" %}</div>
+                    <div class="trans-project">{% trans "Opened security program at HackeOne" %}</div>
+                </div>
+                <div class="trans-item">
+                    <div class="trans-title">{% trans "November 2016" %} — Weblate 2.9</div>
+                    <div class="trans-project">{% trans "Adding support for uploading screenshots to provide better context to translators" %}</div>
+                </div>
+                <a href="https://docs.weblate.org/en/latest/changes.html" class="button center">{% trans "Show older milestones" %}</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="donations-info aboutus">
+    <div class="di-section">
+        <div class="half half-img">
+            <img src="{% static "img/michal-cihar.jpg" %}" alt="#" />
+        </div>
+        <div class="half half-content">
+            <h2>Michal Čihař</h2>
+            <div class="user-info">{% trans "Founder of Weblate" %}</div>
+            <p>{% blocktrans %}Michal was born & lives in Prague, Czech Republic. He is free software enthusiast and long term contributor to various free software projects like <a href="https://weblate.org/">Weblate</a>, <a href="https://wammu.eu/">Gammu</a>, <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> or <a href="https://www.debian.org/">Debian</a>.{% endblocktrans %}</p>
+            <p>{% trans "He was employed in several companies in the technology area in his early career. Since early 2016 Michal is fully dedicated to provide quality services to companies with focus on localization & Weblate." %}</p>
+        </div>
+    </div>
+</section>
+{% include "snippets/about.html" %}
+{% include "snippets/bottom.html" %}
+{% endblock %}

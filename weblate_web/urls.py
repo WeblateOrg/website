@@ -235,6 +235,11 @@ urlpatterns = i18n_patterns(
         name='post'
     ),
     url(
+        r'^about/$',
+        TemplateView.as_view(template_name="about.html"),
+        name='about'
+    ),
+    url(
         r'^support/$',
         TemplateView.as_view(template_name="support.html"),
         name='support'

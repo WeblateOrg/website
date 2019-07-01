@@ -8,7 +8,7 @@
         <li class="{% if request.resolver_match.url_name == 'donate' or request.resolver_match.url_name == 'donate-new' %} active{% endif %}"><a href="{% url 'donate' %}">{% trans "Donate" %}</a></li>
         <li class="gethelp{% if request.resolver_match.url_name == 'support' %} active{% endif %}"><a href="{% url 'support' %}">{% trans "Get help" %}</a></li>
         <li class="{% if request.resolver_match.url_name == 'news' or request.resolver_match.url_name == 'news-archive' or request.resolver_match.url_name == 'post' %} active{% endif %}"><a href="{% url 'news' %}">{% trans "Blog" %}</a></li>
-        <li class="{% if request.resolver_match.url_name == 'about' %} active{% endif %}"><a href="page-about.html">{% trans "About" %}</a></li>
+        <li class="{% if request.resolver_match.url_name == 'about' %} active{% endif %}"><a href="{% url 'about' %}">{% trans "About" %}</a></li>
         <li><a href="https://docs.weblate.org/">{% trans "Docs" %}</a></li>
     </ul>
 </nav>

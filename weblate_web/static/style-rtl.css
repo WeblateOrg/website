@@ -395,6 +395,8 @@ div.wrap {
 }
 .supporters img {
 	margin: 0 35px 50px;
+    width: 60px;
+    height: 60px;
 }
 .half {
 	float: right;
@@ -1897,7 +1899,7 @@ body.page .supporters h2.section-title.hp-style {
 	display: block;
 }
 .aboutus-list .box {
-	border-radius: 20px 20px 20px 0;
+	border-radius: 20px 20px 0 20px;
 	background-color: #2ECCAA;
 	box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);
 	position: relative;
@@ -1920,22 +1922,22 @@ body.page .supporters h2.section-title.hp-style {
 	width: 0;
 	height: 0;
 	border-style: solid;
-	border-width: 30px 30px 0 0;
-	border-color: #2ECCAA transparent transparent transparent;
+	border-width: 0 30px 30px 0;
+	border-color: transparent #2ECCAA transparent transparent;
 	position: absolute;
 	bottom: -30px;
 	right: 0;
 	content: '';
 }
 .aboutus-list .box.blue:before {
-	border-width: 0 30px 30px 0;
-	border-color: transparent #00D2E6 transparent transparent;
+	border-width: 30px 30px 0 0;
+	border-color: #00D2E6 transparent transparent transparent;
 	left: 0;
 	right: inherit;
 }
 .aboutus-list .box.blue {
 	background-color: #00D2E6;
-	border-radius: 20px 20px 0 20px;
+	border-radius: 20px 20px 20px 0;
 }
 .aboutus-list .box h2 {
 	color: #FFFFFF;
@@ -2639,12 +2641,18 @@ a.pagination {
 a.active-page {
 	background-color: #C0EFE4;
 }
-.suporters-items a {
+.supporters-logo {
     max-width: 300px;
     padding: 20px;
     display: inline-block;
     text-align: center;
     vertical-align: middle;
+}
+img.suporters {
+    width: 64px;
+    -webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
 }
 .article .author .avatar img {
     -webkit-border-radius: 50%;
