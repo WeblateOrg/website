@@ -42,7 +42,9 @@
             <img src="https://hosted.weblate.org/avatar/32/{{ user.username }}.png" alt="#" />
             </a>
             {% else %}
-            <a href="{% url 'simple-sso-login' %}?next={{ request.path }}" class="user-tab"></a>
+            <a href="{% url 'simple-sso-login' %}?next={{ request.path }}" class="user-tab">
+            <img src="https://hosted.weblate.org/avatar/32/nijel.png" alt="#" />
+            </a>
             {% endif %}
             <a href="https://hosted.weblate.org/" class="button border small app">Weblate App</a>
             {% include "snippets/main-menu.html" %}
