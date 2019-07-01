@@ -26,13 +26,7 @@
     	<div class="row">
             <div class="wrap supporters">
                 <h2 class="section-title">{% trans "Users & Supporters" %}</h2>
-                <a href="#"><img src="{% static "img/logo-turris.svg" %}" alt="#" /></a>
-                <a href="#"><img src="{% static "img/logo-pi.svg" %}" alt="#" /></a>
-                <a href="#"><img src="{% static "img/logo-opensuse.svg" %}" alt="#" /></a>
-                <a href="#"><img src="{% static "img/logo-pma.svg" %}" alt="#" /></a>
-                <a href="#"><img src="{% static "img/logo-freedombox.svg" %}" alt="#" /></a>
-                <div class="clear"></div>
-                <a href="https://hosted.weblate.org/projects/" class="button border small green inline">{% trans "See all projects" %}</a>
+                {% include "snippets/users.html" %}
             </div>            
             <div class="wrap countries">
             	<div class="half half-text">
