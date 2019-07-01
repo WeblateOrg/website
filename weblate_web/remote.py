@@ -52,7 +52,7 @@ def get_contributors():
         if stat['author']['login'] in EXCLUDE_USERS:
             stat['rank'] = 0
             continue
-        stat['rank'] = 8 * stat['total'] + sum(
+        stat['rank'] = stat['total'] + sum(
             (week['a'] + week['d'] for week in stat['weeks'])
         )
 
