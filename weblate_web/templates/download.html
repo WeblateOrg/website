@@ -4,84 +4,85 @@
 {% load static %}
 
 {% block title %}{% trans "Download Weblate" %}{% endblock %}
-{% block header %}{% trans "Download Weblate" %}{% endblock %}
-{% block description %}
-{% block headline %}{% trans "Weblate comes with complete source code." %}{% endblock %}
-{% endblock %}
+{% block description %}{% trans "Weblate comes with complete source code." %}{% endblock %}
 
-{% block extrajumbo %}
-<p>
-<a class="btn btn-info btn-lg" href="https://github.com/WeblateOrg/weblate/" role="button"><i class="fab fa-github"></i> {% trans "View sources" %}</a>
-<a class="btn btn-info btn-lg" href="{% url 'support' %}"><i class="fas fa-life-ring"></i> {% trans "Get support for Weblate" %}</a>
-</p>
-{% endblock %}
+{% block body_class %}page download light{% endblock %}
+
 {% block content %}
-
-<h2>{% trans "Installing Weblate" %}</h2>
-
-<p>
-{% blocktrans with url='https://docs.weblate.org/en/latest/admin/quick.html' %}Weblate is easiest to install using pip or Docker, please follow the <a href="{{ url }}">Quick setup guide</a> for more detailed instructions.{% endblocktrans %}
-</p>
-
-<h2>{% trans "Download source code" %}</h2>
-
-<p>
-{% blocktrans %}You can download the latest release here:{% endblocktrans %}
-</p>
-
-<ul>
-{% for download in downloads %}
-<li>{% downloadlink download %}</li>
-{% endfor %}
-</ul>
-
-<p>
-{% blocktrans with "https://github.com/WeblateOrg/weblate" as url %}Weblate is being developed on <a href="{{ url }}">GitHub</a>, you can fork it there, or just:{% endblocktrans %}
-</p>
-
-<pre>
-# Weblate
-git clone https://github.com/WeblateOrg/weblate.git
-
-# {% trans "Weblate command line client" %}
-git clone https://github.com/WeblateOrg/wlc.git
-</pre>
-
-<p>
-{% blocktrans with "https://github.com/WeblateOrg" as url %}You can find more repositories related to Weblate on <a href="{{ url }}">GitHub</a>.{% endblocktrans %}
-</p>
-
-<h2>{% trans "Weblate command line client" %}</h2>
-
-<p>
-{% blocktrans with 'https://pypi.python.org/pypi/wlc' as url %}You can control Weblate remotely using <a href="{{ url }}">wlc</a>, it can be installed by using Python PIP:{% endblocktrans %}
-</p>
-
-<pre>
-pip3 install wlc
-</pre>
-
-<p>{% trans "You can also install using packages for following Linux distributions:" %}</p>
-
-<ul>
-<li><a href="https://packages.debian.org/wlc">Debian</a>
-</ul>
-
-
-<h2>{% trans "Cloud or virtualization images" %}</h2>
-
-<p>{% trans "Weblate can be run in any cloud or virtualization environment. Following links will show you information about some of these:" %}</p>
-
-<ul>
-<li><a href="https://docs.weblate.org/en/latest/admin/deployments.html#docker">{% trans "Running Weblate in a Docker container" %}</a></li>
-<li><a href="https://docs.weblate.org/en/latest/admin/deployments.html#openshift">{% trans "Running Weblate on OpenShift platform" %}</a></li>
-<li><a href="https://bitnami.com/stack/weblate">{% trans "BitNami Weblate stack providing native installation for most platforms as well as support for many public cloud providers" %}</a></li>
-</ul>
-
-<a href="https://docs.weblate.org/en/latest/admin/deployments.html#docker"><img src="{% static "docker.png" %}" /></a>
-<a href="https://docs.weblate.org/en/latest/admin/deployments.html#openshift"><img src="{% static "openshift.png" %}" /></a>
-<a href="https://bitnami.com/stack/weblate/cloud/google"><img src="{% static "gcp.png" %}" /></a>
-<a href="https://bitnami.com/stack/weblate/cloud/amazon"><img src="{% static "aws.png" %}" /></a>
-<a href="https://bitnami.com/stack/weblate/cloud/azure"><img src="{% static "azure.png" %}" /></a>
-
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Download Weblate" %}</h1>
+            <div class="page-desc">
+                <p>{% trans "Weblate comes with complete source code that you can use, edit or alter to meet your needs. Feel free to spread the word about Weblate with friends & family." %}</p>
+                <a href="https://github.com/WeblateOrg/weblate/" class="button inline">View sources</a>
+                <a href="{% url 'support' %}" class="button inline border rev">Get Premium service</a>
+            </div>
+            
+            <div class="quick-installation">
+                <a href="https://docs.weblate.org/en/latest/admin/quick.html" class="button right">{% trans "Quick setup" %}</a>
+                <div class="quick-title">{% trans "Quick Installation" %}</div>
+                <p>{% blocktrans with url="https://docs.weblate.org/en/latest/admin/quick.html" %}Weblate is easiest to install using <strong>pip</strong> or <strong>Docker</strong>, please follow the <a href="{{ url }}">Quick setup guide</a> for more detailed instructions.{% endblocktrans %}</p>
+            </div>
+            <div class="download-wrap">
+                <h2 class="section-title left">{% trans "Download source code" %}</h2>
+                <p>{% trans "Latest releases for download, signed with PGP" %}</p>
+                
+                
+                <div class="download-list">
+                    {% for download in downloads %}
+                    {% downloadlink download %}
+                    {% endfor %}
+                </div>
+                
+                <h2 class="section-title left">{% trans "Cloud or virtualization images" %}</h2>
+                <p>{% trans "Weblate can be run in any cloud or virtualization environment. Following guides will show you detailed information about some of the most common platforms." %}</p>
+            </div>
+            <div class="donations-cols download-cols">
+                <div class="col">
+                    <div class="d-logo"><img src="{% static "img/docker.png" %}" alt="#" /></div>
+                    <div class="title">{% trans "Running Weblate in a Docker container" %}</div>
+                    <a href="https://docs.weblate.org/en/latest/admin/deployments.html#docker" class="button">{% trans "Docker guide" %}</a>
+                </div>
+                <div class="col">
+                    <div class="d-logo"><img src="{% static "img/openshift.svg" %}" alt="#" /></div>
+                    <div class="title">{% trans "Running Weblate on OpenShift platform" %}</div>
+                    <a href="https://docs.weblate.org/en/latest/admin/deployments.html#openshift" class="button">{% trans "Openshift guide" %}</a>
+                </div>
+                <div class="col">
+                    <div class="d-logo"><img src="{% static "img/weblate-stack.png" %}" alt="#" /></div>
+                    <div class="title">{% trans "BitNami Weblate stack" %}</div>
+                    <p>{% trans "Native installation for most platforms and support for public cloud providers." %}</p>
+                    <ul>
+                        <li><a href="https://bitnami.com/stack/weblate/cloud/google">Google Cloud Platform</a></li>
+                        <li><a href="https://bitnami.com/stack/weblate/cloud/amazon">Amazon Web Services</a></li>
+                        <li><a href="https://bitnami.com/stack/weblate/cloud/azure">Microsoft Azure</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="download-wrap">
+                <h2 class="section-title left">{% trans "Github repository" %}</h2>
+                <p>{% blocktrans with "https://github.com/WeblateOrg" as url %}Weblate is being developed on <a href="{{ url }}">GitHub</a>, you can fork it there, find <a href="{{ url }}">more repositories</a>, or just:{% endblocktrans %}</p>
+                
+                <blockquote>
+                    <p>
+                        # Weblate<br />
+                        git clone https://github.com/WeblateOrg/weblate.git
+                    </p>
+                    <p>
+                        # Weblate command line client<br />
+                        git clone https://github.com/WeblateOrg/wlc.git
+                    </p>
+                </blockquote>
+                
+                <h2 class="section-title left">{% trans "Weblate command line client" %}</h2>
+                <p>{% blocktrans with 'https://docs.weblate.org/en/latest/wlc.html' as url %}You can control Weblate remotely using <a href="{{ url }}">wlc</a>, it can be installed by using Python PIP:{% endblocktrans %}</p>
+                <blockquote>
+                    <p>pip3 install wlc</p>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+{% include "snippets/bottom.html" %}
 {% endblock %}
