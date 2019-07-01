@@ -29,9 +29,9 @@
                         </div>
                     	<div class="author">
                         	<div class="avatar"><img src="https://hosted.weblate.org/avatar/80/{{ object.author.username }}.png" alt="#" /></div>
-                            {{ object.author.last_name }}
+                            {{ object.author.last_name }}<br />
                             <!-- TODO topic archives? -->
-                            <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="#">{{ object.get_topic_display }}</a>
+                            <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="#">{{ object.get_topic_display }}</a><br />
                             {{ object.timestamp|naturalday }}
                         </div>
                         <div lang="en" dir="ltr" class="entry">
