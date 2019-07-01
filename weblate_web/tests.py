@@ -384,7 +384,7 @@ class DonationTest(FakturaceTestCase):
 
     def test_link(self):
         self.create_donation()
-        response = self.client.get('/en/thanks/')
+        response = self.client.get('/en/thanks/', follow=True)
         self.assertContains(response, 'https://example.com/weblate')
         self.assertContains(response, 'Weblate donation test')
 

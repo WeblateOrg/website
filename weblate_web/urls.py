@@ -90,7 +90,6 @@ class PagesSitemap(Sitemap):
             ('/contribute/', 0.7, 'monthly'),
             ('/donate/', 0.7, 'weekly'),
             ('/support/', 0.7, 'monthly'),
-            ('/thanks/', 0.2, 'monthly'),
             ('/terms/', 0.2, 'monthly'),
             ('/news/', 0.9, 'daily'),
         )
@@ -242,8 +241,7 @@ urlpatterns = i18n_patterns(
     ),
     url(
         r'^thanks/$',
-        TemplateView.as_view(template_name="thanks.html"),
-        name='thanks'
+        RedirectView.as_view(url='/donate/', permanent=True)
     ),
     url(
         r'^terms/$',
