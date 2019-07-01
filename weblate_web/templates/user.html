@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "User profile at Weblate" %}{% endblock %}
+
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "User profile" %}</h1>
+            <div class="page-desc">
+                <a href="{% url 'logout' %}" class="button inline">{% trans "Logout" %}</a>
+                <a href="https://hosted.weblate.org/" class="button inline border rev">{% trans "Weblate App" %}</a>
+            </div>
+           
+<!-- TODO: needs redesign -->
+{% with donations=user.donation_set.all %}
+{% if donations %}
+<h2>{% trans "Your donations" %}</h2>
+
+<table class="table">
+<thead>
+<tr>
+<th>{% trans "Creation date" %}</th>
+<th>{% trans "Reward" %}</th>
+<th>{% trans "Expiry date" %}</th>
+<th>{% trans "Renewal" %}</th>
+<th>{% trans "Payments" %}</th>
+</tr>
+</thead>
+<tbody>
+{% for donation in donations %}
+<tr>
+<td>{{ donation.created }}</td>
+<td>
+{% if donation.reward %}
+{{ donation.reward.get_display_name }}
+<a class="btn btn-info btn-sm" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit" %}</a>
+{% else %}
+{% trans "No reward" %}
+{% endif %}
+</td>
+<td>
+{{ donation.expires }}
+</td>
+<td>
+{% if not donation.active %}
+{% trans "Expired" %}
+{% elif donation.payment_obj.recurring %}
+<form class="form-inline" method="post" action="{% url "donate-disable" pk=donation.pk %}">
+{% csrf_token %}
+<input type="submit" class="btn btn-warning btn-sm" value="{% trans "Disable renewal" %}">
+</form>
+{% else %}
+{% trans "Does not renew" %}
+{% endif %}
+</td>
+<td>
+<ul class="list-unstyled">
+{% for payment in donation.list_payments %}
+<li>
+{{ payment.amount }} EUR 
+{% if payment.state == 5 %} 
+{% if payment.invoice_filename_valid %}
+(<a href="{% url 'donate-invoice' pk=payment.pk %}">{{ payment.invoice_filename }}</a>)
+{% else %}
+({{ payment.invoice_filename }})
+{% endif %}
+{% else %}
+{{ payment.get_state_display }}
+{% if payment.details.reject_reason %}
+({{ payment.details.reject_reason }})
+{% endif %}
+{% endif %}
+</li>
+{% endfor %}
+</ul>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+{% endwith %}
+        </div>
+    </div>
+</section>
+{% endblock %}

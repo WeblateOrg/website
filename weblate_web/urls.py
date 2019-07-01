@@ -27,6 +27,7 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
@@ -178,6 +179,11 @@ urlpatterns = i18n_patterns(
         r'^contribute/$',
         TemplateView.as_view(template_name="contribute.html"),
         name='contribute'
+    ),
+    url(
+        r'^user/$',
+        login_required(TemplateView.as_view(template_name="user.html")),
+        name='user'
     ),
     url(
         r'^donate/$',
