@@ -2,25 +2,17 @@
 {% load static %}
 {% load i18n %}
 {% block title %}{% trans "Donate to Weblate" %}{% endblock %}
-{% block header %}{% trans "Donate to Weblate" %}{% endblock %}
-{% block description %}
-{% block headline %}{% blocktrans %}Weblate is provided free of charge &amp; welcomes donations. There are many ways how you can contribute to Weblate development. The least you can do is to talk about Weblate with friends.{% endblocktrans %}{% endblock %}
-{% endblock %}
-{% block extrajumbo %}
-<p>
+{% block description %}{% blocktrans %}Weblate is provided free of charge &amp; welcomes donations. There are many ways how you can contribute to Weblate development. The least you can do is to talk about Weblate with friends.{% endblocktrans %}{% endblock %}
 
-<a class="btn btn-info btn-lg" href="{% url 'hosting' %}" role="button"><i class="fas fa-server"></i> {% trans "Purchase hosting package" %}</a>
-<a class="btn btn-info btn-lg" href="{% url 'support' %}"><i class="fas fa-life-ring"></i> {% trans "Get support for Weblate" %}</a>
+{% block body_class %}page donate light{% endblock %}
 
-</p>
-{% endblock %}
 {% block content %}
 <section class="content">
     <div class="row">
         <div class="wrap">
             <h1 class="section-title min-m">{% trans "Donate to Weblate" %}</h1>
             <div class="page-desc">
-                <p>{% trans "Weblate is provided free of charge & welcomes donations. There are many ways how you can contribute to Weblate development. The least you can do is talk about Weblate with friends." %}</p>
+                <p>{% trans "Weblate is provided free of charge &amp; welcomes donations. There are many ways how you can contribute to Weblate development. The least you can do is talk about Weblate with friends." %}</p>
                 <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
                 <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>
             </div>
