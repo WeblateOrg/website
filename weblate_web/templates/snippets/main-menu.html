@@ -3,7 +3,7 @@
     <ul>
         <li class="{% if request.resolver_match.url_name == 'features' %} active{% endif %}"><a href="{% url 'features'%}">{% trans "Features" %}</a></li>
         <li class="{% if request.resolver_match.url_name == 'download' %} active{% endif %}"><a href="{% url 'download' %}">{% trans "Download" %}</a></li>
-        <li class="{% if request.resolver_match.url_name == 'hosting' %} active{% endif %}"><a href="{% url 'hosting' %}">{% trans "Pricing" %}</a></li>
+        <li class="{% if request.resolver_match.url_name == 'hosting' %} active{% endif %}"><a href="{% url 'hosting' %}">{% trans "Prices" %}</a></li>
         <li class="{% if request.resolver_match.url_name == 'contribute' %} active{% endif %}"><a href="{% url 'contribute' %}">{% trans "Contribute" %}</a></li>
         <li class="{% if request.resolver_match.url_name == 'donate' or request.resolver_match.url_name == 'donate-new' %} active{% endif %}"><a href="{% url 'donate' %}">{% trans "Donate" %}</a></li>
         <li class="gethelp{% if request.resolver_match.url_name == 'support' %} active{% endif %}"><a href="{% url 'support' %}">{% trans "Get help" %}</a></li>
