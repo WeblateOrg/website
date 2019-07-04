@@ -12,7 +12,10 @@
         <div class="wrap">
             <h1 class="section-title min-m">{% trans "Donate to Weblate" %}</h1>
             <div class="page-desc">
-                <p>{% trans "Weblate is provided free of charge &amp; welcomes donations. There are many ways how you can contribute to Weblate development. The least you can do is talk about Weblate with friends." %}</p>
+                <p>
+                    {% trans "Weblate is provided free of charge &amp; welcomes donations." %}
+                    {% trans "There are many ways how you can contribute to Weblate development. The least you can do is talk about Weblate with friends." %}
+                </p>
                 <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
                 <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>
             </div>
@@ -24,7 +27,7 @@
             </div>     
             <div class="donations-cols">
                 <div class="col">
-                    <div class="title">{% trans "Name placement in the list of supporters" %}</div>
+                    <div class="title">{% trans "Name placement in the list of supporters" %}</div>
                     <a class="format-item">€100 <span>{% trans "anually" %}</span></a>
                     <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
                 </div>
