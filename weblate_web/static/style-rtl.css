@@ -2488,25 +2488,28 @@ footer .main-menu {
 footer .main-menu ul li.gethelp:before {
 	display: none;
 }
-footer .footer-left, footer .footer-right {
+footer .footer-left, footer .footer-right, footer .footer-center {
 	width: 70%;
 	float: right;
 	font-size: 14px;
 	color: #2ECCAA;
 }
-footer .footer-left a, footer .footer-right a {
+footer .footer-center {
+    width: 100px;
+    text-align: center;
+    position: absolute;
+    left: calc(50% - 50px);
+}
+footer .footer-left a, footer .footer-right a, footer .footer-center a {
 	color: #2ECCAA;
 	text-decoration: underline;
 }
-footer .footer-left a:hover, footer .footer-right a:hover {
+footer .footer-left a:hover, footer .footer-right a:hover, footer .footer-center a:hover {
 	text-decoration: none;
 }
 footer .footer-right {
 	width: 30%;
 	text-align: left;
-}
-footer a.service-status {
-	margin-right: 30px;
 }
 .clear {clear: both;}
 
