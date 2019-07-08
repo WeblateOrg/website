@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block header %}
 {% block title %}{% trans "Server error" %}{% endblock %}
-{% endblock %}
-{% block description %}
-{% block headline %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}
-{% endblock %}
+{% block description %}{% trans "Weblate is a libre software web-based continuous localization system." %} {% endblock %}
 
 {% block content %}
-
-<p class="error">
-{% blocktrans %}The server had serious problems while serving your request. We've just sent our trained monkeys to fix the issue.{% endblocktrans %}
-</p>
-
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Server error" %}</h1>
+            <div class="page-desc">
+                <p>{% blocktrans %}The server had serious problems while serving your request. We've just sent our trained monkeys to fix the issue.{% endblocktrans %}</p>
+            </div>
+        </div>
+        <div class="wrap">
 <!-- Sentry JS SDK 2.1.+ required -->
 <script src="https://cdn.ravenjs.com/3.23.1/raven.min.js"></script>
 
@@ -27,7 +27,7 @@
   });
   </script>
 {% endif %}
-
-</p>
-
+        </div>
+    </div>
+</section>
 {% endblock %}

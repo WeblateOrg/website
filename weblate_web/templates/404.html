@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block header %}
 {% block title %}{% trans "Page not found" %}{% endblock %}
-{% endblock %}
-{% block description %}
-{% block headline %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}
-{% endblock %}
+{% block description %}{% trans "Weblate is a libre software web-based continuous localization system." %} {% endblock %}
 
 {% block content %}
-
-<p class="error">
-{% trans "The page you are looking for was not found." %}
-</p>
-
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Page not found" %}</h1>
+            <div class="page-desc">
+                <p>{% trans "The page you are looking for was not found." %}</p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

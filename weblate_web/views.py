@@ -24,11 +24,12 @@ from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins, send_mail
 from django.db import transaction
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
+import django.views.defaults
 from django.views.decorators.http import require_POST
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -396,6 +397,20 @@ class PostView(DetailView):
             '-timestamp'
         )[:3]
         return kwargs
+
+
+def not_found(request, exception=None):
+    """Error handler showing list of available projects."""
+    xx()
+    return render(request, "404.html", status=404)
+
+
+def server_error(request):
+    """Error handler for server errors."""
+    try:
+        return render(request, "500.html", status=500)
+    except Exception:
+        return django.views.defaults.server_error(request)
 
 
 monkey_patch_translate()

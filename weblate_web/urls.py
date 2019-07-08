@@ -50,6 +50,8 @@ from weblate_web.views import (
     fetch_vat,
     process_donation,
     subscribe,
+    not_found,
+    server_error,
 )
 
 
@@ -336,3 +338,5 @@ urlpatterns = i18n_patterns(
         {'document_root': settings.MEDIA_ROOT}
     ),
 ]
+handler404 = not_found
+handler500 = server_error
