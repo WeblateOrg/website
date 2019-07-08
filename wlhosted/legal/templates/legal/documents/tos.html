@@ -5,7 +5,7 @@
 {% law_link 101 2000 as law_101_2000 %}
 {% law_link 480 2004 as law_480_2004 %}
 
-{% if LANGUAGE_CODE != 'en' %}
+{% if not hide_english and LANGUAGE_CODE != 'en' %}
 <div class="alert alert-info" role="alert">
 <a href="https://weblate.org/en/terms/" class="pull-right flip float-right btn btn-info">{% trans "View English version" %}</a>
 {% trans "The Terms of Service document is authoritative in English, translations are provided for your convenience." %}
