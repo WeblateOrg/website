@@ -64,7 +64,7 @@ def get_contributors():
 
 
 def get_activity():
-    key = 'wlweb-contributors'
+    key = 'wlweb-activity-stats'
     results = cache.get(key)
     if results is not None:
         return results
