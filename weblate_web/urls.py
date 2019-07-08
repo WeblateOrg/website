@@ -48,6 +48,7 @@ from weblate_web.views import (
     disable_repeat,
     download_invoice,
     fetch_vat,
+    activity_svg,
     process_donation,
     subscribe,
     not_found,
@@ -315,10 +316,8 @@ urlpatterns = i18n_patterns(
         name='sitemap',
     ),
     path('feed/', LatestEntriesFeed(), name='feed'),
-    url(
-        r'^js/vat/$',
-        fetch_vat
-    ),
+    url(r'^js/vat/$', fetch_vat),
+    url(r'^img/activity.svg$', activity_svg),
     url(r'^sso-login/', include(SSO_CLIENT.get_urls())),
     url(r'^subscribe/(?P<name>hosted|users)/', subscribe, name='subscribe'),
     url(r'^logout/$', LogoutView.as_view(next_page='/'), name='logout'),

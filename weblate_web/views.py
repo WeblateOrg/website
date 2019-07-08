@@ -29,6 +29,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
+from django.views.decorators.cache import cache_control
 import django.views.defaults
 from django.views.decorators.http import require_POST
 from django.views.generic.dates import ArchiveIndexView
@@ -42,6 +43,7 @@ from wlhosted.payments.validators import cache_vies_data, validate_vatin
 
 from weblate_web.forms import DonateForm, EditLinkForm, MethodForm, SubscribeForm
 from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, Reward, process_payment
+from weblate_web.remote import get_activity
 
 
 @require_POST
@@ -401,7 +403,6 @@ class PostView(DetailView):
 
 def not_found(request, exception=None):
     """Error handler showing list of available projects."""
-    xx()
     return render(request, "404.html", status=404)
 
 
@@ -411,6 +412,46 @@ def server_error(request):
         return render(request, "500.html", status=500)
     except Exception:
         return django.views.defaults.server_error(request)
+
+
+@cache_control(max_age=3600)
+def activity_svg(request):
+    bars = []
+    opacities = {
+        0: '.1',
+        1: '.3',
+        2: '.5',
+        3: '.7',
+    }
+    data = get_activity()
+    top_count = max(data)
+    for i, count in enumerate(data):
+        height = int(76 * count / top_count)
+        item = {
+            'rx': 2,
+            'width': 6,
+            'height': height,
+            'id': 'b{}'.format(i),
+            'x': 10 * i,
+            'y': 86 - height,
+        }
+        if height < 20:
+            item['fill'] = '#f6664c'
+        elif height < 45:
+            item['fill'] = '#38f'
+        else:
+            item['fill'] = '#2eccaa'
+        if i in opacities:
+            item['opacity'] = opacities[i]
+
+        bars.append(item)
+
+    return render(
+        request,
+        'svg/activity.svg',
+        {'bars': bars},
+        content_type='image/svg+xml; charset=utf-8'
+    )
 
 
 monkey_patch_translate()

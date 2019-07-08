@@ -26,6 +26,7 @@ from django.core.cache import cache
 CONTRIBUTORS_URL = 'https://api.github.com/repos/{}/{}/stats/contributors'
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format('WeblateOrg', 'weblate')
 EXCLUDE_USERS = {'nijel', 'weblate'}
+ACTIVITY_URL = 'https://hosted.weblate.org/activity/month/'
 
 
 def get_contributors():
@@ -60,3 +61,24 @@ def get_contributors():
 
     cache.set(key, stats[:8], timeout=3600)
     return stats[:8]
+
+
+def get_activity():
+    key = 'wlweb-contributors'
+    results = cache.get(key)
+    if results is not None:
+        return results
+    # Perform request
+    try:
+        response = requests.get(ACTIVITY_URL)
+    except IOError as error:
+        sentry_sdk.capture_exception(error)
+        response = None
+    # Stats are not yet calculated
+    if response is None or response.status_code != 200:
+        return []
+
+    stats = response.json()
+    data = stats['series'][0][:25]
+    cache.set(key, data, timeout=3600)
+    return data
