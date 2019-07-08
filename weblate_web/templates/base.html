@@ -18,10 +18,17 @@
   <meta name="keywords" content="weblate,git,gettext,resources,json,po,mo,qts,CAT,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
 
   <link rel="author" href="mailto:michal@cihar.com" />
-  <link rel="shortcut icon" href="{% static "favicon.ico" %}" type="image/x-icon" />
-  <link rel="icon" href="{% static "favicon.ico" %}" type="image/x-icon" />
-  <link rel="image_src" type="image/png" href="{% static "weblate-128.png" %}" />
-  <link rel="apple-touch-icon" href="{% static "weblate-128.png" %}" />
+
+  <link rel="image_src" type="image/png" href="{% static 'weblate-128.png' %}"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'logo-32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'logo-16.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'weblate-180.png' %}"/>
+  <link rel="mask-icon" href="{% static 'weblate-black.svg' %}" color="#144d3f">
+  <meta name="msapplication-TileColor" content="#144d3f">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#144d3f">
+
   <meta property="og:image" content="{% block og_image %}https://weblate.org/static/background.png{% endblock %}" />
   <title>{% block title %}Weblate{% endblock %}</title>
   <link rel="alternate" type="application/rss+xml" href="https://weblate.org{% url 'feed' %}" title="Weblate blog RSS feed"/>

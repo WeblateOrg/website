@@ -321,6 +321,37 @@ urlpatterns = i18n_patterns(
     url(r'^sso-login/', include(SSO_CLIENT.get_urls())),
     url(r'^subscribe/(?P<name>hosted|users)/', subscribe, name='subscribe'),
     url(r'^logout/$', LogoutView.as_view(next_page='/'), name='logout'),
+
+    # Aliases for static files
+    url(
+        r'^(android-chrome|favicon)-(?P<size>192|512)x(?P=size)\.png$',
+        RedirectView.as_view(
+            url=settings.STATIC_URL + 'weblate-%(size)s.png',
+            permanent=True,
+        )
+    ),
+    url(
+        r'^apple-touch-icon\.png$',
+        RedirectView.as_view(
+            url=settings.STATIC_URL + 'weblate-180.png',
+            permanent=True,
+        )
+    ),
+    url(
+        r'^(?P<name>favicon\.ico|robots\.txt)$',
+        RedirectView.as_view(
+            url=settings.STATIC_URL + '%(name)s',
+            permanent=True,
+        )
+    ),
+    url(
+        r'^browserconfig\.xml$',
+        TemplateView.as_view(template_name='browserconfig.xml'),
+    ),
+    url(
+        r'^site\.webmanifest$',
+        TemplateView.as_view(template_name='site.webmanifest'),
+    ),
     # Admin
     url(
         r'^admin/login/$',
