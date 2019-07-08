@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}{% trans "Weblate - web-based localization" %}{% endblock %}
 {% block description %}
@@ -77,8 +78,8 @@
                         <div class="trans-project">project <span>opensuse</span></div>
                     </div>
                 	<div class="trans-bottom">
-                        <div class="trans-number">1.328 translations</div>
-                        <div class="trans-days">in last 7 days</div>
+                        <div class="trans-number">{% blocktrans count intcount=activity_sum with count=activity_sum|intcomma  %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktrans %}</div>
+                        <div class="trans-days">{% trans "in last 7 days" %}</div>
                     </div>
                 </div>
             </div>    

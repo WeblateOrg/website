@@ -26,7 +26,7 @@ from django.utils.translation import override
 
 from weblate_web.data import EXTENSIONS, SCREENSHOTS, VERSION
 from weblate_web.models import Donation, Reward
-from weblate_web.remote import get_contributors
+from weblate_web.remote import get_contributors, get_activity
 
 
 def weblate_web(request):
@@ -76,6 +76,7 @@ def weblate_web(request):
         'donate_links': Donation.objects.filter(
             active=True, reward__thanks_link=True
         ),
+        'activity_sum': sum(get_activity()[:7]),
         'rewards': Reward.objects.filter(
             third_party=False, active=True
         ).order_by('amount'),
