@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Terms of Service" %}{% endblock %}
+{% block title %}{% trans "Terms & Privacy" %}{% endblock %}
 {% block description %}
 {% block headline %}{% trans "The legal documents necessary to offer this service." %}{% endblock %}
 {% endblock %}
@@ -8,16 +8,33 @@
 
 <section class="content">
     <div class="row">
-        <div class="wrap tos">
-            <h1 class="section-title">{% trans "Terms of Service" %}</h1>
-            {% include "legal/documents/tos.html" %}
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Terms & Privacy" %}</h1>
+            <div class="page-desc">
+                <p>
+                    {% trans "The legal documents necessary to offer this service." %}
+                    {% trans "The Terms of Service document is authoritative in English, translations are provided for your convenience." %}
+                </p>
+                <a href="https://weblate.org/en/terms/" class="button inline">{% trans "View English version" %}</a>
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="wrap tos">
-            <h1 class="section-title">{% trans "Privacy Policy" %}</h1>
+        <div class="wrap">
+            <h2 class="section-title">{% trans "Terms of Service" %}</h2>
+            <div class="tos">
+            {% include "legal/documents/tos.html" %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="wrap">
+            <h2 class="section-title">{% trans "Privacy Policy" %}</h2>
+            <div class="tos">
             {% include "legal/documents/privacy.html" %}
+            </div>
         </div>
     </div>
 </section>
