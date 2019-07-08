@@ -76,7 +76,7 @@ def weblate_web(request):
         'donate_links': Donation.objects.filter(
             active=True, reward__thanks_link=True
         ),
-        'activity_sum': sum(get_activity()[:7]),
+        'activity_sum': sum(get_activity()[-7:]),
         'rewards': Reward.objects.filter(
             third_party=False, active=True
         ).order_by('amount'),
