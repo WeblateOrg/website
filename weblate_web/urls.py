@@ -24,10 +24,10 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
-from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
@@ -45,14 +45,14 @@ from weblate_web.views import (
     NewsView,
     PaymentView,
     PostView,
+    activity_svg,
     disable_repeat,
     download_invoice,
     fetch_vat,
-    activity_svg,
-    process_donation,
-    subscribe,
     not_found,
+    process_donation,
     server_error,
+    subscribe,
 )
 
 

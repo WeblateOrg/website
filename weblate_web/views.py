@@ -18,6 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import django.views.defaults
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import SuspiciousOperation, ValidationError
@@ -30,7 +31,6 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_control
-import django.views.defaults
 from django.views.decorators.http import require_POST
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
