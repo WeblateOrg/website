@@ -51,27 +51,27 @@ class ViewTestCase(PostTestCase):
 
     def test_index_en(self):
         response = self.client.get('/en/')
-        self.assertContains(response, 'See more features')
-        self.assertContains(response, '<link rel="canonical" href="/" />')
+        self.assertContains(response, 'localization system')
 
     def test_index_cs(self):
         response = self.client.get('/cs/')
-        self.assertContains(response, u'Další vlastnosti')
-        self.assertContains(response, '<link rel="canonical" href="/" />')
+        self.assertContains(response, 'kontinuální lokalizaci')
+
+    def test_index_he(self):
+        response = self.client.get('/he/')
+        self.assertContains(response, 'מערכת מבוססת מנשק')
 
     def test_index_be(self):
         response = self.client.get('/be/')
-        self.assertContains(response, u'Больш функцый')
-        self.assertContains(response, '<link rel="canonical" href="/" />')
+        self.assertContains(response, 'Дакументацыя')
 
     def test_index_be_latin(self):
         response = self.client.get('/be@latin/')
-        self.assertContains(response, u'Boĺš funkcyj')
-        self.assertContains(response, '<link rel="canonical" href="/" />')
+        self.assertContains(response, 'Dakumientacyja')
 
     def test_terms(self):
         response = self.client.get('/en/terms/')
-        self.assertContains(response, u'04705904')
+        self.assertContains(response, '04705904')
 
     def test_download_en(self):
         # create dummy files for testing
@@ -368,7 +368,7 @@ class DonationTest(FakturaceTestCase):
             payment=self.create_payment()[0].pk
         )
         self.assertContains(
-            self.client.get(reverse('donate')),
+            self.client.get(reverse('user')),
             'Your donations'
         )
 
