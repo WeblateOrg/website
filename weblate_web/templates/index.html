@@ -35,48 +35,13 @@
                 	<h2>{% trans "Weblate translates the world of software applications" %}</h2>
                     <p>{% trans "Weblate is a libre web-based localization tool with tight version control integration. It features simple and clean user interface, propagation of translations across components, quality checks and automatic linking to source files." %}</p>
                 </div>
-                <!-- TODO: content -->
             	<div class="half half-translations">
+                    {% for change in changes %}
                 	<div class="trans-item">
-                        <div class="trans-title">12 strings translated just recently</div>
-                        <div class="trans-project">project <span>opensuse</span></div>
+                        <div class="trans-title">{% blocktrans count count=change.recent_changes with when=change.last_change|naturalday %}{{ count }} string translated {{ when }}{% plural %}{{ count }} strings translated {{ when }}{% endblocktrans %}</div>
+                        <div class="trans-project">project <a href="{{ change.url }}">{{ change.name }}</a></div>
                     </div>
-                	<div class="trans-item">
-                        <div class="trans-title">3 strings translated recently</div>
-                        <div class="trans-project">project <span>opensuse</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">37 strings translated recently</div>
-                        <div class="trans-project">project <span>turris</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">9 strings translated just recently</div>
-                        <div class="trans-project">project <span>php my admin</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">12 strings translated just recently</div>
-                        <div class="trans-project">project <span>opensuse</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">12 strings translated just recently</div>
-                        <div class="trans-project">project <span>opensuse</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">3 strings translated recently</div>
-                        <div class="trans-project">project <span>opensuse</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">37 strings translated recently</div>
-                        <div class="trans-project">project <span>turris</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">9 strings translated just recently</div>
-                        <div class="trans-project">project <span>php my admin</span></div>
-                    </div>
-                	<div class="trans-item">
-                        <div class="trans-title">12 strings translated just recently</div>
-                        <div class="trans-project">project <span>opensuse</span></div>
-                    </div>
+                    {% endfor %}
                 	<div class="trans-bottom">
                         <div class="trans-number">{% blocktrans count intcount=activity_sum with count=activity_sum|intcomma  %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktrans %}</div>
                         <div class="trans-days">{% trans "in last 7 days" %}</div>

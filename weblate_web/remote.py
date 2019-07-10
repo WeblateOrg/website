@@ -21,7 +21,10 @@
 
 import requests
 import sentry_sdk
+from django.conf import settings
 from django.core.cache import cache
+from wlc import Weblate
+
 
 CONTRIBUTORS_URL = 'https://api.github.com/repos/{}/{}/stats/contributors'
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format('WeblateOrg', 'weblate')
@@ -82,3 +85,19 @@ def get_activity(force=False):
     data = stats['series'][0][-25:]
     cache.set(key, data, timeout=3600)
     return data
+
+
+def get_changes(force=False):
+    key = 'wlweb-changes-list'
+    results = cache.get(key)
+    if not force and results is not None:
+        return results
+    wlc = Weblate(key=settings.CHANGES_KEY, url=settings.CHANGES_API)
+
+    stats = [p.statistics() for p in wlc.list_projects()]
+    stats = [p._data for p in stats if p['last_change'] is not None]
+
+    stats.sort(key=lambda x: x['last_change'], reverse=True)
+
+    cache.set(key, stats[:10], timeout=3600)
+    return stats[:10]

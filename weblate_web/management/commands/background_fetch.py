@@ -20,7 +20,7 @@
 
 from django.core.management.base import BaseCommand
 
-from weblate_web.remote import get_contributors, get_activity
+from weblate_web.remote import get_contributors, get_activity, get_changes
 
 
 class Command(BaseCommand):
@@ -29,3 +29,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         get_contributors(True)
         get_activity(True)
+        get_changes(True)

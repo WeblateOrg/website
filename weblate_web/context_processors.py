@@ -26,7 +26,7 @@ from django.utils.translation import override
 
 from weblate_web.data import EXTENSIONS, SCREENSHOTS, VERSION
 from weblate_web.models import Donation, Reward
-from weblate_web.remote import get_contributors, get_activity
+from weblate_web.remote import get_contributors, get_activity, get_changes
 
 
 def weblate_web(request):
@@ -81,6 +81,7 @@ def weblate_web(request):
             third_party=False, active=True
         ).order_by('amount'),
         'contributors': get_contributors(),
+        'changes': get_changes(),
         'language_columns': [
             language_urls[:language_col],
             language_urls[language_col:language_col * 2],

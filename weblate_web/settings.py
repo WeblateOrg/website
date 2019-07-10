@@ -310,6 +310,9 @@ PAYMENT_REDIRECT_URL = 'http://localhost:1234/{language}/payment/{uuid}/'
 
 REGISTRATION_EMAIL_MATCH = '.*'
 
+CHANGES_API = 'https://hosted.weblate.org/api/'
+CHANGES_KEY = ''
+
 try:
     from .settings_local import *
 except ImportError:
