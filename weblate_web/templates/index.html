@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load humanize %}
+{% load timestamps %}
 
 {% block title %}{% trans "Weblate - web-based localization" %}{% endblock %}
 {% block description %}
@@ -38,7 +39,7 @@
             	<div class="half half-translations">
                     {% for change in changes %}
                 	<div class="trans-item">
-                        <div class="trans-title">{% blocktrans count count=change.recent_changes with when=change.last_change|naturalday %}{{ count }} string translated {{ when }}{% plural %}{{ count }} strings translated {{ when }}{% endblocktrans %}</div>
+                        <div class="trans-title">{% blocktrans count count=change.recent_changes with when=change.last_change|recently %}{{ count }} translation {{ when }}{% plural %}{{ count }} translations {{ when }}{% endblocktrans %}</div>
                         <div class="trans-project">project <a href="{{ change.url }}">{{ change.name }}</a></div>
                     </div>
                     {% endfor %}
