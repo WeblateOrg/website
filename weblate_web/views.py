@@ -401,12 +401,14 @@ class PostView(DetailView):
         return kwargs
 
 
+# pylint: disable=unused-argument
 def not_found(request, exception=None):
     """Error handler showing list of available projects."""
     return render(request, "404.html", status=404)
 
 
 def server_error(request):
+    # pylint: disable=broad-except
     """Error handler for server errors."""
     try:
         return render(request, "500.html", status=500)
