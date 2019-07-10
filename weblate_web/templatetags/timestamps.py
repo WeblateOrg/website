@@ -29,13 +29,13 @@ def recently(value):
     now = timezone.now()
     delta = now - value
     if delta.days > 12:
-        return pgettext("123 translations ...", "weeks ago")
-    if delta.days > 5:
-        return pgettext("123 translations ...", "week ago")
-    if delta.days >= 1:
-        return pgettext("123 translations ...", "days ago")
+        return pgettext("123 translations ...", "this month")
+    if delta.days >= 2:
+        return pgettext("123 translations ...", "this week")
+    if delta.days == 1:
+        return pgettext("123 translations ...", "yesterday")
     if delta.seconds > 10000:
-        return pgettext("123 translations ...", "hours ago")
+        return pgettext("123 translations ...", "today")
     if delta.seconds > 2000:
-        return pgettext("123 translations ...", "minutes ago")
+        return pgettext("123 translations ...", "recently")
     return pgettext("123 translations ...", "just now")
