@@ -95,7 +95,7 @@ def get_changes(force=False):
     wlc = Weblate(key=settings.CHANGES_KEY, url=settings.CHANGES_API)
 
     stats = [p.statistics() for p in wlc.list_projects()]
-    stats = [p._data for p in stats if p['last_change'] is not None]
+    stats = [p.get_data() for p in stats if p['last_change'] is not None]
 
     stats.sort(key=lambda x: x['last_change'], reverse=True)
 
