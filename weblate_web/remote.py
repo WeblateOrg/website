@@ -29,10 +29,10 @@ EXCLUDE_USERS = {'nijel', 'weblate'}
 ACTIVITY_URL = 'https://hosted.weblate.org/activity/month/'
 
 
-def get_contributors():
+def get_contributors(force=False):
     key = 'wlweb-contributors'
     results = cache.get(key)
-    if results is not None:
+    if not force and results is not None:
         return results
     # Perform request
     try:
@@ -63,10 +63,10 @@ def get_contributors():
     return stats[:8]
 
 
-def get_activity():
+def get_activity(force=False):
     key = 'wlweb-activity-stats'
     results = cache.get(key)
-    if results is not None:
+    if not force and results is not None:
         return results
     # Perform request
     try:
