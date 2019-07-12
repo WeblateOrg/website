@@ -20,11 +20,9 @@
                     <div class="img"><a href="{{ object.get_absolute_url }}"><img src="{{ object.image.image.url }}" alt="#" /></a></div>
                     {% endif %}
                     <div class="content">
-                    	<div class="post-sociable">
-                        	<span>{% trans "Share" %}</span>
-                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://weblate.org{{ canonical_url }}&amp;title={{ object.title }}" class="icon icon-in"></a>
-                            <a href="https://twitter.com/intent/tweet?text={{ object.title }} @WeblateOrg https://weblate.org{{ canonical_url }}" class="icon icon-tw"></a>
-                            <a href="https://www.facebook.com/sharer.php?u=https://weblate.org{{ canonical_url }}" class="icon icon-fb"></a>
+                        <div class="post-sociable post-sociable-top">
+                            <span>{% trans "Share" %}</span>
+                            {% include "snippets/sharer.html" %}
                         </div>
                     	<div class="author">
                         	<div class="avatar"><img src="https://hosted.weblate.org/avatar/80/{{ object.author.username }}.png" alt="#" /></div>
@@ -35,6 +33,13 @@
                         </div>
                         <div lang="en" dir="ltr" class="entry">
                         {{ object.body }}
+                        </div>
+                        <div class="clear"></div>
+                        <div class="post-footer">
+                            <div class="post-sociable">
+                            <h2>Share with friends</h2>
+                            {% include "snippets/sharer.html" %}
+                            </div>
                         </div>
                     </div>
                 </div>
