@@ -34,13 +34,19 @@
                         <div lang="en" dir="ltr" class="entry">
                         {{ object.body }}
                         </div>
-                        <div class="clear"></div>
-                        <div class="post-footer">
-                            <div class="post-sociable">
-                            <h2>Share with friends</h2>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="post-footer">
+                        <div class="post-sociable">
+                            <h2>{% trans "Share with friends" %}</h2>
                             {% include "snippets/sharer.html" %}
-                            </div>
                         </div>
+                        <h2>{% trans "Other topics" %}</h2>
+                        <!-- TODO topic archives? -->
+                        <a class="button inline border rev small" href="#release">{% trans "Release" %}</a>
+                        <a class="button inline border rev small" href="#feature">{% trans "Features" %}</a>
+                        <a class="button inline border rev small" href="#development">{% trans "Development" %}</a>
+                        <a class="button inline border rev small" href="#localization">{% trans "Localization" %}</a>
                     </div>
                 </div>
                 <div class="related-posts">
