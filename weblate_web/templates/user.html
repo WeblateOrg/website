@@ -9,8 +9,8 @@
         <div class="wrap">
             <h1 class="section-title min-m">{% trans "User profile" %}</h1>
             <div class="page-desc">
-                <a href="{% url 'logout' %}" class="button inline">{% trans "Logout" %}</a>
-                <a href="https://hosted.weblate.org/" class="button inline border rev">{% trans "Weblate App" %}</a>
+                <a href="{% url 'logout' %}" class="button inline">{% trans "Log out" %}</a>
+                <a href="https://hosted.weblate.org/" class="button inline border rev">{% trans "Weblate app" %}</a>
             </div>
            
 <!-- TODO: needs redesign -->
@@ -49,7 +49,7 @@
 {% elif donation.payment_obj.recurring %}
 <form class="form-inline" method="post" action="{% url "donate-disable" pk=donation.pk %}">
 {% csrf_token %}
-<input type="submit" class="btn btn-warning btn-sm" value="{% trans "Disable renewal" %}">
+<input type="submit" class="btn btn-warning btn-sm" value="{% trans "Turn off renewal" %}">
 </form>
 {% else %}
 {% trans "Does not renew" %}
