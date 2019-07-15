@@ -8,6 +8,77 @@
 {% endblock %}
 {% block content %}
 
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Your donation" %}</h1>
+            <div class="page-desc">
+                <p>{% blocktrans %}<strong>Thank you</strong> for your decision to support Weblate. Please choose your preferred method of support or set a donation amount yourself. We are here to help if needed.{% endblocktrans %}</p>
+            </div>
+            <div class="payment-form">
+                <div class="title">{% trans "Choose your amount in EUR" %}</div>
+                <form action="#" method="get">
+                    <input type="number" min="5" value="1000" class="payment-input" name="amount" id="donate-amount" />
+                    <p class="small">{% blocktrans with minimum=5 %}Amounts from €{{ minimum }} or more{% endblocktrans %}</p>
+                
+                    <div class="title pick">{% trans "Pick how often to donate" %}</div>
+                    <div class="pick-items">
+                        <input id="single-payment" name="recurring" type="radio" value="" />
+                        <label for="single-payment">{% trans "Single payment" %}</label>
+                        
+                        <input id="monthly" name="recurring" type="radio" value="m" />
+                        <label for="monthly">{% trans "Monthly" %}</label>
+                        
+                        <input id="year" name="recurring" type="radio" value="y" />
+                        <label for="year">{% trans "Every year" %}</label>
+                        
+                        <input id="2-year" name="recurring" type="radio" value="b" />
+                        <label for="2-year">{% trans "Every 2nd year" %}</label>
+                    </div>
+                	<div class="title nowhoa">{% trans "Your reward options" %}</div>
+                    <div class="title whoa">{% blocktrans %}<strong>Whoa!</strong> You can get any reward{% endblocktrans %}</div>
+                    
+                    <div class="rewards">
+                        <div class="reward big checked" data-amount="100">
+                            <div class="title">{% trans "Name placement in the list of supporters" %}</div>
+                            <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
+                            <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                            <a href="#" class="close">X</a>
+                            <input name="reward" type="radio" value="1" />
+                        </div>
+                        <div class="reward big" data-amount="400">
+                            <div class="title">{% trans "Link placement in the list of supporters" %}</div>
+                            <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
+                            <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                            <a href="#" class="close">X</a>
+                            <input name="reward" type="radio" value="2" />
+                        </div>
+                        <div class="reward big" data-amount="800">
+                            <div class="title">{% trans "Logo & link placement on the Weblate website" %}</div>
+                            <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
+                            <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                            <a href="#" class="close">X</a>
+                            <input name="reward" type="radio" value="3" />
+                        </div>
+                        <div class="reward fourth" data-amount="0">
+                            <div class="title">{% trans "Please — no reward" %}</div>
+                            <p>{% trans "Thank you anyway!" %}</p>
+                            <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                            <input name="reward" type="radio" value="0" />
+                        </div>
+                    </div>
+                    <a href="#" class="button center">Continue</a>
+                </form>
+            </div>
+            <p class="small">
+                {% trans "Please note — we are able to issue a full invoice for your contribution if needed." %}
+                {% trans "We might refuse to place your link, especially if the site contains adult or illegal content. Please consult us in advance if unsure." %}
+            </p>
+        </div>
+    </div>
+</section>
+
+
 {% if show_form %}
 <div class="alert alert-info" role="alert">
   {% trans "Please choose wanted reward or enter custom donation amount." %}

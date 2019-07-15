@@ -1434,14 +1434,18 @@ input[type=radio]:checked + label {
 	cursor: pointer;
 	position: relative;
 	text-align: center;
+	transition: all 300ms linear;
+	-webkit-transition: all 300ms linear;
 }
-.rewards.small .reward.big {
+.rewards .reward.small {
 	opacity: 0.2;
 }
 .rewards .reward.checked {
 	border-color: #D5F5EE;
 	padding-top: 90px;
 	background-color: #D5F5EE;
+	transition: all 300ms linear;
+	-webkit-transition: all 300ms linear;
 }
 .rewards .reward a.button {
 	min-width: 140px;
@@ -1471,15 +1475,21 @@ input[type=radio]:checked + label {
 	color: #fff;
 	content: 'Selected option';
 }
+.rewards .reward.checked .choose, .rewards .reward.small .choose {
+    display: none;
+}
+.rewards .reward .unavailable {
+    display: none;
+}
+.rewards .reward.small .unavailable {
+    display: block;
+}
 .rewards .reward p {
 	font-size: 20px;
 	letter-spacing: 0.5px;
 	line-height: 30px;
 	text-align: center;
-	margin-top: 20px;
-}
-.rewards .reward.fourth {
-	padding-top: 45px;
+	margin: 20px 0;
 }
 .rewards .reward .title {
 	font-size: 28px;
@@ -1495,12 +1505,19 @@ input[type=radio]:checked + label {
 	background-color: #FFFFFF;
 	text-align: center;
 	line-height: 50px;
+    font-weight: bold;
 	color: #F00;
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
 	border-radius: 50%;
 	display: block;
 	margin: 0 auto;
+}
+.rewards .reward.checked a.close {
+	display: block;
+}
+.rewards .reward a.close {
+    display: none;
 }
 .help-cols {
 	width: 100%;
