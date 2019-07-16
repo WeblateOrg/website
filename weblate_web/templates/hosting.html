@@ -13,8 +13,8 @@
             <h1 class="section-title min-m">{% trans "Pricing" %}</h1>
             <div class="page-desc">
                 {% url 'support' as url %}
-                <p>{% blocktrans %}Use Weblate as a cloud service or <a href="{{ url }}">get help</a> for on-premises hosting — a service where we still provide premium support. Our team is ready to help you make Weblate run smoothly.{% endblocktrans %}</p>
-                <p class="small">{% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows you to use Weblate without any extra effort and with <strong>premium support</strong> backed by it's core developers. We can host translations for your commercial projects as well as for free software projects. Should you have any questions or look for hosting of larger projects, don't hesitate to <a href="{{ contact }}">get in touch with us</a> — we are ready to find a perfect solution.{% endblocktrans %}</p>
+                <p>{% blocktrans %}Use Weblate as a cloud service or <a href="{{ url }}">get help</a> for on-premises hosting — a service where premium support is still provided. Our team is ready to help you make Weblate run smoothly.{% endblocktrans %}</p>
+                <p class="small">{% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows you to use Weblate without any extra effort and with <strong>premium support</strong> backed by it's core developers. We can host translations for your commercial projects as well as for libre software projects. Should you have any questions or look for hosting of larger projects, don't hesitate to <a href="{{ contact }}">get in touch with us</a> — we are ready to find a perfect solution.{% endblocktrans %}</p>
             </div>
             
             <div class="pricing-table">
@@ -24,7 +24,7 @@
                             <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% trans "Continuous localization" %}</a></span>
                         </div>
                         <div class="line">
-                            <span class="middle" title="{% trans "Text unit defined in a translation format, it can be word, sentence or a paragraph" %}">{% trans "Source strings" %}</span>
+                            <span class="middle" title="{% trans "Translation unit defined in a translation format, it can be word, sentence or a paragraph" %}">{% trans "Source strings" %}</span>
                         </div>
                         <div class="line">
                             <span class="middle">{% trans "Target languages" %}</span>
@@ -326,7 +326,7 @@
                         </div>
                         <div class="col">
                             <div class="head line regular">
-                                <strong>{% trans "Free" %}</strong><br />
+                                <strong>{% trans "Gratis" %}</strong><br />
                                 {% trans "for libre projects" %}
                             </div>
                             <div class="line">
@@ -434,7 +434,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{% trans "Free" %}</strong>
+                                        <strong>{% trans "Gratis" %}</strong>
                                         &nbsp;
                                     </div>
                                     <div class="line">
@@ -446,7 +446,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{% trans "Free" %}</strong>
+                                        <strong>{% trans "Gratis" %}</strong>
                                         &nbsp;
                                     </div>
                                     <div class="line">
@@ -491,7 +491,7 @@
                                         <a href="https://hosted.weblate.org/create/billing/?plan=4&amp;upgrade=1" class="button">{% trans "Buy now" %}</a>
                                     </div>
                                     <div class="line last">
-                                        {% comment %}<span class="red"><strong>20 % Savings</strong> <br />in April</span>{% endcomment %}
+                                        {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
                                     </div>
                                 </div>
                                 <div class="col">
@@ -508,7 +508,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{% trans "Free" %}</strong>
+                                        <strong>{% trans "Gratis" %}</strong>
                                         &nbsp;
                                     </div>
                                     <div class="line">
@@ -520,7 +520,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{% trans "Free" %}</strong>
+                                        <strong>{% trans "Gratis" %}</strong>
                                         &nbsp;
                                     </div>
                                     <div class="line">
@@ -538,7 +538,7 @@
             
             <h2 class="section-title crypto payment-conditions">{% trans "Payment Conditions" %}</h2>
             <div class="page-desc small">
-                <p>{% trans "Pricing is based on number of source strings and number of target languages. The source string is a text unit defined in a translation format, it can be word, sentence or a paragraph." %}</p>
+                <p>{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}</p>
                 {% include "snippets/vat.html" %}
             </div>
             <div class="wrap supporters">
