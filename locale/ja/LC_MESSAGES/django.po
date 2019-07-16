@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-15 15:44+0200\n"
+"POT-Creation-Date: 2019-07-16 10:16+0200\n"
 "PO-Revision-Date: 2019-05-15 04:52+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -125,11 +125,11 @@ msgstr "すべてのユーザーのアクセス権を設定できます。"
 msgid "User management"
 msgstr "ユーザ管理"
 
-#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:25
+#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:96
 msgid "Donation recurrence"
 msgstr "継続寄付の間隔"
 
-#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:26
+#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:97
 msgid "Amount in EUR"
 msgstr "寄付の金額 (ユーロ)"
 
@@ -679,11 +679,13 @@ msgid "Donate"
 msgstr "寄付"
 
 #: weblate_web/templates/donate.html:35
+#: weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/donate/rewards.html:3
 msgid "Link placement in the list of supporters"
 msgstr "サポーターリストにリンクの掲載"
 
 #: weblate_web/templates/donate.html:40
+#: weblate_web/templates/donate/form.html:57
 #, fuzzy
 #| msgid "Link placement on the weblate.org thanks page"
 msgid "Logo & link placement on the Weblate website"
@@ -770,7 +772,7 @@ msgid "Weblate is provided free of charge, and welcomes donations."
 msgstr "Weblate は無料で提供されており、寄付を歓迎しています。"
 
 #: weblate_web/templates/donate/edit.html:12
-#: weblate_web/templates/donate/form.html:13
+#: weblate_web/templates/donate/form.html:84
 msgid "Please choose wanted reward or enter custom donation amount."
 msgstr "お求めの報酬を選択するか、任意の寄付金額を入力してください。"
 
@@ -783,11 +785,108 @@ msgstr "ご自身の報酬リンクを編集"
 msgid "Save"
 msgstr "保存"
 
-#: weblate_web/templates/donate/form.html:33
-msgid "Select"
-msgstr "選択"
+#: weblate_web/templates/donate/form.html:14
+#, fuzzy
+#| msgid "Your donations"
+msgid "Your donation"
+msgstr "ご自身の寄付"
 
-#: weblate_web/templates/donate/form.html:41
+#: weblate_web/templates/donate/form.html:16
+msgid ""
+"<strong>Thank you</strong> for your decision to support Weblate. Please "
+"choose your preferred method of support or set a donation amount yourself. "
+"We are here to help if needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:19
+#, fuzzy
+#| msgid "Choose your own donation amount"
+msgid "Choose your amount in EUR"
+msgstr "ご自身の寄付額を選択"
+
+#: weblate_web/templates/donate/form.html:22
+#, python-format
+msgid "Amounts from €%(minimum)s or more"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:24
+msgid "Pick how often to donate"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:27
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Single payment"
+msgstr "Weblate の支払い"
+
+#: weblate_web/templates/donate/form.html:30
+#: weblate_web/templates/hosting.html:381
+#: weblate_web/templates/hosting.html:391
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/hosting.html:415
+#: weblate_web/templates/hosting.html:426
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr "月間"
+
+#: weblate_web/templates/donate/form.html:33
+msgid "Every year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:36
+msgid "Every 2nd year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:38
+#, fuzzy
+#| msgid "Your donations"
+msgid "Your reward options"
+msgstr "ご自身の寄付"
+
+#: weblate_web/templates/donate/form.html:39
+msgid "<strong>Whoa!</strong> You can get any reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:43
+#, fuzzy
+#| msgid "Name placement in the list of supporters"
+msgid "Name placement in the list of supporters"
+msgstr "サポーターリストに名前の掲載"
+
+#: weblate_web/templates/donate/form.html:44
+#: weblate_web/templates/donate/form.html:51
+#: weblate_web/templates/donate/form.html:58
+msgid "Unavailable for your amount"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:45
+#: weblate_web/templates/donate/form.html:52
+#: weblate_web/templates/donate/form.html:59
+#: weblate_web/templates/donate/form.html:66
+#, fuzzy
+#| msgid "Choose hosting plan"
+msgid "Choose this"
+msgstr "ホスティングプランを選択"
+
+#: weblate_web/templates/donate/form.html:64
+msgid "Please — no reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:65
+msgid "Thank you anyway!"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:74
+msgid ""
+"Please note — we are able to issue a full invoice for your contribution if "
+"needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:75
+#: weblate_web/templates/donate/form.html:112
 msgid ""
 "We might refuse to place your link, especially if the site contains adult or "
 "illegal content. Please consult us in advance if unsure."
@@ -795,11 +894,15 @@ msgstr ""
 "リンクの掲載を拒否する場合があります。特に、サイトに成人向けまたは違法な内容"
 "が含まれる場合。ご不明な場合は、事前にご相談ください。"
 
-#: weblate_web/templates/donate/form.html:50
+#: weblate_web/templates/donate/form.html:104
+msgid "Select"
+msgstr "選択"
+
+#: weblate_web/templates/donate/form.html:121
 msgid "Choose your own donation amount"
 msgstr "ご自身の寄付額を選択"
 
-#: weblate_web/templates/donate/form.html:56
+#: weblate_web/templates/donate/form.html:127
 msgid "Continue"
 msgstr "続行"
 
@@ -1641,18 +1744,6 @@ msgstr "翻訳のプロジェクト数"
 msgid "Negotiable"
 msgstr "ご相談ください"
 
-#: weblate_web/templates/hosting.html:381
-#: weblate_web/templates/hosting.html:391
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/hosting.html:415
-#: weblate_web/templates/hosting.html:426
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr "月間"
-
 #: weblate_web/templates/hosting.html:382
 #: weblate_web/templates/hosting.html:464
 #: weblate_web/templates/hosting.html:476
@@ -2363,14 +2454,14 @@ msgstr "ユーザと開発者用のメーリング リスト"
 
 #: weblate_web/templates/support.html:125
 #: weblate_web/templates/support.html:139
-msgid "E-mail"
+msgid "Email"
 msgstr ""
 
 #: weblate_web/templates/support.html:126
 #: weblate_web/templates/support.html:140
 #, fuzzy
 #| msgid "Enter your email"
-msgid "Your e-mail..."
+msgid "Your email..."
 msgstr "メールアドレスを入力してください"
 
 #: weblate_web/templates/support.html:127
@@ -2493,13 +2584,15 @@ msgid "User profile"
 msgstr ""
 
 #: weblate_web/templates/user.html:12
-msgid "Logout"
-msgstr ""
+#, fuzzy
+#| msgid "Sign out"
+msgid "Log out"
+msgstr "サインアウト"
 
 #: weblate_web/templates/user.html:13
 #, fuzzy
 #| msgid "Weblate support"
-msgid "Weblate App"
+msgid "Weblate app"
 msgstr "Weblate のサポート"
 
 #: weblate_web/templates/user.html:19
@@ -2535,8 +2628,8 @@ msgid "Expired"
 msgstr "期限切れ"
 
 #: weblate_web/templates/user.html:52
-msgid "Disable renewal"
-msgstr "更新を無効にする"
+msgid "Turn off renewal"
+msgstr ""
 
 #: weblate_web/templates/user.html:55
 msgid "Does not renew"
@@ -2664,6 +2757,9 @@ msgstr "継続的寄付を開始します。まもなく、確認のメールが
 msgid "Failed to process subscription request."
 msgstr "継続的寄付の処理の要求に失敗しました。"
 
+#~ msgid "Disable renewal"
+#~ msgstr "更新を無効にする"
+
 #~ msgid "Try"
 #~ msgstr "デモ"
 
@@ -2700,9 +2796,6 @@ msgstr "継続的寄付の処理の要求に失敗しました。"
 
 #~ msgid "Purchase hosting package"
 #~ msgstr "ホスティングパッケージを購入"
-
-#~ msgid "Sign out"
-#~ msgstr "サインアウト"
 
 #~ msgid ""
 #~ "Repeated appreciation of the Weblate project helps in keeping the project "
@@ -2822,9 +2915,6 @@ msgstr "継続的寄付の処理の要求に失敗しました。"
 
 #~ msgid "Cloud service"
 #~ msgstr "クラウドサービス"
-
-#~ msgid "Choose hosting plan"
-#~ msgstr "ホスティングプランを選択"
 
 #~ msgid "Your infrastructure"
 #~ msgstr "独自環境"

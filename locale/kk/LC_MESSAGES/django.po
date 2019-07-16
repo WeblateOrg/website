@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-15 15:44+0200\n"
+"POT-Creation-Date: 2019-07-16 10:16+0200\n"
 "PO-Revision-Date: 2019-05-10 08:15+0000\n"
 "Last-Translator: WWWesten <wwwesten@gmail.com>\n"
 "Language-Team: Kazakh <https://hosted.weblate.org/projects/weblate/website/"
@@ -123,11 +123,11 @@ msgstr "Ár paıdalanýshynyń qatynaý deńgeılerin anyqtaı alasyz."
 msgid "User management"
 msgstr "Paıdalanýshy basqarý"
 
-#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:25
+#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:96
 msgid "Donation recurrence"
 msgstr "Qaıtalama demeý"
 
-#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:26
+#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:97
 msgid "Amount in EUR"
 msgstr "EUR somasy"
 
@@ -670,11 +670,13 @@ msgid "Donate"
 msgstr "Demeý"
 
 #: weblate_web/templates/donate.html:35
+#: weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/donate/rewards.html:3
 msgid "Link placement in the list of supporters"
 msgstr "Sltemeni qoldaýshylar tiziminde ornalastyrý"
 
 #: weblate_web/templates/donate.html:40
+#: weblate_web/templates/donate/form.html:57
 #, fuzzy
 #| msgid "Link placement on the weblate.org thanks page"
 msgid "Logo & link placement on the Weblate website"
@@ -761,7 +763,7 @@ msgid "Weblate is provided free of charge, and welcomes donations."
 msgstr "Weblate tegin jetkiziledi, degenmen demeýlerdi qoshametteıdi."
 
 #: weblate_web/templates/donate/edit.html:12
-#: weblate_web/templates/donate/form.html:13
+#: weblate_web/templates/donate/form.html:84
 msgid "Please choose wanted reward or enter custom donation amount."
 msgstr "Qalaǵan marapatty tańdańyz nemese teńsheýli tólem mólsherin engizińiz."
 
@@ -774,11 +776,108 @@ msgstr "Marapat siltemeni óńdeńiz"
 msgid "Save"
 msgstr "Saqtaý"
 
-#: weblate_web/templates/donate/form.html:33
-msgid "Select"
-msgstr "Bólekteý"
+#: weblate_web/templates/donate/form.html:14
+#, fuzzy
+#| msgid "Your donations"
+msgid "Your donation"
+msgstr "Demeýlerińiz"
 
-#: weblate_web/templates/donate/form.html:41
+#: weblate_web/templates/donate/form.html:16
+msgid ""
+"<strong>Thank you</strong> for your decision to support Weblate. Please "
+"choose your preferred method of support or set a donation amount yourself. "
+"We are here to help if needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:19
+#, fuzzy
+#| msgid "Choose your own donation amount"
+msgid "Choose your amount in EUR"
+msgstr "Óz demeýińizdin somasyn tańdańyz"
+
+#: weblate_web/templates/donate/form.html:22
+#, python-format
+msgid "Amounts from €%(minimum)s or more"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:24
+msgid "Pick how often to donate"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:27
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Single payment"
+msgstr "Weblate tólemi"
+
+#: weblate_web/templates/donate/form.html:30
+#: weblate_web/templates/hosting.html:381
+#: weblate_web/templates/hosting.html:391
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/hosting.html:415
+#: weblate_web/templates/hosting.html:426
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr "Aılyq"
+
+#: weblate_web/templates/donate/form.html:33
+msgid "Every year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:36
+msgid "Every 2nd year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:38
+#, fuzzy
+#| msgid "Your donations"
+msgid "Your reward options"
+msgstr "Demeýlerińiz"
+
+#: weblate_web/templates/donate/form.html:39
+msgid "<strong>Whoa!</strong> You can get any reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:43
+#, fuzzy
+#| msgid "Name placement in the list of supporters"
+msgid "Name placement in the list of supporters"
+msgstr "Atyn qoldaýshylar tiziminde ornalastyrý"
+
+#: weblate_web/templates/donate/form.html:44
+#: weblate_web/templates/donate/form.html:51
+#: weblate_web/templates/donate/form.html:58
+msgid "Unavailable for your amount"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:45
+#: weblate_web/templates/donate/form.html:52
+#: weblate_web/templates/donate/form.html:59
+#: weblate_web/templates/donate/form.html:66
+#, fuzzy
+#| msgid "Choose hosting plan"
+msgid "Choose this"
+msgstr "Hostıń josparyn tańdaý"
+
+#: weblate_web/templates/donate/form.html:64
+msgid "Please — no reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:65
+msgid "Thank you anyway!"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:74
+msgid ""
+"Please note — we are able to issue a full invoice for your contribution if "
+"needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:75
+#: weblate_web/templates/donate/form.html:112
 msgid ""
 "We might refuse to place your link, especially if the site contains adult or "
 "illegal content. Please consult us in advance if unsure."
@@ -787,11 +886,15 @@ msgstr ""
 "nemese zańsyz mazmun bar bolsa. Eger senimdi emes bolsańyz, aldyn-ala bizben "
 "keńesińiz."
 
-#: weblate_web/templates/donate/form.html:50
+#: weblate_web/templates/donate/form.html:104
+msgid "Select"
+msgstr "Bólekteý"
+
+#: weblate_web/templates/donate/form.html:121
 msgid "Choose your own donation amount"
 msgstr "Óz demeýińizdin somasyn tańdańyz"
 
-#: weblate_web/templates/donate/form.html:56
+#: weblate_web/templates/donate/form.html:127
 msgid "Continue"
 msgstr "Jalǵastyrý"
 
@@ -1642,18 +1745,6 @@ msgstr "Tárjimelik jobalar"
 msgid "Negotiable"
 msgstr "Shartty"
 
-#: weblate_web/templates/hosting.html:381
-#: weblate_web/templates/hosting.html:391
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/hosting.html:415
-#: weblate_web/templates/hosting.html:426
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr "Aılyq"
-
 #: weblate_web/templates/hosting.html:382
 #: weblate_web/templates/hosting.html:464
 #: weblate_web/templates/hosting.html:476
@@ -2368,14 +2459,14 @@ msgstr "Paıdalanushylar men ázirleýshilerdiń taratý tizimderi"
 
 #: weblate_web/templates/support.html:125
 #: weblate_web/templates/support.html:139
-msgid "E-mail"
+msgid "Email"
 msgstr ""
 
 #: weblate_web/templates/support.html:126
 #: weblate_web/templates/support.html:140
 #, fuzzy
 #| msgid "Enter your email"
-msgid "Your e-mail..."
+msgid "Your email..."
 msgstr "E-poshtańyzdy engizińiz"
 
 #: weblate_web/templates/support.html:127
@@ -2500,13 +2591,15 @@ msgid "User profile"
 msgstr ""
 
 #: weblate_web/templates/user.html:12
-msgid "Logout"
-msgstr ""
+#, fuzzy
+#| msgid "Sign out"
+msgid "Log out"
+msgstr "Shyǵý"
 
 #: weblate_web/templates/user.html:13
 #, fuzzy
 #| msgid "Weblate support"
-msgid "Weblate App"
+msgid "Weblate app"
 msgstr "Weblate qoldaýy"
 
 #: weblate_web/templates/user.html:19
@@ -2542,8 +2635,8 @@ msgid "Expired"
 msgstr "Merzimi aıaqtalǵan"
 
 #: weblate_web/templates/user.html:52
-msgid "Disable renewal"
-msgstr "Jańǵyrtýdy óshirý"
+msgid "Turn off renewal"
+msgstr ""
 
 #: weblate_web/templates/user.html:55
 msgid "Does not renew"
@@ -2670,6 +2763,9 @@ msgstr "Jazylym bastaldy, ony rastaý úshin jaqynda hat alasyz."
 msgid "Failed to process subscription request."
 msgstr "Jazylym saýalyn óńdep shyǵarýy sátsiz aıaqtaldy."
 
+#~ msgid "Disable renewal"
+#~ msgstr "Jańǵyrtýdy óshirý"
+
 #~ msgid "Try"
 #~ msgstr "Synap kórý"
 
@@ -2706,9 +2802,6 @@ msgstr "Jazylym saýalyn óńdep shyǵarýy sátsiz aıaqtaldy."
 
 #~ msgid "Purchase hosting package"
 #~ msgstr "Hostıń býmasyn satyp alý"
-
-#~ msgid "Sign out"
-#~ msgstr "Shyǵý"
 
 #~ msgid ""
 #~ "Repeated appreciation of the Weblate project helps in keeping the project "
@@ -2830,9 +2923,6 @@ msgstr "Jazylym saýalyn óńdep shyǵarýy sátsiz aıaqtaldy."
 
 #~ msgid "Cloud service"
 #~ msgstr "Bult qyzmeti"
-
-#~ msgid "Choose hosting plan"
-#~ msgstr "Hostıń josparyn tańdaý"
 
 #~ msgid "Your infrastructure"
 #~ msgstr "Sizdiń ınfraqurylym"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-15 15:44+0200\n"
+"POT-Creation-Date: 2019-07-16 10:16+0200\n"
 "PO-Revision-Date: 2019-03-05 07:58+0000\n"
 "Last-Translator: Nikola Perović <nikolaperovicccc@gmail.com>\n"
 "Language-Team: Serbian (latin) <https://hosted.weblate.org/projects/weblate/"
@@ -112,11 +112,11 @@ msgstr ""
 msgid "User management"
 msgstr ""
 
-#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:25
+#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:96
 msgid "Donation recurrence"
 msgstr ""
 
-#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:26
+#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:97
 msgid "Amount in EUR"
 msgstr ""
 
@@ -580,11 +580,13 @@ msgid "Donate"
 msgstr ""
 
 #: weblate_web/templates/donate.html:35
+#: weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/donate/rewards.html:3
 msgid "Link placement in the list of supporters"
 msgstr ""
 
 #: weblate_web/templates/donate.html:40
+#: weblate_web/templates/donate/form.html:57
 msgid "Logo & link placement on the Weblate website"
 msgstr ""
 
@@ -653,7 +655,7 @@ msgid "Weblate is provided free of charge, and welcomes donations."
 msgstr ""
 
 #: weblate_web/templates/donate/edit.html:12
-#: weblate_web/templates/donate/form.html:13
+#: weblate_web/templates/donate/form.html:84
 msgid "Please choose wanted reward or enter custom donation amount."
 msgstr ""
 
@@ -666,21 +668,110 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: weblate_web/templates/donate/form.html:33
-msgid "Select"
+#: weblate_web/templates/donate/form.html:14
+msgid "Your donation"
 msgstr ""
 
-#: weblate_web/templates/donate/form.html:41
+#: weblate_web/templates/donate/form.html:16
+msgid ""
+"<strong>Thank you</strong> for your decision to support Weblate. Please "
+"choose your preferred method of support or set a donation amount yourself. "
+"We are here to help if needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:19
+msgid "Choose your amount in EUR"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:22
+#, python-format
+msgid "Amounts from €%(minimum)s or more"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:24
+msgid "Pick how often to donate"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:27
+msgid "Single payment"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:30
+#: weblate_web/templates/hosting.html:381
+#: weblate_web/templates/hosting.html:391
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/hosting.html:415
+#: weblate_web/templates/hosting.html:426
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:33
+msgid "Every year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:36
+msgid "Every 2nd year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:38
+msgid "Your reward options"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:39
+msgid "<strong>Whoa!</strong> You can get any reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:43
+msgid "Name placement in the list of supporters"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:44
+#: weblate_web/templates/donate/form.html:51
+#: weblate_web/templates/donate/form.html:58
+msgid "Unavailable for your amount"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:45
+#: weblate_web/templates/donate/form.html:52
+#: weblate_web/templates/donate/form.html:59
+#: weblate_web/templates/donate/form.html:66
+msgid "Choose this"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:64
+msgid "Please — no reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:65
+msgid "Thank you anyway!"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:74
+msgid ""
+"Please note — we are able to issue a full invoice for your contribution if "
+"needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:75
+#: weblate_web/templates/donate/form.html:112
 msgid ""
 "We might refuse to place your link, especially if the site contains adult or "
 "illegal content. Please consult us in advance if unsure."
 msgstr ""
 
-#: weblate_web/templates/donate/form.html:50
+#: weblate_web/templates/donate/form.html:104
+msgid "Select"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:121
 msgid "Choose your own donation amount"
 msgstr ""
 
-#: weblate_web/templates/donate/form.html:56
+#: weblate_web/templates/donate/form.html:127
 msgid "Continue"
 msgstr ""
 
@@ -1332,18 +1423,6 @@ msgstr ""
 msgid "Negotiable"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:381
-#: weblate_web/templates/hosting.html:391
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/hosting.html:415
-#: weblate_web/templates/hosting.html:426
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr ""
-
 #: weblate_web/templates/hosting.html:382
 #: weblate_web/templates/hosting.html:464
 #: weblate_web/templates/hosting.html:476
@@ -1920,12 +1999,12 @@ msgstr ""
 
 #: weblate_web/templates/support.html:125
 #: weblate_web/templates/support.html:139
-msgid "E-mail"
+msgid "Email"
 msgstr ""
 
 #: weblate_web/templates/support.html:126
 #: weblate_web/templates/support.html:140
-msgid "Your e-mail..."
+msgid "Your email..."
 msgstr ""
 
 #: weblate_web/templates/support.html:127
@@ -2016,11 +2095,11 @@ msgid "User profile"
 msgstr ""
 
 #: weblate_web/templates/user.html:12
-msgid "Logout"
+msgid "Log out"
 msgstr ""
 
 #: weblate_web/templates/user.html:13
-msgid "Weblate App"
+msgid "Weblate app"
 msgstr ""
 
 #: weblate_web/templates/user.html:19
@@ -2056,7 +2135,7 @@ msgid "Expired"
 msgstr ""
 
 #: weblate_web/templates/user.html:52
-msgid "Disable renewal"
+msgid "Turn off renewal"
 msgstr ""
 
 #: weblate_web/templates/user.html:55

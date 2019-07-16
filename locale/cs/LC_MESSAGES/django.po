@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-15 15:44+0200\n"
+"POT-Creation-Date: 2019-07-16 10:16+0200\n"
 "PO-Revision-Date: 2019-06-28 18:28+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/cs/"
@@ -121,11 +121,11 @@ msgstr "Každému z uživatelů je možné určit úrovně přístupových oprá
 msgid "User management"
 msgstr "Správa uživatelů"
 
-#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:25
+#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:96
 msgid "Donation recurrence"
 msgstr "Opakování příspěvku"
 
-#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:26
+#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:97
 msgid "Amount in EUR"
 msgstr "Částka v EUR"
 
@@ -671,11 +671,13 @@ msgid "Donate"
 msgstr "Přispějte"
 
 #: weblate_web/templates/donate.html:35
+#: weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/donate/rewards.html:3
 msgid "Link placement in the list of supporters"
 msgstr "Umístění odkazu v seznamu podporovatelů"
 
 #: weblate_web/templates/donate.html:40
+#: weblate_web/templates/donate/form.html:57
 #, fuzzy
 #| msgid "Link placement on the weblate.org thanks page"
 msgid "Logo & link placement on the Weblate website"
@@ -761,7 +763,7 @@ msgid "Weblate is provided free of charge, and welcomes donations."
 msgstr "Weblate je dostupné zdarma, ale vítá vaše příspěvky."
 
 #: weblate_web/templates/donate/edit.html:12
-#: weblate_web/templates/donate/form.html:13
+#: weblate_web/templates/donate/form.html:84
 msgid "Please choose wanted reward or enter custom donation amount."
 msgstr "Prosím zvolte požadovanou odměnu nebo zvolte vlastní výši příspěvku."
 
@@ -774,11 +776,108 @@ msgstr "Upravte váš odkaz za odměnu"
 msgid "Save"
 msgstr "Uložit"
 
-#: weblate_web/templates/donate/form.html:33
-msgid "Select"
-msgstr "Zvolit"
+#: weblate_web/templates/donate/form.html:14
+#, fuzzy
+#| msgid "Your donations"
+msgid "Your donation"
+msgstr "Vaše příspěvky"
 
-#: weblate_web/templates/donate/form.html:41
+#: weblate_web/templates/donate/form.html:16
+msgid ""
+"<strong>Thank you</strong> for your decision to support Weblate. Please "
+"choose your preferred method of support or set a donation amount yourself. "
+"We are here to help if needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:19
+#, fuzzy
+#| msgid "Choose your own donation amount"
+msgid "Choose your amount in EUR"
+msgstr "Zvolte si vlastní výši příspěvku"
+
+#: weblate_web/templates/donate/form.html:22
+#, python-format
+msgid "Amounts from €%(minimum)s or more"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:24
+msgid "Pick how often to donate"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:27
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Single payment"
+msgstr "Platba Weblate"
+
+#: weblate_web/templates/donate/form.html:30
+#: weblate_web/templates/hosting.html:381
+#: weblate_web/templates/hosting.html:391
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/hosting.html:415
+#: weblate_web/templates/hosting.html:426
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr "Měsíčně"
+
+#: weblate_web/templates/donate/form.html:33
+msgid "Every year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:36
+msgid "Every 2nd year"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:38
+#, fuzzy
+#| msgid "Your donations"
+msgid "Your reward options"
+msgstr "Vaše příspěvky"
+
+#: weblate_web/templates/donate/form.html:39
+msgid "<strong>Whoa!</strong> You can get any reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:43
+#, fuzzy
+#| msgid "Name placement in the list of supporters"
+msgid "Name placement in the list of supporters"
+msgstr "Umístění jména v seznamu podporovatelů"
+
+#: weblate_web/templates/donate/form.html:44
+#: weblate_web/templates/donate/form.html:51
+#: weblate_web/templates/donate/form.html:58
+msgid "Unavailable for your amount"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:45
+#: weblate_web/templates/donate/form.html:52
+#: weblate_web/templates/donate/form.html:59
+#: weblate_web/templates/donate/form.html:66
+#, fuzzy
+#| msgid "Choose hosting plan"
+msgid "Choose this"
+msgstr "Zvolit hostovací balíček"
+
+#: weblate_web/templates/donate/form.html:64
+msgid "Please — no reward"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:65
+msgid "Thank you anyway!"
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:74
+msgid ""
+"Please note — we are able to issue a full invoice for your contribution if "
+"needed."
+msgstr ""
+
+#: weblate_web/templates/donate/form.html:75
+#: weblate_web/templates/donate/form.html:112
 msgid ""
 "We might refuse to place your link, especially if the site contains adult or "
 "illegal content. Please consult us in advance if unsure."
@@ -787,11 +886,15 @@ msgstr ""
 "pro dospělé nebo nelegální obsah. Pokud si nejste jisti, prosím zeptejte se "
 "nás předem."
 
-#: weblate_web/templates/donate/form.html:50
+#: weblate_web/templates/donate/form.html:104
+msgid "Select"
+msgstr "Zvolit"
+
+#: weblate_web/templates/donate/form.html:121
 msgid "Choose your own donation amount"
 msgstr "Zvolte si vlastní výši příspěvku"
 
-#: weblate_web/templates/donate/form.html:56
+#: weblate_web/templates/donate/form.html:127
 msgid "Continue"
 msgstr "Pokračovat"
 
@@ -1643,18 +1746,6 @@ msgstr "Překladové projekty"
 msgid "Negotiable"
 msgstr "Dohodou"
 
-#: weblate_web/templates/hosting.html:381
-#: weblate_web/templates/hosting.html:391
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/hosting.html:415
-#: weblate_web/templates/hosting.html:426
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr "Měsíčně"
-
 #: weblate_web/templates/hosting.html:382
 #: weblate_web/templates/hosting.html:464
 #: weblate_web/templates/hosting.html:476
@@ -2369,14 +2460,14 @@ msgstr "Konference pro uživatele a vývojáře"
 
 #: weblate_web/templates/support.html:125
 #: weblate_web/templates/support.html:139
-msgid "E-mail"
+msgid "Email"
 msgstr ""
 
 #: weblate_web/templates/support.html:126
 #: weblate_web/templates/support.html:140
 #, fuzzy
 #| msgid "Enter your email"
-msgid "Your e-mail..."
+msgid "Your email..."
 msgstr "Zadejte svůj e-mail"
 
 #: weblate_web/templates/support.html:127
@@ -2498,13 +2589,15 @@ msgid "User profile"
 msgstr ""
 
 #: weblate_web/templates/user.html:12
-msgid "Logout"
-msgstr ""
+#, fuzzy
+#| msgid "Sign out"
+msgid "Log out"
+msgstr "Odhlásit se"
 
 #: weblate_web/templates/user.html:13
 #, fuzzy
 #| msgid "Weblate"
-msgid "Weblate App"
+msgid "Weblate app"
 msgstr "Weblate"
 
 #: weblate_web/templates/user.html:19
@@ -2540,8 +2633,8 @@ msgid "Expired"
 msgstr "Platnost skončila"
 
 #: weblate_web/templates/user.html:52
-msgid "Disable renewal"
-msgstr "Vypnout obnovování"
+msgid "Turn off renewal"
+msgstr ""
 
 #: weblate_web/templates/user.html:55
 msgid "Does not renew"
@@ -2671,6 +2764,9 @@ msgstr "Předplatné bylo zahájeno, brzy dostanete e-mail s žádostí o potvrz
 msgid "Failed to process subscription request."
 msgstr "Žádost o přihlášení se nepodařilo zpracovat."
 
+#~ msgid "Disable renewal"
+#~ msgstr "Vypnout obnovování"
+
 #~ msgid "Try"
 #~ msgstr "Vyzkoušejte"
 
@@ -2707,9 +2803,6 @@ msgstr "Žádost o přihlášení se nepodařilo zpracovat."
 
 #~ msgid "Purchase hosting package"
 #~ msgstr "Zakoupit balíček hostování"
-
-#~ msgid "Sign out"
-#~ msgstr "Odhlásit se"
 
 #~ msgid ""
 #~ "Repeated appreciation of the Weblate project helps in keeping the project "
@@ -2825,9 +2918,6 @@ msgstr "Žádost o přihlášení se nepodařilo zpracovat."
 
 #~ msgid "Cloud service"
 #~ msgstr "Služba v cloudu"
-
-#~ msgid "Choose hosting plan"
-#~ msgstr "Zvolit hostovací balíček"
 
 #~ msgid "Your infrastructure"
 #~ msgstr "Vaše infrastruktura"
