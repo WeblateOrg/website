@@ -4,7 +4,7 @@
 {% block title %}{% trans "Weblate support" %}{% endblock %}
 {% block header %}{% trans "Weblate support" %}{% endblock %}
 {% block description %}
-{% block headline %}{% blocktrans %}Weblate is a free software with community support. Cloud hosted Weblate subscribers receive priority support with no extra charge. All other users can prepay ad-hoc help packages.{% endblocktrans %}{% endblock %}
+{% block headline %}{% blocktrans %}Weblate is copylefted libre software with community support. Cloud hosted Weblate subscribers receive priority support at no extra charge. All other users can prepay for ad-hoc help packages.{% endblocktrans %}{% endblock %}
 {% endblock %}
 
 {% block extrajumbo %}
@@ -20,8 +20,8 @@
         <div class="wrap">
             <h1 class="section-title min-m">{% trans "Get help" %}</h1>
             <div class="page-desc">
-                <p>{% trans "Weblate is a free software with community support. Cloud hosted Weblate subscribers receive priority support with no extra charge. All other users can prepay ad-hoc help packages." %}</p>
-                <a href="https://github.com/WeblateOrg/weblate/issues/new/choose" class="button inline">{% trans "Report issue to GitHub" %}</a>
+                <p>{% trans "Weblate is a copylefted libre software with community support. Cloud hosted Weblate subscribers receive priority support at no extra charge. All other users can prepay for ad-hoc help packages." %}</p>
+                <a href="https://github.com/WeblateOrg/weblate/issues/new/choose" class="button inline">{% trans "Report issue" %}</a>
             </div>
             
             <div class="help-cols">
@@ -29,21 +29,21 @@
                     <div class="icon"><img src="{% static "img/icon-bugs.svg" %}" alt="#" /></div>
                     <div class="content">
                         <div class="title">{% trans "Bugs & feature requests" %}</div>
-                        <p>{% blocktrans with url="https://github.com/WeblateOrg/weblate/issues" %}Have you found any issue with Weblate? Do you have idea how to improve it? Best first step is to report it to <a href="{{ url }}">issue tracker on GitHub</a>.{% endblocktrans %}</p>
+                        <p>{% blocktrans with url="https://github.com/WeblateOrg/weblate/issues" %}Found an issue with Weblate? Ideas for improvement? Report those on the <a href="{{ url }}">issue tracker</a>.{% endblocktrans %}</p>
                     </div>
                 </div>
                 <div class="col">
                     <div class="icon"><img src="{% static "img/icon-issues.svg" %}" alt="#" /></div>
                     <div class="content">
                         <div class="title">{% trans "Security issues" %}</div>
-                        <p>{% blocktrans with url="https://docs.weblate.org/en/latest/contributing.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}Should you find security issue within Weblate code base, please report it to {{ report }}. More information on how to report security issues is in the <a href="{{ url }}">documentation</a>.{% endblocktrans %}</p>
+                        <p>{% blocktrans with url="https://docs.weblate.org/en/latest/contributing.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}Should you find a security issue in the Weblate codebase, please report it to {{ report }}. More info on how to report security issues to be found in the <a href="{{ url }}">documentation</a>.{% endblocktrans %}</p>
                     </div>
                 </div>
                 <div class="col">
                     <div class="icon"><img src="{% static "img/icon-subscribers.svg" %}" alt="#" /></div>
                     <div class="content">
                         <div class="title">{% trans "Support for Weblate cloud subscribers" %}</div>
-                        <p>{% blocktrans with email="support@weblate.org" %}Users of our cloud hosting services, can ask for support at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktrans %}</p>
+                        <p>{% blocktrans with email="support@weblate.org" %}Our cloud hosting service users can get support at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktrans %}</p>
                     </div>
                 </div>
             </div>
@@ -52,15 +52,15 @@
 </section>
 <section class="content no-mar crypto">
     <div class="row">
-        <h2 class="section-title crypto">{% trans "Ad-Hoc support for free & self hosted installations" %}</h2>
+        <h2 class="section-title crypto">{% trans "Ad-Hoc support for gratis and self hosted installations" %}</h2>
         
         <div class="installations">
             <div class="box">
                 <div class="icon"><img src="{% static "img/linux.png" %}" alt="#" /></div>
                 <h2>{% trans "Installation on your Linux server" %}</h2>
                 <ul>
-                    <li>{% trans "One time installation of Weblate" %}</li>
-                    <li>{% trans "Installation using virtualenv, uwsgi and nginx" %}</li>
+                    <li>{% trans "One-time installation of Weblate" %}</li>
+                    <li>{% trans "Installation using virtualenv, uWSGI and NGINX" %}</li>
                     <li>{% trans "Using PostgreSQL as a database backend" %}</li>
                     <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
                     <li>{% trans "Configuration customization" %}</li>
@@ -72,7 +72,7 @@
                 <div class="icon"><img src="{% static "img/docker.png" %}" alt="#" /></div>
                 <h2>{% trans "Installation using Docker on your Linux server" %}</h2>
                 <ul>
-                    <li>{% trans "One time installation of Weblate" %}</li>
+                    <li>{% trans "One-time installation of Weblate" %}</li>
                     <li>{% trans "Installation using Docker" %}</li>
                     <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
                     <li>{% trans "Configuration customization" %}</li>
@@ -93,7 +93,7 @@
                 <div class="icon"><img src="{% static "img/logo.svg" %}" alt="#" /></div>
                 <h2>{% trans "Extended support for self hosted Weblate" %}</h2>
                 <ul>
-                    <li>{% trans "Your Weblate will be upgraded to the latest version on every release." %}</li>
+                    <li>{% trans "Your Weblate platform will always be upgraded to the latest version." %}</li>
                     <li>{% trans "We will fix issues that occur in your environment." %}</li>
                     <li>{% trans "You will receive priority email support." %}</li>
                 </ul>
@@ -119,7 +119,7 @@
         <div class="wrap mailing">
             <h2 class="section-title bigger">{% trans "Mailing lists" %}</h2>
             <div class="box">
-                <div class="title">{% trans "Users & developers" %}</div>
+                <div class="title">{% trans "Users and developers" %}</div>
                 <form class="mailing" action="{% url 'subscribe' name='users' %}" method="post">
                     {% csrf_token %}
                     <label>{% trans "E-mail" %}</label>
@@ -127,7 +127,7 @@
                     <input type="submit" class="mailing-submit" value="{% trans "Subscribe" %}" />
                 </form>
                 <ul>
-                    <li>{% trans "Use this mailing list for discussions with other Weblate users & developers" %}</li>
+                    <li>{% trans "Use this mailing list for discussions with other Weblate users and developers" %}</li>
                     <li>{% blocktrans with address="weblate@lists.cihar.com" %}Post to the list using <a href="mailto:{{ address }}">{{ address }}</a> address{% endblocktrans %}</li>
                     <li>{% blocktrans with url="https://lists.cihar.com/hyperkitty/list/weblate@lists.cihar.com/" %}Browse <a href="{{ url }}">mailing list archives</a> to find answers{% endblocktrans %}</li>
                 </ul>
@@ -137,13 +137,13 @@
                 <form class="mailing" action="{% url 'subscribe' name='hosted' %}" method="post">
                     {% csrf_token %}
                     <label>{% trans "E-mail" %}</label>
-                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your e-mail..." %}" />
+                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your e-mail…" %}" />
                     <input type="submit" class="mailing-submit" value="{% trans "Subscribe" %}" />
                 </form>
                 <ul>
                     <li>{% trans "<strong>Low traffic</strong> mailing list with announcements about premium Weblate services" %}</li>
-                    <li>{% trans "The list is moderated — only selected users can post announcements" %}</li>
-                    <li>{% blocktrans with url="https://lists.cihar.com/hyperkitty/list/hosted-weblate-announce@lists.cihar.com/" %}Browse <a href="{{ url }}">mailing list archives</a> to find answers{% endblocktrans %}</li>
+                    <li>{% trans "The list is moderated — only select users can post announcements" %}</li>
+                    <li>{% blocktrans with url="https://lists.cihar.com/hyperkitty/list/hosted-weblate-announce@lists.cihar.com/" %}Browse <a href="{{ url }}">mailing list archives</a> for answers{% endblocktrans %}</li>
                 </ul>
             </div>
         </div>
