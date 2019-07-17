@@ -228,6 +228,7 @@ class DonateView(FormView):
         if data['reward'] and int(data['reward']):
             tmp = Donation(reward_new=int(data['reward']))
             with override('en'):
+                # pylint: disable=no-member
                 description = 'Weblate donation: {}'.format(
                     tmp.get_reward_new_display()
                 )
