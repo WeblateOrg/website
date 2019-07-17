@@ -71,6 +71,14 @@ class Donation(models.Model):
     reward = models.ForeignKey(
         Reward, on_delete=models.deletion.CASCADE, null=True, blank=True
     )
+    reward_new = models.IntegerField(
+        choices=(
+            (0, ugettext_lazy('No reward')),
+            (1, ugettext_lazy('Name placement in the list of supporters')),
+            (2, ugettext_lazy('Link placement in the list of supporters')),
+            (3, ugettext_lazy('Logo & link placement on the Weblate website')),
+        )
+    )
     link_text = models.CharField(
         verbose_name=ugettext_lazy('Link text'),
         max_length=200, blank=True
