@@ -60,12 +60,19 @@
 {% block box %}
 {% endblock %}
 
+{% if messages %}
+<section class="content messages">
+    <div class="row">
+        <div class="wrap">
 {% for message in messages %}
-<!-- TODO -->
-<div class="m-4 alert alert-{% if "error" in message.tags %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">
+<div class="alert {{ message.tags }}" role="alert">
   {{ message }}
 </div>
 {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
 
 {% block content %}
 {% endblock %}
