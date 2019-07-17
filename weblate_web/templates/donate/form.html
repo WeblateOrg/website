@@ -19,8 +19,8 @@
                 <div class="title">{% trans "Choose your amount in EUR" %}</div>
                 <form method="post">
                     {% csrf_token %}
-                    <input type="number" min="5" value="{{ form.amount.value }}" class="payment-input" name="amount" id="donate-amount" />
-                    <p class="small">{% blocktrans with minimum=5 %}Amounts from €{{ minimum }} or more{% endblocktrans %}</p>
+                    <input type="number" min="{{ form.fields.amount.min_value }}" value="{{ form.amount.value }}" class="payment-input" name="amount" id="donate-amount" />
+                    <p class="small">{% blocktrans with minimum=form.fields.amount.min_value %}Amounts from €{{ minimum }} or more{% endblocktrans %}</p>
                     <div class="title pick">{% trans "Pick how often to donate" %}</div>
                     <div class="pick-items">
                         <input id="single-payment" name="recurring" type="radio" value="" {% if not form.recurring.value %}checked="checked"{% endif %} />
