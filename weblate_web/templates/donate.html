@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% block title %}{% trans "Donate to Weblate" %}{% endblock %}
-{% block description %}{% blocktrans %}Weblate is provided free of charge &amp; welcomes donations. There are many ways how you can contribute to Weblate development. The least you can do is to talk about Weblate with friends.{% endblocktrans %}{% endblock %}
+{% block description %}{% blocktrans %}Weblate is provided free of charge and welcomes donations. There are many ways to contribute. Discuss it with your associates.{% endblocktrans %}{% endblock %}
 
 {% block body_class %}page donate light{% endblock %}
 
@@ -13,8 +13,8 @@
             <h1 class="section-title min-m">{% trans "Donate to Weblate" %}</h1>
             <div class="page-desc">
                 <p>
-                    {% trans "Weblate is provided free of charge &amp; welcomes donations." %}
-                    {% trans "There are many ways how you can contribute to Weblate development. The least you can do is talk about Weblate with friends." %}
+                    {% trans "Weblate is provided free of charge and welcomes donations." %}
+                    {% trans "}Weblate is provided free of charge and welcomes donations. There are many ways to contribute. Discuss it with your associates." %}
                 </p>
                 <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
                 <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>
@@ -22,22 +22,22 @@
             
             <h2 class="section-title">{% trans "Recurring donations & rewards" %}</h2>
             <div class="page-desc small">
-                <p>{% trans "Recurring donations facilitate sustainable Weblate development, even the smallest amount helps fund free of charge hosting for libre software. Repeated appreciation helps in keeping the project sustainable long term. Please consider this option if you are hosting Weblate yourself without a support contract." %}</p>
+                <p>{% trans "Recurring donations facilitate sustainable Weblate development, and even the smallest amount is put to good use. Repeated appreciation helps in keeping the project sustainable long term. Please consider this option if you are hosting Weblate yourself without a support contract." %}</p>
                 <a href="{% url 'donate-new' %}" class="button inline">Activate donation</a>
             </div>     
             <div class="donations-cols">
                 <div class="col">
-                    <div class="title">{% trans "Name placement in the list of supporters" %}</div>
+                    <div class="title">{% trans "Name in the list of supporters" %}</div>
                     <a class="format-item">€100 <span>{% trans "anually" %}</span></a>
                     <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
                 </div>
                 <div class="col">
-                    <div class="title">{% trans "Link placement in the list of supporters" %}</div>
+                    <div class="title">{% trans "Link in the list of supporters" %}</div>
                     <a class="format-item">€400 <span>{% trans "anually" %}</span></a>
                     <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% trans "Donate" %}</a>
                 </div>
                 <div class="col">
-                    <div class="title">{% trans "Logo & link placement on the Weblate website" %}</div>
+                    <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
                     <a class="format-item">€800 <span>{% trans "anually" %}</span></a>
                     <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% trans "Donate" %}</a>
                 </div>
@@ -62,8 +62,8 @@
             <img src="{% static "img/RightPhoto.jpg" %}" alt="#" />
         </div>
         <div class="half half-content">
-            <h2>{% trans "Single appreciation donation" %}</h2>
-            <p>{% trans "One time donations are great for appreciating our work on single issue or support." %}</p>
+            <h2>{% trans "Single appreciative donation" %}</h2>
+            <p>{% trans "One-time donations are a great way to bring attention to a single issue before or after it is fixed." %}</p>
             <a href="{% url "donate-new" %}" class="button">{% trans "Donate" %}</a>
         </div>
     </div>
@@ -72,7 +72,7 @@
     <div class="row">
         <h2 class="section-title crypto">Cryptocurrency donations</h2>
         <div class="page-desc">
-            <p>{% blocktrans with "https://trezor.io?offer_id=12&amp;aff_id=1592" as url %}Thanks to <a href="{{ url }}">Trezor</a>, we will gladly accept donations in several cryptocurrencies. You can use the addresses in table below.{% endblocktrans %}</p>
+            <p>{% blocktrans with "https://trezor.io?offer_id=12&amp;aff_id=1592" as url %}Thanks to <a href="{{ url }}">Trezor</a>, donations are happily accepted in several cryptocurrencies. Use the addresses in below.{% endblocktrans %}</p>
         </div>
         
         <div class="currency">
@@ -106,9 +106,9 @@
             </div>
         </div>
 
-        <h2 class="section-title crypto bigger">{% trans "Weblate is thankful for help" %}</h2>
+        <h2 class="section-title crypto bigger">{% trans "Weblate is thankful for your help" %}</h2>
         <div class="page-desc">
-            <p>{% blocktrans with contact="mailto:info@weblate.org" %}Here is a proud showcase of our supporters, some offered contribution by technology, some by monetary funds. We welcome any form of help, so if you have an idea, please <a href="{{ contact }}">let us know</a>.{% endblocktrans %}</p>
+            <p>{% blocktrans with contact="mailto:info@weblate.org" %}Here is a proud showcase of our supporters, some offered technological contributions, others provided monetary funds. We welcome any form of help. If you have an idea, please <a href="{{ contact }}">let us know</a>.{% endblocktrans %}</p>
         </div>
 
         <h2 class="section-title crypto">{% trans "Supporters" %}</h2>
