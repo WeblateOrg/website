@@ -17,7 +17,8 @@
             </div>
             <div class="payment-form">
                 <div class="title">{% trans "Choose your amount in EUR" %}</div>
-                <form action="#" method="get">
+                <form method="post">
+                    {% csrf_token %}
                     <input type="number" min="5" value="1000" class="payment-input" name="amount" id="donate-amount" />
                     <p class="small">{% blocktrans with minimum=5 %}Amounts from €{{ minimum }} or more{% endblocktrans %}</p>
                 
@@ -67,7 +68,7 @@
                             <input name="reward" type="radio" value="0" />
                         </div>
                     </div>
-                    <a href="#" class="button center">Continue</a>
+                    <input type="submit" class="button center" value="{% trans "Continue" %}" />
                 </form>
             </div>
             <p class="small">
