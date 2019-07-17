@@ -269,7 +269,7 @@ def process_donation(request):
         if donation.reward and donation.reward.has_link:
             return redirect(donation)
 
-    return redirect(reverse('donate'))
+    return redirect(reverse('user'))
 
 
 @login_required
