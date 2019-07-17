@@ -29,7 +29,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
 from django.views.generic.dates import ArchiveIndexView
@@ -192,7 +192,8 @@ class DonateView(FormView):
         data = form.cleaned_data
         if data['reward'] and int(data['reward']):
             tmp = Donation(reward_new=int(data['reward']))
-            description = 'Weblate donation: {}'.format(tmp.get_reward_new_display())
+            with override('en'):
+                description = 'Weblate donation: {}'.format(tmp.get_reward_new_display())
         else:
             description = 'Weblate donation'
         return self.redirect_payment(
