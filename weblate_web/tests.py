@@ -51,23 +51,23 @@ class ViewTestCase(PostTestCase):
 
     def test_index_en(self):
         response = self.client.get('/en/')
-        self.assertContains(response, 'localization system')
+        self.assertContains(response, 'Basic')
 
     def test_index_cs(self):
         response = self.client.get('/cs/')
-        self.assertContains(response, 'kontinuální lokalizaci')
+        self.assertContains(response, 'Základní')
 
     def test_index_he(self):
         response = self.client.get('/he/')
-        self.assertContains(response, 'מערכת מבוססת מנשק')
+        self.assertContains(response, 'בסיסית')
 
     def test_index_be(self):
         response = self.client.get('/be/')
-        self.assertContains(response, 'Дакументацыя')
+        self.assertContains(response, 'Просты')
 
     def test_index_be_latin(self):
         response = self.client.get('/be@latin/')
-        self.assertContains(response, 'Dakumientacyja')
+        self.assertContains(response, 'Prosty')
 
     def test_terms(self):
         response = self.client.get('/en/terms/')
