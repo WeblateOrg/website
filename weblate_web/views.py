@@ -266,7 +266,7 @@ def process_donation(request):
     elif payment.state == Payment.ACCEPTED:
         messages.success(request, _('Thank you for your donation.'))
         donation = process_payment(payment)
-        if donation.reward and donation.reward.has_link:
+        if donation.reward_new:
             return redirect(donation)
 
     return redirect(reverse('user'))
@@ -315,13 +315,15 @@ def disable_repeat(request, pk):
 class EditLinkView(UpdateView):
     form_class = EditLinkForm
     template_name = 'donate/edit.html'
-    success_url = '/donate/'
+    success_url = '/user/'
+
+    def get_form_class(self):
+        # TODO: load form based on reward
+        print(self.object.reward_new)
+        return EditLinkForm
 
     def get_queryset(self):
-        return Donation.objects.filter(
-            user=self.request.user,
-            reward__has_link=True
-        )
+        return Donation.objects.filter(user=self.request.user, reward_new__gt=0)
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""

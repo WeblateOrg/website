@@ -73,13 +73,8 @@ def weblate_web(request):
         'screenshots': screenshots,
         'canonical_url': canonical_url,
         'language_urls': language_urls,
-        'donate_links': Donation.objects.filter(
-            active=True, reward__thanks_link=True
-        ),
+        'donate_links': Donation.objects.filter(active=True, reward_new=3),
         'activity_sum': sum(get_activity()[-7:]),
-        'rewards': Reward.objects.filter(
-            third_party=False, active=True
-        ).order_by('amount'),
         'contributors': get_contributors(),
         'changes': get_changes(),
         'language_columns': [

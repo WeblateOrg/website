@@ -33,8 +33,8 @@
 <tr>
 <td>{{ donation.created }}</td>
 <td>
-{% if donation.reward %}
-{{ donation.reward.get_display_name }}
+{% if donation.reward_new %}
+{{ donation.get_reward_new_display }}
 <a class="btn btn-info btn-sm" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit" %}</a>
 {% else %}
 {% trans "No reward" %}
