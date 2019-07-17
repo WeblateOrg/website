@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-17 08:30+0200\n"
+"POT-Creation-Date: 2019-07-17 13:21+0200\n"
 "PO-Revision-Date: 2019-07-17 06:25+0000\n"
 "Last-Translator: byStarTW <pan93412@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -112,55 +112,70 @@ msgstr "您可以定義各個使用者的存取層級。"
 msgid "User management"
 msgstr "使用者管理"
 
-#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:96
-msgid "Donation recurrence"
-msgstr "定期贊助"
+#: weblate_web/models.py:36 weblate_web/templates/user.html:40
+msgid "No reward"
+msgstr "沒有獎勵"
 
-#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:97
-msgid "Amount in EUR"
-msgstr "金額（歐元）"
+#: weblate_web/models.py:37 weblate_web/templates/donate.html:30
+#: weblate_web/templates/donate/rewards.html:4
+msgid "Name placement in the list of supporters"
+msgstr "放置在支援者名單中的名稱"
 
-#: weblate_web/forms.py:60
-#, python-format
-msgid "The minimal amount is %d EUR."
-msgstr "最低金額為 %d 歐元。"
+#: weblate_web/models.py:38 weblate_web/templates/donate.html:35
+#: weblate_web/templates/donate/form.html:50
+#: weblate_web/templates/donate/rewards.html:3
+msgid "Link placement in the list of supporters"
+msgstr "放置在支持者名單中的連結"
 
-#: weblate_web/models.py:75
+#: weblate_web/models.py:39 weblate_web/templates/donate.html:40
+#: weblate_web/templates/donate/form.html:57
+#, fuzzy
+#| msgid "Link placement on the weblate.org thanks page"
+msgid "Logo & link placement on the Weblate website"
+msgstr "放置在 weblate.org 感謝頁面上的連結"
+
+#: weblate_web/models.py:80
 msgid "Link text"
 msgstr "連結文字"
 
-#: weblate_web/models.py:79
+#: weblate_web/models.py:84
 msgid "Link URL"
 msgstr "連結網址"
 
-#: weblate_web/models.py:156
+#: weblate_web/models.py:88
+#, fuzzy
+#| msgid "Link text"
+msgid "Link image"
+msgstr "連結文字"
+
+#: weblate_web/models.py:164
 #: weblate_web/templates/weblate_web/post_detail.html:46
 msgid "Release"
 msgstr "釋出版本"
 
-#: weblate_web/models.py:157 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:165 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:47
 msgid "Features"
 msgstr "功能"
 
-#: weblate_web/models.py:158
+#: weblate_web/models.py:166
 msgid "Announcement"
 msgstr "公告"
 
-#: weblate_web/models.py:159
+#: weblate_web/models.py:167
 msgid "Conferences"
 msgstr "會議"
 
-#: weblate_web/models.py:160 weblate_web/templates/try.html:21
+#: weblate_web/models.py:168 weblate_web/templates/try.html:21
 msgid "Hosted Weblate"
 msgstr "Weblate 託管服務"
 
-#: weblate_web/models.py:161
+#: weblate_web/models.py:169
 #: weblate_web/templates/weblate_web/post_detail.html:48
 msgid "Development"
 msgstr "開發"
 
-#: weblate_web/models.py:162
+#: weblate_web/models.py:170
 #: weblate_web/templates/weblate_web/post_detail.html:49
 msgid "Localization"
 msgstr "本地化"
@@ -370,22 +385,22 @@ msgstr "翻譯"
 msgid "Use Weblate"
 msgstr "Weblate 託管服務"
 
-#: weblate_web/templates/base.html:89
+#: weblate_web/templates/base.html:96
 msgid "Service Status"
 msgstr ""
 
-#: weblate_web/templates/base.html:92
+#: weblate_web/templates/base.html:99
 msgid "Software licensed GNU GPLv3+"
 msgstr ""
 
-#: weblate_web/templates/base.html:94 weblate_web/templates/terms.html:3
+#: weblate_web/templates/base.html:101 weblate_web/templates/terms.html:3
 #: weblate_web/templates/terms.html:12
 #, fuzzy
 #| msgid "Terms of Service"
 msgid "Terms & Privacy"
 msgstr "服務條款"
 
-#: weblate_web/templates/base.html:94
+#: weblate_web/templates/base.html:101
 #, python-format
 msgid "Design by %(author)s"
 msgstr ""
@@ -659,11 +674,6 @@ msgstr ""
 "定期贊助能促進 Weblate 繼續開發，即便是小額捐款也都能幫助到自由軟體的免費託管"
 "服務。"
 
-#: weblate_web/templates/donate.html:30
-#: weblate_web/templates/donate/rewards.html:4
-msgid "Name placement in the list of supporters"
-msgstr "放置在支援者名單中的名稱"
-
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/support.html:90
 #: weblate_web/templates/support.html:100
@@ -675,19 +685,6 @@ msgstr ""
 #: weblate_web/templates/snippets/main-menu.html:8
 msgid "Donate"
 msgstr "捐款"
-
-#: weblate_web/templates/donate.html:35
-#: weblate_web/templates/donate/form.html:50
-#: weblate_web/templates/donate/rewards.html:3
-msgid "Link placement in the list of supporters"
-msgstr "放置在支持者名單中的連結"
-
-#: weblate_web/templates/donate.html:40
-#: weblate_web/templates/donate/form.html:57
-#, fuzzy
-#| msgid "Link placement on the weblate.org thanks page"
-msgid "Logo & link placement on the Weblate website"
-msgstr "放置在 weblate.org 感謝頁面上的連結"
 
 #: weblate_web/templates/donate.html:54
 #, fuzzy
@@ -767,7 +764,6 @@ msgid "Weblate is provided free of charge, and welcomes donations."
 msgstr "Weblate 以免費方式提供，我們歡迎您的捐款贊助。"
 
 #: weblate_web/templates/donate/edit.html:12
-#: weblate_web/templates/donate/form.html:84
 msgid "Please choose wanted reward or enter custom donation amount."
 msgstr "請選擇希望的獎勵，或輸入自訂贊助金額。"
 
@@ -799,7 +795,7 @@ msgstr ""
 msgid "Choose your amount in EUR"
 msgstr "選擇您自訂的贊助金額"
 
-#: weblate_web/templates/donate/form.html:22
+#: weblate_web/templates/donate/form.html:23
 #, python-format
 msgid "Amounts from €%(minimum)s or more"
 msgstr ""
@@ -874,13 +870,16 @@ msgstr ""
 msgid "Thank you anyway!"
 msgstr ""
 
+#: weblate_web/templates/donate/form.html:70
+msgid "Continue"
+msgstr "繼續"
+
 #: weblate_web/templates/donate/form.html:74
 msgid ""
 "Please note — a full invoice for your contribution can be issued if need be."
 msgstr ""
 
 #: weblate_web/templates/donate/form.html:75
-#: weblate_web/templates/donate/form.html:112
 #, fuzzy
 #| msgid ""
 #| "We might refuse to place your link, especially if the site contains adult "
@@ -891,18 +890,6 @@ msgid ""
 msgstr ""
 "我們可能會拒絕放置您的連結，尤其是您的網站若有包含成人或非法內容。如有不確"
 "定，請先諮詢我們。"
-
-#: weblate_web/templates/donate/form.html:104
-msgid "Select"
-msgstr "選取"
-
-#: weblate_web/templates/donate/form.html:121
-msgid "Choose your own donation amount"
-msgstr "選擇您自訂的贊助金額"
-
-#: weblate_web/templates/donate/form.html:127
-msgid "Continue"
-msgstr "繼續"
 
 #: weblate_web/templates/donate/rewards.html:2
 msgid "Link placement on the weblate.org thanks page"
@@ -1240,9 +1227,13 @@ msgid "Collaboration Sites"
 msgstr "合作網站"
 
 #: weblate_web/templates/features.html:189
+#, fuzzy
+#| msgid ""
+#| "Weblate has native support for many software development sites such as "
+#| "GitHub, Bitbucket or Gitlab."
 msgid ""
 "Weblate has native support for many software development sites such as "
-"GitHub, Bitbucket or Gitlab."
+"GitHub, Bitbucket or GitLab."
 msgstr "Weblate 原生支援許多軟體開發網站，例如 GitHub、Bitbucket 與 Gitlab。"
 
 #: weblate_web/templates/features.html:195
@@ -1901,61 +1892,71 @@ msgid "Your billing information"
 msgstr "您的付費資訊"
 
 #: weblate_web/templates/payment/payment.html:12
-msgid "Payment summary"
+#, fuzzy
+#| msgid "Payment summary"
+msgid "Payment Summary"
 msgstr "支付摘要"
 
-#: weblate_web/templates/payment/payment.html:15
+#: weblate_web/templates/payment/payment.html:17
 msgid "Payment amount"
 msgstr "付款額"
 
-#: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/payment.html:19
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s 歐元"
 
-#: weblate_web/templates/payment/payment.html:17
+#: weblate_web/templates/payment/payment.html:20
 msgid "(including VAT)"
 msgstr "(含營業稅 VAT)"
 
-#: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/payment.html:25
 msgid "Payment description"
 msgstr "支付描述說明"
 
-#: weblate_web/templates/payment/payment.html:21
+#: weblate_web/templates/payment/payment.html:31
 msgid "Payment frequence"
 msgstr "支付頻率"
 
-#: weblate_web/templates/payment/payment.html:23
+#: weblate_web/templates/payment/payment.html:34
 msgid "Payment will be issued yearly till you cancel the subscription."
 msgstr "將每年支付，直到您取消訂購為止。"
 
-#: weblate_web/templates/payment/payment.html:25
+#: weblate_web/templates/payment/payment.html:36
 msgid ""
 "Payment will be issued every six months till you cancel the subscription."
 msgstr "將每六個月支付一次，直到您取消訂購為止。"
 
-#: weblate_web/templates/payment/payment.html:27
+#: weblate_web/templates/payment/payment.html:38
 msgid "Payment will be issued monthly till you cancel the subscription."
 msgstr "將每月支付，直到您取消訂購為止。"
 
-#: weblate_web/templates/payment/payment.html:32
+#: weblate_web/templates/payment/payment.html:43
 msgid ""
 "Note: This is unavailable for some payment methods, you will have to "
 "manually complete the next payment in those cases."
 msgstr "註：有些支付方式無法適用此選項，在這種情況下，您必須手動完成下次支付。"
 
-#: weblate_web/templates/payment/payment.html:36
+#: weblate_web/templates/payment/payment.html:49
 msgid "Billing information"
 msgstr "結帳資訊"
 
-#: weblate_web/templates/payment/payment.html:38
+#: weblate_web/templates/payment/payment.html:51
 #: weblate_web/templates/user.html:38
 msgid "Edit"
 msgstr "編輯"
 
-#: weblate_web/templates/payment/payment.html:50
-msgid "Please choose payment method:"
+#: weblate_web/templates/payment/payment.html:62
+#, fuzzy
+#| msgid "Please choose payment method:"
+msgid "Please choose payment method"
 msgstr "請選擇支付方式："
+
+#: weblate_web/templates/payment/payment.html:70
+#, fuzzy
+#| msgid "Payments"
+msgid "Make Payment"
+msgstr "支付"
 
 #: weblate_web/templates/snippets/about.html:4
 #, fuzzy
@@ -2585,10 +2586,6 @@ msgstr "續約"
 msgid "Payments"
 msgstr "支付"
 
-#: weblate_web/templates/user.html:40
-msgid "No reward"
-msgstr "沒有獎勵"
-
 #: weblate_web/templates/user.html:48
 msgid "Expired"
 msgstr "已過期"
@@ -2690,38 +2687,58 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr ""
 
-#: weblate_web/views.py:89
+#: weblate_web/views.py:57
+#, python-format
+msgid "Error in parameter %(field)s: %(error)s"
+msgstr ""
+
+#: weblate_web/views.py:104
 msgid "Please provide your billing information to complete the payment."
 msgstr "請提供您的付費資訊完成支付。"
 
-#: weblate_web/views.py:100
+#: weblate_web/views.py:115
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "營業稅 VAT ID 不再有效，請更新。"
 
-#: weblate_web/views.py:260
+#: weblate_web/views.py:248
 msgid "Payment not yet processed, please retry."
 msgstr "支付尚未處理，請重試。"
 
-#: weblate_web/views.py:265
+#: weblate_web/views.py:253
 msgid "The payment was rejected: {}"
 msgstr "支付動作遭拒：{}"
 
-#: weblate_web/views.py:266
+#: weblate_web/views.py:254
 msgid "Unknown reason"
 msgstr "不明原因"
 
-#: weblate_web/views.py:270
+#: weblate_web/views.py:258
 msgid "Thank you for your donation."
 msgstr "感謝您的贊助。"
 
-#: weblate_web/views.py:358
+#: weblate_web/views.py:346
 msgid ""
 "Subscription was initiated, you will shortly receive email to confirm it."
 msgstr "訂閱已啟動，您很快就會收到電子郵件進行確認。"
 
-#: weblate_web/views.py:365
+#: weblate_web/views.py:353
 msgid "Failed to process subscription request."
 msgstr "無法處理訂閱請求。"
+
+#~ msgid "Donation recurrence"
+#~ msgstr "定期贊助"
+
+#~ msgid "Amount in EUR"
+#~ msgstr "金額（歐元）"
+
+#~ msgid "The minimal amount is %d EUR."
+#~ msgstr "最低金額為 %d 歐元。"
+
+#~ msgid "Select"
+#~ msgstr "選取"
+
+#~ msgid "Choose your own donation amount"
+#~ msgstr "選擇您自訂的贊助金額"
 
 #, fuzzy
 #~| msgid "Weblate support"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-17 08:30+0200\n"
+"POT-Creation-Date: 2019-07-17 13:21+0200\n"
 "PO-Revision-Date: 2019-04-26 19:11+0000\n"
 "Last-Translator: Zmicer Turok <zmicerturok@gmail.com>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/weblate/"
@@ -124,59 +124,72 @@ msgstr "Вы можаце вызначыць узровень доступу д�
 msgid "User management"
 msgstr "Кіраванне карыстальнікамі"
 
-#: weblate_web/forms.py:50 weblate_web/templates/donate/form.html:96
-msgid "Donation recurrence"
-msgstr "Рэгулярнае ахаяраванне"
+#: weblate_web/models.py:36 weblate_web/templates/user.html:40
+msgid "No reward"
+msgstr ""
 
-#: weblate_web/forms.py:57 weblate_web/templates/donate/form.html:97
-msgid "Amount in EUR"
-msgstr "Сума ў Еўра"
+#: weblate_web/models.py:37 weblate_web/templates/donate.html:30
+#: weblate_web/templates/donate/rewards.html:4
+msgid "Name placement in the list of supporters"
+msgstr ""
 
-#: weblate_web/forms.py:60
-#, python-format
-msgid "The minimal amount is %d EUR."
-msgstr "Мінімальная сума - %d EUR."
+#: weblate_web/models.py:38 weblate_web/templates/donate.html:35
+#: weblate_web/templates/donate/form.html:50
+#: weblate_web/templates/donate/rewards.html:3
+msgid "Link placement in the list of supporters"
+msgstr ""
 
-#: weblate_web/models.py:75
+#: weblate_web/models.py:39 weblate_web/templates/donate.html:40
+#: weblate_web/templates/donate/form.html:57
+msgid "Logo & link placement on the Weblate website"
+msgstr ""
+
+#: weblate_web/models.py:80
 msgid "Link text"
 msgstr "Тэкст спасылкі"
 
-#: weblate_web/models.py:79
+#: weblate_web/models.py:84
 msgid "Link URL"
 msgstr "URL спасылкі"
 
-#: weblate_web/models.py:156
+#: weblate_web/models.py:88
+#, fuzzy
+#| msgid "Link text"
+msgid "Link image"
+msgstr "Тэкст спасылкі"
+
+#: weblate_web/models.py:164
 #: weblate_web/templates/weblate_web/post_detail.html:46
 msgid "Release"
 msgstr ""
 
-#: weblate_web/models.py:157 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:165 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:47
 msgid "Features"
 msgstr "Адметнасці"
 
-#: weblate_web/models.py:158
+#: weblate_web/models.py:166
 msgid "Announcement"
 msgstr ""
 
-#: weblate_web/models.py:159
+#: weblate_web/models.py:167
 msgid "Conferences"
 msgstr ""
 
-#: weblate_web/models.py:160 weblate_web/templates/try.html:21
+#: weblate_web/models.py:168 weblate_web/templates/try.html:21
 #, fuzzy
 #| msgid "Hosting Weblate"
 msgid "Hosted Weblate"
 msgstr "Хостынг для Weblate"
 
-#: weblate_web/models.py:161
+#: weblate_web/models.py:169
 #: weblate_web/templates/weblate_web/post_detail.html:48
 #, fuzzy
 #| msgid "Develop"
 msgid "Development"
 msgstr "Распрацоўваць"
 
-#: weblate_web/models.py:162
+#: weblate_web/models.py:170
 #: weblate_web/templates/weblate_web/post_detail.html:49
 #, fuzzy
 #| msgid "Continuous translation"
@@ -393,22 +406,22 @@ msgstr "Ключ"
 msgid "Use Weblate"
 msgstr "Хостынг для Weblate"
 
-#: weblate_web/templates/base.html:89
+#: weblate_web/templates/base.html:96
 msgid "Service Status"
 msgstr ""
 
-#: weblate_web/templates/base.html:92
+#: weblate_web/templates/base.html:99
 msgid "Software licensed GNU GPLv3+"
 msgstr ""
 
-#: weblate_web/templates/base.html:94 weblate_web/templates/terms.html:3
+#: weblate_web/templates/base.html:101 weblate_web/templates/terms.html:3
 #: weblate_web/templates/terms.html:12
 #, fuzzy
 #| msgid "Terms of Service"
 msgid "Terms & Privacy"
 msgstr "Умовы абслугоўвання"
 
-#: weblate_web/templates/base.html:94
+#: weblate_web/templates/base.html:101
 #, python-format
 msgid "Design by %(author)s"
 msgstr ""
@@ -670,11 +683,6 @@ msgstr ""
 "дазваляюць фундаваць бясплатны хостынг для свабоднага праграмнага "
 "забеспячэння. Не трэба траціць вялікіх грошай, мы цэнім кожную капейчыну."
 
-#: weblate_web/templates/donate.html:30
-#: weblate_web/templates/donate/rewards.html:4
-msgid "Name placement in the list of supporters"
-msgstr ""
-
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/support.html:90
 #: weblate_web/templates/support.html:100
@@ -686,17 +694,6 @@ msgstr ""
 #: weblate_web/templates/snippets/main-menu.html:8
 msgid "Donate"
 msgstr "Ахвяраваць"
-
-#: weblate_web/templates/donate.html:35
-#: weblate_web/templates/donate/form.html:50
-#: weblate_web/templates/donate/rewards.html:3
-msgid "Link placement in the list of supporters"
-msgstr ""
-
-#: weblate_web/templates/donate.html:40
-#: weblate_web/templates/donate/form.html:57
-msgid "Logo & link placement on the Weblate website"
-msgstr ""
 
 #: weblate_web/templates/donate.html:54
 #, fuzzy
@@ -776,7 +773,6 @@ msgid "Weblate is provided free of charge, and welcomes donations."
 msgstr "Weblate прапануецца дармавым, але ахвяраванні вітаюцца."
 
 #: weblate_web/templates/donate/edit.html:12
-#: weblate_web/templates/donate/form.html:84
 msgid "Please choose wanted reward or enter custom donation amount."
 msgstr ""
 
@@ -808,7 +804,7 @@ msgstr ""
 msgid "Choose your amount in EUR"
 msgstr "Сума ў Еўра"
 
-#: weblate_web/templates/donate/form.html:22
+#: weblate_web/templates/donate/form.html:23
 #, python-format
 msgid "Amounts from €%(minimum)s or more"
 msgstr ""
@@ -881,29 +877,20 @@ msgstr ""
 msgid "Thank you anyway!"
 msgstr ""
 
+#: weblate_web/templates/donate/form.html:70
+msgid "Continue"
+msgstr "Працягнуць"
+
 #: weblate_web/templates/donate/form.html:74
 msgid ""
 "Please note — a full invoice for your contribution can be issued if need be."
 msgstr ""
 
 #: weblate_web/templates/donate/form.html:75
-#: weblate_web/templates/donate/form.html:112
 msgid ""
 "Your link may be refused, especially if containing too adult or illegal "
 "content. Please consult us in advance if unsure."
 msgstr ""
-
-#: weblate_web/templates/donate/form.html:104
-msgid "Select"
-msgstr ""
-
-#: weblate_web/templates/donate/form.html:121
-msgid "Choose your own donation amount"
-msgstr ""
-
-#: weblate_web/templates/donate/form.html:127
-msgid "Continue"
-msgstr "Працягнуць"
 
 #: weblate_web/templates/donate/rewards.html:2
 msgid "Link placement on the weblate.org thanks page"
@@ -1249,9 +1236,13 @@ msgid "Collaboration Sites"
 msgstr "Сайты сумеснай працы"
 
 #: weblate_web/templates/features.html:189
+#, fuzzy
+#| msgid ""
+#| "Weblate has native support for many software development sites such as "
+#| "GitHub, Bitbucket or Gitlab."
 msgid ""
 "Weblate has native support for many software development sites such as "
-"GitHub, Bitbucket or Gitlab."
+"GitHub, Bitbucket or GitLab."
 msgstr ""
 "Weblate падтрымлівае мноства сайтаў для распрацоўкі ПЗ, такіх як GitHub, "
 "BitBucket або Gitlab."
@@ -1949,46 +1940,48 @@ msgid "Your billing information"
 msgstr "Звесткі аб вашых аплатах"
 
 #: weblate_web/templates/payment/payment.html:12
-msgid "Payment summary"
+#, fuzzy
+#| msgid "Payment summary"
+msgid "Payment Summary"
 msgstr "Зводка аплаты"
 
-#: weblate_web/templates/payment/payment.html:15
+#: weblate_web/templates/payment/payment.html:17
 msgid "Payment amount"
 msgstr "Сума аплаты"
 
-#: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/payment.html:19
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s €"
 
-#: weblate_web/templates/payment/payment.html:17
+#: weblate_web/templates/payment/payment.html:20
 msgid "(including VAT)"
 msgstr "(уключае ПДВ)"
 
-#: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/payment.html:25
 msgid "Payment description"
 msgstr "Апісанне аплаты"
 
-#: weblate_web/templates/payment/payment.html:21
+#: weblate_web/templates/payment/payment.html:31
 msgid "Payment frequence"
 msgstr "Частата аплат"
 
-#: weblate_web/templates/payment/payment.html:23
+#: weblate_web/templates/payment/payment.html:34
 msgid "Payment will be issued yearly till you cancel the subscription."
 msgstr "Аплата будзе паўтарацца штогодна, пакуль вы не скасуеце падпіску."
 
-#: weblate_web/templates/payment/payment.html:25
+#: weblate_web/templates/payment/payment.html:36
 #, fuzzy
 #| msgid "Payment will be issued monthly till you cancel the subscription."
 msgid ""
 "Payment will be issued every six months till you cancel the subscription."
 msgstr "Аплата будзе паўтарацца штомесячна, пакуль вы не скасуеце падпіску."
 
-#: weblate_web/templates/payment/payment.html:27
+#: weblate_web/templates/payment/payment.html:38
 msgid "Payment will be issued monthly till you cancel the subscription."
 msgstr "Аплата будзе паўтарацца штомесячна, пакуль вы не скасуеце падпіску."
 
-#: weblate_web/templates/payment/payment.html:32
+#: weblate_web/templates/payment/payment.html:43
 msgid ""
 "Note: This is unavailable for some payment methods, you will have to "
 "manually complete the next payment in those cases."
@@ -1996,18 +1989,26 @@ msgstr ""
 "Заўвага: гэта недаступна для некаторых спосабаў аплаты. Тады вам патрэбна "
 "рукамі правесці наступны плацёж."
 
-#: weblate_web/templates/payment/payment.html:36
+#: weblate_web/templates/payment/payment.html:49
 msgid "Billing information"
 msgstr "Плацёжная інфармацыя"
 
-#: weblate_web/templates/payment/payment.html:38
+#: weblate_web/templates/payment/payment.html:51
 #: weblate_web/templates/user.html:38
 msgid "Edit"
 msgstr "Рэдагаваць"
 
-#: weblate_web/templates/payment/payment.html:50
-msgid "Please choose payment method:"
+#: weblate_web/templates/payment/payment.html:62
+#, fuzzy
+#| msgid "Please choose payment method:"
+msgid "Please choose payment method"
 msgstr "Калі ласка, абярыце спосаб аплаты:"
+
+#: weblate_web/templates/payment/payment.html:70
+#, fuzzy
+#| msgid "Payment summary"
+msgid "Make Payment"
+msgstr "Зводка аплаты"
 
 #: weblate_web/templates/snippets/about.html:4
 #, fuzzy
@@ -2647,10 +2648,6 @@ msgstr ""
 msgid "Payments"
 msgstr "Зводка аплаты"
 
-#: weblate_web/templates/user.html:40
-msgid "No reward"
-msgstr ""
-
 #: weblate_web/templates/user.html:48
 msgid "Expired"
 msgstr "Сыйшоўшы"
@@ -2754,42 +2751,56 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr ""
 
-#: weblate_web/views.py:89
+#: weblate_web/views.py:57
+#, python-format
+msgid "Error in parameter %(field)s: %(error)s"
+msgstr ""
+
+#: weblate_web/views.py:104
 msgid "Please provide your billing information to complete the payment."
 msgstr "Калі ласка, прадастаўце звесткі, каб завяршыць аплату."
 
-#: weblate_web/views.py:100
+#: weblate_web/views.py:115
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:260
+#: weblate_web/views.py:248
 #, fuzzy
 #| msgid "Payments are processed by The Pay service."
 msgid "Payment not yet processed, please retry."
 msgstr "Аплаты апрацоўваюцца службай «The Pay»."
 
-#: weblate_web/views.py:265
+#: weblate_web/views.py:253
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:266
+#: weblate_web/views.py:254
 msgid "Unknown reason"
 msgstr ""
 
-#: weblate_web/views.py:270
+#: weblate_web/views.py:258
 #, fuzzy
 #| msgid "Thank you for ordering hosting!"
 msgid "Thank you for your donation."
 msgstr "Дзякуй за замову хостынгу!"
 
-#: weblate_web/views.py:358
+#: weblate_web/views.py:346
 msgid ""
 "Subscription was initiated, you will shortly receive email to confirm it."
 msgstr ""
 
-#: weblate_web/views.py:365
+#: weblate_web/views.py:353
 msgid "Failed to process subscription request."
 msgstr ""
+
+#~ msgid "Donation recurrence"
+#~ msgstr "Рэгулярнае ахаяраванне"
+
+#~ msgid "Amount in EUR"
+#~ msgstr "Сума ў Еўра"
+
+#~ msgid "The minimal amount is %d EUR."
+#~ msgstr "Мінімальная сума - %d EUR."
 
 #, fuzzy
 #~| msgid "Weblate support"
