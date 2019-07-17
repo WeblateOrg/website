@@ -132,7 +132,7 @@ class PaymentView(FormView, SingleObjectMixin):
             return super().dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form):
-        show_form_errors(self.request, form)
+        messages.error(self.request, _('Please select a payment method to continue.'))
         return super().form_invalid(form)
 
     def form_valid(self, form):
