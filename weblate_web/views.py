@@ -46,6 +46,21 @@ from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, Reward, process_
 from weblate_web.remote import get_activity
 
 
+def show_form_errors(request, form):
+    """Show all form errors as a message."""
+    for error in form.non_field_errors():
+        messages.error(request, error)
+    for field in form:
+        for error in field.errors:
+            messages.error(
+                request,
+                _('Error in parameter %(field)s: %(error)s') % {
+                    'field': field.name,
+                    'error': error
+                }
+            )
+
+
 @require_POST
 def fetch_vat(request):
     if 'payment' not in request.POST or 'vat' not in request.POST:
@@ -115,6 +130,10 @@ class PaymentView(FormView, SingleObjectMixin):
             if result is not None:
                 return result
             return super().dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form):
+        show_form_errors(self.request, form)
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         if not self.can_pay:
@@ -187,6 +206,10 @@ class DonateView(FormView):
         )[0]
         payment = Payment.objects.create(**kwargs)
         return redirect(payment.get_payment_url())
+
+    def form_invalid(self, form):
+        show_form_errors(self.request, form)
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         data = form.cleaned_data
