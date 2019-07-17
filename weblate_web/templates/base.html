@@ -12,10 +12,10 @@
 
   <meta name="author" content="Michal Čihař" />
   <meta name="dcterms.rightsHolder" content="Michal Čihař">
-  <meta name="dcterms.dateCopyrighted" content="2012 - 2019">
+  <meta name="dcterms.dateCopyrighted" content="2012–2019">
   <meta name="robots" content="index, follow" />
   <meta name="description" content="{% block description %}{% endblock %}" />
-  <meta name="keywords" content="weblate,git,gettext,resources,json,po,mo,qts,CAT,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
+  <meta name="keywords" content="Weblate,Git,Gettext,resources,JSON,PO,MO,QTS,CAT,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
 
   <link rel="author" href="mailto:michal@cihar.com" />
 
@@ -32,7 +32,7 @@
   <meta property="og:image" content="{% block og_image %}https://weblate.org/static/og.png{% endblock %}" />
   <meta property="fb:app_id" content="741121112629028" />
   <title>{% block title %}Weblate{% endblock %}</title>
-  <link rel="alternate" type="application/rss+xml" href="https://weblate.org{% url 'feed' %}" title="Weblate blog RSS feed"/>
+  <link rel="alternate" type="application/rss+xml" href="https://weblate.org{% url 'feed' %}" title="Weblate blog feed (RSS)"/>
   {% for lang in language_urls %}
     {% if lang.code != LANGUAGE_CODE %}<link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}" />{% endif %}
   {% endfor %}
@@ -96,9 +96,9 @@
                 <a href="https://status.weblate.org/" class="service-status">{% trans "Service Status" %}</a>
             </div>
 			<div class="footer-left">
-                Copyright © 2012—2019 <a href="https://cihar.com/">Michal Čihař</a>  •  {% trans "Software licensed GNU GPLv3+" %}
+                Copyright © 2012–2019 <a href="https://cihar.com/">Michal Čihař</a> • {% trans "Software licensed GNU GPLv3+" %}
             </div>
-            <div class="footer-right"><a href="{% url 'terms' %}">{% trans "Terms & Privacy" %}</a>  •  {% blocktrans with author='<a href="https://vitavalka.cz/">Vita Valka</a>' %}Design by {{ author }}{% endblocktrans %}</div>
+            <div class="footer-right"><a href="{% url 'terms' %}">{% trans "Terms & Privacy" %}</a> • {% blocktrans with author='<a href="https://vitavalka.cz/">Vita Valka</a>' %}Design by {{ author }}{% endblocktrans %}</div>
 		</div>
     </footer>
     <section class="mobile-menu">
