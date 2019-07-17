@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
             field=models.IntegerField(
                 choices=[
                     (0, "No reward"),
-                    (1, "Name placement in the list of supporters"),
-                    (2, "Link placement in the list of supporters"),
-                    (3, "Logo & link placement on the Weblate website"),
+                    (1, "Name in the list of supporters"),
+                    (2, "Link in the list of supporters"),
+                    (3, "Logo and link on the Weblate website"),
                 ],
                 default=0,
             ),

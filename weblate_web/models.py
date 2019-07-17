@@ -34,9 +34,9 @@ PAYMENTS_ORIGIN = 'https://weblate.org/donate/process/'
 
 REWARDS = (
     (0, ugettext_lazy('No reward')),
-    (1, ugettext_lazy('Name placement in the list of supporters')),
-    (2, ugettext_lazy('Link placement in the list of supporters')),
-    (3, ugettext_lazy('Logo & link placement on the Weblate website')),
+    (1, ugettext_lazy('Name in the list of supporters')),
+    (2, ugettext_lazy('Link in the list of supporters')),
+    (3, ugettext_lazy('Logo and link on the Weblate website')),
 )
 
 
