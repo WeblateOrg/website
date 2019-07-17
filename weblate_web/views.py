@@ -133,7 +133,7 @@ class PaymentView(FormView, SingleObjectMixin):
 
     def form_invalid(self, form):
         if self.form_class == MethodForm:
-            messages.error(self.request, _('Please select a payment method to continue.'))
+            messages.error(self.request, _('Please choose a payment method to continue.'))
         else:
             messages.error(
                 self.request,
