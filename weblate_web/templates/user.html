@@ -50,7 +50,7 @@
                     <ul class="list-unstyled">
                     {% for payment in donation.list_payments %}
                     <li>
-                    {{ payment.amount }} EUR 
+                    €{{ payment.amount }}
                     {% if payment.state == 5 %} 
                     {% if payment.invoice_filename_valid %}
                     (<a href="{% url 'donate-invoice' pk=payment.pk %}">{{ payment.invoice_filename }}</a>)
