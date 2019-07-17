@@ -25,7 +25,7 @@ from django.urls import reverse
 from django.utils.translation import override
 
 from weblate_web.data import EXTENSIONS, SCREENSHOTS, VERSION
-from weblate_web.models import Donation, Reward
+from weblate_web.models import Donation
 from weblate_web.remote import get_activity, get_changes, get_contributors
 
 

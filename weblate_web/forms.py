@@ -21,11 +21,10 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from wlhosted.payments.backends import list_backends
 from wlhosted.payments.models import RECURRENCE_CHOICES
 
-from weblate_web.models import Donation, REWARDS
+from weblate_web.models import REWARDS, Donation
 
 
 class SubscribeForm(forms.Form):

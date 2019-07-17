@@ -29,7 +29,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _, override
+from django.utils.translation import override
+from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
 from django.views.generic.dates import ArchiveIndexView
@@ -42,7 +43,7 @@ from wlhosted.payments.models import Customer, Payment
 from wlhosted.payments.validators import cache_vies_data, validate_vatin
 
 from weblate_web.forms import DonateForm, EditLinkForm, MethodForm, SubscribeForm
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, Reward, process_payment
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, process_payment
 from weblate_web.remote import get_activity
 
 
@@ -133,7 +134,9 @@ class PaymentView(FormView, SingleObjectMixin):
 
     def form_invalid(self, form):
         if self.form_class == MethodForm:
-            messages.error(self.request, _('Please choose a payment method to continue.'))
+            messages.error(
+                self.request, _('Please choose a payment method to continue.')
+            )
         else:
             messages.error(
                 self.request,
@@ -225,7 +228,9 @@ class DonateView(FormView):
         if data['reward'] and int(data['reward']):
             tmp = Donation(reward_new=int(data['reward']))
             with override('en'):
-                description = 'Weblate donation: {}'.format(tmp.get_reward_new_display())
+                description = 'Weblate donation: {}'.format(
+                    tmp.get_reward_new_display()
+                )
         else:
             description = 'Weblate donation'
         return self.redirect_payment(
