@@ -6,56 +6,72 @@
 {% block jumbotron %}{% endblock %}
 
 {% block content %}
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Payment Summary" %}</h1>
+            <div class="payment-form">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Payment amount" %}</div>
+                        <div class="line-right">
+                            {% blocktrans with object.vat_amount as price %}{{ price }} EUR{% endblocktrans %}
+                            {% if object.customer.needs_vat %}{% trans "(including VAT)" %}{% endif %}
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Payment description" %}</div>
+                        <div class="line-right">{{ object.description }}</div>
+                        <div class="clear"></div>
+                    </div>
+                    {% if object.recurring %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Payment frequence" %}</div>
+                        <div class="line-right">
+                            {% if object.recurring == "y" %}
+                            {% trans "Payment will be issued yearly till you cancel the subscription." %}
+                            {% elif object.recurring == "b" %}
+                            {% trans "Payment will be issued every six months till you cancel the subscription." %}
+                            {% elif object.recurring == "m" %}
+                            {% trans "Payment will be issued monthly till you cancel the subscription." %}
+                            {% else %}
+                            {{ object.recurring }}
+                            {% endif %}
+                            <br>
+                            <span class="text-muted">{% trans "Note: This is unavailable for some payment methods, you will have to manually complete the next payment in those cases." %}</span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    {% endif %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Billing information" %}</div>
+                        <div class="line-right">
+                            <a href="{% url "payment-customer" pk=object.pk %}" class="button small right">{% trans "Edit" %}</a>
+                            {{ object.customer.name }}<br>
+                            {{ object.customer.address }}<br>
+                            {{ object.customer.city }}<br>
+                            {{ object.customer.country.name }}<br>
+                            {{ object.customer.tax }}<br>
+                            {{ object.customer.vat }}
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    {% if can_pay %}
+                    <div class="title pick">{% trans "Please choose payment method" %}</div>
+                    <div class="payment-pick">
+                        {% for backend in backends %}
+                        <input id="banktransfer" name="method" type="radio" value="{{ backend.name }}" />
+                        <label class="pay-{{ backend.name }}" for="pay-{{ backend.name }}">{{ backend.verbose }}</label>
+                        {% endfor %}
+                    </div>
 
-<div class="card m-4">
-  <h5 class="card-header">
-    {% trans "Payment summary" %}
-  </h5>
-    <table class="table">
-    <tr><th>{% trans "Payment amount" %}</th><td>
-    {% blocktrans with object.vat_amount as price %}{{ price }} EUR{% endblocktrans %}
-    {% if object.customer.needs_vat %}{% trans "(including VAT)" %}{% endif %}
-    </td><tr>
-    <tr><th>{% trans "Payment description" %}</th><td>{{ object.description }}</td></tr>
-    {% if object.recurring %}
-    <tr><th>{% trans "Payment frequence" %}</th><td>
-    {% if object.recurring == "y" %}
-    {% trans "Payment will be issued yearly till you cancel the subscription." %}
-    {% elif object.recurring == "b" %}
-    {% trans "Payment will be issued every six months till you cancel the subscription." %}
-    {% elif object.recurring == "m" %}
-    {% trans "Payment will be issued monthly till you cancel the subscription." %}
-    {% else %}
-    {{ object.recurring }}
-    {% endif %}
-    <br>
-    <span class="text-muted">{% trans "Note: This is unavailable for some payment methods, you will have to manually complete the next payment in those cases." %}</span>
-    </td></tr>
-    {% endif %}
-    <tr>
-    <th>{% trans "Billing information" %}</th>
-    <td>
-    <a href="{% url "payment-customer" pk=object.pk %}" class="btn btn-success float-right"><i class="fas fa-edit"></i> {% trans "Edit" %}</a>
-    {{ object.customer.name }}<br>
-    {{ object.customer.address }}<br>
-    {{ object.customer.city }}<br>
-    {{ object.customer.country.name }}<br>
-    {{ object.customer.tax }}<br>
-    {{ object.customer.vat }}
-    </td>
-    </tr>
-    </table>
-  {% if can_pay %}
-  <div class="card-footer text-muted">
-    {% trans "Please choose payment method:" %}
-    <form method="POST">
-      {% csrf_token %}
-      {% for backend in backends %}
-      <button class="btn btn-default" type="submit" name="method" value="{{ backend.name }}"><img src="{% static backend.image_name %}"><br>{{ backend.verbose }}</button>
-      {% endfor %}
-    </form>
-  </div>
-  {% endif %}
-</div>
-
+                    <input type="submit" class="button center make-payment" value="{% trans "Make Payment" %}" />
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
