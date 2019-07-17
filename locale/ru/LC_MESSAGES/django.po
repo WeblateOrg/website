@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-17 14:49+0200\n"
+"POT-Creation-Date: 2019-07-17 21:06+0200\n"
 "PO-Revision-Date: 2019-07-16 07:57+0000\n"
 "Last-Translator: Andrey <andrey@mailbox.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
@@ -128,7 +128,7 @@ msgstr "Можно задать уровни доступа для каждог�
 msgid "User management"
 msgstr "Управление пользователями"
 
-#: weblate_web/models.py:36 weblate_web/templates/user.html:40
+#: weblate_web/models.py:36
 msgid "No reward"
 msgstr "Без вознаграждения"
 
@@ -263,11 +263,9 @@ msgstr ""
 
 #: weblate_web/templates/about.html:23
 msgid ""
-"…The key feature I want from such system is full integration with Git. This "
-"means that whatever is changed should be committed to local Git branch, and "
-"merging translations back should be as easy as merging the remote branch. "
-"I've hacked such a thing into Pootle (in quite a dirty way), so this is "
-"basically the current workflow, and I'm pretty much happy with that…"
+"…The key feature, full integration with Git. Changes should be committed to "
+"a local Git branch. Merging translations back should be as easy as merging "
+"the remote branch. Michal made it work in Pootle."
 msgstr ""
 
 #: weblate_web/templates/about.html:26
@@ -285,9 +283,7 @@ msgid "April 2012"
 msgstr ""
 
 #: weblate_web/templates/about.html:34
-msgid ""
-"…I still get lot of questions why I wrote Weblate instead of staying with "
-"some existing solution. Let’s summarize the reasons:"
+msgid "Instead of staying with an existing solution, Weblate was made to have:"
 msgstr ""
 
 #: weblate_web/templates/about.html:35
@@ -329,7 +325,7 @@ msgid "Today"
 msgstr ""
 
 #: weblate_web/templates/about.html:45
-msgid "Weblate grows and the future is open to new opportunities!"
+msgid "Weblate grows and the future is open to new opportunities."
 msgstr ""
 
 #: weblate_web/templates/about.html:49
@@ -391,10 +387,10 @@ msgstr "Пожертвовать для Weblate"
 
 #: weblate_web/templates/about.html:87
 msgid ""
-"Michal was born & lives in Prague, Czech Republic. He is a libre software "
+"Michal was born and lives in Prague, Czech Republic. He is a libre software "
 "enthusiast and long term contributor to various libre software projects like "
 "<a href=\"https://weblate.org/\">Weblate</a>, <a href=\"https://wammu.eu/"
-"\">Gammu</a>, <a href=\"https://www.phpmyadmin.net/\">phpMyAdmin</a> or <a "
+"\">Gammu</a>, <a href=\"https://www.phpmyadmin.net/\">phpMyAdmin</a> and <a "
 "href=\"https://www.debian.org/\">Debian</a>."
 msgstr ""
 
@@ -684,7 +680,7 @@ msgstr "Войдите в систему, чтобы управлять поже
 #: weblate_web/templates/donate.html:23
 #, fuzzy
 #| msgid "Recurring donation"
-msgid "Recurring donations & rewards"
+msgid "Recurring donations and rewards"
 msgstr "Регулярное пожертвование"
 
 #: weblate_web/templates/donate.html:25
@@ -710,7 +706,9 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:32 weblate_web/templates/donate.html:37
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:67
+#: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/main-menu.html:8
+#: weblate_web/templates/user.html:91
 msgid "Donate"
 msgstr "Пожертвования"
 
@@ -751,6 +749,12 @@ msgid ""
 msgstr ""
 "Единовременные пожертвования - отличная оценка нашей работы по конкретной "
 "проблеме или поддержке."
+
+#: weblate_web/templates/donate.html:73
+#, fuzzy
+#| msgid "Cryptocurrencies"
+msgid "Cryptocurrency donations"
+msgstr "Криптовалюты"
 
 #: weblate_web/templates/donate.html:75
 #, fuzzy, python-format
@@ -1849,9 +1853,9 @@ msgstr "Связаться с нами"
 #: weblate_web/templates/hosting.html:540
 #: weblate_web/templates/support.html:114
 #, fuzzy
-#| msgid "Payment description"
-msgid "Payment Conditions"
-msgstr "Назначение платежа"
+#| msgid "Payments"
+msgid "Payment"
+msgstr "Платежи"
 
 #: weblate_web/templates/hosting.html:542
 #, fuzzy
@@ -1879,7 +1883,9 @@ msgid "Weblate - web-based localization"
 msgstr "Weblate - локализация с помощью веб-технологий"
 
 #: weblate_web/templates/index.html:17
-msgid "Web-based <strong>continuous</strong> localization system"
+#, fuzzy
+#| msgid "Web-based <strong>continuous</strong> localization system"
+msgid "Web-based <strong>continuous</strong> localization"
 msgstr "Веб-система <strong>непрерывной</strong> локализации"
 
 #: weblate_web/templates/index.html:18
@@ -1889,9 +1895,9 @@ msgstr "Веб-система <strong>непрерывной</strong> локал
 #| "by over %(projects)s+ opensource projects &amp; companies in over "
 #| "%(countries)s+ countries around the World."
 msgid ""
-"Weblate is a libre software web-based continuous localization system used by "
-"over %(projects)s+ libre software projects and companies in over "
-"%(countries)s+ countries around the world."
+"Weblate is a copylefted libre software, used by over %(projects)s+ libre "
+"software projects and companies in over %(countries)s+ countries around the "
+"world."
 msgstr ""
 "Weblate - это система непрерывной локализации на основе свободного "
 "программного обеспечения, используемая более  %(projects)s+ проектами "
@@ -1909,7 +1915,7 @@ msgid "Users and Supporters"
 msgstr "Поддерживающие"
 
 #: weblate_web/templates/index.html:36
-msgid "Weblate translates the world of software applications"
+msgid "Weblate localizes the world"
 msgstr ""
 
 #: weblate_web/templates/index.html:37
@@ -2046,7 +2052,6 @@ msgid "Billing information"
 msgstr "Платёжная информация"
 
 #: weblate_web/templates/payment/payment.html:50
-#: weblate_web/templates/user.html:38
 msgid "Edit"
 msgstr "Правка"
 
@@ -2086,30 +2091,30 @@ msgid "See a demo"
 msgstr ""
 
 #: weblate_web/templates/snippets/box-donate.html:3
-msgid "<strong>Donate</strong> — to make the world a better place"
+msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr ""
 
 #: weblate_web/templates/snippets/box-donate.html:4
 msgid ""
 "Give yourself a happy moment. Help build Weblate with a small or bigger "
-"donation. Funds are used wisely between hosting and manpower."
+"donation. Funds are spent wisely between hosting and manpower."
 msgstr ""
 
 #: weblate_web/templates/snippets/box-donate.html:5
 #, fuzzy
-#| msgid "Donations"
-msgid "Donations welcome"
+#| msgid "Donate"
+msgid "Donate here"
 msgstr "Пожертвования"
 
 #: weblate_web/templates/snippets/box-join.html:3
-msgid "<strong>Join the community</strong> & contribute by development"
+msgid "<strong>Join the community</strong> and contribute"
 msgstr ""
 
 #: weblate_web/templates/snippets/box-join.html:4
 msgid ""
 "Weblate is a platform for one of the most positive and empowering "
-"communities of open source software. We learn and grow together and we "
-"connect the world"
+"communities of libre software. We learn and grow together and we connect the "
+"world"
 msgstr ""
 
 #: weblate_web/templates/snippets/box-join.html:5
@@ -2366,8 +2371,8 @@ msgstr "Сообщить о проблеме"
 #| "subscribers receive priority support with no extra charge. All other "
 #| "users can prepay ad-hoc help packages."
 msgid ""
-"Weblate is a copylefted libre software with community support. Cloud hosted "
-"Weblate subscribers receive priority support at no extra charge. All other "
+"Weblate is a copylefted libre software with community support. Hosted "
+"Weblate Cloud subscribers receive priority support at no extra charge. Other "
 "users can prepay for ad-hoc help packages."
 msgstr ""
 "Weblate - это бесплатное программное обеспечение с поддержкой сообщества. "
@@ -2378,7 +2383,7 @@ msgstr ""
 #: weblate_web/templates/support.html:31
 #, fuzzy
 #| msgid "Bugs or feature requests"
-msgid "Bugs & feature requests"
+msgid "Bugs and feature requests"
 msgstr "Ошибки или пожелания"
 
 #: weblate_web/templates/support.html:32
@@ -2388,8 +2393,8 @@ msgstr "Ошибки или пожелания"
 #| "it? Please report it to <a href=\"https://github.com/WeblateOrg/weblate/"
 #| "issues\">issue tracker on GitHub</a>."
 msgid ""
-"Found an issue with Weblate? Ideas for improvement? Report those on the <a "
-"href=\"%(url)s\">issue tracker</a>."
+"Issues and ideas for improvement can be reported to the <a href=\"%(url)s"
+"\">issue tracker</a>."
 msgstr ""
 "Столкнулись со сбоями в работе Weblate? Есть соображения, как сделать его "
 "лучше? Расскажите нам об этом в <a href=\"https://github.com/WeblateOrg/"
@@ -2417,7 +2422,7 @@ msgstr ""
 #: weblate_web/templates/support.html:45
 #, fuzzy
 #| msgid "Support for Hosted Weblate services"
-msgid "Support for Weblate cloud subscribers"
+msgid "Support for Weblate Cloud subscribers"
 msgstr "Поддержка сервисов Hosted Weblate"
 
 #: weblate_web/templates/support.html:46
@@ -2426,8 +2431,8 @@ msgstr "Поддержка сервисов Hosted Weblate"
 #| "If you are using our hosting services, you can ask for support at "
 #| "%(contact)s."
 msgid ""
-"Our cloud hosting service users can get support at <a href=\"mailto:%(email)s"
-"\">%(email)s</a>."
+"As a Hosted Cloud service user, you can get support at <a href=\"mailto:"
+"%(email)s\">%(email)s</a>."
 msgstr ""
 "Если вы используете наши услуги хостинга, вы можете запросить поддержку "
 "здесь: %(contact)s."
@@ -2457,7 +2462,7 @@ msgstr "Установка с использованием virtualenv, uwsgi и 
 #: weblate_web/templates/support.html:64
 #, fuzzy
 #| msgid "Using PostgreSQL, MySQL or MariaDB as database backend"
-msgid "Using PostgreSQL as a database backend"
+msgid "Using PostgreSQL as database backend"
 msgstr ""
 "Использование PostgreSQL, MySQL или MariaDB в качестве опорной базы данных"
 
@@ -2467,7 +2472,9 @@ msgstr ""
 "Потребуется доступ root или тесное взаимодействие с вашими администраторами"
 
 #: weblate_web/templates/support.html:66 weblate_web/templates/support.html:78
-msgid "Configuration customization"
+#, fuzzy
+#| msgid "Configuration customization"
+msgid "Setup customization"
 msgstr "Заказная настройка конфигурации"
 
 #: weblate_web/templates/support.html:67 weblate_web/templates/support.html:79
@@ -2497,7 +2504,9 @@ msgid "We will fix issues that occur in your environment."
 msgstr "Мы будем исправлять проблемы, возникающие в вашей среде."
 
 #: weblate_web/templates/support.html:88 weblate_web/templates/support.html:98
-msgid "You will receive priority email support."
+#, fuzzy
+#| msgid "You will receive priority email support."
+msgid "You receive priority email support."
 msgstr "Вы получите приоритетную поддержку по э-почте."
 
 #: weblate_web/templates/support.html:94
@@ -2519,11 +2528,13 @@ msgid "Consulting services or custom development"
 msgstr "Сервис консультаций или разработки на заказ"
 
 #: weblate_web/templates/support.html:106
-msgid "Custom features development"
-msgstr "Разработка по запросу"
+msgid "Development of custom features"
+msgstr ""
 
 #: weblate_web/templates/support.html:107
-msgid "Integrating Weblate into your workflow"
+#, fuzzy
+#| msgid "Integrating Weblate into your workflow"
+msgid "Integration of Weblate into your workflow"
 msgstr "Интеграция Weblate в ваш рабочий процесс"
 
 #: weblate_web/templates/support.html:108
@@ -2536,9 +2547,9 @@ msgstr ""
 
 #: weblate_web/templates/support.html:112
 #, fuzzy
-#| msgid "Weblate support"
-msgid "Request support"
-msgstr "Поддержка Weblate"
+#| msgid "Ask for hosting"
+msgid "Ask for help"
+msgstr "Запросить хостинг"
 
 #: weblate_web/templates/support.html:120
 msgid "Mailing lists"
@@ -2559,7 +2570,7 @@ msgstr ""
 #: weblate_web/templates/support.html:140
 #, fuzzy
 #| msgid "Enter your email"
-msgid "Your email…"
+msgid "Your email address…"
 msgstr "Введите свою э-почту"
 
 #: weblate_web/templates/support.html:127
@@ -2572,9 +2583,7 @@ msgstr "Подписаться"
 #| msgid ""
 #| "You can use mailing lists for discussions with other Weblate users and "
 #| "developers."
-msgid ""
-"Use this mailing list to discuss matters with other Weblate users and "
-"developers"
+msgid "Discuss matters with other Weblate users and developers"
 msgstr ""
 "Вы можете использовать списки рассылки для общения с другими пользователями "
 "и разработчиками Weblate."
@@ -2601,7 +2610,7 @@ msgstr ""
 #: weblate_web/templates/support.html:136
 #, fuzzy
 #| msgid "Hosted Weblate Announcements mailing list"
-msgid "Cloud Weblate announcements"
+msgid "Weblate Cloud announcements"
 msgstr "Список рассылки Объявления Hosted Weblate"
 
 #: weblate_web/templates/support.html:144
@@ -2609,8 +2618,7 @@ msgstr "Список рассылки Объявления Hosted Weblate"
 #| msgid ""
 #| "Low traffic mailing list with announcements about Hosted Weblate services."
 msgid ""
-"<strong>Low traffic</strong> mailing list with announcements about premium "
-"Weblate services"
+"<strong>Low traffic</strong> mailing list announcing premium Weblate services"
 msgstr ""
 "Список рассылки с небольшим трафиком, содержащий объявления о сервисах "
 "Hosted Weblate."
@@ -2618,15 +2626,17 @@ msgstr ""
 #: weblate_web/templates/support.html:145
 #, fuzzy
 #| msgid "This list is moderated, only chosen users can post announcements."
-msgid "The list is moderated — only select users can post announcements"
+msgid "Moderated list—only select users can post announcements"
 msgstr ""
 "Этот список модерируется, только избранные пользователи могут помещать сюда "
 "объявления."
 
 #: weblate_web/templates/support.html:152
-#, python-format
-msgid ""
-"You can also ask related questions on <a href=\"%(url)s\">Stack Overflow</a>."
+#, fuzzy, python-format
+#| msgid ""
+#| "You can also ask related questions on <a href=\"%(url)s\">Stack Overflow</"
+#| "a>."
+msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr ""
 "Вы можете задавать соответствующие вопросы на <a href=\"%(url)s\">Stack "
 "Overflow</a>."
@@ -2696,11 +2706,11 @@ msgstr ""
 msgid "Log out"
 msgstr "Выйти"
 
-#: weblate_web/templates/user.html:19
+#: weblate_web/templates/user.html:15
 msgid "Your donations"
 msgstr "Ваши пожертвования"
 
-#: weblate_web/templates/user.html:24
+#: weblate_web/templates/user.html:20
 msgid "Creation date"
 msgstr "Дата создания"
 
@@ -2708,29 +2718,45 @@ msgstr "Дата создания"
 msgid "Reward"
 msgstr "Вознаграждение"
 
-#: weblate_web/templates/user.html:26
+#: weblate_web/templates/user.html:30
 msgid "Expiry date"
 msgstr "Дата истечения"
 
-#: weblate_web/templates/user.html:27
-msgid "Renewal"
-msgstr "Продление"
+#: weblate_web/templates/user.html:35
+msgid "State"
+msgstr ""
 
-#: weblate_web/templates/user.html:28
-msgid "Payments"
-msgstr "Платежи"
-
-#: weblate_web/templates/user.html:48
+#: weblate_web/templates/user.html:38
 msgid "Expired"
 msgstr "Истекший"
 
-#: weblate_web/templates/user.html:52
+#: weblate_web/templates/user.html:40
+#, fuzzy
+#| msgid "Automatic translation"
+msgid "Automatically renews"
+msgstr "Автоматический перевод"
+
+#: weblate_web/templates/user.html:42
+msgid "Does not renew"
+msgstr "Не продлевается"
+
+#: weblate_web/templates/user.html:48
+msgid "Payments"
+msgstr "Платежи"
+
+#: weblate_web/templates/user.html:74
+#, fuzzy
+#| msgid "No reward"
+msgid "Edit reward"
+msgstr "Без вознаграждения"
+
+#: weblate_web/templates/user.html:79
 msgid "Turn off renewal"
 msgstr ""
 
-#: weblate_web/templates/user.html:55
-msgid "Does not renew"
-msgstr "Не продлевается"
+#: weblate_web/templates/user.html:86
+msgid "You did not do any donation yet."
+msgstr ""
 
 #: weblate_web/templates/weblate_web/post_detail.html:24
 msgid "Share"
@@ -2842,31 +2868,52 @@ msgstr "Номер плательщика НДС более не действи�
 msgid "Please choose a payment method to continue."
 msgstr "Выберите способ платежа:"
 
-#: weblate_web/views.py:262
+#: weblate_web/views.py:263
 msgid "Payment not yet processed, please retry."
 msgstr "Оплата еще не обработана, повторите попытку."
 
-#: weblate_web/views.py:267
+#: weblate_web/views.py:268
 msgid "The payment was rejected: {}"
 msgstr "Платеж был отклонен: {}"
 
-#: weblate_web/views.py:268
+#: weblate_web/views.py:269
 msgid "Unknown reason"
 msgstr "Неизвестная причина"
 
-#: weblate_web/views.py:272
+#: weblate_web/views.py:273
 msgid "Thank you for your donation."
 msgstr "Спасибо за пожертвование."
 
-#: weblate_web/views.py:362
+#: weblate_web/views.py:363
 msgid ""
 "Subscription was initiated, you will shortly receive email to confirm it."
 msgstr ""
 "Подписка была инициирована, вы вскоре получите письмо для подтверждения."
 
-#: weblate_web/views.py:369
+#: weblate_web/views.py:370
 msgid "Failed to process subscription request."
 msgstr "Не удалось обработать запрос на подписку."
+
+#, fuzzy
+#~| msgid "Payment description"
+#~ msgid "Payment Conditions"
+#~ msgstr "Назначение платежа"
+
+#, fuzzy
+#~| msgid "Donations"
+#~ msgid "Donations welcome"
+#~ msgstr "Пожертвования"
+
+#~ msgid "Custom features development"
+#~ msgstr "Разработка по запросу"
+
+#, fuzzy
+#~| msgid "Weblate support"
+#~ msgid "Request support"
+#~ msgstr "Поддержка Weblate"
+
+#~ msgid "Renewal"
+#~ msgstr "Продление"
 
 #, fuzzy
 #~| msgid "Weblate is provided free of charge, and welcomes donations."
@@ -2985,9 +3032,6 @@ msgstr "Не удалось обработать запрос на подпис�
 
 #~ msgid "Donation rewards"
 #~ msgstr "Вознаграждение за пожертвования"
-
-#~ msgid "Cryptocurrencies"
-#~ msgstr "Криптовалюты"
 
 #~ msgid "You can download latest release here:"
 #~ msgstr "Самый последний выпуск можно скачать по ссылкам:"
