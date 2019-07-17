@@ -55,9 +55,6 @@ class Reward(models.Model):
             ('active', 'third_party'),
         ]
 
-    def get_absolute_url(self):
-        return reverse('donate-reward', kwargs={'pk': self.pk})
-
     def get_display_name(self):
         return ugettext(self.name)
 

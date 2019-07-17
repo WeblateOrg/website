@@ -171,7 +171,6 @@ class CompleteView(PaymentView):
 class DonateView(FormView):
     form_class = DonateForm
     template_name = 'donate/form.html'
-    show_form = True
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
@@ -188,7 +187,6 @@ class DonateView(FormView):
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         kwargs['rewards'] = self.get_rewards()
-        kwargs['show_form'] = self.show_form
         return kwargs
 
     def redirect_payment(self, **kwargs):
@@ -230,16 +228,6 @@ class DonateView(FormView):
             except (Reward.DoesNotExist, ValueError):
                 pass
         return super().post(request, *args, **kwargs)
-
-
-class DonateRewardView(DonateView):
-    show_form = False
-
-    def get_rewards(self):
-        rewards = Reward.objects.filter(pk=self.kwargs['pk'], active=True)
-        if not rewards:
-            raise Http404('Reward not found')
-        return rewards
 
 
 @login_required

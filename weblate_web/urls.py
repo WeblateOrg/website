@@ -203,11 +203,6 @@ urlpatterns = i18n_patterns(
         name='donate-new'
     ),
     url(
-        r'^donate/new/' + UUID + '/$',
-        DonateRewardView.as_view(),
-        name='donate-reward'
-    ),
-    url(
         r'^donate/edit/(?P<pk>[0-9]+)/$',
         EditLinkView.as_view(),
         name='donate-edit'
