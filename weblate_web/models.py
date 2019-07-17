@@ -79,6 +79,11 @@ class Donation(models.Model):
         verbose_name=ugettext_lazy('Link URL'),
         blank=True
     )
+    link_image = models.ImageField(
+        verbose_name=ugettext_lazy('Link image'),
+        blank=True,
+        upload_to='donations/'
+    )
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
     active = models.BooleanField(blank=True, db_index=True)
