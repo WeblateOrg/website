@@ -174,8 +174,7 @@ class DonateView(FormView):
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        if 'recurring' in self.request.GET:
-            result['initial'] = {'recurring': self.request.GET['recurring']}
+        result['initial'] = self.request.GET
         return result
 
     @staticmethod

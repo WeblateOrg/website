@@ -38,7 +38,6 @@ from weblate_web.models import Post
 from weblate_web.views import (
     CompleteView,
     CustomerView,
-    DonateRewardView,
     DonateView,
     EditLinkView,
     NewsArchiveView,

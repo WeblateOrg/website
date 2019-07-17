@@ -19,28 +19,27 @@
                 <div class="title">{% trans "Choose your amount in EUR" %}</div>
                 <form method="post">
                     {% csrf_token %}
-                    <input type="number" min="5" value="1000" class="payment-input" name="amount" id="donate-amount" />
+                    <input type="number" min="5" value="{{ form.amount.value }}" class="payment-input" name="amount" id="donate-amount" />
                     <p class="small">{% blocktrans with minimum=5 %}Amounts from €{{ minimum }} or more{% endblocktrans %}</p>
-                
                     <div class="title pick">{% trans "Pick how often to donate" %}</div>
                     <div class="pick-items">
-                        <input id="single-payment" name="recurring" type="radio" value="" />
+                        <input id="single-payment" name="recurring" type="radio" value="" {% if not form.recurring.value %}checked="checked"{% endif %} />
                         <label for="single-payment">{% trans "Single payment" %}</label>
                         
-                        <input id="monthly" name="recurring" type="radio" value="m" />
+                        <input id="monthly" name="recurring" type="radio" value="m" {% if form.recurring.value == "m" %}checked="checked"{% endif %} />
                         <label for="monthly">{% trans "Monthly" %}</label>
                         
-                        <input id="year" name="recurring" type="radio" value="y" />
+                        <input id="year" name="recurring" type="radio" value="y" {% if form.recurring.value == "y" %}checked="checked"{% endif %} />
                         <label for="year">{% trans "Every year" %}</label>
                         
-                        <input id="2-year" name="recurring" type="radio" value="b" />
+                        <input id="2-year" name="recurring" type="radio" value="b" {% if form.recurring.value == "b" %}checked="checked"{% endif %} />
                         <label for="2-year">{% trans "Every 2nd year" %}</label>
                     </div>
                 	<div class="title nowhoa">{% trans "Your reward options" %}</div>
                     <div class="title whoa">{% blocktrans %}<strong>Whoa!</strong> You can get any reward{% endblocktrans %}</div>
                     
                     <div class="rewards">
-                        <div class="reward big checked" data-amount="100">
+                        <div class="reward big" data-amount="100">
                             <div class="title">{% trans "Name placement in the list of supporters" %}</div>
                             <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
                             <a href="#" class="button center choose">{% trans "Choose this" %}</a>
@@ -61,7 +60,7 @@
                             <a href="#" class="close">⨯</a>
                             <input name="reward" type="radio" value="3" />
                         </div>
-                        <div class="reward fourth" data-amount="0">
+                        <div class="reward fourth checked" data-amount="0">
                             <div class="title">{% trans "Please — no reward" %}</div>
                             <p>{% trans "Thank you anyway!" %}</p>
                             <a href="#" class="button center choose">{% trans "Choose this" %}</a>

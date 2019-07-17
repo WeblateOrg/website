@@ -25,7 +25,7 @@ from django.utils.translation import ugettext_lazy as _
 from wlhosted.payments.backends import list_backends
 from wlhosted.payments.models import RECURRENCE_CHOICES
 
-from weblate_web.models import Donation
+from weblate_web.models import Donation, REWARDS
 
 
 class SubscribeForm(forms.Form):
@@ -47,17 +47,18 @@ class MethodForm(forms.Form):
 
 class DonateForm(forms.Form):
     recurring = forms.ChoiceField(
-        label=_('Donation recurrence'),
         choices=RECURRENCE_CHOICES,
-        initial='m',
+        initial='',
         required=False,
-        widget=forms.RadioSelect,
     )
     amount = forms.IntegerField(
-        label=_('Amount in EUR'),
         min_value=5,
         initial=10,
-        help_text=_('The minimal amount is %d EUR.') % 5
+    )
+    reward = forms.ChoiceField(
+        choices=REWARDS,
+        initial=0,
+        required=False
     )
 
 

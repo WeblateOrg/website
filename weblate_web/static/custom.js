@@ -48,14 +48,17 @@ $(function () {
     $('#donate-amount').change(function() {
         var amount = $(this).val();
         var found = 0;
+        var highest = $('.reward.fourth');
         $('.reward').each(function () {
             var $this = $(this);
             if ($this.data('amount') <= amount) {
                 if ($this.hasClass('small')) {
                     $this.removeClass('small');
-                    $this.find('.choose').click();
                 }
                 found++;
+                if (highest.data('amount') < $this.data('amount')) {
+                    highest = $this;
+                }
             } else {
                 $this.addClass('small');
                 if ($this.hasClass('checked')) {
@@ -63,7 +66,7 @@ $(function () {
                 }
             }
         });
-        console.log(found);
+        highest.find('.choose').click();
         if (found > 1) {
             $('.whoa').show();
             $('.nowhoa').hide();
