@@ -15,7 +15,7 @@
     	<div class="row">
             <div class="box">
             	<h1>{% trans "Web-based <strong>continuous</strong> localization system" %}</h1>
-                <p>{% blocktrans with projects=1150 countries=115 %}Weblate is a libre software web-based continuous localization system used by over {{projects}}+ opensource projects &amp; companies in over {{countries}}+ countries around the World.{% endblocktrans %}</p>
+                <p>{% blocktrans with projects=1150 countries=115 %}Weblate is a libre software web-based continuous localization system used by over {{projects}}+ libre software projects and companies in over {{countries}}+ countries around the world.{% endblocktrans %}</p>
             	<a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
                 <div class="inline-info"><a href="{% url 'features' %}">or see all features</a></div>
             </div>
@@ -27,7 +27,7 @@
 	<section class="content">
     	<div class="row">
             <div class="wrap supporters">
-                <h2 class="section-title">{% trans "Users & Supporters" %}</h2>
+                <h2 class="section-title">{% trans "Users and Supporters" %}</h2>
                 {% include "snippets/users.html" %}
             </div>            
             <div class="wrap countries">
@@ -45,13 +45,13 @@
                     {% endfor %}
                 	<div class="trans-bottom">
                         <div class="trans-number">{% blocktrans count intcount=activity_sum with count=activity_sum|intcomma  %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktrans %}</div>
-                        <div class="trans-days">{% trans "in last 7 days" %}</div>
+                        <div class="trans-days">{% trans "the last 7 days" %}</div>
                     </div>
                 </div>
             </div>    
             <div class="clear"></div>        
 			<div class="wrap features">
-                <h2 class="section-title hp-style">{% trans "Robust set of features" %}</h2>
+                <h2 class="section-title hp-style">{% trans "Robust feature set" %}</h2>
                 {% include "snippets/features-1.html" %}
                 {% include "snippets/features-2.html" %}
             	<a href="{% url 'hosting' %}" class="button inline">{% trans "See pricing" %}</a>
