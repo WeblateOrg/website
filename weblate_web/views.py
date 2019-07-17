@@ -177,17 +177,6 @@ class DonateView(FormView):
         result['initial'] = self.request.GET
         return result
 
-    @staticmethod
-    def get_rewards():
-        return Reward.objects.filter(
-            third_party=False, active=True
-        ).order_by('amount')
-
-    def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
-        kwargs['rewards'] = self.get_rewards()
-        return kwargs
-
     def redirect_payment(self, **kwargs):
         kwargs['customer'] = Customer.objects.get_or_create(
             origin=PAYMENTS_ORIGIN,
@@ -199,34 +188,22 @@ class DonateView(FormView):
         payment = Payment.objects.create(**kwargs)
         return redirect(payment.get_payment_url())
 
-    def handle_reward(self, reward):
-        return self.redirect_payment(
-            amount=reward.amount,
-            amount_fixed=True,
-            description='Weblate donation: {}'.format(reward.name),
-            recurring=reward.recurring,
-            extra={
-                'reward': str(reward.pk),
-            }
-        )
-
     def form_valid(self, form):
         data = form.cleaned_data
+        if data['reward'] and int(data['reward']):
+            tmp = Donation(reward_new=int(data['reward']))
+            description = 'Weblate donation: {}'.format(tmp.get_reward_new_display())
+        else:
+            description = 'Weblate donation'
         return self.redirect_payment(
             amount=data['amount'],
             amount_fixed=True,
-            description='Weblate donation',
+            description=description,
             recurring=data['recurring'],
+            extra={
+                'reward': data['reward'],
+            }
         )
-
-    def post(self, request, *args, **kwargs):
-        if 'reward' in request.POST:
-            try:
-                reward = self.get_rewards().get(pk=int(request.POST['reward']))
-                return self.handle_reward(reward)
-            except (Reward.DoesNotExist, ValueError):
-                pass
-        return super().post(request, *args, **kwargs)
 
 
 @login_required
