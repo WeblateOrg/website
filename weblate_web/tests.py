@@ -20,7 +20,7 @@ from wlhosted.data import SUPPORTED_LANGUAGES
 from wlhosted.payments.models import Customer, Payment
 
 from weblate_web.data import EXTENSIONS, VERSION
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Image, Post, Reward
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, Image, Post
 from weblate_web.templatetags.downloads import downloadlink, filesizeformat
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), 'test-data')
@@ -289,21 +289,6 @@ class PaymentsTest(FakturaceTestCase):
 class DonationTest(FakturaceTestCase):
     credentials = {'username': 'testuser', 'password': 'testpassword'}
 
-    def setUp(self):
-        super().setUp()
-        self.reward_link = Reward.objects.create(
-            name='Link on thanks page', amount=666, recurring='y',
-            has_link=True, third_party=False, thanks_link=True, active=True
-        )
-        self.reward = Reward.objects.create(
-            name='Link in file', amount=66, recurring='y',
-            has_link=True, third_party=False, thanks_link=False, active=True
-        )
-        self.secret_reward = Reward.objects.create(
-            name='Secret link in file', amount=6666, recurring='y',
-            has_link=True, third_party=True, thanks_link=False, active=True
-        )
-
     def create_user(self):
         return User.objects.create_user(**self.credentials)
 
@@ -319,22 +304,14 @@ class DonationTest(FakturaceTestCase):
 
         # Check rewards on page
         response = self.client.get('/en/donate/new/')
-        self.assertContains(response, self.reward.name)
-        self.assertNotContains(response, self.secret_reward.name)
-
-        # Check direct link to reward
-        response = self.client.get(
-            '/en/donate/new/{}/'.format(self.secret_reward.pk)
-        )
-        self.assertNotContains(response, self.reward.name)
-        self.assertContains(response, self.secret_reward.name)
+        self.assertContains(response, 'list of supporters')
 
     def test_donation_process(self):
         user = self.login()
         # Create payment
         payment = self.create_payment()[0]
         payment.state = Payment.ACCEPTED
-        payment.extra = {'reward': self.reward.pk}
+        payment.extra = {'reward': "3"}
         payment.save()
         payment.customer.origin = PAYMENTS_ORIGIN
         payment.customer.user_id = user.pk
