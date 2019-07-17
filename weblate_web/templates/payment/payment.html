@@ -61,7 +61,7 @@
                     <div class="title pick">{% trans "Please choose payment method" %}</div>
                     <div class="payment-pick">
                         {% for backend in backends %}
-                        <input id="banktransfer" name="method" type="radio" value="{{ backend.name }}" />
+                        <input id="pay-{{ backend.name }}" name="method" type="radio" value="{{ backend.name }}" />
                         <label class="pay-{{ backend.name }}" for="pay-{{ backend.name }}">{{ backend.verbose }}</label>
                         {% endfor %}
                     </div>
