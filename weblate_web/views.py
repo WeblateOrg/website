@@ -248,7 +248,7 @@ def process_donation(request):
             customer__user_id=request.user.id
         )
     except (KeyError, Payment.DoesNotExist):
-        return redirect(reverse('donate-new'))
+        return redirect(reverse('user'))
 
     # Create donation
     if payment.state in (Payment.NEW, Payment.PENDING):
