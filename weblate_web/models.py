@@ -183,6 +183,10 @@ class Post(models.Model):
     image = models.ForeignKey(
         Image, on_delete=models.deletion.SET_NULL, blank=True, null=True
     )
+    milestone = models.BooleanField(
+        blank=True, db_index=True,
+        help_text='This is an important milestone, shown on milestones archive'
+    )
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
