@@ -52,7 +52,6 @@ SUPPORTED_LANGUAGES = {
     "ru",
     "sk",
     "sl",
-    "sq",
     "sr",
     "sv",
     "tr",
