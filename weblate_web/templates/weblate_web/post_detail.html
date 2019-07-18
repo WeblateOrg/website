@@ -27,7 +27,7 @@
                     	<div class="author">
                         	<div class="avatar"><img src="https://hosted.weblate.org/avatar/80/{{ object.author.username }}.png" alt="#" /></div>
                             {{ object.author.last_name }}<br />
-                            <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="{% url 'topic-archive' object.topic %}">{{ object.get_topic_display }}</a><br />
+                            <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="{% if object.topic %}{% url 'topic-archive' object.topic %}{% endif %}">{{ object.get_topic_display }}</a><br />
                             {{ object.timestamp|naturalday }}
                         </div>
                         <div lang="en" dir="ltr" class="entry">
