@@ -50,7 +50,13 @@ from weblate_web.forms import (
     MethodForm,
     SubscribeForm,
 )
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, process_payment, TOPIC_DICT
+from weblate_web.models import (
+    PAYMENTS_ORIGIN,
+    TOPIC_DICT,
+    Donation,
+    Post,
+    process_payment,
+)
 from weblate_web.remote import get_activity
 
 

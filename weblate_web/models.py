@@ -52,7 +52,6 @@ TOPICS = (
 TOPIC_DICT = dict(TOPICS)
 
 
-
 class Reward(models.Model):
     uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False
