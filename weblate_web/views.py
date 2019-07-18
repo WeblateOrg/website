@@ -406,6 +406,16 @@ class TopicArchiveView(NewsArchiveView):
         return result
 
 
+class MilestoneArchiveView(NewsArchiveView):
+    def get_queryset(self):
+        return super().get_queryset().filter(milestone=True)
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        result['topic'] = _('Milestones')
+        return result
+
+
 class PostView(DetailView):
     model = Post
 
