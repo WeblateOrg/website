@@ -406,6 +406,7 @@ class TopicArchiveView(NewsArchiveView):
     def get_queryset(self):
         return super().get_queryset().filter(topic=self.kwargs['slug'])
 
+    # pylint: disable=arguments-differ
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['topic'] = TOPIC_DICT[self.kwargs['slug']]
@@ -416,6 +417,7 @@ class MilestoneArchiveView(NewsArchiveView):
     def get_queryset(self):
         return super().get_queryset().filter(milestone=True)
 
+    # pylint: disable=arguments-differ
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['topic'] = _('Milestones')
