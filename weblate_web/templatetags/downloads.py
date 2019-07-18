@@ -49,7 +49,7 @@ def filesizeformat(num_bytes):
     return _("%.1f GiB") % (num_bytes / (1024 * 1024 * 1024))
 
 
-@register.inclusion_tag('download-link.html')
+@register.inclusion_tag('snippets/download-link.html')
 def downloadlink(name, text=None):
     if text is None:
         if name[-8:] == '.tar.bz2':
