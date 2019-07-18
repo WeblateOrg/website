@@ -149,7 +149,7 @@ urlpatterns = i18n_patterns(
     ),
     url(
         r'^tour/$',
-        redirectview.as_view(url='/hosting/', permanent=true)
+        RedirectView.as_view(url='/hosting/', permanent=True)
     ),
     url(
         r'^download/$',
@@ -158,7 +158,7 @@ urlpatterns = i18n_patterns(
     ),
     url(
         r'^try/$',
-        redirectview.as_view(url='/hosting/', permanent=true)
+        RedirectView.as_view(url='/hosting/', permanent=True)
     ),
     url(
         r'^hosting/$',
@@ -167,11 +167,11 @@ urlpatterns = i18n_patterns(
     ),
     url(
         r'^hosting/free/$',
-        redirectview.as_view(url='/hosting/', permanent=true)
+        RedirectView.as_view(url='/hosting/', permanent=True)
     ),
     url(
         r'^hosting/ordered/$',
-        redirectview.as_view(url='/hosting/', permanent=true)
+        RedirectView.as_view(url='/hosting/', permanent=True)
     ),
     url(
         r'^contribute/$',
