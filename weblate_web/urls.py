@@ -167,8 +167,7 @@ urlpatterns = i18n_patterns(
     ),
     url(
         r'^hosting/free/$',
-        TemplateView.as_view(template_name="hosting-free.html"),
-        name='hosting-free'
+        redirectview.as_view(url='/hosting/', permanent=true)
     ),
     url(
         r'^hosting/ordered/$',
