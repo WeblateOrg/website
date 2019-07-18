@@ -18,7 +18,7 @@
                     {% endfor %}
                 </div>
                 {% for pg in page_obj.paginator.page_range %}
-                <a href="{% url 'news-archive' %}?page={{ pg }}" class="button pagination center {% if pg == page_obj.number %}active-page{% endif %}">{{ pg }}</a>
+                <a href="{{ request.path }}?page={{ pg }}" class="button pagination center {% if pg == page_obj.number %}active-page{% endif %}">{{ pg }}</a>
                 {% endfor %}
             </div>            
     	</div>
