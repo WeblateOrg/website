@@ -184,6 +184,7 @@ class Post(models.Model):
     )
     milestone = models.BooleanField(
         blank=True, db_index=True,
+        default=False,
         help_text='This is an important milestone, shown on milestones archive'
     )
 
