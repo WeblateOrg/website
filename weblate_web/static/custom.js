@@ -2,6 +2,7 @@ $(function () {
 	$('.menu-show').click(function(e) {
 		var $body = $('body');
 		$body.toggleClass('open-mobile');
+        $('.mobile-menu').toggle();
 	});
 	$('.open-langs').click(function(e) {
 		if($(this).parent().hasClass('opened')){
