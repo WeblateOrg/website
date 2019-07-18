@@ -8,7 +8,7 @@
         <div class="wrap">
             <h1 class="section-title min-m">{% trans "Edit your reward link" %}</h1>
             <div class="payment-form">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="hidden" name="payment" value="{{ payment.pk }}">
                     {% for field in form %}

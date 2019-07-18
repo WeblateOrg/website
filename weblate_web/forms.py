@@ -61,7 +61,19 @@ class DonateForm(forms.Form):
     )
 
 
+class EditNameForm(forms.ModelForm):
+    class Meta:
+        model = Donation
+        fields = ('link_text',)
+
+
 class EditLinkForm(forms.ModelForm):
     class Meta:
         model = Donation
         fields = ('link_text', 'link_url')
+
+
+class EditImageForm(forms.ModelForm):
+    class Meta:
+        model = Donation
+        fields = ('link_text', 'link_url', 'link_image')

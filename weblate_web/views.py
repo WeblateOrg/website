@@ -42,7 +42,14 @@ from wlhosted.payments.forms import CustomerForm
 from wlhosted.payments.models import Customer, Payment
 from wlhosted.payments.validators import cache_vies_data, validate_vatin
 
-from weblate_web.forms import DonateForm, EditLinkForm, MethodForm, SubscribeForm
+from weblate_web.forms import (
+    DonateForm,
+    EditImageForm,
+    EditLinkForm,
+    EditNameForm,
+    MethodForm,
+    SubscribeForm,
+)
 from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, process_payment
 from weblate_web.remote import get_activity
 
@@ -319,14 +326,17 @@ def disable_repeat(request, pk):
 
 @method_decorator(login_required, name='dispatch')
 class EditLinkView(UpdateView):
-    form_class = EditLinkForm
     template_name = 'donate/edit.html'
     success_url = '/user/'
 
     def get_form_class(self):
-        # TODO: load form based on reward
-        print(self.object.reward_new)
-        return EditLinkForm
+        reward = self.object.reward_new
+        print(reward)
+        if reward == 2:
+            return EditLinkForm
+        if reward == 3:
+            return EditImageForm
+        return EditNameForm
 
     def get_queryset(self):
         return Donation.objects.filter(user=self.request.user, reward_new__gt=0)
@@ -336,7 +346,8 @@ class EditLinkView(UpdateView):
         mail_admins(
             'Weblate: link changed',
             'New link: {link_url}\nNew text: {link_text}\n'.format(
-                **form.cleaned_data
+                link_url=form.cleaned_data.get('link_url', 'N/A'),
+                link_text=form.cleaned_data.get('link_text', 'N/A'),
             )
         )
         return super().form_valid(form)

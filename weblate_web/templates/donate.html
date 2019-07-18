@@ -119,7 +119,11 @@
 
             {% for donation in donate_links %}
             <a class="supporters-logo" href="{% if donation.link_url %}{{ donation.link_url }}{% else %}#{% endif %}">
+                {% if donation.link_image %}
+                <img src="{{ donation.link_image.url }}" alt="{{ donation.link_text }}" title="{{ donation.link_text }}" />
+                {% else %}
                 {% if donation.link_text %}{{ donation.link_text }}{% else %}{{ donation.link_url }}{% endif %}
+                {% endif %}
             </a>
             {% endfor %}
         </div>
