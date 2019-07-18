@@ -39,6 +39,19 @@ REWARDS = (
     (3, ugettext_lazy('Logo and link on the Weblate website')),
 )
 
+TOPICS = (
+    ('release', ugettext_lazy('Release')),
+    ('feature', ugettext_lazy('Features')),
+    ('announce', ugettext_lazy('Announcement')),
+    ('conferences', ugettext_lazy('Conferences')),
+    ('hosting', ugettext_lazy('Hosted Weblate')),
+    ('development', ugettext_lazy('Development')),
+    ('localization', ugettext_lazy('Localization')),
+)
+
+TOPIC_DICT = dict(TOPICS)
+
+
 
 class Reward(models.Model):
     uuid = models.UUIDField(
@@ -160,15 +173,7 @@ class Post(models.Model):
     topic = models.CharField(
         max_length=100,
         db_index=True,
-        choices=(
-            ('release', ugettext_lazy('Release')),
-            ('feature', ugettext_lazy('Features')),
-            ('announce', ugettext_lazy('Announcement')),
-            ('conferences', ugettext_lazy('Conferences')),
-            ('hosting', ugettext_lazy('Hosted Weblate')),
-            ('development', ugettext_lazy('Development')),
-            ('localization', ugettext_lazy('Localization')),
-        )
+        choices=TOPICS,
     )
     body = MarkupField(default_markup_type='markdown')
     summary = models.TextField(

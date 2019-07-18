@@ -27,8 +27,7 @@
                     	<div class="author">
                         	<div class="avatar"><img src="https://hosted.weblate.org/avatar/80/{{ object.author.username }}.png" alt="#" /></div>
                             {{ object.author.last_name }}<br />
-                            <!-- TODO topic archives? -->
-                            <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="#">{{ object.get_topic_display }}</a><br />
+                            <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="{% url 'topic-archive' object.topic %}">{{ object.get_topic_display }}</a><br />
                             {{ object.timestamp|naturalday }}
                         </div>
                         <div lang="en" dir="ltr" class="entry">
@@ -42,11 +41,10 @@
                             {% include "snippets/sharer.html" %}
                         </div>
                         <h2>{% trans "Other topics" %}</h2>
-                        <!-- TODO topic archives? -->
-                        <a class="button inline border rev small" href="#release">{% trans "Release" %}</a>
-                        <a class="button inline border rev small" href="#feature">{% trans "Features" %}</a>
-                        <a class="button inline border rev small" href="#development">{% trans "Development" %}</a>
-                        <a class="button inline border rev small" href="#localization">{% trans "Localization" %}</a>
+                        <a class="button inline border rev small" href="{% url 'topic-archive' 'release' %}">{% trans "Release" %}</a>
+                        <a class="button inline border rev small" href="{% url 'topic-archive' 'feature' %}">{% trans "Features" %}</a>
+                        <a class="button inline border rev small" href="{% url 'topic-archive' 'development' %}">{% trans "Development" %}</a>
+                        <a class="button inline border rev small" href="{% url 'topic-archive' 'localization' %}">{% trans "Localization" %}</a>
                     </div>
                 </div>
                 <div class="related-posts">

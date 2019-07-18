@@ -50,7 +50,7 @@ from weblate_web.forms import (
     MethodForm,
     SubscribeForm,
 )
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, process_payment
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post, process_payment, TOPIC_DICT
 from weblate_web.remote import get_activity
 
 
@@ -394,6 +394,16 @@ class NewsArchiveView(ArchiveIndexView):
 class NewsView(NewsArchiveView):
     paginate_by = 5
     template_name = 'news.html'
+
+
+class TopicArchiveView(NewsArchiveView):
+    def get_queryset(self):
+        return super().get_queryset().filter(topic=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        result['topic'] = TOPIC_DICT[self.kwargs['slug']]
+        return result
 
 
 class PostView(DetailView):

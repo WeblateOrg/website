@@ -41,6 +41,7 @@ from weblate_web.views import (
     DonateView,
     EditLinkView,
     NewsArchiveView,
+    TopicArchiveView,
     NewsView,
     PaymentView,
     PostView,
@@ -222,6 +223,11 @@ urlpatterns = i18n_patterns(
         r'^news/archive/$',
         NewsArchiveView.as_view(),
         name='news-archive'
+    ),
+    url(
+        r'^news/topic/(?P<slug>[-a-zA-Z0-9_]+)/$',
+        TopicArchiveView.as_view(),
+        name='topic-archive'
     ),
     url(
         r'^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$',
