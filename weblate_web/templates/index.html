@@ -15,9 +15,9 @@
     	<div class="row">
             <div class="box">
             	<h1>{% trans "Web-based <strong>continuous</strong> localization" %}</h1>
-                <p>{% blocktrans with projects=1150 countries=115 %}Weblate is a copylefted libre software, used by over {{projects}}+ libre software projects and companies in over {{countries}}+ countries around the world.{% endblocktrans %}</p>
+                <p>{% blocktrans with projects=1150 countries=115 %}Copylefted libre software, used by over {{projects}} libre software projects and companies in over {{countries}} countries.{% endblocktrans %}</p>
             	<a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
-                <div class="inline-info"><a href="{% url 'features' %}">{% trans "or see all features" %}</a></div>
+                <div class="inline-info"><a href="{% url 'features' %}">{% trans "or explore all features" %}</a></div>
             </div>
     	</div>
     </section>
@@ -34,7 +34,7 @@
             	<div class="half half-text">
                 	<div class="countries-number">115+ Countries</div>
                 	<h2>{% trans "Weblate localizes the world" %}</h2>
-                    <p>{% trans "Weblate is a libre web-based localization tool with tight version control integration. It features simple and clean user interface, propagation of translations across components, quality checks and automatic linking to source files." %}</p>
+                    <p>{% trans "Hosted service and standalone tool with tight version control integration. Simple and clean user interface, propagation of translations across components, quality checks and automatic linking to source files." %}</p>
                 </div>
             	<div class="half half-translations">
                     {% for change in changes %}
@@ -54,8 +54,8 @@
                 <h2 class="section-title hp-style">{% trans "Robust feature set" %}</h2>
                 {% include "snippets/features-1.html" %}
                 {% include "snippets/features-2.html" %}
-            	<a href="{% url 'hosting' %}" class="button inline">{% trans "See pricing" %}</a>
-                <div class="inline-info"><a href="{% url 'features' %}">or explore complete features</a></div>
+            	<a href="{% url 'hosting' %}" class="button inline">{% trans "Go to pricing" %}</a>
+                <div class="inline-info"><a href="{% url 'features' %}">or explore all features</a></div>
             </div>            
     	</div>
     </section>
