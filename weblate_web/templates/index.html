@@ -17,7 +17,7 @@
             	<h1>{% trans "Web-based <strong>continuous</strong> localization" %}</h1>
                 <p>{% blocktrans with projects=1150 countries=115 %}Weblate is a copylefted libre software, used by over {{projects}}+ libre software projects and companies in over {{countries}}+ countries around the world.{% endblocktrans %}</p>
             	<a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
-                <div class="inline-info"><a href="{% url 'features' %}">or see all features</a></div>
+                <div class="inline-info"><a href="{% url 'features' %}">{% trans "or see all features" %}</a></div>
             </div>
     	</div>
     </section>
@@ -40,12 +40,12 @@
                     {% for change in changes %}
                 	<div class="trans-item">
                         <div class="trans-title">{% blocktrans count count=change.recent_changes with when=change.last_change|recently %}{{ count }} translation {{ when }}{% plural %}{{ count }} translations {{ when }}{% endblocktrans %}</div>
-                        <div class="trans-project">project <a href="{{ change.url }}">{{ change.name }}</a></div>
+                        <div class="trans-project">{% trans "Project" %} <a href="{{ change.url }}">{{ change.name }}</a></div>
                     </div>
                     {% endfor %}
                 	<div class="trans-bottom">
                         <div class="trans-number">{% blocktrans count intcount=activity_sum with count=activity_sum|intcomma  %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktrans %}</div>
-                        <div class="trans-days">{% trans "the last 7 days" %}</div>
+                        <div class="trans-days">{% trans "in the last 7 days" %}</div>
                     </div>
                 </div>
             </div>    
