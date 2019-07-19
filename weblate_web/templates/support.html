@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% block title %}{% trans "Weblate support" %}{% endblock %}
-{% block description %}{% blocktrans %}Weblate is copylefted libre software with community support. Cloud hosted Weblate subscribers receive priority support at no extra charge. All other users can prepay for ad-hoc help packages.{% endblocktrans %}
+{% block description %}{% blocktrans %}Weblate is copylefted libre software with community support. Hosted Weblate subscribers receive priority support at no extra charge. All other users can prepay for ad-hoc help packages.{% endblocktrans %}
 {% endblock %}
 
 {% block body_class %}page gethelp light{% endblock %}
@@ -13,7 +13,7 @@
         <div class="wrap">
             <h1 class="section-title min-m">{% trans "Get help" %}</h1>
             <div class="page-desc">
-                <p>{% trans "Weblate is a copylefted libre software with community support. Hosted Weblate Cloud subscribers receive priority support at no extra charge. Other users can prepay for ad-hoc help packages." %}</p>
+                <p>{% trans "Weblate is a copylefted libre software with community support. Hosted Weblate subscribers receive priority support at no extra charge. Other users can prepay for ad-hoc help packages." %}</p>
                 <a href="https://github.com/WeblateOrg/weblate/issues/new/choose" class="button inline">{% trans "Report issue" %}</a>
             </div>
             
@@ -35,8 +35,8 @@
                 <div class="col">
                     <div class="icon"><img src="{% static "img/icon-subscribers.svg" %}" /></div>
                     <div class="content">
-                        <div class="title">{% trans "Support for Weblate Cloud subscribers" %}</div>
-                        <p>{% blocktrans with email="support@weblate.org" %}As a Hosted Cloud service user, you can get support at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktrans %}</p>
+                        <div class="title">{% trans "Support for Hosted Weblate subscribers" %}</div>
+                        <p>{% blocktrans with email="support@weblate.org" %}As a Hosted Weblate service user, you can get support at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktrans %}</p>
                     </div>
                 </div>
             </div>
@@ -126,7 +126,7 @@
                 </ul>
             </div>
             <div class="box">
-                <div class="title">{% trans "Weblate Cloud announcements" %}</div>
+                <div class="title">{% trans "Hosted Weblate announcements" %}</div>
                 <form class="mailing" action="{% url 'subscribe' name='hosted' %}" method="post">
                     {% csrf_token %}
                     <label>{% trans "Email" %}</label>
