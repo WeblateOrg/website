@@ -16,7 +16,7 @@
                 <form method="post">
                     {% csrf_token %}
                     <input type="number" min="{{ form.fields.amount.min_value }}" value="{{ form.amount.value }}" class="payment-input" name="amount" id="donate-amount" />
-                    <p class="small">{% blocktrans with minimum=form.fields.amount.min_value %}Amounts from €{{ minimum }} or more{% endblocktrans %}</p>
+                    <p class="small">{% blocktrans with minimum=form.fields.amount.min_value %}From €{{ minimum }}{% endblocktrans %}</p>
                     <div class="title pick">{% trans "Pick how often to donate" %}</div>
                     <div class="pick-items">
                         <input id="single-payment" name="recurring" type="radio" value="" {% if not form.recurring.value %}checked="checked"{% endif %} />
@@ -36,28 +36,28 @@
                     
                     <div class="rewards">
                         <div class="reward big" data-amount="100">
-                            <div class="title">{% trans "Name placement in the list of supporters" %}</div>
+                            <div class="title">{% trans "Name in the list of supporters" %}</div>
                             <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
                             <a href="#" class="button center choose">{% trans "Choose this" %}</a>
                             <a href="#" class="close">⨯</a>
                             <input name="reward" type="radio" value="1" />
                         </div>
                         <div class="reward big" data-amount="400">
-                            <div class="title">{% trans "Link placement in the list of supporters" %}</div>
+                            <div class="title">{% trans "Link in the list of supporters" %}</div>
                             <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
                             <a href="#" class="button center choose">{% trans "Choose this" %}</a>
                             <a href="#" class="close">⨯</a>
                             <input name="reward" type="radio" value="2" />
                         </div>
                         <div class="reward big" data-amount="800">
-                            <div class="title">{% trans "Logo and link placement on the Weblate website" %}</div>
+                            <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
                             <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
                             <a href="#" class="button center choose">{% trans "Choose this" %}</a>
                             <a href="#" class="close">⨯</a>
                             <input name="reward" type="radio" value="3" />
                         </div>
                         <div class="reward fourth checked" data-amount="0">
-                            <div class="title">{% trans "Please — no reward" %}</div>
+                            <div class="title">{% trans "No thanks" %}</div>
                             <p>{% trans "Thank you anyway!" %}</p>
                             <a href="#" class="button center choose">{% trans "Choose this" %}</a>
                             <input name="reward" type="radio" value="0" />
@@ -67,7 +67,7 @@
                 </form>
             </div>
             <p class="small">
-                {% trans "Please note—a full invoice for your donation will be issued immediatelly after payment." %}
+                {% trans "Please note—a full invoice for your donation is issued immediatelly after payment." %}
                 {% trans "Your link may be refused, especially if containing too adult or illegal content. Please consult us in advance if unsure." %}
             </p>
         </div>
