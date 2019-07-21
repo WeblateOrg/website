@@ -156,7 +156,10 @@ def process_payment(payment):
 
 class Image(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(
+        upload_to='images/',
+        help_text='Article image, 1200x630 pixels'
+    )
 
     def __str__(self):
         return self.name
