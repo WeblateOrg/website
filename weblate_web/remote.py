@@ -61,8 +61,9 @@ def get_contributors(force=False):
 
     stats.sort(key=lambda x: -x['rank'])
 
-    cache.set(key, stats[:8], timeout=3600)
-    return stats[:8]
+    data = stats[:8]
+    cache.set(key, data, timeout=3600)
+    return data
 
 
 def get_activity(force=False):
