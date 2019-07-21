@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-07-20 13:40+0200\n"
+"POT-Creation-Date: 2019-07-21 10:06+0200\n"
 "PO-Revision-Date: 2019-07-21 08:05+0000\n"
 "Last-Translator: Tetsuro Shimazaki <shimazaki@shima-office.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -31,7 +31,7 @@ msgstr "メインページの自分の翻訳の概要。"
 msgid "Own translations"
 msgstr "自分の翻訳"
 
-#: weblate_web/data.py:39 weblate_web/templates/features.html:83
+#: weblate_web/data.py:39
 msgid ""
 "Translator can always see important context information like comments or "
 "corresponding source code."
@@ -54,7 +54,7 @@ msgstr ""
 msgid "Project overview"
 msgstr "プロジェクト概要"
 
-#: weblate_web/data.py:55 weblate_web/templates/features.html:119
+#: weblate_web/data.py:55
 msgid ""
 "Translators can define their own glossary to stay consistent in frequently "
 "used terminology."
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Quality checks"
 msgstr "品質チェック"
 
-#: weblate_web/data.py:71 weblate_web/templates/features.html:168
+#: weblate_web/data.py:71
 msgid "Weblate provides you various ways to promote your translation project."
 msgstr "Weblate はあなたの翻訳プロジェクトを宣伝する様々な方法を提供します。"
 
@@ -133,10 +133,12 @@ msgid "Name in the list of supporters"
 msgstr "支援者名簿の記載名"
 
 #: weblate_web/models.py:38 weblate_web/templates/donate.html:35
+#: weblate_web/templates/donate/form.html:46
 msgid "Link in the list of supporters"
 msgstr "支援者名簿のリンク"
 
 #: weblate_web/models.py:39 weblate_web/templates/donate.html:40
+#: weblate_web/templates/donate/form.html:53
 msgid "Logo and link on the Weblate website"
 msgstr "当 HP のロゴとリンク"
 
@@ -218,7 +220,9 @@ msgstr "Weblate の機能"
 msgid ""
 "As a feature rich computer aided translation tool, Weblate saves both "
 "developers and translators time."
-msgstr "機能豊富なコンピュータ支援翻訳ツールである Weblate は、開発者と翻訳者の双方の時間を節約します。"
+msgstr ""
+"機能豊富なコンピュータ支援翻訳ツールである Weblate は、開発者と翻訳者の双方の"
+"時間を節約します。"
 
 #: weblate_web/templates/about.html:13
 msgid "About Weblate"
@@ -334,7 +338,8 @@ msgstr "2018 年 6 月"
 
 #: weblate_web/templates/about.html:64
 msgid "Weblate 3.0 is released with rewritten and more flexible access control"
-msgstr "Weblate 3.0 は、書き換えと、より柔軟なアクセス制御を実現してリリースしました"
+msgstr ""
+"Weblate 3.0 は、書き換えと、より柔軟なアクセス制御を実現してリリースしました"
 
 #: weblate_web/templates/about.html:67
 msgid "April 2018"
@@ -802,8 +807,9 @@ msgid "Choose your amount in EUR"
 msgstr "ユーロでお支払いの金額を選択してください"
 
 #: weblate_web/templates/donate/form.html:19
-#, python-format
-msgid "Amounts from €%(minimum)s or more"
+#, fuzzy, python-format
+#| msgid "Amounts from €%(minimum)s or more"
+msgid "From €%(minimum)s"
 msgstr "€%(minimum)s 以上の金額"
 
 #: weblate_web/templates/donate/form.html:20
@@ -844,8 +850,10 @@ msgid "<strong>Whoa!</strong> You can get any reward."
 msgstr "<strong>素晴らしい！</strong> あなたはどんな報酬でも手に入ります。"
 
 #: weblate_web/templates/donate/form.html:39
-msgid "Name placement in the list of supporters"
-msgstr "支援者名簿への記載"
+#, fuzzy
+#| msgid "Name in the list of supporters"
+msgid "Name in the list of supporters"
+msgstr "支援者名簿の記載名"
 
 #: weblate_web/templates/donate/form.html:40
 #: weblate_web/templates/donate/form.html:47
@@ -860,17 +868,11 @@ msgstr "あなたの金額では利用できません"
 msgid "Choose this"
 msgstr "これを選択"
 
-#: weblate_web/templates/donate/form.html:46
-msgid "Link placement in the list of supporters"
-msgstr "支援者名簿にリンクの掲載"
-
-#: weblate_web/templates/donate/form.html:53
-msgid "Logo and link placement on the Weblate website"
-msgstr "Weblate Web サイト上のロゴとリンクの配置"
-
 #: weblate_web/templates/donate/form.html:60
-msgid "Please — no reward"
-msgstr "お願い — 報酬なし"
+#, fuzzy
+#| msgid "Thanks"
+msgid "No thanks"
+msgstr "謝辞"
 
 #: weblate_web/templates/donate/form.html:61
 msgid "Thank you anyway!"
@@ -881,9 +883,13 @@ msgid "Continue"
 msgstr "続行"
 
 #: weblate_web/templates/donate/form.html:70
+#, fuzzy
+#| msgid ""
+#| "Please note—a full invoice for your donation will be issued immediatelly "
+#| "after payment."
 msgid ""
-"Please note—a full invoice for your donation will be issued immediatelly "
-"after payment."
+"Please note—a full invoice for your donation is issued immediatelly after "
+"payment."
 msgstr "お願い 注意 — お支払い後すぐに全額の請求書が発行されます。"
 
 #: weblate_web/templates/donate/form.html:71
@@ -903,12 +909,16 @@ msgid "Weblate comes with complete source code."
 msgstr "Weblate には完全なソースコードが付属しています。"
 
 #: weblate_web/templates/download.html:17
+#, fuzzy
+#| msgid ""
+#| "Weblate does not require payment and welcomes donations. There are many "
+#| "ways to contribute. Discuss it with your associates."
 msgid ""
-"Weblate comes with complete source code that you can use, edit or alter to "
-"meet your needs. Feel free to let your associates know about Weblate."
+"All Weblate source code is freely available for you to use, modify, share "
+"and distribute. Discuss it with your associates."
 msgstr ""
-"Weblate には完全なソースコードが付属してるので、必要に応じて使用、編集、変更"
-"することができます。Weblate について、お気軽に同僚に知らせてください。"
+"Weblate は無償で提供され、寄付を歓迎しています。Weblate の開発を支援する方法"
+"はたくさんあります。友人と Weblate について相談してください。"
 
 #: weblate_web/templates/download.html:19
 msgid "Get premium service"
@@ -1041,8 +1051,8 @@ msgstr "詳細なコンテキスト"
 #: weblate_web/templates/features.html:30
 #, fuzzy
 msgid ""
-"Translators are provided detailed information about translation context from "
-"the translation files or enriched within Weblate."
+"Translators are provided detailed translation context info from translation "
+"files or enriched within Weblate."
 msgstr ""
 "翻訳者には、翻訳ファイルから翻訳コンテキストに関する詳細情報を提供するか、"
 "Weblate 内で充実します。"
@@ -1060,7 +1070,9 @@ msgid "Access Control"
 msgstr "アクセス制御"
 
 #: weblate_web/templates/features.html:48
-msgid "Access rights can be fine tuned depending on your environment."
+#, fuzzy
+#| msgid "Access rights can be fine tuned depending on your environment."
+msgid "Access rights can be fine-tuned depending on your environment."
 msgstr "アクセス権は、お客様の環境にあわせて微調整できます。"
 
 #: weblate_web/templates/features.html:54
@@ -1068,8 +1080,11 @@ msgid "Smart Notifications"
 msgstr "スマート通知"
 
 #: weblate_web/templates/features.html:55
+#, fuzzy
+#| msgid ""
+#| "Translators can be notified on new strings to translate or other events."
 msgid ""
-"Translators can be notified on new strings to translate or other events."
+"Translators can be notified of new strings to translate or other events."
 msgstr "翻訳者には、「原文の追加」やその他のイベントの通知が届きます。"
 
 #: weblate_web/templates/features.html:61
@@ -1077,7 +1092,10 @@ msgid "Integration API"
 msgstr "統合 API"
 
 #: weblate_web/templates/features.html:62
-msgid "Thanks to the API you can integrate Weblate with third party services."
+#, fuzzy
+#| msgid ""
+#| "Thanks to the API you can integrate Weblate with third party services."
+msgid "Integrate Weblate with third-party services."
 msgstr "API のおかげで Weblate をサードパーティのサービスと統合できます。"
 
 #: weblate_web/templates/features.html:68
@@ -1085,21 +1103,31 @@ msgid "Multiple File Formats"
 msgstr "複数のファイル形式"
 
 #: weblate_web/templates/features.html:69
+#, fuzzy
+#| msgid ""
+#| "Weblate supports all widely used file formats for localization, like "
+#| "gettext, JSON, XLIFF or resource strings."
 msgid ""
-"Weblate supports all widely used file formats for localization, like "
-"gettext, JSON, XLIFF or resource strings."
+"All widely used file formats for localization are supported, gettext, JSON, "
+"XLIFF or resource strings etc."
 msgstr ""
 "Weblate は gettext, JSON, XLIFF やリソース文字列など、翻訳に必要な一般的な"
 "ファイル形式に対応しています。"
 
 #: weblate_web/templates/features.html:75
-msgid "Branches Support"
+#, fuzzy
+#| msgid "Branches Support"
+msgid "Branch Support"
 msgstr "ブランチのサポート"
 
 #: weblate_web/templates/features.html:76
+#, fuzzy
+#| msgid ""
+#| "Weblate can handle different versions of the translation by pushing them "
+#| "to different branches automatically."
 msgid ""
-"Weblate can handle different versions of the translation by pushing them to "
-"different branches automatically."
+"Handle different translation versions by pushing them automatically to "
+"different branches."
 msgstr ""
 "Weblate は、別々のブランチに自動でプッシュすることで、バージョンの違う複数の"
 "翻訳を処理できます。"
@@ -1108,12 +1136,20 @@ msgstr ""
 msgid "Translation Context"
 msgstr "翻訳コンテキスト"
 
+#: weblate_web/templates/features.html:83
+msgid ""
+"Context, comments, nearby translations, images and corresponding source code "
+"for every string."
+msgstr ""
+
 #: weblate_web/templates/features.html:99
 msgid "Key value"
 msgstr "キーの値"
 
 #: weblate_web/templates/features.html:104
-msgid ".Net resource files"
+#, fuzzy
+#| msgid ".Net resource files"
+msgid ".NET resource files"
 msgstr ".Net リソース ファイル"
 
 #: weblate_web/templates/features.html:108
@@ -1124,14 +1160,20 @@ msgstr "アプリ ストア メタデータ"
 msgid "Subtitles"
 msgstr "サブタイトル"
 
+#: weblate_web/templates/features.html:119
+msgid "Define glossaries of frequently used terminology for consistency."
+msgstr ""
+
 #: weblate_web/templates/features.html:125
 msgid "Feedback Acquisition"
 msgstr "フィードバックの取得"
 
 #: weblate_web/templates/features.html:126
-msgid ""
-"You can also use Weblate to acquire feedback on source strings and thus "
-"improve them."
+#, fuzzy
+#| msgid ""
+#| "You can also use Weblate to acquire feedback on source strings and thus "
+#| "improve them."
+msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr ""
 "Weblate を利用して原文に対するフィードバックを送信し、改善に役立てることもで"
 "きます。"
@@ -1149,7 +1191,10 @@ msgid "Fully Integrated"
 msgstr "完全に統合"
 
 #: weblate_web/templates/features.html:140
-msgid "Translations are managed within same version control system as code."
+#, fuzzy
+#| msgid "Translations are managed within same version control system as code."
+msgid ""
+"Translations are managed within the same version control system as your code."
 msgstr "翻訳は、コードと同じバージョン管理システムの中で管理されます。"
 
 #: weblate_web/templates/features.html:146
@@ -1157,8 +1202,11 @@ msgid "Documentation"
 msgstr "ドキュメント"
 
 #: weblate_web/templates/features.html:147
-msgid ""
-"Weblate comes with comprehensive documentation covering both setup and usage."
+#, fuzzy
+#| msgid ""
+#| "Weblate comes with comprehensive documentation covering both setup and "
+#| "usage."
+msgid "Comprehensive documentation covering both setup and usage."
 msgstr ""
 "Weblate には、セットアップ方法と使用方法の両方を含む総合的なドキュメントが付"
 "属しています。"
@@ -1168,31 +1216,47 @@ msgid "Easy Reviews"
 msgstr "簡単なレビュー"
 
 #: weblate_web/templates/features.html:154
-msgid "Translators have several options to review contributions made by peers."
+#, fuzzy
+#| msgid ""
+#| "Translators have several options to review contributions made by peers."
+msgid "Several options for translators to review contributions made by peers."
 msgstr ""
 "翻訳者には、仲間によってなされた翻訳を査読するための選択肢がいくつかありま"
 "す。"
 
 #: weblate_web/templates/features.html:160
-msgid "300 languages"
-msgstr "300 の言語"
+#, fuzzy
+#| msgid "Languages"
+msgid "Language support"
+msgstr "言語"
 
 #: weblate_web/templates/features.html:161
-msgid ""
-"Weblate supports over 300 languages out of the box, others can be defined by "
-"administrator."
+#, fuzzy
+#| msgid ""
+#| "Weblate supports over 300 languages out of the box, others can be defined "
+#| "by administrator."
+msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr ""
 "Weblate は 300 を超える言語をサポートしていますが、その他は管理者が定義できま"
 "す。"
+
+#: weblate_web/templates/features.html:168
+#, fuzzy
+#| msgid ""
+#| "Weblate provides you various ways to promote your translation project."
+msgid "Various built-in features to promote your translation project."
+msgstr "Weblate はあなたの翻訳プロジェクトを宣伝する様々な方法を提供します。"
 
 #: weblate_web/templates/features.html:174
 msgid "Reporting"
 msgstr "レポート"
 
 #: weblate_web/templates/features.html:175
-msgid ""
-"Weblate generates various reports to provide information about project "
-"activity."
+#, fuzzy
+#| msgid ""
+#| "Weblate generates various reports to provide information about project "
+#| "activity."
+msgid "Reports are generated to provide info about project activity."
 msgstr ""
 "Weblate ではさまざまなレポートを生成し、プロジェクトの活動に関する情報を提供"
 "します。"
@@ -1202,9 +1266,13 @@ msgid "Version Control"
 msgstr "バージョン管理"
 
 #: weblate_web/templates/features.html:182
+#, fuzzy
+#| msgid ""
+#| "Weblate talks directly with your version control system, currently Git "
+#| "and Mercurial are supported."
 msgid ""
-"Weblate talks directly with your version control system, currently Git and "
-"Mercurial are supported."
+"Talks directly with your version control system, currently Git and Mercurial "
+"are supported."
 msgstr ""
 "Weblate は使用中のバージョン管理システムと連携します。現在 Git と Mercurial "
 "に対応しています。"
@@ -1214,9 +1282,13 @@ msgid "Collaboration Sites"
 msgstr "コラボレーション サイト"
 
 #: weblate_web/templates/features.html:189
+#, fuzzy
+#| msgid ""
+#| "Weblate has native support for many software development sites such as "
+#| "GitHub, Bitbucket or GitLab."
 msgid ""
-"Weblate has native support for many software development sites such as "
-"GitHub, Bitbucket or GitLab."
+"Native support for many software development sites such as GitHub, Bitbucket "
+"or GitLab."
 msgstr ""
 "Weblate は、GitHub, Bitbucket, Gitlab などの多くのソフトウェア開発サイトをネ"
 "イティブにサポートしています。"
@@ -1226,9 +1298,11 @@ msgid "Responsive UI"
 msgstr "操作性の高い UI"
 
 #: weblate_web/templates/features.html:196
-msgid ""
-"Weblate has responsive UI which will work nicely on your desktop, tablet or "
-"phone."
+#, fuzzy
+#| msgid ""
+#| "Weblate has responsive UI which will work nicely on your desktop, tablet "
+#| "or phone."
+msgid "User interface that works nicely on desktop, tablet and phones."
 msgstr ""
 "Weblate はデスクトップ PC やタブレット、携帯電話用の操作性の高い UI を使用し"
 "ています。"
@@ -1249,10 +1323,14 @@ msgid "Pricing"
 msgstr "価格"
 
 #: weblate_web/templates/hosting.html:16
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Use Weblate as a cloud service or <a href=\"%(url)s\">get help</a> for on-"
+#| "premises hosting — a service where premium support is still provided. Our "
+#| "team is ready to help you make Weblate run smoothly."
 msgid ""
-"Use Weblate as a cloud service or <a href=\"%(url)s\">get help</a> for on-"
-"premises hosting — a service where premium support is still provided. Our "
+"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
+"a> for on-premises hosting—all with the possibility of premium support. Our "
 "team is ready to help you make Weblate run smoothly."
 msgstr ""
 "クラウド サービスとして Weblate を利用するか、オンプレミス ホスティング（自分"
@@ -1261,14 +1339,20 @@ msgstr ""
 "Weblate を順調に運営する支援の準備ができています。"
 
 #: weblate_web/templates/hosting.html:17
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Hosted Weblate allows you to use Weblate without any extra effort and "
+#| "with <strong>premium support</strong> backed by it's core developers. We "
+#| "can host translations for your commercial projects as well as for libre "
+#| "software projects. Should you have any questions or look for hosting of "
+#| "larger projects, don't hesitate to <a href=\"%(contact)s\">get in touch "
+#| "with us</a> — we are ready to find a perfect solution."
 msgid ""
-"Hosted Weblate allows you to use Weblate without any extra effort and with "
-"<strong>premium support</strong> backed by it's core developers. We can host "
-"translations for your commercial projects as well as for libre software "
-"projects. Should you have any questions or look for hosting of larger "
-"projects, don't hesitate to <a href=\"%(contact)s\">get in touch with us</a> "
-"— we are ready to find a perfect solution."
+"Hosted Weblate allows localizatoin without any extra effort, and "
+"<strong>premium support</strong> backed by core developers and professional "
+"translators. Ask about hosting of larger projects, or let us answer your "
+"questions by <a href=\"%(contact)s\">gettting in touch</a>—we are ready to "
+"find the perfect solution."
 msgstr ""
 "Hosted Weblate を使用すると、特別な手間をかけずに、コア開発者による <strong>"
 "プレミアムサポート</strong> 付きで Weblate を使用できます。 私たちはお客様の"
@@ -1467,7 +1551,9 @@ msgid "Yearly"
 msgstr "年間"
 
 #: weblate_web/templates/hosting.html:384
-msgid "<strong>Save extra</strong> with longer pre-payment!"
+#, fuzzy
+#| msgid "<strong>Save extra</strong> with longer pre-payment!"
+msgid "<strong>Save more</strong> with longer pre-payment!"
 msgstr "長期の前払いで <strong>節約！</strong>"
 
 #: weblate_web/templates/hosting.html:394
@@ -1567,8 +1653,10 @@ msgid ""
 "Simple and clean user interface, propagation of translations across "
 "components, quality checks and automatic linking to source files."
 msgstr ""
-"Weblate は、提供しているホスティング サービスも無料版も、バージョン管理サービスと密接に統合しています。シンプルで分かりやすいユーザー "
-"インターフェイス、コンポーネント間の翻訳の連携、品質チェック、ソース ファイルへの自動リンクを特徴としています。"
+"Weblate は、提供しているホスティング サービスも無料版も、バージョン管理サービ"
+"スと密接に統合しています。シンプルで分かりやすいユーザー インターフェイス、コ"
+"ンポーネント間の翻訳の連携、品質チェック、ソース ファイルへの自動リンクを特徴"
+"としています。"
 
 #: weblate_web/templates/index.html:42
 #, python-format
@@ -1694,21 +1782,17 @@ msgstr "Weblate の詳細について"
 
 #: weblate_web/templates/snippets/about.html:5
 msgid ""
-"Dive into Weblate for free, or connect with our team of professionals for "
-"more focused advice attentive to your exact needs. Take advantage of "
-"extensive skills & experience in over 150 languages."
+"Dive in, or leverage extensive skills and experience from our team of "
+"professionals, giving focused advice attentive to your exact needs."
 msgstr ""
-"Weblate を無料で利用するか、私たちのプロフェッショナル チームと連携して、お客"
-"様のニーズに合ったよりフォーカスしたアドバイスを受けることもできます。150 以"
-"上の言語での豊富なスキルと経験を活用できます。"
 
 #: weblate_web/templates/snippets/about.html:6
-msgid "Try Weblate gratis"
-msgstr "Weblate 無料トライアルの試用"
+msgid "Production test"
+msgstr ""
 
 #: weblate_web/templates/snippets/about.html:7
-msgid "See a demo"
-msgstr "デモを見る"
+msgid "Demo"
+msgstr ""
 
 #: weblate_web/templates/snippets/box-donate.html:3
 msgid "<strong>Donate</strong>—to make the world a better place"
@@ -1778,7 +1862,9 @@ msgid "Hosting Plans"
 msgstr "ホスティング プラン"
 
 #: weblate_web/templates/snippets/features-2.html:8
-msgid "Hosting plans for Weblate as a service starting at 19 EUR."
+#, fuzzy
+#| msgid "Hosting plans for Weblate as a service starting at 19 EUR."
+msgid "Use Weblate as a service starting at 19 EUR."
 msgstr ""
 "Weblate のサービスを提供するホスティング プランは、19 ユーロから提供していま"
 "す。"
@@ -1788,7 +1874,9 @@ msgid "Cloud Ready"
 msgstr "クラウド対応"
 
 #: weblate_web/templates/snippets/features-2.html:15
-msgid "Weblate comes with appliances, ready to deploy in your cloud."
+#, fuzzy
+#| msgid "Weblate comes with appliances, ready to deploy in your cloud."
+msgid "Comes with appliances, ready to deploy in your cloud."
 msgstr ""
 "Weblate には、使用中のクラウドにそのまま設置可能なアプライアンス（専用パッ"
 "ケージ）も付属しています。"
@@ -1798,8 +1886,11 @@ msgid "Libre Software"
 msgstr "リブレ ソフトウェア"
 
 #: weblate_web/templates/snippets/features-2.html:22
-msgid ""
-"Weblate is copylefted; use, see, modify and share at will, and with everyone."
+#, fuzzy
+#| msgid ""
+#| "Weblate is copylefted; use, see, modify and share at will, and "
+#| "with everyone."
+msgid "Copylefted; use, see, modify and share at will, and with everyone."
 msgstr ""
 "Weblate はコピーレフトです：誰でも自由に利用、参照、変更、共有できます。"
 
@@ -1830,7 +1921,9 @@ msgid "Docs"
 msgstr "ドキュメント"
 
 #: weblate_web/templates/snippets/pricing.html:5
-msgid "<strong>Gratis</strong> or <strong>Premium</strong> — it’s up to you"
+#, fuzzy
+#| msgid "<strong>Gratis</strong> or <strong>Premium</strong> — it’s up to you"
+msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
 msgstr ""
 "<strong>無料</strong> または <strong>プレミアム</strong> —  それはあなた次第"
 "です"
@@ -1840,7 +1933,9 @@ msgid "Premium Cloud"
 msgstr "プレミアム クラウド"
 
 #: weblate_web/templates/snippets/pricing.html:8
-msgid "for ease & comfort"
+#, fuzzy
+#| msgid "for ease & comfort"
+msgid "for ease and comfort"
 msgstr "安心・快適に"
 
 #: weblate_web/templates/snippets/pricing.html:22
@@ -1909,19 +2004,27 @@ msgid "See all projects"
 msgstr "すべてのプロジェクトを見る"
 
 #: weblate_web/templates/snippets/vat.html:3
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Weblate accepts payments by credit card, bank transfer or Bitcoin. Please "
+#| "<a href=\"%(contact)s\">get in touch</a> for more details & options."
 msgid ""
-"Weblate accepts payments by credit card, bank transfer or Bitcoin. Please <a "
-"href=\"%(contact)s\">get in touch</a> for more details & options."
+"Weblate accepts payments by credit card, bank transfer or bitcoin "
+"transaction. Please <a href=\"%(contact)s\">get in touch</a> for more "
+"details and options."
 msgstr ""
 "Weblate はクレジットカード、銀行振込、Bitcoin による支払いに対応しています。"
 "詳細およびオプションについては、<a href=\"%(contact)s\">お問い合わせ</a> まで"
 "ご連絡ください。"
 
 #: weblate_web/templates/snippets/vat.html:4
+#, fuzzy
+#| msgid ""
+#| "All prices exclude VAT, invoices for EU countries are issued as a reverse "
+#| "charge, invoices for Czech Republic will include additional VAT."
 msgid ""
 "All prices exclude VAT, invoices for EU countries are issued as a reverse "
-"charge, invoices for Czech Republic will include additional VAT."
+"charge, invoices issued to the Czech Republic include additional VAT."
 msgstr ""
 "すべて表示価格は VAT 抜きの価格です。EU 域内では、リバース チャージ方式で請求"
 "書を発行します。チェコ共和国の請求書には VAT が含まれます。"
@@ -1974,11 +2077,15 @@ msgid "Security issues"
 msgstr "セキュリティの問題"
 
 #: weblate_web/templates/support.html:32
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Should you find a security issue in the Weblate codebase, please report "
+#| "it to %(report)s. More info on how to report security issues to be found "
+#| "in the <a href=\"%(url)s\">documentation</a>."
 msgid ""
-"Should you find a security issue in the Weblate codebase, please report it "
-"to %(report)s. More info on how to report security issues to be found in the "
-"<a href=\"%(url)s\">documentation</a>."
+"Should you find a vulnerability, please report it to %(report)s. More info "
+"on how to report security issues to be found in the <a href=\"%(url)s"
+"\">documentation</a>."
 msgstr ""
 "Weblate のコードベースでセキュリティ問題を発見した場合は、%(report)s まで報告"
 "してください。セキュリティの問題を報告する方法の詳細については、<a href="
@@ -2367,6 +2474,43 @@ msgstr "継続的寄付の処理の要求に失敗しました。"
 msgid "Milestones"
 msgstr "マイルス トーン"
 
+#~ msgid "Name placement in the list of supporters"
+#~ msgstr "支援者名簿への記載"
+
+#~ msgid "Link placement in the list of supporters"
+#~ msgstr "支援者名簿にリンクの掲載"
+
+#~ msgid "Logo and link placement on the Weblate website"
+#~ msgstr "Weblate Web サイト上のロゴとリンクの配置"
+
+#~ msgid "Please — no reward"
+#~ msgstr "お願い — 報酬なし"
+
+#~ msgid ""
+#~ "Weblate comes with complete source code that you can use, edit or alter "
+#~ "to meet your needs. Feel free to let your associates know about Weblate."
+#~ msgstr ""
+#~ "Weblate には完全なソースコードが付属してるので、必要に応じて使用、編集、変"
+#~ "更することができます。Weblate について、お気軽に同僚に知らせてください。"
+
+#~ msgid "300 languages"
+#~ msgstr "300 の言語"
+
+#~ msgid ""
+#~ "Dive into Weblate for free, or connect with our team of professionals for "
+#~ "more focused advice attentive to your exact needs. Take advantage of "
+#~ "extensive skills & experience in over 150 languages."
+#~ msgstr ""
+#~ "Weblate を無料で利用するか、私たちのプロフェッショナル チームと連携して、"
+#~ "お客様のニーズに合ったよりフォーカスしたアドバイスを受けることもできます。"
+#~ "150 以上の言語での豊富なスキルと経験を活用できます。"
+
+#~ msgid "Try Weblate gratis"
+#~ msgstr "Weblate 無料トライアルの試用"
+
+#~ msgid "See a demo"
+#~ msgstr "デモを見る"
+
 #~ msgid "Help us with translations"
 #~ msgstr "翻訳を手伝ってください"
 
@@ -2703,9 +2847,6 @@ msgstr "マイルス トーン"
 
 #~ msgid "Support"
 #~ msgstr "サポート"
-
-#~ msgid "Thanks"
-#~ msgstr "謝辞"
 
 #~ msgid "Hosting"
 #~ msgstr "ホスティング"
