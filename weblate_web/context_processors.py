@@ -24,7 +24,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import override
 
-from weblate_web.data import EXTENSIONS, SCREENSHOTS, VERSION
+from weblate_web.data import EXTENSIONS, VERSION
 from weblate_web.models import Donation
 from weblate_web.remote import get_activity, get_changes, get_contributors
 
@@ -58,19 +58,10 @@ def weblate_web(request):
     downloads = [
         'Weblate-{0}.{1}'.format(VERSION, ext) for ext in EXTENSIONS
     ]
-    screenshots = [
-        {
-            'title': title,
-            'description': description,
-            'image': 'screenshots/{}'.format(filename),
-            'thumbnail': 'thumbnails/{}'.format(filename),
-        } for filename, description, title in SCREENSHOTS
-    ]
     language_col = ceil(len(settings.LANGUAGES) / 3)
 
     return {
         'downloads': downloads,
-        'screenshots': screenshots,
         'canonical_url': canonical_url,
         'language_urls': language_urls,
         'donate_links': Donation.objects.filter(active=True, reward_new=3),
