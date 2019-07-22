@@ -239,7 +239,6 @@ INSTALLED_APPS = (
     'wlhosted',
     'wlhosted.payments',
     'wlhosted.legal',
-    'crispy_forms',
 )
 
 # Some security headers
