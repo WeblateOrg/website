@@ -239,6 +239,7 @@ INSTALLED_APPS = (
     'wlhosted',
     'wlhosted.payments',
     'wlhosted.legal',
+    'django_countries',
 )
 
 # Some security headers
