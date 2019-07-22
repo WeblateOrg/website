@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2012 - 2019 Michal Čihař <michal@cihar.com>
+# Copyright © 2012–2019 Michal Čihař <michal@cihar.com>
 #
 # This file is part of Weblate <https://weblate.org/>
 #
@@ -148,7 +148,7 @@ class PaymentView(FormView, SingleObjectMixin):
     def form_invalid(self, form):
         if self.form_class == MethodForm:
             messages.error(
-                self.request, _('Please choose a payment method to continue.')
+                self.request, _('Please choose a payment method.')
             )
         else:
             messages.error(
@@ -377,14 +377,14 @@ def subscribe(request, name):
         messages.success(
             request,
             _(
-                'Subscription was initiated, '
-                'you will shortly receive email to confirm it.'
+                'Subscription initiated, '
+                'you will shortly receive an email to confirm it.'
             )
         )
     else:
         messages.error(
             request,
-            _('Failed to process subscription request.')
+            _('Could not process subscription request.')
         )
 
     return redirect('support')
