@@ -47,13 +47,13 @@
                 <div class="form-line">
                     <div class="line-left">{% trans "Payments" %}</div>
                     <div class="line-right">
-                    <ul class="list-unstyled">
                     {% for payment in donation.list_payments %}
-                    <li>
+                    <p>
                     €{{ payment.amount }}
                     {% if payment.state == 5 %} 
+                    ({{ payment.invoice }})
                     {% if payment.invoice_filename_valid %}
-                    (<a href="{% url 'donate-invoice' pk=payment.pk %}">{{ payment.invoice_filename }}</a>)
+                    <a class="button small inline" href="{% url 'donate-invoice' pk=payment.pk %}">{% trans "Download invoice" %}</a>
                     {% else %}
                     ({{ payment.invoice_filename }})
                     {% endif %}
@@ -63,7 +63,7 @@
                     ({{ payment.details.reject_reason }})
                     {% endif %}
                     {% endif %}
-                    </li>
+                    </p>
                     {% endfor %}
                     </div>
                     <div class="clear"></div>
