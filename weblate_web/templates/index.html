@@ -26,10 +26,6 @@
 {% block content %}
 	<section class="content">
     	<div class="row">
-            <div class="wrap supporters">
-                <h2 class="section-title">{% trans "Users and Supporters" %}</h2>
-                {% include "snippets/users.html" %}
-            </div>            
             <div class="wrap countries">
             	<div class="half half-text">
                 	<div class="countries-number">115+ Countries</div>
@@ -57,6 +53,10 @@
             	<a href="{% url 'hosting' %}" class="button inline">{% trans "Go to pricing" %}</a>
                 <div class="inline-info"><a href="{% url 'features' %}">{% trans "or explore all features" %}</a></div>
             </div>            
+            <div class="wrap supporters">
+                <h2 class="section-title hp-style">{% trans "Users and Supporters" %}</h2>
+                {% include "snippets/users.html" %}
+            </div>
     	</div>
     </section>
     {% include "snippets/pricing.html" %}
