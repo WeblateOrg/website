@@ -111,7 +111,6 @@
                 <div class="title">{% trans "Users and developers" %}</div>
                 <form class="mailing" action="{% url 'subscribe' name='users' %}" method="post">
                     {% csrf_token %}
-                    <label>{% trans "Email" %}</label>
                     <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your email address…" %}" />
                     <input type="submit" class="mailing-submit" value="{% trans "Register" %}" />
                 </form>
@@ -125,7 +124,6 @@
                 <div class="title">{% trans "Hosted Weblate announcements" %}</div>
                 <form class="mailing" action="{% url 'subscribe' name='hosted' %}" method="post">
                     {% csrf_token %}
-                    <label>{% trans "Email" %}</label>
                     <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your email address…" %}" />
                     <input type="submit" class="mailing-submit" value="{% trans "Register" %}" />
                 </form>
