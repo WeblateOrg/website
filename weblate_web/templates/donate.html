@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "Donate to Weblate" %}{% endblock %}
-{% block description %}{% blocktrans %}Weblate does not require payment, and welcomes donations. There are many ways to contribute. Discuss it with your associates.{% endblocktrans %}{% endblock %}
 
 {% block body_class %}page donate light{% endblock %}
 
@@ -10,11 +8,12 @@
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% trans "Donate to Weblate" %}</h1>
+            <h1 class="section-title min-m">{% block title %}{% trans "Donate to Weblate" %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>
-                    {% trans "Weblate is provided free of charge and welcomes donations." %}
+                    {% block description %}
                     {% trans "Weblate does not require payment, and welcomes donations. There are many ways to contribute. Discuss it with your associates." %}
+                    {% endblock %}
                 </p>
                 <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
                 <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>

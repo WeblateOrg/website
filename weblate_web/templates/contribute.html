@@ -1,21 +1,19 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Contribute to Weblate" %}{% endblock %}
-{% block description %}{% trans "Weblate is developed by an open community." %}{% endblock %}
-
-
 {% block body_class %}page contribute light{% endblock %}
 
 {% block content %}
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% trans "Contribute" %}</h1>
+            <h1 class="section-title min-m">{% block title %}{% trans "Contribute to Weblate" %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>
+                {% block description %}
                     {% trans "Weblate is developed by an open community." %}
                     {% trans "There are many ways you can contribute to Weblate development. Talk about it with your associates." %}
+                {% endblock %}
                 </p>
                 <a href="https://github.com/WeblateOrg/weblate/" class="button inline">{% trans "View sources" %}</a>
                 <a href="https://hosted.weblate.org/engage/weblate/" class="button inline border rev">{% trans "Translate the app" %}</a>

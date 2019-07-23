@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans "Weblate features" %}{% endblock %}
-{% block description %}{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time.{% endblocktrans %}{% endblock %}
+
 {% block body_class %}page pfeatures light{% endblock %}
 
 {% block content %}
 	<section class="content">
     	<div class="row">
             <div class="wrap">
-                <h1 class="section-title min-m">{% trans "Weblate features" %}</h1>
-                <div class="page-desc"><p>{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time. Make your users happier! View the <a href="https://docs.weblate.org/">complete documentation</a> to learn more.{% endblocktrans %}</p></div>
+                <h1 class="section-title min-m">{% block title %}{% trans "Weblate features" %}{% endblock %}</h1>
+                <div class="page-desc"><p>
+                    {% block description %}{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time. Make your users happier!{% endblocktrans %}{% endblock %}
+                    {% blocktrans %}View the <a href="https://docs.weblate.org/">complete documentation</a> to learn more.{% endblocktrans %}</p></div>
                 <div class="wrap features">
                 {% include "snippets/features-1.html" %}
                 </div>            

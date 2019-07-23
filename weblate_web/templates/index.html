@@ -5,8 +5,6 @@
 {% load timestamps %}
 
 {% block title %}{% trans "Weblate - web-based localization" %}{% endblock %}
-{% block description %}
-{% endblock %}
 
 {% block body_class %}{% endblock %}
 
@@ -15,7 +13,7 @@
     	<div class="row">
             <div class="box">
             	<h1>{% trans "Web-based <strong>continuous</strong> localization" %}</h1>
-                <p>{% blocktrans with projects=1150 countries=115 %}Copylefted libre software, used by over {{projects}} libre software projects and companies in over {{countries}} countries.{% endblocktrans %}</p>
+                <p>{% block description %}{% blocktrans with projects=1150 countries=115 %}Copylefted libre software, used by over {{projects}} libre software projects and companies in over {{countries}} countries.{% endblocktrans %}{% endblock %}</p>
             	<a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
                 <div class="inline-info"><a href="{% url 'features' %}">{% trans "or explore all features" %}</a></div>
             </div>

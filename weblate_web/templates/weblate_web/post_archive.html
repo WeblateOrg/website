@@ -2,14 +2,13 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Weblate blog" %}{% if topic %} / {{ topic }}{% endif %}{% endblock %}
 {% block description %}{% trans "News about Weblate and localization." %}{% endblock %}
 
 {% block content %}
 	<section class="content">
     	<div class="row">
             <div class="wrap">
-                <h1 class="section-title">{% trans "Weblate Blog" %}{% if topic %} / {{ topic }}{% endif %}</h1>
+                <h1 class="section-title">{% block title %}{% trans "Weblate Blog" %}{% if topic %} / {{ topic }}{% endif %}{% endblock %}</h1>
 				<div class="articles archive">
                     {% for object in object_list %}
                     <div class="article">

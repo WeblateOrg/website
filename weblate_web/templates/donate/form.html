@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Donate to Weblate" %}{% endblock %}
-{% block description %}{% trans "Weblate does not require payment, and welcomes donations." %}{% endblock %}
-{% block content %}
 
+{% block content %}
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% trans "Your donation" %}</h1>
+            <h1 class="section-title min-m">{% block title %}{% trans "Your donation to Weblate" %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>{% blocktrans %}<strong>Thank you</strong> for your decision to support Weblate. Please choose your preferred method of support, or set a donation amount yourself. We are here to help if needed.{% endblocktrans %}</p>
             </div>

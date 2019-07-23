@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans "Weblate features" %}{% endblock %}
-{% block description %}{% blocktrans %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time.{% endblocktrans %}{% endblock %}
 
 {% block body_class %}page pabout light{% endblock %}
 
@@ -10,9 +8,9 @@
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% trans "The Weblate Way" %}</h1>
+            <h1 class="section-title min-m">{% block title %}{% trans "The Weblate Way" %}{% endblock %}</h1>
             <div class="page-desc">
-                <p>{% trans "We love localization and libre software enough to build the only privacy respecting localization tool, and provide it as copylefted libre software. It all started in 2012." %}</p>
+                <p>{% block description %}{% trans "We love localization and libre software enough to build the only privacy respecting localization tool, and provide it as copylefted libre software. It all started in 2012." %}{% endblock %}</p>
             </div>
             
             <div class="aboutus-list">

@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Terms & Privacy" %}{% endblock %}
-{% block description %}{% trans "The legal documents necessary to offer this service." %}{% endblock %}
-{% block content %}
 
+{% block content %}
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% trans "Terms & Privacy" %}</h1>
+            <h1 class="section-title min-m">{% block title %}{% trans "Terms & Privacy" %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>
-                    {% trans "The legal documents necessary to offer this service." %}
+                    {% block description %}{% trans "The legal documents necessary to offer this service." %}{% endif %}
                     {% trans "The Terms of Service document is authoritative in English, translations are provided for your convenience." %}
                 </p>
                 <a href="https://weblate.org/en/terms/" class="button inline">{% trans "View English version" %}</a>
