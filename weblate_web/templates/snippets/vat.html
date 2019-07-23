@@ -1,5 +1,8 @@
 {% load i18n %}
 <p>
-    {% blocktrans with "mailto:sales@weblate.org" as contact %}Payments by credit card, bank transfer or bitcoin transaction are accepted. Please <a href="{{ contact }}">get in touch</a> for more details and possibilities.{% endblocktrans %}
-    {% trans "All prices exclude VAT, except for invoices issued to the Czech Republic. Invoices to EU countries are issued as a reverse charge." %}
+    {% trans "Payments by credit card, bank transfer or cryptocurrency transaction are accepted." %}
+    {% blocktrans with "mailto:sales@weblate.org" as contact %}Please <a href="{{ contact }}">get in touch</a> for more details and possibilities.{% endblocktrans %}
+    {% trans "All listed prices exclude VAT." %}
+    {% trans "EU end users and Czech companies will be charged with additional 21% VAT." %}
+    {% trans "Invoices to EU countries are issued as a reverse charge." %}
 </p>
