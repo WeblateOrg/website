@@ -377,8 +377,8 @@ def subscribe(request, name):
         messages.success(
             request,
             _(
-                'Subscription initiated, '
-                'you will shortly receive an email to confirm it.'
+                'Subscription requested, '
+                'all you have to do is confirm the email.'
             )
         )
     else:
