@@ -7,7 +7,7 @@
         <div class="wrap">
             <h1 class="section-title min-m">{% block title %}{% trans "Your donation to Weblate" %}{% endblock %}</h1>
             <div class="page-desc">
-                <p>{% blocktrans %}<strong>Thank you</strong> for your decision to support Weblate. Please choose your preferred method of support, or set a donation amount yourself. We are here to help if needed.{% endblocktrans %}</p>
+                <p>{% block description %}{% blocktrans %}<strong>Thank you</strong> for your decision to support Weblate. Please choose your preferred method of support, or set a donation amount yourself. We are here to help if needed.{% endblocktrans %}{% endblock %}</p>
             </div>
             <div class="payment-form">
                 <div class="title">{% trans "Choose your amount in EUR" %}</div>
