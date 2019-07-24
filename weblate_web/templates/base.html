@@ -51,7 +51,7 @@
             {% else %}
             <a href="{% url 'simple-sso-login' %}?next={{ request.path }}" class="user-tab user-anonymous"></a>
             {% endif %}
-            <a href="https://hosted.weblate.org/" class="button border small app">{% trans "Use Weblate" %}</a>
+            <a href="https://hosted.weblate.org/" class="button border small app" target="_blank">{% trans "Use Weblate" %}</a>
             {% include "snippets/main-menu.html" %}
             <a href="#" class="menu-show"><span></span><span></span><span></span><span></span>Menu</a>
         </div>
