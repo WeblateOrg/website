@@ -15,7 +15,7 @@
             	<h1>{% trans "Web-based <strong>continuous</strong> localization" %}</h1>
                 <p>{% block description %}{% blocktrans with projects=1150 countries=115 %}Copylefted libre software, used by over {{projects}} libre software projects and companies in over {{countries}} countries.{% endblocktrans %}{% endblock %}</p>
             	<a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
-                <div class="inline-info"><a href="{% url 'features' %}">{% trans "or explore all features" %}</a></div>
+                <a class="button inline black" href="{% url 'features' %}">{% trans "Explore all features" %}</a>
             </div>
     	</div>
     </section>
@@ -49,7 +49,7 @@
                 {% include "snippets/features-1.html" %}
                 {% include "snippets/features-2.html" %}
             	<a href="{% url 'hosting' %}" class="button inline">{% trans "Go to pricing" %}</a>
-                <div class="inline-info"><a href="{% url 'features' %}">{% trans "or explore all features" %}</a></div>
+                <a class="button inline border rev" href="{% url 'features' %}">{% trans "Explore all features" %}</a>
             </div>            
             <div class="wrap supporters">
                 <h2 class="section-title hp-style">{% trans "Users and Supporters" %}</h2>
