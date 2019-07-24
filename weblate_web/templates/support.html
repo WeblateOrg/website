@@ -112,8 +112,7 @@
                 <form class="mailing" action="{% url 'subscribe' name='users' %}" method="post">
                     {% csrf_token %}
                     <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your email address…" %}" />
-                    {% comment %}Translators: This is a button clicked to sign up for the mailing list.{% endcomment %}
-                    <input type="submit" class="mailing-submit" value="{% trans "Register" %}" />
+                    <input type="submit" class="mailing-submit" value="{% trans "Register" context "Sign up for the mailing list" %}" />
                 </form>
                 <ul>
                     <li>{% trans "Discuss Weblate with users and developers" %}</li>
@@ -126,7 +125,7 @@
                 <form class="mailing" action="{% url 'subscribe' name='hosted' %}" method="post">
                     {% csrf_token %}
                     <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your email address…" %}" />
-                    <input type="submit" class="mailing-submit" value="{% trans "Register" %}" />
+                    <input type="submit" class="mailing-submit" value="{% trans "Register" context "Sign up for the mailing list" %}" />
                 </form>
                 <ul>
                     <li>{% trans "<strong>Low traffic</strong> and moderated" %}</li>
