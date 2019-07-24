@@ -112,6 +112,7 @@
                 <form class="mailing" action="{% url 'subscribe' name='users' %}" method="post">
                     {% csrf_token %}
                     <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your email address…" %}" />
+                    {% comment %}Translators: This is a button clicked to sign up for the mailing list.{% endcomment %}
                     <input type="submit" class="mailing-submit" value="{% trans "Register" %}" />
                 </form>
                 <ul>
