@@ -53,6 +53,8 @@ class CreateBillingView(FormView):
 
     def get_form_kwargs(self):
         result = super(CreateBillingView, self).get_form_kwargs()
+        if "do" in self.request.GET:
+            result["data"] = self.request.GET
         result["user"] = self.request.user
         return result
 
@@ -96,6 +98,8 @@ class CreateBillingView(FormView):
         return redirect("create-billing")
 
     def get(self, request, *args, **kwargs):
+        if "do" in request.GET:
+            return self.post(request, *args, **kwargs)
         if "payment" in request.GET:
             with transaction.atomic(using="payments_db"):
                 return self.handle_payment(request)
