@@ -30,6 +30,10 @@
   <meta name="theme-color" content="#144d3f">
 
   <meta property="og:image" content="{% block og_image %}https://weblate.org/static/og.png{% endblock %}" />
+  <meta property="og:url" content="https://weblate.org{{ request.path }}" />
+{% block ogprops %}
+  <meta property="og:type" content="website" />
+{% endblock %}
   <meta property="fb:app_id" content="741121112629028" />
   <title>{% block title %}Weblate{% endblock %}</title>
   <link rel="alternate" type="application/rss+xml" href="https://weblate.org{% url 'feed' %}" title="Weblate blog feed (RSS)"/>
