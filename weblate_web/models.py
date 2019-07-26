@@ -18,17 +18,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import uuid
-
 import html2text
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext, ugettext_lazy
+from django.utils.translation import ugettext_lazy
 from markupfield.fields import MarkupField
-from wlhosted.payments.models import RECURRENCE_CHOICES, Payment, get_period_delta
+from wlhosted.payments.models import Payment, get_period_delta
 
 PAYMENTS_ORIGIN = 'https://weblate.org/donate/process/'
 
