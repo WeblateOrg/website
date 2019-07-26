@@ -5,7 +5,7 @@
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% block title %}{% trans "Page not found" %}{% endblock %}</h1>
+            <h1 class="section-title min-m">{% block ogtitle %}{% block title %}{% trans "Page not found" %}{% endblock %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>{% trans "The page you are looking for was not found." %}</p>
             </div>

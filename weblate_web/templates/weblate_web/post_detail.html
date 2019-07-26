@@ -4,7 +4,7 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block ogtitle %}{% block title %}{{ object.title }}{% endblock %}{% endblock %}
 {% block og_image %}https://weblate.org{{ object.image.image.url }}{% endblock %}
 {% block ogprops %}
   <meta property="og:type" content="article" />

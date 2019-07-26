@@ -5,7 +5,7 @@
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% block title %}{% trans "Your donation to Weblate" %}{% endblock %}</h1>
+            <h1 class="section-title min-m">{% block ogtitle %}{% block title %}{% trans "Your donation to Weblate" %}{% endblock %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>{% block description %}{% blocktrans %}<strong>Thank you</strong> for your decision to support Weblate. Please choose your preferred method of support, or set a donation amount yourself. We are here to help if needed.{% endblocktrans %}{% endblock %}</p>
             </div>

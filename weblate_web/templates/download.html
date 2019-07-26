@@ -9,7 +9,7 @@
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% block title %}{% trans "Download Weblate" %}{% endblock %}</h1>
+            <h1 class="section-title min-m">{% block ogtitle %}{% block title %}{% trans "Download Weblate" %}{% endblock %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>{% block description %}{% trans "All Weblate source code is freely available for you to use, modify, share and distribute. Discuss it with your associates." %}{% endblock %}</p>
                 <a href="https://github.com/WeblateOrg/weblate/" class="button inline">{% trans "View sources" %}</a>
