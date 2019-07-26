@@ -1490,7 +1490,7 @@ input[type=radio]:checked + .biglabel {
 	background-color: #1FA385;
 	color: #fff;
 }
-.text-muted {
+.text-muted, .help {
 	font-size: 16px;
     color: #777;
 }
@@ -1738,17 +1738,28 @@ form.mailing {
 	width: 100%;
 }
 form.mailing .mailing-text {
-	height: 50px;
 	width: calc(100% - 160px);
+	float: left;
+}
+form.mailing .mailing-text, .payment-form input[type="text"], .payment-form select {
+	height: 50px;
 	border-radius: 25px;
 	background-color: #E1E3E5;
 	margin-right: 20px;
 	border: 0;
-	float: left;
 	font-size: 18px;
 	padding: 0 25px;
 	color: #000000;
 	outline: none;
+}
+.payment-form select {
+    -webkit-appearance: none; 
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 50px;
+	background-image: url('img/arrow-down-black.svg');
+	background-position: calc(100% - 20px) center;
+	background-repeat: no-repeat;
 }
 form.mailing .mailing-submit {
 	height: 50px;
