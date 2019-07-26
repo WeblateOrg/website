@@ -337,7 +337,6 @@ class EditLinkView(UpdateView):
 
     def get_form_class(self):
         reward = self.object.reward
-        print(reward)
         if reward == 2:
             return EditLinkForm
         if reward == 3:
