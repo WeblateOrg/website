@@ -1,13 +1,11 @@
+var _paq = window._paq || [];
+/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+_paq.push(['setTrackerUrl', 'https://stats.cihar.com/matomo.php']);
+_paq.push(['setSiteId', '12']);
+
 $(function () {
-    var idSite = 12;
-    var piwikTrackingApiUrl = 'https://stats.cihar.com/piwik.php';
-
-    var _paq = window._paq || [];
-    _paq.push(['setTrackerUrl', piwikTrackingApiUrl]);
-    _paq.push(['setSiteId', idSite]);
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-
 	$('.menu-show').click(function(e) {
 		var $body = $('body');
 		$body.toggleClass('open-mobile');
