@@ -239,11 +239,11 @@ class DonateView(FormView):
     def form_valid(self, form):
         data = form.cleaned_data
         if data['reward'] and int(data['reward']):
-            tmp = Donation(reward_new=int(data['reward']))
+            tmp = Donation(reward=int(data['reward']))
             with override('en'):
                 # pylint: disable=no-member
                 description = 'Weblate donation: {}'.format(
-                    tmp.get_reward_new_display()
+                    tmp.get_reward_display()
                 )
         else:
             description = 'Weblate donation'
@@ -285,7 +285,7 @@ def process_donation(request):
     elif payment.state == Payment.ACCEPTED:
         messages.success(request, _('Thank you for your donation.'))
         donation = process_payment(payment)
-        if donation.reward_new:
+        if donation.reward:
             return redirect(donation)
 
     return redirect(reverse('user'))
@@ -336,7 +336,7 @@ class EditLinkView(UpdateView):
     success_url = '/user/'
 
     def get_form_class(self):
-        reward = self.object.reward_new
+        reward = self.object.reward
         print(reward)
         if reward == 2:
             return EditLinkForm
@@ -345,7 +345,7 @@ class EditLinkView(UpdateView):
         return EditNameForm
 
     def get_queryset(self):
-        return Donation.objects.filter(user=self.request.user, reward_new__gt=0)
+        return Donation.objects.filter(user=self.request.user, reward__gt=0)
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""

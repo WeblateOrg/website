@@ -64,7 +64,7 @@ def weblate_web(request):
         'downloads': downloads,
         'canonical_url': canonical_url,
         'language_urls': language_urls,
-        'donate_links': Donation.objects.filter(active=True, reward_new=3),
+        'donate_links': Donation.objects.filter(active=True, reward=3),
         'activity_sum': sum(get_activity()[-7:]),
         'contributors': get_contributors(),
         'changes': get_changes(),

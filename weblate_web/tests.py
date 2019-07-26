@@ -340,7 +340,7 @@ class DonationTest(FakturaceTestCase):
 
         # Donation show show up
         Donation.objects.create(
-            reward_new=2, user=user, active=True,
+            reward=2, user=user, active=True,
             expires=timezone.now() + relativedelta(years=1),
             payment=self.create_payment()[0].pk
         )
@@ -351,7 +351,7 @@ class DonationTest(FakturaceTestCase):
 
     def create_donation(self, years=1):
         return Donation.objects.create(
-            reward_new=3, user=self.create_user(),
+            reward=3, user=self.create_user(),
             active=True,
             expires=timezone.now() + relativedelta(years=years),
             payment=self.create_payment()[0].pk,

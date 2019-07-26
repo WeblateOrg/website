@@ -23,7 +23,7 @@
                 </div>
                 <div class="form-line">
                     <div class="line-left">{% trans "Reward" %}</div>
-                    <div class="line-right">{{ donation.get_reward_new_display }}</div>
+                    <div class="line-right">{{ donation.get_reward_display }}</div>
                     <div class="clear"></div>
                 </div>
                 <div class="form-line">
@@ -70,7 +70,7 @@
                 </div>
                 <div class="payment-pick">
                 </div>
-                {% if donation.reward_new %}
+                {% if donation.reward %}
                 <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit reward" %}</a>
                 {% endif %}
                 {% if donation.active and donation.payment_obj.recurring %}

@@ -24,7 +24,7 @@ from weblate_web.models import Donation, Image, Post
 
 
 class DonationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'reward_new', 'created', 'expires', 'get_amount')
+    list_display = ('user', 'reward', 'created', 'expires', 'get_amount')
 
 
 class ImageAdmin(admin.ModelAdmin):
