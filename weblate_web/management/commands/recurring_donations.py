@@ -18,34 +18,39 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from datetime import timedelta
+
 from django.core.management.base import BaseCommand
-from django.db import transaction
 from django.utils import timezone
 from wlhosted.payments.models import Payment
 
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, process_payment
+from weblate_web.models import Donation
 
 
 class Command(BaseCommand):
-    help = "processes pending payments"
+    help = "issues recurring payments"
 
     def handle(self, *args, **options):
-        with transaction.atomic(using="payments_db"):
-            self.pending()
-        self.active()
-
-    @staticmethod
-    def pending():
-        # Process pending ones
-        payments = Payment.objects.filter(
-            customer__origin=PAYMENTS_ORIGIN, state=Payment.ACCEPTED
-        ).select_for_update()
-        for payment in payments:
-            process_payment(payment)
-
-    @staticmethod
-    def active():
-        # Adjust active flag
-        Donation.objects.filter(active=True, expires__lt=timezone.now()).update(
-            active=False
+        # Issue recurring payments
+        donations = Donation.objects.filter(
+            active=True, expires__lte=timezone.now() + timedelta(days=3)
         )
+        for donation in donations:
+            payment = donation.payment_obj
+            if not payment.recurring:
+                continue
+
+            # Alllow at most three failures
+            rejected_payments = donation.list_payments().filter(state=Payment.REJECTED)
+            if rejected_payments.count() > 3:
+                payment.recurring = ""
+                payment.save()
+                continue
+
+            repeated = payment.repeat_payment()
+            if not repeated:
+                # Remove recurring flag
+                payment.recurring = ""
+                payment.save()
+            else:
+                repeated.trigger_remotely()
