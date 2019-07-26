@@ -20,13 +20,7 @@
 
 from django.contrib import admin
 
-from weblate_web.models import Donation, Image, Post, Reward
-
-
-class RewardAdmin(admin.ModelAdmin):
-    list_display = ('name', 'amount', 'recurring')
-    list_filter = ('has_link', 'active', 'third_party')
-    search_fields = ('name',)
+from weblate_web.models import Donation, Image, Post
 
 
 class DonationAdmin(admin.ModelAdmin):
@@ -53,5 +47,4 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Post, PostAdmin)
-admin.site.register(Reward, RewardAdmin)
 admin.site.register(Donation, DonationAdmin)

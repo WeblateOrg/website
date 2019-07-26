@@ -52,41 +52,9 @@ TOPICS = (
 TOPIC_DICT = dict(TOPICS)
 
 
-class Reward(models.Model):
-    uuid = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False
-    )
-    recurring = models.CharField(
-        choices=RECURRENCE_CHOICES,
-        default='',
-        blank=True,
-        max_length=10,
-    )
-    amount = models.PositiveIntegerField()
-    has_link = models.BooleanField(blank=True)
-    thanks_link = models.BooleanField(blank=True, db_index=True)
-    third_party = models.BooleanField(blank=True)
-    active = models.BooleanField(blank=True)
-    name = models.CharField(max_length=200)
-
-    class Meta:
-        index_together = [
-            ('active', 'third_party'),
-        ]
-
-    def get_display_name(self):
-        return ugettext(self.name)
-
-    def __str__(self):
-        return self.name
-
-
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
     payment = models.UUIDField()
-    reward = models.ForeignKey(
-        Reward, on_delete=models.deletion.CASCADE, null=True, blank=True
-    )
     reward_new = models.IntegerField(choices=REWARDS)
     link_text = models.CharField(
         verbose_name=ugettext_lazy('Link text'),
