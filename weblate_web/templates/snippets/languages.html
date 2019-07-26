@@ -11,7 +11,7 @@
         </ul>
         {% endfor %}
         <div class="bottom">
-            → <a href="{% url 'contribute' %}#translate">{% trans "Help translate" %}</a>
+            {% if LANGUAGE_BIDI %}←{% else %}→{% endif %} <a href="{% url 'contribute' %}#translate">{% trans "Help translate" %}</a>
         </div>
     </div>
 </div>
