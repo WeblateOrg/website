@@ -42,7 +42,7 @@ class Command(BaseCommand):
         # Issue recurring payments
         donations = Donation.objects.filter(
             active=True,
-            expires__lte=timezone.now().date() + timedelta(days=3)
+            expires__lte=timezone.now() + timedelta(days=3)
         )
         for donation in donations:
             payment = donation.payment_obj
