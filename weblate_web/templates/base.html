@@ -1,5 +1,8 @@
 {% load i18n %}
 {% load static %}
+{% load macros %}
+{% macro title %}{% block title %}Weblate{% endblock %}{% endmacro %}
+{% macro description %}{% filter striptags %}{% block description %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}{% endfilter %}{% endmacro %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" class="no-js">
 <head>
@@ -14,7 +17,8 @@
   <meta name="dcterms.rightsHolder" content="Michal Čihař">
   <meta name="dcterms.dateCopyrighted" content="2012–2019">
   <meta name="robots" content="index, follow" />
-  <meta name="description" content="{% filter striptags %}{% block description %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}{% endfilter %}" />
+  <title>{% use_macro title %}</title>
+  <meta name="description" content="{% use_macro description %}" />
   <meta name="keywords" content="Weblate,Git,gettext,resources,JSON,PO,MO,QTS,CAT,XLIFF,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
 
   <link rel="author" href="mailto:michal@cihar.com" />
@@ -31,15 +35,14 @@
 
   <meta property="og:image" content="{% block og_image %}https://weblate.org/static/og.png{% endblock %}" />
   <meta property="og:url" content="https://weblate.org{{ request.path }}" />
-  <meta property="og:title" content="{% block ogtitle %}Weblate{% endblock %}" />
-  <meta property="og:description" content="{% filter striptags %}{% block ordescription %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}{% endfilter %}" />
+  <meta property="og:title" content="{% use_macro title %}" />
+  <meta property="og:description" content="{% use_macro description %}" />
 {% block ogprops %}
   <meta property="og:type" content="website" />
 {% endblock %}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@WeblateOrg" />  
   <meta property="fb:app_id" content="741121112629028" />
-  <title>{% block title %}Weblate{% endblock %}</title>
   <link rel="alternate" type="application/rss+xml" href="https://weblate.org{% url 'feed' %}" title="Weblate blog feed (RSS)"/>
   {% for lang in language_urls %}
     {% if lang.code != LANGUAGE_CODE %}<link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}" />{% endif %}
