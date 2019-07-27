@@ -32,6 +32,7 @@
   <meta property="og:image" content="{% block og_image %}https://weblate.org/static/og.png{% endblock %}" />
   <meta property="og:url" content="https://weblate.org{{ request.path }}" />
   <meta property="og:title" content="{% block ogtitle %}Weblate{% endblock %}" />
+  <meta property="og:description" content="{% filter striptags %}{% block ordescription %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}{% endfilter %}" />
 {% block ogprops %}
   <meta property="og:type" content="website" />
 {% endblock %}
