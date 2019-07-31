@@ -128,7 +128,7 @@ class Backend(object):
         storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
         customer_id = "web-{}".format(customer.pk)
-        with override('en'):
+        with override("en"):
             contact_file = storage.update_contact(
                 customer_id,
                 customer.name,
