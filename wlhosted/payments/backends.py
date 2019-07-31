@@ -32,6 +32,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
+from django.utils.translation import override
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from fakturace.storage import InvoiceStorage
@@ -127,18 +128,19 @@ class Backend(object):
         storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
         customer_id = "web-{}".format(customer.pk)
-        contact_file = storage.update_contact(
-            customer_id,
-            customer.name,
-            customer.address,
-            customer.city,
-            customer.country.name,
-            customer.email,
-            customer.tax if customer.tax else "",
-            customer.vat if customer.vat else "",
-            "EUR",
-            "weblate",
-        )
+        with override('en'):
+            contact_file = storage.update_contact(
+                customer_id,
+                customer.name,
+                customer.address,
+                customer.city,
+                customer.country.name,
+                customer.email,
+                customer.tax if customer.tax else "",
+                customer.vat if customer.vat else "",
+                "EUR",
+                "weblate",
+            )
         invoice_file = storage.create(
             customer_id,
             0,
