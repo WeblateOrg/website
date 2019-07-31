@@ -63,7 +63,7 @@ class ViewTestCase(PostTestCase):
 
     def test_index_be(self):
         response = self.client.get('/be/')
-        self.assertContains(response, 'Просты')
+        self.assertContains(response, 'Базавы')
 
     def test_index_be_latin(self):
         response = self.client.get('/be@latin/')
