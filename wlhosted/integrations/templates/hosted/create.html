@@ -92,10 +92,12 @@
 </div>
 
 <p class="help-block">
-{% trans "Pricing is based on the number of target languages and strings (word, sentence or paragraph) for translation." %}
+{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}
 </p>
 <p class="help-block">
-{% trans "Weblate is located in Czechia. Prices for all EU end-users include VAT. Invoices for VAT registered EU companies are issued as reverse charges." %}
+    {% trans "All listed prices exclude VAT." %}
+    {% trans "EU end users and Czech companies will be charged with additional 21% VAT." %}
+    {% trans "The reverse charge applies to invoices issued to businesses within the EU." %}
 </p>
 
 {% endblock %}
