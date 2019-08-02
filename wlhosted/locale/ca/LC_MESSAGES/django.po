@@ -5,9 +5,9 @@
 # Eduard Ereza Martínez <eduard@ereza.cat>, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-01-21 13:52+0000\n"
+"POT-Creation-Date: 2019-08-02 06:05+0000\n"
 "PO-Revision-Date: 2019-07-17 11:04+0000\n"
 "Last-Translator: Joan Montané <joan@montane.cat>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/weblate/hosted/"
@@ -19,19 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.8-dev\n"
 
-#: wlhosted/addons.py:38 wlhosted/addons.py:39
+#: wlhosted/addons.py:37 wlhosted/addons.py:38
 msgid "Generate Unknown Horizons scenario data"
 msgstr "Genera les dades de l'escenari Unknown Horizons"
 
-#: wlhosted/integrations/forms.py:37
+#: wlhosted/addons.py:60 wlhosted/addons.py:61
+msgid "Reset repository to upstream"
+msgstr ""
+
+#: wlhosted/integrations/forms.py:35
 msgid "Billing"
 msgstr "Facturació"
 
-#: wlhosted/integrations/forms.py:38
+#: wlhosted/integrations/forms.py:36
 msgid "Choose the billing plan you want to update"
 msgstr "Trieu el pla de facturació que voleu actualitzar"
 
-#: wlhosted/integrations/forms.py:39
+#: wlhosted/integrations/forms.py:37
 msgid "Create new billing plan"
 msgstr "Crea un pla de facturació nou"
 
@@ -107,8 +111,13 @@ msgid "%(price)s EUR / year"
 msgstr "%(price)s euros / any"
 
 #: wlhosted/integrations/templates/hosted/create.html:95
+#, fuzzy
+#| msgid ""
+#| "The pricing is based on number of source strings and target languages. "
+#| "The source string is a text unit defined in a translation format, it can "
+#| "be a word, sentence or paragraph."
 msgid ""
-"The pricing is based on number of source strings and target languages. The "
+"Pricing is based on number of source strings and target languages. The "
 "source string is a text unit defined in a translation format, it can be a "
 "word, sentence or paragraph."
 msgstr ""
@@ -117,25 +126,29 @@ msgstr ""
 "de traducció: pot ser un mot, una frase o un paràgraf."
 
 #: wlhosted/integrations/templates/hosted/create.html:98
-msgid ""
-"Weblate is located in Czechia and you will be charged price with VAT if you "
-"are an end-user in the EU or a Czech resident. Invoices for VAT registered "
-"companies in EU countries are issued as a reverse charges."
+msgid "All listed prices exclude VAT."
 msgstr ""
-"Weblate s'ubica a Txèquia i se us cobrarà el preu amb IVA si sou un usuari "
-"final de la UE o un resident txec. A efectes de l'IVA, les factures emeses "
-"per a les empreses inscrites en països de la UE s'emeten en forma de "
-"cobrament per autoliquidació."
 
-#: wlhosted/integrations/views.py:70
+#: wlhosted/integrations/templates/hosted/create.html:99
+#, python-format
+msgid ""
+"EU end users and Czech companies will be charged with additional 21%% VAT."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:100
+msgid ""
+"The reverse charge applies to invoices issued to businesses within the EU."
+msgstr ""
+
+#: wlhosted/integrations/views.py:69
 msgid "No matching payment found."
 msgstr "No s'ha trobat cap pagament coincident."
 
-#: wlhosted/integrations/views.py:79
+#: wlhosted/integrations/views.py:77
 msgid "Thank you for purchasing a hosting plan, it is now active."
 msgstr "Gràcies per adquirir un pla d'allotjament, ara és actiu."
 
-#: wlhosted/integrations/views.py:86
+#: wlhosted/integrations/views.py:84
 msgid ""
 "Thank you for purchasing a hosting plan, the payment for it is pending and "
 "will be processed in the background."
@@ -143,15 +156,15 @@ msgstr ""
 "Gràcies per adquirir un pla d'allotjament, el pagament és pendent i es "
 "processarà en segon pla."
 
-#: wlhosted/integrations/views.py:94
+#: wlhosted/integrations/views.py:92
 msgid "The payment was rejected: {}"
 msgstr "S'ha rebutjat el pagament: {}"
 
-#: wlhosted/integrations/views.py:95
+#: wlhosted/integrations/views.py:93
 msgid "Unknown reason"
 msgstr "Motiu desconegut"
 
-#: wlhosted/integrations/views.py:111
+#: wlhosted/integrations/views.py:110
 msgid "Payments are temporarily inactive."
 msgstr "Els pagaments estan temporalment inactius."
 
@@ -279,8 +292,8 @@ msgid ""
 "activities or sent you newsletters (Article 6 (1) a. GDPR)"
 msgstr ""
 "amb el vostre consentiment explícit o la vostra autorització expressa, per a "
-"dur a terme activitats comercials i enviar-vos butlletins de notícies ("
-"Article 6 (1) a. del RGPD)"
+"dur a terme activitats comercials i enviar-vos butlletins de notícies "
+"(Article 6 (1) a. del RGPD)"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:50
 msgid "Access to the Personal Data"
@@ -304,7 +317,8 @@ msgstr ""
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:57
 msgid "Persons which are contracted for technical assurance of the service."
-msgstr "Persones contractades per a garantir el funcionament tècnic del servei."
+msgstr ""
+"Persones contractades per a garantir el funcionament tècnic del servei."
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:58
 msgid "Payment processors."
@@ -438,7 +452,7 @@ msgstr "Utilitzem galetes per a oferir els nostres serveis."
 msgid "View English version"
 msgstr "Mostra la versió en anglès"
 
-#: wlhosted/legal/templates/legal/documents/tos.html:12
+#: wlhosted/legal/templates/legal/documents/tos.html:11
 msgid ""
 "The Terms of Service document is authoritative in English, translations are "
 "provided for your convenience."
@@ -906,11 +920,11 @@ msgstr ""
 "Les condicions del servei seran vigents a partir del primer de setembre del "
 "2017."
 
-#: wlhosted/payments/backends.py:185
+#: wlhosted/payments/backends.py:188
 msgid "Your payment on weblate.org"
 msgstr "El vostre pagament a weblate.org"
 
-#: wlhosted/payments/backends.py:186
+#: wlhosted/payments/backends.py:190
 #, python-format
 msgid ""
 "Hello\n"
@@ -931,11 +945,11 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:210
+#: wlhosted/payments/backends.py:216
 msgid "Your payment on weblate.org failed"
 msgstr "El vostre pagament a weblate.org ha fallat"
 
-#: wlhosted/payments/backends.py:211
+#: wlhosted/payments/backends.py:218
 #, python-format
 msgid ""
 "Hello\n"
@@ -964,87 +978,99 @@ msgstr ""
 "Si es tracta d'un pagament recurrent, es tornarà a provar tres vegades,\n"
 "si encara falla, es cancel·larà.\n"
 
-#: wlhosted/payments/backends.py:297
+#: wlhosted/payments/backends.py:309
 msgid "Payment card"
 msgstr "Targeta de pagament"
 
-#: wlhosted/payments/backends.py:373
+#: wlhosted/payments/backends.py:385
 msgid "Payment cancelled"
 msgstr "Pagament cancel·lat"
 
-#: wlhosted/payments/backends.py:375
+#: wlhosted/payments/backends.py:387
 msgid "Payment error"
 msgstr "S'ha produït un error de pagament"
 
-#: wlhosted/payments/backends.py:387
+#: wlhosted/payments/backends.py:400
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: wlhosted/payments/models.py:88
+#: wlhosted/payments/models.py:84
 msgid "European VAT ID"
 msgstr "Identificador d'IVA europeu"
 
-#: wlhosted/payments/models.py:90
+#: wlhosted/payments/models.py:86
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Ompliu l'identificador d'IVA de la Unió Europea, o deixeu-lo en blanc si no "
 "aplica."
 
-#: wlhosted/payments/models.py:96
+#: wlhosted/payments/models.py:92
 msgid "Tax registration"
 msgstr "Identificació tributària"
 
-#: wlhosted/payments/models.py:98
+#: wlhosted/payments/models.py:94
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr ""
 "Ompliu la vostra identificació tributària, si cal que aparegui a la factura."
 
-#: wlhosted/payments/models.py:104
-msgid "Company name"
+#: wlhosted/payments/models.py:99
+#, fuzzy
+#| msgid "Company name"
+msgid "Company or individual name"
 msgstr "Nom de l'empresa"
 
-#: wlhosted/payments/models.py:108
+#: wlhosted/payments/models.py:101
 msgid "Address"
 msgstr "Adreça"
 
-#: wlhosted/payments/models.py:112
+#: wlhosted/payments/models.py:103
 msgid "Postcode and city"
 msgstr "Codi postal i ciutat"
 
-#: wlhosted/payments/models.py:116
+#: wlhosted/payments/models.py:105
 msgid "Country"
 msgstr "País"
 
-#: wlhosted/payments/models.py:149
+#: wlhosted/payments/models.py:133
 msgid "The country has to match your VAT code"
 msgstr "El país ha de coincidir amb el vostre codi d'IVA"
 
-#: wlhosted/payments/models.py:174
+#: wlhosted/payments/models.py:156
 msgid "Annual"
 msgstr "Anual"
 
-#: wlhosted/payments/models.py:175
+#: wlhosted/payments/models.py:157
 msgid "Biannual"
 msgstr "Semestral"
 
-#: wlhosted/payments/models.py:176
+#: wlhosted/payments/models.py:158
 msgid "Monthly"
 msgstr "Mensualment"
 
-#: wlhosted/payments/models.py:177
+#: wlhosted/payments/models.py:159
 msgid "Onetime"
 msgstr "Únic"
 
-#: wlhosted/payments/validators.py:39
+#: wlhosted/payments/validators.py:36
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} no és un codi de país vàlid per a membres de la Unió Europea."
 
-#: wlhosted/payments/validators.py:44
+#: wlhosted/payments/validators.py:41
 msgid "{} does not match the country's VAT ID specifications."
 msgstr ""
 "{} no coincideix amb les especificacions de l'identificador d'IVA del país."
 
-#: wlhosted/payments/validators.py:48
+#: wlhosted/payments/validators.py:45
 msgid "{} is not a valid VAT ID."
 msgstr "{} no és un identificador d'IVA vàlid."
+
+#~ msgid ""
+#~ "Weblate is located in Czechia and you will be charged price with VAT if "
+#~ "you are an end-user in the EU or a Czech resident. Invoices for VAT "
+#~ "registered companies in EU countries are issued as a reverse charges."
+#~ msgstr ""
+#~ "Weblate s'ubica a Txèquia i se us cobrarà el preu amb IVA si sou un "
+#~ "usuari final de la UE o un resident txec. A efectes de l'IVA, les "
+#~ "factures emeses per a les empreses inscrites en països de la UE s'emeten "
+#~ "en forma de cobrament per autoliquidació."

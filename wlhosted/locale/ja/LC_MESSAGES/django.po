@@ -7,9 +7,9 @@
 # Ryo Nakano <ryonakaknock3@gmail.com>, 2018, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-01-21 13:52+0000\n"
+"POT-Creation-Date: 2019-08-02 06:05+0000\n"
 "PO-Revision-Date: 2019-07-21 18:11+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/hosted/"
@@ -21,19 +21,23 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.8-dev\n"
 
-#: wlhosted/addons.py:38 wlhosted/addons.py:39
+#: wlhosted/addons.py:37 wlhosted/addons.py:38
 msgid "Generate Unknown Horizons scenario data"
 msgstr "終わりの見えない物語をはじめる"
 
-#: wlhosted/integrations/forms.py:37
+#: wlhosted/addons.py:60 wlhosted/addons.py:61
+msgid "Reset repository to upstream"
+msgstr ""
+
+#: wlhosted/integrations/forms.py:35
 msgid "Billing"
 msgstr "課金"
 
-#: wlhosted/integrations/forms.py:38
+#: wlhosted/integrations/forms.py:36
 msgid "Choose the billing plan you want to update"
 msgstr "更新する料金プランの選択"
 
-#: wlhosted/integrations/forms.py:39
+#: wlhosted/integrations/forms.py:37
 msgid "Create new billing plan"
 msgstr "料金プランの新規作成"
 
@@ -109,8 +113,13 @@ msgid "%(price)s EUR / year"
 msgstr "%(price)s ユーロ／年"
 
 #: wlhosted/integrations/templates/hosted/create.html:95
+#, fuzzy
+#| msgid ""
+#| "The pricing is based on number of source strings and target languages. "
+#| "The source string is a text unit defined in a translation format, it can "
+#| "be a word, sentence or paragraph."
 msgid ""
-"The pricing is based on number of source strings and target languages. The "
+"Pricing is based on number of source strings and target languages. The "
 "source string is a text unit defined in a translation format, it can be a "
 "word, sentence or paragraph."
 msgstr ""
@@ -119,24 +128,29 @@ msgstr ""
 "は、単語一つの場合もあれば、一つの文、一つの段落となる場合があります。"
 
 #: wlhosted/integrations/templates/hosted/create.html:98
-msgid ""
-"Weblate is located in Czechia and you will be charged price with VAT if you "
-"are an end-user in the EU or a Czech resident. Invoices for VAT registered "
-"companies in EU countries are issued as a reverse charges."
+msgid "All listed prices exclude VAT."
 msgstr ""
-"Weblate はチェコ共和国にあり、EU またはチェコ共和国の居住者のエンドユーザー"
-"は、VAT 込みで料金を請求されます。EU 加盟国の VAT 登録会社に対する請求書は、"
-"逆手数料として発行されます。"
 
-#: wlhosted/integrations/views.py:70
+#: wlhosted/integrations/templates/hosted/create.html:99
+#, python-format
+msgid ""
+"EU end users and Czech companies will be charged with additional 21%% VAT."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:100
+msgid ""
+"The reverse charge applies to invoices issued to businesses within the EU."
+msgstr ""
+
+#: wlhosted/integrations/views.py:69
 msgid "No matching payment found."
 msgstr "一致する支払いが見つかりませんでした。"
 
-#: wlhosted/integrations/views.py:79
+#: wlhosted/integrations/views.py:77
 msgid "Thank you for purchasing a hosting plan, it is now active."
 msgstr "ホスティング プランのご購入ありがとうございます。現在、有効です。"
 
-#: wlhosted/integrations/views.py:86
+#: wlhosted/integrations/views.py:84
 msgid ""
 "Thank you for purchasing a hosting plan, the payment for it is pending and "
 "will be processed in the background."
@@ -144,15 +158,15 @@ msgstr ""
 "ホスティング プランのご購入ありがとうございます。バックグラウンドで行うプラン"
 "の支払いは、保留中です。"
 
-#: wlhosted/integrations/views.py:94
+#: wlhosted/integrations/views.py:92
 msgid "The payment was rejected: {}"
 msgstr "支払いが拒否されました： {}"
 
-#: wlhosted/integrations/views.py:95
+#: wlhosted/integrations/views.py:93
 msgid "Unknown reason"
 msgstr "理由不明"
 
-#: wlhosted/integrations/views.py:111
+#: wlhosted/integrations/views.py:110
 msgid "Payments are temporarily inactive."
 msgstr "支払いは一時的に無効です。"
 
@@ -232,7 +246,8 @@ msgstr "お支払い情報"
 msgid ""
 "In case you purchase service from us, we collect additional billing "
 "information necessary for issuing an invoice"
-msgstr "サービスを購入された場合、請求書の発行に必要な追加のお支払情報を収集します"
+msgstr ""
+"サービスを購入された場合、請求書の発行に必要な追加のお支払情報を収集します"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:40
 msgid "Purpose and legal basis of processing Personal Data"
@@ -388,7 +403,9 @@ msgstr ""
 msgid ""
 "We process private data (such as your email address), those will be "
 "discarded from our database as soon as you remove your account."
-msgstr "個人情報 (メールアドレスなど) は厳重に扱います。アカウントを削除した際は、データベースから即時に廃棄します。"
+msgstr ""
+"個人情報 (メールアドレスなど) は厳重に扱います。アカウントを削除した際は、"
+"データベースから即時に廃棄します。"
 
 #: wlhosted/legal/templates/legal/documents/summary.html:7
 msgid ""
@@ -412,7 +429,7 @@ msgstr "サービスの提供のためにクッキーを使用します。"
 msgid "View English version"
 msgstr "英語版の表示"
 
-#: wlhosted/legal/templates/legal/documents/tos.html:12
+#: wlhosted/legal/templates/legal/documents/tos.html:11
 msgid ""
 "The Terms of Service document is authoritative in English, translations are "
 "provided for your convenience."
@@ -841,11 +858,11 @@ msgid ""
 "2017."
 msgstr "これらの利用規約は、2017年9月1日に発効します。"
 
-#: wlhosted/payments/backends.py:185
+#: wlhosted/payments/backends.py:188
 msgid "Your payment on weblate.org"
 msgstr "weblate.org への支払い"
 
-#: wlhosted/payments/backends.py:186
+#: wlhosted/payments/backends.py:190
 #, python-format
 msgid ""
 "Hello\n"
@@ -866,11 +883,11 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:210
+#: wlhosted/payments/backends.py:216
 msgid "Your payment on weblate.org failed"
 msgstr "weblate.org へのお支払いに失敗しました"
 
-#: wlhosted/payments/backends.py:211
+#: wlhosted/payments/backends.py:218
 #, python-format
 msgid ""
 "Hello\n"
@@ -897,83 +914,96 @@ msgstr ""
 "\n"
 "定期購入の場合は 3 回再試行し、それでも失敗した場合は解約します。\n"
 
-#: wlhosted/payments/backends.py:297
+#: wlhosted/payments/backends.py:309
 msgid "Payment card"
 msgstr "カード払い"
 
-#: wlhosted/payments/backends.py:373
+#: wlhosted/payments/backends.py:385
 msgid "Payment cancelled"
 msgstr "支払いの解約"
 
-#: wlhosted/payments/backends.py:375
+#: wlhosted/payments/backends.py:387
 msgid "Payment error"
 msgstr "決済エラー"
 
-#: wlhosted/payments/backends.py:387
+#: wlhosted/payments/backends.py:400
 msgid "Bitcoin"
 msgstr "ビットコイン"
 
-#: wlhosted/payments/models.py:88
+#: wlhosted/payments/models.py:84
 msgid "European VAT ID"
 msgstr "欧州 VAT ID"
 
-#: wlhosted/payments/models.py:90
+#: wlhosted/payments/models.py:86
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
-msgstr "欧州連合（EU）の VAT ID を記入してください。適用外の場合は空欄にしてください。"
+msgstr ""
+"欧州連合（EU）の VAT ID を記入してください。適用外の場合は空欄にしてくださ"
+"い。"
 
-#: wlhosted/payments/models.py:96
+#: wlhosted/payments/models.py:92
 msgid "Tax registration"
 msgstr "税務登録"
 
-#: wlhosted/payments/models.py:98
+#: wlhosted/payments/models.py:94
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "請求書に記載されている場合は税務登録を記入してください。"
 
-#: wlhosted/payments/models.py:104
-msgid "Company name"
+#: wlhosted/payments/models.py:99
+#, fuzzy
+#| msgid "Company name"
+msgid "Company or individual name"
 msgstr "会社名"
 
-#: wlhosted/payments/models.py:108
+#: wlhosted/payments/models.py:101
 msgid "Address"
 msgstr "住所"
 
-#: wlhosted/payments/models.py:112
+#: wlhosted/payments/models.py:103
 msgid "Postcode and city"
 msgstr "郵便番号と市区町村"
 
-#: wlhosted/payments/models.py:116
+#: wlhosted/payments/models.py:105
 msgid "Country"
 msgstr "国"
 
-#: wlhosted/payments/models.py:149
+#: wlhosted/payments/models.py:133
 msgid "The country has to match your VAT code"
 msgstr "国の VAT コードに一致する必要があります"
 
-#: wlhosted/payments/models.py:174
+#: wlhosted/payments/models.py:156
 msgid "Annual"
 msgstr "年間"
 
-#: wlhosted/payments/models.py:175
+#: wlhosted/payments/models.py:157
 msgid "Biannual"
 msgstr "半年間"
 
-#: wlhosted/payments/models.py:176
+#: wlhosted/payments/models.py:158
 msgid "Monthly"
 msgstr "月払い"
 
-#: wlhosted/payments/models.py:177
+#: wlhosted/payments/models.py:159
 msgid "Onetime"
 msgstr "一括払い"
 
-#: wlhosted/payments/validators.py:39
+#: wlhosted/payments/validators.py:36
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} は、欧州連合加盟国の有効な国コードではありません。"
 
-#: wlhosted/payments/validators.py:44
+#: wlhosted/payments/validators.py:41
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} は、国の VAT ID 仕様と一致しません。"
 
-#: wlhosted/payments/validators.py:48
+#: wlhosted/payments/validators.py:45
 msgid "{} is not a valid VAT ID."
 msgstr "{} は、有効な VAT ID ではありません。"
+
+#~ msgid ""
+#~ "Weblate is located in Czechia and you will be charged price with VAT if "
+#~ "you are an end-user in the EU or a Czech resident. Invoices for VAT "
+#~ "registered companies in EU countries are issued as a reverse charges."
+#~ msgstr ""
+#~ "Weblate はチェコ共和国にあり、EU またはチェコ共和国の居住者のエンドユー"
+#~ "ザーは、VAT 込みで料金を請求されます。EU 加盟国の VAT 登録会社に対する請求"
+#~ "書は、逆手数料として発行されます。"

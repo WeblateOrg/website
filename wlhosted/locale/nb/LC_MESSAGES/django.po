@@ -8,9 +8,9 @@
 # Kurt Eilertsen <kurt@kheds.com>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-01-21 13:52+0000\n"
+"POT-Creation-Date: 2019-08-02 06:05+0000\n"
 "PO-Revision-Date: 2019-07-21 08:06+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/weblate/"
@@ -22,19 +22,23 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.8-dev\n"
 
-#: wlhosted/addons.py:38 wlhosted/addons.py:39
+#: wlhosted/addons.py:37 wlhosted/addons.py:38
 msgid "Generate Unknown Horizons scenario data"
 msgstr "Genererer ukjent Horizons-handlingsdata"
 
-#: wlhosted/integrations/forms.py:37
+#: wlhosted/addons.py:60 wlhosted/addons.py:61
+msgid "Reset repository to upstream"
+msgstr ""
+
+#: wlhosted/integrations/forms.py:35
 msgid "Billing"
 msgstr "Fakturering"
 
-#: wlhosted/integrations/forms.py:38
+#: wlhosted/integrations/forms.py:36
 msgid "Choose the billing plan you want to update"
 msgstr "Velg betalingsplanen du ønsker å oppdatere"
 
-#: wlhosted/integrations/forms.py:39
+#: wlhosted/integrations/forms.py:37
 msgid "Create new billing plan"
 msgstr "Opprett ny betalingsplan"
 
@@ -110,8 +114,13 @@ msgid "%(price)s EUR / year"
 msgstr "%(price)s EUR / år"
 
 #: wlhosted/integrations/templates/hosted/create.html:95
+#, fuzzy
+#| msgid ""
+#| "The pricing is based on number of source strings and target languages. "
+#| "The source string is a text unit defined in a translation format, it can "
+#| "be a word, sentence or paragraph."
 msgid ""
-"The pricing is based on number of source strings and target languages. The "
+"Pricing is based on number of source strings and target languages. The "
 "source string is a text unit defined in a translation format, it can be a "
 "word, sentence or paragraph."
 msgstr ""
@@ -120,24 +129,29 @@ msgstr ""
 "setning eller et avsnitt."
 
 #: wlhosted/integrations/templates/hosted/create.html:98
-msgid ""
-"Weblate is located in Czechia and you will be charged price with VAT if you "
-"are an end-user in the EU or a Czech resident. Invoices for VAT registered "
-"companies in EU countries are issued as a reverse charges."
+msgid "All listed prices exclude VAT."
 msgstr ""
-"Weblate befinner seg i Tsjekkia, og du vil bli fakturert pris med moms hvis "
-"du er en sluttbruker i EU, eller Tjekkisk borger. Fakturaer for "
-"momsregistrerte selskaper i EU-land utstedes som forhåndstrekk."
 
-#: wlhosted/integrations/views.py:70
+#: wlhosted/integrations/templates/hosted/create.html:99
+#, python-format
+msgid ""
+"EU end users and Czech companies will be charged with additional 21%% VAT."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:100
+msgid ""
+"The reverse charge applies to invoices issued to businesses within the EU."
+msgstr ""
+
+#: wlhosted/integrations/views.py:69
 msgid "No matching payment found."
 msgstr "Fant ingen samsvarende betaling."
 
-#: wlhosted/integrations/views.py:79
+#: wlhosted/integrations/views.py:77
 msgid "Thank you for purchasing a hosting plan, it is now active."
 msgstr "Takk for at du kjøper en verts plan, den er nå aktiv."
 
-#: wlhosted/integrations/views.py:86
+#: wlhosted/integrations/views.py:84
 msgid ""
 "Thank you for purchasing a hosting plan, the payment for it is pending and "
 "will be processed in the background."
@@ -145,15 +159,15 @@ msgstr ""
 "Takk for at du kjøper en verts plan, betalingen er underveis, og behandles i "
 "bakgrunnen."
 
-#: wlhosted/integrations/views.py:94
+#: wlhosted/integrations/views.py:92
 msgid "The payment was rejected: {}"
 msgstr "Betalingen ble avslått: {}"
 
-#: wlhosted/integrations/views.py:95
+#: wlhosted/integrations/views.py:93
 msgid "Unknown reason"
 msgstr "Ukjent grunn"
 
-#: wlhosted/integrations/views.py:111
+#: wlhosted/integrations/views.py:110
 msgid "Payments are temporarily inactive."
 msgstr "Betalinger er midlertidig avslått."
 
@@ -429,7 +443,7 @@ msgstr "Vi bruker noen kaker for å levere våre tjenester."
 msgid "View English version"
 msgstr "Vis engelsk versjon"
 
-#: wlhosted/legal/templates/legal/documents/tos.html:12
+#: wlhosted/legal/templates/legal/documents/tos.html:11
 msgid ""
 "The Terms of Service document is authoritative in English, translations are "
 "provided for your convenience."
@@ -880,11 +894,11 @@ msgid ""
 msgstr ""
 "Disse tjenestevilkårene trer i kraft og håndheves fra første september 2017."
 
-#: wlhosted/payments/backends.py:185
+#: wlhosted/payments/backends.py:188
 msgid "Your payment on weblate.org"
 msgstr "Din betaling på weblate.org"
 
-#: wlhosted/payments/backends.py:186
+#: wlhosted/payments/backends.py:190
 #, python-format
 msgid ""
 "Hello\n"
@@ -905,11 +919,11 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:210
+#: wlhosted/payments/backends.py:216
 msgid "Your payment on weblate.org failed"
 msgstr "Din betaling på weblate.org mislyktes"
 
-#: wlhosted/payments/backends.py:211
+#: wlhosted/payments/backends.py:218
 #, python-format
 msgid ""
 "Hello\n"
@@ -938,86 +952,97 @@ msgstr ""
 "Hvis dette var en vedvarende betaling, vil den bli forsøkt gjennomført\n"
 "tre ganger. Hvis den mislykkes, kanselleres planen.\n"
 
-#: wlhosted/payments/backends.py:297
+#: wlhosted/payments/backends.py:309
 msgid "Payment card"
 msgstr "Betalingskort"
 
-#: wlhosted/payments/backends.py:373
+#: wlhosted/payments/backends.py:385
 msgid "Payment cancelled"
 msgstr "Betaling avbrutt"
 
-#: wlhosted/payments/backends.py:375
+#: wlhosted/payments/backends.py:387
 msgid "Payment error"
 msgstr "Betalingsfeil"
 
-#: wlhosted/payments/backends.py:387
+#: wlhosted/payments/backends.py:400
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: wlhosted/payments/models.py:88
+#: wlhosted/payments/models.py:84
 msgid "European VAT ID"
 msgstr "Europeisk moms-ID"
 
-#: wlhosted/payments/models.py:90
+#: wlhosted/payments/models.py:86
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "Fyll inn moms-ID fra EU, la stå tom hvis dette ikke angår deg."
 
-#: wlhosted/payments/models.py:96
+#: wlhosted/payments/models.py:92
 msgid "Tax registration"
 msgstr "Skatteregistrering"
 
-#: wlhosted/payments/models.py:98
+#: wlhosted/payments/models.py:94
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "Fyll inn din skatteregistrering hvis den skal framtre på fakturaen."
 
-#: wlhosted/payments/models.py:104
-msgid "Company name"
+#: wlhosted/payments/models.py:99
+#, fuzzy
+#| msgid "Company name"
+msgid "Company or individual name"
 msgstr "Selskapsnavn"
 
-#: wlhosted/payments/models.py:108
+#: wlhosted/payments/models.py:101
 msgid "Address"
 msgstr "Adresse"
 
-#: wlhosted/payments/models.py:112
+#: wlhosted/payments/models.py:103
 msgid "Postcode and city"
 msgstr "Postnummer og sted"
 
-#: wlhosted/payments/models.py:116
+#: wlhosted/payments/models.py:105
 msgid "Country"
 msgstr "Land"
 
-#: wlhosted/payments/models.py:149
+#: wlhosted/payments/models.py:133
 msgid "The country has to match your VAT code"
 msgstr "Landet må samsvare med momskode"
 
-#: wlhosted/payments/models.py:174
+#: wlhosted/payments/models.py:156
 msgid "Annual"
 msgstr "Årlig"
 
-#: wlhosted/payments/models.py:175
+#: wlhosted/payments/models.py:157
 msgid "Biannual"
 msgstr "Annenhvert år"
 
-#: wlhosted/payments/models.py:176
+#: wlhosted/payments/models.py:158
 msgid "Monthly"
 msgstr "Månedlig"
 
-#: wlhosted/payments/models.py:177
+#: wlhosted/payments/models.py:159
 msgid "Onetime"
 msgstr "Én gang"
 
-#: wlhosted/payments/validators.py:39
+#: wlhosted/payments/validators.py:36
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} er ikke en gyldig landskode for noe EU-medlemsland."
 
-#: wlhosted/payments/validators.py:44
+#: wlhosted/payments/validators.py:41
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} samsvarer ikke med landets moms-ID-spesifikasjoner."
 
-#: wlhosted/payments/validators.py:48
+#: wlhosted/payments/validators.py:45
 msgid "{} is not a valid VAT ID."
 msgstr "{} er ikke en gyldig moms-ID."
+
+#~ msgid ""
+#~ "Weblate is located in Czechia and you will be charged price with VAT if "
+#~ "you are an end-user in the EU or a Czech resident. Invoices for VAT "
+#~ "registered companies in EU countries are issued as a reverse charges."
+#~ msgstr ""
+#~ "Weblate befinner seg i Tsjekkia, og du vil bli fakturert pris med moms "
+#~ "hvis du er en sluttbruker i EU, eller Tjekkisk borger. Fakturaer for "
+#~ "momsregistrerte selskaper i EU-land utstedes som forhåndstrekk."
 
 #, fuzzy
 #~ msgid "Your failed payment on weblate.org"

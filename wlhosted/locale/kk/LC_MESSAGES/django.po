@@ -5,9 +5,9 @@
 # WWWesten <wwwesten@gmail.com>, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-01-21 13:52+0000\n"
+"POT-Creation-Date: 2019-08-02 06:05+0000\n"
 "PO-Revision-Date: 2019-04-03 15:05+0000\n"
 "Last-Translator: WWWesten <wwwesten@gmail.com>\n"
 "Language-Team: Kazakh <https://hosted.weblate.org/projects/weblate/hosted/kk/"
@@ -19,19 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.6-dev\n"
 
-#: wlhosted/addons.py:38 wlhosted/addons.py:39
+#: wlhosted/addons.py:37 wlhosted/addons.py:38
 msgid "Generate Unknown Horizons scenario data"
 msgstr "Unknown Horizons senarı derekterin jasaý"
 
-#: wlhosted/integrations/forms.py:37
+#: wlhosted/addons.py:60 wlhosted/addons.py:61
+msgid "Reset repository to upstream"
+msgstr ""
+
+#: wlhosted/integrations/forms.py:35
 msgid "Billing"
 msgstr "Bılıń"
 
-#: wlhosted/integrations/forms.py:38
+#: wlhosted/integrations/forms.py:36
 msgid "Choose the billing plan you want to update"
 msgstr "Jańartqyńyz keletin tarıftik josparyn tańdańyz"
 
-#: wlhosted/integrations/forms.py:39
+#: wlhosted/integrations/forms.py:37
 msgid "Create new billing plan"
 msgstr "Jańa tarıftik josparyn jasaý"
 
@@ -107,8 +111,13 @@ msgid "%(price)s EUR / year"
 msgstr "%(price)s EUR / jyl"
 
 #: wlhosted/integrations/templates/hosted/create.html:95
+#, fuzzy
+#| msgid ""
+#| "The pricing is based on number of source strings and target languages. "
+#| "The source string is a text unit defined in a translation format, it can "
+#| "be a word, sentence or paragraph."
 msgid ""
-"The pricing is based on number of source strings and target languages. The "
+"Pricing is based on number of source strings and target languages. The "
 "source string is a text unit defined in a translation format, it can be a "
 "word, sentence or paragraph."
 msgstr ""
@@ -117,25 +126,29 @@ msgstr ""
 "sóılem nemese eje bolýy múmkin."
 
 #: wlhosted/integrations/templates/hosted/create.html:98
-msgid ""
-"Weblate is located in Czechia and you will be charged price with VAT if you "
-"are an end-user in the EU or a Czech resident. Invoices for VAT registered "
-"companies in EU countries are issued as a reverse charges."
+msgid "All listed prices exclude VAT."
 msgstr ""
-"Weblate Chehıada jaıǵasqan jáne eger EO ishindegi túpkilikti paıdalanýshy "
-"nemese Cheh Respublıkasynyń rezidenti bolsańyz, baǵa QQS qosa qamtıdy. EO "
-"elderinde QQS boıynsha tirkelgen kompanıalar úshin ınvoıstar kiris kózinen "
-"ustalǵan QQS (reverse charge) retinde shyǵarylady."
 
-#: wlhosted/integrations/views.py:70
+#: wlhosted/integrations/templates/hosted/create.html:99
+#, python-format
+msgid ""
+"EU end users and Czech companies will be charged with additional 21%% VAT."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:100
+msgid ""
+"The reverse charge applies to invoices issued to businesses within the EU."
+msgstr ""
+
+#: wlhosted/integrations/views.py:69
 msgid "No matching payment found."
 msgstr "Sáıkes tólem tabylmady."
 
-#: wlhosted/integrations/views.py:79
+#: wlhosted/integrations/views.py:77
 msgid "Thank you for purchasing a hosting plan, it is now active."
 msgstr "Hostıń josparyn satyp alǵanyńyz úshin raqmet, qazir ol belsendi."
 
-#: wlhosted/integrations/views.py:86
+#: wlhosted/integrations/views.py:84
 msgid ""
 "Thank you for purchasing a hosting plan, the payment for it is pending and "
 "will be processed in the background."
@@ -143,15 +156,15 @@ msgstr ""
 "Hostıń josparyn satyp alǵanyńyz úshin raqmet, ol úshin tólemder kútilýde "
 "jáne óńdikte óńdep shyǵarýlady."
 
-#: wlhosted/integrations/views.py:94
+#: wlhosted/integrations/views.py:92
 msgid "The payment was rejected: {}"
 msgstr "Tólem qabyldanbady: {}"
 
-#: wlhosted/integrations/views.py:95
+#: wlhosted/integrations/views.py:93
 msgid "Unknown reason"
 msgstr "Belgisiz sebep"
 
-#: wlhosted/integrations/views.py:111
+#: wlhosted/integrations/views.py:110
 msgid "Payments are temporarily inactive."
 msgstr "Tólemder ýaqytsha belsendi emes."
 
@@ -214,7 +227,8 @@ msgstr "Paról hesh pishininde"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:30
 msgid "Used to authenticate user if configured"
-msgstr "Rettelgen bolsa, paıdalanýshynyń túpnusqalyǵyn rastaý úshin qoldanylady"
+msgstr ""
+"Rettelgen bolsa, paıdalanýshynyń túpnusqalyǵyn rastaý úshin qoldanylady"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:32
 msgid "IP address and browser name"
@@ -358,8 +372,8 @@ msgid ""
 "get a copy of all of it (Article 15 GDPR)"
 msgstr ""
 "Biz paıdalantyn nemese óńdep shyǵaratyn barlyq Derbes Derekterińizge "
-"qatynaısyz, jáne tipti onyń barlyq kóshirmesin alýyńyz múmkin (GDPR-dyń "
-"15-baby)"
+"qatynaısyz, jáne tipti onyń barlyq kóshirmesin alýyńyz múmkin (GDPR-dyń 15-"
+"baby)"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:77
 msgid ""
@@ -435,7 +449,7 @@ msgstr "Óz qyzmetterimizdi jetkizý úshin cookie-faıldardy paıdalanamyz."
 msgid "View English version"
 msgstr "Aǵylshyn nusqasyn qaraý"
 
-#: wlhosted/legal/templates/legal/documents/tos.html:12
+#: wlhosted/legal/templates/legal/documents/tos.html:11
 msgid ""
 "The Terms of Service document is authoritative in English, translations are "
 "provided for your convenience."
@@ -481,8 +495,8 @@ msgstr "Azamattyq kodeks"
 #, python-format
 msgid "means Act No. %(law_89_2012)s Coll., the Civil Code, as amended"
 msgstr ""
-"maǵynasyn bildirýshi - Azamattyq kodeks, túzetýlerimen, Zań № %(law_89_2012)"
-"s Zańdar jınaǵy"
+"maǵynasyn bildirýshi - Azamattyq kodeks, túzetýlerimen, Zań № "
+"%(law_89_2012)s Zańdar jınaǵy"
 
 #: wlhosted/legal/templates/legal/documents/tos.html:32
 msgid "Consent"
@@ -546,8 +560,8 @@ msgid ""
 "and/or Cookies"
 msgstr ""
 "maǵynasyn bildirýshi - Paıdalanýshy arqyly Qyzmetke jáne/nemese Cookie-"
-"faıldaryna engizilgen, Derbes derekterdi qorǵaý týraly (ózgeristerimen) Zań №"
-" %(law_101_2000)s Zańdar jınaǵy, máni boıynsha derbes derekter"
+"faıldaryna engizilgen, Derbes derekterdi qorǵaý týraly (ózgeristerimen) Zań "
+"№ %(law_101_2000)s Zańdar jınaǵy, máni boıynsha derbes derekter"
 
 #: wlhosted/legal/templates/legal/documents/tos.html:47
 msgid "Owner"
@@ -720,9 +734,9 @@ msgstr ""
 "Paıdalanýshy arqyly jetkizilgen Derbes Derekterdi jınaý, saqtaý jáne óńdep "
 "shyǵarýǵa, Derbes derekterdi qorǵaý týraly (ózgeristerimen) Zań № "
 "%(law_101_2000)s Zańdar jınaǵy, 5-babynyń (2) maǵynasy boıynsha kelisedi. "
-"Paıdalanýshy óziniń Derbes Derekterin Jetkizýshimem, onyń qyzmetkerlerimen já"
-"ne/nemese onyń ýákiletti iskerı seriktesterimen arqyly óńdep shyǵarýǵa jáne "
-"paıdalanýǵa kelisedi. Bul kelisý Paıdalanushy Qyzmetten óz tirkelgisin "
+"Paıdalanýshy óziniń Derbes Derekterin Jetkizýshimem, onyń qyzmetkerlerimen "
+"jáne/nemese onyń ýákiletti iskerı seriktesterimen arqyly óńdep shyǵarýǵa "
+"jáne paıdalanýǵa kelisedi. Bul kelisý Paıdalanushy Qyzmetten óz tirkelgisin "
 "ázirge alastamaǵansha deıin beriledi."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:98
@@ -901,11 +915,11 @@ msgstr ""
 "Osy Qyzmet Kórsetý Shattary 2017 jyldyń qyrkúıegindegi 1-inde kúshi men "
 "qoldanysyna enedi."
 
-#: wlhosted/payments/backends.py:185
+#: wlhosted/payments/backends.py:188
 msgid "Your payment on weblate.org"
 msgstr "Osy weblate.org saıtyndaǵy tólemińiz"
 
-#: wlhosted/payments/backends.py:186
+#: wlhosted/payments/backends.py:190
 #, python-format
 msgid ""
 "Hello\n"
@@ -926,11 +940,11 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:210
+#: wlhosted/payments/backends.py:216
 msgid "Your payment on weblate.org failed"
 msgstr "Osy weblate.org saıtyndaǵy tólemińiz sátsiz aıaqtaldy"
 
-#: wlhosted/payments/backends.py:211
+#: wlhosted/payments/backends.py:218
 #, python-format
 msgid ""
 "Hello\n"
@@ -959,85 +973,97 @@ msgstr ""
 "Eger qaıtalanatyn tólemge qatysty bolsa, úsh ret qaıtalanady,\n"
 "al eger áli de sátsiz bolsa, boldyrylmaıdy.\n"
 
-#: wlhosted/payments/backends.py:297
+#: wlhosted/payments/backends.py:309
 msgid "Payment card"
 msgstr "Tólem kartasy"
 
-#: wlhosted/payments/backends.py:373
+#: wlhosted/payments/backends.py:385
 msgid "Payment cancelled"
 msgstr "Tólem boldyrylmady"
 
-#: wlhosted/payments/backends.py:375
+#: wlhosted/payments/backends.py:387
 msgid "Payment error"
 msgstr "Tólem qatesi"
 
-#: wlhosted/payments/backends.py:387
+#: wlhosted/payments/backends.py:400
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: wlhosted/payments/models.py:88
+#: wlhosted/payments/models.py:84
 msgid "European VAT ID"
 msgstr "Eýropalyq QQS nómiri"
 
-#: wlhosted/payments/models.py:90
+#: wlhosted/payments/models.py:86
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Eýropalyq Odaqtyń QQS nómirin toltyryńyz, eger ol qoldanylmasa, bos "
 "qaldyryńyz."
 
-#: wlhosted/payments/models.py:96
+#: wlhosted/payments/models.py:92
 msgid "Tax registration"
 msgstr "Salyq tirkelgisi"
 
-#: wlhosted/payments/models.py:98
+#: wlhosted/payments/models.py:94
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "Eger ınvoısta kórsetý kerek bolsa, salyqtyq tirkelgini toltyryńyz."
 
-#: wlhosted/payments/models.py:104
-msgid "Company name"
+#: wlhosted/payments/models.py:99
+#, fuzzy
+#| msgid "Company name"
+msgid "Company or individual name"
 msgstr "Kompanıa ataýy"
 
-#: wlhosted/payments/models.py:108
+#: wlhosted/payments/models.py:101
 msgid "Address"
 msgstr "Mekenjaıy"
 
-#: wlhosted/payments/models.py:112
+#: wlhosted/payments/models.py:103
 msgid "Postcode and city"
 msgstr "Poshta ındeksi jane qalasy"
 
-#: wlhosted/payments/models.py:116
+#: wlhosted/payments/models.py:105
 msgid "Country"
 msgstr "Eli"
 
-#: wlhosted/payments/models.py:149
+#: wlhosted/payments/models.py:133
 msgid "The country has to match your VAT code"
 msgstr "Elińiz QQS kodynyna sáıkes keledi"
 
-#: wlhosted/payments/models.py:174
+#: wlhosted/payments/models.py:156
 msgid "Annual"
 msgstr "Jyldyq"
 
-#: wlhosted/payments/models.py:175
+#: wlhosted/payments/models.py:157
 msgid "Biannual"
 msgstr "Ekijyldyq"
 
-#: wlhosted/payments/models.py:176
+#: wlhosted/payments/models.py:158
 msgid "Monthly"
 msgstr "Aılyq"
 
-#: wlhosted/payments/models.py:177
+#: wlhosted/payments/models.py:159
 msgid "Onetime"
 msgstr "Birjolǵy"
 
-#: wlhosted/payments/validators.py:39
+#: wlhosted/payments/validators.py:36
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} Eýropalyq Odaqtyń kezkelgen múshesi úshin jaramdy el kody emes."
 
-#: wlhosted/payments/validators.py:44
+#: wlhosted/payments/validators.py:41
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} eldiń QQS nómiri tehnıkalyq spesıfıkasıalaryna sáıkes kelmeıdi."
 
-#: wlhosted/payments/validators.py:48
+#: wlhosted/payments/validators.py:45
 msgid "{} is not a valid VAT ID."
 msgstr "{} jaramdy QQS nómiri emes."
+
+#~ msgid ""
+#~ "Weblate is located in Czechia and you will be charged price with VAT if "
+#~ "you are an end-user in the EU or a Czech resident. Invoices for VAT "
+#~ "registered companies in EU countries are issued as a reverse charges."
+#~ msgstr ""
+#~ "Weblate Chehıada jaıǵasqan jáne eger EO ishindegi túpkilikti paıdalanýshy "
+#~ "nemese Cheh Respublıkasynyń rezidenti bolsańyz, baǵa QQS qosa qamtıdy. EO "
+#~ "elderinde QQS boıynsha tirkelgen kompanıalar úshin ınvoıstar kiris "
+#~ "kózinen ustalǵan QQS (reverse charge) retinde shyǵarylady."

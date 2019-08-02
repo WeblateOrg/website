@@ -6,9 +6,9 @@
 # Jun Hyung Shin <shmishmi79@gmail.com>, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate\n"
+"Project-Id-Version: Hosted Weblate \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-01-21 13:52+0000\n"
+"POT-Creation-Date: 2019-08-02 06:05+0000\n"
 "PO-Revision-Date: 2019-05-16 06:49+0000\n"
 "Last-Translator: Jun Hyung Shin <shmishmi79@gmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/weblate/hosted/ko/"
@@ -20,19 +20,23 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.7-dev\n"
 
-#: wlhosted/addons.py:38 wlhosted/addons.py:39
+#: wlhosted/addons.py:37 wlhosted/addons.py:38
 msgid "Generate Unknown Horizons scenario data"
 msgstr "Unknown Horizons 시나리오 자료 생성"
 
-#: wlhosted/integrations/forms.py:37
+#: wlhosted/addons.py:60 wlhosted/addons.py:61
+msgid "Reset repository to upstream"
+msgstr ""
+
+#: wlhosted/integrations/forms.py:35
 msgid "Billing"
 msgstr "결제"
 
-#: wlhosted/integrations/forms.py:38
+#: wlhosted/integrations/forms.py:36
 msgid "Choose the billing plan you want to update"
 msgstr "갱신할 결제 플랜을 선택하십시오"
 
-#: wlhosted/integrations/forms.py:39
+#: wlhosted/integrations/forms.py:37
 msgid "Create new billing plan"
 msgstr "새 결제 플랜 생성"
 
@@ -108,8 +112,13 @@ msgid "%(price)s EUR / year"
 msgstr "%(price)s 유로 / 년"
 
 #: wlhosted/integrations/templates/hosted/create.html:95
+#, fuzzy
+#| msgid ""
+#| "The pricing is based on number of source strings and target languages. "
+#| "The source string is a text unit defined in a translation format, it can "
+#| "be a word, sentence or paragraph."
 msgid ""
-"The pricing is based on number of source strings and target languages. The "
+"Pricing is based on number of source strings and target languages. The "
 "source string is a text unit defined in a translation format, it can be a "
 "word, sentence or paragraph."
 msgstr ""
@@ -117,24 +126,29 @@ msgstr ""
 "포맷으로 정의된 문자 단위이며, 이는 단어, 문장 및 문단일 수 있습니다."
 
 #: wlhosted/integrations/templates/hosted/create.html:98
-msgid ""
-"Weblate is located in Czechia and you will be charged price with VAT if you "
-"are an end-user in the EU or a Czech resident. Invoices for VAT registered "
-"companies in EU countries are issued as a reverse charges."
+msgid "All listed prices exclude VAT."
 msgstr ""
-"Weblate는 체코에 위치하고 있으며 EU 또는 체코 거주자의 최종 사용자인 경우에 "
-"부가가치세가 부과됩니다. EU 국가의 부가가치세 등록 회사에 대한 청구서는 역 청"
-"구로 발행됩니다."
 
-#: wlhosted/integrations/views.py:70
+#: wlhosted/integrations/templates/hosted/create.html:99
+#, python-format
+msgid ""
+"EU end users and Czech companies will be charged with additional 21%% VAT."
+msgstr ""
+
+#: wlhosted/integrations/templates/hosted/create.html:100
+msgid ""
+"The reverse charge applies to invoices issued to businesses within the EU."
+msgstr ""
+
+#: wlhosted/integrations/views.py:69
 msgid "No matching payment found."
 msgstr "일치하는 결제가 없습니다."
 
-#: wlhosted/integrations/views.py:79
+#: wlhosted/integrations/views.py:77
 msgid "Thank you for purchasing a hosting plan, it is now active."
 msgstr "호스팅 플랜을 구매해주셔서 감사합니다, 지금 활성화된 상태입니다."
 
-#: wlhosted/integrations/views.py:86
+#: wlhosted/integrations/views.py:84
 msgid ""
 "Thank you for purchasing a hosting plan, the payment for it is pending and "
 "will be processed in the background."
@@ -142,15 +156,15 @@ msgstr ""
 "호스팅 플랜을 구매해주셔서 감사합니다, 결제는 대기 중이며 백그라운드에서 처리"
 "됩니다."
 
-#: wlhosted/integrations/views.py:94
+#: wlhosted/integrations/views.py:92
 msgid "The payment was rejected: {}"
 msgstr "결제가 거부되었습니다: {}"
 
-#: wlhosted/integrations/views.py:95
+#: wlhosted/integrations/views.py:93
 msgid "Unknown reason"
 msgstr "알 수 없는 이유"
 
-#: wlhosted/integrations/views.py:111
+#: wlhosted/integrations/views.py:110
 msgid "Payments are temporarily inactive."
 msgstr "결제가 일시적으로 비활성화되었습니다."
 
@@ -179,7 +193,9 @@ msgstr "%(provider)s, 등록 번호. No. %(reg_no)s"
 msgid ""
 "We have appointed a data protection officer who may be reached via "
 "%(privacy_contact)s."
-msgstr "우리는 %(privacy_contact)s을 통해 접근할 수 있는 자료 보호 책임자를 임명했습니다."
+msgstr ""
+"우리는 %(privacy_contact)s을 통해 접근할 수 있는 자료 보호 책임자를 임명했습"
+"니다."
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:17
 msgid "Personal Data we process"
@@ -218,7 +234,9 @@ msgstr "IP 주소와 브라우저 이름"
 msgid ""
 "These are logged in case of important changes to your account (e.g. password "
 "change) to allow diagnosis in case your account is stolen"
-msgstr "계정에 중요한 변경 사항이 있을 경우 (예 : 암호 변경) 로그인하여 계정을 도난당했는 지를 진단할 수 있습니다"
+msgstr ""
+"계정에 중요한 변경 사항이 있을 경우 (예 : 암호 변경) 로그인하여 계정을 도난당"
+"했는 지를 진단할 수 있습니다"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:35
 msgid "Billing information"
@@ -228,7 +246,9 @@ msgstr "결제 정보"
 msgid ""
 "In case you purchase service from us, we collect additional billing "
 "information necessary for issuing an invoice"
-msgstr "우리에게서 서비스를 구매하는 경우, 우리는 청구서 발행을 위해 필요한 추가 결제 정보를 모읍니다"
+msgstr ""
+"우리에게서 서비스를 구매하는 경우, 우리는 청구서 발행을 위해 필요한 추가 결"
+"제 정보를 모읍니다"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:40
 msgid "Purpose and legal basis of processing Personal Data"
@@ -245,8 +265,9 @@ msgid ""
 "the technical functionality of our services fulfillment of contractual or "
 "pre-contractual obligations (Article 6 (1) b. GDPR)"
 msgstr ""
-"당사 서비스에 관한 서비스 제공, 당사 서비스 관련 문제에 귀하에게 연락하기 위해 (또한 전자우편과 메시지를 통해) 그리고 계약 상 또는 "
-"사전 계약 상의 우리의 서비스 이행의 기술적 기능을 보장하기 위해 사용됩니다 (GDPR 제 6조 1항)"
+"당사 서비스에 관한 서비스 제공, 당사 서비스 관련 문제에 귀하에게 연락하기 위"
+"해 (또한 전자우편과 메시지를 통해) 그리고 계약 상 또는 사전 계약 상의 우리의 "
+"서비스 이행의 기술적 기능을 보장하기 위해 사용됩니다 (GDPR 제 6조 1항)"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:46
 msgid ""
@@ -260,7 +281,9 @@ msgstr ""
 msgid ""
 "with your express consent or instruction to carry out our business "
 "activities or sent you newsletters (Article 6 (1) a. GDPR)"
-msgstr "귀하의 명시적인 동의나 지시 하에 우리의 사업활동을 수행하거나 소식지를 보내기 위해 사용됩니다 (GDPR 제 6조 1항)"
+msgstr ""
+"귀하의 명시적인 동의나 지시 하에 우리의 사업활동을 수행하거나 소식지를 보내"
+"기 위해 사용됩니다 (GDPR 제 6조 1항)"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:50
 msgid "Access to the Personal Data"
@@ -270,7 +293,9 @@ msgstr "개인 자료에 접근하기"
 msgid ""
 "Controller has made all reasonable technical means to protect the Personal "
 "Data. Only authorized persons can access the Personal Data."
-msgstr "컨트롤러는 개인 정보를 보호하기 위해 모든 합리적인 기술을 갖추었습니다. 승인된 사람만 개인 자료에 접근할 수 있습니다."
+msgstr ""
+"컨트롤러는 개인 정보를 보호하기 위해 모든 합리적인 기술을 갖추었습니다. 승인"
+"된 사람만 개인 자료에 접근할 수 있습니다."
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:54
 msgid ""
@@ -297,7 +322,8 @@ msgstr "개인 자료 보존"
 msgid ""
 "The Personal Data is stored in the Service until User deletes his account in "
 "the service."
-msgstr "개인 자료는 사용자가 서비스에서 계정을 삭제하기 전까지 서비스에 저장됩니다."
+msgstr ""
+"개인 자료는 사용자가 서비스에서 계정을 삭제하기 전까지 서비스에 저장됩니다."
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:67
 msgid ""
@@ -332,7 +358,9 @@ msgstr ""
 msgid ""
 "Gain access to all your Personal Data that we use or processing, and even "
 "get a copy of all of it (Article 15 GDPR)"
-msgstr "우리가 사용하거나 처리하는 모든 개인 자료에 대한 액세스 권한을 얻고 모든 사본을 얻을 수도 있습니다 (GDPR 15 조)"
+msgstr ""
+"우리가 사용하거나 처리하는 모든 개인 자료에 대한 액세스 권한을 얻고 모든 사본"
+"을 얻을 수도 있습니다 (GDPR 15 조)"
 
 #: wlhosted/legal/templates/legal/documents/privacy.html:77
 msgid ""
@@ -356,7 +384,9 @@ msgstr "처리 대상"
 msgid ""
 "Receive your Personal Data in a commonly used and machine-readable format or "
 "to transmit this Personal Data to a different provider."
-msgstr "일반적으로 사용되고 기계가 읽을 수 있는 형식으로 귀하의 개인 자료를 수신하거나 다른 제공하는 사람에게 전송하십시오."
+msgstr ""
+"일반적으로 사용되고 기계가 읽을 수 있는 형식으로 귀하의 개인 자료를 수신하거"
+"나 다른 제공하는 사람에게 전송하십시오."
 
 #: wlhosted/legal/templates/legal/documents/summary.html:4
 msgid ""
@@ -373,7 +403,9 @@ msgstr "상용 고객은 해당 계약에 명시된 추가 보증이 적용될 �
 msgid ""
 "We process private data (such as your email address), those will be "
 "discarded from our database as soon as you remove your account."
-msgstr "귀하의 전자우편 주소와 같은 비공개 자료를 관리하며 귀하의 계정을 삭제하는 즉시 자료베이스에서 삭제됩니다."
+msgstr ""
+"귀하의 전자우편 주소와 같은 비공개 자료를 관리하며 귀하의 계정을 삭제하는 즉"
+"시 자료베이스에서 삭제됩니다."
 
 #: wlhosted/legal/templates/legal/documents/summary.html:7
 msgid ""
@@ -385,7 +417,8 @@ msgstr "귀하의 번역은 각 번역본에 명시된 라이선스 하에 작�
 msgid ""
 "Your name and email address is used in VCS commits, it will stay there "
 "indefinitely."
-msgstr "귀하의 이름과 전자우편 주소는 VCS 커밋에 사용되며 무한정 머무를 것입니다."
+msgstr ""
+"귀하의 이름과 전자우편 주소는 VCS 커밋에 사용되며 무한정 머무를 것입니다."
 
 #: wlhosted/legal/templates/legal/documents/summary.html:9
 msgid "We use cookies to deliver our services."
@@ -395,7 +428,7 @@ msgstr "우리는 우리의 서비스를 제공하기 위해 쿠키를 사용합
 msgid "View English version"
 msgstr "영어 버전 보기"
 
-#: wlhosted/legal/templates/legal/documents/tos.html:12
+#: wlhosted/legal/templates/legal/documents/tos.html:11
 msgid ""
 "The Terms of Service document is authoritative in English, translations are "
 "provided for your convenience."
@@ -464,7 +497,8 @@ msgid ""
 "other device connected to the Internet, which enable obtaining of unique "
 "identification of the User’s web browser"
 msgstr ""
-"서비스 웹 서버가 인터넷에 연결된 다른 장치의 사용자 컴퓨터로 보낸 자료 파일을 의미하며, 사용자의 웹 브라우저를 고유하게 식별할 수 있음"
+"서비스 웹 서버가 인터넷에 연결된 다른 장치의 사용자 컴퓨터로 보낸 자료 파일"
+"을 의미하며, 사용자의 웹 브라우저를 고유하게 식별할 수 있음"
 
 #: wlhosted/legal/templates/legal/documents/tos.html:38
 msgid "License"
@@ -498,8 +532,8 @@ msgid ""
 "personal data protection, as amended, inserted by the User into the Service "
 "and/or Cookies"
 msgstr ""
-"개정된 개인 자료 보호에 관한 법률 No. %(law_101_2000)s Coll.에 속하는 개인 정보를 의미하며 사용자가 서비스 및/"
-"또는 쿠키에 삽입함"
+"개정된 개인 자료 보호에 관한 법률 No. %(law_101_2000)s Coll.에 속하는 개인 정"
+"보를 의미하며 사용자가 서비스 및/또는 쿠키에 삽입함"
 
 #: wlhosted/legal/templates/legal/documents/tos.html:47
 msgid "Owner"
@@ -674,9 +708,10 @@ msgid ""
 "contractual partners and for statistical and/or marketing purposes of the "
 "Provider."
 msgstr ""
-"제공하는 사람의 결정에 따른 개인 정보의 처리 목적은 법 No. %(law_480_2004)s Coll의 개정된 정보 사회 특정 서비스에 "
-"따라 전자적 수단으로 자료의 주체 (사용자)에게 상업적 통신을 전송하고 공급자의 계약 파트너의 마케팅 및 비즈니스 요구와 공급자의 통계 "
-"및/또는 마케팅 목적을 위한 목적의 개인 정보 사용입니다."
+"제공하는 사람의 결정에 따른 개인 정보의 처리 목적은 법 No. %(law_480_2004)s "
+"Coll의 개정된 정보 사회 특정 서비스에 따라 전자적 수단으로 자료의 주체 (사용"
+"자)에게 상업적 통신을 전송하고 공급자의 계약 파트너의 마케팅 및 비즈니스 요구"
+"와 공급자의 통계 및/또는 마케팅 목적을 위한 목적의 개인 정보 사용입니다."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:100
 msgid ""
@@ -708,9 +743,11 @@ msgid ""
 "the Personal Data, even after the termination of their employment or "
 "business relationship with the Provider."
 msgstr ""
-"제공하는 사람은 위의 목적을 달성하는 데 필요한 범위 내에서만 개인 자료를 수집하고 수집 된 목적에 따라 개인 자료를 처리할 것이라고 "
-"선언합니다. 제공하는 사람과 계약을 맺어 개인 정보에 접근할 수 있는 제공하는 사람의 직원과 다른 개인은 제공하는 사람과의 고용 관계 "
-"또는 비즈니스 관계가 종료된 후에도 개인 정보의 기밀 유지를 해야 합니다."
+"제공하는 사람은 위의 목적을 달성하는 데 필요한 범위 내에서만 개인 자료를 수집"
+"하고 수집 된 목적에 따라 개인 자료를 처리할 것이라고 선언합니다. 제공하는 사"
+"람과 계약을 맺어 개인 정보에 접근할 수 있는 제공하는 사람의 직원과 다른 개인"
+"은 제공하는 사람과의 고용 관계 또는 비즈니스 관계가 종료된 후에도 개인 정보"
+"의 기밀 유지를 해야 합니다."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:106
 msgid ""
@@ -718,8 +755,8 @@ msgid ""
 "means (automatically) via computer programs for which the Provider has "
 "secured the right of use, in particular the Service."
 msgstr ""
-"제공하는 사람은 제공하는 사람이 사용권, 특히 서비스를 확보한 컴퓨터 프로그램을 통해 전자 수단(자동)으로 개인 자료를 처리할 것이라고 "
-"선언합니다."
+"제공하는 사람은 제공하는 사람이 사용권, 특히 서비스를 확보한 컴퓨터 프로그램"
+"을 통해 전자 수단(자동)으로 개인 자료를 처리할 것이라고 선언합니다."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:108
 msgid ""
@@ -727,8 +764,8 @@ msgid ""
 "free and informed juridical act which concerns the consent of the subject of "
 "the data (the User) with processing of the Personal Data."
 msgstr ""
-"본 서비스 약관 제 5조에 따른 이용자의 동의는 개인 정보의 처리에 관한 자료(사용자)의 동의에 관한 자유와 법인 행위에 관한 정보를 "
-"구성합니다."
+"본 서비스 약관 제 5조에 따른 이용자의 동의는 개인 정보의 처리에 관한 자료(사"
+"용자)의 동의에 관한 자유와 법인 행위에 관한 정보를 구성합니다."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:111
 msgid "Translations"
@@ -772,8 +809,9 @@ msgid ""
 "The User understands that this grant is non revocable due to nature of the "
 "VCS."
 msgstr ""
-"사용자는 자신의 이름과 전자우편을 버전 관리 시스템(VCS) 커밋에 저작자로 사용하는 것에 동의합니다. 사용자는 이 허가가 VCS의 "
-"특성으로 인해 취소할 수 없음을 이해합니다."
+"사용자는 자신의 이름과 전자우편을 버전 관리 시스템(VCS) 커밋에 저작자로 사용"
+"하는 것에 동의합니다. 사용자는 이 허가가 VCS의 특성으로 인해 취소할 수 없음"
+"을 이해합니다."
 
 #: wlhosted/legal/templates/legal/documents/tos.html:126
 #, python-format
@@ -821,11 +859,11 @@ msgid ""
 "2017."
 msgstr "본 서비스 약관은 2017 년 9월 1일 부터 시행되며 효력을 발휘합니다."
 
-#: wlhosted/payments/backends.py:185
+#: wlhosted/payments/backends.py:188
 msgid "Your payment on weblate.org"
 msgstr "weblate.org서비스 이용 지불내역"
 
-#: wlhosted/payments/backends.py:186
+#: wlhosted/payments/backends.py:190
 #, python-format
 msgid ""
 "Hello\n"
@@ -846,11 +884,11 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:210
+#: wlhosted/payments/backends.py:216
 msgid "Your payment on weblate.org failed"
 msgstr "weblate.org 서비스 결제가 중단되었습니다"
 
-#: wlhosted/payments/backends.py:211
+#: wlhosted/payments/backends.py:218
 #, python-format
 msgid ""
 "Hello\n"
@@ -879,87 +917,98 @@ msgstr ""
 "3번 이상이 결제시도를 했음에도 불구하고 실패했다면,\n"
 "귀하가 신청한 서비스가 취소된 것입니다.\n"
 
-#: wlhosted/payments/backends.py:297
+#: wlhosted/payments/backends.py:309
 msgid "Payment card"
 msgstr "결제 카드"
 
-#: wlhosted/payments/backends.py:373
+#: wlhosted/payments/backends.py:385
 msgid "Payment cancelled"
 msgstr "결제 취소됨"
 
-#: wlhosted/payments/backends.py:375
+#: wlhosted/payments/backends.py:387
 msgid "Payment error"
 msgstr "결제 오류"
 
-#: wlhosted/payments/backends.py:387
+#: wlhosted/payments/backends.py:400
 msgid "Bitcoin"
 msgstr "비트코인"
 
-#: wlhosted/payments/models.py:88
+#: wlhosted/payments/models.py:84
 msgid "European VAT ID"
 msgstr "유럽 VAT ID"
 
-#: wlhosted/payments/models.py:90
+#: wlhosted/payments/models.py:86
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "유럽 연합 VAT ID를 작성하십시오, 해당 사항이 아니라면 공백으로 두십시오."
 
-#: wlhosted/payments/models.py:96
+#: wlhosted/payments/models.py:92
 msgid "Tax registration"
 msgstr "세금 등록"
 
-#: wlhosted/payments/models.py:98
+#: wlhosted/payments/models.py:94
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "청구서에 표시해야 할 경우라면 세금 등록란을 채우십시오."
 
-#: wlhosted/payments/models.py:104
-msgid "Company name"
+#: wlhosted/payments/models.py:99
+#, fuzzy
+#| msgid "Company name"
+msgid "Company or individual name"
 msgstr "회사 이름"
 
-#: wlhosted/payments/models.py:108
+#: wlhosted/payments/models.py:101
 msgid "Address"
 msgstr "주소"
 
-#: wlhosted/payments/models.py:112
+#: wlhosted/payments/models.py:103
 msgid "Postcode and city"
 msgstr "우편 번호와 도시"
 
-#: wlhosted/payments/models.py:116
+#: wlhosted/payments/models.py:105
 msgid "Country"
 msgstr "나라"
 
-#: wlhosted/payments/models.py:149
+#: wlhosted/payments/models.py:133
 msgid "The country has to match your VAT code"
 msgstr "나라는 VAT 코드와 일치해야 합니다"
 
-#: wlhosted/payments/models.py:174
+#: wlhosted/payments/models.py:156
 msgid "Annual"
 msgstr "매년"
 
-#: wlhosted/payments/models.py:175
+#: wlhosted/payments/models.py:157
 msgid "Biannual"
 msgstr "반 년"
 
-#: wlhosted/payments/models.py:176
+#: wlhosted/payments/models.py:158
 msgid "Monthly"
 msgstr "매 달"
 
-#: wlhosted/payments/models.py:177
+#: wlhosted/payments/models.py:159
 msgid "Onetime"
 msgstr "한 번"
 
-#: wlhosted/payments/validators.py:39
+#: wlhosted/payments/validators.py:36
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{}이(가) 유럽 연합 회원국에 유효한 국가 코드가 아닙니다."
 
-#: wlhosted/payments/validators.py:44
+#: wlhosted/payments/validators.py:41
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{}이(가) 해당 국가의 VAT ID 명세서와 일치하지 않습니다."
 
-#: wlhosted/payments/validators.py:48
+#: wlhosted/payments/validators.py:45
 msgid "{} is not a valid VAT ID."
 msgstr "{}은(는) 유효한 VAT ID가 아닙니다."
+
+#~ msgid ""
+#~ "Weblate is located in Czechia and you will be charged price with VAT if "
+#~ "you are an end-user in the EU or a Czech resident. Invoices for VAT "
+#~ "registered companies in EU countries are issued as a reverse charges."
+#~ msgstr ""
+#~ "Weblate는 체코에 위치하고 있으며 EU 또는 체코 거주자의 최종 사용자인 경우"
+#~ "에 부가가치세가 부과됩니다. EU 국가의 부가가치세 등록 회사에 대한 청구서"
+#~ "는 역 청구로 발행됩니다."
 
 #~ msgid "Your failed payment on weblate.org"
 #~ msgstr "weblate.org에 결제 실패"
