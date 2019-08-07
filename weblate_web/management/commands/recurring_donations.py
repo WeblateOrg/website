@@ -24,7 +24,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from wlhosted.payments.models import Payment
 
-from weblate_web.models import Donation
+from weblate_web.models import Donation, Subscription
 
 
 class Command(BaseCommand):
@@ -32,6 +32,34 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Issue recurring payments
+        self.handle_donations()
+        self.handle_subscriptions()
+
+    def handle_subscriptions(self):
+        subscriptions = Subscription.objects.filter(
+            expires__lte=timezone.now() + timedelta(days=3)
+        )
+        for subscription in subscriptions:
+            payment = subscription.payment_obj
+            if not payment.recurring:
+                continue
+
+            # Alllow at most three failures
+            rejected_payments = subscription.list_payments().filter(state=Payment.REJECTED)
+            if rejected_payments.count() > 3:
+                payment.recurring = ""
+                payment.save()
+                continue
+
+            repeated = payment.repeat_payment()
+            if not repeated:
+                # Remove recurring flag
+                payment.recurring = ""
+                payment.save()
+            else:
+                repeated.trigger_remotely()
+
+    def handle_donations(self):
         donations = Donation.objects.filter(
             active=True, expires__lte=timezone.now() + timedelta(days=3)
         )
