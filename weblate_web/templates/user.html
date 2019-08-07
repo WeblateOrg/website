@@ -27,10 +27,23 @@
                     <div class="line-left">{% trans "Activation token" %}</div>
                     <div class="line-right">
                         <input value="{{ subscription.secret }}" readonly>
-                        <a class="button small inline" data-clipboard-text="{{ subscription.secret }}">{% trans "Copy" %}</a>
+                        <a class="button small inline" data-clipboard-text="{{ subscription.secret }}">{% trans "Copy" %}</a><br />
                     </div>
                     <div class="clear"></div>
                 </div>
+                {% with last_report=subscription.last_report %}
+                <div class="form-line">
+                    <div class="line-left">{% trans "Server URL" %}</div>
+                    <div class="line-right">
+                {% if last_report %}
+                        <a href="{{ last_report.site_url }}">{{ last_report.site_url }}</a>
+                {% else %}
+                        <p class="text-muted">{% trans "Use activation token to connect your Weblate installation to the support portal. This step is optional, you can use support services without activation as well." %}</p>
+                {% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                {% endwith %}
                 {% endif %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Creation date" %}</div>

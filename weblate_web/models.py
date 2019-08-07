@@ -254,7 +254,7 @@ class Subscription(models.Model):
         return ''
 
     def active(self):
-        return self.expires < timezone.now()
+        return self.expires >= timezone.now()
 
     def get_amount(self):
         return SUBSCRIPTIONS[self.status]
@@ -285,6 +285,9 @@ class Subscription(models.Model):
 
     def __str__(self):
         return '{}:{}'.format(self.user, self.get_status_display())
+
+    def last_report(self):
+        return self.report_set.latest('timestamp')
 
 
 class PastPayments(models.Model):
