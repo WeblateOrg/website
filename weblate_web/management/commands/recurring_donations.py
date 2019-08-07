@@ -35,7 +35,8 @@ class Command(BaseCommand):
         self.handle_donations()
         self.handle_subscriptions()
 
-    def handle_subscriptions(self):
+    @staticmethod
+    def handle_subscriptions():
         subscriptions = Subscription.objects.filter(
             expires__lte=timezone.now() + timedelta(days=3)
         )
@@ -61,7 +62,8 @@ class Command(BaseCommand):
             else:
                 repeated.trigger_remotely()
 
-    def handle_donations(self):
+    @staticmethod
+    def handle_donations():
         donations = Donation.objects.filter(
             active=True, expires__lte=timezone.now() + timedelta(days=3)
         )

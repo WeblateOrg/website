@@ -554,6 +554,7 @@ def subscription_pay(request, pk):
     with override('en'):
         payment = Payment.objects.create(
             amount=subscription.get_amount(),
+            # pylint: disable=no-member
             description='Weblate: {}'.format(subscription.get_status_display()),
             recurring=subscription.get_repeat(),
             extra={'subscription': subscription.pk},

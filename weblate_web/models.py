@@ -270,6 +270,7 @@ class Subscription(models.Model):
         return Payment.objects.get(pk=self.payment)
 
     def list_payments(self):
+        # pylint: disable=no-member
         past = set(self.pastpayments_set.values_list('payment', flat=True))
         query = Q(pk=self.payment)
         if past:
@@ -283,9 +284,11 @@ class Subscription(models.Model):
         return reverse('subscription-edit', kwargs={'pk': self.pk})
 
     def __str__(self):
+        # pylint: disable=no-member
         return '{}:{}'.format(self.user, self.get_status_display())
 
     def last_report(self):
+        # pylint: disable=no-member
         return self.report_set.latest('timestamp')
 
 
