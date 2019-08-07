@@ -28,7 +28,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'status', 'created', 'expires', 'price')
+    list_display = ('user', 'status', 'created', 'expires', 'get_amount')
 
 
 class ImageAdmin(admin.ModelAdmin):

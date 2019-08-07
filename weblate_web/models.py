@@ -21,6 +21,7 @@
 import html2text
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -90,7 +91,7 @@ class Donation(models.Model):
         return '{}:{}'.format(self.user, self.reward)
 
 
-def process_payment(payment):
+def process_donation(payment):
     if payment.state != Payment.ACCEPTED:
         raise ValueError('Can not process not accepted payment')
     if payment.repeat:
@@ -119,6 +120,40 @@ def process_payment(payment):
     payment.state = Payment.PROCESSED
     payment.save()
     return donation
+
+
+def process_subscription(payment):
+    if payment.state != Payment.ACCEPTED:
+        raise ValueError('Can not process not accepted payment')
+    if payment.repeat:
+        # Update existing
+        subscription = Subscription.objects.get(payment=payment.repeat.pk)
+        subscription.expires += get_period_delta(payment.repeat.recurring)
+        subscription.save()
+    elif isinstance(payment.extra['subscription'], int):
+        subscription = Subscription.objects.get(pk=payment.extra['subscription'])
+        if subscription.payment:
+            subscription.pastpayments_set.create(payment=subscription.payment)
+        subscription.expires += get_period_delta('y')
+        subscription.payment = payment.pk
+        subscription.save()
+    else:
+        user = User.objects.get(pk=payment.customer.user_id)
+        # Calculate expiry
+        expires = timezone.now() + get_period_delta('y')
+        # Create new
+        subscription = Subscription.objects.create(
+            user=user,
+            payment=payment.pk,
+            status=payment.extra['subscription'],
+            expires=expires,
+            active=True,
+        )
+    # Flag payment as processed
+    payment.state = Payment.PROCESSED
+    payment.save()
+    return subscription
+
 
 
 class Image(models.Model):
@@ -184,6 +219,14 @@ def generate_secret():
     return get_random_string(64)
 
 
+SUBSCRIPTIONS = {
+    'basic': 500,
+    'extended': 750,
+    'install:docker': 200,
+    'install:linux': 300,
+}
+
+
 class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
     payment = models.UUIDField(blank=True, null=True)
@@ -194,21 +237,47 @@ class Subscription(models.Model):
             ('hosted', ugettext_lazy('Hosted service')),
             ('basic', ugettext_lazy('Basic self-hosted support')),
             ('extended', ugettext_lazy('Extended self-hosted support')),
+            ('install:linux', ugettext_lazy('Installation on your Linux server')),
+            (
+                'install:docker',
+                ugettext_lazy('Docker installation on your Linux server')
+            ),
         ),
         default='community',
     )
-    price = models.IntegerField()
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
+    active = models.BooleanField(blank=True, db_index=True)
+
+    def get_repeat(self):
+        if self.status in ('basic', 'extended'):
+            return 'y'
+        return ''
+
+    def get_amount(self):
+        return SUBSCRIPTIONS[self.status]
+
+    def needs_token(self):
+        return self.status in ('basic', 'extended')
+
+    def regenerate(self):
+        self.secret = generate_secret()
+        self.save(update_fields=['secret'])
 
     @cached_property
     def payment_obj(self):
         return Payment.objects.get(pk=self.payment)
 
     def list_payments(self):
-        initial = Payment.objects.filter(pk=self.payment)
-        return initial | initial[0].payment_set.all()
+        past = set(self.pastpayments_set.values_list('payment', flat=True))
+        query = Q(pk=self.payment)
+        if past:
+            query |= Q(pk__in=past)
+            query |= Q(repeat__pk__in=past)
+        if self.payment:
+            query |= Q(repeat__pk=self.payment)
+        return Payment.objects.filter(query)
 
     def get_absolute_url(self):
         return reverse('subscription-edit', kwargs={'pk': self.pk})

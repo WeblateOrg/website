@@ -56,7 +56,8 @@
                     <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
                     <li>{% trans "Setup customization" %}</li>
                 </ul>
-                <a class="format-item">€300<span>{% trans "installation" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=install:linux" class="format-item">€300<span>{% trans "installation" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=install:linux" class="button center">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
                 <div class="icon"><img src="{% static "img/docker.png" %}" /></div>
@@ -67,7 +68,8 @@
                     <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
                     <li>{% trans "Setup customization" %}</li>
                 </ul>
-                <a class="format-item">€200<span>{% trans "installation" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=install:docker" class="format-item">€200<span>{% trans "installation" %}</span></a>
+                <a href="{% url 'subscription-new' %}?plan=install:docker" class="button center">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
                 <div class="icon"><img src="{% static "img/logo.svg" %}" /></div>
@@ -76,7 +78,8 @@
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
                     <li>{% trans "Priority email support." %}</li>
                 </ul>
-                <a class="format-item">€500<span>{% trans "annually" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=basic" class="format-item">€500<span>{% trans "annually" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=basic" class="button center">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
                 <div class="icon"><img src="{% static "img/logo.svg" %}" /></div>
@@ -86,7 +89,8 @@
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
                     <li>{% trans "Priority email support." %}</li>
                 </ul>
-                <a class="format-item">€750<span>{% trans "annually" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=extended" class="format-item">€750<span>{% trans "annually" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=extended" class="button center">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
                 <div class="icon"><img src="{% static "img/icon-call.svg" %}" /></div>

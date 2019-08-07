@@ -10,6 +10,9 @@ yarn upgrade-interactive
 # jQuery
 cp node_modules/jquery/dist/jquery.min.js ../../weblate_web/static/jquery.min.js
 
+# Clipboard
+cp node_modules/clipboard/dist/clipboard.js ../../weblate_web/static/
+
 # Source Sans/Code Pro fonts
 mkdir -p ../../weblate_web/static/font-source
 sed '/font-family/ a font-display: swap;' < node_modules/source-sans-pro/source-sans-pro.css > ../../weblate_web/static/font-source/source-sans-pro.css

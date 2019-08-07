@@ -110,4 +110,5 @@ $(function () {
             });
         }
     });
+    new ClipboardJS('[data-clipboard-text]');
 });

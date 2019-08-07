@@ -52,9 +52,13 @@ from weblate_web.views import (
     download_invoice,
     fetch_vat,
     not_found,
-    process_donation,
+    process_payment,
     server_error,
     subscribe,
+    subscription_disable_repeat,
+    subscription_token,
+    subscription_pay,
+    subscription_new,
 )
 
 
@@ -193,7 +197,7 @@ urlpatterns = i18n_patterns(
     ),
     url(
         r'^donate/process/$',
-        process_donation,
+        process_payment,
         name='donate-process'
     ),
     url(
@@ -207,14 +211,34 @@ urlpatterns = i18n_patterns(
         name='donate-edit'
     ),
     url(
-        r'^donate/invoice/' + UUID + '/$',
+        r'^user/invoice/' + UUID + '/$',
         download_invoice,
-        name='donate-invoice'
+        name='user-invoice'
     ),
     url(
         r'^donate/disable/(?P<pk>[0-9]+)/$',
         disable_repeat,
         name='donate-disable'
+    ),
+    url(
+        r'^subscription/disable/(?P<pk>[0-9]+)/$',
+        subscription_disable_repeat,
+        name='subscription-disable'
+    ),
+    url(
+        r'^subscription/token/(?P<pk>[0-9]+)/$',
+        subscription_token,
+        name='subscription-token'
+    ),
+    url(
+        r'^subscription/pay/(?P<pk>[0-9]+)/$',
+        subscription_pay,
+        name='subscription-pay'
+    ),
+    url(
+        r'^subscription/new/$',
+        subscription_new,
+        name='subscription-new'
     ),
     url(
         r'^news/$',

@@ -23,7 +23,7 @@ from django.db import transaction
 from django.utils import timezone
 from wlhosted.payments.models import Payment
 
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, process_payment
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, process_donation, process_subscription
 
 
 class Command(BaseCommand):
@@ -41,7 +41,10 @@ class Command(BaseCommand):
             customer__origin=PAYMENTS_ORIGIN, state=Payment.ACCEPTED
         ).select_for_update()
         for payment in payments:
-            process_payment(payment)
+            if 'subscription' in payment.extra:
+                process_subscription(payment)
+            else:
+                process_donation(payment)
 
     @staticmethod
     def active():

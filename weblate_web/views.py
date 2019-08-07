@@ -53,13 +53,25 @@ from weblate_web.forms import (
 )
 from weblate_web.models import (
     PAYMENTS_ORIGIN,
+    SUBSCRIPTIONS,
     TOPIC_DICT,
     Donation,
     Post,
     Subscription,
-    process_payment,
+    process_donation,
+    process_subscription,
 )
 from weblate_web.remote import get_activity
+
+
+def get_customer(request):
+    return Customer.objects.get_or_create(
+        origin=PAYMENTS_ORIGIN,
+        user_id=request.user.id,
+        defaults={
+            'email': request.user.email,
+        }
+    )[0]
 
 
 def show_form_errors(request, form):
@@ -239,13 +251,7 @@ class DonateView(FormView):
         return result
 
     def redirect_payment(self, **kwargs):
-        kwargs['customer'] = Customer.objects.get_or_create(
-            origin=PAYMENTS_ORIGIN,
-            user_id=self.request.user.id,
-            defaults={
-                'email': self.request.user.email,
-            }
-        )[0]
+        kwargs['customer'] = get_customer(self.request)
         payment = Payment.objects.create(**kwargs)
         return redirect(payment.get_payment_url())
 
@@ -276,7 +282,7 @@ class DonateView(FormView):
 
 
 @login_required
-def process_donation(request):
+def process_payment(request):
     try:
         payment = Payment.objects.get(
             pk=request.GET['payment'],
@@ -300,10 +306,14 @@ def process_donation(request):
             )
         )
     elif payment.state == Payment.ACCEPTED:
-        messages.success(request, _('Thank you for your donation.'))
-        donation = process_payment(payment)
-        if donation.reward:
-            return redirect(donation)
+        if 'subscription' in payment.extra:
+            messages.success(request, _('Thank you for your subscription.'))
+            process_subscription(payment)
+        else:
+            messages.success(request, _('Thank you for your donation.'))
+            donation = process_donation(payment)
+            if donation.reward:
+                return redirect(donation)
 
     return redirect(reverse('user'))
 
@@ -344,7 +354,7 @@ def disable_repeat(request, pk):
     payment = donation.payment_obj
     payment.recurring = ''
     payment.save()
-    return redirect(reverse('donate'))
+    return redirect(reverse('user'))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -514,6 +524,56 @@ def activity_svg(request):
         {'bars': bars},
         content_type='image/svg+xml; charset=utf-8'
     )
+
+
+@require_POST
+@login_required
+def subscription_disable_repeat(request, pk):
+    subscription = get_object_or_404(Subscription, pk=pk, user=request.user)
+    payment = subscription.payment_obj
+    payment.recurring = ''
+    payment.save()
+    return redirect(reverse('user'))
+
+
+@require_POST
+@login_required
+def subscription_token(request, pk):
+    subscription = get_object_or_404(Subscription, pk=pk, user=request.user)
+    subscription.regenerate()
+    return redirect(reverse('user'))
+
+
+@require_POST
+@login_required
+def subscription_pay(request, pk):
+    subscription = get_object_or_404(Subscription, pk=pk, user=request.user)
+    with override('en'):
+        payment = Payment.objects.create(
+            amount=subscription.get_amount(),
+            description='Weblate: {}'.format(subscription.get_status_display()),
+            recurring=subscription.get_repeat(),
+            extra={'subscription': subscription.pk},
+            customer=get_customer(request),
+        )
+    return redirect(payment.get_payment_url())
+
+
+@login_required
+def subscription_new(request):
+    plan = request.GET.get('plan')
+    if plan not in SUBSCRIPTIONS:
+        return redirect('support')
+    subscription = Subscription(status=plan)
+    with override('en'):
+        payment = Payment.objects.create(
+            amount=subscription.get_amount(),
+            description='Weblate: {}'.format(subscription.get_status_display()),
+            recurring=subscription.get_repeat(),
+            extra={'subscription': plan},
+            customer=get_customer(request),
+        )
+    return redirect(payment.get_payment_url())
 
 
 monkey_patch_translate()
