@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-08-02 08:08+0200\n"
+"POT-Creation-Date: 2019-08-07 17:45+0200\n"
 "PO-Revision-Date: 2019-08-06 14:38+0000\n"
 "Last-Translator: Mesut Akcan <makcan@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/weblate/website/"
@@ -21,67 +21,93 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.8-dev\n"
 
-#: weblate_web/models.py:34
+#: weblate_web/models.py:36
 msgid "No reward"
 msgstr "Ödül yok"
 
-#: weblate_web/models.py:35 weblate_web/templates/donate.html:29
+#: weblate_web/models.py:37 weblate_web/templates/donate.html:29
 msgid "Name in the list of supporters"
 msgstr "Destekleyenler listesindeki isim"
 
-#: weblate_web/models.py:36 weblate_web/templates/donate.html:34
+#: weblate_web/models.py:38 weblate_web/templates/donate.html:34
 #: weblate_web/templates/donate/form.html:46
 msgid "Link in the list of supporters"
 msgstr "Destekleyenler listesinde bağlantı"
 
-#: weblate_web/models.py:37 weblate_web/templates/donate.html:39
+#: weblate_web/models.py:39 weblate_web/templates/donate.html:39
 #: weblate_web/templates/donate/form.html:54
 msgid "Logo and link on the Weblate website"
 msgstr "Weblate web sitesindeki logo ve link"
 
-#: weblate_web/models.py:41
+#: weblate_web/models.py:43
 #: weblate_web/templates/weblate_web/post_detail.html:50
 msgid "Release"
 msgstr "Sürüm"
 
-#: weblate_web/models.py:42 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:44 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
 msgid "Features"
 msgstr "Özellikler"
 
-#: weblate_web/models.py:43
+#: weblate_web/models.py:45
 msgid "Announcement"
 msgstr "Duyuru"
 
-#: weblate_web/models.py:44
+#: weblate_web/models.py:46
 msgid "Conferences"
 msgstr "Konferanslar"
 
-#: weblate_web/models.py:45
+#: weblate_web/models.py:47
 msgid "Hosted Weblate"
 msgstr "Weblate Barındırma"
 
-#: weblate_web/models.py:46
+#: weblate_web/models.py:48
 #: weblate_web/templates/weblate_web/post_detail.html:52
 msgid "Development"
 msgstr "Geliştirme"
 
-#: weblate_web/models.py:47
+#: weblate_web/models.py:49
 #: weblate_web/templates/weblate_web/post_detail.html:53
 msgid "Localization"
 msgstr "Yerelleştirme"
 
-#: weblate_web/models.py:58
+#: weblate_web/models.py:60
 msgid "Link text"
 msgstr "Bağlantı metni"
 
-#: weblate_web/models.py:62
+#: weblate_web/models.py:64
 msgid "Link URL"
 msgstr "URL Link"
 
-#: weblate_web/models.py:66
+#: weblate_web/models.py:68
 msgid "Link image"
 msgstr "Resim bağlantısı"
+
+#: weblate_web/models.py:234
+#, fuzzy
+#| msgid "Buy support"
+msgid "Community support"
+msgstr "Destek satın al"
+
+#: weblate_web/models.py:235
+msgid "Hosted service"
+msgstr "Hosted hizmeti"
+
+#: weblate_web/models.py:236 weblate_web/templates/support.html:76
+msgid "Basic self-hosted support"
+msgstr "Temel kendi barındırma desteği"
+
+#: weblate_web/models.py:237 weblate_web/templates/support.html:86
+msgid "Extended self-hosted support"
+msgstr "Genişletilmiş kendi barındırma desteği"
+
+#: weblate_web/models.py:238 weblate_web/templates/support.html:51
+msgid "Installation on your Linux server"
+msgstr "Kendi Linux sunucunuz üzerine kurulum"
+
+#: weblate_web/models.py:241 weblate_web/templates/support.html:64
+msgid "Docker installation on your Linux server"
+msgstr "Linux sunucunuzda Docker kurulumu"
 
 #: weblate_web/templates/404.html:8
 msgid "Page not found"
@@ -582,8 +608,8 @@ msgid "Activate donation"
 msgstr "Bağışı etkinleştir"
 
 #: weblate_web/templates/donate.html:30 weblate_web/templates/donate.html:35
-#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:79
-#: weblate_web/templates/support.html:89
+#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:81
+#: weblate_web/templates/support.html:92
 msgid "annually"
 msgstr "yılda"
 
@@ -592,7 +618,7 @@ msgstr "yılda"
 #: weblate_web/templates/donate.html:150
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:91
+#: weblate_web/templates/user.html:201
 msgid "Donate"
 msgstr "Bağış"
 
@@ -1455,7 +1481,9 @@ msgstr "Uzun ödeme öncesi ile <strong>daha fazla tasarruf edin</strong>!"
 #: weblate_web/templates/hosting.html:465
 #: weblate_web/templates/hosting.html:477
 #: weblate_web/templates/hosting.html:489
-#: weblate_web/templates/hosting.html:502
+#: weblate_web/templates/hosting.html:502 weblate_web/templates/support.html:60
+#: weblate_web/templates/support.html:72 weblate_web/templates/support.html:82
+#: weblate_web/templates/support.html:93
 msgid "Buy now"
 msgstr "Şimdi satın alın"
 
@@ -1470,7 +1498,7 @@ msgid "or download Weblate"
 msgstr "veya Weblate'i indirin"
 
 #: weblate_web/templates/hosting.html:538
-#: weblate_web/templates/support.html:103
+#: weblate_web/templates/support.html:107 weblate_web/templates/user.html:105
 msgid "Payment"
 msgstr "Ödeme"
 
@@ -1979,11 +2007,7 @@ msgstr ""
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr "Bedava servis ve kendi barındırılan kurulumlar için ön ödemeli destek"
 
-#: weblate_web/templates/support.html:51
-msgid "Installation on your Linux server"
-msgstr "Kendi Linux sunucunuz üzerine kurulum"
-
-#: weblate_web/templates/support.html:53 weblate_web/templates/support.html:65
+#: weblate_web/templates/support.html:53 weblate_web/templates/support.html:66
 msgid "One-time installation of Weblate"
 msgstr "Bir kerelik Weblate kurulumu"
 
@@ -1995,119 +2019,107 @@ msgstr "virtualenv, uWSGI and NGINX kullanarak kurulum"
 msgid "Using PostgreSQL as database backend"
 msgstr "PostgreSQL'i veritabanı arka ucu olarak kullanma"
 
-#: weblate_web/templates/support.html:56 weblate_web/templates/support.html:67
+#: weblate_web/templates/support.html:56 weblate_web/templates/support.html:68
 msgid "Requires root access or close cooperation of your admins"
 msgstr "Kök erişim veya yöneticilerinizin yakın işbirliğini gerektirir"
 
-#: weblate_web/templates/support.html:57 weblate_web/templates/support.html:68
+#: weblate_web/templates/support.html:57 weblate_web/templates/support.html:69
 msgid "Setup customization"
 msgstr "Kurulum özelleştirme"
 
-#: weblate_web/templates/support.html:59 weblate_web/templates/support.html:70
+#: weblate_web/templates/support.html:59 weblate_web/templates/support.html:71
 msgid "installation"
 msgstr "kurulum"
 
-#: weblate_web/templates/support.html:63
-msgid "Docker installation on your Linux server"
-msgstr "Linux sunucunuzda Docker kurulumu"
-
-#: weblate_web/templates/support.html:66
+#: weblate_web/templates/support.html:67
 msgid "Installation using Docker"
 msgstr "Docker kullanarak yükleme"
 
-#: weblate_web/templates/support.html:74
-msgid "Basic self-hosted support"
-msgstr "Temel kendi barındırma desteği"
-
-#: weblate_web/templates/support.html:76 weblate_web/templates/support.html:86
+#: weblate_web/templates/support.html:78 weblate_web/templates/support.html:89
 msgid "Issues in your environment fixed immediately."
 msgstr "Ortamınızdaki sorunlar hemen düzeltildi."
 
-#: weblate_web/templates/support.html:77 weblate_web/templates/support.html:87
+#: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
 msgid "Priority email support."
 msgstr "Öncelikli eposta desteği."
 
-#: weblate_web/templates/support.html:83
-msgid "Extended self-hosted support"
-msgstr "Genişletilmiş kendi barındırma desteği"
-
-#: weblate_web/templates/support.html:85
+#: weblate_web/templates/support.html:88
 msgid "Always upgraded to latest version."
 msgstr "Her zaman en son sürüme yükseltilir."
 
-#: weblate_web/templates/support.html:93
+#: weblate_web/templates/support.html:97
 msgid "Consulting services and/or custom development"
 msgstr "Danışmanlık hizmetleri ve/veya özel geliştirme"
 
-#: weblate_web/templates/support.html:95
+#: weblate_web/templates/support.html:99
 msgid "Development of custom features"
 msgstr "Özel özelliklerin geliştirilmesi"
 
-#: weblate_web/templates/support.html:96
+#: weblate_web/templates/support.html:100
 msgid "Integration of Weblate into your workflow"
 msgstr "İş akışınıza Weblate entegrasyonu"
 
-#: weblate_web/templates/support.html:97
+#: weblate_web/templates/support.html:101
 msgid "Suggestions on the internationalization and localization"
 msgstr "Uluslararasılaştırma ve yerelleşme üzerine öneriler"
 
-#: weblate_web/templates/support.html:99
+#: weblate_web/templates/support.html:103
 msgid "hourly"
 msgstr "saatlik"
 
-#: weblate_web/templates/support.html:101
+#: weblate_web/templates/support.html:105
 msgid "Ask for help"
 msgstr "Yardım isteyin"
 
-#: weblate_web/templates/support.html:109
+#: weblate_web/templates/support.html:113
 msgid "Mailing lists"
 msgstr "Postalama listeleri"
 
-#: weblate_web/templates/support.html:111
+#: weblate_web/templates/support.html:115
 msgid "Users and developers"
 msgstr "Kullanıcılar ve geliştiriciler"
 
-#: weblate_web/templates/support.html:114
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:118
+#: weblate_web/templates/support.html:131
 msgid "Your email address…"
 msgstr "E-posta adresiniz…"
 
-#: weblate_web/templates/support.html:115
-#: weblate_web/templates/support.html:128
+#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:132
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "Kaydol"
 
-#: weblate_web/templates/support.html:118
+#: weblate_web/templates/support.html:122
 msgid "Discuss Weblate with users and developers"
 msgstr "Weblate'i kullanıcılar ve geliştiricilerle tartışın"
 
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:123
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 "Kullanmak için <a href=\"mailto:%(address)s\">%(address)s</a> adresine "
 "gönderin"
 
-#: weblate_web/templates/support.html:120
-#: weblate_web/templates/support.html:133
+#: weblate_web/templates/support.html:124
+#: weblate_web/templates/support.html:137
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr "Cevapları <a href=\"%(url)s\">arşivlerinde</a> bulun"
 
-#: weblate_web/templates/support.html:124
+#: weblate_web/templates/support.html:128
 msgid "Hosted Weblate announcements"
 msgstr "Barındırılan Weblate duyuruları"
 
-#: weblate_web/templates/support.html:131
+#: weblate_web/templates/support.html:135
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr "<strong>Düşük trafik</strong> ve moderatörlüğü"
 
-#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:136
 msgid "Only premium service announcements"
 msgstr "Sadece premium servis duyuruları"
 
-#: weblate_web/templates/support.html:139
+#: weblate_web/templates/support.html:143
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr "<a href=\"%(url)s\">Stack Overflow </a> sitesinde soru sor."
@@ -2148,55 +2160,98 @@ msgstr "Kullanıcı profili"
 msgid "Log out"
 msgstr "Oturumu kapat"
 
-#: weblate_web/templates/user.html:15
-msgid "Your donations"
-msgstr "Bağışlarınız"
+#: weblate_web/templates/user.html:17
+#, fuzzy
+#| msgid "Your reward options"
+msgid "Your subscriptions"
+msgstr "Ödül seçenekleriniz"
 
-#: weblate_web/templates/user.html:20
+#: weblate_web/templates/user.html:21
+#, fuzzy
+#| msgid "State"
+msgid "Status"
+msgstr "Durum"
+
+#: weblate_web/templates/user.html:27
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activation token"
+msgstr "Bağışı etkinleştir"
+
+#: weblate_web/templates/user.html:30
+msgid "Copy"
+msgstr ""
+
+#: weblate_web/templates/user.html:36
+#, fuzzy
+#| msgid "Server error"
+msgid "Server URL"
+msgstr "Sunucu hatası"
+
+#: weblate_web/templates/user.html:42
+msgid ""
+"Use activation token to connect your Weblate installation to the support "
+"portal. This step is optional, you can use support services without "
+"activation as well."
+msgstr ""
+
+#: weblate_web/templates/user.html:43
+msgid "See documentation on subscription management."
+msgstr ""
+
+#: weblate_web/templates/user.html:52 weblate_web/templates/user.html:130
 msgid "Creation date"
 msgstr "Oluşturulma tarihi"
 
-#: weblate_web/templates/user.html:25
-msgid "Reward"
-msgstr "Ödül"
-
-#: weblate_web/templates/user.html:30
+#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:140
 msgid "Expiry date"
 msgstr "Bitiş tarihi"
 
-#: weblate_web/templates/user.html:35
+#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:145
 msgid "State"
 msgstr "Durum"
 
-#: weblate_web/templates/user.html:38
+#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:148
 msgid "Expired"
 msgstr "Süresi dolmuş"
 
-#: weblate_web/templates/user.html:40
+#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:150
 msgid "Automatic renewal"
 msgstr "Otomatik yenileme"
 
-#: weblate_web/templates/user.html:42
+#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:152
 msgid "No renewal"
 msgstr "Yenileme yok"
 
-#: weblate_web/templates/user.html:48
+#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:158
 msgid "Payments"
 msgstr "Ödemeler"
 
-#: weblate_web/templates/user.html:56
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:166
 msgid "Download invoice"
 msgstr "Faturayı indir"
 
-#: weblate_web/templates/user.html:74
-msgid "Edit reward"
-msgstr "Ödül düzenle"
+#: weblate_web/templates/user.html:111
+msgid "Regenerate activation token"
+msgstr ""
 
-#: weblate_web/templates/user.html:79
+#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:189
 msgid "Turn off renewal"
 msgstr "Yenilemeyi kapat"
 
-#: weblate_web/templates/user.html:86
+#: weblate_web/templates/user.html:125
+msgid "Your donations"
+msgstr "Bağışlarınız"
+
+#: weblate_web/templates/user.html:135
+msgid "Reward"
+msgstr "Ödül"
+
+#: weblate_web/templates/user.html:184
+msgid "Edit reward"
+msgstr "Ödül düzenle"
+
+#: weblate_web/templates/user.html:196
 msgid "Donate to see a nice message here."
 msgstr "Burada güzel bir mesaj görmek için bağış yapın."
 
@@ -2213,7 +2268,7 @@ msgid "Other topics"
 msgstr "Diğer konular"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:422
+#: weblate_web/views.py:452
 msgid "Milestones"
 msgstr "Kilometre taşları"
 
@@ -2293,44 +2348,50 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr "şu anda"
 
-#: weblate_web/views.py:71
+#: weblate_web/views.py:85
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "%(field)s parametresinde hata: %(error)s"
 
-#: weblate_web/views.py:118 weblate_web/views.py:157
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "Ödemeyi tamamlamak için lütfen fatura bilgilerinizi sağlayın."
 
-#: weblate_web/views.py:129
+#: weblate_web/views.py:161
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "KDV NUMARASI artık geçerli değil, güncelleyin."
 
-#: weblate_web/views.py:151
+#: weblate_web/views.py:183
 msgid "Please choose a payment method."
 msgstr "Lütfen bir ödeme yöntemi seçin."
 
-#: weblate_web/views.py:276
+#: weblate_web/views.py:302
 msgid "Payment not yet processed, please retry."
 msgstr "Ödeme henüz işleme koyulmadı, lütfen tekrar deneyin."
 
-#: weblate_web/views.py:281
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "Ödeme reddedildi: {}"
 
-#: weblate_web/views.py:282
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Bilinmeyen sebep"
 
-#: weblate_web/views.py:286
+#: weblate_web/views.py:313
+#, fuzzy
+#| msgid "Thank you for your donation."
+msgid "Thank you for your subscription."
+msgstr "Bağışınız için teşekkürler."
+
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Bağışınız için teşekkürler."
 
-#: weblate_web/views.py:379
+#: weblate_web/views.py:409
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr "Abonelik talep edildi, tek yapmanız gereken e-postayı onaylamak."
 
-#: weblate_web/views.py:386
+#: weblate_web/views.py:416
 msgid "Could not process subscription request."
 msgstr "Abonelik isteği işlenemedi."
 
@@ -3053,9 +3114,6 @@ msgstr "Abonelik isteği işlenemedi."
 
 #~ msgid "Browse hundreds of projects on Hosted Weblate"
 #~ msgstr "Weblate'de barındırılan yüzlerce projeye göz atın"
-
-#~ msgid "Hosted service"
-#~ msgstr "Hosted hizmeti"
 
 #~ msgid "From %(amount)sEUR/month"
 #~ msgstr "%(amount)sEUR/ayda"
