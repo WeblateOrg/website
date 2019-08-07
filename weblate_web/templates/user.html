@@ -42,6 +42,7 @@
                     <div class="line-right">{{ subscription.expires }}</div>
                     <div class="clear"></div>
                 </div>
+                {% if subscription.get_repeat %}
                 <div class="form-line">
                     <div class="line-left">{% trans "State" %}</div>
                     <div class="line-right">
@@ -55,6 +56,7 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+                {% endif %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Payments" %}</div>
                     <div class="line-right">
@@ -93,7 +95,7 @@
                 <input type="submit" class="button small inline" value="{% trans "Regenerate activation token" %}">
                 </form>
                 {% endif %}
-                {% if subscription.active and subscription.payment_obj.recurring %}
+                {% if subscription.payment_obj.recurring %}
                 <form class="form-inline" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">
                 {% csrf_token %}
                 <input type="submit" class="button small inline" value="{% trans "Turn off renewal" %}">

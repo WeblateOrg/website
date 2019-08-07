@@ -147,7 +147,6 @@ def process_subscription(payment):
             payment=payment.pk,
             status=payment.extra['subscription'],
             expires=expires,
-            active=True,
         )
     # Flag payment as processed
     payment.state = Payment.PROCESSED
@@ -248,12 +247,14 @@ class Subscription(models.Model):
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
-    active = models.BooleanField(blank=True, db_index=True)
 
     def get_repeat(self):
         if self.status in ('basic', 'extended'):
             return 'y'
         return ''
+
+    def active(self):
+        return self.expires < timezone.now()
 
     def get_amount(self):
         return SUBSCRIPTIONS[self.status]
