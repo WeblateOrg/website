@@ -23,7 +23,12 @@ from django.db import transaction
 from django.utils import timezone
 from wlhosted.payments.models import Payment
 
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, process_donation, process_subscription
+from weblate_web.models import (
+    PAYMENTS_ORIGIN,
+    Donation,
+    process_donation,
+    process_subscription,
+)
 
 
 class Command(BaseCommand):

@@ -56,9 +56,9 @@ from weblate_web.views import (
     server_error,
     subscribe,
     subscription_disable_repeat,
-    subscription_token,
-    subscription_pay,
     subscription_new,
+    subscription_pay,
+    subscription_token,
 )
 
 
