@@ -45,7 +45,9 @@ class Command(BaseCommand):
                 continue
 
             # Alllow at most three failures
-            rejected_payments = subscription.list_payments().filter(state=Payment.REJECTED)
+            rejected_payments = subscription.list_payments().filter(
+                state=Payment.REJECTED
+            )
             if rejected_payments.count() > 3:
                 payment.recurring = ""
                 payment.save()

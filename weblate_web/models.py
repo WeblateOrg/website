@@ -154,7 +154,6 @@ def process_subscription(payment):
     return subscription
 
 
-
 class Image(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(
@@ -228,7 +227,7 @@ SUBSCRIPTIONS = {
 
 class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True, null=True)
+    payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
     status = models.CharField(
         max_length=150,
         choices=(
@@ -294,6 +293,9 @@ class PastPayments(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
     payment = models.UUIDField()
 
+    def __str__(self):
+        return self.payment
+
 
 class Report(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
@@ -301,5 +303,8 @@ class Report(models.Model):
     users = models.IntegerField()
     projects = models.IntegerField()
     components = models.IntegerField()
-    languages  = models.IntegerField()
+    languages = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.site_url

@@ -92,16 +92,19 @@ def show_form_errors(request, form):
 @require_POST
 @csrf_exempt
 def api_support(request):
-    subscription = get_object_or_404(Subscription, secret=request.POST.get('secret', ''))
+    subscription = get_object_or_404(
+        Subscription, secret=request.POST.get('secret', '')
+    )
     subscription.report_set.create(
         site_url=request.POST.get('site_url', ''),
         users=request.POST.get('users', 0),
         projects=request.POST.get('projects', 0),
         components=request.POST.get('components', 0),
-        languages =request.POST.get('', 0),
+        languages=request.POST.get('', 0),
     )
-    return JsonResponse(data={'name': subscription.status, 'expiry': subscription.expires})
-
+    return JsonResponse(
+        data={'name': subscription.status, 'expiry': subscription.expires}
+    )
 
 
 @require_POST
