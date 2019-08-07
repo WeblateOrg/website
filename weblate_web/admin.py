@@ -20,11 +20,15 @@
 
 from django.contrib import admin
 
-from weblate_web.models import Donation, Image, Post
+from weblate_web.models import Donation, Image, Post, Subscription
 
 
 class DonationAdmin(admin.ModelAdmin):
     list_display = ('user', 'reward', 'created', 'expires', 'get_amount')
+
+
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'status', 'created', 'expires', 'price')
 
 
 class ImageAdmin(admin.ModelAdmin):
@@ -48,3 +52,4 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Donation, DonationAdmin)
+admin.site.register(Subscription, SubscriptionAdmin)

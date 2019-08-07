@@ -23,6 +23,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy
 from markupfield.fields import MarkupField
@@ -177,3 +178,55 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+def generate_secret():
+    return get_random_string(64)
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
+    payment = models.UUIDField(blank=True)
+    status = models.CharField(
+        max_length=150,
+        choices=(
+            ('community', ugettext_lazy('Community support')),
+            ('hosted', ugettext_lazy('Hosted service')),
+            ('basic', ugettext_lazy('Basic self-hosted support')),
+            ('extended', ugettext_lazy('Extended self-hosted support')),
+        ),
+        default='community',
+    )
+    price = models.IntegerField()
+    secret = models.CharField(max_length=400, default=generate_secret)
+    created = models.DateTimeField(auto_now_add=True)
+    expires = models.DateTimeField()
+
+    @cached_property
+    def payment_obj(self):
+        return Payment.objects.get(pk=self.payment)
+
+    def list_payments(self):
+        initial = Payment.objects.filter(pk=self.payment)
+        return initial | initial[0].payment_set.all()
+
+    def get_absolute_url(self):
+        return reverse('subscription-edit', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return '{}:{}'.format(self.user, self.get_status_display())
+
+
+class PastPayments(models.Model):
+    subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
+    payment = models.UUIDField()
+
+
+class Report(models.Model):
+    subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
+    site_url = models.URLField()
+    users = models.IntegerField()
+    projects = models.IntegerField()
+    components = models.IntegerField()
+    languages  = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
