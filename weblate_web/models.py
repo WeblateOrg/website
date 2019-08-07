@@ -186,7 +186,7 @@ def generate_secret():
 
 class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True)
+    payment = models.UUIDField(blank=True, null=True)
     status = models.CharField(
         max_length=150,
         choices=(
@@ -198,7 +198,7 @@ class Subscription(models.Model):
         default='community',
     )
     price = models.IntegerField()
-    secret = models.CharField(max_length=400, default=generate_secret)
+    secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
 

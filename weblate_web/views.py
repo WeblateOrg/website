@@ -29,6 +29,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import override
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_control
@@ -55,6 +56,7 @@ from weblate_web.models import (
     TOPIC_DICT,
     Donation,
     Post,
+    Subscription,
     process_payment,
 )
 from weblate_web.remote import get_activity
@@ -73,6 +75,21 @@ def show_form_errors(request, form):
                     'error': error
                 }
             )
+
+
+@require_POST
+@csrf_exempt
+def api_support(request):
+    subscription = get_object_or_404(Subscription, secret=request.POST.get('secret', ''))
+    subscription.report_set.create(
+        site_url=request.POST.get('site_url', ''),
+        users=request.POST.get('users', 0),
+        projects=request.POST.get('projects', 0),
+        components=request.POST.get('components', 0),
+        languages =request.POST.get('', 0),
+    )
+    return JsonResponse(data={'name': subscription.status, 'expiry': subscription.expires})
+
 
 
 @require_POST
