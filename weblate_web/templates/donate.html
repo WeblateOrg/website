@@ -27,17 +27,17 @@
             <div class="donations-cols">
                 <div class="col">
                     <div class="title">{% trans "Name in the list of supporters" %}</div>
-                    <a class="format-item">€100 <span>{% trans "annually" %}</span></a>
+                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="format-item">€100 <span>{% trans "annually" %}</span></a>
                     <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
                 </div>
                 <div class="col">
                     <div class="title">{% trans "Link in the list of supporters" %}</div>
-                    <a class="format-item">€400 <span>{% trans "annually" %}</span></a>
+                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="format-item">€400 <span>{% trans "annually" %}</span></a>
                     <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% trans "Donate" %}</a>
                 </div>
                 <div class="col">
                     <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
-                    <a class="format-item">€800 <span>{% trans "annually" %}</span></a>
+                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="format-item">€800 <span>{% trans "annually" %}</span></a>
                     <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% trans "Donate" %}</a>
                 </div>
             </div>
