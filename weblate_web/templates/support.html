@@ -76,7 +76,7 @@
                 <h2>{% trans "Basic self-hosted support" %}</h2>
                 <ul>
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
-                    <li>{% trans "Priority email support." %}</li>
+                    <li>{% trans "Priority e-mail support." %}</li>
                 </ul>
                 <a href="{% url 'subscription-new' %}?plan=basic" class="format-item">€500<span>{% trans "annually" %}</span></a>              
                 <a href="{% url 'subscription-new' %}?plan=basic" class="button center">{% trans "Buy now" %}</a>
@@ -87,7 +87,7 @@
                 <ul>
                     <li>{% trans "Always upgraded to latest version." %}</li>
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
-                    <li>{% trans "Priority email support." %}</li>
+                    <li>{% trans "Priority e-mail support." %}</li>
                 </ul>
                 <a href="{% url 'subscription-new' %}?plan=extended" class="format-item">€750<span>{% trans "annually" %}</span></a>              
                 <a href="{% url 'subscription-new' %}?plan=extended" class="button center">{% trans "Buy now" %}</a>
@@ -115,7 +115,7 @@
                 <div class="title">{% trans "Users and developers" %}</div>
                 <form class="mailing" action="{% url 'subscribe' name='users' %}" method="post">
                     {% csrf_token %}
-                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your email address…" %}" />
+                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your e-mail address…" %}" />
                     <input type="submit" class="mailing-submit" value="{% trans "Register" context "Sign up for the mailing list" %}" />
                 </form>
                 <ul>
@@ -128,7 +128,7 @@
                 <div class="title">{% trans "Hosted Weblate announcements" %}</div>
                 <form class="mailing" action="{% url 'subscribe' name='hosted' %}" method="post">
                     {% csrf_token %}
-                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your email address…" %}" />
+                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your e-mail address…" %}" />
                     <input type="submit" class="mailing-submit" value="{% trans "Register" context "Sign up for the mailing list" %}" />
                 </form>
                 <ul>
