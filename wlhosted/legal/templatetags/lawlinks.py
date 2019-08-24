@@ -38,18 +38,35 @@ LINKS = {
 
 EU_LINK = "https://eur-lex.europa.eu/legal-content/ALL/?uri=celex:3{}R0{}"
 
+GDPR_LANGS = {
+    'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'ga', 'hr',
+    'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'pl', 'pt', 'ro', 'sk', 'sl', 'sv',
+}
+GDPR_LINK = "http://www.privacy-regulation.eu/{}/{}.htm"
+
 
 @register.simple_tag(takes_context=True)
-def law_link(context, coll, year, scope=None):
+def law_url(context, coll, year=None, scope=None):
     if scope == "EU":
-        url = EU_LINK.format(year, coll)
-    else:
-        # Czech version by default
-        url = "https://www.zakonyprolidi.cz/cs/{}-{}".format(year, coll)
+        return EU_LINK.format(year, coll)
 
-        # Use translation if available
-        key = (year, coll)
-        if context["LANGUAGE_CODE"] != "cs" and key in LINKS:
-            url = LINKS[key]
+    if scope == "GDPR":
+        lang = context["LANGUAGE_CODE"]
+        if lang not in GDPR_LANGS:
+            lang = "en"
+        return GDPR_LINK.format(lang, coll)
 
+    # Czech version by default
+    url = "https://www.zakonyprolidi.cz/cs/{}-{}".format(year, coll)
+
+    # Use translation if available
+    key = (year, coll)
+    if context["LANGUAGE_CODE"] != "cs" and key in LINKS:
+        url = LINKS[key]
+    return url
+
+
+@register.simple_tag(takes_context=True)
+def law_link(context, coll, year=None, scope=None):
+    url = law_url(context, coll, year, scope)
     return mark_safe('<a href="{}">{}/{}</a>'.format(escape(url), coll, year))

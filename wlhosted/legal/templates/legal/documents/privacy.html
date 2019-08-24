@@ -42,9 +42,10 @@
 <p>{% blocktrans %}Your Personal Data will be used for the purposes of the Service:{% endblocktrans %}</p>
 
 <ul>
-    <li>{% blocktrans %}for providing our services on the Service, to contact you in matters regarding our services (also by means of e-mails and messaging) and to ensure the technical functionality of our services fulfillment of contractual or pre-contractual obligations (Article 6 (1) b. GDPR){% endblocktrans %}</li>
-    <li>{% blocktrans %}to analyze your use of our services and improve our services (Article 6 (1) b. and f. GDPR){% endblocktrans %}</li>
-    <li>{% blocktrans %}with your express consent or instruction to carry out our business activities or send you newsletters (Article 6 (1) a. GDPR){% endblocktrans %}</li>
+    {% law_url 6 scope="GDPR" as url %}
+    <li>{% blocktrans %}for providing our services on the Service, to contact you in matters regarding our services (also by means of e-mails and messaging) and to ensure the technical functionality of our services fulfillment of contractual or pre-contractual obligations (<a href="{{ url }}">Article 6 (1) b. GDPR</a>){% endblocktrans %}</li>
+    <li>{% blocktrans %}to analyze your use of our services and improve our services (<a href="{{ url }}">Article 6 (1) b. and f. GDPR</a>){% endblocktrans %}</li>
+    <li>{% blocktrans %}with your express consent or instruction to carry out our business activities or send you newsletters (<a href="{{ url }}">Article 6 (1) a. GDPR</a>){% endblocktrans %}</li>
 </ul>
 
 <h2>{% blocktrans %}Access to the Personal Data{% endblocktrans %}</h2>
@@ -73,7 +74,8 @@
 <p>{% blocktrans %}We want you to always be in control of your Personal Data. To this end, you have certain rights that allow for it. Under certain conditions, you may:{% endblocktrans %}</p>
 
 <ul>
-    <li>{% blocktrans %}Gain access to all your Personal Data that Weblate uses or processes, and even get a copy of all of it (Article 15 GDPR){% endblocktrans %}</li>
+    {% law_url 15 scope="GDPR" as url %}
+    <li>{% blocktrans %}Gain access to all your Personal Data that Weblate uses or processes, and even get a copy of all of it (<a href="{{ url }}">Article 15 GDPR</a>){% endblocktrans %}</li>
     <li>{% blocktrans %}Correct the Personal Data that Weblate processes if you think that there are mistakes{% endblocktrans %}</li>
     <li>{% blocktrans %}Order us to delete your Personal Data{% endblocktrans %}</li>
     <li>{% blocktrans %}Restrict the Personal Data processing{% endblocktrans %}</li>
