@@ -35,6 +35,10 @@
 <dt>{% blocktrans %}Cookies{% endblocktrans %}</dt>
 <dd>{% blocktrans %}means any datafile sent by the web server of the Service to the User’s computer or other device connected to the Internet, which enable obtaining unique identification of the User’s web browser{% endblocktrans %}</dd>
 
+{% law_link 679 2016 "EU" as law_679_2016 %}
+<dt>{% blocktrans %}GDPR{% endblocktrans %}</dt>
+<dd>{% blocktrans %}means EU Regulation No. {{ law_679_2016 }}, the General Data Protection Regulation{% endblocktrans %}</dd>
+
 <dt>{% blocktrans %}License{% endblocktrans %}</dt>
 <dd>{% blocktrans %}means non-exclusive license granted by the Provider to the User for use of the Service{% endblocktrans %}</dd>
 
@@ -42,7 +46,7 @@
 <dd>{% blocktrans with provider="Ing. Michal Čihař, Zdiměřická 1439/8, 149 00 Praha, CZ" reg_no="04705904" %}means {{ provider }}, Reg. No. {{ reg_no }}{% endblocktrans %}</dd>
 
 <dt>{% blocktrans %}Personal Data{% endblocktrans %}</dt>
-<dd>{% blocktrans %}means personal data within the meaning of Act No. {{ law_101_2000 }} Coll., on personal data protection, as amended, inserted by the User into the Service and/or Cookies{% endblocktrans %}</dd>
+<dd>{% blocktrans %}means personal data within the meaning of EU Regulation No. {{ law_679_2016 }} inserted by the User into the Service and/or Cookies{% endblocktrans %}</dd>
 
 <dt>{% blocktrans %}Owner{% endblocktrans %}</dt>
 <dd>{% blocktrans %}means the User who can manage Project{% endblocktrans %}</dd>
@@ -93,13 +97,16 @@
 
 <h2>{% blocktrans %}Personal Data{% endblocktrans %}</h2>
 
-<p class="item">{% blocktrans %}Within the meaning of Article 5 (2) of Act No. {{ law_101_2000 }} Coll., on personal data protection, as amended, the User hereby gives consent to the collecting, storage and processing of the Personal Data provided by the User to the administrator, who is the Provider, through the use of the Service; the User gives consent to the processing and use of the User’s Personal Data by the Provider, the Providers employees and/or the Providers authorised business partners. This consent is given as long as User does not remove their account from the Service.{% endblocktrans %}</p>
+{% law_url 7 scope="GDPR" as url %}
+<p class="item">{% blocktrans %}Within the meaning of <a href="{{ url }}">Article 7</a> of the GDPR the User hereby gives consent to the collecting, storage and processing of the Personal Data provided by the User to the administrator, who is the Provider, through the use of the Service; the User gives consent to the processing and use of the User’s Personal Data by the Provider, the Providers employees and/or the Providers authorised business partners. This consent is given as long as User does not remove their account from the Service.{% endblocktrans %}</p>
 
 <p class="item">{% blocktrans %}The purpose of the processing of Personal Data as determined by the Provider is the use of Personal Data for sending commercial communications to the subject of the data (the User) through electronic means under Act No. {{ law_480_2004 }} Coll., on certain services of the information society, as amended, and further for marketing and business needs of the Provider’s contractual partners and for statistical and/or marketing purposes of the Provider.{% endblocktrans %}</p>
 
 <p class="item">{% blocktrans %}If the User directly and effectively informs the Provider of no longer wishing to receive business information from the Provider, the Provider shall refrain from sending further unsolicited business communications.{% endblocktrans %}</p>
 
-<p class="item">{% blocktrans %}The User declares awareness of own rights under Article 12 and Article 21 of the Personal Data Protection Act and declares that all the Personal Data is accurate and true and has been provided voluntarily.{% endblocktrans %}</p>
+{% law_url 15 scope="GDPR" as url_15 %}
+{% law_url 17 scope="GDPR" as url_17 %}
+<p class="item">{% blocktrans %}The User declares awareness of own rights under <a href="{{ url_15 }}">Article 15</a> and <a href="{{ url_17 }}">Article 17</a> of the GDPR and declares that all the Personal Data is accurate and true and has been provided voluntarily.{% endblocktrans %}</p>
 
 <p class="item">{% blocktrans %}The Provider declares that it will collect Personal Data only in the extent necessary for meeting the above-specified purpose and process the Personal Data in accordance with the purpose for which it was collected. The Provider’s employees and other individuals who process the Personal Data on the basis of a contract with the Provider shall maintain confidentiality of the Personal Data, even after the termination of their employment or business relationship with the Provider.{% endblocktrans %}</p>
 
