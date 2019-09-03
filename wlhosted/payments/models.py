@@ -155,6 +155,7 @@ class Customer(models.Model):
 RECURRENCE_CHOICES = [
     ("y", _("Annual")),
     ("b", _("Biannual")),
+    ("q", _("Quarterly")),
     ("m", _("Monthly")),
     ("", _("Onetime")),
 ]
@@ -303,6 +304,8 @@ def get_period_delta(period):
         return relativedelta(years=1) - relativedelta(days=1)
     if period == "b":
         return relativedelta(months=6) - relativedelta(days=1)
+    if period == "q":
+        return relativedelta(months=3) - relativedelta(days=1)
     if period == "m":
         return relativedelta(months=1) - relativedelta(days=1)
     raise ValueError("Invalid payment period!")
