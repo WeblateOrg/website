@@ -33,6 +33,8 @@
                             {% trans "Payment will be issued yearly till you cancel the subscription." %}
                             {% elif object.recurring == "b" %}
                             {% trans "Payment will be issued every six months till you cancel the subscription." %}
+                            {% elif object.recurring == "q" %}
+                            {% trans "Payment will be issued every quarter till you cancel the subscription." %}
                             {% elif object.recurring == "m" %}
                             {% trans "Payment will be issued monthly till you cancel the subscription." %}
                             {% else %}

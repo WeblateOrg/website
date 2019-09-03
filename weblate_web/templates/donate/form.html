@@ -19,15 +19,15 @@
                     <div class="pick-items">
                         <input id="single-payment" name="recurring" type="radio" value="" {% if not form.recurring.value %}checked="checked"{% endif %} />
                         <label for="single-payment" class="biglabel">{% trans "Single payment" %}</label>
-                        
+
                         <input id="monthly" name="recurring" type="radio" value="m" {% if form.recurring.value == "m" %}checked="checked"{% endif %} />
                         <label for="monthly" class="biglabel">{% trans "Monthly" %}</label>
-                        
+
+                        <input id="quarterly" name="recurring" type="radio" value="q" {% if form.recurring.value == "q" %}checked="checked"{% endif %} />
+                        <label for="quarterly" class="biglabel">{% trans "Quarterly" %}</label>
+
                         <input id="year" name="recurring" type="radio" value="y" {% if form.recurring.value == "y" %}checked="checked"{% endif %} />
                         <label for="year" class="biglabel">{% trans "Every year" %}</label>
-                        
-                        <input id="2-year" name="recurring" type="radio" value="b" {% if form.recurring.value == "b" %}checked="checked"{% endif %} />
-                        <label for="2-year" class="biglabel">{% trans "Every 2nd year" %}</label>
                     </div>
                 	<div class="title nowhoa">{% trans "Your reward options" %}</div>
                     <div class="title whoa">{% blocktrans %}<strong>Whoa!</strong> You can get any reward.{% endblocktrans %}</div>
