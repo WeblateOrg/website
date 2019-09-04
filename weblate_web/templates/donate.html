@@ -113,10 +113,6 @@
 
         <h2 class="section-title crypto">{% trans "Supporters" %}</h2>
         <div class="supporters-items">
-            <a class="supporters-logo" href="https://hostingfacts.com/"><img src="{% static "hostingfacts.png" %}" alt="Hosting Facts" /></a>
-
-            <a class="supporters-logo" href="https://www.7binaryoptions.com/robot/">7BO: Binary Option Robot</a>
-
             {% for donation in donate_links %}
             <a class="supporters-logo" href="{% if donation.link_url %}{{ donation.link_url }}{% else %}#{% endif %}">
                 {% if donation.link_image %}
