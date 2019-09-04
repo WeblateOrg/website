@@ -54,7 +54,7 @@ TOPIC_DICT = dict(TOPICS)
 
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True, null=True)
+    payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
     reward = models.IntegerField(choices=REWARDS)
     link_text = models.CharField(
         verbose_name=ugettext_lazy('Link text'),
