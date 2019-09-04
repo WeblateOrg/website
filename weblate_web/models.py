@@ -54,7 +54,7 @@ TOPIC_DICT = dict(TOPICS)
 
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField()
+    payment = models.UUIDField(blank=True)
     reward = models.IntegerField(choices=REWARDS)
     link_text = models.CharField(
         verbose_name=ugettext_lazy('Link text'),
@@ -75,6 +75,8 @@ class Donation(models.Model):
 
     @cached_property
     def payment_obj(self):
+        if not self.payment:
+            return None
         return Payment.objects.get(pk=self.payment)
 
     def list_payments(self):
@@ -85,6 +87,8 @@ class Donation(models.Model):
         return reverse('donate-edit', kwargs={'pk': self.pk})
 
     def get_amount(self):
+        if not self.payment:
+            return 0
         return self.payment_obj.amount
 
     def __str__(self):
