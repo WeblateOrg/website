@@ -136,6 +136,13 @@
                     <div class="line-right">{{ donation.get_reward_display }}</div>
                     <div class="clear"></div>
                 </div>
+                {% if donation.link_url %}
+                <div class="form-line">
+                    <div class="line-left">{% trans "Link URL" %}</div>
+                    <div class="line-right">{{ donation.link_url }}</div>
+                    <div class="clear"></div>
+                </div>
+                {% endif %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Expiry date" %}</div>
                     <div class="line-right">{{ donation.expires }}</div>
