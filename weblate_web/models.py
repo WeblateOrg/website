@@ -80,6 +80,8 @@ class Donation(models.Model):
         return Payment.objects.get(pk=self.payment)
 
     def list_payments(self):
+        if not self.payment:
+            return Payment.objects.none()
         initial = Payment.objects.filter(pk=self.payment)
         return initial | initial[0].payment_set.all()
 
