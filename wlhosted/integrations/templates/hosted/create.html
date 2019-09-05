@@ -32,7 +32,7 @@
   </div>
 {% endif %}
   {% if billing %}
-  {% include "billing/status.html" %}
+  {% include "billing/status.html" with projects=billing.projects.all %}
   {% endif %}
 </div>
 {% endif %}
