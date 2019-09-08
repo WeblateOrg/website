@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-03 15:05+0200\n"
+"POT-Creation-Date: 2019-09-08 09:01+0200\n"
 "PO-Revision-Date: 2019-09-06 22:23+0000\n"
 "Last-Translator: k ks <kmshts@naver.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/weblate/website/"
@@ -78,7 +78,7 @@ msgstr "현지화"
 msgid "Link text"
 msgstr "링크 텍스트"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:64 weblate_web/templates/user.html:141
 msgid "Link URL"
 msgstr "링크 URL"
 
@@ -86,27 +86,27 @@ msgstr "링크 URL"
 msgid "Link image"
 msgstr "고리 그림"
 
-#: weblate_web/models.py:234
+#: weblate_web/models.py:240
 msgid "Community support"
 msgstr "커뮤니티 지원"
 
-#: weblate_web/models.py:235
+#: weblate_web/models.py:241
 msgid "Hosted service"
 msgstr "호스팅 서비스"
 
-#: weblate_web/models.py:236 weblate_web/templates/support.html:76
+#: weblate_web/models.py:242 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "자체 기본 호스팅 지원"
 
-#: weblate_web/models.py:237 weblate_web/templates/support.html:86
+#: weblate_web/models.py:243 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "자체 확장 호스팅 지원"
 
-#: weblate_web/models.py:238 weblate_web/templates/support.html:51
+#: weblate_web/models.py:244 weblate_web/templates/support.html:51
 msgid "Installation on your Linux server"
 msgstr "보유중인 리눅스 서버에 설치"
 
-#: weblate_web/models.py:241 weblate_web/templates/support.html:64
+#: weblate_web/models.py:247 weblate_web/templates/support.html:64
 msgid "Docker installation on your Linux server"
 msgstr "리눅스 서버에 도커(Docker) 설치"
 
@@ -365,7 +365,9 @@ msgid "Licensed under GNU GPLv3+"
 msgstr "GNU GPL v3 이상에서 허가됨"
 
 #: weblate_web/templates/base.html:111 weblate_web/templates/terms.html:8
-msgid "Terms & Privacy"
+#, fuzzy
+#| msgid "Terms & Privacy"
+msgid "Terms and Privacy"
 msgstr "이용 약관 및 개인 정보 보호"
 
 #: weblate_web/templates/base.html:111
@@ -436,7 +438,8 @@ msgstr ""
 msgid ""
 "<strong>Follow instructions in the issue template</strong>, and provide as "
 "much relevant info as possible."
-msgstr "<strong>문제 서식의 지시에 따라</strong> 최대한 많은 관련 정보를 제공합니다."
+msgstr ""
+"<strong>문제 서식의 지시에 따라</strong> 최대한 많은 관련 정보를 제공합니다."
 
 #: weblate_web/templates/contribute.html:31
 #: weblate_web/templates/contribute.html:47
@@ -450,13 +453,16 @@ msgstr "오류를 고치는 <strong>패치</strong> 있습니까?"
 #: weblate_web/templates/contribute.html:36
 #, python-format
 msgid "Open a new <a href=\"%(url)s\">GitHub pull request</a> with the patch."
-msgstr "패치를 적용한 새로운 <a href=\"%(url)s\">GitHub 당기기 요청</a>를 엽니다."
+msgstr ""
+"패치를 적용한 새로운 <a href=\"%(url)s\">GitHub 당기기 요청</a>를 엽니다."
 
 #: weblate_web/templates/contribute.html:37
 msgid ""
 "Ensure the pull request description clearly describes the problem and "
 "solution. Include the relevant issue number if applicable."
-msgstr "당기기 요청 설명에 문제 및 해결 방법이 명확하게 설명되어 있는지 확인하십시오. 해당되는 경우 관련 문제 번호를 포함하십시오."
+msgstr ""
+"당기기 요청 설명에 문제 및 해결 방법이 명확하게 설명되어 있는지 확인하십시"
+"오. 해당되는 경우 관련 문제 번호를 포함하십시오."
 
 #: weblate_web/templates/contribute.html:39
 msgid "Open a pull request"
@@ -480,14 +486,18 @@ msgstr "<strong>소스 코드</strong> 관련 질문입니까?"
 msgid ""
 "Please consult the <a href=\"%(url)s\">contributor documentation</a> to find "
 "the most common topics."
-msgstr "가장 일반적인 주제를 찾으려면 <a href=\"%(url)s\">기여자 문서</a>를 참조하십시오."
+msgstr ""
+"가장 일반적인 주제를 찾으려면 <a href=\"%(url)s\">기여자 문서</a>를 참조하십"
+"시오."
 
 #: weblate_web/templates/contribute.html:53
 #, python-format
 msgid ""
 "Ask any question about the source code in the <a href=\"%(url)s\">Weblate "
 "mailing list</a>."
-msgstr "<a href=\"%(url)s\">웹레이트 메일링 리스트</a>에 있는 소스 코드에 대해 질문하십시오."
+msgstr ""
+"<a href=\"%(url)s\">웹레이트 메일링 리스트</a>에 있는 소스 코드에 대해 질문하"
+"십시오."
 
 #: weblate_web/templates/contribute.html:55
 #: weblate_web/templates/contribute.html:63
@@ -499,14 +509,18 @@ msgid "Want to help out with <strong>Documentation</strong>?"
 msgstr "<strong>문서화</strong>에 도움이 필요하십니까?"
 
 #: weblate_web/templates/contribute.html:60
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "The documentation is part of the main source code repository and you can "
+#| "easily follow the links to edit each page directly from the <a href="
+#| "\"%(url)s\">documentation</a>"
 msgid ""
 "The documentation is part of the main source code repository and you can "
 "easily follow the links to edit each page directly from the <a href=\"%(url)s"
-"\">documentation</a>"
+"\">documentation</a>."
 msgstr ""
-"이 문서는 기본 소스 코드 저장소의 일부이며, 쉽게 링크를 따라 <a href=\"%(url)s\">문서</a>에서 직접 각 페이지를 "
-"편집 할 수 있습니다"
+"이 문서는 기본 소스 코드 저장소의 일부이며, 쉽게 링크를 따라 <a href="
+"\"%(url)s\">문서</a>에서 직접 각 페이지를 편집 할 수 있습니다"
 
 #: weblate_web/templates/contribute.html:61
 msgid ""
@@ -535,8 +549,8 @@ msgid ""
 "You can translate Weblate and many other projects at <a href=\"https://"
 "hosted.weblate.org/engage/weblate/\">hosted.weblate.org</a>."
 msgstr ""
-"웹레이트 및 그 외의 많은 프로젝트는 <a href=\"https://hosted.weblate.org/engage/weblate/\""
-">hosted.weblate.org</a>에서 번역 할 수 있습니다."
+"웹레이트 및 그 외의 많은 프로젝트는 <a href=\"https://hosted.weblate.org/"
+"engage/weblate/\">hosted.weblate.org</a>에서 번역 할 수 있습니다."
 
 #: weblate_web/templates/contribute.html:73
 msgid "Start translating"
@@ -555,7 +569,9 @@ msgstr "Weblate에 기부하기"
 msgid ""
 "Weblate does not require payment, and welcomes donations. There are many "
 "ways to contribute. Discuss it with your associates."
-msgstr "웹레이트는 무료로 제공되지만 기부는 환영합니다. 지원하는 방법은 많이 있습니다. 친구와 상담하십시오."
+msgstr ""
+"웹레이트는 무료로 제공되지만 기부는 환영합니다. 지원하는 방법은 많이 있습니"
+"다. 친구와 상담하십시오."
 
 #: weblate_web/templates/donate.html:18 weblate_web/templates/donate.html:55
 msgid "Purchase premium cloud"
@@ -576,8 +592,10 @@ msgid ""
 "the project sustainable long term. Please consider this option if you are "
 "hosting Weblate yourself without a support contract."
 msgstr ""
-"지속적인 기부는 웹레이트 개발에 지속 가능한 발전을 촉진하고, 약간의 기부라도 유용하게 사용합니다. 반복적인 감사는 그 프로젝트를  "
-"장기간에 걸쳐 지속 가능한 유지를 위해 도움이 됩니다. 지원 계약 없이 웹레이트를 직접 호스팅하는 경우, 이 선택사항을 고려하십시오."
+"지속적인 기부는 웹레이트 개발에 지속 가능한 발전을 촉진하고, 약간의 기부라도 "
+"유용하게 사용합니다. 반복적인 감사는 그 프로젝트를  장기간에 걸쳐 지속 가능"
+"한 유지를 위해 도움이 됩니다. 지원 계약 없이 웹레이트를 직접 호스팅하는 경"
+"우, 이 선택사항을 고려하십시오."
 
 #: weblate_web/templates/donate.html:25
 msgid "Activate donation"
@@ -591,10 +609,10 @@ msgstr "매년"
 
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/donate.html:66
-#: weblate_web/templates/donate.html:150
+#: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:201
+#: weblate_web/templates/user.html:208
 msgid "Donate"
 msgstr "기부하기"
 
@@ -606,7 +624,9 @@ msgstr "웹레이트 영웅주의"
 msgid ""
 "Commercial services like hosting or support for self-hosted installations "
 "help fund Weblate development."
-msgstr "자체 호스팅 설치를 위해 호스팅이나 지원 같은 상업적 서비스는 웹레이트 개발 지원에 도움을 줍니다."
+msgstr ""
+"자체 호스팅 설치를 위해 호스팅이나 지원 같은 상업적 서비스는 웹레이트 개발 지"
+"원에 도움을 줍니다."
 
 #: weblate_web/templates/donate.html:56
 msgid "Get help from Weblate"
@@ -673,7 +693,7 @@ msgstr ""
 msgid "Supporters"
 msgstr "후원자들"
 
-#: weblate_web/templates/donate.html:131
+#: weblate_web/templates/donate.html:127
 #, fuzzy
 #| msgid "Technology"
 msgid "Technologies"
@@ -1200,7 +1220,7 @@ msgstr ""
 #: weblate_web/templates/features.html:133
 #, fuzzy
 #| msgid "Export and import"
-msgid "Export & Import"
+msgid "Export and Import"
 msgstr "내보내기/가져오기"
 
 #: weblate_web/templates/features.html:134
@@ -1650,7 +1670,7 @@ msgstr ""
 #: weblate_web/templates/hosting.html:548
 #, fuzzy
 #| msgid "Link placement in the list of supporters"
-msgid "Join existing users & supporters"
+msgid "Join existing users and supporters"
 msgstr "기여자 목록의 링크 배치"
 
 #: weblate_web/templates/index.html:7
@@ -2474,35 +2494,35 @@ msgstr ""
 msgid "Creation date"
 msgstr "생성 날짜"
 
-#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:140
+#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:147
 msgid "Expiry date"
 msgstr "만료일"
 
-#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:145
+#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:152
 msgid "State"
 msgstr "상태"
 
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:155
 msgid "Expired"
 msgstr "만료된"
 
-#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:150
+#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:157
 #, fuzzy
 #| msgid "Automatic translation"
 msgid "Automatic renewal"
 msgstr "자동 번역"
 
-#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:152
+#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:159
 #, fuzzy
 #| msgid "No reward"
 msgid "No renewal"
 msgstr "보상 없음"
 
-#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:158
+#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:165
 msgid "Payments"
 msgstr "결제"
 
-#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:166
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:173
 msgid "Download invoice"
 msgstr "청구서 내려받기"
 
@@ -2510,7 +2530,7 @@ msgstr "청구서 내려받기"
 msgid "Regenerate activation token"
 msgstr ""
 
-#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:189
+#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:196
 msgid "Turn off renewal"
 msgstr ""
 
@@ -2522,13 +2542,13 @@ msgstr "당신의 기부"
 msgid "Reward"
 msgstr "보상"
 
-#: weblate_web/templates/user.html:184
+#: weblate_web/templates/user.html:191
 #, fuzzy
 #| msgid "No reward"
 msgid "Edit reward"
 msgstr "보상 없음"
 
-#: weblate_web/templates/user.html:196
+#: weblate_web/templates/user.html:203
 msgid "Donate to see a nice message here."
 msgstr ""
 
@@ -2676,6 +2696,11 @@ msgstr ""
 #| msgid "Failed to process subscription request."
 msgid "Could not process subscription request."
 msgstr "구독 요청을 처리하지 못했습니다."
+
+#, fuzzy
+#~| msgid "Export and import"
+#~ msgid "Export & Import"
+#~ msgstr "내보내기/가져오기"
 
 #~ msgctxt "Hosting plan"
 #~ msgid "Self hosted"
@@ -2911,9 +2936,6 @@ msgstr "구독 요청을 처리하지 못했습니다."
 #~ msgstr ""
 #~ "번역본은 다양하고 보편적인 파일 포멧을 통해서 내려받거나 Weblate에 올릴 "
 #~ "수 있습니다."
-
-#~ msgid "Export and import"
-#~ msgstr "내보내기/가져오기"
 
 #~ msgid "You can define access levels for every user."
 #~ msgstr "당신은 모든 사용자마다 접근 가능한 권한을 부여할 수 있습니다."

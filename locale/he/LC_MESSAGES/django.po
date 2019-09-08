@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-03 15:05+0200\n"
+"POT-Creation-Date: 2019-09-08 09:01+0200\n"
 "PO-Revision-Date: 2019-09-04 11:28+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/weblate/website/"
@@ -73,7 +73,7 @@ msgstr "תרגום"
 msgid "Link text"
 msgstr "טקסט הקישור"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:64 weblate_web/templates/user.html:141
 msgid "Link URL"
 msgstr "כתובת הקישור"
 
@@ -81,27 +81,27 @@ msgstr "כתובת הקישור"
 msgid "Link image"
 msgstr "תמונת קישור"
 
-#: weblate_web/models.py:234
+#: weblate_web/models.py:240
 msgid "Community support"
 msgstr "תמיכה קהילתית"
 
-#: weblate_web/models.py:235
+#: weblate_web/models.py:241
 msgid "Hosted service"
 msgstr "שירות מתארח"
 
-#: weblate_web/models.py:236 weblate_web/templates/support.html:76
+#: weblate_web/models.py:242 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "תמיכה בסיסית לאירוח עצמי"
 
-#: weblate_web/models.py:237 weblate_web/templates/support.html:86
+#: weblate_web/models.py:243 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "תמיכה מורחבת לאירוח עצמי"
 
-#: weblate_web/models.py:238 weblate_web/templates/support.html:51
+#: weblate_web/models.py:244 weblate_web/templates/support.html:51
 msgid "Installation on your Linux server"
 msgstr "התקנה על שרת לינוקס משלך"
 
-#: weblate_web/models.py:241 weblate_web/templates/support.html:64
+#: weblate_web/models.py:247 weblate_web/templates/support.html:64
 msgid "Docker installation on your Linux server"
 msgstr "התקנת Docker על שרת לינוקס משלך"
 
@@ -357,7 +357,9 @@ msgid "Licensed under GNU GPLv3+"
 msgstr "הרישיון הוא GPLv3+‎ מבית GNU"
 
 #: weblate_web/templates/base.html:111 weblate_web/templates/terms.html:8
-msgid "Terms & Privacy"
+#, fuzzy
+#| msgid "Terms & Privacy"
+msgid "Terms and Privacy"
 msgstr "תנאים ופרטיות"
 
 #: weblate_web/templates/base.html:111
@@ -495,11 +497,15 @@ msgid "Want to help out with <strong>Documentation</strong>?"
 msgstr "מעניין אותך לסייע ב<strong>תיעוד</strong>?"
 
 #: weblate_web/templates/contribute.html:60
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "The documentation is part of the main source code repository and you can "
+#| "easily follow the links to edit each page directly from the <a href="
+#| "\"%(url)s\">documentation</a>"
 msgid ""
 "The documentation is part of the main source code repository and you can "
 "easily follow the links to edit each page directly from the <a href=\"%(url)s"
-"\">documentation</a>"
+"\">documentation</a>."
 msgstr ""
 "התיעוד הוא חלק ממאגר קוד המקור הראשי ובאפשרותך לעקוב בקלות אחר הקישורים כדי "
 "לערוך את כל אחד מהדפים ישירות מה<a href=\"%(url)s\">תיעוד</a>"
@@ -598,10 +604,10 @@ msgstr "שנתית"
 
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/donate.html:66
-#: weblate_web/templates/donate.html:150
+#: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:201
+#: weblate_web/templates/user.html:208
 msgid "Donate"
 msgstr "תרומה"
 
@@ -670,7 +676,7 @@ msgstr ""
 msgid "Supporters"
 msgstr "תומכים"
 
-#: weblate_web/templates/donate.html:131
+#: weblate_web/templates/donate.html:127
 msgid "Technologies"
 msgstr "טכנולוגיות"
 
@@ -825,8 +831,8 @@ msgid ""
 "more detailed instructions."
 msgstr ""
 "הדרך הקלה ביותר להתקין את Weblate היא באמצעות <strong>pip</strong> או "
-"<strong>Docker</strong>, נא לפנות אל <a href=\"%(url)s\">מדריך ההקמה "
-"המהירה</a> לקבלת הנחיות מפורטות."
+"<strong>Docker</strong>, נא לפנות אל <a href=\"%(url)s\">מדריך ההקמה המהירה</"
+"a> לקבלת הנחיות מפורטות."
 
 #: weblate_web/templates/download.html:25
 msgid "Download source code"
@@ -1104,7 +1110,9 @@ msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr "ניתן להשתמש ב־Weblate כדי לקבל משוב על מחרוזות המקור ולשפר אותן."
 
 #: weblate_web/templates/features.html:133
-msgid "Export & Import"
+#, fuzzy
+#| msgid "Export and import"
+msgid "Export and Import"
 msgstr "ייצוא וייבוא"
 
 #: weblate_web/templates/features.html:134
@@ -1484,7 +1492,9 @@ msgstr ""
 "Weblate מתאימה לך."
 
 #: weblate_web/templates/hosting.html:548
-msgid "Join existing users & supporters"
+#, fuzzy
+#| msgid "Join existing users & supporters"
+msgid "Join existing users and supporters"
 msgstr "הצטרפות למשתמשים ולתומכים הקיימים"
 
 #: weblate_web/templates/index.html:7
@@ -2169,31 +2179,31 @@ msgstr "הצגת התיעוד על ניהול מינוי."
 msgid "Creation date"
 msgstr "מועד היצירה"
 
-#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:140
+#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:147
 msgid "Expiry date"
 msgstr "תאריך תפוגה"
 
-#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:145
+#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:152
 msgid "State"
 msgstr "מצב"
 
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:155
 msgid "Expired"
 msgstr "פג תוקף"
 
-#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:150
+#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:157
 msgid "Automatic renewal"
 msgstr "חידוש אוטומטי"
 
-#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:152
+#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:159
 msgid "No renewal"
 msgstr "אין חידוש"
 
-#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:158
+#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:165
 msgid "Payments"
 msgstr "תשלומים"
 
-#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:166
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:173
 msgid "Download invoice"
 msgstr "הורדת חשבונית"
 
@@ -2201,7 +2211,7 @@ msgstr "הורדת חשבונית"
 msgid "Regenerate activation token"
 msgstr "ייצור אסימון הפעלה מחדשה"
 
-#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:189
+#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:196
 msgid "Turn off renewal"
 msgstr "כיבוי החידוש"
 
@@ -2213,11 +2223,11 @@ msgstr "התרומות שלך"
 msgid "Reward"
 msgstr "פרס"
 
-#: weblate_web/templates/user.html:184
+#: weblate_web/templates/user.html:191
 msgid "Edit reward"
 msgstr "עריכת פרס"
 
-#: weblate_web/templates/user.html:196
+#: weblate_web/templates/user.html:203
 msgid "Donate to see a nice message here."
 msgstr "כדי לראות כאן הודעה נחמדה עליך לתרום."
 
@@ -2358,6 +2368,9 @@ msgstr "התקבלה בקשה למינוי, כל שעליך לעשות הוא ל
 #: weblate_web/views.py:416
 msgid "Could not process subscription request."
 msgstr "לא ניתן לעבד את בקשת המינוי."
+
+#~ msgid "Export & Import"
+#~ msgstr "ייצוא וייבוא"
 
 #~ msgid "Every 2nd year"
 #~ msgstr "כל שנתיים"
@@ -2568,9 +2581,6 @@ msgstr "לא ניתן לעבד את בקשת המינוי."
 #~ "Translations can be exported and imported in many widely used file "
 #~ "formats."
 #~ msgstr "ניתן לייצא ולייבא תרגומים במגוון רחב של סוגי קבצים."
-
-#~ msgid "Export and import"
-#~ msgstr "ייצוא וייבוא"
 
 #~ msgid "You can define access levels for every user."
 #~ msgstr "ניתן להגדיר רמות גישה לכל משתמש בנפרד."

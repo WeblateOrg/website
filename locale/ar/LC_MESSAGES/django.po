@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-03 15:05+0200\n"
+"POT-Creation-Date: 2019-09-08 09:01+0200\n"
 "PO-Revision-Date: 2019-09-01 08:14+0000\n"
 "Last-Translator: Omar Aglan <omar.aglan91@yahoo.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/weblate/website/"
@@ -78,7 +78,7 @@ msgstr "الترجمة"
 msgid "Link text"
 msgstr "نص الرابط"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:64 weblate_web/templates/user.html:141
 msgid "Link URL"
 msgstr "عنوان الرابط"
 
@@ -86,27 +86,27 @@ msgstr "عنوان الرابط"
 msgid "Link image"
 msgstr "صورة الرابط"
 
-#: weblate_web/models.py:234
+#: weblate_web/models.py:240
 msgid "Community support"
 msgstr "الدعم المجتمعي"
 
-#: weblate_web/models.py:235
+#: weblate_web/models.py:241
 msgid "Hosted service"
 msgstr "الخدمة المُستضافة"
 
-#: weblate_web/models.py:236 weblate_web/templates/support.html:76
+#: weblate_web/models.py:242 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "دعم استضافة ذاتية بسيطة"
 
-#: weblate_web/models.py:237 weblate_web/templates/support.html:86
+#: weblate_web/models.py:243 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "دعم ممتد للاستضافة الذاتية"
 
-#: weblate_web/models.py:238 weblate_web/templates/support.html:51
+#: weblate_web/models.py:244 weblate_web/templates/support.html:51
 msgid "Installation on your Linux server"
 msgstr "التثبيت على خادم لينكس الخاص بك"
 
-#: weblate_web/models.py:241 weblate_web/templates/support.html:64
+#: weblate_web/models.py:247 weblate_web/templates/support.html:64
 msgid "Docker installation on your Linux server"
 msgstr "تثبيت دوكر على خادم لينكس الخاص بك"
 
@@ -361,7 +361,9 @@ msgid "Licensed under GNU GPLv3+"
 msgstr "مبني تحت رخصة GNU GPLv3+"
 
 #: weblate_web/templates/base.html:111 weblate_web/templates/terms.html:8
-msgid "Terms & Privacy"
+#, fuzzy
+#| msgid "Terms & Privacy"
+msgid "Terms and Privacy"
 msgstr "الشروط والخصوصية"
 
 #: weblate_web/templates/base.html:111
@@ -503,11 +505,15 @@ msgid "Want to help out with <strong>Documentation</strong>?"
 msgstr "أتودّ مساعدتنا على <strong>التوثيق</strong>؟"
 
 #: weblate_web/templates/contribute.html:60
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "The documentation is part of the main source code repository and you can "
+#| "easily follow the links to edit each page directly from the <a href="
+#| "\"%(url)s\">documentation</a>"
 msgid ""
 "The documentation is part of the main source code repository and you can "
 "easily follow the links to edit each page directly from the <a href=\"%(url)s"
-"\">documentation</a>"
+"\">documentation</a>."
 msgstr ""
 "الدليل مستضاف على مستودع الشفرة المصدرية الأساسية وليس عليك إلا اتباع روابط "
 "تعديل الصفحات في <a href=\"%(url)s\">المستندات</a> مباشرة"
@@ -600,10 +606,10 @@ msgstr "سنوياً"
 
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/donate.html:66
-#: weblate_web/templates/donate.html:150
+#: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:201
+#: weblate_web/templates/user.html:208
 msgid "Donate"
 msgstr "تبرع"
 
@@ -674,7 +680,7 @@ msgstr ""
 msgid "Supporters"
 msgstr "الداعمون"
 
-#: weblate_web/templates/donate.html:131
+#: weblate_web/templates/donate.html:127
 msgid "Technologies"
 msgstr "التقنيات"
 
@@ -1108,7 +1114,9 @@ msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr "استخدام Weblate للحصول على آراء حول كلمات المصدر لتحسينها."
 
 #: weblate_web/templates/features.html:133
-msgid "Export & Import"
+#, fuzzy
+#| msgid "Export and import"
+msgid "Export and Import"
 msgstr "التصدير والاستيراد"
 
 #: weblate_web/templates/features.html:134
@@ -1483,7 +1491,9 @@ msgstr ""
 "Weblate قد تم إنشائه من أجلك."
 
 #: weblate_web/templates/hosting.html:548
-msgid "Join existing users & supporters"
+#, fuzzy
+#| msgid "Join existing users & supporters"
+msgid "Join existing users and supporters"
 msgstr "انضم إلى المستخدمين والمؤيدين الحاليين"
 
 #: weblate_web/templates/index.html:7
@@ -2155,31 +2165,31 @@ msgstr "انظر في المستندات حول إدارة الاشتراك."
 msgid "Creation date"
 msgstr "تاريخ الإنشاء"
 
-#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:140
+#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:147
 msgid "Expiry date"
 msgstr "تاريخ الانتهاء"
 
-#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:145
+#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:152
 msgid "State"
 msgstr "الحالة"
 
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:155
 msgid "Expired"
 msgstr "مُنتهي المدة"
 
-#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:150
+#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:157
 msgid "Automatic renewal"
 msgstr "التجديد التلقائي"
 
-#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:152
+#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:159
 msgid "No renewal"
 msgstr "لا تجديد"
 
-#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:158
+#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:165
 msgid "Payments"
 msgstr "المبالغ المدفوعة"
 
-#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:166
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:173
 msgid "Download invoice"
 msgstr "تنزيل الفاتورة"
 
@@ -2187,7 +2197,7 @@ msgstr "تنزيل الفاتورة"
 msgid "Regenerate activation token"
 msgstr "إعادة توليد رمز التنشيط"
 
-#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:189
+#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:196
 msgid "Turn off renewal"
 msgstr "إيقاف التجديد"
 
@@ -2199,11 +2209,11 @@ msgstr "تبرعاتكم"
 msgid "Reward"
 msgstr "مكافأة"
 
-#: weblate_web/templates/user.html:184
+#: weblate_web/templates/user.html:191
 msgid "Edit reward"
 msgstr "تعديل المكافأة"
 
-#: weblate_web/templates/user.html:196
+#: weblate_web/templates/user.html:203
 msgid "Donate to see a nice message here."
 msgstr "تبرع لرؤية رسالة لطيفة هنا."
 
@@ -2348,6 +2358,9 @@ msgstr "تم طلب الاشتراك، كل ما عليكم القيام به ه
 #: weblate_web/views.py:416
 msgid "Could not process subscription request."
 msgstr "لم يستطع معالجة طلب الاشتراك."
+
+#~ msgid "Export & Import"
+#~ msgstr "التصدير والاستيراد"
 
 #~ msgid "Every 2nd year"
 #~ msgstr "كل عامان"
@@ -2583,9 +2596,6 @@ msgstr "لم يستطع معالجة طلب الاشتراك."
 #~ "formats."
 #~ msgstr ""
 #~ "يمكن تصدير و استيراد الترجمات في شتى أشكال نُسق الملفات الشائعة الإستخدام."
-
-#~ msgid "Export and import"
-#~ msgstr "التصدير والاستيراد"
 
 #~ msgid "You can define access levels for every user."
 #~ msgstr "يمكنك تحديد مستويات الوصول لكل مستخدم."

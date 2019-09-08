@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate 1.2\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-03 15:05+0200\n"
+"POT-Creation-Date: 2019-09-08 09:01+0200\n"
 "PO-Revision-Date: 2019-09-06 22:23+0000\n"
 "Last-Translator: WaldiS <admin@sto.ugu.pl>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/weblate/website/"
@@ -77,7 +77,7 @@ msgstr "Lokalizacja"
 msgid "Link text"
 msgstr "Tekst łącza"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:64 weblate_web/templates/user.html:141
 msgid "Link URL"
 msgstr "Łącze URL"
 
@@ -85,27 +85,27 @@ msgstr "Łącze URL"
 msgid "Link image"
 msgstr "Obraz jako odsyłacz"
 
-#: weblate_web/models.py:234
+#: weblate_web/models.py:240
 msgid "Community support"
 msgstr "Wsparcie społeczności"
 
-#: weblate_web/models.py:235
+#: weblate_web/models.py:241
 msgid "Hosted service"
 msgstr "Usługa hostowana"
 
-#: weblate_web/models.py:236 weblate_web/templates/support.html:76
+#: weblate_web/models.py:242 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Wsparcie podstawowego samodzielnego hostowania"
 
-#: weblate_web/models.py:237 weblate_web/templates/support.html:86
+#: weblate_web/models.py:243 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Rozszerzone wsparcie samodzielnego hostowania"
 
-#: weblate_web/models.py:238 weblate_web/templates/support.html:51
+#: weblate_web/models.py:244 weblate_web/templates/support.html:51
 msgid "Installation on your Linux server"
 msgstr "Instalacja na Twoim serwerze linuksowym"
 
-#: weblate_web/models.py:241 weblate_web/templates/support.html:64
+#: weblate_web/models.py:247 weblate_web/templates/support.html:64
 msgid "Docker installation on your Linux server"
 msgstr "Instalacja platformy Docker na twoim serwerze Linux"
 
@@ -373,7 +373,9 @@ msgid "Licensed under GNU GPLv3+"
 msgstr "Licencjonowane na licencji GNU GPLv3+"
 
 #: weblate_web/templates/base.html:111 weblate_web/templates/terms.html:8
-msgid "Terms & Privacy"
+#, fuzzy
+#| msgid "Terms & Privacy"
+msgid "Terms and Privacy"
 msgstr "Warunki i Prywatność"
 
 #: weblate_web/templates/base.html:111
@@ -518,11 +520,15 @@ msgid "Want to help out with <strong>Documentation</strong>?"
 msgstr "Chcesz pomóc w <strong>Dokumentacji</strong>?"
 
 #: weblate_web/templates/contribute.html:60
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "The documentation is part of the main source code repository and you can "
+#| "easily follow the links to edit each page directly from the <a href="
+#| "\"%(url)s\">documentation</a>"
 msgid ""
 "The documentation is part of the main source code repository and you can "
 "easily follow the links to edit each page directly from the <a href=\"%(url)s"
-"\">documentation</a>"
+"\">documentation</a>."
 msgstr ""
 "Dokumentacja jest częścią głównego repozytorium kodu źródłowego i można "
 "łatwo śledzić linki, aby edytować każdą stronę bezpośrednio z <a href="
@@ -618,10 +624,10 @@ msgstr "rocznie"
 
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/donate.html:66
-#: weblate_web/templates/donate.html:150
+#: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:201
+#: weblate_web/templates/user.html:208
 msgid "Donate"
 msgstr "Złóż darowiznę"
 
@@ -694,7 +700,7 @@ msgstr ""
 msgid "Supporters"
 msgstr "Osoby wspierające"
 
-#: weblate_web/templates/donate.html:131
+#: weblate_web/templates/donate.html:127
 msgid "Technologies"
 msgstr "Technologia"
 
@@ -1146,8 +1152,10 @@ msgstr ""
 "celu ich ulepszenia."
 
 #: weblate_web/templates/features.html:133
-msgid "Export & Import"
-msgstr "Eksport i Import"
+#, fuzzy
+#| msgid "Export and import"
+msgid "Export and Import"
+msgstr "Eksport i import"
 
 #: weblate_web/templates/features.html:134
 msgid "Translations can be downloaded for offline translation and merged back."
@@ -1539,7 +1547,9 @@ msgstr ""
 "pewien, czy Weblate został stworzony dla Ciebie."
 
 #: weblate_web/templates/hosting.html:548
-msgid "Join existing users & supporters"
+#, fuzzy
+#| msgid "Join existing users & supporters"
+msgid "Join existing users and supporters"
 msgstr "Dołącz do istniejących użytkowników i sympatyków"
 
 #: weblate_web/templates/index.html:7
@@ -2222,31 +2232,31 @@ msgstr "Zobacz dokumentację dotyczącą zarządzania subskrypcjami."
 msgid "Creation date"
 msgstr "Data utworzenia"
 
-#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:140
+#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:147
 msgid "Expiry date"
 msgstr "Data wygaśnięcia"
 
-#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:145
+#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:152
 msgid "State"
 msgstr "Stan"
 
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:155
 msgid "Expired"
 msgstr "Wygasłe"
 
-#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:150
+#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:157
 msgid "Automatic renewal"
 msgstr "Automatyczne odnawianie"
 
-#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:152
+#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:159
 msgid "No renewal"
 msgstr "Brak odnowienia"
 
-#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:158
+#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:165
 msgid "Payments"
 msgstr "Płatności"
 
-#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:166
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:173
 msgid "Download invoice"
 msgstr "Pobierz fakturę"
 
@@ -2254,7 +2264,7 @@ msgstr "Pobierz fakturę"
 msgid "Regenerate activation token"
 msgstr "Ponownie wygeneruj token aktywacyjny"
 
-#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:189
+#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:196
 msgid "Turn off renewal"
 msgstr "Wyłącz odnawianie"
 
@@ -2266,11 +2276,11 @@ msgstr "Twoje darowizny"
 msgid "Reward"
 msgstr "Wynagrodzenie"
 
-#: weblate_web/templates/user.html:184
+#: weblate_web/templates/user.html:191
 msgid "Edit reward"
 msgstr "Edycja nagrody"
 
-#: weblate_web/templates/user.html:196
+#: weblate_web/templates/user.html:203
 msgid "Donate to see a nice message here."
 msgstr "Przekaż darowiznę, aby zobaczyć tutaj miłą wiadomość."
 
@@ -2412,6 +2422,9 @@ msgstr "Wymagana subskrypcja, wystarczy potwierdzić wiadomość e-mail."
 #: weblate_web/views.py:416
 msgid "Could not process subscription request."
 msgstr "Nie można przetworzyć żądania subskrypcji."
+
+#~ msgid "Export & Import"
+#~ msgstr "Eksport i Import"
 
 #~ msgid "Every 2nd year"
 #~ msgstr "Co 2 lata"
@@ -2674,9 +2687,6 @@ msgstr "Nie można przetworzyć żądania subskrypcji."
 #~ msgstr ""
 #~ "Tłumaczenia można eksportować i importować w wielu powszechnie używanych "
 #~ "formatach plików."
-
-#~ msgid "Export and import"
-#~ msgstr "Eksport i import"
 
 #~ msgid "You can define access levels for every user."
 #~ msgstr "Możesz zdefiniować poziomy dostępu dla każdego użytkownika."

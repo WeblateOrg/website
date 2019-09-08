@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-03 15:05+0200\n"
+"POT-Creation-Date: 2019-09-08 09:01+0200\n"
 "PO-Revision-Date: 2019-09-06 22:23+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/weblate/"
@@ -77,7 +77,7 @@ msgstr "Lokalisering"
 msgid "Link text"
 msgstr "Lenketekst"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:64 weblate_web/templates/user.html:141
 msgid "Link URL"
 msgstr "Lenkenettadresse"
 
@@ -85,27 +85,27 @@ msgstr "Lenkenettadresse"
 msgid "Link image"
 msgstr "Lenkebilde"
 
-#: weblate_web/models.py:234
+#: weblate_web/models.py:240
 msgid "Community support"
 msgstr "Gemenskapsstøtte"
 
-#: weblate_web/models.py:235
+#: weblate_web/models.py:241
 msgid "Hosted service"
 msgstr "Vertlagringstjeneste"
 
-#: weblate_web/models.py:236 weblate_web/templates/support.html:76
+#: weblate_web/models.py:242 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Grunnleggende støtte for selvtjening"
 
-#: weblate_web/models.py:237 weblate_web/templates/support.html:86
+#: weblate_web/models.py:243 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Utvidet støtte for selvtjening"
 
-#: weblate_web/models.py:238 weblate_web/templates/support.html:51
+#: weblate_web/models.py:244 weblate_web/templates/support.html:51
 msgid "Installation on your Linux server"
 msgstr "Installasjon på din Linux-tjener"
 
-#: weblate_web/models.py:241 weblate_web/templates/support.html:64
+#: weblate_web/models.py:247 weblate_web/templates/support.html:64
 msgid "Docker installation on your Linux server"
 msgstr "Docker-installasjon på din Linux-tjener"
 
@@ -368,7 +368,9 @@ msgid "Licensed under GNU GPLv3+"
 msgstr "Lisensiert GNU GPLv3+"
 
 #: weblate_web/templates/base.html:111 weblate_web/templates/terms.html:8
-msgid "Terms & Privacy"
+#, fuzzy
+#| msgid "Terms & Privacy"
+msgid "Terms and Privacy"
 msgstr "Bruksvilkår og personvern"
 
 #: weblate_web/templates/base.html:111
@@ -511,11 +513,15 @@ msgid "Want to help out with <strong>Documentation</strong>?"
 msgstr "Ønsker du å hjelpe til med <strong>dokumentasjonen</strong>?"
 
 #: weblate_web/templates/contribute.html:60
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "The documentation is part of the main source code repository and you can "
+#| "easily follow the links to edit each page directly from the <a href="
+#| "\"%(url)s\">documentation</a>"
 msgid ""
 "The documentation is part of the main source code repository and you can "
 "easily follow the links to edit each page directly from the <a href=\"%(url)s"
-"\">documentation</a>"
+"\">documentation</a>."
 msgstr ""
 "Dokumnetasjonen er en del av hovedkodelageret, og du kan enklet følge "
 "lenkene for å redigere hver side direkte fra <a href=\"%(url)s"
@@ -611,10 +617,10 @@ msgstr "årvist"
 
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/donate.html:66
-#: weblate_web/templates/donate.html:150
+#: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:201
+#: weblate_web/templates/user.html:208
 msgid "Donate"
 msgstr "Doner"
 
@@ -686,7 +692,7 @@ msgstr ""
 msgid "Supporters"
 msgstr "Støttespillere"
 
-#: weblate_web/templates/donate.html:131
+#: weblate_web/templates/donate.html:127
 msgid "Technologies"
 msgstr "Teknologier"
 
@@ -1131,7 +1137,9 @@ msgstr ""
 "dem."
 
 #: weblate_web/templates/features.html:133
-msgid "Export & Import"
+#, fuzzy
+#| msgid "Export and import"
+msgid "Export and Import"
 msgstr "Eksport og import"
 
 #: weblate_web/templates/features.html:134
@@ -1515,7 +1523,9 @@ msgstr ""
 "Weblate ble laget for akkurat deg."
 
 #: weblate_web/templates/hosting.html:548
-msgid "Join existing users & supporters"
+#, fuzzy
+#| msgid "Join existing users & supporters"
+msgid "Join existing users and supporters"
 msgstr "Slå følge med eksisterende brukere og støttespillere"
 
 #: weblate_web/templates/index.html:7
@@ -2190,31 +2200,31 @@ msgstr "Henvend dem til dokumentasjonen om abonnementsbehandling."
 msgid "Creation date"
 msgstr "Opprettelsesdato"
 
-#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:140
+#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:147
 msgid "Expiry date"
 msgstr "Utløpsdato"
 
-#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:145
+#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:152
 msgid "State"
 msgstr "Tilstand"
 
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:155
 msgid "Expired"
 msgstr "Utløpt"
 
-#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:150
+#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:157
 msgid "Automatic renewal"
 msgstr "Fornyes automatisk"
 
-#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:152
+#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:159
 msgid "No renewal"
 msgstr "Ingen fornyelse"
 
-#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:158
+#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:165
 msgid "Payments"
 msgstr "Betalinger"
 
-#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:166
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:173
 msgid "Download invoice"
 msgstr "Last ned faktura"
 
@@ -2223,7 +2233,7 @@ msgstr "Last ned faktura"
 msgid "Regenerate activation token"
 msgstr "Regenerer aktiveringssymbol"
 
-#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:189
+#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:196
 msgid "Turn off renewal"
 msgstr "Skru av fornying"
 
@@ -2235,11 +2245,11 @@ msgstr "Dine donasjoner"
 msgid "Reward"
 msgstr "Påskjønnelse"
 
-#: weblate_web/templates/user.html:184
+#: weblate_web/templates/user.html:191
 msgid "Edit reward"
 msgstr "Rediger påskjønnelse"
 
-#: weblate_web/templates/user.html:196
+#: weblate_web/templates/user.html:203
 msgid "Donate to see a nice message here."
 msgstr "Doner for å se en hyggelig melding her."
 
@@ -2380,6 +2390,9 @@ msgstr "Abonnement forespurt, alt du må gjøre er å bekrefte e-posten."
 #: weblate_web/views.py:416
 msgid "Could not process subscription request."
 msgstr "Klarte ikke å behandle abonnementsforespørsel."
+
+#~ msgid "Export & Import"
+#~ msgstr "Eksport og import"
 
 #~ msgid "Every 2nd year"
 #~ msgstr "Hvert andre år"
@@ -2637,9 +2650,6 @@ msgstr "Klarte ikke å behandle abonnementsforespørsel."
 #~ msgstr ""
 #~ "Oversettelser kan eksporteres og importeres i mange viden brukte "
 #~ "filformater."
-
-#~ msgid "Export and import"
-#~ msgstr "Eksport og import"
 
 #~ msgid "You can define access levels for every user."
 #~ msgstr "Du kan definere tilgangsnivåer for hver bruker."

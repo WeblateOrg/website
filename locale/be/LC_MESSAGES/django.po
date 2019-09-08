@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-03 15:05+0200\n"
+"POT-Creation-Date: 2019-09-08 09:01+0200\n"
 "PO-Revision-Date: 2019-09-08 06:51+0000\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/weblate/"
@@ -19,8 +19,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 3.9-dev\n"
 
 #: weblate_web/models.py:36
@@ -77,7 +77,7 @@ msgstr "Лакалізацыя"
 msgid "Link text"
 msgstr "Тэкст спасылкі"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:64 weblate_web/templates/user.html:141
 msgid "Link URL"
 msgstr "URL спасылкі"
 
@@ -85,27 +85,27 @@ msgstr "URL спасылкі"
 msgid "Link image"
 msgstr "Спасылка на выяву"
 
-#: weblate_web/models.py:234
+#: weblate_web/models.py:240
 msgid "Community support"
 msgstr "Падтрымка суполкі"
 
-#: weblate_web/models.py:235
+#: weblate_web/models.py:241
 msgid "Hosted service"
 msgstr "Хостынг"
 
-#: weblate_web/models.py:236 weblate_web/templates/support.html:76
+#: weblate_web/models.py:242 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Базавая падтрымка самастойнай усталёўкі"
 
-#: weblate_web/models.py:237 weblate_web/templates/support.html:86
+#: weblate_web/models.py:243 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Пашыраная падтрымка самастойнай усталёўкі"
 
-#: weblate_web/models.py:238 weblate_web/templates/support.html:51
+#: weblate_web/models.py:244 weblate_web/templates/support.html:51
 msgid "Installation on your Linux server"
 msgstr "Усталёўка на ваш сервер Linux"
 
-#: weblate_web/models.py:241 weblate_web/templates/support.html:64
+#: weblate_web/models.py:247 weblate_web/templates/support.html:64
 msgid "Docker installation on your Linux server"
 msgstr "Усталёўка Docker на ваш сервер Linux"
 
@@ -370,7 +370,9 @@ msgid "Licensed under GNU GPLv3+"
 msgstr "Ліцэнзія GNU GPLv3+"
 
 #: weblate_web/templates/base.html:111 weblate_web/templates/terms.html:8
-msgid "Terms & Privacy"
+#, fuzzy
+#| msgid "Terms & Privacy"
+msgid "Terms and Privacy"
 msgstr "Умовы і прыватнасць"
 
 #: weblate_web/templates/base.html:111
@@ -512,11 +514,15 @@ msgid "Want to help out with <strong>Documentation</strong>?"
 msgstr "Хочаце дапамагчы з <strong>дакументацыяй</strong>?"
 
 #: weblate_web/templates/contribute.html:60
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "The documentation is part of the main source code repository and you can "
+#| "easily follow the links to edit each page directly from the <a href="
+#| "\"%(url)s\">documentation</a>"
 msgid ""
 "The documentation is part of the main source code repository and you can "
 "easily follow the links to edit each page directly from the <a href=\"%(url)s"
-"\">documentation</a>"
+"\">documentation</a>."
 msgstr ""
 "Дакументацыя з'яўляецца часткай галоўнага рэпазіторыя зыходнага коду, і вы "
 "можаце лёгка перайсці па спасылках для рэдагавання кожнай старонкі "
@@ -613,10 +619,10 @@ msgstr "штогод"
 
 #: weblate_web/templates/donate.html:31 weblate_web/templates/donate.html:36
 #: weblate_web/templates/donate.html:41 weblate_web/templates/donate.html:66
-#: weblate_web/templates/donate.html:150
+#: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:201
+#: weblate_web/templates/user.html:208
 msgid "Donate"
 msgstr "Ахвяраванні"
 
@@ -688,7 +694,7 @@ msgstr ""
 msgid "Supporters"
 msgstr "Прыхільнікі"
 
-#: weblate_web/templates/donate.html:131
+#: weblate_web/templates/donate.html:127
 msgid "Technologies"
 msgstr "Тэхналогіі"
 
@@ -1137,7 +1143,9 @@ msgstr ""
 "каб палепшыць іх."
 
 #: weblate_web/templates/features.html:133
-msgid "Export & Import"
+#, fuzzy
+#| msgid "Export and import"
+msgid "Export and Import"
 msgstr "Экспарт і імпарт"
 
 #: weblate_web/templates/features.html:134
@@ -1522,7 +1530,9 @@ msgstr ""
 "ці падыходзіць для вас Weblate."
 
 #: weblate_web/templates/hosting.html:548
-msgid "Join existing users & supporters"
+#, fuzzy
+#| msgid "Join existing users & supporters"
+msgid "Join existing users and supporters"
 msgstr "Далучайцеся да існых карыстальнікаў і прыхільнікаў"
 
 #: weblate_web/templates/index.html:7
@@ -2199,31 +2209,31 @@ msgstr "Азнаёміцца з дакументацыяй па пытаннях
 msgid "Creation date"
 msgstr "Дата стварэння"
 
-#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:140
+#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:147
 msgid "Expiry date"
 msgstr "Дата заканчэння"
 
-#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:145
+#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:152
 msgid "State"
 msgstr "Стан"
 
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:155
 msgid "Expired"
 msgstr "Сыйшоўшы"
 
-#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:150
+#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:157
 msgid "Automatic renewal"
 msgstr "Аўтаматычнае падаўжэнне"
 
-#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:152
+#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:159
 msgid "No renewal"
 msgstr "Без падаўжэння"
 
-#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:158
+#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:165
 msgid "Payments"
 msgstr "Плацяжы"
 
-#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:166
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:173
 msgid "Download invoice"
 msgstr "Спампаваць рахунак"
 
@@ -2231,7 +2241,7 @@ msgstr "Спампаваць рахунак"
 msgid "Regenerate activation token"
 msgstr "Перастварыць токен актывацыі"
 
-#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:189
+#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:196
 msgid "Turn off renewal"
 msgstr "Выключыце падаўжэнне"
 
@@ -2243,11 +2253,11 @@ msgstr "Вашыя ахвяраванні"
 msgid "Reward"
 msgstr "Узнагарода"
 
-#: weblate_web/templates/user.html:184
+#: weblate_web/templates/user.html:191
 msgid "Edit reward"
 msgstr "Рэдагаваць узнагароду"
 
-#: weblate_web/templates/user.html:196
+#: weblate_web/templates/user.html:203
 msgid "Donate to see a nice message here."
 msgstr "Ахвяраваць, каб убачыць тут прыемнае паведамленне."
 
@@ -2393,6 +2403,9 @@ msgstr ""
 #: weblate_web/views.py:416
 msgid "Could not process subscription request."
 msgstr "Не атрымалася апрацаваць запыт на падпіску."
+
+#~ msgid "Export & Import"
+#~ msgstr "Экспарт і імпарт"
 
 #~ msgid "Every 2nd year"
 #~ msgstr "Раз на 2 гады"
@@ -2587,9 +2600,6 @@ msgstr "Не атрымалася апрацаваць запыт на падп�
 #~ msgstr ""
 #~ "Пераклады могуць быць экспартаваныя і імпартаваныя ў мноства файлавых "
 #~ "фарматаў."
-
-#~ msgid "Export and import"
-#~ msgstr "Экспарт і імпарт"
 
 #~ msgid "You can define access levels for every user."
 #~ msgstr "Вы можаце вызначыць узровень доступу для кожнага карыстальніка."
