@@ -18,7 +18,6 @@ script:
   - ./manage.py check
   - python -Wd -m coverage run --source=. ./manage.py test weblate_web
   - pycodestyle .
-  - pylint --reports=n --rcfile=.pylintrc weblate_web
   - flake8
 after_success:
   - codecov
