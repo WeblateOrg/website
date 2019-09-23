@@ -309,6 +309,7 @@ class PastPayments(models.Model):
 class Report(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
     site_url = models.URLField()
+    site_title = models.TextField()
     users = models.IntegerField()
     projects = models.IntegerField()
     components = models.IntegerField()
