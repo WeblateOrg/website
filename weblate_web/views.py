@@ -98,7 +98,8 @@ def api_support(request):
         users=request.POST.get('users', 0),
         projects=request.POST.get('projects', 0),
         components=request.POST.get('components', 0),
-        languages=request.POST.get('', 0),
+        languages=request.POST.get('languages', 0),
+        source_strings=request.POST.get('source_strings', 0),
     )
     return JsonResponse(
         data={'name': subscription.status, 'expiry': subscription.expires}

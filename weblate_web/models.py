@@ -301,6 +301,7 @@ class Report(models.Model):
     projects = models.IntegerField()
     components = models.IntegerField()
     languages = models.IntegerField()
+    source_strings = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
