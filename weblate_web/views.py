@@ -68,9 +68,7 @@ def get_customer(request):
     return Customer.objects.get_or_create(
         origin=PAYMENTS_ORIGIN,
         user_id=request.user.id,
-        defaults={
-            'email': request.user.email,
-        }
+        defaults={'email': request.user.email},
     )[0]
 
 
@@ -82,10 +80,8 @@ def show_form_errors(request, form):
         for error in field.errors:
             messages.error(
                 request,
-                _('Error in parameter %(field)s: %(error)s') % {
-                    'field': field.name,
-                    'error': error
-                }
+                _('Error in parameter %(field)s: %(error)s')
+                % {'field': field.name, 'error': error},
             )
 
 
@@ -113,9 +109,7 @@ def api_support(request):
 def fetch_vat(request):
     if 'payment' not in request.POST or 'vat' not in request.POST:
         raise SuspiciousOperation('Missing needed parameters')
-    payment = Payment.objects.filter(
-        pk=request.POST['payment'], state=Payment.NEW
-    )
+    payment = Payment.objects.filter(pk=request.POST['payment'], state=Payment.NEW)
     if not payment.exists():
         raise SuspiciousOperation('Already processed payment')
     vat = cache_vies_data(request.POST['vat'])
@@ -130,10 +124,7 @@ class PaymentView(FormView, SingleObjectMixin):
 
     def redirect_origin(self):
         return redirect(
-            '{}?payment={}'.format(
-                self.object.customer.origin,
-                self.object.pk,
-            )
+            '{}?payment={}'.format(self.object.customer.origin, self.object.pk)
         )
 
     def get_context_data(self, **kwargs):
@@ -151,7 +142,7 @@ class PaymentView(FormView, SingleObjectMixin):
                 _(
                     'Please provide your billing information to '
                     'complete the payment.'
-                )
+                ),
             )
             return redirect('payment-customer', pk=self.object.pk)
         if customer.vat:
@@ -159,8 +150,7 @@ class PaymentView(FormView, SingleObjectMixin):
                 validate_vatin(customer.vat)
             except ValidationError:
                 messages.warning(
-                    self.request,
-                    _('The VAT ID is no longer valid, please update it.')
+                    self.request, _('The VAT ID is no longer valid, please update it.')
                 )
                 return redirect('payment-customer', pk=self.object.pk)
         return None
@@ -181,16 +171,14 @@ class PaymentView(FormView, SingleObjectMixin):
 
     def form_invalid(self, form):
         if self.form_class == MethodForm:
-            messages.error(
-                self.request, _('Please choose a payment method.')
-            )
+            messages.error(self.request, _('Please choose a payment method.'))
         else:
             messages.error(
                 self.request,
                 _(
                     'Please provide your billing information to '
                     'complete the payment.'
-                )
+                ),
             )
         return super().form_invalid(form)
 
@@ -270,9 +258,7 @@ class DonateView(FormView):
             tmp = Donation(reward=int(data['reward']))
             with override('en'):
                 # pylint: disable=no-member
-                description = 'Weblate donation: {}'.format(
-                    tmp.get_reward_display()
-                )
+                description = 'Weblate donation: {}'.format(tmp.get_reward_display())
         else:
             description = 'Weblate donation'
         return self.redirect_payment(
@@ -280,9 +266,7 @@ class DonateView(FormView):
             amount_fixed=True,
             description=description,
             recurring=data['recurring'],
-            extra={
-                'reward': data['reward'],
-            }
+            extra={'reward': data['reward']},
         )
 
 
@@ -292,23 +276,20 @@ def process_payment(request):
         payment = Payment.objects.get(
             pk=request.GET['payment'],
             customer__origin=PAYMENTS_ORIGIN,
-            customer__user_id=request.user.id
+            customer__user_id=request.user.id,
         )
     except (KeyError, Payment.DoesNotExist):
         return redirect(reverse('user'))
 
     # Create donation
     if payment.state in (Payment.NEW, Payment.PENDING):
-        messages.error(
-            request,
-            _('Payment not yet processed, please retry.')
-        )
+        messages.error(request, _('Payment not yet processed, please retry.'))
     elif payment.state == Payment.REJECTED:
         messages.error(
             request,
             _('The payment was rejected: {}').format(
                 payment.details.get('reject_reason', _('Unknown reason'))
-            )
+            ),
         )
     elif payment.state == Payment.ACCEPTED:
         if 'subscription' in payment.extra:
@@ -329,21 +310,16 @@ def download_invoice(request, pk):
         Payment,
         pk=pk,
         customer__origin=PAYMENTS_ORIGIN,
-        customer__user_id=request.user.id
+        customer__user_id=request.user.id,
     )
 
     if not payment.invoice_filename_valid:
-        raise Http404(
-            'File {0} does not exist!'.format(payment.invoice_filename)
-        )
+        raise Http404('File {0} does not exist!'.format(payment.invoice_filename))
 
     with open(payment.invoice_full_filename, 'rb') as handle:
         data = handle.read()
 
-    response = HttpResponse(
-        data,
-        content_type='application/pdf'
-    )
+    response = HttpResponse(data, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename={0}'.format(
         payment.invoice_filename
     )
@@ -385,7 +361,7 @@ class EditLinkView(UpdateView):
             'New link: {link_url}\nNew text: {link_text}\n'.format(
                 link_url=form.cleaned_data.get('link_url', 'N/A'),
                 link_text=form.cleaned_data.get('link_text', 'N/A'),
-            )
+            ),
         )
         return super().form_valid(form)
 
@@ -407,16 +383,10 @@ def subscribe(request, name):
         )
         messages.success(
             request,
-            _(
-                'Subscription requested, '
-                'all you have to do is confirm the email.'
-            )
+            _('Subscription requested, ' 'all you have to do is confirm the email.'),
         )
     else:
-        messages.error(
-            request,
-            _('Could not process subscription request.')
-        )
+        messages.error(request, _('Could not process subscription request.'))
 
     return redirect('support')
 
@@ -460,19 +430,16 @@ class PostView(DetailView):
 
     def get_object(self, queryset=None):
         result = super().get_object(queryset)
-        if (not self.request.user.is_superuser
-                and result.timestamp >= timezone.now()):
+        if not self.request.user.is_superuser and result.timestamp >= timezone.now():
             raise Http404('Future entry')
         return result
 
     def get_context_data(self, **kwargs):
-        kwargs['related'] = Post.objects.filter(
-            topic=self.object.topic
-        ).exclude(
-            pk=self.object.pk
-        ).order_by(
-            '-timestamp'
-        )[:3]
+        kwargs['related'] = (
+            Post.objects.filter(topic=self.object.topic)
+            .exclude(pk=self.object.pk)
+            .order_by('-timestamp')[:3]
+        )
         return kwargs
 
 
@@ -494,12 +461,7 @@ def server_error(request):
 @cache_control(max_age=3600)
 def activity_svg(request):
     bars = []
-    opacities = {
-        0: '.1',
-        1: '.3',
-        2: '.5',
-        3: '.7',
-    }
+    opacities = {0: '.1', 1: '.3', 2: '.5', 3: '.7'}
     data = get_activity()
     top_count = max(data)
     for i, count in enumerate(data):
@@ -527,7 +489,7 @@ def activity_svg(request):
         request,
         'svg/activity.svg',
         {'bars': bars},
-        content_type='image/svg+xml; charset=utf-8'
+        content_type='image/svg+xml; charset=utf-8',
     )
 
 

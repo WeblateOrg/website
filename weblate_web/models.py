@@ -57,17 +57,11 @@ class Donation(models.Model):
     payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
     reward = models.IntegerField(choices=REWARDS)
     link_text = models.CharField(
-        verbose_name=ugettext_lazy('Link text'),
-        max_length=200, blank=True
+        verbose_name=ugettext_lazy('Link text'), max_length=200, blank=True
     )
-    link_url = models.URLField(
-        verbose_name=ugettext_lazy('Link URL'),
-        blank=True
-    )
+    link_url = models.URLField(verbose_name=ugettext_lazy('Link URL'), blank=True)
     link_image = models.ImageField(
-        verbose_name=ugettext_lazy('Link image'),
-        blank=True,
-        upload_to='donations/'
+        verbose_name=ugettext_lazy('Link image'), blank=True, upload_to='donations/'
     )
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
@@ -116,11 +110,7 @@ def process_donation(payment):
             expires += get_period_delta('y')
         # Create new
         donation = Donation.objects.create(
-            user=user,
-            payment=payment.pk,
-            reward=reward,
-            expires=expires,
-            active=True,
+            user=user, payment=payment.pk, reward=reward, expires=expires, active=True
         )
     # Flag payment as processed
     payment.state = Payment.PROCESSED
@@ -163,8 +153,7 @@ def process_subscription(payment):
 class Image(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(
-        upload_to='images/',
-        help_text='Article image, 1200x630 pixels'
+        upload_to='images/', help_text='Article image, 1200x630 pixels'
     )
 
     def __str__(self):
@@ -178,27 +167,24 @@ class Post(models.Model):
     author = models.ForeignKey(
         User, editable=False, on_delete=models.deletion.SET_NULL, null=True
     )
-    topic = models.CharField(
-        max_length=100,
-        db_index=True,
-        choices=TOPICS,
-    )
+    topic = models.CharField(max_length=100, db_index=True, choices=TOPICS)
     body = MarkupField(default_markup_type='markdown')
     summary = models.TextField(
-        blank=True,
-        help_text='Will be generated from first body paragraph if empty'
+        blank=True, help_text='Will be generated from first body paragraph if empty'
     )
     image = models.ForeignKey(
         Image, on_delete=models.deletion.SET_NULL, blank=True, null=True
     )
     milestone = models.BooleanField(
-        blank=True, db_index=True,
+        blank=True,
+        db_index=True,
         default=False,
-        help_text='This is an important milestone, shown on milestones archive'
+        help_text='This is an important milestone, shown on milestones archive',
     )
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
         # Need to save first as rendered value is available only then
         super().save(force_insert, force_update, using, update_fields)
         if not self.summary:
@@ -244,7 +230,7 @@ class Subscription(models.Model):
             ('install:linux', ugettext_lazy('Installation on your Linux server')),
             (
                 'install:docker',
-                ugettext_lazy('Docker installation on your Linux server')
+                ugettext_lazy('Docker installation on your Linux server'),
             ),
         ),
         default='community',
