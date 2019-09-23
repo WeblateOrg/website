@@ -98,6 +98,7 @@ def api_support(request):
     subscription.report_set.create(
         site_url=request.POST.get('site_url', ''),
         site_title=request.POST.get('site_title', ''),
+        ssh_key=request.POST.get('ssh_key', ''),
         users=request.POST.get('users', 0),
         projects=request.POST.get('projects', 0),
         components=request.POST.get('components', 0),
