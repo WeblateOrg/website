@@ -20,15 +20,21 @@
 
 from django.contrib import admin
 
-from weblate_web.models import Donation, Image, Post, Subscription
+from weblate_web.models import Donation, Image, Package, Post, Service, Subscription
 
 
 class DonationAdmin(admin.ModelAdmin):
     list_display = ('user', 'reward', 'created', 'expires', 'get_amount')
 
 
+class ServiceAdmin(admin.ModelAdmin):
+    list_filter = ('status',)
+    date_hierarchy = 'created'
+    filter_horizontal = ('users',)
+
+
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'status', 'created', 'expires', 'get_amount')
+    list_display = ('service', 'package', 'created', 'expires', 'get_amount')
 
 
 class ImageAdmin(admin.ModelAdmin):
@@ -49,7 +55,13 @@ class PostAdmin(admin.ModelAdmin):
         obj.save()
 
 
+class PackageAdmin(admin.ModelAdmin):
+    list_display = ['verbose', 'price']
+
+
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Donation, DonationAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
+admin.site.register(Service, ServiceAdmin)
+admin.site.register(Package, PackageAdmin)

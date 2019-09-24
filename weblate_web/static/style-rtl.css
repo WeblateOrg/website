@@ -331,12 +331,12 @@ a.button.border, input.button.border {
 	background: none;
 	border: 1px solid #FFFFFF;
 }
-a.button.border.rev {
+a.button.border.rev, input.button.border.rev {
     background-color: #fff;
 	border: 1px solid #2ECCAA;
 	color: #1FA385;
 }
-a.button.border.rev:hover {
+a.button.border.rev:hover, input.button.border.rev:hover {
 	background: #2ECCAA;
 	color: #fff;
 }
@@ -1977,10 +1977,10 @@ h2.section-title.hp-style {
 .pricing-table-right .col a.button:hover {
 	color: #2ECCAA;
 }
-.pricing-table-right .col a.button.border.rev {
+.pricing-table-right .col a.button.border.rev, .pricing-table-right .col input.button.border.rev {
 	color: #2ECCAA;
 }
-.pricing-table-right .col a.button.border.rev:hover {
+.pricing-table-right .col a.button.border.rev:hover, .pricing-table-right .col input.button.border.rev:hover {
 	color: #fff;
 }
 .contribution-list .box, .aboutus-list .box {
@@ -2205,11 +2205,11 @@ h2.section-title.hp-style {
 	letter-spacing: 0.5px;
 	line-height: 26px;
 }
-.quick-installation p a, .donations-cols.download-cols .col li a {
+.quick-installation p a, .donations-cols.download-cols .col li a, a.link {
 	color: #2ECCAA;
 	text-decoration: underline;
 }
-.quick-installation p a:hover, .donations-cols.download-cols .col li a:hover {
+.quick-installation p a:hover, .donations-cols.download-cols .col li a:hover, a.link:hover {
 	text-decoration: none;
 }
 .quick-installation a.button {
@@ -2365,6 +2365,9 @@ input.button.make-payment {
 	width: calc(100% + 80px);
 	border-bottom: 1px solid #E9EAEC;
 	margin-right: -40px;
+}
+.form-line:last-child {
+    border-bottom: none;
 }
 .form-line > div {
 	padding: 10px;
@@ -2832,5 +2835,14 @@ img.supporters-avatar {
 	border-radius: 50%;
 }
 .img-widget {
+    width: 100%;
+}
+.payment-form .line-right p:first-child .button.inline {
+    margin-top: 0;
+}
+.payment-form .line-right .button.inline {
+    margin-top: 7px;
+}
+input.fullwidthclasclasss {
     width: 100%;
 }

@@ -12,31 +12,34 @@
                 <a href="{% url 'logout' %}" class="button inline">{% trans "Log out" %}</a>
                 <a href="https://hosted.weblate.org/" class="button inline border rev" target="_blank">{% trans "Use Weblate" %}</a>
             </div>
-            {% with subscriptions=user.subscription_set.all %}
-            {% if subscriptions %}
-            <h1>{% trans "Your subscriptions" %}</h1>
-            {% for subscription in subscriptions %}
+            {% with services=user.service_set.all %}
+            {% if services %}
+            <h1>{% trans "Your services" %}</h1>
+            {% for service in services %}
             <div class="payment-form">
                 <div class="form-line">
                     <div class="line-left">{% trans "Status" %}</div>
-                    <div class="line-right">{{ subscription.get_status_display }}</div>
+                    <div class="line-right">{{ service.get_status_display }}</div>
                     <div class="clear"></div>
                 </div>
-                {% if subscription.needs_token %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Activation token" %}</div>
                     <div class="line-right">
-                        <input value="{{ subscription.secret }}" readonly>
-                        <a class="button small inline" data-clipboard-text="{{ subscription.secret }}">{% trans "Copy" %}</a><br />
+                        <input value="{{ service.secret }}" readonly class="fullwidth"><br />
+                        <a class="button small inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
+                        <form class="form-inline" method="post" action="{% url "service-token" pk=service.pk %}">
+                        {% csrf_token %}
+                        <input type="submit" class="button small inline border rev" value="{% trans "Regenerate" %}">
+                        </form>
                     </div>
                     <div class="clear"></div>
                 </div>
-                {% with last_report=subscription.last_report %}
+                {% with last_report=service.last_report %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Server URL" %}</div>
                     <div class="line-right">
                 {% if last_report %}
-                        <a href="{{ last_report.site_url }}">{{ last_report.site_url }}</a>
+                        <a class="link" href="{{ last_report.site_url }}">{{ last_report.site_title|default:"Weblate" }}</a>
                 {% else %}
                         <p class="text-muted">
                             {% trans "Use an activation token to connect your Weblate installation to the support portal. This step is optional, you can use support services without it as well." %}
@@ -47,76 +50,90 @@
                     <div class="clear"></div>
                 </div>
                 {% endwith %}
-                {% endif %}
-                <div class="form-line">
-                    <div class="line-left">{% trans "Creation date" %}</div>
-                    <div class="line-right">{{ subscription.created }}</div>
-                    <div class="clear"></div>
-                </div>
-                {% if subscription.get_repeat %}
-                <div class="form-line">
-                    <div class="line-left">{% trans "Expiry date" %}</div>
-                    <div class="line-right">{{ subscription.expires }}</div>
-                    <div class="clear"></div>
-                </div>
-                <div class="form-line">
-                    <div class="line-left">{% trans "State" %}</div>
-                    <div class="line-right">
-                        {% if not subscription.active %}
-                        {% trans "Expired" %}
-                        {% elif subscription.payment_obj.recurring %}
-                        {% trans "Automatic renewal" %}
-                        {% else %}
-                        {% trans "No renewal" %}
-                        {% endif %}
+                {% with subscriptions=service.subscription_set.all %}
+                {% for subscription in subscriptions %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Subscription" %}</div>
+                        <div class="line-right"><strong>{{ subscription.get_package_display }}</strong></div>
+                        <div class="clear"></div>
                     </div>
-                    <div class="clear"></div>
-                </div>
-                {% endif %}
+                    {% if subscription.get_repeat %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Validity" %}</div>
+                        <div class="line-right">{% blocktrans with created=subscription.created expires=subscription.expires context "Date range" %}{{ created }} – {{ expires }}{% endblocktrans %}</div>
+                        <div class="clear"></div>
+                    </div>
+                    {% else %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Creation date" %}</div>
+                        <div class="line-right">{{ subscription.created }}</div>
+                        <div class="clear"></div>
+                    </div>
+                    {% endif %}
+                    {% if subscription.get_repeat %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "State" %}</div>
+                        <div class="line-right">
+                            {% if not subscription.active %}
+                            {% trans "Expired" %}
+                            {% elif subscription.payment_obj.recurring %}
+                            {% trans "Automatic renewal" %}<br />
+                            {% else %}
+                            {% trans "No renewal" %}
+                            {% endif %}
+                            <form class="form-inline" method="post" action="{% url "subscription-pay" pk=subscription.pk %}">
+                            {% csrf_token %}
+                            <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
+                            </form>
+                            {% if subscription.payment_obj.recurring %}
+                            <form class="form-inline" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">
+                            {% csrf_token %}
+                            <input type="submit" class="button small inline border rev" value="{% trans "Turn off renewal" %}">
+                            </form>
+                            {% endif %}
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Payments" %}</div>
                     <div class="line-right">
-                    {% for payment in subscription.list_payments %}
-                    <p>
-                    €{{ payment.amount }}
-                    {% if payment.state == 5 %} 
-                    ({{ payment.invoice }})
-                    {% if payment.invoice_filename_valid %}
-                    <a class="button small inline" href="{% url 'user-invoice' pk=payment.pk %}">{% trans "Download invoice" %}</a>
-                    {% else %}
-                    ({{ payment.invoice_filename }})
-                    {% endif %}
-                    {% else %}
-                    {{ payment.get_state_display }}
-                    {% if payment.details.reject_reason %}
-                    ({{ payment.details.reject_reason }})
-                    {% endif %}
-                    {% endif %}
-                    </p>
+                    {% for subscription in subscriptions %}
+                        {% for payment in subscription.list_payments %}
+                        <p>
+                        €{{ payment.amount }}
+                        {% if payment.state == 5 %} 
+                        ({{ payment.invoice }})
+                        {% if payment.invoice_filename_valid %}
+                        <a class="button small inline" href="{% url 'user-invoice' pk=payment.pk %}">{% trans "Download invoice" %}</a>
+                        {% else %}
+                        ({{ payment.invoice_filename }})
+                        {% endif %}
+                        {% else %}
+                        {{ payment.get_state_display }}
+                        {% if payment.details.reject_reason %}
+                        ({{ payment.details.reject_reason }})
+                        {% endif %}
+                        {% endif %}
+                        </p>
+                        {% endfor %}
                     {% endfor %}
                     </div>
                     <div class="clear"></div>
                 </div>
-                <div class="payment-pick">
+                {% endwith %}
+                <div class="form-line">
+                    <div class="line-left">{% trans "Get more services" %}</div>
+                    <div class="line-right">
+                        {% for package, name in service.get_suggestions %}
+                        <a class="button small inline" href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ name }}</a>
+                        {% empty %}
+                        {% trans "Congratulations, your Weblate instance is fully covered." %}
+                        {% endfor %}
+                    </div>
+                    <div class="clear"></div>
                 </div>
-                {% if subscription.get_repeat %}
-                <form class="form-inline" method="post" action="{% url "subscription-pay" pk=subscription.pk %}">
-                {% csrf_token %}
-                <input type="submit" class="button small inline" value="{% trans "Payment" %}">
-                </form>
-                {% endif %}
-                {% if subscription.needs_token %}
-                <form class="form-inline" method="post" action="{% url "subscription-token" pk=subscription.pk %}">
-                {% csrf_token %}
-                <input type="submit" class="button small inline" value="{% trans "Regenerate activation token" %}">
-                </form>
-                {% endif %}
-                {% if subscription.payment_obj.recurring %}
-                <form class="form-inline" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">
-                {% csrf_token %}
-                <input type="submit" class="button small inline" value="{% trans "Turn off renewal" %}">
-                </form>
-                {% endif %}
             </div>
             {% endfor %}
             {% endif %}

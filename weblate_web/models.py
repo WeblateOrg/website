@@ -26,6 +26,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
+from django.utils.translation import gettext as _
 from django.utils.translation import ugettext_lazy
 from markupfield.fields import MarkupField
 from wlhosted.payments.models import Payment, get_period_delta
@@ -118,6 +119,16 @@ def process_donation(payment):
     return donation
 
 
+def get_service(payment, user):
+    try:
+        return user.service_set.get(pk=payment.extra['service'])
+    except Service.DoesNotExist:
+        try:
+            return user.service_set.get()
+        except (Service.MultipleObjectsReturned, Service.DoesNotExist):
+            return user.service_set.create()
+
+
 def process_subscription(payment):
     if payment.state != Payment.ACCEPTED:
         raise ValueError('Can not process not accepted payment')
@@ -139,9 +150,9 @@ def process_subscription(payment):
         expires = timezone.now() + get_period_delta('y')
         # Create new
         subscription = Subscription.objects.create(
-            user=user,
+            service=get_service(payment, user),
             payment=payment.pk,
-            status=payment.extra['subscription'],
+            package=payment.extra['subscription'],
             expires=expires,
         )
     # Flag payment as processed
@@ -209,17 +220,18 @@ def generate_secret():
     return get_random_string(64)
 
 
-SUBSCRIPTIONS = {
-    'basic': 500,
-    'extended': 750,
-    'install:docker': 200,
-    'install:linux': 300,
-}
+class Package(models.Model):
+    name = models.CharField(max_length=150, unique=True)
+    verbose = models.CharField(max_length=400)
+    price = models.IntegerField()
+    limit_languages = models.IntegerField(default=0)
+    limit_source_strings = models.IntegerField(default=0)
+    backup = models.BooleanField(default=False)
 
 
-class Subscription(models.Model):
-    user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
+class Service(models.Model):
+    secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
+    users = models.ManyToManyField(User)
     status = models.CharField(
         max_length=150,
         choices=(
@@ -227,20 +239,95 @@ class Subscription(models.Model):
             ('hosted', ugettext_lazy('Hosted service')),
             ('basic', ugettext_lazy('Basic self-hosted support')),
             ('extended', ugettext_lazy('Extended self-hosted support')),
-            ('install:linux', ugettext_lazy('Installation on your Linux server')),
-            (
-                'install:docker',
-                ugettext_lazy('Docker installation on your Linux server'),
-            ),
         ),
         default='community',
     )
-    secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
+    backup_repository = models.CharField(max_length=500, default='')
+    limit_languages = models.IntegerField(default=0)
+    limit_source_strings = models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        try:
+            url = self.last_report().site_url
+        except Report.DoesNotExist:
+            url = ''
+        return '{}: {}: {}'.format(
+            self.get_status_display(),
+            ', '.join(self.users.values_list('username', flat=True)),
+            url,
+        )
+
+    def last_report(self):
+        return self.report_set.latest('timestamp')
+
+    @cached_property
+    def hosted_subscriptions(self):
+        return self.subscription_set.filter(package__startswith='hosted:')
+
+    @cached_property
+    def basic_subscriptions(self):
+        return self.subscription_set.filter(package='basic')
+
+    @cached_property
+    def extended_subscriptions(self):
+        return self.subscription_set.filter(package='extended')
+
+    @cached_property
+    def support_subscriptions(self):
+        return (
+            self.hosted_subscriptions
+            | self.basic_subscriptions
+            | self.extended_subscriptions
+        )
+
+    @cached_property
+    def backup_subscriptions(self):
+        return self.subscription_set.filter(package='backup')
+
+    @cached_property
+    def expires(self):
+        try:
+            return self.support_subscriptions.latest('expires').expires
+        except Subscription.DoesNotExist:
+            return timezone.now()
+
+    def get_suggestions(self):
+        if not self.support_subscriptions.exists():
+            yield 'basic', _('Basic support')
+        if not self.hosted_subscriptions.exists():
+            if not self.extended_subscriptions.exists():
+                yield 'extended', _('Extended support')
+            if not self.backup_subscriptions.exists():
+                yield 'backup', _('Backup service')
+
+    def update_status(self):
+        status = 'community'
+        if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
+            status = 'hosted'
+        elif self.extended_subscriptions.filter(expires__gt=timezone.now()).exists():
+            status = 'extended'
+        elif self.basic_subscriptions.filter(expires__gt=timezone.now()).exists():
+            status = 'basic'
+        if status != self.status:
+            self.status = status
+            self.save(update_fields=['status'])
+
+
+class Subscription(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
+    payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
+    package = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
 
+    def get_package_display(self):
+        return _(Package.objects.get(name=self.package).verbose)
+
     def get_repeat(self):
-        if self.status in ('basic', 'extended'):
+        if self.package in ('basic', 'extended', 'backup') or self.package.startswith(
+            'hosted:'
+        ):
             return 'y'
         return ''
 
@@ -248,10 +335,7 @@ class Subscription(models.Model):
         return self.expires >= timezone.now()
 
     def get_amount(self):
-        return SUBSCRIPTIONS[self.status]
-
-    def needs_token(self):
-        return self.status in ('basic', 'extended')
+        return Package.objects.get(name=self.package).price
 
     def regenerate(self):
         self.secret = generate_secret()
@@ -276,12 +360,13 @@ class Subscription(models.Model):
         return reverse('subscription-edit', kwargs={'pk': self.pk})
 
     def __str__(self):
-        # pylint: disable=no-member
-        return '{}:{}'.format(self.user, self.get_status_display())
+        return self.get_package_display()
 
-    def last_report(self):
-        # pylint: disable=no-member
-        return self.report_set.latest('timestamp')
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(force_insert, force_update, using, update_fields)
+        self.service.update_status()
 
 
 class PastPayments(models.Model):
@@ -293,7 +378,7 @@ class PastPayments(models.Model):
 
 
 class Report(models.Model):
-    subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
     site_url = models.URLField()
     site_title = models.TextField()
     ssh_key = models.TextField()

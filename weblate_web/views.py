@@ -53,10 +53,11 @@ from weblate_web.forms import (
 )
 from weblate_web.models import (
     PAYMENTS_ORIGIN,
-    SUBSCRIPTIONS,
     TOPIC_DICT,
     Donation,
+    Package,
     Post,
+    Service,
     Subscription,
     process_donation,
     process_subscription,
@@ -88,10 +89,8 @@ def show_form_errors(request, form):
 @require_POST
 @csrf_exempt
 def api_support(request):
-    subscription = get_object_or_404(
-        Subscription, secret=request.POST.get('secret', '')
-    )
-    subscription.report_set.create(
+    service = get_object_or_404(Service, secret=request.POST.get('secret', ''))
+    service.report_set.create(
         site_url=request.POST.get('site_url', ''),
         site_title=request.POST.get('site_title', ''),
         ssh_key=request.POST.get('ssh_key', ''),
@@ -101,9 +100,7 @@ def api_support(request):
         languages=request.POST.get('languages', 0),
         source_strings=request.POST.get('source_strings', 0),
     )
-    return JsonResponse(
-        data={'name': subscription.status, 'expiry': subscription.expires}
-    )
+    return JsonResponse(data={'name': service.status, 'expiry': service.expires})
 
 
 @require_POST
@@ -506,9 +503,9 @@ def subscription_disable_repeat(request, pk):
 
 @require_POST
 @login_required
-def subscription_token(request, pk):
-    subscription = get_object_or_404(Subscription, pk=pk, user=request.user)
-    subscription.regenerate()
+def service_token(request, pk):
+    service = get_object_or_404(Service, pk=pk, users=request.user)
+    service.regenerate()
     return redirect(reverse('user'))
 
 
@@ -520,7 +517,7 @@ def subscription_pay(request, pk):
         payment = Payment.objects.create(
             amount=subscription.get_amount(),
             # pylint: disable=no-member
-            description='Weblate: {}'.format(subscription.get_status_display()),
+            description='Weblate: {}'.format(subscription.get_package_display()),
             recurring=subscription.get_repeat(),
             extra={'subscription': subscription.pk},
             customer=get_customer(request),
@@ -531,16 +528,16 @@ def subscription_pay(request, pk):
 @login_required
 def subscription_new(request):
     plan = request.GET.get('plan')
-    if plan not in SUBSCRIPTIONS:
+    if not Package.objects.filter(name=plan).exists():
         return redirect('support')
-    subscription = Subscription(status=plan)
+    subscription = Subscription(package=plan)
     with override('en'):
         payment = Payment.objects.create(
             amount=subscription.get_amount(),
             # pylint: disable=no-member
-            description='Weblate: {}'.format(subscription.get_status_display()),
+            description='Weblate: {}'.format(subscription.get_package_display()),
             recurring=subscription.get_repeat(),
-            extra={'subscription': plan},
+            extra={'subscription': plan, 'service': request.GET.get('service')},
             customer=get_customer(request),
         )
     return redirect(payment.get_payment_url())
