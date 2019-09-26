@@ -350,15 +350,25 @@ class Service(models.Model):
 
     def update_status(self):
         status = 'community'
+        package = 'community'
         if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = 'hosted'
+            package = self.hosted_subscriptions.latest('expires').package
         elif self.extended_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = 'extended'
         elif self.basic_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = 'basic'
-        if status != self.status:
+
+        package_obj = Package.objects.get(name=package)
+
+        if (
+            status != self.status
+            or package_obj.limit_source_strings != self.limit_source_strings
+        ):
             self.status = status
-            self.save(update_fields=['status'])
+            self.limit_source_strings = package_obj.limit_source_strings
+            self.limit_languages = package_obj.limit_languages
+            self.save()
 
     def create_backup(self):
         backup = False
@@ -369,6 +379,16 @@ class Service(models.Model):
         if backup and not self.backup_repository and self.report_set.exists():
             self.backup_repository = create_backup_repository(self)
             self.save(update_fields=['backup_repository'])
+
+    def check_in_limits(self):
+        if (
+            self.limit_source_strings
+            and self.last_report.source_strings > self.limit_source_strings
+        ):
+            return False
+        if self.limit_languages and self.last_report.languages > self.limit_languages:
+            return False
+        return True
 
 
 class Subscription(models.Model):

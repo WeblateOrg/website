@@ -107,6 +107,7 @@ def api_support(request):
             'name': service.status,
             'expiry': service.expires,
             'backup_respository': service.backup_repository,
+            'in_limits': service.check_in_limits(),
         }
     )
 
