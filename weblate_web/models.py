@@ -269,7 +269,6 @@ class Package(models.Model):
     price = models.IntegerField()
     limit_languages = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
-    backup = models.BooleanField(default=False)
 
 
 class Service(models.Model):
