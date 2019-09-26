@@ -100,7 +100,15 @@ def api_support(request):
         languages=request.POST.get('languages', 0),
         source_strings=request.POST.get('source_strings', 0),
     )
-    return JsonResponse(data={'name': service.status, 'expiry': service.expires})
+    service.update_status()
+    service.create_backup()
+    return JsonResponse(
+        data={
+            'name': service.status,
+            'expiry': service.expires,
+            'backup_respository': service.backup_repository,
+        }
+    )
 
 
 @require_POST

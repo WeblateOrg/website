@@ -34,6 +34,17 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+                {% if service.backup_repository %}
+                <div class="form-line">
+                    <div class="line-left">{% trans "Backup repository" %}</div>
+                    <div class="line-right">
+                        <input value="{{ service.backup_repository }}" readonly class="fullwidth"><br />
+                        <a class="button small inline" data-clipboard-text="{{ service.backup_repository }}">{% trans "Copy" %}</a>
+                        <a class="button small inline border rev" href="https://docs.weblate.org/en/latest/admin/backup.html#cloud">{% trans "Documentation" %}</a>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                {% endif %}
                 {% with last_report=service.last_report %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Server URL" %}</div>

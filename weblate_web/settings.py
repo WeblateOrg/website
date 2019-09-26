@@ -60,7 +60,7 @@ DATABASES = {
         'HOST': '',
         # Set to empty string for default. Not used with sqlite3.
         'PORT': '',
-    }
+    },
 }
 DATABASE_ROUTERS = ['wlhosted.dbrouter.HostedRouter']
 
@@ -192,9 +192,7 @@ _TEMPLATE_LOADERS = [
     'django.template.loaders.app_directories.Loader',
 ]
 if not DEBUG:
-    _TEMPLATE_LOADERS = [
-        ('django.template.loaders.cached.Loader', _TEMPLATE_LOADERS)
-    ]
+    _TEMPLATE_LOADERS = [('django.template.loaders.cached.Loader', _TEMPLATE_LOADERS)]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -208,7 +206,7 @@ TEMPLATES = [
             ],
             'loaders': _TEMPLATE_LOADERS,
         },
-    },
+    }
 ]
 
 # Middleware
@@ -261,32 +259,26 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
+    'filters': {'require_debug_false': {'()': 'django.utils.log.RequireDebugFalse'}},
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        },
-    }
+        }
+    },
 }
 
 FILES_PATH = os.path.join(BASE_DIR, 'files')
 FILES_URL = 'https://dl.cihar.com/weblate/'
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
 ALLOWED_HOSTS = ('weblate.org', '127.0.0.1', 'localhost')
 
@@ -312,6 +304,15 @@ REGISTRATION_EMAIL_MATCH = '.*'
 
 CHANGES_API = 'https://hosted.weblate.org/api/'
 CHANGES_KEY = ''
+
+STORAGE_SERVER = {
+    'hostname': 'u164666.your-storagebox.de',
+    'port': 23,
+    'username': 'u164666-sub4',
+}
+STORAGE_BOX = 153391
+STORAGE_USER = ''
+STORAGE_PASSWORD = ''
 
 try:
     from .settings_local import *

@@ -24,7 +24,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from wlhosted.payments.models import Payment
 
-from weblate_web.models import Donation, Subscription
+from weblate_web.models import Donation, Service, Subscription
 
 
 class Command(BaseCommand):
@@ -34,14 +34,19 @@ class Command(BaseCommand):
         # Issue recurring payments
         self.handle_donations()
         self.handle_subscriptions()
+        self.handle_services()
+
+    @staticmethod
+    def handle_services():
+        for service in Service.objects.all():
+            service.update_status()
+            service.create_backup()
 
     @staticmethod
     def handle_subscriptions():
         subscriptions = Subscription.objects.filter(
             expires__lte=timezone.now() + timedelta(days=3)
-        ).exclude(
-            payment=None
-        )
+        ).exclude(payment=None)
         for subscription in subscriptions:
             payment = subscription.payment_obj
             if not payment.recurring:
@@ -68,9 +73,7 @@ class Command(BaseCommand):
     def handle_donations():
         donations = Donation.objects.filter(
             active=True, expires__lte=timezone.now() + timedelta(days=3)
-        ).exclude(
-            payment=None
-        )
+        ).exclude(payment=None)
         for donation in donations:
             payment = donation.payment_obj
             if not payment.recurring:

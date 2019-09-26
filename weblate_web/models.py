@@ -18,7 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from uuid import uuid4
+
 import html2text
+import requests
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
@@ -29,6 +33,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from django.utils.translation import ugettext_lazy
 from markupfield.fields import MarkupField
+from paramiko.client import SSHClient
 from wlhosted.payments.models import Payment, get_period_delta
 
 PAYMENTS_ORIGIN = 'https://weblate.org/donate/process/'
@@ -51,6 +56,44 @@ TOPICS = (
 )
 
 TOPIC_DICT = dict(TOPICS)
+
+
+def create_backup_repository(service):
+    """
+    - create filesystem folders
+    - store ssh key
+    - create subaccount
+    """
+    # Create folder and SSH key
+    client = SSHClient()
+    client.load_system_host_keys()
+    client.connect(**settings.STORAGE_SERVER)
+    ftp = client.open_sftp()
+    dirname = str(uuid4())
+    ftp.mkdir(dirname)
+    ftp.chdir(dirname)
+    ftp.mkdir('.ssh')
+    ftp.chdir('.ssh')
+    with ftp.open('authorized_keys', 'w') as handle:
+        handle.write(service.last_report().ssh_key)
+
+    # Create account on the service
+    url = 'https://robot-ws.your-server.de/storagebox/{}/subaccount'.format(
+        settings.STORAGE_BOX
+    )
+    response = requests.post(
+        url,
+        data={
+            "homedirectory": 'weblate/{}'.format(dirname),
+            "ssh": "1",
+            "comment": "Weblate backup service {}".format(service.pk),
+        },
+        auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
+    )
+    data = response.json()
+    return 'ssh://{}@{}:23/./backups'.format(
+        data['subaccount']['username'], data['subaccount']['server']
+    )
 
 
 class Donation(models.Model):
@@ -312,6 +355,16 @@ class Service(models.Model):
         if status != self.status:
             self.status = status
             self.save(update_fields=['status'])
+
+    def create_backup(self):
+        backup = False
+        if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
+            backup = True
+        if self.backup_subscriptions.filter(expires__gt=timezone.now()).exists():
+            backup = True
+        if backup and not self.backup_repository and self.report_set.exists():
+            self.backup_repository = create_backup_repository(self)
+            self.save(update_fields=['backup_repository'])
 
 
 class Subscription(models.Model):
