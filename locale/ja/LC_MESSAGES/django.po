@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-12 07:38+0200\n"
+"POT-Creation-Date: 2019-09-26 17:27+0200\n"
 "PO-Revision-Date: 2019-09-16 12:48+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -25,91 +25,101 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.9-dev\n"
 
-#: weblate_web/models.py:36
+#: weblate_web/models.py:42
 msgid "No reward"
 msgstr "報酬がありません"
 
-#: weblate_web/models.py:37 weblate_web/templates/donate.html:29
+#: weblate_web/models.py:43 weblate_web/templates/donate.html:29
 msgid "Name in the list of supporters"
 msgstr "支援者名簿の記載名"
 
-#: weblate_web/models.py:38 weblate_web/templates/donate.html:34
+#: weblate_web/models.py:44 weblate_web/templates/donate.html:34
 #: weblate_web/templates/donate/form.html:46
 msgid "Link in the list of supporters"
 msgstr "支援者名簿のリンク"
 
-#: weblate_web/models.py:39 weblate_web/templates/donate.html:39
+#: weblate_web/models.py:45 weblate_web/templates/donate.html:39
 #: weblate_web/templates/donate/form.html:54
 msgid "Logo and link on the Weblate website"
 msgstr "当 HP のロゴとリンク"
 
-#: weblate_web/models.py:43
+#: weblate_web/models.py:49
 #: weblate_web/templates/weblate_web/post_detail.html:50
 msgid "Release"
 msgstr "リリース"
 
-#: weblate_web/models.py:44 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:50 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
 msgid "Features"
 msgstr "機能"
 
-#: weblate_web/models.py:45
+#: weblate_web/models.py:51
 msgid "Announcement"
 msgstr "発表"
 
-#: weblate_web/models.py:46
+#: weblate_web/models.py:52
 msgid "Conferences"
 msgstr "会談"
 
-#: weblate_web/models.py:47
+#: weblate_web/models.py:53
 msgid "Hosted Weblate"
 msgstr "Weblate のホスティング"
 
-#: weblate_web/models.py:48
+#: weblate_web/models.py:54
 #: weblate_web/templates/weblate_web/post_detail.html:52
 msgid "Development"
 msgstr "開発"
 
-#: weblate_web/models.py:49
+#: weblate_web/models.py:55
 #: weblate_web/templates/weblate_web/post_detail.html:53
 msgid "Localization"
 msgstr "翻訳"
 
-#: weblate_web/models.py:60
+#: weblate_web/models.py:104
 msgid "Link text"
 msgstr "リンク テキスト"
 
-#: weblate_web/models.py:64 weblate_web/templates/user.html:141
+#: weblate_web/models.py:106 weblate_web/templates/user.html:174
 msgid "Link URL"
 msgstr "URL リンク"
 
-#: weblate_web/models.py:68
+#: weblate_web/models.py:108
 msgid "Link image"
 msgstr "リンク 画像"
 
-#: weblate_web/models.py:240
+#: weblate_web/models.py:280
 msgid "Community support"
 msgstr "コミュニティによるサポート"
 
-#: weblate_web/models.py:241
+#: weblate_web/models.py:281
 msgid "Hosted service"
 msgstr "ホスティング サービス"
 
-#: weblate_web/models.py:242 weblate_web/templates/support.html:76
+#: weblate_web/models.py:282 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "お客様のサーバへの基本サポート"
 
-#: weblate_web/models.py:243 weblate_web/templates/support.html:86
+#: weblate_web/models.py:283 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "お客様のサーバへの追加サポート"
 
-#: weblate_web/models.py:244 weblate_web/templates/support.html:51
-msgid "Installation on your Linux server"
-msgstr "お客様の Linux サーバへインストール"
+#: weblate_web/models.py:343
+#, fuzzy
+#| msgid "Buy support"
+msgid "Basic support"
+msgstr "サポートの購入"
 
-#: weblate_web/models.py:247 weblate_web/templates/support.html:64
-msgid "Docker installation on your Linux server"
-msgstr "Linux サーバーに Docker のインストール"
+#: weblate_web/models.py:346
+#, fuzzy
+#| msgid "Extended self-hosted support"
+msgid "Extended support"
+msgstr "お客様のサーバへの追加サポート"
+
+#: weblate_web/models.py:348 weblate_web/templates/support.html:97
+#, fuzzy
+#| msgid "Cloud service"
+msgid "Backup service"
+msgstr "クラウドサービス"
 
 #: weblate_web/templates/404.html:8
 msgid "Page not found"
@@ -517,8 +527,8 @@ msgid ""
 "easily follow the links to edit each page directly from the <a href=\"%(url)s"
 "\">documentation</a>."
 msgstr ""
-"このドキュメントは、メイン ソース コード リポジトリの一部であり、リンクをたどって <a href=\"%(url)s\">ドキュメント</a> "
-"から直接各ページを編集できます。"
+"このドキュメントは、メイン ソース コード リポジトリの一部であり、リンクをた"
+"どって <a href=\"%(url)s\">ドキュメント</a> から直接各ページを編集できます。"
 
 #: weblate_web/templates/contribute.html:61
 msgid ""
@@ -603,7 +613,7 @@ msgstr "寄付の開始"
 
 #: weblate_web/templates/donate.html:30 weblate_web/templates/donate.html:35
 #: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:81
-#: weblate_web/templates/support.html:92
+#: weblate_web/templates/support.html:92 weblate_web/templates/support.html:104
 msgid "annually"
 msgstr "無期限"
 
@@ -612,7 +622,7 @@ msgstr "無期限"
 #: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:208
+#: weblate_web/templates/user.html:241
 msgid "Donate"
 msgstr "寄付"
 
@@ -1138,7 +1148,7 @@ msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr "翻訳は、コードと同じバージョン管理システム内で管理します。"
 
-#: weblate_web/templates/features.html:147
+#: weblate_web/templates/features.html:147 weblate_web/templates/user.html:50
 msgid "Documentation"
 msgstr "ドキュメント"
 
@@ -1456,7 +1466,7 @@ msgstr "長期の前払いで <strong>多大な節約！</strong>"
 #: weblate_web/templates/hosting.html:468
 #: weblate_web/templates/hosting.html:481 weblate_web/templates/support.html:60
 #: weblate_web/templates/support.html:72 weblate_web/templates/support.html:82
-#: weblate_web/templates/support.html:93
+#: weblate_web/templates/support.html:93 weblate_web/templates/support.html:105
 msgid "Buy now"
 msgstr "今すぐ購入"
 
@@ -1471,7 +1481,7 @@ msgid "or download Weblate"
 msgstr "もしくは Weblate のダウンロード"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:107 weblate_web/templates/user.html:105
+#: weblate_web/templates/support.html:119
 msgid "Payment"
 msgstr "支払い方法"
 
@@ -1981,6 +1991,10 @@ msgstr ""
 "前払いのサポートは、無償サービスとお客様のサーバのインストールに対して行いま"
 "す"
 
+#: weblate_web/templates/support.html:51
+msgid "Installation on your Linux server"
+msgstr "お客様の Linux サーバへインストール"
+
 #: weblate_web/templates/support.html:53 weblate_web/templates/support.html:66
 msgid "One-time installation of Weblate"
 msgstr "Weblate のインストール 1 回分"
@@ -2005,6 +2019,10 @@ msgstr "設定のカスタマイズ"
 msgid "installation"
 msgstr "インストール"
 
+#: weblate_web/templates/support.html:64
+msgid "Docker installation on your Linux server"
+msgstr "Linux サーバーに Docker のインストール"
+
 #: weblate_web/templates/support.html:67
 msgid "Installation using Docker"
 msgstr "Docker を使用したインストール"
@@ -2021,78 +2039,96 @@ msgstr "優先的なメール サポート。"
 msgid "Always upgraded to latest version."
 msgstr "常に最新バージョンにアップグレードします。"
 
-#: weblate_web/templates/support.html:97
+#: weblate_web/templates/support.html:99
+msgid "Cloud backups of your installations."
+msgstr ""
+
+#: weblate_web/templates/support.html:100
+msgid "Securely encrypted with your passphrase."
+msgstr ""
+
+#: weblate_web/templates/support.html:101
+msgid "Stores up to 100GB of backups."
+msgstr ""
+
+#: weblate_web/templates/support.html:102
+#, fuzzy
+#| msgid "Browse documentation"
+msgid "Read more in the documentation."
+msgstr "ドキュメントの参照"
+
+#: weblate_web/templates/support.html:109
 msgid "Consulting services and/or custom development"
 msgstr "コンサルティング サービス、およびカスタム開発"
 
-#: weblate_web/templates/support.html:99
+#: weblate_web/templates/support.html:111
 msgid "Development of custom features"
 msgstr "独自機能の開発"
 
-#: weblate_web/templates/support.html:100
+#: weblate_web/templates/support.html:112
 msgid "Integration of Weblate into your workflow"
 msgstr "お客様のワークフローに Weblate を統合"
 
-#: weblate_web/templates/support.html:101
+#: weblate_web/templates/support.html:113
 msgid "Suggestions on the internationalization and localization"
 msgstr "国際化と翻訳に関する提案"
 
-#: weblate_web/templates/support.html:103
+#: weblate_web/templates/support.html:115
 msgid "hourly"
 msgstr "毎時"
 
-#: weblate_web/templates/support.html:105
+#: weblate_web/templates/support.html:117
 msgid "Ask for help"
 msgstr "ヘルプの依頼"
 
-#: weblate_web/templates/support.html:113
+#: weblate_web/templates/support.html:125
 msgid "Mailing lists"
 msgstr "メーリング リスト"
 
-#: weblate_web/templates/support.html:115
+#: weblate_web/templates/support.html:127
 msgid "Users and developers"
 msgstr "利用者と開発者用"
 
-#: weblate_web/templates/support.html:118
-#: weblate_web/templates/support.html:131
+#: weblate_web/templates/support.html:130
+#: weblate_web/templates/support.html:143
 msgid "Your e-mail address…"
 msgstr "メールアドレスを入力してください…"
 
-#: weblate_web/templates/support.html:119
-#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:131
+#: weblate_web/templates/support.html:144
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "登録"
 
-#: weblate_web/templates/support.html:122
+#: weblate_web/templates/support.html:134
 msgid "Discuss Weblate with users and developers"
 msgstr "Weblate について利用者や開発者と議論する"
 
-#: weblate_web/templates/support.html:123
+#: weblate_web/templates/support.html:135
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 "投稿は <a href=\"mailto:%(address)s\">%(address)s</a> 宛にお送りください"
 
-#: weblate_web/templates/support.html:124
-#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:136
+#: weblate_web/templates/support.html:149
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr "<a href=\"%(url)s\">アーカイブ</a> で回答を探す"
 
-#: weblate_web/templates/support.html:128
+#: weblate_web/templates/support.html:140
 msgid "Hosted Weblate announcements"
 msgstr "Hosted Weblate のお知らせ"
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:147
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr "<strong>少ない投稿</strong> で運営してます"
 
-#: weblate_web/templates/support.html:136
+#: weblate_web/templates/support.html:148
 msgid "Only premium service announcements"
 msgstr "プレミアム サービスのお知らせのみ"
 
-#: weblate_web/templates/support.html:143
+#: weblate_web/templates/support.html:155
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr "<a href=\"%(url)s\">Stack Overflow</a> で質問。"
@@ -2134,26 +2170,42 @@ msgid "Log out"
 msgstr "ログアウト"
 
 #: weblate_web/templates/user.html:17
-msgid "Your subscriptions"
-msgstr "あなたのサブスクリプション"
+#, fuzzy
+#| msgid "Cloud service"
+msgid "Your services"
+msgstr "クラウドサービス"
 
 #: weblate_web/templates/user.html:21
 msgid "Status"
 msgstr "状態"
 
-#: weblate_web/templates/user.html:27
+#: weblate_web/templates/user.html:26
+msgid "Exceeding service limits"
+msgstr ""
+
+#: weblate_web/templates/user.html:33
 msgid "Activation token"
 msgstr "有効化のトークン"
 
-#: weblate_web/templates/user.html:30
+#: weblate_web/templates/user.html:36 weblate_web/templates/user.html:49
 msgid "Copy"
 msgstr "コピー"
 
-#: weblate_web/templates/user.html:36
+#: weblate_web/templates/user.html:39
+msgid "Regenerate"
+msgstr ""
+
+#: weblate_web/templates/user.html:46
+#, fuzzy
+#| msgid "GitHub repository"
+msgid "Backup repository"
+msgstr "GitHub リポジトリ"
+
+#: weblate_web/templates/user.html:56
 msgid "Server URL"
 msgstr "サーバ URL"
 
-#: weblate_web/templates/user.html:42
+#: weblate_web/templates/user.html:62
 msgid ""
 "Use an activation token to connect your Weblate installation to the support "
 "portal. This step is optional, you can use support services without it as "
@@ -2163,63 +2215,91 @@ msgstr ""
 "接続します。この手順はオプションです。この手順がなくてもサポートサービスを使"
 "用できます。"
 
-#: weblate_web/templates/user.html:43
+#: weblate_web/templates/user.html:63
 msgid "See documentation on subscription management."
 msgstr "サブスクリプションの管理についてドキュメントを参照してください。"
 
-#: weblate_web/templates/user.html:52 weblate_web/templates/user.html:130
+#: weblate_web/templates/user.html:72
+#, fuzzy
+#| msgid "Your subscriptions"
+msgid "Subscription"
+msgstr "あなたのサブスクリプション"
+
+#: weblate_web/templates/user.html:78
+msgid "Validity"
+msgstr ""
+
+#: weblate_web/templates/user.html:79
+#, python-format
+msgctxt "Date range"
+msgid "%(created)s – %(expires)s"
+msgstr ""
+
+#: weblate_web/templates/user.html:84 weblate_web/templates/user.html:163
 msgid "Creation date"
 msgstr "作成日"
 
-#: weblate_web/templates/user.html:58 weblate_web/templates/user.html:147
-msgid "Expiry date"
-msgstr "期限"
-
-#: weblate_web/templates/user.html:63 weblate_web/templates/user.html:152
+#: weblate_web/templates/user.html:91 weblate_web/templates/user.html:185
 msgid "State"
 msgstr "状態"
 
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:155
+#: weblate_web/templates/user.html:94 weblate_web/templates/user.html:188
 msgid "Expired"
 msgstr "期限切れ"
 
-#: weblate_web/templates/user.html:68 weblate_web/templates/user.html:157
+#: weblate_web/templates/user.html:96 weblate_web/templates/user.html:190
 msgid "Automatic renewal"
 msgstr "自動更新"
 
-#: weblate_web/templates/user.html:70 weblate_web/templates/user.html:159
+#: weblate_web/templates/user.html:98 weblate_web/templates/user.html:192
 msgid "No renewal"
 msgstr "更新しない"
 
-#: weblate_web/templates/user.html:77 weblate_web/templates/user.html:165
-msgid "Payments"
-msgstr "支払い"
+#: weblate_web/templates/user.html:102
+#, fuzzy
+#| msgid "Donate now"
+msgid "Renew now"
+msgstr "今すぐ寄付"
 
-#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:173
-msgid "Download invoice"
-msgstr "インボイスのダウンロード"
-
-#: weblate_web/templates/user.html:111
-msgid "Regenerate activation token"
-msgstr "有効化のトークンの再生成"
-
-#: weblate_web/templates/user.html:117 weblate_web/templates/user.html:196
+#: weblate_web/templates/user.html:107 weblate_web/templates/user.html:229
 msgid "Turn off renewal"
 msgstr "更新の無効"
 
-#: weblate_web/templates/user.html:125
+#: weblate_web/templates/user.html:116 weblate_web/templates/user.html:198
+msgid "Payments"
+msgstr "支払い"
+
+#: weblate_web/templates/user.html:125 weblate_web/templates/user.html:206
+msgid "Download invoice"
+msgstr "インボイスのダウンロード"
+
+#: weblate_web/templates/user.html:143
+#, fuzzy
+#| msgid "Get premium service"
+msgid "Get more services"
+msgstr "プレミアム サービスの利用"
+
+#: weblate_web/templates/user.html:148
+msgid "Congratulations, your Weblate instance is fully covered."
+msgstr ""
+
+#: weblate_web/templates/user.html:158
 msgid "Your donations"
 msgstr "ご自身の寄付"
 
-#: weblate_web/templates/user.html:135
+#: weblate_web/templates/user.html:168
 msgid "Reward"
 msgstr "報酬"
 
-#: weblate_web/templates/user.html:191
+#: weblate_web/templates/user.html:180
+msgid "Expiry date"
+msgstr "期限"
+
+#: weblate_web/templates/user.html:224
 msgid "Edit reward"
 msgstr "報酬の編集"
 
-#: weblate_web/templates/user.html:203
+#: weblate_web/templates/user.html:236
 msgid "Donate to see a nice message here."
 msgstr "ここで素敵なメッセージを見るために寄付してください。"
 
@@ -2236,7 +2316,7 @@ msgid "Other topics"
 msgstr "その他のトピック"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:452
+#: weblate_web/views.py:431
 msgid "Milestones"
 msgstr "マイルス トーン"
 
@@ -2315,52 +2395,55 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr "いま"
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:84
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "パラメータ %(field)s 内でエラー: %(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:189
+#: weblate_web/views.py:150 weblate_web/views.py:186
 msgid "Please provide your billing information to complete the payment."
 msgstr "支払いを完了するには、お支払い情報を入力してください。"
 
-#: weblate_web/views.py:161
+#: weblate_web/views.py:160
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "VAT ID が有効ではなくなっています。更新してください。"
 
-#: weblate_web/views.py:183
+#: weblate_web/views.py:181
 msgid "Please choose a payment method."
 msgstr "お支払い方法を選択してください。"
 
-#: weblate_web/views.py:302
+#: weblate_web/views.py:293
 msgid "Payment not yet processed, please retry."
 msgstr "支払いはまだ処理されていません。もう一度お試しください。"
 
-#: weblate_web/views.py:307
+#: weblate_web/views.py:297
 msgid "The payment was rejected: {}"
 msgstr "支払いが拒否されました： {}"
 
-#: weblate_web/views.py:308
+#: weblate_web/views.py:298
 msgid "Unknown reason"
 msgstr "理由不明"
 
-#: weblate_web/views.py:313
+#: weblate_web/views.py:303
 msgid "Thank you for your subscription."
 msgstr "お申し込みありがとうございます。"
 
-#: weblate_web/views.py:316
+#: weblate_web/views.py:306
 msgid "Thank you for your donation."
 msgstr "寄付していただきありがとうございます。"
 
-#: weblate_web/views.py:409
+#: weblate_web/views.py:393
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 "サブスクリプション（定期購入）を選択しました。メールを確認する必要がありま"
 "す。"
 
-#: weblate_web/views.py:416
+#: weblate_web/views.py:396
 msgid "Could not process subscription request."
 msgstr "購読の処理に失敗しました。"
+
+#~ msgid "Regenerate activation token"
+#~ msgstr "有効化のトークンの再生成"
 
 #~ msgid "VCS repositories"
 #~ msgstr "VCS リポジトリ"
@@ -3124,9 +3207,6 @@ msgstr "購読の処理に失敗しました。"
 
 #~ msgid "From %(amount)sEUR/month"
 #~ msgstr "月額 %(amount)s ユーロから"
-
-#~ msgid "Cloud service"
-#~ msgstr "クラウドサービス"
 
 #~ msgid "Your infrastructure"
 #~ msgstr "独自環境"
