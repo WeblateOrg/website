@@ -75,7 +75,7 @@ def create_backup_repository(service):
     ftp.mkdir('.ssh')
     ftp.chdir('.ssh')
     with ftp.open('authorized_keys', 'w') as handle:
-        handle.write(service.last_report().ssh_key)
+        handle.write(service.last_report.ssh_key)
 
     # Create account on the service
     url = 'https://robot-ws.your-server.de/storagebox/{}/subaccount'.format(
@@ -291,9 +291,9 @@ class Service(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        try:
-            url = self.last_report().site_url
-        except Report.DoesNotExist:
+        if self.last_report:
+            url = self.last_report.site_url
+        else:
             url = ''
         return '{}: {}: {}'.format(
             self.get_status_display(),
@@ -301,8 +301,12 @@ class Service(models.Model):
             url,
         )
 
+    @cached_property
     def last_report(self):
-        return self.report_set.latest('timestamp')
+        try:
+            return self.report_set.latest('timestamp')
+        except Report.DoesNotExist:
+            return None
 
     @cached_property
     def hosted_subscriptions(self):

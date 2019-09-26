@@ -45,12 +45,11 @@
                     <div class="clear"></div>
                 </div>
                 {% endif %}
-                {% with last_report=service.last_report %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Server URL" %}</div>
                     <div class="line-right">
-                {% if last_report %}
-                        <a class="link" href="{{ last_report.site_url }}">{{ last_report.site_title|default:"Weblate" }}</a>
+                {% if service.last_report %}
+                        <a class="link" href="{{ service.last_report.site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
                 {% else %}
                         <p class="text-muted">
                             {% trans "Use an activation token to connect your Weblate installation to the support portal. This step is optional, you can use support services without it as well." %}
@@ -60,7 +59,6 @@
                     </div>
                     <div class="clear"></div>
                 </div>
-                {% endwith %}
                 {% with subscriptions=service.subscription_set.all %}
                 {% for subscription in subscriptions %}
                     <div class="form-line">
