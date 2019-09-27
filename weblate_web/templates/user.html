@@ -23,7 +23,7 @@
                         {{ service.get_status_display }}
                         {% if not service.check_in_limits %}
                         <div class="alert error">
-                        {% trans "Exceeding service limits" %}
+                        {% trans "Exceeds selected service period" %}
                         </div>
                         {% endif %}
                     </div>
@@ -76,7 +76,7 @@
                     {% if subscription.get_repeat %}
                     <div class="form-line">
                         <div class="line-left">{% trans "Validity" %}</div>
-                        <div class="line-right">{% blocktrans with created=subscription.created expires=subscription.expires context "Date range" %}{{ created }} – {{ expires }}{% endblocktrans %}</div>
+                        <div class="line-right">{% blocktrans with created=subscription.created expires=subscription.expires context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %}</div>
                         <div class="clear"></div>
                     </div>
                     {% else %}
