@@ -5,6 +5,7 @@ python:
   - "3.7"
 # commands to install dependencies
 install: 
+  - pip install Cython
   - pip install https://github.com/WeblateOrg/weblate/archive/master.zip
   - pip install https://github.com/nijel/thepay/archive/weblate.zip
   - pip install https://github.com/nijel/fakturace/archive/master.zip
@@ -29,3 +30,4 @@ addons:
       - libcairo-dev
       - gir1.2-pango-1.0
       - libgirepository1.0-dev
+      - libacl1-dev
