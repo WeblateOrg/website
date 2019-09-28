@@ -270,6 +270,9 @@ class Package(models.Model):
     limit_languages = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.verbose
+
 
 class Service(models.Model):
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
