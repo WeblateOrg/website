@@ -8,7 +8,7 @@ env:
     - DJANGO_SETTINGS_MODULE=wlhosted.settings_test
 install: 
   # Get newer pip and whell for binary caching support
-  - pip install --upgrade pip wheel
+  - pip install --upgrade pip wheel Cython
   - pip install https://github.com/nijel/thepay/archive/weblate.zip
   - pip install -r requirements-test.txt
 script: 
@@ -30,3 +30,4 @@ addons:
       - libcairo-dev
       - gir1.2-pango-1.0
       - libgirepository1.0-dev
+      - libacl1-dev
