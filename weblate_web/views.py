@@ -437,7 +437,7 @@ class PostView(DetailView):
 
     def get_object(self, queryset=None):
         result = super().get_object(queryset)
-        if not self.request.user.is_superuser and result.timestamp >= timezone.now():
+        if not self.request.user.is_staff and result.timestamp >= timezone.now():
             raise Http404('Future entry')
         return result
 
