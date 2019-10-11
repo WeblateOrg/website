@@ -36,23 +36,23 @@ from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 from wlhosted.payments.models import Payment, get_period_delta
 
-PAYMENTS_ORIGIN = 'https://weblate.org/donate/process/'
+PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 
 REWARDS = (
-    (0, ugettext_lazy('No reward')),
-    (1, ugettext_lazy('Name in the list of supporters')),
-    (2, ugettext_lazy('Link in the list of supporters')),
-    (3, ugettext_lazy('Logo and link on the Weblate website')),
+    (0, ugettext_lazy("No reward")),
+    (1, ugettext_lazy("Name in the list of supporters")),
+    (2, ugettext_lazy("Link in the list of supporters")),
+    (3, ugettext_lazy("Logo and link on the Weblate website")),
 )
 
 TOPICS = (
-    ('release', ugettext_lazy('Release')),
-    ('feature', ugettext_lazy('Features')),
-    ('announce', ugettext_lazy('Announcement')),
-    ('conferences', ugettext_lazy('Conferences')),
-    ('hosting', ugettext_lazy('Hosted Weblate')),
-    ('development', ugettext_lazy('Development')),
-    ('localization', ugettext_lazy('Localization')),
+    ("release", ugettext_lazy("Release")),
+    ("feature", ugettext_lazy("Features")),
+    ("announce", ugettext_lazy("Announcement")),
+    ("conferences", ugettext_lazy("Conferences")),
+    ("hosting", ugettext_lazy("Hosted Weblate")),
+    ("development", ugettext_lazy("Development")),
+    ("localization", ugettext_lazy("Localization")),
 )
 
 TOPIC_DICT = dict(TOPICS)
@@ -72,27 +72,27 @@ def create_backup_repository(service):
     dirname = str(uuid4())
     ftp.mkdir(dirname)
     ftp.chdir(dirname)
-    ftp.mkdir('.ssh')
-    ftp.chdir('.ssh')
-    with ftp.open('authorized_keys', 'w') as handle:
+    ftp.mkdir(".ssh")
+    ftp.chdir(".ssh")
+    with ftp.open("authorized_keys", "w") as handle:
         handle.write(service.last_report.ssh_key)
 
     # Create account on the service
-    url = 'https://robot-ws.your-server.de/storagebox/{}/subaccount'.format(
+    url = "https://robot-ws.your-server.de/storagebox/{}/subaccount".format(
         settings.STORAGE_BOX
     )
     response = requests.post(
         url,
         data={
-            "homedirectory": 'weblate/{}'.format(dirname),
+            "homedirectory": "weblate/{}".format(dirname),
             "ssh": "1",
             "comment": "Weblate backup service {}".format(service.pk),
         },
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
     )
     data = response.json()
-    return 'ssh://{}@{}:23/./backups'.format(
-        data['subaccount']['username'], data['subaccount']['server']
+    return "ssh://{}@{}:23/./backups".format(
+        data["subaccount"]["username"], data["subaccount"]["server"]
     )
 
 
@@ -101,11 +101,11 @@ class Donation(models.Model):
     payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
     reward = models.IntegerField(choices=REWARDS)
     link_text = models.CharField(
-        verbose_name=ugettext_lazy('Link text'), max_length=200, blank=True
+        verbose_name=ugettext_lazy("Link text"), max_length=200, blank=True
     )
-    link_url = models.URLField(verbose_name=ugettext_lazy('Link URL'), blank=True)
+    link_url = models.URLField(verbose_name=ugettext_lazy("Link URL"), blank=True)
     link_image = models.ImageField(
-        verbose_name=ugettext_lazy('Link image'), blank=True, upload_to='donations/'
+        verbose_name=ugettext_lazy("Link image"), blank=True, upload_to="donations/"
     )
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
@@ -124,7 +124,7 @@ class Donation(models.Model):
         return initial | initial[0].payment_set.all()
 
     def get_absolute_url(self):
-        return reverse('donate-edit', kwargs={'pk': self.pk})
+        return reverse("donate-edit", kwargs={"pk": self.pk})
 
     def get_amount(self):
         if not self.payment:
@@ -132,12 +132,12 @@ class Donation(models.Model):
         return self.payment_obj.amount
 
     def __str__(self):
-        return '{}:{}'.format(self.user, self.reward)
+        return "{}:{}".format(self.user, self.reward)
 
 
 def process_donation(payment):
     if payment.state != Payment.ACCEPTED:
-        raise ValueError('Can not process not accepted payment')
+        raise ValueError("Can not process not accepted payment")
     if payment.repeat:
         # Update existing
         donation = Donation.objects.get(payment=payment.repeat.pk)
@@ -145,13 +145,13 @@ def process_donation(payment):
         donation.save()
     else:
         user = User.objects.get(pk=payment.customer.user_id)
-        reward = payment.extra.get('reward', 0)
+        reward = payment.extra.get("reward", 0)
         # Calculate expiry
         expires = timezone.now()
         if payment.recurring:
             expires += get_period_delta(payment.recurring)
         elif reward:
-            expires += get_period_delta('y')
+            expires += get_period_delta("y")
         # Create new
         donation = Donation.objects.create(
             user=user, payment=payment.pk, reward=reward, expires=expires, active=True
@@ -164,7 +164,7 @@ def process_donation(payment):
 
 def get_service(payment, user):
     try:
-        return user.service_set.get(pk=payment.extra['service'])
+        return user.service_set.get(pk=payment.extra["service"])
     except Service.DoesNotExist:
         try:
             return user.service_set.get()
@@ -174,28 +174,28 @@ def get_service(payment, user):
 
 def process_subscription(payment):
     if payment.state != Payment.ACCEPTED:
-        raise ValueError('Can not process not accepted payment')
+        raise ValueError("Can not process not accepted payment")
     if payment.repeat:
         # Update existing
         subscription = Subscription.objects.get(payment=payment.repeat.pk)
         subscription.expires += get_period_delta(payment.repeat.recurring)
         subscription.save()
-    elif isinstance(payment.extra['subscription'], int):
-        subscription = Subscription.objects.get(pk=payment.extra['subscription'])
+    elif isinstance(payment.extra["subscription"], int):
+        subscription = Subscription.objects.get(pk=payment.extra["subscription"])
         if subscription.payment:
             subscription.pastpayments_set.create(payment=subscription.payment)
-        subscription.expires += get_period_delta('y')
+        subscription.expires += get_period_delta("y")
         subscription.payment = payment.pk
         subscription.save()
     else:
         user = User.objects.get(pk=payment.customer.user_id)
         # Calculate expiry
-        expires = timezone.now() + get_period_delta('y')
+        expires = timezone.now() + get_period_delta("y")
         # Create new
         subscription = Subscription.objects.create(
             service=get_service(payment, user),
             payment=payment.pk,
-            package=payment.extra['subscription'],
+            package=payment.extra["subscription"],
             expires=expires,
         )
     # Flag payment as processed
@@ -207,7 +207,7 @@ def process_subscription(payment):
 class Image(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(
-        upload_to='images/', help_text='Article image, 1200x630 pixels'
+        upload_to="images/", help_text="Article image, 1200x630 pixels"
     )
 
     def __str__(self):
@@ -222,9 +222,9 @@ class Post(models.Model):
         User, editable=False, on_delete=models.deletion.SET_NULL, null=True
     )
     topic = models.CharField(max_length=100, db_index=True, choices=TOPICS)
-    body = MarkupField(default_markup_type='markdown')
+    body = MarkupField(default_markup_type="markdown")
     summary = models.TextField(
-        blank=True, help_text='Will be generated from first body paragraph if empty'
+        blank=True, help_text="Will be generated from first body paragraph if empty"
     )
     image = models.ForeignKey(
         Image, on_delete=models.deletion.SET_NULL, blank=True, null=True
@@ -233,7 +233,7 @@ class Post(models.Model):
         blank=True,
         db_index=True,
         default=False,
-        help_text='This is an important milestone, shown on milestones archive',
+        help_text="This is an important milestone, shown on milestones archive",
     )
 
     def save(
@@ -250,10 +250,10 @@ class Post(models.Model):
             text = h2t.handle(self.body.rendered)  # pylint: disable=no-member
             self.summary = text.splitlines()[0]
             if self.summary:
-                super().save(update_fields=['summary'])
+                super().save(update_fields=["summary"])
 
     def get_absolute_url(self):
-        return reverse('post', kwargs={'slug': self.slug})
+        return reverse("post", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.title
@@ -280,14 +280,14 @@ class Service(models.Model):
     status = models.CharField(
         max_length=150,
         choices=(
-            ('community', ugettext_lazy('Community support')),
-            ('hosted', ugettext_lazy('Hosted service')),
-            ('basic', ugettext_lazy('Basic self-hosted support')),
-            ('extended', ugettext_lazy('Extended self-hosted support')),
+            ("community", ugettext_lazy("Community support")),
+            ("hosted", ugettext_lazy("Hosted service")),
+            ("basic", ugettext_lazy("Basic self-hosted support")),
+            ("extended", ugettext_lazy("Extended self-hosted support")),
         ),
-        default='community',
+        default="community",
     )
-    backup_repository = models.CharField(max_length=500, default='')
+    backup_repository = models.CharField(max_length=500, default="", blank=True)
     limit_languages = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
@@ -296,31 +296,31 @@ class Service(models.Model):
         if self.last_report:
             url = self.last_report.site_url
         else:
-            url = ''
-        return '{}: {}: {}'.format(
+            url = ""
+        return "{}: {}: {}".format(
             self.get_status_display(),
-            ', '.join(self.users.values_list('username', flat=True)),
+            ", ".join(self.users.values_list("username", flat=True)),
             url,
         )
 
     @cached_property
     def last_report(self):
         try:
-            return self.report_set.latest('timestamp')
+            return self.report_set.latest("timestamp")
         except Report.DoesNotExist:
             return None
 
     @cached_property
     def hosted_subscriptions(self):
-        return self.subscription_set.filter(package__startswith='hosted:')
+        return self.subscription_set.filter(package__startswith="hosted:")
 
     @cached_property
     def basic_subscriptions(self):
-        return self.subscription_set.filter(package='basic')
+        return self.subscription_set.filter(package="basic")
 
     @cached_property
     def extended_subscriptions(self):
-        return self.subscription_set.filter(package='extended')
+        return self.subscription_set.filter(package="extended")
 
     @cached_property
     def support_subscriptions(self):
@@ -332,34 +332,34 @@ class Service(models.Model):
 
     @cached_property
     def backup_subscriptions(self):
-        return self.subscription_set.filter(package='backup')
+        return self.subscription_set.filter(package="backup")
 
     @cached_property
     def expires(self):
         try:
-            return self.support_subscriptions.latest('expires').expires
+            return self.support_subscriptions.latest("expires").expires
         except Subscription.DoesNotExist:
             return timezone.now()
 
     def get_suggestions(self):
         if not self.support_subscriptions.exists():
-            yield 'basic', _('Basic support')
+            yield "basic", _("Basic support")
         if not self.hosted_subscriptions.exists():
             if not self.extended_subscriptions.exists():
-                yield 'extended', _('Extended support')
+                yield "extended", _("Extended support")
             if not self.backup_subscriptions.exists():
-                yield 'backup', _('Backup service')
+                yield "backup", _("Backup service")
 
     def update_status(self):
-        status = 'community'
-        package = 'community'
+        status = "community"
+        package = "community"
         if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
-            status = 'hosted'
-            package = self.hosted_subscriptions.latest('expires').package
+            status = "hosted"
+            package = self.hosted_subscriptions.latest("expires").package
         elif self.extended_subscriptions.filter(expires__gt=timezone.now()).exists():
-            status = 'extended'
+            status = "extended"
         elif self.basic_subscriptions.filter(expires__gt=timezone.now()).exists():
-            status = 'basic'
+            status = "basic"
 
         package_obj = Package.objects.get(name=package)
 
@@ -380,7 +380,7 @@ class Service(models.Model):
             backup = True
         if backup and not self.backup_repository and self.report_set.exists():
             self.backup_repository = create_backup_repository(self)
-            self.save(update_fields=['backup_repository'])
+            self.save(update_fields=["backup_repository"])
 
     def check_in_limits(self):
         if (
@@ -404,11 +404,11 @@ class Subscription(models.Model):
         return _(Package.objects.get(name=self.package).verbose)
 
     def get_repeat(self):
-        if self.package in ('basic', 'extended', 'backup') or self.package.startswith(
-            'hosted:'
+        if self.package in ("basic", "extended", "backup") or self.package.startswith(
+            "hosted:"
         ):
-            return 'y'
-        return ''
+            return "y"
+        return ""
 
     def active(self):
         return self.expires >= timezone.now()
@@ -418,7 +418,7 @@ class Subscription(models.Model):
 
     def regenerate(self):
         self.secret = generate_secret()
-        self.save(update_fields=['secret'])
+        self.save(update_fields=["secret"])
 
     @cached_property
     def payment_obj(self):
@@ -426,7 +426,7 @@ class Subscription(models.Model):
 
     def list_payments(self):
         # pylint: disable=no-member
-        past = set(self.pastpayments_set.values_list('payment', flat=True))
+        past = set(self.pastpayments_set.values_list("payment", flat=True))
         query = Q(pk=self.payment)
         if past:
             query |= Q(pk__in=past)
@@ -436,7 +436,7 @@ class Subscription(models.Model):
         return Payment.objects.filter(query)
 
     def get_absolute_url(self):
-        return reverse('subscription-edit', kwargs={'pk': self.pk})
+        return reverse("subscription-edit", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.get_package_display()
