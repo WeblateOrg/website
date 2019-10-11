@@ -102,7 +102,7 @@ a.button.app {
 	float: left;
 	min-width: 140px;
 	border: 1px solid #FFFFFF;
-	margin: 17px 0 0 15px;
+	margin: 17px 15px 0 0;
 }
 .main-menu {
 	margin-top: 26px;
@@ -206,18 +206,10 @@ header .menu-show span:nth-child(4) {
 }
 .open-mobile header .menu-show span:nth-child(1) {
 	top: 23px;
-	left: 50%;
+	right: 50%;
 	width: 0%;
 }
 .open-mobile header .menu-show span:nth-child(2) {
-	-webkit-transform: rotate(45deg);
-	-moz-transform: rotate(45deg);
-	-ms-transform: rotate(45deg);
-	-o-transform: rotate(45deg);
-	transform: rotate(45deg);
-	top: 26px;
-}
-.open-mobile header .menu-show span:nth-child(3) {
 	-webkit-transform: rotate(-45deg);
 	-moz-transform: rotate(-45deg);
 	-ms-transform: rotate(-45deg);
@@ -225,9 +217,17 @@ header .menu-show span:nth-child(4) {
 	transform: rotate(-45deg);
 	top: 26px;
 }
+.open-mobile header .menu-show span:nth-child(3) {
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	transform: rotate(45deg);
+	top: 26px;
+}
 .open-mobile header .menu-show span:nth-child(4) {
 	top: 20px;
-	left: 50%;
+	right: 50%;
 	width: 0%;
 }
 .mobile-menu {
@@ -238,11 +238,11 @@ header .menu-show span:nth-child(4) {
 	transition: all .5s cubic-bezier(.645, .045, .355, 1);
 	background-color: #1FA385;
 	top: 0;
-	left: -400px;
+	left: 0;
 	min-height: 500px;
 	z-index: 999;
-	-webkit-transform: translate3d(200px, 0, 0);
-	transform: translate3d(200px, 0, 0);
+	-webkit-transform: translate3d(-200px, 0, 0);
+	transform: translate3d(-200px, 0, 0);
 	text-align: right!important;
 	margin: 0 !important;
 	padding: 20px !important;
@@ -1143,11 +1143,11 @@ section.about p {
 .inter-checks {
 	width: 500px;
 	position: absolute;
-	top: -85px;
+	top: -65px;
 	left: 20px;
 	color: #BFC3C7;
 	font-size: 26px;
-	letter-spacing: 0.4px;
+	letter-spacing: -0.5px;
 	line-height: 33px;
 	text-align: left;
 }
@@ -1274,7 +1274,7 @@ body.pabout {
 	text-align: left;
 }
 .di-section .half-content {
-	padding: 40px 0 0 2%;
+	padding: 40px 2% 0 0;
 }
 .di-section .half-content h2 {
 	font-size: 40px;
@@ -1631,8 +1631,8 @@ input[type=radio]:checked + .biglabel {
 .help-cols .col .icon img {
 	position: absolute;
 	top: 50%;
-	left: 50%;
-	transform: translate(-50%,-50%);
+	right: 50%;
+	transform: translate(50%,-50%);
 }
 .help-cols .col .content {
 	width: calc(100% - 190px);
@@ -2016,11 +2016,11 @@ h2.section-title.hp-style {
 .contribution-list .box p {
 	margin-bottom: 35px;
 }
-.contribution-list .box ul li a, .contribution-list .box p a {
+.contribution-list .box ul li a, .contribution-list .box p a, .box li a {
 	color: #2ECCAA;
 	text-decoration: underline;
 }
-.contribution-list .box ul li a:hover, .contribution-list .box p a:hover {
+.contribution-list .box ul li a:hover, .contribution-list .box p a:hover, .box li a:hover {
 	text-decoration: none;
 }
 .bottom.contribute-bottom .box {
@@ -2061,16 +2061,16 @@ h2.section-title.hp-style {
 	width: 0;
 	height: 0;
 	border-style: solid;
-	border-width: 0 31px 31px 0;
-	border-color: transparent #2ECCAA transparent transparent;
+	border-width: 31px 0 0 31px;
+	border-color: #2ECCAA transparent transparent transparent;
 	position: absolute;
 	bottom: -30px;
 	right: 0;
 	content: '';
 }
 .aboutus-list .box.blue:before {
-	border-width: 31px 31px 0 0;
-	border-color: #00D2E6 transparent transparent transparent;
+	border-width: 0 0 31px 31px;
+	border-color: transparent transparent transparent #00D2E6;
 	left: 0;
 	right: inherit;
 }
@@ -2408,7 +2408,7 @@ input.button.make-payment {
 	position: absolute;
 	top: 13px;
 	background-size: 20px auto;
-	left: 50%;
+	right: 50%;
 	margin-right: -10px;
 	width: 20px;
 	content: '';
@@ -2462,7 +2462,7 @@ footer:before {
 	top: 0;
 	right: 0;
 	z-index: 100;
-	background: linear-gradient(180deg, #000000 0%, rgba(0,0,0,0) 100%);
+	background: linear-gradient(-180deg, #000000 0%, rgba(0,0,0,0) 100%);
 }
 footer .f-logo {
 	background-image: url('img/logo.svg');
@@ -2563,7 +2563,7 @@ footer .sociable a.icon-yt {
 }
 .langs.opened a.open-langs:before {
 	background-image: url('img/arrow-down-green.svg');
-	transform: rotate(-180deg);
+	transform: rotate(180deg);
 }
 .langs.opened a.open-langs {
 	color: #1FA385;
@@ -2676,7 +2676,7 @@ footer .footer-right {
     .aboutus-list .box .avatar {display: none;}
 	a.button.app, .inter-context, .inter-fluent {display: none;}
 	header .menu-show, footer .main-menu ul {display: block;}
-	.countries .half-text {margin-left: 0;}
+	.countries .half-text {margin-right: 0;}
 	body.page section.content {margin-top: 90px;}
 	.pricing-table-tabs-menu {width: 100%;}
 
@@ -2709,7 +2709,7 @@ footer .footer-right {
 	footer .main-menu li {margin: 10px 0; float: right;}
 	footer .main-menu li a {padding-left: 10px;}
 	footer .langs {float: none; display: table; margin: 0 auto;}
-    footer .langs-list {right: 50%; transform: translate(50%, 0);}
+    footer .langs-list {left: 50%; transform: translate(-50%, 0);}
 	.inter-checks, .quick-installation:before {display: none;}
 	.quick-installation {padding: 30px; margin-bottom: 40px;}
 	.donations-cols .col, .installations .box, .mailing .box, .related-posts .article, .article .img img {width: 100% !important; margin: 0 0 30px 0 !important;}
@@ -2747,7 +2747,7 @@ footer .footer-right {
 	.countries .half-text h2 {font-size: 30px; margin-top: 0;line-height: 34px;}
 	.countries .countries-number {padding-top: 0; margin-bottom: 0;}
 	.countries .half-text p, section.bottom .box p {line-height: 22px; font-size: 16px;}
-	.trans-item, .features .f-box, .contribution-list .box, .aboutus-list .box, .aboutus-list .box:nth-child(4n+0), .aboutus-list .box.blue:nth-child(2n+1), .article {width: 100%; margin-right: 0;}
+	.trans-item, .features .f-box, .contribution-list .box, .aboutus-list .box, .aboutus-list .box:nth-child(4n+0), .aboutus-list .box.blue:nth-child(2n+1), .article {width: 100%; margin-right: 0}
     .aboutus-list .box {top: 0 !important;}
 	.trans-number, .trans-days {text-align: center; padding-right: 0; font-size: 30px;}
 	.trans-days, section.about p, .features .f-box, .page-desc, .donations-cols.download-cols .col p, .contribution-list .box ul li, .contribution-list .box p, .article .content p {font-size: 18px;}
@@ -2843,6 +2843,6 @@ img.supporters-avatar {
 .payment-form .line-right .button.inline {
     margin-top: 7px;
 }
-input.fullwidthclasclasss {
+input.fullwidth {
     width: 100%;
 }
