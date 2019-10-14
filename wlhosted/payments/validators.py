@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import sentry_sdk
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
@@ -22,6 +23,7 @@ def cache_vies_data(value):
             data = dict(value.data)
             cache.set(key, data, 3600)
         except WebFault as error:
+            sentry_sdk.capture_exception()
             data = {"valid": False, "fault_reason": str(error.fault.faultstring)}
     value.__dict__["vies_data"] = data
 
