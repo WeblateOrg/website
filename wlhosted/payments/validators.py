@@ -21,8 +21,8 @@ def cache_vies_data(value):
         try:
             data = dict(value.data)
             cache.set(key, data, 3600)
-        except WebFault:
-            data = {"valid": False}
+        except WebFault as error:
+            data = {"valid": False, "fault_reason": str(error.fault.faultstring)}
     value.__dict__["vies_data"] = data
 
     return value
