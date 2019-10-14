@@ -44,5 +44,11 @@ def validate_vatin(value):
         raise ValidationError(msg.format(value))
 
     if not value.vies_data["valid"]:
-        msg = _("{} is not a valid VAT ID.")
+        retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
+        if value.vies_data.get("fault_reason") in retry_errors:
+            msg = _(
+                "VAT ID validation service unavailable for {}, please try again later."
+            )
+        else:
+            msg = _("{} is not a valid VAT ID.")
         raise ValidationError(msg.format(value))
