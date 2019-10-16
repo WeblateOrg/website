@@ -4,7 +4,7 @@ import json
 from importlib.util import module_from_spec, spec_from_file_location
 from urllib.request import urlopen
 
-import icu
+from icu import Locale
 
 URL = "https://hosted.weblate.org/exports/stats/weblate/website/"
 THRESHOLD = 60
@@ -12,7 +12,7 @@ THRESHOLD = 60
 
 def print_language(lang, fmt="{0} ({1})"):
     """Print language code with its name."""
-    locale = icu.Locale(lang)
+    locale = Locale(lang)
     print(fmt.format(lang, locale.getDisplayName(locale).capitalize()))
 
 
