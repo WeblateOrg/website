@@ -37,6 +37,9 @@
                     <div class="clear"></div>
                 </div>
                 {% endfor %}
+                {% if object.invoice_filename_valid %}
+                    <a class="button center make-payment" href="{% url 'user-invoice' pk=object.pk %}">{% trans "Download proforma invoice" %}</a>
+                {% endif %}
             </div>
         </div>
         {% else %}

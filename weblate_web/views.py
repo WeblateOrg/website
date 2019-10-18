@@ -24,13 +24,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins, send_mail
 from django.db import transaction
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import override
 from django.utils.translation import ugettext as _
+from django.utils.translation import override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -322,11 +323,12 @@ def process_payment(request):
 
 @login_required
 def download_invoice(request, pk):
+    # Allow downloading own invoices of pending ones (for proforma invoices)
     payment = get_object_or_404(
         Payment,
+        (Q(customer__origin=PAYMENTS_ORIGIN) & Q(customer__user_id=request.user.id))
+        | Q(state=Payment.PENDING),
         pk=pk,
-        customer__origin=PAYMENTS_ORIGIN,
-        customer__user_id=request.user.id,
     )
 
     if not payment.invoice_filename_valid:
