@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Weblate payment" %}{% endblock %}
+
+{% block content %}
+<section class="content messages">
+    <div class="row">
+        <div class="wrap">
+            <div class="alert info" role="alert">
+                {% trans "Please complete the payment by following provided instructions." %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="row">
+        {% with instructions=backend.get_instructions %}
+        {% if instructions %}
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Payment Instructions" %}</h1>
+            <div class="payment-form">
+                <div class="form-line">
+                    <div class="line-left">{% trans "Payment amount" %}</div>
+                    <div class="line-right">
+                        {% blocktrans with object.vat_amount as price %}{{ price }} EUR{% endblocktrans %}
+                        {% if object.customer.needs_vat %}{% trans "(including VAT)" %}{% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                {% for label, text in instructions %}
+                <div class="form-line">
+                    <div class="line-left">{{ label }}</div>
+                    <div class="line-right">{{ text }}</div>
+                    <div class="clear"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Payment Summary" %}</h1>
+            <div class="payment-form">
+                <div class="form-line">
+                    <div class="line-left">{% trans "Payment amount" %}</div>
+                    <div class="line-right">
+                        {% blocktrans with object.vat_amount as price %}{{ price }} EUR{% endblocktrans %}
+                        {% if object.customer.needs_vat %}{% trans "(including VAT)" %}{% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-line">
+                    <div class="line-left">{% trans "Payment description" %}</div>
+                    <div class="line-right" lang="en" dir="ltr">{{ object.description }}</div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-line">
+                    <div class="line-left">{% trans "Payment status" %}</div>
+                    <div class="line-right">{% trans "Waiting for payment to be completed." %}</div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+</section>
+{% endblock %}
+

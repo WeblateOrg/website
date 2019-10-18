@@ -239,6 +239,13 @@ class CompleteView(PaymentView):
 
             backend = get_backend(self.object.backend)(self.object)
             backend.complete(self.request)
+            # If payment is still pending, display info page
+            if backend.payment.state == Payment.PENDING:
+                return render(
+                    request,
+                    'payment/pending.html',
+                    {'object': backend.payment, 'backend': backend},
+                )
             return self.redirect_origin()
 
 
