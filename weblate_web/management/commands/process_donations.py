@@ -18,9 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from wlhosted.payments.backends import FioBank
 from wlhosted.payments.models import Payment
 
 from weblate_web.models import (
@@ -35,6 +37,9 @@ class Command(BaseCommand):
     help = "processes pending payments"
 
     def handle(self, *args, **options):
+        if settings.FIO_TOKEN:
+            with transaction.atomic(using="payments_db"):
+                FioBank.fetch_payments()
         with transaction.atomic(using="payments_db"):
             self.pending()
         self.active()
