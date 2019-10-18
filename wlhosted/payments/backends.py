@@ -41,7 +41,7 @@ from fakturace.storage import InvoiceStorage, ProformaStorage
 from wlhosted.payments.models import Payment
 
 BACKENDS = {}
-PROFORMA_RE = re.compile('20[0-9]{7}')
+PROFORMA_RE = re.compile("20[0-9]{7}")
 
 
 def get_backend(name):
@@ -274,7 +274,7 @@ following attached instructions.
         email.send()
 
     def get_invoice_kwargs(self):
-        return {'payment_id': str(self.payment.pk), 'payment_method': self.description}
+        return {"payment_id": str(self.payment.pk), "payment_method": self.description}
 
     def success(self):
         self.payment.state = Payment.ACCEPTED
@@ -449,30 +449,30 @@ class FioBank(Backend):
 
     def perform(self, request, back_url, complete_url):
         self.generate_invoice(storage_class=ProformaStorage)
-        self.payment.details['proforma'] = self.payment.invoice
+        self.payment.details["proforma"] = self.payment.invoice
         self.notify_pending()
         return redirect(complete_url)
 
     def get_proforma(self):
         storage = ProformaStorage(settings.PAYMENT_FAKTURACE)
-        return storage.get(self.payment.details['proforma'])
+        return storage.get(self.payment.details["proforma"])
 
     def get_invoice_kwargs(self):
         if self.payment.state == Payment.ACCEPTED:
             # Inject proforma ID to generated invoice
             invoice = self.get_proforma()
-            return {'payment_id': invoice.invoiceid}
+            return {"payment_id": invoice.invoiceid}
         return {}
 
     def get_instructions(self):
         invoice = self.get_proforma()
         return [
-            (gettext('Issuing bank'), invoice.bank['bank']),
-            (gettext('Account holder'), invoice.bank['holder']),
-            (gettext('Account number'), invoice.bank['account']),
-            (gettext('SWIFT code'), invoice.bank['swift']),
-            (gettext('IBAN'), invoice.bank['iban']),
-            (gettext('Reference'), invoice.invoiceid),
+            (gettext("Issuing bank"), invoice.bank["bank"]),
+            (gettext("Account holder"), invoice.bank["holder"]),
+            (gettext("Account number"), invoice.bank["account"]),
+            (gettext("SWIFT code"), invoice.bank["swift"]),
+            (gettext("IBAN"), invoice.bank["iban"]),
+            (gettext("Reference"), invoice.invoiceid),
         ]
 
     @classmethod
@@ -481,28 +481,28 @@ class FioBank(Backend):
         for transaction in client.last():
             matches = []
             # Extract from message
-            if transaction['recipient_message']:
-                matches.extend(PROFORMA_RE.findall(transaction['recipient_message']))
+            if transaction["recipient_message"]:
+                matches.extend(PROFORMA_RE.findall(transaction["recipient_message"]))
             # Extract from variable symbol
-            if transaction['variable_symbol']:
-                matches.extend(PROFORMA_RE.findall(transaction['variable_symbol']))
+            if transaction["variable_symbol"]:
+                matches.extend(PROFORMA_RE.findall(transaction["variable_symbol"]))
             # Process all matches
             for proforma_id in matches:
-                proforma_id = 'P{}'.format(proforma_id)
+                proforma_id = "P{}".format(proforma_id)
                 try:
                     related = Payment.objects.get(
                         backend=cls.name, invoice=proforma_id, state=Payment.PENDING
                     )
                     proforma = related.get_proforma()
-                    if floor(proforma.amount) <= transaction['amount']:
-                        print('Received payment for {}'.format(proforma_id))
-                        related.details['transaction'] = transaction
+                    if floor(proforma.amount) <= transaction["amount"]:
+                        print("Received payment for {}".format(proforma_id))
+                        related.details["transaction"] = transaction
                         related.sucess()
                     else:
                         print(
-                            'Underpaid {}: {}'.format(
-                                proforma_id, transaction['amount']
+                            "Underpaid {}: {}".format(
+                                proforma_id, transaction["amount"]
                             )
                         )
                 except Payment.DoesNotExist:
-                    print('Did not find matching payment for {}'.format(proforma_id))
+                    print("Did not find matching payment for {}".format(proforma_id))
