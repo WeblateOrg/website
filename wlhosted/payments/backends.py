@@ -32,8 +32,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _
-from django.utils.translation import override, ugettext_lazy
+from django.utils.translation import gettext, gettext_lazy, override
 from fakturace.storage import InvoiceStorage, ProformaStorage
 
 from wlhosted.payments.models import Payment
@@ -187,8 +186,8 @@ class Backend(object):
     def notify_user(self):
         """Send email notification with an invoice."""
         email = EmailMessage(
-            _("Your payment on weblate.org"),
-            _(
+            gettext("Your payment on weblate.org"),
+            gettext(
                 """Hello
 
 Thank you for your payment on weblate.org.
@@ -215,8 +214,8 @@ Alternatively you can download it from the website:
     def notify_failure(self):
         """Send email notification with a failure."""
         email = EmailMessage(
-            _("Your payment on weblate.org failed"),
-            _(
+            gettext("Your payment on weblate.org failed"),
+            gettext(
                 """Hello
 
 Your payment on weblate.org has failed.
@@ -250,8 +249,8 @@ and if still failing, cancelled.
     def notify_pending(self):
         """Send email notification with a pending."""
         email = EmailMessage(
-            _("Your pending payment on weblate.org"),
-            _(
+            gettext("Your pending payment on weblate.org"),
+            gettext(
                 """Hello
 
 Your payment on weblate.org is pending. Please complete the payment by
@@ -335,7 +334,7 @@ class DebugPending(DebugPay):
 @register_backend
 class ThePayCard(Backend):
     name = "thepay-card"
-    verbose = ugettext_lazy("Payment card")
+    verbose = gettext_lazy("Payment card")
     description = "Payment Card (The Pay)"
     recurring = True
     thepay_method = 21
@@ -411,9 +410,9 @@ class ThePayCard(Backend):
             return None
         reason = "Unknown: {}".format(status)
         if status == 3:
-            reason = _("Payment cancelled")
+            reason = gettext("Payment cancelled")
         elif status == 4:
-            reason = _("Payment error")
+            reason = gettext("Payment error")
         elif status == 6:
             reason = "Underpaid"
         elif status == 9:
@@ -426,7 +425,7 @@ class ThePayCard(Backend):
 # @register_backend
 class ThePayBitcoin(ThePayCard):
     name = "thepay-bitcoin"
-    verbose = ugettext_lazy("Bitcoin")
+    verbose = gettext_lazy("Bitcoin")
     description = "Bitcoin (The Pay)"
     recurring = False
     thepay_method = 29
@@ -435,7 +434,7 @@ class ThePayBitcoin(ThePayCard):
 @register_backend
 class FioBank(Backend):
     name = "fio-bank"
-    verbose = ugettext_lazy("IBAN bank transfer")
+    verbose = gettext_lazy("IBAN bank transfer")
     description = "Bank transfer"
     recurring = False
 
@@ -465,12 +464,12 @@ class FioBank(Backend):
     def get_instructions(self):
         invoice = self.get_proforma()
         return [
-            (_('Issuing bank'), invoice.bank['bank']),
-            (_('Account holder'), invoice.bank['holder']),
-            (_('Account number'), invoice.bank['account']),
-            (_('SWIFT code'), invoice.bank['swift']),
-            (_('IBAN'), invoice.bank['iban']),
-            (_('Reference'), invoice.invoiceid),
+            (gettext('Issuing bank'), invoice.bank['bank']),
+            (gettext('Account holder'), invoice.bank['holder']),
+            (gettext('Account number'), invoice.bank['account']),
+            (gettext('SWIFT code'), invoice.bank['swift']),
+            (gettext('IBAN'), invoice.bank['iban']),
+            (gettext('Reference'), invoice.invoiceid),
         ]
 
     # TODO: background fetch of payments

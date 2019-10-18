@@ -31,8 +31,7 @@ from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import get_language
+from django.utils.translation import get_language, gettext_lazy
 from django_countries.fields import CountryField
 from vies.models import VATINField
 from weblate.utils.fields import JSONField
@@ -81,28 +80,32 @@ class Customer(models.Model):
         validators=[validate_vatin],
         blank=True,
         null=True,
-        verbose_name=_("European VAT ID"),
-        help_text=_(
+        verbose_name=gettext_lazy("European VAT ID"),
+        help_text=gettext_lazy(
             "Please fill in European Union VAT ID, " "leave blank if not applicable."
         ),
     )
     tax = models.CharField(
         max_length=200,
         blank=True,
-        verbose_name=_("Tax registration"),
-        help_text=_(
+        verbose_name=gettext_lazy("Tax registration"),
+        help_text=gettext_lazy(
             "Please fill in your tax registration if it should "
             "appear on the invoice."
         ),
     )
     name = models.CharField(
-        max_length=200, null=True, verbose_name=_("Company or individual name")
+        max_length=200,
+        null=True,
+        verbose_name=gettext_lazy("Company or individual name"),
     )
-    address = models.CharField(max_length=200, null=True, verbose_name=_("Address"))
+    address = models.CharField(
+        max_length=200, null=True, verbose_name=gettext_lazy("Address")
+    )
     city = models.CharField(
-        max_length=200, null=True, verbose_name=_("Postcode and city")
+        max_length=200, null=True, verbose_name=gettext_lazy("Postcode and city")
     )
-    country = CountryField(null=True, verbose_name=_("Country"))
+    country = CountryField(null=True, verbose_name=gettext_lazy("Country"))
     email = models.EmailField(blank=False, max_length=190, validators=[validate_email])
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
@@ -130,7 +133,7 @@ class Customer(models.Model):
         if self.vat:
             if self.vat_country_code != self.country_code:
                 raise ValidationError(
-                    {"country": _("The country has to match your VAT code")}
+                    {"country": gettext_lazy("The country has to match your VAT code")}
                 )
 
     @property
@@ -153,11 +156,11 @@ class Customer(models.Model):
 
 
 RECURRENCE_CHOICES = [
-    ("y", _("Annual")),
-    ("b", _("Biannual")),
-    ("q", _("Quarterly")),
-    ("m", _("Monthly")),
-    ("", _("Onetime")),
+    ("y", gettext_lazy("Annual")),
+    ("b", gettext_lazy("Biannual")),
+    ("q", gettext_lazy("Quarterly")),
+    ("m", gettext_lazy("Monthly")),
+    ("", gettext_lazy("Onetime")),
 ]
 
 
