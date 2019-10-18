@@ -31,8 +31,8 @@ from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.translation import get_language
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import get_language
 from django_countries.fields import CountryField
 from vies.models import VATINField
 from weblate.utils.fields import JSONField
@@ -213,7 +213,11 @@ class Payment(models.Model):
 
     @cached_property
     def invoice_full_filename(self):
-        return os.path.join(settings.PAYMENT_FAKTURACE, "pdf", self.invoice_filename)
+        return os.path.join(
+            settings.PAYMENT_FAKTURACE,
+            "proforma" if self.state == self.PENDING else "pdf",
+            self.invoice_filename,
+        )
 
     @cached_property
     def invoice_filename_valid(self):

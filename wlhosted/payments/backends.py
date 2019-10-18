@@ -32,10 +32,9 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
-from django.utils.translation import override
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
-from fakturace.storage import InvoiceStorage
+from django.utils.translation import override, ugettext_lazy
+from fakturace.storage import InvoiceStorage, ProformaStorage
 
 from wlhosted.payments.models import Payment
 
@@ -90,6 +89,10 @@ class Backend(object):
         """Collects payment information."""
         raise NotImplementedError()
 
+    def get_instructions(self):
+        """Payment instructions for manual methods."""
+        return []
+
     def initiate(self, request, back_url, complete_url):
         """Initiates payment and optionally redirects user."""
         if self.payment.state != Payment.NEW:
@@ -121,11 +124,11 @@ class Backend(object):
         self.failure()
         return False
 
-    def generate_invoice(self):
+    def generate_invoice(self, storage_class=InvoiceStorage):
         """Generates an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
             return
-        storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
+        storage = storage_class(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
         customer_id = "web-{}".format(customer.pk)
         with override("en"):
@@ -147,9 +150,8 @@ class Backend(object):
             rate="{:f}".format(self.payment.amount_without_vat),
             item=self.payment.description,
             vat=str(customer.vat_rate),
-            payment_method=self.description,
             category=self.payment.extra.get("category", "weblate"),
-            payment_id=str(self.payment.pk),
+            **self.get_invoice_kwargs()
         )
         invoice = storage.get(invoice_file)
         invoice.write_tex()
@@ -245,6 +247,32 @@ and if still failing, cancelled.
                 )
         email.send()
 
+    def notify_pending(self):
+        """Send email notification with a pending."""
+        email = EmailMessage(
+            _("Your pending payment on weblate.org"),
+            _(
+                """Hello
+
+Your payment on weblate.org is pending. Please complete the payment by
+following attached instructions.
+"""
+            ),
+            "billing@weblate.org",
+            [self.payment.customer.email],
+        )
+        if self.invoice is not None:
+            with open(self.invoice.pdf_path, "rb") as handle:
+                email.attach(
+                    os.path.basename(self.invoice.pdf_path),
+                    handle.read(),
+                    "application/pdf",
+                )
+        email.send()
+
+    def get_invoice_kwargs(self):
+        return {'payment_id': str(self.payment.pk), 'payment_method': self.description}
+
     def success(self):
         self.payment.state = Payment.ACCEPTED
         if not self.recurring:
@@ -300,6 +328,7 @@ class DebugPending(DebugPay):
         return redirect("https://cihar.com/?url=" + complete_url)
 
     def collect(self, request):
+        return None
         return True
 
 
@@ -401,3 +430,47 @@ class ThePayBitcoin(ThePayCard):
     description = "Bitcoin (The Pay)"
     recurring = False
     thepay_method = 29
+
+
+@register_backend
+class FioBank(Backend):
+    name = "fio-bank"
+    verbose = ugettext_lazy("IBAN bank transfer")
+    description = "Bank transfer"
+    recurring = False
+
+    def collect(self, request):
+        # We do not actually collect here, it is done in background
+        if self.payment.state == Payment.PENDING:
+            return None
+        return True
+
+    def perform(self, request, back_url, complete_url):
+        self.generate_invoice(storage_class=ProformaStorage)
+        self.payment.details['proforma'] = self.payment.invoice
+        self.notify_pending()
+        return redirect(complete_url)
+
+    def get_proforma(self):
+        storage = ProformaStorage(settings.PAYMENT_FAKTURACE)
+        return storage.get(self.payment.details['proforma'])
+
+    def get_invoice_kwargs(self):
+        if self.payment.state == Payment.ACCEPTED:
+            # Inject proforma ID to generated invoice
+            invoice = self.get_proforma()
+            return {'payment_id': invoice.invoiceid}
+        return {}
+
+    def get_instructions(self):
+        invoice = self.get_proforma()
+        return [
+            (_('Issuing bank'), invoice.bank['bank']),
+            (_('Account holder'), invoice.bank['holder']),
+            (_('Account number'), invoice.bank['account']),
+            (_('SWIFT code'), invoice.bank['swift']),
+            (_('IBAN'), invoice.bank['iban']),
+            (_('Reference'), invoice.invoiceid),
+        ]
+
+    # TODO: background fetch of payments
