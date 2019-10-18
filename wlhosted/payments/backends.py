@@ -478,7 +478,7 @@ class FioBank(Backend):
     @classmethod
     def fetch_payments(cls):
         client = fiobank.FioBank(token=settings.FIO_TOKEN)
-        for transaction in client.last(from_date='2016-01-01'):
+        for transaction in client.last():
             matches = []
             # Extract from message
             if transaction['recipient_message']:
