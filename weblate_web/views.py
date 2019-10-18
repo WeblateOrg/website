@@ -30,8 +30,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _
-from django.utils.translation import override
+from django.utils.translation import gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -82,7 +81,7 @@ def show_form_errors(request, form):
         for error in field.errors:
             messages.error(
                 request,
-                _('Error in parameter %(field)s: %(error)s')
+                gettext('Error in parameter %(field)s: %(error)s')
                 % {'field': field.name, 'error': error},
             )
 
@@ -147,7 +146,7 @@ class PaymentView(FormView, SingleObjectMixin):
         if customer.is_empty:
             messages.info(
                 self.request,
-                _(
+                gettext(
                     'Please provide your billing information to '
                     'complete the payment.'
                 ),
@@ -160,7 +159,8 @@ class PaymentView(FormView, SingleObjectMixin):
                 validate_vatin(customer.vat)
             except ValidationError:
                 messages.warning(
-                    self.request, _('The VAT ID is no longer valid, please update it.')
+                    self.request,
+                    gettext('The VAT ID is no longer valid, please update it.'),
                 )
                 return redirect('payment-customer', pk=self.object.pk)
         return None
@@ -181,11 +181,11 @@ class PaymentView(FormView, SingleObjectMixin):
 
     def form_invalid(self, form):
         if self.form_class == MethodForm:
-            messages.error(self.request, _('Please choose a payment method.'))
+            messages.error(self.request, gettext('Please choose a payment method.'))
         else:
             messages.error(
                 self.request,
-                _(
+                gettext(
                     'Please provide your billing information to '
                     'complete the payment.'
                 ),
@@ -300,20 +300,20 @@ def process_payment(request):
 
     # Create donation
     if payment.state in (Payment.NEW, Payment.PENDING):
-        messages.error(request, _('Payment not yet processed, please retry.'))
+        messages.error(request, gettext('Payment not yet processed, please retry.'))
     elif payment.state == Payment.REJECTED:
         messages.error(
             request,
-            _('The payment was rejected: {}').format(
-                payment.details.get('reject_reason', _('Unknown reason'))
+            gettext('The payment was rejected: {}').format(
+                payment.details.get('reject_reason', gettext('Unknown reason'))
             ),
         )
     elif payment.state == Payment.ACCEPTED:
         if 'subscription' in payment.extra:
-            messages.success(request, _('Thank you for your subscription.'))
+            messages.success(request, gettext('Thank you for your subscription.'))
             process_subscription(payment)
         else:
-            messages.success(request, _('Thank you for your donation.'))
+            messages.success(request, gettext('Thank you for your donation.'))
             donation = process_donation(payment)
             if donation.reward:
                 return redirect(donation)
@@ -401,10 +401,12 @@ def subscribe(request, name):
         )
         messages.success(
             request,
-            _('Subscription requested, ' 'all you have to do is confirm the email.'),
+            gettext(
+                'Subscription requested, ' 'all you have to do is confirm the email.'
+            ),
         )
     else:
-        messages.error(request, _('Could not process subscription request.'))
+        messages.error(request, gettext('Could not process subscription request.'))
 
     return redirect('support')
 
@@ -439,7 +441,7 @@ class MilestoneArchiveView(NewsArchiveView):
     # pylint: disable=arguments-differ
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        result['topic'] = _('Milestones')
+        result['topic'] = gettext('Milestones')
         return result
 
 
