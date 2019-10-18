@@ -327,7 +327,6 @@ class DebugPending(DebugPay):
         return redirect("https://cihar.com/?url=" + complete_url)
 
     def collect(self, request):
-        return None
         return True
 
 
