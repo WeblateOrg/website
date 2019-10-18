@@ -22,8 +22,11 @@ from __future__ import unicode_literals
 
 import json
 import os.path
+import re
 import subprocess
+from math import floor
 
+import fiobank
 import thepay.config
 import thepay.dataApi
 import thepay.gateApi
@@ -38,6 +41,7 @@ from fakturace.storage import InvoiceStorage, ProformaStorage
 from wlhosted.payments.models import Payment
 
 BACKENDS = {}
+PROFORMA_RE = re.compile('20[0-9]{7}')
 
 
 def get_backend(name):
@@ -471,4 +475,34 @@ class FioBank(Backend):
             (gettext('Reference'), invoice.invoiceid),
         ]
 
-    # TODO: background fetch of payments
+    @classmethod
+    def fetch_payments(cls):
+        client = fiobank.FioBank(token=settings.FIO_TOKEN)
+        for transaction in client.last(from_date='2016-01-01'):
+            matches = []
+            # Extract from message
+            if transaction['recipient_message']:
+                matches.extend(PROFORMA_RE.findall(transaction['recipient_message']))
+            # Extract from variable symbol
+            if transaction['variable_symbol']:
+                matches.extend(PROFORMA_RE.findall(transaction['variable_symbol']))
+            # Process all matches
+            for proforma_id in matches:
+                proforma_id = 'P{}'.format(proforma_id)
+                try:
+                    related = Payment.objects.get(
+                        backend=cls.name, invoice=proforma_id, state=Payment.PENDING
+                    )
+                    proforma = related.get_proforma()
+                    if floor(proforma.amount) <= transaction['amount']:
+                        print('Received payment for {}'.format(proforma_id))
+                        related.details['transaction'] = transaction
+                        related.sucess()
+                    else:
+                        print(
+                            'Underpaid {}: {}'.format(
+                                proforma_id, transaction['amount']
+                            )
+                        )
+                except Payment.DoesNotExist:
+                    print('Did not find matching payment for {}'.format(proforma_id))
