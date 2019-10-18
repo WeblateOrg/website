@@ -315,6 +315,8 @@ STORAGE_BOX = 153391
 STORAGE_USER = ""
 STORAGE_PASSWORD = ""
 
+FIO_TOKEN = None
+
 try:
     from .settings_local import *
 except ImportError:
