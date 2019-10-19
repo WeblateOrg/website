@@ -192,7 +192,7 @@ class Backend(object):
         email = EmailMessage(
             gettext("Your payment on weblate.org"),
             gettext(
-                """Hello
+                """Hello,
 
 Thank you for your payment on weblate.org.
 
@@ -220,7 +220,7 @@ Alternatively, you can download it from the website:
         email = EmailMessage(
             gettext("Your payment on weblate.org failed"),
             gettext(
-                """Hello
+                """Hello,
 
 Your payment on weblate.org has failed.
 
@@ -255,7 +255,7 @@ and if still failing, cancelled.
         email = EmailMessage(
             gettext("Your pending payment on weblate.org"),
             gettext(
-                """Hello
+                """Hello,
 
 Your payment on weblate.org is pending. Please follow the provided
 instructions to complete the payment.
