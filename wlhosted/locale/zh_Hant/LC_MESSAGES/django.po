@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Hosted Weblate \n"
-"Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-29 08:12+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-19 14:21+0200\n"
 "PO-Revision-Date: 2019-08-05 11:22+0000\n"
 "Last-Translator: Lzmxya <lzmxya@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -985,11 +985,11 @@ msgid ""
 "2017."
 msgstr "這些「服務條款」應在2017年9月1日實施並生效。"
 
-#: wlhosted/payments/backends.py:188
+#: wlhosted/payments/backends.py:193
 msgid "Your payment on weblate.org"
 msgstr "您於 weblate.org 的支付"
 
-#: wlhosted/payments/backends.py:190
+#: wlhosted/payments/backends.py:195
 #, python-format
 msgid ""
 "Hello\n"
@@ -1010,11 +1010,11 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:216
+#: wlhosted/payments/backends.py:221
 msgid "Your payment on weblate.org failed"
 msgstr "您於 weblate.org 的支付失敗"
 
-#: wlhosted/payments/backends.py:218
+#: wlhosted/payments/backends.py:223
 #, python-format
 msgid ""
 "Hello\n"
@@ -1043,90 +1043,136 @@ msgstr ""
 "如果涉及定期付款，則請重試三次，\n"
 "如果仍然失敗，則請您取消付款。\n"
 
-#: wlhosted/payments/backends.py:309
+#: wlhosted/payments/backends.py:256
+#, fuzzy
+#| msgid "Your payment on weblate.org"
+msgid "Your pending payment on weblate.org"
+msgstr "您於 weblate.org 的支付"
+
+#: wlhosted/payments/backends.py:258
+msgid ""
+"Hello\n"
+"\n"
+"Your payment on weblate.org is pending. Please complete the payment by\n"
+"following attached instructions.\n"
+msgstr ""
+
+#: wlhosted/payments/backends.py:340
 msgid "Payment card"
 msgstr "支付卡片"
 
-#: wlhosted/payments/backends.py:385
+#: wlhosted/payments/backends.py:416
 msgid "Payment cancelled"
 msgstr "支付已取消"
 
-#: wlhosted/payments/backends.py:387
+#: wlhosted/payments/backends.py:418
 msgid "Payment error"
 msgstr "支付發生錯誤"
 
-#: wlhosted/payments/backends.py:400
+#: wlhosted/payments/backends.py:431
 msgid "Bitcoin"
 msgstr "比特幣"
 
-#: wlhosted/payments/models.py:84
+#: wlhosted/payments/backends.py:440
+msgid "IBAN bank transfer"
+msgstr ""
+
+#: wlhosted/payments/backends.py:470
+msgid "Issuing bank"
+msgstr ""
+
+#: wlhosted/payments/backends.py:471
+msgid "Account holder"
+msgstr ""
+
+#: wlhosted/payments/backends.py:472
+msgid "Account number"
+msgstr ""
+
+#: wlhosted/payments/backends.py:473
+msgid "SWIFT code"
+msgstr ""
+
+#: wlhosted/payments/backends.py:474
+msgid "IBAN"
+msgstr ""
+
+#: wlhosted/payments/backends.py:475
+msgid "Reference"
+msgstr ""
+
+#: wlhosted/payments/models.py:83
 msgid "European VAT ID"
 msgstr "歐盟 VAT ID"
 
-#: wlhosted/payments/models.py:86
+#: wlhosted/payments/models.py:85
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "請填入歐盟 VAT ID，如果不適用請留空。"
 
-#: wlhosted/payments/models.py:92
+#: wlhosted/payments/models.py:91
 msgid "Tax registration"
 msgstr "稅務註冊"
 
-#: wlhosted/payments/models.py:94
+#: wlhosted/payments/models.py:93
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "如果稅務註冊資訊應顯示於發票上，請填入您的相關資訊。"
 
-#: wlhosted/payments/models.py:99
+#: wlhosted/payments/models.py:100
 #, fuzzy
 #| msgid "Company name"
 msgid "Company or individual name"
 msgstr "公司名稱"
 
-#: wlhosted/payments/models.py:101
+#: wlhosted/payments/models.py:103
 msgid "Address"
 msgstr "地址"
 
-#: wlhosted/payments/models.py:103
+#: wlhosted/payments/models.py:106
 msgid "Postcode and city"
 msgstr "郵遞區號與城市"
 
-#: wlhosted/payments/models.py:105
+#: wlhosted/payments/models.py:108
 msgid "Country"
 msgstr "國家"
 
-#: wlhosted/payments/models.py:133
+#: wlhosted/payments/models.py:136
 msgid "The country has to match your VAT code"
 msgstr "國家必須與您的 VAT 碼相符"
 
-#: wlhosted/payments/models.py:156
+#: wlhosted/payments/models.py:159
 msgid "Annual"
 msgstr "每年繳費"
 
-#: wlhosted/payments/models.py:157
+#: wlhosted/payments/models.py:160
 msgid "Biannual"
 msgstr "每半年繳費"
 
-#: wlhosted/payments/models.py:158
+#: wlhosted/payments/models.py:161
 msgid "Quarterly"
 msgstr ""
 
-#: wlhosted/payments/models.py:159
+#: wlhosted/payments/models.py:162
 msgid "Monthly"
 msgstr "每月繳費"
 
-#: wlhosted/payments/models.py:160
+#: wlhosted/payments/models.py:163
 msgid "Onetime"
 msgstr "一次性繳費"
 
-#: wlhosted/payments/validators.py:36
+#: wlhosted/payments/validators.py:38
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} 不是任一歐盟成員有效的國家碼。"
 
-#: wlhosted/payments/validators.py:41
+#: wlhosted/payments/validators.py:43
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} 與國家的 VAT ID 規格不符。"
 
-#: wlhosted/payments/validators.py:45
+#: wlhosted/payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+
+#: wlhosted/payments/validators.py:53
 msgid "{} is not a valid VAT ID."
 msgstr "{} 不是有效的 VAT ID。"
 

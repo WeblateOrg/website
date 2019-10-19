@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Hosted Weblate \n"
-"Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-09-29 08:12+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-19 14:21+0200\n"
 "PO-Revision-Date: 2019-09-16 12:48+0000\n"
 "Last-Translator: WWWesten <wwwesten@gmail.com>\n"
 "Language-Team: Kazakh <https://hosted.weblate.org/projects/weblate/hosted/kk/"
@@ -1082,11 +1082,11 @@ msgstr ""
 "Osy Qyzmet Kórsetý Shattary 2017 jyldyń qyrkúıegindegi 1-inde kúshi men "
 "qoldanysyna enedi."
 
-#: wlhosted/payments/backends.py:188
+#: wlhosted/payments/backends.py:193
 msgid "Your payment on weblate.org"
 msgstr "Osy weblate.org saıtyndaǵy tólemińiz"
 
-#: wlhosted/payments/backends.py:190
+#: wlhosted/payments/backends.py:195
 #, python-format
 msgid ""
 "Hello\n"
@@ -1107,11 +1107,11 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: wlhosted/payments/backends.py:216
+#: wlhosted/payments/backends.py:221
 msgid "Your payment on weblate.org failed"
 msgstr "Osy weblate.org saıtyndaǵy tólemińiz sátsiz aıaqtaldy"
 
-#: wlhosted/payments/backends.py:218
+#: wlhosted/payments/backends.py:223
 #, python-format
 msgid ""
 "Hello\n"
@@ -1140,92 +1140,138 @@ msgstr ""
 "Eger qaıtalanatyn tólemge qatysty bolsa, úsh ret qaıtalanady,\n"
 "al eger áli de sátsiz bolsa, boldyrylmaıdy.\n"
 
-#: wlhosted/payments/backends.py:309
+#: wlhosted/payments/backends.py:256
+#, fuzzy
+#| msgid "Your payment on weblate.org"
+msgid "Your pending payment on weblate.org"
+msgstr "Osy weblate.org saıtyndaǵy tólemińiz"
+
+#: wlhosted/payments/backends.py:258
+msgid ""
+"Hello\n"
+"\n"
+"Your payment on weblate.org is pending. Please complete the payment by\n"
+"following attached instructions.\n"
+msgstr ""
+
+#: wlhosted/payments/backends.py:340
 msgid "Payment card"
 msgstr "Tólem kartasy"
 
-#: wlhosted/payments/backends.py:385
+#: wlhosted/payments/backends.py:416
 msgid "Payment cancelled"
 msgstr "Tólem boldyrylmady"
 
-#: wlhosted/payments/backends.py:387
+#: wlhosted/payments/backends.py:418
 msgid "Payment error"
 msgstr "Tólem qatesi"
 
-#: wlhosted/payments/backends.py:400
+#: wlhosted/payments/backends.py:431
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: wlhosted/payments/models.py:84
+#: wlhosted/payments/backends.py:440
+msgid "IBAN bank transfer"
+msgstr ""
+
+#: wlhosted/payments/backends.py:470
+msgid "Issuing bank"
+msgstr ""
+
+#: wlhosted/payments/backends.py:471
+msgid "Account holder"
+msgstr ""
+
+#: wlhosted/payments/backends.py:472
+msgid "Account number"
+msgstr ""
+
+#: wlhosted/payments/backends.py:473
+msgid "SWIFT code"
+msgstr ""
+
+#: wlhosted/payments/backends.py:474
+msgid "IBAN"
+msgstr ""
+
+#: wlhosted/payments/backends.py:475
+msgid "Reference"
+msgstr ""
+
+#: wlhosted/payments/models.py:83
 msgid "European VAT ID"
 msgstr "Eýropalyq QQS nómiri"
 
-#: wlhosted/payments/models.py:86
+#: wlhosted/payments/models.py:85
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Eýropalyq Odaqtyń QQS nómirin toltyryńyz, eger ol qoldanylmasa, bos "
 "qaldyryńyz."
 
-#: wlhosted/payments/models.py:92
+#: wlhosted/payments/models.py:91
 msgid "Tax registration"
 msgstr "Salyq tirkelgisi"
 
-#: wlhosted/payments/models.py:94
+#: wlhosted/payments/models.py:93
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "Eger ınvoısta kórsetý kerek bolsa, salyqtyq tirkelgini toltyryńyz."
 
-#: wlhosted/payments/models.py:99
+#: wlhosted/payments/models.py:100
 #, fuzzy
 #| msgid "Company name"
 msgid "Company or individual name"
 msgstr "Kompanıa ataýy"
 
-#: wlhosted/payments/models.py:101
+#: wlhosted/payments/models.py:103
 msgid "Address"
 msgstr "Mekenjaıy"
 
-#: wlhosted/payments/models.py:103
+#: wlhosted/payments/models.py:106
 msgid "Postcode and city"
 msgstr "Poshta ındeksi jane qalasy"
 
-#: wlhosted/payments/models.py:105
+#: wlhosted/payments/models.py:108
 msgid "Country"
 msgstr "Eli"
 
-#: wlhosted/payments/models.py:133
+#: wlhosted/payments/models.py:136
 msgid "The country has to match your VAT code"
 msgstr "Elińiz QQS kodynyna sáıkes keledi"
 
-#: wlhosted/payments/models.py:156
+#: wlhosted/payments/models.py:159
 msgid "Annual"
 msgstr "Jyldyq"
 
-#: wlhosted/payments/models.py:157
+#: wlhosted/payments/models.py:160
 msgid "Biannual"
 msgstr "Ekijyldyq"
 
-#: wlhosted/payments/models.py:158
+#: wlhosted/payments/models.py:161
 msgid "Quarterly"
 msgstr ""
 
-#: wlhosted/payments/models.py:159
+#: wlhosted/payments/models.py:162
 msgid "Monthly"
 msgstr "Aılyq"
 
-#: wlhosted/payments/models.py:160
+#: wlhosted/payments/models.py:163
 msgid "Onetime"
 msgstr "Birjolǵy"
 
-#: wlhosted/payments/validators.py:36
+#: wlhosted/payments/validators.py:38
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} Eýropalyq Odaqtyń kezkelgen múshesi úshin jaramdy el kody emes."
 
-#: wlhosted/payments/validators.py:41
+#: wlhosted/payments/validators.py:43
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} eldiń QQS nómiri tehnıkalyq spesıfıkasıalaryna sáıkes kelmeıdi."
 
-#: wlhosted/payments/validators.py:45
+#: wlhosted/payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+
+#: wlhosted/payments/validators.py:53
 msgid "{} is not a valid VAT ID."
 msgstr "{} jaramdy QQS nómiri emes."
 

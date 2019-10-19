@@ -18,7 +18,7 @@ wlc push weblate/hosted
 git pull --rebase
 
 # Update po files itself
-django-admin makemessages --keep-pot -a -i 'data/*' -i 'docs/*' -i 'examples/*' -i 'build/*'
+weblate makemessages --keep-pot -a -i 'data/*' -i 'docs/*' -i 'examples/*' -i 'build/*'
 
 # Fix Report-Msgid-Bugs-To as it gets removed
 sed \
