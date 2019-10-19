@@ -18,18 +18,17 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import os
-
-from copy import copy
-import httpretty
 import json
+import os
+from copy import copy
 
+import httpretty
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
-from wlhosted.payments.backends import InvalidState, get_backend, list_backends, FioBank
+from wlhosted.payments.backends import FioBank, InvalidState, get_backend, list_backends
 from wlhosted.payments.models import Customer, Payment
 from wlhosted.payments.validators import validate_vatin
 
@@ -59,7 +58,7 @@ FIO_TRASACTIONS = {
             "idFrom": 10000000002,
             "bankId": "2010",
             "dateEnd": "2016-08-03+0200",
-            "accountId": "1234567890"
+            "accountId": "1234567890",
         },
         "transactionList": {
             "transaction": [
@@ -68,135 +67,72 @@ FIO_TRASACTIONS = {
                     "column26": None,
                     "column10": None,
                     "column12": None,
-                    "column14": {
-                        "name": "M\u011bna",
-                        "value": "CZK",
-                        "id": 14
-                    },
-                    "column17": {
-                        "name": "ID pokynu",
-                        "value": 12210748893,
-                        "id": 17
-                    },
+                    "column14": {"name": "M\u011bna", "value": "CZK", "id": 14},
+                    "column17": {"name": "ID pokynu", "value": 12210748893, "id": 17},
                     "column16": {
                         "name": "Zpr\u00e1va pro p\u0159\u00edjemce",
                         "value": "N\u00e1kup: ORDR, PRAGUE",
-                        "id": 16
+                        "id": 16,
                     },
-                    "column22": {
-                        "name": "ID pohybu",
-                        "value": 10000000002,
-                        "id": 22
-                    },
-                    "column9": {
-                        "name": "Provedl",
-                        "value": "Javorek, Jan",
-                        "id": 9
-                    },
-                    "column8": {
-                        "name": "Typ",
-                        "value": "Platba kartou",
-                        "id": 8
-                    },
+                    "column22": {"name": "ID pohybu", "value": 10000000002, "id": 22},
+                    "column9": {"name": "Provedl", "value": "Javorek, Jan", "id": 9},
+                    "column8": {"name": "Typ", "value": "Platba kartou", "id": 8},
                     "column25": {
                         "name": "Koment\u00e1\u0159",
                         "value": "N\u00e1kup: ORDR, PRAGUE",
-                        "id": 25
+                        "id": 25,
                     },
-                    "column5": {
-                        "name": "VS",
-                        "value": "5678",
-                        "id": 5
-                    },
+                    "column5": {"name": "VS", "value": "5678", "id": 5},
                     "column4": None,
                     "column7": {
                         "name": "U\u017eivatelsk\u00e1 identifikace",
                         "value": "N\u00e1kup: ORDR, PRAGUE",
-                        "id": 7
+                        "id": 7,
                     },
                     "column6": None,
-                    "column1": {
-                        "name": "Objem",
-                        "value": -130.0,
-                        "id": 1
-                    },
-                    "column0": {
-                        "name": "Datum",
-                        "value": "2016-08-03+0200",
-                        "id": 0
-                    },
+                    "column1": {"name": "Objem", "value": -130.0, "id": 1},
+                    "column0": {"name": "Datum", "value": "2016-08-03+0200", "id": 0},
                     "column3": None,
-                    "column2": None
+                    "column2": None,
                 },
                 {
                     "column18": None,
                     "column26": None,
                     "column10": None,
                     "column12": None,
-                    "column14": {
-                        "name": "M\u011bna",
-                        "value": "CZK",
-                        "id": 14
-                    },
-                    "column17": {
-                        "name": "ID pokynu",
-                        "value": 12210832097,
-                        "id": 17
-                    },
+                    "column14": {"name": "M\u011bna", "value": "CZK", "id": 14},
+                    "column17": {"name": "ID pokynu", "value": 12210832097, "id": 17},
                     "column16": {
                         "name": "Zpr\u00e1va pro p\u0159\u00edjemce",
                         "value": "200000000",
-                        "id": 16
+                        "id": 16,
                     },
-                    "column22": {
-                        "name": "ID pohybu",
-                        "value": 10000000001,
-                        "id": 22
-                    },
-                    "column9": {
-                        "name": "Provedl",
-                        "value": "Javorek, Jan",
-                        "id": 9
-                    },
-                    "column8": {
-                        "name": "Typ",
-                        "value": "Platba kartou",
-                        "id": 8
-                    },
+                    "column22": {"name": "ID pohybu", "value": 10000000001, "id": 22},
+                    "column9": {"name": "Provedl", "value": "Javorek, Jan", "id": 9},
+                    "column8": {"name": "Typ", "value": "Platba kartou", "id": 8},
                     "column25": {
                         "name": "Koment\u00e1\u0159",
                         "value": "N\u00e1kup: Billa Ul. Konevova",
-                        "id": 25
+                        "id": 25,
                     },
-                    "column5": {
-                        "name": "VS",
-                        "value": "1234",
-                        "id": 5
-                    },
+                    "column5": {"name": "VS", "value": "1234", "id": 5},
                     "column4": None,
                     "column7": {
                         "name": "U\u017eivatelsk\u00e1 identifikace",
                         "value": "N\u00e1kup: Billa Ul. Konevova",
-                        "id": 7
+                        "id": 7,
                     },
                     "column6": None,
-                    "column1": {
-                        "name": "Objem",
-                        "value": -353.29,
-                        "id": 1
-                    },
-                    "column0": {
-                        "name": "Datum",
-                        "value": "2016-08-03+0200",
-                        "id": 0
-                    },
+                    "column1": {"name": "Objem", "value": -353.29, "id": 1},
+                    "column0": {"name": "Datum", "value": "2016-08-03+0200", "id": 0},
                     "column3": None,
-                    "column2": None
-                }
+                    "column2": None,
+                },
             ]
-        }
+        },
     }
 }
+
 
 def setup_dirs():
     if settings.PAYMENT_FAKTURACE is None:
@@ -323,15 +259,17 @@ class BackendTest(TestCase):
         self.check_payment(Payment.PENDING)
         received = copy(FIO_TRASACTIONS)
         proforma_id = backend.payment.invoice
-        transaction = received['accountStatement']['transactionList']['transaction']
-        transaction[0]['column16']['value'] = proforma_id
-        transaction[1]['column16']['value'] = proforma_id
-        transaction[1]['column1']['value'] = backend.payment.amount
+        transaction = received["accountStatement"]["transactionList"]["transaction"]
+        transaction[0]["column16"]["value"] = proforma_id
+        transaction[1]["column16"]["value"] = proforma_id
+        transaction[1]["column1"]["value"] = backend.payment.amount
         httpretty.register_uri(httpretty.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
         payment = self.check_payment(Payment.ACCEPTED)
         self.maxDiff = None
-        self.assertEqual(payment.details['transaction']['recipient_message'], proforma_id)
+        self.assertEqual(
+            payment.details["transaction"]["recipient_message"], proforma_id
+        )
 
 
 class VATTest(SimpleTestCase):

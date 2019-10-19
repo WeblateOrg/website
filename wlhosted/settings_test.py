@@ -40,4 +40,4 @@ PAYMENT_FAKTURACE = os.path.join(os.path.dirname(__file__), "test-data", "faktur
 
 LOCALE_PATHS = [os.path.join(os.path.dirname(__file__), "locale")]
 
-FIO_TOKEN = 'test-token'
+FIO_TOKEN = "test-token"
