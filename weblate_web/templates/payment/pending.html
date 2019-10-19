@@ -9,7 +9,7 @@
     <div class="row">
         <div class="wrap">
             <div class="alert info" role="alert">
-                {% trans "Please complete the payment by following provided instructions." %}
+                {% trans "Please follow the provided instructions to complete the payment." %}
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@
                 </div>
                 {% endfor %}
                 {% if object.invoice_filename_valid %}
-                    <a class="button center make-payment" href="{% url 'user-invoice' pk=object.pk %}">{% trans "Download proforma invoice" %}</a>
+                    <a class="button center make-payment" href="{% url 'user-invoice' pk=object.pk %}">{% trans "Download pro forma invoice" %}</a>
                 {% endif %}
             </div>
         </div>
