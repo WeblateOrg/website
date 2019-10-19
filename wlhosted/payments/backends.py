@@ -493,11 +493,12 @@ class FioBank(Backend):
                     related = Payment.objects.get(
                         backend=cls.name, invoice=proforma_id, state=Payment.PENDING
                     )
-                    proforma = related.get_proforma()
-                    if floor(proforma.amount) <= transaction["amount"]:
+                    backend = cls(related)
+                    proforma = backend.get_proforma()
+                    if floor(float(proforma.amount)) <= transaction["amount"]:
                         print("Received payment for {}".format(proforma_id))
-                        related.details["transaction"] = transaction
-                        related.sucess()
+                        backend.payment.details["transaction"] = transaction
+                        backend.success()
                     else:
                         print(
                             "Underpaid {}: {}".format(
