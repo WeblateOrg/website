@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-10-08 14:50+0200\n"
+"POT-Creation-Date: 2019-10-19 13:31+0200\n"
 "PO-Revision-Date: 2019-10-15 14:51+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/weblate/website/"
@@ -1251,7 +1251,8 @@ msgstr "UI reaguese"
 
 #: weblate_web/templates/features.html:197
 msgid "User interface that works nicely on desktop, tablet and phones."
-msgstr "Ndërfaqe përdoruesi që funksionon xham në desktop, tablet dhe telefona."
+msgstr ""
+"Ndërfaqe përdoruesi që funksionon xham në desktop, tablet dhe telefona."
 
 #: weblate_web/templates/hosting.html:11
 msgid "Weblate Pricing"
@@ -1637,6 +1638,7 @@ msgstr "Shihni artikuj të dikurshëm"
 
 #: weblate_web/templates/payment/customer.html:4
 #: weblate_web/templates/payment/payment.html:5
+#: weblate_web/templates/payment/pending.html:5
 msgid "Weblate payment"
 msgstr "Pagesë Weblate"
 
@@ -1645,23 +1647,31 @@ msgid "Your billing information"
 msgstr "Të dhëna tuajat për faturim"
 
 #: weblate_web/templates/payment/payment.html:11
+#: weblate_web/templates/payment/pending.html:47
 msgid "Payment Summary"
 msgstr "Përmbledhje Pagese"
 
 #: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/pending.html:26
+#: weblate_web/templates/payment/pending.html:50
 msgid "Payment amount"
 msgstr "Sasi pagese"
 
 #: weblate_web/templates/payment/payment.html:18
+#: weblate_web/templates/payment/pending.html:28
+#: weblate_web/templates/payment/pending.html:52
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s euro"
 
 #: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/pending.html:29
+#: weblate_web/templates/payment/pending.html:53
 msgid "(including VAT)"
 msgstr "(përfshi TVSH-në)"
 
 #: weblate_web/templates/payment/payment.html:24
+#: weblate_web/templates/payment/pending.html:58
 msgid "Payment description"
 msgstr "Përshkrim pagese"
 
@@ -1709,6 +1719,32 @@ msgstr "Ju lutemi, zgjidhni metodë pagesash"
 #: weblate_web/templates/payment/payment.html:71
 msgid "Make Payment"
 msgstr "Bëni Pagesë"
+
+#: weblate_web/templates/payment/pending.html:12
+msgid "Please complete the payment by following provided instructions."
+msgstr ""
+
+#: weblate_web/templates/payment/pending.html:23
+#, fuzzy
+#| msgid "Payment description"
+msgid "Payment Instructions"
+msgstr "Përshkrim pagese"
+
+#: weblate_web/templates/payment/pending.html:41
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Download proforma invoice"
+msgstr "Shkarkoni faturë"
+
+#: weblate_web/templates/payment/pending.html:63
+#, fuzzy
+#| msgid "Payments"
+msgid "Payment status"
+msgstr "Pagesa"
+
+#: weblate_web/templates/payment/pending.html:64
+msgid "Waiting for payment to be completed."
+msgstr ""
 
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
@@ -1973,8 +2009,8 @@ msgstr ""
 msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr ""
-"Vetëlikuidimi i TVSH zbatohet mbi fatura të emetuara për biznese brenda "
-"BE-së."
+"Vetëlikuidimi i TVSH zbatohet mbi fatura të emetuara për biznese brenda BE-"
+"së."
 
 #: weblate_web/templates/support.html:4
 msgid "Weblate support"
@@ -2354,7 +2390,7 @@ msgid "Other topics"
 msgstr "Tema të tjera"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:431
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr "Objektiva"
 
@@ -2439,46 +2475,46 @@ msgstr "mu tani"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Gabim në parametrin %(field)s: %(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:186
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 "Që të plotësohet pagesa, ju lutemi, jepni të dhënat tuaja të faturimit."
 
-#: weblate_web/views.py:160
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "ID-ja e TVSH s’është më e vlefshme, ju lutemi, përditësojeni."
 
-#: weblate_web/views.py:181
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr "Ju lutemi, zgjidhni një metodë pagesash."
 
-#: weblate_web/views.py:293
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "Pagesë ende e pakryer, ju lutemi, riprovoni."
 
-#: weblate_web/views.py:297
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "Pagesa u refuzua: {}"
 
-#: weblate_web/views.py:298
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Arsye e panjohur"
 
-#: weblate_web/views.py:303
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr "Faleminderit për pajtimin tuaj."
 
-#: weblate_web/views.py:306
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Faleminderit për dhurimin tuaj."
 
-#: weblate_web/views.py:393
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 "Pajtimi është i domosdoshëm, krejt çka ju duhet të bëni është të ripohoni "
 "email-in."
 
-#: weblate_web/views.py:396
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr "S’u përpunua dot kërkesë pajtimi."
 

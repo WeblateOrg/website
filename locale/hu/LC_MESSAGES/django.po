@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-10-08 14:50+0200\n"
+"POT-Creation-Date: 2019-10-19 13:31+0200\n"
 "PO-Revision-Date: 2019-10-03 04:31+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/weblate/"
@@ -1706,6 +1706,7 @@ msgstr "Régebbi cikkek megtekintése"
 
 #: weblate_web/templates/payment/customer.html:4
 #: weblate_web/templates/payment/payment.html:5
+#: weblate_web/templates/payment/pending.html:5
 msgid "Weblate payment"
 msgstr "Weblate fizetés"
 
@@ -1714,25 +1715,33 @@ msgid "Your billing information"
 msgstr "A számlázási adatai"
 
 #: weblate_web/templates/payment/payment.html:11
+#: weblate_web/templates/payment/pending.html:47
 #, fuzzy
 #| msgid "Payment summary"
 msgid "Payment Summary"
 msgstr "Fizetési összefoglaló"
 
 #: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/pending.html:26
+#: weblate_web/templates/payment/pending.html:50
 msgid "Payment amount"
 msgstr "Fizetési összeg"
 
 #: weblate_web/templates/payment/payment.html:18
+#: weblate_web/templates/payment/pending.html:28
+#: weblate_web/templates/payment/pending.html:52
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s EUR"
 
 #: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/pending.html:29
+#: weblate_web/templates/payment/pending.html:53
 msgid "(including VAT)"
 msgstr "(ÁFÁVAL)"
 
 #: weblate_web/templates/payment/payment.html:24
+#: weblate_web/templates/payment/pending.html:58
 msgid "Payment description"
 msgstr "Fizetési leírás"
 
@@ -1786,6 +1795,32 @@ msgstr "Kérjük, válasszon fizetési módot:"
 #| msgid "Payments"
 msgid "Make Payment"
 msgstr "Kifizetések"
+
+#: weblate_web/templates/payment/pending.html:12
+msgid "Please complete the payment by following provided instructions."
+msgstr ""
+
+#: weblate_web/templates/payment/pending.html:23
+#, fuzzy
+#| msgid "Payment description"
+msgid "Payment Instructions"
+msgstr "Fizetési leírás"
+
+#: weblate_web/templates/payment/pending.html:41
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Download proforma invoice"
+msgstr "Számla letöltése"
+
+#: weblate_web/templates/payment/pending.html:63
+#, fuzzy
+#| msgid "Payments"
+msgid "Payment status"
+msgstr "Kifizetések"
+
+#: weblate_web/templates/payment/pending.html:64
+msgid "Waiting for payment to be completed."
+msgstr ""
 
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
@@ -2486,7 +2521,7 @@ msgid "Other topics"
 msgstr "Egyéb témakörök"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:431
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr "Mérföldkövek"
 
@@ -2571,47 +2606,47 @@ msgstr "csak most"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Hiba a(z) %(field)s paraméterben: %(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:186
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "Kérjük, adja meg számlázási adatait a fizetés befejezéséhez."
 
-#: weblate_web/views.py:160
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Az ÁFA azonosító már nem érvényes, kérjük frissítse."
 
-#: weblate_web/views.py:181
+#: weblate_web/views.py:184
 #, fuzzy
 #| msgid "Please choose payment method:"
 msgid "Please choose a payment method."
 msgstr "Kérjük, válasszon fizetési módot:"
 
-#: weblate_web/views.py:293
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "A fizetés még nem történt meg, kérjük, próbálkozzon újra."
 
-#: weblate_web/views.py:297
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "A fizetést elutasította: {}"
 
-#: weblate_web/views.py:298
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Ismeretlen ok"
 
-#: weblate_web/views.py:303
+#: weblate_web/views.py:313
 #, fuzzy
 #| msgid "Thank you for your donation."
 msgid "Thank you for your subscription."
 msgstr "Köszönjük a támogatásod."
 
-#: weblate_web/views.py:306
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Köszönjük a támogatásod."
 
-#: weblate_web/views.py:393
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:396
+#: weblate_web/views.py:409
 #, fuzzy
 #| msgid "Failed to process subscription request."
 msgid "Could not process subscription request."
@@ -3004,11 +3039,6 @@ msgstr "Nem sikerült feldolgozni az előfizetési kérelmet."
 
 #~ msgid "Screenshots"
 #~ msgstr "Képernyőképek"
-
-#, fuzzy
-#~| msgid "Payment description"
-#~ msgid "Payment Conditions"
-#~ msgstr "Fizetési leírás"
 
 #, fuzzy
 #~| msgid "Donations"

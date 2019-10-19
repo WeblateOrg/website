@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-10-08 14:50+0200\n"
+"POT-Creation-Date: 2019-10-19 13:31+0200\n"
 "PO-Revision-Date: 2019-09-20 18:27+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/weblate/"
@@ -1875,6 +1875,7 @@ msgstr "Переглянути джерельний код"
 
 #: weblate_web/templates/payment/customer.html:4
 #: weblate_web/templates/payment/payment.html:5
+#: weblate_web/templates/payment/pending.html:5
 msgid "Weblate payment"
 msgstr "Платіж Weblate"
 
@@ -1883,25 +1884,33 @@ msgid "Your billing information"
 msgstr "Інформація про ваші платежі"
 
 #: weblate_web/templates/payment/payment.html:11
+#: weblate_web/templates/payment/pending.html:47
 #, fuzzy
 #| msgid "Payment summary"
 msgid "Payment Summary"
 msgstr "Підсумок платежу"
 
 #: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/pending.html:26
+#: weblate_web/templates/payment/pending.html:50
 msgid "Payment amount"
 msgstr "Сума"
 
 #: weblate_web/templates/payment/payment.html:18
+#: weblate_web/templates/payment/pending.html:28
+#: weblate_web/templates/payment/pending.html:52
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s євро"
 
 #: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/pending.html:29
+#: weblate_web/templates/payment/pending.html:53
 msgid "(including VAT)"
 msgstr "(включаючи ПДВ)"
 
 #: weblate_web/templates/payment/payment.html:24
+#: weblate_web/templates/payment/pending.html:58
 msgid "Payment description"
 msgstr "Опис платежу"
 
@@ -1957,6 +1966,32 @@ msgstr "Будь ласка, оберіть метод оплати:"
 #| msgid "Payments"
 msgid "Make Payment"
 msgstr "Платежі"
+
+#: weblate_web/templates/payment/pending.html:12
+msgid "Please complete the payment by following provided instructions."
+msgstr ""
+
+#: weblate_web/templates/payment/pending.html:23
+#, fuzzy
+#| msgid "Payment description"
+msgid "Payment Instructions"
+msgstr "Опис платежу"
+
+#: weblate_web/templates/payment/pending.html:41
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Download proforma invoice"
+msgstr "Завантажити рахунок"
+
+#: weblate_web/templates/payment/pending.html:63
+#, fuzzy
+#| msgid "Payments"
+msgid "Payment status"
+msgstr "Платежі"
+
+#: weblate_web/templates/payment/pending.html:64
+msgid "Waiting for payment to be completed."
+msgstr ""
 
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
@@ -2726,7 +2761,7 @@ msgid "Other topics"
 msgstr "Інші параметри"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:431
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr ""
 
@@ -2812,47 +2847,47 @@ msgstr ""
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Помилка у параметрі %(field)s: %(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:186
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "Будь ласка, вкажіть інформацію про оплату, щоб здійснити платіж."
 
-#: weblate_web/views.py:160
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Цей номер платника ПДВ вже не дійсний. Оновіть його."
 
-#: weblate_web/views.py:181
+#: weblate_web/views.py:184
 #, fuzzy
 #| msgid "Please choose payment method:"
 msgid "Please choose a payment method."
 msgstr "Будь ласка, оберіть метод оплати:"
 
-#: weblate_web/views.py:293
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "Платіж ще не опрацьований. Будь ласка, повторіть."
 
-#: weblate_web/views.py:297
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "Платіж відхилили: {}"
 
-#: weblate_web/views.py:298
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Невідома причина"
 
-#: weblate_web/views.py:303
+#: weblate_web/views.py:313
 #, fuzzy
 #| msgid "Thank you for your donation."
 msgid "Thank you for your subscription."
 msgstr "Дякуємо за вашу пожертву."
 
-#: weblate_web/views.py:306
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Дякуємо за вашу пожертву."
 
-#: weblate_web/views.py:393
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:396
+#: weblate_web/views.py:409
 #, fuzzy
 #| msgid "Failed to process subscription request."
 msgid "Could not process subscription request."
@@ -3375,11 +3410,6 @@ msgstr "Не вдалося опрацювати запит на підписк�
 
 #~ msgid "Screenshots"
 #~ msgstr "Знімки екрану"
-
-#, fuzzy
-#~| msgid "Payment description"
-#~ msgid "Payment Conditions"
-#~ msgstr "Опис платежу"
 
 #, fuzzy
 #~| msgid "Donations"

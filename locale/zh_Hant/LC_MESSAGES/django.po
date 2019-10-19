@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-10-08 14:50+0200\n"
+"POT-Creation-Date: 2019-10-19 13:31+0200\n"
 "PO-Revision-Date: 2019-09-20 18:28+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -1823,6 +1823,7 @@ msgstr "檢視源碼"
 
 #: weblate_web/templates/payment/customer.html:4
 #: weblate_web/templates/payment/payment.html:5
+#: weblate_web/templates/payment/pending.html:5
 msgid "Weblate payment"
 msgstr "Weblate 支付"
 
@@ -1831,25 +1832,33 @@ msgid "Your billing information"
 msgstr "您的付費資訊"
 
 #: weblate_web/templates/payment/payment.html:11
+#: weblate_web/templates/payment/pending.html:47
 #, fuzzy
 #| msgid "Payment summary"
 msgid "Payment Summary"
 msgstr "支付摘要"
 
 #: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/pending.html:26
+#: weblate_web/templates/payment/pending.html:50
 msgid "Payment amount"
 msgstr "付款額"
 
 #: weblate_web/templates/payment/payment.html:18
+#: weblate_web/templates/payment/pending.html:28
+#: weblate_web/templates/payment/pending.html:52
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s 歐元"
 
 #: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/pending.html:29
+#: weblate_web/templates/payment/pending.html:53
 msgid "(including VAT)"
 msgstr "(含營業稅 VAT)"
 
 #: weblate_web/templates/payment/payment.html:24
+#: weblate_web/templates/payment/pending.html:58
 msgid "Payment description"
 msgstr "支付描述說明"
 
@@ -1901,6 +1910,32 @@ msgstr "請選擇支付方式："
 #| msgid "Payments"
 msgid "Make Payment"
 msgstr "支付"
+
+#: weblate_web/templates/payment/pending.html:12
+msgid "Please complete the payment by following provided instructions."
+msgstr ""
+
+#: weblate_web/templates/payment/pending.html:23
+#, fuzzy
+#| msgid "Payment description"
+msgid "Payment Instructions"
+msgstr "支付描述說明"
+
+#: weblate_web/templates/payment/pending.html:41
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Download proforma invoice"
+msgstr "下載收據"
+
+#: weblate_web/templates/payment/pending.html:63
+#, fuzzy
+#| msgid "Payments"
+msgid "Payment status"
+msgstr "支付"
+
+#: weblate_web/templates/payment/pending.html:64
+msgid "Waiting for payment to be completed."
+msgstr ""
 
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
@@ -2647,7 +2682,7 @@ msgid "Other topics"
 msgstr "其他選項"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:431
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr ""
 
@@ -2731,47 +2766,47 @@ msgstr ""
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "%(field)s 參數錯誤：%(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:186
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "請提供您的付費資訊完成支付。"
 
-#: weblate_web/views.py:160
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "營業稅 VAT ID 不再有效，請更新。"
 
-#: weblate_web/views.py:181
+#: weblate_web/views.py:184
 #, fuzzy
 #| msgid "Please choose payment method:"
 msgid "Please choose a payment method."
 msgstr "請選擇支付方式："
 
-#: weblate_web/views.py:293
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "支付尚未處理，請重試。"
 
-#: weblate_web/views.py:297
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "支付動作遭拒：{}"
 
-#: weblate_web/views.py:298
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "不明原因"
 
-#: weblate_web/views.py:303
+#: weblate_web/views.py:313
 #, fuzzy
 #| msgid "Thank you for your donation."
 msgid "Thank you for your subscription."
 msgstr "感謝您的贊助。"
 
-#: weblate_web/views.py:306
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "感謝您的贊助。"
 
-#: weblate_web/views.py:393
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:396
+#: weblate_web/views.py:409
 #, fuzzy
 #| msgid "Failed to process subscription request."
 msgid "Could not process subscription request."
@@ -3257,11 +3292,6 @@ msgstr "無法處理訂閱請求。"
 
 #~ msgid "Screenshots"
 #~ msgstr "畫面快照"
-
-#, fuzzy
-#~| msgid "Payment description"
-#~ msgid "Payment Conditions"
-#~ msgstr "支付描述說明"
 
 #, fuzzy
 #~| msgid "Donations"

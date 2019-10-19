@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate v. 2017.09.28\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-10-08 14:50+0200\n"
+"POT-Creation-Date: 2019-10-19 13:31+0200\n"
 "PO-Revision-Date: 2019-10-11 12:16+0000\n"
 "Last-Translator: bovirus <roberto.boriotti@canon-europe.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/weblate/website/"
@@ -1636,6 +1636,7 @@ msgstr "Visualizza vecchi articoli"
 
 #: weblate_web/templates/payment/customer.html:4
 #: weblate_web/templates/payment/payment.html:5
+#: weblate_web/templates/payment/pending.html:5
 msgid "Weblate payment"
 msgstr "Pagamenti Weblate"
 
@@ -1644,23 +1645,31 @@ msgid "Your billing information"
 msgstr "I tuoi dati per la fatturazione"
 
 #: weblate_web/templates/payment/payment.html:11
+#: weblate_web/templates/payment/pending.html:47
 msgid "Payment Summary"
 msgstr "Riepilogo del pagamento"
 
 #: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/pending.html:26
+#: weblate_web/templates/payment/pending.html:50
 msgid "Payment amount"
 msgstr "Importo del pagamento"
 
 #: weblate_web/templates/payment/payment.html:18
+#: weblate_web/templates/payment/pending.html:28
+#: weblate_web/templates/payment/pending.html:52
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s Euro"
 
 #: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/pending.html:29
+#: weblate_web/templates/payment/pending.html:53
 msgid "(including VAT)"
 msgstr "(IVA inclusa)"
 
 #: weblate_web/templates/payment/payment.html:24
+#: weblate_web/templates/payment/pending.html:58
 msgid "Payment description"
 msgstr "Descrizione del pagamento"
 
@@ -1714,6 +1723,32 @@ msgstr "Scegli il metodo di pagamento"
 #: weblate_web/templates/payment/payment.html:71
 msgid "Make Payment"
 msgstr "Esegui il pagamento"
+
+#: weblate_web/templates/payment/pending.html:12
+msgid "Please complete the payment by following provided instructions."
+msgstr ""
+
+#: weblate_web/templates/payment/pending.html:23
+#, fuzzy
+#| msgid "Payment description"
+msgid "Payment Instructions"
+msgstr "Descrizione del pagamento"
+
+#: weblate_web/templates/payment/pending.html:41
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Download proforma invoice"
+msgstr "Scarica la fattura"
+
+#: weblate_web/templates/payment/pending.html:63
+#, fuzzy
+#| msgid "Payments"
+msgid "Payment status"
+msgstr "Pagamenti"
+
+#: weblate_web/templates/payment/pending.html:64
+msgid "Waiting for payment to be completed."
+msgstr ""
 
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
@@ -2346,7 +2381,7 @@ msgid "Other topics"
 msgstr "Altri argomenti"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:431
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr "Pietre miliari"
 
@@ -2431,43 +2466,43 @@ msgstr "proprio ora"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Errore nel parametro %(field)s: %(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:186
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "Inserisci i dati di fatturazione per completare il pagamento."
 
-#: weblate_web/views.py:160
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "L'ID IVA non è più valido. Aggiornalo."
 
-#: weblate_web/views.py:181
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr "Scegli un metodo di pagamento."
 
-#: weblate_web/views.py:293
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "Pagamento non ancora elaborato. Riprova."
 
-#: weblate_web/views.py:297
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "Il pagamento è stato rifiutato. {}"
 
-#: weblate_web/views.py:298
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Ragione sconosciuta"
 
-#: weblate_web/views.py:303
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr "Grazie per la tua iscrizione."
 
-#: weblate_web/views.py:306
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Grazie per la tua donazione."
 
-#: weblate_web/views.py:393
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr "Iscrizione richiesta. Tutto ciò che devi fare è confermare l'email."
 
-#: weblate_web/views.py:396
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr "Impossibile elaborare la richiesta di iscrizione."
 
@@ -3037,11 +3072,6 @@ msgstr "Impossibile elaborare la richiesta di iscrizione."
 
 #~ msgid "Screenshots"
 #~ msgstr "Screenshot"
-
-#, fuzzy
-#~| msgid "Payment description"
-#~ msgid "Payment Conditions"
-#~ msgstr "Descrizione del pagamento"
 
 #, fuzzy
 #~| msgid "Donations"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Swedish (Weblate)\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-10-08 14:50+0200\n"
+"POT-Creation-Date: 2019-10-19 13:31+0200\n"
 "PO-Revision-Date: 2019-10-13 06:36+0000\n"
 "Last-Translator: Johan Jacobsson <johan.jacobsson@telia.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/weblate/website/"
@@ -1612,6 +1612,7 @@ msgstr "Visa äldre artiklar"
 
 #: weblate_web/templates/payment/customer.html:4
 #: weblate_web/templates/payment/payment.html:5
+#: weblate_web/templates/payment/pending.html:5
 msgid "Weblate payment"
 msgstr "Weblate-betalning"
 
@@ -1620,23 +1621,31 @@ msgid "Your billing information"
 msgstr "Din faktureringsinformation"
 
 #: weblate_web/templates/payment/payment.html:11
+#: weblate_web/templates/payment/pending.html:47
 msgid "Payment Summary"
 msgstr "Betalningssammanställning"
 
 #: weblate_web/templates/payment/payment.html:16
+#: weblate_web/templates/payment/pending.html:26
+#: weblate_web/templates/payment/pending.html:50
 msgid "Payment amount"
 msgstr "Belopp att betala"
 
 #: weblate_web/templates/payment/payment.html:18
+#: weblate_web/templates/payment/pending.html:28
+#: weblate_web/templates/payment/pending.html:52
 #, python-format
 msgid "%(price)s EUR"
 msgstr "%(price)s EUR"
 
 #: weblate_web/templates/payment/payment.html:19
+#: weblate_web/templates/payment/pending.html:29
+#: weblate_web/templates/payment/pending.html:53
 msgid "(including VAT)"
 msgstr "(inklusive moms)"
 
 #: weblate_web/templates/payment/payment.html:24
+#: weblate_web/templates/payment/pending.html:58
 msgid "Payment description"
 msgstr "Betalningsbeskrivning"
 
@@ -1689,6 +1698,32 @@ msgstr "Välj betalningsmetod"
 #: weblate_web/templates/payment/payment.html:71
 msgid "Make Payment"
 msgstr "Betala"
+
+#: weblate_web/templates/payment/pending.html:12
+msgid "Please complete the payment by following provided instructions."
+msgstr ""
+
+#: weblate_web/templates/payment/pending.html:23
+#, fuzzy
+#| msgid "Payment description"
+msgid "Payment Instructions"
+msgstr "Betalningsbeskrivning"
+
+#: weblate_web/templates/payment/pending.html:41
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Download proforma invoice"
+msgstr "Hämta faktura"
+
+#: weblate_web/templates/payment/pending.html:63
+#, fuzzy
+#| msgid "Payments"
+msgid "Payment status"
+msgstr "Betalningar"
+
+#: weblate_web/templates/payment/pending.html:64
+msgid "Waiting for payment to be completed."
+msgstr ""
 
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
@@ -1970,8 +2005,8 @@ msgid ""
 "Issues and ideas for improvement can be reported to the <a href=\"%(url)s"
 "\">issue tracker</a>."
 msgstr ""
-"Problem och förbättringsförslag kan rapporteras till <a href=\"%(url)s\">"
-"issue tracker</a>."
+"Problem och förbättringsförslag kan rapporteras till <a href=\"%(url)s"
+"\">issue tracker</a>."
 
 #: weblate_web/templates/support.html:29
 msgid "Security issues"
@@ -1996,8 +2031,8 @@ msgid ""
 "As a subscriber, you get premium support at <a href=\"mailto:%(email)s\">"
 "%(email)s</a>."
 msgstr ""
-"Som prenumerant får du premium support på <a href=\"mailto:%(email)s\""
-">%(email)s</a>."
+"Som prenumerant får du premium support på <a href=\"mailto:%(email)s\">"
+"%(email)s</a>."
 
 #: weblate_web/templates/support.html:46
 msgid "Prepaid support for gratis service and self-hosted installations"
@@ -2318,7 +2353,7 @@ msgid "Other topics"
 msgstr "Andra ämnen"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:431
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr "Milstolpar"
 
@@ -2403,45 +2438,45 @@ msgstr "precis nu"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Fel i parameter %(field)s: %(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:186
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 "Vänligen ange din faktureringsinformation för att slutföra betalningen."
 
-#: weblate_web/views.py:160
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Momsregistreringsnumret är inte längre giltigt, uppdatera det."
 
-#: weblate_web/views.py:181
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr "Välj en betalningsmetod."
 
-#: weblate_web/views.py:293
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "Betalning ännu inte behandlad, vänligen försök igen."
 
-#: weblate_web/views.py:297
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "Betalningen avvisades: {}"
 
-#: weblate_web/views.py:298
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Okänd anledning"
 
-#: weblate_web/views.py:303
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr "Tack för din prenumeration."
 
-#: weblate_web/views.py:306
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Tack för din donation."
 
-#: weblate_web/views.py:393
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 "Prenumeration begärd, allt du behöver göra är att bekräfta e-postmeddelandet."
 
-#: weblate_web/views.py:396
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr "Det gick inte att behandla prenumerationsbegäran."
 
@@ -2960,11 +2995,6 @@ msgstr "Det gick inte att behandla prenumerationsbegäran."
 
 #~ msgid "Screenshots"
 #~ msgstr "Skärmdumpar"
-
-#, fuzzy
-#~| msgid "Payment description"
-#~ msgid "Payment Conditions"
-#~ msgstr "Betalningsbeskrivning"
 
 #, fuzzy
 #~| msgid "Donations"
