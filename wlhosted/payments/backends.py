@@ -192,12 +192,12 @@ class Backend(object):
         email = EmailMessage(
             gettext("Your payment on weblate.org"),
             gettext(
-                """Hello
+                """Hello,
 
 Thank you for your payment on weblate.org.
 
 You will find an invoice for this payment attached.
-Alternatively you can download it from the website:
+Alternatively, you can download it from the website:
 
 %s
 """
@@ -220,7 +220,7 @@ Alternatively you can download it from the website:
         email = EmailMessage(
             gettext("Your payment on weblate.org failed"),
             gettext(
-                """Hello
+                """Hello,
 
 Your payment on weblate.org has failed.
 
@@ -255,10 +255,10 @@ and if still failing, cancelled.
         email = EmailMessage(
             gettext("Your pending payment on weblate.org"),
             gettext(
-                """Hello
+                """Hello,
 
-Your payment on weblate.org is pending. Please complete the payment by
-following attached instructions.
+Your payment on weblate.org is pending. Please follow the provided
+instructions to complete the payment.
 """
             ),
             "billing@weblate.org",
@@ -506,4 +506,4 @@ class FioBank(Backend):
                             )
                         )
                 except Payment.DoesNotExist:
-                    print("Did not find matching payment for {}".format(proforma_id))
+                    print("No matching payment for {} found".format(proforma_id))
