@@ -424,8 +424,7 @@ class ThePayCard(Backend):
         return False
 
 
-# Temporarily disabled, not working
-# @register_backend
+@register_backend
 class ThePayBitcoin(ThePayCard):
     name = "thepay-bitcoin"
     verbose = gettext_lazy("Bitcoin")
