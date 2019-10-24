@@ -36,10 +36,17 @@ from weblate_web.models import (
 class Command(BaseCommand):
     help = "processes pending payments"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--from-date',
+            default=None,
+            help='Date for parsing bank statements',
+        )
+
     def handle(self, *args, **options):
         if settings.FIO_TOKEN:
             with transaction.atomic(using="payments_db"):
-                FioBank.fetch_payments()
+                FioBank.fetch_payments(from_date=options['from_date'])
         with transaction.atomic(using="payments_db"):
             self.pending()
         self.active()
