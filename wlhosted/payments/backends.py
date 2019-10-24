@@ -485,6 +485,9 @@ class FioBank(Backend):
             # Extract from variable symbol
             if transaction["variable_symbol"]:
                 matches.extend(PROFORMA_RE.findall(transaction["variable_symbol"]))
+            # Extract from comment for manual pairing
+            if transaction["comment"]:
+                matches.extend(PROFORMA_RE.findall(transaction["comment"]))
             # Process all matches
             for proforma_id in matches:
                 proforma_id = "P{}".format(proforma_id)
