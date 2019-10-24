@@ -497,7 +497,7 @@ class FioBank(Backend):
                     )
                     backend = cls(related)
                     proforma = backend.get_proforma()
-                    if floor(float(proforma.amount)) <= transaction["amount"]:
+                    if floor(float(proforma.total_amount)) <= transaction["amount"]:
                         print("Received payment for {}".format(proforma_id))
                         backend.payment.details["transaction"] = transaction
                         backend.success()
