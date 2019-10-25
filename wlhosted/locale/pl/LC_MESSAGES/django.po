@@ -6,10 +6,10 @@
 # Stanisław Krukowski <pet209a1@riseup.net>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate \n"
+"Project-Id-Version: Hosted Weblate\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2019-10-21 15:12+0000\n"
-"PO-Revision-Date: 2019-10-12 05:01+0000\n"
+"PO-Revision-Date: 2019-10-26 05:40+0000\n"
 "Last-Translator: WaldiS <admin@sto.ugu.pl>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/weblate/hosted/pl/"
 ">\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 3.9.1-dev\n"
 
 #: wlhosted/addons.py:37 wlhosted/addons.py:38
 msgid "Generate Unknown Horizons scenario data"
@@ -938,16 +938,7 @@ msgid "Your payment on weblate.org"
 msgstr "Twoja płatność na weblate.org"
 
 #: wlhosted/payments/backends.py:195
-#, fuzzy, python-format
-#| msgid ""
-#| "Hello\n"
-#| "\n"
-#| "Thank you for your payment on weblate.org.\n"
-#| "\n"
-#| "You will find an invoice for this payment attached.\n"
-#| "Alternatively you can download it from the website:\n"
-#| "\n"
-#| "%s\n"
+#, python-format
 msgid ""
 "Hello,\n"
 "\n"
@@ -958,12 +949,12 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
-"Witaj\n"
+"Witaj,\n"
 "\n"
-"Dziękujemy za dokonanie płatności na weblate.org.\n"
+"Dziękujemy za płatność na weblate.org.\n"
 "\n"
-"Fakturę za tę płatność znajdziesz w załączniku.\n"
-"Alternatywnie możesz pobrać go ze strony internetowej:\n"
+"W załączeniu znajduje się faktura za tę płatność.\n"
+"Możesz również pobrać ją ze strony internetowej:\n"
 "\n"
 "%s\n"
 
@@ -972,20 +963,7 @@ msgid "Your payment on weblate.org failed"
 msgstr "Twoja płatność na weblate.org nie powiodła się"
 
 #: wlhosted/payments/backends.py:223
-#, fuzzy, python-format
-#| msgid ""
-#| "Hello\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
+#, python-format
 msgid ""
 "Hello,\n"
 "\n"
@@ -1000,7 +978,7 @@ msgid ""
 "If concerning a recurring payment, it is retried three times,\n"
 "and if still failing, cancelled.\n"
 msgstr ""
-"Witaj\n"
+"Witaj,\n"
 "\n"
 "Twoja płatność na weblate.org nie powiodła się.\n"
 "\n"
@@ -1014,10 +992,8 @@ msgstr ""
 "a jeśli nadal będzie nieskuteczna, zostanie anulowana.\n"
 
 #: wlhosted/payments/backends.py:256
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Your pending payment on weblate.org"
-msgstr "Twoja płatność na weblate.org"
+msgstr "Twoja oczekująca płatność na weblate.org"
 
 #: wlhosted/payments/backends.py:258
 msgid ""
@@ -1026,6 +1002,10 @@ msgid ""
 "Your payment on weblate.org is pending. Please follow the provided\n"
 "instructions to complete the payment.\n"
 msgstr ""
+"Witaj,\n"
+"\n"
+"Twoja płatność na weblate.org jest w toku. Postępuj zgodnie z podanymi\n"
+"instrukcjami realizacji płatności.\n"
 
 #: wlhosted/payments/backends.py:340
 msgid "Payment card"
@@ -1045,7 +1025,7 @@ msgstr "Bitcoin"
 
 #: wlhosted/payments/backends.py:440
 msgid "IBAN bank transfer"
-msgstr ""
+msgstr "Przelew bankowy IBAN"
 
 #: wlhosted/payments/backends.py:470
 msgid "Issuing bank"
@@ -1053,19 +1033,19 @@ msgstr ""
 
 #: wlhosted/payments/backends.py:471
 msgid "Account holder"
-msgstr ""
+msgstr "Właściciel  rachunku"
 
 #: wlhosted/payments/backends.py:472
 msgid "Account number"
-msgstr ""
+msgstr "Numer rachunku"
 
 #: wlhosted/payments/backends.py:473
 msgid "SWIFT code"
-msgstr ""
+msgstr "Kod SWIFT"
 
 #: wlhosted/payments/backends.py:474
 msgid "IBAN"
-msgstr ""
+msgstr "IBAN"
 
 #: wlhosted/payments/backends.py:475
 msgid "Reference"
@@ -1143,6 +1123,8 @@ msgstr "{} nie pasuje do specyfikacji VAT w kraju."
 #: wlhosted/payments/validators.py:50
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
+"Usługa weryfikacji identyfikatora VAT jest niedostępna dla {}, spróbuj "
+"ponownie później."
 
 #: wlhosted/payments/validators.py:53
 msgid "{} is not a valid VAT ID."
