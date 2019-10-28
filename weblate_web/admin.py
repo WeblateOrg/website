@@ -56,7 +56,9 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ['verbose', 'price']
+    list_display = [
+        'verbose', 'name', 'price', 'limit_languages', 'limit_source_strings'
+    ]
 
 
 admin.site.register(Image, ImageAdmin)
