@@ -24,41 +24,54 @@ from weblate_web.models import Donation, Image, Package, Post, Service, Subscrip
 
 
 class DonationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'reward', 'created', 'expires', 'get_amount')
+    list_display = ("user", "reward", "created", "expires", "get_amount")
 
 
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['site_title', 'site_url', 'site_version', 'languages_limit', 'source_strings_limit', 'status', 'user_emails', 'expires']
-    list_filter = ('status',)
-    date_hierarchy = 'created'
-    filter_horizontal = ('users',)
+    list_display = [
+        "site_title",
+        "site_url",
+        "site_version",
+        "languages_limit",
+        "source_strings_limit",
+        "status",
+        "user_emails",
+        "expires",
+    ]
+    list_filter = ("status",)
+    date_hierarchy = "created"
+    filter_horizontal = ("users",)
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('service', 'package', 'created', 'expires', 'get_amount')
+    list_display = ("service", "package", "created", "expires", "get_amount")
 
 
 class ImageAdmin(admin.ModelAdmin):
-    search_fields = ('name',)
+    search_fields = ("name",)
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title', 'timestamp', 'slug', 'image']
-    list_filter = [('author', admin.RelatedOnlyFieldListFilter), 'topic']
-    prepopulated_fields = {'slug': ('title',)}
-    search_fields = ['title', 'slug']
-    ordering = ('-timestamp',)
-    date_hierarchy = 'timestamp'
+    list_display = ["title", "timestamp", "slug", "image"]
+    list_filter = [("author", admin.RelatedOnlyFieldListFilter), "topic"]
+    prepopulated_fields = {"slug": ("title",)}
+    search_fields = ["title", "slug"]
+    ordering = ("-timestamp",)
+    date_hierarchy = "timestamp"
 
     def save_model(self, request, obj, form, change):
-        if getattr(obj, 'author', None) is None:
+        if getattr(obj, "author", None) is None:
             obj.author = request.user
         obj.save()
 
 
 class PackageAdmin(admin.ModelAdmin):
     list_display = [
-        'verbose', 'name', 'price', 'limit_languages', 'limit_source_strings'
+        "verbose",
+        "name",
+        "price",
+        "limit_languages",
+        "limit_source_strings",
     ]
 
 

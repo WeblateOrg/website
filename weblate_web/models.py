@@ -297,11 +297,7 @@ class Service(models.Model):
             url = self.last_report.site_url
         else:
             url = ""
-        return "{}: {}: {}".format(
-            self.get_status_display(),
-            self.user_emails,
-            url,
-        )
+        return "{}: {}: {}".format(self.get_status_display(), self.user_emails, url)
 
     @cached_property
     def site_title(self):
@@ -325,25 +321,27 @@ class Service(models.Model):
         report = self.last_report
         if report:
             if self.limit_languages:
-                return '{}/{}'.format(report.languages, self.limit_languages)
+                return "{}/{}".format(report.languages, self.limit_languages)
             else:
-                return '{}'.format(report.languages)
-        return '0'
-    languages_limit.short_description = 'Languages'
+                return "{}".format(report.languages)
+        return "0"
+
+    languages_limit.short_description = "Languages"
 
     def source_strings_limit(self):
         report = self.last_report
         if report:
             if self.limit_source_strings:
-                return '{}/{}'.format(report.source_strings, self.limit_source_strings)
+                return "{}/{}".format(report.source_strings, self.limit_source_strings)
             else:
-                return '{}'.format(report.source_strings)
-        return '0'
-    source_strings_limit.short_description = 'Source strings'
+                return "{}".format(report.source_strings)
+        return "0"
+
+    source_strings_limit.short_description = "Source strings"
 
     @cached_property
     def user_emails(self):
-        return ", ".join(self.users.values_list("email", flat=True)),
+        return (", ".join(self.users.values_list("email", flat=True)),)
 
     @cached_property
     def last_report(self):
