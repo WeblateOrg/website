@@ -28,7 +28,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['site_title', 'site_url', 'site_version', 'status', 'user_emails', 'expires']
+    list_display = ['site_title', 'site_url', 'site_version', 'languages_limit', 'source_strings_limit', 'status', 'user_emails', 'expires']
     list_filter = ('status',)
     date_hierarchy = 'created'
     filter_horizontal = ('users',)
