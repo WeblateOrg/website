@@ -341,7 +341,7 @@ class Service(models.Model):
 
     @cached_property
     def user_emails(self):
-        return (", ".join(self.users.values_list("email", flat=True)),)
+        return ", ".join(self.users.values_list("email", flat=True))
 
     @cached_property
     def last_report(self):
