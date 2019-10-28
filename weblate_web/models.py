@@ -184,18 +184,19 @@ def process_subscription(payment):
         subscription = Subscription.objects.get(pk=payment.extra["subscription"])
         if subscription.payment:
             subscription.pastpayments_set.create(payment=subscription.payment)
-        subscription.expires += get_period_delta("y")
+        subscription.expires += get_period_delta(subscription.get_repeat())
         subscription.payment = payment.pk
         subscription.save()
     else:
         user = User.objects.get(pk=payment.customer.user_id)
+        package = Package.objects.get(name=payment.extra["subscription"])
         # Calculate expiry
-        expires = timezone.now() + get_period_delta("y")
+        expires = timezone.now() + get_period_delta(package.get_repeat())
         # Create new
         subscription = Subscription.objects.create(
             service=get_service(payment, user),
             payment=payment.pk,
-            package=payment.extra["subscription"],
+            package=package.name,
             expires=expires,
         )
     # Flag payment as processed
@@ -272,6 +273,15 @@ class Package(models.Model):
 
     def __str__(self):
         return self.verbose
+
+    def get_repeat(self):
+        if self.name in ("basic", "extended", "backup"):
+            return "y"
+        if self.name.startswith("hosted:"):
+            if self.name.endswith("-m"):
+                return "m"
+            return "y"
+        return ""
 
 
 class Service(models.Model):
@@ -440,23 +450,21 @@ class Subscription(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
 
+    @cached_property
+    def package_obj(self):
+        return Package.objects.get(name=self.package)
+
     def get_package_display(self):
-        return _(Package.objects.get(name=self.package).verbose)
+        return _(self.package_obj.verbose)
 
     def get_repeat(self):
-        if self.package in ("basic", "extended", "backup"):
-            return "y"
-        if self.package.startswith("hosted:"):
-            if self.package.endswith("-m"):
-                return "m"
-            return "y"
-        return ""
+        return self.package_obj.get_repeat()
 
     def active(self):
         return self.expires >= timezone.now()
 
     def get_amount(self):
-        return Package.objects.get(name=self.package).price
+        return self.package_obj.price
 
     def regenerate(self):
         self.secret = generate_secret()
