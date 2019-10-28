@@ -299,9 +299,31 @@ class Service(models.Model):
             url = ""
         return "{}: {}: {}".format(
             self.get_status_display(),
-            ", ".join(self.users.values_list("username", flat=True)),
+            self.user_emails,
             url,
         )
+
+    @cached_property
+    def site_title(self):
+        if self.last_report:
+            return self.last_report.site_title
+        return "Weblate"
+
+    @cached_property
+    def site_url(self):
+        if self.last_report:
+            return self.last_report.site_url
+        return ""
+
+    @cached_property
+    def site_version(self):
+        if self.last_report:
+            return self.last_report.version
+        return ""
+
+    @cached_property
+    def user_emails(self):
+        return ", ".join(self.users.values_list("email", flat=True)),
 
     @cached_property
     def last_report(self):
@@ -462,6 +484,7 @@ class Report(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
     site_url = models.URLField()
     site_title = models.TextField()
+    version = models.TextField()
     ssh_key = models.TextField()
     users = models.IntegerField()
     projects = models.IntegerField()

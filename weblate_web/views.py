@@ -99,6 +99,7 @@ def api_support(request):
         components=request.POST.get('components', 0),
         languages=request.POST.get('languages', 0),
         source_strings=request.POST.get('source_strings', 0),
+        version=request.headers['User-Agent'].split('/', 1)[1],
     )
     service.update_status()
     service.create_backup()
