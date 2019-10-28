@@ -404,9 +404,11 @@ class Subscription(models.Model):
         return _(Package.objects.get(name=self.package).verbose)
 
     def get_repeat(self):
-        if self.package in ("basic", "extended", "backup") or self.package.startswith(
-            "hosted:"
-        ):
+        if self.package in ("basic", "extended", "backup"):
+            return "y"
+        if self.package.startswith("hosted:"):
+            if self.package.endswith("-m"):
+                return "m"
             return "y"
         return ""
 
