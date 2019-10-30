@@ -140,6 +140,27 @@
                 </div>
                 {% endwith %}
                 <div class="form-line">
+                    <div class="line-left">{% trans "Users" %}</div>
+                    <div class="line-right">
+                    {% for owner in service.users.all %}
+                    <form method="post" action="{% url 'service-user' pk=service.pk %}">
+                    {{ owner.last_name }} &lt;{{ owner.email }}&gt;
+                    {% csrf_token %}
+                    {% if owner != user %}
+                    <input type="hidden" name="email" value="{{ owner.email }}" />
+                    <input type="submit" class="button small inline border rev" name="remove" value="{% trans "Remove" %}" />
+                    {% endif %}
+                    </form>
+                    {% endfor %}
+                    <form method="post" action="{% url 'service-user' pk=service.pk %}">
+                    {% csrf_token %}
+                    <input type="email" placeholder="{% trans "E-mail" %}" name="email" />
+                    <input type="submit" class="button small inline" value="{% trans "Add" %}" />
+                    </form>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-line">
                     <div class="line-left">{% trans "Get more services" %}</div>
                     <div class="line-right">
                         {% for package, name in service.get_suggestions %}

@@ -21,6 +21,7 @@
 import django.views.defaults
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins, send_mail
 from django.db import transaction
@@ -529,6 +530,18 @@ def subscription_disable_repeat(request, pk):
 def service_token(request, pk):
     service = get_object_or_404(Service, pk=pk, users=request.user)
     service.regenerate()
+    return redirect(reverse("user"))
+
+
+@require_POST
+@login_required
+def service_user(request, pk):
+    service = get_object_or_404(Service, pk=pk, users=request.user)
+    user = get_object_or_404(User, email=request.POST.get("email"))
+    if "remove" in request.POST:
+        service.users.remove(user)
+    else:
+        service.users.add(user)
     return redirect(reverse("user"))
 
 
