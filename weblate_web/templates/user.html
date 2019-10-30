@@ -100,6 +100,9 @@
                             <form class="form-inline" method="post" action="{% url "subscription-pay" pk=subscription.pk %}">
                             {% csrf_token %}
                             <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
+                            {% if subscription.yearly_package %}
+                            <input type="submit" class="button small inline" value="{% trans "Switch to yearly" %}" name="switch_yearly">
+                            {% endif %}
                             </form>
                             {% if subscription.payment_obj.recurring %}
                             <form class="form-inline" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">

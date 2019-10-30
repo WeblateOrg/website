@@ -191,7 +191,11 @@ def process_subscription(payment):
         user = User.objects.get(pk=payment.customer.user_id)
         package = Package.objects.get(name=payment.extra["subscription"])
         # Calculate expiry
-        expires = timezone.now() + get_period_delta(package.get_repeat())
+        repeat = package.get_repeat()
+        if repeat:
+            expires = timezone.now() + get_period_delta(repeat)
+        else:
+            expires = timezone.now()
         # Create new
         subscription = Subscription.objects.create(
             service=get_service(payment, user),
@@ -450,6 +454,12 @@ class Subscription(models.Model):
     package = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
+
+    @cached_property
+    def yearly_package(self):
+        if self.package.endswith("-m"):
+            return self.package[:-2]
+        return None
 
     @cached_property
     def package_obj(self):

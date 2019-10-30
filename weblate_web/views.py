@@ -518,7 +518,7 @@ def activity_svg(request):
 @require_POST
 @login_required
 def subscription_disable_repeat(request, pk):
-    subscription = get_object_or_404(Subscription, pk=pk, user=request.user)
+    subscription = get_object_or_404(Subscription, pk=pk, service__users=request.user)
     payment = subscription.payment_obj
     payment.recurring = ""
     payment.save()
@@ -548,7 +548,10 @@ def service_user(request, pk):
 @require_POST
 @login_required
 def subscription_pay(request, pk):
-    subscription = get_object_or_404(Subscription, pk=pk, user=request.user)
+    subscription = get_object_or_404(Subscription, pk=pk, service__users=request.user)
+    if "switch_yearly" in request.POST and subscription.yearly_package:
+        subscription.package = subscription.yearly_package
+        subscription.save(update_fields=["package"])
     with override("en"):
         payment = Payment.objects.create(
             amount=subscription.get_amount(),
