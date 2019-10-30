@@ -32,6 +32,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "site_title",
         "site_url",
         "site_version",
+        "note",
         "languages_limit",
         "source_strings_limit",
         "status",
