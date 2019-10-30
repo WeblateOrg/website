@@ -8,10 +8,10 @@
 # Scott Anecito <scott.anecito@protonmail.com>, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hosted Weblate \n"
+"Project-Id-Version: Hosted Weblate\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2019-10-21 15:12+0000\n"
-"PO-Revision-Date: 2019-10-05 13:56+0000\n"
+"PO-Revision-Date: 2019-10-31 18:03+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/hosted/"
 "ja/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 3.10-dev\n"
 
 #: wlhosted/addons.py:37 wlhosted/addons.py:38
 msgid "Generate Unknown Horizons scenario data"
@@ -880,16 +880,7 @@ msgid "Your payment on weblate.org"
 msgstr "weblate.org への支払い"
 
 #: wlhosted/payments/backends.py:195
-#, fuzzy, python-format
-#| msgid ""
-#| "Hello\n"
-#| "\n"
-#| "Thank you for your payment on weblate.org.\n"
-#| "\n"
-#| "You will find an invoice for this payment attached.\n"
-#| "Alternatively you can download it from the website:\n"
-#| "\n"
-#| "%s\n"
+#, python-format
 msgid ""
 "Hello,\n"
 "\n"
@@ -914,20 +905,7 @@ msgid "Your payment on weblate.org failed"
 msgstr "weblate.org へのお支払いに失敗しました"
 
 #: wlhosted/payments/backends.py:223
-#, fuzzy, python-format
-#| msgid ""
-#| "Hello\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
+#, python-format
 msgid ""
 "Hello,\n"
 "\n"
@@ -943,7 +921,8 @@ msgid ""
 "and if still failing, cancelled.\n"
 msgstr ""
 "こんにちは\n"
-"weblate.org へのお支払いが失敗しました。\n"
+"\n"
+"weblate.org へのお支払いに失敗しました。\n"
 "\n"
 "%s\n"
 "\n"
@@ -951,13 +930,11 @@ msgstr ""
 "\n"
 "%s\n"
 "\n"
-"定期購入の場合は 3 回再試行し、それでも失敗した場合は解約します。\n"
+"定期購入の場合は 3 回再試行し、それでも失敗した場合は解約されます。\n"
 
 #: wlhosted/payments/backends.py:256
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Your pending payment on weblate.org"
-msgstr "weblate.org への支払い"
+msgstr "weblate.org が、入金待ちの支払い"
 
 #: wlhosted/payments/backends.py:258
 msgid ""
@@ -966,6 +943,10 @@ msgid ""
 "Your payment on weblate.org is pending. Please follow the provided\n"
 "instructions to complete the payment.\n"
 msgstr ""
+"こんにちは\n"
+"\n"
+"お客様の weblate.org への支払いの入金を待っています。\n"
+"指示に従ってお支払いください。\n"
 
 #: wlhosted/payments/backends.py:340
 msgid "Payment card"
@@ -985,31 +966,31 @@ msgstr "ビットコイン"
 
 #: wlhosted/payments/backends.py:440
 msgid "IBAN bank transfer"
-msgstr ""
+msgstr "IBAN 銀行振込"
 
 #: wlhosted/payments/backends.py:470
 msgid "Issuing bank"
-msgstr ""
+msgstr "発行銀行"
 
 #: wlhosted/payments/backends.py:471
 msgid "Account holder"
-msgstr ""
+msgstr "口座名義人"
 
 #: wlhosted/payments/backends.py:472
 msgid "Account number"
-msgstr ""
+msgstr "口座番号"
 
 #: wlhosted/payments/backends.py:473
 msgid "SWIFT code"
-msgstr ""
+msgstr "SWIFT コード"
 
 #: wlhosted/payments/backends.py:474
 msgid "IBAN"
-msgstr ""
+msgstr "IBAN"
 
 #: wlhosted/payments/backends.py:475
 msgid "Reference"
-msgstr ""
+msgstr "参照"
 
 #: wlhosted/payments/models.py:83
 msgid "European VAT ID"
@@ -1080,7 +1061,7 @@ msgstr "{} は、国の VAT ID 仕様と一致しません。"
 
 #: wlhosted/payments/validators.py:50
 msgid "VAT ID validation service unavailable for {}, please try again later."
-msgstr ""
+msgstr "{} の VAT ID 検証サービスは利用できません。しばらくしてから再試行してください。"
 
 #: wlhosted/payments/validators.py:53
 msgid "{} is not a valid VAT ID."
