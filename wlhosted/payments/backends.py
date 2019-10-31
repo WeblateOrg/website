@@ -455,7 +455,7 @@ class FioBank(Backend):
         if self.payment.state == Payment.ACCEPTED:
             # Inject proforma ID to generated invoice
             invoice = self.get_proforma()
-            return {"payment_id": invoice.invoiceid}
+            return {"payment_id": invoice.invoiceid, "bank_suffix": "proforma"}
         return {}
 
     def get_instructions(self):
