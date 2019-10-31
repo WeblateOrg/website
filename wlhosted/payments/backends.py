@@ -127,7 +127,7 @@ class Backend(object):
         self.failure()
         return False
 
-    def generate_invoice(self, storage_class=InvoiceStorage):
+    def generate_invoice(self, storage_class=InvoiceStorage, paid=True):
         """Generates an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
             return
@@ -159,33 +159,28 @@ class Backend(object):
         invoice = storage.get(invoice_file)
         invoice.write_tex()
         invoice.build_pdf()
-        invoice.mark_paid(
-            json.dumps(self.payment.details, indent=2, cls=DjangoJSONEncoder)
-        )
+        files = [contact_file, invoice_file, invoice.tex_path, invoice.pdf_path]
+        if paid:
+            invoice.mark_paid(
+                json.dumps(self.payment.details, indent=2, cls=DjangoJSONEncoder)
+            )
+            files.append(invoice.paid_path)
 
         self.payment.invoice = invoice.invoiceid
+        self.invoice = invoice
 
         # Commit to git
+        self.git_commit(files)
+
+    def git_commit(self, files):
         subprocess.run(
-            [
-                "git",
-                "add",
-                "--",
-                contact_file,
-                invoice_file,
-                invoice.tex_path,
-                invoice.pdf_path,
-                invoice.paid_path,
-            ],
+            ["git", "add", "--"] + files, check=True, cwd=settings.PAYMENT_FAKTURACE
+        )
+        subprocess.run(
+            ["git", "commit", "-m", "Invoice {}".format(self.invoice.invoiceid)],
             check=True,
             cwd=settings.PAYMENT_FAKTURACE,
         )
-        subprocess.run(
-            ["git", "commit", "-m", "Invoice {}".format(self.payment.invoice)],
-            check=True,
-            cwd=settings.PAYMENT_FAKTURACE,
-        )
-        self.invoice = invoice
 
     def notify_user(self):
         """Send email notification with an invoice."""
@@ -447,7 +442,7 @@ class FioBank(Backend):
         return True
 
     def perform(self, request, back_url, complete_url):
-        self.generate_invoice(storage_class=ProformaStorage)
+        self.generate_invoice(storage_class=ProformaStorage, paid=False)
         self.payment.details["proforma"] = self.payment.invoice
         self.notify_pending()
         return redirect(complete_url)
@@ -497,6 +492,8 @@ class FioBank(Backend):
                     )
                     backend = cls(related)
                     proforma = backend.get_proforma()
+                    proforma.mark_paid(json.dumps(transaction))
+                    backend.git_commit([proforma.paid_path])
                     if floor(float(proforma.total_amount)) <= transaction["amount"]:
                         print("Received payment for {}".format(proforma_id))
                         backend.payment.details["transaction"] = transaction
