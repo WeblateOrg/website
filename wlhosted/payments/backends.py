@@ -492,7 +492,9 @@ class FioBank(Backend):
                     )
                     backend = cls(related)
                     proforma = backend.get_proforma()
-                    proforma.mark_paid(json.dumps(transaction))
+                    proforma.mark_paid(
+                        json.dumps(transaction, indent=2, cls=DjangoJSONEncoder)
+                    )
                     backend.git_commit([proforma.paid_path])
                     if floor(float(proforma.total_amount)) <= transaction["amount"]:
                         print("Received payment for {}".format(proforma_id))
