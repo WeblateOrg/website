@@ -502,8 +502,8 @@ class FioBank(Backend):
                         backend.success()
                     else:
                         print(
-                            "Underpaid {}: {}".format(
-                                proforma_id, transaction["amount"]
+                            "Underpaid {}: received={}, expected={}".format(
+                                proforma_id, transaction["amount"], proforma.total_amount
                             )
                         )
                 except Payment.DoesNotExist:
