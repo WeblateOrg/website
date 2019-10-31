@@ -170,14 +170,14 @@ class Backend(object):
         self.invoice = invoice
 
         # Commit to git
-        self.git_commit(files)
+        self.git_commit(files, invoice)
 
-    def git_commit(self, files):
+    def git_commit(self, files, invoice):
         subprocess.run(
             ["git", "add", "--"] + files, check=True, cwd=settings.PAYMENT_FAKTURACE
         )
         subprocess.run(
-            ["git", "commit", "-m", "Invoice {}".format(self.invoice.invoiceid)],
+            ["git", "commit", "-m", "Invoice {}".format(invoice.invoiceid)],
             check=True,
             cwd=settings.PAYMENT_FAKTURACE,
         )
@@ -495,7 +495,7 @@ class FioBank(Backend):
                     proforma.mark_paid(
                         json.dumps(transaction, indent=2, cls=DjangoJSONEncoder)
                     )
-                    backend.git_commit([proforma.paid_path])
+                    backend.git_commit([proforma.paid_path], proforma)
                     if floor(float(proforma.total_amount)) <= transaction["amount"]:
                         print("Received payment for {}".format(proforma_id))
                         backend.payment.details["transaction"] = transaction
