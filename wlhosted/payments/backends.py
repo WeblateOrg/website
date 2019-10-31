@@ -503,7 +503,9 @@ class FioBank(Backend):
                     else:
                         print(
                             "Underpaid {}: received={}, expected={}".format(
-                                proforma_id, transaction["amount"], proforma.total_amount
+                                proforma_id,
+                                transaction["amount"],
+                                proforma.total_amount,
                             )
                         )
                 except Payment.DoesNotExist:
