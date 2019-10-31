@@ -262,7 +262,7 @@ class BackendTest(TestCase):
         transaction = received["accountStatement"]["transactionList"]["transaction"]
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id
-        transaction[1]["column1"]["value"] = backend.payment.amount
+        transaction[1]["column1"]["value"] = backend.payment.total_amount
         httpretty.register_uri(httpretty.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
         payment = self.check_payment(Payment.ACCEPTED)
