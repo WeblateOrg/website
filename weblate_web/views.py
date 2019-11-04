@@ -537,11 +537,14 @@ def service_token(request, pk):
 @login_required
 def service_user(request, pk):
     service = get_object_or_404(Service, pk=pk, users=request.user)
-    user = get_object_or_404(User, email=request.POST.get("email"))
-    if "remove" in request.POST:
-        service.users.remove(user)
-    else:
-        service.users.add(user)
+    try:
+        user = User.objects.get(email__iexact=request.POST.get("email"))
+        if "remove" in request.POST:
+            service.users.remove(user)
+        else:
+            service.users.add(user)
+    except User.DoesNotExist:
+        messages.error(request, _('User not found!'))
     return redirect(reverse("user"))
 
 
