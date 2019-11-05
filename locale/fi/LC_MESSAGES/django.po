@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2019-10-20 08:45+0200\n"
+"POT-Creation-Date: 2019-11-05 13:22+0100\n"
 "PO-Revision-Date: 2019-09-25 10:10+0000\n"
 "Last-Translator: Tuomas Hietala <tuomas.hietala@iki.fi>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/weblate/website/"
@@ -80,7 +80,7 @@ msgstr "Lokalisointi"
 msgid "Link text"
 msgstr "Linkkiteksti"
 
-#: weblate_web/models.py:106 weblate_web/templates/user.html:174
+#: weblate_web/models.py:106 weblate_web/templates/user.html:198
 #, fuzzy
 msgid "Link URL"
 msgstr "URL-linkki"
@@ -89,35 +89,35 @@ msgstr "URL-linkki"
 msgid "Link image"
 msgstr "Kuvalinkki"
 
-#: weblate_web/models.py:283
+#: weblate_web/models.py:297
 msgid "Community support"
 msgstr "Yhteisötuki"
 
-#: weblate_web/models.py:284
+#: weblate_web/models.py:298
 msgid "Hosted service"
 msgstr "Isännöity palvelu"
 
-#: weblate_web/models.py:285 weblate_web/templates/support.html:76
+#: weblate_web/models.py:299 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Itseylläpidetty perustuki"
 
-#: weblate_web/models.py:286 weblate_web/templates/support.html:86
+#: weblate_web/models.py:300 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Laajennettu itseisännöity tuki"
 
-#: weblate_web/models.py:346
+#: weblate_web/models.py:401
 #, fuzzy
 #| msgid "Buy support"
 msgid "Basic support"
 msgstr "Osta tukea"
 
-#: weblate_web/models.py:349
+#: weblate_web/models.py:404
 #, fuzzy
 #| msgid "Extended self-hosted support"
 msgid "Extended support"
 msgstr "Laajennettu itseisännöity tuki"
 
-#: weblate_web/models.py:351 weblate_web/templates/support.html:97
+#: weblate_web/models.py:406 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr ""
 
@@ -327,7 +327,7 @@ msgstr ""
 msgid "Contact"
 msgstr "Ota yhteyttä"
 
-#: weblate_web/templates/about.html:108
+#: weblate_web/templates/about.html:108 weblate_web/templates/user.html:160
 msgid "E-mail"
 msgstr "Sähköposti"
 
@@ -624,7 +624,7 @@ msgstr "vuosittain"
 #: weblate_web/templates/donate.html:146
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:241
+#: weblate_web/templates/user.html:265
 msgid "Donate"
 msgstr "Lahjoita"
 
@@ -1133,7 +1133,7 @@ msgid "Ruby"
 msgstr "Ruby"
 
 #: weblate_web/templates/features.html:109
-msgid "App store metadatada"
+msgid "App store metadata"
 msgstr ""
 
 #: weblate_web/templates/features.html:110
@@ -2369,25 +2369,25 @@ msgctxt "Date range"
 msgid "%(created)s–%(expires)s"
 msgstr ""
 
-#: weblate_web/templates/user.html:84 weblate_web/templates/user.html:163
+#: weblate_web/templates/user.html:84 weblate_web/templates/user.html:187
 #, fuzzy
 #| msgid "Collaboration sites"
 msgid "Creation date"
 msgstr "Yhteistyösivustot"
 
-#: weblate_web/templates/user.html:91 weblate_web/templates/user.html:185
+#: weblate_web/templates/user.html:91 weblate_web/templates/user.html:209
 msgid "State"
 msgstr "Tila"
 
-#: weblate_web/templates/user.html:94 weblate_web/templates/user.html:188
+#: weblate_web/templates/user.html:94 weblate_web/templates/user.html:212
 msgid "Expired"
 msgstr "Rauennut"
 
-#: weblate_web/templates/user.html:96 weblate_web/templates/user.html:190
+#: weblate_web/templates/user.html:96 weblate_web/templates/user.html:214
 msgid "Automatic renewal"
 msgstr "Automaattinen uusiminen"
 
-#: weblate_web/templates/user.html:98 weblate_web/templates/user.html:192
+#: weblate_web/templates/user.html:98 weblate_web/templates/user.html:216
 msgid "No renewal"
 msgstr ""
 
@@ -2397,45 +2397,63 @@ msgstr ""
 msgid "Renew now"
 msgstr "Lahjoita nyt"
 
-#: weblate_web/templates/user.html:107 weblate_web/templates/user.html:229
+#: weblate_web/templates/user.html:104
+msgid "Switch to yearly"
+msgstr ""
+
+#: weblate_web/templates/user.html:110 weblate_web/templates/user.html:253
 msgid "Turn off renewal"
 msgstr ""
 
-#: weblate_web/templates/user.html:116 weblate_web/templates/user.html:198
+#: weblate_web/templates/user.html:119 weblate_web/templates/user.html:222
 msgid "Payments"
 msgstr "Maksut"
 
-#: weblate_web/templates/user.html:125 weblate_web/templates/user.html:206
+#: weblate_web/templates/user.html:128 weblate_web/templates/user.html:230
 msgid "Download invoice"
 msgstr "Lataa lasku"
 
-#: weblate_web/templates/user.html:143
+#: weblate_web/templates/user.html:146
+msgid "Users"
+msgstr ""
+
+#: weblate_web/templates/user.html:154
+msgid "Remove"
+msgstr ""
+
+#: weblate_web/templates/user.html:161
+#, fuzzy
+#| msgid "Addons"
+msgid "Add"
+msgstr "Lisäosat"
+
+#: weblate_web/templates/user.html:167
 #, fuzzy
 #| msgid "Get premium service"
 msgid "Get more services"
 msgstr "Hanki premium-palvelu"
 
-#: weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:172
 msgid "Congratulations, your Weblate instance is fully covered."
 msgstr ""
 
-#: weblate_web/templates/user.html:158
+#: weblate_web/templates/user.html:182
 msgid "Your donations"
 msgstr "Lahjoituksesi"
 
-#: weblate_web/templates/user.html:168
+#: weblate_web/templates/user.html:192
 msgid "Reward"
 msgstr "Palkkio"
 
-#: weblate_web/templates/user.html:180
+#: weblate_web/templates/user.html:204
 msgid "Expiry date"
 msgstr "Päättymispäivämäärä"
 
-#: weblate_web/templates/user.html:224
+#: weblate_web/templates/user.html:248
 msgid "Edit reward"
 msgstr "Muokkaa palkkiota"
 
-#: weblate_web/templates/user.html:236
+#: weblate_web/templates/user.html:260
 msgid "Donate to see a nice message here."
 msgstr ""
 
@@ -2454,7 +2472,7 @@ msgid "Other topics"
 msgstr "Muita vaihtoehtoja"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:444
+#: weblate_web/views.py:446
 msgid "Milestones"
 msgstr "Virstanpylväät"
 
@@ -2534,50 +2552,56 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr "juuri nyt"
 
-#: weblate_web/views.py:84
+#: weblate_web/views.py:85
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Virhe parametrissa %(field)s: %(error)s"
 
-#: weblate_web/views.py:150 weblate_web/views.py:189
+#: weblate_web/views.py:152 weblate_web/views.py:191
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:163
+#: weblate_web/views.py:165
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:184
+#: weblate_web/views.py:186
 msgid "Please choose a payment method."
 msgstr "Valitse maksutapa."
 
-#: weblate_web/views.py:303
+#: weblate_web/views.py:305
 msgid "Payment not yet processed, please retry."
 msgstr ""
 
-#: weblate_web/views.py:307
+#: weblate_web/views.py:309
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:308
+#: weblate_web/views.py:310
 msgid "Unknown reason"
 msgstr "Tuntematon syy"
 
-#: weblate_web/views.py:313
+#: weblate_web/views.py:315
 msgid "Thank you for your subscription."
 msgstr "Kiitos tilauksestasi."
 
-#: weblate_web/views.py:316
+#: weblate_web/views.py:318
 msgid "Thank you for your donation."
 msgstr "Kiitos lahjoituksestasi."
 
-#: weblate_web/views.py:405
+#: weblate_web/views.py:407
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:409
+#: weblate_web/views.py:411
 msgid "Could not process subscription request."
 msgstr ""
+
+#: weblate_web/views.py:547
+#, fuzzy
+#| msgid "Page not found"
+msgid "User not found!"
+msgstr "Sivua ei löydy"
 
 #~ msgid "VCS repositories"
 #~ msgstr "Versionhallinnan arkistot"
@@ -2743,9 +2767,6 @@ msgstr ""
 #~ msgid ""
 #~ "Weblate provides you various ways to promote your translation project."
 #~ msgstr "Weblate tarjoaa erilaisia tapoja mainostaa käännösprojektiasi."
-
-#~ msgid "Addons"
-#~ msgstr "Lisäosat"
 
 #~ msgid "Automatic translation"
 #~ msgstr "Automaattinen kääntäminen"
