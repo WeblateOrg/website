@@ -447,6 +447,10 @@ class Service(models.Model):
             return False
         return True
 
+    def regenerate(self):
+        self.secret = generate_secret()
+        self.save(update_fields=["secret"])
+
 
 class Subscription(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
@@ -476,10 +480,6 @@ class Subscription(models.Model):
 
     def get_amount(self):
         return self.package_obj.price
-
-    def regenerate(self):
-        self.secret = generate_secret()
-        self.save(update_fields=["secret"])
 
     @cached_property
     def payment_obj(self):
