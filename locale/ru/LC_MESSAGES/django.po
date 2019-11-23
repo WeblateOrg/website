@@ -12,13 +12,14 @@
 # Michal Čihař <michal@cihar.com>, 2019.
 # solokot <solokot@gmail.com>, 2019.
 # Vladimir Studinsky <studinsky@gmail.com>, 2019.
+# Andrei Stepanov <adem4ik@gmail.com>, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2019-11-05 13:22+0100\n"
-"PO-Revision-Date: 2019-11-12 14:04+0000\n"
-"Last-Translator: Vladimir Studinsky <studinsky@gmail.com>\n"
+"PO-Revision-Date: 2019-11-24 08:04+0000\n"
+"Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
 "ru/>\n"
 "Language: ru\n"
@@ -359,11 +360,11 @@ msgstr "Чехия"
 
 #: weblate_web/templates/about.html:124
 msgid "Business ID"
-msgstr ""
+msgstr "Идентификатор компании"
 
 #: weblate_web/templates/about.html:131
 msgid "VAT ID"
-msgstr ""
+msgstr "ИДЕНТИФИКАЦИОННЫЙ НОМЕР ПЛАТЕЛЬЩИКА НДС"
 
 #: weblate_web/templates/about.html:138 weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
@@ -829,7 +830,7 @@ msgstr "<strong>Вау!</strong> Ты можешь получить любую �
 #: weblate_web/templates/donate/form.html:53
 #: weblate_web/templates/donate/form.html:61
 msgid "Selected option"
-msgstr ""
+msgstr "Выбранный вариант"
 
 #: weblate_web/templates/donate/form.html:38
 #, fuzzy
@@ -1212,11 +1213,11 @@ msgstr "Android"
 
 #: weblate_web/templates/features.html:98
 msgid "i18next"
-msgstr ""
+msgstr "i18next"
 
 #: weblate_web/templates/features.html:99
 msgid "WebExtension"
-msgstr ""
+msgstr "WebExtension"
 
 #: weblate_web/templates/features.html:100
 #, fuzzy
@@ -1238,7 +1239,7 @@ msgstr "Excel"
 
 #: weblate_web/templates/features.html:104
 msgid "Mozilla DTD"
-msgstr ""
+msgstr "Mozilla DTD"
 
 #: weblate_web/templates/features.html:105
 msgid ".NET resource files"
@@ -1250,15 +1251,15 @@ msgstr "CSV"
 
 #: weblate_web/templates/features.html:107
 msgid "YAML"
-msgstr ""
+msgstr "YAML"
 
 #: weblate_web/templates/features.html:108
 msgid "Ruby"
-msgstr ""
+msgstr "Ruby"
 
 #: weblate_web/templates/features.html:109
 msgid "App store metadata"
-msgstr ""
+msgstr "Метаданные App store"
 
 #: weblate_web/templates/features.html:110
 msgid "Subtitles"
@@ -1278,7 +1279,7 @@ msgstr ""
 
 #: weblate_web/templates/features.html:126
 msgid "Feedback Acquisition"
-msgstr ""
+msgstr "Получение обратной связи"
 
 #: weblate_web/templates/features.html:127
 #, fuzzy
@@ -1639,7 +1640,7 @@ msgstr "Собственный хостинг"
 
 #: weblate_web/templates/hosting.html:262
 msgid "on-premises"
-msgstr ""
+msgstr "локальный"
 
 #: weblate_web/templates/hosting.html:309
 #: weblate_web/templates/hosting.html:414
@@ -1649,7 +1650,7 @@ msgstr ""
 #: weblate_web/templates/snippets/pricing.html:142
 #: weblate_web/templates/snippets/pricing.html:166
 msgid "Gratis"
-msgstr ""
+msgstr "Бесплатно"
 
 #: weblate_web/templates/hosting.html:310
 #: weblate_web/templates/snippets/pricing.html:146
@@ -1675,7 +1676,7 @@ msgstr "Обсуждаемо"
 #: weblate_web/templates/snippets/pricing.html:90
 #: weblate_web/templates/snippets/pricing.html:116
 msgid "Yearly"
-msgstr ""
+msgstr "Ежегодно"
 
 #: weblate_web/templates/hosting.html:361
 msgid "<strong>Save more</strong> with longer pre-payment!"
@@ -1725,7 +1726,7 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:522
 msgid "Gratis Trial?"
-msgstr ""
+msgstr "Пробная версия?"
 
 #: weblate_web/templates/hosting.html:524
 #, python-format
@@ -1745,10 +1746,8 @@ msgid "Weblate - web-based localization"
 msgstr "Weblate - локализация с помощью веб-технологий"
 
 #: weblate_web/templates/index.html:15
-#, fuzzy
-#| msgid "Web-based <strong>continuous</strong> localization system"
 msgid "Web-based <strong>continuous</strong> localization"
-msgstr "Веб-система <strong>непрерывной</strong> локализации"
+msgstr "<strong>Непрерывная</strong> веб-локализация"
 
 #: weblate_web/templates/index.html:16
 #, fuzzy, python-format
@@ -1777,7 +1776,7 @@ msgstr "Функции Weblate"
 #: weblate_web/templates/index.html:29
 #, python-format
 msgid "%(countries)s+ Countries"
-msgstr ""
+msgstr "%(countries)s стран"
 
 #: weblate_web/templates/index.html:30
 msgid "Weblate localizes the world"
@@ -1815,13 +1814,12 @@ msgid "Project"
 msgstr "Проект"
 
 #: weblate_web/templates/index.html:41
-#, fuzzy, python-format
-#| msgid "Own translations"
+#, python-format
 msgid "%(count)s translation"
 msgid_plural "%(count)s translations"
-msgstr[0] "Собственные переводы"
-msgstr[1] "Собственные переводы"
-msgstr[2] "Собственные переводы"
+msgstr[0] "%(count)s перевод"
+msgstr[1] "%(count)s перевода"
+msgstr[2] "%(count)s переводов"
 
 #: weblate_web/templates/index.html:42
 msgid "in the last 7 days"
@@ -1983,7 +1981,7 @@ msgstr "Платежи"
 
 #: weblate_web/templates/payment/pending.html:64
 msgid "Waiting for payment to be completed."
-msgstr ""
+msgstr "Ожидание завершения платежа."
 
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
@@ -1997,7 +1995,7 @@ msgstr ""
 
 #: weblate_web/templates/snippets/about.html:6
 msgid "Production test"
-msgstr ""
+msgstr "Производственный тест"
 
 #: weblate_web/templates/snippets/about.html:7
 msgid "Demo"
@@ -2154,10 +2152,11 @@ msgstr "Документация"
 #: weblate_web/templates/snippets/pricing.html:5
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
 msgstr ""
+"<strong>Бесплатно</strong> или <strong>Премиум</strong> — зависит от вас"
 
 #: weblate_web/templates/snippets/pricing.html:7
 msgid "Premium Cloud"
-msgstr ""
+msgstr "Премиумное облако"
 
 #: weblate_web/templates/snippets/pricing.html:8
 msgid "for ease and comfort"
@@ -2427,15 +2426,15 @@ msgstr ""
 
 #: weblate_web/templates/support.html:99
 msgid "Cloud backups of your installations."
-msgstr ""
+msgstr "Облачное резервное копирование ваших сборок."
 
 #: weblate_web/templates/support.html:100
 msgid "Securely encrypted with your passphrase."
-msgstr ""
+msgstr "Надёжно зашифровано вашей парольной фразой."
 
 #: weblate_web/templates/support.html:101
 msgid "Stores up to 100 GB of backups."
-msgstr ""
+msgstr "Сохраняет до 100 ГБ резервных копий."
 
 #: weblate_web/templates/support.html:102
 #, fuzzy
@@ -2467,7 +2466,7 @@ msgstr "Рекомендации по интернационализации и�
 
 #: weblate_web/templates/support.html:115
 msgid "hourly"
-msgstr ""
+msgstr "ежечасно"
 
 #: weblate_web/templates/support.html:117
 #, fuzzy
@@ -2599,14 +2598,13 @@ msgid "Status"
 msgstr "Статус"
 
 #: weblate_web/templates/user.html:26
+#, fuzzy
 msgid "Exceeds selected service offering."
-msgstr ""
+msgstr "Превышает выбранное предложение услуг."
 
 #: weblate_web/templates/user.html:33
-#, fuzzy
-#| msgid "One time donation"
 msgid "Activation token"
-msgstr "Единовременное пожертвование"
+msgstr "Токен активации"
 
 #: weblate_web/templates/user.html:36 weblate_web/templates/user.html:49
 msgid "Copy"
@@ -2614,13 +2612,11 @@ msgstr "Копировать"
 
 #: weblate_web/templates/user.html:39
 msgid "Regenerate"
-msgstr ""
+msgstr "Обновить"
 
 #: weblate_web/templates/user.html:46
-#, fuzzy
-#| msgid "VCS repositories"
 msgid "Backup repository"
-msgstr "Репозитории VCS"
+msgstr "Репозиторий резервных копий"
 
 #: weblate_web/templates/user.html:56
 #, fuzzy
@@ -2647,13 +2643,13 @@ msgstr "Варианты вознаграждений"
 
 #: weblate_web/templates/user.html:78
 msgid "Validity"
-msgstr ""
+msgstr "Срок действия"
 
 #: weblate_web/templates/user.html:79
 #, python-format
 msgctxt "Date range"
 msgid "%(created)s–%(expires)s"
-msgstr ""
+msgstr "%(created)s–%(expires)s"
 
 #: weblate_web/templates/user.html:84 weblate_web/templates/user.html:187
 msgid "Creation date"
@@ -2687,7 +2683,7 @@ msgstr "Пожертвовать сейчас"
 
 #: weblate_web/templates/user.html:104
 msgid "Switch to yearly"
-msgstr ""
+msgstr "Переключиться на ежегодный"
 
 #: weblate_web/templates/user.html:110 weblate_web/templates/user.html:253
 msgid "Turn off renewal"
@@ -2721,7 +2717,7 @@ msgstr "Пользуйтесь нашими услугами"
 
 #: weblate_web/templates/user.html:172
 msgid "Congratulations, your Weblate instance is fully covered."
-msgstr ""
+msgstr "Поздравляем, ваш экземпляр Weblate полностью покрыт."
 
 #: weblate_web/templates/user.html:182
 msgid "Your donations"
