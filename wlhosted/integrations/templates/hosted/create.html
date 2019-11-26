@@ -11,7 +11,7 @@
 <div class="container-fluid">
 
 {% if not choose_billing and not billing %}
-<div class="panel panel-primary">
+<div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">{% trans "New billing plan" %}</h3>
   </div>
@@ -20,7 +20,7 @@
   </div>
 </div>
 {% else %}
-<div class="panel panel-primary">
+<div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">{% trans "Current billing status" %}</h3>
   </div>
@@ -40,7 +40,7 @@
 <div class="row">
 {% for plan in plans %}
 <div class="col-md-3">
-<div class="panel {% if billing and not plan.would_fit %}panel-warning{% elif billing.plan == plan or plan == selected_plan %}panel-success{% else %}panel-primary{% endif %}">
+<div class="panel {% if billing and not plan.would_fit %}panel-warning{% elif billing.plan == plan or plan == selected_plan %}panel-success{% else %}panel-default{% endif %}">
   <div class="panel-heading">
     {% if billing and not plan.would_fit %}
     <span class="badge pull-right flip" title="{% trans "Too small for your project." %}">{% trans "Too small" %}</span>
@@ -73,13 +73,13 @@
 <input type="hidden" name="billing" value="{{ billing.pk }}">
 {% endif %}
 {% if plan.price %}
-<button type="submit" class="btn btn-success btn-spaced" name="period" value="m" {% if billing and not plan.would_fit %}disabled{% endif %}>
+<button type="submit" class="btn btn-primary btn-spaced" name="period" value="m" {% if billing and not plan.would_fit %}disabled{% endif %}>
 <big>{% blocktrans with price=plan.price %}{{ price }} EUR / month{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
 {% endif %}
 {% if plan.yearly_price %}
-<button type="submit" class="btn btn-success btn-spaced" name="period" value="y" {% if billing and not plan.would_fit %}disabled{% endif %}>
+<button type="submit" class="btn btn-primary btn-spaced" name="period" value="y" {% if billing and not plan.would_fit %}disabled{% endif %}>
 <big>{% blocktrans with price=plan.yearly_price %}{{ price }} EUR / year{% endblocktrans %}</big><br>
 <small>{% blocktrans with price=plan.vat_yearly_price %}{{ price }} EUR including VAT{% endblocktrans %}</small>
 </button>
