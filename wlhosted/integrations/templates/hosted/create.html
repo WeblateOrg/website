@@ -40,7 +40,7 @@
 <div class="row">
 {% for plan in plans %}
 <div class="col-md-3">
-<div class="panel {% if billing and not plan.would_fit %}panel-warning{% elif billing.plan == plan or plan == selected_plan %}panel-success{% else %}panel-default{% endif %}">
+<div class="panel panel-default">
   <div class="panel-heading">
     {% if billing and not plan.would_fit %}
     <span class="badge pull-right flip" title="{% trans "Too small for your project." %}">{% trans "Too small" %}</span>
