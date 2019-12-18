@@ -335,7 +335,7 @@ class ThePayCard(Backend):
     verbose = gettext_lazy("Payment card")
     description = "Payment Card (The Pay)"
     recurring = True
-    thepay_method = 21
+    thepay_method = 31
 
     def __init__(self, payment):
         super().__init__(payment)
