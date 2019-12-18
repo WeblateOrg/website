@@ -62,11 +62,11 @@ class SecurityMiddleware:
         if settings.DEBUG:
             return response
 
-        style = ["'self'"]
+        style = ["'self'", "s.weblate.org"]
         script = ["'self'"]
         connect = ["'self'"]
-        image = ["'self'", "data:"]
-        font = ["'self'", "data:"]
+        image = ["'self'"]
+        font = ["'self'", "s.weblate.org"]
 
         # Sentry/Raven
         script.append('cdn.ravenjs.com')
