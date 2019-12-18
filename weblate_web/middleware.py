@@ -65,7 +65,7 @@ class SecurityMiddleware:
         style = ["'self'", "s.weblate.org"]
         script = ["'self'"]
         connect = ["'self'"]
-        image = ["'self'"]
+        image = ["'self'", "data:"]
         font = ["'self'", "s.weblate.org"]
 
         # Sentry/Raven
