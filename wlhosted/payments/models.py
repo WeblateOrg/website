@@ -29,10 +29,10 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import get_language, gettext_lazy
 from django_countries.fields import CountryField
+from six import python_2_unicode_compatible
 from vies.models import VATINField
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
