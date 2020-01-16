@@ -7,7 +7,6 @@ _paq.push(['setTrackerUrl', 'https://stats.cihar.com/matomo.php']);
 _paq.push(['setSiteId', '12']);
 
 $(function () {
-    $('.delay-css').attr("rel", "stylesheet");
 	$('.menu-show').click(function(e) {
 		var $body = $('body');
 		$body.toggleClass('open-mobile');
