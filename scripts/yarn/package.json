@@ -3,10 +3,15 @@
   "description": "Mock to install javascript deps",
   "main": "index.js",
   "license": "GPL-3.0+",
+  "scripts": {
+    "build:modernizr": "modernizr -c ./modernizr-config.json -d modernizr.js",
+    "build": "npm run build:modernizr"
+  },
   "dependencies": {
     "clipboard": "^2.0.4",
     "jquery": "^3.4.1",
     "rtlcss": "^2.4.1",
+    "modernizr": "^3.8.0",
     "source-code-pro": "2.30.2",
     "source-sans-pro": "3.6.0"
   }

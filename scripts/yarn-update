@@ -6,6 +6,7 @@ cd scripts/yarn/
 
 yarn install --check-files
 yarn upgrade-interactive
+yarn run build --scripts-prepend-node-path
 
 # jQuery
 cp node_modules/jquery/dist/jquery.min.js ../../weblate_web/static/jquery.min.js
@@ -25,3 +26,6 @@ find node_modules/source-sans-pro/ node_modules/source-code-pro/ -name SourceSan
     fi
     cp $name $target
 done
+
+# Modernizr
+mv modernizr.js ../../weblate_web/static/
