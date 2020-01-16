@@ -81,7 +81,6 @@ class SecurityMiddleware:
 
         # Old blog entries
         image.append('blog.cihar.com')
-        image.append('l10n.cihar.com')
 
         # Async CSS loading
         script.append("'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc='")
