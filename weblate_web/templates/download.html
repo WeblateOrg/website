@@ -61,16 +61,12 @@
                 <h2 class="section-title left">{% trans "GitHub repository" %}</h2>
                 <p>{% blocktrans with "https://github.com/WeblateOrg" as url %}Weblate is developed on <a href="{{ url }}">GitHub</a>, you can fork it there, find <a href="{{ url }}">more repositories</a>, or just:{% endblocktrans %}</p>
                 
-                <blockquote>
-                    <p>
-                        # Weblate<br />
-                        git clone https://github.com/WeblateOrg/weblate.git
-                    </p>
-                    <p>
-                        # {% trans "Weblate command line client" %}<br />
-                        git clone https://github.com/WeblateOrg/wlc.git
-                    </p>
-                </blockquote>
+                <pre>
+# Weblate
+git clone https://github.com/WeblateOrg/weblate.git
+
+# {% trans "Weblate command line client" %}
+git clone https://github.com/WeblateOrg/wlc.git</pre>
                 
                 <h2 class="section-title left">{% trans "Weblate command line client" %}</h2>
                 <p>{% blocktrans with 'https://docs.weblate.org/en/latest/wlc.html' as url %}You can control Weblate remotely using <a href="{{ url }}">wlc</a>, which can be installed from Python pip:{% endblocktrans %}</p>
