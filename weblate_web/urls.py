@@ -202,6 +202,7 @@ urlpatterns = i18n_patterns(
     ),
     url(r"^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$", PostView.as_view(), name="post"),
     url(r"^about/$", TemplateView.as_view(template_name="about.html"), name="about"),
+    url(r"^careers/$", TemplateView.as_view(template_name="careers.html"), name="careers"),
     url(
         r"^support/$",
         TemplateView.as_view(template_name="support.html"),

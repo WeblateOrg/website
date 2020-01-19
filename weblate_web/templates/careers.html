@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block body_class %}page contribute light{% endblock %}
+
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% block title %}{% trans "Career at Weblate" %}{% endblock %}</h1>
+            <div class="page-desc">
+                <p>
+                {% block description %}
+                    {% trans "We're looking for great people. Join our team today." %}
+                {% endblock %}
+                </p>
+                <a href="https://github.com/WeblateOrg/weblate/" class="button inline">{% trans "View sources" %}</a>
+                <a href="mailto:michal@weblate.org" class="button inline border rev">{% trans "Contact us" %}</a>
+            </div>
+
+            <h2 class="section-title">Weblate</h2>
+            <div class="page-desc small">
+                <p>{% trans "Weblate is a libre software funded from selling services. Thousands of companies and projects rely on us with localization. Join our team to make Weblate better." %}</p>
+                <a href="{% url 'about' %}" class="button inline">{% trans "Learn more" %}</a>
+            </div>     
+
+            <h2 class="section-title">What we offer</h2>
+            <div class="page-desc small">
+                <p class="small">{% trans "We are currently looking for remote part-time contractors." %}</p>
+                <p>{% trans "Do the work from anywhere you like." %}</p>
+            </div>     
+            
+            <div class="contribution-list">
+                <div class="box">
+                    <h2>{% trans "Frontend developer" %}</h2>
+                    <ul>
+                        <li>JavaScript, CSS, Bootstrap</li>
+                        <li>{% trans "Improve the Weblate user experience." %}</li>
+                        <li>{% trans "Bring modern frontend technologies to Weblate." %}</li>
+                    </ul>
+                    <a href="mailto:michal@weblate.org?subject=Frontend developer for Weblate" class="button">{% trans "Apply now" %}</a>
+                </div>
+                <div class="box">
+                    <h2>{% trans "Python developer" %}</h2>
+                    <ul>
+                        <li>Python, <a href="https://www.djangoproject.com/">Django</a>, <a href="http://www.celeryproject.org/">Celery</a>, <a href="https://github.com/translate/translate/">Translate Toolkit</a></li>
+                        <li>{% trans "Improve our backend and libraries we rely on." %}</li>
+                        <li>{% trans "Tune performance of our backend." %}</li>
+                    </ul>
+                    <a href="mailto:michal@weblate.org?subect=Python developer for Weblate" class="button">{% trans "Apply now" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
