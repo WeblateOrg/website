@@ -52,7 +52,7 @@ class CreateBillingView(FormView):
     form_class = BillingForm
 
     def get_form_kwargs(self):
-        result = super(CreateBillingView, self).get_form_kwargs()
+        result = super().get_form_kwargs()
         if "do" in self.request.GET:
             result["data"] = self.request.GET
         result["user"] = self.request.user
@@ -103,7 +103,7 @@ class CreateBillingView(FormView):
         if "payment" in request.GET:
             with transaction.atomic(using="payments_db"):
                 return self.handle_payment(request)
-        return super(CreateBillingView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         if not settings.PAYMENT_ENABLED:
@@ -115,10 +115,10 @@ class CreateBillingView(FormView):
 
     def form_invalid(self, form):
         show_form_errors(self.request, form)
-        return super(CreateBillingView, self).form_invalid(form)
+        return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        kwargs = super(CreateBillingView, self).get_context_data(**kwargs)
+        kwargs = super().get_context_data(**kwargs)
         kwargs["plans"] = list(Plan.objects.public(self.request.user))
         default_billing = get_default_billing(self.request.user)
         has_billing = Billing.objects.for_user(self.request.user).exists()
