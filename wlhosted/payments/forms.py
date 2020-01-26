@@ -18,8 +18,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from __future__ import unicode_literals
-
 from django import forms
 from vies.forms.fields import VATINField
 from vies.forms.widgets import VATINWidget

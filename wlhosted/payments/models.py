@@ -18,8 +18,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from __future__ import unicode_literals
-
 import os.path
 import uuid
 
@@ -32,7 +30,6 @@ from django.db import models, transaction
 from django.utils.functional import cached_property
 from django.utils.translation import get_language, gettext_lazy
 from django_countries.fields import CountryField
-from six import python_2_unicode_compatible
 from vies.models import VATINField
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
@@ -74,7 +71,6 @@ EU_VAT_RATES = {
 VAT_RATE = 21
 
 
-@python_2_unicode_compatible
 class Customer(models.Model):
     vat = VATINField(
         validators=[validate_vatin],
@@ -164,7 +160,6 @@ RECURRENCE_CHOICES = [
 ]
 
 
-@python_2_unicode_compatible
 class Payment(models.Model):
     NEW = 1
     PENDING = 2

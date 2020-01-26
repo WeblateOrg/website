@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import sentry_sdk
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
