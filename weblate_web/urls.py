@@ -99,6 +99,7 @@ class PagesSitemap(Sitemap):
             ("/hosting/", 0.8, "monthly"),
             ("/contribute/", 0.7, "monthly"),
             ("/donate/", 0.7, "weekly"),
+            ("/careers/", 0.7, "weekly"),
             ("/support/", 0.7, "monthly"),
             ("/terms/", 0.2, "monthly"),
             ("/news/", 0.9, "daily"),
