@@ -18,8 +18,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from __future__ import unicode_literals
-
 from django import forms
 from wlhosted.payments.backends import list_backends
 from wlhosted.payments.models import RECURRENCE_CHOICES
