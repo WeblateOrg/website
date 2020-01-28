@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0013_subscription_active'),
-    ]
+    dependencies = [("weblate_web", "0013_subscription_active")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='subscription',
-            name='price',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="subscription", name="price")]

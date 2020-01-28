@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0008_auto_20190718_1646'),
-    ]
+    dependencies = [("weblate_web", "0008_auto_20190718_1646")]
 
     operations = [
         migrations.AlterField(
-            model_name='image',
-            name='image',
-            field=models.ImageField(help_text='Article image, 1200x630 pixels', upload_to='images/'),
-        ),
+            model_name="image",
+            name="image",
+            field=models.ImageField(
+                help_text="Article image, 1200x630 pixels", upload_to="images/"
+            ),
+        )
     ]

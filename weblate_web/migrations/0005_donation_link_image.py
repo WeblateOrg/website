@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0004_auto_20190514_1457'),
-    ]
+    dependencies = [("weblate_web", "0004_auto_20190514_1457")]
 
     operations = [
         migrations.AddField(
-            model_name='donation',
-            name='link_image',
-            field=models.ImageField(blank=True, upload_to='donations/', verbose_name='Link image'),
-        ),
+            model_name="donation",
+            name="link_image",
+            field=models.ImageField(
+                blank=True, upload_to="donations/", verbose_name="Link image"
+            ),
+        )
     ]

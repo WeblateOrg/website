@@ -5,14 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0007_auto_20190718_1614'),
-    ]
+    dependencies = [("weblate_web", "0007_auto_20190718_1614")]
 
     operations = [
         migrations.AlterField(
-            model_name='post',
-            name='milestone',
-            field=models.BooleanField(blank=True, db_index=True, default=False, help_text='This is an important milestone, shown on milestones archive'),
-        ),
+            model_name="post",
+            name="milestone",
+            field=models.BooleanField(
+                blank=True,
+                db_index=True,
+                default=False,
+                help_text="This is an important milestone, shown on milestones archive",
+            ),
+        )
     ]

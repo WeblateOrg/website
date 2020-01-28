@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0012_auto_20190807_1456'),
-    ]
+    dependencies = [("weblate_web", "0012_auto_20190807_1456")]
 
     operations = [
         migrations.AddField(
-            model_name='subscription',
-            name='active',
+            model_name="subscription",
+            name="active",
             field=models.BooleanField(blank=True, db_index=True, default=True),
             preserve_default=False,
-        ),
+        )
     ]

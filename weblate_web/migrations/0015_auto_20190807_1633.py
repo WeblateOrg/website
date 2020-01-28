@@ -5,18 +5,24 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0014_remove_subscription_price'),
-    ]
+    dependencies = [("weblate_web", "0014_remove_subscription_price")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='subscription',
-            name='active',
-        ),
+        migrations.RemoveField(model_name="subscription", name="active"),
         migrations.AlterField(
-            model_name='subscription',
-            name='status',
-            field=models.CharField(choices=[('community', 'Community support'), ('hosted', 'Hosted service'), ('basic', 'Basic self-hosted support'), ('extended', 'Extended self-hosted support'), ('install:linux', 'Installation on your Linux server'), ('install:docker', 'Docker installation on your Linux server')], default='community', max_length=150),
+            model_name="subscription",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("community", "Community support"),
+                    ("hosted", "Hosted service"),
+                    ("basic", "Basic self-hosted support"),
+                    ("extended", "Extended self-hosted support"),
+                    ("install:linux", "Installation on your Linux server"),
+                    ("install:docker", "Docker installation on your Linux server"),
+                ],
+                default="community",
+                max_length=150,
+            ),
         ),
     ]

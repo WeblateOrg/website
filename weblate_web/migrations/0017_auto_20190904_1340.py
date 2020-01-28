@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0016_auto_20190904_1320'),
-    ]
+    dependencies = [("weblate_web", "0016_auto_20190904_1320")]
 
     operations = [
         migrations.AlterField(
-            model_name='donation',
-            name='payment',
+            model_name="donation",
+            name="payment",
             field=models.UUIDField(blank=True, null=True),
-        ),
+        )
     ]

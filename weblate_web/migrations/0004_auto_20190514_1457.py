@@ -9,24 +9,45 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('weblate_web', '0003_auto_20190509_0952'),
+        ("weblate_web", "0003_auto_20190509_0952"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='post',
-            name='author',
-            field=models.ForeignKey(editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="post",
+            name="author",
+            field=models.ForeignKey(
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='post',
-            name='topic',
-            field=models.CharField(choices=[('release', 'Release'), ('feature', 'Features'), ('announce', 'Announcement'), ('conferences', 'Conferences'), ('hosting', 'Hosted Weblate'), ('development', 'Development'), ('localization', 'Localization')], db_index=True, default='', max_length=100),
+            model_name="post",
+            name="topic",
+            field=models.CharField(
+                choices=[
+                    ("release", "Release"),
+                    ("feature", "Features"),
+                    ("announce", "Announcement"),
+                    ("conferences", "Conferences"),
+                    ("hosting", "Hosted Weblate"),
+                    ("development", "Development"),
+                    ("localization", "Localization"),
+                ],
+                db_index=True,
+                default="",
+                max_length=100,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='post',
-            name='summary',
-            field=models.TextField(blank=True, help_text='Will be generated from first body paragraph if empty'),
+            model_name="post",
+            name="summary",
+            field=models.TextField(
+                blank=True,
+                help_text="Will be generated from first body paragraph if empty",
+            ),
         ),
     ]

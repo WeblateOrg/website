@@ -5,15 +5,18 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0006_donation_reward_new'),
-    ]
+    dependencies = [("weblate_web", "0006_donation_reward_new")]
 
     operations = [
         migrations.AddField(
-            model_name='post',
-            name='milestone',
-            field=models.BooleanField(blank=True, db_index=True, default=False, help_text='This is an important milestone, shown on milestones archive'),
+            model_name="post",
+            name="milestone",
+            field=models.BooleanField(
+                blank=True,
+                db_index=True,
+                default=False,
+                help_text="This is an important milestone, shown on milestones archive",
+            ),
             preserve_default=False,
-        ),
+        )
     ]

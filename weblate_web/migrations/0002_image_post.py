@@ -7,31 +7,66 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0001_initial'),
-    ]
+    dependencies = [("weblate_web", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Image',
+            name="Image",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('image', models.ImageField(upload_to='images/')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("image", models.ImageField(upload_to="images/")),
             ],
         ),
         migrations.CreateModel(
-            name='Post',
+            name="Post",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('slug', models.SlugField(unique=True)),
-                ('timestamp', models.DateTimeField(db_index=True)),
-                ('body', markupfield.fields.MarkupField(rendered_field=True)),
-                ('body_markup_type', models.CharField(choices=[('', '--'), ('html', 'HTML'), ('plain', 'Plain'), ('markdown', 'Markdown'), ('restructuredtext', 'Restructured Text')], default='markdown', max_length=30)),
-                ('summary', models.TextField(blank=True)),
-                ('_body_rendered', models.TextField(editable=False)),
-                ('image', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='weblate_web.Image')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("slug", models.SlugField(unique=True)),
+                ("timestamp", models.DateTimeField(db_index=True)),
+                ("body", markupfield.fields.MarkupField(rendered_field=True)),
+                (
+                    "body_markup_type",
+                    models.CharField(
+                        choices=[
+                            ("", "--"),
+                            ("html", "HTML"),
+                            ("plain", "Plain"),
+                            ("markdown", "Markdown"),
+                            ("restructuredtext", "Restructured Text"),
+                        ],
+                        default="markdown",
+                        max_length=30,
+                    ),
+                ),
+                ("summary", models.TextField(blank=True)),
+                ("_body_rendered", models.TextField(editable=False)),
+                (
+                    "image",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="weblate_web.Image",
+                    ),
+                ),
             ],
         ),
     ]

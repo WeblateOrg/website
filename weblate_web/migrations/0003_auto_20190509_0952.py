@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0002_image_post'),
-    ]
+    dependencies = [("weblate_web", "0002_image_post")]
 
     operations = [
         migrations.AlterField(
-            model_name='image',
-            name='name',
+            model_name="image",
+            name="name",
             field=models.CharField(max_length=100, unique=True),
-        ),
+        )
     ]

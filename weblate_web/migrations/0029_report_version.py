@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('weblate_web', '0028_auto_20191011_0927'),
-    ]
+    dependencies = [("weblate_web", "0028_auto_20191011_0927")]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='version',
-            field=models.TextField(default=''),
+            model_name="report",
+            name="version",
+            field=models.TextField(default=""),
             preserve_default=False,
-        ),
+        )
     ]
