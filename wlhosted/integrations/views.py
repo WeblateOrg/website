@@ -77,7 +77,8 @@ class CreateBillingView(FormView):
                 request, _("Thank you for purchasing a hosting plan, it is now active.")
             )
             return redirect("billing")
-        elif payment.state in (Payment.PENDING, Payment.PROCESSED):
+
+        if payment.state in (Payment.PENDING, Payment.PROCESSED):
             messages.info(
                 request,
                 _(
@@ -86,15 +87,18 @@ class CreateBillingView(FormView):
                 ),
             )
             return redirect("billing")
-        elif payment.state == Payment.REJECTED:
+
+        if payment.state == Payment.NEW:
+            return HttpResponseRedirect(payment.get_payment_url())
+
+        if payment.state == Payment.REJECTED:
             messages.error(
                 request,
                 _("The payment was rejected: {}").format(
                     payment.details.get("reject_reason", _("Unknown reason"))
                 ),
             )
-        elif payment.state == Payment.NEW:
-            return HttpResponseRedirect(payment.get_payment_url())
+
         return redirect("create-billing")
 
     def get(self, request, *args, **kwargs):

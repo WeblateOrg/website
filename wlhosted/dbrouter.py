@@ -48,6 +48,6 @@ class HostedRouter(object):
         """
         if app_label == "payments":
             return db == "payments_db"
-        elif db == "payments_db":
+        if db == "payments_db":
             return False
         return None
