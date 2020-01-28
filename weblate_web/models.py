@@ -337,8 +337,7 @@ class Service(models.Model):
         if report:
             if self.limit_languages:
                 return "{}/{}".format(report.languages, self.limit_languages)
-            else:
-                return "{}".format(report.languages)
+            return "{}".format(report.languages)
         return "0"
 
     languages_limit.short_description = "Languages"
@@ -348,8 +347,7 @@ class Service(models.Model):
         if report:
             if self.limit_source_strings:
                 return "{}/{}".format(report.source_strings, self.limit_source_strings)
-            else:
-                return "{}".format(report.source_strings)
+            return "{}".format(report.source_strings)
         return "0"
 
     source_strings_limit.short_description = "Source strings"
