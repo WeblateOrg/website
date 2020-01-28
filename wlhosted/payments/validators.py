@@ -18,7 +18,9 @@ def cache_vies_data(value):
         except ValidationError:
             return value
         try:
-            data = dict(value.data)
+            data = {}
+            for item in value.data:
+                data[item] = value.data[item]
             cache.set(key, data, 3600)
         except WebFault as error:
             sentry_sdk.capture_exception()
