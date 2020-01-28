@@ -225,7 +225,12 @@ urlpatterns = i18n_patterns(
         name="payment-complete",
     ),
     # FOSDEM short link
-    url(r"^FOSDEM/|fosdem/$", RedirectView.as_view(url="/", permanent=False)),
+    url(
+        r"^FOSDEM/|fosdem/$",
+        RedirectView.as_view(
+            url="/news/archive/meet-weblate-fosdem-2020/", permanent=False
+        ),
+    ),
     # Compatibility with disabled languages
     url(r"^[a-z][a-z]/$", RedirectView.as_view(url="/", permanent=False)),
     url(r"^[a-z][a-z]_[A-Z][A-Z]/$", RedirectView.as_view(url="/", permanent=False)),
