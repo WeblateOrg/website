@@ -94,5 +94,6 @@ class SecurityMiddleware:
             connect=' '.join(connect),
             report=URL
         )
+        response["Expect-CT"] = 'report-uri="{}"'.format(URL)
         response['X-XSS-Protection'] = '1; mode=block'
         return response
