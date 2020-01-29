@@ -86,6 +86,7 @@ def create_backup_repository(service):
         data={
             "homedirectory": "weblate/{}".format(dirname),
             "ssh": "1",
+            "external_reachability": "1",
             "comment": "Weblate backup service {}".format(service.pk),
         },
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
