@@ -82,6 +82,9 @@ class LatestEntriesFeed(Feed):
         # pylint: disable=no-self-use
         return item.body.rendered
 
+    def item_pubdate(self, item):
+        return item.timestamp
+
 
 class PagesSitemap(Sitemap):
     """Sitemap of static pages for one language."""
