@@ -66,7 +66,7 @@ def register_backend(backend):
     return backend
 
 
-class Backend(object):
+class Backend:
     name = None
     debug = False
     verbose = None

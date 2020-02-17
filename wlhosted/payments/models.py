@@ -298,7 +298,7 @@ class PaymentConf(AppConf):
     THEPAY_DATAAPI = None
     FIO_TOKEN = None
 
-    class Meta(object):
+    class Meta:
         prefix = "PAYMENT"
 
 

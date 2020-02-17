@@ -19,7 +19,7 @@
 #
 
 
-class HostedRouter(object):
+class HostedRouter:
     """
     A router to send payments app to separate database and
     block running migrations on that.

@@ -86,5 +86,5 @@ class HostedConf(AppConf):
     REDIRECT_URL = "https://weblate.org/{language}/payment/{uuid}/"
     ENABLED = True
 
-    class Meta(object):
+    class Meta:
         prefix = "PAYMENT"
