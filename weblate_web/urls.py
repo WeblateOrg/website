@@ -83,6 +83,7 @@ class LatestEntriesFeed(Feed):
         return item.body.rendered
 
     def item_pubdate(self, item):
+        # pylint: disable=no-self-use
         return item.timestamp
 
 
