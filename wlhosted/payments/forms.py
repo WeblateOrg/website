@@ -40,6 +40,7 @@ class BootstrapVATINWidget(VATINWidget):
             forms.TextInput(attrs=input_attrs),
         )
         # We intentioanlly skip VATINWidget contructor
+        # pylint: disable=E1003
         super(VATINWidget, self).__init__(widgets, attrs)
 
 
