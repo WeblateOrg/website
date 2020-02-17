@@ -19,7 +19,7 @@
 #
 
 # Version offered for download
-VERSION = '3.10.2'
+VERSION = '3.11'
 
 # Extensions offered for donwload
 EXTENSIONS = ('tar.xz', 'tar.bz2', 'tar.gz')
