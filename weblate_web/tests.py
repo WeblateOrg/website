@@ -9,6 +9,7 @@ import httpretty
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.files.storage import default_storage
 from django.core.management import CommandError, call_command
 from django.test import TestCase
@@ -29,6 +30,12 @@ TEST_BLOG = os.path.join(TEST_DATA, 'blog.json')
 TEST_IMAGE = os.path.join(TEST_DATA, 'weblate-html.png')
 
 
+def fake_remote():
+    cache.set('wlweb-contributors', [])
+    cache.set('wlweb-activity-stats', [])
+    cache.set('wlweb-changes-list', [])
+
+
 class PostTestCase(TestCase):
     @staticmethod
     def create_post(title='testpost', body='testbody', timestamp=None):
@@ -44,6 +51,10 @@ class PostTestCase(TestCase):
 
 class ViewTestCase(PostTestCase):
     """Views testing."""
+
+    def setUp(self):
+        super().setUp()
+        fake_remote()
 
     def test_index_redirect(self):
         response = self.client.get('/')
@@ -199,6 +210,11 @@ class FakturaceTestCase(TestCase):
 
 
 class PaymentsTest(FakturaceTestCase):
+
+    def setUp(self):
+        super().setUp()
+        fake_remote()
+
     def test_languages(self):
         self.assertEqual(
             set(SUPPORTED_LANGUAGES),
@@ -288,6 +304,10 @@ class PaymentsTest(FakturaceTestCase):
 
 class DonationTest(FakturaceTestCase):
     credentials = {'username': 'testuser', 'password': 'testpassword'}
+
+    def setUp(self):
+        super().setUp()
+        fake_remote()
 
     def create_user(self):
         return User.objects.create_user(**self.credentials)
@@ -391,6 +411,10 @@ class DonationTest(FakturaceTestCase):
 
 
 class PostTest(PostTestCase):
+
+    def setUp(self):
+        super().setUp()
+        fake_remote()
 
     def test_future(self):
         past = self.create_post()
