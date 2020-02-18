@@ -32,6 +32,8 @@ jobs:
         pip install https://github.com/nijel/thepay/archive/weblate.zip
         pip install -r requirements-test.txt
     - name: Test with Django
+      env:
+        DJANGO_SETTINGS_MODULE: wlhosted.settings_test
       run: |
         coverage run `which weblate` test
     - uses: codecov/codecov-action@v1
