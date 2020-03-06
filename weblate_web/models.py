@@ -501,7 +501,7 @@ class Subscription(models.Model):
         return reverse("subscription-edit", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return self.get_package_display()
+        return "{}: {}".format(self.get_package_display(), self.service)
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -515,7 +515,7 @@ class PastPayments(models.Model):
     payment = models.UUIDField()
 
     def __str__(self):
-        return self.payment
+        return "{}: {}".format(self.subscription, self.payment)
 
 
 class Report(models.Model):
