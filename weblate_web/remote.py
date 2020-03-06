@@ -19,12 +19,11 @@
 #
 """Remote data fetching and caching."""
 
+import requests
 import sentry_sdk
 from django.conf import settings
 from django.core.cache import cache
 from wlc import Weblate
-
-import requests
 
 CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
