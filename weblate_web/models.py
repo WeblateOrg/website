@@ -495,7 +495,7 @@ class Subscription(models.Model):
             query |= Q(repeat__pk__in=past)
         if self.payment:
             query |= Q(repeat__pk=self.payment)
-        return Payment.objects.filter(query)
+        return Payment.objects.filter(query).distinct()
 
     def get_absolute_url(self):
         return reverse("subscription-edit", kwargs={"pk": self.pk})
