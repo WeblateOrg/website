@@ -4,7 +4,7 @@ python:
   - "3.5"
   - "3.7"
 # commands to install dependencies
-install: 
+install:
   - pip install Cython
   - pip install https://github.com/WeblateOrg/weblate/archive/master.zip
   - pip install https://github.com/nijel/thepay/archive/weblate.zip
@@ -14,7 +14,7 @@ install:
   - pip install -r requirements.txt
   - pip install -r requirements-test.txt
 # commands to run tests
-script: 
+script:
   - ./scripts/generate-locales
   - ./manage.py check
   - python -Wd -m coverage run --source=. ./manage.py test weblate_web

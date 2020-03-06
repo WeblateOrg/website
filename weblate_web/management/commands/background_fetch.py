@@ -24,7 +24,7 @@ from weblate_web.remote import get_activity, get_changes, get_contributors
 
 
 class Command(BaseCommand):
-    help = 'refreshes remote data'
+    help = "refreshes remote data"
 
     def handle(self, *args, **options):
         get_contributors(True)

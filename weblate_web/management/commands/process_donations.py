@@ -38,15 +38,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--from-date',
-            default=None,
-            help='Date for parsing bank statements',
+            "--from-date", default=None, help="Date for parsing bank statements",
         )
 
     def handle(self, *args, **options):
         if settings.FIO_TOKEN:
             with transaction.atomic(using="payments_db"):
-                FioBank.fetch_payments(from_date=options['from_date'])
+                FioBank.fetch_payments(from_date=options["from_date"])
         with transaction.atomic(using="payments_db"):
             self.pending()
         self.active()
@@ -58,7 +56,7 @@ class Command(BaseCommand):
             customer__origin=PAYMENTS_ORIGIN, state=Payment.ACCEPTED
         ).select_for_update()
         for payment in payments:
-            if 'subscription' in payment.extra:
+            if "subscription" in payment.extra:
                 process_subscription(payment)
             else:
                 process_donation(payment)

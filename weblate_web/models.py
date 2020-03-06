@@ -21,7 +21,6 @@
 from uuid import uuid4
 
 import html2text
-import requests
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -35,6 +34,8 @@ from django.utils.translation import ugettext_lazy
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 from wlhosted.payments.models import Payment, get_period_delta
+
+import requests
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 
@@ -60,6 +61,8 @@ TOPIC_DICT = dict(TOPICS)
 
 def create_backup_repository(service):
     """
+    Configure backup repository.
+
     - create filesystem folders
     - store ssh key
     - create subaccount

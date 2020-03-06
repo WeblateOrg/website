@@ -15,7 +15,7 @@
                 <a href="https://github.com/WeblateOrg/weblate/" class="button inline">{% trans "View sources" %}</a>
                 <a href="{% url 'support' %}" class="button inline border rev">{% trans "Get premium service" %}</a>
             </div>
-            
+
             <div class="quick-installation">
                 <a href="https://docs.weblate.org/en/latest/admin/quick.html" class="button right">{% trans "Quick setup" %}</a>
                 <div class="quick-title">{% trans "Quick Installation" %}</div>
@@ -24,14 +24,14 @@
             <div class="download-wrap">
                 <h2 class="section-title left">{% trans "Download source code" %}</h2>
                 <p>{% trans "Latest releases for download, signed with PGP" %}</p>
-                
-                
+
+
                 <div class="download-list">
                     {% for download in downloads %}
                     {% downloadlink download %}
                     {% endfor %}
                 </div>
-                
+
                 <h2 class="section-title left">{% trans "Cloud or virtualization images" %}</h2>
                 <p>{% trans "Weblate can be run in any cloud or virtualization environment. The following guides will show you detailed info about some of the most common platforms." %}</p>
             </div>
@@ -60,14 +60,14 @@
             <div class="download-wrap">
                 <h2 class="section-title left">{% trans "GitHub repository" %}</h2>
                 <p>{% blocktrans with "https://github.com/WeblateOrg" as url %}Weblate is developed on <a href="{{ url }}">GitHub</a>, you can fork it there, find <a href="{{ url }}">more repositories</a>, or just:{% endblocktrans %}</p>
-                
+
                 <pre>
 # Weblate
 git clone https://github.com/WeblateOrg/weblate.git
 
 # {% trans "Weblate command line client" %}
 git clone https://github.com/WeblateOrg/wlc.git</pre>
-                
+
                 <h2 class="section-title left">{% trans "Weblate command line client" %}</h2>
                 <p>{% blocktrans with 'https://docs.weblate.org/en/latest/wlc.html' as url %}You can control Weblate remotely using <a href="{{ url }}">wlc</a>, which can be installed from Python pip:{% endblocktrans %}</p>
                 <blockquote>

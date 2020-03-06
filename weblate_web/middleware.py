@@ -21,8 +21,8 @@
 from django.conf import settings
 
 URL = (
-    'https://sentry.io/api/1305560/security/'
-    '?sentry_key=795461fdeabc4ff6a3b6a6dedc495b5f'
+    "https://sentry.io/api/1305560/security/"
+    "?sentry_key=795461fdeabc4ff6a3b6a6dedc495b5f"
 )
 
 CSP_TEMPLATE = (
@@ -46,14 +46,15 @@ class SecurityMiddleware:
     - Content-Security-Policy
     - X-XSS-Protection
     """
+
     def __init__(self, get_response=None):
         self.get_response = get_response
 
     def __call__(self, request):
         # Skip CSRF validation for requests with valid secret
         # This is used to process automatic payments
-        if request.POST.get('secret') == settings.PAYMENT_SECRET:
-            setattr(request, '_dont_enforce_csrf_checks', True)
+        if request.POST.get("secret") == settings.PAYMENT_SECRET:
+            request._dont_enforce_csrf_checks = True  # noqa: SF01
 
         response = self.get_response(request)
         # No CSP for debug mode (to allow djdt or error pages)
@@ -67,33 +68,33 @@ class SecurityMiddleware:
         font = ["'self'", "s.weblate.org"]
 
         # Sentry/Raven
-        script.append('cdn.ravenjs.com')
+        script.append("cdn.ravenjs.com")
 
         # Matomo/Piwik
-        script.append('stats.cihar.com')
-        image.append('stats.cihar.com')
-        connect.append('stats.cihar.com')
+        script.append("stats.cihar.com")
+        image.append("stats.cihar.com")
+        connect.append("stats.cihar.com")
 
         # Hosted Weblate widget
-        image.append('hosted.weblate.org')
+        image.append("hosted.weblate.org")
 
         # Old blog entries
-        image.append('blog.cihar.com')
+        image.append("blog.cihar.com")
 
         # The Pay
-        image.append('www.thepay.cz')
+        image.append("www.thepay.cz")
 
         # GitHub avatars
-        image.append('*.githubusercontent.com')
+        image.append("*.githubusercontent.com")
 
-        response['Content-Security-Policy'] = CSP_TEMPLATE.format(
-            style=' '.join(style),
-            image=' '.join(image),
-            script=' '.join(script),
-            font=' '.join(font),
-            connect=' '.join(connect),
-            report=URL
+        response["Content-Security-Policy"] = CSP_TEMPLATE.format(
+            style=" ".join(style),
+            image=" ".join(image),
+            script=" ".join(script),
+            font=" ".join(font),
+            connect=" ".join(connect),
+            report=URL,
         )
         response["Expect-CT"] = 'report-uri="{}"'.format(URL)
-        response['X-XSS-Protection'] = '1; mode=block'
+        response["X-XSS-Protection"] = "1; mode=block"
         return response

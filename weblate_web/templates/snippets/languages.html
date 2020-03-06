@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="langs">
     <a class="open-langs" href="#">{% for lang in LANGUAGES %}{% if lang.0 == LANGUAGE_CODE %}{{ lang.1 }}{% endif %}{% endfor %}</a>
-    
+
     <div class="langs-list">
         {% for column in language_columns %}
         <ul>

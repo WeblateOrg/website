@@ -544,7 +544,7 @@ def service_user(request, pk):
         else:
             service.users.add(user)
     except User.DoesNotExist:
-        messages.error(request, gettext('User not found!'))
+        messages.error(request, gettext("User not found!"))
     return redirect(reverse("user"))
 
 

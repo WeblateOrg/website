@@ -30,48 +30,36 @@ class SubscribeForm(forms.Form):
 
 
 class MethodForm(forms.Form):
-    method = forms.ChoiceField(
-        choices=[],
-        required=True,
-    )
+    method = forms.ChoiceField(choices=[], required=True,)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['method'].choices = [
+        self.fields["method"].choices = [
             (backend.name, backend.verbose) for backend in list_backends()
         ]
 
 
 class DonateForm(forms.Form):
     recurring = forms.ChoiceField(
-        choices=RECURRENCE_CHOICES,
-        initial='',
-        required=False,
+        choices=RECURRENCE_CHOICES, initial="", required=False,
     )
-    amount = forms.IntegerField(
-        min_value=5,
-        initial=10,
-    )
-    reward = forms.ChoiceField(
-        choices=REWARDS,
-        initial=0,
-        required=False
-    )
+    amount = forms.IntegerField(min_value=5, initial=10,)
+    reward = forms.ChoiceField(choices=REWARDS, initial=0, required=False)
 
 
 class EditNameForm(forms.ModelForm):
     class Meta:
         model = Donation
-        fields = ('link_text',)
+        fields = ("link_text",)
 
 
 class EditLinkForm(forms.ModelForm):
     class Meta:
         model = Donation
-        fields = ('link_text', 'link_url')
+        fields = ("link_text", "link_url")
 
 
 class EditImageForm(forms.ModelForm):
     class Meta:
         model = Donation
-        fields = ('link_text', 'link_url', 'link_image')
+        fields = ("link_text", "link_url", "link_image")

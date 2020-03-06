@@ -30,56 +30,52 @@ from weblate_web.models import Image, Post
 
 
 class Command(BaseCommand):
-    help = 'import blog posts'
+    help = "import blog posts"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'json-file',
-            type=argparse.FileType('r'),
-            help='JSON file containing data to import',
+            "json-file",
+            type=argparse.FileType("r"),
+            help="JSON file containing data to import",
         )
 
     def handle(self, *args, **options):
-        data = json.load(options['json-file'])
-        options['json-file'].close()
+        data = json.load(options["json-file"])
+        options["json-file"].close()
         missing = False
 
         # First validate we have all images in place
         for item in data:
-            image = item['image_url'] or item['image']
+            image = item["image_url"] or item["image"]
             if not image:
-                item['image_obj'] = None
+                item["image_obj"] = None
             else:
                 try:
-                    item['image_obj'] = Image.objects.get(
-                        name=os.path.basename(image)
-                    )
+                    item["image_obj"] = Image.objects.get(name=os.path.basename(image))
                 except Image.DoesNotExist:
-                    self.stderr.write('Missing image: {}'.format(image))
+                    self.stderr.write("Missing image: {}".format(image))
                     missing = True
         if missing:
-            raise CommandError('Missing image')
+            raise CommandError("Missing image")
 
         # Actually import the data
         for item in data:
             with transaction.atomic():
-                slug = item['slug']
+                slug = item["slug"]
                 index = 0
                 while Post.objects.filter(slug=slug).exists():
                     index += 1
-                    slug = '{}_{}'.format(item['slug'], index)
-                if slug != item['slug']:
+                    slug = "{}_{}".format(item["slug"], index)
+                if slug != item["slug"]:
                     self.stderr.write(
-                        'Slug {} exists, using {} instead'.format(
-                            item['slug'], slug
-                        )
+                        "Slug {} exists, using {} instead".format(item["slug"], slug)
                     )
                 Post.objects.create(
-                    title=item['title'],
+                    title=item["title"],
                     slug=slug,
-                    timestamp=dateutil.parser.parse(item['date']),
-                    body_markup_type=item['body_markup_type'],
-                    body=item['body'],
-                    summary=item['summary'],
-                    image=item['image_obj'],
+                    timestamp=dateutil.parser.parse(item["date"]),
+                    body_markup_type=item["body_markup_type"],
+                    body=item["body"],
+                    summary=item["summary"],
+                    image=item["image_obj"],
                 )

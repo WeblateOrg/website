@@ -14,7 +14,7 @@
                 <p>{% block description %}{% trans "Weblate is copylefted libre software with community support. Subscribers receive priority support at no extra charge. Prepaid help packages are available for everyone." %}{% endblock %}</p>
                 <a href="https://github.com/WeblateOrg/weblate/issues/new/choose" class="button inline">{% trans "Report issue" %}</a>
             </div>
-            
+
             <div class="help-cols">
                 <div class="col">
                     <div class="icon"><img src="{% static "img/icon-bugs.svg" %}" /></div>
@@ -44,7 +44,7 @@
 <section class="content no-mar crypto">
     <div class="row">
         <h2 class="section-title crypto">{% trans "Prepaid support for gratis service and self-hosted installations" %}</h2>
-        
+
         <div class="installations">
             <div class="box">
                 <div class="icon"><img src="{% static "img/linux.png" %}" /></div>
@@ -56,7 +56,7 @@
                     <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
                     <li>{% trans "Setup customization" %}</li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=install:linux" class="format-item">€300<span>{% trans "installation" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=install:linux" class="format-item">€300<span>{% trans "installation" %}</span></a>
                 <a href="{% url 'subscription-new' %}?plan=install:linux" class="button black right">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
@@ -78,7 +78,7 @@
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
                     <li>{% trans "Priority e-mail support." %}</li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=basic" class="format-item">€500<span>{% trans "annually" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=basic" class="format-item">€500<span>{% trans "annually" %}</span></a>
                 <a href="{% url 'subscription-new' %}?plan=basic" class="button black right">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
@@ -89,7 +89,7 @@
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
                     <li>{% trans "Priority e-mail support." %}</li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=extended" class="format-item">€750<span>{% trans "annually" %}</span></a>              
+                <a href="{% url 'subscription-new' %}?plan=extended" class="format-item">€750<span>{% trans "annually" %}</span></a>
                 <a href="{% url 'subscription-new' %}?plan=extended" class="button black right">{% trans "Buy now" %}</a>
             </div>
             <div class="box" id="backup">
@@ -112,7 +112,7 @@
                     <li>{% trans "Integration of Weblate into your workflow" %}</li>
                     <li>{% trans "Suggestions on the internationalization and localization" %}</li>
                 </ul>
-                <a class="format-item">€50<span>{% trans "hourly" %}</span></a>              
+                <a class="format-item">€50<span>{% trans "hourly" %}</span></a>
             </div>
             <a href="mailto:support@weblate.org" class="button center">{% trans "Ask for help" %}</a>
         </div>
@@ -150,11 +150,11 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="stack-overflow">
             {% blocktrans with "https://stackoverflow.com/tags/weblate/info" as url %}Pose questions on <a href="{{ url }}">Stack Overflow</a>.{% endblocktrans %}
         </div>
-        
+
     </div>
 </section>
 {% include "snippets/bottom.html" %}

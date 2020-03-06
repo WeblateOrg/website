@@ -32,45 +32,45 @@ from weblate_web.remote import get_activity, get_changes, get_contributors
 def weblate_web(request):
     if request.resolver_match and request.resolver_match.url_name:
         match = request.resolver_match
-        url_name = ':'.join(match.namespaces + [match.url_name])
+        url_name = ":".join(match.namespaces + [match.url_name])
         url_kwargs = match.kwargs
     else:
-        url_name = 'home'
+        url_name = "home"
         url_kwargs = {}
 
     # Get canonical URl, unfortunately there seems to be no clean
     # way, so just strip /en/ from the URL
     # See also https://stackoverflow.com/a/27727877/225718
-    with override('en'):
+    with override("en"):
         canonical_url = reverse(url_name, kwargs=url_kwargs)
-        if canonical_url.startswith('/en/'):
+        if canonical_url.startswith("/en/"):
             canonical_url = canonical_url[3:]
 
     language_urls = []
     for code, name in settings.LANGUAGES:
         with override(code):
-            language_urls.append({
-                'name': name,
-                'code': code,
-                'url': reverse(url_name, kwargs=url_kwargs),
-            })
+            language_urls.append(
+                {
+                    "name": name,
+                    "code": code,
+                    "url": reverse(url_name, kwargs=url_kwargs),
+                }
+            )
 
-    downloads = [
-        'Weblate-{0}.{1}'.format(VERSION, ext) for ext in EXTENSIONS
-    ]
+    downloads = ["Weblate-{0}.{1}".format(VERSION, ext) for ext in EXTENSIONS]
     language_col = ceil(len(settings.LANGUAGES) / 3)
 
     return {
-        'downloads': downloads,
-        'canonical_url': canonical_url,
-        'language_urls': language_urls,
-        'donate_links': Donation.objects.filter(active=True, reward=3),
-        'activity_sum': sum(get_activity()[-7:]),
-        'contributors': get_contributors(),
-        'changes': get_changes(),
-        'language_columns': [
+        "downloads": downloads,
+        "canonical_url": canonical_url,
+        "language_urls": language_urls,
+        "donate_links": Donation.objects.filter(active=True, reward=3),
+        "activity_sum": sum(get_activity()[-7:]),
+        "contributors": get_contributors(),
+        "changes": get_changes(),
+        "language_columns": [
             language_urls[:language_col],
-            language_urls[language_col:language_col * 2],
-            language_urls[language_col * 2:],
+            language_urls[language_col : language_col * 2],
+            language_urls[language_col * 2 :],
         ],
     }

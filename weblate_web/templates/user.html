@@ -123,7 +123,7 @@
                         {% for payment in subscription.list_payments %}
                         <p>
                         €{{ payment.amount }}
-                        {% if payment.state == 5 %} 
+                        {% if payment.state == 5 %}
                         ({{ payment.invoice }})
                         {% if payment.invoice_filename_valid %}
                         <a class="button small inline" href="{% url 'user-invoice' pk=payment.pk %}">{% trans "Download invoice" %}</a>
@@ -225,7 +225,7 @@
                     {% for payment in donation.list_payments %}
                     <p>
                     €{{ payment.amount }}
-                    {% if payment.state == 5 %} 
+                    {% if payment.state == 5 %}
                     ({{ payment.invoice }})
                     {% if payment.invoice_filename_valid %}
                     <a class="button small inline" href="{% url 'user-invoice' pk=payment.pk %}">{% trans "Download invoice" %}</a>
