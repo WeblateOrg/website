@@ -20,7 +20,15 @@
 
 from django.contrib import admin
 
-from weblate_web.models import Donation, Image, Package, Post, Service, Subscription
+from weblate_web.models import (
+    Donation,
+    Image,
+    Package,
+    PastPayments,
+    Post,
+    Service,
+    Subscription,
+)
 
 
 class DonationAdmin(admin.ModelAdmin):
@@ -76,9 +84,14 @@ class PackageAdmin(admin.ModelAdmin):
     ]
 
 
+class PastPaymentsAdmin(admin.ModelAdmin):
+    list_display = ["subscription", "payment"]
+
+
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Donation, DonationAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Service, ServiceAdmin)
 admin.site.register(Package, PackageAdmin)
+admin.site.register(PastPayments, PastPaymentsAdmin)
