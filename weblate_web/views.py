@@ -38,7 +38,6 @@ from django.views.decorators.http import require_POST
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
-from weblate.utils.django_hacks import monkey_patch_translate
 from wlhosted.payments.backends import get_backend, list_backends
 from wlhosted.payments.forms import CustomerForm
 from wlhosted.payments.models import Customer, Payment
@@ -583,6 +582,3 @@ def subscription_new(request):
             customer=get_customer(request),
         )
     return redirect(payment.get_payment_url())
-
-
-monkey_patch_translate()
