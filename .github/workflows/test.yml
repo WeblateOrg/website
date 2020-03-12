@@ -38,7 +38,7 @@ jobs:
       run: |
         pip install --upgrade pip wheel Cython
         pip install https://github.com/nijel/thepay/archive/weblate.zip
-        pip install -r requirements-test.txt
+        pip install -r requirements-test.txt -r requirements.txt
     - name: Test with Django
       env:
         DJANGO_SETTINGS_MODULE: wlhosted.settings_test
@@ -47,3 +47,12 @@ jobs:
     - uses: codecov/codecov-action@v1
       with:
         token: ${{secrets.CODECOV_TOKEN}}
+        flags: unittests
+        name: Python ${{ matrix.python-version }}
+    - name: DeepSource
+      continue-on-error: true
+      env:
+        DEEPSOURCE_DSN: ${{secrets.DEEPSOURCE_DSN}}
+      run: |
+        curl https://deepsource.io/cli | sh
+        ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml
