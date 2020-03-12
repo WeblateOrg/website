@@ -16,7 +16,10 @@ class Migration(migrations.Migration):
             name="vat",
             field=vies.models.VATINField(
                 blank=True,
-                help_text="Please fill in European Union VAT ID, leave blank if not applicable.",
+                help_text=(
+                    "Please fill in European Union VAT ID, "
+                    "leave blank if not applicable."
+                ),
                 max_length=14,
                 null=True,
                 validators=[wlhosted.payments.validators.validate_vatin],
