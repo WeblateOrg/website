@@ -157,7 +157,11 @@ def process_donation(payment):
             expires += get_period_delta("y")
         # Create new
         donation = Donation.objects.create(
-            user=user, payment=payment.pk, reward=reward, expires=expires, active=True
+            user=user,
+            payment=payment.pk,
+            reward=int(reward),
+            expires=expires,
+            active=True,
         )
     # Flag payment as processed
     payment.state = Payment.PROCESSED
