@@ -7,8 +7,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.core.files.storage import default_storage
-from django.core.management import CommandError, call_command
+from django.core.management import call_command
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -19,7 +18,7 @@ import responses
 from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
 from weblate_web.data import EXTENSIONS, VERSION
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Image, Post
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post
 from weblate_web.templatetags.downloads import downloadlink, filesizeformat
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), "test-data")
@@ -398,19 +397,3 @@ class PostTest(PostTestCase):
         self.assertContains(response, "testbody")
         response = self.client.get(future.get_absolute_url(), follow=True)
         self.assertEqual(response.status_code, 404)
-
-    def test_import(self):
-        self.assertEqual(Post.objects.count(), 0)
-        # It should fail due to missing image
-        with self.assertRaises(CommandError):
-            call_command("import_blog", TEST_BLOG)
-        # Create image
-        filename = "images/test.png"
-        with open(TEST_IMAGE, "rb") as handle:
-            default_storage.save(filename, handle)
-        Image.objects.create(
-            image=default_storage.open(filename), name="weblate-html.png"
-        )
-        # Import should now succeed
-        call_command("import_blog", TEST_BLOG)
-        self.assertEqual(Post.objects.count(), 1)
