@@ -26,6 +26,15 @@ TEST_FAKTURACE = os.path.join(TEST_DATA, "fakturace")
 TEST_BLOG = os.path.join(TEST_DATA, "blog.json")
 TEST_IMAGE = os.path.join(TEST_DATA, "weblate-html.png")
 
+TEST_CUSTOMER = {
+    "name": "Michal Čihař",
+    "address": "Zdiměřická 1439",
+    "city": "149 00 Praha 4",
+    "country": "CZ",
+    "vat_0": "CZ",
+    "vat_1": "8003280318",
+}
+
 
 def fake_remote():
     cache.set("wlweb-contributors", [])
@@ -200,18 +209,7 @@ class PaymentsTest(FakturaceTestCase):
             response = self.client.get(url, follow=True)
             self.assertRedirects(response, customer_url)
             self.assertContains(response, "Please provide your billing")
-            response = self.client.post(
-                customer_url,
-                {
-                    "name": "Michal Čihař",
-                    "address": "Zdiměřická 1439",
-                    "city": "149 00 Praha 4",
-                    "country": "CZ",
-                    "vat_0": "CZ",
-                    "vat_1": "8003280318",
-                },
-                follow=True,
-            )
+            response = self.client.post(customer_url, TEST_CUSTOMER, follow=True,)
             self.assertRedirects(response, url)
             self.assertContains(response, "Test payment")
             self.assertContains(response, "121.0 EUR")
@@ -315,6 +313,20 @@ class DonationTest(FakturaceTestCase):
             "/donate/process/", {"payment": payment.pk}, follow=True
         )
         self.assertContains(response, "Thank you for your donation.")
+
+    def test_donation_workflow(self):
+        self.login()
+        response = self.client.post(
+            "/en/donate/new/",
+            {"recurring": "y", "amount": 10, "reward": 0},
+            follow=True,
+        )
+        self.assertContains(response, "Please provide your billing")
+        payment = Payment.objects.all().get()
+        customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
+        self.assertRedirects(response, customer_url)
+        response = self.client.post(customer_url, TEST_CUSTOMER, follow=True,)
+        self.assertContains(response, "Please choose payment method")
 
     def test_your_donations(self):
         # Check login link
