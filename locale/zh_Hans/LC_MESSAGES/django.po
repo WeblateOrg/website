@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-05 14:06+0100\n"
+"POT-Creation-Date: 2020-03-13 11:52+0100\n"
 "PO-Revision-Date: 2020-03-09 09:16+0000\n"
 "Last-Translator: Changpeng Sun <zzjbcn@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -31,6 +31,212 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.0-dev\n"
+
+#: payments/backends.py:186
+#, fuzzy
+msgid "Your payment on weblate.org"
+msgstr "您对 Weblate 的捐赠"
+
+#: payments/backends.py:188
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Thank you for your payment on weblate.org.\n"
+"\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively, you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+"您好，\n"
+"\n"
+"感谢您在 weblate.org 上付款。\n"
+"\n"
+"您将找到附带的此付款的发票（国际发票）。\n"
+"或者，您可以从网站下载：\n"
+"\n"
+"%s\n"
+
+#: payments/backends.py:214
+#, fuzzy
+msgid "Your payment on weblate.org failed"
+msgstr "在 weblate.org 感谢页面放入链接"
+
+#: payments/backends.py:216
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org has failed.\n"
+"\n"
+"%s\n"
+"\n"
+"Retry issuing the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, cancelled.\n"
+msgstr ""
+"您好，\n"
+"\n"
+"您在 weblate.org 上的付款已失败。\n"
+"\n"
+"%s\n"
+"\n"
+"在网站上重新发起付款：\n"
+"\n"
+"%s\n"
+"\n"
+"如果涉及周期性付款，系统将自动重试三次；\n"
+"如果仍然失败，则会被取消。\n"
+
+#: payments/backends.py:249
+#, fuzzy
+msgid "Your pending payment on weblate.org"
+msgstr "您对 Weblate 的捐赠"
+
+#: payments/backends.py:251
+#, fuzzy
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org is pending. Please follow the provided\n"
+"instructions to complete the payment.\n"
+msgstr "请按照提供的说明完成付款。"
+
+#: payments/backends.py:333
+#, fuzzy
+msgid "Payment card"
+msgstr "付款摘要"
+
+#: payments/backends.py:409
+#, fuzzy
+msgid "Payment cancelled"
+msgstr "付款频率"
+
+#: payments/backends.py:411
+#, fuzzy
+msgid "Payment error"
+msgstr "付款摘要"
+
+#: payments/backends.py:423
+msgid "Bitcoin"
+msgstr "比特币"
+
+#: payments/backends.py:432
+msgid "IBAN bank transfer"
+msgstr "IBAN 银行转账"
+
+#: payments/backends.py:462
+msgid "Issuing bank"
+msgstr "开户行"
+
+#: payments/backends.py:463
+msgid "Account holder"
+msgstr "账户持有人"
+
+#: payments/backends.py:464
+msgid "Account number"
+msgstr "帐号"
+
+#: payments/backends.py:465
+msgid "SWIFT code"
+msgstr "SWIFT 代码"
+
+#: payments/backends.py:466
+msgid "IBAN"
+msgstr "IBAN"
+
+#: payments/backends.py:467
+#, fuzzy
+msgid "Reference"
+msgstr "会议"
+
+#: payments/models.py:79
+msgid "European VAT ID"
+msgstr "欧盟增值税号 VAT ID"
+
+#: payments/models.py:81
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgstr "请填写欧盟增值税号 (VAT ID)，如果不适用，请留空。"
+
+#: payments/models.py:87
+msgid "Tax registration"
+msgstr "税务登记"
+
+#: payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
+msgstr "如果它应出现在发票上，请填写您的税务登记。"
+
+#: payments/models.py:96
+msgid "Company or individual name"
+msgstr "公司或个体名称"
+
+#: payments/models.py:99
+msgid "Address"
+msgstr "地址"
+
+#: payments/models.py:102
+msgid "Postcode and city"
+msgstr "邮政编号和城市"
+
+#: payments/models.py:104
+msgid "Country"
+msgstr "国家"
+
+#: payments/models.py:132
+msgid "The country has to match your VAT code"
+msgstr "国家必须与您的增值税 VAT 代码匹配"
+
+#: payments/models.py:155
+#, fuzzy
+msgid "Annual"
+msgstr "每年"
+
+#: payments/models.py:156
+#, fuzzy
+msgid "Biannual"
+msgstr "每年"
+
+#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+msgid "Quarterly"
+msgstr "每季度"
+
+#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:392
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr "每月"
+
+#: payments/models.py:159
+msgid "Onetime"
+msgstr "一次性"
+
+#: payments/validators.py:38
+msgid "{} is not a valid country code for any European Union member."
+msgstr "{}不是任何欧盟成员的有效国家/地区代码。"
+
+#: payments/validators.py:43
+msgid "{} does not match the country's VAT ID specifications."
+msgstr "{}与国家/地区的增值税号 (VAT ID) 规格不符。"
+
+#: payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr "{}无法使用 VAT ID 验证服务，请稍后重试。"
+
+#: payments/validators.py:53
+msgid "{} is not a valid VAT ID."
+msgstr "{} 不是有效的欧盟增值税号 VAT ID。"
 
 #: weblate_web/models.py:42
 msgid "No reward"
@@ -82,43 +288,43 @@ msgstr "开发"
 msgid "Localization"
 msgstr "本地化"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:107
 msgid "Link text"
 msgstr "链接文字"
 
-#: weblate_web/models.py:107 weblate_web/templates/user.html:199
+#: weblate_web/models.py:109 weblate_web/templates/user.html:199
 msgid "Link URL"
 msgstr "链接网址"
 
-#: weblate_web/models.py:109
+#: weblate_web/models.py:111
 msgid "Link image"
 msgstr "链接图像"
 
-#: weblate_web/models.py:298
+#: weblate_web/models.py:300
 msgid "Community support"
 msgstr "社区支持"
 
-#: weblate_web/models.py:299
+#: weblate_web/models.py:301
 msgid "Hosted service"
 msgstr "托管服务"
 
-#: weblate_web/models.py:300 weblate_web/templates/support.html:76
+#: weblate_web/models.py:302 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "自行架设的基本支持"
 
-#: weblate_web/models.py:301 weblate_web/templates/support.html:86
+#: weblate_web/models.py:303 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "自行架设的拓展支持"
 
-#: weblate_web/models.py:400
+#: weblate_web/models.py:402
 msgid "Basic support"
 msgstr "基础支持"
 
-#: weblate_web/models.py:403
+#: weblate_web/models.py:405
 msgid "Extended support"
 msgstr "扩展支持"
 
-#: weblate_web/models.py:405 weblate_web/templates/support.html:97
+#: weblate_web/models.py:407 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "备份服务"
 
@@ -348,6 +554,7 @@ msgstr "增值税 ID"
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/support.html:116
 msgid "Contact us"
 msgstr "联系我们"
 
@@ -762,23 +969,6 @@ msgstr "选择捐赠频率"
 #: weblate_web/templates/donate/form.html:21
 msgid "Single payment"
 msgstr "单笔付款"
-
-#: weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:358
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr "每月"
-
-#: weblate_web/templates/donate/form.html:27
-msgid "Quarterly"
-msgstr "每季度"
 
 #: weblate_web/templates/donate/form.html:30
 msgid "Every year"
@@ -1484,7 +1674,7 @@ msgid "or download Weblate"
 msgstr "或下载 Weblate"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:120
 msgid "Payment"
 msgstr "付款摘要"
 
@@ -1756,14 +1946,17 @@ msgstr "与我们一起贡献"
 msgid ""
 "Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what we "
 "are looking for."
-msgstr "浏览<a href=\"%(issues)s\">打开的问题</a>，以深入了解我们要查找的内容。"
+msgstr ""
+"浏览<a href=\"%(issues)s\">打开的问题</a>，以深入了解我们要查找的内容。"
 
 #: weblate_web/templates/snippets/career.html:3
 #, python-format
 msgid ""
 "Show us your abilities if you want by picking up an issue from the list. "
 "Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
-msgstr "如果你想的话，可以从列表中选择一个问题来展示你的能力。不确定要选择什么，<a href=\"%(issue)s\">请尝试此项</a>。"
+msgstr ""
+"如果你想的话，可以从列表中选择一个问题来展示你的能力。不确定要选择什么，<a "
+"href=\"%(issue)s\">请尝试此项</a>。"
 
 #: weblate_web/templates/snippets/career.html:4
 msgid "We're open source, all our issues are open to public."
@@ -1980,7 +2173,8 @@ msgid ""
 "receive priority support at no extra charge. Prepaid help packages are "
 "available for everyone."
 msgstr ""
-"Weblate 是一款 copylefted 的自由软件，由社区进行支持。订阅者无需支付额外费用便可以获得优先的支持；预付支持服务包可供所有人使用。"
+"Weblate 是一款 copylefted 的自由软件，由社区进行支持。订阅者无需支付额外费用"
+"便可以获得优先的支持；预付支持服务包可供所有人使用。"
 
 #: weblate_web/templates/support.html:15
 msgid "Report issue"
@@ -2111,58 +2305,58 @@ msgstr "关于国际化或本地化的建议"
 msgid "hourly"
 msgstr "每小时"
 
-#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:118
 msgid "Ask for help"
 msgstr "寻求帮助"
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 msgid "Mailing lists"
 msgstr "邮件列表"
 
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "Users and developers"
 msgstr "用户和开发者"
 
-#: weblate_web/templates/support.html:130
-#: weblate_web/templates/support.html:143
+#: weblate_web/templates/support.html:131
+#: weblate_web/templates/support.html:144
 msgid "Your e-mail address…"
 msgstr "您的电子邮件地址…"
 
-#: weblate_web/templates/support.html:131
-#: weblate_web/templates/support.html:144
+#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:145
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "注册"
 
-#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:135
 msgid "Discuss Weblate with users and developers"
 msgstr "与用户和开发者讨论 Weblate"
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:136
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 "您可以发送邮件到 <a href=\"mailto:%(address)s\">%(address)s</a> 来使用它"
 
-#: weblate_web/templates/support.html:136
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:150
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr "在其 <a href=\"%(url)s\">存档</a> 中查找答案"
 
-#: weblate_web/templates/support.html:140
+#: weblate_web/templates/support.html:141
 msgid "Hosted Weblate announcements"
 msgstr "受托管 Weblate 平台公告"
 
-#: weblate_web/templates/support.html:147
+#: weblate_web/templates/support.html:148
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr "<strong>低流量</strong>并已审核"
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:149
 msgid "Only premium service announcements"
 msgstr "仅高级服务公告"
 
-#: weblate_web/templates/support.html:155
+#: weblate_web/templates/support.html:156
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr "在 <a href=\"%(url)s\">Stack Overflow</a> 上提出问题。"
@@ -2353,7 +2547,7 @@ msgid "Other topics"
 msgstr "其他主题"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:446
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr "里程碑"
 
@@ -2365,40 +2559,40 @@ msgstr "相关文章"
 msgid "Back to blog"
 msgstr "返回博客"
 
-#: weblate_web/templatetags/downloads.py:40
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d 字节"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:47
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:48
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr "源代码 tar 包，bzip2 压缩"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr "源代码 tar 包，gzip 压缩"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr "源代码 tar 包，xz 压缩"
 
-#: weblate_web/templatetags/downloads.py:61
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr "源代码，zip 压缩"
 
@@ -2432,52 +2626,52 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr "刚才"
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:83
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "参数 %(field)s 出错：%(error)s"
 
-#: weblate_web/views.py:152 weblate_web/views.py:191
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "请提供您的结算信息以完成付款。"
 
-#: weblate_web/views.py:165
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "VAT ID 已失效，请对其进行更新。"
 
-#: weblate_web/views.py:186
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr "请选择付款方式。"
 
-#: weblate_web/views.py:305
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "付款尚未处理，请再试一次。"
 
-#: weblate_web/views.py:309
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "付款被拒绝：{}"
 
-#: weblate_web/views.py:310
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "未知原因"
 
-#: weblate_web/views.py:315
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr "感谢您的订阅。"
 
-#: weblate_web/views.py:318
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "感谢您的捐赠。"
 
-#: weblate_web/views.py:407
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr "已请求订阅，您只需确认电子邮件即可。"
 
-#: weblate_web/views.py:411
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr "无法处理订阅请求。"
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "找不到用户！"
 
@@ -2990,9 +3184,6 @@ msgstr "找不到用户！"
 
 #~ msgid "Please choose wanted reward or enter custom donation amount."
 #~ msgstr "请选择想要的赏金或输入自定义受捐金额。"
-
-#~ msgid "Link placement on the weblate.org thanks page"
-#~ msgstr "在 weblate.org 感谢页面放入链接"
 
 #~ msgid "Donation recurrence"
 #~ msgstr "定期捐赠"

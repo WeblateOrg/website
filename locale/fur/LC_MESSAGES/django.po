@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-05 14:06+0100\n"
+"POT-Creation-Date: 2020-03-13 11:52+0100\n"
 "PO-Revision-Date: 2019-12-03 19:11+0000\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <https://hosted.weblate.org/projects/weblate/website/"
@@ -18,6 +18,191 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.10-dev\n"
+
+#: payments/backends.py:186
+#, fuzzy
+msgid "Your payment on weblate.org"
+msgstr "La tô donazion a Weblate"
+
+#: payments/backends.py:188
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Thank you for your payment on weblate.org.\n"
+"\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively, you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: payments/backends.py:214
+msgid "Your payment on weblate.org failed"
+msgstr ""
+
+#: payments/backends.py:216
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org has failed.\n"
+"\n"
+"%s\n"
+"\n"
+"Retry issuing the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, cancelled.\n"
+msgstr ""
+
+#: payments/backends.py:249
+#, fuzzy
+msgid "Your pending payment on weblate.org"
+msgstr "La tô donazion a Weblate"
+
+#: payments/backends.py:251
+#, fuzzy
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org is pending. Please follow the provided\n"
+"instructions to complete the payment.\n"
+msgstr "Seguìs lis istruzions chi daurman par completâ il paiament."
+
+#: payments/backends.py:333
+#, fuzzy
+msgid "Payment card"
+msgstr "Somari paiament"
+
+#: payments/backends.py:409
+#, fuzzy
+msgid "Payment cancelled"
+msgstr "Frecuence di paiament"
+
+#: payments/backends.py:411
+#, fuzzy
+msgid "Payment error"
+msgstr "Paiaments"
+
+#: payments/backends.py:423
+msgid "Bitcoin"
+msgstr ""
+
+#: payments/backends.py:432
+msgid "IBAN bank transfer"
+msgstr ""
+
+#: payments/backends.py:462
+msgid "Issuing bank"
+msgstr ""
+
+#: payments/backends.py:463
+msgid "Account holder"
+msgstr ""
+
+#: payments/backends.py:464
+msgid "Account number"
+msgstr ""
+
+#: payments/backends.py:465
+msgid "SWIFT code"
+msgstr ""
+
+#: payments/backends.py:466
+msgid "IBAN"
+msgstr ""
+
+#: payments/backends.py:467
+#, fuzzy
+msgid "Reference"
+msgstr "Conferencis"
+
+#: payments/models.py:79
+msgid "European VAT ID"
+msgstr ""
+
+#: payments/models.py:81
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgstr ""
+
+#: payments/models.py:87
+msgid "Tax registration"
+msgstr ""
+
+#: payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
+msgstr ""
+
+#: payments/models.py:96
+msgid "Company or individual name"
+msgstr ""
+
+#: payments/models.py:99
+msgid "Address"
+msgstr ""
+
+#: payments/models.py:102
+msgid "Postcode and city"
+msgstr ""
+
+#: payments/models.py:104
+msgid "Country"
+msgstr ""
+
+#: payments/models.py:132
+msgid "The country has to match your VAT code"
+msgstr ""
+
+#: payments/models.py:155
+#, fuzzy
+msgid "Annual"
+msgstr "anuâl"
+
+#: payments/models.py:156
+#, fuzzy
+msgid "Biannual"
+msgstr "anuâl"
+
+#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+msgid "Quarterly"
+msgstr "Trimestrâl"
+
+#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:392
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr "Mensîl"
+
+#: payments/models.py:159
+msgid "Onetime"
+msgstr ""
+
+#: payments/validators.py:38
+msgid "{} is not a valid country code for any European Union member."
+msgstr ""
+
+#: payments/validators.py:43
+msgid "{} does not match the country's VAT ID specifications."
+msgstr ""
+
+#: payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+
+#: payments/validators.py:53
+msgid "{} is not a valid VAT ID."
+msgstr ""
 
 #: weblate_web/models.py:42
 msgid "No reward"
@@ -69,43 +254,43 @@ msgstr "Disvilup"
 msgid "Localization"
 msgstr "Localizazion"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:107
 msgid "Link text"
 msgstr "Test dal colegament"
 
-#: weblate_web/models.py:107 weblate_web/templates/user.html:199
+#: weblate_web/models.py:109 weblate_web/templates/user.html:199
 msgid "Link URL"
 msgstr "URL dal colegament"
 
-#: weblate_web/models.py:109
+#: weblate_web/models.py:111
 msgid "Link image"
 msgstr "Imagjin dal colegament"
 
-#: weblate_web/models.py:298
+#: weblate_web/models.py:300
 msgid "Community support"
 msgstr "Supuart de comunitât"
 
-#: weblate_web/models.py:299
+#: weblate_web/models.py:301
 msgid "Hosted service"
 msgstr ""
 
-#: weblate_web/models.py:300 weblate_web/templates/support.html:76
+#: weblate_web/models.py:302 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:301 weblate_web/templates/support.html:86
+#: weblate_web/models.py:303 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:400
+#: weblate_web/models.py:402
 msgid "Basic support"
 msgstr "Supuart di base"
 
-#: weblate_web/models.py:403
+#: weblate_web/models.py:405
 msgid "Extended support"
 msgstr "Supuart complet"
 
-#: weblate_web/models.py:405 weblate_web/templates/support.html:97
+#: weblate_web/models.py:407 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Servizi di backup"
 
@@ -351,6 +536,7 @@ msgstr "ID IVA"
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/support.html:116
 msgid "Contact us"
 msgstr "Contatinus"
 
@@ -388,7 +574,6 @@ msgstr "Progjetât di %(author)s"
 
 #: weblate_web/templates/careers.html:10
 #, fuzzy
-#| msgid "Gratis Weblate"
 msgid "Career at Weblate"
 msgstr "Weblate gratis"
 
@@ -417,7 +602,6 @@ msgstr ""
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
 #, fuzzy
-#| msgid "Buy now"
 msgid "Apply now"
 msgstr "Compre cumò"
 
@@ -791,23 +975,6 @@ msgstr "Sielç trop dispès donâ"
 #: weblate_web/templates/donate/form.html:21
 msgid "Single payment"
 msgstr "Paiament ugnul"
-
-#: weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:358
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr "Mensîl"
-
-#: weblate_web/templates/donate/form.html:27
-msgid "Quarterly"
-msgstr "Trimestrâl"
 
 #: weblate_web/templates/donate/form.html:30
 msgid "Every year"
@@ -1551,7 +1718,7 @@ msgid "or download Weblate"
 msgstr "o discjarie Weblate"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:120
 msgid "Payment"
 msgstr "Paiaments"
 
@@ -2045,10 +2212,6 @@ msgstr "Assistence Weblate"
 
 #: weblate_web/templates/support.html:14
 #, fuzzy
-#| msgid ""
-#| "Weblate is a copylefted libre software with community support. "
-#| "Subscribers receive priority support at no extra charge. Prepaid help "
-#| "packages are available for everyone."
 msgid ""
 "Weblate is copylefted libre software with community support. Subscribers "
 "receive priority support at no extra charge. Prepaid help packages are "
@@ -2185,57 +2348,57 @@ msgstr ""
 msgid "hourly"
 msgstr ""
 
-#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:118
 msgid "Ask for help"
 msgstr ""
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 msgid "Mailing lists"
 msgstr ""
 
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "Users and developers"
-msgstr ""
-
-#: weblate_web/templates/support.html:130
-#: weblate_web/templates/support.html:143
-msgid "Your e-mail address…"
 msgstr ""
 
 #: weblate_web/templates/support.html:131
 #: weblate_web/templates/support.html:144
+msgid "Your e-mail address…"
+msgstr ""
+
+#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:145
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr ""
 
-#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:135
 msgid "Discuss Weblate with users and developers"
 msgstr ""
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:136
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 
-#: weblate_web/templates/support.html:136
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:150
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr ""
 
-#: weblate_web/templates/support.html:140
+#: weblate_web/templates/support.html:141
 msgid "Hosted Weblate announcements"
 msgstr ""
 
-#: weblate_web/templates/support.html:147
+#: weblate_web/templates/support.html:148
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr ""
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:149
 msgid "Only premium service announcements"
 msgstr ""
 
-#: weblate_web/templates/support.html:155
+#: weblate_web/templates/support.html:156
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr ""
@@ -2424,7 +2587,7 @@ msgid "Other topics"
 msgstr ""
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:446
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr ""
 
@@ -2436,41 +2599,41 @@ msgstr ""
 msgid "Back to blog"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:40
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:47
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:48
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:61
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr ""
 
@@ -2504,53 +2667,52 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr ""
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:83
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
 
-#: weblate_web/views.py:152 weblate_web/views.py:191
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:165
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:186
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr ""
 
-#: weblate_web/views.py:305
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr ""
 
-#: weblate_web/views.py:309
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:310
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr ""
 
-#: weblate_web/views.py:315
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr ""
 
-#: weblate_web/views.py:318
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr ""
 
-#: weblate_web/views.py:407
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:411
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr ""
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:545
 #, fuzzy
-#| msgid "Page not found"
 msgid "User not found!"
 msgstr "Pagjine no cjatade"

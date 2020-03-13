@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-05 14:06+0100\n"
+"POT-Creation-Date: 2020-03-13 11:52+0100\n"
 "PO-Revision-Date: 2019-11-06 06:07+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Breton <https://hosted.weblate.org/projects/weblate/website/"
@@ -18,6 +18,186 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.10-dev\n"
+
+#: payments/backends.py:186
+#, fuzzy
+msgid "Your payment on weblate.org"
+msgstr "Reiñ un dra bennak da Weblate"
+
+#: payments/backends.py:188
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Thank you for your payment on weblate.org.\n"
+"\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively, you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: payments/backends.py:214
+msgid "Your payment on weblate.org failed"
+msgstr ""
+
+#: payments/backends.py:216
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org has failed.\n"
+"\n"
+"%s\n"
+"\n"
+"Retry issuing the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, cancelled.\n"
+msgstr ""
+
+#: payments/backends.py:249
+#, fuzzy
+msgid "Your pending payment on weblate.org"
+msgstr "Reiñ un dra bennak da Weblate"
+
+#: payments/backends.py:251
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org is pending. Please follow the provided\n"
+"instructions to complete the payment.\n"
+msgstr ""
+
+#: payments/backends.py:333
+#, fuzzy
+msgid "Payment card"
+msgstr "Tapadenn skramm Weblate"
+
+#: payments/backends.py:409
+msgid "Payment cancelled"
+msgstr ""
+
+#: payments/backends.py:411
+#, fuzzy
+msgid "Payment error"
+msgstr "Tapadenn skramm Weblate"
+
+#: payments/backends.py:423
+msgid "Bitcoin"
+msgstr ""
+
+#: payments/backends.py:432
+msgid "IBAN bank transfer"
+msgstr ""
+
+#: payments/backends.py:462
+msgid "Issuing bank"
+msgstr ""
+
+#: payments/backends.py:463
+msgid "Account holder"
+msgstr ""
+
+#: payments/backends.py:464
+msgid "Account number"
+msgstr ""
+
+#: payments/backends.py:465
+msgid "SWIFT code"
+msgstr ""
+
+#: payments/backends.py:466
+msgid "IBAN"
+msgstr ""
+
+#: payments/backends.py:467
+msgid "Reference"
+msgstr ""
+
+#: payments/models.py:79
+msgid "European VAT ID"
+msgstr ""
+
+#: payments/models.py:81
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgstr ""
+
+#: payments/models.py:87
+msgid "Tax registration"
+msgstr ""
+
+#: payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
+msgstr ""
+
+#: payments/models.py:96
+msgid "Company or individual name"
+msgstr ""
+
+#: payments/models.py:99
+msgid "Address"
+msgstr ""
+
+#: payments/models.py:102
+msgid "Postcode and city"
+msgstr ""
+
+#: payments/models.py:104
+msgid "Country"
+msgstr ""
+
+#: payments/models.py:132
+msgid "The country has to match your VAT code"
+msgstr ""
+
+#: payments/models.py:155
+msgid "Annual"
+msgstr ""
+
+#: payments/models.py:156
+msgid "Biannual"
+msgstr ""
+
+#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+msgid "Quarterly"
+msgstr ""
+
+#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:392
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr ""
+
+#: payments/models.py:159
+msgid "Onetime"
+msgstr ""
+
+#: payments/validators.py:38
+msgid "{} is not a valid country code for any European Union member."
+msgstr ""
+
+#: payments/validators.py:43
+msgid "{} does not match the country's VAT ID specifications."
+msgstr ""
+
+#: payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+
+#: payments/validators.py:53
+msgid "{} is not a valid VAT ID."
+msgstr ""
 
 #: weblate_web/models.py:42
 msgid "No reward"
@@ -57,73 +237,64 @@ msgstr ""
 
 #: weblate_web/models.py:53
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Hosted Weblate"
 msgstr "Herberc'hiañ Weblate"
 
 #: weblate_web/models.py:54
 #: weblate_web/templates/weblate_web/post_detail.html:52
 #, fuzzy
-#| msgid "Develop"
 msgid "Development"
 msgstr "Diorren"
 
 #: weblate_web/models.py:55
 #: weblate_web/templates/weblate_web/post_detail.html:53
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Localization"
 msgstr "Treiñ dibaouez"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:107
 msgid "Link text"
 msgstr ""
 
-#: weblate_web/models.py:107 weblate_web/templates/user.html:199
+#: weblate_web/models.py:109 weblate_web/templates/user.html:199
 msgid "Link URL"
 msgstr ""
 
-#: weblate_web/models.py:109
+#: weblate_web/models.py:111
 msgid "Link image"
 msgstr ""
 
-#: weblate_web/models.py:298
+#: weblate_web/models.py:300
 #, fuzzy
-#| msgid "Branches support"
 msgid "Community support"
 msgstr "Harp ar brankoù"
 
-#: weblate_web/models.py:299
+#: weblate_web/models.py:301
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Hosted service"
 msgstr "Herberc'hiañ Weblate"
 
-#: weblate_web/models.py:300 weblate_web/templates/support.html:76
+#: weblate_web/models.py:302 weblate_web/templates/support.html:76
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Basic self-hosted support"
 msgstr "Harpañ Weblate"
 
-#: weblate_web/models.py:301 weblate_web/templates/support.html:86
+#: weblate_web/models.py:303 weblate_web/templates/support.html:86
 #, fuzzy
-#| msgid "Support free hosting"
 msgid "Extended self-hosted support"
 msgstr "Harpit an herberc'hiañ digoust"
 
-#: weblate_web/models.py:400
+#: weblate_web/models.py:402
 #, fuzzy
-#| msgid "Branches support"
 msgid "Basic support"
 msgstr "Harp ar brankoù"
 
-#: weblate_web/models.py:403
+#: weblate_web/models.py:405
 #, fuzzy
-#| msgid "Support free hosting"
 msgid "Extended support"
 msgstr "Harpit an herberc'hiañ digoust"
 
-#: weblate_web/models.py:405 weblate_web/templates/support.html:97
+#: weblate_web/models.py:407 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr ""
 
@@ -149,7 +320,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "The Weblate Way"
 msgstr "Logo Weblate"
 
@@ -180,7 +350,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:25
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Announcing Weblate"
 msgstr "Herberc'hiañ Weblate"
 
@@ -196,7 +365,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:30
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Why Weblate?"
 msgstr "Amprouit Weblate"
 
@@ -206,13 +374,11 @@ msgstr ""
 
 #: weblate_web/templates/about.html:33
 #, fuzzy
-#| msgid "Access control"
 msgid "Git integration"
 msgstr "Kontrolloù moned"
 
 #: weblate_web/templates/about.html:34
 #, fuzzy
-#| msgid "Translation status"
 msgid "Translator attribution"
 msgstr "Stad an treiñ"
 
@@ -222,19 +388,16 @@ msgstr ""
 
 #: weblate_web/templates/about.html:36
 #, fuzzy
-#| msgid "Translation context"
 msgid "Displaying context"
 msgstr "Kendestenn ar meneg da dreiñ"
 
 #: weblate_web/templates/about.html:37
 #, fuzzy
-#| msgid "Own translations"
 msgid "Sane merging of translations"
 msgstr "Ho troidigezhioù"
 
 #: weblate_web/templates/about.html:38
 #, fuzzy
-#| msgid "Quality checks"
 msgid "Consistency checks"
 msgstr "Gwririadennoù kalite"
 
@@ -248,13 +411,11 @@ msgstr ""
 
 #: weblate_web/templates/about.html:47
 #, fuzzy
-#| msgid "Automatic translation"
 msgid "Contributors and translators united"
 msgstr "Treiñ emgefre"
 
 #: weblate_web/templates/about.html:54
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "The Weblate history"
 msgstr "Logo Weblate"
 
@@ -264,7 +425,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:58
 #, fuzzy
-#| msgid "Path to translations within the repository."
 msgid "Automatic detection of translatable files in a repository"
 msgstr "Hent war-zu an troidigezhioù er c'havlec'h."
 
@@ -282,7 +442,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:66
 #, fuzzy
-#| msgid "Translation workflow"
 msgid "Built-in translation memory"
 msgstr "Labour treiñ"
 
@@ -321,7 +480,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:96
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Founder of Weblate"
 msgstr "Reiñ un dra bennak da Weblate"
 
@@ -347,7 +505,6 @@ msgstr "Darempred"
 
 #: weblate_web/templates/about.html:108 weblate_web/templates/user.html:161
 #, fuzzy
-#| msgid "E-mail"
 msgid "E-mail"
 msgstr "Postel"
 
@@ -370,12 +527,12 @@ msgstr ""
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/support.html:116
 msgid "Contact us"
 msgstr "Deuit e darempred ganeomp"
 
 #: weblate_web/templates/base.html:5
 #, fuzzy
-#| msgid "Weblate is a free web-based translation management system."
 msgid "Weblate is a libre software web-based continuous localization system."
 msgstr ""
 "Ur reizhiad frank e wirioù evit merañ troidigezhioù enlinenn eo Weblate."
@@ -387,7 +544,6 @@ msgstr "Treiñ"
 
 #: weblate_web/templates/base.html:67 weblate_web/templates/user.html:13
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Use Weblate"
 msgstr "Herberc'hiañ Weblate"
 
@@ -401,7 +557,6 @@ msgstr ""
 
 #: weblate_web/templates/base.html:114 weblate_web/templates/terms.html:8
 #, fuzzy
-#| msgid "Service"
 msgid "Terms and Privacy"
 msgstr "Servij"
 
@@ -412,7 +567,6 @@ msgstr ""
 
 #: weblate_web/templates/careers.html:10
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Career at Weblate"
 msgstr "Amprouit Weblate"
 
@@ -463,7 +617,6 @@ msgstr "Kemerit perzh e Weblate"
 
 #: weblate_web/templates/contribute.html:14
 #, fuzzy
-#| msgid "Weblate is being developed by an open community."
 msgid "Weblate is developed by an open community."
 msgstr "Diorroet eo Weblate a-drugarez d'ur gumuniezh digor."
 
@@ -480,7 +633,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:19
 #, fuzzy
-#| msgid "Translate"
 msgid "Translate the app"
 msgstr "Treiñ"
 
@@ -520,7 +672,6 @@ msgstr ""
 #: weblate_web/templates/contribute.html:31
 #: weblate_web/templates/contribute.html:47
 #, fuzzy
-#| msgid "Reporting"
 msgid "GitHub issues"
 msgstr "Danevelloù"
 
@@ -558,9 +709,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:52
 #, fuzzy, python-format
-#| msgid ""
-#| "Check <a href=\"%(url)s\">our documentation</a> for more information "
-#| "about appliance setup."
 msgid ""
 "Please consult the <a href=\"%(url)s\">contributor documentation</a> to find "
 "the most common topics."
@@ -578,7 +726,6 @@ msgstr ""
 #: weblate_web/templates/contribute.html:55
 #: weblate_web/templates/contribute.html:63
 #, fuzzy
-#| msgid "Documentation"
 msgid "Browse documentation"
 msgstr "Teuliadur"
 
@@ -610,7 +757,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:68
 #, fuzzy
-#| msgid "Donate"
 msgid "Donate now"
 msgstr "Ober un donezon"
 
@@ -620,9 +766,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:72
 #, fuzzy
-#| msgid ""
-#| "You can translate Weblate using Weblate installation at <a href=\"https://"
-#| "hosted.weblate.org/engage/weblate/\">hosted.weblate.org</a>."
 msgid ""
 "You can translate Weblate and many other projects at <a href=\"https://"
 "hosted.weblate.org/engage/weblate/\">hosted.weblate.org</a>."
@@ -632,7 +775,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:73
 #, fuzzy
-#| msgid "Automatic translation"
 msgid "Start translating"
 msgstr "Treiñ emgefre"
 
@@ -647,7 +789,6 @@ msgstr "Reiñ un dra bennak da Weblate"
 
 #: weblate_web/templates/donate.html:15
 #, fuzzy
-#| msgid "Weblate is free, but welcomes donations."
 msgid ""
 "Weblate does not require payment, and welcomes donations. There are many "
 "ways to contribute. Discuss it with your associates."
@@ -659,22 +800,16 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:19
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Manage your donations"
 msgstr "Donezonoù reoliek"
 
 #: weblate_web/templates/donate.html:22
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Recurring donations and rewards"
 msgstr "Donezonoù reoliek"
 
 #: weblate_web/templates/donate.html:24
 #, fuzzy
-#| msgid ""
-#| "Regular donations allow sustainability of Weblate development and help to "
-#| "fund free hosting for free software. You don't have to spend big money, "
-#| "every penny counts."
 msgid ""
 "Recurring donations facilitate sustainable Weblate development, and even the "
 "smallest amount is put to good use. Repeated appreciation helps in keeping "
@@ -687,7 +822,6 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:25
 #, fuzzy
-#| msgid "Documentation"
 msgid "Activate donation"
 msgstr "Teuliadur"
 
@@ -708,7 +842,6 @@ msgstr "Ober un donezon"
 
 #: weblate_web/templates/donate.html:53
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Weblate heroism"
 msgstr "Perzhioù Weblate"
 
@@ -720,13 +853,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:56
 #, fuzzy
-#| msgid "Support free hosting"
 msgid "Get help from Weblate"
 msgstr "Harpit an herberc'hiañ digoust"
 
 #: weblate_web/templates/donate.html:64
 #, fuzzy
-#| msgid "Documentation"
 msgid "Single appreciative donation"
 msgstr "Teuliadur"
 
@@ -738,7 +869,6 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:72
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Cryptocurrency donations"
 msgstr "Donezonoù reoliek"
 
@@ -755,13 +885,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:80
 #, fuzzy
-#| msgid "Donate"
 msgid "Donation address"
 msgstr "Ober un donezon"
 
 #: weblate_web/templates/donate.html:109
 #, fuzzy
-#| msgid "Weblate is thankful for help from others."
 msgid "Weblate is thankful for your help"
 msgstr "Trugarekaus eo Weblate evit ar skoazell degaset gant an dud."
 
@@ -775,13 +903,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:114
 #, fuzzy
-#| msgid "Support"
 msgid "Supporters"
 msgstr "Harpañ"
 
 #: weblate_web/templates/donate.html:127
 #, fuzzy
-#| msgid "Technology"
 msgid "Technologies"
 msgstr "Teknologiezh"
 
@@ -796,7 +922,6 @@ msgstr "Enrollañ"
 
 #: weblate_web/templates/donate/form.html:8
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your donation to Weblate"
 msgstr "Reiñ un dra bennak da Weblate"
 
@@ -822,26 +947,8 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:21
 #, fuzzy
-#| msgid "Weblate screenshot"
 msgid "Single payment"
 msgstr "Tapadenn skramm Weblate"
-
-#: weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:358
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr ""
-
-#: weblate_web/templates/donate/form.html:27
-msgid "Quarterly"
-msgstr ""
 
 #: weblate_web/templates/donate/form.html:30
 msgid "Every year"
@@ -849,7 +956,6 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:32
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Your reward options"
 msgstr "Donezonoù reoliek"
 
@@ -879,13 +985,11 @@ msgstr ""
 #: weblate_web/templates/donate/form.html:56
 #: weblate_web/templates/donate/form.html:64
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Choose this"
 msgstr "Herberc'hiañ Weblate"
 
 #: weblate_web/templates/donate/form.html:62
 #, fuzzy
-#| msgid "Thanks"
 msgid "No thanks"
 msgstr "Trugarez"
 
@@ -895,7 +999,6 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:68
 #, fuzzy
-#| msgid "Context"
 msgid "Continue"
 msgstr "Kendestenn"
 
@@ -917,7 +1020,6 @@ msgstr "Pellgargañ Weblate"
 
 #: weblate_web/templates/download.html:14
 #, fuzzy
-#| msgid "Weblate is free, but welcomes donations."
 msgid ""
 "All Weblate source code is freely available for you to use, modify, share "
 "and distribute. Discuss it with your associates."
@@ -925,7 +1027,6 @@ msgstr "Digoust eo Weblate met deuet mat e vo ho profoù."
 
 #: weblate_web/templates/download.html:16
 #, fuzzy
-#| msgid "Asking for hosting"
 msgid "Get premium service"
 msgstr "Goulenn herberc'hiañ"
 
@@ -935,7 +1036,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:21
 #, fuzzy
-#| msgid "Automatic translation"
 msgid "Quick Installation"
 msgstr "Treiñ emgefre"
 
@@ -949,7 +1049,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:25
 #, fuzzy
-#| msgid "Downloads"
 msgid "Download source code"
 msgstr "Pellgargadennoù"
 
@@ -959,7 +1058,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:35
 #, fuzzy
-#| msgid "Cloud or emulator images"
 msgid "Cloud or virtualization images"
 msgstr "Skeudennoù koumoul pe emulator"
 
@@ -987,7 +1085,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:51
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Bitnami Weblate stack"
 msgstr "Herberc'hiañ Weblate"
 
@@ -997,15 +1094,11 @@ msgstr ""
 
 #: weblate_web/templates/download.html:61
 #, fuzzy
-#| msgid "Status of repositories"
 msgid "GitHub repository"
 msgstr "Stad ar c'havlec'hioù"
 
 #: weblate_web/templates/download.html:62
 #, fuzzy, python-format
-#| msgid ""
-#| "Weblate is being developed on <a href=\"%(url)s\">GitHub</a>, you can "
-#| "fork it there or just:"
 msgid ""
 "Weblate is developed on <a href=\"%(url)s\">GitHub</a>, you can fork it "
 "there, find <a href=\"%(url)s\">more repositories</a>, or just:"
@@ -1031,7 +1124,6 @@ msgstr "Perzhioù Weblate"
 
 #: weblate_web/templates/features.html:13
 #, fuzzy
-#| msgid "Weblate is a feature rich computer aided translation tool."
 msgid ""
 "As a feature rich computer aided translation tool, Weblate saves both "
 "developers and translators time. Make your users happier!"
@@ -1056,7 +1148,6 @@ msgstr "Tapadenn skramm Weblate"
 
 #: weblate_web/templates/features.html:26
 #, fuzzy
-#| msgid "Quality checks"
 msgid "Customizable quality checks"
 msgstr "Gwririadennoù kalite"
 
@@ -1084,20 +1175,16 @@ msgstr "Kontrolloù moned"
 
 #: weblate_web/templates/features.html:49
 #, fuzzy
-#| msgid "Access rights can be fine tuned depending on your environment."
 msgid "Access rights can be fine-tuned depending on your environment."
 msgstr "Gallout a reer resisaat ar gwirioù moned diouzh an endro."
 
 #: weblate_web/templates/features.html:55
 #, fuzzy
-#| msgid "Notifications"
 msgid "Smart Notifications"
 msgstr "Kemennadennoù"
 
 #: weblate_web/templates/features.html:56
 #, fuzzy
-#| msgid ""
-#| "Translators can be notified on new strings to translate or other events."
 msgid ""
 "Translators can be notified of new strings to translate or other events."
 msgstr ""
@@ -1106,7 +1193,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:62
 #, fuzzy
-#| msgid "Integrated"
 msgid "Integration API"
 msgstr "Enframmet"
 
@@ -1116,15 +1202,11 @@ msgstr ""
 
 #: weblate_web/templates/features.html:69
 #, fuzzy
-#| msgid "File formats"
 msgid "Multiple File Formats"
 msgstr "Furmadoù ar restr"
 
 #: weblate_web/templates/features.html:70
 #, fuzzy
-#| msgid ""
-#| "Weblate supports all widely used file formats for localization like "
-#| "Gettext or resource strings."
 msgid ""
 "All widely used file formats for localization are supported, gettext, JSON, "
 "XLIFF or resource strings etc."
@@ -1134,15 +1216,11 @@ msgstr ""
 
 #: weblate_web/templates/features.html:76
 #, fuzzy
-#| msgid "Branches support"
 msgid "Branch Support"
 msgstr "Harp ar brankoù"
 
 #: weblate_web/templates/features.html:77
 #, fuzzy
-#| msgid ""
-#| "Weblate can handle different versions of the translation by pushing them "
-#| "to different branches automatically."
 msgid ""
 "Handle different translation versions by pushing them automatically to "
 "different branches."
@@ -1152,7 +1230,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:83
 #, fuzzy
-#| msgid "Translation context"
 msgid "Translation Context"
 msgstr "Kendestenn ar meneg da dreiñ"
 
@@ -1252,9 +1329,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:127
 #, fuzzy
-#| msgid ""
-#| "You can also use Weblate to acquire feedback on source strings and thus "
-#| "improve them."
 msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr ""
 "Gallout a rit ober gant Weblate evit dastum soñjoù war an neudennadoù tarzh "
@@ -1262,7 +1336,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:133
 #, fuzzy
-#| msgid "Export and import"
 msgid "Export and Import"
 msgstr "Ezporzhiañ hag enporzhiañ"
 
@@ -1274,13 +1347,11 @@ msgstr ""
 
 #: weblate_web/templates/features.html:140
 #, fuzzy
-#| msgid "Integrated"
 msgid "Fully Integrated"
 msgstr "Enframmet"
 
 #: weblate_web/templates/features.html:141
 #, fuzzy
-#| msgid "Translations are managed within same version control system as code."
 msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr ""
@@ -1293,9 +1364,6 @@ msgstr "Teuliadur"
 
 #: weblate_web/templates/features.html:148
 #, fuzzy
-#| msgid ""
-#| "Weblate comes with comprehensive documentation covering both setup and "
-#| "usage."
 msgid "Comprehensive documentation covering both setup and usage."
 msgstr ""
 "Dont a ra Weblate gant un teuliadur klok a bled kement gant ar staliañ hag "
@@ -1303,14 +1371,11 @@ msgstr ""
 
 #: weblate_web/templates/features.html:154
 #, fuzzy
-#| msgid "Review"
 msgid "Easy Reviews"
 msgstr "Adwelet"
 
 #: weblate_web/templates/features.html:155
 #, fuzzy
-#| msgid ""
-#| "Translators have several options to review contributions made by peers."
 msgid "Several options for translators to review contributions made by peers."
 msgstr ""
 "Meur a zoare zo kinniget d'an droerien evit gallout adwelet labour an "
@@ -1318,15 +1383,11 @@ msgstr ""
 
 #: weblate_web/templates/features.html:161
 #, fuzzy
-#| msgid "Languages"
 msgid "Language support"
 msgstr "Yezhoù"
 
 #: weblate_web/templates/features.html:162
 #, fuzzy
-#| msgid ""
-#| "Weblate supports over 150 languages out of the box, others can be defined "
-#| "by administrator."
 msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr ""
 "Ur wech staliet, merañ a ra Weblate ouzhpenn 150 yezh. Re all a c'hall bezañ "
@@ -1338,8 +1399,6 @@ msgstr "Brudañ"
 
 #: weblate_web/templates/features.html:169
 #, fuzzy
-#| msgid ""
-#| "Weblate provides you various ways to promote your translation project."
 msgid ""
 "Built-in features to attract a wider audience for your translation project."
 msgstr ""
@@ -1352,15 +1411,11 @@ msgstr "Danevelloù"
 
 #: weblate_web/templates/features.html:176
 #, fuzzy
-#| msgid ""
-#| "Weblate generates various reports to provide information about project "
-#| "activity."
 msgid "Reports are generated to provide info on project activity."
 msgstr "Embann a ra Weblate danevelloù a bep seurt a-zivout buhez ar raktres."
 
 #: weblate_web/templates/features.html:182
 #, fuzzy
-#| msgid "Access control"
 msgid "Version Control"
 msgstr "Kontrolloù moned"
 
@@ -1390,7 +1445,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "Weblate Pricing"
 msgstr "Logo Weblate"
 
@@ -1414,7 +1468,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:22
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Continuous localization"
 msgstr "Treiñ dibaouez"
 
@@ -1432,25 +1485,21 @@ msgstr ""
 #: weblate_web/templates/snippets/pricing.html:126
 #: weblate_web/templates/snippets/pricing.html:150
 #, fuzzy
-#| msgid "Source strings review"
 msgid "Source strings"
 msgstr "Selladenn ouzh mammennoù an neudennadoù"
 
 #: weblate_web/templates/hosting.html:28
 #, fuzzy
-#| msgid "Languages"
 msgid "Target languages"
 msgstr "Yezhoù"
 
 #: weblate_web/templates/hosting.html:31
 #, fuzzy
-#| msgid "Own translations"
 msgid "Translation projects"
 msgstr "Ho troidigezhioù"
 
 #: weblate_web/templates/hosting.html:34
 #, fuzzy
-#| msgid "Translation context"
 msgid "Translation components"
 msgstr "Kendestenn ar meneg da dreiñ"
 
@@ -1464,7 +1513,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:43
 #, fuzzy
-#| msgid "File formats"
 msgid "Supported file formats"
 msgstr "Furmadoù ar restr"
 
@@ -1474,7 +1522,6 @@ msgstr "Gwririadennoù kalite"
 
 #: weblate_web/templates/hosting.html:49
 #, fuzzy
-#| msgid "Translation status"
 msgid "Translation addons"
 msgstr "Stad an treiñ"
 
@@ -1484,7 +1531,6 @@ msgstr "Geriaoueg"
 
 #: weblate_web/templates/hosting.html:55
 #, fuzzy
-#| msgid "Translation workflow"
 msgid "Translation memory"
 msgstr "Labour treiñ"
 
@@ -1582,7 +1628,6 @@ msgstr ""
 #: weblate_web/templates/hosting.html:261
 #: weblate_web/templates/snippets/pricing.html:121
 #, fuzzy
-#| msgid "Asking for hosting"
 msgctxt "Hosting plan"
 msgid "Self-hosted"
 msgstr "Goulenn herberc'hiañ"
@@ -1604,7 +1649,6 @@ msgstr ""
 #: weblate_web/templates/hosting.html:310
 #: weblate_web/templates/snippets/pricing.html:146
 #, fuzzy
-#| msgid "Own translations"
 msgid "for libre projects"
 msgstr "Ho troidigezhioù"
 
@@ -1648,21 +1692,18 @@ msgstr ""
 #: weblate_web/templates/hosting.html:418
 #: weblate_web/templates/hosting.html:493
 #, fuzzy
-#| msgid "Branches support"
 msgid "Buy support"
 msgstr "Harp ar brankoù"
 
 #: weblate_web/templates/hosting.html:421
 #: weblate_web/templates/hosting.html:496
 #, fuzzy
-#| msgid "Download Weblate"
 msgid "or download Weblate"
 msgstr "Pellgargañ Weblate"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:120
 #, fuzzy
-#| msgid "Weblate screenshot"
 msgid "Payment"
 msgstr "Tapadenn skramm Weblate"
 
@@ -1686,19 +1727,16 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:527
 #, fuzzy
-#| msgid "Support"
 msgid "Join existing users and supporters"
 msgstr "Harpañ"
 
 #: weblate_web/templates/index.html:7
 #, fuzzy
-#| msgid "Weblate - web-based translation"
 msgid "Weblate - web-based localization"
 msgstr "Weblate - Treiñ war ar web"
 
 #: weblate_web/templates/index.html:15
 #, fuzzy
-#| msgid "Weblate is a free web-based translation management system."
 msgid "Web-based <strong>continuous</strong> localization"
 msgstr ""
 "Ur reizhiad frank e wirioù evit merañ troidigezhioù enlinenn eo Weblate."
@@ -1716,7 +1754,6 @@ msgstr "Amprouit Weblate"
 
 #: weblate_web/templates/index.html:18 weblate_web/templates/index.html:52
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Explore all features"
 msgstr "Perzhioù Weblate"
 
@@ -1731,10 +1768,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:31
 #, fuzzy
-#| msgid ""
-#| "Weblate is a free web-based translation tool with tight Git integration. "
-#| "It features simple and clean user interface, propagation of translations "
-#| "across subprojects, quality checks and automatic linking to source files."
 msgid ""
 "Hosted service and standalone tool with tight version control integration. "
 "Simple and clean user interface, propagation of translations across "
@@ -1747,7 +1780,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:36
 #, fuzzy, python-format
-#| msgid "Own translations"
 msgid "%(count)s translation %(when)s"
 msgid_plural "%(count)s translations %(when)s"
 msgstr[0] "Ho troidigezhioù"
@@ -1759,7 +1791,6 @@ msgstr "Raktres"
 
 #: weblate_web/templates/index.html:41
 #, fuzzy, python-format
-#| msgid "Own translations"
 msgid "%(count)s translation"
 msgid_plural "%(count)s translations"
 msgstr[0] "Ho troidigezhioù"
@@ -1771,7 +1802,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:48
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Robust feature set"
 msgstr "Perzhioù Weblate"
 
@@ -1781,21 +1811,18 @@ msgstr ""
 
 #: weblate_web/templates/index.html:55
 #, fuzzy
-#| msgid "Support"
 msgid "Users and Supporters"
 msgstr "Harpañ"
 
 #: weblate_web/templates/news.html:5
 #: weblate_web/templates/weblate_web/post_archive.html:5
 #, fuzzy
-#| msgid "Weblate - web-based translation"
 msgid "News about Weblate and localization."
 msgstr "Weblate - Treiñ war ar web"
 
 #: weblate_web/templates/news.html:11
 #: weblate_web/templates/weblate_web/post_archive.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "Weblate Blog"
 msgstr "Logo Weblate"
 
@@ -1807,7 +1834,6 @@ msgstr ""
 #: weblate_web/templates/payment/payment.html:5
 #: weblate_web/templates/payment/pending.html:5
 #, fuzzy
-#| msgid "Weblate screenshot"
 msgid "Weblate payment"
 msgstr "Tapadenn skramm Weblate"
 
@@ -1885,7 +1911,6 @@ msgstr ""
 
 #: weblate_web/templates/payment/payment.html:71
 #, fuzzy
-#| msgid "Weblate screenshot"
 msgid "Make Payment"
 msgstr "Tapadenn skramm Weblate"
 
@@ -1899,13 +1924,11 @@ msgstr ""
 
 #: weblate_web/templates/payment/pending.html:41
 #, fuzzy
-#| msgid "Download"
 msgid "Download pro forma invoice"
 msgstr "Pellgargañ"
 
 #: weblate_web/templates/payment/pending.html:63
 #, fuzzy
-#| msgid "Weblate screenshot"
 msgid "Payment status"
 msgstr "Tapadenn skramm Weblate"
 
@@ -1950,7 +1973,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/box-join.html:5
 #, fuzzy
-#| msgid "Contribute to Weblate"
 msgid "Contribute with us"
 msgstr "Kemerit perzh e Weblate"
 
@@ -1982,15 +2004,11 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-1.html:7
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Continuous Localization"
 msgstr "Treiñ dibaouez"
 
 #: weblate_web/templates/snippets/features-1.html:8
 #, fuzzy
-#| msgid ""
-#| "Automated translation process can closely follow development of your "
-#| "project."
 msgid ""
 "Automated localization workflow follows your project development closely."
 msgstr ""
@@ -1998,15 +2016,11 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-1.html:14
 #, fuzzy
-#| msgid "Quality checks"
 msgid "Quality Checks"
 msgstr "Gwririadennoù kalite"
 
 #: weblate_web/templates/snippets/features-1.html:15
 #, fuzzy
-#| msgid ""
-#| "Customizable quality checks will help you in improving quality of "
-#| "translations."
 msgid "Customizable quality checks helps improve translation quality."
 msgstr ""
 "Gwiriadennoù kalite personeladus ho skoazello da wellaat live an "
@@ -2018,15 +2032,11 @@ msgstr "Deroadennoù"
 
 #: weblate_web/templates/snippets/features-1.html:22
 #, fuzzy
-#| msgid ""
-#| "All your translators will be properly credited in the version control "
-#| "system."
 msgid "All translators are properly credited in the version control system."
 msgstr "Meneget mat e vo an holl droerien e reizhiad gwiriañ an troidigezhioù."
 
 #: weblate_web/templates/snippets/features-2.html:7
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Hosting Plans"
 msgstr "Herberc'hiañ Weblate"
 
@@ -2040,8 +2050,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-2.html:15
 #, fuzzy
-#| msgid ""
-#| "Weblate comes with an appliance, which is ready to deploy in your cloud."
 msgid "Comes with appliances, ready to deploy in your cloud."
 msgstr ""
 "Hegerz eo Weblate dre ur stumm arloadus, prest d'en em zispakañ en ho "
@@ -2049,7 +2057,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-2.html:21
 #, fuzzy
-#| msgid "Hosting for free software"
 msgid "Libre Software"
 msgstr "Herberc'hiañ evit meziantoù frank"
 
@@ -2059,8 +2066,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/languages.html:14
 #, fuzzy
-#| msgctxt "Keyword"
-#| msgid "translate"
 msgid "Help translate"
 msgstr "Treiñ"
 
@@ -2074,7 +2079,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/main-menu.html:7
 #, fuzzy
-#| msgid "Contribute to Weblate"
 msgid "Contribute"
 msgstr "Kemerit perzh e Weblate"
 
@@ -2094,7 +2098,6 @@ msgstr "Blog"
 
 #: weblate_web/templates/snippets/main-menu.html:14
 #, fuzzy
-#| msgid "about"
 msgid "About"
 msgstr "Diwar-benn"
 
@@ -2139,7 +2142,6 @@ msgstr "Raktresoù"
 #: weblate_web/templates/snippets/pricing.html:138
 #: weblate_web/templates/snippets/pricing.html:162
 #, fuzzy
-#| msgid "Comments"
 msgid "Components"
 msgstr "Evezhiadennoù"
 
@@ -2162,7 +2164,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/pricing.html:145
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Gratis Weblate"
 msgstr "Amprouit Weblate"
 
@@ -2177,13 +2178,11 @@ msgstr ""
 
 #: weblate_web/templates/snippets/users.html:9
 #, fuzzy
-#| msgid "Own translations"
 msgid "See all projects"
 msgstr "Ho troidigezhioù"
 
 #: weblate_web/templates/snippets/users.html:10
 #, fuzzy
-#| msgid "Asking for hosting"
 msgid "See all supporters"
 msgstr "Goulenn herberc'hiañ"
 
@@ -2228,22 +2227,16 @@ msgstr ""
 
 #: weblate_web/templates/support.html:15
 #, fuzzy
-#| msgid "Reporting"
 msgid "Report issue"
 msgstr "Danevelloù"
 
 #: weblate_web/templates/support.html:22
 #, fuzzy
-#| msgid "Bugs or feature requests"
 msgid "Bugs and feature requests"
 msgstr "Drein pe perzhioù goulennet"
 
 #: weblate_web/templates/support.html:23
 #, fuzzy, python-format
-#| msgid ""
-#| "Have you found any issue with Weblate? Do you have idea how to improve "
-#| "it? Please report it to <a href=\"https://github.com/WeblateOrg/weblate/"
-#| "issues\">issue tracker on GitHub</a>."
 msgid ""
 "Issues and ideas for improvement can be reported to the <a href=\"%(url)s"
 "\">issue tracker</a>."
@@ -2255,7 +2248,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:29
 #, fuzzy
-#| msgid "Reporting"
 msgid "Security issues"
 msgstr "Danevelloù"
 
@@ -2268,7 +2260,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:36
 #, fuzzy
-#| msgid "Branches support"
 msgid "Premium support"
 msgstr "Harp ar brankoù"
 
@@ -2281,7 +2272,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:46
 #, fuzzy
-#| msgid "Support free hosting"
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr "Harpit an herberc'hiañ digoust"
 
@@ -2291,7 +2281,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:53 weblate_web/templates/support.html:66
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "One-time installation of Weblate"
 msgstr "Herberc'hiañ Weblate"
 
@@ -2313,7 +2302,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:59 weblate_web/templates/support.html:71
 #, fuzzy
-#| msgid "Own translations"
 msgid "installation"
 msgstr "Ho troidigezhioù"
 
@@ -2331,7 +2319,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
 #, fuzzy
-#| msgid "Branches support"
 msgid "Priority e-mail support."
 msgstr "Harp ar brankoù"
 
@@ -2353,7 +2340,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:102
 #, fuzzy
-#| msgid "Documentation"
 msgid "Read more in the documentation."
 msgstr "Teuliadur"
 
@@ -2377,65 +2363,61 @@ msgstr ""
 msgid "hourly"
 msgstr ""
 
-#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:118
 #, fuzzy
-#| msgid "Asking for hosting"
 msgid "Ask for help"
 msgstr "Goulenn herberc'hiañ"
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 #, fuzzy
-#| msgid "Mailing list"
 msgid "Mailing lists"
 msgstr "Roll-skignañ"
 
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "Users and developers"
-msgstr ""
-
-#: weblate_web/templates/support.html:130
-#: weblate_web/templates/support.html:143
-msgid "Your e-mail address…"
 msgstr ""
 
 #: weblate_web/templates/support.html:131
 #: weblate_web/templates/support.html:144
+msgid "Your e-mail address…"
+msgstr ""
+
+#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:145
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "En em enrollañ"
 
-#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:135
 msgid "Discuss Weblate with users and developers"
 msgstr ""
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:136
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 
-#: weblate_web/templates/support.html:136
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:150
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr ""
 
-#: weblate_web/templates/support.html:140
+#: weblate_web/templates/support.html:141
 #, fuzzy
-#| msgid "Weblate screenshot"
 msgid "Hosted Weblate announcements"
 msgstr "Tapadenn skramm Weblate"
 
-#: weblate_web/templates/support.html:147
+#: weblate_web/templates/support.html:148
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr ""
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:149
 #, fuzzy
-#| msgid "Asking for hosting"
 msgid "Only premium service announcements"
 msgstr "Goulenn herberc'hiañ"
 
-#: weblate_web/templates/support.html:155
+#: weblate_web/templates/support.html:156
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr ""
@@ -2456,7 +2438,6 @@ msgstr ""
 
 #: weblate_web/templates/terms.html:21
 #, fuzzy
-#| msgid "Service"
 msgid "Terms of Service"
 msgstr "Servij"
 
@@ -2466,7 +2447,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:4
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "User profile at Weblate"
 msgstr "Reiñ un dra bennak da Weblate"
 
@@ -2480,7 +2460,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:17
 #, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Your services"
 msgstr "Herberc'hiañ Weblate"
 
@@ -2494,7 +2473,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:33
 #, fuzzy
-#| msgid "Documentation"
 msgid "Activation token"
 msgstr "Teuliadur"
 
@@ -2508,13 +2486,11 @@ msgstr ""
 
 #: weblate_web/templates/user.html:46
 #, fuzzy
-#| msgid "Status of repositories"
 msgid "Backup repository"
 msgstr "Stad ar c'havlec'hioù"
 
 #: weblate_web/templates/user.html:56
 #, fuzzy
-#| msgid "Server error"
 msgid "Server URL"
 msgstr "Fazi gant ar servijer"
 
@@ -2531,7 +2507,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:73
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Subscription"
 msgstr "Donezonoù reoliek"
 
@@ -2559,7 +2534,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:97 weblate_web/templates/user.html:215
 #, fuzzy
-#| msgid "Automatic translation"
 msgid "Automatic renewal"
 msgstr "Treiñ emgefre"
 
@@ -2569,7 +2543,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:103
 #, fuzzy
-#| msgid "Donate"
 msgid "Renew now"
 msgstr "Ober un donezon"
 
@@ -2587,7 +2560,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:129 weblate_web/templates/user.html:231
 #, fuzzy
-#| msgid "Download"
 msgid "Download invoice"
 msgstr "Pellgargañ"
 
@@ -2605,7 +2577,6 @@ msgstr "Ouzhpennañ"
 
 #: weblate_web/templates/user.html:168
 #, fuzzy
-#| msgid "Asking for hosting"
 msgid "Get more services"
 msgstr "Goulenn herberc'hiañ"
 
@@ -2615,7 +2586,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:183
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Your donations"
 msgstr "Donezonoù reoliek"
 
@@ -2648,7 +2618,7 @@ msgid "Other topics"
 msgstr ""
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:446
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr ""
 
@@ -2660,41 +2630,41 @@ msgstr ""
 msgid "Back to blog"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:40
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d okted"
 msgstr[1] "%(size)d okted"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f Kio"
 
-#: weblate_web/templatetags/downloads.py:47
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f Mio"
 
-#: weblate_web/templatetags/downloads.py:48
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f Gio"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr "Dielloù tarzh gwasket bzip2"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr "Dielloù tarzh gwasket gzip"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr "Dielloù tarzh gwasket xz"
 
-#: weblate_web/templatetags/downloads.py:61
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr "Dielloù tarzh gwasket zip"
 
@@ -2728,54 +2698,53 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr ""
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:83
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
 
-#: weblate_web/views.py:152 weblate_web/views.py:191
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:165
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:186
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr ""
 
-#: weblate_web/views.py:305
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr ""
 
-#: weblate_web/views.py:309
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:310
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr ""
 
-#: weblate_web/views.py:315
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr ""
 
-#: weblate_web/views.py:318
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr ""
 
-#: weblate_web/views.py:407
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:411
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr ""
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:545
 #, fuzzy
-#| msgid "Page not found"
 msgid "User not found!"
 msgstr "N'eus ket eus ar bajenn-mañ"
 

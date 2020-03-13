@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-05 14:06+0100\n"
+"POT-Creation-Date: 2020-03-13 11:52+0100\n"
 "PO-Revision-Date: 2020-02-23 11:32+0000\n"
 "Last-Translator: est42 <martin@pep-security.net>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/weblate/website/"
@@ -23,6 +23,193 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Weblate 4.0-dev\n"
+
+#: payments/backends.py:186
+#, fuzzy
+msgid "Your payment on weblate.org"
+msgstr "Váš dar pre Weblate"
+
+#: payments/backends.py:188
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Thank you for your payment on weblate.org.\n"
+"\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively, you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: payments/backends.py:214
+msgid "Your payment on weblate.org failed"
+msgstr "Vaša platba na weblate.org zlyhala"
+
+#: payments/backends.py:216
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org has failed.\n"
+"\n"
+"%s\n"
+"\n"
+"Retry issuing the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, cancelled.\n"
+msgstr ""
+
+#: payments/backends.py:249
+#, fuzzy
+msgid "Your pending payment on weblate.org"
+msgstr "Váš dar pre Weblate"
+
+#: payments/backends.py:251
+#, fuzzy
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org is pending. Please follow the provided\n"
+"instructions to complete the payment.\n"
+msgstr "Pre dokončenie platby postupujte, prosím, podľa zobrazených pokynov."
+
+#: payments/backends.py:333
+#, fuzzy
+msgid "Payment card"
+msgstr "Zhrnutie platby"
+
+#: payments/backends.py:409
+#, fuzzy
+msgid "Payment cancelled"
+msgstr "Opakovanie platby"
+
+#: payments/backends.py:411
+#, fuzzy
+msgid "Payment error"
+msgstr "Platba"
+
+#: payments/backends.py:423
+msgid "Bitcoin"
+msgstr "Bitcoin"
+
+#: payments/backends.py:432
+msgid "IBAN bank transfer"
+msgstr "Bankový prevod (IBAN)"
+
+#: payments/backends.py:462
+msgid "Issuing bank"
+msgstr "Vydávajúca banka"
+
+#: payments/backends.py:463
+msgid "Account holder"
+msgstr "Držiteľ účtu"
+
+#: payments/backends.py:464
+msgid "Account number"
+msgstr "Číslo účtu"
+
+#: payments/backends.py:465
+msgid "SWIFT code"
+msgstr "SWIFT kód"
+
+#: payments/backends.py:466
+msgid "IBAN"
+msgstr "IBAN"
+
+#: payments/backends.py:467
+#, fuzzy
+msgid "Reference"
+msgstr "Konferencie"
+
+#: payments/models.py:79
+msgid "European VAT ID"
+msgstr "Európske IČ DPH"
+
+#: payments/models.py:81
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgstr ""
+"Vyplňte, prosím, IČ DPH Európskej únie alebo nechajte prázdne, ak nie je "
+"použiteľné."
+
+#: payments/models.py:87
+msgid "Tax registration"
+msgstr "Daňová registrácia"
+
+#: payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
+msgstr ""
+
+#: payments/models.py:96
+msgid "Company or individual name"
+msgstr ""
+
+#: payments/models.py:99
+msgid "Address"
+msgstr ""
+
+#: payments/models.py:102
+msgid "Postcode and city"
+msgstr ""
+
+#: payments/models.py:104
+msgid "Country"
+msgstr ""
+
+#: payments/models.py:132
+msgid "The country has to match your VAT code"
+msgstr ""
+
+#: payments/models.py:155
+#, fuzzy
+msgid "Annual"
+msgstr "ročne"
+
+#: payments/models.py:156
+#, fuzzy
+msgid "Biannual"
+msgstr "ročne"
+
+#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+msgid "Quarterly"
+msgstr "Štvrťročne"
+
+#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:392
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr "Mesačne"
+
+#: payments/models.py:159
+msgid "Onetime"
+msgstr ""
+
+#: payments/validators.py:38
+msgid "{} is not a valid country code for any European Union member."
+msgstr ""
+
+#: payments/validators.py:43
+msgid "{} does not match the country's VAT ID specifications."
+msgstr ""
+
+#: payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+
+#: payments/validators.py:53
+msgid "{} is not a valid VAT ID."
+msgstr "{} nie je platné IČ DPH."
 
 #: weblate_web/models.py:42
 msgid "No reward"
@@ -74,43 +261,43 @@ msgstr "Vývoj"
 msgid "Localization"
 msgstr "Lokalizácia"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:107
 msgid "Link text"
 msgstr "Text odkazu"
 
-#: weblate_web/models.py:107 weblate_web/templates/user.html:199
+#: weblate_web/models.py:109 weblate_web/templates/user.html:199
 msgid "Link URL"
 msgstr "URL odkazu"
 
-#: weblate_web/models.py:109
+#: weblate_web/models.py:111
 msgid "Link image"
 msgstr "Obrázok odkazu"
 
-#: weblate_web/models.py:298
+#: weblate_web/models.py:300
 msgid "Community support"
 msgstr "Podpora komunity"
 
-#: weblate_web/models.py:299
+#: weblate_web/models.py:301
 msgid "Hosted service"
 msgstr "Hosťovaná služba"
 
-#: weblate_web/models.py:300 weblate_web/templates/support.html:76
+#: weblate_web/models.py:302 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Základná podpora pre vlastný hosting"
 
-#: weblate_web/models.py:301 weblate_web/templates/support.html:86
+#: weblate_web/models.py:303 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Rozšírená podpora pre vlastný hosting"
 
-#: weblate_web/models.py:400
+#: weblate_web/models.py:402
 msgid "Basic support"
 msgstr "Základná podpora"
 
-#: weblate_web/models.py:403
+#: weblate_web/models.py:405
 msgid "Extended support"
 msgstr "Rozšírená podpora"
 
-#: weblate_web/models.py:405 weblate_web/templates/support.html:97
+#: weblate_web/models.py:407 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Zálohovacia služba"
 
@@ -346,6 +533,7 @@ msgstr "IČ DPH"
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/support.html:116
 msgid "Contact us"
 msgstr "Napíšte nám"
 
@@ -381,7 +569,6 @@ msgstr "Dizajn %(author)s"
 
 #: weblate_web/templates/careers.html:10
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Career at Weblate"
 msgstr "Vyskúšajte Weblate"
 
@@ -398,7 +585,6 @@ msgstr "Zistite viac"
 
 #: weblate_web/templates/careers.html:23
 #, fuzzy
-#| msgid "Users and developers"
 msgid "Frontend developer"
 msgstr "Používatelia a vývojári"
 
@@ -412,13 +598,11 @@ msgstr ""
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
 #, fuzzy
-#| msgid "Buy now"
 msgid "Apply now"
 msgstr "Zakúpiť"
 
 #: weblate_web/templates/careers.html:33
 #, fuzzy
-#| msgid "Users and developers"
 msgid "Python developer"
 msgstr "Používatelia a vývojári"
 
@@ -787,23 +971,6 @@ msgstr "Vyberte, ako často chcete darovať"
 #: weblate_web/templates/donate/form.html:21
 msgid "Single payment"
 msgstr "Jednorazová platba"
-
-#: weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:358
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr "Mesačne"
-
-#: weblate_web/templates/donate/form.html:27
-msgid "Quarterly"
-msgstr "Štvrťročne"
 
 #: weblate_web/templates/donate/form.html:30
 msgid "Every year"
@@ -1546,7 +1713,7 @@ msgid "or download Weblate"
 msgstr "alebo si stiahnite Weblate"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:120
 msgid "Payment"
 msgstr "Platba"
 
@@ -2058,10 +2225,6 @@ msgstr "Podpora pre Weblate"
 
 #: weblate_web/templates/support.html:14
 #, fuzzy
-#| msgid ""
-#| "Weblate is a copylefted libre software with community support. "
-#| "Subscribers receive priority support at no extra charge. Prepaid help "
-#| "packages are available for everyone."
 msgid ""
 "Weblate is copylefted libre software with community support. Subscribers "
 "receive priority support at no extra charge. Prepaid help packages are "
@@ -2203,59 +2366,59 @@ msgstr "Návrhy týkajúce sa internacionalizácie a lokalizácie"
 msgid "hourly"
 msgstr "za hodinu"
 
-#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:118
 msgid "Ask for help"
 msgstr "Požiadať o pomoc"
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 msgid "Mailing lists"
 msgstr "E-mailové konferencie"
 
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "Users and developers"
 msgstr "Používatelia a vývojári"
 
-#: weblate_web/templates/support.html:130
-#: weblate_web/templates/support.html:143
+#: weblate_web/templates/support.html:131
+#: weblate_web/templates/support.html:144
 msgid "Your e-mail address…"
 msgstr "Vaša e-mailová adresa…"
 
-#: weblate_web/templates/support.html:131
-#: weblate_web/templates/support.html:144
+#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:145
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "Registrovať"
 
-#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:135
 msgid "Discuss Weblate with users and developers"
 msgstr "Diskutujte o Weblate s používateľmi a vývojármi"
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:136
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 "Svoj príspevok pošlite na adresu <a href=\"mailto:%(address)s\">%(address)s</"
 "a>"
 
-#: weblate_web/templates/support.html:136
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:150
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr "Odpovede nájdete v <a href=\"%(url)s\">archívoch</a>"
 
-#: weblate_web/templates/support.html:140
+#: weblate_web/templates/support.html:141
 msgid "Hosted Weblate announcements"
 msgstr "Oznámenia týkajúce sa Hosted Weblate"
 
-#: weblate_web/templates/support.html:147
+#: weblate_web/templates/support.html:148
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr "<strong>Nízka návštevnosť</strong> a stredne veľká"
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:149
 msgid "Only premium service announcements"
 msgstr "Iba oznámenia týkajúce sa prémiových služieb"
 
-#: weblate_web/templates/support.html:155
+#: weblate_web/templates/support.html:156
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr ""
@@ -2450,7 +2613,7 @@ msgid "Other topics"
 msgstr "Ďalšie témy"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:446
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr "Míľniky"
 
@@ -2462,7 +2625,7 @@ msgstr "Súvisiace články"
 msgid "Back to blog"
 msgstr "Späť na blog"
 
-#: weblate_web/templatetags/downloads.py:40
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
@@ -2470,34 +2633,34 @@ msgstr[0] "%(size)d bajt"
 msgstr[1] "%(size)d bajty"
 msgstr[2] "%(size)d bajtov"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:47
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:48
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr "Zdrojový tarball, komprimovaný bzipom2"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr "Zdrojový tarball, komprimovaný gzipom"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr "Zdrojový tarball, komprimovaný xz"
 
-#: weblate_web/templatetags/downloads.py:61
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr "Zdrojové kódy, komprimované zipom"
 
@@ -2531,52 +2694,52 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr "práve teraz"
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:83
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Chyba v parametri %(field)s: %(error)s"
 
-#: weblate_web/views.py:152 weblate_web/views.py:191
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "Pre dokončenie platby, prosím, zadajte svoje fakturačné údaje."
 
-#: weblate_web/views.py:165
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "IČ DPH už nie je platné. Prosím, aktualizujte ho."
 
-#: weblate_web/views.py:186
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr "Zvoľte, prosím, spôsob platby."
 
-#: weblate_web/views.py:305
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "Platba zatiaľ nebola spracovaná. Skúste to znova."
 
-#: weblate_web/views.py:309
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "Platba bola zamietnutá: {}"
 
-#: weblate_web/views.py:310
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Neznámy dôvod"
 
-#: weblate_web/views.py:315
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr "Ďakujeme vám za predplatné."
 
-#: weblate_web/views.py:318
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Ďakujeme vám za váš dar."
 
-#: weblate_web/views.py:407
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr "Odber bol vyžiadaný, no musíte ešte potvrdiť e-mail."
 
-#: weblate_web/views.py:411
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr "Žiadosť o prihlásenie na odber sa nepodarilo spracovať."
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "Používateľ nenájdený!"
 

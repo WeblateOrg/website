@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-05 14:06+0100\n"
+"POT-Creation-Date: 2020-03-13 11:52+0100\n"
 "PO-Revision-Date: 2020-02-27 12:32+0000\n"
 "Last-Translator: Zmicer Turok <nashtlumach@gmail.com>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/weblate/"
@@ -23,6 +23,217 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.0-dev\n"
+
+#: payments/backends.py:186
+#, fuzzy
+msgid "Your payment on weblate.org"
+msgstr "Ваша ахвяраванне для Weblate"
+
+#: payments/backends.py:188
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Thank you for your payment on weblate.org.\n"
+"\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively, you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+"Добры дзень,\n"
+"\n"
+"Дзякуй за вашу аплату на сайце weblate.org.\n"
+"\n"
+"У ліст укладаецца інвойс за гэту аплату.\n"
+"Таксама, вы можаце спампаваць яго з вэб-сайта:\n"
+"\n"
+"%s\n"
+
+#: payments/backends.py:214
+msgid "Your payment on weblate.org failed"
+msgstr "Аплата на сайце weblate.org не выкананая"
+
+#: payments/backends.py:216
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org has failed.\n"
+"\n"
+"%s\n"
+"\n"
+"Retry issuing the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, cancelled.\n"
+msgstr ""
+"Добры дзень,\n"
+"\n"
+"Ваша плацеж на сайце weblate.org не прайшоў.\n"
+"\n"
+"%s\n"
+"\n"
+"Паўтарыце афармленне плацяжу на сайце:\n"
+"\n"
+"%s\n"
+"\n"
+"Калі маецца на ўвазе рэгулярная аплата, будзе здзейснена тры спробы,\n"
+"і калі ўсё адно не атрымаецца, то плацёж скасуецца.\n"
+
+#: payments/backends.py:249
+#, fuzzy
+msgid "Your pending payment on weblate.org"
+msgstr "Ваша ахвяраванне для Weblate"
+
+#: payments/backends.py:251
+#, fuzzy
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org is pending. Please follow the provided\n"
+"instructions to complete the payment.\n"
+msgstr "Калі ласка, выконвайце ўсё па інструкцыі, каб завяршыць плацёж."
+
+#: payments/backends.py:333
+#, fuzzy
+msgid "Payment card"
+msgstr "Зводка аплаты"
+
+#: payments/backends.py:409
+#, fuzzy
+msgid "Payment cancelled"
+msgstr "Перыядычнасць плацяжоў"
+
+#: payments/backends.py:411
+#, fuzzy
+msgid "Payment error"
+msgstr "Аплата"
+
+#: payments/backends.py:423
+msgid "Bitcoin"
+msgstr "Bitcoin"
+
+#: payments/backends.py:432
+msgid "IBAN bank transfer"
+msgstr "Банкаўскі перавод па IBAN"
+
+#: payments/backends.py:462
+msgid "Issuing bank"
+msgstr "Банк-эмітэнт"
+
+#: payments/backends.py:463
+msgid "Account holder"
+msgstr "Уладальнік рахунка"
+
+#: payments/backends.py:464
+msgid "Account number"
+msgstr "Нумар рахунка"
+
+#: payments/backends.py:465
+msgid "SWIFT code"
+msgstr "Код SWIFT"
+
+#: payments/backends.py:466
+msgid "IBAN"
+msgstr "IBAN"
+
+#: payments/backends.py:467
+#, fuzzy
+msgid "Reference"
+msgstr "Канферэнцыі"
+
+#: payments/models.py:79
+msgid "European VAT ID"
+msgstr "Еўрапейскі нумар плацельшчыка ПДВ"
+
+#: payments/models.py:81
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgstr ""
+"Калі ласка, запоўніце ідэнтыфікатар ПДВ ЕЗ, калі не ўжываецца, пакінце "
+"пустым."
+
+#: payments/models.py:87
+msgid "Tax registration"
+msgstr "Падатковая рэгістрацыя"
+
+#: payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
+msgstr ""
+"Калі ласка, запоўніце падатковую рэгістрацыю, калі яна будзе размяшчацца на "
+"рахунку."
+
+#: payments/models.py:96
+msgid "Company or individual name"
+msgstr "Назва кампаніі альбо імя прыватнай асоба"
+
+#: payments/models.py:99
+msgid "Address"
+msgstr "Адрас"
+
+#: payments/models.py:102
+msgid "Postcode and city"
+msgstr "Паштовы індэкс і горад"
+
+#: payments/models.py:104
+msgid "Country"
+msgstr "Краіна"
+
+#: payments/models.py:132
+msgid "The country has to match your VAT code"
+msgstr "Краіна павінна адпавядаць вашаму коду ПДВ"
+
+#: payments/models.py:155
+#, fuzzy
+msgid "Annual"
+msgstr "штогод"
+
+#: payments/models.py:156
+#, fuzzy
+msgid "Biannual"
+msgstr "штогод"
+
+#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+msgid "Quarterly"
+msgstr "Штоквартальна"
+
+#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:392
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr "Штомесяц"
+
+#: payments/models.py:159
+msgid "Onetime"
+msgstr "Аднойчы"
+
+#: payments/validators.py:38
+msgid "{} is not a valid country code for any European Union member."
+msgstr "{} не з'яўляецца сапраўдным кодам краіны ні для аднаго члена ЕЗ."
+
+#: payments/validators.py:43
+msgid "{} does not match the country's VAT ID specifications."
+msgstr "{} не адпавядае спецыфікацыям ПДВ у краіне."
+
+#: payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+"Паслуга праверкі ідэнтыфікатара ПДВ недаступная для {}, калі ласка, "
+"паспрабуйце яшчэ раз пазней."
+
+#: payments/validators.py:53
+msgid "{} is not a valid VAT ID."
+msgstr "{} не з'яўляецца сапраўдным ідэнтыфікатарам ПДВ."
 
 #: weblate_web/models.py:42
 msgid "No reward"
@@ -74,43 +285,43 @@ msgstr "Распрацоўка"
 msgid "Localization"
 msgstr "Лакалізацыя"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:107
 msgid "Link text"
 msgstr "Тэкст спасылкі"
 
-#: weblate_web/models.py:107 weblate_web/templates/user.html:199
+#: weblate_web/models.py:109 weblate_web/templates/user.html:199
 msgid "Link URL"
 msgstr "URL спасылкі"
 
-#: weblate_web/models.py:109
+#: weblate_web/models.py:111
 msgid "Link image"
 msgstr "Спасылка на выяву"
 
-#: weblate_web/models.py:298
+#: weblate_web/models.py:300
 msgid "Community support"
 msgstr "Падтрымка суполкі"
 
-#: weblate_web/models.py:299
+#: weblate_web/models.py:301
 msgid "Hosted service"
 msgstr "Хостынг"
 
-#: weblate_web/models.py:300 weblate_web/templates/support.html:76
+#: weblate_web/models.py:302 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Базавая падтрымка самастойнай усталёўкі"
 
-#: weblate_web/models.py:301 weblate_web/templates/support.html:86
+#: weblate_web/models.py:303 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Пашыраная падтрымка самастойнай усталёўкі"
 
-#: weblate_web/models.py:400
+#: weblate_web/models.py:402
 msgid "Basic support"
 msgstr "Базавая падтрымка"
 
-#: weblate_web/models.py:403
+#: weblate_web/models.py:405
 msgid "Extended support"
 msgstr "Пашыраная падтрымка"
 
-#: weblate_web/models.py:405 weblate_web/templates/support.html:97
+#: weblate_web/models.py:407 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Паслуга рэзервовага капіявання"
 
@@ -349,6 +560,7 @@ msgstr "ІДЭНТЫФІКАЦЫЙНЫ НУМАР ПАДАТКАПЛАЦЕЛЬШ
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/support.html:116
 msgid "Contact us"
 msgstr "Звязацца з намі"
 
@@ -386,7 +598,6 @@ msgstr "Дызайн %(author)s"
 
 #: weblate_web/templates/careers.html:10
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Career at Weblate"
 msgstr "Выпрабаваць Weblate"
 
@@ -403,7 +614,6 @@ msgstr "Падрабязней"
 
 #: weblate_web/templates/careers.html:23
 #, fuzzy
-#| msgid "Users and developers"
 msgid "Frontend developer"
 msgstr "Карыстальнікі і распрацоўшчыкі"
 
@@ -417,13 +627,11 @@ msgstr ""
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
 #, fuzzy
-#| msgid "Buy now"
 msgid "Apply now"
 msgstr "Набыць зараз"
 
 #: weblate_web/templates/careers.html:33
 #, fuzzy
-#| msgid "Users and developers"
 msgid "Python developer"
 msgstr "Карыстальнікі і распрацоўшчыкі"
 
@@ -790,23 +998,6 @@ msgstr "Абярыце чашчыню ахвяраванняў"
 #: weblate_web/templates/donate/form.html:21
 msgid "Single payment"
 msgstr "Аднаразовы плацёж"
-
-#: weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:358
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr "Штомесяц"
-
-#: weblate_web/templates/donate/form.html:27
-msgid "Quarterly"
-msgstr "Штоквартальна"
 
 #: weblate_web/templates/donate/form.html:30
 msgid "Every year"
@@ -1547,7 +1738,7 @@ msgid "or download Weblate"
 msgstr "альбо спампаваць Weblate"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:120
 msgid "Payment"
 msgstr "Аплата"
 
@@ -2053,10 +2244,6 @@ msgstr "Падтрымка Weblate"
 
 #: weblate_web/templates/support.html:14
 #, fuzzy
-#| msgid ""
-#| "Weblate is a copylefted libre software with community support. "
-#| "Subscribers receive priority support at no extra charge. Prepaid help "
-#| "packages are available for everyone."
 msgid ""
 "Weblate is copylefted libre software with community support. Subscribers "
 "receive priority support at no extra charge. Prepaid help packages are "
@@ -2199,59 +2386,59 @@ msgstr "Прапановы па працэсе інтэрнацыяналіза�
 msgid "hourly"
 msgstr "штогадзінна"
 
-#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:118
 msgid "Ask for help"
 msgstr "Запрасіць дапамогу"
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 msgid "Mailing lists"
 msgstr "Спісы рассылкі"
 
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "Users and developers"
 msgstr "Карыстальнікі і распрацоўшчыкі"
 
-#: weblate_web/templates/support.html:130
-#: weblate_web/templates/support.html:143
+#: weblate_web/templates/support.html:131
+#: weblate_web/templates/support.html:144
 msgid "Your e-mail address…"
 msgstr "Ваш адрас электроннай пошты…"
 
-#: weblate_web/templates/support.html:131
-#: weblate_web/templates/support.html:144
+#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:145
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "Рэгістрацыя"
 
-#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:135
 msgid "Discuss Weblate with users and developers"
 msgstr "Абмеркаваць Weblate з карыстальнікамі і распрацоўшчыкамі"
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:136
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 "Апублікуйце <a href=\"mailto:%(address)s\">%(address)s</a>, каб карыстацца "
 "гэтым"
 
-#: weblate_web/templates/support.html:136
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:150
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr "Шукаць адказы ў <a href=\"%(url)s\">архіве</a>"
 
-#: weblate_web/templates/support.html:140
+#: weblate_web/templates/support.html:141
 msgid "Hosted Weblate announcements"
 msgstr "Анонсы хостынгу Weblate"
 
-#: weblate_web/templates/support.html:147
+#: weblate_web/templates/support.html:148
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr "<strong> Нізкі трафік </strong> і мадэруецца"
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:149
 msgid "Only premium service announcements"
 msgstr "Толькі анонсы прэміумных паслуг"
 
-#: weblate_web/templates/support.html:155
+#: weblate_web/templates/support.html:156
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr "Задайце пытанні на <a href=\"%(url)s\">Stack Overflow</a>."
@@ -2445,7 +2632,7 @@ msgid "Other topics"
 msgstr "Іншыя тэмы"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:446
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr "Этапы"
 
@@ -2457,7 +2644,7 @@ msgstr "Звязаныя артыкулы"
 msgid "Back to blog"
 msgstr "Вярнуцца ў блог"
 
-#: weblate_web/templatetags/downloads.py:40
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
@@ -2465,34 +2652,34 @@ msgstr[0] "%(size)d байт"
 msgstr[1] "%(size)d байты"
 msgstr[2] "%(size)d байтаў"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:47
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:48
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr "Архівы з зыходнікамі, bzip2-архіў"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr "Архіў з зыходнікамі, gzip-архіў"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr "Архіў з зыходнікамі, xz-архіў"
 
-#: weblate_web/templatetags/downloads.py:61
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr "Заходнікі, zip-архіў"
 
@@ -2526,56 +2713,56 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr "толькі што"
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:83
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Памылка ў параметры %(field)s: %(error)s"
 
-#: weblate_web/views.py:152 weblate_web/views.py:191
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr "Калі ласка, падайце звесткі, каб завяршыць аплату."
 
-#: weblate_web/views.py:165
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 "Ідэнтыфікатар падаткаплацельшчыка ПДВ ўжо не дзейнічае, калі ласка, абновіце "
 "яго."
 
-#: weblate_web/views.py:186
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr "Калі ласка, абярыце спосаб аплаты."
 
-#: weblate_web/views.py:305
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr "Плацёж яшчэ не апрацаваны, паўтарыце спробу."
 
-#: weblate_web/views.py:309
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr "Плацёж адхілены: {}"
 
-#: weblate_web/views.py:310
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr "Невядомая прычына"
 
-#: weblate_web/views.py:315
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr "Дзякуй за падпіску."
 
-#: weblate_web/views.py:318
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr "Дзякуй за ахвяраванне."
 
-#: weblate_web/views.py:407
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 "Патрабуецца падпіска. Усё, што вам трэба зрабіць, гэта пацвердзіць адрас "
 "электроннай пошты."
 
-#: weblate_web/views.py:411
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr "Не атрымалася апрацаваць запыт на падпіску."
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "Карыстальнік не знойдзены!"
 

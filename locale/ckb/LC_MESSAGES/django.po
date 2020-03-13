@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-05 14:06+0100\n"
+"POT-Creation-Date: 2020-03-13 11:52+0100\n"
 "PO-Revision-Date: 2019-11-06 06:07+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Sorani <https://hosted.weblate.org/projects/weblate/website/"
@@ -17,6 +17,186 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.10-dev\n"
+
+#: payments/backends.py:186
+#, fuzzy
+msgid "Your payment on weblate.org"
+msgstr "بەخشین بۆ وێبلەیت"
+
+#: payments/backends.py:188
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Thank you for your payment on weblate.org.\n"
+"\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively, you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: payments/backends.py:214
+msgid "Your payment on weblate.org failed"
+msgstr ""
+
+#: payments/backends.py:216
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org has failed.\n"
+"\n"
+"%s\n"
+"\n"
+"Retry issuing the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, cancelled.\n"
+msgstr ""
+
+#: payments/backends.py:249
+#, fuzzy
+msgid "Your pending payment on weblate.org"
+msgstr "بەخشین بۆ وێبلەیت"
+
+#: payments/backends.py:251
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org is pending. Please follow the provided\n"
+"instructions to complete the payment.\n"
+msgstr ""
+
+#: payments/backends.py:333
+#, fuzzy
+msgid "Payment card"
+msgstr "پاڵپشتی وێبلەیت"
+
+#: payments/backends.py:409
+msgid "Payment cancelled"
+msgstr ""
+
+#: payments/backends.py:411
+#, fuzzy
+msgid "Payment error"
+msgstr "پاڵپشتی وێبلەیت"
+
+#: payments/backends.py:423
+msgid "Bitcoin"
+msgstr ""
+
+#: payments/backends.py:432
+msgid "IBAN bank transfer"
+msgstr ""
+
+#: payments/backends.py:462
+msgid "Issuing bank"
+msgstr ""
+
+#: payments/backends.py:463
+msgid "Account holder"
+msgstr ""
+
+#: payments/backends.py:464
+msgid "Account number"
+msgstr ""
+
+#: payments/backends.py:465
+msgid "SWIFT code"
+msgstr ""
+
+#: payments/backends.py:466
+msgid "IBAN"
+msgstr ""
+
+#: payments/backends.py:467
+msgid "Reference"
+msgstr ""
+
+#: payments/models.py:79
+msgid "European VAT ID"
+msgstr ""
+
+#: payments/models.py:81
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgstr ""
+
+#: payments/models.py:87
+msgid "Tax registration"
+msgstr ""
+
+#: payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
+msgstr ""
+
+#: payments/models.py:96
+msgid "Company or individual name"
+msgstr ""
+
+#: payments/models.py:99
+msgid "Address"
+msgstr ""
+
+#: payments/models.py:102
+msgid "Postcode and city"
+msgstr ""
+
+#: payments/models.py:104
+msgid "Country"
+msgstr ""
+
+#: payments/models.py:132
+msgid "The country has to match your VAT code"
+msgstr ""
+
+#: payments/models.py:155
+msgid "Annual"
+msgstr ""
+
+#: payments/models.py:156
+msgid "Biannual"
+msgstr ""
+
+#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+msgid "Quarterly"
+msgstr ""
+
+#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:392
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr ""
+
+#: payments/models.py:159
+msgid "Onetime"
+msgstr ""
+
+#: payments/validators.py:38
+msgid "{} is not a valid country code for any European Union member."
+msgstr ""
+
+#: payments/validators.py:43
+msgid "{} does not match the country's VAT ID specifications."
+msgstr ""
+
+#: payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+
+#: payments/validators.py:53
+msgid "{} is not a valid VAT ID."
+msgstr ""
 
 #: weblate_web/models.py:42
 msgid "No reward"
@@ -56,73 +236,64 @@ msgstr ""
 
 #: weblate_web/models.py:53
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Hosted Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
 #: weblate_web/models.py:54
 #: weblate_web/templates/weblate_web/post_detail.html:52
 #, fuzzy
-#| msgid "Develop"
 msgid "Development"
 msgstr "پەرەپێدان"
 
 #: weblate_web/models.py:55
 #: weblate_web/templates/weblate_web/post_detail.html:53
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Localization"
 msgstr "وەرگێڕان بەردەوامە"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:107
 msgid "Link text"
 msgstr ""
 
-#: weblate_web/models.py:107 weblate_web/templates/user.html:199
+#: weblate_web/models.py:109 weblate_web/templates/user.html:199
 msgid "Link URL"
 msgstr ""
 
-#: weblate_web/models.py:109
+#: weblate_web/models.py:111
 msgid "Link image"
 msgstr ""
 
-#: weblate_web/models.py:298
+#: weblate_web/models.py:300
 #, fuzzy
-#| msgid "Phone support"
 msgid "Community support"
 msgstr "پاڵپشتی تەلەفۆنی"
 
-#: weblate_web/models.py:299
+#: weblate_web/models.py:301
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Hosted service"
 msgstr "بەخشین بۆ وێبلەیت"
 
-#: weblate_web/models.py:300 weblate_web/templates/support.html:76
+#: weblate_web/models.py:302 weblate_web/templates/support.html:76
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Basic self-hosted support"
 msgstr "پاڵپشتی وێبلەیت"
 
-#: weblate_web/models.py:301 weblate_web/templates/support.html:86
+#: weblate_web/models.py:303 weblate_web/templates/support.html:86
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Extended self-hosted support"
 msgstr "بەخشین بۆ وێبلەیت"
 
-#: weblate_web/models.py:400
+#: weblate_web/models.py:402
 #, fuzzy
-#| msgid "Phone support"
 msgid "Basic support"
 msgstr "پاڵپشتی تەلەفۆنی"
 
-#: weblate_web/models.py:403
+#: weblate_web/models.py:405
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Extended support"
 msgstr "بەخشین بۆ وێبلەیت"
 
-#: weblate_web/models.py:405 weblate_web/templates/support.html:97
+#: weblate_web/models.py:407 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr ""
 
@@ -146,7 +317,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "The Weblate Way"
 msgstr "دروشمی وێبلەیت"
 
@@ -177,7 +347,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:25
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Announcing Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -193,7 +362,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:30
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Why Weblate?"
 msgstr "وێبلەیت تاقیبکەوە"
 
@@ -207,7 +375,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:34
 #, fuzzy
-#| msgid "Translation status"
 msgid "Translator attribution"
 msgstr "ڕەوشی وەرگێڕان"
 
@@ -217,19 +384,16 @@ msgstr ""
 
 #: weblate_web/templates/about.html:36
 #, fuzzy
-#| msgid "Translation context"
 msgid "Displaying context"
 msgstr "دەقی وەرگێڕان"
 
 #: weblate_web/templates/about.html:37
 #, fuzzy
-#| msgid "Number of translators"
 msgid "Sane merging of translations"
 msgstr "ژمارەی وەرگێڕانەکان"
 
 #: weblate_web/templates/about.html:38
 #, fuzzy
-#| msgid "Quality checks"
 msgid "Consistency checks"
 msgstr "پشکنینی جۆریەتی"
 
@@ -243,13 +407,11 @@ msgstr ""
 
 #: weblate_web/templates/about.html:47
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Contributors and translators united"
 msgstr "وەرگێڕان بەردەوامە"
 
 #: weblate_web/templates/about.html:54
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "The Weblate history"
 msgstr "دروشمی وێبلەیت"
 
@@ -275,7 +437,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:66
 #, fuzzy
-#| msgid "Translation workflow"
 msgid "Built-in translation memory"
 msgstr "ڕێڕەوی کاری وەرگێڕان"
 
@@ -314,7 +475,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:96
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Founder of Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -340,7 +500,6 @@ msgstr "پەیوەندیکردن"
 
 #: weblate_web/templates/about.html:108 weblate_web/templates/user.html:161
 #, fuzzy
-#| msgid "E-mail"
 msgid "E-mail"
 msgstr "پۆستی ئەلیکترۆنی"
 
@@ -363,6 +522,7 @@ msgstr ""
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/support.html:116
 msgid "Contact us"
 msgstr "پەیوەندیمان پێوە بکە"
 
@@ -377,7 +537,6 @@ msgstr "وەرگێڕان"
 
 #: weblate_web/templates/base.html:67 weblate_web/templates/user.html:13
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Use Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -400,7 +559,6 @@ msgstr ""
 
 #: weblate_web/templates/careers.html:10
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Career at Weblate"
 msgstr "وێبلەیت تاقیبکەوە"
 
@@ -466,7 +624,6 @@ msgstr "بینینی سەرچاوەکان"
 
 #: weblate_web/templates/contribute.html:19
 #, fuzzy
-#| msgid "Translate"
 msgid "Translate the app"
 msgstr "وەرگێڕان"
 
@@ -506,7 +663,6 @@ msgstr ""
 #: weblate_web/templates/contribute.html:31
 #: weblate_web/templates/contribute.html:47
 #, fuzzy
-#| msgid "Report issue"
 msgid "GitHub issues"
 msgstr "ئاگادارکردنەوە لە کێشەیەک"
 
@@ -559,7 +715,6 @@ msgstr ""
 #: weblate_web/templates/contribute.html:55
 #: weblate_web/templates/contribute.html:63
 #, fuzzy
-#| msgid "View documentation"
 msgid "Browse documentation"
 msgstr "پیشاندانی بەڵگەنامەکردن"
 
@@ -591,7 +746,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:68
 #, fuzzy
-#| msgid "Donate"
 msgid "Donate now"
 msgstr "بەخشین"
 
@@ -607,7 +761,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:73
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Start translating"
 msgstr "وەرگێڕان بەردەوامە"
 
@@ -622,7 +775,6 @@ msgstr "بەخشین بۆ وێبلەیت"
 
 #: weblate_web/templates/donate.html:15
 #, fuzzy
-#| msgid "Weblate is free, but welcomes donations."
 msgid ""
 "Weblate does not require payment, and welcomes donations. There are many "
 "ways to contribute. Discuss it with your associates."
@@ -634,13 +786,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:19
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Manage your donations"
 msgstr "بەخشینی ڕێکخراو"
 
 #: weblate_web/templates/donate.html:22
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Recurring donations and rewards"
 msgstr "بەخشینی ڕێکخراو"
 
@@ -654,7 +804,6 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:25
 #, fuzzy
-#| msgid "View documentation"
 msgid "Activate donation"
 msgstr "پیشاندانی بەڵگەنامەکردن"
 
@@ -675,7 +824,6 @@ msgstr "بەخشین"
 
 #: weblate_web/templates/donate.html:53
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "Weblate heroism"
 msgstr "دروشمی وێبلەیت"
 
@@ -687,13 +835,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:56
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Get help from Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
 #: weblate_web/templates/donate.html:64
 #, fuzzy
-#| msgid "View documentation"
 msgid "Single appreciative donation"
 msgstr "پیشاندانی بەڵگەنامەکردن"
 
@@ -705,7 +851,6 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:72
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Cryptocurrency donations"
 msgstr "بەخشینی ڕێکخراو"
 
@@ -722,13 +867,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:80
 #, fuzzy
-#| msgid "Donate"
 msgid "Donation address"
 msgstr "بەخشین"
 
 #: weblate_web/templates/donate.html:109
 #, fuzzy
-#| msgid "Weblate tour"
 msgid "Weblate is thankful for your help"
 msgstr "ناسینی وێبلەیت"
 
@@ -746,7 +889,6 @@ msgstr "پاڵپشتیوانان"
 
 #: weblate_web/templates/donate.html:127
 #, fuzzy
-#| msgid "Technology"
 msgid "Technologies"
 msgstr "تەکنەلۆژیا"
 
@@ -761,7 +903,6 @@ msgstr "پاشەکەوتکردن"
 
 #: weblate_web/templates/donate/form.html:8
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your donation to Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -787,26 +928,8 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:21
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Single payment"
 msgstr "پاڵپشتی وێبلەیت"
-
-#: weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:358
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr ""
-
-#: weblate_web/templates/donate/form.html:27
-msgid "Quarterly"
-msgstr ""
 
 #: weblate_web/templates/donate/form.html:30
 msgid "Every year"
@@ -814,7 +937,6 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:32
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Your reward options"
 msgstr "بەخشینی ڕێکخراو"
 
@@ -848,7 +970,6 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:62
 #, fuzzy
-#| msgid "Thanks"
 msgid "No thanks"
 msgstr "سوپاس"
 
@@ -878,7 +999,6 @@ msgstr "داگرتنی وێبلەیت"
 
 #: weblate_web/templates/download.html:14
 #, fuzzy
-#| msgid "Weblate is free, but welcomes donations."
 msgid ""
 "All Weblate source code is freely available for you to use, modify, share "
 "and distribute. Discuss it with your associates."
@@ -894,7 +1014,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:21
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Quick Installation"
 msgstr "وەرگێڕان بەردەوامە"
 
@@ -908,7 +1027,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:25
 #, fuzzy
-#| msgid "Downloads"
 msgid "Download source code"
 msgstr "داگرتنەکان"
 
@@ -944,7 +1062,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:51
 #, fuzzy
-#| msgid "Weblate tour"
 msgid "Bitnami Weblate stack"
 msgstr "ناسینی وێبلەیت"
 
@@ -1000,13 +1117,11 @@ msgstr ""
 #: weblate_web/templates/features.html:32
 #: weblate_web/templates/features.html:37
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Weblate screenshot"
 msgstr "پاڵپشتی وێبلەیت"
 
 #: weblate_web/templates/features.html:26
 #, fuzzy
-#| msgid "Quality checks"
 msgid "Customizable quality checks"
 msgstr "پشکنینی جۆریەتی"
 
@@ -1030,7 +1145,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:48
 #, fuzzy
-#| msgid "Version control"
 msgid "Access Control"
 msgstr "سەرپەرشتیکردنی وەشان"
 
@@ -1040,7 +1154,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:55
 #, fuzzy
-#| msgid "Notifications"
 msgid "Smart Notifications"
 msgstr "ئاگادارکردنەوەکان"
 
@@ -1059,7 +1172,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:69
 #, fuzzy
-#| msgid "File formats"
 msgid "Multiple File Formats"
 msgstr "فۆڕماتی پەڕگەکان"
 
@@ -1071,7 +1183,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:76
 #, fuzzy
-#| msgid "Support"
 msgid "Branch Support"
 msgstr "پاڵپشتی"
 
@@ -1083,7 +1194,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:83
 #, fuzzy
-#| msgid "Translation context"
 msgid "Translation Context"
 msgstr "دەقی وەرگێڕان"
 
@@ -1187,7 +1297,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:133
 #, fuzzy
-#| msgid "Export and import"
 msgid "Export and Import"
 msgstr "هەناردەکردن و هاوردەکردن"
 
@@ -1214,7 +1323,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:154
 #, fuzzy
-#| msgid "Review"
 msgid "Easy Reviews"
 msgstr "پێداچوونەوە"
 
@@ -1224,7 +1332,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:161
 #, fuzzy
-#| msgid "Languages"
 msgid "Language support"
 msgstr "زمانەکان"
 
@@ -1279,7 +1386,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "Weblate Pricing"
 msgstr "دروشمی وێبلەیت"
 
@@ -1303,7 +1409,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:22
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Continuous localization"
 msgstr "وەرگێڕان بەردەوامە"
 
@@ -1353,7 +1458,6 @@ msgstr "پشکنینی جۆریەتی"
 
 #: weblate_web/templates/hosting.html:49
 #, fuzzy
-#| msgid "Translation status"
 msgid "Translation addons"
 msgstr "ڕەوشی وەرگێڕان"
 
@@ -1363,7 +1467,6 @@ msgstr "فەرهەنگۆگ"
 
 #: weblate_web/templates/hosting.html:55
 #, fuzzy
-#| msgid "Translation workflow"
 msgid "Translation memory"
 msgstr "ڕێڕەوی کاری وەرگێڕان"
 
@@ -1461,7 +1564,6 @@ msgstr ""
 #: weblate_web/templates/hosting.html:261
 #: weblate_web/templates/snippets/pricing.html:121
 #, fuzzy
-#| msgid "Weblate support"
 msgctxt "Hosting plan"
 msgid "Self-hosted"
 msgstr "پاڵپشتی وێبلەیت"
@@ -1483,7 +1585,6 @@ msgstr ""
 #: weblate_web/templates/hosting.html:310
 #: weblate_web/templates/snippets/pricing.html:146
 #, fuzzy
-#| msgid "Translation projects"
 msgid "for libre projects"
 msgstr "پڕۆژەکانی وەرگێڕان"
 
@@ -1527,21 +1628,18 @@ msgstr ""
 #: weblate_web/templates/hosting.html:418
 #: weblate_web/templates/hosting.html:493
 #, fuzzy
-#| msgid "Phone support"
 msgid "Buy support"
 msgstr "پاڵپشتی تەلەفۆنی"
 
 #: weblate_web/templates/hosting.html:421
 #: weblate_web/templates/hosting.html:496
 #, fuzzy
-#| msgid "Download Weblate"
 msgid "or download Weblate"
 msgstr "داگرتنی وێبلەیت"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:120
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Payment"
 msgstr "پاڵپشتی وێبلەیت"
 
@@ -1565,7 +1663,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:527
 #, fuzzy
-#| msgid "Supporters"
 msgid "Join existing users and supporters"
 msgstr "پاڵپشتیوانان"
 
@@ -1575,7 +1672,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:15
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Web-based <strong>continuous</strong> localization"
 msgstr "وەرگێڕان بەردەوامە"
 
@@ -1612,7 +1708,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:36
 #, fuzzy, python-format
-#| msgid "Own translations"
 msgid "%(count)s translation %(when)s"
 msgid_plural "%(count)s translations %(when)s"
 msgstr[0] "وەرگێڕانەکانت"
@@ -1624,7 +1719,6 @@ msgstr "پڕۆژە"
 
 #: weblate_web/templates/index.html:41
 #, fuzzy, python-format
-#| msgid "Own translations"
 msgid "%(count)s translation"
 msgid_plural "%(count)s translations"
 msgstr[0] "وەرگێڕانەکانت"
@@ -1644,7 +1738,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:55
 #, fuzzy
-#| msgid "Supporters"
 msgid "Users and Supporters"
 msgstr "پاڵپشتیوانان"
 
@@ -1656,13 +1749,11 @@ msgstr ""
 #: weblate_web/templates/news.html:11
 #: weblate_web/templates/weblate_web/post_archive.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "Weblate Blog"
 msgstr "دروشمی وێبلەیت"
 
 #: weblate_web/templates/news.html:19
 #, fuzzy
-#| msgid "View sources"
 msgid "View older articles"
 msgstr "بینینی سەرچاوەکان"
 
@@ -1670,7 +1761,6 @@ msgstr "بینینی سەرچاوەکان"
 #: weblate_web/templates/payment/payment.html:5
 #: weblate_web/templates/payment/pending.html:5
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Weblate payment"
 msgstr "پاڵپشتی وێبلەیت"
 
@@ -1693,7 +1783,6 @@ msgstr ""
 #: weblate_web/templates/payment/pending.html:28
 #: weblate_web/templates/payment/pending.html:52
 #, fuzzy, python-format
-#| msgid "%(price)s EUR / year"
 msgid "%(price)s EUR"
 msgstr "%(price)s یۆرۆ \\ ساڵانە"
 
@@ -1749,7 +1838,6 @@ msgstr ""
 
 #: weblate_web/templates/payment/payment.html:71
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Make Payment"
 msgstr "پاڵپشتی وێبلەیت"
 
@@ -1763,13 +1851,11 @@ msgstr ""
 
 #: weblate_web/templates/payment/pending.html:41
 #, fuzzy
-#| msgid "Downloads"
 msgid "Download pro forma invoice"
 msgstr "داگرتنەکان"
 
 #: weblate_web/templates/payment/pending.html:63
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Payment status"
 msgstr "پاڵپشتی وێبلەیت"
 
@@ -1844,7 +1930,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-1.html:7
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Continuous Localization"
 msgstr "وەرگێڕان بەردەوامە"
 
@@ -1855,7 +1940,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-1.html:14
 #, fuzzy
-#| msgid "Quality checks"
 msgid "Quality Checks"
 msgstr "پشکنینی جۆریەتی"
 
@@ -1873,7 +1957,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-2.html:7
 #, fuzzy
-#| msgid "Consulting"
 msgid "Hosting Plans"
 msgstr "ڕاوێژکردن"
 
@@ -1891,7 +1974,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-2.html:21
 #, fuzzy
-#| msgid "Free software"
 msgid "Libre Software"
 msgstr "نەرمەکاڵایی بەخۆڕایی"
 
@@ -1901,8 +1983,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/languages.html:14
 #, fuzzy
-#| msgctxt "Keyword"
-#| msgid "translate"
 msgid "Help translate"
 msgstr "وەرگێڕان"
 
@@ -1998,7 +2078,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/pricing.html:145
 #, fuzzy
-#| msgid "Try Weblate"
 msgid "Gratis Weblate"
 msgstr "وێبلەیت تاقیبکەوە"
 
@@ -2013,13 +2092,11 @@ msgstr ""
 
 #: weblate_web/templates/snippets/users.html:9
 #, fuzzy
-#| msgid "Translation projects"
 msgid "See all projects"
 msgstr "پڕۆژەکانی وەرگێڕان"
 
 #: weblate_web/templates/snippets/users.html:10
 #, fuzzy
-#| msgid "Weblate support"
 msgid "See all supporters"
 msgstr "پاڵپشتی وێبلەیت"
 
@@ -2079,7 +2156,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:29
 #, fuzzy
-#| msgid "Report issue"
 msgid "Security issues"
 msgstr "ئاگادارکردنەوە لە کێشەیەک"
 
@@ -2092,7 +2168,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:36
 #, fuzzy
-#| msgid "Phone support"
 msgid "Premium support"
 msgstr "پاڵپشتی تەلەفۆنی"
 
@@ -2105,7 +2180,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:46
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -2115,7 +2189,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:53 weblate_web/templates/support.html:66
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "One-time installation of Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -2137,7 +2210,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:59 weblate_web/templates/support.html:71
 #, fuzzy
-#| msgid "Own translations"
 msgid "installation"
 msgstr "وەرگێڕانەکانت"
 
@@ -2155,7 +2227,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
 #, fuzzy
-#| msgid "Phone support"
 msgid "Priority e-mail support."
 msgstr "پاڵپشتی تەلەفۆنی"
 
@@ -2177,7 +2248,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:102
 #, fuzzy
-#| msgid "View documentation"
 msgid "Read more in the documentation."
 msgstr "پیشاندانی بەڵگەنامەکردن"
 
@@ -2201,61 +2271,59 @@ msgstr ""
 msgid "hourly"
 msgstr ""
 
-#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:118
 msgid "Ask for help"
 msgstr ""
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 #, fuzzy
-#| msgid "Mailing list"
 msgid "Mailing lists"
 msgstr "پێڕستی نامەیی"
 
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "Users and developers"
-msgstr ""
-
-#: weblate_web/templates/support.html:130
-#: weblate_web/templates/support.html:143
-msgid "Your e-mail address…"
 msgstr ""
 
 #: weblate_web/templates/support.html:131
 #: weblate_web/templates/support.html:144
+msgid "Your e-mail address…"
+msgstr ""
+
+#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:145
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "خۆتۆمارکردن"
 
-#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:135
 msgid "Discuss Weblate with users and developers"
 msgstr ""
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:136
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 
-#: weblate_web/templates/support.html:136
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:150
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr ""
 
-#: weblate_web/templates/support.html:140
+#: weblate_web/templates/support.html:141
 #, fuzzy
-#| msgid "Weblate support"
 msgid "Hosted Weblate announcements"
 msgstr "پاڵپشتی وێبلەیت"
 
-#: weblate_web/templates/support.html:147
+#: weblate_web/templates/support.html:148
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr ""
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:149
 msgid "Only premium service announcements"
 msgstr ""
 
-#: weblate_web/templates/support.html:155
+#: weblate_web/templates/support.html:156
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr ""
@@ -2284,7 +2352,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:4
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "User profile at Weblate"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -2298,7 +2365,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:17
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your services"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -2312,7 +2378,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:33
 #, fuzzy
-#| msgid "View documentation"
 msgid "Activation token"
 msgstr "پیشاندانی بەڵگەنامەکردن"
 
@@ -2330,7 +2395,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:56
 #, fuzzy
-#| msgid "Server error"
 msgid "Server URL"
 msgstr "هەڵە هەیە لە ڕاژەکار"
 
@@ -2347,7 +2411,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:73
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Subscription"
 msgstr "بەخشینی ڕێکخراو"
 
@@ -2375,7 +2438,6 @@ msgstr "بەسەرچوو"
 
 #: weblate_web/templates/user.html:97 weblate_web/templates/user.html:215
 #, fuzzy
-#| msgid "Continuous translation"
 msgid "Automatic renewal"
 msgstr "وەرگێڕان بەردەوامە"
 
@@ -2385,7 +2447,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:103
 #, fuzzy
-#| msgid "Donate"
 msgid "Renew now"
 msgstr "بەخشین"
 
@@ -2419,7 +2480,6 @@ msgstr "زیادکردن"
 
 #: weblate_web/templates/user.html:168
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Get more services"
 msgstr "بەخشین بۆ وێبلەیت"
 
@@ -2429,7 +2489,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:183
 #, fuzzy
-#| msgid "Regular donations"
 msgid "Your donations"
 msgstr "بەخشینی ڕێکخراو"
 
@@ -2439,7 +2498,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:205
 #, fuzzy
-#| msgid "Expired"
 msgid "Expiry date"
 msgstr "بەسەرچوو"
 
@@ -2464,7 +2522,7 @@ msgid "Other topics"
 msgstr ""
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:446
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr ""
 
@@ -2476,41 +2534,41 @@ msgstr ""
 msgid "Back to blog"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:40
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d بایت"
 msgstr[1] "%(size)d بایت"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f کیلۆبایت"
 
-#: weblate_web/templatetags/downloads.py:47
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f مێگابایت"
 
-#: weblate_web/templatetags/downloads.py:48
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f گێگابایت"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:61
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr ""
 
@@ -2544,54 +2602,53 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr ""
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:83
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
 
-#: weblate_web/views.py:152 weblate_web/views.py:191
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:165
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:186
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr ""
 
-#: weblate_web/views.py:305
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr ""
 
-#: weblate_web/views.py:309
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:310
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr ""
 
-#: weblate_web/views.py:315
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr ""
 
-#: weblate_web/views.py:318
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr ""
 
-#: weblate_web/views.py:407
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:411
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr ""
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:545
 #, fuzzy
-#| msgid "Page not found"
 msgid "User not found!"
 msgstr "پەڕەکە نەدۆزرایەوە"
 

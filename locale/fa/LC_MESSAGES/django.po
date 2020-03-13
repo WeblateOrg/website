@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-05 14:06+0100\n"
+"POT-Creation-Date: 2020-03-13 11:52+0100\n"
 "PO-Revision-Date: 2020-01-08 18:37+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/weblate/website/"
@@ -19,6 +19,187 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.10.1-dev\n"
+
+#: payments/backends.py:186
+#, fuzzy
+msgid "Your payment on weblate.org"
+msgstr "کمک به وبلت"
+
+#: payments/backends.py:188
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Thank you for your payment on weblate.org.\n"
+"\n"
+"You will find an invoice for this payment attached.\n"
+"Alternatively, you can download it from the website:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: payments/backends.py:214
+msgid "Your payment on weblate.org failed"
+msgstr ""
+
+#: payments/backends.py:216
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org has failed.\n"
+"\n"
+"%s\n"
+"\n"
+"Retry issuing the payment on the website:\n"
+"\n"
+"%s\n"
+"\n"
+"If concerning a recurring payment, it is retried three times,\n"
+"and if still failing, cancelled.\n"
+msgstr ""
+
+#: payments/backends.py:249
+#, fuzzy
+msgid "Your pending payment on weblate.org"
+msgstr "کمک به وبلت"
+
+#: payments/backends.py:251
+msgid ""
+"Hello,\n"
+"\n"
+"Your payment on weblate.org is pending. Please follow the provided\n"
+"instructions to complete the payment.\n"
+msgstr ""
+
+#: payments/backends.py:333
+#, fuzzy
+msgid "Payment card"
+msgstr "ویژگی های وبلت"
+
+#: payments/backends.py:409
+msgid "Payment cancelled"
+msgstr ""
+
+#: payments/backends.py:411
+#, fuzzy
+msgid "Payment error"
+msgstr "ویژگی های وبلت"
+
+#: payments/backends.py:423
+msgid "Bitcoin"
+msgstr ""
+
+#: payments/backends.py:432
+msgid "IBAN bank transfer"
+msgstr ""
+
+#: payments/backends.py:462
+msgid "Issuing bank"
+msgstr ""
+
+#: payments/backends.py:463
+msgid "Account holder"
+msgstr ""
+
+#: payments/backends.py:464
+msgid "Account number"
+msgstr ""
+
+#: payments/backends.py:465
+msgid "SWIFT code"
+msgstr ""
+
+#: payments/backends.py:466
+msgid "IBAN"
+msgstr ""
+
+#: payments/backends.py:467
+#, fuzzy
+msgid "Reference"
+msgstr "همایش ها"
+
+#: payments/models.py:79
+msgid "European VAT ID"
+msgstr ""
+
+#: payments/models.py:81
+msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgstr ""
+
+#: payments/models.py:87
+msgid "Tax registration"
+msgstr ""
+
+#: payments/models.py:89
+msgid ""
+"Please fill in your tax registration if it should appear on the invoice."
+msgstr ""
+
+#: payments/models.py:96
+msgid "Company or individual name"
+msgstr ""
+
+#: payments/models.py:99
+msgid "Address"
+msgstr ""
+
+#: payments/models.py:102
+msgid "Postcode and city"
+msgstr ""
+
+#: payments/models.py:104
+msgid "Country"
+msgstr ""
+
+#: payments/models.py:132
+msgid "The country has to match your VAT code"
+msgstr ""
+
+#: payments/models.py:155
+msgid "Annual"
+msgstr ""
+
+#: payments/models.py:156
+msgid "Biannual"
+msgstr ""
+
+#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+msgid "Quarterly"
+msgstr ""
+
+#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:392
+#: weblate_web/templates/hosting.html:403
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:113
+msgid "Monthly"
+msgstr ""
+
+#: payments/models.py:159
+msgid "Onetime"
+msgstr ""
+
+#: payments/validators.py:38
+msgid "{} is not a valid country code for any European Union member."
+msgstr ""
+
+#: payments/validators.py:43
+msgid "{} does not match the country's VAT ID specifications."
+msgstr ""
+
+#: payments/validators.py:50
+msgid "VAT ID validation service unavailable for {}, please try again later."
+msgstr ""
+
+#: payments/validators.py:53
+msgid "{} is not a valid VAT ID."
+msgstr ""
 
 #: weblate_web/models.py:42
 msgid "No reward"
@@ -58,7 +239,6 @@ msgstr "همایش ها"
 
 #: weblate_web/models.py:53
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Hosted Weblate"
 msgstr "کمک به وبلت"
 
@@ -72,51 +252,47 @@ msgstr "توسعه"
 msgid "Localization"
 msgstr "بومی سازی"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:107
 msgid "Link text"
 msgstr "متن لینک"
 
-#: weblate_web/models.py:107 weblate_web/templates/user.html:199
+#: weblate_web/models.py:109 weblate_web/templates/user.html:199
 msgid "Link URL"
 msgstr "آدرس لینک"
 
-#: weblate_web/models.py:109
+#: weblate_web/models.py:111
 msgid "Link image"
 msgstr "عکس لینک"
 
-#: weblate_web/models.py:298
+#: weblate_web/models.py:300
 msgid "Community support"
 msgstr "پشتیبانی جامعه"
 
-#: weblate_web/models.py:299
+#: weblate_web/models.py:301
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Hosted service"
 msgstr "کمک به وبلت"
 
-#: weblate_web/models.py:300 weblate_web/templates/support.html:76
+#: weblate_web/models.py:302 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:301 weblate_web/templates/support.html:86
+#: weblate_web/models.py:303 weblate_web/templates/support.html:86
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Extended self-hosted support"
 msgstr "کمک به وبلت"
 
-#: weblate_web/models.py:400
+#: weblate_web/models.py:402
 #, fuzzy
-#| msgid "Support"
 msgid "Basic support"
 msgstr "حمایت"
 
-#: weblate_web/models.py:403
+#: weblate_web/models.py:405
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Extended support"
 msgstr "کمک به وبلت"
 
-#: weblate_web/models.py:405 weblate_web/templates/support.html:97
+#: weblate_web/models.py:407 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "سرویس پشتیبان گیری"
 
@@ -140,7 +316,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "The Weblate Way"
 msgstr "نماد وبلت"
 
@@ -171,7 +346,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:25
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Announcing Weblate"
 msgstr "کمک به وبلت"
 
@@ -199,7 +373,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:34
 #, fuzzy
-#| msgid "Translation projects"
 msgid "Translator attribution"
 msgstr "پروژه های ترجمه"
 
@@ -213,7 +386,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:37
 #, fuzzy
-#| msgid "Own translations"
 msgid "Sane merging of translations"
 msgstr "ترجمه های من"
 
@@ -231,13 +403,11 @@ msgstr ""
 
 #: weblate_web/templates/about.html:47
 #, fuzzy
-#| msgid "Own translations"
 msgid "Contributors and translators united"
 msgstr "ترجمه های من"
 
 #: weblate_web/templates/about.html:54
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "The Weblate history"
 msgstr "نماد وبلت"
 
@@ -263,7 +433,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:66
 #, fuzzy
-#| msgid "Translation projects"
 msgid "Built-in translation memory"
 msgstr "پروژه های ترجمه"
 
@@ -302,7 +471,6 @@ msgstr ""
 
 #: weblate_web/templates/about.html:96
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Founder of Weblate"
 msgstr "کمک به وبلت"
 
@@ -349,6 +517,7 @@ msgstr ""
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:430
 #: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/support.html:116
 msgid "Contact us"
 msgstr ""
 
@@ -363,7 +532,6 @@ msgstr "ترجمه"
 
 #: weblate_web/templates/base.html:67 weblate_web/templates/user.html:13
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Use Weblate"
 msgstr "کمک به وبلت"
 
@@ -386,7 +554,6 @@ msgstr ""
 
 #: weblate_web/templates/careers.html:10
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Career at Weblate"
 msgstr "کمک به وبلت"
 
@@ -452,7 +619,6 @@ msgstr "نمایش منابع"
 
 #: weblate_web/templates/contribute.html:19
 #, fuzzy
-#| msgid "Translate"
 msgid "Translate the app"
 msgstr "ترجمه"
 
@@ -543,7 +709,6 @@ msgstr ""
 #: weblate_web/templates/contribute.html:55
 #: weblate_web/templates/contribute.html:63
 #, fuzzy
-#| msgid "View documentation"
 msgid "Browse documentation"
 msgstr "نمایش اسناد"
 
@@ -575,7 +740,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:68
 #, fuzzy
-#| msgid "Donate"
 msgid "Donate now"
 msgstr "بخشش"
 
@@ -591,7 +755,6 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:73
 #, fuzzy
-#| msgid "Own translations"
 msgid "Start translating"
 msgstr "ترجمه های من"
 
@@ -616,13 +779,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:19
 #, fuzzy
-#| msgid "View documentation"
 msgid "Manage your donations"
 msgstr "نمایش اسناد"
 
 #: weblate_web/templates/donate.html:22
 #, fuzzy
-#| msgid "Donate"
 msgid "Recurring donations and rewards"
 msgstr "بخشش"
 
@@ -636,7 +797,6 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:25
 #, fuzzy
-#| msgid "View documentation"
 msgid "Activate donation"
 msgstr "نمایش اسناد"
 
@@ -657,7 +817,6 @@ msgstr "بخشش"
 
 #: weblate_web/templates/donate.html:53
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Weblate heroism"
 msgstr "ویژگی های وبلت"
 
@@ -669,13 +828,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:56
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Get help from Weblate"
 msgstr "کمک به وبلت"
 
 #: weblate_web/templates/donate.html:64
 #, fuzzy
-#| msgid "View documentation"
 msgid "Single appreciative donation"
 msgstr "نمایش اسناد"
 
@@ -687,7 +844,6 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:72
 #, fuzzy
-#| msgid "View documentation"
 msgid "Cryptocurrency donations"
 msgstr "نمایش اسناد"
 
@@ -704,13 +860,11 @@ msgstr ""
 
 #: weblate_web/templates/donate.html:80
 #, fuzzy
-#| msgid "Donate"
 msgid "Donation address"
 msgstr "بخشش"
 
 #: weblate_web/templates/donate.html:109
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Weblate is thankful for your help"
 msgstr "ویژگی های وبلت"
 
@@ -741,7 +895,6 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:8
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your donation to Weblate"
 msgstr "کمک به وبلت"
 
@@ -767,26 +920,8 @@ msgstr ""
 
 #: weblate_web/templates/donate/form.html:21
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Single payment"
 msgstr "ویژگی های وبلت"
-
-#: weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:358
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:403
-#: weblate_web/templates/snippets/pricing.html:35
-#: weblate_web/templates/snippets/pricing.html:61
-#: weblate_web/templates/snippets/pricing.html:87
-#: weblate_web/templates/snippets/pricing.html:113
-msgid "Monthly"
-msgstr ""
-
-#: weblate_web/templates/donate/form.html:27
-msgid "Quarterly"
-msgstr ""
 
 #: weblate_web/templates/donate/form.html:30
 msgid "Every year"
@@ -868,7 +1003,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:21
 #, fuzzy
-#| msgid "Own translations"
 msgid "Quick Installation"
 msgstr "ترجمه های من"
 
@@ -882,7 +1016,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:25
 #, fuzzy
-#| msgid "Download Weblate"
 msgid "Download source code"
 msgstr "دریافت weblate"
 
@@ -918,7 +1051,6 @@ msgstr ""
 
 #: weblate_web/templates/download.html:51
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Bitnami Weblate stack"
 msgstr "کمک به وبلت"
 
@@ -974,7 +1106,6 @@ msgstr ""
 #: weblate_web/templates/features.html:32
 #: weblate_web/templates/features.html:37
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Weblate screenshot"
 msgstr "ویژگی های وبلت"
 
@@ -1010,7 +1141,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:55
 #, fuzzy
-#| msgid "Notifications"
 msgid "Smart Notifications"
 msgstr "اعلام ها"
 
@@ -1029,7 +1159,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:69
 #, fuzzy
-#| msgid "File formats"
 msgid "Multiple File Formats"
 msgstr "قالب های پرونده"
 
@@ -1041,7 +1170,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:76
 #, fuzzy
-#| msgid "Support"
 msgid "Branch Support"
 msgstr "حمایت"
 
@@ -1053,7 +1181,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:83
 #, fuzzy
-#| msgid "Translation projects"
 msgid "Translation Context"
 msgstr "پروژه های ترجمه"
 
@@ -1141,7 +1268,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:119
 #, fuzzy
-#| msgid "Glossary"
 msgid "Glossaries"
 msgstr "واژه نامه"
 
@@ -1159,7 +1285,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:133
 #, fuzzy
-#| msgid "Export and import"
 msgid "Export and Import"
 msgstr "درون ریزی و برون ریزی"
 
@@ -1194,7 +1319,6 @@ msgstr ""
 
 #: weblate_web/templates/features.html:161
 #, fuzzy
-#| msgid "Support"
 msgid "Language support"
 msgstr "حمایت"
 
@@ -1249,7 +1373,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "Weblate Pricing"
 msgstr "نماد وبلت"
 
@@ -1321,7 +1444,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:49
 #, fuzzy
-#| msgid "Translation projects"
 msgid "Translation addons"
 msgstr "پروژه های ترجمه"
 
@@ -1331,7 +1453,6 @@ msgstr "واژه نامه"
 
 #: weblate_web/templates/hosting.html:55
 #, fuzzy
-#| msgid "Translation projects"
 msgid "Translation memory"
 msgstr "پروژه های ترجمه"
 
@@ -1429,7 +1550,6 @@ msgstr "پیشتاز"
 #: weblate_web/templates/hosting.html:261
 #: weblate_web/templates/snippets/pricing.html:121
 #, fuzzy
-#| msgid "Support"
 msgctxt "Hosting plan"
 msgid "Self-hosted"
 msgstr "حمایت"
@@ -1451,7 +1571,6 @@ msgstr ""
 #: weblate_web/templates/hosting.html:310
 #: weblate_web/templates/snippets/pricing.html:146
 #, fuzzy
-#| msgid "Translation projects"
 msgid "for libre projects"
 msgstr "پروژه های ترجمه"
 
@@ -1495,21 +1614,18 @@ msgstr ""
 #: weblate_web/templates/hosting.html:418
 #: weblate_web/templates/hosting.html:493
 #, fuzzy
-#| msgid "Support"
 msgid "Buy support"
 msgstr "حمایت"
 
 #: weblate_web/templates/hosting.html:421
 #: weblate_web/templates/hosting.html:496
 #, fuzzy
-#| msgid "Download Weblate"
 msgid "or download Weblate"
 msgstr "دریافت weblate"
 
 #: weblate_web/templates/hosting.html:517
-#: weblate_web/templates/support.html:119
+#: weblate_web/templates/support.html:120
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Payment"
 msgstr "ویژگی های وبلت"
 
@@ -1533,7 +1649,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:527
 #, fuzzy
-#| msgid "Support"
 msgid "Join existing users and supporters"
 msgstr "حمایت"
 
@@ -1558,7 +1673,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:18 weblate_web/templates/index.html:52
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Explore all features"
 msgstr "ویژگی های وبلت"
 
@@ -1580,7 +1694,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:36
 #, fuzzy, python-format
-#| msgid "Own translations"
 msgid "%(count)s translation %(when)s"
 msgid_plural "%(count)s translations %(when)s"
 msgstr[0] "ترجمه های من"
@@ -1592,7 +1705,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:41
 #, fuzzy, python-format
-#| msgid "Own translations"
 msgid "%(count)s translation"
 msgid_plural "%(count)s translations"
 msgstr[0] "ترجمه های من"
@@ -1604,7 +1716,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:48
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Robust feature set"
 msgstr "ویژگی های وبلت"
 
@@ -1614,7 +1725,6 @@ msgstr ""
 
 #: weblate_web/templates/index.html:55
 #, fuzzy
-#| msgid "Support"
 msgid "Users and Supporters"
 msgstr "حمایت"
 
@@ -1626,13 +1736,11 @@ msgstr ""
 #: weblate_web/templates/news.html:11
 #: weblate_web/templates/weblate_web/post_archive.html:11
 #, fuzzy
-#| msgid "Weblate logo"
 msgid "Weblate Blog"
 msgstr "نماد وبلت"
 
 #: weblate_web/templates/news.html:19
 #, fuzzy
-#| msgid "View sources"
 msgid "View older articles"
 msgstr "نمایش منابع"
 
@@ -1640,7 +1748,6 @@ msgstr "نمایش منابع"
 #: weblate_web/templates/payment/payment.html:5
 #: weblate_web/templates/payment/pending.html:5
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Weblate payment"
 msgstr "ویژگی های وبلت"
 
@@ -1718,7 +1825,6 @@ msgstr ""
 
 #: weblate_web/templates/payment/payment.html:71
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Make Payment"
 msgstr "ویژگی های وبلت"
 
@@ -1732,13 +1838,11 @@ msgstr ""
 
 #: weblate_web/templates/payment/pending.html:41
 #, fuzzy
-#| msgid "Download Weblate"
 msgid "Download pro forma invoice"
 msgstr "دریافت weblate"
 
 #: weblate_web/templates/payment/pending.html:63
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Payment status"
 msgstr "ویژگی های وبلت"
 
@@ -1854,7 +1958,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/features-2.html:21
 #, fuzzy
-#| msgid "Free software"
 msgid "Libre Software"
 msgstr "نرم افزار آزاد"
 
@@ -1864,8 +1967,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/languages.html:14
 #, fuzzy
-#| msgctxt "Keyword"
-#| msgid "translate"
 msgid "Help translate"
 msgstr "ترجمه"
 
@@ -1961,7 +2062,6 @@ msgstr ""
 
 #: weblate_web/templates/snippets/pricing.html:145
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Gratis Weblate"
 msgstr "کمک به وبلت"
 
@@ -1976,13 +2076,11 @@ msgstr ""
 
 #: weblate_web/templates/snippets/users.html:9
 #, fuzzy
-#| msgid "Translation projects"
 msgid "See all projects"
 msgstr "پروژه های ترجمه"
 
 #: weblate_web/templates/snippets/users.html:10
 #, fuzzy
-#| msgid "Translation projects"
 msgid "See all supporters"
 msgstr "پروژه های ترجمه"
 
@@ -2031,7 +2129,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:22
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Bugs and feature requests"
 msgstr "ویژگی های وبلت"
 
@@ -2055,7 +2152,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:36
 #, fuzzy
-#| msgid "Support"
 msgid "Premium support"
 msgstr "حمایت"
 
@@ -2068,7 +2164,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:46
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr "کمک به وبلت"
 
@@ -2098,7 +2193,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:59 weblate_web/templates/support.html:71
 #, fuzzy
-#| msgid "Own translations"
 msgid "installation"
 msgstr "ترجمه های من"
 
@@ -2116,7 +2210,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
 #, fuzzy
-#| msgid "Support"
 msgid "Priority e-mail support."
 msgstr "حمایت"
 
@@ -2138,7 +2231,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:102
 #, fuzzy
-#| msgid "View documentation"
 msgid "Read more in the documentation."
 msgstr "نمایش اسناد"
 
@@ -2162,59 +2254,58 @@ msgstr ""
 msgid "hourly"
 msgstr ""
 
-#: weblate_web/templates/support.html:117
+#: weblate_web/templates/support.html:118
 msgid "Ask for help"
 msgstr ""
 
-#: weblate_web/templates/support.html:125
+#: weblate_web/templates/support.html:126
 msgid "Mailing lists"
 msgstr ""
 
-#: weblate_web/templates/support.html:127
+#: weblate_web/templates/support.html:128
 msgid "Users and developers"
-msgstr ""
-
-#: weblate_web/templates/support.html:130
-#: weblate_web/templates/support.html:143
-msgid "Your e-mail address…"
 msgstr ""
 
 #: weblate_web/templates/support.html:131
 #: weblate_web/templates/support.html:144
+msgid "Your e-mail address…"
+msgstr ""
+
+#: weblate_web/templates/support.html:132
+#: weblate_web/templates/support.html:145
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr ""
 
-#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:135
 msgid "Discuss Weblate with users and developers"
 msgstr ""
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:136
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 
-#: weblate_web/templates/support.html:136
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:137
+#: weblate_web/templates/support.html:150
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr ""
 
-#: weblate_web/templates/support.html:140
+#: weblate_web/templates/support.html:141
 #, fuzzy
-#| msgid "Weblate features"
 msgid "Hosted Weblate announcements"
 msgstr "ویژگی های وبلت"
 
-#: weblate_web/templates/support.html:147
+#: weblate_web/templates/support.html:148
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr ""
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:149
 msgid "Only premium service announcements"
 msgstr ""
 
-#: weblate_web/templates/support.html:155
+#: weblate_web/templates/support.html:156
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr ""
@@ -2243,7 +2334,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:4
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "User profile at Weblate"
 msgstr "کمک به وبلت"
 
@@ -2257,7 +2347,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:17
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your services"
 msgstr "کمک به وبلت"
 
@@ -2271,7 +2360,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:33
 #, fuzzy
-#| msgid "View documentation"
 msgid "Activation token"
 msgstr "نمایش اسناد"
 
@@ -2289,7 +2377,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:56
 #, fuzzy
-#| msgid "Server error"
 msgid "Server URL"
 msgstr "خطای سرور"
 
@@ -2332,7 +2419,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:97 weblate_web/templates/user.html:215
 #, fuzzy
-#| msgid "Own translations"
 msgid "Automatic renewal"
 msgstr "ترجمه های من"
 
@@ -2342,7 +2428,6 @@ msgstr ""
 
 #: weblate_web/templates/user.html:103
 #, fuzzy
-#| msgid "Donate"
 msgid "Renew now"
 msgstr "بخشش"
 
@@ -2372,13 +2457,11 @@ msgstr ""
 
 #: weblate_web/templates/user.html:162
 #, fuzzy
-#| msgid "Addons"
 msgid "Add"
 msgstr "افزونه ها"
 
 #: weblate_web/templates/user.html:168
 #, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Get more services"
 msgstr "کمک به وبلت"
 
@@ -2419,7 +2502,7 @@ msgid "Other topics"
 msgstr ""
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:446
+#: weblate_web/views.py:444
 msgid "Milestones"
 msgstr ""
 
@@ -2431,41 +2514,41 @@ msgstr ""
 msgid "Back to blog"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:40
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:47
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:48
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr ""
 
-#: weblate_web/templatetags/downloads.py:61
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr ""
 
@@ -2499,54 +2582,53 @@ msgctxt "123 translations ..."
 msgid "just now"
 msgstr ""
 
-#: weblate_web/views.py:85
+#: weblate_web/views.py:83
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
 
-#: weblate_web/views.py:152 weblate_web/views.py:191
+#: weblate_web/views.py:150 weblate_web/views.py:189
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:165
+#: weblate_web/views.py:163
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:186
+#: weblate_web/views.py:184
 msgid "Please choose a payment method."
 msgstr ""
 
-#: weblate_web/views.py:305
+#: weblate_web/views.py:303
 msgid "Payment not yet processed, please retry."
 msgstr ""
 
-#: weblate_web/views.py:309
+#: weblate_web/views.py:307
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:310
+#: weblate_web/views.py:308
 msgid "Unknown reason"
 msgstr ""
 
-#: weblate_web/views.py:315
+#: weblate_web/views.py:313
 msgid "Thank you for your subscription."
 msgstr ""
 
-#: weblate_web/views.py:318
+#: weblate_web/views.py:316
 msgid "Thank you for your donation."
 msgstr ""
 
-#: weblate_web/views.py:407
+#: weblate_web/views.py:405
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 
-#: weblate_web/views.py:411
+#: weblate_web/views.py:409
 msgid "Could not process subscription request."
 msgstr ""
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:545
 #, fuzzy
-#| msgid "Page not found"
 msgid "User not found!"
 msgstr "صفحه یافت نشد"
 
