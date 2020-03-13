@@ -261,7 +261,7 @@ class BackendTest(TestCase):
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id
         transaction[1]["column1"]["value"] = backend.payment.amount * 1.21
-        responses.add(responses.GET, FIO_API, body=json.dumps(received))
+        responses.replace(responses.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
         payment = self.check_payment(Payment.ACCEPTED)
         self.maxDiff = None
