@@ -18,10 +18,8 @@
 #
 
 import json
-import os
 from copy import copy
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
@@ -135,16 +133,6 @@ FIO_TRASACTIONS = {
 }
 
 
-def setup_dirs():
-    if settings.PAYMENT_FAKTURACE is None:
-        return
-    dirs = ("contacts", "data", "pdf", "tex", "config")
-    for name in dirs:
-        full = os.path.join(settings.PAYMENT_FAKTURACE, name)
-        if not os.path.exists(full):
-            os.makedirs(full)
-
-
 class ModelTest(SimpleTestCase):
     def test_vat(self):
         customer = Customer()
@@ -204,7 +192,6 @@ class BackendTest(TestCase):
         self.payment = Payment.objects.create(
             customer=self.customer, amount=100, description="Test Item"
         )
-        setup_dirs()
 
     def check_payment(self, state):
         payment = Payment.objects.get(pk=self.payment.pk)
