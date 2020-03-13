@@ -192,7 +192,9 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.amount_without_vat, 100)
 
 
-@override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
+@override_settings(
+    PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE, FIO_TOKEN="test-token"
+)
 class BackendTest(TestCase):
     databases = "__all__"
 
