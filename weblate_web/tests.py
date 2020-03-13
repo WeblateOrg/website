@@ -81,6 +81,10 @@ class ViewTestCase(PostTestCase):
         response = self.client.get("/en/terms/")
         self.assertContains(response, "04705904")
 
+    def test_security_txt(self):
+        response = self.client.get("/security.txt")
+        self.assertContains(response, "https://hackerone.com/weblate")
+
     def test_download_en(self):
         # create dummy files for testing
         filenames = ["Weblate-{0}.{1}".format(VERSION, ext) for ext in EXTENSIONS]

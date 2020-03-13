@@ -288,6 +288,10 @@ urlpatterns = i18n_patterns(
         r"^browserconfig\.xml$", TemplateView.as_view(template_name="browserconfig.xml")
     ),
     url(r"^site\.webmanifest$", TemplateView.as_view(template_name="site.webmanifest")),
+    url(
+        r"^security\.txt$",
+        TemplateView.as_view(template_name="security.txt", content_type="text/plain"),
+    ),
     # Admin
     url(
         r"^admin/login/$",
