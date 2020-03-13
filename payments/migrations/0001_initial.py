@@ -5,9 +5,9 @@ import uuid
 import django.db.models.deletion
 import vies.models
 import vies.validators
-import weblate.utils.fields
-import weblate.utils.validators
 from django.db import migrations, models
+
+import payments.utils
 
 
 class Migration(migrations.Migration):
@@ -47,8 +47,7 @@ class Migration(migrations.Migration):
                 (
                     "email",
                     models.EmailField(
-                        max_length=190,
-                        validators=[weblate.utils.validators.validate_email],
+                        max_length=190, validators=[payments.utils.validate_email],
                     ),
                 ),
                 ("origin", models.URLField(max_length=300)),
@@ -81,9 +80,9 @@ class Migration(migrations.Migration):
                 ("paid", models.BooleanField(default=False)),
                 ("handled", models.BooleanField(default=False)),
                 ("processor", models.CharField(default="", max_length=100)),
-                ("details", weblate.utils.fields.JSONField(editable=False)),
-                ("extra", weblate.utils.fields.JSONField(editable=False)),
-                ("repeat", weblate.utils.fields.JSONField(editable=False)),
+                ("details", payments.utils.JSONField(editable=False)),
+                ("extra", payments.utils.JSONField(editable=False)),
+                ("repeat", payments.utils.JSONField(editable=False)),
                 ("invoice", models.CharField(blank=True, default="", max_length=20)),
                 (
                     "customer",

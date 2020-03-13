@@ -29,12 +29,11 @@ from django.utils.functional import cached_property
 from django.utils.translation import get_language, gettext_lazy
 from django_countries.fields import CountryField
 from vies.models import VATINField
-from weblate.utils.fields import JSONField
-from weblate.utils.validators import validate_email
 
 from appconf import AppConf
 
 from .data import SUPPORTED_LANGUAGES
+from .utils import JSONField, validate_email
 from .validators import validate_vatin
 
 EU_VAT_RATES = {
