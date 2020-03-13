@@ -18,7 +18,6 @@
 #
 
 from django import forms
-
 from vies.forms.fields import VATINField
 from vies.forms.widgets import VATINWidget
 from vies.types import VIES_COUNTRY_CHOICES

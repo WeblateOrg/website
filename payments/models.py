@@ -27,12 +27,12 @@ from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.functional import cached_property
 from django.utils.translation import get_language, gettext_lazy
+from django_countries.fields import CountryField
+from vies.models import VATINField
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
 
 from appconf import AppConf
-from django_countries.fields import CountryField
-from vies.models import VATINField
 
 from .data import SUPPORTED_LANGUAGES
 from .validators import validate_vatin

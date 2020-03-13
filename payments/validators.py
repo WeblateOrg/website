@@ -2,8 +2,9 @@ import sentry_sdk
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
-from suds import WebFault
 from vies.types import VATIN
+
+from suds import WebFault
 
 
 def cache_vies_data(value):
