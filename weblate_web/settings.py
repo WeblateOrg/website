@@ -239,7 +239,7 @@ INSTALLED_APPS = (
     "django.contrib.humanize",
     "wlhosted",
     "wlhosted.payments",
-    "wlhosted.legal",
+    "wllegal",
     "django_countries",
     "macros",
 )
