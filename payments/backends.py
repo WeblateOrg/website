@@ -23,19 +23,20 @@ import re
 import subprocess
 from math import floor
 
-import fiobank
-import thepay.config
-import thepay.dataApi
-import thepay.gateApi
-import thepay.payment
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
 from django.utils.translation import gettext, gettext_lazy, override
+
+import fiobank
+import thepay.config
+import thepay.dataApi
+import thepay.gateApi
+import thepay.payment
 from fakturace.storage import InvoiceStorage, ProformaStorage
 
-from wlhosted.payments.models import Payment
+from .models import Payment
 
 BACKENDS = {}
 PROFORMA_RE = re.compile("20[0-9]{7}")
@@ -82,11 +83,11 @@ class Backend:
         return "payment/{}.png".format(self.name)
 
     def perform(self, request, back_url, complete_url):
-        """Performs payment and optionally redirects user."""
+        """Perform payment and optionally redirects user."""
         raise NotImplementedError()
 
     def collect(self, request):
-        """Collects payment information."""
+        """Collect payment information."""
         raise NotImplementedError()
 
     def get_instructions(self):
@@ -94,7 +95,7 @@ class Backend:
         return []
 
     def initiate(self, request, back_url, complete_url):
-        """Initiates payment and optionally redirects user."""
+        """Initiate payment and optionally redirects user."""
         if self.payment.state != Payment.NEW:
             raise InvalidState()
 
@@ -125,7 +126,7 @@ class Backend:
         return False
 
     def generate_invoice(self, storage_class=InvoiceStorage, paid=True):
-        """Generates an invoice."""
+        """Generate an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
             return
         storage = storage_class(settings.PAYMENT_FAKTURACE)

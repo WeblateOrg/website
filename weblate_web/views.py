@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright © 2012–2020 Michal Čihař <michal@cihar.com>
 #
@@ -38,11 +37,11 @@ from django.views.decorators.http import require_POST
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
-from wlhosted.payments.backends import get_backend, list_backends
-from wlhosted.payments.forms import CustomerForm
-from wlhosted.payments.models import Customer, Payment
-from wlhosted.payments.validators import cache_vies_data, validate_vatin
 
+from payments.backends import get_backend, list_backends
+from payments.forms import CustomerForm
+from payments.models import Customer, Payment
+from payments.validators import cache_vies_data, validate_vatin
 from weblate_web.forms import (
     DonateForm,
     EditImageForm,

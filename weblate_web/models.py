@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright © 2012–2020 Michal Čihař <michal@cihar.com>
 #
@@ -34,7 +33,8 @@ from django.utils.translation import gettext as _
 from django.utils.translation import ugettext_lazy
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
-from wlhosted.payments.models import Payment, get_period_delta
+
+from payments.models import Payment, get_period_delta
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 

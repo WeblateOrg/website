@@ -27,9 +27,9 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
-from wlhosted.payments.backends import FioBank, InvalidState, get_backend, list_backends
-from wlhosted.payments.models import Customer, Payment
-from wlhosted.payments.validators import validate_vatin
+from .backends import FioBank, InvalidState, get_backend, list_backends
+from .models import Customer, Payment
+from .validators import validate_vatin
 
 CUSTOMER = {
     "name": "Michal Čihař",

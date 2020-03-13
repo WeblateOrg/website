@@ -19,7 +19,7 @@
 
 from django.contrib import admin
 
-from wlhosted.payments.models import Customer, Payment
+from .models import Customer, Payment
 
 
 class CustomerAdmin(admin.ModelAdmin):

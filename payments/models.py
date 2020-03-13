@@ -21,20 +21,21 @@ import os.path
 import uuid
 
 import requests
-from appconf import AppConf
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.functional import cached_property
 from django.utils.translation import get_language, gettext_lazy
-from django_countries.fields import CountryField
-from vies.models import VATINField
 from weblate.utils.fields import JSONField
 from weblate.utils.validators import validate_email
 
-from wlhosted.data import SUPPORTED_LANGUAGES
-from wlhosted.payments.validators import validate_vatin
+from appconf import AppConf
+from django_countries.fields import CountryField
+from vies.models import VATINField
+
+from .data import SUPPORTED_LANGUAGES
+from .validators import validate_vatin
 
 EU_VAT_RATES = {
     "BE": 21,
@@ -241,7 +242,7 @@ class Payment(models.Model):
 
     def repeat_payment(self, **kwargs):
         # Check if backend is still valid
-        from wlhosted.payments.backends import get_backend
+        from .backends import get_backend
 
         try:
             get_backend(self.backend)

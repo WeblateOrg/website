@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright © 2012–2020 Michal Čihař <michal@cihar.com>
 #
@@ -62,7 +61,7 @@ DATABASES = {
         "PORT": "",
     },
 }
-DATABASE_ROUTERS = ["wlhosted.dbrouter.HostedRouter"]
+DATABASE_ROUTERS = ["payments.dbrouter.HostedRouter"]
 
 # Test execution on Scrutinizer CI
 if "SCRUTINIZER" in os.environ:
@@ -237,8 +236,7 @@ INSTALLED_APPS = (
     "django.contrib.messages",
     "django.contrib.admin",
     "django.contrib.humanize",
-    "wlhosted",
-    "wlhosted.payments",
+    "payments",
     "wllegal",
     "django_countries",
     "macros",

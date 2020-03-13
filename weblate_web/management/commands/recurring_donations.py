@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright © 2012–2020 Michal Čihař <michal@cihar.com>
 #
@@ -22,8 +21,8 @@ from datetime import timedelta
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from wlhosted.payments.models import Payment
 
+from payments.models import Payment
 from weblate_web.models import Donation, Service, Subscription
 
 

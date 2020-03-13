@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright © 2012–2020 Michal Čihař <michal@cihar.com>
 #
@@ -22,9 +21,9 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-from wlhosted.payments.backends import FioBank
-from wlhosted.payments.models import Payment
 
+from payments.backends import FioBank
+from payments.models import Payment
 from weblate_web.models import (
     PAYMENTS_ORIGIN,
     Donation,

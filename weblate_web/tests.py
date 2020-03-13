@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import shutil
 import tempfile
@@ -17,9 +15,9 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
-from wlhosted.data import SUPPORTED_LANGUAGES
-from wlhosted.payments.models import Customer, Payment
 
+from payments.data import SUPPORTED_LANGUAGES
+from payments.models import Customer, Payment
 from weblate_web.data import EXTENSIONS, VERSION
 from weblate_web.models import PAYMENTS_ORIGIN, Donation, Image, Post
 from weblate_web.templatetags.downloads import downloadlink, filesizeformat

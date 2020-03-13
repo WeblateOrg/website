@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright © 2012–2020 Michal Čihař <michal@cihar.com>
 #
@@ -19,9 +18,9 @@
 #
 
 from django import forms
-from wlhosted.payments.backends import list_backends
-from wlhosted.payments.models import RECURRENCE_CHOICES
 
+from payments.backends import list_backends
+from payments.models import RECURRENCE_CHOICES
 from weblate_web.models import REWARDS, Donation
 
 
