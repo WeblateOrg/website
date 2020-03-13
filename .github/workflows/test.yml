@@ -43,7 +43,7 @@ jobs:
       run: |
         ./scripts/generate-locales
         ./manage.py check
-        python -Wd -m coverage run --source=. ./manage.py test weblate_web
+        coverage run ./manage.py test
     - name: Coverage
       run: |
         coverage combine
