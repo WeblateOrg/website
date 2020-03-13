@@ -315,6 +315,7 @@ class DonationTest(FakturaceTestCase):
         )
         self.assertContains(response, "Thank you for your donation.")
 
+    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_donation_workflow_card(self):
         self.login()
         response = self.client.post(
@@ -360,6 +361,7 @@ class DonationTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
 
+    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_donation_workflow_bank(self):
         self.login()
         response = self.client.post(
