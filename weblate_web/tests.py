@@ -324,9 +324,13 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "Please provide your billing")
         payment = Payment.objects.all().get()
         customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
+        payment_url = reverse("payment", kwargs={"pk": payment.uuid})
         self.assertRedirects(response, customer_url)
-        response = self.client.post(customer_url, TEST_CUSTOMER, follow=True,)
+        response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
         self.assertContains(response, "Please choose payment method")
+        response = self.client.post(payment_url, {"method": "thepay-card"})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))
 
     def test_your_donations(self):
         # Check login link
