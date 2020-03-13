@@ -3,6 +3,7 @@ import shutil
 import tempfile
 from xml.etree import ElementTree
 
+import requests
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -314,7 +315,7 @@ class DonationTest(FakturaceTestCase):
         )
         self.assertContains(response, "Thank you for your donation.")
 
-    def test_donation_workflow(self):
+    def test_donation_workflow_card(self):
         self.login()
         response = self.client.post(
             "/en/donate/new/",
@@ -323,6 +324,7 @@ class DonationTest(FakturaceTestCase):
         )
         self.assertContains(response, "Please provide your billing")
         payment = Payment.objects.all().get()
+        self.assertEqual(payment.state, Payment.NEW)
         customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
         payment_url = reverse("payment", kwargs={"pk": payment.uuid})
         self.assertRedirects(response, customer_url)
@@ -331,6 +333,53 @@ class DonationTest(FakturaceTestCase):
         response = self.client.post(payment_url, {"method": "thepay-card"})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PENDING)
+
+        # Perform the payment
+        response = requests.get(response.url)
+        response = requests.get(response.url[:-1] + "p")
+        body = response.content.decode()
+        self.assertIn("Číslo platby", body)
+        for line in body.splitlines():
+            if '<input type="hidden" name="id"' in line:
+                payment_number = line.split('value="')[1].split('"')[0]
+        # Confirm payment state
+        response = requests.post(
+            "https://www.thepay.cz/demo-gate/return.php",
+            data={"state": 2, "underpaid_value": 1, "id": payment_number},
+            allow_redirects=False,
+        )
+
+        # Back to our web
+        response = self.client.get(response.headers["Location"], follow=True)
+        self.assertRedirects(response, "/en/user/")
+        self.assertContains(response, "Thank you for your donation")
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PROCESSED)
+
+    def test_donation_workflow_bank(self):
+        self.login()
+        response = self.client.post(
+            "/en/donate/new/",
+            {"recurring": "y", "amount": 10, "reward": 0},
+            follow=True,
+        )
+        self.assertContains(response, "Please provide your billing")
+        payment = Payment.objects.all().get()
+        self.assertEqual(payment.state, Payment.NEW)
+        customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
+        payment_url = reverse("payment", kwargs={"pk": payment.uuid})
+        self.assertRedirects(response, customer_url)
+        response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
+        self.assertContains(response, "Please choose payment method")
+        response = self.client.post(payment_url, {"method": "fio-bank"}, follow=True)
+        self.assertContains(response, "Payment Instructions")
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PENDING)
 
     def test_your_donations(self):
         # Check login link
