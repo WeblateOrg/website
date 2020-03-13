@@ -19,7 +19,7 @@ import responses
 from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
 from weblate_web.data import EXTENSIONS, VERSION
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Post
+from weblate_web.models import PAYMENTS_ORIGIN, Donation, Package, Post
 from weblate_web.templatetags.downloads import downloadlink, filesizeformat
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), "test-data")
@@ -41,6 +41,22 @@ def fake_remote():
     cache.set("wlweb-contributors", [])
     cache.set("wlweb-activity-stats", [])
     cache.set("wlweb-changes-list", [])
+
+
+def fake_payment(url):
+    response = requests.get(url)
+    response = requests.get(response.url[:-1] + "p")
+    body = response.content.decode()
+    for line in body.splitlines():
+        if '<input type="hidden" name="id"' in line:
+            payment_number = line.split('value="')[1].split('"')[0]
+    # Confirm payment state
+    response = requests.post(
+        "https://www.thepay.cz/demo-gate/return.php",
+        data={"state": 2, "underpaid_value": 1, "id": payment_number},
+        allow_redirects=False,
+    )
+    return response.headers["Location"]
 
 
 class PostTestCase(TestCase):
@@ -316,6 +332,38 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "Thank you for your donation.")
 
     @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    def test_service_workflow_card(self):
+        self.login()
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        Package.objects.create(name="extended", verbose="Extended support", price=42)
+        response = self.client.get("/en/subscription/new/?plan=extended", follow=True)
+        self.assertContains(response, "Please provide your billing")
+        payment = Payment.objects.all().get()
+        self.assertEqual(payment.state, Payment.NEW)
+        customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
+        payment_url = reverse("payment", kwargs={"pk": payment.uuid})
+        self.assertRedirects(response, customer_url)
+        response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
+        self.assertContains(response, "Please choose payment method")
+        response = self.client.post(payment_url, {"method": "thepay-card"})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PENDING)
+
+        # Perform the payment
+        complete_url = fake_payment(response.url)
+
+        # Back to our web
+        response = self.client.get(complete_url, follow=True)
+        self.assertRedirects(response, "/en/user/")
+        self.assertContains(response, "Thank you for your subscription")
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PROCESSED)
+
+    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_donation_workflow_card(self):
         self.login()
         response = self.client.post(
@@ -339,22 +387,10 @@ class DonationTest(FakturaceTestCase):
         self.assertEqual(payment.state, Payment.PENDING)
 
         # Perform the payment
-        response = requests.get(response.url)
-        response = requests.get(response.url[:-1] + "p")
-        body = response.content.decode()
-        self.assertIn("Číslo platby", body)
-        for line in body.splitlines():
-            if '<input type="hidden" name="id"' in line:
-                payment_number = line.split('value="')[1].split('"')[0]
-        # Confirm payment state
-        response = requests.post(
-            "https://www.thepay.cz/demo-gate/return.php",
-            data={"state": 2, "underpaid_value": 1, "id": payment_number},
-            allow_redirects=False,
-        )
+        complete_url = fake_payment(response.url)
 
         # Back to our web
-        response = self.client.get(response.headers["Location"], follow=True)
+        response = self.client.get(complete_url, follow=True)
         self.assertRedirects(response, "/en/user/")
         self.assertContains(response, "Thank you for your donation")
 
