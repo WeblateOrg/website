@@ -21,11 +21,12 @@ import json
 import os
 from copy import copy
 
-import httpretty
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
+
+import responses
 
 from .backends import FioBank, InvalidState, get_backend, list_backends
 from .models import Customer, Payment
@@ -245,7 +246,7 @@ class BackendTest(TestCase):
         backends = list_backends()
         self.assertGreater(len(backends), 0)
 
-    @httpretty.activate
+    @responses.activate
     @override_settings(PAYMENT_DEBUG=True)
     def test_proforma(self):
         backend = get_backend("fio-bank")(self.payment)
@@ -253,7 +254,7 @@ class BackendTest(TestCase):
         self.check_payment(Payment.PENDING)
         self.assertFalse(backend.complete(None))
         self.check_payment(Payment.PENDING)
-        httpretty.register_uri(httpretty.GET, FIO_API, body=json.dumps(FIO_TRASACTIONS))
+        responses.add(responses.GET, FIO_API, body=json.dumps(FIO_TRASACTIONS))
         FioBank.fetch_payments()
         self.check_payment(Payment.PENDING)
         received = copy(FIO_TRASACTIONS)
@@ -262,7 +263,7 @@ class BackendTest(TestCase):
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id
         transaction[1]["column1"]["value"] = backend.payment.amount * 1.21
-        httpretty.register_uri(httpretty.GET, FIO_API, body=json.dumps(received))
+        responses.add(responses.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
         payment = self.check_payment(Payment.ACCEPTED)
         self.maxDiff = None

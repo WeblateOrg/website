@@ -3,7 +3,6 @@ import shutil
 import tempfile
 from xml.etree import ElementTree
 
-import httpretty
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -16,6 +15,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
 
+import responses
 from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
 from weblate_web.data import EXTENSIONS, VERSION
@@ -354,12 +354,13 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "https://example.com/weblate")
         self.assertContains(response, "Weblate donation test")
 
+    @responses.activate
     @override_settings(
         PAYMENT_DEBUG=True, PAYMENT_REDIRECT_URL="http://example.com/payment",
     )
     def test_recurring(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://example.com/payment", body="",
+        responses.add(
+            responses.POST, "http://example.com/payment", body="",
         )
         donation = self.create_donation(-1)
         self.assertEqual(donation.payment_obj.payment_set.count(), 0)
