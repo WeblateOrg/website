@@ -192,6 +192,7 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.amount_without_vat, 100)
 
 
+@override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
 class BackendTest(TestCase):
     databases = "__all__"
 
@@ -208,7 +209,6 @@ class BackendTest(TestCase):
         self.assertEqual(payment.state, state)
         return payment
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_pay(self):
         backend = get_backend("pay")(self.payment)
         self.assertIsNone(backend.initiate(None, "", ""))
@@ -216,7 +216,6 @@ class BackendTest(TestCase):
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_reject(self):
         backend = get_backend("reject")(self.payment)
         self.assertIsNone(backend.initiate(None, "", ""))
@@ -224,7 +223,6 @@ class BackendTest(TestCase):
         self.assertFalse(backend.complete(None))
         self.check_payment(Payment.REJECTED)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_pending(self):
         backend = get_backend("pending")(self.payment)
         self.assertIsNotNone(backend.initiate(None, "", ""))
@@ -232,7 +230,6 @@ class BackendTest(TestCase):
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_assertions(self):
         backend = get_backend("pending")(self.payment)
         backend.payment.state = Payment.PENDING
@@ -242,13 +239,11 @@ class BackendTest(TestCase):
         with self.assertRaises(InvalidState):
             backend.complete(None)
 
-    @override_settings(PAYMENT_DEBUG=True)
     def test_list(self):
         backends = list_backends()
         self.assertGreater(len(backends), 0)
 
     @responses.activate
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_proforma(self):
         backend = get_backend("fio-bank")(self.payment)
         self.assertIsNotNone(backend.initiate(None, "", "/complete/"))
