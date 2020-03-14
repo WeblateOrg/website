@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-13 11:59+0100\n"
+"POT-Creation-Date: 2020-03-14 13:40+0100\n"
 "PO-Revision-Date: 2020-03-14 12:38+0000\n"
 "Last-Translator: amano <amano.hajime@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -145,58 +145,58 @@ msgstr "IBAN"
 msgid "Reference"
 msgstr "参照"
 
-#: payments/models.py:79
+#: payments/models.py:78
 msgid "European VAT ID"
 msgstr "欧州 VAT ID"
 
-#: payments/models.py:81
+#: payments/models.py:80
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "欧州連合（EU）の VAT ID を記入してください。適用外の場合は空欄にしてくださ"
 "い。"
 
-#: payments/models.py:87
+#: payments/models.py:86
 msgid "Tax registration"
 msgstr "税務登録"
 
-#: payments/models.py:89
+#: payments/models.py:88
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "請求書に記載する場合は税務登録を記入してください。"
 
-#: payments/models.py:96
+#: payments/models.py:95
 msgid "Company or individual name"
 msgstr "会社名または個人名"
 
-#: payments/models.py:99
+#: payments/models.py:98
 msgid "Address"
 msgstr "住所"
 
-#: payments/models.py:102
+#: payments/models.py:101
 msgid "Postcode and city"
 msgstr "郵便番号と市区町村"
 
-#: payments/models.py:104
+#: payments/models.py:103
 msgid "Country"
 msgstr "国"
 
-#: payments/models.py:132
+#: payments/models.py:131
 msgid "The country has to match your VAT code"
 msgstr "国の VAT コードに一致する必要があります"
 
-#: payments/models.py:155
+#: payments/models.py:154
 msgid "Annual"
 msgstr "年間"
 
-#: payments/models.py:156
+#: payments/models.py:155
 msgid "Biannual"
 msgstr "半年間"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:156 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "四半期ごと"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:157 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:358
 #: weblate_web/templates/hosting.html:368
 #: weblate_web/templates/hosting.html:380
@@ -209,25 +209,31 @@ msgstr "四半期ごと"
 msgid "Monthly"
 msgstr "月払い"
 
-#: payments/models.py:159
+#: payments/models.py:158
 msgid "Onetime"
 msgstr "一括払い"
 
-#: payments/validators.py:38
+#: payments/utils.py:44 payments/utils.py:47
+#, fuzzy
+#| msgid "Your e-mail address…"
+msgid "Enter a valid e-mail address."
+msgstr "メールアドレスを入力してください…"
+
+#: payments/validators.py:39
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} は、欧州連合加盟国の有効な国コードではありません。"
 
-#: payments/validators.py:43
+#: payments/validators.py:44
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} は、国の VAT ID 仕様と一致しません。"
 
-#: payments/validators.py:50
+#: payments/validators.py:51
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
 "{} の VAT ID 検証サービスは利用できません。しばらくしてから再試行してくださ"
 "い。"
 
-#: payments/validators.py:53
+#: payments/validators.py:54
 msgid "{} is not a valid VAT ID."
 msgstr "{} は、有効な VAT ID ではありません。"
 
@@ -293,31 +299,31 @@ msgstr "URL リンク"
 msgid "Link image"
 msgstr "リンク 画像"
 
-#: weblate_web/models.py:300
+#: weblate_web/models.py:304
 msgid "Community support"
 msgstr "コミュニティによるサポート"
 
-#: weblate_web/models.py:301
+#: weblate_web/models.py:305
 msgid "Hosted service"
 msgstr "ホスティング サービス"
 
-#: weblate_web/models.py:302 weblate_web/templates/support.html:76
+#: weblate_web/models.py:306 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "お客様のサーバへの基本サポート"
 
-#: weblate_web/models.py:303 weblate_web/templates/support.html:86
+#: weblate_web/models.py:307 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "お客様のサーバへの追加サポート"
 
-#: weblate_web/models.py:402
+#: weblate_web/models.py:406
 msgid "Basic support"
 msgstr "基本的なサポート"
 
-#: weblate_web/models.py:405
+#: weblate_web/models.py:409
 msgid "Extended support"
 msgstr "広範囲なサポート"
 
-#: weblate_web/models.py:407 weblate_web/templates/support.html:97
+#: weblate_web/models.py:411 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "バックアップ サービス"
 
@@ -594,9 +600,11 @@ msgid "Career at Weblate"
 msgstr "Webate で経歴を積む"
 
 #: weblate_web/templates/careers.html:14
-msgid ""
-"Weblate. the libre localization platform, wants you to become member of the "
-"team!"
+#, fuzzy
+#| msgid ""
+#| "Weblate. the libre localization platform, wants you to become member of "
+#| "the team!"
+msgid "Weblate, the libre localization platform, wants you on the team!"
 msgstr ""
 "Weblate、リブレな現地語化プラットフォームです。チームのメンバーを募集していま"
 "す！"
@@ -607,15 +615,19 @@ msgid "Learn more"
 msgstr "詳細情報"
 
 #: weblate_web/templates/careers.html:23
-msgid "Frontend developer"
+#, fuzzy
+#| msgid "Frontend developer"
+msgid "Front-end developer"
 msgstr "フロントエンド開発者"
 
 #: weblate_web/templates/careers.html:26
-msgid "Improve Weblate's user experience and make all users happier."
-msgstr "Weblate のユーザ体験を向上させ、すべての利用者を満足させます。"
+msgid "Implement your knowledge in the user experience."
+msgstr ""
 
 #: weblate_web/templates/careers.html:27
-msgid "Bring modern frontend technologies to Weblate."
+#, fuzzy
+#| msgid "Bring modern frontend technologies to Weblate."
+msgid "Bring modern front-end technologies to Weblate."
 msgstr "Weblate に最新のフロントエンド テクノロジをもたらします。"
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
@@ -627,14 +639,21 @@ msgid "Python developer"
 msgstr "Python 開発者"
 
 #: weblate_web/templates/careers.html:36
-msgid "Tuneup the backend and libraries we rely on and save time to all users."
+#, fuzzy
+#| msgid ""
+#| "Tuneup the backend and libraries we rely on and save time to all users."
+msgid "Tune up the back-end and libraries and save time for all users."
 msgstr ""
 "依存しているバックエンドとライブラリを調整し、すべての利用者の時間を削減しま"
 "す。"
 
 #: weblate_web/templates/careers.html:37
+#, fuzzy
+#| msgid ""
+#| "Implement support for new features, file formats or integration with "
+#| "third party services."
 msgid ""
-"Implement support for new features, file formats or integration with third "
+"Implement support for new features, file formats or integration with third-"
 "party services."
 msgstr ""
 "新機能、ファイル形式、またはサードパーティ サービスとの統合のサポートを実装し"
@@ -1991,25 +2010,33 @@ msgid "Contribute with us"
 msgstr "Weblate を支援"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what "
+#| "we are looking for."
 msgid ""
-"Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what we "
-"are looking for."
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
 msgstr ""
 "<a href=\"%(issues)s\">未解決の問題</a>を確認して、私たちが求めているものの詳"
 "細を把握します。"
 
 #: weblate_web/templates/snippets/career.html:3
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Show us your abilities if you want by picking up an issue from the list. "
+#| "Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
 msgid ""
-"Show us your abilities if you want by picking up an issue from the list. "
-"Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
+"Show us your abilities by picking up an issue from the list. Unsure what to "
+"choose? Try <a href=\"%(issue)s\">this one</a>."
 msgstr ""
 "リストから問題を選択したなら、能力を披露してください。迷った場合、<a href="
 "\"%(issue)s\">この問題</a>はどうでしょうか。"
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "We're open source, all our issues are open to public."
+#, fuzzy
+#| msgid "We're open source, all our issues are open to public."
+msgid "It is all libre software, all our issues are open to public."
 msgstr "私たちはオープン ソースであり、すべての問題は公開しています。"
 
 #: weblate_web/templates/snippets/career.html:5
@@ -2624,69 +2651,69 @@ msgstr "関連記事"
 msgid "Back to blog"
 msgstr "ブログに戻る"
 
-#: weblate_web/templatetags/downloads.py:39
+#: weblate_web/templatetags/downloads.py:38
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d bytes"
 
-#: weblate_web/templatetags/downloads.py:43
+#: weblate_web/templatetags/downloads.py:42
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:44
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:46
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:53
+#: weblate_web/templatetags/downloads.py:52
 msgid "Sources tarball, bzip2 compressed"
 msgstr "ソース tarball、bzip2 圧縮"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:54
 msgid "Sources tarball, gzip compressed"
 msgstr "ソース tarball、gzip 圧縮"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:56
 msgid "Sources tarball, xz compressed"
 msgstr "ソース tarball、xz 圧縮"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:58
 msgid "Sources, zip compressed"
 msgstr "ソース、zip 圧縮"
 
-#: weblate_web/templatetags/timestamps.py:32
+#: weblate_web/templatetags/timestamps.py:31
 msgctxt "123 translations ..."
 msgid "this month"
 msgstr "今月"
 
-#: weblate_web/templatetags/timestamps.py:34
+#: weblate_web/templatetags/timestamps.py:33
 msgctxt "123 translations ..."
 msgid "this week"
 msgstr "今週"
 
-#: weblate_web/templatetags/timestamps.py:36
+#: weblate_web/templatetags/timestamps.py:35
 msgctxt "123 translations ..."
 msgid "yesterday"
 msgstr "昨日"
 
-#: weblate_web/templatetags/timestamps.py:38
+#: weblate_web/templatetags/timestamps.py:37
 msgctxt "123 translations ..."
 msgid "today"
 msgstr "今日"
 
-#: weblate_web/templatetags/timestamps.py:40
+#: weblate_web/templatetags/timestamps.py:39
 msgctxt "123 translations ..."
 msgid "recently"
 msgstr "最近"
 
-#: weblate_web/templatetags/timestamps.py:41
+#: weblate_web/templatetags/timestamps.py:40
 msgctxt "123 translations ..."
 msgid "just now"
 msgstr "先ほど"
@@ -2741,6 +2768,9 @@ msgstr "サブスクリプションの処理に失敗しました。"
 #: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "利用者が見つかりません！"
+
+#~ msgid "Improve Weblate's user experience and make all users happier."
+#~ msgstr "Weblate のユーザ体験を向上させ、すべての利用者を満足させます。"
 
 #~ msgid ""
 #~ "Weblate is a copylefted libre software with community support. "

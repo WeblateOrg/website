@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-13 11:59+0100\n"
+"POT-Creation-Date: 2020-03-14 13:40+0100\n"
 "PO-Revision-Date: 2020-03-14 12:38+0000\n"
 "Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/weblate/website/"
@@ -144,57 +144,57 @@ msgstr "IBAN"
 msgid "Reference"
 msgstr "Referans"
 
-#: payments/models.py:79
+#: payments/models.py:78
 msgid "European VAT ID"
 msgstr "Avrupa KDV Kimliği"
 
-#: payments/models.py:81
+#: payments/models.py:80
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Lütfen Avrupa Birliği KDV numaranızı doldurun, uygun değilse boş bırakın."
 
-#: payments/models.py:87
+#: payments/models.py:86
 msgid "Tax registration"
 msgstr "Vergi kaydı"
 
-#: payments/models.py:89
+#: payments/models.py:88
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "Lütfen faturada görünmesi halinde vergi kaydınızı doldurun."
 
-#: payments/models.py:96
+#: payments/models.py:95
 msgid "Company or individual name"
 msgstr "Şirket veya birey adı"
 
-#: payments/models.py:99
+#: payments/models.py:98
 msgid "Address"
 msgstr "Adres"
 
-#: payments/models.py:102
+#: payments/models.py:101
 msgid "Postcode and city"
 msgstr "Posta Kodu ve şehir"
 
-#: payments/models.py:104
+#: payments/models.py:103
 msgid "Country"
 msgstr "Ülke"
 
-#: payments/models.py:132
+#: payments/models.py:131
 msgid "The country has to match your VAT code"
 msgstr "Ülke KDV kodunuzu eşleştirmeli"
 
-#: payments/models.py:155
+#: payments/models.py:154
 msgid "Annual"
 msgstr "Yıllık"
 
-#: payments/models.py:156
+#: payments/models.py:155
 msgid "Biannual"
 msgstr "yılda iki defa"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:156 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "Üç aylık"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:157 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:358
 #: weblate_web/templates/hosting.html:368
 #: weblate_web/templates/hosting.html:380
@@ -207,26 +207,32 @@ msgstr "Üç aylık"
 msgid "Monthly"
 msgstr "Aylık"
 
-#: payments/models.py:159
+#: payments/models.py:158
 msgid "Onetime"
 msgstr "Bir kere"
 
-#: payments/validators.py:38
+#: payments/utils.py:44 payments/utils.py:47
+#, fuzzy
+#| msgid "Your e-mail address…"
+msgid "Enter a valid e-mail address."
+msgstr "E-posta adresiniz…"
+
+#: payments/validators.py:39
 msgid "{} is not a valid country code for any European Union member."
 msgstr ""
 "{} herhangi bir Avrupa Birliği üyesi için geçerli bir ülke kodu değildir."
 
-#: payments/validators.py:43
+#: payments/validators.py:44
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} ülkenin KDV Numarası özelliklerine uymuyor."
 
-#: payments/validators.py:50
+#: payments/validators.py:51
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
 "{} İçin kullanılamayan KDV Kimlik doğrulama servisi, lütfen daha sonra "
 "tekrar deneyin."
 
-#: payments/validators.py:53
+#: payments/validators.py:54
 msgid "{} is not a valid VAT ID."
 msgstr "{} geçerli bir KDV Kimliği değildir."
 
@@ -292,31 +298,31 @@ msgstr "URL Link"
 msgid "Link image"
 msgstr "Resim bağlantısı"
 
-#: weblate_web/models.py:300
+#: weblate_web/models.py:304
 msgid "Community support"
 msgstr "Topluluk desteği"
 
-#: weblate_web/models.py:301
+#: weblate_web/models.py:305
 msgid "Hosted service"
 msgstr "Hosted hizmeti"
 
-#: weblate_web/models.py:302 weblate_web/templates/support.html:76
+#: weblate_web/models.py:306 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Temel kendi barındırma desteği"
 
-#: weblate_web/models.py:303 weblate_web/templates/support.html:86
+#: weblate_web/models.py:307 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Genişletilmiş kendi barındırma desteği"
 
-#: weblate_web/models.py:402
+#: weblate_web/models.py:406
 msgid "Basic support"
 msgstr "Temel destek"
 
-#: weblate_web/models.py:405
+#: weblate_web/models.py:409
 msgid "Extended support"
 msgstr "Genişletilmiş destek"
 
-#: weblate_web/models.py:407 weblate_web/templates/support.html:97
+#: weblate_web/models.py:411 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Yedekleme hizmeti"
 
@@ -595,9 +601,11 @@ msgid "Career at Weblate"
 msgstr "Weblate'de kariyer"
 
 #: weblate_web/templates/careers.html:14
-msgid ""
-"Weblate. the libre localization platform, wants you to become member of the "
-"team!"
+#, fuzzy
+#| msgid ""
+#| "Weblate. the libre localization platform, wants you to become member of "
+#| "the team!"
+msgid "Weblate, the libre localization platform, wants you on the team!"
 msgstr ""
 "Weblate. libre yerelleştirme platformu, takımın bir üyesi olmanızı istiyor!"
 
@@ -607,16 +615,19 @@ msgid "Learn more"
 msgstr "Daha çok  öğren"
 
 #: weblate_web/templates/careers.html:23
-msgid "Frontend developer"
+#, fuzzy
+#| msgid "Frontend developer"
+msgid "Front-end developer"
 msgstr "Ön uç geliştirici"
 
 #: weblate_web/templates/careers.html:26
-msgid "Improve Weblate's user experience and make all users happier."
+msgid "Implement your knowledge in the user experience."
 msgstr ""
-"Weblate'in kullanıcı deneyimini geliştirin ve tüm kullanıcıları mutlu edin."
 
 #: weblate_web/templates/careers.html:27
-msgid "Bring modern frontend technologies to Weblate."
+#, fuzzy
+#| msgid "Bring modern frontend technologies to Weblate."
+msgid "Bring modern front-end technologies to Weblate."
 msgstr "Weblate'e modern ön uç teknolojilerini getirin."
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
@@ -628,14 +639,21 @@ msgid "Python developer"
 msgstr "Python geliştiricisi"
 
 #: weblate_web/templates/careers.html:36
-msgid "Tuneup the backend and libraries we rely on and save time to all users."
+#, fuzzy
+#| msgid ""
+#| "Tuneup the backend and libraries we rely on and save time to all users."
+msgid "Tune up the back-end and libraries and save time for all users."
 msgstr ""
 "Güvendiğimiz arka uç ve kütüphaneleri özenle ayarlayın ve tüm kullanıcılara "
 "zamandan tasarruf ettirin."
 
 #: weblate_web/templates/careers.html:37
+#, fuzzy
+#| msgid ""
+#| "Implement support for new features, file formats or integration with "
+#| "third party services."
 msgid ""
-"Implement support for new features, file formats or integration with third "
+"Implement support for new features, file formats or integration with third-"
 "party services."
 msgstr ""
 "Yeni özellikler, dosya biçimleri ya da üçüncü taraf hizmetleriyle "
@@ -2008,25 +2026,33 @@ msgid "Contribute with us"
 msgstr "Bize katkıda bulunun"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what "
+#| "we are looking for."
 msgid ""
-"Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what we "
-"are looking for."
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
 msgstr ""
 "Ne aradığımızı daha iyi anlamak için <a href=\"%(issues)s\">açık sorunlara</"
 "a> göz atın."
 
 #: weblate_web/templates/snippets/career.html:3
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Show us your abilities if you want by picking up an issue from the list. "
+#| "Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
 msgid ""
-"Show us your abilities if you want by picking up an issue from the list. "
-"Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
+"Show us your abilities by picking up an issue from the list. Unsure what to "
+"choose? Try <a href=\"%(issue)s\">this one</a>."
 msgstr ""
 "Listeden bir sorun alarak isterseniz bize yeteneklerinizi gösterin. Ne "
 "seçeceğinizden emin değilseniz <a href=\"%(issue)s\">bunu</a> deneyin."
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "We're open source, all our issues are open to public."
+#, fuzzy
+#| msgid "We're open source, all our issues are open to public."
+msgid "It is all libre software, all our issues are open to public."
 msgstr "Biz açık kaynağız, tüm sorunlarımız halka açıktır."
 
 #: weblate_web/templates/snippets/career.html:5
@@ -2644,70 +2670,70 @@ msgstr "İlgili Makaleler"
 msgid "Back to blog"
 msgstr "Bloga geri dön"
 
-#: weblate_web/templatetags/downloads.py:39
+#: weblate_web/templatetags/downloads.py:38
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d bayt"
 msgstr[1] "%(size)d bayt"
 
-#: weblate_web/templatetags/downloads.py:43
+#: weblate_web/templatetags/downloads.py:42
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:44
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:46
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:53
+#: weblate_web/templatetags/downloads.py:52
 msgid "Sources tarball, bzip2 compressed"
 msgstr "Kaynaklar tarball, bzip2 ile sıkıştırılmış"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:54
 msgid "Sources tarball, gzip compressed"
 msgstr "Kaynaklar tarball, gzip ile sıkıştırılmış"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:56
 msgid "Sources tarball, xz compressed"
 msgstr "Kaynaklar tarball, xz ile sıkıştırılmış"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:58
 msgid "Sources, zip compressed"
 msgstr "Kaynaklar, zip ile sıkıştırılmış"
 
-#: weblate_web/templatetags/timestamps.py:32
+#: weblate_web/templatetags/timestamps.py:31
 msgctxt "123 translations ..."
 msgid "this month"
 msgstr "bu ay"
 
-#: weblate_web/templatetags/timestamps.py:34
+#: weblate_web/templatetags/timestamps.py:33
 msgctxt "123 translations ..."
 msgid "this week"
 msgstr "bu hafta"
 
-#: weblate_web/templatetags/timestamps.py:36
+#: weblate_web/templatetags/timestamps.py:35
 msgctxt "123 translations ..."
 msgid "yesterday"
 msgstr "dün"
 
-#: weblate_web/templatetags/timestamps.py:38
+#: weblate_web/templatetags/timestamps.py:37
 msgctxt "123 translations ..."
 msgid "today"
 msgstr "bugün"
 
-#: weblate_web/templatetags/timestamps.py:40
+#: weblate_web/templatetags/timestamps.py:39
 msgctxt "123 translations ..."
 msgid "recently"
 msgstr "yakınlarda"
 
-#: weblate_web/templatetags/timestamps.py:41
+#: weblate_web/templatetags/timestamps.py:40
 msgctxt "123 translations ..."
 msgid "just now"
 msgstr "şu anda"
@@ -2760,6 +2786,11 @@ msgstr "Abonelik isteği işlenemedi."
 #: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "Kullanıcı bulunamadı!"
+
+#~ msgid "Improve Weblate's user experience and make all users happier."
+#~ msgstr ""
+#~ "Weblate'in kullanıcı deneyimini geliştirin ve tüm kullanıcıları mutlu "
+#~ "edin."
 
 #~ msgid ""
 #~ "Weblate is a copylefted libre software with community support. "

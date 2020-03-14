@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: French (Weblate)\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-13 11:59+0100\n"
+"POT-Creation-Date: 2020-03-14 13:40+0100\n"
 "PO-Revision-Date: 2020-03-14 12:38+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/weblate/website/"
@@ -145,60 +145,60 @@ msgstr "IBAN"
 msgid "Reference"
 msgstr "Référence"
 
-#: payments/models.py:79
+#: payments/models.py:78
 msgid "European VAT ID"
 msgstr "ID de TVA européen"
 
-#: payments/models.py:81
+#: payments/models.py:80
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Veuillez indiquer un ID de TVA de l’Union européenne, laissez vide si non "
 "applicable."
 
-#: payments/models.py:87
+#: payments/models.py:86
 msgid "Tax registration"
 msgstr "Numéro fiscal"
 
-#: payments/models.py:89
+#: payments/models.py:88
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr ""
 "Veuillez renseigner votre numéro fiscal si vous souhaitez qu’il apparaisse "
 "sur la facture."
 
-#: payments/models.py:96
+#: payments/models.py:95
 msgid "Company or individual name"
 msgstr "Nom de l’entreprise ou de l’individu"
 
-#: payments/models.py:99
+#: payments/models.py:98
 msgid "Address"
 msgstr "Adresse"
 
-#: payments/models.py:102
+#: payments/models.py:101
 msgid "Postcode and city"
 msgstr "Code postal et ville"
 
-#: payments/models.py:104
+#: payments/models.py:103
 msgid "Country"
 msgstr "Pays"
 
-#: payments/models.py:132
+#: payments/models.py:131
 msgid "The country has to match your VAT code"
 msgstr "Le pays doit correspondre au code de TVA européen"
 
-#: payments/models.py:155
+#: payments/models.py:154
 msgid "Annual"
 msgstr "Annuel"
 
-#: payments/models.py:156
+#: payments/models.py:155
 msgid "Biannual"
 msgstr "Bi-annuel"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:156 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "Trimestriellement"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:157 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:358
 #: weblate_web/templates/hosting.html:368
 #: weblate_web/templates/hosting.html:380
@@ -211,25 +211,31 @@ msgstr "Trimestriellement"
 msgid "Monthly"
 msgstr "Mensuel"
 
-#: payments/models.py:159
+#: payments/models.py:158
 msgid "Onetime"
 msgstr "Unique"
 
-#: payments/validators.py:38
+#: payments/utils.py:44 payments/utils.py:47
+#, fuzzy
+#| msgid "Your e-mail address…"
+msgid "Enter a valid e-mail address."
+msgstr "Votre adresse courriel…"
+
+#: payments/validators.py:39
 msgid "{} is not a valid country code for any European Union member."
 msgstr "Le code pays {} ne correspond à aucun pays de l’Union Européenne."
 
-#: payments/validators.py:43
+#: payments/validators.py:44
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "L’ID de TVA {} ne respecte pas la codification du pays."
 
-#: payments/validators.py:50
+#: payments/validators.py:51
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
 "Service de validation du numéro d’identification TVA indisponible pour {}, "
 "veuillez réessayer plus tard."
 
-#: payments/validators.py:53
+#: payments/validators.py:54
 msgid "{} is not a valid VAT ID."
 msgstr "{} n’est pas un ID de TVA valide."
 
@@ -295,31 +301,31 @@ msgstr "Lien URL"
 msgid "Link image"
 msgstr "Image du lien"
 
-#: weblate_web/models.py:300
+#: weblate_web/models.py:304
 msgid "Community support"
 msgstr "Assistance communautaire"
 
-#: weblate_web/models.py:301
+#: weblate_web/models.py:305
 msgid "Hosted service"
 msgstr "Service d’hébergement"
 
-#: weblate_web/models.py:302 weblate_web/templates/support.html:76
+#: weblate_web/models.py:306 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Assistance auto-hébergée basique"
 
-#: weblate_web/models.py:303 weblate_web/templates/support.html:86
+#: weblate_web/models.py:307 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Assistance étendue pour l’auto-hébergement"
 
-#: weblate_web/models.py:402
+#: weblate_web/models.py:406
 msgid "Basic support"
 msgstr "Assistance simple"
 
-#: weblate_web/models.py:405
+#: weblate_web/models.py:409
 msgid "Extended support"
 msgstr "Assistance étendue"
 
-#: weblate_web/models.py:407 weblate_web/templates/support.html:97
+#: weblate_web/models.py:411 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Service de sauvegarde"
 
@@ -602,9 +608,11 @@ msgid "Career at Weblate"
 msgstr "Faire carrière chez Weblate"
 
 #: weblate_web/templates/careers.html:14
-msgid ""
-"Weblate. the libre localization platform, wants you to become member of the "
-"team!"
+#, fuzzy
+#| msgid ""
+#| "Weblate. the libre localization platform, wants you to become member of "
+#| "the team!"
+msgid "Weblate, the libre localization platform, wants you on the team!"
 msgstr ""
 "Weblate, la plateforme de localisation libre souhaite que vous deveniez "
 "membre de l’équipe !"
@@ -615,17 +623,19 @@ msgid "Learn more"
 msgstr "En savoir plus"
 
 #: weblate_web/templates/careers.html:23
-msgid "Frontend developer"
+#, fuzzy
+#| msgid "Frontend developer"
+msgid "Front-end developer"
 msgstr "Développeur Front-End"
 
 #: weblate_web/templates/careers.html:26
-msgid "Improve Weblate's user experience and make all users happier."
+msgid "Implement your knowledge in the user experience."
 msgstr ""
-"Améliorez l’expérience utilisateur de Weblate et rendez tous les "
-"utilisateurs plus heureux."
 
 #: weblate_web/templates/careers.html:27
-msgid "Bring modern frontend technologies to Weblate."
+#, fuzzy
+#| msgid "Bring modern frontend technologies to Weblate."
+msgid "Bring modern front-end technologies to Weblate."
 msgstr "Amenez les technologies front-end modernes dans Weblate."
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
@@ -637,14 +647,21 @@ msgid "Python developer"
 msgstr "Développeur Python"
 
 #: weblate_web/templates/careers.html:36
-msgid "Tuneup the backend and libraries we rely on and save time to all users."
+#, fuzzy
+#| msgid ""
+#| "Tuneup the backend and libraries we rely on and save time to all users."
+msgid "Tune up the back-end and libraries and save time for all users."
 msgstr ""
 "Améliorez le backend et les bibliothèques sur lesquels nous nous appuyons et "
 "faites gagner du temps à tous les utilisateurs."
 
 #: weblate_web/templates/careers.html:37
+#, fuzzy
+#| msgid ""
+#| "Implement support for new features, file formats or integration with "
+#| "third party services."
 msgid ""
-"Implement support for new features, file formats or integration with third "
+"Implement support for new features, file formats or integration with third-"
 "party services."
 msgstr ""
 "Implémentez de nouvelles fonctionnalités, de nouveaux formats de fichiers ou "
@@ -2045,26 +2062,34 @@ msgid "Contribute with us"
 msgstr "Participez avec nous"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what "
+#| "we are looking for."
 msgid ""
-"Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what we "
-"are looking for."
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
 msgstr ""
 "Parcourez les <a href=\"%(issues)s\">incidents ouverts</a> pour avoir un "
 "meilleur aperçu de ce que nous recherchons."
 
 #: weblate_web/templates/snippets/career.html:3
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Show us your abilities if you want by picking up an issue from the list. "
+#| "Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
 msgid ""
-"Show us your abilities if you want by picking up an issue from the list. "
-"Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
+"Show us your abilities by picking up an issue from the list. Unsure what to "
+"choose? Try <a href=\"%(issue)s\">this one</a>."
 msgstr ""
 "Si vous le souhaitez, montrez-nous vos capacités en choisissant un incident "
 "dans la liste. Si vous ne savez pas lequel choisir, essayez <a href="
 "\"%(issue)s\">celui-ci</a>."
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "We're open source, all our issues are open to public."
+#, fuzzy
+#| msgid "We're open source, all our issues are open to public."
+msgid "It is all libre software, all our issues are open to public."
 msgstr "Nous sommes open source, tous nos incidents sont publics."
 
 #: weblate_web/templates/snippets/career.html:5
@@ -2693,70 +2718,70 @@ msgstr "Articles liés"
 msgid "Back to blog"
 msgstr "Retourner au blog"
 
-#: weblate_web/templatetags/downloads.py:39
+#: weblate_web/templatetags/downloads.py:38
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d octet"
 msgstr[1] "%(size)d octets"
 
-#: weblate_web/templatetags/downloads.py:43
+#: weblate_web/templatetags/downloads.py:42
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f Kio"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:44
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f Mio"
 
-#: weblate_web/templatetags/downloads.py:46
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f Gio"
 
-#: weblate_web/templatetags/downloads.py:53
+#: weblate_web/templatetags/downloads.py:52
 msgid "Sources tarball, bzip2 compressed"
 msgstr "Archive source, compressée bzip2"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:54
 msgid "Sources tarball, gzip compressed"
 msgstr "Archive source, compressée gzip"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:56
 msgid "Sources tarball, xz compressed"
 msgstr "Archive source, compressée xz"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:58
 msgid "Sources, zip compressed"
 msgstr "Archive source, compressée zip"
 
-#: weblate_web/templatetags/timestamps.py:32
+#: weblate_web/templatetags/timestamps.py:31
 msgctxt "123 translations ..."
 msgid "this month"
 msgstr "ce mois"
 
-#: weblate_web/templatetags/timestamps.py:34
+#: weblate_web/templatetags/timestamps.py:33
 msgctxt "123 translations ..."
 msgid "this week"
 msgstr "cette semaine"
 
-#: weblate_web/templatetags/timestamps.py:36
+#: weblate_web/templatetags/timestamps.py:35
 msgctxt "123 translations ..."
 msgid "yesterday"
 msgstr "hier"
 
-#: weblate_web/templatetags/timestamps.py:38
+#: weblate_web/templatetags/timestamps.py:37
 msgctxt "123 translations ..."
 msgid "today"
 msgstr "aujourd’hui"
 
-#: weblate_web/templatetags/timestamps.py:40
+#: weblate_web/templatetags/timestamps.py:39
 msgctxt "123 translations ..."
 msgid "recently"
 msgstr "récemment"
 
-#: weblate_web/templatetags/timestamps.py:41
+#: weblate_web/templatetags/timestamps.py:40
 msgctxt "123 translations ..."
 msgid "just now"
 msgstr "à l’instant"
@@ -2813,6 +2838,11 @@ msgstr "Impossible de traiter la demande d’abonnement."
 #: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "Utilisateur introuvable !"
+
+#~ msgid "Improve Weblate's user experience and make all users happier."
+#~ msgstr ""
+#~ "Améliorez l’expérience utilisateur de Weblate et rendez tous les "
+#~ "utilisateurs plus heureux."
 
 #~ msgid ""
 #~ "Weblate is a copylefted libre software with community support. "

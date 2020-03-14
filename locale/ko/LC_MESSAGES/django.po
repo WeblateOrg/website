@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-13 11:59+0100\n"
+"POT-Creation-Date: 2020-03-14 13:40+0100\n"
 "PO-Revision-Date: 2020-03-14 12:38+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/weblate/website/"
@@ -145,57 +145,57 @@ msgstr "IBAN"
 msgid "Reference"
 msgstr "참조"
 
-#: payments/models.py:79
+#: payments/models.py:78
 msgid "European VAT ID"
 msgstr "유럽 VAT ID"
 
-#: payments/models.py:81
+#: payments/models.py:80
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "유럽 연합 VAT ID를 작성하십시오, 해당 사항이 아니라면 공백으로 두십시오."
 
-#: payments/models.py:87
+#: payments/models.py:86
 msgid "Tax registration"
 msgstr "세금 등록"
 
-#: payments/models.py:89
+#: payments/models.py:88
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "청구서에 표시해야 할 경우라면 세금 등록란을 채우십시오."
 
-#: payments/models.py:96
+#: payments/models.py:95
 msgid "Company or individual name"
 msgstr "회사 또는 개인 이름"
 
-#: payments/models.py:99
+#: payments/models.py:98
 msgid "Address"
 msgstr "주소"
 
-#: payments/models.py:102
+#: payments/models.py:101
 msgid "Postcode and city"
 msgstr "우편 번호와 도시"
 
-#: payments/models.py:104
+#: payments/models.py:103
 msgid "Country"
 msgstr "나라"
 
-#: payments/models.py:132
+#: payments/models.py:131
 msgid "The country has to match your VAT code"
 msgstr "나라는 VAT 코드와 일치해야 합니다"
 
-#: payments/models.py:155
+#: payments/models.py:154
 msgid "Annual"
 msgstr "매년"
 
-#: payments/models.py:156
+#: payments/models.py:155
 msgid "Biannual"
 msgstr "반 년"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:156 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "분기별"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:157 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:358
 #: weblate_web/templates/hosting.html:368
 #: weblate_web/templates/hosting.html:380
@@ -208,24 +208,30 @@ msgstr "분기별"
 msgid "Monthly"
 msgstr "매월"
 
-#: payments/models.py:159
+#: payments/models.py:158
 msgid "Onetime"
 msgstr "한 번"
 
-#: payments/validators.py:38
+#: payments/utils.py:44 payments/utils.py:47
+#, fuzzy
+#| msgid "Your e-mail address…"
+msgid "Enter a valid e-mail address."
+msgstr "당신의 전자우편 주소…"
+
+#: payments/validators.py:39
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{}이(가) 유럽 연합 회원국에 유효한 국가 코드가 아닙니다."
 
-#: payments/validators.py:43
+#: payments/validators.py:44
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{}이(가) 해당 국가의 VAT ID 명세서와 일치하지 않습니다."
 
-#: payments/validators.py:50
+#: payments/validators.py:51
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
 "{}에 대한 VAT ID 확인 서비스를 사용할 수 없습니다. 나중에 다시 시도하십시오."
 
-#: payments/validators.py:53
+#: payments/validators.py:54
 msgid "{} is not a valid VAT ID."
 msgstr "{}은(는) 유효한 VAT ID가 아닙니다."
 
@@ -291,31 +297,31 @@ msgstr "링크 URL"
 msgid "Link image"
 msgstr "링크 이미지"
 
-#: weblate_web/models.py:300
+#: weblate_web/models.py:304
 msgid "Community support"
 msgstr "커뮤니티 지원"
 
-#: weblate_web/models.py:301
+#: weblate_web/models.py:305
 msgid "Hosted service"
 msgstr "호스팅 서비스"
 
-#: weblate_web/models.py:302 weblate_web/templates/support.html:76
+#: weblate_web/models.py:306 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "자체 기본 호스팅 지원"
 
-#: weblate_web/models.py:303 weblate_web/templates/support.html:86
+#: weblate_web/models.py:307 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "자체 확장 호스팅 지원"
 
-#: weblate_web/models.py:402
+#: weblate_web/models.py:406
 msgid "Basic support"
 msgstr "기본 지원"
 
-#: weblate_web/models.py:405
+#: weblate_web/models.py:409
 msgid "Extended support"
 msgstr "확장 지원"
 
-#: weblate_web/models.py:407 weblate_web/templates/support.html:97
+#: weblate_web/models.py:411 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "백업 서비스"
 
@@ -589,9 +595,11 @@ msgid "Career at Weblate"
 msgstr "웨블레이트에서 경력쌓기"
 
 #: weblate_web/templates/careers.html:14
-msgid ""
-"Weblate. the libre localization platform, wants you to become member of the "
-"team!"
+#, fuzzy
+#| msgid ""
+#| "Weblate. the libre localization platform, wants you to become member of "
+#| "the team!"
+msgid "Weblate, the libre localization platform, wants you on the team!"
 msgstr "자유 현지화 플랫폼 웨블레이트에서 당신을 팀 맴버로 원합니다!"
 
 #: weblate_web/templates/careers.html:17
@@ -600,16 +608,19 @@ msgid "Learn more"
 msgstr "더 알아보기"
 
 #: weblate_web/templates/careers.html:23
-msgid "Frontend developer"
+#, fuzzy
+#| msgid "Frontend developer"
+msgid "Front-end developer"
 msgstr "프론트엔드 개발자"
 
 #: weblate_web/templates/careers.html:26
-msgid "Improve Weblate's user experience and make all users happier."
+msgid "Implement your knowledge in the user experience."
 msgstr ""
-"웨블레이트의 사용자 경험을 향상시키고 모든 사용자를 더 행복하게 만듭니다."
 
 #: weblate_web/templates/careers.html:27
-msgid "Bring modern frontend technologies to Weblate."
+#, fuzzy
+#| msgid "Bring modern frontend technologies to Weblate."
+msgid "Bring modern front-end technologies to Weblate."
 msgstr "웨블레이트에 최신 프론트엔드 기술을 도입하십시오."
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
@@ -621,14 +632,21 @@ msgid "Python developer"
 msgstr "파이썬 개발자"
 
 #: weblate_web/templates/careers.html:36
-msgid "Tuneup the backend and libraries we rely on and save time to all users."
+#, fuzzy
+#| msgid ""
+#| "Tuneup the backend and libraries we rely on and save time to all users."
+msgid "Tune up the back-end and libraries and save time for all users."
 msgstr ""
 "우리가 의존하는 백엔드 및 라이브러리를 교정하고 모든 사용자의 시간을 절약하십"
 "시오."
 
 #: weblate_web/templates/careers.html:37
+#, fuzzy
+#| msgid ""
+#| "Implement support for new features, file formats or integration with "
+#| "third party services."
 msgid ""
-"Implement support for new features, file formats or integration with third "
+"Implement support for new features, file formats or integration with third-"
 "party services."
 msgstr ""
 "새로운 기능, 파일 형식 또는 타사 서비스와의 통합에 대한 지원을 구현합니다."
@@ -1970,25 +1988,33 @@ msgid "Contribute with us"
 msgstr "우리와 기여하기"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what "
+#| "we are looking for."
 msgid ""
-"Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what we "
-"are looking for."
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
 msgstr ""
 "<a href=\"%(issues)s\">열린 이슈</a>를 탐색하여 우리가 해결해야 하는 더 많은 "
 "정보를 얻으십시오."
 
 #: weblate_web/templates/snippets/career.html:3
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Show us your abilities if you want by picking up an issue from the list. "
+#| "Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
 msgid ""
-"Show us your abilities if you want by picking up an issue from the list. "
-"Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
+"Show us your abilities by picking up an issue from the list. Unsure what to "
+"choose? Try <a href=\"%(issue)s\">this one</a>."
 msgstr ""
 "목록에서 문제를 선택하여 당신의 능력을 보여주십시오. 무엇을 선택해야 할 지 모"
 "르겠다면 <a href=\"%(issue)s\">이 중 하나</a>를 해결하십시오."
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "We're open source, all our issues are open to public."
+#, fuzzy
+#| msgid "We're open source, all our issues are open to public."
+msgid "It is all libre software, all our issues are open to public."
 msgstr "웨블레이트는 오픈 소스이며 모든 문제점은 공개되어 있습니다."
 
 #: weblate_web/templates/snippets/career.html:5
@@ -2596,69 +2622,69 @@ msgstr "관련글"
 msgid "Back to blog"
 msgstr "블로그로 돌아가기"
 
-#: weblate_web/templatetags/downloads.py:39
+#: weblate_web/templatetags/downloads.py:38
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d 바이트"
 
-#: weblate_web/templatetags/downloads.py:43
+#: weblate_web/templatetags/downloads.py:42
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:44
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:46
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:53
+#: weblate_web/templatetags/downloads.py:52
 msgid "Sources tarball, bzip2 compressed"
 msgstr "tarball, bzip2으로 압축된 소스"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:54
 msgid "Sources tarball, gzip compressed"
 msgstr "tarball, gzip으로 압축된 소스"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:56
 msgid "Sources tarball, xz compressed"
 msgstr "tarball, xz으로 압축된 소스"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:58
 msgid "Sources, zip compressed"
 msgstr "zip으로 압축된 소스"
 
-#: weblate_web/templatetags/timestamps.py:32
+#: weblate_web/templatetags/timestamps.py:31
 msgctxt "123 translations ..."
 msgid "this month"
 msgstr "이번 달"
 
-#: weblate_web/templatetags/timestamps.py:34
+#: weblate_web/templatetags/timestamps.py:33
 msgctxt "123 translations ..."
 msgid "this week"
 msgstr "이번 주"
 
-#: weblate_web/templatetags/timestamps.py:36
+#: weblate_web/templatetags/timestamps.py:35
 msgctxt "123 translations ..."
 msgid "yesterday"
 msgstr "어제"
 
-#: weblate_web/templatetags/timestamps.py:38
+#: weblate_web/templatetags/timestamps.py:37
 msgctxt "123 translations ..."
 msgid "today"
 msgstr "오늘"
 
-#: weblate_web/templatetags/timestamps.py:40
+#: weblate_web/templatetags/timestamps.py:39
 msgctxt "123 translations ..."
 msgid "recently"
 msgstr "최근에"
 
-#: weblate_web/templatetags/timestamps.py:41
+#: weblate_web/templatetags/timestamps.py:40
 msgctxt "123 translations ..."
 msgid "just now"
 msgstr "지금"
@@ -2711,6 +2737,10 @@ msgstr "구독 요청을 처리하지 못했습니다."
 #: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "사용자를 찾을 수 없습니다!"
+
+#~ msgid "Improve Weblate's user experience and make all users happier."
+#~ msgstr ""
+#~ "웨블레이트의 사용자 경험을 향상시키고 모든 사용자를 더 행복하게 만듭니다."
 
 #~ msgid ""
 #~ "Weblate is a copylefted libre software with community support. "

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Swedish (Weblate)\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-03-13 11:59+0100\n"
+"POT-Creation-Date: 2020-03-14 13:40+0100\n"
 "PO-Revision-Date: 2020-03-14 12:38+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/weblate/website/"
@@ -139,56 +139,56 @@ msgstr "IBAN"
 msgid "Reference"
 msgstr "Referens"
 
-#: payments/models.py:79
+#: payments/models.py:78
 msgid "European VAT ID"
 msgstr "Europeiskt moms-ID"
 
-#: payments/models.py:81
+#: payments/models.py:80
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "Vänligen fyll i EU:s moms-ID, lämna tomt om inte tillämpligt."
 
-#: payments/models.py:87
+#: payments/models.py:86
 msgid "Tax registration"
 msgstr "Skatteregistrering"
 
-#: payments/models.py:89
+#: payments/models.py:88
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "Vänligen fyll i din skatteregistrering om den ska visas på fakturan."
 
-#: payments/models.py:96
+#: payments/models.py:95
 msgid "Company or individual name"
 msgstr "Företag eller enskilt namn"
 
-#: payments/models.py:99
+#: payments/models.py:98
 msgid "Address"
 msgstr "Adress"
 
-#: payments/models.py:102
+#: payments/models.py:101
 msgid "Postcode and city"
 msgstr "Postnummer och stad"
 
-#: payments/models.py:104
+#: payments/models.py:103
 msgid "Country"
 msgstr "Land"
 
-#: payments/models.py:132
+#: payments/models.py:131
 msgid "The country has to match your VAT code"
 msgstr "Landet måste matcha din momskod"
 
-#: payments/models.py:155
+#: payments/models.py:154
 msgid "Annual"
 msgstr "Årlig"
 
-#: payments/models.py:156
+#: payments/models.py:155
 msgid "Biannual"
 msgstr "Två gånger om året"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:156 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "Kvartalsvis"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:157 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:358
 #: weblate_web/templates/hosting.html:368
 #: weblate_web/templates/hosting.html:380
@@ -201,25 +201,31 @@ msgstr "Kvartalsvis"
 msgid "Monthly"
 msgstr "Månatlig"
 
-#: payments/models.py:159
+#: payments/models.py:158
 msgid "Onetime"
 msgstr "En gång"
 
-#: payments/validators.py:38
+#: payments/utils.py:44 payments/utils.py:47
+#, fuzzy
+#| msgid "Your e-mail address…"
+msgid "Enter a valid e-mail address."
+msgstr "Din e-postadress…"
+
+#: payments/validators.py:39
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} är inte en giltig landskod för någon EU-medlem."
 
-#: payments/validators.py:43
+#: payments/validators.py:44
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} stämmer inte med landets moms-ID-specifikationer."
 
-#: payments/validators.py:50
+#: payments/validators.py:51
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
 "Valideringstjänsten för moms-ID är inte tillgänglig för {}, försök igen "
 "senare."
 
-#: payments/validators.py:53
+#: payments/validators.py:54
 msgid "{} is not a valid VAT ID."
 msgstr "{} är inte ett giltigt moms-ID."
 
@@ -285,31 +291,31 @@ msgstr "Länkwebbadress"
 msgid "Link image"
 msgstr "Länkbild"
 
-#: weblate_web/models.py:300
+#: weblate_web/models.py:304
 msgid "Community support"
 msgstr "Community-support"
 
-#: weblate_web/models.py:301
+#: weblate_web/models.py:305
 msgid "Hosted service"
 msgstr "Webbhotell"
 
-#: weblate_web/models.py:302 weblate_web/templates/support.html:76
+#: weblate_web/models.py:306 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Grundläggande egenvärdsstöd"
 
-#: weblate_web/models.py:303 weblate_web/templates/support.html:86
+#: weblate_web/models.py:307 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Utökad egenvärdsstöd"
 
-#: weblate_web/models.py:402
+#: weblate_web/models.py:406
 msgid "Basic support"
 msgstr "Grundläggande stöd"
 
-#: weblate_web/models.py:405
+#: weblate_web/models.py:409
 msgid "Extended support"
 msgstr "Utökat stöd"
 
-#: weblate_web/models.py:407 weblate_web/templates/support.html:97
+#: weblate_web/models.py:411 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Säkerhetskopieringstjänst"
 
@@ -588,9 +594,11 @@ msgid "Career at Weblate"
 msgstr "Karriär på Weblate"
 
 #: weblate_web/templates/careers.html:14
-msgid ""
-"Weblate. the libre localization platform, wants you to become member of the "
-"team!"
+#, fuzzy
+#| msgid ""
+#| "Weblate. the libre localization platform, wants you to become member of "
+#| "the team!"
+msgid "Weblate, the libre localization platform, wants you on the team!"
 msgstr ""
 "Weblate. libre-lokaliseringsplattformen, vill att du ska bli medlem i teamet!"
 
@@ -600,16 +608,17 @@ msgid "Learn more"
 msgstr "Lär dig mer"
 
 #: weblate_web/templates/careers.html:23
-msgid "Frontend developer"
+#, fuzzy
+#| msgid "Frontend developer"
+msgid "Front-end developer"
 msgstr "Frontend-utvecklare"
 
 #: weblate_web/templates/careers.html:26
-msgid "Improve Weblate's user experience and make all users happier."
+msgid "Implement your knowledge in the user experience."
 msgstr ""
-"Förbättra Weblates användarupplevelse och göra alla användare lyckligare."
 
 #: weblate_web/templates/careers.html:27
-msgid "Bring modern frontend technologies to Weblate."
+msgid "Bring modern front-end technologies to Weblate."
 msgstr ""
 
 #: weblate_web/templates/careers.html:30 weblate_web/templates/careers.html:40
@@ -621,14 +630,21 @@ msgid "Python developer"
 msgstr "Python-utvecklare"
 
 #: weblate_web/templates/careers.html:36
-msgid "Tuneup the backend and libraries we rely on and save time to all users."
+#, fuzzy
+#| msgid ""
+#| "Tuneup the backend and libraries we rely on and save time to all users."
+msgid "Tune up the back-end and libraries and save time for all users."
 msgstr ""
 "Finjustera backend och de bibliotek vi förlitar oss på och spara tid för "
 "alla användare."
 
 #: weblate_web/templates/careers.html:37
+#, fuzzy
+#| msgid ""
+#| "Implement support for new features, file formats or integration with "
+#| "third party services."
 msgid ""
-"Implement support for new features, file formats or integration with third "
+"Implement support for new features, file formats or integration with third-"
 "party services."
 msgstr ""
 "Implementera stöd för nya funktioner, filformat eller integration med tredje "
@@ -2006,26 +2022,34 @@ msgid "Contribute with us"
 msgstr "Bidra med oss"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what "
+#| "we are looking for."
 msgid ""
-"Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what we "
-"are looking for."
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
 msgstr ""
 "Bläddra i <a href=\"%(issues)s\">öppna problem</a> för att få mer insikt om "
 "vad vi söker."
 
 #: weblate_web/templates/snippets/career.html:3
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Show us your abilities if you want by picking up an issue from the list. "
+#| "Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
 msgid ""
-"Show us your abilities if you want by picking up an issue from the list. "
-"Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
+"Show us your abilities by picking up an issue from the list. Unsure what to "
+"choose? Try <a href=\"%(issue)s\">this one</a>."
 msgstr ""
 "Visa oss dina förmågor om du vill genom att plocka upp ett problem från "
 "listan. Osäker på vad du ska välja, prova <a href=\"%(issue)s\"> den här </"
 "a>."
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "We're open source, all our issues are open to public."
+#, fuzzy
+#| msgid "We're open source, all our issues are open to public."
+msgid "It is all libre software, all our issues are open to public."
 msgstr "Vi är öppen källkod, alla våra issues är öppna för allmänheten."
 
 #: weblate_web/templates/snippets/career.html:5
@@ -2642,70 +2666,70 @@ msgstr "Relaterade artiklar"
 msgid "Back to blog"
 msgstr "Tillbaka till bloggen"
 
-#: weblate_web/templatetags/downloads.py:39
+#: weblate_web/templatetags/downloads.py:38
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d byte"
 msgstr[1] "%(size)d bytes"
 
-#: weblate_web/templatetags/downloads.py:43
+#: weblate_web/templatetags/downloads.py:42
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:44
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:46
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:53
+#: weblate_web/templatetags/downloads.py:52
 msgid "Sources tarball, bzip2 compressed"
 msgstr "Källkod i tarball, bzip2-komprimerad"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:54
 msgid "Sources tarball, gzip compressed"
 msgstr "Källkod i tarball, gzip-komprimerad"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:56
 msgid "Sources tarball, xz compressed"
 msgstr "Källkod i tarball, xz-komprimerad"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:58
 msgid "Sources, zip compressed"
 msgstr "Källkod, zip-komprimerad"
 
-#: weblate_web/templatetags/timestamps.py:32
+#: weblate_web/templatetags/timestamps.py:31
 msgctxt "123 translations ..."
 msgid "this month"
 msgstr "den här månaden"
 
-#: weblate_web/templatetags/timestamps.py:34
+#: weblate_web/templatetags/timestamps.py:33
 msgctxt "123 translations ..."
 msgid "this week"
 msgstr "den här veckan"
 
-#: weblate_web/templatetags/timestamps.py:36
+#: weblate_web/templatetags/timestamps.py:35
 msgctxt "123 translations ..."
 msgid "yesterday"
 msgstr "igår"
 
-#: weblate_web/templatetags/timestamps.py:38
+#: weblate_web/templatetags/timestamps.py:37
 msgctxt "123 translations ..."
 msgid "today"
 msgstr "I dag"
 
-#: weblate_web/templatetags/timestamps.py:40
+#: weblate_web/templatetags/timestamps.py:39
 msgctxt "123 translations ..."
 msgid "recently"
 msgstr "nyligen"
 
-#: weblate_web/templatetags/timestamps.py:41
+#: weblate_web/templatetags/timestamps.py:40
 msgctxt "123 translations ..."
 msgid "just now"
 msgstr "precis nu"
@@ -2760,6 +2784,10 @@ msgstr "Det gick inte att behandla prenumerationsbegäran."
 #: weblate_web/views.py:545
 msgid "User not found!"
 msgstr "Användaren hittades inte!"
+
+#~ msgid "Improve Weblate's user experience and make all users happier."
+#~ msgstr ""
+#~ "Förbättra Weblates användarupplevelse och göra alla användare lyckligare."
 
 #~ msgid ""
 #~ "Weblate is a copylefted libre software with community support. "
