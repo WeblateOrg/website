@@ -483,7 +483,7 @@ def activity_svg(request):
     bars = []
     opacities = {0: ".1", 1: ".3", 2: ".5", 3: ".7"}
     data = get_activity()
-    top_count = max(data)
+    top_count = max(data) if data else 0
     for i, count in enumerate(data):
         height = int(76 * count / top_count)
         item = {

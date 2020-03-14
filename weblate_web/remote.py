@@ -22,7 +22,7 @@ import requests
 import sentry_sdk
 from django.conf import settings
 from django.core.cache import cache
-from wlc import Weblate
+from wlc import Weblate, WeblateException
 
 CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
@@ -91,10 +91,13 @@ def get_changes(force=False):
     results = cache.get(key)
     if not force and results is not None:
         return results
-    wlc = Weblate(key=settings.CHANGES_KEY, url=settings.CHANGES_API)
+    try:
+        wlc = Weblate(key=settings.CHANGES_KEY, url=settings.CHANGES_API)
 
-    stats = [p.statistics() for p in wlc.list_projects()]
-    stats = [p.get_data() for p in stats if p["last_change"] is not None]
+        stats = [p.statistics() for p in wlc.list_projects()]
+        stats = [p.get_data() for p in stats if p["last_change"] is not None]
+    except WeblateException:
+        return []
 
     stats.sort(key=lambda x: x["last_change"], reverse=True)
 
