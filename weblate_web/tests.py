@@ -113,7 +113,7 @@ class ViewTestCase(PostTestCase):
     @responses.activate
     def test_about(self):
         with open(TEST_CONTRIBUTORS) as handle:
-            responses.add(responses.GET, WEBLATE_CONTRIBUTORS_URL, data=handle.read())
+            responses.add(responses.GET, WEBLATE_CONTRIBUTORS_URL, body=handle.read())
         get_contributors(force=True)
         response = self.client.get("/en/about/")
         self.assertContains(response, "comradekingu")
