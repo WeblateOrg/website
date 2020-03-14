@@ -20,11 +20,11 @@
 import json
 from copy import copy
 
+import responses
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
-import responses
 from weblate_web.tests import TEST_FAKTURACE
 
 from .backends import FioBank, InvalidState, get_backend, list_backends
