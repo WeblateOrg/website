@@ -224,11 +224,21 @@ class ViewTestCase(PostTestCase):
         get_contributors(force=True)
         response = self.client.get("/en/about/")
         self.assertContains(response, "comradekingu")
+        # Test error handling
+        responses.replace(responses.GET, WEBLATE_CONTRIBUTORS_URL, status=500)
+        get_contributors(force=True)
+        response = self.client.get("/en/about/")
+        self.assertNotContains(response, "comradekingu")
 
     @responses.activate
     def test_activity(self):
         with open(TEST_ACTIVITY) as handle:
             responses.add(responses.GET, ACTIVITY_URL, body=handle.read())
+        get_activity(force=True)
+        response = self.client.get("/img/activity.svg")
+        self.assertContains(response, "<svg")
+        # Test error handling
+        responses.replace(responses.GET, ACTIVITY_URL, status=500)
         get_activity(force=True)
         response = self.client.get("/img/activity.svg")
         self.assertContains(response, "<svg")
