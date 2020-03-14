@@ -224,11 +224,11 @@ class ViewTestCase(PostTestCase):
         get_contributors(force=True)
         response = self.client.get("/en/about/")
         self.assertContains(response, "comradekingu")
-        # Test error handling
+        # Test error handling, cached content should stay there
         responses.replace(responses.GET, WEBLATE_CONTRIBUTORS_URL, status=500)
         get_contributors(force=True)
         response = self.client.get("/en/about/")
-        self.assertNotContains(response, "comradekingu")
+        self.assertContains(response, "comradekingu")
 
     @responses.activate
     def test_activity(self):
@@ -237,7 +237,7 @@ class ViewTestCase(PostTestCase):
         get_activity(force=True)
         response = self.client.get("/img/activity.svg")
         self.assertContains(response, "<svg")
-        # Test error handling
+        # Test error handling, cached content should stay there
         responses.replace(responses.GET, ACTIVITY_URL, status=500)
         get_activity(force=True)
         response = self.client.get("/img/activity.svg")
