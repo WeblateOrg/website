@@ -16,7 +16,7 @@ Django based website for Weblate, running at <https://weblate.org/>.
 .. image:: https://github.com/WeblateOrg/website/workflows/Test/badge.svg
     :alt: Test
     :target: https://github.com/WeblateOrg/website/actions?query=workflow%3ATest
-    
+
 .. image:: https://github.com/WeblateOrg/website/workflows/Lint/badge.svg
     :alt: Lint
     :target: https://github.com/WeblateOrg/website/actions?query=workflow%3ALint
