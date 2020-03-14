@@ -1,13 +1,12 @@
-import datetime
 import os
 import shutil
 import tempfile
+from datetime import timedelta
 from xml.etree import ElementTree
 
 import requests
 import responses
 from dateutil.relativedelta import relativedelta
-from dateutil.tz import tzutc
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -65,9 +64,7 @@ def fake_remote():
                 "translated": 160302,
                 "fuzzy": 31342,
                 "total": 787070,
-                "last_change": datetime.datetime(
-                    2020, 3, 14, 8, 27, 23, tzinfo=tzutc()
-                ),
+                "last_change": timezone.now(),
                 "name": "Godot Engine",
                 "url": "https://hosted.weblate.org/engage/godot-engine/",
             },
@@ -83,7 +80,7 @@ def fake_remote():
                 "translated": 465082,
                 "fuzzy": 124794,
                 "total": 1009956,
-                "last_change": datetime.datetime(2020, 3, 14, 8, 8, 13, tzinfo=tzutc()),
+                "last_change": timezone.now() - timedelta(seconds=3600),
                 "name": "phpMyAdmin",
                 "url": "https://hosted.weblate.org/engage/phpmyadmin/",
             },
@@ -99,9 +96,7 @@ def fake_remote():
                 "translated": 125298,
                 "fuzzy": 24461,
                 "total": 256275,
-                "last_change": datetime.datetime(
-                    2020, 3, 14, 7, 28, 30, tzinfo=tzutc()
-                ),
+                "last_change": timezone.now() - timedelta(seconds=14400),
                 "name": "Weblate",
                 "url": "https://hosted.weblate.org/engage/weblate/",
             },
@@ -117,9 +112,7 @@ def fake_remote():
                 "translated": 104941,
                 "fuzzy": 4011,
                 "total": 520867,
-                "last_change": datetime.datetime(
-                    2020, 3, 14, 7, 22, 15, tzinfo=tzutc()
-                ),
+                "last_change": timezone.now() - timedelta(days=1),
                 "name": "F-Droid",
                 "url": "https://hosted.weblate.org/engage/f-droid/",
             },
@@ -135,29 +128,9 @@ def fake_remote():
                 "translated": 61980,
                 "fuzzy": 1787,
                 "total": 84920,
-                "last_change": datetime.datetime(
-                    2020, 3, 14, 6, 54, 13, tzinfo=tzutc()
-                ),
+                "last_change": timezone.now() - timedelta(days=4),
                 "name": "Freeplane",
                 "url": "https://hosted.weblate.org/engage/freeplane/",
-            },
-            {
-                "failing_percent": 4.8,
-                "translated_percent": 77.3,
-                "total_words": 514362,
-                "failing": 1782,
-                "translated_words": 335048,
-                "url_translate": "https://hosted.weblate.org/projects/coi18n/",
-                "fuzzy_percent": 1.0,
-                "recent_changes": 448,
-                "translated": 28151,
-                "fuzzy": 368,
-                "total": 36393,
-                "last_change": datetime.datetime(
-                    2020, 3, 14, 1, 28, 22, tzinfo=tzutc()
-                ),
-                "name": "coi18n",
-                "url": "https://hosted.weblate.org/engage/coi18n/",
             },
             {
                 "failing_percent": 4.4,
@@ -171,9 +144,7 @@ def fake_remote():
                 "translated": 325725,
                 "fuzzy": 16981,
                 "total": 562798,
-                "last_change": datetime.datetime(
-                    2020, 3, 13, 23, 51, 17, tzinfo=tzutc()
-                ),
+                "last_change": timezone.now() - timedelta(days=30),
                 "name": "OsmAnd",
                 "url": "https://hosted.weblate.org/engage/osmand/",
             },
