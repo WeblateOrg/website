@@ -4,6 +4,7 @@ import tempfile
 from xml.etree import ElementTree
 
 import requests
+import responses
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -15,16 +16,17 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
 
-import responses
 from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
-from weblate_web.data import EXTENSIONS, VERSION
-from weblate_web.models import PAYMENTS_ORIGIN, Donation, Package, Post
-from weblate_web.templatetags.downloads import downloadlink, filesizeformat
+
+from .data import EXTENSIONS, VERSION
+from .models import PAYMENTS_ORIGIN, Donation, Package, Post
+from .remote import WEBLATE_CONTRIBUTORS_URL, get_contributors
+from .templatetags.downloads import downloadlink, filesizeformat
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), "test-data")
 TEST_FAKTURACE = os.path.join(TEST_DATA, "fakturace")
-TEST_BLOG = os.path.join(TEST_DATA, "blog.json")
+TEST_CONTRIBUTORS = os.path.join(TEST_DATA, "contributors.json")
 TEST_IMAGE = os.path.join(TEST_DATA, "weblate-html.png")
 
 TEST_CUSTOMER = {
@@ -107,6 +109,14 @@ class ViewTestCase(PostTestCase):
     def test_security_txt(self):
         response = self.client.get("/security.txt")
         self.assertContains(response, "https://hackerone.com/weblate")
+
+    @responses.activate
+    def test_about(self):
+        with open(TEST_CONTRIBUTORS) as handle:
+            responses.add(responses.GET, WEBLATE_CONTRIBUTORS_URL, data=handle.read())
+        get_contributors(force=True)
+        response = self.client.get("/en/about/")
+        self.assertContains(response, "comradekingu")
 
     def test_download_en(self):
         # create dummy files for testing
