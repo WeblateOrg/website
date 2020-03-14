@@ -29,3 +29,7 @@ done
 
 # Modernizr
 mv modernizr.js ../../weblate_web/static/
+
+# Fix line ends and others
+cd ../..
+pre-commit run --files $(git diff --name-only -- weblate_web/static)
