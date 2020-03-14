@@ -1,3 +1,4 @@
+import datetime
 import os
 import shutil
 import tempfile
@@ -6,6 +7,7 @@ from xml.etree import ElementTree
 import requests
 import responses
 from dateutil.relativedelta import relativedelta
+from dateutil.tz import tzutc
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -21,12 +23,18 @@ from payments.models import Customer, Payment
 
 from .data import EXTENSIONS, VERSION
 from .models import PAYMENTS_ORIGIN, Donation, Package, Post
-from .remote import WEBLATE_CONTRIBUTORS_URL, get_contributors
+from .remote import (
+    ACTIVITY_URL,
+    WEBLATE_CONTRIBUTORS_URL,
+    get_activity,
+    get_contributors,
+)
 from .templatetags.downloads import downloadlink, filesizeformat
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), "test-data")
 TEST_FAKTURACE = os.path.join(TEST_DATA, "fakturace")
 TEST_CONTRIBUTORS = os.path.join(TEST_DATA, "contributors.json")
+TEST_ACTIVITY = os.path.join(TEST_DATA, "activity.json")
 TEST_IMAGE = os.path.join(TEST_DATA, "weblate-html.png")
 
 TEST_CUSTOMER = {
@@ -42,7 +50,135 @@ TEST_CUSTOMER = {
 def fake_remote():
     cache.set("wlweb-contributors", [])
     cache.set("wlweb-activity-stats", [])
-    cache.set("wlweb-changes-list", [])
+    cache.set(
+        "wlweb-changes-list",
+        [
+            {
+                "failing_percent": 0.4,
+                "translated_percent": 20.3,
+                "total_words": 12385202,
+                "failing": 3708,
+                "translated_words": 1773069,
+                "url_translate": "https://hosted.weblate.org/projects/godot-engine/",
+                "fuzzy_percent": 3.9,
+                "recent_changes": 2401,
+                "translated": 160302,
+                "fuzzy": 31342,
+                "total": 787070,
+                "last_change": datetime.datetime(
+                    2020, 3, 14, 8, 27, 23, tzinfo=tzutc()
+                ),
+                "name": "Godot Engine",
+                "url": "https://hosted.weblate.org/engage/godot-engine/",
+            },
+            {
+                "failing_percent": 1.4,
+                "translated_percent": 46.0,
+                "total_words": 7482588,
+                "failing": 14319,
+                "translated_words": 2917305,
+                "url_translate": "https://hosted.weblate.org/projects/phpmyadmin/",
+                "fuzzy_percent": 12.3,
+                "recent_changes": 3652,
+                "translated": 465082,
+                "fuzzy": 124794,
+                "total": 1009956,
+                "last_change": datetime.datetime(2020, 3, 14, 8, 8, 13, tzinfo=tzutc()),
+                "name": "phpMyAdmin",
+                "url": "https://hosted.weblate.org/engage/phpmyadmin/",
+            },
+            {
+                "failing_percent": 0.4,
+                "translated_percent": 48.8,
+                "total_words": 1386375,
+                "failing": 1121,
+                "translated_words": 586192,
+                "url_translate": "https://hosted.weblate.org/projects/weblate/",
+                "fuzzy_percent": 9.5,
+                "recent_changes": 2864,
+                "translated": 125298,
+                "fuzzy": 24461,
+                "total": 256275,
+                "last_change": datetime.datetime(
+                    2020, 3, 14, 7, 28, 30, tzinfo=tzutc()
+                ),
+                "name": "Weblate",
+                "url": "https://hosted.weblate.org/engage/weblate/",
+            },
+            {
+                "failing_percent": 0.8,
+                "translated_percent": 20.1,
+                "total_words": 7707495,
+                "failing": 4459,
+                "translated_words": 1066440,
+                "url_translate": "https://hosted.weblate.org/projects/f-droid/",
+                "fuzzy_percent": 0.7,
+                "recent_changes": 7080,
+                "translated": 104941,
+                "fuzzy": 4011,
+                "total": 520867,
+                "last_change": datetime.datetime(
+                    2020, 3, 14, 7, 22, 15, tzinfo=tzutc()
+                ),
+                "name": "F-Droid",
+                "url": "https://hosted.weblate.org/engage/f-droid/",
+            },
+            {
+                "failing_percent": 1.0,
+                "translated_percent": 72.9,
+                "total_words": 324480,
+                "failing": 883,
+                "translated_words": 231003,
+                "url_translate": "https://hosted.weblate.org/projects/freeplane/",
+                "fuzzy_percent": 2.1,
+                "recent_changes": 535,
+                "translated": 61980,
+                "fuzzy": 1787,
+                "total": 84920,
+                "last_change": datetime.datetime(
+                    2020, 3, 14, 6, 54, 13, tzinfo=tzutc()
+                ),
+                "name": "Freeplane",
+                "url": "https://hosted.weblate.org/engage/freeplane/",
+            },
+            {
+                "failing_percent": 4.8,
+                "translated_percent": 77.3,
+                "total_words": 514362,
+                "failing": 1782,
+                "translated_words": 335048,
+                "url_translate": "https://hosted.weblate.org/projects/coi18n/",
+                "fuzzy_percent": 1.0,
+                "recent_changes": 448,
+                "translated": 28151,
+                "fuzzy": 368,
+                "total": 36393,
+                "last_change": datetime.datetime(
+                    2020, 3, 14, 1, 28, 22, tzinfo=tzutc()
+                ),
+                "name": "coi18n",
+                "url": "https://hosted.weblate.org/engage/coi18n/",
+            },
+            {
+                "failing_percent": 4.4,
+                "translated_percent": 57.8,
+                "total_words": 2016830,
+                "failing": 25211,
+                "translated_words": 1036249,
+                "url_translate": "https://hosted.weblate.org/projects/osmand/",
+                "fuzzy_percent": 3.0,
+                "recent_changes": 3633,
+                "translated": 325725,
+                "fuzzy": 16981,
+                "total": 562798,
+                "last_change": datetime.datetime(
+                    2020, 3, 13, 23, 51, 17, tzinfo=tzutc()
+                ),
+                "name": "OsmAnd",
+                "url": "https://hosted.weblate.org/engage/osmand/",
+            },
+        ],
+    )
 
 
 def fake_payment(url):
@@ -117,6 +253,14 @@ class ViewTestCase(PostTestCase):
         get_contributors(force=True)
         response = self.client.get("/en/about/")
         self.assertContains(response, "comradekingu")
+
+    @responses.activate
+    def test_activity(self):
+        with open(TEST_ACTIVITY) as handle:
+            responses.add(responses.GET, ACTIVITY_URL, body=handle.read())
+        get_activity(force=True)
+        response = self.client.get("/img/activity.svg")
+        self.assertContains(response, "<svg")
 
     def test_download_en(self):
         # create dummy files for testing
