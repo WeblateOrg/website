@@ -21,6 +21,7 @@ from uuid import uuid4
 
 import html2text
 import requests
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -144,7 +145,9 @@ def process_donation(payment):
     if payment.repeat:
         # Update existing
         donation = Donation.objects.get(payment=payment.repeat.pk)
+        payment.start = donation.expires + relativedelta(days=1)
         donation.expires += get_period_delta(payment.repeat.recurring)
+        payment.end = donation.expires
         donation.save()
     else:
         user = User.objects.get(pk=payment.customer.user_id)
@@ -152,9 +155,13 @@ def process_donation(payment):
         # Calculate expiry
         expires = timezone.now()
         if payment.recurring:
+            payment.start = expires
             expires += get_period_delta(payment.recurring)
+            payment.end = expires
         elif reward:
+            payment.start = expires
             expires += get_period_delta("y")
+            payment.end = expires
         # Create new
         donation = Donation.objects.create(
             user=user,
@@ -185,13 +192,17 @@ def process_subscription(payment):
     if payment.repeat:
         # Update existing
         subscription = Subscription.objects.get(payment=payment.repeat.pk)
+        payment.start = subscription.expires + relativedelta(days=1)
         subscription.expires += get_period_delta(payment.repeat.recurring)
+        payment.end = subscription.expires
         subscription.save()
     elif isinstance(payment.extra["subscription"], int):
         subscription = Subscription.objects.get(pk=payment.extra["subscription"])
         if subscription.payment:
             subscription.pastpayments_set.create(payment=subscription.payment)
+        payment.start = subscription.expires + relativedelta(days=1)
         subscription.expires += get_period_delta(subscription.get_repeat())
+        payment.end = subscription.expires
         subscription.payment = payment.pk
         subscription.save()
     else:
@@ -200,7 +211,9 @@ def process_subscription(payment):
         # Calculate expiry
         repeat = package.get_repeat()
         if repeat:
+            payment.start = timezone.now
             expires = timezone.now() + get_period_delta(repeat)
+            payment.end = expires
         else:
             expires = timezone.now()
         # Create new
