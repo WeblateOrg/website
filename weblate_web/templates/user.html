@@ -77,13 +77,13 @@
                     {% if subscription.get_repeat %}
                     <div class="form-line">
                         <div class="line-left">{% trans "Validity" %}</div>
-                        <div class="line-right">{% blocktrans with created=subscription.created expires=subscription.expires context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %}</div>
+                        <div class="line-right">{% blocktrans with created=subscription.created|date:"SHORT_DATE_FORMAT" expires=subscription.expires|date:"SHORT_DATE_FORMAT" context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %}</div>
                         <div class="clear"></div>
                     </div>
                     {% else %}
                     <div class="form-line">
                         <div class="line-left">{% trans "Creation date" %}</div>
-                        <div class="line-right">{{ subscription.created }}</div>
+                        <div class="line-right">{{ subscription.created|date:"SHORT_DATE_FORMAT" }}</div>
                         <div class="clear"></div>
                     </div>
                     {% endif %}
@@ -186,7 +186,7 @@
             <div class="payment-form">
                 <div class="form-line">
                     <div class="line-left">{% trans "Creation date" %}</div>
-                    <div class="line-right">{{ donation.created }}</div>
+                    <div class="line-right">{{ donation.created|date:"SHORT_DATE_FORMAT" }}</div>
                     <div class="clear"></div>
                 </div>
                 <div class="form-line">
@@ -203,7 +203,7 @@
                 {% endif %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Expiry date" %}</div>
-                    <div class="line-right">{{ donation.expires }}</div>
+                    <div class="line-right">{{ donation.expires|date:"SHORT_DATE_FORMAT" }}</div>
                     <div class="clear"></div>
                 </div>
                 <div class="form-line">
