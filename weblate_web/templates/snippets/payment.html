@@ -8,9 +8,9 @@
 {% endif %}
 </div>
 {% endif %}
-{{ payment.description }}, €{{ payment.amount }}<br />
-{% if payment.state == 5 %}
-{% else %}
+{{ payment.description }}<br />
+€{{ payment.amount }}
+{% if payment.state != 5 %}
 {% if payment.details.reject_reason %}
 ({{ payment.get_state_display }}: {{ payment.details.reject_reason }})
 {% else %}
