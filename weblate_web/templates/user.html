@@ -63,10 +63,18 @@
                             <a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">{% trans "See documentation on subscription management." %}</a>
                         </p>
                 {% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                {% if service.note %}
+                <div class="form-line">
+                    <div class="line-left">{% trans "Server URL" %}</div>
+                    <div class="line-right">
                         <p>{{ service.note }}</p>
                     </div>
                     <div class="clear"></div>
                 </div>
+                {% endif %}
                 {% with subscriptions=service.subscription_set.all %}
                 {% for subscription in subscriptions %}
                     <div class="form-line">
