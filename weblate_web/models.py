@@ -121,10 +121,14 @@ class Donation(models.Model):
         return Payment.objects.get(pk=self.payment)
 
     def list_payments(self):
-        if not self.payment:
-            return Payment.objects.none()
-        initial = Payment.objects.filter(pk=self.payment)
-        return initial | initial[0].payment_set.all()
+        past = set(self.pastpayments_set.values_list("payment", flat=True))
+        query = Q(pk=self.payment)
+        if past:
+            query |= Q(pk__in=past)
+            query |= Q(repeat__pk__in=past)
+        if self.payment:
+            query |= Q(repeat__pk=self.payment)
+        return Payment.objects.filter(query).distinct()
 
     def get_absolute_url(self):
         return reverse("donate-edit", kwargs={"pk": self.pk})
