@@ -211,8 +211,9 @@ def process_subscription(payment):
         # Calculate expiry
         repeat = package.get_repeat()
         if repeat:
-            payment.start = timezone.now
-            expires = timezone.now() + get_period_delta(repeat)
+            expires = timezone.now()
+            payment.start = expires
+            expires += get_period_delta(repeat)
             payment.end = expires
         else:
             expires = timezone.now()
