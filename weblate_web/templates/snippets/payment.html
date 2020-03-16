@@ -1,3 +1,4 @@
+{% load i18n %}
 <p>
 {% if payment.invoice %}
 <div class="float-right">
@@ -9,6 +10,9 @@
 </div>
 {% endif %}
 {{ payment.description }}<br />
+{% if payment.start %}
+{% blocktrans with created=payment.start|date:"SHORT_DATE_FORMAT" expires=payment.end|date:"SHORT_DATE_FORMAT" context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %},
+{% endif %}
 €{{ payment.amount }}
 {% if payment.state != 5 %}
 {% if payment.details.reject_reason %}
