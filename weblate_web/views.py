@@ -271,13 +271,9 @@ class DonateView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        if data["reward"] and int(data["reward"]):
-            tmp = Donation(reward=int(data["reward"]))
-            with override("en"):
-                # pylint: disable=no-member
-                description = "Weblate donation: {}".format(tmp.get_reward_display())
-        else:
-            description = "Weblate donation"
+        tmp = Donation(reward=int(data["reward"]))
+        with override("en"):
+            description = tmp.get_payment_description()
         return self.redirect_payment(
             amount=data["amount"],
             amount_fixed=True,
@@ -560,6 +556,21 @@ def subscription_pay(request, pk):
             description="Weblate: {}".format(subscription.get_package_display()),
             recurring=subscription.get_repeat(),
             extra={"subscription": subscription.pk},
+            customer=get_customer(request),
+        )
+    return redirect(payment.get_payment_url())
+
+
+@require_POST
+@login_required
+def donate_pay(request, pk):
+    donation = get_object_or_404(Donation, pk=pk, user=request.user)
+    with override("en"):
+        payment = Payment.objects.create(
+            amount=donation.get_amount(),
+            description=donation.get_payment_description(),
+            recurring=donation.payment_obj.recurring,
+            extra={"donation": donation.pk},
             customer=get_customer(request),
         )
     return redirect(payment.get_payment_url())

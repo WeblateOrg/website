@@ -532,6 +532,35 @@ class DonationTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
 
+        # Manual renew
+        donation = Donation.objects.all().get()
+        response = self.client.post(
+            reverse("donate-pay", kwargs={"pk": donation.pk}), follow=True
+        )
+        renew = Payment.objects.exclude(pk=payment.pk).get()
+        self.assertEqual(renew.state, Payment.NEW)
+        self.assertContains(response, "Please choose payment method")
+
+        response = self.client.post(
+            reverse("payment", kwargs={"pk": renew.uuid}), {"method": "thepay-card"}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))
+
+        renew.refresh_from_db()
+        self.assertEqual(renew.state, Payment.PENDING)
+
+        # Perform the payment
+        complete_url = fake_payment(response.url)
+
+        # Back to our web
+        response = self.client.get(complete_url, follow=True)
+        self.assertRedirects(response, "/en/user/")
+        self.assertContains(response, "Thank you for your donation")
+
+        renew.refresh_from_db()
+        self.assertEqual(renew.state, Payment.PROCESSED)
+
     @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_donation_workflow_bank(self):
         self.login()

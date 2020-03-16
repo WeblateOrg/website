@@ -138,6 +138,11 @@ class Donation(models.Model):
     def __str__(self):
         return "{}:{}".format(self.user, self.reward)
 
+    def get_payment_description(self):
+        if self.reward:
+            return "Weblate donation: {}".format(self.get_reward_display())
+        return "Weblate donation"
+
 
 def process_donation(payment):
     if payment.state != Payment.ACCEPTED:
@@ -148,6 +153,15 @@ def process_donation(payment):
         payment.start = donation.expires + relativedelta(days=1)
         donation.expires += get_period_delta(payment.repeat.recurring)
         payment.end = donation.expires
+        donation.save()
+    elif "donation" in payment.extra:
+        donation = Donation.objects.get(pk=payment.extra["donation"])
+        if donation.payment:
+            donation.pastpayments_set.create(payment=donation.payment)
+        payment.start = donation.expires + relativedelta(days=1)
+        donation.expires += get_period_delta(payment.recurring)
+        payment.end = donation.expires
+        donation.payment = payment.pk
         donation.save()
     else:
         user = User.objects.get(pk=payment.customer.user_id)
@@ -529,7 +543,12 @@ class Subscription(models.Model):
 
 
 class PastPayments(models.Model):
-    subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
+    subscription = models.ForeignKey(
+        Subscription, on_delete=models.deletion.CASCADE, null=True, blank=True
+    )
+    donation = models.ForeignKey(
+        Donation, on_delete=models.deletion.CASCADE, null=True, blank=True
+    )
     payment = models.UUIDField()
 
     def __str__(self):

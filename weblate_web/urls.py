@@ -48,6 +48,7 @@ from weblate_web.views import (
     activity_svg,
     api_support,
     disable_repeat,
+    donate_pay,
     download_invoice,
     fetch_vat,
     not_found,
@@ -179,6 +180,7 @@ urlpatterns = i18n_patterns(
     url(r"^donate/process/$", process_payment, name="donate-process"),
     url(r"^donate/new/$", DonateView.as_view(), name="donate-new"),
     url(r"^donate/edit/(?P<pk>[0-9]+)/$", EditLinkView.as_view(), name="donate-edit"),
+    url(r"^donate/pay/(?P<pk>[0-9]+)/$", donate_pay, name="donate-pay"),
     url(r"^user/invoice/" + UUID + "/$", download_invoice, name="user-invoice"),
     url(r"^donate/disable/(?P<pk>[0-9]+)/$", disable_repeat, name="donate-disable"),
     url(

@@ -184,7 +184,12 @@
                 </div>
                 <div class="form-line">
                     <div class="line-left">{% trans "Reward" %}</div>
-                    <div class="line-right">{{ donation.get_reward_display }}</div>
+                    <div class="line-right">
+                        {{ donation.get_reward_display }}
+                        {% if donation.reward %}
+                        <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit reward" %}</a>
+                        {% endif %}
+                    </div>
                     <div class="clear"></div>
                 </div>
                 {% if donation.link_url %}
@@ -209,6 +214,16 @@
                         {% else %}
                         {% trans "No renewal" %}
                         {% endif %}
+                        <form class="form-inline" method="post" action="{% url "donate-pay" pk=donation.pk %}">
+                        {% csrf_token %}
+                        <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
+                        </form>
+                        {% if donation.active and donation.payment_obj.recurring %}
+                        <form class="form-inline" method="post" action="{% url "donate-disable" pk=donation.pk %}">
+                        {% csrf_token %}
+                        <input type="submit" class="button small inline" value="{% trans "Turn off renewal" %}">
+                        </form>
+                        {% endif %}
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -223,15 +238,6 @@
                 </div>
                 <div class="payment-pick">
                 </div>
-                {% if donation.reward %}
-                <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit reward" %}</a>
-                {% endif %}
-                {% if donation.active and donation.payment_obj.recurring %}
-                <form class="form-inline" method="post" action="{% url "donate-disable" pk=donation.pk %}">
-                {% csrf_token %}
-                <input type="submit" class="button small inline" value="{% trans "Turn off renewal" %}">
-                </form>
-                {% endif %}
             </div>
             {% empty %}
             <div class="payment-form">
