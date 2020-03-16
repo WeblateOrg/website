@@ -1,0 +1,20 @@
+<p>
+{% if payment.invoice %}
+<div class="float-right">
+{% if payment.invoice_filename_valid %}
+<a chref="{% url 'user-invoice' pk=payment.pk %}" class="link">{{ payment.invoice_filename }}</a>
+{% else %}
+{{ payment.invoice_filename }}
+{% endif %}
+</div>
+{% endif %}
+{{ payment.description }}, €{{ payment.amount }}<br />
+{% if payment.state == 5 %}
+{% else %}
+{% if payment.details.reject_reason %}
+({{ payment.get_state_display }}: {{ payment.details.reject_reason }})
+{% else %}
+({{ payment.get_state_display }})
+{% endif %}
+{% endif %}
+</p>

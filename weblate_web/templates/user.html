@@ -60,7 +60,7 @@
                 {% else %}
                         <p class="text-muted">
                             {% trans "Use an activation token to connect your Weblate installation to the support portal. This step is optional, you can use support services without it as well." %}
-                            <a href="https://docs.weblate.org/en/latest/admin/support.html">{% trans "See documentation on subscription management." %}</a>
+                            <a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">{% trans "See documentation on subscription management." %}</a>
                         </p>
                 {% endif %}
                         <p>{{ service.note }}</p>
@@ -121,22 +121,7 @@
                     <div class="line-right">
                     {% for subscription in subscriptions %}
                         {% for payment in subscription.list_payments %}
-                        <p>
-                        €{{ payment.amount }}
-                        {% if payment.state == 5 %}
-                        ({{ payment.invoice }})
-                        {% if payment.invoice_filename_valid %}
-                        <a class="button small inline" href="{% url 'user-invoice' pk=payment.pk %}">{% trans "Download invoice" %}</a>
-                        {% else %}
-                        ({{ payment.invoice_filename }})
-                        {% endif %}
-                        {% else %}
-                        {{ payment.get_state_display }}
-                        {% if payment.details.reject_reason %}
-                        ({{ payment.details.reject_reason }})
-                        {% endif %}
-                        {% endif %}
-                        </p>
+                        {% include "snippets/payment.html" %}
                         {% endfor %}
                     {% endfor %}
                     </div>
@@ -223,22 +208,7 @@
                     <div class="line-left">{% trans "Payments" %}</div>
                     <div class="line-right">
                     {% for payment in donation.list_payments %}
-                    <p>
-                    €{{ payment.amount }}
-                    {% if payment.state == 5 %}
-                    ({{ payment.invoice }})
-                    {% if payment.invoice_filename_valid %}
-                    <a class="button small inline" href="{% url 'user-invoice' pk=payment.pk %}">{% trans "Download invoice" %}</a>
-                    {% else %}
-                    ({{ payment.invoice_filename }})
-                    {% endif %}
-                    {% else %}
-                    {{ payment.get_state_display }}
-                    {% if payment.details.reject_reason %}
-                    ({{ payment.details.reject_reason }})
-                    {% endif %}
-                    {% endif %}
-                    </p>
+                    {% include "snippets/payment.html" %}
                     {% endfor %}
                     </div>
                     <div class="clear"></div>
