@@ -21,7 +21,6 @@ from uuid import uuid4
 
 import html2text
 import requests
-from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -150,7 +149,7 @@ def process_donation(payment):
     if payment.repeat:
         # Update existing
         donation = Donation.objects.get(payment=payment.repeat.pk)
-        payment.start = donation.expires + relativedelta(days=1)
+        payment.start = donation.expires
         donation.expires += get_period_delta(payment.repeat.recurring)
         payment.end = donation.expires
         donation.save()
@@ -158,7 +157,7 @@ def process_donation(payment):
         donation = Donation.objects.get(pk=payment.extra["donation"])
         if donation.payment:
             donation.pastpayments_set.create(payment=donation.payment)
-        payment.start = donation.expires + relativedelta(days=1)
+        payment.start = donation.expires
         donation.expires += get_period_delta(payment.recurring)
         payment.end = donation.expires
         donation.payment = payment.pk
@@ -206,7 +205,7 @@ def process_subscription(payment):
     if payment.repeat:
         # Update existing
         subscription = Subscription.objects.get(payment=payment.repeat.pk)
-        payment.start = subscription.expires + relativedelta(days=1)
+        payment.start = subscription.expires
         subscription.expires += get_period_delta(payment.repeat.recurring)
         payment.end = subscription.expires
         subscription.save()
@@ -214,7 +213,7 @@ def process_subscription(payment):
         subscription = Subscription.objects.get(pk=payment.extra["subscription"])
         if subscription.payment:
             subscription.pastpayments_set.create(payment=subscription.payment)
-        payment.start = subscription.expires + relativedelta(days=1)
+        payment.start = subscription.expires
         subscription.expires += get_period_delta(subscription.get_repeat())
         payment.end = subscription.expires
         subscription.payment = payment.pk
