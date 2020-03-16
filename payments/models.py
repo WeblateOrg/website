@@ -197,6 +197,8 @@ class Payment(models.Model):
     )
     invoice = models.CharField(max_length=20, blank=True, default="")
     amount_fixed = models.BooleanField(blank=True, default=False)
+    start = models.DateField(blank=True, null=True)
+    end = models.DateField(blank=True, null=True)
 
     class Meta:
         ordering = ["-created"]
