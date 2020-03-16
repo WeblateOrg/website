@@ -102,7 +102,7 @@ def create_backup_repository(service):
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
     payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
-    reward = models.IntegerField(choices=REWARDS)
+    reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
         verbose_name=ugettext_lazy("Link text"), max_length=200, blank=True
     )
@@ -233,7 +233,7 @@ class Post(models.Model):
     author = models.ForeignKey(
         User, editable=False, on_delete=models.deletion.SET_NULL, null=True
     )
-    topic = models.CharField(max_length=100, db_index=True, choices=TOPICS)
+    topic = models.CharField(max_length=100, db_index=True, choices=TOPICS, default="")
     body = MarkupField(default_markup_type="markdown")
     summary = models.TextField(
         blank=True, help_text="Will be generated from first body paragraph if empty"
@@ -524,15 +524,15 @@ class PastPayments(models.Model):
 
 class Report(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
-    site_url = models.URLField()
-    site_title = models.TextField()
-    version = models.TextField()
-    ssh_key = models.TextField()
-    users = models.IntegerField()
-    projects = models.IntegerField()
-    components = models.IntegerField()
-    languages = models.IntegerField()
-    source_strings = models.IntegerField()
+    site_url = models.URLField(default="")
+    site_title = models.TextField(default="")
+    version = models.TextField(default="")
+    ssh_key = models.TextField(default="")
+    users = models.IntegerField(default=0)
+    projects = models.IntegerField(default=0)
+    components = models.IntegerField(default=0)
+    languages = models.IntegerField(default=0)
+    source_strings = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
