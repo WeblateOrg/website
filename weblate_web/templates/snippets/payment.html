@@ -13,7 +13,7 @@
 {% if payment.start %}
 {% blocktrans with created=payment.start|date:"SHORT_DATE_FORMAT" expires=payment.end|date:"SHORT_DATE_FORMAT" context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %},
 {% endif %}
-€{{ payment.amount }}
+{{ payment.get_amount_display }} {{ payment.get_currency_display }}
 {% if payment.state != 5 %}
 {% if payment.details.reject_reason %}
 ({{ payment.get_state_display }}: {{ payment.details.reject_reason }})

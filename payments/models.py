@@ -166,8 +166,22 @@ class Payment(models.Model):
     ACCEPTED = 4
     PROCESSED = 5
 
+    CURRENCY_EUR = 0
+    CURRENCY_BTC = 1
+    CURRENCY_USD = 2
+    CURRENCY_CZK = 3
+
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.IntegerField()
+    currency = models.IntegerField(
+        choices=(
+            (CURRENCY_EUR, "EUR"),
+            (CURRENCY_BTC, "BTC"),
+            (CURRENCY_USD, "USD"),
+            (CURRENCY_CZK, "CZK"),
+        ),
+        default=CURRENCY_EUR,
+    )
     description = models.TextField()
     recurring = models.CharField(
         choices=RECURRENCE_CHOICES, default="", blank=True, max_length=10
@@ -221,6 +235,11 @@ class Payment(models.Model):
     @cached_property
     def invoice_filename_valid(self):
         return os.path.exists(self.invoice_full_filename)
+
+    def get_amount_display(self):
+        if self.currency == self.CURRENCY_BTC:
+            return self.amount / 100000000
+        return self.amount
 
     @property
     def vat_amount(self):
