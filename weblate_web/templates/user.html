@@ -18,7 +18,7 @@
             {% for service in services %}
             <div class="payment-form">
                 <div class="form-line">
-                    <div class="line-left">{% trans "Status" %}</div>
+                    <div class="line-left">{% trans "Service" %}</div>
                     <div class="line-right">
                         {{ service.get_status_display }}
                         {% if not service.check_in_limits %}
@@ -29,6 +29,7 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+                {% if service.status != "hosted" %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Activation token" %}</div>
                     <div class="line-right">
@@ -41,6 +42,7 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+                {% endif %}
                 {% if service.backup_repository %}
                 <div class="form-line">
                     <div class="line-left">{% trans "Backup repository" %}</div>

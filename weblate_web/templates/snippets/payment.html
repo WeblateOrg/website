@@ -1,25 +1,32 @@
 {% load i18n %}
 {% load humanize %}
-<p>
-{% if payment.invoice %}
-<div class="float-right">
-{% if payment.invoice_filename_valid %}
-<a chref="{% url 'user-invoice' pk=payment.pk %}" class="link">{{ payment.invoice_filename }}</a>
-{% else %}
-{{ payment.invoice_filename }}
-{% endif %}
-</div>
-{% endif %}
-{{ payment.description }}<br />
-{% if payment.start %}
-{% blocktrans with created=payment.start|date:"SHORT_DATE_FORMAT" expires=payment.end|date:"SHORT_DATE_FORMAT" context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %},
-{% endif %}
-{{ payment.get_amount_display|intcomma }} {{ payment.get_currency_display }}
-{% if payment.state != 5 %}
-{% if payment.details.reject_reason %}
-({{ payment.get_state_display }}: {{ payment.details.reject_reason }})
-{% else %}
-({{ payment.get_state_display }})
-{% endif %}
-{% endif %}
+<p class="payment-listing">
+    <div class="float-right">
+        {{ payment.get_amount_display|intcomma }} {{ payment.get_currency_display }}
+    </div>
+    {{ payment.description }}<br />
+
+    {% if payment.invoice %}
+        <div class="float-right">
+            {% if payment.invoice_filename_valid %}
+                <a chref="{% url 'user-invoice' pk=payment.pk %}" class="link">{{ payment.invoice_filename }}</a>
+            {% else %}
+                {{ payment.invoice_filename }}
+            {% endif %}
+        </div>
+    {% elif payment.state != 5 %}
+        <div class="float-right">
+            {% if payment.is_waiting_for_user %}
+                <a class="link" href="{{ payment.get_absolute_url }}">{{ payment.get_state_display }}</a>
+            {% elif payment.details.reject_reason %}
+                {{ payment.get_state_display }}: {{ payment.details.reject_reason }}
+            {% else %}
+                {{ payment.get_state_display }}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if payment.start %}
+        {% blocktrans with created=payment.start|date:"SHORT_DATE_FORMAT" expires=payment.end|date:"SHORT_DATE_FORMAT" context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %}
+    {% endif %}
 </p>

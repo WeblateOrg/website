@@ -332,7 +332,7 @@ class Service(models.Model):
     status = models.CharField(
         max_length=150,
         choices=(
-            ("community", ugettext_lazy("Community support")),
+            ("community", ugettext_lazy("Expired service")),
             ("hosted", ugettext_lazy("Hosted service")),
             ("basic", ugettext_lazy("Basic self-hosted support")),
             ("extended", ugettext_lazy("Extended self-hosted support")),
