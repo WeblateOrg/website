@@ -449,23 +449,6 @@ class DonationTest(FakturaceTestCase):
         response = self.client.get("/en/donate/new/")
         self.assertContains(response, "list of supporters")
 
-    def test_donation_process(self):
-        user = self.login()
-        # Create payment
-        payment = self.create_payment()[0]
-        payment.state = Payment.ACCEPTED
-        payment.extra = {"reward": "2"}
-        payment.save()
-        payment.customer.origin = PAYMENTS_ORIGIN
-        payment.customer.user_id = user.pk
-        payment.customer.save()
-
-        # Process it
-        response = self.client.get(
-            "/donate/process/", {"payment": payment.pk}, follow=True
-        )
-        self.assertContains(response, "Thank you for your donation.")
-
     @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_service_workflow_card(self):
         self.login()
@@ -498,12 +481,15 @@ class DonationTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
 
+    def test_donation_workflow_card_reward(self):
+        self.test_donation_workflow_card(2)
+
     @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
-    def test_donation_workflow_card(self):
+    def test_donation_workflow_card(self, reward=0):
         self.login()
         response = self.client.post(
             "/en/donate/new/",
-            {"recurring": "y", "amount": 10, "reward": 0},
+            {"recurring": "y", "amount": 10, "reward": reward},
             follow=True,
         )
         self.assertContains(response, "Please provide your billing")
@@ -526,14 +512,18 @@ class DonationTest(FakturaceTestCase):
 
         # Back to our web
         response = self.client.get(complete_url, follow=True)
-        self.assertRedirects(response, "/en/user/")
+        donation = Donation.objects.all().get()
+        if reward:
+            redirect_url = "/en/donate/edit/{}/".format(donation.pk)
+        else:
+            redirect_url = "/en/user/"
+        self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
 
         # Manual renew
-        donation = Donation.objects.all().get()
         response = self.client.post(
             reverse("donate-pay", kwargs={"pk": donation.pk}), follow=True
         )
@@ -555,7 +545,7 @@ class DonationTest(FakturaceTestCase):
 
         # Back to our web
         response = self.client.get(complete_url, follow=True)
-        self.assertRedirects(response, "/en/user/")
+        self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
 
         renew.refresh_from_db()
