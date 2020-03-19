@@ -189,7 +189,7 @@ class Backend:
             cwd=settings.PAYMENT_FAKTURACE,
         )
 
-    def send_notification(self, notification):
+    def send_notification(self, notification, include_invoice=True):
         # HTML to text conversion
         html2text = HTML2Text(bodywidth=78)
         html2text.unicode_snob = True
@@ -234,7 +234,7 @@ class Backend:
             email.attach(image)
         email.attach_alternative(body, "text/html")
         # Include invoice PDF if exists
-        if self.invoice is not None:
+        if include_invoice and self.invoice is not None:
             with open(self.invoice.pdf_path, "rb") as handle:
                 email.attach(
                     os.path.basename(self.invoice.pdf_path),

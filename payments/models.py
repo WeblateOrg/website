@@ -269,12 +269,18 @@ class Payment(models.Model):
             language = "en"
         return settings.PAYMENT_REDIRECT_URL.format(language=language, uuid=self.uuid)
 
-    def repeat_payment(self, **kwargs):
-        # Check if backend is still valid
+    def get_payment_backend_class(self):
         from .backends import get_backend
 
+        return get_backend(self.backend)
+
+    def get_payment_backend(self):
+        return self.get_payment_backend_class()(self.pk)
+
+    def repeat_payment(self, **kwargs):
+        # Check if backend is still valid
         try:
-            get_backend(self.backend)
+            self.get_payment_backend_class()
         except KeyError:
             return False
 

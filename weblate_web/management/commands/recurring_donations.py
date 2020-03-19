@@ -49,6 +49,9 @@ class Command(BaseCommand):
         for subscription in subscriptions:
             payment = subscription.payment_obj
             if not payment.recurring:
+                payment.get_payment_backend().send_notification(
+                    "payment_expired", False
+                )
                 continue
 
             # Alllow at most three failures
@@ -76,6 +79,9 @@ class Command(BaseCommand):
         for donation in donations:
             payment = donation.payment_obj
             if not payment.recurring:
+                payment.get_payment_backend().send_notification(
+                    "payment_expired", False
+                )
                 continue
 
             # Alllow at most three failures
