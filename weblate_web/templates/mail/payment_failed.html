@@ -1,0 +1,20 @@
+{% extends "mail/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<p>
+{% trans "Your payment on weblate.org has failed." %}
+</p>
+
+{% if payment.details.reject_reason %}
+<p>
+{{ payment.details.reject_reason }}
+</p>
+{% endif %}
+
+<p>
+{% trans "If concerning a recurring payment, it is retried three times, and if still failing, cancelled." %}
+</p>
+
+{% endblock %}

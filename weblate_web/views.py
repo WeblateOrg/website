@@ -152,6 +152,7 @@ class PaymentView(FormView, SingleObjectMixin):
                 ),
             )
             return redirect("payment-customer", pk=self.object.pk)
+        return None
         # This should not happen, but apparently validation service is
         # often broken, so whitelist repeating payments
         if customer.vat and not self.object.repeat:

@@ -21,13 +21,22 @@ import json
 import os.path
 import re
 import subprocess
+from email.mime.image import MIMEImage
 from math import floor
 
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
-from django.utils.translation import gettext, gettext_lazy, override
+from django.template.loader import render_to_string
+from django.utils.translation import (
+    get_language,
+    get_language_bidi,
+    gettext,
+    gettext_lazy,
+    override,
+)
+from html2text import HTML2Text
 
 import fiobank
 import thepay.config
@@ -180,83 +189,51 @@ class Backend:
             cwd=settings.PAYMENT_FAKTURACE,
         )
 
-    def notify_user(self):
-        """Send email notification with an invoice."""
-        email = EmailMessage(
-            gettext("Your payment on weblate.org"),
-            gettext(
-                """Hello,
+    def send_notification(self, notification):
+        # HTML to text conversion
+        html2text = HTML2Text(bodywidth=78)
+        html2text.unicode_snob = True
+        html2text.ignore_images = True
+        html2text.pad_tables = True
 
-Thank you for your payment on weblate.org.
+        # Logos
+        images = []
+        for name in ("email-logo.png", "email-logo-footer.png"):
+            filename = os.path.join(settings.STATIC_ROOT, name)
+            with open(filename, "rb") as handle:
+                image = MIMEImage(handle.read())
+            image.add_header("Content-ID", "<{}@cid.weblate.org>".format(name))
+            image.add_header("Content-Disposition", "inline", filename=name)
+            images.append(image)
 
-You will find an invoice for this payment attached.
-Alternatively, you can download it from the website:
+        # Context and subject
+        context = {
+            "LANGUAGE_CODE": get_language(),
+            "LANGUAGE_BIDI": get_language_bidi(),
+            "payment": self.payment,
+            "invoice": self.invoice,
+            "backend": self,
+        }
+        subject = render_to_string(
+            "mail/{0}_subject.txt".format(notification), context
+        ).strip()
+        context["subject"] = subject
 
-%s
-"""
-            )
-            % self.payment.customer.origin,
+        # Render body
+        body = render_to_string("mail/{0}.html".format(notification), context).strip()
+
+        # Prepare e-mail
+        email = EmailMultiAlternatives(
+            subject,
+            html2text.handle(body),
             "billing@weblate.org",
             [self.payment.customer.email],
         )
-        if self.invoice is not None:
-            with open(self.invoice.pdf_path, "rb") as handle:
-                email.attach(
-                    os.path.basename(self.invoice.pdf_path),
-                    handle.read(),
-                    "application/pdf",
-                )
-        email.send()
-
-    def notify_failure(self):
-        """Send email notification with a failure."""
-        email = EmailMessage(
-            gettext("Your payment on weblate.org failed"),
-            gettext(
-                """Hello,
-
-Your payment on weblate.org has failed.
-
-%s
-
-Retry issuing the payment on the website:
-
-%s
-
-If concerning a recurring payment, it is retried three times,
-and if still failing, cancelled.
-"""
-            )
-            % (
-                self.payment.details.get("reject_reason", "Uknown"),
-                self.payment.customer.origin,
-            ),
-            "billing@weblate.org",
-            [self.payment.customer.email],
-        )
-        if self.invoice is not None:
-            with open(self.invoice.pdf_path, "rb") as handle:
-                email.attach(
-                    os.path.basename(self.invoice.pdf_path),
-                    handle.read(),
-                    "application/pdf",
-                )
-        email.send()
-
-    def notify_pending(self):
-        """Send email notification with a pending."""
-        email = EmailMessage(
-            gettext("Your pending payment on weblate.org"),
-            gettext(
-                """Hello,
-
-Your payment on weblate.org is pending. Please follow the provided
-instructions to complete the payment.
-"""
-            ),
-            "billing@weblate.org",
-            [self.payment.customer.email],
-        )
+        email.mixed_subtype = "related"
+        for image in images:
+            email.attach(image)
+        email.attach_alternative(body, "text/html")
+        # Include invoice PDF if exists
         if self.invoice is not None:
             with open(self.invoice.pdf_path, "rb") as handle:
                 email.attach(
@@ -277,13 +254,13 @@ instructions to complete the payment.
         self.generate_invoice()
         self.payment.save()
 
-        self.notify_user()
+        self.send_notification("payment_completed")
 
     def failure(self):
         self.payment.state = Payment.REJECTED
         self.payment.save()
 
-        self.notify_failure()
+        self.send_notification("payment_failed")
 
 
 @register_backend
@@ -442,7 +419,7 @@ class FioBank(Backend):
     def perform(self, request, back_url, complete_url):
         self.generate_invoice(storage_class=ProformaStorage, paid=False)
         self.payment.details["proforma"] = self.payment.invoice
-        self.notify_pending()
+        self.send_notification("payment_pending")
         return redirect(complete_url)
 
     def get_proforma(self):

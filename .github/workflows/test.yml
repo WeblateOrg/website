@@ -41,6 +41,7 @@ jobs:
     - name: Test with Django
       run: |
         ./scripts/generate-locales
+        ./manage.py collectstatic
         ./manage.py check
         coverage run ./manage.py test
     - name: Coverage

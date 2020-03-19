@@ -240,6 +240,7 @@ INSTALLED_APPS = (
     "wllegal",
     "django_countries",
     "macros",
+    "compressor",
 )
 
 # Some security headers
