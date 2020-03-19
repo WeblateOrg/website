@@ -21,6 +21,7 @@ from math import ceil
 
 from django.conf import settings
 from django.urls import reverse
+from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
 
 from weblate_web.data import EXTENSIONS, VERSION
@@ -64,9 +65,9 @@ def weblate_web(request):
         "canonical_url": canonical_url,
         "language_urls": language_urls,
         "donate_links": Donation.objects.filter(active=True, reward=3),
-        "activity_sum": sum(get_activity()[-7:]),
-        "contributors": get_contributors(),
-        "changes": get_changes(),
+        "activity_sum": SimpleLazyObject(lambda: sum(get_activity()[-7:])),
+        "contributors": SimpleLazyObject(get_contributors),
+        "changes": SimpleLazyObject(get_changes),
         "language_columns": [
             language_urls[:language_col],
             language_urls[language_col : language_col * 2],
