@@ -21,6 +21,7 @@ import json
 from copy import copy
 
 import responses
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
@@ -37,6 +38,7 @@ CUSTOMER = {
     "city": "149 00 Praha 4",
     "country": "CZ",
     "vat": "CZ8003280318",
+    "email": "noreply@example.com",
     "user_id": 6,
 }
 
@@ -204,6 +206,8 @@ class BackendTest(TestCase):
         self.check_payment(Payment.PENDING)
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
     def test_reject(self):
         backend = get_backend("reject")(self.payment)
@@ -211,6 +215,8 @@ class BackendTest(TestCase):
         self.check_payment(Payment.PENDING)
         self.assertFalse(backend.complete(None))
         self.check_payment(Payment.REJECTED)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
     def test_pending(self):
         backend = get_backend("pending")(self.payment)
@@ -242,6 +248,10 @@ class BackendTest(TestCase):
         responses.add(responses.GET, FIO_API, body=json.dumps(FIO_TRASACTIONS))
         FioBank.fetch_payments()
         self.check_payment(Payment.PENDING)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your pending payment on weblate.org")
+        mail.outbox = []
+
         received = copy(FIO_TRASACTIONS)
         proforma_id = backend.payment.invoice
         transaction = received["accountStatement"]["transactionList"]["transaction"]
@@ -255,6 +265,8 @@ class BackendTest(TestCase):
         self.assertEqual(
             payment.details["transaction"]["recipient_message"], proforma_id
         )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
 
 class VATTest(SimpleTestCase):
