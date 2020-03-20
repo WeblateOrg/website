@@ -330,14 +330,6 @@ class UtilTestCase(TestCase):
 class FakturaceTestCase(TestCase):
     databases = "__all__"
 
-    def setUp(self):
-        super().setUp()
-        dirs = ("contacts", "data", "pdf", "tex", "config")
-        for name in dirs:
-            full = os.path.join(TEST_FAKTURACE, name)
-            if not os.path.exists(full):
-                os.makedirs(full)
-
     @staticmethod
     def create_payment():
         customer = Customer.objects.create(
