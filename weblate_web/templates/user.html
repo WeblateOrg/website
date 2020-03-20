@@ -81,7 +81,12 @@
                 {% for subscription in subscriptions %}
                     <div class="form-line">
                         <div class="line-left">{% trans "Subscription" %}</div>
-                        <div class="line-right"><strong>{{ subscription.get_package_display }}</strong></div>
+                        <div class="line-right">
+                            <strong>{{ subscription.get_package_display }}</strong>
+                            {% if service.status == "shared" %}
+                            <a class="button small inline" href="https://hosted.weblate.org/create/billing/?billing={{ service.hosted_billing }}&amp;upgrade=1">{% trans "Change plan" %}</a>
+                            {% endif %}
+                        </div>
                         <div class="clear"></div>
                     </div>
                     {% if subscription.get_repeat %}
