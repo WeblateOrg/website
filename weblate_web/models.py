@@ -343,6 +343,7 @@ class Service(models.Model):
     )
     backup_repository = models.CharField(max_length=500, default="", blank=True)
     limit_languages = models.IntegerField(default=0)
+    limit_projects = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
