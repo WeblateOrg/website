@@ -371,6 +371,16 @@ class Service(models.Model):
             return self.last_report.version
         return ""
 
+    def projects_limit(self):
+        report = self.last_report
+        if report:
+            if self.limit_projects:
+                return "{}/{}".format(report.projects, self.limit_projects)
+            return "{}".format(report.projects)
+        return "0"
+
+    projects_limit.short_description = "Projects"
+
     def languages_limit(self):
         report = self.last_report
         if report:
