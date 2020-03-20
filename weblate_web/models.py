@@ -346,6 +346,7 @@ class Service(models.Model):
     limit_source_strings = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
+    hosted_billing = models.IntegerField(default=0, db_index=True)
 
     def __str__(self):
         if self.last_report:
