@@ -40,6 +40,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "site_url",
         "site_version",
         "note",
+        "projects_limit",
         "languages_limit",
         "source_strings_limit",
         "status",
@@ -78,6 +79,7 @@ class PackageAdmin(admin.ModelAdmin):
         "verbose",
         "name",
         "price",
+        "limit_projects",
         "limit_languages",
         "limit_source_strings",
     ]

@@ -310,6 +310,7 @@ class Package(models.Model):
     name = models.CharField(max_length=150, unique=True)
     verbose = models.CharField(max_length=400)
     price = models.IntegerField()
+    limit_projects = models.IntegerField(default=0)
     limit_languages = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
 
@@ -460,7 +461,8 @@ class Service(models.Model):
         ):
             self.status = status
             self.limit_source_strings = package_obj.limit_source_strings
-            self.limit_languages = package_obj.limit_languages
+            self.limit_languages = package_obj.listmit_languages
+            self.limit_projects = package_obj.listmit_projects
             self.save()
 
     def create_backup(self):
@@ -478,6 +480,8 @@ class Service(models.Model):
             self.limit_source_strings
             and self.last_report.source_strings > self.limit_source_strings
         ):
+            return False
+        if self.limit_projects and self.last_report.projects > self.limit_projects:
             return False
         if self.limit_languages and self.last_report.languages > self.limit_languages:
             return False
