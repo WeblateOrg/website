@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.management import call_command
+from django.core.signing import dumps
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -654,3 +655,38 @@ class PostTest(PostTestCase):
         self.assertContains(response, "testbody")
         response = self.client.get(future.get_absolute_url(), follow=True)
         self.assertEqual(response.status_code, 404)
+
+
+class APITest(TestCase):
+    databases = "__all__"
+
+    def test_hosted(self):
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        Package.objects.create(name="shared:test", verbose="Test package", price=0)
+        response = self.client.post(
+            "/api/hosted/",
+            {
+                "payload": dumps(
+                    {
+                        "billing": 42,
+                        "package": "shared:test",
+                        "projects": 1,
+                        "languages": 1,
+                        "source_strings": 1,
+                        "components": 1,
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.hosted",
+                )
+            },
+            HTTP_USER_AGENT="weblate/1.2.3",
+        )
+        self.assertEquals(response.status_code, 200)
+
+    def test_hosted_invalid(self):
+        response = self.client.post("/api/hosted/", {"payload": dumps({}, key="dummy")})
+        self.assertEquals(response.status_code, 400)
+
+    def test_hosted_missing(self):
+        response = self.client.post("/api/hosted/")
+        self.assertEquals(response.status_code, 400)

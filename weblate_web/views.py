@@ -18,14 +18,16 @@
 #
 
 import django.views.defaults
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins, send_mail
+from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import transaction
 from django.db.models import Q
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -83,6 +85,62 @@ def show_form_errors(request, form):
                 gettext("Error in parameter %(field)s: %(error)s")
                 % {"field": field.name, "error": error},
             )
+
+
+@require_POST
+@csrf_exempt
+def api_hosted(request):
+    try:
+        payload = loads(
+            request.POST.get("payload", ""),
+            key=settings.PAYMENT_SECRET,
+            max_age=300,
+            salt="weblate.hosted",
+        )
+    except (BadSignature, SignatureExpired) as error:
+        return HttpResponseBadRequest(str(error))
+
+    # Get/create service for this billing
+    service = Service.objects.get_or_create(hosted_billing=payload["billing"])[0]
+
+    # TODO: This is temporary hack for payments migration period
+    payments = []
+    for payment in Payment.objects.order_by("end").iterator():
+        if payment.extra.get("billing", -1) == payload["billing"]:
+            payments.append(payment.pk)
+    if payments:
+        # Create/update subscription
+        subscription = Subscription.objects.get_or_create(
+            service=service,
+            package=payload["package"],
+            defaults={"payment": payments[-1]},
+        )[0]
+        if subscription.payment != payments[-1]:
+            subscription.payment != payments[-1]
+            subscription.save(update_fields=["payment"])
+        # Link past payments
+        for payment in payments[:-1]:
+            subscription.pastpayment_set.get_or_create(payment=payment)
+
+    # Collect stats
+    service.report_set.create(
+        site_url="https://hosted.weblate.org/",
+        site_title="Hosted Weblate",
+        projects=payload["projects"],
+        components=payload["components"],
+        languages=payload["languages"],
+        source_strings=payload["source_strings"],
+        version=request.headers["User-Agent"].split("/", 1)[1],
+    )
+    service.update_status()
+    return JsonResponse(
+        data={
+            "name": service.status,
+            "expiry": service.expires,
+            "backup_repository": service.backup_repository,
+            "in_limits": service.check_in_limits(),
+        }
+    )
 
 
 @require_POST
