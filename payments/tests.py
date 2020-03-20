@@ -19,9 +19,11 @@
 
 import json
 from copy import copy
+from datetime import date
 
 import responses
 from django.core import mail
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
@@ -270,11 +272,33 @@ class BackendTest(TestCase):
 
 
 class VATTest(SimpleTestCase):
-    def test_validation(self):
+    def test_validation_invalid(self):
         with self.assertRaises(ValidationError):
             validate_vatin("XX123456")
         with self.assertRaises(ValidationError):
             validate_vatin("CZ123456")
         with self.assertRaises(ValidationError):
             validate_vatin("CZ8003280317")
+
+    def test_cache(self):
+        cache.set(
+            "VAT-CZ8003280318",
+            {
+                "countryCode": "CZ",
+                "vatNumber": "8003280318",
+                "requestDate": date(2020, 3, 20),
+                "valid": True,
+                "name": "Ing. Michal Čihař",
+                "address": "Zdiměřická 1439/8\nPRAHA 11 - CHODOV\n149 00  PRAHA 415",
+            },
+        )
         validate_vatin("CZ8003280318")
+
+    def test_direct(self):
+        # This test relies on the VAT validation service being alive
+        # so we accept failure as well
+        cache.delete("VAT-CZ8003280318")
+        try:
+            validate_vatin("CZ8003280318")
+        except ValidationError as error:
+            self.assertIn("service unavailable", str(error))

@@ -1,7 +1,7 @@
 import os
 import shutil
 import tempfile
-from datetime import timedelta
+from datetime import date, timedelta
 from xml.etree import ElementTree
 
 import requests
@@ -48,6 +48,17 @@ TEST_CUSTOMER = {
 
 
 def fake_remote():
+    cache.set(
+        "VAT-CZ8003280318",
+        {
+            "countryCode": "CZ",
+            "vatNumber": "8003280318",
+            "requestDate": date(2020, 3, 20),
+            "valid": True,
+            "name": "Ing. Michal Čihař",
+            "address": "Zdiměřická 1439/8\nPRAHA 11 - CHODOV\n149 00  PRAHA 415",
+        },
+    )
     cache.set("wlweb-contributors", [])
     cache.set("wlweb-activity-stats", [])
     cache.set(
