@@ -320,7 +320,7 @@ class Package(models.Model):
     def get_repeat(self):
         if self.name in ("basic", "extended", "backup"):
             return "y"
-        if self.name.startswith("hosted:"):
+        if self.name.startswith("hosted:") or self.name.startswith("shared:"):
             if self.name.endswith("-m"):
                 return "m"
             return "y"
@@ -334,7 +334,8 @@ class Service(models.Model):
         max_length=150,
         choices=(
             ("community", ugettext_lazy("Expired service")),
-            ("hosted", ugettext_lazy("Hosted service")),
+            ("hosted", ugettext_lazy("Dedicated hosted service")),
+            ("shared", ugettext_lazy("Hosted service")),
             ("basic", ugettext_lazy("Basic self-hosted support")),
             ("extended", ugettext_lazy("Extended self-hosted support")),
         ),
@@ -417,6 +418,10 @@ class Service(models.Model):
         return self.subscription_set.filter(package__startswith="hosted:")
 
     @cached_property
+    def shared_subscriptions(self):
+        return self.subscription_set.filter(package__startswith="shared:")
+
+    @cached_property
     def basic_subscriptions(self):
         return self.subscription_set.filter(package="basic")
 
@@ -428,6 +433,7 @@ class Service(models.Model):
     def support_subscriptions(self):
         return (
             self.hosted_subscriptions
+            | self.shared_subscriptions
             | self.basic_subscriptions
             | self.extended_subscriptions
         )
@@ -446,7 +452,10 @@ class Service(models.Model):
     def get_suggestions(self):
         if not self.support_subscriptions.exists():
             yield "basic", _("Basic support")
-        if not self.hosted_subscriptions.exists():
+        if (
+            not self.hosted_subscriptions.exists()
+            and not self.shared_subscriptions.exists()
+        ):
             if not self.extended_subscriptions.exists():
                 yield "extended", _("Extended support")
             if not self.backup_subscriptions.exists():
@@ -458,6 +467,9 @@ class Service(models.Model):
         if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = "hosted"
             package = self.hosted_subscriptions.latest("expires").package
+        elif self.shared_subscriptions.filter(expires__gt=timezone.now()).exists():
+            status = "shared"
+            package = self.shared_subscriptions.latest("expires").package
         elif self.extended_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = "extended"
         elif self.basic_subscriptions.filter(expires__gt=timezone.now()).exists():
