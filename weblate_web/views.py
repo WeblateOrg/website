@@ -122,6 +122,10 @@ def api_hosted(request):
         for payment in payments[:-1]:
             subscription.pastpayment_set.get_or_create(payment=payment)
 
+    # Link users which are supposed to have access
+    for user in payload["users"]:
+        service.users.add(User.objects.get_or_create(pk=user)[0])
+
     # Collect stats
     service.report_set.create(
         site_url="https://hosted.weblate.org/",

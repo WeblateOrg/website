@@ -677,6 +677,7 @@ class APITest(TestCase):
                         "languages": 1,
                         "source_strings": 1,
                         "components": 1,
+                        "users": [666],
                     },
                     key=settings.PAYMENT_SECRET,
                     salt="weblate.hosted",
