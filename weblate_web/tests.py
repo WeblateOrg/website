@@ -22,7 +22,7 @@ from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
 
 from .data import EXTENSIONS, VERSION
-from .models import PAYMENTS_ORIGIN, Donation, Package, Post
+from .models import PAYMENTS_ORIGIN, Donation, Package, Post, Service
 from .remote import (
     ACTIVITY_URL,
     WEBLATE_CONTRIBUTORS_URL,
@@ -681,12 +681,34 @@ class APITest(TestCase):
             },
             HTTP_USER_AGENT="weblate/1.2.3",
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_hosted_invalid(self):
         response = self.client.post("/api/hosted/", {"payload": dumps({}, key="dummy")})
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_hosted_missing(self):
         response = self.client.post("/api/hosted/")
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
+
+    def test_support_missing(self):
+        response = self.client.post("/api/support/")
+        self.assertEqual(response.status_code, 404)
+
+    def test_support(self, delta=1, expected="extended"):
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        Package.objects.create(name="extended", verbose="Extended support", price=42)
+        service = Service.objects.create()
+        service.subscription_set.create(
+            package="extended", expires=timezone.now() + timedelta(days=delta)
+        )
+        response = self.client.post(
+            "/api/support/",
+            {"secret": service.secret},
+            HTTP_USER_AGENT="weblate/1.2.3",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["name"], expected)
+
+    def test_support_expired(self):
+        self.test_support(delta=-1, expected="community")

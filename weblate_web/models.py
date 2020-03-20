@@ -485,8 +485,8 @@ class Service(models.Model):
         ):
             self.status = status
             self.limit_source_strings = package_obj.limit_source_strings
-            self.limit_languages = package_obj.listmit_languages
-            self.limit_projects = package_obj.listmit_projects
+            self.limit_languages = package_obj.limit_languages
+            self.limit_projects = package_obj.limit_projects
             self.save()
 
     def create_backup(self):
