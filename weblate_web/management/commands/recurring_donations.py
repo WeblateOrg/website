@@ -48,7 +48,7 @@ class Command(BaseCommand):
         ).exclude(payment=None)
         for subscription in subscriptions:
             payment = subscription.payment_obj
-            if not payment.recurring:
+            if not payment.recurring and subscription.get_repeat():
                 payment.get_payment_backend().send_notification(
                     "payment_expired", False
                 )
