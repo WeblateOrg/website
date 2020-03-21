@@ -275,7 +275,7 @@ class Payment(models.Model):
         return get_backend(self.backend)
 
     def get_payment_backend(self):
-        return self.get_payment_backend_class()(self.pk)
+        return self.get_payment_backend_class()(self)
 
     def repeat_payment(self, **kwargs):
         # Check if backend is still valid
