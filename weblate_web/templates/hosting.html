@@ -61,7 +61,7 @@
                             <span class="middle">{% trans "Regular backups" %}</span>
                         </div>
                         <div class="line">
-                            <span class="middle">{% trans "Dedicated instance" %}</span>
+                            <span class="middle"><a href="#dedicated">{% trans "Dedicated instance" %}</a></span>
                         </div>
                     </div>
                 </div>
@@ -538,6 +538,10 @@
             <div class="page-desc small">
                 <p>{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}</p>
                 {% include "snippets/vat.html" %}
+            </div>
+            <h2 class="section-title crypto payment-conditions" id="dedicated">{% trans "Dedicated instance" %}</h2>
+            <div class="page-desc small">
+                <p>{% trans "The default setup for cloud hosting is to use shared instance. This is great for crowdsourcing translations, but it limits available customization. With dedicated instance you can have customized authentication and any of Weblate settings." %}</p>
             </div>
             <h2 class="section-title crypto payment-conditions" id="trial">{% trans "Gratis Trial?" %}</h2>
             <div class="page-desc small">
