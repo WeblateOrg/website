@@ -180,13 +180,12 @@ class Backend:
         )
 
     def send_notification(self, notification, include_invoice=True):
-        send_notification(
-            notification,
-            [self.payment.customer.email],
-            payment=self.payment,
-            invoice=self.invoice,
-            backend=self,
-        )
+        kwargs = {"backend": self}
+        if self.invoice:
+            kwargs["invoice"] = self.invoice
+        if self.payment:
+            kwargs["payment"] = self.payment
+        send_notification(notification, [self.payment.customer.email], **kwargs)
 
     def get_invoice_kwargs(self):
         return {"payment_id": str(self.payment.pk), "payment_method": self.description}
