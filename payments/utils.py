@@ -25,13 +25,20 @@ weblate/utils/validators.py and weblate/utils/fields.py.
 """
 
 import json
+import os.path
 import re
+from email.mime.image import MIMEImage
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import validate_email as validate_email_django
 from django.db import models
+from django.template.loader import render_to_string
+from django.utils.translation import get_language, get_language_bidi
 from django.utils.translation import gettext as _
+from html2text import HTML2Text
 
 # Reject some suspicious e-mail addresses, based on checks enforced by Exim MTA
 EMAIL_BLACKLIST = re.compile(r"^([./|]|.*([@%!`#&?]|/\.\./))")
@@ -83,3 +90,53 @@ class JSONField(models.TextField):
     def value_from_object(self, obj):
         value = super().value_from_object(obj)
         return json.dumps(value, cls=DjangoJSONEncoder)
+
+
+def send_notification(notification, recipients, **kwargs):
+    # HTML to text conversion
+    html2text = HTML2Text(bodywidth=78)
+    html2text.unicode_snob = True
+    html2text.ignore_images = True
+    html2text.pad_tables = True
+
+    # Logos
+    images = []
+    for name in ("email-logo.png", "email-logo-footer.png"):
+        filename = os.path.join(settings.STATIC_ROOT, name)
+        with open(filename, "rb") as handle:
+            image = MIMEImage(handle.read())
+        image.add_header("Content-ID", "<{}@cid.weblate.org>".format(name))
+        image.add_header("Content-Disposition", "inline", filename=name)
+        images.append(image)
+
+    # Context and subject
+    context = {
+        "LANGUAGE_CODE": get_language(),
+        "LANGUAGE_BIDI": get_language_bidi(),
+    }
+    context.update(kwargs)
+    subject = render_to_string(
+        "mail/{0}_subject.txt".format(notification), context
+    ).strip()
+    context["subject"] = subject
+
+    # Render body
+    body = render_to_string("mail/{0}.html".format(notification), context).strip()
+
+    # Prepare e-mail
+    email = EmailMultiAlternatives(
+        subject, html2text.handle(body), "billing@weblate.org", recipients,
+    )
+    email.mixed_subtype = "related"
+    for image in images:
+        email.attach(image)
+    email.attach_alternative(body, "text/html")
+    # Include invoice PDF if exists
+    if "invoice" in kwargs:
+        with open(kwargs["invoice"].pdf_path, "rb") as handle:
+            email.attach(
+                os.path.basename(kwargs["invoice"].pdf_path),
+                handle.read(),
+                "application/pdf",
+            )
+    email.send()

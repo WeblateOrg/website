@@ -18,25 +18,14 @@
 #
 
 import json
-import os.path
 import re
 import subprocess
-from email.mime.image import MIMEImage
 from math import floor
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
-from django.template.loader import render_to_string
-from django.utils.translation import (
-    get_language,
-    get_language_bidi,
-    gettext,
-    gettext_lazy,
-    override,
-)
-from html2text import HTML2Text
+from django.utils.translation import gettext, gettext_lazy, override
 
 import fiobank
 import thepay.config
@@ -46,6 +35,7 @@ import thepay.payment
 from fakturace.storage import InvoiceStorage, ProformaStorage
 
 from .models import Payment
+from .utils import send_notification
 
 BACKENDS = {}
 PROFORMA_RE = re.compile("20[0-9]{7}")
@@ -190,58 +180,13 @@ class Backend:
         )
 
     def send_notification(self, notification, include_invoice=True):
-        # HTML to text conversion
-        html2text = HTML2Text(bodywidth=78)
-        html2text.unicode_snob = True
-        html2text.ignore_images = True
-        html2text.pad_tables = True
-
-        # Logos
-        images = []
-        for name in ("email-logo.png", "email-logo-footer.png"):
-            filename = os.path.join(settings.STATIC_ROOT, name)
-            with open(filename, "rb") as handle:
-                image = MIMEImage(handle.read())
-            image.add_header("Content-ID", "<{}@cid.weblate.org>".format(name))
-            image.add_header("Content-Disposition", "inline", filename=name)
-            images.append(image)
-
-        # Context and subject
-        context = {
-            "LANGUAGE_CODE": get_language(),
-            "LANGUAGE_BIDI": get_language_bidi(),
-            "payment": self.payment,
-            "invoice": self.invoice,
-            "backend": self,
-        }
-        subject = render_to_string(
-            "mail/{0}_subject.txt".format(notification), context
-        ).strip()
-        context["subject"] = subject
-
-        # Render body
-        body = render_to_string("mail/{0}.html".format(notification), context).strip()
-
-        # Prepare e-mail
-        email = EmailMultiAlternatives(
-            subject,
-            html2text.handle(body),
-            "billing@weblate.org",
+        send_notification(
+            notification,
             [self.payment.customer.email],
+            payment=self.payment,
+            invoice=self.invoice,
+            backend=self,
         )
-        email.mixed_subtype = "related"
-        for image in images:
-            email.attach(image)
-        email.attach_alternative(body, "text/html")
-        # Include invoice PDF if exists
-        if include_invoice and self.invoice is not None:
-            with open(self.invoice.pdf_path, "rb") as handle:
-                email.attach(
-                    os.path.basename(self.invoice.pdf_path),
-                    handle.read(),
-                    "application/pdf",
-                )
-        email.send()
 
     def get_invoice_kwargs(self):
         return {"payment_id": str(self.payment.pk), "payment_method": self.description}
