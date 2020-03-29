@@ -232,20 +232,10 @@ img {
     <div class="content">
     <div class="container">
         <div class="box">
-            {% if change %}
-            <h1>
-                <img src="{% if request %}{% static "email-logo.png" %}{% else %}cid:email-logo.png@cid.weblate.org{% endif %}" />
-                {{ change.get_action_display }}
-            </h1>
-            <div class="nav">
-                <a href="https://weblate.org/">Weblate</a>
-            </div>
-            {% else %}
             <h1>
                 <img src="{% if request %}{% static "email-logo.png" %}{% else %}cid:email-logo.png@cid.weblate.org{% endif %}" />
                 {{ subject }}
             </h1>
-            {% endif %}
             {% block content %}
             {% endblock %}
         </div>
