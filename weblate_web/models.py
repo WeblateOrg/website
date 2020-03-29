@@ -35,6 +35,7 @@ from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
 from payments.models import Payment, get_period_delta
+from payments.utils import send_notification
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 
@@ -145,6 +146,11 @@ class Donation(models.Model):
         if self.reward:
             return "Weblate donation: {}".format(self.get_reward_display())
         return "Weblate donation"
+
+    def send_notification(self, notification):
+        send_notification(
+            notification, [self.user.email], donation=self,
+        )
 
 
 def process_donation(payment):
@@ -571,6 +577,13 @@ class Subscription(models.Model):
     ):
         super().save(force_insert, force_update, using, update_fields)
         self.service.update_status()
+
+    def send_notification(self, notification):
+        send_notification(
+            notification,
+            [user.email for user in self.service.users.all()],
+            subscription=self,
+        )
 
 
 class PastPayments(models.Model):
