@@ -149,7 +149,9 @@ class Donation(models.Model):
 
     def send_notification(self, notification):
         send_notification(
-            notification, [self.user.email], donation=self,
+            notification,
+            [self.user.email] + settings.NOTIFY_SUBSCRIPTION,
+            donation=self,
         )
 
 
@@ -246,6 +248,9 @@ def process_subscription(payment):
             payment=payment.pk,
             package=package.name,
             expires=expires,
+        )
+        send_notification(
+            "new_subscription", settings.NOTIFY_SUBSCRIPTION, subscription=subscription,
         )
     # Flag payment as processed
     payment.state = Payment.PROCESSED
@@ -581,7 +586,8 @@ class Subscription(models.Model):
     def send_notification(self, notification):
         send_notification(
             notification,
-            [user.email for user in self.service.users.all()],
+            [user.email for user in self.service.users.all()]
+            + settings.NOTIFY_SUBSCRIPTION,
             subscription=self,
         )
 
