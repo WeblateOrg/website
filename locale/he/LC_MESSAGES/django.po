@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-04-02 14:22+0200\n"
-"PO-Revision-Date: 2020-04-02 09:48+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2020-04-02 21:48+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/weblate/website/"
 "he/>\n"
 "Language: he\n"
@@ -135,32 +135,24 @@ msgid "New payment"
 msgstr "תשלום חדש"
 
 #: payments/models.py:194
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "תשלום יחיד"
+msgstr "בהמתנה לתשלום"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "תדירות תשלום"
+msgstr "התשלום נדחה"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "התשלום בוטל"
+msgstr "התשלום התקבל"
 
 #: payments/models.py:197
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "התשלום בוטל"
+msgstr "התשלום עבר עיבוד"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -245,16 +237,12 @@ msgid "Link image"
 msgstr "תמונת קישור"
 
 #: weblate_web/models.py:347
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Expired service"
-msgstr "שירות מתארח"
+msgstr "שירות שתוקפו פג"
 
 #: weblate_web/models.py:348
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Dedicated hosted service"
-msgstr "שירות מתארח"
+msgstr "שירות מתארח ייעודי"
 
 #: weblate_web/models.py:349
 msgid "Hosted service"
@@ -1492,11 +1480,11 @@ msgstr "תמיכה בדוא״ל בעדיפות גבוהה"
 
 #: weblate_web/templates/hosting.html:61
 msgid "Regular backups"
-msgstr ""
+msgstr "גיבויים תדירים"
 
 #: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:543
 msgid "Dedicated instance"
-msgstr ""
+msgstr "עותק ייעודי"
 
 #: weblate_web/templates/hosting.html:72
 #: weblate_web/templates/snippets/pricing.html:10
@@ -1593,7 +1581,7 @@ msgstr "על שרתים מקומיים"
 
 #: weblate_web/templates/hosting.html:319
 msgid "Optional"
-msgstr ""
+msgstr "רשות"
 
 #: weblate_web/templates/hosting.html:327
 #: weblate_web/templates/hosting.html:435
@@ -1678,6 +1666,9 @@ msgid ""
 "dedicated instance you can have customized authentication and any of Weblate "
 "settings."
 msgstr ""
+"תצורת בררת המחדל של אירוח ענן היא להשתמש במכונה משותפת. פתרון מעולה לתרגומים "
+"במיקור המונים, אך יכולת ההתאמה האישית נפגעת. עם עותק ייעודי אפשר להתאים את "
+"אופן אימות המשתמשים ולהתאים את שאר ההגדרות של Weblate לצרכיך."
 
 #: weblate_web/templates/hosting.html:547
 msgid "Gratis Trial?"
@@ -1779,10 +1770,8 @@ msgid "Weblate, the libre continuous localization system."
 msgstr "מערכת התרגום הרציף החופשית, Weblate."
 
 #: weblate_web/templates/mail/base.html:248
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your payments"
-msgstr "ניהול התרומות שלך"
+msgstr "ניהול התשלומים שלך"
 
 #: weblate_web/templates/mail/base.html:254
 #, python-format
@@ -1790,120 +1779,62 @@ msgid "Generated on %(timestamp)s."
 msgstr "נוצר ב־%(timestamp)s."
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Thank you for your payment on weblate.org."
-msgstr "התשלום שלך ב־weblate.org"
+msgstr "תודה לך על התשלום ב־weblate.org."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "החשבונית לתשלום הזה מצורפת."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
 msgstr "התשלום שלך ב־weblate.org"
 
 #: weblate_web/templates/mail/payment_expired.html:9
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your subscription on weblate.org is expiring soon. Please sign in on the "
 "website to renew it."
-msgstr ""
-"שלום,\n"
-"\n"
-"התשלום שלך ל־weblate.org ממתין כעת. נא לעקוב אחר ההנחיות\n"
-"שלהלן כדי להשלים את התשלום.\n"
+msgstr "תוקף המנוי שלך ל־weblate.org יפוג בקרוב. נא להיכנס לאתר כדי לחדש אותו."
 
 #: weblate_web/templates/mail/payment_expired.html:13
 #: weblate_web/templates/mail/payment_expired.html:23
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "מינוי נוכחי: %(package)s"
 
 #: weblate_web/templates/mail/payment_expired.html:19
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
-msgstr ""
-"שלום,\n"
-"\n"
-"התשלום שלך ל־weblate.org ממתין כעת. נא לעקוב אחר ההנחיות\n"
-"שלהלן כדי להשלים את התשלום.\n"
+msgstr "תוקף התרומה שלך ב־weblate.org יפוג בקרוב. נא להיכנס לאתר כדי לחדש אותה."
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
-#, fuzzy
-#| msgid "Your pending payment on weblate.org"
 msgid "Your expired payment on weblate.org"
-msgstr "התשלום שלך שממתין ב־weblate.org"
+msgstr "התשלום שלך שתוקפו פג ב־weblate.org"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org failed"
 msgid "Your payment on weblate.org has failed."
-msgstr "התשלום שלך ב־weblate.org נכשל"
+msgstr "התשלום שלך ב־weblate.org נכשל."
 
 #: weblate_web/templates/mail/payment_failed.html:17
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
 msgstr ""
-"שלום,\n"
-"\n"
-"התשלום שלך ב־weblate.org נכשל.\n"
-"\n"
-"%s\n"
-"\n"
-"ניתן לנסות לשלם פעם נוספת באתר:\n"
-"\n"
-"%s\n"
-"\n"
-"במקרה של ניסיונות חוזרים, הניסיון מתבצע שלוש פעמים,\n"
-"אם התשלום עדיין נכשל, הוא מבוטל.\n"
+"במקרה של ניסיונות חוזרים, הניסיון מתבצע שלוש פעמים, אם התשלום עדיין נכשל, "
+"הוא מבוטל."
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
 msgstr "התשלום שלך ב־weblate.org נכשל"
 
 #: weblate_web/templates/mail/payment_pending.html:8
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your payment on weblate.org is pending. Please follow the provided "
 "instructions to complete the payment."
 msgstr ""
-"שלום,\n"
-"\n"
-"התשלום שלך ל־weblate.org ממתין כעת. נא לעקוב אחר ההנחיות\n"
-"שלהלן כדי להשלים את התשלום.\n"
+"התשלום שלך ל־weblate.org ממתין כעת. נא לעקוב אחר ההנחיות שלהלן כדי להשלים את "
+"התשלום."
 
 #: weblate_web/templates/mail/payment_pending.html:13
 #: weblate_web/templates/payment/payment.html:16
