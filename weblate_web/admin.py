@@ -30,6 +30,12 @@ from weblate_web.models import (
 )
 
 
+def format_user(obj):
+    return "{}: {} {} <{}>".format(
+        obj.username, obj.first_name, obj.last_name, obj.email
+    )
+
+
 class DonationAdmin(admin.ModelAdmin):
     list_display = ("user", "reward", "created", "expires", "get_amount")
 
@@ -50,6 +56,11 @@ class ServiceAdmin(admin.ModelAdmin):
     list_filter = ("status",)
     date_hierarchy = "created"
     filter_horizontal = ("users",)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields["users"].label_from_instance = format_user
+        return form
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
