@@ -3,6 +3,15 @@
 # Exit on failure
 set -e
 
+# Lock Weblate
+wlc lock
+
+# Push changes from Weblate to GitHub
+wlc push
+
+# Pull changes from GitHub
+git pull --rebase
+
 # Update po files itself
 ./manage.py makemessages -a --keep-pot -i 'weblate_web/files/*'
 
@@ -12,3 +21,9 @@ sed -i 's/"Report-Msgid-Bugs-To:.*/"Report-Msgid-Bugs-To: weblate@lists.cihar.co
 # Commit changes
 git add locale/*/*/*.po locale/django.pot
 git commit -m 'Update po files'
+
+# Push changes
+git push
+
+# Unlock Weblate
+wlc unlock
