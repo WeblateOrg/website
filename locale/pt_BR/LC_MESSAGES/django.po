@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Weblate 1.2\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-04-02 10:59+0200\n"
-"PO-Revision-Date: 2020-04-02 09:48+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2020-04-02 12:22+0000\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "weblate/website/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -141,32 +141,24 @@ msgid "New payment"
 msgstr "Novo pagamento"
 
 #: payments/models.py:194
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Pagamento único"
+msgstr "Aguardando pagamento"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "Frequência do pagamento"
+msgstr "Pagamento rejeitado"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "Pagamento cancelado"
+msgstr "Pagamento aceito"
 
 #: payments/models.py:197
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "Pagamento cancelado"
+msgstr "Pagamento processado"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -254,16 +246,12 @@ msgid "Link image"
 msgstr "Imagem do link"
 
 #: weblate_web/models.py:347
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Expired service"
-msgstr "Serviço hospedado"
+msgstr "Serviço expirado"
 
 #: weblate_web/models.py:348
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Dedicated hosted service"
-msgstr "Serviço hospedado"
+msgstr "Serviço hospedado dedicado"
 
 #: weblate_web/models.py:349
 msgid "Hosted service"
@@ -1546,11 +1534,11 @@ msgstr "Suporte via e-mail prioritário"
 
 #: weblate_web/templates/hosting.html:61
 msgid "Regular backups"
-msgstr ""
+msgstr "Backups regulares"
 
 #: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:543
 msgid "Dedicated instance"
-msgstr ""
+msgstr "Instância dedicada"
 
 #: weblate_web/templates/hosting.html:72
 #: weblate_web/templates/snippets/pricing.html:10
@@ -1648,7 +1636,7 @@ msgstr "no local"
 
 #: weblate_web/templates/hosting.html:319
 msgid "Optional"
-msgstr ""
+msgstr "Opcional"
 
 #: weblate_web/templates/hosting.html:327
 #: weblate_web/templates/hosting.html:435
@@ -1734,6 +1722,10 @@ msgid ""
 "dedicated instance you can have customized authentication and any of Weblate "
 "settings."
 msgstr ""
+"A configuração padrão para hospedagem na nuvem é usar instância "
+"compartilhada. Isso é ótimo para traduções comunitárias, mas limita a "
+"personalização disponível. Com instância dedicada, você pode ter "
+"autenticação personalizada e qualquer uma das configurações do Weblate."
 
 #: weblate_web/templates/hosting.html:547
 msgid "Gratis Trial?"
@@ -1836,10 +1828,8 @@ msgid "Weblate, the libre continuous localization system."
 msgstr "Weblate, o sistema livre de localização contínua."
 
 #: weblate_web/templates/mail/base.html:248
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your payments"
-msgstr "Gerenciar suas doações"
+msgstr "Gerenciar seus pagamentos"
 
 #: weblate_web/templates/mail/base.html:254
 #, python-format
@@ -1847,14 +1837,12 @@ msgid "Generated on %(timestamp)s."
 msgstr "Gerado em %(timestamp)s."
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Thank you for your payment on weblate.org."
-msgstr "Seu pagamento no weblate.org"
+msgstr "Obrigado pelo seu pagamento no weblate.org."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "Você encontrará, em anexo, uma fatura para este pagamento."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
@@ -1865,92 +1853,50 @@ msgid ""
 "Your subscription payment on weblate.org is expiring soon. Please login to "
 "the website and renew it."
 msgstr ""
+"O pagamento da sua assinatura no weblate.org vai expirar em breve. Por "
+"favor, autentique-se no site e renove-a."
 
 #: weblate_web/templates/mail/payment_expired.html:13
 #: weblate_web/templates/mail/payment_expired.html:23
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "Assinatura atual: %(package)s"
 
 #: weblate_web/templates/mail/payment_expired.html:19
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your donation payment on weblate.org is expiring soon. Please login to the "
 "website and renew it."
 msgstr ""
-"Olá!\n"
-"\n"
-"Seu pagamento no weblate.org está pendente. Por favor, siga as\n"
-"instruções fornecidas para concluir o pagamento.\n"
+"O pagamento da sua doação no weblate.org vai expirar em breve. Por favor, "
+"autentique-se no site e renove-a."
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
-#, fuzzy
-#| msgid "Your pending payment on weblate.org"
 msgid "Your expired payment on weblate.org"
-msgstr "Seu pagamento pendente no weblate.org"
+msgstr "Seu pagamento expirou no weblate.org"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org failed"
 msgid "Your payment on weblate.org has failed."
-msgstr "Seu pagamento no weblate.org falhou"
+msgstr "Seu pagamento no weblate.org falhou."
 
 #: weblate_web/templates/mail/payment_failed.html:17
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
 msgstr ""
-"Olá!\n"
-"\n"
-"Seu pagamento no weblate.org falhou.\n"
-"\n"
-"%s\n"
-"\n"
-"Tente emitir novamente o pagamento no site:\n"
-"\n"
-"%s\n"
-"\n"
-"Se estiver relacionado a um pagamento recorrente,\n"
-"ele será repetido três vezes e, se ainda falhar, cancelado.\n"
+"Se estiver relacionado a um pagamento recorrente, ele será repetido três "
+"vezes e, se ainda falhar, cancelado."
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
 msgstr "Seu pagamento no weblate.org falhou"
 
 #: weblate_web/templates/mail/payment_pending.html:8
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your payment on weblate.org is pending. Please follow the provided "
 "instructions to complete the payment."
 msgstr ""
-"Olá!\n"
-"\n"
-"Seu pagamento no weblate.org está pendente. Por favor, siga as\n"
-"instruções fornecidas para concluir o pagamento.\n"
+"Seu pagamento no weblate.org está pendente. Por favor, siga as instruções "
+"fornecidas para concluir o pagamento."
 
 #: weblate_web/templates/mail/payment_pending.html:13
 #: weblate_web/templates/payment/payment.html:16
