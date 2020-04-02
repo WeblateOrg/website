@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-04-02 10:59+0200\n"
 "PO-Revision-Date: 2020-04-02 09:48+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/weblate/website/"
 "tr/>\n"
 "Language: tr\n"
@@ -143,32 +143,24 @@ msgid "New payment"
 msgstr "Yeni ödeme"
 
 #: payments/models.py:194
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Tek ödeme"
+msgstr "Bekleyen ödeme"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "Ödeme sıklığı"
+msgstr "Ödeme reddedildi"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "Ödeme iptal edildi"
+msgstr "Ödeme kabul edildi"
 
 #: payments/models.py:197
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "Ödeme iptal edildi"
+msgstr "Ödeme işleme alındı"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -256,16 +248,12 @@ msgid "Link image"
 msgstr "Resim bağlantısı"
 
 #: weblate_web/models.py:347
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Expired service"
-msgstr "Barındırılan hizmeti"
+msgstr "Süresi dolmuş hizmet"
 
 #: weblate_web/models.py:348
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Dedicated hosted service"
-msgstr "Barındırılan hizmeti"
+msgstr "Adanmış barındırılan hizmet"
 
 #: weblate_web/models.py:349
 msgid "Hosted service"
@@ -1543,11 +1531,11 @@ msgstr "Öncelikli eposta desteği"
 
 #: weblate_web/templates/hosting.html:61
 msgid "Regular backups"
-msgstr ""
+msgstr "Düzenli yedeklemeler"
 
 #: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:543
 msgid "Dedicated instance"
-msgstr ""
+msgstr "Adanmış örnek"
 
 #: weblate_web/templates/hosting.html:72
 #: weblate_web/templates/snippets/pricing.html:10
@@ -1644,7 +1632,7 @@ msgstr "kurum içi"
 
 #: weblate_web/templates/hosting.html:319
 msgid "Optional"
-msgstr ""
+msgstr "İsteğe bağlı"
 
 #: weblate_web/templates/hosting.html:327
 #: weblate_web/templates/hosting.html:435
@@ -1730,6 +1718,10 @@ msgid ""
 "dedicated instance you can have customized authentication and any of Weblate "
 "settings."
 msgstr ""
+"Bulut barındırma için varsayılan kurulum paylaşılan örneği kullanmaktır. Bu, "
+"kitle kaynaklı çeviriler için harikadır, ancak kullanılabilir özelleştirmeyi "
+"sınırlar. Adanmış örnekle, özelleştirilmiş kimlik doğrulamaya ve Weblate "
+"ayarlarından herhangi birine sahip olabilirsiniz."
 
 #: weblate_web/templates/hosting.html:547
 msgid "Gratis Trial?"
@@ -1831,10 +1823,8 @@ msgid "Weblate, the libre continuous localization system."
 msgstr "Weblate, özgür kesintisiz yerelleştirme sistemi."
 
 #: weblate_web/templates/mail/base.html:248
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your payments"
-msgstr "Bağışlarınızı yönetin"
+msgstr "Ödemelerinizi yönetin"
 
 #: weblate_web/templates/mail/base.html:254
 #, python-format
@@ -1842,14 +1832,12 @@ msgid "Generated on %(timestamp)s."
 msgstr "%(timestamp)s tarihinde oluşturuldu."
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Thank you for your payment on weblate.org."
-msgstr "Weblate.org'daki ödemeniz"
+msgstr "Weblate.org'daki ödemeniz için teşekkür ederiz."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "Bu ödeme için faturayı ekte bulacaksınız."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
@@ -1860,28 +1848,22 @@ msgid ""
 "Your subscription payment on weblate.org is expiring soon. Please login to "
 "the website and renew it."
 msgstr ""
+"Weblate.org'daki abonelik ödemeniz yakında sona eriyor. Lütfen web sitesine "
+"oturumaçın ve yenileyin."
 
 #: weblate_web/templates/mail/payment_expired.html:13
 #: weblate_web/templates/mail/payment_expired.html:23
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "Şu anki abonelik: %(package)s"
 
 #: weblate_web/templates/mail/payment_expired.html:19
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your donation payment on weblate.org is expiring soon. Please login to the "
 "website and renew it."
 msgstr ""
-"Merhaba,\n"
-"\n"
-"Weblate.org'daki ödemeniz beklemede. Lütfen ödemeyi tamamlamak\n"
-"için verilen talimatları uygulayın.\n"
+"Weblate.org'daki bağış ödemeniz yakında sona eriyor. Lütfen web sitesine "
+"oturum açın ve yenileyin."
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
 #, fuzzy
