@@ -17,13 +17,14 @@
 # Vadim Nekhai <vadimnekhai@gmail.com>, 2019.
 # Alex Ky <esthomolupus@gmail.com>, 2019.
 # Golubev Alexander <fatzer2@gmail.com>, 2020.
+# Mingun <Alexander_Sergey@mail.ru>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-04-02 14:22+0200\n"
 "PO-Revision-Date: 2020-04-03 08:31+0000\n"
-"Last-Translator: Golubev Alexander <fatzer2@gmail.com>\n"
+"Last-Translator: Mingun <Alexander_Sergey@mail.ru>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
 "ru/>\n"
 "Language: ru\n"
@@ -154,32 +155,24 @@ msgid "New payment"
 msgstr "Новый платёж"
 
 #: payments/models.py:194
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Однократный платёж"
+msgstr "Ожидающий платёж"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "Периодичность платежа"
+msgstr "Платёж отклонён"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "Платёж отменён"
+msgstr "Платёж принят"
 
 #: payments/models.py:197
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "Платёж отменён"
+msgstr "Платёж обработан"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -593,7 +586,7 @@ msgstr "Фронтенд-разработчики"
 
 #: weblate_web/templates/careers.html:26
 msgid "Implement your knowledge in the user experience."
-msgstr ""
+msgstr "Реализуйте свои познания взаимодействия с пользователем."
 
 #: weblate_web/templates/careers.html:27
 msgid "Bring modern front-end technologies to Weblate."
@@ -608,24 +601,17 @@ msgid "Python developer"
 msgstr "Python-разработчик"
 
 #: weblate_web/templates/careers.html:36
-#, fuzzy
-#| msgid ""
-#| "Tuneup the backend and libraries we rely on and save time to all users."
 msgid "Tune up the back-end and libraries and save time for all users."
 msgstr ""
-"Подстройте backend и библиотеки, которые мы используем, и сэкономьте время "
-"всем пользователям."
+"Подстройка серверной части и библиотек, чтобы сэкономить время всем "
+"пользователям."
 
 #: weblate_web/templates/careers.html:37
-#, fuzzy
-#| msgid ""
-#| "Implement support for new features, file formats or integration with "
-#| "third party services."
 msgid ""
 "Implement support for new features, file formats or integration with third-"
 "party services."
 msgstr ""
-"Реализуйте поддержку новых возможностей, форматов файлов или интеграции со "
+"Реализация поддержки новых возможностей, форматов файлов или интеграции со "
 "сторонними сервисами."
 
 #: weblate_web/templates/contribute.html:10
@@ -1574,11 +1560,11 @@ msgstr "Приоритетная поддержка по э-почте"
 
 #: weblate_web/templates/hosting.html:61
 msgid "Regular backups"
-msgstr ""
+msgstr "Регулярное резервное копирование"
 
 #: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:543
 msgid "Dedicated instance"
-msgstr ""
+msgstr "Выделенный экземпляр сервера"
 
 #: weblate_web/templates/hosting.html:72
 #: weblate_web/templates/snippets/pricing.html:10
@@ -1677,7 +1663,7 @@ msgstr "локальный"
 
 #: weblate_web/templates/hosting.html:319
 msgid "Optional"
-msgstr ""
+msgstr "По желанию"
 
 #: weblate_web/templates/hosting.html:327
 #: weblate_web/templates/hosting.html:435
@@ -1763,6 +1749,10 @@ msgid ""
 "dedicated instance you can have customized authentication and any of Weblate "
 "settings."
 msgstr ""
+"По умолчанию для облачного хостинга используется виртуальный сервер. Он "
+"отлично подходит для краудсорсинговых переводов, но его доступные настройки "
+"ограничены. С выделенным сервером вы можете настроить собственную "
+"аутентификацию и изменить любые параметры Weblate."
 
 #: weblate_web/templates/hosting.html:547
 msgid "Gratis Trial?"
@@ -1868,131 +1858,75 @@ msgstr ""
 "Weblate, свободное программное обеспечение системы непрерывной локализации."
 
 #: weblate_web/templates/mail/base.html:248
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your payments"
-msgstr "Управление вашими пожертвованиями"
+msgstr "Управление вашими платежами"
 
 #: weblate_web/templates/mail/base.html:254
 #, python-format
 msgid "Generated on %(timestamp)s."
-msgstr ""
+msgstr "Сгенерировано %(timestamp)s."
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Thank you for your payment on weblate.org."
-msgstr "Ваш платёж на weblate.org"
+msgstr "Спасибо вам за ваш платёж на weblate.org."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "Во вложении находится счёт-фактура к этому платежу."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
 msgstr "Ваш платёж на weblate.org"
 
 #: weblate_web/templates/mail/payment_expired.html:9
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your subscription on weblate.org is expiring soon. Please sign in on the "
 "website to renew it."
 msgstr ""
-"Здравствуйте!\n"
-"\n"
-"Ваш платёж в weblate.org находится на рассмотрении. Пожалуйста, \n"
-"следуйте указанным инструкциям для завершения оплаты.\n"
+"Ваша подписка на weblate.org скоро закончится. Пожалуйста, войдите на сайт, "
+"чтобы её продлить."
 
 #: weblate_web/templates/mail/payment_expired.html:13
 #: weblate_web/templates/mail/payment_expired.html:23
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "Текущая подписка: %(package)s"
 
 #: weblate_web/templates/mail/payment_expired.html:19
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
 msgstr ""
-"Здравствуйте!\n"
-"\n"
-"Ваш платёж в weblate.org находится на рассмотрении. Пожалуйста, \n"
-"следуйте указанным инструкциям для завершения оплаты.\n"
+"Ваше пожертвование на weblate.org скоро закончится. Пожалуйста, войдите на "
+"сайт, чтобы его продлить."
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
-#, fuzzy
-#| msgid "Your pending payment on weblate.org"
 msgid "Your expired payment on weblate.org"
-msgstr "Ваш ожидающий платёж на weblate.org"
+msgstr "Ваш истёкший платёж на weblate.org"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org failed"
 msgid "Your payment on weblate.org has failed."
-msgstr "Ваш платёж на weblate.org не прошёл"
+msgstr "Ваш платёж на weblate.org не прошёл."
 
 #: weblate_web/templates/mail/payment_failed.html:17
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
 msgstr ""
-"Здравствуйте,\n"
-"\n"
-"Ваш платёж на сайте weblate.org не прошёл.\n"
-"\n"
-"%s\n"
-"\n"
-"Повторите оформление платежа на сайте:\n"
-"\n"
-"%s\n"
-"\n"
-"Если речь идёт о регулярном платеже, это повторяется три раза,\n"
-"и если все равно не получается, то он отменяется.\n"
+"Если речь идёт о регулярном платеже, выполняется три попытки его повтора и "
+"если он всё равно не проходит, он отменяется."
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
 msgstr "Ваш платёж на weblate.org не прошёл"
 
 #: weblate_web/templates/mail/payment_pending.html:8
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your payment on weblate.org is pending. Please follow the provided "
 "instructions to complete the payment."
 msgstr ""
-"Здравствуйте!\n"
-"\n"
-"Ваш платёж в weblate.org находится на рассмотрении. Пожалуйста, \n"
-"следуйте указанным инструкциям для завершения оплаты.\n"
+"Ваш платёж в weblate.org находится на рассмотрении. Пожалуйста,  следуйте "
+"указанным инструкциям для завершения оплаты."
 
 #: weblate_web/templates/mail/payment_pending.html:13
 #: weblate_web/templates/payment/payment.html:16
@@ -2175,22 +2109,16 @@ msgid "Contribute with us"
 msgstr "Содействовать с нами"
 
 #: weblate_web/templates/snippets/career.html:2
-#, fuzzy, python-format
-#| msgid ""
-#| "Browse <a href=\"%(issues)s\">open issues</a> to get more insight of what "
-#| "we are looking for."
+#, python-format
 msgid ""
 "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
 "we are looking for."
 msgstr ""
-"Просмотрите <a href=\"%(issues)s\">открытые проблемы</a>, чтобы учше понять, "
-"кого мы ищем."
+"Просмотрите <a href=\"%(issues)s\">открытые проблемы</a>, чтобы понять, кого "
+"мы ищем."
 
 #: weblate_web/templates/snippets/career.html:3
-#, fuzzy, python-format
-#| msgid ""
-#| "Show us your abilities if you want by picking up an issue from the list. "
-#| "Unsure what to choose try <a href=\"%(issue)s\">this one</a>."
+#, python-format
 msgid ""
 "Show us your abilities by picking up an issue from the list. Unsure what to "
 "choose? Try <a href=\"%(issue)s\">this one</a>."
@@ -2199,10 +2127,10 @@ msgstr ""
 "выбрать? Попробуйте <a href=\"%(issue)s\">вот эту</a>."
 
 #: weblate_web/templates/snippets/career.html:4
-#, fuzzy
-#| msgid "We're open source, all our issues are open to public."
 msgid "It is all libre software, all our issues are open to public."
-msgstr "У нас открытый исходный код, все наши проблемы доступны всем."
+msgstr ""
+"Это программное обеспечение с открытым исходным кодом и все наши проблемы "
+"могут видеть все."
 
 #: weblate_web/templates/snippets/career.html:5
 msgid "Currently, we are looking for remote part-time contractors."
