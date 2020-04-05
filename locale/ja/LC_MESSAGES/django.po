@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-04-02 14:22+0200\n"
-"PO-Revision-Date: 2020-04-02 09:48+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2020-04-05 18:38+0000\n"
+"Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
 "ja/>\n"
 "Language: ja\n"
@@ -146,32 +146,24 @@ msgid "New payment"
 msgstr "新規支払い"
 
 #: payments/models.py:194
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "1 回のみの支払い"
+msgstr "入金待ち"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "支払い回数"
+msgstr "支払拒否"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "支払いの解約"
+msgstr "支払い承認"
 
 #: payments/models.py:197
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "支払いの解約"
+msgstr "支払処理済"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -258,16 +250,12 @@ msgid "Link image"
 msgstr "リンク 画像"
 
 #: weblate_web/models.py:347
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Expired service"
-msgstr "ホスティング サービス"
+msgstr "有効期限切れのサービス"
 
 #: weblate_web/models.py:348
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Dedicated hosted service"
-msgstr "ホスティング サービス"
+msgstr "専用のホスティング サービス"
 
 #: weblate_web/models.py:349
 msgid "Hosted service"
@@ -1528,11 +1516,11 @@ msgstr "優先的なメール サポート"
 
 #: weblate_web/templates/hosting.html:61
 msgid "Regular backups"
-msgstr ""
+msgstr "定期的なバックアップ"
 
 #: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:543
 msgid "Dedicated instance"
-msgstr ""
+msgstr "専用インスタンス"
 
 #: weblate_web/templates/hosting.html:72
 #: weblate_web/templates/snippets/pricing.html:10
@@ -1629,7 +1617,7 @@ msgstr "オンプレミス"
 
 #: weblate_web/templates/hosting.html:319
 msgid "Optional"
-msgstr ""
+msgstr "オプション"
 
 #: weblate_web/templates/hosting.html:327
 #: weblate_web/templates/hosting.html:435
@@ -1715,6 +1703,8 @@ msgid ""
 "dedicated instance you can have customized authentication and any of Weblate "
 "settings."
 msgstr ""
+"クラウド ホスティングのデフォルト設定では、共有インスタンスが使用されます。これは翻訳のクラウドソーシングには最適ですが、カスタマイズは制限されています。"
+"専用インスタンスを使用すると、認証や Weblate の設定をカスタマイズできます。"
 
 #: weblate_web/templates/hosting.html:547
 msgid "Gratis Trial?"
@@ -1816,10 +1806,8 @@ msgid "Weblate, the libre continuous localization system."
 msgstr "Weblate、Web サービスを連携して動作するリブレな翻訳システム。"
 
 #: weblate_web/templates/mail/base.html:248
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your payments"
-msgstr "寄付を管理する"
+msgstr "支払いの管理"
 
 #: weblate_web/templates/mail/base.html:254
 #, python-format
@@ -1827,119 +1815,58 @@ msgid "Generated on %(timestamp)s."
 msgstr "%(timestamp)s に生成。"
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Thank you for your payment on weblate.org."
-msgstr "weblate.org への支払い"
+msgstr "weblate.org にお支払いいただきありがとうございます。"
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "今回の支払いの請求書が添付されています。"
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
 msgstr "weblate.org への支払い"
 
 #: weblate_web/templates/mail/payment_expired.html:9
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your subscription on weblate.org is expiring soon. Please sign in on the "
 "website to renew it."
-msgstr ""
-"こんにちは\n"
-"\n"
-"お客様の weblate.org への支払いの入金を待っています。\n"
-"指示に従ってお支払いください。\n"
+msgstr "weblate.org のサブスクリプションがまもなく期限切れになります。更新するには、Web サイトにサインインしてください。"
 
 #: weblate_web/templates/mail/payment_expired.html:13
 #: weblate_web/templates/mail/payment_expired.html:23
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "現在のサブスクリプション: %(package)s"
 
 #: weblate_web/templates/mail/payment_expired.html:19
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
-msgstr ""
-"こんにちは\n"
-"\n"
-"お客様の weblate.org への支払いの入金を待っています。\n"
-"指示に従ってお支払いください。\n"
+msgstr "weblate.org への寄付はまもなく期限切れとなります。更新するには、Web サイトにサインインしてください。"
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
-#, fuzzy
-#| msgid "Your pending payment on weblate.org"
 msgid "Your expired payment on weblate.org"
 msgstr "weblate.org への未払い"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org failed"
 msgid "Your payment on weblate.org has failed."
-msgstr "weblate.org へのお支払いに失敗しました"
+msgstr "weblate.org へのお支払いに失敗しました。"
 
 #: weblate_web/templates/mail/payment_failed.html:17
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
-msgstr ""
-"こんにちは\n"
-"\n"
-"weblate.org へのお支払いに失敗しました。\n"
-"\n"
-"%s\n"
-"\n"
-"Web サイトでお支払いを再試行してください:\n"
-"\n"
-"%s\n"
-"\n"
-"定期購入の場合は 3 回再試行し、それでも失敗した場合は解約されます。\n"
+msgstr "定期的な支払いの場合は 3 回まで試し、それでも失敗する場合はキャンセルされます。"
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
 msgstr "weblate.org へのお支払いに失敗しました"
 
 #: weblate_web/templates/mail/payment_pending.html:8
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your payment on weblate.org is pending. Please follow the provided "
 "instructions to complete the payment."
-msgstr ""
-"こんにちは\n"
-"\n"
-"お客様の weblate.org への支払いの入金を待っています。\n"
-"指示に従ってお支払いください。\n"
+msgstr "weblate.org でのお支払いは保留中です。表示する指示に従って支払いを完了してください。"
 
 #: weblate_web/templates/mail/payment_pending.html:13
 #: weblate_web/templates/payment/payment.html:16
