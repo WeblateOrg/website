@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-04-02 14:22+0200\n"
-"PO-Revision-Date: 2020-04-02 09:48+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2020-04-08 08:48+0000\n"
+"Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/cs/"
 ">\n"
 "Language: cs\n"
@@ -139,32 +139,24 @@ msgid "New payment"
 msgstr "Nová platba"
 
 #: payments/models.py:194
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Jednorázová platba"
+msgstr "Očekávaná platba"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "Opakování platby"
+msgstr "Platba zamítnuta"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "Platba zrušena"
+msgstr "Platba přijata"
 
 #: payments/models.py:197
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "Platba zrušena"
+msgstr "Platba zpracována"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -250,16 +242,12 @@ msgid "Link image"
 msgstr "Obrázek odkazu"
 
 #: weblate_web/models.py:347
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Expired service"
-msgstr "Hostovaná služba"
+msgstr "Ukončená služba"
 
 #: weblate_web/models.py:348
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Dedicated hosted service"
-msgstr "Hostovaná služba"
+msgstr "Vyhrazená hostovaná služba"
 
 #: weblate_web/models.py:349
 msgid "Hosted service"
@@ -1524,11 +1512,11 @@ msgstr "Přednostní e-mailová podpora"
 
 #: weblate_web/templates/hosting.html:61
 msgid "Regular backups"
-msgstr ""
+msgstr "Pravidelné zálohy"
 
 #: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:543
 msgid "Dedicated instance"
-msgstr ""
+msgstr "Vyhrazená instance"
 
 #: weblate_web/templates/hosting.html:72
 #: weblate_web/templates/snippets/pricing.html:10
@@ -1627,7 +1615,7 @@ msgstr "u vás"
 
 #: weblate_web/templates/hosting.html:319
 msgid "Optional"
-msgstr ""
+msgstr "Volitelně"
 
 #: weblate_web/templates/hosting.html:327
 #: weblate_web/templates/hosting.html:435
@@ -1817,10 +1805,8 @@ msgid "Weblate, the libre continuous localization system."
 msgstr "Weblate, svobodný systém pro průběžnou lokalizaci."
 
 #: weblate_web/templates/mail/base.html:248
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your payments"
-msgstr "Spravovat vaše dary"
+msgstr "Spravovat vaše platby"
 
 #: weblate_web/templates/mail/base.html:254
 #, python-format
@@ -1828,120 +1814,66 @@ msgid "Generated on %(timestamp)s."
 msgstr "Vytvořeno %(timestamp)s."
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org"
 msgid "Thank you for your payment on weblate.org."
-msgstr "Vaše platba na weblate.org"
+msgstr "Děkujeme za Vaši platbu na weblate.org."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "V příloze naleznete fakturu pro tuto platbu."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
 msgstr "Vaše platba na weblate.org"
 
 #: weblate_web/templates/mail/payment_expired.html:9
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your subscription on weblate.org is expiring soon. Please sign in on the "
 "website to renew it."
 msgstr ""
-"Dobrý den\n"
-"\n"
-"Vaše platba na webu weblate.org čeká na vyřízení. Prosím proveďte platbu\n"
-"podle přiložených pokynů.\n"
+"Vaše předplatné na weblate.org brzy vyprší. Prosím přihlaste se na webu pro "
+"její obnovení."
 
 #: weblate_web/templates/mail/payment_expired.html:13
 #: weblate_web/templates/mail/payment_expired.html:23
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "Aktuální předplatné: %(package)s"
 
 #: weblate_web/templates/mail/payment_expired.html:19
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
 msgstr ""
-"Dobrý den\n"
-"\n"
-"Vaše platba na webu weblate.org čeká na vyřízení. Prosím proveďte platbu\n"
-"podle přiložených pokynů.\n"
+"Váš dar na weblate.org brzy vyprší. Prosím přihlaste se na webu pro její "
+"obnovení."
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
-#, fuzzy
-#| msgid "Your pending payment on weblate.org"
 msgid "Your expired payment on weblate.org"
-msgstr "Vaše čekající platba na weblate.org"
+msgstr "Vaše končící platba na weblate.org"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org failed"
 msgid "Your payment on weblate.org has failed."
-msgstr "Vaše platba na weblate.org se nezdařila"
+msgstr "Vaše platba na weblate.org se nezdařila."
 
 #: weblate_web/templates/mail/payment_failed.html:17
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
 msgstr ""
-"Dobrý den\n"
-"\n"
-"Vaše platba na weblate.org se nezdařila.\n"
-"\n"
-"%s\n"
-"\n"
-"Opakovat provedení platby můžete uskutečnit na webu:\n"
-"\n"
-"%s\n"
-"\n"
-"Pokud se jednalo o opakující se platbu, pokusíme se jí provést\n"
-"třikrát a pokud se nepodaří, vypneme opakování.\n"
+"Pokud se jednalo o opakující se platbu, pokusíme se jí provést třikrát a "
+"pokud se nepodaří, vypneme opakování."
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
 msgstr "Vaše platba na weblate.org se nezdařila"
 
 #: weblate_web/templates/mail/payment_pending.html:8
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your payment on weblate.org is pending. Please follow the provided "
 "instructions to complete the payment."
 msgstr ""
-"Dobrý den\n"
-"\n"
-"Vaše platba na webu weblate.org čeká na vyřízení. Prosím proveďte platbu\n"
-"podle přiložených pokynů.\n"
+"Vaše platba na webu weblate.org čeká na vyřízení. Prosím proveďte platbu "
+"podle přiložených pokynů."
 
 #: weblate_web/templates/mail/payment_pending.html:13
 #: weblate_web/templates/payment/payment.html:16
