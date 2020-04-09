@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: Weblate v. 2017.09.28\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-04-08 10:56+0200\n"
-"PO-Revision-Date: 2020-04-02 21:48+0000\n"
-"Last-Translator: Mayeul Kauffmann <mayeul.kauffmann@free.fr>\n"
+"PO-Revision-Date: 2020-04-09 17:53+0000\n"
+"Last-Translator: bovirus <roberto.boriotti@canon-europe.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/weblate/website/"
 "it/>\n"
 "Language: it\n"
@@ -150,8 +150,6 @@ msgid "Awaiting payment"
 msgstr "In attesa di pagamento"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Pagamento rifiutato"
@@ -250,10 +248,8 @@ msgid "Link image"
 msgstr "Collegamento immagine"
 
 #: weblate_web/models.py:347
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Expired service"
-msgstr "Servizio hosting"
+msgstr "Servizio scaduto"
 
 #: weblate_web/models.py:348
 msgid "Dedicated hosted service"
@@ -1734,22 +1730,15 @@ msgstr ""
 "traduzione, può essere una parola, una frase od un paragrafo."
 
 #: weblate_web/templates/hosting.html:545
-#, fuzzy
-#| msgid ""
-#| "The default setup for cloud hosting is to use shared instance. This is "
-#| "great for crowdsourcing translations, but it limits available "
-#| "customization. With dedicated instance you can have customized "
-#| "authentication and any of Weblate settings."
 msgid ""
 "With cloud hosting, the default setup is to use a shared instance, and a "
 "common translation memory. On a dedicated instance there is no economy of "
 "scale, but you can make use of customized authentication and settings."
 msgstr ""
-"L'impostazione standard per il hosting cloud è quella di utilizzare "
-"l'istanza condivisa. Questo è ottimo per le traduzioni in modalità "
-"crowdsourcing, ma limita la personalizzazione disponibile. Con l'istanza "
-"dedicata è possibile avere un'autenticazione personalizzata e qualsiasi "
-"impostazioni Weblate."
+"Con l'hosting cloud, l'impostazione predefinita è quella di usare l'istanza "
+"condivisa, e una memoria di traduzione comune. In un'istanza dedicata non "
+"esiste economia di scala, ma è possibile usare l'autenticazione e le "
+"impostazioni personalizzate."
 
 #: weblate_web/templates/hosting.html:547
 msgid "Gratis Trial?"
@@ -1873,84 +1862,42 @@ msgid "Your payment on weblate.org"
 msgstr "Il tuo pagamento su weblate.org"
 
 #: weblate_web/templates/mail/payment_expired.html:9
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your subscription on weblate.org is expiring soon. Please sign in on the "
 "website to renew it."
 msgstr ""
-"Ciao,\n"
-"\n"
-"il tuo pagamento su weblate è in sospeso. \n"
-"Segui le istruzioni per completare il pagamento.\n"
+"Il tuo abbonamento su weblate.org scadrà presto. Accedi al sito Web per "
+"rinnovarla."
 
 #: weblate_web/templates/mail/payment_expired.html:13
 #: weblate_web/templates/mail/payment_expired.html:23
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "Abbonamento attuale: %(package)s"
 
 #: weblate_web/templates/mail/payment_expired.html:19
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org is pending. Please follow the provided\n"
-#| "instructions to complete the payment.\n"
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
 msgstr ""
-"Ciao,\n"
-"\n"
-"il tuo pagamento su weblate è in sospeso. \n"
-"Segui le istruzioni per completare il pagamento.\n"
+"La tua donazione su weblate.org sta per scadere. Accedi al sito Web per "
+"rinnovarla."
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
-#, fuzzy
-#| msgid "Your pending payment on weblate.org"
 msgid "Your expired payment on weblate.org"
-msgstr "Il tuo pagamento in sospeso su weblate.org"
+msgstr "Il tuo pagamento scaduto su weblate.org"
 
 #: weblate_web/templates/mail/payment_failed.html:7
 msgid "Your payment on weblate.org has failed."
-msgstr "Il tuo pagamento su weblate.org è fallito"
+msgstr "Il tuo pagamento su weblate.org è fallito."
 
 #: weblate_web/templates/mail/payment_failed.html:17
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
 msgstr ""
-"Ciao,\n"
-"\n"
-"ll pagamento su weblate.org non è andato a buon fine.\n"
-"\n"
-"%s\n"
-"\n"
-"Ti consigliamo di ripetere il pagamento nel sito web:\n"
-"\n"
-"%s\n"
-"\n"
-"Se si tratta di un pagamento ricorrente, verrà ripetuto tre volte,\n"
-"ma qualora fallisca, sarà cancellato.\n"
+"Se si tratta di un pagamento ricorrente, viene riprovato tre volte e, in "
+"caso contrario, viene annullato."
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
