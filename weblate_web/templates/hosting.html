@@ -22,7 +22,7 @@
                             <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% trans "Continuous localization" %}</a></span>
                         </div>
                         <div class="line">
-                            <span class="middle" title="{% trans "Translation unit defined in a translation format, it can be word, sentence or a paragraph" %}">{% trans "Source strings" %}</span>
+                            <span class="middle"><a href="#strings">{% trans "Source strings" %}</a></span>
                         </div>
                         <div class="line">
                             <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/languages.html">{% trans "Target languages" %}</a></span>
@@ -536,8 +536,11 @@
 
             <h2 class="section-title crypto payment-conditions">{% trans "Payment" %}</h2>
             <div class="page-desc small">
-                <p>{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}</p>
                 {% include "snippets/vat.html" %}
+            </div>
+            <h2 class="section-title crypto payment-conditions" id="strings">{% trans "Source strings" %}</h2>
+            <div class="page-desc small">
+                <p>{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}</p>
             </div>
             <h2 class="section-title crypto payment-conditions" id="dedicated">{% trans "Dedicated instance" %}</h2>
             <div class="page-desc small">
