@@ -289,6 +289,7 @@ ALLOWED_HOSTS = ("weblate.org", "127.0.0.1", "localhost")
 EMAIL_SUBJECT_PREFIX = "[weblate.org] "
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_AGE = 3600
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
