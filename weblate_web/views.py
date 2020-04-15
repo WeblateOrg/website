@@ -158,7 +158,7 @@ def api_hosted(request):
 
     # Link users which are supposed to have access
     for user in payload["users"]:
-        service.users.add(User.objects.get_or_create(pk=user)[0])
+        service.users.add(User.objects.get_or_create(username=user)[0])
 
     # Collect stats
     service.report_set.create(
