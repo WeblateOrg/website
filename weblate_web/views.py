@@ -101,13 +101,20 @@ def api_user(request):
         return HttpResponseBadRequest(str(error))
 
     try:
-        user = User.objects.get(pk=payload["user_id"])
+        user = User.objects.get(username=payload["username"])
     except User.DoesNotExist:
         return JsonResponse({"status": "User not found"})
 
     # Cycle unused passwords to invalidate existing sessions
     if not user.has_usable_password():
         user.set_unusable_password()
+
+    # Update attributes
+    for changed, value in payload.get("changed", {}).items():
+        setattr(user, changed, value)
+
+    # Save to the database
+    user.save()
 
     return JsonResponse({"status": "User updated"})
 

@@ -723,7 +723,7 @@ class APITest(TestCase):
             "/api/user/",
             {
                 "payload": dumps(
-                    {"user_id": user.id},
+                    {"username": user.username},
                     key=settings.PAYMENT_SECRET,
                     salt="weblate.user",
                 )
@@ -735,7 +735,7 @@ class APITest(TestCase):
             "/api/user/",
             {
                 "payload": dumps(
-                    {"user_id": -1}, key=settings.PAYMENT_SECRET, salt="weblate.user",
+                    {"username": "x"}, key=settings.PAYMENT_SECRET, salt="weblate.user",
                 )
             },
         )
@@ -749,3 +749,19 @@ class APITest(TestCase):
     def test_user_missing(self):
         response = self.client.post("/api/user/")
         self.assertEqual(response.status_code, 400)
+
+    def test_user_rename(self):
+        user = User.objects.create(username="testuser", password="testpassword")
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {"username": user.username, "changed": {"username": "other"}},
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username="testuser").exists())
+        self.assertTrue(User.objects.filter(username="other").exists())
