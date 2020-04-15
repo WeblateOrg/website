@@ -756,7 +756,7 @@ class APITest(TestCase):
             "/api/user/",
             {
                 "payload": dumps(
-                    {"username": user.username, "changed": {"username": "other"}},
+                    {"username": user.username, "changes": {"username": "other"}},
                     key=settings.PAYMENT_SECRET,
                     salt="weblate.user",
                 )

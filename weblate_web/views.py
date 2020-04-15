@@ -110,7 +110,7 @@ def api_user(request):
         user.set_unusable_password()
 
     # Update attributes
-    for key, value in payload.get("changed", {}).items():
+    for key, value in payload.get("changes", {}).items():
         if key not in ("username", "email", "last_name"):
             continue
         setattr(user, key, value)
