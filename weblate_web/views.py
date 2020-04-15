@@ -111,7 +111,7 @@ def api_user(request):
 
     # Update attributes
     for key, value in payload.get("changed", {}).items():
-        if key not in ("username", "email", "first_name"):
+        if key not in ("username", "email", "last_name"):
             continue
         setattr(user, key, value)
 
