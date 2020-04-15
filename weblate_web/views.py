@@ -89,6 +89,31 @@ def show_form_errors(request, form):
 
 @require_POST
 @csrf_exempt
+def api_user(request):
+    try:
+        payload = loads(
+            request.POST.get("payload", ""),
+            key=settings.PAYMENT_SECRET,
+            max_age=300,
+            salt="weblate.user",
+        )
+    except (BadSignature, SignatureExpired) as error:
+        return HttpResponseBadRequest(str(error))
+
+    try:
+        user = User.objects.get(pk=payload["user_id"])
+    except User.DoesNotExist:
+        return JsonResponse({"status": "User not found"})
+
+    # Cycle unused passwords to invalidate existing sessions
+    if not user.has_usable_password():
+        user.set_unusable_password()
+
+    return JsonResponse({"status": "User updated"})
+
+
+@require_POST
+@csrf_exempt
 def api_hosted(request):
     try:
         payload = loads(

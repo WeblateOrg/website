@@ -716,3 +716,36 @@ class APITest(TestCase):
 
     def test_support_expired(self):
         self.test_support(delta=-1, expected="community")
+
+    def test_user(self):
+        user = User.objects.create(username="testuser", password="testpassword")
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {"user_id": user.id},
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "User updated"})
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {"user_id": -1}, key=settings.PAYMENT_SECRET, salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "User not found"})
+
+    def test_user_invalid(self):
+        response = self.client.post("/api/user/", {"payload": dumps({}, key="dummy")})
+        self.assertEqual(response.status_code, 400)
+
+    def test_user_missing(self):
+        response = self.client.post("/api/user/")
+        self.assertEqual(response.status_code, 400)
