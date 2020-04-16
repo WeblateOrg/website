@@ -43,6 +43,7 @@ SUPPORTED_LANGUAGES = {
     "id",
     "it",
     "ja",
+    "kab",
     "kk",
     "ko",
     "nb",
