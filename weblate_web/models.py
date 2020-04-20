@@ -115,6 +115,16 @@ class Donation(models.Model):
     expires = models.DateTimeField()
     active = models.BooleanField(blank=True, db_index=True)
 
+    class Meta:
+        verbose_name = "Donation"
+        verbose_name_plural = "Donations"
+
+    def __str__(self):
+        return "{}:{}".format(self.user, self.reward)
+
+    def get_absolute_url(self):
+        return reverse("donate-edit", kwargs={"pk": self.pk})
+
     @cached_property
     def payment_obj(self):
         if not self.payment:
@@ -131,16 +141,10 @@ class Donation(models.Model):
             query |= Q(repeat__pk=self.payment)
         return Payment.objects.filter(query).distinct()
 
-    def get_absolute_url(self):
-        return reverse("donate-edit", kwargs={"pk": self.pk})
-
     def get_amount(self):
         if not self.payment:
             return 0
         return self.payment_obj.amount
-
-    def __str__(self):
-        return "{}:{}".format(self.user, self.reward)
 
     def get_payment_description(self):
         if self.reward:
@@ -264,6 +268,10 @@ class Image(models.Model):
         upload_to="images/", help_text="Article image, 1200x630 pixels"
     )
 
+    class Meta:
+        verbose_name = "Image"
+        verbose_name_plural = "Images"
+
     def __str__(self):
         return self.name
 
@@ -290,6 +298,13 @@ class Post(models.Model):
         help_text="This is an important milestone, shown on milestones archive",
     )
 
+    class Meta:
+        verbose_name = "Blog post"
+        verbose_name_plural = "Blog posts"
+
+    def __str__(self):
+        return self.title
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
@@ -309,9 +324,6 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse("post", kwargs={"slug": self.slug})
 
-    def __str__(self):
-        return self.title
-
 
 def generate_secret():
     return get_random_string(64)
@@ -324,6 +336,10 @@ class Package(models.Model):
     limit_projects = models.IntegerField(default=0)
     limit_languages = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Service package"
+        verbose_name_plural = "Service packages"
 
     def __str__(self):
         return self.verbose
@@ -359,6 +375,10 @@ class Service(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
+
+    class Meta:
+        verbose_name = "Customer service"
+        verbose_name_plural = "Customer services"
 
     def __str__(self):
         if self.last_report:
@@ -534,6 +554,22 @@ class Subscription(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
 
+    class Meta:
+        verbose_name = "Customer subscription"
+        verbose_name_plural = "Customer subscription"
+
+    def __str__(self):
+        return "{}: {}".format(self.get_package_display(), self.service)
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(force_insert, force_update, using, update_fields)
+        self.service.update_status()
+
+    def get_absolute_url(self):
+        return reverse("subscription-edit", kwargs={"pk": self.pk})
+
     @cached_property
     def yearly_package(self):
         if self.package.endswith("-m"):
@@ -571,18 +607,6 @@ class Subscription(models.Model):
             query |= Q(repeat__pk=self.payment)
         return Payment.objects.filter(query).distinct()
 
-    def get_absolute_url(self):
-        return reverse("subscription-edit", kwargs={"pk": self.pk})
-
-    def __str__(self):
-        return "{}: {}".format(self.get_package_display(), self.service)
-
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        super().save(force_insert, force_update, using, update_fields)
-        self.service.update_status()
-
     def send_notification(self, notification):
         send_notification(
             notification,
@@ -601,6 +625,10 @@ class PastPayments(models.Model):
     )
     payment = models.UUIDField()
 
+    class Meta:
+        verbose_name = "Past payment"
+        verbose_name_plural = "Past payments"
+
     def __str__(self):
         return "{}: {}".format(self.subscription, self.payment)
 
@@ -617,6 +645,10 @@ class Report(models.Model):
     languages = models.IntegerField(default=0)
     source_strings = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Weblate report"
+        verbose_name_plural = "Weblate reports"
 
     def __str__(self):
         return self.site_url
