@@ -106,6 +106,10 @@ class Customer(models.Model):
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
 
+    class Meta:
+        verbose_name = "Customer"
+        verbose_name_plural = "Customers"
+
     def __str__(self):
         if self.name:
             return "{} ({})".format(self.name, self.email)
@@ -217,17 +221,19 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ["-created"]
+        verbose_name = "Payment"
+        verbose_name_plural = "Payments"
 
     def __str__(self):
         return "payment:{}".format(self.pk)
+
+    def get_absolute_url(self):
+        return reverse("payment", kwargs={"pk": self.pk})
 
     @property
     def is_waiting_for_user(self):
         """Whether payment is waiting for user action."""
         return self.state in (self.NEW, self.PENDING)
-
-    def get_absolute_url(self):
-        return reverse("payment", kwargs={"pk": self.pk})
 
     @cached_property
     def invoice_filename(self):
