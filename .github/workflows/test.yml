@@ -12,49 +12,49 @@ jobs:
     name: Python ${{ matrix.python-version }}
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Configure git
-      run: |
-        git config --global user.email "ci@example.com"
-        git config --global user.name "CI Job"
-    - name: Cache pip
-      uses: actions/cache@v1
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
-    - name: Install apt dependencies
-      run: |
-        sudo apt update
-        sudo apt install texlive-latex-recommended gettext
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install pip dependencies
-      run: |
-        pip install --upgrade pip wheel setuptools
-        pip install -r requirements.txt -r requirements-test.txt
-    - name: Test with Django
-      run: |
-        ./scripts/generate-locales
-        ./manage.py collectstatic
-        ./manage.py check
-        coverage run ./manage.py test
-    - name: Coverage
-      run: |
-        coverage combine
-        coverage xml
-    - uses: codecov/codecov-action@v1
-      with:
-        token: ${{secrets.CODECOV_TOKEN}}
-        flags: unittests
-        name: Python ${{ matrix.python-version }}
-    - name: DeepSource
-      continue-on-error: true
-      env:
-        DEEPSOURCE_DSN: ${{secrets.DEEPSOURCE_DSN}}
-      run: |
-        curl https://deepsource.io/cli | sh
-        ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Configure git
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Job"
+      - name: Cache pip
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
+      - name: Install apt dependencies
+        run: |
+          sudo apt update
+          sudo apt install texlive-latex-recommended gettext
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip dependencies
+        run: |
+          pip install --upgrade pip wheel setuptools
+          pip install -r requirements.txt -r requirements-test.txt
+      - name: Test with Django
+        run: |
+          ./scripts/generate-locales
+          ./manage.py collectstatic
+          ./manage.py check
+          coverage run ./manage.py test
+      - name: Coverage
+        run: |
+          coverage combine
+          coverage xml
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          flags: unittests
+          name: Python ${{ matrix.python-version }}
+      - name: DeepSource
+        continue-on-error: true
+        env:
+          DEEPSOURCE_DSN: ${{secrets.DEEPSOURCE_DSN}}
+        run: |
+          curl https://deepsource.io/cli | sh
+          ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml
