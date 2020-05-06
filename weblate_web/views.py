@@ -329,9 +329,15 @@ class CompleteView(PaymentView):
     def dispatch(self, request, *args, **kwargs):
         with transaction.atomic(using="payments_db"):
             self.object = self.get_object()
+
+            # User should choose method for new payment
             if self.object.state == Payment.NEW:
                 return redirect("payment", pk=self.object.pk)
-            if self.object.state != Payment.PENDING:
+
+            # Allow reprocessing of rejected payments. User might choose
+            # to retry in the payment gateway and previously rejected payment
+            # can be now completed.
+            if self.object.state not in (Payment.PENDING, Payment.REJECTED):
                 return self.redirect_origin()
 
             backend = get_backend(self.object.backend)(self.object)
