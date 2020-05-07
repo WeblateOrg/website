@@ -82,7 +82,31 @@ class Command(BaseCommand):
             service.create_backup()
 
     @staticmethod
-    def handle_subscriptions():
+    def peform_payment(payment, past_payments):
+        # Alllow at most three failures of current payment method
+        rejected_payments = past_payments.filter(
+            state=Payment.REJECTED, repeat=payment.repeat or payment
+        )
+        if rejected_payments.count() > 3:
+            payment.recurring = ""
+            payment.save()
+            return
+
+        # Create repeated payment
+        repeated = payment.repeat_payment()
+
+        # Backend does not support it
+        if not repeated:
+            # Remove recurring flag
+            payment.recurring = ""
+            payment.save()
+            return
+
+        # Remote trigger of the payment
+        repeated.trigger_remotely()
+
+    @classmethod
+    def handle_subscriptions(cls):
         subscriptions = Subscription.objects.filter(
             expires__lte=timezone.now() + timedelta(days=3)
         ).exclude(payment=None)
@@ -93,25 +117,10 @@ class Command(BaseCommand):
                     subscription.send_notification("payment_expired")
                 continue
 
-            # Alllow at most three failures
-            rejected_payments = subscription.list_payments().filter(
-                state=Payment.REJECTED
-            )
-            if rejected_payments.count() > 3:
-                payment.recurring = ""
-                payment.save()
-                continue
+            cls.peform_payment(payment, subscription.list_payments())
 
-            repeated = payment.repeat_payment()
-            if not repeated:
-                # Remove recurring flag
-                payment.recurring = ""
-                payment.save()
-            else:
-                repeated.trigger_remotely()
-
-    @staticmethod
-    def handle_donations():
+    @classmethod
+    def handle_donations(cls):
         donations = Donation.objects.filter(
             active=True, expires__lte=timezone.now() + timedelta(days=3)
         ).exclude(payment=None)
@@ -121,17 +130,4 @@ class Command(BaseCommand):
                 donation.send_notification("payment_expired")
                 continue
 
-            # Alllow at most three failures
-            rejected_payments = donation.list_payments().filter(state=Payment.REJECTED)
-            if rejected_payments.count() > 3:
-                payment.recurring = ""
-                payment.save()
-                continue
-
-            repeated = payment.repeat_payment()
-            if not repeated:
-                # Remove recurring flag
-                payment.recurring = ""
-                payment.save()
-            else:
-                repeated.trigger_remotely()
+            cls.peform_payment(payment, donation.list_payments())
