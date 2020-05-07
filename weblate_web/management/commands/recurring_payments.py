@@ -19,10 +19,12 @@
 
 from datetime import timedelta
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from payments.models import Payment
+from payments.utils import send_notification
 from weblate_web.models import Donation, Service, Subscription
 
 
@@ -33,7 +35,48 @@ class Command(BaseCommand):
         # Issue recurring payments
         self.handle_donations()
         self.handle_subscriptions()
+        # Update services status
         self.handle_services()
+        # Notify about upcoming expiry
+        self.notify_expiry()
+
+    @staticmethod
+    def notify_expiry():
+        expiry = []
+
+        # Expiring subscriptions
+        subscriptions = Subscription.objects.filter(
+            expires__lte=timezone.now() + timedelta(days=30)
+        ).exclude(payment=None)
+        for subscription in subscriptions:
+            payment = subscription.payment_obj
+            if not payment.recurring:
+                expiry.append(
+                    (
+                        str(subscription),
+                        subscription.service.users.values_list("email", flat=True),
+                    )
+                )
+
+        # Expiring donations
+        donations = Donation.objects.filter(
+            active=True, expires__lte=timezone.now() + timedelta(days=3)
+        ).exclude(payment=None)
+        for donation in donations:
+            payment = donation.payment_obj
+            if not payment.recurring:
+                expiry.append(
+                    (
+                        str(subscription),
+                        subscription.service.users.values_list("email", flat=True),
+                    )
+                )
+
+        # Notify admins
+        if expiry:
+            send_notification(
+                "expiring_subscriptions", settings.NOTIFY_SUBSCRIPTION, expiry=expiry,
+            )
 
     @staticmethod
     def handle_services():
