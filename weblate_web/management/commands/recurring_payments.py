@@ -50,7 +50,9 @@ class Command(BaseCommand):
         ).exclude(payment=None)
         for subscription in subscriptions:
             payment = subscription.payment_obj
-            if not payment.recurring:
+            if payment.recurring:
+                continue
+            if payment.repeat_payment():
                 expiry.append(
                     (
                         str(subscription),
