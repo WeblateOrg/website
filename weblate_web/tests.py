@@ -625,13 +625,13 @@ class DonationTest(FakturaceTestCase):
         donation = self.create_donation(-1)
         self.assertEqual(donation.payment_obj.payment_set.count(), 0)
         # The processing fails here, but new payment is created
-        call_command("recurring_donations")
+        call_command("recurring_payments")
         self.assertEqual(donation.payment_obj.payment_set.count(), 1)
         # Flag it as paid
         donation.payment_obj.payment_set.update(state=Payment.ACCEPTED)
 
         # Process pending payments
-        call_command("process_donations")
+        call_command("process_payments")
         old = donation.expires
         donation.refresh_from_db()
         self.assertGreater(donation.expires, old)
