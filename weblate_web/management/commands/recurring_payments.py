@@ -50,15 +50,15 @@ class Command(BaseCommand):
         ).exclude(payment=None)
         for subscription in subscriptions:
             payment = subscription.payment_obj
-            if payment.recurring:
+            # Skip one-time payments and the ones with recurrence configured
+            if not subscription.get_repeat() or payment.recurring:
                 continue
-            if payment.repeat_payment():
-                expiry.append(
-                    (
-                        str(subscription),
-                        subscription.service.users.values_list("email", flat=True),
-                    )
+            expiry.append(
+                (
+                    str(subscription),
+                    subscription.service.users.values_list("email", flat=True),
                 )
+            )
 
         # Expiring donations
         donations = Donation.objects.filter(
