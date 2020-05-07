@@ -65,12 +65,7 @@ class Command(BaseCommand):
         for donation in donations:
             payment = donation.payment_obj
             if not payment.recurring:
-                expiry.append(
-                    (
-                        str(subscription),
-                        subscription.service.users.values_list("email", flat=True),
-                    )
-                )
+                expiry.append((str(donation), [donation.user.email]))
 
         # Notify admins
         if expiry:
