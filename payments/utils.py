@@ -93,6 +93,9 @@ class JSONField(models.TextField):
 
 
 def send_notification(notification, recipients, **kwargs):
+    if not recipients:
+        return
+
     # HTML to text conversion
     html2text = HTML2Text(bodywidth=78)
     html2text.unicode_snob = True
