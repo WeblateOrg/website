@@ -30,7 +30,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import override, ugettext_lazy
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
@@ -153,10 +153,12 @@ class Donation(models.Model):
 
     def send_notification(self, notification):
         send_notification(
-            notification,
-            [self.user.email] + settings.NOTIFY_SUBSCRIPTION,
-            donation=self,
+            notification, [self.user.email], donation=self,
         )
+        with override("en"):
+            send_notification(
+                notification, settings.NOTIFY_SUBSCRIPTION, donation=self,
+            )
 
 
 def process_donation(payment):
@@ -253,9 +255,12 @@ def process_subscription(payment):
             package=package.name,
             expires=expires,
         )
-        send_notification(
-            "new_subscription", settings.NOTIFY_SUBSCRIPTION, subscription=subscription,
-        )
+        with override("en"):
+            send_notification(
+                "new_subscription",
+                settings.NOTIFY_SUBSCRIPTION,
+                subscription=subscription,
+            )
     # Flag payment as processed
     payment.state = Payment.PROCESSED
     payment.save()
@@ -610,10 +615,13 @@ class Subscription(models.Model):
     def send_notification(self, notification):
         send_notification(
             notification,
-            [user.email for user in self.service.users.all()]
-            + settings.NOTIFY_SUBSCRIPTION,
+            [user.email for user in self.service.users.all()],
             subscription=self,
         )
+        with override("en"):
+            send_notification(
+                notification, settings.NOTIFY_SUBSCRIPTION, subscription=self,
+            )
 
 
 class PastPayments(models.Model):
