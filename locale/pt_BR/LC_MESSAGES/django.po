@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate 1.2\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-04-12 07:56+0200\n"
+"POT-Creation-Date: 2020-05-17 13:56+0200\n"
 "PO-Revision-Date: 2020-04-13 05:25+0000\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -102,23 +102,23 @@ msgstr "Código postal e cidade"
 msgid "Country"
 msgstr "País"
 
-#: payments/models.py:132
+#: payments/models.py:136
 msgid "The country has to match your VAT code"
 msgstr "O país tem que corresponder ao seu código IVA"
 
-#: payments/models.py:155
+#: payments/models.py:159
 msgid "Annual"
 msgstr "Anual"
 
-#: payments/models.py:156
+#: payments/models.py:160
 msgid "Biannual"
 msgstr "Bienal"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:161 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "Trimestralmente"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:162 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:379
 #: weblate_web/templates/hosting.html:389
 #: weblate_web/templates/hosting.html:401
@@ -131,31 +131,31 @@ msgstr "Trimestralmente"
 msgid "Monthly"
 msgstr "Mensal"
 
-#: payments/models.py:159
+#: payments/models.py:163
 msgid "Onetime"
 msgstr "Uma vez"
 
-#: payments/models.py:193
+#: payments/models.py:197
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Novo pagamento"
 
-#: payments/models.py:194
+#: payments/models.py:198
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Aguardando pagamento"
 
-#: payments/models.py:195
+#: payments/models.py:199
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Pagamento rejeitado"
 
-#: payments/models.py:196
+#: payments/models.py:200
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Pagamento aceito"
 
-#: payments/models.py:197
+#: payments/models.py:201
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Pagamento processado"
@@ -245,35 +245,35 @@ msgstr "URL do link"
 msgid "Link image"
 msgstr "Imagem do link"
 
-#: weblate_web/models.py:347
+#: weblate_web/models.py:368
 msgid "Expired service"
 msgstr "Serviço expirado"
 
-#: weblate_web/models.py:348
+#: weblate_web/models.py:369
 msgid "Dedicated hosted service"
 msgstr "Serviço hospedado dedicado"
 
-#: weblate_web/models.py:349
+#: weblate_web/models.py:370
 msgid "Hosted service"
 msgstr "Serviço hospedado"
 
-#: weblate_web/models.py:350 weblate_web/templates/support.html:76
+#: weblate_web/models.py:371 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Suporte básico para hospedagem própria"
 
-#: weblate_web/models.py:351 weblate_web/templates/support.html:86
+#: weblate_web/models.py:372 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Suporte estendido para hospedagem própria"
 
-#: weblate_web/models.py:467
+#: weblate_web/models.py:492
 msgid "Basic support"
 msgstr "Suporte básico"
 
-#: weblate_web/models.py:473
+#: weblate_web/models.py:498
 msgid "Extended support"
 msgstr "Suporte estendido"
 
-#: weblate_web/models.py:475 weblate_web/templates/support.html:97
+#: weblate_web/models.py:500 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Serviço de backup"
 
@@ -1084,20 +1084,30 @@ msgid "OpenShift guide"
 msgstr "Guia de OpenShift"
 
 #: weblate_web/templates/download.html:51
-msgid "Bitnami Weblate stack"
-msgstr "Stack de Bitnami Weblate"
+#, fuzzy
+#| msgid "Running Weblate on the OpenShift platform"
+msgid "Running Weblate on the Kubernetes platform"
+msgstr "Executando o Weblate na plataforma OpenShift"
 
 #: weblate_web/templates/download.html:52
-msgid "Available for many platforms and works with most cloud providers."
+msgid "Helm chart for Kubernetes"
+msgstr ""
+
+#: weblate_web/templates/download.html:56
+#, fuzzy
+#| msgid "Available for many platforms and works with most cloud providers."
+msgid ""
+"Additionally, Bitnami Weblate stack is available for many platforms and "
+"works with most cloud providers."
 msgstr ""
 "Disponível para muitas plataformas e funciona com a maioria dos provedores "
 "de nuvem."
 
-#: weblate_web/templates/download.html:61
+#: weblate_web/templates/download.html:62
 msgid "GitHub repository"
 msgstr "Repositório no GitHub"
 
-#: weblate_web/templates/download.html:62
+#: weblate_web/templates/download.html:63
 #, python-format
 msgid ""
 "Weblate is developed on <a href=\"%(url)s\">GitHub</a>, you can fork it "
@@ -1107,12 +1117,12 @@ msgstr ""
 "fazer um fork dele, encontrar <a href=\"%(url)s\">mais repositórios</a> ou "
 "simplesmente:"
 
-#: weblate_web/templates/download.html:68
-#: weblate_web/templates/download.html:71
+#: weblate_web/templates/download.html:69
+#: weblate_web/templates/download.html:72
 msgid "Weblate command line client"
 msgstr "Cliente em linha de comando do Weblate"
 
-#: weblate_web/templates/download.html:72
+#: weblate_web/templates/download.html:73
 #, python-format
 msgid ""
 "You can control Weblate remotely using <a href=\"%(url)s\">wlc</a>, which "
@@ -1277,135 +1287,163 @@ msgid "Key and value"
 msgstr "Chave e valor"
 
 #: weblate_web/templates/features.html:101
+msgid "react-intl"
+msgstr ""
+
+#: weblate_web/templates/features.html:102
 msgid "PHP"
 msgstr "PHP"
 
-#: weblate_web/templates/features.html:102
+#: weblate_web/templates/features.html:103
+msgid "Laravel"
+msgstr ""
+
+#: weblate_web/templates/features.html:104
 msgid "iOS"
 msgstr "iOS"
 
-#: weblate_web/templates/features.html:103
+#: weblate_web/templates/features.html:105
 msgid "Excel"
 msgstr "Excel"
 
-#: weblate_web/templates/features.html:104
+#: weblate_web/templates/features.html:106
 msgid "Mozilla DTD"
 msgstr "Mozilla DTD"
 
-#: weblate_web/templates/features.html:105
+#: weblate_web/templates/features.html:107
 msgid ".NET resource files"
 msgstr "Arquivos de recursos de .NET"
 
-#: weblate_web/templates/features.html:106
+#: weblate_web/templates/features.html:108
 msgid "CSV"
 msgstr "CSV"
 
-#: weblate_web/templates/features.html:107
+#: weblate_web/templates/features.html:109
 msgid "YAML"
 msgstr "YAML"
 
-#: weblate_web/templates/features.html:108
+#: weblate_web/templates/features.html:110
 msgid "Ruby"
 msgstr "Ruby"
 
-#: weblate_web/templates/features.html:109
+#: weblate_web/templates/features.html:111
 msgid "App store metadata"
 msgstr "Metadados de loja de aplicativos"
 
-#: weblate_web/templates/features.html:110
+#: weblate_web/templates/features.html:112
 msgid "Subtitles"
 msgstr "Legendas"
 
-#: weblate_web/templates/features.html:119
+#: weblate_web/templates/features.html:113
+msgid "Windows"
+msgstr ""
+
+#: weblate_web/templates/features.html:114
+msgid "HTML"
+msgstr ""
+
+#: weblate_web/templates/features.html:115
+#: weblate_web/templates/features.html:116
+#: weblate_web/templates/features.html:117
+#, fuzzy
+#| msgid "Documentation"
+msgid "OpenDocument"
+msgstr "Documentação"
+
+#: weblate_web/templates/features.html:118
+msgid "IDML"
+msgstr ""
+
+#: weblate_web/templates/features.html:127
 msgid "Glossaries"
 msgstr "Glossários"
 
-#: weblate_web/templates/features.html:120
+#: weblate_web/templates/features.html:128
 msgid "Define frequently used terminology for consistency."
 msgstr "Defina terminologia frequentemente usada para manter consistência."
 
-#: weblate_web/templates/features.html:126
+#: weblate_web/templates/features.html:134
 msgid "Feedback Acquisition"
 msgstr "Aquisição de feedback"
 
-#: weblate_web/templates/features.html:127
+#: weblate_web/templates/features.html:135
 msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr ""
 "Use o Weblate para receber comentários nos textos fonte para melhorá-los."
 
-#: weblate_web/templates/features.html:133
+#: weblate_web/templates/features.html:141
 msgid "Export and Import"
 msgstr "Exportar e importar"
 
-#: weblate_web/templates/features.html:134
+#: weblate_web/templates/features.html:142
 msgid "Translations can be downloaded for offline translation and merged back."
 msgstr ""
 "As traduções podem ser baixadas para tradução offline e mescladas de volta."
 
-#: weblate_web/templates/features.html:140
+#: weblate_web/templates/features.html:148
 msgid "Fully Integrated"
 msgstr "Totalmente integrado"
 
-#: weblate_web/templates/features.html:141
+#: weblate_web/templates/features.html:149
 msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr ""
 "As traduções são gerenciadas dentro do mesmo sistema de controle de versão "
 "que seu código."
 
-#: weblate_web/templates/features.html:147 weblate_web/templates/user.html:52
+#: weblate_web/templates/features.html:155 weblate_web/templates/user.html:52
 msgid "Documentation"
 msgstr "Documentação"
 
-#: weblate_web/templates/features.html:148
+#: weblate_web/templates/features.html:156
 msgid "Comprehensive documentation covering both setup and usage."
 msgstr "Documentação completa, tanto para instalação quanto de uso."
 
-#: weblate_web/templates/features.html:154
+#: weblate_web/templates/features.html:162
 msgid "Easy Reviews"
 msgstr "Revisões fáceis"
 
-#: weblate_web/templates/features.html:155
+#: weblate_web/templates/features.html:163
 msgid "Several options for translators to review contributions made by peers."
 msgstr ""
 "Várias opções para tradutores revisar as contribuições feitas por outros."
 
-#: weblate_web/templates/features.html:161
+#: weblate_web/templates/features.html:169
 msgid "Language support"
 msgstr "Suporte a idiomas"
 
-#: weblate_web/templates/features.html:162
+#: weblate_web/templates/features.html:170
 msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr ""
 "Suporte a mais de 300 idiomas pré-instalados e outros podem ser adicionados "
 "também."
 
-#: weblate_web/templates/features.html:168
+#: weblate_web/templates/features.html:176
 msgid "Promotion"
 msgstr "Promoção"
 
-#: weblate_web/templates/features.html:169
+#: weblate_web/templates/features.html:177
 msgid ""
 "Built-in features to attract a wider audience for your translation project."
 msgstr ""
 "Recursos incorporados para atrair uma público mais amplo para seu projeto de "
 "tradução."
 
-#: weblate_web/templates/features.html:175
+#: weblate_web/templates/features.html:183
 msgid "Reporting"
 msgstr "Relatórios"
 
-#: weblate_web/templates/features.html:176
+#: weblate_web/templates/features.html:184
 msgid "Reports are generated to provide info on project activity."
 msgstr ""
 "Relatórios são gerados para fornecer informações sobre as atividades no "
 "projeto."
 
-#: weblate_web/templates/features.html:182
+#: weblate_web/templates/features.html:190
 msgid "Version Control"
 msgstr "Controle de versão"
 
-#: weblate_web/templates/features.html:183
+#: weblate_web/templates/features.html:191
 msgid ""
 "Talks directly with your version control system, currently Git and Mercurial "
 "are supported."
@@ -1413,11 +1451,11 @@ msgstr ""
 "Interage diretamente com seu sistema de controle de versão, tendo atualmente "
 "suporte a Git e Mercurial."
 
-#: weblate_web/templates/features.html:189
+#: weblate_web/templates/features.html:197
 msgid "Collaboration Sites"
 msgstr "Sites de colaboração"
 
-#: weblate_web/templates/features.html:190
+#: weblate_web/templates/features.html:198
 msgid ""
 "Native support for software development sites such as GitLab, GitHub, "
 "Pagure, or Bitbucket."
@@ -1425,11 +1463,11 @@ msgstr ""
 "Suporte nativo para sites de desenvolvimento como GitLab, GitHub, Pagure ou "
 "Bitbucket."
 
-#: weblate_web/templates/features.html:196
+#: weblate_web/templates/features.html:204
 msgid "Responsive UI"
 msgstr "Interface responsiva"
 
-#: weblate_web/templates/features.html:197
+#: weblate_web/templates/features.html:205
 msgid "User interface that works nicely on desktop, tablet and phones."
 msgstr ""
 "Interface de usuário que funciona muito bem no computador, tablet e "
@@ -2700,7 +2738,7 @@ msgid "Other topics"
 msgstr "Outros tópicos"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:502
+#: weblate_web/views.py:542
 msgid "Milestones"
 msgstr "Marcos"
 
@@ -2785,49 +2823,52 @@ msgstr "agora mesmo"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Erro no parâmetro %(field)s: %(error)s"
 
-#: weblate_web/views.py:212 weblate_web/views.py:251
+#: weblate_web/views.py:246 weblate_web/views.py:285
 msgid "Please provide your billing information to complete the payment."
 msgstr "Forneça suas informações de cobrança para completar o pagamento."
 
-#: weblate_web/views.py:225
+#: weblate_web/views.py:259
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "O ID de IVA não é mais válido. Por favor, atualize-o."
 
-#: weblate_web/views.py:246
+#: weblate_web/views.py:280
 msgid "Please choose a payment method."
 msgstr "Escolha um método de pagamento."
 
-#: weblate_web/views.py:361
+#: weblate_web/views.py:401
 msgid "Payment not yet processed, please retry."
 msgstr "Pagamentos ainda não processado. Por favor, tente novamente."
 
-#: weblate_web/views.py:365
+#: weblate_web/views.py:405
 msgid "The payment was rejected: {}"
 msgstr "O pagamento foi rejeitado: {}"
 
-#: weblate_web/views.py:366
+#: weblate_web/views.py:406
 msgid "Unknown reason"
 msgstr "Motivo desconhecido"
 
-#: weblate_web/views.py:371
+#: weblate_web/views.py:411
 msgid "Thank you for your subscription."
 msgstr "Obrigado por sua assinatura."
 
-#: weblate_web/views.py:374
+#: weblate_web/views.py:414
 msgid "Thank you for your donation."
 msgstr "Obrigado por sua doação."
 
-#: weblate_web/views.py:463
+#: weblate_web/views.py:503
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr "Assinatura solicitada, tudo que você tem a fazer é confirmar o e-mail."
 
-#: weblate_web/views.py:467
+#: weblate_web/views.py:507
 msgid "Could not process subscription request."
 msgstr "Não foi possível processar a solicitação de assinatura."
 
-#: weblate_web/views.py:603
+#: weblate_web/views.py:643
 msgid "User not found!"
 msgstr "Usuário não encontrado!"
+
+#~ msgid "Bitnami Weblate stack"
+#~ msgstr "Stack de Bitnami Weblate"
 
 #~ msgid ""
 #~ "Translation unit defined in a translation format, it can be word, "

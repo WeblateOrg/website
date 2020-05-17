@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-04-12 07:56+0200\n"
+"POT-Creation-Date: 2020-05-17 13:56+0200\n"
 "PO-Revision-Date: 2020-04-13 05:25+0000\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/weblate/"
@@ -23,8 +23,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.0-dev\n"
 
 #: payments/backends.py:254
@@ -106,23 +106,23 @@ msgstr "Поштовий код та місто"
 msgid "Country"
 msgstr "Країна"
 
-#: payments/models.py:132
+#: payments/models.py:136
 msgid "The country has to match your VAT code"
 msgstr "Країна відповідає вашому коду ПДВ"
 
-#: payments/models.py:155
+#: payments/models.py:159
 msgid "Annual"
 msgstr "Щорічно"
 
-#: payments/models.py:156
+#: payments/models.py:160
 msgid "Biannual"
 msgstr "Дворічно"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:161 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "Щотримісячно"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:162 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:379
 #: weblate_web/templates/hosting.html:389
 #: weblate_web/templates/hosting.html:401
@@ -135,31 +135,31 @@ msgstr "Щотримісячно"
 msgid "Monthly"
 msgstr "Щомісячно"
 
-#: payments/models.py:159
+#: payments/models.py:163
 msgid "Onetime"
 msgstr "Одноразово"
 
-#: payments/models.py:193
+#: payments/models.py:197
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Новий платіж"
 
-#: payments/models.py:194
+#: payments/models.py:198
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Платіж, що очікується"
 
-#: payments/models.py:195
+#: payments/models.py:199
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Платіж відхилено"
 
-#: payments/models.py:196
+#: payments/models.py:200
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Платіж прийнято"
 
-#: payments/models.py:197
+#: payments/models.py:201
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Платіж оброблено"
@@ -248,35 +248,35 @@ msgstr "Посилання"
 msgid "Link image"
 msgstr "Посилання на зображення"
 
-#: weblate_web/models.py:347
+#: weblate_web/models.py:368
 msgid "Expired service"
 msgstr "Термін підтримки вичерпано"
 
-#: weblate_web/models.py:348
+#: weblate_web/models.py:369
 msgid "Dedicated hosted service"
 msgstr "Хостинг на виділеному сервері"
 
-#: weblate_web/models.py:349
+#: weblate_web/models.py:370
 msgid "Hosted service"
 msgstr "Послуга хостингу"
 
-#: weblate_web/models.py:350 weblate_web/templates/support.html:76
+#: weblate_web/models.py:371 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Основна підтримка Weblate"
 
-#: weblate_web/models.py:351 weblate_web/templates/support.html:86
+#: weblate_web/models.py:372 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Розширена підтримка власного хостингу"
 
-#: weblate_web/models.py:467
+#: weblate_web/models.py:492
 msgid "Basic support"
 msgstr "Основна підтримка"
 
-#: weblate_web/models.py:473
+#: weblate_web/models.py:498
 msgid "Extended support"
 msgstr "Розширена підтримка"
 
-#: weblate_web/models.py:475 weblate_web/templates/support.html:97
+#: weblate_web/models.py:500 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Послуга резервного копіювання"
 
@@ -1087,19 +1087,29 @@ msgid "OpenShift guide"
 msgstr "Посібник по OpenShift"
 
 #: weblate_web/templates/download.html:51
-msgid "Bitnami Weblate stack"
-msgstr "Bitnami Weblate стек"
+#, fuzzy
+#| msgid "Running Weblate on the OpenShift platform"
+msgid "Running Weblate on the Kubernetes platform"
+msgstr "Запуск Weblate на платформі OpenShift"
 
 #: weblate_web/templates/download.html:52
-msgid "Available for many platforms and works with most cloud providers."
+msgid "Helm chart for Kubernetes"
+msgstr ""
+
+#: weblate_web/templates/download.html:56
+#, fuzzy
+#| msgid "Available for many platforms and works with most cloud providers."
+msgid ""
+"Additionally, Bitnami Weblate stack is available for many platforms and "
+"works with most cloud providers."
 msgstr ""
 "Доступно для багатьох платформ і працює з більшістю хмарних постачальників."
 
-#: weblate_web/templates/download.html:61
+#: weblate_web/templates/download.html:62
 msgid "GitHub repository"
 msgstr "GitHub репозиторій"
 
-#: weblate_web/templates/download.html:62
+#: weblate_web/templates/download.html:63
 #, python-format
 msgid ""
 "Weblate is developed on <a href=\"%(url)s\">GitHub</a>, you can fork it "
@@ -1109,12 +1119,12 @@ msgstr ""
 "зробити форк, подивитися наші <a href=\"%(url)s\">інші репозиторії</a>, або "
 "просто виконати:"
 
-#: weblate_web/templates/download.html:68
-#: weblate_web/templates/download.html:71
+#: weblate_web/templates/download.html:69
+#: weblate_web/templates/download.html:72
 msgid "Weblate command line client"
 msgstr "Клієнт Weblate для командного рядка"
 
-#: weblate_web/templates/download.html:72
+#: weblate_web/templates/download.html:73
 #, python-format
 msgid ""
 "You can control Weblate remotely using <a href=\"%(url)s\">wlc</a>, which "
@@ -1278,133 +1288,161 @@ msgid "Key and value"
 msgstr "Ключ і значення"
 
 #: weblate_web/templates/features.html:101
+msgid "react-intl"
+msgstr ""
+
+#: weblate_web/templates/features.html:102
 msgid "PHP"
 msgstr "PHP"
 
-#: weblate_web/templates/features.html:102
+#: weblate_web/templates/features.html:103
+msgid "Laravel"
+msgstr ""
+
+#: weblate_web/templates/features.html:104
 msgid "iOS"
 msgstr "iOS"
 
-#: weblate_web/templates/features.html:103
+#: weblate_web/templates/features.html:105
 msgid "Excel"
 msgstr "Excel"
 
-#: weblate_web/templates/features.html:104
+#: weblate_web/templates/features.html:106
 msgid "Mozilla DTD"
 msgstr "Mozilla DTD"
 
-#: weblate_web/templates/features.html:105
+#: weblate_web/templates/features.html:107
 msgid ".NET resource files"
 msgstr "Файли ресурсів .NET"
 
-#: weblate_web/templates/features.html:106
+#: weblate_web/templates/features.html:108
 msgid "CSV"
 msgstr "CSV"
 
-#: weblate_web/templates/features.html:107
+#: weblate_web/templates/features.html:109
 msgid "YAML"
 msgstr "YAML"
 
-#: weblate_web/templates/features.html:108
+#: weblate_web/templates/features.html:110
 msgid "Ruby"
 msgstr "Ruby"
 
-#: weblate_web/templates/features.html:109
+#: weblate_web/templates/features.html:111
 msgid "App store metadata"
 msgstr "Метадані App Store"
 
-#: weblate_web/templates/features.html:110
+#: weblate_web/templates/features.html:112
 msgid "Subtitles"
 msgstr "Субтитри"
 
-#: weblate_web/templates/features.html:119
+#: weblate_web/templates/features.html:113
+msgid "Windows"
+msgstr ""
+
+#: weblate_web/templates/features.html:114
+msgid "HTML"
+msgstr ""
+
+#: weblate_web/templates/features.html:115
+#: weblate_web/templates/features.html:116
+#: weblate_web/templates/features.html:117
+#, fuzzy
+#| msgid "Documentation"
+msgid "OpenDocument"
+msgstr "Документація"
+
+#: weblate_web/templates/features.html:118
+msgid "IDML"
+msgstr ""
+
+#: weblate_web/templates/features.html:127
 msgid "Glossaries"
 msgstr "Словники"
 
-#: weblate_web/templates/features.html:120
+#: weblate_web/templates/features.html:128
 msgid "Define frequently used terminology for consistency."
 msgstr "Визначення часто використовуваних термінів узгодженості."
 
-#: weblate_web/templates/features.html:126
+#: weblate_web/templates/features.html:134
 msgid "Feedback Acquisition"
 msgstr "Зворотній зв'язок"
 
-#: weblate_web/templates/features.html:127
+#: weblate_web/templates/features.html:135
 msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr ""
 "Використовуйте Weblate, щоб отримати зворотній зв'язок з джерельними "
 "рядками, щоб поліпшити їх."
 
-#: weblate_web/templates/features.html:133
+#: weblate_web/templates/features.html:141
 msgid "Export and Import"
 msgstr "Експорт та імпорт"
 
-#: weblate_web/templates/features.html:134
+#: weblate_web/templates/features.html:142
 msgid "Translations can be downloaded for offline translation and merged back."
 msgstr ""
 "Рядки можуть завантажуватися для перекладу в автономному режимі, а потім "
 "зливатися з існуючими."
 
-#: weblate_web/templates/features.html:140
+#: weblate_web/templates/features.html:148
 msgid "Fully Integrated"
 msgstr "Повне вгуртування"
 
-#: weblate_web/templates/features.html:141
+#: weblate_web/templates/features.html:149
 msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr "Переклади керуються в тому самому устрої керування версіями, що й код."
 
-#: weblate_web/templates/features.html:147 weblate_web/templates/user.html:52
+#: weblate_web/templates/features.html:155 weblate_web/templates/user.html:52
 msgid "Documentation"
 msgstr "Документація"
 
-#: weblate_web/templates/features.html:148
+#: weblate_web/templates/features.html:156
 msgid "Comprehensive documentation covering both setup and usage."
 msgstr ""
 "Комплексна документація, що охоплює як налаштування, так і використання."
 
-#: weblate_web/templates/features.html:154
+#: weblate_web/templates/features.html:162
 msgid "Easy Reviews"
 msgstr "Легкі огляди"
 
-#: weblate_web/templates/features.html:155
+#: weblate_web/templates/features.html:163
 msgid "Several options for translators to review contributions made by peers."
 msgstr ""
 "Кілька варіантів для перекладачів, щоб переглянути внески, зроблені "
 "співпрацівниками."
 
-#: weblate_web/templates/features.html:161
+#: weblate_web/templates/features.html:169
 msgid "Language support"
 msgstr "Мовна підтримка"
 
-#: weblate_web/templates/features.html:162
+#: weblate_web/templates/features.html:170
 msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr "Підтримка більш ніж 300 мов із коробки, інші можуть бути додані теж."
 
-#: weblate_web/templates/features.html:168
+#: weblate_web/templates/features.html:176
 msgid "Promotion"
 msgstr "Просування"
 
-#: weblate_web/templates/features.html:169
+#: weblate_web/templates/features.html:177
 msgid ""
 "Built-in features to attract a wider audience for your translation project."
 msgstr ""
 "Вбудовані функції для залучення широкої авдиторії для вашого перекладу "
 "проєкту."
 
-#: weblate_web/templates/features.html:175
+#: weblate_web/templates/features.html:183
 msgid "Reporting"
 msgstr "Звітнiсть"
 
-#: weblate_web/templates/features.html:176
+#: weblate_web/templates/features.html:184
 msgid "Reports are generated to provide info on project activity."
 msgstr "Звіти формуються для надання відомостей про діяльність проєкту."
 
-#: weblate_web/templates/features.html:182
+#: weblate_web/templates/features.html:190
 msgid "Version Control"
 msgstr "Контроль версій"
 
-#: weblate_web/templates/features.html:183
+#: weblate_web/templates/features.html:191
 msgid ""
 "Talks directly with your version control system, currently Git and Mercurial "
 "are supported."
@@ -1412,11 +1450,11 @@ msgstr ""
 "Взаємодія напряму з вашою системою контролю версій, зраз ми підтримуємо Git "
 "та Mercurial."
 
-#: weblate_web/templates/features.html:189
+#: weblate_web/templates/features.html:197
 msgid "Collaboration Sites"
 msgstr "Майданчики для сумісної роботи"
 
-#: weblate_web/templates/features.html:190
+#: weblate_web/templates/features.html:198
 msgid ""
 "Native support for software development sites such as GitLab, GitHub, "
 "Pagure, or Bitbucket."
@@ -1424,11 +1462,11 @@ msgstr ""
 "Вбудована підтримка платформ розробки програмного забезпечення, таких як "
 "GitLab, GitHub, Pagure або Bitbucket."
 
-#: weblate_web/templates/features.html:196
+#: weblate_web/templates/features.html:204
 msgid "Responsive UI"
 msgstr "Гнучкий інтерфейс"
 
-#: weblate_web/templates/features.html:197
+#: weblate_web/templates/features.html:205
 msgid "User interface that works nicely on desktop, tablet and phones."
 msgstr ""
 "Інтерфейс користувача, що працює чудово на десктопах, планшетах та телефонах."
@@ -2699,7 +2737,7 @@ msgid "Other topics"
 msgstr "Інші теми"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:502
+#: weblate_web/views.py:542
 msgid "Milestones"
 msgstr "Віхи"
 
@@ -2785,51 +2823,54 @@ msgstr "щойно"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Помилка у параметрі %(field)s: %(error)s"
 
-#: weblate_web/views.py:212 weblate_web/views.py:251
+#: weblate_web/views.py:246 weblate_web/views.py:285
 msgid "Please provide your billing information to complete the payment."
 msgstr "Будь ласка, вкажіть відомості про оплату, щоб здійснити платіж."
 
-#: weblate_web/views.py:225
+#: weblate_web/views.py:259
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Цей номер платника ПДВ вже не дійсний. Оновіть його."
 
-#: weblate_web/views.py:246
+#: weblate_web/views.py:280
 msgid "Please choose a payment method."
 msgstr "Будь ласка, оберіть спосіб оплати."
 
-#: weblate_web/views.py:361
+#: weblate_web/views.py:401
 msgid "Payment not yet processed, please retry."
 msgstr "Платіж ще не опрацьований. Будь ласка, повторіть."
 
-#: weblate_web/views.py:365
+#: weblate_web/views.py:405
 msgid "The payment was rejected: {}"
 msgstr "Платіж відхилили: {}"
 
-#: weblate_web/views.py:366
+#: weblate_web/views.py:406
 msgid "Unknown reason"
 msgstr "Невідома причина"
 
-#: weblate_web/views.py:371
+#: weblate_web/views.py:411
 msgid "Thank you for your subscription."
 msgstr "Дякуємо за підписку."
 
-#: weblate_web/views.py:374
+#: weblate_web/views.py:414
 msgid "Thank you for your donation."
 msgstr "Дякуємо за вашу пожертву."
 
-#: weblate_web/views.py:463
+#: weblate_web/views.py:503
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 "Запрошена підписка, все, що вам потрібно зробити - це підтвердити електронну "
 "пошту."
 
-#: weblate_web/views.py:467
+#: weblate_web/views.py:507
 msgid "Could not process subscription request."
 msgstr "Не вдалося обробити запит на підписку."
 
-#: weblate_web/views.py:603
+#: weblate_web/views.py:643
 msgid "User not found!"
 msgstr "Користувач не знайдений!"
+
+#~ msgid "Bitnami Weblate stack"
+#~ msgstr "Bitnami Weblate стек"
 
 #~ msgid ""
 #~ "Translation unit defined in a translation format, it can be word, "

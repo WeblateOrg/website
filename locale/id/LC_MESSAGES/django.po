@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate 1.2\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-04-12 07:56+0200\n"
+"POT-Creation-Date: 2020-05-17 13:56+0200\n"
 "PO-Revision-Date: 2020-04-18 07:00+0000\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/weblate/"
@@ -101,23 +101,23 @@ msgstr "Kode pos dan kota"
 msgid "Country"
 msgstr "Negara"
 
-#: payments/models.py:132
+#: payments/models.py:136
 msgid "The country has to match your VAT code"
 msgstr "Negara harus sesuai dengan kode VAT Anda"
 
-#: payments/models.py:155
+#: payments/models.py:159
 msgid "Annual"
 msgstr "Tahunan"
 
-#: payments/models.py:156
+#: payments/models.py:160
 msgid "Biannual"
 msgstr "Dua kali setahun"
 
-#: payments/models.py:157 weblate_web/templates/donate/form.html:27
+#: payments/models.py:161 weblate_web/templates/donate/form.html:27
 msgid "Quarterly"
 msgstr "Triwulanan"
 
-#: payments/models.py:158 weblate_web/templates/donate/form.html:24
+#: payments/models.py:162 weblate_web/templates/donate/form.html:24
 #: weblate_web/templates/hosting.html:379
 #: weblate_web/templates/hosting.html:389
 #: weblate_web/templates/hosting.html:401
@@ -130,31 +130,31 @@ msgstr "Triwulanan"
 msgid "Monthly"
 msgstr "Bulanan"
 
-#: payments/models.py:159
+#: payments/models.py:163
 msgid "Onetime"
 msgstr "Satu kali"
 
-#: payments/models.py:193
+#: payments/models.py:197
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Pembayaran baru"
 
-#: payments/models.py:194
+#: payments/models.py:198
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Menunggu pembayaran"
 
-#: payments/models.py:195
+#: payments/models.py:199
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Pembayaran ditolak"
 
-#: payments/models.py:196
+#: payments/models.py:200
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Pembayaran diterima"
 
-#: payments/models.py:197
+#: payments/models.py:201
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Pembayaran diproses"
@@ -243,35 +243,35 @@ msgstr "URL pranala"
 msgid "Link image"
 msgstr "Gambar pranala"
 
-#: weblate_web/models.py:347
+#: weblate_web/models.py:368
 msgid "Expired service"
 msgstr "Layanan kedaluarsa"
 
-#: weblate_web/models.py:348
+#: weblate_web/models.py:369
 msgid "Dedicated hosted service"
 msgstr "Layanan ter-hosting khusus"
 
-#: weblate_web/models.py:349
+#: weblate_web/models.py:370
 msgid "Hosted service"
 msgstr "Layanan ter-hosting"
 
-#: weblate_web/models.py:350 weblate_web/templates/support.html:76
+#: weblate_web/models.py:371 weblate_web/templates/support.html:76
 msgid "Basic self-hosted support"
 msgstr "Dukungan dasar hosting mandiri"
 
-#: weblate_web/models.py:351 weblate_web/templates/support.html:86
+#: weblate_web/models.py:372 weblate_web/templates/support.html:86
 msgid "Extended self-hosted support"
 msgstr "Dukungan ekstensif hosting mandiri"
 
-#: weblate_web/models.py:467
+#: weblate_web/models.py:492
 msgid "Basic support"
 msgstr "Dukungan dasar"
 
-#: weblate_web/models.py:473
+#: weblate_web/models.py:498
 msgid "Extended support"
 msgstr "Dukungan ekstensif"
 
-#: weblate_web/models.py:475 weblate_web/templates/support.html:97
+#: weblate_web/models.py:500 weblate_web/templates/support.html:97
 msgid "Backup service"
 msgstr "Layanan rekam cadang"
 
@@ -1093,20 +1093,30 @@ msgid "OpenShift guide"
 msgstr "Panduan OpenShift"
 
 #: weblate_web/templates/download.html:51
-msgid "Bitnami Weblate stack"
-msgstr "Bitnami Weblate stack"
+#, fuzzy
+#| msgid "Running Weblate on the OpenShift platform"
+msgid "Running Weblate on the Kubernetes platform"
+msgstr "Menjalankan Weblate pada platform OpenShift"
 
 #: weblate_web/templates/download.html:52
-msgid "Available for many platforms and works with most cloud providers."
+msgid "Helm chart for Kubernetes"
+msgstr ""
+
+#: weblate_web/templates/download.html:56
+#, fuzzy
+#| msgid "Available for many platforms and works with most cloud providers."
+msgid ""
+"Additionally, Bitnami Weblate stack is available for many platforms and "
+"works with most cloud providers."
 msgstr ""
 "Tersedia bagi banyak platform dan bekerja pada sebagian besar penyedia "
 "layanan awan."
 
-#: weblate_web/templates/download.html:61
+#: weblate_web/templates/download.html:62
 msgid "GitHub repository"
 msgstr "Repositori GitHub"
 
-#: weblate_web/templates/download.html:62
+#: weblate_web/templates/download.html:63
 #, python-format
 msgid ""
 "Weblate is developed on <a href=\"%(url)s\">GitHub</a>, you can fork it "
@@ -1116,12 +1126,12 @@ msgstr ""
 "fork di sana, temukan <a href=\"%(url)s\">lebih banyak lagi repositori</a>, "
 "atau hanya:"
 
-#: weblate_web/templates/download.html:68
-#: weblate_web/templates/download.html:71
+#: weblate_web/templates/download.html:69
+#: weblate_web/templates/download.html:72
 msgid "Weblate command line client"
 msgstr "Klien command line Weblate"
 
-#: weblate_web/templates/download.html:72
+#: weblate_web/templates/download.html:73
 #, python-format
 msgid ""
 "You can control Weblate remotely using <a href=\"%(url)s\">wlc</a>, which "
@@ -1286,132 +1296,160 @@ msgid "Key and value"
 msgstr "Key dan value"
 
 #: weblate_web/templates/features.html:101
+msgid "react-intl"
+msgstr ""
+
+#: weblate_web/templates/features.html:102
 msgid "PHP"
 msgstr "PHP"
 
-#: weblate_web/templates/features.html:102
+#: weblate_web/templates/features.html:103
+msgid "Laravel"
+msgstr ""
+
+#: weblate_web/templates/features.html:104
 msgid "iOS"
 msgstr "iOS"
 
-#: weblate_web/templates/features.html:103
+#: weblate_web/templates/features.html:105
 msgid "Excel"
 msgstr "Excel"
 
-#: weblate_web/templates/features.html:104
+#: weblate_web/templates/features.html:106
 msgid "Mozilla DTD"
 msgstr "Mozilla DTD"
 
-#: weblate_web/templates/features.html:105
+#: weblate_web/templates/features.html:107
 msgid ".NET resource files"
 msgstr "Berkas sumber .NET"
 
-#: weblate_web/templates/features.html:106
+#: weblate_web/templates/features.html:108
 msgid "CSV"
 msgstr "CSV"
 
-#: weblate_web/templates/features.html:107
+#: weblate_web/templates/features.html:109
 msgid "YAML"
 msgstr "YAML"
 
-#: weblate_web/templates/features.html:108
+#: weblate_web/templates/features.html:110
 msgid "Ruby"
 msgstr "Ruby"
 
-#: weblate_web/templates/features.html:109
+#: weblate_web/templates/features.html:111
 msgid "App store metadata"
 msgstr "Metadata App store"
 
-#: weblate_web/templates/features.html:110
+#: weblate_web/templates/features.html:112
 msgid "Subtitles"
 msgstr "Takarir"
 
-#: weblate_web/templates/features.html:119
+#: weblate_web/templates/features.html:113
+msgid "Windows"
+msgstr ""
+
+#: weblate_web/templates/features.html:114
+msgid "HTML"
+msgstr ""
+
+#: weblate_web/templates/features.html:115
+#: weblate_web/templates/features.html:116
+#: weblate_web/templates/features.html:117
+#, fuzzy
+#| msgid "Documentation"
+msgid "OpenDocument"
+msgstr "Dokumentasi"
+
+#: weblate_web/templates/features.html:118
+msgid "IDML"
+msgstr ""
+
+#: weblate_web/templates/features.html:127
 msgid "Glossaries"
 msgstr "Glosarium"
 
-#: weblate_web/templates/features.html:120
+#: weblate_web/templates/features.html:128
 msgid "Define frequently used terminology for consistency."
 msgstr "Menentukan terminologi yang sering digunakan untuk konsistensi."
 
-#: weblate_web/templates/features.html:126
+#: weblate_web/templates/features.html:134
 msgid "Feedback Acquisition"
 msgstr "Perolehan Saran"
 
-#: weblate_web/templates/features.html:127
+#: weblate_web/templates/features.html:135
 msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr ""
 "Gunakan Weblate untuk memperoleh saran pada string sumber untuk "
 "memperbaikinya."
 
-#: weblate_web/templates/features.html:133
+#: weblate_web/templates/features.html:141
 msgid "Export and Import"
 msgstr "Ekspor dan Impor"
 
-#: weblate_web/templates/features.html:134
+#: weblate_web/templates/features.html:142
 msgid "Translations can be downloaded for offline translation and merged back."
 msgstr ""
 "Terjemahan dapat diunduh untuk penerjemahan luring dan digabungkan kembali."
 
-#: weblate_web/templates/features.html:140
+#: weblate_web/templates/features.html:148
 msgid "Fully Integrated"
 msgstr "Terintegrasi secara penuh"
 
-#: weblate_web/templates/features.html:141
+#: weblate_web/templates/features.html:149
 msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr "Terjemahan diatur dalalm kontrol versi yang sama seperti kode Anda."
 
-#: weblate_web/templates/features.html:147 weblate_web/templates/user.html:52
+#: weblate_web/templates/features.html:155 weblate_web/templates/user.html:52
 msgid "Documentation"
 msgstr "Dokumentasi"
 
-#: weblate_web/templates/features.html:148
+#: weblate_web/templates/features.html:156
 msgid "Comprehensive documentation covering both setup and usage."
 msgstr "Dokumentasi komprehensif yang meliputi persiapan dan pemakaian."
 
-#: weblate_web/templates/features.html:154
+#: weblate_web/templates/features.html:162
 msgid "Easy Reviews"
 msgstr "Tinjauan yang mudah"
 
-#: weblate_web/templates/features.html:155
+#: weblate_web/templates/features.html:163
 msgid "Several options for translators to review contributions made by peers."
 msgstr ""
 "Beberapa opsi bagi penerjemah untuk meninjau kontribusi yang diberikan oleh "
 "rekan sejawat."
 
-#: weblate_web/templates/features.html:161
+#: weblate_web/templates/features.html:169
 msgid "Language support"
 msgstr "Dukungan bahasa"
 
-#: weblate_web/templates/features.html:162
+#: weblate_web/templates/features.html:170
 msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr ""
 "Dukungan untuk lebih dari 300 bahasa tersedia secara langsung, bahasa lain "
 "juga dapat ditambahkan."
 
-#: weblate_web/templates/features.html:168
+#: weblate_web/templates/features.html:176
 msgid "Promotion"
 msgstr "Promosi"
 
-#: weblate_web/templates/features.html:169
+#: weblate_web/templates/features.html:177
 msgid ""
 "Built-in features to attract a wider audience for your translation project."
 msgstr "Fitur-fitur bawaan untuk menarik audiens dari proyek terjemahan Anda."
 
-#: weblate_web/templates/features.html:175
+#: weblate_web/templates/features.html:183
 msgid "Reporting"
 msgstr "Pelaporan"
 
-#: weblate_web/templates/features.html:176
+#: weblate_web/templates/features.html:184
 msgid "Reports are generated to provide info on project activity."
 msgstr ""
 "Laporan dihasilkan untuk menyediakan informasi tentang aktivitas proyek."
 
-#: weblate_web/templates/features.html:182
+#: weblate_web/templates/features.html:190
 msgid "Version Control"
 msgstr "Kontrol versi"
 
-#: weblate_web/templates/features.html:183
+#: weblate_web/templates/features.html:191
 msgid ""
 "Talks directly with your version control system, currently Git and Mercurial "
 "are supported."
@@ -1419,11 +1457,11 @@ msgstr ""
 "Berhubungan langsung dengan sistem kontrol versi Anda, saat ini mendukung "
 "Git dan Mercurial."
 
-#: weblate_web/templates/features.html:189
+#: weblate_web/templates/features.html:197
 msgid "Collaboration Sites"
 msgstr "Situs Kolaborasi"
 
-#: weblate_web/templates/features.html:190
+#: weblate_web/templates/features.html:198
 msgid ""
 "Native support for software development sites such as GitLab, GitHub, "
 "Pagure, or Bitbucket."
@@ -1431,11 +1469,11 @@ msgstr ""
 "Dukungan terikut bagi situs pengembangan perangkat lunak seperti GitLab, "
 "GitHub, Pagure, atau Bitbucket."
 
-#: weblate_web/templates/features.html:196
+#: weblate_web/templates/features.html:204
 msgid "Responsive UI"
 msgstr "Antarmuka responsif"
 
-#: weblate_web/templates/features.html:197
+#: weblate_web/templates/features.html:205
 msgid "User interface that works nicely on desktop, tablet and phones."
 msgstr ""
 "Antarmuka yang bekerja dengan baik pada desktop, tablet, dan telepon pintar."
@@ -2707,7 +2745,7 @@ msgid "Other topics"
 msgstr "Topik lain"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:502
+#: weblate_web/views.py:542
 msgid "Milestones"
 msgstr "Pencapaian"
 
@@ -2791,52 +2829,55 @@ msgstr "baru saja"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Kesalahan dalam parameter %(field)s: %(error)s"
 
-#: weblate_web/views.py:212 weblate_web/views.py:251
+#: weblate_web/views.py:246 weblate_web/views.py:285
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 "Harap menyediakan informasi penagihan Anda untuk menyelesaikan pembayaran."
 
-#: weblate_web/views.py:225
+#: weblate_web/views.py:259
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "ID VAT sudah tidak berlaku, silakan diperbarui."
 
-#: weblate_web/views.py:246
+#: weblate_web/views.py:280
 msgid "Please choose a payment method."
 msgstr "Silakan memilih metode pembayaran."
 
-#: weblate_web/views.py:361
+#: weblate_web/views.py:401
 msgid "Payment not yet processed, please retry."
 msgstr "Pembayaran belum diproses, harap diulangi."
 
-#: weblate_web/views.py:365
+#: weblate_web/views.py:405
 msgid "The payment was rejected: {}"
 msgstr "Pembayaran ditolak: {}"
 
-#: weblate_web/views.py:366
+#: weblate_web/views.py:406
 msgid "Unknown reason"
 msgstr "Alasan tidak diketahui"
 
-#: weblate_web/views.py:371
+#: weblate_web/views.py:411
 msgid "Thank you for your subscription."
 msgstr "Terima kasih atas langganan Anda."
 
-#: weblate_web/views.py:374
+#: weblate_web/views.py:414
 msgid "Thank you for your donation."
 msgstr "Terima kasih atas donasi Anda."
 
-#: weblate_web/views.py:463
+#: weblate_web/views.py:503
 msgid "Subscription requested, all you have to do is confirm the email."
 msgstr ""
 "Permintaan layanan berlangganan telah diterima, Anda hanya perlu "
 "mengkonfirmasi surel."
 
-#: weblate_web/views.py:467
+#: weblate_web/views.py:507
 msgid "Could not process subscription request."
 msgstr "Tidak dapat memproses permintaan berlangganan."
 
-#: weblate_web/views.py:603
+#: weblate_web/views.py:643
 msgid "User not found!"
 msgstr "Pengguna tidak ditemukan!"
+
+#~ msgid "Bitnami Weblate stack"
+#~ msgstr "Bitnami Weblate stack"
 
 #~ msgid ""
 #~ "Translation unit defined in a translation format, it can be word, "
