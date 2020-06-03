@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-05-17 13:56+0200\n"
-"PO-Revision-Date: 2020-05-22 09:43+0000\n"
-"Last-Translator: Chang-Chia Tseng <pswo10680@gmail.com>\n"
+"PO-Revision-Date: 2020-06-04 06:31+0000\n"
+"Last-Translator: pan93412 <pan93412@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "weblate/website/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -1820,42 +1820,14 @@ msgid "Your expired payment on weblate.org"
 msgstr "您於 weblate.org 的待支付"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Your payment on weblate.org failed"
 msgid "Your payment on weblate.org has failed."
-msgstr "您於 weblate.org 的支付失敗"
+msgstr "您在 weblate.org 的支付失敗。"
 
 #: weblate_web/templates/mail/payment_failed.html:17
-#, fuzzy
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "Your payment on weblate.org has failed.\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Retry issuing the payment on the website:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "If concerning a recurring payment, it is retried three times,\n"
-#| "and if still failing, cancelled.\n"
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
-msgstr ""
-"您好，\n"
-"\n"
-"您在 weblate.org 上的付款失敗了。\n"
-"\n"
-"%s\n"
-"\n"
-"請重新嘗試網站上的付款：\n"
-"\n"
-"%s\n"
-"\n"
-"如果涉及定期付款，則系統會重試三次，\n"
-"如果仍然失敗，則請您取消付款。\n"
+msgstr "如果涉及定期付款，則系統會重試三次，如果仍然失敗，則請您取消付款。"
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
@@ -2161,7 +2133,7 @@ msgstr "<strong>免費</strong>或 <strong>Premium</strong>—取決於您"
 
 #: weblate_web/templates/snippets/pricing.html:7
 msgid "Premium Cloud"
-msgstr "Premium Cloud"
+msgstr "Premium 雲端"
 
 #: weblate_web/templates/snippets/pricing.html:8
 msgid "for ease and comfort"
@@ -2239,14 +2211,11 @@ msgid ""
 msgstr ""
 
 #: weblate_web/templates/snippets/vat.html:4
-#, fuzzy, python-format
-#| msgid ""
-#| "Alternatively we can accept payments by wire transfer (preferably IBAN) "
-#| "or Bitcoin. Please get in touch for more details."
+#, python-format
 msgid ""
 "Please <a href=\"%(contact)s\">get in touch</a> for more details and "
 "possibilities."
-msgstr "我們也接受電匯（IBAN 為佳）或是比特幣付款。詳情請聯繫我們。"
+msgstr "請<a href=\"%(contact)s\">與我們聯絡</a>以取得進一步資訊或可能性。"
 
 #: weblate_web/templates/snippets/vat.html:5
 msgid "All listed prices exclude VAT."
@@ -2283,49 +2252,33 @@ msgid "Bugs and feature requests"
 msgstr "臭蟲回報或功能請求"
 
 #: weblate_web/templates/support.html:23
-#, fuzzy, python-format
-#| msgid ""
-#| "Have you found any issue with Weblate? Do you have idea how to improve "
-#| "it? Please report it to <a href=\"https://github.com/WeblateOrg/weblate/"
-#| "issues\">issue tracker on GitHub</a>."
+#, python-format
 msgid ""
 "Issues and ideas for improvement can be reported to the <a href=\"%(url)s"
 "\">issue tracker</a>."
-msgstr ""
-"您發現 Weblate 有任何問題嗎？或是有什麼想法可以讓 Weblate 變得更好？請前往 "
-"<a href=\"https://github.com/WeblateOrg/weblate/issues\">GitHub</a> 上開個 "
-"issue 給我們吧。"
+msgstr "問題與改進想法皆可以回報到<a href=\"%(url)s\">議題追蹤器</a>。"
 
 #: weblate_web/templates/support.html:29
 msgid "Security issues"
 msgstr "安全性問題"
 
 #: weblate_web/templates/support.html:30
-#, fuzzy, python-format
-#| msgid ""
-#| "Should you find security issue within our code base, please report it to "
-#| "%(contact)s. More information on reporting security issues can be found "
-#| "in <a href=\"%(docs)s\">our documentation</a>."
+#, python-format
 msgid ""
 "Should you find a vulnerability, please report it to %(report)s. More info "
 "to be found in the <a href=\"%(url)s\">documentation</a>."
-msgstr ""
-"若您在我們的源始碼中找到任何安全性問題的話，請向 %(contact)s 回報。更多有關安"
-"全性問題的回報資訊可於<a href=\"%(docs)s\">我們的文件</a>中找到。"
+msgstr "如您發現到安全性問題，請回報到 %(report)s。可在<a href=\"%(url)s\">文件</a>深入了解。"
 
 #: weblate_web/templates/support.html:36
 msgid "Premium support"
 msgstr "優先支援"
 
 #: weblate_web/templates/support.html:37
-#, fuzzy, python-format
-#| msgid ""
-#| "If you are using our hosting services, you can ask for support at "
-#| "%(contact)s."
+#, python-format
 msgid ""
 "As a subscriber, you get premium support at <a href=\"mailto:%(email)s\">"
 "%(email)s</a>."
-msgstr "如果您打算使用我們的代管服務，您可以向 %(contact)s 尋求支援。"
+msgstr "是訂閱者的話，可以在 <a href=\"mailto:%(email)s\">%(email)s</a> 取得優先支援。"
 
 #: weblate_web/templates/support.html:46
 #, fuzzy
@@ -2384,10 +2337,8 @@ msgid "Issues in your environment fixed immediately."
 msgstr ""
 
 #: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
-#, fuzzy
-#| msgid "Priority email support"
 msgid "Priority e-mail support."
-msgstr "優先電子郵件技術支援"
+msgstr "優先電子郵件技術支援。"
 
 #: weblate_web/templates/support.html:88
 #, fuzzy
@@ -2409,10 +2360,8 @@ msgid "Stores up to 100 GB of backups."
 msgstr ""
 
 #: weblate_web/templates/support.html:102
-#, fuzzy
-#| msgid "View documentation"
 msgid "Read more in the documentation."
-msgstr "檢視文件"
+msgstr "在文件中閱讀更多資訊。"
 
 #: weblate_web/templates/support.html:109
 #, fuzzy
@@ -2458,10 +2407,8 @@ msgstr "使用者和開發者郵遞清單"
 
 #: weblate_web/templates/support.html:131
 #: weblate_web/templates/support.html:144
-#, fuzzy
-#| msgid "Enter your email"
 msgid "Your e-mail address…"
-msgstr "請輸入您的電子郵件"
+msgstr "您的電子信箱位址…"
 
 #: weblate_web/templates/support.html:132
 #: weblate_web/templates/support.html:145
@@ -2470,31 +2417,19 @@ msgid "Register"
 msgstr "註冊"
 
 #: weblate_web/templates/support.html:135
-#, fuzzy
-#| msgid ""
-#| "You can use mailing lists for discussions with other Weblate users and "
-#| "developers."
 msgid "Discuss Weblate with users and developers"
-msgstr "您可以使用郵遞清單來和其他 Weblate 使用者與開發者作討論。"
+msgstr "和使用者及開發者討論 Weblate"
 
 #: weblate_web/templates/support.html:136
-#, fuzzy, python-format
-#| msgid ""
-#| "You can post to it using <a href=\"mailto:weblate@lists.cihar.com"
-#| "\">weblate@lists.cihar.com</a> address."
+#, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
-msgstr ""
-"您可以將內容寄到 <a href=\"mailto:weblate@lists.cihar.com\">weblate@lists."
-"cihar.com</a> 位址。"
+msgstr "貼到 <a href=\"mailto:%(address)s\">%(address)s</a> 使用"
 
 #: weblate_web/templates/support.html:137
 #: weblate_web/templates/support.html:150
-#, fuzzy, python-format
-#| msgid ""
-#| "You can also ask related questions on <a href=\"%(url)s\">Stack Overflow</"
-#| "a>."
+#, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
-msgstr "您也可以上 <a href=\"%(url)s\">Stack Overflow</a> 詢問相關問題。"
+msgstr "在<a href=\"%(url)s\">封存文件</a>中尋找答案"
 
 #: weblate_web/templates/support.html:141
 #, fuzzy
@@ -2503,17 +2438,12 @@ msgid "Hosted Weblate announcements"
 msgstr "Hosted Weblate 公告郵遞清單"
 
 #: weblate_web/templates/support.html:148
-#, fuzzy
-#| msgid ""
-#| "Low traffic mailing list with announcements about Hosted Weblate services."
 msgid "<strong>Low traffic</strong> and moderated"
-msgstr "低流量郵遞清單，發布 Hosted Weblate 服務相關公告。"
+msgstr "<strong>低流量</strong>且已經審核"
 
 #: weblate_web/templates/support.html:149
-#, fuzzy
-#| msgid "This list is moderated, only chosen users can post announcements."
 msgid "Only premium service announcements"
-msgstr "這份清單的投稿須經過審核，只有選定的使用者可以張貼公告。"
+msgstr "只有 Premium 服務公告"
 
 #: weblate_web/templates/support.html:156
 #, fuzzy, python-format
