@@ -27,7 +27,7 @@ jobs:
       - name: Install apt dependencies
         run: |
           sudo apt update
-          sudo apt install texlive-latex-recommended gettext texlive-lang-japanese texlive-xetex
+          sudo apt install texlive-latex-recommended gettext texlive-lang-japanese texlive-xetex texlive-fonts-recommended
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
