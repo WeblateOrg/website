@@ -54,7 +54,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "expires",
     ]
     list_filter = ("status",)
-    search_fields = ("users__email",)
+    search_fields = ("users__email", "report__site_url", "report__site_title")
     date_hierarchy = "created"
     filter_horizontal = ("users",)
 
