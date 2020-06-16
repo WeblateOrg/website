@@ -62,6 +62,7 @@ from weblate_web.views import (
     subscription_disable_repeat,
     subscription_new,
     subscription_pay,
+    subscription_view,
 )
 
 
@@ -194,6 +195,11 @@ urlpatterns = i18n_patterns(
     url(r"^subscription/users/(?P<pk>[0-9]+)/$", service_user, name="service-user"),
     url(
         r"^subscription/pay/(?P<pk>[0-9]+)/$", subscription_pay, name="subscription-pay"
+    ),
+    url(
+        r"^subscription/view/(?P<pk>[0-9]+)/$",
+        subscription_view,
+        name="subscription-view",
     ),
     url(r"^subscription/new/$", subscription_new, name="subscription-new"),
     url(r"^news/$", NewsView.as_view(), name="news"),

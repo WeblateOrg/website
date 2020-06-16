@@ -573,7 +573,7 @@ class Subscription(models.Model):
         self.service.update_status()
 
     def get_absolute_url(self):
-        return reverse("subscription-edit", kwargs={"pk": self.pk})
+        return reverse("subscription-view", kwargs={"pk": self.pk})
 
     @cached_property
     def yearly_package(self):

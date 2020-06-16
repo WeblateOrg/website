@@ -20,7 +20,7 @@
 import django.views.defaults
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins, send_mail
@@ -642,6 +642,13 @@ def service_user(request, pk):
     except User.DoesNotExist:
         messages.error(request, gettext("User not found!"))
     return redirect(reverse("user"))
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def subscription_view(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    return render(request, "service.html", {"service": service},)
 
 
 @require_POST
