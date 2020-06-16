@@ -648,7 +648,7 @@ def service_user(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def subscription_view(request, pk):
     service = get_object_or_404(Service, pk=pk)
-    return render(request, "service.html", {"service": service},)
+    return render(request, "service.html", {"service": service})
 
 
 @require_POST
