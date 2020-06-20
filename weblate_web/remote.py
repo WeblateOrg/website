@@ -27,7 +27,7 @@ from wlc import Weblate, WeblateException
 CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
 EXCLUDE_USERS = {"nijel", "weblate"}
-ACTIVITY_URL = "https://hosted.weblate.org/activity/month/"
+ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
 
 
 def get_contributors(force=False):
