@@ -65,7 +65,7 @@ def weblate_web(request):
         "canonical_url": canonical_url,
         "language_urls": language_urls,
         "donate_links": Donation.objects.filter(active=True, reward=3),
-        "activity_sum": 51358,  # sum(get_activity()[-7:]),
+        "activity_sum": sum(get_activity()[-7:]),
         "contributors": SimpleLazyObject(get_contributors),
         "changes": SimpleLazyObject(get_changes),
         "language_columns": [

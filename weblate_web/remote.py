@@ -81,7 +81,7 @@ def get_activity(force=False):
         return []
 
     stats = response.json()
-    data = stats["series"][0][-25:]
+    data = stats[-25:]
     cache.set(key, data, timeout=3600)
     return data
 

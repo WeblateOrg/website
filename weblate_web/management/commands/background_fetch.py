@@ -27,5 +27,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         get_contributors(True)
-        # get_activity(True)
+        get_activity(True)
         get_changes(True)
