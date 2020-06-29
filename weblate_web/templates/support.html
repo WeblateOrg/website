@@ -47,31 +47,6 @@
 
         <div class="installations">
             <div class="box">
-                <div class="icon"><img src="{% static "img/linux.png" %}" /></div>
-                <h2>{% trans "Installation on your Linux server" %}</h2>
-                <ul>
-                    <li>{% trans "One-time installation of Weblate" %}</li>
-                    <li>{% trans "Installation using virtualenv, uWSGI and NGINX" %}</li>
-                    <li>{% trans "Using PostgreSQL as database backend" %}</li>
-                    <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
-                    <li>{% trans "Setup customization" %}</li>
-                </ul>
-                <a href="{% url 'subscription-new' %}?plan=install:linux" class="format-item">€300<span>{% trans "installation" %}</span></a>
-                <a href="{% url 'subscription-new' %}?plan=install:linux" class="button black right">{% trans "Buy now" %}</a>
-            </div>
-            <div class="box">
-                <div class="icon"><img src="{% static "img/docker.png" %}" /></div>
-                <h2>{% trans "Docker installation on your Linux server" %}</h2>
-                <ul>
-                    <li>{% trans "One-time installation of Weblate" %}</li>
-                    <li>{% trans "Installation using Docker" %}</li>
-                    <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
-                    <li>{% trans "Setup customization" %}</li>
-                </ul>
-                <a href="{% url 'subscription-new' %}?plan=install:docker" class="format-item">€200<span>{% trans "installation" %}</span></a>
-                <a href="{% url 'subscription-new' %}?plan=install:docker" class="button black right">{% trans "Buy now" %}</a>
-            </div>
-            <div class="box">
                 <div class="icon"><img src="{% static "img/Support-Basic.svg" %}" /></div>
                 <h2>{% trans "Basic self-hosted support" %}</h2>
                 <ul>
@@ -88,17 +63,31 @@
                     <li>{% trans "Always upgraded to latest version." %}</li>
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
                     <li>{% trans "Priority e-mail support." %}</li>
+                    <li>{% trans "Available with the installation package only" %}</li>
                 </ul>
                 <a href="{% url 'subscription-new' %}?plan=extended" class="format-item">€750<span>{% trans "annually" %}</span></a>
                 <a href="{% url 'subscription-new' %}?plan=extended" class="button black right">{% trans "Buy now" %}</a>
+            </div>
+            <div class="box">
+                <div class="icon"><img src="{% static "img/linux.png" %}" /></div>
+                <h2>{% trans "Installation on your Linux server" %}</h2>
+                <ul>
+                    <li>{% trans "One-time installation of Weblate" %}</li>
+                    <li>{% trans "Docker based or native installation" %}</li>
+                    <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
+                    <li>{% trans "Setup customization" %}</li>
+                </ul>
+                <a href="{% url 'subscription-new' %}?plan=install:linux" class="format-item">€300<span>{% trans "installation" %}</span></a>
+                <a href="{% url 'subscription-new' %}?plan=install:linux" class="button black right">{% trans "Buy now" %}</a>
             </div>
             <div class="box" id="backup">
                 <div class="icon"><img src="{% static "img/Support-Backup.svg" %}" /></div>
                 <h2>{% trans "Backup service" %}</h2>
                 <ul>
-                    <li>{% trans "Cloud backups of your installations." %}</li>
-                    <li>{% trans "Securely encrypted with your passphrase." %}</li>
-                    <li>{% trans "Stores up to 100 GB of backups." %}</li>
+                    <li>{% trans "Cloud backups of your data" %}</li>
+                    <li>{% trans "Securely encrypted with your passphrase" %}</li>
+                    <li>{% trans "Daily incremental backups" %}</li>
+                    <li>{% trans "Stores up to 100 GB of backups" %}</li>
                     <li><a href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Read more in the documentation." %}</a></li>
                 </ul>
                 <a href="{% url 'subscription-new' %}?plan=backup" class="format-item">€250<span>{% trans "annually" %}</span></a>
