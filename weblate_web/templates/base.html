@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-sans-pro.css">
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-code-pro.css">
 
-  <script src="{% static "modernizr.js" %}"></script>
+  <script src="{% static "vendor/modernizr.js" %}"></script>
 
   <meta name="robots" content="index, follow" />
   <title>{% use_macro title %}</title>
@@ -124,8 +124,8 @@
     </section>
 
     {% compress js %}
-	<script src="{% static "jquery.min.js" %}"></script>
-	<script src="{% static "clipboard.js" %}"></script>
+	<script src="{% static "vendor/jquery.min.js" %}"></script>
+	<script src="{% static "vendor/clipboard.js" %}"></script>
 	<script src="{% static "custom.js" %}"></script>
     {% endcompress %}
 <!-- Matomo -->
