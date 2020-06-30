@@ -69,6 +69,20 @@ repos:
           |vue\
           |yaml|yml\
           )$"
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v7.3.1
+    hooks:
+      - id: eslint
+        additional_dependencies:
+          - prettier@latest
+          - eslint@>=6.2.2
+          - eslint-plugin-import@>=2.18.0
+          - eslint-plugin-node@>=9.1.0
+          - eslint-plugin-promise@>=4.2.1
+          - eslint-plugin-standard@>=4.0.0
+          - eslint-config-prettier@latest
+          - eslint-plugin-prettier@latest
+
 exclude: "^.*\\.(svg)|\
   weblate_web/templates/browserconfig.xml|\
   weblate_web/static/vendor/|\
