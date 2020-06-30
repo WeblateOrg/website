@@ -25,9 +25,6 @@ html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
-body {
-  margin: 0;
-}
 article,
 aside,
 details,
@@ -51,13 +48,6 @@ figure {
 hr {
   box-sizing: content-box;
   height: 0;
-}
-code,
-kbd,
-pre,
-samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
 }
 a {
   background-color: transparent;
@@ -97,9 +87,6 @@ sup {
 audio:not([controls]) {
   display: none;
   height: 0;
-}
-img {
-  border-style: none;
 }
 svg:not(:root) {
   overflow: hidden;
@@ -228,6 +215,7 @@ input.button {
   text-decoration: none;
 }
 img {
+  border-style: none;
   width: auto;
   max-width: 100%;
 }
@@ -1252,6 +1240,7 @@ body.page section.bottom {
 }
 .related-posts .article h2 a {
   font-size: 28px;
+  color: #1fa385;
 }
 .related-posts {
   float: left;
@@ -1265,9 +1254,6 @@ body.page section.bottom {
   line-height: 44px;
   text-transform: none;
   font-weight: 400;
-}
-.related-posts .article h2 a {
-  color: #1fa385;
 }
 .page-desc {
   display: block;
@@ -1889,12 +1875,10 @@ input[type="radio"]:checked + .biglabel {
   border-radius: 50%;
   display: block;
   margin: 0 auto;
+  display: none;
 }
 .rewards .reward.checked a.close {
   display: block;
-}
-.rewards .reward a.close {
-  display: none;
 }
 .help-cols {
   width: 100%;
@@ -3055,9 +3039,9 @@ footer .footer-right {
   .main-box .box {
     padding-top: 150px;
   }
+  .wrap h1,
   .main-box .box h1,
   section.about .section-title,
-  .wrap h1,
   .wrap h2.section-title,
   h2.section-title.bigger {
     font-size: 50px;
@@ -3365,7 +3349,6 @@ footer .footer-right {
   content: counter(tos_chapter) "." counter(tos_paragraph) ". ";
 }
 .tos p,
-.tos dl,
 .tos dl,
 .tos ul {
   font-size: 20px;
