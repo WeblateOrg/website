@@ -54,4 +54,20 @@ repos:
     hooks:
       - id: check-hooks-apply
       - id: check-useless-excludes
-exclude: '^.*\.(svg)|weblate_web/templates/browserconfig.xml$'
+  - repo: https://github.com/prettier/prettier
+    rev: 2.0.5
+    hooks:
+      - id: prettier
+        files: "\\.(\
+          graphql|gql\
+          |json\
+          |md|markdown|mdown|mkdn\
+          |mdx\
+          |ts|tsx\
+          |vue\
+          |yaml|yml\
+          )$"
+exclude: "^.*\\.(svg)|\
+  weblate_web/templates/browserconfig.xml|\
+  scripts/yarn/.*\
+  $"
