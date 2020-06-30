@@ -83,6 +83,14 @@ repos:
           - eslint-plugin-standard@>=4.0.0
           - eslint-config-prettier@latest
           - eslint-plugin-prettier@latest
+  - repo: https://github.com/awebdeveloper/pre-commit-stylelint
+    rev: 0.0.2
+    hooks:
+      - id: stylelint
+        args: ["--formatter=compact"]
+        additional_dependencies:
+          - stylelint@latest
+          - stylelint-config-standard@latest
 
 exclude: "^.*\\.(svg)|\
   weblate_web/templates/browserconfig.xml|\
