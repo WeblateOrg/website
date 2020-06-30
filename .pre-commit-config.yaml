@@ -59,7 +59,9 @@ repos:
     hooks:
       - id: prettier
         files: "\\.(\
-          graphql|gql\
+          css|less|scss\
+          |graphql|gql\
+          |js|jsx\
           |json\
           |md|markdown|mdown|mkdn\
           |mdx\
@@ -69,5 +71,6 @@ repos:
           )$"
 exclude: "^.*\\.(svg)|\
   weblate_web/templates/browserconfig.xml|\
+  weblate_web/static/vendor/|\
   scripts/yarn/.*\
   $"
