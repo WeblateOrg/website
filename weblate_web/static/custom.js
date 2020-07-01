@@ -14,6 +14,21 @@ var ready = (callback) => {
   }
 };
 
+/* Generic tab toggling code */
+function tabToggle(targets, removal) {
+  document.querySelectorAll(targets).forEach((element) => {
+    element.addEventListener("click", (e) => {
+      document.querySelectorAll(removal).forEach((child) => {
+        child.classList.remove("current");
+      });
+      e.target.classList.add("current");
+      document
+        .getElementById(e.target.getAttribute("data-tab"))
+        .classList.add("current");
+    });
+  });
+}
+
 ready(() => {
   /* Mobile menu display */
   document.querySelector(".menu-show").addEventListener("click", (e) => {
@@ -46,30 +61,19 @@ ready(() => {
     e.preventDefault();
   });
 
+  /* Pricing tabs */
+  tabToggle("ul.pricing-tabs li", "ul.pricing-tabs li, .tab-content");
+
+  /* Yearly/monthly toggle */
+  tabToggle(
+    ".pricing-table-tabs-menu ul li",
+    ".pricing-table-tabs-menu ul li, .tab-content"
+  );
+
   new ClipboardJS("[data-clipboard-text]");
 });
 
 $(function () {
-  $("ul.pricing-tabs li").click(function () {
-    var tab_id = $(this).attr("data-tab");
-
-    $("ul.pricing-tabs li").removeClass("current");
-    $(".tab-content").removeClass("current");
-
-    $(this).addClass("current");
-    $("#" + tab_id).addClass("current");
-  });
-
-  $(".pricing-table-tabs-menu ul li").click(function () {
-    var tab_id = $(this).attr("data-tab");
-
-    $(".pricing-table-tabs-menu ul li").removeClass("current");
-    $(".tab-content").removeClass("current");
-
-    $(this).addClass("current");
-    $("#" + tab_id).addClass("current");
-  });
-
   $(".rewards .choose").click(function () {
     var container = $($(this).parents(".reward")[0]);
     container.parent().find(".reward").removeClass("checked");
