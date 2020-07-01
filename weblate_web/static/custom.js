@@ -6,12 +6,23 @@ _paq.push(["enableLinkTracking"]);
 _paq.push(["setTrackerUrl", "https://stats.cihar.com/matomo.php"]);
 _paq.push(["setSiteId", "12"]);
 
-$(function () {
-  $(".menu-show").click(function (e) {
-    var $body = $("body");
-    $body.toggleClass("open-mobile");
-    $(".mobile-menu").toggle();
+var ready = (callback) => {
+  if (document.readyState != "loading") {
+    callback();
+  } else {
+    document.addEventListener("DOMContentLoaded", callback);
+  }
+};
+
+ready(() => {
+  /* Mobile menu display */
+  document.querySelector(".menu-show").addEventListener("click", (e) => {
+    document.querySelector("body").classList.toggle("open-mobile");
+    document.querySelector(".mobile-menu").classList.toggle("is-visible");
   });
+});
+
+$(function () {
   $(".open-langs").click(function (e) {
     if ($(this).parent().hasClass("opened")) {
       $(this).next().fadeOut(300);
