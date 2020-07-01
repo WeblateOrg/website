@@ -20,6 +20,8 @@ ready(() => {
     document.querySelector("body").classList.toggle("open-mobile");
     document.querySelector(".mobile-menu").classList.toggle("is-visible");
   });
+
+  new ClipboardJS("[data-clipboard-text]");
 });
 
 $(function () {
@@ -122,5 +124,4 @@ $(function () {
       });
     }
   });
-  new ClipboardJS("[data-clipboard-text]");
 });
