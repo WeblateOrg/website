@@ -19,23 +19,37 @@ ready(() => {
   document.querySelector(".menu-show").addEventListener("click", (e) => {
     document.querySelector("body").classList.toggle("open-mobile");
     document.querySelector(".mobile-menu").classList.toggle("is-visible");
+    e.preventDefault();
+  });
+
+  /* Languages menu */
+  document.querySelector(".open-langs").addEventListener("click", (e) => {
+    console.log(e);
+    var thisParent = e.target.parentElement;
+    var thisNext = e.target.nextElementSibling;
+    console.log(thisNext);
+    if (thisParent.classList.contains("opened")) {
+      thisParent.classList.remove("opened");
+      thisNext.style.opacity = "0";
+      setTimeout(() => {
+        thisNext.classList.toggle("is-visible");
+        thisNext.style.opacity = null;
+      }, 350);
+    } else {
+      thisNext.style.display = "block";
+      thisParent.classList.add("opened");
+      setTimeout(() => {
+        thisNext.classList.toggle("is-visible");
+        thisNext.style.display = null;
+      }, 20);
+    }
+    e.preventDefault();
   });
 
   new ClipboardJS("[data-clipboard-text]");
 });
 
 $(function () {
-  $(".open-langs").click(function (e) {
-    if ($(this).parent().hasClass("opened")) {
-      $(this).next().fadeOut(300);
-      $(this).parent().removeClass("opened");
-    } else {
-      $(this).next().fadeIn(300);
-      $(this).parent().addClass("opened");
-    }
-    return false;
-  });
-
   $("ul.pricing-tabs li").click(function () {
     var tab_id = $(this).attr("data-tab");
 
