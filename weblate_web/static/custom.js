@@ -128,34 +128,54 @@ ready(() => {
     donate_input.dispatchEvent(new Event("change"));
   }
 
-  new ClipboardJS("[data-clipboard-text]");
-});
-
-$(function () {
-  $("#id_vat_0").on("change", function () {
-    var value = $(this).val();
-    if (value != "") {
-      var country = $('#id_country option[value="' + value + '"]');
-      country.prop("selected", true);
-    }
-  });
-  $("#id_vat_0,#id_vat_1").on("focusout", function () {
-    var country = $("#id_vat_0").val();
-    var code = $("#id_vat_1").val();
-    if (country && code) {
-      var payload = {
-        vat: country + code,
-        payment: $('input[name="payment"]').val(),
-        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-      };
-      $.post("/js/vat/", payload, function (data) {
-        if (data.valid) {
-          $('input[name="name"]').val(data.name);
-          var parts = data.address.trim().split("\n");
-          $('input[name="address"]').val(parts[0]);
-          $('input[name="city"]').val(parts[parts.length - 1]);
+  /* VAT form */
+  let vat_input = document.getElementById("id_vat_0");
+  if (vat_input) {
+    vat_input.addEventListener("change", (e) => {
+      var value = e.target.value;
+      if (value != "") {
+        document.querySelector(
+          '#id_country option[value="' + value + '"'
+        ).selected = true;
+      }
+    });
+    document.querySelectorAll("#id_vat_0,#id_vat_1").forEach((element) => {
+      element.addEventListener("focusout", (e) => {
+        var country = document.getElementById("id_vat_0").value;
+        var code = document.getElementById("id_vat_1").value;
+        if (country && code) {
+          const payload = new FormData();
+          payload.append("vat", country + code);
+          payload.append(
+            "payment",
+            document.querySelector('input[name="payment"]').value
+          );
+          payload.append(
+            "csrfmiddlewaretoken",
+            document.querySelector('input[name="csrfmiddlewaretoken"]').value
+          );
+          fetch("/js/vat/", {
+            method: "POST",
+            body: payload,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.valid) {
+                document.querySelector('input[name="name"]').value = data.name;
+                var parts = data.address.trim().split("\n");
+                document.querySelector('input[name="address"]').value =
+                  parts[0];
+                document.querySelector('input[name="city"]').value =
+                  parts[parts.length - 1];
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
         }
       });
-    }
-  });
+    });
+  }
+
+  new ClipboardJS("[data-clipboard-text]");
 });
