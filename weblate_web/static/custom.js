@@ -70,52 +70,68 @@ ready(() => {
     ".pricing-table-tabs-menu ul li, .tab-content"
   );
 
+  /* Donate rewards selection */
+  let donate_input = document.getElementById("donate-amount");
+  if (donate_input) {
+    document.querySelectorAll(".rewards .choose").forEach((element) => {
+      element.addEventListener("click", (e) => {
+        var container = e.target.parentElement;
+        container.parentElement
+          .querySelector(".reward.checked")
+          .classList.remove("checked");
+        container.classList.add("checked");
+        container.querySelector("input").checked = true;
+        e.preventDefault();
+      });
+    });
+    document.querySelectorAll(".rewards .close").forEach((element) => {
+      element.addEventListener("click", (e) => {
+        document
+          .querySelector(".rewards .fourth .choose")
+          .dispatchEvent(new Event("click"));
+        e.preventDefault();
+      });
+    });
+    donate_input.addEventListener("change", (e) => {
+      var amount = parseInt(e.target.value);
+      var found = 0;
+      var highest = document.querySelector(".rewards .fourth");
+      var highest_amount = parseInt(highest.getAttribute("data-amount"));
+      document.querySelectorAll(".reward").forEach((element) => {
+        var current_amount = parseInt(element.getAttribute("data-amount"));
+        if (current_amount <= amount) {
+          element.classList.remove("small");
+          found++;
+          if (highest_amount < current_amount) {
+            highest = element;
+            highest_amount = current_amount;
+          }
+        } else {
+          element.classList.add("small");
+          if (element.classList.contains("checked")) {
+            element.querySelector(".close").dispatchEvent(new Event("click"));
+          }
+        }
+      });
+      highest.querySelector(".choose").click();
+
+      if (found > 1) {
+        document.querySelector(".whoa").classList.add("is-visible");
+        document.querySelector(".nowhoa").classList.remove("is-visible");
+      } else {
+        document.querySelector(".whoa").classList.remove("is-visible");
+        document.querySelector(".nowhoa").classList.add("is-visible");
+      }
+
+      console.log(amount);
+    });
+    donate_input.dispatchEvent(new Event("change"));
+  }
+
   new ClipboardJS("[data-clipboard-text]");
 });
 
 $(function () {
-  $(".rewards .choose").click(function () {
-    var container = $($(this).parents(".reward")[0]);
-    container.parent().find(".reward").removeClass("checked");
-    container.addClass("checked");
-    container.find("input").prop("checked", true);
-    return false;
-  });
-  $(".rewards .close").click(function () {
-    $(".rewards .fourth .choose").click();
-    return false;
-  });
-  $("#donate-amount").change(function () {
-    var amount = $(this).val();
-    var found = 0;
-    var highest = $(".reward.fourth");
-    $(".reward").each(function () {
-      var $this = $(this);
-      if ($this.data("amount") <= amount) {
-        if ($this.hasClass("small")) {
-          $this.removeClass("small");
-        }
-        found++;
-        if (highest.data("amount") < $this.data("amount")) {
-          highest = $this;
-        }
-      } else {
-        $this.addClass("small");
-        if ($this.hasClass("checked")) {
-          $this.find(".close").click();
-        }
-      }
-    });
-    highest.find(".choose").click();
-    if (found > 1) {
-      $(".whoa").show();
-      $(".nowhoa").hide();
-    } else {
-      $(".whoa").hide();
-      $(".nowhoa").show();
-    }
-  });
-  $("#donate-amount").change();
   $("#id_vat_0").on("change", function () {
     var value = $(this).val();
     if (value != "") {
