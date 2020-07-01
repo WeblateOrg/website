@@ -6,7 +6,6 @@ cd scripts/yarn/
 
 yarn install --check-files
 yarn upgrade-interactive
-yarn run build --scripts-prepend-node-path
 
 # Clipboard
 cp node_modules/clipboard/dist/clipboard.min.js ../../weblate_web/static/vendor/clipboard.js
@@ -23,6 +22,3 @@ find node_modules/source-sans-pro/ node_modules/source-code-pro/ -name SourceSan
     fi
     cp $name $target
 done
-
-# Modernizr
-mv modernizr.js ../../weblate_web/static/vendor/

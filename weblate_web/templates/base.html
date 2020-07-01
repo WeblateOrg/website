@@ -4,7 +4,7 @@
 {% macro title %}{% block title %}Weblate{% endblock %}{% endmacro %}
 {% macro description %}{% filter striptags %}{% block description %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}{% endfilter %}{% endmacro %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" class="no-js">
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -13,8 +13,6 @@
 
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-sans-pro.css">
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-code-pro.css">
-
-  <script src="{% static "vendor/modernizr.js" %}"></script>
 
   <meta name="robots" content="index, follow" />
   <title>{% use_macro title %}</title>
