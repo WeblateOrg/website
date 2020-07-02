@@ -272,6 +272,57 @@
                             </div>
                         </div>
                         <div class="col">
+                            <div class="head line">
+                                <strong>{% trans "Custom" context "Hosting plan" %}</strong><br />
+                                {% trans "and dedicated" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                {% blocktrans with count=50000|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
+                            </div>
+                            <div class="line">
+                                {% blocktrans with count=100|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "All" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Customizable" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Customizable" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                        <div class="col">
                             <div class="head line regular">
                                 <strong>{% trans "Self-hosted" context "Hosting plan" %}</strong><br />
                                 {% trans "on-premises" %}
@@ -320,57 +371,6 @@
                             </div>
                             <div class="line">
                                 <span class="check"></span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line regular">
-                                <strong>{% trans "Gratis" %}</strong><br />
-                                {% trans "for libre projects" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <strong>{{ 10000|intcomma }}</strong>
-                            </div>
-                            <div class="line">
-                                <strong>60</strong>
-                            </div>
-                            <div class="line">
-                                1
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="cross"></span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "All" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <span class="cross"></span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <span class="cross"></span>
                             </div>
                         </div>
                         <div class="clear"></div>
@@ -431,6 +431,17 @@
                                     </div>
                                 </div>
                                 <div class="col">
+                                    <div class="line price small">
+                                        {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/hosting/" class="button">{% trans "Contact us" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
                                     <div class="line price">
                                         <strong>{% trans "Gratis" %}</strong>
                                         &nbsp;
@@ -440,18 +451,6 @@
                                     </div>
                                     <div class="line last">
                                         <a href="{% url 'download' %}">{% trans "or download Weblate" %}</a>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>{% trans "Gratis" %}</strong>
-                                        &nbsp;
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/hosting/" class="button border rev">{% trans "Contact us" %}</a>
-                                    </div>
-                                    <div class="line last">
-
                                     </div>
                                 </div>
                             </div>
