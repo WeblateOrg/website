@@ -571,6 +571,9 @@
                             <span class="middle">{% trans "System maintenance" %}</span>
                         </div>
                         <div class="line">
+                            <span class="middle">{% trans "Weblate installation" %}</span>
+                        </div>
+                        <div class="line">
                             <span class="middle">{% trans "Weblate upgrades" %}</span>
                         </div>
                         <div class="line">
@@ -583,13 +586,13 @@
                             <span class="middle">{% trans "Single sign on" %}</span>
                         </div>
                         <div class="line">
-                            <span class="middle">{% trans "E-mail support" %}</span>
+                            <span class="middle">{% trans "Priority e-mail support" %}</span>
                         </div>
                         <div class="line">
                             <span class="middle">{% trans "Shared translation memory" %}</span>
                         </div>
                         <div class="line">
-                            <span class="middle">{% trans "Bug fixes" %}</span>
+                            <span class="middle">{% trans "Bug fixing" %}</span>
                         </div>
                     </div>
                 </div>
@@ -598,7 +601,10 @@
                         <div class="col">
                             <div class="head line">
                                 <strong>{% trans "Cloud" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
+                                {% trans "Hosted Weblate" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
@@ -628,7 +634,9 @@
                         <div class="col">
                             <div class="head line">
                                 <strong>{% trans "Dedicated cloud" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
@@ -664,6 +672,9 @@
                                 <span class="cross"></span>
                             </div>
                             <div class="line">
+                                <a href="{% url 'support' %}#install">€300</a>
+                            </div>
+                            <div class="line">
                                 <span class="check"></span>
                             </div>
                             <div class="line">
@@ -694,6 +705,9 @@
                                 <span class="cross"></span>
                             </div>
                             <div class="line">
+                                <a href="{% url 'support' %}#install">{% trans "Optional" %}</a>
+                            </div>
+                            <div class="line">
                                 <span class="cross"></span>
                             </div>
                             <div class="line">
@@ -718,7 +732,10 @@
                         <div class="col">
                             <div class="head line">
                                 <strong>{% trans "Self-hosted" context "Hosting plan" %}</strong><br />
-                                {% trans "free" %}
+                                {% trans "Gratis" %}
+                            </div>
+                            <div class="line">
+                                <span class="cross"></span>
                             </div>
                             <div class="line">
                                 <span class="cross"></span>
