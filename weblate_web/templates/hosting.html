@@ -15,7 +15,7 @@
                 <p class="small">{% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktrans %}</p>
             </div>
 
-            <div class="pricing-table">
+            <div class="pricing-table" id="hosted">
                 <div class="pricing-table-left">
                     <div class="col">
                         <div class="line">
@@ -568,7 +568,7 @@
     <div class="row">
         <div class="wrap">
             <h2 class="section-title payment-conditions">{% trans "Which Weblate is right for you" %}</h2>
-            <div class="pricing-table">
+            <div class="pricing-table pricing-5">
                 <div class="pricing-table-left">
                     <div class="col">
                         <div class="line">
@@ -770,6 +770,27 @@
                         <div class="pricing-table-tabs">
                             <div class="col">
                                 <div class="line">
+                                    <a href="#hosted" class="button">{% trans "See options" %}</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="line">
+                                    <a href="#hosted" class="button">{% trans "See options" %}</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="line">
+                                    <a href="{% url 'subscription-new' %}?plan=extended" class="button">{% trans "Buy now" %}</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="line">
+                                    <a href="{% url 'subscription-new' %}?plan=basic" class="button">{% trans "Buy now" %}</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="line">
+                                    <a href="{% url 'download' %}" class="button border rev">{% trans "Download" %}</a>
                                 </div>
                             </div>
                         </div>
