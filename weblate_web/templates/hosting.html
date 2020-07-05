@@ -552,7 +552,11 @@
 
             <div class="libre-hosting">
               <h2>{% trans "Weblate supports libre projects" %}</h2>
-              <p>{% blocktrans with url="https://hosted.weblate.org/hosting/" %}We proudly support opensource across the globe. If you feel like being supported by Weblate will help your libre project, feel free to start free trial and <a href="{{ url }}">let us know</a>. For such projects, we would activate <strong>Advanced plan</strong> for free.{% endblocktrans %}</p>
+              <p>
+                {% blocktrans with url="https://hosted.weblate.org/hosting/" %}We proudly support opensource across the globe. If you feel like being supported by Weblate will help your libre project, feel free to start free trial and <a href="{{ url }}">let us know</a>.{% endblocktrans %}
+                {% blocktrans %}For such projects, we would activate <strong>Libre plan</strong> for free.{% endblocktrans %}
+                {% blocktrans %}It has same limits as <strong>Advanced plan</strong>, but only allows public projects.{% endblocktrans %}
+            </p>
             </div>
 
             <div class="wrap supporters">
