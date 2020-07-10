@@ -12,393 +12,8 @@
             <div class="page-desc">
                 {% url 'support' as url %}
                 <p>{% block description %}{% blocktrans %}Use Weblate as a service, set up your own, or <a href="{{ url }}">get help</a> for on-premises hosting—all with the possibility of premium support. Our team is ready to help you make Weblate run smoothly.{% endblocktrans %}{% endblock %}</p>
-                <p class="small">{% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktrans %}</p>
             </div>
-
-            <div class="pricing-table" id="hosted">
-                <div class="pricing-table-left">
-                    <div class="col">
-                        <div class="line">
-                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% trans "Continuous localization" %}</a></span>
-                        </div>
-                        <div class="line">
-                            <span class="middle"><a href="#strings">{% trans "Source strings" %}</a></span>
-                        </div>
-                        <div class="line">
-                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/languages.html">{% trans "Target languages" %}</a></span>
-                        </div>
-                        <div class="line">
-                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#project-configuration">{% trans "Translation projects" %}</a></span>
-                        </div>
-                        <div class="line">
-                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#component-configuration">{% trans "Translation components" %}</a></span>
-                        </div>
-                        <div class="line">
-                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/access.html#manage-users">{% trans "Number of translators" %}</a></span>
-                        </div>
-                        <div class="line">
-                            <span class="middle"><a href="#dedicated">{% trans "Dedicated instance" %}</a></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="pricing-table-right">
-                    <div class="pricing-table-right-inner">
-                        <div class="col">
-                            <div class="head line">
-                                <strong>{% trans "Basic" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <strong>{{ 1000|intcomma }}</strong>
-                            </div>
-                            <div class="line">
-                                <strong>15</strong>
-                            </div>
-                            <div class="line">
-                                1
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="info" title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">i</span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line">
-                                <strong>{% trans "Medium" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <strong>{{ 3000|intcomma }}</strong>
-                            </div>
-                            <div class="line">
-                                <strong>30</strong>
-                            </div>
-                            <div class="line">
-                                2
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="info" title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">i</span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line">
-                                <strong>{% trans "Advanced" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <strong>{{ 10000|intcomma }}</strong>
-                            </div>
-                            <div class="line">
-                                <strong>60</strong>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="info" title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">i</span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line">
-                                <strong>{% trans "Enterprise" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <strong>{{ 50000|intcomma }}</strong>
-                            </div>
-                            <div class="line">
-                                <strong>100</strong>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line">
-                                <strong>{% trans "Custom" context "Hosting plan" %}</strong><br />
-                                {% trans "and dedicated" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                {% blocktrans with count=50000|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
-                            </div>
-                            <div class="line">
-                                {% blocktrans with count=100|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line regular">
-                                <strong>{% trans "Self-hosted" context "Hosting plan" %}</strong><br />
-                                {% trans "on-premises" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="pricing-table-tabs-menu">
-                            <ul>
-                                <li class="current" data-tab="monthly">{% trans "Monthly" %}</li>
-                                <li data-tab="yearly">{% trans "Yearly" %}</li>
-                            </ul>
-                            <div class="tabs-info">{% trans "<strong>Save more</strong> with longer pre-payment!" %}</div>
-                        </div>
-                        <div class="pricing-table-tabs">
-                            <div id="monthly" class="tab-content current">
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ 19</strong>
-                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=2&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ 49</strong>
-                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=3&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ 99</strong>
-                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=4&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ 299</strong>
-                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=5&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price small">
-                                        {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/hosting/" class="button">{% trans "Contact us" %}</a>
-                                    </div>
-                                    <div class="line last">
-
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>{% trans "Gratis" %}</strong>
-                                        &nbsp;
-                                    </div>
-                                    <div class="line">
-                                        <a href="{% url 'support' %}" class="button border rev">{% trans "Buy support" %}</a>
-                                    </div>
-                                    <div class="line last">
-                                        <a href="{% url 'download' %}">{% trans "or download Weblate" %}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="yearly" class="tab-content">
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ 199</strong>
-                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=2&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ 499</strong>
-                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=3&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ 999</strong>
-                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=4&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-                                        {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>€ {{2999|intcomma}}</strong>
-                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/create/billing/?plan=5&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
-                                    </div>
-                                    <div class="line last">
-
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price small">
-                                        {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
-                                    </div>
-                                    <div class="line">
-                                        <a href="https://hosted.weblate.org/hosting/" class="button">{% trans "Contact us" %}</a>
-                                    </div>
-                                    <div class="line last">
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="line price">
-                                        <strong>{% trans "Gratis" %}</strong>
-                                        &nbsp;
-                                    </div>
-                                    <div class="line">
-                                        <a href="{% url 'support' %}" class="button border rev">{% trans "Buy support" %}</a>
-                                    </div>
-                                    <div class="line last">
-                                        <a href="{% url 'download' %}">{% trans "or download Weblate" %}</a>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h2 class="section-title crypto payment-conditions">{% trans "Payment" %}</h2>
-            <div class="page-desc small">
-                {% include "snippets/vat.html" %}
-            </div>
-            <h2 class="section-title crypto payment-conditions" id="strings">{% trans "Source strings" %}</h2>
-            <div class="page-desc small">
-                <p>{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}</p>
-            </div>
-            <h2 class="section-title crypto payment-conditions" id="dedicated">{% trans "Dedicated instance" %}</h2>
-            <div class="page-desc small">
-                <p>{% trans "With cloud hosting, the default setup is to use a shared instance, and a common translation memory. On a dedicated instance there is no economy of scale, but you can make use of customized authentication and settings." %}</p>
-            </div>
-            <h2 class="section-title crypto payment-conditions" id="trial">{% trans "Gratis Trial?" %}</h2>
-            <div class="page-desc small">
-                <p>{% blocktrans with "mailto:sales@weblate.org" as contact %}<a href="{{ contact }}">Get in touch</a> if you are still unsure whether Weblate was made for you.{% endblocktrans %}
-            </div>
-
-            <div class="libre-hosting">
-              <h2>{% trans "Weblate supports libre projects" %}</h2>
-              <p>
-                {% blocktrans with url="https://hosted.weblate.org/hosting/" %}We proudly support opensource across the globe. If you feel like being supported by Weblate will help your libre project, feel free to start free trial and <a href="{{ url }}">let us know</a>.{% endblocktrans %}
-                {% blocktrans %}For such projects, we would activate <strong>Libre plan</strong> for free.{% endblocktrans %}
-                {% blocktrans %}It has same limits as <strong>Advanced plan</strong>, but only allows public projects.{% endblocktrans %}
-            </p>
-            </div>
-
-            <div class="wrap supporters">
-                <h2 class="section-title hp-style">{% trans "Join existing users and supporters" %}</h2>
-                {% include "snippets/users.html" %}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="wrap">
-            <h2 class="section-title payment-conditions">{% trans "Which Weblate is right for you" %}</h2>
+            <h2 id="which" class="section-title payment-conditions">{% trans "Which Weblate is right for you" %}</h2>
             <div class="pricing-table pricing-5">
                 <div class="pricing-table-left">
                     <div class="col">
@@ -652,6 +267,386 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <h2 id="hosted" class="section-title payment-conditions">{% trans "Hosted Weblate" %}</h2>
+            <div class="page-desc small">
+                <p class="small">{% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktrans %}</p>
+            </div>
+
+            <div class="pricing-table">
+                <div class="pricing-table-left">
+                    <div class="col">
+                        <div class="line">
+                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% trans "Continuous localization" %}</a></span>
+                        </div>
+                        <div class="line">
+                            <span class="middle"><a href="#strings">{% trans "Source strings" %}</a></span>
+                        </div>
+                        <div class="line">
+                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/languages.html">{% trans "Target languages" %}</a></span>
+                        </div>
+                        <div class="line">
+                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#project-configuration">{% trans "Translation projects" %}</a></span>
+                        </div>
+                        <div class="line">
+                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#component-configuration">{% trans "Translation components" %}</a></span>
+                        </div>
+                        <div class="line">
+                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/access.html#manage-users">{% trans "Number of translators" %}</a></span>
+                        </div>
+                        <div class="line">
+                            <span class="middle"><a href="#which">{% trans "Dedicated instance" %}</a></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pricing-table-right">
+                    <div class="pricing-table-right-inner">
+                        <div class="col">
+                            <div class="head line">
+                                <strong>{% trans "Basic" context "Hosting plan" %}</strong><br />
+                                {% trans "cloud" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{ 1000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <strong>15</strong>
+                            </div>
+                            <div class="line">
+                                1
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">€ 100</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line">
+                                <strong>{% trans "Medium" context "Hosting plan" %}</strong><br />
+                                {% trans "cloud" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{ 3000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <strong>30</strong>
+                            </div>
+                            <div class="line">
+                                2
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">€ 100</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line">
+                                <strong>{% trans "Advanced" context "Hosting plan" %}</strong><br />
+                                {% trans "cloud" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{ 10000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <strong>60</strong>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">€ 100</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line">
+                                <strong>{% trans "Enterprise" context "Hosting plan" %}</strong><br />
+                                {% trans "cloud" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{ 50000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <strong>100</strong>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line">
+                                <strong>{% trans "Custom" context "Hosting plan" %}</strong><br />
+                                {% trans "and dedicated" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                {% blocktrans with count=50000|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
+                            </div>
+                            <div class="line">
+                                {% blocktrans with count=100|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line regular">
+                                <strong>{% trans "Self-hosted" context "Hosting plan" %}</strong><br />
+                                {% trans "on-premises" %}
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="pricing-table-tabs-menu">
+                            <ul>
+                                <li class="current" data-tab="monthly">{% trans "Monthly" %}</li>
+                                <li data-tab="yearly">{% trans "Yearly" %}</li>
+                            </ul>
+                            <div class="tabs-info">{% trans "<strong>Save more</strong> with longer pre-payment!" %}</div>
+                        </div>
+                        <div class="pricing-table-tabs">
+                            <div id="monthly" class="tab-content current">
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 19</strong>
+                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=2&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 49</strong>
+                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=3&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 99</strong>
+                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=4&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 299</strong>
+                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=5&amp;period=m&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price small">
+                                        {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/hosting/" class="button">{% trans "Contact us" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{% trans "Gratis" %}</strong>
+                                        &nbsp;
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'support' %}" class="button border rev">{% trans "Buy support" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                        <a href="{% url 'download' %}">{% trans "or download Weblate" %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="yearly" class="tab-content">
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 199</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=2&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 499</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=3&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 999</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=4&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                        {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ {{2999|intcomma}}</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/create/billing/?plan=5&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price small">
+                                        {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/hosting/" class="button">{% trans "Contact us" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{% trans "Gratis" %}</strong>
+                                        &nbsp;
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'support' %}" class="button border rev">{% trans "Buy support" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                        <a href="{% url 'download' %}">{% trans "or download Weblate" %}</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title crypto payment-conditions">{% trans "Payment" %}</h2>
+            <div class="page-desc small">
+                {% include "snippets/vat.html" %}
+            </div>
+            <h2 class="section-title crypto payment-conditions" id="strings">{% trans "Source strings" %}</h2>
+            <div class="page-desc small">
+                <p>{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}</p>
+            </div>
+            <h2 class="section-title crypto payment-conditions" id="trial">{% trans "Gratis Trial?" %}</h2>
+            <div class="page-desc small">
+                <p>{% blocktrans with "mailto:sales@weblate.org" as contact %}<a href="{{ contact }}">Get in touch</a> if you are still unsure whether Weblate was made for you.{% endblocktrans %}
+            </div>
+
+            <div class="libre-hosting">
+              <h2>{% trans "Weblate supports libre projects" %}</h2>
+              <p>
+                {% blocktrans with url="https://hosted.weblate.org/hosting/" %}We proudly support opensource across the globe. If you feel like being supported by Weblate will help your libre project, feel free to start free trial and <a href="{{ url }}">let us know</a>.{% endblocktrans %}
+                {% blocktrans %}For such projects, we would activate <strong>Libre plan</strong> for free.{% endblocktrans %}
+                {% blocktrans %}It has same limits as <strong>Advanced plan</strong>, but only allows public projects.{% endblocktrans %}
+            </p>
+            </div>
+
+            <div class="wrap supporters">
+                <h2 class="section-title hp-style">{% trans "Join existing users and supporters" %}</h2>
+                {% include "snippets/users.html" %}
             </div>
         </div>
     </div>
