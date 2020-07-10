@@ -268,6 +268,7 @@
                     </div>
                 </div>
             </div>
+            <div class="clear"></div>
             <h2 id="hosted" class="section-title payment-conditions">{% trans "Hosted Weblate" %}</h2>
             <div class="page-desc small">
                 <p class="small">{% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktrans %}</p>
@@ -468,6 +469,7 @@
                             <ul>
                                 <li class="current" data-tab="monthly">{% trans "Monthly" %}</li>
                                 <li data-tab="yearly">{% trans "Yearly" %}</li>
+                                <li data-tab="dedicated">{% trans "Dedicated" %}</li>
                             </ul>
                             <div class="tabs-info">{% trans "<strong>Save more</strong> with longer pre-payment!" %}</div>
                         </div>
@@ -588,6 +590,79 @@
                                     </div>
                                     <div class="line">
                                         <a href="https://hosted.weblate.org/create/billing/?plan=5&amp;period=y&amp;do=1" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price small">
+                                        {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/hosting/" class="button">{% trans "Contact us" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{% trans "Gratis" %}</strong>
+                                        &nbsp;
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'support' %}" class="button border rev">{% trans "Buy support" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                        <a href="{% url 'download' %}">{% trans "or download Weblate" %}</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dedicated" class="tab-content">
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 299</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:basic" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ 599</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:medium" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ {{1099|intcomma}}</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:advanced" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+                                        {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>€ {{2999|intcomma}}</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:enterprise" class="button">{% trans "Buy now" %}</a>
                                     </div>
                                     <div class="line last">
 
