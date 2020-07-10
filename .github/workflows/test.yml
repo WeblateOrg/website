@@ -35,12 +35,14 @@ jobs:
         run: |
           pip install --upgrade pip wheel setuptools
           pip install -r requirements.txt -r requirements-test.txt
+      - name: Compile MO files
+        run: ./scripts/generate-locales
+      - name: Collect static files
+        run: ./manage.py collectstatic
+      - name: Django checks
+        run: ./manage.py check
       - name: Test with Django
-        run: |
-          ./scripts/generate-locales
-          ./manage.py collectstatic
-          ./manage.py check
-          coverage run ./manage.py test
+        run: coverage run ./manage.py test
       - name: Coverage
         run: |
           coverage combine
