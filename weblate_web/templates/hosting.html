@@ -11,7 +11,10 @@
             <h1 class="section-title min-m">{% block title %}{% trans "Weblate Pricing" %}{% endblock %}</h1>
             <div class="page-desc">
                 {% url 'support' as url %}
-                <p>{% block description %}{% blocktrans %}Use Weblate as a service, set up your own, or <a href="{{ url }}">get help</a> for on-premises hosting—all with the possibility of premium support. Our team is ready to help you make Weblate run smoothly.{% endblocktrans %}{% endblock %}</p>
+                <p>{% block description %}
+                  {% blocktrans %}Use Weblate as a service, set up your own, or <a href="{{ url }}">get help</a> for on-premise hosting — all with the convenience of the premium support.{% endblocktrans %}
+                  {% blocktrans %}Our team is ready to help you make Weblate run smoothly.{% endblocktrans %}
+                {% endblock %}</p>
             </div>
             <h2 id="which" class="section-title payment-conditions">{% trans "Which Weblate is right for you" %}</h2>
             <div class="pricing-table">
@@ -30,10 +33,10 @@
                             <span class="middle">{% trans "Access to backups" %}</span>
                         </div>
                         <div class="line">
-                            <span class="middle">{% trans "Configuration customization" %}</span>
+                            <span class="middle">{% trans "Complete configuration customization" %}</span>
                         </div>
                         <div class="line">
-                            <span class="middle">{% trans "Single sign on" %}</span>
+                            <span class="middle">{% trans "Single sign-on" %}</span>
                         </div>
                         <div class="line">
                             <span class="middle">{% trans "Priority e-mail support" %}</span>
@@ -42,7 +45,7 @@
                             <span class="middle">{% trans "Shared translation memory" %}</span>
                         </div>
                         <div class="line">
-                            <span class="middle">{% trans "Bug fixing" %}</span>
+                            <span class="middle">{% trans "Priority bug fixing" %}</span>
                         </div>
                     </div>
                 </div>
@@ -63,7 +66,7 @@
                                 <span class="check"></span>
                             </div>
                             <div class="line">
-                                <span class="cross"></span>
+                                <span class="info" title="{% blocktrans %}Backups and restore on Hosted Weblate are fully automatic.{% endblocktrans %}">i</span>
                             </div>
                             <div class="line">
                                 <span class="cross"></span>
@@ -633,6 +636,10 @@
                 </div>
             </div>
 
+            <h2 class="section-title crypto payment-conditions" id="trial">{% trans "Gratis Trial?" %}</h2>
+            <div class="page-desc small">
+                <p>{% blocktrans with "mailto:sales@weblate.org" as contact %}<a href="{{ contact }}">Get in touch</a> if you are still unsure whether Weblate was made for you.{% endblocktrans %}
+            </div>
             <h2 class="section-title crypto payment-conditions">{% trans "Payment" %}</h2>
             <div class="page-desc small">
                 {% include "snippets/vat.html" %}
@@ -640,10 +647,6 @@
             <h2 class="section-title crypto payment-conditions" id="strings">{% trans "Source strings" %}</h2>
             <div class="page-desc small">
                 <p>{% trans "Pricing is based on number of source strings and target languages. The source string is a text unit defined in a translation format, it can be a word, sentence or paragraph." %}</p>
-            </div>
-            <h2 class="section-title crypto payment-conditions" id="trial">{% trans "Gratis Trial?" %}</h2>
-            <div class="page-desc small">
-                <p>{% blocktrans with "mailto:sales@weblate.org" as contact %}<a href="{{ contact }}">Get in touch</a> if you are still unsure whether Weblate was made for you.{% endblocktrans %}
             </div>
 
             <div class="libre-hosting">
