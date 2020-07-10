@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-05-17 13:56+0200\n"
+"POT-Creation-Date: 2020-07-10 22:20+0200\n"
 "PO-Revision-Date: 2020-05-20 07:07+0000\n"
 "Last-Translator: Zmicer Turok <nashtlumach@gmail.com>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/weblate/"
@@ -21,8 +21,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.1-dev\n"
 
 #: payments/backends.py:254
@@ -123,11 +123,11 @@ msgid "Quarterly"
 msgstr "Штоквартальна"
 
 #: payments/models.py:162 weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:379
-#: weblate_web/templates/hosting.html:389
-#: weblate_web/templates/hosting.html:401
-#: weblate_web/templates/hosting.html:413
-#: weblate_web/templates/hosting.html:424
+#: weblate_web/templates/hosting.html:446
+#: weblate_web/templates/hosting.html:457
+#: weblate_web/templates/hosting.html:469
+#: weblate_web/templates/hosting.html:481
+#: weblate_web/templates/hosting.html:492
 #: weblate_web/templates/snippets/pricing.html:35
 #: weblate_web/templates/snippets/pricing.html:61
 #: weblate_web/templates/snippets/pricing.html:87
@@ -230,7 +230,8 @@ msgstr "Анонс"
 msgid "Conferences"
 msgstr "Канферэнцыі"
 
-#: weblate_web/models.py:54
+#: weblate_web/models.py:54 weblate_web/templates/hosting.html:57
+#: weblate_web/templates/hosting.html:275
 msgid "Hosted Weblate"
 msgstr "Хостынг Weblate"
 
@@ -248,7 +249,7 @@ msgstr "Лакалізацыя"
 msgid "Link text"
 msgstr "Тэкст спасылкі"
 
-#: weblate_web/models.py:110 weblate_web/templates/user.html:204
+#: weblate_web/models.py:110 weblate_web/templates/user.html:45
 msgid "Link URL"
 msgstr "URL спасылкі"
 
@@ -272,23 +273,23 @@ msgstr "Хостынг"
 msgid "Hosted service"
 msgstr "Хостынг"
 
-#: weblate_web/models.py:371 weblate_web/templates/support.html:76
+#: weblate_web/models.py:371 weblate_web/templates/support.html:52
 msgid "Basic self-hosted support"
 msgstr "Базавая падтрымка самастойнай усталёўкі"
 
-#: weblate_web/models.py:372 weblate_web/templates/support.html:86
+#: weblate_web/models.py:372 weblate_web/templates/support.html:62
 msgid "Extended self-hosted support"
 msgstr "Пашыраная падтрымка самастойнай усталёўкі"
 
-#: weblate_web/models.py:492
+#: weblate_web/models.py:492 weblate_web/templates/hosting.html:155
 msgid "Basic support"
 msgstr "Базавая падтрымка"
 
-#: weblate_web/models.py:498
+#: weblate_web/models.py:498 weblate_web/templates/hosting.html:122
 msgid "Extended support"
 msgstr "Пашыраная падтрымка"
 
-#: weblate_web/models.py:500 weblate_web/templates/support.html:97
+#: weblate_web/models.py:500 weblate_web/templates/support.html:98
 msgid "Backup service"
 msgstr "Паслуга рэзервовага капіявання"
 
@@ -513,7 +514,8 @@ msgstr ""
 msgid "Contact"
 msgstr "Сувязь"
 
-#: weblate_web/templates/about.html:108 weblate_web/templates/user.html:161
+#: weblate_web/templates/about.html:108
+#: weblate_web/templates/snippets/service.html:145
 msgid "E-mail"
 msgstr "Эл. пошта"
 
@@ -534,9 +536,10 @@ msgid "VAT ID"
 msgstr "ІДЭНТЫФІКАЦЫЙНЫ НУМАР ПАДАТКАПЛАЦЕЛЬШЧЫКА ПДВ"
 
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
-#: weblate_web/templates/hosting.html:451
-#: weblate_web/templates/hosting.html:526
-#: weblate_web/templates/support.html:116
+#: weblate_web/templates/hosting.html:506
+#: weblate_web/templates/hosting.html:568
+#: weblate_web/templates/hosting.html:630
+#: weblate_web/templates/support.html:118
 msgid "Contact us"
 msgstr "Звязацца з намі"
 
@@ -546,14 +549,22 @@ msgstr ""
 "Weblate — сеціўнае свабоднае праграмнае забеспячэнне сістэмы бесперапыннай "
 "лакалізацыі."
 
-#: weblate_web/templates/base.html:22
+#: weblate_web/templates/base.html:20
 msgctxt "Keyword"
 msgid "translate"
 msgstr "перакласці"
 
-#: weblate_web/templates/base.html:67 weblate_web/templates/user.html:13
-msgid "Use Weblate"
-msgstr "Выкарыстоўваць Weblate"
+#: weblate_web/templates/base.html:60
+#, fuzzy
+#| msgid "Log out"
+msgid "Sign out"
+msgstr "Выйсці"
+
+#: weblate_web/templates/base.html:67
+#, fuzzy
+#| msgid "About Weblate"
+msgid "Go Weblate"
+msgstr "Пра Weblate"
 
 #: weblate_web/templates/base.html:109
 msgid "Service Status"
@@ -845,8 +856,9 @@ msgid "Activate donation"
 msgstr "Актываваць ахвяраванне"
 
 #: weblate_web/templates/donate.html:30 weblate_web/templates/donate.html:35
-#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:81
-#: weblate_web/templates/support.html:92 weblate_web/templates/support.html:104
+#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:57
+#: weblate_web/templates/support.html:69 weblate_web/templates/support.html:81
+#: weblate_web/templates/support.html:106
 msgid "annually"
 msgstr "штогод"
 
@@ -855,7 +867,7 @@ msgstr "штогод"
 #: weblate_web/templates/donate.html:145
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:257
+#: weblate_web/templates/user.html:98
 msgid "Donate"
 msgstr "Ахвяраванні"
 
@@ -1287,181 +1299,192 @@ msgid "Java"
 msgstr "Java"
 
 #: weblate_web/templates/features.html:95
+msgid "GWT"
+msgstr ""
+
+#: weblate_web/templates/features.html:96
 msgid "Joomla"
 msgstr "Joomla"
 
-#: weblate_web/templates/features.html:96
+#: weblate_web/templates/features.html:97
 msgid "Qt"
 msgstr "Qt"
 
-#: weblate_web/templates/features.html:97
+#: weblate_web/templates/features.html:98
 msgid "Android"
 msgstr "Android"
 
-#: weblate_web/templates/features.html:98
+#: weblate_web/templates/features.html:99
 msgid "i18next"
 msgstr "i18next"
 
-#: weblate_web/templates/features.html:99
+#: weblate_web/templates/features.html:100
 msgid "WebExtension"
 msgstr "WebExtension"
 
-#: weblate_web/templates/features.html:100
+#: weblate_web/templates/features.html:101
 msgid "Key and value"
 msgstr "Ключ і значэнне"
 
-#: weblate_web/templates/features.html:101
+#: weblate_web/templates/features.html:102
 msgid "react-intl"
 msgstr ""
 
-#: weblate_web/templates/features.html:102
+#: weblate_web/templates/features.html:105
 msgid "PHP"
 msgstr "PHP"
 
-#: weblate_web/templates/features.html:103
+#: weblate_web/templates/features.html:106
 msgid "Laravel"
 msgstr ""
 
-#: weblate_web/templates/features.html:104
+#: weblate_web/templates/features.html:107
 msgid "iOS"
 msgstr "iOS"
 
-#: weblate_web/templates/features.html:105
+#: weblate_web/templates/features.html:108
 msgid "Excel"
 msgstr "Excel"
 
-#: weblate_web/templates/features.html:106
+#: weblate_web/templates/features.html:109
 msgid "Mozilla DTD"
 msgstr "Mozilla DTD"
 
-#: weblate_web/templates/features.html:107
+#: weblate_web/templates/features.html:110
 msgid ".NET resource files"
 msgstr "Файлы рэсурсаў .NET"
 
-#: weblate_web/templates/features.html:108
+#: weblate_web/templates/features.html:111
 msgid "CSV"
 msgstr "CSV"
 
-#: weblate_web/templates/features.html:109
+#: weblate_web/templates/features.html:112
 msgid "YAML"
 msgstr "YAML"
 
-#: weblate_web/templates/features.html:110
+#: weblate_web/templates/features.html:113
 msgid "Ruby"
 msgstr "Ruby"
 
-#: weblate_web/templates/features.html:111
+#: weblate_web/templates/features.html:114
 msgid "App store metadata"
 msgstr "Метаданыя App store"
 
-#: weblate_web/templates/features.html:112
+#: weblate_web/templates/features.html:115
 msgid "Subtitles"
 msgstr "Субцітры"
 
-#: weblate_web/templates/features.html:113
+#: weblate_web/templates/features.html:116
 msgid "Windows"
 msgstr ""
 
-#: weblate_web/templates/features.html:114
+#: weblate_web/templates/features.html:117
 msgid "HTML"
 msgstr "HTML"
 
-#: weblate_web/templates/features.html:115
-#: weblate_web/templates/features.html:116
-#: weblate_web/templates/features.html:117
+#: weblate_web/templates/features.html:118
 #, fuzzy
 #| msgid "Documentation"
 msgid "OpenDocument"
 msgstr "Дакументацыя"
 
-#: weblate_web/templates/features.html:118
+#: weblate_web/templates/features.html:119
 msgid "IDML"
 msgstr ""
 
-#: weblate_web/templates/features.html:127
+#: weblate_web/templates/features.html:120
+msgid "INI files"
+msgstr ""
+
+#: weblate_web/templates/features.html:121
+msgid "InnoSetup"
+msgstr ""
+
+#: weblate_web/templates/features.html:130
 msgid "Glossaries"
 msgstr "Гласарыі"
 
-#: weblate_web/templates/features.html:128
+#: weblate_web/templates/features.html:131
 msgid "Define frequently used terminology for consistency."
 msgstr "Вызначце часта выкарыстоўваемую тэрміналогію."
 
-#: weblate_web/templates/features.html:134
+#: weblate_web/templates/features.html:137
 msgid "Feedback Acquisition"
 msgstr "Атрыманне зваротнай сувязі"
 
-#: weblate_web/templates/features.html:135
+#: weblate_web/templates/features.html:138
 msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr ""
 "Выкарыстоўвайце Weblate для атрымання зваротнай сувязі па зыходных радках, "
 "каб палепшыць іх."
 
-#: weblate_web/templates/features.html:141
+#: weblate_web/templates/features.html:144
 msgid "Export and Import"
 msgstr "Экспарт і імпарт"
 
-#: weblate_web/templates/features.html:142
+#: weblate_web/templates/features.html:145
 msgid "Translations can be downloaded for offline translation and merged back."
 msgstr ""
 "Пераклады можна спампаваць для пазасеціўнага перакладу, а пасля запампаваць "
 "назад."
 
-#: weblate_web/templates/features.html:148
+#: weblate_web/templates/features.html:151
 msgid "Fully Integrated"
 msgstr "Поўная інтэграцыя"
 
-#: weblate_web/templates/features.html:149
+#: weblate_web/templates/features.html:152
 msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr "Кіраванне перакладамі адбываецца ў той жа сістэме, што і ваш код."
 
-#: weblate_web/templates/features.html:155 weblate_web/templates/user.html:52
+#: weblate_web/templates/features.html:158
+#: weblate_web/templates/snippets/service.html:36
 msgid "Documentation"
 msgstr "Дакументацыя"
 
-#: weblate_web/templates/features.html:156
+#: weblate_web/templates/features.html:159
 msgid "Comprehensive documentation covering both setup and usage."
 msgstr "Поўная дакументацыя па ўсталёўцы і выкарыстанню."
 
-#: weblate_web/templates/features.html:162
+#: weblate_web/templates/features.html:165
 msgid "Easy Reviews"
 msgstr "Зручны перагляд"
 
-#: weblate_web/templates/features.html:163
+#: weblate_web/templates/features.html:166
 msgid "Several options for translators to review contributions made by peers."
 msgstr "Некалькі варыянтаў перагляду матэрыялаў, перакладзеных іншымі."
 
-#: weblate_web/templates/features.html:169
+#: weblate_web/templates/features.html:172
 msgid "Language support"
 msgstr "Падтрымка моў"
 
-#: weblate_web/templates/features.html:170
+#: weblate_web/templates/features.html:173
 msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr ""
 "Прадвызначана падтрымліваецца больш за 300 моў, таксама можна дадаць іншыя."
 
-#: weblate_web/templates/features.html:176
+#: weblate_web/templates/features.html:179
 msgid "Promotion"
 msgstr "Прасоўванне"
 
-#: weblate_web/templates/features.html:177
+#: weblate_web/templates/features.html:180
 msgid ""
 "Built-in features to attract a wider audience for your translation project."
 msgstr "Убудаваныя функцыі па папулярызацыі вашага праекта перакладу."
 
-#: weblate_web/templates/features.html:183
+#: weblate_web/templates/features.html:186
 msgid "Reporting"
 msgstr "Справаздачы"
 
-#: weblate_web/templates/features.html:184
+#: weblate_web/templates/features.html:187
 msgid "Reports are generated to provide info on project activity."
 msgstr "Стварэнне справаздач па актыўнасці праекта."
 
-#: weblate_web/templates/features.html:190
+#: weblate_web/templates/features.html:193
 msgid "Version Control"
 msgstr "Кіраванне версіямі"
 
-#: weblate_web/templates/features.html:191
+#: weblate_web/templates/features.html:194
 msgid ""
 "Talks directly with your version control system, currently Git and Mercurial "
 "are supported."
@@ -1469,11 +1492,11 @@ msgstr ""
 "Наўпроставае ўзаемадзеянне з сістэмай кіравання версіямі, на дадзены момант "
 "падтрымліваюцца Git і Mercurial."
 
-#: weblate_web/templates/features.html:197
+#: weblate_web/templates/features.html:200
 msgid "Collaboration Sites"
 msgstr "Сайты сумеснай працы"
 
-#: weblate_web/templates/features.html:198
+#: weblate_web/templates/features.html:201
 msgid ""
 "Native support for software development sites such as GitLab, GitHub, "
 "Pagure, or Bitbucket."
@@ -1481,31 +1504,213 @@ msgstr ""
 "Убудаваная падтрымка сайтаў па распрацоўцы праграмнага забеспячэння, такіх "
 "як GitLab, GitHub, Pagure або Bitbucket."
 
-#: weblate_web/templates/features.html:204
+#: weblate_web/templates/features.html:207
 msgid "Responsive UI"
 msgstr "Спагадлівы інтэрфейс"
 
-#: weblate_web/templates/features.html:205
+#: weblate_web/templates/features.html:208
 msgid "User interface that works nicely on desktop, tablet and phones."
 msgstr "Інтэрфейс, які выдатна працуе на камп’ютары, планшэце ці тэлефоне."
+
+#: weblate_web/templates/features.html:214
+msgid "Translation memory"
+msgstr "Памяць перакладаў"
+
+#: weblate_web/templates/features.html:215
+msgid "Reuse existing translations to save time and costs."
+msgstr ""
+
+#: weblate_web/templates/features.html:221
+msgid "Translation addons"
+msgstr "Дапаўненні перакладу"
+
+#: weblate_web/templates/features.html:222
+#, fuzzy
+#| msgid ""
+#| "Automated localization workflow follows your project development closely."
+msgid "Customize localization workflow with various addons."
+msgstr "Аўтаматызаваны працэс лакалізацыі выяўляе змены падчас распрацоўкі."
+
+#: weblate_web/templates/features.html:228
+#, fuzzy
+#| msgid "Backup service"
+msgid "Backups"
+msgstr "Паслуга рэзервовага капіявання"
+
+#: weblate_web/templates/features.html:229
+msgid "Built-in remote backups to prevent data loss."
+msgstr ""
 
 #: weblate_web/templates/hosting.html:11
 msgid "Weblate Pricing"
 msgstr "Цэны Weblate"
 
-#: weblate_web/templates/hosting.html:14
-#, python-format
+#: weblate_web/templates/hosting.html:15
+#, fuzzy, python-format
+#| msgid ""
+#| "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#| "help</a> for on-premises hosting—all with the possibility of premium "
+#| "support. Our team is ready to help you make Weblate run smoothly."
 msgid ""
 "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premises hosting—all with the possibility of premium support. Our "
-"team is ready to help you make Weblate run smoothly."
+"a> for on-premise hosting — all with the convenience of the premium support."
 msgstr ""
 "Выкарыстоўвайце Weblatе як сэрвіс, ўсталюйце ўласную версію альбо <a href="
 "\"%(url)s\"> атрымайце дапамогу</a> па лакальнаму размяшчэнню - усё з "
 "магчымасцю прэміумнай падтрымкі. Наша каманда гатовая дапамагчы вам "
 "наладзіць Weblate, каб ён працаваў без праблем."
 
-#: weblate_web/templates/hosting.html:15
+#: weblate_web/templates/hosting.html:16
+msgid "Our team is ready to help you make Weblate run smoothly."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:19
+#, fuzzy
+#| msgid "The Weblate history"
+msgid "Which Weblate is right for you"
+msgstr "Гісторыя Weblate"
+
+#: weblate_web/templates/hosting.html:24
+msgid "System maintenance"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:27
+#, fuzzy
+#| msgid "installation"
+msgid "Weblate installation"
+msgstr "усталёўка"
+
+#: weblate_web/templates/hosting.html:30
+#, fuzzy
+#| msgid "Weblate features"
+msgid "Weblate upgrades"
+msgstr "Магчымасці Weblate"
+
+#: weblate_web/templates/hosting.html:33
+msgid "Access to backups"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:36
+#, fuzzy
+#| msgid "Setup customization"
+msgid "Complete configuration customization"
+msgstr "Наладжванне"
+
+#: weblate_web/templates/hosting.html:39
+msgid "Single sign-on"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:42
+msgid "Priority e-mail support"
+msgstr "Прыярытэтныя падтрымка па электроннай пошце"
+
+#: weblate_web/templates/hosting.html:45
+#, fuzzy
+#| msgid "Translation memory"
+msgid "Shared translation memory"
+msgstr "Памяць перакладаў"
+
+#: weblate_web/templates/hosting.html:48
+msgid "Priority bug fixing"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:56
+#, fuzzy
+#| msgid "cloud"
+msgctxt "Hosting plan"
+msgid "Cloud"
+msgstr "воблака"
+
+#: weblate_web/templates/hosting.html:69
+msgid "Backups and restore on Hosted Weblate are fully automatic."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:89
+#, fuzzy
+#| msgid "Hosted service"
+msgctxt "Hosting plan"
+msgid "Dedicated cloud"
+msgstr "Хостынг"
+
+#: weblate_web/templates/hosting.html:121
+#: weblate_web/templates/hosting.html:154
+#: weblate_web/templates/hosting.html:187
+#: weblate_web/templates/snippets/pricing.html:121
+msgctxt "Hosting plan"
+msgid "Self-hosted"
+msgstr "Уласны хостынг"
+
+#: weblate_web/templates/hosting.html:134
+#: weblate_web/templates/hosting.html:161
+#: weblate_web/templates/hosting.html:167
+#: weblate_web/templates/hosting.html:200
+msgid "Optional"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:188
+#: weblate_web/templates/hosting.html:263
+#: weblate_web/templates/snippets/pricing.html:142
+#: weblate_web/templates/snippets/pricing.html:166
+msgid "Gratis"
+msgstr "Бясплатна"
+
+#: weblate_web/templates/hosting.html:222
+#: weblate_web/templates/hosting.html:232
+msgid "From"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:224
+#: weblate_web/templates/hosting.html:234
+#: weblate_web/templates/hosting.html:244
+#: weblate_web/templates/hosting.html:254
+#: weblate_web/templates/hosting.html:447
+#: weblate_web/templates/hosting.html:517
+#: weblate_web/templates/hosting.html:529
+#: weblate_web/templates/hosting.html:541
+#: weblate_web/templates/hosting.html:554
+#: weblate_web/templates/hosting.html:579
+#: weblate_web/templates/hosting.html:591
+#: weblate_web/templates/hosting.html:603
+#: weblate_web/templates/hosting.html:616
+#: weblate_web/templates/snippets/pricing.html:38
+#: weblate_web/templates/snippets/pricing.html:64
+#: weblate_web/templates/snippets/pricing.html:90
+#: weblate_web/templates/snippets/pricing.html:116
+msgid "Yearly"
+msgstr "Штогадовы"
+
+#: weblate_web/templates/hosting.html:227
+#: weblate_web/templates/hosting.html:237
+#, fuzzy
+#| msgid "Selected option"
+msgid "See options"
+msgstr "Абраны варыянт"
+
+#: weblate_web/templates/hosting.html:247
+#: weblate_web/templates/hosting.html:257
+#: weblate_web/templates/hosting.html:460
+#: weblate_web/templates/hosting.html:472
+#: weblate_web/templates/hosting.html:484
+#: weblate_web/templates/hosting.html:495
+#: weblate_web/templates/hosting.html:520
+#: weblate_web/templates/hosting.html:532
+#: weblate_web/templates/hosting.html:544
+#: weblate_web/templates/hosting.html:557
+#: weblate_web/templates/hosting.html:582
+#: weblate_web/templates/hosting.html:594
+#: weblate_web/templates/hosting.html:606
+#: weblate_web/templates/hosting.html:619 weblate_web/templates/support.html:58
+#: weblate_web/templates/support.html:70 weblate_web/templates/support.html:82
+#: weblate_web/templates/support.html:94 weblate_web/templates/support.html:107
+msgid "Buy now"
+msgstr "Набыць зараз"
+
+#: weblate_web/templates/hosting.html:267
+#: weblate_web/templates/snippets/main-menu.html:5
+msgid "Download"
+msgstr "Спампаваць"
+
+#: weblate_web/templates/hosting.html:277
 #, python-format
 msgid ""
 "Hosted Weblate allows localization without any extra effort, and "
@@ -1521,11 +1726,12 @@ msgstr ""
 "\"%(contact)s\"> звязаўшыся з намі </a> - мы гатовыя знайсці найлепшы "
 "варыянт."
 
-#: weblate_web/templates/hosting.html:22
+#: weblate_web/templates/hosting.html:284
 msgid "Continuous localization"
 msgstr "Бесперапынная лакалізацыя"
 
-#: weblate_web/templates/hosting.html:25 weblate_web/templates/hosting.html:542
+#: weblate_web/templates/hosting.html:287
+#: weblate_web/templates/hosting.html:649
 #: weblate_web/templates/snippets/pricing.html:18
 #: weblate_web/templates/snippets/pricing.html:44
 #: weblate_web/templates/snippets/pricing.html:70
@@ -1535,85 +1741,52 @@ msgstr "Бесперапынная лакалізацыя"
 msgid "Source strings"
 msgstr "Зыходныя радкі"
 
-#: weblate_web/templates/hosting.html:28
+#: weblate_web/templates/hosting.html:290
 msgid "Target languages"
 msgstr "Мэтавыя мовы"
 
-#: weblate_web/templates/hosting.html:31
+#: weblate_web/templates/hosting.html:293
 msgid "Translation projects"
 msgstr "Праекты перакладу"
 
-#: weblate_web/templates/hosting.html:34
+#: weblate_web/templates/hosting.html:296
 msgid "Translation components"
 msgstr "Кампаненты перакладу"
 
-#: weblate_web/templates/hosting.html:37
+#: weblate_web/templates/hosting.html:299
 msgid "Number of translators"
 msgstr "Колькасць перакладчыкаў"
 
-#: weblate_web/templates/hosting.html:40
-msgid "User management"
-msgstr "Кіраванне карыстальнікамі"
-
-#: weblate_web/templates/hosting.html:43
-msgid "Supported file formats"
-msgstr "Падтрымліваемыя фарматы файлаў"
-
-#: weblate_web/templates/hosting.html:46
-msgid "Quality checks"
-msgstr "Праверкі якасці"
-
-#: weblate_web/templates/hosting.html:49
-msgid "Translation addons"
-msgstr "Дапаўненні перакладу"
-
-#: weblate_web/templates/hosting.html:52
-msgid "Glossary"
-msgstr "Гласарый"
-
-#: weblate_web/templates/hosting.html:55
-msgid "Translation memory"
-msgstr "Памяць перакладаў"
-
-#: weblate_web/templates/hosting.html:58
-msgid "Priority e-mail support"
-msgstr "Прыярытэтныя падтрымка па электроннай пошце"
-
-#: weblate_web/templates/hosting.html:61
-msgid "Regular backups"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:546
+#: weblate_web/templates/hosting.html:302
 msgid "Dedicated instance"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:72
+#: weblate_web/templates/hosting.html:310
 #: weblate_web/templates/snippets/pricing.html:10
 msgctxt "Hosting plan"
 msgid "Basic"
 msgstr "Базавы"
 
-#: weblate_web/templates/hosting.html:73 weblate_web/templates/hosting.html:124
-#: weblate_web/templates/hosting.html:175
-#: weblate_web/templates/hosting.html:226
+#: weblate_web/templates/hosting.html:311
+#: weblate_web/templates/hosting.html:338
+#: weblate_web/templates/hosting.html:365
+#: weblate_web/templates/hosting.html:392
 msgid "cloud"
 msgstr "воблака"
 
-#: weblate_web/templates/hosting.html:88 weblate_web/templates/hosting.html:91
-#: weblate_web/templates/hosting.html:139
-#: weblate_web/templates/hosting.html:142
-#: weblate_web/templates/hosting.html:187
-#: weblate_web/templates/hosting.html:190
-#: weblate_web/templates/hosting.html:193
-#: weblate_web/templates/hosting.html:238
-#: weblate_web/templates/hosting.html:241
-#: weblate_web/templates/hosting.html:244
-#: weblate_web/templates/hosting.html:283
-#: weblate_web/templates/hosting.html:286
-#: weblate_web/templates/hosting.html:289
-#: weblate_web/templates/hosting.html:292
-#: weblate_web/templates/hosting.html:295
-#: weblate_web/templates/hosting.html:346
+#: weblate_web/templates/hosting.html:326
+#: weblate_web/templates/hosting.html:329
+#: weblate_web/templates/hosting.html:353
+#: weblate_web/templates/hosting.html:356
+#: weblate_web/templates/hosting.html:377
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:383
+#: weblate_web/templates/hosting.html:404
+#: weblate_web/templates/hosting.html:407
+#: weblate_web/templates/hosting.html:410
+#: weblate_web/templates/hosting.html:431
+#: weblate_web/templates/hosting.html:434
+#: weblate_web/templates/hosting.html:437
 #: weblate_web/templates/snippets/pricing.html:31
 #: weblate_web/templates/snippets/pricing.html:57
 #: weblate_web/templates/snippets/pricing.html:79
@@ -1627,132 +1800,85 @@ msgstr "воблака"
 msgid "Unlimited"
 msgstr "Неабмежавана"
 
-#: weblate_web/templates/hosting.html:97 weblate_web/templates/hosting.html:148
-#: weblate_web/templates/hosting.html:199
-#: weblate_web/templates/hosting.html:250
-#: weblate_web/templates/hosting.html:301
-#: weblate_web/templates/hosting.html:352
-msgid "All"
-msgstr "Усе"
-
-#: weblate_web/templates/hosting.html:118
-#: weblate_web/templates/hosting.html:169
-#: weblate_web/templates/hosting.html:220
+#: weblate_web/templates/hosting.html:332
+#: weblate_web/templates/hosting.html:359
+#: weblate_web/templates/hosting.html:386
 #, python-format
 msgid ""
 "Additional charge %(price)s EUR/year, only available with yearly billing"
 msgstr ""
 "Дадатковы збор %(price)s еўра за год, даступна толькі са штогадовым плацяжом"
 
-#: weblate_web/templates/hosting.html:123
+#: weblate_web/templates/hosting.html:337
 #: weblate_web/templates/snippets/pricing.html:11
 msgctxt "Hosting plan"
 msgid "Medium"
 msgstr "Сярэдні"
 
-#: weblate_web/templates/hosting.html:174
+#: weblate_web/templates/hosting.html:364
 #: weblate_web/templates/snippets/pricing.html:12
 msgctxt "Hosting plan"
 msgid "Advanced"
 msgstr "Пашыраны"
 
-#: weblate_web/templates/hosting.html:202
-#: weblate_web/templates/hosting.html:205
-#: weblate_web/templates/hosting.html:253
-#: weblate_web/templates/hosting.html:256
-#: weblate_web/templates/hosting.html:304
-#: weblate_web/templates/hosting.html:307
-msgid "Customizable"
-msgstr "Наладжваемы"
-
-#: weblate_web/templates/hosting.html:225
+#: weblate_web/templates/hosting.html:391
 #: weblate_web/templates/snippets/pricing.html:13
 msgctxt "Hosting plan"
 msgid "Enterprise"
 msgstr "Фірмовы"
 
-#: weblate_web/templates/hosting.html:276
-#: weblate_web/templates/snippets/pricing.html:121
+#: weblate_web/templates/hosting.html:418
+#, fuzzy
+#| msgid "Customizable"
 msgctxt "Hosting plan"
-msgid "Self-hosted"
-msgstr "Уласны хостынг"
+msgid "Custom"
+msgstr "Наладжваемы"
 
-#: weblate_web/templates/hosting.html:277
-msgid "on-premises"
-msgstr "лакальны"
-
-#: weblate_web/templates/hosting.html:319
-msgid "Optional"
+#: weblate_web/templates/hosting.html:419
+msgid "and dedicated"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:327
-#: weblate_web/templates/hosting.html:435
-#: weblate_web/templates/hosting.html:447
-#: weblate_web/templates/hosting.html:510
-#: weblate_web/templates/hosting.html:522
-#: weblate_web/templates/snippets/pricing.html:142
-#: weblate_web/templates/snippets/pricing.html:166
-msgid "Gratis"
-msgstr "Бясплатна"
+#: weblate_web/templates/hosting.html:425
+#: weblate_web/templates/hosting.html:428
+#, python-format
+msgid "over <strong>%(count)s</strong>"
+msgstr ""
 
-#: weblate_web/templates/hosting.html:328
-#: weblate_web/templates/snippets/pricing.html:146
-msgid "for libre projects"
-msgstr "для вольных праектаў"
+#: weblate_web/templates/hosting.html:448
+msgid "Dedicated"
+msgstr ""
 
-#: weblate_web/templates/hosting.html:334
-#: weblate_web/templates/hosting.html:337
-#: weblate_web/templates/hosting.html:343
-#: weblate_web/templates/snippets/pricing.html:151
-#: weblate_web/templates/snippets/pricing.html:155
-msgid "Negotiable"
-msgstr "Дамоўны"
-
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:462
-#: weblate_web/templates/hosting.html:474
-#: weblate_web/templates/hosting.html:486
-#: weblate_web/templates/hosting.html:499
-#: weblate_web/templates/snippets/pricing.html:38
-#: weblate_web/templates/snippets/pricing.html:64
-#: weblate_web/templates/snippets/pricing.html:90
-#: weblate_web/templates/snippets/pricing.html:116
-msgid "Yearly"
-msgstr "Штогадовы"
-
-#: weblate_web/templates/hosting.html:382
+#: weblate_web/templates/hosting.html:450
 msgid "<strong>Save more</strong> with longer pre-payment!"
 msgstr "<strong>Ашчадзіце больш</strong> перадаплатай на доўгі тэрмін!"
 
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:404
-#: weblate_web/templates/hosting.html:416
-#: weblate_web/templates/hosting.html:427
-#: weblate_web/templates/hosting.html:465
-#: weblate_web/templates/hosting.html:477
-#: weblate_web/templates/hosting.html:489
-#: weblate_web/templates/hosting.html:502 weblate_web/templates/support.html:60
-#: weblate_web/templates/support.html:72 weblate_web/templates/support.html:82
-#: weblate_web/templates/support.html:93 weblate_web/templates/support.html:105
-msgid "Buy now"
-msgstr "Набыць зараз"
+#: weblate_web/templates/hosting.html:503
+#: weblate_web/templates/hosting.html:565
+#: weblate_web/templates/hosting.html:627
+#, fuzzy
+#| msgid "Ask for hosting"
+msgid "<b>Ask</b> for options"
+msgstr "Папрасіць хостынг"
 
-#: weblate_web/templates/hosting.html:439
-#: weblate_web/templates/hosting.html:514
-msgid "Buy support"
-msgstr "Набыць падтрымку"
+#: weblate_web/templates/hosting.html:641
+msgid "Gratis Trial?"
+msgstr "Пробная версія?"
 
-#: weblate_web/templates/hosting.html:442
-#: weblate_web/templates/hosting.html:517
-msgid "or download Weblate"
-msgstr "альбо спампаваць Weblate"
+#: weblate_web/templates/hosting.html:643
+#, python-format
+msgid ""
+"<a href=\"%(contact)s\">Get in touch</a> if you are still unsure whether "
+"Weblate was made for you."
+msgstr ""
+"<a href=\"%(contact)s\"> Звяжыцеся з намі </a>, калі вы ўсё яшчэ не ведаеце, "
+"ці падыходзіць для вас Weblate."
 
-#: weblate_web/templates/hosting.html:538
-#: weblate_web/templates/support.html:120
+#: weblate_web/templates/hosting.html:645
+#: weblate_web/templates/support.html:122
 msgid "Payment"
 msgstr "Аплата"
 
-#: weblate_web/templates/hosting.html:544
+#: weblate_web/templates/hosting.html:651
 msgid ""
 "Pricing is based on number of source strings and target languages. The "
 "source string is a text unit defined in a translation format, it can be a "
@@ -1762,27 +1888,32 @@ msgstr ""
 "тэкставая адзінка, якая выкарыстоўваецца ў перакладзе, гэта можа быць слова, "
 "сказ альбо абзац."
 
-#: weblate_web/templates/hosting.html:548
-msgid ""
-"With cloud hosting, the default setup is to use a shared instance, and a "
-"common translation memory. On a dedicated instance there is no economy of "
-"scale, but you can make use of customized authentication and settings."
-msgstr ""
+#: weblate_web/templates/hosting.html:655
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Weblate supports libre projects"
+msgstr "для вольных праектаў"
 
-#: weblate_web/templates/hosting.html:550
-msgid "Gratis Trial?"
-msgstr "Пробная версія?"
-
-#: weblate_web/templates/hosting.html:552
+#: weblate_web/templates/hosting.html:657
 #, python-format
 msgid ""
-"<a href=\"%(contact)s\">Get in touch</a> if you are still unsure whether "
-"Weblate was made for you."
+"We proudly support opensource across the globe. If you feel like being "
+"supported by Weblate will help your libre project, feel free to start free "
+"trial and <a href=\"%(url)s\">let us know</a>."
 msgstr ""
-"<a href=\"%(contact)s\"> Звяжыцеся з намі </a>, калі вы ўсё яшчэ не ведаеце, "
-"ці падыходзіць для вас Weblate."
 
-#: weblate_web/templates/hosting.html:555
+#: weblate_web/templates/hosting.html:658
+msgid ""
+"For such projects, we would activate <strong>Libre plan</strong> for free."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:659
+msgid ""
+"It has same limits as <strong>Advanced plan</strong>, but only allows public "
+"projects."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:664
 msgid "Join existing users and supporters"
 msgstr "Далучайцеся да існых карыстальнікаў і прыхільнікаў"
 
@@ -1867,18 +1998,18 @@ msgstr "Перайсці да цэн"
 msgid "Users and Supporters"
 msgstr "Карыстальнікі і прыхільнікі"
 
-#: weblate_web/templates/mail/base.html:245
+#: weblate_web/templates/mail/base.html:242
 msgid "Weblate, the libre continuous localization system."
 msgstr ""
 "Weblate, вольнае праграмнае забеспячэнне сістэмы бесперапыннай лакалізацыі."
 
-#: weblate_web/templates/mail/base.html:248
+#: weblate_web/templates/mail/base.html:245
 #, fuzzy
 #| msgid "Manage your donations"
 msgid "Manage your payments"
 msgstr "Кіраванне вашымі ахвяраваннямі"
 
-#: weblate_web/templates/mail/base.html:254
+#: weblate_web/templates/mail/base.html:251
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr ""
@@ -2115,6 +2246,15 @@ msgstr "Статус плацяжу"
 msgid "Waiting for payment to be completed."
 msgstr "Чаканне завяршэння плацяжу."
 
+#: weblate_web/templates/service.html:4
+msgid "Serice"
+msgstr ""
+
+#: weblate_web/templates/service.html:10
+#: weblate_web/templates/snippets/service.html:5
+msgid "Service"
+msgstr "Служба"
+
 #: weblate_web/templates/snippets/about.html:5
 msgid ""
 "Dive in, or leverage extensive skills and experience from our team of "
@@ -2242,10 +2382,6 @@ msgstr "Можна выкарыстоўваць, праглядаць, змян�
 msgid "Help translate"
 msgstr "Дапамагчы перакласці"
 
-#: weblate_web/templates/snippets/main-menu.html:5
-msgid "Download"
-msgstr "Спампаваць"
-
 #: weblate_web/templates/snippets/main-menu.html:6
 msgid "Pricing"
 msgstr "Тарыфы"
@@ -2259,7 +2395,7 @@ msgid "Careers"
 msgstr "Кар’ера"
 
 #: weblate_web/templates/snippets/main-menu.html:12
-#: weblate_web/templates/support.html:12
+#: weblate_web/templates/support.html:13
 msgid "Get help"
 msgstr "Атрымаць дапамогу"
 
@@ -2277,7 +2413,7 @@ msgid "Docs"
 msgstr "Дакументацыя"
 
 #: weblate_web/templates/snippets/payment.html:30
-#: weblate_web/templates/user.html:95
+#: weblate_web/templates/snippets/service.html:79
 #, python-format
 msgctxt "Date range"
 msgid "%(created)s–%(expires)s"
@@ -2344,6 +2480,15 @@ msgstr "з платнай <a href=\"%(url)s\"> падтрымкай </a>"
 msgid "Gratis Weblate"
 msgstr "Бясплатны Weblate"
 
+#: weblate_web/templates/snippets/pricing.html:146
+msgid "for libre projects"
+msgstr "для вольных праектаў"
+
+#: weblate_web/templates/snippets/pricing.html:151
+#: weblate_web/templates/snippets/pricing.html:155
+msgid "Negotiable"
+msgstr "Дамоўны"
+
 #: weblate_web/templates/snippets/pricing.html:166
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
@@ -2352,6 +2497,125 @@ msgstr "па <a href=\"%(url)s\"> запыце </a>"
 #: weblate_web/templates/snippets/pricing.html:169
 msgid "Compare all plans"
 msgstr "Параўнаць усе планы"
+
+#: weblate_web/templates/snippets/service.html:10
+msgid "Exceeds selected service offering."
+msgstr "Перавышаны ліміт абранага тарыфу."
+
+#: weblate_web/templates/snippets/service.html:18
+msgid "Activation token"
+msgstr "Токен актывацыі"
+
+#: weblate_web/templates/snippets/service.html:21
+#: weblate_web/templates/snippets/service.html:35
+msgid "Copy"
+msgstr "Капіяваць"
+
+#: weblate_web/templates/snippets/service.html:24
+msgid "Regenerate"
+msgstr "Аднавіць"
+
+#: weblate_web/templates/snippets/service.html:32
+msgid "Backup repository"
+msgstr "Рэпазіторый рэзервовых копій"
+
+#: weblate_web/templates/snippets/service.html:42
+msgid "Server URL"
+msgstr "URL сервера"
+
+#: weblate_web/templates/snippets/service.html:48
+msgid ""
+"Use an activation token to connect your Weblate installation to the support "
+"portal. This step is optional, you can use support services without it as "
+"well."
+msgstr ""
+"Выкарыстайце токен актывацыі для падлучэння ўласнай версіі Weblate да "
+"партала падтрымкі. Гэты крок не з'яўляецца абавязковым, вы можаце карыстацца "
+"службай падтрымкі і без актывацыі."
+
+#: weblate_web/templates/snippets/service.html:49
+msgid "See documentation on subscription management."
+msgstr "Азнаёміцца з дакументацыяй па пытаннях кіравання падпіскай."
+
+#: weblate_web/templates/snippets/service.html:57
+msgid "Note"
+msgstr "Нататка"
+
+#: weblate_web/templates/snippets/service.html:67
+msgid "Subscription"
+msgstr "Падпіска"
+
+#: weblate_web/templates/snippets/service.html:71
+msgid "Change plan"
+msgstr "Змяніць план"
+
+#: weblate_web/templates/snippets/service.html:78
+msgid "Validity"
+msgstr "Тэрмін дзеяння"
+
+#: weblate_web/templates/snippets/service.html:84
+#: weblate_web/templates/user.html:29
+msgid "Creation date"
+msgstr "Дата стварэння"
+
+#: weblate_web/templates/snippets/service.html:91
+#: weblate_web/templates/user.html:56
+msgid "State"
+msgstr "Стан"
+
+#: weblate_web/templates/snippets/service.html:94
+#: weblate_web/templates/user.html:59
+msgid "Expired"
+msgstr "Сыйшоўшы"
+
+#: weblate_web/templates/snippets/service.html:96
+#: weblate_web/templates/user.html:61
+msgid "Automatic renewal"
+msgstr "Аўтаматычнае падаўжэнне"
+
+#: weblate_web/templates/snippets/service.html:98
+#: weblate_web/templates/user.html:63
+msgid "No renewal"
+msgstr "Без падаўжэння"
+
+#: weblate_web/templates/snippets/service.html:102
+#: weblate_web/templates/user.html:67
+msgid "Renew now"
+msgstr "Аднавіць зараз"
+
+#: weblate_web/templates/snippets/service.html:104
+msgid "Switch to yearly"
+msgstr "Пераключыцца на штогадовы"
+
+#: weblate_web/templates/snippets/service.html:110
+#: weblate_web/templates/user.html:72
+msgid "Turn off renewal"
+msgstr "Выключыце падаўжэнне"
+
+#: weblate_web/templates/snippets/service.html:119
+#: weblate_web/templates/user.html:79
+msgid "Payments"
+msgstr "Плацяжы"
+
+#: weblate_web/templates/snippets/service.html:131
+msgid "Users"
+msgstr "Карыстальнікі"
+
+#: weblate_web/templates/snippets/service.html:139
+msgid "Remove"
+msgstr "Выдаліць"
+
+#: weblate_web/templates/snippets/service.html:146
+msgid "Add"
+msgstr "Дадаць"
+
+#: weblate_web/templates/snippets/service.html:152
+msgid "Get more services"
+msgstr "Атрымаць дадатковыя паслугі"
+
+#: weblate_web/templates/snippets/service.html:157
+msgid "Congratulations, your Weblate instance is fully covered."
+msgstr "Віншуем, ваш асобнік Weblate цалкам пакрыты."
 
 #: weblate_web/templates/snippets/users.html:9
 msgid "See all projects"
@@ -2391,11 +2655,11 @@ msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr "Зваротная аплата ўжываецца да рахункаў, выдадзеных прадпрыемствам ЕС."
 
-#: weblate_web/templates/support.html:4
+#: weblate_web/templates/support.html:5
 msgid "Weblate support"
 msgstr "Падтрымка Weblate"
 
-#: weblate_web/templates/support.html:14
+#: weblate_web/templates/support.html:15
 msgid ""
 "Weblate is copylefted libre software with community support. Subscribers "
 "receive priority support at no extra charge. Prepaid help packages are "
@@ -2405,15 +2669,15 @@ msgstr ""
 "Абаненты атрымліваюць першачарговую падтрымку без дадатковай платы. "
 "Папярэдне прадастаўленыя матэрыялы дапамогі даступныя для ўсіх."
 
-#: weblate_web/templates/support.html:15
+#: weblate_web/templates/support.html:16
 msgid "Report issue"
 msgstr "Паведаміць пра праблему"
 
-#: weblate_web/templates/support.html:22
+#: weblate_web/templates/support.html:23
 msgid "Bugs and feature requests"
 msgstr "Хібы альбо прапановы функцый"
 
-#: weblate_web/templates/support.html:23
+#: weblate_web/templates/support.html:24
 #, python-format
 msgid ""
 "Issues and ideas for improvement can be reported to the <a href=\"%(url)s"
@@ -2422,11 +2686,11 @@ msgstr ""
 "Праблемы і ідэі для паляпшэння можна публікаваць на <a href=\"%(url)s\"> "
 "трэкеры прапаноў</a>."
 
-#: weblate_web/templates/support.html:29
+#: weblate_web/templates/support.html:30
 msgid "Security issues"
 msgstr "Праблемы бяспекі"
 
-#: weblate_web/templates/support.html:30
+#: weblate_web/templates/support.html:31
 #, python-format
 msgid ""
 "Should you find a vulnerability, please report it to %(report)s. More info "
@@ -2435,11 +2699,11 @@ msgstr ""
 "Калі вы выявіце ўразлівасць, паведаміце пра гэта %(report)s. Больш "
 "інфармацыі можна знайсці ў <a href=\"%(url)s\"> дакументацыі </a>."
 
-#: weblate_web/templates/support.html:36
+#: weblate_web/templates/support.html:37
 msgid "Premium support"
 msgstr "Прэміумная падтрымка"
 
-#: weblate_web/templates/support.html:37
+#: weblate_web/templates/support.html:38
 #, python-format
 msgid ""
 "As a subscriber, you get premium support at <a href=\"mailto:%(email)s\">"
@@ -2448,149 +2712,169 @@ msgstr ""
 "Як падпісант вы атрымаеце прэміумную падтрымку па <a href=\"mailto:%(email)s"
 "\">%(email)s</a>."
 
-#: weblate_web/templates/support.html:46
+#: weblate_web/templates/support.html:47
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr ""
 "Перадаплачаная падтрымка для бясплатнага абслугоўвання і самастойнай "
 "усталёўкі"
 
-#: weblate_web/templates/support.html:51
-msgid "Installation on your Linux server"
-msgstr "Усталёўка на ваш сервер Linux"
-
-#: weblate_web/templates/support.html:53 weblate_web/templates/support.html:66
-msgid "One-time installation of Weblate"
-msgstr "Аднаразовая ўсталёўка Weblate"
-
-#: weblate_web/templates/support.html:54
-msgid "Installation using virtualenv, uWSGI and NGINX"
-msgstr "Усталёўка пры дапамозе virtualenv, uWSGI і NGINX"
-
-#: weblate_web/templates/support.html:55
-msgid "Using PostgreSQL as database backend"
-msgstr "Выкарыстанне PostgreSQL як сховішча даных"
-
-#: weblate_web/templates/support.html:56 weblate_web/templates/support.html:68
-msgid "Requires root access or close cooperation of your admins"
-msgstr "Спатрэбяцца правы root або супрацоўніцтва з вашымі адміністратарамі"
-
-#: weblate_web/templates/support.html:57 weblate_web/templates/support.html:69
-msgid "Setup customization"
-msgstr "Наладжванне"
-
-#: weblate_web/templates/support.html:59 weblate_web/templates/support.html:71
-msgid "installation"
-msgstr "усталёўка"
-
-#: weblate_web/templates/support.html:64
-msgid "Docker installation on your Linux server"
-msgstr "Усталёўка Docker на ваш сервер Linux"
-
-#: weblate_web/templates/support.html:67
-msgid "Installation using Docker"
-msgstr "Усталёўка пры дапамозе Docker"
-
-#: weblate_web/templates/support.html:78 weblate_web/templates/support.html:89
+#: weblate_web/templates/support.html:54 weblate_web/templates/support.html:65
+#: weblate_web/templates/support.html:76
 msgid "Issues in your environment fixed immediately."
 msgstr "Праблемы ў вашым асяроддзі будуць выпраўленыя адразу."
 
-#: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
+#: weblate_web/templates/support.html:55 weblate_web/templates/support.html:66
+#: weblate_web/templates/support.html:77
 msgid "Priority e-mail support."
 msgstr "Прыярытэтныя падтрымка па электроннай пошце."
 
-#: weblate_web/templates/support.html:88
+#: weblate_web/templates/support.html:64
 msgid "Always upgraded to latest version."
 msgstr "Неадкладнае абнаўленне да апошняй версіі."
 
-#: weblate_web/templates/support.html:99
-msgid "Cloud backups of your installations."
-msgstr "Воблачнае рэзервовае капіяванне вашых усталёвак."
+#: weblate_web/templates/support.html:67
+msgid "Available with the installation package only"
+msgstr ""
+
+#: weblate_web/templates/support.html:74
+#, fuzzy
+#| msgid "Basic self-hosted support"
+msgid "Premium self-hosted support"
+msgstr "Базавая падтрымка самастойнай усталёўкі"
+
+#: weblate_web/templates/support.html:78
+#, fuzzy
+#| msgid "Consulting"
+msgid "Custom consulting."
+msgstr "Кансалтынг"
+
+#: weblate_web/templates/support.html:79
+msgid "Next business day support response guaranteed."
+msgstr ""
+
+#: weblate_web/templates/support.html:86
+msgid "Installation on your Linux server"
+msgstr "Усталёўка на ваш сервер Linux"
+
+#: weblate_web/templates/support.html:88
+msgid "One-time installation of Weblate"
+msgstr "Аднаразовая ўсталёўка Weblate"
+
+#: weblate_web/templates/support.html:89
+msgid "Docker based or native installation"
+msgstr ""
+
+#: weblate_web/templates/support.html:90
+msgid "Requires root access or close cooperation of your admins"
+msgstr "Спатрэбяцца правы root або супрацоўніцтва з вашымі адміністратарамі"
+
+#: weblate_web/templates/support.html:91
+msgid "Setup customization"
+msgstr "Наладжванне"
+
+#: weblate_web/templates/support.html:93
+msgid "installation"
+msgstr "усталёўка"
 
 #: weblate_web/templates/support.html:100
-msgid "Securely encrypted with your passphrase."
-msgstr "Надзейна зашыфравана вашай парольнай фразай."
+#, fuzzy
+#| msgid "Cloud backups of your installations."
+msgid "Cloud backups of your data"
+msgstr "Воблачнае рэзервовае капіяванне вашых усталёвак."
 
 #: weblate_web/templates/support.html:101
-msgid "Stores up to 100 GB of backups."
-msgstr "Захоўвае да 100 ГБ рэзервовых копій."
+#, fuzzy
+#| msgid "Securely encrypted with your passphrase."
+msgid "Securely encrypted with your passphrase"
+msgstr "Надзейна зашыфравана вашай парольнай фразай."
 
 #: weblate_web/templates/support.html:102
+msgid "Daily incremental backups"
+msgstr ""
+
+#: weblate_web/templates/support.html:103
+#, fuzzy
+#| msgid "Stores up to 100 GB of backups."
+msgid "Stores up to 100 GB of backups"
+msgstr "Захоўвае да 100 ГБ рэзервовых копій."
+
+#: weblate_web/templates/support.html:104
 msgid "Read more in the documentation."
 msgstr "Глядзіце падрабязней у дакументацыі."
 
-#: weblate_web/templates/support.html:109
+#: weblate_web/templates/support.html:111
 msgid "Consulting services and/or custom development"
 msgstr "Кансультацыі і дапамога ў распрацоўцы"
 
-#: weblate_web/templates/support.html:111
+#: weblate_web/templates/support.html:113
 msgid "Development of custom features"
 msgstr "Распрацоўка нестандартных функцый"
 
-#: weblate_web/templates/support.html:112
+#: weblate_web/templates/support.html:114
 msgid "Integration of Weblate into your workflow"
 msgstr "Інтэграцыя Weblate ў ваш працоўны працэс"
 
-#: weblate_web/templates/support.html:113
+#: weblate_web/templates/support.html:115
 msgid "Suggestions on the internationalization and localization"
 msgstr "Прапановы па працэсе інтэрнацыяналізацыі і лакалізацыі"
 
-#: weblate_web/templates/support.html:115
+#: weblate_web/templates/support.html:117
 msgid "hourly"
 msgstr "штогадзінна"
 
-#: weblate_web/templates/support.html:118
+#: weblate_web/templates/support.html:120
 msgid "Ask for help"
 msgstr "Запрасіць дапамогу"
 
-#: weblate_web/templates/support.html:126
+#: weblate_web/templates/support.html:128
 msgid "Mailing lists"
 msgstr "Спісы рассылкі"
 
-#: weblate_web/templates/support.html:128
+#: weblate_web/templates/support.html:130
 msgid "Users and developers"
 msgstr "Карыстальнікі і распрацоўшчыкі"
 
-#: weblate_web/templates/support.html:131
-#: weblate_web/templates/support.html:144
+#: weblate_web/templates/support.html:133
+#: weblate_web/templates/support.html:146
 msgid "Your e-mail address…"
 msgstr "Ваш адрас электроннай пошты…"
 
-#: weblate_web/templates/support.html:132
-#: weblate_web/templates/support.html:145
+#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:147
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "Рэгістрацыя"
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:137
 msgid "Discuss Weblate with users and developers"
 msgstr "Абмеркаваць Weblate з карыстальнікамі і распрацоўшчыкамі"
 
-#: weblate_web/templates/support.html:136
+#: weblate_web/templates/support.html:138
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 "Апублікуйце <a href=\"mailto:%(address)s\">%(address)s</a>, каб карыстацца "
 "гэтым"
 
-#: weblate_web/templates/support.html:137
-#: weblate_web/templates/support.html:150
+#: weblate_web/templates/support.html:139
+#: weblate_web/templates/support.html:152
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr "Шукаць адказы ў <a href=\"%(url)s\">архіве</a>"
 
-#: weblate_web/templates/support.html:141
+#: weblate_web/templates/support.html:143
 msgid "Hosted Weblate announcements"
 msgstr "Анонсы хостынгу Weblate"
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:150
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr "<strong> Нізкі трафік </strong> і мадэруецца"
 
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:151
 msgid "Only premium service announcements"
 msgstr "Толькі анонсы прэміумных паслуг"
 
-#: weblate_web/templates/support.html:156
+#: weblate_web/templates/support.html:158
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr "Задайце пытанні на <a href=\"%(url)s\">Stack Overflow</a>."
@@ -2631,141 +2915,31 @@ msgstr "Профіль карыстальніка"
 msgid "Log out"
 msgstr "Выйсці"
 
+#: weblate_web/templates/user.html:13
+msgid "Use Weblate"
+msgstr "Выкарыстоўваць Weblate"
+
 #: weblate_web/templates/user.html:17
 msgid "Your services"
 msgstr "Вашыя паслугі"
 
-#: weblate_web/templates/user.html:21
-msgid "Service"
-msgstr "Служба"
-
-#: weblate_web/templates/user.html:26
-msgid "Exceeds selected service offering."
-msgstr "Перавышаны ліміт абранага тарыфу."
-
-#: weblate_web/templates/user.html:34
-msgid "Activation token"
-msgstr "Токен актывацыі"
-
-#: weblate_web/templates/user.html:37 weblate_web/templates/user.html:51
-msgid "Copy"
-msgstr "Капіяваць"
-
-#: weblate_web/templates/user.html:40
-msgid "Regenerate"
-msgstr "Аднавіць"
-
-#: weblate_web/templates/user.html:48
-msgid "Backup repository"
-msgstr "Рэпазіторый рэзервовых копій"
-
-#: weblate_web/templates/user.html:58
-msgid "Server URL"
-msgstr "URL сервера"
-
-#: weblate_web/templates/user.html:64
-msgid ""
-"Use an activation token to connect your Weblate installation to the support "
-"portal. This step is optional, you can use support services without it as "
-"well."
-msgstr ""
-"Выкарыстайце токен актывацыі для падлучэння ўласнай версіі Weblate да "
-"партала падтрымкі. Гэты крок не з'яўляецца абавязковым, вы можаце карыстацца "
-"службай падтрымкі і без актывацыі."
-
-#: weblate_web/templates/user.html:65
-msgid "See documentation on subscription management."
-msgstr "Азнаёміцца з дакументацыяй па пытаннях кіравання падпіскай."
-
-#: weblate_web/templates/user.html:73
-msgid "Note"
-msgstr "Нататка"
-
-#: weblate_web/templates/user.html:83
-msgid "Subscription"
-msgstr "Падпіска"
-
-#: weblate_web/templates/user.html:87
-msgid "Change plan"
-msgstr "Змяніць план"
-
-#: weblate_web/templates/user.html:94
-msgid "Validity"
-msgstr "Тэрмін дзеяння"
-
-#: weblate_web/templates/user.html:100 weblate_web/templates/user.html:188
-msgid "Creation date"
-msgstr "Дата стварэння"
-
-#: weblate_web/templates/user.html:107 weblate_web/templates/user.html:215
-msgid "State"
-msgstr "Стан"
-
-#: weblate_web/templates/user.html:110 weblate_web/templates/user.html:218
-msgid "Expired"
-msgstr "Сыйшоўшы"
-
-#: weblate_web/templates/user.html:112 weblate_web/templates/user.html:220
-msgid "Automatic renewal"
-msgstr "Аўтаматычнае падаўжэнне"
-
-#: weblate_web/templates/user.html:114 weblate_web/templates/user.html:222
-msgid "No renewal"
-msgstr "Без падаўжэння"
-
-#: weblate_web/templates/user.html:118 weblate_web/templates/user.html:226
-msgid "Renew now"
-msgstr "Аднавіць зараз"
-
-#: weblate_web/templates/user.html:120
-msgid "Switch to yearly"
-msgstr "Пераключыцца на штогадовы"
-
-#: weblate_web/templates/user.html:126 weblate_web/templates/user.html:231
-msgid "Turn off renewal"
-msgstr "Выключыце падаўжэнне"
-
-#: weblate_web/templates/user.html:135 weblate_web/templates/user.html:238
-msgid "Payments"
-msgstr "Плацяжы"
-
-#: weblate_web/templates/user.html:147
-msgid "Users"
-msgstr "Карыстальнікі"
-
-#: weblate_web/templates/user.html:155
-msgid "Remove"
-msgstr "Выдаліць"
-
-#: weblate_web/templates/user.html:162
-msgid "Add"
-msgstr "Дадаць"
-
-#: weblate_web/templates/user.html:168
-msgid "Get more services"
-msgstr "Атрымаць дадатковыя паслугі"
-
-#: weblate_web/templates/user.html:173
-msgid "Congratulations, your Weblate instance is fully covered."
-msgstr "Віншуем, ваш асобнік Weblate цалкам пакрыты."
-
-#: weblate_web/templates/user.html:183
+#: weblate_web/templates/user.html:24
 msgid "Your donations"
 msgstr "Вашыя ахвяраванні"
 
-#: weblate_web/templates/user.html:193
+#: weblate_web/templates/user.html:34
 msgid "Reward"
 msgstr "Узнагарода"
 
-#: weblate_web/templates/user.html:197
+#: weblate_web/templates/user.html:38
 msgid "Edit reward"
 msgstr "Рэдагаваць узнагароду"
 
-#: weblate_web/templates/user.html:210
+#: weblate_web/templates/user.html:51
 msgid "Expiry date"
 msgstr "Дата заканчэння"
 
-#: weblate_web/templates/user.html:252
+#: weblate_web/templates/user.html:93
 msgid "Donate to see a nice message here."
 msgstr "Ахвяраваць, каб убачыць тут прыемнае паведамленне."
 
@@ -2916,6 +3090,42 @@ msgstr "Не атрымалася апрацаваць запыт на падп�
 msgid "User not found!"
 msgstr "Карыстальнік не знойдзены!"
 
+#~ msgid "User management"
+#~ msgstr "Кіраванне карыстальнікамі"
+
+#~ msgid "Supported file formats"
+#~ msgstr "Падтрымліваемыя фарматы файлаў"
+
+#~ msgid "Quality checks"
+#~ msgstr "Праверкі якасці"
+
+#~ msgid "Glossary"
+#~ msgstr "Гласарый"
+
+#~ msgid "All"
+#~ msgstr "Усе"
+
+#~ msgid "on-premises"
+#~ msgstr "лакальны"
+
+#~ msgid "Buy support"
+#~ msgstr "Набыць падтрымку"
+
+#~ msgid "or download Weblate"
+#~ msgstr "альбо спампаваць Weblate"
+
+#~ msgid "Installation using virtualenv, uWSGI and NGINX"
+#~ msgstr "Усталёўка пры дапамозе virtualenv, uWSGI і NGINX"
+
+#~ msgid "Using PostgreSQL as database backend"
+#~ msgstr "Выкарыстанне PostgreSQL як сховішча даных"
+
+#~ msgid "Docker installation on your Linux server"
+#~ msgstr "Усталёўка Docker на ваш сервер Linux"
+
+#~ msgid "Installation using Docker"
+#~ msgstr "Усталёўка пры дапамозе Docker"
+
 #~ msgid "Bitnami Weblate stack"
 #~ msgstr "Bitnami Weblate stack"
 
@@ -3050,9 +3260,6 @@ msgstr "Карыстальнік не знойдзены!"
 #~ "Weblate does not require payment and welcomes donations. There are many "
 #~ "ways to contribute. Discuss it with your associates."
 #~ msgstr "Weblate прапануецца дармавым, але ахвяраванні вітаюцца."
-
-#~ msgid "About Weblate"
-#~ msgstr "Пра Weblate"
 
 #, fuzzy
 #~| msgid "Automatic translation"
@@ -3189,9 +3396,6 @@ msgstr "Карыстальнік не знойдзены!"
 #~ msgstr ""
 #~ "Мы любім адкрытыя зыходнікі і прапануем дармовыя планы для размяшчэньня "
 #~ "перакладаў."
-
-#~ msgid "Ask for hosting"
-#~ msgstr "Папрасіць хостынг"
 
 #, fuzzy
 #~| msgid "Hosting for free software"
@@ -3803,9 +4007,6 @@ msgstr "Карыстальнік не знойдзены!"
 #~ msgstr ""
 #~ "Weblate — гэта <a href=\"%(github_url)s\">свабоднае праграмнае "
 #~ "забеспячэнне</a> і вітае <a href=\"%(donate_url)s\">ахвяраванні</a>."
-
-#~ msgid "Consulting"
-#~ msgstr "Кансалтынг"
 
 #~ msgid "See our support offerings for self hosted Weblate instances"
 #~ msgstr "Глядзіце нашы прапановы па падтрымцы ўласнага хостынга Weblate"

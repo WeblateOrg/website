@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-05-17 13:56+0200\n"
+"POT-Creation-Date: 2020-07-10 22:20+0200\n"
 "PO-Revision-Date: 2020-03-18 00:12+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Central Khmer <https://hosted.weblate.org/projects/weblate/"
@@ -115,11 +115,11 @@ msgid "Quarterly"
 msgstr ""
 
 #: payments/models.py:162 weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:379
-#: weblate_web/templates/hosting.html:389
-#: weblate_web/templates/hosting.html:401
-#: weblate_web/templates/hosting.html:413
-#: weblate_web/templates/hosting.html:424
+#: weblate_web/templates/hosting.html:446
+#: weblate_web/templates/hosting.html:457
+#: weblate_web/templates/hosting.html:469
+#: weblate_web/templates/hosting.html:481
+#: weblate_web/templates/hosting.html:492
 #: weblate_web/templates/snippets/pricing.html:35
 #: weblate_web/templates/snippets/pricing.html:61
 #: weblate_web/templates/snippets/pricing.html:87
@@ -218,7 +218,8 @@ msgstr ""
 msgid "Conferences"
 msgstr ""
 
-#: weblate_web/models.py:54
+#: weblate_web/models.py:54 weblate_web/templates/hosting.html:57
+#: weblate_web/templates/hosting.html:275
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Hosted Weblate"
@@ -242,7 +243,7 @@ msgstr "បន្ត​ការ​បកប្រែ​"
 msgid "Link text"
 msgstr ""
 
-#: weblate_web/models.py:110 weblate_web/templates/user.html:204
+#: weblate_web/models.py:110 weblate_web/templates/user.html:45
 msgid "Link URL"
 msgstr ""
 
@@ -268,29 +269,29 @@ msgstr "បរិច្ចាកទៅកាន់Weblate"
 msgid "Hosted service"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
-#: weblate_web/models.py:371 weblate_web/templates/support.html:76
+#: weblate_web/models.py:371 weblate_web/templates/support.html:52
 msgid "Basic self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:372 weblate_web/templates/support.html:86
+#: weblate_web/models.py:372 weblate_web/templates/support.html:62
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Extended self-hosted support"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
-#: weblate_web/models.py:492
+#: weblate_web/models.py:492 weblate_web/templates/hosting.html:155
 #, fuzzy
 #| msgid "Support"
 msgid "Basic support"
 msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
 
-#: weblate_web/models.py:498
+#: weblate_web/models.py:498 weblate_web/templates/hosting.html:122
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Extended support"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
-#: weblate_web/models.py:500 weblate_web/templates/support.html:97
+#: weblate_web/models.py:500 weblate_web/templates/support.html:98
 msgid "Backup service"
 msgstr ""
 
@@ -506,7 +507,8 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: weblate_web/templates/about.html:108 weblate_web/templates/user.html:161
+#: weblate_web/templates/about.html:108
+#: weblate_web/templates/snippets/service.html:145
 msgid "E-mail"
 msgstr "អ៊ីម៉ែល"
 
@@ -527,9 +529,10 @@ msgid "VAT ID"
 msgstr ""
 
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
-#: weblate_web/templates/hosting.html:451
-#: weblate_web/templates/hosting.html:526
-#: weblate_web/templates/support.html:116
+#: weblate_web/templates/hosting.html:506
+#: weblate_web/templates/hosting.html:568
+#: weblate_web/templates/hosting.html:630
+#: weblate_web/templates/support.html:118
 msgid "Contact us"
 msgstr ""
 
@@ -539,15 +542,19 @@ msgstr ""
 msgid "Weblate is a libre software web-based continuous localization system."
 msgstr "Weblate​ គឺ​ជា​មូលដ្ឋានវែបនៃប្រព័ន្ធ​គ្រប់គ្រង​ការ​បកប្រែ​ ឥតគិតថ្លៃ។"
 
-#: weblate_web/templates/base.html:22
+#: weblate_web/templates/base.html:20
 msgctxt "Keyword"
 msgid "translate"
 msgstr "បកប្រែ"
 
-#: weblate_web/templates/base.html:67 weblate_web/templates/user.html:13
+#: weblate_web/templates/base.html:60
+msgid "Sign out"
+msgstr ""
+
+#: weblate_web/templates/base.html:67
 #, fuzzy
 #| msgid "Donate to Weblate"
-msgid "Use Weblate"
+msgid "Go Weblate"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
 #: weblate_web/templates/base.html:109
@@ -824,8 +831,9 @@ msgid "Activate donation"
 msgstr "ការបកប្រែ​ផ្ទាល់​ខ្លួន​"
 
 #: weblate_web/templates/donate.html:30 weblate_web/templates/donate.html:35
-#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:81
-#: weblate_web/templates/support.html:92 weblate_web/templates/support.html:104
+#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:57
+#: weblate_web/templates/support.html:69 weblate_web/templates/support.html:81
+#: weblate_web/templates/support.html:106
 msgid "annually"
 msgstr ""
 
@@ -834,7 +842,7 @@ msgstr ""
 #: weblate_web/templates/donate.html:145
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:257
+#: weblate_web/templates/user.html:98
 msgid "Donate"
 msgstr "បរិច្ចាក"
 
@@ -1250,199 +1258,238 @@ msgid "Java"
 msgstr ""
 
 #: weblate_web/templates/features.html:95
-msgid "Joomla"
+msgid "GWT"
 msgstr ""
 
 #: weblate_web/templates/features.html:96
-msgid "Qt"
+msgid "Joomla"
 msgstr ""
 
 #: weblate_web/templates/features.html:97
-msgid "Android"
+msgid "Qt"
 msgstr ""
 
 #: weblate_web/templates/features.html:98
-msgid "i18next"
+msgid "Android"
 msgstr ""
 
 #: weblate_web/templates/features.html:99
-msgid "WebExtension"
+msgid "i18next"
 msgstr ""
 
 #: weblate_web/templates/features.html:100
-msgid "Key and value"
+msgid "WebExtension"
 msgstr ""
 
 #: weblate_web/templates/features.html:101
-msgid "react-intl"
+msgid "Key and value"
 msgstr ""
 
 #: weblate_web/templates/features.html:102
-msgid "PHP"
-msgstr ""
-
-#: weblate_web/templates/features.html:103
-msgid "Laravel"
-msgstr ""
-
-#: weblate_web/templates/features.html:104
-msgid "iOS"
+msgid "react-intl"
 msgstr ""
 
 #: weblate_web/templates/features.html:105
-msgid "Excel"
+msgid "PHP"
 msgstr ""
 
 #: weblate_web/templates/features.html:106
-msgid "Mozilla DTD"
+msgid "Laravel"
 msgstr ""
 
 #: weblate_web/templates/features.html:107
-msgid ".NET resource files"
+msgid "iOS"
 msgstr ""
 
 #: weblate_web/templates/features.html:108
-msgid "CSV"
+msgid "Excel"
 msgstr ""
 
 #: weblate_web/templates/features.html:109
-msgid "YAML"
+msgid "Mozilla DTD"
 msgstr ""
 
 #: weblate_web/templates/features.html:110
-msgid "Ruby"
+msgid ".NET resource files"
 msgstr ""
 
 #: weblate_web/templates/features.html:111
-msgid "App store metadata"
+msgid "CSV"
 msgstr ""
 
 #: weblate_web/templates/features.html:112
-msgid "Subtitles"
+msgid "YAML"
 msgstr ""
 
 #: weblate_web/templates/features.html:113
-msgid "Windows"
+msgid "Ruby"
 msgstr ""
 
 #: weblate_web/templates/features.html:114
-msgid "HTML"
+msgid "App store metadata"
 msgstr ""
 
 #: weblate_web/templates/features.html:115
+msgid "Subtitles"
+msgstr ""
+
 #: weblate_web/templates/features.html:116
+msgid "Windows"
+msgstr ""
+
 #: weblate_web/templates/features.html:117
-msgid "OpenDocument"
+msgid "HTML"
 msgstr ""
 
 #: weblate_web/templates/features.html:118
+msgid "OpenDocument"
+msgstr ""
+
+#: weblate_web/templates/features.html:119
 msgid "IDML"
 msgstr ""
 
-#: weblate_web/templates/features.html:127
+#: weblate_web/templates/features.html:120
+msgid "INI files"
+msgstr ""
+
+#: weblate_web/templates/features.html:121
+msgid "InnoSetup"
+msgstr ""
+
+#: weblate_web/templates/features.html:130
 #, fuzzy
 #| msgid "Glossary"
 msgid "Glossaries"
 msgstr "សទ្ទា​នុក្រម​"
 
-#: weblate_web/templates/features.html:128
+#: weblate_web/templates/features.html:131
 msgid "Define frequently used terminology for consistency."
 msgstr ""
 
-#: weblate_web/templates/features.html:134
+#: weblate_web/templates/features.html:137
 msgid "Feedback Acquisition"
 msgstr ""
 
-#: weblate_web/templates/features.html:135
+#: weblate_web/templates/features.html:138
 msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr ""
 
-#: weblate_web/templates/features.html:141
+#: weblate_web/templates/features.html:144
 msgid "Export and Import"
 msgstr ""
 
-#: weblate_web/templates/features.html:142
+#: weblate_web/templates/features.html:145
 msgid "Translations can be downloaded for offline translation and merged back."
 msgstr ""
 
-#: weblate_web/templates/features.html:148
+#: weblate_web/templates/features.html:151
 msgid "Fully Integrated"
 msgstr ""
 
-#: weblate_web/templates/features.html:149
+#: weblate_web/templates/features.html:152
 msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr ""
 
-#: weblate_web/templates/features.html:155 weblate_web/templates/user.html:52
+#: weblate_web/templates/features.html:158
+#: weblate_web/templates/snippets/service.html:36
 msgid "Documentation"
 msgstr ""
 
-#: weblate_web/templates/features.html:156
+#: weblate_web/templates/features.html:159
 msgid "Comprehensive documentation covering both setup and usage."
 msgstr ""
 
-#: weblate_web/templates/features.html:162
+#: weblate_web/templates/features.html:165
 msgid "Easy Reviews"
 msgstr ""
 
-#: weblate_web/templates/features.html:163
+#: weblate_web/templates/features.html:166
 msgid "Several options for translators to review contributions made by peers."
 msgstr ""
 
-#: weblate_web/templates/features.html:169
+#: weblate_web/templates/features.html:172
 #, fuzzy
 #| msgid "Support"
 msgid "Language support"
 msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
 
-#: weblate_web/templates/features.html:170
+#: weblate_web/templates/features.html:173
 msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr ""
 
-#: weblate_web/templates/features.html:176
+#: weblate_web/templates/features.html:179
 msgid "Promotion"
 msgstr "ប្រូម៉ូសិន"
 
-#: weblate_web/templates/features.html:177
+#: weblate_web/templates/features.html:180
 msgid ""
 "Built-in features to attract a wider audience for your translation project."
 msgstr ""
 
-#: weblate_web/templates/features.html:183
+#: weblate_web/templates/features.html:186
 msgid "Reporting"
 msgstr ""
 
-#: weblate_web/templates/features.html:184
+#: weblate_web/templates/features.html:187
 msgid "Reports are generated to provide info on project activity."
 msgstr ""
 
-#: weblate_web/templates/features.html:190
+#: weblate_web/templates/features.html:193
 msgid "Version Control"
 msgstr ""
 
-#: weblate_web/templates/features.html:191
+#: weblate_web/templates/features.html:194
 msgid ""
 "Talks directly with your version control system, currently Git and Mercurial "
 "are supported."
 msgstr ""
 
-#: weblate_web/templates/features.html:197
+#: weblate_web/templates/features.html:200
 msgid "Collaboration Sites"
 msgstr ""
 
-#: weblate_web/templates/features.html:198
+#: weblate_web/templates/features.html:201
 msgid ""
 "Native support for software development sites such as GitLab, GitHub, "
 "Pagure, or Bitbucket."
 msgstr ""
 
-#: weblate_web/templates/features.html:204
+#: weblate_web/templates/features.html:207
 msgid "Responsive UI"
 msgstr ""
 
-#: weblate_web/templates/features.html:205
+#: weblate_web/templates/features.html:208
 msgid "User interface that works nicely on desktop, tablet and phones."
+msgstr ""
+
+#: weblate_web/templates/features.html:214
+#, fuzzy
+#| msgid "Translation context"
+msgid "Translation memory"
+msgstr "បរិបទការបកប្រែ"
+
+#: weblate_web/templates/features.html:215
+msgid "Reuse existing translations to save time and costs."
+msgstr ""
+
+#: weblate_web/templates/features.html:221
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation addons"
+msgstr "ស្ថានភាព​ការបកប្រែ"
+
+#: weblate_web/templates/features.html:222
+msgid "Customize localization workflow with various addons."
+msgstr ""
+
+#: weblate_web/templates/features.html:228
+msgid "Backups"
+msgstr ""
+
+#: weblate_web/templates/features.html:229
+msgid "Built-in remote backups to prevent data loss."
 msgstr ""
 
 #: weblate_web/templates/hosting.html:11
@@ -1451,15 +1498,162 @@ msgstr ""
 msgid "Weblate Pricing"
 msgstr "ស្លាកសញ្ញា Weblate"
 
-#: weblate_web/templates/hosting.html:14
+#: weblate_web/templates/hosting.html:15
 #, python-format
 msgid ""
 "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premises hosting—all with the possibility of premium support. Our "
-"team is ready to help you make Weblate run smoothly."
+"a> for on-premise hosting — all with the convenience of the premium support."
 msgstr ""
 
-#: weblate_web/templates/hosting.html:15
+#: weblate_web/templates/hosting.html:16
+msgid "Our team is ready to help you make Weblate run smoothly."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:19
+#, fuzzy
+#| msgid "Weblate logo"
+msgid "Which Weblate is right for you"
+msgstr "ស្លាកសញ្ញា Weblate"
+
+#: weblate_web/templates/hosting.html:24
+msgid "System maintenance"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:27
+#, fuzzy
+#| msgid "Own translations"
+msgid "Weblate installation"
+msgstr "ការបកប្រែ​ផ្ទាល់​ខ្លួន​"
+
+#: weblate_web/templates/hosting.html:30
+#, fuzzy
+#| msgid "Weblate logo"
+msgid "Weblate upgrades"
+msgstr "ស្លាកសញ្ញា Weblate"
+
+#: weblate_web/templates/hosting.html:33
+msgid "Access to backups"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:36
+msgid "Complete configuration customization"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:39
+msgid "Single sign-on"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:42
+msgid "Priority e-mail support"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:45
+#, fuzzy
+#| msgid "Translation context"
+msgid "Shared translation memory"
+msgstr "បរិបទការបកប្រែ"
+
+#: weblate_web/templates/hosting.html:48
+msgid "Priority bug fixing"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:56
+msgctxt "Hosting plan"
+msgid "Cloud"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:69
+msgid "Backups and restore on Hosted Weblate are fully automatic."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:89
+#, fuzzy
+#| msgid "Donate to Weblate"
+msgctxt "Hosting plan"
+msgid "Dedicated cloud"
+msgstr "បរិច្ចាកទៅកាន់Weblate"
+
+#: weblate_web/templates/hosting.html:121
+#: weblate_web/templates/hosting.html:154
+#: weblate_web/templates/hosting.html:187
+#: weblate_web/templates/snippets/pricing.html:121
+#, fuzzy
+#| msgid "Support"
+msgctxt "Hosting plan"
+msgid "Self-hosted"
+msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
+
+#: weblate_web/templates/hosting.html:134
+#: weblate_web/templates/hosting.html:161
+#: weblate_web/templates/hosting.html:167
+#: weblate_web/templates/hosting.html:200
+msgid "Optional"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:188
+#: weblate_web/templates/hosting.html:263
+#: weblate_web/templates/snippets/pricing.html:142
+#: weblate_web/templates/snippets/pricing.html:166
+msgid "Gratis"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:222
+#: weblate_web/templates/hosting.html:232
+msgid "From"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:224
+#: weblate_web/templates/hosting.html:234
+#: weblate_web/templates/hosting.html:244
+#: weblate_web/templates/hosting.html:254
+#: weblate_web/templates/hosting.html:447
+#: weblate_web/templates/hosting.html:517
+#: weblate_web/templates/hosting.html:529
+#: weblate_web/templates/hosting.html:541
+#: weblate_web/templates/hosting.html:554
+#: weblate_web/templates/hosting.html:579
+#: weblate_web/templates/hosting.html:591
+#: weblate_web/templates/hosting.html:603
+#: weblate_web/templates/hosting.html:616
+#: weblate_web/templates/snippets/pricing.html:38
+#: weblate_web/templates/snippets/pricing.html:64
+#: weblate_web/templates/snippets/pricing.html:90
+#: weblate_web/templates/snippets/pricing.html:116
+msgid "Yearly"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:227
+#: weblate_web/templates/hosting.html:237
+#, fuzzy
+#| msgid "Regular donations"
+msgid "See options"
+msgstr "ការបរិច្ចាកដែលទៀងទាត់"
+
+#: weblate_web/templates/hosting.html:247
+#: weblate_web/templates/hosting.html:257
+#: weblate_web/templates/hosting.html:460
+#: weblate_web/templates/hosting.html:472
+#: weblate_web/templates/hosting.html:484
+#: weblate_web/templates/hosting.html:495
+#: weblate_web/templates/hosting.html:520
+#: weblate_web/templates/hosting.html:532
+#: weblate_web/templates/hosting.html:544
+#: weblate_web/templates/hosting.html:557
+#: weblate_web/templates/hosting.html:582
+#: weblate_web/templates/hosting.html:594
+#: weblate_web/templates/hosting.html:606
+#: weblate_web/templates/hosting.html:619 weblate_web/templates/support.html:58
+#: weblate_web/templates/support.html:70 weblate_web/templates/support.html:82
+#: weblate_web/templates/support.html:94 weblate_web/templates/support.html:107
+msgid "Buy now"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:267
+#: weblate_web/templates/snippets/main-menu.html:5
+msgid "Download"
+msgstr "ការទាញយក"
+
+#: weblate_web/templates/hosting.html:277
 #, python-format
 msgid ""
 "Hosted Weblate allows localization without any extra effort, and "
@@ -1469,13 +1663,14 @@ msgid ""
 "find the perfect solution."
 msgstr ""
 
-#: weblate_web/templates/hosting.html:22
+#: weblate_web/templates/hosting.html:284
 #, fuzzy
 #| msgid "Continuous translation"
 msgid "Continuous localization"
 msgstr "បន្ត​ការ​បកប្រែ​"
 
-#: weblate_web/templates/hosting.html:25 weblate_web/templates/hosting.html:542
+#: weblate_web/templates/hosting.html:287
+#: weblate_web/templates/hosting.html:649
 #: weblate_web/templates/snippets/pricing.html:18
 #: weblate_web/templates/snippets/pricing.html:44
 #: weblate_web/templates/snippets/pricing.html:70
@@ -1485,89 +1680,52 @@ msgstr "បន្ត​ការ​បកប្រែ​"
 msgid "Source strings"
 msgstr "ប្រភព​ខ្សែអក្សរ"
 
-#: weblate_web/templates/hosting.html:28
+#: weblate_web/templates/hosting.html:290
 msgid "Target languages"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:31
+#: weblate_web/templates/hosting.html:293
 msgid "Translation projects"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:34
+#: weblate_web/templates/hosting.html:296
 msgid "Translation components"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:37
+#: weblate_web/templates/hosting.html:299
 msgid "Number of translators"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:40
-msgid "User management"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:43
-msgid "Supported file formats"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:46
-msgid "Quality checks"
-msgstr "ពិនិត្យគុណភាព"
-
-#: weblate_web/templates/hosting.html:49
-#, fuzzy
-#| msgid "Translation status"
-msgid "Translation addons"
-msgstr "ស្ថានភាព​ការបកប្រែ"
-
-#: weblate_web/templates/hosting.html:52
-msgid "Glossary"
-msgstr "សទ្ទា​នុក្រម​"
-
-#: weblate_web/templates/hosting.html:55
-#, fuzzy
-#| msgid "Translation context"
-msgid "Translation memory"
-msgstr "បរិបទការបកប្រែ"
-
-#: weblate_web/templates/hosting.html:58
-msgid "Priority e-mail support"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:61
-msgid "Regular backups"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:546
+#: weblate_web/templates/hosting.html:302
 msgid "Dedicated instance"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:72
+#: weblate_web/templates/hosting.html:310
 #: weblate_web/templates/snippets/pricing.html:10
 msgctxt "Hosting plan"
 msgid "Basic"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:73 weblate_web/templates/hosting.html:124
-#: weblate_web/templates/hosting.html:175
-#: weblate_web/templates/hosting.html:226
+#: weblate_web/templates/hosting.html:311
+#: weblate_web/templates/hosting.html:338
+#: weblate_web/templates/hosting.html:365
+#: weblate_web/templates/hosting.html:392
 msgid "cloud"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:88 weblate_web/templates/hosting.html:91
-#: weblate_web/templates/hosting.html:139
-#: weblate_web/templates/hosting.html:142
-#: weblate_web/templates/hosting.html:187
-#: weblate_web/templates/hosting.html:190
-#: weblate_web/templates/hosting.html:193
-#: weblate_web/templates/hosting.html:238
-#: weblate_web/templates/hosting.html:241
-#: weblate_web/templates/hosting.html:244
-#: weblate_web/templates/hosting.html:283
-#: weblate_web/templates/hosting.html:286
-#: weblate_web/templates/hosting.html:289
-#: weblate_web/templates/hosting.html:292
-#: weblate_web/templates/hosting.html:295
-#: weblate_web/templates/hosting.html:346
+#: weblate_web/templates/hosting.html:326
+#: weblate_web/templates/hosting.html:329
+#: weblate_web/templates/hosting.html:353
+#: weblate_web/templates/hosting.html:356
+#: weblate_web/templates/hosting.html:377
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:383
+#: weblate_web/templates/hosting.html:404
+#: weblate_web/templates/hosting.html:407
+#: weblate_web/templates/hosting.html:410
+#: weblate_web/templates/hosting.html:431
+#: weblate_web/templates/hosting.html:434
+#: weblate_web/templates/hosting.html:437
 #: weblate_web/templates/snippets/pricing.html:31
 #: weblate_web/templates/snippets/pricing.html:57
 #: weblate_web/templates/snippets/pricing.html:79
@@ -1581,162 +1739,108 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:97 weblate_web/templates/hosting.html:148
-#: weblate_web/templates/hosting.html:199
-#: weblate_web/templates/hosting.html:250
-#: weblate_web/templates/hosting.html:301
-#: weblate_web/templates/hosting.html:352
-msgid "All"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:118
-#: weblate_web/templates/hosting.html:169
-#: weblate_web/templates/hosting.html:220
+#: weblate_web/templates/hosting.html:332
+#: weblate_web/templates/hosting.html:359
+#: weblate_web/templates/hosting.html:386
 #, python-format
 msgid ""
 "Additional charge %(price)s EUR/year, only available with yearly billing"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:123
+#: weblate_web/templates/hosting.html:337
 #: weblate_web/templates/snippets/pricing.html:11
 msgctxt "Hosting plan"
 msgid "Medium"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:174
+#: weblate_web/templates/hosting.html:364
 #: weblate_web/templates/snippets/pricing.html:12
 msgctxt "Hosting plan"
 msgid "Advanced"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:202
-#: weblate_web/templates/hosting.html:205
-#: weblate_web/templates/hosting.html:253
-#: weblate_web/templates/hosting.html:256
-#: weblate_web/templates/hosting.html:304
-#: weblate_web/templates/hosting.html:307
-msgid "Customizable"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:225
+#: weblate_web/templates/hosting.html:391
 #: weblate_web/templates/snippets/pricing.html:13
 msgctxt "Hosting plan"
 msgid "Enterprise"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:276
-#: weblate_web/templates/snippets/pricing.html:121
-#, fuzzy
-#| msgid "Support"
+#: weblate_web/templates/hosting.html:418
 msgctxt "Hosting plan"
-msgid "Self-hosted"
-msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
-
-#: weblate_web/templates/hosting.html:277
-msgid "on-premises"
+msgid "Custom"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:319
-msgid "Optional"
+#: weblate_web/templates/hosting.html:419
+msgid "and dedicated"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:327
-#: weblate_web/templates/hosting.html:435
-#: weblate_web/templates/hosting.html:447
-#: weblate_web/templates/hosting.html:510
-#: weblate_web/templates/hosting.html:522
-#: weblate_web/templates/snippets/pricing.html:142
-#: weblate_web/templates/snippets/pricing.html:166
-msgid "Gratis"
+#: weblate_web/templates/hosting.html:425
+#: weblate_web/templates/hosting.html:428
+#, python-format
+msgid "over <strong>%(count)s</strong>"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:328
-#: weblate_web/templates/snippets/pricing.html:146
-msgid "for libre projects"
+#: weblate_web/templates/hosting.html:448
+msgid "Dedicated"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:334
-#: weblate_web/templates/hosting.html:337
-#: weblate_web/templates/hosting.html:343
-#: weblate_web/templates/snippets/pricing.html:151
-#: weblate_web/templates/snippets/pricing.html:155
-msgid "Negotiable"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:462
-#: weblate_web/templates/hosting.html:474
-#: weblate_web/templates/hosting.html:486
-#: weblate_web/templates/hosting.html:499
-#: weblate_web/templates/snippets/pricing.html:38
-#: weblate_web/templates/snippets/pricing.html:64
-#: weblate_web/templates/snippets/pricing.html:90
-#: weblate_web/templates/snippets/pricing.html:116
-msgid "Yearly"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:382
+#: weblate_web/templates/hosting.html:450
 msgid "<strong>Save more</strong> with longer pre-payment!"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:404
-#: weblate_web/templates/hosting.html:416
-#: weblate_web/templates/hosting.html:427
-#: weblate_web/templates/hosting.html:465
-#: weblate_web/templates/hosting.html:477
-#: weblate_web/templates/hosting.html:489
-#: weblate_web/templates/hosting.html:502 weblate_web/templates/support.html:60
-#: weblate_web/templates/support.html:72 weblate_web/templates/support.html:82
-#: weblate_web/templates/support.html:93 weblate_web/templates/support.html:105
-msgid "Buy now"
+#: weblate_web/templates/hosting.html:503
+#: weblate_web/templates/hosting.html:565
+#: weblate_web/templates/hosting.html:627
+msgid "<b>Ask</b> for options"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:439
-#: weblate_web/templates/hosting.html:514
-#, fuzzy
-#| msgid "Support"
-msgid "Buy support"
-msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
-
-#: weblate_web/templates/hosting.html:442
-#: weblate_web/templates/hosting.html:517
-#, fuzzy
-#| msgid "Download Weblate"
-msgid "or download Weblate"
-msgstr "ទាញយក Weblate"
-
-#: weblate_web/templates/hosting.html:538
-#: weblate_web/templates/support.html:120
-msgid "Payment"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:544
-msgid ""
-"Pricing is based on number of source strings and target languages. The "
-"source string is a text unit defined in a translation format, it can be a "
-"word, sentence or paragraph."
-msgstr ""
-
-#: weblate_web/templates/hosting.html:548
-msgid ""
-"With cloud hosting, the default setup is to use a shared instance, and a "
-"common translation memory. On a dedicated instance there is no economy of "
-"scale, but you can make use of customized authentication and settings."
-msgstr ""
-
-#: weblate_web/templates/hosting.html:550
+#: weblate_web/templates/hosting.html:641
 msgid "Gratis Trial?"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:552
+#: weblate_web/templates/hosting.html:643
 #, python-format
 msgid ""
 "<a href=\"%(contact)s\">Get in touch</a> if you are still unsure whether "
 "Weblate was made for you."
 msgstr ""
 
-#: weblate_web/templates/hosting.html:555
+#: weblate_web/templates/hosting.html:645
+#: weblate_web/templates/support.html:122
+msgid "Payment"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:651
+msgid ""
+"Pricing is based on number of source strings and target languages. The "
+"source string is a text unit defined in a translation format, it can be a "
+"word, sentence or paragraph."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:655
+msgid "Weblate supports libre projects"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:657
+#, python-format
+msgid ""
+"We proudly support opensource across the globe. If you feel like being "
+"supported by Weblate will help your libre project, feel free to start free "
+"trial and <a href=\"%(url)s\">let us know</a>."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:658
+msgid ""
+"For such projects, we would activate <strong>Libre plan</strong> for free."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:659
+msgid ""
+"It has same limits as <strong>Advanced plan</strong>, but only allows public "
+"projects."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:664
 #, fuzzy
 #| msgid "Support"
 msgid "Join existing users and supporters"
@@ -1821,19 +1925,19 @@ msgstr ""
 msgid "Users and Supporters"
 msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
 
-#: weblate_web/templates/mail/base.html:245
+#: weblate_web/templates/mail/base.html:242
 #, fuzzy
 #| msgid "Weblate is a free web-based translation management system."
 msgid "Weblate, the libre continuous localization system."
 msgstr "Weblate​ គឺ​ជា​មូលដ្ឋានវែបនៃប្រព័ន្ធ​គ្រប់គ្រង​ការ​បកប្រែ​ ឥតគិតថ្លៃ។"
 
-#: weblate_web/templates/mail/base.html:248
+#: weblate_web/templates/mail/base.html:245
 #, fuzzy
 #| msgid "Regular donations"
 msgid "Manage your payments"
 msgstr "ការបរិច្ចាកដែលទៀងទាត់"
 
-#: weblate_web/templates/mail/base.html:254
+#: weblate_web/templates/mail/base.html:251
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr ""
@@ -2033,6 +2137,17 @@ msgstr "ស្ថានភាព​ការបកប្រែ"
 msgid "Waiting for payment to be completed."
 msgstr ""
 
+#: weblate_web/templates/service.html:4
+msgid "Serice"
+msgstr ""
+
+#: weblate_web/templates/service.html:10
+#: weblate_web/templates/snippets/service.html:5
+#, fuzzy
+#| msgid "Donate to Weblate"
+msgid "Service"
+msgstr "បរិច្ចាកទៅកាន់Weblate"
+
 #: weblate_web/templates/snippets/about.html:5
 msgid ""
 "Dive in, or leverage extensive skills and experience from our team of "
@@ -2172,10 +2287,6 @@ msgstr ""
 msgid "Help translate"
 msgstr "បកប្រែ"
 
-#: weblate_web/templates/snippets/main-menu.html:5
-msgid "Download"
-msgstr "ការទាញយក"
-
 #: weblate_web/templates/snippets/main-menu.html:6
 msgid "Pricing"
 msgstr ""
@@ -2191,7 +2302,7 @@ msgid "Careers"
 msgstr ""
 
 #: weblate_web/templates/snippets/main-menu.html:12
-#: weblate_web/templates/support.html:12
+#: weblate_web/templates/support.html:13
 msgid "Get help"
 msgstr ""
 
@@ -2209,7 +2320,7 @@ msgid "Docs"
 msgstr "ឯកសារ"
 
 #: weblate_web/templates/snippets/payment.html:30
-#: weblate_web/templates/user.html:95
+#: weblate_web/templates/snippets/service.html:79
 #, python-format
 msgctxt "Date range"
 msgid "%(created)s–%(expires)s"
@@ -2277,6 +2388,15 @@ msgstr ""
 msgid "Gratis Weblate"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
+#: weblate_web/templates/snippets/pricing.html:146
+msgid "for libre projects"
+msgstr ""
+
+#: weblate_web/templates/snippets/pricing.html:151
+#: weblate_web/templates/snippets/pricing.html:155
+msgid "Negotiable"
+msgstr ""
+
 #: weblate_web/templates/snippets/pricing.html:166
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
@@ -2284,6 +2404,134 @@ msgstr ""
 
 #: weblate_web/templates/snippets/pricing.html:169
 msgid "Compare all plans"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:10
+msgid "Exceeds selected service offering."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:18
+#, fuzzy
+#| msgid "Own translations"
+msgid "Activation token"
+msgstr "ការបកប្រែ​ផ្ទាល់​ខ្លួន​"
+
+#: weblate_web/templates/snippets/service.html:21
+#: weblate_web/templates/snippets/service.html:35
+msgid "Copy"
+msgstr "ចម្លង"
+
+#: weblate_web/templates/snippets/service.html:24
+msgid "Regenerate"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:32
+msgid "Backup repository"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:42
+#, fuzzy
+#| msgid "Server error"
+msgid "Server URL"
+msgstr "កំហុសម៉ាស៊ីនបម្រើ"
+
+#: weblate_web/templates/snippets/service.html:48
+msgid ""
+"Use an activation token to connect your Weblate installation to the support "
+"portal. This step is optional, you can use support services without it as "
+"well."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:49
+msgid "See documentation on subscription management."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:57
+msgid "Note"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:67
+#, fuzzy
+#| msgid "Regular donations"
+msgid "Subscription"
+msgstr "ការបរិច្ចាកដែលទៀងទាត់"
+
+#: weblate_web/templates/snippets/service.html:71
+msgid "Change plan"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:78
+msgid "Validity"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:84
+#: weblate_web/templates/user.html:29
+msgid "Creation date"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:91
+#: weblate_web/templates/user.html:56
+msgid "State"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:94
+#: weblate_web/templates/user.html:59
+msgid "Expired"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:96
+#: weblate_web/templates/user.html:61
+#, fuzzy
+#| msgid "Continuous translation"
+msgid "Automatic renewal"
+msgstr "បន្ត​ការ​បកប្រែ​"
+
+#: weblate_web/templates/snippets/service.html:98
+#: weblate_web/templates/user.html:63
+msgid "No renewal"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:102
+#: weblate_web/templates/user.html:67
+#, fuzzy
+#| msgid "Donate"
+msgid "Renew now"
+msgstr "បរិច្ចាក"
+
+#: weblate_web/templates/snippets/service.html:104
+msgid "Switch to yearly"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:110
+#: weblate_web/templates/user.html:72
+msgid "Turn off renewal"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:119
+#: weblate_web/templates/user.html:79
+msgid "Payments"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:131
+msgid "Users"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:139
+msgid "Remove"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:146
+msgid "Add"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:152
+#, fuzzy
+#| msgid "Use our hosting"
+msgid "Get more services"
+msgstr "ប្រើសេវាបង្ហោះពួកយើង"
+
+#: weblate_web/templates/snippets/service.html:157
+msgid "Congratulations, your Weblate instance is fully covered."
 msgstr ""
 
 #: weblate_web/templates/snippets/users.html:9
@@ -2324,26 +2572,26 @@ msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr ""
 
-#: weblate_web/templates/support.html:4
+#: weblate_web/templates/support.html:5
 msgid "Weblate support"
 msgstr ""
 
-#: weblate_web/templates/support.html:14
+#: weblate_web/templates/support.html:15
 msgid ""
 "Weblate is copylefted libre software with community support. Subscribers "
 "receive priority support at no extra charge. Prepaid help packages are "
 "available for everyone."
 msgstr ""
 
-#: weblate_web/templates/support.html:15
+#: weblate_web/templates/support.html:16
 msgid "Report issue"
 msgstr ""
 
-#: weblate_web/templates/support.html:22
+#: weblate_web/templates/support.html:23
 msgid "Bugs and feature requests"
 msgstr ""
 
-#: weblate_web/templates/support.html:23
+#: weblate_web/templates/support.html:24
 #, fuzzy, python-format
 #| msgid "This website is stored on <a href=\"%(url)s\">GitHub</a> as well:"
 msgid ""
@@ -2351,181 +2599,193 @@ msgid ""
 "\">issue tracker</a>."
 msgstr "វេបសាយ​នេះ គឺ​បាន​ស្តុក​ទុក​លើ​<a href=\"%(url)s\">GitHub</a>ពិតជា​ប្រសើរ៖"
 
-#: weblate_web/templates/support.html:29
+#: weblate_web/templates/support.html:30
 msgid "Security issues"
 msgstr ""
 
-#: weblate_web/templates/support.html:30
+#: weblate_web/templates/support.html:31
 #, python-format
 msgid ""
 "Should you find a vulnerability, please report it to %(report)s. More info "
 "to be found in the <a href=\"%(url)s\">documentation</a>."
 msgstr ""
 
-#: weblate_web/templates/support.html:36
+#: weblate_web/templates/support.html:37
 #, fuzzy
 #| msgid "Support"
 msgid "Premium support"
 msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
 
-#: weblate_web/templates/support.html:37
+#: weblate_web/templates/support.html:38
 #, python-format
 msgid ""
 "As a subscriber, you get premium support at <a href=\"mailto:%(email)s\">"
 "%(email)s</a>."
 msgstr ""
 
-#: weblate_web/templates/support.html:46
+#: weblate_web/templates/support.html:47
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
-#: weblate_web/templates/support.html:51
-msgid "Installation on your Linux server"
-msgstr ""
-
-#: weblate_web/templates/support.html:53 weblate_web/templates/support.html:66
-msgid "One-time installation of Weblate"
-msgstr ""
-
-#: weblate_web/templates/support.html:54
-msgid "Installation using virtualenv, uWSGI and NGINX"
-msgstr ""
-
-#: weblate_web/templates/support.html:55
-msgid "Using PostgreSQL as database backend"
-msgstr ""
-
-#: weblate_web/templates/support.html:56 weblate_web/templates/support.html:68
-msgid "Requires root access or close cooperation of your admins"
-msgstr ""
-
-#: weblate_web/templates/support.html:57 weblate_web/templates/support.html:69
-msgid "Setup customization"
-msgstr ""
-
-#: weblate_web/templates/support.html:59 weblate_web/templates/support.html:71
-#, fuzzy
-#| msgid "Own translations"
-msgid "installation"
-msgstr "ការបកប្រែ​ផ្ទាល់​ខ្លួន​"
-
-#: weblate_web/templates/support.html:64
-msgid "Docker installation on your Linux server"
-msgstr ""
-
-#: weblate_web/templates/support.html:67
-msgid "Installation using Docker"
-msgstr ""
-
-#: weblate_web/templates/support.html:78 weblate_web/templates/support.html:89
+#: weblate_web/templates/support.html:54 weblate_web/templates/support.html:65
+#: weblate_web/templates/support.html:76
 msgid "Issues in your environment fixed immediately."
 msgstr ""
 
-#: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
+#: weblate_web/templates/support.html:55 weblate_web/templates/support.html:66
+#: weblate_web/templates/support.html:77
 #, fuzzy
 #| msgid "Support"
 msgid "Priority e-mail support."
 msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
 
-#: weblate_web/templates/support.html:88
+#: weblate_web/templates/support.html:64
 msgid "Always upgraded to latest version."
 msgstr ""
 
-#: weblate_web/templates/support.html:99
-msgid "Cloud backups of your installations."
+#: weblate_web/templates/support.html:67
+msgid "Available with the installation package only"
 msgstr ""
 
+#: weblate_web/templates/support.html:74
+#, fuzzy
+#| msgid "Donate to Weblate"
+msgid "Premium self-hosted support"
+msgstr "បរិច្ចាកទៅកាន់Weblate"
+
+#: weblate_web/templates/support.html:78
+msgid "Custom consulting."
+msgstr ""
+
+#: weblate_web/templates/support.html:79
+msgid "Next business day support response guaranteed."
+msgstr ""
+
+#: weblate_web/templates/support.html:86
+msgid "Installation on your Linux server"
+msgstr ""
+
+#: weblate_web/templates/support.html:88
+msgid "One-time installation of Weblate"
+msgstr ""
+
+#: weblate_web/templates/support.html:89
+msgid "Docker based or native installation"
+msgstr ""
+
+#: weblate_web/templates/support.html:90
+msgid "Requires root access or close cooperation of your admins"
+msgstr ""
+
+#: weblate_web/templates/support.html:91
+msgid "Setup customization"
+msgstr ""
+
+#: weblate_web/templates/support.html:93
+#, fuzzy
+#| msgid "Own translations"
+msgid "installation"
+msgstr "ការបកប្រែ​ផ្ទាល់​ខ្លួន​"
+
 #: weblate_web/templates/support.html:100
-msgid "Securely encrypted with your passphrase."
+msgid "Cloud backups of your data"
 msgstr ""
 
 #: weblate_web/templates/support.html:101
-msgid "Stores up to 100 GB of backups."
+msgid "Securely encrypted with your passphrase"
 msgstr ""
 
 #: weblate_web/templates/support.html:102
+msgid "Daily incremental backups"
+msgstr ""
+
+#: weblate_web/templates/support.html:103
+msgid "Stores up to 100 GB of backups"
+msgstr ""
+
+#: weblate_web/templates/support.html:104
 #, fuzzy
 #| msgid "Own translations"
 msgid "Read more in the documentation."
 msgstr "ការបកប្រែ​ផ្ទាល់​ខ្លួន​"
 
-#: weblate_web/templates/support.html:109
+#: weblate_web/templates/support.html:111
 msgid "Consulting services and/or custom development"
 msgstr ""
 
-#: weblate_web/templates/support.html:111
+#: weblate_web/templates/support.html:113
 msgid "Development of custom features"
 msgstr ""
 
-#: weblate_web/templates/support.html:112
+#: weblate_web/templates/support.html:114
 msgid "Integration of Weblate into your workflow"
 msgstr ""
 
-#: weblate_web/templates/support.html:113
+#: weblate_web/templates/support.html:115
 msgid "Suggestions on the internationalization and localization"
 msgstr ""
 
-#: weblate_web/templates/support.html:115
+#: weblate_web/templates/support.html:117
 msgid "hourly"
 msgstr ""
 
-#: weblate_web/templates/support.html:118
+#: weblate_web/templates/support.html:120
 msgid "Ask for help"
 msgstr ""
 
-#: weblate_web/templates/support.html:126
+#: weblate_web/templates/support.html:128
 msgid "Mailing lists"
 msgstr ""
 
-#: weblate_web/templates/support.html:128
+#: weblate_web/templates/support.html:130
 msgid "Users and developers"
 msgstr ""
 
-#: weblate_web/templates/support.html:131
-#: weblate_web/templates/support.html:144
+#: weblate_web/templates/support.html:133
+#: weblate_web/templates/support.html:146
 msgid "Your e-mail address…"
 msgstr ""
 
-#: weblate_web/templates/support.html:132
-#: weblate_web/templates/support.html:145
+#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:147
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr ""
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:137
 msgid "Discuss Weblate with users and developers"
 msgstr ""
 
-#: weblate_web/templates/support.html:136
+#: weblate_web/templates/support.html:138
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 
-#: weblate_web/templates/support.html:137
-#: weblate_web/templates/support.html:150
+#: weblate_web/templates/support.html:139
+#: weblate_web/templates/support.html:152
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr ""
 
-#: weblate_web/templates/support.html:141
+#: weblate_web/templates/support.html:143
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Hosted Weblate announcements"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:150
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr ""
 
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:151
 #, fuzzy
 #| msgid "Use our hosting"
 msgid "Only premium service announcements"
 msgstr "ប្រើសេវាបង្ហោះពួកយើង"
 
-#: weblate_web/templates/support.html:156
+#: weblate_web/templates/support.html:158
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr ""
@@ -2566,156 +2826,37 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
+#: weblate_web/templates/user.html:13
+#, fuzzy
+#| msgid "Donate to Weblate"
+msgid "Use Weblate"
+msgstr "បរិច្ចាកទៅកាន់Weblate"
+
 #: weblate_web/templates/user.html:17
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Your services"
 msgstr "បរិច្ចាកទៅកាន់Weblate"
 
-#: weblate_web/templates/user.html:21
-#, fuzzy
-#| msgid "Donate to Weblate"
-msgid "Service"
-msgstr "បរិច្ចាកទៅកាន់Weblate"
-
-#: weblate_web/templates/user.html:26
-msgid "Exceeds selected service offering."
-msgstr ""
-
-#: weblate_web/templates/user.html:34
-#, fuzzy
-#| msgid "Own translations"
-msgid "Activation token"
-msgstr "ការបកប្រែ​ផ្ទាល់​ខ្លួន​"
-
-#: weblate_web/templates/user.html:37 weblate_web/templates/user.html:51
-msgid "Copy"
-msgstr "ចម្លង"
-
-#: weblate_web/templates/user.html:40
-msgid "Regenerate"
-msgstr ""
-
-#: weblate_web/templates/user.html:48
-msgid "Backup repository"
-msgstr ""
-
-#: weblate_web/templates/user.html:58
-#, fuzzy
-#| msgid "Server error"
-msgid "Server URL"
-msgstr "កំហុសម៉ាស៊ីនបម្រើ"
-
-#: weblate_web/templates/user.html:64
-msgid ""
-"Use an activation token to connect your Weblate installation to the support "
-"portal. This step is optional, you can use support services without it as "
-"well."
-msgstr ""
-
-#: weblate_web/templates/user.html:65
-msgid "See documentation on subscription management."
-msgstr ""
-
-#: weblate_web/templates/user.html:73
-msgid "Note"
-msgstr ""
-
-#: weblate_web/templates/user.html:83
-#, fuzzy
-#| msgid "Regular donations"
-msgid "Subscription"
-msgstr "ការបរិច្ចាកដែលទៀងទាត់"
-
-#: weblate_web/templates/user.html:87
-msgid "Change plan"
-msgstr ""
-
-#: weblate_web/templates/user.html:94
-msgid "Validity"
-msgstr ""
-
-#: weblate_web/templates/user.html:100 weblate_web/templates/user.html:188
-msgid "Creation date"
-msgstr ""
-
-#: weblate_web/templates/user.html:107 weblate_web/templates/user.html:215
-msgid "State"
-msgstr ""
-
-#: weblate_web/templates/user.html:110 weblate_web/templates/user.html:218
-msgid "Expired"
-msgstr ""
-
-#: weblate_web/templates/user.html:112 weblate_web/templates/user.html:220
-#, fuzzy
-#| msgid "Continuous translation"
-msgid "Automatic renewal"
-msgstr "បន្ត​ការ​បកប្រែ​"
-
-#: weblate_web/templates/user.html:114 weblate_web/templates/user.html:222
-msgid "No renewal"
-msgstr ""
-
-#: weblate_web/templates/user.html:118 weblate_web/templates/user.html:226
-#, fuzzy
-#| msgid "Donate"
-msgid "Renew now"
-msgstr "បរិច្ចាក"
-
-#: weblate_web/templates/user.html:120
-msgid "Switch to yearly"
-msgstr ""
-
-#: weblate_web/templates/user.html:126 weblate_web/templates/user.html:231
-msgid "Turn off renewal"
-msgstr ""
-
-#: weblate_web/templates/user.html:135 weblate_web/templates/user.html:238
-msgid "Payments"
-msgstr ""
-
-#: weblate_web/templates/user.html:147
-msgid "Users"
-msgstr ""
-
-#: weblate_web/templates/user.html:155
-msgid "Remove"
-msgstr ""
-
-#: weblate_web/templates/user.html:162
-msgid "Add"
-msgstr ""
-
-#: weblate_web/templates/user.html:168
-#, fuzzy
-#| msgid "Use our hosting"
-msgid "Get more services"
-msgstr "ប្រើសេវាបង្ហោះពួកយើង"
-
-#: weblate_web/templates/user.html:173
-msgid "Congratulations, your Weblate instance is fully covered."
-msgstr ""
-
-#: weblate_web/templates/user.html:183
+#: weblate_web/templates/user.html:24
 #, fuzzy
 #| msgid "Regular donations"
 msgid "Your donations"
 msgstr "ការបរិច្ចាកដែលទៀងទាត់"
 
-#: weblate_web/templates/user.html:193
+#: weblate_web/templates/user.html:34
 msgid "Reward"
 msgstr ""
 
-#: weblate_web/templates/user.html:197
+#: weblate_web/templates/user.html:38
 msgid "Edit reward"
 msgstr ""
 
-#: weblate_web/templates/user.html:210
+#: weblate_web/templates/user.html:51
 msgid "Expiry date"
 msgstr ""
 
-#: weblate_web/templates/user.html:252
+#: weblate_web/templates/user.html:93
 msgid "Donate to see a nice message here."
 msgstr ""
 
@@ -2862,6 +3003,22 @@ msgstr ""
 msgid "User not found!"
 msgstr "ទំព័ររកមិនឃើញ"
 
+#~ msgid "Quality checks"
+#~ msgstr "ពិនិត្យគុណភាព"
+
+#~ msgid "Glossary"
+#~ msgstr "សទ្ទា​នុក្រម​"
+
+#, fuzzy
+#~| msgid "Support"
+#~ msgid "Buy support"
+#~ msgstr "ផ្នែក​ជំនួយ​គាំទ្រ​"
+
+#, fuzzy
+#~| msgid "Download Weblate"
+#~ msgid "or download Weblate"
+#~ msgstr "ទាញយក Weblate"
+
 #, fuzzy
 #~| msgid "Donate to Weblate"
 #~ msgid "Bitnami Weblate stack"
@@ -2901,11 +3058,6 @@ msgstr "ទំព័ររកមិនឃើញ"
 #~ "Weblate does not require payment and welcomes donations. There are many "
 #~ "ways to contribute. Discuss it with your associates."
 #~ msgstr "Weblate គឺឥតគិតថ្លៃ ប៉ុន្តែយើងស្វាគមន៍ការបរិច្ចាក។"
-
-#, fuzzy
-#~| msgid "Donate to Weblate"
-#~ msgid "About Weblate"
-#~ msgstr "បរិច្ចាកទៅកាន់Weblate"
 
 #, fuzzy
 #~| msgid "Continuous translation"
@@ -2974,11 +3126,6 @@ msgstr "ទំព័ររកមិនឃើញ"
 #~| msgid "Continuous translation"
 #~ msgid "Automatic translation"
 #~ msgstr "បន្ត​ការ​បកប្រែ​"
-
-#, fuzzy
-#~| msgid "Weblate logo"
-#~ msgid "Try Weblate gratis"
-#~ msgstr "ស្លាកសញ្ញា Weblate"
 
 #, fuzzy
 #~| msgid "Help with translations!"

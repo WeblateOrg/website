@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-05-17 13:56+0200\n"
+"POT-Creation-Date: 2020-07-10 22:20+0200\n"
 "PO-Revision-Date: 2020-05-20 07:07+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/weblate/website/"
@@ -115,11 +115,11 @@ msgid "Quarterly"
 msgstr "רבעוני"
 
 #: payments/models.py:162 weblate_web/templates/donate/form.html:24
-#: weblate_web/templates/hosting.html:379
-#: weblate_web/templates/hosting.html:389
-#: weblate_web/templates/hosting.html:401
-#: weblate_web/templates/hosting.html:413
-#: weblate_web/templates/hosting.html:424
+#: weblate_web/templates/hosting.html:446
+#: weblate_web/templates/hosting.html:457
+#: weblate_web/templates/hosting.html:469
+#: weblate_web/templates/hosting.html:481
+#: weblate_web/templates/hosting.html:492
 #: weblate_web/templates/snippets/pricing.html:35
 #: weblate_web/templates/snippets/pricing.html:61
 #: weblate_web/templates/snippets/pricing.html:87
@@ -212,7 +212,8 @@ msgstr "הכרזה"
 msgid "Conferences"
 msgstr "כנסים"
 
-#: weblate_web/models.py:54
+#: weblate_web/models.py:54 weblate_web/templates/hosting.html:57
+#: weblate_web/templates/hosting.html:275
 msgid "Hosted Weblate"
 msgstr "Weblate באירוח מלא"
 
@@ -230,7 +231,7 @@ msgstr "תרגום"
 msgid "Link text"
 msgstr "טקסט הקישור"
 
-#: weblate_web/models.py:110 weblate_web/templates/user.html:204
+#: weblate_web/models.py:110 weblate_web/templates/user.html:45
 msgid "Link URL"
 msgstr "כתובת הקישור"
 
@@ -250,23 +251,23 @@ msgstr "שירות מתארח ייעודי"
 msgid "Hosted service"
 msgstr "שירות מתארח"
 
-#: weblate_web/models.py:371 weblate_web/templates/support.html:76
+#: weblate_web/models.py:371 weblate_web/templates/support.html:52
 msgid "Basic self-hosted support"
 msgstr "תמיכה בסיסית לאירוח עצמי"
 
-#: weblate_web/models.py:372 weblate_web/templates/support.html:86
+#: weblate_web/models.py:372 weblate_web/templates/support.html:62
 msgid "Extended self-hosted support"
 msgstr "תמיכה מורחבת לאירוח עצמי"
 
-#: weblate_web/models.py:492
+#: weblate_web/models.py:492 weblate_web/templates/hosting.html:155
 msgid "Basic support"
 msgstr "תמיכה בסיסית"
 
-#: weblate_web/models.py:498
+#: weblate_web/models.py:498 weblate_web/templates/hosting.html:122
 msgid "Extended support"
 msgstr "תמיכה מורחבת"
 
-#: weblate_web/models.py:500 weblate_web/templates/support.html:97
+#: weblate_web/models.py:500 weblate_web/templates/support.html:98
 msgid "Backup service"
 msgstr "שירות גיבוי"
 
@@ -474,7 +475,8 @@ msgstr ""
 msgid "Contact"
 msgstr "יצירת קשר"
 
-#: weblate_web/templates/about.html:108 weblate_web/templates/user.html:161
+#: weblate_web/templates/about.html:108
+#: weblate_web/templates/snippets/service.html:145
 msgid "E-mail"
 msgstr "דוא״ל"
 
@@ -495,9 +497,10 @@ msgid "VAT ID"
 msgstr "מזהה מע״מ"
 
 #: weblate_web/templates/about.html:138 weblate_web/templates/careers.html:18
-#: weblate_web/templates/hosting.html:451
-#: weblate_web/templates/hosting.html:526
-#: weblate_web/templates/support.html:116
+#: weblate_web/templates/hosting.html:506
+#: weblate_web/templates/hosting.html:568
+#: weblate_web/templates/hosting.html:630
+#: weblate_web/templates/support.html:118
 msgid "Contact us"
 msgstr "יצירת קשר אתנו"
 
@@ -505,14 +508,22 @@ msgstr "יצירת קשר אתנו"
 msgid "Weblate is a libre software web-based continuous localization system."
 msgstr "Weblate היא מערכת חופשית מבוססת מנשק דפדפן לניהול תרגומים באופן שוטף."
 
-#: weblate_web/templates/base.html:22
+#: weblate_web/templates/base.html:20
 msgctxt "Keyword"
 msgid "translate"
 msgstr "תרגום"
 
-#: weblate_web/templates/base.html:67 weblate_web/templates/user.html:13
-msgid "Use Weblate"
-msgstr "שימוש ב־Weblate"
+#: weblate_web/templates/base.html:60
+#, fuzzy
+#| msgid "Log out"
+msgid "Sign out"
+msgstr "יציאה"
+
+#: weblate_web/templates/base.html:67
+#, fuzzy
+#| msgid "About Weblate"
+msgid "Go Weblate"
+msgstr "על אודות Weblate"
 
 #: weblate_web/templates/base.html:109
 msgid "Service Status"
@@ -797,8 +808,9 @@ msgid "Activate donation"
 msgstr "הפעלת תרומה"
 
 #: weblate_web/templates/donate.html:30 weblate_web/templates/donate.html:35
-#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:81
-#: weblate_web/templates/support.html:92 weblate_web/templates/support.html:104
+#: weblate_web/templates/donate.html:40 weblate_web/templates/support.html:57
+#: weblate_web/templates/support.html:69 weblate_web/templates/support.html:81
+#: weblate_web/templates/support.html:106
 msgid "annually"
 msgstr "שנתית"
 
@@ -807,7 +819,7 @@ msgstr "שנתית"
 #: weblate_web/templates/donate.html:145
 #: weblate_web/templates/snippets/box-donate.html:5
 #: weblate_web/templates/snippets/main-menu.html:8
-#: weblate_web/templates/user.html:257
+#: weblate_web/templates/user.html:98
 msgid "Donate"
 msgstr "תרומה"
 
@@ -1224,175 +1236,186 @@ msgid "Java"
 msgstr "Java"
 
 #: weblate_web/templates/features.html:95
+msgid "GWT"
+msgstr ""
+
+#: weblate_web/templates/features.html:96
 msgid "Joomla"
 msgstr "Joomla"
 
-#: weblate_web/templates/features.html:96
+#: weblate_web/templates/features.html:97
 msgid "Qt"
 msgstr "Qt"
 
-#: weblate_web/templates/features.html:97
+#: weblate_web/templates/features.html:98
 msgid "Android"
 msgstr "Android"
 
-#: weblate_web/templates/features.html:98
+#: weblate_web/templates/features.html:99
 msgid "i18next"
 msgstr "i18next"
 
-#: weblate_web/templates/features.html:99
+#: weblate_web/templates/features.html:100
 msgid "WebExtension"
 msgstr "WebExtension"
 
-#: weblate_web/templates/features.html:100
+#: weblate_web/templates/features.html:101
 msgid "Key and value"
 msgstr "מפתח וערך"
 
-#: weblate_web/templates/features.html:101
+#: weblate_web/templates/features.html:102
 msgid "react-intl"
 msgstr "react-intl"
 
-#: weblate_web/templates/features.html:102
+#: weblate_web/templates/features.html:105
 msgid "PHP"
 msgstr "PHP"
 
-#: weblate_web/templates/features.html:103
+#: weblate_web/templates/features.html:106
 msgid "Laravel"
 msgstr "Laravel"
 
-#: weblate_web/templates/features.html:104
+#: weblate_web/templates/features.html:107
 msgid "iOS"
 msgstr "iOS"
 
-#: weblate_web/templates/features.html:105
+#: weblate_web/templates/features.html:108
 msgid "Excel"
 msgstr "Excel"
 
-#: weblate_web/templates/features.html:106
+#: weblate_web/templates/features.html:109
 msgid "Mozilla DTD"
 msgstr "Mozilla DTD"
 
-#: weblate_web/templates/features.html:107
+#: weblate_web/templates/features.html:110
 msgid ".NET resource files"
 msgstr "קובצי משאבי ‪.NET"
 
-#: weblate_web/templates/features.html:108
+#: weblate_web/templates/features.html:111
 msgid "CSV"
 msgstr "CSV"
 
-#: weblate_web/templates/features.html:109
+#: weblate_web/templates/features.html:112
 msgid "YAML"
 msgstr "YAML"
 
-#: weblate_web/templates/features.html:110
+#: weblate_web/templates/features.html:113
 msgid "Ruby"
 msgstr "Ruby"
 
-#: weblate_web/templates/features.html:111
+#: weblate_web/templates/features.html:114
 msgid "App store metadata"
 msgstr "נתוני על של חנות יישומונים"
 
-#: weblate_web/templates/features.html:112
+#: weblate_web/templates/features.html:115
 msgid "Subtitles"
 msgstr "כתוביות"
 
-#: weblate_web/templates/features.html:113
+#: weblate_web/templates/features.html:116
 msgid "Windows"
 msgstr "Windows"
 
-#: weblate_web/templates/features.html:114
+#: weblate_web/templates/features.html:117
 msgid "HTML"
 msgstr "HTML"
 
-#: weblate_web/templates/features.html:115
-#: weblate_web/templates/features.html:116
-#: weblate_web/templates/features.html:117
+#: weblate_web/templates/features.html:118
 msgid "OpenDocument"
 msgstr "OpenDocument"
 
-#: weblate_web/templates/features.html:118
+#: weblate_web/templates/features.html:119
 msgid "IDML"
 msgstr "IDML"
 
-#: weblate_web/templates/features.html:127
+#: weblate_web/templates/features.html:120
+msgid "INI files"
+msgstr ""
+
+#: weblate_web/templates/features.html:121
+msgid "InnoSetup"
+msgstr ""
+
+#: weblate_web/templates/features.html:130
 msgid "Glossaries"
 msgstr "מונחונים"
 
-#: weblate_web/templates/features.html:128
+#: weblate_web/templates/features.html:131
 msgid "Define frequently used terminology for consistency."
 msgstr "הגדרת מינוח בשימוש תדיר כדי לשמור על אחידות."
 
-#: weblate_web/templates/features.html:134
+#: weblate_web/templates/features.html:137
 msgid "Feedback Acquisition"
 msgstr "קבלת משוב"
 
-#: weblate_web/templates/features.html:135
+#: weblate_web/templates/features.html:138
 msgid "Use Weblate to acquire feedback on source strings to improve them."
 msgstr "ניתן להשתמש ב־Weblate כדי לקבל משוב על מחרוזות המקור ולשפר אותן."
 
-#: weblate_web/templates/features.html:141
+#: weblate_web/templates/features.html:144
 msgid "Export and Import"
 msgstr "ייצוא וייבוא"
 
-#: weblate_web/templates/features.html:142
+#: weblate_web/templates/features.html:145
 msgid "Translations can be downloaded for offline translation and merged back."
 msgstr ""
 "ניתן להוריד את התרגומים כדי לתרגם באופן בלתי מקוון ולאחר מכן למזג בחזרה."
 
-#: weblate_web/templates/features.html:148
+#: weblate_web/templates/features.html:151
 msgid "Fully Integrated"
 msgstr "שילוב מלא"
 
-#: weblate_web/templates/features.html:149
+#: weblate_web/templates/features.html:152
 msgid ""
 "Translations are managed within the same version control system as your code."
 msgstr "התרגומים מנוהלים באותה מערכת ניהול הגרסאות כמו הקוד שלך."
 
-#: weblate_web/templates/features.html:155 weblate_web/templates/user.html:52
+#: weblate_web/templates/features.html:158
+#: weblate_web/templates/snippets/service.html:36
 msgid "Documentation"
 msgstr "תיעוד"
 
-#: weblate_web/templates/features.html:156
+#: weblate_web/templates/features.html:159
 msgid "Comprehensive documentation covering both setup and usage."
 msgstr "תיעוד נרחב המכסה את ההתקנה ואת התפעול."
 
-#: weblate_web/templates/features.html:162
+#: weblate_web/templates/features.html:165
 msgid "Easy Reviews"
 msgstr "סקירות פשוטות"
 
-#: weblate_web/templates/features.html:163
+#: weblate_web/templates/features.html:166
 msgid "Several options for translators to review contributions made by peers."
 msgstr "מגוון אפשרויות למתרגמים לסקור את התרומות שהתקבלו מעמיתיהם."
 
-#: weblate_web/templates/features.html:169
+#: weblate_web/templates/features.html:172
 msgid "Language support"
 msgstr "תמיכה בשפות"
 
-#: weblate_web/templates/features.html:170
+#: weblate_web/templates/features.html:173
 msgid "Support for over 300 languages out of the box, others can be added too."
 msgstr "תמיכה בלמעלה מ־300 שפות באופן מובנה, ניתן להוסיף עוד."
 
-#: weblate_web/templates/features.html:176
+#: weblate_web/templates/features.html:179
 msgid "Promotion"
 msgstr "קידום"
 
-#: weblate_web/templates/features.html:177
+#: weblate_web/templates/features.html:180
 msgid ""
 "Built-in features to attract a wider audience for your translation project."
 msgstr "תכונות מובנות שנועדו למשוך קהל רחב יותר אל מיזם התרגום שלך."
 
-#: weblate_web/templates/features.html:183
+#: weblate_web/templates/features.html:186
 msgid "Reporting"
 msgstr "דיווח"
 
-#: weblate_web/templates/features.html:184
+#: weblate_web/templates/features.html:187
 msgid "Reports are generated to provide info on project activity."
 msgstr "נוצרים דוחות כדי לספק מידע על פעילות במיזם."
 
-#: weblate_web/templates/features.html:190
+#: weblate_web/templates/features.html:193
 msgid "Version Control"
 msgstr "ניהול גרסאות"
 
-#: weblate_web/templates/features.html:191
+#: weblate_web/templates/features.html:194
 msgid ""
 "Talks directly with your version control system, currently Git and Mercurial "
 "are supported."
@@ -1400,11 +1423,11 @@ msgstr ""
 "פועלת ישירות מול מערכת ניהול הגרסאות שלך, כרגע קיימת תמיכה ב־Git וב־"
 "Mercurial."
 
-#: weblate_web/templates/features.html:197
+#: weblate_web/templates/features.html:200
 msgid "Collaboration Sites"
 msgstr "אתרי שיתוף פעולה"
 
-#: weblate_web/templates/features.html:198
+#: weblate_web/templates/features.html:201
 msgid ""
 "Native support for software development sites such as GitLab, GitHub, "
 "Pagure, or Bitbucket."
@@ -1412,30 +1435,212 @@ msgstr ""
 "תמיכה מובנית באתרי פיתוח תכנה רבים כמו למשל GitLab,‏ GitHub,‏ Pagure או "
 "Bitbucket."
 
-#: weblate_web/templates/features.html:204
+#: weblate_web/templates/features.html:207
 msgid "Responsive UI"
 msgstr "ממשק משתמש מסתגל"
 
-#: weblate_web/templates/features.html:205
+#: weblate_web/templates/features.html:208
 msgid "User interface that works nicely on desktop, tablet and phones."
 msgstr "מנשק משתמש שיכול לעבוד בצורה חלקה על שולחן עבודה, מחשב לוח או טלפונים."
+
+#: weblate_web/templates/features.html:214
+msgid "Translation memory"
+msgstr "זיכרון תרגום"
+
+#: weblate_web/templates/features.html:215
+msgid "Reuse existing translations to save time and costs."
+msgstr ""
+
+#: weblate_web/templates/features.html:221
+msgid "Translation addons"
+msgstr "תוספות תרגומים"
+
+#: weblate_web/templates/features.html:222
+#, fuzzy
+#| msgid ""
+#| "Automated localization workflow follows your project development closely."
+msgid "Customize localization workflow with various addons."
+msgstr "אופן עבודה אוטומטי על תרגום עוקב אחר התפתחות המיזם שלך מקרוב."
+
+#: weblate_web/templates/features.html:228
+#, fuzzy
+#| msgid "Backup service"
+msgid "Backups"
+msgstr "שירות גיבוי"
+
+#: weblate_web/templates/features.html:229
+msgid "Built-in remote backups to prevent data loss."
+msgstr ""
 
 #: weblate_web/templates/hosting.html:11
 msgid "Weblate Pricing"
 msgstr "תמחור Weblate"
 
-#: weblate_web/templates/hosting.html:14
-#, python-format
+#: weblate_web/templates/hosting.html:15
+#, fuzzy, python-format
+#| msgid ""
+#| "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#| "help</a> for on-premises hosting—all with the possibility of premium "
+#| "support. Our team is ready to help you make Weblate run smoothly."
 msgid ""
 "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premises hosting—all with the possibility of premium support. Our "
-"team is ready to help you make Weblate run smoothly."
+"a> for on-premise hosting — all with the convenience of the premium support."
 msgstr ""
 "אפשר להשתמש ב־Weblate כשירות, להקים עותק בעצמך או <a href=\"%(url)s\">לקבל "
 "עזרה</a> לאירוח בשרת פיזי באתר - כל האפשרויות לקבלת תמיכת פרימיום. הצוות "
 "שלנו מוכן לסייע לך כדי שה־Weblate שלך יפעל בצורה חלקה."
 
-#: weblate_web/templates/hosting.html:15
+#: weblate_web/templates/hosting.html:16
+msgid "Our team is ready to help you make Weblate run smoothly."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:19
+#, fuzzy
+#| msgid "The Weblate history"
+msgid "Which Weblate is right for you"
+msgstr "ההיסטוריה של Weblate"
+
+#: weblate_web/templates/hosting.html:24
+msgid "System maintenance"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:27
+#, fuzzy
+#| msgid "installation"
+msgid "Weblate installation"
+msgstr "התקנה"
+
+#: weblate_web/templates/hosting.html:30
+#, fuzzy
+#| msgid "Weblate features"
+msgid "Weblate upgrades"
+msgstr "תכונות Weblate"
+
+#: weblate_web/templates/hosting.html:33
+msgid "Access to backups"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:36
+#, fuzzy
+#| msgid "Setup customization"
+msgid "Complete configuration customization"
+msgstr "התאמת ההקמה"
+
+#: weblate_web/templates/hosting.html:39
+msgid "Single sign-on"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:42
+msgid "Priority e-mail support"
+msgstr "תמיכה בדוא״ל בעדיפות גבוהה"
+
+#: weblate_web/templates/hosting.html:45
+#, fuzzy
+#| msgid "Translation memory"
+msgid "Shared translation memory"
+msgstr "זיכרון תרגום"
+
+#: weblate_web/templates/hosting.html:48
+msgid "Priority bug fixing"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:56
+#, fuzzy
+#| msgid "cloud"
+msgctxt "Hosting plan"
+msgid "Cloud"
+msgstr "ענן"
+
+#: weblate_web/templates/hosting.html:69
+msgid "Backups and restore on Hosted Weblate are fully automatic."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:89
+#, fuzzy
+#| msgid "Dedicated instance"
+msgctxt "Hosting plan"
+msgid "Dedicated cloud"
+msgstr "עותק ייעודי"
+
+#: weblate_web/templates/hosting.html:121
+#: weblate_web/templates/hosting.html:154
+#: weblate_web/templates/hosting.html:187
+#: weblate_web/templates/snippets/pricing.html:121
+msgctxt "Hosting plan"
+msgid "Self-hosted"
+msgstr "באירוח עצמי"
+
+#: weblate_web/templates/hosting.html:134
+#: weblate_web/templates/hosting.html:161
+#: weblate_web/templates/hosting.html:167
+#: weblate_web/templates/hosting.html:200
+msgid "Optional"
+msgstr "רשות"
+
+#: weblate_web/templates/hosting.html:188
+#: weblate_web/templates/hosting.html:263
+#: weblate_web/templates/snippets/pricing.html:142
+#: weblate_web/templates/snippets/pricing.html:166
+msgid "Gratis"
+msgstr "חינם"
+
+#: weblate_web/templates/hosting.html:222
+#: weblate_web/templates/hosting.html:232
+msgid "From"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:224
+#: weblate_web/templates/hosting.html:234
+#: weblate_web/templates/hosting.html:244
+#: weblate_web/templates/hosting.html:254
+#: weblate_web/templates/hosting.html:447
+#: weblate_web/templates/hosting.html:517
+#: weblate_web/templates/hosting.html:529
+#: weblate_web/templates/hosting.html:541
+#: weblate_web/templates/hosting.html:554
+#: weblate_web/templates/hosting.html:579
+#: weblate_web/templates/hosting.html:591
+#: weblate_web/templates/hosting.html:603
+#: weblate_web/templates/hosting.html:616
+#: weblate_web/templates/snippets/pricing.html:38
+#: weblate_web/templates/snippets/pricing.html:64
+#: weblate_web/templates/snippets/pricing.html:90
+#: weblate_web/templates/snippets/pricing.html:116
+msgid "Yearly"
+msgstr "שנתי"
+
+#: weblate_web/templates/hosting.html:227
+#: weblate_web/templates/hosting.html:237
+#, fuzzy
+#| msgid "Selected option"
+msgid "See options"
+msgstr "האפשרות הנבחרת"
+
+#: weblate_web/templates/hosting.html:247
+#: weblate_web/templates/hosting.html:257
+#: weblate_web/templates/hosting.html:460
+#: weblate_web/templates/hosting.html:472
+#: weblate_web/templates/hosting.html:484
+#: weblate_web/templates/hosting.html:495
+#: weblate_web/templates/hosting.html:520
+#: weblate_web/templates/hosting.html:532
+#: weblate_web/templates/hosting.html:544
+#: weblate_web/templates/hosting.html:557
+#: weblate_web/templates/hosting.html:582
+#: weblate_web/templates/hosting.html:594
+#: weblate_web/templates/hosting.html:606
+#: weblate_web/templates/hosting.html:619 weblate_web/templates/support.html:58
+#: weblate_web/templates/support.html:70 weblate_web/templates/support.html:82
+#: weblate_web/templates/support.html:94 weblate_web/templates/support.html:107
+msgid "Buy now"
+msgstr "לרכוש כעת"
+
+#: weblate_web/templates/hosting.html:267
+#: weblate_web/templates/snippets/main-menu.html:5
+msgid "Download"
+msgstr "הורדה"
+
+#: weblate_web/templates/hosting.html:277
 #, python-format
 msgid ""
 "Hosted Weblate allows localization without any extra effort, and "
@@ -1449,11 +1654,12 @@ msgstr ""
 "אירוח של מיזמים גדולים יותר או לאפשר לנו לענות על השאלות שלך דרך <a href="
 "\"%(contact)s\">יצירת קשר</a>, אנו ערוכים למצוא עבורך את הפתרון המושלם."
 
-#: weblate_web/templates/hosting.html:22
+#: weblate_web/templates/hosting.html:284
 msgid "Continuous localization"
 msgstr "תרגום רציף"
 
-#: weblate_web/templates/hosting.html:25 weblate_web/templates/hosting.html:542
+#: weblate_web/templates/hosting.html:287
+#: weblate_web/templates/hosting.html:649
 #: weblate_web/templates/snippets/pricing.html:18
 #: weblate_web/templates/snippets/pricing.html:44
 #: weblate_web/templates/snippets/pricing.html:70
@@ -1463,85 +1669,52 @@ msgstr "תרגום רציף"
 msgid "Source strings"
 msgstr "מחרוזות מקור"
 
-#: weblate_web/templates/hosting.html:28
+#: weblate_web/templates/hosting.html:290
 msgid "Target languages"
 msgstr "שפות היעד"
 
-#: weblate_web/templates/hosting.html:31
+#: weblate_web/templates/hosting.html:293
 msgid "Translation projects"
 msgstr "מיזמי תרגום"
 
-#: weblate_web/templates/hosting.html:34
+#: weblate_web/templates/hosting.html:296
 msgid "Translation components"
 msgstr "רכיבי תרגום"
 
-#: weblate_web/templates/hosting.html:37
+#: weblate_web/templates/hosting.html:299
 msgid "Number of translators"
 msgstr "מספר מתרגמים"
 
-#: weblate_web/templates/hosting.html:40
-msgid "User management"
-msgstr "ניהול משתמשים"
-
-#: weblate_web/templates/hosting.html:43
-msgid "Supported file formats"
-msgstr "סוגי קבצים נתמכים"
-
-#: weblate_web/templates/hosting.html:46
-msgid "Quality checks"
-msgstr "בקרת איכות"
-
-#: weblate_web/templates/hosting.html:49
-msgid "Translation addons"
-msgstr "תוספות תרגומים"
-
-#: weblate_web/templates/hosting.html:52
-msgid "Glossary"
-msgstr "מונחון"
-
-#: weblate_web/templates/hosting.html:55
-msgid "Translation memory"
-msgstr "זיכרון תרגום"
-
-#: weblate_web/templates/hosting.html:58
-msgid "Priority e-mail support"
-msgstr "תמיכה בדוא״ל בעדיפות גבוהה"
-
-#: weblate_web/templates/hosting.html:61
-msgid "Regular backups"
-msgstr "גיבויים תדירים"
-
-#: weblate_web/templates/hosting.html:64 weblate_web/templates/hosting.html:546
+#: weblate_web/templates/hosting.html:302
 msgid "Dedicated instance"
 msgstr "עותק ייעודי"
 
-#: weblate_web/templates/hosting.html:72
+#: weblate_web/templates/hosting.html:310
 #: weblate_web/templates/snippets/pricing.html:10
 msgctxt "Hosting plan"
 msgid "Basic"
 msgstr "בסיסית"
 
-#: weblate_web/templates/hosting.html:73 weblate_web/templates/hosting.html:124
-#: weblate_web/templates/hosting.html:175
-#: weblate_web/templates/hosting.html:226
+#: weblate_web/templates/hosting.html:311
+#: weblate_web/templates/hosting.html:338
+#: weblate_web/templates/hosting.html:365
+#: weblate_web/templates/hosting.html:392
 msgid "cloud"
 msgstr "ענן"
 
-#: weblate_web/templates/hosting.html:88 weblate_web/templates/hosting.html:91
-#: weblate_web/templates/hosting.html:139
-#: weblate_web/templates/hosting.html:142
-#: weblate_web/templates/hosting.html:187
-#: weblate_web/templates/hosting.html:190
-#: weblate_web/templates/hosting.html:193
-#: weblate_web/templates/hosting.html:238
-#: weblate_web/templates/hosting.html:241
-#: weblate_web/templates/hosting.html:244
-#: weblate_web/templates/hosting.html:283
-#: weblate_web/templates/hosting.html:286
-#: weblate_web/templates/hosting.html:289
-#: weblate_web/templates/hosting.html:292
-#: weblate_web/templates/hosting.html:295
-#: weblate_web/templates/hosting.html:346
+#: weblate_web/templates/hosting.html:326
+#: weblate_web/templates/hosting.html:329
+#: weblate_web/templates/hosting.html:353
+#: weblate_web/templates/hosting.html:356
+#: weblate_web/templates/hosting.html:377
+#: weblate_web/templates/hosting.html:380
+#: weblate_web/templates/hosting.html:383
+#: weblate_web/templates/hosting.html:404
+#: weblate_web/templates/hosting.html:407
+#: weblate_web/templates/hosting.html:410
+#: weblate_web/templates/hosting.html:431
+#: weblate_web/templates/hosting.html:434
+#: weblate_web/templates/hosting.html:437
 #: weblate_web/templates/snippets/pricing.html:31
 #: weblate_web/templates/snippets/pricing.html:57
 #: weblate_web/templates/snippets/pricing.html:79
@@ -1555,154 +1728,72 @@ msgstr "ענן"
 msgid "Unlimited"
 msgstr "ללא הגבלה"
 
-#: weblate_web/templates/hosting.html:97 weblate_web/templates/hosting.html:148
-#: weblate_web/templates/hosting.html:199
-#: weblate_web/templates/hosting.html:250
-#: weblate_web/templates/hosting.html:301
-#: weblate_web/templates/hosting.html:352
-msgid "All"
-msgstr "הכול"
-
-#: weblate_web/templates/hosting.html:118
-#: weblate_web/templates/hosting.html:169
-#: weblate_web/templates/hosting.html:220
+#: weblate_web/templates/hosting.html:332
+#: weblate_web/templates/hosting.html:359
+#: weblate_web/templates/hosting.html:386
 #, python-format
 msgid ""
 "Additional charge %(price)s EUR/year, only available with yearly billing"
 msgstr "תשלום נוסף של %(price)s אירו בשנה, זמין רק בתצורת חיוב שנתית"
 
-#: weblate_web/templates/hosting.html:123
+#: weblate_web/templates/hosting.html:337
 #: weblate_web/templates/snippets/pricing.html:11
 msgctxt "Hosting plan"
 msgid "Medium"
 msgstr "בינונית"
 
-#: weblate_web/templates/hosting.html:174
+#: weblate_web/templates/hosting.html:364
 #: weblate_web/templates/snippets/pricing.html:12
 msgctxt "Hosting plan"
 msgid "Advanced"
 msgstr "מתקדמת"
 
-#: weblate_web/templates/hosting.html:202
-#: weblate_web/templates/hosting.html:205
-#: weblate_web/templates/hosting.html:253
-#: weblate_web/templates/hosting.html:256
-#: weblate_web/templates/hosting.html:304
-#: weblate_web/templates/hosting.html:307
-msgid "Customizable"
-msgstr "ניתן להתאמה אישית"
-
-#: weblate_web/templates/hosting.html:225
+#: weblate_web/templates/hosting.html:391
 #: weblate_web/templates/snippets/pricing.html:13
 msgctxt "Hosting plan"
 msgid "Enterprise"
 msgstr "ארגונית"
 
-#: weblate_web/templates/hosting.html:276
-#: weblate_web/templates/snippets/pricing.html:121
+#: weblate_web/templates/hosting.html:418
+#, fuzzy
+#| msgid "Customizable"
 msgctxt "Hosting plan"
-msgid "Self-hosted"
-msgstr "באירוח עצמי"
+msgid "Custom"
+msgstr "ניתן להתאמה אישית"
 
-#: weblate_web/templates/hosting.html:277
-msgid "on-premises"
-msgstr "על שרתים מקומיים"
+#: weblate_web/templates/hosting.html:419
+msgid "and dedicated"
+msgstr ""
 
-#: weblate_web/templates/hosting.html:319
-msgid "Optional"
-msgstr "רשות"
+#: weblate_web/templates/hosting.html:425
+#: weblate_web/templates/hosting.html:428
+#, python-format
+msgid "over <strong>%(count)s</strong>"
+msgstr ""
 
-#: weblate_web/templates/hosting.html:327
-#: weblate_web/templates/hosting.html:435
-#: weblate_web/templates/hosting.html:447
-#: weblate_web/templates/hosting.html:510
-#: weblate_web/templates/hosting.html:522
-#: weblate_web/templates/snippets/pricing.html:142
-#: weblate_web/templates/snippets/pricing.html:166
-msgid "Gratis"
-msgstr "חינם"
+#: weblate_web/templates/hosting.html:448
+#, fuzzy
+#| msgid "Dedicated instance"
+msgid "Dedicated"
+msgstr "עותק ייעודי"
 
-#: weblate_web/templates/hosting.html:328
-#: weblate_web/templates/snippets/pricing.html:146
-msgid "for libre projects"
-msgstr "למיזמים חופשיים"
-
-#: weblate_web/templates/hosting.html:334
-#: weblate_web/templates/hosting.html:337
-#: weblate_web/templates/hosting.html:343
-#: weblate_web/templates/snippets/pricing.html:151
-#: weblate_web/templates/snippets/pricing.html:155
-msgid "Negotiable"
-msgstr "נתון למשא ומתן"
-
-#: weblate_web/templates/hosting.html:380
-#: weblate_web/templates/hosting.html:462
-#: weblate_web/templates/hosting.html:474
-#: weblate_web/templates/hosting.html:486
-#: weblate_web/templates/hosting.html:499
-#: weblate_web/templates/snippets/pricing.html:38
-#: weblate_web/templates/snippets/pricing.html:64
-#: weblate_web/templates/snippets/pricing.html:90
-#: weblate_web/templates/snippets/pricing.html:116
-msgid "Yearly"
-msgstr "שנתי"
-
-#: weblate_web/templates/hosting.html:382
+#: weblate_web/templates/hosting.html:450
 msgid "<strong>Save more</strong> with longer pre-payment!"
 msgstr "ניתן <strong>לחסוך יותר</strong> עם תשלום ארוך יותר מראש!"
 
-#: weblate_web/templates/hosting.html:392
-#: weblate_web/templates/hosting.html:404
-#: weblate_web/templates/hosting.html:416
-#: weblate_web/templates/hosting.html:427
-#: weblate_web/templates/hosting.html:465
-#: weblate_web/templates/hosting.html:477
-#: weblate_web/templates/hosting.html:489
-#: weblate_web/templates/hosting.html:502 weblate_web/templates/support.html:60
-#: weblate_web/templates/support.html:72 weblate_web/templates/support.html:82
-#: weblate_web/templates/support.html:93 weblate_web/templates/support.html:105
-msgid "Buy now"
-msgstr "לרכוש כעת"
+#: weblate_web/templates/hosting.html:503
+#: weblate_web/templates/hosting.html:565
+#: weblate_web/templates/hosting.html:627
+#, fuzzy
+#| msgid "Ask for hosting"
+msgid "<b>Ask</b> for options"
+msgstr "בקשה לאירוח"
 
-#: weblate_web/templates/hosting.html:439
-#: weblate_web/templates/hosting.html:514
-msgid "Buy support"
-msgstr "רכישת תמיכה"
-
-#: weblate_web/templates/hosting.html:442
-#: weblate_web/templates/hosting.html:517
-msgid "or download Weblate"
-msgstr "או להוריד את Weblate"
-
-#: weblate_web/templates/hosting.html:538
-#: weblate_web/templates/support.html:120
-msgid "Payment"
-msgstr "תשלום"
-
-#: weblate_web/templates/hosting.html:544
-msgid ""
-"Pricing is based on number of source strings and target languages. The "
-"source string is a text unit defined in a translation format, it can be a "
-"word, sentence or paragraph."
-msgstr ""
-"התמחור מתבסס על מספר מחרוזות המקור ושפות היעד. מחרוזת מקור היא מקטע טקסט "
-"שמוגדר בתבנית תרגום, זה יכול להיות מילה, משפט או פסקה."
-
-#: weblate_web/templates/hosting.html:548
-msgid ""
-"With cloud hosting, the default setup is to use a shared instance, and a "
-"common translation memory. On a dedicated instance there is no economy of "
-"scale, but you can make use of customized authentication and settings."
-msgstr ""
-"עם אירוח בענן, תצורת בררת המחדל היא עותק משותף וזיכרון תרגום משותף. עותק "
-"עצמאי הוא פחות חסכוני ביחס לשימוש אבל ניתן להשתמש באימות ובהגדרות מותאמים "
-"אישית."
-
-#: weblate_web/templates/hosting.html:550
+#: weblate_web/templates/hosting.html:641
 msgid "Gratis Trial?"
 msgstr "ניסיון בחינם?"
 
-#: weblate_web/templates/hosting.html:552
+#: weblate_web/templates/hosting.html:643
 #, python-format
 msgid ""
 "<a href=\"%(contact)s\">Get in touch</a> if you are still unsure whether "
@@ -1711,7 +1802,46 @@ msgstr ""
 "ניתן <a href=\"%(contact)s\">ליצור קשר</a> אם עדיין יש בך ספק האם מערכת "
 "Weblate מתאימה לך."
 
-#: weblate_web/templates/hosting.html:555
+#: weblate_web/templates/hosting.html:645
+#: weblate_web/templates/support.html:122
+msgid "Payment"
+msgstr "תשלום"
+
+#: weblate_web/templates/hosting.html:651
+msgid ""
+"Pricing is based on number of source strings and target languages. The "
+"source string is a text unit defined in a translation format, it can be a "
+"word, sentence or paragraph."
+msgstr ""
+"התמחור מתבסס על מספר מחרוזות המקור ושפות היעד. מחרוזת מקור היא מקטע טקסט "
+"שמוגדר בתבנית תרגום, זה יכול להיות מילה, משפט או פסקה."
+
+#: weblate_web/templates/hosting.html:655
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Weblate supports libre projects"
+msgstr "למיזמים חופשיים"
+
+#: weblate_web/templates/hosting.html:657
+#, python-format
+msgid ""
+"We proudly support opensource across the globe. If you feel like being "
+"supported by Weblate will help your libre project, feel free to start free "
+"trial and <a href=\"%(url)s\">let us know</a>."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:658
+msgid ""
+"For such projects, we would activate <strong>Libre plan</strong> for free."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:659
+msgid ""
+"It has same limits as <strong>Advanced plan</strong>, but only allows public "
+"projects."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:664
 msgid "Join existing users and supporters"
 msgstr "הצטרפות למשתמשים ולתומכים הקיימים"
 
@@ -1793,15 +1923,15 @@ msgstr "מעבר לתמחור"
 msgid "Users and Supporters"
 msgstr "משתמשים ותומכים"
 
-#: weblate_web/templates/mail/base.html:245
+#: weblate_web/templates/mail/base.html:242
 msgid "Weblate, the libre continuous localization system."
 msgstr "מערכת התרגום הרציף החופשית, Weblate."
 
-#: weblate_web/templates/mail/base.html:248
+#: weblate_web/templates/mail/base.html:245
 msgid "Manage your payments"
 msgstr "ניהול התשלומים שלך"
 
-#: weblate_web/templates/mail/base.html:254
+#: weblate_web/templates/mail/base.html:251
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "נוצר ב־%(timestamp)s."
@@ -1990,6 +2120,15 @@ msgstr "מצב תשלום"
 msgid "Waiting for payment to be completed."
 msgstr "בהמתנה להשלמת התשלום."
 
+#: weblate_web/templates/service.html:4
+msgid "Serice"
+msgstr ""
+
+#: weblate_web/templates/service.html:10
+#: weblate_web/templates/snippets/service.html:5
+msgid "Service"
+msgstr "שירות"
+
 #: weblate_web/templates/snippets/about.html:5
 msgid ""
 "Dive in, or leverage extensive skills and experience from our team of "
@@ -2120,10 +2259,6 @@ msgstr ""
 msgid "Help translate"
 msgstr "עזרה בתרגום"
 
-#: weblate_web/templates/snippets/main-menu.html:5
-msgid "Download"
-msgstr "הורדה"
-
 #: weblate_web/templates/snippets/main-menu.html:6
 msgid "Pricing"
 msgstr "מחיר"
@@ -2137,7 +2272,7 @@ msgid "Careers"
 msgstr "משרות"
 
 #: weblate_web/templates/snippets/main-menu.html:12
-#: weblate_web/templates/support.html:12
+#: weblate_web/templates/support.html:13
 msgid "Get help"
 msgstr "קבלת עזרה"
 
@@ -2155,7 +2290,7 @@ msgid "Docs"
 msgstr "מסמכים"
 
 #: weblate_web/templates/snippets/payment.html:30
-#: weblate_web/templates/user.html:95
+#: weblate_web/templates/snippets/service.html:79
 #, python-format
 msgctxt "Date range"
 msgid "%(created)s–%(expires)s"
@@ -2221,6 +2356,15 @@ msgstr "עם <a href=\"%(url)s\">תמיכה</a> בתשלום"
 msgid "Gratis Weblate"
 msgstr "Weblate חינמי"
 
+#: weblate_web/templates/snippets/pricing.html:146
+msgid "for libre projects"
+msgstr "למיזמים חופשיים"
+
+#: weblate_web/templates/snippets/pricing.html:151
+#: weblate_web/templates/snippets/pricing.html:155
+msgid "Negotiable"
+msgstr "נתון למשא ומתן"
+
 #: weblate_web/templates/snippets/pricing.html:166
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
@@ -2229,6 +2373,124 @@ msgstr "לפי <a href=\"%(url)s\">דרישה</a>"
 #: weblate_web/templates/snippets/pricing.html:169
 msgid "Compare all plans"
 msgstr "השוואת כל התכניות"
+
+#: weblate_web/templates/snippets/service.html:10
+msgid "Exceeds selected service offering."
+msgstr "חורג מהיצע השירות הנבחר."
+
+#: weblate_web/templates/snippets/service.html:18
+msgid "Activation token"
+msgstr "אסימון הפעלה"
+
+#: weblate_web/templates/snippets/service.html:21
+#: weblate_web/templates/snippets/service.html:35
+msgid "Copy"
+msgstr "העתקה"
+
+#: weblate_web/templates/snippets/service.html:24
+msgid "Regenerate"
+msgstr "ליצור מחדש"
+
+#: weblate_web/templates/snippets/service.html:32
+msgid "Backup repository"
+msgstr "מאגר גיבוי"
+
+#: weblate_web/templates/snippets/service.html:42
+msgid "Server URL"
+msgstr "כתובת השרת"
+
+#: weblate_web/templates/snippets/service.html:48
+msgid ""
+"Use an activation token to connect your Weblate installation to the support "
+"portal. This step is optional, you can use support services without it as "
+"well."
+msgstr ""
+"יש להשתמש באסימון הפעלה כדי לחבר את התקנת ה־Weblate שלך אל שער התמיכה. מדובר "
+"בשלב בלתי מחייב, ניתן להשתמש בשירותי התמיכה גם ללא ההגדרה הזאת."
+
+#: weblate_web/templates/snippets/service.html:49
+msgid "See documentation on subscription management."
+msgstr "הצגת התיעוד על ניהול מינוי."
+
+#: weblate_web/templates/snippets/service.html:57
+msgid "Note"
+msgstr "פתק"
+
+#: weblate_web/templates/snippets/service.html:67
+msgid "Subscription"
+msgstr "מינוי"
+
+#: weblate_web/templates/snippets/service.html:71
+msgid "Change plan"
+msgstr "החלפת תכנית"
+
+#: weblate_web/templates/snippets/service.html:78
+msgid "Validity"
+msgstr "תוקף"
+
+#: weblate_web/templates/snippets/service.html:84
+#: weblate_web/templates/user.html:29
+msgid "Creation date"
+msgstr "מועד היצירה"
+
+#: weblate_web/templates/snippets/service.html:91
+#: weblate_web/templates/user.html:56
+msgid "State"
+msgstr "מצב"
+
+#: weblate_web/templates/snippets/service.html:94
+#: weblate_web/templates/user.html:59
+msgid "Expired"
+msgstr "פג תוקף"
+
+#: weblate_web/templates/snippets/service.html:96
+#: weblate_web/templates/user.html:61
+msgid "Automatic renewal"
+msgstr "חידוש אוטומטי"
+
+#: weblate_web/templates/snippets/service.html:98
+#: weblate_web/templates/user.html:63
+msgid "No renewal"
+msgstr "אין חידוש"
+
+#: weblate_web/templates/snippets/service.html:102
+#: weblate_web/templates/user.html:67
+msgid "Renew now"
+msgstr "לחדש כעת"
+
+#: weblate_web/templates/snippets/service.html:104
+msgid "Switch to yearly"
+msgstr "העברה לשנתי"
+
+#: weblate_web/templates/snippets/service.html:110
+#: weblate_web/templates/user.html:72
+msgid "Turn off renewal"
+msgstr "כיבוי החידוש"
+
+#: weblate_web/templates/snippets/service.html:119
+#: weblate_web/templates/user.html:79
+msgid "Payments"
+msgstr "תשלומים"
+
+#: weblate_web/templates/snippets/service.html:131
+msgid "Users"
+msgstr "משתמשים"
+
+#: weblate_web/templates/snippets/service.html:139
+msgid "Remove"
+msgstr "הסרה"
+
+#: weblate_web/templates/snippets/service.html:146
+msgid "Add"
+msgstr "הוספה"
+
+#: weblate_web/templates/snippets/service.html:152
+msgid "Get more services"
+msgstr "קבלת שירותים נוספים"
+
+#: weblate_web/templates/snippets/service.html:157
+msgid "Congratulations, your Weblate instance is fully covered."
+msgstr "ברכותינו, עותק ה־Weblate שלך מכוסה מכל הכיוונים."
 
 #: weblate_web/templates/snippets/users.html:9
 msgid "See all projects"
@@ -2266,11 +2528,11 @@ msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr "החיוב ההפוך חל על חשבוניות שהונפקו לטובת עסקים באיחוד האירופי."
 
-#: weblate_web/templates/support.html:4
+#: weblate_web/templates/support.html:5
 msgid "Weblate support"
 msgstr "Weblate תמיכה"
 
-#: weblate_web/templates/support.html:14
+#: weblate_web/templates/support.html:15
 msgid ""
 "Weblate is copylefted libre software with community support. Subscribers "
 "receive priority support at no extra charge. Prepaid help packages are "
@@ -2279,15 +2541,15 @@ msgstr ""
 "Weblate היא תכנה חופשית ברישיון מתירני עם תמיכה קהילתית. מנויים מקבלים תמיכה "
 "בעדיפות ללא עלות נוספות. חבילות עזרה בתשלום מראש זמינות לכל דורש."
 
-#: weblate_web/templates/support.html:15
+#: weblate_web/templates/support.html:16
 msgid "Report issue"
 msgstr "דיווח על תקלה"
 
-#: weblate_web/templates/support.html:22
+#: weblate_web/templates/support.html:23
 msgid "Bugs and feature requests"
 msgstr "באגים ובקשות תכונות"
 
-#: weblate_web/templates/support.html:23
+#: weblate_web/templates/support.html:24
 #, python-format
 msgid ""
 "Issues and ideas for improvement can be reported to the <a href=\"%(url)s"
@@ -2296,11 +2558,11 @@ msgstr ""
 "ניתן לדווח על תקלות ולהציע הצעות לשיפור ב<a href=\"%(url)s\">עוקב התקלות "
 "שלנו</a>."
 
-#: weblate_web/templates/support.html:29
+#: weblate_web/templates/support.html:30
 msgid "Security issues"
 msgstr "חורי אבטחה"
 
-#: weblate_web/templates/support.html:30
+#: weblate_web/templates/support.html:31
 #, python-format
 msgid ""
 "Should you find a vulnerability, please report it to %(report)s. More info "
@@ -2309,11 +2571,11 @@ msgstr ""
 "במקרה שמצאת פרצת אבטחה, נא לדווח עליה ל־%(report)s. ניתן למצוא מידע נוסף ב<a "
 "href=\"%(url)s\">תיעוד</a>."
 
-#: weblate_web/templates/support.html:36
+#: weblate_web/templates/support.html:37
 msgid "Premium support"
 msgstr "תמיכת פרימיום"
 
-#: weblate_web/templates/support.html:37
+#: weblate_web/templates/support.html:38
 #, python-format
 msgid ""
 "As a subscriber, you get premium support at <a href=\"mailto:%(email)s\">"
@@ -2322,147 +2584,167 @@ msgstr ""
 "אם ערכת מינוי, יש לך זכאות לתמיכת פרימיום ב־<a href=\"mailto:%(email)s\">"
 "%(email)s</a>."
 
-#: weblate_web/templates/support.html:46
+#: weblate_web/templates/support.html:47
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr "תמיכה בתשלום מראש לשירות החינמי ולהתקנות באירוח עצמי"
 
-#: weblate_web/templates/support.html:51
-msgid "Installation on your Linux server"
-msgstr "התקנה על שרת לינוקס משלך"
-
-#: weblate_web/templates/support.html:53 weblate_web/templates/support.html:66
-msgid "One-time installation of Weblate"
-msgstr "התקנה חד־פעמית של Weblate"
-
-#: weblate_web/templates/support.html:54
-msgid "Installation using virtualenv, uWSGI and NGINX"
-msgstr "התקנה באמצעות virtualenv,‏ uWSGI ו־NGINX"
-
-#: weblate_web/templates/support.html:55
-msgid "Using PostgreSQL as database backend"
-msgstr "עם PostgreSQL כמנגנון מסד נתונים"
-
-#: weblate_web/templates/support.html:56 weblate_web/templates/support.html:68
-msgid "Requires root access or close cooperation of your admins"
-msgstr "נדרשת גישת משתמש על (root) או שיתוף פעולה צמוד עם מנהלי השרתים"
-
-#: weblate_web/templates/support.html:57 weblate_web/templates/support.html:69
-msgid "Setup customization"
-msgstr "התאמת ההקמה"
-
-#: weblate_web/templates/support.html:59 weblate_web/templates/support.html:71
-msgid "installation"
-msgstr "התקנה"
-
-#: weblate_web/templates/support.html:64
-msgid "Docker installation on your Linux server"
-msgstr "התקנת Docker על שרת לינוקס משלך"
-
-#: weblate_web/templates/support.html:67
-msgid "Installation using Docker"
-msgstr "התקנה באמצעות Docker"
-
-#: weblate_web/templates/support.html:78 weblate_web/templates/support.html:89
+#: weblate_web/templates/support.html:54 weblate_web/templates/support.html:65
+#: weblate_web/templates/support.html:76
 msgid "Issues in your environment fixed immediately."
 msgstr "תקלות בסביבה שלך מתוקנות מיד."
 
-#: weblate_web/templates/support.html:79 weblate_web/templates/support.html:90
+#: weblate_web/templates/support.html:55 weblate_web/templates/support.html:66
+#: weblate_web/templates/support.html:77
 msgid "Priority e-mail support."
 msgstr "תמיכה בדוא״ל בעדיפות גבוהה."
 
-#: weblate_web/templates/support.html:88
+#: weblate_web/templates/support.html:64
 msgid "Always upgraded to latest version."
 msgstr "תמיד משודרגת לגרסה העדכנית ביותר."
 
-#: weblate_web/templates/support.html:99
-msgid "Cloud backups of your installations."
-msgstr "גיבויי ענן להתקנה שלך."
+#: weblate_web/templates/support.html:67
+msgid "Available with the installation package only"
+msgstr ""
+
+#: weblate_web/templates/support.html:74
+#, fuzzy
+#| msgid "Basic self-hosted support"
+msgid "Premium self-hosted support"
+msgstr "תמיכה בסיסית לאירוח עצמי"
+
+#: weblate_web/templates/support.html:78
+#, fuzzy
+#| msgid "Consulting"
+msgid "Custom consulting."
+msgstr "ייעוץ"
+
+#: weblate_web/templates/support.html:79
+msgid "Next business day support response guaranteed."
+msgstr ""
+
+#: weblate_web/templates/support.html:86
+msgid "Installation on your Linux server"
+msgstr "התקנה על שרת לינוקס משלך"
+
+#: weblate_web/templates/support.html:88
+msgid "One-time installation of Weblate"
+msgstr "התקנה חד־פעמית של Weblate"
+
+#: weblate_web/templates/support.html:89
+msgid "Docker based or native installation"
+msgstr ""
+
+#: weblate_web/templates/support.html:90
+msgid "Requires root access or close cooperation of your admins"
+msgstr "נדרשת גישת משתמש על (root) או שיתוף פעולה צמוד עם מנהלי השרתים"
+
+#: weblate_web/templates/support.html:91
+msgid "Setup customization"
+msgstr "התאמת ההקמה"
+
+#: weblate_web/templates/support.html:93
+msgid "installation"
+msgstr "התקנה"
 
 #: weblate_web/templates/support.html:100
-msgid "Securely encrypted with your passphrase."
-msgstr "בהצפנה מאובטחת עם מילת צופן."
+#, fuzzy
+#| msgid "Cloud backups of your installations."
+msgid "Cloud backups of your data"
+msgstr "גיבויי ענן להתקנה שלך."
 
 #: weblate_web/templates/support.html:101
-msgid "Stores up to 100 GB of backups."
-msgstr "אחסון של עד 100 ג״ב של גיבויים."
+#, fuzzy
+#| msgid "Securely encrypted with your passphrase."
+msgid "Securely encrypted with your passphrase"
+msgstr "בהצפנה מאובטחת עם מילת צופן."
 
 #: weblate_web/templates/support.html:102
+msgid "Daily incremental backups"
+msgstr ""
+
+#: weblate_web/templates/support.html:103
+#, fuzzy
+#| msgid "Stores up to 100 GB of backups."
+msgid "Stores up to 100 GB of backups"
+msgstr "אחסון של עד 100 ג״ב של גיבויים."
+
+#: weblate_web/templates/support.html:104
 msgid "Read more in the documentation."
 msgstr "מידע נוסף בתיעוד."
 
-#: weblate_web/templates/support.html:109
+#: weblate_web/templates/support.html:111
 msgid "Consulting services and/or custom development"
 msgstr "שירותי ייעוץ ו/או פיתוח בהתאמה אישית"
 
-#: weblate_web/templates/support.html:111
+#: weblate_web/templates/support.html:113
 msgid "Development of custom features"
 msgstr "פיתוח של תכונות מותאמות אישית"
 
-#: weblate_web/templates/support.html:112
+#: weblate_web/templates/support.html:114
 msgid "Integration of Weblate into your workflow"
 msgstr "שילוב Weblate בשגרת העבודה שלך"
 
-#: weblate_web/templates/support.html:113
+#: weblate_web/templates/support.html:115
 msgid "Suggestions on the internationalization and localization"
 msgstr "הצעות בנוגע לבינאום או לתרגום"
 
-#: weblate_web/templates/support.html:115
+#: weblate_web/templates/support.html:117
 msgid "hourly"
 msgstr "שעתית"
 
-#: weblate_web/templates/support.html:118
+#: weblate_web/templates/support.html:120
 msgid "Ask for help"
 msgstr "בקשת עזרה"
 
-#: weblate_web/templates/support.html:126
+#: weblate_web/templates/support.html:128
 msgid "Mailing lists"
 msgstr "רשימות תפוצה"
 
-#: weblate_web/templates/support.html:128
+#: weblate_web/templates/support.html:130
 msgid "Users and developers"
 msgstr "משתמשים ומפתחים"
 
-#: weblate_web/templates/support.html:131
-#: weblate_web/templates/support.html:144
+#: weblate_web/templates/support.html:133
+#: weblate_web/templates/support.html:146
 msgid "Your e-mail address…"
 msgstr "כתובת הדוא״ל שלך…"
 
-#: weblate_web/templates/support.html:132
-#: weblate_web/templates/support.html:145
+#: weblate_web/templates/support.html:134
+#: weblate_web/templates/support.html:147
 msgctxt "Sign up for the mailing list"
 msgid "Register"
 msgstr "רישום"
 
-#: weblate_web/templates/support.html:135
+#: weblate_web/templates/support.html:137
 msgid "Discuss Weblate with users and developers"
 msgstr "דיון על Weblate עם משתמשים ומפתחים"
 
-#: weblate_web/templates/support.html:136
+#: weblate_web/templates/support.html:138
 #, python-format
 msgid "Post to <a href=\"mailto:%(address)s\">%(address)s</a> to use it"
 msgstr ""
 "ניתן לפרסם דרך הכתובת <a href=\"mailto:%(address)s\">%(address)s</a> כדי "
 "להשתמש בה"
 
-#: weblate_web/templates/support.html:137
-#: weblate_web/templates/support.html:150
+#: weblate_web/templates/support.html:139
+#: weblate_web/templates/support.html:152
 #, python-format
 msgid "Find answers in its <a href=\"%(url)s\">archives</a>"
 msgstr "איתור תשובות ב<a href=\"%(url)s\">ארכיונים</a>"
 
-#: weblate_web/templates/support.html:141
+#: weblate_web/templates/support.html:143
 msgid "Hosted Weblate announcements"
 msgstr "הכרזות בנושא Weblate עם אירוח"
 
-#: weblate_web/templates/support.html:148
+#: weblate_web/templates/support.html:150
 msgid "<strong>Low traffic</strong> and moderated"
 msgstr "<strong>דלה בעדכונים</strong> ומפוקחת"
 
-#: weblate_web/templates/support.html:149
+#: weblate_web/templates/support.html:151
 msgid "Only premium service announcements"
 msgstr "הכרזות על שירותי פרימיום בלבד"
 
-#: weblate_web/templates/support.html:156
+#: weblate_web/templates/support.html:158
 #, python-format
 msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 msgstr "ניתן לשאול שאלות ב־<a href=\"%(url)s\">Stack Overflow</a>."
@@ -2503,140 +2785,31 @@ msgstr "פרופיל משתמש"
 msgid "Log out"
 msgstr "יציאה"
 
+#: weblate_web/templates/user.html:13
+msgid "Use Weblate"
+msgstr "שימוש ב־Weblate"
+
 #: weblate_web/templates/user.html:17
 msgid "Your services"
 msgstr "השירותים שלך"
 
-#: weblate_web/templates/user.html:21
-msgid "Service"
-msgstr "שירות"
-
-#: weblate_web/templates/user.html:26
-msgid "Exceeds selected service offering."
-msgstr "חורג מהיצע השירות הנבחר."
-
-#: weblate_web/templates/user.html:34
-msgid "Activation token"
-msgstr "אסימון הפעלה"
-
-#: weblate_web/templates/user.html:37 weblate_web/templates/user.html:51
-msgid "Copy"
-msgstr "העתקה"
-
-#: weblate_web/templates/user.html:40
-msgid "Regenerate"
-msgstr "ליצור מחדש"
-
-#: weblate_web/templates/user.html:48
-msgid "Backup repository"
-msgstr "מאגר גיבוי"
-
-#: weblate_web/templates/user.html:58
-msgid "Server URL"
-msgstr "כתובת השרת"
-
-#: weblate_web/templates/user.html:64
-msgid ""
-"Use an activation token to connect your Weblate installation to the support "
-"portal. This step is optional, you can use support services without it as "
-"well."
-msgstr ""
-"יש להשתמש באסימון הפעלה כדי לחבר את התקנת ה־Weblate שלך אל שער התמיכה. מדובר "
-"בשלב בלתי מחייב, ניתן להשתמש בשירותי התמיכה גם ללא ההגדרה הזאת."
-
-#: weblate_web/templates/user.html:65
-msgid "See documentation on subscription management."
-msgstr "הצגת התיעוד על ניהול מינוי."
-
-#: weblate_web/templates/user.html:73
-msgid "Note"
-msgstr "פתק"
-
-#: weblate_web/templates/user.html:83
-msgid "Subscription"
-msgstr "מינוי"
-
-#: weblate_web/templates/user.html:87
-msgid "Change plan"
-msgstr "החלפת תכנית"
-
-#: weblate_web/templates/user.html:94
-msgid "Validity"
-msgstr "תוקף"
-
-#: weblate_web/templates/user.html:100 weblate_web/templates/user.html:188
-msgid "Creation date"
-msgstr "מועד היצירה"
-
-#: weblate_web/templates/user.html:107 weblate_web/templates/user.html:215
-msgid "State"
-msgstr "מצב"
-
-#: weblate_web/templates/user.html:110 weblate_web/templates/user.html:218
-msgid "Expired"
-msgstr "פג תוקף"
-
-#: weblate_web/templates/user.html:112 weblate_web/templates/user.html:220
-msgid "Automatic renewal"
-msgstr "חידוש אוטומטי"
-
-#: weblate_web/templates/user.html:114 weblate_web/templates/user.html:222
-msgid "No renewal"
-msgstr "אין חידוש"
-
-#: weblate_web/templates/user.html:118 weblate_web/templates/user.html:226
-msgid "Renew now"
-msgstr "לחדש כעת"
-
-#: weblate_web/templates/user.html:120
-msgid "Switch to yearly"
-msgstr "העברה לשנתי"
-
-#: weblate_web/templates/user.html:126 weblate_web/templates/user.html:231
-msgid "Turn off renewal"
-msgstr "כיבוי החידוש"
-
-#: weblate_web/templates/user.html:135 weblate_web/templates/user.html:238
-msgid "Payments"
-msgstr "תשלומים"
-
-#: weblate_web/templates/user.html:147
-msgid "Users"
-msgstr "משתמשים"
-
-#: weblate_web/templates/user.html:155
-msgid "Remove"
-msgstr "הסרה"
-
-#: weblate_web/templates/user.html:162
-msgid "Add"
-msgstr "הוספה"
-
-#: weblate_web/templates/user.html:168
-msgid "Get more services"
-msgstr "קבלת שירותים נוספים"
-
-#: weblate_web/templates/user.html:173
-msgid "Congratulations, your Weblate instance is fully covered."
-msgstr "ברכותינו, עותק ה־Weblate שלך מכוסה מכל הכיוונים."
-
-#: weblate_web/templates/user.html:183
+#: weblate_web/templates/user.html:24
 msgid "Your donations"
 msgstr "התרומות שלך"
 
-#: weblate_web/templates/user.html:193
+#: weblate_web/templates/user.html:34
 msgid "Reward"
 msgstr "פרס"
 
-#: weblate_web/templates/user.html:197
+#: weblate_web/templates/user.html:38
 msgid "Edit reward"
 msgstr "עריכת פרס"
 
-#: weblate_web/templates/user.html:210
+#: weblate_web/templates/user.html:51
 msgid "Expiry date"
 msgstr "תאריך תפוגה"
 
-#: weblate_web/templates/user.html:252
+#: weblate_web/templates/user.html:93
 msgid "Donate to see a nice message here."
 msgstr "כדי לראות כאן הודעה נחמדה עליך לתרום."
 
@@ -2781,6 +2954,54 @@ msgstr "לא ניתן לעבד את בקשת המינוי."
 #: weblate_web/views.py:643
 msgid "User not found!"
 msgstr "משתמש לא נמצא!"
+
+#~ msgid "User management"
+#~ msgstr "ניהול משתמשים"
+
+#~ msgid "Supported file formats"
+#~ msgstr "סוגי קבצים נתמכים"
+
+#~ msgid "Quality checks"
+#~ msgstr "בקרת איכות"
+
+#~ msgid "Glossary"
+#~ msgstr "מונחון"
+
+#~ msgid "Regular backups"
+#~ msgstr "גיבויים תדירים"
+
+#~ msgid "All"
+#~ msgstr "הכול"
+
+#~ msgid "on-premises"
+#~ msgstr "על שרתים מקומיים"
+
+#~ msgid "Buy support"
+#~ msgstr "רכישת תמיכה"
+
+#~ msgid "or download Weblate"
+#~ msgstr "או להוריד את Weblate"
+
+#~ msgid ""
+#~ "With cloud hosting, the default setup is to use a shared instance, and a "
+#~ "common translation memory. On a dedicated instance there is no economy of "
+#~ "scale, but you can make use of customized authentication and settings."
+#~ msgstr ""
+#~ "עם אירוח בענן, תצורת בררת המחדל היא עותק משותף וזיכרון תרגום משותף. עותק "
+#~ "עצמאי הוא פחות חסכוני ביחס לשימוש אבל ניתן להשתמש באימות ובהגדרות מותאמים "
+#~ "אישית."
+
+#~ msgid "Installation using virtualenv, uWSGI and NGINX"
+#~ msgstr "התקנה באמצעות virtualenv,‏ uWSGI ו־NGINX"
+
+#~ msgid "Using PostgreSQL as database backend"
+#~ msgstr "עם PostgreSQL כמנגנון מסד נתונים"
+
+#~ msgid "Docker installation on your Linux server"
+#~ msgstr "התקנת Docker על שרת לינוקס משלך"
+
+#~ msgid "Installation using Docker"
+#~ msgstr "התקנה באמצעות Docker"
 
 #~ msgid "Bitnami Weblate stack"
 #~ msgstr "חבילת Weblate של Bitnami"
@@ -2950,9 +3171,6 @@ msgstr "משתמש לא נמצא!"
 #~ "Weblate מוגשת לך ללא עלות ומקבלת תרומות. יש מגוון דרכים בהן ניתן לסייע "
 #~ "לפיתוח של Weblate. המעט שאפשר לעשות הוא לדבר עם החבר׳ה שלך על Weblate."
 
-#~ msgid "About Weblate"
-#~ msgstr "על אודות Weblate"
-
 #~ msgid "Attribution to translator"
 #~ msgstr "ייחוס למתרגמים"
 
@@ -3081,9 +3299,6 @@ msgstr "משתמש לא נמצא!"
 #~ "We love libre software, and we offer gratis plans for hosting such "
 #~ "translations."
 #~ msgstr "אנו אוהבים קוד פתוח ומציעים תכניות בחינם לאירוח תרגומים."
-
-#~ msgid "Ask for hosting"
-#~ msgstr "בקשה לאירוח"
 
 #, fuzzy
 #~| msgid "Hosting for free software"
@@ -3700,9 +3915,6 @@ msgstr "משתמש לא נמצא!"
 #~ msgstr ""
 #~ "Weblate מוגשת במסגרת <a href=\"%(github_url)s\">תכנה חופשית</a> ומקבלת "
 #~ "בברכה <a href=\"%(donate_url)s\">תרומות</a>."
-
-#~ msgid "Consulting"
-#~ msgstr "ייעוץ"
 
 #~ msgid "See our support offerings for self hosted Weblate instances"
 #~ msgstr "הצגת תכניות התמיכה שלנו לעותק של Weblate באירוח עצמי"
