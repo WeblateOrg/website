@@ -148,11 +148,11 @@
                 <table>
                 	<tr>
                     	<td>{% trans "Source strings" %}</td>
-                    	<td>{% trans "Negotiable" %}</td>
+                      <td>{{ 10000|intcomma }}</td>
                     </tr>
                 	<tr>
                     	<td>{% trans "Languages" %}</td>
-                    	<td>{% trans "Negotiable" %}</td>
+                      <td>{{ 90|intcomma }}</td>
                     </tr>
                 	<tr>
                     	<td>{% trans "Projects" %}</td>
@@ -160,7 +160,7 @@
                     </tr>
                 	<tr>
                     	<td>{% trans "Components" %}</td>
-                    	<td>25</td>
+                    	<td>{% trans "Unlimited" %}</td>
                     </tr>
                 </table>
                 <div class="box-price"><strong>{% trans "Gratis" %}</strong><br />{% blocktrans with url="https://hosted.weblate.org/hosting/" %}upon <a href="{{ url }}">request</a>{% endblocktrans %}</div>
