@@ -22,7 +22,6 @@ from io import StringIO
 
 from django import template
 from django.utils.safestring import mark_safe
-
 from lxml import etree
 
 register = template.Library()

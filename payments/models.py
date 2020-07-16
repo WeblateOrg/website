@@ -21,6 +21,7 @@ import os.path
 import uuid
 
 import requests
+from appconf import AppConf
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -30,8 +31,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import get_language, gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
 from vies.models import VATINField
-
-from appconf import AppConf
 
 from .data import SUPPORTED_LANGUAGES
 from .utils import JSONField, validate_email

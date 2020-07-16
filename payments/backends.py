@@ -22,16 +22,15 @@ import re
 import subprocess
 from math import floor
 
-from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
-from django.shortcuts import redirect
-from django.utils.translation import gettext, gettext_lazy, override
-
 import fiobank
 import thepay.config
 import thepay.dataApi
 import thepay.gateApi
 import thepay.payment
+from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import redirect
+from django.utils.translation import gettext, gettext_lazy, override
 from fakturace.storage import InvoiceStorage, ProformaStorage
 
 from .models import Payment
