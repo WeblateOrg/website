@@ -187,7 +187,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = "qov6(*cp%)b*ot+8c%#4@4or(t@_$y5#d8k9u1^+pknz%lms0x"
+SECRET_KEY = "secret key used for tests only"
 
 # Templates settings
 _TEMPLATE_LOADERS = [
