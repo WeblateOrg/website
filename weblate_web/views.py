@@ -150,7 +150,7 @@ def api_hosted(request):
             defaults={"payment": payments[-1]},
         )[0]
         if subscription.payment != payments[-1]:
-            subscription.payment != payments[-1]
+            subscription.payment = payments[-1]
             subscription.save(update_fields=["payment"])
         # Link past payments
         for payment in payments[:-1]:
