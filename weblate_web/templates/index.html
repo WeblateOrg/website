@@ -13,7 +13,7 @@
     	<div class="row">
             <div class="box">
             	<h1>{% trans "Web-based <strong>continuous</strong> localization" %}</h1>
-                <p>{% block description %}{% blocktrans with projects=1150 countries=115 %}Copylefted libre software, used by over {{projects}} libre software projects and companies in over {{countries}} countries.{% endblocktrans %}{% endblock %}</p>
+                <p>{% block description %}{% blocktrans with projects=1500|intcomma countries=115 %}Copylefted libre software, used by over {{projects}} libre software projects and companies in over {{countries}} countries.{% endblocktrans %}{% endblock %}</p>
             	<a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
                 <a class="button inline black" href="{% url 'features' %}">{% trans "Explore all features" %}</a>
             </div>
@@ -33,7 +33,7 @@
             	<div class="half half-translations">
                     {% for change in changes %}
                 	<div class="trans-item">
-                        <div class="trans-title">{% blocktrans count count=change.recent_changes with when=change.last_change|recently %}{{ count }} translation {{ when }}{% plural %}{{ count }} translations {{ when }}{% endblocktrans %}</div>
+                        <div class="trans-title">{% blocktrans count intcount=change.recent_changes with count=change.recent_changes|intcomma when=change.last_change|recently %}{{ count }} translation {{ when }}{% plural %}{{ count }} translations {{ when }}{% endblocktrans %}</div>
                         <div class="trans-project">{% trans "Project" %} <a href="{{ change.url }}">{{ change.name }}</a></div>
                     </div>
                     {% endfor %}
