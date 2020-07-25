@@ -14,17 +14,24 @@ var ready = (callback) => {
   }
 };
 
+/* Actual table switching logic */
+function switchTabs(removal, enable) {
+  document.querySelectorAll(removal).forEach((child) => {
+    child.classList.remove("current");
+  });
+  document.getElementById(enable).classList.add("current");
+}
+
 /* Generic tab toggling code */
 function tabToggle(targets, removal) {
   document.querySelectorAll(targets).forEach((element) => {
     element.addEventListener("click", (e) => {
-      document.querySelectorAll(removal).forEach((child) => {
-        child.classList.remove("current");
-      });
+      let tab = e.target.getAttribute("data-tab");
+      switchTabs(removal, tab);
       e.target.classList.add("current");
-      document
-        .getElementById(e.target.getAttribute("data-tab"))
-        .classList.add("current");
+      if (tab === "monthly") {
+        document.getElementById("dedicated-checkbox").checked = false;
+      }
     });
   });
 }
@@ -69,6 +76,19 @@ ready(() => {
     ".pricing-table-tabs-menu ul li",
     ".pricing-table-tabs-menu ul li, .tab-content"
   );
+  /* Dedicated hosting toggle */
+  document.querySelectorAll("#dedicated-checkbox").forEach((element) => {
+    element.addEventListener("change", (e) => {
+      let yearly_pricing = document.getElementById("yearly-pricing");
+      if (e.target.checked) {
+        yearly_pricing.dispatchEvent(new Event("click"));
+        switchTabs(".pricing-table-tabs-menu ul li, .tab-content", "dedicated");
+      } else {
+        switchTabs(".pricing-table-tabs-menu ul li, .tab-content", "yearly");
+      }
+      yearly_pricing.classList.add("current");
+    });
+  });
 
   /* Donate rewards selection */
   let donate_input = document.getElementById("donate-amount");
