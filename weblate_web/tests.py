@@ -368,7 +368,7 @@ class PaymentsTest(FakturaceTestCase):
             response = self.client.post(customer_url, TEST_CUSTOMER, follow=True,)
             self.assertRedirects(response, url)
             self.assertContains(response, "Test payment")
-            self.assertContains(response, "121.0 EUR")
+            self.assertContains(response, "€ 121.0")
             return payment, url, customer_url
 
     def check_payment(self, payment, state):

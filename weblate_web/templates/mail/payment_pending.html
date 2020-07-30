@@ -1,6 +1,7 @@
 {% extends "mail/base.html" %}
 
 {% load i18n %}
+{% load prices %}
 
 {% block content %}
 
@@ -12,7 +13,7 @@
 <tr>
 <th>{% trans "Payment amount" %}</th>
 <td>
-{% blocktrans with payment.vat_amount as price %}{{ price }} EUR{% endblocktrans %}
+{{ payment.vat_amount | price_format }}
 {% if payment.customer.needs_vat %}{% trans "(including VAT)" %}{% endif %}
 </td>
 </tr>

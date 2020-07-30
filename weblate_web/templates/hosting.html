@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load humanize %}
+{% load prices %}
 
 {% block body_class %}page pricing light{% endblock %}
 
@@ -125,7 +126,7 @@
                                 <span class="cross"></span>
                             </div>
                             <div class="line">
-                                <a href="{% url 'support' %}#install">€ 300</a>
+                                <a href="{% url 'support' %}#install">{{ 300 | price_format }}</a>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
@@ -220,7 +221,7 @@
                             <div class="col">
                                 <div class="line price">
                                     {% trans "From" %}
-                                    <strong>€ 17</strong>
+                                    <strong>{{ 17 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -230,7 +231,7 @@
                             <div class="col">
                                 <div class="line price">
                                     {% trans "From" %}
-                                    <strong>€ 25</strong>
+                                    <strong>{{ 25 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -240,7 +241,7 @@
                             <div class="col">
                                 <div class="line price">
                                     &nbsp;
-                                    <strong>€ 63</strong>
+                                    <strong>{{ 63 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -250,7 +251,7 @@
                             <div class="col">
                                 <div class="line price">
                                     &nbsp;
-                                    <strong>€ 42</strong>
+                                    <strong>{{ 42 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -329,7 +330,7 @@
                                 <span class="green">{% trans "Unlimited" %}</span>
                             </div>
                             <div class="line">
-                                <span title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">€ 100</span>
+                                <span title="{% blocktrans with price=100|price_format %}Additional charge {{ price }}/year, only available with yearly billing{% endblocktrans %}">{{ 100 | price_format }}</span>
                             </div>
                         </div>
                         <div class="col">
@@ -356,7 +357,7 @@
                                 <span class="green">{% trans "Unlimited" %}</span>
                             </div>
                             <div class="line">
-                                <span title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">€ 100</span>
+                                <span title="{% blocktrans with price=100|price_format %}Additional charge {{ price }}/year, only available with yearly billing{% endblocktrans %}">{{ 100 | price_format }}</span>
                             </div>
                         </div>
                         <div class="col">
@@ -383,7 +384,7 @@
                                 <span class="green">{% trans "Unlimited" %}</span>
                             </div>
                             <div class="line">
-                                <span title="{% blocktrans with price=100 %}Additional charge {{ price }} EUR/year, only available with yearly billing{% endblocktrans %}">€ 100</span>
+                                <span title="{% blocktrans with price=100|price_format %}Additional charge {{ price }}/year, only available with yearly billing{% endblocktrans %}">{{ 100 | price_format }}</span>
                             </div>
                         </div>
                         <div class="col">
@@ -458,7 +459,7 @@
                             <div id="monthly" class="tab-content current">
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 19</strong>
+                                        <strong>{{ 19 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -470,7 +471,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 49</strong>
+                                        <strong>{{ 49 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -482,7 +483,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 99</strong>
+                                        <strong>{{ 99 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -493,7 +494,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 299</strong>
+                                        <strong>{{ 299 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -518,7 +519,7 @@
                             <div id="yearly" class="tab-content">
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 199</strong>
+                                        <strong>{{ 199 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -530,7 +531,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 499</strong>
+                                        <strong>{{ 499 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -542,7 +543,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 999</strong>
+                                        <strong>{{ 999 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -554,7 +555,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ {{2999|intcomma}}</strong>
+                                        <strong>{{ 2999 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -579,7 +580,7 @@
                             <div id="dedicated" class="tab-content">
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 299</strong>
+                                        <strong>{{ 299 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -591,7 +592,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ 599</strong>
+                                        <strong>{{ 599 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -603,7 +604,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ {{1099|intcomma}}</strong>
+                                        <strong>{{ 1099 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -615,7 +616,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>€ {{2999|intcomma}}</strong>
+                                        <strong>{{ 2999 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">

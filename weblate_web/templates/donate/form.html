@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load prices %}
 
 {% block content %}
 <section class="content">
@@ -14,7 +15,7 @@
                 <form method="post">
                     {% csrf_token %}
                     <input type="number" min="{{ form.fields.amount.min_value }}" value="{{ form.amount.value }}" class="payment-input" name="amount" id="donate-amount" />
-                    <p class="small">{% blocktrans with minimum=form.fields.amount.min_value %}From €{{ minimum }}{% endblocktrans %}</p>
+                    <p class="small">{% blocktrans with minimum=form.fields.amount.min_value|price_format context "Minimal donation amount in a form" %}From {{ minimum }}{% endblocktrans %}</p>
                     <div class="title pick">{% trans "Pick how often to donate" %}</div>
                     <div class="pick-items">
                         <input id="single-payment" name="recurring" type="radio" value="" {% if not form.recurring.value %}checked="checked"{% endif %} />
