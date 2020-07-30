@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
 "POT-Creation-Date: 2020-07-30 15:27+0200\n"
-"PO-Revision-Date: 2020-07-30 18:07+0000\n"
+"PO-Revision-Date: 2020-07-31 03:39+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/weblate/website/"
 "et/>\n"
@@ -29,19 +29,19 @@ msgstr "Tõlke seis"
 
 #: payments/backends.py:329
 msgid "Payment cancelled"
-msgstr ""
+msgstr "Makse tühistatud"
 
 #: payments/backends.py:331
 msgid "Payment error"
-msgstr ""
+msgstr "Viga maksel"
 
 #: payments/backends.py:343
 msgid "Bitcoin"
-msgstr ""
+msgstr "Bitcoin"
 
 #: payments/backends.py:352
 msgid "IBAN bank transfer"
-msgstr ""
+msgstr "Makse IBAN pangaülekandega"
 
 #: payments/backends.py:382
 msgid "Issuing bank"
@@ -49,19 +49,19 @@ msgstr ""
 
 #: payments/backends.py:383
 msgid "Account holder"
-msgstr ""
+msgstr "Konto omanik"
 
 #: payments/backends.py:384
 msgid "Account number"
-msgstr ""
+msgstr "Pangaarve number"
 
 #: payments/backends.py:385
 msgid "SWIFT code"
-msgstr ""
+msgstr "SWIFT-kood"
 
 #: payments/backends.py:386
 msgid "IBAN"
-msgstr ""
+msgstr "IBAN"
 
 #: payments/backends.py:387
 #, fuzzy
@@ -71,11 +71,13 @@ msgstr "Kokkutulekud"
 
 #: payments/models.py:78
 msgid "European VAT ID"
-msgstr ""
+msgstr "Euroopa käibemaksukohustuslase ID"
 
 #: payments/models.py:80
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
+"Palun täitke Euroopa Liidu käibemaksukohustuslasena registreerimise number "
+"või jätke see tühjaks, kui seda ei kohaldata."
 
 #: payments/models.py:86
 msgid "Tax registration"
@@ -88,23 +90,23 @@ msgstr ""
 
 #: payments/models.py:95
 msgid "Company or individual name"
-msgstr ""
+msgstr "Äriühingu või eraisiku nimi"
 
 #: payments/models.py:98
 msgid "Address"
-msgstr ""
+msgstr "Aadress"
 
 #: payments/models.py:101
 msgid "Postcode and city"
-msgstr ""
+msgstr "Sihtnumber ja linn"
 
 #: payments/models.py:103
 msgid "Country"
-msgstr ""
+msgstr "Riik"
 
 #: payments/models.py:135
 msgid "The country has to match your VAT code"
-msgstr ""
+msgstr "Riik peab vastama teie käibemaksukoodile"
 
 #: payments/models.py:158
 #, fuzzy
@@ -137,7 +139,7 @@ msgstr "Igakuine"
 
 #: payments/models.py:162
 msgid "Onetime"
-msgstr ""
+msgstr "Ühekordne"
 
 #: payments/models.py:196
 #, fuzzy
@@ -180,11 +182,12 @@ msgstr "Palun sisestage kehtiv e-posti aadress."
 
 #: payments/validators.py:42
 msgid "{} is not a valid country code for any European Union member."
-msgstr ""
+msgstr "{} ei ole kehtiv Euroopa Liidu liikmesriigi kood."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
 msgstr ""
+"{} ei vasta selle riigi käibemaksukohuslase registeerimisnumbri valemile."
 
 #: payments/validators.py:58
 msgid "VAT ID validation service unavailable for {}, please try again later."
@@ -554,10 +557,8 @@ msgid "Sign out"
 msgstr ""
 
 #: weblate_web/templates/base.html:67
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Go Weblate!"
-msgstr "Kasuta Weblate-t"
+msgstr "Kasuta Weblate't!"
 
 #: weblate_web/templates/base.html:109
 msgid "Service Status"
@@ -952,8 +953,8 @@ msgid ""
 "choose your preferred method of support, or set a donation amount yourself. "
 "We are here to help if needed."
 msgstr ""
-"<strong>Täname sind</strong> oma otsuse eest toetada  Weblatet. Palun vali "
-"oma elistatud viis toetamiseks, või sea ise annetuse kogus. Vajadusel oleme "
+"<strong>Täname sind</strong> oma otsuse eest toetada Weblatet. Palun vali "
+"oma eelistatud viis toetamiseks, või sea ise annetuse kogus. Vajadusel oleme "
 "abistamas."
 
 #: weblate_web/templates/donate/form.html:14
@@ -1958,10 +1959,8 @@ msgid "Generated on %(timestamp)s."
 msgstr ""
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Thank you for your payment on weblate.org."
-msgstr "Sinu annetus Weblatele"
+msgstr "Täname Sind annetuse eest weblate.org veebisaidis."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
@@ -1998,10 +1997,8 @@ msgid "Your expired payment on weblate.org"
 msgstr "Sinu annetus Weblatele"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Your payment on weblate.org has failed."
-msgstr "Sinu annetus Weblatele"
+msgstr "Sinu makse weblate.org saidis ei õnnestunud."
 
 #: weblate_web/templates/mail/payment_failed.html:17
 msgid ""
@@ -2102,7 +2099,7 @@ msgstr ""
 
 #: weblate_web/templates/payment/payment.html:51
 msgid "Billing information"
-msgstr ""
+msgstr "Arveldusteave"
 
 #: weblate_web/templates/payment/payment.html:53
 msgid "Edit"
@@ -2608,10 +2605,8 @@ msgid "Premium self-hosted support"
 msgstr "Üldistatud oma-majutuse tugi"
 
 #: weblate_web/templates/support.html:79
-#, fuzzy
-#| msgid "Activate donation"
 msgid "Private consultations."
-msgstr "Käivita annetamine"
+msgstr "Privaatne nõustamine."
 
 #: weblate_web/templates/support.html:80
 msgid "Next business day support response guaranteed."
@@ -2945,10 +2940,8 @@ msgid "Could not process subscription request."
 msgstr ""
 
 #: weblate_web/views.py:643
-#, fuzzy
-#| msgid "Page not found"
 msgid "User not found!"
-msgstr "Lehekülg puudub"
+msgstr "Sellist kasutajat ei leidu!"
 
 #, fuzzy
 #~| msgid "The Weblate history"
