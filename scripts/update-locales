@@ -9,8 +9,11 @@ wlc lock
 # Push changes from Weblate to GitHub
 wlc push
 
+# Update Weblate remote
+git remote update weblate
+
 # Pull changes from GitHub
-git pull --rebase
+git rebase --onto weblate/master
 
 # Update po files itself
 ./manage.py makemessages -a --keep-pot -i 'weblate_web/files/*'
