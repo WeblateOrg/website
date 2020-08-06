@@ -47,7 +47,7 @@
 </section>
 <section class="donations-info">
     <div class="di-section">
-        <div class="half half-img">
+        <div class="half half-img rotate">
             <img src="{% static "img/LeftPhoto.jpg" %}" />
         </div>
         <div class="half half-content">
@@ -58,13 +58,24 @@
         </div>
     </div>
     <div class="di-section">
-        <div class="half half-img">
+        <div class="half half-img rotate">
             <img src="{% static "img/RightPhoto.jpg" %}" />
         </div>
         <div class="half half-content">
             <h2>{% trans "Single appreciative donation" %}</h2>
             <p>{% trans "One-time donations are a great way to bring attention to a single issue before or after it is fixed." %}</p>
             <a href="{% url "donate-new" %}" class="button">{% trans "Donate" %}</a>
+        </div>
+    </div>
+    <div class="di-section" id="swag">
+        <div class="half half-img border">
+            <img src="{% static "img/swag.jpg" %}" />
+        </div>
+        <div class="half half-content">
+            <h2>{% trans "Weblate swag" %}</h2>
+            <p>{% trans "Weblate t-shirts and other branded items are great opportunity to donate to Weblate and show your pride." %}</p>
+            <a href="https://shop.spreadshirt.net/weblate/" class="button inline">{% trans "Shop from Europe" %}</a>
+            <a href="https://shop.spreadshirt.com/weblate/" class="button inline">{% trans "Shop from America and Australia" %}</a>
         </div>
     </div>
 </section>
