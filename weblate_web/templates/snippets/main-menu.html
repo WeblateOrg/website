@@ -13,5 +13,8 @@
         <li class="menu-light{% if request.resolver_match.url_name == 'news' or request.resolver_match.url_name == 'news-archive' or request.resolver_match.url_name == 'post' %} active{% endif %} hide1025"><a href="{% url 'news' %}">{% trans "Blog" %}</a></li>
         <li class="menu-light{% if request.resolver_match.url_name == 'about' %} active{% endif %} hide890"><a href="{% url 'about' %}">{% trans "About" %}</a></li>
         <li class="menu-light hide1100"><a href="https://docs.weblate.org/">{% trans "Docs" %}</a></li>
+        {% if mobile_menu %}
+        <li class="menu-light"><a href="https://hosted.weblate.org/" target="_blank">{% trans "Go Weblate!" %}</a></li>
+        {% endif %}
     </ul>
 </nav>
