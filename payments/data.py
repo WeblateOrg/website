@@ -41,6 +41,7 @@ SUPPORTED_LANGUAGES = {
     "hu",
     "hr",
     "id",
+    "is",
     "it",
     "ja",
     "kab",
