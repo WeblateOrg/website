@@ -350,7 +350,7 @@ class Package(models.Model):
         return self.verbose
 
     def get_repeat(self):
-        if self.name in ("basic", "extended", "backup"):
+        if self.name in ("basic", "extended", "premium", "backup"):
             return "y"
         if self.name.startswith("hosted:") or self.name.startswith("shared:"):
             if self.name.endswith("-m"):
@@ -370,6 +370,7 @@ class Service(models.Model):
             ("shared", ugettext_lazy("Hosted service")),
             ("basic", ugettext_lazy("Basic self-hosted support")),
             ("extended", ugettext_lazy("Extended self-hosted support")),
+            ("premium", ugettext_lazy("Premium self-hosted support")),
         ),
         default="community",
     )
@@ -468,12 +469,17 @@ class Service(models.Model):
         return self.subscription_set.filter(package="extended")
 
     @cached_property
+    def premium_subscriptions(self):
+        return self.subscription_set.filter(package="premium")
+
+    @cached_property
     def support_subscriptions(self):
         return (
             self.hosted_subscriptions
             | self.shared_subscriptions
             | self.basic_subscriptions
             | self.extended_subscriptions
+            | self.premium_subscriptions
         )
 
     @cached_property
@@ -494,6 +500,8 @@ class Service(models.Model):
             not self.hosted_subscriptions.exists()
             and not self.shared_subscriptions.exists()
         ):
+            if not self.premium_subscriptions.exists():
+                yield "premium", _("Extended support")
             if not self.extended_subscriptions.exists():
                 yield "extended", _("Extended support")
             if not self.backup_subscriptions.exists():
@@ -508,6 +516,8 @@ class Service(models.Model):
         elif self.shared_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = "shared"
             package = self.shared_subscriptions.latest("expires").package
+        elif self.premium_subscriptions.filter(expires__gt=timezone.now()).exists():
+            status = "premium"
         elif self.extended_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = "extended"
         elif self.basic_subscriptions.filter(expires__gt=timezone.now()).exists():
