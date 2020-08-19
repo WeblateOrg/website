@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-08-09 07:51+0200\n"
+"POT-Creation-Date: 2020-08-19 12:17+0200\n"
 "PO-Revision-Date: 2020-08-12 07:28+0000\n"
 "Last-Translator: Mingun <Alexander_Sergey@mail.ru>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
@@ -281,15 +281,20 @@ msgstr "Основная поддержка своего хостинга"
 msgid "Extended self-hosted support"
 msgstr "Расширенная поддержка своего хостинга"
 
-#: weblate_web/models.py:492 weblate_web/templates/hosting.html:156
+#: weblate_web/models.py:373 weblate_web/templates/support.html:75
+msgid "Premium self-hosted support"
+msgstr "Премиальная поддержка своего хостинга"
+
+#: weblate_web/models.py:498 weblate_web/templates/hosting.html:156
 msgid "Basic support"
 msgstr "Основная поддержка"
 
-#: weblate_web/models.py:498 weblate_web/templates/hosting.html:123
+#: weblate_web/models.py:504 weblate_web/models.py:506
+#: weblate_web/templates/hosting.html:123
 msgid "Extended support"
 msgstr "Расширенная поддержка"
 
-#: weblate_web/models.py:500 weblate_web/templates/support.html:99
+#: weblate_web/models.py:508 weblate_web/templates/support.html:99
 msgid "Backup service"
 msgstr "Служба резервного копирования"
 
@@ -1728,12 +1733,6 @@ msgstr "Непрерывная локализация"
 
 #: weblate_web/templates/hosting.html:288
 #: weblate_web/templates/hosting.html:655
-#: weblate_web/templates/snippets/pricing.html:19
-#: weblate_web/templates/snippets/pricing.html:45
-#: weblate_web/templates/snippets/pricing.html:71
-#: weblate_web/templates/snippets/pricing.html:97
-#: weblate_web/templates/snippets/pricing.html:127
-#: weblate_web/templates/snippets/pricing.html:151
 msgid "Source strings"
 msgstr "Исходные строки"
 
@@ -2393,6 +2392,18 @@ msgstr "Премиумное облако"
 msgid "for ease and comfort"
 msgstr "для удобства и комфорта"
 
+#: weblate_web/templates/snippets/pricing.html:19
+#: weblate_web/templates/snippets/pricing.html:45
+#: weblate_web/templates/snippets/pricing.html:71
+#: weblate_web/templates/snippets/pricing.html:97
+#: weblate_web/templates/snippets/pricing.html:127
+#: weblate_web/templates/snippets/pricing.html:151
+#, fuzzy
+#| msgid "Source strings"
+msgctxt "Hosting plan parameter"
+msgid "Source strings"
+msgstr "Исходные строки"
+
 #: weblate_web/templates/snippets/pricing.html:23
 #: weblate_web/templates/snippets/pricing.html:49
 #: weblate_web/templates/snippets/pricing.html:75
@@ -2700,10 +2711,6 @@ msgstr "Всегда обновляется до последней версии
 #: weblate_web/templates/support.html:68
 msgid "Only available with the installation package"
 msgstr "Доступна только с установочным пакетом"
-
-#: weblate_web/templates/support.html:75
-msgid "Premium self-hosted support"
-msgstr "Премиальная поддержка своего хостинга"
 
 #: weblate_web/templates/support.html:79
 msgid "Private consultations."

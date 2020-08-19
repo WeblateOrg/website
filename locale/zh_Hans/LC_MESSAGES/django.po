@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: weblate@lists.cihar.com\n"
-"POT-Creation-Date: 2020-08-09 07:51+0200\n"
+"POT-Creation-Date: 2020-08-19 12:17+0200\n"
 "PO-Revision-Date: 2020-08-18 11:51+0000\n"
 "Last-Translator: tao wang <tonywang5@163.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -273,15 +273,20 @@ msgstr "自行架设的基本支持"
 msgid "Extended self-hosted support"
 msgstr "自行架设的拓展支持"
 
-#: weblate_web/models.py:492 weblate_web/templates/hosting.html:156
+#: weblate_web/models.py:373 weblate_web/templates/support.html:75
+msgid "Premium self-hosted support"
+msgstr "高级自托管支持"
+
+#: weblate_web/models.py:498 weblate_web/templates/hosting.html:156
 msgid "Basic support"
 msgstr "基础支持"
 
-#: weblate_web/models.py:498 weblate_web/templates/hosting.html:123
+#: weblate_web/models.py:504 weblate_web/models.py:506
+#: weblate_web/templates/hosting.html:123
 msgid "Extended support"
 msgstr "扩展支持"
 
-#: weblate_web/models.py:500 weblate_web/templates/support.html:99
+#: weblate_web/models.py:508 weblate_web/templates/support.html:99
 msgid "Backup service"
 msgstr "备份服务"
 
@@ -1635,12 +1640,6 @@ msgstr "持续本地化集成"
 
 #: weblate_web/templates/hosting.html:288
 #: weblate_web/templates/hosting.html:655
-#: weblate_web/templates/snippets/pricing.html:19
-#: weblate_web/templates/snippets/pricing.html:45
-#: weblate_web/templates/snippets/pricing.html:71
-#: weblate_web/templates/snippets/pricing.html:97
-#: weblate_web/templates/snippets/pricing.html:127
-#: weblate_web/templates/snippets/pricing.html:151
 msgid "Source strings"
 msgstr "源字符串"
 
@@ -1809,8 +1808,8 @@ msgid ""
 "\">set up your libre project</a> and get the <strong>Libre plan</strong> "
 "gratis."
 msgstr ""
-"如果您觉得 Weblate 的支持帮助了您， <a href=\"%(url)s\">设置您自己的开源项目</a> 并获得 <strong>自由计划</"
-"strong> 的免费。"
+"如果您觉得 Weblate 的支持帮助了您， <a href=\"%(url)s\">设置您自己的开源项目"
+"</a> 并获得 <strong>自由计划</strong> 的免费。"
 
 #: weblate_web/templates/hosting.html:664
 msgid ""
@@ -2262,6 +2261,18 @@ msgstr "高级云"
 msgid "for ease and comfort"
 msgstr "轻松舒适"
 
+#: weblate_web/templates/snippets/pricing.html:19
+#: weblate_web/templates/snippets/pricing.html:45
+#: weblate_web/templates/snippets/pricing.html:71
+#: weblate_web/templates/snippets/pricing.html:97
+#: weblate_web/templates/snippets/pricing.html:127
+#: weblate_web/templates/snippets/pricing.html:151
+#, fuzzy
+#| msgid "Source strings"
+msgctxt "Hosting plan parameter"
+msgid "Source strings"
+msgstr "源字符串"
+
 #: weblate_web/templates/snippets/pricing.html:23
 #: weblate_web/templates/snippets/pricing.html:49
 #: weblate_web/templates/snippets/pricing.html:75
@@ -2555,10 +2566,6 @@ msgstr "始终升级到最新版本。"
 #: weblate_web/templates/support.html:68
 msgid "Only available with the installation package"
 msgstr "仅提供安装包"
-
-#: weblate_web/templates/support.html:75
-msgid "Premium self-hosted support"
-msgstr "高级自托管支持"
 
 #: weblate_web/templates/support.html:79
 msgid "Private consultations."
