@@ -95,10 +95,10 @@ class Backend:
     def initiate(self, request, back_url, complete_url):
         """Initiate payment and optionally redirects user."""
         if self.payment.state != Payment.NEW:
-            raise InvalidState()
+            raise InvalidState(self.payment.get_state_display())
 
         if self.payment.repeat and not self.recurring:
-            raise InvalidState()
+            raise InvalidState(self.payment.get_state_display())
 
         result = self.perform(request, back_url, complete_url)
 
@@ -112,7 +112,7 @@ class Backend:
     def complete(self, request):
         """Payment completion called from returned request."""
         if self.payment.state != Payment.PENDING:
-            raise InvalidState()
+            raise InvalidState(self.payment.get_state_display())
 
         status = self.collect(request)
         if status is None:
