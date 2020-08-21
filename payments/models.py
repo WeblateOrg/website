@@ -207,9 +207,7 @@ class Payment(models.Model):
     details = JSONField(default={}, blank=True)
     # Payment extra information from the origin
     extra = JSONField(default={}, blank=True)
-    customer = models.ForeignKey(
-        Customer, on_delete=models.deletion.CASCADE, blank=True
-    )
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE)
     repeat = models.ForeignKey(
         "Payment", on_delete=models.deletion.CASCADE, null=True, blank=True
     )
