@@ -72,7 +72,9 @@ class Command(BaseCommand):
         # Notify admins
         if expiry:
             send_notification(
-                "expiring_subscriptions", settings.NOTIFY_SUBSCRIPTION, expiry=expiry,
+                "expiring_subscriptions",
+                settings.NOTIFY_SUBSCRIPTION,
+                expiry=expiry,
             )
 
     @staticmethod

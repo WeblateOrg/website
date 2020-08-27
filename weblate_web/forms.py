@@ -29,7 +29,10 @@ class SubscribeForm(forms.Form):
 
 
 class MethodForm(forms.Form):
-    method = forms.ChoiceField(choices=[], required=True,)
+    method = forms.ChoiceField(
+        choices=[],
+        required=True,
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,9 +43,14 @@ class MethodForm(forms.Form):
 
 class DonateForm(forms.Form):
     recurring = forms.ChoiceField(
-        choices=RECURRENCE_CHOICES, initial="", required=False,
+        choices=RECURRENCE_CHOICES,
+        initial="",
+        required=False,
     )
-    amount = forms.IntegerField(min_value=5, initial=10,)
+    amount = forms.IntegerField(
+        min_value=5,
+        initial=10,
+    )
     reward = forms.ChoiceField(choices=REWARDS, initial=0, required=False)
 
 

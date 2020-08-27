@@ -153,11 +153,15 @@ class Donation(models.Model):
 
     def send_notification(self, notification):
         send_notification(
-            notification, [self.user.email], donation=self,
+            notification,
+            [self.user.email],
+            donation=self,
         )
         with override("en"):
             send_notification(
-                notification, settings.NOTIFY_SUBSCRIPTION, donation=self,
+                notification,
+                settings.NOTIFY_SUBSCRIPTION,
+                donation=self,
             )
 
 
@@ -630,7 +634,9 @@ class Subscription(models.Model):
         )
         with override("en"):
             send_notification(
-                notification, settings.NOTIFY_SUBSCRIPTION, subscription=self,
+                notification,
+                settings.NOTIFY_SUBSCRIPTION,
+                subscription=self,
             )
 
 

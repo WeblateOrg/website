@@ -333,7 +333,9 @@ class FakturaceTestCase(TestCase):
     @staticmethod
     def create_payment():
         customer = Customer.objects.create(
-            email="weblate@example.com", user_id=1, origin=PAYMENTS_ORIGIN,
+            email="weblate@example.com",
+            user_id=1,
+            origin=PAYMENTS_ORIGIN,
         )
         payment = Payment.objects.create(
             customer=customer,
@@ -356,7 +358,8 @@ class PaymentsTest(FakturaceTestCase):
 
     def test_languages(self):
         self.assertEqual(
-            set(SUPPORTED_LANGUAGES), {x[0] for x in settings.LANGUAGES},
+            set(SUPPORTED_LANGUAGES),
+            {x[0] for x in settings.LANGUAGES},
         )
 
     def test_view(self):
@@ -365,7 +368,11 @@ class PaymentsTest(FakturaceTestCase):
             response = self.client.get(url, follow=True)
             self.assertRedirects(response, customer_url)
             self.assertContains(response, "Please provide your billing")
-            response = self.client.post(customer_url, TEST_CUSTOMER, follow=True,)
+            response = self.client.post(
+                customer_url,
+                TEST_CUSTOMER,
+                follow=True,
+            )
             self.assertRedirects(response, url)
             self.assertContains(response, "Test payment")
             self.assertContains(response, "€ 121.0")
@@ -616,11 +623,14 @@ class DonationTest(FakturaceTestCase):
 
     @responses.activate
     @override_settings(
-        PAYMENT_DEBUG=True, PAYMENT_REDIRECT_URL="http://example.com/payment",
+        PAYMENT_DEBUG=True,
+        PAYMENT_REDIRECT_URL="http://example.com/payment",
     )
     def test_recurring(self):
         responses.add(
-            responses.POST, "http://example.com/payment", body="",
+            responses.POST,
+            "http://example.com/payment",
+            body="",
         )
         donation = self.create_donation(-1)
         self.assertEqual(donation.payment_obj.payment_set.count(), 0)
@@ -735,7 +745,9 @@ class APITest(TestCase):
             "/api/user/",
             {
                 "payload": dumps(
-                    {"username": "x"}, key=settings.PAYMENT_SECRET, salt="weblate.user",
+                    {"username": "x"},
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
                 )
             },
         )

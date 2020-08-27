@@ -16,15 +16,23 @@ class Migration(migrations.Migration):
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name="report", name="languages", field=models.IntegerField(default=0),
+            model_name="report",
+            name="languages",
+            field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name="report", name="projects", field=models.IntegerField(default=0),
+            model_name="report",
+            name="projects",
+            field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name="report", name="site_url", field=models.URLField(default=""),
+            model_name="report",
+            name="site_url",
+            field=models.URLField(default=""),
         ),
         migrations.AlterField(
-            model_name="report", name="users", field=models.IntegerField(default=0),
+            model_name="report",
+            name="users",
+            field=models.IntegerField(default=0),
         ),
     ]

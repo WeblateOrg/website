@@ -128,7 +128,10 @@ def send_notification(notification, recipients, **kwargs):
 
     # Prepare e-mail
     email = EmailMultiAlternatives(
-        subject, html2text.handle(body), "billing@weblate.org", recipients,
+        subject,
+        html2text.handle(body),
+        "billing@weblate.org",
+        recipients,
     )
     email.mixed_subtype = "related"
     for image in images:

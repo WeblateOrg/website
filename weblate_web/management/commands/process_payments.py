@@ -37,7 +37,9 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--from-date", default=None, help="Date for parsing bank statements",
+            "--from-date",
+            default=None,
+            help="Date for parsing bank statements",
         )
 
     def handle(self, *args, **options):

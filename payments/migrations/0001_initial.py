@@ -47,7 +47,8 @@ class Migration(migrations.Migration):
                 (
                     "email",
                     models.EmailField(
-                        max_length=190, validators=[payments.utils.validate_email],
+                        max_length=190,
+                        validators=[payments.utils.validate_email],
                     ),
                 ),
                 ("origin", models.URLField(max_length=300)),
