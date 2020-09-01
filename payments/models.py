@@ -280,7 +280,7 @@ class Payment(models.Model):
     def get_payment_backend(self):
         return self.get_payment_backend_class()(self)
 
-    def repeat_payment(self, **kwargs):
+    def repeat_payment(self, skip_previous: bool = False, **kwargs):
         # Check if backend is still valid
         try:
             self.get_payment_backend_class()
@@ -290,7 +290,7 @@ class Payment(models.Model):
         with transaction.atomic(using="payments_db"):
             # Check for failed payments
             previous = Payment.objects.filter(repeat=self)
-            if previous.exists():
+            if not skip_previous and previous.exists():
                 failures = previous.filter(state=Payment.REJECTED)
                 try:
                     last_good = previous.filter(state=Payment.PROCESSED).order_by(
