@@ -89,6 +89,14 @@ ready(() => {
       yearly_pricing.classList.add("current");
     });
   });
+  document.querySelectorAll(".dedicated-toggle").forEach((element) => {
+    console.log(element);
+    element.addEventListener("click", (e) => {
+      let target = document.getElementById("dedicated-checkbox");
+      target.checked = element.classList.contains("dedicated-enable");
+      target.dispatchEvent(new Event("change"));
+    });
+  });
 
   /* Donate rewards selection */
   let donate_input = document.getElementById("donate-amount");
