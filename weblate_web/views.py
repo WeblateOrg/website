@@ -334,13 +334,15 @@ class CompleteView(PaymentView):
             if self.object.state == Payment.NEW:
                 return redirect("payment", pk=self.object.pk)
 
+            # Get backend and refetch payment from the database
+            backend = get_backend(self.object.backend)(self.object)
+
             # Allow reprocessing of rejected payments. User might choose
             # to retry in the payment gateway and previously rejected payment
             # can be now completed.
-            if self.object.state not in (Payment.PENDING, Payment.REJECTED):
+            if backend.payment.state not in (Payment.PENDING, Payment.REJECTED):
                 return self.redirect_origin()
 
-            backend = get_backend(self.object.backend)(self.object)
             backend.complete(self.request)
             # If payment is still pending, display info page
             if backend.payment.state == Payment.PENDING:
