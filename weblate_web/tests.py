@@ -227,7 +227,7 @@ class ViewTestCase(PostTestCase):
 
     def test_security_txt(self):
         response = self.client.get("/security.txt", follow=True)
-        self.assertRedirects(response, "/.well-known/security.txt")
+        self.assertRedirects(response, "/.well-known/security.txt", status_code=301)
         self.assertContains(response, "https://hackerone.com/weblate")
 
     @responses.activate
