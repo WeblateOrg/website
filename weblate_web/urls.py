@@ -301,7 +301,15 @@ urlpatterns = i18n_patterns(
     url(r"^site\.webmanifest$", TemplateView.as_view(template_name="site.webmanifest")),
     url(
         r"^security\.txt$",
+        RedirectView.as_view(url="/.well-known/security.txt", permanent=True),
+    ),
+    url(
+        r"^\.well-known/security\.txt$",
         TemplateView.as_view(template_name="security.txt", content_type="text/plain"),
+    ),
+    url(
+        r"^\.well-known/keybase\.txt$",
+        TemplateView.as_view(template_name="keybase.txt", content_type="text/plain"),
     ),
     # Admin
     url(
