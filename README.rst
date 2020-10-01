@@ -27,4 +27,4 @@ Django based website for Weblate, running at <https://weblate.org/>.
 
 
 ## If you are looking for Weblate itself ,
-So you should go <https://github.com/WeblateOrg/weblate>.
+So you should go to <https://github.com/WeblateOrg/weblate>.
