@@ -3,11 +3,11 @@
    :target: https://weblate.org/
    :height: 80px
 
-**Weblate is a copylefted libre software web-based continuous localization system,
-used by over 1150 libre projects and companies in more than 115 countries.**
+**Weblate is a copylefted libre software which is  web-based continuous localization system,
+used by over 1150 libre projects and companies in more than 115 countries arocess the world .**
 
 
-Django based website for Weblate, running at <https://weblate.org/>.
+Django is  based on website for Weblate, which is running at this website <https://weblate.org/>.
 
 .. image:: https://img.shields.io/badge/website-weblate.org-blue.svg
     :alt: Website
@@ -26,4 +26,4 @@ Django based website for Weblate, running at <https://weblate.org/>.
     :target: https://codecov.io/github/WeblateOrg/website?branch=master
 
 
-If you are looking for Weblate itself, go to <https://github.com/WeblateOrg/weblate>.
+If you are looking for Weblate itself, then go to website ➡ <https://github.com/WeblateOrg/weblate>.
