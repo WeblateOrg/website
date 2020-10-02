@@ -10,3 +10,4 @@ You can find more information on reporting security issues in
 
 [1]: https://docs.weblate.org/en/latest/contributing/issues.html#security
 [2]: https://hackerone.com/weblate
+===================================================================================
