@@ -26,4 +26,4 @@ Django based website for Weblate, running at <https://weblate.org/>.
     :target: https://codecov.io/github/WeblateOrg/website?branch=master
 
 
-If you are looking for Weblate itself, go to <https://github.com/WeblateOrg/weblate>.
+If you are looking for Weblate itself, go to the link  <https://github.com/WeblateOrg/weblate>.
