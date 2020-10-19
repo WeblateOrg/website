@@ -398,6 +398,9 @@ class FioBank(Backend):
             # Extract from variable symbol
             if transaction["variable_symbol"]:
                 matches.extend(PROFORMA_RE.findall(transaction["variable_symbol"]))
+            # Extract from sender reference
+            if transaction.get("reference", None):
+                matches.extend(PROFORMA_RE.findall(transaction["reference"]))
             # Extract from comment for manual pairing
             if transaction["comment"]:
                 matches.extend(PROFORMA_RE.findall(transaction["comment"]))
