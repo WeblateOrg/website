@@ -377,7 +377,7 @@ SAML_CONFIG = {
             # Enable AllowCreate in NameIDPolicy.
             "name_id_format_allow_create": False,
             # attributes that this project need to identify a user
-            "required_attributes": ["email"],
+            "required_attributes": ["email", "first_name", "last_name", "username"],
         },
     },
     # where the remote metadata is stored, local, remote or mdq server.
