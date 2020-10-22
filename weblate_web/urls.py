@@ -311,6 +311,8 @@ urlpatterns = i18n_patterns(
         r"^\.well-known/keybase\.txt$",
         TemplateView.as_view(template_name="keybase.txt", content_type="text/plain"),
     ),
+    # SAML
+    url(r"^saml2/", include("djangosaml2.urls")),
     # Admin
     url(
         r"^admin/login/$",

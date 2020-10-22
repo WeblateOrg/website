@@ -23,6 +23,8 @@
 
 import os
 
+import saml2.saml
+
 DEBUG = True
 
 ADMINS = (
@@ -224,6 +226,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "weblate_web.middleware.SecurityMiddleware",
+    "djangosaml2.middleware.SamlSessionMiddleware",
 ]
 
 ROOT_URLCONF = "weblate_web.urls"
@@ -242,6 +245,12 @@ INSTALLED_APPS = (
     "wllegal",
     "django_countries",
     "macros",
+    "djangosaml2",
+)
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "djangosaml2.backends.Saml2Backend",
 )
 
 # Some security headers
@@ -290,6 +299,7 @@ EMAIL_SUBJECT_PREFIX = "[weblate.org] "
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_AGE = 3600
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
@@ -302,6 +312,7 @@ SSO_PRIVATE_KEY = None
 SSO_PUBLIC_KEY = None
 
 LOGIN_URL = "/sso-login/"
+LOGIN_REDIRECT_URL = "/user/"
 
 PAYMENT_REDIRECT_URL = "http://localhost:1234/{language}/payment/{uuid}/"
 
@@ -322,6 +333,90 @@ STORAGE_PASSWORD = ""
 NOTIFY_SUBSCRIPTION = []
 
 FIO_TOKEN = None
+
+SAML_ATTRIBUTE_MAPPING = {"uid": ("username",), "email": ("email",)}
+SAML_DJANGO_USER_MAIN_ATTRIBUTE = "email"
+
+SAML_CONFIG = {
+    # full path to the xmlsec1 binary programm
+    "xmlsec_binary": "/usr/bin/xmlsec1",
+    # your entity id, usually your subdomain plus the url to the metadata view
+    "entityid": "http://localhost:1234/saml2/metadata/",
+    # directory with attribute mapping
+    "attribute_map_dir": os.path.join(BASE_DIR, "saml", "attribute-maps"),
+    # this block states what services we provide
+    "service": {
+        # we are just a lonely SP
+        "sp": {
+            "name": "Weblate.org",
+            "name_id_format": saml2.saml.NAMEID_FORMAT_EMAILADDRESS,
+            # For Okta add signed logout requets. Enable this:
+            # "logout_requests_signed": True,
+            "endpoints": {
+                # url and binding to the assetion consumer service view
+                # do not change the binding or service name
+                "assertion_consumer_service": [
+                    ("http://localhost:1234/saml2/acs/", saml2.BINDING_HTTP_POST),
+                ],
+                # url and binding to the single logout service view
+                # do not change the binding or service name
+                "single_logout_service": [
+                    # Disable next two lines for HTTP_REDIRECT for IDP's that only support HTTP_POST. Ex. Okta:
+                    ("http://localhost:1234/saml2/ls/", saml2.BINDING_HTTP_REDIRECT),
+                    ("http://localhost:1234/saml2/ls/post", saml2.BINDING_HTTP_POST),
+                ],
+            },
+            # Mandates that the identity provider MUST authenticate the
+            # presenter directly rather than rely on a previous security context.
+            "force_authn": False,
+            # Enable AllowCreate in NameIDPolicy.
+            "name_id_format_allow_create": False,
+            # attributes that this project need to identify a user
+            "required_attributes": ["uid", "email", "first_name", "last_name"],
+        },
+        # where the remote metadata is stored, local, remote or mdq server.
+        # One metadatastore or many ...
+        "metadata": {
+            "local": [os.path.join(BASE_DIR, "saml", "remote_metadata.xml")],
+            "remote": [{"url": "https://hosted.weblate.org/idp/metadata/"}],
+        },
+        # set to 1 to output debugging information
+        "debug": 1,
+        # Signing
+        "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
+        "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
+        # Encryption
+        "encryption_keypairs": [
+            {
+                "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
+                "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
+            }
+        ],
+        # own metadata settings
+        "contact_person": [
+            {
+                "given_name": "Michal",
+                "sur_name": "Čihař",
+                "company": "Weblate",
+                "email_address": "michal@weblate.org",
+                "contact_type": "technical",
+            },
+            {
+                "given_name": "Michal",
+                "sur_name": "Čihař",
+                "company": "Weblate",
+                "email_address": "michal@weblate.org",
+                "contact_type": "administrative",
+            },
+        ],
+        # you can set multilanguage information here
+        "organization": {
+            "name": [("Weblate", "en")],
+            "display_name": [("Weblate", "es")],
+            "url": [("https://weblate.org/", "en")],
+        },
+    },
+}
 
 LOCAL = os.path.join(BASE_DIR, "weblate_web", "settings_local.py")
 if os.path.exists(LOCAL):
