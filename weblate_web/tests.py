@@ -587,12 +587,12 @@ class DonationTest(FakturaceTestCase):
 
     def test_your_donations(self):
         # Check login link
-        self.assertContains(self.client.get(reverse("donate")), "/sso-login/")
+        self.assertContains(self.client.get(reverse("donate")), "/saml2/login/")
         user = self.login()
 
         # No login/donations
         response = self.client.get(reverse("donate"))
-        self.assertNotContains(response, "/sso-login/")
+        self.assertNotContains(response, "/saml2/login/")
         self.assertNotContains(response, "Your donations")
 
         # Donation show show up

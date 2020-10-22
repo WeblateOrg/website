@@ -31,7 +31,6 @@ from django.urls import path
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView, TemplateView
-from simple_sso.sso_client.client import Client
 
 from weblate_web.models import Post
 from weblate_web.views import (
@@ -141,11 +140,6 @@ class NewsSitemap(Sitemap):
 SITEMAPS = {lang[0]: PagesSitemap(lang[0]) for lang in settings.LANGUAGES}
 SITEMAPS["news"] = NewsSitemap()
 UUID = r"(?P<pk>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
-
-
-SSO_CLIENT = Client(
-    settings.SSO_SERVER, settings.SSO_PUBLIC_KEY, settings.SSO_PRIVATE_KEY
-)
 
 
 urlpatterns = i18n_patterns(
@@ -275,7 +269,6 @@ urlpatterns = i18n_patterns(
     url(r"^api/user/$", api_user),
     url(r"^api/hosted/$", api_hosted),
     url(r"^img/activity.svg$", activity_svg),
-    url(r"^sso-login/", include(SSO_CLIENT.get_urls())),
     url(r"^subscribe/(?P<name>hosted|users)/", subscribe, name="subscribe"),
     url(r"^logout/$", LogoutView.as_view(next_page="/"), name="logout"),
     # Aliases for static files
@@ -317,7 +310,7 @@ urlpatterns = i18n_patterns(
     url(
         r"^admin/login/$",
         RedirectView.as_view(
-            pattern_name="simple-sso-login", permanent=True, query_string=True
+            pattern_name="saml2_login", permanent=True, query_string=True
         ),
     ),
     url(r"^admin/", admin.site.urls),

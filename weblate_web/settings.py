@@ -311,7 +311,7 @@ SSO_SERVER = "https://hosted.weblate.org/accounts/sso/"
 SSO_PRIVATE_KEY = None
 SSO_PUBLIC_KEY = None
 
-LOGIN_URL = "/sso-login/"
+LOGIN_URL = "/saml2/login/"
 LOGIN_REDIRECT_URL = "/user/"
 
 PAYMENT_REDIRECT_URL = "http://localhost:1234/{language}/payment/{uuid}/"
