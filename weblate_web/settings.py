@@ -323,7 +323,7 @@ NOTIFY_SUBSCRIPTION = []
 
 FIO_TOKEN = None
 
-try:
-    from .settings_local import *
-except ImportError:
-    pass
+LOCAL = os.path.join(BASE_DIR, "weblate_web", "settings_local.py")
+if os.path.exists(LOCAL):
+    with open(LOCAL) as handle:
+        exec(handle.read())
