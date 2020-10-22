@@ -369,52 +369,57 @@ SAML_CONFIG = {
             # Mandates that the identity provider MUST authenticate the
             # presenter directly rather than rely on a previous security context.
             "force_authn": False,
+            # Require signing
+            "want_assertions_signed": True,
+            "want_response_signed": True,
+            "want_assertions_or_response_signed": True,
+            "logout_requests_signed": True,
             # Enable AllowCreate in NameIDPolicy.
             "name_id_format_allow_create": False,
             # attributes that this project need to identify a user
-            "required_attributes": ["uid", "email", "first_name", "last_name"],
+            "required_attributes": ["email"],
         },
-        # where the remote metadata is stored, local, remote or mdq server.
-        # One metadatastore or many ...
-        "metadata": {
-            "local": [os.path.join(BASE_DIR, "saml", "remote_metadata.xml")],
-            "remote": [{"url": "https://hosted.weblate.org/idp/metadata/"}],
+    },
+    # where the remote metadata is stored, local, remote or mdq server.
+    # One metadatastore or many ...
+    "metadata": {
+        "local": [os.path.join(BASE_DIR, "saml", "remote_metadata.xml")],
+        "remote": [{"url": "https://hosted.weblate.org/idp/metadata/"}],
+    },
+    # set to 1 to output debugging information
+    "debug": 1,
+    # Signing
+    "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
+    "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
+    # Encryption
+    "encryption_keypairs": [
+        {
+            "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
+            "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
+        }
+    ],
+    # own metadata settings
+    "contact_person": [
+        {
+            "given_name": "Michal",
+            "sur_name": "Čihař",
+            "company": "Weblate",
+            "email_address": "michal@weblate.org",
+            "contact_type": "technical",
         },
-        # set to 1 to output debugging information
-        "debug": 1,
-        # Signing
-        "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
-        "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
-        # Encryption
-        "encryption_keypairs": [
-            {
-                "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
-                "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
-            }
-        ],
-        # own metadata settings
-        "contact_person": [
-            {
-                "given_name": "Michal",
-                "sur_name": "Čihař",
-                "company": "Weblate",
-                "email_address": "michal@weblate.org",
-                "contact_type": "technical",
-            },
-            {
-                "given_name": "Michal",
-                "sur_name": "Čihař",
-                "company": "Weblate",
-                "email_address": "michal@weblate.org",
-                "contact_type": "administrative",
-            },
-        ],
-        # you can set multilanguage information here
-        "organization": {
-            "name": [("Weblate", "en")],
-            "display_name": [("Weblate", "es")],
-            "url": [("https://weblate.org/", "en")],
+        {
+            "given_name": "Michal",
+            "sur_name": "Čihař",
+            "company": "Weblate",
+            "email_address": "michal@weblate.org",
+            "contact_type": "administrative",
         },
+    ],
+    # you can set multilanguage information here
+    "organization": {
+        "name": [("Weblate", "en")],
+        "display_name": [("Weblate", "es")],
+        "url": [("https://weblate.org/", "en")],
     },
 }
 
