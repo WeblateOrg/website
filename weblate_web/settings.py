@@ -329,10 +329,6 @@ PAYMENT_DEBUG = True
 
 PAYMENT_FAKTURACE = "/home/nijel/weblate/tmp-fakturace"
 
-SSO_SERVER = "https://hosted.weblate.org/accounts/sso/"
-SSO_PRIVATE_KEY = None
-SSO_PUBLIC_KEY = None
-
 LOGIN_URL = "/saml2/login/"
 LOGIN_REDIRECT_URL = "/user/"
 
