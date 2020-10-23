@@ -352,7 +352,11 @@ NOTIFY_SUBSCRIPTION = []
 
 FIO_TOKEN = None
 
-SAML_ATTRIBUTE_MAPPING = {"uid": ("username",), "email": ("email",)}
+SAML_ATTRIBUTE_MAPPING = {
+    "uid": ("username",),
+    "email": ("email",),
+    "displayName": ("last_name",),
+}
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "email"
 
 SAML_CONFIG = {
@@ -360,8 +364,6 @@ SAML_CONFIG = {
     "xmlsec_binary": "/usr/bin/xmlsec1",
     # your entity id, usually your subdomain plus the url to the metadata view
     "entityid": "http://localhost:1234/saml2/metadata/",
-    # directory with attribute mapping
-    "attribute_map_dir": os.path.join(BASE_DIR, "saml", "attribute-maps"),
     # this block states what services we provide
     "service": {
         # we are just a lonely SP
@@ -395,7 +397,7 @@ SAML_CONFIG = {
             # Enable AllowCreate in NameIDPolicy.
             "name_id_format_allow_create": False,
             # attributes that this project need to identify a user
-            "required_attributes": ["email", "first_name", "last_name", "username"],
+            "required_attributes": ["email", "displayName", "uid"],
         },
     },
     # where the remote metadata is stored, local, remote or mdq server.
