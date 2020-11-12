@@ -62,7 +62,7 @@ class Command(BaseCommand):
 
         # Expiring donations
         donations = Donation.objects.filter(
-            active=True, expires__lte=timezone.now() + timedelta(days=3)
+            active=True, expires__lte=timezone.now() + timedelta(days=30)
         ).exclude(payment=None)
         for donation in donations:
             payment = donation.payment_obj

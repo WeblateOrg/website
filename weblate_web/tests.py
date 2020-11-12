@@ -9,6 +9,7 @@ import responses
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import mail
 from django.core.cache import cache
 from django.core.management import call_command
 from django.core.signing import dumps
@@ -22,6 +23,7 @@ from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
 
 from .data import EXTENSIONS, VERSION
+from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .models import PAYMENTS_ORIGIN, Donation, Package, Post, Service
 from .remote import (
     ACTIVITY_URL,
@@ -330,9 +332,10 @@ class UtilTestCase(TestCase):
 
 class FakturaceTestCase(TestCase):
     databases = "__all__"
+    credentials = {"username": "testuser", "password": "testpassword"}
 
     @staticmethod
-    def create_payment():
+    def create_payment(recurring="y"):
         customer = Customer.objects.create(
             email="weblate@example.com",
             user_id=1,
@@ -343,13 +346,38 @@ class FakturaceTestCase(TestCase):
             amount=100,
             description="Test payment",
             backend="pay",
-            recurring="y",
+            recurring=recurring,
         )
         return (
             payment,
             reverse("payment", kwargs={"pk": payment.pk}),
             reverse("payment-customer", kwargs={"pk": payment.pk}),
         )
+
+    def create_user(self):
+        return User.objects.create_user(**self.credentials)
+
+    def create_donation(self, years=1, days=0, recurring="y"):
+        return Donation.objects.create(
+            reward=3,
+            user=self.create_user(),
+            active=True,
+            expires=timezone.now() + relativedelta(years=years, days=days),
+            payment=self.create_payment(recurring=recurring)[0].pk,
+            link_url="https://example.com/weblate",
+            link_text="Weblate donation test",
+        )
+
+    def create_service(self, years=1, days=0, recurring="y"):
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        Package.objects.create(name="extended", verbose="Extended support", price=42)
+        service = Service.objects.create()
+        service.subscription_set.create(
+            package="extended",
+            expires=timezone.now() + relativedelta(years=years, days=days),
+            payment=self.create_payment(recurring=recurring)[0].pk,
+        )
+        service.users.add(self.create_user())
 
 
 class PaymentsTest(FakturaceTestCase):
@@ -438,14 +466,9 @@ class PaymentsTest(FakturaceTestCase):
 
 
 class DonationTest(FakturaceTestCase):
-    credentials = {"username": "testuser", "password": "testpassword"}
-
     def setUp(self):
         super().setUp()
         fake_remote()
-
-    def create_user(self):
-        return User.objects.create_user(**self.credentials)
 
     def login(self):
         user = self.create_user()
@@ -604,17 +627,6 @@ class DonationTest(FakturaceTestCase):
             payment=self.create_payment()[0].pk,
         )
         self.assertContains(self.client.get(reverse("user")), "Your donations")
-
-    def create_donation(self, years=1):
-        return Donation.objects.create(
-            reward=3,
-            user=self.create_user(),
-            active=True,
-            expires=timezone.now() + relativedelta(years=years),
-            payment=self.create_payment()[0].pk,
-            link_url="https://example.com/weblate",
-            link_text="Weblate donation test",
-        )
 
     def test_link(self):
         self.create_donation()
@@ -778,3 +790,29 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username="testuser").exists())
         self.assertTrue(User.objects.filter(username="other").exists())
+
+
+@override_settings(NOTIFY_SUBSCRIPTION=["noreply@example.com"])
+class ExpiryTest(FakturaceTestCase):
+    def assert_notifications(self, *subjects):
+        self.assertEqual({m.subject for m in mail.outbox}, set(subjects))
+
+    def test_expiring_donate(self):
+        self.create_donation(years=0, days=3, recurring="")
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications("Expiring subscriptions on weblate.org")
+
+    def test_expiring_recurring_donate(self):
+        self.create_donation(years=0, days=3)
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications()
+
+    def test_expiring_subscription(self):
+        self.create_service(years=0, days=3, recurring="")
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications("Expiring subscriptions on weblate.org")
+
+    def test_expiring_recurring_subscription(self):
+        self.create_service(years=0, days=3)
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications()

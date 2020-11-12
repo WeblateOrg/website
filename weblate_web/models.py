@@ -526,7 +526,6 @@ class Service(models.Model):
             status = "extended"
         elif self.basic_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = "basic"
-
         package_obj = Package.objects.get(name=package)
 
         if (
