@@ -45,9 +45,11 @@ class Command(BaseCommand):
     def notify_expiry():
         expiry = []
 
+        expires_notify = timezone.now() + timedelta(days=30)
+
         # Expiring subscriptions
         subscriptions = Subscription.objects.filter(
-            expires__lte=timezone.now() + timedelta(days=30)
+            expires__lte=expires_notify
         ).exclude(payment=None)
         for subscription in subscriptions:
             payment = subscription.payment_obj
@@ -63,7 +65,7 @@ class Command(BaseCommand):
 
         # Expiring donations
         donations = Donation.objects.filter(
-            active=True, expires__lte=timezone.now() + timedelta(days=30)
+            active=True, expires__lte=expires_notify
         ).exclude(payment=None)
         for donation in donations:
             payment = donation.payment_obj
