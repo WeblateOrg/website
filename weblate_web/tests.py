@@ -792,27 +792,49 @@ class APITest(TestCase):
         self.assertTrue(User.objects.filter(username="other").exists())
 
 
-@override_settings(NOTIFY_SUBSCRIPTION=["noreply@example.com"])
+@override_settings(
+    NOTIFY_SUBSCRIPTION=["noreply@example.com"],
+    PAYMENT_DEBUG=True,
+    PAYMENT_FAKTURACE=TEST_FAKTURACE,
+    PAYMENT_REDIRECT_URL="http://example.com/payment",
+)
 class ExpiryTest(FakturaceTestCase):
     def assert_notifications(self, *subjects):
         self.assertEqual({m.subject for m in mail.outbox}, set(subjects))
+        mail.outbox = []
 
     def test_expiring_donate(self):
         self.create_donation(years=0, days=3, recurring="")
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications("Expiring subscriptions on weblate.org")
+        RecurringPaymentsCommand.handle_donations()
+        self.assert_notifications("Your expired payment on weblate.org")
 
     def test_expiring_recurring_donate(self):
         self.create_donation(years=0, days=3)
         RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications()
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.POST, settings.PAYMENT_REDIRECT_URL, body="")
+            RecurringPaymentsCommand.handle_donations()
+        self.assert_notifications()
+        RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
 
     def test_expiring_subscription(self):
         self.create_service(years=0, days=3, recurring="")
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications("Expiring subscriptions on weblate.org")
+        RecurringPaymentsCommand.handle_subscriptions()
+        self.assert_notifications("Your expired payment on weblate.org")
 
     def test_expiring_recurring_subscription(self):
         self.create_service(years=0, days=3)
         RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications()
+        with responses.RequestsMock() as rsps:
+            rsps.add(responses.POST, settings.PAYMENT_REDIRECT_URL, body="")
+            RecurringPaymentsCommand.handle_subscriptions()
+        self.assert_notifications()
+        RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications()
