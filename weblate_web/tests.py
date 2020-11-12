@@ -821,6 +821,19 @@ class ExpiryTest(FakturaceTestCase):
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
 
+    def test_expiring_donate_notify_user(self):
+        self.create_donation(years=0, days=8, recurring="")
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications(
+            "Expiring subscriptions on weblate.org",
+            "Your upcoming renewal on weblate.org",
+        )
+
+    def test_expiring_recurring_donate_notify_user(self):
+        self.create_donation(years=0, days=8)
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications("Your upcoming payment on weblate.org")
+
     def test_expiring_subscription(self):
         self.create_service(years=0, days=3, recurring="")
         RecurringPaymentsCommand.notify_expiry()
@@ -838,3 +851,16 @@ class ExpiryTest(FakturaceTestCase):
         self.assert_notifications()
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications()
+
+    def test_expiring_subscription_notify_user(self):
+        self.create_service(years=0, days=8, recurring="")
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications(
+            "Expiring subscriptions on weblate.org",
+            "Your upcoming renewal on weblate.org",
+        )
+
+    def test_expiring_recurring_subscription_notify_user(self):
+        self.create_service(years=0, days=8)
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications("Your upcoming payment on weblate.org")

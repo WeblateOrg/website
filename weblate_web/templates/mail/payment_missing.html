@@ -1,0 +1,29 @@
+{% extends "mail/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+{% if subscription %}
+<p>
+{% trans "Your subscription on weblate.org will renew next week." %}
+{% trans "You do not have configured automatic payments, please perform the payment now." %}
+</p>
+
+<p>
+{% blocktrans with package=subscription.get_package_display %}Current subscription: {{ package }}{% endblocktrans %}
+</p>
+{% endif %}
+
+{% if donation %}
+<p>
+{% trans "Your donation on weblate.org will renew next week." %}
+{% trans "You do not have configured automatic payments, please perform the payment now." %}
+</p>
+
+<p>
+{% blocktrans with package=donation.get_payment_description %}Current subscription: {{ package }}{% endblocktrans %}
+</p>
+{% endif %}
+
+{% endblock %}
