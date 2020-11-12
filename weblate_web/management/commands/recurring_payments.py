@@ -17,7 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -37,8 +37,9 @@ class Command(BaseCommand):
         self.handle_subscriptions()
         # Update services status
         self.handle_services()
-        # Notify about upcoming expiry
-        self.notify_expiry()
+        # Notify about upcoming expiry on Monday and Thursday
+        if datetime.today().weekday() in (0, 3):
+            self.notify_expiry()
 
     @staticmethod
     def notify_expiry():
