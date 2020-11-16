@@ -93,7 +93,12 @@ class Command(BaseCommand):
                 continue
             if notify_user:
                 donation.send_notification("payment_missing")
-            expiry.append((str(donation), [donation.user.email]))
+            expiry.append(
+                (
+                    f"{donation.user}: {donation.get_payment_description()}",
+                    [donation.user.email],
+                )
+            )
 
         # Notify admins
         if expiry:
