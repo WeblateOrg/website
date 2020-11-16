@@ -64,11 +64,14 @@ class Command(BaseCommand):
             # Skip one-time payments and the ones with recurrence configured
             if not subscription.get_repeat():
                 continue
+            notify_user = (
+                payment_notify_start <= subscription.expires <= payment_notify_end
+            )
             if payment.recurring:
-                if payment_notify_start <= subscription.expires <= payment_notify_end:
+                if notify_user:
                     subscription.send_notification("payment_upcoming")
                 continue
-            if payment_notify_start <= subscription.expires:
+            if notify_user:
                 subscription.send_notification("payment_missing")
             expiry.append(
                 (
@@ -83,12 +86,14 @@ class Command(BaseCommand):
         ).exclude(payment=None)
         for donation in donations:
             payment = donation.payment_obj
-            if not payment.recurring:
-                expiry.append((str(donation), [donation.user.email]))
-                if payment_notify_start <= donation.expires:
-                    donation.send_notification("payment_missing")
-            elif payment_notify_start <= donation.expires <= payment_notify_end:
-                donation.send_notification("payment_upcoming")
+            notify_user = payment_notify_start <= donation.expires <= payment_notify_end
+            if payment.recurring:
+                if notify_user:
+                    donation.send_notification("payment_upcoming")
+                continue
+            if notify_user:
+                donation.send_notification("payment_missing")
+            expiry.append((str(donation), [donation.user.email]))
 
         # Notify admins
         if expiry:
