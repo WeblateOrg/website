@@ -78,7 +78,7 @@ class Backend:
 
     @property
     def image_name(self):
-        return "payment/{}.png".format(self.name)
+        return f"payment/{self.name}.png"
 
     def perform(self, request, back_url, complete_url):
         """Perform payment and optionally redirects user."""
@@ -129,7 +129,7 @@ class Backend:
             return
         storage = storage_class(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
-        customer_id = "web-{}".format(customer.pk)
+        customer_id = f"web-{customer.pk}"
         with override("en"):
             contact_file = storage.update_contact(
                 customer_id,
@@ -146,11 +146,11 @@ class Backend:
         invoice_file = storage.create(
             customer_id,
             0,
-            rate="{:f}".format(self.payment.amount_without_vat),
+            rate=f"{self.payment.amount_without_vat:f}",
             item=self.payment.description,
             vat=str(customer.vat_rate),
             category=self.payment.extra.get("category", "weblate"),
-            **self.get_invoice_kwargs()
+            **self.get_invoice_kwargs(),
         )
         invoice = storage.get(invoice_file)
         invoice.write_tex()
@@ -173,7 +173,7 @@ class Backend:
             ["git", "add", "--"] + files, check=True, cwd=settings.PAYMENT_FAKTURACE
         )
         subprocess.run(
-            ["git", "commit", "-m", "Invoice {}".format(invoice.invoiceid)],
+            ["git", "commit", "-m", f"Invoice {invoice.invoiceid}"],
             check=True,
             cwd=settings.PAYMENT_FAKTURACE,
         )
@@ -324,7 +324,7 @@ class ThePayCard(Backend):
             return True
         if status == 7:
             return None
-        reason = "Unknown: {}".format(status)
+        reason = f"Unknown: {status}"
         if status == 3:
             reason = gettext("Payment cancelled")
         elif status == 4:
@@ -406,7 +406,7 @@ class FioBank(Backend):
                 matches.extend(PROFORMA_RE.findall(transaction["comment"]))
             # Process all matches
             for proforma_id in matches:
-                proforma_id = "P{}".format(proforma_id)
+                proforma_id = f"P{proforma_id}"
                 try:
                     related = Payment.objects.get(
                         backend=cls.name, invoice=proforma_id, state=Payment.PENDING
@@ -418,7 +418,7 @@ class FioBank(Backend):
                     )
                     backend.git_commit([proforma.paid_path], proforma)
                     if floor(float(proforma.total_amount)) <= transaction["amount"]:
-                        print("Received payment for {}".format(proforma_id))
+                        print(f"Received payment for {proforma_id}")
                         backend.payment.details["transaction"] = transaction
                         backend.success()
                     else:
@@ -430,4 +430,4 @@ class FioBank(Backend):
                             )
                         )
                 except Payment.DoesNotExist:
-                    print("No matching payment for {} found".format(proforma_id))
+                    print(f"No matching payment for {proforma_id} found")

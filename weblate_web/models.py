@@ -87,10 +87,10 @@ def create_backup_repository(service):
     response = requests.post(
         url,
         data={
-            "homedirectory": "weblate/{}".format(dirname),
+            "homedirectory": f"weblate/{dirname}",
             "ssh": "1",
             "external_reachability": "1",
-            "comment": "Weblate backup service {}".format(service.pk),
+            "comment": f"Weblate backup service {service.pk}",
         },
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
     )
@@ -120,7 +120,7 @@ class Donation(models.Model):
         verbose_name_plural = "Donations"
 
     def __str__(self):
-        return "{}:{}".format(self.user, self.reward)
+        return f"{self.user}:{self.reward}"
 
     def get_absolute_url(self):
         return reverse("donate-edit", kwargs={"pk": self.pk})
@@ -148,7 +148,7 @@ class Donation(models.Model):
 
     def get_payment_description(self):
         if self.reward:
-            return "Weblate donation: {}".format(self.get_reward_display())
+            return f"Weblate donation: {self.get_reward_display()}"
         return "Weblate donation"
 
     def send_notification(self, notification):
@@ -395,7 +395,7 @@ class Service(models.Model):
             url = self.last_report.site_url
         else:
             url = ""
-        return "{}: {}: {}".format(self.get_status_display(), self.user_emails, url)
+        return f"{self.get_status_display()}: {self.user_emails}: {url}"
 
     @cached_property
     def site_title(self):
@@ -419,8 +419,8 @@ class Service(models.Model):
         report = self.last_report
         if report:
             if self.limit_projects:
-                return "{}/{}".format(report.projects, self.limit_projects)
-            return "{}".format(report.projects)
+                return f"{report.projects}/{self.limit_projects}"
+            return f"{report.projects}"
         return "0"
 
     projects_limit.short_description = "Projects"
@@ -429,8 +429,8 @@ class Service(models.Model):
         report = self.last_report
         if report:
             if self.limit_languages:
-                return "{}/{}".format(report.languages, self.limit_languages)
-            return "{}".format(report.languages)
+                return f"{report.languages}/{self.limit_languages}"
+            return f"{report.languages}"
         return "0"
 
     languages_limit.short_description = "Languages"
@@ -439,8 +439,8 @@ class Service(models.Model):
         report = self.last_report
         if report:
             if self.limit_source_strings:
-                return "{}/{}".format(report.source_strings, self.limit_source_strings)
-            return "{}".format(report.source_strings)
+                return f"{report.source_strings}/{self.limit_source_strings}"
+            return f"{report.source_strings}"
         return "0"
 
     source_strings_limit.short_description = "Source strings"
@@ -577,7 +577,7 @@ class Subscription(models.Model):
         verbose_name_plural = "Customer subscription"
 
     def __str__(self):
-        return "{}: {}".format(self.get_package_display(), self.service)
+        return f"{self.get_package_display()}: {self.service}"
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -653,7 +653,7 @@ class PastPayments(models.Model):
         verbose_name_plural = "Past payments"
 
     def __str__(self):
-        return "{}: {}".format(self.subscription, self.payment)
+        return f"{self.subscription}: {self.payment}"
 
 
 class Report(models.Model):

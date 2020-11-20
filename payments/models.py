@@ -111,7 +111,7 @@ class Customer(models.Model):
 
     def __str__(self):
         if self.name:
-            return "{} ({})".format(self.name, self.email)
+            return f"{self.name} ({self.email})"
         return self.email
 
     @property
@@ -222,7 +222,7 @@ class Payment(models.Model):
         verbose_name_plural = "Payments"
 
     def __str__(self):
-        return "payment:{}".format(self.pk)
+        return f"payment:{self.pk}"
 
     def get_absolute_url(self):
         return reverse("payment", kwargs={"pk": self.pk})
@@ -234,7 +234,7 @@ class Payment(models.Model):
 
     @cached_property
     def invoice_filename(self):
-        return "{0}.pdf".format(self.invoice)
+        return f"{self.invoice}.pdf"
 
     @cached_property
     def invoice_full_filename(self):
@@ -349,4 +349,4 @@ def get_period_delta(period):
         return relativedelta(months=3) - relativedelta(days=1)
     if period == "m":
         return relativedelta(months=1) - relativedelta(days=1)
-    raise ValueError("Invalid payment period '{}'!".format(period))
+    raise ValueError(f"Invalid payment period '{period}'!")

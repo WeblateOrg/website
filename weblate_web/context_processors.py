@@ -57,7 +57,7 @@ def weblate_web(request):
                 }
             )
 
-    downloads = ["Weblate-{0}.{1}".format(VERSION, ext) for ext in EXTENSIONS]
+    downloads = [f"Weblate-{VERSION}.{ext}" for ext in EXTENSIONS]
     language_col = ceil(len(settings.LANGUAGES) / 3)
 
     return {

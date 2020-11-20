@@ -260,8 +260,8 @@ class ViewTestCase(PostTestCase):
 
     def test_download_en(self):
         # create dummy files for testing
-        filenames = ["Weblate-{0}.{1}".format(VERSION, ext) for ext in EXTENSIONS]
-        filenames.append("Weblate-test-{0}.tar.xz".format(VERSION))
+        filenames = [f"Weblate-{VERSION}.{ext}" for ext in EXTENSIONS]
+        filenames.append(f"Weblate-test-{VERSION}.tar.xz")
 
         temp_dir = tempfile.mkdtemp()
 
@@ -417,7 +417,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.post(url, {"method": "pay"})
         self.assertRedirects(
             response,
-            "{}?payment={}".format(PAYMENTS_ORIGIN, payment.pk),
+            f"{PAYMENTS_ORIGIN}?payment={payment.pk}",
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.ACCEPTED)
@@ -440,7 +440,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.post(url, {"method": "reject"})
         self.assertRedirects(
             response,
-            "{}?payment={}".format(PAYMENTS_ORIGIN, payment.pk),
+            f"{PAYMENTS_ORIGIN}?payment={payment.pk}",
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.REJECTED)
@@ -459,7 +459,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.get(complete_url)
         self.assertRedirects(
             response,
-            "{}?payment={}".format(PAYMENTS_ORIGIN, payment.pk),
+            f"{PAYMENTS_ORIGIN}?payment={payment.pk}",
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.ACCEPTED)
@@ -549,7 +549,7 @@ class DonationTest(FakturaceTestCase):
         response = self.client.get(complete_url, follow=True)
         donation = Donation.objects.all().get()
         if reward:
-            redirect_url = "/en/donate/edit/{}/".format(donation.pk)
+            redirect_url = f"/en/donate/edit/{donation.pk}/"
         else:
             redirect_url = "/en/user/"
         self.assertRedirects(response, redirect_url)

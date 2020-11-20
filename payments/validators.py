@@ -9,7 +9,7 @@ from zeep.exceptions import Fault
 def cache_vies_data(value):
     if isinstance(value, str):
         value = VATIN.from_str(value)
-    key = "VAT-{}".format(value)
+    key = f"VAT-{value}"
     data = cache.get(key)
     if data is None:
         try:

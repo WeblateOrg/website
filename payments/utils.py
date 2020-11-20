@@ -108,7 +108,7 @@ def send_notification(notification, recipients, **kwargs):
         filename = os.path.join(settings.STATIC_ROOT, name)
         with open(filename, "rb") as handle:
             image = MIMEImage(handle.read())
-        image.add_header("Content-ID", "<{}@cid.weblate.org>".format(name))
+        image.add_header("Content-ID", f"<{name}@cid.weblate.org>")
         image.add_header("Content-Disposition", "inline", filename=name)
         images.append(image)
 
@@ -118,13 +118,11 @@ def send_notification(notification, recipients, **kwargs):
         "LANGUAGE_BIDI": get_language_bidi(),
     }
     context.update(kwargs)
-    subject = render_to_string(
-        "mail/{0}_subject.txt".format(notification), context
-    ).strip()
+    subject = render_to_string(f"mail/{notification}_subject.txt", context).strip()
     context["subject"] = subject
 
     # Render body
-    body = render_to_string("mail/{0}.html".format(notification), context).strip()
+    body = render_to_string(f"mail/{notification}.html", context).strip()
 
     # Prepare e-mail
     email = EmailMultiAlternatives(

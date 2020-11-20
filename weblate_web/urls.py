@@ -112,7 +112,7 @@ class PagesSitemap(Sitemap):
         )
 
     def location(self, obj):
-        return "/{0}{1}".format(self.language, obj[0])
+        return "/{}{}".format(self.language, obj[0])
 
     def priority(self, obj):
         if self.language == "en":

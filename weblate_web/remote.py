@@ -38,7 +38,7 @@ def get_contributors(force=False):
     # Perform request
     try:
         response = requests.get(WEBLATE_CONTRIBUTORS_URL)
-    except IOError as error:
+    except OSError as error:
         sentry_sdk.capture_exception(error)
         response = None
     # Stats are not yet calculated
@@ -55,7 +55,7 @@ def get_contributors(force=False):
             stat["rank"] = 0
             continue
         stat["rank"] = stat["total"] + sum(
-            (week["a"] + week["d"] for week in stat["weeks"])
+            week["a"] + week["d"] for week in stat["weeks"]
         )
 
     stats.sort(key=lambda x: -x["rank"])
@@ -73,7 +73,7 @@ def get_activity(force=False):
     # Perform request
     try:
         response = requests.get(ACTIVITY_URL)
-    except IOError as error:
+    except OSError as error:
         sentry_sdk.capture_exception(error)
         response = None
     # Stats are not yet calculated

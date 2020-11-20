@@ -226,9 +226,7 @@ class PaymentView(FormView, SingleObjectMixin):
     check_customer = True
 
     def redirect_origin(self):
-        return redirect(
-            "{}?payment={}".format(self.object.customer.origin, self.object.pk)
-        )
+        return redirect(f"{self.object.customer.origin}?payment={self.object.pk}")
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
@@ -432,13 +430,13 @@ def download_invoice(request, pk):
     )
 
     if not payment.invoice_filename_valid:
-        raise Http404("File {0} does not exist!".format(payment.invoice_filename))
+        raise Http404(f"File {payment.invoice_filename} does not exist!")
 
     with open(payment.invoice_full_filename, "rb") as handle:
         data = handle.read()
 
     response = HttpResponse(data, content_type="application/pdf")
-    response["Content-Disposition"] = "attachment; filename={0}".format(
+    response["Content-Disposition"] = "attachment; filename={}".format(
         payment.invoice_filename
     )
     response["Content-Length"] = len(data)
@@ -590,7 +588,7 @@ def activity_svg(request):
             "rx": 2,
             "width": 6,
             "height": height,
-            "id": "b{}".format(i),
+            "id": f"b{i}",
             "x": 10 * i,
             "y": 86 - height,
         }
@@ -664,7 +662,7 @@ def subscription_pay(request, pk):
         payment = Payment.objects.create(
             amount=subscription.get_amount(),
             # pylint: disable=no-member
-            description="Weblate: {}".format(subscription.get_package_display()),
+            description=f"Weblate: {subscription.get_package_display()}",
             recurring=subscription.get_repeat(),
             extra={"subscription": subscription.pk},
             customer=get_customer(request),
@@ -697,7 +695,7 @@ def subscription_new(request):
         payment = Payment.objects.create(
             amount=subscription.get_amount(),
             # pylint: disable=no-member
-            description="Weblate: {}".format(subscription.get_package_display()),
+            description=f"Weblate: {subscription.get_package_display()}",
             recurring=subscription.get_repeat(),
             extra={"subscription": plan, "service": request.GET.get("service")},
             customer=get_customer(request),
