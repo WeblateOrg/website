@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 "{}, expires {} [{}]: {}".format(
                     subscription,
                     subscription.expires.date(),
-                    payment.extra["period"],
+                    subscription.get_repeat(),
                     ", ".join(subscription.users.values_list("email", flat=True)),
                 )
             )
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 "{}, expires {} [{}]: {}".format(
                     donation,
                     donation.expires.date(),
-                    payment.extra["period"],
+                    "y",
                     donation.user.email,
                 )
             )
