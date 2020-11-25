@@ -157,12 +157,6 @@ class Donation(models.Model):
             [self.user.email],
             donation=self,
         )
-        with override("en"):
-            send_notification(
-                notification,
-                settings.NOTIFY_SUBSCRIPTION,
-                donation=self,
-            )
 
 
 def process_donation(payment):
