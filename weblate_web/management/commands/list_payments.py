@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 continue
             self.stdout.write(
                 "{}, expires {} [{}]: {}".format(
-                    donation,
+                    donation.get_payment_description(),
                     donation.expires.date(),
                     "y",
                     donation.user.email,
