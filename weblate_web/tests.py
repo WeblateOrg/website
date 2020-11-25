@@ -332,7 +332,11 @@ class UtilTestCase(TestCase):
 
 class FakturaceTestCase(TestCase):
     databases = "__all__"
-    credentials = {"username": "testuser", "password": "testpassword"}
+    credentials = {
+        "username": "testuser",
+        "password": "testpassword",
+        "email": "noreply@weblate.org",
+    }
 
     @staticmethod
     def create_payment(recurring="y"):
