@@ -42,7 +42,9 @@ class Command(BaseCommand):
                     subscription,
                     subscription.expires.date(),
                     subscription.get_repeat(),
-                    ", ".join(subscription.users.values_list("email", flat=True)),
+                    ", ".join(
+                        subscription.service.users.values_list("email", flat=True)
+                    ),
                 )
             )
 
