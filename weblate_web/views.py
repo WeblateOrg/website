@@ -373,7 +373,7 @@ class DonateView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        tmp = Donation(reward=int(data["reward"]))
+        tmp = Donation(reward=int(data["reward"] or "0"))
         with override("en"):
             description = tmp.get_payment_description()
         return self.redirect_payment(
