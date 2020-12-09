@@ -188,6 +188,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
 )
 
 # Make this unique, and don't share it with anybody.
@@ -247,6 +248,7 @@ INSTALLED_APPS = (
     "django_countries",
     "macros",
     "djangosaml2",
+    "compressor",
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -351,6 +353,12 @@ STORAGE_PASSWORD = ""
 NOTIFY_SUBSCRIPTION = []
 
 FIO_TOKEN = None
+
+COMPRESS_OFFLINE = True
+COMPRESS_OFFLINE_CONTEXT = [
+    {"LANGUAGE_BIDI": True},
+    {"LANGUAGE_BIDI": False},
+]
 
 SAML_ATTRIBUTE_MAPPING = {
     "uid": ("username",),

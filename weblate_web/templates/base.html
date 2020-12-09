@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load static %}
 {% load macros %}
+{% load compress %}
+
 {% macro title %}{% block title %}Weblate{% endblock %}{% endmacro %}
 {% macro description %}{% filter striptags %}{% block description %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}{% endfilter %}{% endmacro %}
 <!DOCTYPE html>
@@ -9,7 +11,9 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% compress js %}
   <link rel="stylesheet" href="{% if LANGUAGE_BIDI %}{% static "style-rtl.css" %}{% else %}{% static "style.css" %}{% endif %}" />
+{% endcompress %}
 
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-sans-pro.css">
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-code-pro.css">
@@ -120,8 +124,10 @@
         {% include "snippets/languages.html" %}
     </section>
 
+{% compress js %}
 	<script src="{% static "vendor/clipboard.js" %}"></script>
 	<script src="{% static "custom.js" %}"></script>
+{% endcompress %}
 <!-- Matomo -->
 <script src="https://stats.cihar.com/matomo.js" async defer></script>
 <noscript><img src="https://stats.cihar.com/piwik.php?idsite=12&amp;rec=1" alt="" /></noscript>
