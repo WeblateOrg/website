@@ -310,6 +310,10 @@ LOGGING = {
             "handlers": [DEFAULT_LOG],
             "level": "DEBUG",
         },
+        "saml2": {
+            "handlers": [DEFAULT_LOG],
+            "level": "DEBUG",
+        },
     },
 }
 
@@ -419,6 +423,7 @@ SAML_CONFIG = {
     # Signing
     "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
     "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
+    "attribute_map_dir": os.path.join(BASE_DIR, "saml", "attribute-maps"),
     # Encryption
     "encryption_keypairs": [
         {
