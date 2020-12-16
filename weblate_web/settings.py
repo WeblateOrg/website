@@ -361,9 +361,9 @@ COMPRESS_OFFLINE_CONTEXT = [
 ]
 
 SAML_ATTRIBUTE_MAPPING = {
-    "uid": ("username",),
+    "username": ("username",),
     "email": ("email",),
-    "displayName": ("last_name",),
+    "last_name": ("last_name",),
 }
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "email"
 
@@ -405,7 +405,7 @@ SAML_CONFIG = {
             # Enable AllowCreate in NameIDPolicy.
             "name_id_format_allow_create": False,
             # attributes that this project need to identify a user
-            "required_attributes": ["email", "displayName", "uid"],
+            "required_attributes": ["email", "username", "last_name"],
         },
     },
     # where the remote metadata is stored, local, remote or mdq server.
