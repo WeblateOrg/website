@@ -212,7 +212,9 @@ def get_service(payment, user):
         try:
             return user.service_set.get()
         except (Service.MultipleObjectsReturned, Service.DoesNotExist):
-            return user.service_set.create()
+            service = user.service_set.create()
+            service.was_created = True
+            return service
 
 
 def process_subscription(payment):
@@ -247,8 +249,9 @@ def process_subscription(payment):
         else:
             expires = timezone.now()
         # Create new
+        service = get_service(payment, user)
         subscription = Subscription.objects.create(
-            service=get_service(payment, user),
+            service=service,
             payment=payment.pk,
             package=package.name,
             expires=expires,
@@ -258,7 +261,10 @@ def process_subscription(payment):
                 "new_subscription",
                 settings.NOTIFY_SUBSCRIPTION,
                 subscription=subscription,
+                service=subscription.service,
             )
+        if service.was_created and service.needs_token:
+            subscription.send_notification("subscription_intro")
     # Flag payment as processed
     payment.state = Payment.PROCESSED
     payment.save()
@@ -390,6 +396,14 @@ class Service(models.Model):
         else:
             url = ""
         return f"{self.get_status_display()}: {self.user_emails}: {url}"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.was_created = False
+
+    @property
+    def needs_token(self):
+        return self.status not in ("hosted", "shared", "community")
 
     @cached_property
     def site_title(self):

@@ -1,0 +1,17 @@
+{% extends "mail/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<p>
+{% trans "Thank you for purchasing support subscrition on weblate.org." %}
+</p>
+
+<p>
+{% trans "You can now activate it in your Weblate using following activation key:" %} <code>{{ service.secret }}</code>
+</p>
+
+<a class="button" href="/user/">{% trans "Manage your subscriptions" %}</a>
+<a class="button" href="https://docs.weblate.org/en/latest/admin/support.html">{% trans "Documentation on activating support" %}</a>
+
+{% endblock %}
