@@ -1,19 +1,23 @@
 #!/bin/sh
 
+if [ ! -d ../graphics/ ] ; then
+    echo "Graphics repository missing!"
+fi
+
 # SVG
-cp scripts/graphics/logo/weblate.svg scripts/graphics/logo/weblate-black.svg weblate_web/static/
+cp ../graphics/logo/weblate.svg ../graphics/logo/weblate-black.svg weblate_web/static/
 
 # favicon
-cp scripts/graphics/logo/weblate.ico weblate_web/static/favicon.ico
+cp ../graphics/logo/weblate.ico weblate_web/static/favicon.ico
 
 # Scaled logos
 for size in 64 120 128 150 180 192 512 1024 ; do
-    cp scripts/graphics/logo/weblate-background-$size.png weblate_web/static/weblate-$size.png
+    cp ../graphics/logo/weblate-background-$size.png weblate_web/static/weblate-$size.png
 done
 for size in 16 32 128 ; do
-    cp scripts/graphics/logo/weblate-logo-$size.png weblate_web/static/logo-$size.png
+    cp ../graphics/logo/weblate-logo-$size.png weblate_web/static/logo-$size.png
 done
 
 # Buttons
-cp scripts/graphics/logo-text/Logo-Darktext.svg weblate_web/static/weblate-button.svg
-cp scripts/graphics/logo-text/Logo-Darktext.png weblate_web/static/weblate-button.png
+cp ../graphics/logo-text/Logo-Darktext.svg weblate_web/static/weblate-button.svg
+cp ../graphics/logo-text/Logo-Darktext.png weblate_web/static/weblate-button.png
