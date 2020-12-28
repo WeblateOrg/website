@@ -64,7 +64,6 @@ EU_VAT_RATES = {
     "SK": 20,
     "FI": 24,
     "SE": 25,
-    "GB": 20,
 }
 
 VAT_RATE = 21
