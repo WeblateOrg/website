@@ -1,0 +1,8 @@
+#!/bin/sh
+
+OUT=$(mktemp -d)
+
+gpg --list-options show-only-fpr-mbox -k @weblate.org | /usr/lib/gnupg/gpg-wks-client -v --install-key --directory $OUT
+rm -rf .well-known/openpgpkey/
+mv $OUT/weblate.org .well-known/openpgpkey
+rm -rf $OUT
