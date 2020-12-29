@@ -296,9 +296,8 @@ class ThePayCard(Backend):
     def collect(self, request):
         if self.payment.repeat:
             data = thepay.dataApi.DataApi(self.config)
-            payment = data.getPayments(
-                merchant_data=str(self.payment.pk)
-            ).payments.payment[0]
+            response = data.getPayments(merchant_data=str(self.payment.pk))
+            payment = response.payments.payment[0]
             self.payment.details = dict(payment)
             status = int(payment.state)
         else:
