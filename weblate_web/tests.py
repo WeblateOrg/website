@@ -762,14 +762,21 @@ class APITest(TestCase):
             "/api/user/",
             {
                 "payload": dumps(
-                    {"username": "x"},
+                    {
+                        "username": "x",
+                        "create": {
+                            "username": "x",
+                            "last_name": "First Last",
+                            "email": "noreply@weblate.org",
+                        },
+                    },
                     key=settings.PAYMENT_SECRET,
                     salt="weblate.user",
                 )
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"status": "User not found"})
+        self.assertEqual(response.json(), {"status": "User created"})
 
     def test_user_invalid(self):
         response = self.client.post("/api/user/", {"payload": dumps({}, key="dummy")})

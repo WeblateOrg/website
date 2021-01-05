@@ -103,7 +103,8 @@ def api_user(request):
     try:
         user = User.objects.get(username=payload["username"])
     except User.DoesNotExist:
-        return JsonResponse({"status": "User not found"})
+        User.objects.create(**payload["create"])
+        return JsonResponse({"status": "User created"})
 
     # Cycle unused passwords to invalidate existing sessions
     if not user.has_usable_password():
