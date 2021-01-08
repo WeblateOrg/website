@@ -17,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import datetime
 from math import ceil
 
 from django.conf import settings
@@ -68,6 +69,7 @@ def weblate_web(request):
         "activity_sum": sum(get_activity()[-7:]),
         "contributors": SimpleLazyObject(get_contributors),
         "changes": SimpleLazyObject(get_changes),
+        "current_year": datetime.utcnow().strftime("%Y"),
         "language_columns": [
             language_urls[:language_col],
             language_urls[language_col : language_col * 2],
