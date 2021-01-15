@@ -802,7 +802,7 @@ class ViewTestCase(PostTestCase):
         self.assertContains(response, 'dir="rtl"')
         self.assertContains(
             response,
-            '<h2 class="section-title hp-style">المستخدمون والداعمون</h2>',
+            '<h2 class="section-title hp-style">مجموعة ميزات قوية</h2>',
             html=True,
         )
 
