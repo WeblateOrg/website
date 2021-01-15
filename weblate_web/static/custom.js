@@ -207,3 +207,10 @@ ready(() => {
 
   new ClipboardJS("[data-clipboard-text]");
 });
+
+new SimpleSlider('.page-slider', {
+  slidesPerView: {
+    850: 2,
+    1165: 3
+  }
+});
