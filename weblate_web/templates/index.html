@@ -52,7 +52,12 @@
                 <a class="button inline border rev" href="{% url 'features' %}">{% trans "Explore all features" %}</a>
             </div>
             <div class="wrap supporters">
-                <h2 class="section-title hp-style">{% trans "Users and Supporters" %}</h2>
+                <h2 class="section-title hp-style">{% trans "Companies using Weblate" %}</h2>
+                {% include "snippets/reviews.html" %}
+            </div>
+
+            <div class="wrap supporters">
+                <h2 class="section-title hp-style">{% trans "Libre projects" %}</h2>
                 {% include "snippets/users.html" %}
             </div>
     	</div>
