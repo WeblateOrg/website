@@ -210,10 +210,10 @@ ready(() => {
 
 if (typeof SimpleSlider === 'function'){
 
-new SimpleSlider('.page-slider', {
-  slidesPerView: {
-    850: 2,
-    1165: 3
-  }
-});
+  new SimpleSlider('.page-slider', {
+    slidesPerView: {
+      850: 2,
+      1165: 3
+    }
+  });
 }
