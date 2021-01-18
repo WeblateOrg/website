@@ -16,24 +16,3 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-
-import vies.types
-
-
-def monkey_patch_vies():
-    """
-    Ugly hack to remove GB from django_vies until proper solution is done.
-
-    See https://github.com/codingjoe/django-vies/pull/168
-    """
-    if "GB" in vies.types.VIES_OPTIONS:
-        del vies.types.VIES_OPTIONS["GB"]
-        vies.types.VIES_COUNTRY_CHOICES = [
-            item for item in vies.types.VIES_COUNTRY_CHOICES if item[0] != "GB"
-        ]
-        vies.types.MEMBER_COUNTRY_CODES = [
-            item for item in vies.types.MEMBER_COUNTRY_CODES if item != "GB"
-        ]
-
-
-monkey_patch_vies()
