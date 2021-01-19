@@ -208,12 +208,11 @@ ready(() => {
   new ClipboardJS("[data-clipboard-text]");
 });
 
-if (typeof SimpleSlider === 'function'){
-
-  new SimpleSlider('.page-slider', {
+if (typeof SimpleSlider === "function") {
+  new SimpleSlider(".page-slider", {
     slidesPerView: {
       850: 2,
-      1165: 3
-    }
+      1165: 3,
+    },
   });
 }
