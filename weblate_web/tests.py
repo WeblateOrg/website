@@ -234,7 +234,7 @@ class ViewTestCase(PostTestCase):
 
     def test_localized_docs(self):
         response = self.client.get("/uk/contribute/")
-        self.assertcontains(response, "https://docs.weblate.org/uk/latest/contributing")
+        self.assertContains(response, "https://docs.weblate.org/uk/latest/contributing")
 
     @responses.activate
     def test_about(self):
