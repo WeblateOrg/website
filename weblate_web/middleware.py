@@ -18,6 +18,8 @@
 #
 
 from django.conf import settings
+from django.utils.translation import get_language
+from weblate_language_data.docs import DOCUMENTATION_LANGUAGES
 
 URL = (
     "https://sentry.io/api/1305560/security/"
@@ -49,6 +51,14 @@ class SecurityMiddleware:
     def __init__(self, get_response=None):
         self.get_response = get_response
 
+    def adjust_doc_links(self, response):
+        lang = get_language()
+        if lang in DOCUMENTATION_LANGUAGES:
+            response.content = response.content.replace(
+                b"https://docs.weblate.org/en/",
+                f"https://docs.weblate.org/{DOCUMENTATION_LANGUAGES[lang]}/".encode(),
+            )
+
     def __call__(self, request):
         # Skip CSRF validation for requests with valid secret
         # This is used to process automatic payments
@@ -56,6 +66,8 @@ class SecurityMiddleware:
             request._dont_enforce_csrf_checks = True  # noqa: SF01
 
         response = self.get_response(request)
+        if response["Content-Type"] == "text/html; charset=utf-8":
+            self.adjust_doc_links(response)
         # No CSP for debug mode (to allow djdt or error pages)
         if settings.DEBUG:
             return response
