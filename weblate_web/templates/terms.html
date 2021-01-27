@@ -11,7 +11,9 @@
                     {% block description %}{% trans "The legal documents necessary to offer this service." %}{% endblock %}
                     {% trans "The Terms of Service document is authoritative in English, translations are provided for your convenience." %}
                 </p>
-                <a href="https://weblate.org/en/terms/" class="button inline">{% trans "View English version" %}</a>
+                {% if LANGUAGE_CODE != "en" %}
+                  <a href="https://weblate.org/en/terms/" class="button inline">{% trans "View English version" %}</a>
+                {% endif %}
             </div>
         </div>
     </div>
