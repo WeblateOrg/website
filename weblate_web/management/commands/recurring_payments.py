@@ -149,6 +149,18 @@ class Command(BaseCommand):
             if not subscription.get_repeat():
                 continue
 
+            # Skip this in case there is another subscription, for example on service
+            # upgrade on downgrade
+            if (
+                subscription.package in ("basic", "extended", "premium")
+                and subscription.service.support_subscriptions.exclude(
+                    pk=subscription.pk
+                )
+                .filter(expiry__gt=now + timedelta(days=3))
+                .exists()
+            ):
+                continue
+
             # Check recurring payment
             payment = subscription.payment_obj
             if not payment.recurring:
