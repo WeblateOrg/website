@@ -145,12 +145,17 @@ class Command(BaseCommand):
             expires__range=(now - timedelta(days=10), now + timedelta(days=3))
         ).exclude(payment=None)
         for subscription in subscriptions:
-            payment = subscription.payment_obj
-            if not payment.recurring:
-                if subscription.get_repeat():
-                    subscription.send_notification("payment_expired")
+            # Is this repeating subscription?
+            if not subscription.get_repeat():
                 continue
 
+            # Check recurring payment
+            payment = subscription.payment_obj
+            if not payment.recurring:
+                subscription.send_notification("payment_expired")
+                continue
+
+            # Trigger recurring payment
             cls.peform_payment(payment, subscription.list_payments())
 
     @classmethod
