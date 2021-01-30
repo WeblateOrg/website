@@ -140,8 +140,9 @@ class Command(BaseCommand):
 
     @classmethod
     def handle_subscriptions(cls):
+        now = timezone.now()
         subscriptions = Subscription.objects.filter(
-            expires__lte=timezone.now() + timedelta(days=3)
+            expires__range=(now - timedelta(days=10), now + timedelta(days=3))
         ).exclude(payment=None)
         for subscription in subscriptions:
             payment = subscription.payment_obj
