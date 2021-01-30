@@ -156,7 +156,7 @@ class Command(BaseCommand):
                 and subscription.service.support_subscriptions.exclude(
                     pk=subscription.pk
                 )
-                .filter(expiry__gt=now + timedelta(days=3))
+                .filter(expires__gt=now + timedelta(days=3))
                 .exists()
             ):
                 continue
