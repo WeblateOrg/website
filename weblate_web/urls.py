@@ -57,7 +57,6 @@ from weblate_web.views import (
     server_error,
     service_token,
     service_user,
-    subscribe,
     subscription_disable_repeat,
     subscription_new,
     subscription_pay,
@@ -269,7 +268,6 @@ urlpatterns = i18n_patterns(
     url(r"^api/user/$", api_user),
     url(r"^api/hosted/$", api_hosted),
     url(r"^img/activity.svg$", activity_svg),
-    url(r"^subscribe/(?P<name>hosted|users)/", subscribe, name="subscribe"),
     url(r"^logout/$", LogoutView.as_view(next_page="/"), name="logout"),
     # Aliases for static files
     url(

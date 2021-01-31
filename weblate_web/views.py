@@ -23,7 +23,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core.exceptions import SuspiciousOperation, ValidationError
-from django.core.mail import mail_admins, send_mail
+from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import transaction
 from django.db.models import Q
@@ -50,7 +50,6 @@ from weblate_web.forms import (
     EditLinkForm,
     EditNameForm,
     MethodForm,
-    SubscribeForm,
 )
 from weblate_web.models import (
     PAYMENTS_ORIGIN,
@@ -481,33 +480,6 @@ class EditLinkView(UpdateView):
             ),
         )
         return super().form_valid(form)
-
-
-@require_POST
-def subscribe(request, name):
-    addresses = {
-        "hosted": "hosted-weblate-announce-join@lists.cihar.com",
-        "users": "weblate-join@lists.cihar.com",
-    }
-    form = SubscribeForm(request.POST)
-    if form.is_valid():
-        send_mail(
-            "subscribe",
-            "subscribe",
-            form.cleaned_data["email"],
-            [addresses[name]],
-            fail_silently=True,
-        )
-        messages.success(
-            request,
-            gettext(
-                "Subscription requested, " "all you have to do is confirm the email."
-            ),
-        )
-    else:
-        messages.error(request, gettext("Could not process subscription request."))
-
-    return redirect("support")
 
 
 class NewsArchiveView(ArchiveIndexView):
