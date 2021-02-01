@@ -15,6 +15,10 @@ git remote update weblate
 # Pull changes from GitHub
 git rebase --onto weblate/master
 
+# Cleanup locale dirs
+find locale -name '*.mo' -o -name '*~' -delete
+find locale -type d -empty -delete
+
 # Update po files itself
 ./manage.py makemessages -a --keep-pot -i 'weblate_web/files/*'
 

@@ -125,45 +125,9 @@
             {% include "snippets/vat.html" %}
         </div>
 
-        <div class="wrap mailing">
-            <h2 class="section-title bigger">{% trans "Mailing lists" %}</h2>
-            <div class="box">
-                <div class="title">{% trans "Users and developers" %}</div>
-                <form class="mailing" action="{% url 'subscribe' name='users' %}" method="post">
-                    {% csrf_token %}
-                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your e-mail address…" %}" />
-                    <input type="submit" class="mailing-submit" value="{% trans "Register" context "Sign up for the mailing list" %}" />
-                </form>
-                <ul>
-                    <li>{% trans "Discuss Weblate with users and developers" %}</li>
-                    <li>{% blocktrans with address="weblate@lists.cihar.com" %}Post to <a href="mailto:{{ address }}">{{ address }}</a> to use it{% endblocktrans %}</li>
-                    <li>{% blocktrans with url="https://lists.cihar.com/hyperkitty/list/weblate@lists.cihar.com/" %}Find answers in its <a href="{{ url }}">archives</a>{% endblocktrans %}</li>
-                </ul>
-            </div>
-            <div class="box">
-                <div class="title">{% trans "Hosted Weblate announcements" %}</div>
-                <form class="mailing" action="{% url 'subscribe' name='hosted' %}" method="post">
-                    {% csrf_token %}
-                    <input type="email" name="email" class="mailing-text" placeholder="{% trans "Your e-mail address…" %}" />
-                    <input type="submit" class="mailing-submit" value="{% trans "Register" context "Sign up for the mailing list" %}" />
-                </form>
-                <ul>
-                    <li>{% trans "<strong>Low traffic</strong> and moderated" %}</li>
-                    <li>{% trans "Only premium service announcements" %}</li>
-                    <li>{% blocktrans with url="https://lists.cihar.com/hyperkitty/list/hosted-weblate-announce@lists.cihar.com/" %}Find answers in its <a href="{{ url }}">archives</a>{% endblocktrans %}</li>
-                </ul>
-            </div>
-        </div>
-
         <div class="github-discuss">
             {% blocktrans with "https://github.com/WeblateOrg/weblate/discussions" as url %}Discuss with community on <a href="{{ url }}">GitHub</a>.{% endblocktrans %}
         </div>
-
-        <!--
-        <div class="stack-overflow">
-            {% blocktrans with "https://stackoverflow.com/tags/weblate/info" as url %}Pose questions on <a href="{{ url }}">Stack Overflow</a>.{% endblocktrans %}
-        </div>
-        -->
 
     </div>
 </section>

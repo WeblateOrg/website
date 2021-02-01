@@ -140,16 +140,34 @@ class Command(BaseCommand):
 
     @classmethod
     def handle_subscriptions(cls):
+        now = timezone.now()
         subscriptions = Subscription.objects.filter(
-            expires__lte=timezone.now() + timedelta(days=3)
+            expires__range=(now - timedelta(days=10), now + timedelta(days=3))
         ).exclude(payment=None)
         for subscription in subscriptions:
-            payment = subscription.payment_obj
-            if not payment.recurring:
-                if subscription.get_repeat():
-                    subscription.send_notification("payment_expired")
+            # Is this repeating subscription?
+            if not subscription.get_repeat():
                 continue
 
+            # Skip this in case there is another subscription, for example on service
+            # upgrade on downgrade
+            if (
+                subscription.package in ("basic", "extended", "premium")
+                and subscription.service.support_subscriptions.exclude(
+                    pk=subscription.pk
+                )
+                .filter(expires__gt=now + timedelta(days=3))
+                .exists()
+            ):
+                continue
+
+            # Check recurring payment
+            payment = subscription.payment_obj
+            if not payment.recurring:
+                subscription.send_notification("payment_expired")
+                continue
+
+            # Trigger recurring payment
             cls.peform_payment(payment, subscription.list_payments())
 
     @classmethod

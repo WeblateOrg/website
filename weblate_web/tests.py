@@ -232,6 +232,10 @@ class ViewTestCase(PostTestCase):
         self.assertRedirects(response, "/.well-known/security.txt", status_code=301)
         self.assertContains(response, "https://hackerone.com/weblate")
 
+    def test_localized_docs(self):
+        response = self.client.get("/uk/contribute/")
+        self.assertContains(response, "https://docs.weblate.org/uk/latest/contributing")
+
     @responses.activate
     def test_about(self):
         with open(TEST_CONTRIBUTORS) as handle:
