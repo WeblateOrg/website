@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load static %}
+{% load date_diff %}
 {% block title %}{% trans "User profile at Weblate" %}{% endblock %}
 
 {% block content %}
+
+
 <section class="content">
     <div class="row">
         <div class="wrap">
@@ -14,47 +17,55 @@
             </div>
             {% with services=user.service_set.all %}
             {% if services %}
-            <h1>{% trans "Your services" %}</h1>
-            {% for service in services %}
+            <div class="updated-service-title">
+                <h1>{% trans "My services" %}<span><a href="">{% trans "See user profile " %}<img src="{% static "img/ArrowR.png" %}" alt=">" /></a></span></h1>
+            </div>
+                {% for service in services %}
                 {% include "snippets/service.html" %}
             {% endfor %}
             {% endif %}
             {% endwith %}
 
-            <h1>{% trans "Your donations" %}</h1>
+            <h1>{% trans "My donations" %}</h1>
 
             {% for donation in user.donation_set.all %}
-            <div class="payment-form">
-                <div class="form-line">
-                    <div class="line-left">{% trans "Creation date" %}</div>
-                    <div class="line-right">{{ donation.created|date:"SHORT_DATE_FORMAT" }}</div>
-                    <div class="clear"></div>
+            <div class="payment-form stylep">
+                <div class="form-line left-line3">
+                    <div class="line-left line-left2">{{ donation.get_reward_display }}</div>
+                    <div class="line-right2">{% trans "Your reward" %}</div>
                 </div>
-                <div class="form-line">
-                    <div class="line-left">{% trans "Reward" %}</div>
-                    <div class="line-right">
-                        {{ donation.get_reward_display }}
-                        {% if donation.reward %}
-                        <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit reward" %}</a>
-                        {% endif %}
-                    </div>
-                    <div class="clear"></div>
-                </div>
+                <div class="form-line custom-gradient"></div>
+                <div class="inner-content">
+                    <div class="inner-content-child1">
                 {% if donation.link_url %}
-                <div class="form-line">
-                    <div class="line-left">{% trans "Link URL" %}</div>
-                    <div class="line-right">{{ donation.link_url }}</div>
+                <div class="form-line style2">
+                    <div class="line-left style4">{% trans "Link" %}</div>
+                    <div class="line-right style3">{{ donation.link_url }}</div>
                     <div class="clear"></div>
                 </div>
                 {% endif %}
-                <div class="form-line">
-                    <div class="line-left">{% trans "Expiry date" %}</div>
-                    <div class="line-right">{{ donation.expires|date:"SHORT_DATE_FORMAT" }}</div>
+                <div class="form-line style2">
+                    <div class="line-left style4">{% trans "Active" %}</div>
+                    <div class="line-right style3">{{ donation.expires|date:"d M Y"  }}<em>—</em><span>{{ donation.created|date:"d M Y"  }}</span>
+                    {% if donation.expires|days_diff_from_today < 30 %}
+                    {% if donation.expires|days_diff_from_today < 2 and donation.expires|days_diff_from_today >= 0 %}
+                    <t class="orange">{{ donation.expires|days_diff_from_today}} day remaining</t>
+                    {% elif donation.expires|days_diff_from_today < 0  %}
+                    <t class="pl-1 orange">Expired</t>
+                    {% else %}
+                    <t class="orange">{{ donation.expires|days_diff_from_today}} days remaining</t>
+                    {% endif %}
+                    {% else %}
+                    <t class="grey">{{ donation.expires|days_diff_from_today}} days remaining</t>
+                    {% endif %}
+
+                    </div>
                     <div class="clear"></div>
                 </div>
-                <div class="form-line">
-                    <div class="line-left">{% trans "State" %}</div>
-                    <div class="line-right">
+                <div class="form-line style2">
+                    <div class="line-left style4"></div>
+
+                    <div class="line-right style3">
                         {% if not donation.active %}
                         {% trans "Expired" %}
                         {% elif donation.payment_obj.recurring %}
@@ -64,38 +75,41 @@
                         {% endif %}
                         <form class="form-inline" method="post" action="{% url "donate-pay" pk=donation.pk %}">
                         {% csrf_token %}
-                        <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
+                        <input type="submit" class="button med inline" value="{% trans "Renew now" %}">
                         </form>
                         {% if donation.active and donation.payment_obj.recurring %}
                         <form class="form-inline" method="post" action="{% url "donate-disable" pk=donation.pk %}">
                         {% csrf_token %}
-                        <input type="submit" class="button small inline" value="{% trans "Turn off renewal" %}">
+                        <input type="submit" class="button med inline" value="{% trans "Turn off renewal" %}">
                         </form>
                         {% endif %}
                     </div>
                     <div class="clear"></div>
                 </div>
-                <div class="form-line">
-                    <div class="line-left">{% trans "Payments" %}</div>
-                    <div class="line-right">
+                <div class="form-line style2">
+                    <div class="line-left style4">{% trans "Payments" %}</div>
+                    <div class="line-right style3">
                     {% for payment in donation.list_payments %}
                     {% include "snippets/payment.html" %}
                     {% endfor %}
                     </div>
-                    <div class="clear"></div>
-                </div>
+
                 <div class="payment-pick">
                 </div>
+                    </div>
+                    </div>
+            <div class="inner-content-child2">
+                <img src="{% static "img/donations-picture.png" %}">
+            </div>
+            </div>
             </div>
             {% empty %}
-            <div class="payment-form">
-                <div class="form-line">
-                    <div class="line-right">{% trans "Donate to see a nice message here." %}</div>
-                    <div class="clear"></div>
-                </div>
-                <div class="payment-pick">
-                </div>
-                <a class="button center" href="{% url "donate" %}">{% trans "Donate" %}</a>
+
+                <div class="payment-form-donationbox">
+
+                    <div class="line-right-donationbox">{% trans "Wanna see a nice message here?" %}</div>
+
+                <a class="button" href="{% url "donate" %}">{% trans "Donate now" %}</a>
             </div>
             {% endfor %}
         </div>

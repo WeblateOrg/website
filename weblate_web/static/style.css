@@ -4103,70 +4103,467 @@ input.fullwidth {
   }
 }
 
-/*Your Weblate Team - About us */
-.content-p {
-  width: 69%;
-  display: inline-block;
-  padding-left: 10px;
+/*Testimonial and Slider CSS*/
+
+.testimonial {
+  width: 365px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+  margin-left: 10px;
+}
+
+.icon-review {
   text-align: left;
 }
-
-.content-p p {
-  font-weight: bold;
-  text-transform: uppercase;
+.icon-review img {
+  margin-left: 50px;
+}
+.icon-review p {
+  margin-left: 35px;
+  margin-top: -25px;
+  width: 70%;
+  font-size: 15px;
+  line-height: 18px;
+  letter-spacing: 0.5px;
+  color: #2a3744;
 }
 
-.weblate-team-content img {
-  width: 80px;
-  height: 80px;
+.circle-user {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   position: relative;
-  top: -15px;
+  left: 32px;
+  margin-top: 20px;
+}
+.circle-user img {
+  margin: 0px;
+  border-radius: 50%;
 }
 
-.weblate-team-content {
-  display: table-cell;
-  padding-bottom: 90px;
+.icon-user {
+  display: flex;
+  text-align: left;
+  padding-bottom: 25px;
+}
+.content-user {
+  margin-top: 20px;
+  margin-left: 45px;
+}
+.content-user a {
+  color: #1fa385;
+  line-height: 23px;
+  text-decoration: underline;
+}
+.content-logo {
+  margin: 0px !important;
+}
+
+.slider-slide {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.simple-slider {
+  height: 400px;
+}
+
+.simple-slider .slider-btn.slider-btn-prev {
+  left: 11px !important;
+  background-position: left !important;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1) !important;
+  background: white !important;
+  border-radius: 50% !important;
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.simple-slider .slider-btn.slider-btn-next {
+  right: 4px !important;
+  background-position: right !important;
+  border-radius: 50% !important;
+  width: 50px !important;
+  height: 50px !important;
+  background: white !important;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+.simple-slider .slider-btn.slider-btn-next img {
+  padding: 18px;
+  margin: 0px;
+}
+
+.simple-slider .slider-btn.slider-btn-prev img {
+  padding: 18px;
+  margin: 0px;
+}
+
+/* Services CSS */
+
+/* Services CSS (Button Sizes) */
+
+.med {
+  min-width: 140px !important;
+  min-height: 50px !important;
+}
+
+.med1 {
+  min-width: 120px !important;
+  min-height: 50px !important;
+}
+
+.med2 {
+  display: none;
+}
+
+.med3 {
+  min-width: 100px !important;
+  min-height: 50px !important;
+}
+.med4 {
+  min-width: 150px !important;
+  min-height: 50px !important;
+}
+
+.med5 {
+  min-width: 170px !important;
+  min-height: 50px !important;
+}
+
+/* Services CSS (More Weblate Grid) */
+
+.inner-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-column-gap: 0px;
+  grid-row-gap: 25px;
+}
+
+.grid-item2 p {
+  color: #2e344b;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 30px;
+}
+
+.grid-item2 t {
+  color: #2e354a;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 10px;
+}
+
+.grid-item1 {
+  padding-top: 5px;
+}
+
+.grid-item2 {
+  padding-left: 15px;
+}
+
+.grid-item3 {
+  padding-top: 5px;
+}
+
+/* Services CSS (Inputs and placeholders) */
+
+input[type="email"] {
+  height: 50px;
+  width: 70%;
+  border-radius: 5px 5px 0 0;
+  background-color: #e9eaec;
+  border-bottom: 2px solid #c4c6cb;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  padding: 13px 5px;
+}
+
+::placeholder {
+  color: #bfc3c7;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 23px;
+  padding-left: 10px;
+}
+
+input.fullwidth {
+  box-sizing: border-box;
+  height: 50px;
+  width: 100%;
+  border: 2px solid #bfc3c7;
+  border-radius: 5px;
+}
+
+/* Services CSS (Users section) */
+
+.user-slot {
+  height: 60px;
+  width: 330px;
+  border: 1px solid #00d2e6;
+  border-radius: 30px;
+  margin-bottom: 10px;
+  opacity: 0.8;
+  position: relative;
+}
+
+.user-slot-content p {
+  color: #1fa385;
+  font-size: 14px;
+  letter-spacing: 0.86px;
+  line-height: 0px !important;
+  padding-bottom: 3px;
+}
+
+.user-slot-content t {
+  color: #2a3744;
+  font-size: 17px;
+  letter-spacing: 0;
+  line-height: 0px !important;
+}
+
+.user-img {
+  position: relative;
+  top: -14px;
+  left: 288px;
+}
+
+.user-slot-content {
+  position: relative;
+  top: 19px;
+  left: 30px;
+}
+
+/* Services CSS (Payments Section) */
+
+.payment-listing {
+  border-bottom: 1px solid #e9eaec;
+}
+
+.payment-listing:last-child {
+  border-bottom: none;
+}
+
+/* Services CSS (Services) */
+
+.service-variant {
+  display: flex;
+  justify-content: space-between;
+  height: 120px;
+  align-items: center;
+}
+.service-variant p {
+  color: #2b3646;
+  font-size: 40px;
+  letter-spacing: -1px;
+  line-height: 44px;
+  padding-left: 40px;
+  padding-top: 10px;
+}
+
+.service-time {
+  display: grid;
+  text-align: center;
   padding-top: 20px;
+  padding-right: 40px;
+  color: #bfc3c7;
+  font-size: 17px;
 }
 
-.weblate-team {
-  display: table;
-  width: 82%;
+/* Services CSS (Custom paddings, styles and margins) */
+
+.bdr-btm {
+  border-bottom: none !important;
+}
+
+.style {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.pt-pb {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.pt-1 {
+  padding-top: 22px !important;
+}
+
+.style6 > div {
+  font-size: 18px !important;
+  line-height: 30px !important;
+  color: #2c3548;
+  padding-top: 15x;
+  padding-bottom: 20px;
+}
+
+.style2 t {
+  font-size: 16px;
+  line-height: 30px;
+  padding-left: 21px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.pl-1 {
+  font-size: 16px;
+  padding-left: 20px;
+}
+
+/* Services CSS (Days check color) */
+
+.grey {
+  color: #bfc3c7 !important;
+  font-size: 16px;
+}
+
+.orange {
+  color: #f6664c !important;
+  font-size: 16px;
+}
+
+/* For change in font size of payments */
+.payment-font-size {
+  font-size: 16px !important;
+}
+
+.payment-font-size a {
+  padding-left: 40px;
+  text-decoration: none !important;
+}
+
+.payment-font-size a img {
+  position: relative;
+  top: 1px;
+  padding-left: 25px;
+}
+
+/* User.html CSS */
+
+/* User.html CSS(Service Title) */
+
+.updated-service-title span {
+  color: #00a481;
+  font-size: 16px;
+  margin-left: 40.5px;
+}
+
+.updated-service-title span a {
+  color: #00a481;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 20px;
+}
+
+.updated-service-title span img {
+  height: 15px;
+  width: 10px;
+  position: relative;
+  top: 3px;
+  margin-left: 5px;
+}
+
+/* User.html CSS(Donation Box) */
+
+.payment-form-donationbox {
+  height: 100px;
+  width: 100%;
+  max-width: 530px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (max-width: 1250px) {
-  .content-p {
-    width: 58%;
-  }
+.payment-form-donationbox a {
+  min-width: 0px;
 }
 
-@media (max-width: 889px) {
-  .content-p {
-    width: 65%;
-  }
-
-  .weblate-team-content img {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    top: -28px;
-  }
-
-  .weblate-team {
-    width: 90%;
-  }
+.line-right-donationbox {
+  font-size: 18px;
+  padding-right: 30px;
 }
 
-@media (max-width: 790px) {
-  .content-p {
-    width: 100%;
-    display: unset !important;
-    text-align: center;
-  }
+/* User.html CSS(Line-left and Line-Right Custom Variants) */
 
-  .weblate-team-content {
-    text-align: center;
-  }
+.line-left2 {
+  display: flex;
+  font-size: 40px !important;
+  letter-spacing: -1px;
+  line-height: 44px;
+  width: unset !important;
+  justify-content: space-between;
+  font-weight: unset !important;
+  color: #2c3647;
+}
+
+.left-line3 {
+  display: flex;
+  justify-content: space-between;
+  border: none;
+  margin-bottom: 20px;
+}
+
+.line-right2 {
+  color: #3f85ff;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 23px;
+  margin-top: 17px;
+  margin-right: 40px;
+}
+
+.inner-content {
+  display: flex;
+}
+
+.inner-content-child1 {
+  width: 64.84%;
+}
+
+.inner-content-child2 {
+  width: 35.16%;
+}
+
+/* User.html CSS(Custom Styles and Custom Margin and Paddings) */
+
+.stylep {
+  padding-bottom: 0px !important;
+}
+
+.style2 > div {
+  font-size: 18px !important;
+  line-height: 30px !important;
+  color: #2c3548;
+  padding-top: 15x;
+  padding-bottom: 20px;
+}
+
+.style4 {
+  width: 167px !important;
+}
+
+.style3 {
+  width: unset !important;
+}
+
+.style3 span {
+  font-weight: bold;
+}
+
+.custom-gradient {
+  height: 20px;
+  background: linear-gradient(180deg, #e9eaec -45%, #ffffff 100%);
+  border: none;
 }
