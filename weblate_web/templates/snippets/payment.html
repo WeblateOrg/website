@@ -25,9 +25,9 @@
         {% endif %}</span>
     </div>
     {{ payment.description }} <em>—</em><span> {% if payment.end|days_diff_from_today < 365 %}
-        <t>monthly</t>
+        <t>{% trans "monthly" %}</t>
         {% else %}
-        <t>yearly</t>
+        <t>{% trans "yearly" %}</t>
         {% endif %}</span> <br />
     {% if payment.start %}
         <div class="payment-font-size">{% blocktrans with created=payment.start|date:"d M Y" expires=payment.end|date:"d M Y" context "Date range" %}{{ created }}<em>—</em>{{ expires }}{% endblocktrans %}</div>

@@ -18,7 +18,7 @@
             {% with services=user.service_set.all %}
             {% if services %}
             <div class="updated-service-title">
-                <h1>{% trans "My services" %}<span><a href="">{% trans "See user profile " %}<img src="{% static "img/ArrowR.png" %}" alt=">" /></a></span></h1>
+                <h1>{% trans "My services" %}<span><a href="https://hosted.weblate.org/accounts/profile/">{% trans "See user profile " %}<img src="{% static "img/ArrowR.png" %}" alt=">" /></a></span></h1>
             </div>
                 {% for service in services %}
                 {% include "snippets/service.html" %}
@@ -47,18 +47,19 @@
                 <div class="form-line style2">
                     <div class="line-left style4">{% trans "Active" %}</div>
                     <div class="line-right style3">{{ donation.expires|date:"d M Y"  }}<em>—</em><span>{{ donation.created|date:"d M Y"  }}</span>
-                    {% if donation.expires|days_diff_from_today < 30 %}
-                    {% if donation.expires|days_diff_from_today < 2 and donation.expires|days_diff_from_today >= 0 %}
-                    <t class="orange">{{ donation.expires|days_diff_from_today}} day remaining</t>
-                    {% elif donation.expires|days_diff_from_today < 0  %}
-                    <t class="pl-1 orange">Expired</t>
-                    {% else %}
-                    <t class="orange">{{ donation.expires|days_diff_from_today}} days remaining</t>
-                    {% endif %}
-                    {% else %}
-                    <t class="grey">{{ donation.expires|days_diff_from_today}} days remaining</t>
-                    {% endif %}
-
+                        {% with days_from_today_donation=donation.expires|days_diff_from_today %}
+                        {% if days_from_today_donation < 30 %}
+                        {% if days_from_today_donation < 2 and days_from_today_donation >= 0 %}
+                        <t class="orange">{{ days_from_today_donation}} {% trans "day remaining" %}</t>
+                        {% elif days_from_today_donation < 0  %}
+                        <t class="pl-1 orange">{% trans "Expired" %}</t>
+                        {% else %}
+                        <t class="orange">{{ days_from_today_donation}} {% trans "days remaining" %}</t>
+                        {% endif %}
+                        {% else %}
+                        <t class="grey">{{ days_from_today_donation}} {% trans "days remaining" %}</t>
+                        {% endif %}
+                        {% endwith %}
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -99,7 +100,7 @@
                     </div>
                     </div>
             <div class="inner-content-child2">
-                <img src="{% static "img/donations-picture.png" %}">
+                <img src="{% static "img/donations-picture.png" %}" alt="Puppy">
             </div>
             </div>
             </div>
