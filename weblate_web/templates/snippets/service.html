@@ -69,7 +69,7 @@
                         <a class="button med3 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
                         <form class="form-inline" method="post" action="{% url "service-token" pk=service.pk %}">
                         {% csrf_token %}
-                        <input type="submit" class="button med4 inline border rev" value="{% trans "Refresh code" %}">
+                        <input type="submit" class="button med4 inline border rev" value="{% trans "Refresh token" %}">
                         </form>
                     </div>
                     <div class="clear"></div>
@@ -105,7 +105,7 @@
                     <div class="form-line style6">
                         <div class="line-left">{% trans "Subscription" %}</div>
                         <div class="line-right">
-                            <p>{{ subscription.get_package_display }} <em>—</em> 
+                            <p>{{ subscription.get_package_display }} <em>—</em>
                                 {% with days_from_today=subscription.expires|days_diff_from_today %}
                                 {% if days_from_today < 365 %}
                                 <span>{% trans "monthly" %}</span>
@@ -131,14 +131,13 @@
                                 </span>
                             </t>
                             <br>
-                            <v class="subscription-note">Note:
+                            {% if service.note %}
+                            <v class="subscription-note">{% trans "Note" %}:
                                 <span>
-                                    {% if service.note %}
                                     {{ service.note }}
-                                    {% endif %}
-
                                 </span>
                             </v>
+                            {% endif %}
 
                             {% if service.status == "shared" %}
                             <a class="button small inline" href="https://hosted.weblate.org/create/billing/?billing={{ service.hosted_billing }}&amp;upgrade=1">{% trans "Change plan" %}</a>
@@ -146,13 +145,7 @@
                         </div>
                         <div class="clear"></div>
                     </div>
-                    {% if subscription.get_repeat %}
-                    <div class="form-line style6">
-                        <div class="line-left">{% trans "Validity" %}</div>
-                        <div class="line-right">{% blocktrans with created=subscription.created|date:"d M Y" expires=subscription.expires|date:"d M Y" context "Date range" %}{{ created }}–{{ expires }}{% endblocktrans %}</div>
-                        <div class="clear"></div>
-                    </div>
-                    {% endif %}
+    
                     {% if subscription.get_repeat %}
                     <div class="form-line style6">
                         <div class="line-left">{% trans "Billing" %}</div>

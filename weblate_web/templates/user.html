@@ -20,8 +20,8 @@
             <div class="updated-service-title">
                 <h1>{% trans "My services" %}<span><a href="https://hosted.weblate.org/accounts/profile/">{% trans "See user profile " %}<img src="{% static "img/ArrowR.png" %}" alt=">" /></a></span></h1>
             </div>
-                {% for service in services %}
-                {% include "snippets/service.html" %}
+            {% for service in services %}
+            {% include "snippets/service.html" %}
             {% endfor %}
             {% endif %}
             {% endwith %}
@@ -39,13 +39,13 @@
                     <div class="inner-content-child1">
                 {% if donation.link_url %}
                 <div class="form-line style2">
-                    <div class="line-left style4">{% trans "Link" %}</div>
+                    <div class="line-left">{% trans "Link" %}</div>
                     <div class="line-right style3">{{ donation.link_url }}</div>
                     <div class="clear"></div>
                 </div>
                 {% endif %}
                 <div class="form-line style2">
-                    <div class="line-left style4">{% trans "Active" %}</div>
+                    <div class="line-left">{% trans "Active" %}</div>
                     <div class="line-right style3">{{ donation.expires|date:"d M Y"  }}<em>—</em><span>{{ donation.created|date:"d M Y"  }}</span>
                         {% with days_from_today_donation=donation.expires|days_diff_from_today %}
                         {% if days_from_today_donation < 30 %}
@@ -64,7 +64,7 @@
                     <div class="clear"></div>
                 </div>
                 <div class="form-line style2">
-                    <div class="line-left style4"></div>
+                    <div class="line-left"></div>
 
                     <div class="line-right style3">
                         {% if not donation.active %}
@@ -87,22 +87,19 @@
                     </div>
                     <div class="clear"></div>
                 </div>
-                <div class="form-line style2">
-                    <div class="line-left style4">{% trans "Payments" %}</div>
-                    <div class="line-right style3">
-                    {% for payment in donation.list_payments %}
-                    {% include "snippets/payment.html" %}
-                    {% endfor %}
-                    </div>
-
-                <div class="payment-pick">
-                </div>
-                    </div>
                     </div>
             <div class="inner-content-child2">
                 <img src="{% static "img/donations-picture.png" %}" alt="Puppy">
             </div>
             </div>
+            <div class="form-line style2 style7">
+                <div class="line-left">{% trans "Payments" %}</div>
+                <div class="line-right ">
+                {% for payment in donation.list_payments %}
+                {% include "snippets/payment.html" %}
+                {% endfor %}
+                </div>
+                </div>
             </div>
             {% empty %}
 
