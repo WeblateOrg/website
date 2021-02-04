@@ -73,12 +73,13 @@ class Command(BaseCommand):
                 continue
             if notify_user:
                 subscription.send_notification("payment_missing")
-            expiry.append(
-                (
-                    str(subscription),
-                    subscription.service.users.values_list("email", flat=True),
+            if not subscription.could_be_obsolete():
+                expiry.append(
+                    (
+                        str(subscription),
+                        subscription.service.users.values_list("email", flat=True),
+                    )
                 )
-            )
 
         # Expiring donations
         donations = Donation.objects.filter(
@@ -151,14 +152,7 @@ class Command(BaseCommand):
 
             # Skip this in case there is another subscription, for example on service
             # upgrade on downgrade
-            if (
-                subscription.package in ("basic", "extended", "premium")
-                and subscription.service.support_subscriptions.exclude(
-                    pk=subscription.pk
-                )
-                .filter(expires__gt=now + timedelta(days=3))
-                .exists()
-            ):
+            if subscription.could_be_obsolete():
                 continue
 
             # Check recurring payment
