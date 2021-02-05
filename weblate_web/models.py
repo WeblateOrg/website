@@ -651,7 +651,7 @@ class Subscription(models.Model):
         expires = timezone.now() + timedelta(days=3)
         return (
             self.package in ("basic", "extended", "premium")
-            and self.service.support_selfs.exclude(pk=self.pk)
+            and self.service.support_subscriptions.exclude(pk=self.pk)
             .filter(expires__gt=expires)
             .exists()
         )
