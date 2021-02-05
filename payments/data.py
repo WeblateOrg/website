@@ -57,6 +57,7 @@ SUPPORTED_LANGUAGES = {
     "sl",
     "sq",
     "sr",
+    "sr-latn",
     "sv",
     "tr",
     "uk",

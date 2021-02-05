@@ -137,6 +137,7 @@ LANGUAGES = (
     ("sl", "Slovenščina"),
     ("sq", "Shqip"),
     ("sr", "Српски"),
+    ("sr-latn", "Srpski"),
     ("sv", "Svenska"),
     ("tr", "Türkçe"),
     ("uk", "Українська"),
