@@ -8,13 +8,14 @@
 # Anonymous <noreply@weblate.org>, 2020.
 # Jeppe Skindstad Frederiksen <jeppeskindstadfrederiksen@live.dk>, 2020.
 # DraxGaming <simonholmelund@gmail.com>, 2021.
+# Aputsiak Niels Janussen <aputtu@gmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2021-01-25 13:08+0100\n"
-"PO-Revision-Date: 2021-01-24 20:00+0000\n"
-"Last-Translator: DraxGaming <simonholmelund@gmail.com>\n"
+"PO-Revision-Date: 2021-02-05 15:10+0000\n"
+"Last-Translator: Aputsiak Niels Janussen <aputtu@gmail.com>\n"
 "Language-Team: Danish <https://hosted.weblate.org/projects/weblate/website/"
 "da/>\n"
 "Language: da\n"
@@ -46,23 +47,23 @@ msgstr "IBAN bankoverførsel"
 
 #: payments/backends.py:385
 msgid "Issuing bank"
-msgstr ""
+msgstr "Udstedende bank"
 
 #: payments/backends.py:386
 msgid "Account holder"
-msgstr ""
+msgstr "Kontoindehaver"
 
 #: payments/backends.py:387
 msgid "Account number"
-msgstr ""
+msgstr "Kontonummer"
 
 #: payments/backends.py:388
 msgid "SWIFT code"
-msgstr ""
+msgstr "SWIFT-kode"
 
 #: payments/backends.py:389
 msgid "IBAN"
-msgstr ""
+msgstr "IBAN"
 
 #: payments/backends.py:390
 msgid "Reference"
@@ -70,52 +71,55 @@ msgstr "Reference"
 
 #: payments/models.py:77
 msgid "European VAT ID"
-msgstr ""
+msgstr "Europæisk momsnummer"
 
 #: payments/models.py:79
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
+"Udfyld venligst dit momsnummer for Den Europæiske Union, lad stå tom hvis "
+"irrelevant."
 
 #: payments/models.py:85
 msgid "Tax registration"
-msgstr ""
+msgstr "Momsregistrering"
 
 #: payments/models.py:87
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr ""
+"Udfyld venligst din momsregistrering, hvis den skal fremgå på fakturaen."
 
 #: payments/models.py:94
 msgid "Company or individual name"
-msgstr ""
+msgstr "Virksomhed eller personnavn"
 
 #: payments/models.py:97
 msgid "Address"
-msgstr ""
+msgstr "Adresse"
 
 #: payments/models.py:100
 msgid "Postcode and city"
-msgstr ""
+msgstr "Postnummer og by"
 
 #: payments/models.py:102
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 #: payments/models.py:134
 msgid "The country has to match your VAT code"
-msgstr ""
+msgstr "Landet skal matche med din momskode"
 
 #: payments/models.py:157
 msgid "Annual"
-msgstr ""
+msgstr "Årligt"
 
 #: payments/models.py:158
 msgid "Biannual"
-msgstr ""
+msgstr "Halvårligt"
 
 #: payments/models.py:159 weblate_web/templates/donate/form.html:28
 msgid "Quarterly"
-msgstr ""
+msgstr "Kvartalsvis"
 
 #: payments/models.py:160 weblate_web/templates/donate/form.html:25
 #: weblate_web/templates/hosting.html:450
@@ -132,21 +136,17 @@ msgstr "Månedlig"
 
 #: payments/models.py:161
 msgid "Onetime"
-msgstr ""
+msgstr "Èn gang"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Weblate payment"
 msgctxt "Payment state"
 msgid "New payment"
-msgstr "Weblate-betaling"
+msgstr "Ny betaling"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Weblate payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Weblate-betaling"
+msgstr "Afventer betaling"
 
 #: payments/models.py:197
 msgctxt "Payment state"
@@ -169,19 +169,21 @@ msgstr "Angiv en gyldig e-mailadresse."
 
 #: payments/validators.py:42
 msgid "{} is not a valid country code for any European Union member."
-msgstr ""
+msgstr "{} er ikke en gyldig landekode for et medlem af Den Europæiske Union."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
-msgstr ""
+msgstr "{} matcher ikke landet specifikationer for momsnumre."
 
 #: payments/validators.py:58
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
+"Godkendelsestjenesten for momsnumre er ikke tilgængelig for {}, forsøg "
+"venligst igen senere."
 
 #: payments/validators.py:61
 msgid "{} is not a valid VAT ID."
-msgstr ""
+msgstr "{} er ikke et gyldigt momsnummer."
 
 #: weblate_web/models.py:43
 msgid "No reward"
@@ -1742,10 +1744,8 @@ msgstr ""
 "projekt."
 
 #: weblate_web/templates/features.html:229
-#, fuzzy
-#| msgid "Backup service"
 msgid "Backups"
-msgstr "sikkerhedskopi-tjeneste"
+msgstr "Backups"
 
 #: weblate_web/templates/features.html:230
 msgid "Built-in remote backups to prevent data loss."
@@ -1761,7 +1761,7 @@ msgstr ""
 
 #: weblate_web/templates/features.html:243
 msgid "Variants"
-msgstr ""
+msgstr "Varianter"
 
 #: weblate_web/templates/features.html:244
 msgid "Group variants of a strings for easier translating."
@@ -2085,10 +2085,8 @@ msgstr ""
 #: weblate_web/templates/hosting.html:553
 #: weblate_web/templates/hosting.html:566
 #: weblate_web/templates/snippets/about.html:6
-#, fuzzy
-#| msgid "Try Weblate"
 msgid "Gratis trial"
-msgstr "Prøv Weblate"
+msgstr "Gratis forsøgsperiode"
 
 #: weblate_web/templates/hosting.html:512
 #: weblate_web/templates/hosting.html:574
@@ -2989,18 +2987,22 @@ msgstr ""
 
 #: weblate_web/templates/snippets/vat.html:5
 msgid "All listed prices exclude VAT."
-msgstr ""
+msgstr "Alle viste priser er uden moms."
 
 #: weblate_web/templates/snippets/vat.html:6
 #, python-format
 msgid ""
 "EU end users and Czech companies will be charged with additional 21%% VAT."
 msgstr ""
+"Slutbrugere i EU og tjekkiske virksomheder vil blive faktureret med "
+"yderligere 21%% i moms."
 
 #: weblate_web/templates/snippets/vat.html:7
 msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr ""
+"Den omvendte betalingspligt gælder på fakturaer udstedt til virksomheder "
+"inden for EU."
 
 #: weblate_web/templates/support.html:6
 msgid "Weblate support"
