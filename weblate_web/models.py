@@ -507,43 +507,64 @@ class Service(models.Model):
 
     def get_suggestions(self):
         if not self.support_subscriptions.exists():
-            yield "basic", _(
-                "Basic support"
-            ), "This will give you more"\
-               " of this and that. "\
-               "You can't resist,"\
-               "because it is a huge deal.",\
-                  "img/Support-Basic.svg", "Get more support"
-        if (
-            not self.hosted_subscriptions.exists()
-            and not self.shared_subscriptions.exists()
-        ):
-            if not self.premium_subscriptions.exists():
-                yield "premium", _(
-                    "Premium support"
-                ), "This will give you more "\
-                   "of this and that. " \
-                   "You can't resist,"\
-                   "because it is a huge deal.", \
-                      "img/Support-Plus.svg", "Get more support"
-            if not self.extended_subscriptions.exists():
-                yield "extended", _(
-                    "Extended support"
-                ), "This will give you " \
-                   "more of this and that. " \
-                   "You can't resist," \
-                   "because it is a huge deal.", \
-                      "img/Support-Premium.svg", \
-                      "Get more support"
-            if not self.backup_subscriptions.exists():
-                yield "backup", _(
-                    "Backup service"
-                ), "This will give you " \
-                   "more of this and that. " \
-                   "You can't resist," \
-                   "because it is a huge deal.",\
-                      "img/Support-Backup.svg", \
-                      "Get daily backups"
+           yield (
+				  "basic",
+				 _("Basic support"),
+				 _(
+					 "This will give you more of this and that. "
+					 "You can't resist, because it is a huge deal."
+				 ),
+				 "img/Support-Basic.svg",
+				_(
+					 "Get more support"
+				 ),
+			)
+
+		if (
+			not self.hosted_subscriptions.exists()
+			and not self.shared_subscriptions.exists()
+		):
+			if not self.premium_subscriptions.exists():
+			   yield (
+				  "premium",
+				 _("Premium support"),
+				 _(
+					 "This will give you more of this and that. "
+					 "You can't resist, because it is a huge deal."
+				 ),
+				 "img/Support-Plus.svg",
+				_(
+					 "Get more support"
+				 ),
+			)
+
+			if not self.extended_subscriptions.exists():
+				yield (
+				  "extended",
+				 _("Extended support"),
+				 _(
+					 "This will give you more of this and that. "
+					 "You can't resist, because it is a huge deal."
+				 ),
+				 "img/Support-Premium.svg",
+				_(
+					 "Get more support"
+				 ),
+			)
+
+			if not self.backup_subscriptions.exists():
+				yield (
+				  "backup",
+				 _("Backup service"),
+				 _(
+					 "This will give you more of this and that. "
+					 "You can't resist, because it is a huge deal."
+				 ),
+				 "img/Support-Backup.svg",
+				_(
+					 "Get more support"
+				 ),
+			)
 
     def update_status(self):
         status = "community"
