@@ -48,6 +48,7 @@
         <h2 class="section-title crypto">{% trans "Prepaid support for gratis service and self-hosted installations" %}</h2>
 
         <div class="installations">
+          <div class="flex">
             <div class="box">
                 <div class="icon"><img src="{% static "img/Support-Basic.svg" %}" /></div>
                 <h2>{% trans "Basic self-hosted support" %}</h2>
@@ -55,8 +56,8 @@
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
                     <li>{% trans "Priority e-mail support." %}</li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=basic" class="format-item">{{ 500 | price_format }}<span>{% trans "annually" %}</span></a>
-                <a href="{% url 'subscription-new' %}?plan=basic" class="button black right">{% trans "Buy now" %}</a>
+                <a href="{% url 'subscription-new' %}?plan=basic" class="format-item bottom-left">{{ 500 | price_format }}<span>{% trans "annually" %}</span></a>
+                <a href="{% url 'subscription-new' %}?plan=basic" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
                 <div class="icon"><img src="{% static "img/Support-Plus.svg" %}" /></div>
@@ -67,9 +68,11 @@
                     <li>{% trans "Priority e-mail support." %}</li>
                     <li>{% trans "Only available with the installation package" %}</li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=extended" class="format-item">{{ 750 | price_format }}<span>{% trans "annually" %}</span></a>
-                <a href="{% url 'subscription-new' %}?plan=extended" class="button black right">{% trans "Buy now" %}</a>
+                <a href="{% url 'subscription-new' %}?plan=extended" class="format-item bottom-left">{{ 750 | price_format }}<span>{% trans "annually" %}</span></a>
+                <a href="{% url 'subscription-new' %}?plan=extended" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
+          </div>
+          <div class="flex">
             <div class="box">
                 <div class="icon"><img src="{% static "img/Support-Premium.svg" %}" /></div>
                 <h2>{% trans "Premium self-hosted support" %}</h2>
@@ -79,8 +82,8 @@
                     <li>{% trans "Private consultations." %}</li>
                     <li>{% trans "Next business day support response guaranteed." %}</li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=premium" class="format-item">{{ 1200 | price_format }}<span>{% trans "annually" %}</span></a>
-                <a href="{% url 'subscription-new' %}?plan=premium" class="button black right">{% trans "Buy now" %}</a>
+                <a href="{% url 'subscription-new' %}?plan=premium" class="format-item bottom-left">{{ 1200 | price_format }}<span>{% trans "annually" %}</span></a>
+                <a href="{% url 'subscription-new' %}?plan=premium" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
             <div class="box" id="install">
                 <div class="icon"><img src="{% static "img/linux.png" %}" /></div>
@@ -91,9 +94,11 @@
                     <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
                     <li>{% trans "Setup customization" %}</li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=install:linux" class="format-item">{{ 300 | price_format }}<span>{% trans "installation" %}</span></a>
-                <a href="{% url 'subscription-new' %}?plan=install:linux" class="button black right">{% trans "Buy now" %}</a>
+                <a href="{% url 'subscription-new' %}?plan=install:linux" class="format-item bottom-left">{{ 300 | price_format }}<span>{% trans "installation" %}</span></a>
+                <a href="{% url 'subscription-new' %}?plan=install:linux" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
+          </div>
+          <div class="flex">
             <div class="box" id="backup">
                 <div class="icon"><img src="{% static "img/Support-Backup.svg" %}" /></div>
                 <h2>{% trans "Backup service" %}</h2>
@@ -104,8 +109,8 @@
                     <li>{% trans "Stores up to 100 GB of backups" %}</li>
                     <li><a href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Read more in the documentation." %}</a></li>
                 </ul>
-                <a href="{% url 'subscription-new' %}?plan=backup" class="format-item">{{ 250 | price_format }}<span>{% trans "annually" %}</span></a>
-                <a href="{% url 'subscription-new' %}?plan=backup" class="button black right">{% trans "Buy now" %}</a>
+                <a href="{% url 'subscription-new' %}?plan=backup" class="format-item bottom-left">{{ 250 | price_format }}<span>{% trans "annually" %}</span></a>
+                <a href="{% url 'subscription-new' %}?plan=backup" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
                 <div class="icon"><img src="{% static "img/icon-call.svg" %}" /></div>
@@ -115,9 +120,10 @@
                     <li>{% trans "Integration of Weblate into your workflow" %}</li>
                     <li>{% trans "Suggestions on the internationalization and localization" %}</li>
                 </ul>
-                <a class="format-item">{{ 70 | price_format }}<span>{% trans "hourly" %}</span></a>
-                <a href="mailto:sales@weblate.org?subject=Consulting services" class="button black right">{% trans "Contact us" %}</a>
+                <a class="format-item bottom-left">{{ 70 | price_format }}<span>{% trans "hourly" %}</span></a>
+                <a href="mailto:sales@weblate.org?subject=Consulting services" class="button black right bottom-right">{% trans "Contact us" %}</a>
             </div>
+          </div>
             <a href="mailto:support@weblate.org" class="button center">{% trans "Ask for help" %}</a>
         </div>
         <h2 class="section-title crypto payment-conditions">{% trans "Payment" %}</h2>

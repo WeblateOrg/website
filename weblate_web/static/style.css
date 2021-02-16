@@ -1168,9 +1168,19 @@ section.bottom .box.join {
   background-image: url("img/box-join.jpg");
 }
 
+section.bottom .box.join a {
+  position: absolute;
+  bottom: 40px;
+}
+
 section.bottom .box.donate {
   background-color: #f6664c;
   background-image: url("img/box-donate.jpg");
+}
+
+section.bottom .box.donate a {
+  position: absolute;
+  bottom: 40px;
 }
 
 section.bottom .box .title {
@@ -1189,7 +1199,7 @@ section.bottom .box p {
   font-size: 20px;
   letter-spacing: 0.5px;
   line-height: 25px;
-  margin-bottom: 45px;
+  margin-bottom: 70px;
 }
 
 body.light .main-menu ul li a {
@@ -2253,10 +2263,6 @@ input[type="radio"]:checked + .biglabel {
   line-height: 26px;
 }
 
-.installations .box:nth-child(2) {
-  min-height: 500px;
-}
-
 .installations .box:nth-child(2n + 1) {
   margin-left: 0;
 }
@@ -2276,9 +2282,9 @@ input[type="radio"]:checked + .biglabel {
 .installations .box ul {
   margin: 0 0 20px 25px;
   max-width: 380px;
-  padding: 0;
   list-style: none;
   clear: left;
+  padding-bottom: 32px;
 }
 
 .installations .box li::before,
@@ -2668,6 +2674,7 @@ h2.section-title.hp-style {
   margin: 0 0 35px 25px;
   padding: 0;
   list-style: none;
+  padding-bottom: 40px;
 }
 
 .contribution-list .box ul li,
@@ -2758,6 +2765,13 @@ h2.section-title.hp-style {
 .aboutus-list .box.blue {
   background-color: #00d2e6;
   border-radius: 20px 20px 0 20px;
+  display: inline-block !important;
+  min-height: unset;
+}
+
+.aboutus-list .box.green {
+  display: inline-block !important;
+  min-height: unset;
 }
 
 .aboutus-list .box h2 {
@@ -3075,6 +3089,7 @@ input.button.make-payment {
 
 .form-line:last-child {
   border-bottom: none;
+  border-top: 1px solid #e9eaec;
 }
 
 .form-line > div {
@@ -4024,7 +4039,7 @@ input.fullwidth {
   }
 }
 
-/*Your Weblate Team - About us */
+/* About Us Weblate Team CSS */
 
 .content-p {
   width: 69%;
@@ -4054,7 +4069,7 @@ input.fullwidth {
 
 .weblate-team {
   display: table;
-  width: 82%;
+  width: 78%;
   margin: 0 auto;
 }
 
@@ -4090,5 +4105,86 @@ input.fullwidth {
 
   .weblate-team-content {
     text-align: center;
+  }
+}
+
+/* Flex property for boxes */
+
+.flex {
+  display: flex;
+}
+
+/* Box display flow root property */
+
+.box {
+  display: flow-root !important;
+  position: relative;
+}
+
+/* Box bottom left and right button custom position */
+
+.bottom-left {
+  position: absolute;
+  bottom: 40px;
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+}
+
+/* Media Queries for responsiveness */
+
+@media screen and (max-width: 891px) {
+  .flex {
+    display: unset;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .bottom-right {
+    position: unset;
+    bottom: unset;
+    right: unset;
+  }
+
+  .installations .box ul,
+  .mailing .box ul {
+    padding-bottom: unset;
+  }
+
+  .bottom-left {
+    position: unset;
+    bottom: unset;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  section.bottom .box p {
+    margin-bottom: 100px;
+  }
+
+  section.bottom .box.donate a {
+    bottom: 30px;
+  }
+
+  section.bottom .box.join a {
+    bottom: 30px;
+  }
+}
+
+@media screen and (max-width: 1030px) and (min-width: 892px) {
+  .installations .box ul,
+  .mailing .box ul {
+    padding-bottom: 50px;
+  }
+
+  .bottom-left {
+    bottom: 60px;
+  }
+
+  .bottom-right {
+    bottom: 12px;
   }
 }
