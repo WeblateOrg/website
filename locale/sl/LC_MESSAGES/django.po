@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2021-01-25 13:08+0100\n"
-"PO-Revision-Date: 2021-02-12 14:50+0000\n"
+"PO-Revision-Date: 2021-02-22 13:57+0000\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://hosted.weblate.org/projects/weblate/"
 "website/sl/>\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 4.5-dev\n"
+"X-Generator: Weblate 4.5\n"
 
 #: payments/backends.py:253
 msgid "Payment card"
@@ -73,7 +73,7 @@ msgstr "Evropska davčna številka"
 
 #: payments/models.py:79
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
-msgstr ""
+msgstr "Vnesite ID številko (EU) za DDV, pustite prazno, če ni potrebna."
 
 #: payments/models.py:85
 msgid "Tax registration"
@@ -139,11 +139,9 @@ msgid "New payment"
 msgstr "Novo plačilo"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Weblate payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Plačilo Weblate"
+msgstr "Čakajoč na plačilo"
 
 #: payments/models.py:197
 msgctxt "Payment state"
@@ -166,7 +164,7 @@ msgstr "Vnesite veljaven e-poštni naslov."
 
 #: payments/validators.py:42
 msgid "{} is not a valid country code for any European Union member."
-msgstr ""
+msgstr "{} ni veljavna koda države za nobeno članico Evropske unije."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
@@ -178,7 +176,7 @@ msgstr ""
 
 #: payments/validators.py:61
 msgid "{} is not a valid VAT ID."
-msgstr ""
+msgstr "{} ni veljavna številka ID za DDV."
 
 #: weblate_web/models.py:43
 msgid "No reward"
@@ -231,10 +229,8 @@ msgstr "Razvijajte"
 
 #: weblate_web/models.py:56
 #: weblate_web/templates/weblate_web/post_detail.html:53
-#, fuzzy
-#| msgid "Continuous translation"
 msgid "Localization"
-msgstr "Nenehno prevajanje"
+msgstr "Lokalizacija"
 
 #: weblate_web/models.py:108
 msgid "Link text"
@@ -259,22 +255,16 @@ msgid "Dedicated hosted service"
 msgstr "Gostovanje Weblate"
 
 #: weblate_web/models.py:374
-#, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Hosted service"
-msgstr "Gostovanje Weblate"
+msgstr "Storitev gostovanja"
 
 #: weblate_web/models.py:375 weblate_web/templates/support.html:53
-#, fuzzy
-#| msgid "Weblate support"
 msgid "Basic self-hosted support"
-msgstr "Podpora Weblate"
+msgstr "Osnovna podpora samogostovanja"
 
 #: weblate_web/models.py:376 weblate_web/templates/support.html:63
-#, fuzzy
-#| msgid "Extended support for self hosted Weblate"
 msgid "Extended self-hosted support"
-msgstr "Razširjena podpora za samogostovani Weblate"
+msgstr "Razširjena podpora za samogostovanje"
 
 #: weblate_web/models.py:377 weblate_web/templates/support.html:75
 #, fuzzy
@@ -361,10 +351,8 @@ msgid "April 2012"
 msgstr "April 2012"
 
 #: weblate_web/templates/about.html:30
-#, fuzzy
-#| msgid "Try Weblate"
 msgid "Why Weblate?"
-msgstr "Preizkusite Weblate"
+msgstr "Čemu Weblate?"
 
 #: weblate_web/templates/about.html:32
 msgid "Instead of staying with an existing solution, Weblate was made to have:"
@@ -2080,10 +2068,8 @@ msgstr ""
 #: weblate_web/templates/hosting.html:553
 #: weblate_web/templates/hosting.html:566
 #: weblate_web/templates/snippets/about.html:6
-#, fuzzy
-#| msgid "Try Weblate"
 msgid "Gratis trial"
-msgstr "Preizkusite Weblate"
+msgstr "Brezplačen preizkus"
 
 #: weblate_web/templates/hosting.html:512
 #: weblate_web/templates/hosting.html:574
@@ -2272,10 +2258,8 @@ msgid "You will find an invoice for this payment attached."
 msgstr ""
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your payment on weblate.org"
-msgstr "Donirajte Weblateu"
+msgstr "Vaše plačilo weblate.org"
 
 #: weblate_web/templates/mail/payment_expired.html:9
 #, fuzzy
@@ -2323,7 +2307,7 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
-msgstr ""
+msgstr "Vaše plačilo na weblate.org je spodletelo"
 
 #: weblate_web/templates/mail/payment_missing.html:9
 #, fuzzy
@@ -3014,13 +2998,14 @@ msgstr ""
 
 #: weblate_web/templates/snippets/vat.html:5
 msgid "All listed prices exclude VAT."
-msgstr ""
+msgstr "Vse cene so brez DDV."
 
 #: weblate_web/templates/snippets/vat.html:6
 #, python-format
 msgid ""
 "EU end users and Czech companies will be charged with additional 21%% VAT."
 msgstr ""
+"Končnim uporabnikom v EU ter češkim podjetjem bo obračunan dodatni 21 %% DDV."
 
 #: weblate_web/templates/snippets/vat.html:7
 msgid ""
@@ -3516,11 +3501,11 @@ msgstr ""
 
 #: weblate_web/views.py:406
 msgid "The payment was rejected: {}"
-msgstr ""
+msgstr "Plačilo je zavrnjeno: {}"
 
 #: weblate_web/views.py:407
 msgid "Unknown reason"
-msgstr ""
+msgstr "Neznan razlog"
 
 #: weblate_web/views.py:412
 #, fuzzy
