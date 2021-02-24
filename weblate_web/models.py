@@ -16,6 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from datetime import timedelta
 from uuid import uuid4
 
 import html2text
@@ -681,6 +682,15 @@ class Subscription(models.Model):
                 settings.NOTIFY_SUBSCRIPTION,
                 subscription=self,
             )
+
+    def could_be_obsolete(self):
+        expires = timezone.now() + timedelta(days=3)
+        return (
+            self.package in ("basic", "extended", "premium")
+            and self.service.support_subscriptions.exclude(pk=self.pk)
+            .filter(expires__gt=expires)
+            .exists()
+        )
 
 
 class PastPayments(models.Model):

@@ -4,6 +4,14 @@ name: Bug report
 about: Create a report to help us improve
 ---
 
+<!--
+Thank you for reporting an issue on Weblate! Here are a few things to note:
+
+* This template will guide you to create a useful issue report, so please do NOT delete it.
+* The description blocks like this one are comments and won't be shown in the issue once it’s created.
+* Please write your text outside them or replace them.
+-->
+
 **Describe the issue**
 
 <!--
@@ -22,8 +30,8 @@ Describe the steps you tried to solve the problem yourself.
 Steps to reproduce the behavior:
 
 1. Go to '...'
-2. Scroll down to '....'
-3. Click on '....'
+2. Scroll down to '...'
+3. Click on '...'
 4. See error
 
 **Expected behavior**
