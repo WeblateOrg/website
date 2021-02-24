@@ -1,3 +1,4 @@
+#
 # Copyright © 2012–2021 Michal Čihař <michal@cihar.com>
 #
 # This file is part of Weblate <https://weblate.org/>
@@ -533,6 +534,7 @@ class Service(models.Model):
                     "img/Support-Plus.svg",
                     _("Get more support"),
                 )
+
             if not self.extended_subscriptions.exists():
                 yield (
                     "extended",
@@ -544,6 +546,7 @@ class Service(models.Model):
                     "img/Support-Premium.svg",
                     _("Get more support"),
                 )
+
             if not self.backup_subscriptions.exists():
                 yield (
                     "backup",

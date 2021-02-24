@@ -55,7 +55,7 @@
                     <form method="post" action="{% url 'service-user' pk=service.pk %}">
                     {% csrf_token %}
                     <input type="email" placeholder="{% trans "Invite e-mail" %}" name="email" />
-                    <input type="submit" class="button med1 inline border rev" value="{% trans "Add user" %}" />
+                    <input type="submit" class="button button-med-120 inline border rev" value="{% trans "Add user" %}" />
                     </form>
                     </div>
                     <div class="clear"></div>
@@ -66,10 +66,10 @@
                     <div class="line-left pt-1">{% trans "Activation token" %}</div>
                     <div class="line-right">
                         <input value="{{ service.secret }}" readonly class="fullwidth"><br />
-                        <a class="button med3 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
+                        <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
                         <form class="form-inline" method="post" action="{% url "service-token" pk=service.pk %}">
                         {% csrf_token %}
-                        <input type="submit" class="button med4 inline border rev" value="{% trans "Refresh token" %}">
+                        <input type="submit" class="button button-med-150 inline border rev" value="{% trans "Refresh token" %}">
                         </form>
                     </div>
                     <div class="clear"></div>
@@ -80,8 +80,8 @@
                     <div class="line-left pt-1">{% trans "Backup repository" %}</div>
                     <div class="line-right">
                         <input value="{{ service.backup_repository }}" readonly class="fullwidth"><br />
-                        <a class="button med3 inline" data-clipboard-text="{{ service.backup_repository }}">{% trans "Copy" %}</a>
-                        <a class="button med5 inline border rev" href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Documentation" %}</a>
+                        <a class="button button-med-100 inline" data-clipboard-text="{{ service.backup_repository }}">{% trans "Copy" %}</a>
+                        <a class="button button-med-170 inline border rev" href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Documentation" %}</a>
                     </div>
                     <div class="clear"></div>
                 </div>
