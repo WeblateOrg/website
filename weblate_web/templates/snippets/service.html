@@ -3,7 +3,7 @@
 {% load date_diff %}
 
 <div class="payment-form pt-pb">
-    <div class="form-line style6 bdr-btm">
+    <div class="form-line service-text-formatting bdr-btm">
         <div class="service-variant">
             <p>{{ service.get_status_display }}</p>
         <div class="service-time">
@@ -29,7 +29,7 @@
     </div>
                 <div class="form-line clearr"></div>
 
-                <div class="form-line style6">
+                <div class="form-line service-text-formatting">
                     <div class="line-left">{% trans "Users" %}</div>
                     <div class="line-right">
                     {% for owner in service.users.all %}
@@ -62,8 +62,8 @@
                 </div>
 
                 {% if service.needs_token %}
-                <div class="form-line style6 bdr-btm">
-                    <div class="line-left pt-1">{% trans "Activation token" %}</div>
+                <div class="form-line service-text-formatting bdr-btm">
+                    <div class="line-left p-top">{% trans "Activation token" %}</div>
                     <div class="line-right">
                         <input value="{{ service.secret }}" readonly class="fullwidth"><br />
                         <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
@@ -76,8 +76,8 @@
                 </div>
                 {% endif %}
                 {% if service.backup_repository %}
-                <div class="form-line style6 bdr-btm">
-                    <div class="line-left pt-1">{% trans "Backup repository" %}</div>
+                <div class="form-line service-text-formatting bdr-btm">
+                    <div class="line-left p-top">{% trans "Backup repository" %}</div>
                     <div class="line-right">
                         <input value="{{ service.backup_repository }}" readonly class="fullwidth"><br />
                         <a class="button button-med-100 inline" data-clipboard-text="{{ service.backup_repository }}">{% trans "Copy" %}</a>
@@ -86,7 +86,7 @@
                     <div class="clear"></div>
                 </div>
                 {% endif %}
-                <div class="form-line style6">
+                <div class="form-line service-text-formatting">
                     <div class="line-left">{% trans "Server URL" %}</div>
                     <div class="line-right">
                 {% if service.last_report %}
@@ -102,7 +102,7 @@
                 </div>
                 {% with subscriptions=service.subscription_set.all %}
                 {% for subscription in subscriptions %}
-                    <div class="form-line style6">
+                    <div class="form-line service-text-formatting">
                         <div class="line-left">{% trans "Subscription" %}</div>
                         <div class="line-right">
                             <p>{{ subscription.get_package_display }} <em>—</em>
@@ -147,7 +147,7 @@
                     </div>
     
                     {% if subscription.get_repeat %}
-                    <div class="form-line style6">
+                    <div class="form-line service-text-formatting">
                         <div class="line-left">{% trans "Billing" %}</div>
                         <div class="line-right">
                             {% if not subscription.active %}
@@ -175,7 +175,7 @@
                     </div>
                     {% endif %}
                 {% endfor %}
-                <div class="form-line style6">
+                <div class="form-line service-text-formatting">
                     <div class="line-left">{% trans "Payments" %}</div>
                     <div class="line-right">
                     {% for subscription in subscriptions %}
@@ -188,7 +188,7 @@
                 </div>
                 {% endwith %}
 
-                <div class="form-line style6">
+                <div class="form-line service-text-formatting">
                     <div class="line-left">{% trans "More Weblate" %}</div>
                     <div class="line-right">
                         <div class="inner-grid">
