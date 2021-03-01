@@ -552,7 +552,7 @@ class Service(models.Model):
                     "backup",
                     _("Backup service"),
                     _(
-                        "This will give you more of this and that. "
+                        "This will give you more of this and that."
                         "You can't resist, because it is a huge deal."
                     ),
                     "img/Support-Backup.svg",
