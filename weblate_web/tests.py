@@ -634,7 +634,7 @@ class DonationTest(FakturaceTestCase):
             expires=timezone.now() + relativedelta(years=1),
             payment=self.create_payment()[0].pk,
         )
-        self.assertContains(self.client.get(reverse("user")), "Your donations")
+        self.assertContains(self.client.get(reverse("user")), "My donations")
 
     def test_link(self):
         self.create_donation()
