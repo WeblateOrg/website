@@ -39,10 +39,10 @@
                         <p>{{ owner.last_name }}</p>
                     <t>{{ owner.email }}</t></div>
                     {% if owner == user %}
-                    <div class="user-img"><img src="{% static "img/Shield.png" %}" alt="{% trans "Protected user" %}"></div>
+                    <div class="user-img"><img src="{% static "img/Shield.png" %}" title="{% trans "You can not remove yourself" %}" alt="{% trans "Protected user" %}"></div>
                     {% else %}
                     {% csrf_token %}
-                    <img class="user-img" onclick="removeUser('{{owner.id}}')" name="remove" value="remove" src="{% static "img/delete.png" %}" alt="{% trans "Remove user" %}">
+                    <button class="user-img"><img src="{% static "img/delete.png" %}" alt="{% trans "Remove user" %}"></button>
                     {% endif %}
                 </div>
                     {% csrf_token %}

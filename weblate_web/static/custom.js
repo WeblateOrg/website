@@ -207,7 +207,3 @@ ready(() => {
 
   new ClipboardJS("[data-clipboard-text]");
 });
-
-function removeUser(userId) {
-  document.getElementById(`server_user_${userId}_form`).submit();
-}
