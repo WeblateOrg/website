@@ -512,11 +512,11 @@ class Service(models.Model):
                 "basic",
                 _("Basic support"),
                 _(
-                    "Never get hold back by a problem."
+                    "Never get hold back by a problem."<br>
                     "Set priority for all your questions and reported bugs."
                 ),
                 "img/Support-Basic.svg",
-                _("Get more support"),
+                _("Get your support"),
             )
 
         if (
@@ -528,11 +528,11 @@ class Service(models.Model):
                     "premium",
                     _("Premium support"),
                     _(
-                        "Don’t be waiting with your work paused."
+                        "Don’t be waiting with your work paused."<br>
                         "This guarantees you the answers the NBD at the latest."
                     ),
                     "img/Support-Premium.svg",
-                    _("Get more support"),
+                    _("Become Premium"),
                 )
 
             if not self.extended_subscriptions.exists():
@@ -540,11 +540,11 @@ class Service(models.Model):
                     "extended",
                     _("Extended support"),
                     _(
-                        "Don’t be Basic, get a worry-free package."
+                        "Don’t be Basic, get a worry-free package."<br>
                         "We will manage upgrades for you."
                     ),
                     "img/Support-Plus.svg",
-                    _("Get more support"),
+                    _("Stay updated and supported"),
                 )
 
             if not self.backup_subscriptions.exists():
@@ -552,11 +552,11 @@ class Service(models.Model):
                     "backup",
                     _("Backup service"),
                     _(
-                        "Easily put your backups in a safe place."
+                        "Easily put your backups in a safe place."<br>
                         "Encrypted and automatic backups, always available."
                     ),
                     "img/Support-Backup.svg",
-                    _("Get daily backups"),
+                    _("Backup daily"),
                 )
 
     def update_status(self):
