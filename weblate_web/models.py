@@ -508,17 +508,56 @@ class Service(models.Model):
 
     def get_suggestions(self):
         if not self.support_subscriptions.exists():
-            yield "basic", _("Basic support")
+            yield (
+                "basic",
+                _("Basic support"),
+                _(
+                    "Never get hold back by a problem."
+                    "Set priority for all your questions and reported bugs."
+                ),
+                "img/Support-Basic.svg",
+                _("Get more support"),
+            )
+
         if (
             not self.hosted_subscriptions.exists()
             and not self.shared_subscriptions.exists()
         ):
             if not self.premium_subscriptions.exists():
-                yield "premium", _("Extended support")
+                yield (
+                    "premium",
+                    _("Premium support"),
+                    _(
+                        "Don’t be waiting with your work paused."
+                        "This guarantees you the answers the NBD at the latest."
+                    ),
+                    "img/Support-Premium.svg",
+                    _("Get more support"),
+                )
+
             if not self.extended_subscriptions.exists():
-                yield "extended", _("Extended support")
+                yield (
+                    "extended",
+                    _("Extended support"),
+                    _(
+                        "Don’t be Basic, get a worry-free package."
+                        "We will manage upgrades for you."
+                    ),
+                    "img/Support-Plus.svg",
+                    _("Get more support"),
+                )
+
             if not self.backup_subscriptions.exists():
-                yield "backup", _("Backup service")
+                yield (
+                    "backup",
+                    _("Backup service"),
+                    _(
+                        "Easily put your backups in a safe place."
+                        "Encrypted and automatic backups, always available."
+                    ),
+                    "img/Support-Backup.svg",
+                    _("Get more support"),
+                )
 
     def update_status(self):
         status = "community"
@@ -582,8 +621,8 @@ class Subscription(models.Model):
     expires = models.DateTimeField()
 
     class Meta:
-        verbose_name = "Customer subscription"
-        verbose_name_plural = "Customer subscription"
+        verbose_name = "Customer’s subscription"
+        verbose_name_plural = "Customer’s subscriptions"
 
     def __str__(self):
         return f"{self.get_package_display()}: {self.service}"
