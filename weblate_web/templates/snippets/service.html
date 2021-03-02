@@ -93,8 +93,7 @@
                         <a class="link" href="{{ service.last_report.site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
                 {% else %}
                         <p class="text-muted">
-                            {% trans "You can use use support services on our webite. Or, for more comfort, use an activation token to connect your Weblate installation to the support portal. More in " %}
-                            <a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">{% trans "Documentation." %}</a>
+                            {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For more comfort, use the activation token to connect your Weblate installation to the support portal. More in {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
                         </p>
                 {% endif %}
                     </div>
