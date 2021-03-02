@@ -9,7 +9,7 @@
         {{ payment.get_amount_display|intcomma }} {{ payment.get_currency_display }}<span>
             {% if payment.invoice %}
             <div class="float-right payment-font-size">
-                <a href="{% url 'user-invoice' pk=payment.pk %}" class="link">{{ payment.invoice_filename }}<span><img src="{% static "img/dowload.png" %}" alt=">" /></span></a>
+                <a href="{% url 'user-invoice' pk=payment.pk %}" class="link">{{ payment.invoice_filename }}<span><img src="{% static "img/Download.png" %}" alt=">" /></span></a>
             </div>
             {% elif payment.state != 5 %}
             <div class="float-right">
