@@ -556,7 +556,7 @@ class Service(models.Model):
                         "Encrypted and automatic backups, always available."
                     ),
                     "img/Support-Backup.svg",
-                    _("Get more support"),
+                    _("Get daily backups"),
                 )
 
     def update_status(self):
