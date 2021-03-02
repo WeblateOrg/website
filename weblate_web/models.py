@@ -513,7 +513,7 @@ class Service(models.Model):
                 _("Basic support"),
                 _(
                     "Never get hold back by a problem."
-                    "Set priority for all your questions or reported bugs."
+                    "Set priority for all your questions and reported bugs."
                 ),
                 "img/Support-Basic.svg",
                 _("Get more support"),
@@ -529,7 +529,7 @@ class Service(models.Model):
                     _("Premium support"),
                     _(
                         "Don’t be waiting with your work paused."
-                        "This guarantees you the answers NBD at the latest."
+                        "This guarantees you the answers the NBD at the latest."
                     ),
                     "img/Support-Premium.svg",
                     _("Get more support"),
@@ -541,7 +541,7 @@ class Service(models.Model):
                     _("Extended support"),
                     _(
                         "Don’t be Basic, get a worry-free package."
-                        "We manage upgrades for you."
+                        "We will manage upgrades for you."
                     ),
                     "img/Support-Plus.svg",
                     _("Get more support"),
