@@ -511,12 +511,10 @@ class Service(models.Model):
             yield (
                 "basic",
                 _("Basic support"),
-                _(
-                    "Never get hold back by a problem."
-                    "Set priority for all your questions and reported bugs."
-                ),
+                _("Never get hold back by a problem."),
+                _("Set priority for all your questions and reported bugs."),
                 "img/Support-Basic.svg",
-                _("Get more support"),
+                _("Get support"),
             )
 
         if (
@@ -527,36 +525,30 @@ class Service(models.Model):
                 yield (
                     "premium",
                     _("Premium support"),
-                    _(
-                        "Don’t be waiting with your work paused."
-                        "This guarantees you the answers the NBD at the latest."
-                    ),
+                    _("Don’t be waiting with your work paused."),
+                    _("This guarantees you the answers the NBD at the latest."),
                     "img/Support-Premium.svg",
-                    _("Get more support"),
+                    _("Be Premium"),
                 )
 
             if not self.extended_subscriptions.exists():
                 yield (
                     "extended",
                     _("Extended support"),
-                    _(
-                        "Don’t be Basic, get a worry-free package."
-                        "We will manage upgrades for you."
-                    ),
+                    _("Don’t be just Basic, get a worry-free package."),
+                    _("We will manage upgrades for you."),
                     "img/Support-Plus.svg",
-                    _("Get more support"),
+                    _("Stay updated"),
                 )
 
             if not self.backup_subscriptions.exists():
                 yield (
                     "backup",
                     _("Backup service"),
-                    _(
-                        "Easily put your backups in a safe place."
-                        "Encrypted and automatic backups, always available."
-                    ),
+                    _("Easily put your backups in a safe place."),
+                    _("Encrypted and automatic backups, always available."),
                     "img/Support-Backup.svg",
-                    _("Get daily backups"),
+                    _("Backup daily"),
                 )
 
     def update_status(self):

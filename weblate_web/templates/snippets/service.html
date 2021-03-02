@@ -188,16 +188,20 @@
                 {% endwith %}
 
                 <div class="form-line service-text-formatting">
-                    <div class="line-left">{% trans "More Weblate" %}</div>
+                    <div class="line-left">{% trans "Get more Weblate" %}</div>
                     <div class="line-right">
                         <div class="inner-grid">
-                        {% for package, name, desc, image, text in service.get_suggestions %}
+                        {% for package, name, desc1, desc2, image, text in service.get_suggestions %}
                         <div class="grid-item1">
                             <img src="{% static image %}" alt="logo">
                         </div>
                         <div class="grid-item2">
                             <p>{{ name }}</p>
-                            <t>{{ desc }}</t>
+                            <t>
+                              {{ desc1 }}
+                              <br />
+                              {{ desc2 }}
+                            </t>
                         </div>
                         <div class="grid-item3">
                         <a class="button med inline" href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ text }}</a>
