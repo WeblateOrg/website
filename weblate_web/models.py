@@ -512,8 +512,8 @@ class Service(models.Model):
                 "basic",
                 _("Basic support"),
                 _(
-                    "This will give you more of this and that. "
-                    "You can't resist, because it is a huge deal."
+                    "Never get hold back by a problem."
+                    "Set priority for all your questions or reported bugs."
                 ),
                 "img/Support-Basic.svg",
                 _("Get more support"),
@@ -528,10 +528,10 @@ class Service(models.Model):
                     "premium",
                     _("Premium support"),
                     _(
-                        "This will give you more of this and that. "
-                        "You can't resist, because it is a huge deal."
+                        "Don’t be waiting with your work paused."
+                        "This guarantees you the answers NBD at the latest."
                     ),
-                    "img/Support-Plus.svg",
+                    "img/Support-Premium.svg",
                     _("Get more support"),
                 )
 
@@ -540,10 +540,10 @@ class Service(models.Model):
                     "extended",
                     _("Extended support"),
                     _(
-                        "This will give you more of this and that. "
-                        "You can't resist, because it is a huge deal."
+                        "Don’t be Basic, get a worry-free package."
+                        "We manage upgrades for you."
                     ),
-                    "img/Support-Premium.svg",
+                    "img/Support-Plus.svg",
                     _("Get more support"),
                 )
 
@@ -552,8 +552,8 @@ class Service(models.Model):
                     "backup",
                     _("Backup service"),
                     _(
-                        "This will give you more of this and that. "
-                        "You can't resist, because it is a huge deal."
+                        "Easily put your backups in a safe place."
+                        "Encrypted and automatic backups, always available."
                     ),
                     "img/Support-Backup.svg",
                     _("Get more support"),
@@ -621,8 +621,8 @@ class Subscription(models.Model):
     expires = models.DateTimeField()
 
     class Meta:
-        verbose_name = "Customer subscription"
-        verbose_name_plural = "Customer subscription"
+        verbose_name = "Customer’s subscription"
+        verbose_name_plural = "Customer’s subscriptions"
 
     def __str__(self):
         return f"{self.get_package_display()}: {self.service}"
