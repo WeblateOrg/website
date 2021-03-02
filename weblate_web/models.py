@@ -514,7 +514,7 @@ class Service(models.Model):
                 _("Never get hold back by a problem."),
                 _("Set priority for all your questions and reported bugs."),
                 "img/Support-Basic.svg",
-                _("Get your support"),
+                _("Get support"),
             )
 
         if (
@@ -528,17 +528,17 @@ class Service(models.Model):
                     _("Don’t be waiting with your work paused."),
                     _("This guarantees you the answers the NBD at the latest."),
                     "img/Support-Premium.svg",
-                    _("Become Premium"),
+                    _("Be Premium"),
                 )
 
             if not self.extended_subscriptions.exists():
                 yield (
                     "extended",
                     _("Extended support"),
-                    _("Don’t be Basic, get a worry-free package."),
+                    _("Don’t be just Basic, get a worry-free package."),
                     _("We will manage upgrades for you."),
                     "img/Support-Plus.svg",
-                    _("Stay updated and supported"),
+                    _("Stay updated"),
                 )
 
             if not self.backup_subscriptions.exists():
