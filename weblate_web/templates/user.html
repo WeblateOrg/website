@@ -64,9 +64,7 @@
                     <div class="clear"></div>
                 </div>
                 <div class="form-line user-text-formatting">
-                    <div class="line-left"></div>
-
-                    <div class="line-right user-text-formatting-donation">
+                    <div class="line-left">
                         {% if not donation.active %}
                         {% trans "Expired" %}
                         {% elif donation.payment_obj.recurring %}
@@ -74,6 +72,9 @@
                         {% else %}
                         {% trans "No renewal" %}
                         {% endif %}
+                    </div>
+
+                    <div class="line-right user-text-formatting-donation">
                         <form class="form-inline" method="post" action="{% url "donate-pay" pk=donation.pk %}">
                         {% csrf_token %}
                         <input type="submit" class="button button-med-140 inline" value="{% trans "Renew now" %}">
