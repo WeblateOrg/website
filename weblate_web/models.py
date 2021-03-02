@@ -512,8 +512,9 @@ class Service(models.Model):
                 "basic",
                 _("Basic support"),
                 _(
-                    "Never get hold back by a problem."<br>
-                    "Set priority for all your questions and reported bugs."
+                    "Never get hold back by a problem."
+                    < br
+                    > "Set priority for all your questions and reported bugs."
                 ),
                 "img/Support-Basic.svg",
                 _("Get your support"),
@@ -528,8 +529,9 @@ class Service(models.Model):
                     "premium",
                     _("Premium support"),
                     _(
-                        "Don’t be waiting with your work paused."<br>
-                        "This guarantees you the answers the NBD at the latest."
+                        "Don’t be waiting with your work paused."
+                        < br
+                        > "This guarantees you the answers the NBD at the latest."
                     ),
                     "img/Support-Premium.svg",
                     _("Become Premium"),
@@ -540,8 +542,9 @@ class Service(models.Model):
                     "extended",
                     _("Extended support"),
                     _(
-                        "Don’t be Basic, get a worry-free package."<br>
-                        "We will manage upgrades for you."
+                        "Don’t be Basic, get a worry-free package."
+                        < br
+                        > "We will manage upgrades for you."
                     ),
                     "img/Support-Plus.svg",
                     _("Stay updated and supported"),
@@ -552,8 +555,9 @@ class Service(models.Model):
                     "backup",
                     _("Backup service"),
                     _(
-                        "Easily put your backups in a safe place."<br>
-                        "Encrypted and automatic backups, always available."
+                        "Easily put your backups in a safe place."
+                        < br
+                        > "Encrypted and automatic backups, always available."
                     ),
                     "img/Support-Backup.svg",
                     _("Backup daily"),
