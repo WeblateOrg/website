@@ -53,8 +53,8 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name="subscription",
             options={
-                "verbose_name": "Customer subscription",
-                "verbose_name_plural": "Customer subscription",
+                "verbose_name": "Customer’s subscription",
+                "verbose_name_plural": "Customer’s subscriptions",
             },
         ),
     ]
