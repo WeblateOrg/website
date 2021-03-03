@@ -4,7 +4,8 @@
 	<section class="pricing">
     	<div class="row">
             <h2 class="section-title">{% trans "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you" %}</h2>
-            <div class="box box-tabs">
+            <div class="flex">
+              <div class="box box-tabs">
                 <h3>{% trans "Premium Cloud" %}</h3>
                 <p>{% trans "for ease and comfort" %}</p>
                 <ul class="pricing-tabs">
@@ -117,8 +118,8 @@
                         <div class="box-price"><span>{% blocktrans with percent=17 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 2999 | price_format }}</strong><br />{% filter lower %}{% trans "Yearly" %}{% endfilter %}</div>
                     </div>
                 </div>
-            </div>
-            <div class="box">
+              </div>
+              <div class="box">
                 <h3>{% trans "Self-hosted" context "Hosting plan" %}</h3>
                 <p>{% trans "for complete control" %}</p>
 
@@ -141,8 +142,8 @@
                     </tr>
                 </table>
                 <div class="box-price">{% url 'support' as url %}<strong>{% trans "Gratis" %}</strong><br />{% blocktrans %}with paid <a href="{{ url }}">support</a>{% endblocktrans %}</div>
-            </div>
-            <div class="box">
+              </div>
+              <div class="box">
                 <h3>{% trans "Gratis Weblate" %}</h3>
                 <p>{% trans "for libre projects" %}</p>
 
@@ -165,6 +166,7 @@
                     </tr>
                 </table>
                 <div class="box-price"><strong>{% trans "Gratis" %}</strong><br />{% blocktrans with url="https://hosted.weblate.org/hosting/" %}upon <a href="{{ url }}">request</a>{% endblocktrans %}</div>
+              </div>
             </div>
             <div class="clear"></div>
             <a href="{% url 'hosting' %}" class="button">{% trans "Compare all plans" %}</a>
