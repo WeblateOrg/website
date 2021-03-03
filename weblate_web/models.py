@@ -507,14 +507,17 @@ class Service(models.Model):
             return timezone.now()
 
     def get_suggestions(self):
+        result = []
         if not self.support_subscriptions.exists():
-            yield (
-                "basic",
-                _("Basic support"),
-                _("Never get hold back by a problem."),
-                _("Set priority for all your questions and reported bugs."),
-                "img/Support-Basic.svg",
-                _("Get support"),
+            result.append(
+                (
+                    "basic",
+                    _("Basic support"),
+                    _("Never get hold back by a problem."),
+                    _("Set priority for all your questions and reported bugs."),
+                    "img/Support-Basic.svg",
+                    _("Get support"),
+                )
             )
 
         if (
@@ -522,34 +525,41 @@ class Service(models.Model):
             and not self.shared_subscriptions.exists()
         ):
             if not self.premium_subscriptions.exists():
-                yield (
-                    "premium",
-                    _("Premium support"),
-                    _("Don’t be waiting with your work paused."),
-                    _("This guarantees you the answers the NBD at the latest."),
-                    "img/Support-Premium.svg",
-                    _("Be Premium"),
+                result.append(
+                    (
+                        "premium",
+                        _("Premium support"),
+                        _("Don’t be waiting with your work paused."),
+                        _("This guarantees you the answers the NBD at the latest."),
+                        "img/Support-Premium.svg",
+                        _("Be Premium"),
+                    )
                 )
 
             if not self.extended_subscriptions.exists():
-                yield (
-                    "extended",
-                    _("Extended support"),
-                    _("Don’t be just Basic, get a worry-free package."),
-                    _("We will manage upgrades for you."),
-                    "img/Support-Plus.svg",
-                    _("Stay updated"),
+                result.append(
+                    (
+                        "extended",
+                        _("Extended support"),
+                        _("Don’t be just Basic, get a worry-free package."),
+                        _("We will manage upgrades for you."),
+                        "img/Support-Plus.svg",
+                        _("Stay updated"),
+                    )
                 )
 
             if not self.backup_subscriptions.exists():
-                yield (
-                    "backup",
-                    _("Backup service"),
-                    _("Easily put your backups in a safe place."),
-                    _("Encrypted and automatic backups, always available."),
-                    "img/Support-Backup.svg",
-                    _("Backup daily"),
+                result.append(
+                    (
+                        "backup",
+                        _("Backup service"),
+                        _("Easily put your backups in a safe place."),
+                        _("Encrypted and automatic backups, always available."),
+                        "img/Support-Backup.svg",
+                        _("Backup daily"),
+                    )
                 )
+        return result
 
     def update_status(self):
         status = "community"
