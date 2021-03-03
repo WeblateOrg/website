@@ -56,11 +56,13 @@
                 </div>
                 <div class="related-posts">
                     <div class="section-title">{% trans "Related Articles" %}</div>
-                    {% for item in related %}
-                    <div class="article">
+                    <div class="articles">
+                      {% for item in related %}
+                      <div class="article">
                         {% include "snippets/article.html" with object=item %}
+                      </div>
+                      {% endfor %}
                     </div>
-                    {% endfor %}
                     <div class="clear"></div>
                     <a href="{% url 'news' %}" class="button center">{% trans "Back to blog" %}</a>
                 </div>
