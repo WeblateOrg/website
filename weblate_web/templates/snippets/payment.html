@@ -29,7 +29,7 @@
         <t>{% trans "yearly" %}</t>
         {% endif %}</span> <br />
     {% if payment.start %}
-        <div class="payment-font-size">{% blocktrans with created=payment.start|date_format expires=payment.end|date_format context "Date range" %}{{ created }} — {{ expires }}{% endblocktrans %}</div>
+        <div class="payment-font-size">{% date_range payment.start payment.end %}</div>
     {% endif %}
     <div class="clear"></div>
 </div>
