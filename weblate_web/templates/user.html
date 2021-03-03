@@ -108,9 +108,11 @@
             <div class="form-line user-text-formatting user-text-formatting-payment">
                 <div class="line-left">{% trans "Payments" %}</div>
                 <div class="line-right ">
+                <table class="payments-table">
                 {% for payment in donation.list_payments %}
                 {% include "snippets/payment.html" %}
                 {% endfor %}
+                </table>
                 </div>
                 </div>
             </div>

@@ -4,32 +4,35 @@
 {% load static %}
 {% load prices %}
 
-<div class="payment-listing">
-    <div class="float-right payment-font-size">
-        {{ payment.get_amount_display|price_format:payment.get_currency_display }}<span>
-            {% if payment.invoice %}
-            <div class="float-right payment-font-size">
-                <a href="{% url 'user-invoice' pk=payment.pk %}" class="link">{{ payment.invoice_filename }}<span><img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" /></span></a>
-            </div>
-            {% elif payment.state != 5 %}
-            <div class="float-right">
-                {% if payment.is_waiting_for_user %}
-                    <a class="link" href="{{ payment.get_absolute_url }}">{{ payment.get_state_display }}</a>
-                {% elif payment.details.reject_reason %}
-                    {{ payment.get_state_display }}: {{ payment.details.reject_reason }}
-                {% else %}
-                    {{ payment.get_state_display }}
-                {% endif %}
-            </div>
-            {% endif %}</span>
-    </div>
-    {{ payment.description }} —<span> {% if payment.end|days_diff_from_today < 365 %}
-        <t>{% trans "monthly" %}</t>
-        {% else %}
-        <t>{% trans "yearly" %}</t>
-        {% endif %}</span> <br />
+<tr>
+  <td>
+    <span class="description">
+      {{ payment.description }}
+    </span>
     {% if payment.start %}
-        <div class="payment-font-size">{% date_range payment.start payment.end %}</div>
+      <br />
+      {% date_range payment.start payment.end %}
     {% endif %}
-    <div class="clear"></div>
-</div>
+  </td>
+  <td>
+  </td>
+  <td>
+    {{ payment.get_amount_display|price_format:payment.get_currency_display }}
+  </td>
+  <td>
+    {% if payment.invoice %}
+      <a href="{% url 'user-invoice' pk=payment.pk %}" class="link invoice-link">
+        {{ payment.invoice_filename }}
+        <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+      </a>
+    {% elif payment.state != 5 %}
+      {% if payment.is_waiting_for_user %}
+        <a class="link invoice-link" href="{{ payment.get_absolute_url }}">{{ payment.get_state_display }}</a>
+      {% elif payment.details.reject_reason %}
+        {{ payment.get_state_display }}: {{ payment.details.reject_reason }}
+      {% else %}
+        {{ payment.get_state_display }}
+      {% endif %}
+    {% endif %}
+  </td>
+</tr>

@@ -178,11 +178,13 @@
                 <div class="form-line service-text-formatting">
                     <div class="line-left">{% trans "Payments" %}</div>
                     <div class="line-right">
+                    <table class="payments-table">
                     {% for subscription in subscriptions %}
                         {% for payment in subscription.list_payments %}
                         {% include "snippets/payment.html" %}
                         {% endfor %}
                     {% endfor %}
+                    </table>
                     </div>
                     <div class="clear"></div>
                 </div>
