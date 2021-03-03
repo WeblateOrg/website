@@ -33,7 +33,9 @@
             <div class="payment-form payment-padding">
                 <div class="form-line donation-left-line">
                     <div class="line-left get-reward-left-line">{{ donation.get_reward_display }}</div>
-                    <div class="reward-line-right">{% trans "Your reward" %}</div>
+                    {% if donation.reward %}
+                      <div class="reward-line-right">{% trans "Your reward" %}</div>
+                    {% endif %}
                 </div>
                 <div class="form-line custom-gradient"></div>
                 <div class="inner-content">
