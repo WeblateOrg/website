@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+"""Imports short date formats from Django."""
+
+from glob import glob
+from importlib import import_module
+
+from translate.storage.pypo import pofile
+
+for name in glob("locale/*/LC_MESSAGES/django.po"):
+    code = name.split("/")[1]
+
+    try:
+        module = import_module(f"django.conf.locale.{code}.formats")
+    except ImportError:
+        continue
+
+    try:
+        short_date_format = module.SHORT_DATE_FORMAT
+    except AttributeError:
+        continue
+
+    store = pofile.parsefile(name)
+    unit = store.findunit("d M Y")
+    if not unit.target:
+        print(f"Updating {name} to {short_date_format}")
+        unit.target = short_date_format
+        store.save()
