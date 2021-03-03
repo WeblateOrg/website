@@ -18,6 +18,8 @@
 #
 from django.template import Library
 from django.utils import formats, timezone
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 from django.utils.translation import pgettext
 
 register = Library()
@@ -48,3 +50,19 @@ def days_diff_from_today(end):
 @register.filter
 def date_format(value):
     return formats.date_format(value, pgettext("Date format", "d M Y"))
+
+
+@register.simple_tag
+def date_range(created, expires, bold: bool = False):
+    created = escape(date_format(created))
+    expires = escape(date_format(expires))
+    if bold:
+        expires = f"<strong>{expires}</strong>"
+
+    return mark_safe(
+        escape(pgettext("Date range", "%(created)s — %(expires)s"))
+        % {
+            "created": created,
+            "expires": expires,
+        }
+    )

@@ -49,7 +49,7 @@
                 {% endif %}
                 <div class="form-line user-text-formatting">
                     <div class="line-left">{% trans "Active" %}</div>
-                    <div class="line-right user-text-formatting-donation">{{ donation.expires|date_format }} <em>—</em> <span>{{ donation.created|date_format }}</span>
+                    <div class="line-right user-text-formatting-donation">{% date_range donation.created donation.expires True %}
                         {% with days_from_today_donation=donation.expires|days_diff_from_today %}
                         {% if days_from_today_donation < 30 %}
                         {% if days_from_today_donation < 2 and days_from_today_donation >= 0 %}
