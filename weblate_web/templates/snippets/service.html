@@ -12,14 +12,14 @@
             {% with days_from_today=subscription.expires|days_diff_from_today %}
             {% if days_from_today < 30 %}
             {% if days_from_today < 2 and days_from_today >= 0 %}
-            <t class="orange">{{ days_from_today}} {% trans "day remaining" %}</t>
+            <t class="orange">{{ days_from_today | days_remaining}}</t>
             {% elif days_from_today < 0  %}
             <t class="orange">{% trans "Expired" %}</t>
             {% else %}
-            <t class="orange">{{ days_from_today}} {% trans "days remaining" %}</t>
+            <t class="orange">{{ days_from_today | days_remaining}}</t>
             {% endif %}
             {% else %}
-            <t class="grey">{{ days_from_today}} {% trans "days remaining" %}</t>
+            <t class="grey">{{ days_from_today | days_remaining}}</t>
             {% endif %}
             {% endwith %}
             {% endfor %}
@@ -117,14 +117,14 @@
                                     {% with days_from_today=subscription.expires|days_diff_from_today %}
                                     {% if days_from_today < 30 %}
                                     {% if days_from_today < 2 and days_from_today >= 0 %}
-                                    <t class="pl-1 orange">{{ days_from_today}} {% trans "day remaining" %}</t>
+                                    <t class="pl-1 orange">{{ days_from_today | days_remaining}}</t>
                                     {% elif days_from_today < 0  %}
                                     <t class="pl-1 orange">Expired</t>
                                     {% else %}
-                                    <t class="pl-1 orange">{{ days_from_today}} {% trans "days remaining" %}</t>
+                                    <t class="pl-1 orange">{{ days_from_today | days_remaining}}</t>
                                     {% endif %}
                                     {% else %}
-                                    <t class="pl-1 grey">{{ days_from_today}} {% trans "days remaining" %}</t>
+                                    <t class="pl-1 grey">{{ days_from_today | days_remaining}}</t>
                                     {% endif %}
                                     {% endwith %}
                                 </span>

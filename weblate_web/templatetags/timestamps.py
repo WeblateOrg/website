@@ -20,7 +20,7 @@ from django.template import Library
 from django.utils import formats, timezone
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
-from django.utils.translation import pgettext
+from django.utils.translation import ngettext, pgettext
 
 register = Library()
 
@@ -66,3 +66,8 @@ def date_range(created, expires, bold: bool = False):
             "expires": expires,
         }
     )
+
+
+@register.filter
+def days_remaining(value):
+    return ngettext("%d day remaining", "%d days remaining", value) % value

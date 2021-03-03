@@ -53,14 +53,14 @@
                         {% with days_from_today_donation=donation.expires|days_diff_from_today %}
                         {% if days_from_today_donation < 30 %}
                         {% if days_from_today_donation < 2 and days_from_today_donation >= 0 %}
-                        <t class="orange">{{ days_from_today_donation}} {% trans "day remaining" %}</t>
+                        <t class="orange">{{ days_from_today_donation | days_remaining}}</t>
                         {% elif days_from_today_donation < 0  %}
                         <t class="pl-1 orange">{% trans "Expired" %}</t>
                         {% else %}
-                        <t class="orange">{{ days_from_today_donation}} {% trans "days remaining" %}</t>
+                        <t class="orange">{{ days_from_today_donation | days_remaining}}</t>
                         {% endif %}
                         {% else %}
-                        <t class="grey">{{ days_from_today_donation}} {% trans "days remaining" %}</t>
+                        <t class="grey">{{ days_from_today_donation | days_remaining}}</t>
                         {% endif %}
                         {% endwith %}
                     </div>
