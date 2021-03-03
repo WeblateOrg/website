@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2021-03-03 16:05+0100\n"
+"POT-Creation-Date: 2021-03-03 16:14+0100\n"
 "PO-Revision-Date: 2021-03-02 12:52+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/weblate/website/"
@@ -2675,25 +2675,11 @@ msgstr "kur <a href=\"%(url)s\">kërkohet</a>"
 msgid "Compare all plans"
 msgstr "Krahasoni krejt planet"
 
-#: weblate_web/templates/snippets/service.html:15
-#: weblate_web/templates/snippets/service.html:120
-#: weblate_web/templates/user.html:56
-msgid "day remaining"
-msgstr "ditë e mbetur"
-
 #: weblate_web/templates/snippets/service.html:17
 #: weblate_web/templates/snippets/service.html:153
 #: weblate_web/templates/user.html:58 weblate_web/templates/user.html:72
 msgid "Expired"
 msgstr "I skaduar"
-
-#: weblate_web/templates/snippets/service.html:19
-#: weblate_web/templates/snippets/service.html:22
-#: weblate_web/templates/snippets/service.html:124
-#: weblate_web/templates/snippets/service.html:127
-#: weblate_web/templates/user.html:60 weblate_web/templates/user.html:63
-msgid "days remaining"
-msgstr "ditë të mbetura"
 
 #: weblate_web/templates/snippets/service.html:33
 msgid "Users"
@@ -3224,6 +3210,14 @@ msgctxt "Date range"
 msgid "%(created)s — %(expires)s"
 msgstr "%(created)s<em>—</em>%(expires)s"
 
+#: weblate_web/templatetags/timestamps.py:73
+#, fuzzy, python-format
+#| msgid "day remaining"
+msgid "%d day remaining"
+msgid_plural "%d days remaining"
+msgstr[0] "ditë e mbetur"
+msgstr[1] "ditë e mbetur"
+
 #: weblate_web/views.py:84
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
@@ -3265,6 +3259,9 @@ msgstr "Faleminderit për dhurimin tuaj."
 #: weblate_web/views.py:616
 msgid "User not found!"
 msgstr "Përdorues që s’u gjet!"
+
+#~ msgid "days remaining"
+#~ msgstr "ditë të mbetura"
 
 #~ msgid "User profile"
 #~ msgstr "Profil përdoruesi"
