@@ -112,7 +112,7 @@
                                 <span>{% trans "yearly" %}</span>
                                 {% endif %}</p>
                                 {% endwith %}
-                            <t>{{ subscription.created|date:"d M Y" }}<em>—</em><strong>{{ subscription.expires|date:"d M Y" }}</strong>
+                            <t>{{ subscription.created|date:"d M Y" }} <em>—</em> <strong>{{ subscription.expires|date:"d M Y" }}</strong>
                                 <span>
                                     {% with days_from_today=subscription.expires|days_diff_from_today %}
                                     {% if days_from_today < 30 %}
