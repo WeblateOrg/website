@@ -2,11 +2,11 @@
 {% load humanize %}
 {% load date_diff %}
 {% load static %}
-
+{% load prices %}
 
 <div class="payment-listing">
     <div class="float-right payment-font-size">
-        {{ payment.get_amount_display|intcomma }} {{ payment.get_currency_display }}<span>
+        {{ payment.get_amount_display|price_format:payment.get_currency_display }}<span>
             {% if payment.invoice %}
             <div class="float-right payment-font-size">
                 <a href="{% url 'user-invoice' pk=payment.pk %}" class="link">{{ payment.invoice_filename }}<span><img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" /></span></a>

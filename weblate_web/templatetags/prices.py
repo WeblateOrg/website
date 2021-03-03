@@ -25,7 +25,17 @@ register = Library()
 
 @register.filter
 def price_format(value, currency="€"):
-    return pgettext("Price display", "%(currency)s %(price)s") % {
+    if currency == "EUR":
+        currency = "€"
+    price = number_format(value, force_grouping=True)
+    if len(currency) > 1:
+        # Translators: currency is a currency code here, for example CZK
+        return pgettext("Price display", "%(currency)s %(price)s") % {
+            "currency": currency,
+            "price": price,
+        }
+    # Translators: currency is a currency symbol here, for example €
+    return pgettext("Price display", "%(currency)s%(price)s") % {
         "currency": currency,
-        "price": number_format(value, force_grouping=True),
+        "price": price,
     }
