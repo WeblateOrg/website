@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load humanize %}
-{% load date_diff %}
+{% load timestamps %}
 {% load static %}
 {% load prices %}
 
@@ -23,13 +23,13 @@
             </div>
             {% endif %}</span>
     </div>
-    {{ payment.description }} <em>—</em><span> {% if payment.end|days_diff_from_today < 365 %}
+    {{ payment.description }} —<span> {% if payment.end|days_diff_from_today < 365 %}
         <t>{% trans "monthly" %}</t>
         {% else %}
         <t>{% trans "yearly" %}</t>
         {% endif %}</span> <br />
     {% if payment.start %}
-        <div class="payment-font-size">{% blocktrans with created=payment.start|date:"d M Y" expires=payment.end|date:"d M Y" context "Date range" %}{{ created }}<em>—</em>{{ expires }}{% endblocktrans %}</div>
+        <div class="payment-font-size">{% blocktrans with created=payment.start|date_format expires=payment.end|date_format context "Date range" %}{{ created }} — {{ expires }}{% endblocktrans %}</div>
     {% endif %}
     <div class="clear"></div>
 </div>

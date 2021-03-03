@@ -17,7 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 from django.template import Library
-from django.utils import timezone
+from django.utils import formats, timezone
 from django.utils.translation import pgettext
 
 register = Library()
@@ -38,3 +38,13 @@ def recently(value):
     if delta.seconds > 2000:
         return pgettext("123 translations ...", "recently")
     return pgettext("123 translations ...", "just now")
+
+
+@register.filter
+def days_diff_from_today(end):
+    return (end - timezone.now()).days + 1
+
+
+@register.filter
+def date_format(value):
+    return formats.date_format(value, pgettext("Date format", "d M Y"))
