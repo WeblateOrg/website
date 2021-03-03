@@ -10,15 +10,16 @@
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% trans "User profile" %}</h1>
-            <div class="page-desc">
-                <a href="{% url 'logout' %}" class="button inline">{% trans "Log out" %}</a>
-                <a href="https://hosted.weblate.org/" class="button inline border rev" target="_blank">{% trans "Use Weblate" %}</a>
-            </div>
             {% with services=user.service_set.all %}
             {% if services %}
             <div class="updated-service-title">
-                <h1>{% trans "My services" %}<span><a href="https://hosted.weblate.org/accounts/profile/">{% trans "See user profile " %}<img src="{% static "img/ArrowR.png" %}" alt=">" /></a></span></h1>
+              <h1>
+                {% trans "My services" %}
+              </h1>
+              <div class="page-desc">
+                  <a href="{% url 'logout' %}" class="button inline">{% trans "Support portal" %}</a>
+                  <a href="https://hosted.weblate.org/accounts/profile/" class="button inline border rev" target="_blank">{% trans "See user profile" %}</a>
+              </div>
             </div>
             {% for service in services %}
             {% include "snippets/service.html" %}
