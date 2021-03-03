@@ -25,21 +25,27 @@
                 <p>{% trans "Recurring donations facilitate sustainable Weblate development, and even the smallest amount is put to good use. Repeated appreciation helps in keeping the project sustainable long term. Please consider this option if you are hosting Weblate yourself without a support contract." %}</p>
                 <a href="{% url 'donate-new' %}" class="button inline">{% trans "Activate donation" %}</a>
             </div>
-            <div class="donations-cols">
+            <div class="donations-cols flex">
                 <div class="col">
                     <div class="title">{% trans "Name in the list of supporters" %}</div>
-                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="format-item">{{ 100 | price_format }} <span>{% trans "annually" %}</span></a>
-                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
+                    <div class="badges">
+                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="format-item">{{ 100 | price_format }} <span>{% trans "annually" %}</span></a>
+                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
+                    </div>
                 </div>
                 <div class="col">
                     <div class="title">{% trans "Link in the list of supporters" %}</div>
-                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="format-item">{{ 400 | price_format }} <span>{% trans "annually" %}</span></a>
-                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% trans "Donate" %}</a>
+                    <div class="badges">
+                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="format-item">{{ 400 | price_format }} <span>{% trans "annually" %}</span></a>
+                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% trans "Donate" %}</a>
+                    </div>
                 </div>
                 <div class="col">
                     <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
-                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="format-item">{{ 800 | price_format }} <span>{% trans "annually" %}</span></a>
-                    <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% trans "Donate" %}</a>
+                    <div class="badges">
+                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="format-item">{{ 800 | price_format }} <span>{% trans "annually" %}</span></a>
+                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% trans "Donate" %}</a>
+                    </div>
                 </div>
             </div>
         </div>
