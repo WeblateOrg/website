@@ -85,7 +85,7 @@
                         {% if donation.active and donation.payment_obj.recurring %}
                         <form class="form-inline" method="post" action="{% url "donate-disable" pk=donation.pk %}">
                         {% csrf_token %}
-                        <input type="submit" class="button button-med-140 inline" value="{% trans "Turn off renewal" %}">
+                        <input type="submit" class="button button-med-140 inline border rev" value="{% trans "Turn off renewal" %}">
                         </form>
                         {% endif %}
                     </div>
