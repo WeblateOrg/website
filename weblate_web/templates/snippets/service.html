@@ -149,26 +149,27 @@
                     <div class="form-line service-text-formatting">
                         <div class="line-left">{% trans "Billing" %}</div>
                         <div class="line-right">
+                            {% if subscription.active and subscription.payment_obj.recurring %}
+                            <form class="form-float" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">
+                            {% csrf_token %}
+                            <input type="submit" class="link" value="{% trans "Turn off renewal" %}">
+                            </form>
+                            {% endif %}
                             {% if not subscription.active %}
                             {% trans "Expired" %}
                             {% elif subscription.payment_obj.recurring %}
-                            {% trans "Automatic renewal" %}<br />
+                            {% trans "Automatic renewal" %}
                             {% else %}
                             {% trans "No renewal" %}
                             {% endif %}
+                            <br />
                             <form class="form-inline" method="post" action="{% url "subscription-pay" pk=subscription.pk %}">
                             {% csrf_token %}
                             <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
                             {% if subscription.yearly_package %}
-                            <input type="submit" class="button small inline" value="{% trans "Upgrade to annual" %}" name="switch_yearly"><span>{% trans "and" %}<strong>{% trans "save 20%" %}/strong></span>
+                            <input type="submit" class="button small inline" value="{% trans "Upgrade to annual" %}" name="switch_yearly"><span>{% blocktrans %}and <strong>save 20%</strong>.{% endblocktrans %}</span>
                             {% endif %}
                             </form>
-                            {% if subscription.payment_obj.recurring %}
-                            <form class="form-inline" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">
-                            {% csrf_token %}
-                            <input type="submit" class="button small inline border rev" value="{% trans "Turn off renewal" %}">
-                            </form>
-                            {% endif %}
                         </div>
                         <div class="clear"></div>
                     </div>

@@ -248,11 +248,16 @@ header {
 }
 
 a,
+input.link,
 input.button {
   cursor: pointer;
   transition: all 300ms linear;
   -webkit-transition: all 300ms linear;
   text-decoration: none;
+}
+input.link {
+  background: none;
+  border: none;
 }
 
 img {
@@ -2926,6 +2931,7 @@ h2.section-title.hp-style {
 .quick-installation p a,
 .donations-cols.download-cols .col li a,
 .libre-hosting a,
+input.link,
 a.link {
   color: #2eccaa;
   text-decoration: underline;
@@ -2934,6 +2940,7 @@ a.link {
 .quick-installation p a:hover,
 .donations-cols.download-cols .col li a:hover,
 .libre-hosting a:hover,
+input.link:hover,
 a.link:hover {
   text-decoration: none;
 }
@@ -3446,6 +3453,9 @@ footer .footer-right {
 
 .form-inline {
   display: inline;
+}
+.form-float {
+  float: right;
 }
 
 .tos {
@@ -4531,11 +4541,6 @@ button.user-img {
   color: #2c3548;
   padding-top: 15x;
   padding-bottom: 20px;
-}
-
-.user-text-formatting-donation {
-  width: unset !important;
-  margin-right: 0px !important;
 }
 
 .user-text-formatting-donation span {

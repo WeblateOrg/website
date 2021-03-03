@@ -78,16 +78,24 @@
                     </div>
 
                     <div class="line-right user-text-formatting-donation">
+                        {% if donation.active and donation.payment_obj.recurring %}
+                        <form class="form-float" method="post" action="{% url "donate-disable" pk=donation.pk %}">
+                        {% csrf_token %}
+                        <input type="submit" class="link" value="{% trans "Turn off renewal" %}">
+                        </form>
+                        {% endif %}
+                        {% if not donation.active %}
+                        {% trans "Expired" %}
+                        {% elif donation.payment_obj.recurring %}
+                        {% trans "Automatic renewal" %}
+                        {% else %}
+                        {% trans "No renewal" %}
+                        {% endif %}
+                        <br />
                         <form class="form-inline" method="post" action="{% url "donate-pay" pk=donation.pk %}">
                         {% csrf_token %}
                         <input type="submit" class="button button-med-140 inline" value="{% trans "Renew now" %}">
                         </form>
-                        {% if donation.active and donation.payment_obj.recurring %}
-                        <form class="form-inline" method="post" action="{% url "donate-disable" pk=donation.pk %}">
-                        {% csrf_token %}
-                        <input type="submit" class="button button-med-140 inline border rev" value="{% trans "Turn off renewal" %}">
-                        </form>
-                        {% endif %}
                     </div>
                     <div class="clear"></div>
                 </div>
