@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import tempfile
@@ -767,6 +768,51 @@ class APITest(TestCase):
         )
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
+
+    def test_support_discovery_projects(self):
+        service = self.test_support()
+        service = Service.objects.get(pk=service.pk)
+        self.assertFalse(service.discoverable)
+        self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "discoverable": "1",
+                "public_projects": json.dumps(
+                    [
+                        {
+                            "name": "Prj1",
+                            "url": "/projects/p/",
+                            "web": "https://weblate.org/",
+                        }
+                    ]
+                ),
+            },
+            HTTP_USER_AGENT="weblate/1.2.3",
+        )
+        self.assertEqual(service.project_set.count(), 1)
+        project = service.project_set.get()
+        self.assertEqual(project.name, "Prj1")
+        self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "discoverable": "1",
+                "public_projects": json.dumps(
+                    [
+                        {
+                            "name": "Prj2",
+                            "url": "/projects/p/",
+                            "web": "https://weblate.org/",
+                        }
+                    ]
+                ),
+            },
+            HTTP_USER_AGENT="weblate/1.2.3",
+        )
+        self.assertEqual(service.project_set.count(), 1)
+        project = service.project_set.get()
+        self.assertEqual(project.name, "Prj2")
 
     def test_user(self):
         user = User.objects.create(username="testuser", password="testpassword")

@@ -17,6 +17,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import json
+
 import django.views.defaults
 from django.conf import settings
 from django.contrib import messages
@@ -199,6 +201,23 @@ def api_support(request):
     )
     service.update_status()
     service.create_backup()
+    if "public_projects" in request.POST:
+        current_projects = set(service.project_set.values_list("name", "url", "web"))
+        for project in json.loads(request.POST["public_projects"]):
+            # Skip unexpected data
+            if set(project) != {"name", "web", "url"}:
+                continue
+            item = (project["name"], project["url"], project["web"])
+            # Non-changed project
+            if item in current_projects:
+                current_projects.remove(item)
+                continue
+            # New project
+            service.project_set.create(**project)
+        # Remove stale projects
+        for name, url, web in current_projects:
+            service.project_set.filter(name=name, url=url, web=web).delete()
+
     return JsonResponse(
         data={
             "name": service.status,

@@ -744,3 +744,14 @@ class Report(models.Model):
         if self.service.discoverable != self.discoverable:
             self.service.discoverable = self.discoverable
             self.service.save(update_fields=["discoverable"])
+
+
+class Project(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
+
+    name = models.CharField(max_length=60, db_index=True)
+    url = models.CharField(max_length=120)
+    web = models.URLField()
+
+    def __str__(self):
+        return f"{self.service.site_title}: {self.name}"
