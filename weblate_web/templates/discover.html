@@ -31,10 +31,13 @@
                   </div>
                   <div class="content">
                     <h2><a href="{{ service.site_url }}" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
-                    {% if service.discover_text %}
-                      <p lang="en" dir="ltr">{{ service.discover_text }}</p>
-                    {% endif %}
                     {% with projects=service.project_set.all %}
+                      <div class="date">
+                          {% blocktrans count count=projects|length %}{{ count }} project{% plural %}{{ count }} projects{% endblocktrans %}
+                      </div>
+                      {% if service.discover_text %}
+                        <p lang="en" dir="ltr">{{ service.discover_text }}</p>
+                      {% endif %}
                       <p lang="en" dir="ltr">
                         {% for project in service.project_set.all|slice:":20" %}
                           <a href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
