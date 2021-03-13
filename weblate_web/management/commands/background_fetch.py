@@ -17,15 +17,28 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.core.management.base import BaseCommand
+from datetime import timedelta
 
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from weblate_web.models import Service
 from weblate_web.remote import get_activity, get_changes, get_contributors
 
 
 class Command(BaseCommand):
     help = "refreshes remote data"
 
+    def disable_stale_services(self):
+        threshold = timezone.now() - timedelta(days=3)
+        for service in Service.objects.filter(discoverable=True):
+            if service.last_report.timestamp > threshold:
+                service.discoverable = False
+                service.save(update_fields=["discoverable"])
+                self.stdout.write(f"Disabling disoverable for {service}")
+
     def handle(self, *args, **options):
+        self.disable_stale_services()
         get_contributors(True)
         get_activity(True)
         get_changes(True)
