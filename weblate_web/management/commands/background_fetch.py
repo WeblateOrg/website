@@ -32,7 +32,7 @@ class Command(BaseCommand):
     def disable_stale_services(self):
         threshold = timezone.now() - timedelta(days=3)
         for service in Service.objects.filter(discoverable=True):
-            if service.last_report.timestamp > threshold:
+            if service.last_report.timestamp < threshold:
                 service.discoverable = False
                 service.save(update_fields=["discoverable"])
                 self.stdout.write(f"Disabling disoverable for {service}")
