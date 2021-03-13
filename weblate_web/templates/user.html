@@ -40,10 +40,13 @@
                 <div class="form-line custom-gradient"></div>
                 <div class="inner-content">
                     <div class="inner-content-child-width">
-                {% if donation.link_url %}
+                {% if donation.link_url or donation.reward %}
                 <div class="form-line user-text-formatting">
                     <div class="line-left">{% trans "Link" %}</div>
-                    <div class="line-right user-text-formatting-donation">{{ donation.link_url }}</div>
+                    <div class="line-right user-text-formatting-donation">
+                      {{ donation.link_url }}
+                      <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit reward" %}</a>
+                    </div>
                     <div class="clear"></div>
                 </div>
                 {% endif %}
