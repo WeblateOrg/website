@@ -396,11 +396,7 @@ class Service(models.Model):
         verbose_name_plural = "Customer services"
 
     def __str__(self):
-        if self.last_report:
-            url = self.last_report.site_url
-        else:
-            url = ""
-        return f"{self.get_status_display()}: {self.user_emails}: {url}"
+        return f"{self.get_status_display()}: {self.user_emails}: {self.site_url}"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
