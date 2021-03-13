@@ -387,6 +387,9 @@ class Service(models.Model):
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
     discoverable = models.BooleanField(default=False)
+    site_url = models.URLField(default="")
+    site_title = models.TextField(default="Weblate")
+    site_version = models.TextField(default="")
 
     class Meta:
         verbose_name = "Customer service"
@@ -406,24 +409,6 @@ class Service(models.Model):
     @property
     def needs_token(self):
         return self.status not in ("hosted", "shared", "community")
-
-    @cached_property
-    def site_title(self):
-        if self.last_report:
-            return self.last_report.site_title
-        return "Weblate"
-
-    @cached_property
-    def site_url(self):
-        if self.last_report:
-            return self.last_report.site_url
-        return ""
-
-    @cached_property
-    def site_version(self):
-        if self.last_report:
-            return self.last_report.version
-        return ""
 
     def projects_limit(self):
         report = self.last_report
@@ -741,9 +726,13 @@ class Report(models.Model):
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         super().save(force_insert, force_update, using, update_fields)
-        if self.service.discoverable != self.discoverable:
-            self.service.discoverable = self.discoverable
-            self.service.save(update_fields=["discoverable"])
+        self.service.discoverable = self.discoverable
+        self.service.site_url = self.site_url
+        self.service.site_title = self.site_title
+        self.service.site_version = self.version
+        self.service.save(
+            update_fields=["discoverable", "site_url", "site_title", "site_version"]
+        )
 
 
 class Project(models.Model):
