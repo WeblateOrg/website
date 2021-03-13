@@ -744,9 +744,29 @@ class APITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], expected)
+        return service
 
     def test_support_expired(self):
         self.test_support(delta=-1, expected="community")
+
+    def test_support_discovery(self):
+        service = self.test_support()
+        service = Service.objects.get(pk=service.pk)
+        self.assertFalse(service.discoverable)
+        self.client.post(
+            "/api/support/",
+            {"secret": service.secret, "discoverable": "1"},
+            HTTP_USER_AGENT="weblate/1.2.3",
+        )
+        service = Service.objects.get(pk=service.pk)
+        self.assertTrue(service.discoverable)
+        self.client.post(
+            "/api/support/",
+            {"secret": service.secret},
+            HTTP_USER_AGENT="weblate/1.2.3",
+        )
+        service = Service.objects.get(pk=service.pk)
+        self.assertFalse(service.discoverable)
 
     def test_user(self):
         user = User.objects.create(username="testuser", password="testpassword")

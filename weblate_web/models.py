@@ -386,6 +386,7 @@ class Service(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
+    discoverable = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Customer service"
@@ -727,6 +728,7 @@ class Report(models.Model):
     languages = models.IntegerField(default=0)
     source_strings = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
+    discoverable = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Weblate report"
@@ -734,3 +736,11 @@ class Report(models.Model):
 
     def __str__(self):
         return self.site_url
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(force_insert, force_update, using, update_fields)
+        if self.service.discoverable != self.discoverable:
+            self.service.discoverable = self.discoverable
+            self.service.save(update_fields=["discoverable"])
