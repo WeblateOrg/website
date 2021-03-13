@@ -26,7 +26,7 @@ from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
 
 from weblate_web.data import EXTENSIONS, VERSION
-from weblate_web.models import Donation
+from weblate_web.models import Donation, Service
 from weblate_web.remote import get_activity, get_changes, get_contributors
 
 
@@ -75,4 +75,7 @@ def weblate_web(request):
             language_urls[language_col : language_col * 2],
             language_urls[language_col * 2 :],
         ],
+        "discoverable_services": Service.objects.filter(
+            discoverable=True
+        ).prefetch_related("project_set"),
     }
