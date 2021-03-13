@@ -23,7 +23,7 @@
 
             <div class="articles archive">
               {% for service in discoverable_services %}
-                <div class="article">
+                <div class="article" id="d{{ service.pk }}">
                   <div class="img">
                     <a href="{{ service.site_url }}">
                       <img src="{% if service.image %}{{ service.image.url }}{% else %}{{ service.site_url }}/exports/og.png{% endif %}" />
