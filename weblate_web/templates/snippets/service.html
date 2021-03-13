@@ -104,6 +104,7 @@
                     <div class="line-right">
                       {% if service.discoverable %}
                         <a class="link" href="{% url 'discover' %}#d{{ service.pk }}">{% trans "View your listing" %}</a>
+                        <a class="button small inline" href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
                       {% endif %}
                         <p class="text-muted">
                             {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate server. Read how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}

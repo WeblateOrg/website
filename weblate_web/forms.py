@@ -21,7 +21,7 @@ from django import forms
 
 from payments.backends import list_backends
 from payments.models import RECURRENCE_CHOICES
-from weblate_web.models import REWARDS, Donation
+from weblate_web.models import REWARDS, Donation, Service
 
 
 class MethodForm(forms.Form):
@@ -66,3 +66,9 @@ class EditImageForm(forms.ModelForm):
     class Meta:
         model = Donation
         fields = ("link_text", "link_url", "link_image")
+
+
+class EditDiscoveryForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ("discover_text", "discover_image")

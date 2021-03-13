@@ -48,6 +48,7 @@ from payments.models import Customer, Payment
 from payments.validators import cache_vies_data, validate_vatin
 from weblate_web.forms import (
     DonateForm,
+    EditDiscoveryForm,
     EditImageForm,
     EditLinkForm,
     EditNameForm,
@@ -497,6 +498,27 @@ class EditLinkView(UpdateView):
             "New link: {link_url}\nNew text: {link_text}\n".format(
                 link_url=form.cleaned_data.get("link_url", "N/A"),
                 link_text=form.cleaned_data.get("link_text", "N/A"),
+            ),
+        )
+        return super().form_valid(form)
+
+
+@method_decorator(login_required, name="dispatch")
+class EditDiscoveryView(UpdateView):
+    template_name = "subscription/discovery.html"
+    success_url = "/user/"
+    form_class = EditDiscoveryForm
+
+    def get_queryset(self):
+        return Service.objects.filter(users=self.request.user)
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        mail_admins(
+            "Weblate: discovery description changed",
+            "New link: {discover_url}\nNew text: {discover_text}\n".format(
+                discover_url=form.cleaned_data.get("discover_url", "N/A"),
+                discover_text=form.cleaned_data.get("discover_text", "N/A"),
             ),
         )
         return super().form_valid(form)

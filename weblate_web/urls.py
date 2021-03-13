@@ -37,6 +37,7 @@ from weblate_web.views import (
     CompleteView,
     CustomerView,
     DonateView,
+    EditDiscoveryView,
     EditLinkView,
     MilestoneArchiveView,
     NewsArchiveView,
@@ -192,6 +193,11 @@ urlpatterns = i18n_patterns(
     ),
     url(r"^subscription/token/(?P<pk>[0-9]+)/$", service_token, name="service-token"),
     url(r"^subscription/users/(?P<pk>[0-9]+)/$", service_user, name="service-user"),
+    url(
+        r"^subscription/discovery/(?P<pk>[0-9]+)/$",
+        EditDiscoveryView.as_view(),
+        name="service-discovery",
+    ),
     url(
         r"^subscription/pay/(?P<pk>[0-9]+)/$", subscription_pay, name="subscription-pay"
     ),
