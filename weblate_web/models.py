@@ -70,7 +70,7 @@ class MySQLSearchLookup(models.Lookup):
         return f"MATCH ({lhs}) AGAINST ({rhs} IN NATURAL LANGUAGE MODE)", params
 
 
-models.TextField.register_lookup(MySQLSearchLookup)
+models.CharField.register_lookup(MySQLSearchLookup)
 
 
 def create_backup_repository(service):
