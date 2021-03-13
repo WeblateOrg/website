@@ -27,7 +27,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -729,7 +729,11 @@ class DiscoverView(TemplateView):
         )
         query = self.request.GET.get("q", "").strip().lower()
         if query:
-            services = services.filter(project__name__icontains=query).distinct()
+            if connection.vendor == "mysql":
+                services = services.filter(project__name__search=query)
+            else:
+                services = services.filter(project__name__icontains=query)
+            services = services.distinct()
             for service in services:
                 projects = service.project_set.all()
                 service.matched_projects = [

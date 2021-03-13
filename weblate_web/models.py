@@ -60,6 +60,19 @@ TOPICS = (
 TOPIC_DICT = dict(TOPICS)
 
 
+class MySQLSearchLookup(models.Lookup):
+    lookup_name = "search"
+
+    def as_sql(self, compiler, connection):
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return f"MATCH ({lhs}) AGAINST ({rhs} IN NATURAL LANGUAGE MODE)", params
+
+
+models.TextField.register_lookup(MySQLSearchLookup)
+
+
 def create_backup_repository(service):
     """
     Configure backup repository.
