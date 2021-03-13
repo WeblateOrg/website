@@ -36,6 +36,7 @@ from weblate_web.models import Post
 from weblate_web.views import (
     CompleteView,
     CustomerView,
+    DiscoverView,
     DonateView,
     EditDiscoveryView,
     EditLinkView,
@@ -164,7 +165,7 @@ urlpatterns = i18n_patterns(
     ),
     url(
         r"^discover/$",
-        TemplateView.as_view(template_name="discover.html"),
+        DiscoverView.as_view(),
         name="discover",
     ),
     url(r"^hosting/free/$", RedirectView.as_view(url="/hosting/", permanent=True)),

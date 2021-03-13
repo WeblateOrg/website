@@ -38,6 +38,7 @@ from django.utils.translation import gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
@@ -716,3 +717,28 @@ def subscription_new(request):
             customer=get_customer(request),
         )
     return redirect(payment.get_payment_url())
+
+
+class DiscoverView(TemplateView):
+    template_name = "discover.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        services = Service.objects.filter(discoverable=True).prefetch_related(
+            "project_set"
+        )
+        query = self.request.GET.get("q", "").strip().lower()
+        if query:
+            services = services.filter(project__name__icontains=query).distinct()
+            for service in services:
+                projects = service.project_set.all()
+                service.matched_projects = [
+                    project for project in projects if query in project.name.lower()
+                ]
+                service.non_matched_projects_count = len(projects) - len(
+                    service.matched_projects
+                )
+        data["discoverable_services"] = services
+        data["query"] = query
+
+        return data
