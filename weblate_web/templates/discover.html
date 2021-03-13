@@ -26,11 +26,14 @@
                 <div class="article" id="d{{ service.pk }}">
                   <div class="img">
                     <a href="{{ service.site_url }}">
-                      <img src="{% if service.image %}{{ service.image.url }}{% else %}{{ service.site_url }}/exports/og.png{% endif %}" />
+                      <img class="discover-img" src="{% if service.discover_image %}{{ service.discover_image.url }}{% else %}{{ service.site_url }}/exports/og.png{% endif %}" />
                     </a>
                   </div>
                   <div class="content">
                     <h2><a href="{{ service.site_url }}" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
+                    {% if service.discover_text %}
+                      <p lang="en" dir="ltr">{{ service.discover_text }}</p>
+                    {% endif %}
                     {% with projects=service.project_set.all %}
                       <p lang="en" dir="ltr">
                         {% for project in service.project_set.all|slice:":20" %}

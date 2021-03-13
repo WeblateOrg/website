@@ -387,9 +387,19 @@ class Service(models.Model):
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
     discoverable = models.BooleanField(default=False)
-    site_url = models.URLField(default="")
+    site_url = models.URLField(default="", blank=True)
     site_title = models.TextField(default="Weblate")
-    site_version = models.TextField(default="")
+    site_version = models.TextField(default="", blank=True)
+
+    discover_text = models.CharField(
+        verbose_name=ugettext_lazy("Server description"), max_length=200, blank=True
+    )
+    discover_image = models.ImageField(
+        verbose_name=ugettext_lazy("Server image"),
+        blank=True,
+        upload_to="discover/",
+        help_text=_("Please use 1200x630 pixels image for best rendering."),
+    )
 
     class Meta:
         verbose_name = "Customer service"
