@@ -25,6 +25,7 @@ from weblate_web.models import (
     Package,
     PastPayments,
     Post,
+    Project,
     Service,
     Subscription,
 )
@@ -40,6 +41,10 @@ class DonationAdmin(admin.ModelAdmin):
     list_display = ("user", "reward", "created", "expires", "get_amount")
 
 
+class ProjectAdmin(admin.TabularInline):
+    model = Project
+
+
 class ServiceAdmin(admin.ModelAdmin):
     list_display = [
         "site_title",
@@ -52,11 +57,13 @@ class ServiceAdmin(admin.ModelAdmin):
         "status",
         "user_emails",
         "expires",
+        "discoverable",
     ]
-    list_filter = ("status",)
+    list_filter = ("status", "discoverable")
     search_fields = ("users__email", "report__site_url", "report__site_title")
     date_hierarchy = "created"
     filter_horizontal = ("users",)
+    inlines = (ProjectAdmin,)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
