@@ -31,7 +31,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
-from django.utils.translation import override, ugettext_lazy
+from django.utils.translation import gettext_lazy, override
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
@@ -41,20 +41,20 @@ from payments.utils import send_notification
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 
 REWARDS = (
-    (0, ugettext_lazy("No reward")),
-    (1, ugettext_lazy("Name in the list of supporters")),
-    (2, ugettext_lazy("Link in the list of supporters")),
-    (3, ugettext_lazy("Logo and link on the Weblate website")),
+    (0, gettext_lazy("No reward")),
+    (1, gettext_lazy("Name in the list of supporters")),
+    (2, gettext_lazy("Link in the list of supporters")),
+    (3, gettext_lazy("Logo and link on the Weblate website")),
 )
 
 TOPICS = (
-    ("release", ugettext_lazy("Release")),
-    ("feature", ugettext_lazy("Features")),
-    ("announce", ugettext_lazy("Announcement")),
-    ("conferences", ugettext_lazy("Conferences")),
-    ("hosting", ugettext_lazy("Hosted Weblate")),
-    ("development", ugettext_lazy("Development")),
-    ("localization", ugettext_lazy("Localization")),
+    ("release", gettext_lazy("Release")),
+    ("feature", gettext_lazy("Features")),
+    ("announce", gettext_lazy("Announcement")),
+    ("conferences", gettext_lazy("Conferences")),
+    ("hosting", gettext_lazy("Hosted Weblate")),
+    ("development", gettext_lazy("Development")),
+    ("localization", gettext_lazy("Localization")),
 )
 
 TOPIC_DICT = dict(TOPICS)
@@ -119,11 +119,11 @@ class Donation(models.Model):
     payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
     reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
-        verbose_name=ugettext_lazy("Link text"), max_length=200, blank=True
+        verbose_name=gettext_lazy("Link text"), max_length=200, blank=True
     )
-    link_url = models.URLField(verbose_name=ugettext_lazy("Link URL"), blank=True)
+    link_url = models.URLField(verbose_name=gettext_lazy("Link URL"), blank=True)
     link_image = models.ImageField(
-        verbose_name=ugettext_lazy("Link image"), blank=True, upload_to="donations/"
+        verbose_name=gettext_lazy("Link image"), blank=True, upload_to="donations/"
     )
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
@@ -383,12 +383,12 @@ class Service(models.Model):
     status = models.CharField(
         max_length=150,
         choices=(
-            ("community", ugettext_lazy("Expired service")),
-            ("hosted", ugettext_lazy("Dedicated hosted service")),
-            ("shared", ugettext_lazy("Hosted service")),
-            ("basic", ugettext_lazy("Basic self-hosted support")),
-            ("extended", ugettext_lazy("Extended self-hosted support")),
-            ("premium", ugettext_lazy("Premium self-hosted support")),
+            ("community", gettext_lazy("Expired service")),
+            ("hosted", gettext_lazy("Dedicated hosted service")),
+            ("shared", gettext_lazy("Hosted service")),
+            ("basic", gettext_lazy("Basic self-hosted support")),
+            ("extended", gettext_lazy("Extended self-hosted support")),
+            ("premium", gettext_lazy("Premium self-hosted support")),
         ),
         default="community",
     )
@@ -405,10 +405,10 @@ class Service(models.Model):
     site_version = models.TextField(default="", blank=True)
 
     discover_text = models.CharField(
-        verbose_name=ugettext_lazy("Server description"), max_length=200, blank=True
+        verbose_name=gettext_lazy("Server description"), max_length=200, blank=True
     )
     discover_image = models.ImageField(
-        verbose_name=ugettext_lazy("Server image"),
+        verbose_name=gettext_lazy("Server image"),
         blank=True,
         upload_to="discover/",
         help_text=_("Please use 1200x630 pixels image for best rendering."),

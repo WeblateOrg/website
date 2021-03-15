@@ -1,7 +1,7 @@
 import sentry_sdk
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from vies.types import VATIN
 from zeep.exceptions import Fault
 
