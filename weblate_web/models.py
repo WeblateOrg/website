@@ -411,7 +411,7 @@ class Service(models.Model):
         verbose_name=ugettext_lazy("Server image"),
         blank=True,
         upload_to="discover/",
-        help_text=_("Please use 1200x630 pixels image for best rendering."),
+        help_text=_("Please use a 1200 x 630 pixel image for best results."),
     )
 
     class Meta:
@@ -518,7 +518,7 @@ class Service(models.Model):
                 (
                     "basic",
                     _("Basic support"),
-                    _("Never get hold back by a problem."),
+                    _("Never get held back by a problem."),
                     _("Set priority for all your questions and reported bugs."),
                     "img/Support-Basic.svg",
                     _("Get support"),
@@ -534,8 +534,8 @@ class Service(models.Model):
                     (
                         "premium",
                         _("Premium support"),
-                        _("Don’t be waiting with your work paused."),
-                        _("This guarantees you the answers the NBD at the latest."),
+                        _("Don’t wait with your work on hold."),
+                        _("Guarantees you the answer NBD at the latest."),
                         "img/Support-Premium.svg",
                         _("Be Premium"),
                     )
