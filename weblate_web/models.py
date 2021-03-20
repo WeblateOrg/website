@@ -404,6 +404,7 @@ class Service(models.Model):
     site_title = models.TextField(default="Weblate")
     site_version = models.TextField(default="", blank=True)
     site_users = models.IntegerField(default=0)
+    site_projects = models.IntegerField(default=0)
 
     discover_text = models.CharField(
         verbose_name=gettext_lazy("Server description"), max_length=200, blank=True
@@ -751,6 +752,7 @@ class Report(models.Model):
         self.service.site_title = self.site_title
         self.service.site_version = self.version
         self.service.site_users = self.users
+        self.service.site_projects = self.projects
         self.service.save(
             update_fields=[
                 "discoverable",

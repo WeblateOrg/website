@@ -61,6 +61,7 @@ from weblate_web.models import (
     Donation,
     Package,
     Post,
+    Project,
     Service,
     Subscription,
     process_donation,
@@ -729,19 +730,29 @@ class DiscoverView(TemplateView):
         )
         query = self.request.GET.get("q", "").strip().lower()
         if query:
+            projects = Project.objects.filter(
+                service__discoverable=True
+            ).prefetch_related("service")
             if connection.vendor == "mysql":
-                services = services.filter(project__name__search=query)
+                projects = projects.filter(name__search=query)
             else:
-                services = services.filter(project__name__icontains=query)
-            services = services.distinct()
+                projects = projects.filter(name__icontains=query)
+            services_dict = {}
+            for project in projects:
+                service = services_dict[project.service_id] = project.service
+                if not hasattr(service, "matched_projects"):
+                    service.matched_projects = []
+                service.matched_projects.append(project)
+
+            services = list(services_dict.values())
+        else:
             for service in services:
-                projects = service.project_set.all()
-                service.matched_projects = [
-                    project for project in projects if query in project.name.lower()
-                ]
-                service.non_matched_projects_count = len(projects) - len(
-                    service.matched_projects
-                )
+                service.matched_projects = service.project_set.all()
+        for service in services:
+            service.non_matched_projects_count = service.site_projects - len(
+                service.matched_projects
+            )
+
         data["discoverable_services"] = services
         data["query"] = query
         if self.request.user.is_authenticated:
