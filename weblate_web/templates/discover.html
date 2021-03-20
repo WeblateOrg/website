@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load static %}
+{% load prices %}
 
 {% block body_class %}page light{% endblock %}
 
@@ -35,11 +36,12 @@
                     </a>
                   </div>
                   <div class="content">
-                    <h2><a href="{{ service.site_url }}" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
                     {% with projects=service.project_set.all %}
-                      <div class="date">
-                          {% blocktrans count count=projects|length %}{{ count }} project{% plural %}{{ count }} projects{% endblocktrans %}
+                      <div class="counts float-right">
+                          {% blocktrans count cnt=projects|length with count=projects|length|intcomma|make_strong %}{{ count }} project{% plural %}{{ count }} projects{% endblocktrans %}<br />
+                          {% blocktrans count cnt=service.site_users with count=service.site_users|intcomma|make_strong %}{{ count }} translator{% plural %}{{ count }} translators{% endblocktrans %}
                       </div>
+                      <h2><a href="{{ service.site_url }}" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
                       {% if service.discover_text %}
                         <p lang="en" dir="ltr">{{ service.discover_text }}</p>
                       {% endif %}
