@@ -411,7 +411,7 @@ class Service(models.Model):
         verbose_name=ugettext_lazy("Server image"),
         blank=True,
         upload_to="discover/",
-        help_text=_("Please use a 1200 x 630 pixel image for best results."),
+        help_text=_("Please use 1200 x 630 pixels image for best results."),
     )
 
     class Meta:
@@ -535,7 +535,7 @@ class Service(models.Model):
                         "premium",
                         _("Premium support"),
                         _("Don’t wait with your work on hold."),
-                        _("Guarantees you the answer NBD at the latest."),
+                        _("This guarantees you answers the NBD at the latest."),
                         "img/Support-Premium.svg",
                         _("Be Premium"),
                     )
