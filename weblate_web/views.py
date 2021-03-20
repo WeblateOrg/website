@@ -747,7 +747,7 @@ class DiscoverView(TemplateView):
             services = list(services_dict.values())
         else:
             for service in services:
-                service.matched_projects = service.project_set.all()
+                service.matched_projects = service.project_set.all()[:20]
         for service in services:
             service.non_matched_projects_count = service.site_projects - len(
                 service.matched_projects
