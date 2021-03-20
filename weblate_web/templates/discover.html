@@ -17,10 +17,12 @@
                   {% blocktrans %}Look who’s using Weblate! Find your favorite projects and contribute!{% endblocktrans %}
                 {% endblock %}
               </p>
-              <a href="{% url 'user' %}" class="button inline">{% trans "Manage your services" %}</a>
-              <form class="form-inline" action="{% url 'discover' %}">
-                <input type="text" class="grey-input" placeholder="{% trans "Project name" %}" name="q" aria-label="{% trans "Project name" %}" value="{{ query }}" />
-                <input type="submit" class="button button-med-120 inline border rev" value="{% trans "Search" %}" />
+            </div>
+            <div class="search-bar">
+              <a href="{% url 'user' %}" class="link float-right discover-add">{% trans "Add yours" %}</a>
+              <form action="{% url 'discover' %}">
+                <input type="text" class="search-input" placeholder="{% trans "Project name" %}" name="q" aria-label="{% trans "Project name" %}" value="{{ query }}" />
+                <input type="submit" class="button inline black" value="{% trans "Search" %}" />
               </form>
             </div>
 
