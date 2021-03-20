@@ -18,6 +18,7 @@
 #
 
 import json
+import random
 
 import django.views.defaults
 from django.conf import settings
@@ -747,7 +748,10 @@ class DiscoverView(TemplateView):
             services = list(services_dict.values())
         else:
             for service in services:
-                service.matched_projects = service.project_set.all()[:20]
+                projects = list(service.project_set.all())
+                if len(projects) > 20:
+                    projects = random.sample(projects, 20)
+                service.matched_projects = projects
         for service in services:
             service.non_matched_projects_count = service.site_projects - len(
                 service.matched_projects
