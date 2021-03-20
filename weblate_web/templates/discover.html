@@ -24,9 +24,9 @@
               </form>
             </div>
 
-            <div class="articles archive">
+            <div class="articles">
               {% for service in discoverable_services %}
-                <div class="article" id="d{{ service.pk }}">
+                <div class="article discover" id="d{{ service.pk }}">
                   <div class="img">
                     <a href="{{ service.site_url }}">
                       <img class="discover-img" src="{% if service.discover_image %}{{ service.discover_image.url }}{% else %}{{ service.site_url }}/exports/og.png{% endif %}" />
