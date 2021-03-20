@@ -46,19 +46,23 @@
                       <p lang="en" dir="ltr" class="projects">
                         {% if service.matched_projects %}
                           {% for project in service.matched_projects %}
-                            <a href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
+                            <a class="project" href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
                           {% endfor %}
                           {% if service.non_matched_projects_count %}
-                            {% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}
+                            <img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" />
                           {% endif %}
                         {% else %}
                           {% for project in service.project_set.all|slice:":20" %}
-                            <a href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
+                            <a class="project" href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
                           {% endfor %}
                           {% if projects|length > 20 %}
                             <img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=projects|length|add:-20 %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" />
                           {% endif %}
                         {% endif %}
+                        {% if service.pk in user_services %}
+                          <a class="button small float-right" href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
+                        {% endif %}
+                        <div class="clear"></div>
                       </p>
                     {% endwith %}
                   </div>

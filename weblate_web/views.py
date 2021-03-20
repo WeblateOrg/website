@@ -744,5 +744,11 @@ class DiscoverView(TemplateView):
                 )
         data["discoverable_services"] = services
         data["query"] = query
+        if self.request.user.is_authenticated:
+            data["user_services"] = set(
+                self.request.user.service_set.values_list("pk", flat=True)
+            )
+        else:
+            data["user_services"] = set()
 
         return data
