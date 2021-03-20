@@ -51,14 +51,14 @@
                             <a class="project" href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
                           {% endfor %}
                           {% if service.non_matched_projects_count %}
-                            <img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" />
+                            <a href="{{ service.site_url }}/projects/"><img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" /></a>
                           {% endif %}
                         {% else %}
                           {% for project in service.project_set.all|slice:":20" %}
                             <a class="project" href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
                           {% endfor %}
                           {% if projects|length > 20 %}
-                            <img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=projects|length|add:-20 %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" />
+                            <a href="{{ service.site_url }}/projects/"><img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=projects|length|add:-20 %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" /></a>
                           {% endif %}
                         {% endif %}
                         {% if service.pk in user_services %}
