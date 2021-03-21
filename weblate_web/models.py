@@ -17,13 +17,18 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 from datetime import timedelta
+from io import BytesIO
 from uuid import uuid4
 
 import html2text
+import PIL
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -37,6 +42,8 @@ from paramiko.client import SSHClient
 
 from payments.models import Payment, get_period_delta
 from payments.utils import send_notification
+
+ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 
@@ -58,6 +65,66 @@ TOPICS = (
 )
 
 TOPIC_DICT = dict(TOPICS)
+
+
+def validate_bitmap(value):
+    """
+    Validate a bitmap.
+
+    Based on django.forms.fields.ImageField and
+    weblate.utils.validators.validate_bitmap.
+    """
+    if value is None:
+        return
+
+    # Ensure we have image object and content type
+    # Pretty much copy from django.forms.fields.ImageField:
+
+    # We need to get a file object for Pillow. We might have a path or we
+    # might have to read the data into memory.
+    if hasattr(value, "temporary_file_path"):
+        content = value.temporary_file_path()
+    else:
+        if hasattr(value, "read"):
+            content = BytesIO(value.read())
+        else:
+            content = BytesIO(value["content"])
+
+    try:
+        # load() could spot a truncated JPEG, but it loads the entire
+        # image in memory, which is a DoS vector. See #3848 and #18520.
+        image = PIL.Image.open(content)
+        # verify() must be called immediately after the constructor.
+        image.verify()
+
+        # Pillow doesn't detect the MIME type of all formats. In those
+        # cases, content_type will be None.
+        value.file.content_type = PIL.Image.MIME.get(image.format)
+    except Exception:
+        # Pillow doesn't recognize it as an image.
+        raise ValidationError(_("Invalid image!"), code="invalid_image").with_traceback(
+            sys.exc_info()[2]
+        )
+
+    try:
+        if hasattr(value.file, "seek") and callable(value.file.seek):
+            value.file.seek(0)
+
+        # Check image type
+        if value.file.content_type not in ALLOWED_IMAGES:
+            raise ValidationError(
+                _("Unsupported image type: %s") % value.file.content_type
+            )
+
+        # Check dimensions
+        width, height = image.size
+        if image.size != (570, 260):
+            raise ValidationError(
+                _("Please upload an image with resolution 570 x 260 pixels.")
+            )
+
+    finally:
+        image.close()
 
 
 class MySQLSearchLookup(models.Lookup):
@@ -413,7 +480,11 @@ class Service(models.Model):
         verbose_name=gettext_lazy("Server image"),
         blank=True,
         upload_to="discover/",
-        help_text=_("Please use 1200 x 630 pixels image for best results."),
+        help_text=_("PNG or JPG image with a resolution of 570 x 260 pixels."),
+        validators=[
+            FileExtensionValidator(["jpg", "jpeg", "png"]),
+            validate_bitmap,
+        ],
     )
 
     class Meta:
