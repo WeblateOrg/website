@@ -47,7 +47,7 @@
                   </div>
                   <div class="content">
                     <div class="counts float-right">
-                        {% blocktrans count cnt=service.site_projects|length with count=service.site_projects|length|intcomma|make_strong %}{{ count }} project{% plural %}{{ count }} projects{% endblocktrans %}<br />
+                        {% blocktrans count cnt=service.site_projects with count=service.site_projects|intcomma|make_strong %}{{ count }} project{% plural %}{{ count }} projects{% endblocktrans %}<br />
                         {% blocktrans count cnt=service.site_users with count=service.site_users|intcomma|make_strong %}{{ count }} translator{% plural %}{{ count }} translators{% endblocktrans %}
                     </div>
                     <h2><a href="{{ service.site_url }}" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
