@@ -52,7 +52,7 @@
                     </div>
                     <h2><a href="{{ service.site_url }}" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
                     {% if service.discover_text %}
-                      <p lang="en" dir="ltr">{{ service.discover_text }}</p>
+                      <p lang="en" dir="ltr">{{ service.get_discover_text }}</p>
                     {% endif %}
                     <p lang="en" dir="ltr" class="projects">
                       {% for project in service.matched_projects %}

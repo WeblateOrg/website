@@ -498,6 +498,9 @@ class Service(models.Model):
         super().__init__(*args, **kwargs)
         self.was_created = False
 
+    def get_discover_text(self):
+        return _(self.discover_text)
+
     @property
     def needs_token(self):
         return self.status not in ("hosted", "shared", "community")
