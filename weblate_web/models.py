@@ -760,6 +760,7 @@ class Report(models.Model):
                 "site_title",
                 "site_version",
                 "site_users",
+                "site_projects",
             ]
         )
 
