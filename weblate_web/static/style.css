@@ -1296,6 +1296,30 @@ body.page section.content.no-mar {
   padding-top: 10px;
   text-align: justify;
 }
+.layered {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.layered > * {
+  grid-column-start: 1;
+  grid-row-start: 1;
+}
+.discover-name {
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.discover-name span {
+  padding-left: 10px;
+}
+.discover-name img,
+.discover-name span {
+  vertical-align: middle;
+}
 .discover p.projects a.project {
   display: inline-block;
   color: #e9eaec;
@@ -3820,6 +3844,10 @@ input.fullwidth {
 
   div.wrap {
     margin-bottom: 40px;
+  }
+
+  .discover-name img {
+    display: none;
   }
 
   .article .img img {

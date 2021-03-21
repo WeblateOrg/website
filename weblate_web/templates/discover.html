@@ -32,7 +32,17 @@
                 <div class="article discover" id="d{{ service.pk }}">
                   <div class="img">
                     <a href="{{ service.site_url }}">
-                      <img class="discover-img" src="{% if service.discover_image %}{{ service.discover_image.url }}{% else %}{{ service.site_url }}/exports/og.png{% endif %}" />
+                      {% if service.discover_image %}
+                        <img class="discover-img" src="{{ service.discover_image.url }}" />
+                      {% else %}
+                        <div class="discover-panel layered">
+                          <img src="{% static "img/discover-bg.png" %}" />
+                          <div class="discover-name">
+                            <img src="{% static "img/discover-weblate-logo.png" %}" class="discover-logo" />
+                            <span>{{ service.site_title }}</span>
+                          </div>
+                        </div>
+                      {% endif %}
                     </a>
                   </div>
                   <div class="content">
