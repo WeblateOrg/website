@@ -72,3 +72,4 @@ class EditDiscoveryForm(forms.ModelForm):
     class Meta:
         model = Service
         fields = ("discover_text", "discover_image")
+        widgets = {"discover_text": forms.Textarea}
