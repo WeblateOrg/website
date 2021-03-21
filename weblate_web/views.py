@@ -520,7 +520,7 @@ class EditDiscoveryView(UpdateView):
         mail_admins(
             "Weblate: discovery description changed",
             "Service link: {discover_url}\nNew text: {discover_text}\n".format(
-                discover_url=self.instance.site_url,
+                discover_url=form.instance.site_url,
                 discover_text=form.cleaned_data.get("discover_text", "N/A"),
             ),
         )
