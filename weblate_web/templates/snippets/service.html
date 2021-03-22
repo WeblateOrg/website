@@ -66,6 +66,9 @@
                     <div class="line-left p-top">{% trans "Activation token" %}</div>
                     <div class="line-right">
                         <input value="{{ service.secret }}" readonly class="fullwidth"><br />
+                        {% if service.site_url %}
+                          <a class="button button-med-100 inline" href="{{ service.site_url }}/manage/?activation={{ service.secret }}">{% trans "Activate" %}</a>
+                        {% endif %}
                         <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
                         <form class="form-inline" method="post" action="{% url "service-token" pk=service.pk %}">
                         {% csrf_token %}
