@@ -34,6 +34,7 @@ from django.views.generic import RedirectView, TemplateView
 
 from weblate_web.models import Post
 from weblate_web.views import (
+    AddDiscoveryView,
     CompleteView,
     CustomerView,
     DiscoverView,
@@ -198,6 +199,11 @@ urlpatterns = i18n_patterns(
         r"^subscription/discovery/(?P<pk>[0-9]+)/$",
         EditDiscoveryView.as_view(),
         name="service-discovery",
+    ),
+    url(
+        r"^subscription/discovery/$",
+        AddDiscoveryView.as_view(),
+        name="service-discovery-add",
     ),
     url(
         r"^subscription/pay/(?P<pk>[0-9]+)/$", subscription_pay, name="subscription-pay"

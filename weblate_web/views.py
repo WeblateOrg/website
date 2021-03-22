@@ -42,13 +42,14 @@ from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from payments.backends import get_backend, list_backends
 from payments.forms import CustomerForm
 from payments.models import Customer, Payment
 from payments.validators import cache_vies_data, validate_vatin
 from weblate_web.forms import (
+    AddDiscoveryForm,
     DonateForm,
     EditDiscoveryForm,
     EditImageForm,
@@ -525,6 +526,30 @@ class EditDiscoveryView(UpdateView):
             ),
         )
         return super().form_valid(form)
+
+
+@method_decorator(login_required, name="dispatch")
+class AddDiscoveryView(CreateView):
+    template_name = "subscription/discovery-add.html"
+    success_url = "/user/"
+    form_class = AddDiscoveryForm
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        instance = form.instance
+        mail_admins(
+            "Weblate: discovery description changed",
+            "Service link: {discover_url}\nNew text: {discover_text}\n".format(
+                discover_url=instance.site_url,
+                discover_text=form.cleaned_data.get("discover_text", "N/A"),
+            ),
+        )
+        result = super().form_valid(form)
+        instance.users.add(self.request.user)
+        if instance.site_url:
+            url = instance.site_url.rstrip("/")
+            return redirect(f"{url}/manage/?activation={instance.secret}")
+        return result
 
 
 class NewsArchiveView(ArchiveIndexView):

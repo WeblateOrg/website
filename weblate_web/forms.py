@@ -73,3 +73,10 @@ class EditDiscoveryForm(forms.ModelForm):
         model = Service
         fields = ("discover_text", "discover_image")
         widgets = {"discover_text": forms.Textarea}
+
+
+class AddDiscoveryForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ("site_url", "discover_text", "discover_image")
+        widgets = {"discover_text": forms.Textarea}

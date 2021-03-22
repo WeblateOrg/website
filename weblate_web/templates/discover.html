@@ -20,7 +20,7 @@
               </p>
             </div>
             <div class="search-bar">
-              <a href="{% url 'user' %}" class="link float-right discover-add">{% trans "Add yours" %}</a>
+              <a href="{% url "service-discovery-add" %}" class="link float-right discover-add">{% trans "Add yours" %}</a>
               <form action="{% url 'discover' %}">
                 <input type="text" class="search-input" placeholder="{% trans "project name" %}" name="q" aria-label="{% trans "project name" %}" value="{{ query }}" />
                 <input type="submit" class="button inline black" value="{% trans "Search" %}" />

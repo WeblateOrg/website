@@ -26,6 +26,10 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
+            <div class="page-desc">
+              <a class="button inline" href="{% url "support" %}">{% trans "Get support" %}</a>
+              <a class="button inline border rev" href="{% url "service-discovery-add" %}">{% trans "Add server to Discover Weblate" %}</a>
+            </div>
 
             <h1>{% trans "My donations" %}</h1>
 

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Discover Weblate" %}{% endblock %}
+
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div class="wrap">
+            <h1 class="section-title min-m">{% trans "Add Discover Weblate listing" %}</h1>
+            <div class="payment-form">
+                <div class="form-line">
+                    <div class="line-left">{% trans "Discover Weblate" %}</div>
+                    <div class="line-right">
+                        <p>{% trans "Weblate 4.5.2 or newer is needed to participate in Discover Weblate." %}</p>
+                        <p class="text-muted">
+                            {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate server. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
+                        </p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment" value="{{ payment.pk }}">
+                    {% for field in form %}
+                        <div class="form-line">
+                            <div class="line-left">{{ field.label }}</div>
+                            <div class="line-right">
+                            {{ field.errors }}
+                            {{ field }}
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    {% endfor %}
+                    <div class="form-line">
+                        <div class="line-left">{% trans "Next step" %}</div>
+                        <div class="line-right">
+                        <p class="help">{% trans "You will be redirected to registered server to confirm listing." %}</p>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="payment-pick">
+                    </div>
+                    <input type="submit" class="button center make-payment" value="{% trans "Save" %}" />
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

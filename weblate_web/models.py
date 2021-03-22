@@ -450,7 +450,7 @@ class Service(models.Model):
     status = models.CharField(
         max_length=150,
         choices=(
-            ("community", gettext_lazy("Expired service")),
+            ("community", gettext_lazy("Community supported")),
             ("hosted", gettext_lazy("Dedicated hosted service")),
             ("shared", gettext_lazy("Hosted service")),
             ("basic", gettext_lazy("Basic self-hosted support")),
@@ -467,7 +467,7 @@ class Service(models.Model):
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
     discoverable = models.BooleanField(default=False)
-    site_url = models.URLField(default="", blank=True)
+    site_url = models.URLField(verbose_name=_("Server URL"), default="", blank=True)
     site_title = models.TextField(default="Weblate")
     site_version = models.TextField(default="", blank=True)
     site_users = models.IntegerField(default=0)
