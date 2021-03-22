@@ -10,7 +10,8 @@
         <li class="{% if request.resolver_match.url_name == 'careers' %} active{% endif %}"><a href="{% url 'careers' %}">{% trans "Careers" %}</a></li>
         {% endif %}
         {% if full_menu %}
-        <li class="{% if request.resolver_match.url_name == 'shop' %} active{% endif %}"><a href="https://shop.spreadshirt.net/weblate/">{% trans "Merchandise" %}</a></li>
+        <li><a href="https://shop.spreadshirt.net/weblate/">{% trans "Merchandise" %}</a></li>
+        <li class="{% if request.resolver_match.url_name == 'discover' %} active{% endif %}"><a href="{% url 'discover' %}">{% trans "Discover" %}</a></li>
         {% endif %}
         <li class="menu-light gethelp{% if request.resolver_match.url_name == 'support' %} active{% endif %}"><a href="{% url 'support' %}">{% trans "Get help" %}</a></li>
         <li class="menu-light{% if request.resolver_match.url_name == 'news' or request.resolver_match.url_name == 'news-archive' or request.resolver_match.url_name == 'post' %} active{% endif %} hide1025"><a href="{% url 'news' %}">{% trans "Blog" %}</a></li>
