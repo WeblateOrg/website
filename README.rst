@@ -21,9 +21,9 @@ Django based website for Weblate, running at <https://weblate.org/>.
     :alt: Lint
     :target: https://github.com/WeblateOrg/website/actions?query=workflow%3ALint
 
-.. image:: https://codecov.io/github/WeblateOrg/website/coverage.svg?branch=master
+.. image:: https://codecov.io/github/WeblateOrg/website/coverage.svg?branch=main
     :alt: Coverage Status
-    :target: https://codecov.io/github/WeblateOrg/website?branch=master
+    :target: https://codecov.io/github/WeblateOrg/website?branch=main
 
 
 If you are looking for Weblate itself, go to <https://github.com/WeblateOrg/weblate>.
