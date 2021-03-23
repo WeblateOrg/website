@@ -97,7 +97,7 @@ def validate_bitmap(value):
         # verify() must be called immediately after the constructor.
         image.verify()
 
-        # Pillow doesn't detect the MIME type of all formats. In those
+        # Pillow doesn't detect the media type of all formats. In those
         # cases, content_type will be None.
         value.file.content_type = PIL.Image.MIME.get(image.format)
     except Exception:
@@ -120,7 +120,7 @@ def validate_bitmap(value):
         width, height = image.size
         if image.size != (570, 260):
             raise ValidationError(
-                _("Please upload an image with resolution 570 x 260 pixels.")
+                _("Please upload an image with a resolution of 570 x 260 pixels.")
             )
 
     finally:
@@ -145,7 +145,7 @@ def create_backup_repository(service):
     Configure backup repository.
 
     - create filesystem folders
-    - store ssh key
+    - store SSH key
     - create subaccount
     """
     # Create folder and SSH key
@@ -242,7 +242,7 @@ class Donation(models.Model):
 
 def process_donation(payment):
     if payment.state != Payment.ACCEPTED:
-        raise ValueError("Can not process not accepted payment")
+        raise ValueError("Can not process non-accepted payment")
     if payment.repeat:
         # Update existing
         donation = Donation.objects.get(payment=payment.repeat.pk)
@@ -385,7 +385,7 @@ class Post(models.Model):
         blank=True,
         db_index=True,
         default=False,
-        help_text="This is an important milestone, shown on milestones archive",
+        help_text="This is an important milestone shown in the milestones archive",
     )
 
     class Meta:
@@ -611,9 +611,9 @@ class Service(models.Model):
                         "premium",
                         _("Premium support"),
                         _("Don’t wait with your work on hold."),
-                        _("This guarantees you answers the NBD at the latest."),
+                        _("Guarantees you answers the NBD at the latest."),
                         "img/Support-Premium.svg",
-                        _("Be Premium"),
+                        _("Premium, the worry-free package."),
                     )
                 )
 
@@ -622,7 +622,7 @@ class Service(models.Model):
                     (
                         "extended",
                         _("Extended support"),
-                        _("Don’t be just Basic, get a worry-free package."),
+                        _("Have more than a Basic plan."),
                         _("We will manage upgrades for you."),
                         "img/Support-Plus.svg",
                         _("Stay updated"),
@@ -634,10 +634,10 @@ class Service(models.Model):
                     (
                         "backup",
                         _("Backup service"),
-                        _("Easily put your backups in a safe place."),
-                        _("Encrypted and automatic backups, always available."),
+                        _("Easily safeguard all work in a safe place."),
+                        _("Encrypted and automatic, always available."),
                         "img/Support-Backup.svg",
-                        _("Backup daily"),
+                        _("Daily backups"),
                     )
                 )
         return result
