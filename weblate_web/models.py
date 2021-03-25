@@ -637,7 +637,7 @@ class Service(models.Model):
                         _("Easily safeguard all work in a safe place."),
                         _("Encrypted and automatic, always available."),
                         "img/Support-Backup.svg",
-                        _("Daily backups"),
+                        _("Backup daily"),
                     )
                 )
         return result
