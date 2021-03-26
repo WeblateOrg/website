@@ -385,7 +385,7 @@ class Post(models.Model):
         blank=True,
         db_index=True,
         default=False,
-        help_text="This is an important milestone shown in the milestones archive",
+        help_text="Important milestone, shown in the milestones archive",
     )
 
     class Meta:
