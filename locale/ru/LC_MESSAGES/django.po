@@ -22,13 +22,14 @@
 # Anonymous <noreply@weblate.org>, 2020.
 # Allan Nordhøy <epost@anotheragency.no>, 2020.
 # Serg Bormant <bormant@mail.ru>, 2020.
+# Edward Smirnov <ed@microolap.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2021-03-21 17:02+0100\n"
-"PO-Revision-Date: 2021-03-22 12:47+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2021-04-01 06:02+0000\n"
+"Last-Translator: Edward Smirnov <ed@microolap.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
 "ru/>\n"
 "Language: ru\n"
@@ -37,7 +38,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.5.2-dev\n"
+"X-Generator: Weblate 4.6-dev\n"
 "First-Translator: Dmitri GOULIAEV <dmitri+weblate@gouliaev.info>\n"
 
 #: payments/backends.py:253
@@ -207,6 +208,9 @@ msgid ""
 "private projects. And Weblate itself! Love libre software? Your "
 "possibilities of contributing are limitless here!"
 msgstr ""
+"Крупнейший сервер Weblate в мире является домом для сотен свободных и "
+"частных проектов. И для самого Weblate! Любите свободное программное "
+"обеспечение? Ваши возможности здесь безграничны!"
 
 #: weblate_web/models.py:51
 msgid "No reward"
@@ -269,7 +273,7 @@ msgstr "Неподдерживаемый тип изображения: %s"
 
 #: weblate_web/models.py:123
 msgid "Please upload an image with resolution 570 x 260 pixels."
-msgstr ""
+msgstr "Загрузите изображение с разрешением 570 x 260 пикселей."
 
 #: weblate_web/models.py:189
 msgid "Link text"
@@ -308,28 +312,22 @@ msgid "Premium self-hosted support"
 msgstr "Премиальная поддержка своего хостинга"
 
 #: weblate_web/models.py:477
-#, fuzzy
-#| msgid "Payment description"
 msgid "Server description"
-msgstr "Назначение платежа"
+msgstr "Описание сервера"
 
 #: weblate_web/models.py:480
-#, fuzzy
-#| msgid "Server error"
 msgid "Server image"
-msgstr "Ошибка сервера"
+msgstr "Изображение сервера"
 
 #: weblate_web/models.py:483
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
-msgstr ""
+msgstr "Изображение PNG или JPG с разрешением 570 x 260 пикселей."
 
 #: weblate_web/models.py:596 weblate_web/templates/hosting.html:156
 msgid "Basic support"
 msgstr "Базовая поддержка"
 
 #: weblate_web/models.py:597
-#, fuzzy
-#| msgid "Never get hold back by a problem."
 msgid "Never get held back by a problem."
 msgstr "Пусть проблемы вас не удерживают."
 
@@ -347,14 +345,10 @@ msgid "Premium support"
 msgstr "Приоритетная поддержка по электронной почте"
 
 #: weblate_web/models.py:613
-#, fuzzy
-#| msgid "Don’t be waiting with your work paused."
 msgid "Don’t wait with your work on hold."
 msgstr "Не ждите, поставив на паузу свою работу."
 
 #: weblate_web/models.py:614
-#, fuzzy
-#| msgid "This guarantees you the answers the NBD at the latest."
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Это гарантируют вам ответ; самое позднее — на следующий рабочий день."
 
@@ -959,10 +953,8 @@ msgstr "Статус перевода"
 #: weblate_web/templates/discover.html:13
 #: weblate_web/templates/snippets/service.html:103
 #: weblate_web/templates/subscription/discovery.html:3
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Discover Weblate"
-msgstr "Использовать Weblate"
+msgstr "Освойте Weblate"
 
 #: weblate_web/templates/discover.html:18
 msgid ""
@@ -971,12 +963,15 @@ msgid ""
 "readers and app users around the World. Find your favorite projects and "
 "start contributing together with us."
 msgstr ""
+"Узнайте, кто уже использует Weblate. Мы - сообщество переводчиков и "
+"специалистов по локализации, которые используют и улучшают наш общий "
+"инструмент, чтобы расширить возможности читателей и пользователей приложений "
+"по всему миру. Найдите свои любимые проекты и начните вносить свой вклад "
+"вместе с нами."
 
 #: weblate_web/templates/discover.html:23
-#, fuzzy
-#| msgid "Add user"
 msgid "Add yours"
-msgstr "Добавить пользователя"
+msgstr "Добавить"
 
 #: weblate_web/templates/discover.html:25
 msgid "project name"
@@ -987,9 +982,7 @@ msgid "Search"
 msgstr "Поиск"
 
 #: weblate_web/templates/discover.html:50
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s project"
 msgid_plural "%(count)s projects"
 msgstr[0] "%(count)s перевод"
@@ -997,33 +990,29 @@ msgstr[1] "%(count)s перевода"
 msgstr[2] "%(count)s переводов"
 
 #: weblate_web/templates/discover.html:51
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s translator"
 msgid_plural "%(count)s translators"
-msgstr[0] "%(count)s перевод"
-msgstr[1] "%(count)s перевода"
-msgstr[2] "%(count)s переводов"
+msgstr[0] "%(count)s переводчик"
+msgstr[1] "%(count)s переводчика"
+msgstr[2] "%(count)s переводчиков"
 
 #: weblate_web/templates/discover.html:62
 #, python-format
 msgid "…and %(count)s more"
 msgid_plural "…and %(count)s more"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "… %(count)s и более"
+msgstr[1] "… %(count)s и более"
+msgstr[2] "… %(count)s и даже больше"
 
 #: weblate_web/templates/discover.html:65
 #: weblate_web/templates/snippets/service.html:107
-#, fuzzy
-#| msgid "Custom consulting."
 msgid "Customize listing"
-msgstr "Индивидуальные консультации."
+msgstr "Настроить список"
 
 #: weblate_web/templates/discover.html:72
 msgid "No servers matched your search."
-msgstr ""
+msgstr "По вашему запросу не найдено ни одного сервера."
 
 #: weblate_web/templates/donate.html:12
 #: weblate_web/templates/donate/edit.html:3
@@ -1646,10 +1635,8 @@ msgid "Inno Setup"
 msgstr "Inno Setup"
 
 #: weblate_web/templates/features.html:123
-#, fuzzy
-#| msgid "Term Base eXchange"
 msgid "TermBase eXchange"
-msgstr "Term Base eXchange"
+msgstr "TermBase eXchange"
 
 #: weblate_web/templates/features.html:132
 msgid "Glossaries"
@@ -2835,11 +2822,7 @@ msgid "Server URL"
 msgstr "URL сервера"
 
 #: weblate_web/templates/snippets/service.html:96
-#, fuzzy, python-format
-#| msgid ""
-#| "You can use support services on our website. For more comfort, use the "
-#| "activation token to connect your Weblate installation to the support "
-#| "portal. Read how it works in the %(link_start)sdocumentation%(link_end)s."
+#, python-format
 msgid ""
 "You can use support services on our website. For increased comfort, use the "
 "activation token to connect your Weblate installation to the support portal. "
@@ -2851,25 +2834,17 @@ msgstr ""
 "%(link_start)sиз документации%(link_end)s."
 
 #: weblate_web/templates/snippets/service.html:106
-#, fuzzy
-#| msgid "View sources"
 msgid "View your listing"
-msgstr "Исходный код"
+msgstr "Просмотреть список"
 
 #: weblate_web/templates/snippets/service.html:110
-#, fuzzy, python-format
-#| msgid ""
-#| "You can use support services on our website. For more comfort, use the "
-#| "activation token to connect your Weblate installation to the support "
-#| "portal. Read how it works in the %(link_start)sdocumentation%(link_end)s."
+#, python-format
 msgid ""
 "Let other users discover your Weblate server. Read about how it works in the "
 "%(link_start)sdocumentation%(link_end)s."
 msgstr ""
-"Вы можете использовать сервис поддержки на нашем веб-сайте. Для большего "
-"удобства, воспользуйтесь токеном активации, дабы привязать свою установку "
-"Weblate к порталу поддержки. О том, как это сделать, можно узнать "
-"%(link_start)sиз документации%(link_end)s."
+"Позвольте другим пользователям изучить ваш сервер Weblate. О том, как он "
+"работает, читайте в документации %(link_start)s %(link_end)s."
 
 #: weblate_web/templates/snippets/service.html:118
 msgid "Subscription"
@@ -2893,7 +2868,7 @@ msgstr "Изменить тариф"
 
 #: weblate_web/templates/snippets/service.html:163
 msgid "Billing"
-msgstr "Тарифный план"
+msgstr "Биллинг"
 
 #: weblate_web/templates/snippets/service.html:168
 #: weblate_web/templates/user.html:87
@@ -2985,10 +2960,8 @@ msgstr ""
 "пределах ЕС."
 
 #: weblate_web/templates/subscription/discovery.html:9
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Customize Discover Weblate listing"
-msgstr "Использовать Weblate"
+msgstr "Настроить список Discover Weblate"
 
 #: weblate_web/templates/support.html:6
 msgid "Weblate support"
