@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Weblate SSO" %}{% endblock %}
+
+{% block content %}
+
+<section class="content">
+  <div class="row">
+    <div class="wrap">
+      <div class="page-desc">
+        {% trans "You're being redirected to a SSO sign-in page." %}
+      </div>
+      <div class="page-desc small">
+        {% trans "Please click the button below if you're not redirected automatically within a few seconds." %}
+        <form method="post" action="{{ target_url }}" id="SSO_Login">
+          {% for key, value in params.items %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}" />
+          {% endfor %}
+          <input type="submit" class="button inline" value="{% trans "Sign in" %}" />
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

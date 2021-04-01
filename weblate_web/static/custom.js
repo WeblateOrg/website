@@ -200,5 +200,10 @@ ready(() => {
     });
   }
 
+  let sso = document.getElementById("SSO_Login");
+  if (sso) {
+    sso.submit();
+  }
+
   new ClipboardJS("[data-clipboard-text]");
 });
