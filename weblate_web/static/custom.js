@@ -46,10 +46,8 @@ ready(() => {
 
   /* Languages menu */
   document.querySelector(".open-langs").addEventListener("click", (e) => {
-    console.log(e);
     var thisParent = e.target.parentElement;
     var thisNext = e.target.nextElementSibling;
-    console.log(thisNext);
     if (thisParent.classList.contains("opened")) {
       thisParent.classList.remove("opened");
       thisNext.style.opacity = "0";
@@ -90,7 +88,6 @@ ready(() => {
     });
   });
   document.querySelectorAll(".dedicated-toggle").forEach((element) => {
-    console.log(element);
     element.addEventListener("click", (e) => {
       let target = document.getElementById("dedicated-checkbox");
       target.checked = element.classList.contains("dedicated-enable");
@@ -150,8 +147,6 @@ ready(() => {
         document.querySelector(".whoa").classList.remove("is-visible");
         document.querySelector(".nowhoa").classList.add("is-visible");
       }
-
-      console.log(amount);
     });
     donate_input.dispatchEvent(new Event("change"));
   }
