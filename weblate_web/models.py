@@ -613,7 +613,7 @@ class Service(models.Model):
                         _("Don’t wait with your work on hold."),
                         _("This guarantees you answers the NBD at the latest."),
                         "img/Support-Premium.svg",
-                        _("Be Premium."),
+                        _("Be Premium"),
                     )
                 )
 
