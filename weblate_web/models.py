@@ -120,7 +120,7 @@ def validate_bitmap(value):
         width, height = image.size
         if image.size != (570, 260):
             raise ValidationError(
-                _("Please upload an image with resolution 570 x 260 pixels.")
+                _("Please upload an image with a resolution of 570 x 260 pixels.")
             )
 
     finally:
@@ -145,7 +145,7 @@ def create_backup_repository(service):
     Configure backup repository.
 
     - create filesystem folders
-    - store ssh key
+    - store SSH key
     - create subaccount
     """
     # Create folder and SSH key
@@ -242,7 +242,7 @@ class Donation(models.Model):
 
 def process_donation(payment):
     if payment.state != Payment.ACCEPTED:
-        raise ValueError("Can not process not accepted payment")
+        raise ValueError("Cannot process non-accepted payment")
     if payment.repeat:
         # Update existing
         donation = Donation.objects.get(payment=payment.repeat.pk)
@@ -385,7 +385,7 @@ class Post(models.Model):
         blank=True,
         db_index=True,
         default=False,
-        help_text="This is an important milestone, shown on milestones archive",
+        help_text="Important milestone, shown in the milestones archive",
     )
 
     class Meta:
@@ -622,7 +622,7 @@ class Service(models.Model):
                     (
                         "extended",
                         _("Extended support"),
-                        _("Don’t be just Basic, get a worry-free package."),
+                        _("Don’t settle with Basic, get a worry-free package."),
                         _("We will manage upgrades for you."),
                         "img/Support-Plus.svg",
                         _("Stay updated"),
@@ -635,9 +635,9 @@ class Service(models.Model):
                         "backup",
                         _("Backup service"),
                         _("Easily put your backups in a safe place."),
-                        _("Encrypted and automatic backups, always available."),
+                        _("Encrypted and automatic, always available."),
                         "img/Support-Backup.svg",
-                        _("Backup daily"),
+                        _("Back up daily"),
                     )
                 )
         return result
