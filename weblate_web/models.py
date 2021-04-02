@@ -97,7 +97,7 @@ def validate_bitmap(value):
         # verify() must be called immediately after the constructor.
         image.verify()
 
-        # Pillow doesn't detect the media type of all formats. In those
+        # Pillow doesn't detect the MIME type of all formats. In those
         # cases, content_type will be None.
         value.file.content_type = PIL.Image.MIME.get(image.format)
     except Exception:
@@ -242,7 +242,7 @@ class Donation(models.Model):
 
 def process_donation(payment):
     if payment.state != Payment.ACCEPTED:
-        raise ValueError("Can not process non-accepted payment")
+        raise ValueError("Cannot process non-accepted payment")
     if payment.repeat:
         # Update existing
         donation = Donation.objects.get(payment=payment.repeat.pk)
@@ -611,9 +611,9 @@ class Service(models.Model):
                         "premium",
                         _("Premium support"),
                         _("Don’t wait with your work on hold."),
-                        _("Guarantees you answers the NBD at the latest."),
+                        _("This guarantees you answers the NBD at the latest."),
                         "img/Support-Premium.svg",
-                        _("Premium, the worry-free package."),
+                        _("Be Premium."),
                     )
                 )
 
@@ -622,7 +622,7 @@ class Service(models.Model):
                     (
                         "extended",
                         _("Extended support"),
-                        _("Have more than a Basic plan."),
+                        _("Don’t settle with Basic, get a worry-free package."),
                         _("We will manage upgrades for you."),
                         "img/Support-Plus.svg",
                         _("Stay updated"),
@@ -634,10 +634,10 @@ class Service(models.Model):
                     (
                         "backup",
                         _("Backup service"),
-                        _("Easily safeguard all work in a safe place."),
+                        _("Easily put your backups in a safe place."),
                         _("Encrypted and automatic, always available."),
                         "img/Support-Backup.svg",
-                        _("Backup daily"),
+                        _("Back up daily"),
                     )
                 )
         return result
