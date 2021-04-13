@@ -331,8 +331,6 @@ SESSION_COOKIE_AGE = 3600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
-
 PAYMENT_DEBUG = True
 
 PAYMENT_FAKTURACE = "/home/nijel/weblate/tmp-fakturace"
