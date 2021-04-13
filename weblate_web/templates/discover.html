@@ -31,7 +31,7 @@
               {% for service in discoverable_services %}
                 <div class="article discover" id="d{{ service.pk }}">
                   <div class="img">
-                    <a href="{{ service.site_url }}">
+                    <a href="{{ service.site_url }}" target="_blank" rel="ugc">
                       {% if service.discover_image %}
                         <img class="discover-img" src="{{ service.discover_image.url }}" />
                       {% else %}
@@ -50,16 +50,16 @@
                         {% blocktrans count cnt=service.site_projects with count=service.site_projects|intcomma|make_strong %}{{ count }} project{% plural %}{{ count }} projects{% endblocktrans %}<br />
                         {% blocktrans count cnt=service.site_users with count=service.site_users|intcomma|make_strong %}{{ count }} translator{% plural %}{{ count }} translators{% endblocktrans %}
                     </div>
-                    <h2><a href="{{ service.site_url }}" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
+                    <h2><a href="{{ service.site_url }}" target="_blank" rel="ugc" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
                     {% if service.discover_text %}
                       <p lang="en" dir="ltr">{{ service.get_discover_text }}</p>
                     {% endif %}
                     <p lang="en" dir="ltr" class="projects">
                       {% for project in service.matched_projects %}
-                        <a class="project" href="{{ service.site_url }}{{ project.url }}">{{ project.name }}</a>
+                        <a class="project" href="{{ service.site_url }}{{ project.url }}" target="_blank" rel="ugc">{{ project.name }}</a>
                       {% endfor %}
                       {% if service.non_matched_projects_count %}
-                        <a href="{{ service.site_url }}/projects/"><img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" /></a>
+                        <a href="{{ service.site_url }}/projects/" target="_blank" rel="ugc"><img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" /></a>
                       {% endif %}
                       {% if service.pk in user_services %}
                         <a class="button small float-right" href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
