@@ -52,6 +52,7 @@ SUPPORTED_LANGUAGES = {
     "pl",
     "pt",
     "pt-br",
+    "ro",
     "ru",
     "sk",
     "sl",
