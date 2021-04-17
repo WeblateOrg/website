@@ -34,10 +34,10 @@
                         </tr>
                     </table>
                     <div class="half first">
-                        <div class="box-price"><strong>{{ 19 | price_format }}</strong><br />{% filter lower %}{% trans "Monthly" %}{% endfilter %}</div>
+                        <div class="box-price"><strong>{{ 19 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Monthly" %}{% endfilter %}</span></div>
                     </div>
                     <div class="half">
-                        <div class="box-price"><span>{% blocktrans with percent=13 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 199 | price_format }}</strong><br />{% filter lower %}{% trans "Yearly" %}{% endfilter %}</div>
+                        <div class="box-price"><span class="save">{% blocktrans with percent=13 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 199 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Yearly" %}{% endfilter %}</span></div>
                     </div>
                 </div>
                 <div id="medium" class="tab-content">
