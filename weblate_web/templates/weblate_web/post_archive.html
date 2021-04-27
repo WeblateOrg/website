@@ -16,8 +16,12 @@
             </div>
           {% endfor %}
           </div>
-          {% for pg in page_obj.paginator.page_range %}
-            <a href="{{ request.path }}?page={{ pg }}" class="button pagination center {% if pg == page_obj.number %}active-page{% endif %}">{{ pg }}</a>
+          {% for pg in page_range %}
+            {% if pg == "." %}
+              …
+            {% else %}
+              <a href="{{ request.path }}?page={{ pg }}" class="button pagination center {% if pg == page_obj.number %}active-page{% endif %}">{{ pg }}</a>
+            {% endif %}
           {% endfor %}
         </div>
     	</div>
