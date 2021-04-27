@@ -78,12 +78,13 @@ DOT = "."
 
 def get_page_range(page_obj):
     paginator = page_obj.paginator
-    page_num = page_obj.number
+    page_num = page_obj.number - 1
+    num_pages = paginator.num_pages
 
     # If there are 10 or fewer pages, display links to every page.
     # Otherwise, do some fancy
-    if paginator.num_pages <= 10:
-        page_range = range(paginator.num_pages)
+    if num_pages <= 10:
+        page_range = range(num_pages)
     else:
         # Insert "smart" pagination links, so that there are always ON_ENDS
         # links at either end of the list of pages, and there are always
@@ -97,15 +98,15 @@ def get_page_range(page_obj):
             ]
         else:
             page_range.extend(range(0, page_num + 1))
-        if page_num < (paginator.num_pages - ON_EACH_SIDE - ON_ENDS - 1):
+        if page_num < (num_pages - ON_EACH_SIDE - ON_ENDS - 1):
             page_range += [
                 *range(page_num + 1, page_num + ON_EACH_SIDE + 1),
                 DOT,
-                *range(paginator.num_pages - ON_ENDS, paginator.num_pages),
+                *range(num_pages - ON_ENDS, num_pages),
             ]
         else:
-            page_range.extend(range(page_num + 1, paginator.num_pages))
-    return page_range
+            page_range.extend(range(page_num + 1, num_pages))
+    return [page + 1 if isinstance(page, int) else page for page in page_range]
 
 
 def get_customer(request):
