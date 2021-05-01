@@ -108,4 +108,6 @@ class SecurityMiddleware:
         )
         response["Expect-CT"] = f'max-age=86400, enforce, report-uri="{URL}"'
         response["X-XSS-Protection"] = "1; mode=block"
+        # Opt-out from Google FLoC
+        response["Permissions-Policy"] = "interest-cohort=()"
         return response
