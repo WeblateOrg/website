@@ -846,5 +846,9 @@ class Project(models.Model):
     url = models.CharField(max_length=120)
     web = models.URLField()
 
+    class Meta:
+        verbose_name = "Weblate project"
+        verbose_name_plural = "Weblate projects"
+
     def __str__(self):
         return f"{self.service.site_title}: {self.name}"
