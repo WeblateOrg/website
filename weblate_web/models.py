@@ -503,7 +503,10 @@ class Service(models.Model):
 
     @property
     def needs_token(self):
-        return self.status not in ("hosted", "shared", "community")
+        return (
+            self.status not in ("hosted", "shared", "community")
+            or self.backup_subscriptions
+        )
 
     def projects_limit(self):
         report = self.last_report
