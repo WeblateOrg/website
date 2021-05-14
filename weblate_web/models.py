@@ -592,7 +592,7 @@ class Service(models.Model):
 
     def get_suggestions(self):
         result = []
-        if not self.support_subscriptions.exists():
+        if not self.support_subscriptions:
             result.append(
                 (
                     "basic",
@@ -604,11 +604,8 @@ class Service(models.Model):
                 )
             )
 
-        if (
-            not self.hosted_subscriptions.exists()
-            and not self.shared_subscriptions.exists()
-        ):
-            if not self.premium_subscriptions.exists():
+        if not self.hosted_subscriptions and not self.shared_subscriptions:
+            if not self.premium_subscriptions:
                 result.append(
                     (
                         "premium",
@@ -620,7 +617,7 @@ class Service(models.Model):
                     )
                 )
 
-            if not self.extended_subscriptions.exists():
+            if not self.extended_subscriptions:
                 result.append(
                     (
                         "extended",
@@ -632,7 +629,7 @@ class Service(models.Model):
                     )
                 )
 
-            if not self.backup_subscriptions.exists():
+            if not self.backup_subscriptions:
                 result.append(
                     (
                         "backup",
