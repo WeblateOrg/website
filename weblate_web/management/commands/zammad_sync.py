@@ -30,9 +30,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.client = ZammadAPI(
+            url="https://care.weblate.org/api/v1/",
             http_token=settings.ZAMMAD_TOKEN,
-            is_secure=True,
-            host="care.weblate.org",
         )
         self.handle_hosted_account()
 
