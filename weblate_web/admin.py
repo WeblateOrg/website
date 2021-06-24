@@ -38,7 +38,15 @@ def format_user(obj):
 
 
 class DonationAdmin(admin.ModelAdmin):
-    list_display = ("user", "reward", "created", "expires", "get_amount")
+    list_display = (
+        "user",
+        "reward",
+        "created",
+        "expires",
+        "get_amount",
+        "link_text",
+        "link_url",
+    )
 
 
 class ProjectAdmin(admin.TabularInline):
