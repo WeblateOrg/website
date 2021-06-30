@@ -467,7 +467,9 @@ class Service(models.Model):
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
     discoverable = models.BooleanField(default=False)
-    site_url = models.URLField(verbose_name=_("Server URL"), default="", blank=True)
+    site_url = models.URLField(
+        verbose_name=gettext_lazy("Server URL"), default="", blank=True
+    )
     site_title = models.TextField(default="Weblate")
     site_version = models.TextField(default="", blank=True)
     site_users = models.IntegerField(default=0)
@@ -480,7 +482,9 @@ class Service(models.Model):
         verbose_name=gettext_lazy("Server image"),
         blank=True,
         upload_to="discover/",
-        help_text=_("PNG or JPG image with a resolution of 570 x 260 pixels."),
+        help_text=gettext_lazy(
+            "PNG or JPG image with a resolution of 570 x 260 pixels."
+        ),
         validators=[
             FileExtensionValidator(["jpg", "jpeg", "png"]),
             validate_bitmap,
