@@ -18,7 +18,7 @@
 #
 
 # Version offered for download
-VERSION = "4.7"
+VERSION = "4.7.1"
 
 # Extensions offered for donwload
 EXTENSIONS = ("tar.xz", "tar.bz2", "tar.gz")
