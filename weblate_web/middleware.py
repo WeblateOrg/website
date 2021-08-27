@@ -36,6 +36,7 @@ CSP_TEMPLATE = (
     "font-src {font}; "
     "frame-src 'none'; "
     "frame-ancestors 'none'; "
+    "form-action 'self' hosted.weblate.org;"
     "report-uri {report}"
 )
 
