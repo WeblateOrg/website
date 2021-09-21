@@ -23,6 +23,7 @@ import subprocess
 from math import floor
 
 import fiobank
+import sentry_sdk
 import thepay.config
 import thepay.dataApi
 import thepay.gateApi
@@ -276,6 +277,7 @@ class ThePayCard(Backend):
                     self.payment.vat_amount,
                 )
             except thepay.gateApi.GateError as error:
+                sentry_sdk.capture_exception()
                 self.payment.details = {"errorDescription": error.args[0]}
                 # Failure is handled in collect using API
             return None
@@ -312,6 +314,7 @@ class ThePayCard(Backend):
             try:
                 return_payment.checkSignature()
             except thepay.payment.ReturnPayment.InvalidSignature:
+                sentry_sdk.capture_exception()
                 return False
 
             # Check we got correct payment
