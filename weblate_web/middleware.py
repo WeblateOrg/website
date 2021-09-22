@@ -78,7 +78,7 @@ class SecurityMiddleware:
         connect = ["'self'"]
         image = ["'self'", "data:"]
         font = ["'self'", "s.weblate.org"]
-        form = ["'self'", "hosted.weblate.org"]
+        form = ["'self'", "weblate.org", "hosted.weblate.org"]
 
         # Sentry/Raven
         script.append("cdn.ravenjs.com")
