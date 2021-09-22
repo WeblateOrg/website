@@ -36,7 +36,7 @@ CSP_TEMPLATE = (
     "font-src {font}; "
     "frame-src 'none'; "
     "frame-ancestors 'none'; "
-    "form-action 'self' hosted.weblate.org;"
+    "form-action {form};"
     "report-uri {report}"
 )
 
@@ -78,6 +78,7 @@ class SecurityMiddleware:
         connect = ["'self'"]
         image = ["'self'", "data:"]
         font = ["'self'", "s.weblate.org"]
+        form = ["'self'", "hosted.weblate.org"]
 
         # Sentry/Raven
         script.append("cdn.ravenjs.com")
@@ -95,6 +96,7 @@ class SecurityMiddleware:
 
         # The Pay
         image.append("www.thepay.cz")
+        form.append("www.thepay.cz")
 
         # GitHub avatars
         image.append("*.githubusercontent.com")
@@ -105,6 +107,7 @@ class SecurityMiddleware:
             script=" ".join(script),
             font=" ".join(font),
             connect=" ".join(connect),
+            form=" ".join(form),
             report=URL,
         )
         response["Expect-CT"] = f'max-age=86400, enforce, report-uri="{URL}"'
