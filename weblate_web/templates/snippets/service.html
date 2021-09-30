@@ -3,234 +3,237 @@
 {% load timestamps %}
 
 <div class="payment-form pt-pb">
-    <div class="form-line service-text-formatting bdr-btm">
-        <div class="service-variant">
-            <p>{{ service.get_status_display }}</p>
-        <div class="service-time">
-            {% with subscriptions=service.subscription_set.all %}
-            {% for subscription in subscriptions %}
+  <div class="form-line service-text-formatting bdr-btm">
+    <div class="service-variant">
+      <p>{{ service.get_status_display }}</p>
+      <div class="service-time">
+        {% with subscriptions=service.subscription_set.all %}
+          {% for subscription in subscriptions %}
             {% with days_from_today=subscription.expires|days_diff_from_today %}
-            {% if days_from_today < 30 %}
-            {% if days_from_today < 2 and days_from_today >= 0 %}
-            <t class="orange">{{ days_from_today | days_remaining}}</t>
-            {% elif days_from_today < 0  %}
-            <t class="orange">{% trans "Expired" %}</t>
-            {% else %}
-            <t class="orange">{{ days_from_today | days_remaining}}</t>
-            {% endif %}
-            {% else %}
-            <t class="grey">{{ days_from_today | days_remaining}}</t>
-            {% endif %}
-            {% endwith %}
-            {% endfor %}
-            {% endwith %}
-        </div>
-        </div>
-    </div>
-                <div class="form-line clear"></div>
-
-                <div class="form-line service-text-formatting">
-                    <div class="line-left">{% trans "Users" %}</div>
-                    <div class="line-right">
-                    {% for owner in service.users.all %}
-                    <form id="server_user_{{owner.id}}_form" method="post" action="{% url 'service-user' pk=service.pk %}">
-                    <div class="user-slot">
-                        <div class="user-slot-content">
-                        <p>{{ owner.last_name }}</p>
-                    <t>{{ owner.email }}</t></div>
-                    {% if owner == user %}
-                    <div class="user-img"><img src="{% static "img/Shield.png" %}" title="{% trans "You can not remove yourself" %}" alt="{% trans "Protected user" %}"></div>
-                    {% else %}
-                    {% csrf_token %}
-                    <button class="user-img"><img src="{% static "img/delete.png" %}" alt="{% trans "Remove user" %}"></button>
-                    {% endif %}
-                </div>
-                    {% csrf_token %}
-                    {% if owner != user %}
-                    <input type="hidden" name="email" value="{{ owner.email }}" />
-                    <input type="hidden" class="" name="remove" value="{% trans "Remove" %}" />
-                    {% endif %}
-                    </form>
-                    {% endfor %}
-                    <form method="post" action="{% url 'service-user' pk=service.pk %}">
-                    {% csrf_token %}
-                    <input type="email" class="grey-input" placeholder="{% trans "E-mail" %}" name="email" aria-label="{% trans "E-mail" %}" />
-                    <input type="submit" class="button button-med-120 inline border rev" value="{% trans "Add user" %}" />
-                    </form>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-
-                {% if service.needs_token %}
-                <div class="form-line service-text-formatting bdr-btm">
-                    <div class="line-left p-top">{% trans "Activation token" %}</div>
-                    <div class="line-right">
-                        <input value="{{ service.secret }}" readonly class="fullwidth"><br />
-                        {% if service.site_url %}
-                          <a class="button button-med-100 inline" href="{{ service.site_url }}/manage/?activation={{ service.secret }}">{% trans "Activate" %}</a>
-                        {% endif %}
-                        <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
-                        <form class="form-inline" method="post" action="{% url "service-token" pk=service.pk %}">
-                        {% csrf_token %}
-                        <input type="submit" class="button button-med-150 inline border rev" value="{% trans "Refresh token" %}">
-                        </form>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                {% endif %}
-                {% if service.backup_repository %}
-                <div class="form-line service-text-formatting bdr-btm">
-                    <div class="line-left p-top">{% trans "Backup repository" %}</div>
-                    <div class="line-right">
-                        <input value="{{ service.backup_repository }}" readonly class="fullwidth"><br />
-                        <a class="button button-med-100 inline" data-clipboard-text="{{ service.backup_repository }}">{% trans "Copy" %}</a>
-                        <a class="button button-med-170 inline border rev" href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Documentation" %}</a>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                {% endif %}
-                <div class="form-line service-text-formatting">
-                    <div class="line-left">{% trans "Server URL" %}</div>
-                    <div class="line-right">
-                {% if service.last_report %}
-                        <a class="link" href="{{ service.last_report.site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
+              {% if days_from_today < 30 %}
+                {% if days_from_today < 2 and days_from_today >= 0 %}
+                  <t class="orange">{{ days_from_today | days_remaining}}</t>
+                {% elif days_from_today < 0  %}
+                  <t class="orange">{% trans "Expired" %}</t>
                 {% else %}
-                        <p class="text-muted">
-                            {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For increased comfort, use the activation token to connect your Weblate installation to the support portal. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
-                        </p>
+                  <t class="orange">{{ days_from_today | days_remaining}}</t>
                 {% endif %}
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="form-line service-text-formatting">
-                    <div class="line-left">{% trans "Discover Weblate" %}</div>
-                    <div class="line-right">
-                      {% if service.discoverable %}
-                        <a class="link" href="{% url 'discover' %}#d{{ service.pk }}">{% trans "View your listing" %}</a>
-                        <a class="button small inline" href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
-                      {% endif %}
-                        <p class="text-muted">
-                            {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate server. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
-                        </p>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                {% with subscriptions=service.subscription_set.all %}
-                {% for subscription in subscriptions %}
-                    <div class="form-line service-text-formatting">
-                        <div class="line-left">{% trans "Subscription" %}</div>
-                        <div class="line-right">
-                            <p>{{ subscription.get_package_display }}</p>
-                            <t>{% date_range subscription.created subscription.expires True %}
-                                <span>
-                                    {% with days_from_today=subscription.expires|days_diff_from_today %}
-                                    {% if days_from_today < 30 %}
-                                    {% if days_from_today < 2 and days_from_today >= 0 %}
-                                    <t class="pl-1 orange">{{ days_from_today | days_remaining}}</t>
-                                    {% elif days_from_today < 0  %}
-                                    <t class="pl-1 orange">Expired</t>
-                                    {% else %}
-                                    <t class="pl-1 orange">{{ days_from_today | days_remaining}}</t>
-                                    {% endif %}
-                                    {% else %}
-                                    <t class="pl-1 grey">{{ days_from_today | days_remaining}}</t>
-                                    {% endif %}
-                                    {% endwith %}
-                                </span>
-                            </t>
-                            <br>
-                            {% if service.note %}
-                            <v class="subscription-note">{% trans "Note" %}:
-                                <span>
-                                    {{ service.note }}
-                                </span>
-                            </v>
-                            {% endif %}
+              {% else %}
+                <t class="grey">{{ days_from_today | days_remaining}}</t>
+              {% endif %}
+            {% endwith %}
+          {% endfor %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
 
-                            {% if service.status == "shared" %}
-                            <a class="button small inline" href="https://hosted.weblate.org/create/billing/?billing={{ service.hosted_billing }}&amp;upgrade=1">{% trans "Change plan" %}</a>
-                            {% endif %}
-                        </div>
-                        <div class="clear"></div>
-                    </div>
+  <div class="form-line clear"></div>
 
-                    {% if subscription.get_repeat %}
-                    <div class="form-line service-text-formatting">
-                        <div class="line-left">{% trans "Billing" %}</div>
-                        <div class="line-right">
-                            {% if subscription.active and subscription.payment_obj.recurring %}
-                            <form class="form-float" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">
-                            {% csrf_token %}
-                            <input type="submit" class="link" value="{% trans "Turn off renewal" %}">
-                            </form>
-                            {% endif %}
-                            {% if not subscription.active %}
-                            {% trans "Expired" %}
-                            {% elif subscription.payment_obj.recurring %}
-                            {% trans "Automatic renewal" %}
-                            {% else %}
-                            {% trans "No renewal" %}
-                            {% endif %}
-                            <br />
-                            <form class="form-inline" method="post" action="{% url "subscription-pay" pk=subscription.pk %}">
-                            {% csrf_token %}
-                            <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
-                            {% if subscription.yearly_package %}
-                            <input type="submit" class="button small inline" value="{% trans "Upgrade to annual" %}" name="switch_yearly"><span>{% blocktrans %}and <strong>save 20%</strong>.{% endblocktrans %}</span>
-                            {% endif %}
-                            </form>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                    {% endif %}
-                {% endfor %}
-                <div class="form-line service-text-formatting">
-                    <div class="line-left">{% trans "Payments" %}</div>
-                    <div class="line-right">
-                    <table class="payments-table">
-                    {% for subscription in subscriptions %}
-                        {% for payment in subscription.list_payments %}
-                        {% include "snippets/payment.html" %}
-                        {% endfor %}
-                    {% endfor %}
-                    </table>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                {% endwith %}
-
-                {% with service_suggestions=service.get_suggestions %}
-                <div class="form-line service-text-formatting">
-                    <div class="line-left">
-                      {% if service_suggestions %}
-                        {% trans "Get more Weblate" %}
-                      {% else %}
-                        {% trans "Available services" %}
-                      {% endif %}
-                    </div>
-                    <div class="line-right">
-                        <div class="inner-grid">
-                        {% for package, name, desc1, desc2, image, text in service_suggestions %}
-                        <div class="grid-item1">
-                            <img src="{% static image %}" alt="logo">
-                        </div>
-                        <div class="grid-item2">
-                            <p>{{ name }}</p>
-                            <t>
-                              {{ desc1 }}
-                              <br />
-                              {{ desc2 }}
-                            </t>
-                        </div>
-                        <div class="grid-item3">
-                        <a class="button med inline" href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ text }}</a>
-                        </div>
-                        {% empty %}
-                          {% trans "Congratulations, you are fully covered!" %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="clear"></div>
-                </div>
-                {% endwith %}
+  <div class="form-line service-text-formatting">
+    <div class="line-left">{% trans "Users" %}</div>
+    <div class="line-right">
+      {% for owner in service.users.all %}
+        <form id="server_user_{{owner.id}}_form" method="post" action="{% url 'service-user' pk=service.pk %}">
+          <div class="user-slot">
+            <div class="user-slot-content">
+              <p>{{ owner.last_name }}</p>
+              <t>{{ owner.email }}</t>
             </div>
+            {% if owner == user %}
+              <div class="user-img"><img src="{% static "img/Shield.png" %}" title="{% trans "You can not remove yourself" %}" alt="{% trans "Protected user" %}"></div>
+            {% else %}
+              {% csrf_token %}
+              <button class="user-img"><img src="{% static "img/delete.png" %}" alt="{% trans "Remove user" %}"></button>
+            {% endif %}
+          </div>
+          {% csrf_token %}
+          {% if owner != user %}
+            <input type="hidden" name="email" value="{{ owner.email }}" />
+            <input type="hidden" class="" name="remove" value="{% trans "Remove" %}" />
+          {% endif %}
+        </form>
+      {% endfor %}
+      <form method="post" action="{% url 'service-user' pk=service.pk %}">
+        {% csrf_token %}
+        <input type="email" class="grey-input" placeholder="{% trans "E-mail" %}" name="email" aria-label="{% trans "E-mail" %}" />
+        <input type="submit" class="button button-med-120 inline border rev" value="{% trans "Add user" %}" />
+      </form>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  {% if service.needs_token %}
+    <div class="form-line service-text-formatting bdr-btm">
+      <div class="line-left p-top">{% trans "Activation token" %}</div>
+      <div class="line-right">
+        <input value="{{ service.secret }}" readonly class="fullwidth"><br />
+        {% if service.site_url %}
+          <a class="button button-med-100 inline" href="{{ service.site_url }}/manage/?activation={{ service.secret }}">{% trans "Activate" %}</a>
+        {% endif %}
+        <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
+        <form class="form-inline" method="post" action="{% url "service-token" pk=service.pk %}">
+          {% csrf_token %}
+          <input type="submit" class="button button-med-150 inline border rev" value="{% trans "Refresh token" %}">
+        </form>
+      </div>
+      <div class="clear"></div>
+    </div>
+  {% endif %}
+  {% if service.backup_repository %}
+    <div class="form-line service-text-formatting bdr-btm">
+      <div class="line-left p-top">{% trans "Backup repository" %}</div>
+      <div class="line-right">
+        <input value="{{ service.backup_repository }}" readonly class="fullwidth"><br />
+        <a class="button button-med-100 inline" data-clipboard-text="{{ service.backup_repository }}">{% trans "Copy" %}</a>
+        <a class="button button-med-170 inline border rev" href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Documentation" %}</a>
+      </div>
+      <div class="clear"></div>
+    </div>
+  {% endif %}
+  <div class="form-line service-text-formatting">
+    <div class="line-left">{% trans "Server URL" %}</div>
+    <div class="line-right">
+      {% if service.last_report %}
+        <a class="link" href="{{ service.last_report.site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
+      {% else %}
+        <p class="text-muted">
+            {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For increased comfort, use the activation token to connect your Weblate installation to the support portal. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
+        </p>
+      {% endif %}
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div class="form-line service-text-formatting">
+    <div class="line-left">{% trans "Discover Weblate" %}</div>
+    <div class="line-right">
+      {% if service.discoverable %}
+        <a class="link" href="{% url 'discover' %}#d{{ service.pk }}">{% trans "View your listing" %}</a>
+        <a class="button small inline" href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
+      {% endif %}
+        <p class="text-muted">
+            {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate server. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
+        </p>
+    </div>
+    <div class="clear"></div>
+  </div>
+  {% with subscriptions=service.subscription_set.all %}
+    {% for subscription in subscriptions %}
+      <div class="form-line service-text-formatting">
+        <div class="line-left">{% trans "Subscription" %}</div>
+        <div class="line-right">
+          <p>{{ subscription.get_package_display }}</p>
+          <t>{% date_range subscription.created subscription.expires True %}
+            <span>
+              {% with days_from_today=subscription.expires|days_diff_from_today %}
+                {% if days_from_today < 30 %}
+                  {% if days_from_today < 2 and days_from_today >= 0 %}
+                    <t class="pl-1 orange">{{ days_from_today | days_remaining}}</t>
+                  {% elif days_from_today < 0  %}
+                    <t class="pl-1 orange">Expired</t>
+                  {% else %}
+                    <t class="pl-1 orange">{{ days_from_today | days_remaining}}</t>
+                  {% endif %}
+                {% else %}
+                  <t class="pl-1 grey">{{ days_from_today | days_remaining}}</t>
+                {% endif %}
+              {% endwith %}
+            </span>
+          </t>
+          <br>
+          {% if service.note %}
+            <v class="subscription-note">{% trans "Note" %}:
+              <span>
+                {{ service.note }}
+              </span>
+            </v>
+          {% endif %}
+
+          {% if service.status == "shared" %}
+            <a class="button small inline" href="https://hosted.weblate.org/create/billing/?billing={{ service.hosted_billing }}&amp;upgrade=1">{% trans "Change plan" %}</a>
+          {% endif %}
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      {% if subscription.get_repeat %}
+        <div class="form-line service-text-formatting">
+          <div class="line-left">{% trans "Billing" %}</div>
+          <div class="line-right">
+            {% if subscription.active and subscription.payment_obj.recurring %}
+              <form class="form-float" method="post" action="{% url "subscription-disable" pk=subscription.pk %}">
+              {% csrf_token %}
+              <input type="submit" class="link" value="{% trans "Turn off renewal" %}">
+              </form>
+            {% endif %}
+            {% if not subscription.active %}
+              {% trans "Expired" %}
+            {% elif subscription.payment_obj.recurring %}
+              {% trans "Automatic renewal" %}
+            {% else %}
+              {% trans "No renewal" %}
+            {% endif %}
+            <br />
+            <form class="form-inline" method="post" action="{% url "subscription-pay" pk=subscription.pk %}">
+              {% csrf_token %}
+              <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
+              {% if subscription.yearly_package %}
+                <input type="submit" class="button small inline" value="{% trans "Upgrade to annual" %}" name="switch_yearly"><span>{% blocktrans %}and <strong>save 20%</strong>.{% endblocktrans %}</span>
+              {% endif %}
+            </form>
+          </div>
+          <div class="clear"></div>
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <div class="form-line service-text-formatting">
+      <div class="line-left">{% trans "Payments" %}</div>
+      <div class="line-right">
+        <table class="payments-table">
+          {% for subscription in subscriptions %}
+            {% for payment in subscription.list_payments %}
+              {% include "snippets/payment.html" %}
+            {% endfor %}
+          {% endfor %}
+        </table>
+      </div>
+      <div class="clear"></div>
+    </div>
+  {% endwith %}
+
+  {% with service_suggestions=service.get_suggestions %}
+    <div class="form-line service-text-formatting">
+      <div class="line-left">
+        {% if service_suggestions %}
+          {% trans "Get more Weblate" %}
+        {% else %}
+          {% trans "Available services" %}
+        {% endif %}
+      </div>
+      <div class="line-right">
+        <div class="inner-grid">
+          {% for package, name, desc1, desc2, image, text in service_suggestions %}
+            <div class="grid-item1">
+              <img src="{% static image %}" alt="logo">
+            </div>
+            <div class="grid-item2">
+              <p>{{ name }}</p>
+              <t>
+                {{ desc1 }}
+                <br />
+                {{ desc2 }}
+              </t>
+            </div>
+            <div class="grid-item3">
+              <a class="button med inline" href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ text }}</a>
+            </div>
+          {% empty %}
+            {% trans "Congratulations, you are fully covered!" %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="clear"></div>
+    </div>
+  {% endwith %}
+</div>
