@@ -349,7 +349,7 @@ CHANGES_API = "https://hosted.weblate.org/api/"
 CHANGES_KEY = ""
 
 STORAGE_SERVER = {
-    "hostname": "u164666.your-storagebox.de",
+    "hostname": "backups.weblate.cloud",
     "port": 23,
     "username": "u164666-sub4",
 }
