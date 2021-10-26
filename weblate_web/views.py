@@ -802,7 +802,7 @@ class DiscoverView(TemplateView):
                 service__discoverable=True
             ).prefetch_related("service")
             if connection.vendor == "mysql":
-                projects = projects.filter(name__search=query)
+                projects = projects.filter(name__search=query.replace("*", ""))
             else:
                 projects = projects.filter(name__icontains=query)
             services_dict = {}
