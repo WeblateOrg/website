@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2021-06-25 08:49+0200\n"
-"PO-Revision-Date: 2021-07-24 19:33+0000\n"
-"Last-Translator: Klemen Skerbiš <klemen.skerbis1@gmail.com>\n"
+"PO-Revision-Date: 2021-11-01 11:35+0000\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://hosted.weblate.org/projects/weblate/"
 "website/sl/>\n"
 "Language: sl\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 4.7.2-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: payments/backends.py:253
 msgid "Payment card"
@@ -169,11 +169,13 @@ msgstr "{} ni veljavna koda države za nobeno članico Evropske unije."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
-msgstr ""
+msgstr "{} ne ustreza specifikaciji davčnih številk te države."
 
 #: payments/validators.py:58
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
+"Storitev preverjanja davčnih števil za {} ni na voljo, poskusite znova "
+"kasneje."
 
 #: payments/validators.py:61
 msgid "{} is not a valid VAT ID."
@@ -188,26 +190,26 @@ msgstr ""
 
 #: weblate_web/models.py:51
 msgid "No reward"
-msgstr ""
+msgstr "Brez nagrade"
 
 #: weblate_web/models.py:52 weblate_web/templates/donate.html:30
 msgid "Name in the list of supporters"
-msgstr ""
+msgstr "Ime na seznamu podpornikov"
 
 #: weblate_web/models.py:53 weblate_web/templates/donate.html:37
 #: weblate_web/templates/donate/form.html:47
 msgid "Link in the list of supporters"
-msgstr ""
+msgstr "Povezava na seznamu podpornikov"
 
 #: weblate_web/models.py:54 weblate_web/templates/donate.html:44
 #: weblate_web/templates/donate/form.html:55
 msgid "Logo and link on the Weblate website"
-msgstr ""
+msgstr "Logotip in povezava na spletišču Weblate"
 
 #: weblate_web/models.py:58
 #: weblate_web/templates/weblate_web/post_detail.html:50
 msgid "Release"
-msgstr ""
+msgstr "Izdaja"
 
 #: weblate_web/models.py:59 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
@@ -220,20 +222,16 @@ msgstr "Obvestilo"
 
 #: weblate_web/models.py:61
 msgid "Conferences"
-msgstr ""
+msgstr "Konference"
 
 #: weblate_web/models.py:62 weblate_web/templates/hosting.html:58
-#, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Hosted Weblate"
-msgstr "Gostovanje Weblate"
+msgstr "Gostujoči Weblate"
 
 #: weblate_web/models.py:63
 #: weblate_web/templates/weblate_web/post_detail.html:52
-#, fuzzy
-#| msgid "Develop"
 msgid "Development"
-msgstr "Razvijajte"
+msgstr "Razvoj"
 
 #: weblate_web/models.py:64
 #: weblate_web/templates/weblate_web/post_detail.html:53
@@ -247,11 +245,11 @@ msgstr "Neveljavna slika!"
 #: weblate_web/models.py:116
 #, python-format
 msgid "Unsupported image type: %s"
-msgstr ""
+msgstr "Nepodprta vrsta slik: %s"
 
 #: weblate_web/models.py:123
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
-msgstr ""
+msgstr "Naložite sliko z ločljivostjo 570 x 260 slikovnih točk."
 
 #: weblate_web/models.py:189
 msgid "Link text"
@@ -266,10 +264,8 @@ msgid "Link image"
 msgstr "Slika povezave"
 
 #: weblate_web/models.py:453
-#, fuzzy
-#| msgid "Community support"
 msgid "Community supported"
-msgstr "Podpora skupnosti"
+msgstr "S podporo skupnosti"
 
 #: weblate_web/models.py:454
 #, fuzzy
@@ -296,26 +292,20 @@ msgid "Premium self-hosted support"
 msgstr "Podpora Weblate"
 
 #: weblate_web/models.py:470 weblate_web/templates/snippets/service.html:93
-#, fuzzy
-#| msgid "Server error"
 msgid "Server URL"
-msgstr "Napaka strežnika"
+msgstr "URL strežnika"
 
 #: weblate_web/models.py:477
-#, fuzzy
-#| msgid "Payment description"
 msgid "Server description"
-msgstr "Opis plačila"
+msgstr "Opis strežnika"
 
 #: weblate_web/models.py:480
-#, fuzzy
-#| msgid "Server error"
 msgid "Server image"
-msgstr "Napaka strežnika"
+msgstr "Slika strežnika"
 
 #: weblate_web/models.py:483
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
-msgstr ""
+msgstr "Slika PNG ali JPG z ločljivostjo 570 x 260 slikovnih točk."
 
 #: weblate_web/models.py:599 weblate_web/templates/hosting.html:156
 msgid "Basic support"
@@ -323,23 +313,19 @@ msgstr "Osnovna podpora"
 
 #: weblate_web/models.py:600
 msgid "Never get held back by a problem."
-msgstr ""
+msgstr "Naj vas težava nikoli ne ustavi."
 
 #: weblate_web/models.py:601
 msgid "Set priority for all your questions and reported bugs."
-msgstr ""
+msgstr "Določite prednost za vsa vaša vprašanja in poročila o hroščih."
 
 #: weblate_web/models.py:603 weblate_web/templates/user.html:30
-#, fuzzy
-#| msgid "Weblate support"
 msgid "Get support"
-msgstr "Podpora Weblate"
+msgstr "Pridobite podporo"
 
 #: weblate_web/models.py:612
-#, fuzzy
-#| msgid "Priority email support"
 msgid "Premium support"
-msgstr "Prednostna podpora po e-pošti"
+msgstr "Vrhunska podpora"
 
 #: weblate_web/models.py:613
 msgid "Don’t wait with your work on hold."
@@ -367,7 +353,7 @@ msgstr ""
 
 #: weblate_web/models.py:628
 msgid "Stay updated"
-msgstr ""
+msgstr "Ostanite posodobljeni"
 
 #: weblate_web/models.py:636 weblate_web/templates/support.html:104
 msgid "Backup service"
@@ -379,13 +365,11 @@ msgstr ""
 
 #: weblate_web/models.py:638
 msgid "Encrypted and automatic, always available."
-msgstr ""
+msgstr "Šifrirano in samodejno, vedno na voljo."
 
 #: weblate_web/models.py:640
-#, fuzzy
-#| msgid "One VCS repository"
 msgid "Back up daily"
-msgstr "Ena shramba VCS"
+msgstr "Dnevno varnostno kopiranje"
 
 #: weblate_web/templates/404.html:8
 msgid "Page not found"
@@ -424,23 +408,23 @@ msgstr "Februar 2012"
 
 #: weblate_web/templates/about.html:20
 msgid "Looking for a Pootle alternative"
-msgstr ""
+msgstr "Iščoč alternativo za Pootle"
 
 #: weblate_web/templates/about.html:21
 msgid ""
 "…The key feature is full integration with Git. Changes are committed to a "
 "local Git branch and easily merged back."
 msgstr ""
+"… Ključna funkcionalnost je polna integracija s sistemom Git. Spremembe se "
+"objavljajo v krajevni veji Git in se enostavno spajajo nazaj."
 
 #: weblate_web/templates/about.html:24
 msgid "March 2012"
 msgstr "Marec 2012"
 
 #: weblate_web/templates/about.html:25
-#, fuzzy
-#| msgid "Hosting Weblate"
 msgid "Announcing Weblate"
-msgstr "Gostovanje Weblate"
+msgstr "Objava projekta Weblate"
 
 #: weblate_web/templates/about.html:26
 msgid ""
@@ -460,40 +444,32 @@ msgstr "Čemu Weblate?"
 msgid ""
 "Instead of settling with an existing solution, Weblate was made to have:"
 msgstr ""
+"Namesto vztrajanja pri obstoječi rešitvi je razvoj Weblate ciljal na "
+"naslednje zmožnosti:"
 
 #: weblate_web/templates/about.html:33
-#, fuzzy
-#| msgid "Version control integration"
 msgid "Git integration"
-msgstr "Združitev z nadzorom različic"
+msgstr "Integracija z Git"
 
 #: weblate_web/templates/about.html:34
-#, fuzzy
-#| msgid "Translation status"
 msgid "Translator attribution"
-msgstr "Stanje prevoda"
+msgstr "Pripis avtorstva prevoda"
 
 #: weblate_web/templates/about.html:35
 msgid "Handling of several branches"
-msgstr ""
+msgstr "Ravnanje z več vejami"
 
 #: weblate_web/templates/about.html:36
-#, fuzzy
-#| msgid "Translation context"
 msgid "Displaying context"
-msgstr "Sobesedilo prevoda"
+msgstr "Prikaz konteksta"
 
 #: weblate_web/templates/about.html:37
-#, fuzzy
-#| msgid "Number of translators"
 msgid "Sane merging of translations"
-msgstr "Število prevajalcev"
+msgstr "Pametno spajanje prevodov"
 
 #: weblate_web/templates/about.html:38
-#, fuzzy
-#| msgid "Quality checks"
 msgid "Consistency checks"
-msgstr "Preverjanja kakovosti"
+msgstr "Preverjanje doslednosti"
 
 #: weblate_web/templates/about.html:42
 msgid "Today"
@@ -501,13 +477,11 @@ msgstr "danes"
 
 #: weblate_web/templates/about.html:43
 msgid "Weblate grows and the future is open to new opportunities."
-msgstr ""
+msgstr "Weblate raste in prihodnost je odprta za nove priložnosti."
 
 #: weblate_web/templates/about.html:47
-#, fuzzy
-#| msgid "About Weblate"
 msgid "Your Weblate Team"
-msgstr "O Weblate"
+msgstr "Vaša ekipa Weblate"
 
 #: weblate_web/templates/about.html:54
 msgid ""
@@ -539,47 +513,44 @@ msgstr "Zgodovina Weblate"
 
 #: weblate_web/templates/about.html:87
 msgid "April 2020"
-msgstr ""
+msgstr "April 2020"
 
 #: weblate_web/templates/about.html:88
 msgid "Improved translation memory and support for intermediate translations"
-msgstr ""
+msgstr "Izboljšan pomnilnik prevodov in podpora za delovne prevode"
 
 #: weblate_web/templates/about.html:91
 msgid "January 2019"
-msgstr ""
+msgstr "Januar 2019"
 
 #: weblate_web/templates/about.html:92
-#, fuzzy
-#| msgid "Path to translations within the repository."
 msgid "Automatic detection of translatable files in a repository"
-msgstr "Pot do prevodov v skladišču."
+msgstr "Samodejna zaznava datotek za prevajanje v skladišču"
 
 #: weblate_web/templates/about.html:95
 msgid "June 2018"
-msgstr ""
+msgstr "Junij 2018"
 
 #: weblate_web/templates/about.html:96
 msgid "Weblate 3.0 is released with rewritten and more flexible access control"
 msgstr ""
+"Izšel je Weblate 3.0 z novo napisanim in bolj prilagodljivim nadzorom dostopa"
 
 #: weblate_web/templates/about.html:99
 msgid "April 2018"
-msgstr ""
+msgstr "April 2018"
 
 #: weblate_web/templates/about.html:100
-#, fuzzy
-#| msgid "Translation memory"
 msgid "Built-in translation memory"
-msgstr "Spomin prevodov"
+msgstr "Vgrajen pomnilnik prevodov"
 
 #: weblate_web/templates/about.html:103 weblate_web/templates/about.html:107
 msgid "February 2018"
-msgstr ""
+msgstr "Februar 2018"
 
 #: weblate_web/templates/about.html:104
 msgid "Introducing addons to customize the localization workflow"
-msgstr ""
+msgstr "Uvedba dodatkov za prilagajanje poteka lokalizacije"
 
 #: weblate_web/templates/about.html:108
 msgid "Bringing more fine grained per project ACL settings"
@@ -587,30 +558,30 @@ msgstr ""
 
 #: weblate_web/templates/about.html:111
 msgid "April 2017"
-msgstr ""
+msgstr "April 2017"
 
 #: weblate_web/templates/about.html:112
 msgid "Security program opened at HackerOne"
-msgstr ""
+msgstr "Varnostni program odprt pri HackerOne"
 
 #: weblate_web/templates/about.html:115
 msgid "November 2016"
-msgstr ""
+msgstr "November 2016"
 
 #: weblate_web/templates/about.html:116
 msgid ""
 "Support for uploading screenshots to provide better context for translators"
 msgstr ""
+"Podpora za nalaganje zaslonskih slik, ki prevajalcem podajajo jasnejši "
+"kontekst"
 
 #: weblate_web/templates/about.html:118
 msgid "Show older milestones"
 msgstr "Pokaži starejše mejnike"
 
 #: weblate_web/templates/about.html:130
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Founder of Weblate"
-msgstr "Donirajte Weblateu"
+msgstr "Ustanovitelj Weblate"
 
 #: weblate_web/templates/about.html:131
 msgid ""
@@ -639,11 +610,11 @@ msgstr "E-pošta"
 
 #: weblate_web/templates/about.html:149
 msgid "Provider"
-msgstr ""
+msgstr "Ponudnik"
 
 #: weblate_web/templates/about.html:153
 msgid "Czechia"
-msgstr ""
+msgstr "Češka"
 
 #: weblate_web/templates/about.html:158
 msgid "Business ID"
@@ -651,7 +622,7 @@ msgstr ""
 
 #: weblate_web/templates/about.html:165
 msgid "VAT ID"
-msgstr ""
+msgstr "Davčna številka"
 
 #: weblate_web/templates/about.html:172 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:515
@@ -2600,10 +2571,8 @@ msgid "(including VAT)"
 msgstr "(vključno z DDV)"
 
 #: weblate_web/templates/mail/payment_pending_subject.txt:2
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your pending payment on weblate.org"
-msgstr "Donirajte Weblateu"
+msgstr "Vaše čakajoče plačilo na weblate.org"
 
 #: weblate_web/templates/mail/payment_upcoming.html:9
 #, fuzzy
@@ -3745,10 +3714,8 @@ msgid "Thank you for your donation."
 msgstr "Hvala za naročilo gostovanja!"
 
 #: weblate_web/views.py:728
-#, fuzzy
-#| msgid "Page not found"
 msgid "User not found!"
-msgstr "Strani ni bilo mogoče najti"
+msgstr "Uporabnika ni mogoče najti!"
 
 #, fuzzy
 #~| msgid "Monthly"
