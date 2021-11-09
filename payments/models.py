@@ -128,11 +128,10 @@ class Customer(models.Model):
         return None
 
     def clean(self):
-        if self.vat:
-            if self.vat_country_code != self.country_code:
-                raise ValidationError(
-                    {"country": gettext_lazy("The country has to match your VAT code")}
-                )
+        if self.vat and self.vat_country_code != self.country_code:
+            raise ValidationError(
+                {"country": gettext_lazy("The country has to match your VAT code")}
+            )
 
     @property
     def is_empty(self):
