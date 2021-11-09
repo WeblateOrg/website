@@ -117,7 +117,6 @@ def validate_bitmap(value):
             )
 
         # Check dimensions
-        width, height = image.size
         if image.size != (570, 260):
             raise ValidationError(
                 _("Please upload an image with a resolution of 570 x 260 pixels.")
