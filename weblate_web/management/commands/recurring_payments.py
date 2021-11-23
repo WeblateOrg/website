@@ -81,6 +81,7 @@ class Command(BaseCommand):
                     (
                         name,
                         subscription.service.users.values_list("email", flat=True),
+                        subscription.expires,
                     )
                 )
 
@@ -101,6 +102,7 @@ class Command(BaseCommand):
                 (
                     f"{donation.user}: {donation.get_payment_description()}",
                     [donation.user.email],
+                    donation.expires,
                 )
             )
 

@@ -9,8 +9,8 @@
 </p>
 
 <ul>
-    {% for name, emails in expiry %}
-        <li><strong>{{ name }}</strong>, for users: {{ emails|join:", "}}</li>
+    {% for name, emails, expires in expiry %}
+        <li><strong>{{ name }}</strong>, for users: {{ emails|join:", "}}, expires on {{ expires|date }}</li>
     {% endfor %}
 </ul>
 
