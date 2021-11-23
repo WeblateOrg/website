@@ -74,9 +74,12 @@ class Command(BaseCommand):
             if notify_user:
                 subscription.send_notification("payment_missing")
             if not subscription.could_be_obsolete():
+                name = f"{subscription}"
+                if subscription.service.note:
+                    name = f"{name} ({subscription.service.note})"
                 expiry.append(
                     (
-                        str(subscription),
+                        name,
                         subscription.service.users.values_list("email", flat=True),
                     )
                 )
