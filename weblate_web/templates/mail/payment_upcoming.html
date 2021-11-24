@@ -10,9 +10,7 @@
 {% trans "The payment will be automatically charged next week. In case your card has expired or you want to use different payment method, please perform the payment now." %}
 </p>
 
-<p>
-{% blocktrans with package=subscription.get_package_display %}Current subscription: {{ package }}{% endblocktrans %}
-</p>
+{% include "mail/snippets/subscription_info.html" %}
 {% endif %}
 
 {% if donation %}
@@ -21,9 +19,7 @@
 {% trans "The payment will be automatically charged next week. In case your card has expired or you want to use different payment method, please perform the payment now." %}
 </p>
 
-<p>
-{% blocktrans with package=donation.get_payment_description %}Current subscription: {{ package }}{% endblocktrans %}
-</p>
+{% include "mail/snippets/donation_info.html" %}
 {% endif %}
 
 <a class="button" href="/user/">{% trans "Manage your payments" %}</a>
