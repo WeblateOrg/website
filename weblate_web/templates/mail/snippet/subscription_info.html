@@ -2,3 +2,8 @@
 <p>
 {% blocktrans with package=subscription.get_package_display %}Current subscription: {{ package }}{% endblocktrans %}
 </p>
+{% if subscription.service.site_url %}
+  <p>
+    {% blocktrans with url=subscription.service.site_url %}Subscription is for <a href="{{ url }}">{{ url }}</a>.{% endblocktrans %}
+  </p>
+{% endif %}
