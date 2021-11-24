@@ -206,4 +206,17 @@ ready(() => {
   }
 
   new ClipboardJS("[data-clipboard-text]");
+
+  console.log(
+    "%cStop!",
+    "color: red; font-weight: bold; font-size: 50px; font-family: sans-serif; -webkit-text-stroke: 1px black;"
+  );
+  console.log(
+    "%cThis is a browser feature intended for developers. If someone told you to copy-paste something here, they are likely trying to compromise your Weblate account.",
+    "font-size: 20px; font-family: sans-serif"
+  );
+  console.log(
+    "%cSee https://en.wikipedia.org/wiki/Self-XSS for more information.",
+    "font-size: 20px; font-family: sans-serif"
+  );
 });
