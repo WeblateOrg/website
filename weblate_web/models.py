@@ -254,7 +254,7 @@ def process_donation(payment):
         if donation.payment:
             donation.pastpayments_set.create(payment=donation.payment)
         payment.start = donation.expires
-        donation.expires += get_period_delta(payment.recurring)
+        donation.expires += get_period_delta(payment.recurring or "y")
         payment.end = donation.expires
         donation.payment = payment.pk
         donation.save()
