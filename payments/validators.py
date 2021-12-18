@@ -26,7 +26,7 @@ def cache_vies_data(value):
             sentry_sdk.capture_exception()
             data = {
                 "valid": False,
-                "fault_code": error.code,
+                "fault_code": getattr(error, "code", "other:Error"),
                 "fault_message": str(error),
             }
     value.__dict__["vies_data"] = data
@@ -49,7 +49,7 @@ def validate_vatin(value):
 
     if not value.vies_data["valid"]:
         retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
-        retry_codes = {"soap:Server"}
+        retry_codes = {"soap:Server", "other:Error"}
         if (
             value.vies_data.get("fault_reason") in retry_errors
             or value.vies_data.get("fault_code") in retry_codes
