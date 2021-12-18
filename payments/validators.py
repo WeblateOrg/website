@@ -3,7 +3,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from vies.types import VATIN
-from zeep.exceptions import Fault
+from zeep.exceptions import Error
 
 
 def cache_vies_data(value):
@@ -22,7 +22,7 @@ def cache_vies_data(value):
             for item in value.data:
                 data[item] = value.data[item]
             cache.set(key, data, 3600)
-        except Fault as error:
+        except Error as error:
             sentry_sdk.capture_exception()
             data = {
                 "valid": False,
