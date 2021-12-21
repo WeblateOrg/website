@@ -197,12 +197,6 @@ STATICFILES_FINDERS = (
 SECRET_KEY = "secret key used for tests only"
 
 # Templates settings
-_TEMPLATE_LOADERS = [
-    "django.template.loaders.filesystem.Loader",
-    "django.template.loaders.app_directories.Loader",
-]
-if not DEBUG:
-    _TEMPLATE_LOADERS = [("django.template.loaders.cached.Loader", _TEMPLATE_LOADERS)]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -214,8 +208,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "weblate_web.context_processors.weblate_web",
             ],
-            "loaders": _TEMPLATE_LOADERS,
         },
+        "APP_DIRS": True,
     }
 ]
 
