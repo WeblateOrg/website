@@ -764,7 +764,7 @@ def donate_pay(request, pk):
             amount=donation.get_amount(),
             description=donation.get_payment_description(),
             recurring=donation.payment_obj.recurring,
-            extra={"donation": donation.pk},
+            extra={"donation": donation.pk, "category": "donate"},
             customer=get_customer(request),
         )
     return redirect(payment.get_payment_url())
