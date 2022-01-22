@@ -56,6 +56,8 @@ class Command(BaseCommand):
         imap.select(settings.IMAP_SPAM_FOLDER)
 
         search = zammad.ticket.search({"query": "tags:spam -tags:reported-spam"})
+        if "Ticket" not in search["assets"]:
+            return
         for ticket in search["assets"]["Ticket"].values():
 
             # Oldest article
