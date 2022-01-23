@@ -21,24 +21,28 @@
             <div class="contribution-list">
               <div class="flex">
                 <div class="box">
-                    <h2>{% trans "Front-end developer" %}</h2>
+                    <h2>{% trans "Full-stack developer" %}</h2>
                     <ul>
-                        <li>JavaScript, CSS, <a href="https://getbootstrap.com/docs/3.4/">Bootstrap</a></li>
-                        <li>{% trans "Implement your knowledge in the user experience." %}</li>
-                        <li>{% trans "Bring modern front-end technologies to Weblate." %}</li>
-                        {% include "snippets/career.html" with issues="https://github.com/WeblateOrg/weblate/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+label%3Aux+label%3Aenhancement" %}
+                        <li>{% trans "We're looking for a front-end developer who will not be afraid of touching the back-end as well." %}</li>
+                        <li>{% trans "Our front-end is currently using Bootstrap and jQuery, but we want to improve." %}</li>
+                        <li>{% trans "The back-end is in Python, using Django, Django REST framework, Celery, Translate Toolkit, and many others." %}</li>
+                        <li>{% blocktrans with issues="https://github.com/WeblateOrg/weblate/labels/enhancement" %}Browse the <a href="{{ issues }}">open issues</a> to gain insight into what we are looking for.{% endblocktrans %}</li>
+                        <li>{% blocktrans with issues="https://github.com/WeblateOrg/weblate/labels/good%20first%20issue" %}Grab one of the <a href="{{ issues }}">good first issues</a> to show us your expertise.{% endblocktrans %}</li>
+                        <li>{% trans "It is all libre software, all our code and issues are open to the public." %}</li>
+                        {% include "snippets/career.html" %}
                     </ul>
-                    <a href="mailto:michal@weblate.org?subject=Front-end developer for Weblate" class="button">{% trans "Apply now" %}</a>
+                    <a href="mailto:michal@weblate.org?subject=Full-stack developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
                 </div>
                 <div class="box">
-                    <h2>{% trans "Python developer" %}</h2>
+                    <h2>{% trans "Customer care and sales" %}</h2>
                     <ul>
-                        <li><a href="https://python.org">Python</a>, <a href="https://www.djangoproject.com/">Django</a>, <a href="http://www.celeryproject.org/">Celery</a>, <a href="https://github.com/translate/translate/">Translate Toolkit</a></li>
-                        <li>{% trans "Tune up the back-end and libraries and save time for all users." %}</li>
-                        <li>{% trans "Implement support for new features, file formats or integration with third-party services." %}</li>
-                        {% include "snippets/career.html" with issues="https://github.com/WeblateOrg/weblate/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+-label%3Aux+label%3Aenhancement" %}
+                        <li>{% trans "We're looking for a person who loves to speak with the people and will help them in getting the most out of our product." %}</li>
+                        <li>{% trans "You will work with customers to assess their needs and advise them on using Weblate." %}</li>
+                        <li>{% trans "You will be a contact for customers who are seeking help. Our engineers will closely cooperate with you on resolving the customer issues." %}</li>
+                        <li>{% trans "You can expand into other areas where you feel comfortable: publish articles on our blogs, manage social media, discuss with our community, or improve our documentation." %}</li>
+                        {% include "snippets/career.html" %}
                     </ul>
-                    <a href="mailto:michal@weblate.org?subect=Python developer for Weblate" class="button">{% trans "Apply now" %}</a>
+                    <a href="mailto:michal@weblate.org?subect=Customer care and sales for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
                 </div>
               </div>
             </div>
