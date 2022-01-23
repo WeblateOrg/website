@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Swedish (Weblate)\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2021-11-23 17:19+0100\n"
+"POT-Creation-Date: 2022-01-23 14:21+0100\n"
 "PO-Revision-Date: 2021-11-26 07:50+0000\n"
 "Last-Translator: Johan Jacobsson <johan.jacobsson@telia.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/weblate/website/"
@@ -640,7 +640,11 @@ msgstr "Företags-ID"
 msgid "VAT ID"
 msgstr "MOMS-ID"
 
-#: weblate_web/templates/about.html:172 weblate_web/templates/careers.html:18
+#: weblate_web/templates/about.html:172
+msgid "D-U-N-S Number"
+msgstr ""
+
+#: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:515
 #: weblate_web/templates/hosting.html:577
 #: weblate_web/templates/hosting.html:639
@@ -699,36 +703,89 @@ msgid "Learn more"
 msgstr "Lär dig mer"
 
 #: weblate_web/templates/careers.html:24
-msgid "Front-end developer"
+#, fuzzy
+#| msgid "Front-end developer"
+msgid "Full-stack developer"
 msgstr "Frontend-utvecklare"
 
+#: weblate_web/templates/careers.html:26
+msgid ""
+"We're looking for a front-end developer who will not be afraid of touching "
+"the back-end as well."
+msgstr ""
+
 #: weblate_web/templates/careers.html:27
-msgid "Implement your knowledge in the user experience."
-msgstr "Tillämpa dina kunskaper i användarupplevelsen."
+msgid ""
+"Our front-end is currently using Bootstrap and jQuery, but we want to "
+"improve."
+msgstr ""
 
 #: weblate_web/templates/careers.html:28
-msgid "Bring modern front-end technologies to Weblate."
-msgstr "Få till modern frontend-teknik till Weblate."
+msgid ""
+"The back-end is in Python, using Django, Django REST framework, Celery, "
+"Translate Toolkit, and many others."
+msgstr ""
 
-#: weblate_web/templates/careers.html:31 weblate_web/templates/careers.html:41
+#: weblate_web/templates/careers.html:29
+#, python-format
+msgid ""
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
+msgstr ""
+"Bläddra i <a href=\"%(issues)s\">öppna problem</a> för att få insikt i vad "
+"vi söker."
+
+#: weblate_web/templates/careers.html:30
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into "
+#| "what we are looking for."
+msgid ""
+"Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
+"expertise."
+msgstr ""
+"Bläddra i <a href=\"%(issues)s\">öppna problem</a> för att få insikt i vad "
+"vi söker."
+
+#: weblate_web/templates/careers.html:31
+#, fuzzy
+#| msgid "It is all libre software, all our issues are open to public."
+msgid ""
+"It is all libre software, all our code and issues are open to the public."
+msgstr "Allt är libre-programvara, alla våra problem är öppna för allmänheten."
+
+#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:45
 msgid "Apply now"
 msgstr "Ansök nu"
 
-#: weblate_web/templates/careers.html:34
-msgid "Python developer"
-msgstr "Python-utvecklare"
-
 #: weblate_web/templates/careers.html:37
-msgid "Tune up the back-end and libraries and save time for all users."
-msgstr "Trimma backend och bibliotek för att spara tid för alla användare."
-
-#: weblate_web/templates/careers.html:38
-msgid ""
-"Implement support for new features, file formats or integration with third-"
-"party services."
+msgid "Customer care and sales"
 msgstr ""
-"Implementera stöd för nya funktioner, filformat eller integration med "
-"tredjepartstjänster."
+
+#: weblate_web/templates/careers.html:39
+msgid ""
+"We're looking for a person who loves to speak with the people and will help "
+"them in getting the most out of our product."
+msgstr ""
+
+#: weblate_web/templates/careers.html:40
+msgid ""
+"You will work with customers to assess their needs and advise them on using "
+"Weblate."
+msgstr ""
+
+#: weblate_web/templates/careers.html:41
+msgid ""
+"You will be a contact for customers who are seeking help. Our engineers will "
+"closely cooperate with you on resolving the customer issues."
+msgstr ""
+
+#: weblate_web/templates/careers.html:42
+msgid ""
+"You can expand into other areas where you feel comfortable: publish articles "
+"on our blogs, manage social media, discuss with our community, or improve "
+"our documentation."
+msgstr ""
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -2235,10 +2292,10 @@ msgstr "Weblate, det fria systemet för fortlöpande lokalisering."
 
 #: weblate_web/templates/mail/base.html:245
 #: weblate_web/templates/mail/payment_completed.html:14
-#: weblate_web/templates/mail/payment_expired.html:27
+#: weblate_web/templates/mail/payment_expired.html:23
 #: weblate_web/templates/mail/payment_failed.html:20
-#: weblate_web/templates/mail/payment_missing.html:29
-#: weblate_web/templates/mail/payment_upcoming.html:29
+#: weblate_web/templates/mail/payment_missing.html:25
+#: weblate_web/templates/mail/payment_upcoming.html:25
 msgid "Manage your payments"
 msgstr "Hantera dina betalningar"
 
@@ -2267,17 +2324,7 @@ msgstr ""
 "Din prenumeration på weblate.org löper snart ut. Logga in på webbplatsen för "
 "att förnya den."
 
-#: weblate_web/templates/mail/payment_expired.html:13
-#: weblate_web/templates/mail/payment_expired.html:23
-#: weblate_web/templates/mail/payment_missing.html:14
-#: weblate_web/templates/mail/payment_missing.html:25
-#: weblate_web/templates/mail/payment_upcoming.html:14
-#: weblate_web/templates/mail/payment_upcoming.html:25
-#, python-format
-msgid "Current subscription: %(package)s"
-msgstr "Nuvarande prenumeration: %(package)s"
-
-#: weblate_web/templates/mail/payment_expired.html:19
+#: weblate_web/templates/mail/payment_expired.html:17
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
@@ -2318,7 +2365,7 @@ msgid ""
 "If you want to continue using the service, please perform the payment now."
 msgstr "Om du vill fortsätta använda tjänsten, var god utför betalningen nu."
 
-#: weblate_web/templates/mail/payment_missing.html:20
+#: weblate_web/templates/mail/payment_missing.html:18
 msgid ""
 "Your donation on weblate.org should renew next week and you have not set up "
 "automatic payments."
@@ -2326,7 +2373,7 @@ msgstr ""
 "Din donation på weblate.org ska förnyas nästa vecka och du har inte "
 "konfigurerat automatiska betalningar."
 
-#: weblate_web/templates/mail/payment_missing.html:21
+#: weblate_web/templates/mail/payment_missing.html:19
 msgid "Please perform the payment now to continue supporting Weblate."
 msgstr "Utför gärna betalningen nu för att fortsätta stödja Weblate."
 
@@ -2365,7 +2412,7 @@ msgid "Your subscription on weblate.org will renew next week."
 msgstr "Ditt abonnemang på weblate.org förnyas nästa vecka."
 
 #: weblate_web/templates/mail/payment_upcoming.html:10
-#: weblate_web/templates/mail/payment_upcoming.html:21
+#: weblate_web/templates/mail/payment_upcoming.html:19
 msgid ""
 "The payment will be automatically charged next week. In case your card has "
 "expired or you want to use different payment method, please perform the "
@@ -2375,13 +2422,25 @@ msgstr ""
 "eller om du vill använda en annan betalningsmetod, vänligen utför "
 "betalningen nu."
 
-#: weblate_web/templates/mail/payment_upcoming.html:20
+#: weblate_web/templates/mail/payment_upcoming.html:18
 msgid "Your donation on weblate.org will renew next week."
 msgstr "Din donation på weblate.org kommer att förnyas nästa vecka."
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
 msgstr "Din kommande betalning på weblate.org"
+
+#: weblate_web/templates/mail/snippets/donation_info.html:3
+#: weblate_web/templates/mail/snippets/subscription_info.html:3
+#, python-format
+msgid "Current subscription: %(package)s"
+msgstr "Nuvarande prenumeration: %(package)s"
+
+#: weblate_web/templates/mail/snippets/subscription_info.html:7
+#, fuzzy, python-format
+#| msgid "upon <a href=\"%(url)s\">request</a>"
+msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
+msgstr "på <a href=\"%(url)s\">begäran</a>"
 
 #: weblate_web/templates/mail/subscription_intro.html:7
 msgid "Thank you for purchasing support subscription on weblate.org"
@@ -2552,21 +2611,18 @@ msgid "Contribute with us"
 msgstr "Bidra med oss"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
-msgid ""
-"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
-"we are looking for."
+msgid "Good written and spoken English language skills are required."
 msgstr ""
-"Bläddra i <a href=\"%(issues)s\">öppna problem</a> för att få insikt i vad "
-"vi söker."
 
 #: weblate_web/templates/snippets/career.html:3
-msgid "It is all libre software, all our issues are open to public."
-msgstr "Allt är libre-programvara, alla våra problem är öppna för allmänheten."
+msgid "This is a remote contractor position."
+msgstr ""
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "Currently, we are looking for remote part-time contractors."
-msgstr "För närvarande söker vi fjärrentreprenörer på deltid."
+msgid ""
+"We're a small libre software company where everybody has a lot of space to "
+"grow."
+msgstr ""
 
 #: weblate_web/templates/snippets/download-link.html:5
 msgid "PGP signature"
@@ -3353,6 +3409,28 @@ msgstr "Tack för din donation."
 #: weblate_web/views.py:728
 msgid "User not found!"
 msgstr "Användaren hittades inte!"
+
+#~ msgid "Implement your knowledge in the user experience."
+#~ msgstr "Tillämpa dina kunskaper i användarupplevelsen."
+
+#~ msgid "Bring modern front-end technologies to Weblate."
+#~ msgstr "Få till modern frontend-teknik till Weblate."
+
+#~ msgid "Python developer"
+#~ msgstr "Python-utvecklare"
+
+#~ msgid "Tune up the back-end and libraries and save time for all users."
+#~ msgstr "Trimma backend och bibliotek för att spara tid för alla användare."
+
+#~ msgid ""
+#~ "Implement support for new features, file formats or integration with "
+#~ "third-party services."
+#~ msgstr ""
+#~ "Implementera stöd för nya funktioner, filformat eller integration med "
+#~ "tredjepartstjänster."
+
+#~ msgid "Currently, we are looking for remote part-time contractors."
+#~ msgstr "För närvarande söker vi fjärrentreprenörer på deltid."
 
 #~ msgid "monthly"
 #~ msgstr "månadsvis"

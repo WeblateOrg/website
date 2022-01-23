@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2021-11-23 17:19+0100\n"
+"POT-Creation-Date: 2022-01-23 14:21+0100\n"
 "PO-Revision-Date: 2022-01-14 05:00+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -395,7 +395,9 @@ msgstr "サーバーエラー"
 msgid ""
 "The server had serious problems while serving your request. We've just sent "
 "our trained monkeys to fix the issue."
-msgstr "リクエストの処理中に、サーバーで深刻な問題が発生しました。問題解決のために、熟練のおサルさん (開発者) を派遣しました (笑)。"
+msgstr ""
+"リクエストの処理中に、サーバーで深刻な問題が発生しました。問題解決のために、"
+"熟練のおサルさん (開発者) を派遣しました (笑)。"
 
 #: weblate_web/templates/about.html:11
 msgid "The Weblate Way"
@@ -644,7 +646,11 @@ msgstr "ビジネス ID"
 msgid "VAT ID"
 msgstr "VAT ID"
 
-#: weblate_web/templates/about.html:172 weblate_web/templates/careers.html:18
+#: weblate_web/templates/about.html:172
+msgid "D-U-N-S Number"
+msgstr ""
+
+#: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:515
 #: weblate_web/templates/hosting.html:577
 #: weblate_web/templates/hosting.html:639
@@ -705,36 +711,89 @@ msgid "Learn more"
 msgstr "詳細情報"
 
 #: weblate_web/templates/careers.html:24
-msgid "Front-end developer"
+#, fuzzy
+#| msgid "Front-end developer"
+msgid "Full-stack developer"
 msgstr "フロントエンド開発者"
 
+#: weblate_web/templates/careers.html:26
+msgid ""
+"We're looking for a front-end developer who will not be afraid of touching "
+"the back-end as well."
+msgstr ""
+
 #: weblate_web/templates/careers.html:27
-msgid "Implement your knowledge in the user experience."
-msgstr "ユーザー体験にあなたの知識を取り入れます。"
+msgid ""
+"Our front-end is currently using Bootstrap and jQuery, but we want to "
+"improve."
+msgstr ""
 
 #: weblate_web/templates/careers.html:28
-msgid "Bring modern front-end technologies to Weblate."
-msgstr "Weblate に最新のフロントエンド テクノロジをもたらします。"
+msgid ""
+"The back-end is in Python, using Django, Django REST framework, Celery, "
+"Translate Toolkit, and many others."
+msgstr ""
 
-#: weblate_web/templates/careers.html:31 weblate_web/templates/careers.html:41
+#: weblate_web/templates/careers.html:29
+#, python-format
+msgid ""
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
+msgstr ""
+"<a href=\"%(issues)s\">未解決の問題</a>を確認して、私たちが求めているものの詳"
+"細を把握してください。"
+
+#: weblate_web/templates/careers.html:30
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into "
+#| "what we are looking for."
+msgid ""
+"Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
+"expertise."
+msgstr ""
+"<a href=\"%(issues)s\">未解決の問題</a>を確認して、私たちが求めているものの詳"
+"細を把握してください。"
+
+#: weblate_web/templates/careers.html:31
+#, fuzzy
+#| msgid "It is all libre software, all our issues are open to public."
+msgid ""
+"It is all libre software, all our code and issues are open to the public."
+msgstr "すべてが Libre ソフトウエアであり、すべての課題を公開しています。"
+
+#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:45
 msgid "Apply now"
 msgstr "今すぐ申し込む"
 
-#: weblate_web/templates/careers.html:34
-msgid "Python developer"
-msgstr "Python 開発者"
-
 #: weblate_web/templates/careers.html:37
-msgid "Tune up the back-end and libraries and save time for all users."
-msgstr "バックエンドとライブラリを調整し、すべての利用者の時間を削減します。"
-
-#: weblate_web/templates/careers.html:38
-msgid ""
-"Implement support for new features, file formats or integration with third-"
-"party services."
+msgid "Customer care and sales"
 msgstr ""
-"新機能、ファイル形式、またはサードパーティ サービスとの統合のサポートを実装し"
-"ます。"
+
+#: weblate_web/templates/careers.html:39
+msgid ""
+"We're looking for a person who loves to speak with the people and will help "
+"them in getting the most out of our product."
+msgstr ""
+
+#: weblate_web/templates/careers.html:40
+msgid ""
+"You will work with customers to assess their needs and advise them on using "
+"Weblate."
+msgstr ""
+
+#: weblate_web/templates/careers.html:41
+msgid ""
+"You will be a contact for customers who are seeking help. Our engineers will "
+"closely cooperate with you on resolving the customer issues."
+msgstr ""
+
+#: weblate_web/templates/careers.html:42
+msgid ""
+"You can expand into other areas where you feel comfortable: publish articles "
+"on our blogs, manage social media, discuss with our community, or improve "
+"our documentation."
+msgstr ""
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -2175,8 +2234,9 @@ msgid ""
 "Simple and clean user interface, propagation of translations across "
 "components, quality checks and automatic linking to source files."
 msgstr ""
-"堅牢なバージョン管理を備えた、ホスティング サービスとスタンドアローンのツール。シンプルで分かりやすいユーザー "
-"インターフェイス、コンポーネント間の翻訳の連携、品質検査、ソース ファイルへの自動リンクが特徴です。"
+"堅牢なバージョン管理を備えた、ホスティング サービスとスタンドアローンのツー"
+"ル。シンプルで分かりやすいユーザー インターフェイス、コンポーネント間の翻訳の"
+"連携、品質検査、ソース ファイルへの自動リンクが特徴です。"
 
 #: weblate_web/templates/index.html:36
 #, python-format
@@ -2216,10 +2276,10 @@ msgstr "Weblate、連携して動作する Libre な翻訳システム。"
 
 #: weblate_web/templates/mail/base.html:245
 #: weblate_web/templates/mail/payment_completed.html:14
-#: weblate_web/templates/mail/payment_expired.html:27
+#: weblate_web/templates/mail/payment_expired.html:23
 #: weblate_web/templates/mail/payment_failed.html:20
-#: weblate_web/templates/mail/payment_missing.html:29
-#: weblate_web/templates/mail/payment_upcoming.html:29
+#: weblate_web/templates/mail/payment_missing.html:25
+#: weblate_web/templates/mail/payment_upcoming.html:25
 msgid "Manage your payments"
 msgstr "支払いの管理"
 
@@ -2248,17 +2308,7 @@ msgstr ""
 "weblate.org のサブスクリプションがまもなく期限切れになります。更新するには、"
 "Web サイトにサインインしてください。"
 
-#: weblate_web/templates/mail/payment_expired.html:13
-#: weblate_web/templates/mail/payment_expired.html:23
-#: weblate_web/templates/mail/payment_missing.html:14
-#: weblate_web/templates/mail/payment_missing.html:25
-#: weblate_web/templates/mail/payment_upcoming.html:14
-#: weblate_web/templates/mail/payment_upcoming.html:25
-#, python-format
-msgid "Current subscription: %(package)s"
-msgstr "現在のサブスクリプション: %(package)s"
-
-#: weblate_web/templates/mail/payment_expired.html:19
+#: weblate_web/templates/mail/payment_expired.html:17
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
@@ -2299,7 +2349,7 @@ msgid ""
 "If you want to continue using the service, please perform the payment now."
 msgstr "引き続きご利用をご希望の場合は、今すぐお支払いをしてください。"
 
-#: weblate_web/templates/mail/payment_missing.html:20
+#: weblate_web/templates/mail/payment_missing.html:18
 msgid ""
 "Your donation on weblate.org should renew next week and you have not set up "
 "automatic payments."
@@ -2307,7 +2357,7 @@ msgstr ""
 "weblate.org への寄付は来週更新される予定ですが、自動支払いが設定されていませ"
 "ん。"
 
-#: weblate_web/templates/mail/payment_missing.html:21
+#: weblate_web/templates/mail/payment_missing.html:19
 msgid "Please perform the payment now to continue supporting Weblate."
 msgstr "Weblate のサポートの継続が必要なら、今すぐ支払いを実行してください。"
 
@@ -2346,7 +2396,7 @@ msgid "Your subscription on weblate.org will renew next week."
 msgstr "お客様の weblate.org でのサブスクリプションは来週更新予定です。"
 
 #: weblate_web/templates/mail/payment_upcoming.html:10
-#: weblate_web/templates/mail/payment_upcoming.html:21
+#: weblate_web/templates/mail/payment_upcoming.html:19
 msgid ""
 "The payment will be automatically charged next week. In case your card has "
 "expired or you want to use different payment method, please perform the "
@@ -2355,13 +2405,25 @@ msgstr ""
 "お支払いは来週自動的に請求されます。カードの有効期限が切れている場合、または"
 "別の支払い方法を使用したい場合は、今すぐ支払いをしてください。"
 
-#: weblate_web/templates/mail/payment_upcoming.html:20
+#: weblate_web/templates/mail/payment_upcoming.html:18
 msgid "Your donation on weblate.org will renew next week."
 msgstr "weblate.org への寄付は来週更新されます。"
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
 msgstr "今後 weblate.org で必要な支払い"
+
+#: weblate_web/templates/mail/snippets/donation_info.html:3
+#: weblate_web/templates/mail/snippets/subscription_info.html:3
+#, python-format
+msgid "Current subscription: %(package)s"
+msgstr "現在のサブスクリプション: %(package)s"
+
+#: weblate_web/templates/mail/snippets/subscription_info.html:7
+#, fuzzy, python-format
+#| msgid "upon <a href=\"%(url)s\">request</a>"
+msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
+msgstr "<a href=\"%(url)s\">申請</a> する"
 
 #: weblate_web/templates/mail/subscription_intro.html:7
 msgid "Thank you for purchasing support subscription on weblate.org"
@@ -2527,21 +2589,18 @@ msgid "Contribute with us"
 msgstr "Weblate に貢献"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
-msgid ""
-"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
-"we are looking for."
+msgid "Good written and spoken English language skills are required."
 msgstr ""
-"<a href=\"%(issues)s\">未解決の問題</a>を確認して、私たちが求めているものの詳"
-"細を把握してください。"
 
 #: weblate_web/templates/snippets/career.html:3
-msgid "It is all libre software, all our issues are open to public."
-msgstr "すべてが Libre ソフトウエアであり、すべての課題を公開しています。"
+msgid "This is a remote contractor position."
+msgstr ""
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "Currently, we are looking for remote part-time contractors."
-msgstr "現在、私たちはリモートのパートタイムの請負業者を求めています。"
+msgid ""
+"We're a small libre software company where everybody has a lot of space to "
+"grow."
+msgstr ""
 
 #: weblate_web/templates/snippets/download-link.html:5
 msgid "PGP signature"
@@ -2902,7 +2961,9 @@ msgstr "「Weblate プロジェクトの探索」のリストに追加"
 
 #: weblate_web/templates/subscription/discovery-add.html:14
 msgid "Weblate 4.5.2 or newer is needed to participate in Discover Weblate."
-msgstr "「Weblate プロジェクトの探索」のリストにサーバーを登録するには、Weblate 4.5.2 以降が必要です。"
+msgstr ""
+"「Weblate プロジェクトの探索」のリストにサーバーを登録するには、Weblate "
+"4.5.2 以降が必要です。"
 
 #: weblate_web/templates/subscription/discovery-add.html:16
 #, python-format
@@ -2910,8 +2971,8 @@ msgid ""
 "Let other users discover your Weblate. Read about how it works in the "
 "%(link_start)sdocumentation%(link_end)s."
 msgstr ""
-"他のユーザーにあなたの Weblate を発見してもらいましょう。機能の詳細は、%(link_start)sドキュメント %(link_end)s "
-"を確認してください。"
+"他のユーザーにあなたの Weblate を発見してもらいましょう。機能の詳細"
+"は、%(link_start)sドキュメント %(link_end)s を確認してください。"
 
 #: weblate_web/templates/subscription/discovery-add.html:38
 msgid "Next step"
@@ -3319,6 +3380,29 @@ msgstr "寄付していただきありがとうございます。"
 #: weblate_web/views.py:728
 msgid "User not found!"
 msgstr "利用者が見つかりません！"
+
+#~ msgid "Implement your knowledge in the user experience."
+#~ msgstr "ユーザー体験にあなたの知識を取り入れます。"
+
+#~ msgid "Bring modern front-end technologies to Weblate."
+#~ msgstr "Weblate に最新のフロントエンド テクノロジをもたらします。"
+
+#~ msgid "Python developer"
+#~ msgstr "Python 開発者"
+
+#~ msgid "Tune up the back-end and libraries and save time for all users."
+#~ msgstr ""
+#~ "バックエンドとライブラリを調整し、すべての利用者の時間を削減します。"
+
+#~ msgid ""
+#~ "Implement support for new features, file formats or integration with "
+#~ "third-party services."
+#~ msgstr ""
+#~ "新機能、ファイル形式、またはサードパーティ サービスとの統合のサポートを実"
+#~ "装します。"
+
+#~ msgid "Currently, we are looking for remote part-time contractors."
+#~ msgstr "現在、私たちはリモートのパートタイムの請負業者を求めています。"
 
 #~ msgid "monthly"
 #~ msgstr "月払い"

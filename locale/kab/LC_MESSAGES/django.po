@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kabyle (Weblate)\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2021-11-23 17:19+0100\n"
+"POT-Creation-Date: 2022-01-23 14:21+0100\n"
 "PO-Revision-Date: 2021-08-01 16:33+0000\n"
 "Last-Translator: Selyan Sliman Amiri <selyan.kab@gmail.com>\n"
 "Language-Team: Kabyle <https://hosted.weblate.org/projects/weblate/website/"
@@ -648,7 +648,11 @@ msgstr "Asulay ID n tkebbanit"
 msgid "VAT ID"
 msgstr "Asulay n tebzert VAT"
 
-#: weblate_web/templates/about.html:172 weblate_web/templates/careers.html:18
+#: weblate_web/templates/about.html:172
+msgid "D-U-N-S Number"
+msgstr ""
+
+#: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:515
 #: weblate_web/templates/hosting.html:577
 #: weblate_web/templates/hosting.html:639
@@ -707,37 +711,87 @@ msgid "Learn more"
 msgstr "Issin ugar"
 
 #: weblate_web/templates/careers.html:24
-msgid "Front-end developer"
+#, fuzzy
+#| msgid "Front-end developer"
+msgid "Full-stack developer"
 msgstr "Aneflay n ugrudem"
 
+#: weblate_web/templates/careers.html:26
+msgid ""
+"We're looking for a front-end developer who will not be afraid of touching "
+"the back-end as well."
+msgstr ""
+
 #: weblate_web/templates/careers.html:27
-msgid "Implement your knowledge in the user experience."
-msgstr "Sbedd tamussni-k deg termit n useqdac."
+msgid ""
+"Our front-end is currently using Bootstrap and jQuery, but we want to "
+"improve."
+msgstr ""
 
 #: weblate_web/templates/careers.html:28
-msgid "Bring modern front-end technologies to Weblate."
-msgstr "Awway n titiknulujiyin tatrarin n ugrudem ɣer Weblatre."
+msgid ""
+"The back-end is in Python, using Django, Django REST framework, Celery, "
+"Translate Toolkit, and many others."
+msgstr ""
 
-#: weblate_web/templates/careers.html:31 weblate_web/templates/careers.html:41
+#: weblate_web/templates/careers.html:29
+#, python-format
+msgid ""
+"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
+"we are looking for."
+msgstr ""
+"Snirem <a href=\"%(issues)s\">ugiren yeldin</a> akken twaliḍ ayen i nettnadi."
+
+#: weblate_web/templates/careers.html:30
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into "
+#| "what we are looking for."
+msgid ""
+"Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
+"expertise."
+msgstr ""
+"Snirem <a href=\"%(issues)s\">ugiren yeldin</a> akken twaliḍ ayen i nettnadi."
+
+#: weblate_web/templates/careers.html:31
+#, fuzzy
+#| msgid "It is all libre software, all our issues are open to public."
+msgid ""
+"It is all libre software, all our code and issues are open to the public."
+msgstr "D aseɣzan ilelli, meṛṛa uguren ldin i uzayez."
+
+#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:45
 msgid "Apply now"
 msgstr "Snes tura"
 
-#: weblate_web/templates/careers.html:34
-msgid "Python developer"
-msgstr "Aneflay Python"
-
 #: weblate_web/templates/careers.html:37
-msgid "Tune up the back-end and libraries and save time for all users."
+msgid "Customer care and sales"
 msgstr ""
-"Ṣeggem amsedday n ugrudem akked timkarḍiyin daɣen ḥrez akud i yiseqdacen."
 
-#: weblate_web/templates/careers.html:38
+#: weblate_web/templates/careers.html:39
 msgid ""
-"Implement support for new features, file formats or integration with third-"
-"party services."
+"We're looking for a person who loves to speak with the people and will help "
+"them in getting the most out of our product."
 msgstr ""
-"Bnu tallelt i tmahilin timaynutin, imasalen n yifuyla neɣ aslaɣ akked "
-"yimeẓla-nniḍen."
+
+#: weblate_web/templates/careers.html:40
+msgid ""
+"You will work with customers to assess their needs and advise them on using "
+"Weblate."
+msgstr ""
+
+#: weblate_web/templates/careers.html:41
+msgid ""
+"You will be a contact for customers who are seeking help. Our engineers will "
+"closely cooperate with you on resolving the customer issues."
+msgstr ""
+
+#: weblate_web/templates/careers.html:42
+msgid ""
+"You can expand into other areas where you feel comfortable: publish articles "
+"on our blogs, manage social media, discuss with our community, or improve "
+"our documentation."
+msgstr ""
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -2253,10 +2307,10 @@ msgstr "Weblate, anagraw n usideg ilelli imezgi."
 
 #: weblate_web/templates/mail/base.html:245
 #: weblate_web/templates/mail/payment_completed.html:14
-#: weblate_web/templates/mail/payment_expired.html:27
+#: weblate_web/templates/mail/payment_expired.html:23
 #: weblate_web/templates/mail/payment_failed.html:20
-#: weblate_web/templates/mail/payment_missing.html:29
-#: weblate_web/templates/mail/payment_upcoming.html:29
+#: weblate_web/templates/mail/payment_missing.html:25
+#: weblate_web/templates/mail/payment_upcoming.html:25
 msgid "Manage your payments"
 msgstr "Sefrek lexlaṣ-ik"
 
@@ -2285,17 +2339,7 @@ msgstr ""
 "Ajerred-ik deg weblate.org iteddu ad yekfu. Ma ulac aɣilif, qqen ɣer usmel "
 "akken ad as-talsed."
 
-#: weblate_web/templates/mail/payment_expired.html:13
-#: weblate_web/templates/mail/payment_expired.html:23
-#: weblate_web/templates/mail/payment_missing.html:14
-#: weblate_web/templates/mail/payment_missing.html:25
-#: weblate_web/templates/mail/payment_upcoming.html:14
-#: weblate_web/templates/mail/payment_upcoming.html:25
-#, python-format
-msgid "Current subscription: %(package)s"
-msgstr "Ajerred amiran: %(package)s"
-
-#: weblate_web/templates/mail/payment_expired.html:19
+#: weblate_web/templates/mail/payment_expired.html:17
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
@@ -2341,7 +2385,7 @@ msgid ""
 msgstr ""
 "Ma tebɣiḍ ad tkemmleḍ aseqdec n umeẓlu, xelleɣ ma ulac aɣilif seg tura."
 
-#: weblate_web/templates/mail/payment_missing.html:20
+#: weblate_web/templates/mail/payment_missing.html:18
 #, fuzzy
 #| msgid ""
 #| "Your donation on weblate.org should renew next week and you do not have "
@@ -2353,7 +2397,7 @@ msgstr ""
 "Tawsa-ik deg weblate.org issefk ad tales imalas i d-iteddun maca mazal ur d-"
 "tefkiḍ ara lexlaṣ awurman."
 
-#: weblate_web/templates/mail/payment_missing.html:21
+#: weblate_web/templates/mail/payment_missing.html:19
 msgid "Please perform the payment now to continue supporting Weblate."
 msgstr ""
 
@@ -2392,7 +2436,7 @@ msgid "Your subscription on weblate.org will renew next week."
 msgstr "Ajerred-ik deg weblate.org ad yales imalas i d-iteddun."
 
 #: weblate_web/templates/mail/payment_upcoming.html:10
-#: weblate_web/templates/mail/payment_upcoming.html:21
+#: weblate_web/templates/mail/payment_upcoming.html:19
 msgid ""
 "The payment will be automatically charged next week. In case your card has "
 "expired or you want to use different payment method, please perform the "
@@ -2402,13 +2446,25 @@ msgstr ""
 "ik n lbanka temmurt neɣ tebɣiḍ ad tesqedceḍ tarrayt-nniḍen n lexlaṣ, "
 "tanemmirt ma tefriḍ-tt tura."
 
-#: weblate_web/templates/mail/payment_upcoming.html:20
+#: weblate_web/templates/mail/payment_upcoming.html:18
 msgid "Your donation on weblate.org will renew next week."
 msgstr "Tawsa-ik deg weblate.org ad tales imalas i d-iteddun."
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
 msgstr "Lexlaṣ-ik i d-iteddun deg weblate.org"
+
+#: weblate_web/templates/mail/snippets/donation_info.html:3
+#: weblate_web/templates/mail/snippets/subscription_info.html:3
+#, python-format
+msgid "Current subscription: %(package)s"
+msgstr "Ajerred amiran: %(package)s"
+
+#: weblate_web/templates/mail/snippets/subscription_info.html:7
+#, fuzzy, python-format
+#| msgid "upon <a href=\"%(url)s\">request</a>"
+msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
+msgstr "azen <a href=\"%(url)s\">asuter</a>"
 
 #: weblate_web/templates/mail/subscription_intro.html:7
 #, fuzzy
@@ -2579,20 +2635,18 @@ msgid "Contribute with us"
 msgstr "Ttekki yid-neɣ"
 
 #: weblate_web/templates/snippets/career.html:2
-#, python-format
-msgid ""
-"Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
-"we are looking for."
+msgid "Good written and spoken English language skills are required."
 msgstr ""
-"Snirem <a href=\"%(issues)s\">ugiren yeldin</a> akken twaliḍ ayen i nettnadi."
 
 #: weblate_web/templates/snippets/career.html:3
-msgid "It is all libre software, all our issues are open to public."
-msgstr "D aseɣzan ilelli, meṛṛa uguren ldin i uzayez."
+msgid "This is a remote contractor position."
+msgstr ""
 
 #: weblate_web/templates/snippets/career.html:4
-msgid "Currently, we are looking for remote part-time contractors."
-msgstr "Akka tura, nettnadi iguta n wazgen n wakud s lebɛid."
+msgid ""
+"We're a small libre software company where everybody has a lot of space to "
+"grow."
+msgstr ""
 
 #: weblate_web/templates/snippets/download-link.html:5
 msgid "PGP signature"
@@ -3406,6 +3460,29 @@ msgstr "Tanemmirt i tewsa-ik."
 #: weblate_web/views.py:728
 msgid "User not found!"
 msgstr "Ur yettwaf ara useqdac!"
+
+#~ msgid "Implement your knowledge in the user experience."
+#~ msgstr "Sbedd tamussni-k deg termit n useqdac."
+
+#~ msgid "Bring modern front-end technologies to Weblate."
+#~ msgstr "Awway n titiknulujiyin tatrarin n ugrudem ɣer Weblatre."
+
+#~ msgid "Python developer"
+#~ msgstr "Aneflay Python"
+
+#~ msgid "Tune up the back-end and libraries and save time for all users."
+#~ msgstr ""
+#~ "Ṣeggem amsedday n ugrudem akked timkarḍiyin daɣen ḥrez akud i yiseqdacen."
+
+#~ msgid ""
+#~ "Implement support for new features, file formats or integration with "
+#~ "third-party services."
+#~ msgstr ""
+#~ "Bnu tallelt i tmahilin timaynutin, imasalen n yifuyla neɣ aslaɣ akked "
+#~ "yimeẓla-nniḍen."
+
+#~ msgid "Currently, we are looking for remote part-time contractors."
+#~ msgstr "Akka tura, nettnadi iguta n wazgen n wakud s lebɛid."
 
 #, fuzzy
 #~| msgid "Monthly"
