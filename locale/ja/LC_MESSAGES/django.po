@@ -21,7 +21,7 @@ msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2022-01-23 14:21+0100\n"
-"PO-Revision-Date: 2022-01-14 05:00+0000\n"
+"PO-Revision-Date: 2022-01-31 23:56+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
 "ja/>\n"
@@ -30,7 +30,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: payments/backends.py:254
 msgid "Payment card"
@@ -648,7 +648,7 @@ msgstr "VAT ID"
 
 #: weblate_web/templates/about.html:172
 msgid "D-U-N-S Number"
-msgstr ""
+msgstr "D-U-N-S Number"
 
 #: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:515
@@ -711,28 +711,28 @@ msgid "Learn more"
 msgstr "詳細情報"
 
 #: weblate_web/templates/careers.html:24
-#, fuzzy
-#| msgid "Front-end developer"
 msgid "Full-stack developer"
-msgstr "フロントエンド開発者"
+msgstr "フルスタック開発者"
 
 #: weblate_web/templates/careers.html:26
 msgid ""
 "We're looking for a front-end developer who will not be afraid of touching "
 "the back-end as well."
-msgstr ""
+msgstr "私たちは、バックエンドを触わることも恐れないフロントエンド開発者を探しています。"
 
 #: weblate_web/templates/careers.html:27
 msgid ""
 "Our front-end is currently using Bootstrap and jQuery, but we want to "
 "improve."
-msgstr ""
+msgstr "フロントエンドは、現在 Bootstrap と jQuery を使用していますが、改善を考えています。"
 
 #: weblate_web/templates/careers.html:28
 msgid ""
 "The back-end is in Python, using Django, Django REST framework, Celery, "
 "Translate Toolkit, and many others."
 msgstr ""
+"バックエンドは Python で作成されており、Django、Django REST フレームワーク、Celery、Translate Toolkit "
+"などを含む多くのツールを使用しています。"
 
 #: weblate_web/templates/careers.html:29
 #, python-format
@@ -744,23 +744,16 @@ msgstr ""
 "細を把握してください。"
 
 #: weblate_web/templates/careers.html:30
-#, fuzzy, python-format
-#| msgid ""
-#| "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into "
-#| "what we are looking for."
+#, python-format
 msgid ""
 "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
 "expertise."
-msgstr ""
-"<a href=\"%(issues)s\">未解決の問題</a>を確認して、私たちが求めているものの詳"
-"細を把握してください。"
+msgstr "あなたの専門知識を、私たちに披露するために <a href=\"%(issues)s\">よさそうな最初の問題</a> を一つ選んでください。"
 
 #: weblate_web/templates/careers.html:31
-#, fuzzy
-#| msgid "It is all libre software, all our issues are open to public."
 msgid ""
 "It is all libre software, all our code and issues are open to the public."
-msgstr "すべてが Libre ソフトウエアであり、すべての課題を公開しています。"
+msgstr "すべてが Libre ソフトウエアであり、すべてのコードと問題を公開しています。"
 
 #: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:45
 msgid "Apply now"
@@ -768,25 +761,25 @@ msgstr "今すぐ申し込む"
 
 #: weblate_web/templates/careers.html:37
 msgid "Customer care and sales"
-msgstr ""
+msgstr "お客さま対応と販売"
 
 #: weblate_web/templates/careers.html:39
 msgid ""
 "We're looking for a person who loves to speak with the people and will help "
 "them in getting the most out of our product."
-msgstr ""
+msgstr "私たちは、顧客と対話することが好きで、私たちの製品を顧客の求めに応じて活用できる人を探しています。"
 
 #: weblate_web/templates/careers.html:40
 msgid ""
 "You will work with customers to assess their needs and advise them on using "
 "Weblate."
-msgstr ""
+msgstr "顧客に寄り添い要求を把握し、Weblate の使い方をアドバイスします。"
 
 #: weblate_web/templates/careers.html:41
 msgid ""
 "You will be a contact for customers who are seeking help. Our engineers will "
 "closely cooperate with you on resolving the customer issues."
-msgstr ""
+msgstr "あなたが、助けを求めているお客様の窓口となります。私たちの技術者は、あなたと連携してお客様の問題を解決します。"
 
 #: weblate_web/templates/careers.html:42
 msgid ""
@@ -794,6 +787,8 @@ msgid ""
 "on our blogs, manage social media, discuss with our community, or improve "
 "our documentation."
 msgstr ""
+"自分が拡大できる心地よいと思う分野:　"
+"私たちのブログに記事を公開したり、ソーシャルメディアを管理したり、コミュニティと話し合ったり、ドキュメントを改善したりできます。"
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -2420,10 +2415,9 @@ msgid "Current subscription: %(package)s"
 msgstr "現在のサブスクリプション: %(package)s"
 
 #: weblate_web/templates/mail/snippets/subscription_info.html:7
-#, fuzzy, python-format
-#| msgid "upon <a href=\"%(url)s\">request</a>"
+#, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
-msgstr "<a href=\"%(url)s\">申請</a> する"
+msgstr "<a href=\"%(url)s\">%(url)s</a> 用のサブスクリプション。"
 
 #: weblate_web/templates/mail/subscription_intro.html:7
 msgid "Thank you for purchasing support subscription on weblate.org"
@@ -2590,17 +2584,17 @@ msgstr "Weblate に貢献"
 
 #: weblate_web/templates/snippets/career.html:2
 msgid "Good written and spoken English language skills are required."
-msgstr ""
+msgstr "優れた英語の文章力と会話力が必要となります。"
 
 #: weblate_web/templates/snippets/career.html:3
 msgid "This is a remote contractor position."
-msgstr ""
+msgstr "これは、リモートで働く契約社員です。"
 
 #: weblate_web/templates/snippets/career.html:4
 msgid ""
 "We're a small libre software company where everybody has a lot of space to "
 "grow."
-msgstr ""
+msgstr "私たちは、誰もが成長できるポジションのある、小さな Libre なソフトウェア会社です。"
 
 #: weblate_web/templates/snippets/download-link.html:5
 msgid "PGP signature"
