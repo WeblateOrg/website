@@ -18,10 +18,12 @@
 #
 
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext
 
 from payments.backends import list_backends
 from payments.models import RECURRENCE_CHOICES
-from weblate_web.models import REWARDS, Donation, Service
+from weblate_web.models import REWARD_LEVELS, REWARDS, Donation, Service
 
 
 class MethodForm(forms.Form):
@@ -47,7 +49,20 @@ class DonateForm(forms.Form):
         min_value=5,
         initial=10,
     )
-    reward = forms.ChoiceField(choices=REWARDS, initial=0, required=False)
+    reward = forms.TypedChoiceField(
+        choices=REWARDS, initial=0, required=False, coerce=int
+    )
+
+    def clean_reward(self):
+        if "reward" not in self.cleaned_data:
+            self.cleaned_data["reward"] = 0
+        elif (
+            self.cleaned_data.get("amount", 0)
+            < REWARD_LEVELS[self.cleaned_data["reward"]]
+        ):
+            raise ValidationError(gettext("Insufficient donation for selected reward!"))
+
+        return self.cleaned_data["reward"]
 
 
 class EditNameForm(forms.ModelForm):

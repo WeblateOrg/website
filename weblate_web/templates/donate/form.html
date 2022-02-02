@@ -34,7 +34,7 @@
                     <div class="title whoa">{% blocktrans %}<strong>Whoa!</strong> You can get any reward.{% endblocktrans %}</div>
 
                     <div class="rewards">
-                        <div class="reward big" data-amount="100">
+                        <div class="reward big" data-amount="{{ reward_levels.1 }}">
                             <div class="before">{% trans "Selected option" %}</div>
                             <div class="title">{% trans "Name in the list of supporters" %}</div>
                             <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
@@ -42,7 +42,7 @@
                             <a href="#" class="close">⨯</a>
                             <input name="reward" type="radio" value="1" />
                         </div>
-                        <div class="reward big" data-amount="400">
+                        <div class="reward big" data-amount="{{ reward_levels.2 }}">
                             <div class="before">{% trans "Selected option" %}</div>
                             <div class="title">{% trans "Link in the list of supporters" %}</div>
                             <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
@@ -50,7 +50,7 @@
                             <a href="#" class="close">⨯</a>
                             <input name="reward" type="radio" value="2" />
                         </div>
-                        <div class="reward big" data-amount="800">
+                        <div class="reward big" data-amount="{{ reward_levels.3 }}">
                             <div class="before">{% trans "Selected option" %}</div>
                             <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
                             <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
@@ -58,7 +58,7 @@
                             <a href="#" class="close">⨯</a>
                             <input name="reward" type="radio" value="3" />
                         </div>
-                        <div class="reward fourth checked" data-amount="0">
+                        <div class="reward fourth checked" data-amount="{{ reward_levels.0 }}">
                             <div class="before">{% trans "Selected option" %}</div>
                             <div class="title">{% trans "No thanks" %}</div>
                             <p>{% trans "Thank you anyway!" %}</p>

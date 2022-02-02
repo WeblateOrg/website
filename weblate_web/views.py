@@ -59,6 +59,7 @@ from weblate_web.forms import (
 )
 from weblate_web.models import (
     PAYMENTS_ORIGIN,
+    REWARD_LEVELS,
     TOPIC_DICT,
     Donation,
     Package,
@@ -428,6 +429,11 @@ class DonateView(FormView):
         kwargs["customer"] = get_customer(self.request)
         payment = Payment.objects.create(**kwargs)
         return redirect(payment.get_payment_url())
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        result["reward_levels"] = REWARD_LEVELS
+        return result
 
     def form_invalid(self, form):
         show_form_errors(self.request, form)

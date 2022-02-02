@@ -53,6 +53,12 @@ REWARDS = (
     (2, gettext_lazy("Link in the list of supporters")),
     (3, gettext_lazy("Logo and link on the Weblate website")),
 )
+REWARD_LEVELS = {
+    0: 0,
+    1: 100,
+    2: 400,
+    3: 800,
+}
 
 TOPICS = (
     ("release", gettext_lazy("Release")),
