@@ -525,6 +525,15 @@ class DonationTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
 
+    def test_donation_workflow_invalid_reward(self):
+        self.login()
+        response = self.client.post(
+            "/en/donate/new/",
+            {"recurring": "y", "amount": 10, "reward": 2},
+            follow=True,
+        )
+        self.assertContains(response, "Insufficient donation for selected reward!")
+
     def test_donation_workflow_card_reward(self):
         self.test_donation_workflow_card(2)
 
@@ -533,7 +542,7 @@ class DonationTest(FakturaceTestCase):
         self.login()
         response = self.client.post(
             "/en/donate/new/",
-            {"recurring": "y", "amount": 10, "reward": reward},
+            {"recurring": "y", "amount": 1000, "reward": reward},
             follow=True,
         )
         self.assertContains(response, "Please provide your billing")
