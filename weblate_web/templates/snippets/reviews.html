@@ -1,0 +1,73 @@
+{% load i18n %}
+{% load static %}
+
+<div>
+    <a href=""><img src="{% static "img/Siemens-logo.png" %}" alt="Siemens" /></a>
+    <a href=""><img src="{% static "img/Dyson-logo.png" %}" alt="Dyson" /></a>
+    <a href=""><img src="{% static "img/YouGov-logo.png" %}" alt="YouGov" /></a>
+ </div>
+ <br>
+ <div class="simple-slider page-slider" dir="ltr">
+    <div class="slider-wrapper" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+       <div class="slider-slide is-bright">
+          <div class="testimonial">
+             <div class="icon-review">
+                <img src="{% static "img/Quotes.png" %}" alt="Quotes" />
+                <p>Weblate is a gorgeous app! It really saved my life. Translations are managed within same version control as the code. Weblate is a gorgeous app! It really is my life. Translations are managed within it.</p>
+             </div>
+             <div class="icon-user">
+                <div class="circle-user">
+                   <img src="{% static "img/donald.png" %}" alt="Quotes" />
+                </div>
+                <div class="content-user">
+                   <p>Donald McCalister</p>
+                   <a href="">
+                      <p>Dyson Electronics</p>
+                   </a>
+                </div>
+             </div>
+          </div>
+       </div>
+       <div class="slider-slide">
+          <div class="testimonial">
+             <div class="icon-review">
+                <img src="{% static "img/Quotes.png" %}" alt="Quotes" />
+                <p>Weblate is a gorgeous app! It really saved my life. Translations are managed within the same version control system as the code. Weblate is a gorgeous app! It really saved my life. Translations are managed within the same version control system as the code.</p>
+             </div>
+             <div class="icon-user">
+                <div class="content-user">
+                   <p>Elvis McCalister</p>
+                   <a href="">
+                      <p>No Case Study Ltd.</p>
+                   </a>
+                   <img class="content-logo" src="{% static "img/dyson-group.png" %}" alt="Quotes" />
+                </div>
+             </div>
+          </div>
+       </div>
+       <div class="slider-slide">
+          <div class="testimonial">
+             <div class="icon-review">
+                <img src="{% static "img/Quotes.png" %}" alt="Quotes" />
+                <p>Weblate is a gorgeous app! It really saved my life. Translations are managed within the same version control system as the code. Weblate is a gorgeous app! It really saved my life. Translations are managed within the same version control system as the code.</p>
+             </div>
+             <div class="icon-user">
+                <div class="content-user">
+                   <p>Jonathan McCalister</p>
+                   <a href="">
+                      <p>Siemens Inc.</p>
+                   </a>
+                   <img class="content-logo" src="{% static "img/siemens-group.png" %}" alt="Quotes" />
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+    <div class="slider-btn slider-btn-prev"><img src="{% static "img/chevron.png" %}" alt="Quotes" /></div>
+    <div class="slider-btn slider-btn-next"><img src="{% static "img/chevron1.png" %}" alt="Quotes" /></div>
+ </div>
+ <br>
+ <br>
+ <div class="custom-btn">
+    <a href="" class="button border small rev inline" target="_blank">{% trans "Browse case studies" %}</a>
+ </div>

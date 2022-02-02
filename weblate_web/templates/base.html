@@ -15,6 +15,10 @@
   <link rel="stylesheet" href="{% if LANGUAGE_BIDI %}{% static "style-rtl.css" %}{% else %}{% static "style.css" %}{% endif %}" />
 {% endcompress %}
 
+{% if request.resolver_match.url_name == 'home' %}
+  <link rel="stylesheet" href="{% static 'vendor/simpleSlider.min.css' %}" />
+{% endif %}
+
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-sans-3.css">
   <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-code-pro.css">
 
@@ -124,6 +128,10 @@
         {% include "snippets/main-menu.html" with full_menu=1 mobile_menu=1 %}
         {% include "snippets/languages.html" %}
     </section>
+
+{% if request.resolver_match.url_name == 'home' %}
+<script src="{% static 'vendor/simpleSlider.min.js' %}" /></script>
+{% endif %}
 
 {% compress js %}
 	<script src="{% static "vendor/clipboard.js" %}"></script>
