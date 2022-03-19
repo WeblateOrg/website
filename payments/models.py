@@ -157,7 +157,7 @@ RECURRENCE_CHOICES = [
     ("b", gettext_lazy("Biannual")),
     ("q", gettext_lazy("Quarterly")),
     ("m", gettext_lazy("Monthly")),
-    ("", gettext_lazy("Onetime")),
+    ("", gettext_lazy("One-time")),
 ]
 
 
