@@ -29,7 +29,6 @@ from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import connection, transaction
-from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -490,12 +489,16 @@ def process_payment(request):
 @login_required
 def download_invoice(request, pk):
     # Allow downloading own invoices of pending ones (for proforma invoices)
-    payment = get_object_or_404(
-        Payment,
-        (Q(customer__origin=PAYMENTS_ORIGIN) & Q(customer__user_id=request.user.id))
-        | Q(state=Payment.PENDING),
-        pk=pk,
-    )
+    payment = get_object_or_404(Payment, pk=pk)
+
+    if (
+        not payment.state == Payment.PENDING
+        and not Donation.objects.filter(user=request.user, payment=payment.id).exists()
+        and not Service.objects.filter(
+            users=request.user, subscription__payment=payment.id
+        ).exists()
+    ):
+        raise Http404("Invoice not accessible to current user!")
 
     if not payment.invoice_filename_valid:
         raise Http404(f"File {payment.invoice_filename} does not exist!")
