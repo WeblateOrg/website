@@ -493,9 +493,11 @@ def download_invoice(request, pk):
 
     if (
         not payment.state == Payment.PENDING
-        and not Donation.objects.filter(user=request.user, payment=payment.id).exists()
+        and not Donation.objects.filter(
+            user=request.user, payment=payment.uuid
+        ).exists()
         and not Service.objects.filter(
-            users=request.user, subscription__payment=payment.id
+            users=request.user, subscription__payment=payment.uuid
         ).exists()
     ):
         raise Http404("Invoice not accessible to current user!")
