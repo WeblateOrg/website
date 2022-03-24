@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                     ("b", "Biannual"),
                     ("q", "Quarterly"),
                     ("m", "Monthly"),
-                    ("", "Onetime"),
+                    ("", "One-time"),
                 ],
                 default="",
                 max_length=10,
