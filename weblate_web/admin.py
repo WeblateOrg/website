@@ -68,7 +68,13 @@ class ServiceAdmin(admin.ModelAdmin):
         "discoverable",
     ]
     list_filter = ("status", "discoverable")
-    search_fields = ("users__email", "report__site_url", "report__site_title")
+    search_fields = (
+        "users__email",
+        "report__site_url",
+        "report__site_title",
+        "site_url",
+        "note",
+    )
     date_hierarchy = "created"
     filter_horizontal = ("users",)
     inlines = (ProjectAdmin,)
