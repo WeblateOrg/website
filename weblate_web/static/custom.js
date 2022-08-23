@@ -158,7 +158,7 @@ ready(() => {
       var value = e.target.value;
       if (value != "") {
         document.querySelector(
-          '#id_country option[value="' + value + '"'
+          '#id_country option[value="' + value + '"]'
         ).selected = true;
       }
     });
