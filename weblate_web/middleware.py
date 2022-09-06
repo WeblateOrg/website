@@ -21,10 +21,8 @@ from django.conf import settings
 from django.utils.translation import get_language
 from weblate_language_data.docs import DOCUMENTATION_LANGUAGES
 
-URL = (
-    "https://sentry.io/api/1305560/security/"
-    "?sentry_key=795461fdeabc4ff6a3b6a6dedc495b5f"
-)
+SENTRY_KEY = "f4089b47246947759114d23fc884d56e"
+SENTRY_URL = f"https://sentry.weblate.org/api/3/security/?sentry_key={SENTRY_KEY}"
 
 CSP_TEMPLATE = (
     "default-src 'self'; "
@@ -71,7 +69,7 @@ class SecurityMiddleware:
             self.adjust_doc_links(response)
         # No CSP for debug mode (to allow djdt or error pages)
         if settings.DEBUG:
-            return response
+            return responsef4089b47246947759114d23fc884d56e
 
         style = ["'self'", "s.weblate.org"]
         script = ["'self'"]
@@ -108,9 +106,9 @@ class SecurityMiddleware:
             font=" ".join(font),
             connect=" ".join(connect),
             form=" ".join(form),
-            report=URL,
+            report=SENTRY_URL,
         )
-        response["Expect-CT"] = f'max-age=86400, enforce, report-uri="{URL}"'
+        response["Expect-CT"] = f'max-age=86400, enforce, report-uri="{SENTRY_URL}"'
         response["X-XSS-Protection"] = "1; mode=block"
         # Opt-out from Google FLoC
         response["Permissions-Policy"] = "interest-cohort=()"
