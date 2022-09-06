@@ -69,7 +69,7 @@ class SecurityMiddleware:
             self.adjust_doc_links(response)
         # No CSP for debug mode (to allow djdt or error pages)
         if settings.DEBUG:
-            return responsef4089b47246947759114d23fc884d56e
+            return response
 
         style = ["'self'", "s.weblate.org"]
         script = ["'self'"]
