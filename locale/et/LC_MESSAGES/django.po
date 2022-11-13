@@ -4,7 +4,7 @@
 # Michal Čihař <michal@cihar.com>, 2019.
 # Janar Leas <janar.leas@gmail.com>, 2019.
 # anonymous <noreply@weblate.org>, 2019, 2020.
-# Priit Jõerüüt <hwlate@joeruut.com>, 2020, 2021.
+# Priit Jõerüüt <hwlate@joeruut.com>, 2020, 2021, 2022.
 # Stanislav Lem <justaryo@yandex.ru>, 2020.
 # Janar Leas <janarleas+ubuntuone@googlemail.com>, 2020.
 # Allan Nordhøy <epost@anotheragency.no>, 2021.
@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2022-01-23 14:21+0100\n"
-"PO-Revision-Date: 2022-06-26 13:14+0000\n"
-"Last-Translator: PriitUring <priit.uring@gmail.com>\n"
+"PO-Revision-Date: 2022-11-14 21:05+0000\n"
+"Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/weblate/website/"
 "et/>\n"
 "Language: et\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: payments/backends.py:254
 msgid "Payment card"
@@ -2369,10 +2369,9 @@ msgid "Current subscription: %(package)s"
 msgstr ""
 
 #: weblate_web/templates/mail/snippets/subscription_info.html:7
-#, fuzzy, python-format
-#| msgid "Discuss with community on <a href=\"%(url)s\">GitHub</a>."
+#, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
-msgstr "Paku muudatust <a href=\"%(url)s\">GitHubi teavitusega</a>."
+msgstr "Tellimus on mõeldud aadrerssile <a href=\"%(url)s\">%(url)s</a>."
 
 #: weblate_web/templates/mail/subscription_intro.html:7
 msgid "Thank you for purchasing support subscription on weblate.org"
@@ -2950,16 +2949,13 @@ msgid "Security issues"
 msgstr ""
 
 #: weblate_web/templates/support.html:32
-#, fuzzy, python-format
-#| msgid ""
-#| "Should you find a vulnerability, please report it to %(report)s. More "
-#| "info to be found in the <a href=\"%(url)s\">documentation</a>."
+#, python-format
 msgid ""
 "Should you find a vulnerability, please report it to %(report)s. More info "
 "in the <a href=\"%(url)s\">documentation</a>."
 msgstr ""
-"Kui peaksid leidma haavatavuse, palun teavita see %(report)s. Täpsemalt "
-"teavet leiate <a href=\"%(url)s\">dokumentatsioonist</a>."
+"Kui peaksid leidma võimaliku turvavea, palun teavita sellest %(report)s'le. "
+"Täpsemalt teavet leiad <a href=\"%(url)s\">dokumentatsioonist</a>."
 
 #: weblate_web/templates/support.html:38
 msgid "Reliable support"
@@ -2999,10 +2995,8 @@ msgid "Next business day support response guaranteed."
 msgstr ""
 
 #: weblate_web/templates/support.html:83
-#, fuzzy
-#| msgid "Private consultations."
 msgid "Four hours of private consultations in price."
-msgstr "Privaatne nõustamine."
+msgstr "Hinnas on neli tundi privaatset nõustamist."
 
 #: weblate_web/templates/support.html:90
 msgid "Installation on your Linux server"
@@ -3104,22 +3098,16 @@ msgid "User profile at Weblate"
 msgstr ""
 
 #: weblate_web/templates/user.html:17
-#, fuzzy
-#| msgid "Service"
 msgid "My services"
-msgstr "Teenus"
+msgstr "Minu teenused"
 
 #: weblate_web/templates/user.html:20
-#, fuzzy
-#| msgid "Supporters"
 msgid "Support portal"
-msgstr "Toetajad"
+msgstr "Kasutajatugi"
 
 #: weblate_web/templates/user.html:21
-#, fuzzy
-#| msgid "User profile"
 msgid "See user profile"
-msgstr "Kasutajaprofiil"
+msgstr "Vaata kasutajaprofiili"
 
 #: weblate_web/templates/user.html:31
 #, fuzzy
@@ -3128,26 +3116,20 @@ msgid "Add server to Discover Weblate"
 msgstr "Kasuta Weblate-t"
 
 #: weblate_web/templates/user.html:34
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "My donations"
-msgstr "Korralda oma annetusi"
+msgstr "Minu annetused"
 
 #: weblate_web/templates/user.html:41
-#, fuzzy
-#| msgid "No reward"
 msgid "Your reward"
-msgstr "Tasustamata"
+msgstr "Sinu tasu"
 
 #: weblate_web/templates/user.html:49
 msgid "Link"
 msgstr "Viit"
 
 #: weblate_web/templates/user.html:52
-#, fuzzy
-#| msgid "No reward"
 msgid "Edit reward"
-msgstr "Tasustamata"
+msgstr "Muuda tasu"
 
 #: weblate_web/templates/user.html:58
 msgid "Active"
@@ -3270,12 +3252,10 @@ msgid "d M Y"
 msgstr "d.m.Y"
 
 #: weblate_web/templatetags/timestamps.py:63
-#, fuzzy, python-format
-#| msgctxt "Date range"
-#| msgid "%(created)s–%(expires)s"
+#, python-format
 msgctxt "Date range"
 msgid "%(created)s — %(expires)s"
-msgstr "%(created)s–%(expires)s"
+msgstr "%(created)s — %(expires)s"
 
 #: weblate_web/templatetags/timestamps.py:73
 #, python-format
