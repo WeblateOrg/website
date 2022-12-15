@@ -29,7 +29,7 @@ class Tag(Resource):
 
     path_attribute = "tags"
 
-    def add(self, obj, id, item):
+    def add(self, obj, id, item):  # noqa: A002
         response = self._connection.session.post(
             self.url + "/add",
             data={
@@ -42,7 +42,7 @@ class Tag(Resource):
 
 
 class Command(BaseCommand):
-    help = "fetches spam tickets from Zammad"
+    help = "fetches spam tickets from Zammad"  # noqa: A003
     client = None
 
     def handle(self, *args, **options):

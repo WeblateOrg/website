@@ -482,7 +482,7 @@ class DonationTest(FakturaceTestCase):
     def login(self):
         user = self.create_user()
         self.client.login(**self.credentials)
-        return user
+        return user  # noqa: R504
 
     def test_donate_page(self):
         response = self.client.get("/en/donate/")

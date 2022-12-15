@@ -288,7 +288,7 @@ def process_donation(payment):
     # Flag payment as processed
     payment.state = Payment.PROCESSED
     payment.save()
-    return donation
+    return donation  # noqa: R504
 
 
 def get_service(payment, user):

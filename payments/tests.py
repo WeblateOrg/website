@@ -174,7 +174,7 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.vat_amount, 121)
         payment = Payment(customer=customer, amount=100, amount_fixed=True)
         self.assertEqual(payment.vat_amount, 100)
-        self.assertEqual(round(payment.amount_without_vat, 2), 82.64)
+        self.assertAlmostEqual(payment.amount_without_vat, 82.64)
 
         customer.vat = "IE6388047V"
         payment = Payment(customer=customer, amount=100)

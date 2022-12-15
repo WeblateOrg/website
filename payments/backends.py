@@ -108,7 +108,7 @@ class Backend:
         self.payment.backend = self.name
         self.payment.save()
 
-        return result
+        return result  # noqa: R504
 
     def complete(self, request):
         """Payment completion called from returned request."""

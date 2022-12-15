@@ -33,7 +33,7 @@ from weblate_web.models import (
 
 
 class Command(BaseCommand):
-    help = "processes pending payments"
+    help = "processes pending payments"  # noqa: A003
 
     def add_arguments(self, parser):
         parser.add_argument(

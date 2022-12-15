@@ -29,7 +29,7 @@ from weblate_web.models import Donation, Service, Subscription
 
 
 class Command(BaseCommand):
-    help = "issues recurring payments"
+    help = "issues recurring payments"  # noqa: A003
 
     def handle(self, *args, **options):
         # Issue recurring payments
