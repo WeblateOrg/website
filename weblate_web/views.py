@@ -29,6 +29,7 @@ from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import connection, transaction
+from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -494,10 +495,15 @@ def download_invoice(request, pk):
     if (
         not payment.state == Payment.PENDING
         and not Donation.objects.filter(
-            user=request.user, payment=payment.uuid
+            Q(user=request.user)
+            & (Q(payment=payment.uuid) | Q(pastpayments__payment=payment.uuid))
         ).exists()
         and not Service.objects.filter(
-            users=request.user, subscription__payment=payment.uuid
+            Q(users=request.user)
+            & (
+                Q(subscription__payment=payment.uuid)
+                | Q(subscription__pastpayments__payment=payment.uuid)
+            )
         ).exists()
     ):
         raise Http404("Invoice not accessible to current user!")
