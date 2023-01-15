@@ -347,4 +347,4 @@ def get_period_delta(period):
         return relativedelta(months=3) - relativedelta(days=1)
     if period == "m":
         return relativedelta(months=1) - relativedelta(days=1)
-    raise ValueError(f"Invalid payment period '{period}'!")
+    raise ValueError(f"Invalid payment period {period!r}!")

@@ -39,7 +39,7 @@ class Command(BaseCommand):
         """Define link to search account on Hosted Weblate for all users."""
         self.client.user.per_page = 100
         users = self.client.user.search(
-            {"query": f'!hosted_account:"{HOSTED_ACCOUNT}"', "limit": 100}
+            {"query": f"!hosted_account:{HOSTED_ACCOUNT!r}", "limit": 100}
         )
         # We intentionally ignore pagination here as the sync is expected to run
         # regularly and fetch remaining ones in next run

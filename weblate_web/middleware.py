@@ -108,7 +108,7 @@ class SecurityMiddleware:
             form=" ".join(form),
             report=SENTRY_URL,
         )
-        response["Expect-CT"] = f'max-age=86400, enforce, report-uri="{SENTRY_URL}"'
+        response["Expect-CT"] = f"max-age=86400, enforce, report-uri={SENTRY_URL!r}"
         response["X-XSS-Protection"] = "1; mode=block"
         # Opt-out from Google FLoC
         response["Permissions-Policy"] = "interest-cohort=()"
