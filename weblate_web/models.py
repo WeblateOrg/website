@@ -711,6 +711,7 @@ class Subscription(models.Model):
     package = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
+    enabled = models.BooleanField(default=True, blank=True)
 
     class Meta:
         verbose_name = "Customer’s subscription"

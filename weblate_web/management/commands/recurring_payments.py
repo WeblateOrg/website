@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
         # Expiring subscriptions
         subscriptions = Subscription.objects.filter(
-            expires__lte=expires_notify
+            expires__lte=expires_notify, enabled=True
         ).exclude(payment=None)
         for subscription in subscriptions:
             payment = subscription.payment_obj
@@ -148,7 +148,8 @@ class Command(BaseCommand):
     def handle_subscriptions(cls):
         now = timezone.now()
         subscriptions = Subscription.objects.filter(
-            expires__range=(now - timedelta(days=10), now + timedelta(days=3))
+            expires__range=(now - timedelta(days=10), now + timedelta(days=3)),
+            enabled=True,
         ).exclude(payment=None)
         for subscription in subscriptions:
             # Is this repeating subscription?
