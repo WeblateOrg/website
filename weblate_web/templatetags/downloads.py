@@ -22,7 +22,7 @@ import os
 from django.conf import settings
 from django.template import Library
 from django.utils.translation import gettext as _
-from django.utils.translation import ungettext
+from django.utils.translation import ngettext
 
 register = Library()
 
@@ -35,7 +35,7 @@ def filesizeformat(num_bytes):
     num_bytes = float(num_bytes)
 
     if num_bytes < 1024:
-        return ungettext("%(size)d byte", "%(size)d bytes", num_bytes) % {
+        return ngettext("%(size)d byte", "%(size)d bytes", num_bytes) % {
             "size": num_bytes
         }
     if num_bytes < 1024 * 1024:
