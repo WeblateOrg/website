@@ -20,14 +20,13 @@
 import django.contrib.sitemaps.views
 import django.views.static
 from django.conf import settings
-from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
-from django.urls import path
+from django.urls import include, path, re_path
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView, TemplateView
@@ -146,193 +145,213 @@ UUID = r"(?P<pk>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
 
 
 urlpatterns = i18n_patterns(
-    url(r"^$", TemplateView.as_view(template_name="index.html"), name="home"),
-    url(
+    re_path(r"^$", TemplateView.as_view(template_name="index.html"), name="home"),
+    re_path(
         r"^features/$",
         TemplateView.as_view(template_name="features.html"),
         name="features",
     ),
-    url(r"^tour/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-    url(
+    re_path(r"^tour/$", RedirectView.as_view(url="/hosting/", permanent=True)),
+    re_path(
         r"^download/$",
         TemplateView.as_view(template_name="download.html"),
         name="download",
     ),
-    url(r"^try/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-    url(
+    re_path(r"^try/$", RedirectView.as_view(url="/hosting/", permanent=True)),
+    re_path(
         r"^hosting/$",
         TemplateView.as_view(template_name="hosting.html"),
         name="hosting",
     ),
-    url(
+    re_path(
         r"^discover/$",
         DiscoverView.as_view(),
         name="discover",
     ),
-    url(r"^hosting/free/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-    url(r"^hosting/ordered/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-    url(
+    re_path(r"^hosting/free/$", RedirectView.as_view(url="/hosting/", permanent=True)),
+    re_path(
+        r"^hosting/ordered/$", RedirectView.as_view(url="/hosting/", permanent=True)
+    ),
+    re_path(
         r"^contribute/$",
         TemplateView.as_view(template_name="contribute.html"),
         name="contribute",
     ),
-    url(
+    re_path(
         r"^user/$",
         login_required(TemplateView.as_view(template_name="user.html")),
         name="user",
     ),
-    url(r"^donate/$", TemplateView.as_view(template_name="donate.html"), name="donate"),
-    url(r"^donate/process/$", process_payment, name="donate-process"),
-    url(r"^donate/new/$", DonateView.as_view(), name="donate-new"),
-    url(r"^donate/edit/(?P<pk>[0-9]+)/$", EditLinkView.as_view(), name="donate-edit"),
-    url(r"^donate/pay/(?P<pk>[0-9]+)/$", donate_pay, name="donate-pay"),
-    url(r"^user/invoice/" + UUID + "/$", download_invoice, name="user-invoice"),
-    url(r"^donate/disable/(?P<pk>[0-9]+)/$", disable_repeat, name="donate-disable"),
-    url(
+    re_path(
+        r"^donate/$", TemplateView.as_view(template_name="donate.html"), name="donate"
+    ),
+    re_path(r"^donate/process/$", process_payment, name="donate-process"),
+    re_path(r"^donate/new/$", DonateView.as_view(), name="donate-new"),
+    re_path(
+        r"^donate/edit/(?P<pk>[0-9]+)/$", EditLinkView.as_view(), name="donate-edit"
+    ),
+    re_path(r"^donate/pay/(?P<pk>[0-9]+)/$", donate_pay, name="donate-pay"),
+    re_path(r"^user/invoice/" + UUID + "/$", download_invoice, name="user-invoice"),
+    re_path(r"^donate/disable/(?P<pk>[0-9]+)/$", disable_repeat, name="donate-disable"),
+    re_path(
         r"^subscription/disable/(?P<pk>[0-9]+)/$",
         subscription_disable_repeat,
         name="subscription-disable",
     ),
-    url(r"^subscription/token/(?P<pk>[0-9]+)/$", service_token, name="service-token"),
-    url(r"^subscription/users/(?P<pk>[0-9]+)/$", service_user, name="service-user"),
-    url(
+    re_path(
+        r"^subscription/token/(?P<pk>[0-9]+)/$", service_token, name="service-token"
+    ),
+    re_path(r"^subscription/users/(?P<pk>[0-9]+)/$", service_user, name="service-user"),
+    re_path(
         r"^subscription/discovery/(?P<pk>[0-9]+)/$",
         EditDiscoveryView.as_view(),
         name="service-discovery",
     ),
-    url(
+    re_path(
         r"^subscription/discovery/$",
         AddDiscoveryView.as_view(),
         name="service-discovery-add",
     ),
-    url(
+    re_path(
         r"^subscription/pay/(?P<pk>[0-9]+)/$", subscription_pay, name="subscription-pay"
     ),
-    url(
+    re_path(
         r"^subscription/view/(?P<pk>[0-9]+)/$",
         subscription_view,
         name="subscription-view",
     ),
-    url(r"^subscription/new/$", subscription_new, name="subscription-new"),
-    url(r"^news/$", NewsView.as_view(), name="news"),
-    url(r"^news/archive/$", NewsArchiveView.as_view(), name="news-archive"),
-    url(
+    re_path(r"^subscription/new/$", subscription_new, name="subscription-new"),
+    re_path(r"^news/$", NewsView.as_view(), name="news"),
+    re_path(r"^news/archive/$", NewsArchiveView.as_view(), name="news-archive"),
+    re_path(
         r"^news/topic/milestone/$",
         MilestoneArchiveView.as_view(),
         name="milestone-archive",
     ),
-    url(
+    re_path(
         r"^news/topic/(?P<slug>[-a-zA-Z0-9_]+)/$",
         TopicArchiveView.as_view(),
         name="topic-archive",
     ),
-    url(r"^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$", PostView.as_view(), name="post"),
-    url(r"^about/$", TemplateView.as_view(template_name="about.html"), name="about"),
-    url(
+    re_path(
+        r"^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$", PostView.as_view(), name="post"
+    ),
+    re_path(
+        r"^about/$", TemplateView.as_view(template_name="about.html"), name="about"
+    ),
+    re_path(
         r"^careers/$",
         TemplateView.as_view(template_name="careers.html"),
         name="careers",
     ),
-    url(
+    re_path(
         r"^support/$",
         TemplateView.as_view(template_name="support.html"),
         name="support",
     ),
-    url(r"^thanks/$", RedirectView.as_view(url="/donate/", permanent=True)),
-    url(r"^terms/$", TemplateView.as_view(template_name="terms.html"), name="terms"),
-    url(r"^payment/" + UUID + "/$", PaymentView.as_view(), name="payment"),
-    url(
+    re_path(r"^thanks/$", RedirectView.as_view(url="/donate/", permanent=True)),
+    re_path(
+        r"^terms/$", TemplateView.as_view(template_name="terms.html"), name="terms"
+    ),
+    re_path(r"^payment/" + UUID + "/$", PaymentView.as_view(), name="payment"),
+    re_path(
         r"^payment/" + UUID + "/edit/$", CustomerView.as_view(), name="payment-customer"
     ),
-    url(
+    re_path(
         r"^payment/" + UUID + "/complete/$",
         CompleteView.as_view(),
         name="payment-complete",
     ),
     # FOSDEM short link
-    url(
+    re_path(
         r"^FOSDEM/|fosdem/$",
         RedirectView.as_view(
             url="/news/archive/meet-weblate-fosdem-2020/", permanent=False
         ),
     ),
     # Compatibility with disabled languages
-    url(r"^[a-z][a-z]/$", RedirectView.as_view(url="/", permanent=False)),
-    url(r"^[a-z][a-z]_[A-Z][A-Z]/$", RedirectView.as_view(url="/", permanent=False)),
+    re_path(r"^[a-z][a-z]/$", RedirectView.as_view(url="/", permanent=False)),
+    re_path(
+        r"^[a-z][a-z]_[A-Z][A-Z]/$", RedirectView.as_view(url="/", permanent=False)
+    ),
     # Broken links
-    url(r"^https?:/.*$", RedirectView.as_view(url="/", permanent=True)),
-    url(r"^index\.html$", RedirectView.as_view(url="/", permanent=True)),
-    url(r"^index\.([a-z][a-z])\.html$", RedirectView.as_view(url="/", permanent=True)),
-    url(r"^[a-z][a-z]/index\.html$", RedirectView.as_view(url="/", permanent=True)),
-    url(
+    re_path(r"^https?:/.*$", RedirectView.as_view(url="/", permanent=True)),
+    re_path(r"^index\.html$", RedirectView.as_view(url="/", permanent=True)),
+    re_path(
+        r"^index\.([a-z][a-z])\.html$", RedirectView.as_view(url="/", permanent=True)
+    ),
+    re_path(r"^[a-z][a-z]/index\.html$", RedirectView.as_view(url="/", permanent=True)),
+    re_path(
         r"^[a-z][a-z]_[A-Z][A-Z]/index\.html$",
         RedirectView.as_view(url="/", permanent=True),
     ),
 ) + [
-    url(
+    re_path(
         r"^sitemap\.xml$",
         cache_page(3600)(django.contrib.sitemaps.views.index),
         {"sitemaps": SITEMAPS, "sitemap_url_name": "sitemap"},
         name="sitemap-index",
     ),
-    url(
+    re_path(
         r"^sitemap-(?P<section>.+)\.xml$",
         cache_page(1800)(django.contrib.sitemaps.views.sitemap),
         {"sitemaps": SITEMAPS},
         name="sitemap",
     ),
     path("feed/", LatestEntriesFeed(), name="feed"),
-    url(r"^js/vat/$", fetch_vat),
-    url(r"^api/support/$", api_support),
-    url(r"^api/user/$", api_user),
-    url(r"^api/hosted/$", api_hosted),
-    url(r"^img/activity.svg$", activity_svg),
-    url(r"^logout/$", LogoutView.as_view(next_page="/"), name="logout"),
+    re_path(r"^js/vat/$", fetch_vat),
+    re_path(r"^api/support/$", api_support),
+    re_path(r"^api/user/$", api_user),
+    re_path(r"^api/hosted/$", api_hosted),
+    re_path(r"^img/activity.svg$", activity_svg),
+    re_path(r"^logout/$", LogoutView.as_view(next_page="/"), name="logout"),
     # Aliases for static files
-    url(
+    re_path(
         r"^(android-chrome|favicon)-(?P<size>192|512)x(?P=size)\.png$",
         RedirectView.as_view(
             url=settings.STATIC_URL + "weblate-%(size)s.png", permanent=True
         ),
     ),
-    url(
+    re_path(
         r"^apple-touch-icon\.png$",
         RedirectView.as_view(
             url=settings.STATIC_URL + "weblate-180.png", permanent=True
         ),
     ),
-    url(
+    re_path(
         r"^(?P<name>favicon\.ico|robots\.txt)$",
         RedirectView.as_view(url=settings.STATIC_URL + "%(name)s", permanent=True),
     ),
-    url(
+    re_path(
         r"^browserconfig\.xml$", TemplateView.as_view(template_name="browserconfig.xml")
     ),
-    url(r"^site\.webmanifest$", TemplateView.as_view(template_name="site.webmanifest")),
-    url(
+    re_path(
+        r"^site\.webmanifest$", TemplateView.as_view(template_name="site.webmanifest")
+    ),
+    re_path(
         r"^security\.txt$",
         RedirectView.as_view(url="/.well-known/security.txt", permanent=True),
     ),
-    url(
+    re_path(
         r"^\.well-known/security\.txt$",
         TemplateView.as_view(template_name="security.txt", content_type="text/plain"),
     ),
-    url(
+    re_path(
         r"^\.well-known/keybase\.txt$",
         TemplateView.as_view(template_name="keybase.txt", content_type="text/plain"),
     ),
     # SAML
-    url(r"^saml2/", include("djangosaml2.urls")),
+    re_path(r"^saml2/", include("djangosaml2.urls")),
     # Admin
-    url(
+    re_path(
         r"^admin/login/$",
         RedirectView.as_view(
             pattern_name="saml2_login", permanent=True, query_string=True
         ),
     ),
-    url(r"^admin/", admin.site.urls),
+    re_path(r"^admin/", admin.site.urls),
     # Media files on devel server
-    url(
+    re_path(
         r"^media/(?P<path>.*)$",
         django.views.static.serve,
         {"document_root": settings.MEDIA_ROOT},
