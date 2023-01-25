@@ -254,6 +254,7 @@ def process_donation(payment):
         payment.start = donation.expires
         donation.expires += get_period_delta(payment.repeat.recurring)
         payment.end = donation.expires
+        donation.active = True
         donation.save()
     elif "donation" in payment.extra:
         donation = Donation.objects.get(pk=payment.extra["donation"])
