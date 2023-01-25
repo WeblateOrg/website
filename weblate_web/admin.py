@@ -46,7 +46,12 @@ class DonationAdmin(admin.ModelAdmin):
         "get_amount",
         "link_text",
         "link_url",
+        "active",
     )
+    list_filter = [
+        "reward",
+        "active",
+    ]
 
 
 class ProjectAdmin(admin.TabularInline):
