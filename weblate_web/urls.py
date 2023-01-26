@@ -266,7 +266,7 @@ urlpatterns = i18n_patterns(
     re_path(
         r"^FOSDEM/|fosdem/$",
         RedirectView.as_view(
-            url="/news/archive/meet-weblate-fosdem-2020/", permanent=False
+            url="/news/archive/meet-weblate-on-fosdem-2023/", permanent=False
         ),
     ),
     # Compatibility with disabled languages
