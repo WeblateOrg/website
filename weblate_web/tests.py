@@ -717,6 +717,7 @@ class APITest(TestCase):
                         "projects": 1,
                         "languages": 1,
                         "source_strings": 1,
+                        "words": 10,
                         "components": 1,
                         "users": [666],
                     },
