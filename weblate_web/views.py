@@ -213,6 +213,7 @@ def api_hosted(request):
         components=payload["components"],
         languages=payload["languages"],
         source_strings=payload["source_strings"],
+        hosted_words=payload["words"],
         version=request.headers["User-Agent"].split("/", 1)[1],
     )
     service.update_status()
@@ -239,6 +240,7 @@ def api_support(request):
         components=request.POST.get("components", 0),
         languages=request.POST.get("languages", 0),
         source_strings=request.POST.get("source_strings", 0),
+        hosted_words=request.POST.get("words", 0),
         version=request.headers["User-Agent"].split("/", 1)[1],
         discoverable=bool(request.POST.get("discoverable")),
     )

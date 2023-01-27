@@ -432,6 +432,7 @@ class Package(models.Model):
     limit_projects = models.IntegerField(default=0)
     limit_languages = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
+    limit_hosted_words = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = "Service package"
@@ -469,6 +470,7 @@ class Service(models.Model):
     limit_languages = models.IntegerField(default=0)
     limit_projects = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
+    limit_hosted_words = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
@@ -547,6 +549,16 @@ class Service(models.Model):
         return "0"
 
     source_strings_limit.short_description = "Source strings"
+
+    def hosted_words_limit(self):
+        report = self.last_report
+        if report:
+            if self.limit_hosted_words:
+                return f"{report.hosted_words}/{self.limit_hosted_words}"
+            return f"{report.hosted_words}"
+        return "0"
+
+    hosted_words_limit.short_description = "Histed words"
 
     @cached_property
     def user_emails(self):
@@ -672,9 +684,11 @@ class Service(models.Model):
         if (
             status != self.status
             or package_obj.limit_source_strings != self.limit_source_strings
+            or package_obj.limit_hosted_words != self.limit_hosted_words
         ):
             self.status = status
             self.limit_source_strings = package_obj.limit_source_strings
+            self.limit_hosted_words = package_obj.limit_hosted_words
             self.limit_languages = package_obj.limit_languages
             self.limit_projects = package_obj.limit_projects
             self.save()
@@ -690,6 +704,11 @@ class Service(models.Model):
             self.save(update_fields=["backup_repository"])
 
     def check_in_limits(self):
+        if (
+            self.limit_hosted_words
+            and self.last_report.hosted_words > self.limit_hosted_words
+        ):
+            return False
         if (
             self.limit_source_strings
             and self.last_report.source_strings > self.limit_source_strings
@@ -818,6 +837,7 @@ class Report(models.Model):
     components = models.IntegerField(default=0)
     languages = models.IntegerField(default=0)
     source_strings = models.IntegerField(default=0)
+    hosted_words = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
     discoverable = models.BooleanField(default=False)
 

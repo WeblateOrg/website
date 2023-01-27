@@ -67,6 +67,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "projects_limit",
         "languages_limit",
         "source_strings_limit",
+        "hosted_words_limit",
         "status",
         "user_emails",
         "expires",
@@ -127,6 +128,7 @@ class PackageAdmin(admin.ModelAdmin):
         "limit_projects",
         "limit_languages",
         "limit_source_strings",
+        "limit_hosted_words",
     ]
 
 
