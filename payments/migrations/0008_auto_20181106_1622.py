@@ -6,7 +6,6 @@ import payments.utils
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("payments", "0007_customer_tax")]
 
     operations = [

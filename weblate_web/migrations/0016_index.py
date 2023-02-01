@@ -12,7 +12,6 @@ def create_index(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("weblate_web", "0015_auto_20210313_1103"),
     ]

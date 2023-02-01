@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("weblate_web", "0003_auto_20200316_1536"),
     ]

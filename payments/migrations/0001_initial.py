@@ -11,7 +11,6 @@ import payments.utils
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = []

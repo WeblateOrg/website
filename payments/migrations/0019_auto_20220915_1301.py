@@ -6,7 +6,6 @@ from payments.utils import JSONField
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("payments", "0018_auto_20200821_1034"),
     ]
