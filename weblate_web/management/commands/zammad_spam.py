@@ -26,7 +26,6 @@ from zammad_py.api import Resource
 
 
 class Tag(Resource):
-
     path_attribute = "tags"
 
     def add(self, obj, id, item):  # noqa: A002
@@ -59,7 +58,6 @@ class Command(BaseCommand):
         if "Ticket" not in search["assets"]:
             return
         for ticket in search["assets"]["Ticket"].values():
-
             # Oldest article
             ticket_id = ticket["id"]
             article_id = sorted(ticket["article_ids"])[0]

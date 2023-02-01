@@ -7,7 +7,6 @@ import payments.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("payments", "0008_auto_20181106_1622")]
 
     operations = [

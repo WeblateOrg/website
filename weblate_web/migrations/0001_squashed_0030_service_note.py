@@ -9,7 +9,6 @@ import weblate_web.models
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("weblate_web", "0001_initial"),
         ("weblate_web", "0002_image_post"),

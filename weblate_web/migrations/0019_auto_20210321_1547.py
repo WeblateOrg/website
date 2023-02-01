@@ -7,7 +7,6 @@ import weblate_web.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("weblate_web", "0018_service_site_projects"),
     ]

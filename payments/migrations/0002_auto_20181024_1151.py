@@ -7,7 +7,6 @@ import payments.utils
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("payments", "0001_initial")]
 
     operations = [
