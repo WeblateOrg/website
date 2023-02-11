@@ -21,13 +21,14 @@
 # Nam <ywnam@rsupport.com>, 2022.
 # Hoseok Seo <ddinghoya@gmail.com>, 2022.
 # Yi Yunseok <ironyunseok@protonmail.com>, 2023.
+# 이정희 <daemul72@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2022-01-23 14:21+0100\n"
-"PO-Revision-Date: 2023-02-04 01:18+0000\n"
-"Last-Translator: Yi Yunseok <ironyunseok@protonmail.com>\n"
+"PO-Revision-Date: 2023-02-11 15:20+0000\n"
+"Last-Translator: 이정희 <daemul72@gmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/weblate/website/"
 "ko/>\n"
 "Language: ko\n"
@@ -63,7 +64,7 @@ msgstr "발행 은행"
 
 #: payments/backends.py:389
 msgid "Account holder"
-msgstr "계좌 소유자"
+msgstr "예금주"
 
 #: payments/backends.py:390
 msgid "Account number"
@@ -87,8 +88,7 @@ msgstr "유럽 VAT ID"
 
 #: payments/models.py:79
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
-msgstr ""
-"유럽 연합 VAT ID를 작성하십시오, 해당 사항이 아니라면 공백으로 두십시오."
+msgstr "유럽 연합 VAT ID를 입력하시고, 해당되지 않는 경우 비워두세요."
 
 #: payments/models.py:85
 msgid "Tax registration"
@@ -109,23 +109,23 @@ msgstr "주소"
 
 #: payments/models.py:100
 msgid "Postcode and city"
-msgstr "우편 번호와 도시"
+msgstr "우편번호 및 도시"
 
 #: payments/models.py:102
 msgid "Country"
-msgstr "나라"
+msgstr "국가"
 
 #: payments/models.py:133
 msgid "The country has to match your VAT code"
-msgstr "나라는 VAT 코드와 일치해야 합니다"
+msgstr "국가는 VAT 코드와 일치해야 합니다"
 
 #: payments/models.py:156
 msgid "Annual"
-msgstr "매년"
+msgstr "연 1회"
 
 #: payments/models.py:157
 msgid "Biannual"
-msgstr "반 년"
+msgstr "연 2회"
 
 #: payments/models.py:158 weblate_web/templates/donate/form.html:28
 msgid "Quarterly"
@@ -156,22 +156,22 @@ msgstr "신규 결제"
 #: payments/models.py:195
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "대기 중인 결제"
+msgstr "대기중인 결제"
 
 #: payments/models.py:196
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "거부된 결제"
+msgstr "결제 거부됨"
 
 #: payments/models.py:197
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "승인된 결제"
+msgstr "결제 승인됨"
 
 #: payments/models.py:198
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "처리된 결제"
+msgstr "결제 처리됨"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -179,11 +179,11 @@ msgstr "올바른 전자우편 주소를 입력해주세요."
 
 #: payments/validators.py:42
 msgid "{} is not a valid country code for any European Union member."
-msgstr "{}이(가) 유럽 연합 회원국에 유효한 국가 코드가 아닙니다."
+msgstr "{}은(는) 유럽 연합 회원국에 유효한 국가 코드가 아닙니다."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
-msgstr "{}이(가) 해당 국가의 VAT ID 명세서와 일치하지 않습니다."
+msgstr "{}은(는) 해당 국가의 VAT ID 사양과 일치하지 않습니다."
 
 #: payments/validators.py:58
 msgid "VAT ID validation service unavailable for {}, please try again later."
@@ -982,7 +982,7 @@ msgstr "번역 현황"
 #: weblate_web/templates/subscription/discovery-add.html:12
 #: weblate_web/templates/subscription/discovery.html:3
 msgid "Discover Weblate"
-msgstr "웨블레이트 탐색"
+msgstr "Weblate 살펴보기"
 
 #: weblate_web/templates/discover.html:18
 msgid ""
@@ -1870,11 +1870,11 @@ msgstr "시스템 유지보수"
 
 #: weblate_web/templates/hosting.html:28
 msgid "Weblate installation"
-msgstr "웨블레이트 설치"
+msgstr "Weblate 설치"
 
 #: weblate_web/templates/hosting.html:31
 msgid "Weblate upgrades"
-msgstr "웨블레이트 업그레이드"
+msgstr "Weblate 업그레이드"
 
 #: weblate_web/templates/hosting.html:34
 msgid "Access to backups"
@@ -1907,7 +1907,7 @@ msgstr "클라우드"
 
 #: weblate_web/templates/hosting.html:70
 msgid "Backups and restore on Hosted Weblate are fully automatic."
-msgstr "웨블레이트 호스트에서 백업과 복구는 완전히 자동입니다."
+msgstr "호스팅된 Weblate의 백업 및 복원은 완전 자동입니다."
 
 #: weblate_web/templates/hosting.html:90
 msgctxt "Hosting plan"
@@ -2284,7 +2284,7 @@ msgstr "이 결제에 대한 송장이 첨부되어 있습니다."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
-msgstr "weblate.org서비스 이용 지불내역"
+msgstr "weblate.org에 지불한 사용자의 결제 내역"
 
 #: weblate_web/templates/mail/payment_expired.html:9
 msgid ""
@@ -2317,7 +2317,7 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
-msgstr "weblate.org 서비스 결제가 중단되었습니다"
+msgstr "weblate.org에서 결제하지 못했습니다"
 
 #: weblate_web/templates/mail/payment_missing.html:9
 msgid ""
@@ -2370,7 +2370,7 @@ msgstr "(부가세 포함)"
 
 #: weblate_web/templates/mail/payment_pending_subject.txt:2
 msgid "Your pending payment on weblate.org"
-msgstr "weblate.org에 보류 중인 결제"
+msgstr "weblate.org에서 보류중인 결제 내역"
 
 #: weblate_web/templates/mail/payment_upcoming.html:9
 msgid "Your subscription on weblate.org will renew next week."
@@ -2671,7 +2671,7 @@ msgstr "블로그"
 
 #: weblate_web/templates/snippets/main-menu.html:18
 msgid "About"
-msgstr "웨블레이트"
+msgstr "정보"
 
 #: weblate_web/templates/snippets/main-menu.html:19
 msgid "Docs"
@@ -2748,7 +2748,7 @@ msgstr "유료 <a href=\"%(url)s\">지원</a>"
 
 #: weblate_web/templates/snippets/pricing.html:147
 msgid "Gratis Weblate"
-msgstr "무료 웨블레이트"
+msgstr "무료 Weblate"
 
 #: weblate_web/templates/snippets/pricing.html:148
 msgid "for libre projects"
@@ -2853,7 +2853,7 @@ msgstr "플랜 변경"
 
 #: weblate_web/templates/snippets/service.html:161
 msgid "Billing"
-msgstr "결제"
+msgstr "청구"
 
 #: weblate_web/templates/snippets/service.html:166
 #: weblate_web/templates/user.html:91
@@ -2891,7 +2891,7 @@ msgstr "결제"
 
 #: weblate_web/templates/snippets/service.html:209
 msgid "Get more Weblate"
-msgstr "웨블레이트 더 보기"
+msgstr "Weblate 더 보기"
 
 #: weblate_web/templates/snippets/service.html:211
 msgid "Available services"
@@ -2916,14 +2916,13 @@ msgstr "자세한 정보를 알고 싶다면 <a href=\"%(contact)s\">연락</a>�
 
 #: weblate_web/templates/snippets/vat.html:5
 msgid "All listed prices exclude VAT."
-msgstr "나열된 모든 가격은 부가세 제외입니다."
+msgstr "표시된 모든 요금은 부가가치세를 제외한 가격입니다."
 
 #: weblate_web/templates/snippets/vat.html:6
 #, python-format
 msgid ""
 "EU end users and Czech companies will be charged with additional 21%% VAT."
-msgstr ""
-"EU 최종 사용자와 체코 기업들은 21%%의 부가가치세를 추가로 부과받게 됩니다."
+msgstr "EU 최종 사용자와 체코 기업들은 21%%의 부가가치세가 추가로 부과됩니다."
 
 #: weblate_web/templates/snippets/vat.html:7
 msgid ""
