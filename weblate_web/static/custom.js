@@ -183,7 +183,7 @@ ready(() => {
           })
             .then((response) => response.json())
             .then((data) => {
-              if (data.valid) {
+              if (data.valid && data.name !== "---") {
                 document.querySelector('input[name="name"]').value = data.name;
                 var parts = data.address.trim().split("\n");
                 document.querySelector('input[name="address"]').value =
