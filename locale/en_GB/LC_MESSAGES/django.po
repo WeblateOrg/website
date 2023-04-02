@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2022-01-23 14:21+0100\n"
-"PO-Revision-Date: 2023-03-31 05:41+0000\n"
+"PO-Revision-Date: 2023-04-02 13:34+0000\n"
 "Last-Translator: Andi Chandler <andi@gowling.com>\n"
 "Language-Team: English (United Kingdom) <https://hosted.weblate.org/projects/"
 "weblate/website/en_GB/>\n"
@@ -826,8 +826,8 @@ msgid ""
 "<a href=\"%(url)s\">documentation</a>."
 msgstr ""
 "In case it is sensitive or a <strong>security issue</strong>, please report "
-"it to %(report)s. Other ways of reporting security issue can be found in the "
-"<a href=\"%(url)s\">documentation</a>."
+"it to %(report)s. Other ways of reporting security issues can be found in "
+"the <a href=\"%(url)s\">documentation</a>."
 
 #: weblate_web/templates/contribute.html:28
 #, python-format
@@ -936,6 +936,8 @@ msgid ""
 "Once you have a patch ready, please follow <a href=\"#patch\">patch "
 "submission</a> instructions."
 msgstr ""
+"Once you have a patch ready, please follow <a href=\"#patch\">patch "
+"submission</a> instructions."
 
 #: weblate_web/templates/contribute.html:67
 msgid ""
@@ -1011,13 +1013,11 @@ msgid "Search"
 msgstr "Search"
 
 #: weblate_web/templates/discover.html:50
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s project"
 msgid_plural "%(count)s projects"
-msgstr[0] "%(count)s translation"
-msgstr[1] "%(count)s translations"
+msgstr[0] "%(count)s project"
+msgstr[1] "%(count)s projects"
 
 #: weblate_web/templates/discover.html:51
 #, fuzzy, python-format
@@ -1400,16 +1400,12 @@ msgid "Cloud or virtualization images"
 msgstr "Cloud or virtualisation images"
 
 #: weblate_web/templates/download.html:36
-#, fuzzy
-#| msgid ""
-#| "Weblate can be run in any cloud or virtualization environment. Following "
-#| "links will show you information about some of these:"
 msgid ""
 "Weblate can be run in any cloud or virtualization environment. The following "
 "guides will show you detailed info about some of the most common platforms."
 msgstr ""
-"Weblate can be run in any cloud or virtualisation environment. Following "
-"links will show you information about some of these:"
+"Weblate can be run in any cloud or virtualization environment. The following "
+"guides will show you detailed info about some of the most common platforms."
 
 #: weblate_web/templates/download.html:41
 #, fuzzy
@@ -1442,16 +1438,12 @@ msgid "Kubernetes guide"
 msgstr ""
 
 #: weblate_web/templates/download.html:56
-#, fuzzy
-#| msgid ""
-#| "BitNami Weblate stack providing native installation for most platforms as "
-#| "well as support for many public cloud providers"
 msgid ""
 "Additionally, Bitnami Weblate stack is available for many platforms and "
 "works with most cloud providers."
 msgstr ""
-"BitNami Weblate stack providing native installation for most platforms as "
-"well as support for many public cloud providers"
+"Additionally, the Bitnami Weblate stack is available for many platforms and "
+"works with most cloud providers."
 
 #: weblate_web/templates/download.html:57
 msgid "Google Cloud Platform"
@@ -1474,16 +1466,13 @@ msgid "GitHub repository"
 msgstr "VCS repositories"
 
 #: weblate_web/templates/download.html:63
-#, fuzzy, python-format
-#| msgid ""
-#| "Weblate is being developed on <a href=\"%(url)s\">GitHub</a>, you can "
-#| "fork it there or just:"
+#, python-format
 msgid ""
 "Weblate is developed on <a href=\"%(url)s\">GitHub</a>, you can fork it "
 "there, find <a href=\"%(url)s\">more repositories</a>, or just:"
 msgstr ""
-"Weblate is being developed on <a href=\"%(url)s\">GitHub</a>, you can fork "
-"it there or just:"
+"Weblate is developed on <a href=\"%(url)s\">GitHub</a>, you can fork it "
+"there, find <a href=\"%(url)s\">more repositories</a>, or just:"
 
 #: weblate_web/templates/download.html:69
 #: weblate_web/templates/download.html:72
@@ -1507,12 +1496,12 @@ msgid "Weblate features"
 msgstr "Weblate features"
 
 #: weblate_web/templates/features.html:13
-#, fuzzy
-#| msgid "Weblate is a feature rich computer aided translation tool."
 msgid ""
 "As a feature rich computer aided translation tool, Weblate saves both "
 "developers and translators time. Make your users happier!"
-msgstr "Weblate is a feature rich computer aided translation tool."
+msgstr ""
+"As a feature-rich computer-aided translation tool, Weblate saves both "
+"developers and translators time. Make your users happier!"
 
 #: weblate_web/templates/features.html:14
 msgid ""
@@ -1643,7 +1632,7 @@ msgstr ""
 
 #: weblate_web/templates/features.html:92
 msgid "gettext"
-msgstr ""
+msgstr "gettext"
 
 #: weblate_web/templates/features.html:93
 msgid "XLIFF"
@@ -1947,12 +1936,8 @@ msgid "Translation add-ons"
 msgstr "Translation add-ons"
 
 #: weblate_web/templates/features.html:226
-#, fuzzy
-#| msgid ""
-#| "Automated localization workflow follows your project development closely."
 msgid "Customize localization workflow with various add-ons."
-msgstr ""
-"Automated localisation workflow follows your project development closely."
+msgstr "Customise localisation workflow with various add-ons."
 
 #: weblate_web/templates/features.html:232
 msgid "Backups"
@@ -2144,10 +2129,10 @@ msgid ""
 "find the perfect solution."
 msgstr ""
 "Hosted Weblate allows localisation without any extra effort, and "
-"<strong>premium support</strong> backed by core developers and professional "
-"translators. Ask about hosting of larger projects, or let us answer your "
-"questions by <a href=\"%(contact)s\">getting in touch</a> – we are ready to "
-"find the perfect solution."
+"<strong>premium support</strong> is backed by core developers and "
+"professional translators. Ask about the hosting of larger projects, or let "
+"us answer your questions by <a href=\"%(contact)s\">getting in touch</a>—we "
+"are ready to find the perfect solution."
 
 #: weblate_web/templates/hosting.html:282
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
@@ -2466,10 +2451,8 @@ msgid "Generated on %(timestamp)s."
 msgstr ""
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Thank you for your payment on weblate.org."
-msgstr "Donate to Weblate"
+msgstr "Thank you for your payment on weblate.org."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
@@ -2498,10 +2481,8 @@ msgid "Your expired payment on weblate.org"
 msgstr "Donate to Weblate"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your payment on weblate.org has failed."
-msgstr "Donate to Weblate"
+msgstr "Your payment on weblate.org has failed."
 
 #: weblate_web/templates/mail/payment_failed.html:17
 msgid ""
@@ -2525,12 +2506,12 @@ msgid ""
 msgstr ""
 
 #: weblate_web/templates/mail/payment_missing.html:18
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid ""
 "Your donation on weblate.org should renew next week and you have not set up "
 "automatic payments."
-msgstr "Donate to Weblate"
+msgstr ""
+"Your donation on weblate.org should renew next week and you have not set up "
+"automatic payments."
 
 #: weblate_web/templates/mail/payment_missing.html:19
 msgid "Please perform the payment now to continue supporting Weblate."
@@ -2581,10 +2562,8 @@ msgid ""
 msgstr ""
 
 #: weblate_web/templates/mail/payment_upcoming.html:18
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Your donation on weblate.org will renew next week."
-msgstr "Donate to Weblate"
+msgstr "Your donation on weblate.org will renew next week."
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 #, fuzzy
@@ -2599,13 +2578,9 @@ msgid "Current subscription: %(package)s"
 msgstr ""
 
 #: weblate_web/templates/mail/snippets/subscription_info.html:7
-#, fuzzy, python-format
-#| msgid ""
-#| "You can also ask related questions on <a href=\"%(url)s\">Stack Overflow</"
-#| "a>."
+#, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
-msgstr ""
-"You can also ask related questions on <a href=\"%(url)s\">Stack Overflow</a>."
+msgstr "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
 
 #: weblate_web/templates/mail/subscription_intro.html:7
 #, fuzzy
@@ -2814,7 +2789,8 @@ msgstr "Continuous Localisation"
 msgid ""
 "Automated localization workflow follows your project development closely."
 msgstr ""
-"Automated localisation workflow follows your project development closely."
+"Automated localisation workflow follows your project&nbsp;development "
+"closely."
 
 #: weblate_web/templates/snippets/features-1.html:14
 #, fuzzy
@@ -3178,16 +3154,13 @@ msgid ""
 msgstr ""
 
 #: weblate_web/templates/snippets/vat.html:4
-#, fuzzy, python-format
-#| msgid ""
-#| "Alternatively we can accept payments by wire transfer (preferably IBAN) "
-#| "or Bitcoin. Please get in touch for more details."
+#, python-format
 msgid ""
 "Please <a href=\"%(contact)s\">get in touch</a> for more details and "
 "possibilities."
 msgstr ""
-"Alternatively we can accept payments by wire transfer (preferably IBAN) or "
-"Bitcoin. Please get in touch for more details."
+"Please <a href=\"%(contact)s\">get in touch</a> for more details and "
+"possibilities."
 
 #: weblate_web/templates/snippets/vat.html:5
 msgid "All listed prices exclude VAT."
@@ -3262,36 +3235,26 @@ msgid "Bugs and feature requests"
 msgstr "Bugs or feature requests"
 
 #: weblate_web/templates/support.html:25
-#, fuzzy, python-format
-#| msgid ""
-#| "Have you found any issue with Weblate? Do you have idea how to improve "
-#| "it? Please report it to <a href=\"https://github.com/WeblateOrg/weblate/"
-#| "issues\">issue tracker on GitHub</a>."
+#, python-format
 msgid ""
 "Issues and ideas for improvement can be reported to the <a href=\"%(url)s"
 "\">issue tracker</a>."
 msgstr ""
-"Have you found any issues with Weblate? Do you have idea how to improve it? "
-"Please report it to <a href=\"https://github.com/WeblateOrg/weblate/issues"
-"\">issue tracker on GitHub</a>."
+"Issues and ideas for improvement can be reported to the <a href=\"%(url)s\""
+">issue tracker</a>."
 
 #: weblate_web/templates/support.html:31
 msgid "Security issues"
 msgstr "Security issues"
 
 #: weblate_web/templates/support.html:32
-#, fuzzy, python-format
-#| msgid ""
-#| "Should you find security issue within our code base, please report it to "
-#| "%(contact)s. More information on reporting security issues can be found "
-#| "in <a href=\"%(docs)s\">our documentation</a>."
+#, python-format
 msgid ""
 "Should you find a vulnerability, please report it to %(report)s. More info "
 "in the <a href=\"%(url)s\">documentation</a>."
 msgstr ""
-"Should you find security issue within our code base, please report it to "
-"%(contact)s. More information on reporting security issues can be found in "
-"<a href=\"%(docs)s\">our documentation</a>."
+"Should you find a vulnerability, please report it to %(report)s. More info "
+"in the <a href=\"%(url)s\">documentation</a>."
 
 #: weblate_web/templates/support.html:38
 #, fuzzy
@@ -3300,16 +3263,13 @@ msgid "Reliable support"
 msgstr "Weblate support"
 
 #: weblate_web/templates/support.html:39
-#, fuzzy, python-format
-#| msgid ""
-#| "If you are using our hosting services, you can ask for support at "
-#| "%(contact)s."
+#, python-format
 msgid ""
 "As the subscriber, you will always receive fast replies from our dedicated "
 "support team at <a href=\"mailto:%(email)s\">%(email)s</a>."
 msgstr ""
-"If you are using our hosting services, you can ask for support at "
-"%(contact)s."
+"As a subscriber, you will always receive fast replies from our dedicated "
+"support team at <a href=\"mailto:%(email)s\">%(email)s</a>."
 
 #: weblate_web/templates/support.html:48
 #, fuzzy
@@ -3324,10 +3284,8 @@ msgstr ""
 
 #: weblate_web/templates/support.html:57 weblate_web/templates/support.html:68
 #: weblate_web/templates/support.html:81
-#, fuzzy
-#| msgid "Priority email support"
 msgid "Priority e-mail support."
-msgstr "Priority email support"
+msgstr "Priority e-mail support."
 
 #: weblate_web/templates/support.html:66
 #, fuzzy
@@ -3345,10 +3303,8 @@ msgid "Next business day support response guaranteed."
 msgstr ""
 
 #: weblate_web/templates/support.html:83
-#, fuzzy
-#| msgid "View documentation"
 msgid "Four hours of private consultations in price."
-msgstr "View documentation"
+msgstr "Four hours of private consultations in price."
 
 #: weblate_web/templates/support.html:90
 msgid "Installation on your Linux server"
@@ -3399,10 +3355,8 @@ msgid "Stores up to 100 GB of backups"
 msgstr ""
 
 #: weblate_web/templates/support.html:110
-#, fuzzy
-#| msgid "View documentation"
 msgid "Read more in the documentation."
-msgstr "View documentation"
+msgstr "Read more in the documentation."
 
 #: weblate_web/templates/support.html:117
 #, fuzzy
@@ -3435,10 +3389,9 @@ msgid "Ask for help"
 msgstr "Ask for hosting"
 
 #: weblate_web/templates/support.html:135
-#, fuzzy, python-format
-#| msgid "This website is stored on <a href=\"%(url)s\">GitHub</a> as well:"
+#, python-format
 msgid "Discuss with community on <a href=\"%(url)s\">GitHub</a>."
-msgstr "This website is stored on <a href=\"%(url)s\">GitHub</a> as well:"
+msgstr "Discuss with community on <a href=\"%(url)s\">GitHub</a>."
 
 #: weblate_web/templates/terms.html:11
 msgid "The legal documents necessary to offer this service."
@@ -3681,22 +3634,16 @@ msgid "Unknown reason"
 msgstr "Unknown reason"
 
 #: weblate_web/views.py:473
-#, fuzzy
-#| msgid "Thank you for ordering hosting!"
 msgid "Thank you for your subscription."
-msgstr "Thank you for ordering hosting!"
+msgstr "Thank you for your subscription."
 
 #: weblate_web/views.py:476
-#, fuzzy
-#| msgid "Thank you for ordering hosting!"
 msgid "Thank you for your donation."
-msgstr "Thank you for ordering hosting!"
+msgstr "Thank you for your donation."
 
 #: weblate_web/views.py:728
-#, fuzzy
-#| msgid "Page not found"
 msgid "User not found!"
-msgstr "Page not found"
+msgstr "User not found!"
 
 #, fuzzy
 #~| msgid "Users and developers mailing list"
