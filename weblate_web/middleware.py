@@ -40,7 +40,8 @@ CSP_TEMPLATE = (
 
 
 class SecurityMiddleware:
-    """Middleware that sets various security related headers.
+    """
+    Middleware that sets various security related headers.
 
     - Disables CSRF when payment secret is provided
     - Content-Security-Policy
@@ -62,7 +63,7 @@ class SecurityMiddleware:
         # Skip CSRF validation for requests with valid secret
         # This is used to process automatic payments
         if request.POST.get("secret") == settings.PAYMENT_SECRET:
-            request._dont_enforce_csrf_checks = True  # noqa: SF01
+            request._dont_enforce_csrf_checks = True
 
         response = self.get_response(request)
         if response["Content-Type"] == "text/html; charset=utf-8":

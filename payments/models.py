@@ -76,7 +76,7 @@ class Customer(models.Model):
         null=True,
         verbose_name=gettext_lazy("European VAT ID"),
         help_text=gettext_lazy(
-            "Please fill in European Union VAT ID, " "leave blank if not applicable."
+            "Please fill in European Union VAT ID, leave blank if not applicable."
         ),
     )
     tax = models.CharField(

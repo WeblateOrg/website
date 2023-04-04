@@ -605,7 +605,7 @@ class AddDiscoveryView(CreateView):
         if instance.site_url:
             url = instance.site_url.rstrip("/")
             return redirect(f"{url}/manage/?activation={instance.secret}")
-        return result  # noqa: R504
+        return result
 
 
 class NewsArchiveView(ArchiveIndexView):

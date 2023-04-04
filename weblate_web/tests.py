@@ -214,11 +214,11 @@ class ViewTestCase(PostTestCase):
 
     def test_index_he(self):
         response = self.client.get("/he/")
-        self.assertContains(response, "בסיסית")
+        self.assertContains(response, "בo`o`ת")
 
     def test_index_be(self):
         response = self.client.get("/be/")
-        self.assertContains(response, "Базавы")
+        self.assertContains(response, "Бaзaвы")
 
     def test_index_be_latin(self):
         response = self.client.get("/be@latin/")
@@ -482,7 +482,7 @@ class DonationTest(FakturaceTestCase):
     def login(self):
         user = self.create_user()
         self.client.login(**self.credentials)
-        return user  # noqa: R504
+        return user
 
     def test_donate_page(self):
         response = self.client.get("/en/donate/")
@@ -491,7 +491,7 @@ class DonationTest(FakturaceTestCase):
 
         # Check rewards on page
         response = self.client.get("/en/donate/new/")
-        self.assertContains(response, "list of supporters")
+        self.assertContains(response, "list of supporters")
 
     @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_service_workflow_card(self):
@@ -566,10 +566,7 @@ class DonationTest(FakturaceTestCase):
         # Back to our web
         response = self.client.get(complete_url, follow=True)
         donation = Donation.objects.all().get()
-        if reward:
-            redirect_url = f"/en/donate/edit/{donation.pk}/"
-        else:
-            redirect_url = "/en/user/"
+        redirect_url = f"/en/donate/edit/{donation.pk}/" if reward else "/en/user/"
         self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
 

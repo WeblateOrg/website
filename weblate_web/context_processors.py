@@ -32,7 +32,7 @@ from weblate_web.remote import get_activity, get_changes, get_contributors
 def weblate_web(request):
     if request.resolver_match and request.resolver_match.url_name:
         match = request.resolver_match
-        url_name = ":".join(match.namespaces + [match.url_name])
+        url_name = ":".join([*match.namespaces, match.url_name])
         url_kwargs = match.kwargs
     else:
         url_name = "home"

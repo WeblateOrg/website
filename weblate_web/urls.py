@@ -144,148 +144,164 @@ SITEMAPS["news"] = NewsSitemap()
 UUID = r"(?P<pk>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
 
 
-urlpatterns = i18n_patterns(
-    re_path(r"^$", TemplateView.as_view(template_name="index.html"), name="home"),
-    re_path(
-        r"^features/$",
-        TemplateView.as_view(template_name="features.html"),
-        name="features",
-    ),
-    re_path(r"^tour/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-    re_path(
-        r"^download/$",
-        TemplateView.as_view(template_name="download.html"),
-        name="download",
-    ),
-    re_path(r"^try/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-    re_path(
-        r"^hosting/$",
-        TemplateView.as_view(template_name="hosting.html"),
-        name="hosting",
-    ),
-    re_path(
-        r"^discover/$",
-        DiscoverView.as_view(),
-        name="discover",
-    ),
-    re_path(r"^hosting/free/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-    re_path(
-        r"^hosting/ordered/$", RedirectView.as_view(url="/hosting/", permanent=True)
-    ),
-    re_path(
-        r"^contribute/$",
-        TemplateView.as_view(template_name="contribute.html"),
-        name="contribute",
-    ),
-    re_path(
-        r"^user/$",
-        login_required(TemplateView.as_view(template_name="user.html")),
-        name="user",
-    ),
-    re_path(
-        r"^donate/$", TemplateView.as_view(template_name="donate.html"), name="donate"
-    ),
-    re_path(r"^donate/process/$", process_payment, name="donate-process"),
-    re_path(r"^donate/new/$", DonateView.as_view(), name="donate-new"),
-    re_path(
-        r"^donate/edit/(?P<pk>[0-9]+)/$", EditLinkView.as_view(), name="donate-edit"
-    ),
-    re_path(r"^donate/pay/(?P<pk>[0-9]+)/$", donate_pay, name="donate-pay"),
-    re_path(r"^user/invoice/" + UUID + "/$", download_invoice, name="user-invoice"),
-    re_path(r"^donate/disable/(?P<pk>[0-9]+)/$", disable_repeat, name="donate-disable"),
-    re_path(
-        r"^subscription/disable/(?P<pk>[0-9]+)/$",
-        subscription_disable_repeat,
-        name="subscription-disable",
-    ),
-    re_path(
-        r"^subscription/token/(?P<pk>[0-9]+)/$", service_token, name="service-token"
-    ),
-    re_path(r"^subscription/users/(?P<pk>[0-9]+)/$", service_user, name="service-user"),
-    re_path(
-        r"^subscription/discovery/(?P<pk>[0-9]+)/$",
-        EditDiscoveryView.as_view(),
-        name="service-discovery",
-    ),
-    re_path(
-        r"^subscription/discovery/$",
-        AddDiscoveryView.as_view(),
-        name="service-discovery-add",
-    ),
-    re_path(
-        r"^subscription/pay/(?P<pk>[0-9]+)/$", subscription_pay, name="subscription-pay"
-    ),
-    re_path(
-        r"^subscription/view/(?P<pk>[0-9]+)/$",
-        subscription_view,
-        name="subscription-view",
-    ),
-    re_path(r"^subscription/new/$", subscription_new, name="subscription-new"),
-    re_path(r"^news/$", NewsView.as_view(), name="news"),
-    re_path(r"^news/archive/$", NewsArchiveView.as_view(), name="news-archive"),
-    re_path(
-        r"^news/topic/milestone/$",
-        MilestoneArchiveView.as_view(),
-        name="milestone-archive",
-    ),
-    re_path(
-        r"^news/topic/(?P<slug>[-a-zA-Z0-9_]+)/$",
-        TopicArchiveView.as_view(),
-        name="topic-archive",
-    ),
-    re_path(
-        r"^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$", PostView.as_view(), name="post"
-    ),
-    re_path(
-        r"^about/$", TemplateView.as_view(template_name="about.html"), name="about"
-    ),
-    re_path(
-        r"^careers/$",
-        TemplateView.as_view(template_name="careers.html"),
-        name="careers",
-    ),
-    re_path(
-        r"^support/$",
-        TemplateView.as_view(template_name="support.html"),
-        name="support",
-    ),
-    re_path(r"^thanks/$", RedirectView.as_view(url="/donate/", permanent=True)),
-    re_path(
-        r"^terms/$", TemplateView.as_view(template_name="terms.html"), name="terms"
-    ),
-    re_path(r"^payment/" + UUID + "/$", PaymentView.as_view(), name="payment"),
-    re_path(
-        r"^payment/" + UUID + "/edit/$", CustomerView.as_view(), name="payment-customer"
-    ),
-    re_path(
-        r"^payment/" + UUID + "/complete/$",
-        CompleteView.as_view(),
-        name="payment-complete",
-    ),
-    # FOSDEM short link
-    re_path(
-        r"^FOSDEM/|fosdem/$",
-        RedirectView.as_view(
-            url="/news/archive/meet-weblate-on-fosdem-2023/", permanent=False
+urlpatterns = [
+    *i18n_patterns(
+        re_path(r"^$", TemplateView.as_view(template_name="index.html"), name="home"),
+        re_path(
+            r"^features/$",
+            TemplateView.as_view(template_name="features.html"),
+            name="features",
+        ),
+        re_path(r"^tour/$", RedirectView.as_view(url="/hosting/", permanent=True)),
+        re_path(
+            r"^download/$",
+            TemplateView.as_view(template_name="download.html"),
+            name="download",
+        ),
+        re_path(r"^try/$", RedirectView.as_view(url="/hosting/", permanent=True)),
+        re_path(
+            r"^hosting/$",
+            TemplateView.as_view(template_name="hosting.html"),
+            name="hosting",
+        ),
+        re_path(
+            r"^discover/$",
+            DiscoverView.as_view(),
+            name="discover",
+        ),
+        re_path(
+            r"^hosting/free/$", RedirectView.as_view(url="/hosting/", permanent=True)
+        ),
+        re_path(
+            r"^hosting/ordered/$", RedirectView.as_view(url="/hosting/", permanent=True)
+        ),
+        re_path(
+            r"^contribute/$",
+            TemplateView.as_view(template_name="contribute.html"),
+            name="contribute",
+        ),
+        re_path(
+            r"^user/$",
+            login_required(TemplateView.as_view(template_name="user.html")),
+            name="user",
+        ),
+        re_path(
+            r"^donate/$",
+            TemplateView.as_view(template_name="donate.html"),
+            name="donate",
+        ),
+        re_path(r"^donate/process/$", process_payment, name="donate-process"),
+        re_path(r"^donate/new/$", DonateView.as_view(), name="donate-new"),
+        re_path(
+            r"^donate/edit/(?P<pk>[0-9]+)/$", EditLinkView.as_view(), name="donate-edit"
+        ),
+        re_path(r"^donate/pay/(?P<pk>[0-9]+)/$", donate_pay, name="donate-pay"),
+        re_path(r"^user/invoice/" + UUID + "/$", download_invoice, name="user-invoice"),
+        re_path(
+            r"^donate/disable/(?P<pk>[0-9]+)/$", disable_repeat, name="donate-disable"
+        ),
+        re_path(
+            r"^subscription/disable/(?P<pk>[0-9]+)/$",
+            subscription_disable_repeat,
+            name="subscription-disable",
+        ),
+        re_path(
+            r"^subscription/token/(?P<pk>[0-9]+)/$", service_token, name="service-token"
+        ),
+        re_path(
+            r"^subscription/users/(?P<pk>[0-9]+)/$", service_user, name="service-user"
+        ),
+        re_path(
+            r"^subscription/discovery/(?P<pk>[0-9]+)/$",
+            EditDiscoveryView.as_view(),
+            name="service-discovery",
+        ),
+        re_path(
+            r"^subscription/discovery/$",
+            AddDiscoveryView.as_view(),
+            name="service-discovery-add",
+        ),
+        re_path(
+            r"^subscription/pay/(?P<pk>[0-9]+)/$",
+            subscription_pay,
+            name="subscription-pay",
+        ),
+        re_path(
+            r"^subscription/view/(?P<pk>[0-9]+)/$",
+            subscription_view,
+            name="subscription-view",
+        ),
+        re_path(r"^subscription/new/$", subscription_new, name="subscription-new"),
+        re_path(r"^news/$", NewsView.as_view(), name="news"),
+        re_path(r"^news/archive/$", NewsArchiveView.as_view(), name="news-archive"),
+        re_path(
+            r"^news/topic/milestone/$",
+            MilestoneArchiveView.as_view(),
+            name="milestone-archive",
+        ),
+        re_path(
+            r"^news/topic/(?P<slug>[-a-zA-Z0-9_]+)/$",
+            TopicArchiveView.as_view(),
+            name="topic-archive",
+        ),
+        re_path(
+            r"^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$", PostView.as_view(), name="post"
+        ),
+        re_path(
+            r"^about/$", TemplateView.as_view(template_name="about.html"), name="about"
+        ),
+        re_path(
+            r"^careers/$",
+            TemplateView.as_view(template_name="careers.html"),
+            name="careers",
+        ),
+        re_path(
+            r"^support/$",
+            TemplateView.as_view(template_name="support.html"),
+            name="support",
+        ),
+        re_path(r"^thanks/$", RedirectView.as_view(url="/donate/", permanent=True)),
+        re_path(
+            r"^terms/$", TemplateView.as_view(template_name="terms.html"), name="terms"
+        ),
+        re_path(r"^payment/" + UUID + "/$", PaymentView.as_view(), name="payment"),
+        re_path(
+            r"^payment/" + UUID + "/edit/$",
+            CustomerView.as_view(),
+            name="payment-customer",
+        ),
+        re_path(
+            r"^payment/" + UUID + "/complete/$",
+            CompleteView.as_view(),
+            name="payment-complete",
+        ),
+        # FOSDEM short link
+        re_path(
+            r"^FOSDEM/|fosdem/$",
+            RedirectView.as_view(
+                url="/news/archive/meet-weblate-on-fosdem-2023/", permanent=False
+            ),
+        ),
+        # Compatibility with disabled languages
+        re_path(r"^[a-z][a-z]/$", RedirectView.as_view(url="/", permanent=False)),
+        re_path(
+            r"^[a-z][a-z]_[A-Z][A-Z]/$", RedirectView.as_view(url="/", permanent=False)
+        ),
+        # Broken links
+        re_path(r"^https?:/.*$", RedirectView.as_view(url="/", permanent=True)),
+        re_path(r"^index\.html$", RedirectView.as_view(url="/", permanent=True)),
+        re_path(
+            r"^index\.([a-z][a-z])\.html$",
+            RedirectView.as_view(url="/", permanent=True),
+        ),
+        re_path(
+            r"^[a-z][a-z]/index\.html$", RedirectView.as_view(url="/", permanent=True)
+        ),
+        re_path(
+            r"^[a-z][a-z]_[A-Z][A-Z]/index\.html$",
+            RedirectView.as_view(url="/", permanent=True),
         ),
     ),
-    # Compatibility with disabled languages
-    re_path(r"^[a-z][a-z]/$", RedirectView.as_view(url="/", permanent=False)),
-    re_path(
-        r"^[a-z][a-z]_[A-Z][A-Z]/$", RedirectView.as_view(url="/", permanent=False)
-    ),
-    # Broken links
-    re_path(r"^https?:/.*$", RedirectView.as_view(url="/", permanent=True)),
-    re_path(r"^index\.html$", RedirectView.as_view(url="/", permanent=True)),
-    re_path(
-        r"^index\.([a-z][a-z])\.html$", RedirectView.as_view(url="/", permanent=True)
-    ),
-    re_path(r"^[a-z][a-z]/index\.html$", RedirectView.as_view(url="/", permanent=True)),
-    re_path(
-        r"^[a-z][a-z]_[A-Z][A-Z]/index\.html$",
-        RedirectView.as_view(url="/", permanent=True),
-    ),
-) + [
     re_path(
         r"^sitemap\.xml$",
         cache_page(3600)(django.contrib.sitemaps.views.index),

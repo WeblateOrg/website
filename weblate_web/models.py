@@ -90,11 +90,10 @@ def validate_bitmap(value):
     # might have to read the data into memory.
     if hasattr(value, "temporary_file_path"):
         content = value.temporary_file_path()
+    elif hasattr(value, "read"):
+        content = BytesIO(value.read())
     else:
-        if hasattr(value, "read"):
-            content = BytesIO(value.read())
-        else:
-            content = BytesIO(value["content"])
+        content = BytesIO(value["content"])
 
     try:
         # load() could spot a truncated JPEG, but it loads the entire
@@ -118,13 +117,13 @@ def validate_bitmap(value):
 
         # Check image type
         if value.file.content_type not in ALLOWED_IMAGES:
-            raise ValidationError(
+            raise ValidationError(  # noqa: TRY301
                 _("Unsupported image type: %s") % value.file.content_type
             )
 
         # Check dimensions
         if image.size != (570, 260):
-            raise ValidationError(
+            raise ValidationError(  # noqa: TRY301
                 _("Please upload an image with a resolution of 570 x 260 pixels.")
             )
 
@@ -188,7 +187,7 @@ def create_backup_repository(service):
 
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
+    payment = models.UUIDField(blank=True, null=True)
     reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
         verbose_name=gettext_lazy("Link text"), max_length=200, blank=True
@@ -289,7 +288,7 @@ def process_donation(payment):
     # Flag payment as processed
     payment.state = Payment.PROCESSED
     payment.save()
-    return donation  # noqa: R504
+    return donation
 
 
 def get_service(payment, user):
@@ -632,7 +631,7 @@ class Service(models.Model):
                     (
                         "premium",
                         _("Premium support"),
-                        _("Don’t wait with your work on hold."),
+                        _("Don`t wait with your work on hold."),
                         _("This guarantees you answers the NBD at the latest."),
                         "img/Support-Premium.svg",
                         _("Be Premium"),
@@ -644,7 +643,7 @@ class Service(models.Model):
                     (
                         "extended",
                         _("Extended support"),
-                        _("Don’t settle with Basic, get a worry-free package."),
+                        _("Don`t settle with Basic, get a worry-free package."),
                         _("We will manage upgrades for you."),
                         "img/Support-Plus.svg",
                         _("Stay updated"),
@@ -727,15 +726,15 @@ class Service(models.Model):
 
 class Subscription(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True, null=True)  # noqa: DJ01
+    payment = models.UUIDField(blank=True, null=True)
     package = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
     enabled = models.BooleanField(default=True, blank=True)
 
     class Meta:
-        verbose_name = "Customer’s subscription"
-        verbose_name_plural = "Customer’s subscriptions"
+        verbose_name = "Customer`s subscription"
+        verbose_name_plural = "Customer`s subscriptions"
 
     def __str__(self):
         return f"{self.get_package_display()}: {self.service}"

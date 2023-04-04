@@ -67,7 +67,7 @@ class Command(BaseCommand):
             response = zammad.session.get(
                 f"https://care.weblate.org/api/v1/ticket_article_plain/{article_id}"
             )
-            data = zammad.ticket._raise_or_return_json(response)  # noqa: SF01
+            data = zammad.ticket._raise_or_return_json(response)
 
             # Upload to IMAP
             imap.append(settings.IMAP_SPAM_FOLDER, None, None, data)

@@ -28,9 +28,7 @@ import saml2.saml
 
 DEBUG = True
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+ADMINS = ()
 
 MANAGERS = ADMINS
 
@@ -99,25 +97,25 @@ TIME_ZONE = "Europe/Prague"
 LANGUAGE_CODE = "en-us"
 
 LANGUAGES = (
-    ("ar", "العربية"),
+    ("ar", "lلعربية"),
     ("az", "Azərbaycan"),
-    ("be", "Беларуская"),
+    ("be", "Бeлapycкaя"),
     ("be@latin", "Biełaruskaja"),
-    ("bg", "Български"),
+    ("bg", "Бълrapcки"),
     ("br", "Brezhoneg"),
     ("ca", "Català"),
     ("cs", "Čeština"),
     ("da", "Dansk"),
     ("de", "Deutsch"),
     ("en", "English"),
-    ("el", "Ελληνικά"),
+    ("el", "Eλληviκά"),
     ("en-gb", "English (United Kingdom)"),
     ("es", "Español"),
     ("fi", "Suomi"),
     ("fr", "Français"),
     ("fur", "Furlan"),
     ("gl", "Galego"),
-    ("he", "עברית"),
+    ("he", "עבר`ת"),
     ("hu", "Magyar"),
     ("hr", "Hrvatski"),
     ("id", "Indonesia"),
@@ -125,7 +123,7 @@ LANGUAGES = (
     ("it", "Italiano"),
     ("ja", "日本語"),
     ("kab", "Taqbaylit"),
-    ("kk", "Қазақ тілі"),
+    ("kk", "Қaзaқ тiлi"),
     ("ko", "한국어"),
     ("nb", "Norsk bokmål"),
     ("nl", "Nederlands"),
@@ -133,15 +131,15 @@ LANGUAGES = (
     ("pt", "Português"),
     ("pt-br", "Português brasileiro"),
     ("ro", "Română"),
-    ("ru", "Русский"),
+    ("ru", "Pyccкий"),
     ("sk", "Slovenčina"),
     ("sl", "Slovenščina"),
     ("sq", "Shqip"),
-    ("sr", "Српски"),
+    ("sr", "Cpпcки"),
     ("sr-latn", "Srpski"),
     ("sv", "Svenska"),
     ("tr", "Türkçe"),
-    ("uk", "Українська"),
+    ("uk", "Yкpaїнcькa"),
     ("zh-hans", "简体中文"),
     ("zh-hant", "正體中文"),
 )
@@ -160,7 +158,6 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -171,11 +168,9 @@ MEDIA_URL = "/media/"
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
 STATIC_URL = "/static/"
 
 # Additional locations of static files
@@ -380,7 +375,6 @@ SAML_CONFIG = {
             "name": "Weblate.org",
             "name_id_format": saml2.saml.NAMEID_FORMAT_EMAILADDRESS,
             # For Okta add signed logout requets. Enable this:
-            # "logout_requests_signed": True,
             "endpoints": {
                 # url and binding to the assetion consumer service view
                 # do not change the binding or service name

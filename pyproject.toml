@@ -7,6 +7,19 @@ profile = "black"
 [tool.ruff]
 format = "github"
 ignore = [
+  "D10",  # TODO: we are missing many docstrings
+  "D203",  # CONFIG: incompatible with D211
+  "D212",  # CONFIG: incompatible with D213
+  "DJ001",  # TODO: Avoid using `null=True` on string-based fields such as CharField (maybe add noqa)
+  "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
+  "TRY200",  # TODO: Use `raise from` to specify exception cause
+  "B904",  # TODO: Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
+  "PLR0912",  # WONTFIX: Too many branches
+  "PLR2004",  # TODO: Magic value used in comparison, consider replacing 201 with a constant variable
+  "E501",  # WONTFIX: we accept long strings (rest is formatted by black)
+  "PLW2901",  # TODO: overwriting variables inside loop
+  "N818",  # TODO: exception naming
+  "SLF001"  # TODO: Private member accessed (might need noqa tags)
 ]
 select = [
   "E",
@@ -46,3 +59,7 @@ target-version = "py37"
 
 [tool.ruff.mccabe]
 max-complexity = 16
+
+[tool.ruff.per-file-ignores]
+"payments/backends.py" = ["T201"]
+"scripts/*" = ["T201"]

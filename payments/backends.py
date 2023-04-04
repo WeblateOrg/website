@@ -83,11 +83,11 @@ class Backend:
 
     def perform(self, request, back_url, complete_url):
         """Perform payment and optionally redirects user."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def collect(self, request):
         """Collect payment information."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_instructions(self):
         """Payment instructions for manual methods."""
@@ -108,7 +108,7 @@ class Backend:
         self.payment.backend = self.name
         self.payment.save()
 
-        return result  # noqa: R504
+        return result
 
     def complete(self, request):
         """Payment completion called from returned request."""
@@ -171,7 +171,7 @@ class Backend:
 
     def git_commit(self, files, invoice):
         subprocess.run(
-            ["git", "add", "--"] + files, check=True, cwd=settings.PAYMENT_FAKTURACE
+            ["git", "add", "--", *files], check=True, cwd=settings.PAYMENT_FAKTURACE
         )
         subprocess.run(
             ["git", "commit", "-m", f"Invoice {invoice.invoiceid}"],
@@ -299,7 +299,7 @@ class ThePayCard(Backend):
         if self.payment.repeat:
             data = thepay.dataApi.DataApi(self.config)
             response = data.getPayments(merchant_data=str(self.payment.pk))
-            if response.payments == "":
+            if not response.payments:
                 # Something went wrong
                 status = 4
             else:
