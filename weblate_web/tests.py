@@ -214,11 +214,11 @@ class ViewTestCase(PostTestCase):
 
     def test_index_he(self):
         response = self.client.get("/he/")
-        self.assertContains(response, "בo`o`ת")
+        self.assertContains(response, "בסיסית")
 
     def test_index_be(self):
         response = self.client.get("/be/")
-        self.assertContains(response, "Бaзaвы")
+        self.assertContains(response, "Базавы")
 
     def test_index_be_latin(self):
         response = self.client.get("/be@latin/")
@@ -491,7 +491,7 @@ class DonationTest(FakturaceTestCase):
 
         # Check rewards on page
         response = self.client.get("/en/donate/new/")
-        self.assertContains(response, "list of supporters")
+        self.assertContains(response, "list of supporters")
 
     @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_service_workflow_card(self):

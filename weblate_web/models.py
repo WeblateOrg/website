@@ -631,7 +631,7 @@ class Service(models.Model):
                     (
                         "premium",
                         _("Premium support"),
-                        _("Don`t wait with your work on hold."),
+                        _("Don’t wait with your work on hold."),
                         _("This guarantees you answers the NBD at the latest."),
                         "img/Support-Premium.svg",
                         _("Be Premium"),
@@ -643,7 +643,7 @@ class Service(models.Model):
                     (
                         "extended",
                         _("Extended support"),
-                        _("Don`t settle with Basic, get a worry-free package."),
+                        _("Don’t settle with Basic, get a worry-free package."),
                         _("We will manage upgrades for you."),
                         "img/Support-Plus.svg",
                         _("Stay updated"),
@@ -733,8 +733,8 @@ class Subscription(models.Model):
     enabled = models.BooleanField(default=True, blank=True)
 
     class Meta:
-        verbose_name = "Customer`s subscription"
-        verbose_name_plural = "Customer`s subscriptions"
+        verbose_name = "Customer’s subscription"
+        verbose_name_plural = "Customer’s subscriptions"
 
     def __str__(self):
         return f"{self.get_package_display()}: {self.service}"
