@@ -557,7 +557,7 @@ class Service(models.Model):
             return f"{report.hosted_words}"
         return "0"
 
-    hosted_words_limit.short_description = "Histed words"
+    hosted_words_limit.short_description = "Hosted words"
 
     @cached_property
     def user_emails(self):
