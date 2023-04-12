@@ -6,9 +6,6 @@ cd scripts/yarn/
 
 yarn install --check-files
 
-# Clipboard
-cp node_modules/clipboard/dist/clipboard.min.js ../../weblate_web/static/vendor/clipboard.js
-
 # Source Sans/Code Pro fonts
 mkdir -p ../../weblate_web/static/font-source
 sed '/font-family/ a font-display: swap;' < node_modules/source-sans/source-sans-3.css > ../../weblate_web/static/vendor/font-source/source-sans-3.css

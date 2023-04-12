@@ -205,7 +205,15 @@ ready(() => {
     sso.submit();
   }
 
-  new ClipboardJS("[data-clipboard-text]");
+  document.querySelectorAll("[data-clipboard-text]").forEach((element) => {
+    element.addEventListener("click", (e) => {
+      navigator.clipboard
+        .writeText(e.target.getAttribute("data-clipboard-text"))
+        .then(() => {
+          e.preventDefault();
+        });
+    });
+  });
 
   console.log(
     "%cStop!",
