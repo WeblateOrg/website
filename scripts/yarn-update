@@ -23,6 +23,7 @@ find node_modules/source-sans/TTF node_modules/source-sans/WOFF2 node_modules/so
     -o -name SourceCodePro-Medium.* \
     -o -name SourceCodePro-Regular.* \
     -o -name SourceCodePro-Bold.* \
+    -o -name SourceCodePro-It.* \
     -o -name SourceCodePro-Semibold.* | while read name ; do
     target=`echo $name | sed 's@node_modules/source-\(sans\|code-pro\)/@../../weblate_web/static/vendor/font-source/@'`
     dir=`dirname $target`
