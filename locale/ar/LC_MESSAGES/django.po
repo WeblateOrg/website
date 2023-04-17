@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2022-01-23 14:21+0100\n"
-"PO-Revision-Date: 2023-04-12 11:20+0000\n"
+"PO-Revision-Date: 2023-04-18 06:43+0000\n"
 "Last-Translator: Meno25 <meno25mail@gmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/weblate/website/"
 "ar/>\n"
@@ -28,7 +28,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 4.17\n"
 
 #: payments/backends.py:254
 msgid "Payment card"
@@ -52,29 +52,27 @@ msgstr "التحويل المصرفي IBAN"
 
 #: payments/backends.py:388
 msgid "Issuing bank"
-msgstr ""
+msgstr "البنك المصدر"
 
 #: payments/backends.py:389
 msgid "Account holder"
-msgstr ""
+msgstr "صاحب الحساب"
 
 #: payments/backends.py:390
 msgid "Account number"
-msgstr ""
+msgstr "رقم الحساب"
 
 #: payments/backends.py:391
 msgid "SWIFT code"
-msgstr ""
+msgstr "رمز السويفت"
 
 #: payments/backends.py:392
 msgid "IBAN"
-msgstr ""
+msgstr "ايبان"
 
 #: payments/backends.py:393
-#, fuzzy
-#| msgid "Conferences"
 msgid "Reference"
-msgstr "المؤتمرات"
+msgstr "مرجع"
 
 #: payments/models.py:77
 msgid "European VAT ID"
@@ -83,6 +81,8 @@ msgstr "معرف ضريبة القيمة المضافة الأوروبية"
 #: payments/models.py:79
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
+"يرجى ملء معرف ضريبة القيمة المضافة في الاتحاد الأوروبي ، واتركه فارغا إذا لم "
+"يكن قابلا للتطبيق."
 
 #: payments/models.py:85
 msgid "Tax registration"
@@ -91,7 +91,7 @@ msgstr "التسجيل الضريبي"
 #: payments/models.py:87
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
-msgstr ""
+msgstr "يرجى ملء التسجيل الضريبي الخاص بك إذا كان يجب أن يظهر على الفاتورة."
 
 #: payments/models.py:94
 msgid "Company or individual name"
@@ -143,39 +143,29 @@ msgid "Onetime"
 msgstr "مرة واحدة"
 
 #: payments/models.py:194
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "New payment"
-msgstr "دفع مرة واحدة"
+msgstr "دفعة جديدة"
 
 #: payments/models.py:195
-#, fuzzy
-#| msgid "Single payment"
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "دفع مرة واحدة"
+msgstr "في انتظار الدفع"
 
 #: payments/models.py:196
-#, fuzzy
-#| msgid "Payment frequence"
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "السداد الدوري"
+msgstr "تم رفض الدفع"
 
 #: payments/models.py:197
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "تم إلغاء الدفع"
+msgstr "الدفع مقبول"
 
 #: payments/models.py:198
-#, fuzzy
-#| msgid "Payment cancelled"
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "تم إلغاء الدفع"
+msgstr "تمت معالجة الدفع"
 
 #: payments/utils.py:51 payments/utils.py:54
 msgid "Enter a valid e-mail address."
@@ -183,19 +173,21 @@ msgstr "أدخل عنوان بريد صالح."
 
 #: payments/validators.py:42
 msgid "{} is not a valid country code for any European Union member."
-msgstr ""
+msgstr "{} ليس رمز بلد صالحا لأي عضو في الاتحاد الأوروبي."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
-msgstr ""
+msgstr "{} لا يتطابق مع مواصفات معرف ضريبة القيمة المضافة للبلد."
 
 #: payments/validators.py:58
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
+"خدمة التحقق من صحة معرف ضريبة القيمة المضافة غير متوفرة ل {}، يرجى إعادة "
+"المحاولة لاحقا."
 
 #: payments/validators.py:61
 msgid "{} is not a valid VAT ID."
-msgstr ""
+msgstr "{} ليس معرف ضريبة قيمة مضافة صالحا."
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -203,6 +195,8 @@ msgid ""
 "private projects. And Weblate itself! Love libre software? Your "
 "possibilities of contributing are limitless here!"
 msgstr ""
+"أكبر خادم Weblate في جميع أنحاء العالم هو موطن لمئات المشاريع الحرة والخاصة. "
+"ويبل نفسها! هل تحب برنامج ليبر؟ إمكانياتك للمساهمة لا حدود لها هنا!"
 
 #: weblate_web/models.py:51
 msgid "No reward"
@@ -265,7 +259,7 @@ msgstr "نوع صورة غير مدعوم: %s"
 
 #: weblate_web/models.py:122
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
-msgstr ""
+msgstr "يرجى تحميل صورة بدقة 570 × 260 بكسل."
 
 #: weblate_web/models.py:188
 msgid "Link text"
@@ -280,16 +274,12 @@ msgid "Link image"
 msgstr "صورة الرابط"
 
 #: weblate_web/models.py:452
-#, fuzzy
-#| msgid "Community support"
 msgid "Community supported"
-msgstr "الدعم المجتمعي"
+msgstr "دعم المجتمع"
 
 #: weblate_web/models.py:453
-#, fuzzy
-#| msgid "Hosted service"
 msgid "Dedicated hosted service"
-msgstr "الخدمة المُستضافة"
+msgstr "خدمة مستضافة مخصصة"
 
 #: weblate_web/models.py:454
 msgid "Hosted service"
@@ -304,30 +294,24 @@ msgid "Extended self-hosted support"
 msgstr "دعم ممتد للاستضافة الذاتية"
 
 #: weblate_web/models.py:457 weblate_web/templates/support.html:78
-#, fuzzy
-#| msgid "Basic self-hosted support"
 msgid "Premium self-hosted support"
-msgstr "دعم استضافة ذاتية بسيطة"
+msgstr "دعم متميز ذاتي الاستضافة"
 
 #: weblate_web/models.py:470 weblate_web/templates/snippets/service.html:95
 msgid "Server URL"
 msgstr "رابط السيرفر"
 
 #: weblate_web/models.py:478
-#, fuzzy
-#| msgid "Payment description"
 msgid "Server description"
-msgstr "وصف الدفع"
+msgstr "وصف الخادم"
 
 #: weblate_web/models.py:481
-#, fuzzy
-#| msgid "Server error"
 msgid "Server image"
-msgstr "خطأ من الخادم"
+msgstr "صورة الخادم"
 
 #: weblate_web/models.py:485
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
-msgstr ""
+msgstr "صورة PNG أو JPG بدقة 570 × 260 بكسل."
 
 #: weblate_web/models.py:602 weblate_web/templates/hosting.html:156
 msgid "Basic support"
@@ -335,17 +319,15 @@ msgstr "دعم أساسي"
 
 #: weblate_web/models.py:603
 msgid "Never get held back by a problem."
-msgstr ""
+msgstr "لا تتراجع أبدا بسبب مشكلة."
 
 #: weblate_web/models.py:604
 msgid "Set priority for all your questions and reported bugs."
-msgstr ""
+msgstr "حدد الأولوية لجميع أسئلتك والأخطاء المبلغ عنها."
 
 #: weblate_web/models.py:606 weblate_web/templates/user.html:30
-#, fuzzy
-#| msgid "Weblate support"
 msgid "Get support"
-msgstr "دعم Weblate"
+msgstr "الحصول على الدعم"
 
 #: weblate_web/models.py:615
 msgid "Premium support"
@@ -353,17 +335,15 @@ msgstr "دعم ممتاز"
 
 #: weblate_web/models.py:616
 msgid "Don’t wait with your work on hold."
-msgstr ""
+msgstr "لا تنتظر مع عملك في الانتظار."
 
 #: weblate_web/models.py:617
 msgid "This guarantees you answers the NBD at the latest."
-msgstr ""
+msgstr "هذا يضمن لك إجابات NBD على أبعد تقدير."
 
 #: weblate_web/models.py:619
-#, fuzzy
-#| msgid "Premium Cloud"
 msgid "Be Premium"
-msgstr "سحابية ممتازة"
+msgstr "كن مميزا"
 
 #: weblate_web/models.py:627 weblate_web/templates/hosting.html:123
 msgid "Extended support"
@@ -371,15 +351,15 @@ msgstr "دعم موسّع"
 
 #: weblate_web/models.py:628
 msgid "Don’t settle with Basic, get a worry-free package."
-msgstr ""
+msgstr "لا تستقر مع Basic ، احصل على حزمة خالية من القلق."
 
 #: weblate_web/models.py:629
 msgid "We will manage upgrades for you."
-msgstr ""
+msgstr "سنقوم بإدارة الترقيات لك."
 
 #: weblate_web/models.py:631
 msgid "Stay updated"
-msgstr ""
+msgstr "ابق على اطلاع"
 
 #: weblate_web/models.py:639 weblate_web/templates/support.html:104
 msgid "Backup service"
@@ -387,17 +367,15 @@ msgstr "خدمة النسخ الاحتياطي"
 
 #: weblate_web/models.py:640
 msgid "Easily put your backups in a safe place."
-msgstr ""
+msgstr "ضع النسخ الاحتياطية بسهولة في مكان آمن."
 
 #: weblate_web/models.py:641
 msgid "Encrypted and automatic, always available."
-msgstr ""
+msgstr "مشفرة وتلقائية ومتاحة دائما."
 
 #: weblate_web/models.py:643
-#, fuzzy
-#| msgid "Backups"
 msgid "Back up daily"
-msgstr "النسخ الإحتياطية"
+msgstr "النسخ الاحتياطي يوميا"
 
 #: weblate_web/templates/404.html:8
 msgid "Page not found"
@@ -423,18 +401,13 @@ msgid "The Weblate Way"
 msgstr "طريقة Weblate"
 
 #: weblate_web/templates/about.html:13
-#, fuzzy
-#| msgid ""
-#| "We love localization and libre software enough to build the only privacy "
-#| "respecting localization tool, and provide it as copylefted libre "
-#| "software. It all started in 2012."
 msgid ""
 "We love localization and libre software enough to build a privacy-respecting "
 "localization tool and provide it as copylefted libre software. It all "
 "started in 2012."
 msgstr ""
-"نحن نحب التوطين والبرامج الحرة بشكل كافٍ إلى حدّ إنشاء أداة التوطين الوحيدة "
-"التي تحترم الخصوصية، ونوفرها كبرنامج حر متروك الحقوق. كل شيء بدأ عام 2012."
+"نحن نحب التعريب والبرمجيات الحرة بما يكفي لبناء أداة تعريب تحترم الخصوصية "
+"وتوفيرها كبرنامج حر متروك الحقوق. بدأ كل شيء في عام 2012."
 
 #: weblate_web/templates/about.html:19
 msgid "February 2012"
@@ -445,16 +418,12 @@ msgid "Looking for a Pootle alternative"
 msgstr "تبحث عن بديل لبرنامج بوتل"
 
 #: weblate_web/templates/about.html:21
-#, fuzzy
-#| msgid ""
-#| "…The key feature is full integration with Git. Changes should be "
-#| "committed to a local Git branch and easily merged back."
 msgid ""
 "…The key feature is full integration with Git. Changes are committed to a "
 "local Git branch and easily merged back."
 msgstr ""
-"... الميزة الرئيسية هي التكامل التام مع برنامج جت. يجب على التغييرات أن تُحفظ "
-"في فرع جت محلي مع إمكانية دمجها مجددًا بسهولة."
+"... الميزة الرئيسية هي التكامل الكامل مع Git. تلتزم التغييرات بفرع Git محلي "
+"ويمكن دمجها بسهولة مرة أخرى."
 
 #: weblate_web/templates/about.html:24
 msgid "March 2012"
@@ -465,16 +434,12 @@ msgid "Announcing Weblate"
 msgstr "الإعلان عن Weblate"
 
 #: weblate_web/templates/about.html:26
-#, fuzzy
-#| msgid ""
-#| "…After about a week of development, Weblate is announced; a web based "
-#| "translation tool with tight Git integration."
 msgid ""
 "…After about a week of development, Weblate is announced; a web-based "
 "translation tool with tight Git integration."
 msgstr ""
-"... بعد حوالي أسبوع من التطوير، تم إطلاق Weblate، أداة ترجمة على شبكة "
-"الإنترنت مع التكامل الكامل مع برنامج جت."
+"... بعد حوالي أسبوع من التطوير ، تم الإعلان عن Weblate. أداة ترجمة قائمة على "
+"الويب مع تكامل Git محكم."
 
 #: weblate_web/templates/about.html:29
 msgid "April 2012"
@@ -485,12 +450,9 @@ msgid "Why Weblate?"
 msgstr "لماذا Weblate؟"
 
 #: weblate_web/templates/about.html:32
-#, fuzzy
-#| msgid ""
-#| "Instead of staying with an existing solution, Weblate was made to have:"
 msgid ""
 "Instead of settling with an existing solution, Weblate was made to have:"
-msgstr "بدلاً من البقاء في حل قائم، تم تصميم Weblate ليتمكن من:"
+msgstr "بدلا من التسوية مع حل موجود ، تم إنشاء Weblate ليكون:"
 
 #: weblate_web/templates/about.html:33
 msgid "Git integration"
@@ -525,28 +487,31 @@ msgid "Weblate grows and the future is open to new opportunities."
 msgstr "ينمو Weblate والمستقبل مفتوح أمام فرص جديدة."
 
 #: weblate_web/templates/about.html:47
-#, fuzzy
-#| msgid "About Weblate"
 msgid "Your Weblate Team"
-msgstr "عن وِيب لايت"
+msgstr "فريق Weblate الخاص بك"
 
 #: weblate_web/templates/about.html:54
 msgid ""
 "Author of the idea; code and development leader. He’s also designing custom "
 "and large-scale solutions."
 msgstr ""
+"مؤلف الفكرة ؛ قائد الكود والتطوير. كما أنه يصمم حلولا مخصصة وواسعة النطاق."
 
 #: weblate_web/templates/about.html:62
 msgid ""
 "Community manager and support guru who’s helping you with smooth workflows. "
 "Our salesperson."
 msgstr ""
+"مدير المجتمع ومعلم الدعم الذي يساعدك في سير العمل بسلاسة. مندوب المبيعات "
+"لدينا."
 
 #: weblate_web/templates/about.html:70
 msgid ""
 "Interface and graphics designer elevating user happiness. He’s continually "
 "optimizing Weblate."
 msgstr ""
+"مصمم واجهة ورسومات يرفع من سعادة المستخدم. إنه يعمل باستمرار على تحسين "
+"Weblate."
 
 #: weblate_web/templates/about.html:77
 msgid "Contributors and translators united"
@@ -557,14 +522,12 @@ msgid "The Weblate history"
 msgstr "تاريخ Weblate"
 
 #: weblate_web/templates/about.html:87
-#, fuzzy
-#| msgid "April 2012"
 msgid "April 2020"
-msgstr "أبريل 2012"
+msgstr "أبريل 2020"
 
 #: weblate_web/templates/about.html:88
 msgid "Improved translation memory and support for intermediate translations"
-msgstr ""
+msgstr "ذاكرة ترجمة محسنة ودعم للترجمات الوسيطة"
 
 #: weblate_web/templates/about.html:91
 msgid "January 2019"
@@ -642,18 +605,13 @@ msgstr ""
 "\">phpMyAdmin</a> و <a href=\"https://www.debian.org/\">Debian</a>."
 
 #: weblate_web/templates/about.html:132
-#, fuzzy
-#| msgid ""
-#| "After employment in several technology companies, since early 2016 Michal "
-#| "dedicated himself to providing services to companies focusing on "
-#| "localization and Weblate."
 msgid ""
 "After employment in several technology companies, since early 2016, Michal "
 "dedicated himself to providing services to companies focusing on "
 "localization and Weblate."
 msgstr ""
-"بعد العمل في العديد من شركات التكنولوجيا، منذ أوائل عام 2016، كرس ميشال نفسه "
-"لتقديم الخدمات للشركات التي تركز على التوطين و Weblate."
+"بعد العمل في العديد من شركات التكنولوجيا ، منذ أوائل عام 2016 ، كرس ميخال "
+"نفسه لتقديم الخدمات للشركات التي تركز على التوطين و Weblate."
 
 #: weblate_web/templates/about.html:139
 msgid "Contact"
@@ -682,7 +640,7 @@ msgstr "معرف ضريبة القيمة المضافة"
 
 #: weblate_web/templates/about.html:172
 msgid "D-U-N-S Number"
-msgstr ""
+msgstr "رقم D-U-N-S"
 
 #: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
 #: weblate_web/templates/hosting.html:515
@@ -694,7 +652,7 @@ msgstr "اتصل بنا"
 
 #: weblate_web/templates/base.html:7
 msgid "Weblate is a libre software web-based continuous localization system."
-msgstr "Weblate هو نظام برمجي حر للتوطين والترجمة المستمرة مبني على الويب."
+msgstr "Weblate هو نظام تعريب مستمر قائم على الويب لبرنامج حر."
 
 #: weblate_web/templates/base.html:24
 msgctxt "Keyword"
@@ -707,20 +665,16 @@ msgstr "خروج"
 
 #: weblate_web/templates/base.html:72
 #: weblate_web/templates/snippets/main-menu.html:21
-#, fuzzy
-#| msgid "About Weblate"
 msgid "Go Weblate!"
-msgstr "عن وِيب لايت"
+msgstr "اذهب ويبليت!"
 
 #: weblate_web/templates/base.html:114
 msgid "Service Status"
 msgstr "حالة الخدمة"
 
 #: weblate_web/templates/base.html:117
-#, fuzzy
-#| msgid "Licensed under GNU GPLv3+"
 msgid "Licensed GNU GPLv3+"
-msgstr "مبني تحت رخصة GNU GPLv3+"
+msgstr "رخصة جنو GPLv3+"
 
 #: weblate_web/templates/base.html:119 weblate_web/templates/terms.html:8
 msgid "Terms and Privacy"
@@ -732,14 +686,12 @@ msgid "Design by %(author)s"
 msgstr "التصميم بواسطة %(author)s"
 
 #: weblate_web/templates/careers.html:10
-#, fuzzy
-#| msgid "Try Weblate"
 msgid "Career at Weblate"
-msgstr "تجربة Weblate"
+msgstr "مهنة في ويبليت"
 
 #: weblate_web/templates/careers.html:14
 msgid "Weblate, the libre localization platform, wants you on the team!"
-msgstr ""
+msgstr "Weblate ، منصة التعريب الحر ، تريدك في الفريق!"
 
 #: weblate_web/templates/careers.html:17
 #: weblate_web/templates/snippets/about.html:4
@@ -747,28 +699,31 @@ msgid "Learn more"
 msgstr "تعلم المزيد"
 
 #: weblate_web/templates/careers.html:24
-#, fuzzy
-#| msgid "Users and developers"
 msgid "Full-stack developer"
-msgstr "المستخدمون والمطورون"
+msgstr "مطور متكامل"
 
 #: weblate_web/templates/careers.html:26
 msgid ""
 "We're looking for a front-end developer who will not be afraid of touching "
 "the back-end as well."
 msgstr ""
+"نحن نبحث عن مطور الواجهة الأمامية الذي لن يخاف من لمس الواجهة الخلفية أيضا."
 
 #: weblate_web/templates/careers.html:27
 msgid ""
 "Our front-end is currently using Bootstrap and jQuery, but we want to "
 "improve."
 msgstr ""
+"تستخدم الواجهة الأمامية الخاصة بنا حاليا Bootstrap و jQuery ، لكننا نريد "
+"التحسين."
 
 #: weblate_web/templates/careers.html:28
 msgid ""
 "The back-end is in Python, using Django, Django REST framework, Celery, "
 "Translate Toolkit, and many others."
 msgstr ""
+"النهاية الخلفية في Python ، باستخدام إطار عمل Django و Django REST والكرفس "
+"ومجموعة أدوات الترجمة وغيرها الكثير."
 
 #: weblate_web/templates/careers.html:29
 #, python-format
@@ -776,6 +731,8 @@ msgid ""
 "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
 "we are looking for."
 msgstr ""
+"تصفح <a href=\"%(issues)s\"> المشكلات المفتوحة</a> لاكتساب نظرة ثاقبة لما "
+"نبحث عنه."
 
 #: weblate_web/templates/careers.html:30
 #, python-format
@@ -783,39 +740,45 @@ msgid ""
 "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
 "expertise."
 msgstr ""
+"احصل على واحدة من <a href=\"%(issues)s\"> المشكلات الأولى الجيدة</a> لتظهر "
+"لنا خبرتك."
 
 #: weblate_web/templates/careers.html:31
 msgid ""
 "It is all libre software, all our code and issues are open to the public."
 msgstr ""
+"إنها كلها برامج حرة ، وجميع التعليمات البرمجية والقضايا لدينا مفتوحة للجمهور."
 
 #: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:45
-#, fuzzy
-#| msgid "Buy now"
 msgid "Apply now"
-msgstr "الشراء الفوري"
+msgstr "تقدم بطلبك الآن"
 
 #: weblate_web/templates/careers.html:37
 msgid "Customer care and sales"
-msgstr ""
+msgstr "خدمة العملاء والمبيعات"
 
 #: weblate_web/templates/careers.html:39
 msgid ""
 "We're looking for a person who loves to speak with the people and will help "
 "them in getting the most out of our product."
 msgstr ""
+"نحن نبحث عن شخص يحب التحدث مع الناس وسيساعدهم في تحقيق أقصى استفادة من "
+"منتجنا."
 
 #: weblate_web/templates/careers.html:40
 msgid ""
 "You will work with customers to assess their needs and advise them on using "
 "Weblate."
 msgstr ""
+"ستعمل مع العملاء لتقييم احتياجاتهم وتقديم المشورة لهم بشأن استخدام Weblate."
 
 #: weblate_web/templates/careers.html:41
 msgid ""
 "You will be a contact for customers who are seeking help. Our engineers will "
 "closely cooperate with you on resolving the customer issues."
 msgstr ""
+"ستكون جهة اتصال للعملاء الذين يطلبون المساعدة. سيتعاون مهندسونا معك بشكل "
+"وثيق في حل مشكلات العملاء."
 
 #: weblate_web/templates/careers.html:42
 msgid ""
@@ -823,6 +786,8 @@ msgid ""
 "on our blogs, manage social media, discuss with our community, or improve "
 "our documentation."
 msgstr ""
+"يمكنك التوسع في مجالات أخرى تشعر فيها بالراحة: نشر المقالات على مدوناتنا ، "
+"أو إدارة وسائل التواصل الاجتماعي ، أو المناقشة مع مجتمعنا ، أو تحسين وثائقنا."
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -940,11 +905,10 @@ msgstr ""
 "الأكثر شيوعًا."
 
 #: weblate_web/templates/contribute.html:56
-#, fuzzy, python-format
-#| msgid "Suggest your change in the <a href=\"%(url)s\">GitHub issues</a>."
+#, python-format
 msgid ""
 "Share what is on your mind in the <a href=\"%(url)s\">GitHub discussions</a>."
-msgstr "اقترح تغييرك في مسائل <a href=\"%(url)s\">جيت هاب</a>."
+msgstr "شارك ما يدور في ذهنك في مناقشات <a href=\"%(url)s\">GitHub</a>."
 
 #: weblate_web/templates/contribute.html:58
 #: weblate_web/templates/contribute.html:69
@@ -978,6 +942,8 @@ msgid ""
 "Help fix and suggest non-code related pull-requests by joining the reviewer "
 "team."
 msgstr ""
+"ساعد في إصلاح طلبات السحب غير المتعلقة بالتعليمات البرمجية واقتراحها من خلال "
+"الانضمام إلى فريق المراجع."
 
 #: weblate_web/templates/contribute.html:72
 msgid "<strong>Financial support</strong> is always put to good use."
@@ -1017,10 +983,8 @@ msgstr "حالة الترجمة"
 #: weblate_web/templates/subscription/discovery-add.html:3
 #: weblate_web/templates/subscription/discovery-add.html:12
 #: weblate_web/templates/subscription/discovery.html:3
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Discover Weblate"
-msgstr "استخدام Weblate"
+msgstr "اكتشف ويبليت"
 
 #: weblate_web/templates/discover.html:18
 msgid ""
@@ -1029,10 +993,14 @@ msgid ""
 "readers and app users around the World. Find your favorite projects and "
 "start contributing together with us."
 msgstr ""
+"تحقق من مستخدمي Weblate حاليا. نحن مجتمع من المترجمين والمتخصصين في التعريب "
+"الذين يستخدمون ويعملون على تحسين أداتنا المشتركة لتمكين القراء ومستخدمي "
+"التطبيقات في جميع أنحاء العالم. ابحث عن مشاريعك المفضلة وابدأ في المساهمة "
+"معنا."
 
 #: weblate_web/templates/discover.html:23
 msgid "Add yours"
-msgstr ""
+msgstr "أضف لك"
 
 #: weblate_web/templates/discover.html:25
 msgid "project name"
@@ -1043,9 +1011,7 @@ msgid "Search"
 msgstr "البحث"
 
 #: weblate_web/templates/discover.html:50
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s project"
 msgid_plural "%(count)s projects"
 msgstr[0] "لا ترجمات"
@@ -1053,12 +1019,10 @@ msgstr[1] "%(count)s ترجمة"
 msgstr[2] "%(count)s ترجمتان"
 msgstr[3] "%(count)s ترجمات"
 msgstr[4] "%(count)s تراجم"
-msgstr[5] "%(count)s تراجم"
+msgstr[5] "مشاريع %(count)s"
 
 #: weblate_web/templates/discover.html:51
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s translator"
 msgid_plural "%(count)s translators"
 msgstr[0] "لا ترجمات"
@@ -1066,7 +1030,7 @@ msgstr[1] "%(count)s ترجمة"
 msgstr[2] "%(count)s ترجمتان"
 msgstr[3] "%(count)s ترجمات"
 msgstr[4] "%(count)s تراجم"
-msgstr[5] "%(count)s تراجم"
+msgstr[5] "%(count)s المترجمين"
 
 #: weblate_web/templates/discover.html:62
 #, python-format
@@ -1074,37 +1038,35 @@ msgid "…and %(count)s more"
 msgid_plural "…and %(count)s more"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "... و 2 أخرى"
 msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
 #: weblate_web/templates/discover.html:65
 #: weblate_web/templates/snippets/service.html:112
-#, fuzzy
-#| msgid "Consulting"
 msgid "Customize listing"
-msgstr "استشارات"
+msgstr "تخصيص القائمة"
 
 #: weblate_web/templates/discover.html:72
 msgid "No servers matched your search."
-msgstr ""
+msgstr "لا توجد خوادم مطابقة لبحثك."
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:3
-#, fuzzy
-#| msgid "Weblate support"
 msgid "Weblate SSO"
-msgstr "دعم Weblate"
+msgstr "تسجيل الدخول الأحادي عبر الويب"
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:11
 msgid "You're being redirected to a SSO sign-in page."
-msgstr ""
+msgstr "تتم إعادة توجيهك إلى صفحة تسجيل الدخول الموحد (SSO)."
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:14
 msgid ""
 "Please click the button below if you're not redirected automatically within "
 "a few seconds."
 msgstr ""
+"الرجاء النقر فوق الزر أدناه إذا لم تتم إعادة توجيهك تلقائيا في غضون ثوان "
+"قليلة."
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:19
 msgid "Sign in"
@@ -1193,42 +1155,39 @@ msgstr ""
 "التبرعات لمرة واحدة ممتازة لإلقاء الضوء على مشكلة واحدة قبل أو بعد إصلاحها."
 
 #: weblate_web/templates/donate.html:81
-#, fuzzy
-#| msgid "Weblate support"
 msgid "Weblate swag"
-msgstr "دعم Weblate"
+msgstr "ويبليت غنيمة"
 
 #: weblate_web/templates/donate.html:82
 msgid ""
 "Buying branded clothing and merch is a great way to support Weblate and show "
 "your pride!"
 msgstr ""
+"يعد شراء الملابس والسلع ذات العلامات التجارية طريقة رائعة لدعم Weblate "
+"وإظهار فخرك!"
 
 #: weblate_web/templates/donate.html:83
 msgid "Shop from Europe"
-msgstr ""
+msgstr "تسوق من أوروبا"
 
 #: weblate_web/templates/donate.html:84
 msgid "Shop from America and Australia"
-msgstr ""
+msgstr "تسوق من أمريكا وأستراليا"
 
 #: weblate_web/templates/donate.html:90
-#, fuzzy
-#| msgid "Your donations"
 msgid "Your favorite donation platforms"
-msgstr "تبرعاتكم"
+msgstr "منصات التبرع المفضلة لديك"
 
 #: weblate_web/templates/donate.html:93
 msgid ""
 "Join Weblate fans on platforms you trust. We look forward to seeing you "
 "there."
 msgstr ""
+"انضم إلى معجبي Weblate على المنصات التي تثق بها. نحن نتطلع إلى رؤيتكم هناك."
 
 #: weblate_web/templates/donate.html:99
-#, fuzzy
-#| msgid "GitHub repository"
 msgid "GitHub Sponsors"
-msgstr "مستودع جيت هاب"
+msgstr "رعاة جيثب"
 
 #: weblate_web/templates/donate.html:114
 msgid "Cryptocurrency donations"
@@ -1303,11 +1262,10 @@ msgid "Choose your amount in EUR"
 msgstr "اختر مقدار المبلغ باليورو"
 
 #: weblate_web/templates/donate/form.html:18
-#, fuzzy, python-format
-#| msgid "From €%(minimum)s"
+#, python-format
 msgctxt "Minimal donation amount in a form"
 msgid "From %(minimum)s"
-msgstr "من %(minimum)s€"
+msgstr "من %(minimum)s"
 
 #: weblate_web/templates/donate/form.html:19
 msgid "Pick how often to donate"
@@ -1451,36 +1409,32 @@ msgid "OpenShift guide"
 msgstr "دليل أوبن شفت"
 
 #: weblate_web/templates/download.html:51
-#, fuzzy
-#| msgid "Running Weblate on the OpenShift platform"
 msgid "Running Weblate on the Kubernetes platform"
-msgstr "تشغيل Weblate على منصة أوبن شفت"
+msgstr "تشغيل Weblate على منصة Kubernetes"
 
 #: weblate_web/templates/download.html:52
 msgid "Kubernetes guide"
-msgstr ""
+msgstr "دليل Kubernetes"
 
 #: weblate_web/templates/download.html:56
-#, fuzzy
-#| msgid "Available for many platforms and works with most cloud providers."
 msgid ""
 "Additionally, Bitnami Weblate stack is available for many platforms and "
 "works with most cloud providers."
-msgstr "متاح للعديد من المنصات ويعمل مع معظم مزودي الخدمات السحابية."
+msgstr ""
+"بالإضافة إلى ذلك ، يتوفر Bitnami Weblate stack للعديد من الأنظمة الأساسية "
+"ويعمل مع معظم موفري الخدمات السحابية."
 
 #: weblate_web/templates/download.html:57
 msgid "Google Cloud Platform"
-msgstr ""
+msgstr "منصة جوجل السحابية"
 
 #: weblate_web/templates/download.html:58
-#, fuzzy
-#| msgid "Get more services"
 msgid "Amazon Web Services"
-msgstr "أحصل على المزيد من الخدمات"
+msgstr "خدمات أمازون ويب"
 
 #: weblate_web/templates/download.html:59
 msgid "Microsoft Azure"
-msgstr ""
+msgstr "مايكروسوفت أزور"
 
 #: weblate_web/templates/download.html:62
 msgid "GitHub repository"
@@ -1568,10 +1522,8 @@ msgid "Access Control"
 msgstr "التحكم في الوصول"
 
 #: weblate_web/templates/features.html:49
-#, fuzzy
-#| msgid "Access rights can be fine-tuned depending on your environment."
 msgid "Fine-tune access rights to fit your environment."
-msgstr "يمكن ضبط تصريحات الوصول بدقة حسب بيئتكم."
+msgstr "قم بضبط حقوق الوصول لتناسب بيئتك."
 
 #: weblate_web/templates/features.html:55
 msgid "Smart Notifications"
@@ -1595,16 +1547,12 @@ msgid "Multiple File Formats"
 msgstr "تنسيقات متعددة للملفات"
 
 #: weblate_web/templates/features.html:70
-#, fuzzy
-#| msgid ""
-#| "All widely used file formats for localization are supported, gettext, "
-#| "JSON, XLIFF or resource strings etc."
 msgid ""
 "All widely used file formats for localization are supported, gettext, JSON, "
 "XLIFF or resource strings, etc."
 msgstr ""
-"يدعم جميع صيغ الملفات المستخدمة على نطاق واسع للترجمة مثل Gettext, JSON, "
-"XLIFF أو كلمات المصدر، إلخ."
+"يتم دعم جميع تنسيقات الملفات المستخدمة على نطاق واسع للترجمة ، gettext ، "
+"JSON ، XLIFF أو سلاسل الموارد ، إلخ."
 
 #: weblate_web/templates/features.html:76
 msgid "Branch Support"
@@ -1642,7 +1590,7 @@ msgstr "جافا"
 
 #: weblate_web/templates/features.html:95
 msgid "GWT"
-msgstr ""
+msgstr "GWT"
 
 #: weblate_web/templates/features.html:96
 msgid "Joomla"
@@ -1670,11 +1618,11 @@ msgstr "المفتاح والقيمة"
 
 #: weblate_web/templates/features.html:102
 msgid "React Intl"
-msgstr ""
+msgstr "رد الفعل الدولي"
 
 #: weblate_web/templates/features.html:103
 msgid "Vue I18n"
-msgstr ""
+msgstr "فيو I18n"
 
 #: weblate_web/templates/features.html:106
 msgid "PHP"
@@ -1682,7 +1630,7 @@ msgstr "بي إتش بي"
 
 #: weblate_web/templates/features.html:107
 msgid "Laravel"
-msgstr ""
+msgstr "لارافيل"
 
 #: weblate_web/templates/features.html:108
 msgid "iOS"
@@ -1722,39 +1670,35 @@ msgstr "الترجمات"
 
 #: weblate_web/templates/features.html:117
 msgid "Windows"
-msgstr ""
+msgstr "شبابيك"
 
 #: weblate_web/templates/features.html:118
 msgid "HTML"
 msgstr "HTML"
 
 #: weblate_web/templates/features.html:119
-#, fuzzy
-#| msgid "Documentation"
 msgid "OpenDocument"
-msgstr "المستندات"
+msgstr "المستند المفتوح"
 
 #: weblate_web/templates/features.html:120
 msgid "IDML"
-msgstr ""
+msgstr "آي دي إم إل"
 
 #: weblate_web/templates/features.html:121
 msgid "INI files"
-msgstr ""
+msgstr "ملفات INI"
 
 #: weblate_web/templates/features.html:122
 msgid "Inno Setup"
-msgstr ""
+msgstr "إعداد Inno"
 
 #: weblate_web/templates/features.html:123
 msgid "TermBase eXchange"
-msgstr ""
+msgstr "تبادل قاعدة المصطلحات"
 
 #: weblate_web/templates/features.html:124
-#, fuzzy
-#| msgid "Next steps"
 msgid "Text files"
-msgstr "الخطوات التالية"
+msgstr "ملفات نصية"
 
 #: weblate_web/templates/features.html:134
 msgid "Glossaries"
@@ -1796,10 +1740,8 @@ msgid "Documentation"
 msgstr "المستندات"
 
 #: weblate_web/templates/features.html:163
-#, fuzzy
-#| msgid "Comprehensive documentation covering both setup and usage."
 msgid "Comprehensive documentation covering both setup and use."
-msgstr "وثائق شاملة تغطي كل من الإعداد والاستخدام."
+msgstr "وثائق شاملة تغطي كلا من الإعداد والاستخدام."
 
 #: weblate_web/templates/features.html:169
 msgid "Easy Reviews"
@@ -1814,11 +1756,8 @@ msgid "Language support"
 msgstr "الدعم اللغوي"
 
 #: weblate_web/templates/features.html:177
-#, fuzzy
-#| msgid ""
-#| "Support for over 300 languages out of the box, others can be added too."
 msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr "يدعم أساسا أكثر من 300 لغة، ويمكن إضافة أخرى."
+msgstr "دعم لأكثر من 500 لغة خارج الصندوق. يمكن إضافة الآخرين أيضا."
 
 #: weblate_web/templates/features.html:183
 msgid "Promotion"
@@ -1864,10 +1803,8 @@ msgid "Responsive UI"
 msgstr "واجهة تفاعلية"
 
 #: weblate_web/templates/features.html:212
-#, fuzzy
-#| msgid "User interface that works nicely on desktop, tablet and phones."
 msgid "User interface that works nicely on desktop, tablets and phones."
-msgstr "واجهة مستخدم تعمل كما ينبغي على سطح المكتب واللوحيات والهواتف."
+msgstr "واجهة مستخدم تعمل بشكل جيد على سطح المكتب والأجهزة اللوحية والهواتف."
 
 #: weblate_web/templates/features.html:218
 msgid "Translation memory"
@@ -1875,18 +1812,15 @@ msgstr "ذاكرة الترجمة"
 
 #: weblate_web/templates/features.html:219
 msgid "Reuse existing translations to save time and costs."
-msgstr ""
+msgstr "أعد استخدام الترجمات الحالية لتوفير الوقت والتكاليف."
 
 #: weblate_web/templates/features.html:225
 msgid "Translation add-ons"
 msgstr "إضافات الترجمة"
 
 #: weblate_web/templates/features.html:226
-#, fuzzy
-#| msgid ""
-#| "Automated localization workflow follows your project development closely."
 msgid "Customize localization workflow with various add-ons."
-msgstr "يتبع سير عمل التوطين الآلي تطور مشروعكم عن كثب."
+msgstr "تخصيص سير عمل التعريب باستخدام العديد من الوظائف الإضافية."
 
 #: weblate_web/templates/features.html:232
 msgid "Backups"
@@ -1894,7 +1828,7 @@ msgstr "النسخ الإحتياطية"
 
 #: weblate_web/templates/features.html:233
 msgid "Built-in remote backups to prevent data loss."
-msgstr ""
+msgstr "نسخ احتياطي مدمج عن بعد لمنع فقدان البيانات."
 
 #: weblate_web/templates/features.html:239
 msgid "Screenshots"
@@ -1902,81 +1836,68 @@ msgstr "لقطات الشاشة"
 
 #: weblate_web/templates/features.html:240
 msgid "Provide visual context for the translations."
-msgstr ""
+msgstr "توفير سياق مرئي للترجمات."
 
 #: weblate_web/templates/features.html:246
 msgid "Variants"
-msgstr ""
+msgstr "المتغيرات"
 
 #: weblate_web/templates/features.html:247
 msgid "Group variants of strings for easier translating."
-msgstr ""
+msgstr "تجميع متغيرات السلاسل لتسهيل الترجمة."
 
 #: weblate_web/templates/features.html:253
-#, fuzzy
-#| msgid "Target languages"
 msgid "Intermediate language"
-msgstr "اللغات المُستهدفة"
+msgstr "اللغة المتوسطة"
 
 #: weblate_web/templates/features.html:254
 msgid "Proofread strings from developers before translating them."
-msgstr ""
+msgstr "تدقيق السلاسل من المطورين قبل ترجمتها."
 
 #: weblate_web/templates/hosting.html:12
 msgid "Weblate Pricing"
 msgstr "تسعيرة Weblate"
 
 #: weblate_web/templates/hosting.html:16
-#, fuzzy, python-format
-#| msgid ""
-#| "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
-#| "help</a> for on-premises hosting—all with the possibility of premium "
-#| "support. Our team is ready to help you make Weblate run smoothly."
+#, python-format
 msgid ""
 "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
 "a> for on-premise hosting — all with the convenience of the premium support."
 msgstr ""
-"استخدموا Weblate كخدمة، أو قوموا بإعداد الخدمة الخاصة بكم، أو <a href="
-"\"%(url)s\">أحصلوا على المساعدة</a> للاستضافة المحلية — كل ذلك مع إمكانية "
-"الدعم المتميز. فريقنا جاهز لمساعدتك في جعل Weblate يعمل بسلاسة."
+"استخدم Weblate كخدمة ، وقم بإعداد الخدمة الخاصة بك ، أو <a href=\"%(url)s\""
+">احصل على مساعدة</a> للاستضافة المحلية - كل ذلك مع راحة الدعم المتميز."
 
 #: weblate_web/templates/hosting.html:17
 msgid "Our team is ready to help you make Weblate run smoothly."
-msgstr ""
+msgstr "فريقنا جاهز لمساعدتك في جعل Weblate يعمل بسلاسة."
 
 #: weblate_web/templates/hosting.html:20
 msgid "Compare Cloud and Self-hosted Features"
-msgstr ""
+msgstr "مقارنة الميزات السحابية والمستضافة ذاتيا"
 
 #: weblate_web/templates/hosting.html:25
 msgid "System maintenance"
-msgstr ""
+msgstr "صيانة النظام"
 
 #: weblate_web/templates/hosting.html:28
-#, fuzzy
-#| msgid "installation"
 msgid "Weblate installation"
-msgstr "التنصيب"
+msgstr "تثبيت Weblate"
 
 #: weblate_web/templates/hosting.html:31
-#, fuzzy
-#| msgid "Weblate features"
 msgid "Weblate upgrades"
-msgstr "ميزات Weblate"
+msgstr "ترقيات Weblate"
 
 #: weblate_web/templates/hosting.html:34
 msgid "Access to backups"
-msgstr ""
+msgstr "الوصول إلى النسخ الاحتياطية"
 
 #: weblate_web/templates/hosting.html:37
-#, fuzzy
-#| msgid "Setup customization"
 msgid "Complete configuration customization"
-msgstr "تخصيص الإعداد"
+msgstr "تخصيص التكوين الكامل"
 
 #: weblate_web/templates/hosting.html:40
 msgid "Single sign-on"
-msgstr ""
+msgstr "تسجيل الدخول الأحادي"
 
 #: weblate_web/templates/hosting.html:43
 msgid "Priority e-mail support"
@@ -1988,25 +1909,21 @@ msgstr "ذاكرة الترجمة المُشتَرَكة"
 
 #: weblate_web/templates/hosting.html:49
 msgid "Priority bug fixing"
-msgstr ""
+msgstr "أولوية إصلاح الأخطاء"
 
 #: weblate_web/templates/hosting.html:57
-#, fuzzy
-#| msgid "cloud"
 msgctxt "Hosting plan"
 msgid "Cloud"
-msgstr "‎سحابة"
+msgstr "سحابة"
 
 #: weblate_web/templates/hosting.html:70
 msgid "Backups and restore on Hosted Weblate are fully automatic."
-msgstr ""
+msgstr "النسخ الاحتياطية والاستعادة على Weblate المستضاف تلقائية بالكامل."
 
 #: weblate_web/templates/hosting.html:90
-#, fuzzy
-#| msgid "Hosted service"
 msgctxt "Hosting plan"
 msgid "Dedicated cloud"
-msgstr "الخدمة المُستضافة"
+msgstr "سحابة مخصصة"
 
 #: weblate_web/templates/hosting.html:122
 #: weblate_web/templates/hosting.html:155
@@ -2021,7 +1938,7 @@ msgstr "استضافة ذاتية"
 #: weblate_web/templates/hosting.html:168
 #: weblate_web/templates/hosting.html:201
 msgid "Optional"
-msgstr ""
+msgstr "خياري"
 
 #: weblate_web/templates/hosting.html:189
 #: weblate_web/templates/hosting.html:264
@@ -2033,24 +1950,19 @@ msgstr "بلا مقابِل"
 #: weblate_web/templates/hosting.html:223
 #: weblate_web/templates/hosting.html:233
 msgid "From"
-msgstr ""
+msgstr "مِن"
 
 #: weblate_web/templates/hosting.html:225
 #: weblate_web/templates/hosting.html:235
 #: weblate_web/templates/hosting.html:245
 #: weblate_web/templates/hosting.html:255
-#, fuzzy
-#| msgctxt "123 translations ..."
-#| msgid "this month"
 msgid "a month"
-msgstr "هذا الشهر"
+msgstr "في الشهر"
 
 #: weblate_web/templates/hosting.html:228
 #: weblate_web/templates/hosting.html:238
-#, fuzzy
-#| msgid "Selected option"
 msgid "See options"
-msgstr "الخيارات المختارة"
+msgstr "انظر الخيارات"
 
 #: weblate_web/templates/hosting.html:248
 #: weblate_web/templates/hosting.html:258
@@ -2071,7 +1983,7 @@ msgstr "التنزيل"
 
 #: weblate_web/templates/hosting.html:276
 msgid "Cloud-hosted Price Options"
-msgstr ""
+msgstr "خيارات الأسعار المستضافة على السحابة"
 
 #: weblate_web/templates/hosting.html:278
 #, python-format
@@ -2089,7 +2001,7 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:282
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
-msgstr ""
+msgstr "<b>نسخة تجريبية مجانية لمدة 14 يوما</b> مضمنة في جميع الخطط السحابية"
 
 #: weblate_web/templates/hosting.html:288
 msgid "Continuous localization"
@@ -2119,7 +2031,7 @@ msgstr "عدد المترجمين"
 #: weblate_web/templates/hosting.html:306
 #: weblate_web/templates/hosting.html:455
 msgid "Dedicated instance"
-msgstr ""
+msgstr "مثيل مخصص"
 
 #: weblate_web/templates/hosting.html:314
 #: weblate_web/templates/snippets/pricing.html:12
@@ -2164,11 +2076,9 @@ msgstr "غير محدود"
 #: weblate_web/templates/hosting.html:336
 #: weblate_web/templates/hosting.html:363
 #: weblate_web/templates/hosting.html:390
-#, fuzzy, python-format
-#| msgid ""
-#| "Additional charge %(price)s EUR/year, only available with yearly billing"
+#, python-format
 msgid "Additional charge %(price)s/year, only available with yearly billing"
-msgstr "يُدفع إضافيًا %(price)s يورو/السنة، تتوافر فقط مع الدفع السنوي"
+msgstr "رسوم إضافية %(price)s/سنة، متوفرة فقط مع الفوترة السنوية"
 
 #: weblate_web/templates/hosting.html:341
 #: weblate_web/templates/snippets/pricing.html:13
@@ -2195,13 +2105,13 @@ msgstr "مُخصّص"
 
 #: weblate_web/templates/hosting.html:423
 msgid "and dedicated"
-msgstr ""
+msgstr "ومكرسة"
 
 #: weblate_web/templates/hosting.html:429
 #: weblate_web/templates/hosting.html:432
 #, python-format
 msgid "over <strong>%(count)s</strong>"
-msgstr ""
+msgstr "على <strong>%(count)s</strong>"
 
 #: weblate_web/templates/hosting.html:451
 #: weblate_web/templates/hosting.html:526
@@ -2232,18 +2142,14 @@ msgstr "<strong>وفّروا أكثر</strong> مع دفع مسبق طويل ا�
 #: weblate_web/templates/hosting.html:553
 #: weblate_web/templates/hosting.html:566
 #: weblate_web/templates/snippets/about.html:6
-#, fuzzy
-#| msgid "Gratis Trial?"
 msgid "Gratis trial"
-msgstr "تجريب دون مقابل؟"
+msgstr "تجربة مجانية"
 
 #: weblate_web/templates/hosting.html:512
 #: weblate_web/templates/hosting.html:574
 #: weblate_web/templates/hosting.html:636
-#, fuzzy
-#| msgid "Ask for hosting"
 msgid "<b>Ask</b> for options"
-msgstr "اطلب استضافة"
+msgstr "<b>اسأل</b> عن الخيارات"
 
 #: weblate_web/templates/hosting.html:650
 #: weblate_web/templates/support.html:129
@@ -2251,24 +2157,17 @@ msgid "Payment"
 msgstr "طريقة الدفع"
 
 #: weblate_web/templates/hosting.html:656
-#, fuzzy
-#| msgid ""
-#| "Pricing is based on number of source strings and target languages. The "
-#| "source string is a text unit defined in a translation format, it can be a "
-#| "word, sentence or paragraph."
 msgid ""
 "Pricing is based on the number of source strings and target languages. A "
 "source string is a text unit defined in a translation format. It can be a "
 "word, sentence or paragraph."
 msgstr ""
-"يعتمد التسعير على عدد كلمات المصدر واللغات المستهدفة. كلمات المصدر هي وحدة "
-"كتابية محددة في صيغة الترجمة، يمكن أن تكون كلمة أو جملة أو فقرة."
+"يعتمد التسعير على عدد سلاسل المصدر واللغات المستهدفة. السلسلة المصدر هي وحدة "
+"نصية محددة بتنسيق ترجمة. يمكن أن تكون كلمة أو جملة أو فقرة."
 
 #: weblate_web/templates/hosting.html:660
-#, fuzzy
-#| msgid "for libre projects"
 msgid "Weblate proudly supports libre projects"
-msgstr "للمشاريع الحرة"
+msgstr "Weblate يدعم بفخر المشاريع الحرة"
 
 #: weblate_web/templates/hosting.html:662
 #, python-format
@@ -2277,12 +2176,15 @@ msgid ""
 "\">set up your libre project</a> and get the <strong>Libre plan</strong> "
 "gratis."
 msgstr ""
+"إذا كنت تشعر أن الدعم من Weblate سيساعدك ، <a href=\"%(url)s\">قم بإعداد "
+"مشروعك الحر</a> واحصل على <strong>خطة Libre</strong> مجانا."
 
 #: weblate_web/templates/hosting.html:663
 msgid ""
 "It has the same limits as the <strong>Advanced plan</strong>, but only for "
 "public projects."
 msgstr ""
+"لها نفس حدود <strong>الخطة المتقدمة</strong> ، ولكن فقط للمشاريع العامة."
 
 #: weblate_web/templates/hosting.html:668
 msgid "Join existing users and supporters"
@@ -2341,7 +2243,7 @@ msgstr[1] "%(count)s ترجمة %(when)s"
 msgstr[2] "%(count)s ترجمة %(when)s"
 msgstr[3] "%(count)s ترجمة %(when)s"
 msgstr[4] "%(count)s ترجمة %(when)s"
-msgstr[5] "%(count)s ترجمة %(when)s"
+msgstr[5] "%(count)s ترجمات %(when)s"
 
 #: weblate_web/templates/index.html:37
 msgid "Project"
@@ -2384,10 +2286,8 @@ msgstr "Weblate ، نظام التوطين المستمر الحر."
 #: weblate_web/templates/mail/payment_failed.html:20
 #: weblate_web/templates/mail/payment_missing.html:25
 #: weblate_web/templates/mail/payment_upcoming.html:25
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your payments"
-msgstr "قم بإدارة تبرعاتك"
+msgstr "إدارة مدفوعاتك"
 
 #: weblate_web/templates/mail/base.html:251
 #, python-format
@@ -2395,99 +2295,86 @@ msgid "Generated on %(timestamp)s."
 msgstr "تم إنشاؤه في %(timestamp)s."
 
 #: weblate_web/templates/mail/payment_completed.html:7
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Thank you for your payment on weblate.org."
-msgstr "تبرعاتك لWeblate"
+msgstr "شكرا لك على دفعك على weblate.org."
 
 #: weblate_web/templates/mail/payment_completed.html:11
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "ستجد فاتورة لهذه الدفعة مرفقة."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Your payment on weblate.org"
-msgstr "تبرعاتك لWeblate"
+msgstr "دفعتك على weblate.org"
 
 #: weblate_web/templates/mail/payment_expired.html:9
-#, fuzzy
-#| msgid "Please follow the provided instructions to complete the payment."
 msgid ""
 "Your subscription on weblate.org is expiring soon. Please sign in on the "
 "website to renew it."
-msgstr "يرجى اتباع التعليمات المقدمة لاتمام عملية الدفع."
+msgstr ""
+"ستنتهي صلاحية اشتراكك على weblate.org قريبا. يرجى تسجيل الدخول على الموقع "
+"لتجديده."
 
 #: weblate_web/templates/mail/payment_expired.html:17
-#, fuzzy
-#| msgid "Please follow the provided instructions to complete the payment."
 msgid ""
 "Your donation on weblate.org is expiring soon. Please sign in on the website "
 "to renew it."
-msgstr "يرجى اتباع التعليمات المقدمة لاتمام عملية الدفع."
+msgstr ""
+"تبرعك على weblate.org ستنتهي قريبا. يرجى تسجيل الدخول على الموقع لتجديده."
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Your expired payment on weblate.org"
-msgstr "تبرعاتك لWeblate"
+msgstr "دفعتك منتهية الصلاحية على weblate.org"
 
 #: weblate_web/templates/mail/payment_failed.html:7
-#, fuzzy
-#| msgid "Link placement on the weblate.org thanks page"
 msgid "Your payment on weblate.org has failed."
-msgstr "وضع الرابط على صفحة الشكر لموقع weblate.org"
+msgstr "فشلت عملية الدفع الخاصة بك على weblate.org."
 
 #: weblate_web/templates/mail/payment_failed.html:17
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
 msgstr ""
+"إذا كان الأمر يتعلق بدفعة متكررة ، تتم إعادة المحاولة ثلاث مرات ، وإذا استمر "
+"الفشل ، يتم إلغاؤه."
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
-#, fuzzy
-#| msgid "Link placement on the weblate.org thanks page"
 msgid "Your payment on weblate.org failed"
-msgstr "وضع الرابط على صفحة الشكر لموقع weblate.org"
+msgstr "فشلت عملية الدفع في weblate.org"
 
 #: weblate_web/templates/mail/payment_missing.html:9
-#, fuzzy
-#| msgid "Please follow the provided instructions to complete the payment."
 msgid ""
 "Your subscription on weblate.org should renew next week and you have not set "
 "up automatic payments."
-msgstr "يرجى اتباع التعليمات المقدمة لاتمام عملية الدفع."
+msgstr ""
+"من المفترض أن يتم تجديد اشتراكك على weblate.org الأسبوع المقبل ولم تقم "
+"بإعداد الدفعات التلقائية."
 
 #: weblate_web/templates/mail/payment_missing.html:10
 msgid ""
 "If you want to continue using the service, please perform the payment now."
-msgstr ""
+msgstr "إذا كنت ترغب في الاستمرار في استخدام الخدمة ، فيرجى إجراء الدفع الآن."
 
 #: weblate_web/templates/mail/payment_missing.html:18
-#, fuzzy
-#| msgid "Please follow the provided instructions to complete the payment."
 msgid ""
 "Your donation on weblate.org should renew next week and you have not set up "
 "automatic payments."
-msgstr "يرجى اتباع التعليمات المقدمة لاتمام عملية الدفع."
+msgstr ""
+"يجب تجديد تبرعك على weblate.org الأسبوع المقبل ولم تقم بإعداد الدفعات "
+"التلقائية."
 
 #: weblate_web/templates/mail/payment_missing.html:19
 msgid "Please perform the payment now to continue supporting Weblate."
 msgstr "الرجاء اختيار طريقة الدفع أو السداد."
 
 #: weblate_web/templates/mail/payment_missing_subject.txt:2
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Your upcoming renewal on weblate.org"
-msgstr "تبرعاتك لWeblate"
+msgstr "التجديد القادم على weblate.org"
 
 #: weblate_web/templates/mail/payment_pending.html:9
-#, fuzzy
-#| msgid "Please follow the provided instructions to complete the payment."
 msgid ""
 "Your payment on weblate.org is pending. Please follow the provided "
 "instructions to complete the payment."
-msgstr "يرجى اتباع التعليمات المقدمة لاتمام عملية الدفع."
+msgstr "دفعتك على weblate.org معلقة. يرجى اتباع التعليمات المقدمة لإتمام الدفع."
 
 #: weblate_web/templates/mail/payment_pending.html:14
 #: weblate_web/templates/payment/payment.html:17
@@ -2504,16 +2391,12 @@ msgid "(including VAT)"
 msgstr "(بما في ذلك ضريبة القيمة المضافة)"
 
 #: weblate_web/templates/mail/payment_pending_subject.txt:2
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Your pending payment on weblate.org"
-msgstr "تبرعاتك لWeblate"
+msgstr "دفعتك المعلقة على weblate.org"
 
 #: weblate_web/templates/mail/payment_upcoming.html:9
-#, fuzzy
-#| msgid "Please follow the provided instructions to complete the payment."
 msgid "Your subscription on weblate.org will renew next week."
-msgstr "يرجى اتباع التعليمات المقدمة لاتمام عملية الدفع."
+msgstr "سيتم تجديد اشتراكك على weblate.org الأسبوع المقبل."
 
 #: weblate_web/templates/mail/payment_upcoming.html:10
 #: weblate_web/templates/mail/payment_upcoming.html:19
@@ -2522,57 +2405,48 @@ msgid ""
 "expired or you want to use different payment method, please perform the "
 "payment now."
 msgstr ""
+"سيتم تحصيل الدفعة تلقائيا الأسبوع المقبل. في حالة انتهاء صلاحية بطاقتك أو "
+"كنت ترغب في استخدام طريقة دفع مختلفة ، يرجى إجراء الدفع الآن."
 
 #: weblate_web/templates/mail/payment_upcoming.html:18
-#, fuzzy
-#| msgid "Link placement on the weblate.org thanks page"
 msgid "Your donation on weblate.org will renew next week."
-msgstr "وضع الرابط على صفحة الشكر لموقع weblate.org"
+msgstr "سيتم تجديد تبرعك على weblate.org الأسبوع المقبل."
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Your upcoming payment on weblate.org"
-msgstr "تبرعاتك لWeblate"
+msgstr "دفعتك القادمة على weblate.org"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:3
 #: weblate_web/templates/mail/snippets/subscription_info.html:3
 #, python-format
 msgid "Current subscription: %(package)s"
-msgstr ""
+msgstr "الاشتراك الحالي: %(package)s"
 
 #: weblate_web/templates/mail/snippets/subscription_info.html:7
-#, fuzzy, python-format
-#| msgid "upon <a href=\"%(url)s\">request</a>"
+#, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
-msgstr "عند <a href=\"%(url)s\">الطلب</a>"
+msgstr "الاشتراك في <a href=\"%(url)s\">%(url)s</a>."
 
 #: weblate_web/templates/mail/subscription_intro.html:7
-#, fuzzy
-#| msgid "Your donation to Weblate"
 msgid "Thank you for purchasing support subscription on weblate.org"
-msgstr "تبرعاتك لWeblate"
+msgstr "شكرا لك على شراء اشتراك الدعم على weblate.org"
 
 #: weblate_web/templates/mail/subscription_intro.html:11
 msgid ""
 "You can now activate it in your Weblate using the following activation key:"
-msgstr ""
+msgstr "يمكنك الآن تنشيطه في Weblate باستخدام مفتاح التنشيط التالي:"
 
 #: weblate_web/templates/mail/subscription_intro.html:14
-#, fuzzy
-#| msgid "Manage your donations"
 msgid "Manage your subscriptions"
-msgstr "قم بإدارة تبرعاتك"
+msgstr "إدارة اشتراكاتك"
 
 #: weblate_web/templates/mail/subscription_intro.html:15
 msgid "Documentation on activating support"
-msgstr ""
+msgstr "وثائق حول تفعيل الدعم"
 
 #: weblate_web/templates/mail/subscription_intro_subject.txt:2
-#, fuzzy
-#| msgid "Please follow the provided instructions to complete the payment."
 msgid "Your new subscription on weblate.org"
-msgstr "يرجى اتباع التعليمات المقدمة لاتمام عملية الدفع."
+msgstr "اشتراكك الجديد على weblate.org"
 
 #: weblate_web/templates/news.html:5
 #: weblate_web/templates/weblate_web/post_archive.html:5
@@ -2716,17 +2590,17 @@ msgstr "ساهموا معنا"
 
 #: weblate_web/templates/snippets/career.html:2
 msgid "Good written and spoken English language skills are required."
-msgstr ""
+msgstr "مطلوب مهارات جيدة في اللغة الإنجليزية تحدثا وكتابة."
 
 #: weblate_web/templates/snippets/career.html:3
 msgid "This is a remote contractor position."
-msgstr ""
+msgstr "هذا هو موقف المقاول عن بعد."
 
 #: weblate_web/templates/snippets/career.html:4
 msgid ""
 "We're a small libre software company where everybody has a lot of space to "
 "grow."
-msgstr ""
+msgstr "نحن شركة برمجيات حرة صغيرة حيث يتمتع الجميع بمساحة كبيرة للنمو."
 
 #: weblate_web/templates/snippets/download-link.html:5
 msgid "PGP signature"
@@ -2797,17 +2671,15 @@ msgstr "المساهمة"
 
 #: weblate_web/templates/snippets/main-menu.html:10
 msgid "Careers"
-msgstr ""
+msgstr "وظائف"
 
 #: weblate_web/templates/snippets/main-menu.html:13
 msgid "Merchandise"
-msgstr ""
+msgstr "بَضَائِعُ"
 
 #: weblate_web/templates/snippets/main-menu.html:14
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Discover"
-msgstr "استخدام Weblate"
+msgstr "اكتشف"
 
 #: weblate_web/templates/snippets/main-menu.html:16
 #: weblate_web/templates/support.html:14
@@ -2926,17 +2798,15 @@ msgstr "المستخدمون"
 
 #: weblate_web/templates/snippets/service.html:44
 msgid "You can not remove yourself"
-msgstr ""
+msgstr "لا يمكنك إزالة نفسك"
 
 #: weblate_web/templates/snippets/service.html:44
 msgid "Protected user"
-msgstr ""
+msgstr "مستخدم محمي"
 
 #: weblate_web/templates/snippets/service.html:47
-#, fuzzy
-#| msgid "Remove"
 msgid "Remove user"
-msgstr "حذف"
+msgstr "إزالة مستخدم"
 
 #: weblate_web/templates/snippets/service.html:53
 msgid "Remove"
@@ -2944,7 +2814,7 @@ msgstr "حذف"
 
 #: weblate_web/templates/snippets/service.html:60
 msgid "Add user"
-msgstr ""
+msgstr "إضافة مستخدم"
 
 #: weblate_web/templates/snippets/service.html:68
 msgid "Activation token"
@@ -2961,7 +2831,7 @@ msgstr "انسخ"
 
 #: weblate_web/templates/snippets/service.html:77
 msgid "Refresh token"
-msgstr ""
+msgstr "تحديث الرمز المميز"
 
 #: weblate_web/templates/snippets/service.html:85
 msgid "Backup repository"
@@ -2974,12 +2844,13 @@ msgid ""
 "activation token to connect your Weblate installation to the support portal. "
 "Read about how it works in the %(link_start)sdocumentation%(link_end)s."
 msgstr ""
+"يمكنك استخدام خدمات الدعم على موقعنا. لمزيد من الراحة، استخدم رمز التنشيط "
+"لتوصيل تثبيت Weblate بمدخل الدعم. اقرأ حول كيفية عملها في وثائق %(link_start)"
+"s %(link_end)s."
 
 #: weblate_web/templates/snippets/service.html:111
-#, fuzzy
-#| msgid "View sources"
 msgid "View your listing"
-msgstr "الإطلاع على المصادر"
+msgstr "عرض قائمتك"
 
 #: weblate_web/templates/snippets/service.html:115
 #, python-format
@@ -2987,6 +2858,8 @@ msgid ""
 "Let other users discover your Weblate server. Read about how it works in the "
 "%(link_start)sdocumentation%(link_end)s."
 msgstr ""
+"اسمح للمستخدمين الآخرين باكتشاف خادم Weblate الخاص بك. اقرأ حول كيفية عملها "
+"في وثائق %(link_start)s %(link_end)s."
 
 #: weblate_web/templates/snippets/service.html:123
 msgid "Subscription"
@@ -2998,7 +2871,7 @@ msgstr "ملحوظة"
 
 #: weblate_web/templates/snippets/service.html:153
 msgid "Change plan"
-msgstr ""
+msgstr "تغيير الخطة"
 
 #: weblate_web/templates/snippets/service.html:161
 msgid "Billing"
@@ -3026,12 +2899,12 @@ msgstr "جدّد الآن"
 
 #: weblate_web/templates/snippets/service.html:181
 msgid "Upgrade to annual"
-msgstr ""
+msgstr "الترقية إلى سنوي"
 
 #: weblate_web/templates/snippets/service.html:181
 #, python-format
 msgid "and <strong>save 20%%</strong>."
-msgstr ""
+msgstr "و <strong> احفظ 20 %% </strong>."
 
 #: weblate_web/templates/snippets/service.html:191
 #: weblate_web/templates/user.html:116
@@ -3039,22 +2912,16 @@ msgid "Payments"
 msgstr "المبالغ المدفوعة"
 
 #: weblate_web/templates/snippets/service.html:209
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Get more Weblate"
-msgstr "استخدام Weblate"
+msgstr "احصل على المزيد من Weblate"
 
 #: weblate_web/templates/snippets/service.html:211
-#, fuzzy
-#| msgid "Available on request"
 msgid "Available services"
-msgstr "متوفر عند الطلب"
+msgstr "الخدمات المتوفرة"
 
 #: weblate_web/templates/snippets/service.html:232
-#, fuzzy
-#| msgid "Congratulations, your Weblate instance is fully covered."
 msgid "Congratulations, you are fully covered!"
-msgstr "تهانينا ، تمت تغطية مثيل خادم Weblate بالكامل."
+msgstr "تهانينا ، أنت مغطى بالكامل!"
 
 #: weblate_web/templates/snippets/vat.html:3
 msgid ""
@@ -3091,14 +2958,12 @@ msgid ""
 msgstr "ينطبق الرسم العكسي على الفواتير الصادرة للشركات داخل الاتحاد الأوروبي."
 
 #: weblate_web/templates/subscription/discovery-add.html:9
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Add Discover Weblate listing"
-msgstr "استخدام Weblate"
+msgstr "إضافة قائمة Discover Weblate"
 
 #: weblate_web/templates/subscription/discovery-add.html:14
 msgid "Weblate 4.5.2 or newer is needed to participate in Discover Weblate."
-msgstr ""
+msgstr "يلزم استخدام Weblate 4.5.2 أو أحدث للمشاركة في Discover Weblate."
 
 #: weblate_web/templates/subscription/discovery-add.html:16
 #, python-format
@@ -3106,42 +2971,34 @@ msgid ""
 "Let other users discover your Weblate. Read about how it works in the "
 "%(link_start)sdocumentation%(link_end)s."
 msgstr ""
+"اسمح للمستخدمين الآخرين باكتشاف Weblate الخاص بك. اقرأ حول كيفية عملها في "
+"وثائق %(link_start)s %(link_end)s."
 
 #: weblate_web/templates/subscription/discovery-add.html:38
-#, fuzzy
-#| msgid "Next steps"
 msgid "Next step"
-msgstr "الخطوات التالية"
+msgstr "الخطوة التالية"
 
 #: weblate_web/templates/subscription/discovery-add.html:40
 msgid ""
 "You will be redirected to the server in question to confirm its listing."
-msgstr ""
+msgstr "ستتم إعادة توجيهك إلى الخادم المعني لتأكيد قائمته."
 
 #: weblate_web/templates/subscription/discovery.html:9
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Customize Discover Weblate listing"
-msgstr "استخدام Weblate"
+msgstr "تخصيص قائمة \"اكتشاف ويبلايت\""
 
 #: weblate_web/templates/support.html:6
 msgid "Weblate support"
 msgstr "دعم Weblate"
 
 #: weblate_web/templates/support.html:16
-#, fuzzy
-#| msgid ""
-#| "Weblate is a free software with community support. Cloud hosted Weblate "
-#| "subscribers receive priority support with no extra charge. All other "
-#| "users can prepay ad-hoc help packages."
 msgid ""
 "Weblate is copylefted libre software with community support. Subscribers "
 "receive priority support at no extra charge. Prepaid help packages are "
 "available for everyone."
 msgstr ""
-"Weblate هو تطبيق مجانى مع دعم مجتمعي. مشتركي خدمة Weblate المستندة علي "
-"السحاب يأخذون دعم أكثر من غير مصاريف إضافية. كل المستخدمين يمكنك الدفع "
-"المسبق لحزم المساعدة المخصصة ."
+"Weblate هو برنامج حر متروك الحقوق بدعم من المجتمع. يحصل المشتركون على دعم ذي "
+"أولوية دون أي رسوم إضافية. حزم المساعدة المدفوعة مسبقا متاحة للجميع."
 
 #: weblate_web/templates/support.html:17
 msgid "Report issue"
@@ -3165,33 +3022,26 @@ msgid "Security issues"
 msgstr "أخطاء أمنية"
 
 #: weblate_web/templates/support.html:32
-#, fuzzy, python-format
-#| msgid ""
-#| "Should you find a vulnerability, please report it to %(report)s. More "
-#| "info to be found in the <a href=\"%(url)s\">documentation</a>."
+#, python-format
 msgid ""
 "Should you find a vulnerability, please report it to %(report)s. More info "
 "in the <a href=\"%(url)s\">documentation</a>."
 msgstr ""
-"إذا وجدت ثغرة أمنية، فيرجى الإبلاغ عنها إلى %(report)s. مزيد من المعلومات "
-"يمكن العثور عليها في <a href=\"%(url)s\">المستندات</a>."
+"إذا وجدت ثغرة أمنية، يرجى الإبلاغ عنها إلى %(report)s. مزيد من المعلومات في "
+"<a href=\"%(url)s\">الوثائق</a>."
 
 #: weblate_web/templates/support.html:38
-#, fuzzy
-#| msgid "Weblate support"
 msgid "Reliable support"
-msgstr "دعم Weblate"
+msgstr "دعم موثوق"
 
 #: weblate_web/templates/support.html:39
-#, fuzzy, python-format
-#| msgid ""
-#| "As a subscriber, you get premium support at <a href=\"mailto:%(email)s\">"
-#| "%(email)s</a>."
+#, python-format
 msgid ""
 "As the subscriber, you will always receive fast replies from our dedicated "
 "support team at <a href=\"mailto:%(email)s\">%(email)s</a>."
 msgstr ""
-"كمشترك، تحصل على دعم متميز على<a href=\"mailto:%(email)s\">%(email)s</a>."
+"بصفتك مشتركا ، ستتلقى دائما ردودا سريعة من فريق الدعم المخصص لدينا على <a "
+"href=\"mailto:%(email)s\">%(email)s</a>."
 
 #: weblate_web/templates/support.html:48
 msgid "Prepaid support for gratis service and self-hosted installations"
@@ -3213,17 +3063,15 @@ msgstr "تتم ترقيته دائمًا إلى أحدث إصدار."
 
 #: weblate_web/templates/support.html:69
 msgid "Only available with the installation package"
-msgstr ""
+msgstr "متوفر فقط مع حزمة التثبيت"
 
 #: weblate_web/templates/support.html:82
 msgid "Next business day support response guaranteed."
-msgstr ""
+msgstr "استجابة الدعم في يوم العمل التالي مضمونة."
 
 #: weblate_web/templates/support.html:83
-#, fuzzy
-#| msgid "Activate donation"
 msgid "Four hours of private consultations in price."
-msgstr "تفعيل التبرع"
+msgstr "أربع ساعات من الاستشارات الخاصة في السعر."
 
 #: weblate_web/templates/support.html:90
 msgid "Installation on your Linux server"
@@ -3234,10 +3082,8 @@ msgid "One-time installation of Weblate"
 msgstr "تثبيت المرة واحدة من Weblate"
 
 #: weblate_web/templates/support.html:93
-#, fuzzy
-#| msgid "installation"
 msgid "Docker-based or native installation"
-msgstr "التنصيب"
+msgstr "التثبيت المستند إلى Docker أو التثبيت الأصلي"
 
 #: weblate_web/templates/support.html:94
 msgid "Requires root access or close cooperation of your admins"
@@ -3252,26 +3098,20 @@ msgid "installation"
 msgstr "التنصيب"
 
 #: weblate_web/templates/support.html:106
-#, fuzzy
-#| msgid "Cloud backups of your installations."
 msgid "Cloud backups of your data"
-msgstr "نُسخ احتياطية سحابية لتنصيباتكم."
+msgstr "النسخ الاحتياطي السحابي لبياناتك"
 
 #: weblate_web/templates/support.html:107
-#, fuzzy
-#| msgid "Securely encrypted with your passphrase."
 msgid "Securely encrypted with your passphrase"
-msgstr "مشفرة بشكل آمن بعبارتكم السرية الخاصة."
+msgstr "مشفر بشكل آمن باستخدام عبارة المرور الخاصة بك"
 
 #: weblate_web/templates/support.html:108
 msgid "Daily incremental backups"
-msgstr ""
+msgstr "النسخ الاحتياطي التزايدي اليومي"
 
 #: weblate_web/templates/support.html:109
-#, fuzzy
-#| msgid "Stores up to 100 GB of backups."
 msgid "Stores up to 100 GB of backups"
-msgstr "خزّنوا ما يعادل 100 غيغابايت من النسخ الاحتياطية."
+msgstr "يخزن ما يصل إلى 100 جيجابايت من النسخ الاحتياطية"
 
 #: weblate_web/templates/support.html:110
 msgid "Read more in the documentation."
@@ -3302,10 +3142,9 @@ msgid "Ask for help"
 msgstr "اطلب المساعدة"
 
 #: weblate_web/templates/support.html:135
-#, fuzzy, python-format
-#| msgid "Suggest your change in the <a href=\"%(url)s\">GitHub issues</a>."
+#, python-format
 msgid "Discuss with community on <a href=\"%(url)s\">GitHub</a>."
-msgstr "اقترح تغييرك في مسائل <a href=\"%(url)s\">جيت هاب</a>."
+msgstr "ناقش مع المجتمع على <a href=\"%(url)s\">GitHub</a>."
 
 #: weblate_web/templates/terms.html:11
 msgid "The legal documents necessary to offer this service."
@@ -3334,40 +3173,28 @@ msgid "User profile at Weblate"
 msgstr "ملف تعريف المستخدم في Weblate"
 
 #: weblate_web/templates/user.html:17
-#, fuzzy
-#| msgid "Your services"
 msgid "My services"
-msgstr "خدماتك"
+msgstr "خدماتي"
 
 #: weblate_web/templates/user.html:20
-#, fuzzy
-#| msgid "Supporters"
 msgid "Support portal"
-msgstr "الداعمون"
+msgstr "بوابة الدعم"
 
 #: weblate_web/templates/user.html:21
-#, fuzzy
-#| msgid "User profile"
 msgid "See user profile"
-msgstr "حساب المستخدم"
+msgstr "انظر ملف تعريف المستخدم"
 
 #: weblate_web/templates/user.html:31
-#, fuzzy
-#| msgid "Use Weblate"
 msgid "Add server to Discover Weblate"
-msgstr "استخدام Weblate"
+msgstr "إضافة خادم إلى Discover Weblate"
 
 #: weblate_web/templates/user.html:34
-#, fuzzy
-#| msgid "Your donations"
 msgid "My donations"
-msgstr "تبرعاتكم"
+msgstr "تبرعاتي"
 
 #: weblate_web/templates/user.html:41
-#, fuzzy
-#| msgid "No reward"
 msgid "Your reward"
-msgstr "بدون مكافأة"
+msgstr "مكافأتك"
 
 #: weblate_web/templates/user.html:49
 msgid "Link"
@@ -3382,10 +3209,8 @@ msgid "Active"
 msgstr "مُفعل"
 
 #: weblate_web/templates/user.html:131
-#, fuzzy
-#| msgid "Donate to see a nice message here."
 msgid "Wanna see something nice here?"
-msgstr "تبرع لرؤية رسالة لطيفة هنا."
+msgstr "تريد أن ترى شيئا لطيفا هنا؟"
 
 #: weblate_web/templates/weblate_web/post_detail.html:30
 msgid "Share"
@@ -3459,14 +3284,14 @@ msgstr "المصادر، مضغوطة بصيغة Zip"
 #, python-format
 msgctxt "Price display"
 msgid "%(currency)s %(price)s"
-msgstr ""
+msgstr "%(currency)s %(price)s"
 
 #. Translators: currency is a currency symbol here, for example €
 #: weblate_web/templatetags/prices.py:39
 #, python-format
 msgctxt "Price display"
 msgid "%(currency)s%(price)s"
-msgstr ""
+msgstr "%(currency)s %(price)s"
 
 #: weblate_web/templatetags/timestamps.py:33
 msgctxt "123 translations ..."
@@ -3504,12 +3329,10 @@ msgid "d M Y"
 msgstr "d‏/m‏/Y"
 
 #: weblate_web/templatetags/timestamps.py:63
-#, fuzzy, python-format
-#| msgctxt "Date range"
-#| msgid "%(created)s–%(expires)s"
+#, python-format
 msgctxt "Date range"
 msgid "%(created)s — %(expires)s"
-msgstr "%(created)s–%(expires)s"
+msgstr "%(created)s — %(expires)s"
 
 #: weblate_web/templatetags/timestamps.py:73
 #, python-format
@@ -3520,7 +3343,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
-msgstr[5] ""
+msgstr[5] "%d الأيام المتبقية"
 
 #: weblate_web/views.py:128
 #, python-format
