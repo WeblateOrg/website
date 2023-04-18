@@ -22,7 +22,7 @@ SUPPORTED_LANGUAGES = {
     "ar",
     "az",
     "be",
-    "be@latin",
+    "be-latn",
     "bg",
     "br",
     "ca",

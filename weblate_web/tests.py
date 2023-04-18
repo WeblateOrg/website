@@ -221,7 +221,7 @@ class ViewTestCase(PostTestCase):
         self.assertContains(response, "Базавы")
 
     def test_index_be_latin(self):
-        response = self.client.get("/be@latin/")
+        response = self.client.get("/be-latn/")
         self.assertContains(response, "Prosty")
 
     def test_terms(self):
