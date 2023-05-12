@@ -117,13 +117,13 @@ def validate_bitmap(value):
 
         # Check image type
         if value.file.content_type not in ALLOWED_IMAGES:
-            raise ValidationError(  # noqa: TRY301
+            raise ValidationError(
                 _("Unsupported image type: %s") % value.file.content_type
             )
 
         # Check dimensions
         if image.size != (570, 260):
-            raise ValidationError(  # noqa: TRY301
+            raise ValidationError(
                 _("Please upload an image with a resolution of 570 x 260 pixels.")
             )
 
