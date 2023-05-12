@@ -22,14 +22,14 @@
         <div class="wrap">
             <h2 class="section-title">{% trans "Terms of Service" %}</h2>
             <div class="tos">
-            {% include "legal/documents/tos.html" with hide_english=True %}
+            {% include "legal/documents/tos.html" with hide_english=True privacy_url="#privacy" %}
             </div>
         </div>
     </div>
 
     <div class="row">
         <div class="wrap">
-            <h2 class="section-title">{% trans "Privacy Policy" %}</h2>
+            <h2 class="section-title" id="privacy">{% trans "Privacy Policy" %}</h2>
             <div class="tos">
             {% include "legal/documents/privacy.html" %}
             </div>
