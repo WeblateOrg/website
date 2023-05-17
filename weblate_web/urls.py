@@ -23,7 +23,6 @@ from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LogoutView
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
 from django.urls import include, path, re_path
@@ -46,6 +45,7 @@ from weblate_web.views import (
     PaymentView,
     PostView,
     TopicArchiveView,
+    WeblateLogoutView,
     activity_svg,
     api_hosted,
     api_support,
@@ -320,7 +320,7 @@ urlpatterns = [
     re_path(r"^api/user/$", api_user),
     re_path(r"^api/hosted/$", api_hosted),
     re_path(r"^img/activity.svg$", activity_svg),
-    re_path(r"^logout/$", LogoutView.as_view(next_page="/"), name="logout"),
+    re_path(r"^logout/$", WeblateLogoutView.as_view(next_page="/"), name="logout"),
     # Aliases for static files
     re_path(
         r"^(android-chrome|favicon)-(?P<size>192|512)x(?P=size)\.png$",

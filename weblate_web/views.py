@@ -25,6 +25,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LogoutView
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
@@ -853,3 +854,12 @@ class DiscoverView(TemplateView):
             data["user_services"] = set()
 
         return data
+
+
+# TODO: Remove with Django 5.0
+class WeblateLogoutView(LogoutView):
+    http_method_names = ["post", "options"]
+
+    def get(self, request, *args, **kwargs):
+        # Should never be called
+        return None
