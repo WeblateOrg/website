@@ -702,6 +702,14 @@ class Service(models.Model):
             self.backup_repository = create_backup_repository(self)
             self.save(update_fields=["backup_repository"])
 
+    def get_limits(self):
+        return {
+            "hosted_words": self.limit_hosted_words,
+            "source_strings": self.limit_source_strings,
+            "projects": self.limit_projects,
+            "languages": self.limit_languages,
+        }
+
     def check_in_limits(self):
         if (
             self.limit_hosted_words

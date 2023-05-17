@@ -224,6 +224,7 @@ def api_hosted(request):
             "expiry": service.expires,
             "backup_repository": service.backup_repository,
             "in_limits": service.check_in_limits(),
+            "limits": service.get_limits(),
         }
     )
 
@@ -270,6 +271,7 @@ def api_support(request):
             "expiry": service.expires,
             "backup_repository": service.backup_repository,
             "in_limits": service.check_in_limits(),
+            "limits": service.get_limits(),
         }
     )
 
