@@ -17,6 +17,10 @@
 {% trans "If concerning a recurring payment, it is retried three times, and if still failing, cancelled." %}
 </p>
 
-<a class="button" href="/user/">{% trans "Manage your payments" %}</a>
+{% if payment.custome.origin == "https://hosted.weblate.org/create/billing/" %}
+  <a class="button" href="https://hosted.weblate.org/billing/">{% trans "Manage your payments" %}</a>
+{% else %}
+  <a class="button" href="/user/">{% trans "Manage your payments" %}</a>
+{% endif %}
 
 {% endblock %}
