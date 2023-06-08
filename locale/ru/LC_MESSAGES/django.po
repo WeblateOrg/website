@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2022-01-23 14:21+0100\n"
+"POT-Creation-Date: 2023-06-08 14:16+0200\n"
 "PO-Revision-Date: 2023-05-04 22:52+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
@@ -43,8 +43,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.18-dev\n"
 "First-Translator: Dmitri GOULIAEV <dmitri+weblate@gouliaev.info>\n"
 
@@ -158,7 +158,9 @@ msgid "Monthly"
 msgstr "Ежемесячно"
 
 #: payments/models.py:160
-msgid "Onetime"
+#, fuzzy
+#| msgid "Onetime"
+msgid "One-time"
 msgstr "Разово"
 
 #: payments/models.py:194
@@ -219,6 +221,10 @@ msgstr ""
 "частных проектов. И для самого Weblate! Любите свободное программное "
 "обеспечение? Ваши возможности здесь безграничны!"
 
+#: weblate_web/forms.py:63
+msgid "Insufficient donation for selected reward!"
+msgstr ""
+
 #: weblate_web/models.py:51
 msgid "No reward"
 msgstr "Без вознаграждения"
@@ -237,167 +243,167 @@ msgstr "Размещение ссылки в списке поддержавши
 msgid "Logo and link on the Weblate website"
 msgstr "Логотип и ссылка на странице благодарности сайта Weblate"
 
-#: weblate_web/models.py:58
+#: weblate_web/models.py:64
 #: weblate_web/templates/weblate_web/post_detail.html:50
 msgid "Release"
 msgstr "Выпуск"
 
-#: weblate_web/models.py:59 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:65 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
 msgid "Features"
 msgstr "Возможности"
 
-#: weblate_web/models.py:60
+#: weblate_web/models.py:66
 msgid "Announcement"
 msgstr "Объявление"
 
-#: weblate_web/models.py:61
+#: weblate_web/models.py:67
 msgid "Conferences"
 msgstr "Конференции"
 
-#: weblate_web/models.py:62 weblate_web/templates/hosting.html:58
+#: weblate_web/models.py:68 weblate_web/templates/hosting.html:58
 msgid "Hosted Weblate"
 msgstr "Хостинг Weblate"
 
-#: weblate_web/models.py:63
+#: weblate_web/models.py:69
 #: weblate_web/templates/weblate_web/post_detail.html:52
 msgid "Development"
 msgstr "Разработка"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:70
 #: weblate_web/templates/weblate_web/post_detail.html:53
 msgid "Localization"
 msgstr "Перевод"
 
-#: weblate_web/models.py:105
+#: weblate_web/models.py:110
 msgid "Invalid image!"
 msgstr "Недопустимое изображение!"
 
-#: weblate_web/models.py:116
+#: weblate_web/models.py:121
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Неподдерживаемый тип изображения: %s"
 
-#: weblate_web/models.py:122
+#: weblate_web/models.py:127
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Пожалуйста, загрузите изображение с разрешением 570 x 260 пикселей."
 
-#: weblate_web/models.py:188
+#: weblate_web/models.py:193
 msgid "Link text"
 msgstr "Текст ссылки"
 
-#: weblate_web/models.py:190
+#: weblate_web/models.py:195
 msgid "Link URL"
 msgstr "URL ссылки"
 
-#: weblate_web/models.py:192
+#: weblate_web/models.py:197
 msgid "Link image"
 msgstr "Ссылка на изображение"
 
-#: weblate_web/models.py:452
+#: weblate_web/models.py:459
 msgid "Community supported"
 msgstr "Поддержанный сообществом"
 
-#: weblate_web/models.py:453
+#: weblate_web/models.py:460
 msgid "Dedicated hosted service"
 msgstr "Облачный хостинг на выделенном сервере"
 
-#: weblate_web/models.py:454
+#: weblate_web/models.py:461
 msgid "Hosted service"
 msgstr "Облачный хостинг на hosted.weblate.org"
 
-#: weblate_web/models.py:455 weblate_web/templates/support.html:54
+#: weblate_web/models.py:462 weblate_web/templates/support.html:54
 msgid "Basic self-hosted support"
 msgstr "Базовая поддержка вашего собственного хостинга"
 
-#: weblate_web/models.py:456 weblate_web/templates/support.html:64
+#: weblate_web/models.py:463 weblate_web/templates/support.html:64
 msgid "Extended self-hosted support"
 msgstr "Расширенная поддержка вашего собственного хостинга"
 
-#: weblate_web/models.py:457 weblate_web/templates/support.html:78
+#: weblate_web/models.py:464 weblate_web/templates/support.html:78
 msgid "Premium self-hosted support"
 msgstr "Премиальная поддержка своего хостинга"
 
-#: weblate_web/models.py:470 weblate_web/templates/snippets/service.html:95
+#: weblate_web/models.py:478 weblate_web/templates/snippets/service.html:95
 msgid "Server URL"
 msgstr "URL сервера"
 
-#: weblate_web/models.py:478
+#: weblate_web/models.py:486
 msgid "Server description"
 msgstr "Описание сервера"
 
-#: weblate_web/models.py:481
+#: weblate_web/models.py:489
 msgid "Server image"
 msgstr "Изображение сервера"
 
-#: weblate_web/models.py:485
+#: weblate_web/models.py:493
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "Изображение PNG или JPG с разрешением 570 x 260 пикселей."
 
-#: weblate_web/models.py:602 weblate_web/templates/hosting.html:156
+#: weblate_web/models.py:620 weblate_web/templates/hosting.html:156
 msgid "Basic support"
 msgstr "Основная поддержка"
 
-#: weblate_web/models.py:603
+#: weblate_web/models.py:621
 msgid "Never get held back by a problem."
 msgstr "Пусть проблемы вас не удерживают."
 
-#: weblate_web/models.py:604
+#: weblate_web/models.py:622
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 "Сделайте свои все свои вопросы и сообщения об ошибках более приоритетными."
 
-#: weblate_web/models.py:606 weblate_web/templates/user.html:30
+#: weblate_web/models.py:624 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Получить поддержку"
 
-#: weblate_web/models.py:615
+#: weblate_web/models.py:633
 msgid "Premium support"
 msgstr "Приоритетная поддержка по электронной почте"
 
-#: weblate_web/models.py:616
+#: weblate_web/models.py:634
 msgid "Don’t wait with your work on hold."
 msgstr "Не ждите, поставив на паузу свою работу."
 
-#: weblate_web/models.py:617
+#: weblate_web/models.py:635
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Это гарантируют вам ответ; самое позднее — на следующий рабочий день."
 
-#: weblate_web/models.py:619
+#: weblate_web/models.py:637
 msgid "Be Premium"
 msgstr "Станьте премиумом"
 
-#: weblate_web/models.py:627 weblate_web/templates/hosting.html:123
+#: weblate_web/models.py:645 weblate_web/templates/hosting.html:123
 msgid "Extended support"
 msgstr "Расширенная поддержка"
 
-#: weblate_web/models.py:628
+#: weblate_web/models.py:646
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr ""
 "Не довольствуйтесь только Основным, приобретите полный пакет и живите без "
 "забот."
 
-#: weblate_web/models.py:629
+#: weblate_web/models.py:647
 msgid "We will manage upgrades for you."
 msgstr "Мы будем управлять обновлениями за вас."
 
-#: weblate_web/models.py:631
+#: weblate_web/models.py:649
 msgid "Stay updated"
 msgstr "Будьте всегда обновлённым"
 
-#: weblate_web/models.py:639 weblate_web/templates/support.html:104
+#: weblate_web/models.py:657 weblate_web/templates/support.html:104
 msgid "Backup service"
 msgstr "Служба резервного копирования"
 
-#: weblate_web/models.py:640
+#: weblate_web/models.py:658
 msgid "Easily put your backups in a safe place."
 msgstr "Отправляйте свои резервные копии в безопасное место легко."
 
-#: weblate_web/models.py:641
+#: weblate_web/models.py:659
 msgid "Encrypted and automatic, always available."
 msgstr "Шифрованные и автоматизированные, всегда доступны."
 
-#: weblate_web/models.py:643
+#: weblate_web/models.py:661
 msgid "Back up daily"
 msgstr "Делайте резервные копии ежедневно"
 
@@ -694,28 +700,28 @@ msgctxt "Keyword"
 msgid "translate"
 msgstr "перевести"
 
-#: weblate_web/templates/base.html:65
+#: weblate_web/templates/base.html:69
 msgid "Sign out"
 msgstr "Выйти"
 
-#: weblate_web/templates/base.html:72
+#: weblate_web/templates/base.html:77
 #: weblate_web/templates/snippets/main-menu.html:21
 msgid "Go Weblate!"
 msgstr "Открыть Weblate!"
 
-#: weblate_web/templates/base.html:114
+#: weblate_web/templates/base.html:120
 msgid "Service Status"
 msgstr "Статус сервиса"
 
-#: weblate_web/templates/base.html:117
+#: weblate_web/templates/base.html:123
 msgid "Licensed GNU GPLv3+"
 msgstr "Лицензия: GNU GPLv3+"
 
-#: weblate_web/templates/base.html:119 weblate_web/templates/terms.html:8
+#: weblate_web/templates/base.html:125 weblate_web/templates/terms.html:8
 msgid "Terms and Privacy"
 msgstr "Условия обслуживания и политика конфиденциальности"
 
-#: weblate_web/templates/base.html:119
+#: weblate_web/templates/base.html:125
 #, python-format
 msgid "Design by %(author)s"
 msgstr "Дизайн от %(author)s"
@@ -824,9 +830,9 @@ msgid ""
 "on our blogs, manage social media, discuss with our community, or improve "
 "our documentation."
 msgstr ""
-"Вы сможете также работать в других сферах, которые вам покажутся комфортными:"
-" публиковать статьи в наших блогах, управлять социальными сайтами, или "
-"улучшать нашу документацию."
+"Вы сможете также работать в других сферах, которые вам покажутся "
+"комфортными: публиковать статьи в наших блогах, управлять социальными "
+"сайтами, или улучшать нашу документацию."
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -1602,9 +1608,13 @@ msgid "Multiple File Formats"
 msgstr "Множество форматов файлов"
 
 #: weblate_web/templates/features.html:70
+#, fuzzy
+#| msgid ""
+#| "All widely used file formats for localization are supported, gettext, "
+#| "JSON, XLIFF or resource strings, etc."
 msgid ""
-"All widely used file formats for localization are supported, gettext, JSON, "
-"XLIFF or resource strings, etc."
+"Use any common file localization format, like gettext, JSON, XLIFF or "
+"resource strings, etc."
 msgstr ""
 "Поддерживаются все широко используемые форматы файлов для перевода: gettext, "
 "JSON, XLIFF, строки ресурсов и прочие."
@@ -1626,9 +1636,13 @@ msgid "Translation Context"
 msgstr "Контекст перевода"
 
 #: weblate_web/templates/features.html:84
+#, fuzzy
+#| msgid ""
+#| "Context, comments, nearby translations, images and corresponding source "
+#| "code for every string."
 msgid ""
-"Context, comments, nearby translations, images and corresponding source code "
-"for every string."
+"Description, nearby strings, images, related source code and glossary entries"
+"—for every string."
 msgstr ""
 "Контекст, комментарии, соседние переводы, изображения и соответствующий "
 "исходный код для каждой строки."
@@ -2244,8 +2258,8 @@ msgid ""
 "source string is a text unit defined in a translation format. It can be a "
 "word, sentence or paragraph."
 msgstr ""
-"Цены зависят от количества исходных строк и целевых языков. Исходная строка —"
-" это текстовая единица, определённая в формате перевода. Это может быть "
+"Цены зависят от количества исходных строк и целевых языков. Исходная строка "
+"— это текстовая единица, определённая в формате перевода. Это может быть "
 "слово, предложение или абзац."
 
 #: weblate_web/templates/hosting.html:660
@@ -2363,7 +2377,8 @@ msgstr "Weblate — свободная площадка для непрерыв�
 #: weblate_web/templates/mail/base.html:245
 #: weblate_web/templates/mail/payment_completed.html:14
 #: weblate_web/templates/mail/payment_expired.html:23
-#: weblate_web/templates/mail/payment_failed.html:20
+#: weblate_web/templates/mail/payment_failed.html:21
+#: weblate_web/templates/mail/payment_failed.html:23
 #: weblate_web/templates/mail/payment_missing.html:25
 #: weblate_web/templates/mail/payment_upcoming.html:25
 msgid "Manage your payments"
@@ -3137,8 +3152,8 @@ msgid ""
 "in the <a href=\"%(url)s\">documentation</a>."
 msgstr ""
 "Если вы обнаружили уязвимость в безопасности, пожалуйста, сообщите об этом "
-"на %(report)s. Дополнительные сведения доступны в <a href=\"%(url)s\""
-">документации</a>."
+"на %(report)s. Дополнительные сведения доступны в <a href=\"%(url)s"
+"\">документации</a>."
 
 #: weblate_web/templates/support.html:38
 msgid "Reliable support"
@@ -3343,7 +3358,7 @@ msgid "Other topics"
 msgstr "Другие темы"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:627
+#: weblate_web/views.py:649
 msgid "Milestones"
 msgstr "Этапы"
 
@@ -3355,7 +3370,7 @@ msgstr "Связанные статьи"
 msgid "Back to blog"
 msgstr "Вернуться к блогу"
 
-#: weblate_web/templatetags/downloads.py:38
+#: weblate_web/templatetags/downloads.py:39
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
@@ -3363,34 +3378,34 @@ msgstr[0] "%(size)d байт"
 msgstr[1] "%(size)d байта"
 msgstr[2] "%(size)d байтов"
 
-#: weblate_web/templatetags/downloads.py:42
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f КиБ"
 
-#: weblate_web/templatetags/downloads.py:44
+#: weblate_web/templatetags/downloads.py:45
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f МиБ"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:46
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f ГиБ"
 
-#: weblate_web/templatetags/downloads.py:52
+#: weblate_web/templatetags/downloads.py:53
 msgid "Sources tarball, bzip2 compressed"
 msgstr "Архив исходного кода, сжатый bzip2"
 
-#: weblate_web/templatetags/downloads.py:54
+#: weblate_web/templatetags/downloads.py:55
 msgid "Sources tarball, gzip compressed"
 msgstr "Архив исходного кода, сжатый gzip"
 
-#: weblate_web/templatetags/downloads.py:56
+#: weblate_web/templatetags/downloads.py:57
 msgid "Sources tarball, xz compressed"
 msgstr "Архив исходного кода, сжатый xz"
 
-#: weblate_web/templatetags/downloads.py:58
+#: weblate_web/templatetags/downloads.py:59
 msgid "Sources, zip compressed"
 msgstr "Архив исходного кода, сжатый zip"
 
@@ -3457,44 +3472,44 @@ msgstr[0] "Остаётся %d день"
 msgstr[1] "Остаётся %d дня"
 msgstr[2] "Остаётся %d дней"
 
-#: weblate_web/views.py:128
+#: weblate_web/views.py:130
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Ошибка в параметрах %(field)s: %(error)s"
 
-#: weblate_web/views.py:306 weblate_web/views.py:345
+#: weblate_web/views.py:312 weblate_web/views.py:351
 msgid "Please provide your billing information to complete the payment."
 msgstr "Чтобы завершить платёж, предоставьте вашу платёжную информацию."
 
-#: weblate_web/views.py:319
+#: weblate_web/views.py:325
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Номер плательщика НДС более не действителен, обновите его."
 
-#: weblate_web/views.py:340
+#: weblate_web/views.py:346
 msgid "Please choose a payment method."
 msgstr "Выберите способ оплаты."
 
-#: weblate_web/views.py:463
+#: weblate_web/views.py:474
 msgid "Payment not yet processed, please retry."
 msgstr "Оплата ещё не обработана, повторите попытку."
 
-#: weblate_web/views.py:467
+#: weblate_web/views.py:478
 msgid "The payment was rejected: {}"
 msgstr "Платёж был отклонён: {}"
 
-#: weblate_web/views.py:468
+#: weblate_web/views.py:479
 msgid "Unknown reason"
 msgstr "Неизвестная причина"
 
-#: weblate_web/views.py:473
+#: weblate_web/views.py:484
 msgid "Thank you for your subscription."
 msgstr "Спасибо за вашу подписку."
 
-#: weblate_web/views.py:476
+#: weblate_web/views.py:487
 msgid "Thank you for your donation."
 msgstr "Спасибо за пожертвование."
 
-#: weblate_web/views.py:728
+#: weblate_web/views.py:750
 msgid "User not found!"
 msgstr "Пользователь не найден!"
 
