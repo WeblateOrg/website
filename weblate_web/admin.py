@@ -32,9 +32,7 @@ from weblate_web.models import (
 
 
 def format_user(obj):
-    return "{}: {} {} <{}>".format(
-        obj.username, obj.first_name, obj.last_name, obj.email
-    )
+    return f"{obj.username}: {obj.first_name} {obj.last_name} <{obj.email}>"
 
 
 class DonationAdmin(admin.ModelAdmin):
