@@ -520,9 +520,7 @@ def download_invoice(request, pk):
         data = handle.read()
 
     response = HttpResponse(data, content_type="application/pdf")
-    response["Content-Disposition"] = "attachment; filename={}".format(
-        payment.invoice_filename
-    )
+    response["Content-Disposition"] = f"attachment; filename={payment.invoice_filename}"
     response["Content-Length"] = len(data)
 
     return response
