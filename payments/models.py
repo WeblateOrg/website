@@ -17,6 +17,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 import os.path
 import uuid
 
@@ -278,7 +280,9 @@ class Payment(models.Model):
     def get_payment_backend(self):
         return self.get_payment_backend_class()(self)
 
-    def repeat_payment(self, skip_previous: bool = False, **kwargs):
+    def repeat_payment(
+        self, skip_previous: bool = False, amount: int | None = None, **kwargs
+    ):
         # Check if backend is still valid
         try:
             self.get_payment_backend_class()
@@ -305,7 +309,7 @@ class Payment(models.Model):
             extra.update(self.extra)
             extra.update(kwargs)
             return Payment.objects.create(
-                amount=self.amount,
+                amount=self.amount if amount is None else amount,
                 backend=self.backend,
                 description=self.description,
                 recurring="",

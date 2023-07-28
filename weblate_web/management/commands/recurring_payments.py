@@ -17,6 +17,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -121,7 +123,7 @@ class Command(BaseCommand):
             service.create_backup()
 
     @staticmethod
-    def peform_payment(payment, past_payments):
+    def peform_payment(payment, past_payments, amount: int | None = None):
         # Alllow at most three failures of current payment method
         rejected_payments = past_payments.filter(
             state=Payment.REJECTED, repeat=payment.repeat or payment
@@ -132,7 +134,7 @@ class Command(BaseCommand):
             return
 
         # Create repeated payment
-        repeated = payment.repeat_payment()
+        repeated = payment.repeat_payment(amount=amount)
 
         # Backend does not support it
         if not repeated:
@@ -168,7 +170,11 @@ class Command(BaseCommand):
                 continue
 
             # Trigger recurring payment
-            cls.peform_payment(payment, subscription.list_payments())
+            cls.peform_payment(
+                payment,
+                subscription.list_payments(),
+                amount=subscription.package_obj.price,
+            )
 
     @classmethod
     def handle_donations(cls):
