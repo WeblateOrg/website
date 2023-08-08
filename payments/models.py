@@ -27,6 +27,7 @@ from appconf import AppConf
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -204,9 +205,9 @@ class Payment(models.Model):
     )
     backend = models.CharField(max_length=100, default="", blank=True)
     # Payment details from the gateway
-    details = models.JSONField(default=dict, blank=True)
+    details = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
     # Payment extra information from the origin
-    extra = models.JSONField(default=dict, blank=True)
+    extra = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
     customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE)
     repeat = models.ForeignKey(
         "Payment", on_delete=models.deletion.CASCADE, null=True, blank=True
