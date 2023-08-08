@@ -35,7 +35,7 @@ from django_countries.fields import CountryField
 from vies.models import VATINField
 
 from .data import SUPPORTED_LANGUAGES
-from .utils import JSONField, validate_email
+from .utils import validate_email
 from .validators import validate_vatin
 
 EU_VAT_RATES = {
@@ -204,9 +204,9 @@ class Payment(models.Model):
     )
     backend = models.CharField(max_length=100, default="", blank=True)
     # Payment details from the gateway
-    details = JSONField(default=dict, blank=True)
+    details = models.JSONField(default=dict, blank=True)
     # Payment extra information from the origin
-    extra = JSONField(default=dict, blank=True)
+    extra = models.JSONField(default=dict, blank=True)
     customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE)
     repeat = models.ForeignKey(
         "Payment", on_delete=models.deletion.CASCADE, null=True, blank=True
