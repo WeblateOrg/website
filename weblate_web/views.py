@@ -94,12 +94,12 @@ def get_page_range(page_obj):
         page_range = []
         if page_num > (ON_EACH_SIDE + ON_ENDS):
             page_range += [
-                *range(0, ON_ENDS),
+                *range(ON_ENDS),
                 DOT,
                 *range(page_num - ON_EACH_SIDE, page_num + 1),
             ]
         else:
-            page_range.extend(range(0, page_num + 1))
+            page_range.extend(range(page_num + 1))
         if page_num < (num_pages - ON_EACH_SIDE - ON_ENDS - 1):
             page_range += [
                 *range(page_num + 1, page_num + ON_EACH_SIDE + 1),
