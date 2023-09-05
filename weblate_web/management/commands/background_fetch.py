@@ -39,6 +39,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.disable_stale_services()
-        get_contributors(True)
-        get_activity(True)
-        get_changes(True)
+        get_contributors(force=True)
+        get_activity(force=True)
+        get_changes(force=True)

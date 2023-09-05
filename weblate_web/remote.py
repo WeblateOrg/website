@@ -31,7 +31,7 @@ ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
 CACHE_TIMEOUT = 72 * 3600
 
 
-def get_contributors(force=False):
+def get_contributors(force: bool = False):
     key = "wlweb-contributors"
     results = cache.get(key)
     if not force and results is not None:
@@ -66,7 +66,7 @@ def get_contributors(force=False):
     return data
 
 
-def get_activity(force=False):
+def get_activity(force: bool = False):
     key = "wlweb-activity-stats"
     results = cache.get(key)
     if not force and results is not None:
@@ -87,7 +87,7 @@ def get_activity(force=False):
     return data
 
 
-def get_changes(force=False):
+def get_changes(force: bool = False):
     key = "wlweb-changes-list"
     results = cache.get(key)
     if not force and results is not None:
