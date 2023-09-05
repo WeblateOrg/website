@@ -28,6 +28,7 @@ CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
 EXCLUDE_USERS = {"nijel", "weblate"}
 ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
+CACHE_TIMEOUT = 72 * 3600
 
 
 def get_contributors(force=False):
@@ -61,7 +62,7 @@ def get_contributors(force=False):
     stats.sort(key=lambda x: -x["rank"])
 
     data = stats[:8]
-    cache.set(key, data, timeout=3600)
+    cache.set(key, data, timeout=CACHE_TIMEOUT)
     return data
 
 
@@ -82,7 +83,7 @@ def get_activity(force=False):
 
     stats = response.json()
     data = stats[-25:]
-    cache.set(key, data, timeout=3600)
+    cache.set(key, data, timeout=CACHE_TIMEOUT)
     return data
 
 
@@ -101,5 +102,5 @@ def get_changes(force=False):
 
     stats.sort(key=lambda x: x["last_change"], reverse=True)
 
-    cache.set(key, stats[:10], timeout=3600)
+    cache.set(key, stats[:10], timeout=CACHE_TIMEOUT)
     return stats[:10]
