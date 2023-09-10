@@ -52,7 +52,14 @@
                     </div>
                     <h2><a href="{{ service.site_url }}" target="_blank" rel="ugc" lang="en" dir="ltr">{{ service.site_title }}</a></h2>
                     {% if service.discover_text %}
-                      <p lang="en" dir="ltr">{{ service.get_discover_text }}</p>
+                      {% with discover_text=service.get_discover_text %}
+                        {% if service.discover_text == discover_text %}
+                          <p lang="en" dir="ltr">{{ service.get_discover_text }}</p>
+                        {% else %}
+                          {# Localized text for Hosted Weblate #}
+                          <p>{{ service.get_discover_text }}</p>
+                        {% endif %}
+                      {% endwith %}
                     {% endif %}
                     <p lang="en" dir="ltr" class="projects">
                       {% for project in service.matched_projects %}
