@@ -24,7 +24,6 @@ The code here is copy of code from Weblate, taken from
 weblate/utils/validators.py and weblate/utils/fields.py.
 """
 
-import json
 import os.path
 import re
 from email.mime.image import MIMEImage
@@ -32,9 +31,7 @@ from email.mime.image import MIMEImage
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
-from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import validate_email as validate_email_django
-from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import get_language, get_language_bidi
 from django.utils.translation import gettext as _
@@ -52,44 +49,6 @@ def validate_email(value):
     user_part = value.rsplit("@", 1)[0]
     if EMAIL_BLACKLIST.match(user_part):
         raise ValidationError(_("Enter a valid e-mail address."))
-
-
-class JSONField(models.TextField):
-    """JSON serializaed TextField."""
-
-    def __init__(self, **kwargs):
-        if "default" not in kwargs:
-            kwargs["default"] = {}
-        super().__init__(**kwargs)
-
-    def to_python(self, value):
-        """Convert a string from the database to a Python value."""
-        if not value:
-            return None
-        try:
-            return json.loads(value)
-        except ValueError:
-            return value
-
-    def get_prep_value(self, value):
-        """Convert the value to a string that can be stored in the database."""
-        if not value:
-            return None
-        if isinstance(value, (dict, list)):
-            return json.dumps(value, cls=DjangoJSONEncoder)
-        return super().get_prep_value(value)
-
-    def from_db_value(self, value, *args, **kwargs):
-        return self.to_python(value)
-
-    def get_db_prep_save(self, value, *args, **kwargs):
-        if value is None:
-            value = {}
-        return json.dumps(value, cls=DjangoJSONEncoder)
-
-    def value_from_object(self, obj):
-        value = super().value_from_object(obj)
-        return json.dumps(value, cls=DjangoJSONEncoder)
 
 
 def send_notification(notification, recipients, **kwargs):
