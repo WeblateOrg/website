@@ -5,7 +5,6 @@ target-version = ['py39']
 profile = "black"
 
 [tool.ruff]
-format = "github"
 ignore = [
   "D10",  # TODO: we are missing many docstrings
   "D203",  # CONFIG: incompatible with D211
@@ -23,6 +22,7 @@ ignore = [
   "N818",  # TODO: exception naming
   "SLF001"  # TODO: Private member accessed (might need noqa tags)
 ]
+output-format = "github"
 select = [
   "E",
   "F",
