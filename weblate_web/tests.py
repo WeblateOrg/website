@@ -299,14 +299,14 @@ class ViewTestCase(PostTestCase):
         self.assertContains(response, "<sitemapindex")
 
         # Parse it
-        tree = ElementTree.fromstring(response.content)
+        tree = ElementTree.fromstring(response.content)  # noqa: S314
         sitemaps = tree.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}sitemap")
         for sitemap in sitemaps:
             location = sitemap.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
             response = self.client.get(location.text)
             self.assertContains(response, "<urlset")
             # Try if it's a valid XML
-            ElementTree.fromstring(response.content)
+            ElementTree.fromstring(response.content)  # noqa: S314
 
 
 class UtilTestCase(TestCase):
