@@ -6,7 +6,7 @@
         <li class="{% if request.resolver_match.url_name == 'hosting' %} active{% endif %}"><a href="{% url 'hosting' %}">{% trans "Pricing" %}</a></li>
         <li class="{% if request.resolver_match.url_name == 'contribute' %} active{% endif %}"><a href="{% url 'contribute' %}">{% trans "Contribute" %}</a></li>
         <li class="{% if request.resolver_match.url_name == 'donate' or request.resolver_match.url_name == 'donate-new' %} active{% endif %}"><a href="{% url 'donate' %}">{% trans "Donate" %}</a></li>
-        {% if full_menu %}
+        {% if full_menu or footer%}
         <li class="{% if request.resolver_match.url_name == 'careers' %} active{% endif %}"><a href="{% url 'careers' %}">{% trans "Careers" %}</a></li>
         {% endif %}
         {% if full_menu %}
