@@ -18,7 +18,7 @@
 #
 from django.template import Library
 from django.utils.formats import number_format
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 from django.utils.translation import pgettext
 
 register = Library()
@@ -44,4 +44,4 @@ def price_format(value, currency="€"):
 
 @register.filter
 def make_strong(value):
-    return mark_safe(f"<strong>{value}</strong>")
+    return format_html("<strong>%s</strong>", value)

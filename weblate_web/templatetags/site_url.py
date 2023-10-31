@@ -40,7 +40,7 @@ def add_site_url(content):
         url = link.get("src")
         if url.startswith("/"):
             link.set("src", "https://weblate.org" + url)
-    return mark_safe(
+    return mark_safe(  # noqa: S308
         etree.tostring(
             tree.getroot(), pretty_print=True, method="html", encoding="unicode"
         )
