@@ -38,7 +38,7 @@ def get_contributors(force: bool = False):
         return results
     # Perform request
     try:
-        response = requests.get(WEBLATE_CONTRIBUTORS_URL)
+        response = requests.get(WEBLATE_CONTRIBUTORS_URL, timeout=10)
     except OSError as error:
         sentry_sdk.capture_exception(error)
         response = None
@@ -73,7 +73,7 @@ def get_activity(force: bool = False):
         return results
     # Perform request
     try:
-        response = requests.get(ACTIVITY_URL)
+        response = requests.get(ACTIVITY_URL, timeout=10)
     except OSError as error:
         sentry_sdk.capture_exception(error)
         response = None

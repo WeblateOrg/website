@@ -168,8 +168,8 @@ def fake_remote():
 
 
 def fake_payment(url):
-    response = requests.get(url)
-    response = requests.get(response.url[:-1] + "p")
+    response = requests.get(url, timeout=1)
+    response = requests.get(response.url[:-1] + "p", timeout=1)
     body = response.content.decode()
     for line in body.splitlines():
         if '<input type="hidden" name="id"' in line:
@@ -179,6 +179,7 @@ def fake_payment(url):
         "https://www.thepay.cz/demo-gate/return.php",
         data={"state": 2, "underpaid_value": 1, "id": payment_number},
         allow_redirects=False,
+        timeout=1,
     )
     return response.headers["Location"]
 
