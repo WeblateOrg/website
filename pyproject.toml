@@ -6,9 +6,41 @@ profile = "black"
 
 [tool.ruff]
 ignore = [
-  "D10",  # TODO: we are missing many docstrings
+  "PERF401",
+  "FBT002",
+  "FBT001",
+  "S320",
+  "S308",
+  "S105",
+  "S106",
+  "S102",
+  "S310",
+  "DTZ002",
+  "S113",  # TODO: requests without timeout
+  "S314",  # TODO: Using `xml` to parse untrusted data is known to be vulnerable to XML attacks; use `defusedxml` equivalents
+  "COM",  # CONFIG: No trailing commas
+  "PT",  # CONFIG: Not using pytest
   "D203",  # CONFIG: incompatible with D211
   "D212",  # CONFIG: incompatible with D213
+  "FIX002",  # CONFIG: we use TODO
+  "TD002",  # CONFIG: no detailed TODO documentation is required
+  "TD003",  # CONFIG: no detailed TODO documentation is required
+  "S603",  # CONFIG: `subprocess` call: check for execution of untrusted input
+  "S607",  # CONFIG: executing system installed tools
+  "D206",  # CONFIG: formatter
+  'ISC001',  # CONFIG: formatter
+  'Q000',  # CONFIG: formatter
+  'Q001',  # CONFIG: formatter
+  'Q002',  # CONFIG: formatter
+  'Q003',  # CONFIG: formatter
+  'W191',  # CONFIG: formatter
+  "ANN",  # TODO: we are missing many annotations
+  "ARG001",  # TODO: Unused function argument (mostly for API compatibility)
+  "ARG002",  # TODO: Unused method argument (mostly for API compatibility)
+  "PTH",  # TODO: Not using pathlib
+  "BLE001",  # WONTFIX: Do not catch blind exception: `Exception`, third-party modules do not have defined exceptions
+  "EM",  # TODO: Exception strings
+  "D10",  # TODO: we are missing many docstrings
   "DJ001",  # TODO: Avoid using `null=True` on string-based fields such as CharField (maybe add noqa)
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
   "TRY200",  # TODO: Use `raise from` to specify exception cause
@@ -23,40 +55,7 @@ ignore = [
   "SLF001"  # TODO: Private member accessed (might need noqa tags)
 ]
 output-format = "github"
-select = [
-  "E",
-  "F",
-  "B",
-  "T10",
-  "A",
-  "C4",
-  "C90",
-  "YTT",
-  "DJ",
-  "UP",
-  "D",
-  "PD",
-  "PGH",
-  "PL",
-  "TRY",
-  "RUF",
-  "ERA",
-  "ICN",
-  "ISC",
-  "EXE",
-  "INP",
-  "PIE",
-  "G",
-  "PYI",
-  "Q",
-  "SIM",
-  "TID",
-  "RSE",
-  "T20",
-  "RET",
-  "SLF",
-  "N"
-]
+select = ["ALL"]
 target-version = "py39"
 
 [tool.ruff.mccabe]
