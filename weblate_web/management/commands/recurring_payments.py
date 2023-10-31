@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -40,7 +40,7 @@ class Command(BaseCommand):
         # Update services status
         self.handle_services()
         # Notify about upcoming expiry on Monday and Thursday
-        weekday = datetime.today().weekday()
+        weekday = timezone.now().date().weekday()
         if weekday in (0, 3):
             self.notify_expiry(weekday)
 
