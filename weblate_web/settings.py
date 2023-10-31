@@ -450,4 +450,4 @@ SAML_CONFIG = {
 LOCAL = os.path.join(BASE_DIR, "weblate_web", "settings_local.py")
 if os.path.exists(LOCAL):
     with open(LOCAL) as handle:
-        exec(handle.read())
+        exec(handle.read())  # noqa: S102
