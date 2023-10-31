@@ -49,10 +49,11 @@ def get_backend(name):
 
 
 def list_backends():
-    result = []
-    for backend in BACKENDS.values():
-        if not backend.debug or settings.PAYMENT_DEBUG:
-            result.append(backend)
+    result = [
+        backend
+        for backend in BACKENDS.values()
+        if not backend.debug or settings.PAYMENT_DEBUG
+    ]
     return sorted(result, key=lambda x: x.name)
 
 

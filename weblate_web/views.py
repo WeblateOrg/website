@@ -184,10 +184,11 @@ def api_hosted(request):
     service = Service.objects.get_or_create(hosted_billing=payload["billing"])[0]
 
     # TODO: This is temporary hack for payments migration period
-    payments = []
-    for payment in Payment.objects.order_by("end").iterator():
-        if payment.extra.get("billing", -1) == payload["billing"]:
-            payments.append(payment.pk)
+    payments = [
+        payment.pk
+        for payment in Payment.objects.order_by("end").iterator()
+        if payment.extra.get("billing", -1) == payload["billing"]
+    ]
     if payments:
         # Create/update subscription
         subscription = Subscription.objects.get_or_create(
