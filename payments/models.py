@@ -332,7 +332,7 @@ class Payment(models.Model):
 
 class PaymentConf(AppConf):
     DEBUG = False
-    SECRET = "secret"
+    SECRET = "secret"  # noqa: S105
     FAKTURACE = None
     THEPAY_MERCHANTID = None
     THEPAY_ACCOUNTID = None

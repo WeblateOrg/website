@@ -189,7 +189,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = "secret key used for tests only"
+SECRET_KEY = "secret key used for tests only"  # noqa: S105
 
 # Templates settings
 TEMPLATES = [

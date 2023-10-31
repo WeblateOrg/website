@@ -823,7 +823,10 @@ class APITest(TestCase):
         self.assertEqual(project.name, "Prj2")
 
     def test_user(self):
-        user = User.objects.create(username="testuser", password="testpassword")
+        user = User.objects.create(
+            username="testuser",
+            password="testpassword",  # noqa: S106
+        )
         response = self.client.post(
             "/api/user/",
             {
@@ -865,7 +868,10 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_user_rename(self):
-        user = User.objects.create(username="testuser", password="testpassword")
+        user = User.objects.create(
+            username="testuser",
+            password="testpassword",  # noqa: S106
+        )
         response = self.client.post(
             "/api/user/",
             {

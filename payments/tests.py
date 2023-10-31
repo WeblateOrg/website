@@ -185,7 +185,9 @@ class ModelTest(SimpleTestCase):
 
 
 @override_settings(
-    PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE, FIO_TOKEN="test-token"
+    PAYMENT_DEBUG=True,
+    PAYMENT_FAKTURACE=TEST_FAKTURACE,
+    FIO_TOKEN="test-token",  # noqa: S106
 )
 class BackendTest(TestCase):
     databases = "__all__"
