@@ -56,10 +56,12 @@ def date_range(created, expires, bold: bool = False):
     created = date_format(created)
     expires = date_format(expires)
     if bold:
-        expires = format_html("<strong>%s</strong>", expires)
+        expires = format_html("<strong>{}</strong>", expires)
 
     return format_html(
-        escape(pgettext("Date range", "%(created)s — %(expires)s")),
+        escape(pgettext("Date range", "%(created)s — %(expires)s"))
+        .replace("%(created)s", "{created}")
+        .replace("%(expires)s", "{expires}"),
         created=created,
         expires=expires,
     )

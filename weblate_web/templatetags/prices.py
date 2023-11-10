@@ -44,4 +44,4 @@ def price_format(value, currency="€"):
 
 @register.filter
 def make_strong(value):
-    return format_html("<strong>%s</strong>", value)
+    return format_html("<strong>{}</strong>", value)
