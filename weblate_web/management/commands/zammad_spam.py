@@ -54,7 +54,7 @@ class Command(BaseCommand):
         imap.login(settings.IMAP_USER, settings.IMAP_PASSWORD)
         imap.select(settings.IMAP_SPAM_FOLDER)
 
-        search = zammad.ticket.search({"query": "tags:spam AND -tags:reported-spam"})
+        search = zammad.ticket.search("tags:spam AND -tags:reported-spam")
         for ticket in search:
             # Oldest article
             ticket_id = ticket["id"]
