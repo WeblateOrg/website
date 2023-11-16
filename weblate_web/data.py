@@ -18,7 +18,7 @@
 #
 
 # Version offered for download
-VERSION = "5.1.1"
+VERSION = "5.2"
 
 # Extensions offered for donwload
 EXTENSIONS = ("tar.xz", "tar.bz2", "tar.gz")
