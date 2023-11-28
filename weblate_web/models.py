@@ -70,6 +70,14 @@ TOPICS = (
     ("localization", gettext_lazy("Localization")),
 )
 
+HOSTED_UPGRADES = {
+    "hosted:test": "hosted:test",
+    "hosted:test-1": "hosted:test-2",
+    "hosted:basic": "hosted:medium",
+    "hosted:medium": "hosted:advanced",
+    "hosted:advanced": "hosted:enterprise",
+}
+
 TOPIC_DICT = dict(TOPICS)
 
 
@@ -325,24 +333,34 @@ def process_subscription(payment):
         subscription.save()
     else:
         user = User.objects.get(pk=payment.customer.user_id)
-        package = Package.objects.get(name=payment.extra["subscription"])
-        # Calculate expiry
-        repeat = package.get_repeat()
-        if repeat:
-            expires = timezone.now()
-            payment.start = expires
-            expires += get_period_delta(repeat)
-            payment.end = expires
-        else:
-            expires = timezone.now()
-        # Create new
         service = get_service(payment, user)
-        subscription = Subscription.objects.create(
-            service=service,
-            payment=payment.pk,
-            package=package.name,
-            expires=expires,
-        )
+        package = Package.objects.get(name=payment.extra["subscription"])
+        repeat = package.get_repeat()
+        if package.name.startswith("hosted:") and service.hosted_subscriptions:
+            # Package upgrade / downgrade
+            subscription = service.hosted_subscriptions[0]
+            if subscription.payment:
+                subscription.pastpayments_set.create(payment=subscription.payment)
+            subscription.package = package.name
+            subscription.expires += get_period_delta(repeat)
+            subscription.payment = payment.pk
+            subscription.save()
+        else:
+            # Calculate expiry
+            if repeat:
+                expires = timezone.now()
+                payment.start = expires
+                expires += get_period_delta(repeat)
+                payment.end = expires
+            else:
+                expires = timezone.now()
+            # Create new
+            subscription = Subscription.objects.create(
+                service=service,
+                payment=payment.pk,
+                package=package.name,
+                expires=expires,
+            )
         with override("en"):
             send_notification(
                 "new_subscription",
@@ -662,6 +680,23 @@ class Service(models.Model):
                         _("Back up daily"),
                     )
                 )
+        if (
+            self.hosted_subscriptions
+            and self.hosted_subscriptions[0].package in HOSTED_UPGRADES
+        ):
+            package_name = HOSTED_UPGRADES[self.hosted_subscriptions[0].package]
+            package = Package.objects.get(name=package_name)
+            result.append(
+                (
+                    package_name,
+                    _("Upgrade to %s") % package,
+                    _("Increase service limits to translate more content."),
+                    "",
+                    "img/Support-Plus.svg",
+                    _("Upgrade"),
+                )
+            )
+
         return result
 
     def update_status(self):

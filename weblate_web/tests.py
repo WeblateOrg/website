@@ -343,6 +343,12 @@ class FakturaceTestCase(TestCase):
         "password": "testpassword",
         "email": "noreply@weblate.org",
     }
+    _user = None
+
+    def login(self):
+        user = self.create_user()
+        self.client.login(**self.credentials)
+        return user
 
     @staticmethod
     def create_payment(recurring="y"):
@@ -365,7 +371,9 @@ class FakturaceTestCase(TestCase):
         )
 
     def create_user(self):
-        return User.objects.create_user(**self.credentials)
+        if self._user is None:
+            self._user = User.objects.create_user(**self.credentials)
+        return self._user
 
     def create_donation(self, years=1, days=0, recurring="y"):
         return Donation.objects.create(
@@ -378,16 +386,23 @@ class FakturaceTestCase(TestCase):
             link_text="Weblate donation test",
         )
 
-    def create_service(self, years=1, days=0, recurring="y"):
-        Package.objects.create(name="community", verbose="Community support", price=0)
-        Package.objects.create(name="extended", verbose="Extended support", price=42)
+    def create_service(self, years=1, days=0, recurring="y", package="extended"):
+        Package.objects.bulk_create(
+            [
+                Package(name="community", verbose="Community support", price=0),
+                Package(name="extended", verbose="Extended support", price=42),
+                Package(name="hosted:test-1", verbose="Hosted (basic)", price=420),
+                Package(name="hosted:test-2", verbose="Hosted (upgraded)", price=840),
+            ]
+        )
         service = Service.objects.create()
         service.subscription_set.create(
-            package="extended",
+            package=package,
             expires=timezone.now() + relativedelta(years=years, days=days),
             payment=self.create_payment(recurring=recurring)[0].pk,
         )
         service.users.add(self.create_user())
+        return service
 
 
 class PaymentsTest(FakturaceTestCase):
@@ -479,11 +494,6 @@ class DonationTest(FakturaceTestCase):
     def setUp(self):
         super().setUp()
         fake_remote()
-
-    def login(self):
-        user = self.create_user()
-        self.client.login(**self.credentials)
-        return user
 
     def test_donate_page(self):
         response = self.client.get("/en/donate/")
@@ -959,3 +969,38 @@ class ExpiryTest(FakturaceTestCase):
         self.create_service(years=0, days=8)
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications("Your upcoming payment on weblate.org")
+
+
+@override_settings(
+    NOTIFY_SUBSCRIPTION=["noreply@example.com"],
+    PAYMENT_DEBUG=True,
+    PAYMENT_FAKTURACE=TEST_FAKTURACE,
+)
+class ServiceTest(FakturaceTestCase):
+    def test_hosted_upgrade(self):
+        with override("en"):
+            self.login()
+            service = self.create_service(
+                years=0, days=3, recurring="", package="hosted:test-1"
+            )
+            suggestions = service.get_suggestions()
+            self.assertEqual(len(suggestions), 1)
+            self.assertEqual(suggestions[0][0], "hosted:test-2")
+            response = self.client.get(
+                reverse("subscription-new"),
+                {"plan": "hosted:test-2", "service": service.pk},
+                follow=True,
+            )
+            payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
+            payment_edit_url = response.redirect_chain[1][0]
+            self.assertTrue(payment_url.startswith("/en/payment/"))
+            response = self.client.post(payment_edit_url, TEST_CUSTOMER, follow=True)
+            self.assertRedirects(response, payment_url)
+            response = self.client.post(payment_url, {"method": "pay"}, follow=True)
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(response, "Weblate: Hosted (upgraded)")
+
+        service = Service.objects.get(pk=service.pk)
+        hosted = service.hosted_subscriptions
+        self.assertEqual(len(hosted), 1)
+        self.assertEqual(hosted[0].package, "hosted:test-2")
