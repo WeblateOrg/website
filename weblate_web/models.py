@@ -451,6 +451,7 @@ class Package(models.Model):
     limit_languages = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
     limit_hosted_words = models.IntegerField(default=0)
+    limit_hosted_strings = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = "Service package"
@@ -489,6 +490,7 @@ class Service(models.Model):
     limit_projects = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
     limit_hosted_words = models.IntegerField(default=0)
+    limit_hosted_strings = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
@@ -577,6 +579,16 @@ class Service(models.Model):
         return "0"
 
     hosted_words_limit.short_description = "Hosted words"
+
+    def hosted_strings_limit(self):
+        report = self.last_report
+        if report:
+            if self.limit_hosted_strings:
+                return f"{report.hosted_strings}/{self.limit_hosted_strings}"
+            return f"{report.hosted_strings}"
+        return "0"
+
+    hosted_strings_limit.short_description = "Hosted strings"
 
     @cached_property
     def user_emails(self):
@@ -720,10 +732,12 @@ class Service(models.Model):
             status != self.status
             or package_obj.limit_source_strings != self.limit_source_strings
             or package_obj.limit_hosted_words != self.limit_hosted_words
+            or package_obj.limit_hosted_strings != self.limit_hosted_strings
         ):
             self.status = status
             self.limit_source_strings = package_obj.limit_source_strings
             self.limit_hosted_words = package_obj.limit_hosted_words
+            self.limit_hosted_strings = package_obj.limit_hosted_strings
             self.limit_languages = package_obj.limit_languages
             self.limit_projects = package_obj.limit_projects
             self.save()
@@ -741,12 +755,18 @@ class Service(models.Model):
     def get_limits(self):
         return {
             "hosted_words": self.limit_hosted_words,
+            "hosted_strings": self.limit_hosted_strings,
             "source_strings": self.limit_source_strings,
             "projects": self.limit_projects,
             "languages": self.limit_languages,
         }
 
     def check_in_limits(self):
+        if (
+            self.limit_hosted_strings
+            and self.last_report.hosted_strings > self.limit_hosted_strings
+        ):
+            return False
         if (
             self.limit_hosted_words
             and self.last_report.hosted_words > self.limit_hosted_words
@@ -880,6 +900,7 @@ class Report(models.Model):
     components = models.IntegerField(default=0)
     languages = models.IntegerField(default=0)
     source_strings = models.IntegerField(default=0)
+    hosted_strings = models.IntegerField(default=0)
     hosted_words = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
     discoverable = models.BooleanField(default=False)

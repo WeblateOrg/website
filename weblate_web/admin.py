@@ -66,6 +66,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "languages_limit",
         "source_strings_limit",
         "hosted_words_limit",
+        "hosted_strings_limit",
         "status",
         "user_emails",
         "expires",
