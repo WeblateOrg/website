@@ -415,9 +415,13 @@ class FioBank(Backend):
             for proforma_id in matches:
                 proforma_id = f"P{proforma_id}"
                 try:
-                    related = Payment.objects.get(
-                        backend=cls.name, invoice=proforma_id, state=Payment.PENDING
-                    )
+                    related = Payment.objects.get(backend=cls.name, invoice=proforma_id)
+                    if related.state != Payment.PENDING:
+                        print(
+                            f"{proforma_id} not pending: {related.get_state_display()}"
+                        )
+                        continue
+
                     backend = cls(related)
                     proforma = backend.get_proforma()
                     proforma.mark_paid(
