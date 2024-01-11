@@ -31,7 +31,7 @@ from weblate_web.models import Donation, Service, Subscription
 
 
 class Command(BaseCommand):
-    help = "issues recurring payments"  # noqa: A003
+    help = "issues recurring payments"
 
     def handle(self, *args, **options):
         # Issue recurring payments

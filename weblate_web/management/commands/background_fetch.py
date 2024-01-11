@@ -27,7 +27,7 @@ from weblate_web.remote import get_activity, get_changes, get_contributors
 
 
 class Command(BaseCommand):
-    help = "refreshes remote data"  # noqa: A003
+    help = "refreshes remote data"
 
     def disable_stale_services(self):
         threshold = timezone.now() - timedelta(days=3)

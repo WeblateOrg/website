@@ -41,7 +41,7 @@ class Tag(Resource):
 
 
 class Command(BaseCommand):
-    help = "fetches spam tickets from Zammad"  # noqa: A003
+    help = "fetches spam tickets from Zammad"
     client = None
 
     def handle(self, *args, **options):
