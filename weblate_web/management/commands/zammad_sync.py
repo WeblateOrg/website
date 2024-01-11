@@ -25,7 +25,7 @@ HOSTED_ACCOUNT = "Hosted Weblate account"
 
 
 class Command(BaseCommand):
-    help = "synchronizes customer data to Zammad"  # noqa: A003
+    help = "synchronizes customer data to Zammad"
     client = None
 
     def handle(self, *args, **options):
