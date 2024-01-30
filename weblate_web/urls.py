@@ -278,9 +278,7 @@ urlpatterns = [
         # FOSDEM short link
         re_path(
             r"^FOSDEM/|fosdem/$",
-            RedirectView.as_view(
-                url="/news/archive/meet-weblate-on-fosdem-2023/", permanent=False
-            ),
+            RedirectView.as_view(url="/news/archive/fosdem-2024/", permanent=False),
         ),
         # Compatibility with disabled languages
         re_path(r"^[a-z][a-z]/$", RedirectView.as_view(url="/", permanent=False)),
