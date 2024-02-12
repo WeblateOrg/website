@@ -1,7 +1,7 @@
 {% load i18n %}
 
-<div class="file-item">
-    <div class="name"><a href="{{ base }}{{ name }}">{{ text }}</a></div>
-    <div class="info">{{ size }} — <a href="{{ base }}{{ name }}.asc">{% trans "PGP signature" %}</a></div>
+<a class="file-item" href="{{ base }}{{ name }}">
+    <div class="name">{{ text }}</div>
+    <div class="info">{{ size }}</div>
     <div class="clear"></div>
-</div>
+</a>

@@ -3071,6 +3071,7 @@ h2.section-title.left {
 }
 
 .download-list .file-item {
+  display: block;
   background-image: url("img/icon-download-hover.svg");
   background-repeat: no-repeat;
   background-position: 40px center;
@@ -3084,14 +3085,11 @@ h2.section-title.left {
   padding-bottom: 14px;
   transition: all 300ms linear;
   -webkit-transition: all 300ms linear;
-}
-
-.download-list .file-item a {
   color: #1fa385;
   text-decoration: underline;
 }
 
-.download-list .file-item:hover a {
+.download-list .file-item:hover {
   color: #fff;
 }
 
@@ -3133,10 +3131,6 @@ h2.section-title.left {
 .download-list .file-item:hover .name,
 .download-list .file-item:hover .info span {
   color: #fff;
-}
-
-.file-item .info a {
-  text-transform: uppercase;
 }
 
 .download-cols {
