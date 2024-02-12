@@ -1,7 +1,5 @@
 import json
 import os
-import shutil
-import tempfile
 from datetime import date, timedelta
 from xml.etree import ElementTree
 
@@ -23,7 +21,6 @@ from django.utils.translation import override
 from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
 
-from .data import EXTENSIONS, VERSION
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .models import PAYMENTS_ORIGIN, Donation, Package, Post, Service
 from .remote import (
@@ -265,24 +262,8 @@ class ViewTestCase(PostTestCase):
         self.assertContains(response, "<svg")
 
     def test_download_en(self):
-        # create dummy files for testing
-        filenames = [f"Weblate-{VERSION}.{ext}" for ext in EXTENSIONS]
-        filenames.append(f"Weblate-test-{VERSION}.tar.xz")
-
-        temp_dir = tempfile.mkdtemp()
-
-        try:
-            with override_settings(FILES_PATH=temp_dir):
-                for filename in filenames:
-                    fullname = os.path.join(settings.FILES_PATH, filename)
-                    with open(fullname, "w") as handle:
-                        handle.write("test")
-
-                response = self.client.get("/en/download/")
-                self.assertContains(response, "Download Weblate")
-
-        finally:
-            shutil.rmtree(temp_dir)
+        response = self.client.get("/en/download/")
+        self.assertContains(response, "Download Weblate")
 
     def test_sitemap_lang(self):
         response = self.client.get("/sitemap-es.xml")
@@ -319,21 +300,69 @@ class UtilTestCase(TestCase):
         self.assertEqual(filesizeformat(1000000000), "953.7 MiB")
         self.assertEqual(filesizeformat(10000000000000), "9313.2 GiB")
 
-    @override_settings(FILES_PATH=TEST_DATA)
     def test_downloadlink(self):
         self.assertEqual(
-            "Sources tarball, gzip compressed", downloadlink("foo.tar.gz")["text"]
+            downloadlink(
+                {
+                    "comment_text": "",
+                    "digests": {
+                        "blake2b_256": "67b8258109f5829a8a616552cee382ed827c606bf397f992b068e744c533d86a",
+                        "md5": "e4acec80cbda61a4dffbc591062c1e0e",
+                        "sha256": "59224c80144b7784b6efb6dae6bc17745cbbb7938c417c436237d695d75a7db2",
+                    },
+                    "downloads": -1,
+                    "filename": "Weblate-5.3.1-py3-none-any.whl",
+                    "has_sig": False,
+                    "md5_digest": "e4acec80cbda61a4dffbc591062c1e0e",
+                    "packagetype": "bdist_wheel",
+                    "python_version": "py3",
+                    "requires_python": ">=3.9",
+                    "size": 68485094,
+                    "upload_time": "2023-12-19T14:02:25",
+                    "upload_time_iso_8601": "2023-12-19T14:02:25.035680Z",
+                    "url": "https://files.pythonhosted.org/packages/67/b8/258109f5829a8a616552cee382ed827c606bf397f992b068e744c533d86a/Weblate-5.3.1-py3-none-any.whl",
+                    "yanked": False,
+                    "yanked_reason": None,
+                }
+            ),
+            {
+                "name": "Weblate-5.3.1-py3-none-any.whl",
+                "size": "65.3 MiB",
+                "text": "Wheel package",
+                "url": "https://files.pythonhosted.org/packages/67/b8/258109f5829a8a616552cee382ed827c606bf397f992b068e744c533d86a/Weblate-5.3.1-py3-none-any.whl",
+            },
         )
         self.assertEqual(
-            "Sources tarball, xz compressed", downloadlink("foo.tar.xz")["text"]
+            downloadlink(
+                {
+                    "comment_text": "",
+                    "digests": {
+                        "blake2b_256": "149cb3501dc08c06d1c3f9f9b71746268731b7b25e9b13122679d8a219b74857",
+                        "md5": "b0cb1a21719712693ea85e4c14ba8559",
+                        "sha256": "0b3a3862b3703efee302b62d28914e5b610405eec9db1c232729b31f41a694e5",
+                    },
+                    "downloads": -1,
+                    "filename": "Weblate-5.3.1.tar.gz",
+                    "has_sig": False,
+                    "md5_digest": "b0cb1a21719712693ea85e4c14ba8559",
+                    "packagetype": "sdist",
+                    "python_version": "source",
+                    "requires_python": ">=3.9",
+                    "size": 69811080,
+                    "upload_time": "2023-12-19T14:02:53",
+                    "upload_time_iso_8601": "2023-12-19T14:02:53.564201Z",
+                    "url": "https://files.pythonhosted.org/packages/14/9c/b3501dc08c06d1c3f9f9b71746268731b7b25e9b13122679d8a219b74857/Weblate-5.3.1.tar.gz",
+                    "yanked": False,
+                    "yanked_reason": None,
+                }
+            ),
+            {
+                "name": "Weblate-5.3.1.tar.gz",
+                "size": "66.6 MiB",
+                "text": "Sources tarball, gzip compressed",
+                "url": "https://files.pythonhosted.org/packages/14/9c/b3501dc08c06d1c3f9f9b71746268731b7b25e9b13122679d8a219b74857/Weblate-5.3.1.tar.gz",
+            },
         )
-        self.assertEqual(
-            "Sources tarball, bzip2 compressed", downloadlink("foo.tar.bz2")["text"]
-        )
-        self.assertEqual("Sources, zip compressed", downloadlink("foo.zip")["text"])
-        self.assertEqual("0 bytes", downloadlink("foo.pdf")["size"])
-        self.assertEqual("0 bytes", downloadlink("foo.pdf", "text")["size"])
-        self.assertEqual("text", downloadlink("foo.pdf", "text")["text"])
 
 
 class FakturaceTestCase(TestCase):

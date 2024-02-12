@@ -17,14 +17,17 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 """Remote data fetching and caching."""
+from __future__ import annotations
 
 import requests
 import sentry_sdk
+from dateutil.parser import parse
 from django.conf import settings
 from django.core.cache import cache
 from wlc import Weblate, WeblateException
 
 CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
+PYPI_URL = "https://pypi.org/pypi/weblate/json"
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
 EXCLUDE_USERS = {"nijel", "weblate"}
 ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
@@ -105,3 +108,32 @@ def get_changes(force: bool = False):
 
     cache.set(key, stats[:10], timeout=CACHE_TIMEOUT)
     return stats[:10]
+
+
+def get_release(force: bool = False) -> None | list[dict[str, str]]:
+    key = "wlweb-release-x"
+    results = cache.get(key)
+    if not force and results is not None:
+        return results
+    # Perform request
+    try:
+        response = requests.get(PYPI_URL, timeout=10)
+    except OSError as error:
+        sentry_sdk.capture_exception(error)
+        response = None
+    # Stats are not yet calculated
+    if response is None or response.status_code != 200:
+        return None
+
+    recent = None
+    result = None
+    for info in response.json()["releases"].values():
+        if not info:
+            continue
+        timestamp = parse(info[0]["upload_time_iso_8601"])
+        if recent is None or timestamp > recent:
+            recent = timestamp
+            result = info
+
+    cache.set(key, result, timeout=CACHE_TIMEOUT)
+    return result

@@ -308,8 +308,6 @@ LOGGING = {
     },
 }
 
-FILES_PATH = os.path.join(BASE_DIR, "files")
-FILES_URL = "https://dl.cihar.com/weblate/"
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
 ALLOWED_HOSTS = ("weblate.org", "127.0.0.1", "localhost")

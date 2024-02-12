@@ -17,9 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import os
 
-from django.conf import settings
 from django.template import Library
 from django.utils.translation import gettext as _
 from django.utils.translation import ngettext
@@ -47,25 +45,26 @@ def filesizeformat(num_bytes):
 
 
 @register.inclusion_tag("snippets/download-link.html")
-def downloadlink(name, text=None):
-    if text is None:
-        if name[-8:] == ".tar.bz2":
-            text = _("Sources tarball, bzip2 compressed")
-        elif name[-7:] == ".tar.gz":
-            text = _("Sources tarball, gzip compressed")
-        elif name[-7:] == ".tar.xz":
-            text = _("Sources tarball, xz compressed")
-        elif name[-4:] == ".zip":
-            text = _("Sources, zip compressed")
-        else:
-            text = os.path.split(name)[1]
+def downloadlink(info):
+    name = info["filename"]
 
-    filesize = os.path.getsize(os.path.join(settings.FILES_PATH, name))
+    if name.endswith(".tar.bz2"):
+        text = _("Sources tarball, bzip2 compressed")
+    elif name.endswith(".tar.gz"):
+        text = _("Sources tarball, gzip compressed")
+    elif name.endswith(".tar.xz"):
+        text = _("Sources tarball, xz compressed")
+    elif name.endswith(".zip"):
+        text = _("Sources, zip compressed")
+    elif name.endswith(".whl"):
+        text = _("Wheel package")
+    else:
+        text = name
 
-    size = filesizeformat(filesize)
+    size = filesizeformat(info["size"])
 
     return {
-        "base": settings.FILES_URL,
+        "url": info["url"],
         "name": name,
         "text": text,
         "size": size,

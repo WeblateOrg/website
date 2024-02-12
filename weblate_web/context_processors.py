@@ -24,9 +24,8 @@ from django.urls import reverse
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
 
-from weblate_web.data import EXTENSIONS, VERSION
 from weblate_web.models import Donation
-from weblate_web.remote import get_activity, get_changes, get_contributors
+from weblate_web.remote import get_activity, get_changes, get_contributors, get_release
 
 
 def weblate_web(request):
@@ -57,11 +56,10 @@ def weblate_web(request):
                 }
             )
 
-    downloads = [f"Weblate-{VERSION}.{ext}" for ext in EXTENSIONS]
     language_col = ceil(len(settings.LANGUAGES) / 3)
 
     return {
-        "downloads": downloads,
+        "downloads": SimpleLazyObject(get_release),
         "canonical_url": canonical_url,
         "language_urls": language_urls,
         "donate_links": Donation.objects.filter(active=True, reward=3),
