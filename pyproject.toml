@@ -5,6 +5,10 @@ target-version = ['py39']
 profile = "black"
 
 [tool.ruff]
+output-format = "github"
+target-version = "py39"
+
+[tool.ruff.lint]
 ignore = [
   "FBT",  # TODO: Boolean in function definition
   "COM",  # CONFIG: No trailing commas
@@ -32,7 +36,6 @@ ignore = [
   "D10",  # TODO: we are missing many docstrings
   "DJ001",  # TODO: Avoid using `null=True` on string-based fields such as CharField (maybe add noqa)
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
-  "TRY200",  # TODO: Use `raise from` to specify exception cause
   "B904",  # TODO: Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
   "PLR0912",  # WONTFIX: Too many branches
   "PLR2004",  # TODO: Magic value used in comparison, consider replacing 201 with a constant variable
@@ -43,13 +46,11 @@ ignore = [
   "N818",  # TODO: exception naming
   "SLF001"  # TODO: Private member accessed (might need noqa tags)
 ]
-output-format = "github"
 select = ["ALL"]
-target-version = "py39"
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 16
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "payments/backends.py" = ["T201"]
 "scripts/*" = ["T201"]
