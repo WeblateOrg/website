@@ -17,8 +17,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 # Version offered for download
 VERSION = "5.3.1"
 
 # Extensions offered for donwload
-EXTENSIONS = ("tar.xz", "tar.bz2", "tar.gz")
+EXTENSIONS: tuple[str, ...] = ("tar.gz",)
