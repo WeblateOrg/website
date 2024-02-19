@@ -20,7 +20,7 @@
 from __future__ import annotations
 
 # Version offered for download
-VERSION = "5.4"
+VERSION = "5.4.1"
 
 # Extensions offered for donwload
 EXTENSIONS: tuple[str, ...] = ("tar.gz",)
