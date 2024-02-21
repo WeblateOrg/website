@@ -216,6 +216,7 @@ def api_hosted(request):
         languages=payload["languages"],
         source_strings=payload["source_strings"],
         hosted_words=payload["words"],
+        hosted_strings=payload.get("strings", 0),
         version=request.headers["User-Agent"].split("/", 1)[1],
     )
     service.update_status()
@@ -244,6 +245,7 @@ def api_support(request):
         languages=request.POST.get("languages", 0),
         source_strings=request.POST.get("source_strings", 0),
         hosted_words=request.POST.get("words", 0),
+        hosted_strings=request.POST.get("strings", 0),
         version=request.headers["User-Agent"].split("/", 1)[1],
         discoverable=bool(request.POST.get("discoverable")),
     )
