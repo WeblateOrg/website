@@ -33,7 +33,12 @@
 
                       <li><strong>{% trans "Strong Foundation:" %}</strong> {% trans "Our Python-based back-end utilizes Django, Django REST framework, Celery, Translate Toolkit, and more, providing a solid backbone for further enhancements." %}</li>
 
-                      <li><strong>{% trans "Open Collaboration:" %}</strong> {% trans "Dive into our open issues to gain insights and contribute to our dynamic ecosystem. Showcase your skills by tackling one of our good first issues and making a tangible impact." %}</li>
+                      <li>
+                        <strong>{% trans "Open Collaboration:" %}</strong>
+
+                        {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+label%3Aux" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
+                        {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
+                      </li>
 
                       <li><strong>{% trans "Libre Software Advocates:" %}</strong> {% trans "We embrace open source principles, with all our code and issues accessible to the public, fostering collaboration and transparency." %}</li>
 
@@ -70,7 +75,12 @@
 
                       <li><strong>{% trans "Strong Foundation:" %}</strong> {% trans "Our Python-based back-end utilizes Django, Django REST framework, Celery, Translate Toolkit, and more, providing a solid backbone for further enhancements." %}</li>
 
-                      <li><strong>{% trans "Open Collaboration:" %}</strong> {% trans "Dive into our open issues to gain insights and contribute to our dynamic ecosystem. Showcase your skills by tackling one of our good first issues and making a tangible impact." %}</li>
+                      <li>
+                        <strong>{% trans "Open Collaboration:" %}</strong>
+
+                        {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+-label%3Aux" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
+                        {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+-label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
+                      </li>
 
                       <li><strong>{% trans "Libre Software Advocates:" %}</strong> {% trans "We embrace open source principles, with all our code and issues accessible to the public, fostering collaboration and transparency." %}</li>
 
