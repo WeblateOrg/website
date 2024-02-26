@@ -9,13 +9,14 @@
 # Janar Leas <janarleas+ubuntuone@googlemail.com>, 2020, 2023.
 # Allan Nordhøy <epost@anotheragency.no>, 2021.
 # PriitUring <priit.uring@gmail.com>, 2022.
+# Lauri Linnamäe <de0g7o8f@duck.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-01-26 13:15+0100\n"
-"PO-Revision-Date: 2024-01-04 20:07+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-02-26 17:31+0000\n"
+"Last-Translator: Lauri Linnamäe <de0g7o8f@duck.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/weblate/website/"
 "et/>\n"
 "Language: et\n"
@@ -23,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 #: payments/backends.py:255
 msgid "Payment card"
@@ -47,7 +48,7 @@ msgstr "Makse IBAN pangaülekandega"
 
 #: payments/backends.py:389
 msgid "Issuing bank"
-msgstr "Väljastav pank"
+msgstr "Väljastanud pank"
 
 #: payments/backends.py:390
 msgid "Account holder"
@@ -59,7 +60,7 @@ msgstr "Pangaarve number"
 
 #: payments/backends.py:392
 msgid "SWIFT code"
-msgstr "SWIFT-kood"
+msgstr "SWIFT kood"
 
 #: payments/backends.py:393
 msgid "IBAN"
@@ -67,28 +68,24 @@ msgstr "IBAN"
 
 #: payments/backends.py:394
 msgid "Reference"
-msgstr "Viide"
+msgstr "Selgitus"
 
 #: payments/models.py:80
 msgid "European VAT ID"
-msgstr "Euroopa käibemaksukohustuslase ID"
+msgstr "Euroopa KMKR"
 
 #: payments/models.py:82
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
-msgstr ""
-"Palun täitke Euroopa Liidu käibemaksukohustuslasena registreerimise number "
-"või jätke see tühjaks, kui seda ei kohaldata."
+msgstr "Palun täitke Euroopa Liidu KMKR, selle puudumisel jätke tühjaks."
 
 #: payments/models.py:88
 msgid "Tax registration"
-msgstr "Käibemaksukohuslasena registreerimine"
+msgstr "Maksuresidentsus"
 
 #: payments/models.py:90
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
-msgstr ""
-"Palun lisa oma käibemaksukohuslasena registreerimise number, kui soovid seda "
-"näha arvel."
+msgstr "Palun lisa oma maksuresidentsus, kui soovid seda näha arvel."
 
 #: payments/models.py:97
 msgid "Company or individual name"
@@ -116,7 +113,7 @@ msgstr "Üks kord aastas"
 
 #: payments/models.py:160
 msgid "Biannual"
-msgstr "Kaks korda aastas"
+msgstr "Kord poolaastas"
 
 #: payments/models.py:161 weblate_web/templates/donate/form.html:28
 msgid "Quarterly"
@@ -133,7 +130,7 @@ msgstr "Kord kvartalis"
 #: weblate_web/templates/snippets/pricing.html:89
 #: weblate_web/templates/snippets/pricing.html:115
 msgid "Monthly"
-msgstr "Igakuine"
+msgstr "Kord kuus"
 
 #: payments/models.py:163
 #, fuzzy
@@ -159,7 +156,7 @@ msgstr "Makse on tagasi lükatud"
 #: payments/models.py:200
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "Makse on vastu võteud"
+msgstr "Makse on vastu võetud"
 
 #: payments/models.py:201
 msgctxt "Payment state"
@@ -176,18 +173,15 @@ msgstr "{} ei ole kehtiv Euroopa Liidu liikmesriigi kood."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
-msgstr ""
-"{} ei vasta selle riigi käibemaksukohuslase registeerimisnumbri valemile."
+msgstr "{} ei vasta selle riigi KMKR-i formaadile."
 
 #: payments/validators.py:58
 msgid "VAT ID validation service unavailable for {}, please try again later."
-msgstr ""
-"Käibemaksukohuslasena registreerimise numbrit kontrolliv teenus pole {} "
-"olnud saadaval. Palun proovi hiljem uuesti."
+msgstr "KMKR kontrollimine pole {} olnud saadaval. Palun proovi hiljem uuesti."
 
 #: payments/validators.py:61
 msgid "{} is not a valid VAT ID."
-msgstr "{} ei ole korrektne käibemaksukohuslasena registreerimise number."
+msgstr "{} ei ole korrektne KMKR."
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -195,9 +189,9 @@ msgid ""
 "private projects. And Weblate itself! Love libre software? Your "
 "possibilities of contributing are limitless here!"
 msgstr ""
-"Maailma suurim Weblate'i server on koduks sadadele vaba tarkvara ja "
-"privaatsetele projektidele. Ning otseloomulikult Weblate'ile endale! Kas "
-"sulle meeldib vana tarkvara? Sinu võimalused siin osalemiseks on piiramatud!"
+"Maailma suurim Weblate'i server võõrustab sadu vabu ja privaatseid "
+"tarkvaraprojekte. Ning mõistagi Weblate'i ennast! Kas sulle meeldib vaba "
+"tarkvara? Su võimalused panustamiseks on otsatud!"
 
 #: weblate_web/forms.py:63
 msgid "Insufficient donation for selected reward!"
@@ -214,12 +208,12 @@ msgstr "Nimi toetajate loendis"
 #: weblate_web/models.py:53 weblate_web/templates/donate.html:37
 #: weblate_web/templates/donate/form.html:47
 msgid "Link in the list of supporters"
-msgstr "Viit toetajate loendis"
+msgstr "Link toetajate loendis"
 
 #: weblate_web/models.py:54 weblate_web/templates/donate.html:44
 #: weblate_web/templates/donate/form.html:55
 msgid "Logo and link on the Weblate website"
-msgstr "Logo ja viit Weblate kodulehel"
+msgstr "Logo ja link Weblate kodulehel"
 
 #: weblate_web/models.py:64
 #: weblate_web/templates/weblate_web/post_detail.html:50
@@ -229,7 +223,7 @@ msgstr "Väljalase"
 #: weblate_web/models.py:65 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
 msgid "Features"
-msgstr "Iseärasused"
+msgstr "Omadused"
 
 #: weblate_web/models.py:66
 msgid "Announcement"
@@ -260,7 +254,7 @@ msgstr "Vigane pildifail!"
 #: weblate_web/models.py:129
 #, python-format
 msgid "Unsupported image type: %s"
-msgstr "Tundmatu pilditüüp: %s"
+msgstr "Tundmatu pildifaili tüüp: %s"
 
 #: weblate_web/models.py:135
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
@@ -268,19 +262,19 @@ msgstr "Palun laadi üles pilt mõõtudega 570 x 260 pikslit."
 
 #: weblate_web/models.py:202
 msgid "Link text"
-msgstr "Viida tekst"
+msgstr "Lingi tekst"
 
 #: weblate_web/models.py:204
 msgid "Link URL"
-msgstr "Viida URL"
+msgstr "Lingi aadress"
 
 #: weblate_web/models.py:206
 msgid "Link image"
-msgstr "Viida pilt"
+msgstr "Lingi pilt"
 
 #: weblate_web/models.py:479
 msgid "Community supported"
-msgstr "Kogukonna poolt toetatud"
+msgstr "Kogukonna toega"
 
 #: weblate_web/models.py:480
 msgid "Dedicated hosted service"
@@ -292,15 +286,15 @@ msgstr "Majutatud teenus"
 
 #: weblate_web/models.py:482 weblate_web/templates/support.html:54
 msgid "Basic self-hosted support"
-msgstr "Üldistatud oma-majutuse tugi"
+msgstr "Põhiline isemajutuse tugi"
 
 #: weblate_web/models.py:483 weblate_web/templates/support.html:64
 msgid "Extended self-hosted support"
-msgstr "Laiendatud oma-majutuse tugi"
+msgstr "Laiendatud isemajutuse tugi"
 
 #: weblate_web/models.py:484 weblate_web/templates/support.html:78
 msgid "Premium self-hosted support"
-msgstr "Premium tugi oma-majutusele"
+msgstr "Premium isemajutuse tugi"
 
 #: weblate_web/models.py:499 weblate_web/templates/snippets/service.html:95
 msgid "Server URL"
@@ -3237,11 +3231,11 @@ msgstr "Vaata ingliskeelset versiooni"
 
 #: weblate_web/templates/terms.html:23
 msgid "Terms of Service"
-msgstr ""
+msgstr "Teenuse tingimused"
 
 #: weblate_web/templates/terms.html:32
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Privaatsustingimused"
 
 #: weblate_web/templates/user.html:5
 msgid "User profile at Weblate"
