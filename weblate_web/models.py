@@ -46,6 +46,7 @@ from payments.utils import send_notification
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
+SUBACCOUNTS_API = "https://robot-ws.your-server.de/storagebox/{}/subaccount"
 
 REWARDS = (
     (0, gettext_lazy("No reward")),
@@ -174,9 +175,7 @@ def create_backup_repository(service):
         handle.write(service.last_report.ssh_key)
 
     # Create account on the service
-    url = "https://robot-ws.your-server.de/storagebox/{}/subaccount".format(
-        settings.STORAGE_BOX
-    )
+    url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
     response = requests.post(
         url,
         data={
