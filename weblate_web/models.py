@@ -460,7 +460,7 @@ class Package(models.Model):
         return self.verbose
 
     def get_repeat(self):
-        if self.name in ("basic", "extended", "premium", "backup"):
+        if self.name in {"basic", "extended", "premium", "backup"}:
             return "y"
         if self.name.startswith("hosted:") or self.name.startswith("shared:"):
             if self.name.endswith("-m"):
@@ -535,7 +535,7 @@ class Service(models.Model):
     @property
     def needs_token(self):
         return (
-            self.status not in ("hosted", "shared", "community")
+            self.status not in {"hosted", "shared", "community"}
             or self.backup_subscriptions
         )
 
@@ -864,7 +864,7 @@ class Subscription(models.Model):
     def could_be_obsolete(self):
         expires = timezone.now() + timedelta(days=3)
         return (
-            self.package in ("basic", "extended", "premium")
+            self.package in {"basic", "extended", "premium"}
             and self.service.support_subscriptions.exclude(pk=self.pk)
             .filter(expires__gt=expires)
             .exists()

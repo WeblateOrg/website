@@ -231,7 +231,7 @@ class Payment(models.Model):
     @property
     def is_waiting_for_user(self):
         """Whether payment is waiting for user action."""
-        return self.state in (self.NEW, self.PENDING)
+        return self.state in {self.NEW, self.PENDING}
 
     @cached_property
     def invoice_filename(self):

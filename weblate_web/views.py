@@ -157,7 +157,7 @@ def api_user(request):
 
     # Update attributes
     for key, value in payload.get("changes", {}).items():
-        if key not in ("username", "email", "last_name"):
+        if key not in {"username", "email", "last_name"}:
             continue
         setattr(user, key, value)
 
@@ -409,7 +409,7 @@ class CompleteView(PaymentView):
             # Allow reprocessing of rejected payments. User might choose
             # to retry in the payment gateway and previously rejected payment
             # can be now completed.
-            if backend.payment.state not in (Payment.PENDING, Payment.REJECTED):
+            if backend.payment.state not in {Payment.PENDING, Payment.REJECTED}:
                 return self.redirect_origin()
 
             backend.complete(self.request)
@@ -473,7 +473,7 @@ def process_payment(request):
         return redirect(reverse("user"))
 
     # Create donation
-    if payment.state in (Payment.NEW, Payment.PENDING):
+    if payment.state in {Payment.NEW, Payment.PENDING}:
         messages.error(request, gettext("Payment not yet processed, please retry."))
     elif payment.state == Payment.REJECTED:
         messages.error(

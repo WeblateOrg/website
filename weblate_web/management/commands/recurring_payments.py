@@ -41,7 +41,7 @@ class Command(BaseCommand):
         self.handle_services()
         # Notify about upcoming expiry on Monday and Thursday
         weekday = timezone.now().date().weekday()
-        if weekday in (0, 3):
+        if weekday in {0, 3}:
             self.notify_expiry(weekday)
 
     @staticmethod

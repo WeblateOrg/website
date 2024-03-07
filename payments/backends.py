@@ -113,7 +113,7 @@ class Backend:
 
     def complete(self, request):
         """Payment completion called from returned request."""
-        if self.payment.state not in (Payment.PENDING, Payment.REJECTED):
+        if self.payment.state not in {Payment.PENDING, Payment.REJECTED}:
             raise InvalidState(self.payment.get_state_display())
 
         status = self.collect(request)
