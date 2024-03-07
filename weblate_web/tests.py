@@ -467,7 +467,7 @@ class PaymentsTest(FakturaceTestCase):
 
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_pay(self):
-        payment, url, dummy = self.test_view()
+        payment, url, _dummy = self.test_view()
         response = self.client.post(url, {"method": "pay"})
         self.assertRedirects(
             response,
@@ -490,7 +490,7 @@ class PaymentsTest(FakturaceTestCase):
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_reject(self):
-        payment, url, dummy = self.test_view()
+        payment, url, _dummy = self.test_view()
         response = self.client.post(url, {"method": "reject"})
         self.assertRedirects(
             response,
@@ -501,7 +501,7 @@ class PaymentsTest(FakturaceTestCase):
 
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     def test_pending(self):
-        payment, url, dummy = self.test_view()
+        payment, url, _dummy = self.test_view()
         response = self.client.post(url, {"method": "pending"})
         complete_url = reverse("payment-complete", kwargs={"pk": payment.pk})
         self.assertRedirects(
