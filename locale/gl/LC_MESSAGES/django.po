@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-01-26 13:15+0100\n"
-"PO-Revision-Date: 2024-03-08 06:43+0000\n"
+"PO-Revision-Date: 2024-03-09 18:05+0000\n"
 "Last-Translator: \"Miguel A. Bouzada\" <mbouzada@gmail.com>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/weblate/website/"
 "gl/>\n"
@@ -37,7 +37,7 @@ msgstr "Pagamento cancelado"
 
 #: payments/backends.py:338
 msgid "Payment error"
-msgstr "Erro de pagamento"
+msgstr "Produciuse un erro de pagamento"
 
 #: payments/backends.py:350
 msgid "Bitcoin"
@@ -73,12 +73,12 @@ msgstr "Referencia"
 
 #: payments/models.py:80
 msgid "European VAT ID"
-msgstr "Id. de IVE europeo"
+msgstr "ID. de IVE europeo"
 
 #: payments/models.py:82
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
-"Encha co número de Id. do IVE da Unión Europea, déixeo baleiro se non é "
+"Encha co número de Id. de IVE da Unión Europea, déixeo baleiro se non é "
 "aplicábel."
 
 #: payments/models.py:88
@@ -88,8 +88,7 @@ msgstr "Rexistro fiscal"
 #: payments/models.py:90
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
-msgstr ""
-"Por favor, rechee o seu rexistro dos impostos se ten que aparecer na factura."
+msgstr "Encha o rexistro fiscal se ten que aparecer na factura."
 
 #: payments/models.py:97
 msgid "Company or individual name"
@@ -117,11 +116,11 @@ msgstr "Anual"
 
 #: payments/models.py:160
 msgid "Biannual"
-msgstr "Bianual"
+msgstr "Semestral"
 
 #: payments/models.py:161 weblate_web/templates/donate/form.html:28
 msgid "Quarterly"
-msgstr "Trimestralmente"
+msgstr "Trimestral"
 
 #: payments/models.py:162 weblate_web/templates/donate/form.html:25
 #: weblate_web/templates/hosting.html:450
@@ -143,27 +142,27 @@ msgstr "Unha vez"
 #: payments/models.py:197
 msgctxt "Payment state"
 msgid "New payment"
-msgstr "Novo pago"
+msgstr "Novo pagamento"
 
 #: payments/models.py:198
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Agardando o pago"
+msgstr "Agardando polo pagamento"
 
 #: payments/models.py:199
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "Pago rexeitado"
+msgstr "O pagamento foi rexeitado"
 
 #: payments/models.py:200
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "Pago aceptado"
+msgstr "O pagamento foi aceptado"
 
 #: payments/models.py:201
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "Pago procesado"
+msgstr "O pagamento foi procesado"
 
 #: payments/utils.py:48 payments/utils.py:51
 msgid "Enter a valid e-mail address."
@@ -175,17 +174,17 @@ msgstr "{} non é un código de país válido para membros da Unión Europea."
 
 #: payments/validators.py:47
 msgid "{} does not match the country's VAT ID specifications."
-msgstr "{} non concorda cas especificacións da identificación do IVE do país."
+msgstr "{} non concorda coas especificacións da Id. de IVE do país."
 
 #: payments/validators.py:58
 msgid "VAT ID validation service unavailable for {}, please try again later."
 msgstr ""
-"O servizo de validación de identificador de IVE non está dispoñíbel para {}; "
-"ténteo novamente máis tarde."
+"O servizo de validación de ID. do IVE non está dispoñíbel para {}; ténteo "
+"novamente máis tarde."
 
 #: payments/validators.py:61
 msgid "{} is not a valid VAT ID."
-msgstr "{} non é un número identificación do IVE válido."
+msgstr "{} non é un número ID. do IVE válido."
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -255,7 +254,7 @@ msgstr ""
 #: weblate_web/models.py:129
 #, python-format
 msgid "Unsupported image type: %s"
-msgstr ""
+msgstr "Tipo de imaxe non admitida: %s"
 
 #: weblate_web/models.py:135
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
@@ -298,10 +297,8 @@ msgid "Extended self-hosted support"
 msgstr "Asistencia ampliada para instancias autoaloxadas"
 
 #: weblate_web/models.py:484 weblate_web/templates/support.html:78
-#, fuzzy
-#| msgid "Basic self-hosted support"
 msgid "Premium self-hosted support"
-msgstr "Asistencia básica para instancias autoaloxadas"
+msgstr "Asistencia premium para instancias autoaloxadas"
 
 #: weblate_web/models.py:499 weblate_web/templates/snippets/service.html:95
 #, fuzzy
@@ -338,10 +335,8 @@ msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 
 #: weblate_web/models.py:655 weblate_web/templates/user.html:30
-#, fuzzy
-#| msgid "Weblate support"
 msgid "Get support"
-msgstr "Apoio do Weblate"
+msgstr "Obter asistencia"
 
 #: weblate_web/models.py:664
 #, fuzzy
@@ -2404,7 +2399,7 @@ msgstr ""
 #: weblate_web/templates/snippets/pricing.html:141
 #: weblate_web/templates/snippets/pricing.html:165
 msgid "Unlimited"
-msgstr "Infindo"
+msgstr "Sen límite"
 
 #: weblate_web/templates/hosting.html:336
 #: weblate_web/templates/hosting.html:363
@@ -2678,7 +2673,7 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
-msgstr "O seu pagamento no weblate.org"
+msgstr "O seu pagamento en weblate.org"
 
 #: weblate_web/templates/mail/payment_expired.html:9
 #, fuzzy
@@ -2758,7 +2753,7 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
-msgstr "O seu pagamento no weblate.org fallou"
+msgstr "Produciuse un fallo no seu pagamento no weblate.org"
 
 #: weblate_web/templates/mail/payment_missing.html:9
 #, fuzzy
@@ -2841,7 +2836,7 @@ msgstr "(incluíndo IVE)"
 
 #: weblate_web/templates/mail/payment_pending_subject.txt:2
 msgid "Your pending payment on weblate.org"
-msgstr "O seu pagamento pendente no weblate.org"
+msgstr "O seu pagamento pendente en weblate.org"
 
 #: weblate_web/templates/mail/payment_upcoming.html:9
 #, fuzzy
@@ -3365,7 +3360,7 @@ msgstr ""
 
 #: weblate_web/templates/snippets/service.html:68
 msgid "Activation token"
-msgstr "Código de activación"
+msgstr "Testemuño de activación"
 
 #: weblate_web/templates/snippets/service.html:72
 #, fuzzy
@@ -3504,21 +3499,22 @@ msgstr ""
 
 #: weblate_web/templates/snippets/vat.html:5
 msgid "All listed prices exclude VAT."
-msgstr "Tódolos prezos amosados exclúen o IVE."
+msgstr "Todos os prezos indicados exclúen o IVE."
 
 #: weblate_web/templates/snippets/vat.html:6
 #, python-format
 msgid ""
 "EU end users and Czech companies will be charged with additional 21%% VAT."
 msgstr ""
-"Ós usuarios finais da UE e ás empresas checas cobraráselles un 21%% "
+"Aos usuarios finais da UE e ás empresas checas cobraráselles un 21%% "
 "adicional de IVE."
 
 #: weblate_web/templates/snippets/vat.html:7
 msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr ""
-"O cargo aplicarase á inversa ás facturas emitidas a negocios dentro da UE."
+"A inversión de suxeito pasivo aplicarase ás facturas emitidas a empresas "
+"dentro da UE."
 
 #: weblate_web/templates/subscription/discovery-add.html:9
 #, fuzzy
