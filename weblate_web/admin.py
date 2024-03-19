@@ -81,7 +81,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "note",
     )
     date_hierarchy = "created"
-    filter_horizontal = ("users",)
+    autocomplete_fields = ("users",)
     inlines = (ProjectAdmin,)
 
     def get_form(self, request, obj=None, **kwargs):
