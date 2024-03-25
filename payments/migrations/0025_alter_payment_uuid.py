@@ -2,8 +2,9 @@
 
 import uuid
 
-import wlhosted.payments.models
 from django.db import migrations
+
+import payments.models
 
 
 class Migration(migrations.Migration):
@@ -15,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="payment",
             name="uuid",
-            field=wlhosted.payments.models.Char32UUIDField(
+            field=payments.models.Char32UUIDField(
                 default=uuid.uuid4, editable=False, primary_key=True, serialize=False
             ),
         ),
