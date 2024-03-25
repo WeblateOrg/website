@@ -72,6 +72,11 @@ EU_VAT_RATES = {
 VAT_RATE = 21
 
 
+class Char32UUIDField(models.UUIDField):
+    def db_type(self, connection):
+        return "char(32)"
+
+
 class Customer(models.Model):
     vat = VATINField(
         validators=[validate_vatin],
@@ -176,7 +181,7 @@ class Payment(models.Model):
     CURRENCY_USD = 2
     CURRENCY_CZK = 3
 
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = Char32UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.IntegerField()
     currency = models.IntegerField(
         choices=(
