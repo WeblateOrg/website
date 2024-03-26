@@ -1,6 +1,7 @@
 import sentry_sdk
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.utils.html import format_html
 from django.utils.translation import gettext as _
 from vies.types import VATIN
 from zeep.exceptions import Error
@@ -54,9 +55,14 @@ def validate_vatin(value):
             value.vies_data.get("fault_message") in retry_errors
             or value.vies_data.get("fault_code") in retry_codes
         ):
-            msg = _(
-                "VAT ID validation service unavailable for {}, please try again later."
+            msg = format_html(
+                '{} <a href="{}" target="_blank">{}</a>',
+                _(
+                    "The official EU verification tool currently can't validate this VAT ID, please try again later."
+                ),
+                "https://ec.europa.eu/taxation_customs/vies/#/self-monitoring",
+                _("View service status."),
             )
         else:
-            msg = _("{} is not a valid VAT ID.")
-        raise ValidationError(msg.format(value))
+            msg = _("{} is not a valid VAT ID.").format(value)
+        raise ValidationError(msg)
