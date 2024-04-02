@@ -1,4 +1,4 @@
-var _paq = window._paq || [];
+const _paq = window._paq || [];
 /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
 _paq.push(["disableCookies"]);
 _paq.push(["trackPageView"]);
@@ -6,8 +6,8 @@ _paq.push(["enableLinkTracking"]);
 _paq.push(["setTrackerUrl", "https://stats.cihar.com/matomo.php"]);
 _paq.push(["setSiteId", "12"]);
 
-var ready = (callback) => {
-  if (document.readyState != "loading") {
+const ready = (callback) => {
+  if (document.readyState !== "loading") {
     callback();
   } else {
     document.addEventListener("DOMContentLoaded", callback);
@@ -16,24 +16,24 @@ var ready = (callback) => {
 
 /* Actual table switching logic */
 function switchTabs(removal, enable) {
-  document.querySelectorAll(removal).forEach((child) => {
+  for (const child of document.querySelectorAll(removal)) {
     child.classList.remove("current");
-  });
+  }
   document.getElementById(enable).classList.add("current");
 }
 
 /* Generic tab toggling code */
 function tabToggle(targets, removal) {
-  document.querySelectorAll(targets).forEach((element) => {
+  for (const element of document.querySelectorAll(targets)) {
     element.addEventListener("click", (e) => {
-      let tab = e.target.getAttribute("data-tab");
+      const tab = e.target.getAttribute("data-tab");
       switchTabs(removal, tab);
       e.target.classList.add("current");
       if (tab === "monthly") {
         document.getElementById("dedicated-checkbox").checked = false;
       }
     });
-  });
+  }
 }
 
 ready(() => {
@@ -46,8 +46,8 @@ ready(() => {
 
   /* Languages menu */
   document.querySelector(".open-langs").addEventListener("click", (e) => {
-    var thisParent = e.target.parentElement;
-    var thisNext = e.target.nextElementSibling;
+    const thisParent = e.target.parentElement;
+    const thisNext = e.target.nextElementSibling;
     if (thisParent.classList.contains("opened")) {
       thisParent.classList.remove("opened");
       thisNext.style.opacity = "0";
@@ -75,9 +75,9 @@ ready(() => {
     ".pricing-table-tabs-menu ul li, .tab-content",
   );
   /* Dedicated hosting toggle */
-  document.querySelectorAll("#dedicated-checkbox").forEach((element) => {
+  for (const element of document.querySelectorAll("#dedicated-checkbox")) {
     element.addEventListener("change", (e) => {
-      let yearly_pricing = document.getElementById("yearly-pricing");
+      const yearly_pricing = document.getElementById("yearly-pricing");
       if (e.target.checked) {
         yearly_pricing.dispatchEvent(new Event("click"));
         switchTabs(".pricing-table-tabs-menu ul li, .tab-content", "dedicated");
@@ -86,21 +86,21 @@ ready(() => {
       }
       yearly_pricing.classList.add("current");
     });
-  });
-  document.querySelectorAll(".dedicated-toggle").forEach((element) => {
+  }
+  for (const element of document.querySelectorAll(".dedicated-toggle")) {
     element.addEventListener("click", (e) => {
-      let target = document.getElementById("dedicated-checkbox");
+      const target = document.getElementById("dedicated-checkbox");
       target.checked = element.classList.contains("dedicated-enable");
       target.dispatchEvent(new Event("change"));
     });
-  });
+  }
 
   /* Donate rewards selection */
-  let donate_input = document.getElementById("donate-amount");
+  const donate_input = document.getElementById("donate-amount");
   if (donate_input) {
-    document.querySelectorAll(".rewards .choose").forEach((element) => {
+    for (const element of document.querySelectorAll(".rewards .choose")) {
       element.addEventListener("click", (e) => {
-        var container = e.target.parentElement;
+        const container = e.target.parentElement;
         container.parentElement
           .querySelector(".reward.checked")
           .classList.remove("checked");
@@ -108,22 +108,24 @@ ready(() => {
         container.querySelector("input").checked = true;
         e.preventDefault();
       });
-    });
-    document.querySelectorAll(".rewards .close").forEach((element) => {
+    }
+    for (const element of document.querySelectorAll(".rewards .close")) {
       element.addEventListener("click", (e) => {
         document
           .querySelector(".rewards .fourth .choose")
           .dispatchEvent(new Event("click"));
         e.preventDefault();
       });
-    });
+    }
     donate_input.addEventListener("change", (e) => {
-      var amount = parseInt(e.target.value);
-      var found = 0;
-      var highest = document.querySelector(".rewards .fourth");
-      var highest_amount = parseInt(highest.getAttribute("data-amount"));
-      document.querySelectorAll(".reward").forEach((element) => {
-        var current_amount = parseInt(element.getAttribute("data-amount"));
+      const amount = Number.parseInt(e.target.value);
+      let found = 0;
+      let highest = document.querySelector(".rewards .fourth");
+      let highest_amount = Number.parseInt(highest.getAttribute("data-amount"));
+      for (const element of document.querySelectorAll(".reward")) {
+        const current_amount = Number.parseInt(
+          element.getAttribute("data-amount"),
+        );
         if (current_amount <= amount) {
           element.classList.remove("small");
           found++;
@@ -137,7 +139,7 @@ ready(() => {
             element.querySelector(".close").dispatchEvent(new Event("click"));
           }
         }
-      });
+      }
       highest.querySelector(".choose").click();
 
       if (found > 1) {
@@ -152,20 +154,20 @@ ready(() => {
   }
 
   /* VAT form */
-  let vat_input = document.getElementById("id_vat_0");
+  const vat_input = document.getElementById("id_vat_0");
   if (vat_input) {
     vat_input.addEventListener("change", (e) => {
-      var value = e.target.value;
-      if (value != "") {
+      const value = e.target.value;
+      if (value !== "") {
         document.querySelector(
-          '#id_country option[value="' + value + '"]',
+          `#id_country·option[value="${value}"]`,
         ).selected = true;
       }
     });
-    document.querySelectorAll("#id_vat_0,#id_vat_1").forEach((element) => {
+    for (const element of document.querySelectorAll("#id_vat_0,#id_vat_1")) {
       element.addEventListener("focusout", (e) => {
-        var country = document.getElementById("id_vat_0").value;
-        var code = document.getElementById("id_vat_1").value;
+        const country = document.getElementById("id_vat_0").value;
+        const code = document.getElementById("id_vat_1").value;
         if (country && code) {
           const payload = new FormData();
           payload.append("vat", country + code);
@@ -185,7 +187,7 @@ ready(() => {
             .then((data) => {
               if (data.valid && data.name !== "---") {
                 document.querySelector('input[name="name"]').value = data.name;
-                var parts = data.address.trim().split("\n");
+                const parts = data.address.trim().split("\n");
                 document.querySelector('input[name="address"]').value =
                   parts[0];
                 document.querySelector('input[name="city"]').value =
@@ -197,15 +199,15 @@ ready(() => {
             });
         }
       });
-    });
+    }
   }
 
-  let sso = document.getElementById("SSO_Login");
+  const sso = document.getElementById("SSO_Login");
   if (sso) {
     sso.submit();
   }
 
-  document.querySelectorAll("[data-clipboard-text]").forEach((element) => {
+  for (const element of document.querySelectorAll("[data-clipboard-text]")) {
     element.addEventListener("click", (e) => {
       navigator.clipboard
         .writeText(e.target.getAttribute("data-clipboard-text"))
@@ -213,7 +215,7 @@ ready(() => {
           e.preventDefault();
         });
     });
-  });
+  }
 
   console.log(
     "%cStop!",
