@@ -40,7 +40,7 @@ from django.utils.translation import gettext_lazy, override
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
-from payments.models import Payment, get_period_delta
+from payments.models import Char32UUIDField, Payment, get_period_delta
 from payments.utils import send_notification
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
@@ -195,7 +195,7 @@ def create_backup_repository(service):
 
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True, null=True)
+    payment = Char32UUIDField(blank=True, null=True)
     reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
         verbose_name=gettext_lazy("Link text"), max_length=200, blank=True
@@ -789,7 +789,7 @@ class Service(models.Model):
 
 class Subscription(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
-    payment = models.UUIDField(blank=True, null=True)
+    payment = Char32UUIDField(blank=True, null=True)
     package = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
@@ -878,7 +878,7 @@ class PastPayments(models.Model):
     donation = models.ForeignKey(
         Donation, on_delete=models.deletion.CASCADE, null=True, blank=True
     )
-    payment = models.UUIDField()
+    payment = Char32UUIDField()
 
     class Meta:
         verbose_name = "Past payment"
