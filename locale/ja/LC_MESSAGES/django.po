@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-01-26 13:15+0100\n"
+"POT-Creation-Date: 2024-05-06 16:33+0200\n"
 "PO-Revision-Date: 2024-03-31 02:01+0000\n"
 "Last-Translator: amano <amano@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -78,95 +78,99 @@ msgstr "IBAN"
 msgid "Reference"
 msgstr "参照"
 
-#: payments/models.py:80
+#: payments/models.py:91
 msgid "European VAT ID"
 msgstr "欧州 VAT ID"
 
-#: payments/models.py:82
+#: payments/models.py:93
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "欧州連合（EU）の VAT ID を記入してください。適用外の場合は空欄にしてくださ"
 "い。"
 
-#: payments/models.py:88
+#: payments/models.py:99
 msgid "Tax registration"
 msgstr "税務登録"
 
-#: payments/models.py:90
+#: payments/models.py:101
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "請求書に記載する場合は税務登録を記入してください。"
 
-#: payments/models.py:97
+#: payments/models.py:108
 msgid "Company or individual name"
 msgstr "会社名または個人名"
 
-#: payments/models.py:100
+#: payments/models.py:111
 msgid "Address"
 msgstr "住所"
 
-#: payments/models.py:103
+#: payments/models.py:114
 msgid "Postcode and city"
 msgstr "郵便番号と市区町村"
 
-#: payments/models.py:105
+#: payments/models.py:116
 msgid "Country"
 msgstr "国"
 
-#: payments/models.py:136
+#: payments/models.py:147
 msgid "The country has to match your VAT code"
 msgstr "国の VAT コードと一致することが必要です"
 
-#: payments/models.py:159
+#: payments/models.py:170
 msgid "Annual"
 msgstr "年間"
 
-#: payments/models.py:160
+#: payments/models.py:171
 msgid "Biannual"
 msgstr "半年間"
 
-#: payments/models.py:161 weblate_web/templates/donate/form.html:28
+#: payments/models.py:172 weblate_web/templates/donate/form.html:28
 msgid "Quarterly"
 msgstr "四半期ごと"
 
-#: payments/models.py:162 weblate_web/templates/donate/form.html:25
-#: weblate_web/templates/hosting.html:450
-#: weblate_web/templates/hosting.html:466
-#: weblate_web/templates/hosting.html:478
+#: payments/models.py:173 weblate_web/templates/donate/form.html:25
+#: weblate_web/templates/hosting.html:474
 #: weblate_web/templates/hosting.html:490
-#: weblate_web/templates/hosting.html:501
-#: weblate_web/templates/snippets/pricing.html:37
-#: weblate_web/templates/snippets/pricing.html:63
-#: weblate_web/templates/snippets/pricing.html:89
-#: weblate_web/templates/snippets/pricing.html:115
+#: weblate_web/templates/hosting.html:502
+#: weblate_web/templates/hosting.html:514
+#: weblate_web/templates/hosting.html:525
+#: weblate_web/templates/hosting.html:537
+#: weblate_web/templates/hosting.html:549
+#: weblate_web/templates/snippets/pricing.html:39
+#: weblate_web/templates/snippets/pricing.html:65
+#: weblate_web/templates/snippets/pricing.html:91
+#: weblate_web/templates/snippets/pricing.html:117
+#: weblate_web/templates/snippets/pricing.html:143
+#: weblate_web/templates/snippets/pricing.html:169
 msgid "Monthly"
 msgstr "月払い"
 
-#: payments/models.py:163
+#: payments/models.py:174
 msgid "One-time"
 msgstr "一括払い"
 
-#: payments/models.py:197
+#: payments/models.py:208
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "新規支払い"
 
-#: payments/models.py:198
+#: payments/models.py:209
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "入金待ち"
 
-#: payments/models.py:199
+#: payments/models.py:210
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "支払い拒否"
 
-#: payments/models.py:200
+#: payments/models.py:211
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "支払い承認"
 
-#: payments/models.py:201
+#: payments/models.py:212
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "支払処理完了"
@@ -175,20 +179,27 @@ msgstr "支払処理完了"
 msgid "Enter a valid e-mail address."
 msgstr "正確なメールアドレスを入力してください。"
 
-#: payments/validators.py:42
+#: payments/validators.py:43
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} は、欧州連合加盟国の有効な国コードではありません。"
 
-#: payments/validators.py:47
+#: payments/validators.py:48
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} は、国の VAT ID 仕様と一致しません。"
 
-#: payments/validators.py:58
-msgid "VAT ID validation service unavailable for {}, please try again later."
-msgstr ""
-"{} の VAT ID 検証サービスは利用できません。時間をおいて実行してください。"
-
 #: payments/validators.py:61
+msgid ""
+"The official EU verification tool currently can't validate this VAT ID, "
+"please try again later."
+msgstr ""
+
+#: payments/validators.py:64
+#, fuzzy
+#| msgid "Service Status"
+msgid "View service status."
+msgstr "サービスの状態"
+
+#: payments/validators.py:67
 msgid "{} is not a valid VAT ID."
 msgstr "{} は、有効な VAT ID ではありません。"
 
@@ -206,195 +217,195 @@ msgstr ""
 msgid "Insufficient donation for selected reward!"
 msgstr "選択した報酬の寄付金としては不十分です！"
 
-#: weblate_web/models.py:51
+#: weblate_web/models.py:52
 msgid "No reward"
 msgstr "謝礼を辞退する"
 
-#: weblate_web/models.py:52 weblate_web/templates/donate.html:30
+#: weblate_web/models.py:53 weblate_web/templates/donate.html:30
 msgid "Name in the list of supporters"
 msgstr "支援者名簿に名前を記載"
 
-#: weblate_web/models.py:53 weblate_web/templates/donate.html:37
+#: weblate_web/models.py:54 weblate_web/templates/donate.html:37
 #: weblate_web/templates/donate/form.html:47
 msgid "Link in the list of supporters"
 msgstr "支援者名簿にリンクを掲載"
 
-#: weblate_web/models.py:54 weblate_web/templates/donate.html:44
+#: weblate_web/models.py:55 weblate_web/templates/donate.html:44
 #: weblate_web/templates/donate/form.html:55
 msgid "Logo and link on the Weblate website"
 msgstr "当 HP にロゴとリンクを掲載"
 
-#: weblate_web/models.py:64
+#: weblate_web/models.py:65
 #: weblate_web/templates/weblate_web/post_detail.html:50
 msgid "Release"
 msgstr "リリース"
 
-#: weblate_web/models.py:65 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:66 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
 msgid "Features"
 msgstr "機能"
 
-#: weblate_web/models.py:66
+#: weblate_web/models.py:67
 msgid "Announcement"
 msgstr "お知らせ"
 
-#: weblate_web/models.py:67
+#: weblate_web/models.py:68
 msgid "Conferences"
 msgstr "カンファレンス"
 
-#: weblate_web/models.py:68 weblate_web/templates/hosting.html:58
+#: weblate_web/models.py:69 weblate_web/templates/hosting.html:58
 msgid "Hosted Weblate"
 msgstr "Hosted Weblate"
 
-#: weblate_web/models.py:69
+#: weblate_web/models.py:70
 #: weblate_web/templates/weblate_web/post_detail.html:52
 msgid "Development"
 msgstr "開発"
 
-#: weblate_web/models.py:70
+#: weblate_web/models.py:71
 #: weblate_web/templates/weblate_web/post_detail.html:53
 msgid "Localization"
 msgstr "現地語化"
 
-#: weblate_web/models.py:118
+#: weblate_web/models.py:119
 msgid "Invalid image!"
 msgstr "画像が正しくありません！"
 
-#: weblate_web/models.py:129
+#: weblate_web/models.py:130
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "未対応の画像形式: %s"
 
-#: weblate_web/models.py:135
+#: weblate_web/models.py:136
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "解像度 570 x 260 ピクセルの画像をアップロードしてください。"
 
-#: weblate_web/models.py:202
+#: weblate_web/models.py:201
 msgid "Link text"
 msgstr "リンク テキスト"
 
-#: weblate_web/models.py:204
+#: weblate_web/models.py:203
 msgid "Link URL"
 msgstr "リンク URL"
 
-#: weblate_web/models.py:206
+#: weblate_web/models.py:205
 msgid "Link image"
 msgstr "リンク 画像"
 
-#: weblate_web/models.py:479
+#: weblate_web/models.py:478
 msgid "Community supported"
 msgstr "コミュニティによるサポート"
 
-#: weblate_web/models.py:480
+#: weblate_web/models.py:479
 msgid "Dedicated hosted service"
 msgstr "専用のホスティング サービス"
 
-#: weblate_web/models.py:481
+#: weblate_web/models.py:480
 msgid "Hosted service"
 msgstr "ホスティング サービス"
 
-#: weblate_web/models.py:482 weblate_web/templates/support.html:54
+#: weblate_web/models.py:481 weblate_web/templates/support.html:54
 msgid "Basic self-hosted support"
 msgstr "基本サポート（お客様のサーバー対象）"
 
-#: weblate_web/models.py:483 weblate_web/templates/support.html:64
+#: weblate_web/models.py:482 weblate_web/templates/support.html:64
 msgid "Extended self-hosted support"
 msgstr "拡張サポート（お客様のサーバー対象）"
 
-#: weblate_web/models.py:484 weblate_web/templates/support.html:78
+#: weblate_web/models.py:483 weblate_web/templates/support.html:78
 msgid "Premium self-hosted support"
 msgstr "プレミアム サポート（お客様のサーバー対象）"
 
-#: weblate_web/models.py:499 weblate_web/templates/snippets/service.html:95
+#: weblate_web/models.py:498 weblate_web/templates/snippets/service.html:95
 msgid "Server URL"
 msgstr "サーバー URL"
 
-#: weblate_web/models.py:507
+#: weblate_web/models.py:506
 msgid "Server description"
 msgstr "サーバーの説明"
 
-#: weblate_web/models.py:510
+#: weblate_web/models.py:509
 msgid "Server image"
 msgstr "サーバー画像"
 
-#: weblate_web/models.py:514
+#: weblate_web/models.py:513
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "解像度が 570 x 260 ピクセルの PNG または JPG イメージ。"
 
-#: weblate_web/models.py:651 weblate_web/templates/hosting.html:156
+#: weblate_web/models.py:650 weblate_web/templates/hosting.html:156
 msgid "Basic support"
 msgstr "基本的なサポート"
 
-#: weblate_web/models.py:652
+#: weblate_web/models.py:651
 msgid "Never get held back by a problem."
 msgstr "問題にとらわれることはありません。"
 
-#: weblate_web/models.py:653
+#: weblate_web/models.py:652
 msgid "Set priority for all your questions and reported bugs."
 msgstr "お客様のすべての質問と報告したバグを優先します。"
 
-#: weblate_web/models.py:655 weblate_web/templates/user.html:30
+#: weblate_web/models.py:654 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "サポートを受ける"
 
-#: weblate_web/models.py:664
+#: weblate_web/models.py:663
 msgid "Premium support"
 msgstr "プレミアム サポート"
 
-#: weblate_web/models.py:665
+#: weblate_web/models.py:664
 msgid "Don’t wait with your work on hold."
 msgstr "仕事を中断して待つ必要はありません。"
 
-#: weblate_web/models.py:666
+#: weblate_web/models.py:665
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "遅くとも翌営業日の回答を保証します。"
 
-#: weblate_web/models.py:668
+#: weblate_web/models.py:667
 msgid "Be Premium"
 msgstr "プレミアムにする"
 
-#: weblate_web/models.py:676 weblate_web/templates/hosting.html:123
+#: weblate_web/models.py:675 weblate_web/templates/hosting.html:123
 msgid "Extended support"
 msgstr "拡張サポート"
 
-#: weblate_web/models.py:677
+#: weblate_web/models.py:676
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "ベーシックで満足せず、安心のパッケージを入手してください。"
 
-#: weblate_web/models.py:678
+#: weblate_web/models.py:677
 msgid "We will manage upgrades for you."
 msgstr "お客様のアップグレードを管理します。"
 
-#: weblate_web/models.py:680
+#: weblate_web/models.py:679
 msgid "Stay updated"
 msgstr "常に最新状態に"
 
-#: weblate_web/models.py:688 weblate_web/templates/support.html:104
+#: weblate_web/models.py:687 weblate_web/templates/support.html:104
 msgid "Backup service"
 msgstr "バックアップ サービス"
 
-#: weblate_web/models.py:689
+#: weblate_web/models.py:688
 msgid "Easily put your backups in a safe place."
 msgstr "バックアップを安全な場所に簡単に保存します。"
 
-#: weblate_web/models.py:690
+#: weblate_web/models.py:689
 msgid "Encrypted and automatic, always available."
 msgstr "暗号化、自動、常に利用可能。"
 
-#: weblate_web/models.py:692
+#: weblate_web/models.py:691
 msgid "Back up daily"
 msgstr "毎日のバックアップ"
 
-#: weblate_web/models.py:704
+#: weblate_web/models.py:703
 #, python-format
 msgid "Upgrade to %s"
 msgstr "%s にアップグレード"
 
-#: weblate_web/models.py:705
+#: weblate_web/models.py:704
 msgid "Increase service limits to translate more content."
 msgstr "制限を拡大し、翻訳できる量を増やします。"
 
-#: weblate_web/models.py:708
+#: weblate_web/models.py:707
 msgid "Upgrade"
 msgstr "アップグレード"
 
@@ -670,9 +681,9 @@ msgid "D-U-N-S Number"
 msgstr "D-U-N-S Number"
 
 #: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
-#: weblate_web/templates/hosting.html:515
-#: weblate_web/templates/hosting.html:577
-#: weblate_web/templates/hosting.html:639
+#: weblate_web/templates/hosting.html:563
+#: weblate_web/templates/hosting.html:649
+#: weblate_web/templates/hosting.html:725
 #: weblate_web/templates/support.html:124
 msgid "Contact us"
 msgstr "連絡をとる"
@@ -730,10 +741,167 @@ msgid "Learn more"
 msgstr "詳細情報"
 
 #: weblate_web/templates/careers.html:24
+#, fuzzy
+#| msgid "Python developer"
+msgid "Front-end developer"
+msgstr "Python 開発者"
+
+#: weblate_web/templates/careers.html:26
+msgid ""
+"Are you passionate about improving user experiences and making a meaningful "
+"impact? Join us as a front-end Developer to elevate Weblate's interface!"
+msgstr ""
+
+#: weblate_web/templates/careers.html:28 weblate_web/templates/careers.html:70
+msgid "Why choose us:"
+msgstr ""
+
+#: weblate_web/templates/careers.html:32 weblate_web/templates/careers.html:74
+msgid "Freedom to Innovate:"
+msgstr ""
+
+#: weblate_web/templates/careers.html:32
+msgid ""
+"Our front-end, currently powered by Bootstrap and jQuery, offers you the "
+"opportunity to shape its future by selecting the frameworks that best fit "
+"our goals."
+msgstr ""
+
+#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:76
+msgid "Strong Foundation:"
+msgstr ""
+
+#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:76
+#, fuzzy
+#| msgid ""
+#| "The back-end is in Python, using Django, Django REST framework, Celery, "
+#| "Translate Toolkit, and many others."
+msgid ""
+"Our Python-based back-end utilizes Django, Django REST framework, Celery, "
+"Translate Toolkit, and more, providing a solid backbone for further "
+"enhancements."
+msgstr ""
+"バックエンドは Python で作成されており、Django、Django REST フレームワーク、"
+"Celery、Translate Toolkit などを含む多くのツールを使用しています。"
+
+#: weblate_web/templates/careers.html:37 weblate_web/templates/careers.html:79
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Open Collaboration:"
+msgstr "コラボレーション サイト"
+
+#: weblate_web/templates/careers.html:39 weblate_web/templates/careers.html:81
+#, fuzzy, python-format
+#| msgid ""
+#| "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into "
+#| "what we are looking for."
+msgid ""
+"Dive into our <a href=\"%(issues)s\">open issues</a> to gain insights and "
+"contribute to our dynamic ecosystem."
+msgstr ""
+"<a href=\"%(issues)s\">未解決の問題</a>を確認して、私たちが求めているものの詳"
+"細を把握してください。"
+
+#: weblate_web/templates/careers.html:40 weblate_web/templates/careers.html:82
+#, fuzzy, python-format
+#| msgid ""
+#| "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us "
+#| "your expertise."
+msgid ""
+"Showcase your skills by tackling one of our <a href=\"%(issues)s\">good "
+"first issues</a> and making a tangible impact."
+msgstr ""
+"あなたの専門知識を、私たちに披露するために <a href=\"%(issues)s\">よさそうな"
+"最初の問題</a> を一つ選んでください。"
+
+#: weblate_web/templates/careers.html:43 weblate_web/templates/careers.html:85
+#, fuzzy
+#| msgid "Libre Software"
+msgid "Libre Software Advocates:"
+msgstr "Libre ソフトウェア"
+
+#: weblate_web/templates/careers.html:43 weblate_web/templates/careers.html:85
+msgid ""
+"We embrace open source principles, with all our code and issues accessible "
+"to the public, fostering collaboration and transparency."
+msgstr ""
+
+#: weblate_web/templates/careers.html:45 weblate_web/templates/careers.html:87
+msgid "Remote Work Flexibility:"
+msgstr ""
+
+#: weblate_web/templates/careers.html:45 weblate_web/templates/careers.html:87
+msgid ""
+"Enjoy the convenience of working remotely while collaborating with a diverse "
+"team of dedicated individuals."
+msgstr ""
+
+#: weblate_web/templates/careers.html:47 weblate_web/templates/careers.html:89
+msgid "Room for Growth:"
+msgstr ""
+
+#: weblate_web/templates/careers.html:47 weblate_web/templates/careers.html:89
+msgid ""
+"As a small company, we offer opportunities for personal and professional "
+"development. Every team member has space to contribute and grow."
+msgstr ""
+
+#: weblate_web/templates/careers.html:51 weblate_web/templates/careers.html:93
+msgid "Requirements:"
+msgstr ""
+
+#: weblate_web/templates/careers.html:54
+msgid "Strong skills in front-end development and user experience design."
+msgstr ""
+
+#: weblate_web/templates/careers.html:55 weblate_web/templates/careers.html:97
+msgid "Proficiency in written and spoken English."
+msgstr ""
+
+#: weblate_web/templates/careers.html:56 weblate_web/templates/careers.html:98
+msgid "Passion for open source principles and collaborative development."
+msgstr ""
+
+#: weblate_web/templates/careers.html:60 weblate_web/templates/careers.html:102
+msgid ""
+"If you're ready to contribute your expertise and shape the future of "
+"Weblate, apply now to join our team!"
+msgstr ""
+
+#: weblate_web/templates/careers.html:63 weblate_web/templates/careers.html:105
+#: weblate_web/templates/careers.html:119
+#: weblate_web/templates/careers.html:130
+msgid "Apply now"
+msgstr "今すぐ申し込む"
+
+#: weblate_web/templates/careers.html:66
+msgid "Python developer"
+msgstr "Python 開発者"
+
+#: weblate_web/templates/careers.html:68
+msgid ""
+"Are you passionate about developing new features, optimizing back-end, and "
+"integrating with third-party products? Join us as a Python developer to "
+"drive innovation and efficiency at Weblate!"
+msgstr ""
+
+#: weblate_web/templates/careers.html:74
+msgid ""
+"We encourage proactive problem-solving, where your insights and suggestions "
+"for enhancements are valued and considered for implementation."
+msgstr ""
+
+#: weblate_web/templates/careers.html:96
+msgid ""
+"Strong skills in Python development and experience with Django and related "
+"frameworks."
+msgstr ""
+
+#: weblate_web/templates/careers.html:109
 msgid "Full-stack developer"
 msgstr "フルスタック開発者"
 
-#: weblate_web/templates/careers.html:26
+#: weblate_web/templates/careers.html:111
 msgid ""
 "We're looking for a front-end developer who will not be afraid of touching "
 "the back-end as well."
@@ -741,7 +909,7 @@ msgstr ""
 "私たちは、バックエンドを触わることも恐れないフロントエンド開発者を探していま"
 "す。"
 
-#: weblate_web/templates/careers.html:27
+#: weblate_web/templates/careers.html:112
 msgid ""
 "Our front-end is currently using Bootstrap and jQuery, but we want to "
 "improve."
@@ -749,7 +917,7 @@ msgstr ""
 "フロントエンドは、現在 Bootstrap と jQuery を使用していますが、改善を考えてい"
 "ます。"
 
-#: weblate_web/templates/careers.html:28
+#: weblate_web/templates/careers.html:113
 msgid ""
 "The back-end is in Python, using Django, Django REST framework, Celery, "
 "Translate Toolkit, and many others."
@@ -757,7 +925,7 @@ msgstr ""
 "バックエンドは Python で作成されており、Django、Django REST フレームワーク、"
 "Celery、Translate Toolkit などを含む多くのツールを使用しています。"
 
-#: weblate_web/templates/careers.html:29
+#: weblate_web/templates/careers.html:114
 #, python-format
 msgid ""
 "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
@@ -766,7 +934,7 @@ msgstr ""
 "<a href=\"%(issues)s\">未解決の問題</a>を確認して、私たちが求めているものの詳"
 "細を把握してください。"
 
-#: weblate_web/templates/careers.html:30
+#: weblate_web/templates/careers.html:115
 #, python-format
 msgid ""
 "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
@@ -775,21 +943,17 @@ msgstr ""
 "あなたの専門知識を、私たちに披露するために <a href=\"%(issues)s\">よさそうな"
 "最初の問題</a> を一つ選んでください。"
 
-#: weblate_web/templates/careers.html:31
+#: weblate_web/templates/careers.html:116
 msgid ""
 "It is all libre software, all our code and issues are open to the public."
 msgstr ""
 "すべてが Libre ソフトウエアであり、すべてのコードと問題を公開しています。"
 
-#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:45
-msgid "Apply now"
-msgstr "今すぐ申し込む"
-
-#: weblate_web/templates/careers.html:37
+#: weblate_web/templates/careers.html:122
 msgid "Customer care and sales"
 msgstr "お客さま対応と販売"
 
-#: weblate_web/templates/careers.html:39
+#: weblate_web/templates/careers.html:124
 msgid ""
 "We're looking for a person who loves to speak with the people and will help "
 "them in getting the most out of our product."
@@ -797,13 +961,13 @@ msgstr ""
 "私たちは、顧客と対話することが好きで、私たちの製品を顧客の求めに応じて活用で"
 "きる人を探しています。"
 
-#: weblate_web/templates/careers.html:40
+#: weblate_web/templates/careers.html:125
 msgid ""
 "You will work with customers to assess their needs and advise them on using "
 "Weblate."
 msgstr "顧客に寄り添い要求を把握し、Weblate の使い方をアドバイスします。"
 
-#: weblate_web/templates/careers.html:41
+#: weblate_web/templates/careers.html:126
 msgid ""
 "You will be a contact for customers who are seeking help. Our engineers will "
 "closely cooperate with you on resolving the customer issues."
@@ -811,7 +975,7 @@ msgstr ""
 "あなたが、助けを求めているお客様の窓口となります。私たちの技術者は、あなたと"
 "連携してお客様の問題を解決します。"
 
-#: weblate_web/templates/careers.html:42
+#: weblate_web/templates/careers.html:127
 msgid ""
 "You can expand into other areas where you feel comfortable: publish articles "
 "on our blogs, manage social media, discuss with our community, or improve "
@@ -1397,14 +1561,16 @@ msgid "Download source code"
 msgstr "ソースコードのダウンロード"
 
 #: weblate_web/templates/download.html:26
-msgid "Latest releases for download, signed with PGP"
+#, fuzzy
+#| msgid "Latest releases for download, signed with PGP"
+msgid "Latest releases for download"
 msgstr "PGP で署名された最新のリリースをダウンロード"
 
-#: weblate_web/templates/download.html:35
+#: weblate_web/templates/download.html:34
 msgid "Cloud or virtualization images"
 msgstr "クラウドまたは仮想環境のイメージ"
 
-#: weblate_web/templates/download.html:36
+#: weblate_web/templates/download.html:35
 msgid ""
 "Weblate can be run in any cloud or virtualization environment. The following "
 "guides will show you detailed info about some of the most common platforms."
@@ -1412,55 +1578,35 @@ msgstr ""
 "Weblate はクラウド環境や仮想化環境でも動作します。以下のガイドでは、最も一般"
 "的なプラットフォームの一部に関する詳細情報を示します。"
 
-#: weblate_web/templates/download.html:41
+#: weblate_web/templates/download.html:40
 msgid "Running Weblate in a Docker container"
 msgstr "Docker コンテナで Weblate の実行"
 
-#: weblate_web/templates/download.html:42
+#: weblate_web/templates/download.html:41
 msgid "Docker guide"
 msgstr "Docker ガイド"
 
-#: weblate_web/templates/download.html:46
+#: weblate_web/templates/download.html:45
 msgid "Running Weblate on the OpenShift platform"
 msgstr "OpenShift プラットフォーム上での Weblate の実行"
 
-#: weblate_web/templates/download.html:47
+#: weblate_web/templates/download.html:46
 msgid "OpenShift guide"
 msgstr "OpenShift ガイド"
 
-#: weblate_web/templates/download.html:51
+#: weblate_web/templates/download.html:50
 msgid "Running Weblate on the Kubernetes platform"
 msgstr "Kubernetes プラットフォーム上での Weblate の実行"
 
-#: weblate_web/templates/download.html:52
+#: weblate_web/templates/download.html:51
 msgid "Kubernetes guide"
 msgstr "Kubernetes ガイド"
 
-#: weblate_web/templates/download.html:56
-msgid ""
-"Additionally, Bitnami Weblate stack is available for many platforms and "
-"works with most cloud providers."
-msgstr ""
-"また、Bitnami Weblate スタックは多くのプラットフォームに対応しており、ほとん"
-"どのクラウド プロバイダーで動作します。"
-
-#: weblate_web/templates/download.html:57
-msgid "Google Cloud Platform"
-msgstr "Google Cloud Platform"
-
-#: weblate_web/templates/download.html:58
-msgid "Amazon Web Services"
-msgstr "Amazon Web Services"
-
-#: weblate_web/templates/download.html:59
-msgid "Microsoft Azure"
-msgstr "Microsoft Azure"
-
-#: weblate_web/templates/download.html:62
+#: weblate_web/templates/download.html:55
 msgid "GitHub repository"
 msgstr "GitHub リポジトリ"
 
-#: weblate_web/templates/download.html:63
+#: weblate_web/templates/download.html:56
 #, python-format
 msgid ""
 "Weblate is developed on <a href=\"%(url)s\">GitHub</a>, you can fork it "
@@ -1469,12 +1615,12 @@ msgstr ""
 "Weblate は <a href=\"%(url)s\">GitHub</a> 上で開発され、フォークしたり、<a "
 "href=\"%(url)s\">その他のリポジトリ</a> を検索したり、そのまま使用できます。"
 
-#: weblate_web/templates/download.html:69
-#: weblate_web/templates/download.html:72
+#: weblate_web/templates/download.html:62
+#: weblate_web/templates/download.html:65
 msgid "Weblate command line client"
 msgstr "Weblate コマンドライン クライアント"
 
-#: weblate_web/templates/download.html:73
+#: weblate_web/templates/download.html:66
 #, python-format
 msgid ""
 "You can control Weblate remotely using <a href=\"%(url)s\">wlc</a>, which "
@@ -1870,7 +2016,8 @@ msgstr "操作性の高い UI"
 msgid ""
 "User interface that works nicely on desktop, tablets and phones in both "
 "light and dark mode."
-msgstr "デスクトップ、タブレット、スマートフォンで、ライトモードでもダークモードでも"
+msgstr ""
+"デスクトップ、タブレット、スマートフォンで、ライトモードでもダークモードでも"
 "きれいに動作するユーザーインターフェイス。"
 
 #: weblate_web/templates/features.html:226
@@ -2022,7 +2169,7 @@ msgstr "専用クラウド"
 #: weblate_web/templates/hosting.html:122
 #: weblate_web/templates/hosting.html:155
 #: weblate_web/templates/hosting.html:188
-#: weblate_web/templates/snippets/pricing.html:123
+#: weblate_web/templates/snippets/pricing.html:177
 msgctxt "Hosting plan"
 msgid "Self-hosted"
 msgstr "ご自身のサーバー"
@@ -2036,8 +2183,8 @@ msgstr "オプション"
 
 #: weblate_web/templates/hosting.html:189
 #: weblate_web/templates/hosting.html:264
-#: weblate_web/templates/snippets/pricing.html:144
-#: weblate_web/templates/snippets/pricing.html:168
+#: weblate_web/templates/snippets/pricing.html:198
+#: weblate_web/templates/snippets/pricing.html:222
 msgid "Gratis"
 msgstr "無料"
 
@@ -2060,10 +2207,10 @@ msgstr "オプション参照"
 
 #: weblate_web/templates/hosting.html:248
 #: weblate_web/templates/hosting.html:258
-#: weblate_web/templates/hosting.html:591
-#: weblate_web/templates/hosting.html:603
-#: weblate_web/templates/hosting.html:615
-#: weblate_web/templates/hosting.html:628 weblate_web/templates/support.html:60
+#: weblate_web/templates/hosting.html:677
+#: weblate_web/templates/hosting.html:689
+#: weblate_web/templates/hosting.html:701
+#: weblate_web/templates/hosting.html:714 weblate_web/templates/support.html:60
 #: weblate_web/templates/support.html:72 weblate_web/templates/support.html:86
 #: weblate_web/templates/support.html:98 weblate_web/templates/support.html:113
 msgid "Buy now"
@@ -2094,23 +2241,27 @@ msgstr ""
 "href=\"%(contact)s\">お問い合わせ</a> ください — 最適な問題解決の準備ができて"
 "います。"
 
-#: weblate_web/templates/hosting.html:282
+#: weblate_web/templates/hosting.html:281
+msgid ""
+"Cloud hosting prices are based purely on number of strings. All plans "
+"include all Weblate features."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:285
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr ""
 "<b>14 日間の無料トライアル</b>は、すべてのクラウド プランに含まれています"
 
-#: weblate_web/templates/hosting.html:288
+#: weblate_web/templates/hosting.html:291
 msgid "Continuous localization"
 msgstr "継続的な現地語化"
 
-#: weblate_web/templates/hosting.html:291
-#: weblate_web/templates/hosting.html:654
-msgid "Source strings"
-msgstr "原文"
-
 #: weblate_web/templates/hosting.html:294
-msgid "Target languages"
-msgstr "翻訳先の言語数"
+#: weblate_web/templates/hosting.html:740
+#, fuzzy
+#| msgid "PHP strings"
+msgid "Hosted strings"
+msgstr "PHP 文字列"
 
 #: weblate_web/templates/hosting.html:297
 msgid "Translation projects"
@@ -2125,148 +2276,86 @@ msgid "Number of translators"
 msgstr "翻訳者数"
 
 #: weblate_web/templates/hosting.html:306
-#: weblate_web/templates/hosting.html:455
+#: weblate_web/templates/hosting.html:479
 msgid "Dedicated instance"
 msgstr "専用インスタンス"
 
-#: weblate_web/templates/hosting.html:314
-#: weblate_web/templates/snippets/pricing.html:12
-msgctxt "Hosting plan"
-msgid "Basic"
-msgstr "ベーシック"
-
-#: weblate_web/templates/hosting.html:315
-#: weblate_web/templates/hosting.html:342
-#: weblate_web/templates/hosting.html:369
-#: weblate_web/templates/hosting.html:396
-msgid "cloud"
-msgstr "クラウド"
-
-#: weblate_web/templates/hosting.html:330
-#: weblate_web/templates/hosting.html:333
-#: weblate_web/templates/hosting.html:357
-#: weblate_web/templates/hosting.html:360
-#: weblate_web/templates/hosting.html:381
-#: weblate_web/templates/hosting.html:384
-#: weblate_web/templates/hosting.html:387
-#: weblate_web/templates/hosting.html:408
-#: weblate_web/templates/hosting.html:411
-#: weblate_web/templates/hosting.html:414
-#: weblate_web/templates/hosting.html:435
-#: weblate_web/templates/hosting.html:438
-#: weblate_web/templates/hosting.html:441
-#: weblate_web/templates/snippets/pricing.html:33
-#: weblate_web/templates/snippets/pricing.html:59
-#: weblate_web/templates/snippets/pricing.html:81
-#: weblate_web/templates/snippets/pricing.html:85
-#: weblate_web/templates/snippets/pricing.html:107
-#: weblate_web/templates/snippets/pricing.html:111
-#: weblate_web/templates/snippets/pricing.html:129
-#: weblate_web/templates/snippets/pricing.html:133
-#: weblate_web/templates/snippets/pricing.html:137
-#: weblate_web/templates/snippets/pricing.html:141
-#: weblate_web/templates/snippets/pricing.html:165
-msgid "Unlimited"
-msgstr "無制限"
-
-#: weblate_web/templates/hosting.html:336
-#: weblate_web/templates/hosting.html:363
-#: weblate_web/templates/hosting.html:390
-#, python-format
-msgid "Additional charge %(price)s/year, only available with yearly billing"
-msgstr "追加費用は %(price)s /年、年払いのみ"
-
-#: weblate_web/templates/hosting.html:341
-#: weblate_web/templates/snippets/pricing.html:13
-msgctxt "Hosting plan"
-msgid "Medium"
-msgstr "ミディアム"
-
-#: weblate_web/templates/hosting.html:368
-#: weblate_web/templates/snippets/pricing.html:14
-msgctxt "Hosting plan"
-msgid "Advanced"
-msgstr "アドバンスト"
-
-#: weblate_web/templates/hosting.html:395
-#: weblate_web/templates/snippets/pricing.html:15
-msgctxt "Hosting plan"
-msgid "Enterprise"
-msgstr "エンタープライズ"
-
-#: weblate_web/templates/hosting.html:422
+#: weblate_web/templates/hosting.html:450
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "カスタム仕様"
 
-#: weblate_web/templates/hosting.html:423
-msgid "and dedicated"
-msgstr "専用サーバー"
-
-#: weblate_web/templates/hosting.html:429
-#: weblate_web/templates/hosting.html:432
-#, python-format
-msgid "over <strong>%(count)s</strong>"
-msgstr "<strong>%(count)s</strong> 以上"
-
-#: weblate_web/templates/hosting.html:451
-#: weblate_web/templates/hosting.html:526
-#: weblate_web/templates/hosting.html:538
-#: weblate_web/templates/hosting.html:550
-#: weblate_web/templates/hosting.html:563
-#: weblate_web/templates/hosting.html:588
-#: weblate_web/templates/hosting.html:600
-#: weblate_web/templates/hosting.html:612
-#: weblate_web/templates/hosting.html:625
-#: weblate_web/templates/snippets/pricing.html:40
-#: weblate_web/templates/snippets/pricing.html:66
-#: weblate_web/templates/snippets/pricing.html:92
-#: weblate_web/templates/snippets/pricing.html:118
+#: weblate_web/templates/hosting.html:475
+#: weblate_web/templates/hosting.html:574
+#: weblate_web/templates/hosting.html:586
+#: weblate_web/templates/hosting.html:598
+#: weblate_web/templates/hosting.html:611
+#: weblate_web/templates/hosting.html:623
+#: weblate_web/templates/hosting.html:635
+#: weblate_web/templates/hosting.html:674
+#: weblate_web/templates/hosting.html:686
+#: weblate_web/templates/hosting.html:698
+#: weblate_web/templates/hosting.html:711
+#: weblate_web/templates/snippets/pricing.html:42
+#: weblate_web/templates/snippets/pricing.html:68
+#: weblate_web/templates/snippets/pricing.html:94
+#: weblate_web/templates/snippets/pricing.html:120
+#: weblate_web/templates/snippets/pricing.html:146
+#: weblate_web/templates/snippets/pricing.html:172
 msgid "Yearly"
 msgstr "年払い"
 
-#: weblate_web/templates/hosting.html:458
+#: weblate_web/templates/hosting.html:482
 msgid "<strong>Save more</strong> with longer pre-payment!"
 msgstr "長期の前払いで <strong>さらに割引！</strong>"
 
-#: weblate_web/templates/hosting.html:469
-#: weblate_web/templates/hosting.html:481
 #: weblate_web/templates/hosting.html:493
-#: weblate_web/templates/hosting.html:504
-#: weblate_web/templates/hosting.html:529
-#: weblate_web/templates/hosting.html:541
-#: weblate_web/templates/hosting.html:553
-#: weblate_web/templates/hosting.html:566
+#: weblate_web/templates/hosting.html:505
+#: weblate_web/templates/hosting.html:517
+#: weblate_web/templates/hosting.html:528
+#: weblate_web/templates/hosting.html:540
+#: weblate_web/templates/hosting.html:552
+#: weblate_web/templates/hosting.html:577
+#: weblate_web/templates/hosting.html:589
+#: weblate_web/templates/hosting.html:601
+#: weblate_web/templates/hosting.html:614
+#: weblate_web/templates/hosting.html:626
+#: weblate_web/templates/hosting.html:638
 #: weblate_web/templates/snippets/about.html:6
 msgid "Gratis trial"
 msgstr "無料体験"
 
-#: weblate_web/templates/hosting.html:512
-#: weblate_web/templates/hosting.html:574
-#: weblate_web/templates/hosting.html:636
+#: weblate_web/templates/hosting.html:560
+#: weblate_web/templates/hosting.html:646
+#: weblate_web/templates/hosting.html:722
 msgid "<b>Ask</b> for options"
 msgstr "オプションの<b>お問い合わせ</b>"
 
-#: weblate_web/templates/hosting.html:650
+#: weblate_web/templates/hosting.html:736
 #: weblate_web/templates/support.html:129
 msgid "Payment"
 msgstr "支払い方法"
 
-#: weblate_web/templates/hosting.html:656
+#: weblate_web/templates/hosting.html:742
+#, fuzzy
+#| msgid ""
+#| "Pricing is based on the number of source strings and target languages. A "
+#| "source string is a text unit defined in a translation format. It can be a "
+#| "word, sentence or paragraph."
 msgid ""
-"Pricing is based on the number of source strings and target languages. A "
-"source string is a text unit defined in a translation format. It can be a "
-"word, sentence or paragraph."
+"Pricing is based on the number of strings in all used languages. A string is "
+"a text unit defined in a translation format. It can be a word, sentence, or "
+"paragraph."
 msgstr ""
 "価格は、原文となる文字列の数と対象となる言語の数を基準に設定しています。文字"
 "列の数は、翻訳対象となる一単位のテキストを一つと数えます。一単位のテキスト"
 "は、単語一つの場合もあれば、一つの文、一つの段落となる場合もあります。"
 
-#: weblate_web/templates/hosting.html:660
+#: weblate_web/templates/hosting.html:746
 msgid "Weblate proudly supports libre projects"
 msgstr "Weblate が Libre プロジェクトをサポートできることを誇りに思います"
 
-#: weblate_web/templates/hosting.html:662
+#: weblate_web/templates/hosting.html:748
 #, python-format
 msgid ""
 "If you feel like being supported by Weblate will help you, <a "
@@ -2276,7 +2365,7 @@ msgstr ""
 "Weblate のサポートが必要な場合は、<a href=\"%(url)s\">Libre プロジェクトを立"
 "ち上げて</a>、<strong>Libre プラン</strong>でご利用いただけます。"
 
-#: weblate_web/templates/hosting.html:663
+#: weblate_web/templates/hosting.html:749
 msgid ""
 "It has the same limits as the <strong>Advanced plan</strong>, but only for "
 "public projects."
@@ -2284,7 +2373,7 @@ msgstr ""
 "<strong>アドバンスト プラン</strong> と同じ制限がありますが、公開プロジェクト"
 "に限り許可しています。"
 
-#: weblate_web/templates/hosting.html:668
+#: weblate_web/templates/hosting.html:754
 msgid "Join existing users and supporters"
 msgstr "現在の利用者と支援者に参加する"
 
@@ -2697,10 +2786,6 @@ msgid ""
 msgstr ""
 "当社は、誰もが成長できる機会がある、小さな Libre ソフトウェアの開発会社です。"
 
-#: weblate_web/templates/snippets/download-link.html:5
-msgid "PGP signature"
-msgstr "PGP 署名"
-
 #: weblate_web/templates/snippets/features-1.html:7
 msgid "Continuous Localization"
 msgstr "開発と翻訳が結びついた現地語化"
@@ -2806,77 +2891,116 @@ msgstr "プレミアム クラウド"
 msgid "for ease and comfort"
 msgstr "安心・快適"
 
-#: weblate_web/templates/snippets/pricing.html:20
-#: weblate_web/templates/snippets/pricing.html:46
-#: weblate_web/templates/snippets/pricing.html:72
-#: weblate_web/templates/snippets/pricing.html:98
-#: weblate_web/templates/snippets/pricing.html:128
+#: weblate_web/templates/snippets/pricing.html:22
+#: weblate_web/templates/snippets/pricing.html:48
+#: weblate_web/templates/snippets/pricing.html:74
+#: weblate_web/templates/snippets/pricing.html:100
+#: weblate_web/templates/snippets/pricing.html:126
 #: weblate_web/templates/snippets/pricing.html:152
+#: weblate_web/templates/snippets/pricing.html:182
+#: weblate_web/templates/snippets/pricing.html:206
+#, fuzzy
+#| msgid "PHP strings"
 msgctxt "Hosting plan parameter"
-msgid "Source strings"
-msgstr "原文"
+msgid "Hosted strings"
+msgstr "PHP 文字列"
 
-#: weblate_web/templates/snippets/pricing.html:24
-#: weblate_web/templates/snippets/pricing.html:50
-#: weblate_web/templates/snippets/pricing.html:76
-#: weblate_web/templates/snippets/pricing.html:102
-#: weblate_web/templates/snippets/pricing.html:132
+#: weblate_web/templates/snippets/pricing.html:26
+#: weblate_web/templates/snippets/pricing.html:52
+#: weblate_web/templates/snippets/pricing.html:78
+#: weblate_web/templates/snippets/pricing.html:104
+#: weblate_web/templates/snippets/pricing.html:130
 #: weblate_web/templates/snippets/pricing.html:156
+#: weblate_web/templates/snippets/pricing.html:186
+#: weblate_web/templates/snippets/pricing.html:210
 msgctxt "Hosting plan parameter"
 msgid "Languages"
 msgstr "言語"
 
-#: weblate_web/templates/snippets/pricing.html:28
-#: weblate_web/templates/snippets/pricing.html:54
-#: weblate_web/templates/snippets/pricing.html:80
-#: weblate_web/templates/snippets/pricing.html:106
-#: weblate_web/templates/snippets/pricing.html:136
+#: weblate_web/templates/snippets/pricing.html:27
+#: weblate_web/templates/snippets/pricing.html:31
+#: weblate_web/templates/snippets/pricing.html:35
+#: weblate_web/templates/snippets/pricing.html:53
+#: weblate_web/templates/snippets/pricing.html:57
+#: weblate_web/templates/snippets/pricing.html:61
+#: weblate_web/templates/snippets/pricing.html:79
+#: weblate_web/templates/snippets/pricing.html:83
+#: weblate_web/templates/snippets/pricing.html:87
+#: weblate_web/templates/snippets/pricing.html:105
+#: weblate_web/templates/snippets/pricing.html:109
+#: weblate_web/templates/snippets/pricing.html:113
+#: weblate_web/templates/snippets/pricing.html:131
+#: weblate_web/templates/snippets/pricing.html:135
+#: weblate_web/templates/snippets/pricing.html:139
+#: weblate_web/templates/snippets/pricing.html:157
+#: weblate_web/templates/snippets/pricing.html:161
+#: weblate_web/templates/snippets/pricing.html:165
+#: weblate_web/templates/snippets/pricing.html:183
+#: weblate_web/templates/snippets/pricing.html:187
+#: weblate_web/templates/snippets/pricing.html:191
+#: weblate_web/templates/snippets/pricing.html:195
+#: weblate_web/templates/snippets/pricing.html:211
+#: weblate_web/templates/snippets/pricing.html:219
+msgid "Unlimited"
+msgstr "無制限"
+
+#: weblate_web/templates/snippets/pricing.html:30
+#: weblate_web/templates/snippets/pricing.html:56
+#: weblate_web/templates/snippets/pricing.html:82
+#: weblate_web/templates/snippets/pricing.html:108
+#: weblate_web/templates/snippets/pricing.html:134
 #: weblate_web/templates/snippets/pricing.html:160
+#: weblate_web/templates/snippets/pricing.html:190
+#: weblate_web/templates/snippets/pricing.html:214
 msgctxt "Hosting plan parameter"
 msgid "Projects"
 msgstr "プロジェクト"
 
-#: weblate_web/templates/snippets/pricing.html:32
-#: weblate_web/templates/snippets/pricing.html:58
-#: weblate_web/templates/snippets/pricing.html:84
-#: weblate_web/templates/snippets/pricing.html:110
-#: weblate_web/templates/snippets/pricing.html:140
+#: weblate_web/templates/snippets/pricing.html:34
+#: weblate_web/templates/snippets/pricing.html:60
+#: weblate_web/templates/snippets/pricing.html:86
+#: weblate_web/templates/snippets/pricing.html:112
+#: weblate_web/templates/snippets/pricing.html:138
 #: weblate_web/templates/snippets/pricing.html:164
+#: weblate_web/templates/snippets/pricing.html:194
+#: weblate_web/templates/snippets/pricing.html:218
 msgctxt "Hosting plan parameter"
 msgid "Components"
 msgstr "コンポーネント"
 
-#: weblate_web/templates/snippets/pricing.html:40
-#: weblate_web/templates/snippets/pricing.html:66
-#: weblate_web/templates/snippets/pricing.html:92
-#: weblate_web/templates/snippets/pricing.html:118
+#: weblate_web/templates/snippets/pricing.html:42
+#: weblate_web/templates/snippets/pricing.html:68
+#: weblate_web/templates/snippets/pricing.html:94
+#: weblate_web/templates/snippets/pricing.html:120
+#: weblate_web/templates/snippets/pricing.html:146
+#: weblate_web/templates/snippets/pricing.html:172
 #, python-format
 msgid "Save %(percent)s%%"
 msgstr "%(percent)s%% 節約"
 
-#: weblate_web/templates/snippets/pricing.html:124
+#: weblate_web/templates/snippets/pricing.html:178
 msgid "for complete control"
 msgstr "全機能自己管理"
 
-#: weblate_web/templates/snippets/pricing.html:144
+#: weblate_web/templates/snippets/pricing.html:198
 #, python-format
 msgid "with paid <a href=\"%(url)s\">support</a>"
 msgstr "有料の <a href=\"%(url)s\">サポート依頼</a>"
 
-#: weblate_web/templates/snippets/pricing.html:147
+#: weblate_web/templates/snippets/pricing.html:201
 msgid "Gratis Weblate"
 msgstr "無料の Weblate"
 
-#: weblate_web/templates/snippets/pricing.html:148
+#: weblate_web/templates/snippets/pricing.html:202
 msgid "for libre projects"
 msgstr "Libre プロジェクト用"
 
-#: weblate_web/templates/snippets/pricing.html:168
+#: weblate_web/templates/snippets/pricing.html:222
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "<a href=\"%(url)s\">申請</a> する"
 
-#: weblate_web/templates/snippets/pricing.html:172
+#: weblate_web/templates/snippets/pricing.html:226
 msgid "Compare all plans"
 msgstr "すべてのプランの比較"
 
@@ -3325,7 +3449,7 @@ msgid "Other topics"
 msgstr "その他のトピック"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:648
+#: weblate_web/views.py:650
 msgid "Milestones"
 msgstr "マイルス トーン"
 
@@ -3337,42 +3461,46 @@ msgstr "関連記事"
 msgid "Back to blog"
 msgstr "ブログに戻る"
 
-#: weblate_web/templatetags/downloads.py:39
+#: weblate_web/templatetags/downloads.py:37
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] "%(size)d bytes"
 
-#: weblate_web/templatetags/downloads.py:43
+#: weblate_web/templatetags/downloads.py:41
 #, python-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: weblate_web/templatetags/downloads.py:45
+#: weblate_web/templatetags/downloads.py:43
 #, python-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: weblate_web/templatetags/downloads.py:46
+#: weblate_web/templatetags/downloads.py:44
 #, python-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: weblate_web/templatetags/downloads.py:53
+#: weblate_web/templatetags/downloads.py:52
 msgid "Sources tarball, bzip2 compressed"
 msgstr "ソース tarball、bzip2 圧縮"
 
-#: weblate_web/templatetags/downloads.py:55
+#: weblate_web/templatetags/downloads.py:54
 msgid "Sources tarball, gzip compressed"
 msgstr "ソース tarball、gzip 圧縮"
 
-#: weblate_web/templatetags/downloads.py:57
+#: weblate_web/templatetags/downloads.py:56
 msgid "Sources tarball, xz compressed"
 msgstr "ソース tarball、xz 圧縮"
 
-#: weblate_web/templatetags/downloads.py:59
+#: weblate_web/templatetags/downloads.py:58
 msgid "Sources, zip compressed"
 msgstr "ソース、zip 圧縮"
+
+#: weblate_web/templatetags/downloads.py:60
+msgid "Wheel package"
+msgstr ""
 
 #. Translators: currency is a currency code here, for example CZK
 #: weblate_web/templatetags/prices.py:34
@@ -3440,41 +3568,105 @@ msgstr[0] "残り %d 日"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "パラメータ %(field)s 内でエラー: %(error)s"
 
-#: weblate_web/views.py:313 weblate_web/views.py:352
+#: weblate_web/views.py:315 weblate_web/views.py:354
 msgid "Please provide your billing information to complete the payment."
 msgstr "支払いを完了するには、お支払い情報を入力してください。"
 
-#: weblate_web/views.py:326
+#: weblate_web/views.py:328
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "VAT ID が有効ではなくなっています。更新してください。"
 
-#: weblate_web/views.py:347
+#: weblate_web/views.py:349
 msgid "Please choose a payment method."
 msgstr "お支払い方法を選択してください。"
 
-#: weblate_web/views.py:475
+#: weblate_web/views.py:477
 msgid "Payment not yet processed, please retry."
 msgstr "支払いはまだ処理されていません。もう一度お試しください。"
 
-#: weblate_web/views.py:479
+#: weblate_web/views.py:481
 msgid "The payment was rejected: {}"
 msgstr "拒否された支払い: {}"
 
-#: weblate_web/views.py:480
+#: weblate_web/views.py:482
 msgid "Unknown reason"
 msgstr "理由不明"
 
-#: weblate_web/views.py:485
+#: weblate_web/views.py:487
 msgid "Thank you for your subscription."
 msgstr "お申し込みありがとうございます。"
 
-#: weblate_web/views.py:488
+#: weblate_web/views.py:490
 msgid "Thank you for your donation."
 msgstr "寄付していただきありがとうございます。"
 
-#: weblate_web/views.py:749
+#: weblate_web/views.py:751
 msgid "User not found!"
 msgstr "利用者が見つかりません！"
+
+#~ msgid ""
+#~ "VAT ID validation service unavailable for {}, please try again later."
+#~ msgstr ""
+#~ "{} の VAT ID 検証サービスは利用できません。時間をおいて実行してください。"
+
+#~ msgid ""
+#~ "Additionally, Bitnami Weblate stack is available for many platforms and "
+#~ "works with most cloud providers."
+#~ msgstr ""
+#~ "また、Bitnami Weblate スタックは多くのプラットフォームに対応しており、ほと"
+#~ "んどのクラウド プロバイダーで動作します。"
+
+#~ msgid "Google Cloud Platform"
+#~ msgstr "Google Cloud Platform"
+
+#~ msgid "Amazon Web Services"
+#~ msgstr "Amazon Web Services"
+
+#~ msgid "Microsoft Azure"
+#~ msgstr "Microsoft Azure"
+
+#~ msgid "Source strings"
+#~ msgstr "原文"
+
+#~ msgid "Target languages"
+#~ msgstr "翻訳先の言語数"
+
+#~ msgctxt "Hosting plan"
+#~ msgid "Basic"
+#~ msgstr "ベーシック"
+
+#~ msgid "cloud"
+#~ msgstr "クラウド"
+
+#, python-format
+#~ msgid "Additional charge %(price)s/year, only available with yearly billing"
+#~ msgstr "追加費用は %(price)s /年、年払いのみ"
+
+#~ msgctxt "Hosting plan"
+#~ msgid "Medium"
+#~ msgstr "ミディアム"
+
+#~ msgctxt "Hosting plan"
+#~ msgid "Advanced"
+#~ msgstr "アドバンスト"
+
+#~ msgctxt "Hosting plan"
+#~ msgid "Enterprise"
+#~ msgstr "エンタープライズ"
+
+#~ msgid "and dedicated"
+#~ msgstr "専用サーバー"
+
+#, python-format
+#~ msgid "over <strong>%(count)s</strong>"
+#~ msgstr "<strong>%(count)s</strong> 以上"
+
+#~ msgid "PGP signature"
+#~ msgstr "PGP 署名"
+
+#~ msgctxt "Hosting plan parameter"
+#~ msgid "Source strings"
+#~ msgstr "原文"
 
 #~ msgid "Java"
 #~ msgstr "Java"
@@ -3535,9 +3727,6 @@ msgstr "利用者が見つかりません！"
 
 #~ msgid "Bring modern front-end technologies to Weblate."
 #~ msgstr "Weblate に最新のフロントエンド テクノロジをもたらします。"
-
-#~ msgid "Python developer"
-#~ msgstr "Python 開発者"
 
 #~ msgid "Tune up the back-end and libraries and save time for all users."
 #~ msgstr ""
