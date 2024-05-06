@@ -126,7 +126,7 @@
                                 <span class="cross"></span>
                             </div>
                             <div class="line">
-                                <a href="{% url 'support' %}#install">{{ 300 | price_format }}</a>
+                                <a href="{% url 'support' %}#install">{{ 480 | price_format }}</a>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
@@ -221,7 +221,7 @@
                             <div class="col">
                                 <div class="line price">
                                     {% trans "From" %}
-                                    <strong>{{ 17 | price_format }}</strong>
+                                    <strong>{{ 37 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -231,7 +231,7 @@
                             <div class="col">
                                 <div class="line price">
                                     {% trans "From" %}
-                                    <strong>{{ 25 | price_format }}</strong>
+                                    <strong>{{ 88 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -241,7 +241,7 @@
                             <div class="col">
                                 <div class="line price">
                                     &nbsp;
-                                    <strong>{{ 63 | price_format }}</strong>
+                                    <strong>{{ 100 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -251,7 +251,7 @@
                             <div class="col">
                                 <div class="line price">
                                     &nbsp;
-                                    <strong>{{ 42 | price_format }}</strong>
+                                    <strong>{{ 50 | price_format }}</strong>
                                     {% filter upper %}{% trans "a month" %}{% endfilter %}
                                 </div>
                                 <div class="line">
@@ -277,6 +277,9 @@
             <div class="page-desc small">
                 <p class="small">{% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktrans %}</p>
             </div>
+            <div class="page-desc small">
+                <p class="small">{% blocktranslate %}Cloud hosting prices are based purely on number of strings. All plans include all Weblate features.{% endblocktranslate %}</p>
+            </div>
 
             <div class="pricing-table-top">
               {% blocktrans %}<b>14-day gratis trial</b> included in all cloud plans{% endblocktrans %}
@@ -288,10 +291,7 @@
                             <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% trans "Continuous localization" %}</a></span>
                         </div>
                         <div class="line">
-                            <span class="middle"><a href="#strings">{% trans "Source strings" %}</a></span>
-                        </div>
-                        <div class="line">
-                            <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/languages.html">{% trans "Target languages" %}</a></span>
+                            <span class="middle"><a href="#strings">{% trans "Hosted strings" %}</a></span>
                         </div>
                         <div class="line">
                             <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#project-configuration">{% trans "Translation projects" %}</a></span>
@@ -307,66 +307,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="pricing-table-right">
-                    <div class="pricing-table-right-inner">
+                <div class="pricing-table-right pricing-table-right-2">
+                    <div class="pricing-table-right-inner pricing-table-right-inner-2">
                         <div class="col">
                             <div class="head line blue">
-                                <strong>{% trans "Basic" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <strong>{{ 1000|intcomma }}</strong>
-                            </div>
-                            <div class="line">
-                                <strong>15</strong>
-                            </div>
-                            <div class="line">
-                                1
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span title="{% blocktrans with price=100|price_format %}Additional charge {{ price }}/year, only available with yearly billing{% endblocktrans %}">{{ 100 | price_format }}</span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line blue">
-                                <strong>{% trans "Medium" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
-                            </div>
-                            <div class="line">
-                                <span class="check"></span>
-                            </div>
-                            <div class="line">
-                                <strong>{{ 3000|intcomma }}</strong>
-                            </div>
-                            <div class="line">
-                                <strong>30</strong>
-                            </div>
-                            <div class="line">
-                                2
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span title="{% blocktrans with price=100|price_format %}Additional charge {{ price }}/year, only available with yearly billing{% endblocktrans %}">{{ 100 | price_format }}</span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="head line blue">
-                                <strong>{% trans "Advanced" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
+                                <strong>10k</strong>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
@@ -375,43 +320,126 @@
                                 <strong>{{ 10000|intcomma }}</strong>
                             </div>
                             <div class="line">
-                                <strong>60</strong>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span title="{% blocktrans with price=100|price_format %}Additional charge {{ price }}/year, only available with yearly billing{% endblocktrans %}">{{ 100 | price_format }}</span>
                             </div>
                         </div>
                         <div class="col">
                             <div class="head line blue">
-                                <strong>{% trans "Enterprise" context "Hosting plan" %}</strong><br />
-                                {% trans "cloud" %}
+                                <strong>40k</strong>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
                             </div>
                             <div class="line">
-                                <strong>{{ 50000|intcomma }}</strong>
+                                <strong>{{ 40000|intcomma }}</strong>
                             </div>
                             <div class="line">
-                                <strong>100</strong>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line blue">
+                                <strong>160k</strong>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{ 160000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line blue">
+                                <strong>640k</strong>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{ 640000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line blue">
+                                <strong>2.5M</strong>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{ 2560000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="head line blue">
+                                <strong>10M</strong>
+                            </div>
+                            <div class="line">
+                                <span class="check"></span>
+                            </div>
+                            <div class="line">
+                                <strong>{{10240000|intcomma }}</strong>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
+                            </div>
+                            <div class="line">
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
@@ -419,26 +447,22 @@
                         </div>
                         <div class="col">
                             <div class="head line">
-                                <strong>{% trans "Custom" context "Hosting plan" %}</strong><br />
-                                {% trans "and dedicated" %}
+                                <strong>{% trans "Custom" context "Hosting plan" %}</strong>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
                             </div>
                             <div class="line">
-                                {% blocktrans with count=50000|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                {% blocktrans with count=100|intcomma %}over <strong>{{ count }}</strong>{% endblocktrans %}
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
-                            </div>
-                            <div class="line">
-                                <span class="green">{% trans "Unlimited" %}</span>
+                                <span class="green">∞</span>
                             </div>
                             <div class="line">
                                 <span class="check"></span>
@@ -462,7 +486,7 @@
                             <div id="monthly" class="tab-content current">
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 19 | price_format }}</strong>
+                                        <strong>{{ 45 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -474,7 +498,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 49 | price_format }}</strong>
+                                        <strong>{{ 66 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -486,7 +510,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 99 | price_format }}</strong>
+                                        <strong>{{ 106 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -497,7 +521,31 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 299 | price_format }}</strong>
+                                        <strong>{{ 178 | price_format }}</strong>
+                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{{ 313 | price_format }}</strong>
+                                        {% filter upper %}{% trans "Monthly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{{ 562 | price_format }}</strong>
                                         {% filter upper %}{% trans "Monthly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -522,7 +570,7 @@
                             <div id="yearly" class="tab-content">
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 199 | price_format }}</strong>
+                                        <strong>{{ 450 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -534,7 +582,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 499 | price_format }}</strong>
+                                        <strong>{{ 660 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -546,7 +594,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 999 | price_format }}</strong>
+                                        <strong>{{ 1060 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -558,7 +606,31 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 2999 | price_format }}</strong>
+                                        <strong>{{ 1780 | price_format }}</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{{ 3130 | price_format }}</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{{ 5620 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
@@ -582,12 +654,14 @@
                             </div>
                             <div id="dedicated" class="tab-content">
                                 <div class="col">
-                                    <div class="line price">
-                                        <strong>{{ 299 | price_format }}</strong>
-                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    <div class="line price small">
                                     </div>
-                                    <div class="line">
-                                        <a href="{% url 'subscription-new' %}?plan=hosted:basic" class="button">{% trans "Buy now" %}</a>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price small">
                                     </div>
                                     <div class="line last">
 
@@ -595,11 +669,11 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 599 | price_format }}</strong>
+                                        <strong>{{ 1060 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
-                                        <a href="{% url 'subscription-new' %}?plan=hosted:medium" class="button">{% trans "Buy now" %}</a>
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:160k" class="button">{% trans "Buy now" %}</a>
                                     </div>
                                     <div class="line last">
 
@@ -607,11 +681,23 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 1099 | price_format }}</strong>
+                                        <strong>{{ 1780 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
-                                        <a href="{% url 'subscription-new' %}?plan=hosted:advanced" class="button">{% trans "Buy now" %}</a>
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:640k" class="button">{% trans "Buy now" %}</a>
+                                    </div>
+                                    <div class="line last">
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="line price">
+                                        <strong>{{ 3130 | price_format }}</strong>
+                                        {% filter upper %}{% trans "Yearly" %}{% endfilter %}
+                                    </div>
+                                    <div class="line">
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:2.5m" class="button">{% trans "Buy now" %}</a>
                                     </div>
                                     <div class="line last">
                                         {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
@@ -619,11 +705,11 @@
                                 </div>
                                 <div class="col">
                                     <div class="line price">
-                                        <strong>{{ 2999 | price_format }}</strong>
+                                        <strong>{{ 5620 | price_format }}</strong>
                                         {% filter upper %}{% trans "Yearly" %}{% endfilter %}
                                     </div>
                                     <div class="line">
-                                        <a href="{% url 'subscription-new' %}?plan=hosted:enterprise" class="button">{% trans "Buy now" %}</a>
+                                        <a href="{% url 'subscription-new' %}?plan=hosted:10m" class="button">{% trans "Buy now" %}</a>
                                     </div>
                                     <div class="line last">
 
@@ -649,9 +735,9 @@
             <div class="page-desc small">
                 {% include "snippets/vat.html" %}
             </div>
-            <h2 class="section-title crypto payment-conditions" id="strings">{% trans "Source strings" %}</h2>
+            <h2 class="section-title crypto payment-conditions" id="strings">{% trans "Hosted strings" %}</h2>
             <div class="page-desc small">
-                <p>{% trans "Pricing is based on the number of source strings and target languages. A source string is a text unit defined in a translation format. It can be a word, sentence or paragraph." %}</p>
+                <p>{% trans "Pricing is based on the number of strings in all used languages. A string is a text unit defined in a translation format. It can be a word, sentence, or paragraph." %}</p>
             </div>
 
             <div class="libre-hosting" id="libre">
