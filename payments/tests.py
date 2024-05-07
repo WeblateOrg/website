@@ -303,4 +303,4 @@ class VATTest(SimpleTestCase):
         try:
             validate_vatin("CZ8003280318")
         except ValidationError as error:
-            self.assertIn("service unavailable", str(error))
+            self.assertIn("View service status", str(error))
