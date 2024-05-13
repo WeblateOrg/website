@@ -31,7 +31,7 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
-            
+
             <div class="page-desc">
               <!-- Description section -->
               <a class="button inline" href="{% url "support" %}">{% trans "Get support" %}</a>
@@ -41,7 +41,7 @@
             </div>
 
             <h1>{% trans "My donations" %}</h1>
-        
+
             {% for donation in user.donation_set.all %}
             <div class="payment-form payment-padding">
                 <div class="form-line donation-left-line">
@@ -165,4 +165,3 @@
     </div>
 </section>
 {% endblock %}
-
