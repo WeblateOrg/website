@@ -230,7 +230,7 @@ img {
     <div class="container">
         <div class="box">
             <h1>
-                <img src="{% if request %}{% static "email-logo.png" %}{% else %}cid:email-logo.png@cid.weblate.org{% endif %}" />
+                <img src="{% if request %}{% static "email-logo.png" %}{% else %}cid:email-logo.png@cid.weblate.org{% endif %}" alt="Weblate logo" />
                 {{ subject }}
             </h1>
             {% block content %}
@@ -238,7 +238,7 @@ img {
         </div>
         <div class="footer" style="clear:both">
 			<p>
-                <img src="{% if request %}{% static "email-logo-footer.png" %}{% else %}cid:email-logo-footer.png@cid.weblate.org{% endif %}" /><br />
+                <img src="{% if request %}{% static "email-logo-footer.png" %}{% else %}cid:email-logo-footer.png@cid.weblate.org{% endif %}" alt="Weblate logo" /><br />
                 <a href="https://weblate.org/">{% trans "Weblate, the libre continuous localization system." %}</a>
             </p>
             <p>

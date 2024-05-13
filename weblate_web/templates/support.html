@@ -19,21 +19,21 @@
 
             <div class="help-cols">
                 <div class="col">
-                    <div class="icon"><img src="{% static "img/icon-bugs.svg" %}" /></div>
+                    <div class="icon"><img src="{% static "img/icon-bugs.svg" %}" alt="Debugging bug"/></div>
                     <div class="content">
                         <div class="title">{% trans "Bugs and feature requests" %}</div>
                         <p>{% blocktrans with url="https://github.com/WeblateOrg/weblate/issues" %}Issues and ideas for improvement can be reported to the <a href="{{ url }}">issue tracker</a>.{% endblocktrans %}</p>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="icon"><img src="{% static "img/icon-issues.svg" %}" /></div>
+                    <div class="icon"><img src="{% static "img/icon-issues.svg" %}" alt="Shield"/></div>
                     <div class="content">
                         <div class="title">{% trans "Security issues" %}</div>
                         <p>{% blocktrans with url="https://docs.weblate.org/en/latest/contributing/issues.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}Should you find a vulnerability, please report it to {{ report }}. More info in the <a href="{{ url }}">documentation</a>.{% endblocktrans %}</p>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="icon"><img src="{% static "img/icon-subscribers.svg" %}" /></div>
+                    <div class="icon"><img src="{% static "img/icon-subscribers.svg" %}" alt="Cloud"/></div>
                     <div class="content">
                         <div class="title">{% trans "Reliable support" %}</div>
                         <p>{% blocktrans with email="support@weblate.org" %}As the subscriber, you will always receive fast replies from our dedicated support team at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktrans %}</p>
@@ -50,7 +50,7 @@
         <div class="installations">
           <div class="flex">
             <div class="box">
-                <div class="icon"><img src="{% static "img/Support-Basic.svg" %}" /></div>
+                <div class="icon"><img src="{% static "img/Support-Basic.svg" %}" alt="Weblate logo with a tick on top" /></div>
                 <h2>{% trans "Basic self-hosted support" %}</h2>
                 <ul>
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
@@ -60,7 +60,7 @@
                 <a href="{% url 'subscription-new' %}?plan=basic" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
-                <div class="icon"><img src="{% static "img/Support-Plus.svg" %}" /></div>
+                <div class="icon"><img src="{% static "img/Support-Plus.svg" %}" alt="Weblate logo with a plus on top" /></div>
                 <h2>{% trans "Extended self-hosted support" %}</h2>
                 <ul>
                     <li>{% trans "Always upgraded to latest version." %}</li>
@@ -74,7 +74,7 @@
           </div>
           <div class="flex">
             <div class="box">
-                <div class="icon"><img src="{% static "img/Support-Premium.svg" %}" /></div>
+                <div class="icon"><img src="{% static "img/Support-Premium.svg" %}" alt="Weblate logo with shield and tick on top" /></div>
                 <h2>{% trans "Premium self-hosted support" %}</h2>
                 <ul>
                     <li>{% trans "Issues in your environment fixed immediately." %}</li>
@@ -86,7 +86,7 @@
                 <a href="{% url 'subscription-new' %}?plan=premium" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
             <div class="box" id="install">
-                <div class="icon"><img src="{% static "img/linux.png" %}" /></div>
+                <div class="icon"><img src="{% static "img/linux.png" %}" alt="Linux penguin logo"/></div>
                 <h2>{% trans "Installation on your Linux server" %}</h2>
                 <ul>
                     <li>{% trans "One-time installation of Weblate" %}</li>
@@ -100,7 +100,7 @@
           </div>
           <div class="flex">
             <div class="box" id="backup">
-                <div class="icon"><img src="{% static "img/Support-Backup.svg" %}" /></div>
+                <div class="icon"><img src="{% static "img/Support-Backup.svg" %}" alt="Weblate logo with a shield on top" /></div>
                 <h2>{% trans "Backup service" %}</h2>
                 <ul>
                     <li>{% trans "Cloud backups of your data" %}</li>
@@ -113,7 +113,7 @@
                 <a href="{% url 'subscription-new' %}?plan=backup" class="button black right bottom-right">{% trans "Buy now" %}</a>
             </div>
             <div class="box">
-                <div class="icon"><img src="{% static "img/icon-call.svg" %}" /></div>
+                <div class="icon"><img src="{% static "img/icon-call.svg" %}" alt="Phone calling" /></div>
                 <h2>{% trans "Consulting services and/or custom development" %}</h2>
                 <ul>
                     <li>{% trans "Development of custom features" %}</li>

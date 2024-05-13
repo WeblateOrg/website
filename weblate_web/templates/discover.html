@@ -36,9 +36,9 @@
                         <img class="discover-img" src="{{ service.discover_image.url }}" />
                       {% else %}
                         <div class="discover-panel layered">
-                          <img src="{% static "img/discover-bg.png" %}" />
+                          <img src="{% static "img/discover-bg.png" %}" alt="Background Image"/>
                           <div class="discover-name">
-                            <img src="{% static "img/discover-weblate-logo.png" %}" class="discover-logo" />
+                            <img src="{% static "img/discover-weblate-logo.png" %}" class="discover-logo" alt="Weblate logo"/>
                             <span>{{ service.site_title }}</span>
                           </div>
                         </div>
@@ -66,7 +66,7 @@
                         <a class="project" href="{{ service.site_url }}{{ project.url }}" target="_blank" rel="ugc">{{ project.name }}</a>
                       {% endfor %}
                       {% if service.non_matched_projects_count %}
-                        <a href="{{ service.site_url }}/projects/" target="_blank" rel="ugc"><img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" /></a>
+                        <a href="{{ service.site_url }}/projects/" target="_blank" rel="ugc"><img src="{% static "img/three-dots.svg" %}" alt="Three dots icon " title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" /></a>
                       {% endif %}
                       {% if service.pk in user_services %}
                         <a class="button small float-right" href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
