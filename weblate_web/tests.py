@@ -204,23 +204,23 @@ class ViewTestCase(PostTestCase):
 
     def test_index_en(self):
         response = self.client.get("/en/")
-        self.assertContains(response, "Basic")
+        self.assertContains(response, "yearly")
 
     def test_index_cs(self):
         response = self.client.get("/cs/")
-        self.assertContains(response, "Základní")
+        self.assertContains(response, "ročně")
 
     def test_index_he(self):
         response = self.client.get("/he/")
-        self.assertContains(response, "בסיסית")
+        self.assertContains(response, "שנתי")
 
     def test_index_be(self):
         response = self.client.get("/be/")
-        self.assertContains(response, "Базавы")
+        self.assertContains(response, "штогод")
 
     def test_index_be_latin(self):
         response = self.client.get("/be-latn/")
-        self.assertContains(response, "Prosty")
+        self.assertContains(response, "Nieabmiežavany")
 
     def test_terms(self):
         response = self.client.get("/en/terms/")
