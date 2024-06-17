@@ -44,7 +44,7 @@ CUSTOMER = {
     "user_id": 6,
 }
 
-FIO_API = "https://www.fio.cz/ib_api/rest/last/test-token/transactions.json"
+FIO_API = "https://fioapi.fio.cz/v1/rest/last/test-token/transactions.json"
 FIO_TRASACTIONS = {
     "accountStatement": {
         "info": {
