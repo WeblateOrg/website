@@ -328,7 +328,7 @@ class UtilTestCase(TestCase):
             {
                 "name": "Weblate-5.3.1-py3-none-any.whl",
                 "size": "65.3 MiB",
-                "text": "Wheel package",
+                "text": "Python Wheel package",
                 "url": "https://files.pythonhosted.org/packages/67/b8/258109f5829a8a616552cee382ed827c606bf397f992b068e744c533d86a/Weblate-5.3.1-py3-none-any.whl",
             },
         )
