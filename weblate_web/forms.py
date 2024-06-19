@@ -112,6 +112,6 @@ class AddPaymentForm(forms.Form):
             storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
             try:
                 return storage.get(value)
-            except OSError:
-                raise ValidationError(gettext("Invoice was not found!"))
+            except Exception as error:
+                raise ValidationError(gettext("Invoice was not found: %s") % error)
         return None
