@@ -6,12 +6,15 @@
 
 {% block title %}Service: {{ object.site_title }}{% endblock %}
 {% block content %}
+
+
+	<section class="content">
+    <p>
           {{ object.site_title }}
           <a href="{{ object.site_url }}">{{ object.site_url }}</a>
           {{ object.site_version }}
           {{ object.get_status_display }}
-
-	<section class="content">
+    </p>
     <table>
       {% for subscription in object.subscription_set.all %}
         <tr>
