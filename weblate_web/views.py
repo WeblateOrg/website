@@ -50,6 +50,7 @@ from payments.models import Customer, Payment
 from payments.validators import cache_vies_data, validate_vatin
 from weblate_web.forms import (
     AddDiscoveryForm,
+    AddPaymentForm,
     DonateForm,
     EditDiscoveryForm,
     EditImageForm,
@@ -868,3 +869,27 @@ class ServiceListView(ListView):
 @method_decorator(user_passes_test(lambda u: u.is_superuser), name="dispatch")
 class ServiceDetailView(DetailView):
     model = Service
+
+    def get_payment_form(self, **kwargs):
+        form = AddPaymentForm(**kwargs)
+        form.fields["subscription"].queryset = self.object.subscription_set.all()
+        return form
+
+    def post(self, request, **kwargs):
+        self.object = self.get_object()
+        action = request.POST.get("action")
+        if action == "payment":
+            form = self.get_payment_form(data=request.POST)
+            if form.is_valid():
+                form.cleaned_data["subscription"].add_payment(
+                    form.cleaned_data["invoice"], form.cleaned_data["period"]
+                )
+                messages.info(request, gettext("Payment was added."))
+            else:
+                show_form_errors(request, form)
+        return redirect(self.object)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["add_payment_form"] = self.get_payment_form()
+        return context

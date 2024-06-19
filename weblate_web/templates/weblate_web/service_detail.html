@@ -19,9 +19,17 @@
       {% for subscription in object.subscription_set.all %}
         <tr>
           <th>{{ subscription }}</th>
+          <td>{{ subscription.expires }}</td>
           <td><a href="{{ subscription.get_absolute_url }}">Details</a></td>
         </tr>
       {% endfor %}
     </table>
   </section>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="payment">
+  {{ add_payment_form }}
+  <input type="submit">
+</form>
 {% endblock %}

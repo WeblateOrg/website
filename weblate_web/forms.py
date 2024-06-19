@@ -18,8 +18,10 @@
 #
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext
+from fakturace.storage import InvoiceStorage
 
 from payments.backends import list_backends
 from payments.models import RECURRENCE_CHOICES
@@ -100,7 +102,16 @@ class AddDiscoveryForm(forms.ModelForm):
 class AddPaymentForm(forms.Form):
     subscription = forms.ModelChoiceField(queryset=Subscription.objects.none())
     invoice = forms.CharField(max_length=20)
-    recurring = forms.ChoiceField(
+    period = forms.ChoiceField(
         choices=RECURRENCE_CHOICES,
         initial="y",
     )
+
+    def clean_invoice(self):
+        if value := self.cleaned_data["invoice"]:
+            storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
+            try:
+                return storage.get(value)
+            except OSError:
+                raise ValidationError(gettext("Invoice was not found!"))
+        return None

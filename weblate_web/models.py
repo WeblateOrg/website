@@ -17,9 +17,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 import sys
 from datetime import timedelta
 from io import BytesIO
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import html2text
@@ -42,6 +45,9 @@ from paramiko.client import SSHClient
 
 from payments.models import Char32UUIDField, Payment, get_period_delta
 from payments.utils import send_notification
+
+if TYPE_CHECKING:
+    from fakturace.invoices import Invoice
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 
@@ -872,6 +878,36 @@ class Subscription(models.Model):
             .filter(expires__gt=expires)
             .exists()
         )
+
+    def add_payment(self, invoice: Invoice, period: str):
+        # Calculate new expiry
+        start = self.expires
+        end = self.expires + get_period_delta(period)
+
+        # Fetch customer object from last payment here
+        customer = self.payment_obj.customer
+
+        # Create payment based on the invoice and customer
+        payment = Payment.objects.create(
+            amount=float(invoice.amount),
+            currency=Payment.CURRENCY_EUR,
+            description=invoice.invoice["item"],
+            state=Payment.PROCESSED,
+            backend="manual",
+            invoice=invoice.invoiceid,
+            start=start,
+            end=end,
+            customer=customer,
+        )
+
+        # Move current payment to past payments
+        self.pastpayments_set.create(payment=self.payment)
+
+        # Update current payment info
+        self.payment = payment.pk
+        # Extend validity for period
+        self.expires = end
+        self.save()
 
 
 class PastPayments(models.Model):
