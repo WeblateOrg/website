@@ -45,6 +45,8 @@ from weblate_web.views import (
     NewsView,
     PaymentView,
     PostView,
+    ServiceDetailView,
+    ServiceListView,
     TopicArchiveView,
     activity_svg,
     api_hosted,
@@ -311,6 +313,10 @@ urlpatterns = [
         cache_page(1800)(django.contrib.sitemaps.views.sitemap),
         {"sitemaps": SITEMAPS},
         name="sitemap",
+    ),
+    path("manage/services/", ServiceListView.as_view(), name="service-list"),
+    path(
+        "manage/services/<int:pk>/", ServiceDetailView.as_view(), name="service-detail"
     ),
     path("feed/", LatestEntriesFeed(), name="feed"),
     path("js/vat/", fetch_vat),

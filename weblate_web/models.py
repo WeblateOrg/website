@@ -525,6 +525,9 @@ class Service(models.Model):
     def __str__(self):
         return f"{self.get_status_display()}: {self.user_emails}: {self.site_url}"
 
+    def get_absolute_url(self):
+        return reverse("service-detail", kwargs={"pk": self.pk})
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.was_created = False

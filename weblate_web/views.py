@@ -39,9 +39,9 @@ from django.utils.translation import gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.dates import ArchiveIndexView
-from django.views.generic.detail import DetailView, SingleObjectMixin
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from payments.backends import get_backend, list_backends
@@ -856,3 +856,15 @@ class DiscoverView(TemplateView):
             data["user_services"] = set()
 
         return data
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(user_passes_test(lambda u: u.is_superuser), name="dispatch")
+class ServiceListView(ListView):
+    model = Service
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(user_passes_test(lambda u: u.is_superuser), name="dispatch")
+class ServiceDetailView(DetailView):
+    model = Service
