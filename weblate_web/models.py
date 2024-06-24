@@ -892,7 +892,13 @@ class Subscription(models.Model):
                 pk=invoice.invoice["contact"].replace("web-", "")
             )
         else:
-            raise ValueError("Could not get a customer info!")
+            customer = Customer.objects.create(
+                vat=invoice.contact.get("vat_reg", None),
+                name=invoice.contact["name"],
+                address=invoice.contact["address"],
+                city=invoice.contact["city"],
+                country=invoice.contact["country"],
+            )
 
         # Create payment based on the invoice and customer
         payment = Payment.objects.create(
