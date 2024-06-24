@@ -43,7 +43,7 @@ from django.utils.translation import gettext_lazy, override
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
-from payments.models import Char32UUIDField, Payment, get_period_delta
+from payments.models import Char32UUIDField, Customer, Payment, get_period_delta
 from payments.utils import send_notification
 
 if TYPE_CHECKING:
@@ -885,7 +885,14 @@ class Subscription(models.Model):
         end = start + get_period_delta(period)
 
         # Fetch customer object from last payment here
-        customer = self.payment_obj.customer
+        if self.payment:
+            customer = self.payment_obj.customer
+        elif invoice.invoice["contact"].startswith("web-"):
+            customer = Customer.objects.get(
+                pk=invoice.invoice["contact"].replace("web-", "")
+            )
+        else:
+            raise ValueError("Could not get a customer info!")
 
         # Create payment based on the invoice and customer
         payment = Payment.objects.create(
