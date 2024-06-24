@@ -192,7 +192,7 @@ def create_backup_repository(service):
             "comment": f"Weblate backup service {service.pk}",
         },
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
-        timeout=120,
+        timeout=720,
     )
     data = response.json()
     return "ssh://{}@{}:23/./backups".format(
