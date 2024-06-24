@@ -40,6 +40,7 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy, override
+from django_countries import countries
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
@@ -897,7 +898,7 @@ class Subscription(models.Model):
                 name=invoice.contact["name"],
                 address=invoice.contact["address"],
                 city=invoice.contact["city"],
-                country=invoice.contact["country"],
+                country=countries.by_name(invoice.contact["country"]),
             )
 
         # Create payment based on the invoice and customer
