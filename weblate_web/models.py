@@ -901,7 +901,8 @@ class Subscription(models.Model):
         )
 
         # Move current payment to past payments
-        self.pastpayments_set.create(payment=self.payment)
+        if self.payment:
+            self.pastpayments_set.create(payment=self.payment)
 
         # Update current payment info
         self.payment = payment.pk
