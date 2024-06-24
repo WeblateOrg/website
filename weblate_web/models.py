@@ -899,6 +899,8 @@ class Subscription(models.Model):
                 address=invoice.contact["address"],
                 city=invoice.contact["city"],
                 country=countries.by_name(invoice.contact["country"]),
+                user_id=-1,
+                origin="https://weblate.org/auto",
             )
 
         # Create payment based on the invoice and customer
