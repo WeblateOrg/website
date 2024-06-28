@@ -771,26 +771,28 @@ class Service(models.Model):
         }
 
     def check_in_limits(self):
-        if (
-            self.limit_hosted_strings
-            and self.last_report.hosted_strings > self.limit_hosted_strings
-        ):
-            return False
-        if (
-            self.limit_hosted_words
-            and self.last_report.hosted_words > self.limit_hosted_words
-        ):
-            return False
-        if (
-            self.limit_source_strings
-            and self.last_report.source_strings > self.limit_source_strings
-        ):
-            return False
-        if self.limit_projects and self.last_report.projects > self.limit_projects:
-            return False
-        if self.limit_languages and self.last_report.languages > self.limit_languages:
-            return False
-        return True
+        return (
+            (
+                not self.limit_hosted_strings
+                or self.last_report.hosted_strings <= self.limit_hosted_strings
+            )
+            and (
+                not self.limit_hosted_words
+                or self.last_report.hosted_words <= self.limit_hosted_words
+            )
+            and (
+                not self.limit_source_strings
+                or self.last_report.source_strings <= self.limit_source_strings
+            )
+            and (
+                not self.limit_projects
+                or self.last_report.projects <= self.limit_projects
+            )
+            and (
+                not self.limit_languages
+                or self.last_report.languages <= self.limit_languages
+            )
+        )
 
     def regenerate(self):
         self.secret = generate_secret()
