@@ -57,7 +57,7 @@ def downloadlink(info):
     elif name.endswith(".zip"):
         text = _("Sources, zip compressed")
     elif name.endswith(".whl"):
-        text = _("Wheel package")
+        text = _("Python Wheel package")
     else:
         text = name
 

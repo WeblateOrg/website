@@ -23,6 +23,7 @@ from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LogoutView
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
 from django.urls import include, path, re_path
@@ -44,8 +45,9 @@ from weblate_web.views import (
     NewsView,
     PaymentView,
     PostView,
+    ServiceDetailView,
+    ServiceListView,
     TopicArchiveView,
-    WeblateLogoutView,
     activity_svg,
     api_hosted,
     api_support,
@@ -312,13 +314,17 @@ urlpatterns = [
         {"sitemaps": SITEMAPS},
         name="sitemap",
     ),
+    path("manage/services/", ServiceListView.as_view(), name="service-list"),
+    path(
+        "manage/services/<int:pk>/", ServiceDetailView.as_view(), name="service-detail"
+    ),
     path("feed/", LatestEntriesFeed(), name="feed"),
-    re_path(r"^js/vat/$", fetch_vat),
-    re_path(r"^api/support/$", api_support),
-    re_path(r"^api/user/$", api_user),
-    re_path(r"^api/hosted/$", api_hosted),
-    re_path(r"^img/activity.svg$", activity_svg),
-    re_path(r"^logout/$", WeblateLogoutView.as_view(next_page="/"), name="logout"),
+    path("js/vat/", fetch_vat),
+    path("api/support/", api_support),
+    path("api/user/", api_user),
+    path("api/hosted/", api_hosted),
+    path("img/activity.svg", activity_svg),
+    path("logout/", LogoutView.as_view(next_page="/"), name="logout"),
     # Aliases for static files
     re_path(
         r"^(android-chrome|favicon)-(?P<size>192|512)x(?P=size)\.png$",
@@ -326,8 +332,8 @@ urlpatterns = [
             url=settings.STATIC_URL + "weblate-%(size)s.png", permanent=True
         ),
     ),
-    re_path(
-        r"^apple-touch-icon\.png$",
+    path(
+        r"apple-touch-icon.png",
         RedirectView.as_view(
             url=settings.STATIC_URL + "weblate-180.png", permanent=True
         ),
@@ -336,34 +342,30 @@ urlpatterns = [
         r"^(?P<name>favicon\.ico|robots\.txt)$",
         RedirectView.as_view(url=settings.STATIC_URL + "%(name)s", permanent=True),
     ),
-    re_path(
-        r"^browserconfig\.xml$", TemplateView.as_view(template_name="browserconfig.xml")
-    ),
-    re_path(
-        r"^site\.webmanifest$", TemplateView.as_view(template_name="site.webmanifest")
-    ),
-    re_path(
-        r"^security\.txt$",
+    path("browserconfig.xml", TemplateView.as_view(template_name="browserconfig.xml")),
+    path("site.webmanifest", TemplateView.as_view(template_name="site.webmanifest")),
+    path(
+        "security.txt",
         RedirectView.as_view(url="/.well-known/security.txt", permanent=True),
     ),
-    re_path(
-        r"^\.well-known/security\.txt$",
+    path(
+        ".well-known/security.txt",
         TemplateView.as_view(template_name="security.txt", content_type="text/plain"),
     ),
-    re_path(
-        r"^\.well-known/keybase\.txt$",
+    path(
+        ".well-known/keybase.txt",
         TemplateView.as_view(template_name="keybase.txt", content_type="text/plain"),
     ),
     # SAML
-    re_path(r"^saml2/", include("djangosaml2.urls")),
+    path("saml2/", include("djangosaml2.urls")),
     # Admin
-    re_path(
-        r"^admin/login/$",
+    path(
+        "admin/login/",
         RedirectView.as_view(
             pattern_name="saml2_login", permanent=True, query_string=True
         ),
     ),
-    re_path(r"^admin/", admin.site.urls),
+    path("admin/", admin.site.urls),
     # Media files on devel server
     re_path(
         r"^media/(?P<path>.*)$",

@@ -21,7 +21,7 @@ repos:
   hooks:
   - id: yamllint
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.5
+  rev: v0.5.0
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix]
@@ -60,16 +60,16 @@ repos:
   - id: stylelint
     args: [--formatter=compact]
     additional_dependencies:
-    - stylelint@16.6.0
+    - stylelint@16.6.1
     - stylelint-config-prettier@9.0.5
     - stylelint-prettier@5.0.0
-    - prettier@3.2.5
+    - prettier@3.3.2
 - repo: https://github.com/biomejs/pre-commit
-  rev: v0.1.0
+  rev: v0.4.0
   hooks:
   - id: biome-check
     additional_dependencies:
-    - '@biomejs/biome@1.7.3'
+    - '@biomejs/biome@1.8.3'
     types_or: [javascript]
 
 exclude: ^.*\.(svg)|weblate_web/templates/browserconfig.xml|weblate_web/static/vendor/|scripts/yarn/.*$

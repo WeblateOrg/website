@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load downloads %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Service: {{ object.site_title }}{% endblock %}
+{% block content %}
+
+
+	<section class="content">
+    <p>
+          {{ object.site_title }}
+          <a href="{{ object.site_url }}">{{ object.site_url }}</a>
+          {{ object.site_version }}
+          {{ object.get_status_display }}
+    </p>
+    <table>
+      {% for subscription in object.subscription_set.all %}
+        <tr>
+          <th>{{ subscription }}</th>
+          <td>{{ subscription.expires }}</td>
+          <td><a href="{{ subscription.get_absolute_url }}">Details</a></td>
+        </tr>
+      {% endfor %}
+    </table>
+  </section>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="payment">
+  {{ add_payment_form }}
+  <input type="submit">
+</form>
+{% endblock %}

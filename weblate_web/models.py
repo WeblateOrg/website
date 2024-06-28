@@ -17,9 +17,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 import sys
 from datetime import timedelta
 from io import BytesIO
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import html2text
@@ -37,11 +40,15 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy, override
+from django_countries import countries
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
-from payments.models import Char32UUIDField, Payment, get_period_delta
+from payments.models import Char32UUIDField, Customer, Payment, get_period_delta
 from payments.utils import send_notification
+
+if TYPE_CHECKING:
+    from fakturace.invoices import Invoice
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 
@@ -185,7 +192,7 @@ def create_backup_repository(service):
             "comment": f"Weblate backup service {service.pk}",
         },
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
-        timeout=60,
+        timeout=720,
     )
     data = response.json()
     return "ssh://{}@{}:23/./backups".format(
@@ -525,6 +532,9 @@ class Service(models.Model):
     def __str__(self):
         return f"{self.get_status_display()}: {self.user_emails}: {self.site_url}"
 
+    def get_absolute_url(self):
+        return reverse("service-detail", kwargs={"pk": self.pk})
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.was_created = False
@@ -761,26 +771,28 @@ class Service(models.Model):
         }
 
     def check_in_limits(self):
-        if (
-            self.limit_hosted_strings
-            and self.last_report.hosted_strings > self.limit_hosted_strings
-        ):
-            return False
-        if (
-            self.limit_hosted_words
-            and self.last_report.hosted_words > self.limit_hosted_words
-        ):
-            return False
-        if (
-            self.limit_source_strings
-            and self.last_report.source_strings > self.limit_source_strings
-        ):
-            return False
-        if self.limit_projects and self.last_report.projects > self.limit_projects:
-            return False
-        if self.limit_languages and self.last_report.languages > self.limit_languages:
-            return False
-        return True
+        return (
+            (
+                not self.limit_hosted_strings
+                or self.last_report.hosted_strings <= self.limit_hosted_strings
+            )
+            and (
+                not self.limit_hosted_words
+                or self.last_report.hosted_words <= self.limit_hosted_words
+            )
+            and (
+                not self.limit_source_strings
+                or self.last_report.source_strings <= self.limit_source_strings
+            )
+            and (
+                not self.limit_projects
+                or self.last_report.projects <= self.limit_projects
+            )
+            and (
+                not self.limit_languages
+                or self.last_report.languages <= self.limit_languages
+            )
+        )
 
     def regenerate(self):
         self.secret = generate_secret()
@@ -869,6 +881,52 @@ class Subscription(models.Model):
             .filter(expires__gt=expires)
             .exists()
         )
+
+    def add_payment(self, invoice: Invoice, period: str):
+        # Calculate new expiry
+        start = self.expires + timedelta(days=1)
+        end = start + get_period_delta(period)
+
+        # Fetch customer object from last payment here
+        if self.payment:
+            customer = self.payment_obj.customer
+        elif invoice.invoice["contact"].startswith("web-"):
+            customer = Customer.objects.get(
+                pk=invoice.invoice["contact"].replace("web-", "")
+            )
+        else:
+            customer = Customer.objects.create(
+                vat=invoice.contact.get("vat_reg", None),
+                name=invoice.contact["name"],
+                address=invoice.contact["address"],
+                city=invoice.contact["city"],
+                country=countries.by_name(invoice.contact["country"]),
+                user_id=-1,
+                origin="https://weblate.org/auto",
+            )
+
+        # Create payment based on the invoice and customer
+        payment = Payment.objects.create(
+            amount=float(invoice.amount),
+            currency=Payment.CURRENCY_EUR,
+            description=invoice.invoice["item"],
+            state=Payment.PROCESSED,
+            backend="manual",
+            invoice=invoice.invoiceid,
+            start=start,
+            end=end,
+            customer=customer,
+        )
+
+        # Move current payment to past payments
+        if self.payment:
+            self.pastpayments_set.create(payment=self.payment)
+
+        # Update current payment info
+        self.payment = payment.pk
+        # Extend validity for period
+        self.expires = end
+        self.save()
 
 
 class PastPayments(models.Model):

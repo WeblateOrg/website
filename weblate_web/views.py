@@ -25,7 +25,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LogoutView
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
@@ -40,9 +39,9 @@ from django.utils.translation import gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.dates import ArchiveIndexView
-from django.views.generic.detail import DetailView, SingleObjectMixin
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from payments.backends import get_backend, list_backends
@@ -51,6 +50,7 @@ from payments.models import Customer, Payment
 from payments.validators import cache_vies_data, validate_vatin
 from weblate_web.forms import (
     AddDiscoveryForm,
+    AddPaymentForm,
     DonateForm,
     EditDiscoveryForm,
     EditImageForm,
@@ -859,10 +859,37 @@ class DiscoverView(TemplateView):
         return data
 
 
-# TODO: Remove with Django 5.0
-class WeblateLogoutView(LogoutView):
-    http_method_names = ["post", "options"]
+@method_decorator(login_required, name="dispatch")
+@method_decorator(user_passes_test(lambda u: u.is_superuser), name="dispatch")
+class ServiceListView(ListView):
+    model = Service
 
-    def get(self, request, *args, **kwargs):
-        # Should never be called
-        return None
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(user_passes_test(lambda u: u.is_superuser), name="dispatch")
+class ServiceDetailView(DetailView):
+    model = Service
+
+    def get_payment_form(self, **kwargs):
+        form = AddPaymentForm(**kwargs)
+        form.fields["subscription"].queryset = self.object.subscription_set.all()
+        return form
+
+    def post(self, request, **kwargs):
+        self.object = self.get_object()
+        action = request.POST.get("action")
+        if action == "payment":
+            form = self.get_payment_form(data=request.POST)
+            if form.is_valid():
+                form.cleaned_data["subscription"].add_payment(
+                    form.cleaned_data["invoice"], form.cleaned_data["period"]
+                )
+                messages.info(request, gettext("Payment was added."))
+            else:
+                show_form_errors(request, form)
+        return redirect(self.object)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["add_payment_form"] = self.get_payment_form()
+        return context
