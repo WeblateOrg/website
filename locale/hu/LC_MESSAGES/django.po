@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-05-06 17:14+0200\n"
-"PO-Revision-Date: 2024-07-03 07:46+0000\n"
+"PO-Revision-Date: 2024-07-03 20:49+0000\n"
 "Last-Translator: Balázs Úr <balazs@urbalazs.hu>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/weblate/"
 "website/hu/>\n"
@@ -40,11 +40,11 @@ msgstr "Bankkártya"
 
 #: payments/backends.py:336
 msgid "Payment cancelled"
-msgstr "A fizetés törölve"
+msgstr "Befizetés törölve"
 
 #: payments/backends.py:338
 msgid "Payment error"
-msgstr "Fizetési hiba"
+msgstr "Befizetési hiba"
 
 #: payments/backends.py:350
 msgid "Bitcoin"
@@ -68,11 +68,11 @@ msgstr "Számlaszám"
 
 #: payments/backends.py:392
 msgid "SWIFT code"
-msgstr "Swift kód"
+msgstr "SWIFT-kód"
 
 #: payments/backends.py:393
 msgid "IBAN"
-msgstr "Nemzetközi bankszámlaszám (IBAN)"
+msgstr "IBAN"
 
 #: payments/backends.py:394
 msgid "Reference"
@@ -80,13 +80,13 @@ msgstr "Hivatkozás"
 
 #: payments/models.py:91
 msgid "European VAT ID"
-msgstr "Európai ÁFA azonosító"
+msgstr "Európai ÁFA-azonosító"
 
 #: payments/models.py:93
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
-"Kérjük, töltse ki az Európai Unió ÁFA-azonosítóját, ha nem alkalmazható, "
-"hagyja üresen."
+"Töltse ki az Európai Unió ÁFA-azonosítóját. Hagyja üresen, ha nem "
+"alkalmazható."
 
 #: payments/models.py:99
 msgid "Tax registration"
@@ -95,7 +95,7 @@ msgstr "Adószám"
 #: payments/models.py:101
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
-msgstr "Kérjük, töltse ki adószámát, ha meg kell jeleníteni a számlán."
+msgstr "Töltse ki adószámát, ha meg kell jelennie a számlán."
 
 #: payments/models.py:108
 msgid "Company or individual name"
@@ -115,7 +115,7 @@ msgstr "Ország"
 
 #: payments/models.py:147
 msgid "The country has to match your VAT code"
-msgstr "Az országnak meg kell egyeznie az ÁFA kóddal"
+msgstr "Az országnak összhangban kell lennie az ÁFA-kóddal"
 
 #: payments/models.py:170
 msgid "Annual"
@@ -144,38 +144,36 @@ msgstr "Negyedéves"
 #: weblate_web/templates/snippets/pricing.html:143
 #: weblate_web/templates/snippets/pricing.html:169
 msgid "Monthly"
-msgstr "Havonta"
+msgstr "Havi"
 
 #: payments/models.py:174
-#, fuzzy
-#| msgid "Onetime"
 msgid "One-time"
 msgstr "Egyszeri"
 
 #: payments/models.py:208
 msgctxt "Payment state"
 msgid "New payment"
-msgstr "Új fizetés"
+msgstr "Új befizetés"
 
 #: payments/models.py:209
 msgctxt "Payment state"
 msgid "Awaiting payment"
-msgstr "Fizetésre vár"
+msgstr "Befizetésre vár"
 
 #: payments/models.py:210
 msgctxt "Payment state"
 msgid "Payment rejected"
-msgstr "Fizetés elutasítva"
+msgstr "Befizetés elutasítva"
 
 #: payments/models.py:211
 msgctxt "Payment state"
 msgid "Payment accepted"
-msgstr "Fizetés elfogadva"
+msgstr "Befizetés elfogadva"
 
 #: payments/models.py:212
 msgctxt "Payment state"
 msgid "Payment processed"
-msgstr "Fizetés feldolgozva"
+msgstr "Befizetés feldolgozva"
 
 #: payments/utils.py:48 payments/utils.py:51
 msgid "Enter a valid e-mail address."
@@ -183,13 +181,12 @@ msgstr "Adjon meg egy érvényes e-mail-címet."
 
 #: payments/validators.py:43
 msgid "{} is not a valid country code for any European Union member."
-msgstr ""
-"A megadott {} országkód nem felel meg az Európai Unió egyetlen tagországának "
-"sem."
+msgstr "A(z) {} nem érvényes országkód az Európai Unió egyik tagállamában sem."
 
 #: payments/validators.py:48
 msgid "{} does not match the country's VAT ID specifications."
-msgstr "{} nem felel meg az ország adóazonosító előírásainak."
+msgstr ""
+"A(z) {} nem felel meg az ország ÁFA-azonosítójára vonatkozó előírásoknak."
 
 #: payments/validators.py:61
 msgid ""
@@ -205,7 +202,7 @@ msgstr "Szolgáltatás állapota"
 
 #: payments/validators.py:67
 msgid "{} is not a valid VAT ID."
-msgstr "{} érvénytelen ÁFA azonosító."
+msgstr "A(z) {} nem érvényes ÁFA-azonosító."
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -2632,7 +2629,7 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
-msgstr "Befizetése a weblate.org webhelyen"
+msgstr "Az Ön befizetése a weblate.org webhelyen"
 
 #: weblate_web/templates/mail/payment_expired.html:9
 #, fuzzy
@@ -2670,7 +2667,7 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_failed_subject.txt:2
 msgid "Your payment on weblate.org failed"
-msgstr "A fizetés a weblate.org-on sikertelen volt"
+msgstr "A befizetése a weblate.org webhelyen sikertelen"
 
 #: weblate_web/templates/mail/payment_missing.html:9
 #, fuzzy
@@ -2729,7 +2726,7 @@ msgstr "(ÁFÁVAL)"
 
 #: weblate_web/templates/mail/payment_pending_subject.txt:2
 msgid "Your pending payment on weblate.org"
-msgstr "Függőben lévő fizetése a weblate.org oldalon"
+msgstr "Függőben lévő befizetése a weblate.org webhelyen"
 
 #: weblate_web/templates/mail/payment_upcoming.html:9
 #, fuzzy
@@ -3383,20 +3380,22 @@ msgstr ""
 
 #: weblate_web/templates/snippets/vat.html:5
 msgid "All listed prices exclude VAT."
-msgstr "A listázott árak nem tartalmazzák az ÁFÁ-t."
+msgstr "A felsorolt árak nem tartalmazzák az ÁFÁ-t."
 
 #: weblate_web/templates/snippets/vat.html:6
 #, python-format
 msgid ""
 "EU end users and Czech companies will be charged with additional 21%% VAT."
-msgstr "EU és Cseh vállalatoknak további 21 %% ÁFA kerül kiszámlázásra."
+msgstr ""
+"Az Európai Unió végfelhasználói és a cseh vállalatok további 21%% ÁFA-t "
+"fizetnek."
 
 #: weblate_web/templates/snippets/vat.html:7
 msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr ""
-"A fordított adózás az EU-n belüli vállalkozások számára kiállított számlákra "
-"vonatkozik."
+"A fordított adózás az Európai Unión belüli vállalkozások számára kiállított "
+"számlákra vonatkozik."
 
 #: weblate_web/templates/subscription/discovery-add.html:9
 #, fuzzy
@@ -3847,7 +3846,7 @@ msgstr "A fizetés még nem történt meg, kérjük, próbálkozzon újra."
 
 #: weblate_web/views.py:481
 msgid "The payment was rejected: {}"
-msgstr "A fizetés el lett utasítva: {}"
+msgstr "A befizetés el lett utasítva: {}"
 
 #: weblate_web/views.py:482
 msgid "Unknown reason"
