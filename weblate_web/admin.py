@@ -106,8 +106,8 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["title", "timestamp", "topic", "image"]
-    list_filter = [("author", admin.RelatedOnlyFieldListFilter), "topic"]
+    list_display = ["title", "timestamp", "topic", "image", "milestone"]
+    list_filter = [("author", admin.RelatedOnlyFieldListFilter), "topic", "milestone"]
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ["title", "slug"]
     ordering = ("-timestamp",)
