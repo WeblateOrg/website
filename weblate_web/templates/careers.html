@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block body_class %}page contribute light{% endblock %}
 
@@ -17,15 +18,30 @@
                 <a href="{% url 'about' %}" class="button inline">{% trans "Learn more" %}</a>
                 <a href="mailto:michal@weblate.org" class="button inline border rev">{% trans "Contact us" %}</a>
             </div>
+            <div class="wrap features">
+              <div class="f-box">
+                <div class="icon"><img src="{% static "img/icon-software.svg" %}" /></div>
+                <h3>{% trans "Libre software advocates" %}</h3>
+                <p>{% trans "We embrace open source principles, with all our code and issues accessible to the public, fostering collaboration and transparency." %}</p>
+              </div>
+              <div class="f-box">
+                <div class="icon"><img src="{% static "img/icon-earth.svg" %}" /></div>
+                <h3>{% trans "Remote work flexibility" %}</h3>
+                <p>{% trans "Enjoy the convenience of working remotely while collaborating with a diverse team of dedicated individuals." %}</p>
+              </div>
+              <div class="f-box">
+                <div class="icon"><img src="{% static "img/icon-finance.svg" %}" /></div>
+                <h3>{% trans "Room for growth" %}</h3>
+                <p>{% trans "As a small company, we offer opportunities for personal and professional development. Every team member has space to contribute and grow." %}</p>
+              </div>
+            </div>
 
-            <div class="contribution-list">
+            <div class="contribution-list clear">
               <div class="flex">
                 <div class="box">
                     <h2>{% trans "Front-end developer" %}</h2>
 
                     <p>{% trans "Are you passionate about improving user experiences and making a meaningful impact? Join us as a front-end developer to elevate Weblate's interface!" %}</p>
-
-                    <h3>{% trans "Why choose us:"%}</h3>
 
                     <ul>
 
@@ -40,11 +56,6 @@
                         {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
                       </li>
 
-                      <li><strong>{% trans "Libre Software Advocates:" %}</strong> {% trans "We embrace open source principles, with all our code and issues accessible to the public, fostering collaboration and transparency." %}</li>
-
-                      <li><strong>{% trans "Remote Work Flexibility:" %}</strong> {% trans "Enjoy the convenience of working remotely while collaborating with a diverse team of dedicated individuals." %}</li>
-
-                      <li><strong>{% trans "Room for Growth:" %}</strong> {% trans "As a small company, we offer opportunities for personal and professional development. Every team member has space to contribute and grow." %}</li>
                   </ul>
 
 
@@ -62,6 +73,47 @@
 
                     <a href="mailto:michal@weblate.org?subject=Front-end developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
                 </div>
+                <div class="box">
+                    <h2>{% trans "Customer care and sales" %}</h2>
+
+                    <p>{% trans "We're looking for a person who loves to speak with the people and will help them in getting the most out of Weblate." %}</p>
+
+
+                    <ul>
+
+                      <li>
+                        <strong>{% trans "Customer success:" %}</strong>
+                        {% trans "You will work with customers to assess their needs and advise them on using Weblate." %}
+                      </li>
+                      <li>
+                        <strong>{% trans "Backed by engineers:" %}</strong>
+                        {% trans "You will be a contact for customers who are seeking help. Our engineers will closely cooperate with you on resolving the customer issues." %}
+                      </li>
+
+                      <li>
+                        <strong>{% trans "Room for growth:" %}</strong>
+
+                        {% trans "You can expand into other areas where you feel comfortable: publish articles on our blogs, manage social media, discuss with our community, or improve our documentation." %}
+                      </li>
+
+                  </ul>
+
+
+                  <h3>{% trans "Requirements:" %}</h3>
+
+                  <ul>
+                        <li>{% trans "Ability to learn technical concepts quickly and communicate to both technical and non-technical stakeholders." %}</li>
+                        <li>{% trans "Proficiency in written and spoken English." %}</li>
+                        <li>{% trans "Passion for open source principles and collaborative development." %}</li>
+                  </ul>
+
+                  <p>
+                      {% trans "If you're ready to contribute your expertise and shape the future of Weblate, apply now to join our team!" %}
+                  </p>
+
+                    <a href="mailto:michal@weblate.org?subject=Python developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
+                </div>
+                <!--
                 <div class="box">
                     <h2>{% trans "Python developer" %}</h2>
 
@@ -82,11 +134,6 @@
                         {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+-label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
                       </li>
 
-                      <li><strong>{% trans "Libre Software Advocates:" %}</strong> {% trans "We embrace open source principles, with all our code and issues accessible to the public, fostering collaboration and transparency." %}</li>
-
-                      <li><strong>{% trans "Remote Work Flexibility:" %}</strong> {% trans "Enjoy the convenience of working remotely while collaborating with a diverse team of dedicated individuals." %}</li>
-
-                      <li><strong>{% trans "Room for Growth:" %}</strong> {% trans "As a small company, we offer opportunities for personal and professional development. Every team member has space to contribute and grow." %}</li>
                   </ul>
 
 
@@ -104,6 +151,7 @@
 
                     <a href="mailto:michal@weblate.org?subject=Python developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
                 </div>
+                -->
                 <!--
                 <div class="box">
                     <h2>{% trans "Full-stack developer" %}</h2>
