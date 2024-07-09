@@ -36,6 +36,7 @@ TEST_FAKTURACE = os.path.join(TEST_DATA, "fakturace")
 TEST_CONTRIBUTORS = os.path.join(TEST_DATA, "contributors.json")
 TEST_ACTIVITY = os.path.join(TEST_DATA, "activity.json")
 TEST_IMAGE = os.path.join(TEST_DATA, "weblate-html.png")
+TEST_VIES_WSDL = os.path.join(TEST_DATA, "checkVatService.wsdl")
 
 TEST_CUSTOMER = {
     "name": "Michal Čihař",
@@ -45,6 +46,24 @@ TEST_CUSTOMER = {
     "vat_0": "CZ",
     "vat_1": "8003280318",
 }
+
+
+def mock_vies():
+    with open(TEST_VIES_WSDL) as handle:
+        responses.add(
+            responses.GET,
+            "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl",
+            body=handle.read(),
+        )
+    responses.add(
+        responses.POST,
+        "https://ec.europa.eu/taxation_customs/vies/services/checkVatService",
+        body="""
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"><env:Header/><env:Body><ns2:checkVatResponse xmlns:ns2="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><ns2:countryCode>CZ</ns2:countryCode><ns2:vatNumber>8003280318</ns2:vatNumber><ns2:requestDate>2024-07-09+02:00</ns2:requestDate><ns2:valid>true</ns2:valid><ns2:name>Ing. Michal Čihař</ns2:name><ns2:address>Nábřežní 694
+CVIKOV II
+471 54  CVIKOV</ns2:address></ns2:checkVatResponse></env:Body></env:Envelope>
+""",
+    )
 
 
 def fake_remote():
@@ -477,6 +496,7 @@ class PaymentsTest(FakturaceTestCase):
         self.check_payment(payment, Payment.ACCEPTED)
 
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    @responses.activate
     def test_invalid_vat(self):
         payment, url, customer_url = self.test_view()
         # Inject invalid VAT
@@ -1006,7 +1026,9 @@ class ExpiryTest(FakturaceTestCase):
     PAYMENT_FAKTURACE=TEST_FAKTURACE,
 )
 class ServiceTest(FakturaceTestCase):
+    @responses.activate
     def test_hosted_upgrade(self):
+        mock_vies()
         with override("en"):
             self.login()
             service = self.create_service(

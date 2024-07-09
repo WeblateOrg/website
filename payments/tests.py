@@ -28,7 +28,7 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
-from weblate_web.tests import TEST_FAKTURACE
+from weblate_web.tests import TEST_FAKTURACE, mock_vies
 
 from .backends import FioBank, InvalidState, get_backend, list_backends
 from .models import Customer, Payment
@@ -238,12 +238,14 @@ class BackendTest(TestCase):
         with self.assertRaises(InvalidState):
             backend.complete(None)
 
+    @responses.activate
     def test_list(self):
         backends = list_backends()
         self.assertGreater(len(backends), 0)
 
     @responses.activate
     def test_proforma(self):
+        mock_vies()
         backend = get_backend("fio-bank")(self.payment)
         self.assertIsNotNone(backend.initiate(None, "", "/complete/"))
         self.check_payment(Payment.PENDING)
@@ -274,6 +276,7 @@ class BackendTest(TestCase):
 
 
 class VATTest(SimpleTestCase):
+    @responses.activate
     def test_validation_invalid(self):
         with self.assertRaises(ValidationError):
             validate_vatin("XX123456")
@@ -282,6 +285,7 @@ class VATTest(SimpleTestCase):
         with self.assertRaises(ValidationError):
             validate_vatin("CZ8003280317")
 
+    @responses.activate
     def test_cache(self):
         cache.set(
             "VAT-CZ8003280318",
@@ -296,11 +300,8 @@ class VATTest(SimpleTestCase):
         )
         validate_vatin("CZ8003280318")
 
+    @responses.activate
     def test_direct(self):
-        # This test relies on the VAT validation service being alive
-        # so we accept failure as well
+        mock_vies()
         cache.delete("VAT-CZ8003280318")
-        try:
-            validate_vatin("CZ8003280318")
-        except ValidationError as error:
-            self.assertIn("View service status", str(error))
+        validate_vatin("CZ8003280318")
