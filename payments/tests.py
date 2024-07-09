@@ -278,6 +278,7 @@ class BackendTest(TestCase):
 class VATTest(SimpleTestCase):
     @responses.activate
     def test_validation_invalid(self):
+        mock_vies(valid=False)
         with self.assertRaises(ValidationError):
             validate_vatin("XX123456")
         with self.assertRaises(ValidationError):

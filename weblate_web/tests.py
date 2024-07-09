@@ -48,21 +48,52 @@ TEST_CUSTOMER = {
 }
 
 
-def mock_vies():
+def mock_vies(valid: bool = True):
     with open(TEST_VIES_WSDL) as handle:
         responses.add(
             responses.GET,
             "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl",
             body=handle.read(),
         )
+    if valid:
+        payload = """
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+    <env:Header/>
+    <env:Body>
+        <ns2:checkVatResponse xmlns:ns2="urn:ec.europa.eu:taxud:vies:services:checkVat:types">
+            <ns2:countryCode>CZ</ns2:countryCode>
+            <ns2:vatNumber>8003280318</ns2:vatNumber>
+            <ns2:requestDate>2024-07-09+02:00</ns2:requestDate>
+            <ns2:valid>true</ns2:valid>
+            <ns2:name>Ing. Michal Čihař</ns2:name>
+            <ns2:address>Nábřežní 694
+CVIKOV II
+471 54  CVIKOV</ns2:address>
+        </ns2:checkVatResponse>
+    </env:Body>
+</env:Envelope>
+"""
+    else:
+        payload = """
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+    <env:Header/>
+    <env:Body>
+        <ns2:checkVatResponse xmlns:ns2="urn:ec.europa.eu:taxud:vies:services:checkVat:types">
+            <ns2:countryCode>CZ</ns2:countryCode>
+            <ns2:vatNumber>8003280317</ns2:vatNumber>
+            <ns2:requestDate>2024-07-09+02:00</ns2:requestDate>
+            <ns2:valid>false</ns2:valid>
+            <ns2:name>---</ns2:name>
+            <ns2:address>---</ns2:address>
+        </ns2:checkVatResponse>
+    </env:Body>
+</env:Envelope>
+"""
+
     responses.add(
         responses.POST,
         "https://ec.europa.eu/taxation_customs/vies/services/checkVatService",
-        body="""
-<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"><env:Header/><env:Body><ns2:checkVatResponse xmlns:ns2="urn:ec.europa.eu:taxud:vies:services:checkVat:types"><ns2:countryCode>CZ</ns2:countryCode><ns2:vatNumber>8003280318</ns2:vatNumber><ns2:requestDate>2024-07-09+02:00</ns2:requestDate><ns2:valid>true</ns2:valid><ns2:name>Ing. Michal Čihař</ns2:name><ns2:address>Nábřežní 694
-CVIKOV II
-471 54  CVIKOV</ns2:address></ns2:checkVatResponse></env:Body></env:Envelope>
-""",
+        body=payload,
     )
 
 
@@ -498,6 +529,7 @@ class PaymentsTest(FakturaceTestCase):
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
     @responses.activate
     def test_invalid_vat(self):
+        mock_vies(valid=False)
         payment, url, customer_url = self.test_view()
         # Inject invalid VAT
         customer = Customer.objects.get(pk=payment.customer.pk)
