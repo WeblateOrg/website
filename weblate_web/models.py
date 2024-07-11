@@ -330,11 +330,12 @@ def process_subscription(payment):
         payment.end = subscription.expires
         subscription.save()
     elif isinstance(payment.extra["subscription"], int):
+        # Payment for current subscription
         subscription = Subscription.objects.get(pk=payment.extra["subscription"])
         if subscription.payment:
             subscription.pastpayments_set.create(payment=subscription.payment)
         payment.start = subscription.expires
-        subscription.expires += get_period_delta(subscription.get_repeat())
+        subscription.expires += get_period_delta(subscription.package.get_repeat())
         payment.end = subscription.expires
         subscription.payment = payment.pk
         subscription.save()
@@ -348,7 +349,7 @@ def process_subscription(payment):
             subscription = service.hosted_subscriptions[0]
             if subscription.payment:
                 subscription.pastpayments_set.create(payment=subscription.payment)
-            subscription.package = package.name
+            subscription.package = package
             subscription.expires += get_period_delta(repeat)
             subscription.payment = payment.pk
             subscription.save()
@@ -365,7 +366,7 @@ def process_subscription(payment):
             subscription = Subscription.objects.create(
                 service=service,
                 payment=payment.pk,
-                package=package.name,
+                package=package,
                 expires=expires,
             )
         with override("en"):
@@ -613,23 +614,23 @@ class Service(models.Model):
 
     @cached_property
     def hosted_subscriptions(self):
-        return self.subscription_set.filter(package__startswith="hosted:")
+        return self.subscription_set.filter(package__name__startswith="hosted:")
 
     @cached_property
     def shared_subscriptions(self):
-        return self.subscription_set.filter(package__startswith="shared:")
+        return self.subscription_set.filter(package__name__startswith="shared:")
 
     @cached_property
     def basic_subscriptions(self):
-        return self.subscription_set.filter(package="basic")
+        return self.subscription_set.filter(package__name="basic")
 
     @cached_property
     def extended_subscriptions(self):
-        return self.subscription_set.filter(package="extended")
+        return self.subscription_set.filter(package__name="extended")
 
     @cached_property
     def premium_subscriptions(self):
-        return self.subscription_set.filter(package="premium")
+        return self.subscription_set.filter(package__name="premium")
 
     @cached_property
     def support_subscriptions(self):
@@ -643,7 +644,7 @@ class Service(models.Model):
 
     @cached_property
     def backup_subscriptions(self):
-        return self.subscription_set.filter(package="backup")
+        return self.subscription_set.filter(package__name="backup")
 
     @cached_property
     def expires(self):
@@ -704,13 +705,13 @@ class Service(models.Model):
                 )
         if (
             self.hosted_subscriptions
-            and self.hosted_subscriptions[0].package in HOSTED_UPGRADES
+            and self.hosted_subscriptions[0].package.name in HOSTED_UPGRADES
         ):
-            package_name = HOSTED_UPGRADES[self.hosted_subscriptions[0].package]
+            package_name = HOSTED_UPGRADES[self.hosted_subscriptions[0].package.name]
             package = Package.objects.get(name=package_name)
             result.append(
                 (
-                    package_name,
+                    package.name,
                     _("Upgrade to %s") % package,
                     _("Increase service limits to translate more content."),
                     "",
@@ -723,7 +724,7 @@ class Service(models.Model):
 
     def update_status(self):
         status = "community"
-        package = "community"
+        package = Package.objects.get(name="community")
         if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = "hosted"
             package = self.hosted_subscriptions.latest("expires").package
@@ -736,20 +737,19 @@ class Service(models.Model):
             status = "extended"
         elif self.basic_subscriptions.filter(expires__gt=timezone.now()).exists():
             status = "basic"
-        package_obj = Package.objects.get(name=package)
 
         if (
             status != self.status
-            or package_obj.limit_source_strings != self.limit_source_strings
-            or package_obj.limit_hosted_words != self.limit_hosted_words
-            or package_obj.limit_hosted_strings != self.limit_hosted_strings
+            or package.limit_source_strings != self.limit_source_strings
+            or package.limit_hosted_words != self.limit_hosted_words
+            or package.limit_hosted_strings != self.limit_hosted_strings
         ):
             self.status = status
-            self.limit_source_strings = package_obj.limit_source_strings
-            self.limit_hosted_words = package_obj.limit_hosted_words
-            self.limit_hosted_strings = package_obj.limit_hosted_strings
-            self.limit_languages = package_obj.limit_languages
-            self.limit_projects = package_obj.limit_projects
+            self.limit_source_strings = package.limit_source_strings
+            self.limit_hosted_words = package.limit_hosted_words
+            self.limit_hosted_strings = package.limit_hosted_strings
+            self.limit_languages = package.limit_languages
+            self.limit_projects = package.limit_projects
             self.save()
 
     def create_backup(self):
@@ -803,7 +803,7 @@ class Service(models.Model):
 class Subscription(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
     payment = Char32UUIDField(blank=True, null=True)
-    package = models.CharField(max_length=150)
+    package = models.ForeignKey(Package, on_delete=models.deletion.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
     enabled = models.BooleanField(default=True, blank=True)
@@ -813,7 +813,7 @@ class Subscription(models.Model):
         verbose_name_plural = "Customer’s subscriptions"
 
     def __str__(self):
-        return f"{self.get_package_display()}: {self.service}"
+        return f"{self.package}: {self.service}"
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -826,25 +826,16 @@ class Subscription(models.Model):
 
     @cached_property
     def yearly_package(self):
-        if self.package.endswith("-m"):
-            return self.package[:-2]
+        if self.package.name.endswith("-m"):
+            return Package.objects.get(name=self.package[:-2])
         return None
-
-    @cached_property
-    def package_obj(self):
-        return Package.objects.get(name=self.package)
-
-    def get_package_display(self):
-        return _(self.package_obj.verbose)
-
-    def get_repeat(self):
-        return self.package_obj.get_repeat()
 
     def active(self):
         return self.expires >= timezone.now()
 
-    def get_amount(self):
-        return self.package_obj.price
+    @property
+    def price(self):
+        return self.package.price
 
     @cached_property
     def payment_obj(self):
@@ -877,7 +868,7 @@ class Subscription(models.Model):
     def could_be_obsolete(self):
         expires = timezone.now() + timedelta(days=3)
         return (
-            self.package in {"basic", "extended", "premium"}
+            self.package.name in {"basic", "extended", "premium"}
             and self.service.support_subscriptions.exclude(pk=self.pk)
             .filter(expires__gt=expires)
             .exists()

@@ -91,7 +91,7 @@ class ServiceAdmin(admin.ModelAdmin):
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ("service", "package", "created", "expires", "get_amount")
+    list_display = ("service", "package", "created", "expires", "price")
     search_fields = (
         "service__users__email",
         "service__report__site_url",

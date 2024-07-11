@@ -477,7 +477,7 @@ class FakturaceTestCase(TestCase):
         )
         service = Service.objects.create()
         service.subscription_set.create(
-            package=package,
+            package=Package.objects.get_or_create(name=package)[0],
             expires=timezone.now() + relativedelta(years=years, days=days),
             payment=self.create_payment(recurring=recurring)[0].pk,
         )
@@ -833,10 +833,12 @@ class APITest(TestCase):
 
     def test_support(self, delta=1, expected="extended"):
         Package.objects.create(name="community", verbose="Community support", price=0)
-        Package.objects.create(name="extended", verbose="Extended support", price=42)
+        extended = Package.objects.create(
+            name="extended", verbose="Extended support", price=42
+        )
         service = Service.objects.create()
         service.subscription_set.create(
-            package="extended", expires=timezone.now() + timedelta(days=delta)
+            package=extended, expires=timezone.now() + timedelta(days=delta)
         )
         response = self.client.post(
             "/api/support/",
@@ -1060,6 +1062,32 @@ class ExpiryTest(FakturaceTestCase):
 )
 class ServiceTest(FakturaceTestCase):
     @responses.activate
+    def test_hosted_pay(self):
+        mock_vies()
+        with override("en"):
+            self.login()
+            service = self.create_service(
+                years=0, days=3, recurring="", package="hosted:test-1"
+            )
+            response = self.client.post(
+                reverse("subscription-pay", kwargs={"pk": service.pk}),
+                follow=True,
+            )
+            payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
+            payment_edit_url = response.redirect_chain[1][0]
+            self.assertTrue(payment_url.startswith("/en/payment/"))
+            response = self.client.post(payment_edit_url, TEST_CUSTOMER, follow=True)
+            self.assertRedirects(response, payment_url)
+            response = self.client.post(payment_url, {"method": "pay"}, follow=True)
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(response, "Weblate: Hosted (basic)")
+
+        service = Service.objects.get(pk=service.pk)
+        hosted = service.hosted_subscriptions
+        self.assertEqual(len(hosted), 1)
+        self.assertEqual(hosted[0].package.name, "hosted:test-1")
+
+    @responses.activate
     def test_hosted_upgrade(self):
         mock_vies()
         with override("en"):
@@ -1087,4 +1115,4 @@ class ServiceTest(FakturaceTestCase):
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
-        self.assertEqual(hosted[0].package, "hosted:test-2")
+        self.assertEqual(hosted[0].package.name, "hosted:test-2")
