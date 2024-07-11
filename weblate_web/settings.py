@@ -408,7 +408,7 @@ SAML_CONFIG = {
         "remote": [{"url": "https://hosted.weblate.org/idp/metadata/"}],
     },
     # set to 1 to output debugging information
-    "debug": 1,
+    "debug": 0,
     # Signing
     "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
     "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
