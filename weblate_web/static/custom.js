@@ -190,6 +190,10 @@ ready(() => {
                 const parts = data.address.trim().split("\n");
                 document.querySelector('input[name="address"]').value =
                   parts[0];
+                if (parts.length > 2) {
+                  document.querySelector('input[name="address_2"]').value =
+                    parts[1];
+                }
                 document.querySelector('input[name="city"]').value =
                   parts[parts.length - 1];
               }

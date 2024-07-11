@@ -44,7 +44,8 @@ from django_countries import countries
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
 
-from payments.models import Char32UUIDField, Customer, Payment, get_period_delta
+from payments.fields import Char32UUIDField
+from payments.models import Customer, Payment, get_period_delta
 from payments.utils import send_notification
 
 if TYPE_CHECKING:

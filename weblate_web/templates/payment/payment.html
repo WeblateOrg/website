@@ -53,7 +53,10 @@
                             <a href="{% url "payment-customer" pk=object.pk %}" class="button small right">{% trans "Edit" %}</a>
                             {{ object.customer.name }}<br>
                             {{ object.customer.address }}<br>
-                            {{ object.customer.city }}<br>
+                            {% if object.customer.address_2 %}
+                            {{ object.customer.address_2 }}<br>
+                            {% endif %}
+                            {% if object.customer.postcode %}{{ object.customer.postcode }} {% endif %}{{ object.customer.city }}<br>
                             {{ object.customer.country.name }}<br>
                             {{ object.customer.tax }}<br>
                             {{ object.customer.vat }}
