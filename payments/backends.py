@@ -136,8 +136,8 @@ class Backend:
             contact_file = storage.update_contact(
                 customer_id,
                 customer.name,
-                customer.address,
-                customer.city,
+                customer.legacy_address,
+                customer.legacy_city,
                 customer.country.name,
                 customer.email,
                 customer.tax if customer.tax else "",

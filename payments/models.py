@@ -36,6 +36,7 @@ from django_countries.fields import CountryField
 from vies.models import VATINField
 
 from .data import SUPPORTED_LANGUAGES
+from .fields import Char32UUIDField
 from .utils import validate_email
 from .validators import validate_vatin
 
@@ -72,17 +73,6 @@ EU_VAT_RATES = {
 VAT_RATE = 21
 
 
-class Char32UUIDField(models.UUIDField):
-    def db_type(self, connection):
-        return "char(32)"
-
-    def get_db_prep_value(self, value, connection, prepared=False):
-        value = super().get_db_prep_value(value, connection, prepared)
-        if value is not None:
-            value = value.replace("-", "") if isinstance(value, str) else value.hex
-        return value
-
-
 class Customer(models.Model):
     vat = VATINField(
         validators=[validate_vatin],
@@ -110,8 +100,17 @@ class Customer(models.Model):
     address = models.CharField(
         max_length=200, null=True, verbose_name=gettext_lazy("Address")
     )
+    address_2 = models.CharField(
+        max_length=200,
+        null=True,
+        verbose_name=gettext_lazy("Additional address information"),
+        blank=True,
+    )
     city = models.CharField(
-        max_length=200, null=True, verbose_name=gettext_lazy("Postcode and city")
+        max_length=200, null=True, verbose_name=gettext_lazy("City")
+    )
+    postcode = models.CharField(
+        max_length=20, null=True, verbose_name=gettext_lazy("Postcode")
     )
     country = CountryField(null=True, verbose_name=gettext_lazy("Country"))
     email = models.EmailField(blank=False, max_length=190, validators=[validate_email])
@@ -132,6 +131,18 @@ class Customer(models.Model):
         if self.country:
             return self.country.code.upper()
         return None
+
+    @property
+    def legacy_address(self):
+        if self.address_2:
+            return f"{self.address} {self.address_2}"
+        return self.address
+
+    @property
+    def legacy_city(self):
+        if self.postcode:
+            return f"{self.postcode} {self.city}"
+        return self.city
 
     @property
     def vat_country_code(self):

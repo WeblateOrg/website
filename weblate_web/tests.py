@@ -41,7 +41,8 @@ TEST_VIES_WSDL = os.path.join(TEST_DATA, "checkVatService.wsdl")
 TEST_CUSTOMER = {
     "name": "Michal Čihař",
     "address": "Zdiměřická 1439",
-    "city": "149 00 Praha 4",
+    "city": "Praha 4",
+    "postcode": "149 00",
     "country": "CZ",
     "vat_0": "CZ",
     "vat_1": "8003280318",
