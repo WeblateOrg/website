@@ -64,7 +64,7 @@ class Command(BaseCommand):
         for subscription in subscriptions:
             payment = subscription.payment_obj
             # Skip one-time payments and the ones with recurrence configured
-            if not subscription.get_repeat():
+            if not subscription.package.get_repeat():
                 continue
             notify_user = (
                 payment_notify_start <= subscription.expires <= payment_notify_end
@@ -155,7 +155,7 @@ class Command(BaseCommand):
         ).exclude(payment=None)
         for subscription in subscriptions:
             # Is this repeating subscription?
-            if not subscription.get_repeat():
+            if not subscription.package.get_repeat():
                 continue
 
             # Skip this in case there is another subscription, for example on service
@@ -173,7 +173,7 @@ class Command(BaseCommand):
             cls.peform_payment(
                 payment,
                 subscription.list_payments(),
-                amount=subscription.package_obj.price,
+                amount=subscription.package.price,
             )
 
     @classmethod

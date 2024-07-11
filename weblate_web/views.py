@@ -198,7 +198,7 @@ def api_hosted(request):
             }
         )[0]
         if subscription.package != payload["package"]:
-            subscription.package = payload["package"]
+            subscription.package = Package.objects.get(name=payload["package"])
             subscription.save(update_fields=["package"])
         if subscription.payment and subscription.payment != payments[-1]:
             # Include current payment in past payments
@@ -777,10 +777,10 @@ def subscription_pay(request, pk):
         subscription.save(update_fields=["package"])
     with override("en"):
         payment = Payment.objects.create(
-            amount=subscription.get_amount(),
+            amount=subscription.package.price,
             # pylint: disable=no-member
-            description=f"Weblate: {subscription.get_package_display()}",
-            recurring=subscription.get_repeat(),
+            description=f"Weblate: {subscription.package}",
+            recurring=subscription.package.get_repeat(),
             extra={"subscription": subscription.pk},
             customer=get_customer(request),
         )
@@ -805,15 +805,17 @@ def donate_pay(request, pk):
 @login_required
 def subscription_new(request):
     plan = request.GET.get("plan")
-    if not Package.objects.filter(name=plan).exists():
+    try:
+        package = Package.objects.get(name=plan)
+    except Package.DoesNotExist:
         return redirect("support")
-    subscription = Subscription(package=plan)
+    subscription = Subscription(package=package)
     with override("en"):
         payment = Payment.objects.create(
-            amount=subscription.get_amount(),
+            amount=subscription.package.price,
             # pylint: disable=no-member
-            description=f"Weblate: {subscription.get_package_display()}",
-            recurring=subscription.get_repeat(),
+            description=f"Weblate: {subscription.package}",
+            recurring=subscription.package.get_repeat(),
             extra={"subscription": plan, "service": request.GET.get("service")},
             customer=get_customer(request),
         )

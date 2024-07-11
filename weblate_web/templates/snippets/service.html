@@ -122,7 +122,7 @@
       <div class="form-line service-text-formatting">
         <div class="line-left">{% trans "Subscription" %}</div>
         <div class="line-right">
-          <p>{{ subscription.get_package_display }}</p>
+          <p>{{ subscription.package }}</p>
           <t>{% date_range subscription.created subscription.expires True %}
             <span>
               {% with days_from_today=subscription.expires|days_diff_from_today %}
