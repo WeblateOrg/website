@@ -194,8 +194,18 @@ ready(() => {
                   document.querySelector('input[name="address_2"]').value =
                     parts[1];
                 }
-                document.querySelector('input[name="city"]').value =
-                  parts[parts.length - 1];
+                const city_parts = parts[parts.length - 1].split("  ");
+                console.log(city_parts);
+                console.log(parts[parts.length - 1]);
+                if (city_parts.length > 1) {
+                  document.querySelector('input[name="postcode"]').value =
+                    city_parts[0];
+                  document.querySelector('input[name="city"]').value =
+                    city_parts.slice(1).join(" ");
+                } else {
+                  document.querySelector('input[name="city"]').value =
+                    city_parts[0];
+                }
               }
             })
             .catch((error) => {
