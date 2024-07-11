@@ -191,11 +191,15 @@ def api_hosted(request):
     ]
     if payments:
         # Create/update subscription
-        subscription = Subscription.objects.get_or_create(
-            service=service,
-            package=payload["package"],
-            defaults={"payment": payments[-1]},
+        subscription = service.subscription_set.get_or_create(
+            defaults={
+                "payment": payments[-1],
+                "package": payload["package"],
+            }
         )[0]
+        if subscription.package != payload["package"]:
+            subscription.package = payload["package"]
+            subscription.save(update_fields=["package"])
         if subscription.payment and subscription.payment != payments[-1]:
             # Include current payment in past payments
             subscription.pastpayment_set.get_or_create(payment=subscription.payment_obj)
