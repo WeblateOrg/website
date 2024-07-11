@@ -196,9 +196,14 @@ def api_hosted(request):
             package=payload["package"],
             defaults={"payment": payments[-1]},
         )[0]
-        if subscription.payment != payments[-1]:
+        if subscription.payment and subscription.payment != payments[-1]:
+            # Include current payment in past payments
+            subscription.pastpayment_set.get_or_create(payment=subscription.payment_obj)
+
+            # Update current subscription payment
             subscription.payment = payments[-1]
             subscription.save(update_fields=["payment"])
+
         # Link past payments
         for payment in payments[:-1]:
             subscription.pastpayment_set.get_or_create(payment=payment)
