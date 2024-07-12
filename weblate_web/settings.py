@@ -404,6 +404,8 @@ SAML_CONFIG = {
     # where the remote metadata is stored, local, remote or mdq server.
     # One metadatastore or many ...
     "metadata": {
+        # Needs periodic updates of the file, for example:
+        # curl -sSf  https://hosted.weblate.org/idp/metadata/ > .../saml/remote_metadata.xml
         "local": [os.path.join(BASE_DIR, "saml", "remote_metadata.xml")],
         "remote": [{"url": "https://hosted.weblate.org/idp/metadata/"}],
     },
