@@ -319,7 +319,7 @@ urlpatterns = [
         "manage/services/<int:pk>/", ServiceDetailView.as_view(), name="service-detail"
     ),
     path("feed/", LatestEntriesFeed(), name="feed"),
-    path("js/vat/", fetch_vat),
+    path("js/vat/", fetch_vat, name="js-vat"),
     path("api/support/", api_support),
     path("api/user/", api_user),
     path("api/hosted/", api_hosted),

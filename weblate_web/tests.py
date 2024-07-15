@@ -416,6 +416,26 @@ class UtilTestCase(TestCase):
         )
 
 
+def create_payment(recurring="y"):
+    customer = Customer.objects.create(
+        email="weblate@example.com",
+        user_id=1,
+        origin=PAYMENTS_ORIGIN,
+    )
+    payment = Payment.objects.create(
+        customer=customer,
+        amount=100,
+        description="Test payment",
+        backend="pay",
+        recurring=recurring,
+    )
+    return (
+        payment,
+        reverse("payment", kwargs={"pk": payment.pk}),
+        reverse("payment-customer", kwargs={"pk": payment.pk}),
+    )
+
+
 class FakturaceTestCase(TestCase):
     databases = "__all__"
     credentials = {
@@ -430,26 +450,6 @@ class FakturaceTestCase(TestCase):
         self.client.login(**self.credentials)
         return user
 
-    @staticmethod
-    def create_payment(recurring="y"):
-        customer = Customer.objects.create(
-            email="weblate@example.com",
-            user_id=1,
-            origin=PAYMENTS_ORIGIN,
-        )
-        payment = Payment.objects.create(
-            customer=customer,
-            amount=100,
-            description="Test payment",
-            backend="pay",
-            recurring=recurring,
-        )
-        return (
-            payment,
-            reverse("payment", kwargs={"pk": payment.pk}),
-            reverse("payment-customer", kwargs={"pk": payment.pk}),
-        )
-
     def create_user(self):
         if self._user is None:
             self._user = User.objects.create_user(**self.credentials)
@@ -461,7 +461,7 @@ class FakturaceTestCase(TestCase):
             user=self.create_user(),
             active=True,
             expires=timezone.now() + relativedelta(years=years, days=days),
-            payment=self.create_payment(recurring=recurring)[0].pk,
+            payment=create_payment(recurring=recurring)[0].pk,
             link_url="https://example.com/weblate",
             link_text="Weblate donation test",
         )
@@ -494,7 +494,7 @@ class FakturaceTestCase(TestCase):
         service.subscription_set.create(
             package=Package.objects.get_or_create(name=package)[0],
             expires=timezone.now() + relativedelta(years=years, days=days),
-            payment=self.create_payment(recurring=recurring)[0].pk,
+            payment=create_payment(recurring=recurring)[0].pk,
         )
         service.users.add(self.create_user())
         return service
@@ -513,7 +513,7 @@ class PaymentsTest(FakturaceTestCase):
 
     def test_view(self):
         with override("en"):
-            payment, url, customer_url = self.create_payment()
+            payment, url, customer_url = create_payment()
             response = self.client.get(url, follow=True)
             self.assertRedirects(response, customer_url)
             self.assertContains(response, "Please provide your billing")
@@ -747,7 +747,7 @@ class DonationTest(FakturaceTestCase):
             user=user,
             active=True,
             expires=timezone.now() + relativedelta(years=1),
-            payment=self.create_payment()[0].pk,
+            payment=create_payment()[0].pk,
         )
         self.assertContains(self.client.get(reverse("user")), "My donations")
 
@@ -1024,6 +1024,28 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username="testuser").exists())
         self.assertTrue(User.objects.filter(username="other").exists())
+
+    @responses.activate
+    def test_fetch_vat(self):
+        mock_vies()
+        payment, _url, _customer_url = create_payment()
+        response = self.client.post(reverse("js-vat"))
+        self.assertEqual(response.status_code, 400)
+        response = self.client.post(
+            reverse("js-vat"), {"vat": "CZ8003283018", "payment": payment.pk}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "countryCode": "CZ",
+                "vatNumber": "8003280318",
+                "requestDate": "2024-07-09",
+                "valid": True,
+                "name": "Ing. Michal Čihař",
+                "address": "Nábřežní 694\nCVIKOV II\n471 54  CVIKOV",
+            },
+        )
 
 
 @override_settings(
