@@ -661,14 +661,20 @@ class Service(models.Model):
         return self.subscription_set.filter(package__name="backup")
 
     @cached_property
-    def current_subscription(self):
+    def latest_subscription(self):
         try:
-            current = self.support_subscriptions.latest("expires")
+            return self.support_subscriptions.latest("expires")
         except Subscription.DoesNotExist:
             return None
-        if current.expires < timezone.now():
+
+    @cached_property
+    def current_subscription(self):
+        if (
+            self.latest_subscription is None
+            or self.latest_subscription.expires < timezone.now()
+        ):
             return None
-        return current
+        return self.latest_subscription
 
     @cached_property
     def expires(self):
