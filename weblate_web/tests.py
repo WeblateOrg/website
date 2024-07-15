@@ -861,7 +861,14 @@ class APITest(TestCase):
             HTTP_USER_AGENT="weblate/1.2.3",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["name"], expected)
+        payload = response.json()
+        self.assertEqual(payload["name"], expected)
+        if expected == "community":
+            self.assertEqual(payload["package"], "")
+        elif expected == "extended":
+            self.assertEqual(payload["package"], "Extended support")
+        else:
+            raise ValueError("Missing package expecation!")
         return service
 
     def test_support_expired(self):
@@ -890,6 +897,8 @@ class APITest(TestCase):
         service = self.test_support()
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
+
+        # Enable discovery
         self.client.post(
             "/api/support/",
             {
@@ -910,6 +919,8 @@ class APITest(TestCase):
         self.assertEqual(service.project_set.count(), 1)
         project = service.project_set.get()
         self.assertEqual(project.name, "Prj1")
+
+        # Project name change
         self.client.post(
             "/api/support/",
             {
@@ -930,6 +941,25 @@ class APITest(TestCase):
         self.assertEqual(service.project_set.count(), 1)
         project = service.project_set.get()
         self.assertEqual(project.name, "Prj2")
+
+        # Invalid listing of projects
+        self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "discoverable": "1",
+                "public_projects": json.dumps(
+                    [
+                        {
+                            "name": "Prj3",
+                            "url": "/projects/p3/",
+                        }
+                    ]
+                ),
+            },
+            HTTP_USER_AGENT="weblate/1.2.3",
+        )
+        self.assertEqual(service.project_set.count(), 0)
 
     def test_user(self):
         user = User.objects.create(

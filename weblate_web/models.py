@@ -663,9 +663,12 @@ class Service(models.Model):
     @cached_property
     def current_subscription(self):
         try:
-            return self.support_subscriptions.latest("expires")
+            current = self.support_subscriptions.latest("expires")
         except Subscription.DoesNotExist:
             return None
+        if current.expires < timezone.now():
+            return None
+        return current
 
     @cached_property
     def expires(self):

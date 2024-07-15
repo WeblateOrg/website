@@ -280,6 +280,9 @@ def api_support(request):
     return JsonResponse(
         data={
             "name": service.status,
+            "package": service.current_subscription.package.verbose
+            if service.current_subscription
+            else "",
             "expiry": service.expires,
             "backup_repository": service.backup_repository,
             "in_limits": service.check_in_limits(),
