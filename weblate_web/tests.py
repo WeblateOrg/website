@@ -22,7 +22,7 @@ from payments.data import SUPPORTED_LANGUAGES
 from payments.models import Customer, Payment
 
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
-from .models import PAYMENTS_ORIGIN, Donation, Package, Post, Service
+from .models import PAYMENTS_ORIGIN, Donation, Package, PackageCategory, Post, Service
 from .remote import (
     ACTIVITY_URL,
     WEBLATE_CONTRIBUTORS_URL,
@@ -470,9 +470,24 @@ class FakturaceTestCase(TestCase):
         Package.objects.bulk_create(
             [
                 Package(name="community", verbose="Community support", price=0),
-                Package(name="extended", verbose="Extended support", price=42),
-                Package(name="hosted:test-1", verbose="Hosted (basic)", price=420),
-                Package(name="hosted:test-2", verbose="Hosted (upgraded)", price=840),
+                Package(
+                    name="extended",
+                    verbose="Extended support",
+                    price=42,
+                    category=PackageCategory.PACKAGE_SUPPORT,
+                ),
+                Package(
+                    name="hosted:test-1",
+                    verbose="Hosted (basic)",
+                    price=420,
+                    category=PackageCategory.PACKAGE_DEDICATED,
+                ),
+                Package(
+                    name="hosted:test-2",
+                    verbose="Hosted (upgraded)",
+                    price=840,
+                    category=PackageCategory.PACKAGE_DEDICATED,
+                ),
             ]
         )
         service = Service.objects.create()
