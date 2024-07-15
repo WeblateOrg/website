@@ -41,7 +41,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "invoice",
     )
     list_filter = ("state", "backend", "customer__name", "customer__origin")
-    search_fields = ("description", "customer__name", "customer__email")
+    search_fields = ("description", "customer__name", "customer__email", "invoice")
 
 
 admin.site.register(Customer, CustomerAdmin)
