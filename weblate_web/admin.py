@@ -124,11 +124,13 @@ class PackageAdmin(admin.ModelAdmin):
         "verbose",
         "name",
         "price",
+        "category",
         "limit_projects",
         "limit_languages",
         "limit_source_strings",
         "limit_hosted_words",
     ]
+    list_filter = ["category"]
 
 
 class PastPaymentsAdmin(admin.ModelAdmin):

@@ -33,13 +33,13 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.db.models import Q
+from django.db.models import IntegerChoices, Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
-from django.utils.translation import gettext_lazy, override
+from django.utils.translation import gettext_lazy, override, pgettext_lazy
 from django_countries import countries
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
@@ -451,6 +451,13 @@ def generate_secret():
     return get_random_string(64)
 
 
+class PackageCategory(IntegerChoices):
+    PACKAGE_NONE = 0, pgettext_lazy("Package category", "None")
+    PACKAGE_DEDICATED = 10, pgettext_lazy("Package category", "Dedicated hosting")
+    PACKAGE_SHARED = 20, pgettext_lazy("Package category", "Shared hosting")
+    PACKAGE_SUPPORT = 30, pgettext_lazy("Package category", "Self-hosted support")
+
+
 class Package(models.Model):
     name = models.CharField(max_length=150, unique=True)
     verbose = models.CharField(max_length=400)
@@ -460,6 +467,9 @@ class Package(models.Model):
     limit_source_strings = models.IntegerField(default=0)
     limit_hosted_words = models.IntegerField(default=0)
     limit_hosted_strings = models.IntegerField(default=0)
+    category = models.IntegerField(
+        default=PackageCategory.PACKAGE_NONE, choices=PackageCategory
+    )
 
     class Meta:
         verbose_name = "Service package"
@@ -614,11 +624,15 @@ class Service(models.Model):
 
     @cached_property
     def hosted_subscriptions(self):
-        return self.subscription_set.filter(package__name__startswith="hosted:")
+        return self.subscription_set.filter(
+            package__category=PackageCategory.PACKAGE_DEDICATED
+        )
 
     @cached_property
     def shared_subscriptions(self):
-        return self.subscription_set.filter(package__name__startswith="shared:")
+        return self.subscription_set.filter(
+            package__category=PackageCategory.PACKAGE_SHARED
+        )
 
     @cached_property
     def basic_subscriptions(self):
