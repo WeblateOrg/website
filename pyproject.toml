@@ -8,6 +8,15 @@ profile = "black"
 target-version = "py311"
 
 [tool.ruff.lint]
+extend-safe-fixes = [
+  "D",
+  "TCH",
+  "FLY",
+  "SIM",
+  "ANN",
+  "FA102",
+  "UP"
+]
 ignore = [
   "FBT",  # TODO: Boolean in function definition
   "COM",  # CONFIG: No trailing commas

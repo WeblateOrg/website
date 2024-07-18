@@ -24,9 +24,12 @@ The code here is copy of code from Weblate, taken from
 weblate/utils/validators.py and weblate/utils/fields.py.
 """
 
+from __future__ import annotations
+
 import os.path
 import re
 from email.mime.image import MIMEImage
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -36,6 +39,9 @@ from django.template.loader import render_to_string
 from django.utils.translation import get_language, get_language_bidi
 from django.utils.translation import gettext as _
 from html2text import HTML2Text
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 # Reject some suspicious e-mail addresses, based on checks enforced by Exim MTA
 EMAIL_BLACKLIST = re.compile(r"^([./|]|.*([@%!`#&?]|/\.\./))")
@@ -51,7 +57,7 @@ def validate_email(value):
         raise ValidationError(_("Enter a valid e-mail address."))
 
 
-def send_notification(notification, recipients, **kwargs):
+def send_notification(notification: str, recipients: Iterable[str], **kwargs):
     if not recipients:
         return
 

@@ -113,7 +113,13 @@ class Customer(models.Model):
         max_length=20, null=True, verbose_name=gettext_lazy("Postcode")
     )
     country = CountryField(null=True, verbose_name=gettext_lazy("Country"))
-    email = models.EmailField(blank=False, max_length=190, validators=[validate_email])
+    email = models.EmailField(
+        blank=True,
+        max_length=190,
+        validators=[validate_email],
+        verbose_name=gettext_lazy("Billing e-mail"),
+        help_text=gettext_lazy("Additional e-mail to receive billing notifications"),
+    )
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
 
