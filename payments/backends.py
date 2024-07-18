@@ -419,8 +419,8 @@ class FioBank(Backend):
             if transaction["comment"]:
                 matches.extend(PROFORMA_RE.findall(transaction["comment"]))
             # Process all matches
-            for proforma_id in matches:
-                proforma_id = f"P{proforma_id}"
+            for proforma_number in matches:
+                proforma_id = f"P{proforma_number}"
                 try:
                     related = Payment.objects.get(backend=cls.name, invoice=proforma_id)
                     if related.state != Payment.PENDING:
