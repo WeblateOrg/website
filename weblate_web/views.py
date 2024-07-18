@@ -33,7 +33,12 @@ from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import connection, transaction
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import (
+    FileResponse,
+    Http404,
+    HttpResponseBadRequest,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -534,14 +539,12 @@ def download_invoice(request, pk):
     if not payment.invoice_filename_valid:
         raise Http404(f"File {payment.invoice_filename} does not exist!")
 
-    with open(payment.invoice_full_filename, "rb") as handle:
-        data = handle.read()
-
-    response = HttpResponse(data, content_type="application/pdf")
-    response["Content-Disposition"] = f"attachment; filename={payment.invoice_filename}"
-    response["Content-Length"] = len(data)
-
-    return response
+    return FileResponse(
+        open(payment.invoice_full_filename, "rb"),  # noqa: SIM115
+        as_attachment=True,
+        filename=payment.invoice.filename,
+        content_type="application/pdf",
+    )
 
 
 @require_POST
