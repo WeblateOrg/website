@@ -23,6 +23,7 @@
 
 import os
 from logging.handlers import SysLogHandler
+from pathlib import Path
 
 import saml2.saml
 
@@ -412,7 +413,7 @@ SAML_CONFIG = {
     },
 }
 
-LOCAL = os.path.join(BASE_DIR, "weblate_web", "settings_local.py")
-if os.path.exists(LOCAL):
-    with open(LOCAL) as handle:
-        exec(handle.read())  # noqa: S102
+LOCAL = Path(BASE_DIR) / "weblate_web" / "settings_local.py"
+if LOCAL.exists():
+    local_settings = LOCAL.read_text()
+    exec(local_settings)  # noqa: S102
