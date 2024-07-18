@@ -252,7 +252,7 @@ class Donation(models.Model):
             return f"Weblate donation: {self.get_reward_display()}"
         return "Weblate donation"
 
-    def send_notification(self, notification):
+    def send_notification(self, notification: str):
         send_notification(
             notification,
             [self.user.email],
@@ -882,11 +882,10 @@ class Subscription(models.Model):
         return Payment.objects.filter(query).distinct()
 
     def send_notification(self, notification):
-        send_notification(
-            notification,
-            [user.email for user in self.service.users.all()],
-            subscription=self,
-        )
+        emails = {user.email for user in self.service.users.all()}
+        if self.payment_obj.customer.email:
+            emails.add(self.payment_obj.customer.email)
+        send_notification(notification, emails, subscription=self)
         with override("en"):
             send_notification(
                 notification,
