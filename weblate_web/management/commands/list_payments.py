@@ -30,7 +30,7 @@ class Command(BaseCommand):
         subscriptions = Subscription.objects.exclude(payment=None)
         for subscription in subscriptions:
             # Skip one-time payments and the ones with recurrence configured
-            if not subscription.get_repeat():
+            if not subscription.package.get_repeat():
                 continue
             payment = subscription.payment_obj
             if payment.backend != "thepay-card":
@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 "{}, expires {} [{}]: {}".format(
                     subscription,
                     subscription.expires.date(),
-                    subscription.get_repeat(),
+                    subscription.package.get_repeat(),
                     ", ".join(
                         subscription.service.users.values_list("email", flat=True)
                     ),
