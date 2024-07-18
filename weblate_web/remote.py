@@ -20,6 +20,8 @@
 
 from __future__ import annotations
 
+import operator
+
 import requests
 import sentry_sdk
 from dateutil.parser import parse
@@ -105,7 +107,7 @@ def get_changes(force: bool = False):
         sentry_sdk.capture_exception(error)
         return []
 
-    stats.sort(key=lambda x: x["last_change"], reverse=True)
+    stats.sort(key=operator.itemgetter("last_change"), reverse=True)
 
     cache.set(key, stats[:10], timeout=CACHE_TIMEOUT)
     return stats[:10]

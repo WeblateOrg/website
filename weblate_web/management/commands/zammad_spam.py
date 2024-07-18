@@ -58,7 +58,7 @@ class Command(BaseCommand):
         for ticket in search:
             # Oldest article
             ticket_id = ticket["id"]
-            article_id = sorted(ticket["article_ids"])[0]
+            article_id = min(ticket["article_ids"])
             self.stdout.write(f"Processing {ticket_id}: {article_id}")
 
             # Get raw e-mail

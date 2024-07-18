@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import date, timedelta
-from xml.etree import ElementTree
+from xml.etree import ElementTree  # noqa: S405
 
 import requests
 import responses

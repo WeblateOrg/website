@@ -19,7 +19,7 @@
 
 import json
 import re
-import subprocess
+import subprocess  # noqa: S404
 from math import floor
 
 import fiobank
@@ -140,8 +140,8 @@ class Backend:
                 customer.legacy_city,
                 customer.country.name,
                 customer.email,
-                customer.tax if customer.tax else "",
-                customer.vat if customer.vat else "",
+                customer.tax or "",
+                customer.vat or "",
                 "EUR",
                 "weblate",
             )

@@ -303,7 +303,7 @@ class Payment(models.Model):
         return settings.PAYMENT_REDIRECT_URL.format(language=language, uuid=self.uuid)
 
     def get_payment_backend_class(self):
-        from .backends import get_backend
+        from .backends import get_backend  # noqa: PLC0415
 
         return get_backend(self.backend)
 
