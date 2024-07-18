@@ -113,5 +113,7 @@ class AddPaymentForm(forms.Form):
             try:
                 return storage.get(value)
             except Exception as error:
-                raise ValidationError(gettext("Invoice was not found: %s") % error)
+                raise ValidationError(
+                    gettext("Invoice was not found: %s") % error
+                ) from error
         return None

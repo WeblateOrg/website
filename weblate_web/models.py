@@ -122,11 +122,11 @@ def validate_bitmap(value):
         # Pillow doesn't detect the MIME type of all formats. In those
         # cases, content_type will be None.
         value.file.content_type = PIL.Image.MIME.get(image.format)
-    except Exception:
+    except Exception as error:
         # Pillow doesn't recognize it as an image.
         raise ValidationError(_("Invalid image!"), code="invalid_image").with_traceback(
             sys.exc_info()[2]
-        )
+        ) from error
 
     try:
         if hasattr(value.file, "seek") and callable(value.file.seek):

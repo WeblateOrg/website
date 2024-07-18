@@ -39,14 +39,14 @@ def validate_vatin(value):
     value = cache_vies_data(value)
     try:
         value.verify_country_code()
-    except ValidationError:
+    except ValidationError as error:
         msg = _("{} is not a valid country code for any European Union member.")
-        raise ValidationError(msg.format(value.country_code))
+        raise ValidationError(msg.format(value.country_code)) from error
     try:
         value.verify_regex()
-    except ValidationError:
+    except ValidationError as error:
         msg = _("{} does not match the country's VAT ID specifications.")
-        raise ValidationError(msg.format(value))
+        raise ValidationError(msg.format(value)) from error
 
     if not value.vies_data["valid"]:
         retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
