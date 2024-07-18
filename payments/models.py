@@ -238,6 +238,7 @@ class Payment(models.Model):
     amount_fixed = models.BooleanField(blank=True, default=False)
     start = models.DateField(blank=True, null=True)
     end = models.DateField(blank=True, null=True)
+    card_info = models.JSONField(default=dict, blank=True)
 
     class Meta:
         ordering = ["-created"]

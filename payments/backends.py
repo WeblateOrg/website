@@ -220,6 +220,13 @@ class DebugPay(Backend):
         return None
 
     def collect(self, request):
+        # Example data from The Pay API docs
+        self.payment.card_info = {
+            "number": "515735******2654",
+            "expiration_date": "2022-05",
+            "brand": "MASTERCARD",
+            "type": "debit",
+        }
         return True
 
 
