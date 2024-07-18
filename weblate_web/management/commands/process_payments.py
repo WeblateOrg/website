@@ -44,9 +44,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if settings.FIO_TOKEN:
-            with transaction.atomic(using="payments_db"):
+            with transaction.atomic():
                 FioBank.fetch_payments(from_date=options["from_date"])
-        with transaction.atomic(using="payments_db"):
+        with transaction.atomic():
             self.pending()
         self.active()
 

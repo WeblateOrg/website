@@ -343,7 +343,7 @@ class PaymentView(FormView, SingleObjectMixin):
         return None
 
     def dispatch(self, request, *args, **kwargs):
-        with transaction.atomic(using="payments_db"):
+        with transaction.atomic():
             self.object = self.get_object()
             customer = self.object.customer
             self.can_pay = not customer.is_empty
@@ -408,7 +408,7 @@ class CustomerView(PaymentView):
 
 class CompleteView(PaymentView):
     def dispatch(self, request, *args, **kwargs):
-        with transaction.atomic(using="payments_db"):
+        with transaction.atomic():
             self.object = self.get_object()
 
             # User should choose method for new payment

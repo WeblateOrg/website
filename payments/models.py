@@ -313,7 +313,7 @@ class Payment(models.Model):
         except KeyError:
             return False
 
-        with transaction.atomic(using="payments_db"):
+        with transaction.atomic():
             # Check for failed payments
             previous = Payment.objects.filter(repeat=self)
             if not skip_previous and previous.exists():
