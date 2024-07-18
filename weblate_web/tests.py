@@ -1,6 +1,6 @@
 import json
-import os
 from datetime import date, timedelta
+from pathlib import Path
 from xml.etree import ElementTree  # noqa: S405
 
 import requests
@@ -31,12 +31,11 @@ from .remote import (
 )
 from .templatetags.downloads import downloadlink, filesizeformat
 
-TEST_DATA = os.path.join(os.path.dirname(__file__), "test-data")
-TEST_FAKTURACE = os.path.join(TEST_DATA, "fakturace")
-TEST_CONTRIBUTORS = os.path.join(TEST_DATA, "contributors.json")
-TEST_ACTIVITY = os.path.join(TEST_DATA, "activity.json")
-TEST_IMAGE = os.path.join(TEST_DATA, "weblate-html.png")
-TEST_VIES_WSDL = os.path.join(TEST_DATA, "checkVatService.wsdl")
+TEST_DATA = Path(__file__).parent / "test-data"
+TEST_FAKTURACE = TEST_DATA / "fakturace"
+TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
+TEST_ACTIVITY = TEST_DATA / "activity.json"
+TEST_VIES_WSDL = TEST_DATA / "checkVatService.wsdl"
 
 TEST_CUSTOMER = {
     "name": "Michal Čihař",
@@ -50,12 +49,11 @@ TEST_CUSTOMER = {
 
 
 def mock_vies(valid: bool = True):
-    with open(TEST_VIES_WSDL) as handle:
-        responses.add(
-            responses.GET,
-            "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl",
-            body=handle.read(),
-        )
+    responses.add(
+        responses.GET,
+        "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl",
+        body=TEST_VIES_WSDL.read_text(),
+    )
     if valid:
         payload = """
 <env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
@@ -288,8 +286,9 @@ class ViewTestCase(PostTestCase):
 
     @responses.activate
     def test_about(self):
-        with open(TEST_CONTRIBUTORS) as handle:
-            responses.add(responses.GET, WEBLATE_CONTRIBUTORS_URL, body=handle.read())
+        responses.add(
+            responses.GET, WEBLATE_CONTRIBUTORS_URL, body=TEST_CONTRIBUTORS.read_text()
+        )
         get_contributors(force=True)
         response = self.client.get("/en/about/")
         self.assertContains(response, "comradekingu")
@@ -301,8 +300,7 @@ class ViewTestCase(PostTestCase):
 
     @responses.activate
     def test_activity(self):
-        with open(TEST_ACTIVITY) as handle:
-            responses.add(responses.GET, ACTIVITY_URL, body=handle.read())
+        responses.add(responses.GET, ACTIVITY_URL, body=TEST_ACTIVITY.read_text())
         get_activity(force=True)
         response = self.client.get("/img/activity.svg")
         self.assertContains(response, "<svg")
@@ -531,7 +529,7 @@ class PaymentsTest(FakturaceTestCase):
         fresh = Payment.objects.get(pk=payment.pk)
         self.assertEqual(fresh.state, state)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_pay(self):
         payment, url, _dummy = self.test_view()
         response = self.client.post(url, {"method": "pay"})
@@ -542,7 +540,7 @@ class PaymentsTest(FakturaceTestCase):
         )
         self.check_payment(payment, Payment.ACCEPTED)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     @responses.activate
     def test_invalid_vat(self):
         mock_vies(valid=False)
@@ -567,7 +565,7 @@ class PaymentsTest(FakturaceTestCase):
         )
         self.check_payment(payment, Payment.REJECTED)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_pending(self):
         payment, url, _dummy = self.test_view()
         response = self.client.post(url, {"method": "pending"})
@@ -601,7 +599,7 @@ class DonationTest(FakturaceTestCase):
         response = self.client.get("/en/donate/new/")
         self.assertContains(response, "list of supporters")
 
-    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_service_workflow_card(self):
         self.login()
         Package.objects.create(name="community", verbose="Community support", price=0)
@@ -645,7 +643,7 @@ class DonationTest(FakturaceTestCase):
     def test_donation_workflow_card_reward(self):
         self.test_donation_workflow_card(2)
 
-    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_donation_workflow_card(self, reward=0):
         self.login()
         response = self.client.post(
@@ -709,7 +707,7 @@ class DonationTest(FakturaceTestCase):
         renew.refresh_from_db()
         self.assertEqual(renew.state, Payment.PROCESSED)
 
-    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE)
+    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_donation_workflow_bank(self):
         self.login()
         response = self.client.post(
@@ -1051,7 +1049,7 @@ class APITest(TestCase):
 @override_settings(
     NOTIFY_SUBSCRIPTION=["noreply@example.com"],
     PAYMENT_DEBUG=True,
-    PAYMENT_FAKTURACE=TEST_FAKTURACE,
+    PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix(),
     PAYMENT_REDIRECT_URL="http://example.com/payment",
 )
 class ExpiryTest(FakturaceTestCase):
@@ -1125,7 +1123,7 @@ class ExpiryTest(FakturaceTestCase):
 @override_settings(
     NOTIFY_SUBSCRIPTION=["noreply@example.com"],
     PAYMENT_DEBUG=True,
-    PAYMENT_FAKTURACE=TEST_FAKTURACE,
+    PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix(),
 )
 class ServiceTest(FakturaceTestCase):
     @responses.activate
