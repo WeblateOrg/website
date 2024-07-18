@@ -26,9 +26,9 @@ weblate/utils/validators.py and weblate/utils/fields.py.
 
 from __future__ import annotations
 
-import os.path
 import re
 from email.mime.image import MIMEImage
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from django.conf import settings
@@ -70,9 +70,8 @@ def send_notification(notification: str, recipients: Iterable[str], **kwargs):
     # Logos
     images = []
     for name in ("email-logo.png", "email-logo-footer.png"):
-        filename = os.path.join(settings.STATIC_ROOT, name)
-        with open(filename, "rb") as handle:
-            image = MIMEImage(handle.read())
+        filename = Path(settings.STATIC_ROOT) / name
+        image = MIMEImage(filename.read_bytes())
         image.add_header("Content-ID", f"<{name}@cid.weblate.org>")
         image.add_header("Content-Disposition", "inline", filename=name)
         images.append(image)
@@ -102,10 +101,6 @@ def send_notification(notification: str, recipients: Iterable[str], **kwargs):
     email.attach_alternative(body, "text/html")
     # Include invoice PDF if exists
     if "invoice" in kwargs:
-        with open(kwargs["invoice"].pdf_path, "rb") as handle:
-            email.attach(
-                os.path.basename(kwargs["invoice"].pdf_path),
-                handle.read(),
-                "application/pdf",
-            )
+        pdf_path = Path(kwargs["invoice"].pdf_path)
+        email.attach(pdf_path.name, pdf_path.read_bytes(), "application/pdf")
     email.send()
