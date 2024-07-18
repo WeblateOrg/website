@@ -317,6 +317,8 @@ class PaymentView(FormView, SingleObjectMixin):
     check_customer = True
 
     def redirect_origin(self):
+        if self.object.customer.origin == PAYMENTS_ORIGIN:
+            return redirect(f"{reverse('donate-process')}?payment={self.object.pk}")
         return redirect(f"{self.object.customer.origin}?payment={self.object.pk}")
 
     def get_context_data(self, **kwargs):
