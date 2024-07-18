@@ -535,7 +535,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.post(url, {"method": "pay"})
         self.assertRedirects(
             response,
-            f"{PAYMENTS_ORIGIN}?payment={payment.pk}",
+            f"/en/donate/process/?payment={payment.pk}",
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.ACCEPTED)
@@ -560,7 +560,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.post(url, {"method": "reject"})
         self.assertRedirects(
             response,
-            f"{PAYMENTS_ORIGIN}?payment={payment.pk}",
+            f"/en/donate/process/?payment={payment.pk}",
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.REJECTED)
@@ -579,7 +579,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.get(complete_url)
         self.assertRedirects(
             response,
-            f"{PAYMENTS_ORIGIN}?payment={payment.pk}",
+            f"/en/donate/process/?payment={payment.pk}",
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.ACCEPTED)
