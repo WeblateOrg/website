@@ -856,7 +856,7 @@ class Subscription(models.Model):
     @cached_property
     def yearly_package(self):
         if self.package.name.endswith("-m"):
-            return Package.objects.get(name=self.package[:-2])
+            return Package.objects.get(name=self.package.name[:-2])
         return None
 
     def active(self):
