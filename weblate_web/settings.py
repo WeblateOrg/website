@@ -37,21 +37,7 @@ DATABASES = {
         # Use 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         "ENGINE": "django.db.backends.sqlite3",
         # Database name or path to database file if using sqlite3.
-        "NAME": "db.sqlite3",
-        # Database user, not used with sqlite3.
-        "USER": "",
-        # Database pasword, not used with sqlite3.
-        "PASSWORD": "",
-        # Set to empty string for localhost. Not used with sqlite3.
-        "HOST": "",
-        # Set to empty string for default. Not used with sqlite3.
-        "PORT": "",
-    },
-    "payments_db": {
-        # Use 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        "ENGINE": "django.db.backends.sqlite3",
-        # Database name or path to database file if using sqlite3.
-        "NAME": "/home/nijel/weblate/hosted/payments.db",
+        "NAME": "weblate-web.sqlite3",
         # Database user, not used with sqlite3.
         "USER": "",
         # Database pasword, not used with sqlite3.
@@ -62,27 +48,6 @@ DATABASES = {
         "PORT": "",
     },
 }
-DATABASE_ROUTERS = ["payments.dbrouter.HostedRouter"]
-
-# Test execution on Scrutinizer CI
-if "SCRUTINIZER" in os.environ:
-    DATABASES["default"]["ENGINE"] = "django.db.backends.mysql"
-    DATABASES["default"]["NAME"] = "weblate_web"
-    DATABASES["default"]["USER"] = "root"
-    DATABASES["default"]["PASSWORD"] = ""
-    DATABASES["default"]["HOST"] = "127.0.0.1"
-    DATABASES["default"]["OPTIONS"] = {
-        "init_command": (
-            "SET NAMES utf8mb4, "
-            "wait_timeout=28800, "
-            "default_storage_engine=INNODB, "
-            'sql_mode="STRICT_TRANS_TABLES"'
-        ),
-        "charset": "utf8mb4",
-        "isolation_level": "read committed",
-    }
-    DATABASES["payments_db"] = DATABASES["default"].copy()
-    DATABASES["payments_db"]["NAME"] = "payments"
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
