@@ -17,10 +17,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 import json
 import random
 
 import django.views.defaults
+import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -691,7 +694,12 @@ def server_error(request):
     # pylint: disable=broad-except
     """Error handler for server errors."""
     try:
-        return render(request, "500.html", status=500)
+        return render(
+            request,
+            "500.html",
+            {"sentry_event_id": sentry_sdk.last_event_id()},
+            status=500,
+        )
     except Exception:
         return django.views.defaults.server_error(request)
 

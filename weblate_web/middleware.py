@@ -80,7 +80,9 @@ class SecurityMiddleware:
         form = ["'self'", "weblate.org", "hosted.weblate.org"]
 
         # Sentry/Raven
-        script.append("cdn.ravenjs.com")
+        script.append("browser.sentry-cdn.com")
+        connect.append("de.sentry.io")
+        script.append("de.sentry.io")
 
         # Matomo/Piwik
         script.append("stats.cihar.com")
