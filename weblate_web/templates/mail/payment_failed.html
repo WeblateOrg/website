@@ -9,7 +9,8 @@
 
 {% if payment.details.reject_reason %}
 <p>
-{{ payment.details.reject_reason }}
+  {% trans "Detailed failure from the payment gateway:" %}
+  {{ payment.details.reject_reason }}
 </p>
 {% endif %}
 
