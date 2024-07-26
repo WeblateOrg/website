@@ -95,7 +95,14 @@ class Backend:
         return []
 
     def initiate(self, request, back_url, complete_url):
-        """Initiate payment and optionally redirects user."""
+        """
+        Initiate payment and optionally redirects user.
+
+        Raises
+        ------
+            InvalidState: In case the payment can not be initiated.
+
+        """
         if self.payment.state != Payment.NEW:
             raise InvalidState(self.payment.get_state_display())
 
@@ -112,7 +119,14 @@ class Backend:
         return result
 
     def complete(self, request):
-        """Payment completion called from returned request."""
+        """
+        Payment completion called from returned request.
+
+        Raises
+        ------
+            InvalidState: In case the payment can not be completed.
+
+        """
         if self.payment.state not in {Payment.PENDING, Payment.REJECTED}:
             raise InvalidState(self.payment.get_state_display())
 

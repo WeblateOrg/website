@@ -96,6 +96,11 @@ def validate_bitmap(value):
 
     Based on django.forms.fields.ImageField and
     weblate.utils.validators.validate_bitmap.
+
+    Raises
+    ------
+        ValidationError: If invame is not valid to be used.
+
     """
     if value is None:
         return
