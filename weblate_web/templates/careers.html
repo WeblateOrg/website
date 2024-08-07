@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% load i18n_noop %}
 
 {% block body_class %}page contribute light{% endblock %}
 
@@ -21,35 +22,35 @@
             <div class="wrap features">
               <div class="f-box">
                 <div class="icon"><img src="{% static "img/icon-software.svg" %}" /></div>
-                <h3>{% trans "Libre software advocates" %}</h3>
-                <p>{% trans "We embrace open source principles, with all our code and issues accessible to the public, fostering collaboration and transparency." %}</p>
+                <h3>{% trans_noop "Libre software advocates" %}</h3>
+                <p>{% trans_noop "We embrace open source principles, with all our code and issues accessible to the public, fostering collaboration and transparency." %}</p>
               </div>
               <div class="f-box">
                 <div class="icon"><img src="{% static "img/icon-earth.svg" %}" /></div>
-                <h3>{% trans "Remote work flexibility" %}</h3>
-                <p>{% trans "Enjoy the convenience of working remotely while collaborating with a diverse team of dedicated individuals." %}</p>
+                <h3>{% trans_noop "Remote work flexibility" %}</h3>
+                <p>{% trans_noop "Enjoy the convenience of working remotely while collaborating with a diverse team of dedicated individuals." %}</p>
               </div>
               <div class="f-box">
                 <div class="icon"><img src="{% static "img/icon-finance.svg" %}" /></div>
-                <h3>{% trans "Room for growth" %}</h3>
-                <p>{% trans "As a small company, we offer opportunities for personal and professional development. Every team member has space to contribute and grow." %}</p>
+                <h3>{% trans_noop "Room for growth" %}</h3>
+                <p>{% trans_noop "As a small company, we offer opportunities for personal and professional development. Every team member has space to contribute and grow." %}</p>
               </div>
             </div>
 
             <div class="contribution-list clear">
               <div class="flex">
                 <div class="box">
-                    <h2>{% trans "Front-end developer" %}</h2>
+                    <h2>{% trans_noop "Front-end developer" %}</h2>
 
-                    <p>{% trans "Are you passionate about improving user experiences and making a meaningful impact? Join us as a front-end developer to elevate Weblate's interface!" %}</p>
+                    <p>{% trans_noop "Are you passionate about improving user experiences and making a meaningful impact? Join us as a front-end developer to elevate Weblate's interface!" %}</p>
 
                     <ul>
 
-                      <li><strong>{% trans "Freedom to Innovate:" %}</strong> {% trans "Our front-end, currently powered by Bootstrap and jQuery, offers you the opportunity to shape its future by selecting the frameworks that best fit our goals." %}</li>
+                      <li><strong>{% trans_noop "Freedom to Innovate:" %}</strong> {% trans_noop "Our front-end, currently powered by Bootstrap and jQuery, offers you the opportunity to shape its future by selecting the frameworks that best fit our goals." %}</li>
 
-                      <li><strong>{% trans "Strong Foundation:" %}</strong> {% trans "Our Python-based back-end utilizes Django, Django REST framework, Celery, Translate Toolkit, and more, providing a solid backbone for further enhancements." %}</li>
+                      <li><strong>{% trans_noop "Strong Foundation:" %}</strong> {% trans_noop "Our Python-based back-end utilizes Django, Django REST framework, Celery, Translate Toolkit, and more, providing a solid backbone for further enhancements." %}</li>
 
-                      <li><strong>{% trans "Open Collaboration:" %}</strong>
+                      <li><strong>{% trans_noop "Open Collaboration:" %}</strong>
 
                         {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+label%3Aux" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
                         {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
@@ -58,72 +59,72 @@
                   </ul>
 
 
-                  <h3>{% trans "Desired Skills &amp; Experience" %}</h3>
+                  <h3>{% trans_noop "Desired Skills &amp; Experience" %}</h3>
 
                   <ul>
-                        <li>{% trans "Strong skills in front-end development and user experience design." %}</li>
-                        <li>{% trans "Proficiency in written and spoken English." %}</li>
-                        <li>{% trans "Passion for open source principles and collaborative development." %}</li>
+                        <li>{% trans_noop "Strong skills in front-end development and user experience design." %}</li>
+                        <li>{% trans_noop "Proficiency in written and spoken English." %}</li>
+                        <li>{% trans_noop "Passion for open source principles and collaborative development." %}</li>
                   </ul>
 
                   <p>
-                      {% trans "If you're ready to contribute your expertise and shape the future of Weblate, apply now to join our team!" %}
+                      {% trans_noop "If you're ready to contribute your expertise and shape the future of Weblate, apply now to join our team!" %}
                   </p>
 
                     <a href="mailto:michal@weblate.org?subject=Front-end developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
                 </div>
                 <div class="box">
-                    <h2>{% trans "Customer care and sales" %}</h2>
+                    <h2>{% trans_noop "Customer care and sales" %}</h2>
 
-                    <p>{% trans "We're looking for a person who loves to speak with the people and will help them in getting the most out of Weblate." %}</p>
+                    <p>{% trans_noop "We're looking for a person who loves to speak with the people and will help them in getting the most out of Weblate." %}</p>
 
 
                     <ul>
 
-                      <li><strong>{% trans "Customer success:" %}</strong>
-                        {% trans "You will work with customers to assess their needs and advise them on using Weblate." %}
+                      <li><strong>{% trans_noop "Customer success:" %}</strong>
+                        {% trans_noop "You will work with customers to assess their needs and advise them on using Weblate." %}
                       </li>
-                      <li><strong>{% trans "Backed by engineers:" %}</strong>
-                        {% trans "You will be a contact for customers who are seeking help. Our engineers will closely cooperate with you on resolving the customer issues." %}
+                      <li><strong>{% trans_noop "Backed by engineers:" %}</strong>
+                        {% trans_noop "You will be a contact for customers who are seeking help. Our engineers will closely cooperate with you on resolving the customer issues." %}
                       </li>
 
-                      <li><strong>{% trans "Expand your responsibility:" %}</strong>
+                      <li><strong>{% trans_noop "Expand your responsibility:" %}</strong>
 
-                        {% trans "You can expand into other areas where you feel comfortable: publish articles on our blogs, manage social media, discuss with our community, or improve our documentation." %}
+                        {% trans_noop "You can expand into other areas where you feel comfortable: publish articles on our blogs, manage social media, discuss with our community, or improve our documentation." %}
                       </li>
 
                   </ul>
 
 
-                  <h3>{% trans "Desired Skills &amp; Experience" %}</h3>
+                  <h3>{% trans_noop "Desired Skills &amp; Experience" %}</h3>
 
                   <ul>
-                        <li>{% trans "Ability to learn technical concepts quickly and communicate to both technical and non-technical stakeholders." %}</li>
-                        <li>{% trans "Proficiency in written and spoken English." %}</li>
-                        <li>{% trans "Passion for open source principles and collaborative development." %}</li>
+                        <li>{% trans_noop "Ability to learn technical concepts quickly and communicate to both technical and non-technical stakeholders." %}</li>
+                        <li>{% trans_noop "Proficiency in written and spoken English." %}</li>
+                        <li>{% trans_noop "Passion for open source principles and collaborative development." %}</li>
                   </ul>
 
                   <p>
-                      {% trans "If you're ready to contribute your expertise and shape the future of Weblate, apply now to join our team!" %}
+                      {% trans_noop "If you're ready to contribute your expertise and shape the future of Weblate, apply now to join our team!" %}
                   </p>
 
                     <a href="mailto:michal@weblate.org?subject=Python developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
                 </div>
                 <!--
                 <div class="box">
-                    <h2>{% trans "Python developer" %}</h2>
+                    <h2>{% trans_noop "Python developer" %}</h2>
 
-                    <p>{% trans "Are you passionate about developing new features, optimizing back-end, and integrating with third-party products? Join us as a Python developer to drive innovation and efficiency at Weblate!" %}</p>
+                    <p>{% trans_noop "Are you passionate about developing new features, optimizing back-end, and integrating with third-party products? Join us as a Python developer to drive innovation and efficiency at Weblate!" %}</p>
 
-                    <h3>{% trans "Why choose us:"%}</h3>
+                    <h3>{% trans_noop "Why choose us:"%}</h3>
 
                     <ul>
 
-                      <li><strong>{% trans "Freedom to Innovate:" %}</strong> {% trans "We encourage proactive problem-solving, where your insights and suggestions for enhancements are valued and considered for implementation." %}</li>
+                      <li><strong>{% trans_noop "Freedom to Innovate:" %}</strong> {% trans_noop "We encourage proactive problem-solving, where your insights and suggestions for enhancements are valued and considered for implementation." %}</li>
 
-                      <li><strong>{% trans "Strong Foundation:" %}</strong> {% trans "Our Python-based back-end utilizes Django, Django REST framework, Celery, Translate Toolkit, and more, providing a solid backbone for further enhancements." %}</li>
+                      <li><strong>{% trans_noop "Strong Foundation:" %}</strong> {% trans_noop "Our Python-based back-end utilizes Django, Django REST framework, Celery, Translate Toolkit, and more, providing a solid backbone for further enhancements." %}</li>
 
-                      <li><strong>{% trans "Open Collaboration:" %}</strong>
+                      <li><strong>{% trans_noop "Open Collaboration:" %}</strong>
 
                         {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+-label%3Aux" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
                         {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+-label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
@@ -132,45 +133,45 @@
                   </ul>
 
 
-                  <h3>{% trans "Desired Skills &amp; Experience" %}</h3>
+                  <h3>{% trans_noop "Desired Skills &amp; Experience" %}</h3>
 
                   <ul>
-                        <li>{% trans "Strong skills in Python development and experience with Django and related frameworks." %}</li>
-                        <li>{% trans "Proficiency in written and spoken English." %}</li>
-                        <li>{% trans "Passion for open source principles and collaborative development." %}</li>
+                        <li>{% trans_noop "Strong skills in Python development and experience with Django and related frameworks." %}</li>
+                        <li>{% trans_noop "Proficiency in written and spoken English." %}</li>
+                        <li>{% trans_noop "Passion for open source principles and collaborative development." %}</li>
                   </ul>
 
                   <p>
-                      {% trans "If you're ready to contribute your expertise and shape the future of Weblate, apply now to join our team!" %}
+                      {% trans_noop "If you're ready to contribute your expertise and shape the future of Weblate, apply now to join our team!" %}
                   </p>
 
-                    <a href="mailto:michal@weblate.org?subject=Python developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
+                    <a href="mailto:michal@weblate.org?subject=Python developer for Weblate" class="button bottom-left">{% trans_noop "Apply now" %}</a>
                 </div>
                 -->
                 <!--
                 <div class="box">
-                    <h2>{% trans "Full-stack developer" %}</h2>
+                    <h2>{% trans_noop "Full-stack developer" %}</h2>
                     <ul>
-                        <li>{% trans "We're looking for a front-end developer who will not be afraid of touching the back-end as well." %}</li>
-                        <li>{% trans "Our front-end is currently using Bootstrap and jQuery, but we want to improve." %}</li>
-                        <li>{% trans "The back-end is in Python, using Django, Django REST framework, Celery, Translate Toolkit, and many others." %}</li>
+                        <li>{% trans_noop "We're looking for a front-end developer who will not be afraid of touching the back-end as well." %}</li>
+                        <li>{% trans_noop "Our front-end is currently using Bootstrap and jQuery, but we want to improve." %}</li>
+                        <li>{% trans_noop "The back-end is in Python, using Django, Django REST framework, Celery, Translate Toolkit, and many others." %}</li>
                         <li>{% blocktrans with issues="https://github.com/WeblateOrg/weblate/labels/enhancement" %}Browse the <a href="{{ issues }}">open issues</a> to gain insight into what we are looking for.{% endblocktrans %}</li>
                         <li>{% blocktrans with issues="https://github.com/WeblateOrg/weblate/labels/good%20first%20issue" %}Grab one of the <a href="{{ issues }}">good first issues</a> to show us your expertise.{% endblocktrans %}</li>
-                        <li>{% trans "It is all libre software, all our code and issues are open to the public." %}</li>
+                        <li>{% trans_noop "It is all libre software, all our code and issues are open to the public." %}</li>
                         {% include "snippets/career.html" %}
                     </ul>
-                    <a href="mailto:michal@weblate.org?subject=Full-stack developer for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
+                    <a href="mailto:michal@weblate.org?subject=Full-stack developer for Weblate" class="button bottom-left">{% trans_noop "Apply now" %}</a>
                 </div>
                 <div class="box">
-                    <h2>{% trans "Customer care and sales" %}</h2>
+                    <h2>{% trans_noop "Customer care and sales" %}</h2>
                     <ul>
-                        <li>{% trans "We're looking for a person who loves to speak with the people and will help them in getting the most out of our product." %}</li>
-                        <li>{% trans "You will work with customers to assess their needs and advise them on using Weblate." %}</li>
-                        <li>{% trans "You will be a contact for customers who are seeking help. Our engineers will closely cooperate with you on resolving the customer issues." %}</li>
-                        <li>{% trans "You can expand into other areas where you feel comfortable: publish articles on our blogs, manage social media, discuss with our community, or improve our documentation." %}</li>
+                        <li>{% trans_noop "We're looking for a person who loves to speak with the people and will help them in getting the most out of our product." %}</li>
+                        <li>{% trans_noop "You will work with customers to assess their needs and advise them on using Weblate." %}</li>
+                        <li>{% trans_noop "You will be a contact for customers who are seeking help. Our engineers will closely cooperate with you on resolving the customer issues." %}</li>
+                        <li>{% trans_noop "You can expand into other areas where you feel comfortable: publish articles on our blogs, manage social media, discuss with our community, or improve our documentation." %}</li>
                         {% include "snippets/career.html" %}
                     </ul>
-                    <a href="mailto:michal@weblate.org?subject=Customer care and sales for Weblate" class="button bottom-left">{% trans "Apply now" %}</a>
+                    <a href="mailto:michal@weblate.org?subject=Customer care and sales for Weblate" class="button bottom-left">{% trans_noop "Apply now" %}</a>
                 </div>
                 -->
               </div>
