@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-05-06 17:14+0200\n"
+"POT-Creation-Date: 2024-08-07 16:47+0200\n"
 "PO-Revision-Date: 2024-07-02 02:13+0000\n"
 "Last-Translator: ngocanhtve <ngocanh.tve@gmail.com>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/weblate/"
@@ -29,100 +29,120 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: payments/backends.py:255
+#: payments/backends.py:276
 msgid "Payment card"
 msgstr "Thẻ thanh toán"
 
-#: payments/backends.py:336
+#: payments/backends.py:357
 msgid "Payment cancelled"
 msgstr "Đã hủy thanh toán"
 
-#: payments/backends.py:338
+#: payments/backends.py:359
 msgid "Payment error"
 msgstr "Lỗi khi thanh toán"
 
-#: payments/backends.py:350
+#: payments/backends.py:371
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: payments/backends.py:359
+#: payments/backends.py:380
 msgid "IBAN bank transfer"
 msgstr "Chuyển khoản ngân hàng IBAN"
 
-#: payments/backends.py:389
+#: payments/backends.py:410
 msgid "Issuing bank"
 msgstr "Ngân hàng phát hành"
 
-#: payments/backends.py:390
+#: payments/backends.py:411
 msgid "Account holder"
 msgstr "Chủ tài khoản"
 
-#: payments/backends.py:391
+#: payments/backends.py:412
 msgid "Account number"
 msgstr "Số tài khoản"
 
-#: payments/backends.py:392
+#: payments/backends.py:413
 msgid "SWIFT code"
 msgstr "Mã SWIFT"
 
-#: payments/backends.py:393
+#: payments/backends.py:414
 msgid "IBAN"
 msgstr "IBAN"
 
-#: payments/backends.py:394
+#: payments/backends.py:415
 msgid "Reference"
 msgstr "Giấy chứng nhận"
 
-#: payments/models.py:91
+#: payments/models.py:81
 msgid "European VAT ID"
 msgstr "ID VAT châu Âu"
 
-#: payments/models.py:93
+#: payments/models.py:83
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "Vui lòng điền ID VAT của Liên minh châu Âu, để trống nếu không có."
 
-#: payments/models.py:99
+#: payments/models.py:89
 msgid "Tax registration"
 msgstr "Đăng ký thuế"
 
-#: payments/models.py:101
+#: payments/models.py:91
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr "Vui lòng điền thông tin đăng ký thuế (nếu có) vào hóa đơn."
 
-#: payments/models.py:108
+#: payments/models.py:98
 msgid "Company or individual name"
 msgstr "Tên cá nhân hoặc công ty"
 
-#: payments/models.py:111
+#: payments/models.py:101
 msgid "Address"
 msgstr "Địa chỉ"
 
-#: payments/models.py:114
-msgid "Postcode and city"
+#: payments/models.py:106
+msgid "Additional address information"
+msgstr ""
+
+#: payments/models.py:110
+msgid "City"
+msgstr ""
+
+#: payments/models.py:113
+#, fuzzy
+#| msgid "Postcode and city"
+msgid "Postcode"
 msgstr "Mã bưu chính và thành phố"
 
-#: payments/models.py:116
+#: payments/models.py:115
 msgid "Country"
 msgstr "Quốc gia"
 
-#: payments/models.py:147
+#: payments/models.py:120
+#, fuzzy
+#| msgid "Billing"
+msgid "Billing e-mail"
+msgstr "Thanh toán"
+
+#: payments/models.py:121
+msgid "Additional e-mail to receive billing notifications"
+msgstr ""
+
+#: payments/models.py:164
 msgid "The country has to match your VAT code"
 msgstr "Quốc gia phải phù hợp với mã VAT"
 
-#: payments/models.py:170
+#: payments/models.py:187
 msgid "Annual"
 msgstr "Hàng năm"
 
-#: payments/models.py:171
+#: payments/models.py:188
 msgid "Biannual"
 msgstr "Hai lần một năm"
 
-#: payments/models.py:172 weblate_web/templates/donate/form.html:28
+#: payments/models.py:189 weblate_web/templates/donate/form.html:28
 msgid "Quarterly"
 msgstr "Hàng quý"
 
-#: payments/models.py:173 weblate_web/templates/donate/form.html:25
+#: payments/models.py:190 weblate_web/templates/donate/form.html:25
 #: weblate_web/templates/hosting.html:474
 #: weblate_web/templates/hosting.html:490
 #: weblate_web/templates/hosting.html:502
@@ -139,36 +159,36 @@ msgstr "Hàng quý"
 msgid "Monthly"
 msgstr "Hàng tháng"
 
-#: payments/models.py:174
+#: payments/models.py:191
 msgid "One-time"
 msgstr "Một lần"
 
-#: payments/models.py:208
+#: payments/models.py:225
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Thanh toán mới"
 
-#: payments/models.py:209
+#: payments/models.py:226
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Thanh toán đang chờ"
 
-#: payments/models.py:210
+#: payments/models.py:227
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Thanh toán bị từ chối"
 
-#: payments/models.py:211
+#: payments/models.py:228
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Đã nhận thanh toán"
 
-#: payments/models.py:212
+#: payments/models.py:229
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Đang xử lý thanh toán"
 
-#: payments/utils.py:48 payments/utils.py:51
+#: payments/utils.py:54 payments/utils.py:57
 msgid "Enter a valid e-mail address."
 msgstr "Nhập một địa chỉ email hợp lệ."
 
@@ -208,199 +228,228 @@ msgstr ""
 "libre và riêng tư. Và chính Weblate! Bạn thích phần mềm libre? Khả năng đóng "
 "góp của bạn là vô hạn ở đây!"
 
-#: weblate_web/forms.py:63
+#: weblate_web/forms.py:65
 msgid "Insufficient donation for selected reward!"
 msgstr "Đóng góp không đủ cho phần thưởng đã chọn!"
 
-#: weblate_web/models.py:52
+#: weblate_web/forms.py:117
+#, python-format
+msgid "Invoice was not found: %s"
+msgstr ""
+
+#: weblate_web/models.py:60
 msgid "No reward"
 msgstr "Không có phần thưởng"
 
-#: weblate_web/models.py:53 weblate_web/templates/donate.html:30
+#: weblate_web/models.py:61 weblate_web/templates/donate.html:30
 msgid "Name in the list of supporters"
 msgstr "Tên trong danh sách những người hỗ trợ"
 
-#: weblate_web/models.py:54 weblate_web/templates/donate.html:37
+#: weblate_web/models.py:62 weblate_web/templates/donate.html:37
 #: weblate_web/templates/donate/form.html:47
 msgid "Link in the list of supporters"
 msgstr "Liên kết trong danh sách những người hỗ trợ"
 
-#: weblate_web/models.py:55 weblate_web/templates/donate.html:44
+#: weblate_web/models.py:63 weblate_web/templates/donate.html:44
 #: weblate_web/templates/donate/form.html:55
 msgid "Logo and link on the Weblate website"
 msgstr "Logo và đường dẫn có trên trang web của Weblate"
 
-#: weblate_web/models.py:65
+#: weblate_web/models.py:73
 #: weblate_web/templates/weblate_web/post_detail.html:50
 msgid "Release"
 msgstr "ra mắt"
 
-#: weblate_web/models.py:66 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:74 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
 msgid "Features"
 msgstr "Tính năng"
 
-#: weblate_web/models.py:67
+#: weblate_web/models.py:75
 msgid "Announcement"
 msgstr "Thông báo"
 
-#: weblate_web/models.py:68
+#: weblate_web/models.py:76
 msgid "Conferences"
 msgstr "hội nghị"
 
-#: weblate_web/models.py:69 weblate_web/templates/hosting.html:58
+#: weblate_web/models.py:77 weblate_web/templates/hosting.html:58
 msgid "Hosted Weblate"
 msgstr "Weblate được tổ chức"
 
-#: weblate_web/models.py:70
+#: weblate_web/models.py:78
 #: weblate_web/templates/weblate_web/post_detail.html:52
 msgid "Development"
 msgstr "Sự phát triển"
 
-#: weblate_web/models.py:71
+#: weblate_web/models.py:79
 #: weblate_web/templates/weblate_web/post_detail.html:53
 msgid "Localization"
 msgstr "bản địa hóa"
 
-#: weblate_web/models.py:119
+#: weblate_web/models.py:132
 msgid "Invalid image!"
 msgstr "Hình ảnh không hợp lệ!"
 
-#: weblate_web/models.py:130
+#: weblate_web/models.py:143
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Loại tệp ảnh không được hỗ trợ: %s"
 
-#: weblate_web/models.py:136
+#: weblate_web/models.py:149
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Vui lòng tải lên một hình ảnh có độ phân giải 570 x 260 pixel."
 
-#: weblate_web/models.py:201
+#: weblate_web/models.py:214
 msgid "Link text"
 msgstr "kết nối văn bản"
 
-#: weblate_web/models.py:203
+#: weblate_web/models.py:216
 msgid "Link URL"
 msgstr "kết nối URL"
 
-#: weblate_web/models.py:205
+#: weblate_web/models.py:218
 msgid "Link image"
 msgstr "kết nối hình ảnh"
 
-#: weblate_web/models.py:478
+#: weblate_web/models.py:460
+msgctxt "Package category"
+msgid "None"
+msgstr ""
+
+#: weblate_web/models.py:461
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgctxt "Package category"
+msgid "Dedicated hosting"
+msgstr "Dịch vụ lưu trữ chuyên dụng"
+
+#: weblate_web/models.py:462
+msgctxt "Package category"
+msgid "Shared hosting"
+msgstr ""
+
+#: weblate_web/models.py:463
+#, fuzzy
+#| msgid "Basic self-hosted support"
+msgctxt "Package category"
+msgid "Self-hosted support"
+msgstr "Hỗ trợ tự lưu trữ cơ bản"
+
+#: weblate_web/models.py:502
 msgid "Community supported"
 msgstr "cộng đồng được hỗ trợ"
 
-#: weblate_web/models.py:479
+#: weblate_web/models.py:503
 msgid "Dedicated hosted service"
 msgstr "Dịch vụ lưu trữ chuyên dụng"
 
-#: weblate_web/models.py:480
+#: weblate_web/models.py:504
 msgid "Hosted service"
 msgstr "Dịch vụ lưu trữ"
 
-#: weblate_web/models.py:481 weblate_web/templates/support.html:54
+#: weblate_web/models.py:505 weblate_web/templates/support.html:54
 msgid "Basic self-hosted support"
 msgstr "Hỗ trợ tự lưu trữ cơ bản"
 
-#: weblate_web/models.py:482 weblate_web/templates/support.html:64
+#: weblate_web/models.py:506 weblate_web/templates/support.html:64
 msgid "Extended self-hosted support"
 msgstr "Hỗ trợ tự lưu trữ nâng cao"
 
-#: weblate_web/models.py:483 weblate_web/templates/support.html:78
+#: weblate_web/models.py:507 weblate_web/templates/support.html:78
 msgid "Premium self-hosted support"
 msgstr "Hỗ trợ tự lưu trữ cao cấp"
 
-#: weblate_web/models.py:498 weblate_web/templates/snippets/service.html:95
+#: weblate_web/models.py:522 weblate_web/templates/snippets/service.html:95
 msgid "Server URL"
 msgstr "URL máy chủ"
 
-#: weblate_web/models.py:506
+#: weblate_web/models.py:530
 msgid "Server description"
 msgstr "miêu tả máy chủ"
 
-#: weblate_web/models.py:509
+#: weblate_web/models.py:533
 msgid "Server image"
 msgstr "hình ảnh máy chủ"
 
-#: weblate_web/models.py:513
+#: weblate_web/models.py:537
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "ảnh PNG hoặc JPG với độ phân giải 570 x 260 pixel."
 
-#: weblate_web/models.py:650 weblate_web/templates/hosting.html:156
+#: weblate_web/models.py:696 weblate_web/templates/hosting.html:156
 msgid "Basic support"
 msgstr "Hỗ trợ cơ bản"
 
-#: weblate_web/models.py:651
+#: weblate_web/models.py:697
 msgid "Never get held back by a problem."
 msgstr "Không bao giờ bị kéo lại bởi một khó khăn."
 
-#: weblate_web/models.py:652
+#: weblate_web/models.py:698
 msgid "Set priority for all your questions and reported bugs."
 msgstr "Ưu tiên những câu hỏi của bạn và báo cáo lỗi."
 
-#: weblate_web/models.py:654 weblate_web/templates/user.html:30
+#: weblate_web/models.py:700 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Nhận hỗ trợ"
 
-#: weblate_web/models.py:663
+#: weblate_web/models.py:709
 msgid "Premium support"
 msgstr "Hỗ trợ cao cấp"
 
-#: weblate_web/models.py:664
+#: weblate_web/models.py:710
 msgid "Don’t wait with your work on hold."
 msgstr "đừng chờ công việc của bạn bị giữ lại."
 
-#: weblate_web/models.py:665
+#: weblate_web/models.py:711
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Điều này đảm bảo bạn sẽ trả lời NBD muộn nhất."
 
-#: weblate_web/models.py:667
+#: weblate_web/models.py:713
 msgid "Be Premium"
 msgstr "Trở nên Cao cấp"
 
-#: weblate_web/models.py:675 weblate_web/templates/hosting.html:123
+#: weblate_web/models.py:721 weblate_web/templates/hosting.html:123
 msgid "Extended support"
 msgstr "Hỗ trợ kéo dài"
 
-#: weblate_web/models.py:676
+#: weblate_web/models.py:722
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "Đừng lo lắng với gói Basic, hãy nhận một gói miễn phí."
 
-#: weblate_web/models.py:677
+#: weblate_web/models.py:723
 msgid "We will manage upgrades for you."
 msgstr "Chúng tôi sẽ quản lý nâng cấp giúp bạn."
 
-#: weblate_web/models.py:679
+#: weblate_web/models.py:725
 msgid "Stay updated"
 msgstr "tiếp tục được cập nhật"
 
-#: weblate_web/models.py:687 weblate_web/templates/support.html:104
+#: weblate_web/models.py:733 weblate_web/templates/support.html:104
 msgid "Backup service"
 msgstr "Dịch vụ sao lưu"
 
-#: weblate_web/models.py:688
+#: weblate_web/models.py:734
 msgid "Easily put your backups in a safe place."
 msgstr "Dễ dàng đưa bản sao lưu của bạn vào nơi an toàn."
 
-#: weblate_web/models.py:689
+#: weblate_web/models.py:735
 msgid "Encrypted and automatic, always available."
 msgstr "Được mã hóa và tự động, luôn có sẵn."
 
-#: weblate_web/models.py:691
+#: weblate_web/models.py:737
 msgid "Back up daily"
 msgstr "Sao lưu hàng ngày"
 
-#: weblate_web/models.py:703
+#: weblate_web/models.py:749
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Nâng cấp tới %s"
 
-#: weblate_web/models.py:704
+#: weblate_web/models.py:750
 msgid "Increase service limits to translate more content."
 msgstr "Tăng giới hạn phục vụ để dịch nhiều thông tin hơn."
 
-#: weblate_web/models.py:707
+#: weblate_web/models.py:753
 msgid "Upgrade"
 msgstr "Nâng cấp"
 
@@ -678,7 +727,7 @@ msgstr "Mã số thuế GTGT"
 msgid "D-U-N-S Number"
 msgstr "Số D-U-N-S"
 
-#: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
+#: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:20
 #: weblate_web/templates/hosting.html:563
 #: weblate_web/templates/hosting.html:649
 #: weblate_web/templates/hosting.html:725
@@ -723,73 +772,21 @@ msgstr "Điều khoản và Quyền riêng tư"
 msgid "Design by %(author)s"
 msgstr "Được thiết kế bởi %(author)s"
 
-#: weblate_web/templates/careers.html:10
+#: weblate_web/templates/careers.html:12
 msgid "Career at Weblate"
 msgstr "Sự nghiệp tại Weblate"
 
-#: weblate_web/templates/careers.html:14
+#: weblate_web/templates/careers.html:16
 msgid "Weblate, the libre localization platform, wants you on the team!"
 msgstr ""
 "Weblate, nền tảng bản địa hóa miễn phí, muốn bạn tham gia cùng chúng tôi!"
 
-#: weblate_web/templates/careers.html:17
+#: weblate_web/templates/careers.html:19
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
 msgstr "Tìm hiểu thêm"
 
-#: weblate_web/templates/careers.html:24
-msgid "Front-end developer"
-msgstr "Nhà phát triển front-end"
-
-#: weblate_web/templates/careers.html:26
-msgid ""
-"Are you passionate about improving user experiences and making a meaningful "
-"impact? Join us as a front-end developer to elevate Weblate's interface!"
-msgstr ""
-"Bạn có đam mê cải thiện trải nghiệm người dùng và tạo ra tác động có ý nghĩa "
-"không? Hãy tham gia cùng chúng tôi với tư cách là nhà phát triển front-end "
-"để nâng cao giao diện của Weblate!"
-
-#: weblate_web/templates/careers.html:28 weblate_web/templates/careers.html:70
-msgid "Why choose us:"
-msgstr "Tại sao chọn chúng tôi:"
-
-#: weblate_web/templates/careers.html:32 weblate_web/templates/careers.html:74
-msgid "Freedom to Innovate:"
-msgstr "Tự do đổi mới:"
-
-#: weblate_web/templates/careers.html:32
-msgid ""
-"Our front-end, currently powered by Bootstrap and jQuery, offers you the "
-"opportunity to shape its future by selecting the frameworks that best fit "
-"our goals."
-msgstr ""
-"Giao diện người dùng của chúng tôi, hiện được cung cấp bởi Bootstrap và "
-"jQuery, mang đến cho bạn cơ hội định hình tương lai của nó bằng cách chọn "
-"các khung phù hợp nhất với mục tiêu của chúng tôi."
-
-#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:76
-msgid "Strong Foundation:"
-msgstr "Nền tảng vững chắc:"
-
-#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:76
-#, fuzzy
-#| msgid ""
-#| "The back-end is in Python, using Django, Django REST framework, Celery, "
-#| "Translate Toolkit, and many others."
-msgid ""
-"Our Python-based back-end utilizes Django, Django REST framework, Celery, "
-"Translate Toolkit, and more, providing a solid backbone for further "
-"enhancements."
-msgstr ""
-"Phần back-end được viết bằng Python, sử dụng Django, cấu trúc Django REST, "
-"Celery, Translate Toolkit cùng nhiều thứ khác."
-
-#: weblate_web/templates/careers.html:37 weblate_web/templates/careers.html:79
-msgid "Open Collaboration:"
-msgstr ""
-
-#: weblate_web/templates/careers.html:39 weblate_web/templates/careers.html:81
+#: weblate_web/templates/careers.html:55 weblate_web/templates/careers.html:129
 #, fuzzy, python-format
 #| msgid ""
 #| "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into "
@@ -801,7 +798,7 @@ msgstr ""
 "Duyệt qua <a href=\"%(issues)s\">các vấn đề mở</a> để hiểu rõ hơn về những "
 "gì chúng tôi đang tìm kiếm."
 
-#: weblate_web/templates/careers.html:40 weblate_web/templates/careers.html:82
+#: weblate_web/templates/careers.html:56 weblate_web/templates/careers.html:130
 #, fuzzy, python-format
 #| msgid ""
 #| "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us "
@@ -813,120 +810,11 @@ msgstr ""
 "Hãy lấy một trong những <a href=\"%(issues)s\">các vấn đề tốt</a> để cho "
 "chúng tôi thấy kiến thức chuyên môn của bạn."
 
-#: weblate_web/templates/careers.html:43 weblate_web/templates/careers.html:85
-msgid "Libre Software Advocates:"
-msgstr ""
-
-#: weblate_web/templates/careers.html:43 weblate_web/templates/careers.html:85
-msgid ""
-"We embrace open source principles, with all our code and issues accessible "
-"to the public, fostering collaboration and transparency."
-msgstr ""
-
-#: weblate_web/templates/careers.html:45 weblate_web/templates/careers.html:87
-msgid "Remote Work Flexibility:"
-msgstr ""
-
-#: weblate_web/templates/careers.html:45 weblate_web/templates/careers.html:87
-msgid ""
-"Enjoy the convenience of working remotely while collaborating with a diverse "
-"team of dedicated individuals."
-msgstr ""
-
-#: weblate_web/templates/careers.html:47 weblate_web/templates/careers.html:89
-msgid "Room for Growth:"
-msgstr ""
-
-#: weblate_web/templates/careers.html:47 weblate_web/templates/careers.html:89
-msgid ""
-"As a small company, we offer opportunities for personal and professional "
-"development. Every team member has space to contribute and grow."
-msgstr ""
-
-#: weblate_web/templates/careers.html:51 weblate_web/templates/careers.html:93
-msgid "Requirements:"
-msgstr ""
-
-#: weblate_web/templates/careers.html:54
-msgid "Strong skills in front-end development and user experience design."
-msgstr ""
-
-#: weblate_web/templates/careers.html:55 weblate_web/templates/careers.html:97
-msgid "Proficiency in written and spoken English."
-msgstr ""
-
-#: weblate_web/templates/careers.html:56 weblate_web/templates/careers.html:98
-msgid "Passion for open source principles and collaborative development."
-msgstr ""
-
-#: weblate_web/templates/careers.html:60 weblate_web/templates/careers.html:102
-msgid ""
-"If you're ready to contribute your expertise and shape the future of "
-"Weblate, apply now to join our team!"
-msgstr ""
-
-#: weblate_web/templates/careers.html:63 weblate_web/templates/careers.html:105
-#: weblate_web/templates/careers.html:119
-#: weblate_web/templates/careers.html:130
+#: weblate_web/templates/careers.html:74 weblate_web/templates/careers.html:111
 msgid "Apply now"
 msgstr "Áp dụng ngay bây giờ"
 
-#: weblate_web/templates/careers.html:66
-#, fuzzy
-#| msgid "Full-stack developer"
-msgid "Python developer"
-msgstr ""
-"Lập trình viên có thể phát triển cả phần mềm giao diện người dùng và máy chủ"
-
-#: weblate_web/templates/careers.html:68
-msgid ""
-"Are you passionate about developing new features, optimizing back-end, and "
-"integrating with third-party products? Join us as a Python developer to "
-"drive innovation and efficiency at Weblate!"
-msgstr ""
-
-#: weblate_web/templates/careers.html:74
-msgid ""
-"We encourage proactive problem-solving, where your insights and suggestions "
-"for enhancements are valued and considered for implementation."
-msgstr ""
-
-#: weblate_web/templates/careers.html:96
-msgid ""
-"Strong skills in Python development and experience with Django and related "
-"frameworks."
-msgstr ""
-
-#: weblate_web/templates/careers.html:109
-msgid "Full-stack developer"
-msgstr ""
-"Lập trình viên có thể phát triển cả phần mềm giao diện người dùng và máy chủ"
-
-#: weblate_web/templates/careers.html:111
-msgid ""
-"We're looking for a front-end developer who will not be afraid of touching "
-"the back-end as well."
-msgstr ""
-"Chúng tôi đang tìm kiếm một nhà lập trình giao diện không ngại chạm vào phía "
-"máy chủ."
-
-#: weblate_web/templates/careers.html:112
-msgid ""
-"Our front-end is currently using Bootstrap and jQuery, but we want to "
-"improve."
-msgstr ""
-"Giao diện người dùng của chúng tôi hiện đang sử dụng Bootstrap và jQuery, "
-"nhưng chúng tôi muốn cải thiện."
-
-#: weblate_web/templates/careers.html:113
-msgid ""
-"The back-end is in Python, using Django, Django REST framework, Celery, "
-"Translate Toolkit, and many others."
-msgstr ""
-"Phần back-end được viết bằng Python, sử dụng Django, cấu trúc Django REST, "
-"Celery, Translate Toolkit cùng nhiều thứ khác."
-
-#: weblate_web/templates/careers.html:114
+#: weblate_web/templates/careers.html:158
 #, python-format
 msgid ""
 "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
@@ -935,7 +823,7 @@ msgstr ""
 "Duyệt qua <a href=\"%(issues)s\">các vấn đề mở</a> để hiểu rõ hơn về những "
 "gì chúng tôi đang tìm kiếm."
 
-#: weblate_web/templates/careers.html:115
+#: weblate_web/templates/careers.html:159
 #, python-format
 msgid ""
 "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
@@ -943,53 +831,6 @@ msgid ""
 msgstr ""
 "Hãy lấy một trong những <a href=\"%(issues)s\">các vấn đề tốt</a> để cho "
 "chúng tôi thấy kiến thức chuyên môn của bạn."
-
-#: weblate_web/templates/careers.html:116
-msgid ""
-"It is all libre software, all our code and issues are open to the public."
-msgstr ""
-"Tất cả đều là phần mềm miễn phí, tất cả mã và các vấn đề của chúng tôi đều "
-"được mở cho công chúng."
-
-#: weblate_web/templates/careers.html:122
-msgid "Customer care and sales"
-msgstr "Chăm sóc khách hàng và bán hàng"
-
-#: weblate_web/templates/careers.html:124
-msgid ""
-"We're looking for a person who loves to speak with the people and will help "
-"them in getting the most out of our product."
-msgstr ""
-"Chúng tôi đang tìm kiếm một người thích giao lưu với mọi người và sẽ giúp họ "
-"tận dụng tối đa sản phẩm của chúng tôi."
-
-#: weblate_web/templates/careers.html:125
-msgid ""
-"You will work with customers to assess their needs and advise them on using "
-"Weblate."
-msgstr ""
-"Bạn sẽ làm việc với khách hàng để đánh giá nhu cầu của họ và tư vấn cho họ "
-"cách sử dụng Weblate."
-
-#: weblate_web/templates/careers.html:126
-msgid ""
-"You will be a contact for customers who are seeking help. Our engineers will "
-"closely cooperate with you on resolving the customer issues."
-msgstr ""
-"Bạn sẽ là người liên hệ cho những khách hàng đang tìm kiếm sự giúp đỡ. Các "
-"kỹ sư của chúng tôi sẽ hợp tác chặt chẽ với bạn để giải quyết các vấn đề của "
-"khách hàng."
-
-#: weblate_web/templates/careers.html:127
-msgid ""
-"You can expand into other areas where you feel comfortable: publish articles "
-"on our blogs, manage social media, discuss with our community, or improve "
-"our documentation."
-msgstr ""
-"Bạn có thể mở rộng sang các lĩnh vực khác mà bạn cảm thấy thoải mái: xuất "
-"bản bài viết trên blog của chúng tôi, quản lý phương tiện truyền thông xã "
-"hội, thảo luận với cộng đồng của chúng tôi hoặc cải thiện tài liệu của chúng "
-"tôi."
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -2063,7 +1904,7 @@ msgid ""
 msgstr ""
 
 #: weblate_web/templates/hosting.html:17
-msgid "Our team is ready to help you make Weblate run smoothly."
+msgid "Our team is ready to help you run Weblate smoothly."
 msgstr ""
 
 #: weblate_web/templates/hosting.html:20
@@ -2112,7 +1953,7 @@ msgid "Cloud"
 msgstr ""
 
 #: weblate_web/templates/hosting.html:70
-msgid "Backups and restore on Hosted Weblate are fully automatic."
+msgid "Backups and restores are automatic on Hosted Weblate."
 msgstr ""
 
 #: weblate_web/templates/hosting.html:90
@@ -2299,14 +2140,14 @@ msgstr "Weblate tự hào hỗ trợ các dự án libre"
 #: weblate_web/templates/hosting.html:748
 #, python-format
 msgid ""
-"If you feel like being supported by Weblate will help you, <a "
-"href=\"%(url)s\">set up your libre project</a> and get the <strong>Libre "
-"plan</strong> gratis."
+"If you feel that being supported by Weblate will help your libre project, <a "
+"href=\"%(url)s\">set it up</a> and get the <strong>Libre plan</strong> "
+"gratis."
 msgstr ""
 
 #: weblate_web/templates/hosting.html:749
 msgid ""
-"It has the same limits as the <strong>160k plan</strong>, but only for "
+"It has the same limits as the <strong>160k plan</strong>, and is only for "
 "public projects."
 msgstr ""
 
@@ -2392,8 +2233,8 @@ msgstr ""
 #: weblate_web/templates/mail/base.html:245
 #: weblate_web/templates/mail/payment_completed.html:14
 #: weblate_web/templates/mail/payment_expired.html:23
-#: weblate_web/templates/mail/payment_failed.html:21
-#: weblate_web/templates/mail/payment_failed.html:23
+#: weblate_web/templates/mail/payment_failed.html:22
+#: weblate_web/templates/mail/payment_failed.html:24
 #: weblate_web/templates/mail/payment_missing.html:25
 #: weblate_web/templates/mail/payment_upcoming.html:25
 msgid "Manage your payments"
@@ -2436,7 +2277,11 @@ msgstr "Thanh toán đã hết hạn của bạn trên weblate.org"
 msgid "Your payment on weblate.org has failed."
 msgstr "Thanh toán của bạn trên weblate.org đã thất bại."
 
-#: weblate_web/templates/mail/payment_failed.html:17
+#: weblate_web/templates/mail/payment_failed.html:12
+msgid "Detailed failure from the payment gateway:"
+msgstr ""
+
+#: weblate_web/templates/mail/payment_failed.html:18
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
@@ -2618,11 +2463,11 @@ msgstr ""
 msgid "Edit"
 msgstr "Sửa"
 
-#: weblate_web/templates/payment/payment.html:64
+#: weblate_web/templates/payment/payment.html:67
 msgid "Please choose payment method"
 msgstr ""
 
-#: weblate_web/templates/payment/payment.html:72
+#: weblate_web/templates/payment/payment.html:75
 msgid "Make Payment"
 msgstr ""
 
@@ -3336,7 +3181,7 @@ msgid "Other topics"
 msgstr "Chủ đề khác"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:650
+#: weblate_web/views.py:670
 msgid "Milestones"
 msgstr "Cột mốc"
 
@@ -3386,8 +3231,11 @@ msgid "Sources, zip compressed"
 msgstr ""
 
 #: weblate_web/templatetags/downloads.py:60
-msgid "Wheel package"
+#, fuzzy
+#| msgid "Full-stack developer"
+msgid "Python Wheel package"
 msgstr ""
+"Lập trình viên có thể phát triển cả phần mềm giao diện người dùng và máy chủ"
 
 #. Translators: currency is a currency code here, for example CZK
 #: weblate_web/templatetags/prices.py:34
@@ -3450,46 +3298,161 @@ msgid "%d day remaining"
 msgid_plural "%d days remaining"
 msgstr[0] ""
 
-#: weblate_web/views.py:130
+#: weblate_web/views.py:138
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
 
-#: weblate_web/views.py:315 weblate_web/views.py:354
+#: weblate_web/views.py:337 weblate_web/views.py:376
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:328
+#: weblate_web/views.py:350
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:349
+#: weblate_web/views.py:371
 msgid "Please choose a payment method."
 msgstr "Vui lòng chọn một phương pháp thanh toán."
 
-#: weblate_web/views.py:477
+#: weblate_web/views.py:499
 msgid "Payment not yet processed, please retry."
 msgstr "Thanh toán chưa được xử lý, vui lòng thử lại."
 
-#: weblate_web/views.py:481
+#: weblate_web/views.py:503
 msgid "The payment was rejected: {}"
 msgstr "Thanh toán bị từ chối: {}"
 
-#: weblate_web/views.py:482
+#: weblate_web/views.py:504
 msgid "Unknown reason"
 msgstr "Lý do không xác định"
 
-#: weblate_web/views.py:487
+#: weblate_web/views.py:509
 msgid "Thank you for your subscription."
 msgstr ""
 
-#: weblate_web/views.py:490
+#: weblate_web/views.py:512
 msgid "Thank you for your donation."
 msgstr ""
 
-#: weblate_web/views.py:751
+#: weblate_web/views.py:776
 msgid "User not found!"
 msgstr "Không tìm thấy người dùng!"
+
+#: weblate_web/views.py:914
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment was added."
+msgstr "Thẻ thanh toán"
+
+#~ msgid "Front-end developer"
+#~ msgstr "Nhà phát triển front-end"
+
+#~ msgid ""
+#~ "Are you passionate about improving user experiences and making a "
+#~ "meaningful impact? Join us as a front-end developer to elevate Weblate's "
+#~ "interface!"
+#~ msgstr ""
+#~ "Bạn có đam mê cải thiện trải nghiệm người dùng và tạo ra tác động có ý "
+#~ "nghĩa không? Hãy tham gia cùng chúng tôi với tư cách là nhà phát triển "
+#~ "front-end để nâng cao giao diện của Weblate!"
+
+#~ msgid "Why choose us:"
+#~ msgstr "Tại sao chọn chúng tôi:"
+
+#~ msgid "Freedom to Innovate:"
+#~ msgstr "Tự do đổi mới:"
+
+#~ msgid ""
+#~ "Our front-end, currently powered by Bootstrap and jQuery, offers you the "
+#~ "opportunity to shape its future by selecting the frameworks that best fit "
+#~ "our goals."
+#~ msgstr ""
+#~ "Giao diện người dùng của chúng tôi, hiện được cung cấp bởi Bootstrap và "
+#~ "jQuery, mang đến cho bạn cơ hội định hình tương lai của nó bằng cách chọn "
+#~ "các khung phù hợp nhất với mục tiêu của chúng tôi."
+
+#~ msgid "Strong Foundation:"
+#~ msgstr "Nền tảng vững chắc:"
+
+#, fuzzy
+#~| msgid ""
+#~| "The back-end is in Python, using Django, Django REST framework, Celery, "
+#~| "Translate Toolkit, and many others."
+#~ msgid ""
+#~ "Our Python-based back-end utilizes Django, Django REST framework, Celery, "
+#~ "Translate Toolkit, and more, providing a solid backbone for further "
+#~ "enhancements."
+#~ msgstr ""
+#~ "Phần back-end được viết bằng Python, sử dụng Django, cấu trúc Django "
+#~ "REST, Celery, Translate Toolkit cùng nhiều thứ khác."
+
+#~ msgid "Full-stack developer"
+#~ msgstr ""
+#~ "Lập trình viên có thể phát triển cả phần mềm giao diện người dùng và máy "
+#~ "chủ"
+
+#~ msgid ""
+#~ "We're looking for a front-end developer who will not be afraid of "
+#~ "touching the back-end as well."
+#~ msgstr ""
+#~ "Chúng tôi đang tìm kiếm một nhà lập trình giao diện không ngại chạm vào "
+#~ "phía máy chủ."
+
+#~ msgid ""
+#~ "Our front-end is currently using Bootstrap and jQuery, but we want to "
+#~ "improve."
+#~ msgstr ""
+#~ "Giao diện người dùng của chúng tôi hiện đang sử dụng Bootstrap và jQuery, "
+#~ "nhưng chúng tôi muốn cải thiện."
+
+#~ msgid ""
+#~ "The back-end is in Python, using Django, Django REST framework, Celery, "
+#~ "Translate Toolkit, and many others."
+#~ msgstr ""
+#~ "Phần back-end được viết bằng Python, sử dụng Django, cấu trúc Django "
+#~ "REST, Celery, Translate Toolkit cùng nhiều thứ khác."
+
+#~ msgid ""
+#~ "It is all libre software, all our code and issues are open to the public."
+#~ msgstr ""
+#~ "Tất cả đều là phần mềm miễn phí, tất cả mã và các vấn đề của chúng tôi "
+#~ "đều được mở cho công chúng."
+
+#~ msgid "Customer care and sales"
+#~ msgstr "Chăm sóc khách hàng và bán hàng"
+
+#~ msgid ""
+#~ "We're looking for a person who loves to speak with the people and will "
+#~ "help them in getting the most out of our product."
+#~ msgstr ""
+#~ "Chúng tôi đang tìm kiếm một người thích giao lưu với mọi người và sẽ giúp "
+#~ "họ tận dụng tối đa sản phẩm của chúng tôi."
+
+#~ msgid ""
+#~ "You will work with customers to assess their needs and advise them on "
+#~ "using Weblate."
+#~ msgstr ""
+#~ "Bạn sẽ làm việc với khách hàng để đánh giá nhu cầu của họ và tư vấn cho "
+#~ "họ cách sử dụng Weblate."
+
+#~ msgid ""
+#~ "You will be a contact for customers who are seeking help. Our engineers "
+#~ "will closely cooperate with you on resolving the customer issues."
+#~ msgstr ""
+#~ "Bạn sẽ là người liên hệ cho những khách hàng đang tìm kiếm sự giúp đỡ. "
+#~ "Các kỹ sư của chúng tôi sẽ hợp tác chặt chẽ với bạn để giải quyết các vấn "
+#~ "đề của khách hàng."
+
+#~ msgid ""
+#~ "You can expand into other areas where you feel comfortable: publish "
+#~ "articles on our blogs, manage social media, discuss with our community, "
+#~ "or improve our documentation."
+#~ msgstr ""
+#~ "Bạn có thể mở rộng sang các lĩnh vực khác mà bạn cảm thấy thoải mái: xuất "
+#~ "bản bài viết trên blog của chúng tôi, quản lý phương tiện truyền thông xã "
+#~ "hội, thảo luận với cộng đồng của chúng tôi hoặc cải thiện tài liệu của "
+#~ "chúng tôi."
 
 #~ msgid ""
 #~ "VAT ID validation service unavailable for {}, please try again later."

@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-05-06 17:14+0200\n"
+"POT-Creation-Date: 2024-08-07 16:47+0200\n"
 "PO-Revision-Date: 2024-07-09 10:22+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/weblate/"
@@ -39,102 +39,124 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: payments/backends.py:255
+#: payments/backends.py:276
 msgid "Payment card"
 msgstr "Платіжна картка"
 
-#: payments/backends.py:336
+#: payments/backends.py:357
 msgid "Payment cancelled"
 msgstr "Платіж скасовано"
 
-#: payments/backends.py:338
+#: payments/backends.py:359
 msgid "Payment error"
 msgstr "Помилка платежу"
 
-#: payments/backends.py:350
+#: payments/backends.py:371
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: payments/backends.py:359
+#: payments/backends.py:380
 msgid "IBAN bank transfer"
 msgstr "Банківський переказ IBAN"
 
-#: payments/backends.py:389
+#: payments/backends.py:410
 msgid "Issuing bank"
 msgstr "Банк-емітент"
 
-#: payments/backends.py:390
+#: payments/backends.py:411
 msgid "Account holder"
 msgstr "Власник рахунку"
 
-#: payments/backends.py:391
+#: payments/backends.py:412
 msgid "Account number"
 msgstr "Номер рахунку"
 
-#: payments/backends.py:392
+#: payments/backends.py:413
 msgid "SWIFT code"
 msgstr "Код SWIFT"
 
-#: payments/backends.py:393
+#: payments/backends.py:414
 msgid "IBAN"
 msgstr "IBAN"
 
-#: payments/backends.py:394
+#: payments/backends.py:415
 msgid "Reference"
 msgstr "Рекомендація"
 
-#: payments/models.py:91
+#: payments/models.py:81
 msgid "European VAT ID"
 msgstr "Європейський номер платника ПДВ"
 
-#: payments/models.py:93
+#: payments/models.py:83
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Заповніть номер платника ПДВ Євросоюзу, залиште порожнім, якщо не доречно."
 
-#: payments/models.py:99
+#: payments/models.py:89
 msgid "Tax registration"
 msgstr "Податкова реєстрація"
 
-#: payments/models.py:101
+#: payments/models.py:91
 msgid ""
 "Please fill in your tax registration if it should appear on the invoice."
 msgstr ""
 "Заповніть податкову реєстрацію, якщо вона повинна бути вказана в рахунку."
 
-#: payments/models.py:108
+#: payments/models.py:98
 msgid "Company or individual name"
 msgstr "Назва компанії або фізичної особи"
 
-#: payments/models.py:111
+#: payments/models.py:101
 msgid "Address"
 msgstr "Адреса"
 
-#: payments/models.py:114
-msgid "Postcode and city"
+#: payments/models.py:106
+#, fuzzy
+#| msgid "Billing information"
+msgid "Additional address information"
+msgstr "Платіжні відомості"
+
+#: payments/models.py:110
+msgid "City"
+msgstr ""
+
+#: payments/models.py:113
+#, fuzzy
+#| msgid "Postcode and city"
+msgid "Postcode"
 msgstr "Поштовий код та місто"
 
-#: payments/models.py:116
+#: payments/models.py:115
 msgid "Country"
 msgstr "Країна"
 
-#: payments/models.py:147
+#: payments/models.py:120
+#, fuzzy
+#| msgid "Billing information"
+msgid "Billing e-mail"
+msgstr "Платіжні відомості"
+
+#: payments/models.py:121
+msgid "Additional e-mail to receive billing notifications"
+msgstr ""
+
+#: payments/models.py:164
 msgid "The country has to match your VAT code"
 msgstr "Країна відповідає вашому коду ПДВ"
 
-#: payments/models.py:170
+#: payments/models.py:187
 msgid "Annual"
 msgstr "Щорічно"
 
-#: payments/models.py:171
+#: payments/models.py:188
 msgid "Biannual"
 msgstr "Дворічно"
 
-#: payments/models.py:172 weblate_web/templates/donate/form.html:28
+#: payments/models.py:189 weblate_web/templates/donate/form.html:28
 msgid "Quarterly"
 msgstr "Щоквартально"
 
-#: payments/models.py:173 weblate_web/templates/donate/form.html:25
+#: payments/models.py:190 weblate_web/templates/donate/form.html:25
 #: weblate_web/templates/hosting.html:474
 #: weblate_web/templates/hosting.html:490
 #: weblate_web/templates/hosting.html:502
@@ -151,36 +173,36 @@ msgstr "Щоквартально"
 msgid "Monthly"
 msgstr "Щомісячно"
 
-#: payments/models.py:174
+#: payments/models.py:191
 msgid "One-time"
 msgstr "Одноразово"
 
-#: payments/models.py:208
+#: payments/models.py:225
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Нова сплата"
 
-#: payments/models.py:209
+#: payments/models.py:226
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Очікуємо на сплату"
 
-#: payments/models.py:210
+#: payments/models.py:227
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Сплату не прийнято"
 
-#: payments/models.py:211
+#: payments/models.py:228
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Сплату прийнято"
 
-#: payments/models.py:212
+#: payments/models.py:229
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Сплату оброблено"
 
-#: payments/utils.py:48 payments/utils.py:51
+#: payments/utils.py:54 payments/utils.py:57
 msgid "Enter a valid e-mail address."
 msgstr "Введіть дійсну адресу електронної пошти."
 
@@ -218,200 +240,231 @@ msgstr ""
 "проєктів. І для самого Weblate! Захоплені вільним програмним забезпеченням? "
 "Тут немає меж вашим можливостям взяти участь!"
 
-#: weblate_web/forms.py:63
+#: weblate_web/forms.py:65
 msgid "Insufficient donation for selected reward!"
 msgstr "Недостатня пожертва для вибраної винагороди!"
 
-#: weblate_web/models.py:52
+#: weblate_web/forms.py:117
+#, python-format
+msgid "Invoice was not found: %s"
+msgstr ""
+
+#: weblate_web/models.py:60
 msgid "No reward"
 msgstr "Немає винагороди"
 
-#: weblate_web/models.py:53 weblate_web/templates/donate.html:30
+#: weblate_web/models.py:61 weblate_web/templates/donate.html:30
 msgid "Name in the list of supporters"
 msgstr "Назва в списку прихильників"
 
-#: weblate_web/models.py:54 weblate_web/templates/donate.html:37
+#: weblate_web/models.py:62 weblate_web/templates/donate.html:37
 #: weblate_web/templates/donate/form.html:47
 msgid "Link in the list of supporters"
 msgstr "Посилання у списку прихильників"
 
-#: weblate_web/models.py:55 weblate_web/templates/donate.html:44
+#: weblate_web/models.py:63 weblate_web/templates/donate.html:44
 #: weblate_web/templates/donate/form.html:55
 msgid "Logo and link on the Weblate website"
 msgstr "Логотип та посилання на сторінці подяк weblate.org"
 
-#: weblate_web/models.py:65
+#: weblate_web/models.py:73
 #: weblate_web/templates/weblate_web/post_detail.html:50
 msgid "Release"
 msgstr "Випуск"
 
-#: weblate_web/models.py:66 weblate_web/templates/snippets/main-menu.html:4
+#: weblate_web/models.py:74 weblate_web/templates/snippets/main-menu.html:4
 #: weblate_web/templates/weblate_web/post_detail.html:51
 msgid "Features"
 msgstr "Можливості"
 
-#: weblate_web/models.py:67
+#: weblate_web/models.py:75
 msgid "Announcement"
 msgstr "Оголошення"
 
-#: weblate_web/models.py:68
+#: weblate_web/models.py:76
 msgid "Conferences"
 msgstr "Наради"
 
-#: weblate_web/models.py:69 weblate_web/templates/hosting.html:58
+#: weblate_web/models.py:77 weblate_web/templates/hosting.html:58
 msgid "Hosted Weblate"
 msgstr "Hosted Weblate"
 
-#: weblate_web/models.py:70
+#: weblate_web/models.py:78
 #: weblate_web/templates/weblate_web/post_detail.html:52
 msgid "Development"
 msgstr "Розробка"
 
-#: weblate_web/models.py:71
+#: weblate_web/models.py:79
 #: weblate_web/templates/weblate_web/post_detail.html:53
 msgid "Localization"
 msgstr "Локалізація"
 
-#: weblate_web/models.py:119
+#: weblate_web/models.py:132
 msgid "Invalid image!"
 msgstr "Неправильне зображення!"
 
-#: weblate_web/models.py:130
+#: weblate_web/models.py:143
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Непідтримуваний тип зображення: %s"
 
-#: weblate_web/models.py:136
+#: weblate_web/models.py:149
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Будь ласка, вивантажте зображення розмірами 570 на 260 пікселів."
 
-#: weblate_web/models.py:201
+#: weblate_web/models.py:214
 msgid "Link text"
 msgstr "Текст посилання"
 
-#: weblate_web/models.py:203
+#: weblate_web/models.py:216
 msgid "Link URL"
 msgstr "Посилання"
 
-#: weblate_web/models.py:205
+#: weblate_web/models.py:218
 msgid "Link image"
 msgstr "Посилання на зображення"
 
-#: weblate_web/models.py:478
+#: weblate_web/models.py:460
+msgctxt "Package category"
+msgid "None"
+msgstr ""
+
+#: weblate_web/models.py:461
+#, fuzzy
+#| msgid "Dedicated instance"
+msgctxt "Package category"
+msgid "Dedicated hosting"
+msgstr "Виділений екземпляр серверу"
+
+#: weblate_web/models.py:462
+#, fuzzy
+#| msgid "Self hosting"
+msgctxt "Package category"
+msgid "Shared hosting"
+msgstr "Власний хостинг"
+
+#: weblate_web/models.py:463
+#, fuzzy
+#| msgid "Basic self-hosted support"
+msgctxt "Package category"
+msgid "Self-hosted support"
+msgstr "Основна підтримка Weblate"
+
+#: weblate_web/models.py:502
 msgid "Community supported"
 msgstr "Підтримка спільноти"
 
-#: weblate_web/models.py:479
+#: weblate_web/models.py:503
 msgid "Dedicated hosted service"
 msgstr "Хостинг на виділеному сервері"
 
-#: weblate_web/models.py:480
+#: weblate_web/models.py:504
 msgid "Hosted service"
 msgstr "Послуга хостингу"
 
-#: weblate_web/models.py:481 weblate_web/templates/support.html:54
+#: weblate_web/models.py:505 weblate_web/templates/support.html:54
 msgid "Basic self-hosted support"
 msgstr "Основна підтримка Weblate"
 
-#: weblate_web/models.py:482 weblate_web/templates/support.html:64
+#: weblate_web/models.py:506 weblate_web/templates/support.html:64
 msgid "Extended self-hosted support"
 msgstr "Розширена підтримка власного хостингу"
 
-#: weblate_web/models.py:483 weblate_web/templates/support.html:78
+#: weblate_web/models.py:507 weblate_web/templates/support.html:78
 msgid "Premium self-hosted support"
 msgstr "Власна служба підтримки Weblate найвищої якості"
 
-#: weblate_web/models.py:498 weblate_web/templates/snippets/service.html:95
+#: weblate_web/models.py:522 weblate_web/templates/snippets/service.html:95
 msgid "Server URL"
 msgstr "URL-адреса сервера"
 
-#: weblate_web/models.py:506
+#: weblate_web/models.py:530
 msgid "Server description"
 msgstr "Опис сервера"
 
-#: weblate_web/models.py:509
+#: weblate_web/models.py:533
 msgid "Server image"
 msgstr "Зображення сервера"
 
-#: weblate_web/models.py:513
+#: weblate_web/models.py:537
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG або JPG розмірами 570 на 260 пікселів."
 
-#: weblate_web/models.py:650 weblate_web/templates/hosting.html:156
+#: weblate_web/models.py:696 weblate_web/templates/hosting.html:156
 msgid "Basic support"
 msgstr "Основна підтримка"
 
-#: weblate_web/models.py:651
+#: weblate_web/models.py:697
 msgid "Never get held back by a problem."
 msgstr "Не зупиняйтеся через проблеми."
 
-#: weblate_web/models.py:652
+#: weblate_web/models.py:698
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 "Встановлена пріоритетність для всіх ваших питань і повідомлень про вади."
 
-#: weblate_web/models.py:654 weblate_web/templates/user.html:30
+#: weblate_web/models.py:700 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Підтримка"
 
-#: weblate_web/models.py:663
+#: weblate_web/models.py:709
 msgid "Premium support"
 msgstr "Преміум-підтримка"
 
-#: weblate_web/models.py:664
+#: weblate_web/models.py:710
 msgid "Don’t wait with your work on hold."
 msgstr "Не зупиняйтеся у вашій роботі."
 
-#: weblate_web/models.py:665
+#: weblate_web/models.py:711
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Гарантована відповідь принаймні в межах одного робочого дня."
 
-#: weblate_web/models.py:667
+#: weblate_web/models.py:713
 msgid "Be Premium"
 msgstr "Будьте серед перших"
 
-#: weblate_web/models.py:675 weblate_web/templates/hosting.html:123
+#: weblate_web/models.py:721 weblate_web/templates/hosting.html:123
 msgid "Extended support"
 msgstr "Розширена підтримка"
 
-#: weblate_web/models.py:676
+#: weblate_web/models.py:722
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "Не лишайтеся на мінімумі, отримайте гарантію."
 
-#: weblate_web/models.py:677
+#: weblate_web/models.py:723
 msgid "We will manage upgrades for you."
 msgstr "Оновлення для вас буде виконано нами."
 
-#: weblate_web/models.py:679
+#: weblate_web/models.py:725
 msgid "Stay updated"
 msgstr "Не втрачайте актуальності"
 
-#: weblate_web/models.py:687 weblate_web/templates/support.html:104
+#: weblate_web/models.py:733 weblate_web/templates/support.html:104
 msgid "Backup service"
 msgstr "Послуга резервного копіювання"
 
-#: weblate_web/models.py:688
+#: weblate_web/models.py:734
 msgid "Easily put your backups in a safe place."
 msgstr "Без зайвих проблем зберігайте ваші резервні копії у безпечному місці."
 
-#: weblate_web/models.py:689
+#: weblate_web/models.py:735
 msgid "Encrypted and automatic, always available."
 msgstr "Зашифроване і автоматичне, завжди доступне."
 
-#: weblate_web/models.py:691
+#: weblate_web/models.py:737
 msgid "Back up daily"
 msgstr "Щоденне резервне копіювання"
 
-#: weblate_web/models.py:703
+#: weblate_web/models.py:749
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Розширте до %s"
 
-#: weblate_web/models.py:704
+#: weblate_web/models.py:750
 msgid "Increase service limits to translate more content."
 msgstr "Збільште ліміти служби, щоб перекладати більше вмісту."
 
-#: weblate_web/models.py:707
+#: weblate_web/models.py:753
 msgid "Upgrade"
 msgstr "Розширити"
 
@@ -688,7 +741,7 @@ msgstr "ІДЕНТИФІКАЦІЙНИЙ НОМЕР ПЛАТНИКА ПДВ"
 msgid "D-U-N-S Number"
 msgstr "Номер D-U-N-S"
 
-#: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:18
+#: weblate_web/templates/about.html:179 weblate_web/templates/careers.html:20
 #: weblate_web/templates/hosting.html:563
 #: weblate_web/templates/hosting.html:649
 #: weblate_web/templates/hosting.html:725
@@ -731,70 +784,21 @@ msgstr "Умови та конфіденційність"
 msgid "Design by %(author)s"
 msgstr "Дизайн %(author)s"
 
-#: weblate_web/templates/careers.html:10
+#: weblate_web/templates/careers.html:12
 msgid "Career at Weblate"
 msgstr "Кар'єра у Weblate"
 
-#: weblate_web/templates/careers.html:14
+#: weblate_web/templates/careers.html:16
 msgid "Weblate, the libre localization platform, wants you on the team!"
 msgstr ""
 "Weblate, вільна платформа для локалізації, хоче вашого долучення до команди!"
 
-#: weblate_web/templates/careers.html:17
+#: weblate_web/templates/careers.html:19
 #: weblate_web/templates/snippets/about.html:4
 msgid "Learn more"
 msgstr "Докладніше"
 
-#: weblate_web/templates/careers.html:24
-msgid "Front-end developer"
-msgstr "Розробник Front-end"
-
-#: weblate_web/templates/careers.html:26
-msgid ""
-"Are you passionate about improving user experiences and making a meaningful "
-"impact? Join us as a front-end developer to elevate Weblate's interface!"
-msgstr ""
-"Ви прагнете покращити користувацький досвід та зробити значущий вплив? "
-"Приєднуйтесь до нас в якості фронтенд-розробника, щоб покращити інтерфейс "
-"Weblate!"
-
-#: weblate_web/templates/careers.html:28 weblate_web/templates/careers.html:70
-msgid "Why choose us:"
-msgstr "Чому обирають нас:"
-
-#: weblate_web/templates/careers.html:32 weblate_web/templates/careers.html:74
-msgid "Freedom to Innovate:"
-msgstr "Свобода для інновацій:"
-
-#: weblate_web/templates/careers.html:32
-msgid ""
-"Our front-end, currently powered by Bootstrap and jQuery, offers you the "
-"opportunity to shape its future by selecting the frameworks that best fit "
-"our goals."
-msgstr ""
-"Наш фронтенд, який наразі працює на Bootstrap та jQuery, пропонує вам "
-"можливість вплинути на його майбутнє, обравши фреймворки, які найкраще "
-"відповідають нашим цілям."
-
-#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:76
-msgid "Strong Foundation:"
-msgstr "Міцний фундамент:"
-
-#: weblate_web/templates/careers.html:34 weblate_web/templates/careers.html:76
-msgid ""
-"Our Python-based back-end utilizes Django, Django REST framework, Celery, "
-"Translate Toolkit, and more, providing a solid backbone for further "
-"enhancements."
-msgstr ""
-"Наш внутрішній інтерфейс на основі Python використовує Django, Django REST "
-"фреймворк, Celery, Translate Toolkit і багато іншого, забезпечуючи міцну "
-"основу для подальших удосконалень."
-
-#: weblate_web/templates/careers.html:37 weblate_web/templates/careers.html:79
-msgid "Open Collaboration:"
-msgstr "Відкрита співпраця:"
-
-#: weblate_web/templates/careers.html:39 weblate_web/templates/careers.html:81
+#: weblate_web/templates/careers.html:55 weblate_web/templates/careers.html:129
 #, python-format
 msgid ""
 "Dive into our <a href=\"%(issues)s\">open issues</a> to gain insights and "
@@ -803,143 +807,20 @@ msgstr ""
 "Пориньте у наші <a href=\"%(issues)s\">відкриті обговорення</a>, щоб "
 "отримати ідеї та зробити свій внесок у нашу динамічну екосистему."
 
-#: weblate_web/templates/careers.html:40 weblate_web/templates/careers.html:82
+#: weblate_web/templates/careers.html:56 weblate_web/templates/careers.html:130
 #, python-format
 msgid ""
 "Showcase your skills by tackling one of our <a href=\"%(issues)s\">good "
 "first issues</a> and making a tangible impact."
 msgstr ""
-"Продемонструйте свої навички, взявшись за один з наших <a href=\"%(issues)s\""
-">хороших перших випусків</a> і зробивши відчутний вплив."
+"Продемонструйте свої навички, взявшись за один з наших <a "
+"href=\"%(issues)s\">хороших перших випусків</a> і зробивши відчутний вплив."
 
-#: weblate_web/templates/careers.html:43 weblate_web/templates/careers.html:85
-msgid "Libre Software Advocates:"
-msgstr "Захисники вільного програмного забезпечення:"
-
-#: weblate_web/templates/careers.html:43 weblate_web/templates/careers.html:85
-msgid ""
-"We embrace open source principles, with all our code and issues accessible "
-"to the public, fostering collaboration and transparency."
-msgstr ""
-"Ми дотримуємося принципів відкритого вихідного коду, весь наш код і проблеми "
-"доступні для громадськості, що сприяє співпраці та прозорості."
-
-#: weblate_web/templates/careers.html:45 weblate_web/templates/careers.html:87
-msgid "Remote Work Flexibility:"
-msgstr "Гнучкість дистанційної роботи:"
-
-#: weblate_web/templates/careers.html:45 weblate_web/templates/careers.html:87
-msgid ""
-"Enjoy the convenience of working remotely while collaborating with a diverse "
-"team of dedicated individuals."
-msgstr ""
-"Насолоджуйтесь зручністю віддаленої роботи, співпрацюючи з різноманітною "
-"командою відданих своїй справі людей."
-
-#: weblate_web/templates/careers.html:47 weblate_web/templates/careers.html:89
-msgid "Room for Growth:"
-msgstr "Простір для зростання:"
-
-#: weblate_web/templates/careers.html:47 weblate_web/templates/careers.html:89
-msgid ""
-"As a small company, we offer opportunities for personal and professional "
-"development. Every team member has space to contribute and grow."
-msgstr ""
-"Як невелика компанія, ми пропонуємо можливості для особистого та "
-"професійного розвитку. Кожен учасник команди має простір для розвитку та "
-"зростання."
-
-#: weblate_web/templates/careers.html:51 weblate_web/templates/careers.html:93
-msgid "Requirements:"
-msgstr "Вимоги:"
-
-#: weblate_web/templates/careers.html:54
-msgid "Strong skills in front-end development and user experience design."
-msgstr ""
-"Добрі навички у розробці клієнтської частини та проєктування зручності "
-"взаємодії."
-
-#: weblate_web/templates/careers.html:55 weblate_web/templates/careers.html:97
-msgid "Proficiency in written and spoken English."
-msgstr "Володіння письмовою та розмовною англійською мовою."
-
-#: weblate_web/templates/careers.html:56 weblate_web/templates/careers.html:98
-msgid "Passion for open source principles and collaborative development."
-msgstr "Пристрасть до принципів відкритого коду та спільної розробки."
-
-#: weblate_web/templates/careers.html:60 weblate_web/templates/careers.html:102
-msgid ""
-"If you're ready to contribute your expertise and shape the future of "
-"Weblate, apply now to join our team!"
-msgstr ""
-"Якщо ви готові поділитися своїм досвідом і формувати майбутнє Weblate, "
-"подайте заявку, щоб приєднатися до нашої команди!"
-
-#: weblate_web/templates/careers.html:63 weblate_web/templates/careers.html:105
-#: weblate_web/templates/careers.html:119
-#: weblate_web/templates/careers.html:130
+#: weblate_web/templates/careers.html:74 weblate_web/templates/careers.html:111
 msgid "Apply now"
 msgstr "Застосувати зараз"
 
-#: weblate_web/templates/careers.html:66
-msgid "Python developer"
-msgstr "Розробник Python"
-
-#: weblate_web/templates/careers.html:68
-msgid ""
-"Are you passionate about developing new features, optimizing back-end, and "
-"integrating with third-party products? Join us as a Python developer to "
-"drive innovation and efficiency at Weblate!"
-msgstr ""
-"Ви захоплені розробкою нових функцій, оптимізацією бекенду та інтеграцією зі "
-"сторонніми продуктами? Приєднуйтесь до нас як Python розробник для "
-"впровадження інновацій та підвищення ефективності роботи Weblate!"
-
-#: weblate_web/templates/careers.html:74
-msgid ""
-"We encourage proactive problem-solving, where your insights and suggestions "
-"for enhancements are valued and considered for implementation."
-msgstr ""
-"Ми заохочуємо проактивне вирішення проблем, де ваші ідеї та пропозиції щодо "
-"вдосконалення цінуються і розглядаються для впровадження."
-
-#: weblate_web/templates/careers.html:96
-msgid ""
-"Strong skills in Python development and experience with Django and related "
-"frameworks."
-msgstr ""
-"Сильні навички розробки на Python та досвід роботи з Django і суміжними "
-"фреймворками."
-
-#: weblate_web/templates/careers.html:109
-msgid "Full-stack developer"
-msgstr "Full-stack розробник"
-
-#: weblate_web/templates/careers.html:111
-msgid ""
-"We're looking for a front-end developer who will not be afraid of touching "
-"the back-end as well."
-msgstr ""
-"Ми шукаємо розробника клієнтської частини, який не боятиметься працювати з "
-"серверною частиною."
-
-#: weblate_web/templates/careers.html:112
-msgid ""
-"Our front-end is currently using Bootstrap and jQuery, but we want to "
-"improve."
-msgstr ""
-"Наша клієнтська частина у цей час використовує Bootstrap і jQuery, але ми "
-"хочемо вдосконалити її."
-
-#: weblate_web/templates/careers.html:113
-msgid ""
-"The back-end is in Python, using Django, Django REST framework, Celery, "
-"Translate Toolkit, and many others."
-msgstr ""
-"Серверну частину написано на Python, використовуючи Django, фреймворк Django "
-"REST, Celery, Translate Toolkit та багато інших."
-
-#: weblate_web/templates/careers.html:114
+#: weblate_web/templates/careers.html:158
 #, python-format
 msgid ""
 "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
@@ -948,7 +829,7 @@ msgstr ""
 "Перегляньте <a href=\"%(issues)s\">відкриті помилки</a> щоб отримати більше "
 "розуміння того, що ми шукаємо."
 
-#: weblate_web/templates/careers.html:115
+#: weblate_web/templates/careers.html:159
 #, python-format
 msgid ""
 "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
@@ -956,51 +837,6 @@ msgid ""
 msgstr ""
 "Розв'яжіть один з <a href=\"%(issues)s\">good first issues</a>, щоб показати "
 "нам свої навички."
-
-#: weblate_web/templates/careers.html:116
-msgid ""
-"It is all libre software, all our code and issues are open to the public."
-msgstr ""
-"Це все вільне програмне забезпечення, весь наш код і обговорення відкриті "
-"для громадськості."
-
-#: weblate_web/templates/careers.html:122
-msgid "Customer care and sales"
-msgstr "Обслуговування клієнтів і продажі"
-
-#: weblate_web/templates/careers.html:124
-msgid ""
-"We're looking for a person who loves to speak with the people and will help "
-"them in getting the most out of our product."
-msgstr ""
-"Ми шукаємо людину, котра любить спілкуватися з людьми й допоможе їм отримати "
-"максимум від нашого продукту."
-
-#: weblate_web/templates/careers.html:125
-msgid ""
-"You will work with customers to assess their needs and advise them on using "
-"Weblate."
-msgstr ""
-"Ви працюватимете з клієнтами, щоб оцінити їхні потреби та надати пораду щодо "
-"користування Weblate."
-
-#: weblate_web/templates/careers.html:126
-msgid ""
-"You will be a contact for customers who are seeking help. Our engineers will "
-"closely cooperate with you on resolving the customer issues."
-msgstr ""
-"Ви спілкуватиметеся з клієнтами, котрі шукають допомоги. Наші інженери тісно "
-"співпрацюватимуть з вами для розв'язання питань клієнтів."
-
-#: weblate_web/templates/careers.html:127
-msgid ""
-"You can expand into other areas where you feel comfortable: publish articles "
-"on our blogs, manage social media, discuss with our community, or improve "
-"our documentation."
-msgstr ""
-"Ви можете розвиватися в інших галузях, у яких відчуваєте себе комфортно: "
-"публікувати статті в наших блогах, керувати суспільними мережами, "
-"обговорювати питання з нашою спільнотою або поліпшувати нашу документацію."
 
 #: weblate_web/templates/contribute.html:10
 msgid "Contribute to Weblate"
@@ -2162,7 +1998,9 @@ msgstr ""
 "зручностями найякіснішої підтримки."
 
 #: weblate_web/templates/hosting.html:17
-msgid "Our team is ready to help you make Weblate run smoothly."
+#, fuzzy
+#| msgid "Our team is ready to help you make Weblate run smoothly."
+msgid "Our team is ready to help you run Weblate smoothly."
 msgstr ""
 "Наша команда готова допомогти вам налаштувати Weblate так, щоб усе працювало "
 "як слід."
@@ -2213,7 +2051,9 @@ msgid "Cloud"
 msgstr "Хмара"
 
 #: weblate_web/templates/hosting.html:70
-msgid "Backups and restore on Hosted Weblate are fully automatic."
+#, fuzzy
+#| msgid "Backups and restore on Hosted Weblate are fully automatic."
+msgid "Backups and restores are automatic on Hosted Weblate."
 msgstr ""
 "Резервне копіювання на відновлення даних на Hosted Weblate є повністю "
 "автоматичним."
@@ -2410,19 +2250,27 @@ msgid "Weblate proudly supports libre projects"
 msgstr "Weblate пишається підтримкою вільних проєктів"
 
 #: weblate_web/templates/hosting.html:748
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "If you feel like being supported by Weblate will help you, <a "
+#| "href=\"%(url)s\">set up your libre project</a> and get the <strong>Libre "
+#| "plan</strong> gratis."
 msgid ""
-"If you feel like being supported by Weblate will help you, <a "
-"href=\"%(url)s\">set up your libre project</a> and get the <strong>Libre "
-"plan</strong> gratis."
+"If you feel that being supported by Weblate will help your libre project, <a "
+"href=\"%(url)s\">set it up</a> and get the <strong>Libre plan</strong> "
+"gratis."
 msgstr ""
 "Якщо ви вважаєте, що підтримка Weblate допоможе вам, <a "
 "href=\"%(url)s\">налаштуйте ваш вільний проєкт</a> і отримайте безплатний "
 "<strong>план Libre</strong>."
 
 #: weblate_web/templates/hosting.html:749
+#, fuzzy
+#| msgid ""
+#| "It has the same limits as the <strong>160k plan</strong>, but only for "
+#| "public projects."
 msgid ""
-"It has the same limits as the <strong>160k plan</strong>, but only for "
+"It has the same limits as the <strong>160k plan</strong>, and is only for "
 "public projects."
 msgstr ""
 "Він має ті ж обмеження, що і план <strong>160k</strong>, але тільки для "
@@ -2520,8 +2368,8 @@ msgstr "Weblate — вільне програмне забезпечення б�
 #: weblate_web/templates/mail/base.html:245
 #: weblate_web/templates/mail/payment_completed.html:14
 #: weblate_web/templates/mail/payment_expired.html:23
-#: weblate_web/templates/mail/payment_failed.html:21
-#: weblate_web/templates/mail/payment_failed.html:23
+#: weblate_web/templates/mail/payment_failed.html:22
+#: weblate_web/templates/mail/payment_failed.html:24
 #: weblate_web/templates/mail/payment_missing.html:25
 #: weblate_web/templates/mail/payment_upcoming.html:25
 msgid "Manage your payments"
@@ -2568,7 +2416,11 @@ msgstr "Ваш платіж на weblate.org, термін якого вичер
 msgid "Your payment on weblate.org has failed."
 msgstr "Ваш платіж на weblate.org не пройшов."
 
-#: weblate_web/templates/mail/payment_failed.html:17
+#: weblate_web/templates/mail/payment_failed.html:12
+msgid "Detailed failure from the payment gateway:"
+msgstr ""
+
+#: weblate_web/templates/mail/payment_failed.html:18
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
 "failing, cancelled."
@@ -2768,11 +2620,11 @@ msgstr "Платіжні відомості"
 msgid "Edit"
 msgstr "Редагувати"
 
-#: weblate_web/templates/payment/payment.html:64
+#: weblate_web/templates/payment/payment.html:67
 msgid "Please choose payment method"
 msgstr "Будь ласка, оберіть метод оплати"
 
-#: weblate_web/templates/payment/payment.html:72
+#: weblate_web/templates/payment/payment.html:75
 msgid "Make Payment"
 msgstr "Здійснити платіж"
 
@@ -3527,7 +3379,7 @@ msgid "Other topics"
 msgstr "Інші теми"
 
 #: weblate_web/templates/weblate_web/post_detail.html:54
-#: weblate_web/views.py:650
+#: weblate_web/views.py:670
 msgid "Milestones"
 msgstr "Віхи"
 
@@ -3579,7 +3431,9 @@ msgid "Sources, zip compressed"
 msgstr "Вихідний код, стиснутий у zip"
 
 #: weblate_web/templatetags/downloads.py:60
-msgid "Wheel package"
+#, fuzzy
+#| msgid "Wheel package"
+msgid "Python Wheel package"
 msgstr "Колісний комплект"
 
 #. Translators: currency is a currency code here, for example CZK
@@ -3645,46 +3499,235 @@ msgstr[0] "лишився %d день"
 msgstr[1] "лишилося %d дні"
 msgstr[2] "лишилося %d днів"
 
-#: weblate_web/views.py:130
+#: weblate_web/views.py:138
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Помилка у параметрі %(field)s: %(error)s"
 
-#: weblate_web/views.py:315 weblate_web/views.py:354
+#: weblate_web/views.py:337 weblate_web/views.py:376
 msgid "Please provide your billing information to complete the payment."
 msgstr "Будь ласка, вкажіть відомості про оплату, щоб здійснити платіж."
 
-#: weblate_web/views.py:328
+#: weblate_web/views.py:350
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Цей номер платника ПДВ вже не дійсний. Оновіть його."
 
-#: weblate_web/views.py:349
+#: weblate_web/views.py:371
 msgid "Please choose a payment method."
 msgstr "Будь ласка, оберіть спосіб оплати."
 
-#: weblate_web/views.py:477
+#: weblate_web/views.py:499
 msgid "Payment not yet processed, please retry."
 msgstr "Платіж ще не опрацьований. Будь ласка, повторіть."
 
-#: weblate_web/views.py:481
+#: weblate_web/views.py:503
 msgid "The payment was rejected: {}"
 msgstr "Платіж відхилили: {}"
 
-#: weblate_web/views.py:482
+#: weblate_web/views.py:504
 msgid "Unknown reason"
 msgstr "Невідома причина"
 
-#: weblate_web/views.py:487
+#: weblate_web/views.py:509
 msgid "Thank you for your subscription."
 msgstr "Дякуємо за підписку."
 
-#: weblate_web/views.py:490
+#: weblate_web/views.py:512
 msgid "Thank you for your donation."
 msgstr "Дякуємо за вашу пожертву."
 
-#: weblate_web/views.py:751
+#: weblate_web/views.py:776
 msgid "User not found!"
 msgstr "Користувач не знайдений!"
+
+#: weblate_web/views.py:914
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment was added."
+msgstr "Платіжна картка"
+
+#~ msgid "Front-end developer"
+#~ msgstr "Розробник Front-end"
+
+#~ msgid ""
+#~ "Are you passionate about improving user experiences and making a "
+#~ "meaningful impact? Join us as a front-end developer to elevate Weblate's "
+#~ "interface!"
+#~ msgstr ""
+#~ "Ви прагнете покращити користувацький досвід та зробити значущий вплив? "
+#~ "Приєднуйтесь до нас в якості фронтенд-розробника, щоб покращити інтерфейс "
+#~ "Weblate!"
+
+#~ msgid "Why choose us:"
+#~ msgstr "Чому обирають нас:"
+
+#~ msgid "Freedom to Innovate:"
+#~ msgstr "Свобода для інновацій:"
+
+#~ msgid ""
+#~ "Our front-end, currently powered by Bootstrap and jQuery, offers you the "
+#~ "opportunity to shape its future by selecting the frameworks that best fit "
+#~ "our goals."
+#~ msgstr ""
+#~ "Наш фронтенд, який наразі працює на Bootstrap та jQuery, пропонує вам "
+#~ "можливість вплинути на його майбутнє, обравши фреймворки, які найкраще "
+#~ "відповідають нашим цілям."
+
+#~ msgid "Strong Foundation:"
+#~ msgstr "Міцний фундамент:"
+
+#~ msgid ""
+#~ "Our Python-based back-end utilizes Django, Django REST framework, Celery, "
+#~ "Translate Toolkit, and more, providing a solid backbone for further "
+#~ "enhancements."
+#~ msgstr ""
+#~ "Наш внутрішній інтерфейс на основі Python використовує Django, Django "
+#~ "REST фреймворк, Celery, Translate Toolkit і багато іншого, забезпечуючи "
+#~ "міцну основу для подальших удосконалень."
+
+#~ msgid "Open Collaboration:"
+#~ msgstr "Відкрита співпраця:"
+
+#~ msgid "Libre Software Advocates:"
+#~ msgstr "Захисники вільного програмного забезпечення:"
+
+#~ msgid ""
+#~ "We embrace open source principles, with all our code and issues "
+#~ "accessible to the public, fostering collaboration and transparency."
+#~ msgstr ""
+#~ "Ми дотримуємося принципів відкритого вихідного коду, весь наш код і "
+#~ "проблеми доступні для громадськості, що сприяє співпраці та прозорості."
+
+#~ msgid "Remote Work Flexibility:"
+#~ msgstr "Гнучкість дистанційної роботи:"
+
+#~ msgid ""
+#~ "Enjoy the convenience of working remotely while collaborating with a "
+#~ "diverse team of dedicated individuals."
+#~ msgstr ""
+#~ "Насолоджуйтесь зручністю віддаленої роботи, співпрацюючи з різноманітною "
+#~ "командою відданих своїй справі людей."
+
+#~ msgid "Room for Growth:"
+#~ msgstr "Простір для зростання:"
+
+#~ msgid ""
+#~ "As a small company, we offer opportunities for personal and professional "
+#~ "development. Every team member has space to contribute and grow."
+#~ msgstr ""
+#~ "Як невелика компанія, ми пропонуємо можливості для особистого та "
+#~ "професійного розвитку. Кожен учасник команди має простір для розвитку та "
+#~ "зростання."
+
+#~ msgid "Requirements:"
+#~ msgstr "Вимоги:"
+
+#~ msgid "Strong skills in front-end development and user experience design."
+#~ msgstr ""
+#~ "Добрі навички у розробці клієнтської частини та проєктування зручності "
+#~ "взаємодії."
+
+#~ msgid "Proficiency in written and spoken English."
+#~ msgstr "Володіння письмовою та розмовною англійською мовою."
+
+#~ msgid "Passion for open source principles and collaborative development."
+#~ msgstr "Пристрасть до принципів відкритого коду та спільної розробки."
+
+#~ msgid ""
+#~ "If you're ready to contribute your expertise and shape the future of "
+#~ "Weblate, apply now to join our team!"
+#~ msgstr ""
+#~ "Якщо ви готові поділитися своїм досвідом і формувати майбутнє Weblate, "
+#~ "подайте заявку, щоб приєднатися до нашої команди!"
+
+#~ msgid "Python developer"
+#~ msgstr "Розробник Python"
+
+#~ msgid ""
+#~ "Are you passionate about developing new features, optimizing back-end, "
+#~ "and integrating with third-party products? Join us as a Python developer "
+#~ "to drive innovation and efficiency at Weblate!"
+#~ msgstr ""
+#~ "Ви захоплені розробкою нових функцій, оптимізацією бекенду та інтеграцією "
+#~ "зі сторонніми продуктами? Приєднуйтесь до нас як Python розробник для "
+#~ "впровадження інновацій та підвищення ефективності роботи Weblate!"
+
+#~ msgid ""
+#~ "We encourage proactive problem-solving, where your insights and "
+#~ "suggestions for enhancements are valued and considered for implementation."
+#~ msgstr ""
+#~ "Ми заохочуємо проактивне вирішення проблем, де ваші ідеї та пропозиції "
+#~ "щодо вдосконалення цінуються і розглядаються для впровадження."
+
+#~ msgid ""
+#~ "Strong skills in Python development and experience with Django and "
+#~ "related frameworks."
+#~ msgstr ""
+#~ "Сильні навички розробки на Python та досвід роботи з Django і суміжними "
+#~ "фреймворками."
+
+#~ msgid "Full-stack developer"
+#~ msgstr "Full-stack розробник"
+
+#~ msgid ""
+#~ "We're looking for a front-end developer who will not be afraid of "
+#~ "touching the back-end as well."
+#~ msgstr ""
+#~ "Ми шукаємо розробника клієнтської частини, який не боятиметься працювати "
+#~ "з серверною частиною."
+
+#~ msgid ""
+#~ "Our front-end is currently using Bootstrap and jQuery, but we want to "
+#~ "improve."
+#~ msgstr ""
+#~ "Наша клієнтська частина у цей час використовує Bootstrap і jQuery, але ми "
+#~ "хочемо вдосконалити її."
+
+#~ msgid ""
+#~ "The back-end is in Python, using Django, Django REST framework, Celery, "
+#~ "Translate Toolkit, and many others."
+#~ msgstr ""
+#~ "Серверну частину написано на Python, використовуючи Django, фреймворк "
+#~ "Django REST, Celery, Translate Toolkit та багато інших."
+
+#~ msgid ""
+#~ "It is all libre software, all our code and issues are open to the public."
+#~ msgstr ""
+#~ "Це все вільне програмне забезпечення, весь наш код і обговорення відкриті "
+#~ "для громадськості."
+
+#~ msgid "Customer care and sales"
+#~ msgstr "Обслуговування клієнтів і продажі"
+
+#~ msgid ""
+#~ "We're looking for a person who loves to speak with the people and will "
+#~ "help them in getting the most out of our product."
+#~ msgstr ""
+#~ "Ми шукаємо людину, котра любить спілкуватися з людьми й допоможе їм "
+#~ "отримати максимум від нашого продукту."
+
+#~ msgid ""
+#~ "You will work with customers to assess their needs and advise them on "
+#~ "using Weblate."
+#~ msgstr ""
+#~ "Ви працюватимете з клієнтами, щоб оцінити їхні потреби та надати пораду "
+#~ "щодо користування Weblate."
+
+#~ msgid ""
+#~ "You will be a contact for customers who are seeking help. Our engineers "
+#~ "will closely cooperate with you on resolving the customer issues."
+#~ msgstr ""
+#~ "Ви спілкуватиметеся з клієнтами, котрі шукають допомоги. Наші інженери "
+#~ "тісно співпрацюватимуть з вами для розв'язання питань клієнтів."
+
+#~ msgid ""
+#~ "You can expand into other areas where you feel comfortable: publish "
+#~ "articles on our blogs, manage social media, discuss with our community, "
+#~ "or improve our documentation."
+#~ msgstr ""
+#~ "Ви можете розвиватися в інших галузях, у яких відчуваєте себе комфортно: "
+#~ "публікувати статті в наших блогах, керувати суспільними мережами, "
+#~ "обговорювати питання з нашою спільнотою або поліпшувати нашу документацію."
 
 #~ msgid ""
 #~ "VAT ID validation service unavailable for {}, please try again later."
@@ -4776,9 +4819,6 @@ msgstr "Користувач не знайдений!"
 
 #~ msgid "%(price)s EUR / year"
 #~ msgstr "%(price)s EUR / рік"
-
-#~ msgid "Self hosting"
-#~ msgstr "Власний хостинг"
 
 #~ msgid "Weblate is free software, you can run your own instance of it."
 #~ msgstr ""
