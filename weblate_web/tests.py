@@ -414,10 +414,10 @@ class UtilTestCase(TestCase):
         )
 
 
-def create_payment(recurring="y"):
+def create_payment(*, recurring="y", user):
     customer = Customer.objects.create(
         email="weblate@example.com",
-        user_id=1,
+        user_id=user.pk,
         origin=PAYMENTS_ORIGIN,
     )
     payment = Payment.objects.create(
@@ -454,17 +454,19 @@ class FakturaceTestCase(TestCase):
         return self._user
 
     def create_donation(self, years=1, days=0, recurring="y"):
+        user = self.create_user()
         return Donation.objects.create(
             reward=3,
-            user=self.create_user(),
+            user=user,
             active=True,
             expires=timezone.now() + relativedelta(years=years, days=days),
-            payment=create_payment(recurring=recurring)[0].pk,
+            payment=create_payment(recurring=recurring, user=user)[0].pk,
             link_url="https://example.com/weblate",
             link_text="Weblate donation test",
         )
 
     def create_service(self, years=1, days=0, recurring="y", package="extended"):
+        user = self.create_user()
         Package.objects.bulk_create(
             [
                 Package(name="community", verbose="Community support", price=0),
@@ -492,9 +494,9 @@ class FakturaceTestCase(TestCase):
         service.subscription_set.create(
             package=Package.objects.get_or_create(name=package)[0],
             expires=timezone.now() + relativedelta(years=years, days=days),
-            payment=create_payment(recurring=recurring)[0].pk,
+            payment=create_payment(recurring=recurring, user=user)[0].pk,
         )
-        service.users.add(self.create_user())
+        service.users.add(user)
         return service
 
 
@@ -511,7 +513,7 @@ class PaymentsTest(FakturaceTestCase):
 
     def test_view(self):
         with override("en"):
-            payment, url, customer_url = create_payment()
+            payment, url, customer_url = create_payment(user=self.create_user())
             response = self.client.get(url, follow=True)
             self.assertRedirects(response, customer_url)
             self.assertContains(response, "Please provide your billing")
@@ -540,6 +542,10 @@ class PaymentsTest(FakturaceTestCase):
         )
         self.check_payment(payment, Payment.ACCEPTED)
 
+        self.login()
+        response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
+        self.assertEqual(response.status_code, 200)
+
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     @responses.activate
     def test_invalid_vat(self):
@@ -564,6 +570,10 @@ class PaymentsTest(FakturaceTestCase):
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.REJECTED)
+
+        self.login()
+        response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
+        self.assertEqual(response.status_code, 404)
 
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_pending(self):
@@ -745,7 +755,7 @@ class DonationTest(FakturaceTestCase):
             user=user,
             active=True,
             expires=timezone.now() + relativedelta(years=1),
-            payment=create_payment()[0].pk,
+            payment=create_payment(user)[0].pk,
         )
         self.assertContains(self.client.get(reverse("user")), "My donations")
 
