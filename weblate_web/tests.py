@@ -755,7 +755,7 @@ class DonationTest(FakturaceTestCase):
             user=user,
             active=True,
             expires=timezone.now() + relativedelta(years=1),
-            payment=create_payment(user)[0].pk,
+            payment=create_payment(user=user)[0].pk,
         )
         self.assertContains(self.client.get(reverse("user")), "My donations")
 
