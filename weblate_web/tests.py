@@ -1035,8 +1035,12 @@ class APITest(TestCase):
 
     @responses.activate
     def test_fetch_vat(self):
+        user = User.objects.create(
+            username="testuser",
+            password="testpassword",  # noqa: S106
+        )
         mock_vies()
-        payment, _url, _customer_url = create_payment(user=self.create_user())
+        payment, _url, _customer_url = create_payment(user=user)
         response = self.client.post(reverse("js-vat"))
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
