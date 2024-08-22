@@ -9,7 +9,7 @@
 # Aga AP <agiapa@wp.pl>, 2019.
 # Anonymous <noreply@weblate.org>, 2020.
 # ALIENQuake <alienquake@hotmail.com>, 2020.
-# WaldiS <sto@tutanota.de>, 2020, 2021.
+# WaldiS <sto@tutanota.de>, 2020, 2021, 2024.
 # Allan Nordhøy <epost@anotheragency.no>, 2020.
 # Stanisław Stefan Krukowski <pet209a1@riseup.net>, 2020.
 # tomkolp <tomkolp@gmail.com>, 2020, 2021.
@@ -21,8 +21,8 @@ msgstr ""
 "Project-Id-Version: Weblate 1.2\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-08-07 16:47+0200\n"
-"PO-Revision-Date: 2024-08-07 16:01+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-08-23 14:40+0000\n"
+"Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/weblate/website/"
 "pl/>\n"
 "Language: pl\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: payments/backends.py:276
 msgid "Payment card"
@@ -106,34 +106,28 @@ msgid "Address"
 msgstr "Adres"
 
 #: payments/models.py:106
-#, fuzzy
-#| msgid "Billing information"
 msgid "Additional address information"
-msgstr "Informacje rozliczeniowe"
+msgstr "Dodatkowe informacje adresowe"
 
 #: payments/models.py:110
 msgid "City"
-msgstr ""
+msgstr "Miasto"
 
 #: payments/models.py:113
-#, fuzzy
-#| msgid "Postcode and city"
 msgid "Postcode"
-msgstr "Kod pocztowy i miasto"
+msgstr "Kod pocztowy"
 
 #: payments/models.py:115
 msgid "Country"
 msgstr "Kraj"
 
 #: payments/models.py:120
-#, fuzzy
-#| msgid "Billing information"
 msgid "Billing e-mail"
-msgstr "Informacje rozliczeniowe"
+msgstr "Adres e-mail do rozliczeń"
 
 #: payments/models.py:121
 msgid "Additional e-mail to receive billing notifications"
-msgstr ""
+msgstr "Dodatkowy adres e-mail do otrzymywania powiadomień o rozliczeniach"
 
 #: payments/models.py:164
 msgid "The country has to match your VAT code"
@@ -243,7 +237,7 @@ msgstr "Niewystarczająca darowizna na wybraną nagrodę!"
 #: weblate_web/forms.py:117
 #, python-format
 msgid "Invoice was not found: %s"
-msgstr ""
+msgstr "Nie znaleziono faktury: %s"
 
 #: weblate_web/models.py:60
 msgid "No reward"
@@ -326,25 +320,19 @@ msgid "None"
 msgstr "Brak"
 
 #: weblate_web/models.py:461
-#, fuzzy
-#| msgid "Dedicated instance"
 msgctxt "Package category"
 msgid "Dedicated hosting"
-msgstr "Dedykowana instancja"
+msgstr "Hosting dedykowany"
 
 #: weblate_web/models.py:462
-#, fuzzy
-#| msgid "Self hosting"
 msgctxt "Package category"
 msgid "Shared hosting"
-msgstr "Hosting własny"
+msgstr "Hosting współdzielony"
 
 #: weblate_web/models.py:463
-#, fuzzy
-#| msgid "Basic self-hosted support"
 msgctxt "Package category"
 msgid "Self-hosted support"
-msgstr "Wsparcie podstawowego samodzielnego hostowania"
+msgstr "Samodzielna obsługa hostingu"
 
 #: weblate_web/models.py:502
 msgid "Community supported"
@@ -2003,10 +1991,8 @@ msgstr ""
 "premium."
 
 #: weblate_web/templates/hosting.html:17
-#, fuzzy
-#| msgid "Our team is ready to help you make Weblate run smoothly."
 msgid "Our team is ready to help you run Weblate smoothly."
-msgstr "Nasz zespół jest gotowy pomóc Ci w płynnym działaniu Weblate."
+msgstr "Nasz zespół jest gotowy, aby pomóc w sprawnym uruchomieniu Weblate."
 
 #: weblate_web/templates/hosting.html:20
 msgid "Compare Cloud and Self-hosted Features"
@@ -2054,11 +2040,10 @@ msgid "Cloud"
 msgstr "Chmura"
 
 #: weblate_web/templates/hosting.html:70
-#, fuzzy
-#| msgid "Backups and restore on Hosted Weblate are fully automatic."
 msgid "Backups and restores are automatic on Hosted Weblate."
 msgstr ""
-"Kopie zapasowe i przywracanie na Hosted Weblate są w pełni automatyczne."
+"Tworzenie kopii zapasowych i przywracanie danych odbywa się automatycznie w "
+"usłudze Hosted Weblate."
 
 #: weblate_web/templates/hosting.html:90
 msgctxt "Hosting plan"
@@ -2266,16 +2251,12 @@ msgstr ""
 "<strong>Bezpłatny plan</strong> za darmo."
 
 #: weblate_web/templates/hosting.html:749
-#, fuzzy
-#| msgid ""
-#| "It has the same limits as the <strong>160k plan</strong>, but only for "
-#| "public projects."
 msgid ""
 "It has the same limits as the <strong>160k plan</strong>, and is only for "
 "public projects."
 msgstr ""
-"Ma takie same limity jak <strong>plan 160 tys.</strong>, ale tylko w "
-"przypadku projektów publicznych."
+"Ma takie same limity jak plan <strong>160k</strong> i jest przeznaczony "
+"tylko dla projektów publicznych."
 
 #: weblate_web/templates/hosting.html:754
 msgid "Join existing users and supporters"
@@ -2419,7 +2400,7 @@ msgstr "Twoja płatność na weblate.org nie powiodła się."
 
 #: weblate_web/templates/mail/payment_failed.html:12
 msgid "Detailed failure from the payment gateway:"
-msgstr ""
+msgstr "Szczegóły niepowodzenia z bramki płatności:"
 
 #: weblate_web/templates/mail/payment_failed.html:18
 msgid ""
@@ -3431,10 +3412,8 @@ msgid "Sources, zip compressed"
 msgstr "Źródła, skompresowany zip"
 
 #: weblate_web/templatetags/downloads.py:60
-#, fuzzy
-#| msgid "Wheel package"
 msgid "Python Wheel package"
-msgstr "Pakiet Wheel"
+msgstr "Pakiet Python Wheel"
 
 #. Translators: currency is a currency code here, for example CZK
 #: weblate_web/templatetags/prices.py:34
@@ -3541,10 +3520,8 @@ msgid "User not found!"
 msgstr "Nie znaleziono użytkownika!"
 
 #: weblate_web/views.py:914
-#, fuzzy
-#| msgid "Payment card"
 msgid "Payment was added."
-msgstr "Karta płatnicza"
+msgstr "Płatność została dodana."
 
 #~ msgid "Front-end developer"
 #~ msgstr "Programista front-end"
