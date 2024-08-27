@@ -50,6 +50,7 @@ class DonationAdmin(admin.ModelAdmin):
         "reward",
         "active",
     ]
+    autocomplete_fields = ("user",)
 
 
 class ProjectAdmin(admin.TabularInline):
