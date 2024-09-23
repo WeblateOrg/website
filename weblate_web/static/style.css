@@ -3451,6 +3451,9 @@ footer .footicons a.icon:hover {
   display: block;
   padding: 0 15px;
   border-radius: 15px;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }
 
 .langs ul li.active a {
@@ -4098,7 +4101,7 @@ input.fullwidth {
   }
 
   .langs-list {
-    min-width: calc(100vw - 90px);
+    min-width: calc(100vw - 20px);
   }
 
   section.donations-info.aboutus .di-section .half-content {
@@ -4143,8 +4146,11 @@ input.fullwidth {
     font-size: 12px !important;
     height: 25px;
     line-height: 25px;
-    overflow: hidden;
     padding: 0 11px;
+  }
+
+  .langs-list .bottom {
+    margin-top: 0;
   }
 
   .langs-list .bottom a {
