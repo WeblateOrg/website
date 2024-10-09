@@ -1052,7 +1052,7 @@ class APITest(TestCase):
             {
                 "countryCode": "CZ",
                 "vatNumber": "8003280318",
-                "requestDate": "2024-07-09",
+                "requestDate": None,
                 "valid": True,
                 "name": "Ing. Michal Čihař",
                 "address": "Nábřežní 694\nCVIKOV II\n471 54  CVIKOV",
