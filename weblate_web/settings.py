@@ -320,6 +320,7 @@ COMPRESS_OFFLINE_CONTEXT = [
     {"LANGUAGE_BIDI": False},
 ]
 
+SAML_CSP_HANDLER = ""
 SAML_ATTRIBUTE_MAPPING = {
     "username": ("username",),
     "email": ("email",),
