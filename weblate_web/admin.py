@@ -50,7 +50,7 @@ class DonationAdmin(admin.ModelAdmin):
         "reward",
         "active",
     ]
-    autocomplete_fields = ("user",)
+    autocomplete_fields = ("user", "customer")
 
 
 class ProjectAdmin(admin.TabularInline):
@@ -82,7 +82,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "note",
     )
     date_hierarchy = "created"
-    autocomplete_fields = ("users",)
+    autocomplete_fields = ("users", "customer")
     inlines = (ProjectAdmin,)
 
     def get_form(self, request, obj=None, **kwargs):

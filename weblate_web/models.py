@@ -208,6 +208,7 @@ def create_backup_repository(service):
 
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE, null=True)
     payment = Char32UUIDField(blank=True, null=True)
     reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
@@ -301,6 +302,7 @@ def process_donation(payment):
         # Create new
         donation = Donation.objects.create(
             user=user,
+            customer=payment.customer,
             payment=payment.pk,
             reward=int(reward),
             expires=expires,
@@ -319,7 +321,7 @@ def get_service(payment, user):
         try:
             return user.service_set.get()
         except (Service.MultipleObjectsReturned, Service.DoesNotExist):
-            service = user.service_set.create()
+            service = user.service_set.create(customer=payment.customer)
             service.was_created = True
             return service
 
@@ -496,6 +498,7 @@ class Package(models.Model):
 class Service(models.Model):
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
     users = models.ManyToManyField(User)
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE, null=True)
     status = models.CharField(
         max_length=150,
         choices=(
