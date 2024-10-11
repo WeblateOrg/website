@@ -65,6 +65,13 @@
                     <div class="line-right">{% trans "Waiting for payment to be completed." %}</div>
                     <div class="clear"></div>
                 </div>
+                {% if object.details.pay_url %}
+                <div class="form-line">
+                    <div class="line-left">{% trans "Payment link" %}</div>
+                    <div class="line-right"><a href="{{object.details.pay_url }}">{{ object.details.pay_url }}</a></div>
+                    <div class="clear"></div>
+                </div>
+                {% endif %}
             </div>
         </div>
         {% endif %}

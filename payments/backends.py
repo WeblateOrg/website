@@ -20,9 +20,11 @@
 import json
 import re
 import subprocess  # noqa: S404
+from hashlib import sha256
 from math import floor
 
 import fiobank
+import requests
 import sentry_sdk
 import thepay.config
 import thepay.dataApi
@@ -31,7 +33,8 @@ import thepay.payment
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
-from django.utils.translation import gettext, gettext_lazy, override
+from django.utils.http import http_date
+from django.utils.translation import get_language, gettext, gettext_lazy, override
 from fakturace.storage import InvoiceStorage, ProformaStorage
 
 from .models import Payment
@@ -58,6 +61,10 @@ def list_backends():
 
 
 class InvalidState(ValueError):
+    pass
+
+
+class PaymentError(Exception):
     pass
 
 
@@ -463,3 +470,170 @@ class FioBank(Backend):
                         )
                 except Payment.DoesNotExist:
                     print(f"No matching payment for {proforma_id} found")
+
+
+# @register_backend
+class ThePay2Card(Backend):
+    name = "thepay2-card"
+    verbose = gettext_lazy("Payment card")
+    description = "Payment Card (The Pay)"
+    recurring = True
+
+    def get_headers(self) -> dict[str, str]:
+        timestamp = http_date()
+        payload = f"{settings.THEPAY_MERCHANT_ID}{settings.THEPAY_PASSWORD}{timestamp}"
+        hash256 = sha256(payload.encode(), usedforsecurity=True)
+        return {"SignatureDate": timestamp, "Signature": hash256.hexdigest()}
+
+    def request(
+        self,
+        method: str,
+        url: str,
+        params: dict | None = None,
+        json: dict | None = None,
+        api_version: str = "v1",
+    ) -> dict:
+        if params is None:
+            params = {}
+        params["merchant_id"] = settings.THEPAY_MERCHANT_ID
+
+        headers = self.get_headers()
+
+        base_url = f"https://{settings.THEPAY_SERVER}/{api_version}/projects/{settings.THEPAY_PROJECT_ID}"
+
+        response = requests.request(
+            method,
+            f"{base_url}/{url}",
+            params=params,
+            json=json,
+            headers=headers,
+            timeout=10,
+        )
+
+        # Use service specific error message if available
+        if 500 > response.status_code >= 400:
+            try:
+                payload = response.json()
+            except requests.RequestException:
+                pass
+            else:
+                if message := payload.get("message"):
+                    raise PaymentError(message)
+
+        # Fallback to standardad requests handing
+        response.raise_for_status()
+
+        return response.json()
+
+    def perform(self, request, back_url, complete_url):
+        if self.payment.repeat:
+            # Handle recurring payments
+            payload = {
+                "uid": str(self.payment.pk),
+                "value": {
+                    "amount": str(int(self.payment.vat_amount * 100)),
+                    "currency": "EUR",
+                },
+                "notif_url": complete_url,
+            }
+            response = self.request(
+                "post",
+                f"payments/{self.payment.repeat.pk}/savedauthorization",
+                json=payload,
+                api_version="v2",
+            )
+            # This is processed in the collect() method
+            self.payment.details["repeat_response"] = response
+            return None
+
+        # Payment payload
+        payload = {
+            "can_customer_change_method": False,
+            "payment_method_code": "card",
+            "amount": int(self.payment.vat_amount * 100),
+            "currency_code": "EUR",
+            "uid": str(self.payment.pk),
+            "description_for_customer": self.payment.description,
+            "return_url": complete_url,
+            "notif_url": complete_url,
+            "save_authorization": bool(self.payment.recurring),
+            "language_code": get_language(),
+            "customer": {
+                "name": self.payment.customer.name,
+                "surname": "",
+                "email": self.payment.customer.email,
+                "billing_address": {
+                    "country_code": self.payment.customer.country.code,
+                    "city": self.payment.customer.city,
+                    "zip": self.payment.customer.postcode,
+                    "street": self.payment.customer.address,
+                },
+                "shipping_address": {
+                    "country_code": self.payment.customer.country.code,
+                    "city": self.payment.customer.city,
+                    "zip": self.payment.customer.postcode,
+                    "street": self.payment.customer.address,
+                },
+            },
+        }
+
+        # Create payment
+        response = self.request("post", "payments", json=payload)
+
+        # Store payment URL for later
+        pay_url = response["pay_url"]
+        self.payment.details["pay_url"] = pay_url
+
+        # Redirect user to perform the payment
+        return redirect(pay_url)
+
+    def collect(self, request):
+        # Handle repeated payments
+        if self.payment.repeat:
+            if "repeat_response" not in self.payment.details:
+                raise ValueError("Recurring payment without a recurring response")
+
+            response = self.payment.details["repeat_response"]
+            if response["state"] == "paid":
+                return True
+            self.payment.details["reject_reason"] = response["message"]
+            return False
+
+        # Get payment state
+        response = self.request("get", f"payments/{self.payment.pk}")
+
+        self.payment.details["response"] = response
+
+        # Extract state
+        state: str = response["state"]
+
+        # Payment completed
+        if state == "paid":
+            # Store card info
+            if response["card"]:
+                self.payment.card_info = response["card"]
+            return True
+
+        # Pending payment
+        if state in {"waiting_for_payment", "waiting_for_confirmation"}:
+            return None
+
+        # All other states are assumed to be an error
+
+        # Get error detail
+        if response["events"]:
+            last_event = response["events"][-1]
+            if last_event["data"]:
+                reason = last_event["data"]
+            elif last_event["type"] == "payment_error":
+                reason = gettext("Payment error")
+            elif last_event["type"] == "payment_cancelled":
+                reason = gettext("Payment cancelled")
+            else:
+                # Not user friendly, but gives some clue
+                reason = last_event["type"]
+            self.payment.details["reject_reason"] = reason
+        else:
+            self.payment.details["reject_reason"] = state
+
+        return False
