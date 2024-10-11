@@ -13,33 +13,6 @@ import payments.validators
 
 
 class Migration(migrations.Migration):
-    replaces = [
-        ("payments", "0001_initial"),
-        ("payments", "0002_auto_20181024_1151"),
-        ("payments", "0003_auto_20181024_1604"),
-        ("payments", "0004_auto_20181025_1130"),
-        ("payments", "0005_auto_20181025_1135"),
-        ("payments", "0006_auto_20181101_0900"),
-        ("payments", "0007_customer_tax"),
-        ("payments", "0008_auto_20181106_1622"),
-        ("payments", "0009_auto_20181113_2339"),
-        ("payments", "0010_auto_20181127_1307"),
-        ("payments", "0011_payment_amount_fixed"),
-        ("payments", "0012_auto_20190102_1658"),
-        ("payments", "0013_auto_20190903_1456"),
-        ("payments", "0014_auto_20200316_1344"),
-        ("payments", "0015_payment_currency"),
-        ("payments", "0016_auto_20200318_0955"),
-        ("payments", "0017_auto_20200422_2019"),
-        ("payments", "0018_auto_20200821_1034"),
-        ("payments", "0019_auto_20220915_1301"),
-        ("payments", "0020_alter_payment_recurring"),
-        ("payments", "0021_payment_details_new_payment_extra_new"),
-        ("payments", "0022_jsonfield"),
-        ("payments", "0023_remove_payment_details_remove_payment_extra"),
-        ("payments", "0024_rename_details_new_payment_details_and_more"),
-    ]
-
     initial = True
 
     dependencies = []
