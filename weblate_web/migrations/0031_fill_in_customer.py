@@ -57,7 +57,13 @@ def update_customer(apps, schema_editor):
     invoice_storage = InvoiceStorage(settings.PAYMENT_FAKTURACE)
 
     for donation in Donation.objects.filter(customer=None):
-        payment = Payment.objects.get(pk=donation.payment)
+        try:
+            payment = Payment.objects.get(pk=donation.payment)
+        except Payment.DoesNotExist:
+            print(
+                f"<Donation {donation.pk}> missing payment ({donation.payment}) {donation.expires}: {donation.get_reward_display()} {donation.link_text} {donation.link_url}"
+            )
+            continue
         donation.customer = get_customer(
             Customer, [payment], invoice_storage, f"Donation {donation.id}"
         )
