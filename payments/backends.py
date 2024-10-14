@@ -568,12 +568,6 @@ class ThePay2Card(Backend):
                     "zip": self.payment.customer.postcode,
                     "street": self.payment.customer.address,
                 },
-                "shipping_address": {
-                    "country_code": self.payment.customer.country.code,
-                    "city": self.payment.customer.city,
-                    "zip": self.payment.customer.postcode,
-                    "street": self.payment.customer.address,
-                },
             },
         }
 
