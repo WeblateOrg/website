@@ -5,14 +5,14 @@
 <section class="content">
     <div class="row">
         <div class="wrap">
-            <h1 class="section-title min-m">{% block title %}{% trans "Terms of Service" %}{% endblock %}</h1>
+            <h1 class="section-title min-m">{% block title %}{% trans "Privacy Policy" %}{% endblock %}</h1>
             <div class="page-desc">
                 <p>
                     {% block description %}{% trans "The legal documents necessary to offer this service." %}{% endblock %}
                     {% trans "The Terms of Service document is authoritative in English, translations are provided for your convenience." %}
                 </p>
                 {% if LANGUAGE_CODE != "en" %}
-                  <a href="https://weblate.org/en/terms/" class="button inline">{% trans "View English version" %}</a>
+                  <a href="https://weblate.org/en/privacy/" class="button inline">{% trans "View English version" %}</a>
                 {% endif %}
             </div>
         </div>
@@ -21,7 +21,7 @@
     <div class="row">
         <div class="wrap">
             <div class="tos">
-            {% include "legal/documents/tos.html" with hide_english=True privacy_url="/privacy/" %}
+            {% include "legal/documents/privacy.html" %}
             </div>
         </div>
     </div>
