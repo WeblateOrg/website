@@ -289,7 +289,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 PAYMENT_DEBUG = True
 
-PAYMENT_FAKTURACE = "/home/nijel/weblate/tmp-fakturace"
+PAYMENT_FAKTURACE = (Path.home() / "weblate" / "tmp-fakturace").as_posix()
 
 LOGIN_URL = "/saml2/login/"
 LOGIN_REDIRECT_URL = "/user/"
