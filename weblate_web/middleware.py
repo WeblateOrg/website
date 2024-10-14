@@ -96,8 +96,8 @@ class SecurityMiddleware:
         image.append("blog.cihar.com")
 
         # The Pay
-        image.append("www.thepay.cz")
-        form.append("www.thepay.cz")
+        image.append("gate.thepay.cz")
+        form.append("thepay.cz")
 
         # GitHub avatars
         image.append("*.githubusercontent.com")
