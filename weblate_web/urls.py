@@ -112,6 +112,7 @@ class PagesSitemap(Sitemap):
             ("/careers/", 0.7, "weekly"),
             ("/support/", 0.7, "monthly"),
             ("/terms/", 0.2, "monthly"),
+            ("/privacy/", 0.2, "monthly"),
             ("/news/", 0.9, "daily"),
         )
 
@@ -265,6 +266,11 @@ urlpatterns = [
         re_path(r"^thanks/$", RedirectView.as_view(url="/donate/", permanent=True)),
         re_path(
             r"^terms/$", TemplateView.as_view(template_name="terms.html"), name="terms"
+        ),
+        re_path(
+            r"^privacy/$",
+            TemplateView.as_view(template_name="privacy.html"),
+            name="privacy",
         ),
         re_path(r"^payment/" + UUID + "/$", PaymentView.as_view(), name="payment"),
         re_path(

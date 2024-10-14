@@ -275,6 +275,10 @@ class ViewTestCase(PostTestCase):
         response = self.client.get("/en/terms/")
         self.assertContains(response, "04705904")
 
+    def test_privacy(self):
+        response = self.client.get("/en/privacy/")
+        self.assertContains(response, "04705904")
+
     def test_security_txt(self):
         response = self.client.get("/security.txt", follow=True)
         self.assertRedirects(response, "/.well-known/security.txt", status_code=301)
