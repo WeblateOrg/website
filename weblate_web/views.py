@@ -380,7 +380,7 @@ class PaymentView(FormView, SingleObjectMixin):
         return super().form_invalid(form)
 
     def form_valid(self, form):
-        if not self.can_pay:
+        if not self.can_pay or self.object.state != Payment.NEW:
             return redirect("payment", pk=self.object.pk)
         # Actualy call the payment backend
         method = form.cleaned_data["method"]
