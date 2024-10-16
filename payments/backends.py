@@ -507,7 +507,7 @@ class ThePay2Card(Backend):
             params=params,
             json=json,
             headers=headers,
-            timeout=10,
+            timeout=60,
         )
 
         # Use service specific error message if available
