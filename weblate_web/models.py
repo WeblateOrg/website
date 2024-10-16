@@ -391,6 +391,13 @@ def process_subscription(payment):
     return subscription
 
 
+def process_payment(payment: Payment):
+    if "subscription" in payment.extra:
+        process_subscription(payment)
+    else:
+        process_donation(payment)
+
+
 class Image(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(
