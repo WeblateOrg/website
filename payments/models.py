@@ -22,7 +22,6 @@ from __future__ import annotations
 import os.path
 import uuid
 
-import requests
 from appconf import AppConf
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -31,11 +30,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django.utils.translation import get_language, gettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
 from vies.models import VATINField
 
-from .data import SUPPORTED_LANGUAGES
 from .fields import Char32UUIDField
 from .utils import validate_email
 from .validators import validate_vatin
@@ -296,11 +294,15 @@ class Payment(models.Model):
             return 100.0 * self.amount / (100 + self.customer.vat_rate)
         return self.amount
 
-    def get_payment_url(self):
-        language = get_language()
-        if language not in SUPPORTED_LANGUAGES:
-            language = "en"
-        return settings.PAYMENT_REDIRECT_URL.format(language=language, uuid=self.uuid)
+    def _resolve_url(self, name: str) -> str:
+        url = reverse(name, kwargs={"pk": self.pk})
+        return f"{settings.SITE_URL}{url}"
+
+    def get_payment_url(self) -> str:
+        return self._resolve_url("payment")
+
+    def get_complete_url(self) -> str:
+        return self._resolve_url("payment-complete")
 
     def get_payment_backend_class(self):
         from .backends import get_backend  # noqa: PLC0415
@@ -349,14 +351,28 @@ class Payment(models.Model):
                 extra=extra,
             )
 
-    def trigger_remotely(self):
-        # Trigger payment processing remotely
-        requests.post(
-            self.get_payment_url(),
-            allow_redirects=False,
-            data={"method": self.backend, "secret": settings.PAYMENT_SECRET},
-            timeout=10,
-        )
+    def trigger_recurring(self):
+        """Trigger recurring payment."""
+        from weblate_web.models import process_payment  # noqa: PLC0415
+
+        backend = self.get_payment_backend()
+        # Intiate the payment, this typically performs it using remote API
+        with transaction.atomic():
+            result = backend.initiate(
+                None, self.get_payment_url(), self.get_complete_url()
+            )
+        if result is not None:
+            raise ValueError(f"Recurring backend did not complete: {result}")
+        # Collect payment information
+        with transaction.atomic():
+            backend.complete(None)
+
+        # Refresh from the database as initial/complete fetch a copy for select_for_update
+        self.refresh_from_db()
+
+        # Process payment
+        with transaction.atomic():
+            process_payment(self)
 
 
 class PaymentConf(AppConf):

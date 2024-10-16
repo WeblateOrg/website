@@ -418,7 +418,7 @@ class UtilTestCase(TestCase):
         )
 
 
-def create_payment(*, recurring="y", user):
+def create_payment(*, recurring="y", user, **kwargs):
     customer = Customer.objects.create(
         email="weblate@example.com",
         user_id=user.pk,
@@ -430,6 +430,7 @@ def create_payment(*, recurring="y", user):
         description="Test payment",
         backend="pay",
         recurring=recurring,
+        **kwargs,
     )
     return (
         payment,
@@ -495,11 +496,14 @@ class FakturaceTestCase(TestCase):
             ]
         )
         service = Service.objects.create()
-        service.subscription_set.create(
+        subscription = service.subscription_set.create(
             package=Package.objects.get_or_create(name=package)[0],
             expires=timezone.now() + relativedelta(years=years, days=days),
-            payment=create_payment(recurring=recurring, user=user)[0].pk,
         )
+        subscription.payment = create_payment(
+            recurring=recurring, user=user, extra={"subscription": subscription.pk}
+        )[0].pk
+        subscription.save(update_fields=["payment"])
         service.users.add(user)
         return service
 
@@ -586,7 +590,7 @@ class PaymentsTest(FakturaceTestCase):
         complete_url = reverse("payment-complete", kwargs={"pk": payment.pk})
         self.assertRedirects(
             response,
-            "https://cihar.com/?url=http://testserver" + complete_url,
+            "https://cihar.com/?url=http://localhost:1234" + complete_url,
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.PENDING)
@@ -772,27 +776,30 @@ class DonationTest(FakturaceTestCase):
     @responses.activate
     @override_settings(
         PAYMENT_DEBUG=True,
-        PAYMENT_REDIRECT_URL="http://example.com/payment",
+        PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix(),
     )
     def test_recurring(self):
-        responses.add(
-            responses.POST,
-            "http://example.com/payment",
-            body="",
-        )
         donation = self.create_donation(-1)
+        # No recurring payments for now
         self.assertEqual(donation.payment_obj.payment_set.count(), 0)
-        # The processing fails here, but new payment is created
-        call_command("recurring_payments")
-        self.assertEqual(donation.payment_obj.payment_set.count(), 1)
-        # Flag it as paid
-        donation.payment_obj.payment_set.update(state=Payment.ACCEPTED)
 
-        # Process pending payments
-        call_command("process_payments")
+        # Trigger payment and process it
+        call_command("recurring_payments")
+
+        # There should be additional payment
+        self.assertEqual(donation.payment_obj.payment_set.count(), 1)
+        # Verify it is processed
+        self.assertEqual(
+            donation.payment_obj.payment_set.get().state, Payment.PROCESSED
+        )
+
+        # Verify expiry has been moved
         old = donation.expires
         donation.refresh_from_db()
         self.assertGreater(donation.expires, old)
+
+        # Process pending payments (should do nothing)
+        call_command("process_payments")
 
 
 class PostTest(PostTestCase):
@@ -1068,7 +1075,6 @@ class APITest(TestCase):
     NOTIFY_SUBSCRIPTION=["noreply@example.com"],
     PAYMENT_DEBUG=True,
     PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix(),
-    PAYMENT_REDIRECT_URL="http://example.com/payment",
 )
 class ExpiryTest(FakturaceTestCase):
     def assert_notifications(self, *subjects):
@@ -1086,10 +1092,8 @@ class ExpiryTest(FakturaceTestCase):
         self.create_donation(years=0, days=3)
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications()
-        with responses.RequestsMock() as rsps:
-            rsps.add(responses.POST, settings.PAYMENT_REDIRECT_URL, body="")
-            RecurringPaymentsCommand.handle_donations()
-        self.assert_notifications()
+        RecurringPaymentsCommand.handle_donations()
+        self.assert_notifications("Your payment on weblate.org")
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
 
@@ -1117,10 +1121,8 @@ class ExpiryTest(FakturaceTestCase):
         self.create_service(years=0, days=3)
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications()
-        with responses.RequestsMock() as rsps:
-            rsps.add(responses.POST, settings.PAYMENT_REDIRECT_URL, body="")
-            RecurringPaymentsCommand.handle_subscriptions()
-        self.assert_notifications()
+        RecurringPaymentsCommand.handle_subscriptions()
+        self.assert_notifications("Your payment on weblate.org")
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications()
 

@@ -387,12 +387,8 @@ class PaymentView(FormView, SingleObjectMixin):
         backend = get_backend(method)(self.object)
         result = backend.initiate(
             self.request,
-            self.request.build_absolute_uri(
-                reverse("payment", kwargs={"pk": self.object.pk})
-            ),
-            self.request.build_absolute_uri(
-                reverse("payment-complete", kwargs={"pk": self.object.pk})
-            ),
+            self.object.get_payment_url(),
+            self.object.get_complete_url(),
         )
         if result is not None:
             return result

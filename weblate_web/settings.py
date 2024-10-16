@@ -111,6 +111,7 @@ LANGUAGES = (
 )
 
 SITE_ID = 1
+SITE_URL = "http://localhost:1234"
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -293,8 +294,6 @@ PAYMENT_FAKTURACE = (Path.home() / "weblate" / "tmp-fakturace").as_posix()
 
 LOGIN_URL = "/saml2/login/"
 LOGIN_REDIRECT_URL = "/user/"
-
-PAYMENT_REDIRECT_URL = "http://localhost:1234/{language}/payment/{uuid}/"
 
 REGISTRATION_EMAIL_MATCH = ".*"
 

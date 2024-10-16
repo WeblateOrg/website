@@ -143,8 +143,8 @@ class Command(BaseCommand):
             payment.save()
             return
 
-        # Remote trigger of the payment
-        repeated.trigger_remotely()
+        # Trigger of the payment
+        repeated.trigger_recurring()
 
     @classmethod
     def handle_subscriptions(cls):
