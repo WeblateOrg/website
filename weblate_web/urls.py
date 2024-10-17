@@ -348,8 +348,24 @@ urlpatterns = [
         r"^(?P<name>favicon\.ico|robots\.txt)$",
         RedirectView.as_view(url=settings.STATIC_URL + "%(name)s", permanent=True),
     ),
-    path("browserconfig.xml", TemplateView.as_view(template_name="browserconfig.xml")),
-    path("site.webmanifest", TemplateView.as_view(template_name="site.webmanifest")),
+    path(
+        "browserconfig.xml",
+        TemplateView.as_view(
+            template_name="browserconfig.xml", content_type="application/xml"
+        ),
+    ),
+    path(
+        "site.webmanifest",
+        TemplateView.as_view(
+            template_name="site.webmanifest", content_type="application/json"
+        ),
+    ),
+    path(
+        "funding.json",
+        TemplateView.as_view(
+            template_name="funding.json", content_type="application/json"
+        ),
+    ),
     path(
         "security.txt",
         RedirectView.as_view(url="/.well-known/security.txt", permanent=True),
