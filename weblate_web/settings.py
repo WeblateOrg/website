@@ -202,6 +202,7 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "django.contrib.humanize",
     "weblate_web.payments",
+    "weblate_web.invoices",
     "wllegal",
     "django_countries",
     "macros",
@@ -291,6 +292,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 PAYMENT_DEBUG = True
 
 PAYMENT_FAKTURACE = (Path.home() / "weblate" / "tmp-fakturace").as_posix()
+INVOICES_PATH = Path(BASE_DIR) / "invoices"
 
 LOGIN_URL = "/saml2/login/"
 LOGIN_REDIRECT_URL = "/user/"

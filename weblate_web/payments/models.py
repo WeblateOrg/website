@@ -239,6 +239,12 @@ class Payment(models.Model):
         "Payment", on_delete=models.deletion.CASCADE, null=True, blank=True
     )
     invoice = models.CharField(max_length=20, blank=True, default="")
+    paid_invoice = models.ForeignKey(
+        "invoices.Invoice",
+        on_delete=models.deletion.CASCADE,
+        blank=True,
+        null=True,
+    )
     amount_fixed = models.BooleanField(blank=True, default=False)
     start = models.DateField(blank=True, null=True)
     end = models.DateField(blank=True, null=True)
