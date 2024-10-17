@@ -1,0 +1,158 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="invoices:invoice.css" media="print" rel="stylesheet">
+    <title>Invoice {{ invoice.number }}</title>
+    <meta name="description" content="Weblate invoice">
+  </head>
+
+  <body>
+    <header>
+        <img class="logo" src="invoices:invoice-logo.svg" alt="Weblate">
+        <h1>Invoice number {{ invoice.number }}</h1>
+        <p>{{ invoice.issue_date|date }}</p>
+    </header>
+
+    <div id="contacts" class="fullwidth">
+      <address id="to">Invoice to<br/>
+        {{ invoice.customer.name }}<br/>
+        {{ invoice.customer.address }}<br/>
+        {% if invoice.customer.address_2 %}
+          {{ invoice.customer.address_2 }}<br/>
+        {% endif %}
+        {{ invoice.customer.postcode }} {{ invoice.customer.city }}<br/>
+        {{ invoice.customer.country.name }}<br/>
+        {% if invoice.customer.vat %}
+          VAT ID: {{ invoice.customer.vat }}<br/>
+        {% endif %}
+        {% if invoice.customer.tax %}
+          Reg: {{ invoice.customer.tax }}<br/>
+        {% endif %}
+      </address>
+
+      <address id="from">Issued by<br/>
+        Weblate s.r.o<br/>
+        Nábřežní 694<br/>
+        471 54 Cvikov<br/>
+        Czechia<br/>
+        VAT ID: CZ21668027<br/>
+        Reg: 21668027<br/>
+        <a href="mailto:info@weblate.org">info@weblate.org</a>
+      </address>
+    </div>
+
+    <table id="items">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Quantity</th>
+          <th>Rate</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in invoice.all_items %}
+        <tr>
+          <td>{{ item.description }}</td>
+          <td>{{ item.display_quantity }}</td>
+          <td>{{ item.display_price }}</td>
+          <td>{{ item.display_total_price }}</td>
+        </tr>
+      {% endfor %}
+      {% if invoice.discount %}
+        <tr>
+          <td>{{ invoice.discount.description }}</td>
+          <td></td>
+          <td>{{ invoice.discount.display_percents }} </td>
+          <td>{{ invoice.display_total_discount }}</td>
+        </tr>
+      {% endif %}
+      </tbody>
+      <tfoot>
+      {% if invoice.vat_rate %}
+        <tr>
+          <td>Exchange rate for VAT</td>
+          <td></td>
+          <td>{{ invoice.exchange_rate_czk }} Kč</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Total excluding VAT</td>
+          <td></td>
+          <td>{{ invoice.total_amount_no_vat_czk }} Kč</td>
+          <td>{{ invoice.display_total_amount_no_vat }}</td>
+        </tr>
+        <tr>
+          <td>VAT {{ invoice.vat_rate}}%</td>
+          <td></td>
+          <td>{{ invoice.total_vat_czk }} Kč</td>
+          <td>{{ invoice.display_total_vat }}</td>
+        </tr>
+        <tr>
+          <td>Total including VAT</td>
+          <td></td>
+          <td>{{ invoice.total_amount_czk }} Kč</td>
+          <td>{{ invoice.display_total_amount }}</td>
+        </tr>
+    {% else %}
+        <tr>
+          <td>Grand total</td>
+          <td></td>
+          <td></td>
+          <td>{{ invoice.display_total_amount }}</td>
+        </tr>
+    {% endif %}
+      </tfoot>
+    </table>
+
+    <footer>
+      <table id="total" class="fullwidth">
+        <thead>
+          <tr>
+            <th>Total due</th>
+            <th>Due by</th>
+            <th>Payment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>{{ invoice.display_total_amount }}</strong></td>
+            <td>{{ invoice.due_date|date }}</td>
+            <td>
+              {% if invoice.prepaid %}
+                Do not pay, already paid
+              {% else %}
+                Bank transfer<br/>
+                IBAN: CZ30 2010 0000 0023 0290 7395<br/>
+                Reference: {{ invoice.number }}<br/>
+              {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="details">
+        <tbody>
+          <tr>
+            <th>Date of taxable supply</th>
+            <th>Issuing bank</th>
+            <th>Account holder</th>
+            <th>Account number</th>
+            <th>BIC</th>
+          </tr>
+          <tr>
+            <td>{{ invoice.issue_date|date }}</td>
+            <td>Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia</td>
+            <td>Weblate s.r.o.</td>
+            <td>2302907395 / 2012</td>
+            <td>FIOBCZPPXXX</td>
+          </tr>
+        </tbody>
+      </table>
+      {% if invoice.vat_rate == 0 %}
+      <p>
+        The place of supply is considered to be in your country pursuant to Section 9 (1) Value Added Tax Act No. 235/2004 Coll. The person to whom the service is rendered is liable to declare and pay VAT in his country (reverse charge) according to European Directive 206/112/ES.
+       </p>
+      {% endif %}
+    </footer>
+  </body>
+</html>
