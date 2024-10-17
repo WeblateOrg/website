@@ -201,7 +201,7 @@ INSTALLED_APPS = (
     "django.contrib.messages",
     "django.contrib.admin",
     "django.contrib.humanize",
-    "payments",
+    "weblate_web.payments",
     "wllegal",
     "django_countries",
     "macros",

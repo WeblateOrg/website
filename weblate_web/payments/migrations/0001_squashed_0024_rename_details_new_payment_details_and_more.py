@@ -8,8 +8,8 @@ import django_countries.fields
 import vies.models
 from django.db import migrations, models
 
-import payments.utils
-import payments.validators
+import weblate_web.payments.utils
+import weblate_web.payments.validators
 
 
 class Migration(migrations.Migration):
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                         help_text="Please fill in European Union VAT ID, leave blank if not applicable.",
                         max_length=14,
                         null=True,
-                        validators=[payments.validators.validate_vatin],
+                        validators=[weblate_web.payments.validators.validate_vatin],
                         verbose_name="European VAT ID",
                     ),
                 ),
@@ -68,7 +68,8 @@ class Migration(migrations.Migration):
                 (
                     "email",
                     models.EmailField(
-                        max_length=190, validators=[payments.utils.validate_email]
+                        max_length=190,
+                        validators=[weblate_web.payments.utils.validate_email],
                     ),
                 ),
                 ("origin", models.URLField(max_length=300)),

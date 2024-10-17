@@ -22,9 +22,9 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from payments.backends import FioBank
-from payments.models import Payment
 from weblate_web.models import PAYMENTS_ORIGIN, Donation, process_payment
+from weblate_web.payments.backends import FioBank
+from weblate_web.payments.models import Payment
 
 
 class Command(BaseCommand):
