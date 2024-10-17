@@ -2,7 +2,7 @@
 
 from django.db import migrations
 
-import payments.fields
+import weblate_web.payments.fields
 
 
 class Migration(migrations.Migration):
@@ -17,16 +17,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="donation",
             name="payment",
-            field=payments.fields.Char32UUIDField(blank=True, null=True),
+            field=weblate_web.payments.fields.Char32UUIDField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name="pastpayments",
             name="payment",
-            field=payments.fields.Char32UUIDField(),
+            field=weblate_web.payments.fields.Char32UUIDField(),
         ),
         migrations.AlterField(
             model_name="subscription",
             name="payment",
-            field=payments.fields.Char32UUIDField(blank=True, null=True),
+            field=weblate_web.payments.fields.Char32UUIDField(blank=True, null=True),
         ),
     ]

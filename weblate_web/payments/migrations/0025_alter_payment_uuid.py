@@ -4,7 +4,7 @@ import uuid
 
 from django.db import migrations
 
-import payments.fields
+import weblate_web.payments.fields
 
 
 class Migration(migrations.Migration):
@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="payment",
             name="uuid",
-            field=payments.fields.Char32UUIDField(
+            field=weblate_web.payments.fields.Char32UUIDField(
                 default=uuid.uuid4, editable=False, primary_key=True, serialize=False
             ),
         ),

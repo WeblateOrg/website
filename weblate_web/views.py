@@ -52,10 +52,6 @@ from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
-from payments.backends import get_backend, list_backends
-from payments.forms import CustomerForm
-from payments.models import Customer, Payment
-from payments.validators import cache_vies_data, validate_vatin
 from weblate_web.forms import (
     AddDiscoveryForm,
     AddPaymentForm,
@@ -79,6 +75,10 @@ from weblate_web.models import (
     process_donation,
     process_subscription,
 )
+from weblate_web.payments.backends import get_backend, list_backends
+from weblate_web.payments.forms import CustomerForm
+from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.validators import cache_vies_data, validate_vatin
 from weblate_web.remote import get_activity
 
 ON_EACH_SIDE = 3

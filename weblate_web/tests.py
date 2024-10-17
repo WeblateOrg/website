@@ -18,8 +18,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
 
-from payments.data import SUPPORTED_LANGUAGES
-from payments.models import Customer, Payment
+from weblate_web.payments.data import SUPPORTED_LANGUAGES
+from weblate_web.payments.models import Customer, Payment
 
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .models import PAYMENTS_ORIGIN, Donation, Package, PackageCategory, Post, Service

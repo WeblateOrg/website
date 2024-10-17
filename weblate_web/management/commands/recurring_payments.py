@@ -25,9 +25,9 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from payments.models import Payment
-from payments.utils import send_notification
 from weblate_web.models import Donation, Service, Subscription
+from weblate_web.payments.models import Payment
+from weblate_web.payments.utils import send_notification
 
 
 class Command(BaseCommand):

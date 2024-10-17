@@ -23,9 +23,9 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext
 from fakturace.storage import InvoiceStorage
 
-from payments.backends import list_backends
-from payments.models import RECURRENCE_CHOICES
 from weblate_web.models import REWARD_LEVELS, REWARDS, Donation, Service, Subscription
+from weblate_web.payments.backends import list_backends
+from weblate_web.payments.models import RECURRENCE_CHOICES
 
 
 class MethodForm(forms.Form):

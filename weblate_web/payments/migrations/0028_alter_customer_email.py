@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-import payments.utils
+import weblate_web.payments.utils
 
 
 class Migration(migrations.Migration):
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 help_text="Additional e-mail to receive billing notifications",
                 max_length=190,
-                validators=[payments.utils.validate_email],
+                validators=[weblate_web.payments.utils.validate_email],
                 verbose_name="Billing e-mail",
             ),
         ),
