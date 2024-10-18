@@ -14,7 +14,8 @@
     </header>
 
     <div id="contacts" class="fullwidth">
-      <address id="to">Invoice to<br/>
+      <address id="to">
+        <h2>Invoice to</h2>
         {{ invoice.customer.name }}<br/>
         {{ invoice.customer.address }}<br/>
         {% if invoice.customer.address_2 %}
@@ -28,12 +29,10 @@
         {% if invoice.customer.tax %}
           Reg: {{ invoice.customer.tax }}<br/>
         {% endif %}
-        {% if invoice.customer_reference %}
-          Customer reference: {{ invoice.customer_reference }}<br/>
-        {% endif %}
       </address>
 
-      <address id="from">Issued by<br/>
+      <address id="from">
+        <h2>Issued by</h2>
         Weblate s.r.o<br/>
         Nábřežní 694<br/>
         471 54 Cvikov<br/>
@@ -41,6 +40,12 @@
         VAT ID: CZ21668027
       </address>
     </div>
+
+    {% if invoice.customer_reference %}
+      <p>
+        Customer reference: {{ invoice.customer_reference }}
+      </p>
+    {% endif %}
 
     <table id="items">
       <thead>
@@ -89,7 +94,7 @@
           <td>{{ invoice.total_vat_czk }} Kč</td>
           <td>{{ invoice.display_total_vat }}</td>
         </tr>
-        <tr>
+        <tr class="subtotal">
           <td>Total including VAT</td>
           <td></td>
           <td>{{ invoice.total_amount_czk }} Kč</td>

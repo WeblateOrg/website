@@ -9,7 +9,7 @@ from .models import Discount, Invoice, InvoiceKindChoices, QuantityUnitChoices
 
 class InvoiceTestCase(TestCase):
     @staticmethod
-    def create_customer():
+    def create_customer(vat: str = ""):
         return Customer.objects.create(
             name="Test customer",
             address="Street 42",
@@ -17,6 +17,7 @@ class InvoiceTestCase(TestCase):
             postcode="424242",
             country="cz",
             user_id=-1,
+            vat=vat,
         )
 
     def create_invoice(
@@ -24,9 +25,10 @@ class InvoiceTestCase(TestCase):
         discount: Discount | None = None,
         vat_rate: int = 0,
         customer_reference: str = "",
+        vat: str = "",
     ):
         invoice = Invoice.objects.create(
-            customer=self.create_customer(),
+            customer=self.create_customer(vat=vat),
             discount=discount,
             vat_rate=vat_rate,
             kind=InvoiceKindChoices.INVOICE,
@@ -47,7 +49,7 @@ class InvoiceTestCase(TestCase):
             self.assertNotEqual(str(item), "")
 
     def test_total(self):
-        invoice = self.create_invoice()
+        invoice = self.create_invoice(vat="CZ8003280318")
         self.assertEqual(invoice.total_amount, 100)
         self.validate_invoice(invoice)
 

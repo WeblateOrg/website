@@ -18,6 +18,13 @@ a {
   font-size: 11pt;
   line-height: 1.6;
 }
+p {
+  padding: 0 3mm;
+}
+h2 {
+  font-size: 11pt;
+  margin: 0;
+}
 body {
   margin: 0;
   padding: 0;
@@ -29,7 +36,7 @@ header {
 
 h1 {
   font-size: 12pt;
-  padding-top: 0.3cm;
+  padding-top: 3mm;
 }
 header p,
 header h1 {
@@ -45,16 +52,16 @@ img {
 
 .fullwidth {
   border-style: solid;
-  border-width: 0.5cm 1cm;
+  border-width: 5mm 1cm;
   margin: 0 -1cm;
   padding: 0;
   width: 19cm;
+  background: #d5f5ee;
+  border-color: #d5f5ee;
 }
 
 #contacts {
   display: flex;
-  background: #e9eaec;
-  border-color: #e9eaec;
 }
 address {
   font-style: normal;
@@ -71,7 +78,7 @@ address {
 #items {
   width: 100%;
   border-collapse: collapse;
-  margin: 0.5cm 0;
+  margin: 5mm 0;
 }
 #items th {
   font-weight: 400;
@@ -79,7 +86,8 @@ address {
 #items thead {
   border-bottom: 0.2mm solid #a9a;
 }
-#items tfoot {
+#items tfoot,
+#items .subtotal {
   border-top: 0.2mm solid #a9a;
 }
 #items td:last-of-type {
@@ -109,10 +117,6 @@ footer {
   bottom: 0;
   position: absolute;
 }
-#total {
-  background: #d5f5ee;
-  border-color: #d5f5ee;
-}
 #details td,
 #details th,
 #total td,
@@ -124,7 +128,7 @@ footer {
 }
 footer p,
 footer table {
-  margin-top: 0.5cm;
+  margin-top: 5mm;
 }
 footer p,
 #details,
@@ -134,7 +138,10 @@ footer p,
 #total strong {
   font-size: 18pt;
 }
-.thanks {
+.thanks,
+.reference {
   color: #1fa385;
+}
+.thanks {
   font-weight: 700;
 }
