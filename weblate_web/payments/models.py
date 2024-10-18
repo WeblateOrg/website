@@ -120,6 +120,12 @@ class Customer(models.Model):
     )
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
+    discount = models.ForeignKey(
+        "invoices.Discount",
+        on_delete=models.deletion.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "Customer"
