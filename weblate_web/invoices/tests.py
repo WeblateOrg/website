@@ -19,12 +19,18 @@ class InvoiceTestCase(TestCase):
             user_id=-1,
         )
 
-    def create_invoice(self, discount: Discount | None = None, vat_rate: int = 0):
+    def create_invoice(
+        self,
+        discount: Discount | None = None,
+        vat_rate: int = 0,
+        customer_reference: str = "",
+    ):
         invoice = Invoice.objects.create(
             customer=self.create_customer(),
             discount=discount,
             vat_rate=vat_rate,
             kind=InvoiceKindChoices.INVOICE,
+            customer_reference=customer_reference,
         )
         invoice.invoiceitem_set.create(
             description="Test item",
@@ -46,7 +52,7 @@ class InvoiceTestCase(TestCase):
         self.validate_invoice(invoice)
 
     def test_total_vat(self):
-        invoice = self.create_invoice(vat_rate=21)
+        invoice = self.create_invoice(vat_rate=21, customer_reference="PO123456")
         self.assertEqual(invoice.total_amount, 121)
         self.validate_invoice(invoice)
 

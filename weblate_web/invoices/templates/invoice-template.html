@@ -28,6 +28,9 @@
         {% if invoice.customer.tax %}
           Reg: {{ invoice.customer.tax }}<br/>
         {% endif %}
+        {% if invoice.customer_reference %}
+          Customer reference: {{ invoice.customer_reference }}<br/>
+        {% endif %}
       </address>
 
       <address id="from">Issued by<br/>
@@ -35,9 +38,7 @@
         Nábřežní 694<br/>
         471 54 Cvikov<br/>
         Czechia<br/>
-        VAT ID: CZ21668027<br/>
-        Reg: 21668027<br/>
-        <a href="mailto:info@weblate.org">info@weblate.org</a>
+        VAT ID: CZ21668027
       </address>
     </div>
 
@@ -134,17 +135,31 @@
         <tbody>
           <tr>
             <th>Date of taxable supply</th>
-            <th>Issuing bank</th>
-            <th>Account holder</th>
-            <th>Account number</th>
-            <th>BIC</th>
+            <th>CIN (IČ)</td>
+            <th>Managing director</th>
+            <th>Trade register</th>
+            <th>Contact</th>
           </tr>
           <tr>
             <td>{{ invoice.issue_date|date }}</td>
-            <td>Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia</td>
+            <td>21668027</td>
+            <td>Michal Čihař</td>
+            <td>C 52324/KSUL Krajský soud v Ústí nad Labem</td>
+            <td><a href="mailto:info@weblate.org">info@weblate.org</a></td>
+          </tr>
+          <tr>
+            <th>Account holder</th>
+            <th>Account number</th>
+            <th>BIC</th>
+            <th>Issuing bank</th>
+            <th></th>
+          </tr>
+          <tr>
             <td>Weblate s.r.o.</td>
-            <td>2302907395 / 2012</td>
+            <td>2302907395 / 2010</td>
             <td>FIOBCZPPXXX</td>
+            <td>Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia</td>
+            <td class="thanks">♥ Thank you!</td>
           </tr>
         </tbody>
       </table>
