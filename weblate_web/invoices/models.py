@@ -87,17 +87,17 @@ class Invoice(models.Model):
     kind = models.IntegerField(
         choices=InvoiceKindChoices, default=InvoiceKindChoices.INVOICE
     )
-    customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.CASCADE)
+    customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.PROTECT)
     customer_reference = models.CharField(max_length=100, blank=True)
     discount = models.ForeignKey(
-        Discount, on_delete=models.deletion.CASCADE, blank=True, null=True
+        Discount, on_delete=models.deletion.PROTECT, blank=True, null=True
     )
     vat_rate = models.IntegerField(default=0)
     currency = models.IntegerField(choices=CurrencyChoices, default=CurrencyChoices.EUR)
 
     # Invoice chaining Proforma -> Invoice, or Draft -> Invoice
     parent = models.ForeignKey(
-        "Invoice", on_delete=models.deletion.CASCADE, blank=True, null=True
+        "Invoice", on_delete=models.deletion.PROTECT, blank=True, null=True
     )
 
     prepaid = models.BooleanField(

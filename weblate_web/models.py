@@ -207,8 +207,8 @@ def create_backup_repository(service):
 
 
 class Donation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.deletion.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.deletion.PROTECT)
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT, null=True)
     payment = Char32UUIDField(blank=True, null=True)
     reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
@@ -505,7 +505,7 @@ class Package(models.Model):
 class Service(models.Model):
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
     users = models.ManyToManyField(User)
-    customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT, null=True)
     status = models.CharField(
         max_length=150,
         choices=(
@@ -845,9 +845,9 @@ class Service(models.Model):
 
 
 class Subscription(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.deletion.PROTECT)
     payment = Char32UUIDField(blank=True, null=True)
-    package = models.ForeignKey(Package, on_delete=models.deletion.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.deletion.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
     enabled = models.BooleanField(default=True, blank=True)
@@ -966,10 +966,10 @@ class Subscription(models.Model):
 
 class PastPayments(models.Model):
     subscription = models.ForeignKey(
-        Subscription, on_delete=models.deletion.CASCADE, null=True, blank=True
+        Subscription, on_delete=models.deletion.PROTECT, null=True, blank=True
     )
     donation = models.ForeignKey(
-        Donation, on_delete=models.deletion.CASCADE, null=True, blank=True
+        Donation, on_delete=models.deletion.PROTECT, null=True, blank=True
     )
     payment = Char32UUIDField()
 
