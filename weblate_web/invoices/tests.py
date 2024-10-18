@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from weblate_web.payments.models import Customer
 
-from .models import Discount, Invoice, QuantityUnitChoices
+from .models import Discount, Invoice, InvoiceKindChoices, QuantityUnitChoices
 
 
 class InvoiceTestCase(TestCase):
@@ -24,6 +24,7 @@ class InvoiceTestCase(TestCase):
             customer=self.create_customer(),
             discount=discount,
             vat_rate=vat_rate,
+            kind=InvoiceKindChoices.INVOICE,
         )
         invoice.invoiceitem_set.create(
             description="Test item",

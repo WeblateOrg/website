@@ -84,9 +84,7 @@ class Invoice(models.Model):
     sequence = models.IntegerField(editable=False)
     issue_date = models.DateField(default=datetime.date.today)
     due_date = models.DateField(blank=True)
-    kind = models.IntegerField(
-        choices=InvoiceKindChoices, default=InvoiceKindChoices.INVOICE
-    )
+    kind = models.IntegerField(choices=InvoiceKindChoices)
     customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.PROTECT)
     customer_reference = models.CharField(max_length=100, blank=True)
     discount = models.ForeignKey(

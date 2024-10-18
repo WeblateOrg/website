@@ -36,7 +36,8 @@ class InvoiceItemAdmin(admin.TabularInline):
 class InvoiceAdmin(admin.ModelAdmin):
     date_hierarchy = "issue_date"
     autocomplete_fields = ("customer",)
-    list_display = ("number", "customer", "total_amount")
+    list_display = ("number", "kind", "customer", "total_amount")
+    list_filter = ["kind"]
     search_fields = (
         "customer__name",
         "number",
