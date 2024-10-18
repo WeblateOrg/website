@@ -48,16 +48,19 @@ jobs:
     - name: Django checks
       run: ./manage.py check
     - name: Test with Django
-      run: coverage run ./manage.py test
+      run: pytest --junitxml=junit.xml weblate_web
     - name: Coverage
-      run: |
-        coverage combine
-        coverage xml
+      run: coverage xml
     - uses: codecov/codecov-action@v4
       with:
         token: ${{secrets.CODECOV_TOKEN}}
         flags: unittests
         name: Python ${{ matrix.python-version }}
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: DeepSource
       continue-on-error: true
       env:
