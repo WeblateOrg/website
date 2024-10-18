@@ -240,14 +240,14 @@ class Payment(models.Model):
     details = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
     # Payment extra information from the origin
     extra = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
-    customer = models.ForeignKey(Customer, on_delete=models.deletion.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT)
     repeat = models.ForeignKey(
-        "Payment", on_delete=models.deletion.CASCADE, null=True, blank=True
+        "Payment", on_delete=models.deletion.PROTECT, null=True, blank=True
     )
     invoice = models.CharField(max_length=20, blank=True, default="")
     paid_invoice = models.ForeignKey(
         "invoices.Invoice",
-        on_delete=models.deletion.CASCADE,
+        on_delete=models.deletion.PROTECT,
         blank=True,
         null=True,
     )
