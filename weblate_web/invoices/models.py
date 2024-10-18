@@ -25,7 +25,7 @@ from pathlib import Path
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models.functions import Extract
+from django.db.models.functions import Cast, Concat, Extract, LPad
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.utils.translation import override
@@ -82,6 +82,15 @@ class Discount(models.Model):
 
 class Invoice(models.Model):
     sequence = models.IntegerField(editable=False)
+    number = models.GeneratedField(
+        expression=Concat(
+            Cast("kind", models.CharField()),
+            Cast(Extract("issue_date", "year") % 2000, models.CharField()),
+            LPad(Cast("sequence", models.CharField()), 6, models.Value("0")),
+        ),
+        output_field=models.CharField(max_length=20),
+        db_persist=True,
+    )
     issue_date = models.DateField(default=datetime.date.today)
     due_date = models.DateField(blank=True)
     kind = models.IntegerField(choices=InvoiceKindChoices)
@@ -115,15 +124,15 @@ class Invoice(models.Model):
     def save(
         self,
         *,
-        force_insert=False,
-        force_update=False,
+        force_insert: bool = False,
+        force_update: bool = False,
         using=None,
         update_fields=None,
     ):
+        extra_fields: list[str] = []
         if not self.due_date:
             self.due_date = self.issue_date + datetime.timedelta(days=14)
-            if update_fields is not None:
-                update_fields = ("due_date", *update_fields)
+            extra_fields.append("due_date")
         if not self.sequence:
             try:
                 self.sequence = (
@@ -136,18 +145,16 @@ class Invoice(models.Model):
                 )
             except IndexError:
                 self.sequence = 1
-            if update_fields is not None:
-                update_fields = ("sequence", *update_fields)
+            extra_fields.append("sequence")
+        if extra_fields and update_fields is not None:
+            update_fields = tuple(set(update_fields).union(extra_fields))
+
         super().save(
             force_insert=force_insert,
             force_update=force_update,
             using=using,
             update_fields=update_fields,
         )
-
-    @property
-    def number(self) -> str:
-        return f"{self.kind}{self.issue_date.year % 2000}{self.sequence:05d}"
 
     def render_amount(self, amount: int | Decimal) -> str:
         if self.currency == CurrencyChoices.EUR:
