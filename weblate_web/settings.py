@@ -21,6 +21,8 @@
 # Django settings for weblate website project.
 #
 
+from __future__ import annotations
+
 import os
 from logging.handlers import SysLogHandler
 from pathlib import Path
@@ -311,7 +313,7 @@ STORAGE_BOX = 153391
 STORAGE_USER = ""
 STORAGE_PASSWORD = ""
 
-NOTIFY_SUBSCRIPTION = []
+NOTIFY_SUBSCRIPTION: list[str] = []
 
 FIO_TOKEN = None
 
