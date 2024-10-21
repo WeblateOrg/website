@@ -40,7 +40,7 @@ jobs:
         cache-dependency-glob: ''
         cache-suffix: ${{ matrix.python-version }}
     - name: Install pip dependencies
-      run: uv pip install --system -r requirements.txt -r requirements-test.txt
+      run: uv pip install --system -r requirements-dev.txt
     - name: Compile MO files
       run: ./scripts/generate-locales
     - name: Collect static files
