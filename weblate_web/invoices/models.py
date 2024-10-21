@@ -23,6 +23,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.functions import Cast, Concat, Extract, LPad
@@ -30,22 +31,31 @@ from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.utils.translation import override
 from fakturace.rates import DecimalRates
-from weasyprint import HTML
+from weasyprint import CSS, HTML
+from weasyprint.text.fonts import FontConfiguration
 
 INVOICES_URL = "invoices:"
+STATIC_URL = "static:"
 TEMPLATES_PATH = Path(__file__).parent / "templates"
 
 
 def url_fetcher(url: str) -> dict[str, str | bytes]:
-    if not url.startswith(INVOICES_URL):
+    path_obj: Path
+    if url.startswith(INVOICES_URL):
+        path_obj = TEMPLATES_PATH / url.removeprefix(INVOICES_URL)
+    elif url.startswith(STATIC_URL):
+        fullname = url.removeprefix(STATIC_URL)
+        match = finders.find(fullname)
+        if match is None:
+            raise ValueError(f"Could not find {fullname}")
+        path_obj = Path(match)
+    else:
         raise ValueError(f"Usupported URL: {url}")
-    basename = url.removeprefix(INVOICES_URL)
-    filename = TEMPLATES_PATH / basename
     result = {
-        "filename": basename,
-        "string": filename.read_bytes(),
+        "filename": path_obj.name,
+        "string": path_obj.read_bytes(),
     }
-    if basename.endswith("css"):
+    if path_obj.suffix == ".css":
         result["mime_type"] = "text/css"
         result["encoding"] = "utf-8"
     return result
@@ -243,9 +253,30 @@ class Invoice(models.Model):
     def generate_pdf(self):
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
+        font_config = FontConfiguration()
 
         renderer = HTML(string=self.render_html(), url_fetcher=url_fetcher)
-        renderer.write_pdf(settings.INVOICES_PATH / self.filename)
+        font_style = CSS(
+            string="""
+            @font-face {
+              font-family: Source Sans Pro;
+              font-weight: 400;
+              src: url("static:vendor/font-source/TTF/SourceSans3-Regular.ttf");
+            }
+            @font-face {
+              font-family: Source Sans Pro;
+              font-weight: 700;
+              src: url("static:vendor/font-source/TTF/SourceSans3-Bold.ttf");
+            }
+        """,
+            font_config=font_config,
+            url_fetcher=url_fetcher,
+        )
+        renderer.write_pdf(
+            settings.INVOICES_PATH / self.filename,
+            stylesheets=[font_style],
+            font_config=font_config,
+        )
 
 
 class InvoiceItem(models.Model):
