@@ -39,12 +39,13 @@ TEMPLATES_PATH = Path(__file__).parent / "templates"
 def url_fetcher(url: str) -> dict[str, str | bytes]:
     if not url.startswith(INVOICES_URL):
         raise ValueError(f"Usupported URL: {url}")
-    filename = url.removeprefix(INVOICES_URL)
+    basename = url.removeprefix(INVOICES_URL)
+    filename = TEMPLATES_PATH / basename
     result = {
-        "filename": filename,
-        "string": (TEMPLATES_PATH / filename).read_bytes(),
+        "filename": basename,
+        "string": filename.read_bytes(),
     }
-    if filename.endswith("css"):
+    if basename.endswith("css"):
         result["mime_type"] = "text/css"
         result["encoding"] = "utf-8"
     return result
@@ -269,7 +270,7 @@ class InvoiceItem(models.Model):
     def display_total_price(self):
         return self.invoice.render_amount(self.unit_price * self.quantity)
 
-    def get_quantity_unit_display(self) -> str:
+    def get_quantity_unit_display(self) -> str:  # types: ignore[no-redef]
         # Correcly handle singulars
         if self.quantity_unit == QuantityUnitChoices.HOURS and self.quantity == 1:
             return "hour"
