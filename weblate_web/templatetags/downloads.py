@@ -25,14 +25,12 @@ from django.utils.translation import ngettext
 register = Library()
 
 
-def filesizeformat(num_bytes):
+def filesizeformat(num_bytes: int):
     """
     Format the value like a 'human-readable' file size.
 
     For example 13 KB, 4.1 MB, 102 bytes, etc).
     """
-    num_bytes = float(num_bytes)
-
     if num_bytes < 1024:
         return ngettext("%(size)d byte", "%(size)d bytes", num_bytes) % {
             "size": num_bytes
@@ -45,7 +43,7 @@ def filesizeformat(num_bytes):
 
 
 @register.inclusion_tag("snippets/download-link.html")
-def downloadlink(info):
+def downloadlink(info: dict[str, str]):
     name = info["filename"]
 
     if name.endswith(".tar.bz2"):
