@@ -41,6 +41,7 @@ TEMPLATES_PATH = Path(__file__).parent / "templates"
 
 def url_fetcher(url: str) -> dict[str, str | bytes]:
     path_obj: Path
+    result: dict[str, str | bytes]
     if url.startswith(INVOICES_URL):
         path_obj = TEMPLATES_PATH / url.removeprefix(INVOICES_URL)
     elif url.startswith(STATIC_URL):
@@ -132,7 +133,7 @@ class Invoice(models.Model):
     def __str__(self) -> str:
         return f"{self.number}: {self.customer} {self.total_amount}"
 
-    def save(
+    def save(  # type: ignore[override]
         self,
         *,
         force_insert: bool = False,
@@ -248,14 +249,21 @@ class Invoice(models.Model):
 
     @property
     def filename(self) -> str:
-        return f"Weblate {self.get_kind_display()} {self.number}.pdf"
+        return f"Weblate_{self.get_kind_display()}_{self.number}.pdf"
 
-    def generate_pdf(self):
+    @property
+    def path(self) -> Path:
+        return settings.INVOICES_PATH / self.filename
+
+    def generate_pdf(self) -> None:
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         font_config = FontConfiguration()
 
-        renderer = HTML(string=self.render_html(), url_fetcher=url_fetcher)
+        renderer = HTML(
+            string=self.render_html(),
+            url_fetcher=url_fetcher,
+        )
         font_style = CSS(
             string="""
             @font-face {
@@ -278,6 +286,29 @@ class Invoice(models.Model):
             font_config=font_config,
         )
 
+    def finalize(
+        self, *, kind: InvoiceKindChoices = InvoiceKindChoices.INVOICE
+    ) -> Invoice:
+        """Create a final invoice from draft/proforma upon payment."""
+        invoice = Invoice.objects.create(
+            kind=kind,
+            customer=self.customer,
+            customer_reference=self.customer_reference,
+            discount=self.discount,
+            vat_rate=self.vat_rate,
+            currency=self.currency,
+            parent=self,
+            prepaid=True,
+        )
+        for item in self.all_items:
+            invoice.invoiceitem_set.create(
+                description=item.description,
+                quantity=item.quantity,
+                quantity_unit=item.quantity_unit,
+                unit_price=item.unit_price,
+            )
+        return invoice
+
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.deletion.CASCADE)
@@ -294,22 +325,24 @@ class InvoiceItem(models.Model):
         return f"{self.description} ({self.display_quantity}) {self.display_price}"
 
     @property
-    def display_price(self):
+    def display_price(self) -> str:
         return self.invoice.render_amount(self.unit_price)
 
     @property
-    def display_total_price(self):
+    def display_total_price(self) -> str:
         return self.invoice.render_amount(self.unit_price * self.quantity)
 
-    def get_quantity_unit_display(self) -> str:  # types: ignore[no-redef]
+    def get_quantity_unit_display(self) -> str:  # type: ignore[no-redef]
         # Correcly handle singulars
         if self.quantity_unit == QuantityUnitChoices.HOURS and self.quantity == 1:
             return "hour"
         # This is what original get_quantity_unit_display() would have done
-        return self._get_FIELD_display(field=self._meta.get_field("quantity_unit"))
+        return self._get_FIELD_display(  # type: ignore[attr-defined]
+            field=self._meta.get_field("quantity_unit")
+        )
 
     @property
-    def display_quantity(self):
+    def display_quantity(self) -> str:
         if self.quantity_unit:
             return f"{self.quantity} {self.get_quantity_unit_display()}"
         return f"{self.quantity}"
