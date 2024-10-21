@@ -442,10 +442,20 @@ class Post(models.Model):
         return self.title
 
     def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
+        self,
+        *,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using=None,
+        update_fields=None,
     ):
         # Need to save first as rendered value is available only then
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
         if not self.summary:
             h2t = html2text.HTML2Text()
             h2t.body_width = 0
@@ -860,9 +870,19 @@ class Subscription(models.Model):
         return f"{self.package}: {self.service}"
 
     def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
+        self,
+        *,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using=None,
+        update_fields=None,
     ):
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
         self.service.update_status()
 
     def get_absolute_url(self):
@@ -1005,9 +1025,19 @@ class Report(models.Model):
         return self.site_url
 
     def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
+        self,
+        *,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using=None,
+        update_fields=None,
     ):
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
         self.service.discoverable = self.discoverable
         self.service.site_url = self.site_url
         self.service.site_title = self.site_title
