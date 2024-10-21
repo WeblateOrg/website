@@ -41,7 +41,7 @@ from django.utils.translation import gettext as _
 from html2text import HTML2Text
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Sequence
 
 # Reject some suspicious e-mail addresses, based on checks enforced by Exim MTA
 EMAIL_BLACKLIST = re.compile(r"^([./|]|.*([@%!`#&?]|/\.\./))")
@@ -57,7 +57,7 @@ def validate_email(value):
         raise ValidationError(_("Enter a valid e-mail address."))
 
 
-def send_notification(notification: str, recipients: Iterable[str], **kwargs):
+def send_notification(notification: str, recipients: Sequence[str], **kwargs):
     if not recipients:
         return
 
