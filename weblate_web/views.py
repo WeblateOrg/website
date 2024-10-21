@@ -536,6 +536,16 @@ def download_invoice(request, pk):
     ):
         raise Http404("Invoice not accessible to current user!")
 
+    # New invoice model
+    if payment.paid_invoice:
+        return FileResponse(
+            payment.paid_invoice.path.open("rb"),
+            as_attachment=True,
+            filename=payment.paid_invoice.filename,
+            content_type="application/pdf",
+        )
+
+    # Legacy payments storage
     if not payment.invoice_filename_valid:
         raise Http404(f"File {payment.invoice_filename} does not exist!")
 

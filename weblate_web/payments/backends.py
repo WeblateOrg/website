@@ -20,6 +20,7 @@
 import json
 import re
 import subprocess  # noqa: S404
+from decimal import Decimal
 from hashlib import sha256
 from math import floor
 
@@ -32,6 +33,7 @@ import thepay.gateApi
 import thepay.payment
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.http import http_date
 from django.utils.translation import get_language, gettext, gettext_lazy, override
@@ -41,6 +43,7 @@ from .models import Payment
 from .utils import send_notification
 
 BACKENDS = {}
+# TODO: adjust RE to new proformas
 PROFORMA_RE = re.compile("20[0-9]{7}")
 
 
@@ -146,10 +149,78 @@ class Backend:
         self.failure()
         return False
 
-    def generate_invoice(self, storage_class=InvoiceStorage, paid=True):
+    @transaction.atomic
+    def generate_invoice(self, *, proforma: bool = False, paid: bool = True):
+        from weblate_web.invoices.models import (  # noqa: PLC0415
+            CurrencyChoices,
+            Invoice,
+            InvoiceKindChoices,
+        )
+
+        if self.payment.paid_invoice:
+            raise ValueError("Invoice already exists!")
+        invoice_kind = (
+            InvoiceKindChoices.PROFORMA if proforma else InvoiceKindChoices.INVOICE
+        )
+        if self.payment.draft_invoice:
+            # Finalize draft if present
+            self.payment.paid_invoice = self.payment.draft_invoice.finalize(
+                kind=invoice_kind
+            )
+        else:
+            # Generate manually if no draft is present (hosted integration)
+            invoice = self.payment.paid_invoice = Invoice.objects.create(
+                kind=invoice_kind,
+                customer=self.payment.customer,
+                vat_rate=self.payment.customer.vat_rate,
+                currency=CurrencyChoices.EUR,
+                prepaid=True,
+            )
+            invoice.invoiceitem_set.create(
+                description=self.payment.description,
+                unit_price=round(Decimal(self.payment.amount_without_vat), 2),
+            )
+
+        # Generate PDF
+        invoice.generate_pdf()
+
+        # Update reference
+        self.payment.save(update_fields=["paid_invoice"])
+
+    def send_notification(self, notification, include_invoice=True):
+        kwargs = {"backend": self}
+        if self.invoice:
+            kwargs["invoice"] = self.invoice
+        if self.payment:
+            kwargs["payment"] = self.payment
+        send_notification(notification, [self.payment.customer.email], **kwargs)
+
+    def get_invoice_kwargs(self):
+        return {"payment_id": str(self.payment.pk), "payment_method": self.description}
+
+    def success(self):
+        self.payment.state = Payment.ACCEPTED
+        if not self.recurring:
+            self.payment.recurring = ""
+
+        self.generate_invoice()
+        self.payment.save()
+
+        self.send_notification("payment_completed")
+
+    def failure(self):
+        self.payment.state = Payment.REJECTED
+        self.payment.save()
+
+        self.send_notification("payment_failed")
+
+
+class LegacyBackend(Backend):
+    def generate_invoice(self, *, proforma: bool = False, paid: bool = True):
         """Generate an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
-            return
+            raise ValueError("Fakturace storage is not configured!")
+        storage_class = ProformaStorage if proforma else InvoiceStorage
         storage = storage_class(settings.PAYMENT_FAKTURACE)
         customer = self.payment.customer
         customer_id = f"web-{customer.pk}"
@@ -201,33 +272,6 @@ class Backend:
             cwd=settings.PAYMENT_FAKTURACE,
         )
 
-    def send_notification(self, notification, include_invoice=True):
-        kwargs = {"backend": self}
-        if self.invoice:
-            kwargs["invoice"] = self.invoice
-        if self.payment:
-            kwargs["payment"] = self.payment
-        send_notification(notification, [self.payment.customer.email], **kwargs)
-
-    def get_invoice_kwargs(self):
-        return {"payment_id": str(self.payment.pk), "payment_method": self.description}
-
-    def success(self):
-        self.payment.state = Payment.ACCEPTED
-        if not self.recurring:
-            self.payment.recurring = ""
-
-        self.generate_invoice()
-        self.payment.save()
-
-        self.send_notification("payment_completed")
-
-    def failure(self):
-        self.payment.state = Payment.REJECTED
-        self.payment.save()
-
-        self.send_notification("payment_failed")
-
 
 @register_backend
 class DebugPay(Backend):
@@ -278,7 +322,7 @@ class DebugPending(DebugPay):
 
 
 @register_backend
-class ThePayCard(Backend):
+class ThePayCard(LegacyBackend):
     name = "thepay-card"
     verbose = gettext_lazy("Payment card")
     description = "Payment Card (The Pay)"
@@ -382,7 +426,8 @@ class ThePayBitcoin(ThePayCard):
 
 
 @register_backend
-class FioBank(Backend):
+class FioBank(LegacyBackend):
+    # TODO: migrate from legacy backend
     name = "fio-bank"
     verbose = gettext_lazy("IBAN bank transfer")
     description = "Bank transfer"
@@ -395,7 +440,7 @@ class FioBank(Backend):
         return True
 
     def perform(self, request, back_url, complete_url):
-        self.generate_invoice(storage_class=ProformaStorage, paid=False)
+        self.generate_invoice(proforma=True, paid=False)
         self.payment.details["proforma"] = self.payment.invoice
         self.send_notification("payment_pending")
         return redirect(complete_url)
@@ -425,22 +470,23 @@ class FioBank(Backend):
     @classmethod
     def fetch_payments(cls, from_date=None):
         client = fiobank.FioBank(token=settings.FIO_TOKEN)
-        for transaction in client.last(from_date=from_date):
+        for entry in client.last(from_date=from_date):
             matches = []
             # Extract from message
-            if transaction["recipient_message"]:
-                matches.extend(PROFORMA_RE.findall(transaction["recipient_message"]))
+            if entry["recipient_message"]:
+                matches.extend(PROFORMA_RE.findall(entry["recipient_message"]))
             # Extract from variable symbol
-            if transaction["variable_symbol"]:
-                matches.extend(PROFORMA_RE.findall(transaction["variable_symbol"]))
+            if entry["variable_symbol"]:
+                matches.extend(PROFORMA_RE.findall(entry["variable_symbol"]))
             # Extract from sender reference
-            if transaction.get("reference", None):
-                matches.extend(PROFORMA_RE.findall(transaction["reference"]))
+            if entry.get("reference", None):
+                matches.extend(PROFORMA_RE.findall(entry["reference"]))
             # Extract from comment for manual pairing
-            if transaction["comment"]:
-                matches.extend(PROFORMA_RE.findall(transaction["comment"]))
+            if entry["comment"]:
+                matches.extend(PROFORMA_RE.findall(entry["comment"]))
             # Process all matches
             for proforma_number in matches:
+                # TODO: Fetch invoice object
                 proforma_id = f"P{proforma_number}"
                 try:
                     related = Payment.objects.get(backend=cls.name, invoice=proforma_id)
@@ -453,31 +499,31 @@ class FioBank(Backend):
                     backend = cls(related)
                     proforma = backend.get_proforma()
                     proforma.mark_paid(
-                        json.dumps(transaction, indent=2, cls=DjangoJSONEncoder)
+                        json.dumps(entry, indent=2, cls=DjangoJSONEncoder)
                     )
                     backend.git_commit([proforma.paid_path], proforma)
-                    if floor(float(proforma.total_amount)) <= transaction["amount"]:
+                    if floor(float(proforma.total_amount)) <= entry["amount"]:
                         print(f"Received payment for {proforma_id}")
-                        backend.payment.details["transaction"] = transaction
+                        backend.payment.details["transaction"] = entry
                         backend.success()
                     else:
                         print(
                             "Underpaid {}: received={}, expected={}".format(
-                                proforma_id,
-                                transaction["amount"],
-                                proforma.total_amount,
+                                proforma_id, entry["amount"], proforma.total_amount
                             )
                         )
                 except Payment.DoesNotExist:
                     print(f"No matching payment for {proforma_id} found")
 
 
-# @register_backend
+@register_backend
 class ThePay2Card(Backend):
     name = "thepay2-card"
     verbose = gettext_lazy("Payment card")
     description = "Payment Card (The Pay)"
     recurring = True
+    # TODO: make it production
+    debug = True
 
     def get_headers(self) -> dict[str, str]:
         timestamp = http_date()

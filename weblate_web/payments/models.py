@@ -177,11 +177,11 @@ class Customer(models.Model):
         return self.country_code in EU_VAT_RATES and not self.vat
 
     @property
-    def needs_vat(self):
+    def needs_vat(self) -> bool:
         return self.vat_country_code == "CZ" or self.is_eu_enduser
 
     @property
-    def vat_rate(self):
+    def vat_rate(self) -> int:
         if self.needs_vat:
             return VAT_RATE
         return 0
