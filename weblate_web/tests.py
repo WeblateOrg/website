@@ -519,7 +519,7 @@ class PaymentsTest(FakturaceTestCase):
             {x[0] for x in settings.LANGUAGES},
         )
 
-    def test_view(self):
+    def prepare_payment(self):
         with override("en"):
             payment, url, customer_url = create_payment(user=self.create_user())
             response = self.client.get(url, follow=True)
@@ -535,13 +535,16 @@ class PaymentsTest(FakturaceTestCase):
             self.assertContains(response, "€121.0")
             return payment, url, customer_url
 
+    def test_view(self):
+        self.prepare_payment()
+
     def check_payment(self, payment, state):
         fresh = Payment.objects.get(pk=payment.pk)
         self.assertEqual(fresh.state, state)
 
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_pay(self):
-        payment, url, _dummy = self.test_view()
+        payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "pay"})
         self.assertRedirects(
             response,
@@ -558,7 +561,7 @@ class PaymentsTest(FakturaceTestCase):
     @responses.activate
     def test_invalid_vat(self):
         mock_vies(valid=False)
-        payment, url, customer_url = self.test_view()
+        payment, url, customer_url = self.prepare_payment()
         # Inject invalid VAT
         customer = Customer.objects.get(pk=payment.customer.pk)
         customer.vat = "CZ8003280317"
@@ -570,7 +573,7 @@ class PaymentsTest(FakturaceTestCase):
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_reject(self):
-        payment, url, _dummy = self.test_view()
+        payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "reject"})
         self.assertRedirects(
             response,
@@ -585,7 +588,7 @@ class PaymentsTest(FakturaceTestCase):
 
     @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_pending(self):
-        payment, url, _dummy = self.test_view()
+        payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "pending"})
         complete_url = reverse("payment-complete", kwargs={"pk": payment.pk})
         self.assertRedirects(
@@ -865,7 +868,7 @@ class APITest(TestCase):
         response = self.client.post("/api/support/")
         self.assertEqual(response.status_code, 404)
 
-    def test_support(self, delta=1, expected="extended"):
+    def perform_support(self, *, delta: int = 1, expected: str = "extended"):
         Package.objects.create(name="community", verbose="Community support", price=0)
         extended = Package.objects.create(
             name="extended", verbose="Extended support", price=42
@@ -890,11 +893,14 @@ class APITest(TestCase):
             raise ValueError("Missing package expecation!")
         return service
 
+    def test_support(self):
+        self.perform_support()
+
     def test_support_expired(self):
-        self.test_support(delta=-1, expected="community")
+        self.perform_support(delta=-1, expected="community")
 
     def test_support_discovery(self):
-        service = self.test_support()
+        service = self.perform_support()
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
         self.client.post(
@@ -913,7 +919,7 @@ class APITest(TestCase):
         self.assertFalse(service.discoverable)
 
     def test_support_discovery_projects(self):
-        service = self.test_support()
+        service = self.perform_support()
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
 
