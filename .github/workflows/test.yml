@@ -48,7 +48,10 @@ jobs:
     - name: Django checks
       run: ./manage.py check
     - name: Test with Django
-      run: pytest --junitxml=junit.xml weblate_web
+      run: |
+        echo "::add-matcher::.github/matchers/pytest.json"
+        pytest --junitxml=junit.xml weblate_web
+        echo "::remove-matcher owner=pytest::"
     - name: Coverage
       run: coverage xml
     - uses: codecov/codecov-action@v4
