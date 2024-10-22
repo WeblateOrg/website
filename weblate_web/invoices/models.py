@@ -104,6 +104,7 @@ class Invoice(models.Model):
         ),
         output_field=models.CharField(max_length=20),
         db_persist=True,
+        unique=True,
     )
     issue_date = models.DateField(default=datetime.date.today)
     due_date = models.DateField(blank=True)
