@@ -150,8 +150,9 @@ def api_user(request):
             max_age=300,
             salt="weblate.user",
         )
-    except (BadSignature, SignatureExpired) as error:
-        return HttpResponseBadRequest(str(error))
+    except (BadSignature, SignatureExpired):
+        sentry_sdk.capture_exception()
+        return HttpResponseBadRequest("Invalid signature")
 
     try:
         user = User.objects.get(username=payload["username"])
@@ -185,8 +186,9 @@ def api_hosted(request):
             max_age=300,
             salt="weblate.hosted",
         )
-    except (BadSignature, SignatureExpired) as error:
-        return HttpResponseBadRequest(str(error))
+    except (BadSignature, SignatureExpired):
+        sentry_sdk.capture_exception()
+        return HttpResponseBadRequest("Invalid signature")
 
     # Get/create service for this billing
     service = Service.objects.get_or_create(hosted_billing=payload["billing"])[0]

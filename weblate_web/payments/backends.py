@@ -594,6 +594,7 @@ class ThePay2Card(Backend):
         try:
             response.raise_for_status()
         except requests.HTTPError as error:
+            sentry_sdk.capture_exception()
             raise PaymentError(str(error)) from error
 
         return response.json()
