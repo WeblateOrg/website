@@ -417,6 +417,18 @@ SAML_CONFIG = {
     },
 }
 
+# Legacy The Pay
+PAYMENT_THEPAY_MERCHANTID: str
+PAYMENT_THEPAY_ACCOUNTID: str
+PAYMENT_THEPAY_PASSWORD: str
+PAYMENT_THEPAY_DATAAPI: str
+
+# The Pay 2.0
+THEPAY_MERCHANT_ID: str
+THEPAY_PASSWORD: str
+THEPAY_SERVER: str
+THEPAY_PROJECT_ID: str
+
 LOCAL = Path(BASE_DIR) / "weblate_web" / "settings_local.py"
 if LOCAL.exists():
     local_settings = LOCAL.read_text()

@@ -17,12 +17,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 import json
 import re
 import subprocess  # noqa: S404
 from decimal import Decimal
 from hashlib import sha256
 from math import floor
+from typing import TYPE_CHECKING, Any
 
 import fiobank
 import requests
@@ -42,7 +45,12 @@ from fakturace.storage import InvoiceStorage, ProformaStorage
 from .models import Payment
 from .utils import send_notification
 
-BACKENDS = {}
+if TYPE_CHECKING:
+    from django.http import HttpRequest, HttpResponseRedirect
+    from django_stubs_ext import StrOrPromise
+    from fakturace.invoices import Invoice
+
+BACKENDS: dict[str, type[Backend]] = {}
 # TODO: adjust RE to new proformas
 PROFORMA_RE = re.compile("20[0-9]{7}")
 
@@ -71,40 +79,44 @@ class PaymentError(Exception):
     pass
 
 
-def register_backend(backend):
+def register_backend(backend: type[Backend]) -> type[Backend]:
     BACKENDS[backend.name] = backend
     return backend
 
 
 class Backend:
-    name = None
-    debug = False
-    verbose = None
-    description = ""
-    recurring = False
+    name: str = ""
+    debug: bool = False
+    verbose: StrOrPromise = ""
+    description: str = ""
+    recurring: bool = False
 
-    def __init__(self, payment):
+    def __init__(self, payment: Payment):
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
         self.payment = select[0]
-        self.invoice = None
+        self.invoice: Invoice | None = None
 
     @property
-    def image_name(self):
+    def image_name(self) -> str:
         return f"payment/{self.name}.png"
 
-    def perform(self, request, back_url, complete_url):
+    def perform(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> None | HttpResponseRedirect:
         """Perform payment and optionally redirects user."""
         raise NotImplementedError
 
-    def collect(self, request):
+    def collect(self, request: HttpRequest | None) -> bool | None:
         """Collect payment information."""
         raise NotImplementedError
 
-    def get_instructions(self):
+    def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
         """Payment instructions for manual methods."""
         return []
 
-    def initiate(self, request, back_url, complete_url):
+    def initiate(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> None | HttpResponseRedirect:
         """
         Initiate payment and optionally redirects user.
 
@@ -128,7 +140,7 @@ class Backend:
 
         return result
 
-    def complete(self, request):
+    def complete(self, request: HttpRequest | None) -> bool:
         """
         Payment completion called from returned request.
 
@@ -150,7 +162,7 @@ class Backend:
         return False
 
     @transaction.atomic
-    def generate_invoice(self, *, proforma: bool = False, paid: bool = True):
+    def generate_invoice(self, *, proforma: bool = False, paid: bool = True) -> None:
         from weblate_web.invoices.models import (  # noqa: PLC0415
             CurrencyChoices,
             Invoice,
@@ -187,8 +199,10 @@ class Backend:
         # Update reference
         self.payment.save(update_fields=["paid_invoice"])
 
-    def send_notification(self, notification, include_invoice=True):
-        kwargs = {"backend": self}
+    def send_notification(
+        self, notification: str, include_invoice: bool = True
+    ) -> None:
+        kwargs: dict[str, Any] = {"backend": self}
         if self.invoice:
             kwargs["invoice"] = self.invoice
         if self.payment:
@@ -198,7 +212,7 @@ class Backend:
     def get_invoice_kwargs(self):
         return {"payment_id": str(self.payment.pk), "payment_method": self.description}
 
-    def success(self):
+    def success(self) -> None:
         self.payment.state = Payment.ACCEPTED
         if not self.recurring:
             self.payment.recurring = ""
@@ -208,7 +222,7 @@ class Backend:
 
         self.send_notification("payment_completed")
 
-    def failure(self):
+    def failure(self) -> None:
         self.payment.state = Payment.REJECTED
         self.payment.save()
 
@@ -216,7 +230,7 @@ class Backend:
 
 
 class LegacyBackend(Backend):
-    def generate_invoice(self, *, proforma: bool = False, paid: bool = True):
+    def generate_invoice(self, *, proforma: bool = False, paid: bool = True) -> None:
         """Generate an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
             raise ValueError("Fakturace storage is not configured!")
@@ -262,7 +276,7 @@ class LegacyBackend(Backend):
         # Commit to git
         self.git_commit(files, invoice)
 
-    def git_commit(self, files, invoice):
+    def git_commit(self, files: list[str], invoice: Invoice) -> None:
         subprocess.run(
             ["git", "add", "--", *files], check=True, cwd=settings.PAYMENT_FAKTURACE
         )
@@ -281,10 +295,12 @@ class DebugPay(Backend):
     description = "Paid (TEST)"
     recurring = True
 
-    def perform(self, request, back_url, complete_url):
+    def perform(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> None | HttpResponseRedirect:
         return None
 
-    def collect(self, request):
+    def collect(self, request: HttpRequest | None) -> bool:
         # Example data from The Pay API docs
         self.payment.card_info = {
             "number": "515735******2654",
@@ -302,7 +318,7 @@ class DebugReject(DebugPay):
     description = "Reject (TEST)"
     recurring = False
 
-    def collect(self, request):
+    def collect(self, request: HttpRequest | None) -> bool:
         self.payment.details["reject_reason"] = "Debug reject"
         return False
 
@@ -314,10 +330,12 @@ class DebugPending(DebugPay):
     description = "Pending (TEST)"
     recurring = False
 
-    def perform(self, request, back_url, complete_url):
+    def perform(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> None | HttpResponseRedirect:
         return redirect("https://cihar.com/?url=" + complete_url)
 
-    def collect(self, request):
+    def collect(self, request: HttpRequest | None) -> bool:
         return True
 
 
@@ -340,7 +358,9 @@ class ThePayCard(LegacyBackend):
                 settings.PAYMENT_THEPAY_DATAAPI,
             )
 
-    def perform(self, request, back_url, complete_url):
+    def perform(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> None | HttpResponseRedirect:
         if self.payment.repeat:
             api = thepay.gateApi.GateApi(self.config)
             try:
@@ -368,7 +388,7 @@ class ThePayCard(LegacyBackend):
             payment.setIsRecurring(1)
         return redirect(payment.getCreateUrl())
 
-    def collect(self, request):
+    def collect(self, request: HttpRequest | None) -> bool | None:
         if self.payment.repeat:
             data = thepay.dataApi.DataApi(self.config)
             response = data.getPayments(merchant_data=str(self.payment.pk))
@@ -379,7 +399,7 @@ class ThePayCard(LegacyBackend):
                 payment = response.payments.payment[0]
                 self.payment.details = dict(payment)
                 status = int(payment.state)
-        else:
+        elif request is not None:
             return_payment = thepay.payment.ReturnPayment(self.config)
             return_payment.parseData(request.GET)
 
@@ -398,6 +418,8 @@ class ThePayCard(LegacyBackend):
             self.payment.details = dict(return_payment.data)
 
             status = return_payment.getStatus()
+        else:
+            return None
 
         if status == 2:
             return True
@@ -433,19 +455,21 @@ class FioBank(LegacyBackend):
     description = "Bank transfer"
     recurring = False
 
-    def collect(self, request):
+    def collect(self, request: HttpRequest | None) -> bool | None:
         # We do not actually collect here, it is done in background
         if self.payment.state == Payment.PENDING:
             return None
         return True
 
-    def perform(self, request, back_url, complete_url):
+    def perform(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> None | HttpResponseRedirect:
         self.generate_invoice(proforma=True, paid=False)
         self.payment.details["proforma"] = self.payment.invoice
         self.send_notification("payment_pending")
         return redirect(complete_url)
 
-    def get_proforma(self):
+    def get_proforma(self) -> Invoice:
         storage = ProformaStorage(settings.PAYMENT_FAKTURACE)
         return storage.get(self.payment.details["proforma"])
 
@@ -456,7 +480,7 @@ class FioBank(LegacyBackend):
             return {"payment_id": invoice.invoiceid, "bank_suffix": "proforma"}
         return {}
 
-    def get_instructions(self):
+    def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
         invoice = self.get_proforma()
         return [
             (gettext("Issuing bank"), invoice.bank["bank"]),
@@ -468,7 +492,7 @@ class FioBank(LegacyBackend):
         ]
 
     @classmethod
-    def fetch_payments(cls, from_date=None):
+    def fetch_payments(cls, from_date=None) -> None:
         client = fiobank.FioBank(token=settings.FIO_TOKEN)
         for entry in client.last(from_date=from_date):
             matches = []
@@ -571,7 +595,10 @@ class ThePay2Card(Backend):
 
         return response.json()
 
-    def perform(self, request, back_url, complete_url):
+    def perform(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> None | HttpResponseRedirect:
+        payload: dict[str, str | dict[str, str | dict[str, str]] | int | bool]
         if self.payment.repeat:
             # Handle recurring payments
             payload = {
@@ -627,7 +654,7 @@ class ThePay2Card(Backend):
         # Redirect user to perform the payment
         return redirect(pay_url)
 
-    def collect(self, request):
+    def collect(self, request: HttpRequest | None) -> bool | None:
         # Handle repeated payments
         if self.payment.repeat:
             if "repeat_response" not in self.payment.details:

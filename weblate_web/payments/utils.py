@@ -57,7 +57,7 @@ def validate_email(value):
         raise ValidationError(_("Enter a valid e-mail address."))
 
 
-def send_notification(notification: str, recipients: Sequence[str], **kwargs):
+def send_notification(notification: str, recipients: Sequence[str], **kwargs) -> None:
     if not recipients:
         return
 
