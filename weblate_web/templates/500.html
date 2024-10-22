@@ -7,7 +7,9 @@
         <div class="wrap">
             <h1 class="section-title min-m">{% block title %}{% trans "Server error" %}{% endblock %}</h1>
             <div class="page-desc">
-                <p>{% blocktrans %}The server had serious problems while serving your request. We've just sent our trained monkeys to fix the issue.{% endblocktrans %}</p>
+                <p>
+                  {% blocktrans with error_id=sentry_event_id %}The server had serious problems serving your request, and this error has been recorded as {{ error_id }}.{% endblocktrans %}
+                </p>
             </div>
         </div>
         <div class="wrap">
@@ -19,9 +21,7 @@
 
 {% if sentry_event_id %}
   <script>
-    Sentry.init({ dsn: "
-
-  https://5eb5194266692a262a4f8a6aad7a25b6@o4507304895905792.ingest.de.sentry.io/4507486269866064" });
+    Sentry.init({ dsn: "https://5eb5194266692a262a4f8a6aad7a25b6@o4507304895905792.ingest.de.sentry.io/4507486269866064" });
     Sentry.showReportDialog({
       eventId: "{{ sentry_event_id }}",
     });

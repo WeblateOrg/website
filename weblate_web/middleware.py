@@ -83,6 +83,8 @@ class SecurityMiddleware:
         script.append("browser.sentry-cdn.com")
         connect.append("de.sentry.io")
         script.append("de.sentry.io")
+        if self.response.status_code == 500:
+            script.append("'unsafe-inline'")
 
         # Matomo/Piwik
         script.append("stats.cihar.com")
