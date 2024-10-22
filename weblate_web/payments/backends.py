@@ -591,7 +591,10 @@ class ThePay2Card(Backend):
                     raise PaymentError(message)
 
         # Fallback to standardad requests handing
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as error:
+            raise PaymentError(str(error)) from error
 
         return response.json()
 

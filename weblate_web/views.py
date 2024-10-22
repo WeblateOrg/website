@@ -75,7 +75,7 @@ from weblate_web.models import (
     process_donation,
     process_subscription,
 )
-from weblate_web.payments.backends import get_backend, list_backends
+from weblate_web.payments.backends import PaymentError, get_backend, list_backends
 from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
@@ -385,14 +385,26 @@ class PaymentView(FormView, SingleObjectMixin):
         # Actualy call the payment backend
         method = form.cleaned_data["method"]
         backend = get_backend(method)(self.object)
-        result = backend.initiate(
-            self.request,
-            self.object.get_payment_url(),
-            self.object.get_complete_url(),
-        )
+        try:
+            result = backend.initiate(
+                self.request,
+                self.object.get_payment_url(),
+                self.object.get_complete_url(),
+            )
+        except PaymentError as error:
+            messages.error(
+                self.request, gettext("Could not perform payment: %s") % error
+            )
+            return super().form_invalid(form)
         if result is not None:
             return result
-        backend.complete(self.request)
+        try:
+            backend.complete(self.request)
+        except PaymentError as error:
+            messages.error(
+                self.request, gettext("Could not complete payment: %s") % error
+            )
+            return super().form_invalid(form)
         return self.redirect_origin()
 
 
