@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="__Comtypes.xsd"/>
+	<xs:include schemaLocation="__Firma.xsd"/>
+	<xs:include schemaLocation="__Seznamy.xsd"/>
+	<xs:complexType name="zakazkaType">
+		<xs:all>
+			<xs:element name="Zkrat" type="zkratkaType">
+				<xs:annotation>
+					<xs:documentation>Klíčová položka pro identifikaci zakázky při importu. IMPORT(nová:ANO,oprava:NE) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Nazev" type="popisType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Název zakázky. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObchPrip" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Obchodní případ ANO/NE IMPORT: ANO, EXPORT:ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Pozn" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Memo položka, max.  255bytů. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatPlZah" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum plánovaného zahájení zakázky. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatZah" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum skutečného zahájení zakázky. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatPlPred" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum plánovaného předání zakázky. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatPred" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum skutečného předání zakázky. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ZarukaDo" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum, do kterého platí na zakázku záruka. Na kartě Zakázky se zobrazuje jen tehdy, je-li zatržen přepínač záruka. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OdpOs" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Osoba odpovědná za zakázku. Nekontroluje se proti Seznamu zaměstnanců, importuje se jako řetězec. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="DruhZak" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Při importu se nekontroluje oproti Seznamu Druhu zakázek a importuje se jako pouhý řetězec. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="StavZak" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Stav zakázky B= Předběžná* , P=Plánovaná, U=Uvolněná*, S=Zahájená, K=Předaná, Z=Uzavřená   *) - jen výrobní zakázky implicitní hodnota při importu je B(Předběžná) pro výrobní, P(Plánovaná) pro obchodní zakázky.IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO) </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Hodnoceni" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Uživatelské hodnocení zakázky. IMPORT(nová:ANO,oprava:ANO) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CObjednavk" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Číslo objednávky zakázky IMPORT:ANO, EXPORT:ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Vystavil" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Jméno uživatele, který naposledy upravoval zakázku. IMPORT(NE) EXPORT(ANO)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="DodOdb" type="dokladFirmaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Adresa obchodního případu, IMPORT:ANO, ale jen pokud je ObchPrip=True EXPORT:ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Vlajky" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Global" type="VlajkaType" minOccurs="0"/>
+						<xs:element name="User" type="VlajkaType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Dokumenty" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam připojených dokumentů
+IMPORT: ANO
+EXPORT: NE</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Dokument" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Jméno souboru (bez cesty). Soubor se musí nacházet ve stejném adresáři (ZIP souboru) jako importovaný XML dokument.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="Slozka">
+											<xs:annotation>
+												<xs:documentation>Složka v úložišti dokumentů, kam se má přidat nový soubor nebo kde se má hledat existující soubor. Je možné uvést hierarchickou strukturu složek oddělených lomítkem.</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+</xs:schema>

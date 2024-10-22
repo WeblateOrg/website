@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2023 sp1 (x64) (http://www.altova.com) by Marek Vykydal (Seyfor, a. s.) -->
+<xs:schema xmlns:tsd="http://namespaces.softwareag.com/tamino/TaminoSchemaDefinition" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:appinfo>
+			<tsd:schemaInfo name="">
+				<tsd:collection name=""/>
+				<tsd:doctype name="">
+					<tsd:logical>
+						<tsd:content>closed</tsd:content>
+					</tsd:logical>
+				</tsd:doctype>
+			</tsd:schemaInfo>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:include schemaLocation="__Comtypes.xsd"/>
+	<xs:include schemaLocation="__Faktura.xsd"/>
+	<xs:include schemaLocation="__Firma.xsd"/>
+	<xs:include schemaLocation="__IntDokl.xsd"/>
+	<xs:include schemaLocation="__InvDokl.xsd"/>
+	<xs:include schemaLocation="__Mzda.xsd"/>
+	<xs:include schemaLocation="__Objedn.xsd"/>
+	<xs:include schemaLocation="__Seznamy.xsd"/>
+	<xs:include schemaLocation="__SklDokl.xsd"/>
+	<xs:include schemaLocation="__UcDokl.xsd"/>
+	<xs:include schemaLocation="__Uhrady.xsd"/>
+	<xs:include schemaLocation="__Zakazka.xsd"/>
+	<xs:include schemaLocation="__Zamestnanec.xsd"/>
+	<xs:include schemaLocation="__Zasoba.xsd"/>
+	<xs:element name="MoneyReport" type="reportType">
+		<xs:annotation>
+			<xs:documentation>Kořenový element dokumentu</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="messageType">
+		<xs:sequence>
+			<xs:element name="Status">
+				<xs:annotation>
+					<xs:documentation>Výsledek zpracování dané entity.
+
+WarningError = chyba nastala u některé  podřízené entity, záleží na kontextu. Např. u Firmy nastane WarningError, pokud výsledek zpracování některé podřízené Osoby je FatalError.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Ok"/>
+						<xs:enumeration value="WarningError"/>
+						<xs:enumeration value="FatalError"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Reference" type="referenceType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Klíč nebo seznam klíčů - identifikace zpracované entity</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ErrorInfo" type="errorInfoType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Informace o chybě - může být i více chyb současně</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Data" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>XML struktura importované entity</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="messageRootType">
+		<xs:sequence>
+			<xs:element name="Status">
+				<xs:annotation>
+					<xs:documentation>Výsledek zpracování dané entity.
+
+WarningError = chyba nastala u některé  podřízené entity, záleží na kontextu. Např. u Firmy nastane WarningError, pokud výsledek zpracování některé podřízené Osoby je FatalError.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Ok"/>
+						<xs:enumeration value="WarningError"/>
+						<xs:enumeration value="FatalError"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Reference" type="referenceType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Klíč nebo seznam klíčů - identifikace zpracované entity</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ErrorInfo" type="errorInfoType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Informace o chybě - může být i více chyb současně</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="errorInfoType">
+		<xs:all>
+			<xs:element name="ErrorTypeCoded">
+				<xs:annotation>
+					<xs:documentation>Nastaví se podle toho, ve které fázi zpracování chyba nastala.
+
+SystemError - chyba struktury XML dat, chyba datoveho typu atd.
+
+CorrelationError - chyba na základě porovnání klíčů a konfigurace zpracování.
+
+BusinessError - pokud program z nějakého důvodu odmítne záznam uložit.
+
+PayloadError - odmítnutí  příjmu záznamu, který je formálně v pořádku, z nějakého obchodního důvodu.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="SystemError"/>
+						<xs:enumeration value="CorrelationError"/>
+						<xs:enumeration value="BusinessError"/>
+						<xs:enumeration value="PayloadError"/>
+						<xs:enumeration value="other"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ErrorTypeOther"/>
+			<xs:element name="ErrorCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="ErrorDescription" type="xs:string" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="referenceType">
+		<xs:sequence>
+			<xs:element name="ID" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="keyName" type="xs:string" use="optional"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="msgFirmaType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Osoba" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgKmKartaType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Komponenta" type="msgKomponentaType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgZasobaType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="KmKart" type="messageType" minOccurs="0"/>
+					<xs:element name="Sklad" type="messageType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgObjType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="DodOdb" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="KonecPrij" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="Polozka" type="msgPolozType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgPolozType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="KmKarta" type="messageType" minOccurs="0"/>
+					<xs:element name="Sklad" type="messageType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgFaktType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="DodOdb" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="KonecPrij" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="Polozka" type="msgFaktPolozType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Uhrada" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgFakt_DPPType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="DodOdb" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="Polozka" type="msgFaktPolozType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgFaktPolozType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="SklPolozka" type="msgPolozType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgPokDoklType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Adresa" type="messageType" minOccurs="0"/>
+					<xs:element name="Polozka" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Uhrada" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgBanDoklType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Adresa" type="messageType" minOccurs="0"/>
+					<xs:element name="Ucet" type="messageType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Identifikace bank.účtu </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Uhrada" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgIntDoklType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Adresa" type="messageType" minOccurs="0"/>
+					<xs:element name="Polozka" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgPohledavkaType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Adresa" type="messageType" minOccurs="0"/>
+					<xs:element name="Polozka" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgZavazekType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Adresa" type="messageType" minOccurs="0"/>
+					<xs:element name="Polozka" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgSklDoklType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="DodOdb" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="KonecPrij" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="Polozka" type="msgPolozType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="NepPlatba" type="messageType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Nepeněžní platidla na prodejce</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgPrevodkaType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="SkladProPr" type="messageType" minOccurs="0"/>
+					<xs:element name="DodOdb" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="KonecPrij" type="msgFirmaType" minOccurs="0"/>
+					<xs:element name="Polozka" type="msgPolozType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgInvDoklType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Polozka" type="msgPolozType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgKomponentaType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="KmKarta" type="messageType" minOccurs="0"/>
+					<xs:element name="Sklad" type="messageType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgStrediskoType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgZakazkaType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgCinnostType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgClenDPHType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgUcOsnovType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgUcPohybType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgPredkontaceType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgPredkontaceDEType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgZauctovaniDPHType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgZauctovaniDPH_DEType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgBankUcetPokladnaType">
+		<xs:complexContent>
+			<xs:extension base="messageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="msgMzdaType">
+		<xs:complexContent>
+			<xs:extension base="messageType">
+				<xs:sequence>
+					<xs:element name="Nepritomnost" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="reportType">
+		<xs:complexContent>
+			<xs:extension base="messageRootType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Control" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Kontrolní mechanismy</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:all minOccurs="0">
+								<xs:element name="CisloDavky" type="messageRootType" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Kontrola sledování čísel dávek</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="NoEntity" type="messageRootType" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Nebyl proveden import žádného záznamu.
+Vstupní soubor je buď prázdný nebo obsahuje entity, které nejsou zaškrtnuty na kartě definice importu ve filtru entit.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="KodAgendy" type="messageRootType" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Kontrola Kódu agendy</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="HospRok" type="messageRootType" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Kontrola období hospodářského roku</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:all>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamFirem" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Firma" type="msgFirmaType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamKmKarta" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="KmKarta" type="msgKmKartaType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamZasoba" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Zasoba" type="msgZasobaType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamFaktPrij" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Seznam faktur přijatých - normální a zálohové faktury</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FaktPrij" type="msgFaktType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamFaktVyd" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Seznam faktur vydaných - normální a zálohové faktury</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FaktVyd" type="msgFaktType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamObjPrij" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ObjPrij" type="msgObjType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamObjVyd" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ObjVyd" type="msgObjType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamNabPrij" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="NabPrij" type="msgObjType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamNabVyd" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="NabVyd" type="msgObjType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPoptPrij" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="PoptPrij" type="msgObjType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPoptVyd" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="PoptVyd" type="msgObjType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPokDokl" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="PokDokl" type="msgPokDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamBanDokl" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="BanDokl" type="msgBanDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamIntDokl" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="IntDokl" type="msgIntDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamFaktPrij_DPP" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Seznam faktur přijatých - daňové doklady k přijaté platbě</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FaktPrij_DPP" type="msgFakt_DPPType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamFaktVyd_DPP" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Seznam faktur vydaných - daňové doklady k přijaté platbě</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FaktVyd_DPP" type="msgFakt_DPPType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPohledavek" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Pohledavka" type="msgPohledavkaType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamZavazku" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Zavazek" type="msgZavazekType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPrijemka" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Prijemka" type="msgSklDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamVydejka" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Vydejka" type="msgSklDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamDLPrij" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="DlPrij" type="msgSklDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamDLVyd" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="DLVyd" type="msgSklDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamProdejka" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Prodejka" type="msgSklDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPrevodka" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Prevodka" type="msgPrevodkaType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamVyrobka" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Vyrobka" type="msgSklDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamInvDokl" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="InvDokl" type="msgInvDoklType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamStredisek" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Stredisko" type="msgStrediskoType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamZakazka" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Zakazka" type="msgZakazkaType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamCinnosti" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Cinnost" type="msgCinnostType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamClenDPH" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ClenDPH" type="msgClenDPHType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamUcOsnov" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="UcOsnova" type="msgUcOsnovType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamUcPohybu" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="UcPohyb" type="msgUcPohybType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPredkontaci" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Predkontace" type="msgPredkontaceType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamPredkontaciDE" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="PredkontaceDE" type="msgPredkontaceDEType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamZauctovaniDPH" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ZauctovaniDPH" type="msgZauctovaniDPHType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamZauctovaniDPH_DE" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ZauctovaniDPH_DE" type="msgZauctovaniDPH_DEType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamBankUctuPokladen" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="BankUcetPokladna" type="msgBankUcetPokladnaType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SeznamMezd" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Mzda" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:complexContent>
+											<xs:extension base="msgMzdaType"/>
+										</xs:complexContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2022 rel. 2 (x64) (http://www.altova.com) by Marek Vykydal (Solitea, a.s.) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="__Comtypes.xsd"/>
+	<xs:include schemaLocation="__Firma.xsd"/>
+	<xs:include schemaLocation="__Zasoba.xsd"/>
+	<xs:include schemaLocation="_Report.xsd"/>
+	<xs:complexType name="sklDoklType">
+		<xs:sequence>
+			<xs:element name="CisloDokla" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="EET" type="EETType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Údaje týkající se EET (pouze prodejky a pouze CZ verze)
+
+IMPORT: ANO,
+EXPORT: ANO
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ZpusobUctovani" type="xs:byte" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Způsob účtování dokladu:
+0 = účtování dokladu proběhne podle nastavení v konfiguraci (default)
+1 = doklad se nezaúčtuje
+IMPORT: ANO, EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CObjednavk" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Číslo objednávky (pouze DLV, Prodejka) IMPORT:ANO, EXPORT:ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="KPFromOdb" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Příznak toho, že se adresa konečného příjemce přebírá z odběratele Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Datum" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:sequence minOccurs="0">
+				<xs:element name="SouhrnDPH" type="souhrnDPHType">
+					<xs:annotation>
+						<xs:documentation>Doklady v domácí měně
+IMPORT: ANO (pouze prodejky)
+EXPORT: ANO</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Celkem" type="castkaType">
+					<xs:annotation>
+						<xs:documentation>Celkem s DPH
+IMPORT: NE
+EXPORT: ANO</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:element name="DRada" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zkratka číselné řady Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="5"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Stredisko" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Středisko Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Zakazka" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zakázka Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Cinnost" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Činnost Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Popis" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Dodací list vydaný - Doprava/vyskladnění
+Ostatní doklady - Poznámka
+
+Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Vystavil" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="VyrizFaktu" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: NE, Export: NE</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TextPredPo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Text před položkami Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TextZaPol" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Text za položkami Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Nadpis" type="popisType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ZkratTypuD" type="zkratkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zkratka typu dokladu Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PorizCena" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PopisX" type="popisType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Popis dokladu
+Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Fiskal" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Příznak toho, že prošlo fiskálem Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FisDoklad" type="cisloType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Číslo fiskálního dokladu Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatSkPoh" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum skladového pohybu Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StatMOSS" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Kód státu MOSS (Mini One Stop Shop). Jen dodací listy vydané, prodejky a výdejky.
+IMPORT: ANO, EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ZpVypDPH" type="xs:byte" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Způsob výpočtu DPH (1 = matematicky, 2 = koeficient). IMPORT: ANO, EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SazbaDPH1" type="procentoType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Snížená sazba DPH IMPORT: ANO
+EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SazbaDPH2" type="procentoType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Základní sazba DPH IMPORT: ANO
+EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PrimDoklad" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Doklad došlý Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="VarSymbol" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Variabilní symbol Import:ANO, Export:ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ParSymbol" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Párovací symbol Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="DodOdb" type="skDokladFirmaType" minOccurs="0"/>
+			<xs:element name="KonecPrij" type="konecPrijFirmaType" minOccurs="0"/>
+			<xs:element name="TypTransakce" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hodnota pro Intrastat. Údaj je na hlavičkách i na položkách. </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+						<xs:whiteSpace value="replace"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="DodaciPodm" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hodnota pro Intrastat. Údaj je jenom na hlavičkách dokladů.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:whiteSpace value="replace"/>
+						<xs:maxLength value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="DruhDopravy" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hodnota pro Intrastat. Údaj se vyskytuje pouze na hlavičkách dokladů. </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="1"/>
+						<xs:whiteSpace value="replace"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="StOdeslUrc" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hodnota pro Intrastat. Při přijetí zboží z jiného členského státu EU se jedná o „Stát odeslání“ (dodací list přijatý, příjemka), při odeslání zboží do jiného členského státu EU se jedná o „Stát určení“ (dodací list vydaný, výdejka, prodejka). Údaj se vyskytuje pouze na hlavičkách dokladů.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IstatKodOd" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Odběratel bez DIČ (POUZE SK VERZE)
+Hodnota pro Intrastat. Údaj se vyskytuje pouze na hlavičkách dokladů.
+
+Možné hodnoty::
+0 = prázdné
+1 = Spotřebitel (QN)
+2 = FO/PO bez přiděleného IČ DPH (QT
+3 = Neznámý druhý odběratel (XX)
+4 = Neurčené (QV)
+5 = Jiné IČ DPH
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IstatDIC" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Jiné DIČ odběratele
+Hodnota pro Intrastat. Údaj se vyskytuje pouze na hlavičkách dokladů.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DopravTuz" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Doprava tuzemsko</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DopravZahr" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Doprava zahraničí</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatumITS" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum pro Intrastat</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Sleva" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sleva celkem za doklad (pouze u dokladů s položkami) - implicitně 0  IMPORT: NE (případná sleva dokladu musí být zohledněna přímo v cenách položek), EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Valuty" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Doklad v cizí měně</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Mena" type="menaType">
+							<xs:annotation>
+								<xs:documentation>Identifikace cizí měny
+IMPORT: ANO
+EXPORT: ANO</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="SouhrnDPH" type="souhrnDPHType">
+							<xs:annotation>
+								<xs:documentation>Souhrn DPH
+IMPORT: ANO (pouze prodejky)
+EXPORT: ANO</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Celkem" type="castkaType">
+							<xs:annotation>
+								<xs:documentation>Celkem s DPH ve valutách IMPORT: NE
+EXPORT: ANO</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="iDokladID" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Pouze pro interní potřebu (iDoklad)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="iDoklAgend" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Pouze pro interní potřebu (iDoklad)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Import" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Přesměrování importované prodejky do Reportu. Pouze pro interní potřebu (iDoklad).</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="messageType">
+							<xs:sequence minOccurs="0">
+								<xs:element name="DodOdb" type="msgFirmaType" minOccurs="0"/>
+								<xs:element name="KonecPrij" type="msgFirmaType" minOccurs="0"/>
+								<xs:element name="Polozka" type="msgPolozType" minOccurs="0" maxOccurs="unbounded"/>
+								<xs:element name="NepPlatba" type="messageType" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>Nepeněžní platidla na prodejce</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="Exported" type="xs:boolean" use="optional">
+								<xs:annotation>
+									<xs:documentation>Atribut informující o tom, zda se má provést odeslání příznaku Exported do iDokladu. Používá se pouze pro interní potřebu při komunikaci s iDokladem.</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SkladProPr" type="skladType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sklad pro převod Tento tag je zde pro případ, že by se implemetovaly převodky Import: Ne Export: NE </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Pojisteno" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Expedice - pojistné (pouze dodací listy vydané a pouze SK verze)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Prepravce" type="prepravceType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Expedice - přepravce (pouze dodací listy vydané)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TypZasilky" type="typZasilkyType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Expedice - typ zásilky (pouze dodací listy vydané)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Prepr_Vyplatne" type="preprDoplnUdajType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Expedice - doplňkový údaj - výplatné (pouze dodací listy vydané a pouze SK verze)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Prepr_UhradaDobirky" type="preprDoplnUdajType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Expedice - doplňkový údaj - úhrada dobírky (pouze dodací listy vydané a pouze SK verze)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Prepr_Trida" type="preprDoplnUdajType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Expedice - doplňkový údaj - třída (pouze dodací listy vydané a pouze SK verze)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Prepr_SeznamSluzeb" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Expedice - doplňkový údaj - seznam služeb (pouze dodací listy vydané a pouze SK verze)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Prepr_Sluzba" type="preprDoplnUdajType" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Doplňkový údaj - služba</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Polozka" type="polSklDoklType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="MojeFirma" type="mojeFirmaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SeznamNepPlateb" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam nepeněžních plateb na prodejkách
+Import: ANO, Export ANO</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="NepPlatba" type="nepPlatbaType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Vlajky" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Global" type="VlajkaType" minOccurs="0"/>
+						<xs:element name="User" type="VlajkaType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SeznamVazeb" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam vazebních dokladů
+(pouze dodací listy)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Vazba" type="vazbaType" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Vazba</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Dokumenty" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam připojených dokumentů
+IMPORT: ANO
+EXPORT: NE</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Dokument" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Jméno souboru (bez cesty). Soubor se musí nacházet ve stejném adresáři (ZIP souboru) jako importovaný XML dokument.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="Slozka">
+											<xs:annotation>
+												<xs:documentation>Složka v úložišti dokumentů, kam se má přidat nový soubor nebo kde se má hledat existující soubor. Je možné uvést hierarchickou strukturu složek oddělených lomítkem.</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UzivatelskaPole" type="uzivatelskePoleType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam uživatelských polí
+IMPORT: ANO
+EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="polSklDoklType">
+		<xs:all>
+			<xs:element name="Nazev" type="popisType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Název položky Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PocetMJ" type="mnozstviType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Cena" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Příjmové doklady: nákupní cena. Výdajové doklady: dodací list a prodejka - prodejní cena, výdejka -implicitně rovná pořizovací ceně.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Valuty" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>částka v cizí měně</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DPH" type="procentoType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CenaTyp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:totalDigits value="3"/>
+						<xs:fractionDigits value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Sleva" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sleva na položku</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Cinnost" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Činnost Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Zakazka" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zakázka Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Stredisko" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Středisko Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CenovaHlad" type="zkratkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Cenová hladina Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Poznamka" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Poznámka  Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Vratka" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Příznak vratky  Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UcetMD" type="ucetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Účet má dáti  Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UcetD" type="ucetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Účet dal  Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="KodStatuPuv" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Údaj pro Intrastat. Vyskytuje se jen na položkách. Pokud není zadán, přebírá se z km. karty.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+						<xs:whiteSpace value="replace"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TypTransakce" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hodnota pro Intrastat. Údaj je na hlavičkách i na položkách. </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+						<xs:whiteSpace value="replace"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Hmotnost" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hodnota pro Intrastat. Údaj se vyskytuje jenom na položkách. </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:float"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="PorizCena" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Pořizovací cena: Pro výdejové doklady (výdejka, vyst.dod.list a prodejka) je  ignorována: a) při importu určuje pořizovací cenu sklad Money b) při exportu se neexportuje,  viz. též  proměnná "Cena" </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ZvlRezim" type="xs:byte" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zvláštní režim DPH:
+0 = neurčeno
+1 = použité zboží
+2 = umělecké dílo
+3 = sběratelský předmět, starožitnost
+4 = cestovní služba IMPORT: ANO, EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ZvlDPH" type="procentoType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sazba DPH pro zvláštní režim
+IMPORT: ANO, EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RezimEET" type="xs:byte" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Režim EET:
+0 = neurčeno
+1 = poukaz
+2 = vratná záloha
+IMPORT: ANO, EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CenaPoSleve" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indikace, zda se jedná o cenu po slevě</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SeznamVC" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam výrobních čísel Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="VyrobniCislo" type="vyrobniCisloType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Sklad" type="skladType" minOccurs="0"/>
+			<xs:element name="KmKarta" type="kmKartaType" minOccurs="0"/>
+			<xs:element name="Slozeni" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SubPolozka" type="defSubPolType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UzivatelskaPole" type="uzivatelskePoleType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam uživatelských polí
+IMPORT: ANO
+EXPORT: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="defSubPolType">
+		<xs:sequence>
+			<xs:element name="MJNaSadu">
+				<xs:simpleType>
+					<xs:restriction base="mnozstviType">
+						<xs:minExclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Polozka" type="polSklDoklType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="nepPlatidloType">
+		<xs:all>
+			<xs:element name="Kod">
+				<xs:annotation>
+					<xs:documentation>Kód nepeněžního platidla
+Import: ANO (pouze existující), Export ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Popis" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Popis nepeněžního platidla
+Import: NE, Export ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="VarSymb" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Variabilní symbol, který byl určen vystavitelem platidla (např. u platebních karet se jedná o variabilní symbol, pod kterým jsou evidovány kreditní pohyby z těchto plateb na bankovním účtu).
+Import: NE, Export ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="nepPlatbaType">
+		<xs:all>
+			<xs:element name="Platidlo" type="nepPlatidloType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifikace nepeněžního platidla. Není-li uvedeno, jedná se o hotovost.
+Import: ANO, Export ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MnozstviMJ" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Počet měrných jednotek nepeněžního platidla na prodejce
+Import: ANO (pouze je-li uvedeno Platidlo - nehotovostní platba), Export ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Castka" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Celková peněžní částka platidla v domácí měně
+Import: ANO (pouze při hotovostní platbě), Export ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+</xs:schema>

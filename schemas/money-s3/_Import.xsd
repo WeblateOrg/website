@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Import">
+		<xs:annotation>
+			<xs:documentation>Instrukce pro řízení importu</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Entity" type="entityType" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Jednotlivé importované entity</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="description" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="instructionsType">
+		<xs:sequence>
+			<xs:element name="Key">
+				<xs:annotation>
+					<xs:documentation>Definice spojovacího klíče</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Field" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Seznam spojovacích klíčů</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:attribute name="name" type="xs:string" use="required">
+									<xs:annotation>
+										<xs:documentation>Identifikační název spojovacího klíče</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="auto" type="xs:boolean" use="optional" default="0">
+						<xs:annotation>
+							<xs:documentation>Spojovací klíč - automaticky</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="description" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>Slovní popis spojovacího klíče ve výběrovém poli</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Mode">
+				<xs:annotation>
+					<xs:documentation>Definice zpracování podle porovnání klíčů</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="auto" type="xs:boolean" use="optional"/>
+					<xs:attribute name="newValue" use="optional" default="Append">
+						<xs:annotation>
+							<xs:documentation>Nové záznamy</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Append"/>
+								<xs:enumeration value="NoAction"/>
+								<xs:enumeration value="Error"/>
+								<xs:enumeration value="Convert"/>
+								<xs:enumeration value="NoActionSpec"/>
+								<xs:enumeration value="NoActionVazba"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="existingValue" use="optional" default="Update">
+						<xs:annotation>
+							<xs:documentation>Existující záznamy</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Append"/>
+								<xs:enumeration value="Update"/>
+								<xs:enumeration value="NoAction"/>
+								<xs:enumeration value="Delete"/>
+								<xs:enumeration value="Auto"/>
+								<xs:enumeration value="Error"/>
+								<xs:enumeration value="Convert"/>
+								<xs:enumeration value="NoActionSpec"/>
+								<xs:enumeration value="NoActionVazba"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="noValue" use="optional" default="Error">
+						<xs:annotation>
+							<xs:documentation>Záznamy bez klíče</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Append"/>
+								<xs:enumeration value="NoAction"/>
+								<xs:enumeration value="Error"/>
+								<xs:enumeration value="Convert"/>
+								<xs:enumeration value="NoActionSpec"/>
+								<xs:enumeration value="NoActionVazba"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="moreValues" use="optional" default="Error">
+						<xs:annotation>
+							<xs:documentation>Více záznamů se stejnými hodnotami</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Append"/>
+								<xs:enumeration value="NoAction"/>
+								<xs:enumeration value="Error"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="DocLinks" use="optional" default="Append">
+						<xs:annotation>
+							<xs:documentation>Připojené dokumenty</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Append"/>
+								<xs:enumeration value="AppendUpdate"/>
+								<xs:enumeration value="NoAction"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="entityType">
+		<xs:sequence>
+			<xs:element name="StandAlone">
+				<xs:annotation>
+					<xs:documentation>Instrukce pro samostatnou entitu</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="instructionsType">
+							<xs:attribute name="take" type="xs:boolean" use="optional">
+								<xs:annotation>
+									<xs:documentation>Převzít nastavení ze samostatného objektu. Zohledňuje se pouze u vnořených objektů.</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Embedded" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Instrukce pro entitu vnořenou v jiné entitě</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="instructionsType">
+							<xs:attribute name="take" type="xs:boolean" use="optional">
+								<xs:annotation>
+									<xs:documentation>Převzít nastavení ze samostatného objektu. Zohledňuje se pouze u vnořených objektů.</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identifikační název entity</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="enabled" type="xs:boolean" use="optional" default="0"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional"/>
+	</xs:complexType>
+</xs:schema>
