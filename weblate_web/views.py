@@ -40,6 +40,7 @@ from django.http import (
     Http404,
     HttpRequest,
     HttpResponseBadRequest,
+    HttpResponseRedirect,
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
@@ -78,7 +79,12 @@ from weblate_web.models import (
     process_donation,
     process_subscription,
 )
-from weblate_web.payments.backends import PaymentError, get_backend, list_backends
+from weblate_web.payments.backends import (
+    Backend,
+    PaymentError,
+    get_backend,
+    list_backends,
+)
 from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
@@ -391,9 +397,19 @@ class PaymentView(FormView, SingleObjectMixin):
             )
         return super().form_invalid(form)
 
+    def redirect_pending(
+        self, payment: Payment, backend: Backend | None
+    ) -> HttpResponseRedirect:
+        if backend is None:
+            backend = payment.get_payment_backend()
+        if self.object.state == Payment.PENDING and backend.get_instructions():
+            return redirect(self.object.get_complete_url())
+
+        return self.redirect_origin()
+
     def get(self, request, *args, **kwargs):
         if self.object.state != Payment.NEW:
-            return redirect(self.object.get_complete_url())
+            return self.redirect_pending(self.object)
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -404,7 +420,7 @@ class PaymentView(FormView, SingleObjectMixin):
         backend = get_backend(method)(self.object)
         # Use backend payment here because it is selected again for update
         if backend.payment.state != Payment.NEW:
-            return redirect(self.object.get_complete_url())
+            return self.redirect_pending(backend.payment, backend)
         try:
             result = backend.initiate(
                 self.request,
