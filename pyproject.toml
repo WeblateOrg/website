@@ -14,6 +14,22 @@ plugins = [
   "mypy_drf_plugin.main"
 ]
 
+[[tool.mypy.overrides]]
+disallow_untyped_defs = true
+ignore_missing_imports = true
+module = [
+  "saml2.*",
+  "thepay.*",
+  "vies.*",
+  "wlc.*",
+  "fiobank.*",
+  "weblate_language_data.*",
+  "appconf.*",
+  "zammad_py.*",
+  "markupfield.*",
+  "weasyprint.*"
+]
+
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "weblate_web.settings"
 addopts = "--reuse-db --cov=weblate_web --cov-report="
