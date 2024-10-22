@@ -244,3 +244,12 @@ ready(() => {
     "font-size: 20px; font-family: sans-serif",
   );
 });
+
+if (typeof SimpleSlider === "function") {
+  new SimpleSlider(".page-slider", {
+    slidesPerView: {
+      850: 2,
+      1165: 3,
+    },
+  });
+}
