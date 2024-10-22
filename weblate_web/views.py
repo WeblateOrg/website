@@ -20,8 +20,8 @@
 from __future__ import annotations
 
 import json
-import random
 import logging
+import random
 
 import django.views.defaults
 import sentry_sdk
@@ -187,8 +187,10 @@ def api_hosted(request):
             salt="weblate.hosted",
         )
     except (BadSignature, SignatureExpired) as error:
-        logging.error("Error processing payment payload: %s", error)
-        return HttpResponseBadRequest("An error occurred while processing your request.")
+        logging.exception("Error processing payment payload: %s", error)
+        return HttpResponseBadRequest(
+            "An error occurred while processing your request."
+        )
 
     # Get/create service for this billing
     service = Service.objects.get_or_create(hosted_billing=payload["billing"])[0]
