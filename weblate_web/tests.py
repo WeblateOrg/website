@@ -751,6 +751,13 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "Please choose payment method")
         response = self.client.post(payment_url, {"method": "fio-bank"}, follow=True)
         self.assertContains(response, "Payment Instructions")
+        # Verify that second submission doesn't break anything
+        response = self.client.post(payment_url, {"method": "fio-bank"}, follow=True)
+        self.assertContains(response, "Payment Instructions")
+
+        # Verify that get will also display payment instructions
+        response = self.client.get(payment_url, follow=True)
+        self.assertContains(response, "Payment Instructions")
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PENDING)

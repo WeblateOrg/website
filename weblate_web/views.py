@@ -373,10 +373,6 @@ class PaymentView(FormView, SingleObjectMixin):
             self.object = self.get_object()
             customer = self.object.customer
             self.can_pay = not customer.is_empty
-            # Redirect already processed payments to origin in case
-            # the web redirect was aborted
-            if self.object.state != Payment.NEW:
-                return self.redirect_origin()
             result = self.validate_customer(customer)
             if result is not None:
                 return result
@@ -395,12 +391,20 @@ class PaymentView(FormView, SingleObjectMixin):
             )
         return super().form_invalid(form)
 
+    def get(self, request, *args, **kwargs):
+        if self.object.state != Payment.NEW:
+            return redirect(self.object.get_complete_url())
+        return super().get(request, *args, **kwargs)
+
     def form_valid(self, form):
-        if not self.can_pay or self.object.state != Payment.NEW:
+        if not self.can_pay:
             return redirect("payment", pk=self.object.pk)
         # Actualy call the payment backend
         method = form.cleaned_data["method"]
         backend = get_backend(method)(self.object)
+        # Use backend payment here because it is selected again for update
+        if backend.payment.state != Payment.NEW:
+            return redirect(self.object.get_complete_url())
         try:
             result = backend.initiate(
                 self.request,
