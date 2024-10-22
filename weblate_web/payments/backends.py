@@ -390,7 +390,7 @@ class ThePayCard(LegacyBackend):
         self.payment.details["pay_url"] = pay_url
         return redirect(pay_url)
 
-    def collect(self, request: HttpRequest | None) -> bool | None:
+    def collect(self, request: HttpRequest | None) -> bool | None:  # noqa: PLR0911
         if self.payment.repeat:
             data = thepay.dataApi.DataApi(self.config)
             response = data.getPayments(merchant_data=str(self.payment.pk))
@@ -403,14 +403,18 @@ class ThePayCard(LegacyBackend):
                 status = int(payment.state)
         elif request is not None:
             return_payment = thepay.payment.ReturnPayment(self.config)
-            return_payment.parseData(request.GET)
+            try:
+                return_payment.parseData(request.GET)
+            except thepay.payment.ReturnPayment.MissingParameter:
+                sentry_sdk.capture_exception()
+                return None
 
             # Check params signature
             try:
                 return_payment.checkSignature()
             except thepay.payment.ReturnPayment.InvalidSignature:
                 sentry_sdk.capture_exception()
-                return False
+                return None
 
             # Check we got correct payment
             if return_payment.getMerchantData() != str(self.payment.pk):
