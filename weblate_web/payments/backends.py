@@ -194,7 +194,7 @@ class Backend:
             )
 
         # Generate PDF
-        invoice.generate_pdf()
+        invoice.generate_files()
 
         # Update reference
         self.payment.save(update_fields=["paid_invoice"])

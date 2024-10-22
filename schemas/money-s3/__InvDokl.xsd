@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="__Comtypes.xsd"/>
+	<xs:include schemaLocation="__Zasoba.xsd"/>
+	<xs:complexType name="invDoklType">
+		<xs:sequence>
+			<xs:element name="CisloD" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Číslo dokladu v rámci inventury
+Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InvID" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>"Číslo řádku" inventury,
+společně s CisloD jednoznačný identifikátor
+Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Popis" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Popis dokladu Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Prac" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Kontr" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Kontroloval IMPORT:ANO, EXPORT:ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Poznamka" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Poznámka Export:ANO, Import:ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Polozka" type="polInvDoklType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="polInvDoklType">
+		<xs:all>
+			<xs:element name="Popis" type="popisType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Název položky Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Zkrat" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Zkratka Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Slupina" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Číslo skupiny Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MJ" type="popisType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>MJ, Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MnInv" type="mnozstviType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Počet Mj: Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SeznamVC" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam výrobních čísel Import: ANO, Export: ANO</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="VyrobniCislo" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="VyrobniCis" type="popisType" minOccurs="0"/>
+									<xs:element name="DatVyr" minOccurs="0"/>
+									<xs:element name="CarKod" minOccurs="0">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:maxLength value="20"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Sklad" type="skladType" minOccurs="0"/>
+			<xs:element name="KmKarta" type="kmKartaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Číslo kmenové karty Import: NE, Export: ANO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Slozeni" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Definice složené karty Impoet:NE (vždy se bere z definice v Money), Export: ANO </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SubPolozka" type="subpolInvDType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="subpolInvDType">
+		<xs:annotation>
+			<xs:documentation>Definice složených karet: Import:NE Export:ANO (z definice km.karty)</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="MnSada">
+				<xs:annotation>
+					<xs:documentation>Množství na sadu  Export:ANO, Import:NE</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="mnozstviType">
+						<xs:minExclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Polozka" type="polInvDoklType"/>
+		</xs:all>
+	</xs:complexType>
+</xs:schema>

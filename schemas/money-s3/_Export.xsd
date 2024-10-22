@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Export">
+		<xs:annotation>
+			<xs:documentation>Instrukce pro řízení exportu</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="description"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="parametersType">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Slouzi k vyberu zaznamu. Muze byt urceno bud filtrem, nebo vyctem pozadovanych zaznamu, identifikovanych podle nejakeho klice. Pokud neni uvedeny filtr ani vycet, berou se vsechny zaznamy.</xs:documentation>
+			</xs:annotation>
+			<xs:element name="Filter" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nazev ulozeneho filtru v Money</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ListOfRecords" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam hodnot identifikatoru vybranych zaznamu podle klice, ktery je uvedeny v atributu 'key'. Pokud neni klic uvedeny, automaticky se uvazuje interni identifikator dane entity.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ID" type="xs:string" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="key" type="xs:string" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="nodeType">
+		<xs:sequence>
+			<xs:element name="Instructions" type="parametersType"/>
+			<xs:element name="Node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identifikační název entity</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="enabled" type="xs:boolean" use="optional" default="0"/>
+	</xs:complexType>
+</xs:schema>

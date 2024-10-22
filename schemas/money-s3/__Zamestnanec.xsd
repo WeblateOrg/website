@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 sp1 (x64) (http://www.altova.com) by Marek Vykydal (Solitea Česká republika, a.s.) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="__Comtypes.xsd"/>
+	<xs:complexType name="zamestnanecNovyType">
+		<xs:annotation>
+			<xs:documentation>Specifikace zaměstnance (nové mzdy)</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="OsCislo">
+				<xs:annotation>
+					<xs:documentation>Osobní číslo</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Prijmeni" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Příjmení zaměstnance</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Jmeno" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Jméno zaměstnance</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TitulPred" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Titul před</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TitulZa" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Titul za</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RodneCislo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Rodné číslo</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="11"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Poznamka" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Poznámka</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SeznamCasovychObdobi" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam časových období zaměstnance - společné údaje pro všechny pracovní poměry</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CasoveObdobi" type="casoveObdobiType" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Časové období</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SeznamPracPomer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam pracovních poměrů zaměstnance</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="PracPomer" type="pracPomerType" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Pracovní poměr zaměstnance</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="casoveObdobiPPType">
+		<xs:annotation>
+			<xs:documentation>Časové období pracovního poměru (nové mzdy)</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="PlatnostOd" type="xs:date">
+				<xs:annotation>
+					<xs:documentation>Platnost od</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlatnostDo" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Platnost do</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FunkcePP" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Pracovní funkce, zařazení</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Znak1CSSZ" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>1. znak kódu činnosti (kódu ELDP)
+
+Poznámka: prvním znakem v ködu činnosti je Druh činnosti</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="pracPomerType">
+		<xs:annotation>
+			<xs:documentation>Definice pracovního poměru (nové mzdy)</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="PracPomer_ID" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Jedinečný číselný identifikátor pracovního poměru zaměstnance. Číselný identifikátor je jedinečný přes všechny pracovní poměry všech zaměstnanců.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DruhPP" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Název druhu pracovního poměru</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DruhPP_ID" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Jedinečný číselný identifikátor druhu pracovního poměru</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Popis" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Popis pracovního poměru</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Stredisko" type="zkratkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Středisko</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Zacatek" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Začátek (zahájení) pracovního poměru</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VstupZam" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum vstupu do zaměstnání</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Ukonceni" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum ukončení zaměstnání</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SeznamCasovychObdobiPP" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam časových období pracovního poměru</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CasoveObdobiPP" type="casoveObdobiPPType" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Časové období pracovního poměru</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="casoveObdobiType">
+		<xs:annotation>
+			<xs:documentation>Časové období - společné údaje v čase (nové mzdy)</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="PlatnostOd" type="xs:date">
+				<xs:annotation>
+					<xs:documentation>Platnost od</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlatnostDo" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Platnost do</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Znak2CSSZ" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>2. znak kódu činnosti (kódu ELDP)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Znak3CSSZ" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>3. znak kódu činnosti (kódu ELDP)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="zamestnanecType">
+		<xs:annotation>
+			<xs:documentation>Specifikace zaměstnance (původní mzdy)</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="OsCislo">
+				<xs:annotation>
+					<xs:documentation>Osobní číslo</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Jmeno" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Příjmení, jméno a titul zaměstnance</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="Prijmeni" type="xs:string" use="optional"/>
+							<xs:attribute name="JmenoKr" type="xs:string" use="optional"/>
+							<xs:attribute name="Titul" type="xs:string" use="optional"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Stredisko" type="zkratkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Středisko</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatNastup" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum vstupu do zaměstnání</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatOdchod" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum ukončení zaměstnání</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SeznamMzdovychObdobi" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam mzdových období zaměstnance</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MzdoveObdobi" type="mzdoveObdobiType" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Mzdové období</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="mzdoveObdobiType">
+		<xs:annotation>
+			<xs:documentation>Mzdové období zaměstnance (původní mzdy)</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="Mesic">
+				<xs:annotation>
+					<xs:documentation>Měsíc</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="2"/>
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+						<xs:enumeration value="3"/>
+						<xs:enumeration value="4"/>
+						<xs:enumeration value="5"/>
+						<xs:enumeration value="6"/>
+						<xs:enumeration value="7"/>
+						<xs:enumeration value="8"/>
+						<xs:enumeration value="9"/>
+						<xs:enumeration value="10"/>
+						<xs:enumeration value="11"/>
+						<xs:enumeration value="12"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Rok" type="xs:gYear">
+				<xs:annotation>
+					<xs:documentation>Rok</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Funkce" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Pracovní funkce, zařazení</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PracPomer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Pracovní poměr</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="Zkrat">
+							<xs:annotation>
+								<xs:documentation>Zkratka pracovního poměru</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:minLength value="1"/>
+									<xs:maxLength value="10"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="Popis" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Popis pracovního poměru</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="ELDPKod" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Kód činnosti
+
+Poznámka: prvním znakem v ködu činnosti je Druh činnosti</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="3"/>
+									<xs:pattern value="[A-Z0-9\s][DMNPRV\+\s][S\+\s]"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="Pozn" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Poznámka</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+</xs:schema>

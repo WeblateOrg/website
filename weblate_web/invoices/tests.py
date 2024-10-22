@@ -1,17 +1,26 @@
+from __future__ import annotations
+
 from decimal import Decimal
+from pathlib import Path
 
 from django.test import TestCase
+from lxml import etree
 
 from weblate_web.payments.models import Customer
 
 from .models import Discount, Invoice, InvoiceKindChoices, QuantityUnitChoices
+
+S3_SCHEMA_PATH = (
+    Path(__file__).parent.parent.parent / "schemas" / "money-s3" / "_Document.xsd"
+)
+S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))  # noqa: S320
 
 
 class InvoiceTestCase(TestCase):
     @staticmethod
     def create_customer(vat: str = ""):
         return Customer.objects.create(
-            name="Test customer",
+            name="Zkušební zákazník",
             address="Street 42",
             city="City",
             postcode="424242",
@@ -41,12 +50,16 @@ class InvoiceTestCase(TestCase):
         return invoice
 
     def validate_invoice(self, invoice: Invoice):
-        invoice.generate_pdf()
+        invoice.generate_files()
         self.assertNotEqual(str(invoice), "")
         if invoice.discount:
             self.assertNotEqual(str(invoice.discount), "")
         for item in invoice.all_items:
             self.assertNotEqual(str(item), "")
+
+        # Validate generated XML
+        xml_doc = etree.parse(invoice.xml_path)  # noqa: S320
+        S3_SCHEMA.assertValid(xml_doc)
 
     def test_total(self):
         invoice = self.create_invoice(vat="CZ8003280318")

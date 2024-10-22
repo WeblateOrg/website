@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="__Comtypes.xsd"/>
+	<xs:complexType name="uhradaType">
+		<xs:all>
+			<xs:element name="DokladUhr" type="doklRefType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference na hradící doklad </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Prijem" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Příznak Příjem/Výdaj</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Datum" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum úhrady. (Datum platby u bankovních a pokladních dokladů, datum účetního případu u interních dokladů)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatUplDPH" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum uplatnění DPH</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Castka" type="castkaType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Částka úhrady v domácí měně. V případě úhrady v cizí měně je částka vypočtena z kurzu a valutové částky hrazeného dokladu (ValutyHraz/Castka)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ValutyHraz" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Údaje pro úhrady v cizí měně. Údaje jsou vyjádřeny v měně vystavení hrazeného dokladu k datu úhrady. (Pokud je měna hradícího dokladu jiná, údaje jsou přepočteny na tuto měnu)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="Mena" type="menaType">
+							<xs:annotation>
+								<xs:documentation>Měna hrazeného dokladu. </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Castka" type="castkaType">
+							<xs:annotation>
+								<xs:documentation>Castka úhrady ve valutách </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ValutyUhr" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Údaje pro úhrady v cizí měně. Údaje jsou vyjádřeny v měně vystavení hradícího dokladu. </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="Mena" type="menaType">
+							<xs:annotation>
+								<xs:documentation>Měna hradícího dokladu. </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Castka" type="castkaType">
+							<xs:annotation>
+								<xs:documentation>Castka úhrady ve valutách </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="KurzRozd" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Kurzový rozdíl při úhradě</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="Typ" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Typ kurzového rozdílu:
+
+- I = zisk (pouze podvojné účetnictví)
+- T = ztráta (pouze podvojné účetnictví)
+- K = konečná úhrada (pouze daňová evidence)
+- U = doplnění částky (pouze daňová evidence)</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="I"/>
+									<xs:enumeration value="T"/>
+									<xs:enumeration value="K"/>
+									<xs:enumeration value="U"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="Preceneni" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Pokud je  "Preceneni"=true, jedná se o speciální úhradu kurzového rozdílu, vzniklou přeceněním hrazeného dokladu na jiný kurz (ValutyHraz/Mena/Kurs).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Castka" type="castkaType" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Částka kurzového rozdílu</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Doklad" type="doklRefType" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Doklad vytvářející kurzový rozdíl</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ZpusobUhr" type="xs:byte" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Způsob úhrady:
+0 = nedefinováno (default)
+1 = platba prostřednictvím nepeněžního platidla (pouze FV)
+2 = platební kartou (pouze FV)
+3 = na dobírku (pouze FV)
+4 = úhrada zádržného faktury</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Platidlo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Kód nepeněžního platidla (pouze FV)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="4"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SeznamPDUhrad" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Seznam úhrad s rozpisem kontrolingových proměnných v daňové evidenci</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Uhrada_PDUhrada" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="Kontace" type="zkratkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Zkratka předkontace</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Stredisko" type="zkratkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Zkratka střediska</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Zakazka" type="zkratkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Zkratka zakázky</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Cinnost" type="zkratkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Zkratka činnosti</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Zaklad" type="castkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Částka základu daně</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="DPHZS" type="castkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Částka DPH v základní sazbě</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="DPHSS" type="castkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Částka DPH ve snížené sazbě</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="WLZaklady" type="castkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Kurzový zisk nebo ztráta v základu daně</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="WLDPH1" type="castkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Kurzový zisk nebo ztráta ve snížené sazbě DPH</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="WLDPH2" type="castkaType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Kurzový zisk nebo ztráta v základní sazbě DPH</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+</xs:schema>

@@ -31,6 +31,7 @@ from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.utils.translation import override
 from fakturace.rates import DecimalRates
+from lxml import etree
 from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
 
@@ -69,6 +70,7 @@ class QuantityUnitChoices(models.IntegerChoices):
 
 class CurrencyChoices(models.IntegerChoices):
     EUR = 0, "EUR"
+    CZK = 1, "CZK"
 
 
 class InvoiceKindChoices(models.IntegerChoices):
@@ -247,13 +249,144 @@ class Invoice(models.Model):
                 },
             )
 
+    def get_filename(self, extension: str):
+        return f"Weblate_{self.get_kind_display()}_{self.number}.{extension}"
+
     @property
     def filename(self) -> str:
-        return f"Weblate_{self.get_kind_display()}_{self.number}.pdf"
+        """PDF filename."""
+        return self.get_filename("pdf")
 
     @property
     def path(self) -> Path:
+        """PDF path object."""
         return settings.INVOICES_PATH / self.filename
+
+    @property
+    def xml_path(self) -> Path:
+        """XML path object."""
+        return settings.INVOICES_PATH / self.get_filename("xml")
+
+    def generate_files(self) -> None:
+        self.generate_xml()
+        self.generate_pdf()
+
+    def get_xml_tree(self, invoices: etree._Element) -> None:  # noqa: PLR0915,C901
+        def add_element(root, name: str, text: str | Decimal | int | None = None):
+            added = etree.SubElement(root, name)
+            if text is not None:
+                added.text = str(text)
+            return added
+
+        def add_amounts(root, in_czk: bool = False):
+            dph = add_element(root, "SouhrnDPH")
+            if in_czk:
+                castka_zaklad = self.total_amount_no_vat_czk
+                castka_dph = self.total_vat_czk
+                castka_celkem = self.total_amount_czk
+            else:
+                castka_zaklad = self.total_amount_no_vat
+                castka_dph = self.total_vat
+                castka_celkem = self.total_amount
+
+            fixed_rates = {0, 5, 22}
+            if self.vat_rate in fixed_rates:
+                add_element(dph, f"Zaklad{self.vat_rate}", castka_zaklad)
+                if self.vat_rate > 0:
+                    add_element(dph, f"DPH{self.vat_rate}", castka_dph)
+                fixed_rates.remove(self.vat_rate)
+                for rate in fixed_rates:
+                    add_element(dph, f"Zaklad{rate}", "0")
+                for rate in fixed_rates:
+                    if rate > 0:
+                        add_element(dph, f"DPH{rate}", "0")
+            else:
+                dalsi = add_element(dph, "SeznamDalsiSazby")
+                sazba = add_element(dalsi, "DalsiSazba")
+                add_element(sazba, "Sazba", self.vat_rate)
+                add_element(sazba, "Zaklad", castka_zaklad)
+                add_element(sazba, "DPH", castka_dph)
+            add_element(root, "Celkem", castka_celkem)
+
+        output = etree.SubElement(invoices, "FaktVyd")
+        add_element(output, "Doklad", self.number)
+        add_element(output, "CisRada", self.kind)
+        add_element(output, "Popis", self.all_items[0].description)
+        add_element(output, "Vystaveno", self.issue_date.isoformat())
+        add_element(output, "DatUcPr", self.issue_date.isoformat())
+        add_element(output, "PlnenoDPH", self.issue_date.isoformat())
+        add_element(output, "Splatno", self.due_date.isoformat())
+        add_element(output, "DatSkPoh", self.issue_date.isoformat())
+        add_element(output, "KodDPH", "19Ř21")
+        add_element(output, "ZjednD", "0")
+        add_element(output, "VarSymbol", self.number)
+
+        # Druh (N: normální, L: zálohová, F: proforma, D: doklad k přijaté platbě)
+        add_element(output, "Druh", "N")
+        add_element(output, "Dobropis", "0" if self.total_amount > 0 else "1")
+        add_element(output, "ZpVypDPH", "1")
+        add_element(output, "SazbaDPH1", "12")
+        add_element(output, "SazbaDPH2", "21")
+        add_element(output, "Proplatit", self.total_amount_czk)
+        add_element(output, "Vyuctovano", "0")
+        add_amounts(output, in_czk=True)
+        if self.currency != CurrencyChoices.CZK:
+            valuty = add_element(output, "Valuty")
+            mena = add_element(valuty, "Mena")
+            add_element(mena, "Kod", self.get_currency_display())
+            add_element(mena, "Mnozstvi", "1")
+            add_element(mena, "Kurs", self.exchange_rate_czk)
+            add_amounts(valuty)
+
+        add_element(output, "PriUhrZbyv", "0")
+        if self.currency != CurrencyChoices.CZK:
+            add_element(output, "ValutyProp", self.total_amount)
+        add_element(output, "SumZaloha", "0")
+        add_element(output, "SumZalohaC", "0")
+
+        prijemce = add_element(output, "DodOdb")
+        add_element(prijemce, "ObchNazev", self.customer.name)
+        adresa = add_element(prijemce, "ObchAdresa")
+        add_element(adresa, "Ulice", self.customer.address)
+        add_element(adresa, "Misto", self.customer.city)
+        add_element(adresa, "PSC", self.customer.postcode)
+        add_element(adresa, "Stat", self.customer.country)
+        add_element(prijemce, "FaktNazev", self.customer.name)
+        if self.customer.tax and self.customer.country == "CZ":
+            add_element(prijemce, "ICO", self.customer.tax)
+        if self.customer.vat:
+            add_element(prijemce, "DIC", self.customer.vat)
+        adresa = add_element(prijemce, "FaktAdresa")
+        add_element(adresa, "Ulice", self.customer.address)
+        add_element(adresa, "Misto", self.customer.city)
+        add_element(adresa, "PSC", self.customer.postcode)
+        add_element(adresa, "Stat", self.customer.country)
+        if self.customer.vat:
+            add_element(prijemce, "PlatceDPH", "1")
+            add_element(prijemce, "FyzOsoba", "0")
+
+        seznam = add_element(output, "SeznamPolozek")
+        for item in self.all_items:
+            polozka = add_element(seznam, "Polozka")
+            add_element(polozka, "Popis", item.description)
+            add_element(polozka, "PocetMJ", item.quantity)
+            if self.currency == CurrencyChoices.CZK:
+                add_element(polozka, "Cena", item.total_price)
+            else:
+                add_element(polozka, "Valuty", item.total_price)
+
+    def generate_xml(self):
+        document = etree.Element("MoneyData")
+        invoices = etree.SubElement(document, "SeznamFaktVyd")
+
+        self.get_xml_tree(invoices)
+
+        etree.indent(document)
+
+        settings.INVOICES_PATH.mkdir(exist_ok=True)
+        etree.ElementTree(document).write(
+            self.xml_path, encoding="utf-8", xml_declaration=True
+        )
 
     def generate_pdf(self) -> None:
         # Create directory to store invoices
@@ -325,12 +458,16 @@ class InvoiceItem(models.Model):
         return f"{self.description} ({self.display_quantity}) {self.display_price}"
 
     @property
+    def total_price(self) -> Decimal:
+        return self.unit_price * self.quantity
+
+    @property
     def display_price(self) -> str:
         return self.invoice.render_amount(self.unit_price)
 
     @property
     def display_total_price(self) -> str:
-        return self.invoice.render_amount(self.unit_price * self.quantity)
+        return self.invoice.render_amount(self.total_price)
 
     def get_quantity_unit_display(self) -> str:  # type: ignore[no-redef]
         # Correcly handle singulars
