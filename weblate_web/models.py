@@ -177,7 +177,11 @@ def create_backup_repository(service):
     # Create folder and SSH key
     client = SSHClient()
     client.load_system_host_keys()
-    client.connect(**settings.STORAGE_SERVER)
+    client.connect(
+        hostname=settings.STORAGE_SSH_HOSTNAME,
+        port=settings.STORAGE_SSH_PORT,
+        username=settings.STORAGE_SSH_USER,
+    )
     ftp = client.open_sftp()
     dirname = str(uuid4())
     ftp.mkdir(dirname)

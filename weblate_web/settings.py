@@ -304,11 +304,9 @@ REGISTRATION_EMAIL_MATCH = ".*"
 CHANGES_API = "https://hosted.weblate.org/api/"
 CHANGES_KEY = ""
 
-STORAGE_SERVER = {
-    "hostname": "backups.weblate.cloud",
-    "port": 23,
-    "username": "u164666-sub4",
-}
+STORAGE_SSH_HOSTNAME = "backups.weblate.cloud"
+STORAGE_SSH_PORT = 23
+STORAGE_SSH_USER = "u164666-sub4"
 STORAGE_BOX = 153391
 STORAGE_USER = ""
 STORAGE_PASSWORD = ""
