@@ -17,15 +17,21 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from django.template import Library
 from django.utils.translation import gettext as _
 from django.utils.translation import ngettext
 
+if TYPE_CHECKING:
+    from weblate_web.remote import PYPIInfo
+
 register = Library()
 
 
-def filesizeformat(num_bytes: int):
+def filesizeformat(num_bytes: int) -> str:
     """
     Format the value like a 'human-readable' file size.
 
@@ -43,7 +49,7 @@ def filesizeformat(num_bytes: int):
 
 
 @register.inclusion_tag("snippets/download-link.html")
-def downloadlink(info: dict[str, str]):
+def downloadlink(info: PYPIInfo) -> dict[str, str]:
     name = info["filename"]
 
     if name.endswith(".tar.bz2"):
@@ -59,7 +65,7 @@ def downloadlink(info: dict[str, str]):
     else:
         text = name
 
-    size = filesizeformat(info["size"])
+    size = filesizeformat(int(info["size"]))
 
     return {
         "url": info["url"],

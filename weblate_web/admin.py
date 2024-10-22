@@ -17,6 +17,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from django.contrib import admin
 
 from weblate_web.models import (
@@ -29,6 +33,10 @@ from weblate_web.models import (
     Service,
     Subscription,
 )
+
+if TYPE_CHECKING:
+    from django.forms import ModelForm
+    from django.http import HttpRequest
 
 
 def format_user(obj):
@@ -85,9 +93,15 @@ class ServiceAdmin(admin.ModelAdmin):
     autocomplete_fields = ("users", "customer")
     inlines = (ProjectAdmin,)
 
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        form.base_fields["users"].label_from_instance = format_user
+    def get_form(
+        self,
+        request: HttpRequest,
+        obj: Any | None = None,
+        change: bool = False,
+        **kwargs: Any,
+    ) -> type[ModelForm[Any]]:
+        form = super().get_form(request=request, obj=obj, change=change, **kwargs)
+        form.base_fields["users"].label_from_instance = format_user  # type: ignore[attr-defined]
         return form
 
 

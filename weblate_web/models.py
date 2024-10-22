@@ -26,7 +26,6 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import html2text
-import PIL
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -43,6 +42,7 @@ from django.utils.translation import gettext_lazy, override, pgettext_lazy
 from django_countries import countries
 from markupfield.fields import MarkupField
 from paramiko.client import SSHClient
+from PIL import Image as PILImage
 
 from weblate_web.payments.fields import Char32UUIDField
 from weblate_web.payments.models import Customer, Payment, get_period_delta
@@ -120,13 +120,15 @@ def validate_bitmap(value):
     try:
         # load() could spot a truncated JPEG, but it loads the entire
         # image in memory, which is a DoS vector. See #3848 and #18520.
-        image = PIL.Image.open(content)
+        image = PILImage.open(content)
         # verify() must be called immediately after the constructor.
         image.verify()
 
         # Pillow doesn't detect the MIME type of all formats. In those
         # cases, content_type will be None.
-        value.file.content_type = PIL.Image.MIME.get(image.format)
+        value.file.content_type = PILImage.MIME.get(
+            image.format  # type: ignore[arg-type]
+        )
     except Exception as error:
         # Pillow doesn't recognize it as an image.
         raise ValidationError(_("Invalid image!"), code="invalid_image").with_traceback(
@@ -445,7 +447,7 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
-    def save(
+    def save(  # type: ignore[override]
         self,
         *,
         force_insert: bool = False,
@@ -566,6 +568,10 @@ class Service(models.Model):
         ],
     )
 
+    # Discover integration
+    matched_projects: list[Project]
+    non_matched_projects_count: int
+
     class Meta:
         verbose_name = "Customer service"
         verbose_name_plural = "Customer services"
@@ -598,7 +604,7 @@ class Service(models.Model):
             return f"{report.projects}"
         return "0"
 
-    projects_limit.short_description = "Projects"
+    projects_limit.short_description = "Projects"  # type: ignore[attr-defined]
 
     def languages_limit(self):
         report = self.last_report
@@ -608,7 +614,7 @@ class Service(models.Model):
             return f"{report.languages}"
         return "0"
 
-    languages_limit.short_description = "Languages"
+    languages_limit.short_description = "Languages"  # type: ignore[attr-defined]
 
     def source_strings_limit(self):
         report = self.last_report
@@ -618,7 +624,7 @@ class Service(models.Model):
             return f"{report.source_strings}"
         return "0"
 
-    source_strings_limit.short_description = "Source strings"
+    source_strings_limit.short_description = "Source strings"  # type: ignore[attr-defined]
 
     def hosted_words_limit(self):
         report = self.last_report
@@ -628,7 +634,7 @@ class Service(models.Model):
             return f"{report.hosted_words}"
         return "0"
 
-    hosted_words_limit.short_description = "Hosted words"
+    hosted_words_limit.short_description = "Hosted words"  # type: ignore[attr-defined]
 
     def hosted_strings_limit(self):
         report = self.last_report
@@ -638,7 +644,7 @@ class Service(models.Model):
             return f"{report.hosted_strings}"
         return "0"
 
-    hosted_strings_limit.short_description = "Hosted strings"
+    hosted_strings_limit.short_description = "Hosted strings"  # type: ignore[attr-defined]
 
     @cached_property
     def user_emails(self):
@@ -873,7 +879,7 @@ class Subscription(models.Model):
     def __str__(self):
         return f"{self.package}: {self.service}"
 
-    def save(
+    def save(  # type: ignore[override]
         self,
         *,
         force_insert: bool = False,
@@ -924,7 +930,7 @@ class Subscription(models.Model):
         emails = {user.email for user in self.service.users.all()}
         if self.payment_obj.customer.email:
             emails.add(self.payment_obj.customer.email)
-        send_notification(notification, emails, subscription=self)
+        send_notification(notification, list(emails), subscription=self)
         with override("en"):
             send_notification(
                 notification,
@@ -1028,7 +1034,7 @@ class Report(models.Model):
     def __str__(self):
         return self.site_url
 
-    def save(
+    def save(  # type: ignore[override]
         self,
         *,
         force_insert: bool = False,

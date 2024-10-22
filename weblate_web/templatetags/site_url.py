@@ -34,10 +34,14 @@ def add_site_url(content):
     tree = etree.parse(StringIO(content), parser)  # noqa: S320
     for link in tree.findall(".//a"):
         url = link.get("href")
+        if url is None:
+            continue
         if url.startswith("/"):
             link.set("href", "https://weblate.org" + url)
     for link in tree.findall(".//img"):
         url = link.get("src")
+        if url is None:
+            continue
         if url.startswith("/"):
             link.set("src", "https://weblate.org" + url)
     return mark_safe(  # noqa: S308

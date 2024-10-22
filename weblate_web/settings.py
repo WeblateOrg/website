@@ -427,6 +427,16 @@ THEPAY_PASSWORD: str
 THEPAY_SERVER: str
 THEPAY_PROJECT_ID: str
 
+# API authentication
+PAYMENT_SECRET: str
+ZAMMAD_TOKEN: str
+
+# IMAP
+IMAP_SERVER: str
+IMAP_USER: str
+IMAP_PASSWORD: str
+IMAP_SPAM_FOLDER: str
+
 LOCAL = Path(BASE_DIR) / "weblate_web" / "settings_local.py"
 if LOCAL.exists():
     local_settings = LOCAL.read_text()

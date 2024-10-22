@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import operator
+from typing import Literal, TypedDict
 
 import requests
 import sentry_sdk
@@ -35,6 +36,24 @@ WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
 EXCLUDE_USERS = {"nijel", "weblate"}
 ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
 CACHE_TIMEOUT = 72 * 3600
+
+
+class PYPIInfo(TypedDict):
+    comment_text: str
+    digests: dict[Literal["blake2b_256", "md5", "sha256"], str]
+    downloads: int
+    filename: str
+    has_sig: bool
+    md5_digest: str
+    packagetype: str
+    python_version: str
+    requires_python: str
+    size: int
+    upload_time: str
+    upload_time_iso_8601: str
+    url: str
+    yanked: bool
+    yanked_reason: None | str
 
 
 def get_contributors(force: bool = False):
@@ -113,7 +132,7 @@ def get_changes(force: bool = False):
     return stats[:10]
 
 
-def get_release(force: bool = False) -> None | list[dict[str, str]]:
+def get_release(force: bool = False) -> None | list[PYPIInfo]:
     key = "wlweb-release-x"
     results = cache.get(key)
     if not force and results is not None:
