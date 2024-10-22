@@ -30,7 +30,7 @@ from django.test.utils import override_settings
 
 from weblate_web.tests import TEST_FAKTURACE, mock_vies
 
-from .backends import FioBank, InvalidState, get_backend, list_backends
+from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
 from .models import Customer, Payment
 from .validators import validate_vatin
 
@@ -184,17 +184,17 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.amount_without_vat, 100)
 
 
-@override_settings(
-    PAYMENT_DEBUG=True,
-    PAYMENT_FAKTURACE=TEST_FAKTURACE,
-    FIO_TOKEN="test-token",  # noqa: S106
-)
-class BackendTest(TestCase):
+class BackendBaseTestCase(TestCase):
+    backend_name: str = ""
+
     def setUp(self):
         super().setUp()
         self.customer = Customer.objects.create(**CUSTOMER)
         self.payment = Payment.objects.create(
-            customer=self.customer, amount=100, description="Test Item"
+            customer=self.customer,
+            amount=100,
+            description="Test Item",
+            backend=self.backend_name,
         )
 
     def check_payment(self, state):
@@ -202,6 +202,13 @@ class BackendTest(TestCase):
         self.assertEqual(payment.state, state)
         return payment
 
+
+@override_settings(
+    PAYMENT_DEBUG=True,
+    PAYMENT_FAKTURACE=TEST_FAKTURACE,
+    FIO_TOKEN="test-token",  # noqa: S106
+)
+class BackendTest(BackendBaseTestCase):
     def test_pay(self):
         backend = get_backend("pay")(self.payment)
         self.assertIsNone(backend.initiate(None, "", ""))
@@ -271,6 +278,138 @@ class BackendTest(TestCase):
         )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+
+
+@override_settings(
+    PAYMENT_DEBUG=True,
+    THEPAY_MERCHANT_ID="00000000-0000-0000-0000-000000000000",
+    THEPAY_PASSWORD="test-password",  # noqa: S106
+    THEPAY_PROJECT_ID="42",
+    THEPAY_SERVER="demo.api.thepay.cz",
+)
+class ThePay2Test(BackendBaseTestCase):
+    backend_name = "thepay2-card"
+
+    def setUp(self):
+        super().setUp()
+        self.backend = self.payment.get_payment_backend()
+
+    @responses.activate
+    def test_pay(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            json={
+                "pay_url": "https://gate.thepay.cz/12345/pay",
+                "detail_url": "https://gate.thepay.cz/12345/state",
+            },
+        )
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "uid": "efd7d8e6-2fa3-3c46-b475-51762331bf56",
+                "project_id": 1,
+                "order_id": "CZ12131415",
+                "state": "paid",
+                "currency": "CZK",
+                "amount": 87654,
+                "paid_amount": 87654,
+                "created_at": "2019-01-01T12:00:00+00:00",
+                "finished_at": "2019-01-01T12:00:00+00:00",
+                "valid_to": "2019-01-01T12:00:00+00:00",
+                "fee": 121,
+                "description": "Some description of the payment purpose.",
+                "description_for_merchant": "Some description for merchant.",
+                "payment_method": "card",
+                "pay_url": "https://gate.thepay.cz/12345/pay",
+                "detail_url": "https://gate.thepay.cz/12345/state",
+                "customer": {
+                    "name": "Joe Doe",
+                    "ip": "192.168.0.1",
+                    "email": "joe.doe@gmail.com",
+                },
+                "offset_account": {
+                    "iban": "CZ6508000000192000145399",
+                    "owner_name": "Joe Doe",
+                },
+                "offset_account_status": "not_available",
+                "offset_account_determined_at": "2019-01-01T12:00:00+00:00",
+                "card": {
+                    "number": "515735******2654",
+                    "expiration_date": "2022-05",
+                    "brand": "MASTERCARD",
+                    "type": "debit",
+                },
+                "events": [
+                    {
+                        "occured_at": "2021-04-20T11:05:49.000000Z",
+                        "type": "state_change",
+                        "data": "expired",
+                    }
+                ],
+                "parent": {"recurring_payments_available": True},
+            },
+        )
+        response = self.backend.initiate(None, "", "")
+        self.assertIsNotNone(response)
+        self.assertRedirects(
+            response,
+            "https://gate.thepay.cz/12345/pay",
+            fetch_redirect_response=False,
+        )
+        self.check_payment(Payment.PENDING)
+        self.assertTrue(self.backend.complete(None))
+        self.check_payment(Payment.ACCEPTED)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+
+    @responses.activate
+    def test_error(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            status=400,
+        )
+        with self.assertRaises(PaymentError):
+            self.backend.initiate(None, "", "")
+        self.check_payment(Payment.NEW)
+
+    @responses.activate
+    def test_error_message(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            json={
+                "message": "Something wrong",
+            },
+            status=400,
+        )
+        with self.assertRaises(PaymentError):
+            self.backend.initiate(None, "", "")
+        self.check_payment(Payment.NEW)
+
+    @responses.activate
+    def test_error_collect(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            json={
+                "pay_url": "https://gate.thepay.cz/12345/pay",
+                "detail_url": "https://gate.thepay.cz/12345/state",
+            },
+        )
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
+            status=401,
+        )
+        response = self.backend.initiate(None, "", "")
+        self.assertIsNotNone(response)
+        self.assertRedirects(
+            response,
+            "https://gate.thepay.cz/12345/pay",
+            fetch_redirect_response=False,
+        )
+        self.check_payment(Payment.PENDING)
+        with self.assertRaises(PaymentError):
+            self.backend.complete(None)
+        self.check_payment(Payment.PENDING)
+        self.assertEqual(len(mail.outbox), 0)
 
 
 class VATTest(SimpleTestCase):
