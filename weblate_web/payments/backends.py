@@ -386,7 +386,9 @@ class ThePayCard(LegacyBackend):
         payment.setMerchantData(str(self.payment.pk))
         if self.payment.recurring:
             payment.setIsRecurring(1)
-        return redirect(payment.getCreateUrl())
+        pay_url = payment.getCreateUrl()
+        self.payment.details["pay_url"] = pay_url
+        return redirect(pay_url)
 
     def collect(self, request: HttpRequest | None) -> bool | None:
         if self.payment.repeat:
