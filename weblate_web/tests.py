@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import json
 from datetime import date, timedelta
 from pathlib import Path
+from typing import cast
 from xml.etree import ElementTree  # noqa: S405
 
 import requests
@@ -337,7 +340,10 @@ class ViewTestCase(PostTestCase):
         sitemaps = tree.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}sitemap")
         for sitemap in sitemaps:
             location = sitemap.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
-            response = self.client.get(location.text)
+            self.assertIsNotNone(location)
+            response = self.client.get(
+                cast(str, cast(ElementTree.Element, location).text)
+            )
             self.assertContains(response, "<urlset")
             # Try if it's a valid XML
             ElementTree.fromstring(response.content)  # noqa: S314
@@ -635,13 +641,13 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "Please choose payment method")
         response = self.client.post(payment_url, {"method": "thepay-card"})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))
+        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))  # type: ignore[attr-defined]
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PENDING)
 
         # Perform the payment
-        complete_url = fake_payment(response.url)
+        complete_url = fake_payment(response.url)  # type: ignore[attr-defined]
 
         # Back to our web
         response = self.client.get(complete_url, follow=True)
@@ -681,13 +687,13 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "Please choose payment method")
         response = self.client.post(payment_url, {"method": "thepay-card"})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))
+        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))  # type: ignore[attr-defined]
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PENDING)
 
         # Perform the payment
-        complete_url = fake_payment(response.url)
+        complete_url = fake_payment(response.url)  # type: ignore[attr-defined]
 
         # Back to our web
         response = self.client.get(complete_url, follow=True)
@@ -711,13 +717,13 @@ class DonationTest(FakturaceTestCase):
             reverse("payment", kwargs={"pk": renew.uuid}), {"method": "thepay-card"}
         )
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))
+        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))  # type: ignore[attr-defined]
 
         renew.refresh_from_db()
         self.assertEqual(renew.state, Payment.PENDING)
 
         # Perform the payment
-        complete_url = fake_payment(response.url)
+        complete_url = fake_payment(response.url)  # type: ignore[attr-defined]
 
         # Back to our web
         response = self.client.get(complete_url, follow=True)

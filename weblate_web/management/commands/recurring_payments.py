@@ -19,7 +19,8 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -28,6 +29,9 @@ from django.utils import timezone
 from weblate_web.models import Donation, Service, Subscription
 from weblate_web.payments.models import Payment
 from weblate_web.payments.utils import send_notification
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class Command(BaseCommand):
@@ -46,7 +50,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def notify_expiry(weekday=0):
-        expiry = []
+        expiry: list[tuple[str, Iterable[str], datetime]] = []
 
         expires_notify = timezone.now() + timedelta(days=30)
         payment_notify_start = timezone.now() + timedelta(days=7)

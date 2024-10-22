@@ -21,9 +21,11 @@ from __future__ import annotations
 
 import json
 import random
+from typing import TYPE_CHECKING
 
 import django.views.defaults
 import sentry_sdk
+from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -36,6 +38,7 @@ from django.db.models import Q
 from django.http import (
     FileResponse,
     Http404,
+    HttpRequest,
     HttpResponseBadRequest,
     JsonResponse,
 )
@@ -81,15 +84,24 @@ from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
 from weblate_web.remote import get_activity
 
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
 ON_EACH_SIDE = 3
 ON_ENDS = 2
 DOT = "."
+
+
+class AuthenticatedHttpRequest(HttpRequest):
+    user: User
 
 
 def get_page_range(page_obj):
     paginator = page_obj.paginator
     page_num = page_obj.number - 1
     num_pages = paginator.num_pages
+
+    page_range: Iterable[int | str]
 
     # If there are 10 or fewer pages, display links to every page.
     # Otherwise, do some fancy
@@ -212,7 +224,9 @@ def api_hosted(request):
             subscription.save(update_fields=["package"])
         if subscription.payment and subscription.payment != payments[-1]:
             # Include current payment in past payments
-            subscription.pastpayment_set.get_or_create(payment=subscription.payment_obj)
+            subscription.pastpayments_set.get_or_create(
+                payment=subscription.payment_obj
+            )
 
             # Update current subscription payment
             subscription.payment = payments[-1]
@@ -220,7 +234,7 @@ def api_hosted(request):
 
         # Link past payments
         for payment in payments[:-1]:
-            subscription.pastpayment_set.get_or_create(payment=payment)
+            subscription.pastpayments_set.get_or_create(payment=payment)
 
     # Link users which are supposed to have access
     for user in payload["users"]:
@@ -314,7 +328,7 @@ def fetch_vat(request):
 
 class PaymentView(FormView, SingleObjectMixin):
     model = Payment
-    form_class = MethodForm
+    form_class: type[forms.BaseForm] = MethodForm
     template_name = "payment/payment.html"
     check_customer = True
 
@@ -411,7 +425,7 @@ class PaymentView(FormView, SingleObjectMixin):
 
 
 class CustomerView(PaymentView):
-    form_class = CustomerForm
+    form_class: type[forms.BaseForm] = CustomerForm
     template_name = "payment/customer.html"
     check_customer = False
 
@@ -585,6 +599,7 @@ def disable_repeat(request, pk):
 class EditLinkView(UpdateView):
     template_name = "donate/edit.html"
     success_url = "/user/"
+    request: AuthenticatedHttpRequest
 
     def get_form_class(self):
         reward = self.object.reward
@@ -614,6 +629,7 @@ class EditDiscoveryView(UpdateView):
     template_name = "subscription/discovery.html"
     success_url = "/user/"
     form_class = EditDiscoveryForm
+    request: AuthenticatedHttpRequest
 
     def get_queryset(self):
         return Service.objects.filter(users=self.request.user)
@@ -865,6 +881,9 @@ class DiscoverView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        services: Iterable[Service]
+        projects: Iterable[Project]
+
         services = Service.objects.filter(discoverable=True).prefetch_related(
             "project_set"
         )
@@ -877,7 +896,7 @@ class DiscoverView(TemplateView):
                 projects = projects.filter(name__search=query.replace("*", ""))
             else:
                 projects = projects.filter(name__icontains=query)
-            services_dict = {}
+            services_dict: dict[int, Service] = {}
             for project in projects:
                 service = services_dict[project.service_id] = project.service
                 if not hasattr(service, "matched_projects"):
@@ -921,7 +940,7 @@ class ServiceDetailView(DetailView):
 
     def get_payment_form(self, **kwargs):
         form = AddPaymentForm(**kwargs)
-        form.fields["subscription"].queryset = self.object.subscription_set.all()
+        form.fields["subscription"].queryset = self.object.subscription_set.all()  # type: ignore[attr-defined]
         return form
 
     def post(self, request, **kwargs):

@@ -68,7 +68,7 @@ class Command(BaseCommand):
             data = zammad.ticket._raise_or_return_json(response)
 
             # Upload to IMAP
-            imap.append(settings.IMAP_SPAM_FOLDER, None, None, data)
+            imap.append(settings.IMAP_SPAM_FOLDER, "", "", data)
 
             # Add tag
             tag_obj.add("Ticket", ticket_id, "reported-spam")

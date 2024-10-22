@@ -17,6 +17,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -36,7 +38,7 @@ class MethodForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["method"].choices = [
+        self.fields["method"].choices = [  # type: ignore[attr-defined]
             (backend.name, backend.verbose) for backend in list_backends()
         ]
 

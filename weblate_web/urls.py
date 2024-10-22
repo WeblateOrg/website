@@ -142,7 +142,9 @@ class NewsSitemap(Sitemap):
 
 
 # create each section in all languages
-SITEMAPS = {lang[0]: PagesSitemap(lang[0]) for lang in settings.LANGUAGES}
+SITEMAPS: dict[str, Sitemap] = {
+    lang[0]: PagesSitemap(lang[0]) for lang in settings.LANGUAGES
+}
 SITEMAPS["news"] = NewsSitemap()
 UUID = r"(?P<pk>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
 

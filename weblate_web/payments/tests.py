@@ -18,7 +18,6 @@
 #
 
 import json
-from copy import copy
 from datetime import date
 
 import responses
@@ -263,9 +262,9 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your pending payment on weblate.org")
         mail.outbox = []
 
-        received = copy(FIO_TRASACTIONS)
+        received = FIO_TRASACTIONS.copy()
         proforma_id = backend.payment.invoice
-        transaction = received["accountStatement"]["transactionList"]["transaction"]
+        transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id
         transaction[1]["column1"]["value"] = backend.payment.amount * 1.21
