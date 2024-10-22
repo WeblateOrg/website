@@ -667,7 +667,16 @@ class ThePay2Card(Backend):
             response = self.payment.details["repeat_response"]
             if response["state"] == "paid":
                 return True
-            self.payment.details["reject_reason"] = response["message"]
+            self.payment.details["reject_reason"] = response.get("message")
+            if not self.payment.details["reject_reason"]:
+                if not response.get("parent", {}).get(
+                    "recurring_payments_available", True
+                ):
+                    self.payment.details["reject_reason"] = (
+                        "Recurring payment is no longer available"
+                    )
+                else:
+                    self.payment.details["reject_reason"] = "Recurring payment failed"
             return False
 
         # Get payment state
@@ -692,17 +701,20 @@ class ThePay2Card(Backend):
         # All other states are assumed to be an error
 
         # Get error detail
-        if response["events"]:
-            last_event = response["events"][-1]
-            if last_event["data"]:
-                reason = last_event["data"]
-            elif last_event["type"] == "payment_error":
-                reason = gettext("Payment error")
-            elif last_event["type"] == "payment_cancelled":
-                reason = gettext("Payment cancelled")
-            else:
-                # Not user friendly, but gives some clue
-                reason = last_event["type"]
+        reason = ""
+        if events := response.get("events"):
+            last_event = events[-1]
+            if event_data := last_event.get("data"):
+                reason = event_data
+            elif event_type := last_event.get("type"):
+                if event_type == "payment_error":
+                    reason = gettext("Payment error")
+                elif event_type == "payment_cancelled":
+                    reason = gettext("Payment cancelled")
+                else:
+                    # Not user friendly, but gives some clue
+                    reason = event_type
+        if reason:
             self.payment.details["reject_reason"] = reason
         else:
             self.payment.details["reject_reason"] = state

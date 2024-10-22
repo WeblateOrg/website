@@ -197,7 +197,7 @@ class BackendBaseTestCase(TestCase):
             backend=self.backend_name,
         )
 
-    def check_payment(self, state):
+    def check_payment(self, state: int) -> Payment:
         payment = Payment.objects.get(pk=self.payment.pk)
         self.assertEqual(payment.state, state)
         return payment
@@ -363,6 +363,106 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
     @responses.activate
+    def test_unpaid(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            json={
+                "pay_url": "https://gate.thepay.cz/12345/pay",
+                "detail_url": "https://gate.thepay.cz/12345/state",
+            },
+        )
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "uid": "efd7d8e6-2fa3-3c46-b475-51762331bf56",
+                "project_id": 1,
+                "order_id": "CZ12131415",
+                "state": "waiting_for_payment",
+            },
+        )
+        response = self.backend.initiate(None, "", "")
+        self.assertIsNotNone(response)
+        self.assertRedirects(
+            response,
+            "https://gate.thepay.cz/12345/pay",
+            fetch_redirect_response=False,
+        )
+        self.check_payment(Payment.PENDING)
+        self.assertFalse(self.backend.complete(None))
+        self.check_payment(Payment.PENDING)
+        self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    def test_payment_cancelled(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            json={
+                "pay_url": "https://gate.thepay.cz/12345/pay",
+                "detail_url": "https://gate.thepay.cz/12345/state",
+            },
+        )
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "uid": "efd7d8e6-2fa3-3c46-b475-51762331bf56",
+                "project_id": 1,
+                "order_id": "CZ12131415",
+                "state": "error",
+                "events": [
+                    {
+                        "occured_at": "2021-04-20T11:05:49.000000Z",
+                        "type": "payment_cancelled",
+                    }
+                ],
+            },
+        )
+        response = self.backend.initiate(None, "", "")
+        self.assertIsNotNone(response)
+        self.assertRedirects(
+            response,
+            "https://gate.thepay.cz/12345/pay",
+            fetch_redirect_response=False,
+        )
+        self.check_payment(Payment.PENDING)
+        self.assertFalse(self.backend.complete(None))
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertEqual(payment.details["reject_reason"], "Payment cancelled")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
+
+    @responses.activate
+    def test_payment_error(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            json={
+                "pay_url": "https://gate.thepay.cz/12345/pay",
+                "detail_url": "https://gate.thepay.cz/12345/state",
+            },
+        )
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "uid": "efd7d8e6-2fa3-3c46-b475-51762331bf56",
+                "project_id": 1,
+                "order_id": "CZ12131415",
+                "state": "error",
+            },
+        )
+        response = self.backend.initiate(None, "", "")
+        self.assertIsNotNone(response)
+        self.assertRedirects(
+            response,
+            "https://gate.thepay.cz/12345/pay",
+            fetch_redirect_response=False,
+        )
+        self.check_payment(Payment.PENDING)
+        self.assertFalse(self.backend.complete(None))
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertEqual(payment.details["reject_reason"], "error")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
+
+    @responses.activate
     def test_error(self):
         responses.post(
             "https://demo.api.thepay.cz/v1/projects/42/payments",
@@ -379,6 +479,17 @@ class ThePay2Test(BackendBaseTestCase):
             json={
                 "message": "Something wrong",
             },
+            status=400,
+        )
+        with self.assertRaises(PaymentError):
+            self.backend.initiate(None, "", "")
+        self.check_payment(Payment.NEW)
+
+    @responses.activate
+    def test_error_no_message(self):
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            json={},
             status=400,
         )
         with self.assertRaises(PaymentError):
@@ -410,6 +521,108 @@ class ThePay2Test(BackendBaseTestCase):
             self.backend.complete(None)
         self.check_payment(Payment.PENDING)
         self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    def test_pay_recurring(self):
+        # Modify backend payment as it has a copy
+        self.backend.payment.repeat = Payment.objects.create(
+            customer=self.customer,
+            amount=100,
+            description="Test Item",
+            backend=self.backend_name,
+        )
+        self.backend.payment.save()
+        responses.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{self.backend.payment.repeat.pk}/savedauthorization?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "state": "paid",
+                "parent": {"recurring_payments_available": True},
+            },
+        )
+        self.assertIsNone(self.backend.initiate(None, "", ""))
+        self.check_payment(Payment.PENDING)
+        self.assertTrue(self.backend.complete(None))
+        self.check_payment(Payment.ACCEPTED)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+
+    @responses.activate
+    def test_pay_recurring_error(self):
+        # Modify backend payment as it has a copy
+        self.backend.payment.repeat = Payment.objects.create(
+            customer=self.customer,
+            amount=100,
+            description="Test Item",
+            backend=self.backend_name,
+        )
+        self.backend.payment.save()
+        responses.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{self.backend.payment.repeat.pk}/savedauthorization?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "state": "error",
+                "message": "Failed card",
+                "parent": {"recurring_payments_available": True},
+            },
+        )
+        self.assertIsNone(self.backend.initiate(None, "", ""))
+        self.check_payment(Payment.PENDING)
+        self.assertFalse(self.backend.complete(None))
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertEqual(payment.details["reject_reason"], "Failed card")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
+
+    @responses.activate
+    def test_pay_recurring_error_blank_message(self):
+        # Modify backend payment as it has a copy
+        self.backend.payment.repeat = Payment.objects.create(
+            customer=self.customer,
+            amount=100,
+            description="Test Item",
+            backend=self.backend_name,
+        )
+        self.backend.payment.save()
+        responses.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{self.backend.payment.repeat.pk}/savedauthorization?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "state": "error",
+                "message": "",
+                "parent": {"recurring_payments_available": False},
+            },
+        )
+        self.assertIsNone(self.backend.initiate(None, "", ""))
+        self.check_payment(Payment.PENDING)
+        self.assertFalse(self.backend.complete(None))
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertEqual(
+            payment.details["reject_reason"], "Recurring payment is no longer available"
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
+
+    @responses.activate
+    def test_pay_recurring_error_no_message(self):
+        # Modify backend payment as it has a copy
+        self.backend.payment.repeat = Payment.objects.create(
+            customer=self.customer,
+            amount=100,
+            description="Test Item",
+            backend=self.backend_name,
+        )
+        self.backend.payment.save()
+        responses.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{self.backend.payment.repeat.pk}/savedauthorization?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "state": "error",
+            },
+        )
+        self.assertIsNone(self.backend.initiate(None, "", ""))
+        self.check_payment(Payment.PENDING)
+        self.assertFalse(self.backend.complete(None))
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertEqual(payment.details["reject_reason"], "Recurring payment failed")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
 
 class VATTest(SimpleTestCase):
