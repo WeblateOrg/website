@@ -440,7 +440,6 @@ def create_payment(*, recurring="y", user, **kwargs):
 
 
 class FakturaceTestCase(TestCase):
-    databases = "__all__"
     credentials = {
         "username": "testuser",
         "password": "testpassword",
@@ -829,8 +828,6 @@ class PostTest(PostTestCase):
 
 
 class APITest(TestCase):
-    databases = "__all__"
-
     def test_hosted(self):
         Package.objects.create(name="community", verbose="Community support", price=0)
         Package.objects.create(name="shared:test", verbose="Test package", price=0)

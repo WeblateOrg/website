@@ -190,8 +190,6 @@ class ModelTest(SimpleTestCase):
     FIO_TOKEN="test-token",  # noqa: S106
 )
 class BackendTest(TestCase):
-    databases = "__all__"
-
     def setUp(self):
         super().setUp()
         self.customer = Customer.objects.create(**CUSTOMER)
