@@ -519,11 +519,6 @@ class DonateView(FormView):
         result["initial"] = self.request.GET
         return result
 
-    def redirect_payment(self, **kwargs):
-        kwargs["customer"] = get_customer(self.request)
-        payment = Payment.objects.create(**kwargs)
-        return redirect(payment.get_payment_url())
-
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result["reward_levels"] = REWARD_LEVELS
@@ -538,13 +533,15 @@ class DonateView(FormView):
         tmp = Donation(reward=int(data["reward"] or "0"))
         with override("en"):
             description = tmp.get_payment_description()
-        return self.redirect_payment(
+        payment = Payment.objects.create(
             amount=data["amount"],
             amount_fixed=True,
             description=description,
             recurring=data["recurring"],
             extra={"reward": data["reward"]},
+            customer=get_customer(self.request),
         )
+        return redirect(payment.get_payment_url())
 
 
 @login_required
@@ -892,6 +889,7 @@ def donate_pay(request, pk):
             recurring=donation.payment_obj.recurring,
             extra={"donation": donation.pk, "category": "donate"},
             customer=get_customer(request, donation),
+            amount_fixed=True,
         )
     return redirect(payment.get_payment_url())
 
