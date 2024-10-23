@@ -1,139 +1,151 @@
 {% extends "base.html" %}
+
 {% load i18n %}
 {% load static %}
 {% load timestamps %}
-{% block title %}{% trans "User profile at Weblate" %}{% endblock %}
+
+{% block title %}
+  {% trans "User profile at Weblate" %}
+{% endblock %}
+
 
 {% block content %}
 
 
-<section class="content">
+  <section class="content">
     <div class="row">
-        <div class="wrap">
-            {% with services=user.service_set.all %}
-            {% if services %}
+      <div class="wrap">
+        {% with services=user.service_set.all %}
+          {% if services %}
             <div class="updated-service-title">
-              <h1>
-                {% trans "My services" %}
-              </h1>
+              <h1>{% trans "My services" %}</h1>
               <div class="page-desc">
-                  <a href="https://care.weblate.org/" class="button inline">{% trans "Support portal" %}</a>
-                  <a href="https://hosted.weblate.org/accounts/profile/#account" class="button inline border rev" target="_blank">{% trans "See user profile" %}</a>
+                <a href="https://care.weblate.org/" class="button inline">{% trans "Support portal" %}</a>
+                <a href="https://hosted.weblate.org/accounts/profile/#account"
+                   class="button inline border rev"
+                   target="_blank">{% trans "See user profile" %}</a>
               </div>
             </div>
             {% for service in services %}
-            {% include "snippets/service.html" %}
+              {% include "snippets/service.html" %}
             {% endfor %}
-            {% endif %}
-            {% endwith %}
-            <div class="page-desc">
-              <a class="button inline" href="{% url "support" %}">{% trans "Get support" %}</a>
-              <a class="button inline border rev" href="{% url "service-discovery-add" %}">{% trans "Add server to Discover Weblate" %}</a>
+          {% endif %}
+        {% endwith %}
+        <div class="page-desc">
+          <a class="button inline" href="{% url "support" %}">{% trans "Get support" %}</a>
+          <a class="button inline border rev" href="{% url "service-discovery-add" %}">{% trans "Add server to Discover Weblate" %}</a>
+        </div>
+
+        <h1>{% trans "My donations" %}</h1>
+
+        {% for donation in user.donation_set.all %}
+          <div class="payment-form payment-padding">
+            <div class="form-line donation-left-line">
+              <div class="line-left get-reward-left-line">{{ donation.get_reward_display }}</div>
+              {% if donation.reward %}
+                <div class="reward-line-right">{% trans "Your reward" %}</div>
+              {% endif %}
             </div>
-
-            <h1>{% trans "My donations" %}</h1>
-
-            {% for donation in user.donation_set.all %}
-            <div class="payment-form payment-padding">
-                <div class="form-line donation-left-line">
-                    <div class="line-left get-reward-left-line">{{ donation.get_reward_display }}</div>
-                    {% if donation.reward %}
-                      <div class="reward-line-right">{% trans "Your reward" %}</div>
-                    {% endif %}
-                </div>
-                <div class="form-line custom-gradient"></div>
-                <div class="inner-content">
-                    <div class="inner-content-child-width">
+            <div class="form-line custom-gradient"></div>
+            <div class="inner-content">
+              <div class="inner-content-child-width">
                 {% if donation.link_url or donation.reward %}
-                <div class="form-line user-text-formatting">
+                  <div class="form-line user-text-formatting">
                     <div class="line-left">{% trans "Link" %}</div>
                     <div class="line-right user-text-formatting-donation">
                       {{ donation.link_url }}
                       <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% trans "Edit reward" %}</a>
                     </div>
                     <div class="clear"></div>
-                </div>
+                  </div>
                 {% endif %}
                 <div class="form-line user-text-formatting">
-                    <div class="line-left">{% trans "Active" %}</div>
-                    <div class="line-right user-text-formatting-donation">{% date_range donation.created donation.expires True %}
-                        {% with days_from_today_donation=donation.expires|days_diff_from_today %}
-                        {% if days_from_today_donation < 30 %}
+                  <div class="line-left">{% trans "Active" %}</div>
+                  <div class="line-right user-text-formatting-donation">
+                    {% date_range donation.created donation.expires True %}
+                    {% with days_from_today_donation=donation.expires|days_diff_from_today %}
+                      {% if days_from_today_donation < 30 %}
                         {% if days_from_today_donation < 2 and days_from_today_donation >= 0 %}
-                        <t class="orange">{{ days_from_today_donation | days_remaining}}</t>
-                        {% elif days_from_today_donation < 0  %}
-                        <t class="pl-1 orange">{% trans "Expired" %}</t>
+                          <t class="orange">{{ days_from_today_donation | days_remaining }}</t>
+                        {% elif days_from_today_donation < 0 %}
+                          <t class="pl-1 orange">{% trans "Expired" %}</t>
                         {% else %}
-                        <t class="orange">{{ days_from_today_donation | days_remaining}}</t>
+                          <t class="orange">{{ days_from_today_donation | days_remaining }}</t>
                         {% endif %}
-                        {% else %}
-                        <t class="grey">{{ days_from_today_donation | days_remaining}}</t>
-                        {% endif %}
-                        {% endwith %}
-                    </div>
-                    <div class="clear"></div>
+                      {% else %}
+                        <t class="grey">{{ days_from_today_donation | days_remaining }}</t>
+                      {% endif %}
+                    {% endwith %}
+                  </div>
+                  <div class="clear"></div>
                 </div>
                 <div class="form-line user-text-formatting">
-                    <div class="line-left">
-                        {% if not donation.active %}
-                        {% trans "Expired" %}
-                        {% elif donation.payment_obj.recurring %}
-                        {% trans "Automatic renewal" %}
-                        {% else %}
-                        {% trans "No renewal" %}
-                        {% endif %}
-                    </div>
+                  <div class="line-left">
+                    {% if not donation.active %}
+                      {% trans "Expired" %}
+                    {% elif donation.payment_obj.recurring %}
+                      {% trans "Automatic renewal" %}
+                    {% else %}
+                      {% trans "No renewal" %}
+                    {% endif %}
+                  </div>
 
-                    <div class="line-right user-text-formatting-donation">
-                        {% if donation.active and donation.payment_obj.recurring %}
-                        <form class="form-float" method="post" action="{% url "donate-disable" pk=donation.pk %}">
+                  <div class="line-right user-text-formatting-donation">
+                    {% if donation.active and donation.payment_obj.recurring %}
+                      <form class="form-float"
+                            method="post"
+                            action="{% url "donate-disable" pk=donation.pk %}">
                         {% csrf_token %}
                         <input type="submit" class="link" value="{% trans "Turn off renewal" %}">
-                        </form>
-                        {% endif %}
-                        {% if not donation.active %}
-                        {% trans "Expired" %}
-                        {% elif donation.payment_obj.recurring %}
-                        {% trans "Automatic renewal" %}
-                        {% else %}
-                        {% trans "No renewal" %}
-                        {% endif %}
-                        <br />
-                        <form class="form-inline" method="post" action="{% url "donate-pay" pk=donation.pk %}">
-                        {% csrf_token %}
-                        <input type="submit" class="button button-med-140 inline" value="{% trans "Renew now" %}">
-                        </form>
-                    </div>
-                    <div class="clear"></div>
+                      </form>
+                    {% endif %}
+                    {% if not donation.active %}
+                      {% trans "Expired" %}
+                    {% elif donation.payment_obj.recurring %}
+                      {% trans "Automatic renewal" %}
+                    {% else %}
+                      {% trans "No renewal" %}
+                    {% endif %}
+                    <br />
+                    <form class="form-inline"
+                          method="post"
+                          action="{% url "donate-pay" pk=donation.pk %}">
+                      {% csrf_token %}
+                      <input type="submit"
+                             class="button button-med-140 inline"
+                             value="{% trans "Renew now" %}">
+                    </form>
+                  </div>
+                  <div class="clear"></div>
                 </div>
-                    </div>
-            <div class="inner-content-child-width-auto">
+              </div>
+              <div class="inner-content-child-width-auto">
                 <img src="{% static "img/donations-picture.png" %}" alt="Puppy">
-            </div>
+              </div>
             </div>
             <div class="payment-updated">
-            <div class="form-line user-text-formatting user-text-formatting-payment">
+              <div class="form-line user-text-formatting user-text-formatting-payment">
                 <div class="line-left">{% trans "Payments" %}</div>
                 <div class="line-right ">
-                <table class="payments-table">
-                {% for payment in donation.list_payments %}
-                {% include "snippets/payment.html" %}
-                {% endfor %}
-                </table>
+                  <table class="payments-table">
+                    {% for payment in donation.list_payments %}
+                      {% include "snippets/payment.html" %}
+                    {% endfor %}
+                  </table>
                 </div>
-                </div>
+              </div>
             </div>
-            </div>
-            {% empty %}
+          </div>
+        {% empty %}
 
-                <div class="payment-form-donationbox">
+          <div class="payment-form-donationbox">
 
-                    <div class="line-right-donationbox">{% trans "Wanna see something nice here?" %}</div>
+            <div class="line-right-donationbox">{% trans "Wanna see something nice here?" %}</div>
 
-                <a class="button" href="{% url "donate" %}">{% trans "Donate now" %}</a>
-            </div>
-            {% endfor %}
-        </div>
+            <a class="button" href="{% url "donate" %}">{% trans "Donate now" %}</a>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-</section>
+  </section>
 {% endblock %}

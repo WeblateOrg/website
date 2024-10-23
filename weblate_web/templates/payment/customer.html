@@ -1,36 +1,38 @@
 {% extends "base.html" %}
+
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans "Weblate payment" %}{% endblock %}
+
+{% block title %}
+  {% trans "Weblate payment" %}
+{% endblock %}
+
 
 {% block content %}
-<section class="content">
+  <section class="content">
     <div class="row">
-        <div class="wrap">
-            <h1 class="section-title min-m">{% trans "Your billing information" %}</h1>
-            <div class="payment-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="payment" value="{{ payment.pk }}">
-                    {% for field in form %}
-                        <div class="form-line">
-                            <div class="line-left">{{ field.label }}</div>
-                            <div class="line-right">
-                            {{ field.errors }}
-                            {{ field }}
-                            {% if field.help_text %}
-                            <p class="help">{{ field.help_text|safe }}</p>
-                            {% endif %}
-                            </div>
-                            <div class="clear"></div>
-                        </div>
-                    {% endfor %}
-                    <div class="payment-pick">
-                    </div>
-                    <input type="submit" class="button center make-payment" value="{% trans "Save" %}" />
-                </form>
-            </div>
+      <div class="wrap">
+        <h1 class="section-title min-m">{% trans "Your billing information" %}</h1>
+        <div class="payment-form">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="payment" value="{{ payment.pk }}">
+            {% for field in form %}
+              <div class="form-line">
+                <div class="line-left">{{ field.label }}</div>
+                <div class="line-right">
+                  {{ field.errors }}
+                  {{ field }}
+                  {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
+                </div>
+                <div class="clear"></div>
+              </div>
+            {% endfor %}
+            <div class="payment-pick"></div>
+            <input type="submit" class="button center make-payment" value="{% trans "Save" %}" />
+          </form>
         </div>
+      </div>
     </div>
-</section>
+  </section>
 {% endblock %}

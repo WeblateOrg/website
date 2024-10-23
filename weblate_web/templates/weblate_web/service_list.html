@@ -1,20 +1,26 @@
 {% extends "base.html" %}
+
 {% load i18n %}
 {% load downloads %}
 {% load static %}
 {% load humanize %}
 
 {% block title %}Services{% endblock %}
+
 {% block content %}
-	<section class="content">
+  <section class="content">
     <table>
       {% for object in object_list %}
         <tr>
           <th>{{ object.site_title }}</th>
-          <td><a href="{{ object.site_url }}">{{ object.site_url }}</a></td>
+          <td>
+            <a href="{{ object.site_url }}">{{ object.site_url }}</a>
+          </td>
           <td>{{ object.site_version }}</td>
           <td>{{ object.get_status_display }}</td>
-          <td><a href="{{ object.get_absolute_url }}">Details</a></td>
+          <td>
+            <a href="{{ object.get_absolute_url }}">Details</a>
+          </td>
         </tr>
       {% endfor %}
     </table>

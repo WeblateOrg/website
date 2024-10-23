@@ -5,21 +5,26 @@
 
 {% block content %}
 
-<p>
-{% trans "Your payment on weblate.org is pending. Please follow the provided instructions to complete the payment." %}
-</p>
+  <p>
+    {% trans "Your payment on weblate.org is pending. Please follow the provided instructions to complete the payment." %}
+  </p>
 
-<table>
-<tr>
-<th>{% trans "Payment amount" %}</th>
-<td>
-{{ payment.vat_amount | price_format }}
-{% if payment.customer.needs_vat %}{% trans "(including VAT)" %}{% endif %}
-</td>
-</tr>
-{% for name, value in backend.get_instructions %}
-<tr><th>{{ name }}</th><td>{{ value }}</td></tr>
-{% endfor %}
-</table>
+  <table>
+    <tr>
+      <th>{% trans "Payment amount" %}</th>
+      <td>
+        {{ payment.vat_amount | price_format }}
+        {% if payment.customer.needs_vat %}
+          {% trans "(including VAT)" %}
+        {% endif %}
+      </td>
+    </tr>
+    {% for name, value in backend.get_instructions %}
+      <tr>
+        <th>{{ name }}</th>
+        <td>{{ value }}</td>
+      </tr>
+    {% endfor %}
+  </table>
 
 {% endblock %}

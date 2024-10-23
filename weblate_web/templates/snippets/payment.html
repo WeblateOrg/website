@@ -6,19 +6,14 @@
 
 <tr>
   <td>
-    <span class="description">
-      {{ payment.description }}
-    </span>
+    <span class="description">{{ payment.description }}</span>
     {% if payment.start %}
       <br />
       {% date_range payment.start payment.end %}
     {% endif %}
   </td>
-  <td>
-  </td>
-  <td>
-    {{ payment.get_amount_display|price_format:payment.get_currency_display }}
-  </td>
+  <td></td>
+  <td>{{ payment.get_amount_display|price_format:payment.get_currency_display }}</td>
   <td>
     {% if payment.invoice %}
       <a href="{% url 'user-invoice' pk=payment.pk %}" class="link invoice-link">

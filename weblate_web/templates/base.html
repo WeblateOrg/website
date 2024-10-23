@@ -3,141 +3,176 @@
 {% load macros %}
 {% load compress %}
 
-{% macro title %}{% block title %}Weblate{% endblock %}{% endmacro %}
-{% macro description %}{% filter striptags %}{% block description %}{% trans "Weblate is a libre software web-based continuous localization system." %}{% endblock %}{% endfilter %}{% endmacro %}
+{% macro title %}
+  {% block title %}Weblate{% endblock %}
+
+{% endmacro %}
+{% macro description %}
+  {% filter striptags %}
+    {% block description %}
+      {% trans "Weblate is a libre software web-based continuous localization system." %}
+    {% endblock %}
+
+  {% endfilter %}
+{% endmacro %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-{% compress css %}
-  <link rel="stylesheet" href="{% if LANGUAGE_BIDI %}{% static "style-rtl.css" %}{% else %}{% static "style.css" %}{% endif %}" />
-{% endcompress %}
+<html lang="{{ LANGUAGE_CODE }}"
+      dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% compress css %}
+      <link rel="stylesheet"
+            href="{% if LANGUAGE_BIDI %}{% static "style-rtl.css" %}{% else %}{% static "style.css" %}{% endif %}" />
+    {% endcompress %}
 
-  <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-sans-3.css">
-  <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-code-pro.css">
+    <link rel="stylesheet" href="https://s.weblate.org/cdn/font-source/source-sans-3.css">
+    <link rel="stylesheet"
+          href="https://s.weblate.org/cdn/font-source/source-code-pro.css">
 
-  <meta name="robots" content="index, follow" />
-  <title>{% use_macro title %}</title>
-  <meta name="description" content="{% use_macro description %}" />
-  <meta name="keywords" content="Weblate,Git,gettext,resources,JSON,PO,MO,QTS,CAT,XLIFF,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
+    <meta name="robots" content="index, follow" />
+    <title>{% use_macro title %}</title>
+    <meta name="description" content="{% use_macro description %}" />
+    <meta name="keywords"
+          content="Weblate,Git,gettext,resources,JSON,PO,MO,QTS,CAT,XLIFF,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
 
-  <link rel="author" href="mailto:info@weblate.org" />
-  <meta name="copyright" content="Copyright &copy; Michal Čihař" />
-  <link rel="preconnect" href="https://stats.cihar.com">
+    <link rel="author" href="mailto:info@weblate.org" />
+    <meta name="copyright" content="Copyright &copy; Michal Čihař" />
+    <link rel="preconnect" href="https://stats.cihar.com">
 
-  <link rel="image_src" type="image/png" href="{% static 'weblate-128.png' %}"/>
-  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'logo-32.png' %}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'logo-16.png' %}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'weblate-180.png' %}"/>
-  <link rel="mask-icon" href="{% static 'weblate-black.svg' %}" color="#144d3f">
-  <meta name="msapplication-TileColor" content="#144d3f">
-  <meta name="msapplication-config" content="/browserconfig.xml">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#144d3f">
+    <link rel="image_src" type="image/png" href="{% static 'weblate-128.png' %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'logo-32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'logo-16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'weblate-180.png' %}" />
+    <link rel="mask-icon" href="{% static 'weblate-black.svg' %}" color="#144d3f">
+    <meta name="msapplication-TileColor" content="#144d3f">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#144d3f">
 
-  <meta property="og:image" content="{% block og_image %}https://weblate.org/static/og.png{% endblock %}" />
-  <meta property="og:url" content="https://weblate.org{{ request.path }}" />
-  <meta property="og:title" content="{% use_macro title %}" />
-  <meta property="og:site_name" content="Weblate" />
-  <meta property="og:description" content="{% use_macro description %}" />
-{% block ogprops %}
-  <meta property="og:type" content="website" />
-{% endblock %}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@WeblateOrg" />
-  <meta property="fb:app_id" content="741121112629028" />
-  <meta property="fb:page_id" content="371217713079025" />
-  <link rel="alternate" type="application/rss+xml" href="https://weblate.org{% url 'feed' %}" title="Weblate blog feed (RSS)"/>
-  {% for lang in language_urls %}
-    {% if lang.code != LANGUAGE_CODE %}<link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}" />{% endif %}
-  {% endfor %}
-   <meta name="google-site-verification" content="SSd77ql2j6xSOlvDHT2pO2r3ZMQQyMVTycyse-l9i6A" />
-   <meta name="wot-verification" content="b166aac1728babda4ade" />
-   <meta name="monetization" content="$ilp.uphold.com/ENU7fREdeZi9">
-   <link href="https://mastodon.social/@nijel" rel="me">
-</head>
-<body class="{% block body_class %}page light{% endblock %}">
-	<div class="line"></div>
-    <header>
+    <meta property="og:image" content="{% block og_image %}https://weblate.org/static/og.png{% endblock %}
+       " />
+      <meta property="og:url" content="https://weblate.org{{ request.path }}" />
+      <meta property="og:title" content="{% use_macro title %}" />
+      <meta property="og:site_name" content="Weblate" />
+      <meta property="og:description" content="{% use_macro description %}" />
+      {% block ogprops %}<meta property="og:type" content="website" />{% endblock %}
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@WeblateOrg" />
+      <meta property="fb:app_id" content="741121112629028" />
+      <meta property="fb:page_id" content="371217713079025" />
+      <link rel="alternate"
+            type="application/rss+xml"
+            href="https://weblate.org{% url 'feed' %}"
+            title="Weblate blog feed (RSS)" />
+      {% for lang in language_urls %}
+        {% if lang.code != LANGUAGE_CODE %}
+          <link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}" />
+        {% endif %}
+      {% endfor %}
+      <meta name="google-site-verification"
+            content="SSd77ql2j6xSOlvDHT2pO2r3ZMQQyMVTycyse-l9i6A" />
+      <meta name="wot-verification" content="b166aac1728babda4ade" />
+      <meta name="monetization" content="$ilp.uphold.com/ENU7fREdeZi9">
+      <link href="https://mastodon.social/@nijel" rel="me">
+    </head>
+    <body class="{% block body_class %}page light{% endblock %}
+       ">
+      <div class="line"></div>
+      <header>
         <div class="row">
-            <div class="logo"><a href="{% url 'home' %}">Weblate</a></div>
-            {% if user.is_authenticated %}
+          <div class="logo">
+            <a href="{% url 'home' %}">Weblate</a>
+          </div>
+          {% if user.is_authenticated %}
             <form action="{% url 'logout' %}" method="post">
               {% csrf_token %}
               <button type="suvbmit" class="user-logout">{% trans "Sign out" %}</button>
             </form>
             <a href="{% url 'user' %}" class="user-tab">
-            <img src="https://hosted.weblate.org/avatar/32/{{ user.username }}.png" />
+              <img src="https://hosted.weblate.org/avatar/32/{{ user.username }}.png" />
             </a>
-            {% else %}
-            <a href="{% url 'saml2_login' %}?next={{ request.path }}" class="user-tab user-anonymous"></a>
-            {% endif %}
-            <a href="https://hosted.weblate.org/" class="button border small app" target="_blank">{% trans "Go Weblate!" %}</a>
-            {% include "snippets/main-menu.html" %}
-            <a href="#" class="menu-show"><span></span><span></span><span></span><span></span>Menu</a>
+          {% else %}
+            <a href="{% url 'saml2_login' %}?next={{ request.path }}"
+               class="user-tab user-anonymous"></a>
+          {% endif %}
+          <a href="https://hosted.weblate.org/"
+             class="button border small app"
+             target="_blank">{% trans "Go Weblate!" %}</a>
+          {% include "snippets/main-menu.html" %}
+          <a href="#" class="menu-show"><span></span><span></span><span></span><span></span>Menu</a>
         </div>
-    </header>
+      </header>
 
-{% block box %}
-{% endblock %}
+      {% block box %}{% endblock %}
 
-{% if messages %}
-<section class="content messages">
-    <div class="row">
-        <div class="wrap">
-{% for message in messages %}
-<div class="alert {{ message.tags }}" role="alert">
-  {{ message }}
-</div>
-{% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
+      {% if messages %}
+        <section class="content messages">
+          <div class="row">
+            <div class="wrap">
+              {% for message in messages %}<div class="alert {{ message.tags }}" role="alert">{{ message }}</div>{% endfor %}
+            </div>
+          </div>
+        </section>
+      {% endif %}
 
-{% block content %}
-{% endblock %}
+      {% block content %}{% endblock %}
 
-    <footer>
-    	<div class="row">
-        	<a class="f-logo" href="{% url 'home' %}">weblate</a>
-			<div class="footicons">
-            	<a href="https://www.linkedin.com/company/weblate/" class="icon icon-in" title="LinkedIn"></a>
-            	<a href="https://twitter.com/WeblateOrg" class="icon icon-tw" title="X"></a>
-              <a rel="me" href="https://fosstodon.org/@weblate" class="icon icon-mastodon" title="Mastodon"></a>
-            	<a href="https://www.facebook.com/WeblateOrg" class="icon icon-fb" title="Facebook"></a>
-            	<a href="https://github.com/WeblateOrg/weblate" class="icon icon-git" title="GitHub"></a>
-                <!--
+      <footer>
+        <div class="row">
+          <a class="f-logo" href="{% url 'home' %}">weblate</a>
+          <div class="footicons">
+            <a href="https://www.linkedin.com/company/weblate/"
+               class="icon icon-in"
+               title="LinkedIn"></a>
+            <a href="https://twitter.com/WeblateOrg" class="icon icon-tw" title="X"></a>
+            <a rel="me"
+               href="https://fosstodon.org/@weblate"
+               class="icon icon-mastodon"
+               title="Mastodon"></a>
+            <a href="https://www.facebook.com/WeblateOrg"
+               class="icon icon-fb"
+               title="Facebook"></a>
+            <a href="https://github.com/WeblateOrg/weblate"
+               class="icon icon-git"
+               title="GitHub"></a>
+            <!--
             	<a href="#" class="icon icon-yt"></a>
                 -->
-            </div>
-            {% include "snippets/languages.html" %}
-            {% include "snippets/main-menu.html" with footer=1 %}
-            <div class="clear"></div>
-            <div class="footer-center">
-                <a href="https://status.weblate.org/" class="service-status">{% trans "Service Status" %}</a>
-            </div>
-			<div class="footer-left">
-                Copyright © <a href="https://cihar.com/">Michal Čihař</a> • <a href="https://docs.weblate.org/en/latest/contributing/license.html">{% trans "Licensed GNU GPLv3+" %}</a>
-            </div>
-            <div class="footer-right"><a href="{% url 'terms' %}">{% trans "Terms" %}</a> • <a href="{% url 'privacy' %}">{% trans "Privacy" %}</a> • {% blocktrans with author='<a href="https://vitavalka.com/">Vita Valka</a>' %}Design by {{ author }}{% endblocktrans %}</div>
-		</div>
-    </footer>
-    <section class="mobile-menu">
-        <div class="logo"><a href="{% url 'home' %}">Weblate</a></div>
+          </div>
+          {% include "snippets/languages.html" %}
+          {% include "snippets/main-menu.html" with footer=1 %}
+          <div class="clear"></div>
+          <div class="footer-center">
+            <a href="https://status.weblate.org/" class="service-status">{% trans "Service Status" %}</a>
+          </div>
+          <div class="footer-left">
+            Copyright © <a href="https://cihar.com/">Michal Čihař</a> • <a href="https://docs.weblate.org/en/latest/contributing/license.html">{% trans "Licensed GNU GPLv3+" %}</a>
+          </div>
+          <div class="footer-right">
+            <a href="{% url 'terms' %}">{% trans "Terms" %}</a> • <a href="{% url 'privacy' %}">{% trans "Privacy" %}</a> • {% blocktrans with author='<a href="https://vitavalka.com/">Vita Valka</a>' %}Design by {{ author }}{% endblocktrans %}
+          </div>
+        </div>
+      </footer>
+      <section class="mobile-menu">
+        <div class="logo">
+          <a href="{% url 'home' %}">Weblate</a>
+        </div>
         {% include "snippets/main-menu.html" with full_menu=1 mobile_menu=1 %}
         {% include "snippets/languages.html" %}
-    </section>
+      </section>
 
-{% compress js %}
-	<script src="{% static "vendor/clipboard.js" %}"></script>
-	<script src="{% static "custom.js" %}"></script>
-{% endcompress %}
-<!-- Matomo -->
-<script src="https://stats.cihar.com/matomo.js" async defer></script>
-<noscript><img src="https://stats.cihar.com/piwik.php?idsite=12&amp;rec=1" alt="" /></noscript>
-<!-- End Matomo Code -->
-  </body>
-</html>
+      {% compress js %}
+        <script src="{% static "vendor/clipboard.js" %}"></script>
+        <script src="{% static "custom.js" %}"></script>
+      {% endcompress %}
+      <!-- Matomo -->
+      <script src="https://stats.cihar.com/matomo.js" async defer></script>
+      <noscript>
+        <img src="https://stats.cihar.com/piwik.php?idsite=12&amp;rec=1" alt="" />
+      </noscript>
+      <!-- End Matomo Code -->
+    </body>
+  </html>
