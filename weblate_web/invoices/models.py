@@ -74,10 +74,10 @@ class CurrencyChoices(models.IntegerChoices):
 
 
 class InvoiceKindChoices(models.IntegerChoices):
+    DRAFT = 0, "Draft"
     INVOICE = 10, "Invoice"
-    PROFORMA = 20, "Proforma"
-    QUOTE = 30, "Quote"
-    DRAFT = 40, "Draft"
+    PROFORMA = 50, "Proforma"
+    QUOTE = 90, "Quote"
 
 
 class Discount(models.Model):
@@ -98,7 +98,7 @@ class Invoice(models.Model):
     sequence = models.IntegerField(editable=False)
     number = models.GeneratedField(
         expression=Concat(
-            Cast("kind", models.CharField()),
+            LPad(Cast("kind", models.CharField()), 2, models.Value("0")),
             Cast(Extract("issue_date", "year") % 2000, models.CharField()),
             LPad(Cast("sequence", models.CharField()), 6, models.Value("0")),
         ),
