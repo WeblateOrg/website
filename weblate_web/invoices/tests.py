@@ -8,7 +8,7 @@ from lxml import etree
 
 from weblate_web.payments.models import Customer
 
-from .models import Discount, Invoice, InvoiceKindChoices, QuantityUnitChoices
+from .models import Discount, Invoice, InvoiceKind, QuantityUnit
 
 S3_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent / "schemas" / "money-s3" / "_Document.xsd"
@@ -40,7 +40,7 @@ class InvoiceTestCase(TestCase):
             customer=self.create_customer(vat=vat),
             discount=discount,
             vat_rate=vat_rate,
-            kind=InvoiceKindChoices.INVOICE,
+            kind=InvoiceKind.INVOICE,
             customer_reference=customer_reference,
         )
         invoice.invoiceitem_set.create(
@@ -85,7 +85,7 @@ class InvoiceTestCase(TestCase):
             description="Other item",
             unit_price=1000,
             quantity=4,
-            quantity_unit=QuantityUnitChoices.HOURS,
+            quantity_unit=QuantityUnit.HOURS,
         )
         self.assertEqual(invoice.total_amount, 4100)
         self.validate_invoice(invoice)
@@ -96,7 +96,7 @@ class InvoiceTestCase(TestCase):
             description="Other item",
             unit_price=1000,
             quantity=1,
-            quantity_unit=QuantityUnitChoices.HOURS,
+            quantity_unit=QuantityUnit.HOURS,
         )
         self.assertEqual(invoice.total_amount, 1100)
         self.validate_invoice(invoice)

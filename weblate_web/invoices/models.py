@@ -63,17 +63,17 @@ def url_fetcher(url: str) -> dict[str, str | bytes]:
     return result
 
 
-class QuantityUnitChoices(models.IntegerChoices):
+class QuantityUnit(models.IntegerChoices):
     BLANK = 0, ""
     HOURS = 1, "hours"
 
 
-class CurrencyChoices(models.IntegerChoices):
+class Currency(models.IntegerChoices):
     EUR = 0, "EUR"
     CZK = 1, "CZK"
 
 
-class InvoiceKindChoices(models.IntegerChoices):
+class InvoiceKind(models.IntegerChoices):
     DRAFT = 0, "Draft"
     INVOICE = 10, "Invoice"
     PROFORMA = 50, "Proforma"
@@ -108,14 +108,14 @@ class Invoice(models.Model):
     )
     issue_date = models.DateField(default=datetime.date.today)
     due_date = models.DateField(blank=True)
-    kind = models.IntegerField(choices=InvoiceKindChoices)
+    kind = models.IntegerField(choices=InvoiceKind)
     customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.PROTECT)
     customer_reference = models.CharField(max_length=100, blank=True)
     discount = models.ForeignKey(
         Discount, on_delete=models.deletion.PROTECT, blank=True, null=True
     )
     vat_rate = models.IntegerField(default=0)
-    currency = models.IntegerField(choices=CurrencyChoices, default=CurrencyChoices.EUR)
+    currency = models.IntegerField(choices=Currency, default=Currency.EUR)
 
     # Invoice chaining Proforma -> Invoice, or Draft -> Invoice
     parent = models.ForeignKey(
@@ -172,7 +172,7 @@ class Invoice(models.Model):
         )
 
     def render_amount(self, amount: int | Decimal) -> str:
-        if self.currency == CurrencyChoices.EUR:
+        if self.currency == Currency.EUR:
             return f"€{amount}"
         return f"{amount} {self.get_currency_display()}"
 
@@ -331,7 +331,7 @@ class Invoice(models.Model):
         add_element(output, "Proplatit", self.total_amount_czk)
         add_element(output, "Vyuctovano", "0")
         add_amounts(output, in_czk=True)
-        if self.currency != CurrencyChoices.CZK:
+        if self.currency != Currency.CZK:
             valuty = add_element(output, "Valuty")
             mena = add_element(valuty, "Mena")
             add_element(mena, "Kod", self.get_currency_display())
@@ -340,7 +340,7 @@ class Invoice(models.Model):
             add_amounts(valuty)
 
         add_element(output, "PriUhrZbyv", "0")
-        if self.currency != CurrencyChoices.CZK:
+        if self.currency != Currency.CZK:
             add_element(output, "ValutyProp", self.total_amount)
         add_element(output, "SumZaloha", "0")
         add_element(output, "SumZalohaC", "0")
@@ -371,7 +371,7 @@ class Invoice(models.Model):
             polozka = add_element(seznam, "Polozka")
             add_element(polozka, "Popis", item.description)
             add_element(polozka, "PocetMJ", item.quantity)
-            if self.currency == CurrencyChoices.CZK:
+            if self.currency == Currency.CZK:
                 add_element(polozka, "Cena", item.total_price)
             else:
                 add_element(polozka, "Valuty", item.total_price)
@@ -423,7 +423,7 @@ class Invoice(models.Model):
     def finalize(
         self,
         *,
-        kind: InvoiceKindChoices = InvoiceKindChoices.INVOICE,
+        kind: InvoiceKind = InvoiceKind.INVOICE,
         prepaid: bool = True,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
@@ -454,7 +454,7 @@ class InvoiceItem(models.Model):
         default=1, validators=[MinValueValidator(1), MaxValueValidator(50)]
     )
     quantity_unit = models.IntegerField(
-        choices=QuantityUnitChoices, default=QuantityUnitChoices.BLANK
+        choices=QuantityUnit, default=QuantityUnit.BLANK
     )
     unit_price = models.DecimalField(decimal_places=2, max_digits=7)
 
@@ -475,7 +475,7 @@ class InvoiceItem(models.Model):
 
     def get_quantity_unit_display(self) -> str:  # type: ignore[no-redef]
         # Correcly handle singulars
-        if self.quantity_unit == QuantityUnitChoices.HOURS and self.quantity == 1:
+        if self.quantity_unit == QuantityUnit.HOURS and self.quantity == 1:
             return "hour"
         # This is what original get_quantity_unit_display() would have done
         return self._get_FIELD_display(  # type: ignore[attr-defined]
