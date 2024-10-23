@@ -23,7 +23,6 @@ import os.path
 import uuid
 
 from appconf import AppConf
-from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
@@ -416,15 +415,3 @@ class PaymentConf(AppConf):
 
     class Meta:
         prefix = "PAYMENT"
-
-
-def get_period_delta(period):
-    if period == "y":
-        return relativedelta(years=1) - relativedelta(days=1)
-    if period == "b":
-        return relativedelta(months=6) - relativedelta(days=1)
-    if period == "q":
-        return relativedelta(months=3) - relativedelta(days=1)
-    if period == "m":
-        return relativedelta(months=1) - relativedelta(days=1)
-    raise ValueError(f"Invalid payment period {period!r}!")

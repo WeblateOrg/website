@@ -487,6 +487,12 @@ class FakturaceTestCase(TestCase):
                     category=PackageCategory.PACKAGE_SUPPORT,
                 ),
                 Package(
+                    name="hosted:test-1-m",
+                    verbose="Hosted (basic)",
+                    price=42,
+                    category=PackageCategory.PACKAGE_DEDICATED,
+                ),
+                Package(
                     name="hosted:test-1",
                     verbose="Hosted (basic)",
                     price=420,
@@ -1168,7 +1174,7 @@ class ServiceTest(FakturaceTestCase):
         with override("en"):
             self.login()
             service = self.create_service(
-                years=0, days=3, recurring="", package="hosted:test-1"
+                years=0, days=3, recurring="", package="hosted:test-1-m"
             )
             response = self.client.post(
                 reverse("subscription-pay", kwargs={"pk": service.pk}),
@@ -1186,7 +1192,44 @@ class ServiceTest(FakturaceTestCase):
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
+        self.assertEqual(hosted[0].package.name, "hosted:test-1-m")
+        self.assertEqual(hosted[0].payment_obj.amount, 42)
+        self.assertEqual(
+            hosted[0].expires.date(),
+            timezone.now().date() + relativedelta(months=1) + timedelta(days=3),
+        )
+
+    @responses.activate
+    def test_hosted_pay_yearly(self):
+        mock_vies()
+        with override("en"):
+            self.login()
+            service = self.create_service(
+                years=0, days=3, recurring="", package="hosted:test-1-m"
+            )
+            response = self.client.post(
+                reverse("subscription-pay", kwargs={"pk": service.pk}),
+                {"switch_yearly": 1},
+                follow=True,
+            )
+            payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
+            payment_edit_url = response.redirect_chain[1][0]
+            self.assertTrue(payment_url.startswith("/en/payment/"))
+            response = self.client.post(payment_edit_url, TEST_CUSTOMER, follow=True)
+            self.assertRedirects(response, payment_url)
+            response = self.client.post(payment_url, {"method": "pay"}, follow=True)
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(response, "Weblate: Hosted (basic)")
+
+        service = Service.objects.get(pk=service.pk)
+        hosted = service.hosted_subscriptions
+        self.assertEqual(len(hosted), 1)
         self.assertEqual(hosted[0].package.name, "hosted:test-1")
+        self.assertEqual(hosted[0].payment_obj.amount, 420)
+        self.assertEqual(
+            hosted[0].expires.date(),
+            timezone.now().date() + relativedelta(years=1) + timedelta(days=3),
+        )
 
     @responses.activate
     def test_hosted_upgrade(self):
