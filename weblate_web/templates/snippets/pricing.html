@@ -1,228 +1,311 @@
 {% load i18n %}
 {% load humanize %}
 {% load prices %}
-	<section class="pricing">
-    	<div class="row">
-            <h2 class="section-title">{% trans "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you" %}</h2>
-            <div class="flex">
-              <div class="box box-tabs">
-                <h3>{% trans "Premium Cloud" %}</h3>
-                <p>{% trans "for ease and comfort" %}</p>
-                <ul class="pricing-tabs">
-                    <li class="current" data-tab="plan-10k">10k</li>
-                    <li data-tab="plan-40k">40k</li>
-                    <li data-tab="plan-160k">160k</li>
-                    <li data-tab="plan-640k">640k</li>
-                    <li data-tab="plan-2-5m">2.5M</li>
-                    <li data-tab="plan-10m">10M</li>
-                </ul>
-                <div id="plan-10k" class="tab-content current">
-                    <table>
-                        <tr>
-                            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                            <td>{{ 10000|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                    </table>
-                    <div class="half first">
-                        <div class="box-price"><strong>{{ 45 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Monthly" %}{% endfilter %}</span></div>
-                    </div>
-                    <div class="half">
-                        <div class="box-price"><span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 450 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Yearly" %}{% endfilter %}</span></div>
-                    </div>
-                </div>
-                <div id="plan-40k" class="tab-content">
-                    <table>
-                        <tr>
-                            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                            <td>{{ 40000|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                    </table>
-                    <div class="half first">
-                        <div class="box-price"><strong>{{ 66 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Monthly" %}{% endfilter %}</span></div>
-                    </div>
-                    <div class="half">
-                        <div class="box-price"><span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 660 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Yearly" %}{% endfilter %}</span></div>
-                    </div>
-                </div>
-                <div id="plan-160k" class="tab-content">
-                    <table>
-                        <tr>
-                            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                            <td>{{ 160000|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                    </table>
-                    <div class="half first">
-                        <div class="box-price"><strong>{{ 106 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Monthly" %}{% endfilter %}</span></div>
-                    </div>
-                    <div class="half">
-                        <div class="box-price"><span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 1060 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Yearly" %}{% endfilter %}</span></div>
-                    </div>
-                </div>
-                <div id="plan-640k" class="tab-content">
-                    <table>
-                        <tr>
-                            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                            <td>{{ 640000|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                    </table>
-                    <div class="half first">
-                        <div class="box-price"><strong>{{ 178 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Monthly" %}{% endfilter %}</span></div>
-                    </div>
-                    <div class="half">
-                        <div class="box-price"><span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 1780 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Yearly" %}{% endfilter %}</span></div>
-                    </div>
-                </div>
-                <div id="plan-2-5m" class="tab-content">
-                    <table>
-                        <tr>
-                            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                            <td>{{ 2560000|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                    </table>
-                    <div class="half first">
-                        <div class="box-price"><strong>{{ 313 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Monthly" %}{% endfilter %}</span></div>
-                    </div>
-                    <div class="half">
-                        <div class="box-price"><span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 3130 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Yearly" %}{% endfilter %}</span></div>
-                    </div>
-                </div>
-                <div id="plan-10m" class="tab-content">
-                    <table>
-                        <tr>
-                            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                            <td>{{ 10240000|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                            <td>{% trans "Unlimited" %}</td>
-                        </tr>
-                    </table>
-                    <div class="half first">
-                        <div class="box-price"><strong>{{ 562 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Monthly" %}{% endfilter %}</span></div>
-                    </div>
-                    <div class="half">
-                        <div class="box-price"><span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 5620 | price_format }}</strong><span class="period">{% filter lower %}{% trans "Yearly" %}{% endfilter %}</span></div>
-                    </div>
-                </div>
-              </div>
-              <div class="box">
-                <h3>{% trans "Self-hosted" context "Hosting plan" %}</h3>
-                <p>{% trans "for complete control" %}</p>
 
-                <table>
-                	<tr>
-                    	<td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                    	<td>{% trans "Unlimited" %}</td>
-                    </tr>
-                	<tr>
-                    	<td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                    	<td>{% trans "Unlimited" %}</td>
-                    </tr>
-                	<tr>
-                    	<td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                    	<td>{% trans "Unlimited" %}</td>
-                    </tr>
-                	<tr>
-                    	<td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                    	<td>{% trans "Unlimited" %}</td>
-                    </tr>
-                </table>
-                <div class="box-price">{% url 'support' as url %}<strong>{% trans "Gratis" %}</strong><br />{% blocktrans %}with paid <a href="{{ url }}">support</a>{% endblocktrans %}</div>
-              </div>
-              <div class="box">
-                <h3>{% trans "Gratis Weblate" %}</h3>
-                <p>{% trans "for libre projects" %}</p>
-
-                <table>
-                	<tr>
-                    	<td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
-                      <td>{{ 160000|intcomma }}</td>
-                    </tr>
-                	<tr>
-                    	<td>{% trans "Languages" context "Hosting plan parameter" %}</td>
-                    	<td>{% trans "Unlimited" %}</td>
-                    </tr>
-                	<tr>
-                    	<td>{% trans "Projects" context "Hosting plan parameter" %}</td>
-                    	<td>1</td>
-                    </tr>
-                	<tr>
-                    	<td>{% trans "Components" context "Hosting plan parameter" %}</td>
-                    	<td>{% trans "Unlimited" %}</td>
-                    </tr>
-                </table>
-                <div class="box-price"><strong>{% trans "Gratis" %}</strong><br />{% blocktrans with url="https://hosted.weblate.org/hosting/" %}upon <a href="{{ url }}">request</a>{% endblocktrans %}</div>
-              </div>
+<section class="pricing">
+  <div class="row">
+    <h2 class="section-title">
+      {% trans "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you" %}
+    </h2>
+    <div class="flex">
+      <div class="box box-tabs">
+        <h3>{% trans "Premium Cloud" %}</h3>
+        <p>{% trans "for ease and comfort" %}</p>
+        <ul class="pricing-tabs">
+          <li class="current" data-tab="plan-10k">10k</li>
+          <li data-tab="plan-40k">40k</li>
+          <li data-tab="plan-160k">160k</li>
+          <li data-tab="plan-640k">640k</li>
+          <li data-tab="plan-2-5m">2.5M</li>
+          <li data-tab="plan-10m">10M</li>
+        </ul>
+        <div id="plan-10k" class="tab-content current">
+          <table>
+            <tr>
+              <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+              <td>{{ 10000|intcomma }}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+          </table>
+          <div class="half first">
+            <div class="box-price">
+              <strong>{{ 45 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Monthly" %}
+                {% endfilter %}
+              </span>
             </div>
-            <div class="clear"></div>
-            <a href="{% url 'hosting' %}" class="button">{% trans "Compare all plans" %}</a>
-    	</div>
-    </section>
+          </div>
+          <div class="half">
+            <div class="box-price">
+              <span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 450 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Yearly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div id="plan-40k" class="tab-content">
+          <table>
+            <tr>
+              <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+              <td>{{ 40000|intcomma }}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+          </table>
+          <div class="half first">
+            <div class="box-price">
+              <strong>{{ 66 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Monthly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+          <div class="half">
+            <div class="box-price">
+              <span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 660 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Yearly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div id="plan-160k" class="tab-content">
+          <table>
+            <tr>
+              <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+              <td>{{ 160000|intcomma }}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+          </table>
+          <div class="half first">
+            <div class="box-price">
+              <strong>{{ 106 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Monthly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+          <div class="half">
+            <div class="box-price">
+              <span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 1060 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Yearly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div id="plan-640k" class="tab-content">
+          <table>
+            <tr>
+              <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+              <td>{{ 640000|intcomma }}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+          </table>
+          <div class="half first">
+            <div class="box-price">
+              <strong>{{ 178 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Monthly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+          <div class="half">
+            <div class="box-price">
+              <span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 1780 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Yearly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div id="plan-2-5m" class="tab-content">
+          <table>
+            <tr>
+              <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+              <td>{{ 2560000|intcomma }}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+          </table>
+          <div class="half first">
+            <div class="box-price">
+              <strong>{{ 313 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Monthly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+          <div class="half">
+            <div class="box-price">
+              <span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 3130 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Yearly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div id="plan-10m" class="tab-content">
+          <table>
+            <tr>
+              <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+              <td>{{ 10240000|intcomma }}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+            <tr>
+              <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+              <td>{% trans "Unlimited" %}</td>
+            </tr>
+          </table>
+          <div class="half first">
+            <div class="box-price">
+              <strong>{{ 562 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Monthly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+          <div class="half">
+            <div class="box-price">
+              <span class="save">{% blocktrans with percent=20 %}Save {{percent}}%{% endblocktrans %}</span><strong>{{ 5620 | price_format }}</strong><span class="period">
+                {% filter lower %}
+                  {% trans "Yearly" %}
+                {% endfilter %}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box">
+        <h3>{% trans "Self-hosted" context "Hosting plan" %}</h3>
+        <p>{% trans "for complete control" %}</p>
+
+        <table>
+          <tr>
+            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+            <td>{% trans "Unlimited" %}</td>
+          </tr>
+          <tr>
+            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+            <td>{% trans "Unlimited" %}</td>
+          </tr>
+          <tr>
+            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+            <td>{% trans "Unlimited" %}</td>
+          </tr>
+          <tr>
+            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+            <td>{% trans "Unlimited" %}</td>
+          </tr>
+        </table>
+        <div class="box-price">
+          {% url 'support' as url %}<strong>{% trans "Gratis" %}</strong>
+          <br />
+          {% blocktrans %}with paid <a href="{{ url }}">support</a>{% endblocktrans %}
+        </div>
+      </div>
+      <div class="box">
+        <h3>{% trans "Gratis Weblate" %}</h3>
+        <p>{% trans "for libre projects" %}</p>
+
+        <table>
+          <tr>
+            <td>{% trans "Hosted strings" context "Hosting plan parameter" %}</td>
+            <td>{{ 160000|intcomma }}</td>
+          </tr>
+          <tr>
+            <td>{% trans "Languages" context "Hosting plan parameter" %}</td>
+            <td>{% trans "Unlimited" %}</td>
+          </tr>
+          <tr>
+            <td>{% trans "Projects" context "Hosting plan parameter" %}</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td>{% trans "Components" context "Hosting plan parameter" %}</td>
+            <td>{% trans "Unlimited" %}</td>
+          </tr>
+        </table>
+        <div class="box-price">
+          <strong>{% trans "Gratis" %}</strong>
+          <br />
+          {% blocktrans with url="https://hosted.weblate.org/hosting/" %}upon <a href="{{ url }}">request</a>{% endblocktrans %}
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <a href="{% url 'hosting' %}" class="button">{% trans "Compare all plans" %}</a>
+  </div>
+</section>

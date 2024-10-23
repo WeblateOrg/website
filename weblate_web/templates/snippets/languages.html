@@ -1,17 +1,29 @@
 {% load i18n %}
-<div class="langs">
-    <a class="open-langs" href="#">{% for lang in LANGUAGES %}{% if lang.0 == LANGUAGE_CODE %}{{ lang.1 }}{% endif %}{% endfor %}</a>
 
-    <div class="langs-list">
-        {% for column in language_columns %}
-        <ul>
-            {% for lang in column %}
-            <li{% if lang.code == LANGUAGE_CODE %} class="active"{% endif %}><a href="{{ lang.url }}">{{ lang.name }}</a></li>
-            {% endfor %}
-        </ul>
+<div class="langs">
+  <a class="open-langs" href="#">
+    {% for lang in LANGUAGES %}
+      {% if lang.0 == LANGUAGE_CODE %}{{ lang.1 }}{% endif %}
+    {% endfor %}
+  </a>
+
+  <div class="langs-list">
+    {% for column in language_columns %}
+      <ul>
+        {% for lang in column %}
+          <li {% if lang.code == LANGUAGE_CODE %}class="active"{% endif %}>
+            <a href="{{ lang.url }}">{{ lang.name }}</a>
+          </li>
         {% endfor %}
-        <div class="bottom">
-            {% if LANGUAGE_BIDI %}←{% else %}→{% endif %} <a href="{% url 'contribute' %}#translate">{% trans "Help translate" %}</a>
-        </div>
+      </ul>
+    {% endfor %}
+    <div class="bottom">
+      {% if LANGUAGE_BIDI %}
+        ←
+      {% else %}
+        →
+      {% endif %}
+      <a href="{% url 'contribute' %}#translate">{% trans "Help translate" %}</a>
     </div>
+  </div>
 </div>

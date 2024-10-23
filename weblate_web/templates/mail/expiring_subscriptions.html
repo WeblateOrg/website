@@ -4,14 +4,14 @@
 
 {% block content %}
 
-<p>
-    Following subscriptions are about to expire in the next 30 days and do not have recurring payment set:
-</p>
+  <p>Following subscriptions are about to expire in the next 30 days and do not have recurring payment set:</p>
 
-<ul>
+  <ul>
     {% for name, emails, expires in expiry %}
-        <li><strong>{{ name }}</strong>, for users: {{ emails|join:", "}}, expires on {{ expires|date }}</li>
+      <li>
+        <strong>{{ name }}</strong>, for users: {{ emails|join:", " }}, expires on {{ expires|date }}
+      </li>
     {% endfor %}
-</ul>
+  </ul>
 
 {% endblock %}

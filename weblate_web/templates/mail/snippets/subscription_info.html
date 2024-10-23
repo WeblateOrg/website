@@ -1,6 +1,7 @@
 {% load i18n %}
+
 <p>
-{% blocktrans with package=subscription.package %}Current subscription: {{ package }}{% endblocktrans %}
+  {% blocktrans with package=subscription.package %}Current subscription: {{ package }}{% endblocktrans %}
 </p>
 {% if subscription.service.site_url %}
   <p>

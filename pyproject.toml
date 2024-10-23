@@ -4,6 +4,33 @@ target-version = ['py311']
 [tool.django-stubs]
 django_settings_module = "weblate_web.settings"
 
+# strict_settings = false
+[tool.djlint]
+blank_line_after_tag = "load,extends,endblock"
+# H014 - Found extra blank lines.
+# T003 - Endblock should have name.
+# H013 - Img tag should have an alt attribute.
+# H006 - Img tag should have height and width attributes.
+ignore = "T003,H014,H013,H006"
+indent = 2
+max_attribute_length = 80
+max_blank_lines = 2
+preserve_blank_lines = true
+profile = "django"
+
+[tool.djlint.per-file-ignores]
+"weblate_web/invoices/templates/invoice-template.html" = "H031"
+# False positives for crypto URLs
+"weblate_web/templates/donate.html" = "D018"
+# Use language-less URLs in notifications
+"weblate_web/templates/mail/base.html" = "H030,D018,H021,H031"
+"weblate_web/templates/mail/payment_completed.html" = "D018"
+"weblate_web/templates/mail/payment_expired.html" = "D018"
+"weblate_web/templates/mail/payment_failed.html" = "D018"
+"weblate_web/templates/mail/payment_missing.html" = "D018"
+"weblate_web/templates/mail/payment_upcoming.html" = "D018"
+"weblate_web/templates/mail/subscription_intro.html" = "D018"
+
 [tool.isort]
 profile = "black"
 
@@ -100,5 +127,3 @@ max-complexity = 16
 "scripts/*" = ["T201"]
 "weblate_web/migrations/0031_fill_in_customer.py" = ["T201"]
 "weblate_web/payments/backends.py" = ["T201"]
-
-# strict_settings = false

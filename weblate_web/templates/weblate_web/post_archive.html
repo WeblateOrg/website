@@ -1,30 +1,39 @@
 {% extends "base.html" %}
+
 {% load i18n %}
 {% load static %}
 
-{% block description %}{% trans "News about Weblate and localization." %}{% endblock %}
+{% block description %}
+  {% trans "News about Weblate and localization." %}
+{% endblock %}
+
 
 {% block content %}
-	<section class="content">
+  <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title">{% block title %}{% trans "Weblate Blog" %}{% if topic %} / {{ topic }}{% endif %}{% endblock %}</h1>
-				<div class="articles archive">
+        <h1 class="section-title">
+          {% block title %}
+            {% trans "Weblate Blog" %}
+            {% if topic %}/ {{ topic }}{% endif %}
+          {% endblock %}
+
+        </h1>
+        <div class="articles archive">
           {% for object in object_list %}
-            <div class="article">
-              {% include "snippets/article.html" %}
-            </div>
-          {% endfor %}
-          </div>
-          {% for pg in page_range %}
-            {% if pg == "." %}
-              …
-            {% else %}
-              <a href="{{ request.path }}?page={{ pg }}" class="button pagination center {% if pg == page_obj.number %}active-page{% endif %}">{{ pg }}</a>
-            {% endif %}
+            <div class="article">{% include "snippets/article.html" %}</div>
           {% endfor %}
         </div>
-    	</div>
-    </section>
+        {% for pg in page_range %}
+          {% if pg == "." %}
+            …
+          {% else %}
+            <a href="{{ request.path }}?page={{ pg }}"
+               class="button pagination center {% if pg == page_obj.number %}active-page{% endif %}">{{ pg }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
 
 {% endblock %}

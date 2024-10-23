@@ -4,22 +4,18 @@
 
 {% block content %}
 
-{% if subscription %}
-<p>
-{% trans "Your subscription on weblate.org is expiring soon. Please sign in on the website to renew it." %}
-</p>
+  {% if subscription %}
+    <p>{% trans "Your subscription on weblate.org is expiring soon. Please sign in on the website to renew it." %}</p>
 
-{% include "mail/snippets/subscription_info.html" %}
-{% endif %}
+    {% include "mail/snippets/subscription_info.html" %}
+  {% endif %}
 
-{% if donation %}
-<p>
-{% trans "Your donation on weblate.org is expiring soon. Please sign in on the website to renew it." %}
-</p>
+  {% if donation %}
+    <p>{% trans "Your donation on weblate.org is expiring soon. Please sign in on the website to renew it." %}</p>
 
-{% include "mail/snippets/donation_info.html" %}
-{% endif %}
+    {% include "mail/snippets/donation_info.html" %}
+  {% endif %}
 
-<a class="button" href="/user/">{% trans "Manage your payments" %}</a>
+  <a class="button" href="/user/">{% trans "Manage your payments" %}</a>
 
 {% endblock %}

@@ -1,33 +1,37 @@
 {% extends "base.html" %}
+
 {% load i18n %}
 
 {% block content %}
-<section class="content">
+  <section class="content">
     <div class="row">
-        <div class="wrap">
-            <h1 class="section-title min-m">{% block title %}{% trans "Server error" %}{% endblock %}</h1>
-            <div class="page-desc">
-                <p>
-                  {% blocktrans with error_id=sentry_event_id %}The server had serious problems serving your request, and this error has been recorded as {{ error_id }}.{% endblocktrans %}
-                </p>
-            </div>
-        </div>
-        <div class="wrap">
-<script
-  src="https://browser.sentry-cdn.com/8.35.0/bundle.min.js"
-  integrity="sha384-j1K2/oFJn/QPiNs/Fk58NwXcaEbWzaUEF04vKMBnEprfbZ2hIQrAO0yc0XEfai1E"
-  crossorigin="anonymous"
-></script>
+      <div class="wrap">
+        <h1 class="section-title min-m">
+          {% block title %}
+            {% trans "Server error" %}
+          {% endblock %}
 
-{% if sentry_event_id %}
-  <script>
+        </h1>
+        <div class="page-desc">
+          <p>
+            {% blocktrans with error_id=sentry_event_id %}The server had serious problems serving your request, and this error has been recorded as {{ error_id }}.{% endblocktrans %}
+          </p>
+        </div>
+      </div>
+      <div class="wrap">
+        <script src="https://browser.sentry-cdn.com/8.35.0/bundle.min.js"
+                integrity="sha384-j1K2/oFJn/QPiNs/Fk58NwXcaEbWzaUEF04vKMBnEprfbZ2hIQrAO0yc0XEfai1E"
+                crossorigin="anonymous"></script>
+
+        {% if sentry_event_id %}
+          <script>
     Sentry.init({ dsn: "https://5eb5194266692a262a4f8a6aad7a25b6@o4507304895905792.ingest.de.sentry.io/4507486269866064" });
     Sentry.showReportDialog({
       eventId: "{{ sentry_event_id }}",
     });
-  </script>
-{% endif %}
-        </div>
+          </script>
+        {% endif %}
+      </div>
     </div>
-</section>
+  </section>
 {% endblock %}

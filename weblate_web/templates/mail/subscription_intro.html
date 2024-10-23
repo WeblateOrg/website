@@ -3,15 +3,13 @@
 {% load i18n %}
 
 {% block content %}
-<p>
-{% trans "Thank you for purchasing support subscription on weblate.org" %}
-</p>
+  <p>{% trans "Thank you for purchasing support subscription on weblate.org" %}</p>
 
-<p>
-{% trans "You can now activate it in your Weblate using the following activation key:" %} <code>{{ subscription.service.secret }}</code>
-</p>
+  <p>
+    {% trans "You can now activate it in your Weblate using the following activation key:" %} <code>{{ subscription.service.secret }}</code>
+  </p>
 
-<a class="button" href="/user/">{% trans "Manage your subscriptions" %}</a>
-<a class="button" href="https://docs.weblate.org/en/latest/admin/support.html">{% trans "Documentation on activating support" %}</a>
+  <a class="button" href="/user/">{% trans "Manage your subscriptions" %}</a>
+  <a class="button" href="https://docs.weblate.org/en/latest/admin/support.html">{% trans "Documentation on activating support" %}</a>
 
 {% endblock %}

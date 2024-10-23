@@ -1,180 +1,231 @@
 {% extends "base.html" %}
+
 {% load static %}
 {% load i18n %}
 {% load prices %}
 
 {% block body_class %}page donate light{% endblock %}
 
-{% block content %}
-<section class="content">
-    <div class="row">
-        <div class="wrap">
-            <h1 class="section-title min-m">{% block title %}{% trans "Donate to Weblate" %}{% endblock %}</h1>
-            <div class="page-desc">
-                <p>
-                    {% block description %}
-                    {% trans "Weblate does not require payment, and welcomes donations. There are many ways to contribute. Discuss it with your associates." %}
-                    {% endblock %}
-                </p>
-                <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
-                <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>
-            </div>
 
-            <h2 class="section-title">{% trans "Recurring donations and rewards" %}</h2>
-            <div class="page-desc small">
-                <p>{% trans "Recurring donations facilitate sustainable Weblate development, and even the smallest amount is put to good use. Repeated appreciation helps in keeping the project sustainable long term. Please consider this option if you are hosting Weblate yourself without a support contract." %}</p>
-                <a href="{% url 'donate-new' %}" class="button inline">{% trans "Activate donation" %}</a>
-            </div>
-            <div class="donations-cols flex">
-                <div class="col">
-                    <div class="title">{% trans "Name in the list of supporters" %}</div>
-                    <div class="badges">
-                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="format-item">{{ 100 | price_format }} <span>{% trans "annually" %}</span></a>
-                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="title">{% trans "Link in the list of supporters" %}</div>
-                    <div class="badges">
-                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="format-item">{{ 400 | price_format }} <span>{% trans "annually" %}</span></a>
-                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% trans "Donate" %}</a>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
-                    <div class="badges">
-                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="format-item">{{ 800 | price_format }} <span>{% trans "annually" %}</span></a>
-                      <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% trans "Donate" %}</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="donations-info">
-    <div class="di-section">
-        <div class="half half-img rotate">
-            <img src="{% static "img/LeftPhoto.jpg" %}" />
-        </div>
-        <div class="half half-content">
-            <h2>{% trans "Weblate heroism" %}</h2>
-            <p>{% trans "Commercial services like hosting or support for self-hosted installations help fund Weblate development." %}</p>
-            <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
-            <a href="{% url 'support' %}" class="button inline">{% trans "Get help from Weblate" %}</a>
-        </div>
-    </div>
-    <div class="di-section">
-        <div class="half half-img rotate">
-            <img src="{% static "img/RightPhoto.jpg" %}" />
-        </div>
-        <div class="half half-content">
-            <h2>{% trans "Single appreciative donation" %}</h2>
-            <p>{% trans "One-time donations are a great way to bring attention to a single issue before or after it is fixed." %}</p>
-            <a href="{% url "donate-new" %}" class="button">{% trans "Donate" %}</a>
-        </div>
-    </div>
-    <div class="di-section" id="swag">
-        <div class="half half-img border">
-            <img src="{% static "img/swag.jpg" %}" />
-        </div>
-        <div class="half half-content">
-            <h2>{% trans "Weblate swag" %}</h2>
-            <p>{% trans "Buying branded clothing and merch is a great way to support Weblate and show your pride!" %}</p>
-            <a href="https://shop.spreadshirt.net/weblate/" class="button inline">{% trans "Shop from Europe" %}</a>
-            <a href="https://shop.spreadshirt.com/weblate/" class="button inline">{% trans "Shop from America and Australia" %}</a>
-        </div>
-    </div>
-</section>
-<section class="content no-mar">
+{% block content %}
+  <section class="content">
     <div class="row">
-        <h2 class="section-title crypto">{% trans "Your favorite donation platforms" %}</h2>
+      <div class="wrap">
+        <h1 class="section-title min-m">
+          {% block title %}
+            {% trans "Donate to Weblate" %}
+          {% endblock %}
+
+        </h1>
         <div class="page-desc">
           <p>
-            {% trans "Join Weblate fans on platforms you trust. We look forward to seeing you there." %}
+            {% block description %}
+              {% trans "Weblate does not require payment, and welcomes donations. There are many ways to contribute. Discuss it with your associates." %}
+            {% endblock %}
+
           </p>
+          <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
+          <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>
         </div>
-        <div class="donate-platforms">
-          <a href="https://github.com/sponsors/WeblateOrg">
-            <img src="{% static "img/donate-github.svg" %}" />
-            {% trans "GitHub Sponsors" %}
-          </a>
-          <a href="https://liberapay.com/Weblate/">
-            <img src="{% static "img/donate-liberapay.svg" %}" />
-            Liberapay
-          </a>
-          <a href="https://opencollective.com/weblate">
-            <img src="{% static "img/donate-opencollective.svg" %}" />
-            Open Collective
-          </a>
+
+        <h2 class="section-title">{% trans "Recurring donations and rewards" %}</h2>
+        <div class="page-desc small">
+          <p>
+            {% trans "Recurring donations facilitate sustainable Weblate development, and even the smallest amount is put to good use. Repeated appreciation helps in keeping the project sustainable long term. Please consider this option if you are hosting Weblate yourself without a support contract." %}
+          </p>
+          <a href="{% url 'donate-new' %}" class="button inline">{% trans "Activate donation" %}</a>
         </div>
+        <div class="donations-cols flex">
+          <div class="col">
+            <div class="title">{% trans "Name in the list of supporters" %}</div>
+            <div class="badges">
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="format-item">{{ 100 | price_format }} <span>{% trans "annually" %}</span></a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
+            </div>
+          </div>
+          <div class="col">
+            <div class="title">{% trans "Link in the list of supporters" %}</div>
+            <div class="badges">
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="format-item">{{ 400 | price_format }} <span>{% trans "annually" %}</span></a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% trans "Donate" %}</a>
+            </div>
+          </div>
+          <div class="col">
+            <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
+            <div class="badges">
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="format-item">{{ 800 | price_format }} <span>{% trans "annually" %}</span></a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% trans "Donate" %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</section>
-<section class="content no-mar crypto">
+  </section>
+  <section class="donations-info">
+    <div class="di-section">
+      <div class="half half-img rotate">
+        <img src="{% static "img/LeftPhoto.jpg" %}" />
+      </div>
+      <div class="half half-content">
+        <h2>{% trans "Weblate heroism" %}</h2>
+        <p>
+          {% trans "Commercial services like hosting or support for self-hosted installations help fund Weblate development." %}
+        </p>
+        <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
+        <a href="{% url 'support' %}" class="button inline">{% trans "Get help from Weblate" %}</a>
+      </div>
+    </div>
+    <div class="di-section">
+      <div class="half half-img rotate">
+        <img src="{% static "img/RightPhoto.jpg" %}" />
+      </div>
+      <div class="half half-content">
+        <h2>{% trans "Single appreciative donation" %}</h2>
+        <p>
+          {% trans "One-time donations are a great way to bring attention to a single issue before or after it is fixed." %}
+        </p>
+        <a href="{% url "donate-new" %}" class="button">{% trans "Donate" %}</a>
+      </div>
+    </div>
+    <div class="di-section" id="swag">
+      <div class="half half-img border">
+        <img src="{% static "img/swag.jpg" %}" />
+      </div>
+      <div class="half half-content">
+        <h2>{% trans "Weblate swag" %}</h2>
+        <p>{% trans "Buying branded clothing and merch is a great way to support Weblate and show your pride!" %}</p>
+        <a href="https://shop.spreadshirt.net/weblate/" class="button inline">{% trans "Shop from Europe" %}</a>
+        <a href="https://shop.spreadshirt.com/weblate/" class="button inline">{% trans "Shop from America and Australia" %}</a>
+      </div>
+    </div>
+  </section>
+  <section class="content no-mar">
     <div class="row">
-        <h2 class="section-title crypto">{% trans "Cryptocurrency donations" %}</h2>
-        <div class="page-desc">
-            <p>{% blocktrans with "https://trezor.io?offer_id=12&amp;aff_id=1592" as url %}Thanks to <a href="{{ url }}">Trezor</a>, donations are happily accepted in several cryptocurrencies using the addresses below.{% endblocktrans %}</p>
-        </div>
+      <h2 class="section-title crypto">{% trans "Your favorite donation platforms" %}</h2>
+      <div class="page-desc">
+        <p>{% trans "Join Weblate fans on platforms you trust. We look forward to seeing you there." %}</p>
+      </div>
+      <div class="donate-platforms">
+        <a href="https://github.com/sponsors/WeblateOrg">
+          <img src="{% static "img/donate-github.svg" %}" />
+          {% trans "GitHub Sponsors" %}
+        </a>
+        <a href="https://liberapay.com/Weblate/">
+          <img src="{% static "img/donate-liberapay.svg" %}" />
+          Liberapay
+        </a>
+        <a href="https://opencollective.com/weblate">
+          <img src="{% static "img/donate-opencollective.svg" %}" />
+          Open Collective
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="content no-mar crypto">
+    <div class="row">
+      <h2 class="section-title crypto">{% trans "Cryptocurrency donations" %}</h2>
+      <div class="page-desc">
+        <p>
+          {% blocktrans with "https://trezor.io?offer_id=12&amp;aff_id=1592" as url %}Thanks to <a href="{{ url }}">Trezor</a>, donations are happily accepted in several cryptocurrencies using the addresses below.{% endblocktrans %}
+        </p>
+      </div>
 
-        <div class="currency">
-            <div class="head">
-                <div class="line-left">{% trans "Currency" %}</div>
-                <div class="line-right">{% trans "Donation address" %}</div>
-            </div>
-            <div class="line">
-                <div class="line-left"><a href="bitcoin:bc1qs7lkav8h76gj85rlac9cetfp2ragqxl0axgxnd" class="icon-bitcoin">Bitcoin</a></div>
-                <div class="line-right">bc1qs7lkav8h76gj85rlac9cetfp2ragqxl0axgxnd</div>
-            </div>
-            <div class="line">
-                <div class="line-left"><a href="litecoin:ltc1q4u0pys8kp0sewz559twdq0zzg3exc7xhh6ny45" class="icon-litecoin">Litecoin</a></div>
-                <div class="line-right">ltc1q4u0pys8kp0sewz559twdq0zzg3exc7xhh6ny45</div>
-            </div>
-            <div class="line">
-                <div class="line-left"><a href="dash:XoXrWTmZf7ar9P9tpXHm2JuvpvAwSbbgNh" class="icon-dash">DASH</a></div>
-                <div class="line-right">XoXrWTmZf7ar9P9tpXHm2JuvpvAwSbbgNh</div>
-            </div>
-            <div class="line">
-                <div class="line-left"><a href="zcash:t1PSe8FpKfnRJk6XTHkJKCwx4tseSxHr3Z5" class="icon-zcash">Zcash</a></div>
-                <div class="line-right">t1PSe8FpKfnRJk6XTHkJKCwx4tseSxHr3Z5</div>
-            </div>
-            <div class="line">
-                <div class="line-left"><a href="ethereum:0x23a1C22535066f84E7dF86bC53AC059bc38b88B4" class="icon-ethereum">Ethereum</a></div>
-                <div class="line-right">0x23a1C22535066f84E7dF86bC53AC059bc38b88B4</div>
-            </div>
-            <div class="line">
-                <div class="line-left"><a href="monero:47U69VxFRrKjHjMSsG2vjEjR7MFN7ijNteZ8JJQiQrwzNYMsmMV1PDG4JzBUKZtUNk3S23ehQdpj5Uyg65S7EtCh2hiQWeN" class="icon-monero">Monero</a></div>
-                <div class="line-right">47U69VxFRrKjHjMSsG2vjEjR7MFN7ijNteZ8JJQiQrwzNYMsmMV1PDG4JzBUKZtUNk3S23ehQdpj5Uyg65S7EtCh2hiQWeN</div>
-            </div>
+      <div class="currency">
+        <div class="head">
+          <div class="line-left">{% trans "Currency" %}</div>
+          <div class="line-right">{% trans "Donation address" %}</div>
         </div>
-        <div class="clear"></div>
+        <div class="line">
+          <div class="line-left">
+            <a href="bitcoin:bc1qs7lkav8h76gj85rlac9cetfp2ragqxl0axgxnd" class="icon-bitcoin">Bitcoin</a>
+          </div>
+          <div class="line-right">bc1qs7lkav8h76gj85rlac9cetfp2ragqxl0axgxnd</div>
+        </div>
+        <div class="line">
+          <div class="line-left">
+            <a href="litecoin:ltc1q4u0pys8kp0sewz559twdq0zzg3exc7xhh6ny45"
+               class="icon-litecoin">Litecoin</a>
+          </div>
+          <div class="line-right">ltc1q4u0pys8kp0sewz559twdq0zzg3exc7xhh6ny45</div>
+        </div>
+        <div class="line">
+          <div class="line-left">
+            <a href="dash:XoXrWTmZf7ar9P9tpXHm2JuvpvAwSbbgNh" class="icon-dash">DASH</a>
+          </div>
+          <div class="line-right">XoXrWTmZf7ar9P9tpXHm2JuvpvAwSbbgNh</div>
+        </div>
+        <div class="line">
+          <div class="line-left">
+            <a href="zcash:t1PSe8FpKfnRJk6XTHkJKCwx4tseSxHr3Z5" class="icon-zcash">Zcash</a>
+          </div>
+          <div class="line-right">t1PSe8FpKfnRJk6XTHkJKCwx4tseSxHr3Z5</div>
+        </div>
+        <div class="line">
+          <div class="line-left">
+            <a href="ethereum:0x23a1C22535066f84E7dF86bC53AC059bc38b88B4"
+               class="icon-ethereum">Ethereum</a>
+          </div>
+          <div class="line-right">0x23a1C22535066f84E7dF86bC53AC059bc38b88B4</div>
+        </div>
+        <div class="line">
+          <div class="line-left">
+            <a href="monero:47U69VxFRrKjHjMSsG2vjEjR7MFN7ijNteZ8JJQiQrwzNYMsmMV1PDG4JzBUKZtUNk3S23ehQdpj5Uyg65S7EtCh2hiQWeN"
+               class="icon-monero">Monero</a>
+          </div>
+          <div class="line-right">
+            47U69VxFRrKjHjMSsG2vjEjR7MFN7ijNteZ8JJQiQrwzNYMsmMV1PDG4JzBUKZtUNk3S23ehQdpj5Uyg65S7EtCh2hiQWeN
+          </div>
+        </div>
+      </div>
+      <div class="clear"></div>
 
-        <h2 class="section-title crypto bigger" id="thanks">{% trans "Weblate is thankful for your help" %}</h2>
-        <div class="page-desc">
-            <p>{% blocktrans with contact="mailto:info@weblate.org" %}A proud showcase of our supporters, some of which offered technological contributions, others provided monetary funds. We welcome any form of help. If you have an idea, please <a href="{{ contact }}">let us know</a>.{% endblocktrans %}</p>
-        </div>
+      <h2 class="section-title crypto bigger" id="thanks">{% trans "Weblate is thankful for your help" %}</h2>
+      <div class="page-desc">
+        <p>
+          {% blocktrans with contact="mailto:info@weblate.org" %}A proud showcase of our supporters, some of which offered technological contributions, others provided monetary funds. We welcome any form of help. If you have an idea, please <a href="{{ contact }}">let us know</a>.{% endblocktrans %}
+        </p>
+      </div>
 
-        <h2 class="section-title crypto">{% trans "Supporters" %}</h2>
-        <div class="supporters-items">
-            {% for donation in donate_links %}
-            <a class="supporters-logo" href="{% if donation.link_url %}{{ donation.link_url }}{% else %}#{% endif %}">
-                {% if donation.link_image %}
-                <img src="{{ donation.link_image.url }}" alt="{{ donation.link_text }}" title="{{ donation.link_text }}" />
-                {% else %}
-                {% if donation.link_text %}{{ donation.link_text }}{% else %}{{ donation.link_url }}{% endif %}
-                {% endif %}
-            </a>
-            {% endfor %}
-        </div>
+      <h2 class="section-title crypto">{% trans "Supporters" %}</h2>
+      <div class="supporters-items">
+        {% for donation in donate_links %}
+          <a class="supporters-logo"
+             href="{% if donation.link_url %}{{ donation.link_url }}{% else %}#{% endif %}">
+            {% if donation.link_image %}
+              <img src="{{ donation.link_image.url }}"
+                   alt="{{ donation.link_text }}"
+                   title="{{ donation.link_text }}" />
+            {% else %}
+              {% if donation.link_text %}
+                {{ donation.link_text }}
+              {% else %}
+                {{ donation.link_url }}
+              {% endif %}
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
 
-        <h2 class="section-title crypto" id="tech">{% trans "Technologies" %}</h2>
-        <div class="supporters-items">
-            <a class="supporters-logo" href="https://github.com/WeblateOrg/weblate"><img src="{% static "github.svg" %}" alt="GitHub" /></a>
-            <a class="supporters-logo" href="https://readthedocs.org/projects/weblate/"><img src="{% static "readthedocs.svg" %}" alt="Read the Docs" /></a>
-            <a class="supporters-logo" href="https://codecov.io/github/WeblateOrg/weblate"><img src="{% static "codecov.png" %}" alt="Codecov" /></a>
-            <a class="supporters-logo" href="https://www.thepay.eu/" target="_blank"><img src="https://gate.thepay.cz/img/thepay-v2-210726-transparent.svg?pid=2821" alt="ThePay" /></a>
-            <a class="supporters-logo" href="https://hetzner.cloud/?ref=tjS3P52GDcUE"><img src="{% static "hetzner.png" %}" alt="Hetzner" /></a>
-        </div>
-{% comment %}
+      <h2 class="section-title crypto" id="tech">{% trans "Technologies" %}</h2>
+      <div class="supporters-items">
+        <a class="supporters-logo" href="https://github.com/WeblateOrg/weblate">
+          <img src="{% static "github.svg" %}" alt="GitHub" />
+        </a>
+        <a class="supporters-logo" href="https://readthedocs.org/projects/weblate/">
+          <img src="{% static "readthedocs.svg" %}" alt="Read the Docs" />
+        </a>
+        <a class="supporters-logo" href="https://codecov.io/github/WeblateOrg/weblate">
+          <img src="{% static "codecov.png" %}" alt="Codecov" />
+        </a>
+        <a class="supporters-logo" href="https://www.thepay.eu/" target="_blank">
+          <img src="https://gate.thepay.cz/img/thepay-v2-210726-transparent.svg?pid=2821"
+               alt="ThePay" />
+        </a>
+        <a class="supporters-logo" href="https://hetzner.cloud/?ref=tjS3P52GDcUE">
+          <img src="{% static "hetzner.png" %}" alt="Hetzner" />
+        </a>
+      </div>
+      {% comment %}
 Not used for now
         <h2 class="section-title crypto">{% trans "Honorable contributors" %}</h2>
         <div class="supporters-items">
@@ -184,10 +235,10 @@ Not used for now
             <img src="tmp/supporters.jpg" alt="#" class="supporters" />
             <img src="tmp/supporters.jpg" alt="#" class="supporters" />
         </div>
-{% endcomment %}
-        <a href="{% url 'donate-new' %}" class="button center">{% trans "Donate" %}</a>
+      {% endcomment %}
+      <a href="{% url 'donate-new' %}" class="button center">{% trans "Donate" %}</a>
     </div>
-</section>
-{% include "snippets/pricing.html" %}
-{% include "snippets/about.html" %}
+  </section>
+  {% include "snippets/pricing.html" %}
+  {% include "snippets/about.html" %}
 {% endblock %}
