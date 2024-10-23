@@ -76,7 +76,7 @@ class Currency(models.IntegerChoices):
 class InvoiceKind(models.IntegerChoices):
     DRAFT = 0, "Draft"
     INVOICE = 10, "Invoice"
-    PROFORMA = 50, "Proforma"
+    PROFORMA = 50, "Pro Forma Invoice"
     QUOTE = 90, "Quote"
 
 
