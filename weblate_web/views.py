@@ -131,7 +131,11 @@ def get_page_range(page_obj):
     return [page + 1 if isinstance(page, int) else page for page in page_range]
 
 
-def get_customer(request):
+def get_customer(
+    request: AuthenticatedHttpRequest, obj: Service | Donation | None = None
+) -> Customer:
+    if obj and obj.customer:
+        return obj.customer
     return Customer.objects.get_or_create(
         origin=PAYMENTS_ORIGIN,
         user_id=request.user.id,
@@ -477,6 +481,7 @@ class CompleteView(PaymentView):
 class DonateView(FormView):
     form_class = DonateForm
     template_name = "donate/form.html"
+    request: AuthenticatedHttpRequest
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
@@ -840,7 +845,7 @@ def subscription_pay(request, pk):
             description=f"Weblate: {subscription.package}",
             recurring=subscription.package.get_repeat(),
             extra={"subscription": subscription.pk},
-            customer=get_customer(request),
+            customer=get_customer(request, subscription.service),
         )
     return redirect(payment.get_payment_url())
 
@@ -855,7 +860,7 @@ def donate_pay(request, pk):
             description=donation.get_payment_description(),
             recurring=donation.payment_obj.recurring,
             extra={"donation": donation.pk, "category": "donate"},
-            customer=get_customer(request),
+            customer=get_customer(request, donation),
         )
     return redirect(payment.get_payment_url())
 
@@ -867,6 +872,14 @@ def subscription_new(request):
         package = Package.objects.get(name=plan)
     except Package.DoesNotExist:
         return redirect("support")
+    service: Service | None
+    if "service" in request.GET:
+        service = get_object_or_404(
+            Service, pk=request.GET["service"], users=request.user
+        )
+    else:
+        service = None
+
     subscription = Subscription(package=package)
     with override("en"):
         payment = Payment.objects.create(
@@ -874,8 +887,8 @@ def subscription_new(request):
             # pylint: disable=no-member
             description=f"Weblate: {subscription.package}",
             recurring=subscription.package.get_repeat(),
-            extra={"subscription": plan, "service": request.GET.get("service")},
-            customer=get_customer(request),
+            extra={"subscription": plan, "service": service.pk if service else None},
+            customer=get_customer(request, service),
         )
     return redirect(payment.get_payment_url())
 
