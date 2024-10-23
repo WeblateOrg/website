@@ -31,6 +31,7 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView, TemplateView
 
+from weblate_web.invoices.views import download_invoice
 from weblate_web.models import Post
 from weblate_web.views import (
     AddDiscoveryView,
@@ -54,7 +55,7 @@ from weblate_web.views import (
     api_user,
     disable_repeat,
     donate_pay,
-    download_invoice,
+    download_payment_invoice,
     fetch_vat,
     not_found,
     process_payment,
@@ -201,7 +202,11 @@ urlpatterns = [
             r"^donate/edit/(?P<pk>[0-9]+)/$", EditLinkView.as_view(), name="donate-edit"
         ),
         re_path(r"^donate/pay/(?P<pk>[0-9]+)/$", donate_pay, name="donate-pay"),
-        re_path(r"^user/invoice/" + UUID + "/$", download_invoice, name="user-invoice"),
+        re_path(
+            r"^user/invoice/" + UUID + "/$",
+            download_payment_invoice,
+            name="user-invoice",
+        ),
         re_path(
             r"^donate/disable/(?P<pk>[0-9]+)/$", disable_repeat, name="donate-disable"
         ),
@@ -285,6 +290,7 @@ urlpatterns = [
             CompleteView.as_view(),
             name="payment-complete",
         ),
+        path("invoice/<int:pk>/pdf/", download_invoice, name="invoice-pdf"),
         # FOSDEM short link
         re_path(
             r"^FOSDEM/|fosdem/$",
