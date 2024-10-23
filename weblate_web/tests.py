@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from datetime import date, timedelta
 from pathlib import Path
-from typing import cast
+from typing import TYPE_CHECKING, cast
 from xml.etree import ElementTree  # noqa: S405
 
 import requests
@@ -34,6 +34,9 @@ from .remote import (
 )
 from .templatetags.downloads import downloadlink, filesizeformat
 
+if TYPE_CHECKING:
+    from uuid import UUID
+
 TEST_DATA = Path(__file__).parent / "test-data"
 TEST_FAKTURACE = TEST_DATA / "fakturace"
 TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
@@ -49,6 +52,73 @@ TEST_CUSTOMER = {
     "vat_0": "CZ",
     "vat_1": "8003280318",
 }
+
+THEPAY2_MOCK_SETTINGS: dict[str, str | bool] = {
+    "PAYMENT_DEBUG": True,
+    "THEPAY_MERCHANT_ID": "00000000-0000-0000-0000-000000000000",
+    "THEPAY_PASSWORD": "test-password",
+    "THEPAY_PROJECT_ID": "42",
+    "THEPAY_SERVER": "demo.api.thepay.cz",
+}
+
+
+def thepay_mock_create_payment() -> None:
+    responses.post(
+        "https://demo.api.thepay.cz/v1/projects/42/payments",
+        json={
+            "pay_url": "https://gate.thepay.cz/12345/pay",
+            "detail_url": "https://gate.thepay.cz/12345/state",
+        },
+    )
+
+
+def thepay_mock_payment(payment: str | UUID) -> None:
+    responses.get(
+        f"https://demo.api.thepay.cz/v1/projects/42/payments/{payment}?merchant_id=00000000-0000-0000-0000-000000000000",
+        json={
+            "uid": "efd7d8e6-2fa3-3c46-b475-51762331bf56",
+            "project_id": 1,
+            "order_id": "CZ12131415",
+            "state": "paid",
+            "currency": "CZK",
+            "amount": 87654,
+            "paid_amount": 87654,
+            "created_at": "2019-01-01T12:00:00+00:00",
+            "finished_at": "2019-01-01T12:00:00+00:00",
+            "valid_to": "2019-01-01T12:00:00+00:00",
+            "fee": 121,
+            "description": "Some description of the payment purpose.",
+            "description_for_merchant": "Some description for merchant.",
+            "payment_method": "card",
+            "pay_url": "https://gate.thepay.cz/12345/pay",
+            "detail_url": "https://gate.thepay.cz/12345/state",
+            "customer": {
+                "name": "Joe Doe",
+                "ip": "192.168.0.1",
+                "email": "joe.doe@gmail.com",
+            },
+            "offset_account": {
+                "iban": "CZ6508000000192000145399",
+                "owner_name": "Joe Doe",
+            },
+            "offset_account_status": "not_available",
+            "offset_account_determined_at": "2019-01-01T12:00:00+00:00",
+            "card": {
+                "number": "515735******2654",
+                "expiration_date": "2022-05",
+                "brand": "MASTERCARD",
+                "type": "debit",
+            },
+            "events": [
+                {
+                    "occured_at": "2021-04-20T11:05:49.000000Z",
+                    "type": "state_change",
+                    "data": "expired",
+                }
+            ],
+            "parent": {"recurring_payments_available": True},
+        },
+    )
 
 
 def mock_vies(valid: bool = True):
@@ -691,9 +761,11 @@ class DonationTest(FakturaceTestCase):
     def test_donation_workflow_card_reward(self):
         self.test_donation_workflow_card(2)
 
-    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    @responses.activate
     def test_donation_workflow_card(self, reward=0):
         self.login()
+        thepay_mock_create_payment()
         response = self.client.post(
             "/en/donate/new/",
             {"recurring": "y", "amount": 1000, "reward": reward},
@@ -701,30 +773,32 @@ class DonationTest(FakturaceTestCase):
         )
         self.assertContains(response, "Please provide your billing")
         payment = Payment.objects.all().get()
+        self.assertEqual(payment.amount, 1000)
         self.assertEqual(payment.state, Payment.NEW)
         customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
         payment_url = reverse("payment", kwargs={"pk": payment.uuid})
         self.assertRedirects(response, customer_url)
         response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
         self.assertContains(response, "Please choose payment method")
-        response = self.client.post(payment_url, {"method": "thepay-card"})
+        response = self.client.post(payment_url, {"method": "thepay2-card"})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))  # type: ignore[attr-defined]
+        self.assertTrue(response.url.startswith("https://gate.thepay.cz/"))  # type: ignore[attr-defined]
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PENDING)
 
         # Perform the payment
-        complete_url = fake_payment(response.url)  # type: ignore[attr-defined]
+        thepay_mock_payment(payment.pk)
 
         # Back to our web
-        response = self.client.get(complete_url, follow=True)
+        response = self.client.get(payment.get_complete_url(), follow=True)
         donation = Donation.objects.all().get()
         redirect_url = f"/en/donate/edit/{donation.pk}/" if reward else "/en/user/"
         self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
 
         payment.refresh_from_db()
+        self.assertEqual(payment.paid_invoice.total_amount, 1000)  # type: ignore[union-attr]
         self.assertEqual(payment.state, Payment.PROCESSED)
 
         # Manual renew
@@ -736,24 +810,25 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "Please choose payment method")
 
         response = self.client.post(
-            reverse("payment", kwargs={"pk": renew.uuid}), {"method": "thepay-card"}
+            reverse("payment", kwargs={"pk": renew.uuid}), {"method": "thepay2-card"}
         )
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))  # type: ignore[attr-defined]
+        self.assertTrue(response.url.startswith("https://gate.thepay.cz/"))  # type: ignore[attr-defined]
 
         renew.refresh_from_db()
         self.assertEqual(renew.state, Payment.PENDING)
 
         # Perform the payment
-        complete_url = fake_payment(response.url)  # type: ignore[attr-defined]
+        thepay_mock_payment(renew.pk)
 
         # Back to our web
-        response = self.client.get(complete_url, follow=True)
+        response = self.client.get(renew.get_complete_url(), follow=True)
         self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
 
         renew.refresh_from_db()
         self.assertEqual(renew.state, Payment.PROCESSED)
+        self.assertEqual(payment.paid_invoice.total_amount, 1000)  # type: ignore[union-attr]
 
     @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_donation_workflow_bank(self):

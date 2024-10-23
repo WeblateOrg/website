@@ -27,7 +27,13 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
-from weblate_web.tests import TEST_FAKTURACE, mock_vies
+from weblate_web.tests import (
+    TEST_FAKTURACE,
+    THEPAY2_MOCK_SETTINGS,
+    mock_vies,
+    thepay_mock_create_payment,
+    thepay_mock_payment,
+)
 
 from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
 from .models import Customer, Payment
@@ -42,6 +48,7 @@ CUSTOMER = {
     "email": "noreply@example.com",
     "user_id": 6,
 }
+
 
 FIO_API = "https://fioapi.fio.cz/v1/rest/last/test-token/transactions.json"
 FIO_TRASACTIONS = {
@@ -279,13 +286,7 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
 
-@override_settings(
-    PAYMENT_DEBUG=True,
-    THEPAY_MERCHANT_ID="00000000-0000-0000-0000-000000000000",
-    THEPAY_PASSWORD="test-password",  # noqa: S106
-    THEPAY_PROJECT_ID="42",
-    THEPAY_SERVER="demo.api.thepay.cz",
-)
+@override_settings(**THEPAY2_MOCK_SETTINGS)
 class ThePay2Test(BackendBaseTestCase):
     backend_name = "thepay2-card"
 
@@ -295,59 +296,8 @@ class ThePay2Test(BackendBaseTestCase):
 
     @responses.activate
     def test_pay(self):
-        responses.post(
-            "https://demo.api.thepay.cz/v1/projects/42/payments",
-            json={
-                "pay_url": "https://gate.thepay.cz/12345/pay",
-                "detail_url": "https://gate.thepay.cz/12345/state",
-            },
-        )
-        responses.get(
-            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
-            json={
-                "uid": "efd7d8e6-2fa3-3c46-b475-51762331bf56",
-                "project_id": 1,
-                "order_id": "CZ12131415",
-                "state": "paid",
-                "currency": "CZK",
-                "amount": 87654,
-                "paid_amount": 87654,
-                "created_at": "2019-01-01T12:00:00+00:00",
-                "finished_at": "2019-01-01T12:00:00+00:00",
-                "valid_to": "2019-01-01T12:00:00+00:00",
-                "fee": 121,
-                "description": "Some description of the payment purpose.",
-                "description_for_merchant": "Some description for merchant.",
-                "payment_method": "card",
-                "pay_url": "https://gate.thepay.cz/12345/pay",
-                "detail_url": "https://gate.thepay.cz/12345/state",
-                "customer": {
-                    "name": "Joe Doe",
-                    "ip": "192.168.0.1",
-                    "email": "joe.doe@gmail.com",
-                },
-                "offset_account": {
-                    "iban": "CZ6508000000192000145399",
-                    "owner_name": "Joe Doe",
-                },
-                "offset_account_status": "not_available",
-                "offset_account_determined_at": "2019-01-01T12:00:00+00:00",
-                "card": {
-                    "number": "515735******2654",
-                    "expiration_date": "2022-05",
-                    "brand": "MASTERCARD",
-                    "type": "debit",
-                },
-                "events": [
-                    {
-                        "occured_at": "2021-04-20T11:05:49.000000Z",
-                        "type": "state_change",
-                        "data": "expired",
-                    }
-                ],
-                "parent": {"recurring_payments_available": True},
-            },
-        )
+        thepay_mock_create_payment()
+        thepay_mock_payment(self.payment.pk)
         response = self.backend.initiate(None, "", "")
         self.assertIsNotNone(response)
         self.assertRedirects(
@@ -363,13 +313,7 @@ class ThePay2Test(BackendBaseTestCase):
 
     @responses.activate
     def test_unpaid(self):
-        responses.post(
-            "https://demo.api.thepay.cz/v1/projects/42/payments",
-            json={
-                "pay_url": "https://gate.thepay.cz/12345/pay",
-                "detail_url": "https://gate.thepay.cz/12345/state",
-            },
-        )
+        thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
             json={
@@ -393,13 +337,7 @@ class ThePay2Test(BackendBaseTestCase):
 
     @responses.activate
     def test_payment_cancelled(self):
-        responses.post(
-            "https://demo.api.thepay.cz/v1/projects/42/payments",
-            json={
-                "pay_url": "https://gate.thepay.cz/12345/pay",
-                "detail_url": "https://gate.thepay.cz/12345/state",
-            },
-        )
+        thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
             json={
@@ -431,13 +369,7 @@ class ThePay2Test(BackendBaseTestCase):
 
     @responses.activate
     def test_payment_error(self):
-        responses.post(
-            "https://demo.api.thepay.cz/v1/projects/42/payments",
-            json={
-                "pay_url": "https://gate.thepay.cz/12345/pay",
-                "detail_url": "https://gate.thepay.cz/12345/state",
-            },
-        )
+        thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
             json={
@@ -497,13 +429,7 @@ class ThePay2Test(BackendBaseTestCase):
 
     @responses.activate
     def test_error_collect(self):
-        responses.post(
-            "https://demo.api.thepay.cz/v1/projects/42/payments",
-            json={
-                "pay_url": "https://gate.thepay.cz/12345/pay",
-                "detail_url": "https://gate.thepay.cz/12345/state",
-            },
-        )
+        thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
             status=401,

@@ -23,6 +23,7 @@ import uuid
 from decimal import Decimal
 from pathlib import Path
 from shutil import copyfile
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
@@ -38,6 +39,9 @@ from fakturace.rates import DecimalRates
 from lxml import etree
 from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
+
+if TYPE_CHECKING:
+    from weblate_web.payments.models import Payment
 
 INVOICES_URL = "invoices:"
 STATIC_URL = "static:"
@@ -261,7 +265,7 @@ class Invoice(models.Model):
 
     @cached_property
     def total_amount(self) -> Decimal:
-        return self.total_amount_no_vat + self.total_vat
+        return round(self.total_amount_no_vat + self.total_vat, 2)
 
     @property
     def total_amount_czk(self) -> Decimal:
@@ -493,6 +497,18 @@ class Invoice(models.Model):
                 unit_price=item.unit_price,
             )
         return invoice
+
+    def create_payment(self, recurring: str) -> Payment:
+        if self.draft_payment_set.exists():
+            raise ValueError("Payment already exists for this invoice!")
+        return self.draft_payment_set.create(
+            amount=float(self.total_amount),
+            amount_fixed=True,
+            description=self.get_description(),
+            recurring=recurring,
+            extra=self.extra,
+            customer=self.customer,
+        )
 
 
 class InvoiceItem(models.Model):
