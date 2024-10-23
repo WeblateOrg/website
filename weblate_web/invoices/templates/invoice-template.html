@@ -3,20 +3,26 @@
   <head>
     <meta charset="utf-8">
     <link href="invoices:invoice.css" media="print" rel="stylesheet">
-    <title>Invoice {{ invoice.number }}</title>
+    <title>{{ invoice.get_kind_display }} {{ invoice.number }}</title>
     <meta name="description" content="Weblate invoice">
   </head>
 
   <body>
     <header>
       <img class="logo" src="invoices:invoice-logo.svg" alt="Weblate">
-      <h1>Invoice number {{ invoice.number }}</h1>
+      <h1>{{ invoice.get_kind_display }} number {{ invoice.number }}</h1>
       <p>{{ invoice.issue_date|date }}</p>
     </header>
 
     <div id="contacts" class="fullwidth">
       <address id="to">
-        <h2>Invoice to</h2>
+        <h2>
+          {% if invoice.is_draft %}
+            Quote for
+          {% else %}
+            Invoice to
+          {% endif %}
+        </h2>
         {{ invoice.customer.name }}
         <br />
         {{ invoice.customer.address }}
@@ -123,8 +129,20 @@
       <table id="total" class="fullwidth">
         <thead>
           <tr>
-            <th>Total due</th>
-            <th>Due by</th>
+            <th>
+              {% if invoice.is_draft %}
+                Quote amount
+              {% else %}
+                Total due
+              {% endif %}
+            </th>
+            <th>
+              {% if invoice.is_draft %}
+                Valid until
+              {% else %}
+                Due by
+              {% endif %}
+            </th>
             <th>Payment</th>
           </tr>
         </thead>
@@ -135,7 +153,9 @@
             </td>
             <td>{{ invoice.due_date|date }}</td>
             <td>
-              {% if invoice.prepaid %}
+              {% if invoice.is_draft %}
+                Bank transfer od card payments are available
+              {% elif invoice.prepaid %}
                 Do not pay, already paid
               {% else %}
                 Bank transfer
@@ -149,6 +169,9 @@
           </tr>
         </tbody>
       </table>
+      {% if invoice.is_draft %}
+        <p>Should you have any questions concerning this quotation, please contact us at sales@weblate.org.</p>
+      {% endif %}
       {% if invoice.vat_rate == 0 %}
         <p>
           The place of supply is considered to be in your country pursuant to Section 9 (1) Value Added Tax Act No. 235/2004 Coll. The person to whom the service is rendered is liable to declare and pay VAT in his country (reverse charge) according to European Directive 206/112/ES.
@@ -157,7 +180,13 @@
       <table id="details">
         <tbody>
           <tr>
-            <th>Date of taxable supply</th>
+            <th>
+              {% if invoice.is_draft %}
+                Quote date
+              {% else %}
+                Date of taxable supply
+              {% endif %}
+            </th>
             <th>CIN (IČ)</th>
             <th>Managing director</th>
             <th>Trade register</th>

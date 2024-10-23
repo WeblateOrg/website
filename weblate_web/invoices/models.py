@@ -156,7 +156,9 @@ class Invoice(models.Model):
     ):
         extra_fields: list[str] = []
         if not self.due_date:
-            self.due_date = self.issue_date + datetime.timedelta(days=14)
+            self.due_date = self.issue_date + datetime.timedelta(
+                days=30 if self.is_draft else 14
+            )
             extra_fields.append("due_date")
         if not self.sequence:
             try:
@@ -180,6 +182,10 @@ class Invoice(models.Model):
             using=using,
             update_fields=update_fields,
         )
+
+    @property
+    def is_draft(self):
+        return self.kind in {InvoiceKind.DRAFT, InvoiceKind.QUOTE}
 
     def render_amount(self, amount: int | Decimal) -> str:
         if self.currency == Currency.EUR:
