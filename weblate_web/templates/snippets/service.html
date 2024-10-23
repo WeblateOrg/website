@@ -56,7 +56,7 @@
           {% csrf_token %}
           {% if owner != user %}
             <input type="hidden" name="email" value="{{ owner.email }}" />
-            <input type="hidden" class="" name="remove" value="{% trans "Remove" %}" />
+            <input type="hidden" name="remove" value="{% trans "Remove" %}" />
           {% endif %}
         </form>
       {% endfor %}
