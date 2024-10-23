@@ -162,7 +162,7 @@ class Backend:
         return False
 
     @transaction.atomic
-    def generate_invoice(self, *, proforma: bool = False, paid: bool = True) -> None:
+    def generate_invoice(self, *, proforma: bool = False) -> None:
         from weblate_web.invoices.models import (  # noqa: PLC0415
             CurrencyChoices,
             Invoice,
@@ -175,29 +175,37 @@ class Backend:
             InvoiceKindChoices.PROFORMA if proforma else InvoiceKindChoices.INVOICE
         )
         if self.payment.draft_invoice:
+            # Is there already draft proforma?
+            if proforma and self.payment.draft_invoice.kind == invoice_kind:
+                return
             # Finalize draft if present
-            self.payment.paid_invoice = self.payment.draft_invoice.finalize(
-                kind=invoice_kind
+            invoice = self.payment.draft_invoice.finalize(
+                kind=invoice_kind,
+                prepaid=not proforma,
             )
         else:
             # Generate manually if no draft is present (hosted integration)
-            invoice = self.payment.paid_invoice = Invoice.objects.create(
+            invoice = Invoice.objects.create(
                 kind=invoice_kind,
                 customer=self.payment.customer,
                 vat_rate=self.payment.customer.vat_rate,
                 currency=CurrencyChoices.EUR,
-                prepaid=True,
+                prepaid=not proforma,
             )
             invoice.invoiceitem_set.create(
                 description=self.payment.description,
                 unit_price=round(Decimal(self.payment.amount_without_vat), 2),
             )
+        if proforma:
+            self.payment.draft_invoice = invoice
+        else:
+            self.payment.paid_invoice = invoice
 
         # Generate PDF
         invoice.generate_files()
 
         # Update reference
-        self.payment.save(update_fields=["paid_invoice"])
+        self.payment.save(update_fields=["paid_invoice", "draft_invoice"])
 
     def send_notification(
         self, notification: str, include_invoice: bool = True
@@ -230,7 +238,7 @@ class Backend:
 
 
 class LegacyBackend(Backend):
-    def generate_invoice(self, *, proforma: bool = False, paid: bool = True) -> None:
+    def generate_invoice(self, *, proforma: bool = False) -> None:
         """Generate an invoice."""
         if settings.PAYMENT_FAKTURACE is None:
             raise ValueError("Fakturace storage is not configured!")
@@ -264,7 +272,7 @@ class LegacyBackend(Backend):
         invoice.write_tex()
         invoice.build_pdf()
         files = [contact_file, invoice_file, invoice.tex_path, invoice.pdf_path]
-        if paid:
+        if not proforma:
             invoice.mark_paid(
                 json.dumps(self.payment.details, indent=2, cls=DjangoJSONEncoder)
             )
@@ -470,7 +478,7 @@ class FioBank(LegacyBackend):
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
     ) -> None | HttpResponseRedirect:
-        self.generate_invoice(proforma=True, paid=False)
+        self.generate_invoice(proforma=True)
         self.payment.details["proforma"] = self.payment.invoice
         self.send_notification("payment_pending")
         return redirect(complete_url)

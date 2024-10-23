@@ -421,7 +421,10 @@ class Invoice(models.Model):
         )
 
     def finalize(
-        self, *, kind: InvoiceKindChoices = InvoiceKindChoices.INVOICE
+        self,
+        *,
+        kind: InvoiceKindChoices = InvoiceKindChoices.INVOICE,
+        prepaid: bool = True,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
         invoice = Invoice.objects.create(
@@ -432,7 +435,7 @@ class Invoice(models.Model):
             vat_rate=self.vat_rate,
             currency=self.currency,
             parent=self,
-            prepaid=True,
+            prepaid=prepaid,
         )
         for item in self.all_items:
             invoice.invoiceitem_set.create(
