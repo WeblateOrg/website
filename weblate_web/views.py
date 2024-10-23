@@ -546,7 +546,7 @@ def process_payment(request):
 
 
 @login_required
-def download_invoice(request, pk):
+def download_payment_invoice(request, pk):
     # Allow downloading own invoices of pending ones (for proforma invoices)
     payment = get_object_or_404(Payment, pk=pk)
 

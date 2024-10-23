@@ -17,9 +17,17 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from django.contrib import admin
+from django.urls import reverse
 
 from .models import Discount, Invoice, InvoiceItem
+
+if TYPE_CHECKING:
+    from django.http.request import HttpRequest
 
 
 @admin.register(Discount)
@@ -30,6 +38,7 @@ class DiscountAdmin(admin.ModelAdmin):
 
 class InvoiceItemAdmin(admin.TabularInline):
     model = InvoiceItem
+    min_num = 1
 
 
 @admin.register(Invoice)
@@ -43,3 +52,14 @@ class InvoiceAdmin(admin.ModelAdmin):
         "number",
     )
     inlines = (InvoiceItemAdmin,)
+
+    def save_related(
+        self, request: HttpRequest, form: Any, formsets: Any, change: Any
+    ) -> None:
+        super().save_related(
+            request=request, form=form, formsets=formsets, change=change
+        )
+        form.instance.generate_files()
+
+    def view_on_site(self, obj):
+        return reverse("invoice-pdf", kwargs={"pk": obj.pk})
