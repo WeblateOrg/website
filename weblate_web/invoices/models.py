@@ -80,6 +80,13 @@ class InvoiceKind(models.IntegerChoices):
     QUOTE = 90, "Quote"
 
 
+class InvoiceCategory(models.IntegerChoices):
+    HOSTING = 1, "Hosting"
+    SUPPORT = 2, "Support"
+    DEVEL = 3, "Development"
+    DONATE = 4, "Donation"
+
+
 class Discount(models.Model):
     description = models.CharField(max_length=200, unique=True)
     percents = models.IntegerField(
@@ -109,6 +116,9 @@ class Invoice(models.Model):
     issue_date = models.DateField(default=datetime.date.today)
     due_date = models.DateField(blank=True)
     kind = models.IntegerField(choices=InvoiceKind)
+    category = models.IntegerField(
+        choices=InvoiceCategory, default=InvoiceCategory.HOSTING
+    )
     customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.PROTECT)
     customer_reference = models.CharField(max_length=100, blank=True)
     discount = models.ForeignKey(
