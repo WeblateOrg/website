@@ -27,6 +27,7 @@ from uuid import uuid4
 
 import html2text
 import requests
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -45,7 +46,7 @@ from paramiko.client import SSHClient
 from PIL import Image as PILImage
 
 from weblate_web.payments.fields import Char32UUIDField
-from weblate_web.payments.models import Customer, Payment, get_period_delta
+from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 
 if TYPE_CHECKING:
@@ -88,6 +89,18 @@ HOSTED_UPGRADES = {
 }
 
 TOPIC_DICT = dict(TOPICS)
+
+
+def get_period_delta(period):
+    if period == "y":
+        return relativedelta(years=1)
+    if period == "b":
+        return relativedelta(months=6)
+    if period == "q":
+        return relativedelta(months=3)
+    if period == "m":
+        return relativedelta(months=1)
+    raise ValueError(f"Invalid payment period {period!r}!")
 
 
 def validate_bitmap(value):
@@ -950,7 +963,7 @@ class Subscription(models.Model):
     def add_payment(self, invoice: Invoice, period: str):
         # Calculate new expiry
         start = self.expires + timedelta(days=1)
-        end = start + get_period_delta(period)
+        end = start + get_period_delta(period) - relativedelta(days=1)
 
         # Fetch customer object from last payment here
         if self.payment:
