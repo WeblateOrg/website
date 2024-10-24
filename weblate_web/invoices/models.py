@@ -93,6 +93,8 @@ class QuantityUnit(models.IntegerChoices):
 class Currency(models.IntegerChoices):
     EUR = 0, "EUR"
     CZK = 1, "CZK"
+    USD = 2, "USD"
+    GBP = 3, "GBP"
 
 
 class InvoiceKind(models.IntegerChoices):
@@ -220,8 +222,17 @@ class Invoice(models.Model):
 
     @cached_property
     def exchange_rate_czk(self) -> Decimal:
+        """Exchange rate from currency to CZK."""
         return DecimalRates.get(
             self.issue_date.isoformat(), self.get_currency_display()
+        )
+
+    @cached_property
+    def exchange_rate_eur(self) -> Decimal:
+        """Exchange rate from currency to EUR."""
+        return (
+            DecimalRates.get(self.issue_date.isoformat(), "EUR")
+            / self.exchange_rate_czk
         )
 
     @cached_property
@@ -547,7 +558,12 @@ class InvoiceItem(models.Model):
 
         if self.package:
             if not self.unit_price:
-                self.unit_price = self.package.price
+                if self.invoice.currency == Currency.EUR:
+                    self.unit_price = self.package.price
+                else:
+                    self.unit_price = round(
+                        self.package.price * self.invoice.exchange_rate_eur, 0
+                    )
                 extra_fields.append("unit_price")
             if not self.description:
                 if (start_date := self.invoice.extra.get("start_date")) and (
