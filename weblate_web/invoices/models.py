@@ -48,6 +48,10 @@ STATIC_URL = "static:"
 TEMPLATES_PATH = Path(__file__).parent / "templates"
 
 
+def date_format(value: datetime.datetime) -> str:
+    return value.strftime("%-d %b %Y")
+
+
 def round_decimal(num: Decimal) -> Decimal:
     if num % Decimal("0.01"):
         return round(num, 3)
@@ -536,6 +540,8 @@ class InvoiceItem(models.Model):
         using=None,
         update_fields=None,
     ):
+        from weblate_web.models import get_period_delta  # noqa: PLC0415
+
         extra_fields: list[str] = []
 
         if self.package:
@@ -543,7 +549,20 @@ class InvoiceItem(models.Model):
                 self.unit_price = self.package.price
                 extra_fields.append("unit_price")
             if not self.description:
-                self.description = self.package.verbose
+                if (start_date := self.invoice.extra.get("start_date")) and (
+                    repeat := self.package.get_repeat()
+                ):
+                    # Include subscription period
+                    if isinstance(start_date, str):
+                        start_date = datetime.datetime.fromisoformat(start_date)
+                    end_date = (
+                        start_date
+                        + get_period_delta(repeat)
+                        - datetime.timedelta(days=1)
+                    )
+                    self.description = f"{self.package.verbose} [{date_format(start_date)} - {date_format(end_date)}]"
+                else:
+                    self.description = self.package.verbose
                 extra_fields.append("description")
 
         if extra_fields and update_fields is not None:
