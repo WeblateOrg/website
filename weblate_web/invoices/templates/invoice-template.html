@@ -160,7 +160,17 @@
               {% else %}
                 Bank transfer
                 <br />
-                IBAN: CZ30 2010 0000 0023 0290 7395
+                {% if invoice.get_currency_display == "CZK" %}
+                  Bank account:  2002907393 / 2010
+                {% elif invoice.get_currency_display == "EUR" %}
+                  IBAN: CZ30 2010 0000 0023 0290 7395
+                {% elif invoice.get_currency_display == "USD" %}
+                  Bank account: 2603015278
+                  BIC/SWIFT: FIOBCZPPXXX
+                {% elif invoice.get_currency_display == "GBP" %}
+                  Bank account: 2803015280
+                  BIC/SWIFT: FIOBCZPPXXX
+                {% endif %}
                 <br />
                 Reference: {{ invoice.number }}
                 <br />
@@ -210,7 +220,17 @@
           </tr>
           <tr>
             <td>Weblate s.r.o.</td>
-            <td>2302907395 / 2010</td>
+            <td>
+              {% if invoice.get_currency_display == "CZK" %}
+                2002907393 / 2010
+              {% elif invoice.get_currency_display == "EUR" %}
+                2302907395 / 2010
+              {% elif invoice.get_currency_display == "USD" %}
+                2603015278 / 2010
+              {% elif invoice.get_currency_display == "GBP" %}
+                2803015280 / 2010
+              {% endif %}
+            </td>
             <td>FIOBCZPPXXX</td>
             <td>Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia</td>
             <td class="thanks">♥ Thank you!</td>

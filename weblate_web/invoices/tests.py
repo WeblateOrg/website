@@ -6,9 +6,10 @@ from pathlib import Path
 from django.test import TestCase
 from lxml import etree
 
+from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer
 
-from .models import Discount, Invoice, InvoiceKind, QuantityUnit
+from .models import Currency, Discount, Invoice, InvoiceKind, QuantityUnit
 
 S3_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent / "schemas" / "money-s3" / "_Document.xsd"
@@ -17,8 +18,7 @@ S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))  # noqa: S320
 
 
 class InvoiceTestCase(TestCase):
-    @staticmethod
-    def create_customer(vat: str = ""):
+    def create_customer(self, vat: str = "") -> Customer:
         return Customer.objects.create(
             name="Zkušební zákazník",
             address="Street 42",
@@ -29,19 +29,50 @@ class InvoiceTestCase(TestCase):
             vat=vat,
         )
 
+    def create_invoice_base(
+        self,
+        discount: Discount | None = None,
+        vat_rate: int = 0,
+        customer_reference: str = "",
+        vat: str = "",
+        currency: Currency = Currency.EUR,
+    ) -> Invoice:
+        return Invoice.objects.create(
+            customer=self.create_customer(vat=vat),
+            discount=discount,
+            vat_rate=vat_rate,
+            kind=InvoiceKind.INVOICE,
+            customer_reference=customer_reference,
+            currency=currency,
+        )
+
+    def create_invoice_package(
+        self,
+        discount: Discount | None = None,
+        currency: Currency = Currency.EUR,
+    ) -> Invoice:
+        invoice = self.create_invoice_base(discount=discount, currency=currency)
+        package = Package.objects.create(
+            name="hosting",
+            verbose="Weblate hosting",
+            price=100,
+            category=PackageCategory.PACKAGE_DEDICATED,
+        )
+        invoice.invoiceitem_set.create(package=package)
+        return invoice
+
     def create_invoice(
         self,
         discount: Discount | None = None,
         vat_rate: int = 0,
         customer_reference: str = "",
         vat: str = "",
-    ):
-        invoice = Invoice.objects.create(
-            customer=self.create_customer(vat=vat),
+    ) -> Invoice:
+        invoice = self.create_invoice_base(
             discount=discount,
             vat_rate=vat_rate,
-            kind=InvoiceKind.INVOICE,
             customer_reference=customer_reference,
+            vat=vat,
         )
         invoice.invoiceitem_set.create(
             description="Test item",
@@ -49,7 +80,7 @@ class InvoiceTestCase(TestCase):
         )
         return invoice
 
-    def validate_invoice(self, invoice: Invoice):
+    def validate_invoice(self, invoice: Invoice) -> None:
         invoice.generate_files()
         self.assertNotEqual(str(invoice), "")
         if invoice.discount:
@@ -114,4 +145,16 @@ class InvoiceTestCase(TestCase):
             vat_rate=21,
         )
         self.assertEqual(invoice.total_amount, Decimal("60.50"))
+        self.validate_invoice(invoice)
+
+    def test_package(self):
+        invoice = self.create_invoice_package()
+        self.assertEqual(invoice.total_amount, Decimal(100))
+        self.validate_invoice(invoice)
+
+    def test_package_usd(self):
+        invoice = self.create_invoice_package(currency=Currency.USD)
+        self.assertEqual(
+            invoice.total_amount, round(Decimal(100) * invoice.exchange_rate_eur, 0)
+        )
         self.validate_invoice(invoice)

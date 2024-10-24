@@ -500,16 +500,20 @@ class FioBank(LegacyBackend):
     def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
         invoice = self.get_proforma()
         return [
-            (gettext("Issuing bank"), invoice.bank["bank"]),
+            (
+                gettext("Issuing bank"),
+                "Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia",
+            ),
             (gettext("Account holder"), invoice.bank["holder"]),
             (gettext("Account number"), invoice.bank["account"]),
-            (gettext("SWIFT code"), invoice.bank["swift"]),
+            (gettext("SWIFT code"), "FIOBCZPPXXX"),
             (gettext("IBAN"), invoice.bank["iban"]),
             (gettext("Reference"), invoice.invoiceid),
         ]
 
     @classmethod
     def fetch_payments(cls, from_date=None) -> None:
+        # TODO: support token per currency
         client = fiobank.FioBank(token=settings.FIO_TOKEN)
         for entry in client.last(from_date=from_date):
             matches = []
