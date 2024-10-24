@@ -26,6 +26,7 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.functions import Cast, Concat, Extract, LPad
@@ -138,6 +139,9 @@ class Invoice(models.Model):
     prepaid = models.BooleanField(
         default=False, help_text="Invoices paid in advance (card payment, pro forma)"
     )
+
+    # Passed to payment
+    extra = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
 
     class Meta:
         constraints = [
@@ -448,6 +452,7 @@ class Invoice(models.Model):
         """Create a final invoice from draft/proforma upon payment."""
         invoice = Invoice.objects.create(
             kind=kind,
+            category=self.category,
             customer=self.customer,
             customer_reference=self.customer_reference,
             discount=self.discount,
@@ -455,6 +460,7 @@ class Invoice(models.Model):
             currency=self.currency,
             parent=self,
             prepaid=prepaid,
+            extra=self.extra,
         )
         for item in self.all_items:
             invoice.invoiceitem_set.create(
