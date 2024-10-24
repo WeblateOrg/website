@@ -22,6 +22,7 @@ import datetime
 import uuid
 from decimal import Decimal
 from pathlib import Path
+from shutil import copyfile
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
@@ -307,6 +308,15 @@ class Invoice(models.Model):
     def generate_files(self) -> None:
         self.generate_xml()
         self.generate_pdf()
+        if self.kind == InvoiceKind.INVOICE and settings.INVOICES_COPY_PATH:
+            output_dir = (
+                settings.INVOICES_COPY_PATH
+                / f"{self.issue_date.year:d}"
+                / f"{self.issue_date.month:02d}"
+            )
+            output_dir.mkdir(parents=True, exist_ok=True)
+            copyfile(self.path, output_dir / self.filename)
+            copyfile(self.xml_path, output_dir / self.get_filename("xml"))
 
     def get_xml_tree(self, invoices: etree._Element) -> None:  # noqa: PLR0915,C901
         def add_element(root, name: str, text: str | Decimal | int | None = None):
