@@ -65,12 +65,14 @@ from weblate_web.forms import (
     EditNameForm,
     MethodForm,
 )
+from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.models import (
     PAYMENTS_ORIGIN,
     REWARD_LEVELS,
     TOPIC_DICT,
     Donation,
     Package,
+    PackageCategory,
     Post,
     Project,
     Service,
@@ -867,14 +869,18 @@ def subscription_pay(request, pk):
         subscription.package = subscription.yearly_package
         subscription.save(update_fields=["package"])
     with override("en"):
-        payment = Payment.objects.create(
-            amount=subscription.package.price,
-            # pylint: disable=no-member
-            description=f"Weblate: {subscription.package}",
-            recurring=subscription.package.get_repeat(),
+        customer = get_customer(request, subscription.service)
+        invoice = Invoice.objects.create(
+            customer=customer,
             extra={"subscription": subscription.pk},
-            customer=get_customer(request, subscription.service),
+            vat_rate=customer.vat_rate,
+            kind=InvoiceKind.DRAFT,
+            category=InvoiceCategory.SUPPORT
+            if subscription.package.category == PackageCategory.PACKAGE_SUPPORT
+            else InvoiceCategory.HOSTING,
         )
+        invoice.invoiceitem_set.create(package=subscription.package)
+        payment = invoice.create_payment(subscription.package.get_repeat())
     return redirect(payment.get_payment_url())
 
 
@@ -910,15 +916,19 @@ def subscription_new(request):
         service = None
 
     subscription = Subscription(package=package)
+    customer = get_customer(request, service)
     with override("en"):
-        payment = Payment.objects.create(
-            amount=subscription.package.price,
-            # pylint: disable=no-member
-            description=f"Weblate: {subscription.package}",
-            recurring=subscription.package.get_repeat(),
+        invoice = Invoice.objects.create(
+            customer=customer,
             extra={"subscription": plan, "service": service.pk if service else None},
-            customer=get_customer(request, service),
+            vat_rate=customer.vat_rate,
+            kind=InvoiceKind.DRAFT,
+            category=InvoiceCategory.SUPPORT
+            if subscription.package.category == PackageCategory.PACKAGE_SUPPORT
+            else InvoiceCategory.HOSTING,
         )
+        invoice.invoiceitem_set.create(package=subscription.package)
+        payment = invoice.create_payment(subscription.package.get_repeat())
     return redirect(payment.get_payment_url())
 
 

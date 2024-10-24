@@ -542,19 +542,19 @@ class FakturaceTestCase(UserTestCase):
                 ),
                 Package(
                     name="hosted:test-1-m",
-                    verbose="Hosted (basic)",
+                    verbose="Weblate hosting (basic)",
                     price=42,
                     category=PackageCategory.PACKAGE_DEDICATED,
                 ),
                 Package(
                     name="hosted:test-1",
-                    verbose="Hosted (basic)",
+                    verbose="Weblate hosting (basic)",
                     price=420,
                     category=PackageCategory.PACKAGE_DEDICATED,
                 ),
                 Package(
                     name="hosted:test-2",
-                    verbose="Hosted (upgraded)",
+                    verbose="Weblate hosting (upgraded)",
                     price=840,
                     category=PackageCategory.PACKAGE_DEDICATED,
                 ),
@@ -1249,7 +1249,7 @@ class ServiceTest(FakturaceTestCase):
             self.assertRedirects(response, payment_url)
             response = self.client.post(payment_url, {"method": "pay"}, follow=True)
             self.assertRedirects(response, reverse("user"))
-            self.assertContains(response, "Weblate: Hosted (basic)")
+            self.assertContains(response, "Weblate hosting (basic)")
 
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
@@ -1281,7 +1281,7 @@ class ServiceTest(FakturaceTestCase):
             self.assertRedirects(response, payment_url)
             response = self.client.post(payment_url, {"method": "pay"}, follow=True)
             self.assertRedirects(response, reverse("user"))
-            self.assertContains(response, "Weblate: Hosted (basic)")
+            self.assertContains(response, "Weblate hosting (basic)")
 
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
@@ -1316,7 +1316,7 @@ class ServiceTest(FakturaceTestCase):
             self.assertRedirects(response, payment_url)
             response = self.client.post(payment_url, {"method": "pay"}, follow=True)
             self.assertRedirects(response, reverse("user"))
-            self.assertContains(response, "Weblate: Hosted (upgraded)")
+            self.assertContains(response, "Weblate hosting (upgraded)")
 
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
