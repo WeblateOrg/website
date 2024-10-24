@@ -166,6 +166,7 @@ class Backend:
         from weblate_web.invoices.models import (  # noqa: PLC0415
             Currency,
             Invoice,
+            InvoiceCategory,
             InvoiceKind,
         )
 
@@ -182,6 +183,9 @@ class Backend:
                 prepaid=not proforma,
             )
         else:
+            category = InvoiceCategory.HOSTING
+            if self.payment.extra.get("category") == "donate":
+                category = InvoiceCategory.DONATE
             # Generate manually if no draft is present (hosted integration)
             invoice = Invoice.objects.create(
                 kind=invoice_kind,
@@ -189,10 +193,11 @@ class Backend:
                 vat_rate=self.payment.customer.vat_rate,
                 currency=Currency.EUR,
                 prepaid=not proforma,
+                category=category,
             )
             invoice.invoiceitem_set.create(
                 description=self.payment.description,
-                unit_price=round(Decimal(self.payment.amount_without_vat), 2),
+                unit_price=round(Decimal(self.payment.amount_without_vat), 3),
             )
         if proforma:
             self.payment.draft_invoice = invoice
