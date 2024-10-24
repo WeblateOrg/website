@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Any
 from django.contrib import admin
 from django.urls import reverse
 
-from .models import Discount, Invoice, InvoiceItem
+from .models import Discount, Invoice, InvoiceItem, InvoiceKind
 
 if TYPE_CHECKING:
     from django.http.request import HttpRequest
@@ -44,7 +44,7 @@ class InvoiceItemAdmin(admin.TabularInline):
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     date_hierarchy = "issue_date"
-    autocomplete_fields = ("customer",)
+    autocomplete_fields = ("customer", "parent")
     list_display = ("number", "kind", "category", "customer", "total_amount")
     list_filter = ["kind", "category"]
     search_fields = (
@@ -59,7 +59,10 @@ class InvoiceAdmin(admin.ModelAdmin):
         super().save_related(
             request=request, form=form, formsets=formsets, change=change
         )
-        form.instance.generate_files()
+        if form.instance.kind != InvoiceKind.DRAFT:
+            form.instance.generate_files()
 
-    def view_on_site(self, obj):
+    def view_on_site(self, obj: Invoice) -> str | None:  # type: ignore[override]
+        if obj.kind == InvoiceKind.DRAFT:
+            return None
         return reverse("invoice-pdf", kwargs={"pk": obj.pk})
