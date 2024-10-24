@@ -215,6 +215,7 @@ class Payment(models.Model):
     CURRENCY_BTC = 1
     CURRENCY_USD = 2
     CURRENCY_CZK = 3
+    CURRENCY_GBP = 4
 
     uuid = Char32UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.IntegerField()
@@ -224,6 +225,7 @@ class Payment(models.Model):
             (CURRENCY_BTC, "BTC"),
             (CURRENCY_USD, "USD"),
             (CURRENCY_CZK, "CZK"),
+            (CURRENCY_GBP, "GBP"),
         ),
         default=CURRENCY_EUR,
     )

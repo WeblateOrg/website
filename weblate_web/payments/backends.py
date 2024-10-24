@@ -512,53 +512,68 @@ class FioBank(LegacyBackend):
         ]
 
     @classmethod
-    def fetch_payments(cls, from_date=None) -> None:
-        # TODO: support token per currency
-        client = fiobank.FioBank(token=settings.FIO_TOKEN)
-        for entry in client.last(from_date=from_date):
-            matches = []
-            # Extract from message
-            if entry["recipient_message"]:
-                matches.extend(PROFORMA_RE.findall(entry["recipient_message"]))
-            # Extract from variable symbol
-            if entry["variable_symbol"]:
-                matches.extend(PROFORMA_RE.findall(entry["variable_symbol"]))
-            # Extract from sender reference
-            if entry.get("reference", None):
-                matches.extend(PROFORMA_RE.findall(entry["reference"]))
-            # Extract from comment for manual pairing
-            if entry["comment"]:
-                matches.extend(PROFORMA_RE.findall(entry["comment"]))
-            # Process all matches
-            for proforma_number in matches:
-                # TODO: Fetch invoice object
-                proforma_id = f"P{proforma_number}"
-                try:
-                    related = Payment.objects.get(backend=cls.name, invoice=proforma_id)
-                    if related.state != Payment.PENDING:
-                        print(
-                            f"{proforma_id} not pending: {related.get_state_display()}"
+    def fetch_payments(cls, from_date: str | None = None) -> None:
+        tokens: list[str]
+        if isinstance(settings.FIO_TOKEN, str):
+            tokens = [settings.FIO_TOKEN]
+        else:
+            tokens = settings.FIO_TOKEN
+        for token in tokens:
+            client = fiobank.FioBank(token=token)
+            info = client.info()
+            currency = info["currency"]
+            for entry in client.last(from_date=from_date):
+                matches = []
+                # Extract from message
+                if entry["recipient_message"]:
+                    matches.extend(PROFORMA_RE.findall(entry["recipient_message"]))
+                # Extract from variable symbol
+                if entry["variable_symbol"]:
+                    matches.extend(PROFORMA_RE.findall(entry["variable_symbol"]))
+                # Extract from sender reference
+                if entry.get("reference", None):
+                    matches.extend(PROFORMA_RE.findall(entry["reference"]))
+                # Extract from comment for manual pairing
+                if entry["comment"]:
+                    matches.extend(PROFORMA_RE.findall(entry["comment"]))
+                # Process all matches
+                for proforma_number in matches:
+                    # TODO: Fetch invoice object
+                    proforma_id = f"P{proforma_number}"
+                    try:
+                        related = Payment.objects.get(
+                            backend=cls.name, invoice=proforma_id
                         )
-                        continue
-
-                    backend = cls(related)
-                    proforma = backend.get_proforma()
-                    proforma.mark_paid(
-                        json.dumps(entry, indent=2, cls=DjangoJSONEncoder)
-                    )
-                    backend.git_commit([proforma.paid_path], proforma)
-                    if floor(float(proforma.total_amount)) <= entry["amount"]:
-                        print(f"Received payment for {proforma_id}")
-                        backend.payment.details["transaction"] = entry
-                        backend.success()
-                    else:
-                        print(
-                            "Underpaid {}: received={}, expected={}".format(
-                                proforma_id, entry["amount"], proforma.total_amount
+                        expected_currency = related.get_currency_display()
+                        if expected_currency != currency:
+                            print(
+                                f"{proforma_id} currency mismatch: expecting {expected_currency}, got {currency}"
                             )
+                            continue
+                        if related.state != Payment.PENDING:
+                            print(
+                                f"{proforma_id} not pending: {related.get_state_display()}"
+                            )
+                            continue
+
+                        backend = cls(related)
+                        proforma = backend.get_proforma()
+                        proforma.mark_paid(
+                            json.dumps(entry, indent=2, cls=DjangoJSONEncoder)
                         )
-                except Payment.DoesNotExist:
-                    print(f"No matching payment for {proforma_id} found")
+                        backend.git_commit([proforma.paid_path], proforma)
+                        if floor(float(proforma.total_amount)) <= entry["amount"]:
+                            print(f"Received payment for {proforma_id}")
+                            backend.payment.details["transaction"] = entry
+                            backend.success()
+                        else:
+                            print(
+                                "Underpaid {}: received={}, expected={}".format(
+                                    proforma_id, entry["amount"], proforma.total_amount
+                                )
+                            )
+                    except Payment.DoesNotExist:
+                        print(f"No matching payment for {proforma_id} found")
 
 
 @register_backend
