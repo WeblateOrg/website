@@ -290,7 +290,7 @@ urlpatterns = [
             CompleteView.as_view(),
             name="payment-complete",
         ),
-        path("invoice/<int:pk>/pdf/", download_invoice, name="invoice-pdf"),
+        path("invoice/<uuid:pk>/pdf/", download_invoice, name="invoice-pdf"),
         # FOSDEM short link
         re_path(
             r"^FOSDEM/|fosdem/$",

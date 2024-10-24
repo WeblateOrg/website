@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import datetime
+import uuid
 from decimal import Decimal
 from pathlib import Path
 
@@ -102,6 +103,7 @@ class Discount(models.Model):
 
 
 class Invoice(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sequence = models.IntegerField(editable=False)
     number = models.GeneratedField(
         expression=Concat(
@@ -139,7 +141,7 @@ class Invoice(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                Extract("issue_date", "year"), "kind", "sequence", name="unique_number"
+                "sequence", Extract("issue_date", "year"), "kind", name="unique_number"
             )
         ]
 
@@ -166,7 +168,7 @@ class Invoice(models.Model):
                     Invoice.objects.filter(
                         kind=self.kind, issue_date__year=self.issue_date.year
                     )
-                    .order_by("-id")[0]
+                    .order_by("-sequence")[0]
                     .sequence
                     + 1
                 )
@@ -472,7 +474,7 @@ class InvoiceItem(models.Model):
     quantity_unit = models.IntegerField(
         choices=QuantityUnit, default=QuantityUnit.BLANK
     )
-    unit_price = models.DecimalField(decimal_places=2, max_digits=7)
+    unit_price = models.DecimalField(decimal_places=3, max_digits=8)
 
     def __str__(self) -> str:
         return f"{self.description} ({self.display_quantity}) {self.display_price}"
