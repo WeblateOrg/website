@@ -39,6 +39,7 @@ from weblate_web.views import (
     CustomerView,
     DiscoverView,
     DonateView,
+    EditCustomerView,
     EditDiscoveryView,
     EditLinkView,
     MilestoneArchiveView,
@@ -290,6 +291,7 @@ urlpatterns = [
             CompleteView.as_view(),
             name="payment-complete",
         ),
+        path("customer/<int:pk>/", EditCustomerView.as_view(), name="edit-customer"),
         path("invoice/<uuid:pk>/pdf/", download_invoice, name="invoice-pdf"),
         # FOSDEM short link
         re_path(

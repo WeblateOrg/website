@@ -172,10 +172,6 @@ ready(() => {
           const payload = new FormData();
           payload.append("vat", country + code);
           payload.append(
-            "payment",
-            document.querySelector('input[name="payment"]').value,
-          );
-          payload.append(
             "csrfmiddlewaretoken",
             document.querySelector('input[name="csrfmiddlewaretoken"]').value,
           );

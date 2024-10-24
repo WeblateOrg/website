@@ -265,4 +265,19 @@
       <div class="clear"></div>
     </div>
   {% endwith %}
+  {% if service.customer %}
+    <div class="form-line service-text-formatting">
+      <div class="line-left">{% trans "Billing information" %}</div>
+      <div class="line-right">
+        {% include "snippets/customer_address.html" with customer=service.customer %}
+        <br />
+        <form class="form-inline"
+              method="get"
+              action="{% url "edit-customer" pk=service.customer.pk %}">
+          <input type="submit" class="button small inline" value="{% trans "Edit" %}">
+        </form>
+      </div>
+      <div class="clear"></div>
+    </div>
+  {% endif %}
 </div>

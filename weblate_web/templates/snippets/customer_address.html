@@ -1,0 +1,24 @@
+{{ customer.name }}
+<br>
+{{ customer.address }}
+<br>
+{% if customer.address_2 %}
+  {{ customer.address_2 }}
+  <br>
+{% endif %}
+{% if customer.postcode %}{{ customer.postcode }}{% endif %}
+{{ customer.city }}
+<br>
+{{ customer.country.name }}
+{% if customer.tax %}
+  <br>
+  {{ customer.tax }}
+{% endif %}
+{% if customer.vat %}
+  <br>
+  {{ customer.vat }}
+{% endif %}
+{% if customer.email %}
+  <br>
+  {{ customer.email }}
+{% endif %}
