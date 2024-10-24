@@ -538,7 +538,7 @@ class DonateView(FormView):
             amount_fixed=True,
             description=description,
             recurring=data["recurring"],
-            extra={"reward": data["reward"]},
+            extra={"reward": data["reward"], "category": "donate"},
             customer=get_customer(self.request),
         )
         return redirect(payment.get_payment_url())
