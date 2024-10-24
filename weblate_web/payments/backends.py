@@ -178,7 +178,7 @@ class Backend:
             if proforma and self.payment.draft_invoice.kind == invoice_kind:
                 return
             # Finalize draft if present
-            invoice = self.payment.draft_invoice.finalize(
+            invoice = self.payment.draft_invoice.duplicate(
                 kind=invoice_kind,
                 prepaid=not proforma,
             )
