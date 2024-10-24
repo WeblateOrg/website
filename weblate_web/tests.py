@@ -233,6 +233,25 @@ def fake_payment(url):
     return response.headers["Location"]
 
 
+class UserTestCase(TestCase):
+    credentials = {
+        "username": "testuser",
+        "password": "testpassword",
+        "email": "noreply@weblate.org",
+    }
+    _user = None
+
+    def login(self):
+        user = self.create_user()
+        self.client.login(**self.credentials)
+        return user
+
+    def create_user(self):
+        if self._user is None:
+            self._user = User.objects.create_user(**self.credentials)
+        return self._user
+
+
 class PostTestCase(TestCase):
     @staticmethod
     def create_post(title="testpost", body="testbody", timestamp=None):
@@ -445,24 +464,7 @@ def create_payment(*, recurring="y", user, **kwargs):
     )
 
 
-class FakturaceTestCase(TestCase):
-    credentials = {
-        "username": "testuser",
-        "password": "testpassword",
-        "email": "noreply@weblate.org",
-    }
-    _user = None
-
-    def login(self):
-        user = self.create_user()
-        self.client.login(**self.credentials)
-        return user
-
-    def create_user(self):
-        if self._user is None:
-            self._user = User.objects.create_user(**self.credentials)
-        return self._user
-
+class FakturaceTestCase(UserTestCase):
     def create_donation(self, years=1, days=0, recurring="y"):
         user = self.create_user()
         return Donation.objects.create(
@@ -663,6 +665,20 @@ class DonationTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
 
+        # Edit customer info
+        customer = Customer.objects.get()
+        self.assertEqual(customer.name, TEST_CUSTOMER["name"])
+        edit_customer = TEST_CUSTOMER.copy()
+        edit_customer["name"] = "Test Customer"
+        response = self.client.post(
+            reverse("edit-customer", kwargs={"pk": customer.pk}),
+            edit_customer,
+            follow=True,
+        )
+        self.assertRedirects(response, reverse("user"))
+        customer.refresh_from_db()
+        self.assertEqual(customer.name, edit_customer["name"])
+
     def test_donation_workflow_invalid_reward(self):
         self.login()
         response = self.client.post(
@@ -846,7 +862,7 @@ class PostTest(PostTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class APITest(TestCase):
+class APITest(UserTestCase):
     def test_hosted(self):
         Package.objects.create(name="community", verbose="Community support", price=0)
         Package.objects.create(name="shared:test", verbose="Test package", price=0)
@@ -1003,10 +1019,7 @@ class APITest(TestCase):
         self.assertEqual(service.project_set.count(), 0)
 
     def test_user(self):
-        user = User.objects.create(
-            username="testuser",
-            password="testpassword",  # noqa: S106
-        )
+        user = self.create_user()
         response = self.client.post(
             "/api/user/",
             {
@@ -1048,10 +1061,7 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_user_rename(self):
-        user = User.objects.create(
-            username="testuser",
-            password="testpassword",  # noqa: S106
-        )
+        user = self.create_user()
         response = self.client.post(
             "/api/user/",
             {
@@ -1066,19 +1076,17 @@ class APITest(TestCase):
         self.assertFalse(User.objects.filter(username="testuser").exists())
         self.assertTrue(User.objects.filter(username="other").exists())
 
+    def test_fetch_vat_denied(self):
+        response = self.client.post(reverse("js-vat"))
+        self.assertEqual(response.status_code, 302)
+
     @responses.activate
     def test_fetch_vat(self):
-        user = User.objects.create(
-            username="testuser",
-            password="testpassword",  # noqa: S106
-        )
+        self.login()
         mock_vies()
-        payment, _url, _customer_url = create_payment(user=user)
         response = self.client.post(reverse("js-vat"))
         self.assertEqual(response.status_code, 400)
-        response = self.client.post(
-            reverse("js-vat"), {"vat": "CZ8003283018", "payment": payment.pk}
-        )
+        response = self.client.post(reverse("js-vat"), {"vat": "CZ8003283018"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),

@@ -134,8 +134,18 @@ def get_page_range(page_obj):
 def get_customer(
     request: AuthenticatedHttpRequest, obj: Service | Donation | None = None
 ) -> Customer:
+    # Get from Service / Donation objects
     if obj and obj.customer:
         return obj.customer
+
+    # Use existing customer for user
+    customers = Customer.objects.filter(
+        Q(donation__user=request.user) | Q(service__users=request.user)
+    )
+    if len(customers) == 1:
+        return customers[0]
+
+    # Create new customer object for an user
     return Customer.objects.get_or_create(
         origin=PAYMENTS_ORIGIN,
         user_id=request.user.id,
@@ -320,12 +330,10 @@ def api_support(request):
 
 
 @require_POST
-def fetch_vat(request):
-    if "payment" not in request.POST or "vat" not in request.POST:
+@login_required
+def fetch_vat(request: AuthenticatedHttpRequest):
+    if "vat" not in request.POST:
         raise SuspiciousOperation("Missing needed parameters")
-    payment = Payment.objects.filter(pk=request.POST["payment"], state=Payment.NEW)
-    if not payment.exists():
-        raise SuspiciousOperation("Already processed payment")
     vat = cache_vies_data(request.POST["vat"])
     return JsonResponse(data=getattr(vat, "vies_data", {"valid": False}))
 
@@ -446,6 +454,29 @@ class CustomerView(PaymentView):
         kwargs = super().get_form_kwargs()
         kwargs["instance"] = self.object.customer
         return kwargs
+
+
+@method_decorator(login_required, name="dispatch")
+class EditCustomerView(UpdateView):
+    # Unlike CustomerView, this is not bound to payment (allows editing all
+    # user customer contacts) and returns to /user
+    template_name = "payment/customer.html"
+    success_url = "/user/"
+    form_class = CustomerForm
+    model = Customer
+    request: AuthenticatedHttpRequest
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                Q(donation__user=self.request.user)
+                | Q(service__users=self.request.user)
+                | (Q(origin=PAYMENTS_ORIGIN) & Q(user_id=self.request.user.id))
+            )
+            .distinct()
+        )
 
 
 class CompleteView(PaymentView):

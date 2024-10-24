@@ -16,7 +16,6 @@
         <div class="payment-form">
           <form method="post">
             {% csrf_token %}
-            <input type="hidden" name="payment" value="{{ payment.pk }}">
             {% for field in form %}
               <div class="form-line">
                 <div class="line-left">{{ field.label }}</div>
