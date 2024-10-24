@@ -868,6 +868,7 @@ def subscription_pay(request, pk):
     if "switch_yearly" in request.POST and subscription.yearly_package:
         subscription.package = subscription.yearly_package
         subscription.save(update_fields=["package"])
+    package = subscription.package
     with override("en"):
         customer = get_customer(request, subscription.service)
         invoice = Invoice.objects.create(
@@ -876,11 +877,11 @@ def subscription_pay(request, pk):
             vat_rate=customer.vat_rate,
             kind=InvoiceKind.DRAFT,
             category=InvoiceCategory.SUPPORT
-            if subscription.package.category == PackageCategory.PACKAGE_SUPPORT
+            if package.category == PackageCategory.PACKAGE_SUPPORT
             else InvoiceCategory.HOSTING,
         )
-        invoice.invoiceitem_set.create(package=subscription.package)
-        payment = invoice.create_payment(subscription.package.get_repeat())
+        invoice.invoiceitem_set.create(package=package)
+        payment = invoice.create_payment(package.get_repeat())
     return redirect(payment.get_payment_url())
 
 
@@ -915,7 +916,6 @@ def subscription_new(request):
     else:
         service = None
 
-    subscription = Subscription(package=package)
     customer = get_customer(request, service)
     with override("en"):
         invoice = Invoice.objects.create(
@@ -924,11 +924,11 @@ def subscription_new(request):
             vat_rate=customer.vat_rate,
             kind=InvoiceKind.DRAFT,
             category=InvoiceCategory.SUPPORT
-            if subscription.package.category == PackageCategory.PACKAGE_SUPPORT
+            if package.category == PackageCategory.PACKAGE_SUPPORT
             else InvoiceCategory.HOSTING,
         )
-        invoice.invoiceitem_set.create(package=subscription.package)
-        payment = invoice.create_payment(subscription.package.get_repeat())
+        invoice.invoiceitem_set.create(package=package)
+        payment = invoice.create_payment(package.get_repeat())
     return redirect(payment.get_payment_url())
 
 
