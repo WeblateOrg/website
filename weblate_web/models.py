@@ -20,7 +20,7 @@
 from __future__ import annotations
 
 import sys
-from datetime import timedelta
+from datetime import datetime, timedelta
 from io import BytesIO
 from typing import TYPE_CHECKING
 from uuid import uuid4
@@ -380,14 +380,15 @@ def process_subscription(payment):
             subscription.payment = payment.pk
             subscription.save()
         else:
+            if start_date := payment.extra.get("start_date"):
+                expires = datetime.fromisoformat(start_date)
+            else:
+                expires = timezone.now()
             # Calculate expiry
             if repeat:
-                expires = timezone.now()
                 payment.start = expires
                 expires += get_period_delta(repeat)
                 payment.end = expires
-            else:
-                expires = timezone.now()
             # Create new
             subscription = Subscription.objects.create(
                 service=service,

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import random
+from datetime import timedelta
 from typing import TYPE_CHECKING
 
 import django.views.defaults
@@ -873,7 +874,10 @@ def subscription_pay(request, pk):
         customer = get_customer(request, subscription.service)
         invoice = Invoice.objects.create(
             customer=customer,
-            extra={"subscription": subscription.pk},
+            extra={
+                "subscription": subscription.pk,
+                "start_date": subscription.expires + timedelta(days=1),
+            },
             vat_rate=customer.vat_rate,
             kind=InvoiceKind.DRAFT,
             category=InvoiceCategory.SUPPORT
@@ -920,7 +924,11 @@ def subscription_new(request):
     with override("en"):
         invoice = Invoice.objects.create(
             customer=customer,
-            extra={"subscription": plan, "service": service.pk if service else None},
+            extra={
+                "subscription": plan,
+                "service": service.pk if service else None,
+                "start_date": timezone.now(),
+            },
             vat_rate=customer.vat_rate,
             kind=InvoiceKind.DRAFT,
             category=InvoiceCategory.SUPPORT
