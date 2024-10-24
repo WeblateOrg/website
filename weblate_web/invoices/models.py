@@ -474,10 +474,10 @@ class Invoice(models.Model):
             font_config=font_config,
         )
 
-    def finalize(
+    def duplicate(
         self,
         *,
-        kind: InvoiceKind = InvoiceKind.INVOICE,
+        kind: InvoiceKind,
         prepaid: bool = True,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
@@ -499,6 +499,7 @@ class Invoice(models.Model):
                 quantity=item.quantity,
                 quantity_unit=item.quantity_unit,
                 unit_price=item.unit_price,
+                package=item.package,
             )
         return invoice
 

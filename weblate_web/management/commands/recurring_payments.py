@@ -26,6 +26,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from weblate_web.invoices.models import InvoiceKind
 from weblate_web.models import Donation, Service, Subscription
 from weblate_web.payments.models import Payment
 from weblate_web.payments.utils import send_notification
@@ -138,7 +139,11 @@ class Command(BaseCommand):
             return
 
         # Create repeated payment
-        repeated = payment.repeat_payment(amount=amount)
+        if payment.paid_invoice:
+            invoice = payment.paid_invoice.duplicate(kind=InvoiceKind.DRAFT)
+            repeated = invoice.create_payment(payment.recurring)
+        else:
+            repeated = payment.repeat_payment(amount=amount)
 
         # Backend does not support it
         if not repeated:
