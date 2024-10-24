@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, cast
 from xml.etree import ElementTree  # noqa: S405
 
-import requests
 import responses
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -284,23 +283,6 @@ def fake_remote():
             },
         ],
     )
-
-
-def fake_payment(url):
-    response = requests.get(url, timeout=1)
-    response = requests.get(response.url[:-1] + "p", timeout=1)
-    body = response.content.decode()
-    for line in body.splitlines():
-        if '<input type="hidden" name="id"' in line:
-            payment_number = line.split('value="')[1].split('"')[0]
-    # Confirm payment state
-    response = requests.post(
-        "https://www.thepay.cz/demo-gate/return.php",
-        data={"state": 2, "underpaid_value": 1, "id": payment_number},
-        allow_redirects=False,
-        timeout=1,
-    )
-    return response.headers["Location"]
 
 
 class UserTestCase(TestCase):
@@ -625,7 +607,7 @@ class PaymentsTest(FakturaceTestCase):
         fresh = Payment.objects.get(pk=payment.pk)
         self.assertEqual(fresh.state, state)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
+    @override_settings(PAYMENT_DEBUG=True)
     def test_pay(self):
         payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "pay"})
@@ -640,7 +622,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
         self.assertEqual(response.status_code, 200)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
+    @override_settings(PAYMENT_DEBUG=True)
     @responses.activate
     def test_invalid_vat(self):
         mock_vies(valid=False)
@@ -669,7 +651,7 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
         self.assertEqual(response.status_code, 404)
 
-    @override_settings(PAYMENT_DEBUG=True, PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
+    @override_settings(PAYMENT_DEBUG=True)
     def test_pending(self):
         payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "pending"})
@@ -703,9 +685,11 @@ class DonationTest(FakturaceTestCase):
         response = self.client.get("/en/donate/new/")
         self.assertContains(response, "list of supporters")
 
-    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    @responses.activate
     def test_service_workflow_card(self):
         self.login()
+        thepay_mock_create_payment()
         Package.objects.create(name="community", verbose="Community support", price=0)
         Package.objects.create(name="extended", verbose="Extended support", price=42)
         response = self.client.get("/en/subscription/new/?plan=extended", follow=True)
@@ -717,18 +701,18 @@ class DonationTest(FakturaceTestCase):
         self.assertRedirects(response, customer_url)
         response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
         self.assertContains(response, "Please choose payment method")
-        response = self.client.post(payment_url, {"method": "thepay-card"})
+        response = self.client.post(payment_url, {"method": "thepay2-card"})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("https://www.thepay.cz/demo-gate/"))  # type: ignore[attr-defined]
+        self.assertTrue(response.url.startswith("https://gate.thepay.cz/"))  # type: ignore[attr-defined]
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PENDING)
 
         # Perform the payment
-        complete_url = fake_payment(response.url)  # type: ignore[attr-defined]
+        thepay_mock_payment(payment.pk)
 
         # Back to our web
-        response = self.client.get(complete_url, follow=True)
+        response = self.client.get(payment.get_complete_url(), follow=True)
         self.assertRedirects(response, "/en/user/")
         self.assertContains(response, "Thank you for your subscription")
 
@@ -886,10 +870,7 @@ class DonationTest(FakturaceTestCase):
         self.assertContains(response, "Weblate donation test")
 
     @responses.activate
-    @override_settings(
-        PAYMENT_DEBUG=True,
-        PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix(),
-    )
+    @override_settings(PAYMENT_DEBUG=True)
     def test_recurring(self):
         donation = self.create_donation(-1)
         # No recurring payments for now
@@ -1179,7 +1160,6 @@ class APITest(UserTestCase):
 @override_settings(
     NOTIFY_SUBSCRIPTION=["noreply@example.com"],
     PAYMENT_DEBUG=True,
-    PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix(),
 )
 class ExpiryTest(FakturaceTestCase):
     def assert_notifications(self, *subjects):
@@ -1248,7 +1228,6 @@ class ExpiryTest(FakturaceTestCase):
 @override_settings(
     NOTIFY_SUBSCRIPTION=["noreply@example.com"],
     PAYMENT_DEBUG=True,
-    PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix(),
 )
 class ServiceTest(FakturaceTestCase):
     @responses.activate

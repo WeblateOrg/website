@@ -209,11 +209,7 @@ class BackendBaseTestCase(TestCase):
         return payment
 
 
-@override_settings(
-    PAYMENT_DEBUG=True,
-    PAYMENT_FAKTURACE=TEST_FAKTURACE,
-    FIO_TOKEN="test-token",  # noqa: S106
-)
+@override_settings(PAYMENT_DEBUG=True)
 class BackendTest(BackendBaseTestCase):
     def test_pay(self):
         backend = get_backend("pay")(self.payment)
@@ -255,6 +251,10 @@ class BackendTest(BackendBaseTestCase):
         self.assertGreater(len(backends), 0)
 
     @responses.activate
+    @override_settings(
+        PAYMENT_FAKTURACE=TEST_FAKTURACE,
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
     def test_proforma(self):
         mock_vies()
         backend = get_backend("fio-bank")(self.payment)
