@@ -42,6 +42,16 @@ STATIC_URL = "static:"
 TEMPLATES_PATH = Path(__file__).parent / "templates"
 
 
+def round_decimal(num: Decimal) -> Decimal:
+    if num % Decimal("0.01"):
+        return round(num, 3)
+    if not num % Decimal(1):
+        return round(num, 0)
+    if not num % Decimal("0.1"):
+        return round(num, 1)
+    return round(num, 2)
+
+
 def url_fetcher(url: str) -> dict[str, str | bytes]:
     path_obj: Path
     result: dict[str, str | bytes]
@@ -220,7 +230,7 @@ class Invoice(models.Model):
 
     @cached_property
     def total_amount_no_vat(self) -> Decimal:
-        return self.total_items_amount + self.total_discount
+        return round_decimal(self.total_items_amount + self.total_discount)
 
     @property
     def total_amount_no_vat_czk(self) -> Decimal:
@@ -234,7 +244,7 @@ class Invoice(models.Model):
     def total_vat(self) -> Decimal:
         if not self.vat_rate:
             return Decimal(0)
-        return self.total_amount_no_vat * self.vat_rate / 100
+        return round_decimal(self.total_amount_no_vat * self.vat_rate / 100)
 
     @property
     def total_vat_czk(self) -> Decimal:
@@ -259,6 +269,9 @@ class Invoice(models.Model):
     @cached_property
     def all_items(self) -> models.QuerySet[InvoiceItem]:
         return self.invoiceitem_set.order_by("id")
+
+    def get_description(self) -> str:
+        return self.all_items[0].description
 
     def render_html(self) -> str:
         with override("en_GB"):
@@ -331,7 +344,7 @@ class Invoice(models.Model):
         output = etree.SubElement(invoices, "FaktVyd")
         add_element(output, "Doklad", self.number)
         add_element(output, "CisRada", self.kind)
-        add_element(output, "Popis", self.all_items[0].description)
+        add_element(output, "Popis", self.get_description())
         add_element(output, "Vystaveno", self.issue_date.isoformat())
         add_element(output, "DatUcPr", self.issue_date.isoformat())
         add_element(output, "PlnenoDPH", self.issue_date.isoformat())
@@ -523,11 +536,11 @@ class InvoiceItem(models.Model):
 
     @property
     def total_price(self) -> Decimal:
-        return self.unit_price * self.quantity
+        return round_decimal(self.unit_price * self.quantity)
 
     @property
     def display_price(self) -> str:
-        return self.invoice.render_amount(self.unit_price)
+        return self.invoice.render_amount(round_decimal(self.unit_price))
 
     @property
     def display_total_price(self) -> str:
