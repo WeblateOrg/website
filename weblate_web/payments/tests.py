@@ -51,6 +51,9 @@ CUSTOMER = {
 
 
 FIO_API = "https://fioapi.fio.cz/v1/rest/last/test-token/transactions.json"
+FIO_INFO_API = (
+    "https://fioapi.fio.cz/v1/rest/periods/test-token/{0}/{0}/transactions.json"
+)
 FIO_TRASACTIONS = {
     "accountStatement": {
         "info": {
@@ -61,7 +64,7 @@ FIO_TRASACTIONS = {
             "bic": "FIOBCZPPXXX",
             "yearList": None,
             "idTo": 10000000001,
-            "currency": "CZK",
+            "currency": "EUR",
             "openingBalance": 2543.81,
             "iban": "CZ1220100000001234567890",
             "idFrom": 10000000002,
@@ -263,6 +266,13 @@ class BackendTest(BackendBaseTestCase):
         self.assertFalse(backend.complete(None))
         self.check_payment(Payment.PENDING)
         responses.add(responses.GET, FIO_API, body=json.dumps(FIO_TRASACTIONS))
+        responses.add(
+            responses.GET,
+            FIO_INFO_API.format(
+                date.today().isoformat()  # noqa: DTZ011
+            ),
+            body=json.dumps(FIO_TRASACTIONS),
+        )
         FioBank.fetch_payments()
         self.check_payment(Payment.PENDING)
         self.assertEqual(len(mail.outbox), 1)
