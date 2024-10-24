@@ -25,6 +25,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.functions import Cast, Concat, Extract, LPad
@@ -467,17 +468,58 @@ class Invoice(models.Model):
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.deletion.CASCADE)
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True)
     quantity = models.IntegerField(
         default=1, validators=[MinValueValidator(1), MaxValueValidator(50)]
     )
     quantity_unit = models.IntegerField(
         choices=QuantityUnit, default=QuantityUnit.BLANK
     )
-    unit_price = models.DecimalField(decimal_places=3, max_digits=8)
+    unit_price = models.DecimalField(decimal_places=3, max_digits=8, blank=True)
+    package = models.ForeignKey(
+        "weblate_web.Package", on_delete=models.deletion.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self) -> str:
         return f"{self.description} ({self.display_quantity}) {self.display_price}"
+
+    def save(  # type: ignore[override]
+        self,
+        *,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using=None,
+        update_fields=None,
+    ):
+        extra_fields: list[str] = []
+
+        if self.package:
+            if not self.unit_price:
+                self.unit_price = self.package.price
+                extra_fields.append("unit_price")
+            if not self.description:
+                self.description = self.package.verbose
+                extra_fields.append("description")
+
+        if extra_fields and update_fields is not None:
+            update_fields = tuple(set(update_fields).union(extra_fields))
+
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
+
+    def clean(self):
+        if not self.description and not self.package:
+            raise ValidationError(
+                {"description": "Description needs to be provided if not using package"}
+            )
+        if not self.unit_price and not self.package:
+            raise ValidationError(
+                {"unit_price": "Price needs to be provided if not using package"}
+            )
 
     @property
     def total_price(self) -> Decimal:
