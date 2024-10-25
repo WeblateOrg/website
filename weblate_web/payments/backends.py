@@ -458,15 +458,6 @@ class ThePayCard(LegacyBackend):
         return False
 
 
-# @register_backend
-class ThePayBitcoin(ThePayCard):
-    name = "thepay-bitcoin"
-    verbose = gettext_lazy("Bitcoin")
-    description = "Bitcoin (The Pay)"
-    recurring = False
-    thepay_method = 29
-
-
 class FioBankAPI(fiobank.FioBank):
     """
     Fio API wrapper.
