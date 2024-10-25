@@ -52,9 +52,9 @@ def date_format(value: datetime.datetime) -> str:
     return value.strftime("%-d %b %Y")
 
 
-def round_decimal(num: Decimal) -> Decimal:
+def round_decimal(num: Decimal, max_decimals: int = 3) -> Decimal:
     if num % Decimal("0.01"):
-        return round(num, 3)
+        return round(num, max_decimals)
     if not num % Decimal(1):
         return round(num, 0)
     if not num % Decimal("0.1"):
@@ -272,7 +272,7 @@ class Invoice(models.Model):
 
     @property
     def total_vat_czk(self) -> Decimal:
-        return round(self.total_vat * self.exchange_rate_czk, 2)
+        return round_decimal(self.total_vat * self.exchange_rate_czk, max_digits=2)
 
     @property
     def display_total_vat(self) -> str:
@@ -280,11 +280,11 @@ class Invoice(models.Model):
 
     @cached_property
     def total_amount(self) -> Decimal:
-        return round(self.total_amount_no_vat + self.total_vat, 2)
+        return round_decimal(self.total_amount_no_vat + self.total_vat, max_digits=2)
 
     @property
     def total_amount_czk(self) -> Decimal:
-        return round(self.total_amount * self.exchange_rate_czk, 2)
+        return round_decimal(self.total_amount * self.exchange_rate_czk, max_digits=2)
 
     @property
     def display_total_amount(self) -> str:
