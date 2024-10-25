@@ -309,7 +309,9 @@ class Invoice(models.Model):
             )
 
     def get_filename(self, extension: str):
-        return f"Weblate_{self.get_kind_display()}_{self.number}.{extension}"
+        return f"Weblate_{self.get_kind_display()}_{self.number}.{extension}".replace(
+            " ", "_"
+        )
 
     @property
     def filename(self) -> str:
