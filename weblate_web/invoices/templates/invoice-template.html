@@ -177,6 +177,9 @@
                 <br />
                 Reference: {{ invoice.number }}
                 <br />
+                {% with payment_url=invoice.get_payment_url %}
+                  {% if payment_url %}<a href="{{ payment_url }}">Click here to pay by card</a>{% endif %}
+                {% endwith %}
               {% endif %}
             </td>
           </tr>

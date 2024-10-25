@@ -40,6 +40,8 @@ from lxml import etree
 from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
 
+from weblate_web.utils import get_site_url
+
 if TYPE_CHECKING:
     from weblate_web.payments.models import Payment
 
@@ -514,8 +516,8 @@ class Invoice(models.Model):
             )
         return invoice
 
-    def create_payment(self, recurring: str) -> Payment:
-        if self.draft_payment_set.exists():
+    def create_payment(self, recurring: str = "") -> Payment:
+        if not self.can_be_paid(InvoiceKind.DRAFT):
             raise ValueError("Payment already exists for this invoice!")
         return self.draft_payment_set.create(
             amount=float(self.total_amount),
@@ -525,6 +527,18 @@ class Invoice(models.Model):
             extra=self.extra,
             customer=self.customer,
         )
+
+    def can_be_paid(self, *state: InvoiceKind) -> bool:
+        return (
+            self.kind in {InvoiceKind.INVOICE, *state}
+            and not self.prepaid
+            and not self.paid_payment_set.exists()
+        )
+
+    def get_payment_url(self):
+        if self.can_be_paid():
+            return get_site_url("invoice-pay", pk=self.pk)
+        return None
 
 
 class InvoiceItem(models.Model):

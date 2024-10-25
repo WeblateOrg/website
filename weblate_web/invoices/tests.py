@@ -3,11 +3,12 @@ from __future__ import annotations
 from decimal import Decimal
 from pathlib import Path
 
-from django.test import TestCase
+from django.conf import settings
 from lxml import etree
 
 from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer
+from weblate_web.tests import UserTestCase
 
 from .models import Currency, Discount, Invoice, InvoiceKind, QuantityUnit
 
@@ -17,7 +18,7 @@ S3_SCHEMA_PATH = (
 S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))  # noqa: S320
 
 
-class InvoiceTestCase(TestCase):
+class InvoiceTestCase(UserTestCase):
     def create_customer(self, vat: str = "") -> Customer:
         return Customer.objects.create(
             name="Zkušební zákazník",
@@ -158,3 +159,34 @@ class InvoiceTestCase(TestCase):
             invoice.total_amount, round(Decimal(100) * invoice.exchange_rate_eur, 0)
         )
         self.validate_invoice(invoice)
+
+    def test_pay_link(self):
+        invoice = self.create_invoice_package()
+        self.validate_invoice(invoice)
+        url = invoice.get_payment_url()
+
+        # Unauthenticated should redirect to login
+        response = self.client.get(url)
+        # Redirect to language specific URL
+        self.assertEqual(response.status_code, 302)
+
+        # This should redirect to login now, can not use follow=True
+        # because SAML login not working in tests
+        response = self.client.get(response.headers["location"])
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            response.headers["location"].startswith(settings.LOGIN_URL),
+            response.headers["location"],
+        )
+        self.assertFalse(invoice.draft_payment_set.exists())
+
+        # Should create payment
+        self.login()
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, "Payment Summary")
+        self.assertEqual(invoice.draft_payment_set.count(), 1)
+
+        # Repeated access should reuse existing payment
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, "Payment Summary")
+        self.assertEqual(invoice.draft_payment_set.count(), 1)

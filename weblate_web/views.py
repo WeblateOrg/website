@@ -355,7 +355,10 @@ class PaymentView(FormView, SingleObjectMixin):
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         kwargs["can_pay"] = self.can_pay
-        kwargs["backends"] = [x(self.object) for x in list_backends()]
+        kwargs["backends"] = [
+            backend(self.object)
+            for backend in list_backends(self.object.extra.get("exclude_backends"))
+        ]
         return kwargs
 
     def validate_customer(self, customer):

@@ -31,7 +31,7 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView, TemplateView
 
-from weblate_web.invoices.views import download_invoice
+from weblate_web.invoices.views import download_invoice, pay_invoice
 from weblate_web.models import Post
 from weblate_web.views import (
     AddDiscoveryView,
@@ -293,6 +293,7 @@ urlpatterns = [
         ),
         path("customer/<int:pk>/", EditCustomerView.as_view(), name="edit-customer"),
         path("invoice/<uuid:pk>/pdf/", download_invoice, name="invoice-pdf"),
+        path("invoice/<uuid:pk>/pay/", pay_invoice, name="invoice-pay"),
         # FOSDEM short link
         re_path(
             r"^FOSDEM/|fosdem/$",
