@@ -19,28 +19,19 @@
 
 from __future__ import annotations
 
-import json
 import re
-import subprocess  # noqa: S404
 from decimal import Decimal
 from hashlib import sha256
-from math import floor
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import fiobank
 import requests
 import sentry_sdk
-import thepay.config
-import thepay.dataApi
-import thepay.gateApi
-import thepay.payment
 from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.http import http_date
-from django.utils.translation import get_language, gettext, gettext_lazy, override
-from fakturace.storage import InvoiceStorage, ProformaStorage
+from django.utils.translation import get_language, gettext, gettext_lazy
 
 from .models import Payment
 from .utils import send_notification
@@ -54,8 +45,7 @@ if TYPE_CHECKING:
     from fakturace.invoices import Invoice
 
 BACKENDS: dict[str, type[Backend]] = {}
-# TODO: adjust RE to new proformas
-PROFORMA_RE = re.compile("20[0-9]{7}")
+PROFORMA_RE = re.compile("50[0-9]{8}")
 
 
 def get_backend(name):
@@ -97,7 +87,7 @@ class Backend:
 
     def __init__(self, payment: Payment):
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
-        self.payment = select[0]
+        self.payment: Payment = select[0]
         self.invoice: Invoice | None = None
 
     @property
@@ -244,64 +234,6 @@ class Backend:
         self.send_notification("payment_failed")
 
 
-class LegacyBackend(Backend):
-    def generate_invoice(self, *, proforma: bool = False) -> None:
-        """Generate an invoice."""
-        if settings.PAYMENT_FAKTURACE is None:
-            raise ValueError("Fakturace storage is not configured!")
-        storage_class = ProformaStorage if proforma else InvoiceStorage
-        storage = storage_class(settings.PAYMENT_FAKTURACE)
-        customer = self.payment.customer
-        customer_id = f"web-{customer.pk}"
-        with override("en"):
-            contact_file = storage.update_contact(
-                customer_id,
-                customer.name,
-                customer.legacy_address,
-                customer.legacy_city,
-                customer.country.name,
-                customer.email,
-                customer.tax or "",
-                customer.vat or "",
-                "EUR",
-                "weblate",
-            )
-        invoice_file = storage.create(
-            customer_id,
-            0,
-            rate=f"{self.payment.amount_without_vat:f}",
-            item=self.payment.description,
-            vat=str(customer.vat_rate),
-            category=self.payment.extra.get("category", "weblate"),
-            **self.get_invoice_kwargs(),
-        )
-        invoice = storage.get(invoice_file)
-        invoice.write_tex()
-        invoice.build_pdf()
-        files = [contact_file, invoice_file, invoice.tex_path, invoice.pdf_path]
-        if not proforma:
-            invoice.mark_paid(
-                json.dumps(self.payment.details, indent=2, cls=DjangoJSONEncoder)
-            )
-            files.append(invoice.paid_path)
-
-        self.payment.invoice = invoice.invoiceid
-        self.invoice = invoice
-
-        # Commit to git
-        self.git_commit(files, invoice)
-
-    def git_commit(self, files: list[str], invoice: Invoice) -> None:
-        subprocess.run(
-            ["git", "add", "--", *files], check=True, cwd=settings.PAYMENT_FAKTURACE
-        )
-        subprocess.run(
-            ["git", "commit", "-m", f"Invoice {invoice.invoiceid}"],
-            check=True,
-            cwd=settings.PAYMENT_FAKTURACE,
-        )
-
-
 @register_backend
 class DebugPay(Backend):
     name = "pay"
@@ -354,111 +286,6 @@ class DebugPending(DebugPay):
         return True
 
 
-@register_backend
-class ThePayCard(LegacyBackend):
-    name = "thepay-card"
-    verbose = gettext_lazy("Payment card")
-    description = "Payment Card (The Pay)"
-    recurring = True
-    thepay_method = 31
-
-    def __init__(self, payment):
-        super().__init__(payment)
-        self.config = thepay.config.Config()
-        if settings.PAYMENT_THEPAY_MERCHANTID:
-            self.config.setCredentials(
-                settings.PAYMENT_THEPAY_MERCHANTID,
-                settings.PAYMENT_THEPAY_ACCOUNTID,
-                settings.PAYMENT_THEPAY_PASSWORD,
-                settings.PAYMENT_THEPAY_DATAAPI,
-            )
-
-    def perform(
-        self, request: HttpRequest | None, back_url: str, complete_url: str
-    ) -> None | HttpResponseRedirect:
-        if self.payment.repeat:
-            api = thepay.gateApi.GateApi(self.config)
-            try:
-                api.cardCreateRecurrentPayment(
-                    str(self.payment.repeat.pk),
-                    str(self.payment.pk),
-                    self.payment.vat_amount,
-                )
-            except thepay.gateApi.GateError as error:
-                sentry_sdk.capture_exception()
-                self.payment.details = {"errorDescription": error.args[0]}
-                # Failure is handled in collect using API
-            return None
-
-        payment = thepay.payment.Payment(self.config)
-
-        payment.setCurrency("EUR")
-        payment.setValue(self.payment.vat_amount)
-        payment.setMethodId(self.thepay_method)
-        payment.setCustomerEmail(self.payment.customer.email)
-        payment.setDescription(self.payment.description)
-        payment.setReturnUrl(complete_url)
-        payment.setMerchantData(str(self.payment.pk))
-        if self.payment.recurring:
-            payment.setIsRecurring(1)
-        pay_url = payment.getCreateUrl()
-        self.payment.details["pay_url"] = pay_url
-        return redirect(pay_url)
-
-    def collect(self, request: HttpRequest | None) -> bool | None:  # noqa: PLR0911
-        if self.payment.repeat:
-            data = thepay.dataApi.DataApi(self.config)
-            response = data.getPayments(merchant_data=str(self.payment.pk))
-            if not response.payments:
-                # Something went wrong
-                status = 4
-            else:
-                payment = response.payments.payment[0]
-                self.payment.details = dict(payment)
-                status = int(payment.state)
-        elif request is not None:
-            return_payment = thepay.payment.ReturnPayment(self.config)
-            try:
-                return_payment.parseData(request.GET)
-            except thepay.payment.ReturnPayment.MissingParameter:
-                sentry_sdk.capture_exception()
-                return None
-
-            # Check params signature
-            try:
-                return_payment.checkSignature()
-            except thepay.payment.ReturnPayment.InvalidSignature:
-                sentry_sdk.capture_exception()
-                return None
-
-            # Check we got correct payment
-            if return_payment.getMerchantData() != str(self.payment.pk):
-                return False
-
-            # Store payment details
-            self.payment.details = dict(return_payment.data)
-
-            status = return_payment.getStatus()
-        else:
-            return None
-
-        if status == 2:
-            return True
-        if status == 7:
-            return None
-        reason = f"Unknown: {status}"
-        if status == 3:
-            reason = gettext("Payment cancelled")
-        elif status == 4:
-            reason = gettext("Payment error")
-        elif status == 6:
-            reason = "Underpaid"
-        elif status == 9:
-            reason = "Deposit confirmed"
-        self.payment.details["reject_reason"] = reason
-        return False
-
-
 class FioBankAPI(fiobank.FioBank):
     """
     Fio API wrapper.
@@ -495,8 +322,7 @@ class FioBankAPI(fiobank.FioBank):
 
 
 @register_backend
-class FioBank(LegacyBackend):
-    # TODO: migrate from legacy backend
+class FioBank(Backend):
     name = "fio-bank"
     verbose = gettext_lazy("IBAN bank transfer")
     description = "Bank transfer"
@@ -511,38 +337,31 @@ class FioBank(LegacyBackend):
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
     ) -> None | HttpResponseRedirect:
+        # Generate proforma invoice and link it to this payment
         self.generate_invoice(proforma=True)
-        self.payment.details["proforma"] = self.payment.invoice
+        # Notify user
         self.send_notification("payment_pending")
         return redirect(complete_url)
 
-    def get_proforma(self) -> Invoice:
-        storage = ProformaStorage(settings.PAYMENT_FAKTURACE)
-        return storage.get(self.payment.details["proforma"])
-
-    def get_invoice_kwargs(self):
-        if self.payment.state == Payment.ACCEPTED:
-            # Inject proforma ID to generated invoice
-            invoice = self.get_proforma()
-            return {"payment_id": invoice.invoiceid, "bank_suffix": "proforma"}
-        return {}
-
     def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
-        invoice = self.get_proforma()
+        from weblate_web.invoices.models import Invoice  # noqa: PLC0415
+
         return [
             (
                 gettext("Issuing bank"),
                 "Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia",
             ),
-            (gettext("Account holder"), invoice.bank["holder"]),
-            (gettext("Account number"), invoice.bank["account"]),
+            (gettext("Account holder"), "Weblate s.r.o."),
+            (gettext("Account number"), "2302907395 / 2010"),
             (gettext("SWIFT code"), "FIOBCZPPXXX"),
-            (gettext("IBAN"), invoice.bank["iban"]),
-            (gettext("Reference"), invoice.invoiceid),
+            (gettext("IBAN"), "CZ30 2010 0000 0023 0290 7395"),
+            (gettext("Reference"), cast(Invoice, self.payment.draft_invoice).number),
         ]
 
     @classmethod
     def fetch_payments(cls, from_date: str | None = None) -> None:
+        from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
+
         tokens: list[str]
         if isinstance(settings.FIO_TOKEN, str):
             tokens = [settings.FIO_TOKEN]
@@ -568,43 +387,45 @@ class FioBank(LegacyBackend):
                 if entry["comment"]:
                     matches.extend(PROFORMA_RE.findall(entry["comment"]))
                 # Process all matches
-                for proforma_number in matches:
-                    # TODO: Fetch invoice object
-                    proforma_id = f"P{proforma_number}"
-                    try:
-                        related = Payment.objects.get(
-                            backend=cls.name, invoice=proforma_id
+                for invoice in Invoice.objects.filter(
+                    number__in=matches, kind=InvoiceKind.PROFORMA
+                ):
+                    # Match validation
+                    if invoice.paid_payment_set.exists():
+                        print(f"{invoice.number}: skipping, already paid")
+                        continue
+                    expected_currency = invoice.get_currency_display()
+                    if expected_currency != currency:
+                        print(
+                            f"{invoice.number}: skipping, currency mismatch, {currency} instead of {expected_currency}"
                         )
-                        expected_currency = related.get_currency_display()
-                        if expected_currency != currency:
-                            print(
-                                f"{proforma_id} currency mismatch: expecting {expected_currency}, got {currency}"
-                            )
-                            continue
-                        if related.state != Payment.PENDING:
-                            print(
-                                f"{proforma_id} not pending: {related.get_state_display()}"
-                            )
-                            continue
+                        continue
+                    if entry["amount"] < invoice.total_amount:
+                        print(
+                            f"{invoice.number}: skipping, underpaid, {entry['amount']} instead of {invoice.total_amount}"
+                        )
+                        continue
 
-                        backend = cls(related)
-                        proforma = backend.get_proforma()
-                        proforma.mark_paid(
-                            json.dumps(entry, indent=2, cls=DjangoJSONEncoder)
+                    # Fetch payment(s)
+                    payments = invoice.draft_payment_set.all()
+                    if len(payments) != 1:
+                        print(
+                            f"{invoice.number}: skipping, has {len(payments)} draft payments"
                         )
-                        backend.git_commit([proforma.paid_path], proforma)
-                        if floor(float(proforma.total_amount)) <= entry["amount"]:
-                            print(f"Received payment for {proforma_id}")
-                            backend.payment.details["transaction"] = entry
-                            backend.success()
-                        else:
-                            print(
-                                "Underpaid {}: received={}, expected={}".format(
-                                    proforma_id, entry["amount"], proforma.total_amount
-                                )
-                            )
-                    except Payment.DoesNotExist:
-                        print(f"No matching payment for {proforma_id} found")
+                        continue
+                    payment = payments[0]
+                    if payment.backend != cls.name:
+                        print(
+                            f"{invoice.number}: skipping, wrong backend: {payment.backend}"
+                        )
+                        continue
+
+                    print(f"{invoice.number}: received payment")
+                    # Instantionate backend (does SELECT FOR UPDATE)
+                    backend = payment.get_payment_backend()
+                    # Store transaction details
+                    backend.payment.details["transaction"] = entry
+                    backend.success()
 
 
 @register_backend
