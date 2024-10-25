@@ -65,11 +65,12 @@ def get_backend(name):
     return backend
 
 
-def list_backends():
+def list_backends(exclude_names: set[str] | None = None) -> list[type[Backend]]:
     result = [
         backend
         for backend in BACKENDS.values()
-        if not backend.debug or settings.PAYMENT_DEBUG
+        if (not backend.debug or settings.PAYMENT_DEBUG)
+        and (exclude_names is None or backend.name not in exclude_names)
     ]
     return sorted(result, key=lambda x: x.name)
 

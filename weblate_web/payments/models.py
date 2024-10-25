@@ -33,6 +33,8 @@ from django.utils.translation import gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
 from vies.models import VATINField
 
+from weblate_web.utils import get_site_url
+
 from .fields import Char32UUIDField
 from .utils import validate_email
 from .validators import validate_vatin
@@ -324,15 +326,11 @@ class Payment(models.Model):
             return 100.0 * self.amount / (100 + self.customer.vat_rate)
         return self.amount
 
-    def _resolve_url(self, name: str) -> str:
-        url = reverse(name, kwargs={"pk": self.pk})
-        return f"{settings.SITE_URL}{url}"
-
     def get_payment_url(self) -> str:
-        return self._resolve_url("payment")
+        return get_site_url("payment", strip_language=False, pk=self.pk)
 
     def get_complete_url(self) -> str:
-        return self._resolve_url("payment-complete")
+        return get_site_url("payment-complete", strip_language=False, pk=self.pk)
 
     def get_payment_backend_class(self):
         from .backends import get_backend  # noqa: PLC0415
