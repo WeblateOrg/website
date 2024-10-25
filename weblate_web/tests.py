@@ -37,7 +37,6 @@ if TYPE_CHECKING:
     from uuid import UUID
 
 TEST_DATA = Path(__file__).parent / "test-data"
-TEST_FAKTURACE = TEST_DATA / "fakturace"
 TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
 TEST_ACTIVITY = TEST_DATA / "activity.json"
 TEST_VIES_WSDL = TEST_DATA / "checkVatService.wsdl"
@@ -814,7 +813,6 @@ class DonationTest(FakturaceTestCase):
         self.assertEqual(renew.state, Payment.PROCESSED)
         self.assertEqual(payment.paid_invoice.total_amount, 1000)  # type: ignore[union-attr]
 
-    @override_settings(PAYMENT_FAKTURACE=TEST_FAKTURACE.as_posix())
     def test_donation_workflow_bank(self):
         self.login()
         response = self.client.post(

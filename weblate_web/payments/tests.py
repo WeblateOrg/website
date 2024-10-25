@@ -28,7 +28,6 @@ from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
 from weblate_web.tests import (
-    TEST_FAKTURACE,
     THEPAY2_MOCK_SETTINGS,
     mock_vies,
     thepay_mock_create_payment,
@@ -252,7 +251,6 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        PAYMENT_FAKTURACE=TEST_FAKTURACE,
         FIO_TOKEN="test-token",  # noqa: S106
     )
     def test_proforma(self):
@@ -270,7 +268,7 @@ class BackendTest(BackendBaseTestCase):
         mail.outbox = []
 
         received = FIO_TRASACTIONS.copy()
-        proforma_id = backend.payment.invoice
+        proforma_id = backend.payment.draft_invoice.number
         transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id
