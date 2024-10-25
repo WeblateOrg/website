@@ -147,6 +147,7 @@
               {% endif %}
             </th>
             <th>Payment</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -177,14 +178,19 @@
                 <br />
                 Reference: {{ invoice.number }}
                 <br />
-                {% with payment_url=invoice.get_payment_url %}
-                  {% if payment_url %}<a href="{{ payment_url }}">Click here to pay by card</a>{% endif %}
-                {% endwith %}
               {% endif %}
             </td>
+            <td>{{ invoice.get_payment_qrcode }}</td>
           </tr>
         </tbody>
       </table>
+      {% with payment_url=invoice.get_payment_url %}
+        {% if payment_url %}
+          <p>
+            Prefer card payment? <a href="{{ payment_url }}">{{ payment_url }}</a>
+          </p>
+        {% endif %}
+      {% endwith %}
       {% if invoice.is_draft %}
         <p>Should you have any questions concerning this quotation, please contact us at sales@weblate.org.</p>
       {% endif %}

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 from pathlib import Path
+from typing import cast
 
 from django.conf import settings
 from lxml import etree
@@ -19,7 +20,7 @@ S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))  # noqa: S320
 
 
 class InvoiceTestCase(UserTestCase):
-    def create_customer(self, vat: str = "") -> Customer:
+    def create_customer(self, *, vat: str = "") -> Customer:
         return Customer.objects.create(
             name="Zkušební zákazník",
             address="Street 42",
@@ -30,25 +31,28 @@ class InvoiceTestCase(UserTestCase):
             vat=vat,
         )
 
-    def create_invoice_base(
+    def create_invoice_base(  # noqa: PLR0913
         self,
+        *,
         discount: Discount | None = None,
         vat_rate: int = 0,
         customer_reference: str = "",
         vat: str = "",
+        kind: InvoiceKind = InvoiceKind.INVOICE,
         currency: Currency = Currency.EUR,
     ) -> Invoice:
         return Invoice.objects.create(
             customer=self.create_customer(vat=vat),
             discount=discount,
             vat_rate=vat_rate,
-            kind=InvoiceKind.INVOICE,
+            kind=kind,
             customer_reference=customer_reference,
             currency=currency,
         )
 
     def create_invoice_package(
         self,
+        *,
         discount: Discount | None = None,
         currency: Currency = Currency.EUR,
     ) -> Invoice:
@@ -64,16 +68,19 @@ class InvoiceTestCase(UserTestCase):
 
     def create_invoice(
         self,
+        *,
         discount: Discount | None = None,
         vat_rate: int = 0,
         customer_reference: str = "",
         vat: str = "",
+        kind: InvoiceKind = InvoiceKind.INVOICE,
     ) -> Invoice:
         invoice = self.create_invoice_base(
             discount=discount,
             vat_rate=vat_rate,
             customer_reference=customer_reference,
             vat=vat,
+            kind=kind,
         )
         invoice.invoiceitem_set.create(
             description="Test item",
@@ -160,10 +167,16 @@ class InvoiceTestCase(UserTestCase):
         )
         self.validate_invoice(invoice)
 
+    def test_invoice_kinds(self):
+        for kind in InvoiceKind.values:
+            invoice = self.create_invoice(kind=InvoiceKind(kind))
+            self.validate_invoice(invoice)
+
     def test_pay_link(self):
         invoice = self.create_invoice_package()
         self.validate_invoice(invoice)
-        url = invoice.get_payment_url()
+        url = cast(str, invoice.get_payment_url())
+        self.assertIsNotNone(url)
 
         # Unauthenticated should redirect to login
         response = self.client.get(url)
