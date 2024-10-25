@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <link href="invoices:invoice.css" media="print" rel="stylesheet">
-    <title>{{ invoice.get_kind_display }} {{ invoice.number }}</title>
-    <meta name="description" content="Weblate invoice">
+    <title>Weblate {{ invoice.get_kind_display }} {{ invoice.number }}</title>
+    <meta name="description"
+          content="Weblate {{ invoice.get_kind_display }} {{ invoice.number }} for {{ invoice.customer.name }}">
   </head>
 
   <body>
