@@ -25,6 +25,8 @@ from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING
 
+import qrcode
+import qrcode.image.svg
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.core.exceptions import ValidationError
@@ -34,6 +36,7 @@ from django.db import models
 from django.db.models.functions import Cast, Concat, Extract, LPad
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
+from django.utils.safestring import mark_safe
 from django.utils.translation import override
 from fakturace.rates import DecimalRates
 from lxml import etree
@@ -537,10 +540,38 @@ class Invoice(models.Model):
             and not self.paid_payment_set.exists()
         )
 
-    def get_payment_url(self):
+    def get_payment_url(self) -> str | None:
         if self.can_be_paid():
             return get_site_url("invoice-pay", pk=self.pk)
         return None
+
+    def get_payment_qrcode(self) -> str:
+        if not self.can_be_paid(InvoiceKind.PROFORMA):
+            return ""
+        if self.currency == Currency.EUR:
+            data = f"""BCD
+001
+1
+SCT
+FIOBCZPPXXX
+Weblate s.r.o.
+CZ3020100000002302907395
+EUR{self.total_amount}
+
+{self.number}
+
+
+"""
+        elif self.currency == Currency.CZK:
+            data = f"SPD*1.0*ACC:CZ3020100000002302907395*AM:{self.total_amount}*CC:CZK*RF:{self.number}*RN:Weblate s.r.o"
+        else:
+            return ""
+
+        return mark_safe(  # noqa: S308
+            qrcode.make(data, image_factory=qrcode.image.svg.SvgPathImage).to_string(
+                encoding="unicode"
+            )
+        )
 
 
 class InvoiceItem(models.Model):
