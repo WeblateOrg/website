@@ -6,6 +6,8 @@
     <title>Weblate {{ invoice.get_kind_display }} {{ invoice.number }}</title>
     <meta name="description"
           content="Weblate {{ invoice.get_kind_display }} {{ invoice.number }} for {{ invoice.customer.name }}">
+    <meta name="dcterms.created" content="{{ invoice.issue_date.isoformat }}">
+    <meta name="author" content="Weblate s.r.o.">
   </head>
 
   <body>
