@@ -434,8 +434,6 @@ class ThePay2Card(Backend):
     verbose = gettext_lazy("Payment card")
     description = "Payment Card (The Pay)"
     recurring = True
-    # TODO: make it production
-    debug = True
 
     def get_headers(self) -> dict[str, str]:
         timestamp = http_date()
