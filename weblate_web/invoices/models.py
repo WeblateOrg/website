@@ -272,7 +272,7 @@ class Invoice(models.Model):
 
     @property
     def total_vat_czk(self) -> Decimal:
-        return round_decimal(self.total_vat * self.exchange_rate_czk, max_digits=2)
+        return round_decimal(self.total_vat * self.exchange_rate_czk, max_decimals=2)
 
     @property
     def display_total_vat(self) -> str:
@@ -280,11 +280,11 @@ class Invoice(models.Model):
 
     @cached_property
     def total_amount(self) -> Decimal:
-        return round_decimal(self.total_amount_no_vat + self.total_vat, max_digits=2)
+        return round_decimal(self.total_amount_no_vat + self.total_vat, max_decimals=2)
 
     @property
     def total_amount_czk(self) -> Decimal:
-        return round_decimal(self.total_amount * self.exchange_rate_czk, max_digits=2)
+        return round_decimal(self.total_amount * self.exchange_rate_czk, max_decimals=2)
 
     @property
     def display_total_amount(self) -> str:
