@@ -86,11 +86,6 @@ class SecurityMiddleware:
         if response.status_code == 500:
             script.append("'unsafe-inline'")
 
-        # Matomo/Piwik
-        script.append("stats.cihar.com")
-        image.append("stats.cihar.com")
-        connect.append("stats.cihar.com")
-
         # Hosted Weblate widget
         image.append("hosted.weblate.org")
 
