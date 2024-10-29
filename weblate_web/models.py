@@ -964,7 +964,7 @@ class Subscription(models.Model):
     def add_payment(self, invoice: Invoice, period: str):
         # Calculate new expiry
         start = self.expires + timedelta(days=1)
-        end = start + get_period_delta(period) - relativedelta(days=1)
+        end = start - timedelta(days=1) + get_period_delta(period)
 
         # Fetch customer object from last payment here
         if self.payment:
