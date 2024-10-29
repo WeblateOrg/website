@@ -308,7 +308,7 @@ class PostTestCase(TestCase):
     @staticmethod
     def create_post(title="testpost", body="testbody", timestamp=None):
         if timestamp is None:
-            timestamp = timezone.now() - relativedelta(days=1)
+            timestamp = timezone.now() - timedelta(days=1)
         return Post.objects.create(
             title=title, slug=title, body=body, timestamp=timestamp
         )
@@ -523,7 +523,7 @@ class FakturaceTestCase(UserTestCase):
             reward=3,
             user=user,
             active=True,
-            expires=timezone.now() + relativedelta(years=years, days=days),
+            expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
             payment=create_payment(recurring=recurring, user=user)[0].pk,
             link_url="https://example.com/weblate",
             link_text="Weblate donation test",
@@ -563,7 +563,7 @@ class FakturaceTestCase(UserTestCase):
         service = Service.objects.create()
         subscription = service.subscription_set.create(
             package=Package.objects.get_or_create(name=package)[0],
-            expires=timezone.now() + relativedelta(years=years, days=days),
+            expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
         )
         subscription.payment = create_payment(
             recurring=recurring, user=user, extra={"subscription": subscription.pk}
@@ -903,7 +903,7 @@ class PostTest(PostTestCase):
     def test_future(self):
         past = self.create_post()
         future = self.create_post(
-            "futurepost", "futurebody", timezone.now() + relativedelta(days=1)
+            "futurepost", "futurebody", timezone.now() + timedelta(days=1)
         )
         response = self.client.get("/feed/")
         self.assertContains(response, "testpost")
@@ -1238,6 +1238,12 @@ class ServiceTest(FakturaceTestCase):
             service = self.create_service(
                 years=0, days=3, recurring="", package="hosted:test-1-m"
             )
+            hosted = service.hosted_subscriptions
+            self.assertEqual(
+                hosted[0].expires.date(),
+                timezone.now().date() + timedelta(days=3),
+            )
+
             response = self.client.post(
                 reverse("subscription-pay", kwargs={"pk": service.pk}),
                 follow=True,
@@ -1258,7 +1264,7 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(hosted[0].payment_obj.amount, 42)
         self.assertEqual(
             hosted[0].expires.date(),
-            timezone.now().date() + relativedelta(months=1) + timedelta(days=3),
+            timezone.now().date() + timedelta(days=3) + relativedelta(months=1),
         )
 
     @responses.activate
@@ -1290,7 +1296,7 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(hosted[0].payment_obj.amount, 420)
         self.assertEqual(
             hosted[0].expires.date(),
-            timezone.now().date() + relativedelta(years=1) + timedelta(days=3),
+            timezone.now().date() + timedelta(days=3) + relativedelta(years=1),
         )
 
     @responses.activate
