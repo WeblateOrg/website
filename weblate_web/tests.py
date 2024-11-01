@@ -346,11 +346,11 @@ class ViewTestCase(PostTestCase):
 
     def test_terms(self):
         response = self.client.get("/en/terms/")
-        self.assertContains(response, "04705904")
+        self.assertContains(response, "21668027")
 
     def test_privacy(self):
         response = self.client.get("/en/privacy/")
-        self.assertContains(response, "04705904")
+        self.assertContains(response, "21668027")
 
     def test_security_txt(self):
         response = self.client.get("/security.txt", follow=True)
