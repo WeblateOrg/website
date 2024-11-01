@@ -615,6 +615,13 @@ def download_payment_invoice(request, pk):
             filename=payment.paid_invoice.filename,
             content_type="application/pdf",
         )
+    if payment.draft_invoice:
+        return FileResponse(
+            payment.draft_invoice.path.open("rb"),
+            as_attachment=True,
+            filename=payment.draft_invoice.filename,
+            content_type="application/pdf",
+        )
 
     # Legacy payments storage
     if not payment.invoice_filename_valid:
