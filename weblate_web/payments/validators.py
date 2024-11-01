@@ -22,7 +22,7 @@ def cache_vies_data(value):
             data = {}
             for item in value.data:
                 data[item] = value.data[item]
-            cache.set(key, data, 3600)
+            cache.set(key, data, 3600 * 24 * 7)
         except Error as error:
             data = {
                 "valid": False,
