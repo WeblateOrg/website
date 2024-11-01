@@ -430,6 +430,7 @@ class PaymentView(FormView, SingleObjectMixin):
                 self.object.get_complete_url(),
             )
         except PaymentError as error:
+            sentry_sdk.capture_exception()
             messages.error(
                 self.request, gettext("Could not perform payment: %s") % error
             )
@@ -439,6 +440,7 @@ class PaymentView(FormView, SingleObjectMixin):
         try:
             backend.complete(self.request)
         except PaymentError as error:
+            sentry_sdk.capture_exception()
             messages.error(
                 self.request, gettext("Could not complete payment: %s") % error
             )
