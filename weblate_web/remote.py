@@ -28,7 +28,12 @@ import sentry_sdk
 from dateutil.parser import parse
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import F
+from django.utils import timezone
 from wlc import Weblate, WeblateException
+
+from weblate_web.payments.models import Customer
+from weblate_web.payments.validators import cache_vies_data
 
 CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
 PYPI_URL = "https://pypi.org/pypi/weblate/json"
@@ -159,3 +164,12 @@ def get_release(force: bool = False) -> None | list[PYPIInfo]:
 
     cache.set(key, result, timeout=CACHE_TIMEOUT)
     return result
+
+
+def fetch_vat_info(fetch_all: bool = False):
+    customers = Customer.objects.exclude(vat="")
+    if not fetch_all:
+        weekday = timezone.now().weekday()
+        customers = customers.annotate(idmod=F("id") % 7).filter(idmod=weekday)
+    for customer in customers.iterator():
+        cache_vies_data(customer.vat)
