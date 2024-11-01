@@ -39,7 +39,6 @@ class Command(BaseCommand):
     help = "issues recurring payments"
 
     def handle(self, *args, **options):
-        return
         # Issue recurring payments
         self.handle_donations()
         self.handle_subscriptions()
