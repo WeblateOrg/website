@@ -42,7 +42,8 @@ if TYPE_CHECKING:
 
     from django.http import HttpRequest, HttpResponseRedirect
     from django_stubs_ext import StrOrPromise
-    from fakturace.invoices import Invoice
+
+    from weblate_web.invoices.models import Invoice
 
 BACKENDS: dict[str, type[Backend]] = {}
 PROFORMA_RE = re.compile("50[0-9]{8}")
@@ -208,11 +209,16 @@ class Backend:
         self, notification: str, include_invoice: bool = True
     ) -> None:
         kwargs: dict[str, Any] = {"backend": self}
-        if self.invoice:
-            kwargs["invoice"] = self.invoice
+        invoice: Invoice | None = None
+        if self.payment.paid_invoice:
+            invoice = self.payment.paid_invoice
+        elif self.payment.draft_invoice:
+            invoice = self.payment.draft_invoice
         if self.payment:
             kwargs["payment"] = self.payment
-        send_notification(notification, [self.payment.customer.email], **kwargs)
+        send_notification(
+            notification, [self.payment.customer.email], invoice=invoice, **kwargs
+        )
 
     def get_invoice_kwargs(self):
         return {"payment_id": str(self.payment.pk), "payment_method": self.description}

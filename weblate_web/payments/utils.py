@@ -43,6 +43,8 @@ from html2text import HTML2Text
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from weblate_web.invoices.models import Invoice
+
 # Reject some suspicious e-mail addresses, based on checks enforced by Exim MTA
 EMAIL_BLACKLIST = re.compile(r"^([./|]|.*([@%!`#&?]|/\.\./))")
 
@@ -57,7 +59,12 @@ def validate_email(value):
         raise ValidationError(_("Enter a valid e-mail address."))
 
 
-def send_notification(notification: str, recipients: Sequence[str], **kwargs) -> None:
+def send_notification(
+    notification: str,
+    recipients: Sequence[str],
+    invoice: Invoice | None = None,
+    **kwargs,
+) -> None:
     if not recipients:
         return
 
@@ -100,7 +107,6 @@ def send_notification(notification: str, recipients: Sequence[str], **kwargs) ->
         email.attach(image)
     email.attach_alternative(body, "text/html")
     # Include invoice PDF if exists
-    if "invoice" in kwargs:
-        pdf_path = Path(kwargs["invoice"].pdf_path)
-        email.attach(pdf_path.name, pdf_path.read_bytes(), "application/pdf")
+    if invoice is not None:
+        email.attach(invoice.filename, invoice.path.read_bytes(), "application/pdf")
     email.send()
