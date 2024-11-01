@@ -1,7 +1,5 @@
 {
-  "labels": [
-    "dependencies"
-  ],
+  "labels": ["dependencies"],
   "rangeStrategy": "widen",
   "dependencyDashboard": true,
   "automerge": true,
@@ -15,103 +13,74 @@
     "enabled": true
   },
   "pip_requirements": {
-    "fileMatch": [
-      "^requirements-.*\\.txt$"
-    ]
+    "fileMatch": ["^requirements-.*\\.txt$"]
   },
   "packageRules": [
     {
-      "matchDatasources": [
-        "git-refs"
-      ],
+      "matchDatasources": ["git-refs"],
       "automerge": false,
-      "schedule": "on the last day of the month"
+      "schedule": "on the first day of the month"
     },
     {
-      "matchDatasources": [
-        "helm"
-      ],
+      "matchDatasources": ["helm"],
       "automerge": false,
-      "schedule": "on the last day of the month"
+      "schedule": "on the first day of the month"
     },
     {
-      "matchPaths": [
-        "**/package.json"
-      ],
+      "matchFileNames": ["**/package.json"],
       "automerge": false
     },
     {
-      "matchPackageNames": [
-        "shellcheck-py/shellcheck-py"
-      ],
+      "matchPackageNames": ["shellcheck-py/shellcheck-py"],
       "versioning": "loose"
     },
     {
-      "matchPackageNames": [
-        "Django"
-      ],
-      "matchDatasources": [
-        "pypi"
-      ],
+      "matchPackageNames": ["Django"],
+      "matchDatasources": ["pypi"],
       "separateMinorPatch": true
     },
     {
-      "matchPackageNames": [
-        "python"
-      ],
-      "matchDatasources": [
-        "docker"
-      ],
+      "matchPackageNames": ["python"],
+      "matchDatasources": ["docker"],
       "separateMinorPatch": true,
       "minor": {
         "dependencyDashboardApproval": true
       }
     }
   ],
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": [
-        "\\.pre-commit-config\\.yaml"
-      ],
-      "matchStrings": [
-        "(?<depName>[^'\" ]+)==(?<currentValue>[^'\" ,\\s]+)"
-      ],
+      "customType": "regex",
+      "fileMatch": ["\\.pre-commit-config\\.yaml"],
+      "matchStrings": ["(?<depName>[^'\" ]+)==(?<currentValue>[^'\" ,\\s]+)"],
       "datasourceTemplate": "pypi",
       "versioningTemplate": "pep440"
     },
     {
-      "fileMatch": [
-        "\\.pre-commit-config\\.yaml"
-      ],
-      "matchStrings": [
-        "(?<depName>[^'\" ]+)@(?<currentValue>[^'\" ,\\s]+)"
-      ],
+      "customType": "regex",
+      "fileMatch": ["\\.pre-commit-config\\.yaml"],
+      "matchStrings": ["(?<depName>[^'\" ]+)@(?<currentValue>[^'\" ,\\s]+)"],
       "datasourceTemplate": "npm",
       "versioningTemplate": "npm"
     },
     {
-      "fileMatch": [
-        "^Dockerfile$"
-      ],
-      "matchStrings": [
-        "ENV WEBLATE_VERSION=(?<currentValue>.*?)\\n"
-      ],
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ENV WEBLATE_VERSION=(?<currentValue>.*?)\\n"],
       "depNameTemplate": "Weblate",
       "datasourceTemplate": "pypi",
       "versioningTemplate": "pep440"
     },
     {
-      "fileMatch": [
-        "(^|/)Chart\\.yaml$"
-      ],
+      "customType": "regex",
+      "fileMatch": ["(^|/)Chart\\.yaml$"],
       "matchStrings": [
         "renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s+appVersion: (?<currentValue>.*)\\s"
       ]
     },
     {
-      "fileMatch": [
-        "^\\.github/workflows/[^/]+\\.ya?ml$"
-      ],
+      "customType": "regex",
+      "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
       "matchStrings": [
         "renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s+version: (?<currentValue>.*)\\s"
       ]
