@@ -383,9 +383,9 @@ class Payment(models.Model):
         """Trigger recurring payment."""
         from weblate_web.models import process_payment  # noqa: PLC0415
 
-        backend = self.get_payment_backend()
-        # Intiate the payment, this typically performs it using remote API
+        # Intiate the payment
         with transaction.atomic():
+            backend = self.get_payment_backend()
             result = backend.initiate(
                 None, self.get_payment_url(), self.get_complete_url()
             )
