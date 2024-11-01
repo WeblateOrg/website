@@ -621,7 +621,6 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
         self.assertEqual(response.status_code, 200)
 
-    @override_settings(PAYMENT_DEBUG=True)
     @responses.activate
     def test_invalid_vat(self):
         mock_vies(valid=False)
@@ -634,6 +633,12 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, customer_url)
         self.assertContains(response, "The VAT ID is no longer valid")
+
+    @responses.activate
+    def test_prefetch_vat(self):
+        mock_vies(valid=True)
+        self.prepare_payment()
+        call_command("background_vat")
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_reject(self):
