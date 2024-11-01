@@ -35,4 +35,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        fetch_vat_info()
+        fetch_vat_info(fetch_all=options["all"])
