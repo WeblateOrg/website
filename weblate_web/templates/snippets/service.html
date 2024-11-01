@@ -190,7 +190,7 @@
             {% endif %}
             {% if not subscription.active %}
               {% trans "Expired" %}
-            {% elif subscription.payment_obj.recurring %}
+            {% elif subscription.payment_obj.recurring and subscription.payment_obj.is_backend_valid %}
               {% trans "Automatic renewal" %} ({{ subscription.payment_obj.get_payment_backend_class.verbose }})
             {% else %}
               {% trans "No renewal" %}

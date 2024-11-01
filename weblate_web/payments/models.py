@@ -332,6 +332,13 @@ class Payment(models.Model):
     def get_complete_url(self) -> str:
         return get_site_url("payment-complete", strip_language=False, pk=self.pk)
 
+    def is_backend_valid(self):
+        try:
+            self.get_payment_backend_class()
+        except KeyError:
+            return False
+        return True
+
     def get_payment_backend_class(self):
         from .backends import get_backend  # noqa: PLC0415
 
