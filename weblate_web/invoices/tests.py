@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import cast
 
 from django.conf import settings
+from django.test.utils import override_settings
 from lxml import etree
 
 from weblate_web.models import Package, PackageCategory
@@ -172,6 +173,7 @@ class InvoiceTestCase(UserTestCase):
             invoice = self.create_invoice(kind=InvoiceKind(kind))
             self.validate_invoice(invoice)
 
+    @override_settings(PAYMENT_DEBUG=True)
     def test_pay_link(self):
         invoice = self.create_invoice_package()
         self.validate_invoice(invoice)
@@ -203,3 +205,11 @@ class InvoiceTestCase(UserTestCase):
         response = self.client.get(url, follow=True)
         self.assertContains(response, "Payment Summary")
         self.assertEqual(invoice.draft_payment_set.count(), 1)
+
+        # Pay
+        payment = invoice.draft_payment_set.get()
+        payment_url = payment.get_payment_url()
+        response = self.client.post(payment_url, {"method": "pay"})
+
+        # Ensure there is only a single invoice object now
+        self.assertEqual(Invoice.objects.count(), 1)

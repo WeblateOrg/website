@@ -165,6 +165,8 @@ class Backend:
             InvoiceKind,
         )
 
+        generate = True
+
         if self.payment.paid_invoice:
             raise ValueError("Invoice already exists!")
         invoice_kind = InvoiceKind.PROFORMA if proforma else InvoiceKind.INVOICE
@@ -172,11 +174,15 @@ class Backend:
             # Is there already draft proforma?
             if proforma and self.payment.draft_invoice.kind == invoice_kind:
                 return
-            # Finalize draft if present
-            invoice = self.payment.draft_invoice.duplicate(
-                kind=invoice_kind,
-                prepaid=not proforma,
-            )
+            if not proforma and self.payment.draft_invoice.kind == invoice_kind:
+                invoice = self.payment.draft_invoice
+                generate = False
+            else:
+                # Finalize draft if present
+                invoice = self.payment.draft_invoice.duplicate(
+                    kind=invoice_kind,
+                    prepaid=not proforma,
+                )
         else:
             category = InvoiceCategory.HOSTING
             if self.payment.extra.get("category") == "donate":
@@ -200,7 +206,8 @@ class Backend:
             self.payment.paid_invoice = invoice
 
         # Generate PDF
-        invoice.generate_files()
+        if generate:
+            invoice.generate_files()
 
         # Update reference
         self.payment.save(update_fields=["paid_invoice", "draft_invoice"])
