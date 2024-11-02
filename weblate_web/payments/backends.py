@@ -166,7 +166,8 @@ class Backend:
         )
 
         if self.payment.paid_invoice:
-            raise ValueError("Invoice already exists!")
+            # Can happen when using payment link
+            return
         invoice_kind = InvoiceKind.PROFORMA if proforma else InvoiceKind.INVOICE
         if self.payment.draft_invoice:
             # Is there already draft proforma?
