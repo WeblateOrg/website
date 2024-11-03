@@ -502,7 +502,10 @@ class CompleteView(PaymentView):
                 return redirect("payment", pk=self.object.pk)
 
             # Get backend and refetch payment from the database
-            backend = get_backend(self.object.backend)(self.object)
+            try:
+                backend = get_backend(self.object.backend)(self.object)
+            except KeyError as error:
+                raise Http404("Non-existing backend") from error
 
             # Allow reprocessing of rejected payments. User might choose
             # to retry in the payment gateway and previously rejected payment
