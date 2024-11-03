@@ -172,7 +172,10 @@ class Backend:
         invoice_kind = InvoiceKind.PROFORMA if proforma else InvoiceKind.INVOICE
         if self.payment.draft_invoice:
             # Is there already draft proforma?
-            if proforma and self.payment.draft_invoice.kind == invoice_kind:
+            if proforma and self.payment.draft_invoice.kind in {
+                InvoiceKind.PROFORMA,
+                InvoiceKind.INVOICE,
+            }:
                 return
             if not proforma and self.payment.draft_invoice.kind == invoice_kind:
                 invoice = self.payment.draft_invoice
