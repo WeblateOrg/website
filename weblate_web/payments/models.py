@@ -181,7 +181,13 @@ class Customer(models.Model):
 
     @property
     def is_empty(self):
-        return not (self.name and self.address and self.city and self.country)
+        return (
+            not self.name
+            or not self.address
+            or not self.city
+            or not self.vat
+            or not self.country
+        )
 
     @property
     def is_eu_enduser(self):
