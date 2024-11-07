@@ -76,6 +76,7 @@ class Customer(models.Model):
     vat = VATINField(
         validators=[validate_vatin],
         blank=True,
+        null=True,
         default="",
         verbose_name=gettext_lazy("European VAT ID"),
         help_text=gettext_lazy(
