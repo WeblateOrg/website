@@ -185,7 +185,7 @@ class Customer(models.Model):
             not self.name
             or not self.address
             or not self.city
-            or not self.vat
+            or not self.postcode
             or not self.country
         )
 
