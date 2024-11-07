@@ -25,7 +25,7 @@ from django.urls import reverse
 from weblate_web.payments.models import Customer
 
 POSTCODE_RE = re.compile(
-    r"\b((?:(?:[A-Z]{2,} ?)?[0-9][0-9- ]{2,}[0-9])|[0-9]{4}|[A-Z0-9]{4} ?[A-Z0-9]{3})\b"
+    r"\b((?:(?:[A-Z]{1,}[ -]?)?[0-9][0-9- ]{2,}[0-9])|[0-9]{4}|[A-Z0-9]{4} ?[A-Z0-9]{3})\b"
 )
 
 
