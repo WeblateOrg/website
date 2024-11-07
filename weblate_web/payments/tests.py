@@ -41,7 +41,8 @@ from .validators import validate_vatin
 CUSTOMER = {
     "name": "Michal Čihař",
     "address": "Zdiměřická 1439",
-    "city": "149 00 Praha 4",
+    "city": "Praha 4",
+    "postcode": "149 00",
     "country": "CZ",
     "vat": "CZ8003280318",
     "email": "noreply@example.com",
@@ -165,6 +166,10 @@ class ModelTest(SimpleTestCase):
         self.assertTrue(customer.is_empty)
         customer = Customer(**CUSTOMER)
         self.assertFalse(customer.is_empty)
+        customer.vat = None
+        self.assertFalse(customer.is_empty)
+        customer.postcode = ""
+        self.assertTrue(customer.is_empty)
 
     def test_clean(self):
         customer = Customer(**CUSTOMER)
