@@ -64,3 +64,8 @@ class Command(BaseCommand):
             city = city.strip().strip(",").strip()
 
             self.stdout.write(f"{url}: {customer.city!r} -> {city!r} {postcode!r}")
+
+            if options["perform"]:
+                customer.city = city
+                customer.postcode = postcode
+                customer.save(update_fields=["city", "postcode"])
