@@ -17,10 +17,16 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import re
+
 from django.core.management.base import BaseCommand
 from django.urls import reverse
 
 from weblate_web.payments.models import Customer
+
+POSTCODE_RE = re.compile(
+    r"\b((?:(?:[A-Z]{2,} ?)?[0-9][0-9- ]{2,}[0-9])|[0-9]{4}|[A-Z0-9]{4} ?[A-Z0-9]{3})\b"
+)
 
 
 class Command(BaseCommand):
@@ -39,4 +45,22 @@ class Command(BaseCommand):
             url = reverse(
                 "admin:payments_customer_change", kwargs={"object_id": customer.pk}
             )
-            self.stdout.write(f"{url}: {customer.city}")
+
+            matches = POSTCODE_RE.findall(customer.city)
+            if not matches:
+                continue
+            if len(matches) > 1:
+                self.stderr.write(
+                    f"{url}: too many matches {customer.city!r}: {matches}"
+                )
+                continue
+            postcode = matches[0]
+            city = customer.city.strip().removeprefix(postcode).removesuffix(postcode)
+            if city == customer.city:
+                self.stderr.write(
+                    f"{url}: too many matches {customer.city!r}: {postcode} in middle"
+                )
+                continue
+            city = city.strip().strip(",").strip()
+
+            self.stdout.write(f"{url}: {customer.city!r} -> {city!r} {postcode!r}")
