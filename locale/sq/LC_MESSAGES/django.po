@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-11-01 18:16+0100\n"
+"POT-Creation-Date: 2024-11-07 13:47+0100\n"
 "PO-Revision-Date: 2024-11-02 07:50+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/weblate/website/"
@@ -254,43 +254,43 @@ msgstr "Që të përktheni më tepër lëndë, rritni kufij shërbimi."
 msgid "Upgrade"
 msgstr "Përmirësojeni"
 
-#: weblate_web/payments/backends.py:333
+#: weblate_web/payments/backends.py:528
 msgid "IBAN bank transfer"
 msgstr "Transfertë bankare me IBAN"
 
-#: weblate_web/payments/backends.py:357
+#: weblate_web/payments/backends.py:552
 msgid "Issuing bank"
 msgstr "Banka emetuese"
 
-#: weblate_web/payments/backends.py:360
+#: weblate_web/payments/backends.py:555
 msgid "Account holder"
 msgstr "Zotërues i llogarisë"
 
-#: weblate_web/payments/backends.py:361
+#: weblate_web/payments/backends.py:556
 msgid "Account number"
 msgstr "Numër llogarie"
 
-#: weblate_web/payments/backends.py:362
+#: weblate_web/payments/backends.py:557
 msgid "SWIFT code"
 msgstr "Kod SWIFT"
 
-#: weblate_web/payments/backends.py:363
+#: weblate_web/payments/backends.py:558
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/payments/backends.py:364
+#: weblate_web/payments/backends.py:559
 msgid "Reference"
 msgstr "Referencë"
 
-#: weblate_web/payments/backends.py:440
+#: weblate_web/payments/backends.py:635
 msgid "Payment card"
 msgstr "Kartë pagesash"
 
-#: weblate_web/payments/backends.py:603
+#: weblate_web/payments/backends.py:804
 msgid "Payment error"
 msgstr "Gabim pagese"
 
-#: weblate_web/payments/backends.py:605
+#: weblate_web/payments/backends.py:806
 msgid "Payment cancelled"
 msgstr "Pagesa u anulua"
 
@@ -1103,9 +1103,10 @@ msgid "Sign in"
 msgstr "Hyni"
 
 #: weblate_web/templates/donate.html:16
-#: weblate_web/templates/donate/edit.html:6
-msgid "Donate to Weblate"
-msgstr "Dhuroni për Weblate-in"
+#, fuzzy
+#| msgid "Weblate support"
+msgid "Become a Weblate supporter"
+msgstr "Asistencë mbi Weblate-in"
 
 #: weblate_web/templates/donate.html:23
 msgid ""
@@ -1124,7 +1125,9 @@ msgid "Manage your donations"
 msgstr "Administroni dhurimet tuaja"
 
 #: weblate_web/templates/donate.html:31
-msgid "Recurring donations and rewards"
+#, fuzzy
+#| msgid "Recurring donations and rewards"
+msgid "Recurring support and rewards"
 msgstr "Dhurime të ripërsëritshme dhe shpërblime"
 
 #: weblate_web/templates/donate.html:34
@@ -1141,8 +1144,10 @@ msgstr ""
 "ndonjë kontratë asistence."
 
 #: weblate_web/templates/donate.html:36
-msgid "Activate donation"
-msgstr "Aktivizoni dhurim"
+#, fuzzy
+#| msgid "Your reward"
+msgid "Choose your reward"
+msgstr "Shpërblimi juaj"
 
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:49
 #: weblate_web/templates/donate.html:56 weblate_web/templates/support.html:85
@@ -1268,6 +1273,10 @@ msgstr "Përkrahës"
 #: weblate_web/templates/donate.html:209
 msgid "Technologies"
 msgstr "Teknologji"
+
+#: weblate_web/templates/donate/edit.html:6
+msgid "Donate to Weblate"
+msgstr "Dhuroni për Weblate-in"
 
 #: weblate_web/templates/donate/edit.html:14
 msgid "Edit your reward link"
@@ -3363,7 +3372,7 @@ msgid "Other topics"
 msgstr "Tema të tjera"
 
 #: weblate_web/templates/weblate_web/post_detail.html:67
-#: weblate_web/views.py:760
+#: weblate_web/views.py:768
 msgid "Milestones"
 msgstr "Objektiva"
 
@@ -3479,61 +3488,64 @@ msgid_plural "%d days remaining"
 msgstr[0] "%d ditë e mbetur"
 msgstr[1] "%d ditë të mbeture"
 
-#: weblate_web/views.py:167
+#: weblate_web/views.py:168
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Gabim në parametrin %(field)s: %(error)s"
 
-#: weblate_web/views.py:371 weblate_web/views.py:406
+#: weblate_web/views.py:376 weblate_web/views.py:411
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 "Që të plotësohet pagesa, ju lutemi, jepni të dhënat tuaja të faturimit."
 
-#: weblate_web/views.py:384
+#: weblate_web/views.py:389
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "ID-ja e TVSH s’është më e vlefshme, ju lutemi, përditësojeni."
 
-#: weblate_web/views.py:401
+#: weblate_web/views.py:406
 msgid "Please choose a payment method."
 msgstr "Ju lutemi, zgjidhni një metodë pagesash."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "S’u krye dot pagesa: %s"
 
-#: weblate_web/views.py:445
+#: weblate_web/views.py:450
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "S’u plotësua dot pagesa: %s"
 
-#: weblate_web/views.py:568
+#: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
 msgstr "Pagesë ende e pakryer, ju lutemi, riprovoni."
 
-#: weblate_web/views.py:572
+#: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
 msgstr "Pagesa u refuzua: {}"
 
-#: weblate_web/views.py:573
+#: weblate_web/views.py:581
 msgid "Unknown reason"
 msgstr "Arsye e panjohur"
 
-#: weblate_web/views.py:578
+#: weblate_web/views.py:586
 msgid "Thank you for your subscription."
 msgstr "Faleminderit për pajtimin tuaj."
 
-#: weblate_web/views.py:581
+#: weblate_web/views.py:589
 msgid "Thank you for your donation."
 msgstr "Faleminderit për dhurimin tuaj."
 
-#: weblate_web/views.py:866
+#: weblate_web/views.py:874
 msgid "User not found!"
 msgstr "Përdorues që s’u gjet!"
 
-#: weblate_web/views.py:1031
+#: weblate_web/views.py:1039
 msgid "Payment was added."
 msgstr "U shtua pagesë."
+
+#~ msgid "Activate donation"
+#~ msgstr "Aktivizoni dhurim"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

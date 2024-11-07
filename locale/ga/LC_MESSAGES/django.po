@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-11-01 18:16+0100\n"
+"POT-Creation-Date: 2024-11-07 13:47+0100\n"
 "PO-Revision-Date: 2024-11-02 11:02+0000\n"
 "Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
 "Language-Team: Irish <https://hosted.weblate.org/projects/weblate/website/ga/"
@@ -16,8 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :("
-"n>6 && n<11) ? 3 : 4;\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :"
+"(n>6 && n<11) ? 3 : 4;\n"
 "X-Generator: Weblate 5.8.2\n"
 
 #: weblate_web/fake.py:25
@@ -253,43 +253,43 @@ msgstr "Teorainneacha seirbhíse a mhéadú chun níos mó ábhar a aistriú."
 msgid "Upgrade"
 msgstr "Uasghrádú"
 
-#: weblate_web/payments/backends.py:333
+#: weblate_web/payments/backends.py:528
 msgid "IBAN bank transfer"
 msgstr "Aistriú bainc IBAN"
 
-#: weblate_web/payments/backends.py:357
+#: weblate_web/payments/backends.py:552
 msgid "Issuing bank"
 msgstr "Banc éisiúna"
 
-#: weblate_web/payments/backends.py:360
+#: weblate_web/payments/backends.py:555
 msgid "Account holder"
 msgstr "Sealbhóir an chuntais"
 
-#: weblate_web/payments/backends.py:361
+#: weblate_web/payments/backends.py:556
 msgid "Account number"
 msgstr "Uimhir an chuntais"
 
-#: weblate_web/payments/backends.py:362
+#: weblate_web/payments/backends.py:557
 msgid "SWIFT code"
 msgstr "Cód SWIFT"
 
-#: weblate_web/payments/backends.py:363
+#: weblate_web/payments/backends.py:558
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/payments/backends.py:364
+#: weblate_web/payments/backends.py:559
 msgid "Reference"
 msgstr "Tagairt"
 
-#: weblate_web/payments/backends.py:440
+#: weblate_web/payments/backends.py:635
 msgid "Payment card"
 msgstr "Cárta íocaíochta"
 
-#: weblate_web/payments/backends.py:603
+#: weblate_web/payments/backends.py:804
 msgid "Payment error"
 msgstr "Tharla earráid leis an íocaíocht"
 
-#: weblate_web/payments/backends.py:605
+#: weblate_web/payments/backends.py:806
 msgid "Payment cancelled"
 msgstr "Cuireadh an íocaíocht ar ceal"
 
@@ -1108,9 +1108,10 @@ msgid "Sign in"
 msgstr "Sínigh isteach"
 
 #: weblate_web/templates/donate.html:16
-#: weblate_web/templates/donate/edit.html:6
-msgid "Donate to Weblate"
-msgstr "Déan síntiús do Weblate"
+#, fuzzy
+#| msgid "Weblate support"
+msgid "Become a Weblate supporter"
+msgstr "Tacaíocht láithreán gréasáin"
 
 #: weblate_web/templates/donate.html:23
 msgid ""
@@ -1129,7 +1130,9 @@ msgid "Manage your donations"
 msgstr "Bainistigh do thabhartais"
 
 #: weblate_web/templates/donate.html:31
-msgid "Recurring donations and rewards"
+#, fuzzy
+#| msgid "Recurring donations and rewards"
+msgid "Recurring support and rewards"
 msgstr "Síntiúis athfhillteacha agus luaíochtaí"
 
 #: weblate_web/templates/donate.html:34
@@ -1146,8 +1149,10 @@ msgstr ""
 "tacaíochta."
 
 #: weblate_web/templates/donate.html:36
-msgid "Activate donation"
-msgstr "Gníomhachtaigh síntiús"
+#, fuzzy
+#| msgid "Your reward"
+msgid "Choose your reward"
+msgstr "Do luach saothair"
 
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:49
 #: weblate_web/templates/donate.html:56 weblate_web/templates/support.html:85
@@ -1273,6 +1278,10 @@ msgstr "Urraitheoirí"
 #: weblate_web/templates/donate.html:209
 msgid "Technologies"
 msgstr "Teicneolaíochtaí"
+
+#: weblate_web/templates/donate/edit.html:6
+msgid "Donate to Weblate"
+msgstr "Déan síntiús do Weblate"
 
 #: weblate_web/templates/donate/edit.html:14
 msgid "Edit your reward link"
@@ -3380,7 +3389,7 @@ msgid "Other topics"
 msgstr "Ábhair eile"
 
 #: weblate_web/templates/weblate_web/post_detail.html:67
-#: weblate_web/views.py:760
+#: weblate_web/views.py:768
 msgid "Milestones"
 msgstr "Clocha míle"
 
@@ -3502,60 +3511,63 @@ msgstr[2] "%d laethanta fágtha"
 msgstr[3] "%d laethanta fágtha"
 msgstr[4] "%d laethanta fágtha"
 
-#: weblate_web/views.py:167
+#: weblate_web/views.py:168
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Earráid i bparaiméadar %(field)s: %(error)s"
 
-#: weblate_web/views.py:371 weblate_web/views.py:406
+#: weblate_web/views.py:376 weblate_web/views.py:411
 msgid "Please provide your billing information to complete the payment."
 msgstr "Tabhair d'fhaisnéis bhilleála chun an íocaíocht a chomhlánú."
 
-#: weblate_web/views.py:384
+#: weblate_web/views.py:389
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Níl an Aitheantas CBL bailí a thuilleadh, nuashonraigh é le do thoil."
 
-#: weblate_web/views.py:401
+#: weblate_web/views.py:406
 msgid "Please choose a payment method."
 msgstr "Roghnaigh modh íocaíochta."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Níorbh fhéidir an íocaíocht a dhéanamh: %s"
 
-#: weblate_web/views.py:445
+#: weblate_web/views.py:450
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Níorbh fhéidir an íocaíocht a chríochnú: %s"
 
-#: weblate_web/views.py:568
+#: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
 msgstr "Níl an íocaíocht próiseáilte fós, bain triail eile as."
 
-#: weblate_web/views.py:572
+#: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
 msgstr "Diúltaíodh an íocaíocht: {}"
 
-#: weblate_web/views.py:573
+#: weblate_web/views.py:581
 msgid "Unknown reason"
 msgstr "Fáth anaithnid"
 
-#: weblate_web/views.py:578
+#: weblate_web/views.py:586
 msgid "Thank you for your subscription."
 msgstr "Go raibh maith agat as do shíntiús."
 
-#: weblate_web/views.py:581
+#: weblate_web/views.py:589
 msgid "Thank you for your donation."
 msgstr "Go raibh maith agat as do síntiús."
 
-#: weblate_web/views.py:866
+#: weblate_web/views.py:874
 msgid "User not found!"
 msgstr "Úsáideoir gan aimsiú!"
 
-#: weblate_web/views.py:1031
+#: weblate_web/views.py:1039
 msgid "Payment was added."
 msgstr "Cuireadh íocaíocht leis."
+
+#~ msgid "Activate donation"
+#~ msgstr "Gníomhachtaigh síntiús"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

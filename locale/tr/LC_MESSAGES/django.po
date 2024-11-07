@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-11-01 18:16+0100\n"
+"POT-Creation-Date: 2024-11-07 13:47+0100\n"
 "PO-Revision-Date: 2024-11-07 05:08+0000\n"
 "Last-Translator: Kaya Zeren <kayazeren@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/weblate/website/"
@@ -266,43 +266,43 @@ msgstr "Daha fazla içerik çevirmek için hizmetin sınırlarını artırın."
 msgid "Upgrade"
 msgstr "Yükselt"
 
-#: weblate_web/payments/backends.py:333
+#: weblate_web/payments/backends.py:528
 msgid "IBAN bank transfer"
 msgstr "IBAN banka havalesi"
 
-#: weblate_web/payments/backends.py:357
+#: weblate_web/payments/backends.py:552
 msgid "Issuing bank"
 msgstr "İlgili banka"
 
-#: weblate_web/payments/backends.py:360
+#: weblate_web/payments/backends.py:555
 msgid "Account holder"
 msgstr "Hesap sahibi"
 
-#: weblate_web/payments/backends.py:361
+#: weblate_web/payments/backends.py:556
 msgid "Account number"
 msgstr "Hesap numarası"
 
-#: weblate_web/payments/backends.py:362
+#: weblate_web/payments/backends.py:557
 msgid "SWIFT code"
 msgstr "SWIFT kodu"
 
-#: weblate_web/payments/backends.py:363
+#: weblate_web/payments/backends.py:558
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/payments/backends.py:364
+#: weblate_web/payments/backends.py:559
 msgid "Reference"
 msgstr "Referans"
 
-#: weblate_web/payments/backends.py:440
+#: weblate_web/payments/backends.py:635
 msgid "Payment card"
 msgstr "Ödeme kartı"
 
-#: weblate_web/payments/backends.py:603
+#: weblate_web/payments/backends.py:804
 msgid "Payment error"
 msgstr "Ödeme sorunu"
 
-#: weblate_web/payments/backends.py:605
+#: weblate_web/payments/backends.py:806
 msgid "Payment cancelled"
 msgstr "Ödeme iptal edildi"
 
@@ -1112,9 +1112,10 @@ msgid "Sign in"
 msgstr "Oturum aç"
 
 #: weblate_web/templates/donate.html:16
-#: weblate_web/templates/donate/edit.html:6
-msgid "Donate to Weblate"
-msgstr "Weblate için bağış yapın"
+#, fuzzy
+#| msgid "Weblate support"
+msgid "Become a Weblate supporter"
+msgstr "Weblate desteği"
 
 #: weblate_web/templates/donate.html:23
 msgid ""
@@ -1133,7 +1134,9 @@ msgid "Manage your donations"
 msgstr "Bağışlarınızı yönetin"
 
 #: weblate_web/templates/donate.html:31
-msgid "Recurring donations and rewards"
+#, fuzzy
+#| msgid "Recurring donations and rewards"
+msgid "Recurring support and rewards"
 msgstr "Düzenli ödenen bağışlar ve ödüller"
 
 #: weblate_web/templates/donate.html:34
@@ -1149,8 +1152,10 @@ msgstr ""
 "Weblate barındırıyorsanız, bu seçeneği değerlendirin."
 
 #: weblate_web/templates/donate.html:36
-msgid "Activate donation"
-msgstr "Bağışı etkinleştir"
+#, fuzzy
+#| msgid "Your reward"
+msgid "Choose your reward"
+msgstr "Ödülünüz"
 
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:49
 #: weblate_web/templates/donate.html:56 weblate_web/templates/support.html:85
@@ -1275,6 +1280,10 @@ msgstr "Destekleyenler"
 #: weblate_web/templates/donate.html:209
 msgid "Technologies"
 msgstr "Teknolojiler"
+
+#: weblate_web/templates/donate/edit.html:6
+msgid "Donate to Weblate"
+msgstr "Weblate için bağış yapın"
 
 #: weblate_web/templates/donate/edit.html:14
 msgid "Edit your reward link"
@@ -3344,7 +3353,7 @@ msgid "Other topics"
 msgstr "Diğer konular"
 
 #: weblate_web/templates/weblate_web/post_detail.html:67
-#: weblate_web/views.py:760
+#: weblate_web/views.py:768
 msgid "Milestones"
 msgstr "Aşamalar"
 
@@ -3460,60 +3469,63 @@ msgid_plural "%d days remaining"
 msgstr[0] "%d gün kaldı"
 msgstr[1] "%d gün kaldı"
 
-#: weblate_web/views.py:167
+#: weblate_web/views.py:168
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "%(field)s parametresinde hata: %(error)s"
 
-#: weblate_web/views.py:371 weblate_web/views.py:406
+#: weblate_web/views.py:376 weblate_web/views.py:411
 msgid "Please provide your billing information to complete the payment."
 msgstr "Ödemeyi tamamlamak için lütfen fatura bilgilerinizi yazın."
 
-#: weblate_web/views.py:384
+#: weblate_web/views.py:389
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "KDV kimliği artık geçerli değil. Lütfen güncelleyin."
 
-#: weblate_web/views.py:401
+#: weblate_web/views.py:406
 msgid "Please choose a payment method."
 msgstr "Lütfen bir ödeme yöntemi seçin."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Ödeme işlemi yapılamadı: %s"
 
-#: weblate_web/views.py:445
+#: weblate_web/views.py:450
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Ödeme işlemi tamamlanamadı: %s"
 
-#: weblate_web/views.py:568
+#: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
 msgstr "Ödeme henüz alınmadı. Lütfen yeniden deneyin."
 
-#: weblate_web/views.py:572
+#: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
 msgstr "Ödeme reddedildi: {}"
 
-#: weblate_web/views.py:573
+#: weblate_web/views.py:581
 msgid "Unknown reason"
 msgstr "Nedeni bilinmiyor"
 
-#: weblate_web/views.py:578
+#: weblate_web/views.py:586
 msgid "Thank you for your subscription."
 msgstr "Aboneliğiniz için teşekkürler."
 
-#: weblate_web/views.py:581
+#: weblate_web/views.py:589
 msgid "Thank you for your donation."
 msgstr "Bağışınız için teşekkürler."
 
-#: weblate_web/views.py:866
+#: weblate_web/views.py:874
 msgid "User not found!"
 msgstr "Kullanıcı bulunamadı!"
 
-#: weblate_web/views.py:1031
+#: weblate_web/views.py:1039
 msgid "Payment was added."
 msgstr "Ödeme eklendi."
+
+#~ msgid "Activate donation"
+#~ msgstr "Bağışı etkinleştir"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

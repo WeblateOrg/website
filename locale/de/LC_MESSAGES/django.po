@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-11-01 18:16+0100\n"
+"POT-Creation-Date: 2024-11-07 13:47+0100\n"
 "PO-Revision-Date: 2024-11-02 07:50+0000\n"
 "Last-Translator: VfBFan <VfBFan@users.noreply.hosted.weblate.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/weblate/website/"
@@ -280,43 +280,43 @@ msgstr "Erhöhen Sie die Dienstgrenzen, um mehr Inhalte zu übersetzen."
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: weblate_web/payments/backends.py:333
+#: weblate_web/payments/backends.py:528
 msgid "IBAN bank transfer"
 msgstr "IBAN-Banküberweisung"
 
-#: weblate_web/payments/backends.py:357
+#: weblate_web/payments/backends.py:552
 msgid "Issuing bank"
 msgstr "Ausgebende Bank"
 
-#: weblate_web/payments/backends.py:360
+#: weblate_web/payments/backends.py:555
 msgid "Account holder"
 msgstr "Kontoinhaber"
 
-#: weblate_web/payments/backends.py:361
+#: weblate_web/payments/backends.py:556
 msgid "Account number"
 msgstr "Kontonummer"
 
-#: weblate_web/payments/backends.py:362
+#: weblate_web/payments/backends.py:557
 msgid "SWIFT code"
 msgstr "SWIFT-Code"
 
-#: weblate_web/payments/backends.py:363
+#: weblate_web/payments/backends.py:558
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/payments/backends.py:364
+#: weblate_web/payments/backends.py:559
 msgid "Reference"
 msgstr "Referenz"
 
-#: weblate_web/payments/backends.py:440
+#: weblate_web/payments/backends.py:635
 msgid "Payment card"
 msgstr "Zahlungskarte"
 
-#: weblate_web/payments/backends.py:603
+#: weblate_web/payments/backends.py:804
 msgid "Payment error"
 msgstr "Zahlungsfehler"
 
-#: weblate_web/payments/backends.py:605
+#: weblate_web/payments/backends.py:806
 msgid "Payment cancelled"
 msgstr "Zahlung storniert"
 
@@ -1136,9 +1136,10 @@ msgid "Sign in"
 msgstr "Anmelden"
 
 #: weblate_web/templates/donate.html:16
-#: weblate_web/templates/donate/edit.html:6
-msgid "Donate to Weblate"
-msgstr "An Weblate spenden"
+#, fuzzy
+#| msgid "Weblate support"
+msgid "Become a Weblate supporter"
+msgstr "Weblate-Support"
 
 #: weblate_web/templates/donate.html:23
 msgid ""
@@ -1158,7 +1159,9 @@ msgid "Manage your donations"
 msgstr "Ihre Spenden verwalten"
 
 #: weblate_web/templates/donate.html:31
-msgid "Recurring donations and rewards"
+#, fuzzy
+#| msgid "Recurring donations and rewards"
+msgid "Recurring support and rewards"
 msgstr "Regelmäßige Spenden und Prämien"
 
 #: weblate_web/templates/donate.html:34
@@ -1174,8 +1177,10 @@ msgstr ""
 "diese Option, wenn Sie Weblate selbst ohne Supportvertrag hosten."
 
 #: weblate_web/templates/donate.html:36
-msgid "Activate donation"
-msgstr "Spende aktivieren"
+#, fuzzy
+#| msgid "Your reward"
+msgid "Choose your reward"
+msgstr "Ihre Prämie"
 
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:49
 #: weblate_web/templates/donate.html:56 weblate_web/templates/support.html:85
@@ -1301,6 +1306,10 @@ msgstr "Unterstützer"
 #: weblate_web/templates/donate.html:209
 msgid "Technologies"
 msgstr "Technologien"
+
+#: weblate_web/templates/donate/edit.html:6
+msgid "Donate to Weblate"
+msgstr "An Weblate spenden"
 
 #: weblate_web/templates/donate/edit.html:14
 msgid "Edit your reward link"
@@ -3419,7 +3428,7 @@ msgid "Other topics"
 msgstr "Weitere Themen"
 
 #: weblate_web/templates/weblate_web/post_detail.html:67
-#: weblate_web/views.py:760
+#: weblate_web/views.py:768
 msgid "Milestones"
 msgstr "Meilensteine"
 
@@ -3535,60 +3544,63 @@ msgid_plural "%d days remaining"
 msgstr[0] "%d verbleibender Tag"
 msgstr[1] "%d verbleibende Tage"
 
-#: weblate_web/views.py:167
+#: weblate_web/views.py:168
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Fehler im Parameter %(field)s: %(error)s"
 
-#: weblate_web/views.py:371 weblate_web/views.py:406
+#: weblate_web/views.py:376 weblate_web/views.py:411
 msgid "Please provide your billing information to complete the payment."
 msgstr "Bitte geben Sie Ihre Rechnungsdaten an, um die Zahlung abzuschließen."
 
-#: weblate_web/views.py:384
+#: weblate_web/views.py:389
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Die Umsatzsteuer-ID ist nicht mehr gültig, bitte aktualisieren."
 
-#: weblate_web/views.py:401
+#: weblate_web/views.py:406
 msgid "Please choose a payment method."
 msgstr "Bitte wählen Sie eine Zahlungsart."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Zahlung konnte nicht durchgeführt werden: %s"
 
-#: weblate_web/views.py:445
+#: weblate_web/views.py:450
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Zahlung konnte nicht abgeschlossen werden: %s"
 
-#: weblate_web/views.py:568
+#: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
 msgstr "Zahlung noch nicht verarbeitet, bitte versuchen Sie es erneut."
 
-#: weblate_web/views.py:572
+#: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
 msgstr "Die Zahlung wurde zurückgewiesen: {}"
 
-#: weblate_web/views.py:573
+#: weblate_web/views.py:581
 msgid "Unknown reason"
 msgstr "Aus unbekanntem Grund"
 
-#: weblate_web/views.py:578
+#: weblate_web/views.py:586
 msgid "Thank you for your subscription."
 msgstr "Vielen Dank für Ihr Abonnement."
 
-#: weblate_web/views.py:581
+#: weblate_web/views.py:589
 msgid "Thank you for your donation."
 msgstr "Vielen Dank für Ihre Spende."
 
-#: weblate_web/views.py:866
+#: weblate_web/views.py:874
 msgid "User not found!"
 msgstr "Benutzer nicht gefunden!"
 
-#: weblate_web/views.py:1031
+#: weblate_web/views.py:1039
 msgid "Payment was added."
 msgstr "Zahlung wurde hinzugefügt."
+
+#~ msgid "Activate donation"
+#~ msgstr "Spende aktivieren"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

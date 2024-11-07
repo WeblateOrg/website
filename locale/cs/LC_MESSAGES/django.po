@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-11-01 18:16+0100\n"
+"POT-Creation-Date: 2024-11-07 13:47+0100\n"
 "PO-Revision-Date: 2024-11-07 12:47+0000\n"
 "Last-Translator: Michal Čihař <michal@weblate.org>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/cs/"
@@ -261,43 +261,43 @@ msgstr "Zvýšit limity služby pro vice překladů obsahu."
 msgid "Upgrade"
 msgstr "Upgradovat"
 
-#: weblate_web/payments/backends.py:333
+#: weblate_web/payments/backends.py:528
 msgid "IBAN bank transfer"
 msgstr "Bankovní převod IBAN"
 
-#: weblate_web/payments/backends.py:357
+#: weblate_web/payments/backends.py:552
 msgid "Issuing bank"
 msgstr "Banka"
 
-#: weblate_web/payments/backends.py:360
+#: weblate_web/payments/backends.py:555
 msgid "Account holder"
 msgstr "Majitel účtu"
 
-#: weblate_web/payments/backends.py:361
+#: weblate_web/payments/backends.py:556
 msgid "Account number"
 msgstr "Číslo účtu"
 
-#: weblate_web/payments/backends.py:362
+#: weblate_web/payments/backends.py:557
 msgid "SWIFT code"
 msgstr "SWIFT kód"
 
-#: weblate_web/payments/backends.py:363
+#: weblate_web/payments/backends.py:558
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/payments/backends.py:364
+#: weblate_web/payments/backends.py:559
 msgid "Reference"
 msgstr "Variabilní symbol"
 
-#: weblate_web/payments/backends.py:440
+#: weblate_web/payments/backends.py:635
 msgid "Payment card"
 msgstr "Platební karta"
 
-#: weblate_web/payments/backends.py:603
+#: weblate_web/payments/backends.py:804
 msgid "Payment error"
 msgstr "Platba se nezdařila"
 
-#: weblate_web/payments/backends.py:605
+#: weblate_web/payments/backends.py:806
 msgid "Payment cancelled"
 msgstr "Platba zrušena"
 
@@ -1098,9 +1098,10 @@ msgid "Sign in"
 msgstr "Přihlásit se"
 
 #: weblate_web/templates/donate.html:16
-#: weblate_web/templates/donate/edit.html:6
-msgid "Donate to Weblate"
-msgstr "Přispět na Weblate"
+#, fuzzy
+#| msgid "Weblate support"
+msgid "Become a Weblate supporter"
+msgstr "Podpora pro Weblate"
 
 #: weblate_web/templates/donate.html:23
 msgid ""
@@ -1119,7 +1120,9 @@ msgid "Manage your donations"
 msgstr "Spravovat vaše dary"
 
 #: weblate_web/templates/donate.html:31
-msgid "Recurring donations and rewards"
+#, fuzzy
+#| msgid "Recurring donations and rewards"
+msgid "Recurring support and rewards"
 msgstr "Opakované dary a odměny"
 
 #: weblate_web/templates/donate.html:34
@@ -1135,8 +1138,10 @@ msgstr ""
 "podpory."
 
 #: weblate_web/templates/donate.html:36
-msgid "Activate donation"
-msgstr "Začněte darovat"
+#, fuzzy
+#| msgid "Your reward"
+msgid "Choose your reward"
+msgstr "Vaše odměna"
 
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:49
 #: weblate_web/templates/donate.html:56 weblate_web/templates/support.html:85
@@ -1261,6 +1266,10 @@ msgstr "Podporovatelé"
 #: weblate_web/templates/donate.html:209
 msgid "Technologies"
 msgstr "Technologie"
+
+#: weblate_web/templates/donate/edit.html:6
+msgid "Donate to Weblate"
+msgstr "Přispět na Weblate"
 
 #: weblate_web/templates/donate/edit.html:14
 msgid "Edit your reward link"
@@ -3332,7 +3341,7 @@ msgid "Other topics"
 msgstr "Další témata"
 
 #: weblate_web/templates/weblate_web/post_detail.html:67
-#: weblate_web/views.py:760
+#: weblate_web/views.py:768
 msgid "Milestones"
 msgstr "Milníky"
 
@@ -3450,60 +3459,63 @@ msgstr[0] "zbývá %d den"
 msgstr[1] "zbývá %d dny"
 msgstr[2] "zbývá %d dní"
 
-#: weblate_web/views.py:167
+#: weblate_web/views.py:168
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Chyba v parametru %(field)s: %(error)s"
 
-#: weblate_web/views.py:371 weblate_web/views.py:406
+#: weblate_web/views.py:376 weblate_web/views.py:411
 msgid "Please provide your billing information to complete the payment."
 msgstr "Pro dokončení platby prosíme zadejte své fakturační údaje."
 
-#: weblate_web/views.py:384
+#: weblate_web/views.py:389
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Vaše DIČ už není platné, prosíme upravte ho."
 
-#: weblate_web/views.py:401
+#: weblate_web/views.py:406
 msgid "Please choose a payment method."
 msgstr "Zvolte, prosím, způsob platby."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Nepodařilo se provést platbu: %s"
 
-#: weblate_web/views.py:445
+#: weblate_web/views.py:450
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Nepodařilo se dokončit platbu: %s"
 
-#: weblate_web/views.py:568
+#: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
 msgstr "Platba ještě nebyla zpracována, prosíme zkuste to znovu."
 
-#: weblate_web/views.py:572
+#: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
 msgstr "Platba byla zamítnuta: {}"
 
-#: weblate_web/views.py:573
+#: weblate_web/views.py:581
 msgid "Unknown reason"
 msgstr "Neznámý důvod"
 
-#: weblate_web/views.py:578
+#: weblate_web/views.py:586
 msgid "Thank you for your subscription."
 msgstr "Děkujeme vám za vaše předplatné."
 
-#: weblate_web/views.py:581
+#: weblate_web/views.py:589
 msgid "Thank you for your donation."
 msgstr "Děkujeme vám za váš dar."
 
-#: weblate_web/views.py:866
+#: weblate_web/views.py:874
 msgid "User not found!"
 msgstr "Uživatel nenalezen!"
 
-#: weblate_web/views.py:1031
+#: weblate_web/views.py:1039
 msgid "Payment was added."
 msgstr "Platba byla přidána."
+
+#~ msgid "Activate donation"
+#~ msgstr "Začněte darovat"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

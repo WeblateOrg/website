@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
-"POT-Creation-Date: 2024-11-01 18:16+0100\n"
+"POT-Creation-Date: 2024-11-07 13:47+0100\n"
 "PO-Revision-Date: 2024-11-06 05:12+0000\n"
 "Last-Translator: Dick Groskamp <dikgro@yahoo.co.uk>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/weblate/website/nl/"
@@ -263,43 +263,43 @@ msgstr "Verhoog de servicelimieten om meer content te vertalen."
 msgid "Upgrade"
 msgstr "Upgraden"
 
-#: weblate_web/payments/backends.py:333
+#: weblate_web/payments/backends.py:528
 msgid "IBAN bank transfer"
 msgstr "IBAN-bankoverschrijving"
 
-#: weblate_web/payments/backends.py:357
+#: weblate_web/payments/backends.py:552
 msgid "Issuing bank"
 msgstr "Uitgevende bank"
 
-#: weblate_web/payments/backends.py:360
+#: weblate_web/payments/backends.py:555
 msgid "Account holder"
 msgstr "Rekeninghouder"
 
-#: weblate_web/payments/backends.py:361
+#: weblate_web/payments/backends.py:556
 msgid "Account number"
 msgstr "Rekeningnummer"
 
-#: weblate_web/payments/backends.py:362
+#: weblate_web/payments/backends.py:557
 msgid "SWIFT code"
 msgstr "SWIFT-code"
 
-#: weblate_web/payments/backends.py:363
+#: weblate_web/payments/backends.py:558
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/payments/backends.py:364
+#: weblate_web/payments/backends.py:559
 msgid "Reference"
 msgstr "Referentie"
 
-#: weblate_web/payments/backends.py:440
+#: weblate_web/payments/backends.py:635
 msgid "Payment card"
 msgstr "Betaalkaart"
 
-#: weblate_web/payments/backends.py:603
+#: weblate_web/payments/backends.py:804
 msgid "Payment error"
 msgstr "Betaalfout"
 
-#: weblate_web/payments/backends.py:605
+#: weblate_web/payments/backends.py:806
 msgid "Payment cancelled"
 msgstr "Betaling afgebroken"
 
@@ -1105,9 +1105,10 @@ msgid "Sign in"
 msgstr "Inloggen"
 
 #: weblate_web/templates/donate.html:16
-#: weblate_web/templates/donate/edit.html:6
-msgid "Donate to Weblate"
-msgstr "Doneren aan Weblate"
+#, fuzzy
+#| msgid "Weblate support"
+msgid "Become a Weblate supporter"
+msgstr "Weblate-ondersteuning"
 
 #: weblate_web/templates/donate.html:23
 msgid ""
@@ -1126,7 +1127,9 @@ msgid "Manage your donations"
 msgstr "Donaties beheren"
 
 #: weblate_web/templates/donate.html:31
-msgid "Recurring donations and rewards"
+#, fuzzy
+#| msgid "Recurring donations and rewards"
+msgid "Recurring support and rewards"
 msgstr "Terugkerende donaties en beloningen"
 
 #: weblate_web/templates/donate.html:34
@@ -1142,8 +1145,10 @@ msgstr ""
 "deze optie als u Weblate zelf host zonder ondersteuningspakket."
 
 #: weblate_web/templates/donate.html:36
-msgid "Activate donation"
-msgstr "Donatie activeren"
+#, fuzzy
+#| msgid "Your reward"
+msgid "Choose your reward"
+msgstr "Mijn beloning"
 
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:49
 #: weblate_web/templates/donate.html:56 weblate_web/templates/support.html:85
@@ -1268,6 +1273,10 @@ msgstr "Ondersteuners"
 #: weblate_web/templates/donate.html:209
 msgid "Technologies"
 msgstr "Technologieën"
+
+#: weblate_web/templates/donate/edit.html:6
+msgid "Donate to Weblate"
+msgstr "Doneren aan Weblate"
 
 #: weblate_web/templates/donate/edit.html:14
 msgid "Edit your reward link"
@@ -2619,7 +2628,8 @@ msgstr "Privacybeleid"
 
 #: weblate_web/templates/privacy.html:18 weblate_web/templates/terms.html:18
 msgid "The legal documents necessary to offer our services."
-msgstr "De wettelijke documenten die nodig zijn om onze services aan te bieden."
+msgstr ""
+"De wettelijke documenten die nodig zijn om onze services aan te bieden."
 
 #: weblate_web/templates/privacy.html:21
 msgid ""
@@ -3350,7 +3360,7 @@ msgid "Other topics"
 msgstr "Andere onderwerpen"
 
 #: weblate_web/templates/weblate_web/post_detail.html:67
-#: weblate_web/views.py:760
+#: weblate_web/views.py:768
 msgid "Milestones"
 msgstr "Mijlpalen"
 
@@ -3466,60 +3476,63 @@ msgid_plural "%d days remaining"
 msgstr[0] "Resterend: %d dag"
 msgstr[1] "Resterend: %d dagen"
 
-#: weblate_web/views.py:167
+#: weblate_web/views.py:168
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Fout in parameter %(field)s: %(error)s"
 
-#: weblate_web/views.py:371 weblate_web/views.py:406
+#: weblate_web/views.py:376 weblate_web/views.py:411
 msgid "Please provide your billing information to complete the payment."
 msgstr "Geef uw facturatiegegevens op om de betaling af te ronden."
 
-#: weblate_web/views.py:384
+#: weblate_web/views.py:389
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Het btw-id is niet langer geldig, graag bijwerken."
 
-#: weblate_web/views.py:401
+#: weblate_web/views.py:406
 msgid "Please choose a payment method."
 msgstr "Betalingsmethode kiezen."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Kon betaling niet uitvoeren: %s"
 
-#: weblate_web/views.py:445
+#: weblate_web/views.py:450
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Kon betaling niet voltooien: %s"
 
-#: weblate_web/views.py:568
+#: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
 msgstr "Betaling nog niet verwerkt, gelieve opnieuw te proberen."
 
-#: weblate_web/views.py:572
+#: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
 msgstr "De betaling werd geweigerd: {}"
 
-#: weblate_web/views.py:573
+#: weblate_web/views.py:581
 msgid "Unknown reason"
 msgstr "Onbekende reden"
 
-#: weblate_web/views.py:578
+#: weblate_web/views.py:586
 msgid "Thank you for your subscription."
 msgstr "Bedankt voor uw abonnement."
 
-#: weblate_web/views.py:581
+#: weblate_web/views.py:589
 msgid "Thank you for your donation."
 msgstr "Bedankt voor uw donatie."
 
-#: weblate_web/views.py:866
+#: weblate_web/views.py:874
 msgid "User not found!"
 msgstr "Gebruiker niet gevonden!"
 
-#: weblate_web/views.py:1031
+#: weblate_web/views.py:1039
 msgid "Payment was added."
 msgstr "Betaling werd toegevoegd."
+
+#~ msgid "Activate donation"
+#~ msgstr "Donatie activeren"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"
