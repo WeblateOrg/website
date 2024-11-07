@@ -58,7 +58,7 @@ class Command(BaseCommand):
             city = customer.city.strip().removeprefix(postcode).removesuffix(postcode)
             if city == customer.city:
                 self.stderr.write(
-                    f"{url}: too many matches {customer.city!r}: {postcode} in middle"
+                    f"{url}: postcode in middle {customer.city!r}: {postcode!r}"
                 )
                 continue
             city = city.strip().strip(",").strip()
