@@ -571,7 +571,13 @@ class FioBank(Backend):
         for token in tokens:
             # TODO: change to fiobank.FioBank(token=token, decimal=True) with fiobank 4.0
             client = FioBankAPI(token=token)
-            info, transactions = client.last_transactions(from_date=from_date)
+            try:
+                info, transactions = client.last_transactions(from_date=from_date)
+            except requests.RequestException as error:
+                sentry_sdk.capture_exception()
+                print(f"Failed to fetch payments: {error}")
+                continue
+
             currency = info["currency"]
             for entry in transactions:
                 matches = []
