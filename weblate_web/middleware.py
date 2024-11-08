@@ -94,6 +94,7 @@ class SecurityMiddleware:
 
         # The Pay
         image.append("gate.thepay.cz")
+        form.append("gate.thepay.cz")
         form.append("thepay.cz")
 
         # GitHub avatars
