@@ -53,7 +53,7 @@ STATIC_URL = "static:"
 TEMPLATES_PATH = Path(__file__).parent / "templates"
 
 
-def date_format(value: datetime.datetime) -> str:
+def date_format(value: datetime.datetime | datetime.date) -> str:
     return value.strftime("%-d %b %Y")
 
 
@@ -518,6 +518,8 @@ class Invoice(models.Model):
                 quantity_unit=item.quantity_unit,
                 unit_price=item.unit_price,
                 package=item.package,
+                start_date=item.start_date,
+                end_date=item.end_date,
             )
         return invoice
 
@@ -587,6 +589,8 @@ class InvoiceItem(models.Model):
     package = models.ForeignKey(
         "weblate_web.Package", on_delete=models.deletion.SET_NULL, null=True, blank=True
     )
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.description} ({self.display_quantity}) {self.display_price}"
@@ -613,6 +617,9 @@ class InvoiceItem(models.Model):
                     )
                 extra_fields.append("unit_price")
             if not self.description:
+                self.description = self.package.verbose
+                extra_fields.append("description")
+
                 if (start_date := self.invoice.extra.get("start_date")) and (
                     repeat := self.package.get_repeat()
                 ):
@@ -624,10 +631,9 @@ class InvoiceItem(models.Model):
                         + get_period_delta(repeat)
                         - datetime.timedelta(days=1)
                     )
-                    self.description = f"{self.package.verbose} [{date_format(start_date)} - {date_format(end_date)}]"
-                else:
-                    self.description = self.package.verbose
-                extra_fields.append("description")
+                    self.start_date = start_date.date()
+                    self.end_date = end_date.date()
+                    extra_fields.extend(("start_date", "end_date"))
 
         if extra_fields and update_fields is not None:
             update_fields = tuple(set(update_fields).union(extra_fields))
@@ -638,6 +644,15 @@ class InvoiceItem(models.Model):
             using=using,
             update_fields=update_fields,
         )
+
+    @property
+    def has_date_range(self) -> bool:
+        return self.start_date is not None and self.end_date is not None
+
+    def get_date_range_display(self) -> str:
+        if self.start_date is not None and self.end_date is not None:
+            return f"{date_format(self.start_date)} - {date_format(self.end_date)}"
+        return ""
 
     def clean(self):
         if not self.description and not self.package:
