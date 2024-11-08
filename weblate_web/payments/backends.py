@@ -719,6 +719,7 @@ class ThePay2Card(Backend):
         # Payment payload
         payload = {
             "can_customer_change_method": False,
+            "is_customer_notification_enabled": False,
             "payment_method_code": "card",
             "amount": int(self.payment.vat_amount * 100),
             "currency_code": "EUR",
