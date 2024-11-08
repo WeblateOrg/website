@@ -638,7 +638,7 @@ def download_payment_invoice(request, pk):
         raise Http404(f"File {payment.invoice_filename} does not exist!")
 
     return FileResponse(
-        open(payment.invoice_full_filename, "rb"),  # noqa: SIM115
+        open(payment.invoice_full_filename, "rb"),
         as_attachment=True,
         filename=payment.invoice,
         content_type="application/pdf",
