@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def download_invoice(request: AuthenticatedHttpRequest, pk: str):
     invoice = get_object_or_404(Invoice, pk=pk)
 
