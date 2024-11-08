@@ -76,7 +76,10 @@
       <tbody>
         {% for item in invoice.all_items %}
           <tr>
-            <td>{{ item.description }}</td>
+            <td>
+              {{ item.description }}
+              {% if item.has_date_range %}<em class="period">{{ item.get_date_range_display }}</em>{% endif %}
+            </td>
             <td>{{ item.display_quantity }}</td>
             <td>{{ item.display_price }}</td>
             <td>{{ item.display_total_price }}</td>
