@@ -15,10 +15,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Install apt dependencies
-      run: |
-        sudo apt update
-        sudo apt install gettext
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
