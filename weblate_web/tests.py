@@ -528,8 +528,7 @@ class FakturaceTestCase(UserTestCase):
             link_text="Weblate donation test",
         )
 
-    def create_service(self, years=1, days=0, recurring="y", package="extended"):
-        user = self.create_user()
+    def create_packages(self):
         Package.objects.bulk_create(
             [
                 Package(name="community", verbose="Community support", price=0),
@@ -559,6 +558,10 @@ class FakturaceTestCase(UserTestCase):
                 ),
             ]
         )
+
+    def create_service(self, years=1, days=0, recurring="y", package="extended"):
+        user = self.create_user()
+        self.create_packages()
         service = Service.objects.create()
         subscription = service.subscription_set.create(
             package=Package.objects.get_or_create(name=package)[0],
@@ -1301,6 +1304,73 @@ class ServiceTest(FakturaceTestCase):
             hosted[0].expires.date(),
             timezone.now().date() + timedelta(days=3) + relativedelta(years=1),
         )
+
+    @override_settings(ZAMMAD_TOKEN="test")  # noqa: S106
+    @responses.activate
+    def test_decicated_new(self):
+        mock_vies()
+        self.create_packages()
+        responses.add(
+            responses.POST,
+            "https://care.weblate.org/api/v1/tickets",
+            json={
+                "id": 19,
+                "group_id": 2,
+                "priority_id": 2,
+                "state_id": 1,
+                "organization_id": None,
+                "number": "22019",
+                "title": "Help me!",
+                "owner_id": 1,
+                "customer_id": 10,
+                "note": None,
+                "first_response_at": None,
+                "first_response_escalation_at": None,
+                "first_response_in_min": None,
+                "first_response_diff_in_min": None,
+                "close_at": None,
+                "close_escalation_at": None,
+                "close_in_min": None,
+                "close_diff_in_min": None,
+                "update_escalation_at": None,
+                "update_in_min": None,
+                "update_diff_in_min": None,
+                "last_contact_at": None,
+                "last_contact_agent_at": None,
+                "last_contact_customer_at": None,
+                "last_owner_update_at": None,
+                "create_article_type_id": 10,
+                "create_article_sender_id": 1,
+                "article_count": 1,
+                "escalation_at": None,
+                "pending_time": None,
+                "type": None,
+                "time_unit": None,
+                "preferences": {},
+                "updated_by_id": 3,
+                "created_by_id": 3,
+                "created_at": "2021-11-08T14:17:41.913Z",
+                "updated_at": "2021-11-08T14:17:41.994Z",
+                "article_ids": [30],
+                "ticket_time_accounting_ids": [],
+            },
+        )
+
+        with override("en"):
+            self.login()
+            response = self.client.get(
+                reverse("subscription-new"),
+                {"plan": "hosted:test-1"},
+                follow=True,
+            )
+            payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
+            payment_edit_url = response.redirect_chain[1][0]
+            self.assertTrue(payment_url.startswith("/en/payment/"))
+            response = self.client.post(payment_edit_url, TEST_CUSTOMER, follow=True)
+            self.assertRedirects(response, payment_url)
+            response = self.client.post(payment_url, {"method": "pay"}, follow=True)
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(response, "Weblate hosting (upgraded)")
 
     @responses.activate
     def test_hosted_upgrade(self):
