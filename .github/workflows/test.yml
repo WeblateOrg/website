@@ -16,6 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install apt dependencies
+      # gettext is needed as Django uses msgfmt to compile MO files
       run: |
         sudo apt update
         sudo apt install gettext
