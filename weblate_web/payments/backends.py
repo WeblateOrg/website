@@ -234,7 +234,7 @@ THEPAY_LANGUAGES = {
 }
 
 
-def get_backend(name):
+def get_backend(name: str) -> type[Backend]:
     backend = BACKENDS[name]
     if backend.debug and not settings.PAYMENT_DEBUG:
         raise KeyError("Invalid backend")
