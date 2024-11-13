@@ -613,7 +613,10 @@ class InvoiceItem(models.Model):
                     self.unit_price = self.package.price
                 else:
                     self.unit_price = round(
-                        self.package.price * self.invoice.exchange_rate_eur * 1.05, 0
+                        self.package.price
+                        * self.invoice.exchange_rate_eur
+                        * Decimal("1.05"),
+                        0,
                     )
                 extra_fields.append("unit_price")
             if not self.description:
