@@ -1,0 +1,117 @@
+@page {
+  margin: 3.5cm 1cm 3cm 1cm;
+  @bottom-right {
+    content: "Page " counter(page) " of " counter(pages);
+  }
+}
+
+html,
+a {
+  color: #14213d;
+  font-family: Source Sans Pro;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+header {
+  display: block;
+  padding-bottom: 1.3cm;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -2.5cm;
+  height: 2.5cm;
+}
+
+h1 {
+  font-size: 18pt;
+  padding-top: 3mm;
+}
+img {
+  position: absolute;
+  max-width: 30%;
+  margin: 0;
+  padding: 0;
+  right: 0;
+}
+.tos {
+  counter-reset: tos_chapter;
+}
+
+.tos h2::before {
+  counter-increment: tos_chapter;
+  content: counter(tos_chapter) ". ";
+}
+
+.tos h2 {
+  counter-reset: tos_item;
+}
+
+.tos p.item,
+.tos p.subitem,
+.tos p.subsubitem {
+  position: relative;
+}
+.tos p,
+.tos dl {
+  padding: 0 3.5em;
+}
+.tos p.item {
+  counter-reset: tos_subitem;
+}
+.tos p.subitem {
+  counter-reset: tos_subsubitem;
+}
+.tos p.subsubitem {
+  padding: 0 4.2em;
+}
+
+.tos p.item::before {
+  counter-increment: tos_item;
+  content: counter(tos_chapter) "." counter(tos_item) ". ";
+  position: absolute;
+  left: 0;
+}
+
+.tos p.subitem::before {
+  counter-increment: tos_subitem;
+  content: counter(tos_chapter) "." counter(tos_item) "." counter(tos_subitem)
+    ". ";
+  position: absolute;
+  left: 0;
+}
+
+.tos p.subsubitem::before {
+  counter-increment: tos_subsubitem;
+  content: counter(tos_chapter) "." counter(tos_item) "." counter(tos_subitem)
+    "." counter(tos_subsubitem) ". ";
+  position: absolute;
+  left: 0;
+}
+
+.tos ol {
+  counter-reset: tos_list;
+  padding: 0 5em;
+}
+.tos ol > li {
+  list-style: none;
+  position: relative;
+}
+.tos ol > li:before {
+  counter-increment: tos_list;
+  content: counter(tos_list, lower-alpha) ") ";
+  position: absolute;
+  left: -1.4em;
+}
+
+.tos a {
+  color: #2eccaa;
+  text-decoration: underline;
+}
+
+.tos a:hover {
+  text-decoration: none;
+}
