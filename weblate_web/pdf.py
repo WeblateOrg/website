@@ -20,10 +20,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from django.conf import settings
 from django.contrib.staticfiles import finders
 from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
 
+SIGNATURE_URL = "signature:"
 INVOICES_URL = "invoices:"
 LEGAL_URL = "legal:"
 STATIC_URL = "static:"
@@ -34,7 +36,12 @@ LEGAL_TEMPLATES_PATH = Path(__file__).parent / "legal" / "templates"
 def url_fetcher(url: str) -> dict[str, str | bytes]:
     path_obj: Path
     result: dict[str, str | bytes]
-    if url.startswith(INVOICES_URL):
+
+    if url == SIGNATURE_URL:
+        if settings.AGREEMENTS_SIGNATURE_PATH is None:
+            raise ValueError("Signature not configured!")
+        path_obj = settings.AGREEMENTS_SIGNATURE_PATH
+    elif url.startswith(INVOICES_URL):
         path_obj = INVOICES_TEMPLATES_PATH / url.removeprefix(INVOICES_URL)
     elif url.startswith(LEGAL_URL):
         path_obj = LEGAL_TEMPLATES_PATH / url.removeprefix(LEGAL_URL)

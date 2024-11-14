@@ -28,14 +28,24 @@ header {
 
 h1 {
   font-size: 14pt;
+}
+header h1 {
   padding-top: 3mm;
   margin: 0;
   position: absolute;
   top: 0;
   right: 0;
 }
+h1.page {
+  break-before: page;
+  counter-reset: tos_chapter;
+}
 img {
   max-width: 30%;
+}
+.preamble p,
+.tos h1 {
+  text-align: center;
 }
 .tos {
   counter-reset: tos_chapter;
@@ -47,7 +57,12 @@ img {
 }
 
 .tos h2 {
-  counter-reset: tos_item;
+  counter-reset: tos_item tos_subchapter;
+}
+
+.tos h3::before {
+  counter-increment: tos_subchapter;
+  content: counter(tos_chapter) "." counter(tos_subchapter) ". ";
 }
 
 .tos p.item,
@@ -58,6 +73,10 @@ img {
 .tos p,
 .tos dl {
   padding: 0 0 0 3.5em;
+}
+.dpa.tos p,
+.dpa.tos dl {
+  padding: 0 0 0 1.5em;
 }
 .tos p.item {
   counter-reset: tos_subitem;
@@ -76,6 +95,10 @@ img {
   left: 0;
 }
 
+.dpa.tos p.item::before {
+  content: counter(tos_item) ". ";
+}
+
 .tos p.subitem::before {
   counter-increment: tos_subitem;
   content: counter(tos_chapter) "." counter(tos_item) "." counter(tos_subitem)
@@ -92,9 +115,20 @@ img {
   left: 0;
 }
 
+.tos ul,
+.tos ol {
+  padding: 0 0 0 5em;
+}
+.dpa.tos ul,
+.dap.tos ol {
+  padding: 0 0 0 2.5em;
+}
+
+.dpa ul li {
+  margin-top: 0.5em;
+}
 .tos ol {
   counter-reset: tos_list;
-  padding: 0 5em;
 }
 .tos ol > li {
   list-style: none;
@@ -114,4 +148,31 @@ img {
 
 .tos a:hover {
   text-decoration: none;
+}
+
+table.signatures {
+  width: 100%;
+  border-spacing: 5mm;
+}
+table.signatures td {
+  width: 50%;
+  text-align: center;
+}
+div.placeholder,
+table.signatures tr.signatures td {
+  border-bottom: 0.1mm solid #14213d;
+}
+table.signatures tr.signatures td {
+  height: 3cm;
+}
+div.placeholders {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+div.placeholders div {
+  white-space: pre;
+}
+div.placeholder {
+  flex-grow: 8;
 }

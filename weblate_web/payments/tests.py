@@ -197,6 +197,25 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.vat_amount, 100)
         self.assertEqual(payment.amount_without_vat, 100)
 
+    def test_short_filename(self):
+        customer = Customer()
+        customer.name = "Weblate s.r.o."
+        self.assertEqual(customer.short_filename, "Weblate_sro")
+        customer.name = "Weblate / s.r.o."
+        self.assertEqual(customer.short_filename, "Weblate_sro")
+        customer.name = " Weblate / s.r.o.\\"
+        self.assertEqual(customer.short_filename, "Weblate_sro")
+        customer.name = " Weblate - s.r.o.\\"
+        self.assertEqual(customer.short_filename, "Weblate")
+        customer.name = "Zkouška"
+        self.assertEqual(customer.short_filename, "Zkouska")
+        customer.name = "Ελληνικά"
+        self.assertEqual(customer.short_filename, "Ellenika")
+        customer.name = "Русский"
+        self.assertEqual(customer.short_filename, "Russkii")
+        customer.name = "正體中文"
+        self.assertEqual(customer.short_filename, "Zheng_Ti_Zhong_Wen")
+
 
 class BackendBaseTestCase(TestCase):
     backend_name: str = ""
