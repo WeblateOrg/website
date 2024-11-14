@@ -25,15 +25,19 @@ from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
 
 INVOICES_URL = "invoices:"
+LEGAL_URL = "legal:"
 STATIC_URL = "static:"
-TEMPLATES_PATH = Path(__file__).parent / "invoices" / "templates"
+INVOICES_TEMPLATES_PATH = Path(__file__).parent / "invoices" / "templates"
+LEGAL_TEMPLATES_PATH = Path(__file__).parent / "legal" / "templates"
 
 
 def url_fetcher(url: str) -> dict[str, str | bytes]:
     path_obj: Path
     result: dict[str, str | bytes]
     if url.startswith(INVOICES_URL):
-        path_obj = TEMPLATES_PATH / url.removeprefix(INVOICES_URL)
+        path_obj = INVOICES_TEMPLATES_PATH / url.removeprefix(INVOICES_URL)
+    elif url.startswith(LEGAL_URL):
+        path_obj = LEGAL_TEMPLATES_PATH / url.removeprefix(LEGAL_URL)
     elif url.startswith(STATIC_URL):
         fullname = url.removeprefix(STATIC_URL)
         match = finders.find(fullname)

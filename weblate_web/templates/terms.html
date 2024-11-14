@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load static %}
 
 {% block content %}
   <section class="content">
@@ -23,6 +24,8 @@
           {% if LANGUAGE_CODE != "en" %}
             <a href="https://weblate.org/en/terms/" class="button inline">{% trans "View English version" %}</a>
           {% endif %}
+          <a href="{% static "Weblate_General_Terms_and_Conditions.pdf" %}"
+             class="button inline">{% trans "Download as PDF" %}</a>
         </div>
       </div>
     </div>
