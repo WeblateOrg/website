@@ -290,7 +290,7 @@ class Backend:
         """Collect payment information."""
         raise NotImplementedError
 
-    def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
+    def get_instructions(self) -> list[tuple[StrOrPromise, str]]:
         """Payment instructions for manual methods."""
         return []
 
@@ -544,20 +544,13 @@ class FioBank(Backend):
         self.send_notification("payment_pending")
         return redirect(complete_url)
 
-    def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
+    def get_instructions(self) -> list[tuple[StrOrPromise, str]]:
         from weblate_web.invoices.models import Invoice  # noqa: PLC0415
 
-        return [
-            (
-                gettext("Issuing bank"),
-                "Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia",
-            ),
-            (gettext("Account holder"), "Weblate s.r.o."),
-            (gettext("Account number"), "2302907395 / 2010"),
-            (gettext("SWIFT code"), "FIOBCZPPXXX"),
-            (gettext("IBAN"), "CZ30 2010 0000 0023 0290 7395"),
-            (gettext("Reference"), cast(Invoice, self.payment.draft_invoice).number),
-        ]
+        invoice = cast(Invoice, self.payment.draft_invoice)
+        instructions = invoice.bank_account.get_full_info()
+        instructions.append((gettext("Reference"), invoice.number))
+        return instructions
 
     @classmethod
     def fetch_payments(cls, from_date: str | None = None) -> None:
