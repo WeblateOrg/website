@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import os.path
+import re
 import uuid
 
 from appconf import AppConf
@@ -31,6 +32,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
+from unidecode import unidecode
 from vies.models import VATINField
 
 from weblate_web.utils import get_site_url
@@ -38,6 +40,10 @@ from weblate_web.utils import get_site_url
 from .fields import Char32UUIDField
 from .utils import validate_email
 from .validators import validate_vatin
+
+SHORT_NAME_DISCARD = re.compile(r"[^a-zA-Z0-9_\s-]")
+SHORT_NAME_SPACE = re.compile(r"[\s_-]+")
+SHORT_NAME_SPLIT = re.compile("[,(-]")
 
 EU_VAT_RATES = {
     "BE": 21,
@@ -86,9 +92,9 @@ class Customer(models.Model):
     tax = models.CharField(
         max_length=200,
         blank=True,
-        verbose_name=gettext_lazy("Tax registration"),
+        verbose_name=gettext_lazy("Company identification number"),
         help_text=gettext_lazy(
-            "Please fill in your tax registration if it should "
+            "Please fill in your company registration number if it should "
             "appear on the invoice."
         ),
     )
@@ -146,6 +152,16 @@ class Customer(models.Model):
         if self.name:
             return f"{self.name} ({self.email})"
         return self.email
+
+    @property
+    def short_filename(self) -> str:
+        """Short customer name suitable for file names."""
+        return SHORT_NAME_SPACE.sub(
+            "_",
+            SHORT_NAME_DISCARD.sub(
+                "", SHORT_NAME_SPLIT.split(unidecode(self.name), 1)[0]
+            ),
+        ).strip("_")
 
     @property
     def country_code(self):
