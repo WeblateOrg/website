@@ -24,6 +24,7 @@ from django.urls import reverse
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
 
+from weblate_web.invoices.models import BANK_ACCOUNTS, Currency
 from weblate_web.models import Donation
 from weblate_web.remote import get_activity, get_changes, get_contributors, get_release
 
@@ -66,6 +67,7 @@ def weblate_web(request):
         "activity_sum": sum(get_activity()[-7:]),
         "contributors": SimpleLazyObject(get_contributors),
         "changes": SimpleLazyObject(get_changes),
+        "bank_account": BANK_ACCOUNTS[Currency.EUR],
         "language_columns": [
             language_urls[:language_col],
             language_urls[language_col : language_col * 2],
