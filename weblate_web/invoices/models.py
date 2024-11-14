@@ -40,9 +40,8 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import override
 from fakturace.rates import DecimalRates
 from lxml import etree
-from weasyprint import CSS, HTML
-from weasyprint.text.fonts import FontConfiguration
 
+from weblate_web.pdf import render_pdf
 from weblate_web.utils import get_site_url
 
 if TYPE_CHECKING:
@@ -464,32 +463,9 @@ class Invoice(models.Model):
     def generate_pdf(self) -> None:
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
-        font_config = FontConfiguration()
-
-        renderer = HTML(
-            string=self.render_html(),
-            url_fetcher=url_fetcher,
-        )
-        font_style = CSS(
-            string="""
-            @font-face {
-              font-family: Source Sans Pro;
-              font-weight: 400;
-              src: url("static:vendor/font-source/TTF/SourceSans3-Regular.ttf");
-            }
-            @font-face {
-              font-family: Source Sans Pro;
-              font-weight: 700;
-              src: url("static:vendor/font-source/TTF/SourceSans3-Bold.ttf");
-            }
-        """,
-            font_config=font_config,
-            url_fetcher=url_fetcher,
-        )
-        renderer.write_pdf(
-            settings.INVOICES_PATH / self.filename,
-            stylesheets=[font_style],
-            font_config=font_config,
+        render_pdf(
+            html=self.render_html(),
+            output=settings.INVOICES_PATH / self.filename,
         )
 
     def duplicate(
