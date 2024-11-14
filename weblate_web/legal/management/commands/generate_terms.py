@@ -27,6 +27,8 @@ from weblate_web.pdf import render_pdf
 HOSTED_ACCOUNT = "Hosted Weblate account"
 
 OUT_DIR = Path(__file__).parent.parent.parent / "static"
+GTC_NAME = "Weblate_General_Terms_and_Conditions.pdf"
+PRIVACY_NAME = "Weblate_Privacy_Policy.pdf"
 
 
 class Command(BaseCommand):
@@ -36,12 +38,22 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         render_pdf(
             html=render_to_string(
-                "pdf/terms.html", {"title": "General Terms and Conditions"}
+                "pdf/terms.html",
+                {
+                    "title": "General Terms and Conditions",
+                    "privacy_url": f"https://weblate.org/static/{PRIVACY_NAME}",
+                },
             ),
-            output=OUT_DIR / "Weblate_General_Terms_and_Conditions.pdf",
+            output=OUT_DIR / GTC_NAME,
         )
 
         render_pdf(
-            html=render_to_string("pdf/privacy.html", {"title": "Privacy Policy"}),
-            output=OUT_DIR / "Weblate_Privacy_Policy.pdf",
+            html=render_to_string(
+                "pdf/privacy.html",
+                {
+                    "title": "Privacy Policy",
+                    "terms_url": f"https://weblate.org/static/{GTC_NAME}",
+                },
+            ),
+            output=OUT_DIR / PRIVACY_NAME,
         )
