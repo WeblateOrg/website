@@ -59,19 +59,11 @@ def render_pdf(*, html: str, output: Path) -> None:
         string=html,
         url_fetcher=url_fetcher,
     )
+    fonts_css = finders.find("pdf/fonts.css")
+    if fonts_css is None:
+        raise ValueError("Could not load fonts CSS")
     font_style = CSS(
-        string="""
-        @font-face {
-          font-family: Source Sans Pro;
-          font-weight: 400;
-          src: url("static:vendor/font-source/TTF/SourceSans3-Regular.ttf");
-        }
-        @font-face {
-          font-family: Source Sans Pro;
-          font-weight: 700;
-          src: url("static:vendor/font-source/TTF/SourceSans3-Bold.ttf");
-        }
-    """,
+        filename=fonts_css,
         font_config=font_config,
         url_fetcher=url_fetcher,
     )
