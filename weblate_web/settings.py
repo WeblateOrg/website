@@ -205,6 +205,7 @@ INSTALLED_APPS = (
     "django.contrib.humanize",
     "weblate_web.payments",
     "weblate_web.invoices",
+    "weblate_web.legal",
     "wllegal",
     "django_countries",
     "macros",
