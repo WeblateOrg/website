@@ -167,7 +167,7 @@ def get_release(force: bool = False) -> None | list[PYPIInfo]:
 
 
 def fetch_vat_info(fetch_all: bool = False):
-    customers = Customer.objects.exclude(vat="")
+    customers = Customer.objects.exclude(vat="").exclude(vat=None)
     if not fetch_all:
         weekday = timezone.now().weekday()
         customers = customers.annotate(idmod=F("id") % 7).filter(idmod=weekday)
