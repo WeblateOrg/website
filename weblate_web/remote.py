@@ -58,7 +58,7 @@ class PYPIInfo(TypedDict):
     upload_time_iso_8601: str
     url: str
     yanked: bool
-    yanked_reason: None | str
+    yanked_reason: str | None
 
 
 def get_contributors(force: bool = False):
@@ -137,7 +137,7 @@ def get_changes(force: bool = False):
     return stats[:10]
 
 
-def get_release(force: bool = False) -> None | list[PYPIInfo]:
+def get_release(force: bool = False) -> list[PYPIInfo] | None:
     key = "wlweb-release-x"
     results = cache.get(key)
     if not force and results is not None:
