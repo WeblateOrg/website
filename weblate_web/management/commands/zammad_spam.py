@@ -21,8 +21,9 @@ from imaplib import IMAP4_SSL
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from zammad_py import ZammadAPI
 from zammad_py.api import Resource
+
+from weblate_web.zammad import get_zammad_client
 
 
 class Tag(Resource):
@@ -45,10 +46,7 @@ class Command(BaseCommand):
     client = None
 
     def handle(self, *args, **options):
-        zammad = ZammadAPI(
-            url="https://care.weblate.org/api/v1/",
-            http_token=settings.ZAMMAD_TOKEN,
-        )
+        zammad = get_zammad_client()
         tag_obj = Tag(zammad)
         imap = IMAP4_SSL(settings.IMAP_SERVER)
         imap.login(settings.IMAP_USER, settings.IMAP_PASSWORD)

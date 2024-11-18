@@ -48,6 +48,7 @@ from PIL import Image as PILImage
 from weblate_web.payments.fields import Char32UUIDField
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
+from weblate_web.zammad import create_dedicated_hosting_ticket
 
 if TYPE_CHECKING:
     from fakturace.invoices import Invoice
@@ -405,6 +406,13 @@ def process_subscription(payment):
             )
         if service.was_created and service.needs_token:
             subscription.send_notification("subscription_intro")
+
+        if (
+            service.was_created
+            and subscription.package.category == PackageCategory.PACKAGE_DEDICATED
+        ):
+            create_dedicated_hosting_ticket(subscription)
+
     # Flag payment as processed
     payment.state = Payment.PROCESSED
     payment.save()
