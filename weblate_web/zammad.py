@@ -39,15 +39,14 @@ def create_dedicated_hosting_ticket(subscription: Subscription) -> None:
 Thank you for purchasing a dedicated Weblate instance! We will prepare it promptly after you provide the information below.
 
 If you want to use your own domain, please create a CNAME DNS entry to {domain}.weblate.cloud and let us know.
-The Weblate domain name can also be changed if the mentioned one does not fit you.
+Your weblate.cloud domain name can also be changed; if the one mentioned above doesn't fit you, tell us.
 
-In case you would like to use another authentication method(s) than native login, please provide us credentials for chosen method.
-You can check the options at https://docs.weblate.org/en/latest/admin/auth.html#authentication.
+In case you would like to use another authentication method(s) than the native username+password login, please provide us credentials for your chosen method.
+You can check available options like GitHub, OAuth, SAML, Azure AD, and many more at https://docs.weblate.org/en/latest/admin/auth.html#social-authentication.
 
-It is also possible to keep settings default and customize anything later. We will also happily help with any of your Weblate questions.
+It is also possible to keep settings default and customize anything later. It’s your instance, your choice. We will also gladly help with any of your Weblate questions; please don’t hesitate to ask by replying to this message.
 
---
-Weblate
+Kind regards from Weblate
 """,
                 "type": "email",
                 "sender": "Agent",
