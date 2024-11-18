@@ -27,7 +27,7 @@ def create_dedicated_hosting_ticket(subscription: Subscription) -> None:
 
     zammad.ticket.create(
         params={
-            "title": "Your dedicated Weblate instance",
+            "title": f"Your dedicated Weblate instance ({domain})",
             "customer_id": f"guess:{email}",
             "group": "Users",
             "article": {
