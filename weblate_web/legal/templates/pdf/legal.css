@@ -1,7 +1,7 @@
 @page {
   margin: 3.5cm 1cm 3cm 1cm;
   @bottom-right {
-    content: "Page " counter(page) " of " counter(pages);
+    content: counter(page) " / " counter(pages);
   }
 }
 
@@ -46,6 +46,7 @@ img {
 .preamble p,
 .tos h1 {
   text-align: center;
+  padding: 0 !important;
 }
 .tos {
   counter-reset: tos_chapter;
