@@ -58,7 +58,7 @@ class PYPIInfo(TypedDict):
     upload_time_iso_8601: str
     url: str
     yanked: bool
-    yanked_reason: None | str
+    yanked_reason: str | None
 
 
 def get_contributors(force: bool = False):
@@ -137,7 +137,7 @@ def get_changes(force: bool = False):
     return stats[:10]
 
 
-def get_release(force: bool = False) -> None | list[PYPIInfo]:
+def get_release(force: bool = False) -> list[PYPIInfo] | None:
     key = "wlweb-release-x"
     results = cache.get(key)
     if not force and results is not None:
@@ -167,7 +167,7 @@ def get_release(force: bool = False) -> None | list[PYPIInfo]:
 
 
 def fetch_vat_info(fetch_all: bool = False):
-    customers = Customer.objects.exclude(vat="")
+    customers = Customer.objects.exclude(vat="").exclude(vat=None)
     if not fetch_all:
         weekday = timezone.now().weekday()
         customers = customers.annotate(idmod=F("id") % 7).filter(idmod=weekday)

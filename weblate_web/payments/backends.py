@@ -234,7 +234,7 @@ THEPAY_LANGUAGES = {
 }
 
 
-def get_backend(name):
+def get_backend(name: str) -> type[Backend]:
     backend = BACKENDS[name]
     if backend.debug and not settings.PAYMENT_DEBUG:
         raise KeyError("Invalid backend")
@@ -282,7 +282,7 @@ class Backend:
 
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
-    ) -> None | HttpResponseRedirect:
+    ) -> HttpResponseRedirect | None:
         """Perform payment and optionally redirects user."""
         raise NotImplementedError
 
@@ -290,13 +290,13 @@ class Backend:
         """Collect payment information."""
         raise NotImplementedError
 
-    def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
+    def get_instructions(self) -> list[tuple[StrOrPromise, str]]:
         """Payment instructions for manual methods."""
         return []
 
     def initiate(
         self, request: HttpRequest | None, back_url: str, complete_url: str
-    ) -> None | HttpResponseRedirect:
+    ) -> HttpResponseRedirect | None:
         """
         Initiate payment and optionally redirects user.
 
@@ -445,7 +445,7 @@ class DebugPay(Backend):
 
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
-    ) -> None | HttpResponseRedirect:
+    ) -> HttpResponseRedirect | None:
         return None
 
     def collect(self, request: HttpRequest | None) -> bool:
@@ -480,7 +480,7 @@ class DebugPending(DebugPay):
 
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
-    ) -> None | HttpResponseRedirect:
+    ) -> HttpResponseRedirect | None:
         return redirect("https://cihar.com/?url=" + complete_url)
 
     def collect(self, request: HttpRequest | None) -> bool:
@@ -537,27 +537,20 @@ class FioBank(Backend):
 
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
-    ) -> None | HttpResponseRedirect:
+    ) -> HttpResponseRedirect | None:
         # Generate proforma invoice and link it to this payment
         self.generate_invoice(proforma=True)
         # Notify user
         self.send_notification("payment_pending")
         return redirect(complete_url)
 
-    def get_instructions(self) -> list[tuple[StrOrPromise, StrOrPromise]]:
+    def get_instructions(self) -> list[tuple[StrOrPromise, str]]:
         from weblate_web.invoices.models import Invoice  # noqa: PLC0415
 
-        return [
-            (
-                gettext("Issuing bank"),
-                "Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia",
-            ),
-            (gettext("Account holder"), "Weblate s.r.o."),
-            (gettext("Account number"), "2302907395 / 2010"),
-            (gettext("SWIFT code"), "FIOBCZPPXXX"),
-            (gettext("IBAN"), "CZ30 2010 0000 0023 0290 7395"),
-            (gettext("Reference"), cast(Invoice, self.payment.draft_invoice).number),
-        ]
+        invoice = cast(Invoice, self.payment.draft_invoice)
+        instructions = invoice.bank_account.get_full_info()
+        instructions.append((gettext("Reference"), invoice.number))
+        return instructions
 
     @classmethod
     def fetch_payments(cls, from_date: str | None = None) -> None:
@@ -700,7 +693,7 @@ class ThePay2Card(Backend):
 
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
-    ) -> None | HttpResponseRedirect:
+    ) -> HttpResponseRedirect | None:
         payload: dict[str, str | dict[str, str | dict[str, str]] | int | bool]
         if self.payment.repeat:
             # Handle recurring payments

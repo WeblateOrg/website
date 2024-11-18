@@ -41,7 +41,14 @@ class PaymentAdmin(admin.ModelAdmin):
         "invoice",
     )
     list_filter = ("state", "backend", "customer__name", "customer__origin")
-    search_fields = ("description", "customer__name", "customer__email", "invoice")
+    search_fields = (
+        "description",
+        "customer__name",
+        "customer__email",
+        "invoice",
+        "draft_invoice__number",
+        "paid_invoice__number",
+    )
     readonly_fields = ("created",)
     date_hierarchy = "created"
 

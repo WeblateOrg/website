@@ -1170,7 +1170,9 @@ class APITest(UserTestCase):
 class ExpiryTest(FakturaceTestCase):
     def assert_notifications(self, *subjects):
         self.assertEqual({m.subject for m in mail.outbox}, set(subjects))
+        result = mail.outbox
         mail.outbox = []
+        return result
 
     def test_expiring_donate(self):
         self.create_donation(years=0, days=3, recurring="")
@@ -1191,15 +1193,20 @@ class ExpiryTest(FakturaceTestCase):
     def test_expiring_donate_notify_user(self):
         self.create_donation(years=0, days=8, recurring="")
         RecurringPaymentsCommand.notify_expiry()
-        self.assert_notifications(
+        mails = self.assert_notifications(
             "Expiring subscriptions on weblate.org",
             "Your upcoming renewal on weblate.org",
         )
+        self.assertEqual("Your upcoming renewal on weblate.org", mails[0].subject)
+        self.assertIn("€100", mails[0].alternatives[0][0])
+        self.assertIn("€100", mails[0].body)
 
     def test_expiring_recurring_donate_notify_user(self):
         self.create_donation(years=0, days=8)
         RecurringPaymentsCommand.notify_expiry()
-        self.assert_notifications("Your upcoming payment on weblate.org")
+        mails = self.assert_notifications("Your upcoming payment on weblate.org")
+        self.assertIn("€100", mails[0].alternatives[0][0])
+        self.assertIn("€100", mails[0].body)
 
     def test_expiring_subscription(self):
         self.create_service(years=0, days=3, recurring="")

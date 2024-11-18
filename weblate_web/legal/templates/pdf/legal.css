@@ -1,0 +1,179 @@
+@page {
+  margin: 3.5cm 1cm 3cm 1cm;
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+  }
+}
+
+html,
+a {
+  color: #14213d;
+  font-family: Source Sans Pro;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+header {
+  display: block;
+  padding-bottom: 1.3cm;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -2.5cm;
+  height: 2.5cm;
+}
+
+h1 {
+  font-size: 14pt;
+  counter-reset: tos_chapter tos_item tos_subchapter;
+}
+header h1 {
+  padding-top: 3mm;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+h1.page {
+  break-before: page;
+}
+img {
+  max-width: 30%;
+}
+.preamble p,
+.tos h1 {
+  text-align: center;
+  padding: 0 !important;
+}
+.tos {
+  counter-reset: tos_chapter;
+}
+
+.tos h2::before {
+  counter-increment: tos_chapter;
+  content: counter(tos_chapter) ". ";
+}
+
+.tos h2 {
+  counter-reset: tos_item tos_subchapter;
+}
+
+.tos h3::before {
+  counter-increment: tos_subchapter;
+  content: counter(tos_chapter) "." counter(tos_subchapter) ". ";
+}
+
+.tos p.item,
+.tos p.subitem,
+.tos p.subsubitem {
+  position: relative;
+}
+.tos p,
+.tos dl {
+  padding: 0 0 0 3.5em;
+}
+.dpa.tos p,
+.dpa.tos dl {
+  padding: 0 0 0 1.5em;
+}
+.tos p.item {
+  counter-reset: tos_subitem;
+}
+.tos p.subitem {
+  counter-reset: tos_subsubitem;
+}
+.tos p.subsubitem {
+  padding: 0 4.2em;
+}
+
+.tos p.item::before {
+  counter-increment: tos_item;
+  content: counter(tos_chapter) "." counter(tos_item) ". ";
+  position: absolute;
+  left: 0;
+}
+
+.dpa.tos p.item::before {
+  content: counter(tos_item) ". ";
+}
+
+.tos p.subitem::before {
+  counter-increment: tos_subitem;
+  content: counter(tos_chapter) "." counter(tos_item) "." counter(tos_subitem)
+    ". ";
+  position: absolute;
+  left: 0;
+}
+
+.tos p.subsubitem::before {
+  counter-increment: tos_subsubitem;
+  content: counter(tos_chapter) "." counter(tos_item) "." counter(tos_subitem)
+    "." counter(tos_subsubitem) ". ";
+  position: absolute;
+  left: 0;
+}
+
+.tos ul,
+.tos ol {
+  padding: 0 0 0 5em;
+}
+.dpa.tos ul,
+.dap.tos ol {
+  padding: 0 0 0 2.5em;
+}
+
+.dpa ul li {
+  margin-top: 0.5em;
+}
+.tos ol {
+  counter-reset: tos_list;
+}
+.tos ol > li {
+  list-style: none;
+  position: relative;
+}
+.tos ol > li:before {
+  counter-increment: tos_list;
+  content: counter(tos_list, lower-alpha) ") ";
+  position: absolute;
+  left: -1.4em;
+}
+
+.tos a {
+  color: #2eccaa;
+  text-decoration: underline;
+}
+
+.tos a:hover {
+  text-decoration: none;
+}
+
+table.signatures {
+  width: 100%;
+  border-spacing: 5mm;
+}
+table.signatures td {
+  width: 50%;
+  text-align: center;
+}
+div.placeholder,
+table.signatures tr.signatures td {
+  border-bottom: 0.1mm solid #14213d;
+}
+table.signatures tr.signatures td {
+  height: 3cm;
+}
+div.placeholders {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+div.placeholders div {
+  white-space: pre;
+}
+div.placeholder {
+  flex-grow: 8;
+}

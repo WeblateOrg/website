@@ -82,7 +82,12 @@ from weblate_web.models import (
     process_donation,
     process_subscription,
 )
-from weblate_web.payments.backends import PaymentError, get_backend, list_backends
+from weblate_web.payments.backends import (
+    Backend,
+    PaymentError,
+    get_backend,
+    list_backends,
+)
 from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
@@ -503,7 +508,7 @@ class CompleteView(PaymentView):
 
             # Get backend and refetch payment from the database
             try:
-                backend = get_backend(self.object.backend)(self.object)
+                backend: Backend = get_backend(self.object.backend)(self.object)
             except KeyError as error:
                 raise Http404("Non-existing backend") from error
 
@@ -516,6 +521,13 @@ class CompleteView(PaymentView):
             backend.complete(self.request)
             # If payment is still pending, display info page
             if backend.payment.state == Payment.PENDING:
+                if backend.name == "fio-bank":
+                    messages.info(
+                        request,
+                        gettext(
+                            "New company, new bank details! Pay with attention to the current invoice."
+                        ),
+                    )
                 return render(
                     request,
                     "payment/pending.html",

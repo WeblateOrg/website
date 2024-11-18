@@ -23,7 +23,7 @@ import uuid
 from decimal import Decimal
 from pathlib import Path
 from shutil import copyfile
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, cast
 
 import qrcode
 import qrcode.image.svg
@@ -37,15 +37,18 @@ from django.db.models.functions import Cast, Concat, Extract, LPad
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
-from django.utils.translation import override
+from django.utils.translation import gettext, override
 from fakturace.rates import DecimalRates
 from lxml import etree
-from weasyprint import CSS, HTML
-from weasyprint.text.fonts import FontConfiguration
 
+from weblate_web.pdf import render_pdf
 from weblate_web.utils import get_site_url
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from django_stubs_ext import StrOrPromise
+
     from weblate_web.payments.models import Payment
 
 INVOICES_URL = "invoices:"
@@ -100,6 +103,115 @@ class Currency(models.IntegerChoices):
     CZK = 1, "CZK"
     USD = 2, "USD"
     GBP = 3, "GBP"
+
+
+InfoType = Literal["number", "short_number", "iban", "bic", "bank", "holder"]
+
+
+class BankAccountInfo:
+    def __init__(  # noqa: PLR0913
+        self,
+        *,
+        number: str,
+        bank: str,
+        iban: str,
+        bic: str,
+        holder: str = "Weblate s.r.o.",
+        short_list: tuple[InfoType, ...],
+    ):
+        self._number = number
+        self._bank = bank
+        self._iban = iban
+        self._bic = bic
+        self._holder = holder
+        self._short_list = short_list
+
+    @property
+    def number(self) -> str:
+        return self._number
+
+    @property
+    def short_number(self) -> str:
+        return self._number.split("/")[0].strip()
+
+    @property
+    def bank(self) -> str:
+        return self._bank
+
+    @property
+    def iban(self) -> str:
+        return self._iban
+
+    @property
+    def raw_iban(self) -> str:
+        return self._iban.replace(" ", "")
+
+    @property
+    def bic(self) -> str:
+        return self._bic
+
+    @property
+    def holder(self) -> str:
+        return self._holder
+
+    def get_info(self, *items: InfoType) -> Generator[tuple[StrOrPromise, str]]:
+        for item in items:
+            if item == "iban":
+                yield (gettext("IBAN"), self._iban)
+            elif item == "number":
+                yield (gettext("Account number"), self._number)
+            elif item == "short_number":
+                yield (gettext("Account number"), self.short_number)
+            elif item == "bic":
+                yield (gettext("BIC/SWIFT"), self._bic)
+            elif item == "bank":
+                yield (gettext("Issuing bank"), self._bank)
+            elif item == "holder":
+                yield (gettext("Account holder"), self._holder)
+            else:
+                raise ValueError(f"Unknown info type: {item}")
+
+    def get_full_info(self) -> list[tuple[StrOrPromise, str]]:
+        return list(self.get_info("iban", "number", "bic", "bank", "holder"))
+
+    def get_short_info(self) -> list[tuple[StrOrPromise, str]]:
+        return list(self.get_info(*self._short_list))
+
+
+FIO_BANK: str = "Fio banka, a.s., Na Florenci 2139/2, 11000 Praha, Czechia"
+FIO_BIC: str = "FIOBCZPPXXX"
+
+
+BANK_ACCOUNTS: dict[Currency, BankAccountInfo] = {
+    Currency.EUR: BankAccountInfo(
+        number="2302907395 / 2010",
+        bank=FIO_BANK,
+        iban="CZ30 2010 0000 0023 0290 7395",
+        bic=FIO_BIC,
+        short_list=("iban",),
+    ),
+    Currency.CZK: BankAccountInfo(
+        number="2002907393 / 2010",
+        bank=FIO_BANK,
+        iban="CZ49 2010 0000 0020 0290 7393",
+        bic=FIO_BIC,
+        short_list=("number",),
+    ),
+    Currency.USD: BankAccountInfo(
+        number="2603015278 / 2010",
+        bank=FIO_BANK,
+        iban="CZ37 2010 0000 0026 0301 5278",
+        bic=FIO_BIC,
+        short_list=("short_number", "bic"),
+    ),
+    Currency.GBP: BankAccountInfo(
+        number="2803015280 / 2010",
+        bank=FIO_BANK,
+        iban="CZ71 2010 0000 0028 0301 5280",
+        bic=FIO_BIC,
+        short_list=("short_number", "bic"),
+    ),
+}
 
 
 class InvoiceKind(models.IntegerChoices):
@@ -231,6 +343,10 @@ class Invoice(models.Model):
         return DecimalRates.get(
             self.issue_date.isoformat(), self.get_currency_display()
         )
+
+    @cached_property
+    def bank_account(self) -> BankAccountInfo:
+        return BANK_ACCOUNTS[cast(Currency, self.currency)]
 
     @cached_property
     def exchange_rate_eur(self) -> Decimal:
@@ -464,32 +580,9 @@ class Invoice(models.Model):
     def generate_pdf(self) -> None:
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
-        font_config = FontConfiguration()
-
-        renderer = HTML(
-            string=self.render_html(),
-            url_fetcher=url_fetcher,
-        )
-        font_style = CSS(
-            string="""
-            @font-face {
-              font-family: Source Sans Pro;
-              font-weight: 400;
-              src: url("static:vendor/font-source/TTF/SourceSans3-Regular.ttf");
-            }
-            @font-face {
-              font-family: Source Sans Pro;
-              font-weight: 700;
-              src: url("static:vendor/font-source/TTF/SourceSans3-Bold.ttf");
-            }
-        """,
-            font_config=font_config,
-            url_fetcher=url_fetcher,
-        )
-        renderer.write_pdf(
-            settings.INVOICES_PATH / self.filename,
-            stylesheets=[font_style],
-            font_config=font_config,
+        render_pdf(
+            html=self.render_html(),
+            output=settings.INVOICES_PATH / self.filename,
         )
 
     def duplicate(
@@ -555,9 +648,9 @@ class Invoice(models.Model):
 001
 1
 SCT
-FIOBCZPPXXX
-Weblate s.r.o.
-CZ3020100000002302907395
+{self.bank_account.bic}
+{self.bank_account.holder}
+{self.bank_account.raw_iban}
 EUR{self.total_amount}
 
 {self.number}
@@ -565,7 +658,7 @@ EUR{self.total_amount}
 
 """
         elif self.currency == Currency.CZK:
-            data = f"SPD*1.0*ACC:CZ3020100000002302907395*AM:{self.total_amount}*CC:CZK*RF:{self.number}*RN:Weblate s.r.o"
+            data = f"SPD*1.0*ACC:{self.bank_account.raw_iban}*AM:{self.total_amount}*CC:CZK*RF:{self.number}*RN:{self.bank_account.holder}"
         else:
             return ""
 
@@ -613,7 +706,10 @@ class InvoiceItem(models.Model):
                     self.unit_price = self.package.price
                 else:
                     self.unit_price = round(
-                        self.package.price * self.invoice.exchange_rate_eur, 0
+                        self.package.price
+                        * self.invoice.exchange_rate_eur
+                        * Decimal("1.05"),
+                        0,
                     )
                 extra_fields.append("unit_price")
             if not self.description:

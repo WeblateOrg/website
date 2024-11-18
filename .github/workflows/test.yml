@@ -16,6 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install apt dependencies
+      # gettext is needed as Django uses msgfmt to compile MO files
       run: |
         sudo apt update
         sudo apt install gettext
@@ -43,7 +44,7 @@ jobs:
         echo "::remove-matcher owner=pytest::"
     - name: Coverage
       run: coverage xml
-    - uses: codecov/codecov-action@v4
+    - uses: codecov/codecov-action@v5
       with:
         token: ${{secrets.CODECOV_TOKEN}}
         flags: unittests

@@ -17,8 +17,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 import json
 from datetime import date
+from typing import cast
 
 import responses
 from django.core import mail
@@ -27,6 +30,7 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
+from weblate_web.invoices.models import Invoice
 from weblate_web.tests import (
     THEPAY2_MOCK_SETTINGS,
     mock_vies,
@@ -193,6 +197,25 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.vat_amount, 100)
         self.assertEqual(payment.amount_without_vat, 100)
 
+    def test_short_filename(self):
+        customer = Customer()
+        customer.name = "Weblate s.r.o."
+        self.assertEqual(customer.short_filename, "Weblate_sro")
+        customer.name = "Weblate / s.r.o."
+        self.assertEqual(customer.short_filename, "Weblate_sro")
+        customer.name = " Weblate / s.r.o.\\"
+        self.assertEqual(customer.short_filename, "Weblate_sro")
+        customer.name = " Weblate - s.r.o.\\"
+        self.assertEqual(customer.short_filename, "Weblate")
+        customer.name = "Zkouška"
+        self.assertEqual(customer.short_filename, "Zkouska")
+        customer.name = "Ελληνικά"
+        self.assertEqual(customer.short_filename, "Ellenika")
+        customer.name = "Русский"
+        self.assertEqual(customer.short_filename, "Russkii")
+        customer.name = "正體中文"
+        self.assertEqual(customer.short_filename, "Zheng_Ti_Zhong_Wen")
+
 
 class BackendBaseTestCase(TestCase):
     backend_name: str = ""
@@ -273,7 +296,8 @@ class BackendTest(BackendBaseTestCase):
         mail.outbox = []
 
         received = FIO_TRASACTIONS.copy()
-        proforma_id = backend.payment.draft_invoice.number
+        self.assertIsNotNone(backend.payment.draft_invoice)
+        proforma_id = cast(Invoice, backend.payment.draft_invoice).number
         transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id

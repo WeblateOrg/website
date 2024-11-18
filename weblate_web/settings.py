@@ -205,6 +205,7 @@ INSTALLED_APPS = (
     "django.contrib.humanize",
     "weblate_web.payments",
     "weblate_web.invoices",
+    "weblate_web.legal",
     "wllegal",
     "django_countries",
     "macros",
@@ -296,6 +297,9 @@ PAYMENT_DEBUG = True
 PAYMENT_FAKTURACE = (Path.home() / "weblate" / "tmp-fakturace").as_posix()
 INVOICES_PATH = Path(BASE_DIR) / "invoices"
 INVOICES_COPY_PATH: Path | None = None
+AGREEMENTS_PATH = Path(BASE_DIR) / "agreements"
+AGREEMENTS_COPY_PATH: Path | None = None
+AGREEMENTS_SIGNATURE_PATH: Path | None = None
 
 LOGIN_URL = "/saml2/login/"
 LOGIN_REDIRECT_URL = "/user/"

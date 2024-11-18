@@ -164,7 +164,8 @@ class InvoiceTestCase(UserTestCase):
     def test_package_usd(self):
         invoice = self.create_invoice_package(currency=Currency.USD)
         self.assertEqual(
-            invoice.total_amount, round(Decimal(100) * invoice.exchange_rate_eur, 0)
+            invoice.total_amount,
+            round(Decimal(100) * invoice.exchange_rate_eur * Decimal("1.05"), 0),
         )
         self.validate_invoice(invoice)
 

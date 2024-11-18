@@ -1,5 +1,9 @@
 {% load i18n %}
+{% load prices %}
 
 <p>
   {% blocktrans with package=donation.get_payment_description %}Current subscription: {{ package }}{% endblocktrans %}
+</p>
+<p>
+  {% blocktrans with price=donation.get_amount|price_format %}Subscription price: {{ price }}{% endblocktrans %}
 </p>
