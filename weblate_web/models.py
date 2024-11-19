@@ -202,6 +202,14 @@ def create_backup_repository(service):
     dirname = str(uuid4())
     ftp.mkdir(dirname)
     ftp.chdir(dirname)
+    with ftp.open("README.txt", "w") as handle:
+        handle.write(f"""Weblate Cloud Backup
+====================
+
+Service: {service.pk}
+Customer: {service.customer.name}
+""")
+
     ftp.mkdir(".ssh")
     ftp.chdir(".ssh")
     with ftp.open("authorized_keys", "w") as handle:
@@ -215,7 +223,7 @@ def create_backup_repository(service):
             "homedirectory": f"weblate/{dirname}",
             "ssh": "1",
             "external_reachability": "1",
-            "comment": f"Weblate backup service {service.pk}",
+            "comment": f"Weblate backup service {service.pk} ({service.customer.name})",
         },
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
         timeout=720,
