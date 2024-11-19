@@ -254,28 +254,51 @@ class Invoice(models.Model):
         output_field=models.CharField(max_length=20),
         db_persist=True,
         unique=True,
+        help_text="Invoice number is automatically generated",
     )
     issue_date = models.DateField(default=datetime.date.today)
-    due_date = models.DateField(blank=True)
+    due_date = models.DateField(
+        blank=True,
+        help_text="Due date / Quote validity, keep blank unless specific terms are needed",
+    )
     kind = models.IntegerField(choices=InvoiceKind)
     category = models.IntegerField(
-        choices=InvoiceCategory, default=InvoiceCategory.HOSTING
+        choices=InvoiceCategory, help_text="Helps to categorize income"
     )
     customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.PROTECT)
-    customer_reference = models.CharField(max_length=100, blank=True)
-    discount = models.ForeignKey(
-        Discount, on_delete=models.deletion.PROTECT, blank=True, null=True
+    customer_reference = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Text will be shown on the generated invoice",
     )
-    vat_rate = models.IntegerField(default=0)
+    discount = models.ForeignKey(
+        Discount,
+        on_delete=models.deletion.PROTECT,
+        blank=True,
+        null=True,
+        help_text="Automatically applied to all invoice items",
+    )
+    vat_rate = models.IntegerField(
+        default=0,
+        verbose_name="VAT rate",
+        help_text="VAT rate in percents to apply on the invoice",
+    )
     currency = models.IntegerField(choices=Currency, default=Currency.EUR)
 
     # Invoice chaining Proforma -> Invoice, or Draft -> Invoice
     parent = models.ForeignKey(
-        "Invoice", on_delete=models.deletion.PROTECT, blank=True, null=True
+        "Invoice",
+        on_delete=models.deletion.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name="Parent invoice",
+        help_text="Invoices tracking, use for issuing invoice from quote",
     )
 
     prepaid = models.BooleanField(
-        default=False, help_text="Invoices paid in advance (card payment, pro forma)"
+        default=False,
+        verbose_name="Already paid",
+        help_text="Invoices paid in advance (card payment, invoices issued after paying pro forma)",
     )
 
     # Passed to payment
@@ -675,6 +698,13 @@ EUR{self.total_amount}
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.deletion.CASCADE)
+    package = models.ForeignKey(
+        "weblate_web.Package",
+        on_delete=models.deletion.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Selecting package will automatically fill in description and price",
+    )
     description = models.CharField(max_length=200, blank=True)
     quantity = models.IntegerField(
         default=1, validators=[MinValueValidator(1), MaxValueValidator(50)]
@@ -683,9 +713,6 @@ class InvoiceItem(models.Model):
         choices=QuantityUnit, default=QuantityUnit.BLANK
     )
     unit_price = models.DecimalField(decimal_places=3, max_digits=8, blank=True)
-    package = models.ForeignKey(
-        "weblate_web.Package", on_delete=models.deletion.SET_NULL, null=True, blank=True
-    )
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
 

@@ -84,6 +84,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     def get_readonly_fields(
         self, request: HttpRequest, obj: Invoice | None = None
     ) -> list[str]:
+        fields = ["number"]
         if obj:
-            return ["kind", "issue_date"]
-        return []
+            fields.extend(("kind", "issue_date"))
+        return fields
