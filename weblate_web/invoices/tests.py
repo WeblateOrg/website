@@ -4,7 +4,6 @@ from decimal import Decimal
 from pathlib import Path
 from typing import cast
 
-from django.conf import settings
 from django.test.utils import override_settings
 from lxml import etree
 
@@ -190,29 +189,20 @@ class InvoiceTestCase(UserTestCase):
         self.assertIsNotNone(url)
 
         # Unauthenticated should redirect to login
-        response = self.client.get(url)
-        # Redirect to language specific URL
-        self.assertEqual(response.status_code, 302)
-
-        # This should redirect to login now, can not use follow=True
-        # because SAML login not working in tests
-        response = self.client.get(response.headers["location"])
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(
-            response.headers["location"].startswith(settings.LOGIN_URL),
-            response.headers["location"],
-        )
-        self.assertFalse(invoice.draft_payment_set.exists())
-
-        # Should create payment
-        self.login()
         response = self.client.get(url, follow=True)
         self.assertContains(response, "Payment Summary")
+        # Unauthenticated user shoudl see note about terms
+        self.assertContains(response, "By performing the payment, you accept our")
+        self.assertNotContains(response, "Billing information")
         self.assertEqual(invoice.draft_payment_set.count(), 1)
 
         # Repeated access should reuse existing payment
+        self.login()
         response = self.client.get(url, follow=True)
         self.assertContains(response, "Payment Summary")
+        # Logged-in user should not see this
+        self.assertNotContains(response, "By performing the payment, you accept our")
+        self.assertNotContains(response, "Billing information")
         self.assertEqual(invoice.draft_payment_set.count(), 1)
 
         # Pay
