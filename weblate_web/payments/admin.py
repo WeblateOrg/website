@@ -26,6 +26,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ("email", "name", "country", "vat", "origin")
     list_filter = ("country", "origin")
     search_fields = ("name", "email")
+    ordering = ("name",)
 
 
 class PaymentAdmin(admin.ModelAdmin):
@@ -51,6 +52,7 @@ class PaymentAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("created",)
     date_hierarchy = "created"
+    ordering = ("created",)
 
 
 admin.site.register(Customer, CustomerAdmin)
