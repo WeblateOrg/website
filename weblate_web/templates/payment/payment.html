@@ -53,14 +53,16 @@
                 <div class="clear"></div>
               </div>
             {% endif %}
-            <div class="form-line">
-              <div class="line-left">{% trans "Billing information" %}</div>
-              <div class="line-right">
-                <a href="{% url "payment-customer" pk=object.pk %}" class="button small right">{% trans "Edit" %}</a>
-                {% include "snippets/customer_address.html" with customer=object.customer %}
+            {% if not payment.draft_invoice or not payment.draft_invoice.is_final %}
+              <div class="form-line">
+                <div class="line-left">{% trans "Billing information" %}</div>
+                <div class="line-right">
+                  <a href="{% url "payment-customer" pk=object.pk %}" class="button small right">{% trans "Edit" %}</a>
+                  {% include "snippets/customer_address.html" with customer=object.customer %}
+                </div>
+                <div class="clear"></div>
               </div>
-              <div class="clear"></div>
-            </div>
+            {% endif %}
             {% if can_pay %}
               <div class="title pick">{% trans "Please choose payment method" %}</div>
               <div class="payment-pick">

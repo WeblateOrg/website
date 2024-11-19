@@ -662,6 +662,10 @@ class Invoice(models.Model):
             and not self.paid_payment_set.exists()
         )
 
+    @property
+    def is_final(self):
+        return self.kind == InvoiceKind.INVOICE
+
     def get_payment_url(self) -> str | None:
         if self.can_be_paid():
             return get_site_url("invoice-pay", pk=self.pk)
