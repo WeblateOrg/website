@@ -64,15 +64,19 @@ class InvoiceAdmin(admin.ModelAdmin):
         if form.instance.kind != InvoiceKind.DRAFT:
             form.instance.generate_files()
 
-    def view_on_site(self, obj: Invoice) -> str | None:  # type: ignore[override]
+    def view_on_site(self, obj: Invoice) -> str | None:
         if obj.kind == InvoiceKind.DRAFT:
             return None
         return reverse("invoice-pdf", kwargs={"pk": obj.pk})
 
-    def has_delete_permission(self, request: HttpRequest, obj: Invoice | None = None):
+    def has_delete_permission(
+        self, request: HttpRequest, obj: Invoice | None = None
+    ) -> bool:
         return False
 
-    def has_change_permission(self, request: HttpRequest, obj: Invoice | None = None):
+    def has_change_permission(
+        self, request: HttpRequest, obj: Invoice | None = None
+    ) -> bool:
         if obj is None:
             return False
         return obj.issue_date.month == now().month
