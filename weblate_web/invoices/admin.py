@@ -76,3 +76,10 @@ class InvoiceAdmin(admin.ModelAdmin):
         if obj is None:
             return False
         return obj.issue_date.month == now().month
+
+    def get_readonly_fields(
+        self, request: HttpRequest, obj: Invoice | None = None
+    ) -> list[str]:
+        if obj:
+            return ["kind", "issue_date"]
+        return []
