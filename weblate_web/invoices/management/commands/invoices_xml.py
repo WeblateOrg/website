@@ -20,7 +20,7 @@
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.utils.timezone import now
 
 from weblate_web.invoices.models import Invoice, InvoiceKind
@@ -30,6 +30,8 @@ class Command(BaseCommand):
     help = "creates a XML export of invoices for previous month"
 
     def handle(self, *args, **options):
+        if settings.INVOICES_COPY_PATH is None:
+            raise CommandError("Invoices output path is not configured!")
         previous_month = now() - relativedelta(months=1)
         date_start = previous_month - relativedelta(
             day=1, hour=0, minute=0, second=0, microsecond=0
