@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db import transaction
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 
@@ -25,7 +26,7 @@ def download_invoice(request: AuthenticatedHttpRequest, pk: str):
     )
 
 
-@login_required
+@transaction.atomic
 def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
     invoice = get_object_or_404(
         Invoice, pk=pk, kind=InvoiceKind.INVOICE, paid_payment_set=None
