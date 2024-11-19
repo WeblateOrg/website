@@ -53,6 +53,19 @@
                 <div class="clear"></div>
               </div>
             {% endif %}
+            {% if not user.is_authenticated %}
+              <div class="form-line">
+                <div class="line-left">{% trans "Personal data" %}</div>
+                <div class="line-right">
+                  <span class="text-muted">
+                    {% url 'terms' as terms_url %}
+                    {% url 'privacy' as privacy_url %}
+                    {% blocktranslate %}By performing the payment, you accept our <a href="{{ terms_url }}">General Terms and Conditions</a> and <a href="{{ privacy_url }}">Privacy Policy</a>.{% endblocktranslate %}
+                  </span>
+                </div>
+                <div class="clear"></div>
+              </div>
+            {% endif %}
             {% if not payment.draft_invoice or not payment.draft_invoice.is_final %}
               <div class="form-line">
                 <div class="line-left">{% trans "Billing information" %}</div>
