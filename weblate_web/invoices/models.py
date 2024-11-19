@@ -564,18 +564,22 @@ class Invoice(models.Model):
             else:
                 add_element(polozka, "Valuty", item.total_price)
 
-    def generate_xml(self):
+    @staticmethod
+    def get_invoice_xml_root() -> tuple[etree._Element, etree._Element]:
         document = etree.Element("MoneyData")
         invoices = etree.SubElement(document, "SeznamFaktVyd")
+        return document, invoices
 
-        self.get_xml_tree(invoices)
-
+    @staticmethod
+    def save_invoice_xml(document: etree._Element, path: Path) -> None:
         etree.indent(document)
+        etree.ElementTree(document).write(path, encoding="utf-8", xml_declaration=True)
 
+    def generate_xml(self) -> None:
+        document, invoices = self.get_invoice_xml_root()
+        self.get_xml_tree(invoices)
         settings.INVOICES_PATH.mkdir(exist_ok=True)
-        etree.ElementTree(document).write(
-            self.xml_path, encoding="utf-8", xml_declaration=True
-        )
+        self.save_invoice_xml(document, self.xml_path)
 
     def generate_pdf(self) -> None:
         # Create directory to store invoices
