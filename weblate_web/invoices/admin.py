@@ -23,6 +23,7 @@ from typing import TYPE_CHECKING, Any
 
 from django.contrib import admin
 from django.urls import reverse
+from django.utils.timezone import now
 
 from .models import Discount, Invoice, InvoiceItem, InvoiceKind
 
@@ -67,3 +68,11 @@ class InvoiceAdmin(admin.ModelAdmin):
         if obj.kind == InvoiceKind.DRAFT:
             return None
         return reverse("invoice-pdf", kwargs={"pk": obj.pk})
+
+    def has_delete_permission(self, request: HttpRequest, obj: Invoice | None = None):
+        return False
+
+    def has_change_permission(self, request: HttpRequest, obj: Invoice | None = None):
+        if obj is None:
+            return False
+        return obj.issue_date.month == now().month
