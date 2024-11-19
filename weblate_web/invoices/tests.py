@@ -12,7 +12,14 @@ from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer
 from weblate_web.tests import UserTestCase
 
-from .models import Currency, Discount, Invoice, InvoiceKind, QuantityUnit
+from .models import (
+    Currency,
+    Discount,
+    Invoice,
+    InvoiceCategory,
+    InvoiceKind,
+    QuantityUnit,
+)
 
 S3_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent / "schemas" / "money-s3" / "_Document.xsd"
@@ -47,6 +54,7 @@ class InvoiceTestCase(UserTestCase):
             discount=discount,
             vat_rate=vat_rate,
             kind=kind,
+            category=InvoiceCategory.HOSTING,
             customer_reference=customer_reference,
             currency=currency,
         )
