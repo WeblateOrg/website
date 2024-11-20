@@ -40,6 +40,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "start",
         "end",
         "invoice",
+        "created",
     )
     list_filter = ("state", "backend", "customer__name", "customer__origin")
     search_fields = (
@@ -52,7 +53,7 @@ class PaymentAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("created",)
     date_hierarchy = "created"
-    ordering = ("created",)
+    ordering = ("-created",)
 
 
 admin.site.register(Customer, CustomerAdmin)
