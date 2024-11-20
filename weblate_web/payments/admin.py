@@ -41,7 +41,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "end",
         "created",
     )
-    list_filter = ("state", "backend", "customer__name", "customer__origin")
+    list_filter = ("state", "backend")
     search_fields = (
         "description",
         "customer__name",
