@@ -39,7 +39,6 @@ class PaymentAdmin(admin.ModelAdmin):
         "repeat",
         "start",
         "end",
-        "invoice",
         "created",
     )
     list_filter = ("state", "backend", "customer__name", "customer__origin")
