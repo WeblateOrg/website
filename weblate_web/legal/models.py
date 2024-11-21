@@ -19,7 +19,7 @@
 from __future__ import annotations
 
 from shutil import copyfile
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.db import models
@@ -36,10 +36,17 @@ class AgreementKind(models.IntegerChoices):
     DPA = 1, "Data Processing Agreement"
 
 
+class AgreementQuerySet(models.QuerySet):
+    def order(self):
+        return self.order_by("signed", "kind")
+
+
 class Agreement(models.Model):
     customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.PROTECT)
     signed = models.DateTimeField(auto_now_add=True)
     kind = models.IntegerField(choices=AgreementKind, default=AgreementKind.DPA)
+
+    objects = AgreementQuerySet.as_manager()
 
     def __str__(self) -> str:
         return f"{self.kind_name} {self.customer.name} {self.shortdate}"
@@ -66,7 +73,7 @@ class Agreement(models.Model):
 
     @property
     def kind_name(self) -> str:
-        return cast(AgreementKind, self.kind).name
+        return AgreementKind(self.kind).name
 
     @property
     def filename(self) -> str:

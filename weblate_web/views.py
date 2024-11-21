@@ -60,6 +60,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from weblate_web.forms import (
     AddDiscoveryForm,
     AddPaymentForm,
+    AgreementForm,
     DonateForm,
     EditDiscoveryForm,
     EditImageForm,
@@ -68,8 +69,8 @@ from weblate_web.forms import (
     MethodForm,
 )
 from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
+from weblate_web.legal.models import Agreement, AgreementKind
 from weblate_web.models import (
-    PAYMENTS_ORIGIN,
     REWARD_LEVELS,
     TOPIC_DICT,
     Donation,
@@ -92,6 +93,7 @@ from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
 from weblate_web.remote import get_activity
+from weblate_web.utils import PAYMENTS_ORIGIN
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -474,27 +476,64 @@ class CustomerView(PaymentView):
         return kwargs
 
 
+class CustomerBaseView(DetailView):
+    model = Customer
+    request: AuthenticatedHttpRequest
+
+    def get_queryset(self):
+        return super().get_queryset().for_user(self.request.user)  # type: ignore[attr-defined]
+
+
 @method_decorator(login_required, name="dispatch")
-class EditCustomerView(UpdateView):
+class EditCustomerView(CustomerBaseView, UpdateView):  # type: ignore[misc]
     # Unlike CustomerView, this is not bound to payment (allows editing all
     # user customer contacts) and returns to /user
     template_name = "payment/customer.html"
     success_url = "/user/"
     form_class = CustomerForm
-    model = Customer
-    request: AuthenticatedHttpRequest
 
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .filter(
-                Q(donation__user=self.request.user)
-                | Q(service__users=self.request.user)
-                | (Q(origin=PAYMENTS_ORIGIN) & Q(user_id=self.request.user.id))
+
+@method_decorator(login_required, name="dispatch")
+class CustomerDPAView(CustomerBaseView, FormView):
+    template_name = "payment/customer-agreement.html"
+    form_class = AgreementForm
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    @transaction.atomic
+    def form_valid(self, form):
+        customer = self.object
+        if customer.agreement_set.filter(
+            kind=AgreementKind.DPA, signed__gte=timezone.now() - timedelta(days=30)
+        ).exists():
+            messages.error(
+                self.request,
+                gettext(
+                    "Please use already generated agreement, you can generate new one after 30 days."
+                ),
             )
-            .distinct()
-        )
+        else:
+            customer.agreement_set.create(kind=AgreementKind.DPA)
+            messages.info(
+                self.request,
+                gettext("New agreement created, you can download it below."),
+            )
+        return redirect("customer-agreement", pk=customer.pk)
+
+
+@login_required
+def agreement_download_view(request: AuthenticatedHttpRequest, pk: int):
+    agreement = get_object_or_404(
+        Agreement, pk=pk, customer__in=Customer.objects.for_user(request.user)
+    )
+    return FileResponse(
+        agreement.path.open("rb"),
+        as_attachment=True,
+        filename=agreement.filename,
+        content_type="application/pdf",
+    )
 
 
 class CompleteView(PaymentView):

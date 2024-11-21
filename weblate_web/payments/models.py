@@ -22,12 +22,14 @@ from __future__ import annotations
 import os.path
 import re
 import uuid
+from typing import TYPE_CHECKING
 
 from appconf import AppConf
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy, pgettext_lazy
@@ -35,11 +37,14 @@ from django_countries.fields import CountryField
 from unidecode import unidecode
 from vies.models import VATINField
 
-from weblate_web.utils import get_site_url
+from weblate_web.utils import PAYMENTS_ORIGIN, get_site_url
 
 from .fields import Char32UUIDField
 from .utils import validate_email
 from .validators import validate_vatin
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import User
 
 SHORT_NAME_DISCARD = re.compile(r"[^a-zA-Z0-9_\s-]")
 SHORT_NAME_SPACE = re.compile(r"[\s_-]+")
@@ -76,6 +81,15 @@ EU_VAT_RATES = {
 }
 
 VAT_RATE = 21
+
+
+class CustomerQuerySet(models.QuerySet):
+    def for_user(self, user: User) -> CustomerQuerySet:
+        return self.filter(
+            Q(donation__user=user)
+            | Q(service__users=user)
+            | (Q(origin=PAYMENTS_ORIGIN) & Q(user_id=user.id))
+        ).distinct()
 
 
 class Customer(models.Model):
@@ -143,6 +157,8 @@ class Customer(models.Model):
         blank=True,
         null=True,
     )
+
+    objects = CustomerQuerySet.as_manager()
 
     class Meta:
         verbose_name = "Customer"

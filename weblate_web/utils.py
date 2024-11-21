@@ -23,6 +23,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import override
 
+PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
+
 
 def get_site_url(name: str, *, strip_language: bool = True, **kwargs) -> str:
     if strip_language:

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+  {% trans "Weblate data processing agreement" %}
+{% endblock %}
+
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title min-m">{% trans "Your data processing agreements" %}</h1>
+        <div class="payment-form">
+          <div class="form-line">
+            <div class="line-left">{% trans "Organization" %}</div>
+            <div class="line-right">
+              <a href="{% url "edit-customer" pk=object.pk %}" class="button small right">{% trans "Edit" %}</a>
+              {% include "snippets/customer_address.html" with customer=object %}
+            </div>
+            <div class="clear"></div>
+          </div>
+
+          {% with agreements=object.agreement_set.order %}
+            {% if agreements %}
+              <div class="form-line">
+                <div class="line-left">{% trans "Existing agreements" %}</div>
+                <div class="line-right">
+                  <table class="payments-table">
+                    {% for agreement in agreements %}
+                      <tr>
+                        <td>
+                          <a href="{% url "agreement-download" pk=agreement.pk %}" class="link invoice-link">
+                            {{ agreement.kind_name }} {{ agreement.signed|date }}
+                            <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                          </a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+                <div class="clear"></div>
+              </div>
+            {% endif %}
+          {% endwith %}
+
+          <div class="form-line">
+            <div class="line-left">{% trans "Service documentation" %}</div>
+            <div class="line-right">
+              <table class="payments-table">
+                <tr>
+                  <td>
+                    <a href="{% static "Weblate_General_Terms_and_Conditions.pdf" %}"
+                       class="link invoice-link">
+                      {% trans "General Terms and Conditions" %}
+                      <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <a href="{% static "Weblate_Privacy_Policy.pdf" %}" class="link invoice-link">
+                      {% trans "Privacy Policy" %}
+                      <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+            <div class="clear"></div>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="form-line">
+                <div class="line-left">{% trans "New agreement" %}</div>
+                <div class="line-right">
+                  <table class="payments-table">
+                    <tr>
+                      <td>
+                        <a href="{% static "Weblate_Data_Processing_Agreement_Sample.pdf" %}"
+                           class="link invoice-link">
+                          {% trans "Preview the agreement" %}
+                          <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  {{ field.errors }}
+                  <label>{{ field }} {{ field.label }}</label>
+                  {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
+                </div>
+                <div class="clear"></div>
+              </div>
+            {% endfor %}
+            <div class="payment-pick"></div>
+            <input type="submit"
+                   class="button center make-payment"
+                   value="{% trans "Create an agreement" %}" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

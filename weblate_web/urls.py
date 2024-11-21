@@ -36,6 +36,7 @@ from weblate_web.models import Post
 from weblate_web.views import (
     AddDiscoveryView,
     CompleteView,
+    CustomerDPAView,
     CustomerView,
     DiscoverView,
     DonateView,
@@ -51,6 +52,7 @@ from weblate_web.views import (
     ServiceListView,
     TopicArchiveView,
     activity_svg,
+    agreement_download_view,
     api_hosted,
     api_support,
     api_user,
@@ -292,6 +294,16 @@ urlpatterns = [
             name="payment-complete",
         ),
         path("customer/<int:pk>/", EditCustomerView.as_view(), name="edit-customer"),
+        path(
+            "customer/<int:pk>/agreement/",
+            CustomerDPAView.as_view(),
+            name="customer-agreement",
+        ),
+        path(
+            "agreement/<int:pk>/pdf/",
+            agreement_download_view,
+            name="agreement-download",
+        ),
         path("invoice/<uuid:pk>/pdf/", download_invoice, name="invoice-pdf"),
         path("invoice/<uuid:pk>/pay/", pay_invoice, name="invoice-pay"),
         # FOSDEM short link
