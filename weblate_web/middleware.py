@@ -72,11 +72,11 @@ class SecurityMiddleware:
         if settings.DEBUG:
             return response
 
-        style = ["'self'", "s.weblate.org"]
+        style = ["'self'"]
         script = ["'self'"]
         connect = ["'self'"]
         image = ["'self'", "data:"]
-        font = ["'self'", "s.weblate.org"]
+        font = ["'self'"]
         form = ["'self'", "weblate.org", "hosted.weblate.org"]
 
         # Sentry/Raven
