@@ -279,5 +279,17 @@
       </div>
       <div class="clear"></div>
     </div>
+    <div class="form-line service-text-formatting">
+      <div class="line-left">{% trans "Personal data" %}</div>
+      <div class="line-right">
+        {% trans "Data processing agreements for your Weblate service." %}
+        <form class="form-inline"
+              method="get"
+              action="{% url "customer-agreement" pk=service.customer.pk %}">
+          <input type="submit" class="button small inline" value="{% trans "Manage" %}">
+        </form>
+      </div>
+      <div class="clear"></div>
+    </div>
   {% endif %}
 </div>

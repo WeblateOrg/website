@@ -10,12 +10,14 @@
       <p>between</p>
       <p>
         <strong>
-          {{ customer.name }},
-          {% if customer.tax %}ID: {{ customer.tax }},{% endif %}
-          {{ customer.address }},
-          {% if customer.address_2 %}{{ customer.address2 }},{% endif %}
-          {{ customer.postcode }} {{ customer.city }},
-          {{ customer.get_country_display }}
+          {% if customer %}
+            {{ customer.name }},
+            {% if customer.tax %}ID: {{ customer.tax }},{% endif %}
+            {{ customer.address }},
+            {% if customer.address_2 %}{{ customer.address2 }},{% endif %}
+            {{ customer.postcode }} {{ customer.city }},
+            {{ customer.get_country_display }}
+          {% endif %}
         </strong>
       </p>
       <p>
@@ -225,12 +227,14 @@
             <div class="placeholder"></div>
           </div>
         </td>
-        <td>Cvikov, date {{ signed| date }}</td>
+        <td>
+          {% if signed %}Cvikov, date {{ signed| date }}{% endif %}
+        </td>
       </tr>
       <tr class="signatures">
         <td></td>
         <td>
-          <img src="signature:">
+          {% if customer %}<img src="signature:">{% endif %}
         </td>
       </tr>
       <tr>

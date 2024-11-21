@@ -24,7 +24,7 @@ from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
-from .models import PAYMENTS_ORIGIN, Donation, Package, PackageCategory, Post, Service
+from .models import Donation, Package, PackageCategory, Post, Service
 from .remote import (
     ACTIVITY_URL,
     WEBLATE_CONTRIBUTORS_URL,
@@ -32,6 +32,7 @@ from .remote import (
     get_contributors,
 )
 from .templatetags.downloads import downloadlink, filesizeformat
+from .utils import PAYMENTS_ORIGIN
 
 if TYPE_CHECKING:
     from uuid import UUID
@@ -739,6 +740,34 @@ class DonationTest(FakturaceTestCase):
         self.assertRedirects(response, reverse("user"))
         customer.refresh_from_db()
         self.assertEqual(customer.name, edit_customer["name"])
+
+        # Data processing agreements
+        agreements_url = reverse("customer-agreement", kwargs={"pk": customer.pk})
+        response = self.client.get(agreements_url)
+        self.assertContains(response, "Weblate_Data_Processing_Agreement_Sample.pdf")
+        self.assertContains(response, "Weblate_Privacy_Policy.pdf")
+
+        # No agreement without consent
+        response = self.client.post(agreements_url, follow=True)
+        self.assertContains(response, "This field is required.")
+        self.assertEqual(customer.agreement_set.count(), 0)
+
+        # Create agreement
+        response = self.client.post(agreements_url, {"consent": 1}, follow=True)
+        self.assertRedirects(response, agreements_url)
+        self.assertEqual(customer.agreement_set.count(), 1)
+
+        # No agreement on second attempt
+        response = self.client.post(agreements_url, {"consent": 1}, follow=True)
+        self.assertRedirects(response, agreements_url)
+        self.assertEqual(customer.agreement_set.count(), 1)
+
+        # Download agreement
+        agreement = customer.agreement_set.get()
+        response = self.client.get(
+            reverse("agreement-download", kwargs={"pk": agreement.pk})
+        )
+        self.assertEqual(response.headers["Content-Type"], "application/pdf")
 
     def test_donation_workflow_invalid_reward(self):
         self.login()

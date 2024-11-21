@@ -119,3 +119,7 @@ class AddPaymentForm(forms.Form):
                     gettext("Invoice was not found: %s") % error
                 ) from error
         return None
+
+
+class AgreementForm(forms.Form):
+    consent = forms.BooleanField(label="I consent to the agreement", required=True)

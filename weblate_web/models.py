@@ -55,7 +55,6 @@ if TYPE_CHECKING:
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 
-PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 SUBACCOUNTS_API = "https://robot-ws.your-server.de/storagebox/{}/subaccount"
 
 REWARDS = (

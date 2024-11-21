@@ -29,6 +29,7 @@ HOSTED_ACCOUNT = "Hosted Weblate account"
 OUT_DIR = Path(__file__).parent.parent.parent / "static"
 GTC_NAME = "Weblate_General_Terms_and_Conditions.pdf"
 PRIVACY_NAME = "Weblate_Privacy_Policy.pdf"
+DPA_SAMPLE_NAME = "Weblate_Data_Processing_Agreement_Sample.pdf"
 
 
 class Command(BaseCommand):
@@ -56,4 +57,15 @@ class Command(BaseCommand):
                 },
             ),
             output=OUT_DIR / PRIVACY_NAME,
+        )
+
+        render_pdf(
+            html=render_to_string(
+                "pdf/dpa.html",
+                {
+                    "title": "Data Processing Agreement",
+                    "sample": True,
+                },
+            ),
+            output=OUT_DIR / DPA_SAMPLE_NAME,
         )
