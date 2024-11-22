@@ -206,6 +206,7 @@ INSTALLED_APPS = (
     "weblate_web.payments",
     "weblate_web.invoices",
     "weblate_web.legal",
+    "weblate_web.crm",
     "wllegal",
     "django_countries",
     "macros",

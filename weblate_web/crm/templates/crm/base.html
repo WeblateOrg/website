@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+  {% if subtitle %}{{ subtitle }} |{% endif %}
+  {{ title }} | Weblate CRM
+{% endblock %}
+
+{% block branding %}
+  <div id="site-name">
+    <a href="{% url 'crm:index' %}">Weblate CRM</a>
+  </div>
+  {% if user.is_anonymous %}
+    {% include "admin/color_theme_toggle.html" %}
+  {% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'crm:index' %}">Home</a>
+
+    {% block breadcrum_list %}
+    {% endblock breadcrum_list %}
+
+    {% if title %}› {{ title }}{% endif %}
+  </div>
+{% endblock %}

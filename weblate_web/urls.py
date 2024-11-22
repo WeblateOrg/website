@@ -31,6 +31,7 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView, TemplateView
 
+import weblate_web.crm.urls
 from weblate_web.invoices.views import download_invoice, pay_invoice
 from weblate_web.models import Post
 from weblate_web.views import (
@@ -411,6 +412,7 @@ urlpatterns = [
         ),
     ),
     path("admin/", admin.site.urls),
+    path("crm/", include((weblate_web.crm.urls, "weblate_web.crm"), namespace="crm")),
     # Media files on devel server
     re_path(
         r"^media/(?P<path>.*)$",
