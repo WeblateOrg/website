@@ -442,6 +442,15 @@ IMAP_USER: str
 IMAP_PASSWORD: str
 IMAP_SPAM_FOLDER: str
 
+# django-countries disable sanctioned countries
+COUNTRIES_OVERRIDE = {
+    "IR": None,
+    "KP": None,
+    "RU": None,
+    "SY": None,
+    "BY": None,
+}
+
 LOCAL = Path(BASE_DIR) / "weblate_web" / "settings_local.py"
 if LOCAL.exists():
     local_settings = LOCAL.read_text()
