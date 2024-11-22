@@ -609,7 +609,7 @@ class Service(models.Model):
         return f"{self.get_status_display()}: {self.user_emails}: {self.site_url}"
 
     def get_absolute_url(self):
-        return reverse("service-detail", kwargs={"pk": self.pk})
+        return reverse("crm:service-detail", kwargs={"pk": self.pk})
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

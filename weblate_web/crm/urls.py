@@ -19,8 +19,13 @@
 
 from django.urls import path
 
-from .views import IndexView
+from .views import IndexView, InvoiceListView, ServiceDetailView, ServiceListView
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
+    path("services/", ServiceListView.as_view(), name="service-list"),
+    path(
+        "services/detail/<int:pk>/", ServiceDetailView.as_view(), name="service-detail"
+    ),
+    path("invoices/<slug:kind>/", InvoiceListView.as_view(), name="invoice-list"),
 ]
