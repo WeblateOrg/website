@@ -48,7 +48,7 @@ if TYPE_CHECKING:
 
 SHORT_NAME_DISCARD = re.compile(r"[^a-zA-Z0-9_\s-]")
 SHORT_NAME_SPACE = re.compile(r"[\s_-]+")
-SHORT_NAME_SPLIT = re.compile("[,(-]")
+SHORT_NAME_SPLIT = re.compile(r"[,(-]")
 
 EU_VAT_RATES = {
     "BE": 21,

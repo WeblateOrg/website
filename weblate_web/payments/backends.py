@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from weblate_web.invoices.models import Invoice
 
 BACKENDS: dict[str, type[Backend]] = {}
-PROFORMA_RE = re.compile("50[0-9]{8}")
+PROFORMA_RE = re.compile(r"50[0-9]{8}")
 THEPAY_LANGUAGES = {
     "ab",
     "aa",
