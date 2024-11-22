@@ -1,1 +1,128 @@
 {% extends "crm/base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
+{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+    <div class="module">
+      {% if perms.invoices %}
+        <table>
+          <caption>
+            Invoices
+          </caption>
+          <tr>
+            <th scope="row" id="row-invoices">
+              <a href="{% url 'crm:invoice-list' kind="invoice" %}">Invoices</a>
+            </th>
+
+            {% if perms.invoices.add_invoice %}
+              <td>
+                <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-invoices">{% translate "Add" %}</a>
+              </td>
+            {% else %}
+              <td></td>
+            {% endif %}
+
+            <td>
+              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="row-invoices">{% translate "View" %}</a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" id="row-quotes">
+              <a href="{% url 'crm:invoice-list' kind="quote" %}">Quotes</a>
+            </th>
+
+            {% if perms.invoices.add_invoice %}
+              <td>
+                <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-quotes">{% translate "Add" %}</a>
+              </td>
+            {% else %}
+              <td></td>
+            {% endif %}
+
+            <td>
+              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="row-quotes">{% translate "View" %}</a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" id="row-unpaid">
+              <a href="{% url 'crm:invoice-list' kind="unpaid" %}">Unpaid invoices</a>
+            </th>
+
+            <td></td>
+
+            <td>
+              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="row-unpaid">{% translate "View" %}</a>
+            </td>
+          </tr>
+        </table>
+      {% endif %}
+      {% if perms.weblate_web.view_service %}
+        <table>
+          <caption>
+            Services
+          </caption>
+          <tr>
+            <th scope="row" id="row-invoices">
+              <a href="{% url 'crm:service-list' %}">Services</a>
+            </th>
+
+            {% if perms.weblate_web.add_service %}
+              <td>
+                <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-invoices">{% translate "Add" %}</a>
+              </td>
+            {% else %}
+              <td></td>
+            {% endif %}
+
+            <td>
+              <a href="{% url 'crm:service-list' %}"
+                 class="viewlink"
+                 aria-describedby="row-invoices">{% translate "View" %}</a>
+            </td>
+          </tr>
+        </table>
+      {% endif %}
+      {% comment %}
+      <table>
+        <caption>
+          <a href="TODO" class="section">{{ app.name }}xx</a>
+        </caption>
+        <tr>
+          <th scope="row" id="row-TODO">
+            <a href="TODO">TODO</a>
+          </th>
+
+          {% if model.add_url %}
+            <td>
+              <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-TODO">{% translate 'Add' %}</a>
+            </td>
+          {% else %}
+            <td></td>
+          {% endif %}
+
+          {% if model.view_only %}
+            <td>
+              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="{{ app.app_label }}-{{ model_name }}">{% translate 'View' %}</a>
+            </td>
+          {% elif models.edit %}
+            <td>
+              <a href="{{ model.admin_url }}" class="changelink" aria-describedby="{{ app.app_label }}-{{ model_name }}">{% translate 'Change' %}</a>
+            </td>
+          {% else %}
+            <td></td>
+          {% endif %}
+        </tr>
+      </table>
+      {% endcomment %}
+    </div>
+  </div>
+{% endblock %}

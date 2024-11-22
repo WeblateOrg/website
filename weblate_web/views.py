@@ -39,7 +39,6 @@ from django.db.models import Q
 from django.http import (
     FileResponse,
     Http404,
-    HttpRequest,
     HttpResponseBadRequest,
     HttpResponseRedirect,
     JsonResponse,
@@ -52,14 +51,13 @@ from django.utils.translation import gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from weblate_web.forms import (
     AddDiscoveryForm,
-    AddPaymentForm,
     AgreementForm,
     DonateForm,
     EditDiscoveryForm,
@@ -93,7 +91,11 @@ from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
 from weblate_web.remote import get_activity
-from weblate_web.utils import PAYMENTS_ORIGIN
+from weblate_web.utils import (
+    PAYMENTS_ORIGIN,
+    AuthenticatedHttpRequest,
+    show_form_errors,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -101,10 +103,6 @@ if TYPE_CHECKING:
 ON_EACH_SIDE = 3
 ON_ENDS = 2
 DOT = "."
-
-
-class AuthenticatedHttpRequest(HttpRequest):
-    user: User
 
 
 def get_page_range(page_obj):
@@ -162,19 +160,6 @@ def get_customer(
         user_id=request.user.id,
         defaults={"email": request.user.email},
     )[0]
-
-
-def show_form_errors(request, form):
-    """Show all form errors as a message."""
-    for error in form.non_field_errors():
-        messages.error(request, error)
-    for field in form:
-        for error in field.errors:
-            messages.error(
-                request,
-                gettext("Error in parameter %(field)s: %(error)s")
-                % {"field": field.name, "error": error},
-            )
 
 
 @require_POST
@@ -1060,39 +1045,3 @@ class DiscoverView(TemplateView):
             data["user_services"] = set()
 
         return data
-
-
-@method_decorator(login_required, name="dispatch")
-@method_decorator(user_passes_test(lambda u: u.is_superuser), name="dispatch")
-class ServiceListView(ListView):
-    model = Service
-
-
-@method_decorator(login_required, name="dispatch")
-@method_decorator(user_passes_test(lambda u: u.is_superuser), name="dispatch")
-class ServiceDetailView(DetailView):
-    model = Service
-
-    def get_payment_form(self, **kwargs):
-        form = AddPaymentForm(**kwargs)
-        form.fields["subscription"].queryset = self.object.subscription_set.all()  # type: ignore[attr-defined]
-        return form
-
-    def post(self, request, **kwargs):
-        self.object = self.get_object()
-        action = request.POST.get("action")
-        if action == "payment":
-            form = self.get_payment_form(data=request.POST)
-            if form.is_valid():
-                form.cleaned_data["subscription"].add_payment(
-                    form.cleaned_data["invoice"], form.cleaned_data["period"]
-                )
-                messages.info(request, gettext("Payment was added."))
-            else:
-                show_form_errors(request, form)
-        return redirect(self.object)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["add_payment_form"] = self.get_payment_form()
-        return context

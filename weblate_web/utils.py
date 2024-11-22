@@ -19,9 +19,17 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from django.conf import settings
+from django.contrib import messages
+from django.http import HttpRequest
 from django.urls import reverse
-from django.utils.translation import override
+from django.utils.translation import gettext, override
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import User
+    from django.forms import Form
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 
@@ -34,3 +42,20 @@ def get_site_url(name: str, *, strip_language: bool = True, **kwargs) -> str:
     else:
         url = reverse(name, kwargs=kwargs)
     return f"{settings.SITE_URL}{url}"
+
+
+class AuthenticatedHttpRequest(HttpRequest):
+    user: User
+
+
+def show_form_errors(request: HttpRequest, form: Form) -> None:
+    """Show all form errors as a message."""
+    for error in form.non_field_errors():
+        messages.error(request, str(error))
+    for field in form:
+        for error in field.errors:
+            messages.error(
+                request,
+                gettext("Error in parameter %(field)s: %(error)s")
+                % {"field": field.name, "error": error},
+            )
