@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import (
     PermissionDenied,
 )
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from django.http import HttpRequest
 
 
-class CRMBaseView(LoginRequiredMixin):
+class CRMMixin:
     title: str = "CRM"
     permission: str | None = None
 
@@ -29,29 +29,31 @@ class CRMBaseView(LoginRequiredMixin):
         return self.title
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)  # type: ignore[misc]
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
         context["title"] = self.get_title()
         return context
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(settings.LOGIN_URL)
         if not request.user.is_staff:
             raise PermissionDenied
         if self.permission is not None and not request.user.has_perm(self.permission):
             raise PermissionDenied
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)  # type:ignore[misc]
 
 
-class IndexView(CRMBaseView, TemplateView):
+class IndexView(CRMMixin, TemplateView):
     template_name = "crm/index.html"
 
 
-class ServiceListView(CRMBaseView, ListView):
+class ServiceListView(CRMMixin, ListView):
     model = Service
     permission = "weblate_web.view_service"
     title = "Services"
 
 
-class ServiceDetailView(CRMBaseView, DetailView):
+class ServiceDetailView(CRMMixin, DetailView):
     model = Service
     permission = "weblate_web.change_service"
     title = "Service detail"
@@ -81,7 +83,7 @@ class ServiceDetailView(CRMBaseView, DetailView):
         return context
 
 
-class InvoiceListView(CRMBaseView, ListView):
+class InvoiceListView(CRMMixin, ListView):
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoices"
