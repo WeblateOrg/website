@@ -154,3 +154,5 @@ class Command(BaseCommand):
 
         for extra in set(backup_services) - processed_repositories:
             self.stderr.write(f"unused: {extra}")
+
+        self.check_unpaid(backup_services)
