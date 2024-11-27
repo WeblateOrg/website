@@ -17,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import time
 from typing import TYPE_CHECKING
 
 from django.conf import settings
@@ -45,13 +46,14 @@ class Command(BaseCommand):
             help="Delete stale backup repositories",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options):  # noqa: PLR0915
         backup_services: dict[str, Service] = {
             service.backup_repository: service
             for service in Service.objects.exclude(backup_repository="")
         }
         processed_repositories = set()
         backup_storages = get_storage_subaccounts()
+        hetzner_modified = False
 
         for storage in backup_storages:
             # Skip non-weblate subaccounts
@@ -99,7 +101,11 @@ class Command(BaseCommand):
                 self.stdout.write(
                     f"Updating Hetzner data for {username} for {service.pk} ({customer.name})"
                 )
+                if hetzner_modified:
+                    # Honor rate limit
+                    time.sleep(5)
                 modify_storage_subaccount(username, storage_data)
+                hetzner_modified = True
 
         for service in backup_services.values():
             if service.has_paid_backup():

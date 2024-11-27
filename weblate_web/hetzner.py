@@ -68,7 +68,7 @@ def create_storage_subaccount(
     return response.json()
 
 
-def modify_storage_subaccount(username: str, data: dict) -> dict:
+def modify_storage_subaccount(username: str, data: dict) -> None:
     # Create account on the service
     url = f"{SUBACCOUNTS_API.format(settings.STORAGE_BOX)}/{username}"
     response = requests.put(
@@ -78,7 +78,6 @@ def modify_storage_subaccount(username: str, data: dict) -> dict:
         timeout=720,
     )
     response.raise_for_status()
-    return response.json()
 
 
 def generate_ssh_url(data: dict) -> str:
