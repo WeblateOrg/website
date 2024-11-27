@@ -73,7 +73,6 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = [
         "site_title",
         "site_url",
-        "site_version",
         "note",
         "projects_limit",
         "languages_limit",
@@ -96,6 +95,13 @@ class ServiceAdmin(admin.ModelAdmin):
     )
     date_hierarchy = "created"
     autocomplete_fields = ("users", "customer")
+    readonly_fields = (
+        "backup_box",
+        "backup_directory",
+        "backup_size",
+        "backup_timestamp",
+        "site_version",
+    )
 
     def get_form(
         self,
