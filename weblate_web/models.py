@@ -300,72 +300,94 @@ def get_service(payment, user):
             return service
 
 
-def process_subscription(payment):
+def process_repeated_payment(payment: Payment, repeated: Payment) -> Subscription:
+    subscription = Subscription.objects.get(payment=repeated.pk)
+    payment.start = subscription.expires
+    subscription.expires += get_period_delta(repeated.recurring)
+    payment.end = subscription.expires
+    subscription.save()
+    return subscription
+
+
+def process_renewal_payment(payment: Payment) -> Subscription:
+    subscription = Subscription.objects.get(pk=payment.extra["subscription"])
+    if subscription.payment:
+        subscription.pastpayments_set.create(payment=subscription.payment)
+    payment.start = subscription.expires
+    subscription.expires += get_period_delta(subscription.package.get_repeat())
+    payment.end = subscription.expires
+    subscription.payment = payment.pk
+    subscription.save()
+    return subscription
+
+
+def process_new_payment(payment: Payment) -> Subscription:
+    user = User.objects.get(pk=payment.customer.user_id)
+    service = get_service(payment, user)
+    if payment.paid_invoice and (paid_package := payment.paid_invoice.get_package()):
+        package = paid_package
+    elif payment.draft_invoice and (
+        draft_package := payment.draft_invoice.get_package()
+    ):
+        package = draft_package
+    else:
+        package = Package.objects.get(name=payment.extra["subscription"])
+    repeat = package.get_repeat()
+    if package.name.startswith("hosted:") and service.hosted_subscriptions:
+        # Package upgrade / downgrade
+        subscription = service.hosted_subscriptions[0]
+        if subscription.payment:
+            subscription.pastpayments_set.create(payment=subscription.payment)
+        subscription.package = package
+        subscription.expires += get_period_delta(repeat)
+        subscription.payment = payment.pk
+        subscription.save()
+    else:
+        if start_date := payment.extra.get("start_date"):
+            expires = datetime.fromisoformat(start_date)
+        else:
+            expires = timezone.now()
+        # Calculate expiry
+        if repeat:
+            payment.start = expires
+            expires += get_period_delta(repeat)
+            payment.end = expires
+        # Create new
+        subscription = Subscription.objects.create(
+            service=service,
+            payment=payment.pk,
+            package=package,
+            expires=expires,
+        )
+    with override("en"):
+        send_notification(
+            "new_subscription",
+            settings.NOTIFY_SUBSCRIPTION,
+            subscription=subscription,
+            service=subscription.service,
+        )
+    if service.was_created and service.needs_token:
+        subscription.send_notification("subscription_intro")
+
+    if (
+        service.was_created
+        and subscription.package.category == PackageCategory.PACKAGE_DEDICATED
+    ):
+        create_dedicated_hosting_ticket(subscription)
+    return subscription
+
+
+def process_subscription(payment: Payment) -> Subscription:
     if payment.state != Payment.ACCEPTED:
         raise ValueError("Can not process not accepted payment")
     if payment.repeat:
         # Update existing
-        subscription = Subscription.objects.get(payment=payment.repeat.pk)
-        payment.start = subscription.expires
-        subscription.expires += get_period_delta(payment.repeat.recurring)
-        payment.end = subscription.expires
-        subscription.save()
+        subscription = process_repeated_payment(payment, payment.repeat)
     elif isinstance(payment.extra["subscription"], int):
         # Payment for current subscription
-        subscription = Subscription.objects.get(pk=payment.extra["subscription"])
-        if subscription.payment:
-            subscription.pastpayments_set.create(payment=subscription.payment)
-        payment.start = subscription.expires
-        subscription.expires += get_period_delta(subscription.package.get_repeat())
-        payment.end = subscription.expires
-        subscription.payment = payment.pk
-        subscription.save()
+        subscription = process_renewal_payment(payment)
     else:
-        user = User.objects.get(pk=payment.customer.user_id)
-        service = get_service(payment, user)
-        package = Package.objects.get(name=payment.extra["subscription"])
-        repeat = package.get_repeat()
-        if package.name.startswith("hosted:") and service.hosted_subscriptions:
-            # Package upgrade / downgrade
-            subscription = service.hosted_subscriptions[0]
-            if subscription.payment:
-                subscription.pastpayments_set.create(payment=subscription.payment)
-            subscription.package = package
-            subscription.expires += get_period_delta(repeat)
-            subscription.payment = payment.pk
-            subscription.save()
-        else:
-            if start_date := payment.extra.get("start_date"):
-                expires = datetime.fromisoformat(start_date)
-            else:
-                expires = timezone.now()
-            # Calculate expiry
-            if repeat:
-                payment.start = expires
-                expires += get_period_delta(repeat)
-                payment.end = expires
-            # Create new
-            subscription = Subscription.objects.create(
-                service=service,
-                payment=payment.pk,
-                package=package,
-                expires=expires,
-            )
-        with override("en"):
-            send_notification(
-                "new_subscription",
-                settings.NOTIFY_SUBSCRIPTION,
-                subscription=subscription,
-                service=subscription.service,
-            )
-        if service.was_created and service.needs_token:
-            subscription.send_notification("subscription_intro")
-
-        if (
-            service.was_created
-            and subscription.package.category == PackageCategory.PACKAGE_DEDICATED
-        ):
-            create_dedicated_hosting_ticket(subscription)
+        subscription = process_new_payment(payment)
 
     # Flag payment as processed
     payment.state = Payment.PROCESSED
@@ -374,7 +396,11 @@ def process_subscription(payment):
 
 
 def process_payment(payment: Payment):
-    if "subscription" in payment.extra:
+    if (
+        "subscription" in payment.extra
+        or (payment.paid_invoice and payment.paid_invoice.get_package())
+        or (payment.draft_invoice and payment.draft_invoice.get_package())
+    ):
         process_subscription(payment)
     else:
         process_donation(payment)

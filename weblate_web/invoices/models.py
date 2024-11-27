@@ -49,6 +49,7 @@ if TYPE_CHECKING:
 
     from django_stubs_ext import StrOrPromise
 
+    from weblate_web.models import Package
     from weblate_web.payments.models import Payment
 
 INVOICES_URL = "invoices:"
@@ -354,6 +355,11 @@ class Invoice(models.Model):
     @property
     def is_draft(self):
         return self.kind in {InvoiceKind.DRAFT, InvoiceKind.QUOTE}
+
+    def get_package(self) -> Package | None:
+        if not self.all_items:
+            return None
+        return self.all_items[0].package
 
     def render_amount(self, amount: int | Decimal) -> str:
         if self.currency == Currency.EUR:
