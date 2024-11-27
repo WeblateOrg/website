@@ -632,7 +632,7 @@ class Service(models.Model):
     hosted_strings_limit.short_description = "Hosted strings"  # type: ignore[attr-defined]
 
     @cached_property
-    def user_emails(self):
+    def user_emails(self) -> str:
         return ", ".join(self.users.values_list("email", flat=True))
 
     @cached_property
@@ -643,35 +643,35 @@ class Service(models.Model):
             return None
 
     @cached_property
-    def hosted_subscriptions(self):
+    def hosted_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(
             package__category=PackageCategory.PACKAGE_DEDICATED
         ).order_by("-expires")
 
     @cached_property
-    def shared_subscriptions(self):
+    def shared_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(
             package__category=PackageCategory.PACKAGE_SHARED
         ).order_by("-expires")
 
     @cached_property
-    def basic_subscriptions(self):
+    def basic_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(package__name="basic").order_by("-expires")
 
     @cached_property
-    def extended_subscriptions(self):
+    def extended_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(package__name="extended").order_by(
             "-expires"
         )
 
     @cached_property
-    def premium_subscriptions(self):
+    def premium_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(package__name="premium").order_by(
             "-expires"
         )
 
     @cached_property
-    def support_subscriptions(self):
+    def support_subscriptions(self) -> models.QuerySet[Subscription]:
         return (
             self.hosted_subscriptions
             | self.shared_subscriptions
@@ -681,18 +681,18 @@ class Service(models.Model):
         ).order_by("-expires")
 
     @cached_property
-    def backup_subscriptions(self):
+    def backup_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(package__name="backup").order_by("-expires")
 
     @cached_property
-    def latest_subscription(self):
+    def latest_subscription(self) -> Subscription | None:
         try:
             return self.support_subscriptions[0]
         except IndexError:
             return None
 
     @cached_property
-    def current_subscription(self):
+    def current_subscription(self) -> Subscription | None:
         if (
             self.latest_subscription is None
             or self.latest_subscription.expires < timezone.now()
