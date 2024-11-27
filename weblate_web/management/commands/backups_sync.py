@@ -64,6 +64,10 @@ class Command(BaseCommand):
                 self.stderr.write(f"unused URL: {ssh_url}")
                 continue
 
+            # Skip Hosted Weblate
+            if service.site_url == "https://hosted.weblate.org":
+                continue
+
             # Validate service
             customer = service.customer
             if customer is None:
@@ -80,7 +84,7 @@ class Command(BaseCommand):
                 service.backup_directory = dirname
                 update = True
             if update:
-                self.stdout.write("Updating data for {service.pk} ({customer.name})")
+                self.stdout.write(f"Updating data for {service.pk} ({customer.name})")
                 service.save(update_fields=["backup_box", "backup_directory"])
 
             # Sync Hetzner data
@@ -92,8 +96,16 @@ class Command(BaseCommand):
                 )
 
         for service in backup_services.values():
-            if not service.has_paid_backup():
-                self.stderr.write(f"not paid: {service.pk} ({service.customer})")
+            if service.has_paid_backup():
+                continue
+            if service.hosted_subscriptions:
+                self.stderr.write(
+                    f"not paid hosted: {service.pk} ({service.customer}) {service.hosted_subscriptions[0].expires}"
+                )
+            if service.backup_subscriptions:
+                self.stderr.write(
+                    f"not paid backup: {service.pk} ({service.customer}) {service.backup_subscriptions[0].expires}"
+                )
 
         for extra in set(backup_services) - processed_repositories:
             self.stderr.write(f"unused: {extra}")

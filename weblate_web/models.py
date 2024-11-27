@@ -639,25 +639,29 @@ class Service(models.Model):
     def hosted_subscriptions(self):
         return self.subscription_set.filter(
             package__category=PackageCategory.PACKAGE_DEDICATED
-        )
+        ).order_by("-expires")
 
     @cached_property
     def shared_subscriptions(self):
         return self.subscription_set.filter(
             package__category=PackageCategory.PACKAGE_SHARED
-        )
+        ).order_by("-expires")
 
     @cached_property
     def basic_subscriptions(self):
-        return self.subscription_set.filter(package__name="basic")
+        return self.subscription_set.filter(package__name="basic").order_by("-expires")
 
     @cached_property
     def extended_subscriptions(self):
-        return self.subscription_set.filter(package__name="extended")
+        return self.subscription_set.filter(package__name="extended").order_by(
+            "-expires"
+        )
 
     @cached_property
     def premium_subscriptions(self):
-        return self.subscription_set.filter(package__name="premium")
+        return self.subscription_set.filter(package__name="premium").order_by(
+            "-expires"
+        )
 
     @cached_property
     def support_subscriptions(self):
@@ -667,17 +671,17 @@ class Service(models.Model):
             | self.basic_subscriptions
             | self.extended_subscriptions
             | self.premium_subscriptions
-        )
+        ).order_by("-expires")
 
     @cached_property
     def backup_subscriptions(self):
-        return self.subscription_set.filter(package__name="backup")
+        return self.subscription_set.filter(package__name="backup").order_by("-expires")
 
     @cached_property
     def latest_subscription(self):
         try:
-            return self.support_subscriptions.latest("expires")
-        except Subscription.DoesNotExist:
+            return self.support_subscriptions[0]
+        except KeyError:
             return None
 
     @cached_property
