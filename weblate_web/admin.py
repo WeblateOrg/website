@@ -43,6 +43,7 @@ def format_user(obj):
     return f"{obj.username}: {obj.first_name} {obj.last_name} <{obj.email}>"
 
 
+@admin.site(Donation)
 class DonationAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -61,10 +62,13 @@ class DonationAdmin(admin.ModelAdmin):
     autocomplete_fields = ("user", "customer")
 
 
-class ProjectAdmin(admin.TabularInline):
-    model = Project
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("name", "url", "web")
+    autocomplete_fields = ("service",)
 
 
+@admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = [
         "site_title",
@@ -105,6 +109,7 @@ class ServiceAdmin(admin.ModelAdmin):
         return form
 
 
+@admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ("service", "package", "created", "expires", "price")
     search_fields = (
@@ -114,12 +119,15 @@ class SubscriptionAdmin(admin.ModelAdmin):
         "service__site_url",
         "service__note",
     )
+    autocomplete_fields = ("service",)
 
 
+@admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
+@admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ["title", "timestamp", "topic", "image", "milestone"]
     list_filter = [("author", admin.RelatedOnlyFieldListFilter), "topic", "milestone"]
@@ -134,6 +142,7 @@ class PostAdmin(admin.ModelAdmin):
         obj.save()
 
 
+@admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     list_display = [
         "verbose",
@@ -148,14 +157,6 @@ class PackageAdmin(admin.ModelAdmin):
     list_filter = ["category"]
 
 
+@admin.register(PastPayments)
 class PastPaymentsAdmin(admin.ModelAdmin):
     list_display = ["subscription", "payment"]
-
-
-admin.site.register(Image, ImageAdmin)
-admin.site.register(Post, PostAdmin)
-admin.site.register(Donation, DonationAdmin)
-admin.site.register(Subscription, SubscriptionAdmin)
-admin.site.register(Service, ServiceAdmin)
-admin.site.register(Package, PackageAdmin)
-admin.site.register(PastPayments, PastPaymentsAdmin)
