@@ -557,7 +557,7 @@ class Service(models.Model):
         verbose_name_plural = "Customer services"
 
     def __str__(self):
-        return f"{self.get_status_display()}: {self.user_emails}: {self.site_url}"
+        return f"{self.get_status_display()}: {self.user_emails}: {self.site_domain}"
 
     def get_absolute_url(self):
         return reverse("crm:service-detail", kwargs={"pk": self.pk})
@@ -568,6 +568,11 @@ class Service(models.Model):
 
     def get_discover_text(self):
         return _(self.discover_text)
+
+    @property
+    def site_domain(self) -> str:
+        """Extract domain from site_url."""
+        return self.site_url.split("//")[1]
 
     @property
     def needs_token(self):
@@ -828,7 +833,7 @@ class Service(models.Model):
         create_storage_folder(dirname, self, self.customer, last_report)
 
         # Create account on the service
-        data = create_storage_subaccount(dirname, self, self.customer)
+        data = create_storage_subaccount(dirname, self)
 
         self.backup_repository = generate_ssh_url(data)
         self.backup_box = settings.STORAGE_BOX

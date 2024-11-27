@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 import stat
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
@@ -70,6 +69,7 @@ def create_storage_folder(
     ====================
 
     Service: {service.pk}
+    Site: {service.site_domain}
     Customer: {customer.name}
     """)
 
@@ -80,15 +80,13 @@ def create_storage_folder(
 
 
 def generate_subaccount_data(
-    dirname: str, service: Service, customer: Customer, *, access: bool = True
+    dirname: str, service: Service, *, access: bool = True
 ) -> dict[str, str]:
-    # Remove not allowed characters
-    customer_name = re.sub(r"[^\w,.&-]+", " ", customer.name)
     return {
         "homedirectory": f"weblate/{dirname}",
         "ssh": "1",
         "external_reachability": "1" if access else "0",
-        "comment": f"Weblate backup ({service.pk}) {customer_name}"[:50],
+        "comment": f"Weblate backup ({service.pk}) {service.site_domain}"[:50],
     }
 
 
@@ -105,14 +103,12 @@ def extract_field(data: dict, field: str) -> str:
     return value
 
 
-def create_storage_subaccount(
-    dirname: str, service: Service, customer: Customer
-) -> dict:
+def create_storage_subaccount(dirname: str, service: Service) -> dict:
     # Create account on the service
     url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
     response = requests.post(
         url,
-        data=generate_subaccount_data(dirname, service, customer),
+        data=generate_subaccount_data(dirname, service),
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
         timeout=720,
     )

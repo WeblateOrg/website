@@ -99,12 +99,14 @@ class Command(BaseCommand):
                 service.backup_directory = dirname
                 update = True
             if update:
-                self.stdout.write(f"Updating data for {service.pk} ({customer.name})")
+                self.stdout.write(
+                    f"Updating data for {service.pk} {service.site_domain} ({customer.name})"
+                )
                 service.save(update_fields=["backup_box", "backup_directory"])
 
             # Sync Hetzner data
             storage_data = generate_subaccount_data(
-                dirname, service, customer, access=service.has_paid_backup()
+                dirname, service, access=service.has_paid_backup()
             )
             if any(
                 extract_field(storage["subaccount"], field) != value
@@ -112,7 +114,7 @@ class Command(BaseCommand):
             ):
                 username: str = storage["subaccount"]["username"]
                 self.stdout.write(
-                    f"Updating Hetzner data for {username} for {service.pk} ({customer.name})"
+                    f"Updating Hetzner data for {username} for {service.pk} {service.site_domain} ({customer.name})"
                 )
                 if hetzner_modified:
                     # Honor rate limit
