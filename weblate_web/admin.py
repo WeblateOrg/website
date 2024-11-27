@@ -43,7 +43,7 @@ def format_user(obj):
     return f"{obj.username}: {obj.first_name} {obj.last_name} <{obj.email}>"
 
 
-@admin.site(Donation)
+@admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
     list_display = (
         "user",
@@ -95,7 +95,6 @@ class ServiceAdmin(admin.ModelAdmin):
     )
     date_hierarchy = "created"
     autocomplete_fields = ("users", "customer")
-    inlines = (ProjectAdmin,)
 
     def get_form(
         self,
