@@ -81,15 +81,28 @@ def create_storage_folder(
 
 def generate_subaccount_data(
     dirname: str, service: Service, customer: Customer, *, access: bool = True
-) -> dict[str, str | bool]:
+) -> dict[str, str]:
     # Remove not allowed characters
     customer_name = re.sub(r"[^\w,.&-]+", " ", customer.name)
     return {
         "homedirectory": f"weblate/{dirname}",
-        "ssh": True,
-        "external_reachability": access,
+        "ssh": "1",
+        "external_reachability": "1" if access else "0",
         "comment": f"Weblate backup ({service.pk}) {customer_name}"[:50],
     }
+
+
+def extract_field(data: dict, field: str) -> str:
+    """
+    Hides boolean API weirdness when parsing responses.
+
+    - booleans need to be written as strings
+    - but they are returned as booleans
+    """
+    value = data[field]
+    if field in {"ssh", "external_reachability"}:
+        return str(int(value))
+    return value
 
 
 def create_storage_subaccount(

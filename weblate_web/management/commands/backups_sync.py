@@ -24,6 +24,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from weblate_web.hetzner import (
+    extract_field,
     generate_ssh_url,
     generate_subaccount_data,
     get_directory_summary,
@@ -106,7 +107,7 @@ class Command(BaseCommand):
                 dirname, service, customer, access=service.has_paid_backup()
             )
             if any(
-                storage["subaccount"][field] != value
+                extract_field(storage["subaccount"], field) != value
                 for field, value in storage_data.items()
             ):
                 username: str = storage["subaccount"]["username"]
