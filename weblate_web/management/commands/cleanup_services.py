@@ -18,7 +18,10 @@
 #
 
 
+from datetime import timedelta
+
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from weblate_web.models import Service
 
@@ -35,7 +38,12 @@ class Command(BaseCommand):
         )
 
     def handle(self, delete: bool, **kwargs):
+        # Remove services without subscription and report older than 30 days
         for service in Service.objects.filter(
-            subscription__isnull=True, report__isnull=True
+            subscription__isnull=True,
+            report__isnull=True,
+            created__lte=timezone.now() - timedelta(days=30),
         ):
-            print(service, service.subscription_set.all(), service.report_set.all())  # noqa: T201
+            self.stdout.write(f"Removing blank service: {service}")
+            if delete:
+                service.delete()
