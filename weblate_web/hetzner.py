@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import requests
@@ -8,6 +9,10 @@ from django.conf import settings
 from paramiko.client import SSHClient
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from paramiko.sftp_client import SFTPClient
+
     from weblate_web.payments.models import Customer
 
     from .models import Report, Service
@@ -15,32 +20,37 @@ if TYPE_CHECKING:
 SUBACCOUNTS_API = "https://robot-ws.your-server.de/storagebox/{}/subaccount"
 
 
+@contextmanager
+def sftp_client() -> Generator[SFTPClient]:
+    with SSHClient() as client:
+        client.load_system_host_keys()
+        client.connect(
+            hostname=settings.STORAGE_SSH_HOSTNAME,
+            port=settings.STORAGE_SSH_PORT,
+            username=settings.STORAGE_SSH_USER,
+        )
+        yield client.open_sftp()
+
+
 def create_storage_folder(
     dirname: str, service: Service, customer: Customer, last_report: Report
 ):
     # Create folder and SSH key
-    client = SSHClient()
-    client.load_system_host_keys()
-    client.connect(
-        hostname=settings.STORAGE_SSH_HOSTNAME,
-        port=settings.STORAGE_SSH_PORT,
-        username=settings.STORAGE_SSH_USER,
-    )
-    ftp = client.open_sftp()
-    ftp.mkdir(dirname)
-    ftp.chdir(dirname)
-    with ftp.open("README.txt", "w") as handle:
-        handle.write(f"""Weblate Cloud Backup
-====================
+    with sftp_client() as ftp:
+        ftp.mkdir(dirname)
+        ftp.chdir(dirname)
+        with ftp.open("README.txt", "w") as handle:
+            handle.write(f"""Weblate Cloud Backup
+    ====================
 
-Service: {service.pk}
-Customer: {customer.name}
-""")
+    Service: {service.pk}
+    Customer: {customer.name}
+    """)
 
-    ftp.mkdir(".ssh")
-    ftp.chdir(".ssh")
-    with ftp.open("authorized_keys", "w") as handle:
-        handle.write(last_report.ssh_key)
+        ftp.mkdir(".ssh")
+        ftp.chdir(".ssh")
+        with ftp.open("authorized_keys", "w") as handle:
+            handle.write(last_report.ssh_key)
 
 
 def generate_subaccount_data(
