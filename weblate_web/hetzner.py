@@ -45,11 +45,11 @@ def get_directory_summary(
         if attr.st_mode is None or attr.st_size is None or attr.st_mtime is None:
             raise ValueError(f"Incomplete attributes {attr}")
         if stat.S_ISDIR(attr.st_mode):
-            ftp.chrdir(attr.filename)
+            ftp.chdir(attr.filename)
             dir_size, dir_mtime = get_directory_summary(
                 ftp, attr.filename, dirstat=attr
             )
-            ftp.chrdir("..")
+            ftp.chdir("..")
             size += dir_size
             mtime = max(mtime, dir_mtime)
         else:
