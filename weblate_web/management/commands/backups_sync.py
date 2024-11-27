@@ -46,7 +46,7 @@ class Command(BaseCommand):
             help="Delete stale backup repositories",
         )
 
-    def handle(self, *args, **options):  # noqa: PLR0915
+    def handle(self, *args, **options):
         backup_services: dict[str, Service] = {
             service.backup_repository: service
             for service in Service.objects.exclude(backup_repository="")
@@ -69,10 +69,6 @@ class Command(BaseCommand):
                 service = backup_services[ssh_url]
             except KeyError:
                 self.stderr.write(f"unused URL: {ssh_url}")
-                continue
-
-            # Skip Hosted Weblate
-            if service.site_url == "https://hosted.weblate.org":
                 continue
 
             # Validate service
