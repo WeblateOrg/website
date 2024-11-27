@@ -513,7 +513,7 @@ class Service(models.Model):
     backup_repository = models.CharField(max_length=500, default="", blank=True)
     backup_box = models.IntegerField(default=0)
     backup_directory = models.CharField(max_length=50, default="", blank=True)
-    backup_size = models.IntegerField(default=0)
+    backup_size = models.BigIntegerField(default=0)
     backup_timestamp = models.DateTimeField(blank=True, null=True)
     limit_languages = models.IntegerField(default=0)
     limit_projects = models.IntegerField(default=0)
