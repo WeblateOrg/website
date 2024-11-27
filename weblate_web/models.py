@@ -572,7 +572,10 @@ class Service(models.Model):
     @property
     def site_domain(self) -> str:
         """Extract domain from site_url."""
-        return self.site_url.split("//")[1]
+        parts = self.site_url.split("//")
+        if len(parts) > 1:
+            return parts[1]
+        return self.site_url
 
     @property
     def needs_token(self):
