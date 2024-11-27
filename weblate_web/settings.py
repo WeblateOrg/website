@@ -310,7 +310,7 @@ REGISTRATION_EMAIL_MATCH = ".*"
 CHANGES_API = "https://hosted.weblate.org/api/"
 CHANGES_KEY = ""
 
-STORAGE_SSH_HOSTNAME = "backups.weblate.cloud"
+STORAGE_SSH_HOSTNAME = "u164666-sub5.your-storagebox.de"
 STORAGE_SSH_PORT = 23
 STORAGE_SSH_USER = "u164666-sub4"
 STORAGE_BOX = 153391

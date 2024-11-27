@@ -512,6 +512,8 @@ class Service(models.Model):
         default="community",
     )
     backup_repository = models.CharField(max_length=500, default="", blank=True)
+    backup_box = models.IntegerField(default=0)
+    backup_directory = models.CharField(max_length=50, default="", blank=True)
     limit_languages = models.IntegerField(default=0)
     limit_projects = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
@@ -855,7 +857,9 @@ Customer: {self.customer.name}
         self.backup_repository = "ssh://{}@{}:23/./backups".format(
             data["subaccount"]["username"], data["subaccount"]["server"]
         )
-        self.save(update_fields=["backup_repository"])
+        self.backup_box = settings.STORAGE_BOX
+        self.backup_directory = dirname
+        self.save(update_fields=["backup_repository", "backup_box", "backup_directory"])
 
     def get_limits(self):
         return {
