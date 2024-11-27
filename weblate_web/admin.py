@@ -90,6 +90,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "users__email",
         "report__site_url",
         "report__site_title",
+        "customer__name",
         "site_url",
         "note",
     )
