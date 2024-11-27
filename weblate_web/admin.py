@@ -83,6 +83,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "user_emails",
         "expires",
         "discoverable",
+        "backup_size",
     ]
     list_filter = ("status", "discoverable")
     search_fields = (
