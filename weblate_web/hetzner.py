@@ -49,7 +49,7 @@ def generate_subaccount_data(
         "homedirectory": f"weblate/{dirname}",
         "ssh": "1",
         "external_reachability": "1",
-        "comment": f"Weblate backup service {service.pk} ({customer.name})",
+        "comment": f"Weblate backup [{service.pk}]: {customer.name}"[:50],
     }
 
 
