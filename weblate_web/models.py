@@ -48,7 +48,7 @@ from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
 
-from .hetzner import create_storage_folder, create_storage_subaccount
+from .hetzner import create_storage_folder, create_storage_subaccount, generate_ssh_url
 
 if TYPE_CHECKING:
     from fakturace.invoices import Invoice
@@ -794,11 +794,14 @@ class Service(models.Model):
             self.limit_projects = package.limit_projects
             self.save()
 
-    def create_backup(self):
+    def has_paid_backup(self) -> bool:
         subscriptions = self.hosted_subscriptions | self.backup_subscriptions
+        return subscriptions.filter(expires__gt=timezone.now()).exists()
+
+    def create_backup(self):
         if (
             not self.backup_repository
-            and subscriptions.filter(expires__gt=timezone.now()).exists()
+            and self.has_paid_backup()
             and (last_report := self.last_report)
         ):
             self.create_backup_repository(last_report)
@@ -821,9 +824,7 @@ class Service(models.Model):
         # Create account on the service
         data = create_storage_subaccount(dirname, self, self.customer)
 
-        self.backup_repository = "ssh://{}@{}:23/./backups".format(
-            data["subaccount"]["username"], data["subaccount"]["server"]
-        )
+        self.backup_repository = generate_ssh_url(data)
         self.backup_box = settings.STORAGE_BOX
         self.backup_directory = dirname
         self.save(update_fields=["backup_repository", "backup_box", "backup_directory"])
