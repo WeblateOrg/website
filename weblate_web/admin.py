@@ -162,6 +162,7 @@ class PackageAdmin(admin.ModelAdmin):
         "limit_hosted_words",
     ]
     list_filter = ["category"]
+    ordering = ("verbose",)
 
 
 @admin.register(PastPayments)
