@@ -18,7 +18,7 @@
 #
 
 import time
-from typing import TYPE_CHECKING
+from datetime import UTC, datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -26,19 +26,18 @@ from django.core.management.base import BaseCommand
 from weblate_web.hetzner import (
     generate_ssh_url,
     generate_subaccount_data,
+    get_directory_summary,
     get_storage_subaccounts,
     modify_storage_subaccount,
+    sftp_client,
 )
 from weblate_web.models import Service
-
-if TYPE_CHECKING:
-    from datetime import datetime
 
 
 class Command(BaseCommand):
     help = "syncrhonizes backup API"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument(
             "--delete",
             default=False,
@@ -46,11 +45,17 @@ class Command(BaseCommand):
             help="Delete stale backup repositories",
         )
 
-    def handle(self, *args, **options):
-        backup_services: dict[str, Service] = {
-            service.backup_repository: service
-            for service in Service.objects.exclude(backup_repository="")
-        }
+    def scan_directories(self, backup_services: dict[str, Service]) -> None:
+        with sftp_client() as ftp:
+            for service in backup_services.values():
+                size, mtime = get_directory_summary(ftp, service.backup_directory)
+                timestamp = datetime.fromtimestamp(mtime, tz=UTC)
+                if service.backup_size != size or service.backup_timestamp != timestamp:
+                    service.backup_size = size
+                    service.backup_timestamp = timestamp
+                    service.save(update_fields=["backup_size", "backup_timestamp"])
+
+    def sync_data(self, backup_services: dict[str, Service]) -> set[str]:
         processed_repositories = set()
         backup_storages = get_storage_subaccounts()
         hetzner_modified = False
@@ -103,6 +108,9 @@ class Command(BaseCommand):
                 modify_storage_subaccount(username, storage_data)
                 hetzner_modified = True
 
+        return processed_repositories
+
+    def check_unpaid(self, backup_services: dict[str, Service]) -> None:
         for service in backup_services.values():
             if service.has_paid_backup():
                 continue
@@ -118,6 +126,16 @@ class Command(BaseCommand):
             self.stderr.write(
                 f"not paid {kind}: {service.pk} ({service.customer}) {expires}: {service.backup_directory}"
             )
+
+    def handle(self, *args, **options):
+        backup_services: dict[str, Service] = {
+            service.backup_repository: service
+            for service in Service.objects.exclude(backup_repository="")
+        }
+
+        processed_repositories = self.sync_data(backup_services)
+
+        self.scan_directories(backup_services)
 
         for extra in set(backup_services) - processed_repositories:
             self.stderr.write(f"unused: {extra}")

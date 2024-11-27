@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import stat
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
@@ -11,6 +12,7 @@ from paramiko.client import SSHClient
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+    from paramiko.sftp_attr import SFTPAttributes
     from paramiko.sftp_client import SFTPClient
 
     from weblate_web.payments.models import Customer
@@ -30,6 +32,26 @@ def sftp_client() -> Generator[SFTPClient]:
             username=settings.STORAGE_SSH_USER,
         )
         yield client.open_sftp()
+
+
+def get_directory_summary(
+    ftp: SFTPClient, dirname: str, dirstat: SFTPAttributes | None = None
+) -> tuple[int, int]:
+    if dirstat is None:
+        dirstat = ftp.stat(dirname)
+    size = 0
+    mtime = dirstat.st_mtime or 0
+    for attr in ftp.listdir_iter(dirname):
+        if attr.st_mode is None or attr.st_size is None or attr.st_mtime is None:
+            raise ValueError(f"Incomplete attributes {attr}")
+        if stat.S_ISDIR(attr.st_mode):
+            dir_size, dir_mtime = get_directory_summary(ftp, str(attr))
+            size += dir_size
+            mtime = max(mtime, dir_mtime)
+        else:
+            size += attr.st_size
+            mtime = max(mtime, attr.st_mtime)
+    return size, mtime
 
 
 def create_storage_folder(
