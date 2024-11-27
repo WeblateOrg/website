@@ -26,7 +26,6 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import html2text
-import requests
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -42,7 +41,6 @@ from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy, override, pgettext_lazy
 from django_countries import countries
 from markupfield.fields import MarkupField
-from paramiko.client import SSHClient
 from PIL import Image as PILImage
 
 from weblate_web.payments.fields import Char32UUIDField
@@ -50,12 +48,13 @@ from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
 
+from .hetzner import create_storage_folder, create_storage_subaccount
+
 if TYPE_CHECKING:
     from fakturace.invoices import Invoice
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 
-SUBACCOUNTS_API = "https://robot-ws.your-server.de/storagebox/{}/subaccount"
 
 REWARDS = (
     (0, gettext_lazy("No reward")),
@@ -630,7 +629,7 @@ class Service(models.Model):
         return ", ".join(self.users.values_list("email", flat=True))
 
     @cached_property
-    def last_report(self):
+    def last_report(self) -> Report | None:
         try:
             return self.report_set.latest("timestamp")
         except Report.DoesNotExist:
@@ -800,11 +799,11 @@ class Service(models.Model):
         if (
             not self.backup_repository
             and subscriptions.filter(expires__gt=timezone.now()).exists()
-            and self.report_set.exists()
+            and (last_report := self.last_report)
         ):
-            self.create_backup_repository()
+            self.create_backup_repository(last_report)
 
-    def create_backup_repository(self):
+    def create_backup_repository(self, last_report: Report):
         """
         Configure backup repository.
 
@@ -814,45 +813,13 @@ class Service(models.Model):
         """
         if self.customer is None:
             raise ValueError("Missing customer info!")
-        # Create folder and SSH key
-        client = SSHClient()
-        client.load_system_host_keys()
-        client.connect(
-            hostname=settings.STORAGE_SSH_HOSTNAME,
-            port=settings.STORAGE_SSH_PORT,
-            username=settings.STORAGE_SSH_USER,
-        )
-        ftp = client.open_sftp()
         dirname = str(uuid4())
-        ftp.mkdir(dirname)
-        ftp.chdir(dirname)
-        with ftp.open("README.txt", "w") as handle:
-            handle.write(f"""Weblate Cloud Backup
-====================
 
-Service: {self.pk}
-Customer: {self.customer.name}
-""")
-
-        ftp.mkdir(".ssh")
-        ftp.chdir(".ssh")
-        with ftp.open("authorized_keys", "w") as handle:
-            handle.write(self.last_report.ssh_key)
+        # Create folder and SSH key
+        create_storage_folder(dirname, self, self.customer, last_report)
 
         # Create account on the service
-        url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
-        response = requests.post(
-            url,
-            data={
-                "homedirectory": f"weblate/{dirname}",
-                "ssh": "1",
-                "external_reachability": "1",
-                "comment": f"Weblate backup service {self.pk} ({self.customer.name})",
-            },
-            auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
-            timeout=720,
-        )
-        data = response.json()
+        data = create_storage_subaccount(dirname, self, self.customer)
 
         self.backup_repository = "ssh://{}@{}:23/./backups".format(
             data["subaccount"]["username"], data["subaccount"]["server"]
@@ -871,26 +838,24 @@ Customer: {self.customer.name}
         }
 
     def check_in_limits(self):
-        return (
+        last_report = self.last_report
+        return last_report is not None and (
             (
                 not self.limit_hosted_strings
-                or self.last_report.hosted_strings <= self.limit_hosted_strings
+                or last_report.hosted_strings <= self.limit_hosted_strings
             )
             and (
                 not self.limit_hosted_words
-                or self.last_report.hosted_words <= self.limit_hosted_words
+                or last_report.hosted_words <= self.limit_hosted_words
             )
             and (
                 not self.limit_source_strings
-                or self.last_report.source_strings <= self.limit_source_strings
+                or last_report.source_strings <= self.limit_source_strings
             )
-            and (
-                not self.limit_projects
-                or self.last_report.projects <= self.limit_projects
-            )
+            and (not self.limit_projects or last_report.projects <= self.limit_projects)
             and (
                 not self.limit_languages
-                or self.last_report.languages <= self.limit_languages
+                or last_report.languages <= self.limit_languages
             )
         )
 
