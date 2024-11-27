@@ -181,58 +181,6 @@ class MySQLSearchLookup(models.Lookup):
 models.CharField.register_lookup(MySQLSearchLookup)
 
 
-def create_backup_repository(service):
-    """
-    Configure backup repository.
-
-    - create filesystem folders
-    - store SSH key
-    - create subaccount
-    """
-    # Create folder and SSH key
-    client = SSHClient()
-    client.load_system_host_keys()
-    client.connect(
-        hostname=settings.STORAGE_SSH_HOSTNAME,
-        port=settings.STORAGE_SSH_PORT,
-        username=settings.STORAGE_SSH_USER,
-    )
-    ftp = client.open_sftp()
-    dirname = str(uuid4())
-    ftp.mkdir(dirname)
-    ftp.chdir(dirname)
-    with ftp.open("README.txt", "w") as handle:
-        handle.write(f"""Weblate Cloud Backup
-====================
-
-Service: {service.pk}
-Customer: {service.customer.name}
-""")
-
-    ftp.mkdir(".ssh")
-    ftp.chdir(".ssh")
-    with ftp.open("authorized_keys", "w") as handle:
-        handle.write(service.last_report.ssh_key)
-
-    # Create account on the service
-    url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
-    response = requests.post(
-        url,
-        data={
-            "homedirectory": f"weblate/{dirname}",
-            "ssh": "1",
-            "external_reachability": "1",
-            "comment": f"Weblate backup service {service.pk} ({service.customer.name})",
-        },
-        auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
-        timeout=720,
-    )
-    data = response.json()
-    return "ssh://{}@{}:23/./backups".format(
-        data["subaccount"]["username"], data["subaccount"]["server"]
-    )
-
-
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.deletion.PROTECT)
     customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT, null=True)
@@ -846,14 +794,68 @@ class Service(models.Model):
             self.save()
 
     def create_backup(self):
-        backup = False
-        if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
-            backup = True
-        if self.backup_subscriptions.filter(expires__gt=timezone.now()).exists():
-            backup = True
-        if backup and not self.backup_repository and self.report_set.exists():
-            self.backup_repository = create_backup_repository(self)
-            self.save(update_fields=["backup_repository"])
+        subscriptions = self.hosted_subscriptions | self.backup_subscriptions
+        if (
+            not self.backup_repository
+            and subscriptions.filter(expires__gt=timezone.now()).exists()
+            and self.report_set.exists()
+        ):
+            self.create_backup_repository()
+
+    def create_backup_repository(self):
+        """
+        Configure backup repository.
+
+        - create filesystem folders
+        - store SSH key
+        - create subaccount
+        """
+        if self.customer is None:
+            raise ValueError("Missing customer info!")
+        # Create folder and SSH key
+        client = SSHClient()
+        client.load_system_host_keys()
+        client.connect(
+            hostname=settings.STORAGE_SSH_HOSTNAME,
+            port=settings.STORAGE_SSH_PORT,
+            username=settings.STORAGE_SSH_USER,
+        )
+        ftp = client.open_sftp()
+        dirname = str(uuid4())
+        ftp.mkdir(dirname)
+        ftp.chdir(dirname)
+        with ftp.open("README.txt", "w") as handle:
+            handle.write(f"""Weblate Cloud Backup
+====================
+
+Service: {self.pk}
+Customer: {self.customer.name}
+""")
+
+        ftp.mkdir(".ssh")
+        ftp.chdir(".ssh")
+        with ftp.open("authorized_keys", "w") as handle:
+            handle.write(self.last_report.ssh_key)
+
+        # Create account on the service
+        url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
+        response = requests.post(
+            url,
+            data={
+                "homedirectory": f"weblate/{dirname}",
+                "ssh": "1",
+                "external_reachability": "1",
+                "comment": f"Weblate backup service {self.pk} ({self.customer.name})",
+            },
+            auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
+            timeout=720,
+        )
+        data = response.json()
+
+        self.backup_repository = "ssh://{}@{}:23/./backups".format(
+            data["subaccount"]["username"], data["subaccount"]["server"]
+        )
+        self.save(update_fields=["backup_repository"])
 
     def get_limits(self):
         return {
