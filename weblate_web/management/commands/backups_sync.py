@@ -36,7 +36,7 @@ from weblate_web.models import Service
 
 
 class Command(BaseCommand):
-    help = "syncrhonizes backup API"
+    help = "synchronizes backup API"
 
     def add_arguments(self, parser) -> None:
         parser.add_argument(
