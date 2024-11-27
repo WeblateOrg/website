@@ -44,6 +44,12 @@ class Command(BaseCommand):
             action="store_true",
             help="Delete stale backup repositories",
         )
+        parser.add_argument(
+            "--skip-scan",
+            default=False,
+            action="store_true",
+            help="Skip SFTP scan",
+        )
 
     def scan_directories(self, backup_services: dict[str, Service]) -> None:
         with sftp_client() as ftp:
@@ -129,7 +135,7 @@ class Command(BaseCommand):
             self.stderr.write(f"  size: {service.backup_size}")
             self.stderr.write(f"  mtime: {service.backup_timestamp}")
 
-    def handle(self, *args, **options):
+    def handle(self, delete: bool, skip_scan: bool, **kwargs):
         backup_services: dict[str, Service] = {
             service.backup_repository: service
             for service in Service.objects.exclude(backup_repository="")
@@ -137,7 +143,8 @@ class Command(BaseCommand):
 
         processed_repositories = self.sync_data(backup_services)
 
-        self.scan_directories(backup_services)
+        if not skip_scan:
+            self.scan_directories(backup_services)
 
         for extra in set(backup_services) - processed_repositories:
             self.stderr.write(f"unused: {extra}")
