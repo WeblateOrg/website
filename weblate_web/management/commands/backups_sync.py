@@ -135,7 +135,8 @@ class Command(BaseCommand):
                 kind = "backup"
                 expires = service.backup_subscriptions[0].expires
 
-            self.stderr.write(f"not paid {kind}: {service.pk} ({service.customer})")
+            self.stderr.write(f"not paid {kind}: {service.pk} {service.customer}")
+            self.stderr.write(f"  url: {service.site_url}")
             self.stderr.write(f"  directory: {service.backup_directory}")
             self.stderr.write(f"  expires: {expires}")
             self.stderr.write(f"  size: {service.backup_size}")
