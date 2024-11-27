@@ -17,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -27,6 +28,9 @@ from weblate_web.hetzner import (
     get_storage_subaccounts,
 )
 from weblate_web.models import Service
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class Command(BaseCommand):
@@ -98,14 +102,18 @@ class Command(BaseCommand):
         for service in backup_services.values():
             if service.has_paid_backup():
                 continue
+            kind: str = "UNKNOWN"
+            expires: datetime | None = None
             if service.hosted_subscriptions:
-                self.stderr.write(
-                    f"not paid hosted: {service.pk} ({service.customer}) {service.hosted_subscriptions[0].expires}"
-                )
-            if service.backup_subscriptions:
-                self.stderr.write(
-                    f"not paid backup: {service.pk} ({service.customer}) {service.backup_subscriptions[0].expires}"
-                )
+                kind = "hosted"
+                expires = service.hosted_subscriptions[0].expires
+            elif service.backup_subscriptions:
+                kind = "backup"
+                expires = service.backup_subscriptions[0].expires
+
+            self.stderr.write(
+                f"not paid {kind}: {service.pk} ({service.customer}) {expires}: {service.storage_directory}"
+            )
 
         for extra in set(backup_services) - processed_repositories:
             self.stderr.write(f"unused: {extra}")
