@@ -26,6 +26,7 @@ from weblate_web.hetzner import (
     generate_ssh_url,
     generate_subaccount_data,
     get_storage_subaccounts,
+    modify_storage_subaccount,
 )
 from weblate_web.models import Service
 
@@ -98,6 +99,7 @@ class Command(BaseCommand):
                 self.stdout.write(
                     f"Updating Hetzner data for {username} for {service.pk} ({customer.name})"
                 )
+                modify_storage_subaccount(username, storage_data)
 
         for service in backup_services.values():
             if service.has_paid_backup():
@@ -112,7 +114,7 @@ class Command(BaseCommand):
                 expires = service.backup_subscriptions[0].expires
 
             self.stderr.write(
-                f"not paid {kind}: {service.pk} ({service.customer}) {expires}: {service.storage_directory}"
+                f"not paid {kind}: {service.pk} ({service.customer}) {expires}: {service.backup_directory}"
             )
 
         for extra in set(backup_services) - processed_repositories:
