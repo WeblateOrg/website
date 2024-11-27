@@ -42,6 +42,17 @@ Customer: {customer.name}
         handle.write(last_report.ssh_key)
 
 
+def generate_subaccount_data(
+    dirname: str, service: Service, customer: Customer
+) -> dict[str, str]:
+    return {
+        "homedirectory": f"weblate/{dirname}",
+        "ssh": "1",
+        "external_reachability": "1",
+        "comment": f"Weblate backup service {service.pk} ({customer.name})",
+    }
+
+
 def create_storage_subaccount(
     dirname: str, service: Service, customer: Customer
 ) -> dict:
@@ -49,14 +60,24 @@ def create_storage_subaccount(
     url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
     response = requests.post(
         url,
-        data={
-            "homedirectory": f"weblate/{dirname}",
-            "ssh": "1",
-            "external_reachability": "1",
-            "comment": f"Weblate backup service {service.pk} ({customer.name})",
-        },
+        data=generate_subaccount_data(dirname, service, customer),
         auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
         timeout=720,
+    )
+    response.raise_for_status()
+    return response.json()
+
+
+def generate_ssh_url(data: dict) -> str:
+    return "ssh://{}@{}:23/./backups".format(
+        data["subaccount"]["username"], data["subaccount"]["server"]
+    )
+
+
+def get_storage_subaccounts() -> list[dict]:
+    url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
+    response = requests.get(
+        url, auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD), timeout=720
     )
     response.raise_for_status()
     return response.json()
