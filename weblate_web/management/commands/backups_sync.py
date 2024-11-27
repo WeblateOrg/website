@@ -102,8 +102,13 @@ class Command(BaseCommand):
                 service.save(update_fields=["backup_box", "backup_directory"])
 
             # Sync Hetzner data
-            storage_data = generate_subaccount_data(dirname, service, customer)
-            if storage["subaccount"]["comment"] != storage_data["comment"]:
+            storage_data = generate_subaccount_data(
+                dirname, service, customer, access=service.has_paid_backup()
+            )
+            if any(
+                storage["subaccount"][field] != value
+                for field, value in storage_data.items()
+            ):
                 username: str = storage["subaccount"]["username"]
                 self.stdout.write(
                     f"Updating Hetzner data for {username} for {service.pk} ({customer.name})"
