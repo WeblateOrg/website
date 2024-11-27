@@ -81,13 +81,13 @@ def create_storage_folder(
 
 def generate_subaccount_data(
     dirname: str, service: Service, customer: Customer, *, access: bool = True
-) -> dict[str, str]:
+) -> dict[str, str | bool]:
     # Remove not allowed characters
     customer_name = re.sub(r"[^\w,.&-]+", " ", customer.name)
     return {
         "homedirectory": f"weblate/{dirname}",
-        "ssh": "1",
-        "external_reachability": "1" if access else "0",
+        "ssh": True,
+        "external_reachability": access,
         "comment": f"Weblate backup ({service.pk}) {customer_name}"[:50],
     }
 
