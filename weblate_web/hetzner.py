@@ -41,7 +41,7 @@ def get_directory_summary(
         dirstat = ftp.stat(dirname)
     size = 0
     mtime = dirstat.st_mtime or 0
-    for attr in ftp.listdir_iter(dirname):
+    for attr in ftp.listdir_iter(dirname, read_aheads=200):
         if attr.st_mode is None or attr.st_size is None or attr.st_mtime is None:
             raise ValueError(f"Incomplete attributes {attr}")
         if stat.S_ISDIR(attr.st_mode):
