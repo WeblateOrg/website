@@ -45,11 +45,13 @@ Customer: {customer.name}
 def generate_subaccount_data(
     dirname: str, service: Service, customer: Customer
 ) -> dict[str, str]:
+    # Remove not allowed characters
+    customer_name = customer.name.replace(":", "")
     return {
         "homedirectory": f"weblate/{dirname}",
         "ssh": "1",
         "external_reachability": "1",
-        "comment": f"Weblate backup [{service.pk}]: {customer.name}"[:50],
+        "comment": f"Weblate backup ({service.pk}) {customer_name}"[:50],
     }
 
 
