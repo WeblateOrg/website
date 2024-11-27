@@ -47,7 +47,7 @@ def generate_subaccount_data(
     dirname: str, service: Service, customer: Customer
 ) -> dict[str, str]:
     # Remove not allowed characters
-    customer_name = re.sub(r"[^A-Za-z0-9,.]+", " ", customer)
+    customer_name = re.sub(r"[^A-Za-z0-9,.&]+", " ", customer)
     return {
         "homedirectory": f"weblate/{dirname}",
         "ssh": "1",
