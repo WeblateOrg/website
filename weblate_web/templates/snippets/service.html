@@ -44,7 +44,9 @@
             </div>
             {% if owner == user %}
               <div class="user-img">
-                <img src="{% static "img/Shield.png" %}" title="{% trans "You can not remove yourself" %}" alt="{% trans "Protected user" %}">
+                <img src="{% static "img/Shield.png" %}"
+                     title="{% trans "You can not remove yourself" %}"
+                     alt="{% trans "Protected user" %}">
               </div>
             {% else %}
               {% csrf_token %}
