@@ -25,6 +25,7 @@ def update_users(apps: StateApps, schema_editor: BaseDatabaseSchemaEditor):
     for donation in donation_model.objects.select_related("user", "customer"):
         if donation.customer is None:
             donation.customer = customer_model.objects.create(user_id=-1)
+            donation.save(update_fields=["customer"])
         donation.customer.users.add(donation.user)
 
     # Migrate Service assignment to customer
@@ -33,6 +34,7 @@ def update_users(apps: StateApps, schema_editor: BaseDatabaseSchemaEditor):
     ):
         if service.customer is None:
             service.customer = customer_model.objects.create(user_id=-1)
+            service.save(update_fields=["customer"])
         service.customer.users.add(*service.users.all())
 
     # Migrate user_id from Customer
