@@ -34,9 +34,16 @@ DPA_SAMPLE_NAME = "Weblate_Data_Processing_Agreement_Sample.pdf"
 
 class Command(BaseCommand):
     help = "generates legal PDFs"
-    client = None
 
-    def handle(self, *args, **options):
+    def add_arguments(self, parser) -> None:
+        parser.add_argument(
+            "--output",
+            default=OUT_DIR,
+            type=Path,
+            help="Output directory",
+        )
+
+    def handle(self, output: Path, *args, **options):
         render_pdf(
             html=render_to_string(
                 "pdf/terms.html",
@@ -45,7 +52,7 @@ class Command(BaseCommand):
                     "privacy_url": f"https://weblate.org/static/{PRIVACY_NAME}",
                 },
             ),
-            output=OUT_DIR / GTC_NAME,
+            output=output / GTC_NAME,
         )
 
         render_pdf(
@@ -56,7 +63,7 @@ class Command(BaseCommand):
                     "terms_url": f"https://weblate.org/static/{GTC_NAME}",
                 },
             ),
-            output=OUT_DIR / PRIVACY_NAME,
+            output=output / PRIVACY_NAME,
         )
 
         render_pdf(
@@ -67,5 +74,5 @@ class Command(BaseCommand):
                     "sample": True,
                 },
             ),
-            output=OUT_DIR / DPA_SAMPLE_NAME,
+            output=output / DPA_SAMPLE_NAME,
         )
