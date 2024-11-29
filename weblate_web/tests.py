@@ -814,6 +814,19 @@ class PaymentTest(FakturaceTestCase):
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications("Your payment on weblate.org")
 
+        # Disable recurring payments
+        response = self.client.post(
+            reverse("subscription-disable", kwargs={"pk": subscription.pk})
+        )
+        self.assertRedirects(response, reverse("user"))
+
+        # Ensure no payment is made
+        subscription = Subscription.objects.all().get()
+        subscription.expires -= timedelta(days=365)
+        subscription.save(update_fields=["expires"])
+        RecurringPaymentsCommand.handle_subscriptions()
+        self.assert_notifications("Your expired payment on weblate.org")
+
     def test_donation_workflow_invalid_reward(self):
         self.login()
         response = self.client.post(
@@ -828,7 +841,7 @@ class PaymentTest(FakturaceTestCase):
 
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
-    def test_donation_workflow_card(self, reward=0):
+    def test_donation_workflow_card(self, reward=0):  # noqa: PLR0915
         self.login()
         thepay_mock_create_payment()
         response = self.client.post(
@@ -890,10 +903,36 @@ class PaymentTest(FakturaceTestCase):
         response = self.client.get(renew.get_complete_url(), follow=True)
         self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
+        self.assert_notifications("Your payment on weblate.org")
 
         renew.refresh_from_db()
         self.assertEqual(renew.state, Payment.PROCESSED)
         self.assertEqual(payment.paid_invoice.total_amount, 1000)  # type: ignore[union-attr]
+
+        # Service should not get notifications on expiry now
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications()
+
+        # Move expiry into past and renew
+        thepay_mock_repeated_payment()
+        donation = Donation.objects.all().get()
+        donation.expires -= timedelta(days=365 * 2)
+        donation.save(update_fields=["expires"])
+        RecurringPaymentsCommand.handle_donations()
+        self.assert_notifications("Your payment on weblate.org")
+
+        # Disable recurring payments
+        response = self.client.post(
+            reverse("donate-disable", kwargs={"pk": donation.pk})
+        )
+        self.assertRedirects(response, reverse("user"))
+
+        # Ensure no payment is made
+        donation = Donation.objects.all().get()
+        donation.expires -= timedelta(days=365)
+        donation.save(update_fields=["expires"])
+        RecurringPaymentsCommand.handle_donations()
+        self.assert_notifications("Your expired payment on weblate.org")
 
     def test_donation_workflow_bank(self):
         self.login()
