@@ -185,7 +185,7 @@ class InvoiceTestCase(UserTestCase):
     def test_pay_link(self):
         invoice = self.create_invoice_package()
         self.validate_invoice(invoice)
-        url = cast(str, invoice.get_payment_url())
+        url = cast("str", invoice.get_payment_url())
         self.assertIsNotNone(url)
 
         # Unauthenticated should redirect to login

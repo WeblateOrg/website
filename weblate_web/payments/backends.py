@@ -545,9 +545,7 @@ class FioBank(Backend):
         return redirect(complete_url)
 
     def get_instructions(self) -> list[tuple[StrOrPromise, str]]:
-        from weblate_web.invoices.models import Invoice  # noqa: PLC0415
-
-        invoice = cast(Invoice, self.payment.draft_invoice)
+        invoice = cast("Invoice", self.payment.draft_invoice)
         instructions = invoice.bank_account.get_full_info()
         instructions.append((gettext("Reference"), invoice.number))
         return instructions

@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import json
 from datetime import date
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import responses
 from django.core import mail
@@ -30,7 +30,6 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
-from weblate_web.invoices.models import Invoice
 from weblate_web.tests import (
     THEPAY2_MOCK_SETTINGS,
     mock_vies,
@@ -41,6 +40,9 @@ from weblate_web.tests import (
 from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
 from .models import Customer, Payment
 from .validators import validate_vatin
+
+if TYPE_CHECKING:
+    from weblate_web.invoices.models import Invoice
 
 CUSTOMER = {
     "name": "Michal Čihař",
@@ -297,7 +299,7 @@ class BackendTest(BackendBaseTestCase):
 
         received = FIO_TRASACTIONS.copy()
         self.assertIsNotNone(backend.payment.draft_invoice)
-        proforma_id = cast(Invoice, backend.payment.draft_invoice).number
+        proforma_id = cast("Invoice", backend.payment.draft_invoice).number
         transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id
