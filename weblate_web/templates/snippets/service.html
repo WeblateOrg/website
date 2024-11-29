@@ -30,51 +30,6 @@
 
   <div class="form-line clear"></div>
 
-  <div class="form-line service-text-formatting">
-    <div class="line-left">{% trans "Users" %}</div>
-    <div class="line-right">
-      {% for owner in service.users.all %}
-        <form id="server_user_{{ owner.id }}_form"
-              method="post"
-              action="{% url 'service-user' pk=service.pk %}">
-          <div class="user-slot">
-            <div class="user-slot-content">
-              <p>{{ owner.last_name }}</p>
-              <t>{{ owner.email }}</t>
-            </div>
-            {% if owner == user %}
-              <div class="user-img">
-                <img src="{% static "img/Shield.png" %}" title="{% trans "You can not remove yourself" %}" alt="{% trans "Protected user" %}">
-              </div>
-            {% else %}
-              {% csrf_token %}
-              <button class="user-img">
-                <img src="{% static "img/delete.png" %}" alt="{% trans "Remove user" %}">
-              </button>
-            {% endif %}
-          </div>
-          {% csrf_token %}
-          {% if owner != user %}
-            <input type="hidden" name="email" value="{{ owner.email }}" />
-            <input type="hidden" name="remove" value="{% trans "Remove" %}" />
-          {% endif %}
-        </form>
-      {% endfor %}
-      <form method="post" action="{% url 'service-user' pk=service.pk %}">
-        {% csrf_token %}
-        <input type="email"
-               class="grey-input"
-               placeholder="{% trans "E-mail" %}"
-               name="email"
-               aria-label="{% trans "E-mail" %}" />
-        <input type="submit"
-               class="button button-med-120 inline border rev"
-               value="{% trans "Add a user" %}" />
-      </form>
-    </div>
-    <div class="clear"></div>
-  </div>
-
   {% if service.needs_token %}
     <div class="form-line service-text-formatting bdr-btm">
       <div class="line-left p-top">{% trans "Activation token" %}</div>
@@ -265,31 +220,23 @@
       <div class="clear"></div>
     </div>
   {% endwith %}
-  {% if service.customer %}
-    <div class="form-line service-text-formatting">
-      <div class="line-left">{% trans "Billing information" %}</div>
-      <div class="line-right">
-        {% include "snippets/customer_address.html" with customer=service.customer %}
-        <br />
-        <form class="form-inline"
-              method="get"
-              action="{% url "edit-customer" pk=service.customer.pk %}">
-          <input type="submit" class="button small inline" value="{% trans "Edit" %}">
-        </form>
-      </div>
-      <div class="clear"></div>
+
+  <div class="form-line service-text-formatting">
+    {% include "snippets/customer-users.html" with customer=service.customer %}
+  </div>
+  <div class="form-line service-text-formatting">
+    {% include "snippets/customer-address.html" with customer=service.customer %}
+  </div>
+  <div class="form-line service-text-formatting">
+    <div class="line-left">{% trans "Personal data" %}</div>
+    <div class="line-right">
+      {% trans "Data processing agreements for your Weblate service." %}
+      <form class="form-inline"
+            method="get"
+            action="{% url "customer-agreement" pk=service.customer.pk %}">
+        <input type="submit" class="button small inline" value="{% trans "Manage" %}">
+      </form>
     </div>
-    <div class="form-line service-text-formatting">
-      <div class="line-left">{% trans "Personal data" %}</div>
-      <div class="line-right">
-        {% trans "Data processing agreements for your Weblate service." %}
-        <form class="form-inline"
-              method="get"
-              action="{% url "customer-agreement" pk=service.customer.pk %}">
-          <input type="submit" class="button small inline" value="{% trans "Manage" %}">
-        </form>
-      </div>
-      <div class="clear"></div>
-    </div>
-  {% endif %}
+    <div class="clear"></div>
+  </div>
 </div>

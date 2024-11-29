@@ -22,7 +22,6 @@ import django.views.static
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
@@ -50,11 +49,13 @@ from weblate_web.views import (
     PaymentView,
     PostView,
     TopicArchiveView,
+    UserView,
     activity_svg,
     agreement_download_view,
     api_hosted,
     api_support,
     api_user,
+    customer_user,
     disable_repeat,
     donate_pay,
     download_payment_invoice,
@@ -63,7 +64,6 @@ from weblate_web.views import (
     process_payment,
     server_error,
     service_token,
-    service_user,
     subscription_disable_repeat,
     subscription_new,
     subscription_pay,
@@ -188,9 +188,9 @@ urlpatterns = [
             TemplateView.as_view(template_name="contribute.html"),
             name="contribute",
         ),
-        re_path(
-            r"^user/$",
-            login_required(TemplateView.as_view(template_name="user.html")),
+        path(
+            "user/",
+            UserView.as_view(),
             name="user",
         ),
         re_path(
@@ -219,9 +219,6 @@ urlpatterns = [
         ),
         re_path(
             r"^subscription/token/(?P<pk>[0-9]+)/$", service_token, name="service-token"
-        ),
-        re_path(
-            r"^subscription/users/(?P<pk>[0-9]+)/$", service_user, name="service-user"
         ),
         re_path(
             r"^subscription/discovery/(?P<pk>[0-9]+)/$",
@@ -293,6 +290,7 @@ urlpatterns = [
             name="payment-complete",
         ),
         path("customer/<int:pk>/", EditCustomerView.as_view(), name="edit-customer"),
+        path("customer/<int:pk>/users/", customer_user, name="customer-user"),
         path(
             "customer/<int:pk>/agreement/",
             CustomerDPAView.as_view(),

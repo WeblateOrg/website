@@ -181,8 +181,7 @@ models.CharField.register_lookup(MySQLSearchLookup)
 
 
 class Donation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.deletion.PROTECT)
-    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT)
     payment = Char32UUIDField(blank=True, null=True)
     reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
@@ -201,7 +200,7 @@ class Donation(models.Model):
         verbose_name_plural = "Donations"
 
     def __str__(self):
-        return f"{self.user}:{self.reward}"
+        return f"{self.customer}:{self.reward}"
 
     def get_absolute_url(self):
         return reverse("donate-edit", kwargs={"pk": self.pk})
@@ -235,7 +234,7 @@ class Donation(models.Model):
     def send_notification(self, notification: str):
         send_notification(
             notification,
-            [self.user.email],
+            self.customer.get_notify_emails(),
             donation=self,
         )
 
@@ -261,7 +260,6 @@ def process_donation(payment):
         donation.payment = payment.pk
         donation.save()
     else:
-        user = User.objects.get(pk=payment.customer.user_id)
         reward = payment.extra.get("reward", 0)
         # Calculate expiry
         expires = timezone.now()
@@ -275,7 +273,6 @@ def process_donation(payment):
             payment.end = expires
         # Create new
         donation = Donation.objects.create(
-            user=user,
             customer=payment.customer,
             payment=payment.pk,
             reward=int(reward),
@@ -288,16 +285,12 @@ def process_donation(payment):
     return donation
 
 
-def get_service(payment, user):
-    try:
-        return user.service_set.get(pk=payment.extra["service"])
-    except Service.DoesNotExist:
-        try:
-            return user.service_set.get()
-        except (Service.MultipleObjectsReturned, Service.DoesNotExist):
-            service = user.service_set.create(customer=payment.customer)
-            service.was_created = True
-            return service
+def get_service(payment: Payment, customer: Customer):
+    if payment.extra["service"] is None:
+        service = customer.service_set.create()
+        service.was_created = True
+        return service
+    return Service.objects.get(pk=payment.extra["service"], customer=customer)
 
 
 def process_repeated_payment(payment: Payment, repeated: Payment) -> Subscription:
@@ -322,8 +315,7 @@ def process_renewal_payment(payment: Payment) -> Subscription:
 
 
 def process_new_payment(payment: Payment) -> Subscription:
-    user = User.objects.get(pk=payment.customer.user_id)
-    service = get_service(payment, user)
+    service = get_service(payment, payment.customer)
     if payment.paid_invoice and (paid_package := payment.paid_invoice.get_package()):
         package = paid_package
     elif payment.draft_invoice and (
@@ -522,8 +514,7 @@ class Package(models.Model):
 
 class Service(models.Model):
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
-    users = models.ManyToManyField(User)
-    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT)
     status = models.CharField(
         max_length=150,
         choices=(
@@ -662,7 +653,7 @@ class Service(models.Model):
 
     @cached_property
     def user_emails(self) -> str:
-        return ", ".join(self.users.values_list("email", flat=True))
+        return ", ".join(self.customer.get_notify_emails())
 
     @cached_property
     def last_report(self) -> Report | None:
@@ -854,8 +845,6 @@ class Service(models.Model):
         - store SSH key
         - create subaccount
         """
-        if self.customer is None:
-            raise ValueError("Missing customer info!")
         dirname = str(uuid4())
 
         # Create folder and SSH key
@@ -968,10 +957,9 @@ class Subscription(models.Model):
         return Payment.objects.filter(query).distinct()
 
     def send_notification(self, notification):
-        emails = {user.email for user in self.service.users.all()}
-        if self.payment_obj.customer.email:
-            emails.add(self.payment_obj.customer.email)
-        send_notification(notification, list(emails), subscription=self)
+        send_notification(
+            notification, self.service.customer.get_notify_emails(), subscription=self
+        )
         with override("en"):
             send_notification(
                 notification,

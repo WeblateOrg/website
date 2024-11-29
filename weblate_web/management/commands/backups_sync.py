@@ -83,11 +83,7 @@ class Command(BaseCommand):
                 self.stderr.write(f"unused URL: {ssh_url}")
                 continue
 
-            # Validate service
             customer = service.customer
-            if customer is None:
-                self.stderr.write(f"missing customer: {service.pk}")
-                continue
 
             # Sync our data
             update = False

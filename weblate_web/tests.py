@@ -539,9 +539,14 @@ class FakturaceTestCase(UserTestCase):
 
     def create_donation(self, years=1, days=0, recurring="y"):
         user = self.create_user()
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+        )
+        customer.users.add(user)
         return Donation.objects.create(
             reward=3,
-            user=user,
+            customer=customer,
             active=True,
             expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
             payment=create_payment(recurring=recurring, user=user)[0].pk,
@@ -583,7 +588,12 @@ class FakturaceTestCase(UserTestCase):
     def create_service(self, years=1, days=0, recurring="y", package="extended"):
         user = self.create_user()
         self.create_packages()
-        service = Service.objects.create()
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+        )
+        customer.users.add(user)
+        service = Service.objects.create(customer=customer)
         subscription = service.subscription_set.create(
             package=Package.objects.get_or_create(name=package)[0],
             expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
@@ -592,7 +602,6 @@ class FakturaceTestCase(UserTestCase):
             recurring=recurring, user=user, extra={"subscription": subscription.pk}
         )[0].pk
         subscription.save(update_fields=["payment"])
-        service.users.add(user)
         return service
 
 
@@ -743,7 +752,9 @@ class PaymentTest(FakturaceTestCase):
         response = self.client.get(payment.get_complete_url(), follow=True)
         self.assertRedirects(response, "/en/user/")
         self.assertContains(response, "Thank you for your subscription")
-        self.assert_notifications("Your new subscription on weblate.org")
+        self.assert_notifications(
+            "Your payment on weblate.org", "Your new subscription on weblate.org"
+        )
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
@@ -800,6 +811,7 @@ class PaymentTest(FakturaceTestCase):
         subscription.expires -= timedelta(days=365)
         subscription.save(update_fields=["expires"])
         RecurringPaymentsCommand.handle_subscriptions()
+        self.assert_notifications("Your payment on weblate.org")
 
     def test_donation_workflow_invalid_reward(self):
         self.login()
@@ -920,10 +932,15 @@ class PaymentTest(FakturaceTestCase):
         self.assertNotContains(response, "/saml2/login/")
         self.assertNotContains(response, "Your donations")
 
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+        )
+        customer.users.add(user)
         # Donation show show up
         Donation.objects.create(
             reward=2,
-            user=user,
+            customer=customer,
             active=True,
             expires=timezone.now() + relativedelta(years=1),
             payment=create_payment(user=user)[0].pk,
@@ -1028,7 +1045,11 @@ class APITest(UserTestCase):
         extended = Package.objects.create(
             name="extended", verbose="Extended support", price=42
         )
-        service = Service.objects.create()
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+        )
+        service = Service.objects.create(customer=customer)
         service.subscription_set.create(
             package=extended, expires=timezone.now() + timedelta(days=delta)
         )

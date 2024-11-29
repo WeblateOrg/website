@@ -412,7 +412,10 @@ class Backend:
         if self.payment:
             kwargs["payment"] = self.payment
         send_notification(
-            notification, [self.payment.customer.email], invoice=invoice, **kwargs
+            notification,
+            self.payment.customer.get_notify_emails(),
+            invoice=invoice,
+            **kwargs,
         )
 
     def get_invoice_kwargs(self):

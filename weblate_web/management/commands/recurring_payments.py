@@ -87,7 +87,7 @@ class Command(BaseCommand):
                 expiry.append(
                     (
                         name,
-                        subscription.service.users.values_list("email", flat=True),
+                        subscription.service.customer.get_notify_emails(),
                         subscription.expires,
                     )
                 )
@@ -107,8 +107,8 @@ class Command(BaseCommand):
                 donation.send_notification("payment_missing")
             expiry.append(
                 (
-                    f"{donation.user}: {donation.get_payment_description()}",
-                    [donation.user.email],
+                    f"{donation.customer}: {donation.get_payment_description()}",
+                    donation.customer.get_notify_emails(),
                     donation.expires,
                 )
             )
