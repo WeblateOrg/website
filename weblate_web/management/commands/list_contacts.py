@@ -27,16 +27,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         emails = set()
-        for service in (
-            Service.objects.filter(
-                status__in={"hosted", "shared", "basic", "extended", "premium"}
-            )
-            .select_related("customer")
-            .prefetch_related("users")
-        ):
-            if service.customer:
-                emails.add(service.customer.email)
-            emails.update(user.email for user in service.users.all())
+        for service in Service.objects.filter(
+            status__in={"hosted", "shared", "basic", "extended", "premium"}
+        ).prefetch_related("customer__users"):
+            emails.update(service.customer.get_notify_emails())
 
         emails.discard("")
 

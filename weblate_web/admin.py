@@ -46,7 +46,7 @@ def format_user(obj):
 @admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
     list_display = (
-        "user",
+        "customer",
         "reward",
         "created",
         "expires",
@@ -59,7 +59,7 @@ class DonationAdmin(admin.ModelAdmin):
         "reward",
         "active",
     ]
-    autocomplete_fields = ("user", "customer")
+    autocomplete_fields = ("customer",)
 
 
 @admin.register(Project)
@@ -87,7 +87,7 @@ class ServiceAdmin(admin.ModelAdmin):
     ]
     list_filter = ("status", "discoverable")
     search_fields = (
-        "users__email",
+        "customer__users__email",
         "report__site_url",
         "report__site_title",
         "customer__name",
@@ -95,7 +95,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "note",
     )
     date_hierarchy = "created"
-    autocomplete_fields = ("users", "customer")
+    autocomplete_fields = ("customer",)
     readonly_fields = (
         "backup_box",
         "backup_directory",

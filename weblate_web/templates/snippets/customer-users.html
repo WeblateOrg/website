@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load static %}
+
+<div class="line-left">{% trans "Users" %}</div>
+<div class="line-right">
+  {% for owner in customer.users.all %}
+    <form id="server_user_{{ owner.id }}_form"
+          method="post"
+          action="{% url 'customer-user' pk=customer.pk %}">
+      <div class="user-slot">
+        <div class="user-slot-content">
+          <p>{{ owner.last_name }}</p>
+          <t>{{ owner.email }}</t>
+        </div>
+        {% if owner == user %}
+          <div class="user-img">
+            <img src="{% static "img/Shield.png" %}" title="{% trans "You can not remove yourself" %}" alt="{% trans "Protected user" %}">
+          </div>
+        {% else %}
+          {% csrf_token %}
+          <button class="user-img">
+            <img src="{% static "img/delete.png" %}" alt="{% trans "Remove user" %}">
+          </button>
+        {% endif %}
+      </div>
+      {% csrf_token %}
+      {% if owner != user %}
+        <input type="hidden" name="email" value="{{ owner.email }}" />
+        <input type="hidden" name="remove" value="{% trans "Remove" %}" />
+      {% endif %}
+    </form>
+  {% endfor %}
+  <form method="post" action="{% url 'customer-user' pk=customer.pk %}">
+    {% csrf_token %}
+    <input type="email"
+           class="grey-input"
+           placeholder="{% trans "E-mail" %}"
+           name="email"
+           aria-label="{% trans "E-mail" %}" />
+    <input type="submit"
+           class="button button-med-120 inline border rev"
+           value="{% trans "Add a user" %}" />
+  </form>
+</div>
+<div class="clear"></div>

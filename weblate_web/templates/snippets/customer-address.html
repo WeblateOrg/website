@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load static %}
+
+<div class="line-left">{% trans "Billing information" %}</div>
+<div class="line-right">
+  {% include "snippets/customer_address.html" %}
+  <br />
+  <form class="form-inline"
+        method="get"
+        action="{% url "edit-customer" pk=customer.pk %}">
+    <input type="submit" class="button small inline" value="{% trans "Edit" %}">
+  </form>
+</div>
+<div class="clear"></div>

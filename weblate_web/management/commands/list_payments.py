@@ -42,9 +42,7 @@ class Command(BaseCommand):
                     subscription,
                     subscription.expires.date(),
                     subscription.package.get_repeat(),
-                    ", ".join(
-                        subscription.service.users.values_list("email", flat=True)
-                    ),
+                    ", ".join(subscription.service.customer.get_notify_emails()),
                 )
             )
 
@@ -61,6 +59,6 @@ class Command(BaseCommand):
                     donation.get_payment_description(),
                     donation.expires.date(),
                     "y",
-                    donation.user.email,
+                    ", ".join(donation.customer.get_notify_emails()),
                 )
             )

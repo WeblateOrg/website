@@ -144,22 +144,22 @@ def get_customer(
     request: AuthenticatedHttpRequest, obj: Service | Donation | None = None
 ) -> Customer:
     # Get from Service / Donation objects
-    if obj and obj.customer:
+    if obj:
         return obj.customer
 
     # Use existing customer for user
-    customers = Customer.objects.filter(
-        Q(donation__user=request.user) | Q(service__users=request.user)
-    )
+    customers = Customer.objects.for_user(request.user)
     if len(customers) == 1:
         return customers[0]
 
     # Create new customer object for an user
-    return Customer.objects.get_or_create(
+    customer = Customer.objects.get_or_create(
         origin=PAYMENTS_ORIGIN,
         user_id=request.user.id,
         defaults={"email": request.user.email},
     )[0]
+    customer.users.add(request.user)
+    return customer
 
 
 @require_POST
@@ -212,43 +212,54 @@ def api_hosted(request):
         sentry_sdk.capture_exception()
         return HttpResponseBadRequest("Invalid signature")
 
-    # Get/create service for this billing
-    service = Service.objects.get_or_create(hosted_billing=payload["billing"])[0]
+    billing_id: int = payload["billing"]
 
     # TODO: This is temporary hack for payments migration period
     payments = [
-        payment.pk
+        payment
         for payment in Payment.objects.order_by("end").iterator()
-        if payment.extra.get("billing", -1) == payload["billing"]
+        if payment.extra.get("billing", -1) == billing_id
     ]
+
+    # Get/create service for this billing
+    try:
+        service = Service.objects.get(hosted_billing=billing_id)
+    except Service.DoesNotExist:
+        if payments:
+            customer = payments[0].customer
+        else:
+            # TODO: It has to be existing, verify
+            customer = Customer.objects.create(user_id=-1)
+        service = Service.objects.create(customer=customer, hosted_billing=billing_id)
+
     if payments:
         # Create/update subscription
         subscription = service.subscription_set.get_or_create(
             defaults={
-                "payment": payments[-1],
+                "payment": payments[-1].pk,
                 "package": payload["package"],
             }
         )[0]
         if subscription.package != payload["package"]:
             subscription.package = Package.objects.get(name=payload["package"])
             subscription.save(update_fields=["package"])
-        if subscription.payment and subscription.payment != payments[-1]:
+        if subscription.payment and subscription.payment != payments[-1].pk:
             # Include current payment in past payments
             subscription.pastpayments_set.get_or_create(
                 payment=subscription.payment_obj
             )
 
             # Update current subscription payment
-            subscription.payment = payments[-1]
+            subscription.payment = payments[-1].pk
             subscription.save(update_fields=["payment"])
 
         # Link past payments
         for payment in payments[:-1]:
-            subscription.pastpayments_set.get_or_create(payment=payment)
+            subscription.pastpayments_set.get_or_create(payment=payment.pk)
 
     # Link users which are supposed to have access
     for user in payload["users"]:
-        service.users.add(User.objects.get_or_create(username=user)[0])
+        service.customer.users.add(User.objects.get_or_create(username=user)[0])
 
     # Collect stats
     service.report_set.create(
@@ -602,7 +613,7 @@ def process_payment(request):
         payment = Payment.objects.get(
             pk=request.GET["payment"],
             customer__origin=PAYMENTS_ORIGIN,
-            customer__user_id=request.user.id,
+            customer__users=request.user,
         )
     except (KeyError, Payment.DoesNotExist):
         return redirect(reverse("user"))
@@ -638,11 +649,11 @@ def download_payment_invoice(request, pk):
     if (
         not payment.state == Payment.PENDING
         and not Donation.objects.filter(
-            Q(user=request.user)
+            Q(customer__users=request.user)
             & (Q(payment=payment.uuid) | Q(pastpayments__payment=payment.uuid))
         ).exists()
         and not Service.objects.filter(
-            Q(users=request.user)
+            Q(customer__users=request.user)
             & (
                 Q(subscription__payment=payment.uuid)
                 | Q(subscription__pastpayments__payment=payment.uuid)
@@ -684,7 +695,7 @@ def download_payment_invoice(request, pk):
 @require_POST
 @login_required
 def disable_repeat(request, pk):
-    donation = get_object_or_404(Donation, pk=pk, user=request.user)
+    donation = get_object_or_404(Donation, pk=pk, customer__users=request.user)
     payment = donation.payment_obj
     payment.recurring = ""
     payment.save()
@@ -706,7 +717,7 @@ class EditLinkView(UpdateView):
         return EditNameForm
 
     def get_queryset(self):
-        return Donation.objects.filter(user=self.request.user, reward__gt=0)
+        return Donation.objects.filter(customer__users=self.request.user, reward__gt=0)
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
@@ -728,7 +739,7 @@ class EditDiscoveryView(UpdateView):
     request: AuthenticatedHttpRequest
 
     def get_queryset(self):
-        return Service.objects.filter(users=self.request.user)
+        return Service.objects.filter(customer__users=self.request.user)
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
@@ -759,7 +770,7 @@ class AddDiscoveryView(CreateView):
             ),
         )
         result = super().form_valid(form)
-        instance.users.add(self.request.user)
+        instance.customer.users.add(self.request.user)
         if instance.site_url:
             url = instance.site_url.rstrip("/")
             return redirect(f"{url}/manage/?activation={instance.secret}")
@@ -881,7 +892,9 @@ def activity_svg(request):
 @require_POST
 @login_required
 def subscription_disable_repeat(request, pk):
-    subscription = get_object_or_404(Subscription, pk=pk, service__users=request.user)
+    subscription = get_object_or_404(
+        Subscription, pk=pk, service__customer__users=request.user
+    )
     payment = subscription.payment_obj
     payment.recurring = ""
     payment.save()
@@ -891,23 +904,24 @@ def subscription_disable_repeat(request, pk):
 @require_POST
 @login_required
 def service_token(request, pk):
-    service = get_object_or_404(Service, pk=pk, users=request.user)
+    service = get_object_or_404(Service, pk=pk, customer__users=request.user)
     service.regenerate()
     return redirect(reverse("user"))
 
 
 @require_POST
 @login_required
-def service_user(request, pk):
-    service = get_object_or_404(Service, pk=pk, users=request.user)
+def customer_user(request, pk):
+    customer = get_object_or_404(Customer, pk=pk, users=request.user)
     try:
         user = User.objects.get(email__iexact=request.POST.get("email"))
-        if "remove" in request.POST:
-            service.users.remove(user)
-        else:
-            service.users.add(user)
     except User.DoesNotExist:
         messages.error(request, gettext("User not found!"))
+    else:
+        if "remove" in request.POST:
+            customer.users.remove(user)
+        else:
+            customer.users.add(user)
     return redirect(reverse("user"))
 
 
@@ -921,7 +935,9 @@ def subscription_view(request, pk):
 @require_POST
 @login_required
 def subscription_pay(request, pk):
-    subscription = get_object_or_404(Subscription, pk=pk, service__users=request.user)
+    subscription = get_object_or_404(
+        Subscription, pk=pk, service__customer__users=request.user
+    )
     if "switch_yearly" in request.POST and subscription.yearly_package:
         subscription.package = subscription.yearly_package
         subscription.save(update_fields=["package"])
@@ -948,7 +964,7 @@ def subscription_pay(request, pk):
 @require_POST
 @login_required
 def donate_pay(request, pk):
-    donation = get_object_or_404(Donation, pk=pk, user=request.user)
+    donation = get_object_or_404(Donation, pk=pk, customer__users=request.user)
     with override("en"):
         payment = Payment.objects.create(
             amount=donation.get_amount(),
@@ -971,7 +987,7 @@ def subscription_new(request):
     service: Service | None
     if "service" in request.GET:
         service = get_object_or_404(
-            Service, pk=request.GET["service"], users=request.user
+            Service, pk=request.GET["service"], customer__users=request.user
         )
     else:
         service = None
@@ -1039,9 +1055,27 @@ class DiscoverView(TemplateView):
         data["query"] = query
         if self.request.user.is_authenticated:
             data["user_services"] = set(
-                self.request.user.service_set.values_list("pk", flat=True)
+                Service.objects.filter(customer__users=self.request.user).values_list(
+                    "pk", flat=True
+                )
             )
         else:
             data["user_services"] = set()
 
+        return data
+
+
+@method_decorator(login_required, name="dispatch")
+class UserView(TemplateView):
+    template_name = "user.html"
+    request: AuthenticatedHttpRequest
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data["user_services"] = Service.objects.filter(
+            customer__users=self.request.user
+        )
+        data["user_donations"] = Donation.objects.filter(
+            customer__users=self.request.user
+        )
         return data

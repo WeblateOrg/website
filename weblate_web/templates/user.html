@@ -15,22 +15,20 @@
   <section class="content">
     <div class="row">
       <div class="wrap">
-        {% with services=user.service_set.all %}
-          {% if services %}
-            <div class="updated-service-title">
-              <h1>{% trans "My services" %}</h1>
-              <div class="page-desc">
-                <a href="https://care.weblate.org/" class="button inline">{% trans "Support portal" %}</a>
-                <a href="https://hosted.weblate.org/accounts/profile/#account"
-                   class="button inline border rev"
-                   target="_blank">{% trans "See user profile" %}</a>
-              </div>
+        {% if user_services %}
+          <div class="updated-service-title">
+            <h1>{% trans "My services" %}</h1>
+            <div class="page-desc">
+              <a href="https://care.weblate.org/" class="button inline">{% trans "Support portal" %}</a>
+              <a href="https://hosted.weblate.org/accounts/profile/#account"
+                 class="button inline border rev"
+                 target="_blank">{% trans "See user profile" %}</a>
             </div>
-            {% for service in services %}
-              {% include "snippets/service.html" %}
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+          </div>
+          {% for service in user_services %}
+            {% include "snippets/service.html" %}
+          {% endfor %}
+        {% endif %}
         <div class="page-desc">
           <a class="button inline" href="{% url "support" %}">{% trans "Get support" %}</a>
           <a class="button inline border rev" href="{% url "service-discovery-add" %}">{% trans "Add server to Discover Weblate" %}</a>
@@ -38,7 +36,7 @@
 
         <h1>{% trans "My donations" %}</h1>
 
-        {% for donation in user.donation_set.all %}
+        {% for donation in user_donations %}
           <div class="payment-form payment-padding">
             <div class="form-line donation-left-line">
               <div class="line-left get-reward-left-line">{{ donation.get_reward_display }}</div>
@@ -135,23 +133,16 @@
                 </div>
               </div>
             </div>
-            {% if donation.customer %}
-              <div class="payment-updated">
-                <div class="form-line user-text-formatting user-text-formatting-payment">
-                  <div class="line-left">{% trans "Billing information" %}</div>
-                  <div class="line-right">
-                    {% include "snippets/customer_address.html" with customer=donation.customer %}
-                    <br />
-                    <form class="form-inline"
-                          method="get"
-                          action="{% url "edit-customer" pk=donation.customer.pk %}">
-                      <input type="submit" class="button small inline" value="{% trans "Edit" %}">
-                    </form>
-                  </div>
-                  <div class="clear"></div>
-                </div>
+            <div class="payment-updated">
+              <div class="form-line user-text-formatting user-text-formatting-payment">
+                {% include "snippets/customer-users.html" with customer=donation.customer %}
               </div>
-            {% endif %}
+            </div>
+            <div class="payment-updated">
+              <div class="form-line user-text-formatting user-text-formatting-payment">
+                {% include "snippets/customer-address.html" with customer=donation.customer %}
+              </div>
+            </div>
           </div>
         {% empty %}
 
