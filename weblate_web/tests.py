@@ -413,7 +413,7 @@ class ViewTestCase(PostTestCase):
             location = sitemap.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
             self.assertIsNotNone(location)
             response = self.client.get(
-                cast(str, cast(ElementTree.Element, location).text)
+                cast("str", cast("ElementTree.Element", location).text)
             )
             self.assertContains(response, "<urlset")
             # Try if it's a valid XML

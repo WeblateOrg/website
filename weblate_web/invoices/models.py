@@ -375,7 +375,7 @@ class Invoice(models.Model):
 
     @cached_property
     def bank_account(self) -> BankAccountInfo:
-        return BANK_ACCOUNTS[cast(Currency, self.currency)]
+        return BANK_ACCOUNTS[cast("Currency", self.currency)]
 
     @cached_property
     def exchange_rate_eur(self) -> Decimal:
