@@ -939,7 +939,7 @@ class PaymentTest(FakturaceTestCase):
     @responses.activate
     @override_settings(PAYMENT_DEBUG=True)
     def test_recurring(self):
-        donation = self.create_donation(-1)
+        donation = self.create_donation(years=0)
         # No recurring payments for now
         self.assertEqual(donation.payment_obj.payment_set.count(), 0)
 

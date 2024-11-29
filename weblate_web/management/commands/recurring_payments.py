@@ -189,8 +189,10 @@ class Command(BaseCommand):
 
     @classmethod
     def handle_donations(cls):
+        now = timezone.now()
         donations = Donation.objects.filter(
-            active=True, expires__lte=timezone.now() + timedelta(days=3)
+            active=True,
+            expires__range=(now - timedelta(days=10), now + timedelta(days=3)),
         ).exclude(payment=None)
         for donation in donations:
             payment = donation.payment_obj
