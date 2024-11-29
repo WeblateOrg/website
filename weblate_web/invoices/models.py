@@ -634,7 +634,7 @@ class Invoice(models.Model):
             vat_rate=self.vat_rate,
             currency=self.currency,
             parent=self,
-            prepaid=prepaid,
+            prepaid=False,
             extra=self.extra,
         )
         for item in self.all_items:
@@ -649,7 +649,9 @@ class Invoice(models.Model):
             )
         return invoice
 
-    def create_payment(self, recurring: str = "") -> Payment:
+    def create_payment(
+        self, *, recurring: str = "", backend: str = "", repeat: Payment | None = None
+    ) -> Payment:
         if not self.can_be_paid(InvoiceKind.DRAFT):
             raise ValueError("Payment already exists for this invoice!")
         return self.draft_payment_set.create(
@@ -659,6 +661,8 @@ class Invoice(models.Model):
             recurring=recurring,
             extra=self.extra,
             customer=self.customer,
+            backend=backend,
+            repeat=repeat,
         )
 
     def can_be_paid(self, *state: InvoiceKind) -> bool:

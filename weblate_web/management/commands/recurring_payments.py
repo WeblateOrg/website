@@ -141,7 +141,9 @@ class Command(BaseCommand):
         # Create repeated payment
         if payment.paid_invoice:
             invoice = payment.paid_invoice.duplicate(kind=InvoiceKind.DRAFT)
-            repeated = invoice.create_payment(payment.recurring)
+            repeated = invoice.create_payment(
+                recurring=payment.recurring, backend=payment.backend, repeat=payment
+            )
         else:
             repeated = payment.repeat_payment(amount=amount)
 

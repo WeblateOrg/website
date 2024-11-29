@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
@@ -24,7 +25,7 @@ from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
-from .models import Donation, Package, PackageCategory, Post, Service
+from .models import Donation, Package, PackageCategory, Post, Service, Subscription
 from .remote import (
     ACTIVITY_URL,
     WEBLATE_CONTRIBUTORS_URL,
@@ -67,6 +68,19 @@ def thepay_mock_create_payment() -> None:
         json={
             "pay_url": "https://gate.thepay.cz/12345/pay",
             "detail_url": "https://gate.thepay.cz/12345/state",
+        },
+    )
+
+
+def thepay_mock_repeated_payment() -> None:
+    responses.post(
+        re.compile(
+            r"https://demo.api.thepay.cz/v2/projects/42/payments/[a-f0-9-]{36}/savedauthorization"
+        ),
+        json={
+            "state": "paid",
+            "message": "Ok",
+            "parent": {"recurring_payments_available": True},
         },
     )
 
@@ -517,6 +531,12 @@ def create_payment(*, recurring="y", user, **kwargs):
 
 
 class FakturaceTestCase(UserTestCase):
+    def assert_notifications(self, *subjects):
+        self.assertEqual({m.subject for m in mail.outbox}, set(subjects))
+        result = mail.outbox
+        mail.outbox = []
+        return result
+
     def create_donation(self, years=1, days=0, recurring="y"):
         user = self.create_user()
         return Donation.objects.create(
@@ -679,7 +699,7 @@ class PaymentsTest(FakturaceTestCase):
         self.check_payment(payment, Payment.ACCEPTED)
 
 
-class DonationTest(FakturaceTestCase):
+class PaymentTest(FakturaceTestCase):
     def setUp(self):
         super().setUp()
         fake_remote()
@@ -695,7 +715,7 @@ class DonationTest(FakturaceTestCase):
 
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
-    def test_service_workflow_card(self):
+    def test_service_workflow_card(self):  # noqa: PLR0915
         self.login()
         thepay_mock_create_payment()
         Package.objects.create(name="community", verbose="Community support", price=0)
@@ -723,6 +743,7 @@ class DonationTest(FakturaceTestCase):
         response = self.client.get(payment.get_complete_url(), follow=True)
         self.assertRedirects(response, "/en/user/")
         self.assertContains(response, "Thank you for your subscription")
+        self.assert_notifications("Your new subscription on weblate.org")
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
@@ -768,6 +789,17 @@ class DonationTest(FakturaceTestCase):
             reverse("agreement-download", kwargs={"pk": agreement.pk})
         )
         self.assertEqual(response.headers["Content-Type"], "application/pdf")
+
+        # Service should not get notifications on expiry now
+        RecurringPaymentsCommand.notify_expiry()
+        self.assert_notifications()
+
+        # Move expiry into past and renew
+        thepay_mock_repeated_payment()
+        subscription = Subscription.objects.all().get()
+        subscription.expires -= timedelta(days=365)
+        subscription.save(update_fields=["expires"])
+        RecurringPaymentsCommand.handle_subscriptions()
 
     def test_donation_workflow_invalid_reward(self):
         self.login()
@@ -1197,12 +1229,6 @@ class APITest(UserTestCase):
     PAYMENT_DEBUG=True,
 )
 class ExpiryTest(FakturaceTestCase):
-    def assert_notifications(self, *subjects):
-        self.assertEqual({m.subject for m in mail.outbox}, set(subjects))
-        result = mail.outbox
-        mail.outbox = []
-        return result
-
     def test_expiring_donate(self):
         self.create_donation(years=0, days=3, recurring="")
         RecurringPaymentsCommand.notify_expiry()

@@ -941,7 +941,7 @@ def subscription_pay(request, pk):
             else InvoiceCategory.HOSTING,
         )
         invoice.invoiceitem_set.create(package=package)
-        payment = invoice.create_payment(package.get_repeat())
+        payment = invoice.create_payment(recurring=package.get_repeat())
     return redirect(payment.get_payment_url())
 
 
@@ -992,7 +992,7 @@ def subscription_new(request):
             else InvoiceCategory.HOSTING,
         )
         invoice.invoiceitem_set.create(package=package)
-        payment = invoice.create_payment(package.get_repeat())
+        payment = invoice.create_payment(recurring=package.get_repeat())
     return redirect(payment.get_payment_url())
 
 
