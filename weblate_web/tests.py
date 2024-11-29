@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 from datetime import date, timedelta
+from io import StringIO
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 from xml.etree import ElementTree  # noqa: S405
@@ -1484,3 +1485,15 @@ class ServiceTest(FakturaceTestCase):
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
         self.assertEqual(hosted[0].package.name, "hosted:test-2")
+
+
+class CommandsTestCase(FakturaceTestCase):
+    def test_list_contacts(self):
+        with StringIO() as buffer:
+            call_command("list_contacts", stdout=buffer)
+            self.assertEqual(buffer.getvalue(), "")
+
+        self.create_service()
+        with StringIO() as buffer:
+            call_command("list_contacts", stdout=buffer)
+            self.assertEqual(buffer.getvalue(), "noreply@weblate.org\n")
