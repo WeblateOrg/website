@@ -636,14 +636,16 @@ class ThePay2Card(Backend):
     description = "Payment Card (The Pay)"
     recurring = True
 
-    def get_headers(self) -> dict[str, str]:
+    @staticmethod
+    def get_headers() -> dict[str, str]:
         timestamp = http_date()
         payload = f"{settings.THEPAY_MERCHANT_ID}{settings.THEPAY_PASSWORD}{timestamp}"
         hash256 = sha256(payload.encode(), usedforsecurity=True)
         return {"SignatureDate": timestamp, "Signature": hash256.hexdigest()}
 
+    @classmethod
     def request(
-        self,
+        cls,
         method: str,
         url: str,
         params: dict | None = None,
@@ -654,7 +656,7 @@ class ThePay2Card(Backend):
             params = {}
         params["merchant_id"] = settings.THEPAY_MERCHANT_ID
 
-        headers = self.get_headers()
+        headers = cls.get_headers()
 
         base_url = f"https://{settings.THEPAY_SERVER}/{api_version}/projects/{settings.THEPAY_PROJECT_ID}"
 
