@@ -365,7 +365,10 @@ class PaymentView(FormView, SingleObjectMixin):
         kwargs["can_pay"] = self.can_pay
         kwargs["backends"] = [
             backend(self.object)
-            for backend in list_backends(self.object.extra.get("exclude_backends"))
+            for backend in list_backends(
+                exclude_names=self.object.extra.get("exclude_backends"),
+                currency=self.object.get_currency_display(),
+            )
         ]
         return kwargs
 
