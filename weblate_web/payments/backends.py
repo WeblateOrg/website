@@ -241,11 +241,14 @@ def get_backend(name: str) -> type[Backend]:
     return backend
 
 
-def list_backends(exclude_names: set[str] | None = None) -> list[type[Backend]]:
+def list_backends(
+    *, exclude_names: set[str] | None = None, currency: str = "EUR"
+) -> list[type[Backend]]:
     result = [
         backend
         for backend in BACKENDS.values()
         if (not backend.debug or settings.PAYMENT_DEBUG)
+        and currency in backend.supported_currencies
         and (exclude_names is None or backend.name not in exclude_names)
     ]
     return sorted(result, key=lambda x: x.name)
@@ -270,6 +273,7 @@ class Backend:
     verbose: StrOrPromise = ""
     description: str = ""
     recurring: bool = False
+    supported_currencies: set[str] = {"EUR", "CZK", "USD", "GBP"}
 
     def __init__(self, payment: Payment):
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
@@ -636,6 +640,8 @@ class ThePay2Card(Backend):
     description = "Payment Card (The Pay)"
     recurring = True
     thepay_method_code = "card"
+    # TODO: consider allowing GBP and USD
+    supported_currencies: set[str] = {"EUR", "CZK"}
 
     @staticmethod
     def get_headers() -> dict[str, str]:
@@ -826,3 +832,4 @@ class ThePay2Bitcoin(ThePay2Card):
     description = "Bitcoin (The Pay)"
     recurring = False
     thepay_method_code = "bitcoin"
+    supported_currencies: set[str] = {"EUR", "CZK"}
