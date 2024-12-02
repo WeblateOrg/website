@@ -688,7 +688,7 @@ class ThePay2Card(Backend):
 
         return response.json()
 
-    def get_language(self):
+    def get_language(self) -> str:
         language = get_language().lower().replace("_", "-").split("-")[0]
         if language not in THEPAY_LANGUAGES:
             return "en"
