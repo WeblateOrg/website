@@ -635,6 +635,7 @@ class ThePay2Card(Backend):
     verbose = gettext_lazy("Payment card")
     description = "Payment Card (The Pay)"
     recurring = True
+    thepay_method_code = "card"
 
     @staticmethod
     def get_headers() -> dict[str, str]:
@@ -722,7 +723,7 @@ class ThePay2Card(Backend):
         payload = {
             "can_customer_change_method": False,
             "is_customer_notification_enabled": False,
-            "payment_method_code": "card",
+            "payment_method_code": self.thepay_method_code,
             "amount": int(self.payment.vat_amount * 100),
             "currency_code": "EUR",
             "uid": str(self.payment.pk),
@@ -786,8 +787,8 @@ class ThePay2Card(Backend):
         # Payment completed
         if state == "paid":
             # Store card info
-            if response["card"]:
-                self.payment.card_info = response["card"]
+            if card_info := response.get("card"):
+                self.payment.card_info = card_info
             return True
 
         # Pending payment
@@ -816,3 +817,12 @@ class ThePay2Card(Backend):
             self.payment.details["reject_reason"] = state
 
         return False
+
+
+@register_backend
+class ThePay2Bitcoin(ThePay2Card):
+    name = "thepay2-bitcoin"
+    verbose = gettext_lazy("Bitcoin")
+    description = "Bitcoin (The Pay)"
+    recurring = False
+    thepay_method_code = "bitcoin"
