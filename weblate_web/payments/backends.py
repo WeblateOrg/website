@@ -828,7 +828,7 @@ class ThePay2Card(Backend):
 @register_backend
 class ThePay2Bitcoin(ThePay2Card):
     name = "thepay2-bitcoin"
-    verbose = gettext_lazy("Bitcoin")
+    verbose = gettext_lazy("Crypto payment")
     description = "Bitcoin (The Pay)"
     recurring = False
     thepay_method_code = "bitcoin"
