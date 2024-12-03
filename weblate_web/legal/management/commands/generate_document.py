@@ -25,6 +25,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import render_to_string
 from ruamel.yaml import YAML
 
+from weblate_web.invoices.models import BANK_ACCOUNTS
 from weblate_web.pdf import render_pdf
 
 
@@ -56,6 +57,9 @@ class Command(BaseCommand):
 
         context: dict[str, str] = {
             "title": configuration["title"],
+            "bank_accounts": {
+                currency.label: bank for currency, bank in BANK_ACCOUNTS.items()
+            },
         }
 
         for name, value in yaml.load(params).items():
