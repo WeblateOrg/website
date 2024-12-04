@@ -40,6 +40,7 @@ class DiscountAdmin(admin.ModelAdmin):
 class InvoiceItemAdmin(admin.TabularInline):
     model = InvoiceItem
     min_num = 1
+    autocomplete_fields = ("package",)
 
 
 @admin.register(Invoice)
