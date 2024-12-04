@@ -161,7 +161,7 @@ class PackageAdmin(admin.ModelAdmin):
         "limit_source_strings",
         "limit_hosted_words",
     ]
-    list_filter = ["category"]
+    list_filter = ("category", "hidden")
     ordering = ("verbose",)
     search_fields = ("verbose",)
 

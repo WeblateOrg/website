@@ -718,6 +718,7 @@ class InvoiceItem(models.Model):
         null=True,
         blank=True,
         help_text="Selecting package will automatically fill in description and price",
+        limit_choices_to={"hidden": False},
     )
     description = models.CharField(max_length=200, blank=True)
     quantity = models.IntegerField(

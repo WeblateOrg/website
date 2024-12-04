@@ -494,6 +494,7 @@ class Package(models.Model):
     category = models.IntegerField(
         default=PackageCategory.PACKAGE_NONE, choices=PackageCategory
     )
+    hidden = models.BooleanField(blank=True, db_index=True, default=False)
 
     class Meta:
         verbose_name = "Service package"
