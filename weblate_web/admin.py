@@ -163,6 +163,7 @@ class PackageAdmin(admin.ModelAdmin):
     ]
     list_filter = ["category"]
     ordering = ("verbose",)
+    search_fields = ("verbose",)
 
 
 @admin.register(PastPayments)
