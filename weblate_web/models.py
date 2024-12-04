@@ -90,6 +90,10 @@ HOSTED_UPGRADES = {
 TOPIC_DICT = dict(TOPICS)
 
 
+class UnprocessablePaymentError(Exception):
+    pass
+
+
 def get_period_delta(period):
     if period == "y":
         return relativedelta(years=1)
@@ -388,6 +392,8 @@ def process_subscription(payment: Payment) -> Subscription:
 
 
 def process_payment(payment: Payment):
+    if not payment.extra:
+        raise UnprocessablePaymentError
     if (
         "subscription" in payment.extra
         or (payment.paid_invoice and payment.paid_invoice.get_package())

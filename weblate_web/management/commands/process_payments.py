@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from weblate_web.models import Donation, process_payment
+from weblate_web.models import Donation, UnprocessablePaymentError, process_payment
 from weblate_web.payments.backends import FioBank
 from weblate_web.payments.models import Payment
 from weblate_web.utils import PAYMENTS_ORIGIN
@@ -46,14 +46,16 @@ class Command(BaseCommand):
             self.pending()
         self.active()
 
-    @staticmethod
-    def pending():
+    def pending(self):
         # Process pending ones
         payments = Payment.objects.filter(
             customer__origin=PAYMENTS_ORIGIN, state=Payment.ACCEPTED
         ).select_for_update()
         for payment in payments:
-            process_payment(payment)
+            try:
+                process_payment(payment)
+            except UnprocessablePaymentError:
+                self.stderr.write(f"Could not process payment: {payment}")
 
     @staticmethod
     def active():
