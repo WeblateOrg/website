@@ -137,10 +137,10 @@ class PackageAdmin(admin.ModelAdmin):
         "name",
         "price",
         "category",
+        "limit_hosted_strings",
         "limit_projects",
         "limit_languages",
         "limit_source_strings",
-        "limit_hosted_words",
     ]
     list_filter = ("category", "hidden")
     ordering = ("verbose",)
