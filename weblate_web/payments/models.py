@@ -385,7 +385,11 @@ class Payment(models.Model):
         return self.get_payment_backend_class()(self)
 
     def repeat_payment(
-        self, skip_previous: bool = False, amount: int | None = None, **kwargs
+        self,
+        skip_previous: bool = False,
+        amount: int | None = None,
+        extra: dict[str, int] | None = None,
+        **kwargs,
     ):
         # Check if backend is still valid
         try:
@@ -409,9 +413,10 @@ class Payment(models.Model):
                     return False
 
             # Create new payment object
-            extra = {}
-            extra.update(self.extra)
-            extra.update(kwargs)
+            if extra is None:
+                extra = {}
+                extra.update(self.extra)
+                extra.update(kwargs)
             return Payment.objects.create(
                 amount=self.amount if amount is None else amount,
                 backend=self.backend,

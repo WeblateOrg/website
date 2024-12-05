@@ -550,7 +550,9 @@ class FakturaceTestCase(UserTestCase):
             customer=customer,
             active=True,
             expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
-            payment=create_payment(recurring=recurring, user=user)[0].pk,
+            payment=create_payment(
+                recurring=recurring, user=user, state=Payment.PROCESSED
+            )[0].pk,
             link_url="https://example.com/weblate",
             link_text="Weblate donation test",
         )
@@ -600,7 +602,10 @@ class FakturaceTestCase(UserTestCase):
             expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
         )
         subscription.payment = create_payment(
-            recurring=recurring, user=user, extra={"subscription": subscription.pk}
+            recurring=recurring,
+            user=user,
+            extra={"subscription": subscription.pk},
+            state=Payment.PROCESSED,
         )[0].pk
         subscription.save(update_fields=["payment"])
         return service
