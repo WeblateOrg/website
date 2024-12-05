@@ -19,8 +19,6 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
-
 from django.contrib import admin
 
 from weblate_web.models import (
@@ -33,14 +31,6 @@ from weblate_web.models import (
     Service,
     Subscription,
 )
-
-if TYPE_CHECKING:
-    from django.forms import ModelForm
-    from django.http import HttpRequest
-
-
-def format_user(obj):
-    return f"{obj.username}: {obj.first_name} {obj.last_name} <{obj.email}>"
 
 
 @admin.register(Donation)
@@ -103,17 +93,6 @@ class ServiceAdmin(admin.ModelAdmin):
         "backup_timestamp",
         "site_version",
     )
-
-    def get_form(
-        self,
-        request: HttpRequest,
-        obj: Any | None = None,
-        change: bool = False,
-        **kwargs: Any,
-    ) -> type[ModelForm[Any]]:
-        form = super().get_form(request=request, obj=obj, change=change, **kwargs)
-        form.base_fields["users"].label_from_instance = format_user  # type: ignore[attr-defined]
-        return form
 
 
 @admin.register(Subscription)

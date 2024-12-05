@@ -201,7 +201,7 @@ INSTALLED_APPS = (
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     "django.contrib.messages",
-    "django.contrib.admin",
+    "weblate_web.admin_app.CustomAdminConfig",
     "django.contrib.humanize",
     "weblate_web.payments",
     "weblate_web.invoices",

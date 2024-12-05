@@ -16,20 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+from __future__ import annotations
 
 from django.contrib import admin
 
 from .models import Customer, Payment
 
 
+@admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ("email", "name", "country", "vat", "origin")
+    list_display = ("name", "email", "country", "vat", "origin")
     list_filter = ("country", "origin")
     search_fields = ("name", "email", "users__email")
     ordering = ("name",)
     autocomplete_fields = ("users",)
 
 
+@admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
     list_display = (
         "description",
@@ -54,7 +57,3 @@ class PaymentAdmin(admin.ModelAdmin):
     readonly_fields = ("created",)
     date_hierarchy = "created"
     ordering = ("-created",)
-
-
-admin.site.register(Customer, CustomerAdmin)
-admin.site.register(Payment, PaymentAdmin)
