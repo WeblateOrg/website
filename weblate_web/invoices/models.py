@@ -623,6 +623,7 @@ class Invoice(models.Model):
         *,
         kind: InvoiceKind,
         prepaid: bool = True,
+        extra: dict[str, int] | None = None,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
         invoice = Invoice.objects.create(
@@ -635,7 +636,7 @@ class Invoice(models.Model):
             currency=self.currency,
             parent=self,
             prepaid=False,
-            extra=self.extra,
+            extra=extra if extra is not None else self.extra,
         )
         for item in self.all_items:
             invoice.invoiceitem_set.create(

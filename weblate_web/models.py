@@ -400,7 +400,11 @@ def process_payment(payment: Payment):
         or (payment.draft_invoice and payment.draft_invoice.get_package())
     ):
         process_subscription(payment)
+    elif "billing" in payment.extra:
+        # Hosted subscription, currently not handled here
+        raise UnprocessablePaymentError
     else:
+        # donation or reward should be in extra here
         process_donation(payment)
 
 

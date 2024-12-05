@@ -128,7 +128,9 @@ class Command(BaseCommand):
             service.create_backup()
 
     @staticmethod
-    def peform_payment(payment, past_payments, amount: int | None = None):
+    def peform_payment(
+        payment, past_payments, *, amount: int | None = None, extra: dict[str, int]
+    ):
         # Alllow at most three failures of current payment method
         rejected_payments = past_payments.filter(
             state=Payment.REJECTED, repeat=payment.repeat or payment
@@ -140,12 +142,14 @@ class Command(BaseCommand):
 
         # Create repeated payment
         if payment.paid_invoice:
-            invoice = payment.paid_invoice.duplicate(kind=InvoiceKind.DRAFT)
+            invoice = payment.paid_invoice.duplicate(
+                kind=InvoiceKind.DRAFT, extra=extra
+            )
             repeated = invoice.create_payment(
                 recurring=payment.recurring, backend=payment.backend, repeat=payment
             )
         else:
-            repeated = payment.repeat_payment(amount=amount)
+            repeated = payment.repeat_payment(amount=amount, extra=extra)
 
         # Backend does not support it
         if not repeated:
@@ -185,6 +189,7 @@ class Command(BaseCommand):
                 payment,
                 subscription.list_payments(),
                 amount=subscription.package.price,
+                extra={"subscription": subscription.pk},
             )
 
     @classmethod
@@ -200,4 +205,6 @@ class Command(BaseCommand):
                 donation.send_notification("payment_expired")
                 continue
 
-            cls.peform_payment(payment, donation.list_payments())
+            cls.peform_payment(
+                payment, donation.list_payments(), extra={"donation": donation.pk}
+            )
