@@ -1536,3 +1536,12 @@ class CommandsTestCase(FakturaceTestCase):
         with StringIO() as buffer:
             call_command("list_contacts", stdout=buffer)
             self.assertEqual(buffer.getvalue(), "noreply@weblate.org\n")
+
+    def test_sync_packages(self):
+        with StringIO() as buffer:
+            call_command("sync_packages", stdout=buffer)
+            self.assertNotEqual(buffer.getvalue(), "")
+
+        with StringIO() as buffer:
+            call_command("sync_packages", stdout=buffer)
+            self.assertEqual(buffer.getvalue(), "")
