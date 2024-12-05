@@ -640,8 +640,7 @@ class ThePay2Card(Backend):
     description = "Payment Card (The Pay)"
     recurring = True
     thepay_method_code = "card"
-    # TODO: consider allowing GBP and USD
-    supported_currencies: set[str] = {"EUR", "CZK"}
+    supported_currencies: set[str] = {"EUR", "CZK", "GBP", "USD"}
 
     @staticmethod
     def get_headers() -> dict[str, str]:
