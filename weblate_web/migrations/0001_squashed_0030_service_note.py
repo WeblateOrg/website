@@ -9,39 +9,6 @@ import weblate_web.models
 
 
 class Migration(migrations.Migration):
-    replaces = [
-        ("weblate_web", "0001_initial"),
-        ("weblate_web", "0002_image_post"),
-        ("weblate_web", "0003_auto_20190509_0952"),
-        ("weblate_web", "0004_auto_20190514_1457"),
-        ("weblate_web", "0005_donation_link_image"),
-        ("weblate_web", "0006_donation_reward_new"),
-        ("weblate_web", "0007_auto_20190718_1614"),
-        ("weblate_web", "0008_auto_20190718_1646"),
-        ("weblate_web", "0009_auto_20190721_0935"),
-        ("weblate_web", "0010_auto_20190726_0836"),
-        ("weblate_web", "0011_auto_20190726_0837"),
-        ("weblate_web", "0012_auto_20190807_1456"),
-        ("weblate_web", "0013_subscription_active"),
-        ("weblate_web", "0014_remove_subscription_price"),
-        ("weblate_web", "0015_auto_20190807_1633"),
-        ("weblate_web", "0016_auto_20190904_1320"),
-        ("weblate_web", "0017_auto_20190904_1340"),
-        ("weblate_web", "0018_auto_20190923_1626"),
-        ("weblate_web", "0019_auto_20190923_1720"),
-        ("weblate_web", "0020_auto_20190923_1713"),
-        ("weblate_web", "0021_auto_20190923_1724"),
-        ("weblate_web", "0022_auto_20190923_1725"),
-        ("weblate_web", "0023_report_service"),
-        ("weblate_web", "0024_auto_20190923_1726"),
-        ("weblate_web", "0025_auto_20190923_1728"),
-        ("weblate_web", "0026_auto_20190924_1501"),
-        ("weblate_web", "0027_remove_package_backup"),
-        ("weblate_web", "0028_auto_20191011_0927"),
-        ("weblate_web", "0029_report_version"),
-        ("weblate_web", "0030_service_note"),
-    ]
-
     initial = True
 
     dependencies = [
