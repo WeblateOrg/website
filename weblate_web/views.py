@@ -144,7 +144,7 @@ def get_customer(
     request: AuthenticatedHttpRequest, obj: Service | Donation | None = None
 ) -> Customer:
     # Get from Service / Donation objects
-    if obj:
+    if obj and obj.customer:
         return obj.customer
 
     # Use existing customer for user
@@ -761,10 +761,12 @@ class AddDiscoveryView(CreateView):
     template_name = "subscription/discovery-add.html"
     success_url = "/user/"
     form_class = AddDiscoveryForm
+    request: AuthenticatedHttpRequest
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
         instance = form.instance
+        instance.customer = get_customer(self.request, instance)
         mail_admins(
             "Weblate: discovery description changed",
             "Service link: {discover_url}\nNew text: {discover_text}\n".format(
