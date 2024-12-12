@@ -582,7 +582,7 @@ class Invoice(models.Model):
         if self.customer.tax and self.customer.country == "CZ":
             add_element(prijemce, "ICO", self.customer.tax)
         if self.customer.vat:
-            add_element(prijemce, "DIC", self.customer.vat)
+            add_element(prijemce, "DIC", self.customer.vat.replace(" ", ""))
         adresa = add_element(prijemce, "FaktAdresa")
         add_element(adresa, "Ulice", self.customer.address)
         add_element(adresa, "Misto", self.customer.city)
