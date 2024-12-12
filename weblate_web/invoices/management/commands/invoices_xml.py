@@ -30,7 +30,15 @@ from weblate_web.invoices.models import Invoice, InvoiceKind
 class Command(BaseCommand):
     help = "creates a XML export of invoices for previous month"
 
-    def handle(self, *args, **options):
+    def add_arguments(self, parser) -> None:
+        parser.add_argument(
+            "--refresh",
+            default=False,
+            action="store_true",
+            help="Refresh individual XML files",
+        )
+
+    def handle(self, refresh: bool, **kwargs):
         if settings.INVOICES_COPY_PATH is None:
             raise CommandError("Invoices output path is not configured!")
         previous_month = now() - timedelta(days=28)
@@ -42,7 +50,7 @@ class Command(BaseCommand):
 
         invoices = Invoice.objects.filter(
             kind=InvoiceKind.INVOICE, issue_date__range=(date_start, date_end)
-        )
+        ).order_by("date_start")
 
         output_file = (
             settings.INVOICES_COPY_PATH
@@ -55,5 +63,7 @@ class Command(BaseCommand):
         document, invoices_root = Invoice.get_invoice_xml_root()
         for invoice in invoices:
             invoice.get_xml_tree(invoices_root)
+            if refresh:
+                invoice.generate_xml()
 
         Invoice.save_invoice_xml(document, output_file)

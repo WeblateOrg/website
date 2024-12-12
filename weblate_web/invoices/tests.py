@@ -98,6 +98,7 @@ class InvoiceTestCase(UserTestCase):
 
     def validate_invoice(self, invoice: Invoice) -> None:
         invoice.generate_files()
+        invoice.generate_xml()
         self.assertNotEqual(str(invoice), "")
         if invoice.discount:
             self.assertNotEqual(str(invoice.discount), "")
