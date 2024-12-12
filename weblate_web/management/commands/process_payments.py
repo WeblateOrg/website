@@ -25,7 +25,6 @@ from django.utils import timezone
 from weblate_web.models import Donation, UnprocessablePaymentError, process_payment
 from weblate_web.payments.backends import FioBank
 from weblate_web.payments.models import Payment
-from weblate_web.utils import PAYMENTS_ORIGIN
 
 
 class Command(BaseCommand):
@@ -48,10 +47,11 @@ class Command(BaseCommand):
 
     def pending(self):
         # Process pending ones
-        payments = Payment.objects.filter(
-            customer__origin=PAYMENTS_ORIGIN, state=Payment.ACCEPTED
-        ).select_for_update()
+        payments = Payment.objects.filter(state=Payment.ACCEPTED).select_for_update()
         for payment in payments:
+            if payment.extra and "billing" in payment.extra:
+                # hosted.weblate.org, currently handled externally
+                continue
             try:
                 process_payment(payment)
             except UnprocessablePaymentError:
