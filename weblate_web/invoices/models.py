@@ -519,7 +519,7 @@ class Invoice(models.Model):
                 fixed_rates.pop(self.vat_rate)
                 for rate in fixed_rates.values():
                     add_element(dph, f"Zaklad{rate}", "0")
-                for rate in fixed_rates:
+                for rate in fixed_rates.values():
                     if rate > 0:
                         add_element(dph, f"DPH{rate}", "0")
             else:
