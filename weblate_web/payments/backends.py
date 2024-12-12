@@ -558,7 +558,7 @@ class FioBank(Backend):
         return instructions
 
     @classmethod
-    def fetch_payments(cls, from_date: str | None = None) -> None:
+    def fetch_payments(cls, from_date: str | None = None) -> None:  # noqa: PLR0915,C901
         from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
 
         tokens: list[str]
@@ -623,6 +623,9 @@ class FioBank(Backend):
                         payment = invoice.create_payment(backend=cls.name)
                     else:
                         payment = payments[0]
+                        if payment.paid_invoice:
+                            print(f"{invoice.number}: skipping, already paid")
+                            continue
                     if payment.backend != cls.name:
                         print(
                             f"{invoice.number}: skipping, wrong backend: {payment.backend}"

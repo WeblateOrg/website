@@ -311,6 +311,10 @@ class BackendTest(BackendBaseTestCase):
         )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+        mail.outbox = []
+
+        FioBank.fetch_payments()
+        self.assertEqual(len(mail.outbox), 0)
 
     @responses.activate
     @override_settings(
@@ -350,6 +354,10 @@ class BackendTest(BackendBaseTestCase):
         )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+        mail.outbox = []
+
+        FioBank.fetch_payments()
+        self.assertEqual(len(mail.outbox), 0)
 
 
 @override_settings(**THEPAY2_MOCK_SETTINGS)
