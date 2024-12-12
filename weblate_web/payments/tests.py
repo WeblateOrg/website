@@ -359,6 +359,50 @@ class BackendTest(BackendBaseTestCase):
         FioBank.fetch_payments()
         self.assertEqual(len(mail.outbox), 0)
 
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_url(self):
+        mock_vies()
+        customer = Customer.objects.create(**CUSTOMER)
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        invoice.invoiceitem_set.create(
+            description="Test item",
+            unit_price=100,
+        )
+
+        url = cast("str", invoice.get_payment_url())
+        self.assertIsNotNone(url)
+
+        # Trigger payment what creates an empty payment object
+        self.client.get(url, follow=True)
+
+        received = FIO_TRASACTIONS.copy()
+        transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
+        transaction[0]["column16"]["value"] = invoice.number
+        transaction[1]["column16"]["value"] = invoice.number
+        transaction[1]["column1"]["value"] = int(invoice.total_amount)
+        responses.add(responses.GET, FIO_API, body=json.dumps(received))
+        FioBank.fetch_payments()
+        self.assertTrue(invoice.paid_payment_set.exists())
+        payment = invoice.paid_payment_set.get()
+        self.maxDiff = None
+        self.assertEqual(
+            payment.details["transaction"]["recipient_message"], invoice.number
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+        mail.outbox = []
+
+        FioBank.fetch_payments()
+        self.assertEqual(len(mail.outbox), 0)
+
 
 @override_settings(**THEPAY2_MOCK_SETTINGS)
 class ThePay2Test(BackendBaseTestCase):

@@ -626,7 +626,11 @@ class FioBank(Backend):
                         if payment.paid_invoice:
                             print(f"{invoice.number}: skipping, already paid")
                             continue
-                    if payment.backend != cls.name:
+                    if not payment.backend:
+                        # Initialize backend if not set
+                        payment.backend = cls.name
+                        payment.save(update_fields=["backend"])
+                    elif payment.backend != cls.name:
                         print(
                             f"{invoice.number}: skipping, wrong backend: {payment.backend}"
                         )
