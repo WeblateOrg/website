@@ -144,7 +144,7 @@ class PackageAdmin(admin.ModelAdmin):
     ]
     list_filter = ("category", "hidden")
     ordering = ("verbose",)
-    search_fields = ("verbose",)
+    search_fields = ("verbose", "name")
 
 
 @admin.register(PastPayments)
