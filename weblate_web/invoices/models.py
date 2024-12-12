@@ -539,9 +539,11 @@ class Invoice(models.Model):
         add_element(output, "PlnenoDPH", self.issue_date.isoformat())
         add_element(output, "Splatno", self.due_date.isoformat())
         add_element(output, "DatSkPoh", self.issue_date.isoformat())
-        if self.customer.vat:
+        if self.customer.country == "CZ":
+            add_element(output, "KodDPH", "19Ř01,02")
+        elif self.customer.vat:
             add_element(output, "KodDPH", "19Ř21")
-        elif self.customer.country == "CZ":
+        elif self.customer.is_eu_enduser:
             add_element(output, "KodDPH", "19Ř01,02")
         else:
             add_element(output, "KodDPH", "19Ř26")
