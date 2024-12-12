@@ -17,11 +17,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from datetime import timedelta
+
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.timezone import now
-from timedelta import timedelta
 
 from weblate_web.invoices.models import Invoice, InvoiceKind
 
