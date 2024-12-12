@@ -21,6 +21,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.timezone import now
+from timedelta import timedelta
 
 from weblate_web.invoices.models import Invoice, InvoiceKind
 
@@ -31,11 +32,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if settings.INVOICES_COPY_PATH is None:
             raise CommandError("Invoices output path is not configured!")
-        previous_month = now() - relativedelta(months=1)
-        date_start = previous_month - relativedelta(
+        previous_month = now() - timedelta(days=28)
+        date_start = previous_month.replace(
             day=1, hour=0, minute=0, second=0, microsecond=0
         )
         date_end = date_start + relativedelta(months=1)
+        self.stdout.write(f"Dumping invoices from {date_start} to {date_end}")
 
         invoices = Invoice.objects.filter(
             kind=InvoiceKind.INVOICE, issue_date__range=(date_start, date_end)
