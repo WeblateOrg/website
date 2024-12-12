@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from weblate_web.invoices.models import Invoice
 
 BACKENDS: dict[str, type[Backend]] = {}
-PROFORMA_RE = re.compile(r"50[0-9]{8}")
+INVOICE_MATCH_RE = re.compile(r"\b[15]0[0-9]{8}\b")
 THEPAY_LANGUAGES = {
     "ab",
     "aa",
@@ -581,19 +581,20 @@ class FioBank(Backend):
                 matches = []
                 # Extract from message
                 if entry["recipient_message"]:
-                    matches.extend(PROFORMA_RE.findall(entry["recipient_message"]))
+                    matches.extend(INVOICE_MATCH_RE.findall(entry["recipient_message"]))
                 # Extract from variable symbol
                 if entry["variable_symbol"]:
-                    matches.extend(PROFORMA_RE.findall(entry["variable_symbol"]))
+                    matches.extend(INVOICE_MATCH_RE.findall(entry["variable_symbol"]))
                 # Extract from sender reference
                 if entry.get("reference", None):
-                    matches.extend(PROFORMA_RE.findall(entry["reference"]))
+                    matches.extend(INVOICE_MATCH_RE.findall(entry["reference"]))
                 # Extract from comment for manual pairing
                 if entry["comment"]:
-                    matches.extend(PROFORMA_RE.findall(entry["comment"]))
+                    matches.extend(INVOICE_MATCH_RE.findall(entry["comment"]))
                 # Process all matches
                 for invoice in Invoice.objects.filter(
-                    number__in=matches, kind=InvoiceKind.PROFORMA
+                    number__in=matches,
+                    kind__in=(InvoiceKind.PROFORMA, InvoiceKind.INVOICE),
                 ):
                     # Match validation
                     if invoice.paid_payment_set.exists():
@@ -613,12 +614,15 @@ class FioBank(Backend):
 
                     # Fetch payment(s)
                     payments = invoice.draft_payment_set.all()
-                    if len(payments) != 1:
+                    if len(payments) > 1:
                         print(
                             f"{invoice.number}: skipping, has {len(payments)} draft payments"
                         )
                         continue
-                    payment = payments[0]
+                    if not payments:
+                        payment = invoice.create_payment(backend=cls.name)
+                    else:
+                        payment = payments[0]
                     if payment.backend != cls.name:
                         print(
                             f"{invoice.number}: skipping, wrong backend: {payment.backend}"
