@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
         invoices = Invoice.objects.filter(
             kind=InvoiceKind.INVOICE, issue_date__range=(date_start, date_end)
-        ).order_by("issue_date")
+        ).order_by("number")
 
         output_file = (
             settings.INVOICES_COPY_PATH
