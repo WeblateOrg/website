@@ -49,6 +49,7 @@ from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
 
 from .hetzner import create_storage_folder, create_storage_subaccount, generate_ssh_url
+from .packages import PACKAGE_UPGRADES
 
 if TYPE_CHECKING:
     from fakturace.invoices import Invoice
@@ -78,16 +79,6 @@ TOPICS = (
     ("development", gettext_lazy("Development")),
     ("localization", gettext_lazy("Localization")),
 )
-
-HOSTED_UPGRADES = {
-    # Used in tests
-    "test:test": "test:test",
-    "test:test-1": "test:test-2",
-    # Migration to new plans
-    "hosted:basic": "hosted:medium",
-    "hosted:medium": "hosted:advanced",
-    "hosted:advanced": "hosted:enterprise",
-}
 
 TOPIC_DICT = dict(TOPICS)
 
@@ -797,9 +788,9 @@ class Service(models.Model):
                 )
         if (
             self.hosted_subscriptions
-            and self.hosted_subscriptions[0].package.name in HOSTED_UPGRADES
+            and self.hosted_subscriptions[0].package.name in PACKAGE_UPGRADES
         ):
-            package_name = HOSTED_UPGRADES[self.hosted_subscriptions[0].package.name]
+            package_name = PACKAGE_UPGRADES[self.hosted_subscriptions[0].package.name]
             package = Package.objects.get(name=package_name)
             result.append(
                 (
