@@ -479,6 +479,9 @@ class Invoice(models.Model):
     def generate_files(self) -> None:
         self.generate_xml()
         self.generate_pdf()
+        self.sync_files()
+
+    def sync_files(self) -> None:
         if self.kind == InvoiceKind.INVOICE and settings.INVOICES_COPY_PATH:
             output_dir = (
                 settings.INVOICES_COPY_PATH

@@ -65,5 +65,6 @@ class Command(BaseCommand):
             invoice.get_xml_tree(invoices_root)
             if refresh:
                 invoice.generate_xml()
+                invoice.sync_files()
 
         Invoice.save_invoice_xml(document, output_file)
