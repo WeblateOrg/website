@@ -329,7 +329,10 @@ def process_new_payment(payment: Payment) -> Subscription:
     else:
         package = Package.objects.get(name=payment.extra["subscription"])
     repeat = package.get_repeat()
-    if package.name.startswith("hosted:") and service.hosted_subscriptions:
+    if (
+        package.category == PackageCategory.PACKAGE_DEDICATED
+        and service.hosted_subscriptions
+    ):
         # Package upgrade / downgrade
         subscription = service.hosted_subscriptions[0]
         if subscription.payment:
@@ -516,7 +519,10 @@ class Package(models.Model):
     def get_repeat(self):
         if self.name in {"basic", "extended", "premium", "backup"}:
             return "y"
-        if self.name.startswith("hosted:") or self.name.startswith("shared:"):
+        if self.category in {
+            PackageCategory.PACKAGE_DEDICATED,
+            PackageCategory.PACKAGE_SHARED,
+        }:
             if self.name.endswith("-m"):
                 return "m"
             return "y"

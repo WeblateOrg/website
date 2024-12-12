@@ -24,32 +24,16 @@ from typing import TYPE_CHECKING
 from django.core.management.base import BaseCommand
 
 from weblate_web.models import Package, PackageCategory
+from weblate_web.packages import (
+    DEDICATED_LIMIT,
+    DEDICATED_PREFIX,
+    HOSTED_PREFIX,
+    PACKAGE_NAMES,
+    PACKAGES,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
-
-PACKAGES: dict[int, int] = {
-    10000: 450,
-    40000: 660,
-    160000: 1060,
-    640000: 1780,
-    2560000: 3130,
-    10240000: 5620,
-    40960000: 10220,
-    163840000: 18740,
-    655360000: 34500,
-}
-DEDICATED_LIMIT = 160000
-
-
-def package_name(number: int) -> str:
-    if number < 1_000_000:
-        return f"{number // 1000}k"
-    if number < 10_000_000:
-        return f"{(number // 100_000) / 10}M"
-    if number < 100_000_000:
-        return f"{number // 1_000_000}M"
-    return f"{(number // 10_000_000) * 10}M"
 
 
 class Command(BaseCommand):
@@ -57,19 +41,19 @@ class Command(BaseCommand):
 
     def get_packages(self) -> Generator[tuple[PackageCategory, str, str, int, int]]:
         for limit, price in PACKAGES.items():
-            name = package_name(limit)
+            name = PACKAGE_NAMES[limit]
             if limit >= DEDICATED_LIMIT:
                 yield (
                     PackageCategory.PACKAGE_DEDICATED,
                     f"Weblate hosting ({name} strings, dedicated, yearly)",
-                    f"dedicated:{name.lower()}",
+                    f"{DEDICATED_PREFIX}{name.lower()}",
                     limit,
                     price,
                 )
             yield (
                 PackageCategory.PACKAGE_SHARED,
                 f"Weblate hosting ({name} strings, yearly)",
-                f"hosted:{name.lower()}",
+                f"{HOSTED_PREFIX}{name.lower()}",
                 limit,
                 price,
             )
