@@ -507,13 +507,14 @@ class Invoice(models.Model):
                 castka_dph = self.total_vat
                 castka_celkem = self.total_amount
 
-            fixed_rates = {0, 5, 22}
+            fixed_rates: dict[int, int] = {0: 0, 11: 5, 21: 22}
             if self.vat_rate in fixed_rates:
-                add_element(dph, f"Zaklad{self.vat_rate}", castka_zaklad)
+                vat_name = fixed_rates[self.vat_rate]
+                add_element(dph, f"Zaklad{vat_name}", castka_zaklad)
                 if self.vat_rate > 0:
-                    add_element(dph, f"DPH{self.vat_rate}", castka_dph)
-                fixed_rates.remove(self.vat_rate)
-                for rate in fixed_rates:
+                    add_element(dph, f"DPH{vat_name}", castka_dph)
+                fixed_rates.pop(self.vat_rate)
+                for rate in fixed_rates.values():
                     add_element(dph, f"Zaklad{rate}", "0")
                 for rate in fixed_rates:
                     if rate > 0:
