@@ -80,8 +80,10 @@ TOPICS = (
 )
 
 HOSTED_UPGRADES = {
-    "hosted:test": "hosted:test",
-    "hosted:test-1": "hosted:test-2",
+    # Used in tests
+    "test:test": "test:test",
+    "test:test-1": "test:test-2",
+    # Migration to new plans
     "hosted:basic": "hosted:medium",
     "hosted:medium": "hosted:advanced",
     "hosted:advanced": "hosted:enterprise",

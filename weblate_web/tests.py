@@ -568,19 +568,19 @@ class FakturaceTestCase(UserTestCase):
                     category=PackageCategory.PACKAGE_SUPPORT,
                 ),
                 Package(
-                    name="hosted:test-1-m",
+                    name="test:test-1-m",
                     verbose="Weblate hosting (basic)",
                     price=42,
                     category=PackageCategory.PACKAGE_DEDICATED,
                 ),
                 Package(
-                    name="hosted:test-1",
+                    name="test:test-1",
                     verbose="Weblate hosting (basic)",
                     price=420,
                     category=PackageCategory.PACKAGE_DEDICATED,
                 ),
                 Package(
-                    name="hosted:test-2",
+                    name="test:test-2",
                     verbose="Weblate hosting (upgraded)",
                     price=840,
                     category=PackageCategory.PACKAGE_DEDICATED,
@@ -1370,7 +1370,7 @@ class ServiceTest(FakturaceTestCase):
         with override("en"):
             self.login()
             service = self.create_service(
-                years=0, days=3, recurring="", package="hosted:test-1-m"
+                years=0, days=3, recurring="", package="test:test-1-m"
             )
             hosted = service.hosted_subscriptions
             self.assertEqual(
@@ -1394,7 +1394,7 @@ class ServiceTest(FakturaceTestCase):
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
-        self.assertEqual(hosted[0].package.name, "hosted:test-1-m")
+        self.assertEqual(hosted[0].package.name, "test:test-1-m")
         self.assertEqual(hosted[0].payment_obj.amount, 42)
         self.assertEqual(
             hosted[0].expires.date(),
@@ -1407,7 +1407,7 @@ class ServiceTest(FakturaceTestCase):
         with override("en"):
             self.login()
             service = self.create_service(
-                years=0, days=3, recurring="", package="hosted:test-1-m"
+                years=0, days=3, recurring="", package="test:test-1-m"
             )
             response = self.client.post(
                 reverse("subscription-pay", kwargs={"pk": service.pk}),
@@ -1426,7 +1426,7 @@ class ServiceTest(FakturaceTestCase):
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
-        self.assertEqual(hosted[0].package.name, "hosted:test-1")
+        self.assertEqual(hosted[0].package.name, "test:test-1")
         self.assertEqual(hosted[0].payment_obj.amount, 420)
         self.assertEqual(
             hosted[0].expires.date(),
@@ -1488,7 +1488,7 @@ class ServiceTest(FakturaceTestCase):
             self.login()
             response = self.client.get(
                 reverse("subscription-new"),
-                {"plan": "hosted:test-1"},
+                {"plan": "test:test-1"},
                 follow=True,
             )
             payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
@@ -1506,14 +1506,14 @@ class ServiceTest(FakturaceTestCase):
         with override("en"):
             self.login()
             service = self.create_service(
-                years=0, days=3, recurring="", package="hosted:test-1"
+                years=0, days=3, recurring="", package="test:test-1"
             )
             suggestions = service.get_suggestions()
             self.assertEqual(len(suggestions), 1)
-            self.assertEqual(suggestions[0][0], "hosted:test-2")
+            self.assertEqual(suggestions[0][0], "test:test-2")
             response = self.client.get(
                 reverse("subscription-new"),
-                {"plan": "hosted:test-2", "service": service.pk},
+                {"plan": "test:test-2", "service": service.pk},
                 follow=True,
             )
             payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
@@ -1528,7 +1528,7 @@ class ServiceTest(FakturaceTestCase):
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
-        self.assertEqual(hosted[0].package.name, "hosted:test-2")
+        self.assertEqual(hosted[0].package.name, "test:test-2")
 
 
 class CommandsTestCase(FakturaceTestCase):
