@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import json
 from datetime import date
-from typing import TYPE_CHECKING, cast
+from typing import cast
 
 import responses
 from django.core import mail
@@ -30,6 +30,7 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
+from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.tests import (
     THEPAY2_MOCK_SETTINGS,
     mock_vies,
@@ -40,9 +41,6 @@ from weblate_web.tests import (
 from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
 from .models import Customer, Payment
 from .validators import validate_vatin
-
-if TYPE_CHECKING:
-    from weblate_web.invoices.models import Invoice
 
 CUSTOMER = {
     "name": "Michal Čihař",
@@ -310,6 +308,45 @@ class BackendTest(BackendBaseTestCase):
         self.maxDiff = None
         self.assertEqual(
             payment.details["transaction"]["recipient_message"], proforma_id
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank(self):
+        mock_vies()
+        customer = Customer.objects.create(**CUSTOMER)
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        invoice.invoiceitem_set.create(
+            description="Test item",
+            unit_price=100,
+        )
+
+        responses.add(responses.GET, FIO_API, body=json.dumps(FIO_TRASACTIONS))
+        FioBank.fetch_payments()
+        self.assertFalse(invoice.paid_payment_set.exists())
+        self.assertEqual(len(mail.outbox), 0)
+
+        received = FIO_TRASACTIONS.copy()
+        transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
+        transaction[0]["column16"]["value"] = invoice.number
+        transaction[1]["column16"]["value"] = invoice.number
+        transaction[1]["column1"]["value"] = int(invoice.total_amount)
+        responses.replace(responses.GET, FIO_API, body=json.dumps(received))
+        FioBank.fetch_payments()
+        self.assertTrue(invoice.paid_payment_set.exists())
+        payment = invoice.paid_payment_set.get()
+        self.maxDiff = None
+        self.assertEqual(
+            payment.details["transaction"]["recipient_message"], invoice.number
         )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
