@@ -705,7 +705,7 @@ class Invoice(models.Model):
             recurring=recurring,
             extra=self.extra,
             customer=self.customer,
-            currency=CURRENCY_MAP[self.currency],
+            currency=CURRENCY_MAP[cast("Currency", self.currency)],
             backend=backend,
             repeat=repeat,
         )
