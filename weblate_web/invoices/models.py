@@ -106,6 +106,16 @@ class Currency(models.IntegerChoices):
     GBP = 3, "GBP"
 
 
+# Map Currency object to currencies used by the payments
+# TODO: payments model should be migrated to use Currency
+CURRENCY_MAP: dict[Currency, int] = {
+    Currency.EUR: 0,
+    Currency.CZK: 3,
+    Currency.USD: 2,
+    Currency.GBP: 4,
+}
+
+
 InfoType = Literal["number", "short_number", "iban", "bic", "bank", "holder"]
 
 
@@ -695,6 +705,7 @@ class Invoice(models.Model):
             recurring=recurring,
             extra=self.extra,
             customer=self.customer,
+            currency=CURRENCY_MAP[self.currency],
             backend=backend,
             repeat=repeat,
         )
