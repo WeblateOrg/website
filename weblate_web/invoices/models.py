@@ -650,6 +650,27 @@ class Invoice(models.Model):
             extra=extra if extra is not None else self.extra,
         )
         for item in self.all_items:
+            if kind == InvoiceKind.DRAFT:
+                # TODO: figure out start/end dates
+                if item.package:
+                    # Load description and price from the package
+                    invoice.invoiceitem_set.create(
+                        quantity=item.quantity,
+                        quantity_unit=item.quantity_unit,
+                        package=item.package,
+                        start_date=item.start_date,
+                        end_date=item.end_date,
+                    )
+                else:
+                    invoice.invoiceitem_set.create(
+                        description=item.description,
+                        quantity=item.quantity,
+                        quantity_unit=item.quantity_unit,
+                        unit_price=item.unit_price,
+                        package=item.package,
+                        start_date=item.start_date,
+                        end_date=item.end_date,
+                    )
             invoice.invoiceitem_set.create(
                 description=item.description,
                 quantity=item.quantity,
