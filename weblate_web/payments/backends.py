@@ -244,14 +244,13 @@ def get_backend(name: str) -> type[Backend]:
 def list_backends(
     *, exclude_names: set[str] | None = None, currency: str = "EUR"
 ) -> list[type[Backend]]:
-    result = [
+    return [
         backend
         for backend in BACKENDS.values()
         if (not backend.debug or settings.PAYMENT_DEBUG)
         and currency in backend.supported_currencies
         and (exclude_names is None or backend.name not in exclude_names)
     ]
-    return sorted(result, key=lambda x: x.name)
 
 
 class InvalidState(ValueError):
