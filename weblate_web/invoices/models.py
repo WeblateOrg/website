@@ -634,6 +634,8 @@ class Invoice(models.Model):
         *,
         kind: InvoiceKind,
         prepaid: bool = True,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
         extra: dict[str, int] | None = None,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
@@ -651,15 +653,14 @@ class Invoice(models.Model):
         )
         for item in self.all_items:
             if kind == InvoiceKind.DRAFT:
-                # TODO: figure out start/end dates
                 if item.package:
                     # Load description and price from the package
                     invoice.invoiceitem_set.create(
                         quantity=item.quantity,
                         quantity_unit=item.quantity_unit,
                         package=item.package,
-                        start_date=item.start_date,
-                        end_date=item.end_date,
+                        start_date=start_date or item.start_date,
+                        end_date=end_date or item.end_date,
                     )
                 else:
                     invoice.invoiceitem_set.create(
@@ -668,8 +669,8 @@ class Invoice(models.Model):
                         quantity_unit=item.quantity_unit,
                         unit_price=item.unit_price,
                         package=item.package,
-                        start_date=item.start_date,
-                        end_date=item.end_date,
+                        start_date=start_date or item.start_date,
+                        end_date=end_date or item.end_date,
                     )
             invoice.invoiceitem_set.create(
                 description=item.description,
@@ -677,8 +678,8 @@ class Invoice(models.Model):
                 quantity_unit=item.quantity_unit,
                 unit_price=item.unit_price,
                 package=item.package,
-                start_date=item.start_date,
-                end_date=item.end_date,
+                start_date=start_date or item.start_date,
+                end_date=end_date or item.end_date,
             )
         return invoice
 

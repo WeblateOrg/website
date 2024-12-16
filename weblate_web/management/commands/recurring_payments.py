@@ -27,7 +27,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from weblate_web.invoices.models import InvoiceKind
-from weblate_web.models import Donation, Service, Subscription
+from weblate_web.models import Donation, Service, Subscription, get_period_delta
 from weblate_web.payments.models import Payment
 from weblate_web.payments.utils import send_notification
 
@@ -128,11 +128,12 @@ class Command(BaseCommand):
             service.create_backup()
 
     @staticmethod
-    def peform_payment(
+    def peform_payment(  # noqa: PLR0913
         payment,
         past_payments,
         *,
-        recurring: str = "",
+        recurring: str,
+        end_date: datetime,
         amount: int | None = None,
         extra: dict[str, int],
     ):
@@ -148,7 +149,10 @@ class Command(BaseCommand):
         # Create repeated payment
         if payment.paid_invoice:
             invoice = payment.paid_invoice.duplicate(
-                kind=InvoiceKind.DRAFT, extra=extra
+                kind=InvoiceKind.DRAFT,
+                extra=extra,
+                start_date=end_date + timedelta(days=1),
+                end_date=end_date + get_period_delta(recurring),
             )
             repeated = invoice.create_payment(
                 recurring=recurring, backend=payment.backend, repeat=payment
@@ -195,6 +199,7 @@ class Command(BaseCommand):
                 subscription.list_payments(),
                 amount=subscription.package.price,
                 recurring=subscription.package.get_repeat(),
+                end_date=subscription.expires,
                 extra={"subscription": subscription.pk},
             )
 
@@ -215,5 +220,6 @@ class Command(BaseCommand):
                 payment,
                 donation.list_payments(),
                 recurring=payment.recurring,
+                end_date=donation.expires,
                 extra={"donation": donation.pk},
             )
