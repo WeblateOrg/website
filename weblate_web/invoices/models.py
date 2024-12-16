@@ -634,8 +634,8 @@ class Invoice(models.Model):
         *,
         kind: InvoiceKind,
         prepaid: bool = True,
-        start_date: datetime | None = None,
-        end_date: datetime | None = None,
+        start_date: datetime.datetime | None = None,
+        end_date: datetime.datetime | None = None,
         extra: dict[str, int] | None = None,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
