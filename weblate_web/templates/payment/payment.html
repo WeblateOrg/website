@@ -20,7 +20,7 @@
             <div class="form-line">
               <div class="line-left">{% trans "Payment amount" %}</div>
               <div class="line-right">
-                {{ object.vat_amount | price_format }}
+                {{ object.vat_amount | price_format:object.get_currency_display }}
                 {% if object.customer.needs_vat %}
                   {% trans "(including VAT)" %}
                 {% endif %}
