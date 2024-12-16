@@ -129,7 +129,12 @@ class Command(BaseCommand):
 
     @staticmethod
     def peform_payment(
-        payment, past_payments, *, amount: int | None = None, extra: dict[str, int]
+        payment,
+        past_payments,
+        *,
+        recurring: str = "",
+        amount: int | None = None,
+        extra: dict[str, int],
     ):
         # Alllow at most three failures of current payment method
         rejected_payments = past_payments.filter(
@@ -146,7 +151,7 @@ class Command(BaseCommand):
                 kind=InvoiceKind.DRAFT, extra=extra
             )
             repeated = invoice.create_payment(
-                recurring=payment.recurring, backend=payment.backend, repeat=payment
+                recurring=recurring, backend=payment.backend, repeat=payment
             )
         else:
             repeated = payment.repeat_payment(amount=amount, extra=extra)
@@ -189,6 +194,7 @@ class Command(BaseCommand):
                 payment,
                 subscription.list_payments(),
                 amount=subscription.package.price,
+                recurring=subscription.package.get_repeat(),
                 extra={"subscription": subscription.pk},
             )
 
@@ -206,5 +212,8 @@ class Command(BaseCommand):
                 continue
 
             cls.peform_payment(
-                payment, donation.list_payments(), extra={"donation": donation.pk}
+                payment,
+                donation.list_payments(),
+                recurring=payment.recurring,
+                extra={"donation": donation.pk},
             )
