@@ -98,15 +98,24 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ("service", "package", "created", "expires", "price")
+    list_display = (
+        "service__site_url",
+        "service__customer__name",
+        "package",
+        "created",
+        "expires",
+        "price",
+    )
     search_fields = (
         "service__customer__email",
+        "service__customer__name",
         "service__customer__users__email",
         "service__report__site_url",
         "service__report__site_title",
         "service__site_url",
         "service__note",
     )
+    list_filter = ("enabled",)
     autocomplete_fields = ("service",)
 
 
