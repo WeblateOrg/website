@@ -18,11 +18,11 @@
 
 {% block breadcrumbs %}
   <div class="breadcrumbs">
-    <a href="{% url 'crm:index' %}">Home</a>
+    <a href="{% url 'crm:index' %}">CRM</a>
 
     {% block breadcrum_list %}
     {% endblock breadcrum_list %}
 
-    {% if title %}› {{ title }}{% endif %}
+    {% if title and title != "CRM" %}› {{ title }}{% endif %}
   </div>
 {% endblock %}
