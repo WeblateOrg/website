@@ -108,6 +108,7 @@ class Customer(models.Model):
         max_length=200,
         default="",
         verbose_name=gettext_lazy("Company or individual name"),
+        db_index=True,
     )
     address = models.CharField(
         max_length=200,
