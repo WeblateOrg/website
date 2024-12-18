@@ -3,11 +3,15 @@
 {% load i18n %}
 {% load static %}
 
+{% block breadcrum_list %}
+  › <a href="{% url "crm:customer-list" %}">Customers</a>
+{% endblock breadcrum_list %}
+
 {% block content %}
-
-
   <section class="content">
-    <p>{{ object.name }}</p>
+    <p>
+      {{ object.name }} {{ object.vat }} {{ object.city }} {{ object.get_country_display }} <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
+    </p>
     <h2>Services</h2>
     {% include "weblate_web/service_list_content.html" with object_list=object.service_set.all %}
     <h2>Agreements</h2>

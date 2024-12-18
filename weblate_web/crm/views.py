@@ -152,7 +152,7 @@ class InvoiceListView(CRMMixin, ListView):
 class CustomerListView(CRMMixin, ListView):
     model = Customer
     permission = "payments.view_customer"
-    title = "Services"
+    title = "Customers"
 
 
 class CustomerDetailView(CRMMixin, DetailView):

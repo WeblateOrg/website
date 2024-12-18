@@ -3,6 +3,10 @@
 {% load i18n %}
 {% load static %}
 
+{% block breadcrum_list %}
+  › <a href="{% url "crm:service-list" kind="all" %}">Services</a>
+{% endblock breadcrum_list %}
+
 {% block content %}
 
 

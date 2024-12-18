@@ -9,7 +9,9 @@
       {% for object in object_list %}
         <tr>
           <th>{{ object.name }}</th>
-          <td>{{ object.vat_id }}</td>
+          <td>{{ object.vat }}</td>
+          <td>{{ object.city }}</td>
+          <td>{{ object.get_country_display }}</td>
           <td>
             <a href="{{ object.get_absolute_url }}">Details</a>
           </td>
