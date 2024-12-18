@@ -122,6 +122,7 @@ class InvoiceListView(CRMMixin, ListView):
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoices"
+    paginate_by = 100
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -134,7 +135,7 @@ class InvoiceListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = super().get_queryset().order_by("number")
         match self.kwargs["kind"]:
             case "unpaid":
                 return qs.filter(
