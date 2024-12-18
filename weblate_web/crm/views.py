@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.core.exceptions import (
     PermissionDenied,
 )
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.utils.translation import gettext
 from django.views.generic import DetailView, ListView, TemplateView
@@ -103,8 +104,9 @@ class InvoiceListView(CRMMixin, ListView):
         match self.kwargs["kind"]:
             case "unpaid":
                 return qs.filter(
+                    Q(paid_payment_set__state__in={Payment.NEW, Payment.PENDING})
+                    | Q(paid_payment_set=None),
                     kind=InvoiceKind.INVOICE,
-                    paid_payment_set__state__in={Payment.NEW, Payment.PENDING},
                 )
             case "quote":
                 return qs.filter(kind=InvoiceKind.QUOTE)
