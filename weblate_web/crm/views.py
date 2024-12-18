@@ -78,12 +78,13 @@ class ServiceListView(CRMMixin, ListView):
                         continue
                     if not subscription.could_be_obsolete():
                         subscriptions.append(subscription.pk)
-                return qs.filter(subscription__id__in=subscriptions)
+                return qs.filter(subscription__id__in=subscriptions).distinct()
             case "extended":
                 return qs.filter(
                     subscription__expires__gte=timezone.now(),
                     subscription__package__name="extended",
-                )
+                    subscription__enabled=True,
+                ).distinct()
         raise ValueError(self.kwargs["kind"])
 
 
