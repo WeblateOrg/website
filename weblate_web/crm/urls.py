@@ -23,7 +23,7 @@ from .views import IndexView, InvoiceListView, ServiceDetailView, ServiceListVie
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
-    path("services/", ServiceListView.as_view(), name="service-list"),
+    path("services/<slug:kind>/", ServiceListView.as_view(), name="service-list"),
     path(
         "services/detail/<int:pk>/", ServiceDetailView.as_view(), name="service-detail"
     ),

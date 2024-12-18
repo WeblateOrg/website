@@ -4,17 +4,16 @@ from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.exceptions import (
-    PermissionDenied,
-)
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.translation import gettext
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.forms import AddPaymentForm
 from weblate_web.invoices.models import Invoice, InvoiceKind
-from weblate_web.models import Service
+from weblate_web.models import Service, Subscription
 from weblate_web.payments.models import Payment
 from weblate_web.utils import show_form_errors
 
@@ -52,6 +51,40 @@ class ServiceListView(CRMMixin, ListView):
     model = Service
     permission = "weblate_web.view_service"
     title = "Services"
+
+    def get_title(self) -> str:
+        match self.kwargs["kind"]:
+            case "all":
+                return "All services"
+            case "expired":
+                return "Expired services"
+            case "extended":
+                return "Extended support services"
+        raise ValueError(self.kwargs["kind"])
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        match self.kwargs["kind"]:
+            case "all":
+                return qs
+            case "expired":
+                possible_subscriptions = Subscription.objects.filter(
+                    expires__lte=timezone.now(), enabled=True
+                ).exclude(payment=None)
+                subscriptions = []
+                for subscription in possible_subscriptions:
+                    # Skip one-time payments and the ones with recurrence configured
+                    if not subscription.package.get_repeat():
+                        continue
+                    if not subscription.could_be_obsolete():
+                        subscriptions.append(subscription.pk)
+                return qs.filter(subscription__id__in=subscriptions)
+            case "extended":
+                return qs.filter(
+                    subscription__expires__gte=timezone.now(),
+                    subscription__package__name="extended",
+                )
+        raise ValueError(self.kwargs["kind"])
 
 
 class ServiceDetailView(CRMMixin, DetailView):

@@ -72,7 +72,7 @@
           </caption>
           <tr>
             <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:service-list' %}">Services</a>
+              <a href="{% url 'crm:service-list' kind="all" %}">All services</a>
             </th>
 
             {% if perms.weblate_web.add_service %}
@@ -84,7 +84,33 @@
             {% endif %}
 
             <td>
-              <a href="{% url 'crm:service-list' %}"
+              <a href="{% url 'crm:service-list' kind="all" %}"
+                 class="viewlink"
+                 aria-describedby="row-invoices">{% translate "View" %}</a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" id="row-invoices">
+              <a href="{% url 'crm:service-list' kind="expired" %}">Expired services</a>
+            </th>
+
+            <td></td>
+
+            <td>
+              <a href="{% url 'crm:service-list' kind="expired" %}"
+                 class="viewlink"
+                 aria-describedby="row-invoices">{% translate "View" %}</a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" id="row-invoices">
+              <a href="{% url 'crm:service-list' kind="extended" %}">Extended support services</a>
+            </th>
+
+            <td></td>
+
+            <td>
+              <a href="{% url 'crm:service-list' kind="extended" %}"
                  class="viewlink"
                  aria-describedby="row-invoices">{% translate "View" %}</a>
             </td>
