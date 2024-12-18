@@ -10,7 +10,17 @@
 {% block content %}
   <section class="content">
     <p>
-      {{ object.name }} {{ object.vat }} {{ object.city }} {{ object.get_country_display }} <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
+      {{ object.name }}
+      <br>
+      {{ object.email }}
+      <br>
+      {{ object.vat }}
+      <br>
+      {{ object.city }}
+      <br>
+      {{ object.get_country_display }}
+      <br>
+      <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
     </p>
     <h2>Services</h2>
     {% include "weblate_web/service_list_content.html" with object_list=object.service_set.all %}
