@@ -48,6 +48,19 @@
         </tr>
       {% endfor %}
     </table>
+    <h2>Payments</h2>
+    <table>
+      {% for payment in object.payment_set.all %}
+        <tr>
+          <td>{{ payment.get_payment_state }}</td>
+          <td>{{ payment.get_amount_display }} {{ payment.get_currency_display }}</td>
+          <td>{{ payment.description }}</td>
+          <td>
+            <a href="{% url 'admin:payments_payment_change' object_id=payment.pk %}">Edit</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
 
   </section>
 
