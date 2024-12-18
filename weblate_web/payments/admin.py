@@ -57,3 +57,4 @@ class PaymentAdmin(admin.ModelAdmin):
     readonly_fields = ("created",)
     date_hierarchy = "created"
     ordering = ("-created",)
+    autocomplete_fields = ("customer",)
