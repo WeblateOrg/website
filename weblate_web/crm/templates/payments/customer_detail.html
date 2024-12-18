@@ -52,6 +52,7 @@
     <table>
       {% for payment in object.payment_set.all %}
         <tr>
+          <td>{{ payment.created }}</td>
           <td>{{ payment.get_state_display }}</td>
           <td>{{ payment.get_amount_display }} {{ payment.get_currency_display }}</td>
           <td>{{ payment.description }}</td>
