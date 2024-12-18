@@ -160,5 +160,8 @@ class CustomerDetailView(CRMMixin, DetailView):
     permission = "payments.view_customer"
     title = "Customer detail"
 
+    def get_queryset(self):
+        return super().get_queryset().order_by("name")
+
     def get_title(self) -> str:
         return self.object.name
