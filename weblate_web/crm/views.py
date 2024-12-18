@@ -153,6 +153,7 @@ class CustomerListView(CRMMixin, ListView):
     model = Customer
     permission = "payments.view_customer"
     title = "Customers"
+    paginate_by = 100
 
     def get_queryset(self):
         return super().get_queryset().order_by("name")
