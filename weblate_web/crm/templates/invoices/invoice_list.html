@@ -13,7 +13,7 @@
           <td>{{ object.get_description }}</td>
           <td>{{ object.customer }}</td>
           <td>
-            <a href="{{ object.get_absolute_url }}">Details</a>
+            <a href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">Details</a>
           </td>
         </tr>
       {% endfor %}
