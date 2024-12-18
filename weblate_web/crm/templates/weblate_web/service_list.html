@@ -5,26 +5,6 @@
 
 {% block content %}
   <section class="content">
-    <table>
-      {% for object in object_list %}
-        <tr>
-          <th>{{ object.site_title }}</th>
-          <td>
-            <a href="{{ object.site_url }}">{{ object.site_url }}</a>
-          </td>
-          <td>{{ object.site_version }}</td>
-          <td>{{ object.get_status_display }}</td>
-          <td>
-            {% for subscription in object.subscription_set.all %}
-              {{ subscription.package }}
-              {% if not forloop.last %},{% endif %}
-            {% endfor %}
-          </td>
-          <td>
-            <a href="{{ object.get_absolute_url }}">Details</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
+    {% include "weblate_web/service_list_content.html" %}
   </section>
 {% endblock %}

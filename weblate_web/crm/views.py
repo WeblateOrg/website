@@ -14,7 +14,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 from weblate_web.forms import AddPaymentForm
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
-from weblate_web.payments.models import Payment
+from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import show_form_errors
 
 if TYPE_CHECKING:
@@ -147,3 +147,12 @@ class InvoiceListView(CRMMixin, ListView):
             case "invoice":
                 return qs.filter(kind=InvoiceKind.INVOICE)
         raise ValueError(self.kwargs["kind"])
+
+
+class CustomerDetailView(CRMMixin, DetailView):
+    model = Customer
+    permission = "weblate_web.change_service"
+    title = "Customer detail"
+
+    def get_title(self) -> str:
+        return self.object.name

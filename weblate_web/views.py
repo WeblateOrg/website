@@ -524,9 +524,12 @@ class CustomerDPAView(CustomerBaseView, FormView):
 
 @login_required
 def agreement_download_view(request: AuthenticatedHttpRequest, pk: int):
-    agreement = get_object_or_404(
-        Agreement, pk=pk, customer__in=Customer.objects.for_user(request.user)
-    )
+    if request.user.is_staff:
+        agreement = get_object_or_404(Agreement, pk=pk)
+    else:
+        agreement = get_object_or_404(
+            Agreement, pk=pk, customer__in=Customer.objects.for_user(request.user)
+        )
     return FileResponse(
         agreement.path.open("rb"),
         as_attachment=True,

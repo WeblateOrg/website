@@ -1,0 +1,28 @@
+{% extends "crm/base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+
+  <section class="content">
+    <p>{{ object.name }}</p>
+    <h2>Services</h2>
+    {% include "weblate_web/service_list_content.html" with object_list=object.service_set.all %}
+    <h2>Agreements</h2>
+    <table>
+      {% for agreement in object.agreement_set.all %}
+        <tr>
+          <td>{{ agreement.get_kind_display }}</td>
+          <td>{{ agreement.signed }}</td>
+          <td>
+            <a href="{% url 'agreement-download' pk=agreement.pk %}">Download</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  </section>
+
+{% endblock %}

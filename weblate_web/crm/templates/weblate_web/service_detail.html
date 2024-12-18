@@ -9,6 +9,7 @@
   <section class="content">
     <p>
       {{ object.site_title }}
+      <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.name }}</a>
       <a href="{{ object.site_url }}">{{ object.site_url }}</a>
       {{ object.site_version }}
       {{ object.get_status_display }}
