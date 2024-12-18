@@ -24,6 +24,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from weblate_web.models import Service
+from weblate_web.payments.models import Payment
 
 
 class Command(BaseCommand):
@@ -47,3 +48,13 @@ class Command(BaseCommand):
             self.stdout.write(f"Removing blank service: {service}")
             if delete:
                 service.delete()
+
+        for payment in Payment.objects.filter(
+            state=Payment.NEW,
+            created__lte=timezone.now() - timedelta(days=365),
+        ):
+            self.stdout.write(
+                f"Removing not paid payment for {payment.customer}: {payment.description}"
+            )
+            if delete:
+                payment.delete()
