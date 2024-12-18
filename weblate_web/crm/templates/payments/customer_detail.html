@@ -26,6 +26,18 @@
         </tr>
       {% endfor %}
     </table>
+    <h2>Donations</h2>
+    <table>
+      {% for donation in object.donation_set.all %}
+        <tr>
+          <td>{{ donation.get_reward_display }}</td>
+          <td>{{ donation.get_amount }} EUR</td>
+          <td>
+            <a href="{% url 'admin:weblate_web_donation_change' object_id=donation.pk %}">Edit</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
 
   </section>
 
