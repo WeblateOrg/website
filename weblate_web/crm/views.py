@@ -63,7 +63,7 @@ class ServiceListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = super().get_queryset().prefetch_related("subscription_set")
         match self.kwargs["kind"]:
             case "all":
                 return qs

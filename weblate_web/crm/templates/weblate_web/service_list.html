@@ -15,6 +15,12 @@
           <td>{{ object.site_version }}</td>
           <td>{{ object.get_status_display }}</td>
           <td>
+            {% for subscription in object.subscription_set.all %}
+              {{ subscription.package }}
+              {% if not forloop.last %},{% endif %}
+            {% endfor %}
+          </td>
+          <td>
             <a href="{{ object.get_absolute_url }}">Details</a>
           </td>
         </tr>
