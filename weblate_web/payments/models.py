@@ -162,6 +162,9 @@ class Customer(models.Model):
             return f"{self.name} ({self.email})"
         return self.email
 
+    def get_absolute_url(self) -> str:
+        return reverse("crm:customer-detail", kwargs={"pk": self.pk})
+
     @property
     def short_filename(self) -> str:
         """Short customer name suitable for file names."""

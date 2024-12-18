@@ -149,9 +149,15 @@ class InvoiceListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
 
+class CustomerListView(CRMMixin, ListView):
+    model = Customer
+    permission = "payments.view_customer"
+    title = "Services"
+
+
 class CustomerDetailView(CRMMixin, DetailView):
     model = Customer
-    permission = "weblate_web.change_service"
+    permission = "payments.view_customer"
     title = "Customer detail"
 
     def get_title(self) -> str:

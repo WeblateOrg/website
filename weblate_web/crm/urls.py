@@ -21,6 +21,7 @@ from django.urls import path
 
 from .views import (
     CustomerDetailView,
+    CustomerListView,
     IndexView,
     InvoiceListView,
     ServiceDetailView,
@@ -35,7 +36,12 @@ urlpatterns = [
     ),
     path("invoices/<slug:kind>/", InvoiceListView.as_view(), name="invoice-list"),
     path(
-        "customer/detail/<int:pk>/",
+        "customers/",
+        CustomerListView.as_view(),
+        name="customer-list",
+    ),
+    path(
+        "customers/detail/<int:pk>/",
         CustomerDetailView.as_view(),
         name="customer-detail",
     ),

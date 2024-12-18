@@ -13,6 +13,34 @@
 {% block content %}
   <div id="content-main">
     <div class="module">
+      {% if perms.payments.view_customer %}
+        <table>
+          <caption>
+            Customers
+          </caption>
+          <tr>
+            <th scope="row" id="row-invoices">
+              <a href="{% url 'crm:customer-list' %}">Customers</a>
+            </th>
+
+            {% if perms.payments.add_customer %}
+              <td>
+                <a href="{% url "admin:payments_customer_add" %}"
+                   class="addlink"
+                   aria-describedby="row-invoices">{% translate "Add" %}</a>
+              </td>
+            {% else %}
+              <td></td>
+            {% endif %}
+
+            <td>
+              <a href="{% url 'crm:customer-list' %}"
+                 class="viewlink"
+                 aria-describedby="row-invoices">{% translate "View" %}</a>
+            </td>
+          </tr>
+        </table>
+      {% endif %}
       {% if perms.invoices %}
         <table>
           <caption>

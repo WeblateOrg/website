@@ -1,0 +1,20 @@
+{% extends "crm/base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+  <section class="content">
+    <table>
+      {% for object in object_list %}
+        <tr>
+          <th>{{ object.name }}</th>
+          <td>{{ object.vat_id }}</td>
+          <td>
+            <a href="{{ object.get_absolute_url }}">Details</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </section>
+{% endblock %}
