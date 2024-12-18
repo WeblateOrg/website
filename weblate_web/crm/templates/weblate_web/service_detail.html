@@ -12,12 +12,16 @@
       <a href="{{ object.site_url }}">{{ object.site_url }}</a>
       {{ object.site_version }}
       {{ object.get_status_display }}
+      <a href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">Edit</a>
     </p>
     <table>
       {% for subscription in object.subscription_set.all %}
         <tr>
           <th>{{ subscription }}</th>
           <td>{{ subscription.expires }}</td>
+          <td>
+            <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
+          </td>
         </tr>
       {% endfor %}
     </table>
