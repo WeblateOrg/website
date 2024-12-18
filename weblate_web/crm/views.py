@@ -135,7 +135,7 @@ class InvoiceListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
     def get_queryset(self):
-        qs = super().get_queryset().order_by("number")
+        qs = super().get_queryset().order_by("-number")
         match self.kwargs["kind"]:
             case "unpaid":
                 return qs.filter(
