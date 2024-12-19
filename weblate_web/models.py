@@ -283,7 +283,7 @@ def process_donation(payment):
 
 
 def get_service(payment: Payment, customer: Customer):
-    if payment.extra["service"] is None:
+    if payment.extra.get("service") is None:
         service = customer.service_set.create()
         service.was_created = True
         return service
