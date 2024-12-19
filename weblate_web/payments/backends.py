@@ -395,13 +395,14 @@ class Backend:
             self.payment.draft_invoice = invoice
         else:
             self.payment.paid_invoice = invoice
+            self.payment.invoice = invoice.number
 
         # Generate PDF
         if generate:
             invoice.generate_files()
 
         # Update reference
-        self.payment.save(update_fields=["paid_invoice", "draft_invoice"])
+        self.payment.save(update_fields=["paid_invoice", "draft_invoice", "invoice"])
 
     def send_notification(
         self, notification: str, include_invoice: bool = True
