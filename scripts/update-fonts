@@ -19,6 +19,7 @@ for name, font in FONTS.items():
         **font,
     )
     destination = Path(font["destination"])
+    destination.mkdir(parents=True, exist_ok=True)
     print(f"Download {url}...")
     response = requests.get(url, timeout=30)
     response.raise_for_status()

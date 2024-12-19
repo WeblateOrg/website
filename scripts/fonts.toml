@@ -1,4 +1,5 @@
 [source-code-woff2]
+# Used in CSS
 destination = "weblate_web/static/vendor/font-source/WOFF2/TTF"
 extract = [
   "WOFF2/TTF/SourceCodePro-Bold.ttf.woff2",
@@ -12,7 +13,19 @@ url = "https://github.com/adobe-fonts/source-code-pro/releases/download/{version
 # renovate: datasource=github-releases depName=adobe-fonts/source-code-pro
 version = "2.042R-u/1.062R-i/1.026R-vf"
 
+[source-sans-ttf]
+# Used for PDF rendering
+destination = "weblate_web/static/vendor/font-source/TTF"
+extract = [
+  "TTF/SourceSans3-Bold.ttf",
+  "TTF/SourceSans3-Regular.ttf"
+]
+url = "https://github.com/adobe-fonts/source-sans/releases/download/{version}/TTF-source-sans-{version}.zip"
+# renovate: datasource=github-releases depName=adobe-fonts/source-sans
+version = "3.052R"
+
 [source-sans-woff2]
+# Used in CSS
 destination = "weblate_web/static/vendor/font-source/WOFF2/TTF"
 extract = [
   "WOFF2/TTF/SourceSans3-Black.ttf.woff2",
