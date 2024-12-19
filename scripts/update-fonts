@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+
+import tomllib
+from io import BytesIO
+from pathlib import Path, PurePath
+from urllib.parse import quote
+from zipfile import ZipFile
+
+import requests
+
+with open("scripts/fonts.toml", "rb") as handle:
+    FONTS = tomllib.load(handle)
+
+for name, font in FONTS.items():
+    print(f"Processing {name}...")
+    url = font["url"].format(
+        version_quoted=quote(font["version"], safe=""),
+        version_underscore=font["version"].replace("/", "_").replace("-vf", "vf"),
+        **font,
+    )
+    destination = Path(font["destination"])
+    print(f"Download {url}...")
+    response = requests.get(url, timeout=30)
+    response.raise_for_status()
+    with ZipFile(BytesIO(response.content)) as zipfile:
+        for filename in font["extract"]:
+            output = destination / PurePath(filename).name
+            print(f"Writing out {output}...")
+            output.write_bytes(zipfile.read(filename))
