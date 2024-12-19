@@ -127,6 +127,15 @@
     {
       "customType": "regex",
       "fileMatch": [
+        "^scripts/fonts\\.toml$"
+      ],
+      "matchStrings": [
+        "renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s+version = (?<currentValue>.*)\\s"
+      ]
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
         "^\\.github/workflows/[^/]+\\.ya?ml$"
       ],
       "matchStrings": [
