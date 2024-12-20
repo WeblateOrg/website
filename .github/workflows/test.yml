@@ -26,9 +26,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - uses: astral-sh/setup-uv@v5
       with:
-        enable-cache: true
-        cache-dependency-glob: ''
-        cache-suffix: ${{ matrix.python-version }}
+        cache-suffix: test
     - name: Install pip dependencies
       run: uv pip install --system -r requirements-dev.txt
     - name: Compile MO files
