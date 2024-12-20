@@ -144,7 +144,7 @@ def get_customer(
     request: AuthenticatedHttpRequest, obj: Service | Donation | None = None
 ) -> Customer:
     # Get from Service / Donation objects
-    if obj and obj.customer:
+    if obj and obj.pk and obj.customer:
         return obj.customer
 
     # Use existing customer for user

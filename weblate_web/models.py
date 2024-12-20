@@ -584,7 +584,7 @@ class Service(models.Model):
         verbose_name_plural = "Customer services"
 
     def __str__(self):
-        return f"{self.get_status_display()}: {self.user_emails}: {self.site_domain}"
+        return f"Service:{self.pk} {self.get_status_display()}: {self.user_emails}: {self.site_domain}"
 
     def get_absolute_url(self):
         return reverse("crm:service-detail", kwargs={"pk": self.pk})
@@ -663,6 +663,8 @@ class Service(models.Model):
 
     @cached_property
     def user_emails(self) -> str:
+        if not self.pk or not self.customer:
+            return ""
         return ", ".join(self.customer.get_notify_emails())
 
     @cached_property
