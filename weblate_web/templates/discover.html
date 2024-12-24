@@ -86,7 +86,8 @@
                   {% endfor %}
                   {% if service.non_matched_projects_count %}
                     <a href="{{ service.site_url }}/projects/" target="_blank" rel="ugc">
-                      <img src="{% static "img/three-dots.svg" %}" title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" />
+                      <img src="{% static "img/three-dots.svg" %}"
+                           title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" />
                     </a>
                   {% endif %}
                   {% if service.pk in user_services %}
