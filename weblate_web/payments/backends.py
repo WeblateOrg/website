@@ -37,9 +37,6 @@ from .models import Payment
 from .utils import send_notification
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
-    from datetime import date, datetime
-
     from django.http import HttpRequest, HttpResponseRedirect
     from django_stubs_ext import StrOrPromise
 
@@ -494,41 +491,6 @@ class DebugPending(DebugPay):
         return True
 
 
-class FioBankAPI(fiobank.FioBank):
-    """
-    Fio API wrapper.
-
-    Backported API from
-    https://github.com/honzajavorek/fiobank/pull/38.
-
-    TODO: Remove this wrapper once it is released.
-    """
-
-    def _fetch_last(
-        self, from_id: str | None = None, from_date: str | date | datetime | None = None
-    ) -> dict:
-        if from_id and from_date:
-            raise ValueError("Only one constraint is allowed.")
-
-        if from_id:
-            self._request("set-last-id", from_id=from_id)
-        elif from_date:
-            self._request("set-last-date", from_date=fiobank.coerce_date(from_date))
-
-        return self._request("last")
-
-    def last(
-        self, from_id: str | None = None, from_date: str | date | datetime | None = None
-    ) -> Generator[dict]:
-        return self._parse_transactions(self._fetch_last(from_id, from_date))
-
-    def last_transactions(
-        self, from_id: str | None = None, from_date: str | date | datetime | None = None
-    ) -> tuple[dict, Generator[dict]]:
-        data = self._fetch_last(from_id, from_date)
-        return (self._parse_info(data), self._parse_transactions(data))
-
-
 @register_backend
 class FioBank(Backend):
     name = "fio-bank"
@@ -567,8 +529,7 @@ class FioBank(Backend):
         else:
             tokens = settings.FIO_TOKEN
         for token in tokens:
-            # TODO: change to fiobank.FioBank(token=token, decimal=True) with fiobank 4.0
-            client = FioBankAPI(token=token)
+            client = fiobank.FioBank(token=token, decimal=True)
             try:
                 info, transactions = client.last_transactions(from_date=from_date)
             except requests.RequestException as error:
