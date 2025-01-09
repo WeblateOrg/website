@@ -586,12 +586,12 @@ class Service(models.Model):
     def __str__(self):
         return f"Service:{self.pk} {self.get_status_display()}: {self.user_emails}: {self.site_domain}"
 
-    def get_absolute_url(self):
-        return reverse("crm:service-detail", kwargs={"pk": self.pk})
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.was_created = False
+
+    def get_absolute_url(self):
+        return reverse("crm:service-detail", kwargs={"pk": self.pk})
 
     def get_discover_text(self):
         return _(self.discover_text)
