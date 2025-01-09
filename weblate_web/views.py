@@ -379,8 +379,7 @@ class PaymentView(FormView, SingleObjectMixin):
             messages.info(
                 self.request,
                 gettext(
-                    "Please provide your billing information to "
-                    "complete the payment."
+                    "Please provide your billing information to complete the payment."
                 ),
             )
             return redirect("payment-customer", pk=self.object.pk)
@@ -414,8 +413,7 @@ class PaymentView(FormView, SingleObjectMixin):
             messages.error(
                 self.request,
                 gettext(
-                    "Please provide your billing information to "
-                    "complete the payment."
+                    "Please provide your billing information to complete the payment."
                 ),
             )
         return super().form_invalid(form)
