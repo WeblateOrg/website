@@ -662,35 +662,25 @@ class Invoice(models.Model):
             extra=extra if extra is not None else self.extra,
         )
         for item in self.all_items:
-            if kind == InvoiceKind.DRAFT:
-                if item.package:
-                    # Load description and price from the package
-                    invoice.invoiceitem_set.create(
-                        quantity=item.quantity,
-                        quantity_unit=item.quantity_unit,
-                        package=item.package,
-                        start_date=start_date or item.start_date,
-                        end_date=end_date or item.end_date,
-                    )
-                else:
-                    invoice.invoiceitem_set.create(
-                        description=item.description,
-                        quantity=item.quantity,
-                        quantity_unit=item.quantity_unit,
-                        unit_price=item.unit_price,
-                        package=item.package,
-                        start_date=start_date or item.start_date,
-                        end_date=end_date or item.end_date,
-                    )
-            invoice.invoiceitem_set.create(
-                description=item.description,
-                quantity=item.quantity,
-                quantity_unit=item.quantity_unit,
-                unit_price=item.unit_price,
-                package=item.package,
-                start_date=start_date or item.start_date,
-                end_date=end_date or item.end_date,
-            )
+            if kind == InvoiceKind.DRAFT and item.package:
+                # Load description and price from the package
+                invoice.invoiceitem_set.create(
+                    quantity=item.quantity,
+                    quantity_unit=item.quantity_unit,
+                    package=item.package,
+                    start_date=start_date or item.start_date,
+                    end_date=end_date or item.end_date,
+                )
+            else:
+                invoice.invoiceitem_set.create(
+                    description=item.description,
+                    quantity=item.quantity,
+                    quantity_unit=item.quantity_unit,
+                    unit_price=item.unit_price,
+                    package=item.package,
+                    start_date=start_date or item.start_date,
+                    end_date=end_date or item.end_date,
+                )
         return invoice
 
     def create_payment(
