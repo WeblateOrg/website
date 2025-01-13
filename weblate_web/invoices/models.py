@@ -403,10 +403,23 @@ class Invoice(models.Model):
         )
 
     @cached_property
+    def total_plus_items_amount(self) -> Decimal:
+        return sum(
+            (
+                item.unit_price * item.quantity
+                for item in self.all_items
+                if item.unit_price > 0
+            ),
+            start=Decimal(0),
+        )
+
+    @cached_property
     def total_discount(self) -> Decimal:
         if not self.discount:
             return Decimal(0)
-        return -self.total_items_amount * self.discount.percents / 100
+        return round_decimal(
+            -self.total_plus_items_amount * self.discount.percents / 100
+        )
 
     @property
     def display_total_discount(self) -> str:

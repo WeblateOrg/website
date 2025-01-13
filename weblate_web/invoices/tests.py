@@ -155,6 +155,14 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 50)
         self.validate_invoice(invoice)
 
+    def test_discount_negative(self):
+        invoice = self.create_invoice(
+            discount=Discount.objects.create(description="Test discount", percents=50)
+        )
+        invoice.invoiceitem_set.create(description="Prepaid amount", unit_price=-10)
+        self.assertEqual(invoice.total_amount, 40)
+        self.validate_invoice(invoice)
+
     def test_discount_vat(self):
         invoice = self.create_invoice(
             discount=Discount.objects.create(description="Test discount", percents=50),
