@@ -148,6 +148,7 @@ class Command(BaseCommand):
 
         # Create repeated payment
         if payment.paid_invoice:
+            # TODO: use package from the current subscriptions instead of copying
             invoice = payment.paid_invoice.duplicate(
                 kind=InvoiceKind.DRAFT,
                 extra=extra,
