@@ -85,7 +85,7 @@ def generate_subaccount_data(
     return {
         "homedirectory": f"weblate/{dirname}",
         "ssh": "1" if access else "0",
-        "external_reachability": "0" if service.hosted_subscriptions else "1",
+        "external_reachability": "1",
         "comment": f"Weblate backup ({service.pk}) {service.site_domain}"[:50],
     }
 
