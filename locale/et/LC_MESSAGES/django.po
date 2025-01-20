@@ -4,7 +4,7 @@
 # Michal Čihař <michal@cihar.com>, 2019.
 # Janar Leas <janar.leas@gmail.com>, 2019.
 # anonymous <noreply@weblate.org>, 2019, 2020.
-# Priit Jõerüüt <hwlate@joeruut.com>, 2020, 2021, 2022, 2023, 2024.
+# Priit Jõerüüt <hwlate@joeruut.com>, 2020, 2021, 2022, 2023, 2024, 2025.
 # Stanislav Lem <justaryo@yandex.ru>, 2020.
 # Janar Leas <janarleas+ubuntuone@googlemail.com>, 2020, 2023.
 # Allan Nordhøy <epost@anotheragency.no>, 2021.
@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-11-07 13:47+0100\n"
-"PO-Revision-Date: 2024-10-14 13:24+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-01-20 08:05+0000\n"
+"Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/weblate/website/"
 "et/>\n"
 "Language: et\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -126,11 +126,9 @@ msgid "None"
 msgstr "Määratlemata"
 
 #: weblate_web/models.py:500
-#, fuzzy
-#| msgid "Dedicated hosted service"
 msgctxt "Package category"
 msgid "Dedicated hosting"
-msgstr "Pühendatud majutusteenus"
+msgstr "Sihtotstarbeline majutusteenus"
 
 #: weblate_web/models.py:501
 msgctxt "Package category"
@@ -138,11 +136,9 @@ msgid "Shared hosting"
 msgstr ""
 
 #: weblate_web/models.py:502
-#, fuzzy
-#| msgid "Basic self-hosted support"
 msgctxt "Package category"
 msgid "Self-hosted support"
-msgstr "Põhiline isemajutuse tugi"
+msgstr "Enda hallatav majutusteenuse tugi"
 
 #: weblate_web/models.py:542
 msgid "Community supported"
@@ -289,7 +285,7 @@ msgstr "IBAN"
 
 #: weblate_web/payments/backends.py:559
 msgid "Reference"
-msgstr "Selgitus"
+msgstr "Viide"
 
 #: weblate_web/payments/backends.py:635
 msgid "Payment card"
@@ -416,7 +412,7 @@ msgstr "Makse on töödeldud"
 
 #: weblate_web/payments/utils.py:56 weblate_web/payments/utils.py:59
 msgid "Enter a valid e-mail address."
-msgstr "Palun sisestage kehtiv e-posti aadress."
+msgstr "Palun sisesta kehtiv e-posti aadress."
 
 #: weblate_web/payments/validators.py:43
 msgid "{} is not a valid country code for any European Union member."
@@ -453,16 +449,13 @@ msgid "Server error"
 msgstr "Serveri viga"
 
 #: weblate_web/templates/500.html:17
-#, fuzzy, python-format
-#| msgid ""
-#| "The server had serious problems while serving your request. We've just "
-#| "sent our trained monkeys to fix the issue."
+#, python-format
 msgid ""
 "The server had serious problems serving your request, and this error has "
 "been recorded as %(error_id)s."
 msgstr ""
-"Sinu päringu täitmisel esines serveril tõsiseid häireid. Me äsja saatsime "
-"oma koolitatud pärdikud seda lahendama."
+"Sinu päringu täitmisel esines serveris tõsiseid probleeme ja viga on "
+"salvestatud kui %(error_id)s."
 
 #: weblate_web/templates/about.html:15
 msgid "The Weblate Way"
@@ -689,7 +682,7 @@ msgstr "Kontakt"
 #: weblate_web/templates/snippets/service.html:67
 #: weblate_web/templates/snippets/service.html:69
 msgid "E-mail"
-msgstr "E-kiri"
+msgstr "E-posti aadress"
 
 #: weblate_web/templates/about.html:188
 msgid "Provider"
@@ -809,7 +802,7 @@ msgstr ""
 
 #: weblate_web/templates/contribute.html:14
 msgid "Contribute to Weblate"
-msgstr "Toeta Weblate-t"
+msgstr "Osale Weblate'i arendamisel"
 
 #: weblate_web/templates/contribute.html:21
 msgid "Weblate is developed by an open community."
@@ -1073,10 +1066,8 @@ msgid "Sign in"
 msgstr "Logi sisse"
 
 #: weblate_web/templates/donate.html:16
-#, fuzzy
-#| msgid "Reliable support"
 msgid "Become a Weblate supporter"
-msgstr "Ustav tugi"
+msgstr "Asu Weblate'i toetajaks"
 
 #: weblate_web/templates/donate.html:23
 msgid ""
@@ -1095,10 +1086,8 @@ msgid "Manage your donations"
 msgstr "Korralda oma annetusi"
 
 #: weblate_web/templates/donate.html:31
-#, fuzzy
-#| msgid "Recurring donations and rewards"
 msgid "Recurring support and rewards"
-msgstr "Korduvad annetused ja preemiad"
+msgstr "Korduv tugi ja preemiad"
 
 #: weblate_web/templates/donate.html:34
 msgid ""
@@ -1113,10 +1102,8 @@ msgstr ""
 "Weblatet ise, ilma toetaja leppeta."
 
 #: weblate_web/templates/donate.html:36
-#, fuzzy
-#| msgid "Your reward"
 msgid "Choose your reward"
-msgstr "Sinu tasu"
+msgstr "Vali oma preemia"
 
 #: weblate_web/templates/donate.html:42 weblate_web/templates/donate.html:49
 #: weblate_web/templates/donate.html:56 weblate_web/templates/support.html:85
@@ -1243,7 +1230,7 @@ msgstr "Tehnoloogiad"
 
 #: weblate_web/templates/donate/edit.html:6
 msgid "Donate to Weblate"
-msgstr "Anneta Weblatele"
+msgstr "Anneta Weblate'ile"
 
 #: weblate_web/templates/donate/edit.html:14
 msgid "Edit your reward link"
@@ -1514,7 +1501,7 @@ msgstr "Kõiki tõlkeid jälgitakse ning neid saab kommenteerida."
 
 #: weblate_web/templates/features.html:63
 msgid "Access Control"
-msgstr "Pääsete haldus"
+msgstr "Juurdepääsukontroll"
 
 #: weblate_web/templates/features.html:64
 msgid "Fine-tune access rights to fit your environment."
@@ -1544,16 +1531,12 @@ msgid "Multiple File Formats"
 msgstr "Erinevad failivormingud"
 
 #: weblate_web/templates/features.html:91
-#, fuzzy
-#| msgid ""
-#| "All widely used file formats for localization are supported, gettext, "
-#| "JSON, XLIFF or resource strings, etc."
 msgid ""
 "Use any common file localization format, like gettext, JSON, XLIFF or "
 "resource strings, etc."
 msgstr ""
-"Toetatud on laialdaselt kasutatavad failivormingud lokaliseerimiseks: "
-"gettext, JSON, XLIFF või ressursi lausendid, jt."
+"Kasuta kõiki lokaliseerimisel laialdaselt levinud failivormingud nagu "
+"gettext, JSON, XLIFF või ressursi lausendid, jne."
 
 #: weblate_web/templates/features.html:99
 msgid "Branch Support"
@@ -1581,83 +1564,67 @@ msgstr ""
 
 #: weblate_web/templates/features.html:118
 msgid "Android string resources"
-msgstr ""
+msgstr "Androidi sõnede failid"
 
 #: weblate_web/templates/features.html:120
 msgid "Apple iOS strings"
-msgstr ""
+msgstr "Apple iOS sõned"
 
 #: weblate_web/templates/features.html:122
-#, fuzzy
-#| msgid "App store metadata"
 msgid "App store metadata files"
-msgstr "App Store metaandmed"
+msgstr "App Store'i metaandmete failid"
 
 #: weblate_web/templates/features.html:123
 msgid "ARB file"
-msgstr ""
+msgstr "ARB-fail"
 
 #: weblate_web/templates/features.html:124
-#, fuzzy
-#| msgid "INI files"
 msgid "CSV files"
-msgstr "INI failid"
+msgstr "CSV-failid"
 
 #: weblate_web/templates/features.html:125
-#, fuzzy
-#| msgid "Text files"
 msgid "DTD files"
-msgstr "Tekstifailid"
+msgstr "DTD-failid"
 
 #: weblate_web/templates/features.html:127
 msgid "Excel Open XML"
-msgstr ""
+msgstr "Excel Open XML"
 
 #: weblate_web/templates/features.html:129
 msgid "Flat XML files"
-msgstr ""
+msgstr "Flat XML-failid"
 
 #: weblate_web/templates/features.html:131
-#, fuzzy
-#| msgid "Fluent communication"
 msgid "Fluent format"
-msgstr "Sorav suhtlemine"
+msgstr "Fluent-vorming"
 
 #: weblate_web/templates/features.html:133
-#, fuzzy
-#| msgid "gettext"
 msgid "GNU gettext"
-msgstr "gettext"
+msgstr "GNU gettext"
 
 #: weblate_web/templates/features.html:135
 msgid "go-i18n JSON files"
-msgstr ""
+msgstr "go-i18n JSON-failid"
 
 #: weblate_web/templates/features.html:137
-#, fuzzy
-#| msgid "Text files"
 msgid "gotext JSON files"
-msgstr "Tekstifailid"
+msgstr "gotext JSON-failid"
 
 #: weblate_web/templates/features.html:138
 msgid "GWT properties"
-msgstr ""
+msgstr "GWT-omadused"
 
 #: weblate_web/templates/features.html:139
-#, fuzzy
-#| msgid "Text files"
 msgid "HTML files"
-msgstr "Tekstifailid"
+msgstr "HTML-failid"
 
 #: weblate_web/templates/features.html:141
-#, fuzzy
-#| msgid "Text files"
 msgid "i18next JSON files"
-msgstr "Tekstifailid"
+msgstr "i18next JSON-failid"
 
 #: weblate_web/templates/features.html:142
 msgid "IDML Format"
-msgstr ""
+msgstr "IDML-vorming"
 
 #: weblate_web/templates/features.html:143
 #, fuzzy
@@ -1673,19 +1640,15 @@ msgstr "Mõistlik tõlgete ühitamine"
 
 #: weblate_web/templates/features.html:146
 msgid "Java properties"
-msgstr ""
+msgstr "Java-omadused"
 
 #: weblate_web/templates/features.html:148
-#, fuzzy
-#| msgid "Start translating"
 msgid "Joomla translations"
-msgstr "Alusta tõlkimisega"
+msgstr "Joomla tõlked"
 
 #: weblate_web/templates/features.html:149
-#, fuzzy
-#| msgid "INI files"
 msgid "JSON files"
-msgstr "INI failid"
+msgstr "JSON-failid"
 
 #: weblate_web/templates/features.html:150
 msgid "React Intl"
@@ -1698,38 +1661,32 @@ msgid "Vue I18n"
 msgstr "Vue I18n"
 
 #: weblate_web/templates/features.html:153
-#, fuzzy
-#| msgid "Source strings"
 msgid "Laravel PHP strings"
-msgstr "Lähtelausendid"
+msgstr "Laraveli PHP-sõned"
 
 #: weblate_web/templates/features.html:155
 msgid "Markdown files"
-msgstr ""
+msgstr "Markdown-failid"
 
 #: weblate_web/templates/features.html:157
 msgid "mi18n lang files"
-msgstr ""
+msgstr "mi18n-keelefailid"
 
 #: weblate_web/templates/features.html:158
 msgid "Mobile Kotlin resources"
-msgstr ""
+msgstr "Mobile Kotlini andmefailid"
 
 #: weblate_web/templates/features.html:159
-#, fuzzy
-#| msgid "OpenDocument"
 msgid "OpenDocument Format"
-msgstr "OpenDocument (ODF)"
+msgstr "OpenDocument Format"
 
 #: weblate_web/templates/features.html:160
-#, fuzzy
-#| msgid "Source strings"
 msgid "PHP strings"
-msgstr "Lähtelausendid"
+msgstr "PHP-sõned"
 
 #: weblate_web/templates/features.html:161
 msgid "Qt Linguist .ts"
-msgstr ""
+msgstr "Qt Linguisti .ts-failid"
 
 #: weblate_web/templates/features.html:163
 #, fuzzy
@@ -1738,24 +1695,20 @@ msgid "ResourceDictionary files"
 msgstr ".NET ressursi failid"
 
 #: weblate_web/templates/features.html:164
-#, fuzzy
-#| msgid ".NET resource files"
 msgid ".NET resource files (RESX, RESW)"
-msgstr ".NET ressursi failid"
+msgstr ".NET andmefailid (RESX, RESW)"
 
 #: weblate_web/templates/features.html:165
 msgid "Ruby YAML files"
-msgstr ""
+msgstr "Ruby YAML-failid"
 
 #: weblate_web/templates/features.html:167
 msgid "Stringsdict format"
-msgstr ""
+msgstr "Stringsdict vorming"
 
 #: weblate_web/templates/features.html:169
-#, fuzzy
-#| msgid "Subtitles"
 msgid "Subtitle files"
-msgstr "Subtiitrid"
+msgstr "Subtiitrite failid"
 
 #: weblate_web/templates/features.html:170
 msgid "TermBase eXchange format"
@@ -1782,10 +1735,8 @@ msgid "XLIFF"
 msgstr "XLIFF"
 
 #: weblate_web/templates/features.html:178
-#, fuzzy
-#| msgid "INI files"
 msgid "YAML files"
-msgstr "INI failid"
+msgstr "YAML-failid"
 
 #: weblate_web/templates/features.html:190
 msgid "Glossaries"
