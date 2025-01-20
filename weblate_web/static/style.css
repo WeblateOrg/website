@@ -313,6 +313,7 @@ html[dir="rtl"] .logo {
 html[dir="rtl"] .logo a {
   background-position: right center;
   padding-right: 120px;
+  padding-left: unset;
   float: right;
 }
 
@@ -676,6 +677,10 @@ body.open-mobile.light header .menu-show span {
 section {
   width: 100%;
   float: left;
+}
+
+html[dir="rtl"] section {
+  float: right;
 }
 
 a.button,
@@ -1189,9 +1194,7 @@ section.pricing .pricing-tabs li,
 
 html[dir="rtl"] section.pricing .pricing-tabs li,
 html[dir="rtl"] .pricing-table-tabs-menu ul li {
-  float: right;
   margin-right: 0;
-  margin-left: 5px;
 }
 
 section.pricing .pricing-tabs li {
@@ -1348,7 +1351,6 @@ section.bottom .box {
 
 html[dir="rtl"] section.bottom .box {
   float: right;
-  margin-left: 0;
   margin-right: 3%;
 }
 
@@ -3330,7 +3332,7 @@ html[dir="rtl"] .contribution-list .box p {
 }
 
 html[dir="rtl"] .aboutus-list .box {
-  border-radius: 20px 0 20px 20px;
+  border-radius: 20px 20px 0 20px;
 }
 
 .aboutus-list .box:nth-child(4) {
@@ -3340,7 +3342,6 @@ html[dir="rtl"] .aboutus-list .box {
 }
 
 html[dir="rtl"] .aboutus-list .box:nth-child(4) {
-  margin-right: 0;
   margin-left: 10%;
 }
 
@@ -3396,8 +3397,9 @@ html[dir="rtl"] .aboutus-list .box::before {
 
 html[dir="rtl"] .aboutus-list .box.blue::before {
   border-width: 0 0 31px 31px;
-  right: inherit;
+  border-color: transparent transparent transparent #00d2e6;
   left: 0;
+  right: inherit;
 }
 
 .aboutus-list .box.blue {
@@ -4441,7 +4443,7 @@ input.fullwidth {
   padding: 0 20px;
 }
 
-.half-img.rotate img {
+html[dir="rtl"] .half-img.rotate img {
   -webkit-transform: scaleX(-1);
   -moz-transform: scaleX(-1);
   -ms-transform: scaleX(-1);
