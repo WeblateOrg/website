@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-11-07 13:47+0100\n"
-"PO-Revision-Date: 2025-01-20 08:05+0000\n"
+"PO-Revision-Date: 2025-01-20 12:33+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/weblate/website/"
 "et/>\n"
@@ -38,7 +38,7 @@ msgstr ""
 
 #: weblate_web/forms.py:67
 msgid "Insufficient donation for selected reward!"
-msgstr ""
+msgstr "Annetus pole valitud preemia jaoks piisav!"
 
 #: weblate_web/forms.py:119
 #, python-format
@@ -128,12 +128,12 @@ msgstr "Määratlemata"
 #: weblate_web/models.py:500
 msgctxt "Package category"
 msgid "Dedicated hosting"
-msgstr "Sihtotstarbeline majutusteenus"
+msgstr "Majutusteenus ühele kliendile"
 
 #: weblate_web/models.py:501
 msgctxt "Package category"
 msgid "Shared hosting"
-msgstr ""
+msgstr "Jagatud hosting"
 
 #: weblate_web/models.py:502
 msgctxt "Package category"
@@ -146,7 +146,7 @@ msgstr "Kogukonna toega"
 
 #: weblate_web/models.py:543
 msgid "Dedicated hosted service"
-msgstr "Pühendatud majutusteenus"
+msgstr "Majutusteenus ühele kliendile"
 
 #: weblate_web/models.py:544
 msgid "Hosted service"
@@ -253,7 +253,7 @@ msgstr "Uuenda versioonini %s"
 
 #: weblate_web/models.py:794
 msgid "Increase service limits to translate more content."
-msgstr ""
+msgstr "Enama sisu tõlkimiseks suurenda teenuse piirmäärasid."
 
 #: weblate_web/models.py:797
 msgid "Upgrade"
@@ -427,6 +427,8 @@ msgid ""
 "The official EU verification tool currently can't validate this VAT ID, "
 "please try again later."
 msgstr ""
+"ELi ametlik kontrollivahend ei saa praegu seda käibemaksukohustuslase ID "
+"õigsust kinnitada, palun proovi hiljem uuesti."
 
 #: weblate_web/payments/validators.py:64
 msgid "View service status."
@@ -558,12 +560,16 @@ msgid ""
 "Author of the idea; code and development leader. He’s also designing custom "
 "and large-scale solutions."
 msgstr ""
+"Idee autor, juhtiv programmeerija ja arendusjuht. Ta on ka kohandatud ja "
+"suurlahenduste projekteerija."
 
 #: weblate_web/templates/about.html:91
 msgid ""
 "Community manager and support guru who’s helping you with smooth workflows. "
 "Our salesperson."
 msgstr ""
+"Kogukonna juht ja tugiteenuste guru, kes aitab klientidel sujuvalt tööd "
+"teha. Meie müügimees."
 
 #: weblate_web/templates/about.html:99
 msgid ""
@@ -648,7 +654,7 @@ msgstr "Näita vanemaid verstaposte"
 
 #: weblate_web/templates/about.html:165
 msgid "Founder of Weblate"
-msgstr "Weblate asutaja"
+msgstr "Weblate'i asutaja"
 
 #: weblate_web/templates/about.html:167
 msgid ""
@@ -671,8 +677,8 @@ msgid ""
 "localization and Weblate."
 msgstr ""
 "Peale palgatöid mitmetes tehnoloogiaettevõttes, pühendus Michal alates 2016. "
-"aasta algusest lokaliseerimisele ja Weblate-le suunatud teenuste pakkumisele "
-"ettevõtetele."
+"aasta algusest lokaliseerimisele ja Weblate'ile suunatud teenuste "
+"pakkumisele ettevõtetele."
 
 #: weblate_web/templates/about.html:178
 msgid "Contact"
@@ -1035,17 +1041,17 @@ msgstr[1] "%(count)s tõlkijat"
 #, python-format
 msgid "…and %(count)s more"
 msgid_plural "…and %(count)s more"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "…ja %(count)s muu"
+msgstr[1] "…ja %(count)s muud"
 
 #: weblate_web/templates/discover.html:94
 #: weblate_web/templates/snippets/service.html:133
 msgid "Customize listing"
-msgstr ""
+msgstr "Kohanda loendit"
 
 #: weblate_web/templates/discover.html:101
 msgid "No servers matched your search."
-msgstr ""
+msgstr "Sinu otsingule ei vastanud ühtegi serverit."
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:6
 msgid "Weblate SSO"
@@ -1053,13 +1059,15 @@ msgstr "Weblate SSO"
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:15
 msgid "You're being redirected to a SSO sign-in page."
-msgstr ""
+msgstr "Suuname sind ühendatud sisselogimisteenuste lehele."
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:17
 msgid ""
 "Please click the button below if you're not redirected automatically within "
 "a few seconds."
 msgstr ""
+"Kui ümbersuunamine mõne sekundi jooksul ei toimi, siis klõpsi alljärgnevat "
+"nuppu."
 
 #: weblate_web/templates/djangosaml2/post_binding_form.html:20
 msgid "Sign in"
@@ -1416,7 +1424,7 @@ msgstr "Weblate käitamine Kubernetes platvormil"
 
 #: weblate_web/templates/download.html:77
 msgid "Kubernetes guide"
-msgstr ""
+msgstr "Kubernetese juhend"
 
 #: weblate_web/templates/download.html:81
 msgid "GitHub repository"
@@ -1627,16 +1635,12 @@ msgid "IDML Format"
 msgstr "IDML-vorming"
 
 #: weblate_web/templates/features.html:143
-#, fuzzy
-#| msgid "Start translating"
 msgid "INI translations"
-msgstr "Alusta tõlkimisega"
+msgstr "INI-tõlked"
 
 #: weblate_web/templates/features.html:145
-#, fuzzy
-#| msgid "Sane merging of translations"
 msgid "Inno Setup INI translations"
-msgstr "Mõistlik tõlgete ühitamine"
+msgstr "Inno Setupi INI-tõlked"
 
 #: weblate_web/templates/features.html:146
 msgid "Java properties"
@@ -1655,8 +1659,6 @@ msgid "React Intl"
 msgstr "React Intl"
 
 #: weblate_web/templates/features.html:151
-#, fuzzy
-#| msgid "Vue I18n"
 msgid "Vue I18n"
 msgstr "Vue I18n"
 
@@ -1689,10 +1691,8 @@ msgid "Qt Linguist .ts"
 msgstr "Qt Linguisti .ts-failid"
 
 #: weblate_web/templates/features.html:163
-#, fuzzy
-#| msgid ".NET resource files"
 msgid "ResourceDictionary files"
-msgstr ".NET ressursi failid"
+msgstr "ResourceDictionary failid"
 
 #: weblate_web/templates/features.html:164
 msgid ".NET resource files (RESX, RESW)"
@@ -1719,16 +1719,12 @@ msgid "Text files"
 msgstr "Tekstifailid"
 
 #: weblate_web/templates/features.html:173
-#, fuzzy
-#| msgid "WebExtension"
 msgid "WebExtension JSON"
-msgstr "WebExtension"
+msgstr "WebExtension JSON-failid"
 
 #: weblate_web/templates/features.html:175
-#, fuzzy
-#| msgid "Windows"
 msgid "Windows RC files"
-msgstr "Windows"
+msgstr "Windows RC-failid"
 
 #: weblate_web/templates/features.html:177
 msgid "XLIFF"
@@ -1832,30 +1828,24 @@ msgid "Collaboration Sites"
 msgstr "Ühistöösaidid"
 
 #: weblate_web/templates/features.html:282
-#, fuzzy
-#| msgid ""
-#| "Native support for software development sites such as GitLab, GitHub, "
-#| "Pagure, or Bitbucket."
 msgid ""
 "Native support for software development sites such as GitLab, GitHub, "
 "Pagure, Azure, Gitea, or Bitbucket."
 msgstr ""
-"Sisseehitatud tugi tarkvaraarendussaitidele nagu GitLab, GitHub, Pagure või "
-"Bitbucket."
+"Sisseehitatud tugi tarkvaraarendussaitidele nagu GitLab, GitHub, Pagure, "
+"Azure, Gitea või Bitbucket."
 
 #: weblate_web/templates/features.html:291
 msgid "Responsive UI"
 msgstr "Reageeriv kasutajaliides"
 
 #: weblate_web/templates/features.html:292
-#, fuzzy
-#| msgid "User interface that works nicely on desktop, tablets and phones."
 msgid ""
 "User interface that works nicely on desktop, tablets and phones in both "
 "light and dark mode."
 msgstr ""
 "Kasutajaliides, mis toimib ühtemoodi hästi arvutis, tahvlis kui "
-"nutitelefonis."
+"nutitelefonis nii tumedas kui heledas kujunduses."
 
 #: weblate_web/templates/features.html:300
 msgid "Translation memory"
@@ -1910,19 +1900,16 @@ msgid "Automatic translation"
 msgstr "Automaatne tõlge"
 
 #: weblate_web/templates/features.html:355
-#, fuzzy
-#| msgid ""
-#| "Translations can be downloaded for offline translation and merged back."
 msgid ""
 "Translations or suggestions can be done by machine translation services or "
 "AI."
-msgstr "Tõlkeid saab allalaadida mujal tõlkimiseks ning tagasi ühitada."
+msgstr ""
+"Tõlkeid aitavad teha ja tõlkesoovitusi pakuvad nii masintõlke- kui "
+"tehisintellektiteenused."
 
 #: weblate_web/templates/features.html:363
-#, fuzzy
-#| msgid "Sane merging of translations"
 msgid "Organize translations"
-msgstr "Mõistlik tõlgete ühitamine"
+msgstr "Halda tõlkeid"
 
 #: weblate_web/templates/features.html:364
 msgid "Categorize the translation files to ease navigation."
@@ -1957,19 +1944,19 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:35
 msgid "System maintenance"
-msgstr ""
+msgstr "Süsteemihooldus"
 
 #: weblate_web/templates/hosting.html:38
 msgid "Weblate installation"
-msgstr "Weblate paigaldamine"
+msgstr "Weblate'i paigaldamine"
 
 #: weblate_web/templates/hosting.html:41
 msgid "Weblate upgrades"
-msgstr "Weblate uutmine"
+msgstr "Weblate'i uuendamine"
 
 #: weblate_web/templates/hosting.html:44
 msgid "Access to backups"
-msgstr ""
+msgstr "Ligipääs varukoopiatele"
 
 #: weblate_web/templates/hosting.html:47
 msgid "Complete configuration customization"
@@ -2003,7 +1990,7 @@ msgstr ""
 #: weblate_web/templates/hosting.html:102
 msgctxt "Hosting plan"
 msgid "Dedicated cloud"
-msgstr "Pühendatud pilv"
+msgstr "Majutusteenus ühele kliendile pilvelahendusena"
 
 #: weblate_web/templates/hosting.html:135
 #: weblate_web/templates/hosting.html:169
@@ -2093,8 +2080,6 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:322
 #: weblate_web/templates/hosting.html:758
-#, fuzzy
-#| msgid "Source strings"
 msgid "Hosted strings"
 msgstr "Lähtelausendid"
 
@@ -2113,7 +2098,7 @@ msgstr ""
 #: weblate_web/templates/hosting.html:334
 #: weblate_web/templates/hosting.html:505
 msgid "Dedicated instance"
-msgstr ""
+msgstr "Majutusteenus ühele kliendile serverina"
 
 #: weblate_web/templates/hosting.html:476
 msgctxt "Hosting plan"
@@ -2544,10 +2529,8 @@ msgid "Waiting for payment to be completed."
 msgstr ""
 
 #: weblate_web/templates/payment/pending.html:78
-#, fuzzy
-#| msgid "Payment card"
 msgid "Payment link"
-msgstr "Maksekaart"
+msgstr "Makselink"
 
 #: weblate_web/templates/privacy.html:11
 msgid "Privacy Policy"
@@ -2727,8 +2710,6 @@ msgstr ""
 #: weblate_web/templates/snippets/pricing.html:215
 #: weblate_web/templates/snippets/pricing.html:257
 #: weblate_web/templates/snippets/pricing.html:285
-#, fuzzy
-#| msgid "Source strings"
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
 msgstr "Lähtelausendid"
@@ -2860,10 +2841,8 @@ msgid "Remove"
 msgstr "Eemalda"
 
 #: weblate_web/templates/snippets/service.html:72
-#, fuzzy
-#| msgid "Add yours"
 msgid "Add a user"
-msgstr "Lisage oma"
+msgstr "Lisa kasutaja"
 
 #: weblate_web/templates/snippets/service.html:80
 msgid "Activation token"
@@ -3076,6 +3055,8 @@ msgid ""
 "As the subscriber, you will always receive fast replies from our dedicated "
 "support team at <a href=\"mailto:%(email)s\">%(email)s</a>."
 msgstr ""
+"Tellijana saad sa alati kiired vastused meie pühendunud tugitiimilt e-posti "
+"aadressil <a href=\"mailto:%(email)s\">%(email)s</a>."
 
 #: weblate_web/templates/support.html:72
 msgid "Prepaid support for gratis service and self-hosted installations"
@@ -3298,10 +3279,8 @@ msgid "Sources, zip compressed"
 msgstr ""
 
 #: weblate_web/templatetags/downloads.py:64
-#, fuzzy
-#| msgid "Python developer"
 msgid "Python Wheel package"
-msgstr "Python arendaja"
+msgstr "Python Wheeli pakett"
 
 #. Translators: currency is a currency code here, for example CZK
 #: weblate_web/templatetags/prices.py:34
