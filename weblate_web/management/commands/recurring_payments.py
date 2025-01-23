@@ -67,14 +67,17 @@ class Command(BaseCommand):
             expires__lte=expires_notify, enabled=True
         ).exclude(payment=None)
         for subscription in subscriptions:
-            payment = subscription.payment_obj
             # Skip one-time payments and the ones with recurrence configured
             if not subscription.package.get_repeat():
                 continue
+            try:
+                payment = subscription.payment_obj
+            except Payment.DoesNotExist:
+                payment = None
             notify_user = (
                 payment_notify_start <= subscription.expires <= payment_notify_end
             )
-            if payment.recurring:
+            if payment is None or payment.recurring:
                 if notify_user:
                     subscription.send_notification("payment_upcoming")
                 continue
