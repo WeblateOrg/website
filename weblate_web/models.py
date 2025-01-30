@@ -31,7 +31,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
-from django.db import models
+from django.db import models, transaction
 from django.db.models import IntegerChoices, Q
 from django.urls import reverse
 from django.utils import timezone
@@ -311,6 +311,7 @@ def process_renewal_payment(payment: Payment) -> Subscription:
     return subscription
 
 
+@transaction.atomic
 def process_new_payment(payment: Payment) -> Subscription:
     service = get_service(payment, payment.customer)
     if payment.paid_invoice and (paid_package := payment.paid_invoice.get_package()):
@@ -369,6 +370,7 @@ def process_new_payment(payment: Payment) -> Subscription:
     return subscription
 
 
+@transaction.atomic
 def process_subscription(payment: Payment) -> Subscription:
     if payment.state != Payment.ACCEPTED:
         raise ValueError("Can not process not accepted payment")
