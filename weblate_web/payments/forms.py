@@ -18,6 +18,7 @@
 #
 
 from django import forms
+from django.utils.translation import gettext
 from vies.forms.fields import VATINField
 from vies.forms.widgets import VATINWidget
 from vies.types import VIES_COUNTRY_CHOICES
@@ -73,5 +74,5 @@ class CustomerForm(forms.ModelForm):
         if self.instance and self.instance.origin == FOSDEM_ORIGIN:
             self.fields["vat"].widget = forms.HiddenInput()
             self.fields["tax"].widget = forms.HiddenInput()
-            self.fields["email"].widget = forms.HiddenInput()
             self.fields["address_2"].widget = forms.HiddenInput()
+            self.fields["email"].help_text = gettext("You will receive a receipt here.")
