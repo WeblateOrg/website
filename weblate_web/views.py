@@ -97,6 +97,8 @@ from weblate_web.utils import (
     show_form_errors,
 )
 
+FOSDEM_ORIGIN = "https://weblate.org/fosdem/"
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -356,6 +358,14 @@ class PaymentView(FormView, SingleObjectMixin):
             return HttpResponseRedirect(
                 f"{reverse('donate-process')}?payment={self.object.pk}"
             )
+        if self.object.customer.origin == FOSDEM_ORIGIN:
+            self.object.state = Payment.PROCESSED
+            self.object.save()
+            messages.info(
+                self.request,
+                gettext("Thank you for your donation and enjoy FOSDEM."),
+            )
+            # Fallback to redirect to the origin
         return HttpResponseRedirect(
             f"{self.object.customer.origin}?payment={self.object.pk}"
         )
@@ -1085,3 +1095,18 @@ class UserView(TemplateView):
             customer__users=self.request.user
         )
         return data
+
+
+def fosdem_donation(request):
+    # Create customer
+    customer = Customer.objects.create(origin=FOSDEM_ORIGIN, user_id=-1)
+    # Create payment
+    payment = Payment.objects.create(
+        customer=customer,
+        description="FOSDEM donation",
+        amount_fixed=True,
+        amount=30,
+        extra={"category": "donate"},
+    )
+    # Redirect to payment
+    return redirect(payment.get_absolute_url())

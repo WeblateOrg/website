@@ -60,6 +60,7 @@ from weblate_web.views import (
     donate_pay,
     download_payment_invoice,
     fetch_vat,
+    fosdem_donation,
     not_found,
     process_payment,
     server_error,
@@ -308,6 +309,7 @@ urlpatterns = [
             r"^FOSDEM/|fosdem/$",
             RedirectView.as_view(url="/news/archive/fosdem-2025/", permanent=False),
         ),
+        path("fosdem/donate/", fosdem_donation, name="fosdem-donate"),
         # Compatibility with disabled languages
         re_path(r"^[a-z][a-z]/$", RedirectView.as_view(url="/", permanent=False)),
         re_path(
