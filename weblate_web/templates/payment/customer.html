@@ -17,15 +17,20 @@
           <form method="post">
             {% csrf_token %}
             {% for field in form %}
-              <div class="form-line">
-                <div class="line-left">{{ field.label }}</div>
-                <div class="line-right">
-                  {{ field.errors }}
-                  {{ field }}
-                  {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
+              {% if not field.is_hidden %}
+                <div class="form-line">
+                  <div class="line-left">{{ field.label }}</div>
+                  <div class="line-right">
+                    {{ field.errors }}
+                    {{ field }}
+                    {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
+                  </div>
+                  <div class="clear"></div>
                 </div>
-                <div class="clear"></div>
-              </div>
+              {% else %}
+                {{ field.errors }}
+                {{ field }}
+              {% endif %}
             {% endfor %}
             <div class="payment-pick"></div>
             <input type="submit" class="button center make-payment" value="{% trans "Save" %}" />

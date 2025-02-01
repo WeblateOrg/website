@@ -92,12 +92,11 @@ from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
 from weblate_web.remote import get_activity
 from weblate_web.utils import (
+    FOSDEM_ORIGIN,
     PAYMENTS_ORIGIN,
     AuthenticatedHttpRequest,
     show_form_errors,
 )
-
-FOSDEM_ORIGIN = "https://weblate.org/fosdem/"
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

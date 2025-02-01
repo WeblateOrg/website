@@ -22,6 +22,8 @@ from vies.forms.fields import VATINField
 from vies.forms.widgets import VATINWidget
 from vies.types import VIES_COUNTRY_CHOICES
 
+from weblate_web.utils import FOSDEM_ORIGIN
+
 from .models import Customer
 
 
@@ -65,3 +67,10 @@ class CustomerForm(forms.ModelForm):
         )
         field_classes = {"vat": BootstrapVATINField}
         widgets = {"country": forms.Select(attrs={"class": "custom-select"})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.origin == FOSDEM_ORIGIN:
+            self.fields["vat"].widget = forms.HiddenInput()
+            self.fields["tax"].widget = forms.HiddenInput()
+            self.fields["email"].widget = forms.HiddenInput()

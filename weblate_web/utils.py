@@ -32,6 +32,7 @@ if TYPE_CHECKING:
     from django.forms import Form
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
+FOSDEM_ORIGIN = "https://weblate.org/fosdem/"
 
 
 def get_site_url(name: str, *, strip_language: bool = True, **kwargs) -> str:
