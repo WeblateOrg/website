@@ -804,3 +804,19 @@ class ThePay2Bitcoin(ThePay2Card):
     recurring = False
     thepay_method_code = "bitcoin"
     supported_currencies: set[str] = {"EUR", "CZK"}
+
+
+@register_backend
+class ThePay2GooglePay(ThePay2Card):
+    name = "thepay2-gpay"
+    verbose = gettext_lazy("Google Pay")
+    description = "Google Pay (The Pay)"
+    thepay_method_code = "card_gp_gpay"
+
+
+@register_backend
+class ThePay2ApplePay(ThePay2Card):
+    name = "thepay2-apay"
+    verbose = gettext_lazy("Apple Pay")
+    description = "Apple Pay (The Pay)"
+    thepay_method_code = "card_gp_apay"
