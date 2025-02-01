@@ -74,3 +74,4 @@ class CustomerForm(forms.ModelForm):
             self.fields["vat"].widget = forms.HiddenInput()
             self.fields["tax"].widget = forms.HiddenInput()
             self.fields["email"].widget = forms.HiddenInput()
+            self.fields["address_2"].widget = forms.HiddenInput()
