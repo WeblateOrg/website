@@ -811,7 +811,7 @@ class ThePay2GooglePay(ThePay2Card):
     name = "thepay2-gpay"
     verbose = gettext_lazy("Google Pay")
     description = "Google Pay (The Pay)"
-    thepay_method_code = "card_gp_gpay"
+    thepay_method_code = "google_pay"
 
 
 @register_backend
@@ -819,4 +819,4 @@ class ThePay2ApplePay(ThePay2Card):
     name = "thepay2-apay"
     verbose = gettext_lazy("Apple Pay")
     description = "Apple Pay (The Pay)"
-    thepay_method_code = "card_gp_apay"
+    thepay_method_code = "apple_pay"
