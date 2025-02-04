@@ -24,6 +24,7 @@ from django.utils.translation import override
 
 from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
+from weblate_web.utils import FOSDEM_ORIGIN
 
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .models import Donation, Package, PackageCategory, Post, Service, Subscription
@@ -1022,6 +1023,46 @@ class PaymentTest(FakturaceTestCase):
 
         # Process pending payments (should do nothing)
         call_command("process_payments")
+
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    @responses.activate
+    def test_fosdem_donation(self):
+        thepay_mock_create_payment()
+
+        response = self.client.get("/fosdem/donate/", follow=True)
+        self.assertContains(response, "Please provide your billing")
+        payment = Payment.objects.all().get()
+        self.assertEqual(payment.amount, 30)
+        self.assertEqual(payment.state, Payment.NEW)
+        customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
+        payment_url = reverse("payment", kwargs={"pk": payment.uuid})
+        self.assertRedirects(response, customer_url)
+        response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
+        self.assertContains(response, "Please choose payment method")
+        response = self.client.post(payment_url, {"method": "thepay2-card"})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("https://gate.thepay.cz/"))  # type: ignore[attr-defined]
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PENDING)
+
+        # Perform the payment
+        thepay_mock_payment(payment.pk)
+
+        # Back to our web
+        response = self.client.get(payment.get_complete_url())
+        # This redirects to an article we don't have in tets
+        self.assertRedirects(response, FOSDEM_ORIGIN, fetch_redirect_response=False)
+
+        # Fetch any page to verif that message is shown
+        response = self.client.get("/about/", follow=False)
+        response = self.client.get("/en/about/")
+        self.assertContains(response, "Thank you for your donation and enjoy FOSDEM.")
+
+        # Verify payment info
+        payment.refresh_from_db()
+        self.assertEqual(payment.paid_invoice.total_amount, 30)  # type: ignore[union-attr]
+        self.assertEqual(payment.state, Payment.PROCESSED)
 
 
 class PostTest(PostTestCase):

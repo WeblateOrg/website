@@ -364,7 +364,7 @@ class PaymentView(FormView, SingleObjectMixin):
                 self.request,
                 gettext("Thank you for your donation and enjoy FOSDEM."),
             )
-            # Fallback to redirect to the origin
+            return HttpResponseRedirect(FOSDEM_ORIGIN)
         return HttpResponseRedirect(
             f"{self.object.customer.origin}?payment={self.object.pk}"
         )
@@ -559,6 +559,9 @@ class CompleteView(PaymentView):
                 backend: Backend = get_backend(self.object.backend)(self.object)
             except KeyError as error:
                 raise Http404("Non-existing backend") from error
+
+            # Make sure we use the processed object
+            self.object = backend.payment
 
             # Allow reprocessing of rejected payments. User might choose
             # to retry in the payment gateway and previously rejected payment
