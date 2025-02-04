@@ -359,7 +359,7 @@ class PaymentView(FormView, SingleObjectMixin):
             )
         if self.object.customer.origin == FOSDEM_ORIGIN:
             self.object.state = Payment.PROCESSED
-            self.object.save()
+            self.object.save(update_fields=["state"])
             messages.info(
                 self.request,
                 gettext("Thank you for your donation and enjoy FOSDEM."),
