@@ -24,10 +24,10 @@
             {% endblock %}
 
           </p>
-          <a href="{% url 'fosdem-donate' %}" class="button inline">{% trans "FOSDEM donation" %}</a>
-          <!--
+          {% if is_fosdem %}
+            <a href="{% url 'fosdem-donate' %}" class="button inline">{% trans "FOSDEM donation" %}</a>
+          {% endif %}
           <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
-          -->
           <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>
         </div>
 
