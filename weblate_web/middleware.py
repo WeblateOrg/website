@@ -21,8 +21,9 @@ from django.conf import settings
 from django.utils.translation import get_language
 from weblate_language_data.docs import DOCUMENTATION_LANGUAGES
 
-SENTRY_KEY = "f4089b47246947759114d23fc884d56e"
-SENTRY_URL = f"https://sentry.weblate.org/api/3/security/?sentry_key={SENTRY_KEY}"
+SENTRY_KEY = "5eb5194266692a262a4f8a6aad7a25b6"
+SENTRY_URL = f"https://o4507304895905792.ingest.de.sentry.io/api/4507486269866064/security/?sentry_key={SENTRY_KEY}"
+
 
 CSP_TEMPLATE = (
     "default-src 'self'; "
@@ -109,7 +110,7 @@ class SecurityMiddleware:
             form=" ".join(form),
             report=SENTRY_URL,
         )
-        response["Expect-CT"] = f"max-age=86400, enforce, report-uri={SENTRY_URL!r}"
+        response["Expect-CT"] = f'max-age=86400, enforce, report-uri="{SENTRY_URL}"'
         response["X-XSS-Protection"] = "1; mode=block"
         # Opt-out from Google FLoC
         response["Permissions-Policy"] = "interest-cohort=()"
