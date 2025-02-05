@@ -29,7 +29,7 @@ from weblate_web.remote import get_activity, get_changes, get_contributors, get_
 class Command(BaseCommand):
     help = "refreshes remote data"
 
-    def disable_stale_services(self):
+    def disable_stale_services(self) -> None:
         threshold = timezone.now() - timedelta(days=3)
         for service in Service.objects.filter(discoverable=True):
             if service.last_report and service.last_report.timestamp < threshold:
@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 service.save(update_fields=["discoverable"])
                 self.stdout.write(f"Disabling disoverable for {service}")
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         self.disable_stale_services()
         get_contributors(force=True)
         get_activity(force=True)

@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-def create_index(apps, schema_editor):
+def create_index(apps, schema_editor) -> None:
     vendor = schema_editor.connection.vendor
     if vendor == "mysql":
         schema_editor.execute(

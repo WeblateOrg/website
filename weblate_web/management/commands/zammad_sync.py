@@ -28,14 +28,14 @@ class Command(BaseCommand):
     help = "synchronizes customer data to Zammad"
     client = None
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         self.client = ZammadAPI(
             url="https://care.weblate.org/api/v1/",
             http_token=settings.ZAMMAD_TOKEN,
         )
         self.handle_hosted_account()
 
-    def handle_hosted_account(self):
+    def handle_hosted_account(self) -> None:
         """Define link to search account on Hosted Weblate for all users."""
         self.client.user.per_page = 100  # type: ignore[union-attr]
         users = self.client.user.search(  # type: ignore[union-attr]

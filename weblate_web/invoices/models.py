@@ -129,7 +129,7 @@ class BankAccountInfo:
         bic: str,
         holder: str = "Weblate s.r.o.",
         short_list: tuple[InfoType, ...],
-    ):
+    ) -> None:
         self._number = number
         self._bank = bank
         self._iban = iban
@@ -332,7 +332,7 @@ class Invoice(models.Model):
         force_update: bool = False,
         using=None,
         update_fields=None,
-    ):
+    ) -> None:
         extra_fields: list[str] = []
         if not self.due_date:
             self.due_date = self.issue_date + datetime.timedelta(
@@ -522,7 +522,7 @@ class Invoice(models.Model):
                 added.text = str(text)
             return added
 
-        def add_amounts(root, in_czk: bool = False):
+        def add_amounts(root, in_czk: bool = False) -> None:
             dph = add_element(root, "SouhrnDPH")
             if in_czk:
                 castka_zaklad = self.total_amount_no_vat_czk
@@ -789,7 +789,7 @@ class InvoiceItem(models.Model):
         force_update: bool = False,
         using=None,
         update_fields=None,
-    ):
+    ) -> None:
         from weblate_web.models import get_period_delta  # noqa: PLC0415
 
         extra_fields: list[str] = []
@@ -844,7 +844,7 @@ class InvoiceItem(models.Model):
             return f"{date_format(self.start_date)} - {date_format(self.end_date)}"
         return ""
 
-    def clean(self):
+    def clean(self) -> None:
         if not self.description and not self.package:
             raise ValidationError(
                 {"description": "Description needs to be provided if not using package"}

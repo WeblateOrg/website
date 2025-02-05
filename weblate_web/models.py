@@ -99,7 +99,7 @@ def get_period_delta(period):
     raise ValueError(f"Invalid payment period {period!r}!")
 
 
-def validate_bitmap(value):
+def validate_bitmap(value) -> None:
     """
     Validate a bitmap.
 
@@ -196,7 +196,7 @@ class Donation(models.Model):
         verbose_name = "Donation"
         verbose_name_plural = "Donations"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.customer}:{self.reward}"
 
     def get_absolute_url(self):
@@ -223,12 +223,12 @@ class Donation(models.Model):
             return 0
         return self.payment_obj.amount
 
-    def get_payment_description(self):
+    def get_payment_description(self) -> str:
         if self.reward:
             return f"Weblate donation: {self.get_reward_display()}"
         return "Weblate donation"
 
-    def send_notification(self, notification: str):
+    def send_notification(self, notification: str) -> None:
         send_notification(
             notification,
             self.customer.get_notify_emails(),
@@ -389,7 +389,7 @@ def process_subscription(payment: Payment) -> Subscription:
     return subscription
 
 
-def process_payment(payment: Payment):
+def process_payment(payment: Payment) -> None:
     if not payment.extra:
         raise UnprocessablePaymentError
     if (
@@ -416,7 +416,7 @@ class Image(models.Model):
         verbose_name = "Image"
         verbose_name_plural = "Images"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -446,7 +446,7 @@ class Post(models.Model):
         verbose_name = "Blog post"
         verbose_name_plural = "Blog posts"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     def save(  # type: ignore[override]
@@ -456,7 +456,7 @@ class Post(models.Model):
         force_update: bool = False,
         using=None,
         update_fields=None,
-    ):
+    ) -> None:
         # Need to save first as rendered value is available only then
         super().save(
             force_insert=force_insert,
@@ -508,10 +508,10 @@ class Package(models.Model):
         verbose_name = "Service package"
         verbose_name_plural = "Service packages"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.verbose
 
-    def get_repeat(self):
+    def get_repeat(self) -> str:
         if self.name in {"basic", "extended", "premium", "backup"}:
             return "y"
         if self.category in {
@@ -585,10 +585,10 @@ class Service(models.Model):
         verbose_name = "Customer service"
         verbose_name_plural = "Customer services"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Service:{self.pk} {self.get_status_display()}: {self.user_emails}: {self.site_domain}"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.was_created = False
 
@@ -613,7 +613,7 @@ class Service(models.Model):
             or self.backup_subscriptions
         )
 
-    def projects_limit(self):
+    def projects_limit(self) -> str:
         report = self.last_report
         if report:
             if self.limit_projects:
@@ -623,7 +623,7 @@ class Service(models.Model):
 
     projects_limit.short_description = "Projects"  # type: ignore[attr-defined]
 
-    def languages_limit(self):
+    def languages_limit(self) -> str:
         report = self.last_report
         if report:
             if self.limit_languages:
@@ -633,7 +633,7 @@ class Service(models.Model):
 
     languages_limit.short_description = "Languages"  # type: ignore[attr-defined]
 
-    def source_strings_limit(self):
+    def source_strings_limit(self) -> str:
         report = self.last_report
         if report:
             if self.limit_source_strings:
@@ -643,7 +643,7 @@ class Service(models.Model):
 
     source_strings_limit.short_description = "Source strings"  # type: ignore[attr-defined]
 
-    def hosted_words_limit(self):
+    def hosted_words_limit(self) -> str:
         report = self.last_report
         if report:
             if self.limit_hosted_words:
@@ -653,7 +653,7 @@ class Service(models.Model):
 
     hosted_words_limit.short_description = "Hosted words"  # type: ignore[attr-defined]
 
-    def hosted_strings_limit(self):
+    def hosted_strings_limit(self) -> str:
         report = self.last_report
         if report:
             if self.limit_hosted_strings:
@@ -809,7 +809,7 @@ class Service(models.Model):
 
         return result
 
-    def update_status(self):
+    def update_status(self) -> None:
         status = "community"
         package = Package.objects.get(name="community")
         if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
@@ -843,7 +843,7 @@ class Service(models.Model):
         subscriptions = self.hosted_subscriptions | self.backup_subscriptions
         return subscriptions.filter(expires__gt=timezone.now()).exists()
 
-    def create_backup(self):
+    def create_backup(self) -> None:
         if (
             not self.backup_repository
             and self.has_paid_backup()
@@ -851,7 +851,7 @@ class Service(models.Model):
         ):
             self.create_backup_repository(last_report)
 
-    def create_backup_repository(self, last_report: Report):
+    def create_backup_repository(self, last_report: Report) -> None:
         """
         Configure backup repository.
 
@@ -903,7 +903,7 @@ class Service(models.Model):
             )
         )
 
-    def regenerate(self):
+    def regenerate(self) -> None:
         self.secret = generate_secret()
         self.save(update_fields=["secret"])
 
@@ -920,7 +920,7 @@ class Subscription(models.Model):
         verbose_name = "Customer’s subscription"
         verbose_name_plural = "Customer’s subscriptions"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.package}: {self.service}"
 
     def save(  # type: ignore[override]
@@ -930,7 +930,7 @@ class Subscription(models.Model):
         force_update: bool = False,
         using=None,
         update_fields=None,
-    ):
+    ) -> None:
         super().save(
             force_insert=force_insert,
             force_update=force_update,
@@ -970,7 +970,7 @@ class Subscription(models.Model):
             query |= Q(repeat__pk=self.payment)
         return Payment.objects.filter(query).distinct()
 
-    def send_notification(self, notification):
+    def send_notification(self, notification) -> None:
         send_notification(
             notification, self.service.customer.get_notify_emails(), subscription=self
         )
@@ -990,7 +990,7 @@ class Subscription(models.Model):
             .exists()
         )
 
-    def add_payment(self, invoice: Invoice, period: str):
+    def add_payment(self, invoice: Invoice, period: str) -> None:
         # Calculate new expiry
         start = self.expires + timedelta(days=1)
         end = start - timedelta(days=1) + get_period_delta(period)
@@ -1050,7 +1050,7 @@ class PastPayments(models.Model):
         verbose_name = "Past payment"
         verbose_name_plural = "Past payments"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.subscription}: {self.payment}"
 
 
@@ -1074,7 +1074,7 @@ class Report(models.Model):
         verbose_name = "Weblate report"
         verbose_name_plural = "Weblate reports"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.site_url
 
     def save(  # type: ignore[override]
@@ -1084,7 +1084,7 @@ class Report(models.Model):
         force_update: bool = False,
         using=None,
         update_fields=None,
-    ):
+    ) -> None:
         super().save(
             force_insert=force_insert,
             force_update=force_update,
@@ -1120,5 +1120,5 @@ class Project(models.Model):
         verbose_name = "Weblate project"
         verbose_name_plural = "Weblate projects"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.service.site_title}: {self.name}"

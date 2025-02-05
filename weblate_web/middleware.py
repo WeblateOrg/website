@@ -49,10 +49,10 @@ class SecurityMiddleware:
     - X-XSS-Protection
     """
 
-    def __init__(self, get_response=None):
+    def __init__(self, get_response=None) -> None:
         self.get_response = get_response
 
-    def adjust_doc_links(self, response):
+    def adjust_doc_links(self, response) -> None:
         lang = get_language()
         if lang in DOCUMENTATION_LANGUAGES:
             response.content = response.content.replace(

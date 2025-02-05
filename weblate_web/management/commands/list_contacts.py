@@ -25,7 +25,7 @@ from weblate_web.models import Service
 class Command(BaseCommand):
     help = "lists contacts"
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         emails = set()
         for service in Service.objects.filter(
             status__in={"hosted", "shared", "basic", "extended", "premium"}

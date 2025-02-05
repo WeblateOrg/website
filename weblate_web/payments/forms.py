@@ -31,7 +31,7 @@ from .models import Customer
 class BootstrapVATINWidget(VATINWidget):
     template_name = "widgets/vatin.html"
 
-    def __init__(self, choices=VIES_COUNTRY_CHOICES, attrs=None):
+    def __init__(self, choices=VIES_COUNTRY_CHOICES, attrs=None) -> None:
         select_attrs = {"class": "form-control custom-select"}
         input_attrs = {"class": "form-control"}
         if attrs is not None:
@@ -69,7 +69,7 @@ class CustomerForm(forms.ModelForm):
         field_classes = {"vat": BootstrapVATINField}
         widgets = {"country": forms.Select(attrs={"class": "custom-select"})}
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.origin == FOSDEM_ORIGIN:
             self.fields["vat"].widget = forms.HiddenInput()

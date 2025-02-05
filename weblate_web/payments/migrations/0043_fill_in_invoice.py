@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-def fill_in_invoice(apps, schema_editor):
+def fill_in_invoice(apps, schema_editor) -> None:
     Payment = apps.get_model("payments", "Payment")
     for payment in Payment.objects.filter(
         invoice="", paid_invoice__isnull=False

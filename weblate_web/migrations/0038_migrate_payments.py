@@ -3,12 +3,12 @@
 from django.db import migrations
 
 
-def migrate_payments(payments, customer):
+def migrate_payments(payments, customer) -> None:
     print(f"Moving {len(payments)} payments to {customer.name}")
     payments.update(customer=customer)
 
 
-def update_payments(apps, schema_editor):
+def update_payments(apps, schema_editor) -> None:
     Subscription = apps.get_model("weblate_web", "Subscription")
     Payment = apps.get_model("payments", "Payment")
 

@@ -5,7 +5,7 @@ from django.db import migrations, models
 from weblate_web.models import PackageCategory
 
 
-def update_category(apps, schema_editor):
+def update_category(apps, schema_editor) -> None:
     Package = apps.get_model("weblate_web", "Package")
 
     for package in Package.objects.all():

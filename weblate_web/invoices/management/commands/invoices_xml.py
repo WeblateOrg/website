@@ -38,7 +38,7 @@ class Command(BaseCommand):
             help="Refresh individual XML files",
         )
 
-    def handle(self, refresh: bool, **kwargs):
+    def handle(self, refresh: bool, **kwargs) -> None:
         if settings.INVOICES_COPY_PATH is None:
             raise CommandError("Invoices output path is not configured!")
         previous_month = now() - timedelta(days=28)

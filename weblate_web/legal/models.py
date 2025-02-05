@@ -58,7 +58,7 @@ class Agreement(models.Model):
         force_update: bool = False,
         using=None,
         update_fields=None,
-    ):
+    ) -> None:
         super().save(
             force_insert=force_insert,
             force_update=force_update,

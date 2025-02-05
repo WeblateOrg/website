@@ -43,7 +43,7 @@ class Command(BaseCommand):
             help="Output directory",
         )
 
-    def handle(self, output: Path, *args, **options):
+    def handle(self, output: Path, *args, **options) -> None:
         render_pdf(
             html=render_to_string(
                 "pdf/terms.html",

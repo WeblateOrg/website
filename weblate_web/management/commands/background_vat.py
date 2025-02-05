@@ -26,7 +26,7 @@ from weblate_web.remote import fetch_vat_info
 class Command(BaseCommand):
     help = "refreshes VAT caches"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument(
             "--all",
             default=False,
@@ -34,5 +34,5 @@ class Command(BaseCommand):
             help="Fetch all VAT caches",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         fetch_vat_info(fetch_all=options["all"])

@@ -108,17 +108,17 @@ class InvoiceTestCase(UserTestCase):
         xml_doc = etree.parse(invoice.xml_path)  # noqa: S320
         S3_SCHEMA.assertValid(xml_doc)
 
-    def test_total(self):
+    def test_total(self) -> None:
         invoice = self.create_invoice(vat="CZ8003280318")
         self.assertEqual(invoice.total_amount, 100)
         self.validate_invoice(invoice)
 
-    def test_total_vat(self):
+    def test_total_vat(self) -> None:
         invoice = self.create_invoice(vat_rate=21, customer_reference="PO123456")
         self.assertEqual(invoice.total_amount, 121)
         self.validate_invoice(invoice)
 
-    def test_total_items(self):
+    def test_total_items(self) -> None:
         invoice = self.create_invoice()
         invoice.invoiceitem_set.create(
             description="Other item", unit_price=1000, quantity=4
@@ -126,7 +126,7 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 4100)
         self.validate_invoice(invoice)
 
-    def test_total_items_hours(self):
+    def test_total_items_hours(self) -> None:
         invoice = self.create_invoice()
         invoice.invoiceitem_set.create(
             description="Other item",
@@ -137,7 +137,7 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 4100)
         self.validate_invoice(invoice)
 
-    def test_total_items_hour(self):
+    def test_total_items_hour(self) -> None:
         invoice = self.create_invoice()
         invoice.invoiceitem_set.create(
             description="Other item",
@@ -148,14 +148,14 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 1100)
         self.validate_invoice(invoice)
 
-    def test_discount(self):
+    def test_discount(self) -> None:
         invoice = self.create_invoice(
             discount=Discount.objects.create(description="Test discount", percents=50)
         )
         self.assertEqual(invoice.total_amount, 50)
         self.validate_invoice(invoice)
 
-    def test_discount_negative(self):
+    def test_discount_negative(self) -> None:
         invoice = self.create_invoice(
             discount=Discount.objects.create(description="Test discount", percents=50)
         )
@@ -163,7 +163,7 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 40)
         self.validate_invoice(invoice)
 
-    def test_discount_vat(self):
+    def test_discount_vat(self) -> None:
         invoice = self.create_invoice(
             discount=Discount.objects.create(description="Test discount", percents=50),
             vat_rate=21,
@@ -171,12 +171,12 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, Decimal("60.50"))
         self.validate_invoice(invoice)
 
-    def test_package(self):
+    def test_package(self) -> None:
         invoice = self.create_invoice_package()
         self.assertEqual(invoice.total_amount, Decimal(100))
         self.validate_invoice(invoice)
 
-    def test_package_usd(self):
+    def test_package_usd(self) -> None:
         invoice = self.create_invoice_package(currency=Currency.USD)
         self.assertEqual(
             invoice.total_amount,
@@ -184,13 +184,13 @@ class InvoiceTestCase(UserTestCase):
         )
         self.validate_invoice(invoice)
 
-    def test_invoice_kinds(self):
+    def test_invoice_kinds(self) -> None:
         for kind in InvoiceKind.values:
             invoice = self.create_invoice(kind=InvoiceKind(kind))
             self.validate_invoice(invoice)
 
     @override_settings(PAYMENT_DEBUG=True)
-    def test_pay_link(self):
+    def test_pay_link(self) -> None:
         invoice = self.create_invoice_package()
         self.validate_invoice(invoice)
         url = cast("str", invoice.get_payment_url())

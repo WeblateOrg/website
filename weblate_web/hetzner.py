@@ -59,7 +59,7 @@ def get_directory_summary(
 
 def create_storage_folder(
     dirname: str, service: Service, customer: Customer, last_report: Report
-):
+) -> None:
     # Create folder and SSH key
     with sftp_client() as ftp:
         ftp.mkdir(dirname)

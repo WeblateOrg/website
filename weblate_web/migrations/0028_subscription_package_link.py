@@ -4,7 +4,7 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
-def update_links(apps, schema_editor):
+def update_links(apps, schema_editor) -> None:
     Package = apps.get_model("weblate_web", "Package")
     Subscription = apps.get_model("weblate_web", "Subscription")
 

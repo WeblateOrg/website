@@ -33,7 +33,7 @@ class Command(BaseCommand):
     help = "generates legal document"
     client = None
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument(
             "document",
             type=Path,
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             help="Output PDF file",
         )
 
-    def handle(self, document: Path, params: Path, output: Path, **kwargs):
+    def handle(self, document: Path, params: Path, output: Path, **kwargs) -> None:
         yaml = YAML()
         configuration = yaml.load(document)
         template = document.with_suffix(".html")

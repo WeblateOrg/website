@@ -140,7 +140,7 @@ class Command(BaseCommand):
             self.stderr.write(f"  size: {service.backup_size}")
             self.stderr.write(f"  mtime: {service.backup_timestamp}")
 
-    def handle(self, delete: bool, skip_scan: bool, **kwargs):
+    def handle(self, delete: bool, skip_scan: bool, **kwargs) -> None:
         backup_services: dict[str, Service] = {
             service.backup_repository: service
             for service in Service.objects.exclude(backup_repository="")

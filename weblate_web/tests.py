@@ -136,7 +136,7 @@ def thepay_mock_payment(payment: str | UUID) -> None:
     )
 
 
-def mock_vies(valid: bool = True):
+def mock_vies(valid: bool = True) -> None:
     responses.add(
         responses.GET,
         "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl",
@@ -184,7 +184,7 @@ CVIKOV II
     )
 
 
-def fake_remote():
+def fake_remote() -> None:
     cache.set(
         "VAT-CZ8003280318",
         {
@@ -333,53 +333,53 @@ class PostTestCase(TestCase):
 class ViewTestCase(PostTestCase):
     """Views testing."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         fake_remote()
 
-    def test_index_redirect(self):
+    def test_index_redirect(self) -> None:
         response = self.client.get("/")
         self.assertRedirects(response, "/en/", 302)
 
-    def test_index_en(self):
+    def test_index_en(self) -> None:
         response = self.client.get("/en/")
         self.assertContains(response, "yearly")
 
-    def test_index_cs(self):
+    def test_index_cs(self) -> None:
         response = self.client.get("/cs/")
         self.assertContains(response, "ročně")
 
-    def test_index_he(self):
+    def test_index_he(self) -> None:
         response = self.client.get("/he/")
         self.assertContains(response, "שנתי")
 
-    def test_index_be(self):
+    def test_index_be(self) -> None:
         response = self.client.get("/be/")
         self.assertContains(response, "штогод")
 
-    def test_index_be_latin(self):
+    def test_index_be_latin(self) -> None:
         response = self.client.get("/be-latn/")
         self.assertContains(response, "Nieabmiežavany")
 
-    def test_terms(self):
+    def test_terms(self) -> None:
         response = self.client.get("/en/terms/")
         self.assertContains(response, "21668027")
 
-    def test_privacy(self):
+    def test_privacy(self) -> None:
         response = self.client.get("/en/privacy/")
         self.assertContains(response, "21668027")
 
-    def test_security_txt(self):
+    def test_security_txt(self) -> None:
         response = self.client.get("/security.txt", follow=True)
         self.assertRedirects(response, "/.well-known/security.txt", status_code=301)
         self.assertContains(response, "https://hackerone.com/weblate")
 
-    def test_localized_docs(self):
+    def test_localized_docs(self) -> None:
         response = self.client.get("/uk/contribute/")
         self.assertContains(response, "https://docs.weblate.org/uk/latest/contributing")
 
     @responses.activate
-    def test_about(self):
+    def test_about(self) -> None:
         responses.add(
             responses.GET, WEBLATE_CONTRIBUTORS_URL, body=TEST_CONTRIBUTORS.read_text()
         )
@@ -393,7 +393,7 @@ class ViewTestCase(PostTestCase):
         self.assertContains(response, "comradekingu")
 
     @responses.activate
-    def test_activity(self):
+    def test_activity(self) -> None:
         responses.add(responses.GET, ACTIVITY_URL, body=TEST_ACTIVITY.read_text())
         get_activity(force=True)
         response = self.client.get("/img/activity.svg")
@@ -404,20 +404,20 @@ class ViewTestCase(PostTestCase):
         response = self.client.get("/img/activity.svg")
         self.assertContains(response, "<svg")
 
-    def test_download_en(self):
+    def test_download_en(self) -> None:
         response = self.client.get("/en/download/")
         self.assertContains(response, "Download Weblate")
 
-    def test_sitemap_lang(self):
+    def test_sitemap_lang(self) -> None:
         response = self.client.get("/sitemap-es.xml")
         self.assertContains(response, "http://testserver/es/features/")
 
-    def test_sitemap_news(self):
+    def test_sitemap_news(self) -> None:
         self.create_post()
         response = self.client.get("/sitemap-news.xml")
         self.assertContains(response, "testpost")
 
-    def test_sitemaps(self):
+    def test_sitemaps(self) -> None:
         # Get root sitemap
         response = self.client.get("/sitemap.xml")
         self.assertContains(response, "<sitemapindex")
@@ -439,14 +439,14 @@ class ViewTestCase(PostTestCase):
 class UtilTestCase(TestCase):
     """Helper code testing."""
 
-    def test_format(self):
+    def test_format(self) -> None:
         self.assertEqual(filesizeformat(0), "0 bytes")
         self.assertEqual(filesizeformat(1000), "1000 bytes")
         self.assertEqual(filesizeformat(1000000), "976.6 KiB")
         self.assertEqual(filesizeformat(1000000000), "953.7 MiB")
         self.assertEqual(filesizeformat(10000000000000), "9313.2 GiB")
 
-    def test_downloadlink(self):
+    def test_downloadlink(self) -> None:
         self.assertEqual(
             downloadlink(
                 {
@@ -558,7 +558,7 @@ class FakturaceTestCase(UserTestCase):
             link_text="Weblate donation test",
         )
 
-    def create_packages(self):
+    def create_packages(self) -> None:
         Package.objects.bulk_create(
             [
                 Package(name="community", verbose="Community support", price=0),
@@ -613,11 +613,11 @@ class FakturaceTestCase(UserTestCase):
 
 
 class PaymentsTest(FakturaceTestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         fake_remote()
 
-    def test_languages(self):
+    def test_languages(self) -> None:
         self.assertEqual(
             set(SUPPORTED_LANGUAGES),
             {x[0] for x in settings.LANGUAGES},
@@ -639,15 +639,15 @@ class PaymentsTest(FakturaceTestCase):
             self.assertContains(response, "€121.0")
             return payment, url, customer_url
 
-    def test_view(self):
+    def test_view(self) -> None:
         self.prepare_payment()
 
-    def check_payment(self, payment, state):
+    def check_payment(self, payment, state) -> None:
         fresh = Payment.objects.get(pk=payment.pk)
         self.assertEqual(fresh.state, state)
 
     @override_settings(PAYMENT_DEBUG=True)
-    def test_pay(self):
+    def test_pay(self) -> None:
         payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "pay"})
         self.assertRedirects(
@@ -662,7 +662,7 @@ class PaymentsTest(FakturaceTestCase):
         self.assertEqual(response.status_code, 200)
 
     @responses.activate
-    def test_invalid_vat(self):
+    def test_invalid_vat(self) -> None:
         mock_vies(valid=False)
         payment, url, customer_url = self.prepare_payment()
         # Inject invalid VAT
@@ -675,13 +675,13 @@ class PaymentsTest(FakturaceTestCase):
         self.assertContains(response, "The VAT ID is no longer valid")
 
     @responses.activate
-    def test_prefetch_vat(self):
+    def test_prefetch_vat(self) -> None:
         mock_vies(valid=True)
         self.prepare_payment()
         call_command("background_vat")
 
     @override_settings(PAYMENT_DEBUG=True)
-    def test_reject(self):
+    def test_reject(self) -> None:
         payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "reject"})
         self.assertRedirects(
@@ -696,7 +696,7 @@ class PaymentsTest(FakturaceTestCase):
         self.assertEqual(response.status_code, 404)
 
     @override_settings(PAYMENT_DEBUG=True)
-    def test_pending(self):
+    def test_pending(self) -> None:
         payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "pending"})
         complete_url = reverse("payment-complete", kwargs={"pk": payment.pk})
@@ -716,11 +716,11 @@ class PaymentsTest(FakturaceTestCase):
 
 
 class PaymentTest(FakturaceTestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         fake_remote()
 
-    def test_donate_page(self):
+    def test_donate_page(self) -> None:
         response = self.client.get("/en/donate/")
         self.assertContains(response, "/donate/new/")
         self.login()
@@ -731,7 +731,7 @@ class PaymentTest(FakturaceTestCase):
 
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
-    def test_service_workflow_card(self):  # noqa: PLR0915
+    def test_service_workflow_card(self) -> None:  # noqa: PLR0915
         self.login()
         thepay_mock_create_payment()
         Package.objects.create(name="community", verbose="Community support", price=0)
@@ -833,7 +833,7 @@ class PaymentTest(FakturaceTestCase):
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications("Your expired payment on weblate.org")
 
-    def test_donation_workflow_invalid_reward(self):
+    def test_donation_workflow_invalid_reward(self) -> None:
         self.login()
         response = self.client.post(
             "/en/donate/new/",
@@ -842,12 +842,12 @@ class PaymentTest(FakturaceTestCase):
         )
         self.assertContains(response, "Insufficient donation for selected reward!")
 
-    def test_donation_workflow_card_reward(self):
+    def test_donation_workflow_card_reward(self) -> None:
         self.test_donation_workflow_card(2)
 
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
-    def test_donation_workflow_card(self, reward=0):  # noqa: PLR0915
+    def test_donation_workflow_card(self, reward=0) -> None:  # noqa: PLR0915
         self.login()
         thepay_mock_create_payment()
         response = self.client.post(
@@ -940,7 +940,7 @@ class PaymentTest(FakturaceTestCase):
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications("Your expired payment on weblate.org")
 
-    def test_donation_workflow_bank(self):
+    def test_donation_workflow_bank(self) -> None:
         self.login()
         response = self.client.post(
             "/en/donate/new/",
@@ -968,7 +968,7 @@ class PaymentTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PENDING)
 
-    def test_your_donations(self):
+    def test_your_donations(self) -> None:
         # Check login link
         self.assertContains(self.client.get(reverse("donate")), "/saml2/login/")
         user = self.login()
@@ -993,7 +993,7 @@ class PaymentTest(FakturaceTestCase):
         )
         self.assertContains(self.client.get(reverse("user")), "My donations")
 
-    def test_link(self):
+    def test_link(self) -> None:
         self.create_donation()
         response = self.client.get("/en/thanks/", follow=True)
         self.assertContains(response, "https://example.com/weblate")
@@ -1001,7 +1001,7 @@ class PaymentTest(FakturaceTestCase):
 
     @responses.activate
     @override_settings(PAYMENT_DEBUG=True)
-    def test_recurring(self):
+    def test_recurring(self) -> None:
         donation = self.create_donation(years=0)
         # No recurring payments for now
         self.assertEqual(donation.payment_obj.payment_set.count(), 0)
@@ -1026,7 +1026,7 @@ class PaymentTest(FakturaceTestCase):
 
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
-    def test_fosdem_donation(self):
+    def test_fosdem_donation(self) -> None:
         thepay_mock_create_payment()
 
         response = self.client.get("/fosdem/donate/", follow=True)
@@ -1066,11 +1066,11 @@ class PaymentTest(FakturaceTestCase):
 
 
 class PostTest(PostTestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         fake_remote()
 
-    def test_future(self):
+    def test_future(self) -> None:
         past = self.create_post()
         future = self.create_post(
             "futurepost", "futurebody", timezone.now() + timedelta(days=1)
@@ -1089,7 +1089,7 @@ class PostTest(PostTestCase):
 
 
 class APITest(UserTestCase):
-    def test_hosted(self):
+    def test_hosted(self) -> None:
         Package.objects.create(name="community", verbose="Community support", price=0)
         Package.objects.create(name="shared:test", verbose="Test package", price=0)
         response = self.client.post(
@@ -1114,15 +1114,15 @@ class APITest(UserTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_hosted_invalid(self):
+    def test_hosted_invalid(self) -> None:
         response = self.client.post("/api/hosted/", {"payload": dumps({}, key="dummy")})
         self.assertEqual(response.status_code, 400)
 
-    def test_hosted_missing(self):
+    def test_hosted_missing(self) -> None:
         response = self.client.post("/api/hosted/")
         self.assertEqual(response.status_code, 400)
 
-    def test_support_missing(self):
+    def test_support_missing(self) -> None:
         response = self.client.post("/api/support/")
         self.assertEqual(response.status_code, 404)
 
@@ -1155,13 +1155,13 @@ class APITest(UserTestCase):
             raise ValueError("Missing package expecation!")
         return service
 
-    def test_support(self):
+    def test_support(self) -> None:
         self.perform_support()
 
-    def test_support_expired(self):
+    def test_support_expired(self) -> None:
         self.perform_support(delta=-1, expected="community")
 
-    def test_support_discovery(self):
+    def test_support_discovery(self) -> None:
         service = self.perform_support()
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
@@ -1180,7 +1180,7 @@ class APITest(UserTestCase):
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
 
-    def test_support_discovery_projects(self):
+    def test_support_discovery_projects(self) -> None:
         service = self.perform_support()
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
@@ -1248,7 +1248,7 @@ class APITest(UserTestCase):
         )
         self.assertEqual(service.project_set.count(), 0)
 
-    def test_user(self):
+    def test_user(self) -> None:
         user = self.create_user()
         response = self.client.post(
             "/api/user/",
@@ -1282,15 +1282,15 @@ class APITest(UserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "User created"})
 
-    def test_user_invalid(self):
+    def test_user_invalid(self) -> None:
         response = self.client.post("/api/user/", {"payload": dumps({}, key="dummy")})
         self.assertEqual(response.status_code, 400)
 
-    def test_user_missing(self):
+    def test_user_missing(self) -> None:
         response = self.client.post("/api/user/")
         self.assertEqual(response.status_code, 400)
 
-    def test_user_rename(self):
+    def test_user_rename(self) -> None:
         user = self.create_user()
         response = self.client.post(
             "/api/user/",
@@ -1306,12 +1306,12 @@ class APITest(UserTestCase):
         self.assertFalse(User.objects.filter(username="testuser").exists())
         self.assertTrue(User.objects.filter(username="other").exists())
 
-    def test_fetch_vat_denied(self):
+    def test_fetch_vat_denied(self) -> None:
         response = self.client.post(reverse("js-vat"))
         self.assertEqual(response.status_code, 302)
 
     @responses.activate
-    def test_fetch_vat(self):
+    def test_fetch_vat(self) -> None:
         self.login()
         mock_vies()
         response = self.client.post(reverse("js-vat"))
@@ -1336,14 +1336,14 @@ class APITest(UserTestCase):
     PAYMENT_DEBUG=True,
 )
 class ExpiryTest(FakturaceTestCase):
-    def test_expiring_donate(self):
+    def test_expiring_donate(self) -> None:
         self.create_donation(years=0, days=3, recurring="")
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications("Expiring subscriptions on weblate.org")
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications("Your expired payment on weblate.org")
 
-    def test_expiring_recurring_donate(self):
+    def test_expiring_recurring_donate(self) -> None:
         self.create_donation(years=0, days=3)
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications()
@@ -1352,7 +1352,7 @@ class ExpiryTest(FakturaceTestCase):
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
 
-    def test_expiring_donate_notify_user(self):
+    def test_expiring_donate_notify_user(self) -> None:
         self.create_donation(years=0, days=8, recurring="")
         RecurringPaymentsCommand.notify_expiry()
         mails = self.assert_notifications(
@@ -1363,21 +1363,21 @@ class ExpiryTest(FakturaceTestCase):
         self.assertIn("€100", mails[0].alternatives[0][0])
         self.assertIn("€100", mails[0].body)
 
-    def test_expiring_recurring_donate_notify_user(self):
+    def test_expiring_recurring_donate_notify_user(self) -> None:
         self.create_donation(years=0, days=8)
         RecurringPaymentsCommand.notify_expiry()
         mails = self.assert_notifications("Your upcoming payment on weblate.org")
         self.assertIn("€100", mails[0].alternatives[0][0])
         self.assertIn("€100", mails[0].body)
 
-    def test_expiring_subscription(self):
+    def test_expiring_subscription(self) -> None:
         self.create_service(years=0, days=3, recurring="")
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications("Expiring subscriptions on weblate.org")
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications("Your expired payment on weblate.org")
 
-    def test_expiring_recurring_subscription(self):
+    def test_expiring_recurring_subscription(self) -> None:
         self.create_service(years=0, days=3)
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications()
@@ -1386,7 +1386,7 @@ class ExpiryTest(FakturaceTestCase):
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications()
 
-    def test_expiring_subscription_notify_user(self):
+    def test_expiring_subscription_notify_user(self) -> None:
         self.create_service(years=0, days=8, recurring="")
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications(
@@ -1394,7 +1394,7 @@ class ExpiryTest(FakturaceTestCase):
             "Your upcoming renewal on weblate.org",
         )
 
-    def test_expiring_recurring_subscription_notify_user(self):
+    def test_expiring_recurring_subscription_notify_user(self) -> None:
         self.create_service(years=0, days=8)
         RecurringPaymentsCommand.notify_expiry()
         self.assert_notifications("Your upcoming payment on weblate.org")
@@ -1406,7 +1406,7 @@ class ExpiryTest(FakturaceTestCase):
 )
 class ServiceTest(FakturaceTestCase):
     @responses.activate
-    def test_hosted_pay(self):
+    def test_hosted_pay(self) -> None:
         mock_vies()
         with override("en"):
             self.login()
@@ -1443,7 +1443,7 @@ class ServiceTest(FakturaceTestCase):
         )
 
     @responses.activate
-    def test_hosted_pay_yearly(self):
+    def test_hosted_pay_yearly(self) -> None:
         mock_vies()
         with override("en"):
             self.login()
@@ -1476,7 +1476,7 @@ class ServiceTest(FakturaceTestCase):
 
     @override_settings(ZAMMAD_TOKEN="test")  # noqa: S106
     @responses.activate
-    def test_decicated_new(self):
+    def test_decicated_new(self) -> None:
         mock_vies()
         self.create_packages()
         responses.add(
@@ -1542,7 +1542,7 @@ class ServiceTest(FakturaceTestCase):
             self.assertContains(response, "Weblate hosting (upgraded)")
 
     @responses.activate
-    def test_hosted_upgrade(self):
+    def test_hosted_upgrade(self) -> None:
         mock_vies()
         with override("en"):
             self.login()
@@ -1573,7 +1573,7 @@ class ServiceTest(FakturaceTestCase):
 
 
 class CommandsTestCase(FakturaceTestCase):
-    def test_list_contacts(self):
+    def test_list_contacts(self) -> None:
         with StringIO() as buffer:
             call_command("list_contacts", stdout=buffer)
             self.assertEqual(buffer.getvalue(), "")
@@ -1583,7 +1583,7 @@ class CommandsTestCase(FakturaceTestCase):
             call_command("list_contacts", stdout=buffer)
             self.assertEqual(buffer.getvalue(), "noreply@weblate.org\n")
 
-    def test_sync_packages(self):
+    def test_sync_packages(self) -> None:
         with StringIO() as buffer:
             call_command("sync_packages", stdout=buffer)
             self.assertNotEqual(buffer.getvalue(), "")

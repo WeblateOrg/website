@@ -45,7 +45,7 @@ class Command(BaseCommand):
     help = "fetches spam tickets from Zammad"
     client = None
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         zammad = get_zammad_client()
         tag_obj = Tag(zammad)
         imap = IMAP4_SSL(settings.IMAP_SERVER)

@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 class Command(BaseCommand):
     help = "issues recurring payments"
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         # Issue recurring payments
         self.handle_donations()
         self.handle_subscriptions()
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             self.notify_expiry(weekday)
 
     @staticmethod
-    def notify_expiry(weekday=0):
+    def notify_expiry(weekday=0) -> None:
         expiry: list[tuple[str, Iterable[str], datetime]] = []
 
         expires_notify = timezone.now() + timedelta(days=30)
@@ -125,7 +125,7 @@ class Command(BaseCommand):
             )
 
     @staticmethod
-    def handle_services():
+    def handle_services() -> None:
         for service in Service.objects.all():
             service.update_status()
             service.create_backup()
@@ -139,7 +139,7 @@ class Command(BaseCommand):
         end_date: datetime,
         amount: int | None = None,
         extra: dict[str, int],
-    ):
+    ) -> None:
         # Alllow at most three failures of current payment method
         rejected_payments = past_payments.filter(
             state=Payment.REJECTED, repeat=payment.repeat or payment
@@ -175,7 +175,7 @@ class Command(BaseCommand):
         repeated.trigger_recurring()
 
     @classmethod
-    def handle_subscriptions(cls):
+    def handle_subscriptions(cls) -> None:
         now = timezone.now()
         subscriptions = Subscription.objects.filter(
             expires__range=(now - timedelta(days=10), now + timedelta(days=3)),
@@ -208,7 +208,7 @@ class Command(BaseCommand):
             )
 
     @classmethod
-    def handle_donations(cls):
+    def handle_donations(cls) -> None:
         now = timezone.now()
         donations = Donation.objects.filter(
             active=True,

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from django.db.migrations.state import StateApps
 
 
-def update_users(apps: StateApps, schema_editor: BaseDatabaseSchemaEditor):
+def update_users(apps: StateApps, schema_editor: BaseDatabaseSchemaEditor) -> None:
     donation_model = apps.get_model("weblate_web", "Donation")
     service_model = apps.get_model("weblate_web", "Service")
     user_model = apps.get_model("auth", "User")

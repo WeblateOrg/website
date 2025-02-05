@@ -49,7 +49,7 @@ if TYPE_CHECKING:
 EMAIL_BLACKLIST = re.compile(r"^([./|]|.*([@%!`#&?]|/\.\./))")
 
 
-def validate_email(value):
+def validate_email(value) -> None:
     try:
         validate_email_django(value)
     except ValidationError as error:

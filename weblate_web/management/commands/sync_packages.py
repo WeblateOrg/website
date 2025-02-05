@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 price,
             )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         for category, verbose, name, limit, price in self.get_packages():
             package, created = Package.objects.get_or_create(
                 limit_hosted_strings=limit,

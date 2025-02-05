@@ -271,7 +271,7 @@ class Backend:
     recurring: bool = False
     supported_currencies: set[str] = {"EUR", "CZK", "USD", "GBP"}
 
-    def __init__(self, payment: Payment):
+    def __init__(self, payment: Payment) -> None:
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
         self.payment: Payment = select[0]
         self.invoice: Invoice | None = None

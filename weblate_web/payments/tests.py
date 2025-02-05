@@ -148,7 +148,7 @@ FIO_TRASACTIONS = {
 
 
 class ModelTest(SimpleTestCase):
-    def test_vat(self):
+    def test_vat(self) -> None:
         customer = Customer()
         self.assertFalse(customer.needs_vat)
         customer = Customer(**CUSTOMER)
@@ -165,7 +165,7 @@ class ModelTest(SimpleTestCase):
         customer.country = "US"
         self.assertFalse(customer.needs_vat)
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         customer = Customer(country="CZ")
         self.assertTrue(customer.is_empty)
         customer = Customer(**CUSTOMER)
@@ -175,14 +175,14 @@ class ModelTest(SimpleTestCase):
         customer.postcode = ""
         self.assertTrue(customer.is_empty)
 
-    def test_clean(self):
+    def test_clean(self) -> None:
         customer = Customer(**CUSTOMER)
         customer.clean()
         customer.country = "IE"
         with self.assertRaises(ValidationError):
             customer.clean()
 
-    def test_vat_calculation(self):
+    def test_vat_calculation(self) -> None:
         customer = Customer(**CUSTOMER)
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, 121)
@@ -197,7 +197,7 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.vat_amount, 100)
         self.assertEqual(payment.amount_without_vat, 100)
 
-    def test_short_filename(self):
+    def test_short_filename(self) -> None:
         customer = Customer()
         customer.name = "Weblate s.r.o."
         self.assertEqual(customer.short_filename, "Weblate_sro")
@@ -220,7 +220,7 @@ class ModelTest(SimpleTestCase):
 class BackendBaseTestCase(TestCase):
     backend_name: str = ""
 
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         self.customer = Customer.objects.create(**CUSTOMER)
         self.payment = Payment.objects.create(
@@ -238,7 +238,7 @@ class BackendBaseTestCase(TestCase):
 
 @override_settings(PAYMENT_DEBUG=True)
 class BackendTest(BackendBaseTestCase):
-    def test_pay(self):
+    def test_pay(self) -> None:
         backend = get_backend("pay")(self.payment)
         self.assertIsNone(backend.initiate(None, "", ""))
         self.check_payment(Payment.PENDING)
@@ -247,7 +247,7 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
-    def test_reject(self):
+    def test_reject(self) -> None:
         backend = get_backend("reject")(self.payment)
         self.assertIsNone(backend.initiate(None, "", ""))
         self.check_payment(Payment.PENDING)
@@ -256,14 +256,14 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
-    def test_pending(self):
+    def test_pending(self) -> None:
         backend = get_backend("pending")(self.payment)
         self.assertIsNotNone(backend.initiate(None, "", ""))
         self.check_payment(Payment.PENDING)
         self.assertTrue(backend.complete(None))
         self.check_payment(Payment.ACCEPTED)
 
-    def test_assertions(self):
+    def test_assertions(self) -> None:
         backend = get_backend("pending")(self.payment)
         backend.payment.state = Payment.PENDING
         with self.assertRaises(InvalidState):
@@ -273,7 +273,7 @@ class BackendTest(BackendBaseTestCase):
             backend.complete(None)
 
     @responses.activate
-    def test_list(self):
+    def test_list(self) -> None:
         backends = list_backends()
         self.assertGreater(len(backends), 0)
 
@@ -281,7 +281,7 @@ class BackendTest(BackendBaseTestCase):
     @override_settings(
         FIO_TOKEN="test-token",  # noqa: S106
     )
-    def test_proforma(self):
+    def test_proforma(self) -> None:
         mock_vies()
         backend = get_backend("fio-bank")(self.payment)
         self.assertIsNotNone(backend.initiate(None, "", "/complete/"))
@@ -320,7 +320,7 @@ class BackendTest(BackendBaseTestCase):
     @override_settings(
         FIO_TOKEN="test-token",  # noqa: S106
     )
-    def test_invoice_bank(self):
+    def test_invoice_bank(self) -> None:
         mock_vies()
         customer = Customer.objects.create(**CUSTOMER)
         invoice = Invoice.objects.create(
@@ -363,7 +363,7 @@ class BackendTest(BackendBaseTestCase):
     @override_settings(
         FIO_TOKEN="test-token",  # noqa: S106
     )
-    def test_invoice_url(self):
+    def test_invoice_url(self) -> None:
         mock_vies()
         customer = Customer.objects.create(**CUSTOMER)
         invoice = Invoice.objects.create(
@@ -408,12 +408,12 @@ class BackendTest(BackendBaseTestCase):
 class ThePay2Test(BackendBaseTestCase):
     backend_name = "thepay2-card"
 
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         self.backend = self.payment.get_payment_backend()
 
     @responses.activate
-    def test_pay(self):
+    def test_pay(self) -> None:
         thepay_mock_create_payment()
         thepay_mock_payment(self.payment.pk)
         response = self.backend.initiate(None, "", "")
@@ -430,7 +430,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
     @responses.activate
-    def test_unpaid(self):
+    def test_unpaid(self) -> None:
         thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
@@ -454,7 +454,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     @responses.activate
-    def test_payment_cancelled(self):
+    def test_payment_cancelled(self) -> None:
         thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
@@ -486,7 +486,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
     @responses.activate
-    def test_payment_error(self):
+    def test_payment_error(self) -> None:
         thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
@@ -512,7 +512,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
     @responses.activate
-    def test_error(self):
+    def test_error(self) -> None:
         responses.post(
             "https://demo.api.thepay.cz/v1/projects/42/payments",
             status=400,
@@ -522,7 +522,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.check_payment(Payment.NEW)
 
     @responses.activate
-    def test_error_message(self):
+    def test_error_message(self) -> None:
         responses.post(
             "https://demo.api.thepay.cz/v1/projects/42/payments",
             json={
@@ -535,7 +535,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.check_payment(Payment.NEW)
 
     @responses.activate
-    def test_error_no_message(self):
+    def test_error_no_message(self) -> None:
         responses.post(
             "https://demo.api.thepay.cz/v1/projects/42/payments",
             json={},
@@ -546,7 +546,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.check_payment(Payment.NEW)
 
     @responses.activate
-    def test_error_collect(self):
+    def test_error_collect(self) -> None:
         thepay_mock_create_payment()
         responses.get(
             f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
@@ -566,7 +566,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     @responses.activate
-    def test_pay_recurring(self):
+    def test_pay_recurring(self) -> None:
         # Modify backend payment as it has a copy
         self.backend.payment.repeat = Payment.objects.create(
             customer=self.customer,
@@ -590,7 +590,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
     @responses.activate
-    def test_pay_recurring_error(self):
+    def test_pay_recurring_error(self) -> None:
         # Modify backend payment as it has a copy
         self.backend.payment.repeat = Payment.objects.create(
             customer=self.customer,
@@ -616,7 +616,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
     @responses.activate
-    def test_pay_recurring_error_blank_message(self):
+    def test_pay_recurring_error_blank_message(self) -> None:
         # Modify backend payment as it has a copy
         self.backend.payment.repeat = Payment.objects.create(
             customer=self.customer,
@@ -644,7 +644,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
     @responses.activate
-    def test_pay_recurring_error_no_message(self):
+    def test_pay_recurring_error_no_message(self) -> None:
         # Modify backend payment as it has a copy
         self.backend.payment.repeat = Payment.objects.create(
             customer=self.customer,
@@ -670,7 +670,7 @@ class ThePay2Test(BackendBaseTestCase):
 
 class VATTest(SimpleTestCase):
     @responses.activate
-    def test_validation_invalid(self):
+    def test_validation_invalid(self) -> None:
         mock_vies(valid=False)
         with self.assertRaises(ValidationError):
             validate_vatin("XX123456")
@@ -680,7 +680,7 @@ class VATTest(SimpleTestCase):
             validate_vatin("CZ8003280317")
 
     @responses.activate
-    def test_cache(self):
+    def test_cache(self) -> None:
         cache.set(
             "VAT-CZ8003280318",
             {
@@ -695,7 +695,7 @@ class VATTest(SimpleTestCase):
         validate_vatin("CZ8003280318")
 
     @responses.activate
-    def test_direct(self):
+    def test_direct(self) -> None:
         mock_vies()
         cache.delete("VAT-CZ8003280318")
         validate_vatin("CZ8003280318")

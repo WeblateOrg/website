@@ -23,14 +23,14 @@ class LegalTestCase(UserTestCase):
             vat=vat,
         )
 
-    def test_agreement(self):
+    def test_agreement(self) -> None:
         agreement = Agreement.objects.create(
             customer=self.create_customer(), kind=AgreementKind.DPA
         )
         self.assertTrue(agreement.path.exists())
         self.assertIn("DPA", str(agreement))
 
-    def test_generate_terms(self):
+    def test_generate_terms(self) -> None:
         tempdir = mkdtemp()
         try:
             call_command("generate_terms", output=Path(tempdir))

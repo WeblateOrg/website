@@ -36,7 +36,7 @@ class MethodForm(forms.Form):
         required=True,
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.fields["method"].choices = [  # type: ignore[attr-defined]
             (backend.name, backend.verbose) for backend in list_backends()

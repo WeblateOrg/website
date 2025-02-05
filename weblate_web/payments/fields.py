@@ -23,7 +23,7 @@ from django.db import models
 
 
 class Char32UUIDField(models.UUIDField):
-    def db_type(self, connection):
+    def db_type(self, connection) -> str:
         return "char(32)"
 
     def get_db_prep_value(self, value, connection, prepared=False):

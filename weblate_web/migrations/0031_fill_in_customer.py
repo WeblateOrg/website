@@ -47,7 +47,7 @@ def get_customer(customer_model, payments, invoice_storage, instance_name):
     return payments[0].customer
 
 
-def update_customer(apps, schema_editor):
+def update_customer(apps, schema_editor) -> None:
     print()
     Donation = apps.get_model("weblate_web", "Donation")
     Service = apps.get_model("weblate_web", "Service")

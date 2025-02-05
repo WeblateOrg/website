@@ -99,7 +99,7 @@ class LatestEntriesFeed(Feed):
 class PagesSitemap(Sitemap):
     """Sitemap of static pages for one language."""
 
-    def __init__(self, language):
+    def __init__(self, language) -> None:
         super().__init__()
         self.language = language
 
@@ -120,7 +120,7 @@ class PagesSitemap(Sitemap):
             ("/news/", 0.9, "daily"),
         )
 
-    def location(self, obj):
+    def location(self, obj) -> str:
         return f"/{self.language}{obj[0]}"
 
     def priority(self, obj):

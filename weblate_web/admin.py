@@ -133,7 +133,7 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ("-timestamp",)
     date_hierarchy = "timestamp"
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change) -> None:
         if getattr(obj, "author", None) is None:
             obj.author = request.user
         obj.save()

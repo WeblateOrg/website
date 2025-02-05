@@ -38,7 +38,7 @@ class Command(BaseCommand):
             help="Delete stale services",
         )
 
-    def handle(self, delete: bool, **kwargs):
+    def handle(self, delete: bool, **kwargs) -> None:
         # Remove services without subscription and report older than 30 days
         for service in Service.objects.filter(
             subscription__isnull=True,

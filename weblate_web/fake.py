@@ -20,7 +20,7 @@
 from django.utils.translation import gettext as _
 
 
-def discover():
+def discover() -> None:
     _(
         "The largest Weblate server worldwide is home to hundreds of libre and "
         "private projects. And Weblate itself! Love libre software? Your "

@@ -159,7 +159,7 @@ class Customer(models.Model):
         verbose_name = "Customer"
         verbose_name_plural = "Customers"
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.name:
             return f"{self.name} ({self.email})"
         return self.email
@@ -203,14 +203,14 @@ class Customer(models.Model):
             return self.vat[:2].upper()
         return None
 
-    def clean(self):
+    def clean(self) -> None:
         if self.vat and self.vat_country_code != self.country_code:
             raise ValidationError(
                 {"country": gettext_lazy("The country has to match your VAT code")}
             )
 
     @property
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return (
             not self.name
             or not self.address
@@ -323,7 +323,7 @@ class Payment(models.Model):
         verbose_name = "Payment"
         verbose_name_plural = "Payments"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"payment:{self.pk}"
 
     def get_absolute_url(self):
@@ -335,7 +335,7 @@ class Payment(models.Model):
         return self.state in {self.NEW, self.PENDING}
 
     @cached_property
-    def invoice_filename(self):
+    def invoice_filename(self) -> str:
         return f"{self.invoice}.pdf"
 
     @cached_property
@@ -374,7 +374,7 @@ class Payment(models.Model):
     def get_complete_url(self) -> str:
         return get_site_url("payment-complete", strip_language=False, pk=self.pk)
 
-    def is_backend_valid(self):
+    def is_backend_valid(self) -> bool:
         try:
             self.get_payment_backend_class()
         except KeyError:
@@ -433,7 +433,7 @@ class Payment(models.Model):
                 extra=extra,
             )
 
-    def trigger_recurring(self):
+    def trigger_recurring(self) -> None:
         """Trigger recurring payment."""
         from weblate_web.models import process_payment  # noqa: PLC0415
 

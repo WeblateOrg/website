@@ -30,14 +30,14 @@ from weblate_web.payments.models import Payment
 class Command(BaseCommand):
     help = "processes pending payments"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument(
             "--from-date",
             default=None,
             help="Date for parsing bank statements",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         if settings.FIO_TOKEN:
             with transaction.atomic():
                 FioBank.fetch_payments(from_date=options["from_date"])
@@ -45,7 +45,7 @@ class Command(BaseCommand):
             self.pending()
         self.active()
 
-    def pending(self):
+    def pending(self) -> None:
         # Process pending ones
         payments = Payment.objects.filter(state=Payment.ACCEPTED).select_for_update()
         for payment in payments:
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 self.stderr.write(f"Could not process payment: {payment}")
 
     @staticmethod
-    def active():
+    def active() -> None:
         # Adjust active flag
         Donation.objects.filter(active=True, expires__lt=timezone.now()).update(
             active=False
