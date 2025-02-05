@@ -106,10 +106,8 @@ ignore = [
   "DJ001",  # TODO: Avoid using `null=True` on string-based fields such as CharField (maybe add noqa)
   "DOC",  # TODO: pydoclint violations
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
-  "PLR0912",  # WONTFIX: Too many branches
   "PLR6301",  # TODO: Method could be a function, class method, or static method
   "PLR2004",  # TODO: Magic value used in comparison, consider replacing 201 with a constant variable
-  "PLR0904",  # TODO: Too many public methods
   "RUF001",  # WONTFIX: String contains ambiguous unicode character, we are using Unicode
   "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
   "E501",  # WONTFIX: we accept long strings (rest is formatted by black)
@@ -130,3 +128,8 @@ max-complexity = 16
 "weblate_web/migrations/0038_migrate_payments.py" = ["T201"]
 "weblate_web/payments/backends.py" = ["T201"]
 "weblate_web/payments/migrations/0040_fill_in_users.py" = ["T201"]
+
+[tool.ruff.lint.pylint]
+# TODO: all these should be lower (or use defaults)
+max-branches = 19
+max-public-methods = 41
