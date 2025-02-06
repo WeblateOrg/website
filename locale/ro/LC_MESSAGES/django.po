@@ -10,15 +10,15 @@
 # Simona Iacob <s@zp1.net>, 2021, 2022.
 # CRISTIAN ANDREI <cristianvdr@gmail.com>, 2021.
 # Licaon Kter <licaon.kter@protonmail.com>, 2023, 2024.
-# Vlăduț Ilie <vladilie94@gmail.com>, 2023, 2024.
+# Vlăduț Ilie <vladilie94@gmail.com>, 2023, 2024, 2025.
 # Nicoara Alex <alex.nicoara@yahoo.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-11-07 13:47+0100\n"
-"PO-Revision-Date: 2024-11-02 07:50+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-02-06 18:37+0000\n"
+"Last-Translator: Vlăduț Ilie <vladilie94@gmail.com>\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/weblate/website/"
 "ro/>\n"
 "Language: ro\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -129,18 +129,14 @@ msgid "None"
 msgstr "Niciunul"
 
 #: weblate_web/models.py:500
-#, fuzzy
-#| msgid "Dedicated instance"
 msgctxt "Package category"
 msgid "Dedicated hosting"
-msgstr "Instanță dedicată"
+msgstr "Găzduire dedicată"
 
 #: weblate_web/models.py:501
-#, fuzzy
-#| msgid "Hosting"
 msgctxt "Package category"
 msgid "Shared hosting"
-msgstr "Găzduire"
+msgstr "Găzduire partajată"
 
 #: weblate_web/models.py:502
 #, fuzzy
@@ -337,30 +333,24 @@ msgid "Address"
 msgstr "Adresă"
 
 #: weblate_web/payments/models.py:107
-#, fuzzy
-#| msgid "Billing information"
 msgid "Additional address information"
-msgstr "Informații facturare"
+msgstr "Informații suplimentare adresă"
 
 #: weblate_web/payments/models.py:113
 msgid "City"
 msgstr "Oraș"
 
 #: weblate_web/payments/models.py:118
-#, fuzzy
-#| msgid "Postcode and city"
 msgid "Postcode"
-msgstr "Cod poștal și oraș"
+msgstr "Cod poștal"
 
 #: weblate_web/payments/models.py:122
 msgid "Country"
 msgstr "Țară"
 
 #: weblate_web/payments/models.py:128
-#, fuzzy
-#| msgid "Billing information"
 msgid "Billing e-mail"
-msgstr "Informații facturare"
+msgstr "Email facturare"
 
 #: weblate_web/payments/models.py:129
 msgid "Additional e-mail to receive billing notifications"
@@ -450,10 +440,8 @@ msgstr ""
 "momentan, te rugăm să încerci din nou mai târziu."
 
 #: weblate_web/payments/validators.py:64
-#, fuzzy
-#| msgid "Service Status"
 msgid "View service status."
-msgstr "Stare serviciu"
+msgstr "Vezi stare serviciu."
 
 #: weblate_web/payments/validators.py:67
 msgid "{} is not a valid VAT ID."
@@ -1452,10 +1440,8 @@ msgid "Download source code"
 msgstr "Descarcă cod sursă"
 
 #: weblate_web/templates/download.html:41
-#, fuzzy
-#| msgid "Latest releases for download, signed with PGP"
 msgid "Latest releases for download"
-msgstr "Ultimele lansări pentru descărcare, semnate cu PGP"
+msgstr "Ultimele lansări pentru descărcare"
 
 #: weblate_web/templates/download.html:49
 msgid "Cloud or virtualization images"
@@ -2023,12 +2009,8 @@ msgstr ""
 "acestea cu confortul suportului premium."
 
 #: weblate_web/templates/hosting.html:25
-#, fuzzy
-#| msgid "Our team is ready to help you make Weblate run smoothly."
 msgid "Our team is ready to help you run Weblate smoothly."
-msgstr ""
-"Echipa noastră este pregătită să te ajute să faci ca Weblate să funcționeze "
-"fără probleme."
+msgstr "Echipa noastră este pregătită să te ajute rulezi Weblate fără probleme."
 
 #: weblate_web/templates/hosting.html:30
 msgid "Compare Cloud and Self-hosted Features"
@@ -2076,11 +2058,8 @@ msgid "Cloud"
 msgstr "Cloud"
 
 #: weblate_web/templates/hosting.html:82
-#, fuzzy
-#| msgid "Backups and restore on Hosted Weblate are fully automatic."
 msgid "Backups and restores are automatic on Hosted Weblate."
-msgstr ""
-"Copiile de rezervă și restaurarea pe Weblate găzduit sunt complet automate."
+msgstr "Copiile de rezervă și restaurările sunt automate pe Weblate găzduit."
 
 #: weblate_web/templates/hosting.html:102
 msgctxt "Hosting plan"
@@ -2228,11 +2207,9 @@ msgid "Yearly"
 msgstr "Anual"
 
 #: weblate_web/templates/hosting.html:508
-#, fuzzy, python-format
-#| msgid "<strong>Save more</strong> with longer pre-payment!"
+#, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
-msgstr ""
-"<strong>Economisește mai mult</strong> cu o plată anticipată mai lungă!"
+msgstr "<strong>Economisește 20%%</strong> cu abonament anual!"
 
 #: weblate_web/templates/hosting.html:521
 #: weblate_web/templates/hosting.html:533
@@ -2262,50 +2239,36 @@ msgid "Payment"
 msgstr "Plată"
 
 #: weblate_web/templates/hosting.html:761
-#, fuzzy
-#| msgid ""
-#| "Pricing is based on the number of source strings and target languages. A "
-#| "source string is a text unit defined in a translation format. It can be a "
-#| "word, sentence or paragraph."
 msgid ""
 "Pricing is based on the number of strings in all used languages. A string is "
 "a text unit defined in a translation format. It can be a word, sentence, or "
 "paragraph."
 msgstr ""
-"Prețul este bazează pe numărul de șiruri sursă și de limbi țintă. Un șir "
-"sursă este o unitate de text definită într-un format de traducere. Acesta "
-"poate fi un cuvânt, o propoziție sau un paragraf."
+"Prețul se bazează pe numărul de șiruri din toate limbile folosite. Un șir "
+"este o unitate de text definită într-un format de traducere. Acesta poate fi "
+"un cuvânt, o propoziție sau un paragraf."
 
 #: weblate_web/templates/hosting.html:766
 msgid "Weblate proudly supports libre projects"
 msgstr "Weblate sprijină cu mândrie proiectele libre"
 
 #: weblate_web/templates/hosting.html:768
-#, fuzzy, python-format
-#| msgid ""
-#| "If you feel like being supported by Weblate will help you, <a "
-#| "href=\"%(url)s\">set up your libre project</a> and get the <strong>Libre "
-#| "plan</strong> gratis."
+#, python-format
 msgid ""
 "If you feel that being supported by Weblate will help your libre project, <a "
 "href=\"%(url)s\">set it up</a> and get the <strong>Libre plan</strong> "
 "gratis."
 msgstr ""
-"Dacă simți că a fi susținut de Weblate te va ajuta, <a "
-"href=\"%(url)s\">configurează-ți proiectul libre</a> și obține "
-"<strong>planul Libre</strong>."
+"Dacă simți că a fi susținut de Weblate îți va ajuta proiectul libre, <a href="
+"\"%(url)s\">setează-l</a> și obține gratuit <strong>planul Libre</strong>."
 
 #: weblate_web/templates/hosting.html:769
-#, fuzzy
-#| msgid ""
-#| "It has the same limits as the <strong>Advanced plan</strong>, but only "
-#| "for public projects."
 msgid ""
 "It has the same limits as the <strong>160k plan</strong>, and is only for "
 "public projects."
 msgstr ""
-"Acesta are aceleași limite ca și <strong>Planul avansat</strong>, dar numai "
-"pentru proiecte publice."
+"Are aceleași limite ca <strong>planul 160k</strong> și este doar pentru "
+"proiecte publice."
 
 #: weblate_web/templates/hosting.html:774
 msgid "Join existing users and supporters"
@@ -2691,22 +2654,16 @@ msgid "Privacy Policy"
 msgstr "Politică de confidențialitate"
 
 #: weblate_web/templates/privacy.html:18 weblate_web/templates/terms.html:18
-#, fuzzy
-#| msgid "The legal documents necessary to offer this service."
 msgid "The legal documents necessary to offer our services."
-msgstr "Documentele legale necesare pentru a oferi acest serviciu."
+msgstr "Documentele legale necesare pentru a ne oferi serviciile."
 
 #: weblate_web/templates/privacy.html:21
-#, fuzzy
-#| msgid ""
-#| "The Terms of Service document is authoritative in English, translations "
-#| "are provided for your convenience."
 msgid ""
 "The Privacy Policy document is legally-binding in English, translations are "
 "provided for your convenience."
 msgstr ""
-"Documentul Termenilor serviciului de furnizare a serviciilor este în limba "
-"engleză, iar traducerile sunt furnizate pentru confortul tău."
+"Documentul Politica de confidențialitate este, din punct de vedere juridic, "
+"în limba engleză, iar traducerile sunt furnizate pentru confortul tău."
 
 #: weblate_web/templates/privacy.html:24 weblate_web/templates/terms.html:24
 msgid "View English version"
@@ -3364,19 +3321,16 @@ msgstr "Discută cu comunitatea pe <a href=\"%(url)s\">GitHub</a>."
 
 #: weblate_web/templates/terms.html:11
 msgid "General Terms and Conditions"
-msgstr ""
+msgstr "Termene și condiții generale"
 
 #: weblate_web/templates/terms.html:21
-#, fuzzy
-#| msgid ""
-#| "The Terms of Service document is authoritative in English, translations "
-#| "are provided for your convenience."
 msgid ""
 "The General Terms and Conditions document is legally-binding in English, "
 "translations are provided for your convenience."
 msgstr ""
-"Documentul Termenilor serviciului de furnizare a serviciilor este în limba "
-"engleză, iar traducerile sunt furnizate pentru confortul tău."
+"Documentul Termenelor și condițiilor generale este, din punct de vedere "
+"juridic, în limba engleză, iar traducerile sunt furnizate pentru confortul "
+"tău."
 
 #: weblate_web/templates/user.html:8
 msgid "User profile at Weblate"
@@ -3576,12 +3530,12 @@ msgstr "Te rugăm să alegi o metodă de plată."
 #: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
-msgstr ""
+msgstr "Nu s-a putut efectua plata: %s"
 
 #: weblate_web/views.py:450
 #, python-format
 msgid "Could not complete payment: %s"
-msgstr ""
+msgstr "Nu s-a putut finaliza plata: %s"
 
 #: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
@@ -3608,10 +3562,8 @@ msgid "User not found!"
 msgstr "Utilizatorul nu a fost găsit!"
 
 #: weblate_web/views.py:1039
-#, fuzzy
-#| msgid "Payment card"
 msgid "Payment was added."
-msgstr "Card de plată"
+msgstr "Plata a fost adăugată."
 
 #~ msgid "Activate donation"
 #~ msgstr "Activează donație"
