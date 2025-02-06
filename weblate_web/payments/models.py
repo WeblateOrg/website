@@ -389,6 +389,16 @@ class Payment(models.Model):
     def get_payment_backend(self):
         return self.get_payment_backend_class()(self)
 
+    def get_payment_description(self) -> str:
+        backend_name = self.get_payment_backend_class().verbose
+        if self.card_info:
+            card_number = self.card_info["number"]
+            card_number = " ".join(
+                [card_number[i : i + 4] for i in range(0, len(card_number), 4)]
+            )
+            return f"{backend_name} ({card_number})"
+        return backend_name
+
     def repeat_payment(
         self,
         skip_previous: bool = False,

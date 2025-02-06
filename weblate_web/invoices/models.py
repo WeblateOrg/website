@@ -656,7 +656,7 @@ class Invoice(models.Model):
         self,
         *,
         kind: InvoiceKind,
-        prepaid: bool = True,
+        prepaid: bool = False,
         start_date: datetime.datetime | None = None,
         end_date: datetime.datetime | None = None,
         extra: dict[str, int] | None = None,
@@ -671,7 +671,7 @@ class Invoice(models.Model):
             vat_rate=self.vat_rate,
             currency=self.currency,
             parent=self,
-            prepaid=False,
+            prepaid=prepaid,
             extra=extra if extra is not None else self.extra,
         )
         for item in self.all_items:
