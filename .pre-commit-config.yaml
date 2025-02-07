@@ -16,12 +16,11 @@ repos:
     args: [--fix=lf]
   - id: pretty-format-json
     args: [--no-sort-keys, --autofix, --no-ensure-ascii]
-# Crashes for now,see https://github.com/adamchainz/django-upgrade/issues/528
-# - repo: https://github.com/adamchainz/django-upgrade
-#   rev: 1.23.0
-#   hooks:
-#   - id: django-upgrade
-#     args: [--target-version, '5.1']
+- repo: https://github.com/adamchainz/django-upgrade
+  rev: 1.23.0
+  hooks:
+  - id: django-upgrade
+    args: [--target-version, '5.1']
 - repo: https://github.com/adrienverge/yamllint
   rev: v1.35.1
   hooks:

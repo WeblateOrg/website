@@ -150,143 +150,104 @@ SITEMAPS: dict[str, Sitemap] = {
     lang[0]: PagesSitemap(lang[0]) for lang in settings.LANGUAGES
 }
 SITEMAPS["news"] = NewsSitemap()
-UUID = r"(?P<pk>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
 
 
 urlpatterns = [
     *i18n_patterns(
-        re_path(r"^$", TemplateView.as_view(template_name="index.html"), name="home"),
-        re_path(
-            r"^features/$",
+        path("", TemplateView.as_view(template_name="index.html"), name="home"),
+        path(
+            "features/",
             TemplateView.as_view(template_name="features.html"),
             name="features",
         ),
-        re_path(r"^tour/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-        re_path(
-            r"^download/$",
+        path("tour/", RedirectView.as_view(url="/hosting/", permanent=True)),
+        path(
+            "download/",
             TemplateView.as_view(template_name="download.html"),
             name="download",
         ),
-        re_path(r"^try/$", RedirectView.as_view(url="/hosting/", permanent=True)),
-        re_path(
-            r"^hosting/$",
+        path("try/", RedirectView.as_view(url="/hosting/", permanent=True)),
+        path(
+            "hosting/",
             TemplateView.as_view(template_name="hosting.html"),
             name="hosting",
         ),
-        re_path(
-            r"^discover/$",
-            DiscoverView.as_view(),
-            name="discover",
-        ),
-        re_path(
-            r"^hosting/free/$", RedirectView.as_view(url="/hosting/", permanent=True)
-        ),
-        re_path(
-            r"^hosting/ordered/$", RedirectView.as_view(url="/hosting/", permanent=True)
-        ),
-        re_path(
-            r"^contribute/$",
+        path("discover/", DiscoverView.as_view(), name="discover"),
+        path("hosting/free/", RedirectView.as_view(url="/hosting/", permanent=True)),
+        path("hosting/ordered/", RedirectView.as_view(url="/hosting/", permanent=True)),
+        path(
+            "contribute/",
             TemplateView.as_view(template_name="contribute.html"),
             name="contribute",
         ),
+        path("user/", UserView.as_view(), name="user"),
         path(
-            "user/",
-            UserView.as_view(),
-            name="user",
+            "donate/", TemplateView.as_view(template_name="donate.html"), name="donate"
         ),
-        re_path(
-            r"^donate/$",
-            TemplateView.as_view(template_name="donate.html"),
-            name="donate",
-        ),
-        re_path(r"^donate/process/$", process_payment, name="donate-process"),
-        re_path(r"^donate/new/$", DonateView.as_view(), name="donate-new"),
-        re_path(
-            r"^donate/edit/(?P<pk>[0-9]+)/$", EditLinkView.as_view(), name="donate-edit"
-        ),
-        re_path(r"^donate/pay/(?P<pk>[0-9]+)/$", donate_pay, name="donate-pay"),
-        re_path(
-            r"^user/invoice/" + UUID + "/$",
-            download_payment_invoice,
-            name="user-invoice",
-        ),
-        re_path(
-            r"^donate/disable/(?P<pk>[0-9]+)/$", disable_repeat, name="donate-disable"
-        ),
-        re_path(
-            r"^subscription/disable/(?P<pk>[0-9]+)/$",
+        path("donate/process/", process_payment, name="donate-process"),
+        path("donate/new/", DonateView.as_view(), name="donate-new"),
+        path("donate/edit/<int:pk>/", EditLinkView.as_view(), name="donate-edit"),
+        path("donate/pay/<int:pk>/", donate_pay, name="donate-pay"),
+        path("user/invoice/<uuid:pk>/", download_payment_invoice, name="user-invoice"),
+        path("donate/disable/<int:pk>/", disable_repeat, name="donate-disable"),
+        path(
+            "subscription/disable/<int:pk>/",
             subscription_disable_repeat,
             name="subscription-disable",
         ),
-        re_path(
-            r"^subscription/token/(?P<pk>[0-9]+)/$", service_token, name="service-token"
-        ),
-        re_path(
-            r"^subscription/discovery/(?P<pk>[0-9]+)/$",
+        path("subscription/token/<int:pk>/", service_token, name="service-token"),
+        path(
+            "subscription/discovery/<int:pk>/",
             EditDiscoveryView.as_view(),
             name="service-discovery",
         ),
-        re_path(
-            r"^subscription/discovery/$",
+        path(
+            "subscription/discovery/",
             AddDiscoveryView.as_view(),
             name="service-discovery-add",
         ),
-        re_path(
-            r"^subscription/pay/(?P<pk>[0-9]+)/$",
-            subscription_pay,
-            name="subscription-pay",
-        ),
-        re_path(
-            r"^subscription/view/(?P<pk>[0-9]+)/$",
+        path("subscription/pay/<int:pk>/", subscription_pay, name="subscription-pay"),
+        path(
+            "subscription/view/<int:pk>/",
             subscription_view,
             name="subscription-view",
         ),
-        re_path(r"^subscription/new/$", subscription_new, name="subscription-new"),
-        re_path(r"^news/$", NewsView.as_view(), name="news"),
-        re_path(r"^news/archive/$", NewsArchiveView.as_view(), name="news-archive"),
-        re_path(
-            r"^news/topic/milestone/$",
+        path("subscription/new/", subscription_new, name="subscription-new"),
+        path("news/", NewsView.as_view(), name="news"),
+        path("news/archive/", NewsArchiveView.as_view(), name="news-archive"),
+        path(
+            "news/topic/milestone/",
             MilestoneArchiveView.as_view(),
             name="milestone-archive",
         ),
-        re_path(
-            r"^news/topic/(?P<slug>[-a-zA-Z0-9_]+)/$",
-            TopicArchiveView.as_view(),
-            name="topic-archive",
+        path(
+            "news/topic/<slug:slug>/", TopicArchiveView.as_view(), name="topic-archive"
         ),
-        re_path(
-            r"^news/archive/(?P<slug>[-a-zA-Z0-9_]+)/$", PostView.as_view(), name="post"
-        ),
-        re_path(
-            r"^about/$", TemplateView.as_view(template_name="about.html"), name="about"
-        ),
-        re_path(
-            r"^careers/$",
+        path("news/archive/<slug:slug>/", PostView.as_view(), name="post"),
+        path("about/", TemplateView.as_view(template_name="about.html"), name="about"),
+        path(
+            "careers/",
             TemplateView.as_view(template_name="careers.html"),
             name="careers",
         ),
-        re_path(
-            r"^support/$",
+        path(
+            "support/",
             TemplateView.as_view(template_name="support.html"),
             name="support",
         ),
-        re_path(r"^thanks/$", RedirectView.as_view(url="/donate/", permanent=True)),
-        re_path(
-            r"^terms/$", TemplateView.as_view(template_name="terms.html"), name="terms"
-        ),
-        re_path(
-            r"^privacy/$",
+        path("thanks/", RedirectView.as_view(url="/donate/", permanent=True)),
+        path("terms/", TemplateView.as_view(template_name="terms.html"), name="terms"),
+        path(
+            "privacy/",
             TemplateView.as_view(template_name="privacy.html"),
             name="privacy",
         ),
-        re_path(r"^payment/" + UUID + "/$", PaymentView.as_view(), name="payment"),
-        re_path(
-            r"^payment/" + UUID + "/edit/$",
-            CustomerView.as_view(),
-            name="payment-customer",
+        path("payment/<uuid:pk>/", PaymentView.as_view(), name="payment"),
+        path(
+            "payment/<uuid:pk>/edit/", CustomerView.as_view(), name="payment-customer"
         ),
-        re_path(
-            r"^payment/" + UUID + "/complete/$",
+        path(
+            "payment/<uuid:pk>/complete/",
             CompleteView.as_view(),
             name="payment-complete",
         ),
@@ -330,14 +291,14 @@ urlpatterns = [
             RedirectView.as_view(url="/", permanent=True),
         ),
     ),
-    re_path(
-        r"^sitemap\.xml$",
+    path(
+        "sitemap.xml",
         cache_page(3600)(django.contrib.sitemaps.views.index),
         {"sitemaps": SITEMAPS, "sitemap_url_name": "sitemap"},
         name="sitemap-index",
     ),
-    re_path(
-        r"^sitemap-(?P<section>.+)\.xml$",
+    path(
+        "sitemap-<slug:section>.xml",
         cache_page(1800)(django.contrib.sitemaps.views.sitemap),
         {"sitemaps": SITEMAPS},
         name="sitemap",
