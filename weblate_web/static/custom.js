@@ -69,14 +69,14 @@ ready(() => {
   /* Dedicated hosting toggle */
   for (const element of document.querySelectorAll("#dedicated-checkbox")) {
     element.addEventListener("change", (e) => {
-      const yearly_pricing = document.getElementById("yearly-pricing");
+      const yearlyPricing = document.getElementById("yearly-pricing");
       if (e.target.checked) {
-        yearly_pricing.dispatchEvent(new Event("click"));
+        yearlyPricing.dispatchEvent(new Event("click"));
         switchTabs(".pricing-table-tabs-menu ul li, .tab-content", "dedicated");
       } else {
         switchTabs(".pricing-table-tabs-menu ul li, .tab-content", "yearly");
       }
-      yearly_pricing.classList.add("current");
+      yearlyPricing.classList.add("current");
     });
   }
   for (const element of document.querySelectorAll(".dedicated-toggle")) {
@@ -88,8 +88,8 @@ ready(() => {
   }
 
   /* Donate rewards selection */
-  const donate_input = document.getElementById("donate-amount");
-  if (donate_input) {
+  const donateInput = document.getElementById("donate-amount");
+  if (donateInput) {
     for (const element of document.querySelectorAll(".rewards .choose")) {
       element.addEventListener("click", (e) => {
         const container = e.target.parentElement;
@@ -109,21 +109,21 @@ ready(() => {
         e.preventDefault();
       });
     }
-    donate_input.addEventListener("change", (e) => {
+    donateInput.addEventListener("change", (e) => {
       const amount = Number.parseInt(e.target.value);
       let found = 0;
       let highest = document.querySelector(".rewards .fourth");
-      let highest_amount = Number.parseInt(highest.getAttribute("data-amount"));
+      let highestAmount = Number.parseInt(highest.getAttribute("data-amount"));
       for (const element of document.querySelectorAll(".reward")) {
-        const current_amount = Number.parseInt(
+        const currentAmount = Number.parseInt(
           element.getAttribute("data-amount"),
         );
-        if (current_amount <= amount) {
+        if (currentAmount <= amount) {
           element.classList.remove("small");
           found++;
-          if (highest_amount < current_amount) {
+          if (highestAmount < currentAmount) {
             highest = element;
-            highest_amount = current_amount;
+            highestAmount = currentAmount;
           }
         } else {
           element.classList.add("small");
@@ -142,13 +142,13 @@ ready(() => {
         document.querySelector(".nowhoa").classList.add("is-visible");
       }
     });
-    donate_input.dispatchEvent(new Event("change"));
+    donateInput.dispatchEvent(new Event("change"));
   }
 
   /* VAT form */
-  const vat_input = document.getElementById("id_vat_0");
-  if (vat_input) {
-    vat_input.addEventListener("change", (e) => {
+  const vatInput = document.getElementById("id_vat_0");
+  if (vatInput) {
+    vatInput.addEventListener("change", (e) => {
       const value = e.target.value;
       if (value !== "") {
         document.querySelector(
@@ -182,17 +182,18 @@ ready(() => {
                   document.querySelector('input[name="address_2"]').value =
                     parts[1];
                 }
-                const city_parts = parts[parts.length - 1].split("  ");
-                console.log(city_parts);
+                const cityParts = parts[parts.length - 1].split("  ");
+                console.log(cityParts);
                 console.log(parts[parts.length - 1]);
-                if (city_parts.length > 1) {
+                if (cityParts.length > 1) {
                   document.querySelector('input[name="postcode"]').value =
-                    city_parts[0];
-                  document.querySelector('input[name="city"]').value =
-                    city_parts.slice(1).join(" ");
+                    cityParts[0];
+                  document.querySelector('input[name="city"]').value = cityParts
+                    .slice(1)
+                    .join(" ");
                 } else {
                   document.querySelector('input[name="city"]').value =
-                    city_parts[0];
+                    cityParts[0];
                 }
               }
             })
