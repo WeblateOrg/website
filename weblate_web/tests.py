@@ -1110,7 +1110,7 @@ class APITest(UserTestCase):
                     salt="weblate.hosted",
                 )
             },
-            HTTP_USER_AGENT="weblate/1.2.3",
+            headers={"user-agent": "weblate/1.2.3"},
         )
         self.assertEqual(response.status_code, 200)
 
@@ -1142,7 +1142,7 @@ class APITest(UserTestCase):
         response = self.client.post(
             "/api/support/",
             {"secret": service.secret},
-            HTTP_USER_AGENT="weblate/1.2.3",
+            headers={"user-agent": "weblate/1.2.3"},
         )
         self.assertEqual(response.status_code, 200)
         payload = response.json()
@@ -1168,14 +1168,14 @@ class APITest(UserTestCase):
         self.client.post(
             "/api/support/",
             {"secret": service.secret, "discoverable": "1"},
-            HTTP_USER_AGENT="weblate/1.2.3",
+            headers={"user-agent": "weblate/1.2.3"},
         )
         service = Service.objects.get(pk=service.pk)
         self.assertTrue(service.discoverable)
         self.client.post(
             "/api/support/",
             {"secret": service.secret},
-            HTTP_USER_AGENT="weblate/1.2.3",
+            headers={"user-agent": "weblate/1.2.3"},
         )
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
@@ -1201,7 +1201,7 @@ class APITest(UserTestCase):
                     ]
                 ),
             },
-            HTTP_USER_AGENT="weblate/1.2.3",
+            headers={"user-agent": "weblate/1.2.3"},
         )
         self.assertEqual(service.project_set.count(), 1)
         project = service.project_set.get()
@@ -1223,7 +1223,7 @@ class APITest(UserTestCase):
                     ]
                 ),
             },
-            HTTP_USER_AGENT="weblate/1.2.3",
+            headers={"user-agent": "weblate/1.2.3"},
         )
         self.assertEqual(service.project_set.count(), 1)
         project = service.project_set.get()
@@ -1244,7 +1244,7 @@ class APITest(UserTestCase):
                     ]
                 ),
             },
-            HTTP_USER_AGENT="weblate/1.2.3",
+            headers={"user-agent": "weblate/1.2.3"},
         )
         self.assertEqual(service.project_set.count(), 0)
 
