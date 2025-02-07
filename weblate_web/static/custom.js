@@ -183,8 +183,6 @@ ready(() => {
                     parts[1];
                 }
                 const cityParts = parts[parts.length - 1].split("  ");
-                console.log(cityParts);
-                console.log(parts[parts.length - 1]);
                 if (cityParts.length > 1) {
                   document.querySelector('input[name="postcode"]').value =
                     cityParts[0];
