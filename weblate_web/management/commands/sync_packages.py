@@ -28,6 +28,7 @@ from weblate_web.packages import (
     DEDICATED_LIMIT,
     DEDICATED_PREFIX,
     HOSTED_PREFIX,
+    MONTHLY_SUFFIX,
     PACKAGE_NAMES,
     PACKAGES,
 )
@@ -57,18 +58,33 @@ class Command(BaseCommand):
                 limit,
                 price,
             )
+            yield (
+                PackageCategory.PACKAGE_SHARED,
+                f"Weblate hosting ({name} strings, monthly)",
+                f"{HOSTED_PREFIX}{name.lower()}{MONTHLY_SUFFIX}",
+                limit,
+                price // 10,
+            )
 
     def handle(self, *args, **options) -> None:
         for category, verbose, name, limit, price in self.get_packages():
-            package, created = Package.objects.get_or_create(
-                limit_hosted_strings=limit,
-                category=category,
-                defaults={
-                    "verbose": verbose,
-                    "name": name,
-                    "price": price,
-                },
-            )
+            created = False
+            try:
+                package = Package.objects.get(name=name)
+            except Package.DoesNotExist:
+                if name.endswith(MONTHLY_SUFFIX):
+                    packages = Package.objects.filter(name__endswith=MONTHLY_SUFFIX)
+                else:
+                    packages = Package.objects.exclude(name__endswith=MONTHLY_SUFFIX)
+                package, created = packages.get_or_create(
+                    limit_hosted_strings=limit,
+                    category=category,
+                    defaults={
+                        "verbose": verbose,
+                        "name": name,
+                        "price": price,
+                    },
+                )
             if created:
                 self.stdout.write(f"Created {verbose}")
             else:

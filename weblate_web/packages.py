@@ -12,6 +12,7 @@ PACKAGES: dict[int, int] = {
 DEDICATED_LIMIT = 160000
 DEDICATED_PREFIX = "dedicated:"
 HOSTED_PREFIX = "hosted:"
+MONTHLY_SUFFIX = "-m"
 
 
 def package_name(number: int) -> str:
