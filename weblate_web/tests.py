@@ -970,12 +970,12 @@ class PaymentTest(FakturaceTestCase):
 
     def test_your_donations(self) -> None:
         # Check login link
-        self.assertContains(self.client.get(reverse("donate")), "/saml2/login/")
+        self.assertContains(self.client.get(reverse("donate")), "user-anonymous")
         user = self.login()
 
         # No login/donations
         response = self.client.get(reverse("donate"))
-        self.assertNotContains(response, "/saml2/login/")
+        self.assertNotContains(response, "user-anonymous")
         self.assertNotContains(response, "Your donations")
 
         customer = Customer.objects.create(

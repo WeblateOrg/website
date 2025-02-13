@@ -361,7 +361,9 @@ urlpatterns = [
     path("saml2/", include("djangosaml2.urls")),
     # Admin
     path(
-        "admin/login/",
+        "admin/login/"
+        if settings.LOGIN_URL == "/saml2/login/"
+        else "admin/login/saml2/",
         RedirectView.as_view(
             pattern_name="saml2_login", permanent=True, query_string=True
         ),
