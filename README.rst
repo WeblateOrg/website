@@ -50,6 +50,9 @@ Create ``weblate_web/settings_local.py`` which adjust your settings:
 
    # You can also configure API keys and other things, see weblate_web/settings.py
 
+   # Do not send real e-mails, log them to the console
+   EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 Create admin:
 
 .. code-block:: sh
