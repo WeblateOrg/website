@@ -71,6 +71,12 @@ Import subscription packages to the database:
 
    ./manage.py sync_packages
 
+Compile MO files so that translations can be used:
+
+.. code-block:: sh
+
+   ./manage.py compilemessages
+
 Run the development server:
 
 .. code-block:: sh
