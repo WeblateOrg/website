@@ -39,7 +39,7 @@ Create virtual env and install dependencies:
    source .venv/bin/activate
    uv pip install -r requirements-dev.txt
 
-Create :file:`weblate_web/settings_local.py` which adjust your settings:
+Create ``weblate_web/settings_local.py`` which adjust your settings:
 
 .. code-block:: py
 
