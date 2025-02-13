@@ -2445,6 +2445,46 @@ input[type="radio"]:checked + .biglabel {
   color: #fff;
 }
 
+.payment-form #id_vat_0 {
+  width: auto;
+}
+
+@media screen and (max-width: 600px) {
+  .payment-form .form-line,
+  .payment-form .inner-grid {
+    display: flex;
+    flex-direction: column;
+    padding: 0 5px;
+  }
+
+  .form-line .line-left {
+    margin: 0 !important;
+  }
+
+  .form-line .line-right,
+  .payment-form .user-slot {
+    width: 100% !important;
+  }
+
+  .payment-form input {
+    width: 100%;
+  }
+
+  .help,
+  .payment-form .button.inline,
+  .payment-form .grey-input {
+    margin: 5px 0 !important;
+  }
+
+  .payment-form #id_vat_0 {
+    margin-bottom: 5px;
+  }
+
+  .user-img {
+    width: fit-content;
+  }
+}
+
 .text-muted,
 .help {
   font-size: 16px;
@@ -2795,6 +2835,7 @@ html[dir="rtl"] .payment-form select {
   background-image: url("img/arrow-down-black.svg");
   background-position: calc(100% - 20px) center;
   background-repeat: no-repeat;
+  width: 100%;
 }
 
 html[dir="rtl"] .payment-form select {
