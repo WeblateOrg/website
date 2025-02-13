@@ -13,17 +13,17 @@ Django based website for Weblate, running at <https://weblate.org/>.
     :alt: Website
     :target: https://weblate.org/
 
-.. image:: https://github.com/WeblateOrg/website/workflows/Test/badge.svg
-    :alt: Test
-    :target: https://github.com/WeblateOrg/website/actions?query=workflow%3ATest
-
-.. image:: https://github.com/WeblateOrg/website/workflows/Lint/badge.svg
-    :alt: Lint
-    :target: https://github.com/WeblateOrg/website/actions?query=workflow%3ALint
-
 .. image:: https://codecov.io/github/WeblateOrg/website/coverage.svg?branch=main
     :alt: Coverage Status
     :target: https://codecov.io/github/WeblateOrg/website?branch=main
+
+.. image:: https://hosted.weblate.org/widget/weblate/website/status-badge.png
+    :alt: Translation status
+    :target: https://hosted.weblate.org/engage/weblate/
+
+.. image:: https://img.shields.io/github/license/WeblateOrg/website.svg
+    :alt: License
+    :target: https://github.com/WeblateOrg/website/blob/main/LICENSE
 
 
 If you are looking for Weblate itself, go to <https://github.com/WeblateOrg/weblate>.
