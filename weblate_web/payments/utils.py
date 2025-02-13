@@ -18,7 +18,7 @@
 #
 
 """
-Helper functions and classees from Weblate.
+Helper functions and classes from Weblate.
 
 The code here is copy of code from Weblate, taken from
 weblate/utils/validators.py and weblate/utils/fields.py.

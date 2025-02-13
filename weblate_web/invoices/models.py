@@ -83,7 +83,7 @@ def url_fetcher(url: str) -> dict[str, str | bytes]:
             raise ValueError(f"Could not find {fullname}")
         path_obj = Path(match)
     else:
-        raise ValueError(f"Usupported URL: {url}")
+        raise ValueError(f"Unsupported URL: {url}")
     result = {
         "filename": path_obj.name,
         "string": path_obj.read_bytes(),
@@ -867,7 +867,7 @@ class InvoiceItem(models.Model):
         return self.invoice.render_amount(self.total_price)
 
     def get_quantity_unit_display(self) -> str:  # type: ignore[no-redef]
-        # Correcly handle singulars
+        # Correctly handle singulars
         if self.quantity_unit == QuantityUnit.HOURS and self.quantity == 1:
             return "hour"
         # This is what original get_quantity_unit_display() would have done
