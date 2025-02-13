@@ -393,7 +393,7 @@ class PaymentView(FormView, SingleObjectMixin):
             )
             return redirect("payment-customer", pk=self.object.pk)
         # This should not happen, but apparently validation service is
-        # often broken, so whitelist repeating payments
+        # often broken, so all repeating payments without a validation
         if customer.vat and not self.object.repeat:
             try:
                 validate_vatin(customer.vat)
@@ -435,7 +435,7 @@ class PaymentView(FormView, SingleObjectMixin):
     def form_valid(self, form):
         if not self.can_pay:
             return redirect("payment", pk=self.object.pk)
-        # Actualy call the payment backend
+        # Actually call the payment backend
         method = form.cleaned_data["method"]
         backend = get_backend(method)(self.object)
         # Use backend payment here because it is selected again for update

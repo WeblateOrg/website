@@ -199,7 +199,7 @@ class InvoiceTestCase(UserTestCase):
         # Unauthenticated should redirect to login
         response = self.client.get(url, follow=True)
         self.assertContains(response, "Payment Summary")
-        # Unauthenticated user shoudl see note about terms
+        # Unauthenticated user should see note about terms
         self.assertContains(response, "By performing the payment, you accept our")
         self.assertNotContains(response, "Billing information")
         self.assertEqual(invoice.draft_payment_set.count(), 1)

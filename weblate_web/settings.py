@@ -43,7 +43,7 @@ DATABASES = {
         "NAME": "weblate-web.sqlite3",
         # Database user, not used with sqlite3.
         "USER": "",
-        # Database pasword, not used with sqlite3.
+        # Database password, not used with sqlite3.
         "PASSWORD": "",
         # Set to empty string for localhost. Not used with sqlite3.
         "HOST": "",
@@ -332,7 +332,7 @@ SAML_ATTRIBUTE_MAPPING = {
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "email"
 
 SAML_CONFIG = {
-    # full path to the xmlsec1 binary programm
+    # full path to the xmlsec1 binary program
     "xmlsec_binary": "/usr/bin/xmlsec1",
     # your entity id, usually your subdomain plus the url to the metadata view
     "entityid": "http://localhost:1234/saml2/metadata/",
@@ -342,7 +342,7 @@ SAML_CONFIG = {
         "sp": {
             "name": "Weblate.org",
             "name_id_format": saml2.saml.NAMEID_FORMAT_EMAILADDRESS,
-            # For Okta add signed logout requets. Enable this:
+            # For Okta add signed logout requests. Enable this:
             "endpoints": {
                 # url and binding to the assetion consumer service view
                 # do not change the binding or service name

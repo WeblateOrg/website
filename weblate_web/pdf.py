@@ -52,7 +52,7 @@ def url_fetcher(url: str) -> dict[str, str | bytes]:
             raise ValueError(f"Could not find {fullname}")
         path_obj = Path(match)
     else:
-        raise ValueError(f"Usupported URL: {url}")
+        raise ValueError(f"Unsupported URL: {url}")
     result = {
         "filename": path_obj.name,
         "string": path_obj.read_bytes(),

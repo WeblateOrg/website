@@ -1152,7 +1152,7 @@ class APITest(UserTestCase):
         elif expected == "extended":
             self.assertEqual(payload["package"], "Extended support")
         else:
-            raise ValueError("Missing package expecation!")
+            raise ValueError("Missing package expectation!")
         return service
 
     def test_support(self) -> None:

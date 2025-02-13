@@ -140,7 +140,7 @@ class Command(BaseCommand):
         amount: int | None = None,
         extra: dict[str, int],
     ) -> None:
-        # Alllow at most three failures of current payment method
+        # Allow at most three failures of current payment method
         rejected_payments = past_payments.filter(
             state=Payment.REJECTED, repeat=payment.repeat or payment
         )

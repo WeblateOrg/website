@@ -90,7 +90,7 @@ THEPAY_LANGUAGES = {
     "eo",
     "et",
     "ee",
-    "fo",
+    "fo",  # codespell:ignore
     "fj",
     "fi",
     "fr",
@@ -157,7 +157,7 @@ THEPAY_LANGUAGES = {
     "nv",
     "ng",
     "ne",
-    "nd",
+    "nd",  # codespell:ignore
     "se",
     "no",
     "nb",
@@ -202,7 +202,7 @@ THEPAY_LANGUAGES = {
     "tg",
     "ta",
     "tt",
-    "te",
+    "te",  # codespell:ignore
     "th",
     "bo",
     "ti",
