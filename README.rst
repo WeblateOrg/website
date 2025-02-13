@@ -25,8 +25,10 @@ Django based website for Weblate, running at <https://weblate.org/>.
     :alt: License
     :target: https://github.com/WeblateOrg/website/blob/main/LICENSE
 
+Weblate
+-------
 
-If you are looking for Weblate itself, go to <https://github.com/WeblateOrg/weblate>.
+Find Weblate at https://github.com/WeblateOrg/weblate.
 
 Running locally
 ---------------
