@@ -92,8 +92,7 @@
               <img src="https://hosted.weblate.org/avatar/32/{{ user.username }}.png" />
             </a>
           {% else %}
-            <a href="{% url 'saml2_login' %}?next={{ request.path }}"
-               class="user-tab user-anonymous"></a>
+            <a href="{% url 'user' %}" class="user-tab user-anonymous"></a>
           {% endif %}
           <a href="https://hosted.weblate.org/"
              class="button border small app"

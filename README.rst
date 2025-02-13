@@ -27,3 +27,41 @@ Django based website for Weblate, running at <https://weblate.org/>.
 
 
 If you are looking for Weblate itself, go to <https://github.com/WeblateOrg/weblate>.
+
+Running locally
+---------------
+
+Create virtual env and install dependencies:
+
+.. code-block:: sh
+
+   uv venv .venv
+   source .venv/bin/activate
+   uv pip install -r requirements-dev.txt
+
+Create :file:`weblate_web/settings_local.py` which adjust your settings:
+
+.. code-block:: py
+
+   # Disable SAML login, use local
+   LOGIN_URL = "/admin/login/"
+
+   # You can also configure API keys and other things, see weblate_web/settings.py
+
+Create admin:
+
+.. code-block:: sh
+
+   ./manage.py createsuperuser --username admin --email noreply@weblate.org
+
+Migrate the database:
+
+.. code-block:: sh
+
+   ./manage.py migrate
+
+Run the developemnt server:
+
+.. code-block:: sh
+
+   ./manage.py runserver
