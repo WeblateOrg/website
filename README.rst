@@ -62,7 +62,13 @@ Migrate the database:
 
    ./manage.py migrate
 
-Run the developemnt server:
+Import subscription packages to the database:
+
+.. code-block:: sh
+
+   ./manage.py sync_packages
+
+Run the development server:
 
 .. code-block:: sh
 
