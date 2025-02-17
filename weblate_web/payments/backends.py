@@ -769,8 +769,8 @@ class ThePay2Card(Backend):
                 self.payment.card_info = card_info
             return True
 
-        # Pending payment
-        if state in {"waiting_for_payment", "waiting_for_confirmation"}:
+        # Pending payment, expired link
+        if state in {"waiting_for_payment", "waiting_for_confirmation", "expired"}:
             return None
 
         # All other states are assumed to be an error
