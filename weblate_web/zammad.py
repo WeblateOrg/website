@@ -20,10 +20,13 @@ def create_dedicated_hosting_ticket(subscription: Subscription) -> None:
     zammad = get_zammad_client()
 
     # Get first user email (there should be only one for initial subscription anyway)
-    email = subscription.service.user_emails.split(",")[0]
+    emails: list[str] = subscription.service.user_emails.split(",")
+    email: str = emails[0]
+    if not email:
+        raise ValueError(f"Subscription without an email: {subscription}")
 
     # Extract TLD as best guess for cloud name
-    domain = email.split("@")[1].split(".")[0]
+    domain: str = email.split("@")[1].split(".")[0]
 
     zammad.ticket.create(
         params={
@@ -34,6 +37,7 @@ def create_dedicated_hosting_ticket(subscription: Subscription) -> None:
                 "subject": "Your dedicated Weblate instance",
                 "from": "Weblate Care",
                 "to": email,
+                "cc": ",".join(emails[1:]),
                 "body": f"""Hello,
 
 Thank you for purchasing a dedicated Weblate instance! We will prepare it promptly after you provide the information below.
