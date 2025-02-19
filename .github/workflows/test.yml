@@ -14,17 +14,17 @@ jobs:
     name: Python ${{ matrix.python-version }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
     - name: Install apt dependencies
       # gettext is needed as Django uses msgfmt to compile MO files
       run: |
         sudo apt update
         sudo apt install gettext
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: astral-sh/setup-uv@v5
+    - uses: astral-sh/setup-uv@4db96194c378173c656ce18a155ffc14a9fc4355 # v5
       with:
         cache-suffix: test
     - name: Install pip dependencies
@@ -42,14 +42,14 @@ jobs:
         echo "::remove-matcher owner=pytest::"
     - name: Coverage
       run: coverage xml
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5
       with:
         token: ${{secrets.CODECOV_TOKEN}}
         flags: unittests
         name: Python ${{ matrix.python-version }}
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
-      uses: codecov/test-results-action@v1
+      uses: codecov/test-results-action@5c441a7bcc06f8706cde90192857d337c5dab8a6 # v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
 permissions:
