@@ -25,9 +25,11 @@
       </li>
     {% endif %}
     {% if full_menu %}
-      <li>
-        <a href="https://shop.spreadshirt.net/weblate/">{% trans "Merchandise" %}</a>
-      </li>
+      {% if 0 %}
+        <li>
+          <a href="https://shop.spreadshirt.net/weblate/">{% trans "Merchandise" %}</a>
+        </li>
+      {% endif %}
       <li class="{% if request.resolver_match.url_name == 'discover' %} active{% endif %}">
         <a href="{% url 'discover' %}">{% trans "Discover" %}</a>
       </li>
