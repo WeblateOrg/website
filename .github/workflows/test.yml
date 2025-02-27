@@ -49,7 +49,7 @@ jobs:
         name: Python ${{ matrix.python-version }}
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
-      uses: codecov/test-results-action@5c441a7bcc06f8706cde90192857d337c5dab8a6 # v1.0.4@5c441a7bcc06f8706cde90192857d337c5dab8a6 # v1
+      uses: codecov/test-results-action@5c441a7bcc06f8706cde90192857d337c5dab8a6 # v1.0.4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
 permissions:
