@@ -574,7 +574,10 @@ class Invoice(models.Model):
         add_element(output, "VarSymbol", self.number)
 
         # Druh (N: normální, L: zálohová, F: proforma, D: doklad k přijaté platbě)
-        add_element(output, "Druh", "N")
+        if self.prepaid:
+            add_element(output, "Druh", "D")
+        else:
+            add_element(output, "Druh", "N")
         add_element(output, "Dobropis", "0" if self.total_amount > 0 else "1")
         add_element(output, "ZpVypDPH", "1")
         add_element(output, "SazbaDPH1", "12")
