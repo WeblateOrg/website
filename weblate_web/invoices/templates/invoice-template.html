@@ -164,10 +164,12 @@
                 Bank transfer or card payments are available
               {% elif invoice.prepaid %}
                 Do not pay, already paid
-                <br />
-                <span class="method">
-                  {% for payment in invoice.paid_payment_set.all %}{{ payment.get_payment_description }}{% endfor %}
-                </span>
+                <div class="method">
+                  {% for payment in invoice.paid_payment_set.all %}
+                    {{ payment.get_payment_description }}
+                    <div class="uuid">{{ payment.pk }}</div>
+                  {% endfor %}
+                </div>
               {% else %}
                 Bank transfer
                 <br />
