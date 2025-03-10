@@ -736,9 +736,11 @@ class Service(models.Model):
 
     @cached_property
     def expires(self):
-        if self.current_subscription is None:
-            return timezone.now()
-        return self.current_subscription.expires
+        if self.current_subscription is not None:
+            return self.current_subscription.expires
+        if self.latest_subscription is not None:
+            return self.latest_subscription.expires
+        return timezone.now()
 
     def get_suggestions(self):
         result = []
