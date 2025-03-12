@@ -390,6 +390,7 @@ def process_subscription(payment: Payment) -> Subscription:
 
 
 def process_payment(payment: Payment) -> None:
+    payment = Payment.objects.filter(pk=payment.pk).select_for_update()[0]
     if not payment.extra or set(payment.extra.keys()) == {"exclude_backends"}:
         raise UnprocessablePaymentError
     if (
