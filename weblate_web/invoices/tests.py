@@ -23,7 +23,7 @@ from .models import (
 S3_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent / "schemas" / "money-s3" / "_Document.xsd"
 )
-S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))  # noqa: S320
+S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))
 
 
 class InvoiceTestCase(UserTestCase):
@@ -105,7 +105,7 @@ class InvoiceTestCase(UserTestCase):
             self.assertNotEqual(str(item), "")
 
         # Validate generated XML
-        xml_doc = etree.parse(invoice.xml_path)  # noqa: S320
+        xml_doc = etree.parse(invoice.xml_path)
         S3_SCHEMA.assertValid(xml_doc)
 
     def test_total(self) -> None:
