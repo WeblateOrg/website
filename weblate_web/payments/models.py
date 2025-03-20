@@ -150,6 +150,12 @@ class Customer(models.Model):
         blank=True,
         null=True,
     )
+    end_client = models.CharField(
+        max_length=200,
+        default="",
+        verbose_name="End client name",
+    )
+    note = models.TextField(blank=True, verbose_name="Note")
     users = models.ManyToManyField(User, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
