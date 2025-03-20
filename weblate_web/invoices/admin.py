@@ -53,6 +53,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = (
         "customer__name",
         "number",
+        "invoiceitem__description",
     )
     inlines = (InvoiceItemAdmin,)
 
