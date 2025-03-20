@@ -150,7 +150,7 @@ class Customer(models.Model):
         blank=True,
         null=True,
     )
-    users = models.ManyToManyField(User)
+    users = models.ManyToManyField(User, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     objects = CustomerQuerySet.as_manager()
