@@ -20,6 +20,10 @@
       <br>
       {{ object.get_country_display }}
       <br>
+      {% if object.end_client %}
+        End client: {{ object.end_client }}
+        <br>
+      {% endif %}
       <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
     </p>
     <h2>Services</h2>
