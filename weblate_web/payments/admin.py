@@ -27,7 +27,7 @@ from .models import Customer, Payment
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "country", "vat", "origin")
     list_filter = ("country", "origin")
-    search_fields = ("name", "email", "users__email")
+    search_fields = ("name", "email", "users__email", "end_client")
     ordering = ("name",)
     autocomplete_fields = ("users",)
 
