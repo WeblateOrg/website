@@ -172,7 +172,7 @@ class CustomerListView(CRMMixin, ListView):
                 return qs.filter(
                     service__subscription__expires__gte=timezone.now()
                     - timedelta(days=3 * 365)
-                )
+                ).distinct()
             case "all":
                 return qs
         raise ValueError(self.kwargs["kind"])
