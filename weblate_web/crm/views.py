@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext
 from django.views.generic import DetailView, ListView, TemplateView
 
@@ -33,9 +34,8 @@ class CRMMixin:
         context["title"] = self.get_title()
         return context
 
+    @method_decorator(login_required)
     def dispatch(self, request: HttpRequest, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(settings.LOGIN_URL)
         if not request.user.is_staff:
             raise PermissionDenied
         if self.permission is not None and not request.user.has_perm(self.permission):
