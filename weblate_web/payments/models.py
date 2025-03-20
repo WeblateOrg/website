@@ -153,6 +153,7 @@ class Customer(models.Model):
     end_client = models.CharField(
         max_length=200,
         default="",
+        blank=True,
         verbose_name="End client name",
     )
     note = models.TextField(blank=True, verbose_name="Note")
