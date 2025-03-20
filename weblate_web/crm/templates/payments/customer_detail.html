@@ -48,6 +48,20 @@
         </tr>
       {% endfor %}
     </table>
+    <h2>Invoices</h2>
+    <table>
+      {% for invoice in object.invoice_set.all %}
+        <tr>
+          <th>{{ invoice.number }}</th>
+          <td>{{ invoice.display_total_price }}</td>
+          <td>{{ invoice.get_description }}</td>
+          <td>{{ invoice.customer }}</td>
+          <td>
+            <a href="{% url "admin:invoices_invoice_change" object_id=invoice.pk %}">Details</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
     <h2>Payments</h2>
     <table>
       {% for payment in object.payment_set.all %}
