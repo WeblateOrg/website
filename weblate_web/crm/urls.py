@@ -36,7 +36,7 @@ urlpatterns = [
     ),
     path("invoices/<slug:kind>/", InvoiceListView.as_view(), name="invoice-list"),
     path(
-        "customers/",
+        "customers/<slug:kind>/",
         CustomerListView.as_view(),
         name="customer-list",
     ),

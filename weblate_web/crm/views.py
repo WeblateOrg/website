@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from django.contrib import messages
@@ -156,8 +157,25 @@ class CustomerListView(CRMMixin, ListView):
     title = "Customers"
     paginate_by = 100
 
+    def get_title(self) -> str:
+        match self.kwargs["kind"]:
+            case "active":
+                return "Active customer"
+            case "all":
+                return "All customers"
+        raise ValueError(self.kwargs["kind"])
+
     def get_queryset(self):
-        return super().get_queryset().order_by("name")
+        qs = super().get_queryset().order_by("name")
+        match self.kwargs["kind"]:
+            case "active":
+                return qs.filter(
+                    service__subscription__expires__gte=timezone.now()
+                    - timedelta(days=3 * 365)
+                )
+            case "all":
+                return qs
+        raise ValueError(self.kwargs["kind"])
 
 
 class CustomerDetailView(CRMMixin, DetailView):

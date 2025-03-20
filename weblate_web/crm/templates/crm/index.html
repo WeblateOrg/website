@@ -20,7 +20,7 @@
           </caption>
           <tr>
             <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:customer-list' %}">Customers</a>
+              <a href="{% url 'crm:customer-list' kind="all" %}">Customers</a>
             </th>
 
             {% if perms.payments.add_customer %}
@@ -34,7 +34,20 @@
             {% endif %}
 
             <td>
-              <a href="{% url 'crm:customer-list' %}"
+              <a href="{% url 'crm:customer-list' kind="all" %}"
+                 class="viewlink"
+                 aria-describedby="row-invoices">{% translate "View" %}</a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" id="row-invoices">
+              <a href="{% url 'crm:customer-list' kind="active" %}">Active customers</a>
+            </th>
+
+            <td></td>
+
+            <td>
+              <a href="{% url 'crm:customer-list' kind="active" %}"
                  class="viewlink"
                  aria-describedby="row-invoices">{% translate "View" %}</a>
             </td>
