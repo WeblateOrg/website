@@ -57,7 +57,7 @@
       {% for invoice in object.invoice_set.all %}
         <tr>
           <th>{{ invoice.number }}</th>
-          <td>{{ invoice.display_total_price }}</td>
+          <td>{{ invoice.display_total_amount }}</td>
           <td>{{ invoice.get_description }}</td>
           <td>{{ invoice.customer }}</td>
           <td>
