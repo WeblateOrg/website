@@ -468,7 +468,9 @@ class Invoice(models.Model):
         return self.invoiceitem_set.order_by("id")
 
     def get_description(self) -> str:
-        return self.all_items[0].description
+        if self.all_items:
+            return self.all_items[0].description
+        return ""
 
     def render_html(self) -> str:
         with override("en_GB"):
