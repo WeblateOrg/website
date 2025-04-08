@@ -864,7 +864,7 @@ class InvoiceItem(models.Model):
 
     @property
     def display_price(self) -> str:
-        return self.invoice.render_amount(round_decimal(self.unit_price))
+        return self.invoice.render_amount(round_decimal(self.unit_price or 0))
 
     @property
     def display_total_price(self) -> str:
