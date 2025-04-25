@@ -79,8 +79,8 @@
                 <li>
                   <strong>{% trans_noop "Open Collaboration:" %}</strong>
 
-                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+label%3Aux" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
-                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
+                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen%20label%3A%22Area%3A%20ux%22" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
+                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen%20label%3A%22Area%3A%20ux%22%20label%3A%22good%20first%20issue%22%20" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
                 </li>
 
               </ul>
@@ -169,8 +169,8 @@
                 <li>
                   <strong>{% trans_noop "Open Collaboration:" %}</strong>
 
-                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+-label%3Aux" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
-                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen+label%3Aenhancement+-label%3Aux+label%3A%22good+first+issue%22" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
+                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen%20-label%3A%22Area%3A%20ux%22" %}Dive into our <a href="{{ issues }}">open issues</a> to gain insights and contribute to our dynamic ecosystem.{% endblocktrans %}
+                  {% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aopen%20-label%3A%22Area%3A%20ux%22%20label%3A%22good%20first%20issue%22%20" %}Showcase your skills by tackling one of our <a href="{{ issues }}">good first issues</a> and making a tangible impact.{% endblocktrans %}
                 </li>
 
               </ul>
@@ -198,7 +198,7 @@
                         <li>{% trans_noop "We're looking for a front-end developer who will not be afraid of touching the back-end as well." %}</li>
                         <li>{% trans_noop "Our front-end is currently using Bootstrap and jQuery, but we want to improve." %}</li>
                         <li>{% trans_noop "The back-end is in Python, using Django, Django REST framework, Celery, Translate Toolkit, and many others." %}</li>
-                        <li>{% blocktrans with issues="https://github.com/WeblateOrg/weblate/labels/enhancement" %}Browse the <a href="{{ issues }}">open issues</a> to gain insight into what we are looking for.{% endblocktrans %}</li>
+                        <li>{% blocktrans with issues="https://github.com/WeblateOrg/weblate/issues?q=is%3Aissue%20state%3Aopen%20type%3AFeature" %}Browse the <a href="{{ issues }}">open issues</a> to gain insight into what we are looking for.{% endblocktrans %}</li>
                         <li>{% blocktrans with issues="https://github.com/WeblateOrg/weblate/labels/good%20first%20issue" %}Grab one of the <a href="{{ issues }}">good first issues</a> to show us your expertise.{% endblocktrans %}</li>
                         <li>{% trans_noop "It is all libre software, all our code and issues are open to the public." %}</li>
                         {% include "snippets/career.html" %}
