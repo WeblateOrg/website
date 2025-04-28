@@ -444,7 +444,6 @@ COUNTRIES_OVERRIDE = {
     "IR": None,
     "KP": None,
     "RU": None,
-    "SY": None,
     "BY": None,
 }
 
