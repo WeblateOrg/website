@@ -58,7 +58,7 @@ class Command(BaseCommand):
         context: dict[str, str | dict[str, BankAccountInfo]] = {
             "title": configuration["title"],
             "bank_accounts": {
-                currency.label: bank for currency, bank in BANK_ACCOUNTS.items()
+                str(currency.label): bank for currency, bank in BANK_ACCOUNTS.items()
             },
         }
 
