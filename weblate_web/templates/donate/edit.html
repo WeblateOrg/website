@@ -3,15 +3,14 @@
 {% load i18n %}
 
 {% block title %}
-  {% trans "Donate to Weblate" %}
-{% endblock %}
-
+  {% translate "Donate to Weblate" %}
+{% endblock title %}
 
 {% block content %}
   <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title min-m">{% trans "Edit your reward link" %}</h1>
+        <h1 class="section-title min-m">{% translate "Edit your reward link" %}</h1>
         <div class="payment-form">
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -28,10 +27,10 @@
               </div>
             {% endfor %}
             <div class="payment-pick"></div>
-            <input type="submit" class="button center make-payment" value="{% trans "Save" %}" />
+            <input type="submit" class="button center make-payment" value="{% translate "Save" %}" />
           </form>
         </div>
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load humanize %}
-{% load prices %}
+{% load humanize i18n prices %}
 
 {% block body_class %}page pricing light{% endblock %}
-
 
 {% block content %}
   <section class="content">
@@ -13,50 +10,50 @@
       <div class="wrap">
         <h1 class="section-title min-m">
           {% block title %}
-            {% trans "Weblate Pricing" %}
-          {% endblock %}
+            {% translate "Weblate Pricing" %}
+          {% endblock title %}
 
         </h1>
         <div class="page-desc">
           {% url 'support' as url %}
           <p>
             {% block description %}
-              {% blocktrans %}Use Weblate as a service, set up your own, or <a href="{{ url }}">get help</a> for on-premise hosting — all with the convenience of the premium support.{% endblocktrans %}
-              {% blocktrans %}Our team is ready to help you run Weblate smoothly.{% endblocktrans %}
-            {% endblock %}
+              {% blocktranslate %}Use Weblate as a service, set up your own, or <a href="{{ url }}">get help</a> for on-premise hosting — all with the convenience of the premium support.{% endblocktranslate %}
+              {% blocktranslate %}Our team is ready to help you run Weblate smoothly.{% endblocktranslate %}
+            {% endblock description %}
 
           </p>
         </div>
-        <h2 id="which" class="section-title payment-conditions">{% trans "Compare Cloud and Self-hosted Features" %}</h2>
+        <h2 id="which" class="section-title payment-conditions">{% translate "Compare Cloud and Self-hosted Features" %}</h2>
         <div class="pricing-table">
           <div class="pricing-table-left">
             <div class="col">
               <div class="line">
-                <span class="middle">{% trans "System maintenance" %}</span>
+                <span class="middle">{% translate "System maintenance" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Weblate installation" %}</span>
+                <span class="middle">{% translate "Weblate installation" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Weblate upgrades" %}</span>
+                <span class="middle">{% translate "Weblate upgrades" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Access to backups" %}</span>
+                <span class="middle">{% translate "Access to backups" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Complete configuration customization" %}</span>
+                <span class="middle">{% translate "Complete configuration customization" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Single sign-on" %}</span>
+                <span class="middle">{% translate "Single sign-on" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Priority e-mail support" %}</span>
+                <span class="middle">{% translate "Priority e-mail support" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Shared translation memory" %}</span>
+                <span class="middle">{% translate "Shared translation memory" %}</span>
               </div>
               <div class="line">
-                <span class="middle">{% trans "Priority bug fixing" %}</span>
+                <span class="middle">{% translate "Priority bug fixing" %}</span>
               </div>
             </div>
           </div>
@@ -64,9 +61,9 @@
             <div class="pricing-table-right-inner">
               <div class="col">
                 <div class="head line blue">
-                  <strong>{% trans "Cloud" context "Hosting plan" %}</strong>
+                  <strong>{% translate "Cloud" context "Hosting plan" %}</strong>
                   <br />
-                  {% trans "Hosted Weblate" %}
+                  {% translate "Hosted Weblate" %}
                 </div>
                 <div class="line">
                   <span class="check"></span>
@@ -79,7 +76,7 @@
                 </div>
                 <div class="line">
                   <span class="info"
-                        title="{% blocktrans %}Backups and restores are automatic on Hosted Weblate.{% endblocktrans %}">i</span>
+                        title="{% blocktranslate %}Backups and restores are automatic on Hosted Weblate.{% endblocktranslate %}">i</span>
                 </div>
                 <div class="line">
                   <span class="cross"></span>
@@ -99,7 +96,7 @@
               </div>
               <div class="col">
                 <div class="head line blue">
-                  <strong>{% trans "Dedicated cloud" context "Hosting plan" %}</strong>
+                  <strong>{% translate "Dedicated cloud" context "Hosting plan" %}</strong>
                   <br />
                 </div>
                 <div class="line">
@@ -132,21 +129,21 @@
               </div>
               <div class="col">
                 <div class="head line red">
-                  <strong>{% trans "Self-hosted" context "Hosting plan" %}</strong>
+                  <strong>{% translate "Self-hosted" context "Hosting plan" %}</strong>
                   <br />
-                  {% trans "Extended support" %}
+                  {% translate "Extended support" %}
                 </div>
                 <div class="line">
                   <span class="cross"></span>
                 </div>
                 <div class="line">
-                  <a href="{% url 'support' %}#install">{{ 480 | price_format }}</a>
+                  <a href="{% url 'support' %}#install">{{ 480|price_format }}</a>
                 </div>
                 <div class="line">
                   <span class="check"></span>
                 </div>
                 <div class="line">
-                  <a href="{% url 'support' %}#backup">{% trans "Optional" %}</a>
+                  <a href="{% url 'support' %}#backup">{% translate "Optional" %}</a>
                 </div>
                 <div class="line">
                   <span class="check"></span>
@@ -166,21 +163,21 @@
               </div>
               <div class="col">
                 <div class="head line red">
-                  <strong>{% trans "Self-hosted" context "Hosting plan" %}</strong>
+                  <strong>{% translate "Self-hosted" context "Hosting plan" %}</strong>
                   <br />
-                  {% trans "Basic support" %}
+                  {% translate "Basic support" %}
                 </div>
                 <div class="line">
                   <span class="cross"></span>
                 </div>
                 <div class="line">
-                  <a href="{% url 'support' %}#install">{% trans "Optional" %}</a>
+                  <a href="{% url 'support' %}#install">{% translate "Optional" %}</a>
                 </div>
                 <div class="line">
                   <span class="cross"></span>
                 </div>
                 <div class="line">
-                  <a href="{% url 'support' %}#backup">{% trans "Optional" %}</a>
+                  <a href="{% url 'support' %}#backup">{% translate "Optional" %}</a>
                 </div>
                 <div class="line">
                   <span class="check"></span>
@@ -200,9 +197,9 @@
               </div>
               <div class="col">
                 <div class="head line red">
-                  <strong>{% trans "Self-hosted" context "Hosting plan" %}</strong>
+                  <strong>{% translate "Self-hosted" context "Hosting plan" %}</strong>
                   <br />
-                  {% trans "Gratis" %}
+                  {% translate "Gratis" %}
                 </div>
                 <div class="line">
                   <span class="cross"></span>
@@ -214,7 +211,7 @@
                   <span class="cross"></span>
                 </div>
                 <div class="line">
-                  <a href="{% url 'support' %}#backup">{% trans "Optional" %}</a>
+                  <a href="{% url 'support' %}#backup">{% translate "Optional" %}</a>
                 </div>
                 <div class="line">
                   <span class="check"></span>
@@ -236,60 +233,60 @@
               <div class="pricing-table-tabs">
                 <div class="col">
                   <div class="line price">
-                    {% trans "From" %}
-                    <strong>{{ 37 | price_format }}</strong>
+                    {% translate "From" %}
+                    <strong>{{ 37|price_format }}</strong>
                     {% filter upper %}
-                      {% trans "a month" %}
+                      {% translate "a month" %}
                     {% endfilter %}
                   </div>
                   <div class="line">
-                    <a href="#hosted" class="button dedicated-toggle">{% trans "See options" %}</a>
+                    <a href="#hosted" class="button dedicated-toggle">{% translate "See options" %}</a>
                   </div>
                 </div>
                 <div class="col">
                   <div class="line price">
-                    {% trans "From" %}
-                    <strong>{{ 88 | price_format }}</strong>
+                    {% translate "From" %}
+                    <strong>{{ 88|price_format }}</strong>
                     {% filter upper %}
-                      {% trans "a month" %}
+                      {% translate "a month" %}
                     {% endfilter %}
                   </div>
                   <div class="line">
-                    <a href="#hosted" class="button dedicated-toggle dedicated-enable">{% trans "See options" %}</a>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="line price">
-                    &nbsp;
-                    <strong>{{ 100 | price_format }}</strong>
-                    {% filter upper %}
-                      {% trans "a month" %}
-                    {% endfilter %}
-                  </div>
-                  <div class="line">
-                    <a href="{% url 'subscription-new' %}?plan=extended" class="button">{% trans "Buy now" %}</a>
+                    <a href="#hosted" class="button dedicated-toggle dedicated-enable">{% translate "See options" %}</a>
                   </div>
                 </div>
                 <div class="col">
                   <div class="line price">
                     &nbsp;
-                    <strong>{{ 50 | price_format }}</strong>
+                    <strong>{{ 100|price_format }}</strong>
                     {% filter upper %}
-                      {% trans "a month" %}
+                      {% translate "a month" %}
                     {% endfilter %}
                   </div>
                   <div class="line">
-                    <a href="{% url 'subscription-new' %}?plan=basic" class="button">{% trans "Buy now" %}</a>
+                    <a href="{% url 'subscription-new' %}?plan=extended" class="button">{% translate "Buy now" %}</a>
                   </div>
                 </div>
                 <div class="col">
                   <div class="line price">
                     &nbsp;
-                    <strong>{% trans "Gratis" %}</strong>
+                    <strong>{{ 50|price_format }}</strong>
+                    {% filter upper %}
+                      {% translate "a month" %}
+                    {% endfilter %}
+                  </div>
+                  <div class="line">
+                    <a href="{% url 'subscription-new' %}?plan=basic" class="button">{% translate "Buy now" %}</a>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="line price">
+                    &nbsp;
+                    <strong>{% translate "Gratis" %}</strong>
                     &nbsp;
                   </div>
                   <div class="line">
-                    <a href="{% url 'download' %}" class="button border rev">{% trans "Download" %}</a>
+                    <a href="{% url 'download' %}" class="button border rev">{% translate "Download" %}</a>
                   </div>
                 </div>
               </div>
@@ -297,10 +294,10 @@
           </div>
         </div>
         <div class="clear"></div>
-        <h2 id="hosted" class="section-title payment-conditions">{% trans "Cloud-hosted Price Options" %}</h2>
+        <h2 id="hosted" class="section-title payment-conditions">{% translate "Cloud-hosted Price Options" %}</h2>
         <div class="page-desc small">
           <p class="small">
-            {% blocktrans with "mailto:sales@weblate.org" as contact %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktrans %}
+            {% blocktranslate with contact="mailto:sales@weblate.org" %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktranslate %}
           </p>
         </div>
         <div class="page-desc small">
@@ -310,28 +307,28 @@
         </div>
 
         <div class="pricing-table-top">
-          {% blocktrans %}<b>14-day gratis trial</b> included in all cloud plans{% endblocktrans %}
+          {% blocktranslate %}<b>14-day gratis trial</b> included in all cloud plans{% endblocktranslate %}
         </div>
         <div class="pricing-table">
           <div class="pricing-table-left">
             <div class="col">
               <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% trans "Continuous localization" %}</a></span>
+                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% translate "Continuous localization" %}</a></span>
               </div>
               <div class="line">
-                <span class="middle"><a href="#strings">{% trans "Hosted strings" %}</a></span>
+                <span class="middle"><a href="#strings">{% translate "Hosted strings" %}</a></span>
               </div>
               <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#project-configuration">{% trans "Translation projects" %}</a></span>
+                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#project-configuration">{% translate "Translation projects" %}</a></span>
               </div>
               <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#component-configuration">{% trans "Translation components" %}</a></span>
+                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#component-configuration">{% translate "Translation components" %}</a></span>
               </div>
               <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/access.html#manage-users">{% trans "Number of translators" %}</a></span>
+                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/access.html#manage-users">{% translate "Number of translators" %}</a></span>
               </div>
               <div class="line">
-                <span class="middle"><a href="#which">{% trans "Dedicated instance" %}</a></span>
+                <span class="middle"><a href="#which">{% translate "Dedicated instance" %}</a></span>
               </div>
             </div>
           </div>
@@ -473,7 +470,7 @@
               </div>
               <div class="col">
                 <div class="head line">
-                  <strong>{% trans "Custom" context "Hosting plan" %}</strong>
+                  <strong>{% translate "Custom" context "Hosting plan" %}</strong>
                 </div>
                 <div class="line">
                   <span class="check"></span>
@@ -497,97 +494,97 @@
               <div class="clear"></div>
               <div class="pricing-table-tabs-menu">
                 <ul>
-                  <li class="current" data-tab="monthly">{% trans "Monthly" %}</li>
-                  <li data-tab="yearly" id="yearly-pricing">{% trans "Yearly" %}</li>
+                  <li class="current" data-tab="monthly">{% translate "Monthly" %}</li>
+                  <li data-tab="yearly" id="yearly-pricing">{% translate "Yearly" %}</li>
                 </ul>
                 <div class="tabs-checkbox">
                   <input type="checkbox" name="dedicated" id="dedicated-checkbox">
-                  <label for="dedicated-checkbox">{% trans "Dedicated instance" %}</label>
+                  <label for="dedicated-checkbox">{% translate "Dedicated instance" %}</label>
                 </div>
                 <div class="tabs-info">
-                  {% trans "<strong>Save 20%</strong> with annual subscription!" %}
+                  {% translate "<strong>Save 20%</strong> with annual subscription!" %}
                 </div>
               </div>
               <div class="pricing-table-tabs">
                 <div id="monthly" class="tab-content current">
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 45 | price_format }}</strong>
+                      <strong>{{ 45|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Monthly" %}
+                        {% translate "Monthly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 66 | price_format }}</strong>
+                      <strong>{{ 66|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Monthly" %}
+                        {% translate "Monthly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 106 | price_format }}</strong>
+                      <strong>{{ 106|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Monthly" %}
+                        {% translate "Monthly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 178 | price_format }}</strong>
+                      <strong>{{ 178|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Monthly" %}
+                        {% translate "Monthly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 313 | price_format }}</strong>
+                      <strong>{{ 313|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Monthly" %}
+                        {% translate "Monthly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 562 | price_format }}</strong>
+                      <strong>{{ 562|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Monthly" %}
+                        {% translate "Monthly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price small">
-                      {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
+                      {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
                     </div>
                     <div class="line">
-                      <a href="mailto:sales@weblate.org" class="button">{% trans "Contact us" %}</a>
+                      <a href="mailto:sales@weblate.org" class="button">{% translate "Contact us" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
@@ -595,37 +592,37 @@
                 <div id="yearly" class="tab-content">
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 450 | price_format }}</strong>
+                      <strong>{{ 450|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 660 | price_format }}</strong>
+                      <strong>{{ 660|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 1060 | price_format }}</strong>
+                      <strong>{{ 1060|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last">
                       {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
@@ -633,46 +630,46 @@
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 1780 | price_format }}</strong>
+                      <strong>{{ 1780|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 3130 | price_format }}</strong>
+                      <strong>{{ 3130|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 5620 | price_format }}</strong>
+                      <strong>{{ 5620|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% trans "Gratis trial" %}</a>
+                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price small">
-                      {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
+                      {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
                     </div>
                     <div class="line">
-                      <a href="mailto:sales@weblate.org" class="button">{% trans "Contact us" %}</a>
+                      <a href="mailto:sales@weblate.org" class="button">{% translate "Contact us" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
@@ -688,37 +685,37 @@
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 1060 | price_format }}</strong>
+                      <strong>{{ 1060|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:160k" class="button">{% trans "Buy now" %}</a>
+                      <a href="{% url 'subscription-new' %}?plan=dedicated:160k" class="button">{% translate "Buy now" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 1780 | price_format }}</strong>
+                      <strong>{{ 1780|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:640k" class="button">{% trans "Buy now" %}</a>
+                      <a href="{% url 'subscription-new' %}?plan=dedicated:640k" class="button">{% translate "Buy now" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 3130 | price_format }}</strong>
+                      <strong>{{ 3130|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:2.5m" class="button">{% trans "Buy now" %}</a>
+                      <a href="{% url 'subscription-new' %}?plan=dedicated:2.5m" class="button">{% translate "Buy now" %}</a>
                     </div>
                     <div class="line last">
                       {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
@@ -726,22 +723,22 @@
                   </div>
                   <div class="col">
                     <div class="line price">
-                      <strong>{{ 5620 | price_format }}</strong>
+                      <strong>{{ 5620|price_format }}</strong>
                       {% filter upper %}
-                        {% trans "Yearly" %}
+                        {% translate "Yearly" %}
                       {% endfilter %}
                     </div>
                     <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:10m" class="button">{% trans "Buy now" %}</a>
+                      <a href="{% url 'subscription-new' %}?plan=dedicated:10m" class="button">{% translate "Buy now" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
                   <div class="col">
                     <div class="line price small">
-                      {% blocktrans %}<b>Ask</b> for options{% endblocktrans %}
+                      {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
                     </div>
                     <div class="line">
-                      <a href="mailto:sales@weblate.org" class="button">{% trans "Contact us" %}</a>
+                      <a href="mailto:sales@weblate.org" class="button">{% translate "Contact us" %}</a>
                     </div>
                     <div class="line last"></div>
                   </div>
@@ -751,25 +748,25 @@
           </div>
         </div>
 
-        <h2 class="section-title crypto payment-conditions">{% trans "Payment" %}</h2>
+        <h2 class="section-title crypto payment-conditions">{% translate "Payment" %}</h2>
         <div class="page-desc small">{% include "snippets/vat.html" %}</div>
-        <h2 class="section-title crypto payment-conditions" id="strings">{% trans "Hosted strings" %}</h2>
+        <h2 class="section-title crypto payment-conditions" id="strings">{% translate "Hosted strings" %}</h2>
         <div class="page-desc small">
           <p>
-            {% trans "Pricing is based on the number of strings in all used languages. A string is a text unit defined in a translation format. It can be a word, sentence, or paragraph." %}
+            {% translate "Pricing is based on the number of strings in all used languages. A string is a text unit defined in a translation format. It can be a word, sentence, or paragraph." %}
           </p>
         </div>
 
         <div class="libre-hosting" id="libre">
-          <h2>{% trans "Weblate proudly supports libre projects" %}</h2>
+          <h2>{% translate "Weblate proudly supports libre projects" %}</h2>
           <p>
-            {% blocktrans with url="https://hosted.weblate.org/hosting/" %}If you feel that being supported by Weblate will help your libre project, <a href="{{ url }}">set it up</a> and get the <strong>Libre plan</strong> gratis.{% endblocktrans %}
-            {% blocktrans %}It has the same limits as the <strong>160k plan</strong>, and is only for public projects.{% endblocktrans %}
+            {% blocktranslate with url="https://hosted.weblate.org/hosting/" %}If you feel that being supported by Weblate will help your libre project, <a href="{{ url }}">set it up</a> and get the <strong>Libre plan</strong> gratis.{% endblocktranslate %}
+            {% blocktranslate %}It has the same limits as the <strong>160k plan</strong>, and is only for public projects.{% endblocktranslate %}
           </p>
         </div>
 
         <div class="wrap supporters">
-          <h2 class="section-title hp-style">{% trans "Join existing users and supporters" %}</h2>
+          <h2 class="section-title hp-style">{% translate "Join existing users and supporters" %}</h2>
           {% include "snippets/users.html" %}
         </div>
       </div>
@@ -778,4 +775,4 @@
 
   {% include "snippets/bottom.html" %}
   {% include "snippets/about.html" %}
-{% endblock %}
+{% endblock content %}

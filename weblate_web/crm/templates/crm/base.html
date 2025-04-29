@@ -3,7 +3,7 @@
 {% block title %}
   {% if subtitle %}{{ subtitle }} |{% endif %}
   {{ title }} | Weblate CRM
-{% endblock %}
+{% endblock title %}
 
 {% block branding %}
   <div id="site-name">
@@ -12,7 +12,7 @@
   {% if user.is_anonymous %}
     {% include "admin/color_theme_toggle.html" %}
   {% endif %}
-{% endblock %}
+{% endblock branding %}
 
 {% block nav-global %}{% endblock %}
 
@@ -25,4 +25,4 @@
 
     {% if title and title != "CRM" %}› {{ title }}{% endif %}
   </div>
-{% endblock %}
+{% endblock breadcrumbs %}

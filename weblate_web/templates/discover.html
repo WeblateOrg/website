@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load humanize %}
-{% load static %}
-{% load prices %}
+{% load humanize i18n prices static %}
 
 {% block body_class %}page light{% endblock %}
-
 
 {% block content %}
   <section class="content">
@@ -14,29 +10,29 @@
       <div class="wrap">
         <h1 class="section-title min-m">
           {% block title %}
-            {% trans "Discover Weblate" %}
-          {% endblock %}
+            {% translate "Discover Weblate" %}
+          {% endblock title %}
 
         </h1>
 
         <div class="page-desc">
           <p>
             {% block description %}
-              {% blocktrans %}Check out who’s using Weblate already. We are a community of translators and localization specialists who use and improve our common tool to empower readers and app users around the World. Find your favorite projects and start contributing together with us.{% endblocktrans %}
-            {% endblock %}
+              {% blocktranslate %}Check out who’s using Weblate already. We are a community of translators and localization specialists who use and improve our common tool to empower readers and app users around the World. Find your favorite projects and start contributing together with us.{% endblocktranslate %}
+            {% endblock description %}
 
           </p>
         </div>
         <div class="search-bar">
-          <a href="{% url "service-discovery-add" %}" class="link float-right discover-add">{% trans "Add yours" %}</a>
+          <a href="{% url "service-discovery-add" %}" class="link float-right discover-add">{% translate "Add yours" %}</a>
           <form action="{% url 'discover' %}">
             <input type="text"
                    class="search-input"
-                   placeholder="{% trans "project name" %}"
+                   placeholder="{% translate "project name" %}"
                    name="q"
-                   aria-label="{% trans "project name" %}"
+                   aria-label="{% translate "project name" %}"
                    value="{{ query }}" />
-            <input type="submit" class="button inline black" value="{% trans "Search" %}" />
+            <input type="submit" class="button inline black" value="{% translate "Search" %}" />
           </form>
         </div>
 
@@ -60,9 +56,9 @@
               </div>
               <div class="content">
                 <div class="counts float-right">
-                  {% blocktrans count cnt=service.site_projects with count=service.site_projects|intcomma|make_strong %}{{ count }} project{% plural %}{{ count }} projects{% endblocktrans %}
+                  {% blocktranslate count cnt=service.site_projects with count=service.site_projects|intcomma|make_strong %}{{ count }} project{% plural %}{{ count }} projects{% endblocktranslate %}
                   <br />
-                  {% blocktrans count cnt=service.site_users with count=service.site_users|intcomma|make_strong %}{{ count }} translator{% plural %}{{ count }} translators{% endblocktrans %}
+                  {% blocktranslate count cnt=service.site_users with count=service.site_users|intcomma|make_strong %}{{ count }} translator{% plural %}{{ count }} translators{% endblocktranslate %}
                 </div>
                 <h2>
                   <a href="{{ service.site_url }}" target="_blank" rel="ugc" lang="en" dir="ltr">{{ service.site_title }}</a>
@@ -87,23 +83,23 @@
                   {% if service.non_matched_projects_count %}
                     <a href="{{ service.site_url }}/projects/" target="_blank" rel="ugc">
                       <img src="{% static "img/three-dots.svg" %}"
-                           title="{% blocktrans count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktrans %}" />
+                           title="{% blocktranslate count count=service.non_matched_projects_count %}…and {{ count }} more{% plural %}…and {{ count }} more{% endblocktranslate %}" />
                     </a>
                   {% endif %}
                   {% if service.pk in user_services %}
                     <a class="button small float-right"
-                       href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
+                       href="{% url "service-discovery" pk=service.pk %}">{% translate "Customize listing" %}</a>
                   {% endif %}
                   <div class="clear"></div>
                 </p>
               </div>
             </div>
           {% empty %}
-            <h2 id="which" class="section-title payment-conditions">{% trans "No servers matched your search." %}</h2>
+            <h2 id="which" class="section-title payment-conditions">{% translate "No servers matched your search." %}</h2>
           {% endfor %}
         </div>
       </div>
     </div>
   </section>
 
-{% endblock %}
+{% endblock content %}

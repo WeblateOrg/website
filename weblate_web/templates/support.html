@@ -1,32 +1,27 @@
 {% extends "base.html" %}
 
-{% load static %}
-{% load i18n %}
-{% load humanize %}
-{% load prices %}
+{% load humanize i18n prices static %}
 
 {% block title %}
-  {% trans "Weblate support" %}
-{% endblock %}
-
+  {% translate "Weblate support" %}
+{% endblock title %}
 
 {% block body_class %}page gethelp light{% endblock %}
-
 
 {% block content %}
   <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title min-m">{% trans "Get help" %}</h1>
+        <h1 class="section-title min-m">{% translate "Get help" %}</h1>
         <div class="page-desc">
           <p>
             {% block description %}
-              {% trans "Weblate is copylefted libre software with community support. Subscribers receive priority support at no extra charge. Prepaid help packages are available for everyone." %}
-            {% endblock %}
+              {% translate "Weblate is copylefted libre software with community support. Subscribers receive priority support at no extra charge. Prepaid help packages are available for everyone." %}
+            {% endblock description %}
 
           </p>
           <a href="https://github.com/WeblateOrg/weblate/issues/new/choose"
-             class="button inline">{% trans "Report issue" %}</a>
+             class="button inline">{% translate "Report issue" %}</a>
         </div>
 
         <div class="help-cols">
@@ -35,9 +30,9 @@
               <img src="{% static "img/icon-bugs.svg" %}" />
             </div>
             <div class="content">
-              <div class="title">{% trans "Bugs and feature requests" %}</div>
+              <div class="title">{% translate "Bugs and feature requests" %}</div>
               <p>
-                {% blocktrans with url="https://github.com/WeblateOrg/weblate/issues" %}Issues and ideas for improvement can be reported to the <a href="{{ url }}">issue tracker</a>.{% endblocktrans %}
+                {% blocktranslate with url="https://github.com/WeblateOrg/weblate/issues" %}Issues and ideas for improvement can be reported to the <a href="{{ url }}">issue tracker</a>.{% endblocktranslate %}
               </p>
             </div>
           </div>
@@ -46,9 +41,9 @@
               <img src="{% static "img/icon-issues.svg" %}" />
             </div>
             <div class="content">
-              <div class="title">{% trans "Security issues" %}</div>
+              <div class="title">{% translate "Security issues" %}</div>
               <p>
-                {% blocktrans with url="https://docs.weblate.org/en/latest/contributing/issues.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}Should you find a vulnerability, please report it to {{ report }}. More info in the <a href="{{ url }}">documentation</a>.{% endblocktrans %}
+                {% blocktranslate with url="https://docs.weblate.org/en/latest/contributing/issues.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}Should you find a vulnerability, please report it to {{ report }}. More info in the <a href="{{ url }}">documentation</a>.{% endblocktranslate %}
               </p>
             </div>
           </div>
@@ -57,9 +52,9 @@
               <img src="{% static "img/icon-subscribers.svg" %}" />
             </div>
             <div class="content">
-              <div class="title">{% trans "Reliable support" %}</div>
+              <div class="title">{% translate "Reliable support" %}</div>
               <p>
-                {% blocktrans with email="support@weblate.org" %}As the subscriber, you will always receive fast replies from our dedicated support team at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktrans %}
+                {% blocktranslate with email="support@weblate.org" %}As the subscriber, you will always receive fast replies from our dedicated support team at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktranslate %}
               </p>
             </div>
           </div>
@@ -69,7 +64,9 @@
   </section>
   <section class="content no-mar crypto">
     <div class="row">
-      <h2 class="section-title crypto">{% trans "Prepaid support for gratis service and self-hosted installations" %}</h2>
+      <h2 class="section-title crypto">
+        {% translate "Prepaid support for gratis service and self-hosted installations" %}
+      </h2>
 
       <div class="installations">
         <div class="flex">
@@ -77,30 +74,30 @@
             <div class="icon">
               <img src="{% static "img/Support-Basic.svg" %}" />
             </div>
-            <h2>{% trans "Basic self-hosted support" %}</h2>
+            <h2>{% translate "Basic self-hosted support" %}</h2>
             <ul>
-              <li>{% trans "Issues in your environment fixed immediately." %}</li>
-              <li>{% trans "Priority e-mail support." %}</li>
+              <li>{% translate "Issues in your environment fixed immediately." %}</li>
+              <li>{% translate "Priority e-mail support." %}</li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=basic" class="format-item bottom-left">{{ 600 | price_format }}<span>{% trans "annually" %}</span></a>
+            <a href="{% url 'subscription-new' %}?plan=basic" class="format-item bottom-left">{{ 600|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=basic"
-               class="button black right bottom-right">{% trans "Buy now" %}</a>
+               class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
           <div class="box">
             <div class="icon">
               <img src="{% static "img/Support-Plus.svg" %}" />
             </div>
-            <h2>{% trans "Extended self-hosted support" %}</h2>
+            <h2>{% translate "Extended self-hosted support" %}</h2>
             <ul>
-              <li>{% trans "Always upgraded to latest version." %}</li>
-              <li>{% trans "Issues in your environment fixed immediately." %}</li>
-              <li>{% trans "Priority e-mail support." %}</li>
-              <li>{% trans "Only available with the installation package" %}</li>
+              <li>{% translate "Always upgraded to latest version." %}</li>
+              <li>{% translate "Issues in your environment fixed immediately." %}</li>
+              <li>{% translate "Priority e-mail support." %}</li>
+              <li>{% translate "Only available with the installation package" %}</li>
             </ul>
             <a href="{% url 'subscription-new' %}?plan=extended"
-               class="format-item bottom-left">{{ 1200 | price_format }}<span>{% trans "annually" %}</span></a>
+               class="format-item bottom-left">{{ 1200|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=extended"
-               class="button black right bottom-right">{% trans "Buy now" %}</a>
+               class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
         </div>
         <div class="flex">
@@ -108,33 +105,33 @@
             <div class="icon">
               <img src="{% static "img/Support-Premium.svg" %}" />
             </div>
-            <h2>{% trans "Premium self-hosted support" %}</h2>
+            <h2>{% translate "Premium self-hosted support" %}</h2>
             <ul>
-              <li>{% trans "Issues in your environment fixed immediately." %}</li>
-              <li>{% trans "Priority e-mail support." %}</li>
-              <li>{% trans "Next business day support response guaranteed." %}</li>
-              <li>{% trans "Four hours of private consultations in price." %}</li>
+              <li>{% translate "Issues in your environment fixed immediately." %}</li>
+              <li>{% translate "Priority e-mail support." %}</li>
+              <li>{% translate "Next business day support response guaranteed." %}</li>
+              <li>{% translate "Four hours of private consultations in price." %}</li>
             </ul>
             <a href="{% url 'subscription-new' %}?plan=premium"
-               class="format-item bottom-left">{{ 2400 | price_format }}<span>{% trans "annually" %}</span></a>
+               class="format-item bottom-left">{{ 2400|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=premium"
-               class="button black right bottom-right">{% trans "Buy now" %}</a>
+               class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
           <div class="box" id="install">
             <div class="icon">
               <img src="{% static "img/linux.png" %}" />
             </div>
-            <h2>{% trans "Installation on your Linux server" %}</h2>
+            <h2>{% translate "Installation on your Linux server" %}</h2>
             <ul>
-              <li>{% trans "One-time installation of Weblate" %}</li>
-              <li>{% trans "Docker-based or native installation" %}</li>
-              <li>{% trans "Requires root access or close cooperation of your admins" %}</li>
-              <li>{% trans "Setup customization" %}</li>
+              <li>{% translate "One-time installation of Weblate" %}</li>
+              <li>{% translate "Docker-based or native installation" %}</li>
+              <li>{% translate "Requires root access or close cooperation of your admins" %}</li>
+              <li>{% translate "Setup customization" %}</li>
             </ul>
             <a href="{% url 'subscription-new' %}?plan=install:linux"
-               class="format-item bottom-left">{{ 480 | price_format }}<span>{% trans "installation" %}</span></a>
+               class="format-item bottom-left">{{ 480|price_format }}<span>{% translate "installation" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=install:linux"
-               class="button black right bottom-right">{% trans "Buy now" %}</a>
+               class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
         </div>
         <div class="flex">
@@ -142,45 +139,45 @@
             <div class="icon">
               <img src="{% static "img/Support-Backup.svg" %}" />
             </div>
-            <h2>{% trans "Backup service" %}</h2>
+            <h2>{% translate "Backup service" %}</h2>
             <ul>
-              <li>{% trans "Cloud backups of your data" %}</li>
-              <li>{% trans "Securely encrypted with your passphrase" %}</li>
-              <li>{% trans "Daily incremental backups" %}</li>
-              <li>{% trans "Stores up to 100 GB of backups" %}</li>
+              <li>{% translate "Cloud backups of your data" %}</li>
+              <li>{% translate "Securely encrypted with your passphrase" %}</li>
+              <li>{% translate "Daily incremental backups" %}</li>
+              <li>{% translate "Stores up to 100 GB of backups" %}</li>
               <li>
-                <a href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Read more in the documentation." %}</a>
+                <a href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% translate "Read more in the documentation." %}</a>
               </li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=backup" class="format-item bottom-left">{{ 300 | price_format }}<span>{% trans "annually" %}</span></a>
+            <a href="{% url 'subscription-new' %}?plan=backup" class="format-item bottom-left">{{ 300|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=backup"
-               class="button black right bottom-right">{% trans "Buy now" %}</a>
+               class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
           <div class="box">
             <div class="icon">
               <img src="{% static "img/icon-call.svg" %}" />
             </div>
-            <h2>{% trans "Consulting services and/or custom development" %}</h2>
+            <h2>{% translate "Consulting services and/or custom development" %}</h2>
             <ul>
-              <li>{% trans "Development of custom features" %}</li>
-              <li>{% trans "Integration of Weblate into your workflow" %}</li>
-              <li>{% trans "Suggestions on the internationalization and localization" %}</li>
+              <li>{% translate "Development of custom features" %}</li>
+              <li>{% translate "Integration of Weblate into your workflow" %}</li>
+              <li>{% translate "Suggestions on the internationalization and localization" %}</li>
             </ul>
-            <a class="format-item bottom-left">{{ 120 | price_format }}<span>{% trans "hourly" %}</span></a>
+            <a class="format-item bottom-left">{{ 120|price_format }}<span>{% translate "hourly" %}</span></a>
             <a href="mailto:sales@weblate.org?subject=Consulting services"
-               class="button black right bottom-right">{% trans "Contact us" %}</a>
+               class="button black right bottom-right">{% translate "Contact us" %}</a>
           </div>
         </div>
-        <a href="mailto:support@weblate.org" class="button center">{% trans "Ask for help" %}</a>
+        <a href="mailto:support@weblate.org" class="button center">{% translate "Ask for help" %}</a>
       </div>
-      <h2 class="section-title crypto payment-conditions">{% trans "Payment" %}</h2>
+      <h2 class="section-title crypto payment-conditions">{% translate "Payment" %}</h2>
       <div class="page-desc small">{% include "snippets/vat.html" %}</div>
 
       <div class="github-discuss">
-        {% blocktrans with "https://github.com/WeblateOrg/weblate/discussions" as url %}Discuss with community on <a href="{{ url }}">GitHub</a>.{% endblocktrans %}
+        {% blocktranslate with url="https://github.com/WeblateOrg/weblate/discussions" %}Discuss with community on <a href="{{ url }}">GitHub</a>.{% endblocktranslate %}
       </div>
 
     </div>
   </section>
   {% include "snippets/bottom.html" %}
-{% endblock %}
+{% endblock content %}

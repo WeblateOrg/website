@@ -1,21 +1,20 @@
 {% extends "mail/base.html" %}
 
-{% load i18n %}
-{% load prices %}
+{% load i18n prices %}
 
 {% block content %}
 
   <p>
-    {% trans "Your payment on weblate.org is pending. Please follow the provided instructions to complete the payment." %}
+    {% translate "Your payment on weblate.org is pending. Please follow the provided instructions to complete the payment." %}
   </p>
 
   <table>
     <tr>
-      <th>{% trans "Payment amount" %}</th>
+      <th>{% translate "Payment amount" %}</th>
       <td>
-        {{ payment.vat_amount | price_format }}
+        {{ payment.vat_amount|price_format }}
         {% if payment.customer.needs_vat %}
-          {% trans "(including VAT)" %}
+          {% translate "(including VAT)" %}
         {% endif %}
       </td>
     </tr>
@@ -27,4 +26,4 @@
     {% endfor %}
   </table>
 
-{% endblock %}
+{% endblock content %}

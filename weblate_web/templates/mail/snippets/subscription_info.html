@@ -1,14 +1,13 @@
-{% load i18n %}
-{% load prices %}
+{% load i18n prices %}
 
 <p>
-  {% blocktrans with package=subscription.package %}Current subscription: {{ package }}{% endblocktrans %}
+  {% blocktranslate with package=subscription.package %}Current subscription: {{ package }}{% endblocktranslate %}
 </p>
 <p>
-  {% blocktrans with price=subscription.package.price|price_format:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktrans %}
+  {% blocktranslate with price=subscription.package.price|price_format:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
 </p>
 {% if subscription.service.site_url %}
   <p>
-    {% blocktrans with url=subscription.service.site_url %}Subscription is for <a href="{{ url }}">{{ url }}</a>.{% endblocktrans %}
+    {% blocktranslate with url=subscription.service.site_url %}Subscription is for <a href="{{ url }}">{{ url }}</a>.{% endblocktranslate %}
   </p>
 {% endif %}

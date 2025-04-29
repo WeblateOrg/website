@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 {% block content %}
   <section class="content">
@@ -9,22 +8,22 @@
       <div class="wrap">
         <h1 class="section-title min-m">
           {% block title %}
-            {% trans "Privacy Policy" %}
-          {% endblock %}
+            {% translate "Privacy Policy" %}
+          {% endblock title %}
 
         </h1>
         <div class="page-desc">
           <p>
             {% block description %}
-              {% trans "The legal documents necessary to offer our services." %}
-            {% endblock %}
+              {% translate "The legal documents necessary to offer our services." %}
+            {% endblock description %}
 
-            {% trans "The Privacy Policy document is legally-binding in English, translations are provided for your convenience." %}
+            {% translate "The Privacy Policy document is legally-binding in English, translations are provided for your convenience." %}
           </p>
           {% if LANGUAGE_CODE != "en" %}
-            <a href="https://weblate.org/en/privacy/" class="button inline">{% trans "View English version" %}</a>
+            <a href="https://weblate.org/en/privacy/" class="button inline">{% translate "View English version" %}</a>
           {% endif %}
-          <a href="{% static "Weblate_Privacy_Policy.pdf" %}" class="button inline">{% trans "Download as PDF" %}</a>
+          <a href="{% static "Weblate_Privacy_Policy.pdf" %}" class="button inline">{% translate "Download as PDF" %}</a>
         </div>
       </div>
     </div>
@@ -35,4 +34,4 @@
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

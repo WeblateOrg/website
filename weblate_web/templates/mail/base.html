@@ -1,7 +1,4 @@
-{% load i18n %}
-{% load static %}
-{% load humanize %}
-{% load site_url %}
+{% load humanize i18n site_url static %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}"
@@ -182,7 +179,7 @@ tr td:first-child {
     text-align: left;
     padding-left: 0;
 }
-{%  comment %}
+{% comment %}
 /* Bootstrap parts for history */
 {% endcomment %}
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
@@ -245,16 +242,16 @@ p {
             <p>
               <img src="{% if request %}{% static "email-logo-footer.png" %}{% else %}cid:email-logo-footer.png@cid.weblate.org{% endif %}" />
               <br />
-              <a href="https://weblate.org/">{% trans "Weblate, the libre continuous localization system." %}</a>
+              <a href="https://weblate.org/">{% translate "Weblate, the libre continuous localization system." %}</a>
             </p>
             <p>
-              ▸ <a href="/user/">{% trans "Manage your payments" %}</a>
+              ▸ <a href="/user/">{% translate "Manage your payments" %}</a>
             </p>
           </div>
           {% comment %}This avoids Gmail hiding the footer, as it finds unique content here{% endcomment %}
           {% now "DATETIME_FORMAT" as timestamp %}
           <p style="opacity: 0" class="text-muted">
-            {% blocktrans %}Generated on {{ timestamp }}.{% endblocktrans %}
+            {% blocktranslate %}Generated on {{ timestamp }}.{% endblocktranslate %}
           </p>
         </div>
       </div>

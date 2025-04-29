@@ -1,23 +1,21 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 {% block title %}
-  {% trans "Weblate data processing agreement" %}
-{% endblock %}
-
+  {% translate "Weblate data processing agreement" %}
+{% endblock title %}
 
 {% block content %}
   <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title min-m">{% trans "Your data processing agreements" %}</h1>
+        <h1 class="section-title min-m">{% translate "Your data processing agreements" %}</h1>
         <div class="payment-form">
           <div class="form-line">
-            <div class="line-left">{% trans "Organization" %}</div>
+            <div class="line-left">{% translate "Organization" %}</div>
             <div class="line-right">
-              <a href="{% url "edit-customer" pk=object.pk %}" class="button small right">{% trans "Edit" %}</a>
+              <a href="{% url "edit-customer" pk=object.pk %}" class="button small right">{% translate "Edit" %}</a>
               {% include "snippets/customer_address.html" with customer=object %}
             </div>
             <div class="clear"></div>
@@ -26,7 +24,7 @@
           {% with agreements=object.agreement_set.order %}
             {% if agreements %}
               <div class="form-line">
-                <div class="line-left">{% trans "Existing agreements" %}</div>
+                <div class="line-left">{% translate "Existing agreements" %}</div>
                 <div class="line-right">
                   <table class="payments-table">
                     {% for agreement in agreements %}
@@ -34,7 +32,7 @@
                         <td>
                           <a href="{% url "agreement-download" pk=agreement.pk %}" class="link invoice-link">
                             {{ agreement.kind_name }} {{ agreement.signed|date }}
-                            <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                            <img src="{% static "img/Download.png" %}" alt="{% translate "Download" %}" />
                           </a>
                         </td>
                       </tr>
@@ -47,23 +45,23 @@
           {% endwith %}
 
           <div class="form-line">
-            <div class="line-left">{% trans "Service documentation" %}</div>
+            <div class="line-left">{% translate "Service documentation" %}</div>
             <div class="line-right">
               <table class="payments-table">
                 <tr>
                   <td>
                     <a href="{% static "Weblate_General_Terms_and_Conditions.pdf" %}"
                        class="link invoice-link">
-                      {% trans "General Terms and Conditions" %}
-                      <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                      {% translate "General Terms and Conditions" %}
+                      <img src="{% static "img/Download.png" %}" alt="{% translate "Download" %}" />
                     </a>
                   </td>
                 </tr>
                 <tr>
                   <td>
                     <a href="{% static "Weblate_Privacy_Policy.pdf" %}" class="link invoice-link">
-                      {% trans "Privacy Policy" %}
-                      <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                      {% translate "Privacy Policy" %}
+                      <img src="{% static "img/Download.png" %}" alt="{% translate "Download" %}" />
                     </a>
                   </td>
                 </tr>
@@ -76,15 +74,15 @@
             {% csrf_token %}
             {% for field in form %}
               <div class="form-line">
-                <div class="line-left">{% trans "New agreement" %}</div>
+                <div class="line-left">{% translate "New agreement" %}</div>
                 <div class="line-right">
                   <table class="payments-table">
                     <tr>
                       <td>
                         <a href="{% static "Weblate_Data_Processing_Agreement_Sample.pdf" %}"
                            class="link invoice-link">
-                          {% trans "Preview the agreement" %}
-                          <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+                          {% translate "Preview the agreement" %}
+                          <img src="{% static "img/Download.png" %}" alt="{% translate "Download" %}" />
                         </a>
                       </td>
                     </tr>
@@ -99,10 +97,10 @@
             <div class="payment-pick"></div>
             <input type="submit"
                    class="button center make-payment"
-                   value="{% trans "Create an agreement" %}" />
+                   value="{% translate "Create an agreement" %}" />
           </form>
         </div>
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

@@ -1,14 +1,13 @@
 {% extends "crm/base.html" %}
 
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 
 {% block extrastyle %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
-{% endblock %}
+{% endblock extrastyle %}
 
 {% block content %}
   <div id="content-main">
@@ -192,4 +191,4 @@
       {% endcomment %}
     </div>
   </div>
-{% endblock %}
+{% endblock content %}

@@ -8,13 +8,13 @@
       <div class="wrap">
         <h1 class="section-title min-m">
           {% block title %}
-            {% trans "Server error" %}
-          {% endblock %}
+            {% translate "Server error" %}
+          {% endblock title %}
 
         </h1>
         <div class="page-desc">
           <p>
-            {% blocktrans with error_id=sentry_event_id %}The server had serious problems serving your request, and this error has been recorded as {{ error_id }}.{% endblocktrans %}
+            {% blocktranslate with error_id=sentry_event_id %}The server had serious problems serving your request, and this error has been recorded as {{ error_id }}.{% endblocktranslate %}
           </p>
         </div>
       </div>
@@ -33,4 +33,4 @@
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

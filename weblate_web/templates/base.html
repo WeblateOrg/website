@@ -1,7 +1,4 @@
-{% load i18n %}
-{% load static %}
-{% load macros %}
-{% load compress %}
+{% load compress i18n macros static %}
 
 {% macro title %}
   {% block title %}Weblate{% endblock %}
@@ -10,8 +7,8 @@
 {% macro description %}
   {% filter striptags %}
     {% block description %}
-      {% trans "Weblate is a libre software web-based continuous localization system." %}
-    {% endblock %}
+      {% translate "Weblate is a libre software web-based continuous localization system." %}
+    {% endblock description %}
 
   {% endfilter %}
 {% endmacro %}
@@ -33,7 +30,7 @@
     <title>{% use_macro title %}</title>
     <meta name="description" content="{% use_macro description %}" />
     <meta name="keywords"
-          content="Weblate,Git,gettext,resources,JSON,PO,MO,QTS,CAT,XLIFF,web,crowdsourcing,{% trans "translate" context "Keyword" %}" />
+          content="Weblate,Git,gettext,resources,JSON,PO,MO,QTS,CAT,XLIFF,web,crowdsourcing,{% translate "translate" context "Keyword" %}" />
 
     <link rel="author" href="mailto:info@weblate.org" />
     <meta name="copyright" content="Copyright © Michal Čihař" />
@@ -86,7 +83,7 @@
           {% if user.is_authenticated %}
             <form action="{% url 'logout' %}" method="post">
               {% csrf_token %}
-              <button type="suvbmit" class="user-logout">{% trans "Sign out" %}</button>
+              <button type="suvbmit" class="user-logout">{% translate "Sign out" %}</button>
             </form>
             <a href="{% url 'user' %}" class="user-tab">
               <img src="https://hosted.weblate.org/avatar/32/{{ user.username }}.png" />
@@ -96,7 +93,7 @@
           {% endif %}
           <a href="https://hosted.weblate.org/"
              class="button border small app"
-             target="_blank">{% trans "Go Weblate!" %}</a>
+             target="_blank">{% translate "Go Weblate!" %}</a>
           {% include "snippets/main-menu.html" %}
           {# djlint:off #}
           <a href="#" class="menu-show"><span></span><span></span><span></span><span></span>Menu</a>
@@ -144,13 +141,13 @@
           {% include "snippets/main-menu.html" with footer=1 %}
           <div class="clear"></div>
           <div class="footer-center">
-            <a href="https://status.weblate.org/" class="service-status">{% trans "Service Status" %}</a>
+            <a href="https://status.weblate.org/" class="service-status">{% translate "Service Status" %}</a>
           </div>
           <div class="footer-left">
-            Copyright © <a href="https://cihar.com/">Michal Čihař</a> • <a href="https://docs.weblate.org/en/latest/contributing/license.html">{% trans "Licensed GNU GPLv3+" %}</a>
+            Copyright © <a href="https://cihar.com/">Michal Čihař</a> • <a href="https://docs.weblate.org/en/latest/contributing/license.html">{% translate "Licensed GNU GPLv3+" %}</a>
           </div>
           <div class="footer-right">
-            <a href="{% url 'terms' %}">{% trans "Terms" %}</a> • <a href="{% url 'privacy' %}">{% trans "Privacy" %}</a> • {% blocktrans with author='<a href="https://vitavalka.com/">Vita Valka</a>' %}Design by {{ author }}{% endblocktrans %}
+            <a href="{% url 'terms' %}">{% translate "Terms" %}</a> • <a href="{% url 'privacy' %}">{% translate "Privacy" %}</a> • {% blocktranslate with author='<a href="https://vitavalka.com/">Vita Valka</a>' %}Design by {{ author }}{% endblocktranslate %}
           </div>
         </div>
       </footer>

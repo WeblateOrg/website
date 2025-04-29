@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load downloads %}
-{% load static %}
-{% load humanize %}
+{% load downloads humanize i18n static %}
 
 {% block title %}{{ object.title }}{% endblock %}
 
@@ -14,10 +11,9 @@
   <meta property="article:published_time" content="{{ object.timestamp|date:"c" }}" />
   <meta property="article:author" content="{{ object.author.last_name }}" />
   <meta property="article:section" content="{{ object.get_topic_display }}" />
-{% endblock %}
+{% endblock ogprops %}
 
 {% block description %}{{ object.summary }}{% endblock %}
-
 
 {% block content %}
   <section class="content">
@@ -34,7 +30,7 @@
           {% endif %}
           <div class="content">
             <div class="post-links post-links-top">
-              <span>{% trans "Share" %}</span>
+              <span>{% translate "Share" %}</span>
               {% include "snippets/sharer.html" %}
             </div>
             <div class="author">
@@ -43,7 +39,7 @@
               </div>
               {{ object.author.last_name }}
               <br />
-              <a href="{% url 'news' %}">{% trans "Blog" %}</a>  →  <a href="{% if object.topic %}{% url 'topic-archive' object.topic %}{% endif %}">{{ object.get_topic_display }}</a>
+              <a href="{% url 'news' %}">{% translate "Blog" %}</a>  →  <a href="{% if object.topic %}{% url 'topic-archive' object.topic %}{% endif %}">{{ object.get_topic_display }}</a>
               <br />
               {{ object.timestamp|naturalday }}
             </div>
@@ -52,33 +48,33 @@
           <div class="clear"></div>
           <div class="post-footer">
             <div class="post-links">
-              <h2>{% trans "Share with friends" %}</h2>
+              <h2>{% translate "Share with friends" %}</h2>
               {% include "snippets/sharer.html" %}
             </div>
-            <h2>{% trans "Other topics" %}</h2>
+            <h2>{% translate "Other topics" %}</h2>
             <a class="button inline border rev small"
-               href="{% url 'topic-archive' 'release' %}">{% trans "Release" %}</a>
+               href="{% url 'topic-archive' 'release' %}">{% translate "Release" %}</a>
             <a class="button inline border rev small"
-               href="{% url 'topic-archive' 'feature' %}">{% trans "Features" %}</a>
+               href="{% url 'topic-archive' 'feature' %}">{% translate "Features" %}</a>
             <a class="button inline border rev small"
-               href="{% url 'topic-archive' 'development' %}">{% trans "Development" %}</a>
+               href="{% url 'topic-archive' 'development' %}">{% translate "Development" %}</a>
             <a class="button inline border rev small"
-               href="{% url 'topic-archive' 'localization' %}">{% trans "Localization" %}</a>
-            <a class="button inline border rev small" href="{% url 'milestone-archive' %}">{% trans "Milestones" %}</a>
+               href="{% url 'topic-archive' 'localization' %}">{% translate "Localization" %}</a>
+            <a class="button inline border rev small" href="{% url 'milestone-archive' %}">{% translate "Milestones" %}</a>
           </div>
         </div>
         <div class="related-posts">
-          <div class="section-title">{% trans "Related Articles" %}</div>
+          <div class="section-title">{% translate "Related Articles" %}</div>
           <div class="articles">
             {% for item in related %}
               <div class="article">{% include "snippets/article.html" with object=item %}</div>
             {% endfor %}
           </div>
           <div class="clear"></div>
-          <a href="{% url 'news' %}" class="button center">{% trans "Back to blog" %}</a>
+          <a href="{% url 'news' %}" class="button center">{% translate "Back to blog" %}</a>
         </div>
       </div>
     </div>
   </section>
 
-{% endblock %}
+{% endblock content %}

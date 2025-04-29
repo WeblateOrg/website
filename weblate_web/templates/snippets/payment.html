@@ -1,8 +1,4 @@
-{% load i18n %}
-{% load humanize %}
-{% load timestamps %}
-{% load static %}
-{% load prices %}
+{% load humanize i18n prices static timestamps %}
 
 <tr>
   <td>
@@ -18,7 +14,7 @@
     {% if payment.invoice %}
       <a href="{% url 'user-invoice' pk=payment.pk %}" class="link invoice-link">
         {{ payment.invoice_filename }}
-        <img src="{% static "img/Download.png" %}" alt="{% trans "Download" %}" />
+        <img src="{% static "img/Download.png" %}" alt="{% translate "Download" %}" />
       </a>
     {% elif payment.state != 5 %}
       {% if payment.is_waiting_for_user %}

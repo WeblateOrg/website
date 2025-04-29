@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 {% block description %}
-  {% trans "News about Weblate and localization." %}
-{% endblock %}
-
+  {% translate "News about Weblate and localization." %}
+{% endblock description %}
 
 {% block content %}
   <section class="content">
@@ -14,8 +12,8 @@
       <div class="wrap">
         <h1 class="section-title">
           {% block title %}
-            {% trans "Weblate Blog" %}
-          {% endblock %}
+            {% translate "Weblate Blog" %}
+          {% endblock title %}
 
         </h1>
         <div class="articles blog">
@@ -23,10 +21,10 @@
             <div class="article{% if forloop.counter == 1 %} big{% endif %}">{% include "snippets/article.html" %}</div>
           {% endfor %}
         </div>
-        <a href="{% url 'news-archive' %}" class="button center">{% trans "View older articles" %}</a>
+        <a href="{% url 'news-archive' %}" class="button center">{% translate "View older articles" %}</a>
       </div>
     </div>
   </section>
 
   {% include "snippets/bottom.html" with extra_css="hp" %}
-{% endblock %}
+{% endblock content %}

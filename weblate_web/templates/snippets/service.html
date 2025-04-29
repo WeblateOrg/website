@@ -1,6 +1,4 @@
-{% load i18n %}
-{% load static %}
-{% load timestamps %}
+{% load i18n static timestamps %}
 
 <div class="payment-form pt-pb">
   <div class="form-line service-text-formatting bdr-btm">
@@ -12,14 +10,14 @@
             {% with days_from_today=subscription.expires|days_diff_from_today %}
               {% if days_from_today < 30 %}
                 {% if days_from_today < 2 and days_from_today >= 0 %}
-                  <t class="orange">{{ days_from_today | days_remaining }}</t>
+                  <t class="orange">{{ days_from_today|days_remaining }}</t>
                 {% elif days_from_today < 0 %}
-                  <t class="orange">{% trans "Expired" %}</t>
+                  <t class="orange">{% translate "Expired" %}</t>
                 {% else %}
-                  <t class="orange">{{ days_from_today | days_remaining }}</t>
+                  <t class="orange">{{ days_from_today|days_remaining }}</t>
                 {% endif %}
               {% else %}
-                <t class="grey">{{ days_from_today | days_remaining }}</t>
+                <t class="grey">{{ days_from_today|days_remaining }}</t>
               {% endif %}
             {% endwith %}
           {% endfor %}
@@ -32,22 +30,22 @@
 
   {% if service.needs_token %}
     <div class="form-line service-text-formatting bdr-btm">
-      <div class="line-left p-top">{% trans "Activation token" %}</div>
+      <div class="line-left p-top">{% translate "Activation token" %}</div>
       <div class="line-right">
         <input value="{{ service.secret }}" readonly class="fullwidth">
         <br />
         {% if service.site_url %}
           <a class="button button-med-100 inline"
-             href="{{ service.site_url }}/manage/?activation={{ service.secret }}">{% trans "Activate" %}</a>
+             href="{{ service.site_url }}/manage/?activation={{ service.secret }}">{% translate "Activate" %}</a>
         {% endif %}
-        <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% trans "Copy" %}</a>
+        <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% translate "Copy" %}</a>
         <form class="form-inline"
               method="post"
               action="{% url "service-token" pk=service.pk %}">
           {% csrf_token %}
           <input type="submit"
                  class="button button-med-150 inline border rev"
-                 value="{% trans "Refresh token" %}">
+                 value="{% translate "Refresh token" %}">
         </form>
       </div>
       <div class="clear"></div>
@@ -55,40 +53,40 @@
   {% endif %}
   {% if service.backup_repository %}
     <div class="form-line service-text-formatting bdr-btm">
-      <div class="line-left p-top">{% trans "Backup repository" %}</div>
+      <div class="line-left p-top">{% translate "Backup repository" %}</div>
       <div class="line-right">
         <input value="{{ service.backup_repository }}" readonly class="fullwidth">
         <br />
         <a class="button button-med-100 inline"
-           data-clipboard-text="{{ service.backup_repository }}">{% trans "Copy" %}</a>
+           data-clipboard-text="{{ service.backup_repository }}">{% translate "Copy" %}</a>
         <a class="button button-med-170 inline border rev"
-           href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% trans "Documentation" %}</a>
+           href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% translate "Documentation" %}</a>
       </div>
       <div class="clear"></div>
     </div>
   {% endif %}
   <div class="form-line service-text-formatting">
-    <div class="line-left">{% trans "Server URL" %}</div>
+    <div class="line-left">{% translate "Server URL" %}</div>
     <div class="line-right">
       {% if service.last_report %}
         <a class="link" href="{{ service.last_report.site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
       {% else %}
         <p class="text-muted">
-          {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For increased comfort, use the activation token to connect your Weblate installation to the support portal. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
+          {% blocktranslate with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For increased comfort, use the activation token to connect your Weblate installation to the support portal. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktranslate %}
         </p>
       {% endif %}
     </div>
     <div class="clear"></div>
   </div>
   <div class="form-line service-text-formatting">
-    <div class="line-left">{% trans "Discover Weblate" %}</div>
+    <div class="line-left">{% translate "Discover Weblate" %}</div>
     <div class="line-right">
       {% if service.discoverable %}
-        <a class="link" href="{% url 'discover' %}#d{{ service.pk }}">{% trans "View your listing" %}</a>
-        <a class="button small inline" href="{% url "service-discovery" pk=service.pk %}">{% trans "Customize listing" %}</a>
+        <a class="link" href="{% url 'discover' %}#d{{ service.pk }}">{% translate "View your listing" %}</a>
+        <a class="button small inline" href="{% url "service-discovery" pk=service.pk %}">{% translate "Customize listing" %}</a>
       {% endif %}
       <p class="text-muted">
-        {% blocktrans with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate server. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktrans %}
+        {% blocktranslate with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate server. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktranslate %}
       </p>
     </div>
     <div class="clear"></div>
@@ -96,7 +94,7 @@
   {% with subscriptions=service.subscription_set.all %}
     {% for subscription in subscriptions %}
       <div class="form-line service-text-formatting">
-        <div class="line-left">{% trans "Subscription" %}</div>
+        <div class="line-left">{% translate "Subscription" %}</div>
         <div class="line-right">
           <p>{{ subscription.package }}</p>
           <t>{% date_range subscription.created subscription.expires True %}
@@ -104,28 +102,28 @@
             {% with days_from_today=subscription.expires|days_diff_from_today %}
               {% if days_from_today < 30 %}
                 {% if days_from_today < 2 and days_from_today >= 0 %}
-                  <t class="pl-1 orange">{{ days_from_today | days_remaining }}</t>
+                  <t class="pl-1 orange">{{ days_from_today|days_remaining }}</t>
                 {% elif days_from_today < 0 %}
                   <t class="pl-1 orange">Expired</t>
                 {% else %}
-                  <t class="pl-1 orange">{{ days_from_today | days_remaining }}</t>
+                  <t class="pl-1 orange">{{ days_from_today|days_remaining }}</t>
                 {% endif %}
               {% else %}
-                <t class="pl-1 grey">{{ days_from_today | days_remaining }}</t>
+                <t class="pl-1 grey">{{ days_from_today|days_remaining }}</t>
               {% endif %}
             {% endwith %}
           </span>
           </t>
           <br>
           {% if service.note %}
-            <v class="subscription-note">{% trans "Note" %}:
+            <v class="subscription-note">{% translate "Note" %}:
             <span>{{ service.note }}</span>
             </v>
           {% endif %}
 
           {% if service.status == "shared" %}
             <a class="button small inline"
-               href="https://hosted.weblate.org/create/billing/?billing={{ service.hosted_billing }}&amp;upgrade=1">{% trans "Change plan" %}</a>
+               href="https://hosted.weblate.org/create/billing/?billing={{ service.hosted_billing }}&amp;upgrade=1">{% translate "Change plan" %}</a>
           {% endif %}
         </div>
         <div class="clear"></div>
@@ -133,35 +131,35 @@
 
       {% if subscription.package.get_repeat %}
         <div class="form-line service-text-formatting">
-          <div class="line-left">{% trans "Billing" %}</div>
+          <div class="line-left">{% translate "Billing" %}</div>
           <div class="line-right">
             {% if subscription.active and subscription.payment_obj.recurring %}
               <form class="form-float"
                     method="post"
                     action="{% url "subscription-disable" pk=subscription.pk %}">
                 {% csrf_token %}
-                <input type="submit" class="link" value="{% trans "Turn off renewal" %}">
+                <input type="submit" class="link" value="{% translate "Turn off renewal" %}">
               </form>
             {% endif %}
             {% if not subscription.active %}
-              {% trans "Expired" %}
+              {% translate "Expired" %}
             {% elif subscription.payment_obj.recurring and subscription.payment_obj.is_backend_valid %}
-              {% trans "Automatic renewal" %} ({{ subscription.payment_obj.get_payment_backend_class.verbose }})
+              {% translate "Automatic renewal" %} ({{ subscription.payment_obj.get_payment_backend_class.verbose }})
             {% else %}
-              {% trans "No renewal" %}
+              {% translate "No renewal" %}
             {% endif %}
             <br />
             <form class="form-inline"
                   method="post"
                   action="{% url "subscription-pay" pk=subscription.pk %}">
               {% csrf_token %}
-              <input type="submit" class="button small inline" value="{% trans "Renew now" %}">
+              <input type="submit" class="button small inline" value="{% translate "Renew now" %}">
               {% if subscription.yearly_package %}
                 <input type="submit"
                        class="button small inline"
-                       value="{% trans "Upgrade to annual" %}"
+                       value="{% translate "Upgrade to annual" %}"
                        name="switch_yearly">
-                <span>{% blocktrans %}and <strong>save 20%</strong>.{% endblocktrans %}</span>
+                <span>{% blocktranslate %}and <strong>save 20%</strong>.{% endblocktranslate %}</span>
               {% endif %}
             </form>
           </div>
@@ -171,7 +169,7 @@
     {% endfor %}
 
     <div class="form-line service-text-formatting">
-      <div class="line-left">{% trans "Payments" %}</div>
+      <div class="line-left">{% translate "Payments" %}</div>
       <div class="line-right">
         <table class="payments-table">
           {% for subscription in subscriptions %}
@@ -189,9 +187,9 @@
     <div class="form-line service-text-formatting">
       <div class="line-left">
         {% if service_suggestions %}
-          {% trans "Get more Weblate" %}
+          {% translate "Get more Weblate" %}
         {% else %}
-          {% trans "Available services" %}
+          {% translate "Available services" %}
         {% endif %}
       </div>
       <div class="line-right">
@@ -213,7 +211,7 @@
                  href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ text }}</a>
             </div>
           {% empty %}
-            {% trans "Congratulations, you are fully covered!" %}
+            {% translate "Congratulations, you are fully covered!" %}
           {% endfor %}
         </div>
       </div>
@@ -228,13 +226,13 @@
     {% include "snippets/customer-address.html" with customer=service.customer %}
   </div>
   <div class="form-line service-text-formatting">
-    <div class="line-left">{% trans "Personal data" %}</div>
+    <div class="line-left">{% translate "Personal data" %}</div>
     <div class="line-right">
-      {% trans "Data processing agreements for your Weblate service." %}
+      {% translate "Data processing agreements for your Weblate service." %}
       <form class="form-inline"
             method="get"
             action="{% url "customer-agreement" pk=service.customer.pk %}">
-        <input type="submit" class="button small inline" value="{% trans "Manage" %}">
+        <input type="submit" class="button small inline" value="{% translate "Manage" %}">
       </form>
     </div>
     <div class="clear"></div>

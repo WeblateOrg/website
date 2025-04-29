@@ -6,8 +6,8 @@
 
   {% if subscription %}
     <p>
-      {% trans "Your subscription on weblate.org will renew next week." %}
-      {% trans "The payment will be automatically charged next week. In case your card has expired or you want to use different payment method, please perform the payment now." %}
+      {% translate "Your subscription on weblate.org will renew next week." %}
+      {% translate "The payment will be automatically charged next week. In case your card has expired or you want to use different payment method, please perform the payment now." %}
     </p>
 
     {% include "mail/snippets/subscription_info.html" %}
@@ -15,13 +15,13 @@
 
   {% if donation %}
     <p>
-      {% trans "Your donation on weblate.org will renew next week." %}
-      {% trans "The payment will be automatically charged next week. In case your card has expired or you want to use different payment method, please perform the payment now." %}
+      {% translate "Your donation on weblate.org will renew next week." %}
+      {% translate "The payment will be automatically charged next week. In case your card has expired or you want to use different payment method, please perform the payment now." %}
     </p>
 
     {% include "mail/snippets/donation_info.html" %}
   {% endif %}
 
-  <a class="button" href="/user/">{% trans "Manage your payments" %}</a>
+  <a class="button" href="/user/">{% translate "Manage your payments" %}</a>
 
-{% endblock %}
+{% endblock content %}

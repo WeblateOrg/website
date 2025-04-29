@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 
-{% load static %}
-{% load i18n %}
-{% load prices %}
+{% load i18n prices static %}
 
 {% block body_class %}page donate light{% endblock %}
-
 
 {% block content %}
   <section class="content">
@@ -13,51 +10,51 @@
       <div class="wrap">
         <h1 class="section-title min-m">
           {% block title %}
-            {% trans "Become a Weblate supporter" %}
-          {% endblock %}
+            {% translate "Become a Weblate supporter" %}
+          {% endblock title %}
 
         </h1>
         <div class="page-desc">
           <p>
             {% block description %}
-              {% trans "Weblate does not require payment, and welcomes donations. There are many ways to contribute. Discuss it with your associates." %}
-            {% endblock %}
+              {% translate "Weblate does not require payment, and welcomes donations. There are many ways to contribute. Discuss it with your associates." %}
+            {% endblock description %}
 
           </p>
           {% if is_fosdem %}
-            <a href="{% url 'fosdem-donate' %}" class="button inline">{% trans "FOSDEM donation" %}</a>
+            <a href="{% url 'fosdem-donate' %}" class="button inline">{% translate "FOSDEM donation" %}</a>
           {% endif %}
-          <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
-          <a href="{% url 'user' %}" class="button inline border rev">{% trans "Manage your donations" %}</a>
+          <a href="{% url 'hosting' %}" class="button inline">{% translate "Purchase premium cloud" %}</a>
+          <a href="{% url 'user' %}" class="button inline border rev">{% translate "Manage your donations" %}</a>
         </div>
 
-        <h2 class="section-title">{% trans "Recurring support and rewards" %}</h2>
+        <h2 class="section-title">{% translate "Recurring support and rewards" %}</h2>
         <div class="page-desc small">
           <p>
-            {% trans "Recurring donations facilitate sustainable Weblate development, and even the smallest amount is put to good use. Repeated appreciation helps in keeping the project sustainable long term. Please consider this option if you are hosting Weblate yourself without a support contract." %}
+            {% translate "Recurring donations facilitate sustainable Weblate development, and even the smallest amount is put to good use. Repeated appreciation helps in keeping the project sustainable long term. Please consider this option if you are hosting Weblate yourself without a support contract." %}
           </p>
-          <a href="{% url 'donate-new' %}" class="button inline">{% trans "Choose your reward" %}</a>
+          <a href="{% url 'donate-new' %}" class="button inline">{% translate "Choose your reward" %}</a>
         </div>
         <div class="donations-cols flex">
           <div class="col">
-            <div class="title">{% trans "Name in the list of supporters" %}</div>
+            <div class="title">{% translate "Name in the list of supporters" %}</div>
             <div class="badges">
-              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="format-item">{{ 100 | price_format }} <span>{% trans "annually" %}</span></a>
-              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% trans "Donate" %}</a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="format-item">{{ 100|price_format }} <span>{% translate "annually" %}</span></a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=100" class="button center">{% translate "Donate" %}</a>
             </div>
           </div>
           <div class="col">
-            <div class="title">{% trans "Link in the list of supporters" %}</div>
+            <div class="title">{% translate "Link in the list of supporters" %}</div>
             <div class="badges">
-              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="format-item">{{ 400 | price_format }} <span>{% trans "annually" %}</span></a>
-              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% trans "Donate" %}</a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="format-item">{{ 400|price_format }} <span>{% translate "annually" %}</span></a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=400" class="button center">{% translate "Donate" %}</a>
             </div>
           </div>
           <div class="col">
-            <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
+            <div class="title">{% translate "Logo and link on the Weblate website" %}</div>
             <div class="badges">
-              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="format-item">{{ 800 | price_format }} <span>{% trans "annually" %}</span></a>
-              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% trans "Donate" %}</a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="format-item">{{ 800|price_format }} <span>{% translate "annually" %}</span></a>
+              <a href="{% url 'donate-new' %}?recurring=y&amp;amount=800" class="button center">{% translate "Donate" %}</a>
             </div>
           </div>
         </div>
@@ -70,12 +67,12 @@
         <img src="{% static "img/LeftPhoto.jpg" %}" />
       </div>
       <div class="half half-content">
-        <h2>{% trans "Weblate heroism" %}</h2>
+        <h2>{% translate "Weblate heroism" %}</h2>
         <p>
-          {% trans "Commercial services like hosting or support for self-hosted installations help fund Weblate development." %}
+          {% translate "Commercial services like hosting or support for self-hosted installations help fund Weblate development." %}
         </p>
-        <a href="{% url 'hosting' %}" class="button inline">{% trans "Purchase premium cloud" %}</a>
-        <a href="{% url 'support' %}" class="button inline">{% trans "Get help from Weblate" %}</a>
+        <a href="{% url 'hosting' %}" class="button inline">{% translate "Purchase premium cloud" %}</a>
+        <a href="{% url 'support' %}" class="button inline">{% translate "Get help from Weblate" %}</a>
       </div>
     </div>
     <div class="di-section">
@@ -83,11 +80,11 @@
         <img src="{% static "img/RightPhoto.jpg" %}" />
       </div>
       <div class="half half-content">
-        <h2>{% trans "Single appreciative donation" %}</h2>
+        <h2>{% translate "Single appreciative donation" %}</h2>
         <p>
-          {% trans "One-time donations are a great way to bring attention to a single issue before or after it is fixed." %}
+          {% translate "One-time donations are a great way to bring attention to a single issue before or after it is fixed." %}
         </p>
-        <a href="{% url "donate-new" %}" class="button">{% trans "Donate" %}</a>
+        <a href="{% url "donate-new" %}" class="button">{% translate "Donate" %}</a>
       </div>
     </div>
     {% if 0 %}
@@ -96,24 +93,24 @@
           <img src="{% static "img/swag.jpg" %}" />
         </div>
         <div class="half half-content">
-          <h2>{% trans "Weblate swag" %}</h2>
-          <p>{% trans "Buying branded clothing and merch is a great way to support Weblate and show your pride!" %}</p>
-          <a href="https://shop.spreadshirt.net/weblate/" class="button inline">{% trans "Shop from Europe" %}</a>
-          <a href="https://shop.spreadshirt.com/weblate/" class="button inline">{% trans "Shop from America and Australia" %}</a>
+          <h2>{% translate "Weblate swag" %}</h2>
+          <p>{% translate "Buying branded clothing and merch is a great way to support Weblate and show your pride!" %}</p>
+          <a href="https://shop.spreadshirt.net/weblate/" class="button inline">{% translate "Shop from Europe" %}</a>
+          <a href="https://shop.spreadshirt.com/weblate/" class="button inline">{% translate "Shop from America and Australia" %}</a>
         </div>
       </div>
     {% endif %}
   </section>
   <section class="content no-mar">
     <div class="row">
-      <h2 class="section-title crypto">{% trans "Your favorite donation platforms" %}</h2>
+      <h2 class="section-title crypto">{% translate "Your favorite donation platforms" %}</h2>
       <div class="page-desc">
-        <p>{% trans "Join Weblate fans on platforms you trust. We look forward to seeing you there." %}</p>
+        <p>{% translate "Join Weblate fans on platforms you trust. We look forward to seeing you there." %}</p>
       </div>
       <div class="donate-platforms">
         <a href="https://github.com/sponsors/WeblateOrg">
           <img src="{% static "img/donate-github.svg" %}" />
-          {% trans "GitHub Sponsors" %}
+          {% translate "GitHub Sponsors" %}
         </a>
         <a href="https://liberapay.com/Weblate/">
           <img src="{% static "img/donate-liberapay.svg" %}" />
@@ -128,17 +125,17 @@
   </section>
   <section class="content no-mar crypto">
     <div class="row">
-      <h2 class="section-title crypto">{% trans "Cryptocurrency donations" %}</h2>
+      <h2 class="section-title crypto">{% translate "Cryptocurrency donations" %}</h2>
       <div class="page-desc">
         <p>
-          {% blocktrans with "https://trezor.io?offer_id=12&amp;aff_id=1592" as url %}Thanks to <a href="{{ url }}">Trezor</a>, donations are happily accepted in several cryptocurrencies using the addresses below.{% endblocktrans %}
+          {% blocktranslate with url="https://trezor.io?offer_id=12&amp;aff_id=1592" %}Thanks to <a href="{{ url }}">Trezor</a>, donations are happily accepted in several cryptocurrencies using the addresses below.{% endblocktranslate %}
         </p>
       </div>
 
       <div class="currency">
         <div class="head">
-          <div class="line-left">{% trans "Currency" %}</div>
-          <div class="line-right">{% trans "Donation address" %}</div>
+          <div class="line-left">{% translate "Currency" %}</div>
+          <div class="line-right">{% translate "Donation address" %}</div>
         </div>
         <div class="line">
           <div class="line-left">
@@ -184,14 +181,14 @@
       </div>
       <div class="clear"></div>
 
-      <h2 class="section-title crypto bigger" id="thanks">{% trans "Weblate is thankful for your help" %}</h2>
+      <h2 class="section-title crypto bigger" id="thanks">{% translate "Weblate is thankful for your help" %}</h2>
       <div class="page-desc">
         <p>
-          {% blocktrans with contact="mailto:info@weblate.org" %}A proud showcase of our supporters, some of which offered technological contributions, others provided monetary funds. We welcome any form of help. If you have an idea, please <a href="{{ contact }}">let us know</a>.{% endblocktrans %}
+          {% blocktranslate with contact="mailto:info@weblate.org" %}A proud showcase of our supporters, some of which offered technological contributions, others provided monetary funds. We welcome any form of help. If you have an idea, please <a href="{{ contact }}">let us know</a>.{% endblocktranslate %}
         </p>
       </div>
 
-      <h2 class="section-title crypto">{% trans "Supporters" %}</h2>
+      <h2 class="section-title crypto">{% translate "Supporters" %}</h2>
       <div class="supporters-items">
         {% for donation in donate_links %}
           <a class="supporters-logo"
@@ -211,7 +208,7 @@
         {% endfor %}
       </div>
 
-      <h2 class="section-title crypto" id="tech">{% trans "Technologies" %}</h2>
+      <h2 class="section-title crypto" id="tech">{% translate "Technologies" %}</h2>
       <div class="supporters-items">
         <a class="supporters-logo" href="https://github.com/WeblateOrg/weblate">
           <img src="{% static "github.svg" %}" alt="GitHub" />
@@ -232,7 +229,7 @@
       </div>
       {% comment %}
 Not used for now
-        <h2 class="section-title crypto">{% trans "Honorable contributors" %}</h2>
+        <h2 class="section-title crypto">{% translate "Honorable contributors" %}</h2>
         <div class="supporters-items">
             <img src="tmp/supporters.jpg" alt="#" class="supporters" />
             <img src="tmp/supporters.jpg" alt="#" class="supporters" />
@@ -241,9 +238,9 @@ Not used for now
             <img src="tmp/supporters.jpg" alt="#" class="supporters" />
         </div>
       {% endcomment %}
-      <a href="{% url 'donate-new' %}" class="button center">{% trans "Donate" %}</a>
+      <a href="{% url 'donate-new' %}" class="button center">{% translate "Donate" %}</a>
     </div>
   </section>
   {% include "snippets/pricing.html" %}
   {% include "snippets/about.html" %}
-{% endblock %}
+{% endblock content %}

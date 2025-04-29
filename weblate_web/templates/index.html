@@ -1,38 +1,32 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load static %}
-{% load humanize %}
-{% load timestamps %}
+{% load humanize i18n static timestamps %}
 
 {% block title %}
-  {% trans "Weblate - web-based localization" %}
-{% endblock %}
-
+  {% translate "Weblate - web-based localization" %}
+{% endblock title %}
 
 {% block body_class %}{% endblock %}
-
 
 {% block box %}
   <section class="main-box">
     <div class="row">
       <div class="box">
         <h1>
-          {% trans "Web-based <strong>continuous</strong> localization" %}
+          {% translate "Web-based <strong>continuous</strong> localization" %}
         </h1>
         <p>
           {% block description %}
-            {% blocktrans with projects=2500|intcomma countries=165 %}Copylefted libre software, used by over {{projects}} libre software projects and companies in over {{countries}} countries.{% endblocktrans %}
-          {% endblock %}
+            {% blocktranslate with projects=2500|intcomma countries=165 %}Copylefted libre software, used by over {{ projects }} libre software projects and companies in over {{ countries }} countries.{% endblocktranslate %}
+          {% endblock description %}
 
         </p>
-        <a href="https://hosted.weblate.org/" class="button inline">{% trans "Try Weblate" %}</a>
-        <a class="button inline black" href="{% url 'features' %}">{% trans "Explore all features" %}</a>
+        <a href="https://hosted.weblate.org/" class="button inline">{% translate "Try Weblate" %}</a>
+        <a class="button inline black" href="{% url 'features' %}">{% translate "Explore all features" %}</a>
       </div>
     </div>
   </section>
-{% endblock %}
-
+{% endblock box %}
 
 {% block content %}
   <section class="content">
@@ -40,46 +34,46 @@
       <div class="wrap countries">
         <div class="half half-text">
           <div class="countries-number">
-            {% blocktrans with countries=165 %}{{ countries }}+ Countries{% endblocktrans %}
+            {% blocktranslate with countries=165 %}{{ countries }}+ Countries{% endblocktranslate %}
           </div>
-          <h2>{% trans "Weblate localizes the world" %}</h2>
+          <h2>{% translate "Weblate localizes the world" %}</h2>
           <p>
-            {% trans "Hosted service and standalone tool with tight version control integration. Simple and clean user interface, propagation of translations across components, quality checks and automatic linking to source files." %}
+            {% translate "Hosted service and standalone tool with tight version control integration. Simple and clean user interface, propagation of translations across components, quality checks and automatic linking to source files." %}
           </p>
         </div>
         <div class="half half-translations">
           {% for change in changes %}
             <div class="trans-item">
               <div class="trans-title">
-                {% blocktrans count intcount=change.recent_changes with count=change.recent_changes|intcomma when=change.last_change|recently %}{{ count }} translation {{ when }}{% plural %}{{ count }} translations {{ when }}{% endblocktrans %}
+                {% blocktranslate count intcount=change.recent_changes with count=change.recent_changes|intcomma when=change.last_change|recently %}{{ count }} translation {{ when }}{% plural %}{{ count }} translations {{ when }}{% endblocktranslate %}
               </div>
               <div class="trans-project">
-                {% trans "Project" %} <a href="{{ change.url }}">{{ change.name }}</a>
+                {% translate "Project" %} <a href="{{ change.url }}">{{ change.name }}</a>
               </div>
             </div>
           {% endfor %}
           <div class="trans-bottom">
             <div class="trans-number">
-              {% blocktrans count intcount=activity_sum with count=activity_sum|intcomma  %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktrans %}
+              {% blocktranslate count intcount=activity_sum with count=activity_sum|intcomma %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktranslate %}
             </div>
-            <div class="trans-days">{% trans "in the last 7 days" %}</div>
+            <div class="trans-days">{% translate "in the last 7 days" %}</div>
           </div>
         </div>
       </div>
       <div class="clear"></div>
       <div class="wrap features">
-        <h2 class="section-title hp-style">{% trans "Robust feature set" %}</h2>
+        <h2 class="section-title hp-style">{% translate "Robust feature set" %}</h2>
         {% include "snippets/features-1.html" %}
         {% include "snippets/features-2.html" %}
-        <a href="{% url 'hosting' %}" class="button inline">{% trans "Go to pricing" %}</a>
-        <a class="button inline border rev" href="{% url 'features' %}">{% trans "Explore all features" %}</a>
+        <a href="{% url 'hosting' %}" class="button inline">{% translate "Go to pricing" %}</a>
+        <a class="button inline border rev" href="{% url 'features' %}">{% translate "Explore all features" %}</a>
       </div>
       <div class="wrap supporters">
-        <h2 class="section-title hp-style">{% trans "Users and Supporters" %}</h2>
+        <h2 class="section-title hp-style">{% translate "Users and Supporters" %}</h2>
         {% include "snippets/users.html" %}
       </div>
     </div>
   </section>
   {% include "snippets/pricing.html" %}
   {% include "snippets/bottom.html" with extra_css="hp" %}
-{% endblock %}
+{% endblock content %}

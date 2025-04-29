@@ -1,18 +1,16 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 {% block title %}
-  {% trans "Weblate payment" %}
-{% endblock %}
-
+  {% translate "Weblate payment" %}
+{% endblock title %}
 
 {% block content %}
   <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title min-m">{% trans "Your billing information" %}</h1>
+        <h1 class="section-title min-m">{% translate "Your billing information" %}</h1>
         <div class="payment-form">
           <form method="post">
             {% csrf_token %}
@@ -33,10 +31,10 @@
               {% endif %}
             {% endfor %}
             <div class="payment-pick"></div>
-            <input type="submit" class="button center make-payment" value="{% trans "Save" %}" />
+            <input type="submit" class="button center make-payment" value="{% translate "Save" %}" />
           </form>
         </div>
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

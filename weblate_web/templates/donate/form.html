@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load prices %}
+{% load i18n prices %}
 
 {% block content %}
   <section class="content">
@@ -9,20 +8,20 @@
       <div class="wrap">
         <h1 class="section-title min-m">
           {% block title %}
-            {% trans "Your donation to Weblate" %}
-          {% endblock %}
+            {% translate "Your donation to Weblate" %}
+          {% endblock title %}
 
         </h1>
         <div class="page-desc">
           <p>
             {% block description %}
-              {% blocktrans %}<strong>Thank you</strong> for your decision to support Weblate. Please choose your preferred method of support, or set a donation amount yourself. We are here to help if needed.{% endblocktrans %}
-            {% endblock %}
+              {% blocktranslate %}<strong>Thank you</strong> for your decision to support Weblate. Please choose your preferred method of support, or set a donation amount yourself. We are here to help if needed.{% endblocktranslate %}
+            {% endblock description %}
 
           </p>
         </div>
         <div class="payment-form">
-          <div class="title">{% trans "Choose your amount in EUR" %}</div>
+          <div class="title">{% translate "Choose your amount in EUR" %}</div>
           <form method="post">
             {% csrf_token %}
             <input type="number"
@@ -32,85 +31,85 @@
                    name="amount"
                    id="donate-amount" />
             <p class="small">
-              {% blocktrans with minimum=form.fields.amount.min_value|price_format context "Minimal donation amount in a form" %}From {{ minimum }}{% endblocktrans %}
+              {% blocktranslate with minimum=form.fields.amount.min_value|price_format context "Minimal donation amount in a form" %}From {{ minimum }}{% endblocktranslate %}
             </p>
-            <div class="title pick">{% trans "Pick how often to donate" %}</div>
+            <div class="title pick">{% translate "Pick how often to donate" %}</div>
             <div class="pick-items">
               <input id="single-payment"
                      name="recurring"
                      type="radio"
                      value=""
                      {% if not form.recurring.value %}checked="checked"{% endif %} />
-              <label for="single-payment" class="biglabel">{% trans "Single payment" %}</label>
+              <label for="single-payment" class="biglabel">{% translate "Single payment" %}</label>
 
               <input id="monthly"
                      name="recurring"
                      type="radio"
                      value="m"
                      {% if form.recurring.value == "m" %}checked="checked"{% endif %} />
-              <label for="monthly" class="biglabel">{% trans "Monthly" %}</label>
+              <label for="monthly" class="biglabel">{% translate "Monthly" %}</label>
 
               <input id="quarterly"
                      name="recurring"
                      type="radio"
                      value="q"
                      {% if form.recurring.value == "q" %}checked="checked"{% endif %} />
-              <label for="quarterly" class="biglabel">{% trans "Quarterly" %}</label>
+              <label for="quarterly" class="biglabel">{% translate "Quarterly" %}</label>
 
               <input id="year"
                      name="recurring"
                      type="radio"
                      value="y"
                      {% if form.recurring.value == "y" %}checked="checked"{% endif %} />
-              <label for="year" class="biglabel">{% trans "Every year" %}</label>
+              <label for="year" class="biglabel">{% translate "Every year" %}</label>
             </div>
-            <div class="title nowhoa">{% trans "Your reward options" %}</div>
+            <div class="title nowhoa">{% translate "Your reward options" %}</div>
             <div class="title whoa">
-              {% blocktrans %}<strong>Whoa!</strong> You can get any reward.{% endblocktrans %}
+              {% blocktranslate %}<strong>Whoa!</strong> You can get any reward.{% endblocktranslate %}
             </div>
 
             <div class="rewards">
               <div class="reward big" data-amount="{{ reward_levels.1 }}">
-                <div class="before">{% trans "Selected option" %}</div>
-                <div class="title">{% trans "Name in the list of supporters" %}</div>
-                <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
-                <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                <div class="before">{% translate "Selected option" %}</div>
+                <div class="title">{% translate "Name in the list of supporters" %}</div>
+                <p class="unavailable">{% translate "Unavailable for your amount" %}</p>
+                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
                 <a href="#" class="close">⨯</a>
                 <input name="reward" type="radio" value="1" />
               </div>
               <div class="reward big" data-amount="{{ reward_levels.2 }}">
-                <div class="before">{% trans "Selected option" %}</div>
-                <div class="title">{% trans "Link in the list of supporters" %}</div>
-                <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
-                <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                <div class="before">{% translate "Selected option" %}</div>
+                <div class="title">{% translate "Link in the list of supporters" %}</div>
+                <p class="unavailable">{% translate "Unavailable for your amount" %}</p>
+                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
                 <a href="#" class="close">⨯</a>
                 <input name="reward" type="radio" value="2" />
               </div>
               <div class="reward big" data-amount="{{ reward_levels.3 }}">
-                <div class="before">{% trans "Selected option" %}</div>
-                <div class="title">{% trans "Logo and link on the Weblate website" %}</div>
-                <p class="unavailable">{% trans "Unavailable for your amount" %}</p>
-                <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                <div class="before">{% translate "Selected option" %}</div>
+                <div class="title">{% translate "Logo and link on the Weblate website" %}</div>
+                <p class="unavailable">{% translate "Unavailable for your amount" %}</p>
+                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
                 <a href="#" class="close">⨯</a>
                 <input name="reward" type="radio" value="3" />
               </div>
               <div class="reward fourth checked" data-amount="{{ reward_levels.0 }}">
-                <div class="before">{% trans "Selected option" %}</div>
-                <div class="title">{% trans "No thanks" %}</div>
-                <p>{% trans "Thank you anyway!" %}</p>
-                <a href="#" class="button center choose">{% trans "Choose this" %}</a>
+                <div class="before">{% translate "Selected option" %}</div>
+                <div class="title">{% translate "No thanks" %}</div>
+                <p>{% translate "Thank you anyway!" %}</p>
+                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
                 <input name="reward" type="radio" value="0" />
               </div>
             </div>
-            <input type="submit" class="button center" value="{% trans "Continue" %}" />
+            <input type="submit" class="button center" value="{% translate "Continue" %}" />
           </form>
         </div>
         <p class="small">
-          {% trans "Please note—a full invoice for your donation is issued immediately after payment." %}
-          {% trans "Your link may be refused, especially if containing too adult or illegal content. Please consult us in advance if unsure." %}
+          {% translate "Please note—a full invoice for your donation is issued immediately after payment." %}
+          {% translate "Your link may be refused, especially if containing too adult or illegal content. Please consult us in advance if unsure." %}
         </p>
       </div>
     </div>
   </section>
 
-{% endblock %}
+{% endblock content %}

@@ -1,61 +1,58 @@
 {% extends "base.html" %}
 
-{% load i18n %}
-{% load static %}
-{% load prices %}
+{% load i18n prices static %}
 
 {% block title %}
-  {% trans "Weblate payment" %}
-{% endblock %}
-
+  {% translate "Weblate payment" %}
+{% endblock title %}
 
 {% block content %}
   <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title min-m">{% trans "Payment Summary" %}</h1>
+        <h1 class="section-title min-m">{% translate "Payment Summary" %}</h1>
         <div class="payment-form">
           <form method="post">
             {% csrf_token %}
             <div class="form-line">
-              <div class="line-left">{% trans "Payment amount" %}</div>
+              <div class="line-left">{% translate "Payment amount" %}</div>
               <div class="line-right">
-                {{ object.vat_amount | price_format:object.get_currency_display }}
+                {{ object.vat_amount|price_format:object.get_currency_display }}
                 {% if object.customer.needs_vat %}
-                  {% trans "(including VAT)" %}
+                  {% translate "(including VAT)" %}
                 {% endif %}
               </div>
               <div class="clear"></div>
             </div>
             <div class="form-line">
-              <div class="line-left">{% trans "Payment description" %}</div>
+              <div class="line-left">{% translate "Payment description" %}</div>
               <div class="line-right" lang="en" dir="ltr">{{ object.description }}</div>
               <div class="clear"></div>
             </div>
             {% if object.recurring %}
               <div class="form-line">
-                <div class="line-left">{% trans "Payment frequency" %}</div>
+                <div class="line-left">{% translate "Payment frequency" %}</div>
                 <div class="line-right">
                   {% if object.recurring == "y" %}
-                    {% trans "Payment will be issued yearly till you cancel the subscription." %}
+                    {% translate "Payment will be issued yearly till you cancel the subscription." %}
                   {% elif object.recurring == "b" %}
-                    {% trans "Payment will be issued every six months till you cancel the subscription." %}
+                    {% translate "Payment will be issued every six months till you cancel the subscription." %}
                   {% elif object.recurring == "q" %}
-                    {% trans "Payment will be issued every quarter till you cancel the subscription." %}
+                    {% translate "Payment will be issued every quarter till you cancel the subscription." %}
                   {% elif object.recurring == "m" %}
-                    {% trans "Payment will be issued monthly till you cancel the subscription." %}
+                    {% translate "Payment will be issued monthly till you cancel the subscription." %}
                   {% else %}
                     {{ object.recurring }}
                   {% endif %}
                   <br>
-                  <span class="text-muted">{% trans "Note: This is unavailable for some payment methods, you will have to manually complete the next payment in those cases." %}</span>
+                  <span class="text-muted">{% translate "Note: This is unavailable for some payment methods, you will have to manually complete the next payment in those cases." %}</span>
                 </div>
                 <div class="clear"></div>
               </div>
             {% endif %}
             {% if not user.is_authenticated %}
               <div class="form-line">
-                <div class="line-left">{% trans "Personal data" %}</div>
+                <div class="line-left">{% translate "Personal data" %}</div>
                 <div class="line-right">
                   <span class="text-muted">
                     {% url 'terms' as terms_url %}
@@ -68,16 +65,16 @@
             {% endif %}
             {% if not payment.draft_invoice or not payment.draft_invoice.is_final %}
               <div class="form-line">
-                <div class="line-left">{% trans "Billing information" %}</div>
+                <div class="line-left">{% translate "Billing information" %}</div>
                 <div class="line-right">
-                  <a href="{% url "payment-customer" pk=object.pk %}" class="button small right">{% trans "Edit" %}</a>
+                  <a href="{% url "payment-customer" pk=object.pk %}" class="button small right">{% translate "Edit" %}</a>
                   {% include "snippets/customer_address.html" with customer=object.customer %}
                 </div>
                 <div class="clear"></div>
               </div>
             {% endif %}
             {% if can_pay %}
-              <div class="title pick">{% trans "Please choose payment method" %}</div>
+              <div class="title pick">{% translate "Please choose payment method" %}</div>
               <div class="payment-pick">
                 {% for backend in backends %}
                   <input id="pay-{{ backend.name }}"
@@ -90,11 +87,11 @@
 
               <input type="submit"
                      class="button center make-payment"
-                     value="{% trans "Make Payment" %}" />
+                     value="{% translate "Make Payment" %}" />
             {% endif %}
           </form>
         </div>
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

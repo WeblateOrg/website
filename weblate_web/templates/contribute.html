@@ -4,133 +4,132 @@
 
 {% block body_class %}page contribute light{% endblock %}
 
-
 {% block content %}
   <section class="content">
     <div class="row">
       <div class="wrap">
         <h1 class="section-title min-m">
           {% block title %}
-            {% trans "Contribute to Weblate" %}
-          {% endblock %}
+            {% translate "Contribute to Weblate" %}
+          {% endblock title %}
 
         </h1>
         <div class="page-desc">
           <p>
             {% block description %}
-              {% trans "Weblate is developed by an open community." %}
-              {% trans "There are many ways you can contribute to Weblate development. Talk about it with your associates." %}
-            {% endblock %}
+              {% translate "Weblate is developed by an open community." %}
+              {% translate "There are many ways you can contribute to Weblate development. Talk about it with your associates." %}
+            {% endblock description %}
 
           </p>
-          <a href="https://github.com/WeblateOrg/weblate/" class="button inline">{% trans "View sources" %}</a>
+          <a href="https://github.com/WeblateOrg/weblate/" class="button inline">{% translate "View sources" %}</a>
           <a href="https://hosted.weblate.org/engage/weblate/"
-             class="button inline border rev">{% trans "Translate the app" %}</a>
+             class="button inline border rev">{% translate "Translate the app" %}</a>
         </div>
 
         <div class="contribution-list">
           <div class="flex">
             <div class="box">
               <h2>
-                {% trans "Found a <strong>bug</strong> in Weblate?" %}
+                {% translate "Found a <strong>bug</strong> in Weblate?" %}
               </h2>
               <ul>
                 <li>
-                  {% blocktrans with url="https://docs.weblate.org/en/latest/contributing/issues.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}In case it is sensitive or a <strong>security issue</strong>, please report it to {{ report }}. Other ways of reporting security issue can be found in the <a href="{{ url }}">documentation</a>.{% endblocktrans %}
+                  {% blocktranslate with url="https://docs.weblate.org/en/latest/contributing/issues.html#security" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}In case it is sensitive or a <strong>security issue</strong>, please report it to {{ report }}. Other ways of reporting security issue can be found in the <a href="{{ url }}">documentation</a>.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% blocktrans with url='https://github.com/WeblateOrg/weblate/issues' %}<strong>Ensure the bug is not already reported</strong>, by searching through the <a href="{{ url }}">GitHub issues</a>.{% endblocktrans %}
+                  {% blocktranslate with url='https://github.com/WeblateOrg/weblate/issues' %}<strong>Ensure the bug is not already reported</strong>, by searching through the <a href="{{ url }}">GitHub issues</a>.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% blocktrans with url='https://github.com/WeblateOrg/weblate/issues/new?template=bug_report.yml' %}If you're unable to find an open issue addressing the problem, <a href="{{ url }}">open a new one</a>.{% endblocktrans %}
+                  {% blocktranslate with url='https://github.com/WeblateOrg/weblate/issues/new?template=bug_report.yml' %}If you're unable to find an open issue addressing the problem, <a href="{{ url }}">open a new one</a>.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% trans "<strong>Follow instructions in the issue template</strong>, and provide as much relevant info as possible." %}
+                  {% translate "<strong>Follow instructions in the issue template</strong>, and provide as much relevant info as possible." %}
                 </li>
               </ul>
-              <a href="https://github.com/WeblateOrg/weblate/issues/" class="button bottom-left">{% trans "GitHub issues" %}</a>
+              <a href="https://github.com/WeblateOrg/weblate/issues/" class="button bottom-left">{% translate "GitHub issues" %}</a>
             </div>
             <div class="box" id="patch">
               <h2>
-                {% trans "Have a <strong>patch</strong> that fixes a bug?" %}
+                {% translate "Have a <strong>patch</strong> that fixes a bug?" %}
               </h2>
               <ul>
                 <li>
-                  {% blocktrans with url='https://github.com/WeblateOrg/weblate/compare' %}Open a new <a href="{{ url }}">GitHub pull request</a> with the patch.{% endblocktrans %}
+                  {% blocktranslate with url='https://github.com/WeblateOrg/weblate/compare' %}Open a new <a href="{{ url }}">GitHub pull request</a> with the patch.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% blocktrans %}Ensure the pull request description clearly describes the problem and solution. Include the relevant issue number if applicable.{% endblocktrans %}
+                  {% blocktranslate %}Ensure the pull request description clearly describes the problem and solution. Include the relevant issue number if applicable.{% endblocktranslate %}
                 </li>
               </ul>
-              <a href="https://github.com/WeblateOrg/weblate/compare" class="button bottom-left">{% trans "Open a pull request" %}</a>
+              <a href="https://github.com/WeblateOrg/weblate/compare" class="button bottom-left">{% translate "Open a pull request" %}</a>
             </div>
           </div>
           <div class="flex">
             <div class="box">
               <h2>
-                {% trans "Missing a <strong>feature</strong> or want to change something?" %}
+                {% translate "Missing a <strong>feature</strong> or want to change something?" %}
               </h2>
               <ul>
                 <li>
-                  {% blocktrans with url="https://github.com/WeblateOrg/weblate/issues/new?template=feature_request.yml" %}Suggest your change in the <a href="{{ url }}">GitHub issues</a>.{% endblocktrans %}
+                  {% blocktranslate with url="https://github.com/WeblateOrg/weblate/issues/new?template=feature_request.yml" %}Suggest your change in the <a href="{{ url }}">GitHub issues</a>.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% trans "<strong>Follow instructions in the issue template</strong>, and provide as much relevant info as possible." %}
+                  {% translate "<strong>Follow instructions in the issue template</strong>, and provide as much relevant info as possible." %}
                 </li>
               </ul>
-              <a href="https://github.com/WeblateOrg/weblate/issues" class="button bottom-left">{% trans "GitHub issues" %}</a>
+              <a href="https://github.com/WeblateOrg/weblate/issues" class="button bottom-left">{% translate "GitHub issues" %}</a>
             </div>
             <div class="box">
               <h2>
-                {% trans "<strong>Source code</strong> related questions?" %}
+                {% translate "<strong>Source code</strong> related questions?" %}
               </h2>
               <ul>
                 <li>
-                  {% blocktrans with url='https://docs.weblate.org/en/latest/contributing/index.html' %}Please consult the <a href="{{ url }}">contributor documentation</a> to find the most common topics.{% endblocktrans %}
+                  {% blocktranslate with url='https://docs.weblate.org/en/latest/contributing/index.html' %}Please consult the <a href="{{ url }}">contributor documentation</a> to find the most common topics.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% blocktrans with url='https://github.com/WeblateOrg/weblate/discussions' %}Share what is on your mind in the <a href="{{ url }}">GitHub discussions</a>.{% endblocktrans %}
+                  {% blocktranslate with url='https://github.com/WeblateOrg/weblate/discussions' %}Share what is on your mind in the <a href="{{ url }}">GitHub discussions</a>.{% endblocktranslate %}
                 </li>
               </ul>
               <a href="https://docs.weblate.org/en/latest/contributing/index.html"
-                 class="button bottom-left">{% trans "Browse documentation" %}</a>
+                 class="button bottom-left">{% translate "Browse documentation" %}</a>
             </div>
           </div>
           <div class="flex">
             <div class="box">
               <h2>
-                {% trans "Want to help out with <strong>Documentation</strong>?" %}
+                {% translate "Want to help out with <strong>Documentation</strong>?" %}
               </h2>
               <ul>
                 <li>
-                  {% blocktrans with url='https://docs.weblate.org/' %}The documentation is part of the main source code repository and you can easily follow the links to edit each page directly from the <a href="{{ url }}">documentation</a>.{% endblocktrans %}
+                  {% blocktranslate with url='https://docs.weblate.org/' %}The documentation is part of the main source code repository and you can easily follow the links to edit each page directly from the <a href="{{ url }}">documentation</a>.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% blocktrans %}Once you have a patch ready, please follow <a href="#patch">patch submission</a> instructions.{% endblocktrans %}
+                  {% blocktranslate %}Once you have a patch ready, please follow <a href="#patch">patch submission</a> instructions.{% endblocktranslate %}
                 </li>
                 <li>
-                  {% blocktrans %}Help fix and suggest non-code related pull-requests by joining the reviewer team.{% endblocktrans %}
+                  {% blocktranslate %}Help fix and suggest non-code related pull-requests by joining the reviewer team.{% endblocktranslate %}
                 </li>
               </ul>
-              <a href="https://docs.weblate.org/" class="button bottom-left">{% trans "Browse documentation" %}</a>
+              <a href="https://docs.weblate.org/" class="button bottom-left">{% translate "Browse documentation" %}</a>
             </div>
             <div class="box">
               <h2>
-                {% trans "<strong>Financial support</strong> is always put to good use." %}
+                {% translate "<strong>Financial support</strong> is always put to good use." %}
               </h2>
-              <p>{% trans "Please open the donation page for options on how to donate." %}</p>
-              <a href="{% url 'donate' %}" class="button bottom-left">{% trans "Donate now" %}</a>
+              <p>{% translate "Please open the donation page for options on how to donate." %}</p>
+              <a href="{% url 'donate' %}" class="button bottom-left">{% translate "Donate now" %}</a>
             </div>
           </div>
           <div class="flex" id="translate">
             <div class="box">
               <h2>
-                {% blocktrans %}<strong>Are you a translator?</strong> Help translate Weblate itself.{% endblocktrans %}
+                {% blocktranslate %}<strong>Are you a translator?</strong> Help translate Weblate itself.{% endblocktranslate %}
               </h2>
               <p>
-                {% blocktrans %}You can translate Weblate and many other projects at <a href="https://hosted.weblate.org/engage/weblate/">hosted.weblate.org</a>.{% endblocktrans %}
+                {% blocktranslate %}You can translate Weblate and many other projects at <a href="https://hosted.weblate.org/engage/weblate/">hosted.weblate.org</a>.{% endblocktranslate %}
               </p>
-              <a href="https://hosted.weblate.org/engage/weblate/" class="button bottom-left">{% trans "Start translating" %}</a>
+              <a href="https://hosted.weblate.org/engage/weblate/" class="button bottom-left">{% translate "Start translating" %}</a>
             </div>
           </div>
         </div>
@@ -142,7 +141,7 @@
     <div class="row">
       <a href="https://hosted.weblate.org/engage/weblate/?utm_source=widget">
         <img src="https://hosted.weblate.org/widget/weblate/horizontal-auto.svg?native=1"
-             alt="{% trans "Translation status" %}"
+             alt="{% translate "Translation status" %}"
              class="img-widget" />
       </a>
     </div>
@@ -151,4 +150,4 @@
   <section class="bottom contribute-bottom">
     <div class="row">{% include "snippets/box-donate.html" %}</div>
   </section>
-{% endblock %}
+{% endblock content %}

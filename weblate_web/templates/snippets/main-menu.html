@@ -3,52 +3,52 @@
 <nav class="main-menu">
   <ul>
     <li class="{% if request.resolver_match.url_name == 'features' %} active{% endif %}">
-      <a href="{% url 'features' %}">{% trans "Features" %}</a>
+      <a href="{% url 'features' %}">{% translate "Features" %}</a>
     </li>
     <li class="{% if request.resolver_match.url_name == 'download' %} active{% endif %} hide1025">
-      <a href="{% url 'download' %}">{% trans "Download" %}</a>
+      <a href="{% url 'download' %}">{% translate "Download" %}</a>
     </li>
     <li class="{% if request.resolver_match.url_name == 'hosting' %} active{% endif %}">
-      <a href="{% url 'hosting' %}">{% trans "Pricing" %}</a>
+      <a href="{% url 'hosting' %}">{% translate "Pricing" %}</a>
     </li>
     <li class="{% if request.resolver_match.url_name == 'contribute' %} active{% endif %}">
-      <a href="{% url 'contribute' %}">{% trans "Contribute" %}</a>
+      <a href="{% url 'contribute' %}">{% translate "Contribute" %}</a>
     </li>
     {% if full_menu or footer %}
       <li class="{% if request.resolver_match.url_name == 'donate' or request.resolver_match.url_name == 'donate-new' %} active{% endif %}">
-        <a href="{% url 'donate' %}">{% trans "Donate" %}</a>
+        <a href="{% url 'donate' %}">{% translate "Donate" %}</a>
       </li>
     {% endif %}
     {% if full_menu or footer %}
       <li class="{% if request.resolver_match.url_name == 'careers' %} active{% endif %}">
-        <a href="{% url 'careers' %}">{% trans "Careers" %}</a>
+        <a href="{% url 'careers' %}">{% translate "Careers" %}</a>
       </li>
     {% endif %}
     {% if full_menu %}
       {% if 0 %}
         <li>
-          <a href="https://shop.spreadshirt.net/weblate/">{% trans "Merchandise" %}</a>
+          <a href="https://shop.spreadshirt.net/weblate/">{% translate "Merchandise" %}</a>
         </li>
       {% endif %}
       <li class="{% if request.resolver_match.url_name == 'discover' %} active{% endif %}">
-        <a href="{% url 'discover' %}">{% trans "Discover" %}</a>
+        <a href="{% url 'discover' %}">{% translate "Discover" %}</a>
       </li>
     {% endif %}
     <li class="menu-light gethelp{% if request.resolver_match.url_name == 'support' %} active{% endif %}">
-      <a href="{% url 'support' %}">{% trans "Get help" %}</a>
+      <a href="{% url 'support' %}">{% translate "Get help" %}</a>
     </li>
     <li class="menu-light{% if request.resolver_match.url_name == 'news' or request.resolver_match.url_name == 'news-archive' or request.resolver_match.url_name == 'post' %} active{% endif %} hide1025">
-      <a href="{% url 'news' %}">{% trans "Blog" %}</a>
+      <a href="{% url 'news' %}">{% translate "Blog" %}</a>
     </li>
     <li class="menu-light{% if request.resolver_match.url_name == 'about' %} active{% endif %} hide890">
-      <a href="{% url 'about' %}">{% trans "About" %}</a>
+      <a href="{% url 'about' %}">{% translate "About" %}</a>
     </li>
     <li class="menu-light hide1100">
-      <a href="https://docs.weblate.org/">{% trans "Docs" %}</a>
+      <a href="https://docs.weblate.org/">{% translate "Docs" %}</a>
     </li>
     {% if mobile_menu %}
       <li class="menu-light">
-        <a href="https://hosted.weblate.org/" target="_blank">{% trans "Go Weblate!" %}</a>
+        <a href="https://hosted.weblate.org/" target="_blank">{% translate "Go Weblate!" %}</a>
       </li>
     {% endif %}
   </ul>

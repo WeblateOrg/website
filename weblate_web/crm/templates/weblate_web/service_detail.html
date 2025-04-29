@@ -1,7 +1,6 @@
 {% extends "crm/base.html" %}
 
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 {% block breadcrum_list %}
   › <a href="{% url "crm:service-list" kind="all" %}">Services</a>
@@ -38,4 +37,4 @@
     {{ add_payment_form }}
     <input type="submit">
   </form>
-{% endblock %}
+{% endblock content %}
