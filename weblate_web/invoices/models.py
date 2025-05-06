@@ -38,9 +38,9 @@ from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext, override
-from fakturace.rates import DecimalRates
 from lxml import etree
 
+from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.pdf import render_pdf
 from weblate_web.utils import get_site_url
 
@@ -379,9 +379,7 @@ class Invoice(models.Model):
     @cached_property
     def exchange_rate_czk(self) -> Decimal:
         """Exchange rate from currency to CZK."""
-        return DecimalRates.get(
-            self.issue_date.isoformat(), self.get_currency_display()
-        )
+        return ExchangeRates.get(self.get_currency_display(), self.issue_date)
 
     @cached_property
     def bank_account(self) -> BankAccountInfo:
@@ -390,10 +388,7 @@ class Invoice(models.Model):
     @cached_property
     def exchange_rate_eur(self) -> Decimal:
         """Exchange rate from currency to EUR."""
-        return (
-            DecimalRates.get(self.issue_date.isoformat(), "EUR")
-            / self.exchange_rate_czk
-        )
+        return ExchangeRates.get("EUR", self.issue_date) / self.exchange_rate_czk
 
     @cached_property
     def total_items_amount(self) -> Decimal:

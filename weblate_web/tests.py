@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 from datetime import date, timedelta
+from decimal import Decimal
 from io import StringIO
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
@@ -16,12 +17,13 @@ from django.core import mail
 from django.core.cache import cache
 from django.core.management import call_command
 from django.core.signing import dumps
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
 
+from weblate_web.exchange_rates import UncachedExchangeRates
 from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import FOSDEM_ORIGIN
@@ -1591,3 +1593,70 @@ class CommandsTestCase(FakturaceTestCase):
         with StringIO() as buffer:
             call_command("sync_packages", stdout=buffer)
             self.assertEqual(buffer.getvalue(), "")
+
+
+class ExchangeRatesTestCase(SimpleTestCase):
+    def mock_rate(self):
+        # Valid response
+        responses.get(
+            "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=01.01.2000",
+            """01.01.2000 #1
+země|měna|množství|kód|kurz
+Austrálie|dolar|1|AUD|33,333
+Euro|euro|1|EUR|22,222
+""",
+        )
+        # Proper error response
+        responses.get(
+            "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=02.01.2000",
+            status=500,
+        )
+        # Server error without a proper status code
+        responses.get(
+            "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=03.01.2000",
+            "Interní chyba serveru",
+        )
+        responses.get(
+            "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=04.01.2000",
+            status=500,
+        )
+        responses.get(
+            "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=05.01.2000",
+            status=500,
+        )
+        responses.get(
+            "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=06.01.2000",
+            status=500,
+        )
+
+    @responses.activate
+    def test_mocked(self):
+        self.mock_rate()
+        self.assertEqual(
+            UncachedExchangeRates.get("EUR", date(2000, 1, 1)), Decimal("22.222")
+        )
+
+    @responses.activate
+    def test_czk(self):
+        self.assertEqual(UncachedExchangeRates.get("CZK", date(2000, 1, 1)), Decimal(1))
+
+    @responses.activate
+    def test_fallback(self):
+        self.mock_rate()
+        self.assertEqual(
+            UncachedExchangeRates.get("EUR", date(2000, 1, 2)), Decimal("22.222")
+        )
+
+    @responses.activate
+    def test_fallback_hidden_error(self):
+        self.mock_rate()
+        self.assertEqual(
+            UncachedExchangeRates.get("EUR", date(2000, 1, 3)), Decimal("22.222")
+        )
+
+    @responses.activate
+    def test_error(self):
+        self.mock_rate()
+        self.assertEqual(
+            UncachedExchangeRates.get("EUR", date(2000, 1, 6)), Decimal("22.222")
+        )
