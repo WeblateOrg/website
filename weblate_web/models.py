@@ -22,7 +22,6 @@ from __future__ import annotations
 import sys
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import html2text
@@ -39,7 +38,6 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy, override, pgettext_lazy
-from django_countries import countries
 from markupfield.fields import MarkupField
 from PIL import Image as PILImage
 
@@ -50,9 +48,6 @@ from weblate_web.zammad import create_dedicated_hosting_ticket
 
 from .hetzner import create_storage_folder, create_storage_subaccount, generate_ssh_url
 from .packages import PACKAGE_UPGRADES
-
-if TYPE_CHECKING:
-    from fakturace.invoices import Invoice
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 
@@ -990,52 +985,6 @@ class Subscription(models.Model):
             .filter(expires__gt=expires)
             .exists()
         )
-
-    def add_payment(self, invoice: Invoice, period: str) -> None:
-        # Calculate new expiry
-        start = self.expires + timedelta(days=1)
-        end = start - timedelta(days=1) + get_period_delta(period)
-
-        # Fetch customer object from last payment here
-        if self.payment:
-            customer = self.payment_obj.customer
-        elif invoice.invoice["contact"].startswith("web-"):
-            customer = Customer.objects.get(
-                pk=invoice.invoice["contact"].replace("web-", "")
-            )
-        else:
-            customer = Customer.objects.create(
-                vat=invoice.contact.get("vat_reg", None),
-                name=invoice.contact["name"],
-                address=invoice.contact["address"],
-                city=invoice.contact["city"],
-                country=countries.by_name(invoice.contact["country"]),
-                user_id=-1,
-                origin="https://weblate.org/auto",
-            )
-
-        # Create payment based on the invoice and customer
-        payment = Payment.objects.create(
-            amount=float(invoice.amount),
-            currency=Payment.CURRENCY_EUR,
-            description=invoice.invoice["item"],
-            state=Payment.PROCESSED,
-            backend="manual",
-            invoice=invoice.invoiceid,
-            start=start,
-            end=end,
-            customer=customer,
-        )
-
-        # Move current payment to past payments
-        if self.payment:
-            self.pastpayments_set.create(payment=self.payment)
-
-        # Update current payment info
-        self.payment = payment.pk
-        # Extend validity for period
-        self.expires = end
-        self.save()
 
 
 class PastPayments(models.Model):
