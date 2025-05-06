@@ -30,11 +30,4 @@
       {% endfor %}
     </table>
   </section>
-
-  <form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="action" value="payment">
-    {{ add_payment_form }}
-    <input type="submit">
-  </form>
 {% endblock content %}

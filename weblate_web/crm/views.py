@@ -3,21 +3,16 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext
 from django.views.generic import DetailView, ListView, TemplateView
 
-from weblate_web.forms import AddPaymentForm
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
 from weblate_web.payments.models import Customer, Payment
-from weblate_web.utils import show_form_errors
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
@@ -93,30 +88,6 @@ class ServiceDetailView(CRMMixin, DetailView):
     model = Service
     permission = "weblate_web.change_service"
     title = "Service detail"
-
-    def get_payment_form(self, **kwargs):
-        form = AddPaymentForm(**kwargs)
-        form.fields["subscription"].queryset = self.object.subscription_set.all()  # type: ignore[attr-defined]
-        return form
-
-    def post(self, request, **kwargs):
-        self.object = self.get_object()
-        action = request.POST.get("action")
-        if action == "payment":
-            form = self.get_payment_form(data=request.POST)
-            if form.is_valid():
-                form.cleaned_data["subscription"].add_payment(
-                    form.cleaned_data["invoice"], form.cleaned_data["period"]
-                )
-                messages.info(request, gettext("Payment was added."))
-            else:
-                show_form_errors(request, form)
-        return redirect(self.object)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["add_payment_form"] = self.get_payment_form()
-        return context
 
 
 class InvoiceListView(CRMMixin, ListView):
