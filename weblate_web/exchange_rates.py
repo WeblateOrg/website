@@ -59,7 +59,7 @@ class UncachedExchangeRates:
             rates = cls.download(date_iso)
         except (requests.RequestException, InvalidDataError):
             logger.exception("failed to fetch exchange rate data")
-            if recursion > 5:
+            if recursion > 4:
                 raise
             # Fallback on previous day if data is not available
             return cls.get(

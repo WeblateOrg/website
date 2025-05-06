@@ -22,6 +22,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
+from requests.exceptions import HTTPError
 
 from weblate_web.exchange_rates import UncachedExchangeRates
 from weblate_web.payments.data import SUPPORTED_LANGUAGES
@@ -1628,6 +1629,10 @@ Euro|euro|1|EUR|22,222
             "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=06.01.2000",
             status=500,
         )
+        responses.get(
+            "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=07.01.2000",
+            status=500,
+        )
 
     @responses.activate
     def test_mocked(self):
@@ -1657,6 +1662,5 @@ Euro|euro|1|EUR|22,222
     @responses.activate
     def test_error(self):
         self.mock_rate()
-        self.assertEqual(
-            UncachedExchangeRates.get("EUR", date(2000, 1, 6)), Decimal("22.222")
-        )
+        with self.assertRaises(HTTPError):
+            UncachedExchangeRates.get("EUR", date(2000, 1, 7))
