@@ -10,10 +10,7 @@ from typing import ClassVar
 import requests
 
 logger = logging.getLogger(__name__)
-RATE_URL = (
-    "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/"
-    "kurzy_devizoveho_trhu/denni_kurz.txt?date={}"
-)
+RATE_URL = "https://api.cnb.cz/cnbapi/exrates/daily"
 CACHE_DIR = Path.home() / ".cache" / "fakturace"
 
 
@@ -31,24 +28,13 @@ class InvalidDataError(Exception):
 class UncachedExchangeRates:
     @classmethod
     def download(cls, date: str) -> dict[str, Decimal]:
-        result: dict[str, Decimal] = {}
-        parts = date.split("-")
-        date_fmt = f"{parts[2]}.{parts[1]}.{parts[0]}"
-        response = requests.get(RATE_URL.format(date_fmt), timeout=10)
+        response = requests.get(RATE_URL, params={"date": date}, timeout=10)
         response.raise_for_status()
-        text = response.text
-        # Check header
-        if not text.startswith(date_fmt):
-            raise InvalidDataError(text)
-        for line in response.text.splitlines():
-            if "|" not in line:
-                continue
-            parts = line.split("|")
-            if parts[4] in {"kurz", "Rate"}:
-                continue
-            result[parts[3]] = Decimal(parts[4].replace(",", "."))
-
-        return result
+        try:
+            payload = json.loads(response.text, parse_float=Decimal)
+        except json.JSONDecodeError as error:
+            raise InvalidDataError(str(error)) from error
+        return {item["currencyCode"]: item["rate"] for item in payload["rates"]}
 
     @classmethod
     def get(cls, currency: str, date: datetime.date, *, recursion: int = 0) -> Decimal:
