@@ -333,6 +333,7 @@ def api_support(request):
             "backup_repository": service.backup_repository,
             "in_limits": service.check_in_limits(),
             "limits": service.get_limits(),
+            "has_subscription": service.latest_subscription is not None,
         }
     )
 
