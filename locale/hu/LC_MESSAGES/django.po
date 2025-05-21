@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-11-07 13:47+0100\n"
-"PO-Revision-Date: 2025-05-21 10:40+0000\n"
+"PO-Revision-Date: 2025-05-21 14:33+0000\n"
 "Last-Translator: RViktor <rviktor@ivankapal.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/weblate/"
 "website/hu/>\n"
@@ -308,12 +308,12 @@ msgstr "Fizetés megszakítva"
 
 #: weblate_web/payments/models.py:80
 msgid "European VAT ID"
-msgstr "Európai adószám"
+msgstr "Közösségi adószám"
 
 #: weblate_web/payments/models.py:82
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
-"Töltse ki Európai Uniós adószámot (ha rendelkezik ilyennel). A mező üresen "
+"Töltse ki a közösségi adószámot (ha rendelkezik ilyennel). A mező üresen "
 "hagyható."
 
 #: weblate_web/payments/models.py:88
@@ -359,7 +359,7 @@ msgstr "További e-mail a számlázási értesítésekhez"
 
 #: weblate_web/payments/models.py:178
 msgid "The country has to match your VAT code"
-msgstr "Az országnak meg kell egyeznie az adószám országkódjával"
+msgstr "Az országnak meg kell egyeznie a közösségi adószám országkódjával"
 
 #: weblate_web/payments/models.py:201
 msgid "Annual"
@@ -425,11 +425,12 @@ msgstr "Adjon meg egy érvényes e-mail címet."
 
 #: weblate_web/payments/validators.py:43
 msgid "{} is not a valid country code for any European Union member."
-msgstr "A(z) {} nem érvényes országkód egyetlen Európai Uniós tagállamhoz sem."
+msgstr ""
+"A(z) {} nem szerepel az EU-s áfa rendszerben használt országkódok között."
 
 #: weblate_web/payments/validators.py:48
 msgid "{} does not match the country's VAT ID specifications."
-msgstr "A(z) {} nem felel meg az adott ország adószám-formátumának."
+msgstr "A(z) {} nem felel meg az adott ország közösségi adószám-formátumának."
 
 #: weblate_web/payments/validators.py:61
 msgid ""
@@ -445,7 +446,7 @@ msgstr "Szolgáltatás állapotának megtekintése."
 
 #: weblate_web/payments/validators.py:67
 msgid "{} is not a valid VAT ID."
-msgstr "A(z) {} nem érvényes adószám."
+msgstr "A(z) {} nem érvényes közösségi adószám."
 
 #: weblate_web/templates/404.html:11
 msgid "Page not found"
@@ -1529,7 +1530,7 @@ msgstr "Weblate képernyőkép"
 
 #: weblate_web/templates/features.html:37
 msgid "Customizable quality checks"
-msgstr "Testreszabható minőségellenőrzések"
+msgstr "Testreszabható minőség-ellenőrzések"
 
 #: weblate_web/templates/features.html:41
 msgid "Detailed context"
@@ -2301,7 +2302,7 @@ msgid ""
 msgstr ""
 "Kiszolgálón biztosított szolgáltatás és önálló fordítóeszköz szoros "
 "verziókezelő-integrációval. Egyszerű, letisztult felület, fordítások "
-"terjesztése az összetevők között, minőségellenőrzések, és automatikus "
+"terjesztése az összetevők között, minőség-ellenőrzések, és automatikus "
 "hivatkozás a forrásfájlokra."
 
 #: weblate_web/templates/index.html:54
@@ -2644,12 +2645,12 @@ msgid ""
 "The Privacy Policy document is legally-binding in English, translations are "
 "provided for your convenience."
 msgstr ""
-"A jelen Adatvédelmi szabályzat angol nyelven jogilag kötelező érvényű, a "
-"fordítások kizárólag a tájékozódásodat szolgálják."
+"Az adatvédelmi irányelvek angol nyelvű változata jogilag kötelező érvényű, a "
+"fordítások csak tájékoztató jellegűek."
 
 #: weblate_web/templates/privacy.html:24 weblate_web/templates/terms.html:24
 msgid "View English version"
-msgstr "Angol verzió megtekintése"
+msgstr "Angol változat megtekintése"
 
 #: weblate_web/templates/service.html:6 weblate_web/templates/service.html:14
 msgid "Service"
@@ -2660,22 +2661,22 @@ msgid ""
 "Dive in, or leverage extensive skills and experience from our team of "
 "professionals, giving focused advice attentive to your exact needs."
 msgstr ""
-"Merüljön el, vagy használja ki szakemberekből álló csapatunk széles körű "
-"készségeit és tapasztalatát, hogy az Ön pontos igényeire összpontosított "
-"tanácsokat adjanak."
+"Merüljön el benne vagy használja ki szakértő csapatunk átfogó tudását és "
+"tapasztalatát — személyre szabott tanácsokkal, pontosan az Ön igényeire "
+"szabva."
 
 #: weblate_web/templates/snippets/box-donate.html:5
 msgid "<strong>Donate</strong>—to make the world a better place"
-msgstr "<strong>Adományozás</strong> – hogy jobb hellyé tegye a világot"
+msgstr "<strong>Adományozzon</strong> — hogy jobb hellyé tegyük a világot"
 
 #: weblate_web/templates/snippets/box-donate.html:8
 msgid ""
 "Give yourself a happy moment. Help build Weblate with a small or bigger "
 "donation. Funds are spent wisely between hosting and manpower."
 msgstr ""
-"Szerezzen magának egy boldog pillanatot. Segítsen a Weblate építésében egy "
-"kisebb vagy nagyobb adománnyal. Az összegeket bölcsen költjük el a "
-"tárhelyszolgáltatás és a munkaerő között."
+"Ajándékozzon magának egy jó érzést. Segítse a Weblate fejlődését akár "
+"kisebb, akár nagyobb adománnyal. Az összegek ésszerűen kerülnek "
+"felhasználásra: tárhelyre és emberi erőforrásra."
 
 #: weblate_web/templates/snippets/box-join.html:5
 msgid "<strong>Join the community</strong> and contribute"
@@ -2687,13 +2688,13 @@ msgid ""
 "communities of libre software. We learn and grow together and we connect the "
 "world."
 msgstr ""
-"A Weblate a szabad szoftverek legpozitívabb és legerősebb közössége "
-"egyikének a platformja. Együtt tanulunk és fejlődünk, és összekötjük a "
-"világot."
+"A Weblate egy olyan platform, amely a szabad szoftveres közösség egyik "
+"legpozitívabb és leghozzáférhetőbb közösségét szolgálja ki. Együtt tanulunk, "
+"fejlődünk — és összekötjük a világot."
 
 #: weblate_web/templates/snippets/box-join.html:10
 msgid "Contribute with us"
-msgstr "Működjön közre velünk"
+msgstr "Vegyen részt velünk a közös munkában"
 
 #: weblate_web/templates/snippets/career.html:3
 msgid "Good written and spoken English language skills are required."
@@ -2701,45 +2702,45 @@ msgstr "Jó írásbeli és szóbeli angol nyelvtudás szükséges."
 
 #: weblate_web/templates/snippets/career.html:4
 msgid "This is a remote contractor position."
-msgstr "Ez egy távmunkában végezhető vállalkozói állás."
+msgstr "Ez egy távmunkában végezhető vállalkozói pozíció."
 
 #: weblate_web/templates/snippets/career.html:5
 msgid ""
 "We're a small libre software company where everybody has a lot of space to "
 "grow."
 msgstr ""
-"Mi egy kis szabad szoftveres vállalkozás vagyunk, ahol mindenkinek sok tere "
-"van a fejlődésre."
+"Egy kis szabad szoftveres cégnél dolgozunk, ahol mindenkinek bőven van "
+"lehetősége fejlődni."
 
 #: weblate_web/templates/snippets/features-1.html:9
 msgid "Continuous Localization"
-msgstr "Folyamatos honosítás"
+msgstr "Folyamatos lokalizáció"
 
 #: weblate_web/templates/snippets/features-1.html:10
 msgid ""
 "Automated localization workflow follows your project development closely."
 msgstr ""
-"Az automatizált honosítási munkafolyamat szorosan követi a "
-"projektfejlesztést."
+"Az automatizált lokalizációs munkafolyamat szorosan követi a projekt "
+"fejlesztését."
 
 #: weblate_web/templates/snippets/features-1.html:18
 msgid "Quality Checks"
-msgstr "Minőség-ellenőrzések"
+msgstr "Minőség-ellenőrzés"
 
 #: weblate_web/templates/snippets/features-1.html:19
 msgid "Customizable quality checks helps improve translation quality."
 msgstr ""
-"A személyre szabható minőség-ellenőrzések segítenek javítani a fordítás "
-"minőségét."
+"Testreszabható minőség-ellenőrzések segítik a fordítási minőség javítását."
 
 #: weblate_web/templates/snippets/features-1.html:27
 msgid "Attribution"
-msgstr "Megnevezés"
+msgstr "Szerzőség feltüntetése"
 
 #: weblate_web/templates/snippets/features-1.html:28
 msgid "All translators are properly credited in the version control system."
 msgstr ""
-"Az összes fordító megfelelően feltüntetésre kerül a verziókövető rendszerben."
+"Minden fordító megfelelő módon feltüntetésre kerül a verziókezelő "
+"rendszerben."
 
 #: weblate_web/templates/snippets/features-2.html:9
 msgid "Hosting Plans"
@@ -2756,8 +2757,7 @@ msgstr "Felhőre készen"
 #: weblate_web/templates/snippets/features-2.html:19
 msgid "Comes with appliances, ready to deploy in your cloud."
 msgstr ""
-"Olyan készülékekkel érkezik, amelyek készen állnak a felhőben történő üzembe "
-"állításra."
+"Előre konfigurált eszközkészlettel, azonnal telepíthető saját felhőjében."
 
 #: weblate_web/templates/snippets/features-2.html:27
 msgid "Libre Software"
@@ -2766,8 +2766,8 @@ msgstr "Szabad szoftver"
 #: weblate_web/templates/snippets/features-2.html:28
 msgid "Copylefted; use, see, modify and share at will, and with everyone."
 msgstr ""
-"Copyleft-licenccel ellátott: tetszés szerint és bárkivel használhatja, "
-"megtekintheti, módosíthatja és megoszthatja."
+"Copyleft licenc alatt; szabadon használható, megtekinthető, módosítható és "
+"megosztható bárkivel."
 
 #: weblate_web/templates/snippets/languages.html:26
 msgid "Help translate"
@@ -2813,8 +2813,7 @@ msgstr "Dokumentáció"
 
 #: weblate_web/templates/snippets/pricing.html:8
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
-msgstr ""
-"<strong>Ingyenes</strong> vagy <strong>Prémium</strong> – ez csak Öntől függ"
+msgstr "<strong>Ingyenes</strong> vagy <strong>Prémium</strong> — az Ön döntése"
 
 #: weblate_web/templates/snippets/pricing.html:12
 msgid "Premium Cloud"
@@ -2822,7 +2821,7 @@ msgstr "Prémium felhő"
 
 #: weblate_web/templates/snippets/pricing.html:13
 msgid "for ease and comfort"
-msgstr "az egyszerűségért és a kényelemért"
+msgstr "a kényelemért és egyszerűségért"
 
 #: weblate_web/templates/snippets/pricing.html:25
 #: weblate_web/templates/snippets/pricing.html:63
@@ -2929,11 +2928,11 @@ msgstr "szabad projektekhez"
 #: weblate_web/templates/snippets/pricing.html:304
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
-msgstr "<a href=\"%(url)s\">igény</a> szerint"
+msgstr "<a href=\"%(url)s\">kérelemre</a>"
 
 #: weblate_web/templates/snippets/pricing.html:309
 msgid "Compare all plans"
-msgstr "Összes csomag összehasonlítása"
+msgstr "Csomagok összehasonlítása"
 
 #: weblate_web/templates/snippets/service.html:17
 #: weblate_web/templates/snippets/service.html:192
@@ -2948,7 +2947,7 @@ msgstr "Felhasználók"
 
 #: weblate_web/templates/snippets/service.html:47
 msgid "You can not remove yourself"
-msgstr "Nem távolíthatja el saját magát"
+msgstr "Saját magát nem távolíthatja el"
 
 #: weblate_web/templates/snippets/service.html:47
 msgid "Protected user"
@@ -2968,7 +2967,7 @@ msgstr "Felhasználó hozzáadása"
 
 #: weblate_web/templates/snippets/service.html:80
 msgid "Activation token"
-msgstr "Aktiválási token"
+msgstr "Aktiváló token"
 
 #: weblate_web/templates/snippets/service.html:86
 msgid "Activate"
@@ -2985,7 +2984,7 @@ msgstr "Token frissítése"
 
 #: weblate_web/templates/snippets/service.html:103
 msgid "Backup repository"
-msgstr "Biztonsági mentés tároló"
+msgstr "Biztonsági mentési tároló"
 
 #: weblate_web/templates/snippets/service.html:122
 #, python-format
@@ -2994,14 +2993,14 @@ msgid ""
 "activation token to connect your Weblate installation to the support portal. "
 "Read about how it works in the %(link_start)sdocumentation%(link_end)s."
 msgstr ""
-"Támogatási szolgáltatásokat vehet igénybe a webhelyünkön. A nagyobb kényelem "
-"érdekében használja az aktiválási tokent, hogy a Weblate telepítését "
-"összekapcsolja a támogatási portállal. Ennek működéséről a "
-"%(link_start)sdokumentációban%(link_end)s olvashat."
+"A támogatási szolgáltatások weboldalunkon keresztül érhetők el. A nagyobb "
+"kényelem érdekében használja az aktiváló tokent Weblate-telepítésének "
+"összekapcsolásához a támogatási portállal. A működésről bővebben olvashat a "
+"%(link_start)sdokumentációban%(link_end)s."
 
 #: weblate_web/templates/snippets/service.html:132
 msgid "View your listing"
-msgstr "Felsorolás megtekintése"
+msgstr "Saját bejegyzés megtekintése"
 
 #: weblate_web/templates/snippets/service.html:136
 #, python-format
@@ -3009,8 +3008,9 @@ msgid ""
 "Let other users discover your Weblate server. Read about how it works in the "
 "%(link_start)sdocumentation%(link_end)s."
 msgstr ""
-"Hagyja, hogy más felhasználók felfedezzék a Weblate-kiszolgálóját. Ennek "
-"működéséről a %(link_start)sdokumentációban%(link_end)s olvashat."
+"Engedje meg, hogy más felhasználók is felfedezzék az Ön Weblate-"
+"kiszolgálóját. A működésről bővebben olvashat a "
+"%(link_start)sdokumentációban%(link_end)s."
 
 #: weblate_web/templates/snippets/service.html:144
 msgid "Subscription"
@@ -3022,7 +3022,7 @@ msgstr "Megjegyzés"
 
 #: weblate_web/templates/snippets/service.html:173
 msgid "Change plan"
-msgstr "Csomag megváltoztatása"
+msgstr "Csomag módosítása"
 
 #: weblate_web/templates/snippets/service.html:181
 msgid "Billing"
@@ -3055,12 +3055,12 @@ msgstr "Frissítés évesre"
 #: weblate_web/templates/snippets/service.html:209
 #, python-format
 msgid "and <strong>save 20%%</strong>."
-msgstr "és <strong>20%% megtakarítása</strong>."
+msgstr "és <strong>takarítson meg 20%%-ot</strong>."
 
 #: weblate_web/templates/snippets/service.html:219
 #: weblate_web/templates/user.html:128
 msgid "Payments"
-msgstr "Befizetések"
+msgstr "Fizetések"
 
 #: weblate_web/templates/snippets/service.html:237
 msgid "Get more Weblate"
@@ -3072,15 +3072,14 @@ msgstr "Elérhető szolgáltatások"
 
 #: weblate_web/templates/snippets/service.html:261
 msgid "Congratulations, you are fully covered!"
-msgstr "Gratulálunk, Ön teljesen fedezve van!"
+msgstr "Gratulálunk, teljes körű támogatásban részesül!"
 
 #: weblate_web/templates/snippets/vat.html:4
 msgid ""
 "Payments by credit card, bank transfer or cryptocurrency transaction are "
 "accepted."
 msgstr ""
-"A befizetéseket hitelkártyával, banki átutalással vagy kriptovaluta "
-"tranzakcióval fogadjuk el."
+"Fizetés bankkártyával, banki átutalással vagy kriptovalutával is lehetséges."
 
 #: weblate_web/templates/snippets/vat.html:5
 #, python-format
@@ -3088,27 +3087,27 @@ msgid ""
 "Please <a href=\"%(contact)s\">get in touch</a> for more details and "
 "possibilities."
 msgstr ""
-"<a href=\"%(contact)s\">Vegye fel velünk a kapcsolatot</a> a további "
-"részletekért és lehetőségekért."
+"További részletekért és lehetőségekért <a href=\"%(contact)s\">lépjen "
+"kapcsolatba velünk</a>."
 
 #: weblate_web/templates/snippets/vat.html:6
 msgid "All listed prices exclude VAT."
-msgstr "A felsorolt árak nem tartalmazzák az ÁFÁ-t."
+msgstr "A feltüntetett árak áfát nem tartalmaznak."
 
 #: weblate_web/templates/snippets/vat.html:7
 #, python-format
 msgid ""
 "EU end users and Czech companies will be charged with additional 21%% VAT."
 msgstr ""
-"Az Európai Unió végfelhasználói és a cseh vállalatok további 21%% ÁFA-t "
-"fizetnek."
+"EU-s végfelhasználók és cseh cégek esetén további 21%% áfa kerül "
+"felszámításra."
 
 #: weblate_web/templates/snippets/vat.html:8
 msgid ""
 "The reverse charge applies to invoices issued to businesses within the EU."
 msgstr ""
-"A fordított adózás az Európai Unión belüli vállalkozások számára kiállított "
-"számlákra vonatkozik."
+"Az EU-n belüli vállalkozásoknak kiállított számlák esetében fordított adózás "
+"alkalmazandó."
 
 #: weblate_web/templates/subscription/discovery-add.html:14
 msgid "Add Discover Weblate listing"
@@ -3117,7 +3116,8 @@ msgstr "Weblate-felfedezés felsorolásának hozzáadása"
 #: weblate_web/templates/subscription/discovery-add.html:19
 msgid "Weblate 4.5.2 or newer is needed to participate in Discover Weblate."
 msgstr ""
-"Weblate 4.5.2 vagy újabb szükséges a Weblate-felfedezésben való részvételhez."
+"A Weblate-felfedezésben való részvételhez Weblate 4.5.2 vagy újabb verzió "
+"szükséges."
 
 #: weblate_web/templates/subscription/discovery-add.html:21
 #, python-format
@@ -3125,8 +3125,8 @@ msgid ""
 "Let other users discover your Weblate. Read about how it works in the "
 "%(link_start)sdocumentation%(link_end)s."
 msgstr ""
-"Hagyja, hogy más felhasználók felfedezzék a Weblate-kiszolgálóját. Ennek "
-"működéséről a %(link_start)sdokumentációban%(link_end)s olvashat."
+"Engedje, hogy más felhasználók is felfedezzék a Weblate rendszerét. A "
+"működésről bővebben olvashat a %(link_start)sdokumentációban%(link_end)s."
 
 #: weblate_web/templates/subscription/discovery-add.html:41
 msgid "Next step"
@@ -3135,12 +3135,11 @@ msgstr "Következő lépés"
 #: weblate_web/templates/subscription/discovery-add.html:43
 msgid ""
 "You will be redirected to the server in question to confirm its listing."
-msgstr ""
-"Átirányításra kerül a kérdéses kiszolgálóra, hogy megerősítse a felsorolását."
+msgstr "Átirányítjuk az érintett szerverre, ahol megerősítheti a listázást."
 
 #: weblate_web/templates/subscription/discovery.html:14
 msgid "Customize Discover Weblate listing"
-msgstr "Weblate-felfedezés felsorolásának személyre szabása"
+msgstr "Weblate-felfedezés bejegyzés testreszabása"
 
 #: weblate_web/templates/support.html:9
 msgid "Weblate support"
@@ -3152,13 +3151,13 @@ msgid ""
 "receive priority support at no extra charge. Prepaid help packages are "
 "available for everyone."
 msgstr ""
-"A Weblate egy copyleft-licenccel ellátott, közösségi támogatással rendelkező "
-"szoftver. Az előfizetők felár nélkül kapnak elsőbbségi támogatást. Az előre "
-"fizetett segítségcsomagok mindenki számára elérhetőek."
+"A Weblate copyleft licencű szabad szoftver, közösségi támogatással. Az "
+"előfizetők prioritást élvező támogatást kapnak külön díj nélkül. Előre "
+"fizetett támogatási csomagok bárki számára elérhetők."
 
 #: weblate_web/templates/support.html:29
 msgid "Report issue"
-msgstr "Probléma bejelentése"
+msgstr "Hiba jelentése"
 
 #: weblate_web/templates/support.html:38
 msgid "Bugs and feature requests"
@@ -3170,8 +3169,8 @@ msgid ""
 "Issues and ideas for improvement can be reported to the <a "
 "href=\"%(url)s\">issue tracker</a>."
 msgstr ""
-"A problémákat és fejlesztési ötleteket a <a href=\"%(url)s\">hibakövetőben</"
-"a> lehet jelenteni."
+"A hibákat és fejlesztési ötleteket a <a href=\"%(url)s\">hibakövetőben</a> "
+"lehet bejelenteni."
 
 #: weblate_web/templates/support.html:49
 msgid "Security issues"
@@ -3196,49 +3195,48 @@ msgid ""
 "As the subscriber, you will always receive fast replies from our dedicated "
 "support team at <a href=\"mailto:%(email)s\">%(email)s</a>."
 msgstr ""
-"Előfizetőként mindig gyors választ fog kapni a <a href=\"mailto:"
-"%(email)s\">%(email)s</a> címen elérhető, elkötelezett támogatási "
-"csapatunktól."
+"Előfizetőként mindig gyors választ kap elkötelezett támogatási csapatunktól "
+"a következő címen: <a href=\"mailto:%(email)s\">%(email)s</a>."
 
 #: weblate_web/templates/support.html:72
 msgid "Prepaid support for gratis service and self-hosted installations"
 msgstr ""
-"Előre fizetett támogatás ingyenes szolgáltatáshoz és saját kiszolgálású "
+"Előre fizetett támogatás az ingyenes szolgáltatáshoz és a saját üzemeltetésű "
 "telepítésekhez"
 
 #: weblate_web/templates/support.html:82 weblate_web/templates/support.html:96
 #: weblate_web/templates/support.html:113
 msgid "Issues in your environment fixed immediately."
-msgstr "A környezetében felmerülő problémák azonnal javításra kerülnek."
+msgstr "A saját környezetében felmerülő problémák azonnali javítása."
 
 #: weblate_web/templates/support.html:83 weblate_web/templates/support.html:97
 #: weblate_web/templates/support.html:114
 msgid "Priority e-mail support."
-msgstr "Elsőbbségi e-mailes támogatás."
+msgstr "Elsőbbséget élvező e-mailes támogatás."
 
 #: weblate_web/templates/support.html:95
 msgid "Always upgraded to latest version."
-msgstr "Mindig a legújabb verzióra frissítve."
+msgstr "Mindig a legfrissebb verzióra frissítve."
 
 #: weblate_web/templates/support.html:98
 msgid "Only available with the installation package"
-msgstr "Csak a telepítőcsomaggal együtt érhető el"
+msgstr "Csak a telepítési csomaggal együtt elérhető"
 
 #: weblate_web/templates/support.html:115
 msgid "Next business day support response guaranteed."
-msgstr "A következő munkanapra garantált támogatási válasz."
+msgstr "Támogatási válasz legkésőbb a következő munkanapon."
 
 #: weblate_web/templates/support.html:116
 msgid "Four hours of private consultations in price."
-msgstr "Négy óra személyes konzultáció az árban."
+msgstr "Az ár 4 óra privát konzultációt tartalmaz."
 
 #: weblate_web/templates/support.html:127
 msgid "Installation on your Linux server"
-msgstr "Telepítést a Linux-kiszolgálóján"
+msgstr "Telepítés az Ön Linux szerverére"
 
 #: weblate_web/templates/support.html:129
 msgid "One-time installation of Weblate"
-msgstr "A Weblate egyszeri telepítése"
+msgstr "Egyszeri Weblate-telepítés"
 
 #: weblate_web/templates/support.html:130
 msgid "Docker-based or native installation"
@@ -3247,12 +3245,12 @@ msgstr "Docker-alapú vagy natív telepítés"
 #: weblate_web/templates/support.html:131
 msgid "Requires root access or close cooperation of your admins"
 msgstr ""
-"Rendszergazdai (root) hozzáférést vagy szoros együttműködést igényel a "
-"rendszergazdákkal"
+"Rendszergazdai (root) jogosultság vagy rendszergazdái szoros együttműködése "
+"szükséges"
 
 #: weblate_web/templates/support.html:132
 msgid "Setup customization"
-msgstr "Beállítás személyre szabása"
+msgstr "Telepítés testreszabása"
 
 #: weblate_web/templates/support.html:135
 msgid "installation"
@@ -3260,31 +3258,31 @@ msgstr "telepítés"
 
 #: weblate_web/templates/support.html:147
 msgid "Cloud backups of your data"
-msgstr "Az adatainak felhőalapú biztonsági mentése"
+msgstr "Felhőalapú biztonsági mentések az adatairól"
 
 #: weblate_web/templates/support.html:148
 msgid "Securely encrypted with your passphrase"
-msgstr "Biztonságosan titkosítva az Ön jelmondatával"
+msgstr "Saját jelszavával titkosítva"
 
 #: weblate_web/templates/support.html:149
 msgid "Daily incremental backups"
-msgstr "Napi növekményes biztonsági mentések"
+msgstr "Napi növekményes mentések"
 
 #: weblate_web/templates/support.html:150
 msgid "Stores up to 100 GB of backups"
-msgstr "Legfeljebb 100 GB biztonsági mentés tárolása"
+msgstr "Akár 100 GB biztonsági mentést tárol"
 
 #: weblate_web/templates/support.html:152
 msgid "Read more in the documentation."
-msgstr "További információk a dokumentációban."
+msgstr "További információ a dokumentációban."
 
 #: weblate_web/templates/support.html:163
 msgid "Consulting services and/or custom development"
-msgstr "Tanácsadási szolgáltatások és/vagy egyedi fejlesztés"
+msgstr "Tanácsadás és/vagy egyedi fejlesztés"
 
 #: weblate_web/templates/support.html:165
 msgid "Development of custom features"
-msgstr "Egyéni funkciók fejlesztése"
+msgstr "Egyedi funkciók fejlesztése"
 
 #: weblate_web/templates/support.html:166
 msgid "Integration of Weblate into your workflow"
@@ -3292,7 +3290,7 @@ msgstr "A Weblate integrálása az Ön munkafolyamatába"
 
 #: weblate_web/templates/support.html:167
 msgid "Suggestions on the internationalization and localization"
-msgstr "Nemzetköziesítésre és honosításra vonatkozó javaslatok"
+msgstr "Javaslatok a nemzetközivé tételre és lokalizációra"
 
 #: weblate_web/templates/support.html:169
 msgid "hourly"
@@ -3309,15 +3307,15 @@ msgstr "Beszélgetés a közösséggel a <a href=\"%(url)s\">GitHubon</a>."
 
 #: weblate_web/templates/terms.html:11
 msgid "General Terms and Conditions"
-msgstr ""
+msgstr "Általános szerződési feltételek"
 
 #: weblate_web/templates/terms.html:21
 msgid ""
 "The General Terms and Conditions document is legally-binding in English, "
 "translations are provided for your convenience."
 msgstr ""
-"Az Általános Szerződési Feltételek dokumentum angol nyelven jogilag kötelező "
-"érvényű, a fordítások kizárólag a tájékozódásodat szolgálják."
+"Az általános szerződési feltételek dokumentumának angol nyelvű változata "
+"jogilag kötelező érvényű, a fordítások csak tájékoztató jellegűek."
 
 #: weblate_web/templates/user.html:8
 msgid "User profile at Weblate"
@@ -3325,7 +3323,7 @@ msgstr "Felhasználói profil a Weblate-en"
 
 #: weblate_web/templates/user.html:21
 msgid "My services"
-msgstr "Saját szolgáltatások"
+msgstr "Szolgáltatásaim"
 
 #: weblate_web/templates/user.html:23
 msgid "Support portal"
@@ -3341,11 +3339,11 @@ msgstr "Kiszolgáló hozzáadása a Weblate-felfedezéshez"
 
 #: weblate_web/templates/user.html:39
 msgid "My donations"
-msgstr "Saját adományok"
+msgstr "Adományaim"
 
 #: weblate_web/templates/user.html:46
 msgid "Your reward"
-msgstr "Az Ön jutalma"
+msgstr "Jutalom"
 
 #: weblate_web/templates/user.html:54
 msgid "Link"
@@ -3361,7 +3359,7 @@ msgstr "Aktív"
 
 #: weblate_web/templates/user.html:160
 msgid "Wanna see something nice here?"
-msgstr "Valami szépet szeretne látni itt?"
+msgstr "Szeretne itt látni valami szépet?"
 
 #: weblate_web/templates/weblate_web/post_detail.html:37
 msgid "Share"
@@ -3369,7 +3367,7 @@ msgstr "Megosztás"
 
 #: weblate_web/templates/weblate_web/post_detail.html:55
 msgid "Share with friends"
-msgstr "Megosztás az ismerősökkel"
+msgstr "Megosztás ismerősökkel"
 
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Other topics"
@@ -3386,7 +3384,7 @@ msgstr "Kapcsolódó cikkek"
 
 #: weblate_web/templates/weblate_web/post_detail.html:78
 msgid "Back to blog"
-msgstr "Vissza a blogra"
+msgstr "Vissza a bloghoz"
 
 #: weblate_web/templatetags/downloads.py:41
 #, python-format
@@ -3499,15 +3497,15 @@ msgstr "Hiba a(z) %(field)s paraméterben: %(error)s"
 
 #: weblate_web/views.py:376 weblate_web/views.py:411
 msgid "Please provide your billing information to complete the payment."
-msgstr "Adja meg a számlázási információit a befizetés befejezéséhez."
+msgstr "Adja meg számlázási adatait a fizetés befejezéséhez."
 
 #: weblate_web/views.py:389
 msgid "The VAT ID is no longer valid, please update it."
-msgstr "Az ÁFA-azonosító már nem érvényes, frissítse azt."
+msgstr "Az adószáma már nem érvényes, frissítse azt."
 
 #: weblate_web/views.py:406
 msgid "Please choose a payment method."
-msgstr "Válasszon befizetési módot."
+msgstr "Válasszon fizetési módot."
 
 #: weblate_web/views.py:440
 #, python-format
@@ -3521,11 +3519,11 @@ msgstr "Nem sikerült befejezni a fizetést: %s"
 
 #: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
-msgstr "A befizetés még nem került feldolgozásra, próbálja meg újra."
+msgstr "A fizetés még nem került feldolgozásra, próbálja meg újra."
 
 #: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
-msgstr "A befizetés el lett utasítva: {}"
+msgstr "A fizetés el lett utasítva: {}"
 
 #: weblate_web/views.py:581
 msgid "Unknown reason"
@@ -3533,19 +3531,19 @@ msgstr "Ismeretlen ok"
 
 #: weblate_web/views.py:586
 msgid "Thank you for your subscription."
-msgstr "Köszönjük az előfizetését."
+msgstr "Köszönjük előfizetését."
 
 #: weblate_web/views.py:589
 msgid "Thank you for your donation."
-msgstr "Köszönjük az adományát."
+msgstr "Köszönjük adományát."
 
 #: weblate_web/views.py:874
 msgid "User not found!"
-msgstr "A felhasználó nem található!"
+msgstr "Felhasználó nem található!"
 
 #: weblate_web/views.py:1039
 msgid "Payment was added."
-msgstr "A befizetés hozzá lett adva."
+msgstr "A fizetés hozzáadásra került."
 
 #~ msgid "Activate donation"
 #~ msgstr "Adomány aktiválása"
