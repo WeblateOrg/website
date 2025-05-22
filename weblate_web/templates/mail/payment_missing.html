@@ -6,7 +6,11 @@
 
   {% if subscription %}
     <p>
-      {% translate "Your subscription on weblate.org should renew next week and you have not set up automatic payments." %}
+      {% if subscription.is_expired %}
+        {% translate "Your subscription on weblate.org is expired and you have not set up automatic payments." %}
+      {% else %}
+        {% translate "Your subscription on weblate.org should renew soon and you have not set up automatic payments." %}
+      {% endif %}
       {% translate "If you want to continue using the service, please perform the payment now." %}
     </p>
 
@@ -15,7 +19,11 @@
 
   {% if donation %}
     <p>
-      {% translate "Your donation on weblate.org should renew next week and you have not set up automatic payments." %}
+      {% if donation.is_expired %}
+        {% translate "Your donation on weblate.org is expired and you have not set up automatic payments." %}
+      {% else %}
+        {% translate "Your donation on weblate.org should renew soon and you have not set up automatic payments." %}
+      {% endif %}
       {% translate "Please perform the payment now to continue supporting Weblate." %}
     </p>
 

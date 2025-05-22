@@ -50,7 +50,7 @@ from .hetzner import create_storage_folder, create_storage_subaccount, generate_
 from .packages import PACKAGE_UPGRADES
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
-
+NOTIFY_DAYS = {-7, -2}
 
 REWARDS = (
     (0, gettext_lazy("No reward")),
@@ -229,6 +229,21 @@ class Donation(models.Model):
             self.customer.get_notify_emails(),
             donation=self,
         )
+
+    @property
+    def is_expired(self) -> bool:
+        return self.expires > timezone.now()
+
+    def should_notify(self, timestamp: datetime) -> bool:
+        delta = timestamp - self.expires
+        # Notify month before yearly payment
+        if delta.days == -31:
+            return True
+        # Notify just before the payment
+        if delta.days in NOTIFY_DAYS:
+            return True
+        # Notify weekly after the payment
+        return delta.days > 0 and delta.days % 7 == 0
 
 
 def process_donation(payment):
@@ -985,6 +1000,21 @@ class Subscription(models.Model):
             .filter(expires__gt=expires)
             .exists()
         )
+
+    @property
+    def is_expired(self) -> bool:
+        return self.expires > timezone.now()
+
+    def should_notify(self, timestamp: datetime) -> bool:
+        delta = timestamp - self.expires
+        # Notify month before yearly payment
+        if delta.days == -31 and self.package.get_repeat() == "y":
+            return True
+        # Notify just before the payment
+        if delta.days in NOTIFY_DAYS:
+            return True
+        # Notify weekly after the payment
+        return delta.days > 0 and delta.days % 7 == 0
 
 
 class PastPayments(models.Model):
