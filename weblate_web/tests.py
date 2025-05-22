@@ -6,7 +6,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 from io import StringIO
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Literal, cast
 from xml.etree import ElementTree  # noqa: S405
 
 import responses
@@ -42,6 +42,8 @@ from .utils import PAYMENTS_ORIGIN
 
 if TYPE_CHECKING:
     from uuid import UUID
+
+    from django.core.mail.message import EmailMultiAlternatives
 
 TEST_DATA = Path(__file__).parent / "test-data"
 TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
@@ -832,13 +834,15 @@ def create_payment(*, recurring="y", user, **kwargs):
 
 
 class FakturaceTestCase(UserTestCase):
-    def assert_notifications(self, *subjects):
-        self.assertEqual({m.subject for m in mail.outbox}, set(subjects))
-        result = mail.outbox
+    def assert_notifications(self, *subjects: str) -> list[EmailMultiAlternatives]:
+        self.assertEqual(sorted(m.subject for m in mail.outbox), sorted(subjects))
+        result = cast("list[EmailMultiAlternatives]", mail.outbox)
         mail.outbox = []
         return result
 
-    def create_donation(self, years=1, days=0, recurring="y"):
+    def create_donation(
+        self, years: int = 1, days: int = 0, recurring: Literal["y", ""] = "y"
+    ) -> Donation:
         user = self.create_user()
         customer = Customer.objects.create(
             user_id=-1,
@@ -888,7 +892,13 @@ class FakturaceTestCase(UserTestCase):
             ]
         )
 
-    def create_service(self, years=1, days=0, recurring="y", package="extended"):
+    def create_service(
+        self,
+        years: int = 1,
+        days: int = 0,
+        recurring: Literal["y", ""] = "y",
+        package: str = "extended",
+    ) -> Service:
         user = self.create_user()
         self.create_packages()
         customer = Customer.objects.create(
@@ -1108,7 +1118,7 @@ class PaymentTest(FakturaceTestCase):
         self.assertEqual(response.headers["Content-Type"], "application/pdf")
 
         # Service should not get notifications on expiry now
-        RecurringPaymentsCommand.notify_expiry()
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications()
 
         # Move expiry into past and renew
@@ -1208,14 +1218,16 @@ class PaymentTest(FakturaceTestCase):
         response = self.client.get(renew.get_complete_url(), follow=True)
         self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
-        self.assert_notifications("Your payment on weblate.org")
+        self.assert_notifications(
+            "Your payment on weblate.org", "Your payment on weblate.org"
+        )
 
         renew.refresh_from_db()
         self.assertEqual(renew.state, Payment.PROCESSED)
         self.assertEqual(payment.paid_invoice.total_amount, 1000)  # type: ignore[union-attr]
 
         # Service should not get notifications on expiry now
-        RecurringPaymentsCommand.notify_expiry()
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications()
 
         # Move expiry into past and renew
@@ -1636,15 +1648,15 @@ class APITest(UserTestCase):
 )
 class ExpiryTest(FakturaceTestCase):
     def test_expiring_donate(self) -> None:
-        self.create_donation(years=0, days=3, recurring="")
-        RecurringPaymentsCommand.notify_expiry()
+        self.create_donation(years=0, days=-2, recurring="")
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications("Your expired payment on weblate.org")
 
     def test_expiring_recurring_donate(self) -> None:
-        self.create_donation(years=0, days=3)
-        RecurringPaymentsCommand.notify_expiry()
+        self.create_donation(years=0, days=-2)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications()
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications("Your payment on weblate.org")
@@ -1652,33 +1664,35 @@ class ExpiryTest(FakturaceTestCase):
         self.assert_notifications()
 
     def test_expiring_donate_notify_user(self) -> None:
-        self.create_donation(years=0, days=8, recurring="")
-        RecurringPaymentsCommand.notify_expiry()
+        self.create_donation(years=0, days=7, recurring="")
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         mails = self.assert_notifications(
             "Expiring subscriptions on weblate.org",
-            "Your upcoming renewal on weblate.org",
+            "Your upcoming payment on weblate.org",
         )
-        self.assertEqual("Your upcoming renewal on weblate.org", mails[0].subject)
-        self.assertIn("€100", mails[0].alternatives[0][0])
+        self.assertEqual("Your upcoming payment on weblate.org", mails[0].subject)
+        self.assertIn("€100", cast("str", mails[0].alternatives[0][0]))
         self.assertIn("€100", mails[0].body)
 
     def test_expiring_recurring_donate_notify_user(self) -> None:
-        self.create_donation(years=0, days=8)
-        RecurringPaymentsCommand.notify_expiry()
+        self.create_donation(years=0, days=7)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         mails = self.assert_notifications("Your upcoming payment on weblate.org")
-        self.assertIn("€100", mails[0].alternatives[0][0])
+        self.assertIn("€100", cast("str", mails[0].alternatives[0][0]))
         self.assertIn("€100", mails[0].body)
 
     def test_expiring_subscription(self) -> None:
-        self.create_service(years=0, days=3, recurring="")
-        RecurringPaymentsCommand.notify_expiry()
+        self.create_service(years=0, days=-2, recurring="")
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
         RecurringPaymentsCommand.handle_subscriptions()
-        self.assert_notifications("Your expired payment on weblate.org")
+        self.assert_notifications(
+            "Your expired payment on weblate.org", "Your expired payment on weblate.org"
+        )
 
     def test_expiring_recurring_subscription(self) -> None:
-        self.create_service(years=0, days=3)
-        RecurringPaymentsCommand.notify_expiry()
+        self.create_service(years=0, days=-2)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications()
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications("Your payment on weblate.org")
@@ -1686,17 +1700,21 @@ class ExpiryTest(FakturaceTestCase):
         self.assert_notifications()
 
     def test_expiring_subscription_notify_user(self) -> None:
-        self.create_service(years=0, days=8, recurring="")
-        RecurringPaymentsCommand.notify_expiry()
+        self.create_service(years=0, days=7, recurring="")
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications(
             "Expiring subscriptions on weblate.org",
-            "Your upcoming renewal on weblate.org",
+            "Your expired payment on weblate.org",
+            "Your expired payment on weblate.org",
         )
 
     def test_expiring_recurring_subscription_notify_user(self) -> None:
-        self.create_service(years=0, days=8)
-        RecurringPaymentsCommand.notify_expiry()
-        self.assert_notifications("Your upcoming payment on weblate.org")
+        self.create_service(years=0, days=7)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications(
+            "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
+        )
 
 
 @override_settings(
@@ -1851,11 +1869,11 @@ class ServiceTest(FakturaceTestCase):
             suggestions = service.get_suggestions()
             self.assertEqual(len(suggestions), 1)
             self.assertEqual(suggestions[0][0], "test:test-2")
-            response = self.client.get(
-                reverse("subscription-new"),
-                {"plan": "test:test-2", "service": service.pk},
-                follow=True,
-            )
+            params: dict[str, str | int] = {
+                "plan": "test:test-2",
+                "service": service.pk,
+            }
+            response = self.client.get(reverse("subscription-new"), params, follow=True)
             payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
             payment_edit_url = response.redirect_chain[1][0]
             self.assertTrue(payment_url.startswith("/en/payment/"))

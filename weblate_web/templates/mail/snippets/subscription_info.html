@@ -1,10 +1,13 @@
-{% load i18n prices %}
+{% load i18n prices timestamps %}
 
 <p>
   {% blocktranslate with package=subscription.package %}Current subscription: {{ package }}{% endblocktranslate %}
 </p>
 <p>
   {% blocktranslate with price=subscription.package.price|price_format:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
+</p>
+<p>
+  {% blocktranslate with expiry=subscription.expires|date_format %}Subscription expiry: {{ expiry }}{% endblocktranslate %}
 </p>
 {% if subscription.service.site_url %}
   <p>

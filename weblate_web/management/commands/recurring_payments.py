@@ -44,23 +44,15 @@ class Command(BaseCommand):
         self.handle_subscriptions()
         # Update services status
         self.handle_services()
-        # Notify about upcoming expiry on Monday and Thursday
-        weekday = timezone.now().date().weekday()
-        if weekday in {0, 3}:
-            self.notify_expiry(weekday)
+        # Notify about upcoming expiry
+        self.notify_expiry()
 
     @staticmethod
-    def notify_expiry(weekday=0) -> None:
+    def notify_expiry(*, force_summary: bool = False) -> None:
         expiry: list[tuple[str, Iterable[str], datetime]] = []
+        timestamp = timezone.now()
 
-        expires_notify = timezone.now() + timedelta(days=30)
-        payment_notify_start = timezone.now() + timedelta(days=7)
-        if weekday == 0:
-            # Monday - Wednesday next week
-            payment_notify_end = timezone.now() + timedelta(days=10)
-        else:
-            # Thursday - Sunday next week
-            payment_notify_end = timezone.now() + timedelta(days=11)
+        expires_notify = timezone.now() + timedelta(days=31)
 
         # Expiring subscriptions
         subscriptions = Subscription.objects.filter(
@@ -74,9 +66,7 @@ class Command(BaseCommand):
                 payment = subscription.payment_obj
             except Payment.DoesNotExist:
                 payment = None
-            notify_user = (
-                payment_notify_start <= subscription.expires <= payment_notify_end
-            )
+            notify_user = subscription.should_notify(timestamp)
             if payment is None or payment.recurring:
                 if notify_user:
                     subscription.send_notification("payment_upcoming")
@@ -101,7 +91,7 @@ class Command(BaseCommand):
         ).exclude(payment=None)
         for donation in donations:
             payment = donation.payment_obj
-            notify_user = payment_notify_start <= donation.expires <= payment_notify_end
+            notify_user = donation.should_notify(timestamp)
             if payment.recurring:
                 if notify_user:
                     donation.send_notification("payment_upcoming")
@@ -117,7 +107,7 @@ class Command(BaseCommand):
             )
 
         # Notify admins
-        if expiry:
+        if expiry and (timestamp.day == 1 or force_summary):
             send_notification(
                 "expiring_subscriptions",
                 settings.NOTIFY_SUBSCRIPTION,

@@ -1,2 +1,6 @@
 {% load i18n %}
-{% translate "Your upcoming renewal on weblate.org" %}
+{% if subscription and subscription.is_expired %}
+  {% include "mail/payment_expired_subject.txt" %}
+{% else %}
+  {% include "mail/payment_upcoming_subject.txt" %}
+{% endif %}
