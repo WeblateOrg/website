@@ -683,7 +683,7 @@ class ThePay2Card(Backend):
                 "uid": str(self.payment.pk),
                 "value": {
                     "amount": str(int(self.payment.vat_amount * 100)),
-                    "currency": "EUR",
+                    "currency": self.payment.get_currency_display(),
                 },
                 "notif_url": complete_url,
             }
@@ -703,7 +703,7 @@ class ThePay2Card(Backend):
             "is_customer_notification_enabled": False,
             "payment_method_code": self.thepay_method_code,
             "amount": int(self.payment.vat_amount * 100),
-            "currency_code": "EUR",
+            "currency_code": self.payment.get_currency_display(),
             "uid": str(self.payment.pk),
             "description_for_customer": self.payment.description,
             "return_url": complete_url,
