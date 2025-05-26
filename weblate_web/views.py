@@ -676,6 +676,8 @@ def download_payment_invoice(request, pk):
                 | Q(subscription__pastpayments__payment=payment.uuid)
             )
         ).exists()
+        and not payment.customer.origin == PAYMENTS_ORIGIN
+        and not payment.customer.user_id == request.user.id
     ):
         raise Http404("Invoice not accessible to current user!")
 
