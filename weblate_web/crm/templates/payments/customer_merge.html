@@ -1,0 +1,26 @@
+{% extends "crm/base.html" %}
+
+{% load i18n static timestamps %}
+
+{% block breadcrum_list %}
+  › <a href="{% url "crm:customer-list" kind="all" %}">Customers</a>
+{% endblock breadcrum_list %}
+
+{% block content %}
+  <section class="content">
+    <p>
+      <a href="{{ merge.get_absolute_url }}">{{ merge.name }} ({{ merge.pk }})</a> will be merged into <a href="{{ object.get_absolute_url }}">{{ object.name }} ({{ object.pk }})</a>.
+    </p>
+    <ul>
+      <li>All content from {{ merge.name }} ({{ merged.pk }}) will be moved to {{ object.name }} ({{ object.pk }})</li>
+      <li>{{ merge.name }} ({{ merged.pk }}) will be removed</li>
+    </ul>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="merge" value="{{ merge.pk }}">
+      <input type="submit" value="Merge">
+      <a href="{{ object.get_absolute_url }}">Cancel</a>
+    </form>
+  </section>
+
+{% endblock content %}

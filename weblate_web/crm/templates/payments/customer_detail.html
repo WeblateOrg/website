@@ -25,6 +25,14 @@
       {% endif %}
       <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
     </p>
+    <form action="{% url "crm:customer-merge" pk=object.pk %}" method="get">
+      <label>
+        Merge with following customer object:
+        <input type="number" name="merge" required>
+      </label>
+      <input type="submit" value="Review merge">
+    </form>
+
     <h2>Services</h2>
     {% include "weblate_web/service_list_content.html" with object_list=object.service_set.all %}
     <h2>Agreements</h2>
@@ -56,6 +64,7 @@
       {% for interaction in object.interaction_set.all %}
         <tr>
           <td>{{ interaction.timestamp|date_format }}</td>
+          <td>{{ interaction.user.username }}</td>
           <td>{{ interaction.get_origin_display }}</td>
           <td>{{ interaction.summary }}</td>
           <td>

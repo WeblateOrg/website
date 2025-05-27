@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING
 from appconf import AppConf
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.core.serializers.json import DjangoJSONEncoder
@@ -274,6 +275,28 @@ class Customer(models.Model):
             f"{notification}-{self.short_filename}-{interaction.timestamp.date().isoformat()}.eml",
             ContentFile(email.message().as_bytes()),
         )
+
+    def merge(self, other: Customer, *, user: User | None = None) -> None:
+        from weblate_web.crm.models import Interaction  # noqa: PLC0415
+
+        other.payment_set.update(customer=self)
+        other.invoice_set.update(customer=self)
+        other.agreement_set.update(customer=self)
+        other.donation_set.update(customer=self)
+        other.service_set.update(customer=self)
+        other.interaction_set.update(customer=self)
+        users = list(other.users.all())
+        if users:
+            self.users.add(*users)
+        interaction = self.interaction_set.create(
+            origin=Interaction.Origin.MERGE,
+            summary=f"Merged with {other.name} ({other.pk})",
+        )
+        interaction.attachment.save(
+            f"customer-{other.pk}.json",
+            ContentFile(serializers.serialize("json", [other])),
+        )
+        other.delete()
 
 
 RECURRENCE_CHOICES = [
