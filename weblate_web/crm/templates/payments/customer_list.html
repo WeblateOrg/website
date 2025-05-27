@@ -3,6 +3,13 @@
 {% load i18n static %}
 
 {% block content %}
+  <form>
+    <label>
+      Search:
+      <input type="search" name="q">
+    </label>
+    <input type="submit" value="Search">
+  </form>
   <section class="content">
     <table>
       {% for object in object_list %}

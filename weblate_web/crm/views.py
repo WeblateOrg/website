@@ -142,6 +142,13 @@ class CustomerListView(CRMMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset().order_by("name")
+        if query := self.request.GET.get("q"):
+            qs = qs.filter(
+                Q(name__icontains=query)
+                | Q(email__icontains=query)
+                | Q(users__email__icontains=query)
+                | Q(end_client__icontains=query)
+            )
         match self.kwargs["kind"]:
             case "active":
                 return qs.filter(
