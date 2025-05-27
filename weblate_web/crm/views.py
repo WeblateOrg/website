@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import FileResponse, HttpResponse
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView
@@ -159,6 +160,28 @@ class CustomerDetailView(CRMMixin, DetailView):
 
     def get_title(self) -> str:
         return self.object.name
+
+
+class CustomerMergeView(CustomerDetailView):
+    template_name = "payments/customer_merge.html"
+
+    def get_merged(self) -> Customer:
+        return Customer.objects.get(
+            pk=self.request.POST["merge"]
+            if self.request.method == "POST"
+            else self.request.GET["merge"]
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        context["merge"] = self.get_merged()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        customer = self.get_object()
+        merge = self.get_merged()
+        customer.merge(merge)
+        return redirect(customer)
 
 
 class InteractionDetailView(CRMMixin, DetailView):

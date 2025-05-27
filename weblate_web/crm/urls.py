@@ -22,6 +22,7 @@ from django.urls import path
 from .views import (
     CustomerDetailView,
     CustomerListView,
+    CustomerMergeView,
     IndexView,
     InteractionDetailView,
     InteractionDownloadView,
@@ -46,6 +47,11 @@ urlpatterns = [
         "customers/detail/<int:pk>/",
         CustomerDetailView.as_view(),
         name="customer-detail",
+    ),
+    path(
+        "customers/detail/<int:pk>/merge/",
+        CustomerMergeView.as_view(),
+        name="customer-merge",
     ),
     path(
         "interaction/<int:pk>/view/",

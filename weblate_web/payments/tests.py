@@ -24,6 +24,7 @@ from datetime import date
 from typing import cast
 
 import responses
+from django.contrib.auth.models import User
 from django.core import mail
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -215,6 +216,21 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(customer.short_filename, "Russkii")
         customer.name = "正體中文"
         self.assertEqual(customer.short_filename, "Zheng_Ti_Zhong_Wen")
+
+
+class ModelObjectsTestCase(TestCase):
+    def test_merge(self) -> None:
+        customer = Customer.objects.create(**CUSTOMER)
+        self.assertEqual(0, customer.users.count())
+        Payment.objects.create(customer=customer, amount=100)
+        customer2 = Customer.objects.create(**CUSTOMER)
+        Payment.objects.create(customer=customer2, amount=100)
+        customer.merge(customer2)
+        self.assertEqual(2, customer.payment_set.count())
+        customer2 = Customer.objects.create(**CUSTOMER)
+        customer2.users.add(User.objects.create())
+        customer.merge(customer2)
+        self.assertEqual(1, customer.users.count())
 
 
 class BackendBaseTestCase(TestCase):

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 from weblate_web.payments.models import Customer
@@ -6,6 +7,7 @@ from weblate_web.payments.models import Customer
 class Interaction(models.Model):
     class Origin(models.IntegerChoices):
         EMAIL = 1, "Outboud e-mail"
+        MERGE = 2, "Merged customer"
 
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Timestamp")
     origin = models.IntegerField(choices=Origin, verbose_name="Origin")
@@ -13,6 +15,7 @@ class Interaction(models.Model):
     summary = models.CharField(max_length=200, verbose_name="Summary")
     content = models.TextField(verbose_name="Content")
     attachment = models.FileField(upload_to="crm/uploads/", verbose_name="Attachment")
+    user = models.ForeignKey(User, null=True, on_delete=models.RESTRICT)
 
     class Meta:
         ordering = ["-timestamp"]
