@@ -1,6 +1,6 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n static timestamps %}
 
 {% block breadcrum_list %}
   › <a href="{% url "crm:customer-list" kind="all" %}">Customers</a>
@@ -47,6 +47,24 @@
           <td>{{ donation.get_amount }} EUR</td>
           <td>
             <a href="{% url 'admin:weblate_web_donation_change' object_id=donation.pk %}">Edit</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+    <h2>Interactions</h2>
+    <table>
+      {% for interaction in object.interaction_set.all %}
+        <tr>
+          <td>{{ interaction.timestamp|date_format }}</td>
+          <td>{{ interaction.get_origin_display }}</td>
+          <td>{{ interaction.summary }}</td>
+          <td>
+            {% if interaction.content %}
+              <a href="{% url 'crm:interaction-detail' pk=interaction.pk %}" target="_blank">View</a>
+            {% endif %}
+            {% if interaction.attachment %}
+              <a href="{% url 'crm:interaction-download' pk=interaction.pk %}">Download</a>
+            {% endif %}
           </td>
         </tr>
       {% endfor %}

@@ -34,7 +34,6 @@ from django.utils.http import http_date
 from django.utils.translation import get_language, gettext, gettext_lazy
 
 from .models import Payment
-from .utils import send_notification
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponseRedirect
@@ -413,9 +412,8 @@ class Backend:
             invoice = self.payment.draft_invoice
         if self.payment:
             kwargs["payment"] = self.payment
-        send_notification(
+        self.payment.customer.send_notification(
             notification,
-            self.payment.customer.get_notify_emails(),
             invoice=invoice,
             **kwargs,
         )

@@ -23,6 +23,8 @@ from .views import (
     CustomerDetailView,
     CustomerListView,
     IndexView,
+    InteractionDetailView,
+    InteractionDownloadView,
     InvoiceListView,
     ServiceDetailView,
     ServiceListView,
@@ -44,5 +46,15 @@ urlpatterns = [
         "customers/detail/<int:pk>/",
         CustomerDetailView.as_view(),
         name="customer-detail",
+    ),
+    path(
+        "interaction/<int:pk>/view/",
+        InteractionDetailView.as_view(),
+        name="interaction-detail",
+    ),
+    path(
+        "interaction/<int:pk>/download/",
+        InteractionDownloadView.as_view(),
+        name="interaction-download",
     ),
 ]

@@ -64,10 +64,7 @@ def send_notification(
     recipients: Sequence[str],
     invoice: Invoice | None = None,
     **kwargs,
-) -> None:
-    if not recipients:
-        return
-
+) -> EmailMultiAlternatives:
     # HTML to text conversion
     html2text = HTML2Text(bodywidth=78)
     html2text.unicode_snob = True
@@ -109,4 +106,6 @@ def send_notification(
     # Include invoice PDF if exists
     if invoice is not None and not invoice.is_draft:
         email.attach(invoice.filename, invoice.path.read_bytes(), "application/pdf")
-    email.send()
+    if recipients:
+        email.send()
+    return email
