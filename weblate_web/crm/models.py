@@ -1,7 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 
 from weblate_web.payments.models import Customer
+
+CRM_STORAGE = FileSystemStorage(location=settings.CRM_ROOT)
 
 
 class Interaction(models.Model):
@@ -14,7 +18,9 @@ class Interaction(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     summary = models.CharField(max_length=200, verbose_name="Summary")
     content = models.TextField(verbose_name="Content")
-    attachment = models.FileField(upload_to="crm/uploads/", verbose_name="Attachment")
+    attachment = models.FileField(
+        storage=CRM_STORAGE, upload_to="attachments", verbose_name="Attachment"
+    )
     user = models.ForeignKey(User, null=True, on_delete=models.RESTRICT)
 
     class Meta:
