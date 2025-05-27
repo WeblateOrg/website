@@ -11,10 +11,14 @@
     <p>
       {{ object.name }}
       <br>
-      {{ object.email }}
+      {{ object.get_notify_emails|join:", " }}
       <br>
-      {{ object.vat }}
-      <br>
+      {% if object.vat %}
+        {{ object.vat }}
+        <br>
+      {% endif %}
+      {{ object.address }},
+      {% if object.address2 %}{{ object.address2 }},{% endif %}
       {{ object.city }}
       <br>
       {{ object.get_country_display }}
