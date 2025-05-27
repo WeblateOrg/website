@@ -22,7 +22,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from django.contrib import admin
-from django.urls import reverse
 from django.utils.timezone import now
 
 from .models import Discount, Invoice, InvoiceItem, InvoiceKind
@@ -67,9 +66,7 @@ class InvoiceAdmin(admin.ModelAdmin):
             form.instance.generate_files()
 
     def view_on_site(self, obj: Invoice) -> str | None:
-        if obj.kind == InvoiceKind.DRAFT:
-            return None
-        return reverse("invoice-pdf", kwargs={"pk": obj.pk})
+        return obj.get_download_url()
 
     def has_delete_permission(
         self, request: HttpRequest, obj: Invoice | None = None

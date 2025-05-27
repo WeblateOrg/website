@@ -90,25 +90,7 @@
     </table>
     <h2>Invoices</h2>
     <table>
-      {% for invoice in object.invoice_set.all %}
-        <tr>
-          <th>{{ invoice.number }}</th>
-          <td>
-            {% if invoice.is_paid %}
-              paid
-            {% elif invoice.is_payable %}
-              unpaid
-            {% endif %}
-          </td>
-          <td>{{ invoice.get_kind_display }}</td>
-          <td>{{ invoice.display_total_amount }}</td>
-          <td>{{ invoice.get_description }}</td>
-          <td>{{ invoice.customer }}</td>
-          <td>
-            <a href="{% url "admin:invoices_invoice_change" object_id=invoice.pk %}">Details</a>
-          </td>
-        </tr>
-      {% endfor %}
+      {% include "invoices/invoice_list_content.html" with object_list=object.invoice_set.all %}
     </table>
     {% if perms.invoices.add_invoice %}
       <a href="{% url "admin:invoices_invoice_add" %}?customer={{ object.pk }}"

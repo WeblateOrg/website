@@ -35,6 +35,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.functions import Cast, Concat, Extract, LPad
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext, override
@@ -758,12 +759,17 @@ EUR{self.total_amount}
         )
 
     @property
-    def is_payable(self):
+    def is_payable(self) -> bool:
         return self.kind == InvoiceKind.INVOICE
 
     @property
-    def is_paid(self):
+    def is_paid(self) -> bool:
         return self.paid_payment_set.exists()
+
+    def get_download_url(self) -> str | None:
+        if self.kind == InvoiceKind.DRAFT:
+            return None
+        return reverse("invoice-pdf", kwargs={"pk": self.pk})
 
 
 class InvoiceItem(models.Model):

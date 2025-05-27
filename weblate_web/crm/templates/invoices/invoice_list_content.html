@@ -1,0 +1,22 @@
+{% for invoice in object_list %}
+  <tr>
+    <th>{{ invoice.number }}</th>
+    <td>
+      {% if invoice.is_paid %}
+        paid
+      {% elif invoice.is_payable %}
+        unpaid
+      {% endif %}
+    </td>
+    <td>{{ invoice.get_kind_display }}</td>
+    <td>{{ invoice.display_total_amount }}</td>
+    <td>{{ invoice.get_description }}</td>
+    <td>{{ invoice.customer }}</td>
+    <td>
+      <a href="{% url "admin:invoices_invoice_change" object_id=invoice.pk %}">Edit</a>
+      {% with download_url=invoice.get_download_url %}
+        {% if download_url %}<a href="{{ download_url }}">Download</a>{% endif %}
+      {% endwith %}
+    </td>
+  </tr>
+{% endfor %}

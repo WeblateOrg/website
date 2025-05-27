@@ -5,17 +5,7 @@
 {% block content %}
   <section class="content">
     <table>
-      {% for object in object_list %}
-        <tr>
-          <th>{{ object.number }}</th>
-          <td>{{ object.display_total_amount }}</td>
-          <td>{{ object.get_description }}</td>
-          <td>{{ object.customer }}</td>
-          <td>
-            <a href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">Details</a>
-          </td>
-        </tr>
-      {% endfor %}
+      {% include "invoices/invoice_list_content.html" %}
     </table>
   </section>
   {% include "crm/pagination.html" %}
