@@ -140,6 +140,11 @@ class CustomerListView(CRMMixin, ListView):
                 return "All customers"
         raise ValueError(self.kwargs["kind"])
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        context["query"] = self.request.GET.get("q")
+        return context
+
     def get_queryset(self):
         qs = super().get_queryset().order_by("name", "email")
         if query := self.request.GET.get("q"):
