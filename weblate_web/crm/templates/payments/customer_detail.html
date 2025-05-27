@@ -29,6 +29,7 @@
       {% endif %}
       <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
     </p>
+    <h2>Actions</h2>
     <form action="{% url "crm:customer-merge" pk=object.pk %}" method="get">
       <label>
         Merge with following customer object:
