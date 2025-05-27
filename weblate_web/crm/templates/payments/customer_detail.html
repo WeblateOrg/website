@@ -52,6 +52,11 @@
         </tr>
       {% endfor %}
     </table>
+    {% if perms.legal.add_agreement %}
+      <a href="{% url "admin:legal_agreement_add" %}?customer={{ object.pk }}"
+         class="addlink"
+         aria-describedby="row-invoices">{% translate "Add new agreement" %}</a>
+    {% endif %}
     <h2>Donations</h2>
     <table>
       {% for donation in object.donation_set.all %}
@@ -105,6 +110,11 @@
         </tr>
       {% endfor %}
     </table>
+    {% if perms.invoices.add_invoice %}
+      <a href="{% url "admin:invoices_invoice_add" %}?customer={{ object.pk }}"
+         class="addlink"
+         aria-describedby="row-invoices">{% translate "Issue new invoice" %}</a>
+    {% endif %}
     <h2>Payments</h2>
     <table>
       {% for payment in object.payment_set.all %}
