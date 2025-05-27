@@ -141,7 +141,7 @@ class CustomerListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
     def get_queryset(self):
-        qs = super().get_queryset().order_by("name")
+        qs = super().get_queryset().order_by("name", "email")
         if query := self.request.GET.get("q"):
             qs = qs.filter(
                 Q(name__icontains=query)
