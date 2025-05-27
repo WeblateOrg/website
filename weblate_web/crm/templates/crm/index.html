@@ -65,7 +65,9 @@
 
             {% if perms.invoices.add_invoice %}
               <td>
-                <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-invoices">{% translate "Add" %}</a>
+                <a href="{% url "admin:invoices_invoice_add" %}"
+                   class="addlink"
+                   aria-describedby="row-invoices">{% translate "Add" %}</a>
               </td>
             {% else %}
               <td></td>
@@ -84,7 +86,9 @@
 
             {% if perms.invoices.add_invoice %}
               <td>
-                <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-quotes">{% translate "Add" %}</a>
+                <a href="{% url "admin:invoices_invoice_add" %}"
+                   class="addlink"
+                   aria-describedby="row-invoices">{% translate "Add" %}</a>
               </td>
             {% else %}
               <td></td>
