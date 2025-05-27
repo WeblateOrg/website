@@ -175,8 +175,12 @@ class Customer(models.Model):
 
     def __str__(self) -> str:
         if self.name:
-            return f"{self.name} ({self.email})"
-        return self.email
+            if self.email:
+                return f"{self.name} ({self.email})"
+            return self.name
+        if self.email:
+            return self.email
+        return f"Customer:{self.pk}"
 
     def get_absolute_url(self) -> str:
         return reverse("crm:customer-detail", kwargs={"pk": self.pk})
