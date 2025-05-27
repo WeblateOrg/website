@@ -291,6 +291,7 @@ class Customer(models.Model):
         interaction = self.interaction_set.create(
             origin=Interaction.Origin.MERGE,
             summary=f"Merged with {other.name} ({other.pk})",
+            user=user,
         )
         interaction.attachment.save(
             f"customer-{other.pk}.json",
