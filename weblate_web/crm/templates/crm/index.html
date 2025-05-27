@@ -72,7 +72,9 @@
             {% endif %}
 
             <td>
-              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="row-invoices">{% translate "View" %}</a>
+              <a href="{% url 'crm:invoice-list' kind="invoice" %}"
+                 class="viewlink"
+                 aria-describedby="row-invoices">{% translate "View" %}</a>
             </td>
           </tr>
           <tr>
@@ -89,7 +91,9 @@
             {% endif %}
 
             <td>
-              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="row-quotes">{% translate "View" %}</a>
+              <a href="{% url 'crm:invoice-list' kind="quote" %}"
+                 class="viewlink"
+                 aria-describedby="row-quotes">{% translate "View" %}</a>
             </td>
           </tr>
           <tr>
@@ -100,7 +104,9 @@
             <td></td>
 
             <td>
-              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="row-unpaid">{% translate "View" %}</a>
+              <a href="{% url 'crm:invoice-list' kind="unpaid" %}"
+                 class="viewlink"
+                 aria-describedby="row-unpaid">{% translate "View" %}</a>
             </td>
           </tr>
         </table>
