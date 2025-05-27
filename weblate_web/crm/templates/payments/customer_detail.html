@@ -44,8 +44,8 @@
     <table>
       {% for agreement in object.agreement_set.all %}
         <tr>
-          <td>{{ agreement.get_kind_display }}</td>
           <td>{{ agreement.signed }}</td>
+          <td>{{ agreement.get_kind_display }}</td>
           <td>
             <a href="{% url 'agreement-download' pk=agreement.pk %}">Download</a>
           </td>
@@ -61,6 +61,7 @@
     <table>
       {% for donation in object.donation_set.all %}
         <tr>
+          <td>{{ donation.created }}</td>
           <td>{{ donation.get_reward_display }}</td>
           <td>{{ donation.get_amount }} EUR</td>
           <td>
