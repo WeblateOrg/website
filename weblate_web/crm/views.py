@@ -180,7 +180,7 @@ class CustomerMergeView(CustomerDetailView):
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
         merge = self.get_merged()
-        customer.merge(merge)
+        customer.merge(merge, user=self.request.user)
         return redirect(customer)
 
 
