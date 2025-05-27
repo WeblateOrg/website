@@ -87,6 +87,13 @@
       {% for invoice in object.invoice_set.all %}
         <tr>
           <th>{{ invoice.number }}</th>
+          <td>
+            {% if invoice.is_paid %}
+              paid
+            {% elif invoice.is_payable %}
+              unpaid
+            {% endif %}
+          </td>
           <td>{{ invoice.get_kind_display }}</td>
           <td>{{ invoice.display_total_amount }}</td>
           <td>{{ invoice.get_description }}</td>

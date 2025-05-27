@@ -253,7 +253,7 @@ class Discount(models.Model):
         return f"{self.percents}%"
 
 
-class Invoice(models.Model):
+class Invoice(models.Model):  # noqa: PLR0904
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sequence = models.IntegerField(editable=False)
     number = models.GeneratedField(
@@ -717,7 +717,7 @@ class Invoice(models.Model):
         return (
             self.kind in {InvoiceKind.INVOICE, *state}
             and not self.prepaid
-            and not self.paid_payment_set.exists()
+            and not self.is_paid
         )
 
     @property
@@ -756,6 +756,14 @@ EUR{self.total_amount}
                 encoding="unicode"
             )
         )
+
+    @property
+    def is_payable(self):
+        return self.kind == InvoiceKind.INVOICE
+
+    @property
+    def is_paid(self):
+        return self.paid_payment_set.exists()
 
 
 class InvoiceItem(models.Model):
