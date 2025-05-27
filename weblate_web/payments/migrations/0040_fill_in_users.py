@@ -54,6 +54,7 @@ def update_users(apps: StateApps, schema_editor: BaseDatabaseSchemaEditor) -> No
 class Migration(migrations.Migration):
     dependencies = [
         ("payments", "0039_customer_users"),
+        ("weblate_web", "0031_fill_in_customer"),
     ]
 
     operations = [

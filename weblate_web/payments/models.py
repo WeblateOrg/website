@@ -22,11 +22,14 @@ from __future__ import annotations
 import os.path
 import re
 import uuid
+from email.message import Message
+from typing import TYPE_CHECKING
 
 from appconf import AppConf
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
 from django.urls import reverse
@@ -39,8 +42,11 @@ from vies.models import VATINField
 from weblate_web.utils import get_site_url
 
 from .fields import Char32UUIDField
-from .utils import validate_email
+from .utils import send_notification, validate_email
 from .validators import validate_vatin
+
+if TYPE_CHECKING:
+    from weblate_web.invoices.models import Invoice
 
 SHORT_NAME_DISCARD = re.compile(r"[^a-zA-Z0-9_\s-]")
 SHORT_NAME_SPACE = re.compile(r"[\s_-]+")
@@ -244,6 +250,30 @@ class Customer(models.Model):
         mails = {self.email, *self.users.values_list("email", flat=True)}
         mails.discard("")
         return list(mails)
+
+    def send_notification(
+        self, notification: str, invoice: Invoice | None = None, **kwargs
+    ) -> None:
+        from weblate_web.crm.models import Interaction  # noqa: PLC0415
+
+        recipients = self.get_notify_emails()
+        email = send_notification(notification, recipients, invoice=invoice, **kwargs)
+
+        # Extract HTML content
+        content = ""
+        for alternative in email.alternatives:
+            if isinstance(alternative, Message) and alternative.mimetype == "text/html":
+                content = alternative.content
+
+        # Store interaction log
+        interaction = self.interaction_set.create(
+            origin=Interaction.Origin.EMAIL, summary=str(email.subject), content=content
+        )
+        # Store e-mail as attachment
+        interaction.attachment.save(
+            f"{notification}-{self.short_filename}-{interaction.timestamp.date().isoformat()}.eml",
+            ContentFile(email.message().as_bytes()),
+        )
 
 
 RECURRENCE_CHOICES = [

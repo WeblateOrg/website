@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
+from django.http import FileResponse, HttpResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView
@@ -13,6 +14,8 @@ from django.views.generic import DetailView, ListView, TemplateView
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
 from weblate_web.payments.models import Customer, Payment
+
+from .models import Interaction
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
@@ -156,3 +159,20 @@ class CustomerDetailView(CRMMixin, DetailView):
 
     def get_title(self) -> str:
         return self.object.name
+
+
+class InteractionDetailView(CRMMixin, DetailView):
+    model = Interaction
+    permission = "payments.view_customer"
+
+    def render_to_response(self, context, **response_kwargs):
+        return HttpResponse(self.object.content, content_type="text/html")
+
+
+class InteractionDownloadView(InteractionDetailView):
+    def render_to_response(self, context, **response_kwargs):
+        return FileResponse(
+            self.object.attachment.open(),
+            as_attachment=True,
+            filename=self.object.attachment.name,
+        )

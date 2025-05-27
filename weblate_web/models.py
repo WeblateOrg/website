@@ -224,9 +224,8 @@ class Donation(models.Model):
         return "Weblate donation"
 
     def send_notification(self, notification: str) -> None:
-        send_notification(
+        self.customer.send_notification(
             notification,
-            self.customer.get_notify_emails(),
             donation=self,
         )
 
@@ -981,10 +980,8 @@ class Subscription(models.Model):
             query |= Q(repeat__pk=self.payment)
         return Payment.objects.filter(query).distinct()
 
-    def send_notification(self, notification) -> None:
-        send_notification(
-            notification, self.service.customer.get_notify_emails(), subscription=self
-        )
+    def send_notification(self, notification: str) -> None:
+        self.service.customer.send_notification(notification, subscription=self)
         with override("en"):
             send_notification(
                 notification,

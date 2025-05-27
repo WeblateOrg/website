@@ -818,6 +818,7 @@ def create_payment(*, recurring="y", user, **kwargs):
         user_id=user.pk,
         origin=PAYMENTS_ORIGIN,
     )
+    customer.users.add(user)
     payment = Payment.objects.create(
         customer=customer,
         amount=100,
