@@ -6,6 +6,11 @@
 <p>
   {% blocktranslate with price=subscription.package.price|price_format:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
 </p>
+{% if subscription.payment_obj.card_info %}
+  <p>
+    {% blocktranslate with card_number=subscription.payment_obj.get_card_number %}Saved card: {{ card_number }}{% endblocktranslate %}
+  </p>
+{% endif %}
 <p>
   {% blocktranslate with expiry=subscription.expires|date_format %}Subscription expiry: {{ expiry }}{% endblocktranslate %}
 </p>
