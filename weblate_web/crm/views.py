@@ -148,7 +148,7 @@ class CustomerListView(CRMMixin, ListView):
                 | Q(email__icontains=query)
                 | Q(users__email__icontains=query)
                 | Q(end_client__icontains=query)
-            )
+            ).distinct()
         match self.kwargs["kind"]:
             case "active":
                 return qs.filter(
