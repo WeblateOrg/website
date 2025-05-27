@@ -63,7 +63,7 @@
     <table>
       {% for interaction in object.interaction_set.all %}
         <tr>
-          <td>{{ interaction.timestamp|date_format }}</td>
+          <td>{{ interaction.timestamp }}</td>
           <td>{{ interaction.user.username }}</td>
           <td>{{ interaction.get_origin_display }}</td>
           <td>{{ interaction.summary }}</td>
