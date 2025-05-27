@@ -78,7 +78,7 @@
                   <div class="line-left">
                     {% if not donation.active %}
                       {% translate "Expired" %}
-                    {% elif donation.payment_obj.recurring %}
+                    {% elif donation.payment_obj.recurring and donation.payment_obj.is_backend_valid %}
                       {% translate "Automatic renewal" %}
                     {% else %}
                       {% translate "No renewal" %}
@@ -96,8 +96,8 @@
                     {% endif %}
                     {% if not donation.active %}
                       {% translate "Expired" %}
-                    {% elif donation.payment_obj.recurring %}
-                      {% translate "Automatic renewal" %}
+                    {% elif donation.payment_obj.recurring and donation.payment_obj.is_backend_valid %}
+                      {% translate "Automatic renewal" %} ({{ donation.payment_obj.get_payment_description }})
                     {% else %}
                       {% translate "No renewal" %}
                     {% endif %}
