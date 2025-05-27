@@ -321,6 +321,7 @@ class Invoice(models.Model):
                 "sequence", Extract("issue_date", "year"), "kind", name="unique_number"
             )
         ]
+        ordering = ["-issue_date"]
 
     def __str__(self) -> str:
         return f"{self.number}: {self.customer} {self.total_amount}"
