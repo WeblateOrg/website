@@ -11,7 +11,7 @@
       <td>
         {% for subscription in object.subscription_set.all %}
           {{ subscription.package }}
-          {% if not forloop.last %},{% endif %}
+          {% if not forloop.last %}<br>{% endif %}
         {% endfor %}
       </td>
       <td>
