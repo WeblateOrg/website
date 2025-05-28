@@ -7,27 +7,46 @@
 {% endblock breadcrum_list %}
 
 {% block content %}
-
-
   <section class="content">
+    <h2>{{ object.site_title }}</h2>
     <p>
-      {{ object.site_title }}
       <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.name }}</a>
+      <br>
       <a href="{{ object.site_url }}">{{ object.site_url }}</a>
-      {{ object.site_version }}
-      {{ object.get_status_display }}
-      <a href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">Edit</a>
-    </p>
-    <table>
-      {% for subscription in object.subscription_set.all %}
-        <tr>
-          <th>{{ subscription }}</th>
-          <td>{{ subscription.expires }}</td>
-          <td>
-            <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-  </section>
+      <br>
+      Weblate {{ object.site_version }}, {{ object.site_users }} users, {{ object.site_projects }} projects
+      <br>
+      Support status: {{ object.get_status_display }}
+    </br>
+    {% if object.secret %}
+      Secret: {{ object.secret }}
+    </br>
+  {% endif %}
+  {% if object.backup_repository %}
+    Backup: {{ object.backup_repository }} ({{ object.backup_size|filesizeformat }} in {{ object.backup_directory }})
+    <br>
+  {% endif %}
+  {% if object.discoverable %}
+    Discoverable: {{ object.discover_text }}
+    <br>
+    {% if object.discover_image %}
+      <img class="discover-img" src="{{ object.discover_image.url }}" />
+      <br>
+    {% endif %}
+  {% endif %}
+  <a href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">Edit</a>
+</p>
+{% for subscription in object.subscription_set.all %}
+  <h2>{{ subscription.package }}</h2>
+  <p>
+    {% if not subscription.enabled %}
+      <strong>Service is terminated</strong>
+      <br>
+    {% endif %}
+    Expires: {{ subscription.expires }}
+    <br>
+    <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
+  </p>
+{% endfor %}
+</section>
 {% endblock content %}
