@@ -19,13 +19,16 @@
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from zammad_py import ZammadAPI
 
 from weblate_web.payments.models import Customer
+
+if TYPE_CHECKING:
+    from weblate_web.models import Service, Subscription
 
 HOSTED_ACCOUNT = "Hosted Weblate account"
 
@@ -39,6 +42,10 @@ class Organization(TypedDict, total=False):
     premium_support: bool
     support: bool
     plan: str
+
+
+class InvalidSubscrptionError(Exception):
+    pass
 
 
 class Command(BaseCommand):
@@ -64,6 +71,33 @@ class Command(BaseCommand):
                 {"hosted_account": HOSTED_ACCOUNT},
             )
             self.stdout.write(f"Updating user {user['login']}")
+
+    def get_customer_service(self, customer: Customer) -> tuple[Service, Subscription]:
+        services = customer.service_set.all()
+        if len(services) != 1:
+            self.stderr.write(
+                f"ERROR: Wrong services count for customer {customer} ({len(services)})"
+            )
+            raise InvalidSubscrptionError
+        service = services[0]
+        subscription = service.latest_subscription
+        if subscription is None:
+            self.stderr.write(
+                f"ERROR: Missing subscription for customer {customer} ({service})"
+            )
+            raise InvalidSubscrptionError
+        return service, subscription
+
+    def get_organization_subscription(
+        self, service: Service, subscription: Subscription
+    ) -> Organization:
+        return {
+            "last_payment": subscription.expires.date().isoformat(),
+            "service_link": service.site_url,
+            "premium_support": subscription.package.name == "premium",
+            "support": not subscription.is_expired,
+            "plan": subscription.package.verbose,
+        }
 
     def handle_organizations(self) -> None:
         # Fetch all active customers
@@ -110,7 +144,13 @@ class Command(BaseCommand):
         # Create pending ones
         for pk in pending:
             customer = customers[pk]
-            self.stdout.write(f"Create {customer}")
+            try:
+                service, subscription = self.get_customer_service(customer)
+            except InvalidSubscrptionError:
+                continue
+            organization = self.get_organization_subscription(service, subscription)
+            organization["name"] = customer.end_client or customer.name
+            self.stdout.write(f"Create {organization}")
 
         # Update attributes
         for organization in organizations:
@@ -125,26 +165,13 @@ class Command(BaseCommand):
             except KeyError:
                 customer = Customer.objects.get(pk=int(crm_id))
                 self.stderr.write(f"Inactive customer {customer}")
-            services = customer.service_set.all()
-            if len(services) != 1:
-                self.stderr.write(
-                    f"ERROR: Wrong services count for customer {customer} ({len(services)})"
-                )
+            try:
+                service, subscription = self.get_customer_service(customer)
+            except InvalidSubscrptionError:
                 continue
-            service = services[0]
-            subscription = service.latest_subscription
-            if subscription is None:
-                self.stderr.write(
-                    f"ERROR: Missing subscription for customer {customer} ({service})"
-                )
-                continue
-            data: Organization = {
-                "last_payment": subscription.expires.date().isoformat(),
-                "service_link": service.site_url,
-                "premium_support": subscription.package.name == "premium",
-                "support": not subscription.is_expired,
-                "plan": subscription.package.verbose,
-            }
+            data: Organization = self.get_organization_subscription(
+                service, subscription
+            )
             for name, value in data.items():
                 if organization.get(name) != value:
                     organization[name] = value  # type: ignore[literal-required]
