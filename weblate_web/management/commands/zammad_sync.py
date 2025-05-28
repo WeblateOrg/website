@@ -110,7 +110,8 @@ class Command(BaseCommand):
 
         # Update attributes
         for organization in organizations:
-            if not (crm_id := organization.get("crm")):
+            crm_id = organization.get("crm")
+            if not crm_id and crm_id.lower() != "none":
                 self.stderr.write(
                     f"No match found for {organization['id']} ({organization['name']})"
                 )
