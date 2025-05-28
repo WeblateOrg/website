@@ -9,3 +9,4 @@ class InteractionAdmin(admin.ModelAdmin):
     list_display = ("summary", "timestamp", "origin", "user")
     search_fields = ("custumer__name",)
     date_hierarchy = "timestamp"
+    autocomplete_fields = ("customer",)
