@@ -120,6 +120,8 @@ class InvoiceListView(CRMMixin, ListView):
                 return "Quotes"
             case "invoice":
                 return "Invoices"
+            case "all":
+                return "Invoices"
         raise ValueError(self.kwargs["kind"])
 
     def get_queryset(self):
@@ -135,6 +137,8 @@ class InvoiceListView(CRMMixin, ListView):
                 return qs.filter(kind=InvoiceKind.QUOTE)
             case "invoice":
                 return qs.filter(kind=InvoiceKind.INVOICE)
+            case "all":
+                return qs
         raise ValueError(self.kwargs["kind"])
 
 
