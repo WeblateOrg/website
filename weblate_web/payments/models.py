@@ -267,7 +267,9 @@ class Customer(models.Model):
         # Extract HTML content
         content = ""
         for alternative in email.alternatives:
-            if isinstance(alternative, Message) and alternative.mimetype == "text/html":
+            if isinstance(alternative, Message) and alternative.mimetype.startswith(
+                "text/html"
+            ):
                 content = alternative.content
 
         # Store interaction log
