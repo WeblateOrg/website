@@ -66,7 +66,7 @@ class Command(BaseCommand):
                 user["id"],
                 {"hosted_account": HOSTED_ACCOUNT},
             )
-            self.stdout.write(f"Updating {user['login']}")
+            self.stdout.write(f"Updating user {user['login']}")
 
     def handle_organizations(self) -> None:
         # Fetch all active customers
@@ -74,8 +74,12 @@ class Command(BaseCommand):
             customer.pk: customer
             for customer in Customer.objects.active().prefetch_related("service_set")
         }
-        # Fetch all
-        organizations: list[Organization] = list(self.client.organization.all())
+        # Fetch organizations all using pagination
+        organizations: list[Organization] = []
+        results = self.client.organization.all()
+        while len(results):
+            organizations.extend(results)
+            results = results.next_page()
         # Find existing maps
         mapped: set[int] = {
             int(crm_id)
