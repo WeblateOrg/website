@@ -52,6 +52,10 @@ class Command(BaseCommand):
     help = "synchronizes customer data to Zammad"
     client: ZammadAPI
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.customers: dict[int, Customer] = {}
+
     def handle(self, *args, **options) -> None:
         self.client = ZammadAPI(
             url="https://care.weblate.org/api/v1/",
@@ -99,12 +103,30 @@ class Command(BaseCommand):
             "plan": subscription.package.verbose,
         }
 
-    def handle_organizations(self) -> None:  # noqa: PLR0915
-        # Fetch all active customers
-        customers: dict[int, Customer] = {
+    def fetch_customers(self) -> None:
+        self.customers = {
             customer.pk: customer
             for customer in Customer.objects.active().prefetch_related("service_set")
         }
+
+    def get_customer(self, pk: int) -> Customer:
+        try:
+            customer = self.customers[pk]
+        except KeyError:
+            customer = Customer.objects.get(pk=pk)
+            self.stderr.write(f"WARNING: Fetched inactive customer {customer}")
+            self.customers[customer.pk] = customer
+        return customer
+
+    def update_zammad_id(self, customer: Customer, zammad_id: int) -> None:
+        if zammad_id and customer.zammad_id != zammad_id:
+            customer.zammad_id = zammad_id
+            self.stdout.write(f"Updating zammad_id for {customer}: {zammad_id}")
+            customer.save(update_fields=["zammad_id"])
+
+    def handle_organizations(self) -> None:  # noqa: PLR0915,C901
+        # Fetch all active customers
+        self.fetch_customers()
         # Fetch organizations all using pagination
         organizations: list[Organization] = []
         results = self.client.organization.all()
@@ -112,12 +134,16 @@ class Command(BaseCommand):
             organizations.extend(results)
             results = results.next_page()
         # Find existing maps
-        mapped: set[int] = {
-            int(crm_id)
-            for crm_id in (organization.get("crm") for organization in organizations)
-            if crm_id and crm_id.lower() != "none"
-        }
-        pending: set[int] = set(customers.keys()) - mapped
+        mapped: set[int] = set()
+        for organization in organizations:
+            crm_id = organization.get("crm")
+            if crm_id and crm_id.lower() != "none":
+                mapped.add(int(crm_id))
+                # Ensure we have the customer and link it
+                customer = self.get_customer(int(crm_id))
+                self.update_zammad_id(customer, organization["id"])
+
+        pending: set[int] = set(self.customers.keys()) - mapped
 
         # Try to map missing organizations
         for organization in organizations:
@@ -126,12 +152,13 @@ class Command(BaseCommand):
             name = organization["name"]
             match: int | None = None
             for customer_id in pending:
-                customer = customers[customer_id]
+                customer = self.get_customer(customer_id)
                 if name in customer.name or name in customer.end_client:
                     self.stdout.write(
                         f"Map {customer} to {organization['id']} ({organization['name']})"
                     )
                     match = customer.pk
+                    self.update_zammad_id(customer, organization["id"])
                     break
 
             if match:
@@ -143,7 +170,7 @@ class Command(BaseCommand):
 
         # Create pending ones
         for pk in pending:
-            customer = customers[pk]
+            customer = self.get_customer(pk)
             try:
                 service, subscription = self.get_customer_service(customer)
             except InvalidSubscrptionError:
@@ -155,7 +182,8 @@ class Command(BaseCommand):
                 continue
             organization["crm"] = str(customer.pk)
             self.stdout.write(f"Creating {organization}")
-            self.client.organization.create(organization)
+            organization = self.client.organization.create(organization)
+            self.update_zammad_id(customer, organization["id"])
 
         # Update attributes
         for organization in organizations:
@@ -165,11 +193,7 @@ class Command(BaseCommand):
                     f"No match found for {organization['id']} ({organization['name']})"
                 )
                 continue
-            try:
-                customer = customers[int(crm_id)]
-            except KeyError:
-                customer = Customer.objects.get(pk=int(crm_id))
-                self.stderr.write(f"Inactive customer {customer}")
+            customer = self.get_customer(int(crm_id))
             try:
                 service, subscription = self.get_customer_service(customer)
             except InvalidSubscrptionError:

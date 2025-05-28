@@ -175,6 +175,8 @@ class Customer(models.Model):
     users = models.ManyToManyField(User, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    zammad_id = models.IntegerField(default=0, editable=False)
+
     objects = CustomerQuerySet.as_manager()
 
     class Meta:
