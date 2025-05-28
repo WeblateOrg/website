@@ -150,7 +150,8 @@ class Command(BaseCommand):
                 continue
             organization = self.get_organization_subscription(service, subscription)
             organization["name"] = customer.end_client or customer.name
-            self.stdout.write(f"Create {organization}")
+            self.stdout.write(f"Creating {organization}")
+            self.client.organization.create(organization)
 
         # Update attributes
         for organization in organizations:
