@@ -31,6 +31,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
+from django.core.mail import EmailAlternative
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
 from django.urls import reverse
@@ -267,9 +268,9 @@ class Customer(models.Model):
         # Extract HTML content
         content = ""
         for alternative in email.alternatives:
-            if isinstance(alternative, Message) and alternative.mimetype.startswith(
-                "text/html"
-            ):
+            if isinstance(
+                alternative, (Message, EmailAlternative)
+            ) and alternative.mimetype.startswith("text/html"):
                 content = alternative.content
 
         # Store interaction log
