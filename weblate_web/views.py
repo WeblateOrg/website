@@ -92,6 +92,7 @@ from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data, validate_vatin
 from weblate_web.remote import get_activity
 from weblate_web.utils import (
+    AUTO_ORIGIN,
     FOSDEM_ORIGIN,
     PAYMENTS_ORIGIN,
     AuthenticatedHttpRequest,
@@ -354,7 +355,7 @@ class PaymentView(FormView, SingleObjectMixin):
     check_customer = True
 
     def redirect_origin(self):
-        if self.object.customer.origin == PAYMENTS_ORIGIN:
+        if self.object.customer.origin in {PAYMENTS_ORIGIN, AUTO_ORIGIN}:
             return HttpResponseRedirect(
                 f"{reverse('donate-process')}?payment={self.object.pk}"
             )
