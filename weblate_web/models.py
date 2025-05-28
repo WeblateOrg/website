@@ -232,7 +232,7 @@ class Donation(models.Model):
 
     @property
     def is_expired(self) -> bool:
-        return self.expires > timezone.now()
+        return self.expires < timezone.now()
 
     def should_notify(self, timestamp: datetime) -> bool:
         delta = timestamp - self.expires
@@ -1001,7 +1001,7 @@ class Subscription(models.Model):
 
     @property
     def is_expired(self) -> bool:
-        return self.expires > timezone.now()
+        return self.expires < timezone.now()
 
     def should_notify(self, timestamp: datetime) -> bool:
         delta = timestamp - self.expires
