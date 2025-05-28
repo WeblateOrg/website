@@ -116,7 +116,11 @@ class Command(BaseCommand):
                     f"No match found for {organization['id']} ({organization['name']})"
                 )
                 continue
-            customer = customers[int(crm_id)]
+            try:
+                customer = customers[int(crm_id)]
+            except KeyError:
+                customer = Customer.objects.get(pk=int(crm_id))
+                self.stderr.write(f"Inactive customer {customer}")
             services = customer.service_set.all()
             if len(services) != 1:
                 self.stderr.write(
