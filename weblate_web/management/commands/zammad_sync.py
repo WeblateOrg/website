@@ -150,6 +150,7 @@ class Command(BaseCommand):
                 continue
             organization = self.get_organization_subscription(service, subscription)
             organization["name"] = customer.end_client or customer.name
+            organization["crm"] = str(customer.pk)
             self.stdout.write(f"Creating {organization}")
             self.client.organization.create(organization)
 
