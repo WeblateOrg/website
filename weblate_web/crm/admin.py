@@ -6,7 +6,7 @@ from .models import Interaction
 
 @admin.register(Interaction)
 class InteractionAdmin(admin.ModelAdmin):
-    list_display = ("summary", "timestamp", "origin", "user")
+    list_display = ("summary", "customer", "timestamp", "origin", "user")
     search_fields = ("custumer__name",)
     date_hierarchy = "timestamp"
-    autocomplete_fields = ("customer",)
+    autocomplete_fields = ("customer", "user")
