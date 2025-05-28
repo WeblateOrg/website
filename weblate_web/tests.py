@@ -1705,8 +1705,8 @@ class ExpiryTest(FakturaceTestCase):
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications(
             "Expiring subscriptions on weblate.org",
-            "Your expired payment on weblate.org",
-            "Your expired payment on weblate.org",
+            "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
         )
 
     def test_expiring_recurring_subscription_notify_user(self) -> None:
