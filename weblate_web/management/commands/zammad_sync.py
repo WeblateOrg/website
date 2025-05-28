@@ -124,7 +124,7 @@ class Command(BaseCommand):
             services = customer.service_set.all()
             if len(services) != 1:
                 self.stderr.write(
-                    f"ERROR: Wrong services count for customer {customer} ({len(services)}"
+                    f"ERROR: Wrong services count for customer {customer} ({len(services)})"
                 )
                 continue
             service = services[0]
@@ -145,3 +145,4 @@ class Command(BaseCommand):
                 if organization.get(name) != value:
                     organization[name] = value  # type: ignore[literal-required]
                     self.stdout.write(f"Updating {customer}: {name}={value}")
+                    self.client.organization.update(organization["id"], {name: value})
