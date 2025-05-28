@@ -30,9 +30,7 @@ def download_invoice(request: AuthenticatedHttpRequest, pk: str):
 
 @transaction.atomic
 def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
-    invoice = get_object_or_404(
-        Invoice, pk=pk, kind=InvoiceKind.INVOICE, paid_payment_set=None
-    )
+    invoice = get_object_or_404(Invoice, pk=pk, kind=InvoiceKind.INVOICE)
     if not invoice.can_be_paid():
         if invoice.paid_payment_set.exists():
             messages.info(
