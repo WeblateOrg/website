@@ -99,7 +99,7 @@ class Command(BaseCommand):
             "plan": subscription.package.verbose,
         }
 
-    def handle_organizations(self) -> None:
+    def handle_organizations(self) -> None:  # noqa: PLR0915
         # Fetch all active customers
         customers: dict[int, Customer] = {
             customer.pk: customer
@@ -150,6 +150,9 @@ class Command(BaseCommand):
                 continue
             organization = self.get_organization_subscription(service, subscription)
             organization["name"] = customer.end_client or customer.name
+            if not organization["name"]:
+                self.stderr.write(f"Customer has no name {customer}")
+                continue
             organization["crm"] = str(customer.pk)
             self.stdout.write(f"Creating {organization}")
             self.client.organization.create(organization)
