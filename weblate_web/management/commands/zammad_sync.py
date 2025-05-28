@@ -80,7 +80,7 @@ class Command(BaseCommand):
         mapped: set[int] = {
             int(crm_id)
             for crm_id in (organization.get("crm") for organization in organizations)
-            if crm_id
+            if crm_id and crm_id.lower() != "none"
         }
         pending: set[int] = set(customers.keys()) - mapped
 
