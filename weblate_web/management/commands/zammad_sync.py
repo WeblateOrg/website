@@ -101,6 +101,9 @@ class Command(BaseCommand):
 
             if match:
                 organization["crm"] = str(match)
+                self.client.organization.update(
+                    organization["id"], {"crm": organization["crm"]}
+                )
                 pending.remove(match)
 
         # Create pending ones
