@@ -95,7 +95,7 @@ class CustomerQuerySet(models.QuerySet["Customer"]):
 
     def active(self) -> CustomerQuerySet:
         return self.filter(
-            service__subscription__expires__gte=timezone.now() - timedelta(days=3 * 365)
+            service__subscription__expires__gte=timezone.now() - timedelta(days=4 * 365)
         ).distinct()
 
 
