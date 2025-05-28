@@ -41,6 +41,7 @@ from django.utils.translation import gettext_lazy, override, pgettext_lazy
 from markupfield.fields import MarkupField
 from PIL import Image as PILImage
 
+from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.payments.fields import Char32UUIDField
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
@@ -1012,6 +1013,26 @@ class Subscription(models.Model):
             return True
         # Notify weekly after the payment
         return delta.days > 0 and delta.days % 7 == 0
+
+    def create_invoice(self, *, kind: InvoiceKind) -> Invoice:
+        package = self.package
+        customer = self.service.customer
+        invoice = Invoice.objects.create(
+            customer=customer,
+            extra={
+                "subscription": self.pk,
+                "start_date": self.expires + timedelta(days=1),
+            },
+            vat_rate=customer.vat_rate,
+            kind=kind,
+            category=InvoiceCategory.SUPPORT
+            if package.category == PackageCategory.PACKAGE_SUPPORT
+            else InvoiceCategory.HOSTING,
+        )
+        invoice.invoiceitem_set.create(package=package)
+        if invoice.has_pdf:
+            invoice.generate_files()
+        return invoice
 
 
 class PastPayments(models.Model):

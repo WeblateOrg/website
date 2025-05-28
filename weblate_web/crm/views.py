@@ -93,6 +93,15 @@ class ServiceDetailView(CRMMixin, DetailView):
     permission = "weblate_web.change_service"
     title = "Service detail"
 
+    def post(self, request, *args, **kwargs):
+        service = self.get_object()
+        subscription = service.subscription_set.get(pk=request.POST["subscription"])
+        if "quote" in request.POST:
+            return redirect(subscription.create_invoice(kind=InvoiceKind.QUOTE))
+        if "invoice" in request.POST:
+            return redirect(subscription.create_invoice(kind=InvoiceKind.INVOICE))
+        return redirect(service)
+
 
 class InvoiceListView(CRMMixin, ListView):
     model = Invoice
@@ -124,6 +133,12 @@ class InvoiceListView(CRMMixin, ListView):
             case "invoice":
                 return qs.filter(kind=InvoiceKind.INVOICE)
         raise ValueError(self.kwargs["kind"])
+
+
+class InvoiceDetailView(CRMMixin, DetailView):
+    model = Invoice
+    permission = "invoices.view_invoice"
+    title = "Invoice detail"
 
 
 class CustomerListView(CRMMixin, ListView):

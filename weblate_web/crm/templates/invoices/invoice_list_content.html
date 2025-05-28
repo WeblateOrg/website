@@ -13,7 +13,7 @@
     <td>{{ invoice.get_description }}</td>
     <td>{{ invoice.customer }}</td>
     <td>
-      <a href="{% url "admin:invoices_invoice_change" object_id=invoice.pk %}">Edit</a>
+      <a href="{{ invoice.get_absolute_url }}">View</a>
       {% with download_url=invoice.get_download_url %}
         {% if download_url %}<a href="{{ download_url }}">Download</a>{% endif %}
       {% endwith %}

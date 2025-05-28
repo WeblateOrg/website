@@ -364,6 +364,9 @@ class Invoice(models.Model):  # noqa: PLR0904
             update_fields=update_fields,
         )
 
+    def get_absolute_url(self) -> str:
+        return reverse("crm:invoice-detail", kwargs={"pk": self.pk})
+
     @property
     def is_draft(self):
         return self.kind in {InvoiceKind.DRAFT, InvoiceKind.QUOTE}
@@ -766,8 +769,12 @@ EUR{self.total_amount}
     def is_paid(self) -> bool:
         return self.paid_payment_set.exists()
 
+    @property
+    def has_pdf(self):
+        return self.kind != InvoiceKind.DRAFT
+
     def get_download_url(self) -> str | None:
-        if self.kind == InvoiceKind.DRAFT:
+        if not self.has_pdf:
             return None
         return reverse("invoice-pdf", kwargs={"pk": self.pk})
 

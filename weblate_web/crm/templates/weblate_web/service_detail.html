@@ -37,16 +37,22 @@
   <a href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">Edit</a>
 </p>
 {% for subscription in object.subscription_set.all %}
-  <h2>{{ subscription.package }}</h2>
-  <p>
-    {% if not subscription.enabled %}
-      <strong>Service is terminated</strong>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+    <h2>{{ subscription.package }}</h2>
+    <p>
+      {% if not subscription.enabled %}
+        <strong>Service is terminated</strong>
+        <br>
+      {% endif %}
+      Expires: {{ subscription.expires }}
       <br>
-    {% endif %}
-    Expires: {{ subscription.expires }}
-    <br>
-    <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
-  </p>
+      <input type="submit" name="quote" value="Issue renewal quote">
+      <input type="submit" name="invoice" value="Issue renewal invoice">
+      <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
+    </p>
+  </form>
 {% endfor %}
 </section>
 {% endblock content %}

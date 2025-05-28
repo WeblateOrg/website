@@ -1,0 +1,44 @@
+{% extends "crm/base.html" %}
+
+{% load i18n static %}
+
+{% block breadcrum_list %}
+  › <a href="{% url "crm:invoice-list" kind="all" %}">Invoices</a>
+{% endblock breadcrum_list %}
+
+{% block content %}
+  <section class="content">
+    <h2>{{ object.number }}</h2>
+    <p>
+      <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.name }}</a>
+      <br>
+      {{ object.get_kind_display }}
+      {% if object.is_paid %}
+        paid
+      {% elif object.is_payable %}
+        <strong>unpaid</strong>
+      {% endif %}
+      <br>
+      Amount: {{ object.display_total_amount }}
+      <br>
+      {% with download_url=object.get_download_url %}
+        {% if download_url %}<a href="{{ download_url }}">Download</a>{% endif %}
+      {% endwith %}
+      <a href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">Edit</a>
+    </p>
+    <table>
+      {% for item in object.all_items %}
+        <tr>
+          <td>
+            {{ item.description }}
+            <br>
+            {% if item.has_date_range %}<em class="period">{{ item.get_date_range_display }}</em>{% endif %}
+          </td>
+          <td>{{ item.display_quantity }}</td>
+          <td>{{ item.display_price }}</td>
+          <td>{{ item.display_total_price }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </section>
+{% endblock content %}

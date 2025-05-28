@@ -960,23 +960,9 @@ def subscription_pay(request, pk):
     if "switch_yearly" in request.POST and subscription.yearly_package:
         subscription.package = subscription.yearly_package
         subscription.save(update_fields=["package"])
-    package = subscription.package
     with override("en"):
-        customer = get_customer(request, subscription.service)
-        invoice = Invoice.objects.create(
-            customer=customer,
-            extra={
-                "subscription": subscription.pk,
-                "start_date": subscription.expires + timedelta(days=1),
-            },
-            vat_rate=customer.vat_rate,
-            kind=InvoiceKind.DRAFT,
-            category=InvoiceCategory.SUPPORT
-            if package.category == PackageCategory.PACKAGE_SUPPORT
-            else InvoiceCategory.HOSTING,
-        )
-        invoice.invoiceitem_set.create(package=package)
-        payment = invoice.create_payment(recurring=package.get_repeat())
+        invoice = subscription.create_invoice(kind=InvoiceKind.DRAFT)
+        payment = invoice.create_payment(recurring=subscription.package.get_repeat())
     return redirect(payment.get_payment_url())
 
 

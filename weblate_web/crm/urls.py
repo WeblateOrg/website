@@ -26,6 +26,7 @@ from .views import (
     IndexView,
     InteractionDetailView,
     InteractionDownloadView,
+    InvoiceDetailView,
     InvoiceListView,
     ServiceDetailView,
     ServiceListView,
@@ -38,6 +39,9 @@ urlpatterns = [
         "services/detail/<int:pk>/", ServiceDetailView.as_view(), name="service-detail"
     ),
     path("invoices/<slug:kind>/", InvoiceListView.as_view(), name="invoice-list"),
+    path(
+        "invoices/detail/<uuid:pk>/", InvoiceDetailView.as_view(), name="invoice-detail"
+    ),
     path(
         "customers/<slug:kind>/",
         CustomerListView.as_view(),
