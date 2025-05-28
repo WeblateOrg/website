@@ -1014,7 +1014,9 @@ class Subscription(models.Model):
         # Notify weekly after the payment
         return delta.days > 0 and delta.days % 7 == 0
 
-    def create_invoice(self, *, kind: InvoiceKind) -> Invoice:
+    def create_invoice(
+        self, *, kind: InvoiceKind, customer_reference: str = ""
+    ) -> Invoice:
         package = self.package
         customer = self.service.customer
         invoice = Invoice.objects.create(
@@ -1024,6 +1026,7 @@ class Subscription(models.Model):
                 "start_date": self.expires + timedelta(days=1),
             },
             vat_rate=customer.vat_rate,
+            customer_reference=customer_reference,
             kind=kind,
             category=InvoiceCategory.SUPPORT
             if package.category == PackageCategory.PACKAGE_SUPPORT

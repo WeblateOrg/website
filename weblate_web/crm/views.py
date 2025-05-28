@@ -96,11 +96,15 @@ class ServiceDetailView(CRMMixin, DetailView):
     def post(self, request, *args, **kwargs):
         service = self.get_object()
         subscription = service.subscription_set.get(pk=request.POST["subscription"])
+        reference = request.POST.get("customer_reference", "")
         if "quote" in request.POST:
-            return redirect(subscription.create_invoice(kind=InvoiceKind.QUOTE))
-        if "invoice" in request.POST:
-            return redirect(subscription.create_invoice(kind=InvoiceKind.INVOICE))
-        return redirect(service)
+            kind = InvoiceKind.QUOTE
+        elif "invoice" in request.POST:
+            kind = InvoiceKind.INVOICE
+        else:
+            raise ValueError("Missing renewal type!")
+        invoice = subscription.create_invoice(kind=kind, customer_reference=reference)
+        return redirect(invoice)
 
 
 class InvoiceListView(CRMMixin, ListView):

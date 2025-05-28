@@ -48,6 +48,11 @@
       {% endif %}
       Expires: {{ subscription.expires }}
       <br>
+      <label>
+        Customer reference for renewal:
+        <input type="text" name="customer_reference">
+      </label>
+      <br>
       <input type="submit" name="quote" value="Issue renewal quote">
       <input type="submit" name="invoice" value="Issue renewal invoice">
       <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>

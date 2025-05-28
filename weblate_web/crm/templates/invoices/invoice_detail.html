@@ -18,7 +18,18 @@
       {% elif object.is_payable %}
         <strong>unpaid</strong>
       {% endif %}
+      / {{ object.get_category_display }}
       <br>
+      Issued {{ object.issue_date }}, due {{ object.due_date }}
+      <br>
+      {% if object.parent %}
+        Generate from <a href="{{ object.parent.get_absolute_url }}">{{ object.parent.number }}</a>
+        <br>
+      {% endif %}
+      {% if object.customer_reference %}
+        Customer reference: {{ object.customer_reference }}
+        <br>
+      {% endif %}
       Amount: {{ object.display_total_amount }}
       <br>
       {% with download_url=object.get_download_url %}
