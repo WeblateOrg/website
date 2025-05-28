@@ -27,4 +27,4 @@ class Interaction(models.Model):
         ordering = ["-timestamp"]
 
     def __str__(self):
-        return f"{self.timestamp.isoformat} [{self.customer}:{self.get_origin_display}]: {self.summary}"
+        return f"{self.timestamp.isoformat()} [{self.customer}:{self.get_origin_display()}]: {self.summary}"
