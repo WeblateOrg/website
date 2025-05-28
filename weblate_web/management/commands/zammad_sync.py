@@ -55,14 +55,11 @@ class Command(BaseCommand):
 
     def handle_hosted_account(self) -> None:
         """Define link to search account on Hosted Weblate for all users."""
-        self.client.user.per_page = 100  # type: ignore[union-attr]
-        users = self.client.user.search(  # type: ignore[union-attr]
-            {"query": f"!hosted_account:{HOSTED_ACCOUNT!r}", "limit": 100}
-        )
+        users = self.client.user.search(f"!(hosted_account:{HOSTED_ACCOUNT!r})")
         # We intentionally ignore pagination here as the sync is expected to run
         # regularly and fetch remaining ones in next run
         for user in users:
-            self.client.user.update(  # type: ignore[union-attr]
+            self.client.user.update(
                 user["id"],
                 {"hosted_account": HOSTED_ACCOUNT},
             )
