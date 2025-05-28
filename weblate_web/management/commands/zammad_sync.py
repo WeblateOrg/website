@@ -72,7 +72,7 @@ class Command(BaseCommand):
         # Fetch all active customers
         customers: dict[int, Customer] = {
             customer.pk: customer
-            for customer in Customer.objects.active().prefetch_related("service")
+            for customer in Customer.objects.active().prefetch_related("service_set")
         }
         # Fetch all
         organizations: list[Organization] = list(self.client.organization.all())
