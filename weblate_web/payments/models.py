@@ -22,6 +22,7 @@ from __future__ import annotations
 import os.path
 import re
 import uuid
+from datetime import timedelta
 from email.message import Message
 from typing import TYPE_CHECKING
 
@@ -35,6 +36,7 @@ from django.core.mail import EmailAlternative
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
@@ -87,9 +89,14 @@ EU_VAT_RATES = {
 VAT_RATE = 21
 
 
-class CustomerQuerySet(models.QuerySet):
+class CustomerQuerySet(models.QuerySet["Customer"]):
     def for_user(self, user: User) -> CustomerQuerySet:
         return self.filter(users=user).distinct()
+
+    def active(self) -> CustomerQuerySet:
+        return self.filter(
+            service__subscription__expires__gte=timezone.now() - timedelta(days=3 * 365)
+        ).distinct()
 
 
 class Customer(models.Model):

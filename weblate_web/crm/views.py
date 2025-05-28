@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from datetime import timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -14,7 +13,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.models import Customer, CustomerQuerySet, Payment
 
 from .models import Interaction
 
@@ -164,8 +163,8 @@ class CustomerListView(CRMMixin, ListView):
         context["query"] = self.request.GET.get("q", "")
         return context
 
-    def get_queryset(self):
-        qs = super().get_queryset().order_by("name", "email")
+    def get_queryset(self) -> CustomerQuerySet:
+        qs = cast("CustomerQuerySet", super().get_queryset().order_by("name", "email"))
         if query := self.request.GET.get("q"):
             qs = qs.filter(
                 Q(name__icontains=query)
@@ -175,10 +174,7 @@ class CustomerListView(CRMMixin, ListView):
             ).distinct()
         match self.kwargs["kind"]:
             case "active":
-                return qs.filter(
-                    service__subscription__expires__gte=timezone.now()
-                    - timedelta(days=3 * 365)
-                ).distinct()
+                return qs.active()
             case "all":
                 return qs
         raise ValueError(self.kwargs["kind"])
