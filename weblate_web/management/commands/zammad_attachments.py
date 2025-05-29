@@ -23,21 +23,39 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from zammad_py import ZammadAPI
 
-from weblate_web.crm.models import ZammadSyncLog
+from weblate_web.crm.models import Interaction, ZammadSyncLog
 from weblate_web.payments.models import Customer
+
+EXTENSIONS: tuple[str, ...] = (".pdf", ".docx", ".doc", ".odf", ".ods", ".xls", ".xlsx")
 
 
 class Command(BaseCommand):
     help = "synchronizes attachments from Zammad"
+    client: ZammadAPI
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def add_arguments(self, parser) -> None:
+        parser.add_argument(
+            "--force",
+            default=False,
+            action="store_true",
+            help="Force processing already processed articles",
+        )
 
-    def process_article(self, article_id: int, customer: Customer) -> None:
+    def process_article(
+        self, article_id: int, customer: Customer, known_attachments: set[int]
+    ) -> None:
         self.stdout.write(f"Processing article {article_id}")
+        article = self.client.ticket_article.get(article_id)
+        for attachment in article["attachments"]:
+            if attachment["filename"].lower.endswith(EXTENSIONS):
+                self.stdout.write(
+                    f"Downloading {attachment['filename']} {attachment['id']}"
+                )
+                # ticket_article_attachment
+        customer.zammadsynclog_set.create(article_id=article_id)
 
     def handle(self, *args, **options) -> None:
-        client = ZammadAPI(
+        self.client = ZammadAPI(
             url="https://care.weblate.org/api/v1/",
             http_token=settings.ZAMMAD_TOKEN,
         )
@@ -46,25 +64,30 @@ class Command(BaseCommand):
         processed_articles: set[int] = set(
             ZammadSyncLog.objects.values_list("article_id", flat=True)
         )
-        self.stdout.write(f"{processed_articles=}")
 
         for customer in customers:
             # Search for tickets with attachments from this customer
-            results = client.ticket.search(
+            results = self.client.ticket.search(
                 f"article.attachment.title:* AND organization.id:{customer.zammad_id}"
             )
-            self.stdout.write(f"{customer}")
-            self.stdout.write(
-                f"article.attachment.title:* AND organization.id:{customer.zammad_id}"
-            )
-            self.stdout.write(f"{list(results)}")
+            # List of known attachments is only needed in force mode, otherwise we do not
+            # visit processed articles otherwise
+            known_attachments: set[int] = set()
+            if options["force"]:
+                known_attachments = set(
+                    Customer.interaction_set.filter(
+                        origin=Interaction.Origin.ZAMMAD_ATTACHMENT
+                    )
+                    .exclude(remote_id=0)
+                    .values_list("remote_id", flat=True)
+                )
+
+            # Process tickets and articles
             while len(results):
-                # Process tickets and articles
                 for ticket in results:
                     for article_id in ticket["article_ids"]:
-                        if article_id in processed_articles:
+                        if article_id in processed_articles and not options["force"]:
                             continue
-                        processed_articles.add(article_id)
-                        # customer.zammadsynclog_set.create(article_id=article_id) # noqa: ERA001
+                        self.process_article(article_id, customer, known_attachments)
 
                 results = results.next_page()
