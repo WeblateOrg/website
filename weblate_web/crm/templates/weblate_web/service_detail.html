@@ -37,27 +37,41 @@
   <a href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">Edit</a>
 </p>
 {% for subscription in object.subscription_set.all %}
-  <form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-    <h2>{{ subscription.package }}</h2>
-    <p>
-      {% if not subscription.enabled %}
-        <strong>Service is terminated</strong>
-        <br>
-      {% endif %}
-      Expires: {{ subscription.expires }}
+  <h2>{{ subscription.package }}</h2>
+  <p>
+    {% if not subscription.enabled %}
+      <strong>Service is terminated</strong>
       <br>
-      <label>
-        Customer reference for renewal:
-        <input type="text" name="customer_reference">
-      </label>
-      <br>
+    {% endif %}
+    Expires: {{ subscription.expires }}
+    <br>
+    <label>
+      Customer reference for renewal:
+      <input type="text" name="customer_reference">
+    </label>
+    <br>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="subscription" value="{{ subscription.pk }}">
       <input type="submit" name="quote" value="Issue renewal quote">
       <input type="submit" name="invoice" value="Issue renewal invoice">
-      <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
-    </p>
-  </form>
+    </form>
+
+    {% if subscription.enabled %}
+      <br>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+        <label>
+          <input type="checkbox" required>
+          Disable the subscription, no payments will be reminded or triggered
+        </label>
+        <br>
+        <input type="submit" name="disable" value="Disable">
+      </form>
+    {% endif %}
+    <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
+  </p>
 {% endfor %}
 </section>
 {% endblock content %}

@@ -1,8 +1,13 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
-from weblate_web.payments.models import Customer
+from weblate_web.invoices.models import Invoice, InvoiceKind
+from weblate_web.models import Package, Service
+from weblate_web.payments.models import Customer, Payment
 
 
 class CRMTestCase(TestCase):
@@ -45,3 +50,55 @@ class CRMTestCase(TestCase):
         response = self.client.get(list_url, {"q": "end"})
         self.assertNotContains(response, "TEST CUSTOMER 1")
         self.assertContains(response, "TEST CUSTOMER 2")
+
+    def test_service(self):
+        Package.objects.create(name="community", price=0)
+        customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+        payment = Payment.objects.create(customer=customer, amount=1)
+        service = Service.objects.create(customer=customer)
+        expires = timezone.now() + timedelta(days=1)
+        subscription1 = service.subscription_set.create(
+            package=Package.objects.create(name="x1", verbose="pkg1", price=42),
+            expires=expires,
+            payment=payment.pk,
+        )
+        subscription2 = service.subscription_set.create(
+            package=Package.objects.create(name="x2", verbose="pkg2", price=99),
+            expires=expires,
+            payment=payment.pk,
+        )
+        self.assertTrue(subscription1.enabled)
+        self.assertTrue(subscription2.enabled)
+        response = self.client.get(service.get_absolute_url())
+        self.assertContains(response, "pkg1")
+        self.assertContains(response, "pkg2")
+
+        # Test renewal invoices
+        response = self.client.post(
+            service.get_absolute_url(), {"quote": 1, "subscription": subscription1.pk}
+        )
+        invoice = Invoice.objects.get()
+        self.assertEqual(invoice.kind, InvoiceKind.QUOTE)
+        self.assertEqual(invoice.total_amount, 42)
+        self.assertRedirects(response, invoice.get_absolute_url())
+        response = self.client.post(
+            service.get_absolute_url(),
+            {
+                "invoice": 1,
+                "subscription": subscription2.pk,
+                "customer_reference": "PO1234",
+            },
+        )
+        invoice = Invoice.objects.exclude(pk=invoice.pk).get()
+        self.assertEqual(invoice.customer_reference, "PO1234")
+        self.assertEqual(invoice.kind, InvoiceKind.INVOICE)
+        self.assertEqual(invoice.total_amount, 99)
+        self.assertRedirects(response, invoice.get_absolute_url())
+
+        # Test disabling
+        response = self.client.post(
+            service.get_absolute_url(), {"disable": 1, "subscription": subscription1.pk}
+        )
+        self.assertRedirects(response, service.get_absolute_url())
+        subscription1.refresh_from_db()
+        self.assertFalse(subscription1.enabled)
