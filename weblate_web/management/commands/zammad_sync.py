@@ -189,8 +189,8 @@ class Command(BaseCommand):
         for organization in organizations:
             crm_id = organization.get("crm")
             if not crm_id or crm_id.lower() == "none":
-                self.stderr.write(
-                    f"No match found for {organization['id']} ({organization['name']})"
+                self.stdout.write(
+                    f"WARNING: No match found for {organization['id']} ({organization['name']})"
                 )
                 continue
             customer = self.get_customer(int(crm_id))
