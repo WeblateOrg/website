@@ -44,7 +44,7 @@ class Organization(TypedDict, total=False):
     plan: str
 
 
-class InvalidSubscrptionError(Exception):
+class InvalidSubscriptionError(Exception):
     pass
 
 
@@ -82,14 +82,14 @@ class Command(BaseCommand):
             self.stderr.write(
                 f"ERROR: Wrong services count for customer {customer} ({len(services)})"
             )
-            raise InvalidSubscrptionError
+            raise InvalidSubscriptionError
         service = services[0]
         subscription = service.latest_subscription
         if subscription is None:
             self.stderr.write(
                 f"ERROR: Missing subscription for customer {customer} ({service})"
             )
-            raise InvalidSubscrptionError
+            raise InvalidSubscriptionError
         return service, subscription
 
     def get_organization_subscription(
@@ -173,7 +173,7 @@ class Command(BaseCommand):
             customer = self.get_customer(pk)
             try:
                 service, subscription = self.get_customer_service(customer)
-            except InvalidSubscrptionError:
+            except InvalidSubscriptionError:
                 continue
             organization = self.get_organization_subscription(service, subscription)
             organization["name"] = customer.end_client or customer.name
@@ -196,7 +196,7 @@ class Command(BaseCommand):
             customer = self.get_customer(int(crm_id))
             try:
                 service, subscription = self.get_customer_service(customer)
-            except InvalidSubscrptionError:
+            except InvalidSubscriptionError:
                 continue
             data: Organization = self.get_organization_subscription(
                 service, subscription
