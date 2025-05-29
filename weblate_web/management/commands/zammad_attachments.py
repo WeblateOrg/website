@@ -52,6 +52,11 @@ class Command(BaseCommand):
             results = client.ticket.search(
                 f"article.attachment.title:* AND organization.id:{customer.zammad_id}"
             )
+            self.stdout.write(f"{customer}")
+            self.stdout.write(
+                f"article.attachment.title:* AND organization.id:{customer.zammad_id}"
+            )
+            self.stdout.write("f{list(results)}")
             while len(results):
                 # Process tickets and articles
                 for ticket in results:
