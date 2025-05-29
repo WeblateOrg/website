@@ -9,6 +9,7 @@ from django.http import FileResponse, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.translation import override
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.invoices.models import Invoice, InvoiceKind
@@ -101,9 +102,10 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
         reference = request.POST.get("customer_reference", "")
         if "quote" in request.POST or "invoice" in request.POST:
             kind = InvoiceKind.QUOTE if "quote" in request.POST else InvoiceKind.INVOICE
-            invoice = subscription.create_invoice(
-                kind=kind, customer_reference=reference
-            )
+            with override("en"):
+                invoice = subscription.create_invoice(
+                    kind=kind, customer_reference=reference
+                )
             return redirect(invoice)
         if "disable" in request.POST:
             subscription.enabled = False
