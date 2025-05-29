@@ -66,14 +66,13 @@ from weblate_web.forms import (
     EditNameForm,
     MethodForm,
 )
-from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
+from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.legal.models import Agreement, AgreementKind
 from weblate_web.models import (
     REWARD_LEVELS,
     TOPIC_DICT,
     Donation,
     Package,
-    PackageCategory,
     Post,
     Project,
     Service,
@@ -1007,15 +1006,13 @@ def subscription_new(request):
         invoice = Invoice.objects.create(
             customer=customer,
             extra={
-                "subscription": plan,
+                "subscription": package.name,
                 "service": service.pk if service else None,
                 "start_date": timezone.now(),
             },
             vat_rate=customer.vat_rate,
             kind=InvoiceKind.DRAFT,
-            category=InvoiceCategory.SUPPORT
-            if package.category == PackageCategory.PACKAGE_SUPPORT
-            else InvoiceCategory.HOSTING,
+            category=package.get_invoice_category(),
         )
         invoice.invoiceitem_set.create(package=package)
         payment = invoice.create_payment(recurring=package.get_repeat())

@@ -539,6 +539,11 @@ class Package(models.Model):
             return "y"
         return ""
 
+    def get_invoice_category(self) -> InvoiceCategory:
+        if self.category == PackageCategory.PACKAGE_SUPPORT:
+            return InvoiceCategory.SUPPORT
+        return InvoiceCategory.HOSTING
+
 
 class Service(models.Model):
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
@@ -1035,9 +1040,7 @@ class Subscription(models.Model):
             discount=self.service.customer.discount,
             customer_reference=customer_reference,
             kind=kind,
-            category=InvoiceCategory.SUPPORT
-            if package.category == PackageCategory.PACKAGE_SUPPORT
-            else InvoiceCategory.HOSTING,
+            category=package.get_invoice_category(),
         )
         invoice.invoiceitem_set.create(package=package)
         if invoice.has_pdf:
