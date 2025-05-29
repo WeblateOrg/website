@@ -49,7 +49,7 @@ class IndexView(CRMMixin, TemplateView):  # type: ignore[misc]
     template_name = "crm/index.html"
 
 
-class ServiceListView(CRMMixin, ListView):  # type: ignore[misc]
+class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
     model = Service
     permission = "weblate_web.view_service"
     title = "Services"
@@ -90,7 +90,7 @@ class ServiceListView(CRMMixin, ListView):  # type: ignore[misc]
         raise ValueError(self.kwargs["kind"])
 
 
-class ServiceDetailView(CRMMixin, DetailView):  # type: ignore[misc]
+class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
     model = Service
     permission = "weblate_web.change_service"
     title = "Service detail"
@@ -109,7 +109,7 @@ class ServiceDetailView(CRMMixin, DetailView):  # type: ignore[misc]
         return redirect(invoice)
 
 
-class InvoiceListView(CRMMixin, ListView):  # type: ignore[misc]
+class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoices"
@@ -145,13 +145,13 @@ class InvoiceListView(CRMMixin, ListView):  # type: ignore[misc]
         raise ValueError(self.kwargs["kind"])
 
 
-class InvoiceDetailView(CRMMixin, DetailView):  # type: ignore[misc]
+class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoice detail"
 
 
-class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
+class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
     title = "Customers"
@@ -187,7 +187,7 @@ class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
         raise ValueError(self.kwargs["kind"])
 
 
-class CustomerDetailView(CRMMixin, DetailView):  # type: ignore[misc]
+class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
     title = "Customer detail"
@@ -218,7 +218,7 @@ class CustomerMergeView(CustomerDetailView):
         return redirect(merge)
 
 
-class InteractionDetailView(CRMMixin, DetailView):  # type: ignore[misc]
+class InteractionDetailView(CRMMixin, DetailView[Interaction]):  # type: ignore[misc]
     model = Interaction
     permission = "payments.view_customer"
 

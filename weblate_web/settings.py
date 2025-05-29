@@ -27,7 +27,10 @@ import os
 from logging.handlers import SysLogHandler
 from pathlib import Path
 
+import django_stubs_ext
 import saml2.saml
+
+django_stubs_ext.monkeypatch()
 
 DEBUG = True
 
