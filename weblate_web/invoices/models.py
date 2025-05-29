@@ -115,6 +115,9 @@ CURRENCY_MAP: dict[Currency, int] = {
     Currency.USD: 2,
     Currency.GBP: 4,
 }
+CURRENCY_MAP_FROM_PAYMENT: dict[int, Currency] = {
+    value: key for key, value in CURRENCY_MAP.items()
+}
 
 
 InfoType = Literal["number", "short_number", "iban", "bic", "bank", "holder"]

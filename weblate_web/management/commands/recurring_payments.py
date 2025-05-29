@@ -92,7 +92,7 @@ class Command(BaseCommand):
         for donation in donations:
             payment = donation.payment_obj
             notify_user = donation.should_notify(timestamp)
-            if payment.recurring:
+            if payment and payment.recurring:
                 if notify_user:
                     donation.send_notification("payment_upcoming")
                 continue
@@ -206,7 +206,7 @@ class Command(BaseCommand):
         ).exclude(payment=None)
         for donation in donations:
             payment = donation.payment_obj
-            if not payment.recurring:
+            if not payment or not payment.recurring:
                 donation.send_notification("payment_expired")
                 continue
 
