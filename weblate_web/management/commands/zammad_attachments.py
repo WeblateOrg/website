@@ -97,4 +97,4 @@ class Command(BaseCommand):
                 results = results.next_page()
 
             if logs:
-                ZammadSyncLog.bulk_create(logs, ignore_conflicts=True)
+                ZammadSyncLog.objects.bulk_create(logs, ignore_conflicts=True)
