@@ -45,7 +45,7 @@ class Command(BaseCommand):
         self, article_id: int, customer: Customer, known_attachments: set[int]
     ) -> None:
         self.stdout.write(f"Processing article {article_id}")
-        article = self.client.ticket_article.get(article_id)
+        article = self.client.ticket_article.find(article_id)
         for attachment in article["attachments"]:
             if attachment["filename"].lower.endswith(EXTENSIONS):
                 self.stdout.write(
