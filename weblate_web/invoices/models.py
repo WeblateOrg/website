@@ -420,9 +420,7 @@ class Invoice(models.Model):  # noqa: PLR0904
     def total_discount(self) -> Decimal:
         if not self.discount:
             return Decimal(0)
-        return round_decimal(
-            -self.total_plus_items_amount * self.discount.percents / 100
-        )
+        return round(-self.total_plus_items_amount * self.discount.percents / 100, 0)
 
     @property
     def display_total_discount(self) -> str:
