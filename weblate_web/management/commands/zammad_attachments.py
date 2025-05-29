@@ -52,7 +52,6 @@ class Command(BaseCommand):
                     f"Downloading {attachment['filename']} {attachment['id']}"
                 )
                 # ticket_article_attachment
-        customer.zammadsynclog_set.get_or_create(article_id=article_id)
 
     def handle(self, *args, **options) -> None:
         self.client = ZammadAPI(
@@ -82,6 +81,8 @@ class Command(BaseCommand):
                     .values_list("remote_id", flat=True)
                 )
 
+            logs: list[ZammadSyncLog] = []
+
             # Process tickets and articles
             while len(results):
                 for ticket in results:
@@ -89,5 +90,11 @@ class Command(BaseCommand):
                         if article_id in processed_articles and not options["force"]:
                             continue
                         self.process_article(article_id, customer, known_attachments)
+                        logs.append(
+                            ZammadSyncLog(customer=customer, article_id=article_id)
+                        )
 
                 results = results.next_page()
+
+            if logs:
+                ZammadSyncLog.bulk_create(logs, ignore_conflicts=True)
