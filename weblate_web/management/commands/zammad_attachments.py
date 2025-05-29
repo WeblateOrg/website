@@ -19,7 +19,9 @@
 
 from __future__ import annotations
 
+from dateutil.parser import isoparse
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from zammad_py import ZammadAPI
 
@@ -42,16 +44,38 @@ class Command(BaseCommand):
         )
 
     def process_article(
-        self, article_id: int, customer: Customer, known_attachments: set[int]
+        self,
+        ticket_id: int,
+        article_id: int,
+        customer: Customer,
+        known_attachments: set[int],
     ) -> None:
         self.stdout.write(f"Processing article {article_id}")
         article = self.client.ticket_article.find(article_id)
         for attachment in article["attachments"]:
+            # Skip already imported attachments
+            if attachment["id"] in known_attachments:
+                continue
+            # Check file extension
             if attachment["filename"].lower().endswith(EXTENSIONS):
                 self.stdout.write(
                     f"Downloading {attachment['filename']} {attachment['id']}"
                 )
-                # ticket_article_attachment
+                # Download attachment
+                content: bytes = self.client.ticket_article_attachment.download(
+                    attachment["id"], article_id, ticket_id
+                )
+                # Create interaction
+                interaction = customer.interaction_set.create(
+                    timestamp=isoparse(article["created_at"]),
+                    origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
+                    summary=attachment["filename"],
+                    remote_id=attachment["id"],
+                )
+                # Store file
+                interaction.attachment.save(
+                    attachment["filename"], ContentFile(content)
+                )
 
     def handle(self, *args, **options) -> None:
         self.client = ZammadAPI(
@@ -89,7 +113,9 @@ class Command(BaseCommand):
                     for article_id in ticket["article_ids"]:
                         if article_id in processed_articles and not options["force"]:
                             continue
-                        self.process_article(article_id, customer, known_attachments)
+                        self.process_article(
+                            ticket["id"], article_id, customer, known_attachments
+                        )
                         logs.append(
                             ZammadSyncLog(customer=customer, article_id=article_id)
                         )
