@@ -75,7 +75,7 @@ class Command(BaseCommand):
             known_attachments: set[int] = set()
             if options["force"]:
                 known_attachments = set(
-                    Customer.interaction_set.filter(
+                    customer.interaction_set.filter(
                         origin=Interaction.Origin.ZAMMAD_ATTACHMENT
                     )
                     .exclude(remote_id=0)
