@@ -28,8 +28,8 @@ class CRMTestCase(TestCase):
         self.assertContains(response, "TEST CUSTOMER 2")
 
         response = self.client.post(merge_url, {"merge": customer2.pk})
-        self.assertRedirects(response, customer1.get_absolute_url())
-        self.assertFalse(Customer.objects.filter(pk=customer2.pk).exists())
+        self.assertRedirects(response, customer2.get_absolute_url())
+        self.assertFalse(Customer.objects.filter(pk=customer1.pk).exists())
 
     def test_customer_search(self):
         Customer.objects.create(user_id=-1, name="TEST CUSTOMER 1")
