@@ -22,6 +22,7 @@ from __future__ import annotations
 import sys
 from datetime import datetime, timedelta
 from io import BytesIO
+from typing import Any
 from uuid import uuid4
 
 import html2text
@@ -43,6 +44,7 @@ from PIL import Image as PILImage
 
 from weblate_web.invoices.models import (
     CURRENCY_MAP_FROM_PAYMENT,
+    Currency,
     Invoice,
     InvoiceCategory,
     InvoiceKind,
@@ -1024,28 +1026,70 @@ class Subscription(models.Model):
         # Notify weekly after the payment
         return delta.days > 0 and delta.days % 7 == 0
 
-    def create_invoice(
-        self, *, kind: InvoiceKind, customer_reference: str = ""
+    @classmethod
+    def _create_invoice(  # noqa: PLR0913
+        cls,
+        *,
+        kind: InvoiceKind,
+        customer: Customer,
+        package: Package,
+        customer_reference: str,
+        currency: Currency,
+        extra: dict[str, Any],
     ) -> Invoice:
-        package = self.package
-        customer = self.service.customer
         invoice = Invoice.objects.create(
             customer=customer,
-            extra={
-                "subscription": self.pk,
-                "start_date": self.expires + timedelta(days=1),
-            },
-            currency=CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency],
+            extra=extra,
             vat_rate=customer.vat_rate,
-            discount=self.service.customer.discount,
+            discount=customer.discount,
             customer_reference=customer_reference,
             kind=kind,
+            currency=currency,
             category=package.get_invoice_category(),
         )
         invoice.invoiceitem_set.create(package=package)
         if invoice.has_pdf:
             invoice.generate_files()
         return invoice
+
+    @classmethod
+    def new_subscription_invoice(  # noqa: PLR0913
+        cls,
+        *,
+        kind: InvoiceKind,
+        customer: Customer,
+        package: Package,
+        currency: Currency = Currency.EUR,
+        service: Service | None = None,
+        customer_reference: str = "",
+    ) -> Invoice:
+        return cls._create_invoice(
+            kind=kind,
+            customer=customer,
+            package=package,
+            currency=currency,
+            extra={
+                "subscription": package.name,
+                "service": service.pk if service else None,
+                "start_date": timezone.now(),
+            },
+            customer_reference=customer_reference,
+        )
+
+    def create_invoice(
+        self, *, kind: InvoiceKind, customer_reference: str = ""
+    ) -> Invoice:
+        return self._create_invoice(
+            kind=kind,
+            customer=self.service.customer,
+            package=self.package,
+            currency=CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency],
+            extra={
+                "subscription": self.pk,
+                "start_date": self.expires + timedelta(days=1),
+            },
+            customer_reference=customer_reference,
+        )
 
 
 class PastPayments(models.Model):

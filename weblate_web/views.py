@@ -66,7 +66,7 @@ from weblate_web.forms import (
     EditNameForm,
     MethodForm,
 )
-from weblate_web.invoices.models import Invoice, InvoiceKind
+from weblate_web.invoices.models import InvoiceKind
 from weblate_web.legal.models import Agreement, AgreementKind
 from weblate_web.models import (
     REWARD_LEVELS,
@@ -1003,18 +1003,9 @@ def subscription_new(request):
 
     customer = get_customer(request, service)
     with override("en"):
-        invoice = Invoice.objects.create(
-            customer=customer,
-            extra={
-                "subscription": package.name,
-                "service": service.pk if service else None,
-                "start_date": timezone.now(),
-            },
-            vat_rate=customer.vat_rate,
-            kind=InvoiceKind.DRAFT,
-            category=package.get_invoice_category(),
+        invoice = Subscription.new_subscription_invoice(
+            kind=InvoiceKind.DRAFT, customer=customer, package=package, service=service
         )
-        invoice.invoiceitem_set.create(package=package)
         payment = invoice.create_payment(recurring=package.get_repeat())
     return redirect(payment.get_payment_url())
 
