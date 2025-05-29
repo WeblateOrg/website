@@ -20,10 +20,13 @@ from .models import Interaction
 if TYPE_CHECKING:
     from django.http import HttpRequest
 
+    from weblate_web.views import AuthenticatedHttpRequest
+
 
 class CRMMixin:
     title: str = "CRM"
     permission: str | None = None
+    request: AuthenticatedHttpRequest
 
     def get_title(self) -> str:
         return self.title
@@ -42,11 +45,11 @@ class CRMMixin:
         return super().dispatch(request, *args, **kwargs)  # type:ignore[misc]
 
 
-class IndexView(CRMMixin, TemplateView):
+class IndexView(CRMMixin, TemplateView):  # type: ignore[misc]
     template_name = "crm/index.html"
 
 
-class ServiceListView(CRMMixin, ListView):
+class ServiceListView(CRMMixin, ListView):  # type: ignore[misc]
     model = Service
     permission = "weblate_web.view_service"
     title = "Services"
@@ -87,7 +90,7 @@ class ServiceListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
 
-class ServiceDetailView(CRMMixin, DetailView):
+class ServiceDetailView(CRMMixin, DetailView):  # type: ignore[misc]
     model = Service
     permission = "weblate_web.change_service"
     title = "Service detail"
@@ -106,7 +109,7 @@ class ServiceDetailView(CRMMixin, DetailView):
         return redirect(invoice)
 
 
-class InvoiceListView(CRMMixin, ListView):
+class InvoiceListView(CRMMixin, ListView):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoices"
@@ -142,13 +145,13 @@ class InvoiceListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
 
-class InvoiceDetailView(CRMMixin, DetailView):
+class InvoiceDetailView(CRMMixin, DetailView):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoice detail"
 
 
-class CustomerListView(CRMMixin, ListView):
+class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
     title = "Customers"
@@ -184,7 +187,7 @@ class CustomerListView(CRMMixin, ListView):
         raise ValueError(self.kwargs["kind"])
 
 
-class CustomerDetailView(CRMMixin, DetailView):
+class CustomerDetailView(CRMMixin, DetailView):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
     title = "Customer detail"
@@ -215,7 +218,7 @@ class CustomerMergeView(CustomerDetailView):
         return redirect(customer)
 
 
-class InteractionDetailView(CRMMixin, DetailView):
+class InteractionDetailView(CRMMixin, DetailView):  # type: ignore[misc]
     model = Interaction
     permission = "payments.view_customer"
 
