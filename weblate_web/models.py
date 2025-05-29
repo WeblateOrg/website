@@ -1032,6 +1032,7 @@ class Subscription(models.Model):
             },
             currency=CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency],
             vat_rate=customer.vat_rate,
+            discount=self.service.customer.discount,
             customer_reference=customer_reference,
             kind=kind,
             category=InvoiceCategory.SUPPORT
