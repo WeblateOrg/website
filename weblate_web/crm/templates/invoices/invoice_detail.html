@@ -32,6 +32,10 @@
       {% endif %}
       Amount: {{ object.display_total_amount }}
       <br>
+      {% if object.discount %}
+        Discount: {{ object.discount }}
+        <br>
+      {% endif %}
       {% with download_url=object.get_download_url %}
         {% if download_url %}<a href="{{ download_url }}">Download</a>{% endif %}
       {% endwith %}
