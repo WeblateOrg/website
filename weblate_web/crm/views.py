@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import override
 from django.views.generic import DetailView, ListView, TemplateView
 
+from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
 from weblate_web.payments.models import Customer, CustomerQuerySet, Payment
@@ -198,8 +199,31 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     permission = "payments.view_customer"
     title = "Customer detail"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        context["new_subscription_form"] = NewSubscriptionForm(
+            self.request.POST if self.request.method == "POST" else None
+        )
+        return context
+
     def get_title(self) -> str:
         return self.object.name
+
+    def post(self, request, *args, **kwargs):
+        customer = self.get_object()
+        form = NewSubscriptionForm(request.POST)
+        if form.is_valid():
+            with override("en"):
+                invoice = Subscription.new_subscription_invoice(
+                    kind=form.cleaned_data["kind"],
+                    customer=customer,
+                    package=form.cleaned_data["package"],
+                    currency=form.cleaned_data["currency"],
+                    customer_reference=form.cleaned_data["customer_reference"],
+                )
+            return redirect(invoice)
+
+        return self.get(request, *args, **kwargs)
 
 
 class CustomerMergeView(CustomerDetailView):

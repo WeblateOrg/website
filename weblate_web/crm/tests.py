@@ -1,13 +1,15 @@
 from datetime import timedelta
 
+import responses
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from weblate_web.invoices.models import Invoice, InvoiceKind
+from weblate_web.invoices.models import Discount, Invoice, InvoiceKind
 from weblate_web.models import Package, Service
 from weblate_web.payments.models import Customer, Payment
+from weblate_web.tests import cnb_mock_rates
 
 
 class CRMTestCase(TestCase):
@@ -102,3 +104,44 @@ class CRMTestCase(TestCase):
         self.assertRedirects(response, service.get_absolute_url())
         subscription1.refresh_from_db()
         self.assertFalse(subscription1.enabled)
+
+    @responses.activate
+    def test_customer_quote(self):
+        cnb_mock_rates()
+        Package.objects.create(name="community", price=0)
+        package = Package.objects.create(name="x1", verbose="pkg1", price=42)
+        customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+
+        response = self.client.get(customer.get_absolute_url())
+        self.assertContains(response, "Invoice new service")
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "package": package.id,
+                "customer_reference": "PO123456",
+                "currency": 1,
+                "kind": 90,
+            },
+        )
+        invoice = Invoice.objects.get()
+        self.assertEqual(invoice.total_amount, 1151)
+        self.assertRedirects(response, invoice.get_absolute_url())
+
+        customer.discount = Discount.objects.create(
+            description="Libre discount", percents=50
+        )
+        customer.save()
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "package": package.id,
+                "customer_reference": "PO123456",
+                "currency": 1,
+                "kind": 90,
+            },
+        )
+        invoice = Invoice.objects.exclude(pk=invoice.pk).get()
+        self.assertEqual(invoice.total_amount, 575)
+        self.assertRedirects(response, invoice.get_absolute_url())

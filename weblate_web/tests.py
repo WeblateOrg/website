@@ -384,6 +384,13 @@ def thepay_mock_repeated_payment() -> None:
     )
 
 
+def cnb_mock_rates() -> None:
+    responses.get(
+        f"https://api.cnb.cz/cnbapi/exrates/daily?date={timezone.now().date().isoformat()}",
+        json=RATES_JSON,
+    )
+
+
 def thepay_mock_payment(payment: str | UUID) -> None:
     responses.get(
         f"https://demo.api.thepay.cz/v1/projects/42/payments/{payment}?merchant_id=00000000-0000-0000-0000-000000000000",
@@ -431,10 +438,7 @@ def thepay_mock_payment(payment: str | UUID) -> None:
             "parent": {"recurring_payments_available": True},
         },
     )
-    responses.get(
-        f"https://api.cnb.cz/cnbapi/exrates/daily?date={timezone.now().date().isoformat()}",
-        json=RATES_JSON,
-    )
+    cnb_mock_rates()
 
 
 def mock_vies(valid: bool = True) -> None:

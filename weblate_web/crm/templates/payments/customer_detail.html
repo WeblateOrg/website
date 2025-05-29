@@ -42,7 +42,17 @@
     </form>
 
     <h2>Services</h2>
-    {% include "weblate_web/service_list_content.html" with object_list=object.service_set.all %}
+    {% with services=object.service_set.all %}
+      {% include "weblate_web/service_list_content.html" with object_list=services %}
+      {% if not services %}
+        <form method="post">
+          <p>Invoice new service</p>
+          {% csrf_token %}
+          {{ new_subscription_form }}
+          <input type="submit" value="Create">
+        </form>
+      {% endif %}
+    {% endwith %}
     <h2>Agreements</h2>
     <table>
       {% for agreement in object.agreement_set.all %}

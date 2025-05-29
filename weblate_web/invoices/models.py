@@ -106,6 +106,10 @@ class Currency(models.IntegerChoices):
     USD = 2, "USD"
     GBP = 3, "GBP"
 
+    @staticmethod
+    def from_str(value: str) -> Currency:
+        return Currency(int(value))
+
 
 # Map Currency object to currencies used by the payments
 # TODO: payments model should be migrated to use Currency
@@ -234,6 +238,10 @@ class InvoiceKind(models.IntegerChoices):
     INVOICE = 10, "Invoice"
     PROFORMA = 50, "Pro Forma Invoice"
     QUOTE = 90, "Quote"
+
+    @staticmethod
+    def from_str(value: str) -> InvoiceKind:
+        return InvoiceKind(int(value))
 
 
 class InvoiceCategory(models.IntegerChoices):

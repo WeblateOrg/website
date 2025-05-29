@@ -23,9 +23,27 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext
 
-from weblate_web.models import REWARD_LEVELS, REWARDS, Donation, Service
+from weblate_web.invoices.models import Currency, InvoiceKind
+from weblate_web.models import REWARD_LEVELS, REWARDS, Donation, Package, Service
 from weblate_web.payments.backends import list_backends
 from weblate_web.payments.models import RECURRENCE_CHOICES
+
+
+class NewSubscriptionForm(forms.Form):
+    kind = forms.TypedChoiceField(
+        choices=(
+            choice
+            for choice in InvoiceKind.choices
+            if choice[0] in {InvoiceKind.QUOTE, InvoiceKind.INVOICE}
+        ),
+        initial=InvoiceKind.QUOTE,
+        coerce=InvoiceKind.from_str,
+    )
+    package = forms.ModelChoiceField(Package.objects.all())
+    currency = forms.TypedChoiceField(
+        choices=Currency, initial=Currency.EUR, coerce=Currency.from_str
+    )
+    customer_reference = forms.CharField(required=False)
 
 
 class MethodForm(forms.Form):
