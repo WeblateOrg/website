@@ -68,7 +68,7 @@ class Command(BaseCommand):
         for customer in customers:
             # Search for tickets with attachments from this customer
             results = self.client.ticket.search(
-                f"article.attachment.filename:* AND organization.id:{customer.zammad_id}"
+                f"article.attachment.title:* AND organization.id:{customer.zammad_id}"
             )
             # List of known attachments is only needed in force mode, otherwise we do not
             # visit processed articles otherwise
