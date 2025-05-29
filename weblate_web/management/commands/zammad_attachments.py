@@ -46,6 +46,7 @@ class Command(BaseCommand):
         processed_articles: set[int] = set(
             ZammadSyncLog.objects.values_list("article_id", flat=True)
         )
+        self.stdout.write(f"{processed_articles=}")
 
         for customer in customers:
             # Search for tickets with attachments from this customer
@@ -56,7 +57,7 @@ class Command(BaseCommand):
             self.stdout.write(
                 f"article.attachment.title:* AND organization.id:{customer.zammad_id}"
             )
-            self.stdout.write("f{list(results)}")
+            self.stdout.write(f"{list(results)}")
             while len(results):
                 # Process tickets and articles
                 for ticket in results:
