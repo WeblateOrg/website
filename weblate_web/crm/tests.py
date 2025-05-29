@@ -125,7 +125,7 @@ class CRMTestCase(TestCase):
             },
         )
         invoice = Invoice.objects.get()
-        self.assertEqual(invoice.total_amount, 1151)
+        self.assertEqual(invoice.total_amount, 1027)
         self.assertRedirects(response, invoice.get_absolute_url())
 
         customer.discount = Discount.objects.create(
@@ -143,5 +143,5 @@ class CRMTestCase(TestCase):
             },
         )
         invoice = Invoice.objects.exclude(pk=invoice.pk).get()
-        self.assertEqual(invoice.total_amount, 575)
+        self.assertEqual(invoice.total_amount, 513)
         self.assertRedirects(response, invoice.get_absolute_url())
