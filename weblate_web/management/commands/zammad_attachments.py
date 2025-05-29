@@ -52,7 +52,7 @@ class Command(BaseCommand):
                     f"Downloading {attachment['filename']} {attachment['id']}"
                 )
                 # ticket_article_attachment
-        customer.zammadsynclog_set.create(article_id=article_id)
+        customer.zammadsynclog_set.get_or_create(article_id=article_id)
 
     def handle(self, *args, **options) -> None:
         self.client = ZammadAPI(
