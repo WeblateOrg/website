@@ -715,6 +715,8 @@ def download_payment_invoice(request, pk):
 def disable_repeat(request, pk):
     donation = get_object_or_404(Donation, pk=pk, customer__users=request.user)
     payment = donation.payment_obj
+    if payment is None:
+        raise Http404("Nothing to disable")
     payment.recurring = ""
     payment.save()
     return redirect(reverse("user"))
@@ -971,6 +973,8 @@ def subscription_pay(request, pk):
 @login_required
 def donate_pay(request, pk):
     donation = get_object_or_404(Donation, pk=pk, customer__users=request.user)
+    if donation.payment_obj is None:
+        raise Http404("Nothing to pay")
     with override("en"):
         payment = Payment.objects.create(
             amount=donation.get_amount(),

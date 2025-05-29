@@ -1315,18 +1315,18 @@ class PaymentTest(FakturaceTestCase):
     @override_settings(PAYMENT_DEBUG=True)
     def test_recurring(self) -> None:
         donation = self.create_donation(years=0)
+        payment = cast("Payment", donation.payment_obj)
+        self.assertIsNotNone(payment)
         # No recurring payments for now
-        self.assertEqual(donation.payment_obj.payment_set.count(), 0)
+        self.assertEqual(payment.payment_set.count(), 0)
 
         # Trigger payment and process it
         call_command("recurring_payments")
 
         # There should be additional payment
-        self.assertEqual(donation.payment_obj.payment_set.count(), 1)
+        self.assertEqual(payment.payment_set.count(), 1)
         # Verify it is processed
-        self.assertEqual(
-            donation.payment_obj.payment_set.get().state, Payment.PROCESSED
-        )
+        self.assertEqual(payment.payment_set.get().state, Payment.PROCESSED)
 
         # Verify expiry has been moved
         old = donation.expires

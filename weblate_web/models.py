@@ -41,7 +41,12 @@ from django.utils.translation import gettext_lazy, override, pgettext_lazy
 from markupfield.fields import MarkupField
 from PIL import Image as PILImage
 
-from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
+from weblate_web.invoices.models import (
+    CURRENCY_MAP_FROM_PAYMENT,
+    Invoice,
+    InvoiceCategory,
+    InvoiceKind,
+)
 from weblate_web.payments.fields import Char32UUIDField
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
@@ -199,7 +204,7 @@ class Donation(models.Model):
         return reverse("donate-edit", kwargs={"pk": self.pk})
 
     @cached_property
-    def payment_obj(self):
+    def payment_obj(self) -> Payment | None:
         if not self.payment:
             return None
         return Payment.objects.get(pk=self.payment)
@@ -215,7 +220,7 @@ class Donation(models.Model):
         return Payment.objects.filter(query).distinct()
 
     def get_amount(self):
-        if not self.payment:
+        if not self.payment_obj:
             return 0
         return self.payment_obj.amount
 
@@ -959,15 +964,15 @@ class Subscription(models.Model):
             return Package.objects.get(name=self.package.name[:-2])
         return None
 
-    def active(self):
+    def active(self) -> bool:
         return self.expires >= timezone.now()
 
     @property
-    def price(self):
+    def price(self) -> int:
         return self.package.price
 
     @cached_property
-    def payment_obj(self):
+    def payment_obj(self) -> Payment:
         return Payment.objects.get(pk=self.payment)
 
     def list_payments(self):
@@ -1025,6 +1030,7 @@ class Subscription(models.Model):
                 "subscription": self.pk,
                 "start_date": self.expires + timedelta(days=1),
             },
+            currency=CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency],
             vat_rate=customer.vat_rate,
             customer_reference=customer_reference,
             kind=kind,
