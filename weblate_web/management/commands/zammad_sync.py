@@ -79,15 +79,15 @@ class Command(BaseCommand):
     def get_customer_service(self, customer: Customer) -> tuple[Service, Subscription]:
         services = customer.service_set.all()
         if len(services) != 1:
-            self.stderr.write(
-                f"ERROR: Wrong services count for customer {customer} ({len(services)})"
+            self.stdout.write(
+                f"WARNING: Wrong services count for customer {customer} ({len(services)})"
             )
             raise InvalidSubscriptionError
         service = services[0]
         subscription = service.latest_subscription
         if subscription is None:
-            self.stderr.write(
-                f"ERROR: Missing subscription for customer {customer} ({service})"
+            self.stdout.write(
+                f"WARNING: Missing subscription for customer {customer} ({service})"
             )
             raise InvalidSubscriptionError
         return service, subscription
@@ -114,7 +114,7 @@ class Command(BaseCommand):
             customer = self.customers[pk]
         except KeyError:
             customer = Customer.objects.get(pk=pk)
-            self.stderr.write(f"WARNING: Fetched inactive customer {customer}")
+            self.stdout.write(f"WARNING: Fetched inactive customer {customer}")
             self.customers[customer.pk] = customer
         return customer
 
