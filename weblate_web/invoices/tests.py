@@ -180,7 +180,7 @@ class InvoiceTestCase(UserTestCase):
         invoice = self.create_invoice_package(currency=Currency.USD)
         self.assertEqual(
             invoice.total_amount,
-            round(Decimal(100) * invoice.exchange_rate_eur * Decimal("1.05"), 0),
+            round(Decimal(100) * invoice.exchange_rate_eur * Decimal("1.1"), 0),
         )
         self.validate_invoice(invoice)
 

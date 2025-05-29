@@ -820,11 +820,10 @@ class InvoiceItem(models.Model):
                 if self.invoice.currency == Currency.EUR:
                     self.unit_price = self.package.price
                 else:
-                    self.unit_price = round(
-                        self.package.price
-                        * self.invoice.exchange_rate_eur
-                        * Decimal("1.05"),
-                        0,
+                    self.unit_price = ExchangeRates.convert_from_eur(
+                        self.package.price,
+                        self.invoice.get_currency_display(),
+                        self.invoice.issue_date,
                     )
                 extra_fields.append("unit_price")
             if not self.description:
