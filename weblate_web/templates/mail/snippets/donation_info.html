@@ -4,7 +4,7 @@
   {% blocktranslate with package=donation.get_payment_description %}Current subscription: {{ package }}{% endblocktranslate %}
 </p>
 <p>
-  {% blocktranslate with price=donation.get_amount|price_format:donation.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
+  {% blocktranslate with price=donation.get_amount|price_format_convert:donation.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
 </p>
 {% if donation.payment_obj.card_info %}
   <p>

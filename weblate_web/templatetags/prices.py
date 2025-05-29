@@ -16,16 +16,35 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django.template import Library
+from django.utils import timezone
 from django.utils.formats import number_format
 from django.utils.html import format_html
 from django.utils.translation import pgettext
+
+from weblate_web.exchange_rates import ExchangeRates
+
+if TYPE_CHECKING:
+    from decimal import Decimal
 
 register = Library()
 
 
 @register.filter
-def price_format(value, currency="€"):
+def price_format_convert(value: Decimal | float, currency: str = "€"):
+    if currency == "EUR":
+        currency = "€"
+    if currency != "€":
+        value = ExchangeRates.convert_from_eur(value, currency, timezone.now().date())
+    return price_format(value, currency)
+
+
+@register.filter
+def price_format(value: Decimal | float, currency: str = "€"):
     if currency == "EUR":
         currency = "€"
     price = number_format(value, force_grouping=True)

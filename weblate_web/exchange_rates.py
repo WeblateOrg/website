@@ -12,6 +12,7 @@ import requests
 logger = logging.getLogger(__name__)
 RATE_URL = "https://api.cnb.cz/cnbapi/exrates/daily"
 CACHE_DIR = Path.home() / ".cache" / "fakturace"
+EXCHANGE_MARKUP = Decimal("1.1")
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -52,6 +53,16 @@ class UncachedExchangeRates:
                 currency, date - datetime.timedelta(days=1), recursion=recursion + 1
             )
         return rates[currency]
+
+    @classmethod
+    def convert_from_eur(
+        cls, amount: Decimal | float, currency: str, date: datetime.date
+    ) -> Decimal:
+        if not isinstance(amount, Decimal):
+            amount = Decimal(amount)
+        currency_rate = cls.get(currency, date)
+        eur_rate = cls.get("EUR", date)
+        return round(amount * EXCHANGE_MARKUP * eur_rate / currency_rate, 0)
 
 
 class ExchangeRates(UncachedExchangeRates):
