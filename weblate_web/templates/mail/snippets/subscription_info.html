@@ -3,13 +3,15 @@
 <p>
   {% blocktranslate with package=subscription.package %}Current subscription: {{ package }}{% endblocktranslate %}
 </p>
-<p>
-  {% blocktranslate with price=subscription.package.price|price_format_convert:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
-</p>
-{% if subscription.payment_obj.card_info %}
+{% if subscription.payment_obj %}
   <p>
-    {% blocktranslate with card_number=subscription.payment_obj.get_card_number %}Saved card: {{ card_number }}{% endblocktranslate %}
+    {% blocktranslate with price=subscription.package.price|price_format_convert:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
   </p>
+  {% if subscription.payment_obj.card_info %}
+    <p>
+      {% blocktranslate with card_number=subscription.payment_obj.get_card_number %}Saved card: {{ card_number }}{% endblocktranslate %}
+    </p>
+  {% endif %}
 {% endif %}
 <p>
   {% blocktranslate with expiry=subscription.expires|date_format %}Subscription expiry: {{ expiry }}{% endblocktranslate %}
