@@ -87,6 +87,7 @@ EU_VAT_RATES = {
 }
 
 VAT_RATE = 21
+DELETED_MAIL = re.compile(r"noreply\+[0-9]+@weblate.org")
 
 
 class CustomerQuerySet(models.QuerySet["Customer"]):
@@ -263,8 +264,7 @@ class Customer(models.Model):
 
     def get_notify_emails(self) -> list[str]:
         mails = {self.email, *self.users.values_list("email", flat=True)}
-        mails.discard("")
-        return list(mails)
+        return [mail for mail in mails if mail and not DELETED_MAIL.match(mail)]
 
     def send_notification(
         self, notification: str, invoice: Invoice | None = None, **kwargs
