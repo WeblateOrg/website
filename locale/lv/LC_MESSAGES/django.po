@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2024-11-07 13:47+0100\n"
-"PO-Revision-Date: 2025-06-07 15:01+0000\n"
+"PO-Revision-Date: 2025-06-10 17:02+0000\n"
 "Last-Translator: \"ℂ𝕠𝕠𝕠𝕝 (𝕘𝕚𝕥𝕙𝕦𝕓.𝕔𝕠𝕞/ℂ𝕠𝕠𝕠𝕝)\" <coool@mail.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/weblate/website/"
 "lv/>\n"
@@ -132,6 +132,7 @@ msgid "Shared hosting"
 msgstr ""
 
 #: weblate_web/models.py:502
+#, fuzzy
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "Pašmitinātas instalācijas atbalsts"
@@ -1294,6 +1295,8 @@ msgid ""
 "Please note—a full invoice for your donation is issued immediately after "
 "payment."
 msgstr ""
+"Lūdzu, ņemiet vērā, ka pilnais rēķins par jūsu ziedojumu tiks izrakstīts "
+"tūlīt pēc apmaksas saņemšanas."
 
 #: weblate_web/templates/donate/form.html:110
 msgid ""
@@ -1330,6 +1333,10 @@ msgid ""
 "strong>, please follow the <a href=\"%(url)s\">Quick setup guide</a> for "
 "more detailed instructions."
 msgstr ""
+"Weblate ir visvieglāk uzstādīt, izmantojot <strong>pip</strong> vai "
+"<strong>Docker</strong>, lūdzu, sekojiet <a href=\"%(url)s\">Ātrās "
+"uzstādīšanas rokasgrāmatas</a> sniegtajiem norādījumiem, lai iegūtu daudz "
+"detalizētāku izklāstu."
 
 #: weblate_web/templates/download.html:40
 msgid "Download source code"
@@ -2216,11 +2223,11 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_completed.html:6
 msgid "Thank you for your payment on weblate.org."
-msgstr ""
+msgstr "Paldies par maksājumu weblate.org vietnē."
 
 #: weblate_web/templates/mail/payment_completed.html:8
 msgid "You will find an invoice for this payment attached."
-msgstr ""
+msgstr "Šī maksājuma rēķins būs atrodams pielikumā."
 
 #: weblate_web/templates/mail/payment_completed_subject.txt:2
 msgid "Your payment on weblate.org"
@@ -2231,8 +2238,8 @@ msgid ""
 "Your subscription on weblate.org is expiring soon. Please sign in on the "
 "website to renew it."
 msgstr ""
-"Drīz beigsies jūsu weblate.org abonementa termiņš. Lūdzu, pierakstieties "
-"tīmekļa vietnē, lai to atjaunotu."
+"Drīz beigsies jūsu weblate.org pakalpojuma abonementa termiņš. Lūdzu, "
+"pierakstieties tīmekļa vietnē, lai to atjaunotu."
 
 #: weblate_web/templates/mail/payment_expired.html:14
 msgid ""
@@ -2244,15 +2251,15 @@ msgstr ""
 
 #: weblate_web/templates/mail/payment_expired_subject.txt:2
 msgid "Your expired payment on weblate.org"
-msgstr ""
+msgstr "Jūsu maksājums, kam beidzies termiņš, weblate.org vietnē"
 
 #: weblate_web/templates/mail/payment_failed.html:6
 msgid "Your payment on weblate.org has failed."
-msgstr ""
+msgstr "Jūsu maksājums weblate.org vietnē neizdevās."
 
 #: weblate_web/templates/mail/payment_failed.html:10
 msgid "Detailed failure from the payment gateway:"
-msgstr ""
+msgstr "Sīkāka informācija par kļūmi no maksājumu apstrādātāja:"
 
 #: weblate_web/templates/mail/payment_failed.html:15
 msgid ""
@@ -2269,22 +2276,26 @@ msgid ""
 "Your subscription on weblate.org should renew next week and you have not set "
 "up automatic payments."
 msgstr ""
+"Jūsu weblate.org pakalpojuma abonements beigsies nākamnedēļ un ir jāatjauno, "
+"jo jūs neesiet iestatījuši automātisko rēķinu apmaksu."
 
 #: weblate_web/templates/mail/payment_missing.html:10
 msgid ""
 "If you want to continue using the service, please perform the payment now."
 msgstr ""
-"Ja vēlaties turpināt izmantot pakalpojumu, lūdzu, veiciet maksājumu tagad."
+"Ja vēlaties turpināt izmantot pakalpojumu, lūdzu, veiciet apmaksu tagad."
 
 #: weblate_web/templates/mail/payment_missing.html:18
 msgid ""
 "Your donation on weblate.org should renew next week and you have not set up "
 "automatic payments."
 msgstr ""
+"Jūsu weblate.org ziedojuma diena ir nākamnedēļ un ir jāveic jums pašiem, jo "
+"neesiet iestatījuši automātisko ziedojumu veikšanu."
 
 #: weblate_web/templates/mail/payment_missing.html:19
 msgid "Please perform the payment now to continue supporting Weblate."
-msgstr ""
+msgstr "Lūdzu, veiciet ziedojumu tagad, lai turpinātu atbalstīt Weblate."
 
 #: weblate_web/templates/mail/payment_missing_subject.txt:2
 msgid "Your upcoming renewal on weblate.org"
@@ -2295,6 +2306,8 @@ msgid ""
 "Your payment on weblate.org is pending. Please follow the provided "
 "instructions to complete the payment."
 msgstr ""
+"Jūsu maksājums weblate.org vietnē gaida apstiprinājumu. Lai veiktu "
+"maksājumu, lūdzu, izpildiet tālāk sniegtos norādījumus."
 
 #: weblate_web/templates/mail/payment_pending.html:14
 #: weblate_web/templates/payment/payment.html:21
@@ -2325,14 +2338,18 @@ msgid ""
 "expired or you want to use different payment method, please perform the "
 "payment now."
 msgstr ""
+"Apmaksa tiks automātiski pārskaitīta nākamajā nedēļā. Gadījumā, ja jūsu "
+"maksājumu kartes derīguma termiņš ir beidzies vai vēlaties izmantot citu "
+"maksājuma veidu, tad apmaksa jāveic pirms šī laika."
 
 #: weblate_web/templates/mail/payment_upcoming.html:18
 msgid "Your donation on weblate.org will renew next week."
 msgstr ""
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
+#, fuzzy
 msgid "Your upcoming payment on weblate.org"
-msgstr ""
+msgstr "Jūsu gaidāmais rēķins weblate.org vietnē"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:4
 #: weblate_web/templates/mail/snippets/subscription_info.html:4
@@ -2407,25 +2424,33 @@ msgstr "Maksājumu biežums"
 #: weblate_web/templates/payment/payment.html:40
 msgid "Payment will be issued yearly till you cancel the subscription."
 msgstr ""
+"Rēķins tiks izrakstīts katru gadu, kamēr neatteiksieties no pakalpojuma."
 
 #: weblate_web/templates/payment/payment.html:42
 msgid ""
 "Payment will be issued every six months till you cancel the subscription."
 msgstr ""
+"Rēķins tiks izrakstīts ik pēc sešiem mēnešiem, kamēr neatteiksieties no "
+"pakalpojuma."
 
 #: weblate_web/templates/payment/payment.html:44
 msgid "Payment will be issued every quarter till you cancel the subscription."
 msgstr ""
+"Rēķins tiks izrakstīts katru ceturksni, ik pēc trim mēnešiem, kamēr "
+"neatteiksieties no pakalpojuma."
 
 #: weblate_web/templates/payment/payment.html:46
 msgid "Payment will be issued monthly till you cancel the subscription."
 msgstr ""
+"Rēķins tiks izrakstīts katru mēnesi, kamēr neatteiksieties no pakalpojuma."
 
 #: weblate_web/templates/payment/payment.html:51
 msgid ""
 "Note: This is unavailable for some payment methods, you will have to "
 "manually complete the next payment in those cases."
 msgstr ""
+"Piezīme. Dažiem maksājuma veidiem tas nav pieejams. Tādos gadījumos nākamais "
+"rēķins būs jāapmaksā pašiem."
 
 #: weblate_web/templates/payment/payment.html:57
 #: weblate_web/templates/snippets/service.html:270
@@ -2441,7 +2466,7 @@ msgstr "Labot"
 
 #: weblate_web/templates/payment/payment.html:65
 msgid "Please choose payment method"
-msgstr ""
+msgstr "Lūdzu, atlasiet maksājuma veidu"
 
 #: weblate_web/templates/payment/payment.html:78
 msgid "Make Payment"
@@ -2449,11 +2474,11 @@ msgstr "Veikt maksājumu"
 
 #: weblate_web/templates/payment/pending.html:17
 msgid "Please follow the provided instructions to complete the payment."
-msgstr ""
+msgstr "Lūdzu, izpildiet sniegtos norādījumus, lai veiktu maksājumu."
 
 #: weblate_web/templates/payment/pending.html:28
 msgid "Payment Instructions"
-msgstr ""
+msgstr "Maksājuma norādījumi"
 
 #: weblate_web/templates/payment/pending.html:48
 msgid "Download pro forma invoice"
@@ -2465,7 +2490,7 @@ msgstr "Maksājuma statuss"
 
 #: weblate_web/templates/payment/pending.html:73
 msgid "Waiting for payment to be completed."
-msgstr ""
+msgstr "Gaida apmaksas veikšanu."
 
 #: weblate_web/templates/payment/pending.html:78
 msgid "Payment link"
@@ -3027,15 +3052,15 @@ msgstr ""
 
 #: weblate_web/templates/support.html:127
 msgid "Installation on your Linux server"
-msgstr ""
+msgstr "Uzstādīšana uz jūsu Linux servera"
 
 #: weblate_web/templates/support.html:129
 msgid "One-time installation of Weblate"
-msgstr ""
+msgstr "Viena Weblate uzstādīšana"
 
 #: weblate_web/templates/support.html:130
 msgid "Docker-based or native installation"
-msgstr ""
+msgstr "Uzstādam gan Docker, gan uzstādīšanas pakotnes risinājumus"
 
 #: weblate_web/templates/support.html:131
 msgid "Requires root access or close cooperation of your admins"
@@ -3306,7 +3331,7 @@ msgstr "Lūdzu, atlasiet maksājuma veidu."
 #: weblate_web/views.py:440
 #, python-format
 msgid "Could not perform payment: %s"
-msgstr ""
+msgstr "Nevarēja veikt maksājumu: %s"
 
 #: weblate_web/views.py:450
 #, python-format
@@ -3315,7 +3340,7 @@ msgstr "Neizdevās pabeigt maksājumu: %s"
 
 #: weblate_web/views.py:576
 msgid "Payment not yet processed, please retry."
-msgstr ""
+msgstr "Maksājums vēl nav apstrādāts. Lūdzu, mēģiniet vēlreiz."
 
 #: weblate_web/views.py:580
 msgid "The payment was rejected: {}"
@@ -3339,7 +3364,7 @@ msgstr "Lietotājs nav atrasts!"
 
 #: weblate_web/views.py:1039
 msgid "Payment was added."
-msgstr "Maksājums tika pievienots."
+msgstr "Maksājums pievienots."
 
 #~ msgid "Activate donation"
 #~ msgstr "Aktivizēt ziedojumu"
