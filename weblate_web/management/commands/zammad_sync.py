@@ -99,7 +99,7 @@ class Command(BaseCommand):
             "last_payment": subscription.expires.date().isoformat(),
             "service_link": service.site_url,
             "premium_support": subscription.package.name == "premium"
-            and subscription.active,
+            and subscription.active(),
             "support": not subscription.is_expired,
             "plan": subscription.package.verbose,
         }
