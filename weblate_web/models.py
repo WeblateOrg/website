@@ -249,6 +249,9 @@ class Donation(models.Model):
         # Notify just before the payment
         if delta.days in NOTIFY_DAYS:
             return True
+        # Notify monthly after two months
+        if delta.days > 60:
+            return delta.days % 31 == 0
         # Notify weekly after the payment
         return delta.days > 0 and delta.days % 7 == 0
 
