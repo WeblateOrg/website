@@ -192,14 +192,13 @@
           </p>
         {% endif %}
       {% endwith %}
-      {% if invoice.is_draft %}
-        <p>Should you have any questions concerning this quotation, please contact us at sales@weblate.org.</p>
-      {% endif %}
-      {% if invoice.vat_rate == 0 %}
-        <p>
-          The place of supply is considered to be in your country pursuant to Section 9 (1) Value Added Tax Act No. 235/2004 Coll. The person to whom the service is rendered is liable to declare and pay VAT in his country (reverse charge) according to European Directive 206/112/ES.
-        </p>
-      {% endif %}
+      <p>
+        {% if invoice.is_draft %}
+          Should you have any questions concerning this quotation, please contact us at <a href="mailto:sales@weblate.org">sales@weblate.org</a>.
+        {% endif %}
+        {% if invoice.vat_rate == 0 %}This supply is subject to reverse charge.{% endif %}
+        {% if not invoice.is_draft %}This is a computer-generated invoice; signature not required.{% endif %}
+      </p>
       <table id="details">
         <tbody>
           <tr>
