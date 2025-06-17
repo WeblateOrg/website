@@ -1,17 +1,38 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "files": {
-    "ignore": [
-      "weblate_web/test-data/contributors.json"
+    "includes": [
+      "**",
+      "!weblate_web/test-data/contributors.json",
+      "!weblate_web/templates/site.webmanifest"
     ]
   },
   "linter": {
     "enabled": true,
     "rules": {
-      "all": true
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noDescendingSpecificity": "warn",
+        "noUselessElse": "error"
+      },
+      "correctness": {
+        "noUnknownTypeSelector": "warn"
+      }
     }
   },
   "formatter": {

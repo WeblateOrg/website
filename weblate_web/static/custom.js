@@ -80,7 +80,7 @@ ready(() => {
     });
   }
   for (const element of document.querySelectorAll(".dedicated-toggle")) {
-    element.addEventListener("click", (e) => {
+    element.addEventListener("click", (_e) => {
       const target = document.getElementById("dedicated-checkbox");
       target.checked = element.classList.contains("dedicated-enable");
       target.dispatchEvent(new Event("change"));
@@ -157,7 +157,7 @@ ready(() => {
       }
     });
     for (const element of document.querySelectorAll("#id_vat_0,#id_vat_1")) {
-      element.addEventListener("focusout", (e) => {
+      element.addEventListener("focusout", (_e) => {
         const country = document.getElementById("id_vat_0").value;
         const code = document.getElementById("id_vat_1").value;
         if (country && code) {
