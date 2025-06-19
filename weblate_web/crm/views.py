@@ -184,8 +184,8 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                     kind=InvoiceKind.INVOICE,
                     customer_reference=form.cleaned_data["customer_reference"],
                 )
+                invoice.generate_files()
             return redirect(invoice)
-
         return self.get(request, *args, **kwargs)
 
 
