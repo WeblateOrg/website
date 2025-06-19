@@ -665,7 +665,7 @@ class Invoice(models.Model):  # noqa: PLR0904
             output=settings.INVOICES_PATH / self.filename,
         )
 
-    def duplicate(
+    def duplicate(  # noqa: PLR0913
         self,
         *,
         kind: InvoiceKind,
@@ -673,13 +673,14 @@ class Invoice(models.Model):  # noqa: PLR0904
         start_date: datetime.datetime | None = None,
         end_date: datetime.datetime | None = None,
         extra: dict[str, int] | None = None,
+        customer_reference: str | None = None,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
         invoice = Invoice.objects.create(
             kind=kind,
             category=self.category,
             customer=self.customer,
-            customer_reference=self.customer_reference,
+            customer_reference=customer_reference or self.customer_reference,
             discount=self.discount,
             vat_rate=self.vat_rate,
             currency=self.currency,

@@ -46,6 +46,10 @@ class NewSubscriptionForm(forms.Form):
     customer_reference = forms.CharField(required=False)
 
 
+class CustomerReferenceForm(forms.Form):
+    customer_reference = forms.CharField(required=False)
+
+
 class MethodForm(forms.Form):
     method = forms.ChoiceField(
         choices=[],
