@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import override
 from django.views.generic import DetailView, ListView, TemplateView
 
-from weblate_web.forms import NewSubscriptionForm
+from weblate_web.forms import CustomerReferenceForm, NewSubscriptionForm
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
 from weblate_web.payments.models import Customer, CustomerQuerySet, Payment
@@ -156,6 +156,37 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoice detail"
+
+    def get_title(self) -> str:
+        return f"{self.object.get_kind_display()} {self.object.number}"
+
+    def can_convert(self) -> bool:
+        return (
+            self.object.kind == InvoiceKind.QUOTE
+            and not self.object.invoice_set.exists()
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        if self.can_convert():
+            context["convert_form"] = CustomerReferenceForm(
+                self.request.POST if self.request.method == "POST" else None,
+                initial={"customer_reference": self.object.customer_reference},
+            )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = quote = self.get_object()
+        form = CustomerReferenceForm(request.POST)
+        if form.is_valid() and self.can_convert():
+            with override("en"):
+                invoice = quote.duplicate(
+                    kind=InvoiceKind.INVOICE,
+                    customer_reference=form.cleaned_data["customer_reference"],
+                )
+            return redirect(invoice)
+
+        return self.get(request, *args, **kwargs)
 
 
 class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]

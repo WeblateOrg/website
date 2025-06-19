@@ -1039,6 +1039,8 @@ class Subscription(models.Model):
         customer_reference: str,
         currency: Currency,
         extra: dict[str, Any],
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
     ) -> Invoice:
         invoice = Invoice.objects.create(
             customer=customer,
@@ -1050,7 +1052,9 @@ class Subscription(models.Model):
             currency=currency,
             category=package.get_invoice_category(),
         )
-        invoice.invoiceitem_set.create(package=package)
+        invoice.invoiceitem_set.create(
+            package=package, start_date=start_date, end_date=end_date
+        )
         if invoice.has_pdf:
             invoice.generate_files()
         return invoice
@@ -1082,6 +1086,7 @@ class Subscription(models.Model):
     def create_invoice(
         self, *, kind: InvoiceKind, customer_reference: str = ""
     ) -> Invoice:
+        start_date = self.expires + timedelta(days=1)
         return self._create_invoice(
             kind=kind,
             customer=self.service.customer,
@@ -1092,6 +1097,8 @@ class Subscription(models.Model):
                 "start_date": self.expires + timedelta(days=1),
             },
             customer_reference=customer_reference,
+            start_date=start_date,
+            end_date=start_date + get_period_delta(self.package.get_repeat()),
         )
 
 

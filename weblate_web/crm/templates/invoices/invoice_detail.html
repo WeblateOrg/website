@@ -23,9 +23,13 @@
       Issued {{ object.issue_date }}, due {{ object.due_date }}
       <br>
       {% if object.parent %}
-        Generate from <a href="{{ object.parent.get_absolute_url }}">{{ object.parent.number }}</a>
+        Generated from <a href="{{ object.parent.get_absolute_url }}">{{ object.parent.number }}</a>
         <br>
       {% endif %}
+      {% for child in object.invoice_set.all %}
+        Followup as <a href="{{ child.get_absolute_url }}">{{ child.number }}</a>
+        <br>
+      {% endfor %}
       {% if object.customer_reference %}
         Customer reference: {{ object.customer_reference }}
         <br>
@@ -55,5 +59,14 @@
         </tr>
       {% endfor %}
     </table>
+    {% if convert_form %}
+      <h2>Create invoice</h2>
+      <p>This will create an invoice matching this quote.</p>
+      <form method="post">
+        {% csrf_token %}
+        {{ convert_form }}
+        <input type="submit" name="invoice" value="Issue invoice">
+      </form>
+    {% endif %}
   </section>
 {% endblock content %}

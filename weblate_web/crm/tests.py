@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from weblate_web.invoices.models import Discount, Invoice, InvoiceKind
-from weblate_web.models import Package, Service
+from weblate_web.models import Package, PackageCategory, Service
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.tests import cnb_mock_rates
 
@@ -60,12 +60,22 @@ class CRMTestCase(TestCase):
         service = Service.objects.create(customer=customer)
         expires = timezone.now() + timedelta(days=1)
         subscription1 = service.subscription_set.create(
-            package=Package.objects.create(name="x1", verbose="pkg1", price=42),
+            package=Package.objects.create(
+                name="x1",
+                verbose="pkg1",
+                price=42,
+                category=PackageCategory.PACKAGE_SHARED,
+            ),
             expires=expires,
             payment=payment.pk,
         )
         subscription2 = service.subscription_set.create(
-            package=Package.objects.create(name="x2", verbose="pkg2", price=99),
+            package=Package.objects.create(
+                name="x2",
+                verbose="pkg2",
+                price=99,
+                category=PackageCategory.PACKAGE_SHARED,
+            ),
             expires=expires,
             payment=payment.pk,
         )
@@ -75,14 +85,45 @@ class CRMTestCase(TestCase):
         self.assertContains(response, "pkg1")
         self.assertContains(response, "pkg2")
 
-        # Test renewal invoices
+        # Test renewal quote
         response = self.client.post(
-            service.get_absolute_url(), {"quote": 1, "subscription": subscription1.pk}
+            service.get_absolute_url(),
+            {"quote": 1, "subscription": subscription1.pk},
+            follow=True,
         )
         invoice = Invoice.objects.get()
         self.assertEqual(invoice.kind, InvoiceKind.QUOTE)
         self.assertEqual(invoice.total_amount, 42)
+        self.assertEqual(
+            invoice.all_items[0].start_date, expires.date() + timedelta(days=1)
+        )
         self.assertRedirects(response, invoice.get_absolute_url())
+        self.assertContains(response, f"Quote {invoice.number}")
+        self.assertNotContains(response, "Followup as")
+        self.assertContains(response, "Create invoice")
+
+        # Convert to invoice
+        response = self.client.post(invoice.get_absolute_url(), follow=True)
+        children = invoice.invoice_set.all()
+        self.assertEqual(len(children), 1)
+        child = children[0]
+        self.assertEqual(child.kind, InvoiceKind.INVOICE)
+        self.assertEqual(child.total_amount, 42)
+        self.assertEqual(
+            child.all_items[0].start_date, expires.date() + timedelta(days=1)
+        )
+        self.assertContains(response, f"Invoice {child.number}")
+        self.assertNotContains(response, "Create invoice")
+
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertContains(response, "Followup as")
+        self.assertNotContains(response, "Create invoice")
+
+        # Second conversion should fail
+        response = self.client.post(invoice.get_absolute_url())
+        self.assertContains(response, f"Quote {invoice.number}")
+
+        # Test renewal invoices
         response = self.client.post(
             service.get_absolute_url(),
             {
@@ -90,12 +131,19 @@ class CRMTestCase(TestCase):
                 "subscription": subscription2.pk,
                 "customer_reference": "PO1234",
             },
+            follow=True,
         )
-        invoice = Invoice.objects.exclude(pk=invoice.pk).get()
+        invoice = Invoice.objects.exclude(pk__in={invoice.pk, child.pk}).get()
         self.assertEqual(invoice.customer_reference, "PO1234")
         self.assertEqual(invoice.kind, InvoiceKind.INVOICE)
         self.assertEqual(invoice.total_amount, 99)
+        self.assertEqual(
+            invoice.all_items[0].start_date, expires.date() + timedelta(days=1)
+        )
         self.assertRedirects(response, invoice.get_absolute_url())
+        self.assertContains(response, f"Invoice {invoice.number}")
+        self.assertNotContains(response, "Followup as")
+        self.assertNotContains(response, "Create invoice")
 
         # Test disabling
         response = self.client.post(
