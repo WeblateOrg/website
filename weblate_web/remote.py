@@ -38,7 +38,14 @@ from weblate_web.payments.validators import cache_vies_data
 CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
 PYPI_URL = "https://pypi.org/pypi/weblate/json"
 WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
-EXCLUDE_USERS = {"nijel", "weblate"}
+EXCLUDE_USERS = {
+    "nijel",
+    "weblate",
+    "renovate",
+    "dependabot",
+    "renovate[bot]",
+    "dependabot[bot]",
+}
 ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
 CACHE_TIMEOUT = 72 * 3600
 
