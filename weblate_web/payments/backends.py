@@ -566,7 +566,10 @@ class FioBank(Backend):
                             f"{invoice.number}: skipping, currency mismatch, {currency} instead of {expected_currency}"
                         )
                         continue
-                    if entry["amount"] < invoice.total_amount:
+                    if (
+                        entry["amount"] < invoice.total_amount
+                        and "[underpaid]" not in entry["comment"]
+                    ):
                         print(
                             f"{invoice.number}: skipping, underpaid, {entry['amount']} instead of {invoice.total_amount}"
                         )
