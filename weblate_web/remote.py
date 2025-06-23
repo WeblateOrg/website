@@ -41,10 +41,10 @@ WEBLATE_CONTRIBUTORS_URL = CONTRIBUTORS_URL.format("WeblateOrg", "weblate")
 EXCLUDE_USERS = {
     "nijel",
     "weblate",
-    "renovate",
-    "dependabot",
     "renovate[bot]",
     "dependabot[bot]",
+    "dependabot-preview[bot]",
+    "pre-commit-ci[bot]",
 }
 ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
 CACHE_TIMEOUT = 72 * 3600
@@ -98,7 +98,7 @@ def get_contributors(force: bool = False):
 
     stats.sort(key=lambda x: -x["rank"])
 
-    data = stats[:8]
+    data = stats[:52]
     cache.set(key, data, timeout=CACHE_TIMEOUT)
     return data
 
