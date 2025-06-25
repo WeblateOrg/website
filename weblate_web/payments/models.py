@@ -185,16 +185,20 @@ class Customer(models.Model):
         verbose_name_plural = "Customers"
 
     def __str__(self) -> str:
-        if self.name:
-            if self.email:
-                return f"{self.name} ({self.email})"
-            return self.name
         if self.email:
-            return self.email
-        return f"Customer:{self.pk}"
+            return f"{self.verbose_name} ({self.email})"
+        return self.verbose_name
 
     def get_absolute_url(self) -> str:
         return reverse("crm:customer-detail", kwargs={"pk": self.pk})
+
+    @property
+    def verbose_name(self) -> str:
+        if self.end_client:
+            return f"{self.end_client} ({self.name})"
+        if self.name:
+            return self.name
+        return f"Customer:{self.pk}"
 
     @property
     def short_filename(self) -> str:

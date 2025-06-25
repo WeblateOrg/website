@@ -238,7 +238,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         return context
 
     def get_title(self) -> str:
-        return self.object.name
+        return self.object.verbose_name
 
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
