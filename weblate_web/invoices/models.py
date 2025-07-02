@@ -247,7 +247,7 @@ class InvoiceKind(models.IntegerChoices):
 class InvoiceCategory(models.IntegerChoices):
     HOSTING = 1, "Hosting"
     SUPPORT = 2, "Support"
-    DEVEL = 3, "Development"
+    DEVEL = 3, "Development / Consultations"
     DONATE = 4, "Donation"
 
 
