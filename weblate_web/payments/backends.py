@@ -42,7 +42,17 @@ if TYPE_CHECKING:
     from weblate_web.invoices.models import Invoice
 
 BACKENDS: dict[str, type[Backend]] = {}
-INVOICE_MATCH_RE = re.compile(r"\b[15]0[0-9]{8}\b")
+INVOICE_MATCH_RE = re.compile(r"\b[15]0(?:[0-9] *){7}[0-9]\b")
+EXTRACTABLE_FIELDS: tuple[str, ...] = (
+    # Extract from message
+    "recipient_message"
+    # Extract from variable symbol
+    "variable_symbol"
+    # Extract from sender reference
+    "reference",
+    # Extract from comment for manual pairing
+    "comment",
+)
 THEPAY_LANGUAGES = {
     "ab",
     "aa",
@@ -519,7 +529,7 @@ class FioBank(Backend):
         return instructions
 
     @classmethod
-    def fetch_payments(cls, from_date: str | None = None) -> None:  # noqa: PLR0915,C901
+    def fetch_payments(cls, from_date: str | None = None) -> None:
         from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
 
         tokens: list[str]
@@ -539,18 +549,13 @@ class FioBank(Backend):
             currency = info["currency"]
             for entry in transactions:
                 matches = []
-                # Extract from message
-                if entry["recipient_message"]:
-                    matches.extend(INVOICE_MATCH_RE.findall(entry["recipient_message"]))
-                # Extract from variable symbol
-                if entry["variable_symbol"]:
-                    matches.extend(INVOICE_MATCH_RE.findall(entry["variable_symbol"]))
-                # Extract from sender reference
-                if entry.get("reference", None):
-                    matches.extend(INVOICE_MATCH_RE.findall(entry["reference"]))
-                # Extract from comment for manual pairing
-                if entry["comment"]:
-                    matches.extend(INVOICE_MATCH_RE.findall(entry["comment"]))
+                for field in EXTRACTABLE_FIELDS:
+                    if value := entry.get(field, None):
+                        matches.extend(
+                            match.replace(" ", "")
+                            for match in INVOICE_MATCH_RE.findall(value)
+                        )
+
                 # Process all matches
                 for invoice in Invoice.objects.filter(
                     number__in=matches,
