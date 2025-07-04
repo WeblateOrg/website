@@ -548,7 +548,7 @@ class FioBank(Backend):
 
             currency = info["currency"]
             for entry in transactions:
-                matches = []
+                matches: list[str] = []
                 for field in EXTRACTABLE_FIELDS:
                     if value := entry.get(field, None):
                         matches.extend(
