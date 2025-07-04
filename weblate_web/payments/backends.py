@@ -45,9 +45,9 @@ BACKENDS: dict[str, type[Backend]] = {}
 INVOICE_MATCH_RE = re.compile(r"\b[15]0(?:[0-9] *){7}[0-9]\b")
 EXTRACTABLE_FIELDS: tuple[str, ...] = (
     # Extract from message
-    "recipient_message"
+    "recipient_message",
     # Extract from variable symbol
-    "variable_symbol"
+    "variable_symbol",
     # Extract from sender reference
     "reference",
     # Extract from comment for manual pairing
