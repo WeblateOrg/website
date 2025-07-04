@@ -349,7 +349,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         extra_fields: list[str] = []
         if not self.due_date:
             self.due_date = self.issue_date + datetime.timedelta(
-                days=30 if self.is_draft else 14
+                days=self.get_due_delta()
             )
             extra_fields.append("due_date")
         if not self.sequence:
@@ -377,6 +377,13 @@ class Invoice(models.Model):  # noqa: PLR0904
 
     def get_absolute_url(self) -> str:
         return reverse("crm:invoice-detail", kwargs={"pk": self.pk})
+
+    def get_due_delta(self) -> int:
+        if self.prepaid:
+            return 0
+        if self.is_draft:
+            return 30
+        return 14
 
     @property
     def is_draft(self):
