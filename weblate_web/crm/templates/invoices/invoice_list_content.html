@@ -5,7 +5,7 @@
       {% if invoice.is_paid %}
         paid
       {% elif invoice.is_payable %}
-        <strong>unpaid</strong>
+        <strong>unpaid, due {{ invoice.due_date }}</strong>
       {% endif %}
     </td>
     <td>{{ invoice.get_kind_display }}</td>
