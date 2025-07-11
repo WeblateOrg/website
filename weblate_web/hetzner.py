@@ -141,7 +141,7 @@ def generate_subaccount_data(
         "labels": {
             "environment": service.site_domain,
         },
-        "description": f"Weblate backup ({service.pk}) {service.site_domain}"[:50],
+        "description": f"{service.site_domain} ({service.pk})"[:50],
     }
 
 
