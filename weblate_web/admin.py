@@ -93,6 +93,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "backup_directory",
         "backup_size",
         "backup_timestamp",
+        "backup_removed",
         "site_version",
     )
 

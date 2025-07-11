@@ -153,8 +153,21 @@ class Command(BaseCommand):
             with sftp_client() as ftp:
                 remove_directory(ftp, service.backup_directory)
 
-            # Update database
+            # Update database and store current values for possible restore
+            service.backup_removed = {
+                "repository": service.backup_repository,
+                "box": service.backup_box,
+                "directory": service.backup_directory,
+                "subaccount": service.backup_subaccount,
+                "size": service.backup_size,
+                "timestamp": service.backup_timestamp,
+            }
+            service.backup_repository = ""
+            service.backup_box = 0
             service.backup_directory = ""
+            service.backup_subaccount = 0
+            service.backup_size = 0
+            service.backup_timestamp = None
             service.save()
 
     def check_unpaid(self, backup_services: dict[str, Service]) -> None:

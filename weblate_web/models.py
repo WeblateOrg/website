@@ -30,6 +30,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import FileExtensionValidator
 from django.db import models, transaction
 from django.db.models import IntegerChoices, Q
@@ -570,6 +571,9 @@ class Service(models.Model):
     backup_subaccount = models.IntegerField(default=0)
     backup_size = models.BigIntegerField(default=0)
     backup_timestamp = models.DateTimeField(blank=True, null=True)
+    backup_removed = models.JSONField(
+        default=dict, blank=True, encoder=DjangoJSONEncoder
+    )
     limit_languages = models.IntegerField(default=0)
     limit_projects = models.IntegerField(default=0)
     limit_source_strings = models.IntegerField(default=0)
