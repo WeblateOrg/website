@@ -17,7 +17,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import time
 from datetime import UTC, datetime
 
 from django.conf import settings
@@ -64,7 +63,6 @@ class Command(BaseCommand):
     def sync_data(self, backup_services: dict[str, Service]) -> set[str]:
         processed_repositories = set()
         backup_storages = get_storage_subaccounts()
-        hetzner_modified = False
 
         for storage in backup_storages:
             # Skip non-weblate subaccounts and admin account
@@ -108,11 +106,7 @@ class Command(BaseCommand):
                 self.stdout.write(
                     f"Updating Hetzner data for {username} for {service.pk} {service.site_domain} ({customer.name})"
                 )
-                if hetzner_modified:
-                    # Honor rate limit
-                    time.sleep(5)
                 modify_storage_subaccount(storage["id"], storage_data)
-                hetzner_modified = True
 
         return processed_repositories
 
