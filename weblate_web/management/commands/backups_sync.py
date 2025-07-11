@@ -92,11 +92,20 @@ class Command(BaseCommand):
             if service.backup_directory != dirname:
                 service.backup_directory = dirname
                 update = True
+            if service.backup_subaccount != storage["id"]:
+                service.backup_subaccount = storage["id"]
+                update = True
             if update:
                 self.stdout.write(
                     f"Updating data for {service.pk} {service.site_domain} ({customer.name})"
                 )
-                service.save(update_fields=["backup_box", "backup_directory"])
+                service.save(
+                    update_fields=[
+                        "backup_box",
+                        "backup_directory",
+                        "backup_subaccount",
+                    ]
+                )
 
             # Sync Hetzner data
             storage_data = generate_subaccount_data(
