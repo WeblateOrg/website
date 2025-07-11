@@ -26,6 +26,7 @@ from weblate_web.hetzner import (
     generate_ssh_url,
     generate_subaccount_data,
     get_directory_summary,
+    get_service_backup_readme,
     get_storage_subaccounts,
     modify_storage_subaccount,
     sftp_client,
@@ -135,6 +136,22 @@ class Command(BaseCommand):
             self.stderr.write(f"  size: {service.backup_size}")
             self.stderr.write(f"  mtime: {service.backup_timestamp}")
 
+    def update_readme(self, backup_services: dict[str, Service]) -> None:
+        with sftp_client() as ftp:
+            for service in backup_services.values():
+                filename = f"{service.backup_directory}/README.txt"
+                try:
+                    with ftp.open(filename, "r") as handle:
+                        content = handle.read().decode()
+                except OSError:
+                    content = ""
+
+                readme = get_service_backup_readme(service)
+                if readme != content:
+                    self.stdout.write(f"updating {filename} for {service.customer}")
+                    with ftp.open(filename, "w") as handle:
+                        handle.write(readme)
+
     def handle(self, delete: bool, skip_scan: bool, **kwargs) -> None:
         backup_services: dict[str, Service] = {
             service.backup_repository: service
@@ -148,5 +165,7 @@ class Command(BaseCommand):
 
         for extra in set(backup_services) - processed_repositories:
             self.stderr.write(f"unused: {extra}")
+
+        self.update_readme(backup_services)
 
         self.check_unpaid(backup_services)

@@ -888,7 +888,7 @@ class Service(models.Model):
         dirname = str(uuid4())
 
         # Create folder and SSH key
-        create_storage_folder(dirname, self, self.customer, last_report)
+        create_storage_folder(dirname, self, last_report)
 
         # Create account on the service
         data = create_storage_subaccount(dirname, self)

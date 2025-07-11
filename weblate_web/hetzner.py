@@ -16,8 +16,6 @@ if TYPE_CHECKING:
     from paramiko.sftp_attr import SFTPAttributes
     from paramiko.sftp_client import SFTPClient
 
-    from weblate_web.payments.models import Customer
-
     from .models import Report, Service
 
 STORAGE_BOX_API = "https://api.hetzner.com/v1/storage_boxes/{}"
@@ -104,21 +102,23 @@ def get_directory_summary(
     return size, mtime
 
 
-def create_storage_folder(
-    dirname: str, service: Service, customer: Customer, last_report: Report
-) -> None:
+def get_service_backup_readme(service: Service) -> str:
+    return f"""Weblate Cloud Backup
+====================
+
+Service: {service.pk}
+Site: {service.site_domain}
+Customer: {service.customer.name}
+"""
+
+
+def create_storage_folder(dirname: str, service: Service, last_report: Report) -> None:
     # Create folder and SSH key
     with sftp_client() as ftp:
         ftp.mkdir(dirname)
         ftp.chdir(dirname)
         with ftp.open("README.txt", "w") as handle:
-            handle.write(f"""Weblate Cloud Backup
-====================
-
-Service: {service.pk}
-Site: {service.site_domain}
-Customer: {customer.name}
-""")
+            handle.write(get_service_backup_readme(service))
 
         ftp.mkdir(".ssh")
         ftp.chdir(".ssh")
