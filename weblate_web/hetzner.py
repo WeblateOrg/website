@@ -113,12 +113,12 @@ def create_storage_folder(
         ftp.chdir(dirname)
         with ftp.open("README.txt", "w") as handle:
             handle.write(f"""Weblate Cloud Backup
-    ====================
+====================
 
-    Service: {service.pk}
-    Site: {service.site_domain}
-    Customer: {customer.name}
-    """)
+Service: {service.pk}
+Site: {service.site_domain}
+Customer: {customer.name}
+""")
 
         ftp.mkdir(".ssh")
         ftp.chdir(".ssh")
