@@ -5,7 +5,7 @@
       {% if invoice.is_paid %}
         paid
       {% elif invoice.is_payable %}
-        {% if invoice.due_date > today %}
+        {% if invoice.due_date > today.date %}
           unpaid, due {{ invoice.due_date }}
         {% else %}
           <strong>unpaid, due {{ invoice.due_date }}</strong>
