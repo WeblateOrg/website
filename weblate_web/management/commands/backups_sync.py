@@ -116,14 +116,17 @@ class Command(BaseCommand):
                 continue
             kind: str = "UNKNOWN"
             expires: datetime | None = None
+            enabled = False
             if service.hosted_subscriptions:
                 kind = "hosted"
                 expires = service.hosted_subscriptions[0].expires
+                enabled = service.hosted_subscriptions[0].enabled
             elif service.backup_subscriptions:
                 kind = "backup"
                 expires = service.backup_subscriptions[0].expires
+                enabled = service.backup_subscriptions[0].enabled
 
-            status = "disabled" if not service.enabled else "not paid"
+            status = "disabled" if not enabled else "not paid"
 
             self.stderr.write(f"{status} {kind}: {service.pk} {service.customer}")
             self.stderr.write(f"  url: {service.site_url}")
