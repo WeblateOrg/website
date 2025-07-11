@@ -23,12 +23,14 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from weblate_web.hetzner import (
+    delete_storage_subaccount,
     generate_ssh_url,
     generate_subaccount_data,
     get_directory_summary,
     get_service_backup_readme,
     get_storage_subaccounts,
     modify_storage_subaccount,
+    remove_directory,
     sftp_client,
 )
 from weblate_web.models import Service
@@ -135,6 +137,25 @@ class Command(BaseCommand):
                 continue
 
             self.stdout.write(f"Removing backup repository for {service}...")
+
+            if (
+                not service.backup_subaccount
+                or not service.backup_box
+                or not service.backup_directory
+            ):
+                self.stderr.write(f"SKIPPING: Incomplete info for {service}")
+                continue
+
+            # Remove account
+            delete_storage_subaccount(service.backup_subaccount)
+
+            # Remove directory
+            with sftp_client() as ftp:
+                remove_directory(ftp, service.backup_directory)
+
+            # Update database
+            service.backup_directory = ""
+            service.save()
 
     def check_unpaid(self, backup_services: dict[str, Service]) -> None:
         for service in backup_services.values():

@@ -102,6 +102,19 @@ def get_directory_summary(
     return size, mtime
 
 
+def remove_directory(ftp: SFTPClient, dirname: str) -> None:
+    """Recursively remove sftp directory."""
+    for attr in ftp.listdir_attr(dirname):
+        if attr.st_mode is None or attr.st_size is None or attr.st_mtime is None:
+            raise ValueError(f"Incomplete attributes {attr}")
+        name = f"{dirname}/{attr.filename}"
+        if stat.S_ISDIR(attr.st_mode):
+            remove_directory(ftp, name)
+        else:
+            ftp.remove(name)
+    ftp.rmdir(dirname)
+
+
 def get_service_backup_readme(service: Service) -> str:
     return f"""Weblate Cloud Backup
 ====================
@@ -228,6 +241,18 @@ def modify_storage_subaccount(subaccount_id: int, data: SubaccountInfoDict) -> N
     access_data.update(cast("dict[str, bool]", data["access_settings"]))
     response = requests.post(
         access_url, json=access_data, headers=get_hetzner_headers(), timeout=60
+    )
+    response.raise_for_status()
+    wait_for_action(response.json()["action"])
+
+
+def delete_storage_subaccount(subaccount_id: int) -> None:
+    """Update account on the service."""
+    subaccount_url = hetzner_box_url("subaccounts", str(subaccount_id))
+    response = requests.delete(
+        subaccount_url,
+        headers=get_hetzner_headers(),
+        timeout=60,
     )
     response.raise_for_status()
     wait_for_action(response.json()["action"])
