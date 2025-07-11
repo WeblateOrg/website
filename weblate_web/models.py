@@ -306,6 +306,7 @@ def get_service(payment: Payment, customer: Customer):
     if payment.extra.get("service") is None:
         service = customer.service_set.create()
         service.was_created = True
+        service.skip_intro = payment.extra.get("skip_intro", False)
         return service
     return Service.objects.get(pk=payment.extra["service"], customer=customer)
 
@@ -379,14 +380,12 @@ def process_new_payment(payment: Payment) -> Subscription:
             subscription=subscription,
             service=subscription.service,
         )
-    if service.was_created and service.needs_token:
-        subscription.send_notification("subscription_intro")
+    if service.was_created and not service.skip_intro:
+        if service.needs_token:
+            subscription.send_notification("subscription_intro")
 
-    if (
-        service.was_created
-        and subscription.package.category == PackageCategory.PACKAGE_DEDICATED
-    ):
-        create_dedicated_hosting_ticket(subscription)
+        if subscription.package.category == PackageCategory.PACKAGE_DEDICATED:
+            create_dedicated_hosting_ticket(subscription)
     return subscription
 
 
@@ -617,6 +616,7 @@ class Service(models.Model):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.was_created = False
+        self.skip_intro = False
 
     def get_absolute_url(self):
         return reverse("crm:service-detail", kwargs={"pk": self.pk})
@@ -1069,6 +1069,7 @@ class Subscription(models.Model):
         currency: Currency = Currency.EUR,
         service: Service | None = None,
         customer_reference: str = "",
+        skip_intro: bool = False,
     ) -> Invoice:
         return cls._create_invoice(
             kind=kind,
@@ -1079,6 +1080,7 @@ class Subscription(models.Model):
                 "subscription": package.name,
                 "service": service.pk if service else None,
                 "start_date": timezone.now(),
+                "skip_intro": skip_intro,
             },
             customer_reference=customer_reference,
         )

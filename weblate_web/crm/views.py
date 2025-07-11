@@ -251,6 +251,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     package=form.cleaned_data["package"],
                     currency=form.cleaned_data["currency"],
                     customer_reference=form.cleaned_data["customer_reference"],
+                    skip_intro=form.cleaned_data.get("skip_intro", False),
                 )
             return redirect(invoice)
 
