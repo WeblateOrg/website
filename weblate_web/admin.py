@@ -89,6 +89,7 @@ class ServiceAdmin(admin.ModelAdmin):
     autocomplete_fields = ("customer",)
     readonly_fields = (
         "backup_box",
+        "backup_subaccount",
         "backup_directory",
         "backup_size",
         "backup_timestamp",
