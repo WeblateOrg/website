@@ -21,6 +21,7 @@ from math import ceil
 
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
 
@@ -68,6 +69,7 @@ def weblate_web(request):
         "contributors": SimpleLazyObject(get_contributors),
         "changes": SimpleLazyObject(get_changes),
         "bank_account": BANK_ACCOUNTS[Currency.EUR],
+        "today": timezone.now(),
         "language_columns": [
             language_urls[:language_col],
             language_urls[language_col : language_col * 2],
