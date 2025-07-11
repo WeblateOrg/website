@@ -111,6 +111,22 @@ class Command(BaseCommand):
 
         return processed_repositories
 
+    def remove_disabled(self, backup_services: dict[str, Service]) -> None:
+        for service in backup_services.values():
+            # Skip services with paid backup
+            if service.has_paid_backup():
+                continue
+
+            # Skip still enabled subscriptions
+            if (
+                service.hosted_subscriptions and service.hosted_subscriptions[0].enabled
+            ) or (
+                service.backup_subscriptions and service.backup_subscriptions[0].enabled
+            ):
+                continue
+
+            self.stdout.write(f"Removing backup repository for {service}...")
+
     def check_unpaid(self, backup_services: dict[str, Service]) -> None:
         for service in backup_services.values():
             if service.has_paid_backup():
@@ -167,5 +183,7 @@ class Command(BaseCommand):
             self.stderr.write(f"unused: {extra}")
 
         self.update_readme(backup_services)
+
+        self.remove_disabled(backup_services)
 
         self.check_unpaid(backup_services)
