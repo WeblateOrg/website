@@ -67,9 +67,9 @@ class Command(BaseCommand):
         hetzner_modified = False
 
         for storage in backup_storages:
-            # Skip non-weblate subaccounts
+            # Skip non-weblate subaccounts and admin account
             homedirectory: str = storage["home_directory"]
-            if not homedirectory.startswith("weblate/"):
+            if not homedirectory.startswith("weblate/") or homedirectory == "weblate/":
                 continue
             # Generate SSH URL used for borg
             ssh_url = generate_ssh_url(storage)
