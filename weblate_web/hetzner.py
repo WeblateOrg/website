@@ -162,7 +162,7 @@ def wait_for_action(action: ActionDict) -> ActionDict:
 
     # Wait until action is completed
     while action["error"] is None and action["status"] == "running":
-        time.sleep(1)
+        time.sleep(4)
         response = requests.get(
             action_url,
             headers=get_hetzner_headers(),
