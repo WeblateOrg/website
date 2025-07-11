@@ -24,7 +24,6 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from weblate_web.hetzner import (
-    extract_field,
     generate_ssh_url,
     generate_subaccount_data,
     get_directory_summary,
@@ -69,7 +68,7 @@ class Command(BaseCommand):
 
         for storage in backup_storages:
             # Skip non-weblate subaccounts
-            homedirectory: str = storage["subaccount"]["homedirectory"]
+            homedirectory: str = storage["home_directory"]
             if not homedirectory.startswith("weblate/"):
                 continue
             # Generate SSH URL used for borg
@@ -104,18 +103,15 @@ class Command(BaseCommand):
             storage_data = generate_subaccount_data(
                 dirname, service, access=service.has_paid_backup()
             )
-            if any(
-                extract_field(storage["subaccount"], field) != value
-                for field, value in storage_data.items()
-            ):
-                username: str = storage["subaccount"]["username"]
+            if any(storage[field] != value for field, value in storage_data.items()):  # type: ignore[literal-required]
+                username: str = storage["username"]
                 self.stdout.write(
                     f"Updating Hetzner data for {username} for {service.pk} {service.site_domain} ({customer.name})"
                 )
                 if hetzner_modified:
                     # Honor rate limit
                     time.sleep(5)
-                modify_storage_subaccount(username, storage_data)
+                modify_storage_subaccount(storage["id"], storage_data)
                 hetzner_modified = True
 
         return processed_repositories

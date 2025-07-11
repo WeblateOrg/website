@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import stat
+import time
 from contextlib import contextmanager
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, NotRequired, TypedDict, cast
 
 import requests
 from django.conf import settings
+from django.utils.crypto import get_random_string
 from paramiko.client import SSHClient
 
 if TYPE_CHECKING:
@@ -18,7 +20,52 @@ if TYPE_CHECKING:
 
     from .models import Report, Service
 
-SUBACCOUNTS_API = "https://robot-ws.your-server.de/storagebox/{}/subaccount"
+STORAGE_BOX_API = "https://api.hetzner.com/v1/storage_boxes/{}"
+
+
+class ErrorDict(TypedDict):
+    code: str
+    message: str
+
+
+class ResourceDict(TypedDict):
+    id: int
+    type: str
+
+
+class ActionDict(TypedDict):
+    id: int
+    command: str
+    status: Literal["running", "success", "error"]
+    started: str
+    finished: str | None
+    progress: int
+    resources: list[ResourceDict]
+    error: ErrorDict | None
+
+
+class AccessSettingsDict(TypedDict):
+    samba_enabled: bool
+    ssh_enabled: bool
+    webdav_enabled: bool
+    readonly: bool
+    reachable_externally: bool
+
+
+class SubaccountInfoDict(TypedDict):
+    home_directory: str
+    labels: dict[str, str]
+    description: str
+    access_settings: AccessSettingsDict
+    password: NotRequired[str]
+
+
+class SubaccountDict(SubaccountInfoDict):
+    id: int
+    username: str
+    server: str
+    created: str
+    storage_box: int
 
 
 @contextmanager
@@ -81,63 +128,123 @@ def create_storage_folder(
 
 def generate_subaccount_data(
     dirname: str, service: Service, *, access: bool = True
-) -> dict[str, str]:
+) -> SubaccountInfoDict:
     return {
-        "homedirectory": f"weblate/{dirname}",
-        "ssh": "1" if access else "0",
-        "external_reachability": "1",
-        "comment": f"Weblate backup ({service.pk}) {service.site_domain}"[:50],
+        "home_directory": f"weblate/{dirname}",
+        "access_settings": {
+            "samba_enabled": False,
+            "ssh_enabled": access,
+            "webdav_enabled": False,
+            "readonly": False,
+            "reachable_externally": True,
+        },
+        "labels": {
+            "environment": service.site_domain,
+        },
+        "description": f"Weblate backup ({service.pk}) {service.site_domain}"[:50],
     }
 
 
-def extract_field(data: dict, field: str) -> str:
-    """
-    Hides boolean API weirdness when parsing responses.
-
-    - booleans need to be written as strings
-    - but they are returned as booleans
-    """
-    value = data[field]
-    if field in {"ssh", "external_reachability"}:
-        return str(int(value))
-    return value
+def get_hetzner_headers() -> dict[str, str]:
+    """Hetzner API authorization headers."""
+    return {"Authorization": f"Bearer {settings.HETZNER_API}"}
 
 
-def create_storage_subaccount(dirname: str, service: Service) -> dict:
-    # Create account on the service
-    url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
+def hetzner_box_url(*parts: str) -> str:
+    """URL for Hetzner Storage Box API."""
+    base_url = STORAGE_BOX_API.format(settings.STORAGE_BOX)
+    return "/".join((base_url, *parts))
+
+
+def wait_for_action(action: ActionDict) -> ActionDict:
+    """Wait for action to complete."""
+    action_url = hetzner_box_url("actions", str(action["id"]))
+
+    # Wait until action is completed
+    while action["error"] is None and action["status"] == "running":
+        time.sleep(1)
+        response = requests.get(
+            action_url,
+            headers=get_hetzner_headers(),
+            timeout=60,
+        )
+        response.raise_for_status()
+        action = response.json()["action"]
+
+    # Error handling
+    if action["error"] is not None:
+        raise ValueError(f"Creating subaccount failed: {action['error']['message']}")
+
+    return action
+
+
+def create_storage_subaccount(dirname: str, service: Service) -> SubaccountDict:
+    """Create account on the service."""
+    url = hetzner_box_url("subaccounts")
+    data = generate_subaccount_data(dirname, service)
+    data["password"] = get_random_string(32)
+    # Create subaccount
     response = requests.post(
         url,
-        data=generate_subaccount_data(dirname, service),
-        auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
-        timeout=720,
+        json=data,
+        headers=get_hetzner_headers(),
+        timeout=60,
     )
     response.raise_for_status()
-    return response.json()
+    action = wait_for_action(response.json()["action"])
+
+    # Parse subaccount ID
+    subaccount_id = -1
+    for resource in action["resources"]:
+        if resource["type"] == "storage_box_subaccount":
+            subaccount_id = resource["id"]
+    if subaccount_id == -1:
+        raise ValueError("Could not find created subaccount ID!")
+
+    # Fetch subaccount data (needed for SSH URL)
+    subaccount_url = hetzner_box_url("subaccounts", str(subaccount_id))
+    response = requests.get(subaccount_url, headers=get_hetzner_headers(), timeout=60)
+    response.raise_for_status()
+    return response.json()["subaccount"]
 
 
-def modify_storage_subaccount(username: str, data: dict) -> None:
-    # Create account on the service
-    url = f"{SUBACCOUNTS_API.format(settings.STORAGE_BOX)}/{username}"
+def modify_storage_subaccount(subaccount_id: int, data: SubaccountInfoDict) -> None:
+    """Update account on the service."""
+    # Update metadata
+    subaccount_url = hetzner_box_url("subaccounts", str(subaccount_id))
     response = requests.put(
-        url,
-        data=data,
-        auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD),
-        timeout=720,
+        subaccount_url,
+        json={"labels": data["labels"], "description": data["description"]},
+        headers=get_hetzner_headers(),
+        timeout=60,
     )
     response.raise_for_status()
 
-
-def generate_ssh_url(data: dict) -> str:
-    return "ssh://{}@{}:23/./backups".format(
-        data["subaccount"]["username"], data["subaccount"]["server"]
+    # Update access
+    access_url = hetzner_box_url(
+        "subaccounts", str(subaccount_id), "actions", "update_access_settings"
     )
+    access_data: dict[str, str | bool] = {"home_directory": data["home_directory"]}
+    access_data.update(cast("dict[str, bool]", data["access_settings"]))
+    response = requests.post(
+        access_url, json=access_data, headers=get_hetzner_headers(), timeout=60
+    )
+    response.raise_for_status()
+    wait_for_action(response.json()["action"])
 
 
-def get_storage_subaccounts() -> list[dict]:
-    url = SUBACCOUNTS_API.format(settings.STORAGE_BOX)
+def generate_ssh_url(data: SubaccountDict) -> str:
+    """Generate SSH URL from subaccount service data."""
+    return "ssh://{}@{}:23/./backups".format(data["username"], data["server"])
+
+
+def get_storage_subaccounts() -> list[SubaccountDict]:
+    """List current subaccounts."""
+    url = hetzner_box_url("subaccounts")
     response = requests.get(
-        url, auth=(settings.STORAGE_USER, settings.STORAGE_PASSWORD), timeout=720
+        url,
+        headers=get_hetzner_headers(),
+        timeout=60,
     )
     response.raise_for_status()
-    return response.json()
+    return response.json()["subaccounts"]

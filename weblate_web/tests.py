@@ -7,6 +7,7 @@ from decimal import Decimal
 from io import StringIO
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, cast
+from unittest.mock import patch
 from xml.etree import ElementTree  # noqa: S405
 
 import responses
@@ -29,8 +30,17 @@ from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import FOSDEM_ORIGIN
 
+from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
-from .models import Donation, Package, PackageCategory, Post, Service, Subscription
+from .models import (
+    Donation,
+    Package,
+    PackageCategory,
+    Post,
+    Report,
+    Service,
+    Subscription,
+)
 from .remote import (
     ACTIVITY_URL,
     WEBLATE_CONTRIBUTORS_URL,
@@ -1979,3 +1989,174 @@ class ExchangeRatesTestCase(SimpleTestCase):
         self.mock_rate()
         with self.assertRaises(HTTPError):
             UncachedExchangeRates.get("EUR", date(2000, 1, 7))
+
+
+class StorageBoxTestCase(FakturaceTestCase):
+    @responses.activate
+    def test_create(self):
+        service = self.create_service(years=0, days=-2, recurring="")
+        responses.post(
+            "https://api.hetzner.com/v1/storage_boxes/153391/subaccounts",
+            json={
+                "action": {
+                    "id": 13,
+                    "command": "create_subaccount",
+                    "status": "running",
+                    "progress": 0,
+                    "started": "2016-01-30T23:50:00+00:00",
+                    "finished": None,
+                    "resources": [
+                        {"id": 42, "type": "storage_box"},
+                        {"id": 42, "type": "storage_box_subaccount"},
+                    ],
+                    "error": None,
+                }
+            },
+        )
+        responses.get(
+            "https://api.hetzner.com/v1/storage_boxes/153391/actions/13",
+            json={
+                "action": {
+                    "id": 13,
+                    "command": "create_subaccount",
+                    "status": "success",
+                    "progress": 100,
+                    "started": "2016-01-30T23:50:00+00:00",
+                    "finished": "2016-01-30T23:50:00+00:00",
+                    "resources": [
+                        {"id": 42, "type": "storage_box"},
+                        {"id": 42, "type": "storage_box_subaccount"},
+                    ],
+                    "error": None,
+                }
+            },
+        )
+        responses.get(
+            "https://api.hetzner.com/v1/storage_boxes/153391/subaccounts/42",
+            json={
+                "subaccount": {
+                    "id": 42,
+                    "username": "u1337-sub1",
+                    "home_directory": "my_backups/host01.my.company",
+                    "server": "u1337-sub1.your-storagebox.de",
+                    "access_settings": {
+                        "reachable_externally": False,
+                        "readonly": False,
+                        "samba_enabled": False,
+                        "ssh_enabled": False,
+                        "webdav_enabled": False,
+                    },
+                    "description": "host01 backup",
+                    "labels": {
+                        "environment": "prod",
+                        "example.com/my": "label",
+                        "just-a-key": "",
+                    },
+                    "created": "2016-01-30T23:55:00+00:00",
+                    "storage_box": 42,
+                }
+            },
+        )
+        with patch("weblate_web.models.create_storage_folder"):
+            service.create_backup_repository(Report())
+
+    @responses.activate
+    def test_sync(self):
+        test_repo = "ssh://u1337-sub1@u1337-sub1.your-storagebox.de:23/./backups"
+        service = self.create_service(years=0, days=-2, recurring="")
+        service.backup_repository = test_repo
+
+        responses.get(
+            "https://api.hetzner.com/v1/storage_boxes/153391/subaccounts",
+            json={
+                "subaccounts": [
+                    {
+                        "id": 42,
+                        "username": "u1337-sub1",
+                        "home_directory": "weblate/host01.my.company",
+                        "server": "u1337-sub1.your-storagebox.de",
+                        "access_settings": {
+                            "reachable_externally": False,
+                            "readonly": False,
+                            "samba_enabled": False,
+                            "ssh_enabled": False,
+                            "webdav_enabled": False,
+                        },
+                        "description": "host01 backup",
+                        "labels": {
+                            "environment": "prod",
+                            "example.com/my": "label",
+                            "just-a-key": "",
+                        },
+                        "created": "2016-01-30T23:55:00+00:00",
+                        "storage_box": 42,
+                    }
+                ]
+            },
+        )
+        responses.put(
+            "https://api.hetzner.com/v1/storage_boxes/153391/subaccounts/42",
+            json={
+                "subaccount": {
+                    "id": 42,
+                    "username": "u1337-sub1",
+                    "home_directory": "my_backups/host01.my.company",
+                    "server": "u1337-sub1.your-storagebox.de",
+                    "access_settings": {
+                        "reachable_externally": False,
+                        "readonly": False,
+                        "samba_enabled": False,
+                        "ssh_enabled": False,
+                        "webdav_enabled": False,
+                    },
+                    "description": "host01 backup",
+                    "labels": {
+                        "environment": "prod",
+                        "example.com/my": "label",
+                        "just-a-key": "",
+                    },
+                    "created": "2016-01-30T23:55:00+00:00",
+                    "storage_box": 42,
+                }
+            },
+        )
+        responses.post(
+            "https://api.hetzner.com/v1/storage_boxes/153391/subaccounts/42/actions/update_access_settings",
+            json={
+                "action": {
+                    "id": 13,
+                    "command": "update_access_settings",
+                    "status": "running",
+                    "progress": 0,
+                    "started": "2016-01-30T23:50:00+00:00",
+                    "finished": None,
+                    "resources": [
+                        {"id": 42, "type": "storage_box"},
+                        {"id": 42, "type": "storage_box_subaccount"},
+                    ],
+                    "error": None,
+                }
+            },
+        )
+        responses.get(
+            "https://api.hetzner.com/v1/storage_boxes/153391/actions/13",
+            json={
+                "action": {
+                    "id": 13,
+                    "command": "update_access_settings",
+                    "status": "success",
+                    "progress": 100,
+                    "started": "2016-01-30T23:50:00+00:00",
+                    "finished": "2016-01-30T23:50:00+00:00",
+                    "resources": [
+                        {"id": 42, "type": "storage_box"},
+                        {"id": 42, "type": "storage_box_subaccount"},
+                    ],
+                    "error": None,
+                }
+            },
+        )
+
+        command = BackupsSyncCommand()
+        services_dict = {test_repo: service}
+        self.assertEqual(command.sync_data(services_dict), {test_repo})
