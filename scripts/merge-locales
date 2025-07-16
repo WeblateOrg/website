@@ -1,10 +1,12 @@
 #!/bin/sh
 
 # Temporary hack to merge locales from elsewhere
-for d in locale/* ; do
+for d in locale/*; do
     loc=${d##locale/}
-    if [ $loc = "django.pot" ] ; then
+    if [ "$loc" = "django.pot" ]; then
         continue
     fi
-    msgmerge -U --previous -C ~/work/weblate/weblate/locale/${loc}/LC_MESSAGES/django.po $d/LC_MESSAGES/django.po locale/django.pot
+    msgmerge -U --previous \
+        -C "$HOME/weblate/weblate/locale/${loc}/LC_MESSAGES/django.po" \
+        "$d/LC_MESSAGES/django.po locale/django.pot"
 done

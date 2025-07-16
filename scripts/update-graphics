@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -d ../graphics/ ] ; then
+if [ ! -d ../graphics/ ]; then
     echo "Graphics repository missing!"
 fi
 
@@ -11,10 +11,10 @@ cp ../graphics/logo/weblate.svg ../graphics/logo/weblate-black.svg weblate_web/s
 cp ../graphics/logo/weblate.ico weblate_web/static/favicon.ico
 
 # Scaled logos
-for size in 64 120 128 150 180 192 512 1024 ; do
+for size in 64 120 128 150 180 192 512 1024; do
     cp ../graphics/logo/weblate-background-$size.png weblate_web/static/weblate-$size.png
 done
-for size in 16 32 128 ; do
+for size in 16 32 128; do
     cp ../graphics/logo/weblate-logo-$size.png weblate_web/static/logo-$size.png
 done
 
