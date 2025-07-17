@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import random
+import re
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
@@ -31,7 +32,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.core.exceptions import SuspiciousOperation, ValidationError
+from django.core.exceptions import BadRequest, SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import connection, transaction
@@ -39,6 +40,7 @@ from django.db.models import Q
 from django.http import (
     FileResponse,
     Http404,
+    HttpRequest,
     HttpResponseBadRequest,
     HttpResponseRedirect,
     JsonResponse,
@@ -104,6 +106,7 @@ if TYPE_CHECKING:
 ON_EACH_SIDE = 3
 ON_ENDS = 2
 DOT = "."
+USER_AGENT_RE = re.compile(r"Weblate/([0-9.]{3,6})")
 
 
 def get_page_range(page_obj):
@@ -199,6 +202,14 @@ def api_user(request):
     return JsonResponse({"status": "User updated"})
 
 
+def extract_weblate_version(request: HttpRequest) -> str:
+    user_agent = request.headers.get("User-Agent", "")
+    match = USER_AGENT_RE.match(user_agent)
+    if match:
+        return match[1]
+    raise BadRequest("Invalid User-Agent")
+
+
 @require_POST
 @csrf_exempt
 def api_hosted(request):
@@ -272,7 +283,7 @@ def api_hosted(request):
         source_strings=payload["source_strings"],
         hosted_words=payload["words"],
         hosted_strings=payload.get("strings", 0),
-        version=request.headers["User-Agent"].split("/", 1)[1],
+        version=extract_weblate_version(request),
     )
     service.update_status()
     return JsonResponse(
@@ -301,7 +312,7 @@ def api_support(request):
         source_strings=request.POST.get("source_strings", 0),
         hosted_words=request.POST.get("words", 0),
         hosted_strings=request.POST.get("strings", 0),
-        version=request.headers["User-Agent"].split("/", 1)[1],
+        version=extract_weblate_version(request),
         discoverable=bool(request.POST.get("discoverable")),
     )
     service.update_status()
