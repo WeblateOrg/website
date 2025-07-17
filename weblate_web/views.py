@@ -41,7 +41,6 @@ from django.http import (
     FileResponse,
     Http404,
     HttpRequest,
-    HttpResponseBadRequest,
     HttpResponseRedirect,
     JsonResponse,
 )
@@ -103,13 +102,15 @@ from weblate_web.utils import (
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from django.core.paginator import Page
+
 ON_EACH_SIDE = 3
 ON_ENDS = 2
 DOT = "."
 USER_AGENT_RE = re.compile(r"Weblate/([0-9.]{3,6})")
 
 
-def get_page_range(page_obj):
+def get_page_range(page_obj: Page) -> list[int | str]:
     paginator = page_obj.paginator
     page_num = page_obj.number - 1
     num_pages = paginator.num_pages
@@ -168,7 +169,7 @@ def get_customer(
 
 @require_POST
 @csrf_exempt
-def api_user(request):
+def api_user(request: HttpRequest) -> JsonResponse:
     try:
         payload = loads(
             request.POST.get("payload", ""),
@@ -176,9 +177,9 @@ def api_user(request):
             max_age=300,
             salt="weblate.user",
         )
-    except (BadSignature, SignatureExpired):
+    except (BadSignature, SignatureExpired) as error:
         sentry_sdk.capture_exception()
-        return HttpResponseBadRequest("Invalid signature")
+        raise BadRequest("Invalid signature") from error
 
     try:
         user = User.objects.get(username=payload["username"])
@@ -212,7 +213,7 @@ def extract_weblate_version(request: HttpRequest) -> str:
 
 @require_POST
 @csrf_exempt
-def api_hosted(request):
+def api_hosted(request: HttpRequest) -> JsonResponse:
     try:
         payload = loads(
             request.POST.get("payload", ""),
@@ -220,9 +221,9 @@ def api_hosted(request):
             max_age=300,
             salt="weblate.hosted",
         )
-    except (BadSignature, SignatureExpired):
+    except (BadSignature, SignatureExpired) as error:
         sentry_sdk.capture_exception()
-        return HttpResponseBadRequest("Invalid signature")
+        raise BadRequest("Invalid signature") from error
 
     billing_id: int = payload["billing"]
 
@@ -299,7 +300,7 @@ def api_hosted(request):
 
 @require_POST
 @csrf_exempt
-def api_support(request):
+def api_support(request: HttpRequest) -> JsonResponse:
     service = get_object_or_404(Service, secret=request.POST.get("secret", ""))
     service.report_set.create(
         site_url=request.POST.get("site_url", ""),
@@ -351,7 +352,7 @@ def api_support(request):
 
 @require_POST
 @login_required
-def fetch_vat(request: AuthenticatedHttpRequest):
+def fetch_vat(request: AuthenticatedHttpRequest) -> JsonResponse:
     if "vat" not in request.POST:
         raise SuspiciousOperation("Missing needed parameters")
     vat = cache_vies_data(request.POST["vat"])
