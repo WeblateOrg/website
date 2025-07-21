@@ -177,6 +177,6 @@ def fetch_vat_info(fetch_all: bool = False) -> None:
     customers = Customer.objects.exclude(vat="").exclude(vat=None)
     if not fetch_all:
         weekday = timezone.now().weekday()
-        customers = customers.annotate(idmod=F("id") % 7).filter(idmod=weekday)
+        customers = customers.annotate(idmod=F("id") % 3).filter(idmod=weekday)
     for customer in customers.iterator():
         cache_vies_data(customer.vat)
