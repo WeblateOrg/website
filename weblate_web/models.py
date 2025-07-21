@@ -1076,6 +1076,14 @@ class Subscription(models.Model):
         customer_reference: str = "",
         skip_intro: bool = False,
     ) -> Invoice:
+        start_date = timezone.now()
+        if (
+            service
+            and package.category == PackageCategory.PACKAGE_DEDICATED
+            and service.hosted_subscriptions
+        ):
+            # Chain start date for service upgrades
+            start_date = service.expires + timedelta(days=1)
         return cls._create_invoice(
             kind=kind,
             customer=customer,
@@ -1084,7 +1092,7 @@ class Subscription(models.Model):
             extra={
                 "subscription": package.name,
                 "service": service.pk if service else None,
-                "start_date": timezone.now(),
+                "start_date": start_date,
                 "skip_intro": skip_intro,
             },
             customer_reference=customer_reference,
