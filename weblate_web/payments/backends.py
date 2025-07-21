@@ -53,6 +53,11 @@ EXTRACTABLE_FIELDS: tuple[str, ...] = (
     # Extract from comment for manual pairing
     "comment",
 )
+SKIP_ACCOUNTS: set[str] = {
+    "2400163692",
+    "705-77628461",
+    "CZ4906000000001610116101",
+}
 THEPAY_LANGUAGES = {
     "ab",
     "aa",
@@ -529,7 +534,7 @@ class FioBank(Backend):
         return instructions
 
     @classmethod
-    def fetch_payments(cls, from_date: str | None = None) -> None:
+    def fetch_payments(cls, from_date: str | None = None) -> None:  # noqa: C901, PLR0915
         from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
 
         tokens: list[str]
@@ -546,8 +551,15 @@ class FioBank(Backend):
                 print(f"Failed to fetch payments: {error}")
                 continue
 
-            currency = info["currency"]
+            currency: str = info["currency"]
             for entry in transactions:
+                amount: Decimal = entry["amount"]
+
+                # Skip outgoing payments
+                if amount < 0:
+                    continue
+
+                # Extract possible invoice IDs
                 matches: list[str] = []
                 for field in EXTRACTABLE_FIELDS:
                     if value := entry.get(field, None):
@@ -555,6 +567,8 @@ class FioBank(Backend):
                             match.replace(" ", "")
                             for match in INVOICE_MATCH_RE.findall(value)
                         )
+
+                processed = False
 
                 # Process all matches
                 for invoice in Invoice.objects.filter(
@@ -572,11 +586,11 @@ class FioBank(Backend):
                         )
                         continue
                     if (
-                        entry["amount"] < invoice.total_amount
+                        amount < invoice.total_amount
                         and "[underpaid]" not in entry["comment"]
                     ):
                         print(
-                            f"{invoice.number}: skipping, underpaid, {entry['amount']} instead of {invoice.total_amount}"
+                            f"{invoice.number}: skipping, underpaid, {amount} instead of {invoice.total_amount}"
                         )
                         continue
 
@@ -610,6 +624,14 @@ class FioBank(Backend):
                     # Store transaction details
                     backend.payment.details["transaction"] = entry
                     backend.success()
+                    processed = True
+                    break
+
+                # Warn about not processed payment
+                if not processed and entry["account_number"] not in SKIP_ACCOUNTS:
+                    print(
+                        f"Unprocessed incoming payment {amount} {currency}  {entry['account_name']}"
+                    )
 
 
 @register_backend
