@@ -9,7 +9,7 @@
       <td>{{ object.site_version }}</td>
       <td>{{ object.get_status_display }}</td>
       <td>
-        {% for subscription in object.subscription_set.all %}
+        {% for subscription in object.enabled_subscriptions %}
           {{ subscription.package }}
           {% if not forloop.last %}<br>{% endif %}
         {% endfor %}

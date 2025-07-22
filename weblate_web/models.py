@@ -766,6 +766,10 @@ class Service(models.Model):
         return self.latest_subscription
 
     @cached_property
+    def enabled_subscriptions(self) -> models.QuerySet[Subscription]:
+        return self.subscription_set.filter(enabled=True).order_by("-expires")
+
+    @cached_property
     def expires(self):
         if self.latest_subscription is not None:
             return self.latest_subscription.expires
