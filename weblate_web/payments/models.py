@@ -45,7 +45,6 @@ from vies.models import VATINField
 
 from weblate_web.utils import get_site_url
 
-from .fields import Char32UUIDField
 from .utils import send_notification, validate_email
 from .validators import validate_vatin
 
@@ -344,7 +343,7 @@ class Payment(models.Model):
     CURRENCY_CZK = 3
     CURRENCY_GBP = 4
 
-    uuid = Char32UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.IntegerField()
     currency = models.IntegerField(
         choices=(

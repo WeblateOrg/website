@@ -50,7 +50,6 @@ from weblate_web.invoices.models import (
     InvoiceCategory,
     InvoiceKind,
 )
-from weblate_web.payments.fields import Char32UUIDField
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
@@ -183,7 +182,8 @@ models.CharField.register_lookup(MySQLSearchLookup)
 
 class Donation(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT)
-    payment = Char32UUIDField(blank=True, null=True)
+    # TODO: should use foreign key
+    payment = models.UUIDField(blank=True, null=True)
     reward = models.IntegerField(choices=REWARDS, default=0)
     link_text = models.CharField(
         verbose_name=gettext_lazy("Link text"), max_length=200, blank=True
@@ -945,7 +945,8 @@ class Service(models.Model):
 
 class Subscription(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.PROTECT)
-    payment = Char32UUIDField(blank=True, null=True)
+    # TODO: should use foreign key
+    payment = models.UUIDField(blank=True, null=True)
     package = models.ForeignKey(Package, on_delete=models.deletion.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
@@ -992,6 +993,8 @@ class Subscription(models.Model):
 
     @cached_property
     def payment_obj(self) -> Payment:
+        if self.payment is None:
+            raise ValueError("Missing payment!")
         return Payment.objects.get(pk=self.payment)
 
     def list_payments(self):
@@ -1128,7 +1131,8 @@ class PastPayments(models.Model):
     donation = models.ForeignKey(
         Donation, on_delete=models.deletion.PROTECT, null=True, blank=True
     )
-    payment = Char32UUIDField()
+    # TODO: should use foreign key
+    payment = models.UUIDField()
 
     class Meta:
         verbose_name = "Past payment"

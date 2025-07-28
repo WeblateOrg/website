@@ -14,10 +14,12 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: weblate
+          POSTGRES_DB: weblate
       mariadb:
         image: mariadb:10.11.13@sha256:24bb6e3d8e46f4581ddcc2b2c22fd78c99c77ac4e3fb7c9aba3a5c4c4d934ca2
         env:
-          MYSQL_ROOT_PASSWORD: weblate
+          MARIADB_ROOT_PASSWORD: weblate
+          MARIADB_DATABASE: weblate
         ports:
         - 3306:3306
     runs-on: ubuntu-24.04
@@ -38,7 +40,8 @@ jobs:
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
-        persist-credentials: false
+        persist-credentials: true
+        fetch-depth: 0
     - name: Install apt dependencies
       # gettext is needed as Django uses msgfmt to compile MO files
       run: |
@@ -62,8 +65,31 @@ jobs:
     - name: Test with Django
       run: |
         pytest --junitxml=junit.xml weblate_web
+        cp .coverage .coverage.pytest
+    - name: Migrations
+      run: |
+        # First version with database backends tests
+        git checkout 7ba420b18ec3c7d32fb71823335e068f15b96855
+        ./manage.py migrate
+        ./manage.py shell -c 'customer = Customer.objects.create(user_id=-1); payment = Payment.objects.create(customer=customer, amount=1); Payment.objects.create(customer=customer, amount=1, repeat=payment)'
+        EXISTING_PK=$(./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
+        EXISTING_REPEAT=$(./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
+        git checkout "$GITHUB_SHA"
+        coverage run ./manage.py migrate
+        NEW_PK=$(./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
+        NEW_REPEAT=$(./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
+        if [ "$NEW_PK" != "$EXISTING_PK" ] ; then
+          echo "Migration failed (pk): $NEW_PK != $EXISTING_PK"
+          exit 1
+        fi
+        if [ "$NEW_REPEAT" != "$EXISTING_REPEAT" ] ; then
+          echo "Migration failed (repeat): $NEW_REPEAT != $EXISTING_REPEAT"
+          exit 1
+        fi
     - name: Coverage
-      run: coverage xml
+      run: |
+        coverage combine
+        coverage xml
     - uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
       with:
         token: ${{secrets.CODECOV_TOKEN}}
