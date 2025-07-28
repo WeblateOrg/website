@@ -19,6 +19,8 @@
 
 from __future__ import annotations
 
+from uuid import UUID
+
 from django.db import models
 
 
@@ -31,3 +33,12 @@ class Char32UUIDField(models.UUIDField):
         if value is not None:
             value = value.replace("-", "") if isinstance(value, str) else value.hex
         return value
+
+
+def migrate_uuid_field(model, old: str, new: str):
+    for instance in model.objects.iterator():
+        old_value: str | UUID | None = getattr(instance, old)
+        if old_value is not None:
+            new_value = old_value if isinstance(old_value, UUID) else UUID(old_value)
+            setattr(instance, new, new_value)
+            instance.save(update_fields=[new])
