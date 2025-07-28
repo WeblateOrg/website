@@ -2177,6 +2177,10 @@ class StorageBoxTestCase(FakturaceTestCase):
 class DiscoveryTestCase(UserTestCase):
     def test_create(self):
         # This requires login
+        response = self.client.get("/subscription/discovery/", follow=True)
+        self.assertRedirects(
+            response, "/admin/login/?next=%2Fen%2Fsubscription%2Fdiscovery%2F"
+        )
         self.login()
         # Test exact URL because that is used from Weblate
         response = self.client.get("/subscription/discovery/", follow=True)
