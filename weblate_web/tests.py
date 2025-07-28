@@ -2172,3 +2172,30 @@ class StorageBoxTestCase(FakturaceTestCase):
         command = BackupsSyncCommand()
         services_dict = {test_repo: service}
         self.assertEqual(command.sync_data(services_dict), {test_repo})
+
+
+class DiscoveryTestCase(UserTestCase):
+    def test_create(self):
+        # This requires login
+        self.login()
+        # Test exact URL because that is used from Weblate
+        response = self.client.get("/subscription/discovery/", follow=True)
+        self.assertRedirects(response, "/en/subscription/discovery/")
+
+        # Missing required fields
+        response = self.client.post("/en/subscription/discovery/", {}, follow=True)
+        self.assertContains(response, "This field is required.")
+
+        # Valid activation
+        response = self.client.post(
+            "/en/subscription/discovery/",
+            {"site_url": "http://localhost", "discover_text": "Discover localhost"},
+        )
+        service = Service.objects.get()
+        self.assertEqual(service.site_url, "http://localhost")
+        self.assertNotEqual(service.secret, "")
+        self.assertRedirects(
+            response,
+            f"http://localhost/manage/?activation={service.secret}",
+            fetch_redirect_response=False,
+        )

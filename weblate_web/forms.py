@@ -124,6 +124,11 @@ class AddDiscoveryForm(forms.ModelForm):
         fields = ("site_url", "discover_text", "discover_image")
         widgets = {"discover_text": forms.Textarea}
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields["site_url"].required = True
+        self.fields["discover_text"].required = True
+
 
 class AgreementForm(forms.Form):
     consent = forms.BooleanField(label="I consent to the agreement", required=True)

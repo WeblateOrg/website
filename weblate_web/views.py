@@ -796,7 +796,7 @@ class AddDiscoveryView(CreateView):
         instance = form.instance
         instance.customer = get_customer(self.request, instance)
         mail_admins(
-            "Weblate: discovery description changed",
+            "Weblate: discovery registered",
             "Service link: {discover_url}\nNew text: {discover_text}\n".format(
                 discover_url=instance.site_url,
                 discover_text=form.cleaned_data.get("discover_text", "N/A"),
