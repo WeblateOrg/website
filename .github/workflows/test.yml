@@ -4,15 +4,37 @@ on: [push, pull_request]
 
 jobs:
   test:
+    services:
+      postgres:
+        image: postgres:17.5-alpine@sha256:ec01646a894c7c5aec8a29e0fe723ab093e24e2e055940090d282d8ab1c79d26
+        ports:
+        - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: weblate
+      mysql:
+        image: mariadb:11.8.2@sha256:2bcbaec92bd9d4f6591bc8103d3a8e6d0512ee2235506e47a2e129d190444405
+        env:
+          MYSQL_ROOT_PASSWORD: weblate
+        ports:
+        - 3306:3306
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         python-version:
         - '3.11'
         - '3.12'
         - '3.13'
-    name: Python ${{ matrix.python-version }}
-
+        database:
+        - sqlite
+        - mariadb
+        - postgresql
+    name: Python ${{ matrix.python-version }}, ${{ matrix.database }}
+    env:
+      CI_DATABASE: ${{ matrix.database }}
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:

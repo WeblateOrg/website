@@ -55,6 +55,19 @@ DATABASES = {
     },
 }
 
+# Configure CI database
+if (ci_database := os.environ.get("CI_DATABASE")) and ci_database != "sqlite":
+    DATABASES["default"]["NAME"] = "weblate"
+    DATABASES["default"]["PASSWORD"] = "weblate"  # noqa: S105
+    DATABASES["default"]["HOST"] = "127.0.0.1"
+    if ci_database == "mariadb":
+        DATABASES["default"]["ENGINE"] = "django.db.backends.mysql"
+        DATABASES["default"]["USER"] = "root"
+    else:
+        DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql"
+        DATABASES["default"]["USER"] = "postgres"
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Local time zone for this installation. Choices can be found here:
@@ -305,6 +318,8 @@ AGREEMENTS_COPY_PATH: Path | None = None
 AGREEMENTS_SIGNATURE_PATH: Path | None = None
 
 LOGIN_URL = "/saml2/login/"
+if ci_database:
+    LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/user/"
 
 REGISTRATION_EMAIL_MATCH = ".*"
