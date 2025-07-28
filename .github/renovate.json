@@ -2,5 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>WeblateOrg/meta:renovate"
+  ],
+  "packageRules": [
+    {
+      "description": "Pin MariaDB to match production environment",
+      "matchDepNames": [
+        "mariadb"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
+      "enabled": false
+    }
   ]
 }
