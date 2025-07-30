@@ -942,6 +942,7 @@ class Service(models.Model):
         self.secret = generate_secret()
         self.save(update_fields=["secret"])
 
+    @cached_property
     def recent_reports(self) -> models.QuerySet[Report]:
         return self.report_set.order_by("-timestamp")[:10]
 
