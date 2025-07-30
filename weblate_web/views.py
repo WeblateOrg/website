@@ -275,7 +275,7 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
         service.customer.users.add(User.objects.get_or_create(username=user)[0])
 
     # Collect stats
-    service.report_set.create(
+    report = service.report_set.create(
         site_url="https://hosted.weblate.org/",
         site_title="Hosted Weblate",
         projects=payload["projects"],
@@ -292,7 +292,7 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
             "name": service.status,
             "expiry": service.expires,
             "backup_repository": service.backup_repository,
-            "in_limits": service.check_in_limits(),
+            "in_limits": report.is_valid_site_url() and service.check_in_limits(),
             "limits": service.get_limits(),
         }
     )

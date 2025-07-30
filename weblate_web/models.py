@@ -582,9 +582,12 @@ class Service(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
     hosted_billing = models.IntegerField(default=0, db_index=True)
-    discoverable = models.BooleanField(default=False)
+    discoverable = models.BooleanField(default=False, blank=True)
     site_url = models.URLField(
         verbose_name=gettext_lazy("Server URL"), default="", blank=True
+    )
+    site_url_lock = models.BooleanField(
+        verbose_name="Lock server URL", default=False, blank=True
     )
     site_title = models.TextField(default="Weblate")
     site_version = models.TextField(default="", blank=True)
@@ -944,6 +947,9 @@ class Service(models.Model):
 
     @cached_property
     def recent_reports(self) -> models.QuerySet[Report]:
+        reports = self.report_set.all()
+        if self.site_url_lock:
+            reports = reports.filter(site_url=self.site_url)
         return self.report_set.order_by("-timestamp")[:10]
 
 
@@ -1183,6 +1189,9 @@ class Report(models.Model):
             using=using,
             update_fields=update_fields,
         )
+        if not self.is_valid_site_url():
+            return
+
         self.service.discoverable = self.discoverable
         self.service.site_url = self.site_url
         self.service.site_title = self.site_title
@@ -1198,6 +1207,12 @@ class Report(models.Model):
                 "site_users",
                 "site_projects",
             ]
+        )
+
+    def is_valid_site_url(self) -> bool:
+        return (
+            not self.service.site_url_lock
+            or self.site_url == self.service.site_url_lock
         )
 
 
