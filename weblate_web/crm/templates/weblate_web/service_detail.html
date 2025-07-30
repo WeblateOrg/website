@@ -73,5 +73,38 @@
     <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
   </p>
 {% endfor %}
+
+{% if object.recent_reports %}
+  <h2>Recent reports</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Site URL</th>
+        <th>Site title</th>
+        <th>Weblate version</th>
+        <th>Users</th>
+        <th>Projects</th>
+        <th>Hosted strings</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in object.recent_reports %}
+        <tr>
+          <td>{{ report.timestamp }}</td>
+          <td>
+            <a href="{{ report.site_url }}">{{ report.site_url }}</a>
+          </td>
+          <td>{{ report.site_title }}</td>
+          <td>{{ report.version }}</td>
+          <td>{{ report.users }}</td>
+          <td>{{ report.projects }}</td>
+          <td>{{ report.hosted_strings }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
 </section>
 {% endblock content %}

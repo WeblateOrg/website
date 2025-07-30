@@ -703,8 +703,8 @@ class Service(models.Model):
     @cached_property
     def last_report(self) -> Report | None:
         try:
-            return self.report_set.latest("timestamp")
-        except Report.DoesNotExist:
+            return self.recent_reports[0]
+        except IndexError:
             return None
 
     @cached_property
@@ -941,6 +941,9 @@ class Service(models.Model):
     def regenerate(self) -> None:
         self.secret = generate_secret()
         self.save(update_fields=["secret"])
+
+    def recent_reports(self) -> models.QuerySet[Report]:
+        return self.report_set.order_by("-timestamp")[:10]
 
 
 class Subscription(models.Model):
