@@ -13,7 +13,7 @@
       <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.name }}</a>
       <br>
       <a href="{{ object.site_url }}">{{ object.site_url }}</a>
-      {% if object.site_url_locked %}<strong>locked</strong>{% endif %}
+      {% if object.site_url_lock %}<strong>locked</strong>{% endif %}
       <br>
       Weblate {{ object.site_version }}, {{ object.site_users }} users, {{ object.site_projects }} projects
       <br>

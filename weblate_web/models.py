@@ -587,7 +587,10 @@ class Service(models.Model):
         verbose_name=gettext_lazy("Server URL"), default="", blank=True
     )
     site_url_lock = models.BooleanField(
-        verbose_name="Lock server URL", default=False, blank=True
+        verbose_name="Lock server URL",
+        default=False,
+        blank=True,
+        help_text="Other URLs will get support status as out of limits. The URL needs to be updated manually in case it changes.",
     )
     site_title = models.TextField(default="Weblate")
     site_version = models.TextField(default="", blank=True)
