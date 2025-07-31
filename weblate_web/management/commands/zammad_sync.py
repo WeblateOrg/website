@@ -21,13 +21,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
-from zammad_py import ZammadAPI
 
 from weblate_web.payments.models import Customer
+from weblate_web.zammad import get_zammad_client
 
 if TYPE_CHECKING:
+    from zammad_py import ZammadAPI
+
     from weblate_web.models import Service, Subscription
 
 HOSTED_ACCOUNT = "Hosted Weblate account"
@@ -57,10 +58,7 @@ class Command(BaseCommand):
         self.customers: dict[int, Customer] = {}
 
     def handle(self, *args, **options) -> None:
-        self.client = ZammadAPI(
-            url="https://care.weblate.org/api/v1/",
-            http_token=settings.ZAMMAD_TOKEN,
-        )
+        self.client = get_zammad_client()
         self.handle_hosted_account()
         self.handle_organizations()
 

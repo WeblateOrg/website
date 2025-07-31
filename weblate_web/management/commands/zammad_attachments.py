@@ -19,14 +19,18 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dateutil.parser import isoparse
-from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
-from zammad_py import ZammadAPI
 
 from weblate_web.crm.models import Interaction, ZammadSyncLog
 from weblate_web.payments.models import Customer
+from weblate_web.zammad import get_zammad_client
+
+if TYPE_CHECKING:
+    from zammad_py import ZammadAPI
 
 EXTENSIONS: tuple[str, ...] = (".pdf", ".docx", ".doc", ".odf", ".ods", ".xls", ".xlsx")
 
@@ -78,10 +82,7 @@ class Command(BaseCommand):
                 )
 
     def handle(self, *args, **options) -> None:
-        self.client = ZammadAPI(
-            url="https://care.weblate.org/api/v1/",
-            http_token=settings.ZAMMAD_TOKEN,
-        )
+        self.client = get_zammad_client()
         customers = Customer.objects.exclude(zammad_id=0)
 
         processed_articles: set[int] = set(
