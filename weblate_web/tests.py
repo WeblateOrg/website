@@ -988,6 +988,7 @@ class PaymentsTest(FakturaceTestCase):
     @responses.activate
     def test_invalid_vat(self) -> None:
         mock_vies(valid=False)
+        cnb_mock_rates()
         payment, url, customer_url = self.prepare_payment()
         # Inject invalid VAT
         customer = Customer.objects.get(pk=payment.customer.pk)
@@ -1001,6 +1002,7 @@ class PaymentsTest(FakturaceTestCase):
     @responses.activate
     def test_prefetch_vat(self) -> None:
         mock_vies(valid=True)
+        cnb_mock_rates()
         self.prepare_payment()
         call_command("background_vat")
 
@@ -1652,6 +1654,7 @@ class APITest(UserTestCase):
     def test_fetch_vat(self) -> None:
         self.login()
         mock_vies()
+        cnb_mock_rates()
         response = self.client.post(reverse("js-vat"))
         self.assertEqual(response.status_code, 400)
         response = self.client.post(reverse("js-vat"), {"vat": "CZ8003283018"})
@@ -1752,6 +1755,7 @@ class ServiceTest(FakturaceTestCase):
     @responses.activate
     def test_hosted_pay(self) -> None:
         mock_vies()
+        cnb_mock_rates()
         with override("en"):
             self.login()
             service = self.create_service(
@@ -1789,6 +1793,7 @@ class ServiceTest(FakturaceTestCase):
     @responses.activate
     def test_hosted_pay_yearly(self) -> None:
         mock_vies()
+        cnb_mock_rates()
         with override("en"):
             self.login()
             service = self.create_service(
@@ -1822,6 +1827,7 @@ class ServiceTest(FakturaceTestCase):
     @responses.activate
     def test_decicated_new(self) -> None:
         mock_vies()
+        cnb_mock_rates()
         self.create_packages()
         responses.add(
             responses.POST,
@@ -1888,6 +1894,7 @@ class ServiceTest(FakturaceTestCase):
     @responses.activate
     def test_hosted_upgrade(self) -> None:
         mock_vies()
+        cnb_mock_rates()
         with override("en"):
             self.login()
             service = self.create_service(
