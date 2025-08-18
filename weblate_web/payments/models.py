@@ -252,8 +252,12 @@ class Customer(models.Model):
         )
 
     @property
-    def is_eu_enduser(self):
-        return self.country_code in EU_VAT_RATES and not self.vat
+    def is_eu(self) -> bool:
+        return self.country_code in EU_VAT_RATES
+
+    @property
+    def is_eu_enduser(self) -> bool:
+        return self.is_eu and not self.vat
 
     @property
     def needs_vat(self) -> bool:

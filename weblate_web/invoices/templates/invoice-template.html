@@ -122,7 +122,14 @@
           </tr>
         {% else %}
           <tr>
-            <td>VAT 0% – Reverse charge</td>
+            <td>
+              VAT 0% –
+              {% if invoice.customer.is_eu %}
+                Reverse charge
+              {% else %}
+                Place of supply outside EU
+              {% endif %}
+            </td>
             <td></td>
             <td></td>
             <td>{{ invoice.display_total_vat }}</td>
@@ -203,14 +210,17 @@
           Should you have any questions concerning this quotation, please contact us at <a href="mailto:sales@weblate.org">sales@weblate.org</a>.
         {% endif %}
         {% if invoice.vat_rate == 0 %}
+          {% if invoice.customer.is_eu %}
 
+            VAT exempt under reverse charge mechanism pursuant to Article 196 of Directive 2006/112/EC.
 
-          VAT exempt under reverse charge mechanism pursuant to Article 196 of Directive 2006/112/EC.
+            Reverse charge applies.
 
-          Reverse charge applies.
+            VAT to be accounted for by the recipient in accordance with EU VAT rules.
+          {% else %}
+            VAT not applicable because place of supply outside EU.
 
-          VAT to be accounted for by the recipient in accordance with EU VAT rules.
-
+          {% endif %}
         {% endif %}
         {% if not invoice.is_draft %}This is a computer-generated invoice; signature not required.{% endif %}
       </p>
