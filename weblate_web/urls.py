@@ -278,7 +278,7 @@ urlpatterns = [
         ),
         # Broken links
         re_path(r"^https?:/.*$", RedirectView.as_view(url="/", permanent=True)),
-        re_path(r"^index\.html$", RedirectView.as_view(url="/", permanent=True)),
+        path("index.html", RedirectView.as_view(url="/", permanent=True)),
         re_path(
             r"^index\.([a-z][a-z])\.html$",
             RedirectView.as_view(url="/", permanent=True),
