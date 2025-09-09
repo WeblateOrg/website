@@ -44,14 +44,11 @@ class NewSubscriptionForm(forms.Form):
         choices=Currency, initial=Currency.EUR, coerce=Currency.from_str
     )
     customer_reference = forms.CharField(required=False)
+    customer_note = forms.CharField(required=False, widget=forms.Textarea)
     skip_intro = forms.BooleanField(
         required=False,
         label="Skip sending introduction/creating Zammad ticket upon purchase",
     )
-
-
-class CustomerReferenceForm(forms.Form):
-    customer_reference = forms.CharField(required=False)
 
 
 class MethodForm(forms.Form):

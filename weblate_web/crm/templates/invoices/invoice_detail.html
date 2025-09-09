@@ -34,6 +34,10 @@
         Customer reference: {{ object.customer_reference }}
         <br>
       {% endif %}
+      {% if object.customer_note %}
+        Customer note: {{ object.customer_note }}
+        <br>
+      {% endif %}
       Amount: {{ object.display_total_amount }}
       <br>
       {% if object.discount %}

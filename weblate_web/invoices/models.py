@@ -691,6 +691,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         end_date: datetime.datetime | None = None,
         extra: dict[str, int] | None = None,
         customer_reference: str | None = None,
+        customer_note: str | None = None,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
         invoice = Invoice.objects.create(
@@ -698,6 +699,7 @@ class Invoice(models.Model):  # noqa: PLR0904
             category=self.category,
             customer=self.customer,
             customer_reference=customer_reference or self.customer_reference,
+            customer_note=customer_note or self.customer_note,
             discount=self.discount,
             vat_rate=self.vat_rate,
             currency=self.currency,

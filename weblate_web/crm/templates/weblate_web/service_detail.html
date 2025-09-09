@@ -46,13 +46,9 @@
     {% endif %}
     Expires: {{ subscription.expires }}
     <br>
-    <label>
-      Customer reference for renewal:
-      <input type="text" name="customer_reference">
-    </label>
-    <br>
     <form method="post">
       {% csrf_token %}
+      {{ reference_form }}
       <input type="hidden" name="subscription" value="{{ subscription.pk }}">
       <input type="submit" name="quote" value="Issue renewal quote">
       <input type="submit" name="invoice" value="Issue renewal invoice">

@@ -12,10 +12,12 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import override
 from django.views.generic import DetailView, ListView, TemplateView
 
-from weblate_web.forms import CustomerReferenceForm, NewSubscriptionForm
+from weblate_web.forms import NewSubscriptionForm
+from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
 from weblate_web.payments.models import Customer, CustomerQuerySet, Payment
+from weblate_web.utils import show_form_errors
 
 from .models import Interaction
 
@@ -97,15 +99,24 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
     permission = "weblate_web.change_service"
     title = "Service detail"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["reference_form"] = CustomerReferenceForm()
+        return context
+
     def post(self, request, *args, **kwargs):
         service = self.get_object()
         subscription = service.subscription_set.get(pk=request.POST["subscription"])
-        reference = request.POST.get("customer_reference", "")
         if "quote" in request.POST or "invoice" in request.POST:
+            form = CustomerReferenceForm(request.POST)
+            if not form.is_valid():
+                show_form_errors(self.form, form)
             kind = InvoiceKind.QUOTE if "quote" in request.POST else InvoiceKind.INVOICE
             with override("en"):
                 invoice = subscription.create_invoice(
-                    kind=kind, customer_reference=reference
+                    kind=kind,
+                    customer_reference=form.cleaned_data["customer_reference"],
+                    customer_note=form.cleaned_data["customer_note"],
                 )
             return redirect(invoice)
         if "disable" in request.POST:
@@ -171,7 +182,10 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
         if self.can_convert():
             context["convert_form"] = CustomerReferenceForm(
                 self.request.POST if self.request.method == "POST" else None,
-                initial={"customer_reference": self.object.customer_reference},
+                initial={
+                    "customer_reference": self.object.customer_reference,
+                    "customer_note": self.object.customer_note,
+                },
             )
         return context
 
@@ -183,6 +197,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                 invoice = quote.duplicate(
                     kind=InvoiceKind.INVOICE,
                     customer_reference=form.cleaned_data["customer_reference"],
+                    customer_note=form.cleaned_data["customer_note"],
                 )
                 invoice.generate_files()
             return redirect(invoice)
@@ -251,6 +266,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     package=form.cleaned_data["package"],
                     currency=form.cleaned_data["currency"],
                     customer_reference=form.cleaned_data["customer_reference"],
+                    customer_note=form.cleaned_data["customer_note"],
                     skip_intro=form.cleaned_data.get("skip_intro", False),
                 )
             return redirect(invoice)

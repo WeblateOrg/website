@@ -1062,6 +1062,7 @@ class Subscription(models.Model):
         customer: Customer,
         package: Package,
         customer_reference: str,
+        customer_note: str = "",
         currency: Currency,
         extra: dict[str, Any],
         start_date: datetime | None = None,
@@ -1073,6 +1074,7 @@ class Subscription(models.Model):
             vat_rate=customer.vat_rate,
             discount=customer.discount,
             customer_reference=customer_reference,
+            customer_note=customer_note,
             kind=kind,
             currency=currency,
             category=package.get_invoice_category(),
@@ -1094,6 +1096,7 @@ class Subscription(models.Model):
         currency: Currency = Currency.EUR,
         service: Service | None = None,
         customer_reference: str = "",
+        customer_note: str = "",
         skip_intro: bool = False,
     ) -> Invoice:
         start_date = timezone.now()
@@ -1116,10 +1119,15 @@ class Subscription(models.Model):
                 "skip_intro": skip_intro,
             },
             customer_reference=customer_reference,
+            customer_note=customer_note,
         )
 
     def create_invoice(
-        self, *, kind: InvoiceKind, customer_reference: str = ""
+        self,
+        *,
+        kind: InvoiceKind,
+        customer_reference: str = "",
+        customer_note: str = "",
     ) -> Invoice:
         start_date = self.expires + timedelta(days=1)
         return self._create_invoice(
@@ -1132,6 +1140,7 @@ class Subscription(models.Model):
                 "start_date": self.expires + timedelta(days=1),
             },
             customer_reference=customer_reference,
+            customer_note=customer_note,
             start_date=start_date,
             end_date=start_date + get_period_delta(self.package.get_repeat()),
         )

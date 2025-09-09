@@ -130,11 +130,13 @@ class CRMTestCase(TestCase):
                 "invoice": 1,
                 "subscription": subscription2.pk,
                 "customer_reference": "PO1234",
+                "customer_note": "Custom note",
             },
             follow=True,
         )
         invoice = Invoice.objects.exclude(pk__in={invoice.pk, child.pk}).get()
         self.assertEqual(invoice.customer_reference, "PO1234")
+        self.assertEqual(invoice.customer_note, "Custom note")
         self.assertEqual(invoice.kind, InvoiceKind.INVOICE)
         self.assertEqual(invoice.total_amount, 99)
         self.assertEqual(
