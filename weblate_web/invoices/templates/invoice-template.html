@@ -63,6 +63,7 @@
     </div>
 
     {% if invoice.customer_reference %}<p>Customer reference: {{ invoice.customer_reference }}</p>{% endif %}
+    {% if invoice.customer_note %}<div class="customer_note">{{ invoice.customer_note|linebreaks }}</div>{% endif %}
 
     <table id="items">
       <thead>
@@ -143,9 +144,6 @@
         {% endif %}
       </tfoot>
     </table>
-    <div class="customer_note">
-      {% if invoice.customer_note %}{{ invoice.customer_note|linebreaks }}{% endif %}
-    </div>
 
     <footer>
       <table id="total" class="fullwidth">
