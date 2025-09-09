@@ -29,7 +29,7 @@ from django.utils.translation import gettext, override
 
 if TYPE_CHECKING:
     from django.contrib.auth.models import User
-    from django.forms import Form
+    from django.forms import BaseForm
 
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 FOSDEM_ORIGIN = "https://weblate.org/fosdem/"
@@ -50,7 +50,7 @@ class AuthenticatedHttpRequest(HttpRequest):
     user: User
 
 
-def show_form_errors(request: HttpRequest, form: Form) -> None:
+def show_form_errors(request: HttpRequest, form: BaseForm) -> None:
     """Show all form errors as a message."""
     for error in form.non_field_errors():
         messages.error(request, str(error))
