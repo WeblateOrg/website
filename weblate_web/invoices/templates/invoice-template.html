@@ -143,6 +143,9 @@
         {% endif %}
       </tfoot>
     </table>
+    <div class="customer_note">
+      {% if invoice.customer_note %}{{ invoice.customer_note|linebreaks }}{% endif %}
+    </div>
 
     <footer>
       <table id="total" class="fullwidth">

@@ -44,6 +44,7 @@ class InvoiceTestCase(UserTestCase):
         discount: Discount | None = None,
         vat_rate: int = 0,
         customer_reference: str = "",
+        customer_note: str = "",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         currency: Currency = Currency.EUR,
@@ -53,6 +54,7 @@ class InvoiceTestCase(UserTestCase):
             discount=discount,
             vat_rate=vat_rate,
             kind=kind,
+            customer_note=customer_note,
             category=InvoiceCategory.HOSTING,
             customer_reference=customer_reference,
             currency=currency,
@@ -74,12 +76,13 @@ class InvoiceTestCase(UserTestCase):
         invoice.invoiceitem_set.create(package=package)
         return invoice
 
-    def create_invoice(
+    def create_invoice(  # noqa: PLR0913
         self,
         *,
         discount: Discount | None = None,
         vat_rate: int = 0,
         customer_reference: str = "",
+        customer_note: str = "",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
     ) -> Invoice:
@@ -87,6 +90,7 @@ class InvoiceTestCase(UserTestCase):
             discount=discount,
             vat_rate=vat_rate,
             customer_reference=customer_reference,
+            customer_note=customer_note,
             vat=vat,
             kind=kind,
         )
@@ -115,6 +119,13 @@ class InvoiceTestCase(UserTestCase):
 
     def test_total_vat(self) -> None:
         invoice = self.create_invoice(vat_rate=21, customer_reference="PO123456")
+        self.assertEqual(invoice.total_amount, 121)
+        self.validate_invoice(invoice)
+
+    def test_total_vat_note(self) -> None:
+        invoice = self.create_invoice(
+            vat_rate=21, customer_reference="PO123456", customer_note="Test note\n" * 3
+        )
         self.assertEqual(invoice.total_amount, 121)
         self.validate_invoice(invoice)
 
