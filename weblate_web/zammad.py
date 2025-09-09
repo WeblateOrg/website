@@ -33,6 +33,7 @@ def create_dedicated_hosting_ticket(subscription: Subscription) -> None:
             "title": f"Your dedicated Weblate instance ({domain})",
             "customer_id": f"guess:{email}",
             "group": "Users",
+            "tags": "dedicated",
             "article": {
                 "subject": "Your dedicated Weblate instance",
                 "from": "Weblate Care",
