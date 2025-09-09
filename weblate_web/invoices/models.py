@@ -294,6 +294,10 @@ class Invoice(models.Model):  # noqa: PLR0904
         blank=True,
         help_text="Text will be shown on the generated invoice",
     )
+    customer_note = models.TextField(
+        blank=True,
+        help_text="Text will be shown on the generated invoice",
+    )
     discount = models.ForeignKey(
         Discount,
         on_delete=models.deletion.PROTECT,
