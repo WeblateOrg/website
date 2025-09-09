@@ -38,6 +38,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
+from django.utils.timezone import now
 from django.utils.translation import gettext, override
 from lxml import etree
 
@@ -381,6 +382,11 @@ class Invoice(models.Model):  # noqa: PLR0904
 
     def get_absolute_url(self) -> str:
         return reverse("crm:invoice-detail", kwargs={"pk": self.pk})
+
+    def is_editable(self) -> bool:
+        if self.kind == InvoiceKind.INVOICE:
+            return self.issue_date.month == now().month
+        return not self.invoice_set.exists()
 
     def get_due_delta(self) -> int:
         if self.prepaid:

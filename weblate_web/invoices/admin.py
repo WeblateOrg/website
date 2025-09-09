@@ -22,7 +22,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from django.contrib import admin
-from django.utils.timezone import now
 
 from .models import Discount, Invoice, InvoiceItem, InvoiceKind
 
@@ -78,7 +77,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     ) -> bool:
         if obj is None:
             return False
-        return obj.issue_date.month == now().month
+        return obj.is_editable()
 
     def get_readonly_fields(
         self, request: HttpRequest, obj: Invoice | None = None
