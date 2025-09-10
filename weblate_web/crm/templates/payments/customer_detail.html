@@ -83,6 +83,14 @@
         </tr>
       {% endfor %}
     </table>
+    <h2>Invoices</h2>
+    <table>
+      {% include "invoices/invoice_list_content.html" with object_list=object.invoice_set.all %}
+    </table>
+    {% if perms.invoices.add_invoice %}
+      <a href="{% url "admin:invoices_invoice_add" %}?customer={{ object.pk }}"
+         class="addlink">{% translate "Issue new invoice" %}</a>
+    {% endif %}
     <h2>Interactions</h2>
     <table>
       {% for interaction in object.interaction_set.all %}
@@ -102,14 +110,6 @@
         </tr>
       {% endfor %}
     </table>
-    <h2>Invoices</h2>
-    <table>
-      {% include "invoices/invoice_list_content.html" with object_list=object.invoice_set.all %}
-    </table>
-    {% if perms.invoices.add_invoice %}
-      <a href="{% url "admin:invoices_invoice_add" %}?customer={{ object.pk }}"
-         class="addlink">{% translate "Issue new invoice" %}</a>
-    {% endif %}
     <h2>Payments</h2>
     <table>
       {% for payment in object.payment_set.all %}
