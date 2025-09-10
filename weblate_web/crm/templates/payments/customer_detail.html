@@ -29,6 +29,7 @@
       {% endif %}
       {% if object.zammad_id %}
         <a href="https://care.weblate.org/#organization/profile/{{ object.zammad_id }}">View in Zammad</a>
+        <br />
       {% endif %}
       <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
     </p>
