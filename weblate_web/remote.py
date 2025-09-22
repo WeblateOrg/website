@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 import operator
-from typing import Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 import requests
 import sentry_sdk
@@ -34,6 +34,9 @@ from wlc import Weblate, WeblateException
 
 from weblate_web.payments.models import Customer
 from weblate_web.payments.validators import cache_vies_data
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 CONTRIBUTORS_URL = "https://api.github.com/repos/{}/{}/stats/contributors"
 PYPI_URL = "https://pypi.org/pypi/weblate/json"
@@ -68,7 +71,7 @@ class PYPIInfo(TypedDict):
     yanked_reason: str | None
 
 
-def get_contributors(force: bool = False):
+def get_contributors(force: bool = False) -> list:
     key = "wlweb-contributors"
     results = cache.get(key)
     if not force and results is not None:
@@ -103,7 +106,7 @@ def get_contributors(force: bool = False):
     return data
 
 
-def get_activity(force: bool = False):
+def get_activity(force: bool = False) -> list:
     key = "wlweb-activity-stats"
     results = cache.get(key)
     if not force and results is not None:
@@ -124,7 +127,7 @@ def get_activity(force: bool = False):
     return data
 
 
-def get_changes(force: bool = False):
+def get_changes(force: bool = False) -> list:
     key = "wlweb-changes-list"
     results = cache.get(key)
     if not force and results is not None:
@@ -144,7 +147,7 @@ def get_changes(force: bool = False):
     return stats[:10]
 
 
-def get_release(force: bool = False) -> list[PYPIInfo] | None:
+def get_release(force: bool = False) -> list[PYPIInfo]:
     key = "wlweb-release-x"
     results = cache.get(key)
     if not force and results is not None:
@@ -157,10 +160,10 @@ def get_release(force: bool = False) -> list[PYPIInfo] | None:
         response = None
     # Stats are not yet calculated
     if response is None or response.status_code != 200:
-        return None
+        return []
 
-    recent = None
-    result = None
+    recent: datetime | None = None
+    result: list[PYPIInfo] = []
     for info in response.json()["releases"].values():
         if not info:
             continue
