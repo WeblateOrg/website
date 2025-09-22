@@ -44,6 +44,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "start",
         "end",
         "created",
+        "uuid",
     )
     list_filter = ("state", "backend")
     search_fields = (
