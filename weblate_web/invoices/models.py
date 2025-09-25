@@ -351,6 +351,8 @@ class Invoice(models.Model):  # noqa: PLR0904
         using=None,
         update_fields=None,
     ) -> None:
+        if self.extra is None:
+            self.extra = {}
         extra_fields: list[str] = []
         if not self.due_date:
             self.due_date = self.issue_date + datetime.timedelta(
