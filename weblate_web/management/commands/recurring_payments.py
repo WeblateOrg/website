@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from django.conf import settings
@@ -33,6 +33,7 @@ from weblate_web.payments.utils import send_notification
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from datetime import datetime
 
 
 class Command(BaseCommand):

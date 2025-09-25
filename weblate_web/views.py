@@ -27,7 +27,6 @@ from typing import TYPE_CHECKING
 
 import django.views.defaults
 import sentry_sdk
-from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -40,7 +39,6 @@ from django.db.models import Q
 from django.http import (
     FileResponse,
     Http404,
-    HttpRequest,
     HttpResponseRedirect,
     JsonResponse,
 )
@@ -82,7 +80,6 @@ from weblate_web.models import (
     process_subscription,
 )
 from weblate_web.payments.backends import (
-    Backend,
     PaymentError,
     get_backend,
     list_backends,
@@ -95,14 +92,24 @@ from weblate_web.utils import (
     AUTO_ORIGIN,
     FOSDEM_ORIGIN,
     PAYMENTS_ORIGIN,
-    AuthenticatedHttpRequest,
     show_form_errors,
 )
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from django import forms
     from django.core.paginator import Page
+    from django.http import (
+        HttpRequest,
+    )
+
+    from weblate_web.payments.backends import (
+        Backend,
+    )
+    from weblate_web.utils import (
+        AuthenticatedHttpRequest,
+    )
 
 ON_EACH_SIDE = 3
 ON_ENDS = 2

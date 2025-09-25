@@ -22,7 +22,7 @@ from __future__ import annotations
 import sys
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 import html2text
@@ -48,7 +48,6 @@ from weblate_web.invoices.models import (
     Currency,
     Invoice,
     InvoiceCategory,
-    InvoiceKind,
 )
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
@@ -56,6 +55,11 @@ from weblate_web.zammad import create_dedicated_hosting_ticket
 
 from .hetzner import create_storage_folder, create_storage_subaccount, generate_ssh_url
 from .packages import PACKAGE_UPGRADES
+
+if TYPE_CHECKING:
+    from weblate_web.invoices.models import (
+        InvoiceKind,
+    )
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 NOTIFY_DAYS = {-7, -2}

@@ -20,13 +20,17 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import render_to_string
 from ruamel.yaml import YAML
 
-from weblate_web.invoices.models import BANK_ACCOUNTS, BankAccountInfo
+from weblate_web.invoices.models import BANK_ACCOUNTS
 from weblate_web.pdf import render_pdf
+
+if TYPE_CHECKING:
+    from weblate_web.invoices.models import BankAccountInfo
 
 
 class Command(BaseCommand):

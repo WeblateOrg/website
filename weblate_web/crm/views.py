@@ -16,7 +16,7 @@ from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Service, Subscription
-from weblate_web.payments.models import Customer, CustomerQuerySet, Payment
+from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import show_form_errors
 
 from .models import Interaction
@@ -24,6 +24,7 @@ from .models import Interaction
 if TYPE_CHECKING:
     from django.http import HttpRequest
 
+    from weblate_web.payments.models import CustomerQuerySet
     from weblate_web.views import AuthenticatedHttpRequest
 
 
