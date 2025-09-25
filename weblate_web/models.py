@@ -717,6 +717,21 @@ class Service(models.Model):
         except IndexError:
             return None
 
+    def package_kind(self) -> str:
+        if self.hosted_subscriptions:
+            return "Dedicated service"
+        if self.shared_subscriptions:
+            return "Hosted service"
+        if (
+            self.basic_subscriptions
+            or self.extended_subscriptions
+            or self.premium_subscriptions
+        ):
+            return "Support"
+        if self.backup_subscriptions:
+            return "Backup"
+        return "Community support"
+
     @cached_property
     def hosted_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(

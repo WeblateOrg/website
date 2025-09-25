@@ -3,7 +3,19 @@
 {% load i18n static %}
 
 {% block content %}
-  <section class="content">
-    {% include "weblate_web/service_list_content.html" %}
-  </section>
+  {% if kind == "expired" %}
+    {% regroup object_list by package_kind as service_list %}
+
+    {% for package_group in service_list %}
+      <h3>{{ package_group.grouper }}</h3>
+      <section class="content">
+        {% include "weblate_web/service_list_content.html" with object_list=package_group.list %}
+      </section>
+    {% endfor %}
+
+  {% else %}
+    <section class="content">
+      {% include "weblate_web/service_list_content.html" %}
+    </section>
+  {% endif %}
 {% endblock content %}
