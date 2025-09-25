@@ -69,6 +69,11 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                 return "Extended support services"
         raise ValueError(self.kwargs["kind"])
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        context["kind"] = self.kwargs["kind"]
+        return context
+
     def get_queryset(self):
         qs = super().get_queryset().prefetch_related("subscription_set")
         match self.kwargs["kind"]:
