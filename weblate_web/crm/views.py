@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from operator import attrgetter
 from typing import TYPE_CHECKING, cast
 
 from django.contrib.auth.decorators import login_required
@@ -58,6 +59,7 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
     model = Service
     permission = "weblate_web.view_service"
     title = "Services"
+    template_name = "weblate_web/service_list.html"
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -90,7 +92,8 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                         continue
                     if not subscription.could_be_obsolete():
                         subscriptions.append(subscription.pk)
-                return qs.filter(subscription__id__in=subscriptions).distinct()
+                expired = qs.filter(subscription__id__in=subscriptions).distinct()
+                return sorted(expired, key=attrgetter("package_kind"))
             case "extended":
                 return qs.filter(
                     subscription__expires__gte=timezone.now(),

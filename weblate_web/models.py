@@ -717,6 +717,7 @@ class Service(models.Model):
         except IndexError:
             return None
 
+    @property
     def package_kind(self) -> str:
         if self.hosted_subscriptions:
             return "Dedicated service"
