@@ -11,7 +11,7 @@ CRM_STORAGE = FileSystemStorage(location=settings.CRM_ROOT)
 
 class Interaction(models.Model):
     class Origin(models.IntegerChoices):
-        EMAIL = 1, "Outboud e-mail"
+        EMAIL = 1, "Outbound e-mail"
         MERGE = 2, "Merged customer"
         ZAMMAD_ATTACHMENT = 3, "Attachment exchanged in Zammad"
 
