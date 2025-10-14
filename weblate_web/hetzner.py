@@ -223,13 +223,15 @@ def wait_for_action(action: ActionDict) -> ActionDict:
     return action
 
 
-def generate_random_password(length: int = 128) -> str:
+def generate_random_password(length: int = 124) -> str:
     """
     Generate random password to comply with Hetzner requirements.
 
     * The password must be between 12 and 128 characters long
     * The password can only contain these characters: a-z A-Z Ä Ö Ü ä ö ü ß 0-9 ^ ° ! § $ % / ( ) = ? + # - . , ; : ~ * @ { } _ &
     * The password must contain at least one upper case letter, one lower case letter, one number, and a special character
+
+    The password of length 128 is not actually accepted.
     """
     if length % 4 != 0:
         raise ValueError("Password length must be modulo 4!")
