@@ -177,7 +177,7 @@ def handle_error_response(response: requests.Response) -> None:
     sentry_sdk.add_breadcrumb(
         category="hetzner.api",
         level="info",
-        data=response.text,
+        data={"text": response.text},
     )
     if 400 <= response.status_code < 600:
         try:
@@ -185,7 +185,14 @@ def handle_error_response(response: requests.Response) -> None:
         except requests.JSONDecodeError:
             pass
         else:
-            raise requests.HTTPError(payload["error"]["message"], response=response)
+            messages = [payload["error"]["message"]]
+            if (
+                "details" in payload["error"]
+                and "fields" in payload["error"]["details"]
+            ):
+                for field in payload["error"]["details"]["fields"]:
+                    messages.extend(field["messages"])
+            raise requests.HTTPError(", ".join(messages), response=response)
 
     response.raise_for_status()
 

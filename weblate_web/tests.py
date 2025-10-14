@@ -2036,7 +2036,9 @@ class StorageBoxTestCase(FakturaceTestCase):
         )
         with (
             patch("weblate_web.models.create_storage_folder"),
-            self.assertRaises(HTTPError, msg="invalid input in field password"),
+            self.assertRaisesRegex(
+                HTTPError, "invalid input in field password, The password must contain"
+            ),
         ):
             service.create_backup_repository(Report())
 
