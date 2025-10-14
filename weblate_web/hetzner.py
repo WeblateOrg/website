@@ -177,6 +177,14 @@ def handle_error_response(response: requests.Response) -> None:
         level="info",
         data=response.text,
     )
+    if 400 <= response.status_code < 600:
+        try:
+            payload = response.json()
+        except requests.JSONDecodeError:
+            pass
+        else:
+            raise requests.HTTPError(payload["error"]["message"], response=response)
+
     response.raise_for_status()
 
 
