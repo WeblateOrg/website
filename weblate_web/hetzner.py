@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Literal, NotRequired, TypedDict, cast
 
 import requests
+import sentry_sdk
 from django.conf import settings
 from django.utils.crypto import get_random_string
 from paramiko.client import SSHClient
@@ -169,6 +170,16 @@ def hetzner_box_url(*parts: str) -> str:
     return "/".join((base_url, *parts))
 
 
+def handle_error_response(response: requests.Response) -> None:
+    """Store additional info for error handling in Sentry."""
+    sentry_sdk.add_breadcrumb(
+        category="hetzner.api",
+        level="info",
+        data=response.text,
+    )
+    response.raise_for_status()
+
+
 def wait_for_action(action: ActionDict) -> ActionDict:
     """Wait for action to complete."""
     action_url = hetzner_box_url("actions", str(action["id"]))
@@ -181,7 +192,7 @@ def wait_for_action(action: ActionDict) -> ActionDict:
             headers=get_hetzner_headers(),
             timeout=60,
         )
-        response.raise_for_status()
+        handle_error_response(response)
         action = response.json()["action"]
 
     # Error handling
@@ -203,7 +214,8 @@ def create_storage_subaccount(dirname: str, service: Service) -> SubaccountDict:
         headers=get_hetzner_headers(),
         timeout=60,
     )
-    response.raise_for_status()
+
+    handle_error_response(response)
     action = wait_for_action(response.json()["action"])
 
     # Parse subaccount ID
@@ -217,7 +229,7 @@ def create_storage_subaccount(dirname: str, service: Service) -> SubaccountDict:
     # Fetch subaccount data (needed for SSH URL)
     subaccount_url = hetzner_box_url("subaccounts", str(subaccount_id))
     response = requests.get(subaccount_url, headers=get_hetzner_headers(), timeout=60)
-    response.raise_for_status()
+    handle_error_response(response)
     return response.json()["subaccount"]
 
 
@@ -231,7 +243,7 @@ def modify_storage_subaccount(subaccount_id: int, data: SubaccountInfoDict) -> N
         headers=get_hetzner_headers(),
         timeout=60,
     )
-    response.raise_for_status()
+    handle_error_response(response)
 
     # Update access
     access_url = hetzner_box_url(
@@ -242,7 +254,7 @@ def modify_storage_subaccount(subaccount_id: int, data: SubaccountInfoDict) -> N
     response = requests.post(
         access_url, json=access_data, headers=get_hetzner_headers(), timeout=60
     )
-    response.raise_for_status()
+    handle_error_response(response)
     wait_for_action(response.json()["action"])
 
 
@@ -254,7 +266,7 @@ def delete_storage_subaccount(subaccount_id: int) -> None:
         headers=get_hetzner_headers(),
         timeout=60,
     )
-    response.raise_for_status()
+    handle_error_response(response)
     wait_for_action(response.json()["action"])
 
 
@@ -271,5 +283,5 @@ def get_storage_subaccounts() -> list[SubaccountDict]:
         headers=get_hetzner_headers(),
         timeout=60,
     )
-    response.raise_for_status()
+    handle_error_response(response)
     return response.json()["subaccounts"]
