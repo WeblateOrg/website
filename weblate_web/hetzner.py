@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+import secrets
 import stat
+import string
 import time
 from contextlib import contextmanager
+from itertools import chain
 from typing import TYPE_CHECKING, Literal, NotRequired, TypedDict, cast
 
 import requests
 import sentry_sdk
 from django.conf import settings
-from django.utils.crypto import get_random_string
 from paramiko.client import SSHClient
 
 if TYPE_CHECKING:
@@ -210,11 +212,34 @@ def wait_for_action(action: ActionDict) -> ActionDict:
     return action
 
 
+def generate_random_password(length: int = 128) -> str:
+    """
+    Generate random password to comply with Hetzner requirements.
+
+    * The password must be between 12 and 128 characters long
+    * The password can only contain these characters: a-z A-Z Ä Ö Ü ä ö ü ß 0-9 ^ ° ! § $ % / ( ) = ? + # - . , ; : ~ * @ { } _ &
+    * The password must contain at least one upper case letter, one lower case letter, one number, and a special character
+    """
+    if length % 4 != 0:
+        raise ValueError("Password length must be modulo 4!")
+
+    part = length // 4
+    specialchars = "^°!§$%/()=?+#-.,;:~*@{}_&"
+    blocks: tuple[str, ...] = (
+        string.ascii_lowercase,
+        string.ascii_uppercase,
+        string.digits,
+        specialchars,
+    )
+    parts = (secrets.choice(block) for i in range(part) for block in blocks)
+    return "".join(chain(parts))
+
+
 def create_storage_subaccount(dirname: str, service: Service) -> SubaccountDict:
     """Create account on the service."""
     url = hetzner_box_url("subaccounts")
     data = generate_subaccount_data(dirname, service)
-    data["password"] = get_random_string(32)
+    data["password"] = generate_random_password()
     # Create subaccount
     response = requests.post(
         url,
