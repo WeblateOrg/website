@@ -174,17 +174,21 @@ def hetzner_box_url(*parts: str) -> str:
 
 def handle_error_response(response: requests.Response) -> None:
     """Store additional info for error handling in Sentry."""
-    sentry_sdk.add_breadcrumb(
-        category="hetzner.api",
-        level="info",
-        data={"text": response.text},
-    )
     if 400 <= response.status_code < 600:
         try:
             payload = response.json()
         except requests.JSONDecodeError:
-            pass
+            sentry_sdk.add_breadcrumb(
+                category="hetzner.api",
+                level="info",
+                data={"text": response.text},
+            )
         else:
+            sentry_sdk.add_breadcrumb(
+                category="hetzner.api",
+                level="info",
+                data={"response": payload},
+            )
             messages = [payload["error"]["message"]]
             if (
                 "details" in payload["error"]
