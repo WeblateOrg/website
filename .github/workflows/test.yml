@@ -54,6 +54,8 @@ jobs:
     - uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24 # v7.1.1
       with:
         cache-suffix: test
+        # renovate: datasource=pypi depName=uv versioning=pep440
+        version: 0.9.4
     - name: Install pip dependencies
       run: uv pip install --system -r requirements-dev.txt
     - name: Compile MO files
