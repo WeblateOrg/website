@@ -24,6 +24,7 @@ from decimal import Decimal
 from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Literal, cast
+from xml.etree import ElementTree  # noqa: S405
 
 import qrcode
 import qrcode.image.svg
@@ -41,11 +42,29 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext, override
 from lxml import etree
+from pycheval import (
+    BankAccount,
+    DocumentAllowance,
+    EN16931Invoice,
+    EN16931LineItem,
+    Money,
+    PaymentMeans,
+    PaymentTerms,
+    PostalAddress,
+    Tax,
+    TradeParty,
+    generate_et,
+    generate_xml,
+)
+from pycheval.quantities import QuantityCode
+from pycheval.type_codes import DocumentTypeCode, PaymentMeansCode, TaxCategoryCode
+from weasyprint import Attachment
 
 from weblate_web.const import (
     COMPANY_ADDRESS,
     COMPANY_CITY,
     COMPANY_COUNTRY,
+    COMPANY_COUNTRY_CODE,
     COMPANY_ID,
     COMPANY_NAME,
     COMPANY_VAT_ID,
@@ -568,8 +587,14 @@ class Invoice(models.Model):  # noqa: PLR0904
         """XML path object."""
         return settings.INVOICES_PATH / self.get_filename("xml")
 
+    @property
+    def en_16931_xml_path(self) -> Path:
+        """XML path object."""
+        return settings.INVOICES_PATH / self.get_filename("einvoice.xml")
+
     def generate_files(self) -> None:
         self.generate_money_s3_xml()
+        self.generate_en_16931_xml()
         self.generate_pdf()
         self.sync_files()
 
@@ -688,7 +713,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         add_element(adresa, "Ulice", self.customer.address)
         add_element(adresa, "Misto", self.customer.city)
         add_element(adresa, "PSC", self.customer.postcode)
-        add_element(adresa, "Stat", self.customer.country)
+        add_element(adresa, "Stat", self.customer.country.code)
         if self.customer.vat:
             add_element(prijemce, "PlatceDPH", "1")
             add_element(prijemce, "FyzOsoba", "0")
@@ -721,18 +746,210 @@ class Invoice(models.Model):  # noqa: PLR0904
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         self.save_invoice_xml(document, self.xml_path)
 
-    def _generate_pdf(self, filename: str, *, is_receipt: bool = False) -> None:
+    @property
+    def supports_en_16931(self) -> bool:
+        return self.is_final or self.is_proforma
+
+    def get_en_16931_xml(self) -> EN16931Invoice:
+        if self.kind == InvoiceKind.INVOICE:
+            type_code = DocumentTypeCode.INVOICE
+        elif self.kind == InvoiceKind.PROFORMA:
+            type_code = DocumentTypeCode.PRO_FORMA_INVOICE
+        else:
+            raise TypeError(f"{self.get_kind_display()} is not supported as EN 16931")
+
+        total_amount = Money(self.total_amount, self.get_currency_display())
+
+        # Ensure tax has two decimals, see https://github.com/zfutura/pycheval/issues/30
+        tax_amount = Money(
+            self.total_vat.quantize(Decimal("0.01")), self.get_currency_display()
+        )
+        tax_basis_amount = Money(self.total_amount_no_vat, self.get_currency_display())
+
+        tax_category = (
+            TaxCategoryCode.STANDARD_RATE
+            if self.vat_rate
+            else TaxCategoryCode.REVERSE_CHARGE
+        )
+        tax = Tax(
+            category_code=tax_category,
+            calculated_amount=tax_amount,
+            basis_amount=tax_basis_amount,
+            rate_percent=Decimal(self.vat_rate),
+            exemption_reason="Reverse charge" if not self.vat_rate else None,
+        )
+
+        line_items: list[EN16931LineItem] = []
+        allowances: list[DocumentAllowance] = []
+
+        line_total_amount = Money(
+            self.total_amount_no_vat - self.total_discount, self.get_currency_display()
+        )
+        allowance_total_amount = Money(
+            -self.total_discount, self.get_currency_display()
+        )
+
+        for item in self.all_items:
+            if item.total_price < 0:
+                # Negative prices must be included as allowances
+                allowances.append(
+                    DocumentAllowance(
+                        reason=item.description,
+                        actual_amount=Money(
+                            -item.total_price, self.get_currency_display()
+                        ),
+                        tax_rate=Decimal(self.vat_rate),
+                        tax_category=tax_category,
+                    )
+                )
+                line_total_amount.amount -= item.total_price
+                allowance_total_amount.amount -= item.total_price
+            else:
+                line_items.append(
+                    EN16931LineItem(
+                        id=item.package.name if item.package else f"ITEM-{item.id}",
+                        name=item.description,
+                        net_price=Money(
+                            item.total_price / item.quantity,
+                            self.get_currency_display(),
+                        ),
+                        billed_quantity=(
+                            Decimal(item.quantity),
+                            QuantityCode.HOUR
+                            if item.quantity_unit in {"hour", "hours"}
+                            else QuantityCode.ONE,
+                        ),
+                        billed_total=Money(
+                            item.total_price, self.get_currency_display()
+                        ),
+                        tax_rate=Decimal(self.vat_rate),
+                        tax_category=tax_category,
+                        billing_period=(item.start_date, item.end_date)
+                        if item.start_date and item.end_date
+                        else None,
+                    )
+                )
+
+        if self.discount:
+            allowances.append(
+                DocumentAllowance(
+                    reason=self.discount.description,
+                    basis_amount=line_total_amount,
+                    percent=Decimal(self.discount.percents),
+                    actual_amount=Money(
+                        -self.total_discount, self.get_currency_display()
+                    ),
+                    tax_rate=Decimal(self.vat_rate),
+                    tax_category=tax_category,
+                )
+            )
+
+        payment_means: list[PaymentMeans] = []
+        if self.prepaid:
+            prepaid_amount = total_amount
+            due_payable_amount = Money(Decimal(0), self.get_currency_display())
+            payment_reference = None
+            payment_terms = None
+        else:
+            prepaid_amount = None
+            due_payable_amount = total_amount
+            payment_reference = self.number
+            payment_means = [
+                PaymentMeans(
+                    type_code=PaymentMeansCode.BANK_PAYMENT,
+                    payee_account=BankAccount(
+                        name=self.bank_account.holder,
+                        bank_id=self.bank_account.number,
+                        iban=self.bank_account.raw_iban,
+                    ),
+                    payee_bic=self.bank_account.bic,
+                )
+            ]
+            payment_terms = PaymentTerms(due_date=self.due_date)
+
+        return EN16931Invoice(  # pylint: disable=E1123
+            invoice_number=self.number,
+            allowances=allowances,
+            invoice_date=self.issue_date,
+            currency_code=self.get_currency_display(),
+            grand_total_amount=total_amount,
+            tax_basis_total_amount=tax_basis_amount,
+            tax_total_amounts=[tax_amount] if self.vat_rate else [],
+            due_payable_amount=due_payable_amount,
+            prepaid_amount=prepaid_amount,
+            payment_reference=payment_reference,
+            payment_means=payment_means,
+            payment_terms=payment_terms,
+            line_total_amount=line_total_amount,
+            line_items=line_items,
+            type_code=type_code,
+            allowance_total_amount=allowance_total_amount,
+            seller=TradeParty(
+                name=COMPANY_NAME,
+                address=PostalAddress(
+                    country_code=COMPANY_COUNTRY_CODE,
+                    post_code=COMPANY_ZIP,
+                    city=COMPANY_CITY,
+                    line_one=COMPANY_ADDRESS,
+                ),
+                vat_id=COMPANY_VAT_ID,
+            ),
+            buyer=TradeParty(
+                name=self.customer.name,
+                address=PostalAddress(
+                    country_code=self.customer.country.code,
+                    post_code=self.customer.postcode,
+                    city=self.customer.city,
+                    line_one=self.customer.address,
+                    line_two=self.customer.address_2 or None,
+                ),
+                vat_id=self.customer.vat or None,
+            ),
+            tax=[tax],
+        )
+
+    def generate_en_16931_xml(self) -> None:
+        if self.supports_en_16931:
+            invoice = self.get_en_16931_xml()
+            xml_tree = generate_et(invoice)
+            ElementTree.indent(xml_tree)
+            xml_string = ElementTree.tostring(
+                xml_tree, encoding="unicode", xml_declaration=True
+            )
+            self.en_16931_xml_path.write_text(xml_string)
+
+    def _generate_pdf(
+        self,
+        filename: str,
+        *,
+        is_receipt: bool = False,
+        attachments: list[Attachment] | None = None,
+    ) -> None:
         """Render invoice as PDF."""
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         render_pdf(
             html=self.render_html(is_receipt=is_receipt),
             output=settings.INVOICES_PATH / filename,
+            attachments=attachments,
+            factur_x=bool(attachments),
         )
 
     def generate_pdf(self) -> None:
         """Render invoice as PDF."""
-        self._generate_pdf(self.filename)
+        attachments: list[Attachment] = []
+        if self.supports_en_16931:
+            attachments = [
+                Attachment(
+                    string=generate_xml(self.get_en_16931_xml()),
+                    base_url="factur-x.xml",
+                    description="Factur-x invoice",
+                )
+            ]
+        self._generate_pdf(
+            self.filename,
+            attachments=attachments,
+        )
 
     def duplicate(  # noqa: PLR0913
         self,
@@ -967,6 +1184,16 @@ class InvoiceItem(models.Model):
     @property
     def total_price(self) -> Decimal:
         return round_decimal(self.unit_price * self.quantity)
+
+    @cached_property
+    def total_vat(self) -> Decimal:
+        if not self.invoice.vat_rate:
+            return Decimal(0)
+        return round_decimal(self.total_price * self.invoice.vat_rate / 100)
+
+    @cached_property
+    def total_vat_price(self) -> Decimal:
+        return self.total_price + self.total_vat
 
     @property
     def display_price(self) -> str:

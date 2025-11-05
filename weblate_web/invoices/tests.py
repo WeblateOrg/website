@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import os
 from datetime import date, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import cast
 
+import requests
 from django.test.utils import override_settings
+from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
 
 from weblate_web.models import Package, PackageCategory
@@ -20,6 +23,7 @@ from .models import (
     InvoiceKind,
     QuantityUnit,
 )
+from .validation import EN16931Validator
 
 S3_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent / "schemas" / "money-s3" / "_Document.xsd"
@@ -52,6 +56,9 @@ class InvoiceTestCase(UserTestCase):
         tax_date: date | None = None,
         due_date: date | None = None,
     ) -> Invoice:
+        if vat_rate == 0 and not vat:
+            # Ensure VAT ID is present for invoices without VAT
+            vat = "CZ21668027"
         return Invoice.objects.create(
             customer=self.create_customer(vat=vat),
             discount=discount,
@@ -121,6 +128,52 @@ class InvoiceTestCase(UserTestCase):
         xml_doc = etree.parse(invoice.xml_path)
         S3_SCHEMA.assertValid(xml_doc)
 
+        # EN 16931 validation
+        if invoice.is_final or invoice.is_proforma:
+            einvoice = invoice.en_16931_xml_path.read_bytes()
+
+            # Validate using drafthorse
+            validate_xml(einvoice, "FACTUR-X_EN16931")
+
+            # Validate calculations
+            validator = EN16931Validator()
+
+            is_valid, errors, warnings = validator.validate_bytes(einvoice)
+            self.assertTrue(is_valid, errors)
+            self.assertEqual(errors, [])
+            self.assertEqual(warnings, [])
+
+            # Validate using https://github.com/gflohr/e-invoice-eu-validator
+            if validator_url := os.environ.get("EINVOICE_VALIDATOR_URL"):
+                # Validate standalone eInvoice
+                response = requests.post(
+                    f"{validator_url}validate",
+                    files={"invoice": einvoice},
+                    timeout=20,
+                )
+                self.assertEqual(response.status_code, 200, response.text)
+                # Validate eInvoice included in the PDF
+                response = requests.post(
+                    f"{validator_url}validate",
+                    files={"invoice": invoice.path.read_bytes()},
+                    timeout=20,
+                )
+                self.assertEqual(response.status_code, 200, response.text)
+
+            # Validate using EU eInvoice Validator service
+            response = requests.post(
+                "https://www.itb.ec.europa.eu/vitb/rest/invoice/api/validate",
+                headers={"Accept": "application/json"},
+                json={
+                    "validationType": "cii",
+                    "contentToValidate": einvoice.decode("utf-8"),
+                },
+                timeout=10,
+            )
+            self.assertEqual(response.status_code, 200, response.text)
+            result = response.json()
+            self.assertEqual(result["result"], "SUCCESS", result["reports"])
+
     def test_dates(self) -> None:
         invoice = self.create_invoice(vat="CZ8003280318")
         self.assertEqual(invoice.tax_date, invoice.issue_date)
@@ -189,7 +242,7 @@ class InvoiceTestCase(UserTestCase):
 
     def test_discount_negative(self) -> None:
         invoice = self.create_invoice(
-            discount=Discount.objects.create(description="Test discount", percents=50)
+            discount=Discount.objects.create(description="Test discount", percents=50),
         )
         invoice.invoiceitem_set.create(description="Prepaid amount", unit_price=-10)
         self.assertEqual(invoice.total_amount, 40)
