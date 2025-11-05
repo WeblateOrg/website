@@ -62,9 +62,9 @@ class Command(BaseCommand):
 
         document, invoices_root = Invoice.get_invoice_xml_root()
         for invoice in invoices:
-            invoice.get_xml_tree(invoices_root)
+            invoice.get_money_s3_xml_tree(invoices_root)
             if refresh:
-                invoice.generate_xml()
+                invoice.generate_money_s3_xml()
                 invoice.sync_files()
 
         Invoice.save_invoice_xml(document, output_file)

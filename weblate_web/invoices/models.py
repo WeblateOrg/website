@@ -530,7 +530,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         return settings.INVOICES_PATH / self.get_filename("xml")
 
     def generate_files(self) -> None:
-        self.generate_xml()
+        self.generate_money_s3_xml()
         self.generate_pdf()
         self.sync_files()
 
@@ -545,7 +545,9 @@ class Invoice(models.Model):  # noqa: PLR0904
             copyfile(self.path, output_dir / self.filename)
             copyfile(self.xml_path, output_dir / self.get_filename("xml"))
 
-    def get_xml_tree(self, invoices: etree._Element) -> None:  # noqa: PLR0915,C901
+    def get_money_s3_xml_tree(self, invoices: etree._Element) -> None:  # noqa: PLR0915,C901
+        """Create XML tree for Money S3 invoice XML."""
+
         def add_element(root, name: str, text: str | Decimal | int | None = None):
             added = etree.SubElement(root, name)
             if text is not None:
@@ -670,13 +672,15 @@ class Invoice(models.Model):  # noqa: PLR0904
         etree.indent(document)
         etree.ElementTree(document).write(path, encoding="utf-8", xml_declaration=True)
 
-    def generate_xml(self) -> None:
+    def generate_money_s3_xml(self) -> None:
+        """Create XML file for Money S3 invoice XML."""
         document, invoices = self.get_invoice_xml_root()
-        self.get_xml_tree(invoices)
+        self.get_money_s3_xml_tree(invoices)
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         self.save_invoice_xml(document, self.xml_path)
 
     def generate_pdf(self) -> None:
+        """Render invoice as PDF."""
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         render_pdf(
