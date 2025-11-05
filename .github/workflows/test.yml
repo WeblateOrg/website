@@ -47,6 +47,13 @@ jobs:
       run: |
         sudo apt update
         sudo apt install gettext
+    - name: Start validation service
+      env:
+        # renovate: datasource=github-releases depName=gflohr/e-invoice-eu-validator versioning=loose
+        VALIDATOR_VERSION: 2.16.4
+      run: |
+        curl -L "https://github.com/gflohr/e-invoice-eu-validator/releases/download/v$VALIDATOR_VERSION/validator-$VALIDATOR_VERSION-jar-with-dependencies.jar" > /tmp/validator.jar
+        PORT=7070 java -jar /tmp/validator.jar > /tmp/validator.log 2>&1 &
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
       with:
@@ -64,6 +71,8 @@ jobs:
     - name: Django checks
       run: ./manage.py check
     - name: Test with Django
+      env:
+        EINVOICE_VALIDATOR_URL: http://localhost:7070/
       run: |
         pytest --junitxml=junit.xml weblate_web
         cp .coverage .coverage.pytest
@@ -101,5 +110,8 @@ jobs:
       uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Show validation logs
+      if: ${{ !cancelled() }}
+      run: cat /tmp/validator.log
 permissions:
   contents: read

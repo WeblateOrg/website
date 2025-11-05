@@ -19,11 +19,16 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from weasyprint import CSS, HTML
+from weasyprint.pdf.metadata import generate_rdf_metadata
 from weasyprint.text.fonts import FontConfiguration
+
+if TYPE_CHECKING:
+    from weasyprint import Attachment
 
 SIGNATURE_URL = "signature:"
 INVOICES_URL = "invoices:"
@@ -31,6 +36,71 @@ LEGAL_URL = "legal:"
 STATIC_URL = "static:"
 INVOICES_TEMPLATES_PATH = Path(__file__).parent / "invoices" / "templates"
 LEGAL_TEMPLATES_PATH = Path(__file__).parent / "legal" / "templates"
+
+FACTURX_RDF_METADATA = """
+<x:xmpmeta
+    xmlns:x="adobe:ns:meta/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:pdf="http://ns.adobe.com/pdf/1.3/"
+    xmlns:fx="urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#"
+    xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/"
+    xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#"
+    xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#">
+  {}
+  <rdf:RDF>
+    <rdf:Description rdf:about="">
+      <fx:ConformanceLevel>COMFORT</fx:ConformanceLevel>
+      <fx:DocumentFileName>factur-x.xml</fx:DocumentFileName>
+      <fx:DocumentType>INVOICE</fx:DocumentType>
+      <fx:Version>1.0</fx:Version>
+    </rdf:Description>
+    <rdf:Description rdf:about="">
+      <pdfaExtension:schemas>
+        <rdf:Bag>
+          <rdf:li rdf:parseType="Resource">
+            <pdfaSchema:schema>Factur-X PDFA Extension Schema</pdfaSchema:schema>
+            <pdfaSchema:namespaceURI>urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#</pdfaSchema:namespaceURI>
+            <pdfaSchema:prefix>fx</pdfaSchema:prefix>
+            <pdfaSchema:property>
+              <rdf:Seq>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>DocumentFileName</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>name of the embedded XML invoice file</pdfaProperty:description>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>DocumentType</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>INVOICE</pdfaProperty:description>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>Version</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>The actual version of the Factur-X XML schema</pdfaProperty:description>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>ConformanceLevel</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>The conformance level of the embedded Factur-X data</pdfaProperty:description>
+                </rdf:li>
+              </rdf:Seq>
+            </pdfaSchema:property>
+          </rdf:li>
+        </rdf:Bag>
+      </pdfaExtension:schemas>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>
+"""
+
+
+def generate_faxturx_rdf_metadata(metadata, variant, version, conformance) -> bytes:
+    original_rdf = generate_rdf_metadata(metadata, variant, version, conformance)
+    return FACTURX_RDF_METADATA.format(original_rdf.decode("utf-8")).encode("utf-8")
 
 
 def url_fetcher(url: str) -> dict[str, str | bytes]:
@@ -63,7 +133,13 @@ def url_fetcher(url: str) -> dict[str, str | bytes]:
     return result
 
 
-def render_pdf(*, html: str, output: Path) -> None:
+def render_pdf(
+    *,
+    html: str,
+    output: Path,
+    attachments: list[Attachment] | None = None,
+    factur_x: bool = False,
+) -> None:
     font_config = FontConfiguration()
 
     renderer = HTML(
@@ -78,8 +154,16 @@ def render_pdf(*, html: str, output: Path) -> None:
         font_config=font_config,
         url_fetcher=url_fetcher,
     )
-    renderer.write_pdf(
-        output,
+    document = renderer.render(
         stylesheets=[font_style],
         font_config=font_config,
+        pdf_variant="pdf/a-3b",
+    )
+    if factur_x:
+        document.metadata.generate_rdf_metadata = generate_faxturx_rdf_metadata
+    if attachments:
+        document.metadata.attachments = attachments
+    document.write_pdf(
+        output,
+        pdf_variant="pdf/a-3b",
     )
