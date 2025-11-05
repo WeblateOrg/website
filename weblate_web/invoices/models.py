@@ -41,6 +41,23 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext, override
 from lxml import etree
+from pycheval import (
+    BankAccount,
+    EN16931Invoice,
+    EN16931LineItem,
+    Money,
+    PaymentMeans,
+    PaymentTerms,
+    PostalAddress,
+    Tax,
+    TradeParty,
+    generate_xml,
+)
+
+# TODO: consider https://pypi.org/project/pyfactx/ instead of pycheval
+from pycheval.quantities import QuantityCode
+from pycheval.type_codes import DocumentTypeCode, PaymentMeansCode, TaxCategoryCode
+from weasyprint import Attachment
 
 from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.pdf import render_pdf
@@ -540,8 +557,14 @@ class Invoice(models.Model):  # noqa: PLR0904
         """XML path object."""
         return settings.INVOICES_PATH / self.get_filename("xml")
 
+    @property
+    def en_16931_xml_path(self) -> Path:
+        """XML path object."""
+        return settings.INVOICES_PATH / self.get_filename("einvoice.xml")
+
     def generate_files(self) -> None:
         self.generate_money_s3_xml()
+        self.generate_en_16931_xml()
         self.generate_pdf()
         self.sync_files()
 
@@ -657,7 +680,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         add_element(adresa, "Ulice", self.customer.address)
         add_element(adresa, "Misto", self.customer.city)
         add_element(adresa, "PSC", self.customer.postcode)
-        add_element(adresa, "Stat", self.customer.country)
+        add_element(adresa, "Stat", self.customer.country.code)
         if self.customer.vat:
             add_element(prijemce, "PlatceDPH", "1")
             add_element(prijemce, "FyzOsoba", "0")
@@ -690,6 +713,136 @@ class Invoice(models.Model):  # noqa: PLR0904
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         self.save_invoice_xml(document, self.xml_path)
 
+    def get_en_16931_xml(self) -> EN16931Invoice:
+        type_code = DocumentTypeCode.INVOICING_DATA_SHEET
+        if self.kind == InvoiceKind.INVOICE:
+            type_code = DocumentTypeCode.INVOICE
+        elif self.kind == InvoiceKind.QUOTE:
+            type_code = DocumentTypeCode.VALIDATED_PRICED_TENDER
+        elif self.kind == InvoiceKind.PROFORMA:
+            type_code = DocumentTypeCode.PRO_FORMA_INVOICE
+        total_amount = Money(self.total_amount, self.get_currency_display())
+
+        tax_amount = Money(self.total_vat, self.get_currency_display())
+        tax_basis_amount = Money(self.total_amount_no_vat, self.get_currency_display())
+
+        tax_category = (
+            TaxCategoryCode.STANDARD_RATE
+            if self.vat_rate
+            else TaxCategoryCode.REVERSE_CHARGE
+        )
+        tax = Tax(
+            category_code=tax_category,
+            calculated_amount=tax_amount,
+            basis_amount=tax_basis_amount,
+            rate_percent=self.vat_rate or None,
+            exemption_reason="Reverse charge" if not self.vat_rate else None,
+        )
+
+        line_items = [
+            EN16931LineItem(
+                id=item.package.name if item.package else "ITEM",
+                name=item.description,
+                net_price=Money(item.unit_price, self.get_currency_display()),
+                billed_quantity=(
+                    item.quantity,
+                    QuantityCode.ONE,
+                ),  # TODO: convert quantity_unit to QuantityCode
+                billed_total=Money(item.total_price, self.get_currency_display()),
+                tax_rate=self.vat_rate or None,
+                tax_category=tax_category,
+                billing_period=(item.start_date, item.end_date)
+                if item.has_date_range
+                else None,
+            )
+            for item in self.all_items
+        ]
+        # TODO: There might be model for discount
+        if self.discount:
+            line_items.append(
+                EN16931LineItem(
+                    id="DISCOUNT",
+                    name=self.discount.description,
+                    description=self.discount.display_percents,
+                    net_price=Money(self.total_discount, self.get_currency_display()),
+                    billed_quantity=(1, QuantityCode.ONE),
+                    billed_total=Money(
+                        self.total_discount, self.get_currency_display()
+                    ),
+                    tax_rate=self.vat_rate,
+                    tax_category=tax_category,
+                )
+            )
+
+        payment_means = []
+        if self.prepaid:
+            prepaid_amount = total_amount
+            due_payable_amount = Money(Decimal(0), self.get_currency_display())
+            payment_reference = None
+            payment_terms = None
+        else:
+            prepaid_amount = None
+            due_payable_amount = total_amount
+            payment_reference = self.number
+            if self.currency == Currency.EUR:
+                # TODO: support other currencies here
+                payment_means = [
+                    PaymentMeans(
+                        type_code=PaymentMeansCode.BANK_PAYMENT,
+                        payee_account=BankAccount(
+                            name=self.bank_account.holder,
+                            bank_id=self.bank_account.bic,
+                            iban=self.bank_account.raw_iban,
+                        ),
+                        payee_bic=self.bank_account.bic,
+                    )
+                ]
+            payment_terms = PaymentTerms(due_date=self.due_date)
+
+        return EN16931Invoice(
+            invoice_number=self.number,
+            invoice_date=self.issue_date,
+            currency_code=self.get_currency_display(),
+            grand_total_amount=total_amount,
+            tax_basis_total_amount=total_amount,
+            tax_total_amounts=[tax_amount] if self.vat_rate else [],
+            due_payable_amount=due_payable_amount,
+            prepaid_amount=prepaid_amount,
+            payment_reference=payment_reference,
+            payment_means=payment_means,
+            payment_terms=payment_terms,
+            line_total_amount=total_amount,
+            line_items=line_items,
+            type_code=type_code,
+            seller=TradeParty(
+                name="Weblate s.r.o.",
+                address=PostalAddress(
+                    country_code="CZ",
+                    post_code="471 54",
+                    city="Cvikov",
+                    line_one="Nábřežní 694",
+                ),
+                vat_id="CZ21668027",
+            ),
+            buyer=TradeParty(
+                name=self.customer.name,
+                address=PostalAddress(
+                    country_code=self.customer.country.code,
+                    post_code=self.customer.postcode,
+                    city=self.customer.city,
+                    line_one=self.customer.address,
+                    line_two=self.customer.address_2 or None,
+                ),
+                vat_id=self.customer.vat or None,
+            ),
+            tax=[tax],
+        )
+
+    def generate_en_16931_xml(self) -> None:
+        invoice = self.get_en_16931_xml()
+        xml_string = generate_xml(invoice)
+        self.en_16931_xml_path.write_text(xml_string)
+
     def generate_pdf(self) -> None:
         """Render invoice as PDF."""
         # Create directory to store invoices
@@ -697,6 +850,14 @@ class Invoice(models.Model):  # noqa: PLR0904
         render_pdf(
             html=self.render_html(),
             output=settings.INVOICES_PATH / self.filename,
+            pdf_variant="pdf/a-3b",
+            attachments=[
+                Attachment(
+                    string=generate_xml(self.get_en_16931_xml()),
+                    base_url="factur-x.xml",
+                    description="Factur-x invoice",
+                )
+            ],
         )
 
     def duplicate(  # noqa: PLR0913

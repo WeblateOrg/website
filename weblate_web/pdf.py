@@ -19,11 +19,15 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
+
+if TYPE_CHECKING:
+    from weasyprint import Attachment
 
 SIGNATURE_URL = "signature:"
 INVOICES_URL = "invoices:"
@@ -63,7 +67,13 @@ def url_fetcher(url: str) -> dict[str, str | bytes]:
     return result
 
 
-def render_pdf(*, html: str, output: Path) -> None:
+def render_pdf(
+    *,
+    html: str,
+    output: Path,
+    attachments: list[Attachment] | None = None,
+    pdf_variant: str | None = None,
+) -> None:
     font_config = FontConfiguration()
 
     renderer = HTML(
@@ -78,8 +88,11 @@ def render_pdf(*, html: str, output: Path) -> None:
         font_config=font_config,
         url_fetcher=url_fetcher,
     )
+    if attachments:
+        renderer.metadata.attachments = attachments
     renderer.write_pdf(
         output,
         stylesheets=[font_style],
         font_config=font_config,
+        pdf_variant=pdf_variant,
     )
