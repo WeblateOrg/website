@@ -42,7 +42,9 @@ if TYPE_CHECKING:
     from weblate_web.invoices.models import Invoice
 
 BACKENDS: dict[str, type[Backend]] = {}
-INVOICE_MATCH_RE = re.compile(r"\b[15]0(?:[0-9] *){7}[0-9]\b")
+INVOICE_MATCH_RE = re.compile(
+    r"(?:\b|(?<=[^0-9]))[15]0(?:[0-9] *){7}[0-9](?:\b|(?=[^0-9]))"
+)
 EXTRACTABLE_FIELDS: tuple[str, ...] = (
     # Extract from message
     "recipient_message",

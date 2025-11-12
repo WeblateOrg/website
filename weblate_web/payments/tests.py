@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from datetime import date
 from typing import cast
 
@@ -311,7 +312,7 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your pending payment on weblate.org")
         mail.outbox = []
 
-        received = FIO_TRASACTIONS.copy()
+        received = deepcopy(FIO_TRASACTIONS)
         self.assertIsNotNone(backend.payment.draft_invoice)
         proforma_id = cast("Invoice", backend.payment.draft_invoice).number
         transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
@@ -336,7 +337,7 @@ class BackendTest(BackendBaseTestCase):
     @override_settings(
         FIO_TOKEN="test-token",  # noqa: S106
     )
-    def test_invoice_bank(self) -> None:
+    def test_invoice_bank(self, format_string="{}") -> None:
         mock_vies()
         customer = Customer.objects.create(**CUSTOMER)
         invoice = Invoice.objects.create(
@@ -355,10 +356,11 @@ class BackendTest(BackendBaseTestCase):
         self.assertFalse(invoice.paid_payment_set.exists())
         self.assertEqual(len(mail.outbox), 0)
 
-        received = FIO_TRASACTIONS.copy()
+        received = deepcopy(FIO_TRASACTIONS)
         transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
-        transaction[0]["column16"]["value"] = invoice.number
-        transaction[1]["column16"]["value"] = invoice.number
+        payment_message = format_string.format(invoice.number)
+        transaction[0]["column16"]["value"] = payment_message
+        transaction[1]["column16"]["value"] = payment_message
         transaction[1]["column1"]["value"] = int(invoice.total_amount)
         responses.replace(responses.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
@@ -366,7 +368,7 @@ class BackendTest(BackendBaseTestCase):
         payment = invoice.paid_payment_set.get()
         self.maxDiff = None
         self.assertEqual(
-            payment.details["transaction"]["recipient_message"], invoice.number
+            payment.details["transaction"]["recipient_message"], payment_message
         )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
@@ -374,6 +376,22 @@ class BackendTest(BackendBaseTestCase):
 
         FioBank.fetch_payments()
         self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_vs(self) -> None:
+        # Czech bank notation
+        self.test_invoice_bank(format_string="VS{}/SS/KS")
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_in_text(self) -> None:
+        # Czech bank notation
+        self.test_invoice_bank(format_string="PROFORMA{}PAYMENT")
 
     @responses.activate
     @override_settings(
@@ -399,7 +417,7 @@ class BackendTest(BackendBaseTestCase):
         # Trigger payment what creates an empty payment object
         self.client.get(url, follow=True)
 
-        received = FIO_TRASACTIONS.copy()
+        received = deepcopy(FIO_TRASACTIONS)
         transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
         transaction[0]["column16"]["value"] = invoice.number
         transaction[1]["column16"]["value"] = invoice.number
