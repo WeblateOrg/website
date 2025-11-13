@@ -1104,11 +1104,19 @@ class HostingView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data["hosting_packages"] = (
+
+        data["hosted_package"] = (
             Package.objects.filter(category=PackageCategory.PACKAGE_SHARED)
             .exclude(name__endswith="-m")
-            .order_by("price")[:6]
+            .order_by("price")[0]
         )
+        data["dedicated_package"] = (
+            Package.objects.filter(category=PackageCategory.PACKAGE_DEDICATED)
+            .exclude(name__endswith="-m")
+            .order_by("price")[0]
+        )
+        data["basic_support_package"] = Package.objects.get(name="basic")
+        data["extended_support_package"] = Package.objects.get(name="extended")
         return data
 
 

@@ -234,7 +234,7 @@
                 <div class="col">
                   <div class="line price">
                     {% translate "From" %}
-                    <strong>{{ 37|price_format }}</strong>
+                    <strong>{{ hosted_package.per_month_cost|price_format }}</strong>
                     {% filter upper %}
                       {% translate "a month" %}
                     {% endfilter %}
@@ -246,7 +246,7 @@
                 <div class="col">
                   <div class="line price">
                     {% translate "From" %}
-                    <strong>{{ 88|price_format }}</strong>
+                    <strong>{{ dedicated_package.per_month_cost|price_format }}</strong>
                     {% filter upper %}
                       {% translate "a month" %}
                     {% endfilter %}
@@ -258,7 +258,7 @@
                 <div class="col">
                   <div class="line price">
                     &nbsp;
-                    <strong>{{ 100|price_format }}</strong>
+                    <strong>{{ basic_support_package.per_month_cost|price_format }}</strong>
                     {% filter upper %}
                       {% translate "a month" %}
                     {% endfilter %}
@@ -270,7 +270,7 @@
                 <div class="col">
                   <div class="line price">
                     &nbsp;
-                    <strong>{{ 50|price_format }}</strong>
+                    <strong>{{ extended_support_package.per_month_cost|price_format }}</strong>
                     {% filter upper %}
                       {% translate "a month" %}
                     {% endfilter %}

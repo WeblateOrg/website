@@ -546,6 +546,15 @@ class Package(models.Model):
         return self.price // 10
 
     @property
+    def per_month_cost(self) -> int:
+        """
+        Price of the yearly package on monthly basis.
+
+        This is merely a marketing value to show the monthly cost.
+        """
+        return self.price // 12
+
+    @property
     def short_name(self) -> str:
         return self.verbose.split("(", 1)[1].split()[0]
 
