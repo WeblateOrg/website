@@ -551,9 +551,7 @@ class Package(models.Model):
 
     @property
     def can_be_dedicated(self):
-        return (
-            self.limit_hosted_strings and self.limit_hosted_strings >= DEDICATED_LIMIT
-        )
+        return self.limit_hosted_strings >= DEDICATED_LIMIT
 
     def get_repeat(self) -> str:
         if self.name in {"basic", "extended", "premium", "backup"}:
