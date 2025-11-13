@@ -19,6 +19,7 @@ SUPPORT_PACKAGES: list[tuple[str, str, int]] = [
     ("Weblate basic self-hosted support (yearly)", "basic", 600),
     ("Weblate extended self-hosted support (yearly)", "extended", 1200),
     ("Weblate premium self-hosted support (yearly)", "premium", 2400),
+    ("Weblate installation on your Linux server", "install:linux", 480),
 ]
 
 

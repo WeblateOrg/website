@@ -1325,7 +1325,9 @@ def get_packages() -> Generator[tuple[PackageCategory, str, str, int, int]]:
         )
     for verbose, name, price in SUPPORT_PACKAGES:
         yield (
-            PackageCategory.PACKAGE_SUPPORT,
+            PackageCategory.PACKAGE_NONE
+            if name.startswith("install:")
+            else PackageCategory.PACKAGE_SUPPORT,
             verbose,
             name,
             0,
