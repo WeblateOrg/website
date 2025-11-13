@@ -10,241 +10,52 @@
         <h3>{% translate "Premium Cloud" %}</h3>
         <p>{% translate "for ease and comfort" %}</p>
         <ul class="pricing-tabs">
-          <li class="current" data-tab="plan-10k">10k</li>
-          <li data-tab="plan-40k">40k</li>
-          <li data-tab="plan-160k">160k</li>
-          <li data-tab="plan-640k">640k</li>
-          <li data-tab="plan-2-5m">2.5M</li>
-          <li data-tab="plan-10m">10M</li>
+          {% for package in hosting_packages %}
+            <li {% if forloop.first %}class="current"{% endif %}
+                data-tab="plan-{{ package.name }}">{{ package.short_name }}</li>
+          {% endfor %}
         </ul>
-        <div id="plan-10k" class="tab-content current">
-          <table>
-            <tr>
-              <td>{% translate "Hosted strings" context "Hosting plan parameter" %}</td>
-              <td>{{ 10000|intcomma }}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Languages" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Projects" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Components" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-          </table>
-          <div class="half first">
-            <div class="box-price">
-              <strong>{{ 45|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Monthly" %}
-                {% endfilter %}
-              </span>
+        {% for package in hosting_packages %}
+          <div id="plan-{{ package.name }}"
+               class="tab-content {% if forloop.first %}current{% endif %}">
+            <table>
+              <tr>
+                <td>{% translate "Hosted strings" context "Hosting plan parameter" %}</td>
+                <td>{{ package.limit_hosted_strings|intcomma }}</td>
+              </tr>
+              <tr>
+                <td>{% translate "Languages" context "Hosting plan parameter" %}</td>
+                <td>{% translate "Unlimited" %}</td>
+              </tr>
+              <tr>
+                <td>{% translate "Projects" context "Hosting plan parameter" %}</td>
+                <td>{% translate "Unlimited" %}</td>
+              </tr>
+              <tr>
+                <td>{% translate "Components" context "Hosting plan parameter" %}</td>
+                <td>{% translate "Unlimited" %}</td>
+              </tr>
+            </table>
+            <div class="half first">
+              <div class="box-price">
+                <strong>{{ package.monthly_price|price_format }}</strong><span class="period">
+                  {% filter lower %}
+                    {% translate "Monthly" %}
+                  {% endfilter %}
+                </span>
+              </div>
+            </div>
+            <div class="half">
+              <div class="box-price">
+                <span class="save">{% blocktranslate with percent=20 %}Save {{ percent }}%{% endblocktranslate %}</span><strong>{{ package.price|price_format }}</strong><span class="period">
+                  {% filter lower %}
+                    {% translate "Yearly" %}
+                  {% endfilter %}
+                </span>
+              </div>
             </div>
           </div>
-          <div class="half">
-            <div class="box-price">
-              <span class="save">{% blocktranslate with percent=20 %}Save {{ percent }}%{% endblocktranslate %}</span><strong>{{ 450|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Yearly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div id="plan-40k" class="tab-content">
-          <table>
-            <tr>
-              <td>{% translate "Hosted strings" context "Hosting plan parameter" %}</td>
-              <td>{{ 40000|intcomma }}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Languages" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Projects" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Components" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-          </table>
-          <div class="half first">
-            <div class="box-price">
-              <strong>{{ 66|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Monthly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-          <div class="half">
-            <div class="box-price">
-              <span class="save">{% blocktranslate with percent=20 %}Save {{ percent }}%{% endblocktranslate %}</span><strong>{{ 660|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Yearly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div id="plan-160k" class="tab-content">
-          <table>
-            <tr>
-              <td>{% translate "Hosted strings" context "Hosting plan parameter" %}</td>
-              <td>{{ 160000|intcomma }}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Languages" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Projects" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Components" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-          </table>
-          <div class="half first">
-            <div class="box-price">
-              <strong>{{ 106|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Monthly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-          <div class="half">
-            <div class="box-price">
-              <span class="save">{% blocktranslate with percent=20 %}Save {{ percent }}%{% endblocktranslate %}</span><strong>{{ 1060|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Yearly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div id="plan-640k" class="tab-content">
-          <table>
-            <tr>
-              <td>{% translate "Hosted strings" context "Hosting plan parameter" %}</td>
-              <td>{{ 640000|intcomma }}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Languages" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Projects" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Components" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-          </table>
-          <div class="half first">
-            <div class="box-price">
-              <strong>{{ 178|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Monthly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-          <div class="half">
-            <div class="box-price">
-              <span class="save">{% blocktranslate with percent=20 %}Save {{ percent }}%{% endblocktranslate %}</span><strong>{{ 1780|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Yearly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div id="plan-2-5m" class="tab-content">
-          <table>
-            <tr>
-              <td>{% translate "Hosted strings" context "Hosting plan parameter" %}</td>
-              <td>{{ 2560000|intcomma }}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Languages" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Projects" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Components" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-          </table>
-          <div class="half first">
-            <div class="box-price">
-              <strong>{{ 313|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Monthly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-          <div class="half">
-            <div class="box-price">
-              <span class="save">{% blocktranslate with percent=20 %}Save {{ percent }}%{% endblocktranslate %}</span><strong>{{ 3130|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Yearly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div id="plan-10m" class="tab-content">
-          <table>
-            <tr>
-              <td>{% translate "Hosted strings" context "Hosting plan parameter" %}</td>
-              <td>{{ 10240000|intcomma }}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Languages" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Projects" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-            <tr>
-              <td>{% translate "Components" context "Hosting plan parameter" %}</td>
-              <td>{% translate "Unlimited" %}</td>
-            </tr>
-          </table>
-          <div class="half first">
-            <div class="box-price">
-              <strong>{{ 562|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Monthly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-          <div class="half">
-            <div class="box-price">
-              <span class="save">{% blocktranslate with percent=20 %}Save {{ percent }}%{% endblocktranslate %}</span><strong>{{ 5620|price_format }}</strong><span class="period">
-                {% filter lower %}
-                  {% translate "Yearly" %}
-                {% endfilter %}
-              </span>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
       <div class="box">
         <h3>{% translate "Self-hosted" context "Hosting plan" %}</h3>
