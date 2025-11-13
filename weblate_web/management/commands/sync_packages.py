@@ -19,110 +19,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from django.core.management.base import BaseCommand
 
-from weblate_web.models import Package, PackageCategory
-from weblate_web.packages import (
-    DEDICATED_LIMIT,
-    DEDICATED_PREFIX,
-    HOSTED_PREFIX,
-    MONTHLY_SUFFIX,
-    PACKAGE_NAMES,
-    PACKAGES,
-    SUPPORT_PACKAGES,
-)
-
-if TYPE_CHECKING:
-    from collections.abc import Generator
+from weblate_web.models import sync_packages
 
 
 class Command(BaseCommand):
     help = "sync packages"
 
-    def get_packages(self) -> Generator[tuple[PackageCategory, str, str, int, int]]:
-        for limit, price in PACKAGES.items():
-            name = PACKAGE_NAMES[limit]
-            if limit >= DEDICATED_LIMIT:
-                yield (
-                    PackageCategory.PACKAGE_DEDICATED,
-                    f"Weblate hosting ({name} strings, dedicated, yearly)",
-                    f"{DEDICATED_PREFIX}{name.lower()}",
-                    limit,
-                    price,
-                )
-            yield (
-                PackageCategory.PACKAGE_SHARED,
-                f"Weblate hosting ({name} strings, yearly)",
-                f"{HOSTED_PREFIX}{name.lower()}",
-                limit,
-                price,
-            )
-            yield (
-                PackageCategory.PACKAGE_SHARED,
-                f"Weblate hosting ({name} strings, monthly)",
-                f"{HOSTED_PREFIX}{name.lower()}{MONTHLY_SUFFIX}",
-                limit,
-                price // 10,
-            )
-        for verbose, name, price in SUPPORT_PACKAGES:
-            yield (
-                PackageCategory.PACKAGE_SUPPORT,
-                verbose,
-                name,
-                0,
-                price,
-            )
-
     def handle(self, *args, **options) -> None:
-        for category, verbose, name, limit, price in self.get_packages():
-            created = False
-            try:
-                package = Package.objects.get(name=name)
-            except Package.DoesNotExist:
-                if name.endswith(MONTHLY_SUFFIX):
-                    packages = Package.objects.filter(name__endswith=MONTHLY_SUFFIX)
-                else:
-                    packages = Package.objects.exclude(name__endswith=MONTHLY_SUFFIX)
-                if limit:
-                    package, created = packages.get_or_create(
-                        limit_hosted_strings=limit,
-                        category=category,
-                        defaults={
-                            "verbose": verbose,
-                            "name": name,
-                            "price": price,
-                        },
-                    )
-                else:
-                    package, created = packages.get_or_create(
-                        name=name,
-                        category=category,
-                        defaults={
-                            "verbose": verbose,
-                            "price": price,
-                        },
-                    )
-            if created:
-                self.stdout.write(f"Created {verbose}")
-            else:
-                modified = False
-                if package.verbose != verbose:
-                    self.stdout.write(f"Updating {package.verbose!r} -> {verbose!r}")
-                    package.verbose = verbose
-                    modified = True
-                if package.name != name:
-                    self.stdout.write(
-                        f"Updating {verbose}: {package.name!r} -> {name!r}"
-                    )
-                    package.name = name
-                    modified = True
-                if package.price != price:
-                    self.stdout.write(
-                        f"Updating {verbose}: {package.price!r} -> {price!r}"
-                    )
-                    package.price = price
-                    modified = True
-                if modified:
-                    package.save()
+        output = sync_packages()
+        for line in output:
+            self.stdout.write(line)

@@ -25,11 +25,10 @@ from django.utils import timezone
 from django.utils.translation import override
 from requests.exceptions import HTTPError
 
-from weblate_web.exchange_rates import UncachedExchangeRates
 from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
-from weblate_web.utils import FOSDEM_ORIGIN
 
+from .exchange_rates import UncachedExchangeRates
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .models import (
@@ -40,6 +39,7 @@ from .models import (
     Report,
     Service,
     Subscription,
+    sync_packages,
 )
 from .remote import (
     ACTIVITY_URL,
@@ -48,7 +48,7 @@ from .remote import (
     get_contributors,
 )
 from .templatetags.downloads import downloadlink, filesizeformat
-from .utils import PAYMENTS_ORIGIN
+from .utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
 
 if TYPE_CHECKING:
     from uuid import UUID
@@ -651,6 +651,7 @@ class ViewTestCase(PostTestCase):
     def setUp(self) -> None:
         super().setUp()
         fake_remote()
+        sync_packages()
 
     def test_index_redirect(self) -> None:
         response = self.client.get("/")
