@@ -54,7 +54,7 @@ from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
 
 from .hetzner import create_storage_folder, create_storage_subaccount, generate_ssh_url
-from .packages import PACKAGE_UPGRADES
+from .packages import DEDICATED_LIMIT, PACKAGE_UPGRADES
 
 if TYPE_CHECKING:
     from weblate_web.invoices.models import (
@@ -551,7 +551,9 @@ class Package(models.Model):
 
     @property
     def can_be_dedicated(self):
-        return self.price > 1000
+        return (
+            self.limit_hosted_strings and self.limit_hosted_strings >= DEDICATED_LIMIT
+        )
 
     def get_repeat(self) -> str:
         if self.name in {"basic", "extended", "premium", "backup"}:
