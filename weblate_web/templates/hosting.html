@@ -334,140 +334,31 @@
           </div>
           <div class="pricing-table-right pricing-table-right-2">
             <div class="pricing-table-right-inner pricing-table-right-inner-2">
-              <div class="col">
-                <div class="head line blue">
-                  <strong>10k</strong>
+              {% for package in hosting_packages %}
+                <div class="col">
+                  <div class="head line blue">
+                    <strong>{{ package.short_name }}</strong>
+                  </div>
+                  <div class="line">
+                    <span class="check"></span>
+                  </div>
+                  <div class="line">
+                    <strong>{{ package.limit_hosted_strings|intcomma }}</strong>
+                  </div>
+                  <div class="line">
+                    <span class="green">∞</span>
+                  </div>
+                  <div class="line">
+                    <span class="green">∞</span>
+                  </div>
+                  <div class="line">
+                    <span class="green">∞</span>
+                  </div>
+                  <div class="line">
+                    {% if package.can_be_dedicated %}<span class="check"></span>{% endif %}
+                  </div>
                 </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-                <div class="line">
-                  <strong>{{ 10000|intcomma }}</strong>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line"></div>
-              </div>
-              <div class="col">
-                <div class="head line blue">
-                  <strong>40k</strong>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-                <div class="line">
-                  <strong>{{ 40000|intcomma }}</strong>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line"></div>
-              </div>
-              <div class="col">
-                <div class="head line blue">
-                  <strong>160k</strong>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-                <div class="line">
-                  <strong>{{ 160000|intcomma }}</strong>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-              </div>
-              <div class="col">
-                <div class="head line blue">
-                  <strong>640k</strong>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-                <div class="line">
-                  <strong>{{ 640000|intcomma }}</strong>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-              </div>
-              <div class="col">
-                <div class="head line blue">
-                  <strong>2.5M</strong>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-                <div class="line">
-                  <strong>{{ 2560000|intcomma }}</strong>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-              </div>
-              <div class="col">
-                <div class="head line blue">
-                  <strong>10M</strong>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-                <div class="line">
-                  <strong>{{ 10240000|intcomma }}</strong>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-              </div>
+              {% endfor %}
               <div class="col">
                 <div class="head line">
                   <strong>{% translate "Custom" context "Hosting plan" %}</strong>
@@ -507,78 +398,20 @@
               </div>
               <div class="pricing-table-tabs">
                 <div id="monthly" class="tab-content current">
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 45|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Monthly" %}
-                      {% endfilter %}
+                  {% for package in hosting_packages %}
+                    <div class="col">
+                      <div class="line price">
+                        <strong>{{ package.monthly_price|price_format }}</strong>
+                        {% filter upper %}
+                          {% translate "Monthly" %}
+                        {% endfilter %}
+                      </div>
+                      <div class="line">
+                        <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
+                      </div>
+                      <div class="line last"></div>
                     </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 66|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Monthly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 106|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Monthly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 178|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Monthly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 313|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Monthly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 562|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Monthly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
+                  {% endfor %}
                   <div class="col">
                     <div class="line price small">
                       {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
@@ -590,80 +423,20 @@
                   </div>
                 </div>
                 <div id="yearly" class="tab-content">
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 450|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
+                  {% for package in hosting_packages %}
+                    <div class="col">
+                      <div class="line price">
+                        <strong>{{ package.price|price_format }}</strong>
+                        {% filter upper %}
+                          {% translate "Yearly" %}
+                        {% endfilter %}
+                      </div>
+                      <div class="line">
+                        <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
+                      </div>
+                      <div class="line last"></div>
                     </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 660|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 1060|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last">
-                      {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 1780|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 3130|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 5620|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
+                  {% endfor %}
                   <div class="col">
                     <div class="line price small">
                       {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
@@ -675,64 +448,27 @@
                   </div>
                 </div>
                 <div id="dedicated" class="tab-content">
-                  <div class="col">
-                    <div class="line price small"></div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price small"></div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 1060|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:160k" class="button">{% translate "Buy now" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 1780|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:640k" class="button">{% translate "Buy now" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 3130|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:2.5m" class="button">{% translate "Buy now" %}</a>
-                    </div>
-                    <div class="line last">
-                      {% comment %}<span class="red"><strong>20 % Savings</strong><br />in April</span>{% endcomment %}
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class="line price">
-                      <strong>{{ 5620|price_format }}</strong>
-                      {% filter upper %}
-                        {% translate "Yearly" %}
-                      {% endfilter %}
-                    </div>
-                    <div class="line">
-                      <a href="{% url 'subscription-new' %}?plan=dedicated:10m" class="button">{% translate "Buy now" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
+                  {% for package in hosting_packages %}
+                    {% if not package.can_be_dedicated %}
+                      <div class="col">
+                        <div class="line price small"></div>
+                        <div class="line last"></div>
+                      </div>
+                    {% else %}
+                      <div class="col">
+                        <div class="line price">
+                          <strong>{{ package.price|price_format }}</strong>
+                          {% filter upper %}
+                            {% translate "Yearly" %}
+                          {% endfilter %}
+                        </div>
+                        <div class="line">
+                          <a href="{% url 'subscription-new' %}?plan=dedicated:160k" class="button">{% translate "Buy now" %}</a>
+                        </div>
+                        <div class="line last"></div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
                   <div class="col">
                     <div class="line price small">
                       {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}

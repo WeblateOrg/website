@@ -72,6 +72,7 @@ from weblate_web.models import (
     TOPIC_DICT,
     Donation,
     Package,
+    PackageCategory,
     Post,
     Project,
     Service,
@@ -1094,6 +1095,19 @@ class UserView(TemplateView):
         )
         data["user_donations"] = Donation.objects.filter(
             customer__users=self.request.user
+        )
+        return data
+
+
+class HostingView(TemplateView):
+    template_name = "hosting.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data["hosting_packages"] = (
+            Package.objects.filter(category=PackageCategory.PACKAGE_SHARED)
+            .exclude(name__endswith="-m")
+            .order_by("price")[:6]
         )
         return data
 

@@ -536,6 +536,23 @@ class Package(models.Model):
     def __str__(self) -> str:
         return self.verbose
 
+    @property
+    def monthly_price(self) -> int:
+        """
+        Calculate monthly price.
+
+        This does not mean that the service is available in the monthly package.
+        """
+        return self.price // 10
+
+    @property
+    def short_name(self) -> str:
+        return self.verbose.split("(", 1)[1].split()[0]
+
+    @property
+    def can_be_dedicated(self):
+        return self.price > 1000
+
     def get_repeat(self) -> str:
         if self.name in {"basic", "extended", "premium", "backup"}:
             return "y"
