@@ -49,6 +49,7 @@ from weblate_web.views import (
     NewsView,
     PaymentView,
     PostView,
+    SupportView,
     TopicArchiveView,
     UserView,
     activity_svg,
@@ -227,11 +228,7 @@ urlpatterns = [
             TemplateView.as_view(template_name="careers.html"),
             name="careers",
         ),
-        path(
-            "support/",
-            TemplateView.as_view(template_name="support.html"),
-            name="support",
-        ),
+        path("support/", SupportView.as_view(), name="support"),
         path("thanks/", RedirectView.as_view(url="/donate/", permanent=True)),
         path("terms/", TemplateView.as_view(template_name="terms.html"), name="terms"),
         path(

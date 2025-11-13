@@ -79,7 +79,7 @@
               <li>{% translate "Issues in your environment fixed immediately." %}</li>
               <li>{% translate "Priority e-mail support." %}</li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=basic" class="format-item bottom-left">{{ 600|price_format }}<span>{% translate "annually" %}</span></a>
+            <a href="{% url 'subscription-new' %}?plan=basic" class="format-item bottom-left">{{ basic_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=basic"
                class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
@@ -95,7 +95,7 @@
               <li>{% translate "Only available with the installation package" %}</li>
             </ul>
             <a href="{% url 'subscription-new' %}?plan=extended"
-               class="format-item bottom-left">{{ 1200|price_format }}<span>{% translate "annually" %}</span></a>
+               class="format-item bottom-left">{{ extended_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=extended"
                class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
@@ -112,7 +112,7 @@
               <li>{% translate "Next business day support response guaranteed." %}</li>
             </ul>
             <a href="{% url 'subscription-new' %}?plan=premium"
-               class="format-item bottom-left">{{ 2400|price_format }}<span>{% translate "annually" %}</span></a>
+               class="format-item bottom-left">{{ premium_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=premium"
                class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
@@ -128,7 +128,7 @@
               <li>{% translate "Setup customization" %}</li>
             </ul>
             <a href="{% url 'subscription-new' %}?plan=install:linux"
-               class="format-item bottom-left">{{ 480|price_format }}<span>{% translate "installation" %}</span></a>
+               class="format-item bottom-left">{{ install_package.price|price_format }}<span>{% translate "installation" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=install:linux"
                class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
@@ -148,7 +148,7 @@
                 <a href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% translate "Read more in the documentation." %}</a>
               </li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=backup" class="format-item bottom-left">{{ 300|price_format }}<span>{% translate "annually" %}</span></a>
+            <a href="{% url 'subscription-new' %}?plan=backup" class="format-item bottom-left">{{ backup_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=backup"
                class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>

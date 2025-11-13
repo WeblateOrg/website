@@ -1120,6 +1120,21 @@ class HostingView(TemplateView):
         return data
 
 
+class SupportView(TemplateView):
+    template_name = "support.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        for package in Package.objects.filter(
+            Q(category=PackageCategory.PACKAGE_SUPPORT) | Q(name="install:linux")
+        ):
+            if package.name == "install:linux":
+                data["install_package"] = package
+            else:
+                data[f"{package.name}_support_package"] = package
+        return data
+
+
 def fosdem_donation(request):
     # Create customer
     customer = Customer.objects.create(origin=FOSDEM_ORIGIN, user_id=-1)
