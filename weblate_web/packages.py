@@ -14,6 +14,13 @@ DEDICATED_PREFIX = "dedicated:"
 HOSTED_PREFIX = "hosted:"
 MONTHLY_SUFFIX = "-m"
 
+SUPPORT_PACKAGES: list[tuple[str, str, int]] = [
+    ("Weblate backup service (yearly)", "backup", 300),
+    ("Weblate basic self-hosted support (yearly)", "basic", 600),
+    ("Weblate extended self-hosted support (yearly)", "extended", 1200),
+    ("Weblate premium self-hosted support (yearly)", "premium", 2400),
+]
+
 
 def package_name(number: int) -> str:
     if number < 1_000_000:

@@ -31,6 +31,7 @@ from weblate_web.packages import (
     MONTHLY_SUFFIX,
     PACKAGE_NAMES,
     PACKAGES,
+    SUPPORT_PACKAGES,
 )
 
 if TYPE_CHECKING:
@@ -65,6 +66,14 @@ class Command(BaseCommand):
                 limit,
                 price // 10,
             )
+        for verbose, name, price in SUPPORT_PACKAGES:
+            yield (
+                PackageCategory.PACKAGE_SUPPORT,
+                verbose,
+                name,
+                0,
+                price,
+            )
 
     def handle(self, *args, **options) -> None:
         for category, verbose, name, limit, price in self.get_packages():
@@ -76,15 +85,25 @@ class Command(BaseCommand):
                     packages = Package.objects.filter(name__endswith=MONTHLY_SUFFIX)
                 else:
                     packages = Package.objects.exclude(name__endswith=MONTHLY_SUFFIX)
-                package, created = packages.get_or_create(
-                    limit_hosted_strings=limit,
-                    category=category,
-                    defaults={
-                        "verbose": verbose,
-                        "name": name,
-                        "price": price,
-                    },
-                )
+                if limit:
+                    package, created = packages.get_or_create(
+                        limit_hosted_strings=limit,
+                        category=category,
+                        defaults={
+                            "verbose": verbose,
+                            "name": name,
+                            "price": price,
+                        },
+                    )
+                else:
+                    package, created = packages.get_or_create(
+                        name=name,
+                        category=category,
+                        defaults={
+                            "verbose": verbose,
+                            "price": price,
+                        },
+                    )
             if created:
                 self.stdout.write(f"Created {verbose}")
             else:
