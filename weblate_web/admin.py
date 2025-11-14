@@ -161,3 +161,4 @@ class PackageAdmin(admin.ModelAdmin):
 @admin.register(PastPayments)
 class PastPaymentsAdmin(admin.ModelAdmin):
     list_display = ["subscription", "payment"]
+    autocomplete_fields = ("subscription",)
