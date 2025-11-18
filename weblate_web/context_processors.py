@@ -73,7 +73,7 @@ def weblate_web(request):
         "hosting_packages": Package.objects.filter(
             category=PackageCategory.PACKAGE_SHARED
         )
-        .filter(name__regex="^hosted:[0-9]+[km]$")
+        .filter(name__regex="^hosted:[0-9.]+[km]$")
         .order_by("price")[:6],
         "language_columns": [
             language_urls[:language_col],

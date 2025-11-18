@@ -1107,12 +1107,12 @@ class HostingView(TemplateView):
 
         data["hosted_package"] = (
             Package.objects.filter(category=PackageCategory.PACKAGE_SHARED)
-            .filter(name__regex="^hosted:[0-9]+[km]$")
+            .filter(name__regex="^hosted:[0-9.]+[km]$")
             .order_by("price")[0]
         )
         data["dedicated_package"] = (
             Package.objects.filter(category=PackageCategory.PACKAGE_DEDICATED)
-            .filter(name__regex="^dedicated:[0-9]+[km]$")
+            .filter(name__regex="^dedicated:[0-9.]+[km]$")
             .order_by("price")[0]
         )
         data["basic_support_package"] = Package.objects.get(name="basic")
