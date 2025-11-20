@@ -470,4 +470,5 @@ COUNTRIES_OVERRIDE = {
 LOCAL = Path(BASE_DIR) / "weblate_web" / "settings_local.py"
 if LOCAL.exists():
     local_settings = LOCAL.read_text()
+    # pylint: disable-next=exec-used
     exec(local_settings)  # noqa: S102

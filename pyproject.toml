@@ -94,6 +94,39 @@ module = [
   "weasyprint.*"
 ]
 
+[tool.pylint.main]
+disable = [
+  "cyclic-import",
+  "duplicate-code",
+  "line-too-long",
+  "invalid-name",  # TODO
+  "import-outside-toplevel",
+  "missing-function-docstring",
+  "no-member",
+  "missing-module-docstring",
+  "too-many-lines",
+  "too-many-statements",
+  "too-few-public-methods",
+  "consider-using-f-string",  # TODO
+  "fixme",
+  "attribute-defined-outside-init",  # TODO
+  "unused-argument",
+  "too-many-positional-arguments",
+  "c-extension-no-member",
+  "too-many-ancestors",
+  "abstract-method",  # TODO
+  "arguments-differ",  # TODO
+  "undefined-variable",  # TODO
+  "too-many-arguments",
+  "too-many-locals",
+  "too-many-branches",
+  "invalid-str-returned",  # TODO
+  "too-many-instance-attributes",
+  "too-many-public-methods",
+  "missing-class-docstring",
+  "unsubscriptable-object"  # TODO
+]
+
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "weblate_web.settings"
 addopts = "--reuse-db --cov=weblate_web --cov-report="

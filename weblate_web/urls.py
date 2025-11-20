@@ -80,21 +80,17 @@ class LatestEntriesFeed(Feed):
     description = "News about Weblate and localization."
 
     def items(self):
-        # pylint: disable=no-self-use
         return Post.objects.filter(timestamp__lt=timezone.now()).order_by("-timestamp")[
             :10
         ]
 
     def item_title(self, item):
-        # pylint: disable=no-self-use
         return item.title
 
     def item_description(self, item):
-        # pylint: disable=no-self-use
         return item.body.rendered
 
     def item_pubdate(self, item):
-        # pylint: disable=no-self-use
         return item.timestamp
 
 
@@ -122,16 +118,15 @@ class PagesSitemap(Sitemap):
             ("/news/", 0.9, "daily"),
         )
 
-    def location(self, obj) -> str:
-        return f"/{self.language}{obj[0]}"
+    def location(self, item) -> str:
+        return f"/{self.language}{item[0]}"
 
-    def priority(self, obj):
+    def priority(self, item):
         if self.language == "en":
-            return obj[1]
-        return obj[1] * 3 / 4
+            return item[1]
+        return item[1] * 3 / 4
 
     def changefreq(self, obj):
-        # pylint: disable=no-self-use
         return obj[2]
 
 
@@ -139,11 +134,9 @@ class NewsSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        # pylint: disable=no-self-use
         return Post.objects.filter(timestamp__lt=timezone.now()).order_by("-timestamp")
 
     def lastmod(self, item):
-        # pylint: disable=no-self-use
         return item.timestamp
 
 
