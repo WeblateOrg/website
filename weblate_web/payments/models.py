@@ -511,9 +511,10 @@ class Payment(models.Model):
                     last_good = previous.filter(state=Payment.PROCESSED).order_by(
                         "-created"
                     )[0]
-                    failures = failures.filter(created__gt=last_good.created)
                 except IndexError:
                     pass
+                else:
+                    failures = failures.filter(created__gt=last_good.created)
                 if failures.count() >= 3:
                     return False
 
