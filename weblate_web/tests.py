@@ -1385,6 +1385,7 @@ class PaymentTest(FakturaceTestCase):
 
         # Fetch any page to verif that message is shown
         response = self.client.get("/about/", follow=False)
+        self.assertRedirects(response, "/en/about/", fetch_redirect_response=False)
         response = self.client.get("/en/about/")
         self.assertContains(response, "Thank you for your donation and enjoy FOSDEM.")
 
