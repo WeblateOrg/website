@@ -227,7 +227,7 @@ class InvoiceTestCase(UserTestCase):
         # Pay
         payment = invoice.draft_payment_set.get()
         payment_url = payment.get_payment_url()
-        response = self.client.post(payment_url, {"method": "pay"})
+        self.client.post(payment_url, {"method": "pay"})
 
         # Ensure there is only a single invoice object now
         self.assertEqual(Invoice.objects.count(), 1)
