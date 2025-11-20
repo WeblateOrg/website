@@ -1008,7 +1008,7 @@ class Service(models.Model):
         reports = self.report_set.all()
         if self.site_url_lock:
             reports = reports.filter(site_url=self.site_url)
-        return self.report_set.order_by("-timestamp")[:10]
+        return reports.order_by("-timestamp")[:10]
 
 
 class Subscription(models.Model):
