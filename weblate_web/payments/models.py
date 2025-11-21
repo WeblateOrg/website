@@ -520,9 +520,7 @@ class Payment(models.Model):
 
             # Create new payment object
             if extra is None:
-                extra = {}
-                extra.update(self.extra)
-                extra.update(kwargs)
+                extra = {**self.extra, **kwargs}
             return Payment.objects.create(
                 amount=self.amount if amount is None else amount,
                 backend=self.backend,
