@@ -305,7 +305,7 @@ urlpatterns = [
         ),
     ),
     path(
-        r"apple-touch-icon.png",
+        "apple-touch-icon.png",
         RedirectView.as_view(
             url=settings.STATIC_URL + "weblate-180.png", permanent=True
         ),
