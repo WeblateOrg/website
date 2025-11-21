@@ -318,7 +318,7 @@ def delete_storage_subaccount(subaccount_id: int) -> None:
 
 def generate_ssh_url(data: SubaccountDict) -> str:
     """Generate SSH URL from subaccount service data."""
-    return "ssh://{}@{}:23/./backups".format(data["username"], data["server"])
+    return f"ssh://{data['username']}@{data['server']}:23/./backups"
 
 
 def get_storage_subaccounts() -> list[SubaccountDict]:

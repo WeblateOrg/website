@@ -180,7 +180,7 @@ def validate_bitmap(value) -> None:
         image.close()
 
 
-class MySQLSearchLookup(models.Lookup):
+class MySQLSearchLookup(models.Lookup):  # pylint: disable=abstract-method
     lookup_name = "search"
 
     def as_sql(self, compiler, connection):

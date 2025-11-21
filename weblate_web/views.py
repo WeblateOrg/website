@@ -760,12 +760,11 @@ class EditLinkView(UpdateView):
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
+        link_url = form.cleaned_data.get("link_url", "N/A")
+        link_text = form.cleaned_data.get("link_text", "N/A")
         mail_admins(
             "Weblate: link changed",
-            "New link: {link_url}\nNew text: {link_text}\n".format(
-                link_url=form.cleaned_data.get("link_url", "N/A"),
-                link_text=form.cleaned_data.get("link_text", "N/A"),
-            ),
+            f"New link: {link_url}\nNew text: {link_text}\n",
         )
         return super().form_valid(form)
 
@@ -803,12 +802,11 @@ class AddDiscoveryView(CreateView):
         """If the form is valid, save the associated model."""
         instance = form.instance
         instance.customer = get_customer(self.request, instance)
+        discover_url = instance.site_url
+        discover_text = form.cleaned_data.get("discover_text", "N/A")
         mail_admins(
             "Weblate: discovery registered",
-            "Service link: {discover_url}\nNew text: {discover_text}\n".format(
-                discover_url=instance.site_url,
-                discover_text=form.cleaned_data.get("discover_text", "N/A"),
-            ),
+            f"Service link: {discover_url}\nNew text: {discover_text}\n",
         )
         result = super().form_valid(form)
         instance.customer.users.add(self.request.user)
