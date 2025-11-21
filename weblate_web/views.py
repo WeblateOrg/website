@@ -781,12 +781,11 @@ class EditDiscoveryView(UpdateView):
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
+        discover_url = form.instance.site_url
+        discover_text = form.cleaned_data.get("discover_text", "N/A")
         mail_admins(
             "Weblate: discovery description changed",
-            "Service link: {discover_url}\nNew text: {discover_text}\n".format(
-                discover_url=form.instance.site_url,
-                discover_text=form.cleaned_data.get("discover_text", "N/A"),
-            ),
+            f"Service link: {discover_url}\nNew text: {discover_text}\n",
         )
         return super().form_valid(form)
 
