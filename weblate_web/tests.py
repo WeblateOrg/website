@@ -827,7 +827,9 @@ class UtilTestCase(TestCase):
         )
 
 
-def create_payment(*, recurring="y", user, **kwargs):
+def create_payment(
+    *, recurring: Literal["y", ""] = "y", user: User, **kwargs
+) -> tuple[Payment, str, str]:
     customer = Customer.objects.create(
         email="weblate@example.com",
         user_id=user.pk,
