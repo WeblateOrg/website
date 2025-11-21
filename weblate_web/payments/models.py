@@ -445,7 +445,7 @@ class Payment(models.Model):
     def vat_amount(self):
         if self.customer.needs_vat and not self.amount_fixed:
             rate = 100 + self.customer.vat_rate
-            return round(1.0 * rate * self.amount / 100, 2)
+            return round(rate * self.amount / 100, 2)
         return self.amount
 
     @property
