@@ -124,7 +124,7 @@ def validate_bitmap(value) -> None:
 
     Raises
     ------
-        ValidationError: If invame is not valid to be used.
+        ValidationError: If image is not valid to be used.
 
     """
     if value is None:
