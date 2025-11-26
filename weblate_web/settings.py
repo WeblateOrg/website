@@ -194,6 +194,7 @@ TEMPLATES = [
 
 # Middleware
 MIDDLEWARE = [
+    "weblate_web.middleware.CSRFSecurityMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "weblate_web.middleware.SecurityMiddleware",
@@ -203,6 +204,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "weblate_web.middleware.LocalizedDocumentationMiddleware",
     "djangosaml2.middleware.SamlSessionMiddleware",
 ]
 

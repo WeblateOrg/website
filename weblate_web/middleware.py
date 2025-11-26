@@ -44,7 +44,6 @@ class SecurityMiddleware:
     """
     Middleware that sets various security related headers.
 
-    - Disables CSRF when payment secret is provided
     - Content-Security-Policy
     - X-XSS-Protection
     """
@@ -52,23 +51,9 @@ class SecurityMiddleware:
     def __init__(self, get_response=None) -> None:
         self.get_response = get_response
 
-    def adjust_doc_links(self, response) -> None:
-        lang = get_language()
-        if lang in DOCUMENTATION_LANGUAGES:
-            response.content = response.content.replace(
-                b"https://docs.weblate.org/en/",
-                f"https://docs.weblate.org/{DOCUMENTATION_LANGUAGES[lang]}/".encode(),
-            )
-
     def __call__(self, request):
-        # Skip CSRF validation for requests with valid secret
-        # This is used to process automatic payments
-        if request.POST.get("secret") == settings.PAYMENT_SECRET:
-            request._dont_enforce_csrf_checks = True
-
         response = self.get_response(request)
-        if response["Content-Type"] == "text/html; charset=utf-8":
-            self.adjust_doc_links(response)
+
         # No CSP for debug mode (to allow djdt or error pages)
         if settings.DEBUG:
             return response
@@ -114,4 +99,40 @@ class SecurityMiddleware:
         response["X-XSS-Protection"] = "1; mode=block"
         # Opt-out from Google FLoC
         response["Permissions-Policy"] = "interest-cohort=()"
+        return response
+
+
+class CSRFSecurityMiddleware:
+    """Middleware that disables CSRF when payment secret is provided."""
+
+    def __init__(self, get_response=None) -> None:
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Skip CSRF validation for requests with valid secret
+        # This is used to process automatic payments
+        if request.POST.get("secret") == settings.PAYMENT_SECRET:
+            request._dont_enforce_csrf_checks = True
+
+        return self.get_response(request)
+
+
+class LocalizedDocumentationMiddleware:
+    """Middleware that adjust documentation links to localized ones."""
+
+    def __init__(self, get_response=None) -> None:
+        self.get_response = get_response
+
+    def adjust_doc_links(self, response) -> None:
+        lang = get_language()
+        if lang in DOCUMENTATION_LANGUAGES:
+            response.content = response.content.replace(
+                b"https://docs.weblate.org/en/",
+                f"https://docs.weblate.org/{DOCUMENTATION_LANGUAGES[lang]}/".encode(),
+            )
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if response["Content-Type"] == "text/html; charset=utf-8":
+            self.adjust_doc_links(response)
         return response
