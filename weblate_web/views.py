@@ -101,16 +101,10 @@ if TYPE_CHECKING:
 
     from django import forms
     from django.core.paginator import Page
-    from django.http import (
-        HttpRequest,
-    )
+    from django.http import HttpRequest, HttpResponse
 
-    from weblate_web.payments.backends import (
-        Backend,
-    )
-    from weblate_web.utils import (
-        AuthenticatedHttpRequest,
-    )
+    from weblate_web.payments.backends import Backend
+    from weblate_web.utils import AuthenticatedHttpRequest
 
 ON_EACH_SIDE = 3
 ON_ENDS = 2
@@ -373,7 +367,7 @@ class PaymentView(FormView, SingleObjectMixin):
     template_name = "payment/payment.html"
     check_customer = True
 
-    def redirect_origin(self):
+    def redirect_origin(self) -> HttpResponse:
         if self.object.customer.origin in {PAYMENTS_ORIGIN, AUTO_ORIGIN}:
             return HttpResponseRedirect(
                 f"{reverse('donate-process')}?payment={self.object.pk}"
@@ -402,7 +396,7 @@ class PaymentView(FormView, SingleObjectMixin):
         ]
         return kwargs
 
-    def validate_customer(self, customer):
+    def validate_customer(self, customer: Customer) -> HttpResponse | None:
         if not self.check_customer:
             return None
         if customer.is_empty:
@@ -426,7 +420,7 @@ class PaymentView(FormView, SingleObjectMixin):
                 return redirect("payment-customer", pk=self.object.pk)
         return None
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
         with transaction.atomic():
             self.object = self.get_object()
             customer = self.object.customer
@@ -448,7 +442,7 @@ class PaymentView(FormView, SingleObjectMixin):
             )
         return super().form_invalid(form)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
         if self.object.state != Payment.NEW:
             return redirect(self.object.get_complete_url())
         return super().get(request, *args, **kwargs)
