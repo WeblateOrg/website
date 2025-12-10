@@ -223,7 +223,11 @@
 
           {% endif %}
         {% endif %}
-        {% if invoice.is_final %}This is a computer-generated invoice; signature not required.{% endif %}
+        {% if invoice.is_final %}
+          This is a computer-generated invoice; signature not required.
+        {% elif invoice.is_proforma %}
+          This is not a tax document.
+        {% endif %}
       </p>
       <table id="details">
         <tbody>
@@ -231,6 +235,8 @@
             <th>
               {% if invoice.is_draft %}
                 Quote date
+              {% elif invoice.is_proforma %}
+                Issue date
               {% else %}
                 Date of taxable supply
               {% endif %}

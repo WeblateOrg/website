@@ -763,6 +763,10 @@ class Invoice(models.Model):  # noqa: PLR0904
     def is_final(self):
         return self.kind == InvoiceKind.INVOICE
 
+    @property
+    def is_proforma(self):
+        return self.kind == InvoiceKind.PROFORMA
+
     def get_payment_url(self) -> str | None:
         if self.can_be_paid():
             return get_site_url("invoice-pay", pk=self.pk)
