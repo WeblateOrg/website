@@ -285,6 +285,10 @@ class Invoice(models.Model):  # noqa: PLR0904
         blank=True,
         help_text="Due date / Quote validity, keep blank unless specific terms are needed",
     )
+    tax_date = models.DateField(
+        blank=True,
+        help_text="Date of taxable supply, keep blank for issue date",
+    )
 
     kind = models.IntegerField(choices=InvoiceKind)
     category = models.IntegerField(
@@ -355,6 +359,9 @@ class Invoice(models.Model):  # noqa: PLR0904
         if self.extra is None:
             self.extra = {}
         extra_fields: list[str] = []
+        if not self.tax_date:
+            self.tax_date = self.issue_date
+            extra_fields.append("tax_date")
         if not self.due_date:
             self.due_date = self.issue_date + datetime.timedelta(
                 days=self.get_due_delta()
@@ -415,7 +422,7 @@ class Invoice(models.Model):  # noqa: PLR0904
     @cached_property
     def exchange_rate_czk(self) -> Decimal:
         """Exchange rate from currency to CZK."""
-        return ExchangeRates.get(self.get_currency_display(), self.issue_date)
+        return ExchangeRates.get(self.get_currency_display(), self.tax_date)
 
     @cached_property
     def bank_account(self) -> BankAccountInfo:
@@ -424,7 +431,7 @@ class Invoice(models.Model):  # noqa: PLR0904
     @cached_property
     def exchange_rate_eur(self) -> Decimal:
         """Exchange rate from currency to EUR."""
-        return ExchangeRates.get("EUR", self.issue_date) / self.exchange_rate_czk
+        return ExchangeRates.get("EUR", self.tax_date) / self.exchange_rate_czk
 
     @cached_property
     def total_items_amount(self) -> Decimal:
@@ -699,6 +706,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         extra: dict[str, int] | None = None,
         customer_reference: str | None = None,
         customer_note: str | None = None,
+        tax_date: datetime.date | None = None,
     ) -> Invoice:
         """Create a final invoice from draft/proforma upon payment."""
         invoice = Invoice.objects.create(
@@ -710,6 +718,7 @@ class Invoice(models.Model):  # noqa: PLR0904
             discount=self.discount,
             vat_rate=self.vat_rate,
             currency=self.currency,
+            tax_date=cast("datetime.date", tax_date),
             parent=self,
             prepaid=prepaid,
             extra=extra if extra is not None else self.extra,
@@ -863,7 +872,7 @@ class InvoiceItem(models.Model):
                     self.unit_price = ExchangeRates.convert_from_eur(
                         self.package.price,
                         self.invoice.get_currency_display(),
-                        self.invoice.issue_date,
+                        self.invoice.tax_date,
                     )
                 extra_fields.append("unit_price")
             if not self.description:

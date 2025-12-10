@@ -399,6 +399,11 @@ def cnb_mock_rates() -> None:
         f"https://api.cnb.cz/cnbapi/exrates/daily?date={timezone.now().date().isoformat()}",
         json=RATES_JSON,
     )
+    # Matches Fio payments mock
+    responses.get(
+        "https://api.cnb.cz/cnbapi/exrates/daily?date=2016-07-29",
+        json=RATES_JSON,
+    )
 
 
 def thepay_mock_payment(payment: str | UUID) -> None:

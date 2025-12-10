@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import cast
@@ -48,6 +49,8 @@ class InvoiceTestCase(UserTestCase):
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         currency: Currency = Currency.EUR,
+        tax_date: date | None = None,
+        due_date: date | None = None,
     ) -> Invoice:
         return Invoice.objects.create(
             customer=self.create_customer(vat=vat),
@@ -58,6 +61,8 @@ class InvoiceTestCase(UserTestCase):
             category=InvoiceCategory.HOSTING,
             customer_reference=customer_reference,
             currency=currency,
+            tax_date=cast("date", tax_date),
+            due_date=cast("date", due_date),
         )
 
     def create_invoice_package(
@@ -85,6 +90,8 @@ class InvoiceTestCase(UserTestCase):
         customer_note: str = "",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
+        tax_date: date | None = None,
+        due_date: date | None = None,
     ) -> Invoice:
         invoice = self.create_invoice_base(
             discount=discount,
@@ -93,6 +100,8 @@ class InvoiceTestCase(UserTestCase):
             customer_note=customer_note,
             vat=vat,
             kind=kind,
+            tax_date=tax_date,
+            due_date=due_date,
         )
         invoice.invoiceitem_set.create(
             description="Test item",
@@ -111,6 +120,18 @@ class InvoiceTestCase(UserTestCase):
         # Validate generated XML
         xml_doc = etree.parse(invoice.xml_path)
         S3_SCHEMA.assertValid(xml_doc)
+
+    def test_dates(self) -> None:
+        invoice = self.create_invoice(vat="CZ8003280318")
+        self.assertEqual(invoice.tax_date, invoice.issue_date)
+        self.assertEqual(invoice.due_date, invoice.issue_date + timedelta(days=14))
+        tax_date = date(2020, 10, 10)
+        due_date = date(3030, 10, 10)
+        invoice = self.create_invoice(
+            vat="CZ8003280318", tax_date=tax_date, due_date=due_date
+        )
+        self.assertEqual(invoice.tax_date, tax_date)
+        self.assertEqual(invoice.due_date, due_date)
 
     def test_total(self) -> None:
         invoice = self.create_invoice(vat="CZ8003280318")

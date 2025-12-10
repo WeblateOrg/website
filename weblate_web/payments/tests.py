@@ -35,6 +35,7 @@ from django.test.utils import override_settings
 from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.tests import (
     THEPAY2_MOCK_SETTINGS,
+    cnb_mock_rates,
     mock_vies,
     thepay_mock_create_payment,
     thepay_mock_payment,
@@ -300,6 +301,7 @@ class BackendTest(BackendBaseTestCase):
     )
     def test_proforma(self) -> None:
         mock_vies()
+        cnb_mock_rates()
         backend = get_backend("fio-bank")(self.payment)
         self.assertIsNotNone(backend.initiate(None, "", "/complete/"))
         self.check_payment(Payment.PENDING)
