@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 
+import datetime
 import re
 from decimal import Decimal
 from hashlib import sha256
@@ -31,6 +32,7 @@ from django.conf import settings
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.http import http_date
+from django.utils.timezone import make_aware
 from django.utils.translation import get_language, gettext, gettext_lazy
 
 from .models import Payment
@@ -386,6 +388,7 @@ class Backend:
                 invoice = self.payment.draft_invoice.duplicate(
                     kind=invoice_kind,
                     prepaid=not proforma,
+                    tax_date=self.payment.created.date(),
                 )
         else:
             category = InvoiceCategory.HOSTING
@@ -396,6 +399,7 @@ class Backend:
                 kind=invoice_kind,
                 customer=self.payment.customer,
                 vat_rate=self.payment.customer.vat_rate,
+                tax_date=self.payment.created.date(),
                 currency=Currency.EUR,
                 prepaid=not proforma,
                 category=category,
@@ -536,7 +540,7 @@ class FioBank(Backend):
         return instructions
 
     @classmethod
-    def fetch_payments(cls, from_date: str | None = None) -> None:  # noqa: C901, PLR0915
+    def fetch_payments(cls, from_date: str | None = None) -> None:  # noqa: C901, PLR0915, PLR0912
         from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
 
         tokens: list[str]
@@ -621,10 +625,23 @@ class FioBank(Backend):
                         continue
 
                     print(f"{invoice.number}: received payment")
+
                     # Instantionate backend (does SELECT FOR UPDATE)
                     backend = payment.get_payment_backend()
+
+                    # Sync payment date with the actual payment
+                    if backend.payment.created.date() != entry["date"]:
+                        # Make timezone aware datetime out of date object
+                        backend.payment.created = make_aware(
+                            datetime.datetime.combine(entry["date"], datetime.time.min)
+                        )
+                        # Saved later via backend.success()
+
                     # Store transaction details
                     backend.payment.details["transaction"] = entry
+                    # Saved later via backend.success()
+
+                    # Complete processing and save updated payment
                     backend.success()
                     processed = True
                     break
