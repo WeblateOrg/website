@@ -96,7 +96,7 @@
         {% endif %}
       </tbody>
       <tfoot>
-        {% if invoice.vat_rate %}
+        {% if invoice.vat_rate and invoice.is_final %}
           <tr>
             <td>Exchange rate for VAT</td>
             <td></td>
@@ -223,7 +223,7 @@
 
           {% endif %}
         {% endif %}
-        {% if not invoice.is_draft %}This is a computer-generated invoice; signature not required.{% endif %}
+        {% if invoice.is_final %}This is a computer-generated invoice; signature not required.{% endif %}
       </p>
       <table id="details">
         <tbody>
