@@ -285,6 +285,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         blank=True,
         help_text="Due date / Quote validity, keep blank unless specific terms are needed",
     )
+
     kind = models.IntegerField(choices=InvoiceKind)
     category = models.IntegerField(
         choices=InvoiceCategory, help_text="Helps to categorize income"
