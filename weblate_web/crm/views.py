@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, cast
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -15,7 +16,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
-from weblate_web.invoices.models import Invoice, InvoiceKind
+from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.models import Service, Subscription
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import show_form_errors
@@ -320,3 +321,176 @@ class InteractionDownloadView(InteractionDetailView):
             as_attachment=True,
             filename=self.object.attachment.name,
         )
+
+
+class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
+    template_name = "crm/income.html"
+    permission = "invoices.view_income"
+    title = "Income Tracking"
+
+    def get_year(self) -> int:
+        """Get the year from URL kwargs or default to current year."""
+        return self.kwargs.get("year", timezone.now().year)
+
+    def get_month(self) -> int | None:
+        """Get the month from URL kwargs if present."""
+        return self.kwargs.get("month")
+
+    def get_title(self) -> str:
+        year = self.get_year()
+        month = self.get_month()
+        if month:
+            return f"Income Tracking - {year}/{month:02d}"
+        return f"Income Tracking - {year}"
+
+    def generate_svg_bar_chart(
+        self, data: dict[str, Decimal], max_value: Decimal | None = None
+    ) -> str:
+        """Generate a simple SVG bar chart."""
+        if not data:
+            return ""
+
+        # Chart dimensions
+        width = 800
+        height = 400
+        padding = 60
+        chart_width = width - 2 * padding
+        chart_height = height - 2 * padding
+
+        # Calculate max value if not provided
+        if max_value is None:
+            max_value = max(data.values()) if data.values() else Decimal(0)
+
+        if max_value == 0:
+            max_value = Decimal(1)
+
+        # Start SVG
+        svg_parts = [
+            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">',
+            '<style>',
+            '.bar { fill: #417690; }',
+            '.bar:hover { fill: #79aec8; }',
+            '.label { font-family: Arial, sans-serif; font-size: 12px; }',
+            '.value { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }',
+            '.axis { stroke: #ccc; stroke-width: 1; }',
+            '</style>',
+        ]
+
+        # Draw axes
+        svg_parts.append(
+            f'<line x1="{padding}" y1="{padding}" x2="{padding}" '
+            f'y2="{height - padding}" class="axis"/>'
+        )
+        svg_parts.append(
+            f'<line x1="{padding}" y1="{height - padding}" '
+            f'x2="{width - padding}" y2="{height - padding}" class="axis"/>'
+        )
+
+        # Calculate bar properties
+        num_bars = len(data)
+        bar_spacing = chart_width / (num_bars * 2 + 1)
+        bar_width = bar_spacing * 0.8
+
+        # Draw bars
+        for i, (label, value) in enumerate(data.items()):
+            x = padding + bar_spacing * (2 * i + 1)
+            bar_height = (
+                float(value / max_value * chart_height) if value > 0 else 0
+            )
+            y = height - padding - bar_height
+
+            # Bar
+            svg_parts.append(
+                f'<rect x="{x}" y="{y}" width="{bar_width}" '
+                f'height="{bar_height}" class="bar">'
+                f'<title>{label}: {value:,.0f} CZK</title>'
+                f'</rect>'
+            )
+
+            # Label
+            label_x = x + bar_width / 2
+            label_y = height - padding + 15
+            svg_parts.append(
+                f'<text x="{label_x}" y="{label_y}" '
+                f'text-anchor="middle" class="label">{label}</text>'
+            )
+
+            # Value
+            if bar_height > 20:
+                value_y = y + bar_height / 2 + 4
+                svg_parts.append(
+                    f'<text x="{label_x}" y="{value_y}" '
+                    f'text-anchor="middle" class="value">{value:,.0f}</text>'
+                )
+
+        svg_parts.append("</svg>")
+        return "".join(svg_parts)
+
+    def get_income_data(self, year: int, month: int | None = None):
+        """Get income data aggregated by category."""
+        invoices = Invoice.objects.filter(
+            kind=InvoiceKind.INVOICE, issue_date__year=year
+        )
+
+        if month:
+            invoices = invoices.filter(issue_date__month=month)
+
+        # Aggregate by category
+        category_data = {}
+        for category in InvoiceCategory:
+            total = (
+                invoices.filter(category=category.value).aggregate(
+                    total=Sum("total_amount_no_vat_czk")
+                )["total"]
+                or Decimal(0)
+            )
+            category_data[category.label] = total
+
+        return category_data
+
+    def get_monthly_data(self, year: int):
+        """Get monthly income data for the year."""
+        monthly_totals = {}
+        for month in range(1, 13):
+            invoices = Invoice.objects.filter(
+                kind=InvoiceKind.INVOICE,
+                issue_date__year=year,
+                issue_date__month=month,
+            )
+            total = (
+                invoices.aggregate(total=Sum("total_amount_no_vat_czk"))["total"]
+                or Decimal(0)
+            )
+            monthly_totals[f"{month:02d}"] = total
+
+        return monthly_totals
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        year = self.get_year()
+        month = self.get_month()
+
+        # Get income data
+        income_data = self.get_income_data(year, month)
+        context["income_data"] = income_data
+        context["total_income"] = sum(income_data.values())
+
+        # Navigation years (show last 5 years and next year)
+        current_year = timezone.now().year
+        context["years"] = list(range(current_year - 5, current_year + 2))
+        context["current_year"] = year
+        context["current_month"] = month
+
+        # Generate chart
+        if month:
+            # For monthly view, show category breakdown
+            context["chart_svg"] = self.generate_svg_bar_chart(income_data)
+            context["is_monthly"] = True
+        else:
+            # For yearly view, show monthly totals
+            monthly_data = self.get_monthly_data(year)
+            context["chart_svg"] = self.generate_svg_bar_chart(monthly_data)
+            context["monthly_data"] = monthly_data
+            context["is_monthly"] = False
+
+        return context

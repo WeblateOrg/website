@@ -167,6 +167,26 @@
           </tr>
         </table>
       {% endif %}
+      {% if perms.invoices.view_income %}
+        <table>
+          <caption>
+            Income Tracking
+          </caption>
+          <tr>
+            <th scope="row" id="row-income">
+              <a href="{% url 'crm:income' %}">Income</a>
+            </th>
+
+            <td></td>
+
+            <td>
+              <a href="{% url 'crm:income' %}"
+                 class="viewlink"
+                 aria-describedby="row-income">{% translate "View" %}</a>
+            </td>
+          </tr>
+        </table>
+      {% endif %}
       {% comment %}
       <table>
         <caption>

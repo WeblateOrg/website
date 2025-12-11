@@ -1,0 +1,221 @@
+{% extends "crm/base.html" %}
+
+{% load i18n static %}
+
+{% block bodyclass %}{{ block.super }} income{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    .income-summary {
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .income-summary h2 {
+      margin-top: 0;
+    }
+    .income-table {
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+    }
+    .income-table th,
+    .income-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .income-table th {
+      background: #417690;
+      color: white;
+      font-weight: bold;
+    }
+    .income-table tr:hover {
+      background: #f5f5f5;
+    }
+    .income-table .total-row {
+      font-weight: bold;
+      background: #e8f4f8;
+      border-top: 2px solid #417690;
+    }
+    .income-table .amount {
+      text-align: right;
+      font-family: monospace;
+    }
+    .year-navigation {
+      margin: 20px 0;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    .year-navigation a {
+      display: inline-block;
+      padding: 5px 10px;
+      margin: 2px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      text-decoration: none;
+      color: #333;
+    }
+    .year-navigation a.current {
+      background: #417690;
+      color: white;
+      font-weight: bold;
+    }
+    .year-navigation a:hover {
+      background: #79aec8;
+      color: white;
+    }
+    .chart-container {
+      margin: 30px 0;
+      padding: 20px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .month-links {
+      margin: 20px 0;
+    }
+    .month-links a {
+      display: inline-block;
+      padding: 5px 10px;
+      margin: 2px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      text-decoration: none;
+      color: #333;
+    }
+    .month-links a:hover {
+      background: #79aec8;
+      color: white;
+    }
+    .breadcrumb-link {
+      margin-bottom: 10px;
+    }
+    .breadcrumb-link a {
+      color: #417690;
+      text-decoration: none;
+    }
+    .breadcrumb-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+{% endblock extrastyle %}
+
+{% block content %}
+  <div id="content-main">
+    {% if is_monthly %}
+      <div class="breadcrumb-link">
+        <a href="{% url 'crm:income-year' current_year %}">← Back to {{ current_year }} yearly view</a>
+      </div>
+    {% endif %}
+
+    <div class="year-navigation">
+      <strong>{% translate "Year:" %}</strong>
+      {% for year in years %}
+        {% if year == current_year %}
+          <a href="{% url 'crm:income-year' year %}" class="current">{{ year }}</a>
+        {% else %}
+          <a href="{% url 'crm:income-year' year %}">{{ year }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="income-summary">
+      {% if is_monthly %}
+        <h2>{% translate "Income by Category" %} - {{ current_year }}/{{ current_month|stringformat:"02d" }}</h2>
+      {% else %}
+        <h2>{% translate "Total Income" %} - {{ current_year }}</h2>
+      {% endif %}
+      <p style="font-size: 24px; font-weight: bold; color: #417690;">
+        {{ total_income|floatformat:0 }} CZK
+      </p>
+    </div>
+
+    <div class="chart-container">
+      <h3>
+        {% if is_monthly %}
+          {% translate "Income Distribution by Category" %}
+        {% else %}
+          {% translate "Monthly Income Distribution" %}
+        {% endif %}
+      </h3>
+      {{ chart_svg|safe }}
+    </div>
+
+    {% if is_monthly %}
+      <table class="income-table">
+        <thead>
+          <tr>
+            <th>{% translate "Category" %}</th>
+            <th class="amount">{% translate "Amount (CZK)" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for category, amount in income_data.items %}
+            <tr>
+              <td>{{ category }}</td>
+              <td class="amount">{{ amount|floatformat:0 }}</td>
+            </tr>
+          {% endfor %}
+          <tr class="total-row">
+            <td>{% translate "Total" %}</td>
+            <td class="amount">{{ total_income|floatformat:0 }}</td>
+          </tr>
+        </tbody>
+      </table>
+    {% else %}
+      <table class="income-table">
+        <thead>
+          <tr>
+            <th>{% translate "Month" %}</th>
+            <th class="amount">{% translate "Amount (CZK)" %}</th>
+            <th>{% translate "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for month, amount in monthly_data.items %}
+            <tr>
+              <td>{{ current_year }}/{{ month }}</td>
+              <td class="amount">{{ amount|floatformat:0 }}</td>
+              <td>
+                <a href="{% url 'crm:income-month' current_year month %}">{% translate "View details" %}</a>
+              </td>
+            </tr>
+          {% endfor %}
+          <tr class="total-row">
+            <td>{% translate "Total" %}</td>
+            <td class="amount">{{ total_income|floatformat:0 }}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="income-summary">
+        <h3>{% translate "Income by Category (Full Year)" %}</h3>
+        <table class="income-table">
+          <thead>
+            <tr>
+              <th>{% translate "Category" %}</th>
+              <th class="amount">{% translate "Amount (CZK)" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for category, amount in income_data.items %}
+              <tr>
+                <td>{{ category }}</td>
+                <td class="amount">{{ amount|floatformat:0 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}
