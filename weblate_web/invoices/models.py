@@ -598,10 +598,10 @@ class Invoice(models.Model):  # noqa: PLR0904
         add_element(output, "CisRada", self.kind)
         add_element(output, "Popis", self.get_description())
         add_element(output, "Vystaveno", self.issue_date.isoformat())
-        add_element(output, "DatUcPr", self.issue_date.isoformat())
-        add_element(output, "PlnenoDPH", self.issue_date.isoformat())
+        add_element(output, "DatUcPr", self.tax_date.isoformat())
+        add_element(output, "PlnenoDPH", self.tax_date.isoformat())
         add_element(output, "Splatno", self.due_date.isoformat())
-        add_element(output, "DatSkPoh", self.issue_date.isoformat())
+        add_element(output, "DatSkPoh", self.tax_date.isoformat())
         if self.customer.country == "CZ":
             add_element(output, "KodDPH", "19Ř01,02")
         elif self.customer.vat:
