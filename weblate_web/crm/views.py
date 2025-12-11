@@ -342,12 +342,20 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     CHART_PADDING = 60
     MIN_CHART_VALUE = Decimal(1)
 
-    # Category colors shared across all charts (keyed by category label)
+    # Category colors shared across all charts (keyed by category value)
     CATEGORY_COLORS = {
-        "Hosting": "#417690",
-        "Support": "#79aec8",
-        "Development / Consultations": "#5b80b2",
-        "Donation": "#9fc5e8",
+        InvoiceCategory.HOSTING: "#417690",
+        InvoiceCategory.SUPPORT: "#79aec8",
+        InvoiceCategory.DEVEL: "#5b80b2",
+        InvoiceCategory.DONATE: "#9fc5e8",
+    }
+
+    # Label to enum mapping for pie chart lookups
+    LABEL_TO_CATEGORY = {
+        "Hosting": InvoiceCategory.HOSTING,
+        "Support": InvoiceCategory.SUPPORT,
+        "Development / Consultations": InvoiceCategory.DEVEL,
+        "Donation": InvoiceCategory.DONATE,
     }
 
     def get_year(self) -> int:
@@ -390,19 +398,20 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         # Special case: if only one category, draw a circle instead of a pie slice
         if len(non_zero_categories) == 1:
-            category = non_zero_categories[0]
-            value = data[category]
-            color = self.CATEGORY_COLORS.get(category, "#999")
+            category_label = non_zero_categories[0]
+            value = data[category_label]
+            category_enum = self.LABEL_TO_CATEGORY.get(category_label)
+            color = self.CATEGORY_COLORS.get(category_enum, "#999")
             svg_parts.append(
                 f'<circle cx="{center_x}" cy="{center_y}" r="{radius}" '
                 f'fill="{color}" stroke="white" stroke-width="2">'
-                f"<title>{category}: €{value:,.0f} (100.0%)</title>"
+                f"<title>{category_label}: €{value:,.0f} (100.0%)</title>"
                 f"</circle>"
             )
         else:
             # Draw pie slices for multiple categories
             start_angle: float = 0
-            for category, value in data.items():
+            for category_label, value in data.items():
                 if value == 0:
                     continue
 
@@ -421,12 +430,13 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
                 large_arc = 1 if angle > 180 else 0
 
-                color = self.CATEGORY_COLORS.get(category, "#999")
+                category_enum = self.LABEL_TO_CATEGORY.get(category_label)
+                color = self.CATEGORY_COLORS.get(category_enum, "#999")
                 svg_parts.append(
                     f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
                     f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
                     f'fill="{color}" stroke="white" stroke-width="2">'
-                    f"<title>{category}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
+                    f"<title>{category_label}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
                     f"</path>"
                 )
 
@@ -438,11 +448,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         legend_spacing = 25
 
         idx = 0
-        for category, value in data.items():
+        for category_label, value in data.items():
             if value == 0:
                 continue
 
-            color = self.CATEGORY_COLORS.get(category, "#999")
+            category_enum = self.LABEL_TO_CATEGORY.get(category_label)
+            color = self.CATEGORY_COLORS.get(category_enum, "#999")
             y_pos = legend_y + idx * legend_spacing
 
             # Legend color box
@@ -454,7 +465,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             # Legend text
             svg_parts.append(
                 f'<text x="{legend_x + 20}" y="{y_pos + 12}" font-size="11" fill="#333">'
-                f"{category}: €{value:,.0f} ({value / total * 100:.0f}%)</text>"
+                f"{category_label}: €{value:,.0f} ({value / total * 100:.0f}%)</text>"
             )
 
             idx += 1
@@ -488,13 +499,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             # Monthly view: show daily bars
             num_bars = calendar.monthrange(year, month)[1]
             bar_labels = [str(d) for d in range(1, num_bars + 1)]
-            filter_func = lambda inv, idx: inv.issue_date.day == idx + 1
+
+            def filter_func(inv, idx):
+                return inv.issue_date.day == idx + 1
+
             label_prefix = "Day"
         else:
             # Yearly view: show monthly bars
             num_bars = 12
             bar_labels = [f"{m:02d}" for m in range(1, 13)]
-            filter_func = lambda inv, idx: inv.issue_date.month == idx + 1
+
+            def filter_func(inv, idx):
+                return inv.issue_date.month == idx + 1
+
             label_prefix = ""
 
         # Get max value for scaling
@@ -539,7 +556,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     )
                     svg_parts.append(
                         f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
-                        f'fill="{self.CATEGORY_COLORS.get(category.label, "#999")}" stroke="white" stroke-width="1">'
+                        f'fill="{self.CATEGORY_COLORS.get(category, "#999")}" stroke="white" stroke-width="1">'
                         f"<title>{category.label} - {title_label}: €{category_total:,.0f}</title>"
                         f"</rect>"
                     )
@@ -559,22 +576,26 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
-    def get_income_data(
+    def _get_invoices_and_totals(
         self, year: int, month: int | None = None
-    ) -> dict[str, Decimal]:
-        """Get income data aggregated by category."""
-        # Build query with proper database-level filtering
+    ) -> tuple[list, dict]:
+        """Fetch invoices and pre-calculate totals (shared helper)."""
         query = Invoice.objects.filter(kind=InvoiceKind.INVOICE, issue_date__year=year)
         if month:
             query = query.filter(issue_date__month=month)
 
         invoices = list(query.prefetch_related("invoiceitem_set"))
-
-        # Pre-calculate totals in EUR to avoid exchange rate fluctuations
         invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
+        return invoices, invoice_totals
+
+    def get_income_data(
+        self, year: int, month: int | None = None
+    ) -> dict[str, Decimal]:
+        """Get income data aggregated by category."""
+        invoices, invoice_totals = self._get_invoices_and_totals(year, month)
+
         # Aggregate by category manually since total_amount_no_vat is a property
-        # Group invoices by category to avoid N+1 queries
         category_data = {}
         for category in InvoiceCategory:
             total = sum(
@@ -591,15 +612,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_monthly_data(self, year: int) -> tuple[dict[str, Decimal], list]:
         """Get monthly income data for the year."""
-        # Fetch all invoices for the year at once to avoid 12 separate queries
-        invoices = list(
-            Invoice.objects.filter(
-                kind=InvoiceKind.INVOICE, issue_date__year=year
-            ).prefetch_related("invoiceitem_set")
-        )
-
-        # Pre-calculate totals in EUR to avoid exchange rate fluctuations
-        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
+        invoices, invoice_totals = self._get_invoices_and_totals(year)
 
         # Group by month in Python
         monthly_totals = {}
@@ -618,14 +631,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_daily_data(self, year: int, month: int) -> tuple[dict[str, Decimal], list]:
         """Get daily income data for a specific month."""
-        invoices = list(
-            Invoice.objects.filter(
-                kind=InvoiceKind.INVOICE, issue_date__year=year, issue_date__month=month
-            ).prefetch_related("invoiceitem_set")
-        )
-
-        # Pre-calculate totals in EUR
-        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
+        invoices, invoice_totals = self._get_invoices_and_totals(year, month)
 
         # Get number of days in month
         num_days = calendar.monthrange(year, month)[1]
