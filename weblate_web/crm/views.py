@@ -494,7 +494,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             num_bars = calendar.monthrange(year, month)[1]
             bar_labels = [str(d) for d in range(1, num_bars + 1)]
 
-            def filter_by_day(inv, idx):
+            def filter_by_day(inv: Invoice, idx: int) -> bool:
                 return inv.issue_date.day == idx + 1
 
             filter_func = filter_by_day
@@ -504,7 +504,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             num_bars = 12
             bar_labels = [f"{m:02d}" for m in range(1, 13)]
 
-            def filter_by_month(inv, idx):
+            def filter_by_month(inv: Invoice, idx: int) -> bool:
                 return inv.issue_date.month == idx + 1
 
             filter_func = filter_by_month
