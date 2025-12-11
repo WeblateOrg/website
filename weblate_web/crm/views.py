@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import calendar
 import math
+from collections.abc import Callable
 from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, cast
@@ -351,21 +352,6 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     }
 
     # Cached label-to-enum mapping (built once on first access)
-    _LABEL_TO_CATEGORY_CACHE: dict[str, InvoiceCategory] | None = None
-
-    @classmethod
-    def _get_label_to_category_map(cls) -> dict[str, InvoiceCategory]:
-        """Get or build cached label-to-enum mapping."""
-        if cls._LABEL_TO_CATEGORY_CACHE is None:
-            cls._LABEL_TO_CATEGORY_CACHE = {
-                category.label: category for category in InvoiceCategory
-            }
-        return cls._LABEL_TO_CATEGORY_CACHE
-
-    def _get_category_by_label(self, label: str) -> InvoiceCategory | None:
-        """Get category enum by its label."""
-        return self._get_label_to_category_map().get(label)
-
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
         return self.kwargs.get("year", timezone.now().year)
@@ -381,7 +367,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return f"Income Tracking - {year}/{month:02d}"
         return f"Income Tracking - {year}"
 
-    def generate_svg_pie_chart(self, data: dict[str, Decimal]) -> str:  # noqa: PLR0914
+    def generate_svg_pie_chart(
+        self, data: dict[InvoiceCategory, Decimal]
+    ) -> str:  # noqa: PLR0914
         """Generate a simple SVG pie chart for category distribution with legend."""
         if not data or sum(data.values()) == 0:
             return ""
@@ -406,20 +394,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         # Special case: if only one category, draw a circle instead of a pie slice
         if len(non_zero_categories) == 1:
-            category_label = non_zero_categories[0]
-            value = data[category_label]
-            category_enum = self._get_category_by_label(category_label)
-            color = self.CATEGORY_COLORS.get(category_enum, "#999")
+            category = non_zero_categories[0]
+            value = data[category]
+            color = self.CATEGORY_COLORS.get(category, "#999")
             svg_parts.append(
                 f'<circle cx="{center_x}" cy="{center_y}" r="{radius}" '
                 f'fill="{color}" stroke="white" stroke-width="2">'
-                f"<title>{category_label}: €{value:,.0f} (100.0%)</title>"
+                f"<title>{category.label}: €{value:,.0f} (100.0%)</title>"
                 f"</circle>"
             )
         else:
             # Draw pie slices for multiple categories
             start_angle: float = 0
-            for category_label, value in data.items():
+            for category, value in data.items():
                 if value == 0:
                     continue
 
@@ -438,13 +425,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
                 large_arc = 1 if angle > 180 else 0
 
-                category_enum = self._get_category_by_label(category_label)
-                color = self.CATEGORY_COLORS.get(category_enum, "#999")
+                color = self.CATEGORY_COLORS.get(category, "#999")
                 svg_parts.append(
                     f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
                     f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
                     f'fill="{color}" stroke="white" stroke-width="2">'
-                    f"<title>{category_label}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
+                    f"<title>{category.label}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
                     f"</path>"
                 )
 
@@ -456,12 +442,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         legend_spacing = 25
 
         idx = 0
-        for category_label, value in data.items():
+        for category, value in data.items():
             if value == 0:
                 continue
 
-            category_enum = self._get_category_by_label(category_label)
-            color = self.CATEGORY_COLORS.get(category_enum, "#999")
+            color = self.CATEGORY_COLORS.get(category, "#999")
             y_pos = legend_y + idx * legend_spacing
 
             # Legend color box
@@ -473,7 +458,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             # Legend text
             svg_parts.append(
                 f'<text x="{legend_x + 20}" y="{y_pos + 12}" font-size="11" fill="#333">'
-                f"{category_label}: €{value:,.0f} ({value / total * 100:.0f}%)</text>"
+                f"{category.label}: €{value:,.0f} ({value / total * 100:.0f}%)</text>"
             )
 
             idx += 1
@@ -599,9 +584,41 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         return invoices, invoice_totals
 
+    def _aggregate_income_by_period(
+        self,
+        year: int,
+        month: int | None,
+        filter_func: Callable[[object], bool],
+        period_keys: list[str],
+    ) -> tuple[dict[str, Decimal], list]:
+        """
+        Aggregate income data filtered by a custom function.
+
+        Args:
+            year: Year to filter invoices
+            month: Optional month to filter invoices
+            filter_func: Function that takes an invoice and returns True if it matches the period
+            period_keys: List of period keys (e.g., ['01', '02'] for months or ['1', '2'] for days)
+
+        Returns:
+            Tuple of (period_totals_dict, invoices_list)
+        """
+        invoices, invoice_totals = self._get_invoices_and_totals(year, month)
+
+        # Aggregate by period
+        period_totals = {}
+        for key in period_keys:
+            total = sum(
+                (invoice_totals[inv.pk] for inv in invoices if filter_func(inv, key)),
+                start=Decimal(0),
+            )
+            period_totals[key] = total
+
+        return period_totals, invoices
+
     def get_income_data(
         self, year: int, month: int | None = None
-    ) -> dict[str, Decimal]:
+    ) -> dict[InvoiceCategory, Decimal]:
         """Get income data aggregated by category."""
         invoices, invoice_totals = self._get_invoices_and_totals(year, month)
 
@@ -616,50 +633,26 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 ),
                 start=Decimal(0),
             )
-            category_data[category.label] = total
+            category_data[category] = total
 
         return category_data
 
     def get_monthly_data(self, year: int) -> tuple[dict[str, Decimal], list]:
         """Get monthly income data for the year."""
-        invoices, invoice_totals = self._get_invoices_and_totals(year)
+        def filter_by_month(inv: object, key: str) -> bool:
+            return inv.issue_date.month == int(key)
 
-        # Group by month in Python
-        monthly_totals = {}
-        for month in range(1, 13):
-            total = sum(
-                (
-                    invoice_totals[inv.pk]
-                    for inv in invoices
-                    if inv.issue_date.month == month
-                ),
-                start=Decimal(0),
-            )
-            monthly_totals[f"{month:02d}"] = total
-
-        return monthly_totals, invoices
+        monthly_keys = [f"{month:02d}" for month in range(1, 13)]
+        return self._aggregate_income_by_period(year, None, filter_by_month, monthly_keys)
 
     def get_daily_data(self, year: int, month: int) -> tuple[dict[str, Decimal], list]:
         """Get daily income data for a specific month."""
-        invoices, invoice_totals = self._get_invoices_and_totals(year, month)
+        def filter_by_day(inv: object, key: str) -> bool:
+            return inv.issue_date.day == int(key)
 
-        # Get number of days in month
         num_days = calendar.monthrange(year, month)[1]
-
-        # Group by day
-        daily_totals = {}
-        for day in range(1, num_days + 1):
-            total = sum(
-                (
-                    invoice_totals[inv.pk]
-                    for inv in invoices
-                    if inv.issue_date.day == day
-                ),
-                start=Decimal(0),
-            )
-            daily_totals[str(day)] = total
-
-        return daily_totals, invoices
+        daily_keys = [str(day) for day in range(1, num_days + 1)]
+        return self._aggregate_income_by_period(year, month, filter_by_day, daily_keys)
 
     def get_monthly_category_data(
         self, year: int
@@ -699,9 +692,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         year = self.get_year()
         month = self.get_month()
 
-        # Get income data
+        # Get income data (returns dict with InvoiceCategory keys)
         income_data = self.get_income_data(year, month)
-        context["income_data"] = income_data
+        
+        # Convert to label-keyed dict for template display
+        income_data_labels = {cat.label: amount for cat, amount in income_data.items()}
+        context["income_data"] = income_data_labels
         context["total_income"] = sum(income_data.values())
 
         # Navigation years (show last 5 years and next year)
@@ -710,7 +706,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         context["current_year"] = year
         context["current_month"] = month
 
-        # Generate charts
+        # Generate charts (pie chart uses enum-keyed dict)
         # Always generate pie chart for both views
         context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
 
