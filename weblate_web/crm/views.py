@@ -350,12 +350,21 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         InvoiceCategory.DONATE: "#9fc5e8",
     }
 
+    # Cached label-to-enum mapping (built once on first access)
+    _LABEL_TO_CATEGORY_CACHE: dict[str, InvoiceCategory] | None = None
+
+    @classmethod
+    def _get_label_to_category_map(cls) -> dict[str, InvoiceCategory]:
+        """Get or build cached label-to-enum mapping."""
+        if cls._LABEL_TO_CATEGORY_CACHE is None:
+            cls._LABEL_TO_CATEGORY_CACHE = {
+                category.label: category for category in InvoiceCategory
+            }
+        return cls._LABEL_TO_CATEGORY_CACHE
+
     def _get_category_by_label(self, label: str) -> InvoiceCategory | None:
-        """Get category enum by its label (dynamically to avoid hard-coded mapping)."""
-        for category in InvoiceCategory:
-            if category.label == label:
-                return category
-        return None
+        """Get category enum by its label."""
+        return self._get_label_to_category_map().get(label)
 
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
@@ -499,18 +508,20 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             num_bars = calendar.monthrange(year, month)[1]
             bar_labels = [str(d) for d in range(1, num_bars + 1)]
 
-            def filter_func(inv, idx):
+            def filter_by_day(inv, idx):
                 return inv.issue_date.day == idx + 1
 
+            filter_func = filter_by_day
             label_prefix = "Day"
         else:
             # Yearly view: show monthly bars
             num_bars = 12
             bar_labels = [f"{m:02d}" for m in range(1, 13)]
 
-            def filter_func(inv, idx):
+            def filter_by_month(inv, idx):
                 return inv.issue_date.month == idx + 1
 
+            filter_func = filter_by_month
             label_prefix = ""
 
         # Get max value for scaling
