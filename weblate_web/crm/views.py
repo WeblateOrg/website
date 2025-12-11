@@ -350,13 +350,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         InvoiceCategory.DONATE: "#9fc5e8",
     }
 
-    # Label to enum mapping for pie chart lookups
-    LABEL_TO_CATEGORY = {
-        "Hosting": InvoiceCategory.HOSTING,
-        "Support": InvoiceCategory.SUPPORT,
-        "Development / Consultations": InvoiceCategory.DEVEL,
-        "Donation": InvoiceCategory.DONATE,
-    }
+    def _get_category_by_label(self, label: str) -> InvoiceCategory | None:
+        """Get category enum by its label (dynamically to avoid hard-coded mapping)."""
+        for category in InvoiceCategory:
+            if category.label == label:
+                return category
+        return None
 
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
@@ -400,7 +399,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if len(non_zero_categories) == 1:
             category_label = non_zero_categories[0]
             value = data[category_label]
-            category_enum = self.LABEL_TO_CATEGORY.get(category_label)
+            category_enum = self._get_category_by_label(category_label)
             color = self.CATEGORY_COLORS.get(category_enum, "#999")
             svg_parts.append(
                 f'<circle cx="{center_x}" cy="{center_y}" r="{radius}" '
@@ -430,7 +429,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
                 large_arc = 1 if angle > 180 else 0
 
-                category_enum = self.LABEL_TO_CATEGORY.get(category_label)
+                category_enum = self._get_category_by_label(category_label)
                 color = self.CATEGORY_COLORS.get(category_enum, "#999")
                 svg_parts.append(
                     f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
@@ -452,7 +451,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             if value == 0:
                 continue
 
-            category_enum = self.LABEL_TO_CATEGORY.get(category_label)
+            category_enum = self._get_category_by_label(category_label)
             color = self.CATEGORY_COLORS.get(category_enum, "#999")
             y_pos = legend_y + idx * legend_spacing
 
