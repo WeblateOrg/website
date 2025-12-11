@@ -588,7 +588,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         self,
         year: int,
         month: int | None,
-        filter_func: Callable[[object], bool],
+        filter_func: Callable[[object, str], bool],
         period_keys: list[str],
     ) -> tuple[dict[str, Decimal], list]:
         """
@@ -597,7 +597,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         Args:
             year: Year to filter invoices
             month: Optional month to filter invoices
-            filter_func: Function that takes an invoice and returns True if it matches the period
+            filter_func: Function that takes (invoice, key) and returns True if it matches the period
             period_keys: List of period keys (e.g., ['01', '02'] for months or ['1', '2'] for days)
 
         Returns:
