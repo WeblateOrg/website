@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import calendar
 import math
-from collections.abc import Callable
 from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, cast
@@ -27,6 +26,8 @@ from weblate_web.utils import show_form_errors
 from .models import Interaction
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from django.http import HttpRequest
 
     from weblate_web.payments.models import CustomerQuerySet
@@ -367,9 +368,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return f"Income Tracking - {year}/{month:02d}"
         return f"Income Tracking - {year}"
 
-    def generate_svg_pie_chart(
-        self, data: dict[InvoiceCategory, Decimal]
-    ) -> str:  # noqa: PLR0914
+    def generate_svg_pie_chart(self, data: dict[InvoiceCategory, Decimal]) -> str:
         """Generate a simple SVG pie chart for category distribution with legend."""
         if not data or sum(data.values()) == 0:
             return ""
@@ -602,6 +601,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         Returns:
             Tuple of (period_totals_dict, invoices_list)
+
         """
         invoices, invoice_totals = self._get_invoices_and_totals(year, month)
 
@@ -639,14 +639,18 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_monthly_data(self, year: int) -> tuple[dict[str, Decimal], list]:
         """Get monthly income data for the year."""
+
         def filter_by_month(inv: object, key: str) -> bool:
             return inv.issue_date.month == int(key)
 
         monthly_keys = [f"{month:02d}" for month in range(1, 13)]
-        return self._aggregate_income_by_period(year, None, filter_by_month, monthly_keys)
+        return self._aggregate_income_by_period(
+            year, None, filter_by_month, monthly_keys
+        )
 
     def get_daily_data(self, year: int, month: int) -> tuple[dict[str, Decimal], list]:
         """Get daily income data for a specific month."""
+
         def filter_by_day(inv: object, key: str) -> bool:
             return inv.issue_date.day == int(key)
 
@@ -694,7 +698,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         # Get income data (returns dict with InvoiceCategory keys)
         income_data = self.get_income_data(year, month)
-        
+
         # Convert to label-keyed dict for template display
         income_data_labels = {cat.label: amount for cat, amount in income_data.items()}
         context["income_data"] = income_data_labels
