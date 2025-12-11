@@ -3,7 +3,7 @@
 {% load i18n static %}
 
 {% block content %}
-  {% if kind == "expired" %}
+  {% if kind == "expired" or kind == "all" %}
     {% regroup object_list by package_kind as service_list %}
 
     {% for package_group in service_list %}
