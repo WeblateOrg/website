@@ -374,13 +374,13 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         # Start SVG
         svg_parts = [
             f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">',
-            '<style>',
-            '.bar { fill: #417690; }',
-            '.bar:hover { fill: #79aec8; }',
-            '.label { font-family: Arial, sans-serif; font-size: 12px; }',
-            '.value { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }',
-            '.axis { stroke: #ccc; stroke-width: 1; }',
-            '</style>',
+            "<style>",
+            ".bar { fill: #417690; }",
+            ".bar:hover { fill: #79aec8; }",
+            ".label { font-family: Arial, sans-serif; font-size: 12px; }",
+            ".value { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }",
+            ".axis { stroke: #ccc; stroke-width: 1; }",
+            "</style>",
         ]
 
         # Draw axes
@@ -401,17 +401,15 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         # Draw bars
         for i, (label, value) in enumerate(data.items()):
             x = padding + bar_spacing * (2 * i + 1)
-            bar_height = (
-                float(value / max_value * chart_height) if value > 0 else 0
-            )
+            bar_height = float(value / max_value * chart_height) if value > 0 else 0
             y = height - padding - bar_height
 
             # Bar
             svg_parts.append(
                 f'<rect x="{x}" y="{y}" width="{bar_width}" '
                 f'height="{bar_height}" class="bar">'
-                f'<title>{label}: {value:,.0f} CZK</title>'
-                f'</rect>'
+                f"<title>{label}: {value:,.0f} CZK</title>"
+                f"</rect>"
             )
 
             # Label

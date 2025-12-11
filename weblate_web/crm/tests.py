@@ -267,13 +267,13 @@ class IncomeTrackingTestCase(TestCase):
 
         # Create test invoices
         self.create_test_invoice(
-            current_year, 1, InvoiceCategory.HOSTING, Decimal("1000")
+            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
         )
         self.create_test_invoice(
-            current_year, 2, InvoiceCategory.SUPPORT, Decimal("2000")
+            current_year, 2, InvoiceCategory.SUPPORT, Decimal(2000)
         )
         self.create_test_invoice(
-            current_year, 3, InvoiceCategory.HOSTING, Decimal("1500")
+            current_year, 3, InvoiceCategory.HOSTING, Decimal(1500)
         )
 
         response = self.client.get(reverse("crm:income"))
@@ -292,14 +292,12 @@ class IncomeTrackingTestCase(TestCase):
 
         # Create test invoices for different categories
         self.create_test_invoice(
-            current_year, 3, InvoiceCategory.HOSTING, Decimal("1000")
+            current_year, 3, InvoiceCategory.HOSTING, Decimal(1000)
         )
         self.create_test_invoice(
-            current_year, 3, InvoiceCategory.SUPPORT, Decimal("2000")
+            current_year, 3, InvoiceCategory.SUPPORT, Decimal(2000)
         )
-        self.create_test_invoice(
-            current_year, 3, InvoiceCategory.DEVEL, Decimal("3000")
-        )
+        self.create_test_invoice(current_year, 3, InvoiceCategory.DEVEL, Decimal(3000))
 
         response = self.client.get(
             reverse("crm:income-month", kwargs={"year": current_year, "month": 3})
@@ -328,7 +326,7 @@ class IncomeTrackingTestCase(TestCase):
             currency=0,
         )
         invoice.invoiceitem_set.create(
-            description="Invoice item", quantity=1, unit_price=Decimal("1000")
+            description="Invoice item", quantity=1, unit_price=Decimal(1000)
         )
 
         # Create quote (should not be counted)
@@ -340,10 +338,12 @@ class IncomeTrackingTestCase(TestCase):
             currency=0,
         )
         quote.invoiceitem_set.create(
-            description="Quote item", quantity=1, unit_price=Decimal("5000")
+            description="Quote item", quantity=1, unit_price=Decimal(5000)
         )
 
-        response = self.client.get(reverse("crm:income-year", kwargs={"year": current_year}))
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
         self.assertEqual(response.status_code, 200)
 
         # Check that total income only includes the invoice, not the quote
@@ -355,7 +355,9 @@ class IncomeTrackingTestCase(TestCase):
         """Test year navigation."""
         current_year = timezone.now().year
 
-        response = self.client.get(reverse("crm:income-year", kwargs={"year": current_year}))
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
         self.assertEqual(response.status_code, 200)
 
         # Check for year links
@@ -373,10 +375,12 @@ class IncomeTrackingTestCase(TestCase):
         self.mock_exchange_rates_for_date(f"{current_year}-01-15")
 
         self.create_test_invoice(
-            current_year, 1, InvoiceCategory.HOSTING, Decimal("1000")
+            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
         )
 
-        response = self.client.get(reverse("crm:income-year", kwargs={"year": current_year}))
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<svg")
         self.assertContains(response, "</svg>")
@@ -395,19 +399,17 @@ class IncomeTrackingTestCase(TestCase):
 
         # Create invoices in different categories
         self.create_test_invoice(
-            current_year, 1, InvoiceCategory.HOSTING, Decimal("1000")
+            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
         )
         self.create_test_invoice(
-            current_year, 2, InvoiceCategory.SUPPORT, Decimal("2000")
+            current_year, 2, InvoiceCategory.SUPPORT, Decimal(2000)
         )
-        self.create_test_invoice(
-            current_year, 3, InvoiceCategory.DEVEL, Decimal("3000")
-        )
-        self.create_test_invoice(
-            current_year, 4, InvoiceCategory.DONATE, Decimal("500")
-        )
+        self.create_test_invoice(current_year, 3, InvoiceCategory.DEVEL, Decimal(3000))
+        self.create_test_invoice(current_year, 4, InvoiceCategory.DONATE, Decimal(500))
 
-        response = self.client.get(reverse("crm:income-year", kwargs={"year": current_year}))
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
         self.assertEqual(response.status_code, 200)
 
         # All categories should be shown
