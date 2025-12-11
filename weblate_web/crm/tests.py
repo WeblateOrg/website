@@ -347,9 +347,8 @@ class IncomeTrackingTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Check that total income only includes the invoice, not the quote
-        # The income should be approximately 1000 (invoice) in CZK
-        # (exact value depends on exchange rates)
-        self.assertContains(response, "CZK")
+        # The income should be 1000 (invoice) in EUR
+        self.assertContains(response, "EUR")
 
     def test_income_year_navigation(self):
         """Test year navigation."""

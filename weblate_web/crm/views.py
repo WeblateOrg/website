@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import calendar
+import math
 from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, cast
@@ -349,7 +351,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return f"Income Tracking - {year}/{month:02d}"
         return f"Income Tracking - {year}"
 
-    def generate_svg_bar_chart(
+    def generate_svg_bar_chart(  # noqa: PLR0914
         self, data: dict[str, Decimal], max_value: Decimal | None = None
     ) -> str:
         """Generate a simple SVG bar chart without inline styles."""
@@ -401,7 +403,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             svg_parts.append(
                 f'<rect x="{x}" y="{y}" width="{bar_width}" '
                 f'height="{bar_height}" fill="#417690">'
-                f"<title>{label}: {value:,.0f} CZK</title>"
+                f"<title>{label}: €{value:,.0f}</title>"
                 f"</rect>"
             )
 
@@ -424,12 +426,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
-    def generate_svg_pie_chart(
-        self, data: dict[str, Decimal]
-    ) -> str:
+    def generate_svg_pie_chart(self, data: dict[str, Decimal]) -> str:  # noqa: PLR0914
         """Generate a simple SVG pie chart for category distribution."""
-        import math
-
         if not data or sum(data.values()) == 0:
             return ""
 
@@ -478,8 +476,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
                 f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
                 f'fill="{color}" stroke="white" stroke-width="2">'
-                f'<title>{category}: {value:,.0f} CZK ({value/total*100:.1f}%)</title>'
-                f'</path>'
+                f"<title>{category}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
+                f"</path>"
             )
 
             start_angle = end_angle
@@ -487,7 +485,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
-    def generate_svg_stacked_bar_chart(
+    def generate_svg_stacked_bar_chart(  # noqa: PLR0914
         self, monthly_data: dict, invoices: list
     ) -> str:
         """Generate a stacked bar chart showing monthly totals by category."""
@@ -508,8 +506,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             InvoiceCategory.DONATE.value: "#9fc5e8",
         }
 
-        # Pre-calculate invoice totals
-        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+        # Pre-calculate invoice totals in EUR
+        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
         # Get max value for scaling
         max_value = max(monthly_data.values()) if monthly_data.values() else Decimal(1)
@@ -531,13 +529,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             x = padding + bar_spacing * (month_idx - 0.5)
 
             # Get invoices for this month by category
-            month_invoices = [inv for inv in invoices if inv.issue_date.month == month_idx]
+            month_invoices = [
+                inv for inv in invoices if inv.issue_date.month == month_idx
+            ]
 
             # Stack bars by category
             y_offset = height - padding
             for category in InvoiceCategory:
                 category_total = sum(
-                    (invoice_totals[inv.pk] for inv in month_invoices if inv.category == category.value),
+                    (
+                        invoice_totals[inv.pk]
+                        for inv in month_invoices
+                        if inv.category == category.value
+                    ),
                     start=Decimal(0),
                 )
 
@@ -548,8 +552,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     svg_parts.append(
                         f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
                         f'fill="{colors.get(category.value, "#999")}" stroke="white" stroke-width="1">'
-                        f'<title>{category.label} - {month_key}: {category_total:,.0f} CZK</title>'
-                        f'</rect>'
+                        f"<title>{category.label} - {month_key}: €{category_total:,.0f}</title>"
+                        f"</rect>"
                     )
                     y_offset = y
 
@@ -564,12 +568,10 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
-    def generate_svg_daily_chart(
+    def generate_svg_daily_chart(  # noqa: PLR0914
         self, year: int, month: int, invoices: list
     ) -> str:
         """Generate a daily bar chart for a specific month."""
-        import calendar
-
         width = self.CHART_WIDTH
         height = 300
         padding = 40
@@ -579,8 +581,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         # Get number of days in month
         num_days = calendar.monthrange(year, month)[1]
 
-        # Pre-calculate invoice totals
-        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+        # Pre-calculate invoice totals in EUR
+        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
         # Calculate daily totals
         daily_totals = {}
@@ -609,8 +611,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             svg_parts.append(
                 f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
                 f'fill="#417690">'
-                f'<title>Day {day}: {value:,.0f} CZK</title>'
-                f'</rect>'
+                f"<title>Day {day}: €{value:,.0f}</title>"
+                f"</rect>"
             )
 
             # Show day label every 5 days
@@ -627,19 +629,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_income_data(self, year: int, month: int | None = None):
         """Get income data aggregated by category."""
-        invoices = list(
-            Invoice.objects.filter(
-                kind=InvoiceKind.INVOICE, issue_date__year=year
-            ).prefetch_related("invoiceitem_set")
-        )
-
+        # Build query with proper database-level filtering
+        query = Invoice.objects.filter(kind=InvoiceKind.INVOICE, issue_date__year=year)
         if month:
-            invoices = [inv for inv in invoices if inv.issue_date.month == month]
+            query = query.filter(issue_date__month=month)
 
-        # Pre-calculate totals to leverage cached_property and avoid repeated calculations
-        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+        invoices = list(query.prefetch_related("invoiceitem_set"))
 
-        # Aggregate by category manually since total_amount_no_vat_czk is a property
+        # Pre-calculate totals in EUR to avoid exchange rate fluctuations
+        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
+
+        # Aggregate by category manually since total_amount_no_vat is a property
         # Group invoices by category to avoid N+1 queries
         category_data = {}
         for category in InvoiceCategory:
@@ -664,8 +664,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             ).prefetch_related("invoiceitem_set")
         )
 
-        # Pre-calculate totals to leverage cached_property and avoid repeated calculations
-        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+        # Pre-calculate totals in EUR to avoid exchange rate fluctuations
+        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
         # Group by month in Python
         monthly_totals = {}
@@ -690,8 +690,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             ).prefetch_related("invoiceitem_set")
         )
 
-        # Pre-calculate totals
-        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+        # Pre-calculate totals in EUR to avoid exchange rate fluctuations
+        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
         # Group by month and category
         monthly_category_data = {}
@@ -704,7 +704,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     (
                         invoice_totals[inv.pk]
                         for inv in invoices
-                        if inv.issue_date.month == month and inv.category == category.value
+                        if inv.issue_date.month == month
+                        and inv.category == category.value
                     ),
                     start=Decimal(0),
                 )
@@ -741,13 +742,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             )
 
             context["chart_svg"] = self.generate_svg_bar_chart(income_data)
-            context["daily_chart_svg"] = self.generate_svg_daily_chart(year, month, month_invoices)
+            context["daily_chart_svg"] = self.generate_svg_daily_chart(
+                year, month, month_invoices
+            )
             context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["is_monthly"] = True
         else:
             # For yearly view, show stacked monthly chart and category pie
             monthly_data, invoices = self.get_monthly_data(year)
-            context["chart_svg"] = self.generate_svg_stacked_bar_chart(monthly_data, invoices)
+            context["chart_svg"] = self.generate_svg_stacked_bar_chart(
+                monthly_data, invoices
+            )
             context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["monthly_data"] = monthly_data
             context["monthly_category_data"], _ = self.get_monthly_category_data(year)
