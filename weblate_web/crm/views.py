@@ -427,15 +427,15 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return "".join(svg_parts)
 
     def generate_svg_pie_chart(self, data: dict[str, Decimal]) -> str:  # noqa: PLR0914
-        """Generate a simple SVG pie chart for category distribution."""
+        """Generate a simple SVG pie chart for category distribution with legend."""
         if not data or sum(data.values()) == 0:
             return ""
 
-        width = 400
+        width = 500
         height = 400
-        radius = 150
-        center_x = width / 2
-        center_y = height / 2
+        radius = 120
+        center_x = 200
+        center_y = 200
 
         # Category colors
         colors = {
@@ -497,6 +497,33 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 )
 
                 start_angle = end_angle
+
+        # Add legend
+        legend_x = 420
+        legend_y = 50
+        legend_spacing = 25
+
+        idx = 0
+        for category, value in data.items():
+            if value == 0:
+                continue
+
+            color = colors.get(category, "#999")
+            y_pos = legend_y + idx * legend_spacing
+
+            # Legend color box
+            svg_parts.append(
+                f'<rect x="{legend_x}" y="{y_pos}" width="15" height="15" '
+                f'fill="{color}" stroke="white" stroke-width="1"/>'
+            )
+
+            # Legend text
+            svg_parts.append(
+                f'<text x="{legend_x + 20}" y="{y_pos + 12}" font-size="11" fill="#333">'
+                f"{category}: €{value:,.0f} ({value / total * 100:.0f}%)</text>"
+            )
+
+            idx += 1
 
         svg_parts.append("</svg>")
         return "".join(svg_parts)
@@ -631,14 +658,13 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 f"</rect>"
             )
 
-            # Show day label every 5 days
-            if day % 5 == 1 or day == num_days:
-                label_x = x + bar_width / 2
-                label_y = height - padding + 12
-                svg_parts.append(
-                    f'<text x="{label_x}" y="{label_y}" text-anchor="middle" '
-                    f'font-size="9" fill="#666">{day}</text>'
-                )
+            # Show all day labels
+            label_x = x + bar_width / 2
+            label_y = height - padding + 12
+            svg_parts.append(
+                f'<text x="{label_x}" y="{label_y}" text-anchor="middle" '
+                f'font-size="9" fill="#666">{day}</text>'
+            )
 
         svg_parts.append("</svg>")
         return "".join(svg_parts)
@@ -746,8 +772,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         context["current_month"] = month
 
         # Generate charts
+        # Always generate pie chart for both views
+        context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
+
         if month:
-            # For monthly view, show category pie chart and daily chart
+            # For monthly view, show daily chart
             # Get all invoices for the month
             month_invoices = list(
                 Invoice.objects.filter(
@@ -757,18 +786,16 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 ).prefetch_related("invoiceitem_set")
             )
 
-            context["chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["daily_chart_svg"] = self.generate_svg_daily_chart(
                 year, month, month_invoices
             )
             context["is_monthly"] = True
         else:
-            # For yearly view, show stacked monthly chart and category pie
+            # For yearly view, show stacked monthly chart
             monthly_data, invoices = self.get_monthly_data(year)
             context["chart_svg"] = self.generate_svg_stacked_bar_chart(
                 monthly_data, invoices
             )
-            context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["monthly_data"] = monthly_data
             context["monthly_category_data"], _ = self.get_monthly_category_data(year)
             context["is_monthly"] = False

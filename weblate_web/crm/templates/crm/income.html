@@ -18,17 +18,20 @@
     {% endif %}
 
     <div class="module">
-      <h2>
-        {% translate "Year:" %}
-        {% for year in years %}
-          {% if year == current_year %}
-            <strong>{{ year }}</strong>
-          {% else %}
-            <a href="{% url 'crm:income-year' year %}">{{ year }}</a>
-          {% endif %}
-          {% if not forloop.last %}|{% endif %}
-        {% endfor %}
-      </h2>
+      <table>
+        <caption>{% translate "Year" %}</caption>
+        <tr>
+          {% for year in years %}
+            <td>
+              {% if year == current_year %}
+                <strong>{{ year }}</strong>
+              {% else %}
+                <a href="{% url 'crm:income-year' year %}">{{ year }}</a>
+              {% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+      </table>
     </div>
 
     <div class="module">
@@ -47,27 +50,22 @@
     <div class="module">
       <h3>
         {% if is_monthly %}
-          {% translate "Income Distribution by Category" %}
+          {% translate "Daily Income" %}
         {% else %}
           {% translate "Monthly Income with Category Breakdown" %}
         {% endif %}
       </h3>
-      <div class="dashboard-chart">{{ chart_svg|safe }}</div>
+      {% if is_monthly %}
+        <div class="dashboard-chart">{{ daily_chart_svg|safe }}</div>
+      {% else %}
+        <div class="dashboard-chart">{{ chart_svg|safe }}</div>
+      {% endif %}
     </div>
 
-    {% if not is_monthly and pie_chart_svg %}
-      <div class="module">
-        <h3>{% translate "Category Distribution" %}</h3>
-        <div class="dashboard-chart">{{ pie_chart_svg|safe }}</div>
-      </div>
-    {% endif %}
-
-    {% if is_monthly and daily_chart_svg %}
-      <div class="module">
-        <h3>{% translate "Daily Income" %}</h3>
-        <div class="dashboard-chart">{{ daily_chart_svg|safe }}</div>
-      </div>
-    {% endif %}
+    <div class="module">
+      <h3>{% translate "Category Distribution" %}</h3>
+      <div class="dashboard-chart">{{ pie_chart_svg|safe }}</div>
+    </div>
 
     {% if is_monthly %}
       <div class="module">
@@ -76,19 +74,19 @@
           <thead>
             <tr>
               <th>{% translate "Category" %}</th>
-              <th class="align-right">{% translate "Amount (EUR)" %}</th>
+              <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
             </tr>
           </thead>
           <tbody>
             {% for category, amount in income_data.items %}
               <tr>
                 <td>{{ category }}</td>
-                <td class="align-right">€{{ amount|floatformat:0 }}</td>
+                <td class="align-right nowrap">€{{ amount|floatformat:0 }}</td>
               </tr>
             {% endfor %}
             <tr class="total">
               <td>{% translate "Total" %}</td>
-              <td class="align-right">€{{ total_income|floatformat:0 }}</td>
+              <td class="align-right nowrap">€{{ total_income|floatformat:0 }}</td>
             </tr>
           </tbody>
         </table>
@@ -129,14 +127,14 @@
           <thead>
             <tr>
               <th>{% translate "Category" %}</th>
-              <th class="align-right">{% translate "Amount (EUR)" %}</th>
+              <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
             </tr>
           </thead>
           <tbody>
             {% for category, amount in income_data.items %}
               <tr>
                 <td>{{ category }}</td>
-                <td class="align-right">€{{ amount|floatformat:0 }}</td>
+                <td class="align-right nowrap">€{{ amount|floatformat:0 }}</td>
               </tr>
             {% endfor %}
           </tbody>
