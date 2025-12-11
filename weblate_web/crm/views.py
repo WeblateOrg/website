@@ -106,10 +106,16 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                 ).distinct()
             case "dedicated":
                 return qs.filter(
-                    subscription__package__category=PackageCategory.PACKAGE_DEDICATED
+                    subscription__package__category=PackageCategory.PACKAGE_DEDICATED,
+                    subscription__expires__gte=timezone.now(),
+                    subscription__enabled=True,
                 ).distinct()
             case "premium":
-                return qs.filter(subscription__package__name="premium").distinct()
+                return qs.filter(
+                    subscription__package__name="premium",
+                    subscription__expires__gte=timezone.now(),
+                    subscription__enabled=True,
+                ).distinct()
         raise ValueError(self.kwargs["kind"])
 
 
