@@ -366,7 +366,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return f"Income Tracking - {year}/{month:02d}"
         return f"Income Tracking - {year}"
 
-    def generate_svg_pie_chart(self, data: dict[InvoiceCategory, Decimal]) -> str:
+    def generate_svg_pie_chart(self, data: dict[InvoiceCategory, Decimal]) -> str:  # noqa: PLR0914
         """Generate a simple SVG pie chart for category distribution with legend."""
         if not data or sum(data.values()) == 0:
             return ""
