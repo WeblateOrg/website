@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import calendar
 import math
-from collections.abc import Callable
 from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, cast
@@ -27,6 +26,8 @@ from weblate_web.utils import show_form_errors
 from .models import Interaction
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from django.http import HttpRequest
 
     from weblate_web.payments.models import CustomerQuerySet
