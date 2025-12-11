@@ -342,6 +342,20 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     CHART_PADDING = 60
     MIN_CHART_VALUE = Decimal(1)
 
+    # Category colors shared across all charts
+    CATEGORY_COLORS = {
+        "Hosting": "#417690",
+        "Support": "#79aec8",
+        "Development / Consultations": "#5b80b2",
+        "Donation": "#9fc5e8",
+    }
+    CATEGORY_COLORS_BY_VALUE = {
+        InvoiceCategory.HOSTING.value: "#417690",
+        InvoiceCategory.SUPPORT.value: "#79aec8",
+        InvoiceCategory.DEVEL.value: "#5b80b2",
+        InvoiceCategory.DONATE.value: "#9fc5e8",
+    }
+
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
         return self.kwargs.get("year", timezone.now().year)
@@ -357,99 +371,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return f"Income Tracking - {year}/{month:02d}"
         return f"Income Tracking - {year}"
 
-    def generate_svg_bar_chart(  # noqa: PLR0914
-        self, data: dict[str, Decimal], max_value: Decimal | None = None
-    ) -> str:
-        """Generate a simple SVG bar chart without inline styles."""
-        if not data:
-            return ""
-
-        # Chart dimensions
-        width = self.CHART_WIDTH
-        height = self.CHART_HEIGHT
-        padding = self.CHART_PADDING
-        chart_width = width - 2 * padding
-        chart_height = height - 2 * padding
-
-        # Calculate max value if not provided
-        if max_value is None:
-            max_value = max(data.values()) if data.values() else Decimal(0)
-
-        # Ensure max_value is at least MIN_CHART_VALUE to avoid division by zero
-        if max_value <= 0:
-            max_value = self.MIN_CHART_VALUE
-
-        # Start SVG without inline styles
-        svg_parts = [
-            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="income-chart">',
-        ]
-
-        # Draw axes
-        svg_parts.append(
-            f'<line x1="{padding}" y1="{padding}" x2="{padding}" '
-            f'y2="{height - padding}" stroke="#ccc" stroke-width="1"/>'
-        )
-        svg_parts.append(
-            f'<line x1="{padding}" y1="{height - padding}" '
-            f'x2="{width - padding}" y2="{height - padding}" stroke="#ccc" stroke-width="1"/>'
-        )
-
-        # Calculate bar properties
-        num_bars = len(data)
-        bar_spacing = chart_width / (num_bars * 2 + 1)
-        bar_width = bar_spacing * 0.8
-
-        # Draw bars
-        for i, (label, value) in enumerate(data.items()):
-            x = padding + bar_spacing * (2 * i + 1)
-            bar_height = float(value / max_value * chart_height) if value > 0 else 0
-            y = height - padding - bar_height
-
-            # Bar
-            svg_parts.append(
-                f'<rect x="{x}" y="{y}" width="{bar_width}" '
-                f'height="{bar_height}" fill="#417690">'
-                f"<title>{label}: €{value:,.0f}</title>"
-                f"</rect>"
-            )
-
-            # Label
-            label_x = x + bar_width / 2
-            label_y = height - padding + 15
-            svg_parts.append(
-                f'<text x="{label_x}" y="{label_y}" '
-                f'text-anchor="middle" font-size="12" fill="#666">{label}</text>'
-            )
-
-            # Value
-            if bar_height > 20:
-                value_y = y + bar_height / 2 + 4
-                svg_parts.append(
-                    f'<text x="{label_x}" y="{value_y}" '
-                    f'text-anchor="middle" font-size="11" fill="#fff">{value:,.0f}</text>'
-                )
-
-        svg_parts.append("</svg>")
-        return "".join(svg_parts)
-
     def generate_svg_pie_chart(self, data: dict[str, Decimal]) -> str:  # noqa: PLR0914
         """Generate a simple SVG pie chart for category distribution with legend."""
         if not data or sum(data.values()) == 0:
             return ""
 
-        width = 500
+        # Calculate required width based on legend text
+        # Longest category name is "Development / Consultations"
+        # Estimate: 420 (legend_x) + 20 (icon) + 300 (text) = 740, round to 750
+        width = 750
         height = 400
         radius = 120
         center_x = 200
         center_y = 200
-
-        # Category colors
-        colors = {
-            "Hosting": "#417690",
-            "Support": "#79aec8",
-            "Development / Consultations": "#5b80b2",
-            "Donation": "#9fc5e8",
-        }
 
         total = sum(data.values())
 
@@ -464,7 +398,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if len(non_zero_categories) == 1:
             category = non_zero_categories[0]
             value = data[category]
-            color = colors.get(category, "#999")
+            color = self.CATEGORY_COLORS.get(category, "#999")
             svg_parts.append(
                 f'<circle cx="{center_x}" cy="{center_y}" r="{radius}" '
                 f'fill="{color}" stroke="white" stroke-width="2">'
@@ -473,7 +407,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             )
         else:
             # Draw pie slices for multiple categories
-            start_angle = 0
+            start_angle: float = 0
             for category, value in data.items():
                 if value == 0:
                     continue
@@ -493,7 +427,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
                 large_arc = 1 if angle > 180 else 0
 
-                color = colors.get(category, "#999")
+                color = self.CATEGORY_COLORS.get(category, "#999")
                 svg_parts.append(
                     f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
                     f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
@@ -514,7 +448,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             if value == 0:
                 continue
 
-            color = colors.get(category, "#999")
+            color = self.CATEGORY_COLORS.get(category, "#999")
             y_pos = legend_y + idx * legend_spacing
 
             # Legend color box
@@ -547,14 +481,6 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         chart_width = width - 2 * padding
         chart_height = height - 2 * padding
 
-        # Category colors
-        colors = {
-            InvoiceCategory.HOSTING.value: "#417690",
-            InvoiceCategory.SUPPORT.value: "#79aec8",
-            InvoiceCategory.DEVEL.value: "#5b80b2",
-            InvoiceCategory.DONATE.value: "#9fc5e8",
-        }
-
         # Pre-calculate invoice totals in EUR
         invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
@@ -575,7 +501,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         # Draw each month
         for month_idx in range(1, 13):
             month_key = f"{month_idx:02d}"
-            x = padding + bar_spacing * (month_idx - 0.5)
+            x: float = padding + bar_spacing * (month_idx - 0.5)
 
             # Get invoices for this month by category
             month_invoices = [
@@ -583,7 +509,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             ]
 
             # Stack bars by category
-            y_offset = height - padding
+            y_offset: float = height - padding
             for category in InvoiceCategory:
                 category_total = sum(
                     (
@@ -600,7 +526,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
                     svg_parts.append(
                         f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
-                        f'fill="{colors.get(category.value, "#999")}" stroke="white" stroke-width="1">'
+                        f'fill="{self.CATEGORY_COLORS_BY_VALUE.get(category.value, "#999")}" stroke="white" stroke-width="1">'
                         f"<title>{category.label} - {month_key}: €{category_total:,.0f}</title>"
                         f"</rect>"
                     )
@@ -653,7 +579,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         # Draw bars
         bar_width = chart_width / num_days * 0.8
         for day, value in daily_totals.items():
-            x = padding + (day - 1) * (chart_width / num_days)
+            x: float = padding + (day - 1) * (chart_width / num_days)
             bar_height = float(value / max_value * chart_height) if value > 0 else 0
             y = height - padding - bar_height
 
@@ -742,7 +668,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
         # Group by month and category
-        monthly_category_data = {}
+        monthly_category_data: dict[str, dict[str, Decimal]] = {}
         for month in range(1, 13):
             month_key = f"{month:02d}"
             monthly_category_data[month_key] = {}
