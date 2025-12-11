@@ -254,11 +254,6 @@ class IncomeTrackingTestCase(TestCase):
         cnb_mock_rates()
         current_year = timezone.now().year
 
-        # Mock rates for test dates
-        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
-        self.mock_exchange_rates_for_date(f"{current_year}-02-15")
-        self.mock_exchange_rates_for_date(f"{current_year}-03-15")
-
         # Create test invoices
         self.create_test_invoice(
             current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
@@ -280,9 +275,6 @@ class IncomeTrackingTestCase(TestCase):
         """Test monthly income view."""
         cnb_mock_rates()
         current_year = timezone.now().year
-
-        # Mock rates for test date
-        self.mock_exchange_rates_for_date(f"{current_year}-03-15")
 
         # Create test invoices for different categories
         self.create_test_invoice(
@@ -307,9 +299,6 @@ class IncomeTrackingTestCase(TestCase):
         """Test that income view only shows INVOICE kind, not quotes."""
         cnb_mock_rates()
         current_year = timezone.now().year
-
-        # Mock rates for test date
-        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
 
         # Create invoice
         invoice = Invoice.objects.create(
@@ -364,9 +353,6 @@ class IncomeTrackingTestCase(TestCase):
         cnb_mock_rates()
         current_year = timezone.now().year
 
-        # Mock rates for test date
-        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
-
         self.create_test_invoice(
             current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
         )
@@ -383,12 +369,6 @@ class IncomeTrackingTestCase(TestCase):
         """Test category breakdown in yearly view."""
         cnb_mock_rates()
         current_year = timezone.now().year
-
-        # Mock rates for test dates
-        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
-        self.mock_exchange_rates_for_date(f"{current_year}-02-15")
-        self.mock_exchange_rates_for_date(f"{current_year}-03-15")
-        self.mock_exchange_rates_for_date(f"{current_year}-04-15")
 
         # Create invoices in different categories
         self.create_test_invoice(

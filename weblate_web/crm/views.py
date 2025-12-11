@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import calendar
 import math
+from collections.abc import Callable
 from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, cast
@@ -26,8 +27,6 @@ from weblate_web.utils import show_form_errors
 from .models import Interaction
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
     from django.http import HttpRequest
 
     from weblate_web.payments.models import CustomerQuerySet
@@ -344,7 +343,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     CHART_PADDING = 60
     MIN_CHART_VALUE = Decimal(1)
 
-    # Category colors shared across all charts (keyed by category value)
+    # Category colors shared across all charts (keyed by category enum)
     CATEGORY_COLORS = {
         InvoiceCategory.HOSTING: "#417690",
         InvoiceCategory.SUPPORT: "#79aec8",
@@ -352,7 +351,6 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         InvoiceCategory.DONATE: "#9fc5e8",
     }
 
-    # Cached label-to-enum mapping (built once on first access)
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
         return self.kwargs.get("year", timezone.now().year)
@@ -466,7 +464,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return "".join(svg_parts)
 
     def generate_svg_stacked_bar_chart(  # noqa: PLR0914
-        self, monthly_data: dict, invoices: list, year: int, month: int | None = None
+        self,
+        monthly_data: dict[str, Decimal],
+        invoices: list[Invoice],
+        year: int,
+        month: int | None = None,
     ) -> str:
         """
         Generate a stacked bar chart showing totals by category.
@@ -572,7 +574,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def _get_invoices_and_totals(
         self, year: int, month: int | None = None
-    ) -> tuple[list, dict]:
+    ) -> tuple[list[Invoice], dict[int, Decimal]]:
         """Fetch invoices and pre-calculate totals (shared helper)."""
         query = Invoice.objects.filter(kind=InvoiceKind.INVOICE, issue_date__year=year)
         if month:
@@ -587,9 +589,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         self,
         year: int,
         month: int | None,
-        filter_func: Callable[[object, str], bool],
+        filter_func: Callable[[Invoice, str], bool],
         period_keys: list[str],
-    ) -> tuple[dict[str, Decimal], list]:
+    ) -> tuple[dict[str, Decimal], list[Invoice]]:
         """
         Aggregate income data filtered by a custom function.
 
@@ -637,10 +639,10 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         return category_data
 
-    def get_monthly_data(self, year: int) -> tuple[dict[str, Decimal], list]:
+    def get_monthly_data(self, year: int) -> tuple[dict[str, Decimal], list[Invoice]]:
         """Get monthly income data for the year."""
 
-        def filter_by_month(inv: object, key: str) -> bool:
+        def filter_by_month(inv: Invoice, key: str) -> bool:
             return inv.issue_date.month == int(key)
 
         monthly_keys = [f"{month:02d}" for month in range(1, 13)]
@@ -648,10 +650,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             year, None, filter_by_month, monthly_keys
         )
 
-    def get_daily_data(self, year: int, month: int) -> tuple[dict[str, Decimal], list]:
+    def get_daily_data(
+        self, year: int, month: int
+    ) -> tuple[dict[str, Decimal], list[Invoice]]:
         """Get daily income data for a specific month."""
 
-        def filter_by_day(inv: object, key: str) -> bool:
+        def filter_by_day(inv: Invoice, key: str) -> bool:
             return inv.issue_date.day == int(key)
 
         num_days = calendar.monthrange(year, month)[1]
@@ -660,7 +664,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_monthly_category_data(
         self, year: int
-    ) -> tuple[dict[str, dict[str, Decimal]], list]:
+    ) -> tuple[dict[str, dict[str, Decimal]], list[Invoice]]:
         """Get monthly income data split by category for stacked chart."""
         invoices = list(
             Invoice.objects.filter(

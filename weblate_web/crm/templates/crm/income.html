@@ -108,7 +108,7 @@
                 <td>{{ current_year }}/{{ month }}</td>
                 <td class="align-right nowrap">€{{ amount|floatformat:0 }}</td>
                 <td>
-                  <a href="{% url 'crm:income-month' current_year month %}">{% translate "View details" %}</a>
+                  <a href="{% url 'crm:income-month' current_year month|add:0 %}">{% translate "View details" %}</a>
                 </td>
               </tr>
             {% endfor %}
