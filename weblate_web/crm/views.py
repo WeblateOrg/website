@@ -428,17 +428,22 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_income_data(self, year: int, month: int | None = None):
         """Get income data aggregated by category."""
-        invoices = Invoice.objects.filter(
-            kind=InvoiceKind.INVOICE, issue_date__year=year
-        ).prefetch_related("invoiceitem_set")
+        invoices = list(
+            Invoice.objects.filter(
+                kind=InvoiceKind.INVOICE, issue_date__year=year
+            ).prefetch_related("invoiceitem_set")
+        )
 
         if month:
-            invoices = invoices.filter(issue_date__month=month)
+            invoices = [inv for inv in invoices if inv.issue_date.month == month]
 
         # Aggregate by category manually since total_amount_no_vat_czk is a property
+        # Group invoices by category to avoid N+1 queries
         category_data = {}
         for category in InvoiceCategory:
-            category_invoices = invoices.filter(category=category.value)
+            category_invoices = [
+                inv for inv in invoices if inv.category == category.value
+            ]
             total = sum(
                 (invoice.total_amount_no_vat_czk for invoice in category_invoices),
                 start=Decimal(0),
@@ -449,15 +454,21 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_monthly_data(self, year: int):
         """Get monthly income data for the year."""
+        # Fetch all invoices for the year at once to avoid 12 separate queries
+        invoices = list(
+            Invoice.objects.filter(
+                kind=InvoiceKind.INVOICE, issue_date__year=year
+            ).prefetch_related("invoiceitem_set")
+        )
+
+        # Group by month in Python
         monthly_totals = {}
         for month in range(1, 13):
-            invoices = Invoice.objects.filter(
-                kind=InvoiceKind.INVOICE,
-                issue_date__year=year,
-                issue_date__month=month,
-            ).prefetch_related("invoiceitem_set")
+            month_invoices = [
+                inv for inv in invoices if inv.issue_date.month == month
+            ]
             total = sum(
-                (invoice.total_amount_no_vat_czk for invoice in invoices),
+                (invoice.total_amount_no_vat_czk for invoice in month_invoices),
                 start=Decimal(0),
             )
             monthly_totals[f"{month:02d}"] = total
