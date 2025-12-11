@@ -23,6 +23,7 @@ from .views import (
     CustomerDetailView,
     CustomerListView,
     CustomerMergeView,
+    IncomeView,
     IndexView,
     InteractionDetailView,
     InteractionDownloadView,
@@ -67,4 +68,7 @@ urlpatterns = [
         InteractionDownloadView.as_view(),
         name="interaction-download",
     ),
+    path("income/", IncomeView.as_view(), name="income"),
+    path("income/<int:year>/", IncomeView.as_view(), name="income-year"),
+    path("income/<int:year>/<int:month>/", IncomeView.as_view(), name="income-month"),
 ]

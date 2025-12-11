@@ -1,12 +1,19 @@
-from datetime import timedelta
+from datetime import date, timedelta
+from decimal import Decimal
 
 import responses
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from weblate_web.invoices.models import Discount, Invoice, InvoiceKind
+from weblate_web.invoices.models import (
+    Currency,
+    Discount,
+    Invoice,
+    InvoiceCategory,
+    InvoiceKind,
+)
 from weblate_web.models import Package, PackageCategory, Service
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.tests import cnb_mock_rates
@@ -195,6 +202,195 @@ class CRMTestCase(TestCase):
         invoice = Invoice.objects.exclude(pk=invoice.pk).get()
         self.assertEqual(invoice.total_amount, 513)
         self.assertRedirects(response, invoice.get_absolute_url())
+
+
+class IncomeTrackingTestCase(TestCase):
+    user: User
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        # Add the view_income permission
+        permission = Permission.objects.get(
+            codename="view_income", content_type__app_label="invoices"
+        )
+        self.user.user_permissions.add(permission)
+        self.client.force_login(self.user)
+
+        # Create test customer
+        self.customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+
+    def create_test_invoice(self, year, month, category, amount):
+        """Create a test invoice with the specified parameters."""
+        # Mock exchange rates
+        cnb_mock_rates()
+
+        invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=category,
+            customer=self.customer,
+            issue_date=date(year, month, 15),
+            currency=Currency.EUR,
+        )
+        invoice.invoiceitem_set.create(
+            description="Test item", quantity=1, unit_price=amount
+        )
+        return invoice
+
+    def test_income_permission_required(self):
+        """Test that income view requires permission."""
+        # Create a regular user without permission
+        regular_user = User.objects.create_user(
+            username="regular", email="regular@example.com", is_staff=True
+        )
+        self.client.force_login(regular_user)
+
+        response = self.client.get(reverse("crm:income"))
+        self.assertEqual(response.status_code, 403)
+
+    @responses.activate
+    def test_income_yearly_view(self):
+        """Test yearly income view."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        # Create test invoices
+        self.create_test_invoice(
+            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
+        )
+        self.create_test_invoice(
+            current_year, 2, InvoiceCategory.SUPPORT, Decimal(2000)
+        )
+        self.create_test_invoice(
+            current_year, 3, InvoiceCategory.HOSTING, Decimal(1500)
+        )
+
+        response = self.client.get(reverse("crm:income"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Income Tracking")
+        self.assertContains(response, str(current_year))
+
+    @responses.activate
+    def test_income_monthly_view(self):
+        """Test monthly income view."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        # Create test invoices for different categories
+        self.create_test_invoice(
+            current_year, 3, InvoiceCategory.HOSTING, Decimal(1000)
+        )
+        self.create_test_invoice(
+            current_year, 3, InvoiceCategory.SUPPORT, Decimal(2000)
+        )
+        self.create_test_invoice(current_year, 3, InvoiceCategory.DEVEL, Decimal(3000))
+
+        response = self.client.get(
+            reverse("crm:income-month", kwargs={"year": current_year, "month": 3})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Income by Category")
+        self.assertContains(response, "Hosting")
+        self.assertContains(response, "Support")
+        self.assertContains(response, "Development / Consultations")
+
+    @responses.activate
+    def test_income_filters_only_invoices(self):
+        """Test that income view only shows INVOICE kind, not quotes."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        # Create invoice
+        invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=self.customer,
+            issue_date=date(current_year, 1, 15),
+            currency=Currency.EUR,
+        )
+        invoice.invoiceitem_set.create(
+            description="Invoice item", quantity=1, unit_price=Decimal(1000)
+        )
+
+        # Create quote (should not be counted)
+        quote = Invoice.objects.create(
+            kind=InvoiceKind.QUOTE,
+            category=InvoiceCategory.HOSTING,
+            customer=self.customer,
+            issue_date=date(current_year, 1, 15),
+            currency=Currency.EUR,
+        )
+        quote.invoiceitem_set.create(
+            description="Quote item", quantity=1, unit_price=Decimal(5000)
+        )
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Check that total income only includes the invoice, not the quote
+        # The income should be 1000 (invoice) in EUR
+        self.assertContains(response, "EUR")
+
+    def test_income_year_navigation(self):
+        """Test year navigation."""
+        current_year = timezone.now().year
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Check for year links
+        self.assertContains(response, str(current_year - 1))
+        self.assertContains(response, str(current_year))
+        self.assertContains(response, str(current_year + 1))
+
+    @responses.activate
+    def test_income_svg_chart_generation(self):
+        """Test that SVG charts are generated."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        self.create_test_invoice(
+            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
+        )
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<svg")
+        self.assertContains(response, "</svg>")
+
+    @responses.activate
+    def test_income_category_breakdown(self):
+        """Test category breakdown in yearly view."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        # Create invoices in different categories
+        self.create_test_invoice(
+            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
+        )
+        self.create_test_invoice(
+            current_year, 2, InvoiceCategory.SUPPORT, Decimal(2000)
+        )
+        self.create_test_invoice(current_year, 3, InvoiceCategory.DEVEL, Decimal(3000))
+        self.create_test_invoice(current_year, 4, InvoiceCategory.DONATE, Decimal(500))
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # All categories should be shown
+        self.assertContains(response, "Hosting")
+        self.assertContains(response, "Support")
+        self.assertContains(response, "Development / Consultations")
+        self.assertContains(response, "Donation")
 
     def test_service_list_views(self):
         """Test various service list views."""

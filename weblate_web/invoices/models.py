@@ -344,6 +344,9 @@ class Invoice(models.Model):  # noqa: PLR0904
             )
         ]
         ordering = ["-issue_date"]
+        permissions = [
+            ("view_income", "Can view income tracking"),
+        ]
 
     def __str__(self) -> str:
         return f"{self.number}: {self.customer} {self.total_amount}"
