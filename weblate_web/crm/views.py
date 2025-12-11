@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, cast
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q, Sum
+from django.db.models import Q
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -430,19 +430,18 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         """Get income data aggregated by category."""
         invoices = Invoice.objects.filter(
             kind=InvoiceKind.INVOICE, issue_date__year=year
-        )
+        ).prefetch_related("invoiceitem_set")
 
         if month:
             invoices = invoices.filter(issue_date__month=month)
 
-        # Aggregate by category
+        # Aggregate by category manually since total_amount_no_vat_czk is a property
         category_data = {}
         for category in InvoiceCategory:
-            total = (
-                invoices.filter(category=category.value).aggregate(
-                    total=Sum("total_amount_no_vat_czk")
-                )["total"]
-                or Decimal(0)
+            category_invoices = invoices.filter(category=category.value)
+            total = sum(
+                (invoice.total_amount_no_vat_czk for invoice in category_invoices),
+                start=Decimal(0),
             )
             category_data[category.label] = total
 
@@ -456,10 +455,10 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 kind=InvoiceKind.INVOICE,
                 issue_date__year=year,
                 issue_date__month=month,
-            )
-            total = (
-                invoices.aggregate(total=Sum("total_amount_no_vat_czk"))["total"]
-                or Decimal(0)
+            ).prefetch_related("invoiceitem_set")
+            total = sum(
+                (invoice.total_amount_no_vat_czk for invoice in invoices),
+                start=Decimal(0),
             )
             monthly_totals[f"{month:02d}"] = total
 

@@ -220,6 +220,15 @@ class IncomeTrackingTestCase(TestCase):
         # Create test customer
         self.customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
 
+    def mock_exchange_rates_for_date(self, date_str):
+        """Mock exchange rates for a specific date."""
+        from weblate_web.tests import RATES_JSON
+
+        responses.get(
+            f"https://api.cnb.cz/cnbapi/exrates/daily?date={date_str}",
+            json=RATES_JSON,
+        )
+
     def create_test_invoice(self, year, month, category, amount):
         """Helper to create test invoices."""
         invoice = Invoice.objects.create(
@@ -245,9 +254,16 @@ class IncomeTrackingTestCase(TestCase):
         response = self.client.get(reverse("crm:income"))
         self.assertEqual(response.status_code, 403)
 
+    @responses.activate
     def test_income_yearly_view(self):
         """Test yearly income view."""
+        cnb_mock_rates()
         current_year = timezone.now().year
+
+        # Mock rates for test dates
+        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
+        self.mock_exchange_rates_for_date(f"{current_year}-02-15")
+        self.mock_exchange_rates_for_date(f"{current_year}-03-15")
 
         # Create test invoices
         self.create_test_invoice(
@@ -265,9 +281,14 @@ class IncomeTrackingTestCase(TestCase):
         self.assertContains(response, "Income Tracking")
         self.assertContains(response, str(current_year))
 
+    @responses.activate
     def test_income_monthly_view(self):
         """Test monthly income view."""
+        cnb_mock_rates()
         current_year = timezone.now().year
+
+        # Mock rates for test date
+        self.mock_exchange_rates_for_date(f"{current_year}-03-15")
 
         # Create test invoices for different categories
         self.create_test_invoice(
@@ -289,9 +310,14 @@ class IncomeTrackingTestCase(TestCase):
         self.assertContains(response, "Support")
         self.assertContains(response, "Development / Consultations")
 
+    @responses.activate
     def test_income_filters_only_invoices(self):
         """Test that income view only shows INVOICE kind, not quotes."""
+        cnb_mock_rates()
         current_year = timezone.now().year
+
+        # Mock rates for test date
+        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
 
         # Create invoice
         invoice = Invoice.objects.create(
@@ -337,9 +363,14 @@ class IncomeTrackingTestCase(TestCase):
         self.assertContains(response, str(current_year))
         self.assertContains(response, str(current_year + 1))
 
+    @responses.activate
     def test_income_svg_chart_generation(self):
         """Test that SVG charts are generated."""
+        cnb_mock_rates()
         current_year = timezone.now().year
+
+        # Mock rates for test date
+        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
 
         self.create_test_invoice(
             current_year, 1, InvoiceCategory.HOSTING, Decimal("1000")
@@ -350,9 +381,17 @@ class IncomeTrackingTestCase(TestCase):
         self.assertContains(response, "<svg")
         self.assertContains(response, "</svg>")
 
+    @responses.activate
     def test_income_category_breakdown(self):
         """Test category breakdown in yearly view."""
+        cnb_mock_rates()
         current_year = timezone.now().year
+
+        # Mock rates for test dates
+        self.mock_exchange_rates_for_date(f"{current_year}-01-15")
+        self.mock_exchange_rates_for_date(f"{current_year}-02-15")
+        self.mock_exchange_rates_for_date(f"{current_year}-03-15")
+        self.mock_exchange_rates_for_date(f"{current_year}-04-15")
 
         # Create invoices in different categories
         self.create_test_invoice(
