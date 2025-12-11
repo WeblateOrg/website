@@ -55,7 +55,7 @@
       <div class="dashboard-chart">{{ chart_svg|safe }}</div>
     </div>
 
-    {% if pie_chart_svg %}
+    {% if not is_monthly and pie_chart_svg %}
       <div class="module">
         <h3>{% translate "Category Distribution" %}</h3>
         <div class="dashboard-chart">{{ pie_chart_svg|safe }}</div>
@@ -100,7 +100,7 @@
           <thead>
             <tr>
               <th>{% translate "Month" %}</th>
-              <th class="align-right">{% translate "Total Amount (EUR)" %}</th>
+              <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
               <th>{% translate "Actions" %}</th>
             </tr>
           </thead>
@@ -108,7 +108,7 @@
             {% for month, amount in monthly_data.items %}
               <tr>
                 <td>{{ current_year }}/{{ month }}</td>
-                <td class="align-right">€{{ amount|floatformat:0 }}</td>
+                <td class="align-right nowrap">€{{ amount|floatformat:0 }}</td>
                 <td>
                   <a href="{% url 'crm:income-month' current_year month %}">{% translate "View details" %}</a>
                 </td>
@@ -116,7 +116,7 @@
             {% endfor %}
             <tr class="total">
               <td>{% translate "Total" %}</td>
-              <td class="align-right">€{{ total_income|floatformat:0 }}</td>
+              <td class="align-right nowrap">€{{ total_income|floatformat:0 }}</td>
               <td></td>
             </tr>
           </tbody>

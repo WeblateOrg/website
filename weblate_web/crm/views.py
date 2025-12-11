@@ -446,41 +446,57 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         }
 
         total = sum(data.values())
+
+        # Count non-zero categories
+        non_zero_categories = [cat for cat, val in data.items() if val > 0]
+
         svg_parts = [
             f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="pie-chart">',
         ]
 
-        # Draw pie slices
-        start_angle = 0
-        for category, value in data.items():
-            if value == 0:
-                continue
-
-            angle = float(value / total * 360)
-            end_angle = start_angle + angle
-
-            # Convert to radians
-            start_rad = math.radians(start_angle - 90)
-            end_rad = math.radians(end_angle - 90)
-
-            # Calculate path
-            start_x = center_x + radius * math.cos(start_rad)
-            start_y = center_y + radius * math.sin(start_rad)
-            end_x = center_x + radius * math.cos(end_rad)
-            end_y = center_y + radius * math.sin(end_rad)
-
-            large_arc = 1 if angle > 180 else 0
-
+        # Special case: if only one category, draw a circle instead of a pie slice
+        if len(non_zero_categories) == 1:
+            category = non_zero_categories[0]
+            value = data[category]
             color = colors.get(category, "#999")
             svg_parts.append(
-                f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
-                f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
+                f'<circle cx="{center_x}" cy="{center_y}" r="{radius}" '
                 f'fill="{color}" stroke="white" stroke-width="2">'
-                f"<title>{category}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
-                f"</path>"
+                f"<title>{category}: €{value:,.0f} (100.0%)</title>"
+                f"</circle>"
             )
+        else:
+            # Draw pie slices for multiple categories
+            start_angle = 0
+            for category, value in data.items():
+                if value == 0:
+                    continue
 
-            start_angle = end_angle
+                angle = float(value / total * 360)
+                end_angle = start_angle + angle
+
+                # Convert to radians
+                start_rad = math.radians(start_angle - 90)
+                end_rad = math.radians(end_angle - 90)
+
+                # Calculate path
+                start_x = center_x + radius * math.cos(start_rad)
+                start_y = center_y + radius * math.sin(start_rad)
+                end_x = center_x + radius * math.cos(end_rad)
+                end_y = center_y + radius * math.sin(end_rad)
+
+                large_arc = 1 if angle > 180 else 0
+
+                color = colors.get(category, "#999")
+                svg_parts.append(
+                    f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
+                    f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
+                    f'fill="{color}" stroke="white" stroke-width="2">'
+                    f"<title>{category}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
+                    f"</path>"
+                )
+
+                start_angle = end_angle
 
         svg_parts.append("</svg>")
         return "".join(svg_parts)
@@ -731,7 +747,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         # Generate charts
         if month:
-            # For monthly view, show category breakdown and daily chart
+            # For monthly view, show category pie chart and daily chart
             # Get all invoices for the month
             month_invoices = list(
                 Invoice.objects.filter(
@@ -741,11 +757,10 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 ).prefetch_related("invoiceitem_set")
             )
 
-            context["chart_svg"] = self.generate_svg_bar_chart(income_data)
+            context["chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["daily_chart_svg"] = self.generate_svg_daily_chart(
                 year, month, month_invoices
             )
-            context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["is_monthly"] = True
         else:
             # For yearly view, show stacked monthly chart and category pie
