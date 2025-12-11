@@ -416,6 +416,7 @@ class IncomeTrackingTestCase(TestCase):
         self.assertContains(response, "Support")
         self.assertContains(response, "Development / Consultations")
         self.assertContains(response, "Donation")
+
     def test_service_list_views(self):
         """Test various service list views."""
         # Community package is required by the Service.update_status() method

@@ -4,14 +4,16 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('invoices', '0023_alter_invoice_tax_date'),
+        ("invoices", "0023_alter_invoice_tax_date"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='invoice',
-            options={'ordering': ['-issue_date'], 'permissions': [('view_income', 'Can view income tracking')]},
+            name="invoice",
+            options={
+                "ordering": ["-issue_date"],
+                "permissions": [("view_income", "Can view income tracking")],
+            },
         ),
     ]

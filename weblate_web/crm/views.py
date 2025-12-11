@@ -19,8 +19,6 @@ from django.views.generic import DetailView, ListView, TemplateView
 from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
-from weblate_web.models import Service, Subscription
-from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import PackageCategory, Service, Subscription
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import show_form_errors
