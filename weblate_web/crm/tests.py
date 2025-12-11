@@ -416,3 +416,69 @@ class IncomeTrackingTestCase(TestCase):
         self.assertContains(response, "Support")
         self.assertContains(response, "Development / Consultations")
         self.assertContains(response, "Donation")
+    def test_service_list_views(self):
+        """Test various service list views."""
+        # Community package is required by the Service.update_status() method
+        Package.objects.create(name="community", price=0)
+        customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+        payment = Payment.objects.create(customer=customer, amount=1)
+
+        # Create services with different types of packages
+        dedicated_service = Service.objects.create(customer=customer)
+        dedicated_service.subscription_set.create(
+            package=Package.objects.create(
+                name="dedicated:160k",
+                verbose="Dedicated 160k",
+                price=100,
+                category=PackageCategory.PACKAGE_DEDICATED,
+            ),
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment.pk,
+        )
+
+        shared_service = Service.objects.create(customer=customer)
+        shared_service.subscription_set.create(
+            package=Package.objects.create(
+                name="hosted:10k",
+                verbose="Hosted 10k",
+                price=50,
+                category=PackageCategory.PACKAGE_SHARED,
+            ),
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment.pk,
+        )
+
+        support_service = Service.objects.create(customer=customer)
+        support_service.subscription_set.create(
+            package=Package.objects.create(
+                name="basic",
+                verbose="Basic Support",
+                price=600,
+                category=PackageCategory.PACKAGE_SUPPORT,
+            ),
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment.pk,
+        )
+
+        # Test "all" services view - should show all services grouped by package_kind
+        response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "All services")
+        # Check that all package types are present
+        self.assertContains(response, "Dedicated 160k")
+        self.assertContains(response, "Hosted 10k")
+        self.assertContains(response, "Basic Support")
+        # Check grouping headers
+        self.assertContains(response, "Dedicated service")
+        self.assertContains(response, "Hosted service")
+        self.assertContains(response, "Support")
+
+        # Test "dedicated" services view - should only show dedicated hosting services
+        response = self.client.get(
+            reverse("crm:service-list", kwargs={"kind": "dedicated"})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Dedicated hosting services")
+        self.assertContains(response, "Dedicated 160k")
+        self.assertNotContains(response, "Hosted 10k")
+        self.assertNotContains(response, "Basic Support")

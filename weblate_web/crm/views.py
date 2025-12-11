@@ -20,6 +20,8 @@ from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.models import Service, Subscription
+from weblate_web.invoices.models import Invoice, InvoiceKind
+from weblate_web.models import PackageCategory, Service, Subscription
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import show_form_errors
 
@@ -72,6 +74,8 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                 return "Expired services"
             case "extended":
                 return "Extended support services"
+            case "dedicated":
+                return "Dedicated hosting services"
         raise ValueError(self.kwargs["kind"])
 
     def get_context_data(self, **kwargs):
@@ -83,7 +87,7 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
         qs = super().get_queryset().prefetch_related("subscription_set")
         match self.kwargs["kind"]:
             case "all":
-                return qs
+                return sorted(qs, key=attrgetter("package_kind"))
             case "expired":
                 possible_subscriptions = Subscription.objects.filter(
                     expires__lte=timezone.now(), enabled=True
@@ -102,6 +106,10 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                     subscription__expires__gte=timezone.now(),
                     subscription__package__name="extended",
                     subscription__enabled=True,
+                ).distinct()
+            case "dedicated":
+                return qs.filter(
+                    subscription__package__category=PackageCategory.PACKAGE_DEDICATED
                 ).distinct()
         raise ValueError(self.kwargs["kind"])
 
