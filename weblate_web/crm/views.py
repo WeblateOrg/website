@@ -588,7 +588,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         self, year: int, month: int | None = None
     ) -> tuple[list[Invoice], dict[UUID, Decimal]]:
         """Fetch invoices and pre-calculate totals (shared helper)."""
-        query = Invoice.objects.filter(kind=InvoiceKind.INVOICE, issue_date__year=year)
+        query = Invoice.objects.filter(
+            kind=InvoiceKind.INVOICE, issue_date__year=year
+        ).prefetch_related("invoiceitem_set")
         if month:
             query = query.filter(issue_date__month=month)
 
