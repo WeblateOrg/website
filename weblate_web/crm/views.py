@@ -361,7 +361,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if max_value is None:
             max_value = max(data.values()) if data.values() else Decimal(0)
 
-        if max_value == 0:
+        # Ensure max_value is at least 1 to avoid division by zero
+        if max_value <= 0:
             max_value = Decimal(1)
 
         # Start SVG
@@ -437,15 +438,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if month:
             invoices = [inv for inv in invoices if inv.issue_date.month == month]
 
+        # Pre-calculate totals to leverage cached_property and avoid repeated calculations
+        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+
         # Aggregate by category manually since total_amount_no_vat_czk is a property
         # Group invoices by category to avoid N+1 queries
         category_data = {}
         for category in InvoiceCategory:
-            category_invoices = [
-                inv for inv in invoices if inv.category == category.value
-            ]
             total = sum(
-                (invoice.total_amount_no_vat_czk for invoice in category_invoices),
+                (
+                    invoice_totals[inv.pk]
+                    for inv in invoices
+                    if inv.category == category.value
+                ),
                 start=Decimal(0),
             )
             category_data[category.label] = total
@@ -461,14 +466,18 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             ).prefetch_related("invoiceitem_set")
         )
 
+        # Pre-calculate totals to leverage cached_property and avoid repeated calculations
+        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+
         # Group by month in Python
         monthly_totals = {}
         for month in range(1, 13):
-            month_invoices = [
-                inv for inv in invoices if inv.issue_date.month == month
-            ]
             total = sum(
-                (invoice.total_amount_no_vat_czk for invoice in month_invoices),
+                (
+                    invoice_totals[inv.pk]
+                    for inv in invoices
+                    if inv.issue_date.month == month
+                ),
                 start=Decimal(0),
             )
             monthly_totals[f"{month:02d}"] = total
