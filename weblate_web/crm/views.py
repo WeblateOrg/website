@@ -352,7 +352,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     def generate_svg_bar_chart(
         self, data: dict[str, Decimal], max_value: Decimal | None = None
     ) -> str:
-        """Generate a simple SVG bar chart."""
+        """Generate a simple SVG bar chart without inline styles."""
         if not data:
             return ""
 
@@ -371,26 +371,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if max_value <= 0:
             max_value = self.MIN_CHART_VALUE
 
-        # Start SVG
+        # Start SVG without inline styles
         svg_parts = [
-            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">',
-            "<style>",
-            ".bar { fill: #417690; }",
-            ".bar:hover { fill: #79aec8; }",
-            ".label { font-family: Arial, sans-serif; font-size: 12px; }",
-            ".value { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }",
-            ".axis { stroke: #ccc; stroke-width: 1; }",
-            "</style>",
+            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="income-chart">',
         ]
 
         # Draw axes
         svg_parts.append(
             f'<line x1="{padding}" y1="{padding}" x2="{padding}" '
-            f'y2="{height - padding}" class="axis"/>'
+            f'y2="{height - padding}" stroke="#ccc" stroke-width="1"/>'
         )
         svg_parts.append(
             f'<line x1="{padding}" y1="{height - padding}" '
-            f'x2="{width - padding}" y2="{height - padding}" class="axis"/>'
+            f'x2="{width - padding}" y2="{height - padding}" stroke="#ccc" stroke-width="1"/>'
         )
 
         # Calculate bar properties
@@ -407,7 +400,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             # Bar
             svg_parts.append(
                 f'<rect x="{x}" y="{y}" width="{bar_width}" '
-                f'height="{bar_height}" class="bar">'
+                f'height="{bar_height}" fill="#417690">'
                 f"<title>{label}: {value:,.0f} CZK</title>"
                 f"</rect>"
             )
@@ -417,7 +410,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             label_y = height - padding + 15
             svg_parts.append(
                 f'<text x="{label_x}" y="{label_y}" '
-                f'text-anchor="middle" class="label">{label}</text>'
+                f'text-anchor="middle" font-size="12" fill="#666">{label}</text>'
             )
 
             # Value
@@ -425,7 +418,208 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 value_y = y + bar_height / 2 + 4
                 svg_parts.append(
                     f'<text x="{label_x}" y="{value_y}" '
-                    f'text-anchor="middle" class="value">{value:,.0f}</text>'
+                    f'text-anchor="middle" font-size="11" fill="#fff">{value:,.0f}</text>'
+                )
+
+        svg_parts.append("</svg>")
+        return "".join(svg_parts)
+
+    def generate_svg_pie_chart(
+        self, data: dict[str, Decimal]
+    ) -> str:
+        """Generate a simple SVG pie chart for category distribution."""
+        import math
+
+        if not data or sum(data.values()) == 0:
+            return ""
+
+        width = 400
+        height = 400
+        radius = 150
+        center_x = width / 2
+        center_y = height / 2
+
+        # Category colors
+        colors = {
+            "Hosting": "#417690",
+            "Support": "#79aec8",
+            "Development / Consultations": "#5b80b2",
+            "Donation": "#9fc5e8",
+        }
+
+        total = sum(data.values())
+        svg_parts = [
+            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="pie-chart">',
+        ]
+
+        # Draw pie slices
+        start_angle = 0
+        for category, value in data.items():
+            if value == 0:
+                continue
+
+            angle = float(value / total * 360)
+            end_angle = start_angle + angle
+
+            # Convert to radians
+            start_rad = math.radians(start_angle - 90)
+            end_rad = math.radians(end_angle - 90)
+
+            # Calculate path
+            start_x = center_x + radius * math.cos(start_rad)
+            start_y = center_y + radius * math.sin(start_rad)
+            end_x = center_x + radius * math.cos(end_rad)
+            end_y = center_y + radius * math.sin(end_rad)
+
+            large_arc = 1 if angle > 180 else 0
+
+            color = colors.get(category, "#999")
+            svg_parts.append(
+                f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
+                f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
+                f'fill="{color}" stroke="white" stroke-width="2">'
+                f'<title>{category}: {value:,.0f} CZK ({value/total*100:.1f}%)</title>'
+                f'</path>'
+            )
+
+            start_angle = end_angle
+
+        svg_parts.append("</svg>")
+        return "".join(svg_parts)
+
+    def generate_svg_stacked_bar_chart(
+        self, monthly_data: dict, invoices: list
+    ) -> str:
+        """Generate a stacked bar chart showing monthly totals by category."""
+        if not monthly_data:
+            return ""
+
+        width = self.CHART_WIDTH
+        height = self.CHART_HEIGHT
+        padding = self.CHART_PADDING
+        chart_width = width - 2 * padding
+        chart_height = height - 2 * padding
+
+        # Category colors
+        colors = {
+            InvoiceCategory.HOSTING.value: "#417690",
+            InvoiceCategory.SUPPORT.value: "#79aec8",
+            InvoiceCategory.DEVEL.value: "#5b80b2",
+            InvoiceCategory.DONATE.value: "#9fc5e8",
+        }
+
+        # Pre-calculate invoice totals
+        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+
+        # Get max value for scaling
+        max_value = max(monthly_data.values()) if monthly_data.values() else Decimal(1)
+        if max_value <= 0:
+            max_value = self.MIN_CHART_VALUE
+
+        svg_parts = [
+            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="stacked-bar-chart">',
+        ]
+
+        # Calculate bar properties
+        num_bars = 12
+        bar_spacing = chart_width / (num_bars * 1.5)
+        bar_width = bar_spacing * 0.8
+
+        # Draw each month
+        for month_idx in range(1, 13):
+            month_key = f"{month_idx:02d}"
+            x = padding + bar_spacing * (month_idx - 0.5)
+
+            # Get invoices for this month by category
+            month_invoices = [inv for inv in invoices if inv.issue_date.month == month_idx]
+
+            # Stack bars by category
+            y_offset = height - padding
+            for category in InvoiceCategory:
+                category_total = sum(
+                    (invoice_totals[inv.pk] for inv in month_invoices if inv.category == category.value),
+                    start=Decimal(0),
+                )
+
+                if category_total > 0:
+                    bar_height = float(category_total / max_value * chart_height)
+                    y = y_offset - bar_height
+
+                    svg_parts.append(
+                        f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
+                        f'fill="{colors.get(category.value, "#999")}" stroke="white" stroke-width="1">'
+                        f'<title>{category.label} - {month_key}: {category_total:,.0f} CZK</title>'
+                        f'</rect>'
+                    )
+                    y_offset = y
+
+            # Month label
+            label_x = x + bar_width / 2
+            label_y = height - padding + 15
+            svg_parts.append(
+                f'<text x="{label_x}" y="{label_y}" text-anchor="middle" '
+                f'font-size="10" fill="#666">{month_key}</text>'
+            )
+
+        svg_parts.append("</svg>")
+        return "".join(svg_parts)
+
+    def generate_svg_daily_chart(
+        self, year: int, month: int, invoices: list
+    ) -> str:
+        """Generate a daily bar chart for a specific month."""
+        import calendar
+
+        width = self.CHART_WIDTH
+        height = 300
+        padding = 40
+        chart_width = width - 2 * padding
+        chart_height = height - 2 * padding
+
+        # Get number of days in month
+        num_days = calendar.monthrange(year, month)[1]
+
+        # Pre-calculate invoice totals
+        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+
+        # Calculate daily totals
+        daily_totals = {}
+        for day in range(1, num_days + 1):
+            daily_invoices = [inv for inv in invoices if inv.issue_date.day == day]
+            daily_totals[day] = sum(
+                (invoice_totals[inv.pk] for inv in daily_invoices),
+                start=Decimal(0),
+            )
+
+        max_value = max(daily_totals.values()) if daily_totals.values() else Decimal(1)
+        if max_value <= 0:
+            max_value = self.MIN_CHART_VALUE
+
+        svg_parts = [
+            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="daily-chart">',
+        ]
+
+        # Draw bars
+        bar_width = chart_width / num_days * 0.8
+        for day, value in daily_totals.items():
+            x = padding + (day - 1) * (chart_width / num_days)
+            bar_height = float(value / max_value * chart_height) if value > 0 else 0
+            y = height - padding - bar_height
+
+            svg_parts.append(
+                f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
+                f'fill="#417690">'
+                f'<title>Day {day}: {value:,.0f} CZK</title>'
+                f'</rect>'
+            )
+
+            # Show day label every 5 days
+            if day % 5 == 1 or day == num_days:
+                label_x = x + bar_width / 2
+                label_y = height - padding + 12
+                svg_parts.append(
+                    f'<text x="{label_x}" y="{label_y}" text-anchor="middle" '
+                    f'font-size="9" fill="#666">{day}</text>'
                 )
 
         svg_parts.append("</svg>")
@@ -486,7 +680,37 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             )
             monthly_totals[f"{month:02d}"] = total
 
-        return monthly_totals
+        return monthly_totals, invoices
+
+    def get_monthly_category_data(self, year: int):
+        """Get monthly income data split by category for stacked chart."""
+        invoices = list(
+            Invoice.objects.filter(
+                kind=InvoiceKind.INVOICE, issue_date__year=year
+            ).prefetch_related("invoiceitem_set")
+        )
+
+        # Pre-calculate totals
+        invoice_totals = {inv.pk: inv.total_amount_no_vat_czk for inv in invoices}
+
+        # Group by month and category
+        monthly_category_data = {}
+        for month in range(1, 13):
+            month_key = f"{month:02d}"
+            monthly_category_data[month_key] = {}
+
+            for category in InvoiceCategory:
+                total = sum(
+                    (
+                        invoice_totals[inv.pk]
+                        for inv in invoices
+                        if inv.issue_date.month == month and inv.category == category.value
+                    ),
+                    start=Decimal(0),
+                )
+                monthly_category_data[month_key][category.label] = total
+
+        return monthly_category_data, invoices
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -504,16 +728,29 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         context["current_year"] = year
         context["current_month"] = month
 
-        # Generate chart
+        # Generate charts
         if month:
-            # For monthly view, show category breakdown
+            # For monthly view, show category breakdown and daily chart
+            # Get all invoices for the month
+            month_invoices = list(
+                Invoice.objects.filter(
+                    kind=InvoiceKind.INVOICE,
+                    issue_date__year=year,
+                    issue_date__month=month,
+                ).prefetch_related("invoiceitem_set")
+            )
+
             context["chart_svg"] = self.generate_svg_bar_chart(income_data)
+            context["daily_chart_svg"] = self.generate_svg_daily_chart(year, month, month_invoices)
+            context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["is_monthly"] = True
         else:
-            # For yearly view, show monthly totals
-            monthly_data = self.get_monthly_data(year)
-            context["chart_svg"] = self.generate_svg_bar_chart(monthly_data)
+            # For yearly view, show stacked monthly chart and category pie
+            monthly_data, invoices = self.get_monthly_data(year)
+            context["chart_svg"] = self.generate_svg_stacked_bar_chart(monthly_data, invoices)
+            context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
             context["monthly_data"] = monthly_data
+            context["monthly_category_data"], _ = self.get_monthly_category_data(year)
             context["is_monthly"] = False
 
         return context
