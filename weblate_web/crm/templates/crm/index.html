@@ -178,6 +178,19 @@
                  aria-describedby="row-invoices">{% translate "View" %}</a>
             </td>
           </tr>
+          <tr>
+            <th scope="row" id="row-invoices">
+              <a href="{% url 'crm:service-list' kind="premium" %}">Premium support services</a>
+            </th>
+
+            <td></td>
+
+            <td>
+              <a href="{% url 'crm:service-list' kind="premium" %}"
+                 class="viewlink"
+                 aria-describedby="row-invoices">{% translate "View" %}</a>
+            </td>
+          </tr>
         </table>
       {% endif %}
       {% comment %}

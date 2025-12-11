@@ -71,6 +71,8 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                 return "Extended support services"
             case "dedicated":
                 return "Dedicated hosting services"
+            case "premium":
+                return "Premium support services"
         raise ValueError(self.kwargs["kind"])
 
     def get_context_data(self, **kwargs):
@@ -106,6 +108,8 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                 return qs.filter(
                     subscription__package__category=PackageCategory.PACKAGE_DEDICATED
                 ).distinct()
+            case "premium":
+                return qs.filter(subscription__package__name="premium").distinct()
         raise ValueError(self.kwargs["kind"])
 
 
