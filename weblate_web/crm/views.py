@@ -328,6 +328,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     permission = "invoices.view_income"
     title = "Income Tracking"
 
+    # Chart configuration
+    CHART_WIDTH = 800
+    CHART_HEIGHT = 400
+    CHART_PADDING = 60
+    MIN_CHART_VALUE = Decimal(1)
+
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
         return self.kwargs.get("year", timezone.now().year)
@@ -351,9 +357,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return ""
 
         # Chart dimensions
-        width = 800
-        height = 400
-        padding = 60
+        width = self.CHART_WIDTH
+        height = self.CHART_HEIGHT
+        padding = self.CHART_PADDING
         chart_width = width - 2 * padding
         chart_height = height - 2 * padding
 
@@ -361,9 +367,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if max_value is None:
             max_value = max(data.values()) if data.values() else Decimal(0)
 
-        # Ensure max_value is at least 1 to avoid division by zero
+        # Ensure max_value is at least MIN_CHART_VALUE to avoid division by zero
         if max_value <= 0:
-            max_value = Decimal(1)
+            max_value = self.MIN_CHART_VALUE
 
         # Start SVG
         svg_parts = [
