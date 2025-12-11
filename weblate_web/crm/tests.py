@@ -220,15 +220,11 @@ class IncomeTrackingTestCase(TestCase):
         # Create test customer
         self.customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
 
-    def mock_exchange_rates_for_date(self, date_str):
-        """Mock exchange rates for a specific date."""
-        responses.get(
-            f"https://api.cnb.cz/cnbapi/exrates/daily?date={date_str}",
-            json=RATES_JSON,
-        )
-
     def create_test_invoice(self, year, month, category, amount):
         """Create a test invoice with the specified parameters."""
+        # Mock exchange rates
+        cnb_mock_rates()
+        
         invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
             category=category,

@@ -342,18 +342,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     CHART_PADDING = 60
     MIN_CHART_VALUE = Decimal(1)
 
-    # Category colors shared across all charts
+    # Category colors shared across all charts (keyed by category label)
     CATEGORY_COLORS = {
         "Hosting": "#417690",
         "Support": "#79aec8",
         "Development / Consultations": "#5b80b2",
         "Donation": "#9fc5e8",
-    }
-    CATEGORY_COLORS_BY_VALUE = {
-        InvoiceCategory.HOSTING.value: "#417690",
-        InvoiceCategory.SUPPORT.value: "#79aec8",
-        InvoiceCategory.DEVEL.value: "#5b80b2",
-        InvoiceCategory.DONATE.value: "#9fc5e8",
     }
 
     def get_year(self) -> int:
@@ -469,9 +463,13 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return "".join(svg_parts)
 
     def generate_svg_stacked_bar_chart(  # noqa: PLR0914
-        self, monthly_data: dict, invoices: list
+        self, monthly_data: dict, invoices: list, year: int, month: int | None = None
     ) -> str:
-        """Generate a stacked bar chart showing monthly totals by category."""
+        """Generate a stacked bar chart showing totals by category.
+        
+        For yearly view (month=None): shows 12 monthly bars
+        For monthly view (month=int): shows daily bars for that month
+        """
         if not monthly_data:
             return ""
 
@@ -484,6 +482,20 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         # Pre-calculate invoice totals in EUR
         invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
 
+        # Determine number of bars and labels based on view type
+        if month:
+            # Monthly view: show daily bars
+            num_bars = calendar.monthrange(year, month)[1]
+            bar_labels = [str(d) for d in range(1, num_bars + 1)]
+            filter_func = lambda inv, idx: inv.issue_date.day == idx + 1
+            label_prefix = "Day"
+        else:
+            # Yearly view: show monthly bars
+            num_bars = 12
+            bar_labels = [f"{m:02d}" for m in range(1, 13)]
+            filter_func = lambda inv, idx: inv.issue_date.month == idx + 1
+            label_prefix = ""
+
         # Get max value for scaling
         max_value = max(monthly_data.values()) if monthly_data.values() else Decimal(1)
         if max_value <= 0:
@@ -494,18 +506,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         ]
 
         # Calculate bar properties
-        num_bars = 12
         bar_spacing = chart_width / (num_bars * 1.5)
         bar_width = bar_spacing * 0.8
 
-        # Draw each month
-        for month_idx in range(1, 13):
-            month_key = f"{month_idx:02d}"
-            x: float = padding + bar_spacing * (month_idx - 0.5)
+        # Draw each bar
+        for idx in range(num_bars):
+            bar_label = bar_labels[idx]
+            x: float = padding + bar_spacing * (idx + 0.5)
 
-            # Get invoices for this month by category
-            month_invoices = [
-                inv for inv in invoices if inv.issue_date.month == month_idx
+            # Get invoices for this time period by category
+            period_invoices = [
+                inv for inv in invoices if filter_func(inv, idx)
             ]
 
             # Stack bars by category
@@ -514,7 +525,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 category_total = sum(
                     (
                         invoice_totals[inv.pk]
-                        for inv in month_invoices
+                        for inv in period_invoices
                         if inv.category == category.value
                     ),
                     start=Decimal(0),
@@ -524,84 +535,30 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     bar_height = float(category_total / max_value * chart_height)
                     y = y_offset - bar_height
 
+                    title_label = f"{label_prefix} {bar_label}" if label_prefix else bar_label
                     svg_parts.append(
                         f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
-                        f'fill="{self.CATEGORY_COLORS_BY_VALUE.get(category.value, "#999")}" stroke="white" stroke-width="1">'
-                        f"<title>{category.label} - {month_key}: €{category_total:,.0f}</title>"
+                        f'fill="{self.CATEGORY_COLORS.get(category.label, "#999")}" stroke="white" stroke-width="1">'
+                        f"<title>{category.label} - {title_label}: €{category_total:,.0f}</title>"
                         f"</rect>"
                     )
                     y_offset = y
 
-            # Month label
+            # Bar label
             label_x = x + bar_width / 2
             label_y = height - padding + 15
+            font_size = "9" if month else "10"  # Smaller font for daily view (more bars)
             svg_parts.append(
                 f'<text x="{label_x}" y="{label_y}" text-anchor="middle" '
-                f'font-size="10" fill="#666">{month_key}</text>'
+                f'font-size="{font_size}" fill="#666">{bar_label}</text>'
             )
 
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
-    def generate_svg_daily_chart(  # noqa: PLR0914
-        self, year: int, month: int, invoices: list
-    ) -> str:
-        """Generate a daily bar chart for a specific month."""
-        width = self.CHART_WIDTH
-        height = 300
-        padding = 40
-        chart_width = width - 2 * padding
-        chart_height = height - 2 * padding
-
-        # Get number of days in month
-        num_days = calendar.monthrange(year, month)[1]
-
-        # Pre-calculate invoice totals in EUR
-        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
-
-        # Calculate daily totals
-        daily_totals = {}
-        for day in range(1, num_days + 1):
-            daily_invoices = [inv for inv in invoices if inv.issue_date.day == day]
-            daily_totals[day] = sum(
-                (invoice_totals[inv.pk] for inv in daily_invoices),
-                start=Decimal(0),
-            )
-
-        max_value = max(daily_totals.values()) if daily_totals.values() else Decimal(1)
-        if max_value <= 0:
-            max_value = self.MIN_CHART_VALUE
-
-        svg_parts = [
-            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="daily-chart">',
-        ]
-
-        # Draw bars
-        bar_width = chart_width / num_days * 0.8
-        for day, value in daily_totals.items():
-            x: float = padding + (day - 1) * (chart_width / num_days)
-            bar_height = float(value / max_value * chart_height) if value > 0 else 0
-            y = height - padding - bar_height
-
-            svg_parts.append(
-                f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
-                f'fill="#417690">'
-                f"<title>Day {day}: €{value:,.0f}</title>"
-                f"</rect>"
-            )
-
-            # Show all day labels
-            label_x = x + bar_width / 2
-            label_y = height - padding + 12
-            svg_parts.append(
-                f'<text x="{label_x}" y="{label_y}" text-anchor="middle" '
-                f'font-size="9" fill="#666">{day}</text>'
-            )
-
-        svg_parts.append("</svg>")
-        return "".join(svg_parts)
-
-    def get_income_data(self, year: int, month: int | None = None):
+    def get_income_data(
+        self, year: int, month: int | None = None
+    ) -> dict[str, Decimal]:
         """Get income data aggregated by category."""
         # Build query with proper database-level filtering
         query = Invoice.objects.filter(kind=InvoiceKind.INVOICE, issue_date__year=year)
@@ -629,7 +586,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         return category_data
 
-    def get_monthly_data(self, year: int):
+    def get_monthly_data(self, year: int) -> tuple[dict[str, Decimal], list]:
         """Get monthly income data for the year."""
         # Fetch all invoices for the year at once to avoid 12 separate queries
         invoices = list(
@@ -656,7 +613,38 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         return monthly_totals, invoices
 
-    def get_monthly_category_data(self, year: int):
+    def get_daily_data(self, year: int, month: int) -> tuple[dict[str, Decimal], list]:
+        """Get daily income data for a specific month."""
+        invoices = list(
+            Invoice.objects.filter(
+                kind=InvoiceKind.INVOICE, issue_date__year=year, issue_date__month=month
+            ).prefetch_related("invoiceitem_set")
+        )
+
+        # Pre-calculate totals in EUR
+        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
+
+        # Get number of days in month
+        num_days = calendar.monthrange(year, month)[1]
+
+        # Group by day
+        daily_totals = {}
+        for day in range(1, num_days + 1):
+            total = sum(
+                (
+                    invoice_totals[inv.pk]
+                    for inv in invoices
+                    if inv.issue_date.day == day
+                ),
+                start=Decimal(0),
+            )
+            daily_totals[str(day)] = total
+
+        return daily_totals, invoices
+
+    def get_monthly_category_data(
+        self, year: int
+    ) -> tuple[dict[str, dict[str, Decimal]], list]:
         """Get monthly income data split by category for stacked chart."""
         invoices = list(
             Invoice.objects.filter(
@@ -708,25 +696,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         context["pie_chart_svg"] = self.generate_svg_pie_chart(income_data)
 
         if month:
-            # For monthly view, show daily chart
-            # Get all invoices for the month
-            month_invoices = list(
-                Invoice.objects.filter(
-                    kind=InvoiceKind.INVOICE,
-                    issue_date__year=year,
-                    issue_date__month=month,
-                ).prefetch_related("invoiceitem_set")
-            )
-
-            context["daily_chart_svg"] = self.generate_svg_daily_chart(
-                year, month, month_invoices
+            # For monthly view, show daily stacked chart
+            daily_data, daily_invoices = self.get_daily_data(year, month)
+            context["daily_chart_svg"] = self.generate_svg_stacked_bar_chart(
+                daily_data, daily_invoices, year, month
             )
             context["is_monthly"] = True
         else:
-            # For yearly view, show stacked monthly chart
+            # For yearly view, show monthly stacked chart
             monthly_data, invoices = self.get_monthly_data(year)
             context["chart_svg"] = self.generate_svg_stacked_bar_chart(
-                monthly_data, invoices
+                monthly_data, invoices, year
             )
             context["monthly_data"] = monthly_data
             context["monthly_category_data"], _ = self.get_monthly_category_data(year)
