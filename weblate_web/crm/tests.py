@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from decimal import Decimal
 
 import responses
@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from weblate_web.invoices.models import (
+    Currency,
     Discount,
     Invoice,
     InvoiceCategory,
@@ -229,8 +230,8 @@ class IncomeTrackingTestCase(TestCase):
             kind=InvoiceKind.INVOICE,
             category=category,
             customer=self.customer,
-            issue_date=timezone.datetime(year, month, 15).date(),
-            currency=0,  # EUR
+            issue_date=date(year, month, 15),
+            currency=Currency.EUR,
         )
         invoice.invoiceitem_set.create(
             description="Test item", quantity=1, unit_price=amount
@@ -305,8 +306,8 @@ class IncomeTrackingTestCase(TestCase):
             kind=InvoiceKind.INVOICE,
             category=InvoiceCategory.HOSTING,
             customer=self.customer,
-            issue_date=timezone.datetime(current_year, 1, 15).date(),
-            currency=0,
+            issue_date=date(current_year, 1, 15),
+            currency=Currency.EUR,
         )
         invoice.invoiceitem_set.create(
             description="Invoice item", quantity=1, unit_price=Decimal(1000)
@@ -317,8 +318,8 @@ class IncomeTrackingTestCase(TestCase):
             kind=InvoiceKind.QUOTE,
             category=InvoiceCategory.HOSTING,
             customer=self.customer,
-            issue_date=timezone.datetime(current_year, 1, 15).date(),
-            currency=0,
+            issue_date=date(current_year, 1, 15),
+            currency=Currency.EUR,
         )
         quote.invoiceitem_set.create(
             description="Quote item", quantity=1, unit_price=Decimal(5000)

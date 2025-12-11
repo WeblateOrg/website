@@ -27,6 +27,7 @@ from .models import Interaction
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from uuid import UUID
 
     from django.http import HttpRequest
 
@@ -76,6 +77,8 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                 return "Extended support services"
             case "dedicated":
                 return "Dedicated hosting services"
+            case "premium":
+                return "Premium support services"
         raise ValueError(self.kwargs["kind"])
 
     def get_context_data(self, **kwargs):
@@ -109,7 +112,15 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
                 ).distinct()
             case "dedicated":
                 return qs.filter(
-                    subscription__package__category=PackageCategory.PACKAGE_DEDICATED
+                    subscription__package__category=PackageCategory.PACKAGE_DEDICATED,
+                    subscription__expires__gte=timezone.now(),
+                    subscription__enabled=True,
+                ).distinct()
+            case "premium":
+                return qs.filter(
+                    subscription__package__name="premium",
+                    subscription__expires__gte=timezone.now(),
+                    subscription__enabled=True,
                 ).distinct()
         raise ValueError(self.kwargs["kind"])
 
@@ -575,7 +586,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def _get_invoices_and_totals(
         self, year: int, month: int | None = None
-    ) -> tuple[list[Invoice], dict[int, Decimal]]:
+    ) -> tuple[list[Invoice], dict[UUID, Decimal]]:
         """Fetch invoices and pre-calculate totals (shared helper)."""
         query = Invoice.objects.filter(kind=InvoiceKind.INVOICE, issue_date__year=year)
         if month:
