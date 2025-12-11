@@ -465,8 +465,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     def generate_svg_stacked_bar_chart(  # noqa: PLR0914
         self, monthly_data: dict, invoices: list, year: int, month: int | None = None
     ) -> str:
-        """Generate a stacked bar chart showing totals by category.
-        
+        """
+        Generate a stacked bar chart showing totals by category.
+
         For yearly view (month=None): shows 12 monthly bars
         For monthly view (month=int): shows daily bars for that month
         """
@@ -515,9 +516,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             x: float = padding + bar_spacing * (idx + 0.5)
 
             # Get invoices for this time period by category
-            period_invoices = [
-                inv for inv in invoices if filter_func(inv, idx)
-            ]
+            period_invoices = [inv for inv in invoices if filter_func(inv, idx)]
 
             # Stack bars by category
             y_offset: float = height - padding
@@ -535,7 +534,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     bar_height = float(category_total / max_value * chart_height)
                     y = y_offset - bar_height
 
-                    title_label = f"{label_prefix} {bar_label}" if label_prefix else bar_label
+                    title_label = (
+                        f"{label_prefix} {bar_label}" if label_prefix else bar_label
+                    )
                     svg_parts.append(
                         f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
                         f'fill="{self.CATEGORY_COLORS.get(category.label, "#999")}" stroke="white" stroke-width="1">'
@@ -547,7 +548,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             # Bar label
             label_x = x + bar_width / 2
             label_y = height - padding + 15
-            font_size = "9" if month else "10"  # Smaller font for daily view (more bars)
+            font_size = (
+                "9" if month else "10"
+            )  # Smaller font for daily view (more bars)
             svg_parts.append(
                 f'<text x="{label_x}" y="{label_y}" text-anchor="middle" '
                 f'font-size="{font_size}" fill="#666">{bar_label}</text>'

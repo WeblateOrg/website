@@ -15,7 +15,7 @@ from weblate_web.invoices.models import (
 )
 from weblate_web.models import Package, PackageCategory, Service
 from weblate_web.payments.models import Customer, Payment
-from weblate_web.tests import RATES_JSON, cnb_mock_rates
+from weblate_web.tests import cnb_mock_rates
 
 
 class CRMTestCase(TestCase):
@@ -224,7 +224,7 @@ class IncomeTrackingTestCase(TestCase):
         """Create a test invoice with the specified parameters."""
         # Mock exchange rates
         cnb_mock_rates()
-        
+
         invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
             category=category,
