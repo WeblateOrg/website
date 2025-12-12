@@ -1,3 +1,5 @@
+from typing import NotRequired, TypedDict
+
 import sentry_sdk
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -7,22 +9,27 @@ from vies.types import VATIN
 from zeep.exceptions import Error
 
 
-def cache_vies_data(value):
-    if isinstance(value, str):
-        value = VATIN.from_str(value)
-    key = f"VAT-{value}"
-    data = cache.get(key)
+class VatinValidation(TypedDict):
+    valid: bool
+    fault_message: NotRequired[str]
+    fault_code: NotRequired[str]
+
+
+def cache_vies_data(value: str | VATIN) -> tuple[VATIN, VatinValidation]:
+    result = value if isinstance(value, VATIN) else VATIN.from_str(value)
+    key = f"VAT-{result}"
+    data: VatinValidation | None = cache.get(key)
     if data is None:
+        # Offline validation
         try:
-            value.verify_country_code()
-            value.verify_regex()
+            result.verify_country_code()
+            result.verify_regex()
         except ValidationError:
-            return value
+            return result, {"valid": False}
+
+        # Online validation
         try:
-            data = {}
-            for item in value.data:
-                data[item] = value.data[item]
-            cache.set(key, data, 3600 * 24 * 7)
+            vies_data = result.data
         except Error as error:
             data = {
                 "valid": False,
@@ -30,30 +37,36 @@ def cache_vies_data(value):
                 "fault_message": str(error),
             }
             sentry_sdk.capture_exception()
-    value.__dict__["vies_data"] = data
+        else:
+            data = {
+                "valid": vies_data.valid,
+                "fault_code": vies_data.get("fault_code", ""),
+                "fault_message": vies_data.get("fault_message", ""),
+            }
+            cache.set(key, data, 3600 * 24 * 7)
 
-    return value
+    return result, data
 
 
-def validate_vatin(value) -> None:
-    value = cache_vies_data(value)
+def validate_vatin(value: str | VATIN) -> None:
+    vatin, vies_data = cache_vies_data(value)
     try:
-        value.verify_country_code()
+        vatin.verify_country_code()
     except ValidationError as error:
         msg = _("{} is not a valid country code for any European Union member.")
-        raise ValidationError(msg.format(value.country_code)) from error
+        raise ValidationError(msg.format(vatin.country_code)) from error
     try:
-        value.verify_regex()
+        vatin.verify_regex()
     except ValidationError as error:
         msg = _("{} does not match the country's VAT ID specifications.")
-        raise ValidationError(msg.format(value)) from error
+        raise ValidationError(msg.format(vatin)) from error
 
-    if not value.vies_data["valid"]:
+    if not vies_data["valid"]:
         retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
         retry_codes = {"soap:Server", "other:Error", "env:Server"}
         if (
-            value.vies_data.get("fault_message") in retry_errors
-            or value.vies_data.get("fault_code") in retry_codes
+            vies_data.get("fault_message") in retry_errors
+            or vies_data.get("fault_code") in retry_codes
         ):
             msg = format_html(
                 '{} <a href="{}" target="_blank">{}</a>',
@@ -64,5 +77,5 @@ def validate_vatin(value) -> None:
                 _("View service status."),
             )
         else:
-            msg = _("{} is not a valid VAT ID.").format(value)
+            msg = _("{} is not a valid VAT ID.").format(vatin)
         raise ValidationError(msg)

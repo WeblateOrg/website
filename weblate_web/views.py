@@ -357,8 +357,8 @@ def api_support(request: HttpRequest) -> JsonResponse:
 def fetch_vat(request: AuthenticatedHttpRequest) -> JsonResponse:
     if "vat" not in request.POST:
         raise SuspiciousOperation("Missing needed parameters")
-    vat = cache_vies_data(request.POST["vat"])
-    return JsonResponse(data=getattr(vat, "vies_data", {"valid": False}))
+    _vatin, vies_data = cache_vies_data(request.POST["vat"])
+    return JsonResponse(data=vies_data)
 
 
 class PaymentView(FormView, SingleObjectMixin):
