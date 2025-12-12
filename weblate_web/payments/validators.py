@@ -1,4 +1,5 @@
-from typing import NotRequired, TypedDict
+from contextlib import suppress
+from typing import TYPE_CHECKING, NotRequired, TypedDict
 
 import sentry_sdk
 from django.core.cache import cache
@@ -7,6 +8,11 @@ from django.utils.html import format_html
 from django.utils.translation import gettext as _
 from vies.types import VATIN
 from zeep.exceptions import Error
+
+if TYPE_CHECKING:
+    from django_stubs_ext import StrOrPromise
+
+VAT_VALIDITY_DAYS = 7
 
 
 class VatinValidation(TypedDict):
@@ -40,18 +46,18 @@ def cache_vies_data(
             }
             sentry_sdk.capture_exception()
         else:
-            data = {
-                "valid": vies_data.valid,
-                "fault_code": vies_data.get("fault_code", ""),
-                "fault_message": vies_data.get("fault_message", ""),
-            }
-            cache.set(key, data, 3600 * 24 * 7)
+            data = {"valid": vies_data.valid}
+            with suppress(AttributeError):
+                data["fault_code"] = vies_data.fault_code
+            with suppress(AttributeError):
+                data["fault_message"] = vies_data.fault_message
+            cache.set(key, data, 3600 * 24 * VAT_VALIDITY_DAYS)
 
     return result, data
 
 
-def validate_vatin(value: str | VATIN) -> None:
-    vatin, vies_data = cache_vies_data(value)
+def validate_vatin_offline(value: str | VATIN) -> None:
+    vatin = value if isinstance(value, VATIN) else VATIN.from_str(value)
     try:
         vatin.verify_country_code()
     except ValidationError as error:
@@ -65,12 +71,18 @@ def validate_vatin(value: str | VATIN) -> None:
         msg = _("{} does not match the country's VAT ID specifications.")
         raise ValidationError(msg.format(vatin), code="Invalid VAT syntax") from error
 
+
+def validate_vatin(value: str | VATIN) -> None:
+    vatin, vies_data = cache_vies_data(value)
+    validate_vatin_offline(vatin)
+
     if not vies_data["valid"]:
         retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
         retry_codes = {"soap:Server", "other:Error", "env:Server"}
         code = "{}: {}".format(
             vies_data.get("fault_code"), vies_data.get("fault_message")
         )
+        msg: StrOrPromise
         if (
             vies_data.get("fault_message") in retry_errors
             or vies_data.get("fault_code") in retry_codes

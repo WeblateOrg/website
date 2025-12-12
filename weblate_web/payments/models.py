@@ -46,7 +46,7 @@ from vies.models import VATINField
 from weblate_web.utils import get_site_url
 
 from .utils import send_notification, validate_email
-from .validators import validate_vatin
+from .validators import VAT_VALIDITY_DAYS, validate_vatin, validate_vatin_offline
 
 if TYPE_CHECKING:
     from weblate_web.invoices.models import Invoice
@@ -110,6 +110,7 @@ class Customer(models.Model):
             "Please fill in European Union VAT ID, leave blank if not applicable."
         ),
     )
+    vat_validated = models.DateTimeField(blank=True, null=True, db_index=True)
     tax = models.CharField(
         max_length=200,
         blank=True,
@@ -187,6 +188,17 @@ class Customer(models.Model):
         if self.email:
             return f"{self.verbose_name} ({self.email})"
         return self.verbose_name
+
+    def save(self, **kwargs) -> None:
+        if self.vat:
+            try:
+                # This should be cached due to UI validation
+                validate_vatin(self.vat)
+            except ValidationError:
+                self.vat_validated = None
+            else:
+                self.vat_validated = timezone.now()
+        super().save(**kwargs)
 
     def get_absolute_url(self) -> str:
         return reverse("crm:customer-detail", kwargs={"pk": self.pk})
@@ -324,17 +336,34 @@ class Customer(models.Model):
         )
         other.delete()
 
-    def validate_vatin(self):
+    def validate_vatin(self, *, automated: bool = False):
         from weblate_web.crm.models import Interaction  # noqa: PLC0415
+
+        now = timezone.now()
+
+        # Skip payment originated validation if we have validated recently
+        if (
+            not automated
+            and self.vat_validated is not None
+            and self.vat_validated > now - timedelta(days=VAT_VALIDITY_DAYS)
+        ):
+            # Perform offline validation only
+            validate_vatin_offline(self.vat)
+            return
 
         try:
             validate_vatin(self.vat)
         except ValidationError as error:
-            self.interaction_set.create(
-                origin=Interaction.Origin.VIES,
-                summary=error.code or str(error.message),
-            )
+            # Log interactive validation error
+            if automated:
+                self.interaction_set.create(
+                    origin=Interaction.Origin.VIES,
+                    summary=error.code or str(error.message),
+                )
             raise
+        else:
+            self.vat_validated = timezone.now()
+            self.save(update_fields=["vat_validated"])
 
 
 RECURRENCE_CHOICES = [

@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import operator
+from datetime import timedelta
 from time import sleep
 from typing import TYPE_CHECKING, Literal, TypedDict
 
@@ -29,12 +30,11 @@ import sentry_sdk
 from dateutil.parser import parse
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import F
+from django.db.models import F, Q
 from django.utils import timezone
 from wlc import Weblate, WeblateException
 
 from weblate_web.payments.models import Customer
-from weblate_web.payments.validators import cache_vies_data
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -181,12 +181,17 @@ def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
     customers = Customer.objects.exclude(vat="").exclude(vat=None)
     if not fetch_all:
         # Fetch data once a week
+        # - entries without validation set once a week (never validated or during migration)
+        # - validated entries two days before expiry to have two attempts to fetch the data
         weekday = timezone.now().weekday()
-        customers = customers.annotate(idmod=F("id") % 7).filter(idmod=weekday)
+        customers = customers.annotate(idmod=F("id") % 7).filter(
+            (Q(idmod=weekday) & Q(vat_validated=None))
+            | Q(vat_validity__gte=timezone.now() + timedelta(days=2))
+        )
 
     for customer in customers.iterator():
         # Avoid being rate limited at their side
         sleep(delay)
 
         # Actually fetch data
-        cache_vies_data(customer.vat, force=True)
+        customer.validate_vatin(automated=True)
