@@ -194,4 +194,4 @@ def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
         sleep(delay)
 
         # Actually fetch data
-        customer.validate_vatin(automated=True)
+        customer.prepayment_validation(automated=True)

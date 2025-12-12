@@ -336,7 +336,7 @@ class Customer(models.Model):
         )
         other.delete()
 
-    def validate_vatin(self, *, automated: bool = False):
+    def prepayment_validation(self, *, automated: bool = False):
         from weblate_web.crm.models import Interaction  # noqa: PLC0415
 
         now = timezone.now()
@@ -361,9 +361,8 @@ class Customer(models.Model):
                     summary=error.code or str(error.message),
                 )
             raise
-        else:
-            self.vat_validated = timezone.now()
-            self.save(update_fields=["vat_validated"])
+        self.vat_validated = timezone.now()
+        self.save(update_fields=["vat_validated"])
 
 
 RECURRENCE_CHOICES = [

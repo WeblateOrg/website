@@ -411,7 +411,7 @@ class PaymentView(FormView, SingleObjectMixin):
         # often broken, so all repeating payments without a validation
         if customer.vat and not self.object.repeat:
             try:
-                customer.validate_vatin()
+                customer.prepayment_validation()
             except ValidationError:
                 messages.warning(
                     self.request,
