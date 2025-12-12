@@ -15,11 +15,13 @@ class VatinValidation(TypedDict):
     fault_code: NotRequired[str]
 
 
-def cache_vies_data(value: str | VATIN) -> tuple[VATIN, VatinValidation]:
+def cache_vies_data(
+    value: str | VATIN, *, force: bool = False
+) -> tuple[VATIN, VatinValidation]:
     result = value if isinstance(value, VATIN) else VATIN.from_str(value)
     key = f"VAT-{result}"
     data: VatinValidation | None = cache.get(key)
-    if data is None:
+    if data is None or force:
         # Offline validation
         try:
             result.verify_country_code()

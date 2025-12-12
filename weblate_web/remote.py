@@ -180,8 +180,13 @@ def get_release(force: bool = False) -> list[PYPIInfo]:
 def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
     customers = Customer.objects.exclude(vat="").exclude(vat=None)
     if not fetch_all:
+        # Fetch data once a week
         weekday = timezone.now().weekday()
-        customers = customers.annotate(idmod=F("id") % 3).filter(idmod=weekday)
+        customers = customers.annotate(idmod=F("id") % 7).filter(idmod=weekday)
+
     for customer in customers.iterator():
+        # Avoid being rate limited at their side
         sleep(delay)
-        cache_vies_data(customer.vat)
+
+        # Actually fetch data
+        cache_vies_data(customer.vat, force=True)
