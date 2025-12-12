@@ -79,9 +79,7 @@ def validate_vatin(value: str | VATIN) -> None:
     if not vies_data["valid"]:
         retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
         retry_codes = {"soap:Server", "other:Error", "env:Server"}
-        code = "{}: {}".format(
-            vies_data.get("fault_code"), vies_data.get("fault_message")
-        )
+        code = f"{vies_data.get('fault_code')}: {vies_data.get('fault_message')}"
         msg: StrOrPromise
         if (
             vies_data.get("fault_message") in retry_errors
