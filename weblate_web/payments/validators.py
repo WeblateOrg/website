@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from contextlib import suppress
 from typing import TYPE_CHECKING, NotRequired, TypedDict
 
@@ -10,6 +12,8 @@ from vies.types import VATIN
 from zeep.exceptions import Error
 
 if TYPE_CHECKING:
+    from datetime import date
+
     from django_stubs_ext import StrOrPromise
 
 VAT_VALIDITY_DAYS = 7
@@ -19,6 +23,20 @@ class VatinValidation(TypedDict):
     valid: bool
     fault_message: NotRequired[str]
     fault_code: NotRequired[str]
+    name: NotRequired[str]
+    address: NotRequired[str]
+    vatNumber: NotRequired[str]
+    requestDate: NotRequired[date]
+
+
+VAT_COPY = (
+    "fault_code",
+    "fault_message",
+    "name",
+    "address",
+    "vatNumber",
+    "requestDate",
+)
 
 
 def cache_vies_data(
@@ -47,10 +65,9 @@ def cache_vies_data(
             sentry_sdk.capture_exception()
         else:
             data = {"valid": vies_data.valid}
-            with suppress(AttributeError):
-                data["fault_code"] = vies_data.fault_code
-            with suppress(AttributeError):
-                data["fault_message"] = vies_data.fault_message
+            for field in VatinValidation.__annotations__:
+                with suppress(AttributeError):
+                    data[field] = getattr(vies_data, field)  # type: ignore[literal-required]
             cache.set(key, data, 3600 * 24 * VAT_VALIDITY_DAYS)
 
     return result, data
