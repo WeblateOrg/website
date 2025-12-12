@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import operator
+from time import sleep
 from typing import TYPE_CHECKING, Literal, TypedDict
 
 import requests
@@ -176,10 +177,11 @@ def get_release(force: bool = False) -> list[PYPIInfo]:
     return result
 
 
-def fetch_vat_info(fetch_all: bool = False) -> None:
+def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
     customers = Customer.objects.exclude(vat="").exclude(vat=None)
     if not fetch_all:
         weekday = timezone.now().weekday()
         customers = customers.annotate(idmod=F("id") % 3).filter(idmod=weekday)
     for customer in customers.iterator():
+        sleep(delay)
         cache_vies_data(customer.vat)

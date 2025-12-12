@@ -33,6 +33,12 @@ class Command(BaseCommand):
             action="store_true",
             help="Fetch all VAT caches",
         )
+        parser.add_argument(
+            "--delay",
+            default=30,
+            type=int,
+            help="Delay between API requests",
+        )
 
     def handle(self, *args, **options) -> None:
-        fetch_vat_info(fetch_all=options["all"])
+        fetch_vat_info(fetch_all=options["all"], delay=options["delay"])
