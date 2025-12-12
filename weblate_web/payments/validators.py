@@ -23,20 +23,11 @@ class VatinValidation(TypedDict):
     valid: bool
     fault_message: NotRequired[str]
     fault_code: NotRequired[str]
+    countryCode: NotRequired[str]
     name: NotRequired[str]
     address: NotRequired[str]
     vatNumber: NotRequired[str]
     requestDate: NotRequired[date]
-
-
-VAT_COPY = (
-    "fault_code",
-    "fault_message",
-    "name",
-    "address",
-    "vatNumber",
-    "requestDate",
-)
 
 
 def cache_vies_data(
