@@ -186,7 +186,7 @@ def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
         weekday = timezone.now().weekday()
         customers = customers.annotate(idmod=F("id") % 7).filter(
             (Q(idmod=weekday) & Q(vat_validated=None))
-            | Q(vat_validity__gte=timezone.now() + timedelta(days=2))
+            | Q(vat_validated__gte=timezone.now() + timedelta(days=2))
         )
 
     for customer in customers.iterator():
