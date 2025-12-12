@@ -324,6 +324,18 @@ class Customer(models.Model):
         )
         other.delete()
 
+    def validate_vatin(self):
+        from weblate_web.crm.models import Interaction  # noqa: PLC0415
+
+        try:
+            validate_vatin(self.vat)
+        except ValidationError as error:
+            self.interaction_set.create(
+                origin=Interaction.Origin.VIES,
+                summary=error.code or str(error.message),
+            )
+            raise
+
 
 RECURRENCE_CHOICES = [
     ("y", gettext_lazy("Annual")),

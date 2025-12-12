@@ -87,7 +87,7 @@ from weblate_web.payments.backends import (
 )
 from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
-from weblate_web.payments.validators import cache_vies_data, validate_vatin
+from weblate_web.payments.validators import cache_vies_data
 from weblate_web.remote import get_activity
 from weblate_web.utils import (
     AUTO_ORIGIN,
@@ -411,7 +411,7 @@ class PaymentView(FormView, SingleObjectMixin):
         # often broken, so all repeating payments without a validation
         if customer.vat and not self.object.repeat:
             try:
-                validate_vatin(customer.vat)
+                customer.validate_vatin()
             except ValidationError:
                 messages.warning(
                     self.request,

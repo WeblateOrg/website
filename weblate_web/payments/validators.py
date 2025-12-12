@@ -54,16 +54,21 @@ def validate_vatin(value: str | VATIN) -> None:
         vatin.verify_country_code()
     except ValidationError as error:
         msg = _("{} is not a valid country code for any European Union member.")
-        raise ValidationError(msg.format(vatin.country_code)) from error
+        raise ValidationError(
+            msg.format(vatin.country_code), code="Invalid country"
+        ) from error
     try:
         vatin.verify_regex()
     except ValidationError as error:
         msg = _("{} does not match the country's VAT ID specifications.")
-        raise ValidationError(msg.format(vatin)) from error
+        raise ValidationError(msg.format(vatin), code="Invalid VAT syntax") from error
 
     if not vies_data["valid"]:
         retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
         retry_codes = {"soap:Server", "other:Error", "env:Server"}
+        code = "{}: {}".format(
+            vies_data.get("fault_code"), vies_data.get("fault_message")
+        )
         if (
             vies_data.get("fault_message") in retry_errors
             or vies_data.get("fault_code") in retry_codes
@@ -78,4 +83,4 @@ def validate_vatin(value: str | VATIN) -> None:
             )
         else:
             msg = _("{} is not a valid VAT ID.").format(vatin)
-        raise ValidationError(msg)
+        raise ValidationError(msg, code=code)
