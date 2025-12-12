@@ -336,17 +336,18 @@ class Customer(models.Model):
         )
         other.delete()
 
+    @property
+    def vat_recently_validated(self) -> bool:
+        return (
+            self.vat_validated is not None
+            and self.vat_validated > timezone.now() - timedelta(days=VAT_VALIDITY_DAYS)
+        )
+
     def prepayment_validation(self, *, automated: bool = False):
         from weblate_web.crm.models import Interaction  # noqa: PLC0415
 
-        now = timezone.now()
-
         # Skip payment originated validation if we have validated recently
-        if (
-            not automated
-            and self.vat_validated is not None
-            and self.vat_validated > now - timedelta(days=VAT_VALIDITY_DAYS)
-        ):
+        if not automated and self.vat_recently_validated:
             # Perform offline validation only
             validate_vatin_offline(self.vat)
             return

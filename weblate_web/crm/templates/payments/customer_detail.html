@@ -14,7 +14,13 @@
       {{ object.get_notify_emails|join:", " }}
       <br>
       {% if object.vat %}
-        {{ object.vat }}
+        {{ object.vat }} (
+        {% if object.vat_recently_validated %}
+          validated on {{ object.vat_validated }}
+        {% else %}
+          <strong>not validated</strong>
+        {% endif %}
+        )
         <br>
       {% endif %}
       {{ object.address }},
