@@ -99,7 +99,7 @@ class Command(BaseCommand):
                 update = True
             if update:
                 self.stdout.write(
-                    f"Updating data for {service.pk} {service.site_domain} ({customer.name})"
+                    f"Updating data for {service.pk} {service.site_domain} ({customer.verbose_name})"
                 )
                 service.save(
                     update_fields=[
@@ -116,7 +116,7 @@ class Command(BaseCommand):
             if any(storage[field] != value for field, value in storage_data.items()):  # type: ignore[literal-required]
                 username: str = storage["username"]
                 self.stdout.write(
-                    f"Updating Hetzner data for {username} for {service.pk} {service.site_domain} ({customer.name})"
+                    f"Updating Hetzner data for {username} for {service.pk} {service.site_domain} ({customer.verbose_name})"
                 )
                 modify_storage_subaccount(storage["id"], storage_data)
 
