@@ -10,7 +10,7 @@
   <section class="content">
     <h2>{{ object.number }}</h2>
     <p>
-      <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.name }}</a>
+      <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
       <br>
       {{ object.get_kind_display }}
       {% if object.is_paid %}
