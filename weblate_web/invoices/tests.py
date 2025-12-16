@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import os
 from datetime import date, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import cast
 
+import requests
 from django.test.utils import override_settings
+from drafthorse.utils import validate_xml
 from lxml import etree
 
 from weblate_web.models import Package, PackageCategory
@@ -120,6 +123,25 @@ class InvoiceTestCase(UserTestCase):
         # Validate generated XML
         xml_doc = etree.parse(invoice.xml_path)
         S3_SCHEMA.assertValid(xml_doc)
+
+        einvoice = invoice.en_16931_xml_path.read_bytes()
+        validate_xml(einvoice, "FACTUR-X_EN16931")
+
+        if validator_url := os.environ.get("VALIDATOR_URL"):
+            # Validate standalone eInvoice
+            response = requests.post(
+                f"{validator_url}validate",
+                files={"invoice": einvoice},
+                timeout=20,
+            )
+            self.assertEqual(response.status_code, 200, response.text)
+            # Validate eInvoice included in the PDF
+            response = requests.post(
+                f"{validator_url}validate",
+                files={"invoice": invoice.path.read_bytes()},
+                timeout=20,
+            )
+            self.assertEqual(response.status_code, 200, response.text)
 
     def test_dates(self) -> None:
         invoice = self.create_invoice(vat="CZ8003280318")
