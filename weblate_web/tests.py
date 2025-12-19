@@ -1036,7 +1036,7 @@ class PaymentsTest(FakturaceTestCase):
         complete_url = reverse("payment-complete", kwargs={"pk": payment.pk})
         self.assertRedirects(
             response,
-            "https://cihar.com/?url=http://localhost:1234" + complete_url,
+            f"https://cihar.com/?url=http://localhost:1234{complete_url}",
             fetch_redirect_response=False,
         )
         self.check_payment(payment, Payment.PENDING)

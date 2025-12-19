@@ -301,18 +301,18 @@ urlpatterns = [
     re_path(
         r"^(android-chrome|favicon)-(?P<size>192|512)x(?P=size)\.png$",
         RedirectView.as_view(
-            url=settings.STATIC_URL + "weblate-%(size)s.png", permanent=True
+            url=f"{settings.STATIC_URL}weblate-%(size)s.png", permanent=True
         ),
     ),
     path(
         "apple-touch-icon.png",
         RedirectView.as_view(
-            url=settings.STATIC_URL + "weblate-180.png", permanent=True
+            url=f"{settings.STATIC_URL}weblate-180.png", permanent=True
         ),
     ),
     re_path(
         r"^(?P<name>favicon\.ico|robots\.txt)$",
-        RedirectView.as_view(url=settings.STATIC_URL + "%(name)s", permanent=True),
+        RedirectView.as_view(url=f"{settings.STATIC_URL}%(name)s", permanent=True),
     ),
     path(
         "browserconfig.xml",

@@ -505,7 +505,7 @@ class DebugPending(DebugPay):
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
     ) -> HttpResponseRedirect | None:
-        return redirect("https://cihar.com/?url=" + complete_url)
+        return redirect(f"https://cihar.com/?url={complete_url}")
 
     def collect(self, request: HttpRequest | None) -> bool:
         return True

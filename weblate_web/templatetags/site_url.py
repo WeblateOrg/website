@@ -37,13 +37,13 @@ def add_site_url(content):
         if url is None:
             continue
         if url.startswith("/"):
-            link.set("href", "https://weblate.org" + url)
+            link.set("href", f"https://weblate.org{url}")
     for link in tree.findall(".//img"):
         url = link.get("src")
         if url is None:
             continue
         if url.startswith("/"):
-            link.set("src", "https://weblate.org" + url)
+            link.set("src", f"https://weblate.org{url}")
     return mark_safe(  # noqa: S308
         etree.tostring(
             tree.getroot(), pretty_print=True, method="html", encoding="unicode"
