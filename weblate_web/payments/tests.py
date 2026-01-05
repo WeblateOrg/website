@@ -341,6 +341,7 @@ class BackendTest(BackendBaseTestCase):
     )
     def test_invoice_bank(self, format_string="{}") -> None:
         mock_vies()
+        cnb_mock_rates()
         customer = Customer.objects.create(**CUSTOMER)
         invoice = Invoice.objects.create(
             customer=customer,
@@ -352,6 +353,7 @@ class BackendTest(BackendBaseTestCase):
             description="Test item",
             unit_price=100,
         )
+        invoice.generate_files()
 
         responses.add(responses.GET, FIO_API, body=json.dumps(FIO_TRASACTIONS))
         FioBank.fetch_payments()
@@ -401,6 +403,7 @@ class BackendTest(BackendBaseTestCase):
     )
     def test_invoice_url(self) -> None:
         mock_vies()
+        cnb_mock_rates()
         customer = Customer.objects.create(**CUSTOMER)
         invoice = Invoice.objects.create(
             customer=customer,
@@ -412,6 +415,7 @@ class BackendTest(BackendBaseTestCase):
             description="Test item",
             unit_price=100,
         )
+        invoice.generate_files()
 
         url = cast("str", invoice.get_payment_url())
         self.assertIsNotNone(url)
