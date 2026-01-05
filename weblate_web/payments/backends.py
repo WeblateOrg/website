@@ -34,6 +34,7 @@ from django.shortcuts import redirect
 from django.utils.http import http_date
 from django.utils.timezone import make_aware
 from django.utils.translation import get_language, gettext, gettext_lazy
+from django.views.decorators.debug import sensitive_variables
 
 from .models import Payment
 
@@ -539,6 +540,7 @@ class FioBank(Backend):
         instructions.append((gettext("Reference"), invoice.number))
         return instructions
 
+    @sensitive_variables("tokens", "token")
     @classmethod
     def fetch_payments(cls, from_date: str | None = None) -> None:  # noqa: C901, PLR0915, PLR0912
         from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
