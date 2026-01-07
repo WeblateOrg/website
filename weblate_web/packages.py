@@ -1,13 +1,13 @@
 PACKAGES: dict[int, int] = {
-    10000: 450,
-    40000: 660,
-    160000: 1060,
-    640000: 1780,
-    2560000: 3130,
-    10240000: 5620,
-    40960000: 10220,
-    163840000: 18740,
-    655360000: 34500,
+    10000: 470,
+    40000: 700,
+    160000: 1140,
+    640000: 1930,
+    2560000: 3420,
+    10240000: 6160,
+    40960000: 11220,
+    163840000: 20590,
+    655360000: 37930,
 }
 DEDICATED_LIMIT = 160000
 DEDICATED_PREFIX = "dedicated:"
@@ -16,9 +16,9 @@ MONTHLY_SUFFIX = "-m"
 
 SUPPORT_PACKAGES: list[tuple[str, str, int]] = [
     ("Weblate backup service (yearly)", "backup", 300),
-    ("Weblate basic self-hosted support (yearly)", "basic", 600),
-    ("Weblate extended self-hosted support (yearly)", "extended", 1200),
-    ("Weblate premium self-hosted support (yearly)", "premium", 2400),
+    ("Weblate basic self-hosted support (yearly)", "basic", 645),
+    ("Weblate extended self-hosted support (yearly)", "extended", 1275),
+    ("Weblate premium self-hosted support (yearly)", "premium", 2550),
     ("Weblate installation on your Linux server", "install:linux", 480),
 ]
 
