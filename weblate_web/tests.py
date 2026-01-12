@@ -833,13 +833,18 @@ class UtilTestCase(TestCase):
 
 
 def create_payment(
-    *, recurring: Literal["y", ""] = "y", user: User, **kwargs
+    *,
+    recurring: Literal["y", ""] = "y",
+    user: User,
+    customer: Customer | None = None,
+    **kwargs,
 ) -> tuple[Payment, str, str]:
-    customer = Customer.objects.create(
-        email="weblate@example.com",
-        user_id=user.pk,
-        origin=PAYMENTS_ORIGIN,
-    )
+    if customer is None:
+        customer = Customer.objects.create(
+            email="weblate@example.com",
+            user_id=user.pk,
+            origin=PAYMENTS_ORIGIN,
+        )
     customer.users.add(user)
     payment = Payment.objects.create(
         customer=customer,
@@ -870,6 +875,11 @@ class FakturaceTestCase(UserTestCase):
         customer = Customer.objects.create(
             user_id=-1,
             origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
         )
         customer.users.add(user)
         return Donation.objects.create(
@@ -878,7 +888,10 @@ class FakturaceTestCase(UserTestCase):
             active=True,
             expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
             payment=create_payment(
-                recurring=recurring, user=user, state=Payment.PROCESSED
+                recurring=recurring,
+                user=user,
+                state=Payment.PROCESSED,
+                customer=customer,
             )[0].pk,
             link_url="https://example.com/weblate",
             link_text="Weblate donation test",
@@ -937,6 +950,7 @@ class FakturaceTestCase(UserTestCase):
         subscription.payment = create_payment(
             recurring=recurring,
             user=user,
+            customer=customer,
             extra={"subscription": subscription.pk},
             state=Payment.PROCESSED,
         )[0].pk
@@ -1334,7 +1348,7 @@ class PaymentTest(FakturaceTestCase):
             customer=customer,
             active=True,
             expires=timezone.now() + relativedelta(years=1),
-            payment=create_payment(user=user)[0].pk,
+            payment=create_payment(user=user, customer=customer)[0].pk,
         )
         self.assertContains(self.client.get(reverse("user")), "My donations")
 
