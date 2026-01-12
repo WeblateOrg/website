@@ -525,7 +525,10 @@ class Payment(models.Model):
         return ""
 
     def get_payment_description(self) -> str:
-        backend_name = self.get_payment_backend_class().verbose
+        if not self.is_backend_valid():
+            backend_name = self.backend
+        else:
+            backend_name = self.get_payment_backend_class().verbose
         if self.card_info:
             return f"{backend_name} ({self.get_card_number()})"
         return backend_name
