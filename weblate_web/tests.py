@@ -940,6 +940,11 @@ class FakturaceTestCase(UserTestCase):
         customer = Customer.objects.create(
             user_id=-1,
             origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
         )
         customer.users.add(user)
         service = Service.objects.create(customer=customer)
