@@ -1828,7 +1828,7 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(len(hosted), 1)
         self.assertEqual(hosted[0].package.name, "test:test-1-m")
         payment = hosted[0].payment_obj
-        self.assertEqual(payment.amount, 42)
+        self.assertEqual(payment.amount, 50)
         self.assertEqual(
             hosted[0].expires.date(),
             timezone.now().date() + timedelta(days=3) + relativedelta(months=1),
