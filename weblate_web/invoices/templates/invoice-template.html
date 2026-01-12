@@ -170,7 +170,9 @@
               {% endif %}
             </th>
             <th>
-              {% if invoice.is_draft %}
+              {% if is_receipt %}
+                Paid on
+              {% elif invoice.is_draft %}
                 Valid until
               {% else %}
                 Due by
@@ -185,7 +187,13 @@
             <td>
               <strong>{{ invoice.display_total_amount }}</strong>
             </td>
-            <td>{{ invoice.due_date|date }}</td>
+            <td>
+              {% if is_receipt %}
+                {{ invoice.get_payment.created|date }}
+              {% else %}
+                {{ invoice.due_date|date }}
+              {% endif %}
+            </td>
             <td>
               {% if invoice.is_draft %}
                 Bank transfer or card payments are available
