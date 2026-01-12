@@ -30,6 +30,7 @@ import sentry_sdk
 from dateutil.parser import parse
 from django.conf import settings
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.db.models import F, Q
 from django.utils import timezone
 from wlc import Weblate, WeblateException
@@ -194,4 +195,7 @@ def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
         sleep(delay)
 
         # Actually fetch data
-        customer.prepayment_validation(automated=True)
+        try:
+            customer.prepayment_validation(automated=True)
+        except ValidationError:
+            continue
