@@ -383,6 +383,7 @@ class Backend:
             }:
                 return
             if not proforma and self.payment.draft_invoice.kind == invoice_kind:
+                # This is a payment for existing invoice
                 invoice = self.payment.draft_invoice
                 generate = False
             else:
@@ -423,6 +424,8 @@ class Backend:
         # Generate PDF
         if generate:
             invoice.generate_files()
+        if not proforma:
+            invoice.generate_receipt()
 
     def send_notification(
         self, notification: str, include_invoice: bool = True

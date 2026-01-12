@@ -697,6 +697,13 @@ def download_payment_invoice(request, pk):
 
     # New invoice model
     if payment.paid_invoice:
+        if "receipt" in request.GET:
+            return FileResponse(
+                payment.paid_invoice.receipt_path.open("rb"),
+                as_attachment=True,
+                filename=payment.paid_invoice.receipt_filename,
+                content_type="application/pdf",
+            )
         return FileResponse(
             payment.paid_invoice.path.open("rb"),
             as_attachment=True,

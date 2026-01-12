@@ -106,6 +106,12 @@ def send_notification(
     # Include invoice PDF if exists
     if invoice is not None and not invoice.is_draft:
         email.attach(invoice.filename, invoice.path.read_bytes(), "application/pdf")
+        if invoice.is_paid:
+            email.attach(
+                invoice.receipt_filename,
+                invoice.receipt_path.read_bytes(),
+                "application/pdf",
+            )
     if recipients:
         email.send()
     return email

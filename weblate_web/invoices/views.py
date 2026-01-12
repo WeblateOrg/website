@@ -19,6 +19,13 @@ if TYPE_CHECKING:
 @user_passes_test(lambda u: u.is_staff)
 def download_invoice(request: AuthenticatedHttpRequest, pk: str):
     invoice = get_object_or_404(Invoice, pk=pk)
+    if "receipt" in request.GET:
+        return FileResponse(
+            invoice.receipt_path.open("rb"),
+            as_attachment=True,
+            filename=invoice.receipt_filename,
+            content_type="application/pdf",
+        )
 
     return FileResponse(
         invoice.path.open("rb"),

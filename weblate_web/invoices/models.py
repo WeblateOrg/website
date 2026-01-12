@@ -511,17 +511,18 @@ class Invoice(models.Model):  # noqa: PLR0904
             return self.all_items[0].description
         return ""
 
-    def render_html(self) -> str:
+    def render_html(self, *, is_receipt: bool = False) -> str:
         with override("en_GB"):
             return render_to_string(
                 "invoice-template.html",
                 {
                     "invoice": self,
+                    "is_receipt": is_receipt,
                 },
             )
 
-    def get_filename(self, extension: str):
-        return f"Weblate_{self.get_kind_display()}_{self.number}.{extension}".replace(
+    def get_filename(self, extension: str, *, kind_override: str = ""):
+        return f"Weblate_{kind_override or self.get_kind_display()}_{self.number}.{extension}".replace(
             " ", "_"
         )
 
@@ -531,9 +532,20 @@ class Invoice(models.Model):  # noqa: PLR0904
         return self.get_filename("pdf")
 
     @property
+    def receipt_filename(self) -> str:
+        if not self.is_paid:
+            raise ValueError("Unpaid invoices do not have a receipt")
+        return self.get_filename("pdf", kind_override="Receipt")
+
+    @property
     def path(self) -> Path:
         """PDF path object."""
         return settings.INVOICES_PATH / self.filename
+
+    @property
+    def receipt_path(self) -> Path:
+        """PDF receipt path object."""
+        return settings.INVOICES_PATH / self.receipt_filename
 
     @property
     def xml_path(self) -> Path:
@@ -544,6 +556,9 @@ class Invoice(models.Model):  # noqa: PLR0904
         self.generate_money_s3_xml()
         self.generate_pdf()
         self.sync_files()
+
+    def generate_receipt(self) -> None:
+        self._generate_pdf(self.receipt_filename, is_receipt=True)
 
     def sync_files(self) -> None:
         if self.kind == InvoiceKind.INVOICE and settings.INVOICES_COPY_PATH:
@@ -690,14 +705,18 @@ class Invoice(models.Model):  # noqa: PLR0904
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         self.save_invoice_xml(document, self.xml_path)
 
-    def generate_pdf(self) -> None:
+    def _generate_pdf(self, filename: str, *, is_receipt: bool = False) -> None:
         """Render invoice as PDF."""
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
         render_pdf(
-            html=self.render_html(),
-            output=settings.INVOICES_PATH / self.filename,
+            html=self.render_html(is_receipt=is_receipt),
+            output=settings.INVOICES_PATH / filename,
         )
+
+    def generate_pdf(self) -> None:
+        """Render invoice as PDF."""
+        self._generate_pdf(self.filename)
 
     def duplicate(  # noqa: PLR0913
         self,

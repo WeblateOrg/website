@@ -369,6 +369,8 @@ class BackendTest(BackendBaseTestCase):
         responses.replace(responses.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
         self.assertTrue(invoice.paid_payment_set.exists())
+        self.assertTrue(invoice.path.exists())
+        self.assertTrue(invoice.receipt_path.exists())
         payment = invoice.paid_payment_set.get()
         self.maxDiff = None
         self.assertEqual(

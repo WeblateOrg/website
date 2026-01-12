@@ -979,7 +979,9 @@ class PaymentsTest(FakturaceTestCase):
         self.assertEqual(fresh.state, state)
 
     @override_settings(PAYMENT_DEBUG=True)
+    @responses.activate
     def test_pay(self) -> None:
+        cnb_mock_rates()
         payment, url, _dummy = self.prepare_payment()
         response = self.client.post(url, {"method": "pay"})
         self.assertRedirects(
@@ -990,8 +992,15 @@ class PaymentsTest(FakturaceTestCase):
         self.check_payment(payment, Payment.ACCEPTED)
 
         self.login()
-        response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
+
+        invoice_url = reverse("user-invoice", kwargs={"pk": payment.pk})
+        response = self.client.get(invoice_url)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["Content-Type"], "application/pdf")
+
+        response = self.client.get(f"{invoice_url}?receipt=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["Content-Type"], "application/pdf")
 
     @responses.activate
     def test_invalid_vat(self) -> None:
@@ -1788,12 +1797,15 @@ class ServiceTest(FakturaceTestCase):
             response = self.client.post(payment_url, {"method": "pay"}, follow=True)
             self.assertRedirects(response, reverse("user"))
             self.assertContains(response, "Weblate hosting (basic)")
+            self.assertContains(response, "Download invoice")
+            self.assertContains(response, "Download receipt")
 
         service = Service.objects.get(pk=service.pk)
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
         self.assertEqual(hosted[0].package.name, "test:test-1-m")
-        self.assertEqual(hosted[0].payment_obj.amount, 42)
+        payment = hosted[0].payment_obj
+        self.assertEqual(payment.amount, 42)
         self.assertEqual(
             hosted[0].expires.date(),
             timezone.now().date() + timedelta(days=3) + relativedelta(months=1),
