@@ -16,10 +16,26 @@ from weblate_web.invoices.models import (
 )
 from weblate_web.models import Package, PackageCategory, Service
 from weblate_web.payments.models import Customer, Payment
-from weblate_web.tests import cnb_mock_rates
+from weblate_web.tests import TEST_CUSTOMER, cnb_mock_rates
 
 
-class CRMTestCase(TestCase):
+class BaseCRMTestCase(TestCase):
+    def create_customer(
+        self, name: str = "TEST CUSTOMER", end_client: str = ""
+    ) -> Customer:
+        return Customer.objects.create(
+            user_id=-1,
+            name=name,
+            end_client=end_client,
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            # Use non-EU country to avoid VAT on generated invoices
+            country="US",
+        )
+
+
+class CRMTestCase(BaseCRMTestCase):
     user: User
 
     def setUp(self):
@@ -29,8 +45,8 @@ class CRMTestCase(TestCase):
         self.client.force_login(self.user)
 
     def test_customer_merge(self):
-        customer1 = Customer.objects.create(user_id=-1, name="TEST CUSTOMER 1")
-        customer2 = Customer.objects.create(user_id=-1, name="TEST CUSTOMER 2")
+        customer1 = self.create_customer("TEST CUSTOMER 1")
+        customer2 = self.create_customer("TEST CUSTOMER 2")
         response = self.client.get(customer1.get_absolute_url())
         self.assertContains(response, "TEST CUSTOMER 1")
         response = self.client.get(customer2.get_absolute_url())
@@ -46,8 +62,8 @@ class CRMTestCase(TestCase):
         self.assertFalse(Customer.objects.filter(pk=customer1.pk).exists())
 
     def test_customer_search(self):
-        Customer.objects.create(user_id=-1, name="TEST CUSTOMER 1")
-        Customer.objects.create(user_id=-1, name="TEST CUSTOMER 2", end_client="END")
+        self.create_customer("TEST CUSTOMER 1")
+        self.create_customer("TEST CUSTOMER 2", end_client="END")
 
         list_url = reverse("crm:customer-list", kwargs={"kind": "all"})
         response = self.client.get(list_url)
@@ -62,7 +78,7 @@ class CRMTestCase(TestCase):
 
     def test_service(self):
         Package.objects.create(name="community", price=0)
-        customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+        customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=1)
         service = Service.objects.create(customer=customer)
         expires = timezone.now() + timedelta(days=1)
@@ -167,7 +183,7 @@ class CRMTestCase(TestCase):
         cnb_mock_rates()
         Package.objects.create(name="community", price=0)
         package = Package.objects.create(name="x1", verbose="pkg1", price=42)
-        customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+        customer = self.create_customer()
 
         response = self.client.get(customer.get_absolute_url())
         self.assertContains(response, "Invoice new service")
@@ -204,8 +220,9 @@ class CRMTestCase(TestCase):
         self.assertRedirects(response, invoice.get_absolute_url())
 
 
-class IncomeTrackingTestCase(TestCase):
+class IncomeTrackingTestCase(BaseCRMTestCase):
     user: User
+    customer: Customer
 
     def setUp(self):
         self.user = User.objects.create_superuser(
@@ -219,7 +236,7 @@ class IncomeTrackingTestCase(TestCase):
         self.client.force_login(self.user)
 
         # Create test customer
-        self.customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+        self.customer = self.create_customer()
 
     def create_test_invoice(self, year, month, category, amount):
         """Create a test invoice with the specified parameters."""
@@ -396,7 +413,7 @@ class IncomeTrackingTestCase(TestCase):
         """Test various service list views."""
         # Community package is required by the Service.update_status() method
         Package.objects.create(name="community", price=0)
-        customer = Customer.objects.create(user_id=-1, name="TEST CUSTOMER")
+        customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=1)
 
         # Create services with different types of packages
