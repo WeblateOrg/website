@@ -29,6 +29,17 @@ from weblate_web.invoices.models import BANK_ACCOUNTS, Currency
 from weblate_web.models import Donation, Package, PackageCategory
 from weblate_web.remote import get_activity, get_changes, get_contributors, get_release
 
+from .const import (
+    COMPANY_ADDRESS,
+    COMPANY_CITY,
+    COMPANY_COUNTRY,
+    COMPANY_DUNS,
+    COMPANY_ID,
+    COMPANY_NAME,
+    COMPANY_VAT_ID,
+    COMPANY_ZIP,
+)
+
 
 def weblate_web(request):
     if request.resolver_match and request.resolver_match.url_name:
@@ -80,4 +91,12 @@ def weblate_web(request):
             language_urls[language_col : language_col * 2],
             language_urls[language_col * 2 :],
         ],
+        "company_name": COMPANY_NAME,
+        "company_address": COMPANY_ADDRESS,
+        "company_zip": COMPANY_ZIP,
+        "company_city": COMPANY_CITY,
+        "company_country": COMPANY_COUNTRY,
+        "company_vat_id": COMPANY_VAT_ID,
+        "company_id": COMPANY_ID,
+        "company_duns": COMPANY_DUNS,
     }

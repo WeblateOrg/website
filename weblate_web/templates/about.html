@@ -188,28 +188,28 @@
         <div class="form-line">
           <div class="line-left">{% translate "Provider" %}</div>
           <div class="line-right">
-            Weblate s.r.o.
+            {{ company_name }}
             <br />
-            Nábřežní 694
+            {{ company_address }}
             <br />
-            471 54, Cvikov, {% translate "Czechia" %}
+            {{ company_zip }} {{ company_city }}, {% translate "Czechia" %}
             <br />
           </div>
           <div class="clear"></div>
         </div>
         <div class="form-line">
           <div class="line-left">{% translate "Business ID" %}</div>
-          <div class="line-right">21668027</div>
+          <div class="line-right">{{ company_id }}</div>
           <div class="clear"></div>
         </div>
         <div class="form-line">
           <div class="line-left">{% translate "VAT ID" %}</div>
-          <div class="line-right">CZ21668027</div>
+          <div class="line-right">{{ company_vat_id }}</div>
           <div class="clear"></div>
         </div>
         <div class="form-line">
           <div class="line-left">{% translate "D-U-N-S Number" %}</div>
-          <div class="line-right">76-438-1530</div>
+          <div class="line-right">{{ company_duns }}</div>
           <div class="clear"></div>
         </div>
         <div class="form-line">

@@ -42,6 +42,15 @@ from django.utils.timezone import now
 from django.utils.translation import gettext, override
 from lxml import etree
 
+from weblate_web.const import (
+    COMPANY_ADDRESS,
+    COMPANY_CITY,
+    COMPANY_COUNTRY,
+    COMPANY_ID,
+    COMPANY_NAME,
+    COMPANY_VAT_ID,
+    COMPANY_ZIP,
+)
 from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.pdf import render_pdf
 from weblate_web.utils import get_site_url
@@ -136,7 +145,7 @@ class BankAccountInfo:
         bank: str,
         iban: str,
         bic: str,
-        holder: str = "Weblate s.r.o.",
+        holder: str = COMPANY_NAME,
         short_list: tuple[InfoType, ...],
     ) -> None:
         self._number = number
@@ -518,6 +527,13 @@ class Invoice(models.Model):  # noqa: PLR0904
                 {
                     "invoice": self,
                     "is_receipt": is_receipt,
+                    "company_name": COMPANY_NAME,
+                    "company_address": COMPANY_ADDRESS,
+                    "company_zip": COMPANY_ZIP,
+                    "company_city": COMPANY_CITY,
+                    "company_country": COMPANY_COUNTRY,
+                    "company_vat_id": COMPANY_VAT_ID,
+                    "company_id": COMPANY_ID,
                 },
             )
 
