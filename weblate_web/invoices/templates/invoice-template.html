@@ -221,7 +221,13 @@
       {% endwith %}
       <p>
         {% if is_receipt %}
-          We confirm that the bank transfer payment of the invoice {{ invoice.number }} was received on {{ invoice.get_payment.created|date }}.
+          {% with payment=invoice.get_payment %}
+            {% if payment.backend == "fio-bank" %}
+              We confirm that the bank transfer payment of the invoice {{ invoice.number }} was received on {{ payment.created|date }}.
+            {% else %}
+              We confirm that the payment of the invoice {{ invoice.number }} was received on {{ payment.created|date }}.
+            {% endif %}
+          {% endwith %}
         {% else %}
           {% if invoice.is_draft %}
             Should you have any questions concerning this quotation, please contact us at <a href="mailto:sales@weblate.org">sales@weblate.org</a>.
