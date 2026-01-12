@@ -26,6 +26,15 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import override
 
+from weblate_web.const import (
+    COMPANY_ADDRESS,
+    COMPANY_CITY,
+    COMPANY_COUNTRY,
+    COMPANY_ID,
+    COMPANY_NAME,
+    COMPANY_VAT_ID,
+    COMPANY_ZIP,
+)
 from weblate_web.pdf import render_pdf
 
 if TYPE_CHECKING:
@@ -106,5 +115,12 @@ class Agreement(models.Model):
                     "customer": self.customer,
                     "signed": self.signed,
                     "title": self.get_kind_display(),
+                    "company_name": COMPANY_NAME,
+                    "company_address": COMPANY_ADDRESS,
+                    "company_zip": COMPANY_ZIP,
+                    "company_city": COMPANY_CITY,
+                    "company_country": COMPANY_COUNTRY,
+                    "company_vat_id": COMPANY_VAT_ID,
+                    "company_id": COMPANY_ID,
                 },
             )
