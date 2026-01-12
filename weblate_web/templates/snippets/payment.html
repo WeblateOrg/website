@@ -14,8 +14,15 @@
     {% if payment.invoice %}
       <a href="{% url 'user-invoice' pk=payment.pk %}" class="link invoice-link">
         {{ payment.invoice_filename }}
-        <img src="{% static "img/Download.png" %}" alt="{% translate "Download" %}" />
+        <img src="{% static "img/Download.png" %}" alt="{% translate "Download invoice" %}" />
       </a>
+      {% if payment.paid_invoice %}
+        <a href="{% url 'user-invoice' pk=payment.pk %}?receipt=1"
+           class="link invoice-link">
+          {{ payment.paid_invoice.receipt_filename }}
+          <img src="{% static "img/Download.png" %}" alt="{% translate "Download receipt" %}" />
+        </a>
+      {% endif %}
     {% elif payment.state != 5 %}
       {% if payment.is_waiting_for_user %}
         <a class="link invoice-link" href="{{ payment.get_absolute_url }}">{{ payment.get_state_display }}</a>

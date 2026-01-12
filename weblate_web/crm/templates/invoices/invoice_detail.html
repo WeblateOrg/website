@@ -45,7 +45,10 @@
         <br>
       {% endif %}
       {% with download_url=object.get_download_url %}
-        {% if download_url %}<a href="{{ download_url }}">Download</a>{% endif %}
+        {% if download_url %}
+          <a href="{{ download_url }}">Download</a>
+          {% if object.is_paid %}<a href="{{ download_url }}?receipt=1">Receipt</a>{% endif %}
+        {% endif %}
       {% endwith %}
       <a href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">Edit</a>
     </p>

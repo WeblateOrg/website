@@ -3,9 +3,11 @@
   <head>
     <meta charset="utf-8">
     <link href="invoices:invoice.css" media="print" rel="stylesheet">
-    <title>Weblate {{ invoice.get_kind_display }} {{ invoice.number }}</title>
+    {# djlint:off #}
+    <title>Weblate {% if is_receipt %}Receipt{% else %}{{ invoice.get_kind_display }}{% endif %} {{ invoice.number }}</title>
+    {# djlint:on #}
     <meta name="description"
-          content="Weblate {{ invoice.get_kind_display }} {{ invoice.number }} for {{ invoice.customer.name }}">
+          content="Weblate {% if is_receipt %}Receipt{% else %}{{ invoice.get_kind_display }}{% endif %} {{ invoice.number }} for {{ invoice.customer.name }}">
     <meta name="dcterms.created" content="{{ invoice.issue_date.isoformat }}">
     <meta name="author" content="Weblate s.r.o.">
   </head>
@@ -13,14 +15,23 @@
   <body>
     <header>
       <img class="logo" src="invoices:invoice-logo.svg" alt="Weblate">
-      <h1>{{ invoice.get_kind_display }} number {{ invoice.number }}</h1>
+      <h1>
+        {% if is_receipt %}
+          Receipt for invoice number
+        {% else %}
+          {{ invoice.get_kind_display }} number
+        {% endif %}
+        {{ invoice.number }}
+      </h1>
       <p>{{ invoice.issue_date|date }}</p>
     </header>
 
     <div id="contacts" class="fullwidth">
       <address id="to">
         <h2>
-          {% if invoice.is_draft %}
+          {% if is_receipt %}
+            Receipt for
+          {% elif invoice.is_draft %}
             Quote for
           {% else %}
             Invoice to
@@ -152,6 +163,8 @@
             <th>
               {% if invoice.is_draft %}
                 Quote amount
+              {% elif is_receipt %}
+                Amount
               {% else %}
                 Total due
               {% endif %}
@@ -176,8 +189,8 @@
             <td>
               {% if invoice.is_draft %}
                 Bank transfer or card payments are available
-              {% elif invoice.prepaid %}
-                Do not pay, already paid
+              {% elif invoice.prepaid or is_receipt %}
+                {% if not is_receipt %}Do not pay, already paid{% endif %}
                 <div class="method">
                   {% for payment in invoice.paid_payment_set.all %}
                     {{ payment.get_payment_description }}
@@ -207,26 +220,30 @@
         {% endif %}
       {% endwith %}
       <p>
-        {% if invoice.is_draft %}
-          Should you have any questions concerning this quotation, please contact us at <a href="mailto:sales@weblate.org">sales@weblate.org</a>.
-        {% endif %}
-        {% if invoice.vat_rate == 0 %}
-          {% if invoice.customer.is_eu %}
-
-            VAT exempt under reverse charge mechanism pursuant to Article 196 of Directive 2006/112/EC.
-
-            Reverse charge applies.
-
-            VAT to be accounted for by the recipient in accordance with the EU VAT rules.
-          {% else %}
-            VAT not applicable because the place of supply is outside the EU.
-
+        {% if is_receipt %}
+          We confirm that the bank transfer payment of the invoice {{ invoice.number }} was received on {{ invoice.tax_date|date }}.
+        {% else %}
+          {% if invoice.is_draft %}
+            Should you have any questions concerning this quotation, please contact us at <a href="mailto:sales@weblate.org">sales@weblate.org</a>.
           {% endif %}
-        {% endif %}
-        {% if invoice.is_final %}
-          This is a computer-generated invoice; signature not required.
-        {% elif invoice.is_proforma %}
-          This is not a tax document.
+          {% if invoice.vat_rate == 0 %}
+            {% if invoice.customer.is_eu %}
+
+              VAT exempt under reverse charge mechanism pursuant to Article 196 of Directive 2006/112/EC.
+
+              Reverse charge applies.
+
+              VAT to be accounted for by the recipient in accordance with the EU VAT rules.
+            {% else %}
+              VAT not applicable because the place of supply is outside the EU.
+
+            {% endif %}
+          {% endif %}
+          {% if invoice.is_final %}
+            This is a computer-generated invoice; signature not required.
+          {% elif invoice.is_proforma %}
+            This is not a tax document.
+          {% endif %}
         {% endif %}
       </p>
       <table id="details">
