@@ -856,6 +856,9 @@ EUR{self.total_amount}
     def is_paid(self) -> bool:
         return self.paid_payment_set.exists()
 
+    def get_payment(self) -> Payment:
+        return self.paid_payment_set.all()[0]
+
     @property
     def has_pdf(self):
         return self.kind != InvoiceKind.DRAFT
