@@ -31,11 +31,14 @@ from weblate_web.remote import get_activity, get_changes, get_contributors, get_
 
 from .const import (
     COMPANY_ADDRESS,
+    COMPANY_CARE_EMAIL,
     COMPANY_CITY,
     COMPANY_COUNTRY,
     COMPANY_DUNS,
     COMPANY_ID,
+    COMPANY_INFO_EMAIL,
     COMPANY_NAME,
+    COMPANY_SALES_EMAIL,
     COMPANY_VAT_ID,
     COMPANY_ZIP,
 )
@@ -97,6 +100,12 @@ def weblate_web(request):
         "company_city": COMPANY_CITY,
         "company_country": COMPANY_COUNTRY,
         "company_vat_id": COMPANY_VAT_ID,
+        "company_sales_email": COMPANY_SALES_EMAIL,
+        "company_care_email": COMPANY_CARE_EMAIL,
+        "company_info_email": COMPANY_INFO_EMAIL,
+        "company_sales_email_mailto": f"mailto:{COMPANY_SALES_EMAIL}",
+        "company_care_email_mailto": f"mailto:{COMPANY_CARE_EMAIL}",
+        "company_info_email_mailto": f"mailto:{COMPANY_INFO_EMAIL}",
         "company_id": COMPANY_ID,
         "company_duns": COMPANY_DUNS,
     }

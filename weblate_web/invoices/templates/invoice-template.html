@@ -238,7 +238,7 @@
           {% endwith %}
         {% else %}
           {% if invoice.is_draft %}
-            Should you have any questions concerning this quotation, please contact us at <a href="mailto:sales@weblate.org">sales@weblate.org</a>.
+            Should you have any questions concerning this quotation, please contact us at <a href="{{ company_sales_email_mailto }}">{{ company_sales_email }}</a>.
           {% endif %}
           {% if invoice.vat_rate == 0 %}
             {% if invoice.customer.is_eu %}
@@ -283,7 +283,7 @@
             <td>Michal Čihař</td>
             <td>C 52324/KSUL Krajský soud v Ústí nad Labem</td>
             <td>
-              <a href="mailto:sales@weblate.org">sales@weblate.org</a>
+              <a href="{{ company_sales_email_mailto }}">{{ company_sales_email }}</a>
             </td>
           </tr>
           <tr>

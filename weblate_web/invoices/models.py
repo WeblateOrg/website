@@ -67,6 +67,7 @@ from weblate_web.const import (
     COMPANY_COUNTRY_CODE,
     COMPANY_ID,
     COMPANY_NAME,
+    COMPANY_SALES_EMAIL,
     COMPANY_VAT_ID,
     COMPANY_ZIP,
 )
@@ -552,6 +553,8 @@ class Invoice(models.Model):  # noqa: PLR0904
                     "company_city": COMPANY_CITY,
                     "company_country": COMPANY_COUNTRY,
                     "company_vat_id": COMPANY_VAT_ID,
+                    "company_sales_email": COMPANY_SALES_EMAIL,
+                    "company_sales_email_mailto": f"mailto:{COMPANY_SALES_EMAIL}",
                     "company_id": COMPANY_ID,
                 },
             )
@@ -893,6 +896,7 @@ class Invoice(models.Model):  # noqa: PLR0904
                     line_one=COMPANY_ADDRESS,
                 ),
                 vat_id=COMPANY_VAT_ID,
+                email=COMPANY_SALES_EMAIL,
             ),
             buyer=TradeParty(
                 name=self.customer.name,
@@ -904,6 +908,7 @@ class Invoice(models.Model):  # noqa: PLR0904
                     line_two=self.customer.address_2 or None,
                 ),
                 vat_id=self.customer.vat or None,
+                email=self.customer.email or None,
             ),
             tax=[tax],
         )
