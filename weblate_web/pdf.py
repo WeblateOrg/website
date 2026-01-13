@@ -49,7 +49,7 @@ FACTURX_RDF_METADATA = """
   {}
   <rdf:RDF>
     <rdf:Description rdf:about="">
-      <fx:ConformanceLevel>COMFORT</fx:ConformanceLevel>
+      <fx:ConformanceLevel>EN 16931</fx:ConformanceLevel>
       <fx:DocumentFileName>factur-x.xml</fx:DocumentFileName>
       <fx:DocumentType>INVOICE</fx:DocumentType>
       <fx:Version>1.0</fx:Version>
