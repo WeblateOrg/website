@@ -54,7 +54,7 @@
             <div class="content">
               <div class="title">{% translate "Reliable support" %}</div>
               <p>
-                {% blocktranslate with email="support@weblate.org" %}As the subscriber, you will always receive fast replies from our dedicated support team at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktranslate %}
+                {% blocktranslate with email=company_care_email %}As the subscriber, you will always receive fast replies from our dedicated support team at <a href="mailto:{{ email }}">{{ email }}</a>.{% endblocktranslate %}
               </p>
             </div>
           </div>
@@ -164,11 +164,11 @@
               <li>{% translate "Integration of Weblate into your workflow" %}</li>
               <li>{% translate "Suggestions on the internationalization and localization" %}</li>
             </ul>
-            <a href="mailto:sales@weblate.org?subject=Consulting services"
+            <a href="{{ company_sales_email_mailto }}?subject=Consulting services"
                class="button black right bottom-right">{% translate "Get a quote" %}</a>
           </div>
         </div>
-        <a href="mailto:support@weblate.org" class="button center">{% translate "Ask for help" %}</a>
+        <a href="{{ company_care_email_mailto }}" class="button center">{% translate "Ask for help" %}</a>
       </div>
       <h2 class="section-title crypto payment-conditions">{% translate "Payment" %}</h2>
       <div class="page-desc small">{% include "snippets/vat.html" %}</div>

@@ -40,6 +40,8 @@ from django.utils.translation import get_language, get_language_bidi
 from django.utils.translation import gettext as _
 from html2text import HTML2Text
 
+from weblate_web.const import COMPANY_BILLING_EMAIL
+
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
@@ -96,7 +98,7 @@ def send_notification(
     email = EmailMultiAlternatives(
         subject,
         html2text.handle(body),
-        "billing@weblate.org",
+        COMPANY_BILLING_EMAIL,
         recipients,
     )
     email.mixed_subtype = "related"

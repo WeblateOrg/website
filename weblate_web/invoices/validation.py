@@ -7,6 +7,7 @@ EN 16931 Invoice XML Validator.
 """
 
 import re
+from datetime import datetime
 
 from lxml import etree
 
@@ -28,10 +29,6 @@ class EN16931Validator:
 
         # Namespace definitions
         self.namespaces = {
-            "ubl": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
-            "cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
-            "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
-            "cii": "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100",
             "rsm": "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100",
             "ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100",
             "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100",
@@ -60,9 +57,7 @@ class EN16931Validator:
         # Detect format (only CII is supported)
         if "CrossIndustryInvoice" not in root.tag:  # type: ignore[operator]
             self.errors.append(
-                ValidationError(
-                    "FORMAT", "Unknown invoice format. Expected UBL or CII."
-                )
+                ValidationError("FORMAT", "Unknown invoice format. Expected CII.")
             )
             return False, self.errors, self.warnings
 
@@ -78,29 +73,9 @@ class EN16931Validator:
             self.errors.append(
                 ValidationError("CII-01", "ExchangedDocument is mandatory")
             )
-        else:
-            # BR-01: Invoice number
-            invoice_id = header.find(".//ram:ID", self.namespaces)
-            if invoice_id is None or not invoice_id.text:
-                self.errors.append(
-                    ValidationError("BR-01", "Invoice number is mandatory")
-                )
+            return
 
-            # BR-02: Issue date
-            issue_date = header.find(
-                ".//ram:IssueDateTime/udt:DateTimeString", self.namespaces
-            )
-            if issue_date is None or not issue_date.text:
-                self.errors.append(
-                    ValidationError("BR-02", "Issue date (BT-2) is mandatory")
-                )
-
-            # BR-03: Type code
-            type_code = header.find(".//ram:TypeCode", self.namespaces)
-            if type_code is None or not type_code.text:
-                self.errors.append(
-                    ValidationError("BR-03", "Invoice type code (BT-3) is mandatory")
-                )
+        self._validate_header(header)
 
         transaction = root.find(".//rsm:SupplyChainTradeTransaction", self.namespaces)
         if transaction is None:
@@ -119,7 +94,7 @@ class EN16931Validator:
         if not lines:
             self.errors.append(
                 ValidationError(
-                    "BR-14", "At least one invoice line (BG-25) is mandatory"
+                    "BR-16", "At least one invoice line (BG-25) is mandatory"
                 )
             )
         else:
@@ -128,6 +103,81 @@ class EN16931Validator:
 
         # Validate monetary totals and BR-CO-* rules
         self._validate_amounts_cii(transaction)
+
+        # Validate payment terms
+        self._validate_payment_terms(transaction)
+
+    def _validate_header(self, header):
+        """Validate document header."""
+        # BR-01: Invoice number
+        invoice_id = header.find(".//ram:ID", self.namespaces)
+        if invoice_id is None or not invoice_id.text:
+            self.errors.append(
+                ValidationError("BR-01", "Invoice number (BT-1) is mandatory")
+            )
+
+        # BR-02: Issue date
+        issue_date = header.find(
+            ".//ram:IssueDateTime/udt:DateTimeString", self.namespaces
+        )
+        if issue_date is None or not issue_date.text:
+            self.errors.append(
+                ValidationError("BR-02", "Issue date (BT-2) is mandatory")
+            )
+        else:
+            self._validate_date_format(issue_date.text, "BR-02", "Issue date")
+
+        # BR-03: Type code
+        type_code = header.find(".//ram:TypeCode", self.namespaces)
+        if type_code is None or not type_code.text:
+            self.errors.append(
+                ValidationError("BR-03", "Invoice type code (BT-3) is mandatory")
+            )
+        else:
+            # BR-04: Invoice type code must be valid
+            self._validate_type_code(type_code.text)
+
+    def _validate_type_code(self, code: str):
+        """Validate invoice type code."""
+        valid_codes = {
+            "325",  # Proforma invoice
+            "380",  # Commercial invoice
+            "381",  # Credit note
+            "384",  # Corrected invoice
+            "389",  # Self-billed invoice
+            "751",  # Invoice information for accounting purposes
+        }
+        if code not in valid_codes:
+            self.warnings.append(
+                ValidationError(
+                    "BR-CL-01",
+                    f"Invoice type code {code} is not in the recommended list",
+                    "warning",
+                )
+            )
+
+    def _validate_date_format(self, date_str: str, rule: str, field_name: str):
+        """Validate date format."""
+        # CII uses format 102 (YYYYMMDD) or other formats
+        # Try to parse common formats
+        formats = ["%Y%m%d", "%Y-%m-%d", "%Y%m%d%H%M%S"]
+        parsed = False
+        for fmt in formats:
+            try:
+                datetime.strptime(date_str, fmt)  # noqa: DTZ007
+                parsed = True
+                break
+            except ValueError:
+                continue
+
+        if not parsed:
+            self.warnings.append(
+                ValidationError(
+                    rule,
+                    f"{field_name} has unusual format: {date_str}",
+                    "warning",
+                )
+            )
 
     def _validate_currency_code(self, code: str, bt_code: str = "BT-5"):
         """Validate ISO 4217 currency code."""
@@ -164,10 +214,38 @@ class EN16931Validator:
         if seller is None:
             self.errors.append(ValidationError("BR-06", "Seller (BG-4) is mandatory"))
         else:
+            # BR-27: Seller name
             seller_name = seller.find(".//ram:Name", self.namespaces)
             if seller_name is None or not seller_name.text:
                 self.errors.append(
                     ValidationError("BR-27", "Seller name (BT-27) is mandatory")
+                )
+
+            # BR-28: Seller postal address
+            seller_address = seller.find(".//ram:PostalTradeAddress", self.namespaces)
+            if seller_address is not None:
+                # BR-AE-01: Seller country code is mandatory
+                country = seller_address.find(".//ram:CountryID", self.namespaces)
+                if country is None or not country.text:
+                    self.errors.append(
+                        ValidationError(
+                            "BR-AE-01", "Seller country code (BT-40) is mandatory"
+                        )
+                    )
+                else:
+                    self._validate_country_code(country.text, "BT-40")
+
+            # BR-30: Seller electronic address
+            seller_email = seller.find(
+                ".//ram:URIUniversalCommunication/ram:URIID", self.namespaces
+            )
+            if seller_email is None or not seller_email.text:
+                self.warnings.append(
+                    ValidationError(
+                        "BR-30",
+                        "Seller electronic address (BT-34) is recommended",
+                        "warning",
+                    )
                 )
 
         # Buyer validation
@@ -177,18 +255,40 @@ class EN16931Validator:
         if buyer is None:
             self.errors.append(ValidationError("BR-07", "Buyer (BG-7) is mandatory"))
         else:
+            # BR-08: Buyer name
             buyer_name = buyer.find(".//ram:Name", self.namespaces)
             if buyer_name is None or not buyer_name.text:
                 self.errors.append(
-                    ValidationError("BR-44", "Buyer name (BT-44) is mandatory")
+                    ValidationError("BR-08", "Buyer name (BT-44) is mandatory")
                 )
 
-            # BR-08: Buyer postal address
+            # BR-09: Buyer postal address
             buyer_address = buyer.find(".//ram:PostalTradeAddress", self.namespaces)
             if buyer_address is None:
                 self.errors.append(
-                    ValidationError("BR-08", "Buyer postal address (BG-8) is mandatory")
+                    ValidationError("BR-09", "Buyer postal address (BG-8) is mandatory")
                 )
+            else:
+                # BR-AE-02: Buyer country code is mandatory
+                country = buyer_address.find(".//ram:CountryID", self.namespaces)
+                if country is None or not country.text:
+                    self.errors.append(
+                        ValidationError(
+                            "BR-AE-02", "Buyer country code (BT-55) is mandatory"
+                        )
+                    )
+                else:
+                    self._validate_country_code(country.text, "BT-55")
+
+    def _validate_country_code(self, code: str, bt_code: str):
+        """Validate ISO 3166-1 alpha-2 country code."""
+        if not re.match(r"^[A-Z]{2}$", code):
+            self.errors.append(
+                ValidationError(
+                    f"BR-CL-{bt_code}",
+                    f"Invalid country code: {code}. Must be ISO 3166-1 alpha-2 code",
+                )
+            )
 
     def _validate_invoice_line_cii(self, line, line_num):
         """Validate individual invoice line for CII format."""
@@ -213,9 +313,8 @@ class EN16931Validator:
                     "BR-22", f"Line {line_num}: Invoiced quantity (BT-129) is mandatory"
                 )
             )
-
-        # BR-23: Unit code
-        if quantity is not None:
+        else:
+            # BR-23: Unit code
             unit_code = quantity.get("unitCode")
             if not unit_code:
                 self.errors.append(
@@ -223,6 +322,8 @@ class EN16931Validator:
                         "BR-23", f"Line {line_num}: Unit code (BT-130) is mandatory"
                     )
                 )
+            else:
+                self._validate_unit_code(unit_code, line_num)
 
         # BR-24: Line net amount
         settlement = line.find(".//ram:SpecifiedLineTradeSettlement", self.namespaces)
@@ -240,16 +341,16 @@ class EN16931Validator:
                         )
                     )
 
-        # BR-25: Item name
+        # BR-26: Item name
         product = line.find(".//ram:SpecifiedTradeProduct/ram:Name", self.namespaces)
         if product is None or not product.text:
             self.errors.append(
                 ValidationError(
-                    "BR-25", f"Line {line_num}: Item name (BT-153) is mandatory"
+                    "BR-26", f"Line {line_num}: Item name (BT-153) is mandatory"
                 )
             )
 
-        # BR-26: Item price
+        # BR-28: Item price
         price = line.find(
             ".//ram:SpecifiedLineTradeAgreement/ram:NetPriceProductTradePrice/ram:ChargeAmount",
             self.namespaces,
@@ -263,9 +364,76 @@ class EN16931Validator:
             if price is None or not price.text:
                 self.errors.append(
                     ValidationError(
-                        "BR-26", f"Line {line_num}: Item price (BT-146) is mandatory"
+                        "BR-28", f"Line {line_num}: Item price (BT-146) is mandatory"
                     )
                 )
+
+        # BR-AE-03: Line VAT category code is mandatory
+        if settlement is not None:
+            vat_category = settlement.find(
+                ".//ram:ApplicableTradeTax/ram:CategoryCode", self.namespaces
+            )
+            if vat_category is None or not vat_category.text:
+                self.errors.append(
+                    ValidationError(
+                        "BR-AE-03",
+                        f"Line {line_num}: VAT category code (BT-151) is mandatory",
+                    )
+                )
+            else:
+                self._validate_vat_category_code(vat_category.text, line_num)
+
+    def _validate_unit_code(self, code: str, line_num: int):
+        """Validate unit code (should be from UN/ECE Recommendation 20)."""
+        # This is a subset of common codes
+        common_codes = {
+            "C62",
+            "MTR",
+            "KGM",
+            "LTR",
+            "H87",
+            "DAY",
+            "HUR",
+            "MTK",
+            "MTQ",
+            "P1",
+            "EA",
+            "SET",
+            "TNE",  # codespell:ignore
+            "CMT",
+            "DMT",
+            "GRM",
+        }
+        if code not in common_codes:
+            self.warnings.append(
+                ValidationError(
+                    "BR-CL-23",
+                    f"Line {line_num}: Unit code {code} is not in common UN/ECE Rec. 20 codes",
+                    "warning",
+                )
+            )
+
+    def _validate_vat_category_code(self, code: str, line_num: int | None = None):
+        """Validate VAT category code."""
+        valid_codes = {
+            "S",  # Standard rate
+            "Z",  # Zero rated
+            "E",  # Exempt
+            "AE",  # Reverse charge
+            "K",  # Intra-community
+            "G",  # Free export
+            "O",  # Outside scope
+            "L",  # Canary Islands
+            "M",  # IGIC (Canary Islands)
+        }
+        if code not in valid_codes:
+            location = f"Line {line_num}: " if line_num else ""
+            self.errors.append(
+                ValidationError(
+                    "BR-CL-05",
+                    f"{location}Invalid VAT category code: {code}",
+                )
+            )
 
     def _validate_amounts_cii(self, transaction):
         """Validate invoice totals and amounts for CII format with BR-CO-* rules."""
@@ -292,11 +460,11 @@ class EN16931Validator:
             )
             return
 
-        # BR-04: Currency code
+        # BR-05: Currency code
         currency = settlement.find(".//ram:InvoiceCurrencyCode", self.namespaces)
         if currency is None or not currency.text:
             self.errors.append(
-                ValidationError("BR-04", "Document currency code (BT-5) is mandatory")
+                ValidationError("BR-05", "Document currency code (BT-5) is mandatory")
             )
         else:
             self._validate_currency_code(currency.text)
@@ -332,8 +500,93 @@ class EN16931Validator:
                 ValidationError("BR-15", "Amount due for payment (BT-115) is mandatory")
             )
 
+        # Validate VAT breakdown
+        self._validate_vat_breakdown(settlement)
+
         # Now perform BR-CO-* calculations
         self._validate_brco_rules_cii(transaction, monetary)
+
+    def _validate_vat_breakdown(self, settlement):
+        """Validate VAT breakdown (BR-AE-*)."""
+        vat_breakdowns = settlement.findall(
+            ".//ram:ApplicableTradeTax", self.namespaces
+        )
+
+        if not vat_breakdowns:
+            self.errors.append(
+                ValidationError(
+                    "BR-AE-10",
+                    "At least one VAT breakdown (BG-23) is mandatory",
+                )
+            )
+            return
+
+        for idx, vat in enumerate(vat_breakdowns, 1):
+            # BR-AE-11: VAT category code
+            category = vat.find(".//ram:CategoryCode", self.namespaces)
+            if category is None or not category.text:
+                self.errors.append(
+                    ValidationError(
+                        "BR-AE-11",
+                        f"VAT breakdown {idx}: Category code (BT-118) is mandatory",
+                    )
+                )
+            else:
+                self._validate_vat_category_code(category.text)
+
+            # BR-AE-12: VAT category taxable amount
+            basis = vat.find(".//ram:BasisAmount", self.namespaces)
+            if basis is None or not basis.text:
+                self.errors.append(
+                    ValidationError(
+                        "BR-AE-12",
+                        f"VAT breakdown {idx}: Taxable amount (BT-116) is mandatory",
+                    )
+                )
+
+            # BR-AE-13: VAT category tax amount
+            tax_amount = vat.find(".//ram:CalculatedAmount", self.namespaces)
+            if tax_amount is None or not tax_amount.text:
+                self.errors.append(
+                    ValidationError(
+                        "BR-AE-13",
+                        f"VAT breakdown {idx}: Tax amount (BT-117) is mandatory",
+                    )
+                )
+
+            # BR-AE-14: For standard rate, rate must be present
+            if category is not None and category.text == "S":
+                rate = vat.find(".//ram:RateApplicablePercent", self.namespaces)
+                if rate is None or not rate.text:
+                    self.errors.append(
+                        ValidationError(
+                            "BR-AE-14",
+                            f"VAT breakdown {idx}: VAT rate (BT-119) is mandatory for standard rate",
+                        )
+                    )
+
+    def _validate_payment_terms(self, transaction):
+        """Validate payment terms."""
+        settlement = transaction.find(
+            ".//ram:ApplicableHeaderTradeSettlement", self.namespaces
+        )
+        if settlement is None:
+            return
+
+        # BR-20: Payment means code
+        payment_means = settlement.find(
+            ".//ram:SpecifiedTradeSettlementPaymentMeans", self.namespaces
+        )
+        if payment_means is not None:
+            type_code = payment_means.find(".//ram:TypeCode", self.namespaces)
+            if type_code is None or not type_code.text:
+                self.warnings.append(
+                    ValidationError(
+                        "BR-20",
+                        "Payment means code (BT-81) is recommended",
+                        "warning",
+                    )
+                )
 
     def _validate_brco_rules_cii(self, transaction, monetary):
         """Validate BR-CO-* calculation rules for CII format."""
@@ -489,7 +742,7 @@ class EN16931Validator:
 
     def _validate_vat_category_brco15_cii(self, transaction, trade_tax):
         """BR-CO-15: VAT category taxable amount validation for CII."""
-        category_code = trade_tax.find(".//ram:TypeCode", self.namespaces)
+        category_code = trade_tax.find(".//ram:CategoryCode", self.namespaces)
         if category_code is None:
             return
 
@@ -506,7 +759,7 @@ class EN16931Validator:
 
         for line in lines:
             line_tax = line.find(
-                ".//ram:SpecifiedLineTradeSettlement/ram:ApplicableTradeTax/ram:TypeCode",
+                ".//ram:SpecifiedLineTradeSettlement/ram:ApplicableTradeTax/ram:CategoryCode",
                 self.namespaces,
             )
             if line_tax is not None and line_tax.text == category:
@@ -536,7 +789,9 @@ class EN16931Validator:
             charge_indicator = ac.find(
                 ".//ram:ChargeIndicator/udt:Indicator", self.namespaces
             )
-            ac_tax = ac.find(".//ram:CategoryTradeTax/ram:TypeCode", self.namespaces)
+            ac_tax = ac.find(
+                ".//ram:CategoryTradeTax/ram:CategoryCode", self.namespaces
+            )
             ac_amount = self._get_decimal(
                 ac.find(".//ram:ActualAmount", self.namespaces)
             )
