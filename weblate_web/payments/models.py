@@ -43,7 +43,7 @@ from django_countries.fields import CountryField
 from unidecode import unidecode
 from vies.models import VATINField
 
-from weblate_web.utils import get_site_url
+from weblate_web.utils import FOSDEM_ORIGIN, get_site_url
 
 from .utils import send_notification, validate_email
 from .validators import VAT_VALIDITY_DAYS, validate_vatin, validate_vatin_offline
@@ -123,7 +123,10 @@ class Customer(models.Model):
     name = models.CharField(
         max_length=200,
         default="",
-        verbose_name=gettext_lazy("Company or individual name"),
+        verbose_name=gettext_lazy("Name"),
+        help_text=gettext_lazy(
+            "Company or individual name as it should appear on the invoice."
+        ),
         db_index=True,
     )
     address = models.CharField(
@@ -255,6 +258,8 @@ class Customer(models.Model):
 
     @property
     def is_empty(self) -> bool:
+        if self.origin == FOSDEM_ORIGIN:
+            return not self.name
         return (
             not self.name
             or not self.address

@@ -1394,14 +1394,16 @@ class PaymentTest(FakturaceTestCase):
         thepay_mock_create_payment()
 
         response = self.client.get("/fosdem/donate/", follow=True)
-        self.assertContains(response, "Please provide your billing")
+        self.assertContains(response, "Please provide your name")
         payment = Payment.objects.all().get()
         self.assertEqual(payment.amount, 30)
         self.assertEqual(payment.state, Payment.NEW)
         customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
         payment_url = reverse("payment", kwargs={"pk": payment.uuid})
         self.assertRedirects(response, customer_url)
-        response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
+        response = self.client.post(
+            customer_url, {"name": "FOSDEM Visitor", "country": "BE"}, follow=True
+        )
         self.assertContains(response, "Please choose payment method")
         response = self.client.post(payment_url, {"method": "thepay2-card"})
         self.assertEqual(response.status_code, 302)

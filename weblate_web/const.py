@@ -30,3 +30,5 @@ COMPANY_SALES_EMAIL = "sales@weblate.org"
 COMPANY_CARE_EMAIL = "care@weblate.org"
 COMPANY_INFO_EMAIL = "info@weblate.org"
 COMPANY_BILLING_EMAIL = "billing@weblate.org"
+
+FOSDEM_DONATION_DESCRIPTION = "FOSDEM donation"

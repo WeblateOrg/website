@@ -96,6 +96,8 @@ from weblate_web.utils import (
     show_form_errors,
 )
 
+from .const import FOSDEM_DONATION_DESCRIPTION
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -400,12 +402,20 @@ class PaymentView(FormView, SingleObjectMixin):
         if not self.check_customer:
             return None
         if customer.is_empty:
-            messages.info(
-                self.request,
-                gettext(
-                    "Please provide your billing information to complete the payment."
-                ),
-            )
+            if self.object.customer.origin == FOSDEM_ORIGIN:
+                messages.info(
+                    self.request,
+                    gettext(
+                        "Please provide your name to complete the payment. Include other billing information if you need it on the receipt."
+                    ),
+                )
+            else:
+                messages.info(
+                    self.request,
+                    gettext(
+                        "Please provide your billing information to complete the payment."
+                    ),
+                )
             return redirect("payment-customer", pk=self.object.pk)
         # This should not happen, but apparently validation service is
         # often broken, so all repeating payments without a validation
@@ -1134,12 +1144,21 @@ class SupportView(TemplateView):
 
 
 def fosdem_donation(request):
-    # Create customer
-    customer = Customer.objects.create(origin=FOSDEM_ORIGIN, user_id=-1)
+    # Create customer (or use existing for authenticated users)
+    if request.user.is_authenticated:
+        customer = Customer.objects.get_or_create(
+            origin=PAYMENTS_ORIGIN,
+            user_id=request.user.id,
+            defaults={"email": request.user.email},
+        )[0]
+    else:
+        customer = Customer.objects.create(
+            origin=FOSDEM_ORIGIN, user_id=-1, country="BE"
+        )
     # Create payment
     payment = Payment.objects.create(
         customer=customer,
-        description="FOSDEM donation",
+        description=FOSDEM_DONATION_DESCRIPTION,
         amount_fixed=True,
         amount=30,
         extra={"category": "donate"},
