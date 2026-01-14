@@ -56,9 +56,9 @@ class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = (
+            "name",
             "vat",
             "tax",
-            "name",
             "address",
             "address_2",
             "postcode",
@@ -72,7 +72,7 @@ class CustomerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.origin == FOSDEM_ORIGIN:
-            self.fields["vat"].widget = forms.HiddenInput()
-            self.fields["tax"].widget = forms.HiddenInput()
-            self.fields["address_2"].widget = forms.HiddenInput()
+            self.fields["address"].required = False
+            self.fields["postcode"].required = False
+            self.fields["city"].required = False
             self.fields["email"].help_text = gettext("You will receive a receipt here.")
