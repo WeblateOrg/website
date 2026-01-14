@@ -24,7 +24,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from weblate_web.models import Service
-from weblate_web.payments.models import Payment
+from weblate_web.payments.models import Customer, Payment
+from weblate_web.utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
 
 
 class Command(BaseCommand):
@@ -58,3 +59,17 @@ class Command(BaseCommand):
             )
             if delete:
                 payment.delete()
+
+        for customer in Customer.objects.filter(
+            service__isnull=True,
+            users__isnull=True,
+            payment__isnull=True,
+            interaction__isnull=True,
+            invoice__isnull=True,
+            zammad_id=0,
+            origin__in={FOSDEM_ORIGIN, PAYMENTS_ORIGIN},
+            created__lte=timezone.now() - timedelta(days=365),
+        ):
+            self.stdout.write(f"Removing not used customer {customer}")
+            if delete:
+                customer.delete()
