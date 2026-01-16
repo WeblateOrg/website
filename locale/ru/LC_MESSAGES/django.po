@@ -24,7 +24,7 @@
 # Serg Bormant <bormant@mail.ru>, 2020.
 # Edward Smirnov <ed@microolap.com>, 2021.
 # S3aBreeze <paperwork@evilcorp.ltd>, 2021, 2022.
-# Blueberry <igory.ygr200@gmail.com>, 2021, 2022, 2023, 2024, 2025.
+# Blueberry <igory.ygr200@gmail.com>, 2021, 2022, 2023, 2024, 2025, 2026.
 # Ivan <goz9ae93qun@temp.mailbox.org>, 2021.
 # Viktor <xasertop@gmail.com>, 2022.
 # WofWca <wofwca@protonmail.com>, 2022.
@@ -44,8 +44,8 @@ msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2025-12-11 17:14+0100\n"
-"PO-Revision-Date: 2025-12-27 20:00+0000\n"
-"Last-Translator: Oleksandr Zadera <zadera.alex@gmail.com>\n"
+"PO-Revision-Date: 2026-01-17 09:01+0000\n"
+"Last-Translator: Blueberry <igory.ygr200@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
 "ru/>\n"
 "Language: ru\n"
@@ -54,7 +54,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.15.2\n"
 "First-Translator: Dmitri GOULIAEV <dmitri+weblate@gouliaev.info>\n"
 
 #: weblate_web/crm/templates/crm/income.html:16
@@ -179,7 +179,7 @@ msgstr "Номер счёта"
 
 #: weblate_web/invoices/models.py:186
 msgid "BIC/SWIFT"
-msgstr ""
+msgstr "BIC/SWIFT"
 
 #: weblate_web/invoices/models.py:188
 msgid "Issuing bank"
@@ -192,6 +192,7 @@ msgstr "Владелец счёта"
 #: weblate_web/invoices/views.py:39
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
+"Этот счёт уже оплачен. Пожалуйста, войдите, чтобы просмотреть подробности."
 
 #: weblate_web/models.py:77
 msgid "No reward"
@@ -429,23 +430,20 @@ msgid "Payment cancelled"
 msgstr "Платёж отменён"
 
 #: weblate_web/payments/backends.py:850
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "New payment"
 msgid "Crypto payment"
-msgstr "Новый платёж"
+msgstr "Криптоплатёж"
 
 #: weblate_web/payments/backends.py:860
 msgid "Google Pay"
-msgstr ""
+msgstr "Google Pay"
 
 #: weblate_web/payments/backends.py:868
 msgid "Apple Pay"
-msgstr ""
+msgstr "Apple Pay"
 
 #: weblate_web/payments/forms.py:78
 msgid "You will receive a receipt here."
-msgstr ""
+msgstr "Вы получите квитанцию здесь."
 
 #: weblate_web/payments/models.py:108
 msgid "European VAT ID"
@@ -458,20 +456,16 @@ msgstr ""
 "применимо."
 
 #: weblate_web/payments/models.py:116
-#, fuzzy
-#| msgid "Company or individual name"
 msgid "Company identification number"
-msgstr "Название компании или физического лица"
+msgstr "Идентификационный номер компании"
 
 #: weblate_web/payments/models.py:118
-#, fuzzy
-#| msgid ""
-#| "Please fill in your tax registration if it should appear on the invoice."
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
 msgstr ""
-"Заполните налоговую регистрацию, если она должна быть указана в инвойсе."
+"Заполните регистрационный номер вашей компании, если он должен быть указан в "
+"инвойсе."
 
 #: weblate_web/payments/models.py:125
 msgid "Company or individual name"
@@ -864,10 +858,8 @@ msgid "D-U-N-S Number"
 msgstr "Номер D-U-N-S"
 
 #: weblate_web/templates/about.html:216
-#, fuzzy
-#| msgid "Payment amount"
 msgid "Bank account"
-msgstr "Сумма платежа"
+msgstr "Банковский счёт"
 
 #: weblate_web/templates/about.html:221 weblate_web/templates/careers.html:25
 #: weblate_web/templates/hosting.html:420
@@ -1271,10 +1263,8 @@ msgstr ""
 "способов внести свой вклад. Обсудите его со своими товарищами."
 
 #: weblate_web/templates/donate.html:25
-#, fuzzy
-#| msgid "My donations"
 msgid "FOSDEM donation"
-msgstr "Мои пожертвования"
+msgstr "Пожертвование FOSDEM"
 
 #: weblate_web/templates/donate.html:27 weblate_web/templates/donate.html:74
 msgid "Purchase premium cloud"
@@ -2549,28 +2539,17 @@ msgid "Your payment on weblate.org failed"
 msgstr "Ваш платёж на weblate.org не прошёл"
 
 #: weblate_web/templates/mail/payment_missing.html:10
-#, fuzzy
-#| msgid ""
-#| "Your subscription on weblate.org should renew next week and you have not "
-#| "set up automatic payments."
 msgid ""
 "Your subscription on weblate.org is expired and you have not set up "
 "automatic payments."
-msgstr ""
-"Ваша подписка на weblate.org заканчивается на следующей неделе, и вы не "
-"настроили автоплатёж."
+msgstr "Ваша подписка на weblate.org закончилась, и вы не настроили автоплатёж."
 
 #: weblate_web/templates/mail/payment_missing.html:12
-#, fuzzy
-#| msgid ""
-#| "Your subscription on weblate.org should renew next week and you have not "
-#| "set up automatic payments."
 msgid ""
 "Your subscription on weblate.org should renew soon and you have not set up "
 "automatic payments."
 msgstr ""
-"Ваша подписка на weblate.org заканчивается на следующей неделе, и вы не "
-"настроили автоплатёж."
+"Ваша подписка на weblate.org скоро продлится, и вы не настроили автоплатёж."
 
 #: weblate_web/templates/mail/payment_missing.html:14
 msgid ""
@@ -2580,28 +2559,19 @@ msgstr ""
 "платёж."
 
 #: weblate_web/templates/mail/payment_missing.html:23
-#, fuzzy
-#| msgid ""
-#| "Your donation on weblate.org should renew next week and you have not set "
-#| "up automatic payments."
 msgid ""
 "Your donation on weblate.org is expired and you have not set up automatic "
 "payments."
 msgstr ""
-"Ваше пожертвование на weblate.org заканчивается на следующей неделе, и вы не "
-"настроили автоплатёж."
+"Ваше пожертвование на weblate.org закончилось, и вы не настроили автоплатёж."
 
 #: weblate_web/templates/mail/payment_missing.html:25
-#, fuzzy
-#| msgid ""
-#| "Your donation on weblate.org should renew next week and you have not set "
-#| "up automatic payments."
 msgid ""
 "Your donation on weblate.org should renew soon and you have not set up "
 "automatic payments."
 msgstr ""
-"Ваше пожертвование на weblate.org заканчивается на следующей неделе, и вы не "
-"настроили автоплатёж."
+"Ваше пожертвование на weblate.org скоро продлится, и вы не настроили "
+"автоплатёж."
 
 #: weblate_web/templates/mail/payment_missing.html:27
 msgid "Please perform the payment now to continue supporting Weblate."
@@ -2635,36 +2605,26 @@ msgid "Your pending payment on weblate.org"
 msgstr "Ваш ожидающий платёж на weblate.org"
 
 #: weblate_web/templates/mail/payment_upcoming.html:9
-#, fuzzy
-#| msgid "Your subscription on weblate.org will renew next week."
 msgid "Your subscription on weblate.org will renew soon."
-msgstr "Ваша подписка на weblate.org возобновится на следующей неделе."
+msgstr "Ваша подписка на weblate.org скоро продлится."
 
 #: weblate_web/templates/mail/payment_upcoming.html:10
 #: weblate_web/templates/mail/payment_upcoming.html:20
 msgid "The payment will be automatically charged soon."
-msgstr ""
+msgstr "Оплата будет автоматически списана в ближайшее время."
 
 #: weblate_web/templates/mail/payment_upcoming.html:11
 #: weblate_web/templates/mail/payment_upcoming.html:21
-#, fuzzy
-#| msgid ""
-#| "The payment will be automatically charged next week. In case your card "
-#| "has expired or you want to use different payment method, please perform "
-#| "the payment now."
 msgid ""
 "In case your card has expired or you want to use different payment method, "
 "please perform the payment now."
 msgstr ""
-"Платёж будет автоматически произведён на следующей неделе. Если срок "
-"действия вашей карточки истёк или вы хотите использовать другой способ "
-"оплаты, то совершите платёж самостоятельно до этого времени."
+"Если срок действия вашей карточки истёк или вы хотите использовать другой "
+"способ оплаты, то совершите платёж самостоятельно до этого времени."
 
 #: weblate_web/templates/mail/payment_upcoming.html:19
-#, fuzzy
-#| msgid "Your donation on weblate.org will renew next week."
 msgid "Your donation on weblate.org will renew soon."
-msgstr "Ваше пожертвование weblate.org продолжится на следующей неделе."
+msgstr "Ваше пожертвование weblate.org скоро продлится."
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
@@ -2678,22 +2638,21 @@ msgstr "Текущая подписка: %(package)s"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:8
 #: weblate_web/templates/mail/snippets/subscription_info.html:8
-#, fuzzy, python-format
-#| msgid "Current subscription: %(package)s"
+#, python-format
 msgid "Subscription price: %(price)s"
-msgstr "Текущая подписка: %(package)s"
+msgstr "Стоимость подписки: %(price)s"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:12
 #: weblate_web/templates/mail/snippets/subscription_info.html:12
 #, python-format
 msgid "Saved card: %(card_number)s"
-msgstr ""
+msgstr "Сохранённая карта: %(card_number)s"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:17
 #: weblate_web/templates/mail/snippets/subscription_info.html:17
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
-msgstr ""
+msgstr "Истечение срока подписки: %(expiry)s"
 
 #: weblate_web/templates/mail/snippets/subscription_info.html:21
 #, python-format
@@ -2739,17 +2698,15 @@ msgstr "Просмотреть старые статьи"
 
 #: weblate_web/templates/payment/customer-agreement.html:6
 msgid "Weblate data processing agreement"
-msgstr ""
+msgstr "Соглашение об обработке данных Weblate"
 
 #: weblate_web/templates/payment/customer-agreement.html:13
 msgid "Your data processing agreements"
-msgstr ""
+msgstr "Ваши соглашения об обработке данных"
 
 #: weblate_web/templates/payment/customer-agreement.html:16
-#, fuzzy
-#| msgid "Organize translations"
 msgid "Organization"
-msgstr "Организовывать переводы"
+msgstr "Организация"
 
 #: weblate_web/templates/payment/customer-agreement.html:18
 #: weblate_web/templates/payment/payment.html:70
@@ -2758,17 +2715,12 @@ msgid "Edit"
 msgstr "Правка"
 
 #: weblate_web/templates/payment/customer-agreement.html:27
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "Awaiting payment"
 msgid "Existing agreements"
-msgstr "Ожидающий платёж"
+msgstr "Существующие соглашения"
 
 #: weblate_web/templates/payment/customer-agreement.html:48
-#, fuzzy
-#| msgid "Browse documentation"
 msgid "Service documentation"
-msgstr "Просмотр документации"
+msgstr "Сервисная документация"
 
 #: weblate_web/templates/payment/customer-agreement.html:55
 #: weblate_web/templates/terms.html:11
@@ -2781,21 +2733,16 @@ msgid "Privacy Policy"
 msgstr "Политика конфиденциальности"
 
 #: weblate_web/templates/payment/customer-agreement.html:77
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "New payment"
 msgid "New agreement"
-msgstr "Новый платёж"
+msgstr "Новое соглашение"
 
 #: weblate_web/templates/payment/customer-agreement.html:84
 msgid "Preview the agreement"
-msgstr ""
+msgstr "Предпросмотр соглашения"
 
 #: weblate_web/templates/payment/customer-agreement.html:100
-#, fuzzy
-#| msgid "User management"
 msgid "Create an agreement"
-msgstr "Управление пользователями"
+msgstr "Создать соглашение"
 
 #: weblate_web/templates/payment/customer.html:6
 #: weblate_web/templates/payment/payment.html:6
@@ -2818,8 +2765,6 @@ msgid "Payment description"
 msgstr "Назначение платежа"
 
 #: weblate_web/templates/payment/payment.html:34
-#, fuzzy
-#| msgid "Payment frequence"
 msgid "Payment frequency"
 msgstr "Промежуточность платежа"
 
@@ -2858,7 +2803,7 @@ msgstr ""
 #: weblate_web/templates/payment/payment.html:55
 #: weblate_web/templates/snippets/service.html:229
 msgid "Personal data"
-msgstr ""
+msgstr "Личные данные"
 
 #: weblate_web/templates/payment/payment.html:60
 #, python-format
@@ -2866,6 +2811,9 @@ msgid ""
 "By performing the payment, you accept our <a href=\"%(terms_url)s\">General "
 "Terms and Conditions</a> and <a href=\"%(privacy_url)s\">Privacy Policy</a>."
 msgstr ""
+"Осуществляя платёж, вы принимаете наши <a href=\"%(terms_url)s\">Общие "
+"положения и условия</a> и <a href=\"%(privacy_url)s\">Политику "
+"конфиденциальности</a>."
 
 #: weblate_web/templates/payment/payment.html:68
 #: weblate_web/templates/snippets/customer-address.html:3
@@ -2921,10 +2869,8 @@ msgid "View English version"
 msgstr "Посмотреть английскую версию"
 
 #: weblate_web/templates/privacy.html:26 weblate_web/templates/terms.html:27
-#, fuzzy
-#| msgid "Download"
 msgid "Download as PDF"
-msgstr "Скачать"
+msgstr "Скачать как PDF"
 
 #: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
 msgid "Service"
@@ -3306,7 +3252,7 @@ msgstr "Поздравляем, у вас полный комплект!"
 
 #: weblate_web/templates/snippets/service.html:231
 msgid "Data processing agreements for your Weblate service."
-msgstr ""
+msgstr "Соглашения об обработке данных для вашего сервиса Weblate."
 
 #: weblate_web/templates/snippets/service.html:235
 msgid "Manage"
@@ -3465,6 +3411,8 @@ msgstr "Доступна только с установочным пакетом
 #: weblate_web/templates/support.html:96 weblate_web/templates/support.html:114
 msgid "Be prepared with security notifications prior to the fix publication."
 msgstr ""
+"Будьте готовы к получению уведомлений о безопасности до публикации "
+"исправления."
 
 #: weblate_web/templates/support.html:113
 msgid "Next business day support response guaranteed."
@@ -3534,10 +3482,8 @@ msgid "Suggestions on the internationalization and localization"
 msgstr "Предложения по интернационализации и переводу"
 
 #: weblate_web/templates/support.html:168
-#, fuzzy
-#| msgid "Get support"
 msgid "Get a quote"
-msgstr "Получить поддержку"
+msgstr "Получить расценку"
 
 #: weblate_web/templates/support.html:171
 msgid "Ask for help"
@@ -3737,10 +3683,8 @@ msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Ошибка в параметрах %(field)s: %(error)s"
 
 #: weblate_web/views.py:380
-#, fuzzy
-#| msgid "Thank you for your donation."
 msgid "Thank you for your donation and enjoy FOSDEM."
-msgstr "Спасибо за пожертвование."
+msgstr "Спасибо за пожертвование и приятного пользования FOSDEM."
 
 #: weblate_web/views.py:406 weblate_web/views.py:440
 msgid "Please provide your billing information to complete the payment."
@@ -3769,15 +3713,19 @@ msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr ""
+"Пожалуйста, используйте уже сгенерированное соглашение, новое соглашение "
+"можно сгенерировать через 30 дней."
 
 #: weblate_web/views.py:542
 msgid "New agreement created, you can download it below."
-msgstr ""
+msgstr "Новое соглашение создано, вы можете скачать его ниже."
 
 #: weblate_web/views.py:594
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
+"Новая компания, новые банковские реквизиты! Оплачивайте с учётом текущего "
+"инвойса."
 
 #: weblate_web/views.py:654
 msgid "Payment not yet processed, please retry."
