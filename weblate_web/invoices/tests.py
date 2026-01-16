@@ -7,13 +7,14 @@ from pathlib import Path
 from typing import cast
 
 import requests
+import responses
 from django.test.utils import override_settings
 from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
 
 from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer
-from weblate_web.tests import UserTestCase
+from weblate_web.tests import UserTestCase, cnb_mock_rates, mock_vies
 
 from .models import (
     Currency,
@@ -174,7 +175,18 @@ class InvoiceTestCase(UserTestCase):
             result = response.json()
             self.assertEqual(result["result"], "SUCCESS", result["reports"])
 
+    def mock_requests(self) -> None:
+        mock_vies()
+        cnb_mock_rates()
+        responses.add_passthru(
+            "https://www.itb.ec.europa.eu/vitb/rest/invoice/api/validate"
+        )
+        if validator_url := os.environ.get("EINVOICE_VALIDATOR_URL"):
+            responses.add_passthru(f"{validator_url}validate")
+
+    @responses.activate
     def test_dates(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(vat="CZ8003280318")
         self.assertEqual(invoice.tax_date, invoice.issue_date)
         self.assertEqual(invoice.due_date, invoice.issue_date + timedelta(days=14))
@@ -186,24 +198,32 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.tax_date, tax_date)
         self.assertEqual(invoice.due_date, due_date)
 
+    @responses.activate
     def test_total(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(vat="CZ8003280318")
         self.assertEqual(invoice.total_amount, 100)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_total_vat(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(vat_rate=21, customer_reference="PO123456")
         self.assertEqual(invoice.total_amount, 121)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_total_vat_note(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(
             vat_rate=21, customer_reference="PO123456", customer_note="Test note\n" * 3
         )
         self.assertEqual(invoice.total_amount, 121)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_total_items(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice()
         invoice.invoiceitem_set.create(
             description="Other item", unit_price=1000, quantity=4
@@ -211,7 +231,9 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 4100)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_total_items_hours(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice()
         invoice.invoiceitem_set.create(
             description="Other item",
@@ -222,7 +244,9 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 4100)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_total_items_hour(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice()
         invoice.invoiceitem_set.create(
             description="Other item",
@@ -233,14 +257,18 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 1100)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_discount(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(
             discount=Discount.objects.create(description="Test discount", percents=50)
         )
         self.assertEqual(invoice.total_amount, 50)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_discount_negative(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(
             discount=Discount.objects.create(description="Test discount", percents=50),
         )
@@ -248,7 +276,9 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 40)
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_discount_vat(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(
             discount=Discount.objects.create(description="Test discount", percents=50),
             vat_rate=21,
@@ -256,12 +286,16 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, Decimal("60.50"))
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_package(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice_package()
         self.assertEqual(invoice.total_amount, Decimal(100))
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_package_usd(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice_package(currency=Currency.USD)
         self.assertEqual(
             invoice.total_amount,
@@ -269,13 +303,17 @@ class InvoiceTestCase(UserTestCase):
         )
         self.validate_invoice(invoice)
 
+    @responses.activate
     def test_invoice_kinds(self) -> None:
+        self.mock_requests()
         for kind in InvoiceKind.values:
             invoice = self.create_invoice(kind=InvoiceKind(kind))
             self.validate_invoice(invoice)
 
     @override_settings(PAYMENT_DEBUG=True)
+    @responses.activate
     def test_pay_link(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice_package()
         self.validate_invoice(invoice)
         url = cast("str", invoice.get_payment_url())
