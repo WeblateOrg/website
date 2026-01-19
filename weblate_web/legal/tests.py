@@ -4,9 +4,10 @@ from shutil import rmtree
 from tempfile import mkdtemp
 
 from django.core.management import call_command
+from django.test.utils import override_settings
 
 from weblate_web.payments.models import Customer
-from weblate_web.tests import UserTestCase
+from weblate_web.tests import SIGNATURE_MOCK_SETTINGS, UserTestCase
 
 from .models import Agreement, AgreementKind
 
@@ -23,6 +24,7 @@ class LegalTestCase(UserTestCase):
             vat=vat,
         )
 
+    @override_settings(**SIGNATURE_MOCK_SETTINGS)
     def test_agreement(self) -> None:
         agreement = Agreement.objects.create(
             customer=self.create_customer(), kind=AgreementKind.DPA

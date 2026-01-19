@@ -56,6 +56,7 @@ if TYPE_CHECKING:
     from django.core.mail.message import EmailMultiAlternatives
 
 TEST_DATA = Path(__file__).parent / "test-data"
+TEST_SIGNATURE = Path(__file__).parent / "static" / "weblate-black.svg"
 TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
 TEST_ACTIVITY = TEST_DATA / "activity.json"
 TEST_VIES_WSDL = TEST_DATA / "checkVatService.wsdl"
@@ -368,6 +369,9 @@ THEPAY2_MOCK_SETTINGS: dict[str, str | bool] = {
     "THEPAY_PASSWORD": "test-password",
     "THEPAY_PROJECT_ID": "42",
     "THEPAY_SERVER": "demo.api.thepay.cz",
+}
+SIGNATURE_MOCK_SETTINGS: dict[str, str] = {
+    "AGREEMENTS_SIGNATURE_PATH": TEST_SIGNATURE.as_posix(),
 }
 
 
@@ -1091,7 +1095,7 @@ class PaymentTest(FakturaceTestCase):
         response = self.client.get("/en/donate/new/")
         self.assertContains(response, "list of supporters")
 
-    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    @override_settings(**THEPAY2_MOCK_SETTINGS, **SIGNATURE_MOCK_SETTINGS)
     @responses.activate
     def test_service_workflow_card(self) -> None:  # noqa: PLR0915
         self.login()
