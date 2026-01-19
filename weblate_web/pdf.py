@@ -24,8 +24,8 @@ from typing import TYPE_CHECKING
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from weasyprint import CSS, HTML
-from weasyprint.pdf.metadata import generate_rdf_metadata
 from weasyprint.text.fonts import FontConfiguration
+from weasyprint.urls import FatalURLFetchingError, URLFetcher, URLFetcherResponse
 
 if TYPE_CHECKING:
     from weasyprint import Attachment
@@ -38,16 +38,12 @@ INVOICES_TEMPLATES_PATH = Path(__file__).parent / "invoices" / "templates"
 LEGAL_TEMPLATES_PATH = Path(__file__).parent / "legal" / "templates"
 
 FACTURX_RDF_METADATA = """
-<x:xmpmeta
-    xmlns:x="adobe:ns:meta/"
+  <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:pdf="http://ns.adobe.com/pdf/1.3/"
     xmlns:fx="urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#"
     xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/"
     xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#"
     xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#">
-  {}
-  <rdf:RDF>
     <rdf:Description rdf:about="">
       <fx:ConformanceLevel>EN 16931</fx:ConformanceLevel>
       <fx:DocumentFileName>factur-x.xml</fx:DocumentFileName>
@@ -94,43 +90,35 @@ FACTURX_RDF_METADATA = """
       </pdfaExtension:schemas>
     </rdf:Description>
   </rdf:RDF>
-</x:xmpmeta>
 """
 
 
-def generate_faxturx_rdf_metadata(metadata, variant, version, conformance) -> bytes:
-    original_rdf = generate_rdf_metadata(metadata, variant, version, conformance)
-    return FACTURX_RDF_METADATA.format(original_rdf.decode("utf-8")).encode("utf-8")
+class WeblateUrlFetcher(URLFetcher):
+    def fetch(self, url: str, headers: dict | None = None) -> URLFetcherResponse:
+        path_obj: Path
 
+        if url == SIGNATURE_URL:
+            if settings.AGREEMENTS_SIGNATURE_PATH is None:
+                raise FatalURLFetchingError("Signature not configured!")
+            path_obj = settings.AGREEMENTS_SIGNATURE_PATH
+        elif url.startswith(INVOICES_URL):
+            path_obj = INVOICES_TEMPLATES_PATH / url.removeprefix(INVOICES_URL)
+        elif url.startswith(LEGAL_URL):
+            path_obj = LEGAL_TEMPLATES_PATH / url.removeprefix(LEGAL_URL)
+        elif url.startswith(STATIC_URL):
+            fullname = url.removeprefix(STATIC_URL)
+            match = finders.find(fullname)
+            if match is None:
+                raise FatalURLFetchingError(f"Could not find {fullname}")
+            path_obj = Path(match)
+        else:
+            raise FatalURLFetchingError(f"Unsupported URL: {url}")
 
-def url_fetcher(url: str) -> dict[str, str | bytes]:
-    path_obj: Path
-    result: dict[str, str | bytes]
+        response_headers: dict[str, str] = {}
+        if path_obj.suffix == ".css":
+            response_headers["Content-Type"] = "text/css; charset=utf-8"
 
-    if url == SIGNATURE_URL:
-        if settings.AGREEMENTS_SIGNATURE_PATH is None:
-            raise ValueError("Signature not configured!")
-        path_obj = settings.AGREEMENTS_SIGNATURE_PATH
-    elif url.startswith(INVOICES_URL):
-        path_obj = INVOICES_TEMPLATES_PATH / url.removeprefix(INVOICES_URL)
-    elif url.startswith(LEGAL_URL):
-        path_obj = LEGAL_TEMPLATES_PATH / url.removeprefix(LEGAL_URL)
-    elif url.startswith(STATIC_URL):
-        fullname = url.removeprefix(STATIC_URL)
-        match = finders.find(fullname)
-        if match is None:
-            raise ValueError(f"Could not find {fullname}")
-        path_obj = Path(match)
-    else:
-        raise ValueError(f"Unsupported URL: {url}")
-    result = {
-        "filename": path_obj.name,
-        "string": path_obj.read_bytes(),
-    }
-    if path_obj.suffix == ".css":
-        result["mime_type"] = "text/css"
-        result["encoding"] = "utf-8"
-    return result
+        return URLFetcherResponse(url, path_obj.read_bytes(), response_headers)
 
 
 def render_pdf(
@@ -141,10 +129,11 @@ def render_pdf(
     factur_x: bool = False,
 ) -> None:
     font_config = FontConfiguration()
+    fetcher = WeblateUrlFetcher()
 
     renderer = HTML(
         string=html,
-        url_fetcher=url_fetcher,
+        url_fetcher=fetcher,
     )
     fonts_css = finders.find("pdf/fonts.css")
     if fonts_css is None:
@@ -152,15 +141,14 @@ def render_pdf(
     font_style = CSS(
         filename=fonts_css,
         font_config=font_config,
-        url_fetcher=url_fetcher,
+        url_fetcher=fetcher,
     )
     document = renderer.render(
         stylesheets=[font_style],
         font_config=font_config,
-        pdf_variant="pdf/a-3b",
     )
     if factur_x:
-        document.metadata.generate_rdf_metadata = generate_faxturx_rdf_metadata
+        document.metadata.xmp_metadata = [FACTURX_RDF_METADATA.encode("utf-8")]
     if attachments:
         document.metadata.attachments = attachments
     document.write_pdf(
