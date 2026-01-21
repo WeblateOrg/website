@@ -5,7 +5,7 @@
 </p>
 {% if subscription.payment_obj %}
   <p>
-    {% blocktranslate with price=subscription.package.price|price_format_convert:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
+    {% blocktranslate with price=subscription.get_expected_payment_amount|price_format_convert:subscription.payment_obj.get_currency_display %}Subscription price: {{ price }}{% endblocktranslate %}
   </p>
   {% if subscription.payment_obj.card_info %}
     <p>

@@ -1200,6 +1200,11 @@ class Subscription(models.Model):
             end_date=start_date + get_period_delta(self.package.get_repeat()),
         )
 
+    def get_expected_payment_amount(self) -> int:
+        if discount := self.service.customer.discount:
+            return self.package.price * (100 - discount.percents) // 100
+        return self.package.price
+
 
 class PastPayments(models.Model):
     subscription = models.ForeignKey(
