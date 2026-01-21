@@ -25,6 +25,7 @@ from django.utils import timezone
 from django.utils.translation import override
 from requests.exceptions import HTTPError
 
+from weblate_web.invoices.models import Discount
 from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 
@@ -1795,6 +1796,23 @@ class ExpiryTest(FakturaceTestCase):
     PAYMENT_DEBUG=True,
 )
 class ServiceTest(FakturaceTestCase):
+    @responses.activate
+    def test_upcoming_payment(self) -> None:
+        service = self.create_service(
+            years=0, days=3, recurring="", package="test:test-1-m"
+        )
+        subscription = service.subscription_set.all().get()
+        self.assertEqual(subscription.get_expected_payment_amount(), 42)
+
+        discount = Discount.objects.create(percents=50)
+        service.customer.discount = discount
+        service.customer.save()
+        self.assertEqual(subscription.get_expected_payment_amount(), 21)
+
+        discount.percents = 10
+        discount.save()
+        self.assertEqual(subscription.get_expected_payment_amount(), 37)
+
     @responses.activate
     def test_hosted_pay(self) -> None:
         mock_vies()
