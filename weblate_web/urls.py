@@ -255,7 +255,7 @@ urlpatterns = [
         # FOSDEM short link
         re_path(
             r"^FOSDEM/|fosdem/$",
-            RedirectView.as_view(url="/news/archive/fosdem-2025/", permanent=False),
+            RedirectView.as_view(url="/news/archive/fosdem-2026/", permanent=False),
         ),
         path("fosdem/donate/", fosdem_donation, name="fosdem-donate"),
         # Compatibility with disabled languages
