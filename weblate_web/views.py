@@ -1160,7 +1160,7 @@ def fosdem_donation(request):
         customer=customer,
         description=FOSDEM_DONATION_DESCRIPTION,
         amount_fixed=True,
-        amount=30,
+        amount=int(request.GET.get("amount", "30")),
         extra={"category": "donate"},
     )
     # Redirect to payment

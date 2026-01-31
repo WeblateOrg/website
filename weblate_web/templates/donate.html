@@ -8,6 +8,12 @@
   <section class="content">
     <div class="row">
       <div class="wrap">
+        <h1 class="section-title min-m">{% translate "FOSDEM donation" %}</h1>
+        <div class="page-desc">
+          <p>{% translate "Want to get a t-shirt or hoodie at our FOSDEM stand?" %}</p>
+          <a href="{% url 'fosdem-donate' %}" class="button inline">{% translate "Donate to get a t-shirt" %}</a>
+          <a href="{% url 'fosdem-donate' %}?amount=50" class="button inline">{% translate "Donate to get a hoodie" %}</a>
+        </div>
         <h1 class="section-title min-m">
           {% block title %}
             {% translate "Become a Weblate supporter" %}
@@ -21,9 +27,6 @@
             {% endblock description %}
 
           </p>
-          {% if is_fosdem %}
-            <a href="{% url 'fosdem-donate' %}" class="button inline">{% translate "FOSDEM donation" %}</a>
-          {% endif %}
           <a href="{% url 'hosting' %}" class="button inline">{% translate "Purchase premium cloud" %}</a>
           <a href="{% url 'user' %}" class="button inline border rev">{% translate "Manage your donations" %}</a>
         </div>
