@@ -69,10 +69,15 @@ class CustomerForm(forms.ModelForm):
         field_classes = {"vat": BootstrapVATINField}
         widgets = {"country": forms.Select(attrs={"class": "custom-select"})}
 
+    @property
+    def is_fosdem(self):
+        return self.instance and self.instance.origin == FOSDEM_ORIGIN
+
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        if self.instance and self.instance.origin == FOSDEM_ORIGIN:
+        if self.is_fosdem:
             self.fields["address"].required = False
             self.fields["postcode"].required = False
             self.fields["city"].required = False
             self.fields["email"].help_text = gettext("You will receive a receipt here.")
+            self.fields["email"].label = gettext("E-mail address")

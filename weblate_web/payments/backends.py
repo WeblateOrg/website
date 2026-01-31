@@ -770,7 +770,7 @@ class ThePay2Card(Backend):
             },
         }
         if self.payment.customer.address:
-            payload["customer"]["billing_address"] = { # type: ignore[index]
+            payload["customer"]["billing_address"] = {  # type: ignore[index]
                 "country_code": self.payment.customer.country.code,
                 "city": self.payment.customer.city,
                 "zip": self.payment.customer.postcode,
