@@ -767,14 +767,15 @@ class ThePay2Card(Backend):
                 "name": self.payment.customer.name,
                 "surname": "",
                 "email": self.payment.customer.email,
-                "billing_address": {
-                    "country_code": self.payment.customer.country.code,
-                    "city": self.payment.customer.city,
-                    "zip": self.payment.customer.postcode,
-                    "street": self.payment.customer.address,
-                },
             },
         }
+        if self.payment.customer.address:
+            payload["customer"]["billing_address"] = {
+                "country_code": self.payment.customer.country.code,
+                "city": self.payment.customer.city,
+                "zip": self.payment.customer.postcode,
+                "street": self.payment.customer.address,
+            }
 
         # Create payment
         response = self.request("post", "payments", json=payload)
