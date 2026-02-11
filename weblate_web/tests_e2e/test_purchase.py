@@ -41,9 +41,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         # The page should display pricing or package details
         assert page.is_visible("text=Buy now") or page.is_visible("text=Get started")
 
-    def test_purchase_flow_requires_authentication(
-        self, page: Page, live_server
-    ):
+    def test_purchase_flow_requires_authentication(self, page: Page, live_server):
         """Test that purchase flow redirects unauthenticated users."""
         # Try to access subscription purchase directly without auth
         # This should redirect to login or show an error
@@ -51,7 +49,9 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
 
         # Check response is successful (200-level or redirect)
         assert response is not None
-        assert response.status < 500, f"Subscription page returned server error {response.status}"
+        assert response.status < 500, (
+            f"Subscription page returned server error {response.status}"
+        )
 
         # Verify no server error is displayed
         assert not page.locator("text=Server Error").is_visible()
@@ -95,7 +95,9 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
 
         # Check response is successful
         assert response is not None
-        assert response.status < 500, f"Subscription page returned server error {response.status}"
+        assert response.status < 500, (
+            f"Subscription page returned server error {response.status}"
+        )
 
         # Should reach payment page or similar
         page.wait_for_load_state("networkidle")
@@ -111,9 +113,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         # Verify we're in the payment flow
         assert "payment" in current_url or "subscription" in current_url
 
-    def test_hosting_page_displays_packages(
-        self, page: Page, live_server
-    ):
+    def test_hosting_page_displays_packages(self, page: Page, live_server):
         """Test that the hosting page displays available packages."""
         response = page.goto(f"{live_server.url}/en/hosting/")
 
@@ -137,9 +137,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
 
         assert has_pricing, "Hosting page should display package purchase options"
 
-    def test_support_page_displays_packages(
-        self, page: Page, live_server
-    ):
+    def test_support_page_displays_packages(self, page: Page, live_server):
         """Test that the support page displays available support packages."""
         response = page.goto(f"{live_server.url}/en/support/")
 
