@@ -24,10 +24,18 @@ class TestWebsiteNavigation:
     def test_new_user_visits_homepage(self, page: Page, live_server):
         """Test that a new user can visit the homepage and see key content."""
         # Visit the homepage
-        page.goto(live_server.url)
+        response = page.goto(live_server.url)
+
+        # Check that the page loaded successfully without errors
+        assert response is not None
+        assert response.ok, f"Homepage returned status {response.status}"
 
         # Check that the page loaded successfully
         assert page.title()
+
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
+        assert not page.locator("text=500").is_visible()
 
         # Check for key elements on the homepage
         # The Weblate logo or heading should be visible
@@ -35,30 +43,58 @@ class TestWebsiteNavigation:
 
     def test_navigation_to_hosting_page(self, page: Page, live_server):
         """Test navigation to the hosting page."""
-        page.goto(f"{live_server.url}/en/hosting/")
+        response = page.goto(f"{live_server.url}/en/hosting/")
+
+        # Check response is successful
+        assert response is not None
+        assert response.ok, f"Hosting page returned status {response.status}"
 
         # Verify we're on the hosting page
         assert "hosting" in page.url.lower()
 
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
+
     def test_navigation_to_features_page(self, page: Page, live_server):
         """Test navigation to the features page."""
-        page.goto(f"{live_server.url}/en/features/")
+        response = page.goto(f"{live_server.url}/en/features/")
+
+        # Check response is successful
+        assert response is not None
+        assert response.ok, f"Features page returned status {response.status}"
 
         # Verify we're on the features page
         assert "features" in page.url.lower()
 
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
+
     def test_navigation_to_support_page(self, page: Page, live_server):
         """Test navigation to the support page."""
         # Navigate to support page directly
-        page.goto(f"{live_server.url}/en/support/")
+        response = page.goto(f"{live_server.url}/en/support/")
+
+        # Check response is successful
+        assert response is not None
+        assert response.ok, f"Support page returned status {response.status}"
 
         # Verify we're on the support page
         assert "support" in page.url.lower()
 
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
+
     def test_navigation_to_donate_page(self, page: Page, live_server):
         """Test navigation to the donate page."""
         # Navigate to donate page directly
-        page.goto(f"{live_server.url}/en/donate/")
+        response = page.goto(f"{live_server.url}/en/donate/")
+
+        # Check response is successful
+        assert response is not None
+        assert response.ok, f"Donate page returned status {response.status}"
 
         # Verify we're on the donate page
         assert "donate" in page.url.lower()
+
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()

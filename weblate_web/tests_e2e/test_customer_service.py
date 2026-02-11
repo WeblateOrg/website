@@ -14,18 +14,10 @@ import pytest
 from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 
-from weblate_web.models import sync_packages
-
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 pytestmark = pytest.mark.django_db
-
-
-@pytest.fixture
-def setup_packages(db):  # pylint: disable=redefined-outer-name
-    """Set up test packages in the database."""
-    sync_packages()
 
 
 class TestCustomerManagement:  # pylint: disable=redefined-outer-name
@@ -55,8 +47,15 @@ class TestCustomerManagement:  # pylint: disable=redefined-outer-name
         )
 
         # Navigate to user page
-        page.goto(f"{live_server.url}/en/user/")
+        response = page.goto(f"{live_server.url}/en/user/")
         page.wait_for_load_state("networkidle")
+
+        # Check response is successful
+        assert response is not None
+        assert response.ok, f"User page returned status {response.status}"
+
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
 
         # Take screenshot of user profile page
         page.screenshot(path="test-results/user-profile.png", full_page=True)
@@ -90,8 +89,15 @@ class TestServiceManagement:  # pylint: disable=redefined-outer-name
         )
 
         # Navigate to user page to see services
-        page.goto(f"{live_server.url}/en/user/")
+        response = page.goto(f"{live_server.url}/en/user/")
         page.wait_for_load_state("networkidle")
+
+        # Check response is successful
+        assert response is not None
+        assert response.ok, f"User page returned status {response.status}"
+
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
 
         # Take screenshot of services section
         page.screenshot(path="test-results/user-services.png", full_page=True)
