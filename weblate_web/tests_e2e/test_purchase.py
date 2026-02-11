@@ -23,17 +23,20 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def setup_packages(db):
+def setup_packages(db):  # pylint: disable=redefined-outer-name
     """Set up test packages in the database."""
     sync_packages()
 
 
-class TestServicePurchase:
+class TestServicePurchase:  # pylint: disable=redefined-outer-name
     """Test suite for purchasing services."""
 
     def test_view_hosting_packages(self, page: Page, live_server, setup_packages):
         """Test that users can view available hosting packages."""
         page.goto(f"{live_server.url}/en/hosting/")
+
+        # Take screenshot of the hosting page with packages
+        page.screenshot(path="test-results/hosting-packages.png")
 
         # Check that we can see package information
         # The page should display pricing or package details
@@ -74,7 +77,7 @@ class TestServicePurchase:
             [
                 {
                     "name": settings.SESSION_COOKIE_NAME,
-                    "value": session.session_key,
+                    "value": session.session_key or "",
                     "domain": "localhost",
                     "path": "/",
                 }
@@ -86,6 +89,10 @@ class TestServicePurchase:
 
         # Should reach payment page or similar
         page.wait_for_load_state("networkidle")
+
+        # Take screenshot of payment selection page
+        page.screenshot(path="test-results/payment-selection.png")
+
         current_url = page.url
 
         # Verify we're in the payment flow

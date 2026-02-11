@@ -20,6 +20,15 @@ jobs:
         python-version: '3.12'
         cache-suffix: e2e
 
+    - name: Run mypy on E2E tests
+      run: |
+        echo "::add-matcher::.github/matchers/mypy.json"
+        mypy --show-column-numbers weblate_web/tests_e2e
+        echo "::remove-matcher owner=mypy::"
+
+    - name: Run pylint on E2E tests
+      run: pylint --output-format=github weblate_web/tests_e2e/
+
     - name: Install Playwright browsers
       run: playwright install --with-deps chromium
 
@@ -37,9 +46,9 @@ jobs:
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-      if: failure()
+      if: always()
       with:
-        name: playwright-traces
+        name: playwright-test-results
         path: |
           test-results/
           playwright-report/
