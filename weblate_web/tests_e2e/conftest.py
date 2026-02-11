@@ -4,9 +4,13 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
 import pytest
 from django.contrib.auth.models import User
+
+# Allow Django operations in async context for Playwright tests
+os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 
 if TYPE_CHECKING:
     from playwright.sync_api import Browser, BrowserContext, Page
@@ -24,45 +28,21 @@ except ImportError:
         VIDEO = None
 
 
-@pytest.fixture(scope="session")
-def browser_type_launch_args():
-    """Configure browser launch arguments."""
-    return {
-        "headless": pw_config.HEADLESS,
-        "slow_mo": pw_config.SLOW_MO,
-    }
+@pytest.fixture(scope="session", autouse=True)
+def mock_external_apis():
+    """Mock external API calls for e2e tests."""
+    with (
+        patch("weblate_web.remote.get_changes", return_value=[]),
+        patch("weblate_web.remote.get_contributors", return_value=[]),
+        patch("weblate_web.remote.get_activity", return_value=[]),
+    ):
+        yield
 
 
 @pytest.fixture(scope="session")
-def browser_context_args():
-    """Configure browser context arguments."""
-    return {
-        "viewport": {"width": 1280, "height": 720},
-        "record_video_dir": "test-results/videos" if pw_config.VIDEO else None,
-    }
-
-
-@pytest.fixture
-def base_url():
-    """Base URL for the application."""
-    return pw_config.BASE_URL
-
-
-@pytest.fixture
-def context(browser: Browser, browser_context_args: dict, base_url: str) -> BrowserContext:
-    """Create a new browser context for each test."""
-    context = browser.new_context(**browser_context_args, base_url=base_url)
-    yield context
-    context.close()
-
-
-@pytest.fixture
-def page(context: BrowserContext) -> Page:
-    """Create a new page for each test."""
-    page = context.new_page()
-    page.set_default_timeout(pw_config.DEFAULT_TIMEOUT)
-    yield page
-    page.close()
+def base_url(live_server):
+    """Provide base URL for playwright tests from live_server."""
+    return live_server.url
 
 
 @pytest.fixture

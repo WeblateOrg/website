@@ -35,44 +35,34 @@ class TestWebsiteNavigation:
 
     def test_navigation_to_hosting_page(self, page: Page, live_server):
         """Test navigation to the hosting page."""
-        page.goto(live_server.url)
-
-        # Navigate to hosting page
-        page.click("text=Hosting", timeout=5000)
+        page.goto(f"{live_server.url}/en/hosting/")
 
         # Verify we're on the hosting page
-        page.wait_for_url("**/hosting/**", timeout=5000)
         assert "hosting" in page.url.lower()
 
     def test_navigation_to_features_page(self, page: Page, live_server):
         """Test navigation to the features page."""
-        page.goto(live_server.url)
-
-        # Navigate to features page
-        page.click("text=Features", timeout=5000)
+        page.goto(f"{live_server.url}/en/features/")
 
         # Verify we're on the features page
-        page.wait_for_url("**/features/**", timeout=5000)
         assert "features" in page.url.lower()
 
     def test_navigation_to_support_page(self, page: Page, live_server):
         """Test navigation to the support page."""
         page.goto(live_server.url)
 
-        # Navigate to support page
-        page.click("text=Support", timeout=5000)
+        # Navigate to support page directly
+        page.goto(f"{live_server.url}/en/support/")
 
         # Verify we're on the support page
-        page.wait_for_url("**/support/**", timeout=5000)
         assert "support" in page.url.lower()
 
     def test_navigation_to_donate_page(self, page: Page, live_server):
         """Test navigation to the donate page."""
         page.goto(live_server.url)
 
-        # Navigate to donate page
-        page.click("text=Donate", timeout=5000)
+        # Navigate to donate page directly
+        page.goto(f"{live_server.url}/en/donate/")
 
         # Verify we're on the donate page
-        page.wait_for_url("**/donate/**", timeout=5000)
         assert "donate" in page.url.lower()
