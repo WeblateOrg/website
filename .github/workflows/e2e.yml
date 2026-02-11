@@ -36,7 +36,7 @@ jobs:
         pytest weblate_web/tests_e2e/ -v --screenshot=only-on-failure --video=retain-on-failure
 
     - name: Upload test artifacts
-      uses: actions/upload-artifact@ea4a91620b27f72b2d07c0f69f9cfd71fce71f5d  # v4.6.2
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       if: failure()
       with:
         name: playwright-traces
