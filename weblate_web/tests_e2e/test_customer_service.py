@@ -68,9 +68,7 @@ class TestCustomerManagement:  # pylint: disable=redefined-outer-name
 class TestServiceManagement:  # pylint: disable=redefined-outer-name
     """Test suite for service management features."""
 
-    def test_user_can_view_services(
-        self, page: Page, live_server, authenticated_user
-    ):
+    def test_user_can_view_services(self, page: Page, live_server, authenticated_user):
         """Test that user can view their services."""
         # Create a session cookie for the authenticated user
         session = SessionStore()
