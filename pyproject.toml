@@ -35,7 +35,8 @@ concurrency = ["multiprocessing", "thread"]
 omit = [
   ".venv*/*",
   "weblate_web/settings.py",
-  "weblate_web/settings_*.py"
+  "weblate_web/settings_*.py",
+  "weblate_web/tests_e2e/*"
 ]
 
 [tool.django-stubs]
@@ -126,7 +127,7 @@ disable = [
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "weblate_web.settings"
-addopts = "--reuse-db --cov=weblate_web --cov-report="
+addopts = "--reuse-db --cov=weblate_web --cov-report= --ignore=weblate_web/tests_e2e"
 python_files = ["test_*.py", "tests.py"]
 
 [tool.ruff]
