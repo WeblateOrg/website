@@ -1,0 +1,42 @@
+name: Setup Weblate
+description: Common setup steps for Weblate testing
+inputs:
+  python-version:
+    description: Python version to use
+    required: false
+    default: '3.12'
+  cache-suffix:
+    description: Cache suffix for uv
+    required: false
+    default: 'test'
+
+runs:
+  using: composite
+  steps:
+    - name: Install apt dependencies
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install gettext
+
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
+      with:
+        cache-suffix: ${{ inputs.cache-suffix }}
+        version: 0.10.2
+
+    - name: Install pip dependencies
+      shell: bash
+      run: uv pip install --system -r requirements-dev.txt
+
+    - name: Compile MO files
+      shell: bash
+      run: ./scripts/generate-locales
+
+    - name: Collect static files
+      shell: bash
+      run: ./manage.py collectstatic --noinput

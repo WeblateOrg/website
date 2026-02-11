@@ -5,6 +5,7 @@ This directory contains end-to-end (E2E) tests for the Weblate website using [Pl
 ## Overview
 
 The E2E tests cover full user flows including:
+
 - New user visiting the website
 - Navigating through key pages (hosting, features, support, donate)
 - Purchasing services/subscriptions
@@ -14,23 +15,27 @@ The E2E tests cover full user flows including:
 Before running the E2E tests, you need to:
 
 1. Install all dependencies:
+
    ```bash
    uv pip install -r requirements-dev.txt
    ```
 
-2. Install Playwright browsers:
+1. Install Playwright browsers:
+
    ```bash
    playwright install chromium
    ```
 
-3. Set up the database and static files:
+1. Set up the database and static files:
+
    ```bash
    ./manage.py migrate
    ./manage.py sync_packages
    ./manage.py collectstatic --noinput
    ```
 
-4. Compile translation files (optional):
+1. Compile translation files (optional):
+
    ```bash
    ./scripts/generate-locales
    ```
@@ -114,6 +119,7 @@ E2E tests run automatically in CI on every push and pull request. See `.github/w
 ### Tests fail with "SynchronousOnlyOperation" error
 
 Make sure the `DJANGO_ALLOW_ASYNC_UNSAFE` environment variable is set:
+
 ```bash
 export DJANGO_ALLOW_ASYNC_UNSAFE=true
 pytest weblate_web/tests_e2e/
@@ -126,6 +132,7 @@ The tests use Django's `live_server` fixture which starts a test server automati
 ### Browser not installed
 
 If you get an error about missing browser, run:
+
 ```bash
 playwright install chromium
 ```
@@ -135,12 +142,13 @@ playwright install chromium
 When adding new E2E tests:
 
 1. Create a new test file in `weblate_web/tests_e2e/` following the naming convention `test_*.py`
-2. Use the `live_server` fixture to get the URL of the test server
-3. Use the `page` fixture from pytest-playwright for browser interaction
-4. Mark tests with `@pytest.mark.django_db` if they require database access
-5. Follow the existing test structure and patterns
+1. Use the `live_server` fixture to get the URL of the test server
+1. Use the `page` fixture from pytest-playwright for browser interaction
+1. Mark tests with `@pytest.mark.django_db` if they require database access
+1. Follow the existing test structure and patterns
 
 Example:
+
 ```python
 import pytest
 from playwright.sync_api import Page

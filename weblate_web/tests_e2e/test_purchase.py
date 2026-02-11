@@ -9,12 +9,12 @@ Tests cover:
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from unittest.mock import patch
 
 import pytest
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.sessions.backends.db import SessionStore
 
-from weblate_web.models import Package, PackageCategory, sync_packages
+from weblate_web.models import sync_packages
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -63,9 +63,6 @@ class TestServicePurchase:
         """Test authenticated user can start the purchase flow."""
         # Create a session cookie for the authenticated user
         # This simulates a logged-in user
-        from django.conf import settings
-        from django.contrib.sessions.backends.db import SessionStore
-
         session = SessionStore()
         session["_auth_user_id"] = str(authenticated_user.pk)
         session["_auth_user_backend"] = "django.contrib.auth.backends.ModelBackend"

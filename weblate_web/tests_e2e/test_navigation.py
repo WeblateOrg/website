@@ -27,7 +27,7 @@ class TestWebsiteNavigation:
         page.goto(live_server.url)
 
         # Check that the page loaded successfully
-        assert page.title() != ""
+        assert page.title()
 
         # Check for key elements on the homepage
         # The Weblate logo or heading should be visible
