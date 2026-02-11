@@ -1,13 +1,15 @@
 name: E2E Tests
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
 
 jobs:
   e2e:
     runs-on: ubuntu-24.04
     name: Playwright E2E Tests
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       with:
         persist-credentials: true
         fetch-depth: 0
@@ -34,7 +36,7 @@ jobs:
         pytest weblate_web/tests_e2e/ -v --screenshot=only-on-failure --video=retain-on-failure
 
     - name: Upload test artifacts
-      uses: actions/upload-artifact@ea4a91620b27f72b2d07c0f69f9cfd71fce71f5d # v4.6.2
+      uses: actions/upload-artifact@ea4a91620b27f72b2d07c0f69f9cfd71fce71f5d  # v4.6.2
       if: failure()
       with:
         name: playwright-traces
