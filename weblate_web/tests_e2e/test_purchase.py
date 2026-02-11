@@ -36,7 +36,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         page.goto(f"{live_server.url}/en/hosting/")
 
         # Take screenshot of the hosting page with packages
-        page.screenshot(path="test-results/hosting-packages.png")
+        page.screenshot(path="test-results/hosting-packages.png", full_page=True)
 
         # Check that we can see package information
         # The page should display pricing or package details
@@ -91,7 +91,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         page.wait_for_load_state("networkidle")
 
         # Take screenshot of payment selection page
-        page.screenshot(path="test-results/payment-selection.png")
+        page.screenshot(path="test-results/payment-selection.png", full_page=True)
 
         current_url = page.url
 

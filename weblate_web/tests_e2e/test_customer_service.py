@@ -59,7 +59,7 @@ class TestCustomerManagement:  # pylint: disable=redefined-outer-name
         page.wait_for_load_state("networkidle")
 
         # Take screenshot of user profile page
-        page.screenshot(path="test-results/user-profile.png")
+        page.screenshot(path="test-results/user-profile.png", full_page=True)
 
         # Verify we're on the user page
         assert "/user/" in page.url
@@ -94,7 +94,7 @@ class TestServiceManagement:  # pylint: disable=redefined-outer-name
         page.wait_for_load_state("networkidle")
 
         # Take screenshot of services section
-        page.screenshot(path="test-results/user-services.png")
+        page.screenshot(path="test-results/user-services.png", full_page=True)
 
         # Verify page loaded
         assert "/user/" in page.url

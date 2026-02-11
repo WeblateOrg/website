@@ -12,13 +12,14 @@ from django.contrib.auth.models import User
 os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def mock_external_apis():
     """Mock external API calls for e2e tests."""
     with (
         patch("weblate_web.remote.get_changes", return_value=[]),
         patch("weblate_web.remote.get_contributors", return_value=[]),
         patch("weblate_web.remote.get_activity", return_value=[]),
+        patch("weblate_web.remote.get_release", return_value=None),
     ):
         yield
 
