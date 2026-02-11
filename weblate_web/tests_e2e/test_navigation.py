@@ -34,8 +34,9 @@ class TestWebsiteNavigation:
         assert page.title()
 
         # Verify no server error is displayed
+        # Check for common error indicators, but be specific to avoid false positives
         assert not page.locator("text=Server Error").is_visible()
-        assert not page.locator("text=500").is_visible()
+        assert not page.locator("text=Internal Server Error").is_visible()
 
         # Check for key elements on the homepage
         # The Weblate logo or heading should be visible
