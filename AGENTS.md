@@ -8,4 +8,4 @@ Using Django with HTML templates, frontend is vanilla JavaScript.
 
 - Use `pytest` to run the testsuite.
 - Use `prek` to lint code, it utilized the `pre-commit` framework.
-- Use `ty` to type check the code.
+- Use `mypy` to type check the code.
