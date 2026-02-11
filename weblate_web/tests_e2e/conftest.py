@@ -15,18 +15,6 @@ os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 if TYPE_CHECKING:
     from playwright.sync_api import Browser, BrowserContext, Page
 
-# Import Playwright config
-try:
-    import playwright.config as pw_config
-except ImportError:
-    # Fallback defaults if config file is not available
-    class pw_config:  # type: ignore[no-redef]
-        HEADLESS = True
-        SLOW_MO = 0
-        BASE_URL = "http://localhost:8000"
-        DEFAULT_TIMEOUT = 30000
-        VIDEO = None
-
 
 @pytest.fixture(scope="session", autouse=True)
 def mock_external_apis():

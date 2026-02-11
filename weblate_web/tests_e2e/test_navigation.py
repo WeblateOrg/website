@@ -49,8 +49,6 @@ class TestWebsiteNavigation:
 
     def test_navigation_to_support_page(self, page: Page, live_server):
         """Test navigation to the support page."""
-        page.goto(live_server.url)
-
         # Navigate to support page directly
         page.goto(f"{live_server.url}/en/support/")
 
@@ -59,8 +57,6 @@ class TestWebsiteNavigation:
 
     def test_navigation_to_donate_page(self, page: Page, live_server):
         """Test navigation to the donate page."""
-        page.goto(live_server.url)
-
         # Navigate to donate page directly
         page.goto(f"{live_server.url}/en/donate/")
 
