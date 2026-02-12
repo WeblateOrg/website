@@ -85,48 +85,34 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         # Take screenshot after login
         page.screenshot(path="test-results/02-after-admin-login.png", full_page=True)
 
-        # First navigate to user page to verify authentication works
-        page.goto(f"{live_server.url}/en/user/")
+        # Navigate to subscription purchase - this should redirect to customer page
+        page.goto(f"{live_server.url}/en/subscription/new/?plan=basic")
         page.wait_for_load_state("networkidle")
 
-        # Verify we're authenticated (on user page, not login)
-        assert "/user/" in page.url, f"Not on user page after login. URL: {page.url}"
-
-        # Now navigate to subscription purchase
-        response = page.goto(f"{live_server.url}/en/subscription/new/?plan=basic")
-
-        # Check response is successful
-        assert response is not None
-        assert response.status < 500, (
-            f"Subscription page returned server error {response.status}"
-        )
-
-        # Wait for page to load
-        page.wait_for_load_state("networkidle")
-
-        # Verify no server error is displayed
-        assert not page.locator("text=Server Error").is_visible()
-
-        # Take screenshot of subscription page
-        page.screenshot(path="test-results/03-subscription-page.png", full_page=True)
+        # Take screenshot of where we landed
+        page.screenshot(path="test-results/03-after-subscription-redirect.png", full_page=True)
 
         current_url = page.url
 
-        # Take final screenshot showing the payment selection
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
+        assert not page.locator("text=Internal Server Error").is_visible()
+
+        # Take final screenshot
         page.screenshot(path="test-results/payment-selection.png", full_page=True)
 
-        # Verify we're in the payment flow (not stuck on login)
-        # Authenticated user should NOT be on login page
-        assert "login" not in current_url.lower(), (
-            f"Authenticated user stuck on login page. URL: {current_url}"
-        )
-        assert "saml" not in current_url.lower(), (
-            f"Authenticated user redirected to SAML. URL: {current_url}"
+        # Authenticated user should be in the payment flow
+        # (either on customer info page or payment selection page)
+        assert "payment" in current_url or "customer" in current_url, (
+            f"Not in payment flow. URL: {current_url}"
         )
 
-        # We should be on payment or subscription page
-        assert "payment" in current_url or "subscription" in current_url, (
-            f"Not on payment/subscription page. URL: {current_url}"
+        # Should NOT be on login page
+        assert "login" not in current_url.lower(), (
+            f"Still on login page. URL: {current_url}"
+        )
+        assert "saml" not in current_url.lower(), (
+            f"Redirected to SAML. URL: {current_url}"
         )
 
     def test_hosting_page_displays_packages(self, page: Page, live_server):

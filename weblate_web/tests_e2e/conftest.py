@@ -19,6 +19,8 @@ def configure_test_settings(settings):  # pylint: disable=redefined-outer-name
     """Configure Django settings for E2E tests."""
     # Use local login instead of SAML for tests
     settings.LOGIN_URL = "/admin/login/"
+    # Enable payment debug mode to use mock payment backends
+    settings.PAYMENT_DEBUG = True
 
 
 @pytest.fixture(autouse=True)
