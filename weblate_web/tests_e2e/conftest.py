@@ -6,6 +6,7 @@ import os
 from unittest.mock import patch
 
 import pytest
+from django.contrib.auth.models import User
 
 from weblate_web.models import sync_packages
 
@@ -42,3 +43,17 @@ def setup_packages(db):
 def base_url(live_server):
     """Provide base URL for playwright tests from live_server."""
     return live_server.url
+
+
+@pytest.fixture
+def authenticated_user(db):
+    """Create a test user for authenticated tests."""
+    user = User.objects.create_user(
+        username="testuser",
+        email="test@example.com",
+        password="testpassword123",  # noqa: S106
+    )
+    # Make user staff so they can use admin login for E2E tests
+    user.is_staff = True
+    user.save()
+    return user

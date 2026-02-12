@@ -64,38 +64,75 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
             or "saml" in current_url
         )
 
-    def test_authenticated_user_cannot_bypass_login_for_subscription(
-        self, page: Page, live_server
+    def test_authenticated_user_purchase_flow(
+        self, page: Page, live_server, authenticated_user
     ):
-        """Test that subscription purchase requires authentication."""
-        # Navigate directly to subscription purchase without auth
+        """Test authenticated user can complete the purchase flow."""
+        # Log in through the admin interface
+        page.goto(f"{live_server.url}/admin/login/")
+
+        # Fill in login form
+        page.fill('input[name="username"]', "testuser")
+        page.fill('input[name="password"]', "testpassword123")
+
+        # Take screenshot of login page
+        page.screenshot(
+            path="test-results/01-login-page.png", full_page=True
+        )
+
+        # Submit login
+        page.click('input[type="submit"]')
+        page.wait_for_load_state("networkidle")
+
+        # Take screenshot after login
+        page.screenshot(
+            path="test-results/02-after-admin-login.png", full_page=True
+        )
+
+        # First navigate to user page to verify authentication works
+        page.goto(f"{live_server.url}/en/user/")
+        page.wait_for_load_state("networkidle")
+
+        # Verify we're authenticated (on user page, not login)
+        assert "/user/" in page.url, f"Not on user page after login. URL: {page.url}"
+
+        # Now navigate to subscription purchase
         response = page.goto(f"{live_server.url}/en/subscription/new/?plan=basic")
 
-        # Check response
+        # Check response is successful
         assert response is not None
         assert response.status < 500, (
             f"Subscription page returned server error {response.status}"
         )
 
+        # Wait for page to load
         page.wait_for_load_state("networkidle")
 
-        # Take screenshot showing where user lands
+        # Verify no server error is displayed
+        assert not page.locator("text=Server Error").is_visible()
+
+        # Take screenshot of subscription page
         page.screenshot(
-            path="test-results/01-subscription-requires-auth.png", full_page=True
+            path="test-results/03-subscription-page.png", full_page=True
         )
 
         current_url = page.url
 
-        # Verify we're redirected to login (not on the actual payment page)
-        # An unauthenticated user should be redirected to login
-        is_on_login = "login" in current_url.lower() or "saml" in current_url.lower()
-
-        # Take final screenshot
+        # Take final screenshot showing the payment selection
         page.screenshot(path="test-results/payment-selection.png", full_page=True)
 
-        # User should be redirected to login page
-        assert is_on_login, (
-            f"Expected redirect to login page, but got: {current_url}"
+        # Verify we're in the payment flow (not stuck on login)
+        # Authenticated user should NOT be on login page
+        assert "login" not in current_url.lower(), (
+            f"Authenticated user stuck on login page. URL: {current_url}"
+        )
+        assert "saml" not in current_url.lower(), (
+            f"Authenticated user redirected to SAML. URL: {current_url}"
+        )
+
+        # We should be on payment or subscription page
+        assert "payment" in current_url or "subscription" in current_url, (
+            f"Not on payment/subscription page. URL: {current_url}"
         )
 
     def test_hosting_page_displays_packages(self, page: Page, live_server):
