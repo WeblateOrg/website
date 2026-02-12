@@ -90,7 +90,9 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         page.wait_for_load_state("networkidle")
 
         # Take screenshot of where we landed
-        page.screenshot(path="test-results/03-after-subscription-redirect.png", full_page=True)
+        page.screenshot(
+            path="test-results/03-after-subscription-redirect.png", full_page=True
+        )
 
         current_url = page.url
 
