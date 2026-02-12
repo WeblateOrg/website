@@ -76,18 +76,14 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         page.fill('input[name="password"]', "testpassword123")
 
         # Take screenshot of login page
-        page.screenshot(
-            path="test-results/01-login-page.png", full_page=True
-        )
+        page.screenshot(path="test-results/01-login-page.png", full_page=True)
 
         # Submit login
         page.click('input[type="submit"]')
         page.wait_for_load_state("networkidle")
 
         # Take screenshot after login
-        page.screenshot(
-            path="test-results/02-after-admin-login.png", full_page=True
-        )
+        page.screenshot(path="test-results/02-after-admin-login.png", full_page=True)
 
         # First navigate to user page to verify authentication works
         page.goto(f"{live_server.url}/en/user/")
@@ -112,9 +108,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         assert not page.locator("text=Server Error").is_visible()
 
         # Take screenshot of subscription page
-        page.screenshot(
-            path="test-results/03-subscription-page.png", full_page=True
-        )
+        page.screenshot(path="test-results/03-subscription-page.png", full_page=True)
 
         current_url = page.url
 

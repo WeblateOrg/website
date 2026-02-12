@@ -59,9 +59,7 @@ class TestCustomerManagement:  # pylint: disable=redefined-outer-name
         assert "login" not in page.url.lower(), (
             f"Authenticated user redirected to login. URL: {page.url}"
         )
-        assert "/user/" in page.url, (
-            f"Not on user profile page. URL: {page.url}"
-        )
+        assert "/user/" in page.url, f"Not on user profile page. URL: {page.url}"
 
 
 class TestServiceManagement:  # pylint: disable=redefined-outer-name
@@ -98,6 +96,4 @@ class TestServiceManagement:  # pylint: disable=redefined-outer-name
         assert "login" not in page.url.lower(), (
             f"Authenticated user redirected to login. URL: {page.url}"
         )
-        assert "/user/" in page.url, (
-            f"Not on user services page. URL: {page.url}"
-        )
+        assert "/user/" in page.url, f"Not on user services page. URL: {page.url}"
