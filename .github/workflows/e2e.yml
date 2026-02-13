@@ -1,0 +1,58 @@
+name: E2E Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    name: Playwright E2E Tests
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      with:
+        persist-credentials: true
+        fetch-depth: 0
+
+    - name: Setup Weblate
+      uses: ./.github/actions/setup-weblate
+      with:
+        python-version: '3.12'
+        cache-suffix: e2e
+
+    - name: Run mypy on E2E tests
+      run: |
+        echo "::add-matcher::.github/matchers/mypy.json"
+        mypy --show-column-numbers weblate_web/tests_e2e
+        echo "::remove-matcher owner=mypy::"
+
+    - name: Run pylint on E2E tests
+      run: pylint --output-format=github weblate_web/tests_e2e/
+
+    - name: Install Playwright browsers
+      run: playwright install --with-deps chromium
+
+    - name: Create database
+      run: ./manage.py migrate
+
+    - name: Sync packages
+      run: ./manage.py sync_packages
+
+    - name: Run E2E tests
+      env:
+        DJANGO_ALLOW_ASYNC_UNSAFE: 'true'
+      run: |
+        pytest weblate_web/tests_e2e/ -v --screenshot=only-on-failure --video=retain-on-failure
+
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      if: always()
+      with:
+        name: playwright-test-results
+        path: |
+          test-results/
+          playwright-report/
+        retention-days: 7
+
+permissions:
+  contents: read
