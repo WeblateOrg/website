@@ -67,12 +67,13 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
     def test_authenticated_user_purchase_flow(
         self, page: Page, live_server, authenticated_user
     ):
-        """Test authenticated user can view hosting packages and start purchase flow.
-        
+        """
+        Test authenticated user can view hosting packages and start purchase flow.
+
         Note: This test verifies the user journey up to viewing packages.
-        The full payment flow (clicking "Buy now" -> subscription creation -> 
+        The full payment flow (clicking "Buy now" -> subscription creation ->
         payment redirect) causes Django live_server to crash due to immediate
-        redirects to payment URLs. Testing the complete payment flow would 
+        redirects to payment URLs. Testing the complete payment flow would
         require either:
         1. Mocking the entire payment backend to avoid redirects
         2. Using a real application server instead of Django's test live_server
@@ -102,7 +103,9 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         page.wait_for_load_state("networkidle")
 
         # Take screenshot of hosting page
-        page.screenshot(path="test-results/03-hosting-page-logged-in.png", full_page=True)
+        page.screenshot(
+            path="test-results/03-hosting-page-logged-in.png", full_page=True
+        )
 
         # Verify no server error is displayed
         assert not page.locator("text=Server Error").is_visible()
@@ -110,7 +113,9 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
 
         # Verify authenticated user can see subscription options
         buy_link = page.locator('a[href*="subscription"]').first
-        assert buy_link.is_visible(), "Subscription links should be visible to authenticated users"
+        assert buy_link.is_visible(), (
+            "Subscription links should be visible to authenticated users"
+        )
 
         # Take screenshot showing subscription link is available
         page.screenshot(path="test-results/payment-selection.png", full_page=True)
