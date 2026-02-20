@@ -26,7 +26,7 @@ def create_dedicated_hosting_ticket(subscription: Subscription) -> None:
         raise ValueError(f"Subscription without an email: {subscription}")
 
     # Extract TLD as best guess for cloud name
-    domain: str = email.split("@")[1].split(".")[0]
+    domain: str = email.split("@")[1].split(".", maxsplit=1)[0]
 
     zammad.ticket.create(
         params={
