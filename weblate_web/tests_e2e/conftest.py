@@ -57,7 +57,6 @@ def mock_external_apis():
 @pytest.fixture(autouse=True)
 def setup_packages(db):
     """Set up test packages in the database for all tests."""
-    from weblate_web.models import Package  # pylint: disable=import-outside-toplevel
 
     sync_packages()
     Package.objects.get_or_create(
