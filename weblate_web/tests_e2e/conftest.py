@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 from decimal import Decimal
 from unittest.mock import patch
+from weblate_web.models import Package
+
 
 import pytest
 import responses
