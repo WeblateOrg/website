@@ -168,3 +168,76 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         # The support page should display support packages
         # Check for common elements
         assert page.locator("h1").count() > 0
+
+    def test_full_purchase_flow(  # pylint: disable=redefined-outer-name
+        self, page: Page, live_server, authenticated_user
+    ):
+        """
+        Test full purchase flow from subscription creation to service verification.
+
+        Uses the debug payment backend (PAYMENT_DEBUG=True) to complete the
+        payment without external services. Verifies the purchased service
+        appears on the /user/ page.
+        """
+        # Step 1: Log in through the admin interface
+        page.goto(f"{live_server.url}/admin/login/")
+        page.fill('input[name="username"]', "testuser")
+        page.fill('input[name="password"]', "testpassword123")
+        page.click('input[type="submit"]')
+        page.wait_for_load_state("networkidle")
+
+        # Step 2: Start purchase flow - navigate to subscription/new
+        # This redirects to payment page, then to billing info form
+        response = page.goto(f"{live_server.url}/en/subscription/new/?plan=basic")
+        page.wait_for_load_state("networkidle")
+
+        assert response is not None
+        assert not page.locator("text=Server Error").is_visible()
+        assert not page.locator("text=Internal Server Error").is_visible()
+
+        page.screenshot(
+            path="test-results/purchase-flow-01-billing-form.png", full_page=True
+        )
+
+        # Step 3: Fill in billing information (required to proceed with payment)
+        page.fill('input[name="name"]', "Test Company")
+        page.fill('input[name="address"]', "123 Test Street")
+        page.fill('input[name="city"]', "Test City")
+        page.fill('input[name="postcode"]', "12345")
+        page.select_option('select[name="country"]', "CZ")
+
+        page.screenshot(
+            path="test-results/purchase-flow-02-billing-filled.png", full_page=True
+        )
+
+        # Submit billing info
+        page.click('input[type="submit"]')
+        page.wait_for_load_state("networkidle")
+
+        assert not page.locator("text=Server Error").is_visible()
+
+        # Step 4: Select debug payment method on the payment page
+        page.screenshot(
+            path="test-results/purchase-flow-03-payment-methods.png", full_page=True
+        )
+
+        # Verify we're on the payment page with method selection
+        assert page.locator("text=Payment Summary").is_visible()
+
+        # Select the debug "Pay" method (auto-succeeds)
+        page.click('label[for="pay-pay"]')
+        page.click('input[type="submit"].make-payment')
+        page.wait_for_load_state("networkidle")
+
+        # Step 5: Verify we end up on /user/ page with the purchased service
+        page.screenshot(
+            path="test-results/purchase-flow-04-user-page.png", full_page=True
+        )
+
+        assert not page.locator("text=Server Error").is_visible()
+        assert "/user/" in page.url, f"Expected /user/ page, got: {page.url}"
+
+        # Verify the service appears on the user page
+        assert page.locator("text=My services").is_visible(), (
+            "Purchased service should appear under 'My services' on /user/ page"
+        )

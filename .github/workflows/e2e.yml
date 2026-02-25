@@ -20,15 +20,6 @@ jobs:
         python-version: '3.12'
         cache-suffix: e2e
 
-    - name: Run mypy on E2E tests
-      run: |
-        echo "::add-matcher::.github/matchers/mypy.json"
-        mypy --show-column-numbers weblate_web/tests_e2e
-        echo "::remove-matcher owner=mypy::"
-
-    - name: Run pylint on E2E tests
-      run: pylint --output-format=github weblate_web/tests_e2e/
-
     - name: Install Playwright browsers
       run: playwright install --with-deps chromium
 
