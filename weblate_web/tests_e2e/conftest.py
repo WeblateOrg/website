@@ -5,14 +5,12 @@ from __future__ import annotations
 import os
 from decimal import Decimal
 from unittest.mock import patch
-from weblate_web.models import Package
-
 
 import pytest
 import responses
 from django.contrib.auth.models import User
 
-from weblate_web.models import sync_packages
+from weblate_web.models import Package, sync_packages
 from weblate_web.tests import mock_vies
 
 # Allow Django operations in async context for Playwright tests
@@ -44,7 +42,7 @@ def mock_external_apis():
                 "EUR": Decimal("25.215"),
                 "USD": Decimal("22.425"),
                 "GBP": Decimal("28.635"),
-                "CZK": Decimal("1"),
+                "CZK": Decimal(1),
             },
         ),
         responses.RequestsMock(),
@@ -57,7 +55,6 @@ def mock_external_apis():
 @pytest.fixture(autouse=True)
 def setup_packages(db):
     """Set up test packages in the database for all tests."""
-
     sync_packages()
     Package.objects.get_or_create(
         name="community", defaults={"verbose": "Community support", "price": 0}
