@@ -734,7 +734,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_customer_uses_end_client_name(self, mock_get_client):
         """Test organization creation uses end_client over name."""
-        _customer, _service = self.create_customer_with_service(
+        self.create_customer_with_service(
             name="Parent Co", end_client="End Client Inc"
         )
 
