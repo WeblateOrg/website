@@ -560,6 +560,10 @@ class ZammadLibraryTestCase(TestCase):
 class ZammadSyncCommandTestCase(BaseCRMTestCase):
     """Tests for zammad_sync management command."""
 
+    def setUp(self):
+        super().setUp()
+        Package.objects.get_or_create(name="community", defaults={"price": 0})
+
     def create_customer_with_service(
         self,
         name="TEST CUSTOMER",
@@ -568,7 +572,6 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
     ):
         """Create a customer with service and active subscription."""
         customer = self.create_customer(name=name, end_client=end_client)
-        Package.objects.get_or_create(name="community", defaults={"price": 0})
         package, _ = Package.objects.get_or_create(
             name=package_name,
             defaults={
@@ -758,7 +761,6 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
     def test_sync_customer_no_name(self, mock_get_client):
         """Test skipping customer creation when customer has no name."""
         customer = self.create_customer(name="")
-        Package.objects.get_or_create(name="community", defaults={"price": 0})
         package, _ = Package.objects.get_or_create(
             name="extended",
             defaults={
@@ -789,7 +791,6 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
     def test_sync_invalid_subscription_skipped(self, mock_get_client):
         """Test that customers with invalid subscriptions are skipped."""
         customer = self.create_customer(name="No Service Corp")
-        Package.objects.get_or_create(name="community", defaults={"price": 0})
         # Create a service but no subscription
         Service.objects.create(customer=customer)
 
@@ -817,7 +818,6 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
     def test_get_customer_service_no_subscription(self):
         """Test get_customer_service raises when service has no subscription."""
         customer = self.create_customer()
-        Package.objects.get_or_create(name="community", defaults={"price": 0})
         Service.objects.create(customer=customer)
 
         cmd = ZammadSyncCommand()
@@ -829,7 +829,6 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
     def test_get_customer_service_multiple_services(self):
         """Test get_customer_service raises when customer has multiple services."""
         customer = self.create_customer()
-        Package.objects.get_or_create(name="community", defaults={"price": 0})
         Service.objects.create(customer=customer)
         Service.objects.create(customer=customer)
 
