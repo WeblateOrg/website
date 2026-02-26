@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.utils.html import format_html
 from django.utils.translation import gettext as _
 from vies.types import VATIN
-from zeep.exceptions import Error
+from zeep.exceptions import Error, Fault
 
 if TYPE_CHECKING:
     from datetime import date
@@ -47,11 +47,18 @@ def cache_vies_data(
         # Online validation
         try:
             vies_data = result.data
+        except Fault as error:
+            data = {
+                "valid": False,
+                "fault_code": error.code or "other:Error",
+                "fault_message": error.message,
+            }
+            sentry_sdk.capture_exception()
         except Error as error:
             data = {
                 "valid": False,
-                "fault_code": getattr(error, "code", "other:Error"),
-                "fault_message": str(error),
+                "fault_code": "other:Error",
+                "fault_message": error.message,
             }
             sentry_sdk.capture_exception()
         else:
