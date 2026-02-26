@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 import responses
 from django.contrib.auth.models import Permission, User
 from django.core.management import call_command
+from django.core.management.base import OutputWrapper
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -805,7 +806,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         customer = self.create_customer()
 
         cmd = ZammadSyncCommand()
-        cmd.stdout = StringIO()
+        cmd.stdout = OutputWrapper(StringIO())
 
         with self.assertRaises(InvalidSubscriptionError):
             cmd.get_customer_service(customer)
@@ -816,7 +817,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         Service.objects.create(customer=customer)
 
         cmd = ZammadSyncCommand()
-        cmd.stdout = StringIO()
+        cmd.stdout = OutputWrapper(StringIO())
 
         with self.assertRaises(InvalidSubscriptionError):
             cmd.get_customer_service(customer)
@@ -828,7 +829,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         Service.objects.create(customer=customer)
 
         cmd = ZammadSyncCommand()
-        cmd.stdout = StringIO()
+        cmd.stdout = OutputWrapper(StringIO())
 
         with self.assertRaises(InvalidSubscriptionError):
             cmd.get_customer_service(customer)
@@ -839,7 +840,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         self.assertEqual(customer.zammad_id, 0)
 
         cmd = ZammadSyncCommand()
-        cmd.stdout = StringIO()
+        cmd.stdout = OutputWrapper(StringIO())
         cmd.update_zammad_id(customer, 42)
 
         customer.refresh_from_db()
@@ -852,7 +853,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         customer.save(update_fields=["zammad_id"])
 
         cmd = ZammadSyncCommand()
-        cmd.stdout = StringIO()
+        cmd.stdout = OutputWrapper(StringIO())
         cmd.update_zammad_id(customer, 42)
 
         self.assertEqual(cmd.stdout.getvalue(), "")
@@ -862,7 +863,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         customer = self.create_customer()
 
         cmd = ZammadSyncCommand()
-        cmd.stdout = StringIO()
+        cmd.stdout = OutputWrapper(StringIO())
         cmd.update_zammad_id(customer, 0)
 
         customer.refresh_from_db()
