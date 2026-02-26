@@ -2128,20 +2128,20 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         }
         with patch("weblate_web.remote.Weblate") as mock_weblate:
             mock_stat_a = type("MockStat", (), {
-                "__getitem__": lambda self, key: mock_stat_data[key],
-                "get_data": lambda self: mock_stat_data,
+                "__getitem__": lambda _self, key: mock_stat_data[key],
+                "get_data": lambda _self: mock_stat_data,
             })()
             mock_stat_old = type("MockStat", (), {
-                "__getitem__": lambda self, key: mock_stat_old_data[key],
-                "get_data": lambda self: mock_stat_old_data,
+                "__getitem__": lambda _self, key: mock_stat_old_data[key],
+                "get_data": lambda _self: mock_stat_old_data,
             })()
             mock_stat_none = type("MockStat", (), {
-                "__getitem__": lambda self, key: mock_stat_none_data[key],
-                "get_data": lambda self: mock_stat_none_data,
+                "__getitem__": lambda _self, key: mock_stat_none_data[key],
+                "get_data": lambda _self: mock_stat_none_data,
             })()
-            mock_project_a = type("MockProject", (), {"statistics": lambda self: mock_stat_a})()
-            mock_project_b = type("MockProject", (), {"statistics": lambda self: mock_stat_old})()
-            mock_project_c = type("MockProject", (), {"statistics": lambda self: mock_stat_none})()
+            mock_project_a = type("MockProject", (), {"statistics": lambda _self: mock_stat_a})()
+            mock_project_b = type("MockProject", (), {"statistics": lambda _self: mock_stat_old})()
+            mock_project_c = type("MockProject", (), {"statistics": lambda _self: mock_stat_none})()
             mock_weblate.return_value.list_projects.return_value = [
                 mock_project_a,
                 mock_project_b,
@@ -2169,10 +2169,10 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         }
         with patch("weblate_web.remote.Weblate") as mock_weblate:
             mock_stat = type("MockStat", (), {
-                "__getitem__": lambda self, key: mock_stat_data[key],
-                "get_data": lambda self: mock_stat_data,
+                "__getitem__": lambda _self, key: mock_stat_data[key],
+                "get_data": lambda _self: mock_stat_data,
             })()
-            mock_project = type("MockProject", (), {"statistics": lambda self: mock_stat})()
+            mock_project = type("MockProject", (), {"statistics": lambda _self: mock_stat})()
             mock_weblate.return_value.list_projects.return_value = [mock_project]
             result = get_changes(force=True)
             self.assertEqual(len(result), 1)
