@@ -24,6 +24,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
 from requests.exceptions import HTTPError
+from wlc import WeblateException
 
 from weblate_web.invoices.models import Discount
 from weblate_web.payments.data import SUPPORTED_LANGUAGES
@@ -44,9 +45,12 @@ from .models import (
 )
 from .remote import (
     ACTIVITY_URL,
+    PYPI_URL,
     WEBLATE_CONTRIBUTORS_URL,
     get_activity,
+    get_changes,
     get_contributors,
+    get_release,
 )
 from .templatetags.downloads import downloadlink, filesizeformat
 from .utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
@@ -2004,6 +2008,297 @@ class CommandsTestCase(FakturaceTestCase):
         with StringIO() as buffer:
             call_command("sync_packages", stdout=buffer)
             self.assertEqual(buffer.getvalue(), "")
+
+
+class BackgroundFetchTestCase(FakturaceTestCase):
+    """Tests for background_fetch management command and underlying code."""
+
+    @responses.activate
+    def test_get_release(self) -> None:
+        pypi_data = {
+            "releases": {
+                "5.0": [
+                    {
+                        "comment_text": "",
+                        "digests": {"sha256": "abc123"},
+                        "downloads": 0,
+                        "filename": "Weblate-5.0.tar.gz",
+                        "has_sig": False,
+                        "md5_digest": "md5",
+                        "packagetype": "sdist",
+                        "python_version": "source",
+                        "requires_python": ">=3.9",
+                        "size": 1000,
+                        "upload_time": "2024-01-01T00:00:00",
+                        "upload_time_iso_8601": "2024-01-01T00:00:00.000000Z",
+                        "url": "https://example.com/Weblate-5.0.tar.gz",
+                        "yanked": False,
+                        "yanked_reason": None,
+                    }
+                ],
+                "5.1": [
+                    {
+                        "comment_text": "",
+                        "digests": {"sha256": "def456"},
+                        "downloads": 0,
+                        "filename": "Weblate-5.1.tar.gz",
+                        "has_sig": False,
+                        "md5_digest": "md5",
+                        "packagetype": "sdist",
+                        "python_version": "source",
+                        "requires_python": ">=3.9",
+                        "size": 2000,
+                        "upload_time": "2024-06-01T00:00:00",
+                        "upload_time_iso_8601": "2024-06-01T00:00:00.000000Z",
+                        "url": "https://example.com/Weblate-5.1.tar.gz",
+                        "yanked": False,
+                        "yanked_reason": None,
+                    }
+                ],
+                "4.0": [],
+            }
+        }
+        responses.add(responses.GET, PYPI_URL, json=pypi_data)
+        result = get_release(force=True)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["filename"], "Weblate-5.1.tar.gz")
+
+    @responses.activate
+    def test_get_release_error(self) -> None:
+        responses.add(responses.GET, PYPI_URL, status=500)
+        result = get_release(force=True)
+        self.assertEqual(result, [])
+
+    @responses.activate
+    def test_get_release_network_error(self) -> None:
+        responses.add(
+            responses.GET, PYPI_URL, body=OSError("Connection refused")
+        )
+        result = get_release(force=True)
+        self.assertEqual(result, [])
+
+    @responses.activate
+    def test_get_release_caching(self) -> None:
+        pypi_data = {
+            "releases": {
+                "5.0": [
+                    {
+                        "comment_text": "",
+                        "digests": {"sha256": "abc123"},
+                        "downloads": 0,
+                        "filename": "Weblate-5.0.tar.gz",
+                        "has_sig": False,
+                        "md5_digest": "md5",
+                        "packagetype": "sdist",
+                        "python_version": "source",
+                        "requires_python": ">=3.9",
+                        "size": 1000,
+                        "upload_time": "2024-01-01T00:00:00",
+                        "upload_time_iso_8601": "2024-01-01T00:00:00.000000Z",
+                        "url": "https://example.com/Weblate-5.0.tar.gz",
+                        "yanked": False,
+                        "yanked_reason": None,
+                    }
+                ],
+            }
+        }
+        responses.add(responses.GET, PYPI_URL, json=pypi_data)
+        result = get_release(force=True)
+        self.assertEqual(len(result), 1)
+        # Cached result returned without force
+        responses.replace(responses.GET, PYPI_URL, status=500)
+        result = get_release(force=False)
+        self.assertEqual(len(result), 1)
+
+    def test_get_changes(self) -> None:
+        mock_stat_data = {
+            "last_change": "2024-06-01T00:00:00Z",
+            "name": "Project A",
+            "translated_percent": 50.0,
+        }
+        mock_stat_old_data = {
+            "last_change": "2024-01-01T00:00:00Z",
+            "name": "Project B",
+            "translated_percent": 30.0,
+        }
+        mock_stat_none_data = {
+            "last_change": None,
+            "name": "Project C",
+            "translated_percent": 10.0,
+        }
+        with patch("weblate_web.remote.Weblate") as mock_weblate:
+            mock_stat_a = type("MockStat", (), {
+                "__getitem__": lambda self, key: mock_stat_data[key],
+                "get_data": lambda self: mock_stat_data,
+            })()
+            mock_stat_old = type("MockStat", (), {
+                "__getitem__": lambda self, key: mock_stat_old_data[key],
+                "get_data": lambda self: mock_stat_old_data,
+            })()
+            mock_stat_none = type("MockStat", (), {
+                "__getitem__": lambda self, key: mock_stat_none_data[key],
+                "get_data": lambda self: mock_stat_none_data,
+            })()
+            mock_project_a = type("MockProject", (), {"statistics": lambda self: mock_stat_a})()
+            mock_project_b = type("MockProject", (), {"statistics": lambda self: mock_stat_old})()
+            mock_project_c = type("MockProject", (), {"statistics": lambda self: mock_stat_none})()
+            mock_weblate.return_value.list_projects.return_value = [
+                mock_project_a,
+                mock_project_b,
+                mock_project_c,
+            ]
+            result = get_changes(force=True)
+        self.assertEqual(len(result), 2)
+        # Should be sorted by last_change descending, Project C excluded (None)
+        self.assertEqual(result[0]["name"], "Project A")
+        self.assertEqual(result[1]["name"], "Project B")
+
+    def test_get_changes_error(self) -> None:
+        with patch("weblate_web.remote.Weblate") as mock_weblate:
+            mock_weblate.return_value.list_projects.side_effect = WeblateException(
+                "Connection failed"
+            )
+            result = get_changes(force=True)
+        self.assertEqual(result, [])
+
+    def test_get_changes_caching(self) -> None:
+        mock_stat_data = {
+            "last_change": "2024-06-01T00:00:00Z",
+            "name": "Project A",
+            "translated_percent": 50.0,
+        }
+        with patch("weblate_web.remote.Weblate") as mock_weblate:
+            mock_stat = type("MockStat", (), {
+                "__getitem__": lambda self, key: mock_stat_data[key],
+                "get_data": lambda self: mock_stat_data,
+            })()
+            mock_project = type("MockProject", (), {"statistics": lambda self: mock_stat})()
+            mock_weblate.return_value.list_projects.return_value = [mock_project]
+            result = get_changes(force=True)
+            self.assertEqual(len(result), 1)
+            # Cached result returned without force
+            mock_weblate.return_value.list_projects.side_effect = Exception("Should not be called")
+            result = get_changes(force=False)
+            self.assertEqual(len(result), 1)
+
+    @patch("weblate_web.management.commands.background_fetch.get_release")
+    @patch("weblate_web.management.commands.background_fetch.get_changes")
+    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_contributors")
+    def test_disable_stale_services_no_report(
+        self, *mocks: object
+    ) -> None:
+        """Service with discoverable=True but no report should not be disabled."""
+        service = self.create_service()
+        service.discoverable = True
+        service.save(update_fields=["discoverable"])
+        call_command("background_fetch")
+        service.refresh_from_db()
+        self.assertTrue(service.discoverable)
+
+    @patch("weblate_web.management.commands.background_fetch.get_release")
+    @patch("weblate_web.management.commands.background_fetch.get_changes")
+    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_contributors")
+    def test_disable_stale_services_fresh(
+        self, *mocks: object
+    ) -> None:
+        """Service with a recent report should not be disabled."""
+        service = self.create_service()
+        service.discoverable = True
+        service.save(update_fields=["discoverable"])
+        Report.objects.create(
+            service=service, site_url="https://example.com", discoverable=True
+        )
+        call_command("background_fetch")
+        service.refresh_from_db()
+        self.assertTrue(service.discoverable)
+
+    @patch("weblate_web.management.commands.background_fetch.get_release")
+    @patch("weblate_web.management.commands.background_fetch.get_changes")
+    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_contributors")
+    def test_disable_stale_services_stale(
+        self, *mocks: object
+    ) -> None:
+        """Service with a stale report (>3 days old) should be disabled."""
+        service = self.create_service()
+        service.discoverable = True
+        service.save(update_fields=["discoverable"])
+        report = Report.objects.create(
+            service=service, site_url="https://example.com", discoverable=True
+        )
+        # Make the report stale by backdating its timestamp
+        Report.objects.filter(pk=report.pk).update(
+            timestamp=timezone.now() - timedelta(days=4)
+        )
+        call_command("background_fetch")
+        service.refresh_from_db()
+        self.assertFalse(service.discoverable)
+
+    @patch("weblate_web.management.commands.background_fetch.get_release")
+    @patch("weblate_web.management.commands.background_fetch.get_changes")
+    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_contributors")
+    def test_disable_stale_services_not_discoverable(
+        self, *mocks: object
+    ) -> None:
+        """Service that is not discoverable should not be affected."""
+        service = self.create_service()
+        report = Report.objects.create(
+            service=service, site_url="https://example.com"
+        )
+        Report.objects.filter(pk=report.pk).update(
+            timestamp=timezone.now() - timedelta(days=4)
+        )
+        call_command("background_fetch")
+        service.refresh_from_db()
+        self.assertFalse(service.discoverable)
+
+    @responses.activate
+    def test_background_fetch_command(self) -> None:
+        """Test that the background_fetch command calls all remote functions."""
+        responses.add(
+            responses.GET,
+            WEBLATE_CONTRIBUTORS_URL,
+            body=TEST_CONTRIBUTORS.read_text(),
+        )
+        responses.add(responses.GET, ACTIVITY_URL, body=TEST_ACTIVITY.read_text())
+        responses.add(
+            responses.GET,
+            PYPI_URL,
+            json={
+                "releases": {
+                    "5.0": [
+                        {
+                            "comment_text": "",
+                            "digests": {"sha256": "abc"},
+                            "downloads": 0,
+                            "filename": "Weblate-5.0.tar.gz",
+                            "has_sig": False,
+                            "md5_digest": "md5",
+                            "packagetype": "sdist",
+                            "python_version": "source",
+                            "requires_python": ">=3.9",
+                            "size": 1000,
+                            "upload_time": "2024-01-01T00:00:00",
+                            "upload_time_iso_8601": "2024-01-01T00:00:00.000000Z",
+                            "url": "https://example.com/Weblate-5.0.tar.gz",
+                            "yanked": False,
+                            "yanked_reason": None,
+                        }
+                    ],
+                }
+            },
+        )
+        with patch("weblate_web.remote.Weblate") as mock_weblate:
+            mock_weblate.return_value.list_projects.return_value = []
+            call_command("background_fetch")
+        # Verify all remote functions populated the cache
+        self.assertIsNotNone(cache.get("wlweb-contributors"))
+        self.assertIsNotNone(cache.get("wlweb-activity-stats"))
+        self.assertIsNotNone(cache.get("wlweb-changes-list"))
+        self.assertIsNotNone(cache.get("wlweb-release-x"))
 
 
 class ExchangeRatesTestCase(SimpleTestCase):
