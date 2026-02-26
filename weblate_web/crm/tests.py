@@ -1,3 +1,4 @@
+from collections import UserList
 from datetime import date, timedelta
 from decimal import Decimal
 from io import StringIO
@@ -19,14 +20,12 @@ from weblate_web.invoices.models import (
     InvoiceCategory,
     InvoiceKind,
 )
-from weblate_web.management.commands.zammad_sync import (
-    Command as ZammadSyncCommand,
-    InvalidSubscriptionError,
-)
+from weblate_web.management.commands.zammad_sync import Command as ZammadSyncCommand
+from weblate_web.management.commands.zammad_sync import InvalidSubscriptionError
 from weblate_web.models import Package, PackageCategory, Service
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.tests import TEST_CUSTOMER, cnb_mock_rates
-from weblate_web.zammad import create_dedicated_hosting_ticket
+from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_client
 
 
 class BaseCRMTestCase(TestCase):
@@ -487,7 +486,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertNotContains(response, "Basic Support")
 
 
-class MockPaginatedResults(list):
+class MockPaginatedResults(UserList):
     """Mock for zammad_py paginated results supporting next_page()."""
 
     def next_page(self):
@@ -501,12 +500,10 @@ class ZammadLibraryTestCase(TestCase):
     @patch("weblate_web.zammad.ZammadAPI")
     def test_get_zammad_client(self, mock_api_class):
         """Test get_zammad_client creates ZammadAPI with correct settings."""
-        from weblate_web.zammad import get_zammad_client
-
         client = get_zammad_client()
         mock_api_class.assert_called_once_with(
             url="https://care.weblate.org/api/v1/",
-            http_token="test-token",
+            http_token="test-token",  # noqa: S106
         )
         self.assertEqual(client, mock_api_class.return_value)
 
@@ -686,9 +683,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         customer.refresh_from_db()
         self.assertEqual(customer.zammad_id, 200)
         # Organization should be updated with crm ID
-        mock_client.organization.update.assert_any_call(
-            200, {"crm": str(customer.pk)}
-        )
+        mock_client.organization.update.assert_any_call(200, {"crm": str(customer.pk)})
 
     @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
@@ -738,7 +733,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_customer_uses_end_client_name(self, mock_get_client):
         """Test organization creation uses end_client over name."""
-        customer, _service = self.create_customer_with_service(
+        _customer, _service = self.create_customer_with_service(
             name="Parent Co", end_client="End Client Inc"
         )
 
@@ -875,7 +870,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
 
     def test_get_organization_subscription(self):
         """Test get_organization_subscription returns correct data."""
-        customer, service = self.create_customer_with_service(package_name="premium")
+        _customer, service = self.create_customer_with_service(package_name="premium")
         subscription = service.subscription_set.first()
 
         cmd = ZammadSyncCommand()
@@ -891,7 +886,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
 
     def test_get_organization_subscription_non_premium(self):
         """Test get_organization_subscription with non-premium package."""
-        customer, service = self.create_customer_with_service(package_name="extended")
+        _customer, service = self.create_customer_with_service(package_name="extended")
         subscription = service.subscription_set.first()
 
         cmd = ZammadSyncCommand()
