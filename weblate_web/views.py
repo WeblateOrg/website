@@ -1144,6 +1144,18 @@ class SupportView(TemplateView):
 
 
 def fosdem_donation(request):
+    # Validate and parse the amount parameter
+    amount_str = request.GET.get("amount", "30")
+
+    try:
+        amount = int(amount_str)
+    except (ValueError, TypeError) as error:
+        raise BadRequest("Invalid amount parameter") from error
+
+    # Validate amount is within reasonable bounds
+    if amount < 5 or amount > 100:
+        raise BadRequest("Invalid amount parameter")
+
     # Create customer (or use existing for authenticated users)
     if request.user.is_authenticated:
         customer = Customer.objects.get_or_create(
@@ -1160,7 +1172,7 @@ def fosdem_donation(request):
         customer=customer,
         description=FOSDEM_DONATION_DESCRIPTION,
         amount_fixed=True,
-        amount=int(request.GET.get("amount", "30")),
+        amount=amount,
         extra={"category": "donate"},
     )
     # Redirect to payment
