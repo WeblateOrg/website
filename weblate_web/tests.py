@@ -1836,8 +1836,9 @@ class ServiceTest(FakturaceTestCase):
             service.customer.name = ""
             service.customer.save()
 
+            subscription = service.subscription_set.get()
             response = self.client.post(
-                reverse("subscription-pay", kwargs={"pk": service.pk}),
+                reverse("subscription-pay", kwargs={"pk": subscription.pk}),
                 follow=True,
             )
             payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
@@ -1871,8 +1872,9 @@ class ServiceTest(FakturaceTestCase):
             service = self.create_service(
                 years=0, days=3, recurring="", package="test:test-1-m"
             )
+            subscription = service.subscription_set.get()
             response = self.client.post(
-                reverse("subscription-pay", kwargs={"pk": service.pk}),
+                reverse("subscription-pay", kwargs={"pk": subscription.pk}),
                 {"switch_yearly": 1},
                 follow=True,
             )
