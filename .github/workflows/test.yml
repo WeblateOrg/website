@@ -6,7 +6,7 @@ jobs:
   test:
     services:
       postgres:
-        image: postgres:18.2-alpine@sha256:035b9ab53cfa147d7202b61f5f7782b939ae815b7d6bc81c96b7b42ff1fca950
+        image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
         ports:
         - 5432:5432
         # needed because the postgres container does not provide a healthcheck
@@ -58,10 +58,10 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
+    - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
       with:
         cache-suffix: test
-        version: 0.10.6
+        version: 0.10.7
     - name: Install pip dependencies
       run: uv pip install --system -r requirements-dev.txt
     - name: Compile MO files

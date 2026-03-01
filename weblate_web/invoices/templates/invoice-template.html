@@ -135,11 +135,14 @@
         {% else %}
           <tr>
             <td>
-              VAT 0% –
-              {% if invoice.customer.is_eu %}
-                Reverse charge
-              {% else %}
-                Place of supply outside EU
+              VAT {{ invoice.vat_rate }}%
+              {% if not invoice.vat_rate %}
+                –
+                {% if invoice.customer.is_eu %}
+                  Reverse charge
+                {% else %}
+                  Place of supply outside EU
+                {% endif %}
               {% endif %}
             </td>
             <td></td>
