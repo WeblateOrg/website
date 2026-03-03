@@ -366,6 +366,9 @@ class Invoice(models.Model):  # noqa: PLR0904
     # Passed to payment
     extra = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
 
+    # Manual disabling of XML in invoices
+    generate_en_16931 = True
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -751,7 +754,7 @@ class Invoice(models.Model):  # noqa: PLR0904
 
     @property
     def supports_en_16931(self) -> bool:
-        return self.is_final or self.is_proforma
+        return (self.is_final or self.is_proforma) and self.generate_en_16931
 
     def get_en_16931_xml(self) -> EN16931Invoice:
         if self.kind == InvoiceKind.INVOICE:
