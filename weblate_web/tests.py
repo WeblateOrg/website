@@ -1426,7 +1426,7 @@ class PaymentTest(FakturaceTestCase):
 
         # Back to our web
         response = self.client.get(payment.get_complete_url())
-        # This redirects to an article we don't have in tets
+        # This redirects to an article we don't have in tests
         self.assertRedirects(response, FOSDEM_ORIGIN, fetch_redirect_response=False)
 
         # Fetch any page to verif that message is shown
