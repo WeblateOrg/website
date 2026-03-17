@@ -55,9 +55,7 @@ class AdminSiteTestCase(TestCase):
         self.assertNotIn("<", result["text"])
 
     def test_custom_admin_site_autocomplete_view(self) -> None:
-        User.objects.create_superuser(
-            username="admin", email="admin@example.com"
-        )
+        User.objects.create_superuser(username="admin", email="admin@example.com")
         self.client.force_login(User.objects.get(username="admin"))
         response = self.client.get(
             "/admin/autocomplete/",
