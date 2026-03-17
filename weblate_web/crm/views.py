@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, cast
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -337,6 +337,8 @@ class InteractionDetailView(CRMMixin, DetailView[Interaction]):  # type: ignore[
 
 class InteractionDownloadView(InteractionDetailView):
     def render_to_response(self, context, **response_kwargs):
+        if not self.object.attachment or not self.object.attachment.name:
+            raise Http404("No attachment")
         return FileResponse(
             self.object.attachment.open(),
             as_attachment=True,
