@@ -415,6 +415,7 @@ class Invoice(models.Model):  # noqa: PLR0904
             except IndexError:
                 self.sequence = 1
             extra_fields.append("sequence")
+
         if extra_fields and update_fields is not None:
             update_fields = tuple(set(update_fields).union(extra_fields))
 
@@ -835,6 +836,21 @@ class Invoice(models.Model):  # noqa: PLR0904
                         else None,
                     )
                 )
+
+        if not line_items:
+            # Negative invoice, add dummy one
+            line_items.append(
+                EN16931LineItem(
+                    id=f"INVOICE-{self.pk}",
+                    name="Refund",
+                    net_price=Money(Decimal(0), self.get_currency_display()),
+                    billed_quantity=(Decimal(0), QuantityCode.ONE),
+                    billed_total=Money(Decimal(0), self.get_currency_display()),
+                    tax_rate=Decimal(self.vat_rate),
+                    tax_category=tax_category,
+                    billing_period=None,
+                )
+            )
 
         if self.discount:
             allowances.append(

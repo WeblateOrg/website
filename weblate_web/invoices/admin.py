@@ -61,8 +61,13 @@ class InvoiceAdmin(admin.ModelAdmin):
         super().save_related(
             request=request, form=form, formsets=formsets, change=change
         )
-        if form.instance.kind != InvoiceKind.DRAFT:
-            form.instance.generate_files()
+        invoice: Invoice = form.instance
+        if invoice.kind != InvoiceKind.DRAFT:
+            # Negative amounts (refunds are automatically prepaid)
+            if invoice.total_amount < 0:
+                invoice.prepaid = True
+                invoice.save(update_fields=["prepaid"])
+            invoice.generate_files()
 
     def view_on_site(self, obj: Invoice) -> str | None:
         return obj.get_download_url()
