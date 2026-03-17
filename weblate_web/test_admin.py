@@ -70,7 +70,7 @@ class AdminSiteTestCase(TestCase):
         data = response.json()
         results = data.get("results", [])
         # Check that User results use the custom format
-        self.assertTrue(len(results) > 0)
+        self.assertGreater(len(results), 0)
         self.assertIn("<", results[0]["text"])
 
 
