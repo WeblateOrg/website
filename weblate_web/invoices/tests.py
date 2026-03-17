@@ -56,6 +56,7 @@ class InvoiceTestCase(UserTestCase):
         currency: Currency = Currency.EUR,
         tax_date: date | None = None,
         due_date: date | None = None,
+        prepaid: bool = False,
     ) -> Invoice:
         if vat_rate == 0 and not vat:
             # Ensure VAT ID is present for invoices without VAT
@@ -71,6 +72,7 @@ class InvoiceTestCase(UserTestCase):
             currency=currency,
             tax_date=cast("date", tax_date),
             due_date=cast("date", due_date),
+            prepaid=prepaid,
         )
 
     def create_invoice_package(
@@ -100,6 +102,8 @@ class InvoiceTestCase(UserTestCase):
         kind: InvoiceKind = InvoiceKind.INVOICE,
         tax_date: date | None = None,
         due_date: date | None = None,
+        unit_price: int = 100,
+        prepaid: bool = False,
     ) -> Invoice:
         invoice = self.create_invoice_base(
             discount=discount,
@@ -110,10 +114,11 @@ class InvoiceTestCase(UserTestCase):
             kind=kind,
             tax_date=tax_date,
             due_date=due_date,
+            prepaid=prepaid,
         )
         invoice.invoiceitem_set.create(
             description="Test item",
-            unit_price=100,
+            unit_price=unit_price,
         )
         return invoice
 
@@ -284,6 +289,13 @@ class InvoiceTestCase(UserTestCase):
             vat_rate=21,
         )
         self.assertEqual(invoice.total_amount, Decimal("60.50"))
+        self.validate_invoice(invoice)
+
+    @responses.activate
+    def test_refund(self) -> None:
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21, unit_price=-100, prepaid=True)
+        self.assertEqual(invoice.total_amount, Decimal(-121))
         self.validate_invoice(invoice)
 
     @responses.activate
