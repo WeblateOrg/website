@@ -8,7 +8,8 @@ from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
 from weblate_web.admin import PostAdmin
-from weblate_web.admin_site import CustomAdminSite, UserAutocompleteJsonView
+from weblate_web.admin_app import CustomAdminConfig
+from weblate_web.admin_site import UserAutocompleteJsonView
 from weblate_web.invoices.admin import InvoiceAdmin
 from weblate_web.invoices.models import (
     Invoice,
@@ -23,8 +24,6 @@ class AdminSiteTestCase(TestCase):
     """Tests for CustomAdminSite and UserAutocompleteJsonView."""
 
     def test_custom_admin_site_default_site(self) -> None:
-        from weblate_web.admin_app import CustomAdminConfig
-
         self.assertEqual(
             CustomAdminConfig.default_site,
             "weblate_web.admin_site.CustomAdminSite",
@@ -156,6 +155,11 @@ class InvoiceAdminTestCase(TestCase):
             **kwargs,
         )
 
+    def make_mock_form(self, invoice: Invoice):
+        return type(
+            "MockForm", (), {"instance": invoice, "save_m2m": lambda _self: None}
+        )()
+
     def test_has_delete_permission_always_false(self) -> None:
         request = self.factory.get("/")
         request.user = self.user
@@ -225,8 +229,7 @@ class InvoiceAdminTestCase(TestCase):
         request = self.factory.get("/")
         request.user = self.user
 
-        # Create a mock form with the invoice instance
-        form = type("MockForm", (), {"instance": invoice, "save_m2m": lambda self: None})()
+        form = self.make_mock_form(invoice)
         self.invoice_admin.save_related(request, form, formsets=[], change=True)
 
         mock_generate.assert_called_once()
@@ -240,7 +243,7 @@ class InvoiceAdminTestCase(TestCase):
         request = self.factory.get("/")
         request.user = self.user
 
-        form = type("MockForm", (), {"instance": invoice, "save_m2m": lambda self: None})()
+        form = self.make_mock_form(invoice)
         self.invoice_admin.save_related(request, form, formsets=[], change=True)
 
         mock_generate.assert_not_called()
@@ -254,7 +257,7 @@ class InvoiceAdminTestCase(TestCase):
         request = self.factory.get("/")
         request.user = self.user
 
-        form = type("MockForm", (), {"instance": invoice, "save_m2m": lambda self: None})()
+        form = self.make_mock_form(invoice)
         self.invoice_admin.save_related(request, form, formsets=[], change=True)
 
         invoice.refresh_from_db()
@@ -270,7 +273,7 @@ class InvoiceAdminTestCase(TestCase):
         request = self.factory.get("/")
         request.user = self.user
 
-        form = type("MockForm", (), {"instance": invoice, "save_m2m": lambda self: None})()
+        form = self.make_mock_form(invoice)
         self.invoice_admin.save_related(request, form, formsets=[], change=True)
 
         invoice.refresh_from_db()
