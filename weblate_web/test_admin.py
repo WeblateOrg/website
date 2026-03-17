@@ -53,7 +53,7 @@ class AdminSiteTestCase(TestCase):
         view = UserAutocompleteJsonView()
         result = view.serialize_result(customer, "pk")
         # Non-User objects should use default text (str representation)
-        self.assertNotIn("<", result["text"])
+        self.assertEqual(result["text"], str(customer))
 
     def test_custom_admin_site_autocomplete_view(self) -> None:
         User.objects.create_superuser(username="admin", email="admin@example.com")
