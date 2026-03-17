@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from unittest.mock import patch
+from typing import cast
 
 from django.contrib import admin
 from django.contrib.auth.models import User
@@ -210,7 +211,7 @@ class InvoiceAdminTestCase(TestCase):
         invoice = self.create_invoice(kind=InvoiceKind.INVOICE)
         url = self.invoice_admin.view_on_site(invoice)
         self.assertIsNotNone(url)
-        self.assertIn(str(invoice.pk), url)
+        self.assertIn(str(invoice.pk), cast(str, url))
 
     def test_view_on_site_draft(self) -> None:
         invoice = self.create_invoice(kind=InvoiceKind.DRAFT)
