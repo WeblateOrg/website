@@ -230,6 +230,13 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, invoice.get_absolute_url())
 
 
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+)
 class IncomeTrackingTestCase(BaseCRMTestCase):
     user: User
     customer: Customer
@@ -360,6 +367,35 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         # Check that total income only includes the invoice, not the quote
         # The income should be 1000 (invoice) in EUR
         self.assertContains(response, "EUR")
+
+    @responses.activate
+    def test_income_uses_amount_without_vat(self):
+        """Test that income report totals stay VAT-exclusive."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+        customer = self.create_customer()
+        customer.country = "CZ"
+        customer.save(update_fields=["country"])
+
+        invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=customer,
+            issue_date=date(current_year, 1, 15),
+            currency=Currency.EUR,
+            vat_rate=21,
+        )
+        invoice.invoiceitem_set.create(
+            description="Invoice item",
+            quantity=1,
+            unit_price=Decimal(100),
+        )
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_income"], Decimal(100))
 
     def test_income_year_navigation(self):
         """Test year navigation."""
