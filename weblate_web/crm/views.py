@@ -4,11 +4,21 @@ import calendar
 import math
 from decimal import Decimal
 from operator import attrgetter
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, ClassVar, cast
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.db.models import (
+    Case,
+    DecimalField,
+    ExpressionWrapper,
+    F,
+    Q,
+    Sum,
+    Value,
+    When,
+)
+from django.db.models.functions import Coalesce, ExtractDay, ExtractMonth, Round
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -26,9 +36,6 @@ from weblate_web.utils import show_form_errors
 from .models import Interaction
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-    from uuid import UUID
-
     from django.http import HttpRequest
 
     from weblate_web.payments.models import CustomerQuerySet
@@ -356,6 +363,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     CHART_HEIGHT = 400
     CHART_PADDING = 60
     MIN_CHART_VALUE = Decimal(1)
+    DECIMAL_OUTPUT_FIELD: ClassVar[DecimalField] = DecimalField(
+        max_digits=16, decimal_places=3
+    )
 
     # Category colors shared across all charts (keyed by category enum)
     CATEGORY_COLORS = {
@@ -480,7 +490,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     def generate_svg_stacked_bar_chart(  # noqa: PLR0914
         self,
         monthly_data: dict[str, Decimal],
-        invoices: list[Invoice],
+        period_category_data: dict[str, dict[InvoiceCategory, Decimal]],
         year: int,
         month: int | None = None,
     ) -> str:
@@ -499,29 +509,16 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         chart_width = width - 2 * padding
         chart_height = height - 2 * padding
 
-        # Pre-calculate invoice totals in EUR
-        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
-
         # Determine number of bars and labels based on view type
         if month:
             # Monthly view: show daily bars
             num_bars = calendar.monthrange(year, month)[1]
             bar_labels = [str(d) for d in range(1, num_bars + 1)]
-
-            def filter_by_day(inv: Invoice, idx: int) -> bool:
-                return inv.issue_date.day == idx + 1
-
-            filter_func = filter_by_day
             label_prefix = "Day"
         else:
             # Yearly view: show monthly bars
             num_bars = 12
             bar_labels = [f"{m:02d}" for m in range(1, 13)]
-
-            def filter_by_month(inv: Invoice, idx: int) -> bool:
-                return inv.issue_date.month == idx + 1
-
-            filter_func = filter_by_month
             label_prefix = ""
 
         # Get max value for scaling
@@ -541,21 +538,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         for idx in range(num_bars):
             bar_label = bar_labels[idx]
             x: float = padding + bar_spacing * (idx + 0.5)
-
-            # Get invoices for this time period by category
-            period_invoices = [inv for inv in invoices if filter_func(inv, idx)]
+            category_totals = period_category_data.get(bar_label, {})
 
             # Stack bars by category
             y_offset: float = height - padding
             for category in InvoiceCategory:
-                category_total = sum(
-                    (
-                        invoice_totals[inv.pk]
-                        for inv in period_invoices
-                        if inv.category == category.value
-                    ),
-                    start=Decimal(0),
-                )
+                category_total = category_totals.get(category, Decimal(0))
 
                 if category_total > 0:
                     bar_height = float(category_total / max_value * chart_height)
@@ -586,130 +574,124 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
-    def _get_invoices_and_totals(
+    def _get_invoice_summary_rows(
         self, year: int, month: int | None = None
-    ) -> tuple[list[Invoice], dict[UUID, Decimal]]:
-        """Fetch invoices and pre-calculate totals (shared helper)."""
+    ) -> list[dict[str, int | Decimal]]:
+        """Fetch per-invoice totals for the report using SQL aggregation."""
+        zero = Value(Decimal(0), output_field=self.DECIMAL_OUTPUT_FIELD)
+        line_total = ExpressionWrapper(
+            F("invoiceitem__unit_price") * F("invoiceitem__quantity"),
+            output_field=self.DECIMAL_OUTPUT_FIELD,
+        )
+
         query = Invoice.objects.filter(
-            kind=InvoiceKind.INVOICE, issue_date__year=year
-        ).prefetch_related("invoiceitem_set")
+            kind=InvoiceKind.INVOICE,
+            issue_date__year=year,
+        )
         if month:
             query = query.filter(issue_date__month=month)
 
-        invoices = list(query.prefetch_related("invoiceitem_set"))
-        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
+        period_expr = ExtractDay("issue_date") if month else ExtractMonth("issue_date")
 
-        return invoices, invoice_totals
-
-    def _aggregate_income_by_period(
-        self,
-        year: int,
-        month: int | None,
-        filter_func: Callable[[Invoice, str], bool],
-        period_keys: list[str],
-    ) -> tuple[dict[str, Decimal], list[Invoice]]:
-        """
-        Aggregate income data filtered by a custom function.
-
-        Args:
-            year: Year to filter invoices
-            month: Optional month to filter invoices
-            filter_func: Function that takes (invoice, key) and returns True if it matches the period
-            period_keys: List of period keys (e.g., ['01', '02'] for months or ['1', '2'] for days)
-
-        Returns:
-            Tuple of (period_totals_dict, invoices_list)
-
-        """
-        invoices, invoice_totals = self._get_invoices_and_totals(year, month)
-
-        # Aggregate by period
-        period_totals = {}
-        for key in period_keys:
-            total = sum(
-                (invoice_totals[inv.pk] for inv in invoices if filter_func(inv, key)),
-                start=Decimal(0),
+        return list(
+            query.annotate(period=period_expr)
+            .values("pk", "category", "period")
+            .annotate(
+                items_total=Coalesce(Sum(line_total), zero),
+                positive_items_total=Coalesce(
+                    Sum(
+                        Case(
+                            When(invoiceitem__unit_price__gt=0, then=line_total),
+                            default=zero,
+                            output_field=self.DECIMAL_OUTPUT_FIELD,
+                        )
+                    ),
+                    zero,
+                ),
             )
-            period_totals[key] = total
+            .annotate(
+                discount_amount=Case(
+                    When(
+                        discount__isnull=False,
+                        then=Round(
+                            ExpressionWrapper(
+                                -F("positive_items_total")
+                                * F("discount__percents")
+                                / Value(100),
+                                output_field=self.DECIMAL_OUTPUT_FIELD,
+                            ),
+                            precision=0,
+                        ),
+                    ),
+                    default=zero,
+                    output_field=self.DECIMAL_OUTPUT_FIELD,
+                )
+            )
+            .annotate(
+                total_no_vat=ExpressionWrapper(
+                    F("items_total") + F("discount_amount"),
+                    output_field=self.DECIMAL_OUTPUT_FIELD,
+                )
+            )
+            .values("category", "period", "total_no_vat")
+        )
 
-        return period_totals, invoices
+    def _get_empty_category_totals(self) -> dict[InvoiceCategory, Decimal]:
+        return {category: Decimal(0) for category in InvoiceCategory}
+
+    def _aggregate_period_totals(
+        self, summary_rows: list[dict[str, int | Decimal]], period_keys: list[str]
+    ) -> tuple[dict[str, Decimal], dict[str, dict[InvoiceCategory, Decimal]]]:
+        period_totals = {key: Decimal(0) for key in period_keys}
+        period_category_data = {
+            key: self._get_empty_category_totals() for key in period_keys
+        }
+        use_zero_padding = len(period_keys[0]) == 2
+
+        for row in summary_rows:
+            key = (
+                f"{row['period']:02d}"
+                if use_zero_padding
+                else str(cast("int", row["period"]))
+            )
+            category = InvoiceCategory(cast("int", row["category"]))
+            total = cast("Decimal", row["total_no_vat"])
+            period_totals[key] += total
+            period_category_data[key][category] += total
+
+        return period_totals, period_category_data
 
     def get_income_data(
         self, year: int, month: int | None = None
     ) -> dict[InvoiceCategory, Decimal]:
         """Get income data aggregated by category."""
-        invoices, invoice_totals = self._get_invoices_and_totals(year, month)
-
-        # Aggregate by category manually since total_amount_no_vat is a property
-        category_data = {}
-        for category in InvoiceCategory:
-            total = sum(
-                (
-                    invoice_totals[inv.pk]
-                    for inv in invoices
-                    if inv.category == category.value
-                ),
-                start=Decimal(0),
-            )
-            category_data[category] = total
+        category_data = self._get_empty_category_totals()
+        for row in self._get_invoice_summary_rows(year, month):
+            category = InvoiceCategory(cast("int", row["category"]))
+            category_data[category] += cast("Decimal", row["total_no_vat"])
 
         return category_data
 
-    def get_monthly_data(self, year: int) -> tuple[dict[str, Decimal], list[Invoice]]:
+    def get_monthly_data(
+        self, year: int
+    ) -> tuple[dict[str, Decimal], dict[str, dict[InvoiceCategory, Decimal]]]:
         """Get monthly income data for the year."""
-
-        def filter_by_month(inv: Invoice, key: str) -> bool:
-            return inv.issue_date.month == int(key)
-
         monthly_keys = [f"{month:02d}" for month in range(1, 13)]
-        return self._aggregate_income_by_period(
-            year, None, filter_by_month, monthly_keys
+        return self._aggregate_period_totals(
+            self._get_invoice_summary_rows(year),
+            monthly_keys,
         )
 
     def get_daily_data(
         self, year: int, month: int
-    ) -> tuple[dict[str, Decimal], list[Invoice]]:
+    ) -> tuple[dict[str, Decimal], dict[str, dict[InvoiceCategory, Decimal]]]:
         """Get daily income data for a specific month."""
-
-        def filter_by_day(inv: Invoice, key: str) -> bool:
-            return inv.issue_date.day == int(key)
-
         num_days = calendar.monthrange(year, month)[1]
         daily_keys = [str(day) for day in range(1, num_days + 1)]
-        return self._aggregate_income_by_period(year, month, filter_by_day, daily_keys)
-
-    def get_monthly_category_data(
-        self, year: int
-    ) -> tuple[dict[str, dict[str, Decimal]], list[Invoice]]:
-        """Get monthly income data split by category for stacked chart."""
-        invoices = list(
-            Invoice.objects.filter(
-                kind=InvoiceKind.INVOICE, issue_date__year=year
-            ).prefetch_related("invoiceitem_set")
+        return self._aggregate_period_totals(
+            self._get_invoice_summary_rows(year, month),
+            daily_keys,
         )
-
-        # Pre-calculate totals in EUR to avoid exchange rate fluctuations
-        invoice_totals = {inv.pk: inv.total_amount_no_vat for inv in invoices}
-
-        # Group by month and category
-        monthly_category_data: dict[str, dict[str, Decimal]] = {}
-        for month in range(1, 13):
-            month_key = f"{month:02d}"
-            monthly_category_data[month_key] = {}
-
-            for category in InvoiceCategory:
-                total = sum(
-                    (
-                        invoice_totals[inv.pk]
-                        for inv in invoices
-                        if inv.issue_date.month == month
-                        and inv.category == category.value
-                    ),
-                    start=Decimal(0),
-                )
-                monthly_category_data[month_key][category.label] = total
-
-        return monthly_category_data, invoices
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -736,19 +718,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         if month:
             # For monthly view, show daily stacked chart
-            daily_data, daily_invoices = self.get_daily_data(year, month)
+            daily_data, daily_category_data = self.get_daily_data(year, month)
             context["daily_chart_svg"] = self.generate_svg_stacked_bar_chart(
-                daily_data, daily_invoices, year, month
+                daily_data, daily_category_data, year, month
             )
             context["is_monthly"] = True
         else:
             # For yearly view, show monthly stacked chart
-            monthly_data, invoices = self.get_monthly_data(year)
+            monthly_data, monthly_category_data = self.get_monthly_data(year)
             context["chart_svg"] = self.generate_svg_stacked_bar_chart(
-                monthly_data, invoices, year
+                monthly_data, monthly_category_data, year
             )
             context["monthly_data"] = monthly_data
-            context["monthly_category_data"], _ = self.get_monthly_category_data(year)
+            context["monthly_category_data"] = monthly_category_data
             context["is_monthly"] = False
 
         return context
