@@ -397,6 +397,23 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["total_income"], Decimal(100))
 
+    @responses.activate
+    def test_income_counts_duplicate_invoice_totals(self):
+        """Test that identical invoices in one bucket are both counted."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": current_year})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_income"], Decimal(200))
+        self.assertEqual(response.context["income_data"]["Hosting"], Decimal(200))
+        self.assertEqual(response.context["monthly_data"]["01"], Decimal(200))
+
     def test_income_year_navigation(self):
         """Test year navigation."""
         current_year = timezone.now().year
