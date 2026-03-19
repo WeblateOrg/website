@@ -2416,6 +2416,26 @@ class StorageBoxTestCase(FakturaceTestCase):
             service.create_backup_repository(Report())
 
     @responses.activate
+    def test_create_fail_without_details(self):
+        service = self.create_service(years=0, days=-2, recurring="")
+        responses.post(
+            "https://api.hetzner.com/v1/storage_boxes/153391/subaccounts",
+            status=422,
+            json={
+                "error": {
+                    "code": "invalid_input",
+                    "message": "invalid input in field password",
+                    "details": None,
+                }
+            },
+        )
+        with (
+            patch("weblate_web.models.create_storage_folder"),
+            self.assertRaisesRegex(HTTPError, "invalid input in field password"),
+        ):
+            service.create_backup_repository(Report())
+
+    @responses.activate
     def test_create(self):
         service = self.create_service(years=0, days=-2, recurring="")
         responses.post(
