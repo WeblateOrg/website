@@ -231,17 +231,23 @@ def generate_random_password(length: int = 124) -> str:
     """
     Generate random password to comply with Hetzner requirements.
 
-    * The password must be between 12 and 128 characters long
-    * The password can only contain these characters: a-z A-Z Ä Ö Ü ä ö ü ß 0-9 ^ ° ! § $ % / ( ) = ? + # - . , ; : ~ * @ { } _ &
-    * The password must contain at least one upper case letter, one lower case letter, one number, and a special character
+    * The password must be between 12 and 128 bytes long when UTF-8 encoded
+    * Hetzner allows these characters: a-z A-Z Ä Ö Ü ä ö ü ß 0-9 ^ ° ! § $ % / ( ) = ? + # - . , ; : ~ * @ { } _ &
+    * This generator intentionally uses an ASCII-only subset so that the length
+      in characters equals the length in bytes, and the UTF-8 encoded password
+      stays within the 128-byte limit
+    * The password must contain at least one upper case letter, one lower case
+      letter, one number, and a special character
 
-    The password of length 128 is not actually accepted.
+    Note: A password of length 128 bytes is not actually accepted by Hetzner.
     """
     if length % 4 != 0:
         raise ValueError("Password length must be modulo 4!")
 
     part = length // 4
-    specialchars = "^°!§$%/()=?+#-.,;:~*@{}_&"
+    # Restrict to ASCII so the UTF-8 encoded password stays within Hetzner's
+    # 128-byte limit.
+    specialchars = "^!$%/()=?+#-.,;:~*@{}_&"
     blocks: tuple[str, ...] = (
         string.ascii_lowercase,
         string.ascii_uppercase,

@@ -31,6 +31,7 @@ from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 
 from .exchange_rates import UncachedExchangeRates
+from .hetzner import generate_random_password
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .models import (
@@ -2384,6 +2385,15 @@ class ExchangeRatesTestCase(SimpleTestCase):
 
 
 class StorageBoxTestCase(FakturaceTestCase):
+    def test_password_is_ascii_and_within_byte_limit(self):
+        password = generate_random_password()
+        # Ensure all characters are ASCII
+        self.assertTrue(all(ord(ch) < 128 for ch in password))
+        # Ensure the UTF-8 encoded password fits within the 128-byte limit
+        self.assertLessEqual(len(password.encode("utf-8")), 128)
+        # For ASCII, character count should match UTF-8 byte length
+        self.assertEqual(len(password), len(password.encode("utf-8")))
+
     @responses.activate
     def test_create_fail(self):
         service = self.create_service(years=0, days=-2, recurring="")
