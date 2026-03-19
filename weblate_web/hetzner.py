@@ -241,7 +241,9 @@ def generate_random_password(length: int = 124) -> str:
         raise ValueError("Password length must be modulo 4!")
 
     part = length // 4
-    specialchars = "^°!§$%/()=?+#-.,;:~*@{}_&"
+    # Restrict to ASCII so the UTF-8 encoded password stays within Hetzner's
+    # 128-byte limit.
+    specialchars = "^!$%/()=?+#-.,;:~*@{}_&"
     blocks: tuple[str, ...] = (
         string.ascii_lowercase,
         string.ascii_uppercase,
