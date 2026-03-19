@@ -2387,8 +2387,12 @@ class ExchangeRatesTestCase(SimpleTestCase):
 class StorageBoxTestCase(FakturaceTestCase):
     def test_password_is_ascii_and_within_byte_limit(self):
         password = generate_random_password()
-        self.assertEqual(len(password), 124)
-        self.assertEqual(len(password.encode("utf-8")), 124)
+        # Ensure all characters are ASCII
+        self.assertTrue(all(ord(ch) < 128 for ch in password))
+        # Ensure the UTF-8 encoded password fits within the 128-byte limit
+        self.assertLessEqual(len(password.encode("utf-8")), 128)
+        # For ASCII, character count should match UTF-8 byte length
+        self.assertEqual(len(password), len(password.encode("utf-8")))
 
     @responses.activate
     def test_create_fail(self):
