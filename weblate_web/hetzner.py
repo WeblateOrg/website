@@ -190,12 +190,16 @@ def handle_error_response(response: requests.Response) -> None:
                 data={"response": payload},
             )
             messages = [payload["error"]["message"]]
-            if (
-                "details" in payload["error"]
-                and "fields" in payload["error"]["details"]
-            ):
-                for field in payload["error"]["details"]["fields"]:
-                    messages.extend(field["messages"])
+            details = payload["error"].get("details")
+            fields = details.get("fields") if isinstance(details, dict) else None
+            if isinstance(fields, list):
+                messages.extend(
+                    message
+                    for field in fields
+                    if isinstance(field, dict)
+                    for message in field.get("messages", [])
+                    if isinstance(message, str)
+                )
             raise requests.HTTPError(", ".join(messages), response=response)
 
     response.raise_for_status()
