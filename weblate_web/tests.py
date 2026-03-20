@@ -1735,10 +1735,35 @@ class ExpiryTest(FakturaceTestCase):
             city=TEST_CUSTOMER["city"],
             postcode=TEST_CUSTOMER["postcode"],
             country="US",
+            origin="https://example.com/customer",
             upcoming_payment_notification_days=366,
         )
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValidationError) as exc:
             customer.full_clean()
+        self.assertEqual(
+            list(exc.exception.message_dict),
+            ["upcoming_payment_notification_days"],
+        )
+
+    def test_customer_extra_upcoming_notification_days_conflicts_with_default(
+        self,
+    ) -> None:
+        customer = Customer(
+            user_id=-1,
+            name="TEST CUSTOMER",
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country="US",
+            origin="https://example.com/customer",
+            upcoming_payment_notification_days=31,
+        )
+        with self.assertRaises(ValidationError) as exc:
+            customer.full_clean()
+        self.assertEqual(
+            list(exc.exception.message_dict),
+            ["upcoming_payment_notification_days"],
+        )
 
     def test_expiring_donate(self) -> None:
         self.create_donation(years=0, days=-2, recurring="")

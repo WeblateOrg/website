@@ -90,6 +90,7 @@ EU_VAT_RATES = {
 
 VAT_RATE = 21
 DELETED_MAIL = re.compile(r"noreply\+[0-9]+@weblate.org")
+DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS = {2, 7, 31}
 
 
 class CustomerQuerySet(models.QuerySet["Customer"]):
@@ -270,6 +271,18 @@ class Customer(models.Model):
         if self.vat and self.vat_country_code != self.country_code:
             raise ValidationError(
                 {"country": gettext_lazy("The country has to match your VAT code")}
+            )
+        if (
+            self.upcoming_payment_notification_days
+            in DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS
+        ):
+            raise ValidationError(
+                {
+                    "upcoming_payment_notification_days": gettext_lazy(
+                        "Choose a day different from the default payment "
+                        "notifications: 2, 7, and 31."
+                    )
+                }
             )
 
     @property
