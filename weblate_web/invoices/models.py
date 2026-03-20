@@ -1061,6 +1061,42 @@ class Invoice(models.Model):  # noqa: PLR0904
             return get_site_url("invoice-pay", pk=self.pk)
         return None
 
+    def get_upcoming_payment_url(self) -> str | None:
+        from weblate_web.payments.models import Payment  # noqa: PLC0415
+
+        payment: Payment | None = None
+        if self.kind == InvoiceKind.PROFORMA:
+            payments = list(self.draft_payment_set.all())
+            if any(item.state == Payment.PROCESSED for item in payments):
+                return None
+            payment = max(
+                (
+                    item
+                    for item in payments
+                    if item.state in {Payment.NEW, Payment.PENDING, Payment.REJECTED}
+                ),
+                key=lambda item: item.created,
+                default=None,
+            )
+        elif self.kind == InvoiceKind.INVOICE:
+            payments = list(self.paid_payment_set.all())
+            if any(item.state == Payment.PROCESSED for item in payments):
+                return None
+            payment = max(
+                (
+                    item
+                    for item in payments
+                    if item.state in {Payment.NEW, Payment.PENDING, Payment.REJECTED}
+                ),
+                key=lambda item: item.created,
+                default=None,
+            )
+
+        if payment is not None:
+            return payment.get_payment_url()
+
+        return self.get_payment_url()
+
     def get_payment_qrcode(self) -> str:
         if not self.can_be_paid(InvoiceKind.PROFORMA):
             return ""

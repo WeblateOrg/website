@@ -319,10 +319,62 @@ class Customer(models.Model):
         mails = {self.email, *self.users.values_list("email", flat=True)}
         return [mail for mail in mails if mail and not DELETED_MAIL.match(mail)]
 
+    def get_upcoming_payment_invoices(self) -> models.QuerySet[Invoice]:
+        from weblate_web.invoices.models import InvoiceKind  # noqa: PLC0415
+
+        recent = timezone.now().date() - timedelta(days=31)
+        return (
+            self.invoice_set.filter(
+                prepaid=False,
+            )
+            .prefetch_related(
+                "invoiceitem_set", "draft_payment_set", "paid_payment_set"
+            )
+            .exclude(paid_payment_set__state=Payment.PROCESSED)
+            .exclude(draft_payment_set__state=Payment.PROCESSED)
+            .filter(
+                models.Q(
+                    kind=InvoiceKind.INVOICE,
+                )
+                & (
+                    models.Q(
+                        paid_payment_set__state__in={
+                            Payment.NEW,
+                            Payment.PENDING,
+                            Payment.REJECTED,
+                        }
+                    )
+                    | models.Q(paid_payment_set=None)
+                )
+                | models.Q(
+                    kind=InvoiceKind.PROFORMA,
+                    issue_date__gte=recent,
+                )
+                & (
+                    models.Q(
+                        draft_payment_set__state__in={
+                            Payment.NEW,
+                            Payment.PENDING,
+                            Payment.REJECTED,
+                        }
+                    )
+                    | models.Q(draft_payment_set=None)
+                )
+            )
+            .distinct()
+            .order_by("-issue_date", "-number")[:10]
+        )
+
     def send_notification(
         self, notification: str, invoice: Invoice | None = None, **kwargs
     ) -> None:
         from weblate_web.crm.models import Interaction  # noqa: PLC0415
+
+        if (
+            notification == "payment_upcoming"
+            and "upcoming_payment_invoices" not in kwargs
+        ):
+            kwargs["upcoming_payment_invoices"] = self.get_upcoming_payment_invoices()
 
         recipients = self.get_notify_emails()
         email = send_notification(notification, recipients, invoice=invoice, **kwargs)
