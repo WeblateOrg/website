@@ -33,6 +33,11 @@
         End client: {{ object.end_client }}
         <br>
       {% endif %}
+      {% if object.upcoming_payment_notification_days %}
+        Additional upcoming payment notification:
+        {{ object.upcoming_payment_notification_days }} days before due date
+        <br>
+      {% endif %}
       {% if object.zammad_id %}
         <a href="https://care.weblate.org/#organization/profile/{{ object.zammad_id }}">View in Zammad</a>
         <br />

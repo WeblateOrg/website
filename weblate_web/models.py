@@ -43,6 +43,7 @@ from django.utils.translation import gettext_lazy, override, pgettext_lazy
 from markupfield.fields import MarkupField
 from PIL import Image as PILImage
 
+from weblate_web.const import DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS
 from weblate_web.invoices.models import (
     CURRENCY_MAP_FROM_PAYMENT,
     Currency,
@@ -71,7 +72,6 @@ if TYPE_CHECKING:
     from weblate_web.invoices.models import InvoiceKind
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
-NOTIFY_DAYS = {-7, -2}
 
 REWARDS = (
     (0, gettext_lazy("No reward")),
@@ -257,11 +257,13 @@ class Donation(models.Model):
 
     def should_notify(self, timestamp: datetime) -> bool:
         delta = timestamp - self.expires
-        # Notify month before yearly payment
-        if delta.days == -31:
+        extra_days = self.customer.upcoming_payment_notification_days
+        days_before = -delta.days
+        # Notify before payment
+        if days_before in DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS:
             return True
-        # Notify just before the payment
-        if delta.days in NOTIFY_DAYS:
+        # Additional customer-specific notification before payment
+        if extra_days and days_before == extra_days:
             return True
         # Notify monthly after two months
         if delta.days > 60:
@@ -1100,11 +1102,15 @@ class Subscription(models.Model):
 
     def should_notify(self, timestamp: datetime) -> bool:
         delta = timestamp - self.expires
-        # Notify month before yearly payment
-        if delta.days == -31 and self.package.get_repeat() == "y":
+        extra_days = self.service.customer.upcoming_payment_notification_days
+        days_before = -delta.days
+        # Notify before payment
+        if days_before in DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS and (
+            days_before != 31 or self.package.get_repeat() == "y"
+        ):
             return True
-        # Notify just before the payment
-        if delta.days in NOTIFY_DAYS:
+        # Additional customer-specific notification before payment
+        if extra_days and days_before == extra_days:
             return True
         # Notify weekly after the payment
         return delta.days > 0 and delta.days % 7 == 0

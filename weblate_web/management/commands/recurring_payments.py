@@ -24,11 +24,12 @@ from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db.models import Max
 from django.utils import timezone
 
 from weblate_web.invoices.models import InvoiceKind
 from weblate_web.models import Donation, Service, Subscription, get_period_delta
-from weblate_web.payments.models import Payment
+from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 
 if TYPE_CHECKING:
@@ -53,7 +54,14 @@ class Command(BaseCommand):
         expiry: list[tuple[str, Iterable[str], datetime]] = []
         timestamp = timezone.now()
 
-        expires_notify = timezone.now() + timedelta(days=31)
+        summary_notify = timestamp + timedelta(days=31)
+        customer_notification_days = (
+            Customer.objects.aggregate(Max("upcoming_payment_notification_days"))[
+                "upcoming_payment_notification_days__max"
+            ]
+            or 0
+        )
+        expires_notify = timestamp + timedelta(days=max(31, customer_notification_days))
 
         # Expiring subscriptions
         subscriptions = Subscription.objects.filter(
@@ -74,7 +82,10 @@ class Command(BaseCommand):
                 continue
             if notify_user:
                 subscription.send_notification("payment_missing")
-            if not subscription.could_be_obsolete():
+            if (
+                subscription.expires <= summary_notify
+                and not subscription.could_be_obsolete()
+            ):
                 name = f"{subscription}"
                 if subscription.service.note:
                     name = f"{name} ({subscription.service.note})"
@@ -99,13 +110,14 @@ class Command(BaseCommand):
                 continue
             if notify_user:
                 donation.send_notification("payment_missing")
-            expiry.append(
-                (
-                    f"{donation.customer}: {donation.get_payment_description()}",
-                    donation.customer.get_notify_emails(),
-                    donation.expires,
+            if donation.expires <= summary_notify:
+                expiry.append(
+                    (
+                        f"{donation.customer}: {donation.get_payment_description()}",
+                        donation.customer.get_notify_emails(),
+                        donation.expires,
+                    )
                 )
-            )
 
         # Notify admins
         if expiry and (timestamp.day == 1 or force_summary):
