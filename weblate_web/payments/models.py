@@ -45,7 +45,10 @@ from django_countries.fields import CountryField
 from unidecode import unidecode
 from vies.models import VATINField
 
-from weblate_web.const import MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS
+from weblate_web.const import (
+    DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
+    MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
+)
 from weblate_web.utils import FOSDEM_ORIGIN, get_site_url
 
 from .utils import send_notification, validate_email
@@ -90,7 +93,6 @@ EU_VAT_RATES = {
 
 VAT_RATE = 21
 DELETED_MAIL = re.compile(r"noreply\+[0-9]+@weblate.org")
-DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS = {2, 7, 31}
 
 
 class CustomerQuerySet(models.QuerySet["Customer"]):
