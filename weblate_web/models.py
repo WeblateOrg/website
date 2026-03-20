@@ -257,8 +257,12 @@ class Donation(models.Model):
 
     def should_notify(self, timestamp: datetime) -> bool:
         delta = timestamp - self.expires
+        extra_days = self.customer.upcoming_payment_notification_days
         # Notify month before yearly payment
         if delta.days == -31:
+            return True
+        # Additional customer-specific notification before payment
+        if extra_days and delta.days == -extra_days:
             return True
         # Notify just before the payment
         if delta.days in NOTIFY_DAYS:
@@ -1100,8 +1104,12 @@ class Subscription(models.Model):
 
     def should_notify(self, timestamp: datetime) -> bool:
         delta = timestamp - self.expires
+        extra_days = self.service.customer.upcoming_payment_notification_days
         # Notify month before yearly payment
         if delta.days == -31 and self.package.get_repeat() == "y":
+            return True
+        # Additional customer-specific notification before payment
+        if extra_days and delta.days == -extra_days:
             return True
         # Notify just before the payment
         if delta.days in NOTIFY_DAYS:

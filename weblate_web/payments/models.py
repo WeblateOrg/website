@@ -34,15 +34,18 @@ from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.core.mail import EmailAlternative
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.validators import MaxValueValidator
 from django.db import models, transaction
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
 from unidecode import unidecode
 from vies.models import VATINField
 
+from weblate_web.const import MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS
 from weblate_web.utils import FOSDEM_ORIGIN, get_site_url
 
 from .utils import send_notification, validate_email
@@ -160,6 +163,19 @@ class Customer(models.Model):
         validators=[validate_email],
         verbose_name=gettext_lazy("Billing e-mail"),
         help_text=gettext_lazy("Additional e-mail to receive billing notifications"),
+    )
+    upcoming_payment_notification_days = models.PositiveIntegerField(
+        default=0,
+        validators=[MaxValueValidator(MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS)],
+        verbose_name=gettext_lazy("Additional upcoming payment notification"),
+        help_text=format_lazy(
+            gettext_lazy(
+                "Number of days before the payment due date to send one extra "
+                "upcoming payment notification, from 0 to {}. Set to 0 to use "
+                "only default notifications."
+            ),
+            MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
+        ),
     )
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
