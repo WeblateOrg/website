@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from dataclasses import dataclass
 from datetime import date, timedelta
 from decimal import Decimal
 from io import StringIO
@@ -27,7 +28,7 @@ from django.utils.translation import override
 from requests.exceptions import HTTPError
 from wlc import WeblateException
 
-from weblate_web.invoices.models import Discount
+from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 
@@ -67,6 +68,28 @@ TEST_SIGNATURE = Path(__file__).parent / "static" / "weblate-black.svg"
 TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
 TEST_ACTIVITY = TEST_DATA / "activity.json"
 TEST_VIES_WSDL = TEST_DATA / "checkVatService.wsdl"
+
+
+@dataclass
+class UpcomingInvoiceCases:
+    proforma: Invoice
+    proforma_urls: list[str]
+    invoice: Invoice
+    invoice_urls: list[str]
+    old_invoice: Invoice
+    old_proforma: Invoice
+    rejected_proforma: Invoice
+    rejected_proforma_urls: list[str]
+    rejected_invoice: Invoice
+    rejected_invoice_urls: list[str]
+    recovered_proforma: Invoice
+    recovered_proforma_urls: list[str]
+    recovered_invoice: Invoice
+    recovered_invoice_urls: list[str]
+    paid_invoice: Invoice
+    paid_invoice_urls: list[str]
+
+
 RATES_JSON = {
     "rates": [
         {
@@ -1739,6 +1762,116 @@ class ExpiryTest(FakturaceTestCase):
         )
         with self.assertRaises(ValidationError):
             customer.full_clean()
+            
+    def _create_invoice_case(
+        self,
+        customer: Customer,
+        *,
+        kind: InvoiceKind,
+        description: str,
+        issue_days: int = 0,
+        payment_states: tuple[int, ...] = (),
+    ) -> tuple[Invoice, list[str]]:
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=kind,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+            issue_date=timezone.now().date() + timedelta(days=issue_days),
+        )
+        invoice.invoiceitem_set.create(description=description, unit_price=100)
+
+        relation = "draft_invoice" if kind == InvoiceKind.PROFORMA else "paid_invoice"
+        payment_urls = []
+        for index, state in enumerate(payment_states):
+            payment = Payment.objects.create(
+                customer=customer,
+                amount=121,
+                amount_fixed=True,
+                description=f"{description} payment {index}",
+                backend="pay",
+                state=state,
+                **{relation: invoice},
+            )
+            payment_urls.append(payment.get_payment_url())
+
+        return invoice, payment_urls
+
+    def _prepare_upcoming_invoice_cases(  # noqa: PLR0914
+        self, customer: Customer
+    ) -> UpcomingInvoiceCases:
+        proforma, proforma_urls = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.PROFORMA,
+            description="Pending pro forma",
+            payment_states=(Payment.NEW, Payment.PENDING),
+        )
+        invoice, invoice_urls = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.INVOICE,
+            description="Pending invoice",
+            payment_states=(Payment.PENDING, Payment.NEW),
+        )
+        old_invoice, _ = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.INVOICE,
+            description="Old invoice",
+            issue_days=-40,
+        )
+        old_proforma, _ = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.PROFORMA,
+            description="Old pro forma",
+            issue_days=-40,
+        )
+        rejected_proforma, rejected_proforma_urls = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.PROFORMA,
+            description="Rejected pro forma",
+            payment_states=(Payment.REJECTED,),
+        )
+        rejected_invoice, rejected_invoice_urls = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.INVOICE,
+            description="Rejected invoice",
+            payment_states=(Payment.REJECTED,),
+        )
+        recovered_proforma, recovered_proforma_urls = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.PROFORMA,
+            description="Recovered pro forma",
+            payment_states=(Payment.REJECTED, Payment.PROCESSED),
+        )
+        recovered_invoice, recovered_invoice_urls = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.INVOICE,
+            description="Recovered invoice",
+            payment_states=(Payment.REJECTED, Payment.PROCESSED),
+        )
+        paid_invoice, paid_invoice_urls = self._create_invoice_case(
+            customer,
+            kind=InvoiceKind.INVOICE,
+            description="Paid invoice",
+            payment_states=(Payment.PROCESSED,),
+        )
+        return UpcomingInvoiceCases(
+            proforma=proforma,
+            proforma_urls=proforma_urls,
+            invoice=invoice,
+            invoice_urls=invoice_urls,
+            old_invoice=old_invoice,
+            old_proforma=old_proforma,
+            rejected_proforma=rejected_proforma,
+            rejected_proforma_urls=rejected_proforma_urls,
+            rejected_invoice=rejected_invoice,
+            rejected_invoice_urls=rejected_invoice_urls,
+            recovered_proforma=recovered_proforma,
+            recovered_proforma_urls=recovered_proforma_urls,
+            recovered_invoice=recovered_invoice,
+            recovered_invoice_urls=recovered_invoice_urls,
+            paid_invoice=paid_invoice,
+            paid_invoice_urls=paid_invoice_urls,
+        )
 
     def test_expiring_donate(self) -> None:
         self.create_donation(years=0, days=-2, recurring="")
@@ -1870,6 +2003,43 @@ class ExpiryTest(FakturaceTestCase):
         service.customer.save(update_fields=["upcoming_payment_notification_days"])
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
+    def test_expiring_subscription_notify_user_lists_unpaid_invoices_and_recent_proformas(
+        self,
+    ) -> None:
+        service = self.create_service(years=0, days=7)
+        cases = self._prepare_upcoming_invoice_cases(service.customer)
+
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        mails = self.assert_notifications(
+            "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
+        )
+        user_mail = next(
+            mail
+            for mail in mails
+            if mail.subject == "Your upcoming payment on weblate.org"
+        )
+        html_body = cast("str", user_mail.alternatives[0][0])
+        self.assertIn("There might already be an invoice for this renewal", html_body)
+        self.assertIn(cases.proforma.number, html_body)
+        self.assertIn(cases.invoice.number, html_body)
+        self.assertIn(cases.old_invoice.number, html_body)
+        self.assertIn(cases.rejected_proforma.number, html_body)
+        self.assertIn(cases.rejected_invoice.number, html_body)
+        self.assertNotIn(cases.old_proforma.number, html_body)
+        self.assertNotIn(cases.paid_invoice.number, html_body)
+        self.assertNotIn(cases.recovered_proforma.number, html_body)
+        self.assertNotIn(cases.recovered_invoice.number, html_body)
+        self.assertEqual(html_body.count(cases.proforma.number), 1)
+        self.assertEqual(html_body.count(cases.invoice.number), 1)
+        self.assertIn(cases.proforma_urls[1], html_body)
+        self.assertIn(cases.invoice_urls[1], html_body)
+        self.assertIn(cases.rejected_proforma_urls[0], html_body)
+        self.assertIn(cases.rejected_invoice_urls[0], html_body)
+        self.assertNotIn(cases.recovered_proforma_urls[1], html_body)
+        self.assertNotIn(cases.recovered_invoice_urls[1], html_body)
+        self.assertNotIn(cases.proforma_urls[0], html_body)
+        self.assertNotIn(cases.invoice_urls[0], html_body)
 
 
 @override_settings(
