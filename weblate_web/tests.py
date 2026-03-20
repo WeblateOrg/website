@@ -1771,22 +1771,25 @@ class ExpiryTest(FakturaceTestCase):
     def test_customer_extra_upcoming_notification_days_conflicts_with_default(
         self,
     ) -> None:
-        customer = Customer(
-            user_id=-1,
-            name="TEST CUSTOMER",
-            address=TEST_CUSTOMER["address"],
-            city=TEST_CUSTOMER["city"],
-            postcode=TEST_CUSTOMER["postcode"],
-            country="US",
-            origin="https://example.com/customer",
-            upcoming_payment_notification_days=31,
-        )
+        service = self.create_service()
+        customer = service.customer
+        customer.upcoming_payment_notification_days = 31
         with self.assertRaises(ValidationError) as exc:
             customer.full_clean()
         self.assertEqual(
             list(exc.exception.message_dict),
             ["upcoming_payment_notification_days"],
         )
+
+    def test_customer_extra_upcoming_notification_days_allows_31_for_monthly_only(
+        self,
+    ) -> None:
+        service = self.create_service(
+            years=0, days=45, recurring="", package="test:test-1-m"
+        )
+        customer = service.customer
+        customer.upcoming_payment_notification_days = 31
+        customer.full_clean()
 
     def _create_invoice_case(
         self,
@@ -2016,6 +2019,20 @@ class ExpiryTest(FakturaceTestCase):
         service.customer.save(update_fields=["upcoming_payment_notification_days"])
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications(
+            "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
+        )
+
+    def test_expiring_monthly_subscription_notify_user_31_days_before(self) -> None:
+        service = self.create_service(
+            years=0, days=31, recurring="", package="test:test-1-m"
+        )
+        service.customer.upcoming_payment_notification_days = 31
+        service.customer.full_clean()
+        service.customer.save(update_fields=["upcoming_payment_notification_days"])
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications(
+            "Expiring subscriptions on weblate.org",
             "Your upcoming payment on weblate.org",
             "Your upcoming payment on weblate.org",
         )

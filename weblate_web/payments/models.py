@@ -274,15 +274,32 @@ class Customer(models.Model):
             raise ValidationError(
                 {"country": gettext_lazy("The country has to match your VAT code")}
             )
-        if (
-            self.upcoming_payment_notification_days
-            in DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS
-        ):
+        if self.upcoming_payment_notification_days in {
+            *DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS - {31}
+        }:
             raise ValidationError(
                 {
                     "upcoming_payment_notification_days": gettext_lazy(
                         "Choose a day different from the default payment "
-                        "notifications: 2, 7, and 31."
+                        "notifications: 2 and 7."
+                    )
+                }
+            )
+        if self.upcoming_payment_notification_days == 31 and (
+            self.donation_set.filter(active=True).exists()
+            or any(
+                subscription.package.get_repeat() == "y"
+                for service in self.service_set.prefetch_related(
+                    "subscription_set__package"
+                )
+                for subscription in service.subscription_set.all()
+            )
+        ):
+            raise ValidationError(
+                {
+                    "upcoming_payment_notification_days": gettext_lazy(
+                        "Choose a day different from the default yearly payment "
+                        "notification: 31."
                     )
                 }
             )
