@@ -9,6 +9,9 @@
       {% translate "Your subscription on weblate.org will renew soon." %}
       {% translate "The payment will be automatically charged soon." %}
       {% translate "In case your card has expired or you want to use different payment method, please perform the payment now." %}
+      {% if upcoming_payment_invoices %}
+        {% translate "There might already be an invoice for this renewal and only the payment might still be missing." %}
+      {% endif %}
     </p>
 
     {% include "mail/snippets/subscription_info.html" %}
@@ -19,9 +22,29 @@
       {% translate "Your donation on weblate.org will renew soon." %}
       {% translate "The payment will be automatically charged soon." %}
       {% translate "In case your card has expired or you want to use different payment method, please perform the payment now." %}
+      {% if upcoming_payment_invoices %}
+        {% translate "There might already be an invoice for this renewal and only the payment might still be missing." %}
+      {% endif %}
     </p>
 
     {% include "mail/snippets/donation_info.html" %}
+  {% endif %}
+
+  {% if upcoming_payment_invoices %}
+    <p>{% translate "Unpaid invoices and recent pro forma invoices:" %}</p>
+    <ul>
+      {% for recent_invoice in upcoming_payment_invoices %}
+        <li>
+          {{ recent_invoice.get_kind_display }} {{ recent_invoice.number }}:
+          {{ recent_invoice.display_total_amount }}
+          {% with payment_url=recent_invoice.get_upcoming_payment_url %}
+            {% if payment_url %}
+              <a href="{{ payment_url }}">{% translate "pay now" %}</a>
+            {% endif %}
+          {% endwith %}
+        </li>
+      {% endfor %}
+    </ul>
   {% endif %}
 
   <a class="button" href="/user/">{% translate "Manage your payments" %}</a>
