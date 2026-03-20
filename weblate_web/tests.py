@@ -1762,7 +1762,7 @@ class ExpiryTest(FakturaceTestCase):
         )
         with self.assertRaises(ValidationError):
             customer.full_clean()
-            
+
     def _create_invoice_case(
         self,
         customer: Customer,
@@ -2003,6 +2003,7 @@ class ExpiryTest(FakturaceTestCase):
         service.customer.save(update_fields=["upcoming_payment_notification_days"])
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
+
     def test_expiring_subscription_notify_user_lists_unpaid_invoices_and_recent_proformas(
         self,
     ) -> None:
