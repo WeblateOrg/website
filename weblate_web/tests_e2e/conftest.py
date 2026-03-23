@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from datetime import UTC, date, datetime
 from decimal import Decimal
 from unittest.mock import patch
 
@@ -10,7 +11,8 @@ import pytest
 import responses
 from django.contrib.auth.models import User
 
-from weblate_web.models import Package, sync_packages
+from weblate_web.invoices.models import Invoice
+from weblate_web.models import Package, Service, sync_packages
 from weblate_web.tests import mock_vies
 
 # Allow Django operations in async context for Playwright tests
@@ -31,11 +33,22 @@ def configure_test_settings(settings, live_server):  # pylint: disable=redefined
 @pytest.fixture(autouse=True)
 def mock_external_apis():
     """Mock external API calls and VIES validation for e2e tests."""
+    secret_field = Service._meta.get_field("secret")  # pylint: disable=protected-access
+    original_secret_default = secret_field.default
+    issue_date_field = Invoice._meta.get_field("issue_date")  # pylint: disable=protected-access
+    original_issue_date_default = issue_date_field.default
+    fixed_secret = "e2e-fixed-service-secret-token-0123456789abcdef0123456789abcd"  # noqa: S105
+    fixed_issue_date = date(2026, 1, 15)
+    fixed_now = datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC)
+    secret_field.default = fixed_secret
+    issue_date_field.default = fixed_issue_date
     with (
+        patch("django.utils.timezone.now", return_value=fixed_now),
         patch("weblate_web.remote.get_changes", return_value=[]),
         patch("weblate_web.remote.get_contributors", return_value=[]),
         patch("weblate_web.remote.get_activity", return_value=[]),
         patch("weblate_web.remote.get_release", return_value=None),
+        patch("weblate_web.models.generate_secret", return_value=fixed_secret),
         patch(
             "weblate_web.exchange_rates.ExchangeRates.download",
             return_value={
@@ -49,7 +62,11 @@ def mock_external_apis():
     ):
         # Mock VIES VAT validation service
         mock_vies()
-        yield
+        try:
+            yield
+        finally:
+            secret_field.default = original_secret_default
+            issue_date_field.default = original_issue_date_default
 
 
 @pytest.fixture(autouse=True)
