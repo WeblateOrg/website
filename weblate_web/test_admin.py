@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import cast
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from django.contrib import admin
 from django.contrib.auth.models import User
@@ -155,9 +155,10 @@ class InvoiceAdminTestCase(TestCase):
         )
 
     def make_mock_form(self, invoice: Invoice):
-        return type(
-            "MockForm", (), {"instance": invoice, "save_m2m": lambda _self: None}
-        )()
+        form = Mock()
+        form.instance = invoice
+        form.save_m2m = lambda: None
+        return form
 
     def test_has_delete_permission_always_false(self) -> None:
         request = self.factory.get("/")
