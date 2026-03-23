@@ -35,11 +35,11 @@ jobs:
       run: |
         pytest weblate_web/tests_e2e/ -v --screenshot=only-on-failure --video=retain-on-failure
 
-    - name:
+    - name: Argos CI upload
       env:
         ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }} # zizmor: ignore[secrets-outside-env]
       run: |
-        npx --package=@argos-ci/cli -- argos
+        npx --package=@argos-ci/cli -- argos upload ./test-results/
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
