@@ -1059,7 +1059,7 @@ class PaymentsTest(FakturaceTestCase):
         user = self.create_user()
         user.is_staff = True
         user.save(update_fields=["is_staff"])
-        self.client.login(**self.credentials)
+        self.client.force_login(user)
         customer = Customer.objects.create(
             email="weblate@example.com",
             user_id=user.pk,
@@ -1118,7 +1118,6 @@ class PaymentsTest(FakturaceTestCase):
         paid_invoice = cast("Invoice", paid_invoice)
         self.assertTrue(paid_invoice.is_paid)
         paid_invoice.receipt_path.unlink(missing_ok=True)
-        self.login()
 
         response = self.client.get(
             reverse("user-invoice", kwargs={"pk": payment.pk}) + "?receipt=1"

@@ -717,7 +717,7 @@ def download_payment_invoice(request, pk):
                     filename=payment.paid_invoice.receipt_filename,
                     content_type="application/pdf",
                 )
-            except FileNotFoundError as error:
+            except OSError as error:
                 raise Http404("Receipt not available") from error
         return FileResponse(
             payment.paid_invoice.path.open("rb"),
