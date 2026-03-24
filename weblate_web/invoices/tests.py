@@ -11,6 +11,7 @@ import responses
 from django.test.utils import override_settings
 from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
+from pycheval.quantities import QuantityCode
 
 from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer
@@ -247,6 +248,9 @@ class InvoiceTestCase(UserTestCase):
             quantity_unit=QuantityUnit.HOURS,
         )
         self.assertEqual(invoice.total_amount, 4100)
+        self.assertEqual(
+            invoice.get_en_16931_xml().line_items[-1].billed_quantity[1], QuantityCode.HOUR
+        )
         self.validate_invoice(invoice)
 
     @responses.activate
