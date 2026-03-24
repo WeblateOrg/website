@@ -20,14 +20,17 @@ if TYPE_CHECKING:
 def download_invoice(request: AuthenticatedHttpRequest, pk: str):
     invoice = get_object_or_404(Invoice, pk=pk)
     if "receipt" in request.GET:
-        if not invoice.has_receipt:
+        if not invoice.is_paid:
             raise Http404("Receipt not available")
-        return FileResponse(
-            invoice.receipt_path.open("rb"),
-            as_attachment=True,
-            filename=invoice.receipt_filename,
-            content_type="application/pdf",
-        )
+        try:
+            return FileResponse(
+                invoice.receipt_path.open("rb"),
+                as_attachment=True,
+                filename=invoice.receipt_filename,
+                content_type="application/pdf",
+            )
+        except FileNotFoundError as error:
+            raise Http404("Receipt not available") from error
 
     return FileResponse(
         invoice.path.open("rb"),

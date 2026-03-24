@@ -708,14 +708,17 @@ def download_payment_invoice(request, pk):
     # New invoice model
     if payment.paid_invoice:
         if "receipt" in request.GET:
-            if not payment.paid_invoice.has_receipt:
+            if not payment.paid_invoice.is_paid:
                 raise Http404("Receipt not available")
-            return FileResponse(
-                payment.paid_invoice.receipt_path.open("rb"),
-                as_attachment=True,
-                filename=payment.paid_invoice.receipt_filename,
-                content_type="application/pdf",
-            )
+            try:
+                return FileResponse(
+                    payment.paid_invoice.receipt_path.open("rb"),
+                    as_attachment=True,
+                    filename=payment.paid_invoice.receipt_filename,
+                    content_type="application/pdf",
+                )
+            except FileNotFoundError as error:
+                raise Http404("Receipt not available") from error
         return FileResponse(
             payment.paid_invoice.path.open("rb"),
             as_attachment=True,
