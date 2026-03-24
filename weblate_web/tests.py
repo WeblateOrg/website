@@ -2219,7 +2219,7 @@ class ServiceTest(FakturaceTestCase):
 
     @override_settings(ZAMMAD_TOKEN="test")  # noqa: S106
     @responses.activate
-    def test_decicated_new(self) -> None:
+    def test_dedicated_new(self) -> None:
         mock_vies()
         cnb_mock_rates()
         self.create_packages()
