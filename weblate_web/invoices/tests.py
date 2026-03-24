@@ -249,7 +249,8 @@ class InvoiceTestCase(UserTestCase):
         )
         self.assertEqual(invoice.total_amount, 4100)
         self.assertEqual(
-            invoice.get_en_16931_xml().line_items[-1].billed_quantity[1], QuantityCode.HOUR
+            invoice.get_en_16931_xml().line_items[-1].billed_quantity[1],
+            QuantityCode.HOUR,
         )
         self.validate_invoice(invoice)
 
