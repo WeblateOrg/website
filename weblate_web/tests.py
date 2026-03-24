@@ -1055,6 +1055,72 @@ class PaymentsTest(FakturaceTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["Content-Type"], "application/pdf")
 
+    def test_staff_receipt_unpaid_invoice_404(self) -> None:
+        user = self.create_user()
+        user.is_staff = True
+        user.save(update_fields=["is_staff"])
+        self.client.login(**self.credentials)
+        customer = Customer.objects.create(
+            email="weblate@example.com",
+            user_id=user.pk,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
+        )
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+
+        response = self.client.get(
+            reverse("invoice-pdf", kwargs={"pk": invoice.pk}) + "?receipt=1"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_paid_receipt_missing_file_404(self) -> None:
+        cnb_mock_rates()
+        user = self.login()
+        customer = Customer.objects.create(
+            email="weblate@example.com",
+            user_id=user.pk,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
+        )
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        invoice.invoiceitem_set.create(description="Test item", unit_price=100)
+        invoice.generate_files()
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=100,
+            description="Test payment",
+            backend="pay",
+            recurring="",
+            state=Payment.ACCEPTED,
+            paid_invoice=invoice,
+        )
+        self.assertTrue(payment.paid_invoice.is_paid)
+        payment.paid_invoice.receipt_path.unlink(missing_ok=True)
+        self.login()
+
+        response = self.client.get(
+            reverse("user-invoice", kwargs={"pk": payment.pk}) + "?receipt=1"
+        )
+        self.assertEqual(response.status_code, 404)
+
     @responses.activate
     def test_invalid_vat(self) -> None:
         mock_vies(valid=False)
