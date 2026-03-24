@@ -1113,8 +1113,10 @@ class PaymentsTest(FakturaceTestCase):
             state=Payment.ACCEPTED,
             paid_invoice=invoice,
         )
-        self.assertTrue(payment.paid_invoice.is_paid)
-        payment.paid_invoice.receipt_path.unlink(missing_ok=True)
+        paid_invoice = payment.paid_invoice
+        assert paid_invoice is not None
+        self.assertTrue(paid_invoice.is_paid)
+        paid_invoice.receipt_path.unlink(missing_ok=True)
         self.login()
 
         response = self.client.get(
