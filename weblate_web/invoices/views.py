@@ -29,7 +29,7 @@ def download_invoice(request: AuthenticatedHttpRequest, pk: str):
                 filename=invoice.receipt_filename,
                 content_type="application/pdf",
             )
-        except OSError as error:
+        except (OSError, ValueError) as error:
             raise Http404("Receipt not available") from error
 
     return FileResponse(
