@@ -230,6 +230,37 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(invoice.total_amount, 513)
         self.assertRedirects(response, invoice.get_absolute_url())
 
+    def test_service_invalid_customer_reference(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=1)
+        service = Service.objects.create(customer=customer)
+        expires = timezone.now() + timedelta(days=1)
+        subscription = service.subscription_set.create(
+            package=Package.objects.create(
+                name="x1",
+                verbose="pkg1",
+                price=42,
+                category=PackageCategory.PACKAGE_SHARED,
+            ),
+            expires=expires,
+            payment=payment.pk,
+        )
+
+        response = self.client.post(
+            service.get_absolute_url(),
+            {
+                "invoice": 1,
+                "subscription": subscription.pk,
+                "customer_reference": "x" * 101,
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertEqual(Invoice.objects.count(), 0)
+        self.assertContains(response, "Error in parameter customer_reference")
+
 
 @override_settings(
     CACHES={

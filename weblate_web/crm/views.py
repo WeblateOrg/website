@@ -149,6 +149,7 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             form = CustomerReferenceForm(request.POST)
             if not form.is_valid():
                 show_form_errors(self.request, form)
+                return redirect(service)
             kind = InvoiceKind.QUOTE if "quote" in request.POST else InvoiceKind.INVOICE
             with override("en"):
                 invoice = subscription.create_invoice(
