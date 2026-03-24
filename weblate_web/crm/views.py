@@ -633,7 +633,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     output_field=self.DECIMAL_OUTPUT_FIELD,
                 )
             )
-            .values("category", "period", "total_no_vat")
+            .values("pk", "category", "period", "total_no_vat")
         )
 
     def _get_empty_category_totals(self) -> dict[InvoiceCategory, Decimal]:
