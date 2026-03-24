@@ -1114,7 +1114,8 @@ class PaymentsTest(FakturaceTestCase):
             paid_invoice=invoice,
         )
         paid_invoice = payment.paid_invoice
-        assert paid_invoice is not None
+        self.assertIsNotNone(paid_invoice)
+        paid_invoice = cast("Invoice", paid_invoice)
         self.assertTrue(paid_invoice.is_paid)
         paid_invoice.receipt_path.unlink(missing_ok=True)
         self.login()
