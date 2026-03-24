@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from weblate_web.crm.models import Interaction, ZammadSyncLog
+from weblate_web.crm.views import IncomeView
 from weblate_web.invoices.models import (
     Currency,
     Discount,
@@ -229,6 +230,37 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(invoice.total_amount, 513)
         self.assertRedirects(response, invoice.get_absolute_url())
 
+    def test_service_invalid_customer_reference(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=1)
+        service = Service.objects.create(customer=customer)
+        expires = timezone.now() + timedelta(days=1)
+        subscription = service.subscription_set.create(
+            package=Package.objects.create(
+                name="x1",
+                verbose="pkg1",
+                price=42,
+                category=PackageCategory.PACKAGE_SHARED,
+            ),
+            expires=expires,
+            payment=payment.pk,
+        )
+
+        response = self.client.post(
+            service.get_absolute_url(),
+            {
+                "invoice": 1,
+                "subscription": subscription.pk,
+                "customer_reference": "x" * 101,
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertEqual(Invoice.objects.count(), 0)
+        self.assertContains(response, "Error in parameter customer_reference")
+
 
 @override_settings(
     CACHES={
@@ -413,6 +445,23 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.context["total_income"], Decimal(200))
         self.assertEqual(response.context["income_data"]["Hosting"], Decimal(200))
         self.assertEqual(response.context["monthly_data"]["01"], Decimal(200))
+
+    @responses.activate
+    def test_income_monthly_data_keeps_duplicate_invoices(self):
+        """Test monthly data counts duplicate invoices with equal totals."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+
+        monthly_data, monthly_category_data = IncomeView().get_monthly_data(
+            current_year
+        )
+        self.assertEqual(monthly_data["01"], Decimal(200))
+        self.assertEqual(
+            monthly_category_data["01"][InvoiceCategory.HOSTING], Decimal(200)
+        )
 
     def test_income_year_navigation(self):
         """Test year navigation."""

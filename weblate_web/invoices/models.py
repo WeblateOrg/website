@@ -823,7 +823,7 @@ class Invoice(models.Model):  # noqa: PLR0904
                         billed_quantity=(
                             Decimal(item.quantity),
                             QuantityCode.HOUR
-                            if item.quantity_unit in {"hour", "hours"}
+                            if item.quantity_unit == QuantityUnit.HOURS
                             else QuantityCode.ONE,
                         ),
                         billed_total=Money(

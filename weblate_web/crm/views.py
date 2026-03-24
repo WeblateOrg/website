@@ -149,6 +149,7 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             form = CustomerReferenceForm(request.POST)
             if not form.is_valid():
                 show_form_errors(self.request, form)
+                return redirect(service)
             kind = InvoiceKind.QUOTE if "quote" in request.POST else InvoiceKind.INVOICE
             with override("en"):
                 invoice = subscription.create_invoice(
@@ -633,7 +634,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     output_field=self.DECIMAL_OUTPUT_FIELD,
                 )
             )
-            .values("category", "period", "total_no_vat")
+            .values("pk", "category", "period", "total_no_vat")
         )
 
     def _get_empty_category_totals(self) -> dict[InvoiceCategory, Decimal]:

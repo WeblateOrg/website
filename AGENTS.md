@@ -21,6 +21,10 @@ This file captures agent-specific guidance for working in the Weblate website co
   text.
 - Preserve accessibility and the existing Bootstrap/jQuery-based frontend
   patterns.
+- Write commit messages using the Conventional Commits format
+  `<type>(<optional scope>): <description>`. Common types include `feat`,
+  `fix`, `docs`, `refactor`, `test`, `ci`, and `chore`. Example:
+  `fix(translations): handle empty component slug`.
 - Include the GPL-3.0-or-later license header in new Python files.
 
 ## Testing and linting instructions
