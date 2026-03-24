@@ -1667,7 +1667,7 @@ class APITest(UserTestCase):
         service.site_url_lock = True
         service.save(update_fields=["site_url", "site_url_lock"])
 
-        self.client.post(
+        response = self.client.post(
             "/api/support/",
             {
                 "secret": service.secret,
@@ -1676,10 +1676,12 @@ class APITest(UserTestCase):
             },
             headers={"user-agent": "Weblate/1.2.3"},
         )
+        self.assertEqual(response.status_code, 200)
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
+        self.assertEqual(service.site_url, "https://allowed.example.com")
 
-        self.client.post(
+        response = self.client.post(
             "/api/support/",
             {
                 "secret": service.secret,
@@ -1688,6 +1690,7 @@ class APITest(UserTestCase):
             },
             headers={"user-agent": "Weblate/1.2.3"},
         )
+        self.assertEqual(response.status_code, 200)
         service = Service.objects.get(pk=service.pk)
         self.assertTrue(service.discoverable)
 
