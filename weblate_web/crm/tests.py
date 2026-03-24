@@ -416,17 +416,19 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.context["monthly_data"]["01"], Decimal(200))
 
     @responses.activate
-    def test_income_summary_rows_keep_duplicate_invoices(self):
-        """Test summary rows keep one row per invoice even for equal totals."""
+    def test_income_monthly_data_keeps_duplicate_invoices(self):
+        """Test monthly data counts duplicate invoices with equal totals."""
         cnb_mock_rates()
         current_year = timezone.now().year
 
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
 
-        summary_rows = IncomeView()._get_invoice_summary_rows(current_year)
-        self.assertEqual(len(summary_rows), 2)
-        self.assertEqual(sum(row["total_no_vat"] for row in summary_rows), Decimal(200))
+        monthly_data, monthly_category_data = IncomeView().get_monthly_data(current_year)
+        self.assertEqual(monthly_data["01"], Decimal(200))
+        self.assertEqual(
+            monthly_category_data["01"][InvoiceCategory.HOSTING], Decimal(200)
+        )
 
     def test_income_year_navigation(self):
         """Test year navigation."""
