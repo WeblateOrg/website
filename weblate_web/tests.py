@@ -1082,6 +1082,7 @@ class PaymentsTest(FakturaceTestCase):
         )
         self.assertEqual(response.status_code, 404)
 
+    @responses.activate
     def test_paid_receipt_missing_file_404(self) -> None:
         cnb_mock_rates()
         user = self.login()

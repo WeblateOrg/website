@@ -590,6 +590,10 @@ class Invoice(models.Model):  # noqa: PLR0904
         return settings.INVOICES_PATH / self.receipt_filename
 
     @property
+    def has_receipt(self) -> bool:
+        return self.is_paid and self.receipt_path.exists()
+
+    @property
     def xml_path(self) -> Path:
         """XML path object."""
         return settings.INVOICES_PATH / self.get_filename("xml")
