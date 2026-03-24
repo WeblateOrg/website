@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from weblate_web.crm.models import Interaction, ZammadSyncLog
+from weblate_web.crm.views import IncomeView
 from weblate_web.invoices.models import (
     Currency,
     Discount,
@@ -413,6 +414,19 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.context["total_income"], Decimal(200))
         self.assertEqual(response.context["income_data"]["Hosting"], Decimal(200))
         self.assertEqual(response.context["monthly_data"]["01"], Decimal(200))
+
+    @responses.activate
+    def test_income_summary_rows_keep_duplicate_invoices(self):
+        """Test summary rows keep one row per invoice even for equal totals."""
+        cnb_mock_rates()
+        current_year = timezone.now().year
+
+        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+
+        summary_rows = IncomeView()._get_invoice_summary_rows(current_year)
+        self.assertEqual(len(summary_rows), 2)
+        self.assertEqual(sum(row["total_no_vat"] for row in summary_rows), Decimal(200))
 
     def test_income_year_navigation(self):
         """Test year navigation."""
