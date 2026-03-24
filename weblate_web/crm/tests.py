@@ -424,7 +424,9 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
 
-        monthly_data, monthly_category_data = IncomeView().get_monthly_data(current_year)
+        monthly_data, monthly_category_data = IncomeView().get_monthly_data(
+            current_year
+        )
         self.assertEqual(monthly_data["01"], Decimal(200))
         self.assertEqual(
             monthly_category_data["01"][InvoiceCategory.HOSTING], Decimal(200)
