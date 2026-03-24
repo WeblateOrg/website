@@ -463,7 +463,8 @@
                           {% endfilter %}
                         </div>
                         <div class="line">
-                          <a href="{% url 'subscription-new' %}?plan=dedicated:160k" class="button">{% translate "Buy now" %}</a>
+                          <a href="{% url 'subscription-new' %}?plan=dedicated{{ package.name|cut:"hosted" }}"
+                             class="button">{% translate "Buy now" %}</a>
                         </div>
                         <div class="line last"></div>
                       </div>
