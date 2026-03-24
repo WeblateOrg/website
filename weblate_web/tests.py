@@ -1661,6 +1661,36 @@ class APITest(UserTestCase):
         )
         self.assertEqual(service.project_set.count(), 0)
 
+    def test_support_site_url_lock(self) -> None:
+        service = self.perform_support()
+        service.site_url = "https://allowed.example.com"
+        service.site_url_lock = True
+        service.save(update_fields=["site_url", "site_url_lock"])
+
+        self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://wrong.example.com",
+                "discoverable": "1",
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+        service = Service.objects.get(pk=service.pk)
+        self.assertFalse(service.discoverable)
+
+        self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://allowed.example.com",
+                "discoverable": "1",
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+        service = Service.objects.get(pk=service.pk)
+        self.assertTrue(service.discoverable)
+
     def test_user(self) -> None:
         user = self.create_user()
         response = self.client.post(
