@@ -1288,10 +1288,7 @@ class Report(models.Model):
         )
 
     def is_valid_site_url(self) -> bool:
-        return (
-            not self.service.site_url_lock
-            or self.site_url == self.service.site_url_lock
-        )
+        return not self.service.site_url_lock or self.site_url == self.service.site_url
 
 
 class Project(models.Model):
