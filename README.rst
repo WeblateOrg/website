@@ -25,6 +25,10 @@ Django based website for Weblate, running at <https://weblate.org/>.
     :alt: License
     :target: https://github.com/WeblateOrg/website/blob/main/LICENSE
 
+.. image:: https://argos-ci.com/badge.svg
+    :alt: Covered by Argos Visual Testing
+    :target: https://app.argos-ci.com/weblate/website/reference?utm_source=weblate&utm_campaign=oss
+
 Weblate
 -------
 
