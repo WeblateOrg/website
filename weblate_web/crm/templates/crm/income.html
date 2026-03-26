@@ -50,18 +50,24 @@
     {% if rolling_trend %}
       <div class="module">
         <table>
-          <caption>{% translate "Rolling 12-month trend" %}</caption>
+          <caption>{% translate "Rolling trend" %}</caption>
           <tbody>
             <tr>
               <th scope="row">{% translate "Window ending" %}</th>
               <td>{{ rolling_trend.period_year }}/{{ rolling_trend.period_month|stringformat:"02d" }}</td>
             </tr>
             <tr>
-              <th scope="row">{% translate "Trailing 12 months" %}</th>
+              <th scope="row">{% translate "Window size" %}</th>
+              <td>
+                {% blocktranslate count months=rolling_trend.window_months %}{{ months }} month{% plural %}{{ months }} months{% endblocktranslate %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{% translate "Current window" %}</th>
               <td class="align-right nowrap">€{{ rolling_trend.rolling_total|floatformat:0 }}</td>
             </tr>
             <tr>
-              <th scope="row">{% translate "Previous 12 months" %}</th>
+              <th scope="row">{% translate "Previous window" %}</th>
               <td class="align-right nowrap">€{{ rolling_trend.previous_total|floatformat:0 }}</td>
             </tr>
             <tr>
@@ -133,7 +139,7 @@
             <tr>
               <th>{% translate "Month" %}</th>
               <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
-              <th class="align-right nowrap">{% translate "Rolling 12 months" %}</th>
+              <th class="align-right nowrap">{% translate "Rolling window" %}</th>
               <th class="align-right nowrap">{% translate "Trend" %}</th>
               <th>{% translate "Actions" %}</th>
             </tr>
@@ -146,6 +152,9 @@
                 <td class="align-right nowrap">
                   {% if row.trend_available %}
                     €{{ row.rolling_total|floatformat:0 }}
+                    (
+                    {% blocktranslate count months=row.window_months %}{{ months }} month{% plural %}{{ months }} months{% endblocktranslate %}
+                    )
                   {% else %}
                     —
                   {% endif %}
