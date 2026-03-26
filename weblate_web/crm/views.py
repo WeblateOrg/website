@@ -721,11 +721,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         return period_totals, period_category_data
 
+    def _count_months_inclusive(self, start_month: date, end_month: date) -> int:
+        return (
+            (end_month.year - start_month.year) * 12
+            + end_month.month
+            - start_month.month
+            + 1
+        )
+
     def _get_month_totals_in_range(
         self, start_month: date | None, end_month: date
-    ) -> dict[date, Decimal]:
+    ) -> tuple[dict[date, Decimal], date | None]:
         if start_month is None or start_month > end_month:
-            return {}
+            return {}, None
 
         month_totals = {
             month_start: Decimal(0)
@@ -744,10 +752,13 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 period_expr=TruncMonth("issue_date"),
             )
 
+        earliest_month: date | None = None
         for row in rows:
             month_start = cast("date", row["period"])
+            if earliest_month is None or month_start < earliest_month:
+                earliest_month = month_start
             month_totals[month_start] += cast("Decimal", row["total_no_vat"])
-        return month_totals
+        return month_totals, earliest_month
 
     def _sum_month_totals(
         self,
@@ -772,12 +783,26 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return self._get_current_date().replace(day=1)
 
     def _build_rolling_window_summary(
-        self, month_totals: dict[date, Decimal], period_start: date
+        self,
+        month_totals: dict[date, Decimal],
+        period_start: date,
+        earliest_month: date | None,
     ) -> dict[str, int | Decimal | bool] | None:
-        rolling_start = self._shift_month(period_start, -11)
-        previous_start = self._shift_month(period_start, -23)
-        previous_end = self._shift_month(period_start, -12)
-        if rolling_start is None or previous_start is None or previous_end is None:
+        if earliest_month is None or earliest_month > period_start:
+            return None
+
+        available_months = self._count_months_inclusive(earliest_month, period_start)
+        if available_months < 2:
+            return None
+
+        window_months = 12 if available_months >= 24 else available_months // 2
+        rolling_start = self._shift_month(period_start, -(window_months - 1))
+        if rolling_start is None:
+            return None
+
+        previous_end = self._shift_month(rolling_start, -1)
+        previous_start = self._shift_month(rolling_start, -window_months)
+        if previous_start is None or previous_end is None:
             return None
 
         rolling_total = self._sum_month_totals(
@@ -795,6 +820,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return {
             "period_year": period_start.year,
             "period_month": period_start.month,
+            "window_months": window_months,
             "rolling_total": rolling_total,
             "previous_total": previous_total,
             "change_amount": change_amount,
@@ -816,8 +842,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if period_start > self._get_current_month_start():
             return None
         lookback_start = self._shift_month(period_start, -23)
-        month_totals = self._get_month_totals_in_range(lookback_start, period_start)
-        return self._build_rolling_window_summary(month_totals, period_start)
+        month_totals, earliest_month = self._get_month_totals_in_range(
+            lookback_start, period_start
+        )
+        return self._build_rolling_window_summary(
+            month_totals, period_start, earliest_month
+        )
 
     def get_yearly_breakdown_rows(
         self, year: int, monthly_data: dict[str, Decimal]
@@ -843,7 +873,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return rows
 
         trend_end_month = min(last_month, current_month_start)
-        month_totals = self._get_month_totals_in_range(
+        month_totals, earliest_month = self._get_month_totals_in_range(
             self._shift_month(first_month, -23),
             trend_end_month,
         )
@@ -853,7 +883,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 continue
 
             rolling_summary = self._build_rolling_window_summary(
-                month_totals, period_start
+                month_totals, period_start, earliest_month
             )
             if rolling_summary is None:
                 continue
@@ -879,6 +909,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return {
             "period_year": cast("int", trend_row["period_year"]),
             "period_month": cast("int", trend_row["period_month"]),
+            "window_months": cast("int", trend_row["window_months"]),
             "rolling_total": cast("Decimal", trend_row["rolling_total"]),
             "previous_total": cast("Decimal", trend_row["previous_total"]),
             "change_amount": cast("Decimal", trend_row["change_amount"]),
