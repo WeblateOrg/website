@@ -47,6 +47,40 @@
       </p>
     </div>
 
+    {% if rolling_trend %}
+      <div class="module">
+        <table>
+          <caption>{% translate "Rolling 12-month trend" %}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{% translate "Window ending" %}</th>
+              <td>{{ rolling_trend.period_year }}/{{ rolling_trend.period_month|stringformat:"02d" }}</td>
+            </tr>
+            <tr>
+              <th scope="row">{% translate "Trailing 12 months" %}</th>
+              <td class="align-right nowrap">€{{ rolling_trend.rolling_total|floatformat:0 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">{% translate "Previous 12 months" %}</th>
+              <td class="align-right nowrap">€{{ rolling_trend.previous_total|floatformat:0 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">{% translate "Change" %}</th>
+              <td class="align-right nowrap">
+                {% if rolling_trend.change_amount > 0 %}+{% endif %}
+                €{{ rolling_trend.change_amount|floatformat:0 }}
+                {% if rolling_trend.has_change_percent %}
+                  (
+                  {% if rolling_trend.change_percent > 0 %}+{% endif %}
+                  {{ rolling_trend.change_percent|floatformat:1 }}%)
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
     <div class="module">
       <h3>
         {% if is_monthly %}
@@ -99,22 +133,46 @@
             <tr>
               <th>{% translate "Month" %}</th>
               <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
+              <th class="align-right nowrap">{% translate "Rolling 12 months" %}</th>
+              <th class="align-right nowrap">{% translate "Trend" %}</th>
               <th>{% translate "Actions" %}</th>
             </tr>
           </thead>
           <tbody>
-            {% for month, amount in monthly_data.items %}
+            {% for row in monthly_breakdown_rows %}
               <tr>
-                <td>{{ current_year }}/{{ month }}</td>
-                <td class="align-right nowrap">€{{ amount|floatformat:0 }}</td>
+                <td>{{ current_year }}/{{ row.month }}</td>
+                <td class="align-right nowrap">€{{ row.amount|floatformat:0 }}</td>
+                <td class="align-right nowrap">
+                  {% if row.trend_available %}
+                    €{{ row.rolling_total|floatformat:0 }}
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td class="align-right nowrap">
+                  {% if row.trend_available %}
+                    {% if row.change_amount > 0 %}+{% endif %}
+                    €{{ row.change_amount|floatformat:0 }}
+                    {% if row.has_change_percent %}
+                      (
+                      {% if row.change_percent > 0 %}+{% endif %}
+                      {{ row.change_percent|floatformat:1 }}%)
+                    {% endif %}
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
                 <td>
-                  <a href="{% url 'crm:income-month' current_year month|add:0 %}">{% translate "View details" %}</a>
+                  <a href="{% url 'crm:income-month' current_year row.month_number %}">{% translate "View details" %}</a>
                 </td>
               </tr>
             {% endfor %}
             <tr class="total">
               <td>{% translate "Total" %}</td>
               <td class="align-right nowrap">€{{ total_income|floatformat:0 }}</td>
+              <td></td>
+              <td></td>
               <td></td>
             </tr>
           </tbody>

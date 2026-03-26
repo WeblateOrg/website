@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import calendar
 import math
+from datetime import date
 from decimal import Decimal
 from operator import attrgetter
-from typing import TYPE_CHECKING, ClassVar, cast
+from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -18,7 +19,13 @@ from django.db.models import (
     Value,
     When,
 )
-from django.db.models.functions import Coalesce, ExtractDay, ExtractMonth, Round
+from django.db.models.functions import (
+    Coalesce,
+    ExtractDay,
+    ExtractMonth,
+    Round,
+    TruncMonth,
+)
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -36,10 +43,19 @@ from weblate_web.utils import show_form_errors
 from .models import Interaction
 
 if TYPE_CHECKING:
+    from uuid import UUID
+
     from django.http import HttpRequest
 
     from weblate_web.payments.models import CustomerQuerySet
     from weblate_web.views import AuthenticatedHttpRequest
+
+
+class InvoiceSummaryRow(TypedDict):
+    pk: UUID
+    category: int
+    period: date | int
+    total_no_vat: Decimal
 
 
 class CRMMixin:
@@ -358,6 +374,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     template_name = "crm/income.html"
     permission = "invoices.view_income"
     title = "Income Tracking"
+    MAX_MONTH_INDEX = date.max.year * 12 - 1
 
     # Chart configuration
     CHART_WIDTH = 800
@@ -378,7 +395,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
-        return self.kwargs.get("year", timezone.now().year)
+        return self.kwargs.get("year", self._get_current_date().year)
 
     def get_month(self) -> int | None:
         """Get the month from URL kwargs if present."""
@@ -575,9 +592,38 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
+    def _get_month_start(self, year: int, month: int) -> date:
+        return date(year, month, 1)
+
+    def _shift_month(self, month_start: date, offset: int) -> date | None:
+        month_index = (month_start.year - 1) * 12 + month_start.month - 1 + offset
+        if month_index < 0 or month_index > self.MAX_MONTH_INDEX:
+            return None
+        year, zero_based_month = divmod(month_index, 12)
+        return date(year + 1, zero_based_month + 1, 1)
+
+    def _iter_month_starts(
+        self, start_month: date | None, end_month: date
+    ) -> list[date]:
+        if start_month is None or start_month > end_month:
+            return []
+
+        month_starts = []
+        current_month: date | None = start_month
+        while current_month is not None and current_month <= end_month:
+            month_starts.append(current_month)
+            current_month = self._shift_month(current_month, 1)
+        return month_starts
+
     def _get_invoice_summary_rows(
-        self, year: int, month: int | None = None
-    ) -> list[dict[str, int | Decimal]]:
+        self,
+        year: int | None = None,
+        month: int | None = None,
+        *,
+        start_date: date | None = None,
+        end_date: date | None = None,
+        period_expr=None,
+    ) -> list[InvoiceSummaryRow]:
         """Fetch per-invoice totals for the report using SQL aggregation."""
         zero = Value(Decimal(0), output_field=self.DECIMAL_OUTPUT_FIELD)
         line_total = ExpressionWrapper(
@@ -587,61 +633,74 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         query = Invoice.objects.filter(
             kind=InvoiceKind.INVOICE,
-            issue_date__year=year,
         )
+        if year is not None:
+            query = query.filter(issue_date__year=year)
         if month:
             query = query.filter(issue_date__month=month)
+        if start_date is not None:
+            query = query.filter(issue_date__gte=start_date)
+        if end_date is not None:
+            query = query.filter(issue_date__lt=end_date)
 
-        period_expr = ExtractDay("issue_date") if month else ExtractMonth("issue_date")
-
-        return list(
-            query.annotate(period=period_expr)
-            .values("pk", "category", "period")
-            .annotate(
-                items_total=Coalesce(Sum(line_total), zero),
-                positive_items_total=Coalesce(
-                    Sum(
-                        Case(
-                            When(invoiceitem__unit_price__gt=0, then=line_total),
-                            default=zero,
-                            output_field=self.DECIMAL_OUTPUT_FIELD,
-                        )
-                    ),
-                    zero,
-                ),
+        if period_expr is None:
+            period_expr = (
+                ExtractDay("issue_date") if month else ExtractMonth("issue_date")
             )
-            .annotate(
-                discount_amount=Case(
-                    When(
-                        discount__isnull=False,
-                        then=Round(
-                            ExpressionWrapper(
-                                -F("positive_items_total")
-                                * F("discount__percents")
-                                / Value(100),
+
+        return cast(
+            "list[InvoiceSummaryRow]",
+            list(
+                query.annotate(period=period_expr)
+                .values("pk", "category", "period")
+                .annotate(
+                    items_total=Coalesce(Sum(line_total), zero),
+                    positive_items_total=Coalesce(
+                        Sum(
+                            Case(
+                                When(invoiceitem__unit_price__gt=0, then=line_total),
+                                default=zero,
                                 output_field=self.DECIMAL_OUTPUT_FIELD,
-                            ),
-                            precision=0,
+                            )
                         ),
+                        zero,
                     ),
-                    default=zero,
-                    output_field=self.DECIMAL_OUTPUT_FIELD,
                 )
-            )
-            .annotate(
-                total_no_vat=ExpressionWrapper(
-                    F("items_total") + F("discount_amount"),
-                    output_field=self.DECIMAL_OUTPUT_FIELD,
+                .annotate(
+                    discount_amount=Case(
+                        When(
+                            discount__isnull=False,
+                            then=Round(
+                                ExpressionWrapper(
+                                    -F("positive_items_total")
+                                    * F("discount__percents")
+                                    / Value(100),
+                                    output_field=self.DECIMAL_OUTPUT_FIELD,
+                                ),
+                                precision=0,
+                            ),
+                        ),
+                        default=zero,
+                        output_field=self.DECIMAL_OUTPUT_FIELD,
+                    )
                 )
-            )
-            .values("pk", "category", "period", "total_no_vat")
+                .annotate(
+                    total_no_vat=ExpressionWrapper(
+                        F("items_total") + F("discount_amount"),
+                        output_field=self.DECIMAL_OUTPUT_FIELD,
+                    )
+                )
+                .values("pk", "category", "period", "total_no_vat")
+            ),
         )
 
     def _get_empty_category_totals(self) -> dict[InvoiceCategory, Decimal]:
         return {category: Decimal(0) for category in InvoiceCategory}
 
     def _aggregate_period_totals(
-        self, summary_rows: list[dict[str, int | Decimal]], period_keys: list[str]
+        self,
+        summary_rows: list[InvoiceSummaryRow],
+        period_keys: list[str],
     ) -> tuple[dict[str, Decimal], dict[str, dict[InvoiceCategory, Decimal]]]:
         period_totals = {key: Decimal(0) for key in period_keys}
         period_category_data = {
@@ -661,6 +720,171 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             period_category_data[key][category] += total
 
         return period_totals, period_category_data
+
+    def _get_month_totals_in_range(
+        self, start_month: date | None, end_month: date
+    ) -> dict[date, Decimal]:
+        if start_month is None or start_month > end_month:
+            return {}
+
+        month_totals = {
+            month_start: Decimal(0)
+            for month_start in self._iter_month_starts(start_month, end_month)
+        }
+        end_date = self._shift_month(end_month, 1)
+        if end_date is None:
+            rows = self._get_invoice_summary_rows(
+                start_date=start_month,
+                period_expr=TruncMonth("issue_date"),
+            )
+        else:
+            rows = self._get_invoice_summary_rows(
+                start_date=start_month,
+                end_date=end_date,
+                period_expr=TruncMonth("issue_date"),
+            )
+
+        for row in rows:
+            month_start = cast("date", row["period"])
+            month_totals[month_start] += cast("Decimal", row["total_no_vat"])
+        return month_totals
+
+    def _sum_month_totals(
+        self,
+        month_totals: dict[date, Decimal],
+        start_month: date | None,
+        end_month: date | None,
+    ) -> Decimal:
+        if start_month is None or end_month is None or start_month > end_month:
+            return Decimal(0)
+
+        total = Decimal(0)
+        current_month: date | None = start_month
+        while current_month is not None and current_month <= end_month:
+            total += month_totals.get(current_month, Decimal(0))
+            current_month = self._shift_month(current_month, 1)
+        return total
+
+    def _get_current_date(self) -> date:
+        return timezone.localdate()
+
+    def _get_current_month_start(self) -> date:
+        return self._get_current_date().replace(day=1)
+
+    def _build_rolling_window_summary(
+        self, month_totals: dict[date, Decimal], period_start: date
+    ) -> dict[str, int | Decimal | bool] | None:
+        rolling_start = self._shift_month(period_start, -11)
+        previous_start = self._shift_month(period_start, -23)
+        previous_end = self._shift_month(period_start, -12)
+        if rolling_start is None or previous_start is None or previous_end is None:
+            return None
+
+        rolling_total = self._sum_month_totals(
+            month_totals,
+            rolling_start,
+            period_start,
+        )
+        previous_total = self._sum_month_totals(
+            month_totals,
+            previous_start,
+            previous_end,
+        )
+        change_amount = rolling_total - previous_total
+        has_change_percent = previous_total > 0
+        return {
+            "period_year": period_start.year,
+            "period_month": period_start.month,
+            "rolling_total": rolling_total,
+            "previous_total": previous_total,
+            "change_amount": change_amount,
+            "change_percent": (
+                change_amount / previous_total * Decimal(100)
+                if has_change_percent
+                else Decimal(0)
+            ),
+            "has_change_percent": has_change_percent,
+        }
+
+    def get_rolling_window_summary(
+        self, year: int, month: int
+    ) -> dict[str, int | Decimal | bool] | None:
+        try:
+            period_start = self._get_month_start(year, month)
+        except ValueError:
+            return None
+        if period_start > self._get_current_month_start():
+            return None
+        lookback_start = self._shift_month(period_start, -23)
+        month_totals = self._get_month_totals_in_range(lookback_start, period_start)
+        return self._build_rolling_window_summary(month_totals, period_start)
+
+    def get_yearly_breakdown_rows(
+        self, year: int, monthly_data: dict[str, Decimal]
+    ) -> list[dict[str, str | int | Decimal | bool]]:
+        rows: list[dict[str, str | int | Decimal | bool]] = [
+            {
+                "month": f"{month:02d}",
+                "month_number": month,
+                "amount": monthly_data[f"{month:02d}"],
+                "trend_available": False,
+            }
+            for month in range(1, 13)
+        ]
+
+        try:
+            first_month = self._get_month_start(year, 1)
+            last_month = self._get_month_start(year, 12)
+        except ValueError:
+            return rows
+
+        current_month_start = self._get_current_month_start()
+        if first_month > current_month_start:
+            return rows
+
+        trend_end_month = min(last_month, current_month_start)
+        month_totals = self._get_month_totals_in_range(
+            self._shift_month(first_month, -23),
+            trend_end_month,
+        )
+        for row in rows:
+            period_start = self._get_month_start(year, cast("int", row["month_number"]))
+            if period_start > current_month_start:
+                continue
+
+            rolling_summary = self._build_rolling_window_summary(
+                month_totals, period_start
+            )
+            if rolling_summary is None:
+                continue
+
+            row["trend_available"] = True
+            row.update(rolling_summary)
+        return rows
+
+    def get_yearly_rolling_summary(
+        self,
+        year: int,
+        monthly_breakdown_rows: list[dict[str, str | int | Decimal | bool]],
+        current_year: int,
+    ) -> dict[str, int | Decimal | bool] | None:
+        trend_month = 12 if year < current_year else self._get_current_date().month
+        if not 1 <= trend_month <= len(monthly_breakdown_rows):
+            return None
+
+        trend_row = monthly_breakdown_rows[trend_month - 1]
+        if not cast("bool", trend_row["trend_available"]):
+            return None
+
+        return {
+            "period_year": cast("int", trend_row["period_year"]),
+            "period_month": cast("int", trend_row["period_month"]),
+            "rolling_total": cast("Decimal", trend_row["rolling_total"]),
+            "previous_total": cast("Decimal", trend_row["previous_total"]),
+            "change_amount": cast("Decimal", trend_row["change_amount"]),
+            "change_percent": cast("Decimal", trend_row["change_percent"]),
+            "has_change_percent": cast("bool", trend_row["has_change_percent"]),
+        }
 
     def get_income_data(
         self, year: int, month: int | None = None
@@ -708,7 +932,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         context["total_income"] = sum(income_data.values())
 
         # Navigation years (show last 5 years and next year)
-        current_year = timezone.now().year
+        current_year = self._get_current_date().year
         context["years"] = list(range(current_year - 5, current_year + 2))
         context["current_year"] = year
         context["current_month"] = month
@@ -724,6 +948,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 daily_data, daily_category_data, year, month
             )
             context["is_monthly"] = True
+            context["rolling_trend"] = self.get_rolling_window_summary(year, month)
         else:
             # For yearly view, show monthly stacked chart
             monthly_data, monthly_category_data = self.get_monthly_data(year)
@@ -732,6 +957,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             )
             context["monthly_data"] = monthly_data
             context["monthly_category_data"] = monthly_category_data
+            context["monthly_breakdown_rows"] = self.get_yearly_breakdown_rows(
+                year, monthly_data
+            )
+            context["rolling_trend"] = self.get_yearly_rolling_summary(
+                year, context["monthly_breakdown_rows"], current_year
+            )
             context["is_monthly"] = False
 
         return context
