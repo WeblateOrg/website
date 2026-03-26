@@ -319,7 +319,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_yearly_view(self):
         """Test yearly income view."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         # Create test invoices
         self.create_test_invoice(
@@ -341,7 +341,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_monthly_view(self):
         """Test monthly income view."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         # Create test invoices for different categories
         self.create_test_invoice(
@@ -362,10 +362,51 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertContains(response, "Development / Consultations")
 
     @responses.activate
+    def test_income_monthly_view_shows_rolling_trend(self):
+        """Test monthly income view exposes rolling 12-month trend data."""
+        cnb_mock_rates()
+        selected_year = timezone.localdate().year - 1
+
+        self.create_test_invoice(
+            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(100)
+        )
+        self.create_test_invoice(
+            selected_year - 1, 6, InvoiceCategory.HOSTING, Decimal(400)
+        )
+        self.create_test_invoice(
+            selected_year, 4, InvoiceCategory.HOSTING, Decimal(500)
+        )
+        self.create_test_invoice(
+            selected_year, 12, InvoiceCategory.HOSTING, Decimal(600)
+        )
+
+        response = self.client.get(
+            reverse("crm:income-month", kwargs={"year": selected_year, "month": 12})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Rolling 12-month trend")
+
+        trend = response.context["rolling_trend"]
+        self.assertEqual(trend["rolling_total"], Decimal(1100))
+        self.assertEqual(trend["previous_total"], Decimal(500))
+        self.assertEqual(trend["change_amount"], Decimal(600))
+        self.assertEqual(trend["change_percent"], Decimal(120))
+        self.assertEqual(trend["period_year"], selected_year)
+        self.assertEqual(trend["period_month"], 12)
+
+    def test_income_monthly_view_handles_boundary_year(self):
+        """Test monthly income view does not fail for boundary years."""
+        response = self.client.get(
+            reverse("crm:income-month", kwargs={"year": 1, "month": 12})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.context["rolling_trend"])
+
+    @responses.activate
     def test_income_filters_only_invoices(self):
         """Test that income view only shows INVOICE kind, not quotes."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         # Create invoice
         invoice = Invoice.objects.create(
@@ -404,7 +445,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_uses_amount_without_vat(self):
         """Test that income report totals stay VAT-exclusive."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
         customer = self.create_customer()
         customer.country = "CZ"
         customer.save(update_fields=["country"])
@@ -433,7 +474,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_counts_duplicate_invoice_totals(self):
         """Test that identical invoices in one bucket are both counted."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
@@ -450,7 +491,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_monthly_data_keeps_duplicate_invoices(self):
         """Test monthly data counts duplicate invoices with equal totals."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
         self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
@@ -465,7 +506,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
     def test_income_year_navigation(self):
         """Test year navigation."""
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         response = self.client.get(
             reverse("crm:income-year", kwargs={"year": current_year})
@@ -477,11 +518,23 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertContains(response, str(current_year))
         self.assertContains(response, str(current_year + 1))
 
+    def test_income_yearly_view_handles_low_boundary_year(self):
+        """Test yearly income view does not fail for low boundary years."""
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["monthly_breakdown_rows"]), 12)
+
+    def test_income_yearly_view_handles_max_year(self):
+        """Test yearly income view does not fail for the max supported year."""
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 9999}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["monthly_breakdown_rows"]), 12)
+
     @responses.activate
     def test_income_svg_chart_generation(self):
         """Test that SVG charts are generated."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         self.create_test_invoice(
             current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
@@ -498,7 +551,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_category_breakdown(self):
         """Test category breakdown in yearly view."""
         cnb_mock_rates()
-        current_year = timezone.now().year
+        current_year = timezone.localdate().year
 
         # Create invoices in different categories
         self.create_test_invoice(
@@ -520,6 +573,169 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertContains(response, "Support")
         self.assertContains(response, "Development / Consultations")
         self.assertContains(response, "Donation")
+
+    @responses.activate
+    def test_income_yearly_view_shows_rolling_trend_rows(self):
+        """Test yearly view exposes rolling 12-month trend data."""
+        cnb_mock_rates()
+        selected_year = timezone.localdate().year - 1
+
+        self.create_test_invoice(
+            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(100)
+        )
+        self.create_test_invoice(
+            selected_year - 1, 6, InvoiceCategory.HOSTING, Decimal(400)
+        )
+        self.create_test_invoice(
+            selected_year, 4, InvoiceCategory.HOSTING, Decimal(500)
+        )
+        self.create_test_invoice(
+            selected_year, 12, InvoiceCategory.HOSTING, Decimal(600)
+        )
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": selected_year})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Rolling 12 months")
+
+        trend = response.context["rolling_trend"]
+        self.assertEqual(trend["rolling_total"], Decimal(1100))
+        self.assertEqual(trend["previous_total"], Decimal(500))
+        self.assertEqual(trend["change_amount"], Decimal(600))
+        self.assertEqual(trend["change_percent"], Decimal(120))
+        self.assertEqual(trend["period_year"], selected_year)
+        self.assertEqual(trend["period_month"], 12)
+
+        december_row = response.context["monthly_breakdown_rows"][11]
+        self.assertEqual(december_row["month"], "12")
+        self.assertEqual(december_row["amount"], Decimal(600))
+        self.assertEqual(december_row["rolling_total"], Decimal(1100))
+        self.assertEqual(december_row["previous_total"], Decimal(500))
+        self.assertEqual(december_row["change_amount"], Decimal(600))
+
+    @responses.activate
+    def test_income_yearly_view_early_month_trend_uses_full_lookback(self):
+        """Test early-month rolling trend includes the full 24-month lookback."""
+        cnb_mock_rates()
+        selected_year = timezone.localdate().year - 1
+
+        self.create_test_invoice(
+            selected_year - 2, 3, InvoiceCategory.HOSTING, Decimal(250)
+        )
+        self.create_test_invoice(
+            selected_year - 2, 12, InvoiceCategory.HOSTING, Decimal(150)
+        )
+        self.create_test_invoice(
+            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(200)
+        )
+        self.create_test_invoice(
+            selected_year - 1, 2, InvoiceCategory.HOSTING, Decimal(100)
+        )
+        self.create_test_invoice(
+            selected_year - 1, 12, InvoiceCategory.HOSTING, Decimal(400)
+        )
+        self.create_test_invoice(
+            selected_year, 1, InvoiceCategory.HOSTING, Decimal(300)
+        )
+
+        response = self.client.get(
+            reverse("crm:income-year", kwargs={"year": selected_year})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        january_row = response.context["monthly_breakdown_rows"][0]
+        self.assertEqual(january_row["month"], "01")
+        self.assertEqual(january_row["amount"], Decimal(300))
+        self.assertEqual(january_row["rolling_total"], Decimal(800))
+        self.assertEqual(january_row["previous_total"], Decimal(600))
+        self.assertEqual(january_row["change_amount"], Decimal(200))
+
+    @responses.activate
+    def test_income_yearly_view_uses_local_year_for_trend_month(self):
+        """Test yearly rolling trend follows the local date at New Year."""
+        cnb_mock_rates()
+        selected_year = 2025
+
+        self.create_test_invoice(
+            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(100)
+        )
+        self.create_test_invoice(
+            selected_year - 1, 6, InvoiceCategory.HOSTING, Decimal(400)
+        )
+        self.create_test_invoice(
+            selected_year, 4, InvoiceCategory.HOSTING, Decimal(500)
+        )
+        self.create_test_invoice(
+            selected_year, 12, InvoiceCategory.HOSTING, Decimal(600)
+        )
+
+        with patch.object(
+            IncomeView, "_get_current_date", return_value=date(2026, 1, 1)
+        ):
+            response = self.client.get(
+                reverse("crm:income-year", kwargs={"year": selected_year})
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["rolling_trend"]["period_month"], 12)
+
+    @responses.activate
+    def test_income_yearly_breakdown_trend_uses_single_query(self):
+        """Test yearly trend breakdown stays constant-query."""
+        cnb_mock_rates()
+        selected_year = timezone.localdate().year - 1
+
+        self.create_test_invoice(
+            selected_year - 1, 12, InvoiceCategory.HOSTING, Decimal(100)
+        )
+        self.create_test_invoice(
+            selected_year, 12, InvoiceCategory.HOSTING, Decimal(200)
+        )
+
+        view = IncomeView()
+        monthly_data, _ = view.get_monthly_data(selected_year)
+
+        with self.assertNumQueries(1):
+            rows = view.get_yearly_breakdown_rows(selected_year, monthly_data)
+
+        self.assertEqual(len(rows), 12)
+        self.assertEqual(rows[11]["rolling_total"], Decimal(200))
+
+    @responses.activate
+    def test_income_yearly_context_reuses_breakdown_trend_data(self):
+        """Test yearly context does not repeat the trend aggregation query."""
+        cnb_mock_rates()
+        selected_year = timezone.localdate().year - 1
+
+        self.create_test_invoice(
+            selected_year - 1, 12, InvoiceCategory.HOSTING, Decimal(100)
+        )
+        self.create_test_invoice(
+            selected_year, 12, InvoiceCategory.HOSTING, Decimal(200)
+        )
+
+        view = IncomeView()
+        view.kwargs = {"year": selected_year}
+
+        with self.assertNumQueries(3):
+            context = view.get_context_data()
+
+        self.assertEqual(context["rolling_trend"]["rolling_total"], Decimal(200))
+
+    def test_income_future_year_skips_yearly_trend_aggregation(self):
+        """Test future yearly view skips unused trend aggregation."""
+        future_year = timezone.localdate().year + 1
+        view = IncomeView()
+        view.kwargs = {"year": future_year}
+
+        with self.assertNumQueries(2):
+            context = view.get_context_data()
+
+        self.assertIsNone(context["rolling_trend"])
+        self.assertTrue(
+            all(not row["trend_available"] for row in context["monthly_breakdown_rows"])
+        )
 
     def test_service_list_views(self):
         """Test various service list views."""
