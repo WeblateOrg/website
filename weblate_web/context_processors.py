@@ -38,6 +38,7 @@ from .const import (
     COMPANY_ID,
     COMPANY_INFO_EMAIL,
     COMPANY_NAME,
+    COMPANY_PIC,
     COMPANY_SALES_EMAIL,
     COMPANY_VAT_ID,
     COMPANY_ZIP,
@@ -108,4 +109,5 @@ def weblate_web(request):
         "company_info_email_mailto": f"mailto:{COMPANY_INFO_EMAIL}",
         "company_id": COMPANY_ID,
         "company_duns": COMPANY_DUNS,
+        "company_pic": COMPANY_PIC,
     }
