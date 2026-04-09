@@ -13,13 +13,14 @@
 # Vlăduț Ilie <vladilie94@gmail.com>, 2023, 2024, 2025.
 # Nicoara Alex <alex.nicoara@yahoo.com>, 2024.
 # GitHub webhook <noreply-webhook-github@weblate.org>, 2025.
+# Luciana Waldbaur <luciana.waldbaur@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/WeblateOrg/website/issues\n"
 "POT-Creation-Date: 2025-12-11 17:14+0100\n"
-"PO-Revision-Date: 2026-01-18 16:01+0000\n"
-"Last-Translator: CRISTIAN ANDREI <cristianvdr@gmail.com>\n"
+"PO-Revision-Date: 2026-04-09 13:09+0000\n"
+"Last-Translator: Luciana Waldbaur <luciana.waldbaur@gmail.com>\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/weblate/website/"
 "ro/>\n"
 "Language: ro\n"
@@ -28,7 +29,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: weblate_web/crm/templates/crm/income.html:16
 msgid "Back to"
@@ -57,7 +58,7 @@ msgstr "Venit zilnic"
 
 #: weblate_web/crm/templates/crm/income.html:55
 msgid "Monthly Income with Category Breakdown"
-msgstr ""
+msgstr "Venituri lunare cu defalcare pe categorii"
 
 #: weblate_web/crm/templates/crm/income.html:66
 msgid "Category Distribution"
@@ -122,11 +123,11 @@ msgstr "Vezi"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:71
 msgid "Add new agreement"
-msgstr ""
+msgstr "Adaugă un contract nou"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:92
 msgid "Issue new invoice"
-msgstr ""
+msgstr "Emite o factură nouă"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -152,7 +153,7 @@ msgstr "Număr cont"
 
 #: weblate_web/invoices/models.py:186
 msgid "BIC/SWIFT"
-msgstr ""
+msgstr "BIC/SWIFT"
 
 #: weblate_web/invoices/models.py:188
 msgid "Issuing bank"
@@ -165,6 +166,8 @@ msgstr "Titular cont"
 #: weblate_web/invoices/views.py:39
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
+"Factura a fost deja achitată. Intră în cont pentru a afla mai multe "
+"informații."
 
 #: weblate_web/models.py:77
 msgid "No reward"
@@ -400,23 +403,20 @@ msgid "Payment cancelled"
 msgstr "Plată anulată"
 
 #: weblate_web/payments/backends.py:850
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "New payment"
 msgid "Crypto payment"
-msgstr "Plată nouă"
+msgstr "Plată cu criptomonede"
 
 #: weblate_web/payments/backends.py:860
 msgid "Google Pay"
-msgstr ""
+msgstr "Google Pay"
 
 #: weblate_web/payments/backends.py:868
 msgid "Apple Pay"
-msgstr ""
+msgstr "Apple Pay"
 
 #: weblate_web/payments/forms.py:78
 msgid "You will receive a receipt here."
-msgstr ""
+msgstr "Vei primi confirmarea de plată aici."
 
 #: weblate_web/payments/models.py:108
 msgid "European VAT ID"
@@ -429,21 +429,16 @@ msgstr ""
 "este cazul."
 
 #: weblate_web/payments/models.py:116
-#, fuzzy
-#| msgid "Company or individual name"
 msgid "Company identification number"
-msgstr "Nume firmă sau persoană fizică"
+msgstr "Cod de identificare fiscală companie"
 
 #: weblate_web/payments/models.py:118
-#, fuzzy
-#| msgid ""
-#| "Please fill in your tax registration if it should appear on the invoice."
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
 msgstr ""
-"Te rugăm să completezi numărul de înregistrare fiscală dacă acesta trebuie "
-"să apară pe factură."
+"Te rugăm să introduci codul de înregistrare fiscală dacă acesta trebuie să "
+"apară pe factură."
 
 #: weblate_web/payments/models.py:125
 msgid "Company or individual name"
@@ -838,10 +833,8 @@ msgid "D-U-N-S Number"
 msgstr "Număr D-U-N-S"
 
 #: weblate_web/templates/about.html:216
-#, fuzzy
-#| msgid "Payment amount"
 msgid "Bank account"
-msgstr "Sumă de plată"
+msgstr "Cont bancar"
 
 #: weblate_web/templates/about.html:221 weblate_web/templates/careers.html:25
 #: weblate_web/templates/hosting.html:420
@@ -1240,10 +1233,8 @@ msgstr ""
 "a contribui. Discută cu asociații tăi."
 
 #: weblate_web/templates/donate.html:25
-#, fuzzy
-#| msgid "My donations"
 msgid "FOSDEM donation"
-msgstr "Donațiile mele"
+msgstr "Donație FOSDEM"
 
 #: weblate_web/templates/donate.html:27 weblate_web/templates/donate.html:74
 msgid "Purchase premium cloud"
@@ -2516,28 +2507,19 @@ msgid "Your payment on weblate.org failed"
 msgstr "Plata ta pe weblate.org a eșuat"
 
 #: weblate_web/templates/mail/payment_missing.html:10
-#, fuzzy
-#| msgid ""
-#| "Your subscription on weblate.org should renew next week and you have not "
-#| "set up automatic payments."
 msgid ""
 "Your subscription on weblate.org is expired and you have not set up "
 "automatic payments."
 msgstr ""
-"Abonamentul tău pe weblate.org ar trebui să se reînnoiască săptămâna "
-"viitoare și nu ai configurat plăți automate."
+"Abonamentul tău pe weblate.org a expirat și nu ai configurat plăți automate."
 
 #: weblate_web/templates/mail/payment_missing.html:12
-#, fuzzy
-#| msgid ""
-#| "Your subscription on weblate.org should renew next week and you have not "
-#| "set up automatic payments."
 msgid ""
 "Your subscription on weblate.org should renew soon and you have not set up "
 "automatic payments."
 msgstr ""
-"Abonamentul tău pe weblate.org ar trebui să se reînnoiască săptămâna "
-"viitoare și nu ai configurat plăți automate."
+"Abonamentul tău pe weblate.org urmează să se reînnoiască în curând și nu ai "
+"configurat plăți automate."
 
 #: weblate_web/templates/mail/payment_missing.html:14
 msgid ""
@@ -2547,28 +2529,19 @@ msgstr ""
 "acum."
 
 #: weblate_web/templates/mail/payment_missing.html:23
-#, fuzzy
-#| msgid ""
-#| "Your donation on weblate.org should renew next week and you have not set "
-#| "up automatic payments."
 msgid ""
 "Your donation on weblate.org is expired and you have not set up automatic "
 "payments."
 msgstr ""
-"Donația ta de pe weblate.org ar trebui să se reînnoiască săptămâna viitoare "
-"și nu ai configurat plăți automate."
+"Donația ta de pe weblate.org a expirat și nu ai configurat plăți automate."
 
 #: weblate_web/templates/mail/payment_missing.html:25
-#, fuzzy
-#| msgid ""
-#| "Your donation on weblate.org should renew next week and you have not set "
-#| "up automatic payments."
 msgid ""
 "Your donation on weblate.org should renew soon and you have not set up "
 "automatic payments."
 msgstr ""
-"Donația ta de pe weblate.org ar trebui să se reînnoiască săptămâna viitoare "
-"și nu ai configurat plăți automate."
+"Donația ta de pe weblate.org ar trebui să se reînnoiască în curând și nu ai "
+"configurat plăți automate."
 
 #: weblate_web/templates/mail/payment_missing.html:27
 msgid "Please perform the payment now to continue supporting Weblate."
@@ -2601,30 +2574,22 @@ msgid "Your pending payment on weblate.org"
 msgstr "Plata ta în așteptare pe weblate.org"
 
 #: weblate_web/templates/mail/payment_upcoming.html:9
-#, fuzzy
-#| msgid "Your subscription on weblate.org will renew next week."
 msgid "Your subscription on weblate.org will renew soon."
-msgstr "Abonamentul tău pe weblate.org se va reînnoi săptămâna viitoare."
+msgstr "Abonamentul tău pe weblate.org se va reînnoi în curând."
 
 #: weblate_web/templates/mail/payment_upcoming.html:10
 #: weblate_web/templates/mail/payment_upcoming.html:20
 msgid "The payment will be automatically charged soon."
-msgstr ""
+msgstr "Plata se va efectua automat în curând."
 
 #: weblate_web/templates/mail/payment_upcoming.html:11
 #: weblate_web/templates/mail/payment_upcoming.html:21
-#, fuzzy
-#| msgid ""
-#| "The payment will be automatically charged next week. In case your card "
-#| "has expired or you want to use different payment method, please perform "
-#| "the payment now."
 msgid ""
 "In case your card has expired or you want to use different payment method, "
 "please perform the payment now."
 msgstr ""
-"Plata va fi debitată automat săptămâna viitoare. În cazul în care cardul tău "
-"a expirat sau vrei să folosești o altă metodă de plată, te rugăm să "
-"efectuezi plata acum."
+"În cazul în care cardul tău a expirat sau vrei să folosești o altă metodă de "
+"plată, te rugăm să efectuezi plata acum."
 
 #: weblate_web/templates/mail/payment_upcoming.html:19
 #, fuzzy
@@ -2644,22 +2609,21 @@ msgstr "Abonament curent: %(package)s"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:8
 #: weblate_web/templates/mail/snippets/subscription_info.html:8
-#, fuzzy, python-format
-#| msgid "Current subscription: %(package)s"
+#, python-format
 msgid "Subscription price: %(price)s"
-msgstr "Abonament curent: %(package)s"
+msgstr "Prețul abonamentului: %(price)s"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:12
 #: weblate_web/templates/mail/snippets/subscription_info.html:12
 #, python-format
 msgid "Saved card: %(card_number)s"
-msgstr ""
+msgstr "Card salvat: %(card_number)s"
 
 #: weblate_web/templates/mail/snippets/donation_info.html:17
 #: weblate_web/templates/mail/snippets/subscription_info.html:17
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
-msgstr ""
+msgstr "Expirare abonament: %(expiry)s"
 
 #: weblate_web/templates/mail/snippets/subscription_info.html:21
 #, python-format
@@ -2704,17 +2668,15 @@ msgstr "Vezi articole mai vechi"
 
 #: weblate_web/templates/payment/customer-agreement.html:6
 msgid "Weblate data processing agreement"
-msgstr ""
+msgstr "Acordul Weblate de procesare a datelor"
 
 #: weblate_web/templates/payment/customer-agreement.html:13
 msgid "Your data processing agreements"
-msgstr ""
+msgstr "Acordurile tale de procesare a datelor"
 
 #: weblate_web/templates/payment/customer-agreement.html:16
-#, fuzzy
-#| msgid "Organize translations"
 msgid "Organization"
-msgstr "Organizează traduceri"
+msgstr "Organizație"
 
 #: weblate_web/templates/payment/customer-agreement.html:18
 #: weblate_web/templates/payment/payment.html:70
@@ -2723,17 +2685,12 @@ msgid "Edit"
 msgstr "Editează"
 
 #: weblate_web/templates/payment/customer-agreement.html:27
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "Awaiting payment"
 msgid "Existing agreements"
-msgstr "În așteptarea plății"
+msgstr "Acorduri existente"
 
 #: weblate_web/templates/payment/customer-agreement.html:48
-#, fuzzy
-#| msgid "Browse documentation"
 msgid "Service documentation"
-msgstr "Răsfoiește documentația"
+msgstr "Documentație serviciu"
 
 #: weblate_web/templates/payment/customer-agreement.html:55
 #: weblate_web/templates/terms.html:11
@@ -2746,19 +2703,16 @@ msgid "Privacy Policy"
 msgstr "Politică de confidențialitate"
 
 #: weblate_web/templates/payment/customer-agreement.html:77
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "New payment"
 msgid "New agreement"
-msgstr "Plată nouă"
+msgstr "Acord nou"
 
 #: weblate_web/templates/payment/customer-agreement.html:84
 msgid "Preview the agreement"
-msgstr ""
+msgstr "Previzualizează acordul"
 
 #: weblate_web/templates/payment/customer-agreement.html:100
 msgid "Create an agreement"
-msgstr ""
+msgstr "Creează un acord"
 
 #: weblate_web/templates/payment/customer.html:6
 #: weblate_web/templates/payment/payment.html:6
@@ -2781,8 +2735,6 @@ msgid "Payment description"
 msgstr "Descriere plată"
 
 #: weblate_web/templates/payment/payment.html:34
-#, fuzzy
-#| msgid "Payment frequence"
 msgid "Payment frequency"
 msgstr "Frecvență plăți"
 
@@ -2816,7 +2768,7 @@ msgstr ""
 #: weblate_web/templates/payment/payment.html:55
 #: weblate_web/templates/snippets/service.html:229
 msgid "Personal data"
-msgstr ""
+msgstr "Date personale"
 
 #: weblate_web/templates/payment/payment.html:60
 #, python-format
@@ -2824,6 +2776,9 @@ msgid ""
 "By performing the payment, you accept our <a href=\"%(terms_url)s\">General "
 "Terms and Conditions</a> and <a href=\"%(privacy_url)s\">Privacy Policy</a>."
 msgstr ""
+"Prin efectuarea plății, accepți <a href=\"%(terms_url)s\">Termenii și "
+"condițiile generale</a> and <a href=\"%(privacy_url)s\">Politica de "
+"confidențialitate</a>."
 
 #: weblate_web/templates/payment/payment.html:68
 #: weblate_web/templates/snippets/customer-address.html:3
@@ -2880,10 +2835,8 @@ msgid "View English version"
 msgstr "Vezi versiunea în limba engleză"
 
 #: weblate_web/templates/privacy.html:26 weblate_web/templates/terms.html:27
-#, fuzzy
-#| msgid "Download"
 msgid "Download as PDF"
-msgstr "Descărcare"
+msgstr "Descarcă PDF"
 
 #: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
 msgid "Service"
@@ -3268,7 +3221,7 @@ msgstr "Felicitări, ești complet acoperit!"
 
 #: weblate_web/templates/snippets/service.html:231
 msgid "Data processing agreements for your Weblate service."
-msgstr ""
+msgstr "Acorduri de procesare a datelor pentru serviciul tău Weblate."
 
 #: weblate_web/templates/snippets/service.html:235
 msgid "Manage"
@@ -3424,7 +3377,7 @@ msgstr "Disponibil numai cu pachetul de instalare"
 
 #: weblate_web/templates/support.html:96 weblate_web/templates/support.html:114
 msgid "Be prepared with security notifications prior to the fix publication."
-msgstr ""
+msgstr "Pregătește notificări de securitate înainte de anunțarea remedierii."
 
 #: weblate_web/templates/support.html:113
 msgid "Next business day support response guaranteed."
@@ -3491,10 +3444,8 @@ msgid "Suggestions on the internationalization and localization"
 msgstr "Sugestii privind internaționalizarea și localizarea"
 
 #: weblate_web/templates/support.html:168
-#, fuzzy
-#| msgid "Get support"
 msgid "Get a quote"
-msgstr "Obține asistență"
+msgstr "Obține o ofertă"
 
 #: weblate_web/templates/support.html:171
 msgid "Ask for help"
@@ -3695,10 +3646,8 @@ msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Eroare în parametrul %(field)s: %(error)s"
 
 #: weblate_web/views.py:380
-#, fuzzy
-#| msgid "Thank you for your donation."
 msgid "Thank you for your donation and enjoy FOSDEM."
-msgstr "Îți mulțumim pentru donația ta."
+msgstr "Îți mulțumim pentru donația ta. Sperăm să-ți placă FOSDEM."
 
 #: weblate_web/views.py:406 weblate_web/views.py:440
 msgid "Please provide your billing information to complete the payment."
@@ -3728,15 +3677,17 @@ msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr ""
+"Te rugăm să folosești acordul deja generat, vei putea genera unul nou după "
+"30 de zile."
 
 #: weblate_web/views.py:542
 msgid "New agreement created, you can download it below."
-msgstr ""
+msgstr "A fost creat un nou acord, pe care îl poți descărca mai jos."
 
 #: weblate_web/views.py:594
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
-msgstr ""
+msgstr "Companie nouă, date bancare noi! Acordă atenție facturii actuale."
 
 #: weblate_web/views.py:654
 msgid "Payment not yet processed, please retry."
