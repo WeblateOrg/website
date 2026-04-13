@@ -453,6 +453,30 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertIsNone(response.context["rolling_trend"])
 
     @responses.activate
+    def test_income_monthly_view_excludes_current_month_from_rolling_trend(self):
+        """Test monthly rolling trend skips the current incomplete month."""
+        cnb_mock_rates()
+        selected_year = 2026
+
+        self.create_test_invoice(2024, 4, InvoiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(2024, 9, InvoiceCategory.HOSTING, Decimal(400))
+        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(500))
+        self.create_test_invoice(
+            selected_year, 4, InvoiceCategory.HOSTING, Decimal(600)
+        )
+
+        with patch.object(
+            IncomeView, "_get_current_date", return_value=date(2026, 4, 15)
+        ):
+            response = self.client.get(
+                reverse("crm:income-month", kwargs={"year": selected_year, "month": 4})
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.context["rolling_trend"])
+        self.assertNotContains(response, "Rolling trend")
+
+    @responses.activate
     def test_income_filters_only_invoices(self):
         """Test that income view only shows INVOICE kind, not quotes."""
         cnb_mock_rates()
@@ -735,6 +759,46 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["rolling_trend"]["period_month"], 12)
+
+    @responses.activate
+    def test_income_yearly_view_excludes_current_month_from_rolling_trend(self):
+        """Test yearly rolling trend ends at the last complete month."""
+        cnb_mock_rates()
+        selected_year = 2026
+
+        self.create_test_invoice(2024, 4, InvoiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(2024, 9, InvoiceCategory.HOSTING, Decimal(400))
+        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(500))
+        self.create_test_invoice(
+            selected_year, 3, InvoiceCategory.HOSTING, Decimal(600)
+        )
+        self.create_test_invoice(
+            selected_year, 4, InvoiceCategory.HOSTING, Decimal(700)
+        )
+
+        with patch.object(
+            IncomeView, "_get_current_date", return_value=date(2026, 4, 15)
+        ):
+            response = self.client.get(
+                reverse("crm:income-year", kwargs={"year": selected_year})
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["rolling_trend"]["period_month"], 3)
+        self.assertEqual(
+            response.context["rolling_trend"]["rolling_total"], Decimal(1100)
+        )
+        self.assertEqual(
+            response.context["rolling_trend"]["previous_total"], Decimal(500)
+        )
+
+        march_row = response.context["monthly_breakdown_rows"][2]
+        self.assertTrue(march_row["trend_available"])
+        self.assertEqual(march_row["rolling_total"], Decimal(1100))
+
+        april_row = response.context["monthly_breakdown_rows"][3]
+        self.assertEqual(april_row["amount"], Decimal(700))
+        self.assertFalse(april_row["trend_available"])
 
     @responses.activate
     def test_income_yearly_breakdown_trend_uses_single_query(self):

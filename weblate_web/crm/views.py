@@ -782,6 +782,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     def _get_current_month_start(self) -> date:
         return self._get_current_date().replace(day=1)
 
+    def _get_last_complete_month_start(self) -> date | None:
+        return self._shift_month(self._get_current_month_start(), -1)
+
     def _build_rolling_window_summary(
         self,
         month_totals: dict[date, Decimal],
@@ -839,7 +842,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             period_start = self._get_month_start(year, month)
         except ValueError:
             return None
-        if period_start > self._get_current_month_start():
+        if period_start >= self._get_current_month_start():
             return None
         lookback_start = self._shift_month(period_start, -23)
         month_totals, earliest_month = self._get_month_totals_in_range(
@@ -868,18 +871,18 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         except ValueError:
             return rows
 
-        current_month_start = self._get_current_month_start()
-        if first_month > current_month_start:
+        last_complete_month = self._get_last_complete_month_start()
+        if last_complete_month is None or first_month > last_complete_month:
             return rows
 
-        trend_end_month = min(last_month, current_month_start)
+        trend_end_month = min(last_month, last_complete_month)
         month_totals, earliest_month = self._get_month_totals_in_range(
             self._shift_month(first_month, -23),
             trend_end_month,
         )
         for row in rows:
             period_start = self._get_month_start(year, cast("int", row["month_number"]))
-            if period_start > current_month_start:
+            if period_start > trend_end_month:
                 continue
 
             rolling_summary = self._build_rolling_window_summary(
@@ -898,7 +901,16 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         monthly_breakdown_rows: list[dict[str, str | int | Decimal | bool]],
         current_year: int,
     ) -> dict[str, int | Decimal | bool] | None:
-        trend_month = 12 if year < current_year else self._get_current_date().month
+        if year < current_year:
+            trend_month = 12
+        elif year > current_year:
+            return None
+        else:
+            last_complete_month = self._get_last_complete_month_start()
+            if last_complete_month is None or last_complete_month.year != year:
+                return None
+            trend_month = last_complete_month.month
+
         if not 1 <= trend_month <= len(monthly_breakdown_rows):
             return None
 
