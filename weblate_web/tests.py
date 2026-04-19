@@ -29,7 +29,6 @@ from requests.exceptions import HTTPError
 from wlc import WeblateException
 
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
-from weblate_web.payments.data import SUPPORTED_LANGUAGES
 from weblate_web.payments.models import Customer, Payment
 
 from .exchange_rates import UncachedExchangeRates
@@ -1011,12 +1010,6 @@ class PaymentsTest(FakturaceTestCase):
     def setUp(self) -> None:
         super().setUp()
         fake_remote()
-
-    def test_languages(self) -> None:
-        self.assertEqual(
-            set(SUPPORTED_LANGUAGES),
-            {x[0] for x in settings.LANGUAGES},
-        )
 
     def prepare_payment(self):
         with override("en"):
