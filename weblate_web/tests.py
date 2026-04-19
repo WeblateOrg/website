@@ -708,6 +708,16 @@ class ViewTestCase(PostTestCase):
         response = self.client.get("/he/")
         self.assertContains(response, "שנתי")
 
+    def test_index_ar(self) -> None:
+        response = self.client.get("/ar/")
+        self.assertContains(response, 'lang="ar"')
+        self.assertContains(response, 'dir="rtl"')
+        self.assertContains(
+            response,
+            '<h2 class="section-title hp-style">المستخدمون والداعمون</h2>',
+            html=True,
+        )
+
     def test_index_be(self) -> None:
         response = self.client.get("/be/")
         self.assertContains(response, "штогод")
