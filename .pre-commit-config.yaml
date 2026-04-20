@@ -48,12 +48,6 @@ repos:
     args: [--autofix, --indent, '2']
   - id: pretty-format-toml
     args: [--autofix]
-- repo: https://github.com/executablebooks/mdformat
-  rev: 1.0.0
-  hooks:
-  - id: mdformat
-    additional_dependencies:
-    - mdformat-gfm==1.0.0
 - repo: https://github.com/djlint/djLint
   rev: v1.36.4
   hooks:
@@ -101,6 +95,11 @@ repos:
   hooks:
   - id: shfmt
     args: [--write]
+- repo: https://github.com/rvben/rumdl-pre-commit
+  rev: v0.1.62
+  hooks:
+  - id: rumdl
+  - id: rumdl-fmt
 exclude: ^.*\.(svg)|weblate_web/templates/browserconfig.xml|weblate_web/static/vendor/|scripts/yarn/.*$
 ci:
   autoupdate_schedule: quarterly
