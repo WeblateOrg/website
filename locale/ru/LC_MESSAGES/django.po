@@ -45,8 +45,8 @@ msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-04-20 01:30-0500\n"
-"PO-Revision-Date: 2026-04-20 06:42+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-04-20 11:03+0000\n"
+"Last-Translator: Blueberry <igory.ygr200@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
 "ru/>\n"
 "Language: ru\n"
@@ -81,42 +81,36 @@ msgstr "Весь доход"
 
 #: weblate_web/crm/templates/crm/income.html:53
 msgid "Rolling trend"
-msgstr ""
+msgstr "Скользящий тренд"
 
 #: weblate_web/crm/templates/crm/income.html:56
 msgid "Window ending"
-msgstr ""
+msgstr "Период заканчивается"
 
 #: weblate_web/crm/templates/crm/income.html:60
-#, fuzzy
-#| msgid "Windows RC files"
 msgid "Window size"
-msgstr "Файлы ресурсов Windows"
+msgstr "Период расчёта"
 
 #: weblate_web/crm/templates/crm/income.html:62
 #: weblate_web/crm/templates/crm/income.html:156
-#, fuzzy, python-format
-#| msgctxt "123 translations ..."
-#| msgid "this month"
+#, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
-msgstr[0] "в этом месяце"
-msgstr[1] "в этом месяце"
-msgstr[2] "в этом месяце"
+msgstr[0] "%(months)s месяц"
+msgstr[1] "%(months)s месяца"
+msgstr[2] "%(months)s месяцев"
 
 #: weblate_web/crm/templates/crm/income.html:66
 msgid "Current window"
-msgstr ""
+msgstr "Текущий период"
 
 #: weblate_web/crm/templates/crm/income.html:70
 msgid "Previous window"
-msgstr ""
+msgstr "Предыдущий период"
 
 #: weblate_web/crm/templates/crm/income.html:74
-#, fuzzy
-#| msgid "Change plan"
 msgid "Change"
-msgstr "Изменить тариф"
+msgstr "Изменить"
 
 #: weblate_web/crm/templates/crm/income.html:93
 msgid "Daily Income"
@@ -156,11 +150,11 @@ msgstr "Месяц"
 
 #: weblate_web/crm/templates/crm/income.html:142
 msgid "Rolling window"
-msgstr ""
+msgstr "Скользящее окно"
 
 #: weblate_web/crm/templates/crm/income.html:143
 msgid "Trend"
-msgstr ""
+msgstr "Динамика"
 
 #: weblate_web/crm/templates/crm/income.html:144
 msgid "Actions"
@@ -494,10 +488,8 @@ msgid "You will receive a receipt here."
 msgstr "Вы получите квитанцию здесь."
 
 #: weblate_web/payments/forms.py:83
-#, fuzzy
-#| msgid "Your e-mail address…"
 msgid "E-mail address"
-msgstr "Ваш e-mail…"
+msgstr "Адрес электронной почты"
 
 #: weblate_web/payments/models.py:114
 msgid "European VAT ID"
@@ -526,14 +518,10 @@ msgid "Name"
 msgstr "Имя"
 
 #: weblate_web/payments/models.py:134
-#, fuzzy
-#| msgid ""
-#| "Please fill in your company registration number if it should appear on "
-#| "the invoice."
 msgid "Company or individual name as it should appear on the invoice."
 msgstr ""
-"Заполните регистрационный номер вашей компании, если он должен быть указан в "
-"инвойсе."
+"Имя компании или физического лица, как оно должно быть указано на счёте-"
+"фактуре."
 
 #: weblate_web/payments/models.py:141
 msgid "Address"
@@ -565,11 +553,8 @@ msgstr ""
 "Дополнительный адрес электронной почты для получения уведомлений о платежах"
 
 #: weblate_web/payments/models.py:173
-#, fuzzy
-#| msgid "Additional e-mail to receive billing notifications"
 msgid "Additional upcoming payment notification"
-msgstr ""
-"Дополнительный адрес электронной почты для получения уведомлений о платежах"
+msgstr "Уведомление о предстоящем дополнительном платеже"
 
 #: weblate_web/payments/models.py:176
 msgid ""
@@ -577,6 +562,9 @@ msgid ""
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
+"Количество дней до наступления срока платежа для отправки одного "
+"дополнительного уведомления о предстоящем платеже, от 0 до {}. 0 = "
+"использовать только уведомления по умолчанию."
 
 #: weblate_web/payments/models.py:275
 msgid "The country has to match your VAT code"
@@ -584,12 +572,14 @@ msgstr "Страна соответствует вашему коду НДС"
 
 #: weblate_web/payments/models.py:283
 msgid "Choose a day different from the default payment notifications: 2 and 7."
-msgstr ""
+msgstr "Выберите день, отличный от уведомлений о платежах по умолчанию: 2 и 7."
 
 #: weblate_web/payments/models.py:301
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
+"Выберите день, отличный от установленного по умолчанию уведомления о "
+"ежегодной оплате: 31."
 
 #: weblate_web/payments/models.py:475
 msgid "Annual"
@@ -945,10 +935,8 @@ msgid "D-U-N-S Number"
 msgstr "Номер D-U-N-S"
 
 #: weblate_web/templates/about.html:216
-#, fuzzy
-#| msgid "Company identification number"
 msgid "Participant Identification Code"
-msgstr "Идентификационный номер компании"
+msgstr "Идентификационный код участника"
 
 #: weblate_web/templates/about.html:221
 msgid "Bank account"
@@ -1350,19 +1338,15 @@ msgstr "Пожертвование FOSDEM"
 
 #: weblate_web/templates/donate.html:13
 msgid "Want to get a t-shirt or hoodie at our FOSDEM stand?"
-msgstr ""
+msgstr "Хотите получить футболку или толстовку на нашем стенде FOSDEM?"
 
 #: weblate_web/templates/donate.html:14
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a t-shirt"
-msgstr "Пожертвовать для Weblate"
+msgstr "Пожертвуйте, чтобы получить футболку"
 
 #: weblate_web/templates/donate.html:15
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a hoodie"
-msgstr "Пожертвовать для Weblate"
+msgstr "Пожертвуйте, чтобы получить толстовку"
 
 #: weblate_web/templates/donate.html:19
 msgid "Become a Weblate supporter"
@@ -2737,22 +2721,20 @@ msgid ""
 "There might already be an invoice for this renewal and only the payment "
 "might still be missing."
 msgstr ""
+"Возможно, счёт-фактура за это продление уже есть, и не хватает только "
+"платежа."
 
 #: weblate_web/templates/mail/payment_upcoming.html:22
 msgid "Your donation on weblate.org will renew soon."
 msgstr "Ваше пожертвование weblate.org скоро продлится."
 
 #: weblate_web/templates/mail/payment_upcoming.html:34
-#, fuzzy
-#| msgid "Download pro forma invoice"
 msgid "Unpaid invoices and recent pro forma invoices:"
-msgstr "Скачать счет-проформу"
+msgstr "Неоплаченные счета-фактуры и последние счета-фактуры:"
 
 #: weblate_web/templates/mail/payment_upcoming.html:42
-#, fuzzy
-#| msgid "Apply now"
 msgid "pay now"
-msgstr "Подать заявление"
+msgstr "оплатить сейчас"
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
@@ -3184,10 +3166,8 @@ msgid "Download invoice"
 msgstr "Скачать инвойс"
 
 #: weblate_web/templates/snippets/payment.html:23
-#, fuzzy
-#| msgid "Download source code"
 msgid "Download receipt"
-msgstr "Скачать исходный код"
+msgstr "Скачать квитанцию"
 
 #: weblate_web/templates/snippets/pricing.html:6
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
@@ -3565,12 +3545,8 @@ msgid "One-time installation of Weblate"
 msgstr "Одноразовая установка Weblate"
 
 #: weblate_web/templates/support.html:128
-#, fuzzy
-#| msgid "Docker-based or native installation"
 msgid "Docker-based installation"
-msgstr ""
-"Установка как на основе Docker’а, так и через родной для системы "
-"установочный пакет"
+msgstr "Установка на основе Docker"
 
 #: weblate_web/templates/support.html:129
 msgid "Requires root access or close cooperation of your admins"
@@ -3831,6 +3807,8 @@ msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
+"Укажите своё имя для завершения платежа. Укажите другую информацию для "
+"выставления счёта, если она необходима в квитанции."
 
 #: weblate_web/views.py:416 weblate_web/views.py:450
 msgid "Please provide your billing information to complete the payment."
