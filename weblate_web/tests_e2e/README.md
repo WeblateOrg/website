@@ -93,7 +93,7 @@ pytest weblate_web/tests_e2e/ --screenshot=only-on-failure
 
 ## Test Structure
 
-```
+```text
 weblate_web/tests_e2e/
 ├── __init__.py
 ├── conftest.py           # Pytest fixtures and configuration
