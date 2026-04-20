@@ -37,7 +37,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-04-20 01:30-0500\n"
-"PO-Revision-Date: 2026-04-20 07:06+0000\n"
+"PO-Revision-Date: 2026-04-20 11:03+0000\n"
 "Last-Translator: VfBFan <vfbfan@users.noreply.hosted.weblate.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/weblate/website/"
 "de/>\n"
@@ -543,11 +543,8 @@ msgstr ""
 "Zusätzliche E-Mail-Adresse zum Empfang von Abrechnungsbenachrichtigungen"
 
 #: weblate_web/payments/models.py:173
-#, fuzzy
-#| msgid "Additional e-mail to receive billing notifications"
 msgid "Additional upcoming payment notification"
-msgstr ""
-"Zusätzliche E-Mail-Adresse zum Empfang von Abrechnungsbenachrichtigungen"
+msgstr "Zusätzliche Benachrichtigung über anstehende Zahlungen"
 
 #: weblate_web/payments/models.py:176
 msgid ""
@@ -555,6 +552,9 @@ msgid ""
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
+"Anzahl der Tage vor Fälligkeit der Zahlung, um eine zusätzliche "
+"Benachrichtigung über bevorstehende Zahlungen zu senden, von 0 bis {}. Auf 0 "
+"setzen, um nur Standardbenachrichtigungen zu verwenden."
 
 #: weblate_web/payments/models.py:275
 msgid "The country has to match your VAT code"
@@ -564,11 +564,15 @@ msgstr ""
 #: weblate_web/payments/models.py:283
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
+"Wählen Sie einen anderen Tag als die voreingestellten "
+"Zahlungsbenachrichtigungen: 2 und 7."
 
 #: weblate_web/payments/models.py:301
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
+"Wählen Sie einen anderen Tag als die voreingestellte jährliche "
+"Zahlungsbenachrichtigung: 31."
 
 #: weblate_web/payments/models.py:475
 msgid "Annual"
@@ -928,10 +932,8 @@ msgid "D-U-N-S Number"
 msgstr "D-U-N-S-Nummer"
 
 #: weblate_web/templates/about.html:216
-#, fuzzy
-#| msgid "Company identification number"
 msgid "Participant Identification Code"
-msgstr "Unternehmens-Identifikationsnummer"
+msgstr "Teilnehmeridentifizierungscode"
 
 #: weblate_web/templates/about.html:221
 msgid "Bank account"
@@ -1332,18 +1334,15 @@ msgstr "FOSDEM-Spende"
 #: weblate_web/templates/donate.html:13
 msgid "Want to get a t-shirt or hoodie at our FOSDEM stand?"
 msgstr ""
+"Möchten Sie ein T-Shirt oder einen Hoodie an unserem FOSDEM-Stand erwerben?"
 
 #: weblate_web/templates/donate.html:14
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a t-shirt"
-msgstr "An Weblate spenden"
+msgstr "Spenden, um ein T-Shirt zu erhalten"
 
 #: weblate_web/templates/donate.html:15
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a hoodie"
-msgstr "An Weblate spenden"
+msgstr "Spenden, um einen Hoodie zu erhalten"
 
 #: weblate_web/templates/donate.html:19
 msgid "Become a Weblate supporter"
@@ -2730,22 +2729,20 @@ msgid ""
 "There might already be an invoice for this renewal and only the payment "
 "might still be missing."
 msgstr ""
+"Möglicherweise gibt es bereits eine Rechnung für diese Verlängerung und es "
+"fehlt nur noch die Zahlung."
 
 #: weblate_web/templates/mail/payment_upcoming.html:22
 msgid "Your donation on weblate.org will renew soon."
 msgstr "Ihre Spende auf weblate.org wird in Kürze erneuert."
 
 #: weblate_web/templates/mail/payment_upcoming.html:34
-#, fuzzy
-#| msgid "Download pro forma invoice"
 msgid "Unpaid invoices and recent pro forma invoices:"
-msgstr "Proformarechnung herunterladen"
+msgstr "Unbezahlte Rechnungen und aktuelle Proformarechnungen:"
 
 #: weblate_web/templates/mail/payment_upcoming.html:42
-#, fuzzy
-#| msgid "Apply now"
 msgid "pay now"
-msgstr "Jetzt bewerben"
+msgstr "Jetzt zahlen"
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
@@ -3177,10 +3174,8 @@ msgid "Download invoice"
 msgstr "Rechnung herunterladen"
 
 #: weblate_web/templates/snippets/payment.html:23
-#, fuzzy
-#| msgid "Download source code"
 msgid "Download receipt"
-msgstr "Quellcode herunterladen"
+msgstr "Quittung herunterladen"
 
 #: weblate_web/templates/snippets/pricing.html:6
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
@@ -3559,10 +3554,8 @@ msgid "One-time installation of Weblate"
 msgstr "Einmalige Installation von Weblate"
 
 #: weblate_web/templates/support.html:128
-#, fuzzy
-#| msgid "Docker-based or native installation"
 msgid "Docker-based installation"
-msgstr "Docker-basierte oder native Installation"
+msgstr "Docker-basierte Installation"
 
 #: weblate_web/templates/support.html:129
 msgid "Requires root access or close cooperation of your admins"
