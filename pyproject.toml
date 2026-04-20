@@ -206,3 +206,17 @@ max-complexity = 16
 # TODO: all these should be lower (or use defaults)
 max-branches = 19
 max-public-methods = 41
+
+[tool.rumdl]
+disable = [
+  # We do not enforce heading
+  "first-line-heading",
+  # Avoid length limit checks
+  "line-length"
+]
+
+[tool.rumdl.per-file-ignores]
+"README.md" = [
+  # Allow HTML
+  "MD033"
+]
