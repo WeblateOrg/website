@@ -25,14 +25,14 @@
 # Christian Wia <w9204-gi@yahoo.com>, 2024.
 # Yvan Zo <yvanzo@users.noreply.hosted.weblate.org>, 2024.
 # GitHub webhook <noreply-webhook-github@weblate.org>, 2025.
-# Mickaël Binos <mickaelbinos@outlook.com>, 2025.
+# Mickaël Binos <mickaelbinos@outlook.com>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: French (Weblate)\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-04-20 01:30-0500\n"
-"PO-Revision-Date: 2026-04-20 06:42+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-04-21 12:10+0000\n"
+"Last-Translator: Mickaël Binos <mickaelbinos@outlook.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/weblate/website/"
 "fr/>\n"
 "Language: fr\n"
@@ -65,41 +65,35 @@ msgstr "Revenu total"
 
 #: weblate_web/crm/templates/crm/income.html:53
 msgid "Rolling trend"
-msgstr ""
+msgstr "Tendance mobile"
 
 #: weblate_web/crm/templates/crm/income.html:56
 msgid "Window ending"
-msgstr ""
+msgstr "Fin de fenêtre"
 
 #: weblate_web/crm/templates/crm/income.html:60
-#, fuzzy
-#| msgid "Windows RC files"
 msgid "Window size"
-msgstr "Fichiers RC Windows"
+msgstr "Taille de la fenêtre"
 
 #: weblate_web/crm/templates/crm/income.html:62
 #: weblate_web/crm/templates/crm/income.html:156
-#, fuzzy, python-format
-#| msgctxt "123 translations ..."
-#| msgid "this month"
+#, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
-msgstr[0] "ce mois"
-msgstr[1] "ce mois"
+msgstr[0] "%(months)s mois"
+msgstr[1] "%(months)s mois"
 
 #: weblate_web/crm/templates/crm/income.html:66
 msgid "Current window"
-msgstr ""
+msgstr "Fenêtre actuelle"
 
 #: weblate_web/crm/templates/crm/income.html:70
 msgid "Previous window"
-msgstr ""
+msgstr "Fenêtre précédente"
 
 #: weblate_web/crm/templates/crm/income.html:74
-#, fuzzy
-#| msgid "Change plan"
 msgid "Change"
-msgstr "Changer d’offre"
+msgstr "Changer"
 
 #: weblate_web/crm/templates/crm/income.html:93
 msgid "Daily Income"
@@ -139,11 +133,11 @@ msgstr "Mois"
 
 #: weblate_web/crm/templates/crm/income.html:142
 msgid "Rolling window"
-msgstr ""
+msgstr "Fenêtre mobile"
 
 #: weblate_web/crm/templates/crm/income.html:143
 msgid "Trend"
-msgstr ""
+msgstr "Tendance"
 
 #: weblate_web/crm/templates/crm/income.html:144
 msgid "Actions"
@@ -477,10 +471,8 @@ msgid "You will receive a receipt here."
 msgstr "Vous recevrez un reçu ici."
 
 #: weblate_web/payments/forms.py:83
-#, fuzzy
-#| msgid "Your e-mail address…"
 msgid "E-mail address"
-msgstr "Votre adresse courriel…"
+msgstr "Adresse e-mail"
 
 #: weblate_web/payments/models.py:114
 msgid "European VAT ID"
@@ -509,14 +501,9 @@ msgid "Name"
 msgstr "Nom"
 
 #: weblate_web/payments/models.py:134
-#, fuzzy
-#| msgid ""
-#| "Please fill in your company registration number if it should appear on "
-#| "the invoice."
 msgid "Company or individual name as it should appear on the invoice."
 msgstr ""
-"Veuillez indiquer le numéro d'immatriculation de votre entreprise s'il doit "
-"figurer sur la facture."
+"Nom de la société ou du particulier tel qu'il doit figurer sur la facture."
 
 #: weblate_web/payments/models.py:141
 msgid "Address"
@@ -547,10 +534,8 @@ msgid "Additional e-mail to receive billing notifications"
 msgstr "Adresse courriel additionnelle pour être notifié de la facturation"
 
 #: weblate_web/payments/models.py:173
-#, fuzzy
-#| msgid "Additional e-mail to receive billing notifications"
 msgid "Additional upcoming payment notification"
-msgstr "Adresse courriel additionnelle pour être notifié de la facturation"
+msgstr "Notification de paiement supplémentaire à venir"
 
 #: weblate_web/payments/models.py:176
 msgid ""
@@ -558,6 +543,10 @@ msgid ""
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
+"Nombre de jours avant la date d'échéance du paiement pour envoyer une "
+"notification supplémentaire concernant le prochain paiement, compris entre 0 "
+"et {}. Définissez cette valeur sur 0 pour n'utiliser que les notifications "
+"par défaut."
 
 #: weblate_web/payments/models.py:275
 msgid "The country has to match your VAT code"
@@ -566,11 +555,15 @@ msgstr "Le pays doit correspondre au code de TVA européen"
 #: weblate_web/payments/models.py:283
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
+"Choisissez un jour différent de ceux indiqués par défaut pour les "
+"notifications de paiement : le 2 et le 7."
 
 #: weblate_web/payments/models.py:301
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
+"Choisissez une date différente de celle indiquée par défaut pour la "
+"notification de paiement annuelle : le 31."
 
 #: weblate_web/payments/models.py:475
 msgid "Annual"
@@ -929,10 +922,8 @@ msgid "D-U-N-S Number"
 msgstr "Numéro D-U-N-S"
 
 #: weblate_web/templates/about.html:216
-#, fuzzy
-#| msgid "Company identification number"
 msgid "Participant Identification Code"
-msgstr "Numéro d'identification de l'entreprise"
+msgstr "Code d'identification du participant"
 
 #: weblate_web/templates/about.html:221
 msgid "Bank account"
@@ -1331,18 +1322,16 @@ msgstr "Don FOSDEM"
 #: weblate_web/templates/donate.html:13
 msgid "Want to get a t-shirt or hoodie at our FOSDEM stand?"
 msgstr ""
+"Vous souhaitez acheter un t-shirt ou un sweat à capuche sur notre stand au "
+"FOSDEM ?"
 
 #: weblate_web/templates/donate.html:14
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a t-shirt"
-msgstr "Faites un don à Weblate"
+msgstr "Faites un don pour recevoir un t-shirt"
 
 #: weblate_web/templates/donate.html:15
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a hoodie"
-msgstr "Faites un don à Weblate"
+msgstr "Faites un don pour recevoir un sweat à capuche"
 
 #: weblate_web/templates/donate.html:19
 msgid "Become a Weblate supporter"
@@ -2723,22 +2712,20 @@ msgid ""
 "There might already be an invoice for this renewal and only the payment "
 "might still be missing."
 msgstr ""
+"Il se peut qu'une facture ait déjà été émise pour ce renouvellement et qu'il "
+"ne manque plus que le paiement."
 
 #: weblate_web/templates/mail/payment_upcoming.html:22
 msgid "Your donation on weblate.org will renew soon."
 msgstr "Votre don sur weblate.org sera bientôt renouvelé."
 
 #: weblate_web/templates/mail/payment_upcoming.html:34
-#, fuzzy
-#| msgid "Download pro forma invoice"
 msgid "Unpaid invoices and recent pro forma invoices:"
-msgstr "Télécharger la facture pro forma"
+msgstr "Factures impayées et factures pro forma récentes :"
 
 #: weblate_web/templates/mail/payment_upcoming.html:42
-#, fuzzy
-#| msgid "Apply now"
 msgid "pay now"
-msgstr "Postulez maintenant"
+msgstr "payer maintenant"
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
@@ -3169,10 +3156,8 @@ msgid "Download invoice"
 msgstr "Télécharger la facture"
 
 #: weblate_web/templates/snippets/payment.html:23
-#, fuzzy
-#| msgid "Download source code"
 msgid "Download receipt"
-msgstr "Télécharger le code source"
+msgstr "Télécharger le reçu"
 
 #: weblate_web/templates/snippets/pricing.html:6
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
@@ -3552,10 +3537,8 @@ msgid "One-time installation of Weblate"
 msgstr "Une installation de Weblate"
 
 #: weblate_web/templates/support.html:128
-#, fuzzy
-#| msgid "Docker-based or native installation"
 msgid "Docker-based installation"
-msgstr "Installation basée sur Docker ou native"
+msgstr "Installation via Docker"
 
 #: weblate_web/templates/support.html:129
 msgid "Requires root access or close cooperation of your admins"
@@ -3814,6 +3797,8 @@ msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
+"Veuillez indiquer votre nom pour finaliser le paiement. Ajoutez d'autres "
+"informations de facturation si vous souhaitez qu'elles figurent sur le reçu."
 
 #: weblate_web/views.py:416 weblate_web/views.py:450
 msgid "Please provide your billing information to complete the payment."
