@@ -14,7 +14,7 @@
 # inson1 <vaclav.svarc01@seznam.cz>, 2023.
 # Odweta <code.62rdl@aleeas.com>, 2024.
 # Fjuro <fjuro@alius.cz>, 2024, 2025.
-# Fjuro <fjuro@users.noreply.hosted.weblate.org>, 2025.
+# Fjuro <fjuro@users.noreply.hosted.weblate.org>, 2025, 2026.
 # Fjuro <git@alius.cz>, 2025.
 # zenobit <zenobit@disroot.org>, 2025.
 # GitHub webhook <noreply-webhook-github@weblate.org>, 2025.
@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-04-20 01:30-0500\n"
-"PO-Revision-Date: 2026-04-20 06:42+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-04-21 12:10+0000\n"
+"Last-Translator: Fjuro <fjuro@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/"
 "cs/>\n"
 "Language: cs\n"
@@ -57,42 +57,36 @@ msgstr "Celkový příjem"
 
 #: weblate_web/crm/templates/crm/income.html:53
 msgid "Rolling trend"
-msgstr ""
+msgstr "Klouzavý trend"
 
 #: weblate_web/crm/templates/crm/income.html:56
 msgid "Window ending"
-msgstr ""
+msgstr "Konec okna"
 
 #: weblate_web/crm/templates/crm/income.html:60
-#, fuzzy
-#| msgid "Windows RC files"
 msgid "Window size"
-msgstr "Soubory Windows RC"
+msgstr "Velikost okna"
 
 #: weblate_web/crm/templates/crm/income.html:62
 #: weblate_web/crm/templates/crm/income.html:156
-#, fuzzy, python-format
-#| msgctxt "123 translations ..."
-#| msgid "this month"
+#, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
-msgstr[0] "tento měsíc"
-msgstr[1] "tento měsíc"
-msgstr[2] "tento měsíc"
+msgstr[0] "%(months)s měsíc"
+msgstr[1] "%(months)s měsíce"
+msgstr[2] "%(months)s měsíců"
 
 #: weblate_web/crm/templates/crm/income.html:66
 msgid "Current window"
-msgstr ""
+msgstr "Aktuální okno"
 
 #: weblate_web/crm/templates/crm/income.html:70
 msgid "Previous window"
-msgstr ""
+msgstr "Předchozí okno"
 
 #: weblate_web/crm/templates/crm/income.html:74
-#, fuzzy
-#| msgid "Change plan"
 msgid "Change"
-msgstr "Změnit balíček"
+msgstr "Změnit"
 
 #: weblate_web/crm/templates/crm/income.html:93
 msgid "Daily Income"
@@ -132,11 +126,11 @@ msgstr "Měsíc"
 
 #: weblate_web/crm/templates/crm/income.html:142
 msgid "Rolling window"
-msgstr ""
+msgstr "Pohyblivé okno"
 
 #: weblate_web/crm/templates/crm/income.html:143
 msgid "Trend"
-msgstr ""
+msgstr "Trend"
 
 #: weblate_web/crm/templates/crm/income.html:144
 msgid "Actions"
@@ -467,10 +461,8 @@ msgid "You will receive a receipt here."
 msgstr "Zde obdržíte účtenku."
 
 #: weblate_web/payments/forms.py:83
-#, fuzzy
-#| msgid "Your e-mail address…"
 msgid "E-mail address"
-msgstr "Váš e-mail…"
+msgstr "E-mailová adresa"
 
 #: weblate_web/payments/models.py:114
 msgid "European VAT ID"
@@ -499,14 +491,8 @@ msgid "Name"
 msgstr "Název"
 
 #: weblate_web/payments/models.py:134
-#, fuzzy
-#| msgid ""
-#| "Please fill in your company registration number if it should appear on "
-#| "the invoice."
 msgid "Company or individual name as it should appear on the invoice."
-msgstr ""
-"Vyplňte prosím registrační číslo vaší společnosti (IČO), pokud má být "
-"uvedeno na faktuře."
+msgstr "Název společnosti nebo jméno osoby tak, jak se má objevit na faktuře."
 
 #: weblate_web/payments/models.py:141
 msgid "Address"
@@ -537,10 +523,8 @@ msgid "Additional e-mail to receive billing notifications"
 msgstr "Dodatečný e-mail pro zasílání fakturačních oznámení"
 
 #: weblate_web/payments/models.py:173
-#, fuzzy
-#| msgid "Additional e-mail to receive billing notifications"
 msgid "Additional upcoming payment notification"
-msgstr "Dodatečný e-mail pro zasílání fakturačních oznámení"
+msgstr "Dodatečné oznámení o nadcházející platbě"
 
 #: weblate_web/payments/models.py:176
 msgid ""
@@ -548,6 +532,9 @@ msgid ""
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
+"Počet dní před datem splatnosti platby, kdy se má odeslat jedno oznámení o "
+"nadcházející platbě navíc, od 0 do {}. Nastavte na 0 pro použití pouze "
+"výchozích oznámení."
 
 #: weblate_web/payments/models.py:275
 msgid "The country has to match your VAT code"
@@ -555,12 +542,12 @@ msgstr "Země musí odpovídat DIČ"
 
 #: weblate_web/payments/models.py:283
 msgid "Choose a day different from the default payment notifications: 2 and 7."
-msgstr ""
+msgstr "Vyberte den různý od výchozích oznámení: 2 a 7."
 
 #: weblate_web/payments/models.py:301
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
-msgstr ""
+msgstr "Vyberte den různý od výchozího ročního oznámení: 31."
 
 #: weblate_web/payments/models.py:475
 msgid "Annual"
@@ -912,10 +899,8 @@ msgid "D-U-N-S Number"
 msgstr "Číslo D-U-N-S"
 
 #: weblate_web/templates/about.html:216
-#, fuzzy
-#| msgid "Company identification number"
 msgid "Participant Identification Code"
-msgstr "Identifikační číslo společnosti"
+msgstr "Identifikační kód účastníka"
 
 #: weblate_web/templates/about.html:221
 msgid "Bank account"
@@ -1308,19 +1293,15 @@ msgstr "Dar FOSDEM"
 
 #: weblate_web/templates/donate.html:13
 msgid "Want to get a t-shirt or hoodie at our FOSDEM stand?"
-msgstr ""
+msgstr "Chcete získat tričko nebo mikinu u našeho stánku na FOSDEM?"
 
 #: weblate_web/templates/donate.html:14
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a t-shirt"
-msgstr "Přispět na Weblate"
+msgstr "Přispějte a získejte tričko"
 
 #: weblate_web/templates/donate.html:15
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a hoodie"
-msgstr "Přispět na Weblate"
+msgstr "Přispějte a získejte mikinu"
 
 #: weblate_web/templates/donate.html:19
 msgid "Become a Weblate supporter"
@@ -2679,22 +2660,20 @@ msgid ""
 "There might already be an invoice for this renewal and only the payment "
 "might still be missing."
 msgstr ""
+"Je možné, že faktura za toto prodloužení již byla vystavena a zbývá už jen "
+"uhradit platbu."
 
 #: weblate_web/templates/mail/payment_upcoming.html:22
 msgid "Your donation on weblate.org will renew soon."
 msgstr "Vaše dar na weblate.org se brzy obnoví."
 
 #: weblate_web/templates/mail/payment_upcoming.html:34
-#, fuzzy
-#| msgid "Download pro forma invoice"
 msgid "Unpaid invoices and recent pro forma invoices:"
-msgstr "Stáhnout pro forma fakturu"
+msgstr "Neuhrazené faktury a nedávné proforma faktury:"
 
 #: weblate_web/templates/mail/payment_upcoming.html:42
-#, fuzzy
-#| msgid "Apply now"
 msgid "pay now"
-msgstr "Přihlásit se nyní"
+msgstr "zaplatit nyní"
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
@@ -3117,10 +3096,8 @@ msgid "Download invoice"
 msgstr "Stáhnout fakturu"
 
 #: weblate_web/templates/snippets/payment.html:23
-#, fuzzy
-#| msgid "Download source code"
 msgid "Download receipt"
-msgstr "Stáhnout zdrojové kódy"
+msgstr "Stáhnout účtenku"
 
 #: weblate_web/templates/snippets/pricing.html:6
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
@@ -3488,10 +3465,8 @@ msgid "One-time installation of Weblate"
 msgstr "Jednorázová instalace Weblate"
 
 #: weblate_web/templates/support.html:128
-#, fuzzy
-#| msgid "Docker-based or native installation"
 msgid "Docker-based installation"
-msgstr "Instalace v Dockeru nebo nativní"
+msgstr "Instalace v Dockeru"
 
 #: weblate_web/templates/support.html:129
 msgid "Requires root access or close cooperation of your admins"
@@ -3751,6 +3726,8 @@ msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
+"Pro dokončení platby uveďte své jméno. Pokud chcete, aby byly na účtence "
+"uvedeny další fakturační údaje, přidejte je prosím."
 
 #: weblate_web/views.py:416 weblate_web/views.py:450
 msgid "Please provide your billing information to complete the payment."
