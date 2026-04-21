@@ -137,8 +137,12 @@ def get_changes(force: bool = False) -> list:
     try:
         wlc = Weblate(key=settings.CHANGES_KEY, url=settings.CHANGES_API)
 
-        stats = [p.statistics() for p in wlc.list_projects()]
-        stats = [p.get_data() for p in stats if p["last_change"] is not None]
+        project_stats = [project.statistics() for project in wlc.list_projects()]
+        stats = [
+            project.get_data()
+            for project in project_stats
+            if project["last_change"] is not None
+        ]
     except WeblateException as error:
         sentry_sdk.capture_exception(error)
         return []
