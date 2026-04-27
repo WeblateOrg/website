@@ -88,7 +88,7 @@ class LatestEntriesFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        return item.body.rendered
+        return item.body_rendered
 
     def item_pubdate(self, item):
         return item.timestamp

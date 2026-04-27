@@ -1714,6 +1714,85 @@ class PostTest(PostTestCase):
         response = self.client.get(future.get_absolute_url(), follow=True)
         self.assertEqual(response.status_code, 404)
 
+    def test_archive_escapes_title_and_summary(self) -> None:
+        payload = '"><img src=x onerror=prompt(document.domain)>'
+        post = Post.objects.create(
+            title=payload, slug="xss-title", body="safe", timestamp=timezone.now()
+        )
+        post.summary = payload
+        post.save(update_fields=["summary"])
+
+        response = self.client.get("/news/", follow=True)
+
+        self.assertNotContains(response, "<img src=x onerror=prompt(document.domain)>")
+        self.assertContains(
+            response, "&lt;img src=x onerror=prompt(document.domain)&gt;"
+        )
+
+    def test_body_strips_raw_html(self) -> None:
+        payload = '"><img src=x onerror=prompt(document.domain)>'
+        post = self.create_post(title="xss-post", body=payload)
+
+        response = self.client.get(post.get_absolute_url(), follow=True)
+
+        self.assertNotContains(response, "src=x")
+        self.assertNotContains(response, "onerror")
+        self.assertContains(response, "&quot;&gt;")
+
+    def test_body_escapes_unsafe_link(self) -> None:
+        post = self.create_post(title="xss-link", body="[link](javascript:alert(1))")
+
+        response = self.client.get(post.get_absolute_url(), follow=True)
+
+        self.assertNotContains(response, 'href="javascript:alert(1)"')
+        self.assertContains(response, "[link](javascript:alert(1))")
+
+    def test_body_plain_autolink_boundaries(self) -> None:
+        post = self.create_post(
+            title="plain-autolink",
+            body="Links: https://example.com). and https://example.com/",
+        )
+
+        self.assertIn(
+            '<a href="https://example.com">https://example.com</a>).',
+            post.body_rendered,
+        )
+        self.assertIn(
+            '<a href="https://example.com/">https://example.com/</a>',
+            post.body_rendered,
+        )
+
+    def test_body_escapes_image_url(self) -> None:
+        post = self.create_post(
+            title="xss-image",
+            body='![logo](<https://example.com/" onerror="alert(1)>)',
+        )
+
+        self.assertNotIn('src="https://example.com/" onerror=', post.body_rendered)
+        self.assertNotIn(' onerror="alert(1)"', post.body_rendered)
+        self.assertIn('src="https://example.com/%22%20onerror=', post.body_rendered)
+
+    def test_body_escapes_image_alt(self) -> None:
+        post = self.create_post(
+            title="xss-image-alt",
+            body='![" onerror="alert(1)](https://example.com/logo.png)',
+        )
+
+        self.assertNotIn('alt="" onerror="alert(1)"', post.body_rendered)
+        self.assertNotIn(' onerror="alert(1)"', post.body_rendered)
+        self.assertIn('alt="&quot; onerror=&quot;alert(1)"', post.body_rendered)
+
+    def test_feed_uses_sanitized_body(self) -> None:
+        self.create_post(
+            title="xss-feed",
+            body='"><img src=x onerror=prompt(document.domain)>',
+        )
+
+        response = self.client.get("/feed/")
+
+        self.assertNotContains(response, "<img")
+        self.assertNotContains(response, "onerror")
+
 
 class APITest(UserTestCase):
     def test_hosted(self) -> None:

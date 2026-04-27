@@ -40,7 +40,6 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy, override, pgettext_lazy
-from markupfield.fields import MarkupField
 from PIL import Image as PILImage
 
 from weblate_web.const import DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS
@@ -55,6 +54,7 @@ from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
 
 from .hetzner import create_storage_folder, create_storage_subaccount, generate_ssh_url
+from .markup import render_markdown
 from .packages import (
     DEDICATED_LIMIT,
     DEDICATED_PREFIX,
@@ -464,7 +464,10 @@ class Post(models.Model):
         User, editable=False, on_delete=models.deletion.SET_NULL, null=True
     )
     topic = models.CharField(max_length=100, db_index=True, choices=TOPICS, default="")
-    body = MarkupField(default_markup_type="markdown")
+    body = models.TextField()
+    body_rendered = models.TextField(
+        blank=True, db_column="_body_rendered", editable=False
+    )
     summary = models.TextField(
         blank=True, help_text="Will be generated from first body paragraph if empty"
     )
@@ -493,23 +496,31 @@ class Post(models.Model):
         using=None,
         update_fields=None,
     ) -> None:
-        # Need to save first as rendered value is available only then
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
+        self.body_rendered = render_markdown(self.body)
+        generated_summary = False
         if not self.summary:
             h2t = html2text.HTML2Text()
             h2t.body_width = 0
             h2t.ignore_images = True
             h2t.ignore_links = True
             h2t.ignore_emphasis = True
-            text = h2t.handle(self.body.rendered)  # pylint: disable=no-member
+            text = h2t.handle(self.body_rendered)
             self.summary = text.splitlines()[0]
-            if self.summary:
-                super().save(update_fields=["summary"])
+            generated_summary = bool(self.summary)
+
+        if update_fields is not None:
+            update_fields = set(update_fields)
+            if "body" in update_fields:
+                update_fields.add("body_rendered")
+            if generated_summary:
+                update_fields.add("summary")
+
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def get_absolute_url(self):
         return reverse("post", kwargs={"slug": self.slug})
