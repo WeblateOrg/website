@@ -25,7 +25,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-04-27 01:11-0500\n"
-"PO-Revision-Date: 2026-05-01 23:35+0000\n"
+"PO-Revision-Date: 2026-05-03 02:09+0000\n"
 "Last-Translator: Peter Vančo <petervanco347@gmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/weblate/website/"
 "sk/>\n"
@@ -59,40 +59,36 @@ msgstr "Celkové príjmy"
 
 #: weblate_web/crm/templates/crm/income.html:53
 msgid "Rolling trend"
-msgstr "Kĺzavý trend"
+msgstr "Otočný trend"
 
 #: weblate_web/crm/templates/crm/income.html:56
 msgid "Window ending"
-msgstr "Koniec okna"
+msgstr "Okno sa ukončuje"
 
 #: weblate_web/crm/templates/crm/income.html:60
 msgid "Window size"
-msgstr "Vyľkosť okna"
+msgstr "Veľkosť okna"
 
 #: weblate_web/crm/templates/crm/income.html:62
 #: weblate_web/crm/templates/crm/income.html:156
-#, fuzzy, python-format
-#| msgctxt "123 translations ..."
-#| msgid "this month"
+#, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
-msgstr[0] "tento mesiac"
-msgstr[1] "tento mesiac"
-msgstr[2] "tento mesiac"
+msgstr[0] "%(months)s mesiac"
+msgstr[1] "%(months)s mesiace"
+msgstr[2] "%(months)s mesiacov"
 
 #: weblate_web/crm/templates/crm/income.html:66
 msgid "Current window"
-msgstr ""
+msgstr "Aktuálne okno"
 
 #: weblate_web/crm/templates/crm/income.html:70
 msgid "Previous window"
-msgstr ""
+msgstr "Predchádzajúce okno"
 
 #: weblate_web/crm/templates/crm/income.html:74
-#, fuzzy
-#| msgid "Change plan"
 msgid "Change"
-msgstr "Zmeniť plán"
+msgstr "Zmeniť"
 
 #: weblate_web/crm/templates/crm/income.html:93
 msgid "Daily Income"
@@ -132,11 +128,11 @@ msgstr "Mesiac"
 
 #: weblate_web/crm/templates/crm/income.html:142
 msgid "Rolling window"
-msgstr ""
+msgstr "Kĺzavé okno"
 
 #: weblate_web/crm/templates/crm/income.html:143
 msgid "Trend"
-msgstr ""
+msgstr "Trend"
 
 #: weblate_web/crm/templates/crm/income.html:144
 msgid "Actions"
@@ -320,7 +316,7 @@ msgstr "Podporované komunitou"
 
 #: weblate_web/models.py:601
 msgid "Dedicated hosted service"
-msgstr "Vyhradená hostovaná služba"
+msgstr "Vyhradená hosťovaná služba"
 
 #: weblate_web/models.py:602
 msgid "Hosted service"
@@ -468,10 +464,8 @@ msgid "You will receive a receipt here."
 msgstr "Tu dostanete potvrdenku."
 
 #: weblate_web/payments/forms.py:83
-#, fuzzy
-#| msgid "Your e-mail address…"
 msgid "E-mail address"
-msgstr "Vaša e-mailová adresa…"
+msgstr "E-mailová adresa"
 
 #: weblate_web/payments/models.py:114
 msgid "European VAT ID"
@@ -500,14 +494,8 @@ msgid "Name"
 msgstr "Názov"
 
 #: weblate_web/payments/models.py:134
-#, fuzzy
-#| msgid ""
-#| "Please fill in your company registration number if it should appear on "
-#| "the invoice."
 msgid "Company or individual name as it should appear on the invoice."
-msgstr ""
-"Vyplňte, prosím, identifikačné číslo vašej spoločnosti, ak sa má zobraziť na "
-"faktúre."
+msgstr "Názov spoločnosti alebo meno osoby, ako sa má zobraziť na faktúre."
 
 #: weblate_web/payments/models.py:141
 msgid "Address"
@@ -538,10 +526,8 @@ msgid "Additional e-mail to receive billing notifications"
 msgstr "Ďalší e-mail na zasielanie fakturačných oznámení"
 
 #: weblate_web/payments/models.py:173
-#, fuzzy
-#| msgid "Additional e-mail to receive billing notifications"
 msgid "Additional upcoming payment notification"
-msgstr "Ďalší e-mail na zasielanie fakturačných oznámení"
+msgstr "Dodatočné upozornenie na nadchádzajúcu platbu"
 
 #: weblate_web/payments/models.py:176
 msgid ""
@@ -549,6 +535,9 @@ msgid ""
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
+"Počet dní pred dátumom splatnosti platby na odoslanie jedného dodatočného "
+"upozornenia na nadchádzajúcu platbu, od 0 do {}. Nastavte na 0, ak chcete "
+"používať iba predvolené upozornenia."
 
 #: weblate_web/payments/models.py:275
 msgid "The country has to match your VAT code"
@@ -556,12 +545,12 @@ msgstr "Krajina sa musí zhodovať s vaším IČ DPH"
 
 #: weblate_web/payments/models.py:283
 msgid "Choose a day different from the default payment notifications: 2 and 7."
-msgstr ""
+msgstr "Vyberte deň odlišný od predvolených upozornení na platbu: 2 a 7."
 
 #: weblate_web/payments/models.py:301
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
-msgstr ""
+msgstr "Vyberte deň odlišný od predvoleného ročného upozornenia na platbu: 31."
 
 #: weblate_web/payments/models.py:475
 msgid "Annual"
@@ -580,7 +569,7 @@ msgstr "Štvrťročne"
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
-msgstr "Mesačná"
+msgstr "Mesačne"
 
 #: weblate_web/payments/models.py:479
 msgid "One-time"
@@ -801,7 +790,7 @@ msgstr "Január 2019"
 
 #: weblate_web/templates/about.html:123
 msgid "Automatic detection of translatable files in a repository"
-msgstr "Automatická detekcia preložiteľných súborov v odkladacom priestore"
+msgstr "Automatická detekcia preložiteľných súborov v repozitári"
 
 #: weblate_web/templates/about.html:126
 msgid "June 2018"
@@ -913,10 +902,8 @@ msgid "D-U-N-S Number"
 msgstr "Číslo D-U-N-S"
 
 #: weblate_web/templates/about.html:216
-#, fuzzy
-#| msgid "Company identification number"
 msgid "Participant Identification Code"
-msgstr "Identifikačné číslo organizácie"
+msgstr "Identifikačný kód účastníka"
 
 #: weblate_web/templates/about.html:221
 msgid "Bank account"
@@ -1019,7 +1006,7 @@ msgid ""
 "Grab one of the <a href=\"%(issues)s\">good first issues</a> to show us your "
 "expertise."
 msgstr ""
-"Zvoľte si jednu z <a href=\"%(issues)s\">prvotné dobré otázky</a> a ukážte "
+"Zvoľte si jednu z <a href=\"%(issues)s\">prvotných dobrých úloh</a> a ukážte "
 "nám svoju odbornosť."
 
 #: weblate_web/templates/contribute.html:13
@@ -1068,8 +1055,8 @@ msgid ""
 "<strong>Ensure the bug is not already reported</strong>, by searching "
 "through the <a href=\"%(url)s\">GitHub issues</a>."
 msgstr ""
-"Vyhľadaním v <a href=\"%(url)s\">problémoch na GitHube</a> sa "
-"<strong>usitite, že chyba už nebola nahlásená</strong>."
+"Vyhľadaním v <a href=\"%(url)s\">problémoch na GitHube</a> sa <strong>"
+"uisťte, že chyba už nebola nahlásená</strong>."
 
 #: weblate_web/templates/contribute.html:44
 #, python-format
@@ -1163,9 +1150,9 @@ msgid ""
 "easily follow the links to edit each page directly from the <a "
 "href=\"%(url)s\">documentation</a>."
 msgstr ""
-"Dokumentácia tvorí súčasť odkladacieho priestoru hlavného zdrojového kódu a "
-"pre úpravu akejkoľvek stránky priamo z <a href=\"%(url)s\">dokumentácie</a> "
-"môžete jednoducho nasledovať odkazy."
+"Dokumentácia tvorí súčasť repozitára hlavného zdrojového kódu a pre úpravu "
+"akejkoľvek stránky priamo z <a href=\"%(url)s\">dokumentácie</a> môžete "
+"jednoducho nasledovať odkazy."
 
 #: weblate_web/templates/contribute.html:108
 msgid ""
@@ -1224,7 +1211,7 @@ msgstr "Stav prekladu"
 #: weblate_web/templates/subscription/discovery-add.html:16
 #: weblate_web/templates/subscription/discovery.html:6
 msgid "Discover Weblate"
-msgstr "Objaviť Weblate"
+msgstr "Objavte Weblate"
 
 #: weblate_web/templates/discover.html:21
 msgid ""
@@ -1310,19 +1297,15 @@ msgstr "Dar FOSDEM"
 
 #: weblate_web/templates/donate.html:13
 msgid "Want to get a t-shirt or hoodie at our FOSDEM stand?"
-msgstr ""
+msgstr "Chcete získať tričko alebo mikinu na našom stánku FOSDEM?"
 
 #: weblate_web/templates/donate.html:14
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a t-shirt"
-msgstr "Prispejte na Weblate"
+msgstr "Darujte na tričko"
 
 #: weblate_web/templates/donate.html:15
-#, fuzzy
-#| msgid "Donate to Weblate"
 msgid "Donate to get a hoodie"
-msgstr "Prispejte na Weblate"
+msgstr "Darujte na mikinu"
 
 #: weblate_web/templates/donate.html:19
 msgid "Become a Weblate supporter"
@@ -1680,7 +1663,7 @@ msgstr "Príručka Kubernetes"
 
 #: weblate_web/templates/download.html:78
 msgid "GitHub repository"
-msgstr "Odkladací priestor GitHub"
+msgstr "Repozitár GitHub"
 
 #: weblate_web/templates/download.html:80
 #, python-format
@@ -1689,8 +1672,8 @@ msgid ""
 "there, find <a href=\"%(url)s\">more repositories</a>, or just:"
 msgstr ""
 "Weblate vyvíjame na <a href=\"%(url)s\">GitHube</a>, kde si z neho môžete "
-"odvodiť vlastnú vetvu (fork), nájsť <a href=\"%(url)s\">viac odkladacích "
-"priestorov</a>, alebo stačí:"
+"odvodiť vlastnú vetvu (fork), nájsť <a href=\"%(url)s\">viac repozitárov</a>"
+", alebo stačí:"
 
 #: weblate_web/templates/download.html:87
 #: weblate_web/templates/download.html:90
@@ -2164,8 +2147,8 @@ msgid ""
 "Translations or suggestions can be done by machine translation services or "
 "AI."
 msgstr ""
-"Preklady je možné stiahnuť tak, aby fungovali bez pripojenia na internet, a "
-"potom ich nahrať späť."
+"Preklady alebo návrhy môžu byť realizované službami strojového prekladu "
+"alebo AI."
 
 #: weblate_web/templates/features.html:368
 msgid "Organize translations"
@@ -2348,7 +2331,7 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:316
 msgid "Continuous localization"
-msgstr "Priebežná lokalizácia"
+msgstr "Nepretržitá lokalizácia"
 
 #: weblate_web/templates/hosting.html:319
 #: weblate_web/templates/hosting.html:490
@@ -2682,23 +2665,19 @@ msgstr ""
 msgid ""
 "There might already be an invoice for this renewal and only the payment "
 "might still be missing."
-msgstr ""
+msgstr "Môže už existovať faktúra za toto obnovenie a môže chýbať iba platba."
 
 #: weblate_web/templates/mail/payment_upcoming.html:22
 msgid "Your donation on weblate.org will renew soon."
 msgstr "Váš dar na weblate.org sa čoskoro obnoví."
 
 #: weblate_web/templates/mail/payment_upcoming.html:34
-#, fuzzy
-#| msgid "Download pro forma invoice"
 msgid "Unpaid invoices and recent pro forma invoices:"
-msgstr "Stiahnuť pro forma faktúru"
+msgstr "Nezaplatené faktúry a nedávne pro forma faktúry:"
 
 #: weblate_web/templates/mail/payment_upcoming.html:42
-#, fuzzy
-#| msgid "Apply now"
 msgid "pay now"
-msgstr "Prihlásiť sa teraz"
+msgstr "zaplatiť teraz"
 
 #: weblate_web/templates/mail/payment_upcoming_subject.txt:2
 msgid "Your upcoming payment on weblate.org"
@@ -3111,7 +3090,7 @@ msgstr "Blog"
 
 #: weblate_web/templates/snippets/main-menu.html:44
 msgid "About"
-msgstr "O aplikácii"
+msgstr "Informácie"
 
 #: weblate_web/templates/snippets/main-menu.html:47
 msgid "Docs"
@@ -3122,10 +3101,8 @@ msgid "Download invoice"
 msgstr "Stiahnuť faktúru"
 
 #: weblate_web/templates/snippets/payment.html:23
-#, fuzzy
-#| msgid "Download source code"
 msgid "Download receipt"
-msgstr "Stiahnuť zdrojový kód"
+msgstr "Stiahnuť potvrdenku"
 
 #: weblate_web/templates/snippets/pricing.html:6
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
@@ -3500,14 +3477,12 @@ msgid "One-time installation of Weblate"
 msgstr "Jednorazová inštalácia Weblate"
 
 #: weblate_web/templates/support.html:128
-#, fuzzy
-#| msgid "Docker-based or native installation"
 msgid "Docker-based installation"
-msgstr "Inštalácia založená na nástroji Docker alebo natívna inštalácia"
+msgstr "Inštalácia založená na nástroji Docker"
 
 #: weblate_web/templates/support.html:129
 msgid "Requires root access or close cooperation of your admins"
-msgstr "Vyžaduje root prístup alebo dobrú kooperáciu Vášich administrátorov"
+msgstr "Vyžaduje root prístup alebo dobrú kooperáciu vašich administrátorov"
 
 #: weblate_web/templates/support.html:130
 msgid "Setup customization"
@@ -3718,7 +3693,7 @@ msgstr "včera"
 #: weblate_web/templatetags/timestamps.py:38
 msgctxt "123 translations ..."
 msgid "today"
-msgstr "Dnes"
+msgstr "dnes"
 
 #: weblate_web/templatetags/timestamps.py:40
 msgctxt "123 translations ..."
@@ -3763,6 +3738,8 @@ msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
+"Prosím, uveďte svoje meno na dokončenie platby. Uveďte aj ďalšie fakturačné "
+"údaje, ak ich potrebujete na potvrdenke."
 
 #: weblate_web/views.py:416 weblate_web/views.py:450
 msgid "Please provide your billing information to complete the payment."
