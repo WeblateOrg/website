@@ -15,6 +15,7 @@ class Interaction(models.Model):
         MERGE = 2, "Merged customer"
         ZAMMAD_ATTACHMENT = 3, "Attachment exchanged in Zammad"
         VIES = 4, "VIES validation"
+        MANUAL_PAYMENT = 5, "Manual payment"
 
     timestamp = models.DateTimeField(default=timezone.now, verbose_name="Timestamp")
     origin = models.IntegerField(choices=Origin, verbose_name="Origin")

@@ -1425,6 +1425,29 @@ class PaymentTest(FakturaceTestCase):
         response = self.client.get("/en/donate/new/")
         self.assertContains(response, "list of supporters")
 
+    def test_manual_backend_not_offered(self) -> None:
+        customer = Customer.objects.create(
+            name="Test Customer",
+            address="Test address",
+            city="Test City",
+            postcode="12345",
+            country="CZ",
+            origin=PAYMENTS_ORIGIN,
+            user_id=-1,
+        )
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=100,
+            description="Test payment",
+        )
+
+        response = self.client.get(f"/en/payment/{payment.pk}/")
+
+        self.assertContains(response, "Please choose payment method")
+        self.assertNotContains(response, 'value="manual"')
+        self.assertNotContains(response, "pay-manual")
+        self.assertNotContains(response, "Manual payment")
+
     @override_settings(**THEPAY2_MOCK_SETTINGS, **SIGNATURE_MOCK_SETTINGS)
     @responses.activate
     def test_service_workflow_card(self) -> None:  # noqa: PLR0915

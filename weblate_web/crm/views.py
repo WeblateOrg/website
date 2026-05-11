@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.db.models import (
     Case,
     DecimalField,
@@ -33,9 +34,15 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import override
 from django.views.generic import DetailView, ListView, TemplateView
 
+from weblate_web.crm.forms import RefundConfirmationForm
 from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
-from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
+from weblate_web.invoices.models import (
+    CURRENCY_MAP,
+    Invoice,
+    InvoiceCategory,
+    InvoiceKind,
+)
 from weblate_web.models import PackageCategory, Service, Subscription
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import show_form_errors
@@ -47,6 +54,7 @@ if TYPE_CHECKING:
 
     from django.http import HttpRequest
 
+    from weblate_web.invoices.models import Currency
     from weblate_web.payments.models import CustomerQuerySet
     from weblate_web.views import AuthenticatedHttpRequest
 
@@ -232,6 +240,13 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
             and not self.object.invoice_set.exists()
         )
 
+    def can_confirm_refund(self) -> bool:
+        return (
+            self.object.kind == InvoiceKind.INVOICE
+            and self.object.total_amount < 0
+            and not self.object.is_paid
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
         if self.can_convert():
@@ -242,17 +257,91 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                     "customer_note": self.object.customer_note,
                 },
             )
+        if self.can_confirm_refund():
+            context["refund_form"] = RefundConfirmationForm(
+                self.request.POST
+                if self.request.method == "POST"
+                and "confirm_refund" in self.request.POST
+                else None
+            )
         return context
 
+    def confirm_refund(self, description: str) -> Payment | None:
+        with transaction.atomic():
+            self.object = Invoice.objects.select_for_update().get(pk=self.object.pk)
+            if not self.can_confirm_refund():
+                return None
+
+            description = description.strip()
+            payment_description = (
+                description or f"Refund for invoice {self.object.number}"
+            )
+            confirmed_at = timezone.now()
+            payment = Payment.objects.create(
+                amount=int(self.object.total_amount),
+                amount_fixed=True,
+                backend="manual",
+                currency=CURRENCY_MAP[cast("Currency", self.object.currency)],
+                customer=self.object.customer,
+                description=payment_description,
+                extra={
+                    "source": "crm",
+                    "action": "refund-confirmed",
+                    "invoice": self.object.number,
+                    "confirmed_at": confirmed_at.isoformat(),
+                    "user": self.request.user.get_username(),
+                    "user_id": self.request.user.pk,
+                    **({"description": description} if description else {}),
+                },
+                invoice=self.object.number,
+                paid_invoice=self.object,
+                state=Payment.PROCESSED,
+            )
+            self.object.generate_receipt()
+
+            summary = f"Refund confirmed for invoice {self.object.number}"
+            if description:
+                summary = f"{summary}: {description}"
+
+            content = [
+                f"Invoice: {self.object.number}",
+                f"Amount: {self.object.display_total_amount}",
+                f"Payment: {payment.pk}",
+                f"Confirmed by: {self.request.user.get_username()}",
+                f"Confirmed at: {timezone.localtime(confirmed_at).isoformat()}",
+            ]
+            if description:
+                content.append(f"Description: {description}")
+
+            self.object.customer.interaction_set.create(
+                origin=Interaction.Origin.MANUAL_PAYMENT,
+                summary=summary[:200],
+                content="\n".join(content),
+                user=self.request.user,
+            )
+
+        return payment
+
     def post(self, request, *args, **kwargs):
-        self.object = quote = self.get_object()
-        form = CustomerReferenceForm(request.POST)
-        if form.is_valid() and self.can_convert():
+        self.object = self.get_object()
+        if "confirm_refund" in request.POST:
+            if not self.can_confirm_refund():
+                return redirect(self.object)
+            refund_form = RefundConfirmationForm(request.POST)
+            if refund_form.is_valid():
+                self.confirm_refund(refund_form.cleaned_data["description"])
+                return redirect(self.object)
+            show_form_errors(self.request, refund_form)
+            return self.get(request, *args, **kwargs)
+
+        quote = self.object
+        convert_form = CustomerReferenceForm(request.POST)
+        if convert_form.is_valid() and self.can_convert():
             with override("en"):
                 invoice = quote.duplicate(
                     kind=InvoiceKind.INVOICE,
-                    customer_reference=form.cleaned_data["customer_reference"],
-                    customer_note=form.cleaned_data["customer_note"],
+                    customer_reference=convert_form.cleaned_data["customer_reference"],
+                    customer_note=convert_form.cleaned_data["customer_note"],
                 )
                 invoice.generate_files()
             return redirect(invoice)
