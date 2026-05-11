@@ -261,6 +261,121 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(Invoice.objects.count(), 0)
         self.assertContains(response, "Error in parameter customer_reference")
 
+    def create_invoice(
+        self, amount: Decimal, kind: InvoiceKind = InvoiceKind.INVOICE
+    ) -> Invoice:
+        invoice = Invoice.objects.create(
+            kind=kind,
+            category=InvoiceCategory.HOSTING,
+            customer=self.create_customer(),
+            currency=Currency.EUR,
+        )
+        invoice.invoiceitem_set.create(description="Refund", unit_price=amount)
+        return invoice
+
+    def test_refund_confirmation_form_visibility(self):
+        negative_invoice = self.create_invoice(Decimal(-100))
+        response = self.client.get(negative_invoice.get_absolute_url())
+        self.assertContains(response, "Confirm refund done")
+
+        positive_invoice = self.create_invoice(Decimal(100))
+        response = self.client.get(positive_invoice.get_absolute_url())
+        self.assertNotContains(response, "Confirm refund done")
+
+        quote = self.create_invoice(Decimal(-100), kind=InvoiceKind.QUOTE)
+        response = self.client.get(quote.get_absolute_url())
+        self.assertNotContains(response, "Confirm refund done")
+
+        paid_invoice = self.create_invoice(Decimal(-100))
+        Payment.objects.create(
+            customer=paid_invoice.customer,
+            amount=-100,
+            description="Manual refund",
+            paid_invoice=paid_invoice,
+            state=Payment.PROCESSED,
+        )
+        response = self.client.get(paid_invoice.get_absolute_url())
+        self.assertNotContains(response, "Confirm refund done")
+
+    @patch.object(Invoice, "generate_receipt")
+    def test_confirm_negative_invoice_refund(self, mock_generate_receipt):
+        invoice = self.create_invoice(Decimal(-100))
+        description = "Refunded by bank transfer"
+
+        response = self.client.post(
+            invoice.get_absolute_url(),
+            {"confirm_refund": "1", "description": description},
+        )
+
+        self.assertRedirects(response, invoice.get_absolute_url())
+        payment = Payment.objects.get()
+        self.assertEqual(payment.state, Payment.PROCESSED)
+        self.assertEqual(payment.backend, "manual")
+        self.assertEqual(payment.customer, invoice.customer)
+        self.assertEqual(payment.amount, -100)
+        self.assertEqual(payment.description, description)
+        self.assertEqual(payment.extra["source"], "crm")
+        self.assertEqual(payment.extra["action"], "refund-confirmed")
+        self.assertEqual(payment.extra["invoice"], invoice.number)
+        self.assertEqual(payment.extra["description"], description)
+        self.assertEqual(payment.paid_invoice, invoice)
+        mock_generate_receipt.assert_called_once()
+
+        invoice.refresh_from_db()
+        self.assertTrue(invoice.is_paid)
+        interaction = Interaction.objects.get(customer=invoice.customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_PAYMENT)
+        self.assertEqual(interaction.user, self.user)
+        self.assertIn(description, interaction.summary)
+        self.assertIn(description, interaction.content)
+        self.assertIn(str(payment.pk), interaction.content)
+
+        response = self.client.get(invoice.customer.get_absolute_url())
+        self.assertContains(response, description)
+
+    @patch.object(Invoice, "generate_receipt")
+    def test_confirm_negative_invoice_refund_without_description(
+        self, mock_generate_receipt
+    ):
+        invoice = self.create_invoice(Decimal(-100))
+
+        response = self.client.post(invoice.get_absolute_url(), {"confirm_refund": "1"})
+
+        self.assertRedirects(response, invoice.get_absolute_url())
+        payment = Payment.objects.get()
+        self.assertEqual(payment.description, f"Refund for invoice {invoice.number}")
+        self.assertNotIn("description", payment.extra)
+        mock_generate_receipt.assert_called_once()
+
+    @patch.object(Invoice, "generate_receipt")
+    def test_confirm_negative_invoice_refund_repeated_post(self, mock_generate_receipt):
+        invoice = self.create_invoice(Decimal(-100))
+
+        self.client.post(invoice.get_absolute_url(), {"confirm_refund": "1"})
+        response = self.client.post(invoice.get_absolute_url(), {"confirm_refund": "1"})
+
+        self.assertRedirects(response, invoice.get_absolute_url())
+        self.assertEqual(Payment.objects.count(), 1)
+        self.assertEqual(Interaction.objects.count(), 1)
+        mock_generate_receipt.assert_called_once()
+
+    @patch.object(Invoice, "generate_receipt")
+    def test_confirm_negative_invoice_refund_invalid_description(
+        self, mock_generate_receipt
+    ):
+        invoice = self.create_invoice(Decimal(-100))
+
+        response = self.client.post(
+            invoice.get_absolute_url(),
+            {"confirm_refund": "1", "description": "x" * 201},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Payment.objects.count(), 0)
+        self.assertEqual(Interaction.objects.count(), 0)
+        mock_generate_receipt.assert_not_called()
+        self.assertContains(response, "Error in parameter description")
+
 
 @override_settings(
     CACHES={

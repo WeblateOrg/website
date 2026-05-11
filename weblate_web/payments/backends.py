@@ -517,6 +517,23 @@ class DebugPending(DebugPay):
 
 
 @register_backend
+class ManualPayment(Backend):
+    name = "manual"
+    verbose = gettext_lazy("Manual payment")
+    description = "Manual payment"
+    recurring = False
+    supported_currencies: set[str] = set()
+
+    def perform(
+        self, request: HttpRequest | None, back_url: str, complete_url: str
+    ) -> HttpResponseRedirect | None:
+        raise PaymentError("Manual payments cannot be initiated")
+
+    def collect(self, request: HttpRequest | None) -> bool | None:
+        raise PaymentError("Manual payments cannot be completed")
+
+
+@register_backend
 class FioBank(Backend):
     name = "fio-bank"
     verbose = gettext_lazy("IBAN bank transfer")

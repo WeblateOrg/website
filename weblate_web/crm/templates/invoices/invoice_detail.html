@@ -66,6 +66,16 @@
         </tr>
       {% endfor %}
     </table>
+    {% if refund_form %}
+      <h2>{% translate "Confirm refund done" %}</h2>
+      <p>{% translate "Use this after the refund or chargeback has been completed." %}</p>
+      <form method="post">
+        {% csrf_token %}
+        {{ refund_form }}
+        {% translate "Confirm refund done" as confirm_refund_label %}
+        <input type="submit" name="confirm_refund" value="{{ confirm_refund_label }}">
+      </form>
+    {% endif %}
     {% if convert_form %}
       <h2>Create invoice</h2>
       <p>This will create an invoice matching this quote.</p>

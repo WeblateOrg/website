@@ -294,6 +294,20 @@ class BackendTest(BackendBaseTestCase):
     def test_list(self) -> None:
         backends = list_backends()
         self.assertGreater(len(backends), 0)
+        self.assertNotIn("manual", {backend.name for backend in backends})
+
+    def test_manual_backend(self) -> None:
+        backend_class = get_backend("manual")
+        self.assertEqual(str(backend_class.verbose), "Manual payment")
+        self.assertEqual(self.payment.get_payment_description(), "")
+
+        self.payment.backend = "manual"
+        self.payment.save(update_fields=["backend"])
+        self.assertEqual(self.payment.get_payment_description(), "Manual payment")
+
+        backend = backend_class(self.payment)
+        with self.assertRaises(PaymentError):
+            backend.initiate(None, "", "")
 
     @responses.activate
     @override_settings(
