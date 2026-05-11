@@ -682,27 +682,42 @@ def process_payment(request):
     return redirect(reverse("user"))
 
 
-@login_required
-def download_payment_invoice(request, pk):
-    # Allow downloading own invoices of pending ones (for proforma invoices)
-    payment = get_object_or_404(Payment, pk=pk)
+def can_download_payment_invoice(
+    request: AuthenticatedHttpRequest, payment: Payment
+) -> bool:
+    user = request.user
+    if payment.customer.users.filter(pk=user.pk).exists():
+        return True
 
     if (
-        not payment.state == Payment.PENDING
-        and not Donation.objects.filter(
-            Q(customer__users=request.user)
+        payment.customer.origin == PAYMENTS_ORIGIN
+        and payment.customer.user_id == user.id
+    ):
+        return True
+
+    return (
+        Donation.objects.filter(
+            Q(customer__users=user)
             & (Q(payment=payment.uuid) | Q(pastpayments__payment=payment.uuid))
         ).exists()
-        and not Service.objects.filter(
-            Q(customer__users=request.user)
+        or Service.objects.filter(
+            Q(customer__users=user)
             & (
                 Q(subscription__payment=payment.uuid)
                 | Q(subscription__pastpayments__payment=payment.uuid)
             )
         ).exists()
-        and not payment.customer.origin == PAYMENTS_ORIGIN
-        and not payment.customer.user_id == request.user.id
-    ):
+    )
+
+
+@login_required
+def download_payment_invoice(request: AuthenticatedHttpRequest, pk):
+    payment = get_object_or_404(
+        Payment.objects.select_related("customer", "draft_invoice", "paid_invoice"),
+        pk=pk,
+    )
+
+    if not can_download_payment_invoice(request, payment):
         raise Http404("Invoice not accessible to current user!")
 
     # New invoice model

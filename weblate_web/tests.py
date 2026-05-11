@@ -1058,6 +1058,80 @@ class PaymentsTest(FakturaceTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["Content-Type"], "application/pdf")
 
+    def test_user_invoice_denies_other_payment_customer(self) -> None:
+        user = self.create_user()
+        other_user = User.objects.create_user(
+            username="otheruser",
+            email="other@example.com",
+        )
+        customer = Customer.objects.create(
+            email="weblate@example.com",
+            user_id=user.pk,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
+        )
+        customer.users.add(user)
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=100,
+            description="Test payment",
+            backend="pay",
+            recurring="",
+            state=Payment.ACCEPTED,
+            paid_invoice=invoice,
+        )
+
+        self.client.force_login(other_user)
+        response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_invoice_denies_other_pending_payment_customer(self) -> None:
+        user = self.create_user()
+        other_user = User.objects.create_user(
+            username="otheruser",
+            email="other@example.com",
+        )
+        customer = Customer.objects.create(
+            email="weblate@example.com",
+            user_id=user.pk,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
+        )
+        customer.users.add(user)
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.PROFORMA,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=100,
+            description="Test payment",
+            backend="pay",
+            recurring="",
+            state=Payment.PENDING,
+            draft_invoice=invoice,
+        )
+
+        self.client.force_login(other_user)
+        response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
+        self.assertEqual(response.status_code, 404)
+
     def test_staff_receipt_unpaid_invoice_404(self) -> None:
         user = self.create_user()
         user.is_staff = True
