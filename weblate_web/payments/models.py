@@ -24,7 +24,7 @@ import re
 import uuid
 from datetime import timedelta
 from email.message import Message
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from appconf import AppConf
 from django.conf import settings
@@ -55,6 +55,8 @@ from .utils import send_notification, validate_email
 from .validators import VAT_VALIDITY_DAYS, validate_vatin, validate_vatin_offline
 
 if TYPE_CHECKING:
+    from django_countries.fields import Country
+
     from weblate_web.invoices.models import Invoice
 
 SHORT_NAME_DISCARD = re.compile(r"[^a-zA-Z0-9_\s-]")
@@ -245,8 +247,9 @@ class Customer(models.Model):
 
     @property
     def country_code(self):
-        if self.country:
-            return self.country.code.upper()
+        country = cast("Country", self.country)
+        if country and country.code:
+            return country.code.upper()
         return None
 
     @property
