@@ -334,6 +334,31 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(response, description)
 
     @patch.object(Invoice, "generate_receipt")
+    def test_confirm_negative_invoice_refund_requires_add_payment(
+        self, mock_generate_receipt
+    ):
+        invoice = self.create_invoice(Decimal(-100))
+        readonly_user = User.objects.create_user(
+            username="readonly", email="readonly@example.com", is_staff=True
+        )
+        view_invoice_permission = Permission.objects.get(
+            codename="view_invoice", content_type__app_label="invoices"
+        )
+        readonly_user.user_permissions.add(view_invoice_permission)
+        self.client.force_login(readonly_user)
+
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Confirm refund done")
+
+        response = self.client.post(invoice.get_absolute_url(), {"confirm_refund": "1"})
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Payment.objects.count(), 0)
+        self.assertEqual(Interaction.objects.count(), 0)
+        mock_generate_receipt.assert_not_called()
+
+    @patch.object(Invoice, "generate_receipt")
     def test_confirm_negative_invoice_refund_without_description(
         self, mock_generate_receipt
     ):

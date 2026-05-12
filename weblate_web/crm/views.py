@@ -229,6 +229,7 @@ class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
 class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
+    refund_permission = "payments.add_payment"
     title = "Invoice detail"
 
     def get_title(self) -> str:
@@ -247,6 +248,9 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
             and not self.object.is_paid
         )
 
+    def can_confirm_refund_permission(self) -> bool:
+        return self.request.user.has_perm(self.refund_permission)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
         if self.can_convert():
@@ -257,7 +261,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                     "customer_note": self.object.customer_note,
                 },
             )
-        if self.can_confirm_refund():
+        if self.can_confirm_refund() and self.can_confirm_refund_permission():
             context["refund_form"] = RefundConfirmationForm(
                 self.request.POST
                 if self.request.method == "POST"
@@ -267,6 +271,9 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
         return context
 
     def confirm_refund(self, description: str) -> Payment | None:
+        if not self.can_confirm_refund_permission():
+            raise PermissionDenied
+
         with transaction.atomic():
             self.object = Invoice.objects.select_for_update().get(pk=self.object.pk)
             if not self.can_confirm_refund():
@@ -325,6 +332,8 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if "confirm_refund" in request.POST:
+            if not self.can_confirm_refund_permission():
+                raise PermissionDenied
             if not self.can_confirm_refund():
                 return redirect(self.object)
             refund_form = RefundConfirmationForm(request.POST)
