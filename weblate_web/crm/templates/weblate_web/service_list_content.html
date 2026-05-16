@@ -10,6 +10,7 @@
       </td>
       <td>{{ object.site_version }}</td>
       <td>{{ object.get_status_display }}</td>
+      {% if kind == "extended" %}<td>{{ object.maintenance_window|default:"-" }}</td>{% endif %}
       <td>
         {% for subscription in object.enabled_subscriptions %}
           {{ subscription.package }}

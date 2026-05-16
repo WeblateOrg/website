@@ -37,6 +37,16 @@
   {% endif %}
   <a href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">Edit</a>
 </p>
+{% if maintenance_window_form %}
+  <h2>{% translate "Maintenance window" %}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ maintenance_window_form }}
+    <input type="submit"
+           name="update_maintenance_window"
+           value="{% translate "Update maintenance window" %}">
+  </form>
+{% endif %}
 {% for subscription in object.subscription_set.all %}
   <h2>{{ subscription.package }}</h2>
   <p>
