@@ -34,7 +34,10 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import override
 from django.views.generic import DetailView, ListView, TemplateView
 
-from weblate_web.crm.forms import RefundConfirmationForm
+from weblate_web.crm.forms import (
+    RefundConfirmationForm,
+    ServiceMaintenanceWindowForm,
+)
 from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import (
@@ -164,10 +167,40 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["reference_form"] = CustomerReferenceForm()
+        if self.object.has_active_extended_support:
+            context["maintenance_window_form"] = ServiceMaintenanceWindowForm(
+                instance=self.object
+            )
         return context
 
     def post(self, request, *args, **kwargs):
         service = self.get_object()
+        if "update_maintenance_window" in request.POST:
+            if not service.has_active_extended_support:
+                raise PermissionDenied
+            maintenance_window = service.maintenance_window
+            maintenance_window_form = ServiceMaintenanceWindowForm(
+                request.POST, instance=service
+            )
+            if maintenance_window_form.is_valid():
+                new_maintenance_window = maintenance_window_form.cleaned_data[
+                    "maintenance_window"
+                ]
+                if new_maintenance_window != maintenance_window:
+                    service.maintenance_window = new_maintenance_window
+                    service.save(update_fields=["maintenance_window"])
+                    service.customer.interaction_set.create(
+                        origin=Interaction.Origin.MAINTENANCE_WINDOW,
+                        summary=f"Maintenance window updated for service {service.pk}",
+                        content=(
+                            f"Maintenance window: {new_maintenance_window or 'not set'}"
+                        ),
+                        user=request.user,
+                    )
+                return redirect(service)
+            show_form_errors(self.request, maintenance_window_form)
+            return redirect(service)
+
         subscription = service.subscription_set.get(pk=request.POST["subscription"])
         if "quote" in request.POST or "invoice" in request.POST:
             form = CustomerReferenceForm(request.POST)

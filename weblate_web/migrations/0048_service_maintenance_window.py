@@ -19,23 +19,23 @@
 
 from __future__ import annotations
 
-from django import forms
+from django.db import migrations, models
 from django.utils.translation import gettext_lazy
 
-from weblate_web.models import Service
 
+class Migration(migrations.Migration):
+    dependencies = [
+        ("weblate_web", "0047_replace_markupfield"),
+    ]
 
-class RefundConfirmationForm(forms.Form):
-    description = forms.CharField(
-        label=gettext_lazy("Refund description"),
-        required=False,
-        max_length=200,
-        help_text=gettext_lazy("Optional note describing how the refund was done."),
-        widget=forms.TextInput(),
-    )
-
-
-class ServiceMaintenanceWindowForm(forms.ModelForm):
-    class Meta:
-        model = Service
-        fields = ("maintenance_window",)
+    operations = [
+        migrations.AddField(
+            model_name="service",
+            name="maintenance_window",
+            field=models.CharField(
+                blank=True,
+                max_length=200,
+                verbose_name=gettext_lazy("Maintenance window"),
+            ),
+        ),
+    ]

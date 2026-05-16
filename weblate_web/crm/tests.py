@@ -55,6 +55,35 @@ class CRMTestCase(BaseCRMTestCase):
         )
         self.client.force_login(self.user)
 
+    def create_extended_service(
+        self,
+        *,
+        enabled: bool = True,
+        expires=None,
+        maintenance_window: str = "",
+    ) -> Service:
+        Package.objects.get_or_create(name="community", defaults={"price": 0})
+        package, _ = Package.objects.get_or_create(
+            name="extended",
+            defaults={
+                "verbose": "Extended support",
+                "price": 600,
+                "category": PackageCategory.PACKAGE_SUPPORT,
+            },
+        )
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=1)
+        service = Service.objects.create(
+            customer=customer, maintenance_window=maintenance_window
+        )
+        service.subscription_set.create(
+            package=package,
+            expires=expires or timezone.now() + timedelta(days=30),
+            enabled=enabled,
+            payment=payment.pk,
+        )
+        return service
+
     def test_customer_merge(self):
         customer1 = self.create_customer("TEST CUSTOMER 1")
         customer2 = self.create_customer("TEST CUSTOMER 2")
@@ -188,6 +217,116 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, service.get_absolute_url())
         subscription1.refresh_from_db()
         self.assertFalse(subscription1.enabled)
+
+    def test_service_maintenance_window(self):
+        service = self.create_extended_service()
+
+        response = self.client.get(service.get_absolute_url())
+        self.assertContains(response, 'name="maintenance_window"')
+        self.assertContains(response, "Update maintenance window")
+
+        response = self.client.post(
+            service.get_absolute_url(),
+            {
+                "update_maintenance_window": 1,
+                "maintenance_window": "Sundays 02:00 UTC",
+            },
+        )
+        self.assertRedirects(response, service.get_absolute_url())
+
+        service.refresh_from_db()
+        self.assertEqual(service.maintenance_window, "Sundays 02:00 UTC")
+
+        interaction = Interaction.objects.get(customer=service.customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.MAINTENANCE_WINDOW)
+        self.assertEqual(interaction.user, self.user)
+        self.assertEqual(
+            interaction.summary, f"Maintenance window updated for service {service.pk}"
+        )
+        self.assertEqual(interaction.content, "Maintenance window: Sundays 02:00 UTC")
+
+        response = self.client.post(
+            service.get_absolute_url(),
+            {
+                "update_maintenance_window": 1,
+                "maintenance_window": "Sundays 02:00 UTC",
+            },
+        )
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertEqual(
+            Interaction.objects.filter(customer=service.customer).count(), 1
+        )
+
+    def test_service_maintenance_window_requires_active_extended_support(self):
+        Package.objects.create(name="community", price=0)
+        basic = Package.objects.create(
+            name="basic",
+            verbose="Basic support",
+            price=300,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=1)
+        basic_service = Service.objects.create(customer=customer)
+        basic_service.subscription_set.create(
+            package=basic,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment.pk,
+        )
+        expired_service = self.create_extended_service(
+            expires=timezone.now() - timedelta(days=1)
+        )
+        disabled_service = self.create_extended_service(enabled=False)
+
+        for service in (basic_service, expired_service, disabled_service):
+            response = self.client.get(service.get_absolute_url())
+            self.assertNotContains(response, "Update maintenance window")
+
+            response = self.client.post(
+                service.get_absolute_url(),
+                {
+                    "update_maintenance_window": 1,
+                    "maintenance_window": "Sundays 02:00 UTC",
+                },
+            )
+            self.assertEqual(response.status_code, 403)
+            service.refresh_from_db()
+            self.assertEqual(service.maintenance_window, "")
+
+        self.assertFalse(Interaction.objects.exists())
+
+    def test_service_maintenance_window_requires_change_service_permission(self):
+        service = self.create_extended_service()
+        readonly_user = User.objects.create_user(
+            username="readonly", email="readonly@example.com", is_staff=True
+        )
+        self.client.force_login(readonly_user)
+
+        response = self.client.get(service.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+
+        response = self.client.post(
+            service.get_absolute_url(),
+            {
+                "update_maintenance_window": 1,
+                "maintenance_window": "Sundays 02:00 UTC",
+            },
+        )
+        self.assertEqual(response.status_code, 403)
+
+        service.refresh_from_db()
+        self.assertEqual(service.maintenance_window, "")
+        self.assertFalse(Interaction.objects.exists())
+
+    def test_extended_service_list_shows_maintenance_window(self):
+        self.create_extended_service(maintenance_window="Sundays 02:00 UTC")
+
+        response = self.client.get(
+            reverse("crm:service-list", kwargs={"kind": "extended"})
+        )
+
+        self.assertContains(response, "Extended support services")
+        self.assertContains(response, "Sundays 02:00 UTC")
 
     @responses.activate
     def test_customer_quote(self):

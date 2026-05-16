@@ -64,6 +64,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "site_title",
         "site_url",
         "note",
+        "maintenance_window",
         "projects_limit",
         "languages_limit",
         "source_strings_limit",
@@ -84,6 +85,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "customer__name",
         "site_url",
         "note",
+        "maintenance_window",
     )
     date_hierarchy = "created"
     autocomplete_fields = ("customer",)

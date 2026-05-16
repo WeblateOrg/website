@@ -16,6 +16,7 @@ class Interaction(models.Model):
         ZAMMAD_ATTACHMENT = 3, "Attachment exchanged in Zammad"
         VIES = 4, "VIES validation"
         MANUAL_PAYMENT = 5, "Manual payment"
+        MAINTENANCE_WINDOW = 6, "Maintenance window"
 
     timestamp = models.DateTimeField(default=timezone.now, verbose_name="Timestamp")
     origin = models.IntegerField(choices=Origin, verbose_name="Origin")

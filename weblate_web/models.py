@@ -633,6 +633,9 @@ class Service(models.Model):
     limit_hosted_strings = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     note = models.TextField(blank=True)
+    maintenance_window = models.CharField(
+        verbose_name=gettext_lazy("Maintenance window"), max_length=200, blank=True
+    )
     hosted_billing = models.IntegerField(default=0, db_index=True)
     discoverable = models.BooleanField(default=False, blank=True)
     site_url = models.URLField(
@@ -801,6 +804,14 @@ class Service(models.Model):
     def extended_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(package__name="extended").order_by(
             "-expires"
+        )
+
+    @property
+    def has_active_extended_support(self) -> bool:
+        now = timezone.now()
+        return any(
+            subscription.enabled and subscription.expires >= now
+            for subscription in self.extended_subscriptions
         )
 
     @cached_property
