@@ -35,6 +35,7 @@ from django.utils.translation import override
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.crm.forms import (
+    ManualInteractionForm,
     RefundConfirmationForm,
     ServiceMaintenanceWindowForm,
 )
@@ -436,8 +437,16 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        add_manual_note = (
+            self.request.method == "POST" and "add_manual_note" in self.request.POST
+        )
         context["new_subscription_form"] = NewSubscriptionForm(
-            self.request.POST if self.request.method == "POST" else None
+            self.request.POST
+            if self.request.method == "POST" and not add_manual_note
+            else None
+        )
+        context["manual_interaction_form"] = ManualInteractionForm(
+            self.request.POST if add_manual_note else None
         )
         return context
 
@@ -446,17 +455,32 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
 
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
-        form = NewSubscriptionForm(request.POST)
-        if form.is_valid():
+        if "add_manual_note" in request.POST:
+            manual_form = ManualInteractionForm(request.POST)
+            if manual_form.is_valid():
+                note = manual_form.cleaned_data["note"].strip()
+                customer.interaction_set.create(
+                    origin=Interaction.Origin.MANUAL_NOTE,
+                    summary=note.splitlines()[0][:200],
+                    content=note,
+                    user=request.user,
+                )
+                return redirect(customer)
+            return self.get(request, *args, **kwargs)
+
+        subscription_form = NewSubscriptionForm(request.POST)
+        if subscription_form.is_valid():
             with override("en"):
                 invoice = Subscription.new_subscription_invoice(
-                    kind=form.cleaned_data["kind"],
+                    kind=subscription_form.cleaned_data["kind"],
                     customer=customer,
-                    package=form.cleaned_data["package"],
-                    currency=form.cleaned_data["currency"],
-                    customer_reference=form.cleaned_data["customer_reference"],
-                    customer_note=form.cleaned_data["customer_note"],
-                    skip_intro=form.cleaned_data.get("skip_intro", False),
+                    package=subscription_form.cleaned_data["package"],
+                    currency=subscription_form.cleaned_data["currency"],
+                    customer_reference=subscription_form.cleaned_data[
+                        "customer_reference"
+                    ],
+                    customer_note=subscription_form.cleaned_data["customer_note"],
+                    skip_intro=subscription_form.cleaned_data.get("skip_intro", False),
                 )
             return redirect(invoice)
 
