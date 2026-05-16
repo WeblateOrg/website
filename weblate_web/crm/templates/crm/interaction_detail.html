@@ -1,0 +1,74 @@
+{% extends "crm/base.html" %}
+
+{% load i18n %}
+
+{% block breadcrum_list %}
+  › <a href="{% url "crm:customer-list" kind="all" %}">Customers</a>
+  › <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
+{% endblock breadcrum_list %}
+
+{% block content %}
+  <section class="content">
+    <h2>{{ object.summary }}</h2>
+    <table>
+      <tr>
+        <th>{% translate "Timestamp" %}</th>
+        <td>{{ object.timestamp }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Customer" %}</th>
+        <td>
+          <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
+        </td>
+      </tr>
+      <tr>
+        <th>{% translate "User" %}</th>
+        <td>{{ object.user.username }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Origin" %}</th>
+        <td>{{ object.get_origin_display }}</td>
+      </tr>
+    </table>
+
+    {% with detail_rows=object.detail_rows %}
+      {% if detail_rows or object.attachment %}
+        <h3>{% translate "Details" %}</h3>
+        <table>
+          {% for detail in detail_rows %}
+            <tr>
+              <th>{{ detail.label }}</th>
+              <td>
+                {% if detail.url %}
+                  <a href="{{ detail.url }}">{{ detail.value }}</a>
+                {% else %}
+                  {{ detail.value }}
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          {% if object.attachment %}
+            <tr>
+              <th>{% translate "Attachment" %}</th>
+              <td>
+                <a href="{{ object.attachment_download_url }}">{{ object.attachment_filename }}</a>
+              </td>
+            </tr>
+          {% endif %}
+        </table>
+      {% endif %}
+    {% endwith %}
+
+    {% if object.content %}
+      <h3>{% translate "Content" %}</h3>
+      {% if object.content_is_html %}
+        <iframe title="{% translate "Interaction content" %}"
+                class="interaction-content"
+                sandbox
+                srcdoc="{{ object.content }}"></iframe>
+      {% else %}
+        <pre>{{ object.content }}</pre>
+      {% endif %}
+    {% endif %}
+  </section>
+{% endblock content %}

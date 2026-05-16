@@ -27,7 +27,7 @@ from django.db.models.functions import (
     Round,
     TruncMonth,
 )
-from django.http import FileResponse, Http404, HttpResponse
+from django.http import FileResponse, Http404
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -192,9 +192,14 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
                     service.customer.interaction_set.create(
                         origin=Interaction.Origin.MAINTENANCE_WINDOW,
                         summary=f"Maintenance window updated for service {service.pk}",
-                        content=(
-                            f"Maintenance window: {new_maintenance_window or 'not set'}"
-                        ),
+                        content=new_maintenance_window,
+                        details={
+                            "service_id": service.pk,
+                            "service_title": service.site_title,
+                            "service_url": service.site_url,
+                            "old_value": maintenance_window,
+                            "new_value": new_maintenance_window,
+                        },
                         user=request.user,
                     )
                 return redirect(service)
@@ -343,20 +348,18 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
             if description:
                 summary = f"{summary}: {description}"
 
-            content = [
-                f"Invoice: {self.object.number}",
-                f"Amount: {self.object.display_total_amount}",
-                f"Payment: {payment.pk}",
-                f"Confirmed by: {self.request.user.get_username()}",
-                f"Confirmed at: {timezone.localtime(confirmed_at).isoformat()}",
-            ]
-            if description:
-                content.append(f"Description: {description}")
-
             self.object.customer.interaction_set.create(
                 origin=Interaction.Origin.MANUAL_PAYMENT,
                 summary=summary[:200],
-                content="\n".join(content),
+                content=description or self.object.display_total_amount,
+                details={
+                    "invoice": self.object.number,
+                    "amount": self.object.display_total_amount,
+                    "payment_id": str(payment.pk),
+                    "confirmed_by": self.request.user.get_username(),
+                    "confirmed_at": timezone.localtime(confirmed_at).isoformat(),
+                    **({"description": description} if description else {}),
+                },
                 user=self.request.user,
             )
 
@@ -485,9 +488,11 @@ class CustomerMergeView(CustomerDetailView):
 class InteractionDetailView(CRMMixin, DetailView[Interaction]):  # type: ignore[misc]
     model = Interaction
     permission = "payments.view_customer"
+    template_name = "crm/interaction_detail.html"
+    title = "Interaction detail"
 
-    def render_to_response(self, context, **response_kwargs):
-        return HttpResponse(self.object.content, content_type="text/html")
+    def get_title(self) -> str:
+        return self.object.summary
 
 
 class InteractionDownloadView(InteractionDetailView):
@@ -497,7 +502,7 @@ class InteractionDownloadView(InteractionDetailView):
         return FileResponse(
             self.object.attachment.open(),
             as_attachment=True,
-            filename=self.object.attachment.name,
+            filename=self.object.attachment_filename,
         )
 
 

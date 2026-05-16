@@ -69,12 +69,21 @@ class Command(BaseCommand):
                 content: bytes = self.client.ticket_article_attachment.download(
                     attachment["id"], article_id, ticket_id
                 )
+                timestamp = isoparse(article["created_at"])
                 # Create interaction
                 interaction = customer.interaction_set.create(
-                    timestamp=isoparse(article["created_at"]),
+                    timestamp=timestamp,
                     origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
                     summary=attachment["filename"],
+                    content=attachment["filename"],
                     remote_id=attachment["id"],
+                    details={
+                        "ticket_id": ticket_id,
+                        "article_id": article_id,
+                        "attachment_id": attachment["id"],
+                        "filename": attachment["filename"],
+                        "created_at": timestamp.isoformat(),
+                    },
                 )
                 # Store file
                 interaction.attachment.save(

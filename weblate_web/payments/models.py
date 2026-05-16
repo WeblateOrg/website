@@ -412,12 +412,25 @@ class Customer(models.Model):
                 content = alternative.content
 
         # Store interaction log
+        attachment_filename = (
+            f"{notification}-{self.short_filename}-"
+            f"{timezone.localtime().date().isoformat()}.eml"
+        )
         interaction = self.interaction_set.create(
-            origin=Interaction.Origin.EMAIL, summary=str(email.subject), content=content
+            origin=Interaction.Origin.EMAIL,
+            summary=str(email.subject),
+            content=content,
+            details={
+                "notification": notification,
+                "recipients": list(recipients),
+                "subject": str(email.subject),
+                "invoice": invoice.number if invoice else "",
+                "attachment": attachment_filename,
+            },
         )
         # Store e-mail as attachment
         interaction.attachment.save(
-            f"{notification}-{self.short_filename}-{interaction.timestamp.date().isoformat()}.eml",
+            attachment_filename,
             ContentFile(email.message().as_bytes()),
         )
 
@@ -436,6 +449,13 @@ class Customer(models.Model):
         interaction = self.interaction_set.create(
             origin=Interaction.Origin.MERGE,
             summary=f"Merged with {other.name} ({other.pk})",
+            content=other.verbose_name,
+            details={
+                "merged_customer": other.verbose_name,
+                "merged_customer_id": other.pk,
+                "merged_customer_email": other.email,
+                "merged_customer_end_client": other.end_client,
+            },
             user=user,
         )
         interaction.attachment.save(
@@ -468,6 +488,12 @@ class Customer(models.Model):
                 self.interaction_set.create(
                     origin=Interaction.Origin.VIES,
                     summary=error.code or str(error.message),
+                    content=str(error.message),
+                    details={
+                        "automated": automated,
+                        "code": error.code,
+                        "message": str(error.message),
+                    },
                 )
             raise
         self.vat_validated = timezone.now()

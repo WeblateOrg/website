@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import responses
 from django.contrib.auth.models import Permission, User
+from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
 from django.test import TestCase
@@ -243,7 +244,17 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(
             interaction.summary, f"Maintenance window updated for service {service.pk}"
         )
-        self.assertEqual(interaction.content, "Maintenance window: Sundays 02:00 UTC")
+        self.assertEqual(interaction.content, "Sundays 02:00 UTC")
+        self.assertEqual(
+            interaction.details,
+            {
+                "service_id": service.pk,
+                "service_title": service.site_title,
+                "service_url": service.site_url,
+                "old_value": "",
+                "new_value": "Sundays 02:00 UTC",
+            },
+        )
 
         response = self.client.post(
             service.get_absolute_url(),
@@ -466,8 +477,10 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_PAYMENT)
         self.assertEqual(interaction.user, self.user)
         self.assertIn(description, interaction.summary)
-        self.assertIn(description, interaction.content)
-        self.assertIn(str(payment.pk), interaction.content)
+        self.assertEqual(interaction.content, description)
+        self.assertEqual(interaction.details["description"], description)
+        self.assertEqual(interaction.details["payment_id"], str(payment.pk))
+        self.assertEqual(interaction.details["invoice"], invoice.number)
 
         response = self.client.get(invoice.customer.get_absolute_url())
         self.assertContains(response, description)
@@ -539,6 +552,89 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(Interaction.objects.count(), 0)
         mock_generate_receipt.assert_not_called()
         self.assertContains(response, "Error in parameter description")
+
+    def test_interaction_detail_renders_email_content(self):
+        customer = self.create_customer()
+        interaction = customer.interaction_set.create(
+            origin=Interaction.Origin.EMAIL,
+            summary="Payment completed",
+            content="<strong>HTML body</strong>",
+            details={
+                "subject": "Payment completed",
+                "notification": "payment_completed",
+                "recipients": ["billing@example.com"],
+            },
+        )
+
+        response = self.client.get(
+            reverse("crm:interaction-detail", kwargs={"pk": interaction.pk})
+        )
+
+        self.assertContains(response, "Payment completed")
+        self.assertContains(response, "payment_completed")
+        self.assertContains(response, "billing@example.com")
+        self.assertContains(response, "HTML body")
+
+    def test_customer_detail_keeps_interaction_details_on_detail_page(self):
+        customer = self.create_customer()
+        interaction = customer.interaction_set.create(
+            origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
+            summary="contract.pdf",
+            content="contract.pdf",
+            remote_id=500,
+            details={
+                "ticket_id": 10,
+                "article_id": 100,
+                "attachment_id": 500,
+                "filename": "contract.pdf",
+            },
+        )
+        interaction.attachment.save("contract.pdf", ContentFile(b"PDF content"))
+
+        response = self.client.get(customer.get_absolute_url())
+
+        self.assertContains(response, "contract.pdf")
+        self.assertNotContains(response, "Ticket ID")
+        self.assertContains(response, interaction.attachment_download_url)
+        self.assertContains(response, "Download")
+
+        response = self.client.get(
+            reverse("crm:interaction-detail", kwargs={"pk": interaction.pk})
+        )
+
+        self.assertContains(response, "Ticket ID")
+        self.assertContains(response, "10")
+        self.assertContains(response, "Article ID")
+        self.assertContains(response, "100")
+
+    def test_interaction_detail_renders_old_rows_without_details(self):
+        customer = self.create_customer()
+        interaction = customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_PAYMENT,
+            summary="Legacy manual payment",
+            content="Invoice: 2024-0001\nPayment: 123",
+        )
+
+        response = self.client.get(
+            reverse("crm:interaction-detail", kwargs={"pk": interaction.pk})
+        )
+
+        self.assertContains(response, "Legacy manual payment")
+        self.assertContains(response, "Invoice: 2024-0001")
+
+    def test_interaction_download_missing_attachment(self):
+        customer = self.create_customer()
+        interaction = customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_PAYMENT,
+            summary="No attachment",
+            content="No attachment",
+        )
+
+        response = self.client.get(
+            reverse("crm:interaction-download", kwargs={"pk": interaction.pk})
+        )
+
+        self.assertEqual(response.status_code, 404)
 
 
 @override_settings(
@@ -1671,7 +1767,18 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
         interaction = Interaction.objects.get(customer=customer)
         self.assertEqual(interaction.origin, Interaction.Origin.ZAMMAD_ATTACHMENT)
         self.assertEqual(interaction.summary, "contract.pdf")
+        self.assertEqual(interaction.content, "contract.pdf")
         self.assertEqual(interaction.remote_id, 500)
+        self.assertEqual(
+            interaction.details,
+            {
+                "ticket_id": 1,
+                "article_id": 100,
+                "attachment_id": 500,
+                "filename": "contract.pdf",
+                "created_at": "2024-01-15T10:30:00+00:00",
+            },
+        )
 
         # Verify sync log was created
         self.assertTrue(
