@@ -64,6 +64,7 @@
       {% if object.content_is_html %}
         <iframe title="{% translate "Interaction content" %}"
                 class="interaction-content"
+                sandbox
                 srcdoc="{{ object.content }}"></iframe>
       {% else %}
         <pre>{{ object.content }}</pre>
