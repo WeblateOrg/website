@@ -117,6 +117,54 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertNotContains(response, "TEST CUSTOMER 1")
         self.assertContains(response, "TEST CUSTOMER 2")
 
+    def test_customer_detail_renders_manual_note_form(self):
+        customer = self.create_customer()
+
+        response = self.client.get(customer.get_absolute_url())
+
+        self.assertContains(response, 'name="note"')
+        self.assertContains(response, "Add note")
+
+    def test_customer_detail_adds_manual_note(self):
+        customer = self.create_customer()
+        note = (
+            "Updated the invoice with correct PO# and sent it to customer.\n"
+            "Waiting for payment confirmation."
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {"add_manual_note": "1", "note": note},
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        interaction = Interaction.objects.get(customer=customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
+        self.assertEqual(interaction.user, self.user)
+        self.assertEqual(
+            interaction.summary,
+            "Updated the invoice with correct PO# and sent it to customer.",
+        )
+        self.assertEqual(interaction.content, note)
+
+        response = self.client.get(customer.get_absolute_url())
+        self.assertContains(response, "Manual note")
+        self.assertContains(
+            response, "Updated the invoice with correct PO# and sent it to customer."
+        )
+
+    def test_customer_detail_rejects_empty_manual_note(self):
+        customer = self.create_customer()
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {"add_manual_note": "1", "note": ""},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Interaction.objects.exists())
+        self.assertContains(response, "This field is required")
+
     def test_service(self):
         Package.objects.create(name="community", price=0)
         customer = self.create_customer()

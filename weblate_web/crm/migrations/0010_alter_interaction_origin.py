@@ -19,30 +19,29 @@
 
 from __future__ import annotations
 
-from django import forms
-from django.utils.translation import gettext_lazy
-
-from weblate_web.models import Service
+from django.db import migrations, models
 
 
-class RefundConfirmationForm(forms.Form):
-    description = forms.CharField(
-        label=gettext_lazy("Refund description"),
-        required=False,
-        max_length=200,
-        help_text=gettext_lazy("Optional note describing how the refund was done."),
-        widget=forms.TextInput(),
-    )
+class Migration(migrations.Migration):
+    dependencies = [
+        ("CRM", "0009_interaction_details"),
+    ]
 
-
-class ManualInteractionForm(forms.Form):
-    note = forms.CharField(
-        label=gettext_lazy("Note"),
-        widget=forms.Textarea(attrs={"rows": 4}),
-    )
-
-
-class ServiceMaintenanceWindowForm(forms.ModelForm):
-    class Meta:
-        model = Service
-        fields = ("maintenance_window",)
+    operations = [
+        migrations.AlterField(
+            model_name="interaction",
+            name="origin",
+            field=models.IntegerField(
+                choices=[
+                    (1, "Outbound e-mail"),
+                    (2, "Merged customer"),
+                    (3, "Attachment exchanged in Zammad"),
+                    (4, "VIES validation"),
+                    (5, "Manual payment"),
+                    (6, "Maintenance window"),
+                    (7, "Manual note"),
+                ],
+                verbose_name="Origin",
+            ),
+        ),
+    ]

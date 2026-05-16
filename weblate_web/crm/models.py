@@ -36,6 +36,7 @@ class Interaction(models.Model):
         VIES = 4, "VIES validation"
         MANUAL_PAYMENT = 5, "Manual payment"
         MAINTENANCE_WINDOW = 6, "Maintenance window"
+        MANUAL_NOTE = 7, "Manual note"
 
     timestamp = models.DateTimeField(default=timezone.now, verbose_name="Timestamp")
     origin = models.IntegerField(choices=Origin, verbose_name="Origin")

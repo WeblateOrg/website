@@ -103,6 +103,11 @@
          class="addlink">{% translate "Issue new invoice" %}</a>
     {% endif %}
     <h2>Interactions</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ manual_interaction_form }}
+      <input type="submit" name="add_manual_note" value="{% translate "Add note" %}">
+    </form>
     <table>
       {% for interaction in object.interaction_set.all %}
         <tr>
