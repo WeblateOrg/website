@@ -111,12 +111,15 @@
           <td>{{ interaction.get_origin_display }}</td>
           <td>{{ interaction.summary }}</td>
           <td>
-            {% if interaction.content %}
+            {% with primary=interaction.primary_content %}
+              {% if primary and primary != interaction.summary %}{{ primary|linebreaksbr }}{% endif %}
+            {% endwith %}
+          </td>
+          <td>
+            {% if interaction.has_detail_page %}
               <a href="{% url 'crm:interaction-detail' pk=interaction.pk %}" target="_blank">View</a>
             {% endif %}
-            {% if interaction.attachment %}
-              <a href="{% url 'crm:interaction-download' pk=interaction.pk %}">Download</a>
-            {% endif %}
+            {% if interaction.attachment %}<a href="{{ interaction.attachment_download_url }}">Download</a>{% endif %}
           </td>
         </tr>
       {% endfor %}

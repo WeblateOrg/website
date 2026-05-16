@@ -1,5 +1,12 @@
 {% extends "admin/base.html" %}
 
+{% load static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static "crm.css" %}">
+{% endblock extrastyle %}
+
 {% block title %}
   {% if subtitle %}{{ subtitle }} |{% endif %}
   {{ title }} | Weblate CRM
