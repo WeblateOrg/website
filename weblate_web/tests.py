@@ -2754,7 +2754,8 @@ class ExpiryTest(FakturaceTestCase):
         )
 
     def test_expiring_donate(self) -> None:
-        self.create_donation(years=0, days=-2, recurring="")
+        donation = self.create_donation(years=0, days=-2, recurring="")
+        subscription = cast("Subscription", donation.donation_subscription)
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
         RecurringPaymentsCommand.handle_donations()
@@ -2762,6 +2763,31 @@ class ExpiryTest(FakturaceTestCase):
             "Your expired payment on weblate.org",
             "Your expired payment on weblate.org",
         )
+        subscription.refresh_from_db()
+        self.assertFalse(subscription.enabled)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications()
+
+    def test_expiring_donate_full_command_keeps_summary(self) -> None:
+        donation = self.create_donation(years=0, recurring="")
+        subscription = cast("Subscription", donation.donation_subscription)
+        timestamp = timezone.now().replace(day=1)
+        subscription.expires = timestamp - timedelta(days=2)
+        subscription.save(update_fields=["expires"])
+
+        with patch(
+            "weblate_web.management.commands.recurring_payments.timezone.now",
+            return_value=timestamp,
+        ):
+            call_command("recurring_payments")
+
+        self.assert_notifications(
+            "Expiring subscriptions on weblate.org",
+            "Your expired payment on weblate.org",
+            "Your expired payment on weblate.org",
+        )
+        subscription.refresh_from_db()
+        self.assertFalse(subscription.enabled)
 
     def test_expiring_recurring_donate(self) -> None:
         self.create_donation(years=0, days=-2)
@@ -2829,7 +2855,8 @@ class ExpiryTest(FakturaceTestCase):
         self.assert_notifications("Expiring subscriptions on weblate.org")
 
     def test_expired_donate_notify_user_monthly_after_two_months(self) -> None:
-        self.create_donation(years=0, days=-62, recurring="")
+        donation = self.create_donation(years=0, days=-62, recurring="")
+        subscription = cast("Subscription", donation.donation_subscription)
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         mails = self.assert_notifications(
             "Expiring subscriptions on weblate.org",
@@ -2837,11 +2864,25 @@ class ExpiryTest(FakturaceTestCase):
             "Your upcoming payment on weblate.org",
         )
         self.assertIn("Your donation on weblate.org is expired", mails[0].body)
+        subscription.refresh_from_db()
+        self.assertFalse(subscription.enabled)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications()
 
     def test_expired_donate_notify_user_not_weekly_after_two_months(self) -> None:
         self.create_donation(years=0, days=-63, recurring="")
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
+
+    def test_expired_donate_cleanup_after_grace_period(self) -> None:
+        donation = self.create_donation(years=0, days=-11, recurring="")
+        subscription = cast("Subscription", donation.donation_subscription)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications("Expiring subscriptions on weblate.org")
+        subscription.refresh_from_db()
+        self.assertFalse(subscription.enabled)
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications()
 
     def test_expiring_subscription(self) -> None:
         self.create_service(years=0, days=-2, recurring="")
