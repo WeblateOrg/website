@@ -30,14 +30,15 @@
 # VfBFan <VfBFan@users.noreply.hosted.weblate.org>, 2023, 2024.
 # Peter Pfeufer <info@ppfeufer.de>, 2023.
 # Ben <srcmkr@srcmkr.io>, 2023.
-# GitHub webhook <noreply-webhook-github@weblate.org>, 2025.
+# GitHub webhook <noreply-webhook-github@weblate.org>, 2025, 2026.
 # VfBFan <vfbfan@users.noreply.hosted.weblate.org>, 2026.
+# Automatic translation add-on <noreply-addon-autotranslate@weblate.org>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-05-11 04:45-0500\n"
-"PO-Revision-Date: 2026-05-13 02:11+0000\n"
+"POT-Creation-Date: 2026-05-18 02:06-0500\n"
+"PO-Revision-Date: 2026-05-18 09:53+0000\n"
 "Last-Translator: VfBFan <vfbfan@users.noreply.hosted.weblate.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/weblate/website/"
 "de/>\n"
@@ -46,7 +47,145 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.5-dev\n"
+"X-Generator: Weblate 2026.6.dev0\n"
+
+#: weblate_web/crm/forms.py:30
+msgid "Refund description"
+msgstr "Rückerstattungsbeschreibung"
+
+#: weblate_web/crm/forms.py:33
+msgid "Optional note describing how the refund was done."
+msgstr ""
+
+#: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
+msgid "Note"
+msgstr "Anmerkung"
+
+#: weblate_web/crm/models.py:66
+msgid "Yes"
+msgstr ""
+
+#: weblate_web/crm/models.py:66
+#, fuzzy
+#| msgid "Note"
+msgid "No"
+msgstr "Anmerkung"
+
+#: weblate_web/crm/models.py:86
+msgid "not set"
+msgstr ""
+
+#: weblate_web/crm/models.py:136
+msgid "Notification"
+msgstr "Benachrichtigung"
+
+#: weblate_web/crm/models.py:137
+#, fuzzy
+#| msgid "Requirements:"
+msgid "Recipients"
+msgstr "Anforderungen:"
+
+#: weblate_web/crm/models.py:138 weblate_web/crm/models.py:190
+msgid "Invoice"
+msgstr ""
+
+#: weblate_web/crm/models.py:139
+#: weblate_web/crm/templates/crm/interaction_detail.html:52
+msgid "Attachment"
+msgstr ""
+
+#: weblate_web/crm/models.py:146
+msgid "Merged customer"
+msgstr ""
+
+#: weblate_web/crm/models.py:150
+msgid "Merged customer ID"
+msgstr ""
+
+#: weblate_web/crm/models.py:154
+msgid "Merged customer email"
+msgstr ""
+
+#: weblate_web/crm/models.py:159
+msgid "Merged customer end client"
+msgstr ""
+
+#: weblate_web/crm/models.py:168
+msgid "Filename"
+msgstr "Dateiname"
+
+#: weblate_web/crm/models.py:171
+msgid "Ticket ID"
+msgstr ""
+
+#: weblate_web/crm/models.py:172
+msgid "Article ID"
+msgstr ""
+
+#: weblate_web/crm/models.py:175
+msgid "Attachment ID"
+msgstr ""
+
+#: weblate_web/crm/models.py:182
+#, fuzzy
+#| msgid "Automatic renewal"
+msgid "Automated"
+msgstr "Automatische Verlängerung"
+
+#: weblate_web/crm/models.py:183
+msgid "Error code"
+msgstr ""
+
+#: weblate_web/crm/models.py:184
+msgid "Error message"
+msgstr "Fehlermeldung"
+
+#: weblate_web/crm/models.py:191
+#, fuzzy
+#| msgid "Amount (EUR)"
+msgid "Amount"
+msgstr "Betrag (EUR)"
+
+#: weblate_web/crm/models.py:194 weblate_web/templates/hosting.html:488
+#: weblate_web/templates/support.html:173
+msgid "Payment"
+msgstr "Zahlung"
+
+#: weblate_web/crm/models.py:200
+msgid "Confirmed by"
+msgstr ""
+
+#: weblate_web/crm/models.py:201
+msgid "Confirmed at"
+msgstr ""
+
+#: weblate_web/crm/models.py:202
+msgid "Description"
+msgstr "Beschreibung"
+
+#: weblate_web/crm/models.py:211 weblate_web/templates/service.html:6
+#: weblate_web/templates/service.html:13
+msgid "Service"
+msgstr "Dienst"
+
+#: weblate_web/crm/models.py:218
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous maintenance window"
+msgstr "Vorheriges Fenster"
+
+#: weblate_web/crm/models.py:224
+#: weblate_web/crm/templates/weblate_web/service_detail.html:41
+#: weblate_web/migrations/0048_service_maintenance_window.py:38
+#: weblate_web/models.py:637
+msgid "Maintenance window"
+msgstr ""
+
+#: weblate_web/crm/models.py:228
+#, fuzzy
+#| msgid "Server URL"
+msgid "Service URL"
+msgstr "Server-URL"
 
 #: weblate_web/crm/templates/crm/income.html:16
 msgid "Back to"
@@ -178,6 +317,48 @@ msgstr "Hinzufügen"
 msgid "View"
 msgstr "Anzeigen"
 
+#: weblate_web/crm/templates/crm/interaction_detail.html:15
+msgid "Timestamp"
+msgstr "Zeitstempel"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:19
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer"
+msgstr "Eigene"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:25
+msgid "User"
+msgstr "Benutzer"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:29
+msgid "Origin"
+msgstr "Ursprung"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:36
+msgid "Details"
+msgstr "Details"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:63
+msgid "Content"
+msgstr "Inhalt"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:65
+#, fuzzy
+#| msgid "Translation context"
+msgid "Interaction content"
+msgstr "Übersetzungskontext"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:70
+#: weblate_web/crm/templates/invoices/invoice_detail.html:75
+msgid "Confirm refund done"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:71
+msgid "Use this after the refund or chargeback has been completed."
+msgstr ""
+
 #: weblate_web/crm/templates/payments/customer_detail.html:82
 msgid "Add new agreement"
 msgstr "Neuen Vertrag hinzufügen"
@@ -185,6 +366,16 @@ msgstr "Neuen Vertrag hinzufügen"
 #: weblate_web/crm/templates/payments/customer_detail.html:103
 msgid "Issue new invoice"
 msgstr "Neue Rechnung ausstellen"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:109
+msgid "Add note"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:47
+#, fuzzy
+#| msgid "System maintenance"
+msgid "Update maintenance window"
+msgstr "Wartung des Systems"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -345,131 +536,137 @@ msgstr "Erweiterter Support für Self-Hosted"
 msgid "Premium self-hosted support"
 msgstr "Premium-Support für Self-Hosted"
 
-#: weblate_web/models.py:639 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:642 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "Server-URL"
 
-#: weblate_web/models.py:653
+#: weblate_web/models.py:656
 msgid "Server description"
 msgstr "Serverbeschreibung"
 
-#: weblate_web/models.py:656
+#: weblate_web/models.py:659
 msgid "Server image"
 msgstr "Serverbild"
 
-#: weblate_web/models.py:660
+#: weblate_web/models.py:663
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG- oder JPG-Bild mit einer Auflösung von 570 × 260 Pixel."
 
-#: weblate_web/models.py:858 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:869 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Basis-Support"
 
-#: weblate_web/models.py:859
+#: weblate_web/models.py:870
 msgid "Never get held back by a problem."
 msgstr "Lassen Sie sich niemals durch ein Problem aufhalten."
 
-#: weblate_web/models.py:860
+#: weblate_web/models.py:871
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 "Legen Sie die Priorität für all Ihre Fragen und gemeldeten Fehler fest."
 
-#: weblate_web/models.py:862 weblate_web/templates/user.html:30
+#: weblate_web/models.py:873 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Support erhalten"
 
-#: weblate_web/models.py:871
+#: weblate_web/models.py:882
 msgid "Premium support"
 msgstr "Premium-Support"
 
-#: weblate_web/models.py:872
+#: weblate_web/models.py:883
 msgid "Don’t wait with your work on hold."
 msgstr "Warten Sie nicht mit Ihrer Arbeit in der Warteschleife."
 
-#: weblate_web/models.py:873
+#: weblate_web/models.py:884
 msgid "This guarantees you answers the NBD at the latest."
 msgstr ""
 "Dies garantiert Ihnen die Antworten bis spätestens zum nächsten Arbeitstag."
 
-#: weblate_web/models.py:875
+#: weblate_web/models.py:886
 msgid "Be Premium"
 msgstr "Premium sein"
 
-#: weblate_web/models.py:883 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:894 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Erweiterter Support"
 
-#: weblate_web/models.py:884
+#: weblate_web/models.py:895
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr ""
 "Begnügen Sie sich nicht mit Basis, holen Sie sich ein Rundum-Sorglos-Paket."
 
-#: weblate_web/models.py:885
+#: weblate_web/models.py:896
 msgid "We will manage upgrades for you."
 msgstr "Wir verwalten Upgrades für Sie."
 
-#: weblate_web/models.py:887
+#: weblate_web/models.py:898
 msgid "Stay updated"
 msgstr "Bleiben Sie auf dem Laufenden"
 
-#: weblate_web/models.py:895 weblate_web/templates/support.html:143
+#: weblate_web/models.py:906 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Sicherungsdienst"
 
-#: weblate_web/models.py:896
+#: weblate_web/models.py:907
 msgid "Easily put your backups in a safe place."
 msgstr "Legen Sie Ihre Sicherungen ganz einfach an einem sicheren Ort ab."
 
-#: weblate_web/models.py:897
+#: weblate_web/models.py:908
 msgid "Encrypted and automatic, always available."
 msgstr "Verschlüsselt und automatisch, immer verfügbar."
 
-#: weblate_web/models.py:899
+#: weblate_web/models.py:910
 msgid "Back up daily"
 msgstr "Tägliche Sicherung"
 
-#: weblate_web/models.py:911
+#: weblate_web/models.py:922
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Upgrade auf %s"
 
-#: weblate_web/models.py:912
+#: weblate_web/models.py:923
 msgid "Increase service limits to translate more content."
 msgstr "Erhöhen Sie die Dienstgrenzen, um mehr Inhalte zu übersetzen."
 
-#: weblate_web/models.py:915
+#: weblate_web/models.py:926
 msgid "Upgrade"
 msgstr "Upgrade"
 
 #: weblate_web/payments/backends.py:522
+#, fuzzy
+#| msgid "Single payment"
+msgid "Manual payment"
+msgstr "Einmalige Zahlung"
+
+#: weblate_web/payments/backends.py:539
 msgid "IBAN bank transfer"
 msgstr "IBAN-Banküberweisung"
 
-#: weblate_web/payments/backends.py:544
+#: weblate_web/payments/backends.py:561
 msgid "Reference"
 msgstr "Referenz"
 
-#: weblate_web/payments/backends.py:665
+#: weblate_web/payments/backends.py:682
 msgid "Payment card"
 msgstr "Zahlungskarte"
 
-#: weblate_web/payments/backends.py:840
+#: weblate_web/payments/backends.py:857
 msgid "Payment error"
 msgstr "Zahlungsfehler"
 
-#: weblate_web/payments/backends.py:842
+#: weblate_web/payments/backends.py:859
 msgid "Payment cancelled"
 msgstr "Zahlung storniert"
 
-#: weblate_web/payments/backends.py:857
+#: weblate_web/payments/backends.py:874
 msgid "Crypto payment"
 msgstr "Kryptozahlung"
 
-#: weblate_web/payments/backends.py:867
+#: weblate_web/payments/backends.py:884
 msgid "Google Pay"
 msgstr "Google Pay"
 
-#: weblate_web/payments/backends.py:875
+#: weblate_web/payments/backends.py:892
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
@@ -481,21 +678,21 @@ msgstr "Hier erhalten Sie eine Quittung."
 msgid "E-mail address"
 msgstr "E-Mail-Adresse"
 
-#: weblate_web/payments/models.py:114
+#: weblate_web/payments/models.py:116
 msgid "European VAT ID"
 msgstr "Europäische UST-ID"
 
-#: weblate_web/payments/models.py:116
+#: weblate_web/payments/models.py:118
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Bitte geben Sie die Umsatzsteuer-Identifikationsnummer für die Europäische "
 "Union an; falls nicht zutreffend, lassen Sie das Feld leer."
 
-#: weblate_web/payments/models.py:123
+#: weblate_web/payments/models.py:125
 msgid "Company identification number"
 msgstr "Unternehmens-Identifikationsnummer"
 
-#: weblate_web/payments/models.py:125
+#: weblate_web/payments/models.py:127
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
@@ -503,50 +700,50 @@ msgstr ""
 "Bitte geben Sie Ihre Unternehmens-Identifikationsnummer an, wenn diese auf "
 "der Rechnung erscheinen soll."
 
-#: weblate_web/payments/models.py:132
+#: weblate_web/payments/models.py:134
 msgid "Name"
 msgstr "Bezeichnung"
 
-#: weblate_web/payments/models.py:134
+#: weblate_web/payments/models.py:136
 msgid "Company or individual name as it should appear on the invoice."
 msgstr ""
 "Name des Unternehmens oder der Person, wie er auf der Rechnung erscheinen "
 "soll."
 
-#: weblate_web/payments/models.py:141
+#: weblate_web/payments/models.py:143
 msgid "Address"
 msgstr "Adresse"
 
-#: weblate_web/payments/models.py:146
+#: weblate_web/payments/models.py:148
 msgid "Additional address information"
 msgstr "Zusätzliche Adressinformationen"
 
-#: weblate_web/payments/models.py:152
+#: weblate_web/payments/models.py:154
 msgid "City"
 msgstr "Ort"
 
-#: weblate_web/payments/models.py:157
+#: weblate_web/payments/models.py:159
 msgid "Postcode"
 msgstr "Postleitzahl"
 
-#: weblate_web/payments/models.py:161
+#: weblate_web/payments/models.py:163
 msgid "Country"
 msgstr "Land"
 
-#: weblate_web/payments/models.py:167
+#: weblate_web/payments/models.py:169
 msgid "Billing e-mail"
 msgstr "Abrechnungs-E-Mail"
 
-#: weblate_web/payments/models.py:168
+#: weblate_web/payments/models.py:170
 msgid "Additional e-mail to receive billing notifications"
 msgstr ""
 "Zusätzliche E-Mail-Adresse zum Empfang von Abrechnungsbenachrichtigungen"
 
-#: weblate_web/payments/models.py:173
+#: weblate_web/payments/models.py:175
 msgid "Additional upcoming payment notification"
 msgstr "Zusätzliche Benachrichtigung über bevorstehende Zahlungen"
 
-#: weblate_web/payments/models.py:176
+#: weblate_web/payments/models.py:178
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
@@ -556,68 +753,68 @@ msgstr ""
 "Benachrichtigung über bevorstehende Zahlungen zu senden, von 0 bis {}. Auf 0 "
 "setzen, um nur Standardbenachrichtigungen zu verwenden."
 
-#: weblate_web/payments/models.py:275
+#: weblate_web/payments/models.py:278
 msgid "The country has to match your VAT code"
 msgstr ""
 "Das Land muss mit Ihrer Umsatzsteuer-Identifikationsnummer übereinstimmen"
 
-#: weblate_web/payments/models.py:283
+#: weblate_web/payments/models.py:286
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
 "Wählen Sie einen anderen Tag als die voreingestellten "
 "Zahlungsbenachrichtigungen: 2 und 7."
 
-#: weblate_web/payments/models.py:301
+#: weblate_web/payments/models.py:304
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
 "Wählen Sie einen anderen Tag als die voreingestellte jährliche "
 "Zahlungsbenachrichtigung: 31."
 
-#: weblate_web/payments/models.py:475
+#: weblate_web/payments/models.py:504
 msgid "Annual"
 msgstr "Jährlich"
 
-#: weblate_web/payments/models.py:476
+#: weblate_web/payments/models.py:505
 msgid "Biannual"
 msgstr "Halbjährlich"
 
-#: weblate_web/payments/models.py:477 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:506 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "Vierteljährlich"
 
-#: weblate_web/payments/models.py:478 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:507 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "Monatlich"
 
-#: weblate_web/payments/models.py:479
+#: weblate_web/payments/models.py:508
 msgid "One-time"
 msgstr "Einmalig"
 
-#: weblate_web/payments/models.py:515
+#: weblate_web/payments/models.py:544
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Neue Zahlung"
 
-#: weblate_web/payments/models.py:516
+#: weblate_web/payments/models.py:545
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Auf Zahlung wartend"
 
-#: weblate_web/payments/models.py:517
+#: weblate_web/payments/models.py:546
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Zahlung abgelehnt"
 
-#: weblate_web/payments/models.py:518
+#: weblate_web/payments/models.py:547
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Zahlung akzeptiert"
 
-#: weblate_web/payments/models.py:519
+#: weblate_web/payments/models.py:548
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Zahlung verarbeitet"
@@ -2442,11 +2639,6 @@ msgstr "Kostenlos testen"
 msgid "<b>Ask</b> for options"
 msgstr "<b>Auf Anfrage</b>"
 
-#: weblate_web/templates/hosting.html:488
-#: weblate_web/templates/support.html:173
-msgid "Payment"
-msgstr "Zahlung"
-
 #: weblate_web/templates/hosting.html:493
 msgid ""
 "Pricing is based on the number of strings in all used languages. A string is "
@@ -2987,10 +3179,6 @@ msgstr "Englische Version anzeigen"
 msgid "Download as PDF"
 msgstr "Als PDF herunterladen"
 
-#: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
-msgid "Service"
-msgstr "Dienst"
-
 #: weblate_web/templates/snippets/about.html:7
 msgid ""
 "Dive in, or leverage extensive skills and experience from our team of "
@@ -3317,10 +3505,6 @@ msgstr ""
 #: weblate_web/templates/snippets/service.html:97
 msgid "Subscription"
 msgstr "Abonnement"
-
-#: weblate_web/templates/snippets/service.html:119
-msgid "Note"
-msgstr "Anmerkung"
 
 #: weblate_web/templates/snippets/service.html:126
 msgid "Change plan"
@@ -3686,7 +3870,7 @@ msgid "Other topics"
 msgstr "Weitere Themen"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:869
+#: weblate_web/views.py:884
 msgid "Milestones"
 msgstr "Meilensteine"
 
@@ -3879,7 +4063,7 @@ msgstr "Vielen Dank für Ihr Abonnement."
 msgid "Thank you for your donation."
 msgstr "Vielen Dank für Ihre Spende."
 
-#: weblate_web/views.py:973
+#: weblate_web/views.py:988
 msgid "User not found!"
 msgstr "Benutzer nicht gefunden!"
 
@@ -3993,9 +4177,6 @@ msgstr "Benutzer nicht gefunden!"
 #~ "Als kleines Unternehmen bieten wir Möglichkeiten zur persönlichen und "
 #~ "beruflichen Entwicklung. Jedes Teammitglied kann seinen Beitrag leisten "
 #~ "und sich weiterentwickeln."
-
-#~ msgid "Requirements:"
-#~ msgstr "Anforderungen:"
 
 #~ msgid "Strong skills in front-end development and user experience design."
 #~ msgstr ""
@@ -4727,9 +4908,6 @@ msgstr "Benutzer nicht gefunden!"
 #~ msgstr ""
 #~ "Der Übersetzer kann jederzeit wichtige Kontextinformationen wie "
 #~ "Kommentare oder den dazugehörigen Quellcode einsehen."
-
-#~ msgid "Translation context"
-#~ msgstr "Übersetzungskontext"
 
 #~ msgid ""
 #~ "Project page gives you detailed information about project translation "
