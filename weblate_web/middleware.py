@@ -21,6 +21,7 @@ from base64 import b64encode
 from secrets import token_bytes
 
 from django.conf import settings
+from django.urls import reverse
 from django.utils.translation import get_language
 from weblate_language_data.docs import DOCUMENTATION_LANGUAGES
 
@@ -43,6 +44,26 @@ CSP_TEMPLATE = (
 )
 
 
+def add_agent_discovery_link_header(request, response) -> None:
+    """Add RFC 8288 links for agent discovery on homepage responses."""
+    language = getattr(request, "LANGUAGE_CODE", get_language())
+    if request.path_info not in {"/", f"/{language}/"}:
+        return
+
+    links = ", ".join(
+        (
+            f'<{reverse("support")}>; rel="help"',
+            f'<{reverse("privacy")}>; rel="privacy-policy"',
+            f'<{reverse("terms")}>; rel="terms-of-service"',
+            '</site.webmanifest>; rel="manifest"',
+        )
+    )
+    if "Link" in response:
+        response["Link"] = f"{response['Link']}, {links}"
+    else:
+        response["Link"] = links
+
+
 class SecurityMiddleware:
     """
     Middleware that sets various security related headers.
@@ -57,6 +78,7 @@ class SecurityMiddleware:
     def __call__(self, request):
         request.csp_nonce = b64encode(token_bytes(16)).decode("ascii")
         response = self.get_response(request)
+        add_agent_discovery_link_header(request, response)
 
         # No CSP for debug mode (to allow djdt or error pages)
         if settings.DEBUG:
