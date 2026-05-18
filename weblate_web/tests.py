@@ -65,6 +65,7 @@ if TYPE_CHECKING:
     from django.core.mail.message import EmailMultiAlternatives
 
 TEST_DATA = Path(__file__).parent / "test-data"
+TEST_ROBOTS = Path(__file__).parent / "static" / "robots.txt"
 TEST_SIGNATURE = Path(__file__).parent / "static" / "weblate-black.svg"
 TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
 TEST_ACTIVITY = TEST_DATA / "activity.json"
@@ -720,15 +721,38 @@ class ViewTestCase(PostTestCase):
 
     def test_index_redirect(self) -> None:
         response = self.client.get("/")
+        links = response["Link"]
+
         self.assertRedirects(response, "/en/", 302)
+        self.assertIn('</en/support/>; rel="help"', links)
+        self.assertIn('</en/privacy/>; rel="privacy-policy"', links)
+        self.assertIn('</en/terms/>; rel="terms-of-service"', links)
+        self.assertIn('</site.webmanifest>; rel="manifest"', links)
 
     def test_index_en(self) -> None:
         response = self.client.get("/en/")
         self.assertContains(response, "yearly")
 
+    def test_index_link_headers(self) -> None:
+        response = self.client.get("/en/")
+        links = response["Link"]
+
+        self.assertIn('</en/support/>; rel="help"', links)
+        self.assertIn('</en/privacy/>; rel="privacy-policy"', links)
+        self.assertIn('</en/terms/>; rel="terms-of-service"', links)
+        self.assertIn('</site.webmanifest>; rel="manifest"', links)
+
     def test_index_cs(self) -> None:
         response = self.client.get("/cs/")
         self.assertContains(response, "ročně")
+
+    def test_index_link_headers_localized(self) -> None:
+        response = self.client.get("/cs/")
+        links = response["Link"]
+
+        self.assertIn('</cs/support/>; rel="help"', links)
+        self.assertIn('</cs/privacy/>; rel="privacy-policy"', links)
+        self.assertIn('</cs/terms/>; rel="terms-of-service"', links)
 
     def test_index_he(self) -> None:
         response = self.client.get("/he/")
@@ -764,6 +788,20 @@ class ViewTestCase(PostTestCase):
         response = self.client.get("/security.txt", follow=True)
         self.assertRedirects(response, "/.well-known/security.txt", status_code=301)
         self.assertContains(response, "https://hackerone.com/weblate")
+
+    def test_robots_txt_content_signals(self) -> None:
+        response = self.client.get("/robots.txt")
+
+        self.assertRedirects(
+            response,
+            "/static/robots.txt",
+            status_code=301,
+            fetch_redirect_response=False,
+        )
+        self.assertIn(
+            "Content-Signal: ai-train=no, search=yes, ai-input=no",
+            TEST_ROBOTS.read_text(),
+        )
 
     def test_localized_docs(self) -> None:
         response = self.client.get("/uk/contribute/")
