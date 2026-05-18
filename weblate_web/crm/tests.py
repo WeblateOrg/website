@@ -87,7 +87,7 @@ class CRMTestCase(BaseCRMTestCase):
             package=package,
             expires=expires or timezone.now() + timedelta(days=30),
             enabled=enabled,
-            payment=payment.pk,
+            payment=payment,
         )
         return service
 
@@ -185,7 +185,7 @@ class CRMTestCase(BaseCRMTestCase):
                 category=PackageCategory.PACKAGE_SHARED,
             ),
             expires=expires,
-            payment=payment.pk,
+            payment=payment,
         )
         subscription2 = service.subscription_set.create(
             package=Package.objects.create(
@@ -195,7 +195,7 @@ class CRMTestCase(BaseCRMTestCase):
                 category=PackageCategory.PACKAGE_SHARED,
             ),
             expires=expires,
-            payment=payment.pk,
+            payment=payment,
         )
         self.assertTrue(subscription1.enabled)
         self.assertTrue(subscription2.enabled)
@@ -336,7 +336,7 @@ class CRMTestCase(BaseCRMTestCase):
         basic_service.subscription_set.create(
             package=basic,
             expires=timezone.now() + timedelta(days=30),
-            payment=payment.pk,
+            payment=payment,
         )
         expired_service = self.create_extended_service(
             expires=timezone.now() - timedelta(days=1)
@@ -448,7 +448,7 @@ class CRMTestCase(BaseCRMTestCase):
                 category=PackageCategory.PACKAGE_SHARED,
             ),
             expires=expires,
-            payment=payment.pk,
+            payment=payment,
         )
 
         response = self.client.post(
@@ -1303,7 +1303,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 category=PackageCategory.PACKAGE_DEDICATED,
             ),
             expires=timezone.now() + timedelta(days=30),
-            payment=payment.pk,
+            payment=payment,
         )
 
         shared_service = Service.objects.create(customer=customer)
@@ -1315,7 +1315,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 category=PackageCategory.PACKAGE_SHARED,
             ),
             expires=timezone.now() + timedelta(days=30),
-            payment=payment.pk,
+            payment=payment,
         )
 
         support_service = Service.objects.create(customer=customer)
@@ -1327,7 +1327,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 category=PackageCategory.PACKAGE_SUPPORT,
             ),
             expires=timezone.now() + timedelta(days=30),
-            payment=payment.pk,
+            payment=payment,
         )
 
         # Test "all" services view - should show all services grouped by package_kind
@@ -1366,7 +1366,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 category=PackageCategory.PACKAGE_SUPPORT,
             ),
             expires=timezone.now() + timedelta(days=30),
-            payment=payment.pk,
+            payment=payment,
         )
         donation = Service.objects.create(
             customer=customer,
@@ -1375,7 +1375,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         donation.subscription_set.create(
             package=get_donation_package(3),
             expires=timezone.now() + timedelta(days=30),
-            payment=payment.pk,
+            payment=payment,
         )
 
         response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
