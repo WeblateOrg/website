@@ -42,16 +42,38 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options) -> None:
         # Issue recurring payments
-        self.handle_recurring_payments()
+        disable_donations = self.handle_recurring_payments(
+            defer_one_time_donation_disable=True
+        )
         # Update services status
         self.handle_services()
         # Notify about upcoming expiry
-        self.notify_expiry()
+        self.notify_expiry(disable_one_time_donations=disable_donations)
 
     @staticmethod
-    def notify_expiry(*, force_summary: bool = False) -> None:
-        expiry: list[tuple[str, Iterable[str], datetime]] = []
+    def disable_expired_one_time_donation(
+        subscription: Subscription, payment: Payment | None, timestamp: datetime
+    ) -> None:
+        if subscription.expires < timestamp and (
+            payment is None or not payment.recurring
+        ):
+            subscription.enabled = False
+            subscription.save(update_fields=["enabled"])
+
+    @classmethod
+    def notify_expiry(
+        cls,
+        *,
+        force_summary: bool = False,
+        disable_one_time_donations: Iterable[tuple[Subscription, Payment | None]] = (),
+    ) -> None:
+        expiry: dict[int | None, tuple[str, Iterable[str], datetime]] = {}
         timestamp = timezone.now()
+        deferred_payments = {
+            subscription.pk: payment
+            for subscription, payment in disable_one_time_donations
+        }
+        deferred_disable: dict[int | None, tuple[Subscription, Payment | None]] = {}
 
         summary_notify = timestamp + timedelta(days=31)
         customer_notification_days = (
@@ -73,25 +95,38 @@ class Command(BaseCommand):
             except Payment.DoesNotExist:
                 payment = None
             notify_user = subscription.should_notify(timestamp)
+            disable_after_summary = subscription.pk in deferred_payments
             if payment is not None and payment.recurring:
                 if notify_user:
                     subscription.send_notification("payment_upcoming")
                 continue
-            if notify_user:
+            if notify_user and not disable_after_summary:
                 subscription.send_notification("payment_missing")
             if (
                 subscription.expires <= summary_notify
                 and not subscription.could_be_obsolete()
             ):
-                expiry.append(subscription.get_expiry_summary())
+                expiry[subscription.pk] = subscription.get_expiry_summary()
+            if subscription.service.is_donation and disable_after_summary:
+                deferred_disable[subscription.pk] = (
+                    subscription,
+                    deferred_payments[subscription.pk],
+                )
+            elif subscription.service.is_donation and (
+                notify_user or subscription.expires < timestamp - timedelta(days=10)
+            ):
+                cls.disable_expired_one_time_donation(subscription, payment, timestamp)
 
         # Notify admins
         if expiry and (timestamp.day == 1 or force_summary):
             send_notification(
                 "expiring_subscriptions",
                 settings.NOTIFY_SUBSCRIPTION,
-                expiry=expiry,
+                expiry=list(expiry.values()),
             )
+
+        for subscription, payment in deferred_disable.values():
+            cls.disable_expired_one_time_donation(subscription, payment, timestamp)
 
     @staticmethod
     def handle_services() -> None:
@@ -144,8 +179,14 @@ class Command(BaseCommand):
         repeated.trigger_recurring()
 
     @classmethod
-    def handle_recurring_payments(cls, service_kind: ServiceKind | None = None) -> None:
+    def handle_recurring_payments(
+        cls,
+        service_kind: ServiceKind | None = None,
+        *,
+        defer_one_time_donation_disable: bool = False,
+    ) -> list[tuple[Subscription, Payment | None]]:
         now = timezone.now()
+        disable_donations: list[tuple[Subscription, Payment | None]] = []
         subscriptions = Subscription.objects.payment_lifecycle().filter(
             expires__range=(now - timedelta(days=10), now + timedelta(days=3)),
         )
@@ -164,11 +205,25 @@ class Command(BaseCommand):
             payment = subscription.payment_obj
             if not payment.recurring:
                 subscription.send_notification("payment_expired")
+                if subscription.service.is_donation:
+                    if defer_one_time_donation_disable:
+                        disable_donations.append((subscription, payment))
+                    else:
+                        cls.disable_expired_one_time_donation(
+                            subscription, payment, now
+                        )
                 continue
 
             recurring = subscription.get_recurring_payment_period()
             if not recurring:
                 subscription.send_notification("payment_expired")
+                if subscription.service.is_donation:
+                    if defer_one_time_donation_disable:
+                        disable_donations.append((subscription, payment))
+                    else:
+                        cls.disable_expired_one_time_donation(
+                            subscription, payment, now
+                        )
                 continue
 
             # Trigger recurring payment
@@ -180,6 +235,7 @@ class Command(BaseCommand):
                 end_date=subscription.expires,
                 extra=subscription.get_renewal_extra(),
             )
+        return disable_donations
 
     @classmethod
     def handle_subscriptions(cls) -> None:
