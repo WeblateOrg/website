@@ -1,4 +1,4 @@
-{% load compress i18n macros static %}
+{% load compress i18n macros schema static %}
 
 {% macro title %}
   {% block title %}Weblate{% endblock %}
@@ -71,6 +71,12 @@
       <meta name="wot-verification" content="b166aac1728babda4ade" />
       <meta name="monetization" content="$ilp.uphold.com/ENU7fREdeZi9">
       <link href="https://mastodon.social/@nijel" rel="me">
+      {% for schema_item in schema_json_ld %}
+        <script type="application/ld+json" nonce="{{ request.csp_nonce }}">{{ schema_item|json_ld }}</script>
+      {% endfor %}
+      {% for schema_item in extra_schema_json_ld %}
+        <script type="application/ld+json" nonce="{{ request.csp_nonce }}">{{ schema_item|json_ld }}</script>
+      {% endfor %}
     </head>
     <body class="{% block body_class %}page light{% endblock %}
        ">
