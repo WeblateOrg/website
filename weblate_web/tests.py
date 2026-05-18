@@ -20,7 +20,9 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.core.signing import dumps
-from django.test import RequestFactory, SimpleTestCase, TestCase
+from django.db import connection
+from django.db.migrations.executor import MigrationExecutor
+from django.test import RequestFactory, SimpleTestCase, TestCase, TransactionTestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -37,13 +39,16 @@ from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .middleware import SecurityMiddleware
 from .models import (
-    Donation,
+    REWARD_LEVELS,
     Package,
     PackageCategory,
     Post,
     Report,
     Service,
+    ServiceKind,
     Subscription,
+    get_donation_package,
+    get_donation_reward_package_name,
     sync_packages,
 )
 from .remote import (
@@ -1024,8 +1029,12 @@ class FakturaceTestCase(UserTestCase):
         return result
 
     def create_donation(
-        self, years: int = 1, days: int = 0, recurring: Literal["y", ""] = "y"
-    ) -> Donation:
+        self,
+        years: int = 1,
+        days: int = 0,
+        recurring: Literal["y", ""] = "y",
+        reward: int = 3,
+    ) -> Service:
         user = self.create_user()
         customer = Customer.objects.create(
             user_id=-1,
@@ -1037,20 +1046,24 @@ class FakturaceTestCase(UserTestCase):
             country=TEST_CUSTOMER["country"],
         )
         customer.users.add(user)
-        return Donation.objects.create(
-            reward=3,
+        service = Service.objects.create(
             customer=customer,
-            active=True,
-            expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
-            payment=create_payment(
-                recurring=recurring,
-                user=user,
-                state=Payment.PROCESSED,
-                customer=customer,
-            )[0].pk,
-            link_url="https://example.com/weblate",
-            link_text="Weblate donation test",
+            kind=ServiceKind.DONATION,
+            donation_link_url="https://example.com/weblate",
+            donation_link_text="Weblate donation test",
         )
+        subscription = service.subscription_set.create(
+            package=get_donation_package(reward),
+            expires=timezone.now() + timedelta(days=days) + relativedelta(years=years),
+        )
+        subscription.payment = create_payment(
+            recurring=recurring,
+            user=user,
+            state=Payment.PROCESSED,
+            customer=customer,
+        )[0].pk
+        subscription.save(update_fields=["payment"])
+        return service
 
     def create_packages(self) -> None:
         Package.objects.bulk_create(
@@ -1116,6 +1129,116 @@ class FakturaceTestCase(UserTestCase):
         )[0].pk
         subscription.save(update_fields=["payment"])
         return service
+
+
+class DonationMigration0049Test(TransactionTestCase):
+    migrate_from = [("weblate_web", "0048_service_maintenance_window")]
+    migrate_to = [("weblate_web", "0049_consolidate_donations")]
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.executor = MigrationExecutor(connection)
+        self.executor.migrate(self.migrate_from)
+        self.old_apps = self.executor.loader.project_state(self.migrate_from).apps
+
+    def tearDown(self) -> None:
+        self.executor = MigrationExecutor(connection)
+        self.executor.migrate(self.migrate_to)
+        super().tearDown()
+
+    def test_donation_rewards_are_migrated_to_subscription_packages(  # noqa: PLR0914
+        self,
+    ) -> None:
+        donation_model = self.old_apps.get_model("weblate_web", "Donation")
+        past_payments_model = self.old_apps.get_model("weblate_web", "PastPayments")
+
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country="US",
+        )
+        created = timezone.now() - timedelta(days=30)
+        expires = timezone.now() + timedelta(days=30)
+        donations = []
+        for reward in range(4):
+            payment = Payment.objects.create(
+                customer=customer,
+                amount=100 + reward,
+                description=f"Donation {reward}",
+                state=Payment.PROCESSED,
+            )
+            donation = donation_model.objects.create(
+                customer_id=customer.pk,
+                payment=payment.pk,
+                reward=reward,
+                link_text=f"Donor {reward}",
+                link_url=f"https://example.com/{reward}",
+                link_image=f"donations/{reward}.png",
+                expires=expires + timedelta(days=reward),
+                active=reward != 1,
+            )
+            donation_model.objects.filter(pk=donation.pk).update(created=created)
+            donation.created = created
+            donations.append(donation)
+
+        past_payment = Payment.objects.create(
+            customer=customer,
+            amount=42,
+            description="Past donation",
+            state=Payment.PROCESSED,
+        )
+        past_payments_model.objects.create(
+            donation=donations[3],
+            payment=past_payment.pk,
+        )
+
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.migrate_to)
+        new_apps = executor.loader.project_state(self.migrate_to).apps
+        package_model = new_apps.get_model("weblate_web", "Package")
+        past_payments_model = new_apps.get_model("weblate_web", "PastPayments")
+        service_model = new_apps.get_model("weblate_web", "Service")
+        subscription_model = new_apps.get_model("weblate_web", "Subscription")
+
+        self.assertNotIn(
+            "donation_reward",
+            {
+                field.name
+                for field in service_model._meta.fields  # pylint: disable=protected-access
+            },
+        )
+        self.assertNotIn(
+            "donation",
+            {
+                field.name
+                for field in past_payments_model._meta.fields  # pylint: disable=protected-access
+            },
+        )
+        for reward, donation in enumerate(donations):
+            service = service_model.objects.get(donation_legacy_id=donation.pk)
+            subscription = subscription_model.objects.get(service=service)
+            package = package_model.objects.get(pk=subscription.package_id)
+            self.assertEqual(package.name, get_donation_reward_package_name(reward))
+            self.assertEqual(package.price, REWARD_LEVELS[reward])
+            self.assertEqual(service.kind, ServiceKind.DONATION)
+            self.assertEqual(service.donation_link_text, f"Donor {reward}")
+            self.assertEqual(service.donation_link_url, f"https://example.com/{reward}")
+            self.assertEqual(service.donation_link_image, f"donations/{reward}.png")
+            self.assertEqual(subscription.payment, donation.payment)
+            self.assertEqual(subscription.enabled, reward != 1)
+            self.assertEqual(subscription.expires, expires + timedelta(days=reward))
+
+        migrated_past_payment = past_payments_model.objects.get(payment=past_payment.pk)
+        self.assertEqual(
+            migrated_past_payment.subscription_id,
+            subscription_model.objects.get(
+                service__donation_legacy_id=donations[3].pk
+            ).pk,
+        )
 
 
 class PaymentsTest(FakturaceTestCase):
@@ -1673,6 +1796,57 @@ class PaymentTest(FakturaceTestCase):
         )
         self.assertContains(response, "Insufficient donation for selected reward!")
 
+    def test_donation_reward_packages(self) -> None:
+        for reward in range(4):
+            package = get_donation_package(reward)
+            self.assertEqual(package.name, get_donation_reward_package_name(reward))
+            self.assertEqual(package.price, REWARD_LEVELS[reward])
+            self.assertEqual(package.category, PackageCategory.PACKAGE_DONATION)
+            self.assertEqual(package.donation_reward, reward)
+
+        self.assertEqual(
+            get_donation_package(0).donation_payment_description,
+            "Weblate donation",
+        )
+        self.assertEqual(
+            get_donation_package(3).donation_payment_description,
+            "Weblate donation: Logo and link on the Weblate website",
+        )
+        package = Package.objects.create(
+            name="test",
+            verbose="Test package",
+            price=42,
+        )
+        with self.assertRaises(ValueError):
+            _description = package.donation_payment_description
+
+    def test_donation_reward_edit_forms_match_package_reward(self) -> None:
+        self.login()
+        expected_fields = {
+            1: ("donation_link_text",),
+            2: ("donation_link_text", "donation_link_url"),
+            3: ("donation_link_text", "donation_link_url", "donation_link_image"),
+        }
+        for reward, fields in expected_fields.items():
+            donation = self.create_donation(reward=reward)
+            with override("en"):
+                response = self.client.get(
+                    reverse("donate-edit", kwargs={"pk": donation.pk})
+                )
+            self.assertEqual(response.status_code, 200)
+            content = response.content.decode()
+            for field in fields:
+                self.assertIn(f'name="{field}"', content)
+            for field in {"donation_link_url", "donation_link_image"} - set(fields):
+                self.assertNotIn(f'name="{field}"', content)
+
+        donation = self.create_donation(reward=0)
+        with override("en"):
+            response = self.client.get(
+                reverse("donate-edit", kwargs={"pk": donation.pk})
+            )
+        self.assertEqual(response.status_code, 404)
+
     def test_donation_workflow_card_reward(self) -> None:
         self.test_donation_workflow_card(2)
 
@@ -1707,7 +1881,12 @@ class PaymentTest(FakturaceTestCase):
 
         # Back to our web
         response = self.client.get(payment.get_complete_url(), follow=True)
-        donation = Donation.objects.all().get()
+        donation = Service.objects.filter(kind=ServiceKind.DONATION).get()
+        subscription = cast("Subscription", donation.donation_subscription)
+        self.assertEqual(
+            subscription.package.name,
+            get_donation_reward_package_name(reward),
+        )
         redirect_url = f"/en/donate/edit/{donation.pk}/" if reward else "/en/user/"
         self.assertRedirects(response, redirect_url)
         self.assertContains(response, "Thank you for your donation")
@@ -1747,6 +1926,11 @@ class PaymentTest(FakturaceTestCase):
         renew.refresh_from_db()
         self.assertEqual(renew.state, Payment.PROCESSED)
         self.assertEqual(payment.paid_invoice.total_amount, 1000)  # type: ignore[union-attr]
+        subscription = cast("Subscription", donation.donation_subscription)
+        self.assertEqual(
+            subscription.package.name,
+            get_donation_reward_package_name(reward),
+        )
 
         # Service should not get notifications on expiry now
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
@@ -1754,9 +1938,12 @@ class PaymentTest(FakturaceTestCase):
 
         # Move expiry into past and renew
         thepay_mock_repeated_payment()
-        donation = Donation.objects.all().get()
-        donation.expires -= timedelta(days=365 * 2)
-        donation.save(update_fields=["expires"])
+        donation = Service.objects.filter(kind=ServiceKind.DONATION).get()
+        renewal_subscription = donation.donation_subscription
+        self.assertIsNotNone(renewal_subscription)
+        renewal_subscription = cast("Subscription", renewal_subscription)
+        renewal_subscription.expires -= timedelta(days=365 * 2)
+        renewal_subscription.save(update_fields=["expires"])
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications("Your payment on weblate.org")
 
@@ -1767,9 +1954,12 @@ class PaymentTest(FakturaceTestCase):
         self.assertRedirects(response, reverse("user"))
 
         # Ensure no payment is made
-        donation = Donation.objects.all().get()
-        donation.expires -= timedelta(days=365)
-        donation.save(update_fields=["expires"])
+        donation = Service.objects.filter(kind=ServiceKind.DONATION).get()
+        expired_subscription = donation.donation_subscription
+        self.assertIsNotNone(expired_subscription)
+        expired_subscription = cast("Subscription", expired_subscription)
+        expired_subscription.expires -= timedelta(days=365)
+        expired_subscription.save(update_fields=["expires"])
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications("Your expired payment on weblate.org")
 
@@ -1802,29 +1992,89 @@ class PaymentTest(FakturaceTestCase):
         self.assertEqual(payment.state, Payment.PENDING)
 
     def test_your_donations(self) -> None:
-        # Check login link
-        self.assertContains(self.client.get(reverse("donate")), "user-anonymous")
-        user = self.login()
+        with override("en"):
+            # Check login link
+            self.assertContains(self.client.get(reverse("donate")), "user-anonymous")
+            user = self.login()
 
-        # No login/donations
+            # No login/donations
+            response = self.client.get(reverse("donate"))
+            self.assertNotContains(response, "user-anonymous")
+            self.assertNotContains(response, "Your donations")
+
+            customer = Customer.objects.create(
+                user_id=-1,
+                origin=PAYMENTS_ORIGIN,
+            )
+            customer.users.add(user)
+            # Donation show show up
+            service = Service.objects.create(
+                customer=customer,
+                kind=ServiceKind.DONATION,
+            )
+            service.subscription_set.create(
+                package=get_donation_package(2),
+                expires=timezone.now() + relativedelta(years=1),
+                payment=create_payment(user=user, customer=customer)[0].pk,
+            )
+            self.assertContains(self.client.get(reverse("user")), "My donations")
+
+    def test_user_view_keeps_services_and_donations_separate(self) -> None:
+        self.login()
+        service = self.create_service()
+        donation = self.create_donation()
+
+        with override("en"):
+            response = self.client.get(reverse("user"))
+
+        self.assertEqual(
+            {item.pk for item in response.context["user_services"]},
+            {service.pk},
+        )
+        self.assertEqual(
+            {item.pk for item in response.context["user_donations"]},
+            {donation.pk},
+        )
+
+    def test_active_customers_exclude_donation_only_customers(self) -> None:
+        service = self.create_service()
+        donation = self.create_donation()
+
+        self.assertEqual(
+            set(Customer.objects.active().values_list("pk", flat=True)),
+            {service.customer_id},
+        )
+        self.assertNotEqual(service.customer_id, donation.customer_id)
+
+    def test_user_view_renders_active_donation_without_payment(self) -> None:
+        self.login()
+        donation = self.create_donation()
+        subscription = cast("Subscription", donation.donation_subscription)
+        subscription.payment = None
+        subscription.save(update_fields=["payment"])
+
+        with override("en"):
+            response = self.client.get(reverse("user"))
+
+        self.assertContains(response, "My donations")
+        self.assertContains(response, "No renewal")
+
+    def test_donor_listing_only_shows_active_logo_rewards(self) -> None:
+        logo_donation = self.create_donation(reward=3)
+        logo_donation.donation_link_text = "Logo donor"
+        logo_donation.save(update_fields=["donation_link_text"])
+        link_donation = self.create_donation(reward=2)
+        link_donation.donation_link_text = "Link donor"
+        link_donation.save(update_fields=["donation_link_text"])
+        expired_donation = self.create_donation(years=0, days=-1, reward=3)
+        expired_donation.donation_link_text = "Expired logo donor"
+        expired_donation.save(update_fields=["donation_link_text"])
+
         response = self.client.get(reverse("donate"))
-        self.assertNotContains(response, "user-anonymous")
-        self.assertNotContains(response, "Your donations")
 
-        customer = Customer.objects.create(
-            user_id=-1,
-            origin=PAYMENTS_ORIGIN,
-        )
-        customer.users.add(user)
-        # Donation show show up
-        Donation.objects.create(
-            reward=2,
-            customer=customer,
-            active=True,
-            expires=timezone.now() + relativedelta(years=1),
-            payment=create_payment(user=user, customer=customer)[0].pk,
-        )
-        self.assertContains(self.client.get(reverse("user")), "My donations")
+        self.assertContains(response, "Logo donor")
+        self.assertNotContains(response, "Link donor")
+        self.assertNotContains(response, "Expired logo donor")
 
     def test_link(self) -> None:
         self.create_donation()
@@ -1836,7 +2086,8 @@ class PaymentTest(FakturaceTestCase):
     @override_settings(PAYMENT_DEBUG=True)
     def test_recurring(self) -> None:
         donation = self.create_donation(years=0)
-        payment = cast("Payment", donation.payment_obj)
+        subscription = cast("Subscription", donation.donation_subscription)
+        payment = cast("Payment", subscription.payment_obj)
         self.assertIsNotNone(payment)
         # No recurring payments for now
         self.assertEqual(payment.payment_set.count(), 0)
@@ -1850,9 +2101,9 @@ class PaymentTest(FakturaceTestCase):
         self.assertEqual(payment.payment_set.get().state, Payment.PROCESSED)
 
         # Verify expiry has been moved
-        old = donation.expires
-        donation.refresh_from_db()
-        self.assertGreater(donation.expires, old)
+        old = subscription.expires
+        subscription.refresh_from_db()
+        self.assertGreater(subscription.expires, old)
 
         # Process pending payments (should do nothing)
         call_command("process_payments")
@@ -2507,7 +2758,10 @@ class ExpiryTest(FakturaceTestCase):
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
         RecurringPaymentsCommand.handle_donations()
-        self.assert_notifications("Your expired payment on weblate.org")
+        self.assert_notifications(
+            "Your expired payment on weblate.org",
+            "Your expired payment on weblate.org",
+        )
 
     def test_expiring_recurring_donate(self) -> None:
         self.create_donation(years=0, days=-2)
@@ -2524,15 +2778,21 @@ class ExpiryTest(FakturaceTestCase):
         mails = self.assert_notifications(
             "Expiring subscriptions on weblate.org",
             "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
         )
         self.assertEqual("Your upcoming payment on weblate.org", mails[0].subject)
         self.assertIn("€100", cast("str", mails[0].alternatives[0][0]))
         self.assertIn("€100", mails[0].body)
+        self.assertIn("Your donation on weblate.org should renew soon", mails[0].body)
+        self.assertNotIn("Your subscription on weblate.org", mails[0].body)
 
     def test_expiring_recurring_donate_notify_user(self) -> None:
         self.create_donation(years=0, days=7)
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
-        mails = self.assert_notifications("Your upcoming payment on weblate.org")
+        mails = self.assert_notifications(
+            "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
+        )
         self.assertIn("€100", cast("str", mails[0].alternatives[0][0]))
         self.assertIn("€100", mails[0].body)
 
@@ -2544,6 +2804,7 @@ class ExpiryTest(FakturaceTestCase):
         self.assert_notifications(
             "Expiring subscriptions on weblate.org",
             "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
         )
 
     def test_expiring_donate_notify_user_extra_customer_notification_before_default(
@@ -2553,7 +2814,10 @@ class ExpiryTest(FakturaceTestCase):
         donation.customer.upcoming_payment_notification_days = 45
         donation.customer.save(update_fields=["upcoming_payment_notification_days"])
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
-        self.assert_notifications("Your upcoming payment on weblate.org")
+        self.assert_notifications(
+            "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
+        )
 
     def test_expiring_donate_notify_user_extra_customer_notification_disabled(
         self,
@@ -2561,6 +2825,21 @@ class ExpiryTest(FakturaceTestCase):
         donation = self.create_donation(years=0, days=14, recurring="")
         donation.customer.upcoming_payment_notification_days = 0
         donation.customer.save(update_fields=["upcoming_payment_notification_days"])
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications("Expiring subscriptions on weblate.org")
+
+    def test_expired_donate_notify_user_monthly_after_two_months(self) -> None:
+        self.create_donation(years=0, days=-62, recurring="")
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        mails = self.assert_notifications(
+            "Expiring subscriptions on weblate.org",
+            "Your upcoming payment on weblate.org",
+            "Your upcoming payment on weblate.org",
+        )
+        self.assertIn("Your donation on weblate.org is expired", mails[0].body)
+
+    def test_expired_donate_notify_user_not_weekly_after_two_months(self) -> None:
+        self.create_donation(years=0, days=-63, recurring="")
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications("Expiring subscriptions on weblate.org")
 
@@ -2585,11 +2864,45 @@ class ExpiryTest(FakturaceTestCase):
     def test_expiring_subscription_notify_user(self) -> None:
         self.create_service(years=0, days=7, recurring="")
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
-        self.assert_notifications(
+        mails = self.assert_notifications(
             "Expiring subscriptions on weblate.org",
             "Your upcoming payment on weblate.org",
             "Your upcoming payment on weblate.org",
         )
+        self.assertIn(
+            "Your subscription on weblate.org should renew soon", mails[0].body
+        )
+        self.assertNotIn("Your donation on weblate.org", mails[0].body)
+
+    def test_expiring_subscription_missing_payment_sends_missing_notice(self) -> None:
+        service = self.create_service(years=0, days=-7)
+        subscription = service.subscription_set.get()
+        self.assertIsNotNone(subscription.payment)
+        payment_id = cast("UUID", subscription.payment)
+        Payment.objects.filter(pk=payment_id).delete()
+
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+
+        mails = self.assert_notifications(
+            "Expiring subscriptions on weblate.org",
+            "Your expired payment on weblate.org",
+            "Your expired payment on weblate.org",
+        )
+        self.assertIn("Your subscription on weblate.org is expired", mails[0].body)
+
+    def test_expired_subscription_notify_user_monthly_after_two_months(self) -> None:
+        self.create_service(years=0, days=-62, recurring="")
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications(
+            "Expiring subscriptions on weblate.org",
+            "Your expired payment on weblate.org",
+            "Your expired payment on weblate.org",
+        )
+
+    def test_expired_subscription_notify_user_not_weekly_after_two_months(self) -> None:
+        self.create_service(years=0, days=-63, recurring="")
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assert_notifications("Expiring subscriptions on weblate.org")
 
     def test_expiring_recurring_subscription_notify_user(self) -> None:
         self.create_service(years=0, days=7)
@@ -2707,6 +3020,53 @@ class ServiceTest(FakturaceTestCase):
         discount.percents = 10
         discount.save()
         self.assertEqual(subscription.get_expected_payment_amount(), 37)
+
+    def test_recurring_donation_payment_uses_previous_amount_and_donation_extra(
+        self,
+    ) -> None:
+        donation = self.create_donation(years=0, days=-2, reward=3)
+        subscription = cast("Subscription", donation.donation_subscription)
+        self.assertIsNotNone(subscription.payment)
+        payment_id = cast("UUID", subscription.payment)
+        Payment.objects.filter(pk=payment_id).update(amount=123)
+
+        with patch.object(
+            RecurringPaymentsCommand, "peform_payment"
+        ) as perform_payment:
+            RecurringPaymentsCommand.handle_donations()
+
+        perform_payment.assert_called_once()
+        self.assertEqual(
+            perform_payment.call_args.kwargs,
+            {
+                "amount": 123,
+                "recurring": "y",
+                "end_date": subscription.expires,
+                "extra": {"donation_service": donation.pk},
+            },
+        )
+
+    def test_recurring_service_payment_uses_package_price_and_subscription_extra(
+        self,
+    ) -> None:
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+
+        with patch.object(
+            RecurringPaymentsCommand, "peform_payment"
+        ) as perform_payment:
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        perform_payment.assert_called_once()
+        self.assertEqual(
+            perform_payment.call_args.kwargs,
+            {
+                "amount": subscription.package.price,
+                "recurring": "y",
+                "end_date": subscription.expires,
+                "extra": {"subscription": subscription.pk},
+            },
+        )
 
     @responses.activate
     def test_hosted_pay(self) -> None:
@@ -2897,6 +3257,10 @@ class CommandsTestCase(FakturaceTestCase):
         with StringIO() as buffer:
             call_command("sync_packages", stdout=buffer)
             self.assertNotEqual(buffer.getvalue(), "")
+        for reward in range(4):
+            package = Package.objects.get(name=get_donation_reward_package_name(reward))
+            self.assertEqual(package.category, PackageCategory.PACKAGE_DONATION)
+            self.assertEqual(package.price, REWARD_LEVELS[reward])
 
         with StringIO() as buffer:
             call_command("sync_packages", stdout=buffer)

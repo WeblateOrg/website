@@ -85,6 +85,16 @@ REWARD_LEVELS = {
     2: 400,
     3: 800,
 }
+DONATION_REWARD_PACKAGE_NAMES = {
+    0: "donation",
+    1: "donation-name",
+    2: "donation-link",
+    3: "donation-logo",
+}
+DONATION_PACKAGE_REWARDS = {
+    package_name: reward
+    for reward, package_name in DONATION_REWARD_PACKAGE_NAMES.items()
+}
 
 TOPICS = (
     ("release", gettext_lazy("Release")),
@@ -193,107 +203,90 @@ class MySQLSearchLookup(models.Lookup):  # pylint: disable=abstract-method
 models.CharField.register_lookup(MySQLSearchLookup)
 
 
-class Donation(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT)
-    # TODO: should use foreign key
-    payment = models.UUIDField(blank=True, null=True)
-    reward = models.IntegerField(choices=REWARDS, default=0)
-    link_text = models.CharField(
-        verbose_name=gettext_lazy("Link text"), max_length=200, blank=True
+def get_donation_reward_package_name(reward: int) -> str:
+    return DONATION_REWARD_PACKAGE_NAMES[int(reward)]
+
+
+def get_donation_reward_package_names() -> tuple[str, ...]:
+    return tuple(
+        package_name
+        for reward, package_name in DONATION_REWARD_PACKAGE_NAMES.items()
+        if reward
     )
-    link_url = models.URLField(verbose_name=gettext_lazy("Link URL"), blank=True)
-    link_image = models.ImageField(
-        verbose_name=gettext_lazy("Link image"), blank=True, upload_to="donations/"
+
+
+def get_donation_reward_from_package_name(package_name: str) -> int:
+    return DONATION_PACKAGE_REWARDS.get(package_name, 0)
+
+
+def get_donation_reward_display(reward: int) -> str:
+    return str(dict(REWARDS)[int(reward)])
+
+
+def get_donation_package_verbose(reward: int) -> str:
+    reward = int(reward)
+    if reward:
+        return f"Weblate donation: {get_donation_reward_display(reward)}"
+    return "Weblate donation"
+
+
+def get_donation_package(reward: int = 0) -> Package:
+    reward = int(reward)
+    name = get_donation_reward_package_name(reward)
+    package, _created = Package.objects.get_or_create(
+        name=name,
+        defaults={
+            "category": PackageCategory.PACKAGE_DONATION,
+            "verbose": get_donation_package_verbose(reward),
+            "price": REWARD_LEVELS[reward],
+        },
     )
-    created = models.DateTimeField(auto_now_add=True)
-    expires = models.DateTimeField()
-    active = models.BooleanField(blank=True, db_index=True)
+    return package
 
-    class Meta:
-        verbose_name = "Donation"
-        verbose_name_plural = "Donations"
 
-    def __str__(self) -> str:
-        return f"{self.customer}:{self.reward}"
-
-    def get_absolute_url(self):
-        return reverse("donate-edit", kwargs={"pk": self.pk})
-
-    @cached_property
-    def payment_obj(self) -> Payment | None:
-        if not self.payment:
-            return None
-        return Payment.objects.get(pk=self.payment)
-
-    def list_payments(self):
-        past = set(self.pastpayments_set.values_list("payment", flat=True))
-        query = Q(pk=self.payment)
-        if past:
-            query |= Q(pk__in=past)
-            query |= Q(repeat__pk__in=past)
-        if self.payment:
-            query |= Q(repeat__pk=self.payment)
-        return Payment.objects.filter(query).distinct()
-
-    def get_amount(self):
-        if not self.payment_obj:
-            return 0
-        return self.payment_obj.amount
-
-    def get_payment_description(self) -> str:
-        if self.reward:
-            return f"Weblate donation: {self.get_reward_display()}"
-        return "Weblate donation"
-
-    def send_notification(self, notification: str) -> None:
-        self.customer.send_notification(
-            notification,
-            donation=self,
+def get_donation_service(payment: Payment) -> Service:
+    if donation_service := payment.extra.get("donation_service"):
+        return Service.objects.donations().get(
+            pk=donation_service,
+            customer=payment.customer,
         )
-
-    @property
-    def is_expired(self) -> bool:
-        return self.expires < timezone.now()
-
-    def should_notify(self, timestamp: datetime) -> bool:
-        delta = timestamp - self.expires
-        extra_days = self.customer.upcoming_payment_notification_days
-        days_before = -delta.days
-        # Notify before payment
-        if days_before in DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS:
-            return True
-        # Additional customer-specific notification before payment
-        if extra_days and days_before == extra_days:
-            return True
-        # Notify monthly after two months
-        if delta.days > 60:
-            return delta.days % 31 == 0
-        # Notify weekly after the payment
-        return delta.days > 0 and delta.days % 7 == 0
+    return Service.objects.donations().get(
+        donation_legacy_id=payment.extra["donation"],
+        customer=payment.customer,
+    )
 
 
-def process_donation(payment):
+def process_donation(payment: Payment) -> Service:
     if payment.state != Payment.ACCEPTED:
         raise ValueError("Cannot process non-accepted payment")
     if payment.repeat:
         # Update existing
-        donation = Donation.objects.get(payment=payment.repeat.pk)
-        payment.start = donation.expires
-        donation.expires += get_period_delta(payment.repeat.recurring)
-        payment.end = donation.expires
-        donation.active = True
-        donation.save()
-    elif "donation" in payment.extra:
-        donation = Donation.objects.get(pk=payment.extra["donation"])
-        if donation.payment:
-            donation.pastpayments_set.create(payment=donation.payment)
-        payment.start = donation.expires
-        donation.expires += get_period_delta(payment.recurring or "y")
-        payment.end = donation.expires
-        donation.payment = payment.pk
-        donation.save()
+        subscription = Subscription.objects.donations().get(
+            payment=payment.repeat.pk,
+        )
+        payment.start = subscription.expires
+        subscription.expires += get_period_delta(payment.repeat.recurring)
+        payment.end = subscription.expires
+        subscription.enabled = True
+        subscription.save()
+        donation = subscription.service
+    elif "donation_service" in payment.extra or "donation" in payment.extra:
+        donation = get_donation_service(payment)
+        donation_subscription = donation.donation_subscription
+        if donation_subscription is None:
+            raise ValueError("Donation service is missing a subscription")
+        if donation_subscription.payment:
+            donation_subscription.pastpayments_set.create(
+                payment=donation_subscription.payment
+            )
+        payment.start = donation_subscription.expires
+        donation_subscription.expires += get_period_delta(payment.recurring or "y")
+        payment.end = donation_subscription.expires
+        donation_subscription.payment = payment.pk
+        donation_subscription.enabled = True
+        donation_subscription.save()
     else:
-        reward = payment.extra.get("reward", 0)
+        reward = int(payment.extra.get("reward", 0) or 0)
         # Calculate expiry
         expires = timezone.now()
         if payment.recurring:
@@ -305,12 +298,15 @@ def process_donation(payment):
             expires += get_period_delta("y")
             payment.end = expires
         # Create new
-        donation = Donation.objects.create(
+        donation = Service.objects.create(
             customer=payment.customer,
+            kind=ServiceKind.DONATION,
+        )
+        Subscription.objects.create(
+            service=donation,
             payment=payment.pk,
-            reward=int(reward),
+            package=get_donation_package(reward),
             expires=expires,
-            active=True,
         )
     # Flag payment as processed
     payment.state = Payment.PROCESSED
@@ -530,11 +526,17 @@ def generate_secret():
     return get_random_string(64)
 
 
+class ServiceKind(IntegerChoices):
+    SERVICE = 0, pgettext_lazy("Service kind", "Service")
+    DONATION = 10, pgettext_lazy("Service kind", "Donation")
+
+
 class PackageCategory(IntegerChoices):
     PACKAGE_NONE = 0, pgettext_lazy("Package category", "None")
     PACKAGE_DEDICATED = 10, pgettext_lazy("Package category", "Dedicated hosting")
     PACKAGE_SHARED = 20, pgettext_lazy("Package category", "Shared hosting")
     PACKAGE_SUPPORT = 30, pgettext_lazy("Package category", "Self-hosted support")
+    PACKAGE_DONATION = 40, pgettext_lazy("Package category", "Donation")
 
 
 class Package(models.Model):
@@ -597,14 +599,39 @@ class Package(models.Model):
         return ""
 
     def get_invoice_category(self) -> InvoiceCategory:
+        if self.category == PackageCategory.PACKAGE_DONATION:
+            return InvoiceCategory.DONATE
         if self.category == PackageCategory.PACKAGE_SUPPORT:
             return InvoiceCategory.SUPPORT
         return InvoiceCategory.HOSTING
+
+    @property
+    def donation_reward(self) -> int:
+        if self.category != PackageCategory.PACKAGE_DONATION:
+            raise ValueError("Donation reward is only available for donation packages")
+        return get_donation_reward_from_package_name(self.name)
+
+    @property
+    def donation_reward_display(self) -> str:
+        return get_donation_reward_display(self.donation_reward)
+
+    @property
+    def donation_payment_description(self) -> str:
+        return get_donation_package_verbose(self.donation_reward)
+
+
+class ServiceQuerySet(models.QuerySet["Service"]):
+    def customer_services(self) -> ServiceQuerySet:
+        return self.filter(kind=ServiceKind.SERVICE)
+
+    def donations(self) -> ServiceQuerySet:
+        return self.filter(kind=ServiceKind.DONATION)
 
 
 class Service(models.Model):
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
     customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT)
+    kind = models.IntegerField(default=ServiceKind.SERVICE, choices=ServiceKind)
     status = models.CharField(
         max_length=150,
         choices=(
@@ -667,16 +694,30 @@ class Service(models.Model):
             validate_bitmap,
         ],
     )
+    donation_link_text = models.CharField(
+        verbose_name=gettext_lazy("Link text"), max_length=200, blank=True
+    )
+    donation_link_url = models.URLField(
+        verbose_name=gettext_lazy("Link URL"), blank=True
+    )
+    donation_link_image = models.ImageField(
+        verbose_name=gettext_lazy("Link image"), blank=True, upload_to="donations/"
+    )
+    donation_legacy_id = models.IntegerField(blank=True, null=True, db_index=True)
 
     # Discover integration
     matched_projects: list[Project]
     non_matched_projects_count: int
+
+    objects = ServiceQuerySet.as_manager()
 
     class Meta:
         verbose_name = "Customer service"
         verbose_name_plural = "Customer services"
 
     def __str__(self) -> str:
+        if self.is_donation:
+            return f"Donation:{self.pk} {self.customer}: {self.get_donation_payment_description()}"
         return f"Service:{self.pk} {self.get_status_display()}: {self.user_emails}: {self.site_domain}"
 
     def __init__(self, *args, **kwargs) -> None:
@@ -685,7 +726,13 @@ class Service(models.Model):
         self.skip_intro = False
 
     def get_absolute_url(self):
+        if self.is_donation:
+            return reverse("donate-edit", kwargs={"pk": self.pk})
         return reverse("crm:service-detail", kwargs={"pk": self.pk})
+
+    @property
+    def is_donation(self) -> bool:
+        return self.kind == ServiceKind.DONATION
 
     def get_discover_text(self):
         return _(self.discover_text)
@@ -700,6 +747,8 @@ class Service(models.Model):
 
     @property
     def needs_token(self):
+        if self.is_donation:
+            return False
         return (
             self.status not in {"hosted", "shared", "community"}
             or self.backup_subscriptions
@@ -770,6 +819,8 @@ class Service(models.Model):
 
     @property
     def package_kind(self) -> str:
+        if self.is_donation:
+            return "Donation"
         if self.hosted_subscriptions:
             return "Dedicated service"
         if self.shared_subscriptions:
@@ -833,6 +884,41 @@ class Service(models.Model):
     @cached_property
     def backup_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(package__name="backup").order_by("-expires")
+
+    @cached_property
+    def donation_subscriptions(self) -> models.QuerySet[Subscription]:
+        return self.subscription_set.filter(
+            package__category=PackageCategory.PACKAGE_DONATION
+        ).order_by("-expires")
+
+    @cached_property
+    def donation_subscription(self) -> Subscription | None:
+        try:
+            return self.donation_subscriptions[0]
+        except IndexError:
+            return None
+
+    @property
+    def donation_is_active(self) -> bool:
+        subscription = self.donation_subscription
+        return (
+            self.is_donation
+            and subscription is not None
+            and subscription.enabled
+            and subscription.expires >= timezone.now()
+        )
+
+    def get_donation_amount(self) -> int:
+        subscription = self.donation_subscription
+        if subscription is None or not subscription.payment:
+            return 0
+        return subscription.payment_obj.amount
+
+    def get_donation_payment_description(self) -> str:
+        subscription = self.donation_subscription
+        if subscription is None:
+            return get_donation_package_verbose(0)
+        return subscription.package.donation_payment_description
 
     @cached_property
     def latest_subscription(self) -> Subscription | None:
@@ -930,6 +1016,8 @@ class Service(models.Model):
         return result
 
     def update_status(self) -> None:
+        if self.is_donation:
+            return
         status = "community"
         package = Package.objects.get(name="community")
         if self.hosted_subscriptions.filter(expires__gt=timezone.now()).exists():
@@ -1035,6 +1123,17 @@ class Service(models.Model):
         return reports.order_by("-timestamp")[:10]
 
 
+class SubscriptionQuerySet(models.QuerySet["Subscription"]):
+    def customer_services(self) -> SubscriptionQuerySet:
+        return self.filter(service__kind=ServiceKind.SERVICE)
+
+    def donations(self) -> SubscriptionQuerySet:
+        return self.filter(service__kind=ServiceKind.DONATION)
+
+    def payment_lifecycle(self) -> SubscriptionQuerySet:
+        return self.filter(enabled=True).exclude(payment=None)
+
+
 class Subscription(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.PROTECT)
     # TODO: should use foreign key
@@ -1042,7 +1141,11 @@ class Subscription(models.Model):
     package = models.ForeignKey(Package, on_delete=models.deletion.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
+    # For donations, this tracks whether renewal is enabled. Current activity is
+    # determined by the expiration date, not this flag alone.
     enabled = models.BooleanField(default=True, blank=True)
+
+    objects = SubscriptionQuerySet.as_manager()
 
     class Meta:
         verbose_name = "Customer’s subscription"
@@ -1101,15 +1204,26 @@ class Subscription(models.Model):
         return Payment.objects.filter(query).distinct()
 
     def send_notification(self, notification: str) -> None:
-        self.service.customer.send_notification(notification, subscription=self)
+        context = self.get_notification_context()
+        self.service.customer.send_notification(notification, **context)
         with override("en"):
             send_notification(
                 notification,
                 settings.NOTIFY_SUBSCRIPTION,
-                subscription=self,
+                **context,
             )
 
+    def get_notification_context(self) -> dict[str, Any]:
+        if self.service.is_donation:
+            return {"donation": self.service}
+        return {"subscription": self}
+
+    def uses_obsolete_subscription_skip(self) -> bool:
+        return not self.service.is_donation
+
     def could_be_obsolete(self):
+        if not self.uses_obsolete_subscription_skip():
+            return False
         expires = timezone.now() + timedelta(days=3)
         return (
             self.package.name in {"basic", "extended", "premium"}
@@ -1126,16 +1240,64 @@ class Subscription(models.Model):
         delta = timestamp - self.expires
         extra_days = self.service.customer.upcoming_payment_notification_days
         days_before = -delta.days
+
         # Notify before payment
         if days_before in DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS and (
-            days_before != 31 or self.package.get_repeat() == "y"
+            days_before != 31 or self.get_notification_period() == "y"
         ):
             return True
         # Additional customer-specific notification before payment
         if extra_days and days_before == extra_days:
             return True
+        # Notify monthly after two months
+        if delta.days > 60:
+            return delta.days % 31 == 0
         # Notify weekly after the payment
         return delta.days > 0 and delta.days % 7 == 0
+
+    def uses_payment_lifecycle(self) -> bool:
+        return self.service.is_donation or bool(self.package.get_repeat())
+
+    def get_recurring_payment_period(self) -> str:
+        if self.service.is_donation:
+            return self.payment_obj.recurring
+        return self.package.get_repeat()
+
+    def get_notification_period(self) -> str:
+        if self.service.is_donation:
+            try:
+                return self.payment_obj.recurring or "y"
+            except (Payment.DoesNotExist, ValueError):
+                return ""
+        return self.package.get_repeat()
+
+    def get_renewal_amount(self) -> int:
+        if self.service.is_donation:
+            return self.service.get_donation_amount()
+        return self.package.price
+
+    def get_renewal_extra(self) -> dict[str, int]:
+        if self.service.is_donation:
+            return {"donation_service": self.service_id}
+        return {"subscription": self.pk}
+
+    def get_expiry_summary_name(self) -> str:
+        if self.service.is_donation:
+            return (
+                f"{self.service.customer}: "
+                f"{self.service.get_donation_payment_description()}"
+            )
+        name = f"{self}"
+        if self.service.note:
+            name = f"{name} ({self.service.note})"
+        return name
+
+    def get_expiry_summary(self) -> tuple[str, list[str], datetime]:
+        return (
+            self.get_expiry_summary_name(),
+            self.service.customer.get_notify_emails(),
+            self.expires,
+        )
 
     @classmethod
     def _create_invoice(  # noqa: PLR0913
@@ -1229,6 +1391,8 @@ class Subscription(models.Model):
         )
 
     def get_expected_payment_amount(self) -> int:
+        if self.service.is_donation:
+            return self.get_renewal_amount()
         if discount := self.service.customer.discount:
             return self.package.price * (100 - discount.percents) // 100
         return self.package.price
@@ -1237,9 +1401,6 @@ class Subscription(models.Model):
 class PastPayments(models.Model):
     subscription = models.ForeignKey(
         Subscription, on_delete=models.deletion.PROTECT, null=True, blank=True
-    )
-    donation = models.ForeignKey(
-        Donation, on_delete=models.deletion.PROTECT, null=True, blank=True
     )
     # TODO: should use foreign key
     payment = models.UUIDField()
@@ -1362,6 +1523,14 @@ def get_packages() -> Generator[tuple[PackageCategory, str, str, int, int]]:
             name,
             0,
             price,
+        )
+    for reward, name in DONATION_REWARD_PACKAGE_NAMES.items():
+        yield (
+            PackageCategory.PACKAGE_DONATION,
+            get_donation_package_verbose(reward),
+            name,
+            0,
+            REWARD_LEVELS[reward],
         )
 
 

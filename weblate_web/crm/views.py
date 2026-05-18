@@ -122,14 +122,16 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
         return context
 
     def get_queryset(self):
-        qs = super().get_queryset().prefetch_related("subscription_set")
+        qs = Service.objects.customer_services().prefetch_related("subscription_set")
         match self.kwargs["kind"]:
             case "all":
                 return sorted(qs, key=attrgetter("package_kind"))
             case "expired":
-                possible_subscriptions = Subscription.objects.filter(
-                    expires__lte=timezone.now(), enabled=True
-                ).exclude(payment=None)
+                possible_subscriptions = (
+                    Subscription.objects.customer_services()
+                    .filter(expires__lte=timezone.now(), enabled=True)
+                    .exclude(payment=None)
+                )
                 subscriptions = []
                 for subscription in possible_subscriptions:
                     # Skip one-time payments and the ones with recurrence configured
@@ -448,6 +450,8 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["manual_interaction_form"] = ManualInteractionForm(
             self.request.POST if add_manual_note else None
         )
+        context["services"] = self.object.service_set.customer_services()
+        context["donations"] = self.object.service_set.donations()
         return context
 
     def get_title(self) -> str:

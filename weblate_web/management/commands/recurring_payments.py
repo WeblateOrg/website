@@ -28,7 +28,7 @@ from django.db.models import Max
 from django.utils import timezone
 
 from weblate_web.invoices.models import InvoiceKind
-from weblate_web.models import Donation, Service, Subscription, get_period_delta
+from weblate_web.models import Service, ServiceKind, Subscription, get_period_delta
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 
@@ -42,8 +42,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options) -> None:
         # Issue recurring payments
-        self.handle_donations()
-        self.handle_subscriptions()
+        self.handle_recurring_payments()
         # Update services status
         self.handle_services()
         # Notify about upcoming expiry
@@ -63,20 +62,18 @@ class Command(BaseCommand):
         )
         expires_notify = timestamp + timedelta(days=max(31, customer_notification_days))
 
-        # Expiring subscriptions
-        subscriptions = Subscription.objects.filter(
-            expires__lte=expires_notify, enabled=True
-        ).exclude(payment=None)
+        subscriptions = Subscription.objects.payment_lifecycle().filter(
+            expires__lte=expires_notify,
+        )
         for subscription in subscriptions:
-            # Skip one-time payments and the ones with recurrence configured
-            if not subscription.package.get_repeat():
+            if not subscription.uses_payment_lifecycle():
                 continue
             try:
                 payment = subscription.payment_obj
             except Payment.DoesNotExist:
                 payment = None
             notify_user = subscription.should_notify(timestamp)
-            if payment is None or payment.recurring:
+            if payment is not None and payment.recurring:
                 if notify_user:
                     subscription.send_notification("payment_upcoming")
                 continue
@@ -86,38 +83,7 @@ class Command(BaseCommand):
                 subscription.expires <= summary_notify
                 and not subscription.could_be_obsolete()
             ):
-                name = f"{subscription}"
-                if subscription.service.note:
-                    name = f"{name} ({subscription.service.note})"
-                expiry.append(
-                    (
-                        name,
-                        subscription.service.customer.get_notify_emails(),
-                        subscription.expires,
-                    )
-                )
-
-        # Expiring donations
-        donations = Donation.objects.filter(
-            active=True, expires__lte=expires_notify
-        ).exclude(payment=None)
-        for donation in donations:
-            payment = donation.payment_obj
-            notify_user = donation.should_notify(timestamp)
-            if payment and payment.recurring:
-                if notify_user:
-                    donation.send_notification("payment_upcoming")
-                continue
-            if notify_user:
-                donation.send_notification("payment_missing")
-            if donation.expires <= summary_notify:
-                expiry.append(
-                    (
-                        f"{donation.customer}: {donation.get_payment_description()}",
-                        donation.customer.get_notify_emails(),
-                        donation.expires,
-                    )
-                )
+                expiry.append(subscription.get_expiry_summary())
 
         # Notify admins
         if expiry and (timestamp.day == 1 or force_summary):
@@ -129,7 +95,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def handle_services() -> None:
-        for service in Service.objects.all():
+        for service in Service.objects.customer_services():
             service.update_status()
             service.create_backup()
 
@@ -178,15 +144,15 @@ class Command(BaseCommand):
         repeated.trigger_recurring()
 
     @classmethod
-    def handle_subscriptions(cls) -> None:
+    def handle_recurring_payments(cls, service_kind: ServiceKind | None = None) -> None:
         now = timezone.now()
-        subscriptions = Subscription.objects.filter(
+        subscriptions = Subscription.objects.payment_lifecycle().filter(
             expires__range=(now - timedelta(days=10), now + timedelta(days=3)),
-            enabled=True,
-        ).exclude(payment=None)
+        )
+        if service_kind is not None:
+            subscriptions = subscriptions.filter(service__kind=service_kind)
         for subscription in subscriptions:
-            # Is this repeating subscription?
-            if not subscription.package.get_repeat():
+            if not subscription.uses_payment_lifecycle():
                 continue
 
             # Skip this in case there is another subscription, for example on service
@@ -200,33 +166,25 @@ class Command(BaseCommand):
                 subscription.send_notification("payment_expired")
                 continue
 
+            recurring = subscription.get_recurring_payment_period()
+            if not recurring:
+                subscription.send_notification("payment_expired")
+                continue
+
             # Trigger recurring payment
             cls.peform_payment(
                 payment,
                 subscription.list_payments(),
-                amount=subscription.package.price,
-                recurring=subscription.package.get_repeat(),
+                amount=subscription.get_renewal_amount(),
+                recurring=recurring,
                 end_date=subscription.expires,
-                extra={"subscription": subscription.pk},
+                extra=subscription.get_renewal_extra(),
             )
 
     @classmethod
-    def handle_donations(cls) -> None:
-        now = timezone.now()
-        donations = Donation.objects.filter(
-            active=True,
-            expires__range=(now - timedelta(days=10), now + timedelta(days=3)),
-        ).exclude(payment=None)
-        for donation in donations:
-            payment = donation.payment_obj
-            if not payment or not payment.recurring:
-                donation.send_notification("payment_expired")
-                continue
+    def handle_subscriptions(cls) -> None:
+        cls.handle_recurring_payments(ServiceKind.SERVICE)
 
-            cls.peform_payment(
-                payment,
-                donation.list_payments(),
-                recurring=payment.recurring,
-                end_date=donation.expires,
-                extra={"donation": donation.pk},
-            )
+    @classmethod
+    def handle_donations(cls) -> None:
+        cls.handle_recurring_payments(ServiceKind.DONATION)

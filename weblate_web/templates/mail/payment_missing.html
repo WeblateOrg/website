@@ -18,16 +18,18 @@
   {% endif %}
 
   {% if donation %}
-    <p>
-      {% if donation.is_expired %}
-        {% translate "Your donation on weblate.org is expired and you have not set up automatic payments." %}
-      {% else %}
-        {% translate "Your donation on weblate.org should renew soon and you have not set up automatic payments." %}
-      {% endif %}
-      {% translate "Please perform the payment now to continue supporting Weblate." %}
-    </p>
+    {% with subscription=donation.donation_subscription %}
+      <p>
+        {% if subscription.is_expired %}
+          {% translate "Your donation on weblate.org is expired and you have not set up automatic payments." %}
+        {% else %}
+          {% translate "Your donation on weblate.org should renew soon and you have not set up automatic payments." %}
+        {% endif %}
+        {% translate "Please perform the payment now to continue supporting Weblate." %}
+      </p>
 
-    {% include "mail/snippets/donation_info.html" %}
+      {% include "mail/snippets/donation_info.html" %}
+    {% endwith %}
   {% endif %}
 
   <a class="button" href="/user/">{% translate "Manage your payments" %}</a>

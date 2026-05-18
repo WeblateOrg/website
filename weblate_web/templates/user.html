@@ -34,113 +34,115 @@
         <h1>{% translate "My donations" %}</h1>
 
         {% for donation in user_donations %}
-          <div class="payment-form payment-padding">
-            <div class="form-line donation-left-line">
-              <div class="line-left get-reward-left-line">{{ donation.get_reward_display }}</div>
-              {% if donation.reward %}
-                <div class="reward-line-right">{% translate "Your reward" %}</div>
-              {% endif %}
-            </div>
-            <div class="form-line custom-gradient"></div>
-            <div class="inner-content">
-              <div class="inner-content-child-width">
-                {% if donation.link_url or donation.reward %}
+          {% with subscription=donation.donation_subscription %}
+            <div class="payment-form payment-padding">
+              <div class="form-line donation-left-line">
+                <div class="line-left get-reward-left-line">{{ subscription.package.donation_reward_display }}</div>
+                {% if subscription.package.donation_reward %}
+                  <div class="reward-line-right">{% translate "Your reward" %}</div>
+                {% endif %}
+              </div>
+              <div class="form-line custom-gradient"></div>
+              <div class="inner-content">
+                <div class="inner-content-child-width">
+                  {% if donation.donation_link_url or subscription.package.donation_reward %}
+                    <div class="form-line user-text-formatting">
+                      <div class="line-left">{% translate "Link" %}</div>
+                      <div class="line-right user-text-formatting-donation">
+                        {{ donation.donation_link_url }}
+                        <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% translate "Edit reward" %}</a>
+                      </div>
+                      <div class="clear"></div>
+                    </div>
+                  {% endif %}
                   <div class="form-line user-text-formatting">
-                    <div class="line-left">{% translate "Link" %}</div>
+                    <div class="line-left">{% translate "Active" %}</div>
                     <div class="line-right user-text-formatting-donation">
-                      {{ donation.link_url }}
-                      <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% translate "Edit reward" %}</a>
+                      {% date_range subscription.created subscription.expires True %}
+                      {% with days_from_today_donation=subscription.expires|days_diff_from_today %}
+                        {% if days_from_today_donation < 30 %}
+                          {% if days_from_today_donation < 2 and days_from_today_donation >= 0 %}
+                            <t class="orange">{{ days_from_today_donation|days_remaining }}</t>
+                          {% elif days_from_today_donation < 0 %}
+                            <t class="pl-1 orange">{% translate "Expired" %}</t>
+                          {% else %}
+                            <t class="orange">{{ days_from_today_donation|days_remaining }}</t>
+                          {% endif %}
+                        {% else %}
+                          <t class="grey">{{ days_from_today_donation|days_remaining }}</t>
+                        {% endif %}
+                      {% endwith %}
                     </div>
                     <div class="clear"></div>
                   </div>
-                {% endif %}
-                <div class="form-line user-text-formatting">
-                  <div class="line-left">{% translate "Active" %}</div>
-                  <div class="line-right user-text-formatting-donation">
-                    {% date_range donation.created donation.expires True %}
-                    {% with days_from_today_donation=donation.expires|days_diff_from_today %}
-                      {% if days_from_today_donation < 30 %}
-                        {% if days_from_today_donation < 2 and days_from_today_donation >= 0 %}
-                          <t class="orange">{{ days_from_today_donation|days_remaining }}</t>
-                        {% elif days_from_today_donation < 0 %}
-                          <t class="pl-1 orange">{% translate "Expired" %}</t>
-                        {% else %}
-                          <t class="orange">{{ days_from_today_donation|days_remaining }}</t>
-                        {% endif %}
+                  <div class="form-line user-text-formatting">
+                    <div class="line-left">
+                      {% if not donation.donation_is_active %}
+                        {% translate "Expired" %}
+                      {% elif subscription.payment and subscription.payment_obj.recurring and subscription.payment_obj.is_backend_valid %}
+                        {% translate "Automatic renewal" %}
                       {% else %}
-                        <t class="grey">{{ days_from_today_donation|days_remaining }}</t>
+                        {% translate "No renewal" %}
                       {% endif %}
-                    {% endwith %}
-                  </div>
-                  <div class="clear"></div>
-                </div>
-                <div class="form-line user-text-formatting">
-                  <div class="line-left">
-                    {% if not donation.active %}
-                      {% translate "Expired" %}
-                    {% elif donation.payment_obj.recurring and donation.payment_obj.is_backend_valid %}
-                      {% translate "Automatic renewal" %}
-                    {% else %}
-                      {% translate "No renewal" %}
-                    {% endif %}
-                  </div>
+                    </div>
 
-                  <div class="line-right user-text-formatting-donation">
-                    {% if donation.active and donation.payment_obj.recurring %}
-                      <form class="form-float"
+                    <div class="line-right user-text-formatting-donation">
+                      {% if donation.donation_is_active and subscription.payment and subscription.payment_obj.recurring %}
+                        <form class="form-float"
+                              method="post"
+                              action="{% url "donate-disable" pk=donation.pk %}">
+                          {% csrf_token %}
+                          <input type="submit" class="link" value="{% translate "Turn off renewal" %}">
+                        </form>
+                      {% endif %}
+                      {% if not donation.donation_is_active %}
+                        {% translate "Expired" %}
+                      {% elif subscription.payment and subscription.payment_obj.recurring and subscription.payment_obj.is_backend_valid %}
+                        {% translate "Automatic renewal" %} ({{ subscription.payment_obj.get_payment_description }})
+                      {% else %}
+                        {% translate "No renewal" %}
+                      {% endif %}
+                      <br />
+                      <form class="form-inline"
                             method="post"
-                            action="{% url "donate-disable" pk=donation.pk %}">
+                            action="{% url "donate-pay" pk=donation.pk %}">
                         {% csrf_token %}
-                        <input type="submit" class="link" value="{% translate "Turn off renewal" %}">
+                        <input type="submit"
+                               class="button button-med-140 inline"
+                               value="{% translate "Renew now" %}">
                       </form>
-                    {% endif %}
-                    {% if not donation.active %}
-                      {% translate "Expired" %}
-                    {% elif donation.payment_obj.recurring and donation.payment_obj.is_backend_valid %}
-                      {% translate "Automatic renewal" %} ({{ donation.payment_obj.get_payment_description }})
-                    {% else %}
-                      {% translate "No renewal" %}
-                    {% endif %}
-                    <br />
-                    <form class="form-inline"
-                          method="post"
-                          action="{% url "donate-pay" pk=donation.pk %}">
-                      {% csrf_token %}
-                      <input type="submit"
-                             class="button button-med-140 inline"
-                             value="{% translate "Renew now" %}">
-                    </form>
+                    </div>
+                    <div class="clear"></div>
                   </div>
-                  <div class="clear"></div>
+                </div>
+                <div class="inner-content-child-width-auto">
+                  <img src="{% static "img/donations-picture.png" %}" alt="Puppy">
                 </div>
               </div>
-              <div class="inner-content-child-width-auto">
-                <img src="{% static "img/donations-picture.png" %}" alt="Puppy">
+              <div class="payment-updated">
+                <div class="form-line user-text-formatting user-text-formatting-payment">
+                  <div class="line-left">{% translate "Payments" %}</div>
+                  <div class="line-right ">
+                    <table class="payments-table">
+                      {% for payment in subscription.list_payments %}
+                        {% include "snippets/payment.html" %}
+                      {% endfor %}
+                    </table>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="payment-updated">
-              <div class="form-line user-text-formatting user-text-formatting-payment">
-                <div class="line-left">{% translate "Payments" %}</div>
-                <div class="line-right ">
-                  <table class="payments-table">
-                    {% for payment in donation.list_payments %}
-                      {% include "snippets/payment.html" %}
-                    {% endfor %}
-                  </table>
+              <div class="payment-updated">
+                <div class="form-line user-text-formatting user-text-formatting-payment">
+                  {% include "snippets/customer-users.html" with customer=donation.customer %}
+                </div>
+              </div>
+              <div class="payment-updated">
+                <div class="form-line user-text-formatting user-text-formatting-payment">
+                  {% include "snippets/customer-address.html" with customer=donation.customer %}
                 </div>
               </div>
             </div>
-            <div class="payment-updated">
-              <div class="form-line user-text-formatting user-text-formatting-payment">
-                {% include "snippets/customer-users.html" with customer=donation.customer %}
-              </div>
-            </div>
-            <div class="payment-updated">
-              <div class="form-line user-text-formatting user-text-formatting-payment">
-                {% include "snippets/customer-address.html" with customer=donation.customer %}
-              </div>
-            </div>
-          </div>
+          {% endwith %}
         {% empty %}
 
           <div class="payment-form-donationbox">

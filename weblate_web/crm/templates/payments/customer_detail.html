@@ -54,17 +54,15 @@
     </form>
 
     <h2>Services</h2>
-    {% with services=object.service_set.all %}
-      {% include "weblate_web/service_list_content.html" with object_list=services %}
-      {% if not services %}
-        <form method="post">
-          <p>Invoice new service</p>
-          {% csrf_token %}
-          {{ new_subscription_form }}
-          <input type="submit" value="Create">
-        </form>
-      {% endif %}
-    {% endwith %}
+    {% include "weblate_web/service_list_content.html" with object_list=services %}
+    {% if not services %}
+      <form method="post">
+        <p>Invoice new service</p>
+        {% csrf_token %}
+        {{ new_subscription_form }}
+        <input type="submit" value="Create">
+      </form>
+    {% endif %}
     <h2>Agreements</h2>
     <table>
       {% for agreement in object.agreement_set.all %}
@@ -83,13 +81,13 @@
     {% endif %}
     <h2>Donations</h2>
     <table>
-      {% for donation in object.donation_set.all %}
+      {% for donation in donations %}
         <tr>
           <td>{{ donation.created }}</td>
-          <td>{{ donation.get_reward_display }}</td>
-          <td>{{ donation.get_amount }} EUR</td>
+          <td>{{ donation.donation_subscription.package.donation_reward_display }}</td>
+          <td>{{ donation.get_donation_amount }} EUR</td>
           <td>
-            <a href="{% url 'admin:weblate_web_donation_change' object_id=donation.pk %}">Edit</a>
+            <a href="{% url 'admin:weblate_web_service_change' object_id=donation.pk %}">Edit</a>
           </td>
         </tr>
       {% endfor %}

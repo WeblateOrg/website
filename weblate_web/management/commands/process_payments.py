@@ -20,9 +20,8 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.utils import timezone
 
-from weblate_web.models import Donation, UnprocessablePaymentError, process_payment
+from weblate_web.models import UnprocessablePaymentError, process_payment
 from weblate_web.payments.backends import FioBank
 from weblate_web.payments.models import Payment
 
@@ -43,7 +42,6 @@ class Command(BaseCommand):
                 FioBank.fetch_payments(from_date=options["from_date"])
         with transaction.atomic():
             self.pending()
-        self.active()
 
     def pending(self) -> None:
         # Process pending ones
@@ -56,10 +54,3 @@ class Command(BaseCommand):
                 process_payment(payment)
             except UnprocessablePaymentError:
                 self.stderr.write(f"Could not process payment: {payment}")
-
-    @staticmethod
-    def active() -> None:
-        # Adjust active flag
-        Donation.objects.filter(active=True, expires__lt=timezone.now()).update(
-            active=False
-        )

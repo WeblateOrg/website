@@ -24,7 +24,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext
 
 from weblate_web.invoices.models import Currency, InvoiceKind
-from weblate_web.models import REWARD_LEVELS, REWARDS, Donation, Package, Service
+from weblate_web.models import REWARD_LEVELS, REWARDS, Package, Service
 from weblate_web.payments.backends import list_backends
 from weblate_web.payments.models import RECURRENCE_CHOICES
 
@@ -92,20 +92,20 @@ class DonateForm(forms.Form):
 
 class EditNameForm(forms.ModelForm):
     class Meta:
-        model = Donation
-        fields = ("link_text",)
+        model = Service
+        fields = ("donation_link_text",)
 
 
 class EditLinkForm(forms.ModelForm):
     class Meta:
-        model = Donation
-        fields = ("link_text", "link_url")
+        model = Service
+        fields = ("donation_link_text", "donation_link_url")
 
 
 class EditImageForm(forms.ModelForm):
     class Meta:
-        model = Donation
-        fields = ("link_text", "link_url", "link_image")
+        model = Service
+        fields = ("donation_link_text", "donation_link_url", "donation_link_image")
 
 
 class EditDiscoveryForm(forms.ModelForm):

@@ -75,7 +75,7 @@ class Command(BaseCommand):
             self.stdout.write(f"Updating user {user['login']}")
 
     def get_customer_service(self, customer: Customer) -> tuple[Service, Subscription]:
-        services = customer.service_set.all()
+        services = list(customer.service_set.customer_services())
         if len(services) != 1:
             self.stdout.write(
                 f"WARNING: Wrong services count for customer {customer} ({len(services)})"
