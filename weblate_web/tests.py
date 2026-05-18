@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 from io import StringIO
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
 from xml.etree import ElementTree  # noqa: S405
 
@@ -20,7 +20,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.core.signing import dumps
-from django.test import SimpleTestCase, TestCase
+from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -35,6 +35,7 @@ from .exchange_rates import UncachedExchangeRates
 from .hetzner import generate_random_password
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
+from .middleware import SecurityMiddleware
 from .models import (
     Donation,
     Package,
@@ -56,6 +57,7 @@ from .remote import (
 )
 from .templatetags.downloads import downloadlink, filesizeformat
 from .utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
+from .views import PostView, server_error
 
 if TYPE_CHECKING:
     from uuid import UUID
@@ -67,6 +69,17 @@ TEST_SIGNATURE = Path(__file__).parent / "static" / "weblate-black.svg"
 TEST_CONTRIBUTORS = TEST_DATA / "contributors.json"
 TEST_ACTIVITY = TEST_DATA / "activity.json"
 TEST_VIES_WSDL = TEST_DATA / "checkVatService.wsdl"
+JSON_LD_RE = re.compile(
+    rb'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', re.DOTALL
+)
+JSON_LD_NONCE_RE = re.compile(
+    rb'<script[^>]*type="application/ld\+json"[^>]* nonce="([^"]+)"[^>]*>',
+    re.DOTALL,
+)
+CSP_BASE64_VALUE_RE = re.compile(r"^[A-Za-z0-9+/]+={0,2}$")
+SENTRY_SCRIPT_NONCE_RE = re.compile(
+    rb'<script nonce="([^"]+)">\s*Sentry\.init', re.DOTALL
+)
 
 
 @dataclass
@@ -87,6 +100,20 @@ class UpcomingInvoiceCases:
     recovered_invoice_urls: list[str]
     paid_invoice: Invoice
     paid_invoice_urls: list[str]
+
+
+def get_json_ld(response) -> list[dict[str, Any]]:
+    return [
+        cast("dict[str, Any]", json.loads(match))
+        for match in JSON_LD_RE.findall(response.content)
+    ]
+
+
+def get_json_ld_by_type(response, schema_type: str) -> dict[str, Any]:
+    for schema in get_json_ld(response):
+        if schema.get("@type") == schema_type:
+            return schema
+    raise AssertionError(f"Missing JSON-LD schema of type {schema_type}")
 
 
 RATES_JSON = {
@@ -755,6 +782,53 @@ class ViewTestCase(PostTestCase):
         get_contributors(force=True)
         response = self.client.get("/en/about/")
         self.assertContains(response, "comradekingu")
+
+    def test_site_json_ld(self) -> None:
+        response = self.client.get("/en/about/")
+
+        schemas = get_json_ld(response)
+
+        self.assertEqual(len(schemas), 1)
+        self.assertEqual(schemas[0]["@context"], "https://schema.org")
+        graph = schemas[0]["@graph"]
+        types = {item["@type"] for item in graph}
+        self.assertEqual(types, {"Organization", "WebSite"})
+        organization = next(item for item in graph if item["@type"] == "Organization")
+        website = next(item for item in graph if item["@type"] == "WebSite")
+        self.assertEqual(organization["@id"], "https://weblate.org/#organization")
+        self.assertEqual(organization["alternateName"], "Weblate")
+        self.assertEqual(organization["url"], "https://weblate.org/")
+        self.assertEqual(
+            organization["logo"], "https://weblate.org/static/weblate-512.png"
+        )
+        self.assertEqual(website["@id"], "https://weblate.org/#website")
+        self.assertEqual(website["publisher"], {"@id": organization["@id"]})
+
+    @override_settings(DEBUG=False, COMPRESS_ENABLED=False)
+    def test_site_json_ld_csp_nonce(self) -> None:
+        response = self.client.get("/en/about/")
+        nonces = JSON_LD_NONCE_RE.findall(response.content)
+
+        self.assertEqual(len(nonces), 1)
+        nonce = nonces[0].decode()
+        self.assertRegex(nonce, CSP_BASE64_VALUE_RE)
+        self.assertIn(f"'nonce-{nonce}'", response["Content-Security-Policy"])
+
+    @override_settings(DEBUG=False, COMPRESS_ENABLED=False)
+    @patch("sentry_sdk.last_event_id", return_value="test-event-id")
+    def test_server_error_sentry_script_csp_nonce(self, last_event_id) -> None:
+        request = RequestFactory().get("/en/test-error/")
+        response = SecurityMiddleware(server_error)(request)
+        nonces = SENTRY_SCRIPT_NONCE_RE.findall(response.content)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(len(nonces), 1)
+        nonce = nonces[0].decode()
+        self.assertRegex(nonce, CSP_BASE64_VALUE_RE)
+        self.assertIn(f"'nonce-{nonce}'", response["Content-Security-Policy"])
+        self.assertNotIn("'unsafe-inline'", response["Content-Security-Policy"])
+        self.assertContains(response, "test-event-id", status_code=500)
+        last_event_id.assert_called_once_with()
 
     @responses.activate
     def test_activity(self) -> None:
@@ -1810,6 +1884,60 @@ class PostTest(PostTestCase):
         self.assertContains(response, "testbody")
         response = self.client.get(future.get_absolute_url(), follow=True)
         self.assertEqual(response.status_code, 404)
+
+    def test_detail_json_ld(self) -> None:
+        author = User.objects.create_user(username="schema-author", last_name="Author")
+        post = Post.objects.create(
+            title="Schema post",
+            slug="schema-post",
+            body="Post body",
+            timestamp=timezone.now() - timedelta(days=1),
+            author=author,
+            topic="release",
+            summary="Post summary",
+        )
+
+        response = self.client.get(post.get_absolute_url(), follow=True)
+        schema = get_json_ld_by_type(response, "BlogPosting")
+
+        self.assertEqual(response.context["object"], post)
+        self.assertIsInstance(response.context["view"], PostView)
+        self.assertEqual(schema["headline"], post.title)
+        self.assertEqual(schema["description"], post.summary)
+        self.assertEqual(schema["url"], "https://weblate.org/news/archive/schema-post/")
+        self.assertEqual(
+            schema["mainEntityOfPage"],
+            {
+                "@type": "WebPage",
+                "@id": "https://weblate.org/news/archive/schema-post/",
+            },
+        )
+        self.assertEqual(schema["author"], {"@type": "Person", "name": "Author"})
+        self.assertEqual(
+            schema["publisher"], {"@id": "https://weblate.org/#organization"}
+        )
+        self.assertEqual(schema["isPartOf"], {"@id": "https://weblate.org/#website"})
+        self.assertEqual(schema["articleSection"], "Release")
+        self.assertEqual(schema["datePublished"], schema["dateModified"])
+        self.assertEqual(schema["inLanguage"], "en")
+
+    def test_detail_json_ld_escapes_script_content(self) -> None:
+        payload = "</script><img src=x onerror=prompt(document.domain)>"
+        post = Post.objects.create(
+            title=payload,
+            slug="xss-schema",
+            body="safe",
+            timestamp=timezone.now() - timedelta(days=1),
+            summary=payload,
+        )
+
+        response = self.client.get(post.get_absolute_url(), follow=True)
+        schema = get_json_ld_by_type(response, "BlogPosting")
+
+        self.assertNotContains(response, payload)
+        self.assertNotContains(response, "<img src=x")
+        self.assertEqual(schema["headline"], payload)
+        self.assertEqual(schema["description"], payload)
 
     def test_archive_escapes_title_and_summary(self) -> None:
         payload = '"><img src=x onerror=prompt(document.domain)>'

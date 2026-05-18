@@ -23,11 +23,12 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import SimpleLazyObject
-from django.utils.translation import override
+from django.utils.translation import get_language, override
 
 from weblate_web.invoices.models import BANK_ACCOUNTS, Currency
 from weblate_web.models import Donation, Package, PackageCategory
 from weblate_web.remote import get_activity, get_changes, get_contributors, get_release
+from weblate_web.schema import get_site_schema
 
 from .const import (
     COMPANY_ADDRESS,
@@ -110,4 +111,5 @@ def weblate_web(request):
         "company_id": COMPANY_ID,
         "company_duns": COMPANY_DUNS,
         "company_pic": COMPANY_PIC,
+        "schema_json_ld": [get_site_schema(get_language())],
     }

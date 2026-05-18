@@ -17,6 +17,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from base64 import b64encode
+from secrets import token_bytes
+
 from django.conf import settings
 from django.utils.translation import get_language
 from weblate_language_data.docs import DOCUMENTATION_LANGUAGES
@@ -52,6 +55,7 @@ class SecurityMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        request.csp_nonce = b64encode(token_bytes(16)).decode("ascii")
         response = self.get_response(request)
 
         # No CSP for debug mode (to allow djdt or error pages)
@@ -59,7 +63,7 @@ class SecurityMiddleware:
             return response
 
         style = ["'self'"]
-        script = ["'self'"]
+        script = ["'self'", f"'nonce-{request.csp_nonce}'"]
         connect = ["'self'"]
         image = ["'self'", "data:"]
         font = ["'self'"]
@@ -69,8 +73,6 @@ class SecurityMiddleware:
         script.append("browser.sentry-cdn.com")
         connect.append("de.sentry.io")
         script.append("de.sentry.io")
-        if response.status_code == 500:
-            script.append("'unsafe-inline'")
 
         # Hosted Weblate widget
         image.append("hosted.weblate.org")

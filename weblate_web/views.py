@@ -89,6 +89,7 @@ from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data
 from weblate_web.remote import get_activity
+from weblate_web.schema import get_blog_post_schema
 from weblate_web.utils import (
     AUTO_ORIGIN,
     FOSDEM_ORIGIN,
@@ -895,12 +896,14 @@ class PostView(DetailView):
         return result
 
     def get_context_data(self, **kwargs):
-        kwargs["related"] = (
+        context = super().get_context_data(**kwargs)
+        context["related"] = (
             Post.objects.filter(topic=self.object.topic)
             .exclude(pk=self.object.pk)
             .order_by("-timestamp")[:3]
         )
-        return kwargs
+        context["extra_schema_json_ld"] = [get_blog_post_schema(self.object)]
+        return context
 
 
 # pylint: disable=unused-argument
