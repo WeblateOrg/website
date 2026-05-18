@@ -262,7 +262,7 @@ def process_donation(payment: Payment) -> Service:
     if payment.repeat:
         # Update existing
         subscription = Subscription.objects.donations().get(
-            payment=payment.repeat.pk,
+            payment=payment.repeat,
         )
         payment.start = subscription.expires
         subscription.expires += get_period_delta(payment.repeat.recurring)
@@ -276,13 +276,13 @@ def process_donation(payment: Payment) -> Service:
         if donation_subscription is None:
             raise ValueError("Donation service is missing a subscription")
         if donation_subscription.payment:
-            donation_subscription.pastpayments_set.create(
-                payment=donation_subscription.payment
+            add_subscription_past_payments(
+                donation_subscription, donation_subscription.payment
             )
         payment.start = donation_subscription.expires
         donation_subscription.expires += get_period_delta(payment.recurring or "y")
         payment.end = donation_subscription.expires
-        donation_subscription.payment = payment.pk
+        donation_subscription.payment = payment
         donation_subscription.enabled = True
         donation_subscription.save()
     else:
@@ -304,7 +304,7 @@ def process_donation(payment: Payment) -> Service:
         )
         Subscription.objects.create(
             service=donation,
-            payment=payment.pk,
+            payment=payment,
             package=get_donation_package(reward),
             expires=expires,
         )
@@ -324,7 +324,7 @@ def get_service(payment: Payment, customer: Customer):
 
 
 def process_repeated_payment(payment: Payment, repeated: Payment) -> Subscription:
-    subscription = Subscription.objects.get(payment=repeated.pk)
+    subscription = Subscription.objects.get(payment=repeated)
     payment.start = subscription.expires
     subscription.expires += get_period_delta(repeated.recurring)
     payment.end = subscription.expires
@@ -335,11 +335,11 @@ def process_repeated_payment(payment: Payment, repeated: Payment) -> Subscriptio
 def process_renewal_payment(payment: Payment) -> Subscription:
     subscription = Subscription.objects.get(pk=payment.extra["subscription"])
     if subscription.payment:
-        subscription.pastpayments_set.create(payment=subscription.payment)
+        add_subscription_past_payments(subscription, subscription.payment)
     payment.start = subscription.expires
     subscription.expires += get_period_delta(subscription.package.get_repeat())
     payment.end = subscription.expires
-    subscription.payment = payment.pk
+    subscription.payment = payment
     subscription.save()
     return subscription
 
@@ -363,10 +363,10 @@ def process_new_payment(payment: Payment) -> Subscription:
         # Package upgrade / downgrade
         subscription = service.hosted_subscriptions[0]
         if subscription.payment:
-            subscription.pastpayments_set.create(payment=subscription.payment)
+            add_subscription_past_payments(subscription, subscription.payment)
         subscription.package = package
         subscription.expires += get_period_delta(repeat)
-        subscription.payment = payment.pk
+        subscription.payment = payment
         subscription.save()
     else:
         if start_date := payment.extra.get("start_date"):
@@ -381,7 +381,7 @@ def process_new_payment(payment: Payment) -> Subscription:
         # Create new
         subscription = Subscription.objects.create(
             service=service,
-            payment=payment.pk,
+            payment=payment,
             package=package,
             expires=expires,
         )
@@ -1136,8 +1136,17 @@ class SubscriptionQuerySet(models.QuerySet["Subscription"]):
 
 class Subscription(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.PROTECT)
-    # TODO: should use foreign key
-    payment = models.UUIDField(blank=True, null=True)
+    payment = models.ForeignKey(
+        Payment, on_delete=models.deletion.RESTRICT, blank=True, null=True
+    )
+    past_payments: models.ManyToManyField[Payment, SubscriptionPastPayment] = (
+        models.ManyToManyField(
+            Payment,
+            through="SubscriptionPastPayment",
+            blank=True,
+            related_name="past_subscription_set",
+        )
+    )
     package = models.ForeignKey(Package, on_delete=models.deletion.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
@@ -1190,17 +1199,19 @@ class Subscription(models.Model):
     def payment_obj(self) -> Payment:
         if self.payment is None:
             raise ValueError("Missing payment!")
-        return Payment.objects.get(pk=self.payment)
+        return self.payment
 
     def list_payments(self):
-        # pylint: disable=no-member
-        past = set(self.pastpayments_set.values_list("payment", flat=True))
-        query = Q(pk=self.payment)
+        past = set(self.past_payments.values_list("pk", flat=True))
+        query = Q()
+        if self.payment_id:
+            query |= Q(pk=self.payment_id)
+            query |= Q(repeat_id=self.payment_id)
         if past:
             query |= Q(pk__in=past)
-            query |= Q(repeat__pk__in=past)
-        if self.payment:
-            query |= Q(repeat__pk=self.payment)
+            query |= Q(repeat_id__in=past)
+        if not query.children:
+            return Payment.objects.none()
         return Payment.objects.filter(query).distinct()
 
     def send_notification(self, notification: str) -> None:
@@ -1398,19 +1409,36 @@ class Subscription(models.Model):
         return self.package.price
 
 
-class PastPayments(models.Model):
-    subscription = models.ForeignKey(
-        Subscription, on_delete=models.deletion.PROTECT, null=True, blank=True
-    )
-    # TODO: should use foreign key
-    payment = models.UUIDField()
+class SubscriptionPastPayment(models.Model):
+    subscription = models.ForeignKey(Subscription, on_delete=models.deletion.CASCADE)
+    payment = models.ForeignKey(Payment, on_delete=models.deletion.RESTRICT)
 
     class Meta:
-        verbose_name = "Past payment"
-        verbose_name_plural = "Past payments"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("subscription", "payment"),
+                name="unique_subscription_past_payment",
+            )
+        ]
+        verbose_name = "Past subscription payment"
+        verbose_name_plural = "Past subscription payments"
 
     def __str__(self) -> str:
         return f"{self.subscription}: {self.payment}"
+
+
+def add_subscription_past_payments(
+    subscription: Subscription, *payments: Payment
+) -> None:
+    if not payments:
+        return
+    SubscriptionPastPayment.objects.bulk_create(
+        [
+            SubscriptionPastPayment(subscription=subscription, payment=payment)
+            for payment in payments
+        ],
+        ignore_conflicts=True,
+    )
 
 
 class Report(models.Model):

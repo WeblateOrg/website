@@ -5,10 +5,12 @@ import re
 from dataclasses import dataclass
 from datetime import date, timedelta
 from decimal import Decimal
+from importlib import import_module
 from io import StringIO
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
+from uuid import uuid4
 from xml.etree import ElementTree  # noqa: S405
 
 import responses
@@ -22,6 +24,7 @@ from django.core.management import call_command
 from django.core.signing import dumps
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
+from django.db.models.deletion import RestrictedError
 from django.test import RequestFactory, SimpleTestCase, TestCase, TransactionTestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -47,6 +50,7 @@ from .models import (
     Service,
     ServiceKind,
     Subscription,
+    add_subscription_past_payments,
     get_donation_package,
     get_donation_reward_package_name,
     sync_packages,
@@ -86,6 +90,16 @@ CSP_BASE64_VALUE_RE = re.compile(r"^[A-Za-z0-9+/]+={0,2}$")
 SENTRY_SCRIPT_NONCE_RE = re.compile(
     rb'<script nonce="([^"]+)">\s*Sentry\.init', re.DOTALL
 )
+
+
+def migrate_to_current_weblate_web_head(executor: MigrationExecutor) -> None:
+    executor.migrate(
+        [
+            node
+            for node in executor.loader.graph.leaf_nodes()
+            if node[0] == "weblate_web"
+        ]
+    )
 
 
 @dataclass
@@ -1061,7 +1075,7 @@ class FakturaceTestCase(UserTestCase):
             user=user,
             state=Payment.PROCESSED,
             customer=customer,
-        )[0].pk
+        )[0]
         subscription.save(update_fields=["payment"])
         return service
 
@@ -1126,7 +1140,7 @@ class FakturaceTestCase(UserTestCase):
             customer=customer,
             extra={"subscription": subscription.pk},
             state=Payment.PROCESSED,
-        )[0].pk
+        )[0]
         subscription.save(update_fields=["payment"])
         return service
 
@@ -1143,7 +1157,7 @@ class DonationMigration0049Test(TransactionTestCase):
 
     def tearDown(self) -> None:
         self.executor = MigrationExecutor(connection)
-        self.executor.migrate(self.migrate_to)
+        migrate_to_current_weblate_web_head(self.executor)
         super().tearDown()
 
     def test_donation_rewards_are_migrated_to_subscription_packages(  # noqa: PLR0914
@@ -1238,6 +1252,136 @@ class DonationMigration0049Test(TransactionTestCase):
             subscription_model.objects.get(
                 service__donation_legacy_id=donations[3].pk
             ).pk,
+        )
+
+
+class SubscriptionPaymentMigration0050Test(TransactionTestCase):
+    migrate_from = [("weblate_web", "0049_consolidate_donations")]
+    migrate_to = [("weblate_web", "0050_subscription_payment_fk")]
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.executor = MigrationExecutor(connection)
+        self.executor.migrate(self.migrate_from)
+        self.old_apps = self.executor.loader.project_state(self.migrate_from).apps
+
+    def tearDown(self) -> None:
+        self.executor = MigrationExecutor(connection)
+        migrate_to_current_weblate_web_head(self.executor)
+        super().tearDown()
+
+    def test_subscription_payments_are_migrated_to_relations(self) -> None:
+        package_model = self.old_apps.get_model("weblate_web", "Package")
+        past_payments_model = self.old_apps.get_model("weblate_web", "PastPayments")
+        service_model = self.old_apps.get_model("weblate_web", "Service")
+        subscription_model = self.old_apps.get_model("weblate_web", "Subscription")
+
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country="US",
+        )
+        package = package_model.objects.create(
+            name="migration-test", verbose="Migration test", price=42
+        )
+        service = service_model.objects.create(customer_id=customer.pk)
+        current_payment = Payment.objects.create(
+            customer=customer,
+            amount=100,
+            description="Current payment",
+            state=Payment.PROCESSED,
+        )
+        past_payment = Payment.objects.create(
+            customer=customer,
+            amount=50,
+            description="Past payment",
+            state=Payment.PROCESSED,
+        )
+        subscription = subscription_model.objects.create(
+            service_id=service.pk,
+            package_id=package.pk,
+            payment=current_payment.pk,
+            expires=timezone.now(),
+        )
+        past_payments_model.objects.create(
+            subscription_id=subscription.pk,
+            payment=past_payment.pk,
+        )
+
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.migrate_to)
+        new_apps = executor.loader.project_state(self.migrate_to).apps
+        subscription_model = new_apps.get_model("weblate_web", "Subscription")
+
+        migrated_subscription = subscription_model.objects.get(pk=subscription.pk)
+        self.assertEqual(migrated_subscription.payment_id, current_payment.pk)
+        self.assertEqual(
+            set(migrated_subscription.past_payments.values_list("pk", flat=True)),
+            {past_payment.pk},
+        )
+        with self.assertRaises(LookupError):
+            new_apps.get_model("weblate_web", "PastPayments")
+
+    def test_orphan_payment_references_stop_migration(self) -> None:
+        package_model = self.old_apps.get_model("weblate_web", "Package")
+        past_payments_model = self.old_apps.get_model("weblate_web", "PastPayments")
+        service_model = self.old_apps.get_model("weblate_web", "Service")
+        subscription_model = self.old_apps.get_model("weblate_web", "Subscription")
+        migration = import_module("weblate_web.migrations.0050_subscription_payment_fk")
+        validate_payment_references_migration = (
+            migration.validate_payment_references_migration
+        )
+        self.assertEqual(
+            migration.Migration.operations[0].code,
+            validate_payment_references_migration,
+        )
+
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country="US",
+        )
+        package = package_model.objects.create(
+            name="migration-orphan-test", verbose="Migration orphan test", price=42
+        )
+        service = service_model.objects.create(customer_id=customer.pk)
+        subscription = subscription_model.objects.create(
+            service_id=service.pk,
+            package_id=package.pk,
+            payment=uuid4(),
+            expires=timezone.now(),
+        )
+        past_payments_model.objects.create(
+            subscription_id=subscription.pk,
+            payment=uuid4(),
+        )
+
+        with self.assertRaisesMessage(
+            ValueError, "Can not migrate subscription payment references"
+        ):
+            validate_payment_references_migration(self.old_apps, None)
+        subscription_model.objects.filter(pk=subscription.pk).update(payment=None)
+        past_payments_model.objects.filter(subscription_id=subscription.pk).delete()
+
+    def test_format_missing_payments_suffix_only_for_more_than_ten(self) -> None:
+        migration = import_module("weblate_web.migrations.0050_subscription_payment_fk")
+        payment_ids = [uuid4() for _unused in range(11)]
+
+        self.assertEqual(
+            migration.format_missing_payments(payment_ids[:10]),
+            ", ".join(str(payment_id) for payment_id in payment_ids[:10]),
+        )
+        self.assertEqual(
+            migration.format_missing_payments(payment_ids),
+            f"{', '.join(str(payment_id) for payment_id in payment_ids[:10])}, ...",
         )
 
 
@@ -2015,7 +2159,7 @@ class PaymentTest(FakturaceTestCase):
             service.subscription_set.create(
                 package=get_donation_package(2),
                 expires=timezone.now() + relativedelta(years=1),
-                payment=create_payment(user=user, customer=customer)[0].pk,
+                payment=create_payment(user=user, customer=customer)[0],
             )
             self.assertContains(self.client.get(reverse("user")), "My donations")
 
@@ -2333,6 +2477,82 @@ class APITest(UserTestCase):
             headers={"user-agent": "Weblate/1.2.3"},
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_hosted_links_payments_idempotently(self) -> None:
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        package = Package.objects.create(
+            name="shared:test", verbose="Test package", price=42
+        )
+        customer = Customer.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
+        )
+        initial_payment = Payment.objects.create(
+            customer=customer,
+            amount=100,
+            description="Initial hosted payment",
+            extra={"billing": 42},
+            end=date(2025, 1, 1),
+        )
+        payload = {
+            "billing": 42,
+            "package": "shared:test",
+            "projects": 1,
+            "languages": 1,
+            "source_strings": 1,
+            "words": 10,
+            "components": 1,
+            "users": ["hosted-user"],
+        }
+
+        response = self.client.post(
+            "/api/hosted/",
+            {
+                "payload": dumps(
+                    payload,
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.hosted",
+                )
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+        current_payment = Payment.objects.create(
+            customer=customer,
+            amount=200,
+            description="Current hosted payment",
+            extra={"billing": 42},
+            end=date(2026, 1, 1),
+        )
+
+        for _unused in range(2):
+            response = self.client.post(
+                "/api/hosted/",
+                {
+                    "payload": dumps(
+                        payload,
+                        key=settings.PAYMENT_SECRET,
+                        salt="weblate.hosted",
+                    )
+                },
+                headers={"user-agent": "Weblate/1.2.3"},
+            )
+            self.assertEqual(response.status_code, 200)
+
+        subscription = Service.objects.get(hosted_billing=42).subscription_set.get()
+        self.assertEqual(subscription.package, package)
+        self.assertEqual(subscription.payment, current_payment)
+        self.assertEqual(subscription.expires.date(), current_payment.end)
+        self.assertEqual(
+            set(subscription.past_payments.values_list("pk", flat=True)),
+            {initial_payment.pk},
+        )
 
     def test_hosted_invalid(self) -> None:
         response = self.client.post("/api/hosted/", {"payload": dumps({}, key="dummy")})
@@ -2915,21 +3135,15 @@ class ExpiryTest(FakturaceTestCase):
         )
         self.assertNotIn("Your donation on weblate.org", mails[0].body)
 
-    def test_expiring_subscription_missing_payment_sends_missing_notice(self) -> None:
+    def test_subscription_payment_delete_is_restricted(self) -> None:
         service = self.create_service(years=0, days=-7)
         subscription = service.subscription_set.get()
         self.assertIsNotNone(subscription.payment)
-        payment_id = cast("UUID", subscription.payment)
-        Payment.objects.filter(pk=payment_id).delete()
-
-        RecurringPaymentsCommand.notify_expiry(force_summary=True)
-
-        mails = self.assert_notifications(
-            "Expiring subscriptions on weblate.org",
-            "Your expired payment on weblate.org",
-            "Your expired payment on weblate.org",
-        )
-        self.assertIn("Your subscription on weblate.org is expired", mails[0].body)
+        payment = cast("Payment", subscription.payment)
+        with self.assertRaises(RestrictedError):
+            payment.delete()
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.payment, payment)
 
     def test_expired_subscription_notify_user_monthly_after_two_months(self) -> None:
         self.create_service(years=0, days=-62, recurring="")
@@ -3068,8 +3282,8 @@ class ServiceTest(FakturaceTestCase):
         donation = self.create_donation(years=0, days=-2, reward=3)
         subscription = cast("Subscription", donation.donation_subscription)
         self.assertIsNotNone(subscription.payment)
-        payment_id = cast("UUID", subscription.payment)
-        Payment.objects.filter(pk=payment_id).update(amount=123)
+        payment = cast("Payment", subscription.payment)
+        Payment.objects.filter(pk=payment.pk).update(amount=123)
 
         with patch.object(
             RecurringPaymentsCommand, "peform_payment"
@@ -3085,6 +3299,36 @@ class ServiceTest(FakturaceTestCase):
                 "end_date": subscription.expires,
                 "extra": {"donation_service": donation.pk},
             },
+        )
+
+    def test_past_subscription_payment_delete_is_restricted(self) -> None:
+        service = self.create_service()
+        subscription = service.subscription_set.get()
+        past_payment = create_payment(
+            user=service.customer.users.get(),
+            customer=service.customer,
+            state=Payment.PROCESSED,
+        )[0]
+        subscription.past_payments.add(past_payment)
+
+        with self.assertRaises(RestrictedError):
+            past_payment.delete()
+
+    def test_add_subscription_past_payments_is_idempotent(self) -> None:
+        service = self.create_service()
+        subscription = service.subscription_set.get()
+        past_payment = create_payment(
+            user=service.customer.users.get(),
+            customer=service.customer,
+            state=Payment.PROCESSED,
+        )[0]
+
+        add_subscription_past_payments(subscription, past_payment)
+        add_subscription_past_payments(subscription, past_payment)
+
+        self.assertEqual(
+            list(subscription.past_payments.values_list("pk", flat=True)),
+            [past_payment.pk],
         )
 
     def test_recurring_service_payment_uses_package_price_and_subscription_extra(

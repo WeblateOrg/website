@@ -8,7 +8,12 @@ from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
-from weblate_web.admin import PostAdmin
+from weblate_web.admin import (
+    PostAdmin,
+    SubscriptionAdmin,
+    SubscriptionPastPaymentAdmin,
+    SubscriptionPastPaymentInline,
+)
 from weblate_web.admin_app import CustomAdminConfig
 from weblate_web.admin_site import UserAutocompleteJsonView
 from weblate_web.invoices.admin import InvoiceAdmin
@@ -17,7 +22,7 @@ from weblate_web.invoices.models import (
     InvoiceCategory,
     InvoiceKind,
 )
-from weblate_web.models import Post
+from weblate_web.models import Post, Subscription, SubscriptionPastPayment
 from weblate_web.payments.models import Customer
 
 
@@ -73,6 +78,19 @@ class AdminSiteTestCase(TestCase):
         # Check that User results use the custom format
         self.assertGreater(len(results), 0)
         self.assertIn("<", results[0]["text"])
+
+    def test_subscription_past_payment_admin_is_manageable(self) -> None:
+        subscription_admin = admin.site._registry[Subscription]  # pylint: disable=protected-access
+        past_payment_admin = admin.site._registry[SubscriptionPastPayment]  # pylint: disable=protected-access
+
+        self.assertIsInstance(subscription_admin, SubscriptionAdmin)
+        self.assertNotIn("past_payments", subscription_admin.autocomplete_fields)
+        self.assertIn(SubscriptionPastPaymentInline, subscription_admin.inlines)
+        self.assertIsInstance(past_payment_admin, SubscriptionPastPaymentAdmin)
+        self.assertEqual(
+            past_payment_admin.autocomplete_fields,
+            ("subscription", "payment"),
+        )
 
 
 class PostAdminTestCase(TestCase):

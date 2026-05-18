@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 import random
 import re
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 from typing import TYPE_CHECKING
 
 import django.views.defaults
@@ -76,6 +76,7 @@ from weblate_web.models import (
     Project,
     Service,
     Subscription,
+    add_subscription_past_payments,
     get_donation_package_verbose,
     get_donation_reward_package_names,
     process_donation,
@@ -252,29 +253,34 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
         service = Service.objects.create(customer=customer, hosted_billing=billing_id)
 
     if payments:
+        package = Package.objects.get(name=payload["package"])
+        expires = (
+            timezone.make_aware(datetime.combine(payments[-1].end, time.max))
+            if payments[-1].end
+            else timezone.now()
+        )
         # Create/update subscription
         subscription = service.subscription_set.get_or_create(
             defaults={
-                "payment": payments[-1].pk,
-                "package": payload["package"],
+                "payment": payments[-1],
+                "package": package,
+                "expires": expires,
             }
         )[0]
-        if subscription.package != payload["package"]:
-            subscription.package = Package.objects.get(name=payload["package"])
+        if subscription.package_id != package.pk:
+            subscription.package = package
             subscription.save(update_fields=["package"])
-        if subscription.payment and subscription.payment != payments[-1].pk:
+        if subscription.payment_id and subscription.payment_id != payments[-1].pk:
             # Include current payment in past payments
-            subscription.pastpayments_set.get_or_create(
-                payment=subscription.payment_obj
-            )
+            add_subscription_past_payments(subscription, subscription.payment_obj)
 
             # Update current subscription payment
-            subscription.payment = payments[-1].pk
-            subscription.save(update_fields=["payment"])
+            subscription.payment = payments[-1]
+            subscription.expires = expires
+            subscription.save(update_fields=["payment", "expires"])
 
         # Link past payments
-        for payment in payments[:-1]:
-            subscription.pastpayments_set.get_or_create(payment=payment.pk)
+        add_subscription_past_payments(subscription, *payments[:-1])
 
     # Link users which are supposed to have access
     for user in payload["users"]:
@@ -699,10 +705,7 @@ def can_download_payment_invoice(
 
     return Service.objects.filter(
         Q(customer__users=user)
-        & (
-            Q(subscription__payment=payment.uuid)
-            | Q(subscription__pastpayments__payment=payment.uuid)
-        )
+        & (Q(subscription__payment=payment) | Q(subscription__past_payments=payment))
     ).exists()
 
 

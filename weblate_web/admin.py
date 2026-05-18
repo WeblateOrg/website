@@ -24,11 +24,11 @@ from django.contrib import admin
 from weblate_web.models import (
     Image,
     Package,
-    PastPayments,
     Post,
     Project,
     Service,
     Subscription,
+    SubscriptionPastPayment,
 )
 
 
@@ -82,6 +82,12 @@ class ServiceAdmin(admin.ModelAdmin):
     )
 
 
+class SubscriptionPastPaymentInline(admin.TabularInline):
+    model = SubscriptionPastPayment
+    autocomplete_fields = ("payment",)
+    extra = 0
+
+
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = (
@@ -102,7 +108,14 @@ class SubscriptionAdmin(admin.ModelAdmin):
         "service__note",
     )
     list_filter = ("enabled",)
-    autocomplete_fields = ("service",)
+    autocomplete_fields = ("service", "payment")
+    inlines = (SubscriptionPastPaymentInline,)
+
+
+@admin.register(SubscriptionPastPayment)
+class SubscriptionPastPaymentAdmin(admin.ModelAdmin):
+    list_display = ("subscription", "payment")
+    autocomplete_fields = ("subscription", "payment")
 
 
 @admin.register(Image)
@@ -140,9 +153,3 @@ class PackageAdmin(admin.ModelAdmin):
     list_filter = ("category", "hidden")
     ordering = ("verbose",)
     search_fields = ("verbose", "name")
-
-
-@admin.register(PastPayments)
-class PastPaymentsAdmin(admin.ModelAdmin):
-    list_display = ["subscription", "payment"]
-    autocomplete_fields = ("subscription",)
