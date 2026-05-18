@@ -25,7 +25,13 @@ from weblate_web.invoices.models import (
 )
 from weblate_web.management.commands.zammad_sync import Command as ZammadSyncCommand
 from weblate_web.management.commands.zammad_sync import InvalidSubscriptionError
-from weblate_web.models import Package, PackageCategory, Service
+from weblate_web.models import (
+    Package,
+    PackageCategory,
+    Service,
+    ServiceKind,
+    get_donation_package,
+)
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.tests import TEST_CUSTOMER, cnb_mock_rates
 from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_client
@@ -1347,6 +1353,42 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertNotContains(response, "Hosted 10k")
         self.assertNotContains(response, "Basic Support")
 
+    def test_service_lists_exclude_donations_and_customer_detail_shows_them(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        service = Service.objects.create(customer=customer)
+        service.subscription_set.create(
+            package=Package.objects.create(
+                name="extended",
+                verbose="Extended Support",
+                price=600,
+                category=PackageCategory.PACKAGE_SUPPORT,
+            ),
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment.pk,
+        )
+        donation = Service.objects.create(
+            customer=customer,
+            kind=ServiceKind.DONATION,
+        )
+        donation.subscription_set.create(
+            package=get_donation_package(3),
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment.pk,
+        )
+
+        response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
+
+        self.assertIn(service, response.context["object_list"])
+        self.assertNotIn(donation, response.context["object_list"])
+
+        response = self.client.get(customer.get_absolute_url())
+
+        self.assertContains(response, "Logo and link on the Weblate website")
+        self.assertEqual(list(response.context["services"]), [service])
+        self.assertEqual(list(response.context["donations"]), [donation])
+
 
 class MockPaginatedResults(UserList):
     """Mock for zammad_py paginated results supporting next_page()."""
@@ -1692,6 +1734,26 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
 
         with self.assertRaises(InvalidSubscriptionError):
             cmd.get_customer_service(customer)
+
+    def test_get_customer_service_ignores_donations(self):
+        """Test donations do not count as customer services."""
+        customer, service = self.create_customer_with_service()
+        donation = Service.objects.create(
+            customer=customer,
+            kind=ServiceKind.DONATION,
+        )
+        donation.subscription_set.create(
+            package=get_donation_package(),
+            expires=timezone.now() + timedelta(days=365),
+        )
+
+        cmd = ZammadSyncCommand()
+        cmd.stdout = OutputWrapper(StringIO())
+
+        result_service, result_subscription = cmd.get_customer_service(customer)
+
+        self.assertEqual(result_service, service)
+        self.assertEqual(result_subscription, service.subscription_set.get())
 
     def test_update_zammad_id(self):
         """Test update_zammad_id updates customer's zammad_id."""

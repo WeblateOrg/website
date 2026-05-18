@@ -22,7 +22,6 @@ from __future__ import annotations
 from django.contrib import admin
 
 from weblate_web.models import (
-    Donation,
     Image,
     Package,
     PastPayments,
@@ -31,25 +30,6 @@ from weblate_web.models import (
     Service,
     Subscription,
 )
-
-
-@admin.register(Donation)
-class DonationAdmin(admin.ModelAdmin):
-    list_display = (
-        "customer",
-        "reward",
-        "created",
-        "expires",
-        "get_amount",
-        "link_text",
-        "link_url",
-        "active",
-    )
-    list_filter = [
-        "reward",
-        "active",
-    ]
-    autocomplete_fields = ("customer",)
 
 
 @admin.register(Project)
@@ -76,7 +56,7 @@ class ServiceAdmin(admin.ModelAdmin):
         "discoverable",
         "backup_size",
     ]
-    list_filter = ("status", "discoverable")
+    list_filter = ("kind", "status", "discoverable")
     search_fields = (
         "customer__email",
         "customer__users__email",
@@ -86,6 +66,8 @@ class ServiceAdmin(admin.ModelAdmin):
         "site_url",
         "note",
         "maintenance_window",
+        "donation_link_text",
+        "donation_link_url",
     )
     date_hierarchy = "created"
     autocomplete_fields = ("customer",)

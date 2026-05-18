@@ -70,13 +70,14 @@ from weblate_web.legal.models import Agreement, AgreementKind
 from weblate_web.models import (
     REWARD_LEVELS,
     TOPIC_DICT,
-    Donation,
     Package,
     PackageCategory,
     Post,
     Project,
     Service,
     Subscription,
+    get_donation_package_verbose,
+    get_donation_reward_package_names,
     process_donation,
     process_subscription,
 )
@@ -151,9 +152,9 @@ def get_page_range(page_obj: Page) -> list[int | str]:
 
 
 def get_customer(
-    request: AuthenticatedHttpRequest, obj: Service | Donation | None = None
+    request: AuthenticatedHttpRequest, obj: Service | None = None
 ) -> Customer:
-    # Get from Service / Donation objects
+    # Get from service objects
     if obj and obj.pk and obj.customer:
         return obj.customer
 
@@ -635,9 +636,8 @@ class DonateView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        tmp = Donation(reward=int(data["reward"] or "0"))
         with override("en"):
-            description = tmp.get_payment_description()
+            description = get_donation_package_verbose(int(data["reward"] or "0"))
         payment = Payment.objects.create(
             amount=data["amount"],
             amount_fixed=True,
@@ -677,7 +677,8 @@ def process_payment(request):
         else:
             messages.success(request, gettext("Thank you for your donation."))
             donation = process_donation(payment)
-            if donation.reward:
+            subscription = donation.donation_subscription
+            if subscription is not None and subscription.package.donation_reward:
                 return redirect(donation)
 
     return redirect(reverse("user"))
@@ -696,19 +697,13 @@ def can_download_payment_invoice(
     ):
         return True
 
-    return (
-        Donation.objects.filter(
-            Q(customer__users=user)
-            & (Q(payment=payment.uuid) | Q(pastpayments__payment=payment.uuid))
-        ).exists()
-        or Service.objects.filter(
-            Q(customer__users=user)
-            & (
-                Q(subscription__payment=payment.uuid)
-                | Q(subscription__pastpayments__payment=payment.uuid)
-            )
-        ).exists()
-    )
+    return Service.objects.filter(
+        Q(customer__users=user)
+        & (
+            Q(subscription__payment=payment.uuid)
+            | Q(subscription__pastpayments__payment=payment.uuid)
+        )
+    ).exists()
 
 
 @login_required
@@ -764,8 +759,15 @@ def download_payment_invoice(request: AuthenticatedHttpRequest, pk):
 @require_POST
 @login_required
 def disable_repeat(request, pk):
-    donation = get_object_or_404(Donation, pk=pk, customer__users=request.user)
-    payment = donation.payment_obj
+    donation = get_object_or_404(
+        Service.objects.donations(),
+        pk=pk,
+        customer__users=request.user,
+    )
+    subscription = donation.donation_subscription
+    if subscription is None:
+        raise Http404("Nothing to disable")
+    payment = subscription.payment_obj
     if payment is None:
         raise Http404("Nothing to disable")
     payment.recurring = ""
@@ -780,7 +782,8 @@ class EditLinkView(UpdateView):
     request: AuthenticatedHttpRequest
 
     def get_form_class(self):
-        reward = self.object.reward
+        subscription = self.object.donation_subscription
+        reward = 0 if subscription is None else subscription.package.donation_reward
         if reward == 2:
             return EditLinkForm
         if reward == 3:
@@ -788,12 +791,19 @@ class EditLinkView(UpdateView):
         return EditNameForm
 
     def get_queryset(self):
-        return Donation.objects.filter(customer__users=self.request.user, reward__gt=0)
+        return (
+            Service.objects.donations()
+            .filter(
+                customer__users=self.request.user,
+                subscription__package__name__in=get_donation_reward_package_names(),
+            )
+            .distinct()
+        )
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
-        link_url = form.cleaned_data.get("link_url", "N/A")
-        link_text = form.cleaned_data.get("link_text", "N/A")
+        link_url = form.cleaned_data.get("donation_link_url", "N/A")
+        link_text = form.cleaned_data.get("donation_link_text", "N/A")
         mail_admins(
             "Weblate: link changed",
             f"New link: {link_url}\nNew text: {link_text}\n",
@@ -809,7 +819,9 @@ class EditDiscoveryView(UpdateView):
     request: AuthenticatedHttpRequest
 
     def get_queryset(self):
-        return Service.objects.filter(customer__users=self.request.user)
+        return Service.objects.customer_services().filter(
+            customer__users=self.request.user,
+        )
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
@@ -1022,15 +1034,20 @@ def subscription_pay(request, pk):
 @require_POST
 @login_required
 def donate_pay(request, pk):
-    donation = get_object_or_404(Donation, pk=pk, customer__users=request.user)
-    if donation.payment_obj is None:
+    donation = get_object_or_404(
+        Service.objects.donations(),
+        pk=pk,
+        customer__users=request.user,
+    )
+    subscription = donation.donation_subscription
+    if subscription is None or subscription.payment is None:
         raise Http404("Nothing to pay")
     with override("en"):
         payment = Payment.objects.create(
-            amount=donation.get_amount(),
-            description=donation.get_payment_description(),
-            recurring=donation.payment_obj.recurring,
-            extra={"donation": donation.pk, "category": "donate"},
+            amount=donation.get_donation_amount(),
+            description=donation.get_donation_payment_description(),
+            recurring=subscription.payment_obj.recurring,
+            extra={"donation_service": donation.pk, "category": "donate"},
             customer=get_customer(request, donation),
             amount_fixed=True,
         )
@@ -1069,13 +1086,14 @@ class DiscoverView(TemplateView):
         services: Iterable[Service]
         projects: Iterable[Project]
 
-        services = Service.objects.filter(discoverable=True).prefetch_related(
-            "project_set"
+        discoverable_services = Service.objects.customer_services().filter(
+            discoverable=True
         )
+        services = discoverable_services.prefetch_related("project_set")
         query = self.request.GET.get("q", "").strip().lower()
         if query:
             projects = Project.objects.filter(
-                service__discoverable=True
+                service__in=discoverable_services,
             ).prefetch_related("service")
             if connection.vendor == "mysql":
                 projects = projects.filter(name__search=query.replace("*", ""))
@@ -1104,9 +1122,11 @@ class DiscoverView(TemplateView):
         data["query"] = query
         if self.request.user.is_authenticated:
             data["user_services"] = set(
-                Service.objects.filter(customer__users=self.request.user).values_list(
-                    "pk", flat=True
+                Service.objects.customer_services()
+                .filter(
+                    customer__users=self.request.user,
                 )
+                .values_list("pk", flat=True)
             )
         else:
             data["user_services"] = set()
@@ -1121,11 +1141,11 @@ class UserView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data["user_services"] = Service.objects.filter(
-            customer__users=self.request.user
+        data["user_services"] = Service.objects.customer_services().filter(
+            customer__users=self.request.user,
         )
-        data["user_donations"] = Donation.objects.filter(
-            customer__users=self.request.user
+        data["user_donations"] = Service.objects.donations().filter(
+            customer__users=self.request.user,
         )
         return data
 

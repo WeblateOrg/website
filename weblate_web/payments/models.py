@@ -102,8 +102,12 @@ class CustomerQuerySet(models.QuerySet["Customer"]):
         return self.filter(users=user).distinct()
 
     def active(self) -> CustomerQuerySet:
+        from weblate_web.models import ServiceKind  # noqa: PLC0415
+
         return self.filter(
-            service__subscription__expires__gte=timezone.now() - timedelta(days=4 * 365)
+            service__kind=ServiceKind.SERVICE,
+            service__subscription__expires__gte=timezone.now()
+            - timedelta(days=4 * 365),
         ).distinct()
 
 
@@ -289,10 +293,15 @@ class Customer(models.Model):
                 }
             )
         if self.upcoming_payment_notification_days == 31 and (
-            self.donation_set.filter(active=True).exists()
+            self.service_set.donations()
+            .filter(
+                subscription__enabled=True,
+                subscription__expires__gte=timezone.now(),
+            )
+            .exists()
             or any(
                 subscription.package.get_repeat() == "y"
-                for service in self.service_set.prefetch_related(
+                for service in self.service_set.customer_services().prefetch_related(
                     "subscription_set__package"
                 )
                 for subscription in service.subscription_set.all()
@@ -440,7 +449,6 @@ class Customer(models.Model):
         other.payment_set.update(customer=self)
         other.invoice_set.update(customer=self)
         other.agreement_set.update(customer=self)
-        other.donation_set.update(customer=self)
         other.service_set.update(customer=self)
         other.interaction_set.update(customer=self)
         users = list(other.users.all())

@@ -26,7 +26,12 @@ from django.utils.functional import SimpleLazyObject
 from django.utils.translation import get_language, override
 
 from weblate_web.invoices.models import BANK_ACCOUNTS, Currency
-from weblate_web.models import Donation, Package, PackageCategory
+from weblate_web.models import (
+    Package,
+    PackageCategory,
+    Service,
+    get_donation_reward_package_name,
+)
 from weblate_web.remote import get_activity, get_changes, get_contributors, get_release
 from weblate_web.schema import get_site_schema
 
@@ -80,7 +85,13 @@ def weblate_web(request):
         "downloads": SimpleLazyObject(get_release),
         "canonical_url": canonical_url,
         "language_urls": language_urls,
-        "donate_links": Donation.objects.filter(active=True, reward=3),
+        "donate_links": Service.objects.donations()
+        .filter(
+            subscription__package__name=get_donation_reward_package_name(3),
+            subscription__enabled=True,
+            subscription__expires__gte=timezone.now(),
+        )
+        .distinct(),
         "activity_sum": sum(get_activity()[-7:]),
         "contributors": SimpleLazyObject(get_contributors),
         "changes": SimpleLazyObject(get_changes),
