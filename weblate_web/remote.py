@@ -31,11 +31,12 @@ from dateutil.parser import parse
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.db.models import F, Q
+from django.db.models import Q
 from django.utils import timezone
 from wlc import Weblate, WeblateException
 
 from weblate_web.payments.models import Customer
+from weblate_web.payments.validators import VAT_VALIDITY_DAYS
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -185,13 +186,12 @@ def get_release(force: bool = False) -> list[PYPIInfo]:
 def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
     customers = Customer.objects.exclude(vat="").exclude(vat=None)
     if not fetch_all:
-        # Fetch data once a week
-        # - entries without validation set once a week (never validated or during migration)
-        # - validated entries two days before expiry to have two attempts to fetch the data
-        weekday = timezone.now().weekday()
-        customers = customers.annotate(idmod=F("id") % 7).filter(
-            (Q(idmod=weekday) & Q(vat_validated=None))
-            | Q(vat_validated__gte=timezone.now() + timedelta(days=2))
+        # Run hourly:
+        # - entries without validation retry every run
+        # - validated entries retry two days before the cached validation expires
+        refresh_after = timezone.now() - timedelta(days=VAT_VALIDITY_DAYS - 2)
+        customers = customers.filter(
+            Q(vat_validated=None) | Q(vat_validated__lte=refresh_after)
         )
 
     for customer in customers.iterator():

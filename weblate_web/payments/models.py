@@ -52,7 +52,12 @@ from weblate_web.const import (
 from weblate_web.utils import FOSDEM_ORIGIN, get_site_url
 
 from .utils import send_notification, validate_email
-from .validators import VAT_VALIDITY_DAYS, validate_vatin, validate_vatin_offline
+from .validators import (
+    VAT_VALIDITY_DAYS,
+    is_vies_transient_validation_error,
+    validate_vatin,
+    validate_vatin_offline,
+)
 
 if TYPE_CHECKING:
     from django_countries.fields import Country
@@ -491,8 +496,7 @@ class Customer(models.Model):
         try:
             validate_vatin(self.vat)
         except ValidationError as error:
-            # Log interactive validation error
-            if automated:
+            if automated and not is_vies_transient_validation_error(error):
                 self.interaction_set.create(
                     origin=Interaction.Origin.VIES,
                     summary=error.code or str(error.message),

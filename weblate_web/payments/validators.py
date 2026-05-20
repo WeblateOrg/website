@@ -17,6 +17,10 @@ if TYPE_CHECKING:
     from django_stubs_ext import StrOrPromise
 
 VAT_VALIDITY_DAYS = 7
+RETRYABLE_VIES_FAULT_MESSAGES = frozenset(
+    {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
+)
+RETRYABLE_VIES_FAULT_CODES = frozenset({"soap:Server", "other:Error", "env:Server"})
 
 
 class VatinValidation(TypedDict):
@@ -28,6 +32,25 @@ class VatinValidation(TypedDict):
     address: NotRequired[str]
     vatNumber: NotRequired[str]
     requestDate: NotRequired[date]
+
+
+def is_vies_transient_error(vies_data: VatinValidation) -> bool:
+    return (
+        vies_data.get("fault_message") in RETRYABLE_VIES_FAULT_MESSAGES
+        or vies_data.get("fault_code") in RETRYABLE_VIES_FAULT_CODES
+    )
+
+
+def is_vies_transient_validation_error(error: ValidationError) -> bool:
+    code = error.code
+    if not isinstance(code, str):
+        return False
+    return any(
+        code.startswith(f"{fault_code}:") for fault_code in RETRYABLE_VIES_FAULT_CODES
+    ) or any(
+        code.endswith(f": {fault_message}")
+        for fault_message in RETRYABLE_VIES_FAULT_MESSAGES
+    )
 
 
 def cache_vies_data(
@@ -92,14 +115,9 @@ def validate_vatin(value: str | VATIN) -> None:
     validate_vatin_offline(vatin)
 
     if not vies_data["valid"]:
-        retry_errors = {"MS_UNAVAILABLE", "MS_MAX_CONCURRENT_REQ", "TIMEOUT"}
-        retry_codes = {"soap:Server", "other:Error", "env:Server"}
         code = f"{vies_data.get('fault_code')}: {vies_data.get('fault_message')}"
         msg: StrOrPromise
-        if (
-            vies_data.get("fault_message") in retry_errors
-            or vies_data.get("fault_code") in retry_codes
-        ):
+        if is_vies_transient_error(vies_data):
             msg = format_html(
                 '{} <a href="{}" target="_blank">{}</a>',
                 _(
