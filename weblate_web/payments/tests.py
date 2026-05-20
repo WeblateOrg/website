@@ -732,8 +732,9 @@ class VATTest(SimpleTestCase):
             validate_vatin("XX123456")
         with self.assertRaises(ValidationError):
             validate_vatin("CZ123456")
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValidationError) as error:
             validate_vatin("CZ8003280317")
+        self.assertEqual(error.exception.code, "Invalid VAT")
 
     @responses.activate
     def test_cache(self) -> None:
