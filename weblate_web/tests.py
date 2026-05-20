@@ -55,10 +55,12 @@ from .models import (
     get_donation_reward_package_name,
     sync_packages,
 )
+from .payments.validators import VAT_VALIDITY_DAYS
 from .remote import (
     ACTIVITY_URL,
     PYPI_URL,
     WEBLATE_CONTRIBUTORS_URL,
+    fetch_vat_info,
     get_activity,
     get_changes,
     get_contributors,
@@ -1390,6 +1392,19 @@ class PaymentsTest(FakturaceTestCase):
         super().setUp()
         fake_remote()
 
+    def create_vat_customer(self) -> Customer:
+        return Customer.objects.create(
+            email="weblate@example.com",
+            user_id=self.create_user().pk,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
+            vat=f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}",
+        )
+
     def prepare_payment(self):
         with override("en"):
             payment, url, customer_url = create_payment(user=self.create_user())
@@ -1754,6 +1769,77 @@ class PaymentsTest(FakturaceTestCase):
         cnb_mock_rates()
         self.prepare_payment()
         call_command("background_vat")
+
+    def test_prefetch_vat_filtering(self) -> None:
+        now = timezone.now()
+        never_validated = self.create_vat_customer()
+        due = self.create_vat_customer()
+        recent = self.create_vat_customer()
+        Customer.objects.filter(pk=never_validated.pk).update(vat_validated=None)
+        Customer.objects.filter(pk=due.pk).update(
+            vat_validated=now - timedelta(days=VAT_VALIDITY_DAYS - 2, minutes=1)
+        )
+        Customer.objects.filter(pk=recent.pk).update(vat_validated=now)
+
+        with patch.object(
+            Customer, "prepayment_validation", autospec=True
+        ) as prepayment_validation:
+            fetch_vat_info(delay=0)
+
+        self.assertEqual(
+            {call.args[0].pk for call in prepayment_validation.call_args_list},
+            {never_validated.pk, due.pk},
+        )
+        self.assertTrue(
+            all(
+                call.kwargs == {"automated": True}
+                for call in prepayment_validation.call_args_list
+            )
+        )
+
+    def test_prefetch_vat_all(self) -> None:
+        recent = self.create_vat_customer()
+
+        with patch.object(
+            Customer, "prepayment_validation", autospec=True
+        ) as prepayment_validation:
+            fetch_vat_info(fetch_all=True, delay=0)
+
+        self.assertEqual(
+            {call.args[0].pk for call in prepayment_validation.call_args_list},
+            {recent.pk},
+        )
+
+    def test_prefetch_vat_transient_errors_retry_without_interaction(self) -> None:
+        customer = self.create_vat_customer()
+        original_validation = timezone.now() - timedelta(days=VAT_VALIDITY_DAYS)
+        Customer.objects.filter(pk=customer.pk).update(
+            vat_validated=original_validation
+        )
+        error = ValidationError("Temporary VIES failure", code="other:Error: TIMEOUT")
+
+        with patch(
+            "weblate_web.payments.models.validate_vatin", side_effect=error
+        ) as validate:
+            for _attempt in range(2):
+                fetch_vat_info(delay=0)
+
+        customer.refresh_from_db()
+        self.assertEqual(customer.vat_validated, original_validation)
+        self.assertEqual(customer.interaction_set.count(), 0)
+        self.assertEqual(validate.call_count, 2)
+
+    def test_prefetch_vat_invalid_errors_create_interaction(self) -> None:
+        customer = self.create_vat_customer()
+        Customer.objects.filter(pk=customer.pk).update(vat_validated=None)
+
+        with patch(
+            "weblate_web.payments.models.validate_vatin",
+            side_effect=ValidationError("Invalid VAT", code="Invalid VAT"),
+        ):
+            fetch_vat_info(delay=0)
+
+        self.assertEqual(customer.interaction_set.count(), 1)
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_reject(self) -> None:
