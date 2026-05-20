@@ -69,37 +69,60 @@
             </div>
 
             <div class="rewards">
-              <div class="reward big" data-amount="{{ reward_levels.1 }}">
-                <div class="before">{% translate "Selected option" %}</div>
-                <div class="title">{% translate "Name in the list of supporters" %}</div>
-                <p class="unavailable">{% translate "Unavailable for your amount" %}</p>
-                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
-                <a href="#" class="close">⨯</a>
-                <input name="reward" type="radio" value="1" />
-              </div>
-              <div class="reward big" data-amount="{{ reward_levels.2 }}">
-                <div class="before">{% translate "Selected option" %}</div>
-                <div class="title">{% translate "Link in the list of supporters" %}</div>
-                <p class="unavailable">{% translate "Unavailable for your amount" %}</p>
-                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
-                <a href="#" class="close">⨯</a>
-                <input name="reward" type="radio" value="2" />
-              </div>
-              <div class="reward big" data-amount="{{ reward_levels.3 }}">
-                <div class="before">{% translate "Selected option" %}</div>
-                <div class="title">{% translate "Logo and link on the Weblate website" %}</div>
-                <p class="unavailable">{% translate "Unavailable for your amount" %}</p>
-                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
-                <a href="#" class="close">⨯</a>
-                <input name="reward" type="radio" value="3" />
-              </div>
-              <div class="reward fourth checked" data-amount="{{ reward_levels.0 }}">
-                <div class="before">{% translate "Selected option" %}</div>
-                <div class="title">{% translate "No thanks" %}</div>
-                <p>{% translate "Thank you anyway!" %}</p>
-                <a href="#" class="button center choose">{% translate "Choose this" %}</a>
-                <input name="reward" type="radio" value="0" />
-              </div>
+              <button class="reward big"
+                      type="button"
+                      data-amount="{{ reward_levels.1 }}"
+                      data-reward-input="reward-1"
+                      aria-pressed="false">
+                <span class="before">{% translate "Selected option" %}</span>
+                <span class="title">{% translate "Name in the list of supporters" %}</span>
+                <span class="reward-minimum">
+                  {% blocktranslate with minimum=reward_levels.1|price_format context "Donation reward minimal amount" %}From {{ minimum }}{% endblocktranslate %}
+                </span>
+                <span class="unavailable">{% translate "Unavailable for your amount" %}</span>
+                <span class="choose">{% translate "Choose this" %}</span>
+              </button>
+              <input id="reward-1" name="reward" type="radio" value="1" />
+              <button class="reward big"
+                      type="button"
+                      data-amount="{{ reward_levels.2 }}"
+                      data-reward-input="reward-2"
+                      aria-pressed="false">
+                <span class="before">{% translate "Selected option" %}</span>
+                <span class="title">{% translate "Link in the list of supporters" %}</span>
+                <span class="reward-minimum">
+                  {% blocktranslate with minimum=reward_levels.2|price_format context "Donation reward minimal amount" %}From {{ minimum }}{% endblocktranslate %}
+                </span>
+                <span class="unavailable">{% translate "Unavailable for your amount" %}</span>
+                <span class="choose">{% translate "Choose this" %}</span>
+              </button>
+              <input id="reward-2" name="reward" type="radio" value="2" />
+              <button class="reward big"
+                      type="button"
+                      data-amount="{{ reward_levels.3 }}"
+                      data-reward-input="reward-3"
+                      aria-pressed="false">
+                <span class="before">{% translate "Selected option" %}</span>
+                <span class="title">{% translate "Logo and link on the Weblate website" %}</span>
+                <span class="reward-minimum">
+                  {% blocktranslate with minimum=reward_levels.3|price_format context "Donation reward minimal amount" %}From {{ minimum }}{% endblocktranslate %}
+                </span>
+                <span class="unavailable">{% translate "Unavailable for your amount" %}</span>
+                <span class="choose">{% translate "Choose this" %}</span>
+              </button>
+              <input id="reward-3" name="reward" type="radio" value="3" />
+              <button class="reward fourth checked"
+                      type="button"
+                      data-amount="{{ reward_levels.0 }}"
+                      data-reward-input="reward-0"
+                      aria-pressed="true">
+                <span class="before">{% translate "Selected option" %}</span>
+                <span class="title">{% translate "No thanks" %}</span>
+                <span class="reward-minimum">{% translate "Any amount" %}</span>
+                <span class="reward-note">{% translate "Thank you anyway!" %}</span>
+                <span class="choose">{% translate "Choose this" %}</span>
+              </button>
+              <input id="reward-0" name="reward" type="radio" value="0" checked="checked" />
             </div>
             <input type="submit" class="button center" value="{% translate "Continue" %}" />
           </form>

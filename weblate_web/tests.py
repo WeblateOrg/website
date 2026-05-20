@@ -67,6 +67,7 @@ from .remote import (
     get_release,
 )
 from .templatetags.downloads import downloadlink, filesizeformat
+from .templatetags.prices import price_format
 from .utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
 from .views import PostView, server_error
 
@@ -2033,6 +2034,15 @@ class PaymentTest(FakturaceTestCase):
         # Check rewards on page
         response = self.client.get("/en/donate/new/")
         self.assertContains(response, "list of supporters")
+        self.assertContains(response, f"From {price_format(REWARD_LEVELS[1])}")
+        self.assertContains(response, f"From {price_format(REWARD_LEVELS[2])}")
+        self.assertContains(response, f"From {price_format(REWARD_LEVELS[3])}")
+        self.assertContains(response, "Any amount")
+        self.assertContains(response, f'data-amount="{REWARD_LEVELS[1]}"')
+        self.assertContains(response, f'data-amount="{REWARD_LEVELS[2]}"')
+        self.assertContains(response, f'data-amount="{REWARD_LEVELS[3]}"')
+        self.assertContains(response, 'data-reward-input="reward-1"')
+        self.assertNotContains(response, 'class="close"')
 
     def test_manual_backend_not_offered(self) -> None:
         customer = Customer.objects.create(
