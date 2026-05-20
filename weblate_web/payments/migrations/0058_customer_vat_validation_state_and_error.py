@@ -6,7 +6,10 @@ from django.db import migrations, models
 
 def backfill_vat_validation_state(apps, schema_editor) -> None:
     customer = apps.get_model("payments", "Customer")
-    customer.objects.filter(vat_validated__isnull=False).update(
+    customer.objects.filter(
+        vat_validated__isnull=False,
+        vat__isnull=False,
+    ).exclude(vat="").update(
         vat_validation_state=1,
         vat_validation_error={},
     )
