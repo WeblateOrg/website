@@ -85,6 +85,7 @@ def weblate_web(request):
         "downloads": SimpleLazyObject(get_release),
         "canonical_url": canonical_url,
         "language_urls": language_urls,
+        "is_fosdem": False,
         "donate_links": Service.objects.donations()
         .filter(
             subscription__package__name=get_donation_reward_package_name(3),
