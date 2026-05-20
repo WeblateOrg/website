@@ -33,6 +33,7 @@ def delete_transient_vies_interactions(apps, schema_editor) -> None:
         transient_summary |= Q(summary__endswith=f": {fault_message}")
     interaction_model.objects.filter(
         origin=VIES_ORIGIN,
+        details__automated=True,
     ).filter(transient_summary).delete()
 
 
