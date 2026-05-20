@@ -681,11 +681,11 @@ def process_payment(request):
             messages.success(request, gettext("Thank you for your subscription."))
             process_subscription(payment)
         else:
-            # Translators: This is shown after a successful donation. You can use
-            # a culturally natural, poetic compliment instead of translating this
-            # literally; keep it short and use original or public-domain wording.
             messages.success(
                 request,
+                # Translators: This is shown after a successful donation. You can use
+                # a culturally natural, poetic compliment instead of translating this
+                # literally; keep it short and use original or public-domain wording.
                 gettext("You are the heart of Weblate. Thank you for your donation."),
             )
             donation = process_donation(payment)
