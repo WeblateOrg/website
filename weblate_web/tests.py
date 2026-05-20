@@ -104,6 +104,12 @@ def migrate_to_current_weblate_web_head(executor: MigrationExecutor) -> None:
     )
 
 
+def migrate_to_current_payments_head(executor: MigrationExecutor) -> None:
+    executor.migrate(
+        [node for node in executor.loader.graph.leaf_nodes() if node[0] == "payments"]
+    )
+
+
 @dataclass
 class UpcomingInvoiceCases:
     proforma: Invoice
@@ -1387,6 +1393,64 @@ class SubscriptionPaymentMigration0050Test(TransactionTestCase):
         )
 
 
+class CustomerVatValidationStateMigration0058Test(TransactionTestCase):
+    migrate_from = [("payments", "0057_customer_upcoming_payment_notification_days")]
+    migrate_to = [("payments", "0058_customer_vat_validation_state_and_error")]
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.executor = MigrationExecutor(connection)
+        self.executor.migrate(self.migrate_from)
+        self.old_apps = self.executor.loader.project_state(self.migrate_from).apps
+
+    def tearDown(self) -> None:
+        self.executor = MigrationExecutor(connection)
+        migrate_to_current_payments_head(self.executor)
+        super().tearDown()
+
+    def test_existing_validated_customers_are_backfilled_as_valid(self) -> None:
+        customer_model = self.old_apps.get_model("payments", "Customer")
+        validated = customer_model.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country="CZ",
+            vat="CZ8003280318",
+            vat_validated=timezone.now(),
+        )
+        unknown = customer_model.objects.create(
+            user_id=-1,
+            origin=PAYMENTS_ORIGIN,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country="CZ",
+            vat="CZ8003280317",
+        )
+
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.migrate_to)
+        new_apps = executor.loader.project_state(self.migrate_to).apps
+        customer_model = new_apps.get_model("payments", "Customer")
+
+        validated.refresh_from_db()
+        migrated_validated = customer_model.objects.get(pk=validated.pk)
+        migrated_unknown = customer_model.objects.get(pk=unknown.pk)
+        self.assertEqual(
+            migrated_validated.vat_validation_state,
+            Customer.VatValidationState.VALID,
+        )
+        self.assertEqual(migrated_validated.vat_validation_error, {})
+        self.assertEqual(
+            migrated_unknown.vat_validation_state,
+            Customer.VatValidationState.UNKNOWN,
+        )
+
+
 class PaymentsTest(FakturaceTestCase):
     def setUp(self) -> None:
         super().setUp()
@@ -1775,11 +1839,19 @@ class PaymentsTest(FakturaceTestCase):
         never_validated = self.create_vat_customer()
         due = self.create_vat_customer()
         recent = self.create_vat_customer()
-        Customer.objects.filter(pk=never_validated.pk).update(vat_validated=None)
-        Customer.objects.filter(pk=due.pk).update(
-            vat_validated=now - timedelta(days=VAT_VALIDITY_DAYS - 2, minutes=1)
+        Customer.objects.filter(pk=never_validated.pk).update(
+            vat_validated=None,
+            vat_validation_state=Customer.VatValidationState.UNKNOWN,
+            vat_validation_error={},
         )
-        Customer.objects.filter(pk=recent.pk).update(vat_validated=now)
+        Customer.objects.filter(pk=due.pk).update(
+            vat_validated=now - timedelta(days=VAT_VALIDITY_DAYS - 2, minutes=1),
+            vat_validation_state=Customer.VatValidationState.VALID,
+        )
+        Customer.objects.filter(pk=recent.pk).update(
+            vat_validated=now,
+            vat_validation_state=Customer.VatValidationState.VALID,
+        )
 
         with patch.object(
             Customer, "prepayment_validation", autospec=True
@@ -1814,7 +1886,9 @@ class PaymentsTest(FakturaceTestCase):
         customer = self.create_vat_customer()
         original_validation = timezone.now() - timedelta(days=VAT_VALIDITY_DAYS)
         Customer.objects.filter(pk=customer.pk).update(
-            vat_validated=original_validation
+            vat_validated=original_validation,
+            vat_validation_state=Customer.VatValidationState.VALID,
+            vat_validation_error={},
         )
         error = ValidationError("Temporary VIES failure", code="other:Error: TIMEOUT")
 
@@ -1826,12 +1900,52 @@ class PaymentsTest(FakturaceTestCase):
 
         customer.refresh_from_db()
         self.assertEqual(customer.vat_validated, original_validation)
+        self.assertEqual(
+            customer.vat_validation_state, Customer.VatValidationState.VALID
+        )
+        self.assertEqual(customer.vat_validation_error, {})
         self.assertEqual(customer.interaction_set.count(), 0)
         self.assertEqual(validate.call_count, 2)
 
-    def test_prefetch_vat_invalid_errors_create_interaction(self) -> None:
+    def test_prefetch_vat_invalid_errors_store_state_without_interaction(self) -> None:
         customer = self.create_vat_customer()
-        Customer.objects.filter(pk=customer.pk).update(vat_validated=None)
+        Customer.objects.filter(pk=customer.pk).update(
+            vat_validated=None,
+            vat_validation_state=Customer.VatValidationState.UNKNOWN,
+            vat_validation_error={},
+        )
+        error = ValidationError("Invalid VAT", code="Invalid VAT")
+
+        with patch(
+            "weblate_web.payments.models.validate_vatin", side_effect=error
+        ) as validate:
+            fetch_vat_info(delay=0)
+            fetch_vat_info(delay=0)
+            fetch_vat_info(fetch_all=True, delay=0)
+
+        customer.refresh_from_db()
+        self.assertEqual(
+            customer.vat_validation_state, Customer.VatValidationState.INVALID
+        )
+        self.assertIsNotNone(customer.vat_validated)
+        self.assertEqual(
+            customer.vat_validation_error,
+            {
+                "vat": str(customer.vat),
+                "code": "Invalid VAT",
+                "message": "Invalid VAT",
+            },
+        )
+        self.assertEqual(customer.interaction_set.count(), 0)
+        self.assertEqual(validate.call_count, 1)
+
+    def test_prefetch_vat_valid_to_invalid_creates_interaction(self) -> None:
+        customer = self.create_vat_customer()
+        Customer.objects.filter(pk=customer.pk).update(
+            vat_validated=timezone.now() - timedelta(days=VAT_VALIDITY_DAYS),
+            vat_validation_state=Customer.VatValidationState.VALID,
+            vat_validation_error={},
+        )
 
         with patch(
             "weblate_web.payments.models.validate_vatin",
@@ -1840,6 +1954,36 @@ class PaymentsTest(FakturaceTestCase):
             fetch_vat_info(delay=0)
 
         self.assertEqual(customer.interaction_set.count(), 1)
+        interaction = customer.interaction_set.get()
+        self.assertEqual(interaction.details["vat"], str(customer.vat))
+        self.assertEqual(interaction.details["code"], "Invalid VAT")
+        self.assertEqual(interaction.details["message"], "Invalid VAT")
+        self.assertTrue(interaction.details["automated"])
+
+    def test_manual_vat_validation_retries_recent_invalid_state(self) -> None:
+        customer = self.create_vat_customer()
+        Customer.objects.filter(pk=customer.pk).update(
+            vat_validated=timezone.now(),
+            vat_validation_state=Customer.VatValidationState.INVALID,
+            vat_validation_error={
+                "vat": str(customer.vat),
+                "code": "Invalid VAT",
+                "message": "Invalid VAT",
+            },
+        )
+        customer.refresh_from_db()
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            customer.prepayment_validation()
+
+        self.assertEqual(validate.call_count, 1)
+        self.assertEqual(validate.call_args.kwargs, {"force": True})
+        customer.refresh_from_db()
+        self.assertEqual(
+            customer.vat_validation_state, Customer.VatValidationState.VALID
+        )
+        self.assertIsNotNone(customer.vat_validated)
+        self.assertEqual(customer.vat_validation_error, {})
 
     @override_settings(PAYMENT_DEBUG=True)
     def test_reject(self) -> None:

@@ -110,14 +110,16 @@ def validate_vatin_offline(value: str | VATIN) -> None:
         raise ValidationError(msg.format(vatin), code="Invalid VAT syntax") from error
 
 
-def validate_vatin(value: str | VATIN) -> None:
-    vatin, vies_data = cache_vies_data(value)
+def validate_vatin(value: str | VATIN, *, force: bool = False) -> None:
+    vatin, vies_data = cache_vies_data(value, force=force)
     validate_vatin_offline(vatin)
 
     if not vies_data["valid"]:
-        code = f"{vies_data.get('fault_code')}: {vies_data.get('fault_message')}"
+        fault_code = vies_data.get("fault_code")
+        fault_message = vies_data.get("fault_message")
         msg: StrOrPromise
         if is_vies_transient_error(vies_data):
+            code = f"{fault_code}: {fault_message}"
             msg = format_html(
                 '{} <a href="{}" target="_blank">{}</a>',
                 _(
@@ -127,5 +129,10 @@ def validate_vatin(value: str | VATIN) -> None:
                 _("View service status."),
             )
         else:
+            code = (
+                f"{fault_code}: {fault_message}"
+                if fault_code and fault_message
+                else fault_code or fault_message or "Invalid VAT"
+            )
             msg = _("{} is not a valid VAT ID.").format(vatin)
         raise ValidationError(msg, code=code)

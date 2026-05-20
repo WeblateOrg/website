@@ -117,6 +117,11 @@ class CustomerQuerySet(models.QuerySet["Customer"]):
 
 
 class Customer(models.Model):
+    class VatValidationState(models.IntegerChoices):
+        UNKNOWN = 0, gettext_lazy("Unknown")
+        VALID = 1, gettext_lazy("Valid")
+        INVALID = 2, gettext_lazy("Invalid")
+
     vat = VATINField(
         validators=[validate_vatin],
         blank=True,
@@ -128,6 +133,14 @@ class Customer(models.Model):
         ),
     )
     vat_validated = models.DateTimeField(blank=True, null=True, db_index=True)
+    vat_validation_state = models.PositiveSmallIntegerField(
+        choices=VatValidationState,
+        default=VatValidationState.UNKNOWN,
+        db_index=True,
+    )
+    vat_validation_error = models.JSONField(
+        default=dict, blank=True, encoder=DjangoJSONEncoder
+    )
     tax = models.CharField(
         max_length=200,
         blank=True,
@@ -223,18 +236,55 @@ class Customer(models.Model):
         return self.verbose_name
 
     def save(self, **kwargs) -> None:
-        if self.vat:
+        update_fields = kwargs.get("update_fields")
+        validate_vat = update_fields is None or "vat" in update_fields
+
+        if validate_vat and self.vat:
             try:
                 # This should be cached due to UI validation
-                validate_vatin(self.vat)
-            except ValidationError:
-                self.vat_validated = None
+                validate_vatin(self.vat, force=self.vat_recently_invalid)
+            except ValidationError as error:
+                if is_vies_transient_validation_error(error):
+                    self._clear_vat_validation()
+                else:
+                    self._set_vat_invalid(error)
             else:
-                self.vat_validated = timezone.now()
+                self._set_vat_valid()
+        elif validate_vat:
+            self._clear_vat_validation()
+
+        if validate_vat and update_fields is not None:
+            kwargs["update_fields"] = (
+                set(update_fields) | self._vat_validation_update_fields
+            )
+
         super().save(**kwargs)
 
     def get_absolute_url(self) -> str:
         return reverse("crm:customer-detail", kwargs={"pk": self.pk})
+
+    @property
+    def _vat_validation_update_fields(self) -> set[str]:
+        return {"vat_validated", "vat_validation_state", "vat_validation_error"}
+
+    def _clear_vat_validation(self) -> None:
+        self.vat_validated = None
+        self.vat_validation_state = self.VatValidationState.UNKNOWN
+        self.vat_validation_error = {}
+
+    def _set_vat_valid(self) -> None:
+        self.vat_validated = timezone.now()
+        self.vat_validation_state = self.VatValidationState.VALID
+        self.vat_validation_error = {}
+
+    def _set_vat_invalid(self, error: ValidationError) -> None:
+        self.vat_validated = timezone.now()
+        self.vat_validation_state = self.VatValidationState.INVALID
+        self.vat_validation_error = {
+            "vat": str(self.vat),
+            "code": str(error.code) if error.code else "",
+            "message": str(error.message),
+        }
 
     @property
     def verbose_name(self) -> str:
@@ -480,8 +530,18 @@ class Customer(models.Model):
     @property
     def vat_recently_validated(self) -> bool:
         return (
-            self.vat_validated is not None
+            self.vat_validation_state == self.VatValidationState.VALID
+            and self.vat_validated is not None
             and self.vat_validated > timezone.now() - timedelta(days=VAT_VALIDITY_DAYS)
+        )
+
+    @property
+    def vat_recently_invalid(self) -> bool:
+        return (
+            self.vat_validation_state == self.VatValidationState.INVALID
+            and self.vat_validated is not None
+            and self.vat_validated > timezone.now() - timedelta(days=VAT_VALIDITY_DAYS)
+            and self.vat_validation_error.get("vat") == str(self.vat)
         )
 
     def prepayment_validation(self, *, automated: bool = False):
@@ -492,24 +552,32 @@ class Customer(models.Model):
             # Perform offline validation only
             validate_vatin_offline(self.vat)
             return
+        if automated and self.vat_recently_invalid:
+            return
 
+        previous_state = self.vat_validation_state
         try:
-            validate_vatin(self.vat)
+            validate_vatin(self.vat, force=not automated and self.vat_recently_invalid)
         except ValidationError as error:
-            if automated and not is_vies_transient_validation_error(error):
+            if is_vies_transient_validation_error(error):
+                raise
+
+            self._set_vat_invalid(error)
+            self.save(update_fields=self._vat_validation_update_fields)
+            if automated and previous_state == self.VatValidationState.VALID:
                 self.interaction_set.create(
                     origin=Interaction.Origin.VIES,
-                    summary=error.code or str(error.message),
-                    content=str(error.message),
+                    summary=self.vat_validation_error["code"]
+                    or self.vat_validation_error["message"],
+                    content=self.vat_validation_error["message"],
                     details={
                         "automated": automated,
-                        "code": error.code,
-                        "message": str(error.message),
+                        **self.vat_validation_error,
                     },
                 )
             raise
-        self.vat_validated = timezone.now()
-        self.save(update_fields=["vat_validated"])
+        self._set_vat_valid()
+        self.save(update_fields=self._vat_validation_update_fields)
 
 
 RECURRENCE_CHOICES = [

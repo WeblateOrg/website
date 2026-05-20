@@ -30,7 +30,12 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ("name", "email", "users__email", "end_client")
     ordering = ("name",)
     autocomplete_fields = ("users",)
-    readonly_fields = ("created", "vat_validated")
+    readonly_fields = (
+        "created",
+        "vat_validated",
+        "vat_validation_state",
+        "vat_validation_error",
+    )
 
 
 @admin.register(Payment)
