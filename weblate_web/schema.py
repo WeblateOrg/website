@@ -37,7 +37,7 @@ WEBSITE_ID = f"{SITE_URL}/#website"
 SAME_AS_URLS = (
     "https://fosstodon.org/@weblate",
     "https://www.linkedin.com/company/weblate/",
-    "https://twitter.com/WeblateOrg",
+    "https://x.com/WeblateOrg",
     "https://www.facebook.com/WeblateOrg",
     "https://github.com/WeblateOrg",
 )
