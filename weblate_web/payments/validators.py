@@ -45,11 +45,16 @@ def is_vies_transient_validation_error(error: ValidationError) -> bool:
     code = error.code
     if not isinstance(code, str):
         return False
-    return any(
-        code.startswith(f"{fault_code}:") for fault_code in RETRYABLE_VIES_FAULT_CODES
-    ) or any(
-        code.endswith(f": {fault_message}")
-        for fault_message in RETRYABLE_VIES_FAULT_MESSAGES
+    return (
+        code in RETRYABLE_VIES_FAULT_MESSAGES
+        or any(
+            code.startswith(f"{fault_code}:")
+            for fault_code in RETRYABLE_VIES_FAULT_CODES
+        )
+        or any(
+            code.endswith(f": {fault_message}")
+            for fault_message in RETRYABLE_VIES_FAULT_MESSAGES
+        )
     )
 
 

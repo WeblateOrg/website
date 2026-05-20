@@ -9,7 +9,9 @@ from django.contrib.auth.models import Permission, User
 from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
-from django.test import TestCase
+from django.db import connection
+from django.db.migrations.executor import MigrationExecutor
+from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -36,6 +38,10 @@ from weblate_web.payments.models import Customer, Payment
 from weblate_web.tests import TEST_CUSTOMER, cnb_mock_rates
 from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_client
 
+VIES_MS_UNAVAILABLE = "MS_UNAVAILABLE"
+VIES_MS_MAX_CONCURRENT_REQ = "MS_MAX_CONCURRENT_REQ"
+VIES_TIMEOUT = "TIMEOUT"
+
 
 class BaseCRMTestCase(TestCase):
     def create_customer(
@@ -50,6 +56,159 @@ class BaseCRMTestCase(TestCase):
             postcode=TEST_CUSTOMER["postcode"],
             # Use non-EU country to avoid VAT on generated invoices
             country="US",
+        )
+
+
+class CRMTransientViesMigrationTest(TransactionTestCase):
+    migrate_from = [("CRM", "0010_alter_interaction_origin")]
+    migrate_to = [("CRM", "0011_delete_transient_vies_interactions")]
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.executor = MigrationExecutor(connection)
+        self.executor.migrate(self.migrate_from)
+        self.old_apps = self.executor.loader.project_state(self.migrate_from).apps
+
+    def tearDown(self) -> None:
+        self.executor = MigrationExecutor(connection)
+        self.executor.migrate(self.executor.loader.graph.leaf_nodes())
+        super().tearDown()
+
+    def test_transient_vies_interactions_are_deleted(self) -> None:
+        interaction_model = self.old_apps.get_model("CRM", "Interaction")
+        customer = Customer.objects.create(
+            user_id=-1,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country="US",
+        )
+        service_unavailable_message = (
+            "The official EU verification tool currently can't validate this VAT ID."
+        )
+        matching_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.VIES,
+            summary=f"env:Server: {VIES_MS_UNAVAILABLE}",
+            content=service_unavailable_message,
+            details={
+                "automated": True,
+                "code": f"env:Server: {VIES_MS_UNAVAILABLE}",
+                "message": service_unavailable_message,
+            },
+        )
+        matching_service_code_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.VIES,
+            summary=VIES_MS_UNAVAILABLE,
+            content=service_unavailable_message,
+            details={
+                "automated": True,
+                "code": VIES_MS_UNAVAILABLE,
+                "message": service_unavailable_message,
+            },
+        )
+        matching_concurrent_req_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.VIES,
+            summary=f"env:Server: {VIES_MS_MAX_CONCURRENT_REQ}",
+            content=service_unavailable_message,
+            details={
+                "automated": True,
+                "code": f"env:Server: {VIES_MS_MAX_CONCURRENT_REQ}",
+                "message": service_unavailable_message,
+            },
+        )
+        matching_soap_code_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.VIES,
+            summary=f"soap:Server: {VIES_MS_UNAVAILABLE}",
+            content=service_unavailable_message,
+            details={
+                "automated": True,
+                "code": f"soap:Server: {VIES_MS_UNAVAILABLE}",
+                "message": service_unavailable_message,
+            },
+        )
+        matching_other_code_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.VIES,
+            summary=f"other:Error: {VIES_MS_MAX_CONCURRENT_REQ}",
+            content=service_unavailable_message,
+            details={
+                "automated": True,
+                "code": f"other:Error: {VIES_MS_MAX_CONCURRENT_REQ}",
+                "message": service_unavailable_message,
+            },
+        )
+        matching_timeout_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.VIES,
+            summary=f"env:Server: {VIES_TIMEOUT}",
+            content=service_unavailable_message,
+            details={
+                "automated": True,
+                "code": f"env:Server: {VIES_TIMEOUT}",
+                "message": service_unavailable_message,
+            },
+        )
+        other_vies_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.VIES,
+            summary="env:Server: INVALID_INPUT",
+            content=service_unavailable_message,
+            details={
+                "automated": True,
+                "code": "env:Server: INVALID_INPUT",
+            },
+        )
+        other_origin_interaction = interaction_model.objects.create(
+            customer_id=customer.pk,
+            origin=Interaction.Origin.EMAIL,
+            summary=f"env:Server: {VIES_MS_UNAVAILABLE}",
+            content=f"env:Server: {VIES_MS_UNAVAILABLE}",
+            details={"code": f"env:Server: {VIES_MS_UNAVAILABLE}"},
+        )
+
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.migrate_to)
+        new_apps = executor.loader.project_state(self.migrate_to).apps
+        interaction_model = new_apps.get_model("CRM", "Interaction")
+
+        self.assertFalse(
+            interaction_model.objects.filter(pk=matching_interaction.pk).exists()
+        )
+        self.assertFalse(
+            interaction_model.objects.filter(
+                pk=matching_service_code_interaction.pk
+            ).exists()
+        )
+        self.assertFalse(
+            interaction_model.objects.filter(
+                pk=matching_concurrent_req_interaction.pk
+            ).exists()
+        )
+        self.assertFalse(
+            interaction_model.objects.filter(
+                pk=matching_soap_code_interaction.pk
+            ).exists()
+        )
+        self.assertFalse(
+            interaction_model.objects.filter(
+                pk=matching_other_code_interaction.pk
+            ).exists()
+        )
+        self.assertFalse(
+            interaction_model.objects.filter(
+                pk=matching_timeout_interaction.pk
+            ).exists()
+        )
+        self.assertTrue(
+            interaction_model.objects.filter(pk=other_vies_interaction.pk).exists()
+        )
+        self.assertTrue(
+            interaction_model.objects.filter(pk=other_origin_interaction.pk).exists()
         )
 
 
