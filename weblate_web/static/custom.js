@@ -89,52 +89,75 @@ ready(() => {
 
   /* Donate rewards selection */
   const donateInput = document.getElementById("donate-amount");
-  if (donateInput) {
-    for (const element of document.querySelectorAll(".rewards .choose")) {
+  const rewards = document.querySelector(".rewards");
+  if (donateInput && rewards) {
+    const selectReward = (reward) => {
+      const current = rewards.querySelector(".reward.checked");
+      if (current) {
+        current.classList.remove("checked");
+        current.setAttribute("aria-pressed", "false");
+      }
+      reward.classList.add("checked");
+      reward.setAttribute("aria-pressed", "true");
+      const rewardInput = document.getElementById(
+        reward.getAttribute("data-reward-input"),
+      );
+      if (rewardInput) {
+        rewardInput.checked = true;
+      }
+    };
+    const chooseReward = (reward, updateAmount) => {
+      const minimumAmount = Number.parseInt(
+        reward.getAttribute("data-amount"),
+        10,
+      );
+      const amount = Number.parseInt(donateInput.value, 10) || 0;
+      if (updateAmount && minimumAmount > amount) {
+        donateInput.value = minimumAmount;
+        donateInput.dispatchEvent(new Event("change"));
+      } else {
+        selectReward(reward);
+      }
+    };
+    for (const element of rewards.querySelectorAll(".reward")) {
       element.addEventListener("click", (e) => {
-        const container = e.target.parentElement;
-        container.parentElement
-          .querySelector(".reward.checked")
-          .classList.remove("checked");
-        container.classList.add("checked");
-        container.querySelector("input").checked = true;
-        e.preventDefault();
-      });
-    }
-    for (const element of document.querySelectorAll(".rewards .close")) {
-      element.addEventListener("click", (e) => {
-        document
-          .querySelector(".rewards .fourth .choose")
-          .dispatchEvent(new Event("click"));
+        chooseReward(element, true);
         e.preventDefault();
       });
     }
     donateInput.addEventListener("change", (e) => {
-      const amount = Number.parseInt(e.target.value);
-      let found = 0;
+      const amount = Number.parseInt(e.target.value, 10) || 0;
+      let availableRewards = 0;
       let highest = document.querySelector(".rewards .fourth");
-      let highestAmount = Number.parseInt(highest.getAttribute("data-amount"));
-      for (const element of document.querySelectorAll(".reward")) {
+      let highestAmount = Number.parseInt(
+        highest.getAttribute("data-amount"),
+        10,
+      );
+      let rewardCount = 0;
+      for (const element of rewards.querySelectorAll(".reward")) {
         const currentAmount = Number.parseInt(
           element.getAttribute("data-amount"),
+          10,
         );
+        if (currentAmount > 0) {
+          rewardCount++;
+        }
         if (currentAmount <= amount) {
           element.classList.remove("small");
-          found++;
+          if (currentAmount > 0) {
+            availableRewards++;
+          }
           if (highestAmount < currentAmount) {
             highest = element;
             highestAmount = currentAmount;
           }
         } else {
           element.classList.add("small");
-          if (element.classList.contains("checked")) {
-            element.querySelector(".close").dispatchEvent(new Event("click"));
-          }
         }
       }
-      highest.querySelector(".choose").click();
+      selectReward(highest);
 
-      if (found > 1) {
+      if (availableRewards === rewardCount) {
         document.querySelector(".whoa").classList.add("is-visible");
         document.querySelector(".nowhoa").classList.remove("is-visible");
       } else {
