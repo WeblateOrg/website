@@ -23,6 +23,7 @@ import json
 from copy import deepcopy
 from datetime import date
 from typing import cast
+from unittest.mock import patch
 
 import responses
 from django.contrib.auth.models import User
@@ -32,6 +33,7 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
+from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.tests import (
     THEPAY2_MOCK_SETTINGS,
@@ -55,6 +57,9 @@ CUSTOMER = {
     "email": "noreply@example.com",
     "user_id": 6,
 }
+VIES_MS_UNAVAILABLE = "MS_UNAVAILABLE"
+VIES_MS_MAX_CONCURRENT_REQ = "MS_MAX_CONCURRENT_REQ"
+VIES_TIMEOUT = "TIMEOUT"
 
 
 FIO_API = "https://fioapi.fio.cz/v1/rest/last/test-token/transactions.json"
@@ -221,6 +226,20 @@ class ModelTest(SimpleTestCase):
 
 
 class ModelObjectsTestCase(TestCase):
+    def create_customer_for_vat_validation(self) -> Customer:
+        customer = Customer.objects.create(
+            user_id=-1,
+            name=cast("str", CUSTOMER["name"]),
+            address=cast("str", CUSTOMER["address"]),
+            city=cast("str", CUSTOMER["city"]),
+            postcode=cast("str", CUSTOMER["postcode"]),
+            country=cast("str", CUSTOMER["country"]),
+            vat="",
+        )
+        customer.vat = cast("str", CUSTOMER["vat"])
+        customer.vat_validation_state = Customer.VatValidationState.VALID
+        return customer
+
     def test_merge(self) -> None:
         customer = Customer.objects.create(**CUSTOMER)
         self.assertEqual(0, customer.users.count())
@@ -233,6 +252,60 @@ class ModelObjectsTestCase(TestCase):
         customer2.users.add(User.objects.create())
         customer.merge(customer2)
         self.assertEqual(1, customer.users.count())
+
+    def test_automated_vies_transient_fault_is_not_logged(self) -> None:
+        for code in (
+            VIES_MS_UNAVAILABLE,
+            f"env:Server: {VIES_MS_UNAVAILABLE}",
+            VIES_MS_MAX_CONCURRENT_REQ,
+            f"env:Server: {VIES_MS_MAX_CONCURRENT_REQ}",
+            VIES_TIMEOUT,
+            f"soap:Server: {VIES_TIMEOUT}",
+        ):
+            with self.subTest(code=code):
+                customer = self.create_customer_for_vat_validation()
+
+                with (
+                    patch(
+                        "weblate_web.payments.models.validate_vatin",
+                        side_effect=ValidationError(
+                            "The VIES service is unavailable",
+                            code=code,
+                        ),
+                    ),
+                    self.assertRaises(ValidationError),
+                ):
+                    customer.prepayment_validation(automated=True)
+
+                self.assertFalse(Interaction.objects.filter(customer=customer).exists())
+
+    def test_automated_vies_validation_error_is_logged(self) -> None:
+        customer = self.create_customer_for_vat_validation()
+        code = "INVALID_INPUT"
+        message = "The VIES service rejected the VAT ID"
+
+        with (
+            patch(
+                "weblate_web.payments.models.validate_vatin",
+                side_effect=ValidationError(message, code=code),
+            ),
+            self.assertRaises(ValidationError),
+        ):
+            customer.prepayment_validation(automated=True)
+
+        interaction = Interaction.objects.get(customer=customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.VIES)
+        self.assertEqual(interaction.summary, code)
+        self.assertEqual(interaction.content, message)
+        self.assertEqual(
+            interaction.details,
+            {
+                "automated": True,
+                "vat": customer.vat,
+                "code": code,
+                "message": message,
+            },
+        )
 
 
 class BackendBaseTestCase(TestCase):
