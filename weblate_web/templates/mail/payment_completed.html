@@ -3,7 +3,14 @@
 {% load i18n %}
 
 {% block content %}
-  <p>{% translate "Thank you for your payment on weblate.org." %}</p>
+  {% if payment.extra.category == "donate" %}
+    <p>
+      {# Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording. #}
+      {% translate "You are the heart of Weblate. Thank you for your donation." %}
+    </p>
+  {% else %}
+    <p>{% translate "Thank you for your payment on weblate.org." %}</p>
+  {% endif %}
 
   <p>{% translate "You will find an invoice for this payment attached." %}</p>
 

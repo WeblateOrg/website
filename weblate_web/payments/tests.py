@@ -337,6 +337,21 @@ class BackendTest(BackendBaseTestCase):
         self.check_payment(Payment.ACCEPTED)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+        self.assertIn("Thank you for your payment", mail.outbox[0].body)
+        self.assertNotIn("You are the heart of Weblate", mail.outbox[0].body)
+
+    def test_donation_pay(self) -> None:
+        self.payment.extra = {"category": "donate"}
+        self.payment.save(update_fields=["extra"])
+        backend = get_backend("pay")(self.payment)
+        self.assertIsNone(backend.initiate(None, "", ""))
+        self.check_payment(Payment.PENDING)
+        self.assertTrue(backend.complete(None))
+        self.check_payment(Payment.ACCEPTED)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+        self.assertIn("You are the heart of Weblate", mail.outbox[0].body)
+        self.assertNotIn("Thank you for your payment", mail.outbox[0].body)
 
     def test_reject(self) -> None:
         backend = get_backend("reject")(self.payment)

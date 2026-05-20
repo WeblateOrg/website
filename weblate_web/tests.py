@@ -2273,7 +2273,7 @@ class PaymentTest(FakturaceTestCase):
         )
         redirect_url = f"/en/donate/edit/{donation.pk}/" if reward else "/en/user/"
         self.assertRedirects(response, redirect_url)
-        self.assertContains(response, "Thank you for your donation")
+        self.assertContains(response, "You are the heart of Weblate")
 
         payment.refresh_from_db()
         self.assertEqual(payment.paid_invoice.total_amount, 1000)  # type: ignore[union-attr]
@@ -2302,7 +2302,7 @@ class PaymentTest(FakturaceTestCase):
         # Back to our web
         response = self.client.get(renew.get_complete_url(), follow=True)
         self.assertRedirects(response, redirect_url)
-        self.assertContains(response, "Thank you for your donation")
+        self.assertContains(response, "You are the heart of Weblate")
         self.assert_notifications(
             "Your payment on weblate.org", "Your payment on weblate.org"
         )
