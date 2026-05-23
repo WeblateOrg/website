@@ -64,6 +64,23 @@
       <input type="submit" name="invoice" value="Issue renewal invoice">
     </form>
 
+    {% for package in subscription.upgrade_packages %}
+      <br>
+      {% blocktranslate %}Upgrade to {{ package }} without extending the current subscription period.{% endblocktranslate %}
+      <form method="post">
+        {% csrf_token %}
+        {{ reference_form }}
+        <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+        <input type="hidden" name="package" value="{{ package.name }}">
+        <input type="submit"
+               name="upgrade_quote"
+               value="{% translate "Issue upgrade quote" %}">
+        <input type="submit"
+               name="upgrade_invoice"
+               value="{% translate "Issue upgrade invoice" %}">
+      </form>
+    {% endfor %}
+
     {% if subscription.enabled %}
       <br>
       <form method="post">

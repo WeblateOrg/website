@@ -7,6 +7,7 @@ from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -28,10 +29,10 @@ from django.db.models.functions import (
     TruncMonth,
 )
 from django.http import FileResponse, Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import override
+from django.utils.translation import gettext, override
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.crm.forms import (
@@ -47,7 +48,7 @@ from weblate_web.invoices.models import (
     InvoiceCategory,
     InvoiceKind,
 )
-from weblate_web.models import PackageCategory, Service, Subscription
+from weblate_web.models import Package, PackageCategory, Service, Subscription
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.utils import show_form_errors
 
@@ -176,53 +177,117 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             )
         return context
 
-    def post(self, request, *args, **kwargs):
-        service = self.get_object()
-        if "update_maintenance_window" in request.POST:
-            if not service.has_active_extended_support:
-                raise PermissionDenied
-            maintenance_window = service.maintenance_window
-            maintenance_window_form = ServiceMaintenanceWindowForm(
-                request.POST, instance=service
-            )
-            if maintenance_window_form.is_valid():
-                new_maintenance_window = maintenance_window_form.cleaned_data[
-                    "maintenance_window"
-                ]
-                if new_maintenance_window != maintenance_window:
-                    service.maintenance_window = new_maintenance_window
-                    service.save(update_fields=["maintenance_window"])
-                    service.customer.interaction_set.create(
-                        origin=Interaction.Origin.MAINTENANCE_WINDOW,
-                        summary=f"Maintenance window updated for service {service.pk}",
-                        content=new_maintenance_window,
-                        details={
-                            "service_id": service.pk,
-                            "service_title": service.site_title,
-                            "service_url": service.site_url,
-                            "old_value": maintenance_window,
-                            "new_value": new_maintenance_window,
-                        },
-                        user=request.user,
-                    )
-                return redirect(service)
+    def update_maintenance_window(self, request, service):
+        if not service.has_active_extended_support:
+            raise PermissionDenied
+        maintenance_window = service.maintenance_window
+        maintenance_window_form = ServiceMaintenanceWindowForm(
+            request.POST, instance=service
+        )
+        if not maintenance_window_form.is_valid():
             show_form_errors(self.request, maintenance_window_form)
             return redirect(service)
 
-        subscription = service.subscription_set.get(pk=request.POST["subscription"])
-        if "quote" in request.POST or "invoice" in request.POST:
-            form = CustomerReferenceForm(request.POST)
-            if not form.is_valid():
-                show_form_errors(self.request, form)
-                return redirect(service)
+        new_maintenance_window = maintenance_window_form.cleaned_data[
+            "maintenance_window"
+        ]
+        if new_maintenance_window != maintenance_window:
+            service.maintenance_window = new_maintenance_window
+            service.save(update_fields=["maintenance_window"])
+            service.customer.interaction_set.create(
+                origin=Interaction.Origin.MAINTENANCE_WINDOW,
+                summary=f"Maintenance window updated for service {service.pk}",
+                content=new_maintenance_window,
+                details={
+                    "service_id": service.pk,
+                    "service_title": service.site_title,
+                    "service_url": service.site_url,
+                    "old_value": maintenance_window,
+                    "new_value": new_maintenance_window,
+                },
+                user=request.user,
+            )
+        return redirect(service)
+
+    def create_subscription_invoice(self, request, service, subscription, *, upgrade):
+        form = CustomerReferenceForm(request.POST)
+        if not form.is_valid():
+            show_form_errors(self.request, form)
+            return redirect(service)
+
+        if upgrade:
+            kind = (
+                InvoiceKind.QUOTE
+                if "upgrade_quote" in request.POST
+                else InvoiceKind.INVOICE
+            )
+            create_invoice = subscription.create_upgrade_invoice
+        else:
             kind = InvoiceKind.QUOTE if "quote" in request.POST else InvoiceKind.INVOICE
-            with override("en"):
-                invoice = subscription.create_invoice(
-                    kind=kind,
-                    customer_reference=form.cleaned_data["customer_reference"],
-                    customer_note=form.cleaned_data["customer_note"],
+            create_invoice = subscription.create_invoice
+
+        package = None
+        if upgrade and (package_name := request.POST.get("package")):
+            package = Package.objects.filter(name=package_name).first()
+            if package is None:
+                messages.error(
+                    request,
+                    gettext(
+                        "This subscription can not be upgraded to the selected package."
+                    ),
                 )
-            return redirect(invoice)
+                return redirect(service)
+
+        if upgrade:
+            try:
+                if not subscription.upgrade_requires_payment(package):
+                    subscription.upgrade_without_payment(package)
+                    return redirect(service)
+            except ValueError:
+                messages.error(
+                    request,
+                    gettext(
+                        "This subscription can not be upgraded to the selected package."
+                    ),
+                )
+                return redirect(service)
+
+        with override("en"):
+            kwargs = {
+                "kind": kind,
+                "customer_reference": form.cleaned_data["customer_reference"],
+                "customer_note": form.cleaned_data["customer_note"],
+            }
+            if package is not None:
+                kwargs["package"] = package
+            try:
+                invoice = create_invoice(**kwargs)
+            except ValueError:
+                messages.error(
+                    request,
+                    gettext(
+                        "This subscription can not be upgraded to the selected package."
+                    ),
+                )
+                return redirect(service)
+        return redirect(invoice)
+
+    def post(self, request, *args, **kwargs):
+        service = self.get_object()
+        if "update_maintenance_window" in request.POST:
+            return self.update_maintenance_window(request, service)
+
+        subscription = get_object_or_404(
+            service.subscription_set, pk=request.POST["subscription"]
+        )
+        if "upgrade_quote" in request.POST or "upgrade_invoice" in request.POST:
+            return self.create_subscription_invoice(
+                request, service, subscription, upgrade=True
+            )
+        if "quote" in request.POST or "invoice" in request.POST:
+            return self.create_subscription_invoice(
+                request, service, subscription, upgrade=False
+            )
         if "disable" in request.POST:
             subscription.enabled = False
             subscription.save(update_fields=["enabled"])

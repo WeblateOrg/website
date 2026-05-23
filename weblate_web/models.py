@@ -20,7 +20,9 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from decimal import ROUND_CEILING, Decimal
 from io import BytesIO
+from math import ceil
 from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
@@ -47,11 +49,13 @@ from weblate_web.invoices.models import (
     Currency,
     Invoice,
     InvoiceCategory,
+    round_decimal,
 )
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
 
+from .exchange_rates import ExchangeRates
 from .hetzner import create_storage_folder, create_storage_subaccount, generate_ssh_url
 from .markup import render_markdown
 from .packages import (
@@ -67,8 +71,11 @@ from .packages import (
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+    from datetime import date
 
     from weblate_web.invoices.models import InvoiceKind
+
+ServiceSuggestion = tuple[str, str, str, str, str, str, int | None]
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 PILLOW_VALIDATION_ERRORS = (
@@ -77,6 +84,7 @@ PILLOW_VALIDATION_ERRORS = (
     ValueError,
     PILImage.DecompressionBombError,
 )
+MINIMUM_UPGRADE_PAYMENT = Decimal(5)
 
 REWARDS = (
     (0, gettext_lazy("No reward")),
@@ -349,6 +357,28 @@ def process_renewal_payment(payment: Payment) -> Subscription:
     return subscription
 
 
+def process_upgrade_payment(payment: Payment) -> Subscription:
+    try:
+        subscription = Subscription.objects.select_for_update().get(
+            pk=payment.extra["subscription_upgrade"],
+            service__customer=payment.customer,
+        )
+        package = Package.objects.get(name=payment.extra["package"])
+    except (KeyError, Package.DoesNotExist, Subscription.DoesNotExist) as error:
+        raise UnprocessablePaymentError from error
+    if not subscription.can_upgrade_to(package):
+        raise UnprocessablePaymentError
+
+    payment.start = timezone.localdate()
+    payment.end = subscription.expires.date()
+    subscription.package = package
+    if subscription.payment:
+        add_subscription_past_payments(subscription, subscription.payment)
+    subscription.payment = payment
+    subscription.save(update_fields=["package", "payment"])
+    return subscription
+
+
 @transaction.atomic
 def process_new_payment(payment: Payment) -> Subscription:
     service = get_service(payment, payment.customer)
@@ -410,7 +440,9 @@ def process_new_payment(payment: Payment) -> Subscription:
 def process_subscription(payment: Payment) -> Subscription:
     if payment.state != Payment.ACCEPTED:
         raise ValueError("Can not process not accepted payment")
-    if payment.repeat:
+    if "subscription_upgrade" in payment.extra:
+        subscription = process_upgrade_payment(payment)
+    elif payment.repeat:
         # Update existing
         subscription = process_repeated_payment(payment, payment.repeat)
     elif isinstance(payment.extra["subscription"], int):
@@ -425,15 +457,20 @@ def process_subscription(payment: Payment) -> Subscription:
     return subscription
 
 
+def is_subscription_payment(payment: Payment) -> bool:
+    return (
+        "subscription_upgrade" in payment.extra
+        or "subscription" in payment.extra
+        or bool(payment.paid_invoice and payment.paid_invoice.get_package())
+        or bool(payment.draft_invoice and payment.draft_invoice.get_package())
+    )
+
+
 def process_payment(payment: Payment) -> None:
     payment = Payment.objects.filter(pk=payment.pk).select_for_update()[0]
     if not payment.extra or set(payment.extra.keys()) == {"exclude_backends"}:
         raise UnprocessablePaymentError
-    if (
-        "subscription" in payment.extra
-        or (payment.paid_invoice and payment.paid_invoice.get_package())
-        or (payment.draft_invoice and payment.draft_invoice.get_package())
-    ):
+    if is_subscription_payment(payment):
         process_subscription(payment)
     elif "billing" in payment.extra:
         # Hosted subscription, currently not handled here
@@ -951,8 +988,14 @@ class Service(models.Model):
             return self.latest_subscription.expires
         return timezone.now()
 
-    def get_suggestions(self):
-        result = []
+    def _get_upgrade_subscription(self, package: Package) -> Subscription | None:
+        for subscription in self.support_subscriptions:
+            if subscription.can_upgrade_to(package):
+                return subscription
+        return None
+
+    def get_suggestions(self) -> list[ServiceSuggestion]:
+        result: list[ServiceSuggestion] = []
         if not self.support_subscriptions:
             result.append(
                 (
@@ -962,31 +1005,42 @@ class Service(models.Model):
                     _("Set priority for all your questions and reported bugs."),
                     "img/Support-Basic.svg",
                     _("Get support"),
+                    None,
                 )
             )
 
         if not self.hosted_subscriptions and not self.shared_subscriptions:
             if not self.premium_subscriptions:
+                package = Package.objects.get(name="premium")
+                subscription = self._get_upgrade_subscription(package)
                 result.append(
                     (
-                        "premium",
-                        _("Premium support"),
+                        package.name,
+                        _("Upgrade to %s") % package
+                        if subscription
+                        else _("Premium support"),
                         _("Don’t wait with your work on hold."),
                         _("This guarantees you answers the NBD at the latest."),
                         "img/Support-Premium.svg",
-                        _("Be Premium"),
+                        _("Be premium"),
+                        subscription.pk if subscription else None,
                     )
                 )
 
             if not self.extended_subscriptions:
+                package = Package.objects.get(name="extended")
+                subscription = self._get_upgrade_subscription(package)
                 result.append(
                     (
-                        "extended",
-                        _("Extended support"),
+                        package.name,
+                        _("Upgrade to %s") % package
+                        if subscription
+                        else _("Extended support"),
                         _("Don’t settle with Basic, get a worry-free package."),
                         _("We will manage upgrades for you."),
                         "img/Support-Plus.svg",
                         _("Stay updated"),
+                        subscription.pk if subscription else None,
                     )
                 )
 
@@ -999,24 +1053,26 @@ class Service(models.Model):
                         _("Encrypted and automatic, always available."),
                         "img/Support-Backup.svg",
                         _("Back up daily"),
+                        None,
                     )
                 )
-        if (
-            self.hosted_subscriptions
-            and self.hosted_subscriptions[0].package.name in PACKAGE_UPGRADES
-        ):
-            package_name = PACKAGE_UPGRADES[self.hosted_subscriptions[0].package.name]
-            package = Package.objects.get(name=package_name)
-            result.append(
-                (
-                    package.name,
-                    _("Upgrade to %s") % package,
-                    _("Increase service limits to translate more content."),
-                    "",
-                    "img/Support-Plus.svg",
-                    _("Upgrade"),
+        for subscriptions in (self.hosted_subscriptions, self.shared_subscriptions):
+            if not subscriptions:
+                continue
+            subscription = subscriptions[0]
+            if upgrade_package := subscription.upgrade_package:
+                result.append(
+                    (
+                        upgrade_package.name,
+                        _("Upgrade to %s") % upgrade_package,
+                        _("Increase service limits to translate more content."),
+                        "",
+                        "img/Support-Plus.svg",
+                        _("Upgrade"),
+                        subscription.pk,
+                    )
                 )
-            )
+                break
 
         return result
 
@@ -1201,6 +1257,98 @@ class Subscription(models.Model):
         return self.package.price
 
     @cached_property
+    def upgrade_package(self) -> Package | None:
+        try:
+            return self.upgrade_packages[0]
+        except IndexError:
+            return None
+
+    @cached_property
+    def upgrade_packages(self) -> list[Package]:
+        packages = []
+        for package_name in PACKAGE_UPGRADES.get(self.package.name, ()):
+            try:
+                package = Package.objects.get(name=package_name)
+            except Package.DoesNotExist:
+                continue
+            if self.can_upgrade_to(package):
+                packages.append(package)
+        return packages
+
+    def get_upgrade_remaining_days(self) -> int:
+        remaining = self.expires - timezone.now()
+        return max(ceil(remaining.total_seconds() / 86400), 0)
+
+    def get_upgrade_period_days(self) -> int:
+        repeat = self.package.get_repeat()
+        if not repeat:
+            return 0
+        start = self.expires - get_period_delta(repeat)
+        return max((self.expires.date() - start.date()).days, 1)
+
+    def can_upgrade_to(self, package: Package | None) -> bool:
+        if package is None:
+            return False
+        repeat = self.package.get_repeat()
+        return (
+            self.enabled
+            and self.active()
+            and self.get_upgrade_remaining_days() > 0
+            and bool(repeat)
+            and repeat == package.get_repeat()
+            and self.package.category == package.category
+            and package.name in PACKAGE_UPGRADES.get(self.package.name, ())
+            and package.price > self.package.price
+        )
+
+    @staticmethod
+    def round_upgrade_price(price: Decimal) -> Decimal:
+        return price.to_integral_value(rounding=ROUND_CEILING)
+
+    def get_valid_upgrade_package(self, package: Package | None = None) -> Package:
+        if package is None:
+            package = self.upgrade_package
+        if package is None or not self.can_upgrade_to(package):
+            raise ValueError("Subscription can not be upgraded to this package")
+        return package
+
+    def get_prorated_upgrade_price(self, package: Package | None = None) -> Decimal:
+        if package is None:
+            package = self.upgrade_package
+        if package is None or not self.can_upgrade_to(package):
+            return Decimal(0)
+        price_difference = Decimal(package.price - self.package.price)
+        return round_decimal(
+            price_difference
+            * Decimal(self.get_upgrade_remaining_days())
+            / Decimal(self.get_upgrade_period_days())
+        )
+
+    def get_upgrade_price(self, package: Package | None = None) -> Decimal:
+        return self.round_upgrade_price(self.get_prorated_upgrade_price(package))
+
+    def get_upgrade_unit_price(self, package: Package, currency: Currency) -> Decimal:
+        price = self.get_prorated_upgrade_price(package)
+        if currency == Currency.EUR:
+            return self.round_upgrade_price(price)
+        return self.round_upgrade_price(
+            ExchangeRates.convert_from_eur(
+                price, Currency(currency).label, timezone.localdate()
+            )
+        )
+
+    def upgrade_requires_payment(self, package: Package | None = None) -> bool:
+        package = self.get_valid_upgrade_package(package)
+        return self.get_upgrade_price(package) >= MINIMUM_UPGRADE_PAYMENT
+
+    def upgrade_without_payment(self, package: Package | None = None) -> None:
+        package = self.get_valid_upgrade_package(package)
+        if self.upgrade_requires_payment(package):
+            raise ValueError("Subscription upgrade requires payment")
+        self.package = package
+        self.save(update_fields=["package"])
+
+    @cached_property
     def payment_obj(self) -> Payment:
         if self.payment is None:
             raise ValueError("Missing payment!")
@@ -1326,8 +1474,10 @@ class Subscription(models.Model):
         customer_note: str = "",
         currency: Currency,
         extra: dict[str, Any],
-        start_date: datetime | None = None,
-        end_date: datetime | None = None,
+        start_date: date | datetime | None = None,
+        end_date: date | datetime | None = None,
+        description: str = "",
+        unit_price: Decimal | None = None,
     ) -> Invoice:
         invoice = Invoice.objects.create(
             customer=customer,
@@ -1340,9 +1490,15 @@ class Subscription(models.Model):
             currency=currency,
             category=package.get_invoice_category(),
         )
-        invoice.invoiceitem_set.create(
-            package=package, start_date=start_date, end_date=end_date
-        )
+        item: dict[str, Any] = {
+            "package": package,
+            "description": description,
+            "start_date": start_date,
+            "end_date": end_date,
+        }
+        if unit_price is not None:
+            item["unit_price"] = unit_price
+        invoice.invoiceitem_set.create(**item)
         if invoice.has_pdf:
             invoice.generate_files()
         return invoice
@@ -1404,6 +1560,36 @@ class Subscription(models.Model):
             customer_note=customer_note,
             start_date=start_date,
             end_date=start_date + get_period_delta(self.package.get_repeat()),
+        )
+
+    def create_upgrade_invoice(
+        self,
+        *,
+        kind: InvoiceKind,
+        package: Package | None = None,
+        customer_reference: str = "",
+        customer_note: str = "",
+    ) -> Invoice:
+        package = self.get_valid_upgrade_package(package)
+        if not self.upgrade_requires_payment(package):
+            raise ValueError("Subscription upgrade does not need payment")
+        currency = CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency]
+        start_date = timezone.localdate()
+        return self._create_invoice(
+            kind=kind,
+            customer=self.service.customer,
+            package=package,
+            currency=currency,
+            extra={
+                "subscription_upgrade": self.pk,
+                "package": package.name,
+            },
+            customer_reference=customer_reference,
+            customer_note=customer_note,
+            start_date=start_date,
+            end_date=self.expires.date(),
+            description=_("Upgrade to %s") % package,
+            unit_price=self.get_upgrade_unit_price(package, currency),
         )
 
     def get_expected_payment_amount(self) -> int:

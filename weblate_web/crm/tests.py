@@ -1512,6 +1512,227 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertNotContains(response, "Hosted 10k")
         self.assertNotContains(response, "Basic Support")
 
+    def test_service_detail_upgrade_invoice(self):
+        Package.objects.create(name="community", price=0)
+        current = Package.objects.create(
+            name="dedicated:160k",
+            verbose="Dedicated 160k",
+            price=100,
+            category=PackageCategory.PACKAGE_DEDICATED,
+        )
+        target = Package.objects.create(
+            name="dedicated:640k",
+            verbose="Dedicated 640k",
+            price=220,
+            category=PackageCategory.PACKAGE_DEDICATED,
+        )
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        service = Service.objects.create(customer=customer)
+        subscription = service.subscription_set.create(
+            package=current,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+
+        response = self.client.get(
+            reverse("crm:service-detail", kwargs={"pk": service.pk})
+        )
+        self.assertContains(response, "Issue upgrade quote")
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "upgrade_quote": "1",
+                "customer_reference": "PO-42",
+                "customer_note": "Upgrade approved",
+            },
+            follow=True,
+        )
+
+        invoice = Invoice.objects.get()
+        self.assertRedirects(response, invoice.get_absolute_url())
+        self.assertEqual(invoice.kind, InvoiceKind.QUOTE)
+        self.assertEqual(invoice.customer_reference, "PO-42")
+        self.assertEqual(invoice.customer_note, "Upgrade approved")
+        self.assertEqual(invoice.extra["subscription_upgrade"], subscription.pk)
+        self.assertEqual(invoice.extra["package"], target.name)
+        item = invoice.all_items[0]
+        self.assertEqual(item.package, target)
+        self.assertEqual(item.unit_price, subscription.get_upgrade_price(target))
+
+    def test_service_detail_support_upgrade_invoice(self):
+        Package.objects.create(name="community", price=0)
+        current = Package.objects.create(
+            name="basic",
+            verbose="Basic support",
+            price=100,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        Package.objects.create(
+            name="extended",
+            verbose="Extended support",
+            price=200,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        target = Package.objects.create(
+            name="premium",
+            verbose="Premium support",
+            price=400,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        service = Service.objects.create(customer=customer)
+        subscription = service.subscription_set.create(
+            package=current,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+
+        response = self.client.get(
+            reverse("crm:service-detail", kwargs={"pk": service.pk})
+        )
+        self.assertContains(response, "Extended support")
+        self.assertContains(response, "Premium support")
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "package": target.name,
+                "upgrade_quote": "1",
+                "customer_reference": "",
+                "customer_note": "",
+            },
+            follow=True,
+        )
+
+        invoice = Invoice.objects.get()
+        self.assertRedirects(response, invoice.get_absolute_url())
+        self.assertEqual(invoice.extra["subscription_upgrade"], subscription.pk)
+        self.assertEqual(invoice.extra["package"], target.name)
+        item = invoice.all_items[0]
+        self.assertEqual(item.package, target)
+        self.assertEqual(item.unit_price, subscription.get_upgrade_price(target))
+
+    def test_service_detail_upgrade_below_invoice_minimum(self):
+        Package.objects.create(name="community", price=0)
+        current = Package.objects.create(
+            name="basic",
+            verbose="Basic support",
+            price=100,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        target = Package.objects.create(
+            name="extended",
+            verbose="Extended support",
+            price=105,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        service = Service.objects.create(customer=customer)
+        subscription = service.subscription_set.create(
+            package=current,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+        self.assertLess(subscription.get_upgrade_price(target), Decimal(5))
+
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "package": target.name,
+                "upgrade_quote": "1",
+                "customer_reference": "",
+                "customer_note": "",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package, target)
+        self.assertEqual(subscription.payment, payment)
+        self.assertEqual(Invoice.objects.count(), 0)
+
+    def test_service_detail_upgrade_invalid_package(self):
+        Package.objects.create(name="community", price=0)
+        current = Package.objects.create(
+            name="basic",
+            verbose="Basic support",
+            price=100,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        service = Service.objects.create(customer=customer)
+        subscription = service.subscription_set.create(
+            package=current,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "package": "missing-package",
+                "upgrade_quote": "1",
+                "customer_reference": "",
+                "customer_note": "",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertContains(
+            response, "This subscription can not be upgraded to the selected package."
+        )
+        self.assertEqual(Invoice.objects.count(), 0)
+
+    def test_service_detail_upgrade_non_upgradeable_package(self):
+        Package.objects.create(name="community", price=0)
+        current = Package.objects.create(
+            name="premium",
+            verbose="Premium support",
+            price=400,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        target = Package.objects.create(
+            name="basic",
+            verbose="Basic support",
+            price=100,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        service = Service.objects.create(customer=customer)
+        subscription = service.subscription_set.create(
+            package=current,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "package": target.name,
+                "upgrade_quote": "1",
+                "customer_reference": "",
+                "customer_note": "",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertContains(
+            response, "This subscription can not be upgraded to the selected package."
+        )
+        self.assertEqual(Invoice.objects.count(), 0)
+
     def test_service_lists_exclude_donations_and_customer_detail_shows_them(self):
         Package.objects.create(name="community", price=0)
         customer = self.create_customer()

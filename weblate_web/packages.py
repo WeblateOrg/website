@@ -35,20 +35,25 @@ def package_name(number: int) -> str:
 
 PACKAGE_NAMES: dict[int, str] = {limit: package_name(limit) for limit in PACKAGES}
 
-PACKAGE_UPGRADES: dict[str, str] = {
+PACKAGE_UPGRADES: dict[str, tuple[str, ...]] = {
     # Used in tests
-    "test:test": "test:test",
-    "test:test-1": "test:test-2",
+    "test:test": ("test:test",),
+    "test:test-1": ("test:test-2",),
+    # Self-hosted support upgrades
+    "basic": ("extended", "premium"),
+    "extended": ("premium",),
     # Migration to new plans
-    "dedicated:basic": "dedicated:160k",
-    "dedicated:medium": "dedicated:160k",
-    "dedicated:advanced": "dedicated:640k",
-    "dedicated:enterprise": "dedicated:10m",
+    "dedicated:basic": ("dedicated:160k",),
+    "dedicated:medium": ("dedicated:160k",),
+    "dedicated:advanced": ("dedicated:640k",),
+    "dedicated:enterprise": ("dedicated:10m",),
 }
 previous: str | None = None
 for name in PACKAGE_NAMES.values():
     if previous is not None:
-        PACKAGE_UPGRADES[f"{DEDICATED_PREFIX}{previous}"] = f"{DEDICATED_PREFIX}{name}"
-        PACKAGE_UPGRADES[f"{HOSTED_PREFIX}{previous}"] = f"{HOSTED_PREFIX}{name}"
+        PACKAGE_UPGRADES[f"{DEDICATED_PREFIX}{previous}"] = (
+            f"{DEDICATED_PREFIX}{name}",
+        )
+        PACKAGE_UPGRADES[f"{HOSTED_PREFIX}{previous}"] = (f"{HOSTED_PREFIX}{name}",)
     previous = name
 del previous

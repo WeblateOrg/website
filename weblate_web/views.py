@@ -76,6 +76,7 @@ from weblate_web.models import (
     Project,
     Service,
     Subscription,
+    UnprocessablePaymentError,
     add_subscription_past_payments,
     get_donation_package_verbose,
     get_donation_reward_package_names,
@@ -677,9 +678,20 @@ def process_payment(request):
             ),
         )
     elif payment.state == Payment.ACCEPTED:
-        if "subscription" in payment.extra:
-            messages.success(request, gettext("Thank you for your subscription."))
-            process_subscription(payment)
+        if "subscription" in payment.extra or "subscription_upgrade" in payment.extra:
+            try:
+                process_subscription(payment)
+            except UnprocessablePaymentError as error:
+                sentry_sdk.capture_exception(error)
+                messages.error(
+                    request,
+                    gettext(
+                        "Payment was processed, but the subscription could not be "
+                        "updated. Please contact us."
+                    ),
+                )
+            else:
+                messages.success(request, gettext("Thank you for your subscription."))
         else:
             messages.success(
                 request,
@@ -1042,6 +1054,50 @@ def subscription_pay(request, pk):
 
 @require_POST
 @login_required
+def subscription_upgrade(request, pk):
+    subscription = get_object_or_404(
+        Subscription, pk=pk, service__customer__users=request.user
+    )
+    package = None
+    if package_name := request.POST.get("package"):
+        package = Package.objects.filter(name=package_name).first()
+        if package is None:
+            messages.error(
+                request,
+                gettext(
+                    "This subscription can not be upgraded to the selected package."
+                ),
+            )
+            return redirect("user")
+    try:
+        if not subscription.upgrade_requires_payment(package):
+            subscription.upgrade_without_payment(package)
+            return redirect("user")
+    except ValueError:
+        messages.error(
+            request,
+            gettext("This subscription can not be upgraded to the selected package."),
+        )
+        return redirect("user")
+    with override("en"):
+        try:
+            invoice = subscription.create_upgrade_invoice(
+                kind=InvoiceKind.DRAFT, package=package
+            )
+        except ValueError:
+            messages.error(
+                request,
+                gettext(
+                    "This subscription can not be upgraded to the selected package."
+                ),
+            )
+            return redirect("user")
+        payment = invoice.create_payment()
+    return redirect(payment.get_payment_url())
+
+
+@require_POST
+@login_required
 def donate_pay(request, pk):
     donation = get_object_or_404(
         Service.objects.donations(),
@@ -1079,11 +1135,34 @@ def subscription_new(request):
         service = None
 
     customer = get_customer(request, service)
+    recurring = package.get_repeat()
     with override("en"):
-        invoice = Subscription.new_subscription_invoice(
-            kind=InvoiceKind.DRAFT, customer=customer, package=package, service=service
-        )
-        payment = invoice.create_payment(recurring=package.get_repeat())
+        if service:
+            for subscription in service.support_subscriptions:
+                if subscription.can_upgrade_to(package):
+                    if not subscription.upgrade_requires_payment(package):
+                        subscription.upgrade_without_payment(package)
+                        return redirect("user")
+                    invoice = subscription.create_upgrade_invoice(
+                        kind=InvoiceKind.DRAFT, package=package
+                    )
+                    recurring = ""
+                    break
+            else:
+                invoice = Subscription.new_subscription_invoice(
+                    kind=InvoiceKind.DRAFT,
+                    customer=customer,
+                    package=package,
+                    service=service,
+                )
+        else:
+            invoice = Subscription.new_subscription_invoice(
+                kind=InvoiceKind.DRAFT,
+                customer=customer,
+                package=package,
+                service=service,
+            )
+        payment = invoice.create_payment(recurring=recurring)
     return redirect(payment.get_payment_url())
 
 
