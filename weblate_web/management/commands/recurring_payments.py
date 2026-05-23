@@ -155,13 +155,16 @@ class Command(BaseCommand):
 
         # Create repeated payment
         if payment.paid_invoice:
-            # TODO: use package from the current subscriptions instead of copying
-            invoice = payment.paid_invoice.duplicate(
-                kind=InvoiceKind.DRAFT,
-                extra=extra,
-                start_date=end_date + timedelta(days=1),
-                end_date=end_date + get_period_delta(recurring),
-            )
+            if subscription_id := extra.get("subscription"):
+                subscription = Subscription.objects.get(pk=subscription_id)
+                invoice = subscription.create_invoice(kind=InvoiceKind.DRAFT)
+            else:
+                invoice = payment.paid_invoice.duplicate(
+                    kind=InvoiceKind.DRAFT,
+                    extra=extra,
+                    start_date=end_date + timedelta(days=1),
+                    end_date=end_date + get_period_delta(recurring),
+                )
             repeated = invoice.create_payment(
                 recurring=recurring, backend=payment.backend, repeat=payment
             )

@@ -1030,7 +1030,7 @@ class Invoice(models.Model):  # noqa: PLR0904
         if not self.can_be_paid(InvoiceKind.DRAFT):
             raise ValueError("Payment already exists for this invoice!")
         return self.draft_payment_set.create(
-            amount=float(self.total_amount),
+            amount=int(self.total_amount),
             amount_fixed=True,
             description=self.get_description(),
             recurring=recurring,

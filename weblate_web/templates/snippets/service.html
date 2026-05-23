@@ -194,7 +194,7 @@
       </div>
       <div class="line-right">
         <div class="inner-grid">
-          {% for package, name, desc1, desc2, image, text in service_suggestions %}
+          {% for package, name, desc1, desc2, image, text, subscription_pk in service_suggestions %}
             <div class="grid-item1">
               <img src="{% static image %}" alt="logo">
             </div>
@@ -207,8 +207,18 @@
               </t>
             </div>
             <div class="grid-item3">
-              <a class="button med inline"
-                 href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ text }}</a>
+              {% if subscription_pk %}
+                <form class="form-inline"
+                      method="post"
+                      action="{% url "subscription-upgrade" pk=subscription_pk %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="package" value="{{ package }}">
+                  <input type="submit" class="button med inline" value="{{ text }}">
+                </form>
+              {% else %}
+                <a class="button med inline"
+                   href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ text }}</a>
+              {% endif %}
             </div>
           {% empty %}
             {% translate "Congratulations, you are fully covered!" %}

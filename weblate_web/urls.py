@@ -70,6 +70,7 @@ from weblate_web.views import (
     subscription_disable_repeat,
     subscription_new,
     subscription_pay,
+    subscription_upgrade,
     subscription_view,
 )
 
@@ -198,6 +199,11 @@ urlpatterns = [
             name="service-discovery-add",
         ),
         path("subscription/pay/<int:pk>/", subscription_pay, name="subscription-pay"),
+        path(
+            "subscription/upgrade/<int:pk>/",
+            subscription_upgrade,
+            name="subscription-upgrade",
+        ),
         path(
             "subscription/view/<int:pk>/",
             subscription_view,

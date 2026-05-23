@@ -53,9 +53,11 @@ from .models import (
     Service,
     ServiceKind,
     Subscription,
+    UnprocessablePaymentError,
     add_subscription_past_payments,
     get_donation_package,
     get_donation_reward_package_name,
+    process_payment,
     sync_packages,
     validate_bitmap,
 )
@@ -1205,9 +1207,21 @@ class FakturaceTestCase(UserTestCase):
             [
                 Package(name="community", verbose="Community support", price=0),
                 Package(
+                    name="basic",
+                    verbose="Basic support",
+                    price=21,
+                    category=PackageCategory.PACKAGE_SUPPORT,
+                ),
+                Package(
                     name="extended",
                     verbose="Extended support",
                     price=42,
+                    category=PackageCategory.PACKAGE_SUPPORT,
+                ),
+                Package(
+                    name="premium",
+                    verbose="Premium support",
+                    price=84,
                     category=PackageCategory.PACKAGE_SUPPORT,
                 ),
                 Package(
@@ -3857,18 +3871,41 @@ class ServiceTest(FakturaceTestCase):
         with override("en"):
             self.login()
             service = self.create_service(
-                years=0, days=3, recurring="", package="test:test-1"
+                years=0, days=10, recurring="", package="test:test-1"
             )
+            service.customer.country = "US"
+            service.customer.save(update_fields=["country"])
             suggestions = service.get_suggestions()
             self.assertEqual(len(suggestions), 1)
             self.assertEqual(suggestions[0][0], "test:test-2")
-            params: dict[str, str | int] = {
-                "plan": "test:test-2",
-                "service": service.pk,
-            }
-            response = self.client.get(reverse("subscription-new"), params, follow=True)
+            subscription = service.subscription_set.get()
+            expires = subscription.expires
+            target = Package.objects.get(name="test:test-2")
+            upgrade_price = subscription.get_upgrade_price(target)
+            self.assertGreaterEqual(upgrade_price, Decimal(5))
+
+            response = self.client.post(
+                reverse("subscription-upgrade", kwargs={"pk": subscription.pk}),
+                follow=True,
+            )
             payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
             self.assertTrue(payment_url.startswith("/en/payment/"))
+            payment = Payment.objects.get(state=Payment.NEW)
+            draft_invoice = payment.draft_invoice
+            self.assertIsNotNone(draft_invoice)
+            draft_invoice = cast("Invoice", draft_invoice)
+            self.assertEqual(payment.recurring, "")
+            self.assertEqual(payment.amount, int(upgrade_price))
+            self.assertEqual(draft_invoice.total_amount, upgrade_price)
+            self.assertEqual(
+                draft_invoice.extra["subscription_upgrade"],
+                subscription.pk,
+            )
+            self.assertEqual(draft_invoice.get_package(), target)
+            self.assertEqual(
+                draft_invoice.all_items[0].unit_price,
+                upgrade_price,
+            )
             response = self.client.post(payment_url, {"method": "pay"}, follow=True)
             self.assertRedirects(response, reverse("user"))
             self.assertContains(response, "Weblate hosting (upgraded)")
@@ -3877,6 +3914,260 @@ class ServiceTest(FakturaceTestCase):
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
         self.assertEqual(hosted[0].package.name, "test:test-2")
+        self.assertEqual(hosted[0].expires, expires)
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PROCESSED)
+        self.assertEqual(payment.start, timezone.localdate())
+        self.assertEqual(payment.end, expires.date())
+        self.assertFalse(hosted[0].upgrade_package)
+
+    def test_hosted_upgrade_below_invoice_minimum(self) -> None:
+        with override("en"):
+            self.login()
+            service = self.create_service(
+                years=0, days=3, recurring="", package="test:test-1"
+            )
+            subscription = service.subscription_set.get()
+            original_payment = subscription.payment
+            expires = subscription.expires
+            target = Package.objects.get(name="test:test-2")
+            self.assertLess(subscription.get_upgrade_price(target), Decimal(5))
+            with self.assertRaises(ValueError):
+                subscription.create_upgrade_invoice(
+                    kind=InvoiceKind.DRAFT, package=target
+                )
+
+            response = self.client.post(
+                reverse("subscription-upgrade", kwargs={"pk": subscription.pk}),
+                follow=True,
+            )
+
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(response, "Weblate hosting (upgraded)")
+
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package, target)
+        self.assertEqual(subscription.payment, original_payment)
+        self.assertEqual(subscription.expires, expires)
+        self.assertEqual(Payment.objects.count(), 1)
+        self.assertEqual(Invoice.objects.count(), 0)
+
+    def test_hosted_upgrade_full_remaining_period(self) -> None:
+        self.login()
+        service = self.create_service(package="test:test-1")
+        subscription = service.subscription_set.get()
+        target = Package.objects.get(name="test:test-2")
+
+        self.assertEqual(
+            subscription.get_upgrade_price(target),
+            Decimal(target.price - subscription.package.price),
+        )
+
+    def test_hosted_upgrade_rejects_downgrade(self) -> None:
+        self.login()
+        service = self.create_service(package="test:test-2")
+        subscription = service.subscription_set.get()
+        target = Package.objects.get(name="test:test-1")
+
+        self.assertIsNone(subscription.upgrade_package)
+        self.assertFalse(subscription.can_upgrade_to(target))
+        with self.assertRaises(ValueError):
+            subscription.create_upgrade_invoice(kind=InvoiceKind.DRAFT, package=target)
+
+    def test_hosted_upgrade_invalid_post_redirects(self) -> None:
+        with override("en"):
+            self.login()
+            service = self.create_service(package="test:test-1")
+            subscription = service.subscription_set.get()
+
+            response = self.client.post(
+                reverse("subscription-upgrade", kwargs={"pk": subscription.pk}),
+                {"package": "test:test-1"},
+                follow=True,
+            )
+
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(
+                response,
+                "This subscription can not be upgraded to the selected package.",
+            )
+            self.assertFalse(Payment.objects.filter(state=Payment.NEW).exists())
+
+    def test_upgrade_payment_invalid_data_is_unprocessable(self) -> None:
+        service = self.create_service(package="test:test-1")
+        subscription = service.subscription_set.get()
+        payment = Payment.objects.create(
+            amount=1,
+            customer=service.customer,
+            extra={
+                "subscription_upgrade": subscription.pk,
+                "package": "missing-package",
+            },
+            state=Payment.ACCEPTED,
+        )
+
+        with self.assertRaises(UnprocessablePaymentError):
+            process_payment(payment)
+
+    def test_upgrade_payment_invalid_data_shows_error(self) -> None:
+        with override("en"):
+            self.login()
+            service = self.create_service(package="test:test-1")
+            subscription = service.subscription_set.get()
+            payment = Payment.objects.create(
+                amount=1,
+                customer=service.customer,
+                extra={
+                    "subscription_upgrade": subscription.pk,
+                    "package": "missing-package",
+                },
+                state=Payment.ACCEPTED,
+            )
+
+            response = self.client.get(
+                reverse("donate-process"),
+                {"payment": str(payment.pk)},
+                follow=True,
+            )
+
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(
+                response,
+                "Payment was processed, but the subscription could not be updated. "
+                "Please contact us.",
+            )
+
+        payment.refresh_from_db()
+        subscription.refresh_from_db()
+        self.assertEqual(payment.state, Payment.ACCEPTED)
+        self.assertEqual(subscription.package.name, "test:test-1")
+
+    @responses.activate
+    def test_support_upgrade_to_premium(self) -> None:
+        mock_vies()
+        cnb_mock_rates()
+        with override("en"):
+            self.login()
+            service = self.create_service(
+                years=0, days=3, recurring="", package="basic"
+            )
+            service.customer.country = "US"
+            service.customer.save(update_fields=["country"])
+            subscription = service.subscription_set.get()
+            expires = subscription.expires
+            suggestions = {
+                suggestion[0]: suggestion for suggestion in service.get_suggestions()
+            }
+            self.assertEqual(suggestions["extended"][5], "Stay updated")
+            self.assertEqual(suggestions["premium"][5], "Be premium")
+            self.assertEqual(suggestions["extended"][6], subscription.pk)
+            self.assertEqual(suggestions["premium"][6], subscription.pk)
+            target = Package.objects.get(name="premium")
+            self.assertEqual(
+                subscription.get_upgrade_price(target),
+                Decimal(1),
+            )
+            original_payment = subscription.payment
+
+            response = self.client.post(
+                reverse("subscription-upgrade", kwargs={"pk": subscription.pk}),
+                {"package": "premium"},
+                follow=True,
+            )
+
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(response, "Premium support")
+
+        service = Service.objects.get(pk=service.pk)
+        subscription = service.subscription_set.get()
+        self.assertEqual(subscription.package.name, "premium")
+        self.assertEqual(subscription.payment, original_payment)
+        self.assertEqual(subscription.expires, expires)
+        self.assertEqual(Payment.objects.count(), 1)
+        self.assertEqual(Invoice.objects.count(), 0)
+
+    def test_subscription_new_support_upgrade_below_invoice_minimum(self) -> None:
+        with override("en"):
+            self.login()
+            service = self.create_service(
+                years=0, days=3, recurring="", package="basic"
+            )
+            subscription = service.subscription_set.get()
+            original_payment = subscription.payment
+            expires = subscription.expires
+            target = Package.objects.get(name="premium")
+            self.assertLess(subscription.get_upgrade_price(target), Decimal(5))
+
+            response = self.client.get(
+                reverse("subscription-new"),
+                {"plan": "premium", "service": str(service.pk)},
+                follow=True,
+            )
+
+            self.assertRedirects(response, reverse("user"))
+            self.assertContains(response, "Premium support")
+
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package, target)
+        self.assertEqual(subscription.payment, original_payment)
+        self.assertEqual(subscription.expires, expires)
+        self.assertEqual(Payment.objects.count(), 1)
+        self.assertEqual(Invoice.objects.count(), 0)
+
+    def test_extended_support_upgrade_to_premium(self) -> None:
+        self.login()
+        service = self.create_service(package="extended")
+        subscription = service.subscription_set.get()
+        target = Package.objects.get(name="premium")
+
+        self.assertEqual(subscription.upgrade_package, target)
+        self.assertTrue(subscription.can_upgrade_to(target))
+
+    @responses.activate
+    def test_upgrade_replaces_recurring_payment(self) -> None:
+        mock_vies()
+        cnb_mock_rates()
+        with override("en"):
+            self.login()
+            service = self.create_service(
+                years=1, days=0, recurring="y", package="basic"
+            )
+            service.customer.country = "US"
+            service.customer.save(update_fields=["country"])
+            subscription = service.subscription_set.get()
+            recurring_payment = subscription.payment_obj
+            recurring_payment.paid_invoice = subscription.create_invoice(
+                kind=InvoiceKind.INVOICE
+            )
+            recurring_payment.save(update_fields=["paid_invoice"])
+
+            response = self.client.post(
+                reverse("subscription-upgrade", kwargs={"pk": subscription.pk}),
+                {"package": "premium"},
+                follow=True,
+            )
+            payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
+            self.assertTrue(payment_url.startswith("/en/payment/"))
+            upgrade_payment = Payment.objects.exclude(pk=recurring_payment.pk).get()
+            response = self.client.post(payment_url, {"method": "pay"}, follow=True)
+            self.assertRedirects(response, reverse("user"))
+
+        subscription.refresh_from_db()
+        upgrade_payment.refresh_from_db()
+        self.assertEqual(subscription.package.name, "premium")
+        self.assertEqual(subscription.payment, upgrade_payment)
+        self.assertEqual(upgrade_payment.recurring, "")
+        self.assertIn(recurring_payment, subscription.past_payments.all())
+        self.assertEqual(upgrade_payment.state, Payment.PROCESSED)
+
+        subscription.expires = timezone.now() - timedelta(days=2)
+        subscription.save(update_fields=["expires"])
+        with patch.object(
+            RecurringPaymentsCommand, "peform_payment"
+        ) as perform_payment:
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        perform_payment.assert_not_called()
 
 
 class CommandsTestCase(FakturaceTestCase):
