@@ -19,7 +19,6 @@
 
 from __future__ import annotations
 
-import sys
 from datetime import datetime, timedelta
 from io import BytesIO
 from typing import TYPE_CHECKING, Any
@@ -72,6 +71,12 @@ if TYPE_CHECKING:
     from weblate_web.invoices.models import InvoiceKind
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
+PILLOW_VALIDATION_ERRORS = (
+    OSError,
+    SyntaxError,
+    ValueError,
+    PILImage.DecompressionBombError,
+)
 
 REWARDS = (
     (0, gettext_lazy("No reward")),
@@ -156,21 +161,24 @@ def validate_bitmap(value) -> None:
         # load() could spot a truncated JPEG, but it loads the entire
         # image in memory, which is a DoS vector. See #3848 and #18520.
         image = PILImage.open(content)
-        # verify() must be called immediately after the constructor.
-        image.verify()
+    except PILLOW_VALIDATION_ERRORS as error:
+        # Pillow doesn't recognize it as a valid image.
+        raise ValidationError(_("Invalid image!"), code="invalid_image") from error
+
+    with image:
+        try:
+            # verify() must be called immediately after the constructor.
+            image.verify()
+        except PILLOW_VALIDATION_ERRORS as error:
+            # Pillow doesn't recognize it as a valid image.
+            raise ValidationError(_("Invalid image!"), code="invalid_image") from error
 
         # Pillow doesn't detect the MIME type of all formats. In those
         # cases, content_type will be None.
         value.file.content_type = PILImage.MIME.get(
             image.format  # type: ignore[arg-type]
         )
-    except Exception as error:
-        # Pillow doesn't recognize it as an image.
-        raise ValidationError(_("Invalid image!"), code="invalid_image").with_traceback(
-            sys.exc_info()[2]
-        ) from error
 
-    try:
         if hasattr(value.file, "seek") and callable(value.file.seek):
             value.file.seek(0)
 
@@ -185,9 +193,6 @@ def validate_bitmap(value) -> None:
             raise ValidationError(
                 _("Please upload an image with a resolution of 570 x 260 pixels.")
             )
-
-    finally:
-        image.close()
 
 
 class MySQLSearchLookup(models.Lookup):  # pylint: disable=abstract-method
