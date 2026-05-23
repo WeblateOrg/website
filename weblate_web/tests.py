@@ -6,12 +6,13 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from decimal import Decimal
 from importlib import import_module
-from io import StringIO
+from io import BytesIO, StringIO
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
 from uuid import uuid4
 from xml.etree import ElementTree  # noqa: S405
+from zlib import crc32
 
 import responses
 from dateutil.relativedelta import relativedelta
@@ -20,6 +21,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.signing import dumps
 from django.db import connection
@@ -30,6 +32,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
+from PIL import Image as PILImage
 from requests.exceptions import HTTPError
 from wlc import WeblateException
 
@@ -54,6 +57,7 @@ from .models import (
     get_donation_package,
     get_donation_reward_package_name,
     sync_packages,
+    validate_bitmap,
 )
 from .payments.validators import VAT_VALIDITY_DAYS
 from .remote import (
@@ -1012,6 +1016,114 @@ class UtilTestCase(TestCase):
                 "text": "Sources tarball, gzip compressed",
                 "url": "https://files.pythonhosted.org/packages/14/9c/b3501dc08c06d1c3f9f9b71746268731b7b25e9b13122679d8a219b74857/Weblate-5.3.1.tar.gz",
             },
+        )
+
+
+class BitmapValidationTest(SimpleTestCase):
+    """Bitmap validation testing."""
+
+    @staticmethod
+    def get_image_content(
+        image_format: str, size: tuple[int, int] = (570, 260)
+    ) -> bytes:
+        content = BytesIO()
+        PILImage.new("RGB", size).save(content, image_format)
+        return content.getvalue()
+
+    @classmethod
+    def get_uploaded_image(
+        cls, image_format: str, size: tuple[int, int] = (570, 260)
+    ) -> SimpleUploadedFile:
+        return SimpleUploadedFile(
+            f"image.{image_format.lower()}", cls.get_image_content(image_format, size)
+        )
+
+    @staticmethod
+    def corrupt_png_chunk_crc(content: bytes, chunk_type: bytes) -> bytes:
+        data = bytearray(content)
+        position = 8
+        while position < len(data):
+            chunk_length = int.from_bytes(data[position : position + 4], "big")
+            crc_position = position + 8 + chunk_length
+            if data[position + 4 : position + 8] == chunk_type:
+                data[crc_position] ^= 1
+                return bytes(data)
+            position = crc_position + 4
+        raise ValueError(f"Missing PNG chunk: {chunk_type!r}")
+
+    @staticmethod
+    def resize_png_header(content: bytes, size: tuple[int, int]) -> bytes:
+        data = bytearray(content)
+        data[16:20] = size[0].to_bytes(4, "big")
+        data[20:24] = size[1].to_bytes(4, "big")
+        data[29:33] = crc32(data[12:29]).to_bytes(4, "big")
+        return bytes(data)
+
+    def test_valid_png(self) -> None:
+        upload = self.get_uploaded_image("PNG")
+
+        validate_bitmap(upload)
+
+        upload_file = upload.file
+        if upload_file is None:
+            self.fail("Uploaded file was closed")
+        self.assertEqual(cast("Any", upload_file).content_type, "image/png")
+        self.assertEqual(upload_file.tell(), 0)
+
+    def test_invalid_image(self) -> None:
+        upload = SimpleUploadedFile("image.png", b"invalid image")
+
+        with self.assertRaises(ValidationError) as error:
+            validate_bitmap(upload)
+
+        self.assertEqual(error.exception.code, "invalid_image")
+        self.assertEqual(error.exception.messages, ["Invalid image!"])
+
+    def test_corrupt_identified_image(self) -> None:
+        upload = SimpleUploadedFile(
+            "image.png",
+            self.corrupt_png_chunk_crc(self.get_image_content("PNG"), b"IDAT"),
+        )
+
+        with self.assertRaises(ValidationError) as error:
+            validate_bitmap(upload)
+
+        self.assertEqual(error.exception.code, "invalid_image")
+        self.assertEqual(error.exception.messages, ["Invalid image!"])
+
+    def test_decompression_bomb_image(self) -> None:
+        upload = SimpleUploadedFile(
+            "image.png",
+            self.resize_png_header(
+                self.get_image_content("PNG", (1, 1)), (20_000, 20_000)
+            ),
+        )
+
+        with self.assertRaises(ValidationError) as error:
+            validate_bitmap(upload)
+
+        self.assertEqual(error.exception.code, "invalid_image")
+        self.assertEqual(error.exception.messages, ["Invalid image!"])
+
+    def test_unsupported_image_type(self) -> None:
+        upload = self.get_uploaded_image("GIF")
+
+        with self.assertRaises(ValidationError) as error:
+            validate_bitmap(upload)
+
+        self.assertEqual(
+            error.exception.messages, ["Unsupported image type: image/gif"]
+        )
+
+    def test_invalid_image_dimensions(self) -> None:
+        upload = self.get_uploaded_image("PNG", (570, 261))
+
+        with self.assertRaises(ValidationError) as error:
+            validate_bitmap(upload)
+
+        self.assertEqual(
+            error.exception.messages,
+            ["Please upload an image with a resolution of 570 x 260 pixels."],
         )
 
 
