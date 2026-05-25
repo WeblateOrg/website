@@ -1141,7 +1141,12 @@ def subscription_new(request):
             for subscription in service.support_subscriptions:
                 if subscription.can_upgrade_to(package):
                     if not subscription.upgrade_requires_payment(package):
-                        subscription.upgrade_without_payment(package)
+                        messages.info(
+                            request,
+                            gettext(
+                                "Please confirm the upgrade from your account page."
+                            ),
+                        )
                         return redirect("user")
                     invoice = subscription.create_upgrade_invoice(
                         kind=InvoiceKind.DRAFT, package=package
