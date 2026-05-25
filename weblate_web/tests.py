@@ -8,6 +8,7 @@ from decimal import Decimal
 from importlib import import_module
 from io import BytesIO, StringIO
 from pathlib import Path
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
 from uuid import uuid4
@@ -24,7 +25,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.signing import dumps
-from django.db import connection
+from django.db import IntegrityError, connection, transaction
 from django.db.migrations.executor import MigrationExecutor
 from django.db.models.deletion import RestrictedError
 from django.test import RequestFactory, SimpleTestCase, TestCase, TransactionTestCase
@@ -36,6 +37,7 @@ from PIL import Image as PILImage
 from requests.exceptions import HTTPError
 from wlc import WeblateException
 
+from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.payments.models import Customer, Payment
 
@@ -46,10 +48,12 @@ from .management.commands.recurring_payments import Command as RecurringPayments
 from .middleware import SecurityMiddleware
 from .models import (
     REWARD_LEVELS,
+    ExternalSyncState,
     Package,
     PackageCategory,
     Post,
     Report,
+    SamlIdentity,
     Service,
     ServiceKind,
     Subscription,
@@ -72,6 +76,7 @@ from .remote import (
     get_contributors,
     get_release,
 )
+from .saml import HostedSaml2Backend, get_username_max_length, sync_saml_identity
 from .templatetags.downloads import downloadlink, filesizeformat
 from .templatetags.prices import price_format
 from .utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
@@ -3168,6 +3173,520 @@ class APITest(UserTestCase):
         self.assertFalse(User.objects.filter(username="testuser").exists())
         self.assertTrue(User.objects.filter(username="other").exists())
 
+    def test_user_external_id(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": "remote",
+                            "last_name": "Remote User",
+                            "email": "remote@example.com",
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "User created"})
+        user = User.objects.get(username="remote")
+        self.assertEqual(user.email, "remote@example.com")
+        self.assertEqual(
+            user.saml_identities.get().external_id,
+            "42",
+        )
+        old_password = user.password
+
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "changes": {
+                            "username": "renamed",
+                            "email": "renamed@example.com",
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "User updated"})
+        user.refresh_from_db()
+        self.assertEqual(user.username, "renamed")
+        self.assertEqual(user.email, "renamed@example.com")
+        self.assertNotEqual(user.password, old_password)
+        self.assertEqual(User.objects.count(), 1)
+
+    def test_user_external_id_unique_username(self) -> None:
+        User.objects.create_user(username="taken", email="taken@example.com")
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": "remote",
+                            "email": "remote@example.com",
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(email="remote@example.com")
+
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "changes": {"username": "taken"},
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        user.refresh_from_db()
+        self.assertEqual(user.username, "taken-1")
+
+    def test_user_external_id_normalizes_fallback_username(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "bad id!" * 30,
+                        "profile": {"email": "remote@example.com"},
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(email="remote@example.com")
+        self.assertLessEqual(len(user.username), get_username_max_length())
+        self.assertNotIn(" ", user.username)
+        self.assertNotIn("!", user.username)
+
+    def test_user_external_id_prefers_is_active(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": "remote",
+                            "email": "remote@example.com",
+                            "active": True,
+                            "is_active": False,
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.get(username="remote").is_active)
+
+    def test_saml_login_does_not_cycle_unusable_password(self) -> None:
+        user = self.create_user()
+        user.set_unusable_password()
+        user.save(update_fields=["password"])
+        SamlIdentity.objects.create(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="42",
+            user=user,
+        )
+        old_password = user.password
+
+        sync_saml_identity(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="42",
+            profile={"email": "renamed@example.com"},
+        )
+
+        user.refresh_from_db()
+        self.assertEqual(user.email, "renamed@example.com")
+        self.assertEqual(user.password, old_password)
+
+    def test_saml_backend_rejects_empty_nameid(self) -> None:
+        backend = HostedSaml2Backend()
+
+        self.assertEqual(
+            backend._extract_user_identifier_params(  # pylint: disable=protected-access
+                {"name_id": SimpleNamespace(text=None)}, {}, {}
+            ),
+            ("external_id", None),
+        )
+        self.assertEqual(
+            backend._extract_user_identifier_params(  # pylint: disable=protected-access
+                {"name_id": SimpleNamespace(text=" ")}, {}, {}
+            ),
+            ("external_id", None),
+        )
+        self.assertEqual(
+            backend._extract_user_identifier_params(  # pylint: disable=protected-access
+                {"name_id": SimpleNamespace(text="hosted-user-42")}, {}, {}
+            ),
+            ("external_id", "hosted-user-42"),
+        )
+
+    def test_user_external_id_links_legacy_user(self) -> None:
+        user = self.create_user()
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": user.username,
+                            "email": "new@example.com",
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "User updated"})
+        user.refresh_from_db()
+        self.assertEqual(user.email, "new@example.com")
+        self.assertTrue(
+            SamlIdentity.objects.filter(user=user, external_id="42").exists()
+        )
+
+    def test_user_external_id_rejects_already_linked_legacy_user(self) -> None:
+        user = self.create_user()
+        SamlIdentity.objects.create(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="old",
+            user=user,
+        )
+
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "new",
+                        "profile": {
+                            "username": user.username,
+                            "email": user.email,
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(SamlIdentity.objects.filter(external_id="new").exists())
+
+    def test_user_external_id_unique_per_provider_user(self) -> None:
+        user = self.create_user()
+        SamlIdentity.objects.create(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="old",
+            user=user,
+        )
+
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            SamlIdentity.objects.create(
+                provider="https://hosted.weblate.org/idp/metadata",
+                external_id="new",
+                user=user,
+            )
+
+        SamlIdentity.objects.create(
+            provider="https://other.example/idp/metadata",
+            external_id="new",
+            user=user,
+        )
+
+    def test_user_external_id_deletes_losing_race_user(self) -> None:
+        def create_existing_identity(
+            *_args: object, **_kwargs: object
+        ) -> tuple[SamlIdentity, bool]:
+            user = User.objects.create_user(
+                username="winner", email="winner@example.com"
+            )
+            identity = SamlIdentity.objects.create(
+                provider="https://hosted.weblate.org/idp/metadata",
+                external_id="42",
+                user=user,
+            )
+            return identity, False
+
+        with patch(
+            "weblate_web.saml.SamlIdentity.objects.get_or_create",
+            side_effect=create_existing_identity,
+        ):
+            user, created = sync_saml_identity(
+                provider="https://hosted.weblate.org/idp/metadata",
+                external_id="42",
+                profile={"email": "remote@example.com"},
+            )
+
+        self.assertFalse(created)
+        self.assertIsNotNone(user)
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.get().email, "remote@example.com")
+
+    def test_user_external_id_duplicate_email(self) -> None:
+        User.objects.create_user(username="first", email="dup@example.com")
+        User.objects.create_user(username="second", email="dup@example.com")
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": "remote",
+                            "email": "dup@example.com",
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(SamlIdentity.objects.exists())
+
+    def test_user_database_error(self) -> None:
+        with patch(
+            "weblate_web.views.sync_saml_payload",
+            side_effect=IntegrityError("broken"),
+        ):
+            response = self.client.post(
+                "/api/user/",
+                {
+                    "payload": dumps(
+                        {"external_id": "42"},
+                        key=settings.PAYMENT_SECRET,
+                        salt="weblate.user",
+                    )
+                },
+            )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_user_malformed_legacy_payload(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {"username": "remote", "create": "not a mapping"},
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(username="remote").exists())
+
+    def test_user_invalid_payload_type(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    ["external_id", "42"],
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(SamlIdentity.objects.exists())
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_counts_successful_payloads(self) -> None:
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {
+                        "cursor": "cursor-1",
+                        "users": [
+                            {"external_id": " "},
+                            {"username": "broken"},
+                            {
+                                "external_id": "42",
+                                "profile": {
+                                    "username": "remote",
+                                    "email": "remote@example.com",
+                                },
+                            },
+                        ],
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+        output = StringIO()
+        error = StringIO()
+
+        call_command("sync_hosted_users", stdout=output, stderr=error)
+
+        self.assertIn("Synchronized 1 hosted users", output.getvalue())
+        self.assertIn("Skipping hosted user payload", error.getvalue())
+        self.assertIn("Not advancing hosted user sync cursor", error.getvalue())
+        self.assertTrue(User.objects.filter(username="remote").exists())
+        self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_skips_empty_external_id(self) -> None:
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {"cursor": "cursor-1", "users": [{"external_id": " "}]},
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+        output = StringIO()
+        error = StringIO()
+
+        call_command("sync_hosted_users", stdout=output, stderr=error)
+
+        self.assertIn("Synchronized 0 hosted users", output.getvalue())
+        self.assertIn("Skipping hosted user payload", error.getvalue())
+        self.assertIn("Not advancing hosted user sync cursor", error.getvalue())
+        self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_updates_cursor(self) -> None:
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {
+                        "cursor": "cursor-1",
+                        "users": [
+                            {
+                                "external_id": "42",
+                                "profile": {
+                                    "username": "remote",
+                                    "email": "remote@example.com",
+                                },
+                            },
+                        ],
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+        output = StringIO()
+        error = StringIO()
+
+        call_command("sync_hosted_users", stdout=output, stderr=error)
+
+        self.assertIn("Synchronized 1 hosted users", output.getvalue())
+        self.assertEqual(error.getvalue(), "")
+        self.assertEqual(
+            ExternalSyncState.objects.get(key="hosted-users").cursor, "cursor-1"
+        )
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_invalid_json_response(self) -> None:
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            body="not json",
+        )
+
+        with self.assertRaisesMessage(
+            RuntimeError, "Invalid hosted user sync response"
+        ):
+            call_command("sync_hosted_users")
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    def test_sync_hosted_users_invalid_response_payload(self) -> None:
+        invalid_responses: tuple[object, ...] = (
+            [],
+            {},
+            {"payload": 1},
+            {"payload": "invalid"},
+            {
+                "payload": dumps(
+                    ["not", "a", "dict"],
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+
+        for response_json in invalid_responses:
+            with self.subTest(response=response_json), responses.RequestsMock() as rsps:
+                rsps.add(
+                    responses.POST,
+                    "https://hosted.example/users/",
+                    json=response_json,
+                )
+
+                with self.assertRaisesMessage(
+                    RuntimeError, "Invalid hosted user sync response"
+                ):
+                    call_command("sync_hosted_users")
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_without_cursor(self) -> None:
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {"users": []},
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+        output = StringIO()
+
+        call_command("sync_hosted_users", stdout=output)
+
+        self.assertIn("Synchronized 0 hosted users", output.getvalue())
+        self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
+
     def test_fetch_vat_denied(self) -> None:
         response = self.client.post(reverse("js-vat"))
         self.assertEqual(response.status_code, 302)
@@ -4185,6 +4704,53 @@ class ServiceTest(FakturaceTestCase):
 
 
 class CommandsTestCase(FakturaceTestCase):
+    def test_audit_saml_users(self) -> None:
+        first = User.objects.create_user(
+            username="audit-first", email="dup@example.com"
+        )
+        second = User.objects.create_user(
+            username="audit-second", email="DUP@example.com"
+        )
+        Customer.objects.create(
+            user_id=second.pk,
+            origin=PAYMENTS_ORIGIN,
+            name="Unlinked customer",
+        )
+        customer = Customer.objects.create(
+            user_id=first.pk,
+            origin=PAYMENTS_ORIGIN,
+            name="Audit customer",
+        )
+        customer.users.add(first)
+        Service.objects.create(customer=customer)
+        Interaction.objects.create(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            customer=customer,
+            user=first,
+            summary="Audit note",
+            content="Audit content",
+        )
+        SamlIdentity.objects.create(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="42",
+            user=first,
+        )
+
+        with StringIO() as buffer:
+            call_command("audit_saml_users", stdout=buffer)
+            output = buffer.getvalue()
+
+        self.assertIn("Duplicate email: dup@example.com", output)
+        self.assertIn("username='audit-first'", output)
+        self.assertIn("username='audit-second'", output)
+        self.assertIn(f"customers=[{customer.pk}]", output)
+        self.assertIn("services=1", output)
+        self.assertIn("crm_interactions=1", output)
+        self.assertIn(
+            "saml_identities=['https://hosted.weblate.org/idp/metadata:42']",
+            output,
+        )
+
     def test_list_contacts(self) -> None:
         with StringIO() as buffer:
             call_command("list_contacts", stdout=buffer)

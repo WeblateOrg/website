@@ -246,7 +246,7 @@ INSTALLED_APPS = (
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
-    "djangosaml2.backends.Saml2Backend",
+    "weblate_web.saml.HostedSaml2Backend",
 )
 
 # Some security headers
@@ -364,7 +364,9 @@ SAML_ATTRIBUTE_MAPPING = {
     "email": ("email",),
     "last_name": ("last_name",),
 }
-SAML_DJANGO_USER_MAIN_ATTRIBUTE = "email"
+SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
+HOSTED_SAML_PROVIDER = "https://hosted.weblate.org/idp/metadata"
+HOSTED_USER_SYNC_API = "https://hosted.weblate.org/hosted/api/users/"
 
 SAML_CONFIG = {
     # full path to the xmlsec1 binary program
@@ -376,7 +378,7 @@ SAML_CONFIG = {
         # we are just a lonely SP
         "sp": {
             "name": "Weblate.org",
-            "name_id_format": saml2.saml.NAMEID_FORMAT_EMAILADDRESS,
+            "name_id_format": saml2.saml.NAMEID_FORMAT_PERSISTENT,
             # For Okta add signed logout requests. Enable this:
             "endpoints": {
                 # url and binding to the assetion consumer service view

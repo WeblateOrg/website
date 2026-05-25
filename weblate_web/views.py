@@ -34,7 +34,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import BadRequest, SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
-from django.db import connection, transaction
+from django.db import DataError, IntegrityError, connection, transaction
 from django.db.models import Q
 from django.http import (
     FileResponse,
@@ -92,6 +92,7 @@ from weblate_web.payments.forms import CustomerForm
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.validators import cache_vies_data
 from weblate_web.remote import get_activity
+from weblate_web.saml import sync_saml_payload
 from weblate_web.schema import get_blog_post_schema
 from weblate_web.utils import (
     AUTO_ORIGIN,
@@ -188,27 +189,24 @@ def api_user(request: HttpRequest) -> JsonResponse:
     except (BadSignature, SignatureExpired) as error:
         sentry_sdk.capture_exception()
         raise BadRequest("Invalid signature") from error
+    if not isinstance(payload, dict):
+        raise BadRequest("Invalid user payload")
 
     try:
-        user = User.objects.get(username=payload["username"])
-    except User.DoesNotExist:
-        User.objects.create(**payload["create"])
-        return JsonResponse({"status": "User created"})
+        user, created = sync_saml_payload(payload)
+    except (
+        KeyError,
+        TypeError,
+        ValueError,
+        DataError,
+        IntegrityError,
+    ) as error:
+        sentry_sdk.capture_exception()
+        raise BadRequest("Invalid user payload") from error
 
-    # Cycle unused passwords to invalidate existing sessions
-    if not user.has_usable_password():
-        user.set_unusable_password()
-
-    # Update attributes
-    for key, value in payload.get("changes", {}).items():
-        if key not in {"username", "email", "last_name"}:
-            continue
-        setattr(user, key, value)
-
-    # Save to the database
-    user.save()
-
-    return JsonResponse({"status": "User updated"})
+    if user is None:
+        raise BadRequest("User could not be synchronized")
+    return JsonResponse({"status": f"User {'created' if created else 'updated'}"})
 
 
 def extract_weblate_version(request: HttpRequest) -> str:

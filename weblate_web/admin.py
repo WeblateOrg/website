@@ -26,6 +26,7 @@ from weblate_web.models import (
     Package,
     Post,
     Project,
+    SamlIdentity,
     Service,
     Subscription,
     SubscriptionPastPayment,
@@ -121,6 +122,13 @@ class SubscriptionPastPaymentAdmin(admin.ModelAdmin):
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     search_fields = ("name",)
+
+
+@admin.register(SamlIdentity)
+class SamlIdentityAdmin(admin.ModelAdmin):
+    list_display = ("provider", "external_id", "user", "last_seen")
+    search_fields = ("provider", "external_id", "user__username", "user__email")
+    autocomplete_fields = ("user",)
 
 
 @admin.register(Post)

@@ -86,6 +86,47 @@ PILLOW_VALIDATION_ERRORS = (
 )
 MINIMUM_UPGRADE_PAYMENT = Decimal(5)
 
+
+class SamlIdentity(models.Model):
+    provider = models.CharField(max_length=255)
+    external_id = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="saml_identities"
+    )
+    last_seen = models.DateTimeField(default=timezone.now)
+    raw_attrs = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
+
+    class Meta:
+        verbose_name = "SAML identity"
+        verbose_name_plural = "SAML identities"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("provider", "external_id"),
+                name="weblate_web_saml_identity_unique",
+            ),
+            models.UniqueConstraint(
+                fields=("provider", "user"),
+                name="weblate_web_saml_identity_user_unique",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.provider}:{self.external_id}"
+
+
+class ExternalSyncState(models.Model):
+    key = models.CharField(max_length=100, unique=True)
+    cursor = models.CharField(max_length=255, blank=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "External sync state"
+        verbose_name_plural = "External sync states"
+
+    def __str__(self) -> str:
+        return self.key
+
+
 REWARDS = (
     (0, gettext_lazy("No reward")),
     (1, gettext_lazy("Name in the list of supporters")),
