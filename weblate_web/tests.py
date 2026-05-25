@@ -837,6 +837,17 @@ class ViewTestCase(PostTestCase):
             TEST_ROBOTS.read_text(),
         )
 
+    def test_llms_txt(self) -> None:
+        response = self.client.get("/llms.txt")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/plain; charset=utf-8")
+        self.assertContains(response, "# Weblate")
+        self.assertContains(response, "> Weblate")
+        self.assertContains(response, "## Product")
+        self.assertContains(response, "https://docs.weblate.org/")
+        self.assertContains(response, "https://github.com/WeblateOrg/weblate")
+
     def test_localized_docs(self) -> None:
         response = self.client.get("/uk/contribute/")
         self.assertContains(response, "https://docs.weblate.org/uk/latest/contributing")
