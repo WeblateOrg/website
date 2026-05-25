@@ -339,6 +339,13 @@ urlpatterns = [
         ),
     ),
     path(
+        "llms.txt",
+        TemplateView.as_view(
+            template_name="llms.txt", content_type="text/plain; charset=utf-8"
+        ),
+        name="llms-txt",
+    ),
+    path(
         "security.txt",
         RedirectView.as_view(url="/.well-known/security.txt", permanent=True),
     ),
