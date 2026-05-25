@@ -4751,6 +4751,75 @@ class CommandsTestCase(FakturaceTestCase):
             output,
         )
 
+    def test_audit_saml_users_cleanup_unused_dry_run(self) -> None:
+        first = User.objects.create_user(
+            username="cleanup-first", email="cleanup@example.com"
+        )
+        second = User.objects.create_user(
+            username="cleanup-second", email="cleanup@example.com"
+        )
+
+        with StringIO() as buffer:
+            call_command("audit_saml_users", "--cleanup-unused", stdout=buffer)
+            output = buffer.getvalue()
+
+        self.assertIn(
+            f"Would prefix duplicate email on id={second.pk} "
+            f"username='cleanup-second': cleanup@example.com -> "
+            f"duplicate-{second.pk}-cleanup@example.com",
+            output,
+        )
+        self.assertIn("Would prefix duplicate email on 1 users", output)
+        first.refresh_from_db()
+        second.refresh_from_db()
+        self.assertEqual(first.email, "cleanup@example.com")
+        self.assertEqual(second.email, "cleanup@example.com")
+
+    def test_audit_saml_users_cleanup_unused_apply(self) -> None:
+        first = User.objects.create_user(
+            username="cleanup-apply-first", email="cleanup-apply@example.com"
+        )
+        second = User.objects.create_user(
+            username="cleanup-apply-second", email="cleanup-apply@example.com"
+        )
+
+        with StringIO() as buffer:
+            call_command(
+                "audit_saml_users", "--cleanup-unused", "--apply", stdout=buffer
+            )
+            output = buffer.getvalue()
+
+        self.assertIn("Prefixed duplicate email on 1 users", output)
+        first.refresh_from_db()
+        second.refresh_from_db()
+        self.assertEqual(first.email, "cleanup-apply@example.com")
+        self.assertEqual(
+            second.email, f"duplicate-{second.pk}-cleanup-apply@example.com"
+        )
+
+    def test_audit_saml_users_cleanup_skips_multiple_valued_users(self) -> None:
+        first = User.objects.create_user(
+            username="cleanup-valued-first", email="cleanup-valued@example.com"
+        )
+        second = User.objects.create_user(
+            username="cleanup-valued-second", email="cleanup-valued@example.com"
+        )
+        timestamp = timezone.now()
+        User.objects.filter(pk__in=(first.pk, second.pk)).update(last_login=timestamp)
+
+        with StringIO() as buffer:
+            call_command(
+                "audit_saml_users", "--cleanup-unused", "--apply", stdout=buffer
+            )
+            output = buffer.getvalue()
+
+        self.assertIn("Cleanup skipped: multiple users have activity", output)
+        self.assertIn("Prefixed duplicate email on 0 users", output)
+        first.refresh_from_db()
+        second.refresh_from_db()
+        self.assertEqual(first.email, "cleanup-valued@example.com")
+        self.assertEqual(second.email, "cleanup-valued@example.com")
+
     def test_list_contacts(self) -> None:
         with StringIO() as buffer:
             call_command("list_contacts", stdout=buffer)
