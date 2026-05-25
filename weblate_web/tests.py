@@ -4105,10 +4105,13 @@ class ServiceTest(FakturaceTestCase):
             )
 
             self.assertRedirects(response, reverse("user"))
-            self.assertContains(response, "Premium support")
+            self.assertContains(
+                response,
+                "Please confirm the upgrade from your account page.",
+            )
 
         subscription.refresh_from_db()
-        self.assertEqual(subscription.package, target)
+        self.assertNotEqual(subscription.package, target)
         self.assertEqual(subscription.payment, original_payment)
         self.assertEqual(subscription.expires, expires)
         self.assertEqual(Payment.objects.count(), 1)
