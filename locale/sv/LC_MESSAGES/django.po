@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Swedish (Weblate)\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-05-18 02:06-0500\n"
+"POT-Creation-Date: 2026-05-24 23:16-0500\n"
 "PO-Revision-Date: 2026-05-18 07:20+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
@@ -157,7 +157,7 @@ msgstr ""
 #: weblate_web/crm/models.py:224
 #: weblate_web/crm/templates/weblate_web/service_detail.html:41
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:637
+#: weblate_web/models.py:706
 msgid "Maintenance window"
 msgstr ""
 
@@ -345,15 +345,15 @@ msgstr ""
 msgid "Use this after the refund or chargeback has been completed."
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:82
+#: weblate_web/crm/templates/payments/customer_detail.html:80
 msgid "Add new agreement"
 msgstr "Lägg till nytt avtal"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:103
+#: weblate_web/crm/templates/payments/customer_detail.html:101
 msgid "Issue new invoice"
 msgstr "Skicka ny faktura"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:109
+#: weblate_web/crm/templates/payments/customer_detail.html:107
 msgid "Add note"
 msgstr ""
 
@@ -362,6 +362,30 @@ msgstr ""
 #| msgid "System maintenance"
 msgid "Update maintenance window"
 msgstr "Systemunderhåll"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#, python-format
+msgid ""
+"Upgrade to %(package)s without extending the current subscription period."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Issue upgrade quote"
+msgstr "Få en offert"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue upgrade invoice"
+msgstr "Skicka ny faktura"
+
+#: weblate_web/crm/views.py:236 weblate_web/crm/views.py:250
+#: weblate_web/crm/views.py:269 weblate_web/views.py:1068
+#: weblate_web/views.py:1079 weblate_web/views.py:1091
+msgid "This subscription can not be upgraded to the selected package."
+msgstr ""
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -401,215 +425,249 @@ msgstr "Kontoinnehavare"
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "Denna faktura har redan betalats. Logga in för att se detaljer."
 
-#: weblate_web/models.py:77
-msgid "No reward"
-msgstr "Ingen belöning"
+#: weblate_web/migrations/0049_consolidate_donations.py:104
+#: weblate_web/models.py:572
+#, fuzzy
+#| msgid "Service"
+msgctxt "Service kind"
+msgid "Service"
+msgstr "Tjänst"
 
-#: weblate_web/models.py:78 weblate_web/templates/donate.html:43
-msgid "Name in the list of supporters"
-msgstr "Namn i listan över understödjare"
+#: weblate_web/migrations/0049_consolidate_donations.py:105
+#: weblate_web/models.py:573
+#, fuzzy
+#| msgid "Documentation"
+msgctxt "Service kind"
+msgid "Donation"
+msgstr "Dokumentation"
 
-#: weblate_web/models.py:79 weblate_web/templates/donate.html:50
-#: weblate_web/templates/donate/form.html:82
-msgid "Link in the list of supporters"
-msgstr "Länk i listan över understödjare"
-
-#: weblate_web/models.py:80 weblate_web/templates/donate.html:57
-#: weblate_web/templates/donate/form.html:90
-msgid "Logo and link on the Weblate website"
-msgstr "Logotyp och länk på Weblates webbplats"
-
-#: weblate_web/models.py:90
-#: weblate_web/templates/weblate_web/post_detail.html:56
-msgid "Release"
-msgstr "Utgåva"
-
-#: weblate_web/models.py:91 weblate_web/templates/snippets/main-menu.html:6
-#: weblate_web/templates/weblate_web/post_detail.html:58
-msgid "Features"
-msgstr "Funktioner"
-
-#: weblate_web/models.py:92
-msgid "Announcement"
-msgstr "Tillkännagivande"
-
-#: weblate_web/models.py:93
-msgid "Conferences"
-msgstr "Konferenser"
-
-#: weblate_web/models.py:94 weblate_web/templates/hosting.html:66
-msgid "Hosted Weblate"
-msgstr "Hosted Weblate"
-
-#: weblate_web/models.py:95
-#: weblate_web/templates/weblate_web/post_detail.html:60
-msgid "Development"
-msgstr "Utveckling"
-
-#: weblate_web/models.py:96
-#: weblate_web/templates/weblate_web/post_detail.html:62
-msgid "Localization"
-msgstr "Översättning"
-
-#: weblate_web/models.py:159
-msgid "Invalid image!"
-msgstr "Ogiltig bild!"
-
-#: weblate_web/models.py:170
-#, python-format
-msgid "Unsupported image type: %s"
-msgstr "Bildtypen '%s' stöds inte"
-
-#: weblate_web/models.py:176
-msgid "Please upload an image with a resolution of 570 x 260 pixels."
-msgstr "Ladda upp en bild med en upplösning på 570 x 260 pixlar."
-
-#: weblate_web/models.py:202
+#: weblate_web/migrations/0049_consolidate_donations.py:114
+#: weblate_web/models.py:740
 msgid "Link text"
 msgstr "Länktext"
 
-#: weblate_web/models.py:204
+#: weblate_web/migrations/0049_consolidate_donations.py:120
+#: weblate_web/models.py:743
 msgid "Link URL"
 msgstr "Länkwebbadress"
 
-#: weblate_web/models.py:206
+#: weblate_web/migrations/0049_consolidate_donations.py:128
+#: weblate_web/models.py:746
 msgid "Link image"
 msgstr "Länkbild"
 
-#: weblate_web/models.py:534
+#: weblate_web/migrations/0049_consolidate_donations.py:141
+#: weblate_web/models.py:577
 msgctxt "Package category"
 msgid "None"
 msgstr "Inget"
 
-#: weblate_web/models.py:535
+#: weblate_web/migrations/0049_consolidate_donations.py:142
+#: weblate_web/models.py:578
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr "Dedikerat webbhotell"
 
-#: weblate_web/models.py:536
+#: weblate_web/migrations/0049_consolidate_donations.py:143
+#: weblate_web/models.py:579
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr "Delat webbhotell"
 
-#: weblate_web/models.py:537
+#: weblate_web/migrations/0049_consolidate_donations.py:144
+#: weblate_web/models.py:580
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "Support vid egeninstallation"
 
-#: weblate_web/models.py:611
+#: weblate_web/migrations/0049_consolidate_donations.py:145
+#: weblate_web/models.py:581
+#, fuzzy
+#| msgid "Documentation"
+msgctxt "Package category"
+msgid "Donation"
+msgstr "Dokumentation"
+
+#: weblate_web/models.py:90
+msgid "No reward"
+msgstr "Ingen belöning"
+
+#: weblate_web/models.py:91 weblate_web/templates/donate.html:45
+msgid "Name in the list of supporters"
+msgstr "Namn i listan över understödjare"
+
+#: weblate_web/models.py:92 weblate_web/templates/donate.html:52
+#: weblate_web/templates/donate/form.html:92
+msgid "Link in the list of supporters"
+msgstr "Länk i listan över understödjare"
+
+#: weblate_web/models.py:93 weblate_web/templates/donate.html:59
+#: weblate_web/templates/donate/form.html:106
+msgid "Logo and link on the Weblate website"
+msgstr "Logotyp och länk på Weblates webbplats"
+
+#: weblate_web/models.py:113
+#: weblate_web/templates/weblate_web/post_detail.html:56
+msgid "Release"
+msgstr "Utgåva"
+
+#: weblate_web/models.py:114 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/templates/weblate_web/post_detail.html:58
+msgid "Features"
+msgstr "Funktioner"
+
+#: weblate_web/models.py:115
+msgid "Announcement"
+msgstr "Tillkännagivande"
+
+#: weblate_web/models.py:116
+msgid "Conferences"
+msgstr "Konferenser"
+
+#: weblate_web/models.py:117 weblate_web/templates/hosting.html:66
+msgid "Hosted Weblate"
+msgstr "Hosted Weblate"
+
+#: weblate_web/models.py:118
+#: weblate_web/templates/weblate_web/post_detail.html:60
+msgid "Development"
+msgstr "Utveckling"
+
+#: weblate_web/models.py:119
+#: weblate_web/templates/weblate_web/post_detail.html:62
+msgid "Localization"
+msgstr "Översättning"
+
+#: weblate_web/models.py:174 weblate_web/models.py:182
+msgid "Invalid image!"
+msgstr "Ogiltig bild!"
+
+#: weblate_web/models.py:196
+#, python-format
+msgid "Unsupported image type: %s"
+msgstr "Bildtypen '%s' stöds inte"
+
+#: weblate_web/models.py:202
+msgid "Please upload an image with a resolution of 570 x 260 pixels."
+msgstr "Ladda upp en bild med en upplösning på 570 x 260 pixlar."
+
+#: weblate_web/models.py:680
 msgid "Community supported"
 msgstr "Gemenskapsstödd"
 
-#: weblate_web/models.py:612
+#: weblate_web/models.py:681
 msgid "Dedicated hosted service"
 msgstr "Dedikerad värdtjänst"
 
-#: weblate_web/models.py:613
+#: weblate_web/models.py:682
 msgid "Hosted service"
 msgstr "Webbhotell"
 
-#: weblate_web/models.py:614 weblate_web/templates/support.html:77
+#: weblate_web/models.py:683 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Grundläggande support vid egeninstallation"
 
-#: weblate_web/models.py:615 weblate_web/templates/support.html:90
+#: weblate_web/models.py:684 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Utökad support vid egeninstallation"
 
-#: weblate_web/models.py:616 weblate_web/templates/support.html:109
+#: weblate_web/models.py:685 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Premiumsupport vid egeninstallation"
 
-#: weblate_web/models.py:642 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:711 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "Server-URL"
 
-#: weblate_web/models.py:656
+#: weblate_web/models.py:725
 msgid "Server description"
 msgstr "Serverbeskrivning"
 
-#: weblate_web/models.py:659
+#: weblate_web/models.py:728
 msgid "Server image"
 msgstr "Serverbild"
 
-#: weblate_web/models.py:663
+#: weblate_web/models.py:732
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG- eller JPG-bild med en upplösning på 570 x 260 pixlar."
 
-#: weblate_web/models.py:869 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1003 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Grundläggande stöd"
 
-#: weblate_web/models.py:870
+#: weblate_web/models.py:1004
 msgid "Never get held back by a problem."
 msgstr "Låt dig aldrig hållas tillbaka av ett problem."
 
-#: weblate_web/models.py:871
+#: weblate_web/models.py:1005
 msgid "Set priority for all your questions and reported bugs."
 msgstr "Ange prioritet för alla dina frågor och rapporterade fel."
 
-#: weblate_web/models.py:873 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1007 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Få support"
 
-#: weblate_web/models.py:882
-msgid "Premium support"
-msgstr "Premium support"
-
-#: weblate_web/models.py:883
-msgid "Don’t wait with your work on hold."
-msgstr "Sitt inte väntande med ditt arbete pausat."
-
-#: weblate_web/models.py:884
-msgid "This guarantees you answers the NBD at the latest."
-msgstr "Detta garanterar att du får svar senast nästa arbetsdag."
-
-#: weblate_web/models.py:886
-msgid "Be Premium"
-msgstr "Var Premium"
-
-#: weblate_web/models.py:894 weblate_web/templates/hosting.html:134
-msgid "Extended support"
-msgstr "Utökat stöd"
-
-#: weblate_web/models.py:895
-msgid "Don’t settle with Basic, get a worry-free package."
-msgstr "Nöj dig inte med Basic, skaffa ett bekymmersfritt paket."
-
-#: weblate_web/models.py:896
-msgid "We will manage upgrades for you."
-msgstr "Vi hanterar uppgraderingar åt dig."
-
-#: weblate_web/models.py:898
-msgid "Stay updated"
-msgstr "Håll dig uppdaterad"
-
-#: weblate_web/models.py:906 weblate_web/templates/support.html:143
-msgid "Backup service"
-msgstr "Säkerhetskopieringstjänst"
-
-#: weblate_web/models.py:907
-msgid "Easily put your backups in a safe place."
-msgstr "Du kan enkelt placera dina säkerhetskopior på ett säkert ställe."
-
-#: weblate_web/models.py:908
-msgid "Encrypted and automatic, always available."
-msgstr "Krypterad och automatisk, alltid tillgänglig."
-
-#: weblate_web/models.py:910
-msgid "Back up daily"
-msgstr "Säkerhetskopiera dagligen"
-
-#: weblate_web/models.py:922
+#: weblate_web/models.py:1019 weblate_web/models.py:1036
+#: weblate_web/models.py:1067 weblate_web/models.py:1591
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Uppgradera till %s"
 
-#: weblate_web/models.py:923
+#: weblate_web/models.py:1021
+msgid "Premium support"
+msgstr "Premium support"
+
+#: weblate_web/models.py:1022
+msgid "Don’t wait with your work on hold."
+msgstr "Sitt inte väntande med ditt arbete pausat."
+
+#: weblate_web/models.py:1023
+msgid "This guarantees you answers the NBD at the latest."
+msgstr "Detta garanterar att du får svar senast nästa arbetsdag."
+
+#: weblate_web/models.py:1025
+#, fuzzy
+#| msgid "Be Premium"
+msgid "Be premium"
+msgstr "Var Premium"
+
+#: weblate_web/models.py:1038 weblate_web/templates/hosting.html:134
+msgid "Extended support"
+msgstr "Utökat stöd"
+
+#: weblate_web/models.py:1039
+msgid "Don’t settle with Basic, get a worry-free package."
+msgstr "Nöj dig inte med Basic, skaffa ett bekymmersfritt paket."
+
+#: weblate_web/models.py:1040
+msgid "We will manage upgrades for you."
+msgstr "Vi hanterar uppgraderingar åt dig."
+
+#: weblate_web/models.py:1042
+msgid "Stay updated"
+msgstr "Håll dig uppdaterad"
+
+#: weblate_web/models.py:1051 weblate_web/templates/support.html:143
+msgid "Backup service"
+msgstr "Säkerhetskopieringstjänst"
+
+#: weblate_web/models.py:1052
+msgid "Easily put your backups in a safe place."
+msgstr "Du kan enkelt placera dina säkerhetskopior på ett säkert ställe."
+
+#: weblate_web/models.py:1053
+msgid "Encrypted and automatic, always available."
+msgstr "Krypterad och automatisk, alltid tillgänglig."
+
+#: weblate_web/models.py:1055
+msgid "Back up daily"
+msgstr "Säkerhetskopiera dagligen"
+
+#: weblate_web/models.py:1068
 msgid "Increase service limits to translate more content."
 msgstr "Öka tjänstegränserna för att översätta mer innehåll."
 
-#: weblate_web/models.py:926
+#: weblate_web/models.py:1071
 msgid "Upgrade"
 msgstr "Uppgradera"
 
@@ -661,29 +719,47 @@ msgstr "Du kommer att få ett kvitto här."
 msgid "E-mail address"
 msgstr "Din e-postadress…"
 
-#: weblate_web/payments/models.py:116
+#: weblate_web/payments/models.py:121
+#, fuzzy
+#| msgid "Unknown reason"
+msgid "Unknown"
+msgstr "Okänd anledning"
+
+#: weblate_web/payments/models.py:122
+#, fuzzy
+#| msgid "Validity"
+msgid "Valid"
+msgstr "Giltighet"
+
+#: weblate_web/payments/models.py:123
+#, fuzzy
+#| msgid "Invalid image!"
+msgid "Invalid"
+msgstr "Ogiltig bild!"
+
+#: weblate_web/payments/models.py:130
 msgid "European VAT ID"
 msgstr "Europeiskt moms-ID"
 
-#: weblate_web/payments/models.py:118
+#: weblate_web/payments/models.py:132
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "Vänligen fyll i EU:s moms-ID, lämna tomt om inte tillämpligt."
 
-#: weblate_web/payments/models.py:125
+#: weblate_web/payments/models.py:147
 msgid "Company identification number"
 msgstr "Företagets identifikationsnummer"
 
-#: weblate_web/payments/models.py:127
+#: weblate_web/payments/models.py:149
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
 msgstr "Fyll i ditt företags registreringsnummer om det ska anges på fakturan."
 
-#: weblate_web/payments/models.py:134
+#: weblate_web/payments/models.py:156
 msgid "Name"
 msgstr "Namn"
 
-#: weblate_web/payments/models.py:136
+#: weblate_web/payments/models.py:158
 #, fuzzy
 #| msgid ""
 #| "Please fill in your company registration number if it should appear on "
@@ -691,104 +767,104 @@ msgstr "Namn"
 msgid "Company or individual name as it should appear on the invoice."
 msgstr "Fyll i ditt företags registreringsnummer om det ska anges på fakturan."
 
-#: weblate_web/payments/models.py:143
+#: weblate_web/payments/models.py:165
 msgid "Address"
 msgstr "Adress"
 
-#: weblate_web/payments/models.py:148
+#: weblate_web/payments/models.py:170
 msgid "Additional address information"
 msgstr "Ytterligare adressinformation"
 
-#: weblate_web/payments/models.py:154
+#: weblate_web/payments/models.py:176
 msgid "City"
 msgstr "Stad"
 
-#: weblate_web/payments/models.py:159
+#: weblate_web/payments/models.py:181
 msgid "Postcode"
 msgstr "Postnummer"
 
-#: weblate_web/payments/models.py:163
+#: weblate_web/payments/models.py:185
 msgid "Country"
 msgstr "Land"
 
-#: weblate_web/payments/models.py:169
+#: weblate_web/payments/models.py:191
 msgid "Billing e-mail"
 msgstr "E-postadress för fakturering"
 
-#: weblate_web/payments/models.py:170
+#: weblate_web/payments/models.py:192
 msgid "Additional e-mail to receive billing notifications"
 msgstr "Ytterligare e-post för att ta emot faktureringsaviseringar"
 
-#: weblate_web/payments/models.py:175
+#: weblate_web/payments/models.py:197
 #, fuzzy
 #| msgid "Additional e-mail to receive billing notifications"
 msgid "Additional upcoming payment notification"
 msgstr "Ytterligare e-post för att ta emot faktureringsaviseringar"
 
-#: weblate_web/payments/models.py:178
+#: weblate_web/payments/models.py:200
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
 
-#: weblate_web/payments/models.py:278
+#: weblate_web/payments/models.py:337
 msgid "The country has to match your VAT code"
 msgstr "Landet måste matcha din momskod"
 
-#: weblate_web/payments/models.py:286
+#: weblate_web/payments/models.py:345
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
 
-#: weblate_web/payments/models.py:304
+#: weblate_web/payments/models.py:368
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
 
-#: weblate_web/payments/models.py:504
+#: weblate_web/payments/models.py:584
 msgid "Annual"
 msgstr "Årlig"
 
-#: weblate_web/payments/models.py:505
+#: weblate_web/payments/models.py:585
 msgid "Biannual"
 msgstr "Två gånger om året"
 
-#: weblate_web/payments/models.py:506 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:586 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "Kvartalsvis"
 
-#: weblate_web/payments/models.py:507 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:587 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "Månatlig"
 
-#: weblate_web/payments/models.py:508
+#: weblate_web/payments/models.py:588
 msgid "One-time"
 msgstr "Engångs"
 
-#: weblate_web/payments/models.py:544
+#: weblate_web/payments/models.py:624
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Ny betalning"
 
-#: weblate_web/payments/models.py:545
+#: weblate_web/payments/models.py:625
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Väntar på betalning"
 
-#: weblate_web/payments/models.py:546
+#: weblate_web/payments/models.py:626
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Betalning avvisad"
 
-#: weblate_web/payments/models.py:547
+#: weblate_web/payments/models.py:627
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Betalning accepterad"
 
-#: weblate_web/payments/models.py:548
+#: weblate_web/payments/models.py:628
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Betalning behandlad"
@@ -797,15 +873,15 @@ msgstr "Betalning behandlad"
 msgid "Enter a valid e-mail address."
 msgstr "Ange en giltig e-postadress."
 
-#: weblate_web/payments/validators.py:79
+#: weblate_web/payments/validators.py:107
 msgid "{} is not a valid country code for any European Union member."
 msgstr "{} är inte en giltig landskod för någon EU-medlem."
 
-#: weblate_web/payments/validators.py:86
+#: weblate_web/payments/validators.py:114
 msgid "{} does not match the country's VAT ID specifications."
 msgstr "{} stämmer inte med landets moms-ID-specifikationer."
 
-#: weblate_web/payments/validators.py:106
+#: weblate_web/payments/validators.py:131
 msgid ""
 "The official EU verification tool currently can't validate this VAT ID, "
 "please try again later."
@@ -813,11 +889,11 @@ msgstr ""
 "Det officiella EU-verifieringsverktyget kan för närvarande inte validera "
 "detta momsregistreringsnummer, försök igen senare."
 
-#: weblate_web/payments/validators.py:109
+#: weblate_web/payments/validators.py:134
 msgid "View service status."
 msgstr "Visa status för tjänsten."
 
-#: weblate_web/payments/validators.py:112
+#: weblate_web/payments/validators.py:142
 msgid "{} is not a valid VAT ID."
 msgstr "{} är inte ett giltigt moms-ID."
 
@@ -1124,32 +1200,32 @@ msgctxt "Keyword"
 msgid "translate"
 msgstr "översätt"
 
-#: weblate_web/templates/base.html:86
+#: weblate_web/templates/base.html:92
 msgid "Sign out"
 msgstr "Logga ut"
 
-#: weblate_web/templates/base.html:96
+#: weblate_web/templates/base.html:102
 #: weblate_web/templates/snippets/main-menu.html:51
 msgid "Go Weblate!"
 msgstr "Använd Weblate!"
 
-#: weblate_web/templates/base.html:144
+#: weblate_web/templates/base.html:150
 msgid "Service Status"
 msgstr "Driftinformation"
 
-#: weblate_web/templates/base.html:147
+#: weblate_web/templates/base.html:153
 msgid "Licensed GNU GPLv3+"
 msgstr "Licensierad under GNU GPLv3+"
 
-#: weblate_web/templates/base.html:150
+#: weblate_web/templates/base.html:156
 msgid "Terms"
 msgstr "Villkor"
 
-#: weblate_web/templates/base.html:150
+#: weblate_web/templates/base.html:156
 msgid "Privacy"
 msgstr "Integritet"
 
-#: weblate_web/templates/base.html:150
+#: weblate_web/templates/base.html:156
 #, python-format
 msgid "Design by %(author)s"
 msgstr "Design av %(author)s"
@@ -1376,7 +1452,7 @@ msgid "Please open the donation page for options on how to donate."
 msgstr "Vänligen öppna donationssidan för alternativ om hur man kan donera."
 
 #: weblate_web/templates/contribute.html:121
-#: weblate_web/templates/user.html:150
+#: weblate_web/templates/user.html:152
 msgid "Donate now"
 msgstr "Donera nu"
 
@@ -1486,31 +1562,31 @@ msgstr ""
 msgid "Sign in"
 msgstr "Logga in"
 
-#: weblate_web/templates/donate.html:11
+#: weblate_web/templates/donate.html:12
 msgid "FOSDEM donation"
 msgstr "FOSDEM-donation"
 
-#: weblate_web/templates/donate.html:13
+#: weblate_web/templates/donate.html:14
 msgid "Want to get a t-shirt or hoodie at our FOSDEM stand?"
 msgstr ""
 
-#: weblate_web/templates/donate.html:14
+#: weblate_web/templates/donate.html:15
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Donate to get a t-shirt"
 msgstr "Donera till Weblate"
 
-#: weblate_web/templates/donate.html:15
+#: weblate_web/templates/donate.html:16
 #, fuzzy
 #| msgid "Donate to Weblate"
 msgid "Donate to get a hoodie"
 msgstr "Donera till Weblate"
 
-#: weblate_web/templates/donate.html:19
+#: weblate_web/templates/donate.html:21
 msgid "Become a Weblate supporter"
 msgstr "Bli Weblate-supporter"
 
-#: weblate_web/templates/donate.html:26
+#: weblate_web/templates/donate.html:28
 msgid ""
 "Weblate does not require payment, and welcomes donations. There are many "
 "ways to contribute. Discuss it with your associates."
@@ -1518,19 +1594,19 @@ msgstr ""
 "Weblate kräver inte betalning och välkomnar donationer. Det finns många sätt "
 "att bidra med. Diskutera det med dina medarbetare."
 
-#: weblate_web/templates/donate.html:30 weblate_web/templates/donate.html:77
+#: weblate_web/templates/donate.html:32 weblate_web/templates/donate.html:79
 msgid "Purchase premium cloud"
 msgstr "Köp premiummoln"
 
-#: weblate_web/templates/donate.html:31
+#: weblate_web/templates/donate.html:33
 msgid "Manage your donations"
 msgstr "Hantera dina donationer"
 
-#: weblate_web/templates/donate.html:34
+#: weblate_web/templates/donate.html:36
 msgid "Recurring support and rewards"
 msgstr "Återkommande stöd och belöningar"
 
-#: weblate_web/templates/donate.html:37
+#: weblate_web/templates/donate.html:39
 msgid ""
 "Recurring donations facilitate sustainable Weblate development, and even the "
 "smallest amount is put to good use. Repeated appreciation helps in keeping "
@@ -1542,30 +1618,30 @@ msgstr ""
 "hålla projektet hållbart på lång sikt. Överväg detta alternativ om du har en "
 "egen installation av Weblate utan supportkontrakt."
 
-#: weblate_web/templates/donate.html:39
+#: weblate_web/templates/donate.html:41
 msgid "Choose your reward"
 msgstr "Välj din belöning"
 
-#: weblate_web/templates/donate.html:45 weblate_web/templates/donate.html:52
-#: weblate_web/templates/donate.html:59 weblate_web/templates/support.html:82
+#: weblate_web/templates/donate.html:47 weblate_web/templates/donate.html:54
+#: weblate_web/templates/donate.html:61 weblate_web/templates/support.html:82
 #: weblate_web/templates/support.html:99 weblate_web/templates/support.html:117
 #: weblate_web/templates/support.html:153
 msgid "annually"
 msgstr "årligen"
 
-#: weblate_web/templates/donate.html:46 weblate_web/templates/donate.html:53
-#: weblate_web/templates/donate.html:60 weblate_web/templates/donate.html:90
-#: weblate_web/templates/donate.html:248
+#: weblate_web/templates/donate.html:48 weblate_web/templates/donate.html:55
+#: weblate_web/templates/donate.html:62 weblate_web/templates/donate.html:92
+#: weblate_web/templates/donate.html:250
 #: weblate_web/templates/snippets/box-donate.html:10
 #: weblate_web/templates/snippets/main-menu.html:19
 msgid "Donate"
 msgstr "Donera"
 
-#: weblate_web/templates/donate.html:73
+#: weblate_web/templates/donate.html:75
 msgid "Weblate heroism"
 msgstr "Weblate hjältemod"
 
-#: weblate_web/templates/donate.html:75
+#: weblate_web/templates/donate.html:77
 msgid ""
 "Commercial services like hosting or support for self-hosted installations "
 "help fund Weblate development."
@@ -1573,15 +1649,15 @@ msgstr ""
 "Kommersiella tjänster som hosting eller support för egen-hosting "
 "installationer hjälper till att finansiera utvecklingen av Weblate."
 
-#: weblate_web/templates/donate.html:78
+#: weblate_web/templates/donate.html:80
 msgid "Get help from Weblate"
 msgstr "Få hjälp från Weblate"
 
-#: weblate_web/templates/donate.html:86
+#: weblate_web/templates/donate.html:88
 msgid "Single appreciative donation"
 msgstr "Enskilt uppskattande donation"
 
-#: weblate_web/templates/donate.html:88
+#: weblate_web/templates/donate.html:90
 msgid ""
 "One-time donations are a great way to bring attention to a single issue "
 "before or after it is fixed."
@@ -1589,11 +1665,11 @@ msgstr ""
 "Engångsdonationer är ett utmärkt sätt att fästa uppmärksamhet åt en enda "
 "fråga före eller efter det är fixat."
 
-#: weblate_web/templates/donate.html:99
+#: weblate_web/templates/donate.html:101
 msgid "Weblate swag"
 msgstr "Weblate-swag"
 
-#: weblate_web/templates/donate.html:100
+#: weblate_web/templates/donate.html:102
 msgid ""
 "Buying branded clothing and merch is a great way to support Weblate and show "
 "your pride!"
@@ -1601,19 +1677,19 @@ msgstr ""
 "Att köpa märkeskläder och merch är ett bra sätt att stödja Weblate och visa "
 "din stolthet!"
 
-#: weblate_web/templates/donate.html:101
+#: weblate_web/templates/donate.html:103
 msgid "Shop from Europe"
 msgstr "Handla från Europa"
 
-#: weblate_web/templates/donate.html:102
+#: weblate_web/templates/donate.html:104
 msgid "Shop from America and Australia"
 msgstr "Handla från Amerika och Australien"
 
-#: weblate_web/templates/donate.html:109
+#: weblate_web/templates/donate.html:111
 msgid "Your favorite donation platforms"
 msgstr "Dina favoritplattformar för donationer"
 
-#: weblate_web/templates/donate.html:111
+#: weblate_web/templates/donate.html:113
 msgid ""
 "Join Weblate fans on platforms you trust. We look forward to seeing you "
 "there."
@@ -1621,15 +1697,15 @@ msgstr ""
 "Gå med i Weblate-fans på plattformar du litar på. Vi ser fram emot att se "
 "dig där."
 
-#: weblate_web/templates/donate.html:116
+#: weblate_web/templates/donate.html:118
 msgid "GitHub Sponsors"
 msgstr "GitHub-sponsorer"
 
-#: weblate_web/templates/donate.html:131
+#: weblate_web/templates/donate.html:133
 msgid "Cryptocurrency donations"
 msgstr "Kryptovalutedonationer"
 
-#: weblate_web/templates/donate.html:134
+#: weblate_web/templates/donate.html:136
 #, python-format
 msgid ""
 "Thanks to <a href=\"%(url)s\">Trezor</a>, donations are happily accepted in "
@@ -1638,19 +1714,19 @@ msgstr ""
 "Tack vare <a href=\"%(url)s\">Trezor</a> accepteras donationer gärna i flera "
 "kryptovalutor med adresserna nedan."
 
-#: weblate_web/templates/donate.html:140
+#: weblate_web/templates/donate.html:142
 msgid "Currency"
 msgstr "Valuta"
 
-#: weblate_web/templates/donate.html:141
+#: weblate_web/templates/donate.html:143
 msgid "Donation address"
 msgstr "Donationsadress"
 
-#: weblate_web/templates/donate.html:187
+#: weblate_web/templates/donate.html:189
 msgid "Weblate is thankful for your help"
 msgstr "Weblate är tacksam för din hjälp"
 
-#: weblate_web/templates/donate.html:190
+#: weblate_web/templates/donate.html:192
 #, python-format
 msgid ""
 "A proud showcase of our supporters, some of which offered technological "
@@ -1661,11 +1737,11 @@ msgstr ""
 "bidrag, andra gav pengar. Vi välkomnar alla former av hjälp. Om du har en "
 "idé, vänligen <a href=\"%(contact)s\">berätta det för oss</a>."
 
-#: weblate_web/templates/donate.html:194
+#: weblate_web/templates/donate.html:196
 msgid "Supporters"
 msgstr "Sponsorer"
 
-#: weblate_web/templates/donate.html:214
+#: weblate_web/templates/donate.html:216
 msgid "Technologies"
 msgstr "Teknologier"
 
@@ -1728,43 +1804,59 @@ msgstr "Dina belöningsalternativ"
 msgid "<strong>Whoa!</strong> You can get any reward."
 msgstr "<strong>Whoa!</strong> Du kan få vilken belöning du vill."
 
-#: weblate_web/templates/donate/form.html:73
-#: weblate_web/templates/donate/form.html:81
-#: weblate_web/templates/donate/form.html:89
-#: weblate_web/templates/donate/form.html:97
+#: weblate_web/templates/donate/form.html:77
+#: weblate_web/templates/donate/form.html:91
+#: weblate_web/templates/donate/form.html:105
+#: weblate_web/templates/donate/form.html:119
 msgid "Selected option"
 msgstr "Valt alternativ"
 
-#: weblate_web/templates/donate/form.html:74
+#: weblate_web/templates/donate/form.html:78
 msgid "Name in the list of supporters"
 msgstr "Namn i listan över understödjare"
 
-#: weblate_web/templates/donate/form.html:75
-#: weblate_web/templates/donate/form.html:83
-#: weblate_web/templates/donate/form.html:91
+#: weblate_web/templates/donate/form.html:80
+#: weblate_web/templates/donate/form.html:94
+#: weblate_web/templates/donate/form.html:108
+#, fuzzy, python-format
+#| msgctxt "Minimal donation amount in a form"
+#| msgid "From %(minimum)s"
+msgctxt "Donation reward minimal amount"
+msgid "From %(minimum)s"
+msgstr "Från %(minimum)s"
+
+#: weblate_web/templates/donate/form.html:82
+#: weblate_web/templates/donate/form.html:96
+#: weblate_web/templates/donate/form.html:110
 msgid "Unavailable for your amount"
 msgstr "Inte tillgänglig för ditt belopp"
 
-#: weblate_web/templates/donate/form.html:76
-#: weblate_web/templates/donate/form.html:84
-#: weblate_web/templates/donate/form.html:92
-#: weblate_web/templates/donate/form.html:100
+#: weblate_web/templates/donate/form.html:83
+#: weblate_web/templates/donate/form.html:97
+#: weblate_web/templates/donate/form.html:111
+#: weblate_web/templates/donate/form.html:123
 msgid "Choose this"
 msgstr "Välj den här"
 
-#: weblate_web/templates/donate/form.html:98
+#: weblate_web/templates/donate/form.html:120
 msgid "No thanks"
 msgstr "Nej tack"
 
-#: weblate_web/templates/donate/form.html:99
+#: weblate_web/templates/donate/form.html:121
+#, fuzzy
+#| msgid "Amount (EUR)"
+msgid "Any amount"
+msgstr "Belopp (EUR)"
+
+#: weblate_web/templates/donate/form.html:122
 msgid "Thank you anyway!"
 msgstr "Tack ändå!"
 
-#: weblate_web/templates/donate/form.html:104
+#: weblate_web/templates/donate/form.html:127
 msgid "Continue"
 msgstr "Fortsätt"
 
-#: weblate_web/templates/donate/form.html:108
+#: weblate_web/templates/donate/form.html:131
 msgid ""
 "Please note—a full invoice for your donation is issued immediately after "
 "payment."
@@ -1772,7 +1864,7 @@ msgstr ""
 "Observera - en fullständig faktura för din donation utfärdas omedelbart "
 "efter betalning."
 
-#: weblate_web/templates/donate/form.html:109
+#: weblate_web/templates/donate/form.html:132
 msgid ""
 "Your link may be refused, especially if containing too adult or illegal "
 "content. Please consult us in advance if unsure."
@@ -2700,11 +2792,11 @@ msgid "Weblate, the libre continuous localization system."
 msgstr "Weblate, det fria systemet för fortlöpande lokalisering."
 
 #: weblate_web/templates/mail/base.html:248
-#: weblate_web/templates/mail/payment_completed.html:10
+#: weblate_web/templates/mail/payment_completed.html:17
 #: weblate_web/templates/mail/payment_expired.html:19
 #: weblate_web/templates/mail/payment_failed.html:18
 #: weblate_web/templates/mail/payment_failed.html:20
-#: weblate_web/templates/mail/payment_missing.html:33
+#: weblate_web/templates/mail/payment_missing.html:35
 #: weblate_web/templates/mail/payment_upcoming.html:50
 msgid "Manage your payments"
 msgstr "Hantera dina betalningar"
@@ -2714,11 +2806,21 @@ msgstr "Hantera dina betalningar"
 msgid "Generated on %(timestamp)s."
 msgstr "Genererades på %(timestamp)s."
 
-#: weblate_web/templates/mail/payment_completed.html:6
+#. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
+#. Translators: This is shown after a successful donation. You can use
+#. a culturally natural, poetic compliment instead of translating this
+#. literally; keep it short and use original or public-domain wording.
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:701
+#, fuzzy
+#| msgid "Thank you for your donation."
+msgid "You are the heart of Weblate. Thank you for your donation."
+msgstr "Tack för din donation."
+
+#: weblate_web/templates/mail/payment_completed.html:12
 msgid "Thank you for your payment on weblate.org."
 msgstr "Tack för din betalning på weblate.org."
 
-#: weblate_web/templates/mail/payment_completed.html:8
+#: weblate_web/templates/mail/payment_completed.html:15
 msgid "You will find an invoice for this payment attached."
 msgstr "Du hittar en faktura för denna betalning bifogad."
 
@@ -2787,7 +2889,7 @@ msgid ""
 "If you want to continue using the service, please perform the payment now."
 msgstr "Om du vill fortsätta använda tjänsten, var god utför betalningen nu."
 
-#: weblate_web/templates/mail/payment_missing.html:23
+#: weblate_web/templates/mail/payment_missing.html:24
 msgid ""
 "Your donation on weblate.org is expired and you have not set up automatic "
 "payments."
@@ -2795,7 +2897,7 @@ msgstr ""
 "Din donation på weblate.org har gått ut och du har inte ställt in "
 "automatiska betalningar."
 
-#: weblate_web/templates/mail/payment_missing.html:25
+#: weblate_web/templates/mail/payment_missing.html:26
 msgid ""
 "Your donation on weblate.org should renew soon and you have not set up "
 "automatic payments."
@@ -2803,7 +2905,7 @@ msgstr ""
 "Din donation på weblate.org bör förnyas snart och du har inte ställt in "
 "automatisk betalning."
 
-#: weblate_web/templates/mail/payment_missing.html:27
+#: weblate_web/templates/mail/payment_missing.html:28
 msgid "Please perform the payment now to continue supporting Weblate."
 msgstr "Utför gärna betalningen nu för att fortsätta stödja Weblate."
 
@@ -2878,25 +2980,25 @@ msgstr "Ansök nu"
 msgid "Your upcoming payment on weblate.org"
 msgstr "Din kommande betalning på weblate.org"
 
-#: weblate_web/templates/mail/snippets/donation_info.html:4
+#: weblate_web/templates/mail/snippets/donation_info.html:5
 #: weblate_web/templates/mail/snippets/subscription_info.html:4
 #, python-format
 msgid "Current subscription: %(package)s"
 msgstr "Nuvarande abonnemang: %(package)s"
 
-#: weblate_web/templates/mail/snippets/donation_info.html:8
+#: weblate_web/templates/mail/snippets/donation_info.html:9
 #: weblate_web/templates/mail/snippets/subscription_info.html:8
 #, python-format
 msgid "Subscription price: %(price)s"
 msgstr "Abonnemangspris: %(price)s"
 
-#: weblate_web/templates/mail/snippets/donation_info.html:12
+#: weblate_web/templates/mail/snippets/donation_info.html:13
 #: weblate_web/templates/mail/snippets/subscription_info.html:12
 #, python-format
 msgid "Saved card: %(card_number)s"
 msgstr "Sparat kort: %(card_number)s"
 
-#: weblate_web/templates/mail/snippets/donation_info.html:17
+#: weblate_web/templates/mail/snippets/donation_info.html:18
 #: weblate_web/templates/mail/snippets/subscription_info.html:17
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
@@ -3044,7 +3146,7 @@ msgstr ""
 "manuellt slutföra nästa betalning i dessa fall."
 
 #: weblate_web/templates/payment/payment.html:55
-#: weblate_web/templates/snippets/service.html:229
+#: weblate_web/templates/snippets/service.html:239
 msgid "Personal data"
 msgstr "Personlig data"
 
@@ -3297,6 +3399,12 @@ msgstr "Hämta faktura"
 msgid "Download receipt"
 msgstr "Ladda ner källkoden"
 
+#: weblate_web/templates/snippets/payment.html:28
+#, fuzzy
+#| msgid "Apply now"
+msgid "Pay now"
+msgstr "Ansök nu"
+
 #: weblate_web/templates/snippets/pricing.html:6
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
 msgstr ""
@@ -3383,8 +3491,8 @@ msgstr "Jämför alla planer"
 
 #: weblate_web/templates/snippets/service.html:15
 #: weblate_web/templates/snippets/service.html:145
-#: weblate_web/templates/user.html:66 weblate_web/templates/user.html:80
-#: weblate_web/templates/user.html:98
+#: weblate_web/templates/user.html:67 weblate_web/templates/user.html:81
+#: weblate_web/templates/user.html:99
 msgid "Expired"
 msgstr "Upphörd"
 
@@ -3447,22 +3555,22 @@ msgid "Billing"
 msgstr "Fakturering"
 
 #: weblate_web/templates/snippets/service.html:141
-#: weblate_web/templates/user.html:94
+#: weblate_web/templates/user.html:95
 msgid "Turn off renewal"
 msgstr "Stäng av förnyelse"
 
 #: weblate_web/templates/snippets/service.html:147
-#: weblate_web/templates/user.html:82 weblate_web/templates/user.html:100
+#: weblate_web/templates/user.html:83 weblate_web/templates/user.html:101
 msgid "Automatic renewal"
 msgstr "Automatisk förnyelse"
 
 #: weblate_web/templates/snippets/service.html:149
-#: weblate_web/templates/user.html:84 weblate_web/templates/user.html:102
+#: weblate_web/templates/user.html:85 weblate_web/templates/user.html:103
 msgid "No renewal"
 msgstr "Ingen förnyelse"
 
 #: weblate_web/templates/snippets/service.html:156
-#: weblate_web/templates/user.html:111
+#: weblate_web/templates/user.html:112
 msgid "Renew now"
 msgstr "Förnya nu"
 
@@ -3476,7 +3584,7 @@ msgid "and <strong>save 20%%</strong>."
 msgstr "och <strong>spara 20%%</strong>."
 
 #: weblate_web/templates/snippets/service.html:172
-#: weblate_web/templates/user.html:123
+#: weblate_web/templates/user.html:124
 msgid "Payments"
 msgstr "Betalningar"
 
@@ -3488,15 +3596,15 @@ msgstr "Få mer Weblate"
 msgid "Available services"
 msgstr "Tillgängliga tjänster"
 
-#: weblate_web/templates/snippets/service.html:214
+#: weblate_web/templates/snippets/service.html:224
 msgid "Congratulations, you are fully covered!"
 msgstr "Grattis, du är helt täckt!"
 
-#: weblate_web/templates/snippets/service.html:231
+#: weblate_web/templates/snippets/service.html:241
 msgid "Data processing agreements for your Weblate service."
 msgstr "Databehandlingsavtal för din Weblate-tjänst."
 
-#: weblate_web/templates/snippets/service.html:235
+#: weblate_web/templates/snippets/service.html:245
 msgid "Manage"
 msgstr "Hantera"
 
@@ -3761,23 +3869,23 @@ msgstr "Lägg till server i Discover Weblate"
 msgid "My donations"
 msgstr "Mina donationer"
 
-#: weblate_web/templates/user.html:41
+#: weblate_web/templates/user.html:42
 msgid "Your reward"
 msgstr "Din belöning"
 
-#: weblate_web/templates/user.html:49
+#: weblate_web/templates/user.html:50
 msgid "Link"
 msgstr "Länk"
 
-#: weblate_web/templates/user.html:52
+#: weblate_web/templates/user.html:53
 msgid "Edit reward"
 msgstr "Redigera belöning"
 
-#: weblate_web/templates/user.html:58
+#: weblate_web/templates/user.html:59
 msgid "Active"
 msgstr "Aktiv"
 
-#: weblate_web/templates/user.html:148
+#: weblate_web/templates/user.html:150
 msgid "Wanna see something nice here?"
 msgstr "Vill du se något trevligt här?"
 
@@ -3794,7 +3902,7 @@ msgid "Other topics"
 msgstr "Andra ämnen"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:884
+#: weblate_web/views.py:918
 msgid "Milestones"
 msgstr "Milstolpar"
 
@@ -3915,78 +4023,80 @@ msgstr[1] "%d dagar kvar"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Fel i parameter %(field)s: %(error)s"
 
-#: weblate_web/views.py:382
+#: weblate_web/views.py:391
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Tack för din donation och njut av FOSDEM."
 
-#: weblate_web/views.py:409
+#: weblate_web/views.py:418
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
 
-#: weblate_web/views.py:416 weblate_web/views.py:450
+#: weblate_web/views.py:425 weblate_web/views.py:459
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 "Vänligen ange din faktureringsinformation för att slutföra betalningen."
 
-#: weblate_web/views.py:428
+#: weblate_web/views.py:437
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Momsregistreringsnumret är inte längre giltigt, uppdatera det."
 
-#: weblate_web/views.py:445
+#: weblate_web/views.py:454
 msgid "Please choose a payment method."
 msgstr "Välj en betalningsmetod."
 
-#: weblate_web/views.py:478
+#: weblate_web/views.py:487
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Kunde inte utföra betalningen: %s"
 
-#: weblate_web/views.py:488
+#: weblate_web/views.py:497
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Kunde inte slutföra betalningen: %s"
 
-#: weblate_web/views.py:545
+#: weblate_web/views.py:554
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr ""
 "Använd det redan genererade avtalet. Du kan generera ett nytt efter 30 dagar."
 
-#: weblate_web/views.py:552
+#: weblate_web/views.py:561
 msgid "New agreement created, you can download it below."
 msgstr "Nytt avtal har skapats, du kan ladda ner det nedan."
 
-#: weblate_web/views.py:604
+#: weblate_web/views.py:613
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 "Nytt företag, nya bankuppgifter! Betala med hänsyn till den aktuella "
 "fakturan."
 
-#: weblate_web/views.py:664
+#: weblate_web/views.py:672
 msgid "Payment not yet processed, please retry."
 msgstr "Betalning ännu inte behandlad, vänligen försök igen."
 
-#: weblate_web/views.py:668
+#: weblate_web/views.py:676
 msgid "The payment was rejected: {}"
 msgstr "Betalningen avvisades: {}"
 
-#: weblate_web/views.py:669
+#: weblate_web/views.py:677
 msgid "Unknown reason"
 msgstr "Okänd anledning"
 
-#: weblate_web/views.py:674
+#: weblate_web/views.py:689
+msgid ""
+"Payment was processed, but the subscription could not be updated. Please "
+"contact us."
+msgstr ""
+
+#: weblate_web/views.py:694
 msgid "Thank you for your subscription."
 msgstr "Tack för ditt abonnemang."
 
-#: weblate_web/views.py:677
-msgid "Thank you for your donation."
-msgstr "Tack för din donation."
-
-#: weblate_web/views.py:988
+#: weblate_web/views.py:1024
 msgid "User not found!"
 msgstr "Användaren hittades inte!"
 
@@ -4319,9 +4429,6 @@ msgstr "Användaren hittades inte!"
 
 #~ msgid "See documentation on subscription management."
 #~ msgstr "Se dokumentationen för prenumerationshantering."
-
-#~ msgid "Validity"
-#~ msgstr "Giltighet"
 
 #~ msgid "Creation date"
 #~ msgstr "Skapandedatum"
