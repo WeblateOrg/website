@@ -3264,6 +3264,54 @@ class APITest(UserTestCase):
         user.refresh_from_db()
         self.assertEqual(user.username, "taken-1")
 
+    def test_user_external_id_unique_username_case_insensitive(self) -> None:
+        User.objects.create_user(username="IvanS", email="taken@example.com")
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": "ivans",
+                            "email": "remote@example.com",
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            User.objects.get(email="remote@example.com").username, "ivans-1"
+        )
+
+    def test_user_external_id_normalizes_null_profile_values(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": "remote",
+                            "last_name": None,
+                            "email": None,
+                        },
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(username="remote")
+        self.assertEqual(user.email, "")
+        self.assertEqual(user.last_name, "")
+
     def test_user_external_id_normalizes_fallback_username(self) -> None:
         response = self.client.post(
             "/api/user/",
@@ -3585,6 +3633,110 @@ class APITest(UserTestCase):
         self.assertIn("Synchronized 0 hosted users", output.getvalue())
         self.assertIn("Skipping hosted user payload", error.getvalue())
         self.assertIn("Not advancing hosted user sync cursor", error.getvalue())
+        self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_reports_candidate_links(self) -> None:
+        first = User.objects.create_user(username="first", email="dup@example.com")
+        second = User.objects.create_user(username="second", email="dup@example.com")
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {
+                        "cursor": "cursor-1",
+                        "users": [
+                            {
+                                "external_id": "42",
+                                "profile": {
+                                    "username": "remote",
+                                    "email": "dup@example.com",
+                                },
+                            }
+                        ],
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+        error = StringIO()
+
+        call_command("sync_hosted_users", stderr=error)
+
+        error_text = error.getvalue()
+        self.assertIn("Multiple local users match hosted user 42", error_text)
+        self.assertIn(
+            "admin=https://hosted.example/admin/auth/user/42/change/", error_text
+        )
+        self.assertIn(
+            f"admin=http://localhost:1234/admin/auth/user/{first.pk}/change/",
+            error_text,
+        )
+        self.assertIn(
+            f"admin=http://localhost:1234/admin/auth/user/{second.pk}/change/",
+            error_text,
+        )
+        self.assertIn("possible action: link the correct local candidate", error_text)
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_only_missing(self) -> None:
+        existing = User.objects.create_user(
+            username="existing", email="existing@example.com"
+        )
+        SamlIdentity.objects.create(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="42",
+            user=existing,
+        )
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {
+                        "cursor": "cursor-1",
+                        "users": [
+                            {
+                                "external_id": "42",
+                                "profile": {
+                                    "username": "existing-renamed",
+                                    "email": "existing@example.com",
+                                },
+                            },
+                            {
+                                "external_id": "43",
+                                "profile": {
+                                    "username": "missing",
+                                    "email": "missing@example.com",
+                                },
+                            },
+                        ],
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+        output = StringIO()
+        error = StringIO()
+
+        call_command(
+            "sync_hosted_users",
+            "--only-missing",
+            stdout=output,
+            stderr=error,
+        )
+
+        self.assertIn("Skipped 1 already linked hosted users", output.getvalue())
+        self.assertIn("Synchronized 1 hosted users", output.getvalue())
+        self.assertIn("Not advancing hosted user sync cursor", error.getvalue())
+        existing.refresh_from_db()
+        self.assertEqual(existing.username, "existing")
+        self.assertTrue(User.objects.filter(username="missing").exists())
         self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
 
     @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
