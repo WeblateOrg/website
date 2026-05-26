@@ -3681,6 +3681,43 @@ class APITest(UserTestCase):
         )
         self.assertIn("possible action: link the correct local candidate", error_text)
 
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_does_not_link_case_variant_username(self) -> None:
+        victim = User.objects.create_user(username="Victim", email="victim@example.com")
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {
+                        "cursor": "cursor-1",
+                        "users": [
+                            {
+                                "external_id": "42",
+                                "profile": {
+                                    "username": "victim",
+                                    "email": "new@example.com",
+                                },
+                            }
+                        ],
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt="weblate.user-sync-response",
+                )
+            },
+        )
+
+        call_command("sync_hosted_users")
+
+        identity = SamlIdentity.objects.get(
+            provider="https://hosted.weblate.org/idp/metadata", external_id="42"
+        )
+        self.assertNotEqual(identity.user_id, victim.pk)
+        victim.refresh_from_db()
+        self.assertEqual(victim.username, "Victim")
+
     @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
     @responses.activate
     def test_sync_hosted_users_only_missing(self) -> None:

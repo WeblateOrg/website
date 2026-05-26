@@ -118,7 +118,7 @@ class SamlSyncContext:
         context = cls()
         providers_external_ids: dict[str, set[str]] = defaultdict(set)
         providers = set()
-        usernames = set()
+        usernames_exact = set()
         emails = set()
 
         for payload in payloads:
@@ -131,13 +131,13 @@ class SamlSyncContext:
                 providers_external_ids[provider].add(external_id)
             profile = extract_profile(payload)
             if username := profile.get("username"):
-                usernames.add(str(username).casefold())
+                usernames_exact.add(str(username))
             if email := profile.get("email"):
                 emails.add(str(email).casefold())
 
         context.preload_username_owners()
         context.preload_identities(providers_external_ids)
-        users = context.preload_legacy_users(usernames, emails)
+        users = context.preload_legacy_users(usernames_exact, emails)
         context.preload_user_identities(providers, users)
         return context
 
@@ -156,15 +156,11 @@ class SamlSyncContext:
                     self.add_identity(identity)
 
     def preload_legacy_users(
-        self, usernames: set[str], emails: set[str]
+        self, usernames_exact: set[str], emails: set[str]
     ) -> dict[int, User]:
         users: dict[int, User] = {}
-        for chunk in iter_chunks(usernames):
-            for username_user in (
-                User.objects.annotate(username_lower=Lower("username"))
-                .filter(username_lower__in=chunk)
-                .iterator()
-            ):
+        for chunk in iter_chunks(usernames_exact):
+            for username_user in User.objects.filter(username__in=chunk).iterator():
                 users[username_user.pk] = username_user
                 self.users_by_username[username_user.username.casefold()].append(
                     username_user
