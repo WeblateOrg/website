@@ -20,7 +20,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, NoReturn
+from typing import NoReturn
 from urllib.parse import urlsplit
 
 import requests
@@ -28,21 +28,15 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.core.signing import BadSignature, SignatureExpired, dumps, loads
 from django.db import DataError, IntegrityError
-from django.urls import NoReverseMatch, reverse
 
 from weblate_web.models import ExternalSyncState, SamlIdentity
 from weblate_web.saml import (
-    AmbiguousSamlIdentityError,
     SamlSyncContext,
     extract_profile,
     get_default_saml_provider,
-    get_legacy_candidates,
     normalize_external_id,
     sync_saml_payload,
 )
-
-if TYPE_CHECKING:
-    from django.contrib.auth.models import User
 
 SYNC_KEY = "hosted-users"
 USER_SYNC_SALT = "weblate.user-sync"
@@ -175,7 +169,7 @@ class Command(BaseCommand):
             processed += 1
             if not isinstance(user_payload, dict):
                 skipped = True
-                self.write_skip("payload is not a mapping", user_payload, context)
+                self.write_skip("payload is not a mapping", user_payload)
                 self.write_progress(processed, total, progress_every)
                 continue
             if only_missing and self.get_existing_identity(user_payload, context):
@@ -185,7 +179,6 @@ class Command(BaseCommand):
             try:
                 user, _created = sync_saml_payload(user_payload, context)
             except (
-                AmbiguousSamlIdentityError,
                 AttributeError,
                 DataError,
                 IntegrityError,
@@ -194,12 +187,12 @@ class Command(BaseCommand):
                 ValueError,
             ) as error:
                 skipped = True
-                self.write_skip(error, user_payload, context)
+                self.write_skip(error, user_payload)
                 self.write_progress(processed, total, progress_every)
                 continue
             if user is None:
                 skipped = True
-                self.write_skip("user not synchronized", user_payload, context)
+                self.write_skip("user not synchronized", user_payload)
                 self.write_progress(processed, total, progress_every)
                 continue
             count += 1
@@ -235,64 +228,25 @@ class Command(BaseCommand):
         self,
         error: object,
         user_payload: object,
-        context: SamlSyncContext | None,
     ) -> None:
         self.stderr.write(f"Skipping hosted user payload: {error}")
-        for line in self.describe_user_payload(user_payload, context):
+        for line in self.describe_user_payload(user_payload):
             self.stderr.write(f"  {line}")
 
-    def describe_user_payload(
-        self, user_payload: object, context: SamlSyncContext | None
-    ) -> list[str]:
+    def describe_user_payload(self, user_payload: object) -> list[str]:
         if not isinstance(user_payload, dict):
             return [f"payload={user_payload!r}"]
-        provider = str(user_payload.get("provider", get_default_saml_provider()))
         external_id = normalize_external_id(user_payload.get("external_id"))
         profile = extract_profile(user_payload)
         username = profile.get("username", user_payload.get("username", ""))
         email = profile.get("email", "")
-        lines = [
+        return [
             (
                 "hosted user: "
                 f"external_id={external_id!r} username={username!r} email={email!r} "
                 f"admin={self.get_hosted_user_admin_url(external_id)}"
             )
         ]
-        candidates = sorted(
-            get_legacy_candidates(profile, context), key=lambda user: user.pk
-        )
-        if candidates:
-            lines.append("local candidates:")
-            lines.extend(f"  {self.describe_local_user(user)}" for user in candidates)
-            if external_id:
-                lines.append(
-                    "possible action: link the correct local candidate with "
-                    f"SamlIdentity(provider={provider!r}, "
-                    f"external_id={external_id!r}, user=<chosen user>)"
-                )
-        elif external_id:
-            lines.append(
-                "possible action: create a placeholder local user and link "
-                f"SamlIdentity(provider={provider!r}, external_id={external_id!r})"
-            )
-        return lines
-
-    def describe_local_user(self, user: User) -> str:
-        identities = [
-            (
-                f"{identity.provider}:{identity.external_id} "
-                f"{self.get_admin_url('admin:weblate_web_samlidentity_change', identity.pk)}"
-            )
-            for identity in SamlIdentity.objects.filter(user=user).order_by(
-                "provider", "external_id"
-            )
-        ]
-        return (
-            f"id={user.pk} username={user.username!r} email={user.email!r} "
-            f"last_login={user.last_login} "
-            f"admin={self.get_admin_url('admin:auth_user_change', user.pk)} "
-            f"saml_identities={identities}"
-        )
 
     def get_existing_identity(
         self, user_payload: object, context: SamlSyncContext | None
@@ -310,13 +264,6 @@ class Command(BaseCommand):
             .select_related("user")
             .first()
         )
-
-    def get_admin_url(self, viewname: str, object_id: object) -> str:
-        try:
-            path = reverse(viewname, args=[object_id])
-        except NoReverseMatch:
-            return ""
-        return f"{settings.SITE_URL.rstrip('/')}{path}"
 
     def get_hosted_user_admin_url(self, external_id: str) -> str:
         if not external_id:

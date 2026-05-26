@@ -411,6 +411,11 @@ class CRMTestCase(BaseCRMTestCase):
         existing = User.objects.create_user(
             username="existing", email="existing@example.com"
         )
+        SamlIdentity.objects.create(
+            provider=settings.HOSTED_SAML_PROVIDER,
+            external_id="43",
+            user=existing,
+        )
         responses.add(
             responses.POST,
             "https://hosted.example/users/ensure/",
@@ -461,6 +466,11 @@ class CRMTestCase(BaseCRMTestCase):
         customer = self.create_customer()
         existing = User.objects.create_user(
             username="existing", email="existing@example.com"
+        )
+        SamlIdentity.objects.create(
+            provider=settings.HOSTED_SAML_PROVIDER,
+            external_id="43",
+            user=existing,
         )
         customer.users.add(existing)
         responses.add(

@@ -37,7 +37,6 @@ from PIL import Image as PILImage
 from requests.exceptions import HTTPError
 from wlc import WeblateException
 
-from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.payments.models import Customer, Payment
 
@@ -3118,11 +3117,22 @@ class APITest(UserTestCase):
 
     def test_user(self) -> None:
         user = self.create_user()
+        SamlIdentity.objects.create(
+            provider=settings.HOSTED_SAML_PROVIDER,
+            external_id="42",
+            user=user,
+        )
         response = self.client.post(
             "/api/user/",
             {
                 "payload": dumps(
-                    {"username": user.username},
+                    {
+                        "external_id": "42",
+                        "profile": {
+                            "username": user.username,
+                            "email": "updated@example.com",
+                        },
+                    },
                     key=settings.PAYMENT_SECRET,
                     salt="weblate.user",
                 )
@@ -3135,8 +3145,8 @@ class APITest(UserTestCase):
             {
                 "payload": dumps(
                     {
-                        "username": "x",
-                        "create": {
+                        "external_id": "43",
+                        "profile": {
                             "username": "x",
                             "last_name": "First Last",
                             "email": "noreply@weblate.org",
@@ -3160,11 +3170,16 @@ class APITest(UserTestCase):
 
     def test_user_rename(self) -> None:
         user = self.create_user()
+        SamlIdentity.objects.create(
+            provider=settings.HOSTED_SAML_PROVIDER,
+            external_id="42",
+            user=user,
+        )
         response = self.client.post(
             "/api/user/",
             {
                 "payload": dumps(
-                    {"username": user.username, "changes": {"username": "other"}},
+                    {"external_id": "42", "changes": {"username": "other"}},
                     key=settings.PAYMENT_SECRET,
                     salt="weblate.user",
                 )
@@ -3432,7 +3447,7 @@ class APITest(UserTestCase):
             ("external_id", "hosted-user-42"),
         )
 
-    def test_user_external_id_links_legacy_user(self) -> None:
+    def test_user_external_id_does_not_link_existing_username(self) -> None:
         user = self.create_user()
         response = self.client.post(
             "/api/user/",
@@ -3451,40 +3466,15 @@ class APITest(UserTestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"status": "User updated"})
+        self.assertEqual(response.json(), {"status": "User created"})
         user.refresh_from_db()
-        self.assertEqual(user.email, "new@example.com")
-        self.assertTrue(
-            SamlIdentity.objects.filter(user=user, external_id="42").exists()
+        self.assertNotEqual(user.email, "new@example.com")
+        created = User.objects.get(email="new@example.com")
+        self.assertEqual(created.username, f"{user.username}-1")
+        self.assertEqual(
+            SamlIdentity.objects.get(external_id="42").user,
+            created,
         )
-
-    def test_user_external_id_rejects_already_linked_legacy_user(self) -> None:
-        user = self.create_user()
-        SamlIdentity.objects.create(
-            provider="https://hosted.weblate.org/idp/metadata",
-            external_id="old",
-            user=user,
-        )
-
-        response = self.client.post(
-            "/api/user/",
-            {
-                "payload": dumps(
-                    {
-                        "external_id": "new",
-                        "profile": {
-                            "username": user.username,
-                            "email": user.email,
-                        },
-                    },
-                    key=settings.PAYMENT_SECRET,
-                    salt="weblate.user",
-                )
-            },
-        )
-
-        self.assertEqual(response.status_code, 400)
-        self.assertFalse(SamlIdentity.objects.filter(external_id="new").exists())
 
     def test_user_external_id_unique_per_provider_user(self) -> None:
         user = self.create_user()
@@ -3536,7 +3526,7 @@ class APITest(UserTestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().email, "remote@example.com")
 
-    def test_user_external_id_duplicate_email(self) -> None:
+    def test_user_external_id_ignores_duplicate_email_candidates(self) -> None:
         User.objects.create_user(username="first", email="dup@example.com")
         User.objects.create_user(username="second", email="dup@example.com")
         response = self.client.post(
@@ -3555,8 +3545,11 @@ class APITest(UserTestCase):
                 )
             },
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertFalse(SamlIdentity.objects.exists())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(User.objects.filter(email="dup@example.com").count(), 3)
+        self.assertEqual(
+            SamlIdentity.objects.get(external_id="42").user.username, "remote"
+        )
 
     def test_user_database_error(self) -> None:
         with patch(
@@ -3576,12 +3569,17 @@ class APITest(UserTestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_user_malformed_legacy_payload(self) -> None:
+    def test_user_missing_external_id_is_not_synchronized(self) -> None:
         response = self.client.post(
             "/api/user/",
             {
                 "payload": dumps(
-                    {"username": "remote", "create": "not a mapping"},
+                    {
+                        "profile": {
+                            "username": "remote",
+                            "email": "remote@example.com",
+                        }
+                    },
                     key=settings.PAYMENT_SECRET,
                     salt="weblate.user",
                 )
@@ -3667,52 +3665,6 @@ class APITest(UserTestCase):
         self.assertIn("Skipping hosted user payload", error.getvalue())
         self.assertIn("Not advancing hosted user sync cursor", error.getvalue())
         self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
-
-    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
-    @responses.activate
-    def test_sync_hosted_users_reports_candidate_links(self) -> None:
-        first = User.objects.create_user(username="first", email="dup@example.com")
-        second = User.objects.create_user(username="second", email="dup@example.com")
-        responses.add(
-            responses.POST,
-            "https://hosted.example/users/",
-            json={
-                "payload": dumps(
-                    {
-                        "cursor": "cursor-1",
-                        "users": [
-                            {
-                                "external_id": "42",
-                                "profile": {
-                                    "username": "remote",
-                                    "email": "dup@example.com",
-                                },
-                            }
-                        ],
-                    },
-                    key=settings.PAYMENT_SECRET,
-                    salt=USER_SYNC_RESPONSE_SALT,
-                )
-            },
-        )
-        error = StringIO()
-
-        call_command("sync_hosted_users", stderr=error)
-
-        error_text = error.getvalue()
-        self.assertIn("Multiple local users match hosted user 42", error_text)
-        self.assertIn(
-            "admin=https://hosted.example/admin/auth/user/42/change/", error_text
-        )
-        self.assertIn(
-            f"admin=http://localhost:1234/admin/auth/user/{first.pk}/change/",
-            error_text,
-        )
-        self.assertIn(
-            f"admin=http://localhost:1234/admin/auth/user/{second.pk}/change/",
-            error_text,
-        )
-        self.assertIn("possible action: link the correct local candidate", error_text)
 
     @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
     @responses.activate
@@ -4889,122 +4841,6 @@ class ServiceTest(FakturaceTestCase):
 
 
 class CommandsTestCase(FakturaceTestCase):
-    def test_audit_saml_users(self) -> None:
-        first = User.objects.create_user(
-            username="audit-first", email="dup@example.com"
-        )
-        second = User.objects.create_user(
-            username="audit-second", email="DUP@example.com"
-        )
-        Customer.objects.create(
-            user_id=second.pk,
-            origin=PAYMENTS_ORIGIN,
-            name="Unlinked customer",
-        )
-        customer = Customer.objects.create(
-            user_id=first.pk,
-            origin=PAYMENTS_ORIGIN,
-            name="Audit customer",
-        )
-        customer.users.add(first)
-        Service.objects.create(customer=customer)
-        Interaction.objects.create(
-            origin=Interaction.Origin.MANUAL_NOTE,
-            customer=customer,
-            user=first,
-            summary="Audit note",
-            content="Audit content",
-        )
-        SamlIdentity.objects.create(
-            provider="https://hosted.weblate.org/idp/metadata",
-            external_id="42",
-            user=first,
-        )
-
-        with StringIO() as buffer:
-            call_command("audit_saml_users", stdout=buffer)
-            output = buffer.getvalue()
-
-        self.assertIn("Duplicate email: dup@example.com", output)
-        self.assertIn("username='audit-first'", output)
-        self.assertIn("username='audit-second'", output)
-        self.assertIn(f"customers=[{customer.pk}]", output)
-        self.assertIn("services=1", output)
-        self.assertIn("crm_interactions=1", output)
-        self.assertIn(
-            "saml_identities=['https://hosted.weblate.org/idp/metadata:42']",
-            output,
-        )
-
-    def test_audit_saml_users_cleanup_unused_dry_run(self) -> None:
-        first = User.objects.create_user(
-            username="cleanup-first", email="cleanup@example.com"
-        )
-        second = User.objects.create_user(
-            username="cleanup-second", email="cleanup@example.com"
-        )
-
-        with StringIO() as buffer:
-            call_command("audit_saml_users", "--cleanup-unused", stdout=buffer)
-            output = buffer.getvalue()
-
-        self.assertIn(
-            f"Would prefix duplicate email on id={second.pk} "
-            f"username='cleanup-second': cleanup@example.com -> "
-            f"duplicate-{second.pk}-cleanup@example.com",
-            output,
-        )
-        self.assertIn("Would prefix duplicate email on 1 users", output)
-        first.refresh_from_db()
-        second.refresh_from_db()
-        self.assertEqual(first.email, "cleanup@example.com")
-        self.assertEqual(second.email, "cleanup@example.com")
-
-    def test_audit_saml_users_cleanup_unused_apply(self) -> None:
-        first = User.objects.create_user(
-            username="cleanup-apply-first", email="cleanup-apply@example.com"
-        )
-        second = User.objects.create_user(
-            username="cleanup-apply-second", email="cleanup-apply@example.com"
-        )
-
-        with StringIO() as buffer:
-            call_command(
-                "audit_saml_users", "--cleanup-unused", "--apply", stdout=buffer
-            )
-            output = buffer.getvalue()
-
-        self.assertIn("Prefixed duplicate email on 1 users", output)
-        first.refresh_from_db()
-        second.refresh_from_db()
-        self.assertEqual(first.email, "cleanup-apply@example.com")
-        self.assertEqual(
-            second.email, f"duplicate-{second.pk}-cleanup-apply@example.com"
-        )
-
-    def test_audit_saml_users_cleanup_skips_multiple_valued_users(self) -> None:
-        first = User.objects.create_user(
-            username="cleanup-valued-first", email="cleanup-valued@example.com"
-        )
-        second = User.objects.create_user(
-            username="cleanup-valued-second", email="cleanup-valued@example.com"
-        )
-        timestamp = timezone.now()
-        User.objects.filter(pk__in=(first.pk, second.pk)).update(last_login=timestamp)
-
-        with StringIO() as buffer:
-            call_command(
-                "audit_saml_users", "--cleanup-unused", "--apply", stdout=buffer
-            )
-            output = buffer.getvalue()
-
-        self.assertIn("Cleanup skipped: multiple users have activity", output)
-        self.assertIn("Prefixed duplicate email on 0 users", output)
-        first.refresh_from_db()
-        second.refresh_from_db()
-        self.assertEqual(first.email, "cleanup-valued@example.com")
-        self.assertEqual(second.email, "cleanup-valued@example.com")
-
     def test_list_contacts(self) -> None:
         with StringIO() as buffer:
             call_command("list_contacts", stdout=buffer)

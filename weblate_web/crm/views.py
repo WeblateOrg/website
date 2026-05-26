@@ -62,7 +62,6 @@ from weblate_web.models import (
 )
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.saml import (
-    AmbiguousSamlIdentityError,
     get_default_saml_provider,
     normalize_external_id,
     sync_saml_payload,
@@ -675,7 +674,6 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                 },
             )
         except (
-            AmbiguousSamlIdentityError,
             DataError,
             HostedUserEnsureError,
             IntegrityError,
