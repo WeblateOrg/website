@@ -297,6 +297,41 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(response, 'name="note"')
         self.assertContains(response, "Add note")
 
+    def test_customer_detail_hides_add_customer_user_for_readonly_staff(self):
+        customer = self.create_customer()
+        readonly_user = User.objects.create_user(
+            username="readonly", email="readonly@example.com", is_staff=True
+        )
+        readonly_user.user_permissions.add(
+            Permission.objects.get(codename="view_customer")
+        )
+        self.client.force_login(readonly_user)
+
+        response = self.client.get(customer.get_absolute_url())
+
+        self.assertNotContains(response, 'name="add_customer_user"')
+
+    def test_customer_detail_rejects_add_customer_user_for_readonly_staff(self):
+        customer = self.create_customer()
+        readonly_user = User.objects.create_user(
+            username="readonly", email="readonly@example.com", is_staff=True
+        )
+        readonly_user.user_permissions.add(
+            Permission.objects.get(codename="view_customer")
+        )
+        self.client.force_login(readonly_user)
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "new@example.com",
+                "full_name": "New User",
+            },
+        )
+
+        self.assertEqual(response.status_code, 403)
+
     def test_customer_detail_adds_manual_note(self):
         customer = self.create_customer()
         note = (

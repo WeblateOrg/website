@@ -52,12 +52,14 @@
       </label>
       <input type="submit" value="Review merge">
     </form>
-    <form method="post">
-      <p>{% translate "Add user to customer" %}</p>
-      {% csrf_token %}
-      {{ customer_user_form }}
-      <input type="submit" name="add_customer_user" value="{% translate "Add user" %}">
-    </form>
+    {% if can_add_customer_user %}
+      <form method="post">
+        <p>{% translate "Add user to customer" %}</p>
+        {% csrf_token %}
+        {{ customer_user_form }}
+        <input type="submit" name="add_customer_user" value="{% translate "Add user" %}">
+      </form>
+    {% endif %}
 
     <h2>Services</h2>
     {% include "weblate_web/service_list_content.html" with object_list=services %}
