@@ -522,6 +522,7 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
 class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
+    add_customer_user_permission = "payments.change_customer"
     title = "Customer detail"
 
     def get_context_data(self, **kwargs):
@@ -546,15 +547,17 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             self.request.POST if add_customer_user else None
         )
         context["can_add_customer_user"] = self.request.user.has_perm(
-            "payments.change_customer"
+            self.add_customer_user_permission
         )
         context["services"] = self.object.service_set.customer_services()
         context["donations"] = self.object.service_set.donations()
         return context
 
-    @staticmethod
-    def check_add_customer_user_permission(request) -> None:
-        if not request.user.has_perm("payments.change_customer"):
+    @classmethod
+    def check_add_customer_user_permission(
+        cls, request: AuthenticatedHttpRequest
+    ) -> None:
+        if not request.user.has_perm(cls.add_customer_user_permission):
             raise PermissionDenied
 
     def get_title(self) -> str:
