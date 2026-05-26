@@ -3265,6 +3265,8 @@ class APITest(UserTestCase):
         user.refresh_from_db()
         self.assertEqual(user.username, "taken-1")
 
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
     def test_user_external_id_unique_username_case_insensitive(self) -> None:
         User.objects.create_user(username="IvanS", email="taken@example.com")
         response = self.client.post(
@@ -3287,6 +3289,36 @@ class APITest(UserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             User.objects.get(email="remote@example.com").username, "ivans-1"
+        )
+
+        User.objects.create_user(username="LenaS", email="taken2@example.com")
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {
+                        "cursor": "cursor-1",
+                        "users": [
+                            {
+                                "external_id": "43",
+                                "profile": {
+                                    "username": "lenas",
+                                    "email": "remote-sync@example.com",
+                                },
+                            }
+                        ],
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt=USER_SYNC_RESPONSE_SALT,
+                )
+            },
+        )
+
+        call_command("sync_hosted_users")
+
+        self.assertEqual(
+            User.objects.get(email="remote-sync@example.com").username, "lenas-1"
         )
 
     def test_user_external_id_normalizes_null_profile_values(self) -> None:
