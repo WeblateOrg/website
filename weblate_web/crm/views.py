@@ -545,9 +545,17 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["customer_user_form"] = CustomerUserForm(
             self.request.POST if add_customer_user else None
         )
+        context["can_add_customer_user"] = self.request.user.has_perm(
+            "payments.change_customer"
+        )
         context["services"] = self.object.service_set.customer_services()
         context["donations"] = self.object.service_set.donations()
         return context
+
+    @staticmethod
+    def check_add_customer_user_permission(request) -> None:
+        if not request.user.has_perm("payments.change_customer"):
+            raise PermissionDenied
 
     def get_title(self) -> str:
         return self.object.verbose_name
@@ -642,6 +650,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             return True
 
     def add_customer_user(self, request, customer: Customer, *args, **kwargs):
+        self.check_add_customer_user_permission(request)
         form = CustomerUserForm(request.POST)
         if not form.is_valid():
             show_form_errors(request, form)
