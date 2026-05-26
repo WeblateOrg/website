@@ -313,6 +313,7 @@ class CRMTestCase(BaseCRMTestCase):
 
         response = self.client.get(customer.get_absolute_url())
 
+        self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, 'name="add_customer_user"')
 
     def test_customer_detail_rejects_add_customer_user_for_readonly_staff(self):
@@ -321,7 +322,11 @@ class CRMTestCase(BaseCRMTestCase):
             username="readonly", email="readonly@example.com", is_staff=True
         )
         readonly_user.user_permissions.add(
-            Permission.objects.get(codename="view_customer")
+            Permission.objects.get(
+                codename="view_customer",
+                content_type__app_label="payments",
+                content_type__model="customer",
+            )
         )
         self.client.force_login(readonly_user)
 
