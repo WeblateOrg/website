@@ -367,6 +367,7 @@ SAML_ATTRIBUTE_MAPPING = {
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
 HOSTED_SAML_PROVIDER = "https://hosted.weblate.org/idp/metadata"
 HOSTED_USER_SYNC_API = "https://hosted.weblate.org/hosted/api/users/"
+HOSTED_USER_CREATE_API = "https://hosted.weblate.org/hosted/api/users/ensure/"
 
 SAML_CONFIG = {
     # full path to the xmlsec1 binary program

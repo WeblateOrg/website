@@ -45,6 +45,8 @@ if TYPE_CHECKING:
     from django.contrib.auth.models import User
 
 SYNC_KEY = "hosted-users"
+USER_SYNC_SALT = "weblate.user-sync"
+USER_SYNC_RESPONSE_SALT = "weblate.user-sync-response"
 INVALID_SYNC_RESPONSE = "Invalid hosted user sync response"
 DEFAULT_PROGRESS_EVERY = 10000
 
@@ -112,7 +114,7 @@ class Command(BaseCommand):
                 "payload": dumps(
                     request_payload,
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync",
+                    salt=USER_SYNC_SALT,
                 )
             },
             timeout=60,
@@ -132,7 +134,7 @@ class Command(BaseCommand):
                 signed_payload,
                 key=settings.PAYMENT_SECRET,
                 max_age=300,
-                salt="weblate.user-sync-response",
+                salt=USER_SYNC_RESPONSE_SALT,
             )
         except (BadSignature, SignatureExpired) as error:
             raise RuntimeError(INVALID_SYNC_RESPONSE) from error

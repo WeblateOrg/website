@@ -42,6 +42,11 @@ class ManualInteractionForm(forms.Form):
     )
 
 
+class CustomerUserForm(forms.Form):
+    email = forms.EmailField(label=gettext_lazy("E-mail"))
+    full_name = forms.CharField(label=gettext_lazy("Full name"), max_length=150)
+
+
 class ServiceMaintenanceWindowForm(forms.ModelForm):
     class Meta:
         model = Service

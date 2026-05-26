@@ -9,8 +9,9 @@ from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
+from django.db import DataError, IntegrityError, transaction
 from django.db.models import (
     Case,
     DecimalField,
@@ -30,16 +31,20 @@ from django.db.models.functions import (
 )
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext, override
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.crm.forms import (
+    CustomerUserForm,
     ManualInteractionForm,
     RefundConfirmationForm,
     ServiceMaintenanceWindowForm,
 )
+from weblate_web.crm.hosted import HostedUserEnsureError, ensure_hosted_user
 from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import (
@@ -48,8 +53,20 @@ from weblate_web.invoices.models import (
     InvoiceCategory,
     InvoiceKind,
 )
-from weblate_web.models import Package, PackageCategory, Service, Subscription
+from weblate_web.models import (
+    Package,
+    PackageCategory,
+    SamlIdentity,
+    Service,
+    Subscription,
+)
 from weblate_web.payments.models import Customer, Payment
+from weblate_web.saml import (
+    AmbiguousSamlIdentityError,
+    get_default_saml_provider,
+    normalize_external_id,
+    sync_saml_payload,
+)
 from weblate_web.utils import show_form_errors
 
 from .models import Interaction
@@ -69,6 +86,12 @@ class InvoiceSummaryRow(TypedDict):
     category: int
     period: date | int
     total_no_vat: Decimal
+
+
+class CustomerHostedUserContext(TypedDict):
+    email: str
+    hosted_created: bool
+    email_users: list[User]
 
 
 class CRMMixin:
@@ -507,13 +530,21 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         add_manual_note = (
             self.request.method == "POST" and "add_manual_note" in self.request.POST
         )
+        add_customer_user = (
+            self.request.method == "POST" and "add_customer_user" in self.request.POST
+        )
         context["new_subscription_form"] = NewSubscriptionForm(
             self.request.POST
-            if self.request.method == "POST" and not add_manual_note
+            if self.request.method == "POST"
+            and not add_manual_note
+            and not add_customer_user
             else None
         )
         context["manual_interaction_form"] = ManualInteractionForm(
             self.request.POST if add_manual_note else None
+        )
+        context["customer_user_form"] = CustomerUserForm(
+            self.request.POST if add_customer_user else None
         )
         context["services"] = self.object.service_set.customer_services()
         context["donations"] = self.object.service_set.donations()
@@ -522,8 +553,159 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     def get_title(self) -> str:
         return self.object.verbose_name
 
+    @staticmethod
+    def get_email_users(email: str) -> list[User]:
+        return list(User.objects.filter(email__iexact=email).order_by("pk"))
+
+    @staticmethod
+    def get_username_users(username: object) -> list[User]:
+        if not isinstance(username, str) or not username:
+            return []
+        return list(User.objects.filter(username__iexact=username).order_by("pk"))
+
+    @staticmethod
+    def has_hosted_identity(hosted_payload) -> bool:
+        provider = str(hosted_payload.get("provider", get_default_saml_provider()))
+        external_id = normalize_external_id(hosted_payload.get("external_id"))
+        if not external_id:
+            return False
+        return SamlIdentity.objects.filter(
+            provider=provider, external_id=external_id
+        ).exists()
+
+    @staticmethod
+    def get_user_admin_links(users: list[User]) -> str:
+        return format_html_join(
+            ", ",
+            '<a href="{}">{} ({})</a>',
+            (
+                (
+                    reverse("admin:auth_user_change", kwargs={"object_id": user.pk}),
+                    user.username,
+                    user.pk,
+                )
+                for user in users
+            ),
+        )
+
+    def reject_username_only_hosted_match(
+        self, hosted_payload, context: CustomerHostedUserContext
+    ) -> None:
+        if context["email_users"] or self.has_hosted_identity(hosted_payload):
+            return
+        profile = hosted_payload.get("profile")
+        if not isinstance(profile, dict):
+            return
+        if self.get_username_users(profile.get("username")):
+            raise HostedUserEnsureError(
+                gettext("Hosted username matches a local user with a different e-mail.")
+            )
+
+    def link_customer_hosted_user(
+        self,
+        request,
+        customer: Customer,
+        hosted_payload,
+        context: CustomerHostedUserContext,
+    ) -> bool:
+        self.reject_username_only_hosted_match(hosted_payload, context)
+        with transaction.atomic():
+            user, created = sync_saml_payload(hosted_payload)
+            if user is None:
+                raise HostedUserEnsureError(gettext("Hosted user was not linked."))
+            if context["email_users"] and user.pk != context["email_users"][0].pk:
+                raise HostedUserEnsureError(
+                    gettext("Hosted user is already linked to a different local user.")
+                )
+            if customer.users.filter(pk=user.pk).exists():
+                return False
+            customer.users.add(user)
+            customer.interaction_set.create(
+                origin=Interaction.Origin.MANUAL_NOTE,
+                summary=gettext("Added customer user"),
+                content=gettext(
+                    "Added %(email)s to customer users. Hosted user was %(state)s."
+                )
+                % {
+                    "email": context["email"],
+                    "state": gettext("created")
+                    if context["hosted_created"]
+                    else gettext("linked"),
+                },
+                details={
+                    "user": user.pk,
+                    "email": context["email"],
+                    "hosted_created": context["hosted_created"],
+                    "local_created": created,
+                },
+                user=request.user,
+            )
+            return True
+
+    def add_customer_user(self, request, customer: Customer, *args, **kwargs):
+        form = CustomerUserForm(request.POST)
+        if not form.is_valid():
+            show_form_errors(request, form)
+            return self.get(request, *args, **kwargs)
+
+        email = form.cleaned_data["email"]
+        full_name = form.cleaned_data["full_name"]
+        email_users = self.get_email_users(email)
+        if len(email_users) > 1:
+            messages.error(
+                request,
+                format_html(
+                    "{}: {}",
+                    gettext("Multiple local users use this e-mail address"),
+                    self.get_user_admin_links(email_users),
+                ),
+            )
+            return self.get(request, *args, **kwargs)
+
+        try:
+            hosted_payload, hosted_created = ensure_hosted_user(email, full_name)
+            added = self.link_customer_hosted_user(
+                request,
+                customer,
+                hosted_payload,
+                {
+                    "email": email,
+                    "hosted_created": hosted_created,
+                    "email_users": email_users,
+                },
+            )
+        except (
+            AmbiguousSamlIdentityError,
+            DataError,
+            HostedUserEnsureError,
+            IntegrityError,
+            KeyError,
+            TypeError,
+            ValueError,
+        ) as error:
+            messages.error(
+                request,
+                gettext("Could not add customer user: %(error)s") % {"error": error},
+            )
+            return self.get(request, *args, **kwargs)
+
+        if added:
+            messages.success(
+                request,
+                gettext("Added %(email)s to customer users.") % {"email": email},
+            )
+        else:
+            messages.info(
+                request,
+                gettext("%(email)s is already a customer user.") % {"email": email},
+            )
+        return redirect(customer)
+
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
+        if "add_customer_user" in request.POST:
+            return self.add_customer_user(request, customer, *args, **kwargs)
+
         if "add_manual_note" in request.POST:
             manual_form = ManualInteractionForm(request.POST)
             if manual_form.is_valid():
