@@ -45,6 +45,7 @@ from .exchange_rates import UncachedExchangeRates
 from .hetzner import generate_random_password
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
+from .management.commands.sync_hosted_users import USER_SYNC_RESPONSE_SALT
 from .middleware import SecurityMiddleware
 from .models import (
     REWARD_LEVELS,
@@ -3596,7 +3597,7 @@ class APITest(UserTestCase):
                         ],
                     },
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync-response",
+                    salt=USER_SYNC_RESPONSE_SALT,
                 )
             },
         )
@@ -3621,7 +3622,7 @@ class APITest(UserTestCase):
                 "payload": dumps(
                     {"cursor": "cursor-1", "users": [{"external_id": " "}]},
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync-response",
+                    salt=USER_SYNC_RESPONSE_SALT,
                 )
             },
         )
@@ -3658,7 +3659,7 @@ class APITest(UserTestCase):
                         ],
                     },
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync-response",
+                    salt=USER_SYNC_RESPONSE_SALT,
                 )
             },
         )
@@ -3717,7 +3718,7 @@ class APITest(UserTestCase):
                         ],
                     },
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync-response",
+                    salt=USER_SYNC_RESPONSE_SALT,
                 )
             },
         )
@@ -3760,7 +3761,7 @@ class APITest(UserTestCase):
                         ],
                     },
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync-response",
+                    salt=USER_SYNC_RESPONSE_SALT,
                 )
             },
         )
@@ -3800,7 +3801,7 @@ class APITest(UserTestCase):
                 "payload": dumps(
                     ["not", "a", "dict"],
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync-response",
+                    salt=USER_SYNC_RESPONSE_SALT,
                 )
             },
         )
@@ -3828,7 +3829,7 @@ class APITest(UserTestCase):
                 "payload": dumps(
                     {"users": []},
                     key=settings.PAYMENT_SECRET,
-                    salt="weblate.user-sync-response",
+                    salt=USER_SYNC_RESPONSE_SALT,
                 )
             },
         )

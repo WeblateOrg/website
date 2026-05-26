@@ -27,7 +27,6 @@ from typing import TYPE_CHECKING, Any
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Q
 from django.db.models.functions import Lower
 from django.utils import timezone
 from djangosaml2.backends import Saml2Backend  # type: ignore[import-untyped]
@@ -166,9 +165,7 @@ class SamlSyncContext:
                 .iterator()
             ):
                 users[username_user.pk] = username_user
-                self.users_by_username[username_user.username.casefold()].append(
-                    username_user
-                )
+                self.users_by_username[username_user.username].append(username_user)
         for chunk in iter_chunks(emails):
             for email_user in (
                 User.objects.annotate(email_lower=Lower("email"))
@@ -210,7 +207,7 @@ class SamlSyncContext:
     def get_legacy_candidates(self, profile: dict[str, Any]) -> list[User]:
         users = {}
         if username := profile.get("username"):
-            for user in self.users_by_username.get(str(username).casefold(), []):
+            for user in self.users_by_username.get(str(username), []):
                 users[user.pk] = user
         if email := profile.get("email"):
             for user in self.users_by_email.get(str(email).casefold(), []):
@@ -241,7 +238,7 @@ class SamlSyncContext:
             self.users_by_email[user.email.casefold()].append(user)
 
     def add_legacy_user(self, user: User) -> None:
-        self.users_by_username[user.username.casefold()].append(user)
+        self.users_by_username[user.username].append(user)
         self.set_user_email(user)
         self.set_username_owner(user)
 
@@ -292,14 +289,15 @@ def get_legacy_candidates(
 ) -> list[User]:
     if context is not None:
         return context.get_legacy_candidates(profile)
-    query = Q()
+    users = {}
     if username := profile.get("username"):
-        query |= Q(username=username)
+        for user in User.objects.filter(username=username):
+            if user.username == username:
+                users[user.pk] = user
     if email := profile.get("email"):
-        query |= Q(email__iexact=email)
-    if not query:
-        return []
-    return list(User.objects.filter(query).distinct())
+        for user in User.objects.filter(email__iexact=email):
+            users[user.pk] = user
+    return list(users.values())
 
 
 def apply_profile(

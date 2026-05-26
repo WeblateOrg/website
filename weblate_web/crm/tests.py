@@ -3,12 +3,16 @@ from datetime import date, timedelta
 from decimal import Decimal
 from io import StringIO
 from unittest.mock import MagicMock, patch
+from urllib.parse import parse_qs
 
+import requests
 import responses
+from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
+from django.core.signing import dumps, loads
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 from django.test import TestCase, TransactionTestCase
@@ -16,6 +20,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 
+from weblate_web.crm.hosted import USER_ENSURE_RESPONSE_SALT, USER_ENSURE_SALT
 from weblate_web.crm.models import Interaction, ZammadSyncLog
 from weblate_web.crm.views import IncomeView
 from weblate_web.invoices.models import (
@@ -30,6 +35,7 @@ from weblate_web.management.commands.zammad_sync import InvalidSubscriptionError
 from weblate_web.models import (
     Package,
     PackageCategory,
+    SamlIdentity,
     Service,
     ServiceKind,
     get_donation_package,
@@ -41,6 +47,7 @@ from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_clien
 VIES_MS_UNAVAILABLE = "MS_UNAVAILABLE"
 VIES_MS_MAX_CONCURRENT_REQ = "MS_MAX_CONCURRENT_REQ"
 VIES_TIMEOUT = "TIMEOUT"
+TEST_PAYMENT_SECRET = "secret"  # noqa: S105
 
 
 class BaseCRMTestCase(TestCase):
@@ -329,6 +336,408 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Interaction.objects.exists())
         self.assertContains(response, "This field is required")
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_adds_hosted_user(self):
+        customer = self.create_customer()
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            json={
+                "payload": dumps(
+                    {
+                        "created": True,
+                        "user": {
+                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "external_id": "42",
+                            "profile": {
+                                "username": "new-user",
+                                "last_name": "New User",
+                                "email": "new@example.com",
+                            },
+                        },
+                    },
+                    key=TEST_PAYMENT_SECRET,
+                    salt=USER_ENSURE_RESPONSE_SALT,
+                )
+            },
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "new@example.com",
+                "full_name": "New User",
+            },
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        user = User.objects.get(email="new@example.com")
+        self.assertEqual(user.last_name, "New User")
+        self.assertTrue(
+            SamlIdentity.objects.filter(user=user, external_id="42").exists()
+        )
+        self.assertIn(user, customer.users.all())
+        interaction = Interaction.objects.get(customer=customer)
+        self.assertEqual(interaction.summary, "Added customer user")
+        self.assertTrue(interaction.details["hosted_created"])
+
+        request_body = responses.calls[0].request.body
+        if isinstance(request_body, bytes):
+            request_body = request_body.decode()
+        self.assertIsInstance(request_body, str)
+        request_payload = loads(
+            parse_qs(request_body)["payload"][0],
+            key=TEST_PAYMENT_SECRET,
+            salt=USER_ENSURE_SALT,
+        )
+        self.assertEqual(
+            request_payload,
+            {"email": "new@example.com", "full_name": "New User"},
+        )
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_adds_existing_hosted_user(self):
+        customer = self.create_customer()
+        existing = User.objects.create_user(
+            username="existing", email="existing@example.com"
+        )
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            json={
+                "payload": dumps(
+                    {
+                        "created": False,
+                        "user": {
+                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "external_id": "43",
+                            "profile": {
+                                "username": "hosted-existing",
+                                "last_name": "Existing User",
+                                "email": "existing@example.com",
+                            },
+                        },
+                    },
+                    key=TEST_PAYMENT_SECRET,
+                    salt=USER_ENSURE_RESPONSE_SALT,
+                )
+            },
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "existing@example.com",
+                "full_name": "Existing User",
+            },
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertIn(existing, customer.users.all())
+        self.assertTrue(
+            SamlIdentity.objects.filter(user=existing, external_id="43").exists()
+        )
+        self.assertFalse(
+            Interaction.objects.get(customer=customer).details["hosted_created"]
+        )
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_does_not_log_duplicate_customer_user(self):
+        customer = self.create_customer()
+        existing = User.objects.create_user(
+            username="existing", email="existing@example.com"
+        )
+        customer.users.add(existing)
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            json={
+                "payload": dumps(
+                    {
+                        "created": False,
+                        "user": {
+                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "external_id": "43",
+                            "profile": {
+                                "username": "hosted-existing",
+                                "last_name": "Existing User",
+                                "email": "existing@example.com",
+                            },
+                        },
+                    },
+                    key=TEST_PAYMENT_SECRET,
+                    salt=USER_ENSURE_RESPONSE_SALT,
+                )
+            },
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "existing@example.com",
+                "full_name": "Existing User",
+            },
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertEqual(customer.users.count(), 1)
+        self.assertTrue(
+            SamlIdentity.objects.filter(user=existing, external_id="43").exists()
+        )
+        self.assertFalse(Interaction.objects.filter(customer=customer).exists())
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_rejects_duplicate_local_users(self):
+        customer = self.create_customer()
+        User.objects.create_user(username="first", email="dup@example.com")
+        User.objects.create_user(username="second", email="dup@example.com")
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "dup@example.com",
+                "full_name": "Duplicate User",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(
+            any(
+                call.request.method == "POST"
+                and call.request.url == settings.HOSTED_USER_CREATE_API
+                for call in responses.calls
+            )
+        )
+        self.assertFalse(customer.users.exists())
+        self.assertContains(response, "Multiple local users use this e-mail address")
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_rejects_username_only_hosted_match(self):
+        customer = self.create_customer()
+        existing = User.objects.create_user(
+            username="collision", email="other@example.com"
+        )
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            json={
+                "payload": dumps(
+                    {
+                        "created": False,
+                        "user": {
+                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "external_id": "44",
+                            "profile": {
+                                "username": "collision",
+                                "last_name": "Invited User",
+                                "email": "invited@example.com",
+                            },
+                        },
+                    },
+                    key=TEST_PAYMENT_SECRET,
+                    salt=USER_ENSURE_RESPONSE_SALT,
+                )
+            },
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "invited@example.com",
+                "full_name": "Invited User",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(customer.users.exists())
+        self.assertFalse(SamlIdentity.objects.filter(external_id="44").exists())
+        existing.refresh_from_db()
+        self.assertEqual(existing.email, "other@example.com")
+        self.assertContains(
+            response, "Hosted username matches a local user with a different e-mail."
+        )
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_rejects_case_insensitive_username_only_hosted_match(self):
+        customer = self.create_customer()
+        existing = User.objects.create_user(
+            username="Collision", email="other@example.com"
+        )
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            json={
+                "payload": dumps(
+                    {
+                        "created": False,
+                        "user": {
+                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "external_id": "45",
+                            "profile": {
+                                "username": "collision",
+                                "last_name": "Invited User",
+                                "email": "invited@example.com",
+                            },
+                        },
+                    },
+                    key=TEST_PAYMENT_SECRET,
+                    salt=USER_ENSURE_RESPONSE_SALT,
+                )
+            },
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "invited@example.com",
+                "full_name": "Invited User",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(customer.users.exists())
+        self.assertFalse(SamlIdentity.objects.filter(external_id="45").exists())
+        existing.refresh_from_db()
+        self.assertEqual(existing.email, "other@example.com")
+        self.assertContains(
+            response, "Hosted username matches a local user with a different e-mail."
+        )
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_uses_default_provider_for_hosted_identity(self):
+        customer = self.create_customer()
+        existing = User.objects.create_user(
+            username="collision", email="other@example.com"
+        )
+        SamlIdentity.objects.create(
+            provider=settings.HOSTED_SAML_PROVIDER,
+            external_id="46",
+            user=existing,
+        )
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            json={
+                "payload": dumps(
+                    {
+                        "created": False,
+                        "user": {
+                            "external_id": "46",
+                            "profile": {
+                                "username": "collision",
+                                "last_name": "Invited User",
+                                "email": "invited@example.com",
+                            },
+                        },
+                    },
+                    key=TEST_PAYMENT_SECRET,
+                    salt=USER_ENSURE_RESPONSE_SALT,
+                )
+            },
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "invited@example.com",
+                "full_name": "Invited User",
+            },
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertIn(existing, customer.users.all())
+        existing.refresh_from_db()
+        self.assertEqual(existing.email, "invited@example.com")
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_keeps_customer_on_hosted_error(self):
+        customer = self.create_customer()
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            status=400,
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "broken@example.com",
+                "full_name": "Broken User",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(customer.users.exists())
+        self.assertFalse(User.objects.filter(email="broken@example.com").exists())
+        self.assertContains(response, "Could not add customer user")
+
+    @override_settings(
+        HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
+        PAYMENT_SECRET=TEST_PAYMENT_SECRET,
+    )
+    @responses.activate
+    def test_customer_detail_keeps_customer_on_hosted_connection_error(self):
+        customer = self.create_customer()
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/ensure/",
+            body=requests.ConnectionError("connection failed"),
+        )
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "add_customer_user": "1",
+                "email": "broken@example.com",
+                "full_name": "Broken User",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(customer.users.exists())
+        self.assertFalse(User.objects.filter(email="broken@example.com").exists())
+        self.assertContains(response, "Could not add customer user")
 
     def test_service(self):
         Package.objects.create(name="community", price=0)
