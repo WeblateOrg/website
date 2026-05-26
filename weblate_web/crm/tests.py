@@ -303,7 +303,11 @@ class CRMTestCase(BaseCRMTestCase):
             username="readonly", email="readonly@example.com", is_staff=True
         )
         readonly_user.user_permissions.add(
-            Permission.objects.get(codename="view_customer")
+            Permission.objects.get(
+                codename="view_customer",
+                content_type__app_label="payments",
+                content_type__model="customer",
+            )
         )
         self.client.force_login(readonly_user)
 
