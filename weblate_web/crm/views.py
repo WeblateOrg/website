@@ -87,6 +87,16 @@ class InvoiceSummaryRow(TypedDict):
     total_no_vat: Decimal
 
 
+def has_invoice_confirmation(request: HttpRequest) -> bool:
+    if request.POST.get("confirm_invoice") == "1":
+        return True
+    messages.error(
+        request,
+        gettext("Please confirm that you want to issue a final invoice."),
+    )
+    return False
+
+
 class CustomerHostedUserContext(TypedDict):
     email: str
     hosted_created: bool
@@ -231,6 +241,34 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             )
         return redirect(service)
 
+    def get_upgrade_invoice_package(self, request, service, subscription):
+        package = None
+        if package_name := request.POST.get("package"):
+            package = Package.objects.filter(name=package_name).first()
+            if package is None:
+                messages.error(
+                    request,
+                    gettext(
+                        "This subscription can not be upgraded to the selected package."
+                    ),
+                )
+                return package, redirect(service)
+
+        try:
+            if not subscription.upgrade_requires_payment(package):
+                subscription.upgrade_without_payment(package)
+                return package, redirect(service)
+        except ValueError:
+            messages.error(
+                request,
+                gettext(
+                    "This subscription can not be upgraded to the selected package."
+                ),
+            )
+            return package, redirect(service)
+
+        return package, None
+
     def create_subscription_invoice(self, request, service, subscription, *, upgrade):
         form = CustomerReferenceForm(request.POST)
         if not form.is_valid():
@@ -248,31 +286,16 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             kind = InvoiceKind.QUOTE if "quote" in request.POST else InvoiceKind.INVOICE
             create_invoice = subscription.create_invoice
 
-        package = None
-        if upgrade and (package_name := request.POST.get("package")):
-            package = Package.objects.filter(name=package_name).first()
-            if package is None:
-                messages.error(
-                    request,
-                    gettext(
-                        "This subscription can not be upgraded to the selected package."
-                    ),
-                )
-                return redirect(service)
+        if kind == InvoiceKind.INVOICE and not has_invoice_confirmation(request):
+            return redirect(service)
 
+        package = None
         if upgrade:
-            try:
-                if not subscription.upgrade_requires_payment(package):
-                    subscription.upgrade_without_payment(package)
-                    return redirect(service)
-            except ValueError:
-                messages.error(
-                    request,
-                    gettext(
-                        "This subscription can not be upgraded to the selected package."
-                    ),
-                )
-                return redirect(service)
+            package, response = self.get_upgrade_invoice_package(
+                request, service, subscription
+            )
+            if response is not None:
+                return response
 
         with override("en"):
             kwargs = {
@@ -471,7 +494,11 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
 
         quote = self.object
         convert_form = CustomerReferenceForm(request.POST)
-        if convert_form.is_valid() and self.can_convert():
+        if (
+            convert_form.is_valid()
+            and self.can_convert()
+            and has_invoice_confirmation(request)
+        ):
             with override("en"):
                 invoice = quote.duplicate(
                     kind=InvoiceKind.INVOICE,

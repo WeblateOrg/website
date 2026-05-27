@@ -843,7 +843,11 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(response, "Create invoice")
 
         # Convert to invoice
-        response = self.client.post(invoice.get_absolute_url(), follow=True)
+        response = self.client.post(
+            invoice.get_absolute_url(),
+            {"confirm_invoice": "1", "invoice": "1"},
+            follow=True,
+        )
         children = invoice.invoice_set.all()
         self.assertEqual(len(children), 1)
         child = children[0]
@@ -871,6 +875,7 @@ class CRMTestCase(BaseCRMTestCase):
                 "subscription": subscription2.pk,
                 "customer_reference": "PO1234",
                 "customer_note": "Custom note",
+                "confirm_invoice": "1",
             },
             follow=True,
         )
@@ -894,6 +899,37 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, service.get_absolute_url())
         subscription1.refresh_from_db()
         self.assertFalse(subscription1.enabled)
+
+    def test_quote_conversion_requires_confirmation(self):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+
+        response = self.client.post(quote.get_absolute_url(), follow=True)
+
+        self.assertEqual(quote.invoice_set.count(), 0)
+        self.assertContains(
+            response, "Please confirm that you want to issue a final invoice."
+        )
+
+    def test_service_invoice_requires_confirmation(self):
+        service = self.create_extended_service()
+        subscription = service.subscription_set.get()
+
+        response = self.client.post(
+            service.get_absolute_url(),
+            {
+                "invoice": 1,
+                "subscription": subscription.pk,
+                "customer_reference": "PO1234",
+                "customer_note": "Custom note",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertEqual(Invoice.objects.count(), 0)
+        self.assertContains(
+            response, "Please confirm that you want to issue a final invoice."
+        )
 
     def test_service_maintenance_window(self):
         service = self.create_extended_service()
@@ -2024,6 +2060,43 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(item.package, target)
         self.assertEqual(item.unit_price, subscription.get_upgrade_price(target))
 
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "package": target.name,
+                "upgrade_invoice": "1",
+                "customer_reference": "PO-43",
+                "customer_note": "Upgrade invoice approved",
+            },
+            follow=True,
+        )
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertEqual(Invoice.objects.count(), 1)
+        self.assertContains(
+            response, "Please confirm that you want to issue a final invoice."
+        )
+
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "package": target.name,
+                "upgrade_invoice": "1",
+                "customer_reference": "PO-43",
+                "customer_note": "Upgrade invoice approved",
+                "confirm_invoice": "1",
+            },
+            follow=True,
+        )
+        upgrade_invoice = Invoice.objects.exclude(pk=invoice.pk).get()
+        self.assertRedirects(response, upgrade_invoice.get_absolute_url())
+        self.assertEqual(upgrade_invoice.kind, InvoiceKind.INVOICE)
+        self.assertEqual(upgrade_invoice.customer_reference, "PO-43")
+        self.assertEqual(upgrade_invoice.customer_note, "Upgrade invoice approved")
+        self.assertEqual(upgrade_invoice.extra["subscription_upgrade"], subscription.pk)
+        self.assertEqual(upgrade_invoice.extra["package"], target.name)
+
     def test_service_detail_support_upgrade_invoice(self):
         Package.objects.create(name="community", price=0)
         current = Package.objects.create(
@@ -2101,6 +2174,26 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             payment=payment,
         )
         self.assertLess(subscription.get_upgrade_price(target), Decimal(5))
+
+        response = self.client.post(
+            reverse("crm:service-detail", kwargs={"pk": service.pk}),
+            {
+                "subscription": subscription.pk,
+                "package": target.name,
+                "upgrade_invoice": "1",
+                "customer_reference": "",
+                "customer_note": "",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertContains(
+            response, "Please confirm that you want to issue a final invoice."
+        )
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package, current)
+        self.assertEqual(Invoice.objects.count(), 0)
 
         response = self.client.post(
             reverse("crm:service-detail", kwargs={"pk": service.pk}),

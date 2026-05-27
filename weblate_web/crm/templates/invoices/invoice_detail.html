@@ -46,11 +46,13 @@
       {% endif %}
       {% with download_url=object.get_download_url %}
         {% if download_url %}
-          <a href="{{ download_url }}">Download</a>
-          {% if object.is_paid %}<a href="{{ download_url }}?receipt=1">Receipt</a>{% endif %}
+          <a href="{{ download_url }}">{% translate "Download" %}</a>
+          {% if object.is_paid %}
+            <a href="{{ download_url }}?receipt=1">{% translate "Receipt" %}</a>
+          {% endif %}
         {% endif %}
       {% endwith %}
-      <a href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">Edit</a>
+      <a href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">{% translate "Edit" %}</a>
     </p>
     <table>
       {% for item in object.all_items %}
@@ -77,13 +79,24 @@
       </form>
     {% endif %}
     {% if convert_form %}
-      <h2>Create invoice</h2>
-      <p>This will create an invoice matching this quote.</p>
-      <form method="post">
-        {% csrf_token %}
-        {{ convert_form }}
-        <input type="submit" name="invoice" value="Issue invoice">
-      </form>
+      <h2>{% translate "Create invoice" %}</h2>
+      <details class="crm-danger-action">
+        <summary>{% translate "Issue invoice from quote" %}</summary>
+        <p>
+          {% blocktranslate %}This creates a final invoice matching this quote. Use Download if you only need the quote PDF.{% endblocktranslate %}
+        </p>
+        <form method="post">
+          {% csrf_token %}
+          {{ convert_form }}
+          <label>
+            <input type="checkbox" name="confirm_invoice" value="1" required>
+            {% translate "I confirm that I want to issue a final invoice." %}
+          </label>
+          <br>
+          {% translate "Issue invoice" as issue_invoice_label %}
+          <input type="submit" name="invoice" value="{{ issue_invoice_label }}">
+        </form>
+      </details>
     {% endif %}
   </section>
 {% endblock content %}

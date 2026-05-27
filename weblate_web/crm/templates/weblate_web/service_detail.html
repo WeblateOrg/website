@@ -60,9 +60,26 @@
       {% csrf_token %}
       {{ reference_form }}
       <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-      <input type="submit" name="quote" value="Issue renewal quote">
-      <input type="submit" name="invoice" value="Issue renewal invoice">
+      <input type="submit" name="quote" value="{% translate "Issue renewal quote" %}">
     </form>
+    <details class="crm-danger-action">
+      <summary>{% translate "Issue renewal invoice" %}</summary>
+      <p>
+        {% blocktranslate %}This creates a final invoice for the renewal. Use the renewal quote action if you only need a quote.{% endblocktranslate %}
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        {{ reference_form }}
+        <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+        <input type="hidden" name="invoice" value="1">
+        <label>
+          <input type="checkbox" name="confirm_invoice" value="1" required>
+          {% translate "I confirm that I want to issue a final invoice." %}
+        </label>
+        <br>
+        <input type="submit" value="{% translate "Issue renewal invoice" %}">
+      </form>
+    </details>
 
     {% for package in subscription.upgrade_packages %}
       <br>
@@ -75,10 +92,26 @@
         <input type="submit"
                name="upgrade_quote"
                value="{% translate "Issue upgrade quote" %}">
-        <input type="submit"
-               name="upgrade_invoice"
-               value="{% translate "Issue upgrade invoice" %}">
       </form>
+      <details class="crm-danger-action">
+        <summary>{% translate "Issue upgrade invoice" %}</summary>
+        <p>
+          {% blocktranslate %}This creates a final invoice for the upgrade. Use the upgrade quote action if you only need a quote.{% endblocktranslate %}
+        </p>
+        <form method="post">
+          {% csrf_token %}
+          {{ reference_form }}
+          <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+          <input type="hidden" name="package" value="{{ package.name }}">
+          <input type="hidden" name="upgrade_invoice" value="1">
+          <label>
+            <input type="checkbox" name="confirm_invoice" value="1" required>
+            {% translate "I confirm that I want to issue a final invoice." %}
+          </label>
+          <br>
+          <input type="submit" value="{% translate "Issue upgrade invoice" %}">
+        </form>
+      </details>
     {% endfor %}
 
     {% if subscription.enabled %}
