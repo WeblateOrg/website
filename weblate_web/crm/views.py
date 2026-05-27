@@ -372,7 +372,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     def can_confirm_refund(self) -> bool:
         return (
             self.object.kind == InvoiceKind.INVOICE
-            and self.object.total_amount < 0
+            and self.object.total_amount <= 0
             and not self.object.is_paid
         )
 
