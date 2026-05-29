@@ -40,7 +40,7 @@ from wlc import WeblateException
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.payments.models import Customer, Payment
 
-from .exchange_rates import UncachedExchangeRates
+from .exchange_rates import ExchangeRates, UncachedExchangeRates
 from .hetzner import generate_random_password
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
@@ -495,6 +495,12 @@ def thepay_mock_repeated_payment() -> None:
 
 
 def cnb_mock_rates() -> None:
+    rates = {
+        str(item["currencyCode"]): Decimal(str(item["rate"]))
+        for item in RATES_JSON["rates"]
+    }
+    ExchangeRates.datacache[timezone.now().date().isoformat()] = rates.copy()
+    ExchangeRates.datacache["2016-07-29"] = rates.copy()
     responses.get(
         f"https://api.cnb.cz/cnbapi/exrates/daily?date={timezone.now().date().isoformat()}",
         json=RATES_JSON,
@@ -3334,6 +3340,40 @@ class APITest(UserTestCase):
 
         self.assertEqual(
             User.objects.get(email="remote-sync@example.com").username, "lenas-1"
+        )
+
+    def test_user_external_id_retries_username_race(self) -> None:
+        original_save = User.save
+        raised_username_conflict = False
+
+        def create_conflict(user: User, *args, **kwargs):
+            nonlocal raised_username_conflict
+            if user.email == "remote-race@example.com" and not raised_username_conflict:
+                raised_username_conflict = True
+                raise IntegrityError("Duplicate entry 'remote-race' for key 'username'")
+            return original_save(user, *args, **kwargs)
+
+        with patch.object(User, "save", create_conflict):
+            response = self.client.post(
+                "/api/user/",
+                {
+                    "payload": dumps(
+                        {
+                            "external_id": "42",
+                            "profile": {
+                                "username": "remote-race",
+                                "email": "remote-race@example.com",
+                            },
+                        },
+                        key=settings.PAYMENT_SECRET,
+                        salt="weblate.user",
+                    )
+                },
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            User.objects.get(email="remote-race@example.com").username, "remote-race-1"
         )
 
     def test_user_external_id_normalizes_null_profile_values(self) -> None:

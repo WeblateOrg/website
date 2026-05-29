@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING, Any
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 from djangosaml2.backends import Saml2Backend  # type: ignore[import-untyped]
 
@@ -41,6 +41,12 @@ PROFILE_FIELDS = {"username", "email", "last_name"}
 ACTIVE_FIELDS = ("is_active", "active")
 USERNAME_ALLOWED_RE = re.compile(r"[^\w.@+-]+")
 PRELOAD_CHUNK_SIZE = 1000
+USERNAME_INTEGRITY_MARKERS = (
+    "username",
+    "auth_user.username",
+    "user_username",
+)
+CREATE_USER_RETRIES = 5
 
 
 def get_default_saml_provider() -> str:
@@ -179,19 +185,31 @@ def username_exists(
 
 
 def make_unique_username(
-    username: str, user: User | None = None, context: SamlSyncContext | None = None
+    username: str,
+    user: User | None = None,
+    context: SamlSyncContext | None = None,
+    excluded_usernames: set[str] | None = None,
 ) -> str:
     username = normalize_username(username)
-    if not username_exists(username, user, context):
+    if username.casefold() not in (excluded_usernames or set()) and not username_exists(
+        username, user, context
+    ):
         return username
     max_length = get_username_max_length()
     counter = 1
     while True:
         suffix = f"-{counter}"
         candidate = f"{username[: max_length - len(suffix)]}{suffix}"
-        if not username_exists(candidate, user, context):
+        if candidate.casefold() not in (
+            excluded_usernames or set()
+        ) and not username_exists(candidate, user, context):
             return candidate
         counter += 1
+
+
+def is_username_integrity_error(error: IntegrityError) -> bool:
+    message = " ".join(str(arg) for arg in error.args).lower()
+    return any(marker in message for marker in USERNAME_INTEGRITY_MARKERS)
 
 
 def apply_profile(
@@ -236,20 +254,37 @@ def create_user(
     profile: dict[str, Any], external_id: str, context: SamlSyncContext | None = None
 ) -> User:
     username = profile.get("username") or f"hosted-{external_id}"
-    user = User(
-        username=make_unique_username(str(username), context=context),
-        email=profile.get("email") or "",
-        last_name=profile.get("last_name") or "",
-    )
-    for field in ACTIVE_FIELDS:
-        if field in profile:
-            user.is_active = parse_active(profile[field])
-            break
-    user.set_unusable_password()
-    user.save()
-    if context is not None:
-        context.set_username_owner(user)
-    return user
+    base_username = str(username)
+    excluded_usernames: set[str] = set()
+    for _attempt in range(CREATE_USER_RETRIES):
+        user = User(
+            username=make_unique_username(
+                base_username, context=context, excluded_usernames=excluded_usernames
+            ),
+            email=profile.get("email") or "",
+            last_name=profile.get("last_name") or "",
+        )
+        for field in ACTIVE_FIELDS:
+            if field in profile:
+                user.is_active = parse_active(profile[field])
+                break
+        user.set_unusable_password()
+        try:
+            with transaction.atomic():
+                user.save()
+        except IntegrityError as error:
+            if not is_username_integrity_error(error):
+                raise
+            excluded_usernames.add(user.username.casefold())
+            if context is not None:
+                context.username_owner[user.username.casefold()] = -1
+            continue
+        if context is not None:
+            context.set_username_owner(user)
+        return user
+
+    msg = f"Could not allocate a unique username for hosted user {external_id}"
+    raise IntegrityError(msg)
 
 
 @transaction.atomic
@@ -308,12 +343,13 @@ def sync_saml_identity(  # noqa: PLR0913
         elif context is not None:
             context.add_identity(identity)
 
-    apply_profile(
-        user,
-        profile,
-        cycle_unusable_password=cycle_unusable_password,
-        context=context,
-    )
+    if not created_user:
+        apply_profile(
+            user,
+            profile,
+            cycle_unusable_password=cycle_unusable_password,
+            context=context,
+        )
     if not identity_created:
         identity.last_seen = timezone.now()
         if raw_attrs is not None:
