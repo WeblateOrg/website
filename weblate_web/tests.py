@@ -2793,6 +2793,26 @@ class PostTest(PostTestCase):
         self.assertNotContains(response, 'href="javascript:alert(1)"')
         self.assertContains(response, "[link](javascript:alert(1))")
 
+    def test_body_allows_mailto_link(self) -> None:
+        post = self.create_post(
+            title="mailto-link",
+            body="[Care](mailto:care@weblate.org)",
+        )
+
+        self.assertIn(
+            '<a href="mailto:care@weblate.org">Care</a>',
+            post.body_rendered,
+        )
+
+    def test_body_escapes_email_link_without_mailto(self) -> None:
+        post = self.create_post(
+            title="email-link",
+            body="[Care](care@weblate.org)",
+        )
+
+        self.assertNotIn('href="care@weblate.org"', post.body_rendered)
+        self.assertIn("[Care](care@weblate.org)", post.body_rendered)
+
     def test_body_plain_autolink_boundaries(self) -> None:
         post = self.create_post(
             title="plain-autolink",

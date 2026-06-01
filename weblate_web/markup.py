@@ -59,6 +59,10 @@ class SafeHtmlRenderer(mistletoe.HtmlRenderer):
     _allowed_email_re = re.compile(
         r"^(mailto:)?[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     )
+    _allowed_mailto_re = re.compile(
+        r"^mailto:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+        re.IGNORECASE,
+    )
 
     def __init__(self) -> None:
         super().__init__(SkipHtmlSpan, PlainAutoLink, process_html_tokens=False)
@@ -70,7 +74,7 @@ class SafeHtmlRenderer(mistletoe.HtmlRenderer):
         return self.render_auto_link(token)
 
     def render_link(self, token: span_token.Link) -> str:
-        if self.check_url(token.target):
+        if self.check_url(token.target) or self.check_mailto(token.target):
             return super().render_link(token)
         return self.escape_html_text(f"[{self.render_to_plain(token)}]({token.target})")
 
@@ -93,6 +97,9 @@ class SafeHtmlRenderer(mistletoe.HtmlRenderer):
 
     def check_email(self, email: str) -> bool:
         return bool(self._allowed_email_re.match(email))
+
+    def check_mailto(self, url: str) -> bool:
+        return bool(self._allowed_mailto_re.match(url))
 
 
 def render_markdown(text: str) -> str:
