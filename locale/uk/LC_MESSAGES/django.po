@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-05-24 23:16-0500\n"
+"POT-Creation-Date: 2026-05-31 20:06-0500\n"
 "PO-Revision-Date: 2026-05-25 10:02+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
@@ -58,6 +58,27 @@ msgstr ""
 #: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "Примітка"
+
+#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/templates/snippets/customer-users.html:38
+#: weblate_web/templates/snippets/customer-users.html:40
+msgid "E-mail"
+msgstr "Електронна пошта"
+
+#: weblate_web/crm/forms.py:47
+#, fuzzy
+#| msgid "Filename"
+msgid "Full name"
+msgstr "Назва файлу"
+
+#: weblate_web/crm/hosted.py:38 weblate_web/crm/hosted.py:64
+#: weblate_web/crm/hosted.py:79
+msgid "Invalid hosted user response"
+msgstr ""
+
+#: weblate_web/crm/hosted.py:43
+msgid "Hosted user synchronization is disabled."
+msgstr ""
 
 #: weblate_web/crm/models.py:66
 msgid "Yes"
@@ -165,7 +186,7 @@ msgstr "Попереднє вікно супроводу"
 #: weblate_web/crm/models.py:224
 #: weblate_web/crm/templates/weblate_web/service_detail.html:41
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:706
+#: weblate_web/models.py:747
 msgid "Maintenance window"
 msgstr "Вікно супроводу"
 
@@ -332,24 +353,87 @@ msgstr "Вміст"
 msgid "Interaction content"
 msgstr "Дані взаємодії"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:70
-#: weblate_web/crm/templates/invoices/invoice_detail.html:75
+#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/templates/hosting.html:289
+#: weblate_web/templates/payment/customer-agreement.html:35
+#: weblate_web/templates/payment/customer-agreement.html:56
+#: weblate_web/templates/payment/customer-agreement.html:64
+#: weblate_web/templates/payment/customer-agreement.html:85
+#: weblate_web/templates/snippets/main-menu.html:9
+msgid "Download"
+msgstr "Завантажити"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+msgid "Receipt"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:55
+#: weblate_web/templates/payment/customer-agreement.html:18
+#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/snippets/customer-address.html:10
+msgid "Edit"
+msgstr "Редагувати"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:72
+#: weblate_web/crm/templates/invoices/invoice_detail.html:77
 msgid "Confirm refund done"
 msgstr "Підтвердження відшкодування виконано"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:71
+#: weblate_web/crm/templates/invoices/invoice_detail.html:73
 msgid "Use this after the refund or chargeback has been completed."
 msgstr "Скористайтеся після виконання відшкодування або повернення коштів."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:80
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Create invoice"
+msgstr "Виписати новий рахунок-фактуру"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:84
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice from quote"
+msgstr "Виписати новий рахунок-фактуру"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:86
+msgid ""
+"This creates a final invoice matching this quote. Use Download if you only "
+"need the quote PDF."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:93
+#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:109
+msgid "I confirm that I want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:96
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice"
+msgstr "Виписати новий рахунок-фактуру"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:57
+#, fuzzy
+#| msgid "Merged customer"
+msgid "Add user to customer"
+msgstr "Об'єднаний запис клієнта"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:60
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add user"
+msgstr "Додати користувача"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:88
 msgid "Add new agreement"
 msgstr "Додати нову угоду"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:101
+#: weblate_web/crm/templates/payments/customer_detail.html:109
 msgid "Issue new invoice"
 msgstr "Виписати новий рахунок-фактуру"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:107
+#: weblate_web/crm/templates/payments/customer_detail.html:115
 msgid "Add note"
 msgstr "Додати нотатку"
 
@@ -357,28 +441,110 @@ msgstr "Додати нотатку"
 msgid "Update maintenance window"
 msgstr "Оновити вікно супроводу"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:63
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Issue renewal quote"
+msgstr "Отримати цінову пропозицію"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:66
+#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue renewal invoice"
+msgstr "Виписати новий рахунок-фактуру"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+msgid ""
+"This creates a final invoice for the renewal. Use the renewal quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:86
 #, python-format
 msgid ""
 "Upgrade to %(package)s without extending the current subscription period."
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:94
 #, fuzzy
 #| msgid "Get a quote"
 msgid "Issue upgrade quote"
 msgstr "Отримати цінову пропозицію"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#: weblate_web/crm/templates/weblate_web/service_detail.html:97
+#: weblate_web/crm/templates/weblate_web/service_detail.html:112
 #, fuzzy
 #| msgid "Issue new invoice"
 msgid "Issue upgrade invoice"
 msgstr "Виписати новий рахунок-фактуру"
 
-#: weblate_web/crm/views.py:236 weblate_web/crm/views.py:250
-#: weblate_web/crm/views.py:269 weblate_web/views.py:1068
-#: weblate_web/views.py:1079 weblate_web/views.py:1091
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid ""
+"This creates a final invoice for the upgrade. Use the upgrade quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/views.py:95
+msgid "Please confirm that you want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
+#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
 msgid "This subscription can not be upgraded to the selected package."
+msgstr ""
+
+#: weblate_web/crm/views.py:638
+msgid "Hosted username matches a local user with a different e-mail."
+msgstr ""
+
+#: weblate_web/crm/views.py:652
+msgid "Hosted user was not linked."
+msgstr ""
+
+#: weblate_web/crm/views.py:655
+msgid "Hosted user is already linked to a different local user."
+msgstr ""
+
+#: weblate_web/crm/views.py:662
+#, fuzzy
+#| msgid "Merged customer email"
+msgid "Added customer user"
+msgstr "Об'єднана адреса ел. пошти клієнта"
+
+#: weblate_web/crm/views.py:664
+#, python-format
+msgid "Added %(email)s to customer users. Hosted user was %(state)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:668
+#, fuzzy
+#| msgid "Dedicated"
+msgid "created"
+msgstr "Виокремлений"
+
+#: weblate_web/crm/views.py:670
+msgid "linked"
+msgstr ""
+
+#: weblate_web/crm/views.py:697
+msgid "Multiple local users use this e-mail address"
+msgstr ""
+
+#: weblate_web/crm/views.py:725
+#, python-format
+msgid "Could not add customer user: %(error)s"
+msgstr ""
+
+#: weblate_web/crm/views.py:732
+#, python-format
+msgid "Added %(email)s to customer users."
+msgstr ""
+
+#: weblate_web/crm/views.py:737
+#, python-format
+msgid "%(email)s is already a customer user."
 msgstr ""
 
 #: weblate_web/fake.py:25
@@ -422,13 +588,13 @@ msgstr ""
 "деталі."
 
 #: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:572
+#: weblate_web/models.py:613
 msgctxt "Service kind"
 msgid "Service"
 msgstr "Служба"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:573
+#: weblate_web/models.py:614
 #, fuzzy
 #| msgid "Documentation"
 msgctxt "Service kind"
@@ -436,233 +602,233 @@ msgid "Donation"
 msgstr "Документація"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:740
+#: weblate_web/models.py:781
 msgid "Link text"
 msgstr "Текст посилання"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:743
+#: weblate_web/models.py:784
 msgid "Link URL"
 msgstr "URL-адреса посилання"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:746
+#: weblate_web/models.py:787
 msgid "Link image"
 msgstr "Посилання на зображення"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:577
+#: weblate_web/models.py:618
 msgctxt "Package category"
 msgid "None"
 msgstr "Жодного"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:578
+#: weblate_web/models.py:619
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr "Виділений хостинг"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:579
+#: weblate_web/models.py:620
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr "Віртуальний хостинг"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:580
+#: weblate_web/models.py:621
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "Підтримка власного хостингу"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:581
+#: weblate_web/models.py:622
 #, fuzzy
 #| msgid "Documentation"
 msgctxt "Package category"
 msgid "Donation"
 msgstr "Документація"
 
-#: weblate_web/models.py:90
+#: weblate_web/models.py:131
 msgid "No reward"
 msgstr "Немає винагороди"
 
-#: weblate_web/models.py:91 weblate_web/templates/donate.html:45
+#: weblate_web/models.py:132 weblate_web/templates/donate.html:45
 msgid "Name in the list of supporters"
 msgstr "Назва в списку прихильників"
 
-#: weblate_web/models.py:92 weblate_web/templates/donate.html:52
+#: weblate_web/models.py:133 weblate_web/templates/donate.html:52
 #: weblate_web/templates/donate/form.html:92
 msgid "Link in the list of supporters"
 msgstr "Посилання у списку прихильників"
 
-#: weblate_web/models.py:93 weblate_web/templates/donate.html:59
+#: weblate_web/models.py:134 weblate_web/templates/donate.html:59
 #: weblate_web/templates/donate/form.html:106
 msgid "Logo and link on the Weblate website"
 msgstr "Логотип та посилання на сторінці подяк weblate.org"
 
-#: weblate_web/models.py:113
+#: weblate_web/models.py:154
 #: weblate_web/templates/weblate_web/post_detail.html:56
 msgid "Release"
 msgstr "Випуск"
 
-#: weblate_web/models.py:114 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/models.py:155 weblate_web/templates/snippets/main-menu.html:6
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Features"
 msgstr "Можливості"
 
-#: weblate_web/models.py:115
+#: weblate_web/models.py:156
 msgid "Announcement"
 msgstr "Оголошення"
 
-#: weblate_web/models.py:116
+#: weblate_web/models.py:157
 msgid "Conferences"
 msgstr "Наради"
 
-#: weblate_web/models.py:117 weblate_web/templates/hosting.html:66
+#: weblate_web/models.py:158 weblate_web/templates/hosting.html:66
 msgid "Hosted Weblate"
 msgstr "Hosted Weblate"
 
-#: weblate_web/models.py:118
+#: weblate_web/models.py:159
 #: weblate_web/templates/weblate_web/post_detail.html:60
 msgid "Development"
 msgstr "Розробка"
 
-#: weblate_web/models.py:119
+#: weblate_web/models.py:160
 #: weblate_web/templates/weblate_web/post_detail.html:62
 msgid "Localization"
 msgstr "Локалізація"
 
-#: weblate_web/models.py:174 weblate_web/models.py:182
+#: weblate_web/models.py:215 weblate_web/models.py:223
 msgid "Invalid image!"
 msgstr "Неправильне зображення!"
 
-#: weblate_web/models.py:196
+#: weblate_web/models.py:237
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Непідтримуваний тип зображення: %s"
 
-#: weblate_web/models.py:202
+#: weblate_web/models.py:243
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Будь ласка, вивантажте зображення розмірами 570 на 260 пікселів."
 
-#: weblate_web/models.py:680
+#: weblate_web/models.py:721
 msgid "Community supported"
 msgstr "Підтримка спільноти"
 
-#: weblate_web/models.py:681
+#: weblate_web/models.py:722
 msgid "Dedicated hosted service"
 msgstr "Хостинг на виділеному сервері"
 
-#: weblate_web/models.py:682
+#: weblate_web/models.py:723
 msgid "Hosted service"
 msgstr "Послуга хостингу"
 
-#: weblate_web/models.py:683 weblate_web/templates/support.html:77
+#: weblate_web/models.py:724 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Основна підтримка Weblate"
 
-#: weblate_web/models.py:684 weblate_web/templates/support.html:90
+#: weblate_web/models.py:725 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Розширена підтримка власного хостингу"
 
-#: weblate_web/models.py:685 weblate_web/templates/support.html:109
+#: weblate_web/models.py:726 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Власна служба підтримки Weblate найвищої якості"
 
-#: weblate_web/models.py:711 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "URL-адреса сервера"
 
-#: weblate_web/models.py:725
+#: weblate_web/models.py:766
 msgid "Server description"
 msgstr "Опис сервера"
 
-#: weblate_web/models.py:728
+#: weblate_web/models.py:769
 msgid "Server image"
 msgstr "Зображення сервера"
 
-#: weblate_web/models.py:732
+#: weblate_web/models.py:773
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG або JPG розмірами 570 на 260 пікселів."
 
-#: weblate_web/models.py:1003 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Основна підтримка"
 
-#: weblate_web/models.py:1004
+#: weblate_web/models.py:1045
 msgid "Never get held back by a problem."
 msgstr "Не зупиняйтеся через проблеми."
 
-#: weblate_web/models.py:1005
+#: weblate_web/models.py:1046
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 "Встановлена пріоритетність для всіх ваших питань і повідомлень про вади."
 
-#: weblate_web/models.py:1007 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Підтримка"
 
-#: weblate_web/models.py:1019 weblate_web/models.py:1036
-#: weblate_web/models.py:1067 weblate_web/models.py:1591
+#: weblate_web/models.py:1060 weblate_web/models.py:1077
+#: weblate_web/models.py:1108 weblate_web/models.py:1632
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Розширте до %s"
 
-#: weblate_web/models.py:1021
+#: weblate_web/models.py:1062
 msgid "Premium support"
 msgstr "Преміум-підтримка"
 
-#: weblate_web/models.py:1022
+#: weblate_web/models.py:1063
 msgid "Don’t wait with your work on hold."
 msgstr "Не зупиняйтеся у вашій роботі."
 
-#: weblate_web/models.py:1023
+#: weblate_web/models.py:1064
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Гарантована відповідь принаймні в межах одного робочого дня."
 
-#: weblate_web/models.py:1025
+#: weblate_web/models.py:1066
 #, fuzzy
 #| msgid "Be Premium"
 msgid "Be premium"
 msgstr "Будьте серед перших"
 
-#: weblate_web/models.py:1038 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Розширена підтримка"
 
-#: weblate_web/models.py:1039
+#: weblate_web/models.py:1080
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "Не лишайтеся на мінімумі, отримайте гарантію."
 
-#: weblate_web/models.py:1040
+#: weblate_web/models.py:1081
 msgid "We will manage upgrades for you."
 msgstr "Оновлення для вас буде виконано нами."
 
-#: weblate_web/models.py:1042
+#: weblate_web/models.py:1083
 msgid "Stay updated"
 msgstr "Не втрачайте актуальності"
 
-#: weblate_web/models.py:1051 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Послуга резервного копіювання"
 
-#: weblate_web/models.py:1052
+#: weblate_web/models.py:1093
 msgid "Easily put your backups in a safe place."
 msgstr "Без зайвих проблем зберігайте ваші резервні копії у безпечному місці."
 
-#: weblate_web/models.py:1053
+#: weblate_web/models.py:1094
 msgid "Encrypted and automatic, always available."
 msgstr "Зашифроване і автоматичне, завжди доступне."
 
-#: weblate_web/models.py:1055
+#: weblate_web/models.py:1096
 msgid "Back up daily"
 msgstr "Щоденне резервне копіювання"
 
-#: weblate_web/models.py:1068
+#: weblate_web/models.py:1109
 msgid "Increase service limits to translate more content."
 msgstr "Збільште ліміти служби, щоб перекладати більше вмісту."
 
-#: weblate_web/models.py:1071
+#: weblate_web/models.py:1112
 msgid "Upgrade"
 msgstr "Розширити"
 
@@ -1139,12 +1305,6 @@ msgstr ""
 #: weblate_web/templates/about.html:179
 msgid "Contact"
 msgstr "Контакти"
-
-#: weblate_web/templates/about.html:182
-#: weblate_web/templates/snippets/customer-users.html:38
-#: weblate_web/templates/snippets/customer-users.html:40
-msgid "E-mail"
-msgstr "Електронна пошта"
 
 #: weblate_web/templates/about.html:189
 msgid "Provider"
@@ -2580,15 +2740,6 @@ msgstr "Переглянути варіанти"
 msgid "Buy now"
 msgstr "Придбати зараз"
 
-#: weblate_web/templates/hosting.html:289
-#: weblate_web/templates/payment/customer-agreement.html:35
-#: weblate_web/templates/payment/customer-agreement.html:56
-#: weblate_web/templates/payment/customer-agreement.html:64
-#: weblate_web/templates/payment/customer-agreement.html:85
-#: weblate_web/templates/snippets/main-menu.html:9
-msgid "Download"
-msgstr "Завантажити"
-
 #: weblate_web/templates/hosting.html:297
 msgid "Cloud-hosted Price Options"
 msgstr "Варіанти цін на «хмарну» версію"
@@ -2818,7 +2969,7 @@ msgstr "Створено за %(timestamp)s."
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:701
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:699
 #, fuzzy
 #| msgid "Thank you for your donation."
 msgid "You are the heart of Weblate. Thank you for your donation."
@@ -3065,12 +3216,6 @@ msgstr "Ваші угоди про обробку даних"
 #: weblate_web/templates/payment/customer-agreement.html:16
 msgid "Organization"
 msgstr "Організація"
-
-#: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
-#: weblate_web/templates/snippets/customer-address.html:10
-msgid "Edit"
-msgstr "Редагувати"
 
 #: weblate_web/templates/payment/customer-agreement.html:27
 msgid "Existing agreements"
@@ -3915,7 +4060,7 @@ msgid "Other topics"
 msgstr "Інші теми"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:918
+#: weblate_web/views.py:916
 msgid "Milestones"
 msgstr "Віхи"
 
@@ -4038,11 +4183,11 @@ msgstr[2] "лишилося %d днів"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Помилка у параметрі %(field)s: %(error)s"
 
-#: weblate_web/views.py:391
+#: weblate_web/views.py:389
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Дякуємо за ваш внесок і насолоджуйтесь FOSDEM."
 
-#: weblate_web/views.py:418
+#: weblate_web/views.py:416
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -4050,29 +4195,29 @@ msgstr ""
 "Вкажіть своє ім'я, щоб завершити оплату. Якщо потрібно, вкажіть також інші "
 "платіжні реквізити, які мають бути зазначені у квитанції."
 
-#: weblate_web/views.py:425 weblate_web/views.py:459
+#: weblate_web/views.py:423 weblate_web/views.py:457
 msgid "Please provide your billing information to complete the payment."
 msgstr "Будь ласка, вкажіть відомості про оплату, щоб здійснити платіж."
 
-#: weblate_web/views.py:437
+#: weblate_web/views.py:435
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Цей номер платника ПДВ вже не дійсний. Оновіть його."
 
-#: weblate_web/views.py:454
+#: weblate_web/views.py:452
 msgid "Please choose a payment method."
 msgstr "Будь ласка, оберіть спосіб оплати."
 
-#: weblate_web/views.py:487
+#: weblate_web/views.py:485
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Не вдалося виконати сплату: %s"
 
-#: weblate_web/views.py:497
+#: weblate_web/views.py:495
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Не вдалося завершити сплату: %s"
 
-#: weblate_web/views.py:554
+#: weblate_web/views.py:552
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
@@ -4080,42 +4225,46 @@ msgstr ""
 "Будь ласка, використовуйте вже згенеровану угоду, ви можете згенерувати нову "
 "через 30 днів."
 
-#: weblate_web/views.py:561
+#: weblate_web/views.py:559
 msgid "New agreement created, you can download it below."
 msgstr "Нову угоду створено, ви можете завантажити її нижче."
 
-#: weblate_web/views.py:613
+#: weblate_web/views.py:611
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 "Нова компанія, нові банківські реквізити! Зверніть увагу на поточний рахунок-"
 "фактуру."
 
-#: weblate_web/views.py:672
+#: weblate_web/views.py:670
 msgid "Payment not yet processed, please retry."
 msgstr "Платіж ще не опрацьований. Будь ласка, повторіть."
 
-#: weblate_web/views.py:676
+#: weblate_web/views.py:674
 msgid "The payment was rejected: {}"
 msgstr "Платіж відхилили: {}"
 
-#: weblate_web/views.py:677
+#: weblate_web/views.py:675
 msgid "Unknown reason"
 msgstr "Невідома причина"
 
-#: weblate_web/views.py:689
+#: weblate_web/views.py:687
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr ""
 
-#: weblate_web/views.py:694
+#: weblate_web/views.py:692
 msgid "Thank you for your subscription."
 msgstr "Дякуємо за підписку."
 
-#: weblate_web/views.py:1024
+#: weblate_web/views.py:1022
 msgid "User not found!"
 msgstr "Користувач не знайдений!"
+
+#: weblate_web/views.py:1145
+msgid "Please confirm the upgrade from your account page."
+msgstr ""
 
 #~ msgid "Company or individual name"
 #~ msgstr "Назва компанії або фізичної особи"
@@ -4664,9 +4813,6 @@ msgstr "Користувач не знайдений!"
 
 #~ msgid "Which Weblate is right for you"
 #~ msgstr "Який Weblate вам пасує"
-
-#~ msgid "Dedicated"
-#~ msgstr "Виокремлений"
 
 #~ msgid "Negotiable"
 #~ msgstr "Договірна"

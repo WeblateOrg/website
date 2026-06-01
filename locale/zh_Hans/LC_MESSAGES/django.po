@@ -51,7 +51,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-05-24 23:16-0500\n"
+"POT-Creation-Date: 2026-05-31 20:06-0500\n"
 "PO-Revision-Date: 2026-05-29 04:48+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
@@ -75,6 +75,27 @@ msgstr "描述如何完成退款的可选附注。"
 #: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "备注"
+
+#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/templates/snippets/customer-users.html:38
+#: weblate_web/templates/snippets/customer-users.html:40
+msgid "E-mail"
+msgstr "电子邮件地址"
+
+#: weblate_web/crm/forms.py:47
+#, fuzzy
+#| msgid "Filename"
+msgid "Full name"
+msgstr "文件名"
+
+#: weblate_web/crm/hosted.py:38 weblate_web/crm/hosted.py:64
+#: weblate_web/crm/hosted.py:79
+msgid "Invalid hosted user response"
+msgstr ""
+
+#: weblate_web/crm/hosted.py:43
+msgid "Hosted user synchronization is disabled."
+msgstr ""
 
 #: weblate_web/crm/models.py:66
 msgid "Yes"
@@ -182,7 +203,7 @@ msgstr "上个维护窗口"
 #: weblate_web/crm/models.py:224
 #: weblate_web/crm/templates/weblate_web/service_detail.html:41
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:706
+#: weblate_web/models.py:747
 msgid "Maintenance window"
 msgstr "维护窗口"
 
@@ -347,24 +368,87 @@ msgstr "内容"
 msgid "Interaction content"
 msgstr "互动上下文"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:70
-#: weblate_web/crm/templates/invoices/invoice_detail.html:75
+#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/templates/hosting.html:289
+#: weblate_web/templates/payment/customer-agreement.html:35
+#: weblate_web/templates/payment/customer-agreement.html:56
+#: weblate_web/templates/payment/customer-agreement.html:64
+#: weblate_web/templates/payment/customer-agreement.html:85
+#: weblate_web/templates/snippets/main-menu.html:9
+msgid "Download"
+msgstr "下载"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+msgid "Receipt"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:55
+#: weblate_web/templates/payment/customer-agreement.html:18
+#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/snippets/customer-address.html:10
+msgid "Edit"
+msgstr "编辑"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:72
+#: weblate_web/crm/templates/invoices/invoice_detail.html:77
 msgid "Confirm refund done"
 msgstr "确认退款完毕"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:71
+#: weblate_web/crm/templates/invoices/invoice_detail.html:73
 msgid "Use this after the refund or chargeback has been completed."
 msgstr "在退款或信用卡退款完成后使用这个。"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:80
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Create invoice"
+msgstr "开具新发票"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:84
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice from quote"
+msgstr "开具新发票"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:86
+msgid ""
+"This creates a final invoice matching this quote. Use Download if you only "
+"need the quote PDF."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:93
+#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:109
+msgid "I confirm that I want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:96
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice"
+msgstr "开具新发票"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:57
+#, fuzzy
+#| msgid "Merged customer"
+msgid "Add user to customer"
+msgstr "已合并客户"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:60
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add user"
+msgstr "添加用户"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:88
 msgid "Add new agreement"
 msgstr "新增协议"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:101
+#: weblate_web/crm/templates/payments/customer_detail.html:109
 msgid "Issue new invoice"
 msgstr "开具新发票"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:107
+#: weblate_web/crm/templates/payments/customer_detail.html:115
 msgid "Add note"
 msgstr "添加附注"
 
@@ -372,25 +456,107 @@ msgstr "添加附注"
 msgid "Update maintenance window"
 msgstr "更新维护窗口"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:63
+#, fuzzy
+#| msgid "Issue upgrade quote"
+msgid "Issue renewal quote"
+msgstr "发布升级报价"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:66
+#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue renewal invoice"
+msgstr "开具新发票"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+msgid ""
+"This creates a final invoice for the renewal. Use the renewal quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:86
 #, python-format
 msgid ""
 "Upgrade to %(package)s without extending the current subscription period."
 msgstr "不延长当前订阅周期升级到 %(package)s。"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:94
 msgid "Issue upgrade quote"
 msgstr "发布升级报价"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#: weblate_web/crm/templates/weblate_web/service_detail.html:97
+#: weblate_web/crm/templates/weblate_web/service_detail.html:112
 msgid "Issue upgrade invoice"
 msgstr "开具升级发票"
 
-#: weblate_web/crm/views.py:236 weblate_web/crm/views.py:250
-#: weblate_web/crm/views.py:269 weblate_web/views.py:1068
-#: weblate_web/views.py:1079 weblate_web/views.py:1091
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid ""
+"This creates a final invoice for the upgrade. Use the upgrade quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/views.py:95
+msgid "Please confirm that you want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
+#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "此订阅无法升级到所选套餐。"
+
+#: weblate_web/crm/views.py:638
+msgid "Hosted username matches a local user with a different e-mail."
+msgstr ""
+
+#: weblate_web/crm/views.py:652
+msgid "Hosted user was not linked."
+msgstr ""
+
+#: weblate_web/crm/views.py:655
+msgid "Hosted user is already linked to a different local user."
+msgstr ""
+
+#: weblate_web/crm/views.py:662
+#, fuzzy
+#| msgid "Merged customer email"
+msgid "Added customer user"
+msgstr "已合并客户电子邮件"
+
+#: weblate_web/crm/views.py:664
+#, python-format
+msgid "Added %(email)s to customer users. Hosted user was %(state)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:668
+#, fuzzy
+#| msgid "Dedicated"
+msgid "created"
+msgstr "专用的"
+
+#: weblate_web/crm/views.py:670
+msgid "linked"
+msgstr ""
+
+#: weblate_web/crm/views.py:697
+msgid "Multiple local users use this e-mail address"
+msgstr ""
+
+#: weblate_web/crm/views.py:725
+#, python-format
+msgid "Could not add customer user: %(error)s"
+msgstr ""
+
+#: weblate_web/crm/views.py:732
+#, python-format
+msgid "Added %(email)s to customer users."
+msgstr ""
+
+#: weblate_web/crm/views.py:737
+#, python-format
+msgid "%(email)s is already a customer user."
+msgstr ""
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -430,240 +596,240 @@ msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "该发票已付款。请登录查看详情。"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:572
+#: weblate_web/models.py:613
 msgctxt "Service kind"
 msgid "Service"
 msgstr "服务"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:573
+#: weblate_web/models.py:614
 msgctxt "Service kind"
 msgid "Donation"
 msgstr "捐赠"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:740
+#: weblate_web/models.py:781
 msgid "Link text"
 msgstr "链接文字"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:743
+#: weblate_web/models.py:784
 msgid "Link URL"
 msgstr "链接网址"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:746
+#: weblate_web/models.py:787
 msgid "Link image"
 msgstr "链接图片"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:577
+#: weblate_web/models.py:618
 msgctxt "Package category"
 msgid "None"
 msgstr "无"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:578
+#: weblate_web/models.py:619
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr "专用托管"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:579
+#: weblate_web/models.py:620
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr "共享托管"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:580
+#: weblate_web/models.py:621
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "自托管支持"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:581
+#: weblate_web/models.py:622
 msgctxt "Package category"
 msgid "Donation"
 msgstr "捐赠"
 
-#: weblate_web/models.py:90
+#: weblate_web/models.py:131
 msgid "No reward"
 msgstr "无奖励"
 
-#: weblate_web/models.py:91 weblate_web/templates/donate.html:45
+#: weblate_web/models.py:132 weblate_web/templates/donate.html:45
 msgid "Name in the list of supporters"
 msgstr "在支持者名单中展示姓名"
 
-#: weblate_web/models.py:92 weblate_web/templates/donate.html:52
+#: weblate_web/models.py:133 weblate_web/templates/donate.html:52
 #: weblate_web/templates/donate/form.html:92
 msgid "Link in the list of supporters"
 msgstr "在支持者名单中展示为超链接"
 
-#: weblate_web/models.py:93 weblate_web/templates/donate.html:59
+#: weblate_web/models.py:134 weblate_web/templates/donate.html:59
 #: weblate_web/templates/donate/form.html:106
 msgid "Logo and link on the Weblate website"
 msgstr "在 Weblate 网站上展示标志和链接"
 
-#: weblate_web/models.py:113
+#: weblate_web/models.py:154
 #: weblate_web/templates/weblate_web/post_detail.html:56
 msgid "Release"
 msgstr "发行版"
 
-#: weblate_web/models.py:114 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/models.py:155 weblate_web/templates/snippets/main-menu.html:6
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Features"
 msgstr "功能"
 
-#: weblate_web/models.py:115
+#: weblate_web/models.py:156
 msgid "Announcement"
 msgstr "公告"
 
-#: weblate_web/models.py:116
+#: weblate_web/models.py:157
 msgid "Conferences"
 msgstr "会议"
 
-#: weblate_web/models.py:117 weblate_web/templates/hosting.html:66
+#: weblate_web/models.py:158 weblate_web/templates/hosting.html:66
 msgid "Hosted Weblate"
 msgstr "Hosted Weblate"
 
-#: weblate_web/models.py:118
+#: weblate_web/models.py:159
 #: weblate_web/templates/weblate_web/post_detail.html:60
 msgid "Development"
 msgstr "开发"
 
-#: weblate_web/models.py:119
+#: weblate_web/models.py:160
 #: weblate_web/templates/weblate_web/post_detail.html:62
 msgid "Localization"
 msgstr "本地化"
 
-#: weblate_web/models.py:174 weblate_web/models.py:182
+#: weblate_web/models.py:215 weblate_web/models.py:223
 msgid "Invalid image!"
 msgstr "无效图片！"
 
-#: weblate_web/models.py:196
+#: weblate_web/models.py:237
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "不支持的图片类型：%s"
 
-#: weblate_web/models.py:202
+#: weblate_web/models.py:243
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "请上传分辨率为 570 x 260 像素的图片。"
 
-#: weblate_web/models.py:680
+#: weblate_web/models.py:721
 msgid "Community supported"
 msgstr "社区支持"
 
-#: weblate_web/models.py:681
+#: weblate_web/models.py:722
 msgid "Dedicated hosted service"
 msgstr "专用托管服务"
 
-#: weblate_web/models.py:682
+#: weblate_web/models.py:723
 msgid "Hosted service"
 msgstr "托管服务"
 
-#: weblate_web/models.py:683 weblate_web/templates/support.html:77
+#: weblate_web/models.py:724 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "基础自托管支持"
 
-#: weblate_web/models.py:684 weblate_web/templates/support.html:90
+#: weblate_web/models.py:725 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "扩展自托管支持"
 
-#: weblate_web/models.py:685 weblate_web/templates/support.html:109
+#: weblate_web/models.py:726 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "进阶自托管支持"
 
-#: weblate_web/models.py:711 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "服务器 URL"
 
-#: weblate_web/models.py:725
+#: weblate_web/models.py:766
 msgid "Server description"
 msgstr "服务器描述"
 
-#: weblate_web/models.py:728
+#: weblate_web/models.py:769
 msgid "Server image"
 msgstr "服务器图片"
 
-#: weblate_web/models.py:732
+#: weblate_web/models.py:773
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG 或 JPG 格式，分辨率为 570 × 260 像素。"
 
-#: weblate_web/models.py:1003 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "基础支持"
 
-#: weblate_web/models.py:1004
+#: weblate_web/models.py:1045
 msgid "Never get held back by a problem."
 msgstr "永远不要被问题阻碍。"
 
-#: weblate_web/models.py:1005
+#: weblate_web/models.py:1046
 msgid "Set priority for all your questions and reported bugs."
 msgstr "为您的所有问题和报告的错误设置优先级。"
 
-#: weblate_web/models.py:1007 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "获取支持"
 
-#: weblate_web/models.py:1019 weblate_web/models.py:1036
-#: weblate_web/models.py:1067 weblate_web/models.py:1591
+#: weblate_web/models.py:1060 weblate_web/models.py:1077
+#: weblate_web/models.py:1108 weblate_web/models.py:1632
 #, python-format
 msgid "Upgrade to %s"
 msgstr "升级到 %s"
 
-#: weblate_web/models.py:1021
+#: weblate_web/models.py:1062
 msgid "Premium support"
 msgstr "进阶支持"
 
-#: weblate_web/models.py:1022
+#: weblate_web/models.py:1063
 msgid "Don’t wait with your work on hold."
 msgstr "不要暂停您的工作进行等待。"
 
-#: weblate_web/models.py:1023
+#: weblate_web/models.py:1064
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "这保证最迟在下个营业日给您问题的答案。"
 
-#: weblate_web/models.py:1025
+#: weblate_web/models.py:1066
 msgid "Be premium"
 msgstr "付费升级"
 
-#: weblate_web/models.py:1038 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "扩展支持"
 
-#: weblate_web/models.py:1039
+#: weblate_web/models.py:1080
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "不要停留在基础版，买一个安心的套餐。"
 
-#: weblate_web/models.py:1040
+#: weblate_web/models.py:1081
 msgid "We will manage upgrades for you."
 msgstr "我们将为您管理升级。"
 
-#: weblate_web/models.py:1042
+#: weblate_web/models.py:1083
 msgid "Stay updated"
 msgstr "保持更新"
 
-#: weblate_web/models.py:1051 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "备份服务"
 
-#: weblate_web/models.py:1052
+#: weblate_web/models.py:1093
 msgid "Easily put your backups in a safe place."
 msgstr "轻松地把备份放在一个安全的地方。"
 
-#: weblate_web/models.py:1053
+#: weblate_web/models.py:1094
 msgid "Encrypted and automatic, always available."
 msgstr "加密和自动，始终可用。"
 
-#: weblate_web/models.py:1055
+#: weblate_web/models.py:1096
 msgid "Back up daily"
 msgstr "每日备份"
 
-#: weblate_web/models.py:1068
+#: weblate_web/models.py:1109
 msgid "Increase service limits to translate more content."
 msgstr "提升服务限制翻译更多内容。"
 
-#: weblate_web/models.py:1071
+#: weblate_web/models.py:1112
 msgid "Upgrade"
 msgstr "升级"
 
@@ -1110,12 +1276,6 @@ msgstr ""
 #: weblate_web/templates/about.html:179
 msgid "Contact"
 msgstr "联系"
-
-#: weblate_web/templates/about.html:182
-#: weblate_web/templates/snippets/customer-users.html:38
-#: weblate_web/templates/snippets/customer-users.html:40
-msgid "E-mail"
-msgstr "电子邮件地址"
 
 #: weblate_web/templates/about.html:189
 msgid "Provider"
@@ -2469,15 +2629,6 @@ msgstr "查看选项"
 msgid "Buy now"
 msgstr "立即购买"
 
-#: weblate_web/templates/hosting.html:289
-#: weblate_web/templates/payment/customer-agreement.html:35
-#: weblate_web/templates/payment/customer-agreement.html:56
-#: weblate_web/templates/payment/customer-agreement.html:64
-#: weblate_web/templates/payment/customer-agreement.html:85
-#: weblate_web/templates/snippets/main-menu.html:9
-msgid "Download"
-msgstr "下载"
-
 #: weblate_web/templates/hosting.html:297
 msgid "Cloud-hosted Price Options"
 msgstr "云托管价格选项"
@@ -2692,7 +2843,7 @@ msgstr "生成于 %(timestamp)s。"
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:701
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:699
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr "您是 Weblate 的支柱。感谢您的捐赠。"
 
@@ -2913,12 +3064,6 @@ msgstr "您的数据处理协议"
 #: weblate_web/templates/payment/customer-agreement.html:16
 msgid "Organization"
 msgstr "组织"
-
-#: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
-#: weblate_web/templates/snippets/customer-address.html:10
-msgid "Edit"
-msgstr "编辑"
 
 #: weblate_web/templates/payment/customer-agreement.html:27
 msgid "Existing agreements"
@@ -3723,7 +3868,7 @@ msgid "Other topics"
 msgstr "其他主题"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:918
+#: weblate_web/views.py:916
 msgid "Milestones"
 msgstr "里程碑"
 
@@ -3842,79 +3987,83 @@ msgstr[0] "还剩 %d 天"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "参数 %(field)s 出错：%(error)s"
 
-#: weblate_web/views.py:391
+#: weblate_web/views.py:389
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "感谢您的捐赠，在 FOSDEM 玩得尽兴。"
 
-#: weblate_web/views.py:418
+#: weblate_web/views.py:416
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
 "请提供您的姓名以完成付款。如果需要在收据上看到其他账单信息也请一并提供。"
 
-#: weblate_web/views.py:425 weblate_web/views.py:459
+#: weblate_web/views.py:423 weblate_web/views.py:457
 msgid "Please provide your billing information to complete the payment."
 msgstr "请提供您的账单信息以完成付款。"
 
-#: weblate_web/views.py:437
+#: weblate_web/views.py:435
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "VAT ID 已失效，请对其进行更新。"
 
-#: weblate_web/views.py:454
+#: weblate_web/views.py:452
 msgid "Please choose a payment method."
 msgstr "请选择付款方式。"
 
-#: weblate_web/views.py:487
+#: weblate_web/views.py:485
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "无法执行付款：%s"
 
-#: weblate_web/views.py:497
+#: weblate_web/views.py:495
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "无法完成付款：%s"
 
-#: weblate_web/views.py:554
+#: weblate_web/views.py:552
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr "请使用已生成的协议，您可以在30天后生成新的协议。"
 
-#: weblate_web/views.py:561
+#: weblate_web/views.py:559
 msgid "New agreement created, you can download it below."
 msgstr "已创建新协议，您可以在下方下载。"
 
-#: weblate_web/views.py:613
+#: weblate_web/views.py:611
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr "新公司，新的银行账户信息！请关注当前发票。"
 
-#: weblate_web/views.py:672
+#: weblate_web/views.py:670
 msgid "Payment not yet processed, please retry."
 msgstr "付款尚未处理，请再试一次。"
 
-#: weblate_web/views.py:676
+#: weblate_web/views.py:674
 msgid "The payment was rejected: {}"
 msgstr "付款被拒绝：{}"
 
-#: weblate_web/views.py:677
+#: weblate_web/views.py:675
 msgid "Unknown reason"
 msgstr "未知原因"
 
-#: weblate_web/views.py:689
+#: weblate_web/views.py:687
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr "付款被处理，但无法更新订阅。请联系我们。"
 
-#: weblate_web/views.py:694
+#: weblate_web/views.py:692
 msgid "Thank you for your subscription."
 msgstr "感谢您的订阅。"
 
-#: weblate_web/views.py:1024
+#: weblate_web/views.py:1022
 msgid "User not found!"
 msgstr "找不到用户！"
+
+#: weblate_web/views.py:1145
+msgid "Please confirm the upgrade from your account page."
+msgstr ""
 
 #~ msgid "Company or individual name"
 #~ msgstr "公司或个体名称"
@@ -4411,9 +4560,6 @@ msgstr "找不到用户！"
 
 #~ msgid "Which Weblate is right for you"
 #~ msgstr "哪种Weblate适合您"
-
-#~ msgid "Dedicated"
-#~ msgstr "专用的"
 
 #~ msgid "Negotiable"
 #~ msgstr "可协商"

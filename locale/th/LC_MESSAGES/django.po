@@ -15,12 +15,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-05-24 23:16-0500\n"
+"POT-Creation-Date: 2026-05-31 20:06-0500\n"
 "PO-Revision-Date: 2026-05-25 10:02+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
-"Language-Team: Thai <https://hosted.weblate.org/projects/weblate/website/th/>"
-"\n"
+"Language-Team: Thai <https://hosted.weblate.org/projects/weblate/website/th/"
+">\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,6 +41,27 @@ msgstr ""
 #: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "หมายเหตุ"
+
+#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/templates/snippets/customer-users.html:38
+#: weblate_web/templates/snippets/customer-users.html:40
+msgid "E-mail"
+msgstr "อีเมล"
+
+#: weblate_web/crm/forms.py:47
+#, fuzzy
+#| msgid "Fully Integrated"
+msgid "Full name"
+msgstr "เชื่อมต่ออย่างสมบูรณ์"
+
+#: weblate_web/crm/hosted.py:38 weblate_web/crm/hosted.py:64
+#: weblate_web/crm/hosted.py:79
+msgid "Invalid hosted user response"
+msgstr ""
+
+#: weblate_web/crm/hosted.py:43
+msgid "Hosted user synchronization is disabled."
+msgstr ""
 
 #: weblate_web/crm/models.py:66
 msgid "Yes"
@@ -158,7 +179,7 @@ msgstr "หน้าต่างก่อนหน้า"
 #: weblate_web/crm/models.py:224
 #: weblate_web/crm/templates/weblate_web/service_detail.html:41
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:706
+#: weblate_web/models.py:747
 msgid "Maintenance window"
 msgstr ""
 
@@ -334,24 +355,87 @@ msgstr "ติดต่อ"
 msgid "Interaction content"
 msgstr "API สำหรับการเชื่อมต่อ"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:70
-#: weblate_web/crm/templates/invoices/invoice_detail.html:75
+#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/templates/hosting.html:289
+#: weblate_web/templates/payment/customer-agreement.html:35
+#: weblate_web/templates/payment/customer-agreement.html:56
+#: weblate_web/templates/payment/customer-agreement.html:64
+#: weblate_web/templates/payment/customer-agreement.html:85
+#: weblate_web/templates/snippets/main-menu.html:9
+msgid "Download"
+msgstr "ดาวน์โหลด"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+msgid "Receipt"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:55
+#: weblate_web/templates/payment/customer-agreement.html:18
+#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/snippets/customer-address.html:10
+msgid "Edit"
+msgstr "แก้ไข"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:72
+#: weblate_web/crm/templates/invoices/invoice_detail.html:77
 msgid "Confirm refund done"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:71
+#: weblate_web/crm/templates/invoices/invoice_detail.html:73
 msgid "Use this after the refund or chargeback has been completed."
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:80
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Create invoice"
+msgstr "ออกใบแจ้งหนี้ใหม่"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:84
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice from quote"
+msgstr "ออกใบแจ้งหนี้ใหม่"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:86
+msgid ""
+"This creates a final invoice matching this quote. Use Download if you only "
+"need the quote PDF."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:93
+#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:109
+msgid "I confirm that I want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:96
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice"
+msgstr "ออกใบแจ้งหนี้ใหม่"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:57
+#, fuzzy
+#| msgid "Add server to Discover Weblate"
+msgid "Add user to customer"
+msgstr "เพิ่มเซิร์ฟเวอร์ลงใน Discover Weblate"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:60
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add user"
+msgstr "เพิ่มผู้ใช้"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:88
 msgid "Add new agreement"
 msgstr "เพิ่มข้อตกลงใหม่"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:101
+#: weblate_web/crm/templates/payments/customer_detail.html:109
 msgid "Issue new invoice"
 msgstr "ออกใบแจ้งหนี้ใหม่"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:107
+#: weblate_web/crm/templates/payments/customer_detail.html:115
 msgid "Add note"
 msgstr ""
 
@@ -361,28 +445,108 @@ msgstr ""
 msgid "Update maintenance window"
 msgstr "การบำรุงรักษาระบบ"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:63
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Issue renewal quote"
+msgstr "ขอใบเสนอราคา"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:66
+#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue renewal invoice"
+msgstr "ออกใบแจ้งหนี้ใหม่"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+msgid ""
+"This creates a final invoice for the renewal. Use the renewal quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:86
 #, python-format
 msgid ""
 "Upgrade to %(package)s without extending the current subscription period."
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:94
 #, fuzzy
 #| msgid "Get a quote"
 msgid "Issue upgrade quote"
 msgstr "ขอใบเสนอราคา"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#: weblate_web/crm/templates/weblate_web/service_detail.html:97
+#: weblate_web/crm/templates/weblate_web/service_detail.html:112
 #, fuzzy
 #| msgid "Issue new invoice"
 msgid "Issue upgrade invoice"
 msgstr "ออกใบแจ้งหนี้ใหม่"
 
-#: weblate_web/crm/views.py:236 weblate_web/crm/views.py:250
-#: weblate_web/crm/views.py:269 weblate_web/views.py:1068
-#: weblate_web/views.py:1079 weblate_web/views.py:1091
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid ""
+"This creates a final invoice for the upgrade. Use the upgrade quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/views.py:95
+msgid "Please confirm that you want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
+#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
 msgid "This subscription can not be upgraded to the selected package."
+msgstr ""
+
+#: weblate_web/crm/views.py:638
+msgid "Hosted username matches a local user with a different e-mail."
+msgstr ""
+
+#: weblate_web/crm/views.py:652
+msgid "Hosted user was not linked."
+msgstr ""
+
+#: weblate_web/crm/views.py:655
+msgid "Hosted user is already linked to a different local user."
+msgstr ""
+
+#: weblate_web/crm/views.py:662
+#, fuzzy
+#| msgid "Add a user"
+msgid "Added customer user"
+msgstr "เพิ่มผู้ใช้"
+
+#: weblate_web/crm/views.py:664
+#, python-format
+msgid "Added %(email)s to customer users. Hosted user was %(state)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:668
+msgid "created"
+msgstr ""
+
+#: weblate_web/crm/views.py:670
+msgid "linked"
+msgstr ""
+
+#: weblate_web/crm/views.py:697
+msgid "Multiple local users use this e-mail address"
+msgstr ""
+
+#: weblate_web/crm/views.py:725
+#, python-format
+msgid "Could not add customer user: %(error)s"
+msgstr ""
+
+#: weblate_web/crm/views.py:732
+#, python-format
+msgid "Added %(email)s to customer users."
+msgstr ""
+
+#: weblate_web/crm/views.py:737
+#, python-format
+msgid "%(email)s is already a customer user."
 msgstr ""
 
 #: weblate_web/fake.py:25
@@ -424,13 +588,13 @@ msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "ใบแจ้งหนี้นี้ชำระเงินแล้ว โปรดเข้าสู่ระบบเพื่อดูรายละเอียด"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:572
+#: weblate_web/models.py:613
 msgctxt "Service kind"
 msgid "Service"
 msgstr "บริการ"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:573
+#: weblate_web/models.py:614
 #, fuzzy
 #| msgid "Documentation"
 msgctxt "Service kind"
@@ -438,232 +602,232 @@ msgid "Donation"
 msgstr "เอกสารประกอบ"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:740
+#: weblate_web/models.py:781
 msgid "Link text"
 msgstr "ข้อความลิงก์"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:743
+#: weblate_web/models.py:784
 msgid "Link URL"
 msgstr "URL ลิงก์"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:746
+#: weblate_web/models.py:787
 msgid "Link image"
 msgstr "รูปภาพลิงก์"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:577
+#: weblate_web/models.py:618
 msgctxt "Package category"
 msgid "None"
 msgstr "ไม่มี"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:578
+#: weblate_web/models.py:619
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr "โฮสติ้งแบบส่วนตัว"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:579
+#: weblate_web/models.py:620
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr "โฮสติ้งแบบแชร์ทรัพยากร"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:580
+#: weblate_web/models.py:621
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "บริการสนับสนุนสำหรับแบบติดตั้งเอง"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:581
+#: weblate_web/models.py:622
 #, fuzzy
 #| msgid "Documentation"
 msgctxt "Package category"
 msgid "Donation"
 msgstr "เอกสารประกอบ"
 
-#: weblate_web/models.py:90
+#: weblate_web/models.py:131
 msgid "No reward"
 msgstr "ไม่มีของรางวัล"
 
-#: weblate_web/models.py:91 weblate_web/templates/donate.html:45
+#: weblate_web/models.py:132 weblate_web/templates/donate.html:45
 msgid "Name in the list of supporters"
 msgstr "ชื่อในรายชื่อผู้สนับสนุน"
 
-#: weblate_web/models.py:92 weblate_web/templates/donate.html:52
+#: weblate_web/models.py:133 weblate_web/templates/donate.html:52
 #: weblate_web/templates/donate/form.html:92
 msgid "Link in the list of supporters"
 msgstr "ลิงก์ในรายชื่อผู้สนับสนุน"
 
-#: weblate_web/models.py:93 weblate_web/templates/donate.html:59
+#: weblate_web/models.py:134 weblate_web/templates/donate.html:59
 #: weblate_web/templates/donate/form.html:106
 msgid "Logo and link on the Weblate website"
 msgstr "โลโก้และลิงก์บนเว็บไซต์ Weblate"
 
-#: weblate_web/models.py:113
+#: weblate_web/models.py:154
 #: weblate_web/templates/weblate_web/post_detail.html:56
 msgid "Release"
 msgstr "เวอร์ชันที่ปล่อยออกมา"
 
-#: weblate_web/models.py:114 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/models.py:155 weblate_web/templates/snippets/main-menu.html:6
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Features"
 msgstr "คุณสมบัติ"
 
-#: weblate_web/models.py:115
+#: weblate_web/models.py:156
 msgid "Announcement"
 msgstr "ประกาศ"
 
-#: weblate_web/models.py:116
+#: weblate_web/models.py:157
 msgid "Conferences"
 msgstr "งานประชุม"
 
-#: weblate_web/models.py:117 weblate_web/templates/hosting.html:66
+#: weblate_web/models.py:158 weblate_web/templates/hosting.html:66
 msgid "Hosted Weblate"
 msgstr "บริการ Weblate บนคลาวด์"
 
-#: weblate_web/models.py:118
+#: weblate_web/models.py:159
 #: weblate_web/templates/weblate_web/post_detail.html:60
 msgid "Development"
 msgstr "การพัฒนา"
 
-#: weblate_web/models.py:119
+#: weblate_web/models.py:160
 #: weblate_web/templates/weblate_web/post_detail.html:62
 msgid "Localization"
 msgstr "การปรับเนื้อหาให้เป็นภาษาท้องถิ่น"
 
-#: weblate_web/models.py:174 weblate_web/models.py:182
+#: weblate_web/models.py:215 weblate_web/models.py:223
 msgid "Invalid image!"
 msgstr "รูปภาพไม่ถูกต้อง!"
 
-#: weblate_web/models.py:196
+#: weblate_web/models.py:237
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "ไม่รองรับประเภทรูปภาพ: %s"
 
-#: weblate_web/models.py:202
+#: weblate_web/models.py:243
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "โปรดอัปโหลดรูปภาพที่มีความละเอียด 570 x 260 พิกเซล"
 
-#: weblate_web/models.py:680
+#: weblate_web/models.py:721
 msgid "Community supported"
 msgstr "สนับสนุนโดยชุมชน"
 
-#: weblate_web/models.py:681
+#: weblate_web/models.py:722
 msgid "Dedicated hosted service"
 msgstr "บริการโฮสต์แบบส่วนตัว"
 
-#: weblate_web/models.py:682
+#: weblate_web/models.py:723
 msgid "Hosted service"
 msgstr "บริการแบบโฮสต์"
 
-#: weblate_web/models.py:683 weblate_web/templates/support.html:77
+#: weblate_web/models.py:724 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "บริการสนับสนุนพื้นฐานสำหรับแบบติดตั้งเอง"
 
-#: weblate_web/models.py:684 weblate_web/templates/support.html:90
+#: weblate_web/models.py:725 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "บริการสนับสนุนแบบขยายสำหรับแบบติดตั้งเอง"
 
-#: weblate_web/models.py:685 weblate_web/templates/support.html:109
+#: weblate_web/models.py:726 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "บริการสนับสนุนระดับพรีเมียมสำหรับแบบติดตั้งเอง"
 
-#: weblate_web/models.py:711 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "URL เซิร์ฟเวอร์"
 
-#: weblate_web/models.py:725
+#: weblate_web/models.py:766
 msgid "Server description"
 msgstr "คำอธิบายเซิร์ฟเวอร์"
 
-#: weblate_web/models.py:728
+#: weblate_web/models.py:769
 msgid "Server image"
 msgstr "รูปภาพเซิร์ฟเวอร์"
 
-#: weblate_web/models.py:732
+#: weblate_web/models.py:773
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "รูปภาพ PNG หรือ JPG ความละเอียด 570 x 260 พิกเซล"
 
-#: weblate_web/models.py:1003 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "บริการสนับสนุนพื้นฐาน"
 
-#: weblate_web/models.py:1004
+#: weblate_web/models.py:1045
 msgid "Never get held back by a problem."
 msgstr "ไม่ต้องติดขัดกับปัญหาอีกต่อไป"
 
-#: weblate_web/models.py:1005
+#: weblate_web/models.py:1046
 msgid "Set priority for all your questions and reported bugs."
 msgstr "จัดลำดับความสำคัญให้กับทุกคำถามและบั๊กที่คุณรายงาน"
 
-#: weblate_web/models.py:1007 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "รับบริการสนับสนุน"
 
-#: weblate_web/models.py:1019 weblate_web/models.py:1036
-#: weblate_web/models.py:1067 weblate_web/models.py:1591
+#: weblate_web/models.py:1060 weblate_web/models.py:1077
+#: weblate_web/models.py:1108 weblate_web/models.py:1632
 #, python-format
 msgid "Upgrade to %s"
 msgstr "อัปเกรดเป็น %s"
 
-#: weblate_web/models.py:1021
+#: weblate_web/models.py:1062
 msgid "Premium support"
 msgstr "บริการสนับสนุนระดับพรีเมียม"
 
-#: weblate_web/models.py:1022
+#: weblate_web/models.py:1063
 msgid "Don’t wait with your work on hold."
 msgstr "อย่าปล่อยให้งานของคุณต้องหยุดชะงัก"
 
-#: weblate_web/models.py:1023
+#: weblate_web/models.py:1064
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "รับประกันคำตอบภายในวันทำการถัดไปอย่างช้าที่สุด"
 
-#: weblate_web/models.py:1025
+#: weblate_web/models.py:1066
 #, fuzzy
 #| msgid "Be Premium"
 msgid "Be premium"
 msgstr "เป็นสมาชิกระดับพรีเมียม"
 
-#: weblate_web/models.py:1038 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "บริการสนับสนุนแบบขยาย"
 
-#: weblate_web/models.py:1039
+#: weblate_web/models.py:1080
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "อย่าหยุดอยู่แค่ระดับพื้นฐาน เลือกแพ็กเกจที่ไร้กังวลดีกว่า"
 
-#: weblate_web/models.py:1040
+#: weblate_web/models.py:1081
 msgid "We will manage upgrades for you."
 msgstr "เราจะจัดการการอัปเกรดให้คุณ"
 
-#: weblate_web/models.py:1042
+#: weblate_web/models.py:1083
 msgid "Stay updated"
 msgstr "ทันสมัยอยู่เสมอ"
 
-#: weblate_web/models.py:1051 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "บริการสำรองข้อมูล"
 
-#: weblate_web/models.py:1052
+#: weblate_web/models.py:1093
 msgid "Easily put your backups in a safe place."
 msgstr "จัดเก็บข้อมูลสำรองของคุณในที่ปลอดภัยได้อย่างง่ายดาย"
 
-#: weblate_web/models.py:1053
+#: weblate_web/models.py:1094
 msgid "Encrypted and automatic, always available."
 msgstr "เข้ารหัสและทำงานอัตโนมัติ พร้อมใช้งานเสมอ"
 
-#: weblate_web/models.py:1055
+#: weblate_web/models.py:1096
 msgid "Back up daily"
 msgstr "สำรองข้อมูลทุกวัน"
 
-#: weblate_web/models.py:1068
+#: weblate_web/models.py:1109
 msgid "Increase service limits to translate more content."
 msgstr "เพิ่มขีดจำกัดการให้บริการเพื่อแปลเนื้อหาได้มากขึ้น"
 
-#: weblate_web/models.py:1071
+#: weblate_web/models.py:1112
 msgid "Upgrade"
 msgstr "อัปเกรด"
 
@@ -1124,12 +1288,6 @@ msgstr ""
 #: weblate_web/templates/about.html:179
 msgid "Contact"
 msgstr "ติดต่อ"
-
-#: weblate_web/templates/about.html:182
-#: weblate_web/templates/snippets/customer-users.html:38
-#: weblate_web/templates/snippets/customer-users.html:40
-msgid "E-mail"
-msgstr "อีเมล"
 
 #: weblate_web/templates/about.html:189
 msgid "Provider"
@@ -2500,15 +2658,6 @@ msgstr "ดูตัวเลือก"
 msgid "Buy now"
 msgstr "ซื้อเลย"
 
-#: weblate_web/templates/hosting.html:289
-#: weblate_web/templates/payment/customer-agreement.html:35
-#: weblate_web/templates/payment/customer-agreement.html:56
-#: weblate_web/templates/payment/customer-agreement.html:64
-#: weblate_web/templates/payment/customer-agreement.html:85
-#: weblate_web/templates/snippets/main-menu.html:9
-msgid "Download"
-msgstr "ดาวน์โหลด"
-
 #: weblate_web/templates/hosting.html:297
 msgid "Cloud-hosted Price Options"
 msgstr "ตัวเลือกราคาโฮสติ้งบนคลาวด์"
@@ -2726,7 +2875,7 @@ msgstr "สร้างเมื่อ %(timestamp)s"
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:701
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:699
 #, fuzzy
 #| msgid "Thank you for your donation."
 msgid "You are the heart of Weblate. Thank you for your donation."
@@ -2960,12 +3109,6 @@ msgstr "ข้อตกลงการประมวลผลข้อมูล
 #: weblate_web/templates/payment/customer-agreement.html:16
 msgid "Organization"
 msgstr "องค์กร"
-
-#: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
-#: weblate_web/templates/snippets/customer-address.html:10
-msgid "Edit"
-msgstr "แก้ไข"
 
 #: weblate_web/templates/payment/customer-agreement.html:27
 msgid "Existing agreements"
@@ -3785,7 +3928,7 @@ msgid "Other topics"
 msgstr "หัวข้ออื่น ๆ"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:918
+#: weblate_web/views.py:916
 msgid "Milestones"
 msgstr "เหตุการณ์สำคัญ (Milestones)"
 
@@ -3904,11 +4047,11 @@ msgstr[0] "เหลือเวลาอีก %d วัน"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "พบข้อผิดพลาดที่พารามิเตอร์ %(field)s: %(error)s"
 
-#: weblate_web/views.py:391
+#: weblate_web/views.py:389
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "ขอบคุณสำหรับการบริจาคและขอให้สนุกกับงาน FOSDEM"
 
-#: weblate_web/views.py:418
+#: weblate_web/views.py:416
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -3916,68 +4059,72 @@ msgstr ""
 "โปรดระบุชื่อของคุณเพื่อดำเนินการชำระเงินให้เสร็จสมบูรณ์ "
 "หากต้องการข้อมูลเพิ่มเติมสำหรับการเรียกเก็บเงินในใบเสร็จ โปรดระบุ"
 
-#: weblate_web/views.py:425 weblate_web/views.py:459
+#: weblate_web/views.py:423 weblate_web/views.py:457
 msgid "Please provide your billing information to complete the payment."
 msgstr "โปรดระบุข้อมูลการเรียกเก็บเงินของคุณเพื่อดำเนินการชำระเงินให้เสร็จสมบูรณ์"
 
-#: weblate_web/views.py:437
+#: weblate_web/views.py:435
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "เลขประจำตัวผู้เสียภาษี (VAT) ไม่ถูกต้องอีกต่อไป โปรดอัปเดตใหม่"
 
-#: weblate_web/views.py:454
+#: weblate_web/views.py:452
 msgid "Please choose a payment method."
 msgstr "โปรดเลือกวิธีการชำระเงิน"
 
-#: weblate_web/views.py:487
+#: weblate_web/views.py:485
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "ชำระเงินไม่สำเร็จ: %s"
 
-#: weblate_web/views.py:497
+#: weblate_web/views.py:495
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "ดำเนินการชำระเงินไม่สำเร็จ: %s"
 
-#: weblate_web/views.py:554
+#: weblate_web/views.py:552
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr "โปรดใช้ข้อตกลงที่มีอยู่เดิม คุณสามารถสร้างใหม่ได้ในอีก 30 วัน"
 
-#: weblate_web/views.py:561
+#: weblate_web/views.py:559
 msgid "New agreement created, you can download it below."
 msgstr "สร้างข้อตกลงใหม่แล้ว คุณสามารถดาวน์โหลดได้จากด้านล่าง"
 
-#: weblate_web/views.py:613
+#: weblate_web/views.py:611
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr "บริษัทใหม่ รายละเอียดธนาคารใหม่! โปรดตรวจสอบใบแจ้งหนี้ปัจจุบันก่อนชำระเงิน"
 
-#: weblate_web/views.py:672
+#: weblate_web/views.py:670
 msgid "Payment not yet processed, please retry."
 msgstr "ยังไม่ได้ดำเนินการชำระเงิน โปรดลองอีกครั้ง"
 
-#: weblate_web/views.py:676
+#: weblate_web/views.py:674
 msgid "The payment was rejected: {}"
 msgstr "การชำระเงินถูกปฏิเสธ: {}"
 
-#: weblate_web/views.py:677
+#: weblate_web/views.py:675
 msgid "Unknown reason"
 msgstr "ไม่ทราบสาเหตุ"
 
-#: weblate_web/views.py:689
+#: weblate_web/views.py:687
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr ""
 
-#: weblate_web/views.py:694
+#: weblate_web/views.py:692
 msgid "Thank you for your subscription."
 msgstr "ขอบคุณสำหรับการสมัครสมาชิก"
 
-#: weblate_web/views.py:1024
+#: weblate_web/views.py:1022
 msgid "User not found!"
 msgstr "ไม่พบผู้ใช้!"
+
+#: weblate_web/views.py:1145
+msgid "Please confirm the upgrade from your account page."
+msgstr ""
 
 #~ msgid "Company or individual name"
 #~ msgstr "ชื่อบริษัทหรือบุคคล"

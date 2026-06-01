@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-05-24 23:16-0500\n"
+"POT-Creation-Date: 2026-05-31 20:06-0500\n"
 "PO-Revision-Date: 2026-06-01 01:01+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/weblate/website/"
@@ -42,6 +42,27 @@ msgstr "הערת רשות שמתארת איך בוצע הזיכוי."
 #: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "הערה"
+
+#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/templates/snippets/customer-users.html:38
+#: weblate_web/templates/snippets/customer-users.html:40
+msgid "E-mail"
+msgstr "דוא״ל"
+
+#: weblate_web/crm/forms.py:47
+#, fuzzy
+#| msgid "Filename"
+msgid "Full name"
+msgstr "שם קובץ"
+
+#: weblate_web/crm/hosted.py:38 weblate_web/crm/hosted.py:64
+#: weblate_web/crm/hosted.py:79
+msgid "Invalid hosted user response"
+msgstr ""
+
+#: weblate_web/crm/hosted.py:43
+msgid "Hosted user synchronization is disabled."
+msgstr ""
 
 #: weblate_web/crm/models.py:66
 msgid "Yes"
@@ -149,7 +170,7 @@ msgstr "חלון תחזוקה קודם"
 #: weblate_web/crm/models.py:224
 #: weblate_web/crm/templates/weblate_web/service_detail.html:41
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:706
+#: weblate_web/models.py:747
 msgid "Maintenance window"
 msgstr "חלון תחזוקה"
 
@@ -315,24 +336,87 @@ msgstr "תוכן"
 msgid "Interaction content"
 msgstr "תוכן תפעולי"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:70
-#: weblate_web/crm/templates/invoices/invoice_detail.html:75
+#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/templates/hosting.html:289
+#: weblate_web/templates/payment/customer-agreement.html:35
+#: weblate_web/templates/payment/customer-agreement.html:56
+#: weblate_web/templates/payment/customer-agreement.html:64
+#: weblate_web/templates/payment/customer-agreement.html:85
+#: weblate_web/templates/snippets/main-menu.html:9
+msgid "Download"
+msgstr "הורדה"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+msgid "Receipt"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:55
+#: weblate_web/templates/payment/customer-agreement.html:18
+#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/snippets/customer-address.html:10
+msgid "Edit"
+msgstr "עריכה"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:72
+#: weblate_web/crm/templates/invoices/invoice_detail.html:77
 msgid "Confirm refund done"
 msgstr "אישור שהפיצוי הושלם"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:71
+#: weblate_web/crm/templates/invoices/invoice_detail.html:73
 msgid "Use this after the refund or chargeback has been completed."
 msgstr "להשתמש בזה אחרי שהפיצוי או החזרת התשלום הושלמו."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:80
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Create invoice"
+msgstr "הנפקת חשבונית חדשה"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:84
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice from quote"
+msgstr "הנפקת חשבונית חדשה"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:86
+msgid ""
+"This creates a final invoice matching this quote. Use Download if you only "
+"need the quote PDF."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:93
+#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:109
+msgid "I confirm that I want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:96
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice"
+msgstr "הנפקת חשבונית חדשה"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:57
+#, fuzzy
+#| msgid "Merged customer"
+msgid "Add user to customer"
+msgstr "לקוח ממוזג"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:60
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add user"
+msgstr "הוספת משתמש"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:88
 msgid "Add new agreement"
 msgstr "הוספת הסכם חדש"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:101
+#: weblate_web/crm/templates/payments/customer_detail.html:109
 msgid "Issue new invoice"
 msgstr "הנפקת חשבונית חדשה"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:107
+#: weblate_web/crm/templates/payments/customer_detail.html:115
 msgid "Add note"
 msgstr "הוספת הערה"
 
@@ -340,27 +424,109 @@ msgstr "הוספת הערה"
 msgid "Update maintenance window"
 msgstr "חלון תחזוקת עדכונים"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:63
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Issue renewal quote"
+msgstr "קבלת הצעת מחיר"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:66
+#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue renewal invoice"
+msgstr "הנפקת חשבונית חדשה"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+msgid ""
+"This creates a final invoice for the renewal. Use the renewal quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:86
 #, python-format
 msgid ""
 "Upgrade to %(package)s without extending the current subscription period."
 msgstr "לשדרג לתוכנית %(package)s מבלי להאריך את תקופת המינוי הנוכחי."
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
+#: weblate_web/crm/templates/weblate_web/service_detail.html:94
 #, fuzzy
 #| msgid "Get a quote"
 msgid "Issue upgrade quote"
 msgstr "קבלת הצעת מחיר"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#: weblate_web/crm/templates/weblate_web/service_detail.html:97
+#: weblate_web/crm/templates/weblate_web/service_detail.html:112
 msgid "Issue upgrade invoice"
 msgstr "הנפקת חשבונית שדרוג"
 
-#: weblate_web/crm/views.py:236 weblate_web/crm/views.py:250
-#: weblate_web/crm/views.py:269 weblate_web/views.py:1068
-#: weblate_web/views.py:1079 weblate_web/views.py:1091
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid ""
+"This creates a final invoice for the upgrade. Use the upgrade quote action "
+"if you only need a quote."
+msgstr ""
+
+#: weblate_web/crm/views.py:95
+msgid "Please confirm that you want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
+#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "אי אפשר לשדרג את המינוי הזה לחבילה הנבחרת."
+
+#: weblate_web/crm/views.py:638
+msgid "Hosted username matches a local user with a different e-mail."
+msgstr ""
+
+#: weblate_web/crm/views.py:652
+msgid "Hosted user was not linked."
+msgstr ""
+
+#: weblate_web/crm/views.py:655
+msgid "Hosted user is already linked to a different local user."
+msgstr ""
+
+#: weblate_web/crm/views.py:662
+#, fuzzy
+#| msgid "Merged customer email"
+msgid "Added customer user"
+msgstr "דוא״ל לקוח ממוזג"
+
+#: weblate_web/crm/views.py:664
+#, python-format
+msgid "Added %(email)s to customer users. Hosted user was %(state)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:668
+#, fuzzy
+#| msgid "Dedicated"
+msgid "created"
+msgstr "ייעודי"
+
+#: weblate_web/crm/views.py:670
+msgid "linked"
+msgstr ""
+
+#: weblate_web/crm/views.py:697
+msgid "Multiple local users use this e-mail address"
+msgstr ""
+
+#: weblate_web/crm/views.py:725
+#, python-format
+msgid "Could not add customer user: %(error)s"
+msgstr ""
+
+#: weblate_web/crm/views.py:732
+#, python-format
+msgid "Added %(email)s to customer users."
+msgstr ""
+
+#: weblate_web/crm/views.py:737
+#, python-format
+msgid "%(email)s is already a customer user."
+msgstr ""
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -400,240 +566,240 @@ msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "החשבונית הזאת כבר שולמה. נא להיכנס כדי לצפות בפרטים."
 
 #: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:572
+#: weblate_web/models.py:613
 msgctxt "Service kind"
 msgid "Service"
 msgstr "שירות"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:573
+#: weblate_web/models.py:614
 msgctxt "Service kind"
 msgid "Donation"
 msgstr "תרומה"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:740
+#: weblate_web/models.py:781
 msgid "Link text"
 msgstr "טקסט הקישור"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:743
+#: weblate_web/models.py:784
 msgid "Link URL"
 msgstr "כתובת הקישור"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:746
+#: weblate_web/models.py:787
 msgid "Link image"
 msgstr "תמונת קישור"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:577
+#: weblate_web/models.py:618
 msgctxt "Package category"
 msgid "None"
 msgstr "אין"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:578
+#: weblate_web/models.py:619
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr "אירוח ייעודי"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:579
+#: weblate_web/models.py:620
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr "אירוח משותף"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:580
+#: weblate_web/models.py:621
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "תמיכה לאירוח עצמי"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:581
+#: weblate_web/models.py:622
 msgctxt "Package category"
 msgid "Donation"
 msgstr "תרומה"
 
-#: weblate_web/models.py:90
+#: weblate_web/models.py:131
 msgid "No reward"
 msgstr "אין תגמול"
 
-#: weblate_web/models.py:91 weblate_web/templates/donate.html:45
+#: weblate_web/models.py:132 weblate_web/templates/donate.html:45
 msgid "Name in the list of supporters"
 msgstr "שם ברשימת התומכים"
 
-#: weblate_web/models.py:92 weblate_web/templates/donate.html:52
+#: weblate_web/models.py:133 weblate_web/templates/donate.html:52
 #: weblate_web/templates/donate/form.html:92
 msgid "Link in the list of supporters"
 msgstr "קישור ברשימת התומכים"
 
-#: weblate_web/models.py:93 weblate_web/templates/donate.html:59
+#: weblate_web/models.py:134 weblate_web/templates/donate.html:59
 #: weblate_web/templates/donate/form.html:106
 msgid "Logo and link on the Weblate website"
 msgstr "לוגו וקישור באתר Weblate"
 
-#: weblate_web/models.py:113
+#: weblate_web/models.py:154
 #: weblate_web/templates/weblate_web/post_detail.html:56
 msgid "Release"
 msgstr "מהדורה"
 
-#: weblate_web/models.py:114 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/models.py:155 weblate_web/templates/snippets/main-menu.html:6
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Features"
 msgstr "תכונות"
 
-#: weblate_web/models.py:115
+#: weblate_web/models.py:156
 msgid "Announcement"
 msgstr "הכרזה"
 
-#: weblate_web/models.py:116
+#: weblate_web/models.py:157
 msgid "Conferences"
 msgstr "כנסים"
 
-#: weblate_web/models.py:117 weblate_web/templates/hosting.html:66
+#: weblate_web/models.py:158 weblate_web/templates/hosting.html:66
 msgid "Hosted Weblate"
 msgstr "Weblate באירוח מלא"
 
-#: weblate_web/models.py:118
+#: weblate_web/models.py:159
 #: weblate_web/templates/weblate_web/post_detail.html:60
 msgid "Development"
 msgstr "פיתוח"
 
-#: weblate_web/models.py:119
+#: weblate_web/models.py:160
 #: weblate_web/templates/weblate_web/post_detail.html:62
 msgid "Localization"
 msgstr "תרגום"
 
-#: weblate_web/models.py:174 weblate_web/models.py:182
+#: weblate_web/models.py:215 weblate_web/models.py:223
 msgid "Invalid image!"
 msgstr "תמונה לא תקינה!"
 
-#: weblate_web/models.py:196
+#: weblate_web/models.py:237
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "סוג התמונה לא נתמך: %s"
 
-#: weblate_web/models.py:202
+#: weblate_web/models.py:243
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "נא להעלות תמונה ברזולוציה של 570‎ × 260 פיקסלים."
 
-#: weblate_web/models.py:680
+#: weblate_web/models.py:721
 msgid "Community supported"
 msgstr "בתמיכה קהילתית"
 
-#: weblate_web/models.py:681
+#: weblate_web/models.py:722
 msgid "Dedicated hosted service"
 msgstr "שירות מתארח ייעודי"
 
-#: weblate_web/models.py:682
+#: weblate_web/models.py:723
 msgid "Hosted service"
 msgstr "שירות מתארח"
 
-#: weblate_web/models.py:683 weblate_web/templates/support.html:77
+#: weblate_web/models.py:724 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "תמיכה בסיסית לאירוח עצמי"
 
-#: weblate_web/models.py:684 weblate_web/templates/support.html:90
+#: weblate_web/models.py:725 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "תמיכה מורחבת לאירוח עצמי"
 
-#: weblate_web/models.py:685 weblate_web/templates/support.html:109
+#: weblate_web/models.py:726 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "תמיכת פרימיום לאירוח עצמי"
 
-#: weblate_web/models.py:711 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "כתובת השרת"
 
-#: weblate_web/models.py:725
+#: weblate_web/models.py:766
 msgid "Server description"
 msgstr "תיאור השרת"
 
-#: weblate_web/models.py:728
+#: weblate_web/models.py:769
 msgid "Server image"
 msgstr "תמונת השרת"
 
-#: weblate_web/models.py:732
+#: weblate_web/models.py:773
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "תמונת PNG או JPG ברזולוציה של ‎570 × 260 פיקסלים."
 
-#: weblate_web/models.py:1003 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "תמיכה בסיסית"
 
-#: weblate_web/models.py:1004
+#: weblate_web/models.py:1045
 msgid "Never get held back by a problem."
 msgstr "לא נותנים לבעיות להפריע בדרך."
 
-#: weblate_web/models.py:1005
+#: weblate_web/models.py:1046
 msgid "Set priority for all your questions and reported bugs."
 msgstr "הגדרת עדיפות לכל השאלות והבאגים שדיווחת עליהם."
 
-#: weblate_web/models.py:1007 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "קבלת תמיכה"
 
-#: weblate_web/models.py:1019 weblate_web/models.py:1036
-#: weblate_web/models.py:1067 weblate_web/models.py:1591
+#: weblate_web/models.py:1060 weblate_web/models.py:1077
+#: weblate_web/models.py:1108 weblate_web/models.py:1632
 #, python-format
 msgid "Upgrade to %s"
 msgstr "שדרוג לגרסה %s"
 
-#: weblate_web/models.py:1021
+#: weblate_web/models.py:1062
 msgid "Premium support"
 msgstr "תמיכת פרימיום"
 
-#: weblate_web/models.py:1022
+#: weblate_web/models.py:1063
 msgid "Don’t wait with your work on hold."
 msgstr "אין סיבה להמתין ולהשהות עבודה."
 
-#: weblate_web/models.py:1023
+#: weblate_web/models.py:1064
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "מבטיח לך תשובות עד יום העסקים הבא לכל המאוחר."
 
-#: weblate_web/models.py:1025
+#: weblate_web/models.py:1066
 msgid "Be premium"
 msgstr "לקבל יחס פרימיום"
 
-#: weblate_web/models.py:1038 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "תמיכה מורחבת"
 
-#: weblate_web/models.py:1039
+#: weblate_web/models.py:1080
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "לא מסתפקים בפשטות, אפשר לצמצם את הדאגות."
 
-#: weblate_web/models.py:1040
+#: weblate_web/models.py:1081
 msgid "We will manage upgrades for you."
 msgstr "אנו ננהל את השדרוגים עבורך."
 
-#: weblate_web/models.py:1042
+#: weblate_web/models.py:1083
 msgid "Stay updated"
 msgstr "להישאר עדכניים"
 
-#: weblate_web/models.py:1051 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "שירות גיבוי"
 
-#: weblate_web/models.py:1052
+#: weblate_web/models.py:1093
 msgid "Easily put your backups in a safe place."
 msgstr "לאחסן את הגיבויים שלך במקום בטוח."
 
-#: weblate_web/models.py:1053
+#: weblate_web/models.py:1094
 msgid "Encrypted and automatic, always available."
 msgstr "מוצפן ואוטומטי, זמין תמיד."
 
-#: weblate_web/models.py:1055
+#: weblate_web/models.py:1096
 msgid "Back up daily"
 msgstr "גיבוי יומי"
 
-#: weblate_web/models.py:1068
+#: weblate_web/models.py:1109
 msgid "Increase service limits to translate more content."
 msgstr "ניתן להגדיל את מגבלות מסגרת השימוש כדי לתרגם יותר תוכן."
 
-#: weblate_web/models.py:1071
+#: weblate_web/models.py:1112
 msgid "Upgrade"
 msgstr "שדרוג"
 
@@ -1083,12 +1249,6 @@ msgstr ""
 #: weblate_web/templates/about.html:179
 msgid "Contact"
 msgstr "יצירת קשר"
-
-#: weblate_web/templates/about.html:182
-#: weblate_web/templates/snippets/customer-users.html:38
-#: weblate_web/templates/snippets/customer-users.html:40
-msgid "E-mail"
-msgstr "דוא״ל"
 
 #: weblate_web/templates/about.html:189
 msgid "Provider"
@@ -2475,15 +2635,6 @@ msgstr "הצגת אפשרויות"
 msgid "Buy now"
 msgstr "לרכוש כעת"
 
-#: weblate_web/templates/hosting.html:289
-#: weblate_web/templates/payment/customer-agreement.html:35
-#: weblate_web/templates/payment/customer-agreement.html:56
-#: weblate_web/templates/payment/customer-agreement.html:64
-#: weblate_web/templates/payment/customer-agreement.html:85
-#: weblate_web/templates/snippets/main-menu.html:9
-msgid "Download"
-msgstr "הורדה"
-
 #: weblate_web/templates/hosting.html:297
 msgid "Cloud-hosted Price Options"
 msgstr "אפשרויות תשלום לאירוח בענן"
@@ -2706,7 +2857,7 @@ msgstr "נוצר ב־%(timestamp)s."
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:701
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:699
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr "הלב של Weblate פועם בזכותך. תודה לך על תרומתך הכספית."
 
@@ -2934,12 +3085,6 @@ msgstr "הסכמי עיבוד הנתונים שלך"
 #: weblate_web/templates/payment/customer-agreement.html:16
 msgid "Organization"
 msgstr "ארגון"
-
-#: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
-#: weblate_web/templates/snippets/customer-address.html:10
-msgid "Edit"
-msgstr "עריכה"
 
 #: weblate_web/templates/payment/customer-agreement.html:27
 msgid "Existing agreements"
@@ -3754,7 +3899,7 @@ msgid "Other topics"
 msgstr "נושאים אחרים"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:918
+#: weblate_web/views.py:916
 msgid "Milestones"
 msgstr "אבני דרך"
 
@@ -3875,11 +4020,11 @@ msgstr[1] "%d ימים נותרו"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "שגיאה במשתנה %(field)s‏: %(error)s"
 
-#: weblate_web/views.py:391
+#: weblate_web/views.py:389
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "תודה לך על תרומתך הכספית ומאחלים לך ליהנות מ־FOSDEM."
 
-#: weblate_web/views.py:418
+#: weblate_web/views.py:416
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -3887,68 +4032,72 @@ msgstr ""
 "נא לספק את שמך כדי להשלים את התשלום. יש לכלול פרטי חיוב נוספים אם הם צריכים "
 "להופיע בקבלה."
 
-#: weblate_web/views.py:425 weblate_web/views.py:459
+#: weblate_web/views.py:423 weblate_web/views.py:457
 msgid "Please provide your billing information to complete the payment."
 msgstr "נא לספק את פרטי החיוב שלך כדי להשלים את התשלום."
 
-#: weblate_web/views.py:437
+#: weblate_web/views.py:435
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "מזהה המע״מ אינו תקף עוד, נא לעדכן אותו."
 
-#: weblate_web/views.py:454
+#: weblate_web/views.py:452
 msgid "Please choose a payment method."
 msgstr "נא לבחור שיטת תשלום."
 
-#: weblate_web/views.py:487
+#: weblate_web/views.py:485
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "לא ניתן לשלם: %s"
 
-#: weblate_web/views.py:497
+#: weblate_web/views.py:495
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "לא ניתן להשלים את התשלום: %s"
 
-#: weblate_web/views.py:554
+#: weblate_web/views.py:552
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr "נא להשתמש בהסכם שכבר נוצר, אפשר לייצר אחד חדש לאחר 30 יום."
 
-#: weblate_web/views.py:561
+#: weblate_web/views.py:559
 msgid "New agreement created, you can download it below."
 msgstr "נוצר הסכם חדש, אפשר להוריד אותו להלן."
 
-#: weblate_web/views.py:613
+#: weblate_web/views.py:611
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr "חברה חדשה, פרטי בנק חדשים! נא לשלם תוך שימת לב לחשבונית הנוכחית."
 
-#: weblate_web/views.py:672
+#: weblate_web/views.py:670
 msgid "Payment not yet processed, please retry."
 msgstr "התשלומים עדיין לא טופלו, נא לנסות שוב."
 
-#: weblate_web/views.py:676
+#: weblate_web/views.py:674
 msgid "The payment was rejected: {}"
 msgstr "התשלום נדחה: {}"
 
-#: weblate_web/views.py:677
+#: weblate_web/views.py:675
 msgid "Unknown reason"
 msgstr "סיבה בלתי ידועה"
 
-#: weblate_web/views.py:689
+#: weblate_web/views.py:687
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr "התשלום עבר עיבוד אבל אי אפשר לעדכן את המינוי. נא ליצור איתנו קשר."
 
-#: weblate_web/views.py:694
+#: weblate_web/views.py:692
 msgid "Thank you for your subscription."
 msgstr "תודה לך על עריכת המינוי."
 
-#: weblate_web/views.py:1024
+#: weblate_web/views.py:1022
 msgid "User not found!"
 msgstr "משתמש לא נמצא!"
+
+#: weblate_web/views.py:1145
+msgid "Please confirm the upgrade from your account page."
+msgstr ""
 
 #~ msgid "Company or individual name"
 #~ msgstr "שם האדם או החברה"
@@ -4469,9 +4618,6 @@ msgstr "משתמש לא נמצא!"
 
 #~ msgid "Which Weblate is right for you"
 #~ msgstr "איזה Weblate הכי מתאים לך"
-
-#~ msgid "Dedicated"
-#~ msgstr "ייעודי"
 
 #~ msgid "Negotiable"
 #~ msgstr "נתון למשא ומתן"
