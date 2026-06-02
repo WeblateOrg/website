@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-05-31 20:06-0500\n"
-"PO-Revision-Date: 2026-06-01 06:48+0000\n"
-"Last-Translator: GitHub webhook <noreply-webhook-github@weblate.org>\n"
+"PO-Revision-Date: 2026-06-03 10:01+0000\n"
+"Last-Translator: Fjuro <fjuro@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/"
 "cs/>\n"
 "Language: cs\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.6.dev0\n"
+"X-Generator: Weblate 2026.6\n"
 
 #: weblate_web/crm/forms.py:30
 msgid "Refund description"
@@ -60,11 +60,11 @@ msgstr "Celé jméno"
 #: weblate_web/crm/hosted.py:38 weblate_web/crm/hosted.py:64
 #: weblate_web/crm/hosted.py:79
 msgid "Invalid hosted user response"
-msgstr ""
+msgstr "Neplatná odpověď hostovaného uživatele"
 
 #: weblate_web/crm/hosted.py:43
 msgid "Hosted user synchronization is disabled."
-msgstr ""
+msgstr "Synchronizace hostovaného uživatele je zakázána."
 
 #: weblate_web/crm/models.py:66
 msgid "Yes"
@@ -351,7 +351,7 @@ msgstr "Stáhnout"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:51
 msgid "Receipt"
-msgstr ""
+msgstr "Účtenka"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:55
 #: weblate_web/templates/payment/customer-agreement.html:18
@@ -370,44 +370,36 @@ msgid "Use this after the refund or chargeback has been completed."
 msgstr "Použijte po dokončení vrácení peněz nebo zpětného účtování."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:82
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Create invoice"
-msgstr "Vystavit novou fakturu"
+msgstr "Vytvořit fakturu"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:84
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Issue invoice from quote"
-msgstr "Vystavit novou fakturu"
+msgstr "Vystavit fakturu na základě nabídky"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:86
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
 msgstr ""
+"Toto vytvoří konečnou fakturu odpovídající této nabídce. Stažení použijte "
+"pouze, pokud potřebujete PDF s nabídkou."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:93
 #: weblate_web/crm/templates/weblate_web/service_detail.html:77
 #: weblate_web/crm/templates/weblate_web/service_detail.html:109
 msgid "I confirm that I want to issue a final invoice."
-msgstr ""
+msgstr "Potvrzuji, že chci vystavit konečnou fakturu."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:96
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Issue invoice"
-msgstr "Vystavit novou fakturu"
+msgstr "Vystavit fakturu"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:57
-#, fuzzy
-#| msgid "Merged customer"
 msgid "Add user to customer"
-msgstr "Spojený zákazník"
+msgstr "Přidat uživatele do zákazníka"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:60
-#, fuzzy
-#| msgid "Add a user"
 msgid "Add user"
 msgstr "Přidat uživatele"
 
@@ -428,23 +420,21 @@ msgid "Update maintenance window"
 msgstr "Aktualizovat okno údržby"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:63
-#, fuzzy
-#| msgid "Issue upgrade quote"
 msgid "Issue renewal quote"
-msgstr "Vystavit nabídku na upgrade"
+msgstr "Vystavit nabídku na prodloužení"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:66
 #: weblate_web/crm/templates/weblate_web/service_detail.html:80
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Issue renewal invoice"
-msgstr "Vystavit novou fakturu"
+msgstr "Vytavit fakturu na prodloužení"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:68
 msgid ""
 "This creates a final invoice for the renewal. Use the renewal quote action "
 "if you only need a quote."
 msgstr ""
+"Toto vytvoří konečnou fakturu za prodloužení. Akci nabídky prodloužení "
+"použijte pouze, pokud potřebujete nabídku."
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:86
 #, python-format
@@ -466,10 +456,12 @@ msgid ""
 "This creates a final invoice for the upgrade. Use the upgrade quote action "
 "if you only need a quote."
 msgstr ""
+"Toto vytvoří konečnou fakturu za upgrade. Akci upgrade nabídky použijte "
+"pouze, pokud potřebujete nabídku."
 
 #: weblate_web/crm/views.py:95
 msgid "Please confirm that you want to issue a final invoice."
-msgstr ""
+msgstr "Potvrďte prosím, že chcete vystavit konečnou fakturu."
 
 #: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
 #: weblate_web/crm/views.py:314 weblate_web/views.py:1066
@@ -480,54 +472,52 @@ msgstr "S tímto předplatným nelze přejít na zvolený balíček."
 #: weblate_web/crm/views.py:638
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
+"Hostované uživatelské jméno odpovídá lokálnímu uživateli s jiným e-mailem."
 
 #: weblate_web/crm/views.py:652
 msgid "Hosted user was not linked."
-msgstr ""
+msgstr "Hostovaný uživatel nebyl propojen."
 
 #: weblate_web/crm/views.py:655
 msgid "Hosted user is already linked to a different local user."
-msgstr ""
+msgstr "Hostovaný uživatel je již propojen s jiným lokálním uživatelem."
 
 #: weblate_web/crm/views.py:662
-#, fuzzy
-#| msgid "Merged customer email"
 msgid "Added customer user"
-msgstr "E-mail spojeného zákazníka"
+msgstr "Přidán uživatel zákazníka"
 
 #: weblate_web/crm/views.py:664
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
+"%(email)s přidán do uživatelů zákazníka. Hostovaný uživatel byl %(state)s."
 
 #: weblate_web/crm/views.py:668
-#, fuzzy
-#| msgid "Dedicated"
 msgid "created"
-msgstr "Vyhrazená"
+msgstr "vytvořen"
 
 #: weblate_web/crm/views.py:670
 msgid "linked"
-msgstr ""
+msgstr "propojen"
 
 #: weblate_web/crm/views.py:697
 msgid "Multiple local users use this e-mail address"
-msgstr ""
+msgstr "Tuto e-mailovou adresu používá několik lokálních uživatelů"
 
 #: weblate_web/crm/views.py:725
 #, python-format
 msgid "Could not add customer user: %(error)s"
-msgstr ""
+msgstr "Nepodařilo se přidat uživatele zákazníka: %(error)s"
 
 #: weblate_web/crm/views.py:732
 #, python-format
 msgid "Added %(email)s to customer users."
-msgstr ""
+msgstr "%(email)s přidán do uživatelů zákazníka."
 
 #: weblate_web/crm/views.py:737
 #, python-format
 msgid "%(email)s is already a customer user."
-msgstr ""
+msgstr "%(email)s již je uživatelem zákazníka."
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -4188,7 +4178,7 @@ msgstr "Uživatel nenalezen!"
 
 #: weblate_web/views.py:1145
 msgid "Please confirm the upgrade from your account page."
-msgstr ""
+msgstr "Potvrďte prosím upgrade ze stránky vašeho účtu."
 
 #~ msgid "Company or individual name"
 #~ msgstr "Společnost nebo jméno osoby"
