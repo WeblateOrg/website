@@ -32,8 +32,8 @@ msgstr ""
 "Project-Id-Version: French (Weblate)\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-05-31 20:06-0500\n"
-"PO-Revision-Date: 2026-06-01 06:48+0000\n"
-"Last-Translator: GitHub webhook <noreply-webhook-github@weblate.org>\n"
+"PO-Revision-Date: 2026-06-05 07:59+0000\n"
+"Last-Translator: Mickaël Binos <mickaelbinos@outlook.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/weblate/website/"
 "fr/>\n"
 "Language: fr\n"
@@ -41,7 +41,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.6.dev0\n"
+"X-Generator: Weblate 2026.6\n"
 
 #: weblate_web/crm/forms.py:30
 msgid "Refund description"
@@ -69,11 +69,11 @@ msgstr "Nom complet"
 #: weblate_web/crm/hosted.py:38 weblate_web/crm/hosted.py:64
 #: weblate_web/crm/hosted.py:79
 msgid "Invalid hosted user response"
-msgstr ""
+msgstr "Réponse non valide de l'utilisateur hébergé"
 
 #: weblate_web/crm/hosted.py:43
 msgid "Hosted user synchronization is disabled."
-msgstr ""
+msgstr "La synchronisation des utilisateurs hébergés est désactivée."
 
 #: weblate_web/crm/models.py:66
 msgid "Yes"
@@ -359,7 +359,7 @@ msgstr "Télécharger"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:51
 msgid "Receipt"
-msgstr ""
+msgstr "Reçu"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:55
 #: weblate_web/templates/payment/customer-agreement.html:18
@@ -378,44 +378,36 @@ msgid "Use this after the refund or chargeback has been completed."
 msgstr "Utiliser ceci une fois le rembousement ou le dû réalisés."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:82
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Create invoice"
-msgstr "Émettre une nouvelle facture"
+msgstr "Créer une facture"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:84
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Issue invoice from quote"
-msgstr "Émettre une nouvelle facture"
+msgstr "Émettre une facture à partir d'un devis"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:86
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
 msgstr ""
+"Cela génère une facture finale correspondant à ce devis. Cliquez sur « "
+"Télécharger » si vous souhaitez uniquement obtenir le devis au format PDF."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:93
 #: weblate_web/crm/templates/weblate_web/service_detail.html:77
 #: weblate_web/crm/templates/weblate_web/service_detail.html:109
 msgid "I confirm that I want to issue a final invoice."
-msgstr ""
+msgstr "Je confirme que je souhaite émettre une facture finale."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:96
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Issue invoice"
-msgstr "Émettre une nouvelle facture"
+msgstr "Émettre une facture"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:57
-#, fuzzy
-#| msgid "Merged customer"
 msgid "Add user to customer"
-msgstr "Client fusionné"
+msgstr "Ajouter un utilisateur à un client"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:60
-#, fuzzy
-#| msgid "Add a user"
 msgid "Add user"
 msgstr "Ajouter un utilisateur"
 
@@ -443,16 +435,16 @@ msgstr "Émettre un devis de mise à niveau"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:66
 #: weblate_web/crm/templates/weblate_web/service_detail.html:80
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Issue renewal invoice"
-msgstr "Émettre une nouvelle facture"
+msgstr "Émettre la facture de renouvellement"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:68
 msgid ""
 "This creates a final invoice for the renewal. Use the renewal quote action "
 "if you only need a quote."
 msgstr ""
+"Cela génère une facture finale pour le renouvellement. Utilisez l'action « "
+"Devis de renouvellement » si vous avez uniquement besoin d'un devis."
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:86
 #, python-format
@@ -475,10 +467,12 @@ msgid ""
 "This creates a final invoice for the upgrade. Use the upgrade quote action "
 "if you only need a quote."
 msgstr ""
+"Cela génère une facture finale pour la mise à niveau. Utilisez l'action « "
+"Devis de mise à niveau » si vous avez uniquement besoin d'un devis."
 
 #: weblate_web/crm/views.py:95
 msgid "Please confirm that you want to issue a final invoice."
-msgstr ""
+msgstr "Veuillez confirmer que vous souhaitez émettre une facture finale."
 
 #: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
 #: weblate_web/crm/views.py:314 weblate_web/views.py:1066
@@ -490,54 +484,54 @@ msgstr ""
 #: weblate_web/crm/views.py:638
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
+"Le nom d'utilisateur hébergé correspond à un utilisateur local dont "
+"l'adresse e-mail est différente."
 
 #: weblate_web/crm/views.py:652
 msgid "Hosted user was not linked."
-msgstr ""
+msgstr "L'utilisateur hébergé n'était pas associé."
 
 #: weblate_web/crm/views.py:655
 msgid "Hosted user is already linked to a different local user."
-msgstr ""
+msgstr "L'utilisateur hébergé est déjà associé à un autre utilisateur local."
 
 #: weblate_web/crm/views.py:662
-#, fuzzy
-#| msgid "Merged customer email"
 msgid "Added customer user"
-msgstr "Adresse courriel du client fusionné"
+msgstr "Ajout d'un utilisateur client"
 
 #: weblate_web/crm/views.py:664
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
+"Ajout de %(email)s aux utilisateurs clients. L'utilisateur hébergé était %"
+"(state)s."
 
 #: weblate_web/crm/views.py:668
-#, fuzzy
-#| msgid "Dedicated"
 msgid "created"
-msgstr "Dédié"
+msgstr "créé"
 
 #: weblate_web/crm/views.py:670
 msgid "linked"
-msgstr ""
+msgstr "lié"
 
 #: weblate_web/crm/views.py:697
 msgid "Multiple local users use this e-mail address"
-msgstr ""
+msgstr "Plusieurs utilisateurs locaux utilisent cette adresse e-mail"
 
 #: weblate_web/crm/views.py:725
 #, python-format
 msgid "Could not add customer user: %(error)s"
-msgstr ""
+msgstr "Impossible d'ajouter l'utilisateur client : %(error)s"
 
 #: weblate_web/crm/views.py:732
 #, python-format
 msgid "Added %(email)s to customer users."
-msgstr ""
+msgstr "Les adresses %(email)s ont été ajoutées aux utilisateurs clients."
 
 #: weblate_web/crm/views.py:737
 #, python-format
 msgid "%(email)s is already a customer user."
-msgstr ""
+msgstr "%(email)s est déjà un utilisateur client."
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -4264,7 +4258,7 @@ msgstr "Utilisateur introuvable !"
 
 #: weblate_web/views.py:1145
 msgid "Please confirm the upgrade from your account page."
-msgstr ""
+msgstr "Veuillez confirmer la mise à niveau depuis la page de votre compte."
 
 #~ msgid "Company or individual name"
 #~ msgstr "Nom de l’entreprise ou de l’individu"
