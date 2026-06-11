@@ -107,13 +107,16 @@
         </div>
       </header>
 
-      {% block box %}{% endblock %}
+      {% block box %}
+      {% endblock box %}
 
       {% if messages %}
         <section class="content messages">
           <div class="row">
             <div class="wrap">
-              {% for message in messages %}<div class="alert {{ message.tags }}" role="alert">{{ message }}</div>{% endfor %}
+              {% for message in messages %}
+                <div class="alert {{ message.tags }}" role="alert">{{ message }}</div>
+              {% endfor %}
             </div>
           </div>
         </section>
