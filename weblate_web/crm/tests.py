@@ -840,7 +840,7 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, invoice.get_absolute_url())
         self.assertContains(response, f"Quote {invoice.number}")
         self.assertNotContains(response, "Followup as")
-        self.assertContains(response, "Create invoice")
+        self.assertContains(response, "Issue invoice")
 
         # Convert to invoice
         response = self.client.post(
@@ -857,11 +857,11 @@ class CRMTestCase(BaseCRMTestCase):
             child.all_items[0].start_date, expires.date() + timedelta(days=1)
         )
         self.assertContains(response, f"Invoice {child.number}")
-        self.assertNotContains(response, "Create invoice")
+        self.assertNotContains(response, "Issue invoice")
 
         response = self.client.get(invoice.get_absolute_url())
         self.assertContains(response, "Followup as")
-        self.assertNotContains(response, "Create invoice")
+        self.assertNotContains(response, "Issue invoice")
 
         # Second conversion should fail
         response = self.client.post(invoice.get_absolute_url())
@@ -890,7 +890,7 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, invoice.get_absolute_url())
         self.assertContains(response, f"Invoice {invoice.number}")
         self.assertNotContains(response, "Followup as")
-        self.assertNotContains(response, "Create invoice")
+        self.assertNotContains(response, "Issue invoice")
 
         # Test disabling
         response = self.client.post(
