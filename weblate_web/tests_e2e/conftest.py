@@ -19,7 +19,7 @@ from weblate_web.tests import mock_vies
 os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def configure_test_settings(settings, live_server):  # pylint: disable=redefined-outer-name
     """Configure Django settings for E2E tests."""
     # Use local login instead of SAML for tests
@@ -30,7 +30,7 @@ def configure_test_settings(settings, live_server):  # pylint: disable=redefined
     settings.SITE_URL = live_server.url
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def mock_external_apis():
     """Mock external API calls and VIES validation for e2e tests."""
     secret_field = Service._meta.get_field("secret")  # pylint: disable=protected-access
@@ -69,13 +69,20 @@ def mock_external_apis():
             issue_date_field.default = original_issue_date_default
 
 
-@pytest.fixture(autouse=True)
-def setup_packages(db):
+@pytest.fixture
+def setup_packages(db, mock_external_apis):  # pylint: disable=redefined-outer-name
     """Set up test packages in the database for all tests."""
     sync_packages()
     Package.objects.get_or_create(
         name="community", defaults={"verbose": "Community support", "price": 0}
     )
+
+
+@pytest.fixture
+def e2e_setup(  # pylint: disable=redefined-outer-name
+    configure_test_settings, setup_packages
+):
+    """Apply common E2E test setup."""
 
 
 @pytest.fixture(scope="session")

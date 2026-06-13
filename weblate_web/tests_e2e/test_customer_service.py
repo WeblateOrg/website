@@ -15,7 +15,10 @@ import pytest
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
-pytestmark = pytest.mark.django_db
+pytestmark = [
+    pytest.mark.django_db,
+    pytest.mark.usefixtures("e2e_setup"),
+]
 
 
 class TestCustomerManagement:  # pylint: disable=redefined-outer-name
