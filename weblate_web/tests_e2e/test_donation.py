@@ -40,8 +40,49 @@ def assert_no_server_error(page: Page) -> None:
     assert not page.locator("text=Internal Server Error").is_visible()
 
 
+def wait_for_reward_animation(page: Page) -> None:
+    """Wait for donation reward card transitions to settle."""
+    page.evaluate(
+        """
+        () => new Promise((resolve) => {
+          const rewards = document.querySelector(".rewards");
+          if (!rewards) {
+            resolve();
+            return;
+          }
+
+          let resolved = false;
+          const finish = () => {
+            if (resolved) {
+              return;
+            }
+            resolved = true;
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+          };
+
+          requestAnimationFrame(() => {
+            const animations = rewards
+              .getAnimations({ subtree: true })
+              .filter((animation) =>
+                ["pending", "running"].includes(animation.playState),
+              );
+            if (!animations.length) {
+              finish();
+              return;
+            }
+            Promise.allSettled(
+              animations.map((animation) => animation.finished),
+            ).then(finish);
+            window.setTimeout(finish, 1000);
+          });
+        })
+        """,
+    )
+
+
 def capture_step(page: Page, name: str) -> None:
     """Capture a full-page screenshot for important donation flow steps."""
+    wait_for_reward_animation(page)
     page.screenshot(path=f"test-results/donation-{name}.png", full_page=True)
 
 
