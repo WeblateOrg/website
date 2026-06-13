@@ -42,7 +42,10 @@ if TYPE_CHECKING:
 
     from weblate_web.models import Subscription
 
-pytestmark = pytest.mark.django_db
+pytestmark = [
+    pytest.mark.django_db,
+    pytest.mark.usefixtures("e2e_setup"),
+]
 
 
 def create_active_subscription(user: User, package_name: str) -> Subscription:
