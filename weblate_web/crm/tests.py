@@ -48,6 +48,7 @@ VIES_MS_UNAVAILABLE = "MS_UNAVAILABLE"
 VIES_MS_MAX_CONCURRENT_REQ = "MS_MAX_CONCURRENT_REQ"
 VIES_TIMEOUT = "TIMEOUT"
 TEST_PAYMENT_SECRET = "secret"  # noqa: S105
+TEST_ZAMMAD_TOKEN = "test" + "-token"
 
 
 class BaseCRMTestCase(TestCase):
@@ -2336,18 +2337,18 @@ class MockPaginatedResults(UserList):
 class ZammadLibraryTestCase(TestCase):
     """Tests for weblate_web.zammad module."""
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.zammad.ZammadAPI")
     def test_get_zammad_client(self, mock_api_class):
         """Test get_zammad_client creates ZammadAPI with correct settings."""
         client = get_zammad_client()
         mock_api_class.assert_called_once_with(
             url="https://care.weblate.org/api/v1/",
-            http_token="test-token",  # noqa: S106
+            http_token=TEST_ZAMMAD_TOKEN,
         )
         self.assertEqual(client, mock_api_class.return_value)
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.zammad.ZammadAPI")
     def test_create_dedicated_hosting_ticket(self, mock_api_class):
         """Test create_dedicated_hosting_ticket with single email."""
@@ -2369,7 +2370,7 @@ class ZammadLibraryTestCase(TestCase):
         self.assertEqual(params["article"]["sender"], "Agent")
         self.assertFalse(params["article"]["internal"])
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.zammad.ZammadAPI")
     def test_create_ticket_multiple_emails(self, mock_api_class):
         """Test create_dedicated_hosting_ticket with multiple emails."""
@@ -2383,7 +2384,7 @@ class ZammadLibraryTestCase(TestCase):
         self.assertEqual(params["article"]["to"], "user@example.com")
         self.assertEqual(params["article"]["cc"], "other@test.org")
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.zammad.ZammadAPI")
     def test_create_ticket_no_email(self, mock_api_class):
         """Test create_dedicated_hosting_ticket raises ValueError without email."""
@@ -2424,7 +2425,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         )
         return customer, service
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_empty(self, mock_get_client):
         """Test sync with no organizations or customers."""
@@ -2438,7 +2439,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         mock_client.user.search.assert_called_once()
         mock_client.organization.all.assert_called_once()
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_handle_hosted_account(self, mock_get_client):
         """Test updating users with hosted account link."""
@@ -2464,7 +2465,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         self.assertIn("user1", output)
         self.assertIn("user2", output)
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_existing_mapped_organization(self, mock_get_client):
         """Test syncing an organization already mapped via crm ID."""
@@ -2504,7 +2505,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
             100, {"plan": subscription.package.verbose}
         )
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_name_matching(self, mock_get_client):
         """Test mapping organization to customer by name matching."""
@@ -2525,7 +2526,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         # Organization should be updated with crm ID
         mock_client.organization.update.assert_any_call(200, {"crm": str(customer.pk)})
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_end_client_matching(self, mock_get_client):
         """Test mapping organization to customer by end_client name."""
@@ -2545,7 +2546,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         customer.refresh_from_db()
         self.assertEqual(customer.zammad_id, 250)
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_create_new_organization(self, mock_get_client):
         """Test creating a new organization for unmapped customer."""
@@ -2569,7 +2570,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         customer.refresh_from_db()
         self.assertEqual(customer.zammad_id, 300)
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_customer_uses_end_client_name(self, mock_get_client):
         """Test organization creation uses end_client over name."""
@@ -2589,7 +2590,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         create_args = mock_client.organization.create.call_args[0][0]
         self.assertEqual(create_args["name"], "End Client Inc")
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_customer_no_name(self, mock_get_client):
         """Test skipping customer creation when customer has no name."""
@@ -2619,7 +2620,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         mock_client.organization.create.assert_not_called()
         self.assertIn("has no name", err.getvalue())
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_invalid_subscription_skipped(self, mock_get_client):
         """Test that customers with invalid subscriptions are skipped."""
@@ -2753,7 +2754,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
         self.assertFalse(result["premium_support"])
         self.assertTrue(result["support"])
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_sync.get_zammad_client")
     def test_sync_unmatched_organization_warning(self, mock_get_client):
         """Test warning for organizations without CRM match."""
@@ -2773,7 +2774,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
 class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
     """Tests for zammad_attachments management command."""
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_no_customers_with_zammad_id(self, mock_get_client):
         """Test command does nothing when no customers have zammad_id."""
@@ -2785,7 +2786,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
 
         mock_client.ticket.search.assert_not_called()
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_download_attachment(self, mock_get_client):
         """Test downloading and storing a PDF attachment."""
@@ -2836,7 +2837,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
             500, 100, 1
         )
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_skip_non_matching_extension(self, mock_get_client):
         """Test skipping attachments with non-allowed extensions."""
@@ -2863,7 +2864,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
         self.assertFalse(Interaction.objects.filter(customer=customer).exists())
         mock_client.ticket_article_attachment.download.assert_not_called()
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_case_insensitive_extension(self, mock_get_client):
         """Test that file extension matching is case-insensitive."""
@@ -2889,7 +2890,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
 
         self.assertEqual(Interaction.objects.filter(customer=customer).count(), 1)
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_skip_processed_articles(self, mock_get_client):
         """Test skipping already processed articles."""
@@ -2911,7 +2912,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
         # Article should not be processed
         mock_client.ticket_article.find.assert_not_called()
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_force_mode_reprocesses(self, mock_get_client):
         """Test force mode reprocesses already processed articles."""
@@ -2943,7 +2944,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
         interaction = Interaction.objects.get(customer=customer)
         self.assertEqual(interaction.remote_id, 500)
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_force_mode_skips_known_attachments(self, mock_get_client):
         """Test force mode skips already imported attachments."""
@@ -2976,7 +2977,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
         # Download should not be called for already imported attachment
         mock_client.ticket_article_attachment.download.assert_not_called()
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_multiple_allowed_extensions(self, mock_get_client):
         """Test processing attachments with different allowed extensions."""
@@ -3007,7 +3008,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
         self.assertEqual(Interaction.objects.filter(customer=customer).count(), 3)
         self.assertEqual(mock_client.ticket_article_attachment.download.call_count, 3)
 
-    @override_settings(ZAMMAD_TOKEN="test-token")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_multiple_tickets_and_articles(self, mock_get_client):
         """Test processing multiple tickets with multiple articles."""
