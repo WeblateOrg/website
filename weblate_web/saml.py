@@ -374,19 +374,23 @@ def sync_saml_payload(
     )
 
 
+def extract_user_identifier_params(session_info: dict) -> tuple[str, str | None]:
+    name_id = session_info.get("name_id")
+    if name_id is None:
+        LOGGER.error("The nameid is not available.")
+        return "external_id", None
+    external_id = normalize_external_id(name_id.text)
+    if not external_id:
+        LOGGER.error("The nameid text is not available.")
+        return "external_id", None
+    return "external_id", external_id
+
+
 class HostedSaml2Backend(Saml2Backend):
     def _extract_user_identifier_params(
         self, session_info: dict, attributes: dict, attribute_mapping: dict
     ) -> tuple[str, str | None]:
-        name_id = session_info.get("name_id")
-        if name_id is None:
-            LOGGER.error("The nameid is not available.")
-            return "external_id", None
-        external_id = normalize_external_id(name_id.text)
-        if not external_id:
-            LOGGER.error("The nameid text is not available.")
-            return "external_id", None
-        return "external_id", external_id
+        return extract_user_identifier_params(session_info)
 
     def get_or_create_user(  # noqa: PLR0913,PLR0917
         self,
