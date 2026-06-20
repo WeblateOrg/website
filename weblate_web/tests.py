@@ -76,7 +76,11 @@ from .remote import (
     get_contributors,
     get_release,
 )
-from .saml import HostedSaml2Backend, get_username_max_length, sync_saml_identity
+from .saml import (
+    extract_user_identifier_params,
+    get_username_max_length,
+    sync_saml_identity,
+)
 from .templatetags.downloads import downloadlink, filesizeformat
 from .templatetags.prices import price_format
 from .utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
@@ -3486,23 +3490,17 @@ class APITest(UserTestCase):
         self.assertEqual(user.password, old_password)
 
     def test_saml_backend_rejects_empty_nameid(self) -> None:
-        backend = HostedSaml2Backend()
-
         self.assertEqual(
-            backend._extract_user_identifier_params(  # pylint: disable=protected-access
-                {"name_id": SimpleNamespace(text=None)}, {}, {}
-            ),
+            extract_user_identifier_params({"name_id": SimpleNamespace(text=None)}),
             ("external_id", None),
         )
         self.assertEqual(
-            backend._extract_user_identifier_params(  # pylint: disable=protected-access
-                {"name_id": SimpleNamespace(text=" ")}, {}, {}
-            ),
+            extract_user_identifier_params({"name_id": SimpleNamespace(text=" ")}),
             ("external_id", None),
         )
         self.assertEqual(
-            backend._extract_user_identifier_params(  # pylint: disable=protected-access
-                {"name_id": SimpleNamespace(text="hosted-user-42")}, {}, {}
+            extract_user_identifier_params(
+                {"name_id": SimpleNamespace(text="hosted-user-42")}
             ),
             ("external_id", "hosted-user-42"),
         )
