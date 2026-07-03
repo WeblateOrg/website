@@ -11,6 +11,7 @@ import responses
 from django.test.utils import override_settings
 from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
+from pycheval import generate_xml
 from pycheval.quantities import QuantityCode
 
 from weblate_web.models import Package, PackageCategory
@@ -180,6 +181,35 @@ class InvoiceTestCase(UserTestCase):
             self.assertEqual(response.status_code, 200, response.text)
             result = response.json()
             self.assertEqual(result["result"], "SUCCESS", result["reports"])
+
+    def get_einvoice_xml_tree(self, invoice: Invoice) -> etree._Element:
+        return etree.fromstring(generate_xml(invoice.get_en_16931_xml()).encode())
+
+    def test_customer_reference_is_buyer_order_reference(self) -> None:
+        invoice = self.create_invoice(customer_reference="PO123456")
+        root = self.get_einvoice_xml_tree(invoice)
+
+        buyer_order = root.find(
+            ".//ram:ApplicableHeaderTradeAgreement/"
+            "ram:BuyerOrderReferencedDocument/ram:IssuerAssignedID",
+            EN16931Validator().namespaces,
+        )
+
+        self.assertIsNotNone(buyer_order)
+        if buyer_order is None:
+            self.fail("Buyer order reference is missing")
+        self.assertEqual(buyer_order.text, "PO123456")
+
+    def test_empty_customer_reference_omits_buyer_order_reference(self) -> None:
+        invoice = self.create_invoice()
+        root = self.get_einvoice_xml_tree(invoice)
+
+        buyer_order = root.find(
+            ".//ram:ApplicableHeaderTradeAgreement/ram:BuyerOrderReferencedDocument",
+            EN16931Validator().namespaces,
+        )
+
+        self.assertIsNone(buyer_order)
 
     def mock_requests(self) -> None:
         mock_vies()

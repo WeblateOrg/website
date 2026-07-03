@@ -902,6 +902,7 @@ class Invoice(models.Model):  # noqa: PLR0904
             payment_reference=payment_reference,
             payment_means=payment_means,
             payment_terms=payment_terms,
+            buyer_order_id=self.customer_reference or None,
             line_total_amount=line_total_amount,
             line_items=line_items,
             type_code=type_code,
