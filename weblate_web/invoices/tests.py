@@ -5,6 +5,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 from pathlib import Path
 from typing import cast
+from unittest.mock import patch
 
 import requests
 import responses
@@ -318,6 +319,27 @@ class InvoiceTestCase(UserTestCase):
         html = invoice.render_html()
 
         self.assertIn("Contact: Finance approvals", html)
+
+    def test_pdf_page_marker_is_added_only_for_multi_page_invoice(self) -> None:
+        invoice = self.create_invoice(kind=InvoiceKind.QUOTE)
+
+        with (
+            patch(
+                "weblate_web.invoices.models.count_pdf_pages",
+                side_effect=[1, 2],
+            ) as count_pdf_pages,
+            patch("weblate_web.invoices.models.render_pdf") as render_pdf,
+        ):
+            invoice.generate_pdf()
+            single_page_html = render_pdf.call_args.kwargs["html"]
+
+            render_pdf.reset_mock()
+            invoice.generate_pdf()
+            multi_page_html = render_pdf.call_args.kwargs["html"]
+
+        self.assertEqual(count_pdf_pages.call_count, 2)
+        self.assertNotIn("with-page-marker", single_page_html)
+        self.assertIn("with-page-marker", multi_page_html)
 
     def mock_requests(self) -> None:
         mock_vies()

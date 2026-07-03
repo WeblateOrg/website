@@ -2,6 +2,21 @@
   margin: 1cm;
 }
 
+@page invoice-with-page-marker {
+  margin: 1cm;
+
+  @bottom-center {
+    color: #a9a;
+    /* biome-ignore lint/correctness/noUnknownFunction: WeasyPrint paged media supports CSS strings. */
+    content: string(document-title) " · Page " counter(page) " of "
+      counter(pages);
+    font-family:
+      Source Sans Pro,
+      sans-serif;
+    font-size: 8pt;
+  }
+}
+
 html,
 a {
   color: #14213d;
@@ -22,6 +37,20 @@ body {
   margin: 0;
   padding: 0;
 }
+.invoice-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 277mm;
+}
+.invoice-page.with-page-marker {
+  page: invoice-with-page-marker;
+}
+.invoice-page > * {
+  flex-shrink: 0;
+}
+main {
+  flex-grow: 1;
+}
 header {
   display: block;
   padding-bottom: 1.3cm;
@@ -30,6 +59,8 @@ header {
 h1 {
   font-size: 12pt;
   padding-top: 3mm;
+  /* biome-ignore lint/correctness/noUnknownFunction: WeasyPrint paged media supports CSS strings. */
+  string-set: document-title content(text);
 }
 header p,
 header h1 {
@@ -111,9 +142,8 @@ address {
   margin-top: 1cm;
 }
 footer {
+  break-inside: avoid;
   display: block;
-  bottom: 0;
-  position: absolute;
 }
 #details td,
 #details th,

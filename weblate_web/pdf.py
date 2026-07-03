@@ -28,7 +28,7 @@ from weasyprint.text.fonts import FontConfiguration
 from weasyprint.urls import FatalURLFetchingError, URLFetcher, URLFetcherResponse
 
 if TYPE_CHECKING:
-    from weasyprint import Attachment
+    from weasyprint import Attachment, Document
 
 SIGNATURE_URL = "signature:"
 INVOICES_URL = "invoices:"
@@ -121,13 +121,7 @@ class WeblateUrlFetcher(URLFetcher):
         return URLFetcherResponse(url, path_obj.read_bytes(), response_headers)
 
 
-def render_pdf(
-    *,
-    html: str,
-    output: Path,
-    attachments: list[Attachment] | None = None,
-    factur_x: bool = False,
-) -> None:
+def render_pdf_document(*, html: str) -> Document:
     font_config = FontConfiguration()
     fetcher = WeblateUrlFetcher()
 
@@ -143,10 +137,24 @@ def render_pdf(
         font_config=font_config,
         url_fetcher=fetcher,
     )
-    document = renderer.render(
+    return renderer.render(
         stylesheets=[font_style],
         font_config=font_config,
     )
+
+
+def count_pdf_pages(*, html: str) -> int:
+    return len(render_pdf_document(html=html).pages)
+
+
+def render_pdf(
+    *,
+    html: str,
+    output: Path,
+    attachments: list[Attachment] | None = None,
+    factur_x: bool = False,
+) -> None:
+    document = render_pdf_document(html=html)
     if factur_x:
         document.metadata.xmp_metadata = [FACTURX_RDF_METADATA.encode("utf-8")]
     if attachments:

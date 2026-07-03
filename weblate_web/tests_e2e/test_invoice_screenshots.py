@@ -27,9 +27,11 @@ from datetime import date
 from decimal import Decimal
 from pathlib import Path
 from shutil import which
+from typing import cast
 from uuid import UUID
 
 import pytest
+from PIL import Image as PILImage
 
 from weblate_web.invoices.models import (
     Currency,
@@ -49,6 +51,10 @@ pytestmark = [
 SCREENSHOT_DIR = Path("test-results")
 ISSUE_DATE = date(2026, 1, 15)
 DUE_DATE = date(2026, 1, 29)
+MAX_LOGO_RED = 90
+MIN_LOGO_GREEN = 120
+MIN_LOGO_BLUE = 90
+MIN_LOGO_MARK_PIXELS = 500
 
 
 @dataclass(frozen=True)
@@ -152,8 +158,8 @@ def create_invoice(case: InvoiceData, sequence: int) -> Invoice:
 
 def convert_pdf_to_screenshots(pdf_path: Path, screenshot_name: str) -> list[Path]:
     """Rasterize all PDF pages into Argos-consumed PNG screenshots."""
-    converter = which("pdftoppm")
-    assert converter is not None, "pdftoppm is required for invoice PDF screenshots"
+    converter = which("gs")
+    assert converter is not None, "Ghostscript is required for invoice PDF screenshots"
 
     SCREENSHOT_DIR.mkdir(exist_ok=True)
     for screenshot in SCREENSHOT_DIR.glob(f"{screenshot_name}-*.png"):
@@ -163,11 +169,15 @@ def convert_pdf_to_screenshots(pdf_path: Path, screenshot_name: str) -> list[Pat
     subprocess.run(
         [
             converter,
-            "-png",
-            "-r",
-            "144",
+            "-dSAFER",
+            "-dBATCH",
+            "-dNOPAUSE",
+            "-sDEVICE=png16m",
+            "-r144",
+            "-dTextAlphaBits=4",
+            "-dGraphicsAlphaBits=4",
+            f"-sOutputFile={output_prefix.as_posix()}-%d.png",
             pdf_path.as_posix(),
-            output_prefix.as_posix(),
         ],
         check=True,
     )
@@ -176,7 +186,29 @@ def convert_pdf_to_screenshots(pdf_path: Path, screenshot_name: str) -> list[Pat
     assert screenshots, f"No screenshots generated for {pdf_path}"
     for screenshot in screenshots:
         assert screenshot.stat().st_size > 0
+    assert_invoice_logo_rendered(screenshots[0])
     return screenshots
+
+
+def assert_invoice_logo_rendered(screenshot: Path) -> None:
+    """Verify the colored Weblate mark is present, not only the wordmark."""
+    with PILImage.open(screenshot) as image:
+        header = image.crop((0, 0, min(image.width, 600), min(image.height, 240)))
+        header = header.convert("RGB")
+        logo_pixels = 0
+        for y in range(header.height):
+            for x in range(header.width):
+                pixel = cast("tuple[int, int, int]", header.getpixel((x, y)))
+                if is_logo_mark_pixel(pixel):
+                    logo_pixels += 1
+    assert logo_pixels > MIN_LOGO_MARK_PIXELS, (
+        f"Invoice logo mark is missing from {screenshot}"
+    )
+
+
+def is_logo_mark_pixel(pixel: tuple[int, int, int]) -> bool:
+    red, green, blue = pixel
+    return red < MAX_LOGO_RED and green > MIN_LOGO_GREEN and blue > MIN_LOGO_BLUE
 
 
 def test_invoice_pdf_screenshots(settings, tmp_path):
