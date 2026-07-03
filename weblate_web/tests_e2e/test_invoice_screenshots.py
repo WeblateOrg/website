@@ -73,6 +73,8 @@ class InvoiceData:
     prepaid: bool = False
     customer_reference: str = ""
     customer_note: str = ""
+    contact_point: str = ""
+    accounting_reference: str = ""
     discount: Discount | None = None
     items: tuple[InvoiceItemData, ...] = ()
     receipt: bool = False
@@ -90,6 +92,8 @@ def create_customer(case: InvoiceData) -> Customer:
         tax=case.tax,
         user_id=-1,
         email=f"{case.slug}@example.test",
+        contact_point=case.contact_point,
+        accounting_reference=case.accounting_reference,
     )
     if case.vat:
         Customer.objects.filter(pk=customer.pk).update(vat=case.vat)
@@ -193,6 +197,8 @@ def test_invoice_pdf_screenshots(settings, tmp_path):
             vat_rate=21,
             customer_reference="PO-2026-001",
             customer_note="Please include the internal cost center.\nApproved by finance.",
+            contact_point="Finance approvals",
+            accounting_reference="COST-2026-OPEN-SOURCE",
             discount=discount,
             items=(
                 InvoiceItemData(

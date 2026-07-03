@@ -25,9 +25,16 @@ from .models import Customer, Payment
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ("name", "email", "country", "vat", "origin")
+    list_display = ("name", "contact_point", "email", "country", "vat", "origin")
     list_filter = ("country", "origin")
-    search_fields = ("name", "email", "users__email", "end_client")
+    search_fields = (
+        "name",
+        "contact_point",
+        "accounting_reference",
+        "email",
+        "users__email",
+        "end_client",
+    )
     ordering = ("name",)
     autocomplete_fields = ("users",)
     readonly_fields = (

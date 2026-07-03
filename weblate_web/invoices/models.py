@@ -52,6 +52,7 @@ from pycheval import (
     PaymentTerms,
     PostalAddress,
     Tax,
+    TradeContact,
     TradeParty,
     generate_et,
     generate_xml,
@@ -757,6 +758,14 @@ class Invoice(models.Model):  # noqa: PLR0904
     def supports_en_16931(self) -> bool:
         return (self.is_final or self.is_proforma) and self.generate_en_16931
 
+    def get_buyer_trade_contact(self) -> TradeContact | None:
+        if not self.customer.contact_point and not self.customer.email:
+            return None
+        return TradeContact(
+            person_name=self.customer.contact_point or None,
+            email=self.customer.email or None,
+        )
+
     def get_en_16931_xml(self) -> EN16931Invoice:
         if self.kind == InvoiceKind.INVOICE:
             type_code = DocumentTypeCode.INVOICE
@@ -834,6 +843,7 @@ class Invoice(models.Model):  # noqa: PLR0904
                         billing_period=(item.start_date, item.end_date)
                         if item.start_date and item.end_date
                         else None,
+                        trade_account_id=self.customer.accounting_reference or None,
                     )
                 )
 
@@ -929,6 +939,7 @@ class Invoice(models.Model):  # noqa: PLR0904
                 ),
                 vat_id=self.customer.vat or None,
                 email=self.customer.email or None,
+                contact=self.get_buyer_trade_contact(),
             ),
             tax=[tax],
         )

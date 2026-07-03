@@ -39,6 +39,10 @@
         </h2>
         {{ invoice.customer.name }}
         <br />
+        {% if invoice.customer.contact_point %}
+          Contact: {{ invoice.customer.contact_point }}
+          <br />
+        {% endif %}
         {{ invoice.customer.address }}
         <br />
         {% if invoice.customer.address_2 %}

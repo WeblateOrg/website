@@ -33,6 +33,14 @@
         End client: {{ object.end_client }}
         <br>
       {% endif %}
+      {% if object.contact_point %}
+        {% translate "Contact point" %}: {{ object.contact_point }}
+        <br>
+      {% endif %}
+      {% if object.accounting_reference %}
+        {% translate "Accounting reference" %}: {{ object.accounting_reference }}
+        <br>
+      {% endif %}
       {% if object.upcoming_payment_notification_days %}
         Additional upcoming payment notification:
         {{ object.upcoming_payment_notification_days }} days before due date

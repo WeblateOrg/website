@@ -1,5 +1,11 @@
+{% load i18n %}
+
 {{ customer.name }}
 <br>
+{% if customer.contact_point %}
+  {% translate "Contact" %}: {{ customer.contact_point }}
+  <br>
+{% endif %}
 {{ customer.address }}
 <br>
 {% if customer.address_2 %}
