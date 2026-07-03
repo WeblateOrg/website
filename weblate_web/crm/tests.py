@@ -298,6 +298,61 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(response, 'name="note"')
         self.assertContains(response, "Add note")
 
+    def test_customer_detail_uses_stable_related_ordering(self):
+        customer = self.create_customer()
+        customer.email = "billing@example.com"
+        customer.save(update_fields=["email"])
+        user_b = User.objects.create_user(username="user-b", email="b@example.com")
+        user_a = User.objects.create_user(username="user-a", email="a@example.com")
+        customer.users.add(user_b, user_a)
+
+        timestamp = timezone.now()
+        beta_interaction = customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            summary="Beta note",
+            content="Beta note",
+            timestamp=timestamp,
+            user=self.user,
+        )
+        alpha_interaction = customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            summary="Alpha note",
+            content="Alpha note",
+            timestamp=timestamp,
+            user=self.user,
+        )
+        beta_payment = Payment.objects.create(
+            customer=customer, amount=1, description="Beta payment"
+        )
+        alpha_payment = Payment.objects.create(
+            customer=customer, amount=1, description="Alpha payment"
+        )
+        Payment.objects.filter(pk__in=(beta_payment.pk, alpha_payment.pk)).update(
+            created=timestamp
+        )
+
+        response = self.client.get(customer.get_absolute_url())
+
+        self.assertEqual(
+            customer.get_notify_emails(),
+            ["a@example.com", "b@example.com", "billing@example.com"],
+        )
+        self.assertEqual(
+            [user.email for user in response.context["customer_users"]],
+            ["a@example.com", "b@example.com"],
+        )
+        self.assertEqual(
+            list(customer.interaction_set.order()),
+            [alpha_interaction, beta_interaction],
+        )
+        self.assertEqual(
+            list(customer.payment_set.order()),
+            [alpha_payment, beta_payment],
+        )
+        content = response.content.decode()
+        self.assertLess(content.index("Alpha note"), content.index("Beta note"))
+        self.assertLess(content.index("Alpha payment"), content.index("Beta payment"))
+
     def test_customer_detail_hides_add_customer_user_for_readonly_staff(self):
         customer = self.create_customer()
         readonly_user = User.objects.create_user(

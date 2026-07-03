@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import re
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
@@ -123,13 +124,16 @@ def create_customer(
 
 def create_payment(customer: Customer, package: Package) -> Payment:
     """Create a processed payment suitable for a subscription."""
-    return Payment.objects.create(
+    payment = Payment.objects.create(
         amount=package.price,
         customer=customer,
         description=package.verbose,
         recurring=package.get_repeat(),
         state=Payment.PROCESSED,
     )
+    Payment.objects.filter(pk=payment.pk).update(created=FIXED_TIMESTAMP)
+    payment.created = FIXED_TIMESTAMP
+    return payment
 
 
 def create_service(customer: Customer, data: ServiceFixture) -> Service:
@@ -166,6 +170,18 @@ def create_invoice(customer: Customer, data: InvoiceFixture) -> Invoice:
     )
     invoice.invoiceitem_set.create(description=data.description, unit_price=data.amount)
     return invoice
+
+
+@contextmanager
+def fixed_interaction_timestamp(timestamp: datetime) -> Iterator[None]:
+    """Pin action-created interaction timestamps before visual captures."""
+    field = Interaction._meta.get_field("timestamp")  # pylint: disable=protected-access
+    original_default = field.default
+    field.default = lambda: timestamp
+    try:
+        yield
+    finally:
+        field.default = original_default
 
 
 @pytest.fixture
@@ -456,8 +472,9 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         capture(page, "customer-detail")
 
         page.fill('textarea[name="note"]', "Manual CRM note\nFollow-up requested.")
-        page.click('input[name="add_manual_note"]')
-        page.wait_for_load_state("networkidle")
+        with fixed_interaction_timestamp(FIXED_TIMESTAMP + timedelta(minutes=10)):
+            page.click('input[name="add_manual_note"]')
+            page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
         assert_text_visible(page, "Manual CRM note", exact=False)
         capture(page, "customer-manual-note")
@@ -471,9 +488,12 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
                 "last_name": "Linked User",
             },
         }
-        with patch(
-            "weblate_web.crm.views.ensure_hosted_user",
-            return_value=(hosted_payload, True),
+        with (
+            fixed_interaction_timestamp(FIXED_TIMESTAMP + timedelta(minutes=20)),
+            patch(
+                "weblate_web.crm.views.ensure_hosted_user",
+                return_value=(hosted_payload, True),
+            ),
         ):
             page.fill('input[name="email"]', "crm-linked@example.test")
             page.fill('input[name="full_name"]', "CRM Linked User")

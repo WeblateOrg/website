@@ -45,9 +45,9 @@ class AgreementKind(models.IntegerChoices):
     DPA = 1, "Data Processing Agreement"
 
 
-class AgreementQuerySet(models.QuerySet):
-    def order(self):
-        return self.order_by("signed", "kind")
+class AgreementQuerySet(models.QuerySet["Agreement", "Agreement"]):
+    def order(self) -> AgreementQuerySet:
+        return self.order_by("signed", "kind", "pk")
 
 
 class Agreement(models.Model):

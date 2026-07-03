@@ -530,7 +530,7 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
         return context
 
     def get_queryset(self) -> CustomerQuerySet:
-        qs = cast("CustomerQuerySet", super().get_queryset().order_by("name", "email"))
+        qs = cast("CustomerQuerySet", super().get_queryset()).order()
         if query := self.request.GET.get("q"):
             qs = qs.filter(
                 Q(name__icontains=query)
@@ -576,8 +576,9 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["can_add_customer_user"] = self.request.user.has_perm(
             self.add_customer_user_permission
         )
-        context["services"] = self.object.service_set.customer_services()
-        context["donations"] = self.object.service_set.donations()
+        context["services"] = self.object.service_set.customer_services().order()
+        context["donations"] = self.object.service_set.donations().order()
+        context["customer_users"] = self.object.ordered_users
         return context
 
     @classmethod

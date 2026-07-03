@@ -102,7 +102,10 @@ VAT_RATE = 21
 DELETED_MAIL = re.compile(r"noreply\+[0-9]+@weblate.org")
 
 
-class CustomerQuerySet(models.QuerySet["Customer"]):
+class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
+    def order(self) -> CustomerQuerySet:
+        return self.order_by("name", "email", "pk")
+
     def for_user(self, user: User) -> CustomerQuerySet:
         return self.filter(users=user).distinct()
 
@@ -421,7 +424,14 @@ class Customer(models.Model):
 
     def get_notify_emails(self) -> list[str]:
         mails = {self.email, *self.users.values_list("email", flat=True)}
-        return [mail for mail in mails if mail and not DELETED_MAIL.match(mail)]
+        return sorted(
+            (mail for mail in mails if mail and not DELETED_MAIL.match(mail)),
+            key=str.casefold,
+        )
+
+    @property
+    def ordered_users(self) -> models.QuerySet[User, User]:
+        return self.users.order_by("email", "username", "pk")
 
     def get_upcoming_payment_invoices(self) -> models.QuerySet[Invoice]:
         from weblate_web.invoices.models import InvoiceKind  # noqa: PLC0415
@@ -607,6 +617,11 @@ RECURRENCE_CHOICES = [
 ]
 
 
+class PaymentQuerySet(models.QuerySet["Payment", "Payment"]):
+    def order(self) -> PaymentQuerySet:
+        return self.order_by("-created", "description", "uuid")
+
+
 class Payment(models.Model):
     NEW = 1
     PENDING = 2
@@ -676,6 +691,8 @@ class Payment(models.Model):
     start = models.DateField(blank=True, null=True)
     end = models.DateField(blank=True, null=True)
     card_info = models.JSONField(default=dict, blank=True)
+
+    objects = PaymentQuerySet.as_manager()
 
     class Meta:
         ordering = ["-created"]

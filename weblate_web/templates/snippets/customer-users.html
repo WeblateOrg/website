@@ -2,7 +2,7 @@
 
 <div class="line-left">{% translate "Users" %}</div>
 <div class="line-right">
-  {% for owner in customer.users.all %}
+  {% for owner in customer_users|default:customer.ordered_users %}
     <form id="server_user_{{ owner.id }}_form"
           method="post"
           action="{% url 'customer-user' pk=customer.pk %}">

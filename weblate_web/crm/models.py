@@ -28,6 +28,11 @@ class InteractionDetailRow:
     url: str = ""
 
 
+class InteractionQuerySet(models.QuerySet["Interaction", "Interaction"]):
+    def order(self) -> InteractionQuerySet:
+        return self.order_by("-timestamp", "origin", "summary", "pk")
+
+
 class Interaction(models.Model):
     class Origin(models.IntegerChoices):
         EMAIL = 1, "Outbound e-mail"
@@ -53,6 +58,8 @@ class Interaction(models.Model):
         help_text="For example Zammad attachment ID",
         default=0,
     )
+
+    objects = InteractionQuerySet.as_manager()
 
     class Meta:
         ordering = ["-timestamp"]
