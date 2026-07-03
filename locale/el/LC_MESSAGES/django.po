@@ -20,16 +20,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-06-29 07:03-0500\n"
-"PO-Revision-Date: 2026-06-10 07:54+0000\n"
+"PO-Revision-Date: 2026-07-04 00:36+0000\n"
 "Last-Translator: Jim Kats <jim-kats@hotmail.com>\n"
-"Language-Team: Greek <https://hosted.weblate.org/projects/weblate/website/el/"
-">\n"
+"Language-Team: Greek <https://hosted.weblate.org/projects/weblate/website/"
+"el/>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.6\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #: weblate_web/crm/forms.py:30
 msgid "Refund description"
@@ -331,10 +331,8 @@ msgid "Content"
 msgstr "Περιεχόμενο"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:65
-#, fuzzy
-#| msgid "Translation context"
 msgid "Interaction content"
-msgstr "Συνοδευτικά μετάφρασης"
+msgstr "Περιεχόμενο αλληλεπίδρασης"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:49
 #: weblate_web/templates/hosting.html:289
@@ -372,22 +370,22 @@ msgid "Issue invoice"
 msgstr "Έκδοση τιμολογίου"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:84
-#, fuzzy
-#| msgid "Issue new invoice"
 msgid "Issue invoice from quote"
-msgstr "Έκδοση νέου τιμολογίου"
+msgstr "Έκδοση τιμολογίου από προσφορά"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:86
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
 msgstr ""
+"Αυτό δημιουργεί ένα τελικό τιμολόγιο το οποίο αντιστοιχεί με αυτήν την "
+"προσφορά. Χρησιμοποιήστε τη Λήψη εάν χρειάζεστε μόνο το PDF της προσφοράς."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:93
 #: weblate_web/crm/templates/weblate_web/service_detail.html:77
 #: weblate_web/crm/templates/weblate_web/service_detail.html:109
 msgid "I confirm that I want to issue a final invoice."
-msgstr ""
+msgstr "Επιβεβαιώνω ότι θέλω να εκδοθεί ένα τελικό τιμολόγιο."
 
 #: weblate_web/crm/templates/payments/customer_detail.html:57
 msgid "Add user to customer"
@@ -427,12 +425,15 @@ msgid ""
 "This creates a final invoice for the renewal. Use the renewal quote action "
 "if you only need a quote."
 msgstr ""
+"Αυτό δημιουργεί ένα τελικό τιμολόγιο για την ανανέωση. Χρησιμοποιήστε την "
+"ενέργεια προσφοράς ανανέωσης εάν χρειάζεστε μόνο την προσφορά."
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:86
 #, python-format
 msgid ""
 "Upgrade to %(package)s without extending the current subscription period."
 msgstr ""
+"Αναβαθμίστε σε %(package)s χωρίς να παραταθεί η τρέχουσα περίοδος συνδρομής."
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:94
 msgid "Issue upgrade quote"
@@ -448,16 +449,18 @@ msgid ""
 "This creates a final invoice for the upgrade. Use the upgrade quote action "
 "if you only need a quote."
 msgstr ""
+"Αυτό δημιουργεί ένα τελικό τιμολόγιο για την αναβάθμιση. Χρησιμοποιήστε την "
+"ενέργεια προσφοράς αναβάθμισης εάν χρειάζεστε μόνο την προσφορά."
 
 #: weblate_web/crm/views.py:95
 msgid "Please confirm that you want to issue a final invoice."
-msgstr ""
+msgstr "Παρακαλούμε επιβεβαιώστε εάν θέλετε να εκδοθεί ένα τελικό τιμολόγιο."
 
 #: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
 #: weblate_web/crm/views.py:314 weblate_web/views.py:1066
 #: weblate_web/views.py:1077 weblate_web/views.py:1089
 msgid "This subscription can not be upgraded to the selected package."
-msgstr ""
+msgstr "Αυτή η συνδρομή δεν μπορεί να αναβαθμιστεί στο επιλεγμένο πακέτο."
 
 #: weblate_web/crm/views.py:638
 msgid "Hosted username matches a local user with a different e-mail."
@@ -1934,9 +1937,7 @@ msgstr "Όνομα στη λίστα των υποστηρικτών"
 #: weblate_web/templates/donate/form.html:80
 #: weblate_web/templates/donate/form.html:94
 #: weblate_web/templates/donate/form.html:108
-#, fuzzy, python-format
-#| msgctxt "Minimal donation amount in a form"
-#| msgid "From %(minimum)s"
+#, python-format
 msgctxt "Donation reward minimal amount"
 msgid "From %(minimum)s"
 msgstr "Από %(minimum)s"
@@ -2938,10 +2939,8 @@ msgstr "Δημιουργήθηκε στις %(timestamp)s."
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
 #: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:699
-#, fuzzy
-#| msgid "Thank you for your donation."
 msgid "You are the heart of Weblate. Thank you for your donation."
-msgstr "Σας ευχαριστούμε για τη δωρεά σας."
+msgstr "Είστε η καρδιά του Weblate. Σας ευχαριστούμε για τη δωρεά σας."
 
 #: weblate_web/templates/mail/payment_completed.html:12
 msgid "Thank you for your payment on weblate.org."
@@ -3524,10 +3523,8 @@ msgid "Download receipt"
 msgstr "Λήψη απόδειξης"
 
 #: weblate_web/templates/snippets/payment.html:28
-#, fuzzy
-#| msgid "pay now"
 msgid "Pay now"
-msgstr "πληρώστε τώρα"
+msgstr "Πληρώστε τώρα"
 
 #: weblate_web/templates/snippets/pricing.html:6
 msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
