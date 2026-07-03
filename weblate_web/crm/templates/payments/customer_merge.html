@@ -10,17 +10,27 @@
   <section class="content">
     <p>
       <a href="{{ object.get_absolute_url }}">{{ object.name }} ({{ object.pk }})</a>
-      will be merged into <a href="{{ merge.get_absolute_url }}">{{ merge.name }} ({{ merge.pk }})</a>.
+      {% translate "will be merged into" %}
+      <a href="{{ merge.get_absolute_url }}">{{ merge.name }} ({{ merge.pk }})</a>.
     </p>
     <ul>
-      <li>All content from {{ object.name }} ({{ object.pk }}) will be moved to {{ merge.name }} ({{ merge.pk }})</li>
-      <li>{{ object.name }} ({{ object.pk }}) will be removed</li>
+      <li>
+        {% blocktranslate with source=object.name source_pk=object.pk target=merge.name target_pk=merge.pk trimmed %}
+          All content from {{ source }} ({{ source_pk }}) will be moved to {{ target }} ({{ target_pk }})
+        {% endblocktranslate %}
+      </li>
+      <li>
+        {% blocktranslate with source=object.name source_pk=object.pk trimmed %}
+          {{ source }} ({{ source_pk }}) will be removed
+        {% endblocktranslate %}
+      </li>
     </ul>
     <form method="post">
       {% csrf_token %}
-      <input type="hidden" name="merge" value="{{ merge.pk }}">
-      <input type="submit" value="Merge">
-      <a href="{{ object.get_absolute_url }}">Cancel</a>
+      {{ merge_form.merge }}
+      {% translate "Merge" as merge_label %}
+      <input type="submit" value="{{ merge_label }}">
+      <a href="{{ object.get_absolute_url }}">{% translate "Cancel" %}</a>
     </form>
   </section>
 

@@ -261,12 +261,31 @@ class CRMTestCase(BaseCRMTestCase):
     def test_customer_merge(self):
         customer1 = self.create_customer("TEST CUSTOMER 1")
         customer2 = self.create_customer("TEST CUSTOMER 2")
+        merge_url = reverse("crm:customer-merge", kwargs={"pk": customer1.pk})
+
+        response = self.client.get(merge_url, follow=True)
+        self.assertRedirects(response, customer1.get_absolute_url())
+        self.assertContains(response, "Error in parameter merge")
+        self.assertTrue(Customer.objects.filter(pk=customer1.pk).exists())
+        self.assertTrue(Customer.objects.filter(pk=customer2.pk).exists())
+
+        response = self.client.post(merge_url, {"merge": 999999}, follow=True)
+        self.assertRedirects(response, customer1.get_absolute_url())
+        self.assertContains(response, "Select a valid customer to merge into.")
+        self.assertTrue(Customer.objects.filter(pk=customer1.pk).exists())
+        self.assertTrue(Customer.objects.filter(pk=customer2.pk).exists())
+
+        response = self.client.post(merge_url, {"merge": customer1.pk}, follow=True)
+        self.assertRedirects(response, customer1.get_absolute_url())
+        self.assertContains(response, "A customer can not be merged into itself.")
+        self.assertTrue(Customer.objects.filter(pk=customer1.pk).exists())
+        self.assertTrue(Customer.objects.filter(pk=customer2.pk).exists())
+
         response = self.client.get(customer1.get_absolute_url())
         self.assertContains(response, "TEST CUSTOMER 1")
         response = self.client.get(customer2.get_absolute_url())
         self.assertContains(response, "TEST CUSTOMER 2")
 
-        merge_url = reverse("crm:customer-merge", kwargs={"pk": customer1.pk})
         response = self.client.get(merge_url, {"merge": customer2.pk})
         self.assertContains(response, "TEST CUSTOMER 1")
         self.assertContains(response, "TEST CUSTOMER 2")
@@ -276,8 +295,8 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertFalse(Customer.objects.filter(pk=customer1.pk).exists())
 
     def test_customer_search(self):
-        self.create_customer("TEST CUSTOMER 1")
-        self.create_customer("TEST CUSTOMER 2", end_client="END")
+        customer1 = self.create_customer("TEST CUSTOMER 1")
+        customer2 = self.create_customer("TEST CUSTOMER 2", end_client="END")
 
         list_url = reverse("crm:customer-list", kwargs={"kind": "all"})
         response = self.client.get(list_url)
@@ -287,6 +306,23 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(response, "TEST CUSTOMER 1")
         self.assertContains(response, "TEST CUSTOMER 2")
         response = self.client.get(list_url, {"q": "end"})
+        self.assertNotContains(response, "TEST CUSTOMER 1")
+        self.assertContains(response, "TEST CUSTOMER 2")
+
+        customer1.email = "billing@example.com"
+        customer1.save(update_fields=["email"])
+        user = User.objects.create_user(
+            username="customer-user", email="user@example.com"
+        )
+        customer2.users.add(user)
+
+        response = self.client.get(list_url, {"q": "billing@example.com"})
+
+        self.assertContains(response, "TEST CUSTOMER 1")
+        self.assertNotContains(response, "TEST CUSTOMER 2")
+
+        response = self.client.get(list_url, {"q": "user@example.com"})
+
         self.assertNotContains(response, "TEST CUSTOMER 1")
         self.assertContains(response, "TEST CUSTOMER 2")
 
@@ -986,6 +1022,16 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(
             response, "Please confirm that you want to issue a final invoice."
         )
+
+        response = self.client.post(
+            service.get_absolute_url(),
+            {"quote": 1, "subscription": 999999},
+            follow=True,
+        )
+
+        self.assertRedirects(response, service.get_absolute_url())
+        self.assertEqual(Invoice.objects.count(), 0)
+        self.assertContains(response, "Error in parameter subscription")
 
     def test_service_maintenance_window(self):
         service = self.create_extended_service()

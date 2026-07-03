@@ -54,11 +54,10 @@
     </p>
     <h2>Actions</h2>
     <form action="{% url "crm:customer-merge" pk=object.pk %}" method="get">
-      <label>
-        Merge with following customer object:
-        <input type="number" name="merge" required>
-      </label>
-      <input type="submit" value="Review merge">
+      {{ merge_form.merge.label_tag }}
+      {{ merge_form.merge }}
+      {% translate "Review merge" as review_merge_label %}
+      <input type="submit" value="{{ review_merge_label }}">
     </form>
     {% if can_add_customer_user %}
       <form method="post">
