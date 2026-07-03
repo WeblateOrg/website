@@ -320,7 +320,9 @@ class InvoiceTestCase(UserTestCase):
 
         self.assertIn("Contact: Finance approvals", html)
 
+    @responses.activate
     def test_pdf_page_marker_is_added_only_for_multi_page_invoice(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice(kind=InvoiceKind.QUOTE)
 
         with (
