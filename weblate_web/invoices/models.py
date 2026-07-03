@@ -296,6 +296,11 @@ class Discount(models.Model):
         return f"{self.percents}%"
 
 
+class InvoiceQuerySet(models.QuerySet["Invoice", "Invoice"]):
+    def order(self) -> InvoiceQuerySet:
+        return self.order_by("-issue_date", "-number")
+
+
 class Invoice(models.Model):  # noqa: PLR0904
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sequence = models.IntegerField(editable=False)
@@ -369,6 +374,8 @@ class Invoice(models.Model):  # noqa: PLR0904
 
     # Manual disabling of XML in invoices
     generate_en_16931 = True
+
+    objects = InvoiceQuerySet.as_manager()
 
     class Meta:
         constraints = [

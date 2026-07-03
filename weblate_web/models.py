@@ -703,7 +703,10 @@ class Package(models.Model):
         return get_donation_package_verbose(self.donation_reward)
 
 
-class ServiceQuerySet(models.QuerySet["Service"]):
+class ServiceQuerySet(models.QuerySet["Service", "Service"]):
+    def order(self) -> ServiceQuerySet:
+        return self.order_by("site_title", "site_url", "pk")
+
     def customer_services(self) -> ServiceQuerySet:
         return self.filter(kind=ServiceKind.SERVICE)
 

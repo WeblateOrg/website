@@ -81,7 +81,7 @@
     {% endif %}
     <h2>Agreements</h2>
     <table>
-      {% for agreement in object.agreement_set.all %}
+      {% for agreement in object.agreement_set.order %}
         <tr>
           <td>{{ agreement.signed }}</td>
           <td>{{ agreement.get_kind_display }}</td>
@@ -110,7 +110,7 @@
     </table>
     <h2>Invoices</h2>
     <table>
-      {% include "invoices/invoice_list_content.html" with object_list=object.invoice_set.all %}
+      {% include "invoices/invoice_list_content.html" with object_list=object.invoice_set.order %}
     </table>
     {% if perms.invoices.add_invoice %}
       <a href="{% url "admin:invoices_invoice_add" %}?customer={{ object.pk }}"
@@ -123,7 +123,7 @@
       <input type="submit" name="add_manual_note" value="{% translate "Add note" %}">
     </form>
     <table>
-      {% for interaction in object.interaction_set.all %}
+      {% for interaction in object.interaction_set.order %}
         <tr>
           <td>{{ interaction.timestamp }}</td>
           <td>{{ interaction.user.username }}</td>
@@ -145,7 +145,7 @@
     </table>
     <h2>Payments</h2>
     <table>
-      {% for payment in object.payment_set.all %}
+      {% for payment in object.payment_set.order %}
         <tr>
           <td>{{ payment.created }}</td>
           <td>{{ payment.get_state_display }}</td>
