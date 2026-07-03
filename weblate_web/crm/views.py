@@ -30,7 +30,7 @@ from django.db.models.functions import (
     TruncMonth,
 )
 from django.http import FileResponse, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -39,10 +39,14 @@ from django.utils.translation import gettext, override
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.crm.forms import (
+    CustomerMergeForm,
+    CustomerSearchForm,
     CustomerUserForm,
+    InvoiceConfirmationForm,
     ManualInteractionForm,
     RefundConfirmationForm,
     ServiceMaintenanceWindowForm,
+    ServiceSubscriptionActionForm,
 )
 from weblate_web.crm.hosted import HostedUserEnsureError, ensure_hosted_user
 from weblate_web.forms import NewSubscriptionForm
@@ -54,7 +58,6 @@ from weblate_web.invoices.models import (
     InvoiceKind,
 )
 from weblate_web.models import (
-    Package,
     PackageCategory,
     SamlIdentity,
     Service,
@@ -88,12 +91,10 @@ class InvoiceSummaryRow(TypedDict):
 
 
 def has_invoice_confirmation(request: HttpRequest) -> bool:
-    if request.POST.get("confirm_invoice") == "1":
+    form = InvoiceConfirmationForm(request.POST)
+    if form.is_valid():
         return True
-    messages.error(
-        request,
-        gettext("Please confirm that you want to issue a final invoice."),
-    )
+    show_form_errors(request, form)
     return False
 
 
@@ -241,19 +242,7 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             )
         return redirect(service)
 
-    def get_upgrade_invoice_package(self, request, service, subscription):
-        package = None
-        if package_name := request.POST.get("package"):
-            package = Package.objects.filter(name=package_name).first()
-            if package is None:
-                messages.error(
-                    request,
-                    gettext(
-                        "This subscription can not be upgraded to the selected package."
-                    ),
-                )
-                return package, redirect(service)
-
+    def get_upgrade_invoice_package(self, request, service, subscription, package):
         try:
             if not subscription.upgrade_requires_payment(package):
                 subscription.upgrade_without_payment(package)
@@ -269,30 +258,35 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
 
         return package, None
 
-    def create_subscription_invoice(self, request, service, subscription, *, upgrade):
-        form = CustomerReferenceForm(request.POST)
-        if not form.is_valid():
-            show_form_errors(self.request, form)
-            return redirect(service)
-
+    def create_subscription_invoice(
+        self,
+        request,
+        service: Service,
+        form: ServiceSubscriptionActionForm,
+        *,
+        upgrade: bool,
+    ):
+        subscription = form.cleaned_data["subscription"]
         if upgrade:
             kind = (
                 InvoiceKind.QUOTE
-                if "upgrade_quote" in request.POST
+                if form.cleaned_data["action"]
+                == ServiceSubscriptionActionForm.ACTION_UPGRADE_QUOTE
                 else InvoiceKind.INVOICE
             )
             create_invoice = subscription.create_upgrade_invoice
         else:
-            kind = InvoiceKind.QUOTE if "quote" in request.POST else InvoiceKind.INVOICE
+            is_quote = (
+                form.cleaned_data["action"]
+                == ServiceSubscriptionActionForm.ACTION_QUOTE
+            )
+            kind = InvoiceKind.QUOTE if is_quote else InvoiceKind.INVOICE
             create_invoice = subscription.create_invoice
-
-        if kind == InvoiceKind.INVOICE and not has_invoice_confirmation(request):
-            return redirect(service)
 
         package = None
         if upgrade:
             package, response = self.get_upgrade_invoice_package(
-                request, service, subscription
+                request, service, subscription, form.cleaned_data["package"]
             )
             if response is not None:
                 return response
@@ -322,18 +316,25 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
         if "update_maintenance_window" in request.POST:
             return self.update_maintenance_window(request, service)
 
-        subscription = get_object_or_404(
-            service.subscription_set, pk=request.POST["subscription"]
-        )
-        if "upgrade_quote" in request.POST or "upgrade_invoice" in request.POST:
+        form = ServiceSubscriptionActionForm(request.POST, service=service)
+        if not form.is_valid():
+            show_form_errors(request, form)
+            return redirect(service)
+
+        action = form.cleaned_data["action"]
+        if action in ServiceSubscriptionActionForm.UPGRADE_ACTIONS:
             return self.create_subscription_invoice(
-                request, service, subscription, upgrade=True
+                request, service, form, upgrade=True
             )
-        if "quote" in request.POST or "invoice" in request.POST:
+        if action in {
+            ServiceSubscriptionActionForm.ACTION_QUOTE,
+            ServiceSubscriptionActionForm.ACTION_INVOICE,
+        }:
             return self.create_subscription_invoice(
-                request, service, subscription, upgrade=False
+                request, service, form, upgrade=False
             )
-        if "disable" in request.POST:
+        if action == ServiceSubscriptionActionForm.ACTION_DISABLE:
+            subscription = form.cleaned_data["subscription"]
             subscription.enabled = False
             subscription.save(update_fields=["enabled"])
             return redirect(service)
@@ -515,6 +516,7 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
     permission = "payments.view_customer"
     title = "Customers"
     paginate_by = 100
+    _search_form: CustomerSearchForm | None = None
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -524,14 +526,22 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
                 return "All customers"
         raise ValueError(self.kwargs["kind"])
 
+    def get_search_form(self) -> CustomerSearchForm:
+        if self._search_form is None:
+            self._search_form = CustomerSearchForm(self.request.GET)
+        return self._search_form
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
-        context["query"] = self.request.GET.get("q", "")
+        search_form = self.get_search_form()
+        context["search_form"] = search_form
+        context["query"] = search_form["q"].value() or ""
         return context
 
     def get_queryset(self) -> CustomerQuerySet:
         qs = cast("CustomerQuerySet", super().get_queryset()).order()
-        if query := self.request.GET.get("q"):
+        search_form = self.get_search_form()
+        if search_form.is_valid() and (query := search_form.cleaned_data["q"]):
             qs = qs.filter(
                 Q(name__icontains=query)
                 | Q(email__icontains=query)
@@ -576,6 +586,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["can_add_customer_user"] = self.request.user.has_perm(
             self.add_customer_user_permission
         )
+        context["merge_form"] = CustomerMergeForm(customer=self.object)
         context["services"] = self.object.service_set.customer_services().order()
         context["donations"] = self.object.service_set.donations().order()
         context["customer_users"] = self.object.ordered_users
@@ -779,21 +790,37 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
 class CustomerMergeView(CustomerDetailView):
     template_name = "payments/customer_merge.html"
 
-    def get_merged(self) -> Customer:
-        return Customer.objects.get(
-            pk=self.request.POST["merge"]
-            if self.request.method == "POST"
-            else self.request.GET["merge"]
-        )
+    merge: Customer
+    merge_form: CustomerMergeForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
-        context["merge"] = self.get_merged()
+        context["merge"] = self.merge
+        context["merge_form"] = self.merge_form
         return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = CustomerMergeForm(request.GET, customer=self.object)
+        if not form.is_valid():
+            show_form_errors(request, form)
+            return redirect(self.object)
+        self.merge_form = CustomerMergeForm(
+            initial={"merge": form.cleaned_data["merge"].pk},
+            customer=self.object,
+            hidden=True,
+        )
+        self.merge = form.cleaned_data["merge"]
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
-        merge = self.get_merged()
+        form = CustomerMergeForm(request.POST, customer=customer)
+        if not form.is_valid():
+            show_form_errors(request, form)
+            return redirect(customer)
+        merge = form.cleaned_data["merge"]
         merge.merge(customer, user=self.request.user)
         return redirect(merge)
 

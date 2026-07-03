@@ -19,10 +19,114 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy
 
-from weblate_web.models import Service
+from weblate_web.invoices.forms import CustomerReferenceForm
+from weblate_web.models import Package, Service, Subscription
+from weblate_web.payments.models import Customer
+
+FINAL_INVOICE_CONFIRMATION_ERROR = gettext_lazy(
+    "Please confirm that you want to issue a final invoice."
+)
+INVALID_UPGRADE_PACKAGE_ERROR = gettext_lazy(
+    "This subscription can not be upgraded to the selected package."
+)
+
+
+class InvoiceConfirmationForm(forms.Form):
+    confirm_invoice = forms.BooleanField(required=False)
+
+    def clean(self):
+        super().clean()
+        if not self.cleaned_data.get("confirm_invoice"):
+            raise ValidationError(FINAL_INVOICE_CONFIRMATION_ERROR)
+        return self.cleaned_data
+
+
+class CustomerSearchForm(forms.Form):
+    q = forms.CharField(
+        label=gettext_lazy("Search"),
+        required=False,
+        widget=forms.TextInput(attrs={"type": "search"}),
+    )
+
+
+class CustomerMergeForm(forms.Form):
+    merge = forms.ModelChoiceField(
+        label=gettext_lazy("Merge with following customer object"),
+        queryset=Customer.objects.none(),
+        widget=forms.NumberInput(),
+        error_messages={
+            "invalid_choice": gettext_lazy("Select a valid customer to merge into.")
+        },
+    )
+
+    def __init__(self, *args, customer: Customer, hidden: bool = False, **kwargs):
+        self.customer = customer
+        super().__init__(*args, **kwargs)
+        merge_field = cast("forms.ModelChoiceField", self.fields["merge"])
+        merge_field.queryset = Customer.objects.all()
+        if hidden:
+            merge_field.widget = forms.HiddenInput()
+
+    def clean_merge(self) -> Customer:
+        merge = self.cleaned_data["merge"]
+        if merge == self.customer:
+            raise ValidationError(
+                gettext_lazy("A customer can not be merged into itself.")
+            )
+        return merge
+
+
+class ServiceSubscriptionActionForm(CustomerReferenceForm):
+    ACTION_QUOTE = "quote"
+    ACTION_INVOICE = "invoice"
+    ACTION_UPGRADE_QUOTE = "upgrade_quote"
+    ACTION_UPGRADE_INVOICE = "upgrade_invoice"
+    ACTION_DISABLE = "disable"
+
+    ACTIONS = (
+        ACTION_QUOTE,
+        ACTION_INVOICE,
+        ACTION_UPGRADE_QUOTE,
+        ACTION_UPGRADE_INVOICE,
+        ACTION_DISABLE,
+    )
+    INVOICE_ACTIONS = (ACTION_INVOICE, ACTION_UPGRADE_INVOICE)
+    UPGRADE_ACTIONS = (ACTION_UPGRADE_QUOTE, ACTION_UPGRADE_INVOICE)
+
+    subscription = forms.ModelChoiceField(queryset=Subscription.objects.none())
+    package = forms.ModelChoiceField(
+        queryset=Package.objects.all(),
+        required=False,
+        to_field_name="name",
+        error_messages={"invalid_choice": INVALID_UPGRADE_PACKAGE_ERROR},
+    )
+    confirm_invoice = forms.BooleanField(required=False)
+
+    def __init__(self, *args, service: Service, **kwargs):
+        self.service = service
+        super().__init__(*args, **kwargs)
+        subscription_field = cast("forms.ModelChoiceField", self.fields["subscription"])
+        subscription_field.queryset = service.subscription_set.all()
+
+    def clean(self):
+        super().clean()
+        actions = [action for action in self.ACTIONS if action in self.data]
+        if len(actions) != 1:
+            raise ValidationError(gettext_lazy("Missing action."))
+
+        action = actions[0]
+        self.cleaned_data["action"] = action
+        if action in self.INVOICE_ACTIONS and not self.cleaned_data.get(
+            "confirm_invoice"
+        ):
+            raise ValidationError(FINAL_INVOICE_CONFIRMATION_ERROR)
+        return self.cleaned_data
 
 
 class RefundConfirmationForm(forms.Form):

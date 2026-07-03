@@ -4,11 +4,10 @@
 
 {% block content %}
   <form>
-    <label>
-      Search:
-      <input type="search" name="q" value="{{ query }}">
-    </label>
-    <input type="submit" value="Search">
+    {{ search_form.q.label_tag }}
+    {{ search_form.q }}
+    {% translate "Search" as search_label %}
+    <input type="submit" value="{{ search_label }}">
   </form>
   <section class="content">
     <table>
