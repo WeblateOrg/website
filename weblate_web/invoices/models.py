@@ -73,7 +73,7 @@ from weblate_web.const import (
     COMPANY_ZIP,
 )
 from weblate_web.exchange_rates import ExchangeRates
-from weblate_web.pdf import render_pdf
+from weblate_web.pdf import count_pdf_pages, render_pdf
 from weblate_web.utils import get_site_url
 
 if TYPE_CHECKING:
@@ -545,13 +545,16 @@ class Invoice(models.Model):  # noqa: PLR0904
             return self.all_items[0].description
         return ""
 
-    def render_html(self, *, is_receipt: bool = False) -> str:
+    def render_html(
+        self, *, is_receipt: bool = False, show_page_marker: bool = False
+    ) -> str:
         with override("en_GB"):
             return render_to_string(
                 "invoice-template.html",
                 {
                     "invoice": self,
                     "is_receipt": is_receipt,
+                    "show_page_marker": show_page_marker,
                     "company_name": COMPANY_NAME,
                     "company_address": COMPANY_ADDRESS,
                     "company_zip": COMPANY_ZIP,
@@ -964,8 +967,11 @@ class Invoice(models.Model):  # noqa: PLR0904
         """Render invoice as PDF."""
         # Create directory to store invoices
         settings.INVOICES_PATH.mkdir(exist_ok=True)
+        html = self.render_html(is_receipt=is_receipt)
+        if count_pdf_pages(html=html) > 1:
+            html = self.render_html(is_receipt=is_receipt, show_page_marker=True)
         render_pdf(
-            html=self.render_html(is_receipt=is_receipt),
+            html=html,
             output=settings.INVOICES_PATH / filename,
             attachments=attachments,
             factur_x=bool(attachments),
