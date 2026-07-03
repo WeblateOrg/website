@@ -35,7 +35,14 @@ S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))
 
 
 class InvoiceTestCase(UserTestCase):
-    def create_customer(self, *, vat: str = "") -> Customer:
+    def create_customer(
+        self,
+        *,
+        vat: str = "",
+        contact_point: str = "",
+        email: str = "",
+        accounting_reference: str = "",
+    ) -> Customer:
         return Customer.objects.create(
             name="Zkušební zákazník",
             address="Street 42",
@@ -44,6 +51,9 @@ class InvoiceTestCase(UserTestCase):
             country="cz",
             user_id=-1,
             vat=vat,
+            contact_point=contact_point,
+            email=email,
+            accounting_reference=accounting_reference,
         )
 
     def create_invoice_base(  # noqa: PLR0913
@@ -53,6 +63,9 @@ class InvoiceTestCase(UserTestCase):
         vat_rate: int = 0,
         customer_reference: str = "",
         customer_note: str = "",
+        customer_contact_point: str = "",
+        customer_email: str = "",
+        accounting_reference: str = "",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         currency: Currency = Currency.EUR,
@@ -64,7 +77,12 @@ class InvoiceTestCase(UserTestCase):
             # Ensure VAT ID is present for invoices without VAT
             vat = "CZ21668027"
         return Invoice.objects.create(
-            customer=self.create_customer(vat=vat),
+            customer=self.create_customer(
+                vat=vat,
+                contact_point=customer_contact_point,
+                email=customer_email,
+                accounting_reference=accounting_reference,
+            ),
             discount=discount,
             vat_rate=vat_rate,
             kind=kind,
@@ -100,6 +118,9 @@ class InvoiceTestCase(UserTestCase):
         vat_rate: int = 0,
         customer_reference: str = "",
         customer_note: str = "",
+        customer_contact_point: str = "",
+        customer_email: str = "",
+        accounting_reference: str = "",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         tax_date: date | None = None,
@@ -112,6 +133,9 @@ class InvoiceTestCase(UserTestCase):
             vat_rate=vat_rate,
             customer_reference=customer_reference,
             customer_note=customer_note,
+            customer_contact_point=customer_contact_point,
+            customer_email=customer_email,
+            accounting_reference=accounting_reference,
             vat=vat,
             kind=kind,
             tax_date=tax_date,
@@ -210,6 +234,90 @@ class InvoiceTestCase(UserTestCase):
         )
 
         self.assertIsNone(buyer_order)
+
+    def test_customer_contact_is_buyer_trade_contact(self) -> None:
+        invoice = self.create_invoice(
+            customer_contact_point="Finance approvals",
+            customer_email="finance@example.test",
+        )
+        root = self.get_einvoice_xml_tree(invoice)
+
+        contact_name = root.find(
+            ".//ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/"
+            "ram:DefinedTradeContact/ram:PersonName",
+            EN16931Validator().namespaces,
+        )
+        contact_email = root.find(
+            ".//ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/"
+            "ram:DefinedTradeContact/ram:EmailURIUniversalCommunication/ram:URIID",
+            EN16931Validator().namespaces,
+        )
+
+        self.assertIsNotNone(contact_name)
+        self.assertIsNotNone(contact_email)
+        if contact_name is None or contact_email is None:
+            self.fail("Buyer trade contact is missing")
+        self.assertEqual(contact_name.text, "Finance approvals")
+        self.assertEqual(contact_email.text, "mailto:finance@example.test")
+
+    def test_customer_email_is_buyer_trade_contact_email(self) -> None:
+        invoice = self.create_invoice(customer_email="billing@example.test")
+        root = self.get_einvoice_xml_tree(invoice)
+
+        contact_email = root.find(
+            ".//ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/"
+            "ram:DefinedTradeContact/ram:EmailURIUniversalCommunication/ram:URIID",
+            EN16931Validator().namespaces,
+        )
+
+        self.assertIsNotNone(contact_email)
+        if contact_email is None:
+            self.fail("Buyer trade contact e-mail is missing")
+        self.assertEqual(contact_email.text, "mailto:billing@example.test")
+
+    def test_empty_customer_contact_omits_buyer_trade_contact(self) -> None:
+        invoice = self.create_invoice()
+        root = self.get_einvoice_xml_tree(invoice)
+
+        contact = root.find(
+            ".//ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/"
+            "ram:DefinedTradeContact",
+            EN16931Validator().namespaces,
+        )
+
+        self.assertIsNone(contact)
+
+    def test_customer_accounting_reference_is_line_trade_account(self) -> None:
+        invoice = self.create_invoice(accounting_reference="COST-42")
+        invoice.invoiceitem_set.create(description="Other item", unit_price=1000)
+        root = self.get_einvoice_xml_tree(invoice)
+
+        trade_accounts = root.findall(
+            ".//ram:SpecifiedLineTradeSettlement/"
+            "ram:ReceivableSpecifiedTradeAccountingAccount/ram:ID",
+            EN16931Validator().namespaces,
+        )
+
+        self.assertEqual([account.text for account in trade_accounts], ["COST-42"] * 2)
+
+    def test_empty_accounting_reference_omits_line_trade_account(self) -> None:
+        invoice = self.create_invoice()
+        root = self.get_einvoice_xml_tree(invoice)
+
+        trade_account = root.find(
+            ".//ram:SpecifiedLineTradeSettlement/"
+            "ram:ReceivableSpecifiedTradeAccountingAccount",
+            EN16931Validator().namespaces,
+        )
+
+        self.assertIsNone(trade_account)
+
+    def test_customer_contact_point_is_rendered_on_invoice(self) -> None:
+        invoice = self.create_invoice(customer_contact_point="Finance approvals")
+
+        html = invoice.render_html()
+
+        self.assertIn("Contact: Finance approvals", html)
 
     def mock_requests(self) -> None:
         mock_vies()

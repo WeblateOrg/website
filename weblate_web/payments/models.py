@@ -191,6 +191,24 @@ class Customer(models.Model):
         verbose_name=gettext_lazy("Billing e-mail"),
         help_text=gettext_lazy("Additional e-mail to receive billing notifications"),
     )
+    contact_point = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name=gettext_lazy("Contact point"),
+        help_text=gettext_lazy(
+            "Person, team, or department to show as the invoice contact."
+        ),
+    )
+    accounting_reference = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name=gettext_lazy("Accounting reference"),
+        help_text=gettext_lazy(
+            "Line-level accounting code for the customer's internal invoice "
+            "processing, such as a cost center, project, internal order, or GL "
+            "account. Separate from the customer reference or purchase order number."
+        ),
+    )
     upcoming_payment_notification_days = models.PositiveIntegerField(
         default=0,
         validators=[MaxValueValidator(MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS)],

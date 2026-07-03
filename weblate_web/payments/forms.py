@@ -65,6 +65,8 @@ class CustomerForm(forms.ModelForm):
             "city",
             "country",
             "email",
+            "contact_point",
+            "accounting_reference",
         )
         field_classes = {"vat": BootstrapVATINField}
         widgets = {"country": forms.Select(attrs={"class": "custom-select"})}
