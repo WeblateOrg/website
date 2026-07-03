@@ -26,6 +26,12 @@ Before running the E2E tests, you need to:
    playwright install chromium
    ```
 
+1. Install PDF screenshot tooling:
+
+   ```bash
+   sudo apt-get install poppler-utils
+   ```
+
 1. Set up the database and static files:
 
    ```bash
