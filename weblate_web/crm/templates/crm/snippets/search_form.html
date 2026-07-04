@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<form class="crm-toolbar crm-search" method="get">
+  <div class="crm-field crm-field--inline">
+    {{ search_form.q.label_tag }}
+    {{ search_form.q }}
+  </div>
+  <div class="crm-toolbar__actions">
+    <button class="crm-button" type="submit">{% translate "Search" %}</button>
+    {% if query %}
+      <a class="crm-button crm-button--secondary" href="{{ request.path }}">{% translate "Clear" %}</a>
+    {% endif %}
+  </div>
+</form>

@@ -1,102 +1,188 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n %}
 
 {% block breadcrum_list %}
-  › <a href="{% url "crm:invoice-list" kind="all" %}">Invoices</a>
+  <span aria-hidden="true">›</span>
+  <a href="{% url "crm:invoice-list" kind="all" %}">{% translate "Invoices" %}</a>
 {% endblock breadcrum_list %}
 
-{% block content %}
-  <section class="content">
-    <h2>{{ object.number }}</h2>
-    <p>
-      <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
-      <br>
-      {{ object.get_kind_display }}
-      {% if object.is_paid %}
-        paid
-      {% elif object.is_payable %}
-        <strong>unpaid</strong>
+{% block page_actions %}
+  <div class="crm-page-actions">
+    {% with download_url=object.get_download_url %}
+      {% if download_url %}
+        <a class="crm-button crm-button--secondary" href="{{ download_url }}">{% translate "Download" %}</a>
+        {% if object.is_paid %}
+          <a class="crm-button crm-button--secondary" href="{{ download_url }}?receipt=1">{% translate "Receipt" %}</a>
+        {% endif %}
       {% endif %}
-      / {{ object.get_category_display }}
-      <br>
-      Issued {{ object.issue_date }}, due {{ object.due_date }}
-      <br>
+    {% endwith %}
+    <a class="crm-button crm-button--secondary"
+       href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">{% translate "Edit in admin" %}</a>
+  </div>
+{% endblock page_actions %}
+
+{% block content %}
+  <section class="crm-section content">
+    {% translate "Invoice" as section_title %}
+    {% include "crm/snippets/section_header.html" %}
+    <p class="crm-summary-line">
+      <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
+      <span>{{ object.get_kind_display }}</span>
+      {% if object.is_paid %}
+        <span class="crm-badge crm-badge--success">{% translate "Paid" %}</span>
+      {% elif object.is_payable %}
+        <span class="crm-badge crm-badge--warning">{% translate "Unpaid" %}</span>
+      {% endif %}
+      <span>{{ object.get_category_display }}</span>
+    </p>
+    <dl class="crm-detail-grid">
+      <div>
+        <dt>{% translate "Number" %}</dt>
+        <dd>
+          {{ object.number }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Issued" %}</dt>
+        <dd>
+          {{ object.issue_date }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Due" %}</dt>
+        <dd>
+          {{ object.due_date }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Amount" %}</dt>
+        <dd>
+          {{ object.display_total_amount }}
+        </dd>
+      </div>
+      {% if object.discount %}
+        <div>
+          <dt>{% translate "Discount" %}</dt>
+          <dd>
+            {{ object.discount }}
+          </dd>
+        </div>
+      {% endif %}
       {% if object.parent %}
-        Generated from <a href="{{ object.parent.get_absolute_url }}">{{ object.parent.number }}</a>
-        <br>
+        <div>
+          <dt>{% translate "Generated from" %}</dt>
+          <dd>
+            <a href="{{ object.parent.get_absolute_url }}">{{ object.parent.number }}</a>
+          </dd>
+        </div>
       {% endif %}
       {% for child in object.invoice_set.all %}
-        Followup as <a href="{{ child.get_absolute_url }}">{{ child.number }}</a>
-        <br>
+        <div>
+          <dt>{% translate "Followup as" %}</dt>
+          <dd>
+            <a href="{{ child.get_absolute_url }}">{{ child.number }}</a>
+          </dd>
+        </div>
       {% endfor %}
       {% if object.customer_reference %}
-        Customer reference: {{ object.customer_reference }}
-        <br>
+        <div>
+          <dt>{% translate "Customer reference" %}</dt>
+          <dd>
+            {{ object.customer_reference }}
+          </dd>
+        </div>
       {% endif %}
       {% if object.customer_note %}
-        Customer note: {{ object.customer_note }}
-        <br>
+        <div>
+          <dt>{% translate "Customer note" %}</dt>
+          <dd>
+            {{ object.customer_note }}
+          </dd>
+        </div>
       {% endif %}
-      Amount: {{ object.display_total_amount }}
-      <br>
-      {% if object.discount %}
-        Discount: {{ object.discount }}
-        <br>
-      {% endif %}
-      {% with download_url=object.get_download_url %}
-        {% if download_url %}
-          <a href="{{ download_url }}">{% translate "Download" %}</a>
-          {% if object.is_paid %}
-            <a href="{{ download_url }}?receipt=1">{% translate "Receipt" %}</a>
-          {% endif %}
-        {% endif %}
-      {% endwith %}
-      <a href="{% url "admin:invoices_invoice_change" object_id=object.pk %}">{% translate "Edit" %}</a>
-    </p>
-    <table>
-      {% for item in object.all_items %}
-        <tr>
-          <td>
-            {{ item.description }}
-            <br>
-            {% if item.has_date_range %}<em class="period">{{ item.get_date_range_display }}</em>{% endif %}
-          </td>
-          <td>{{ item.display_quantity }}</td>
-          <td>{{ item.display_price }}</td>
-          <td>{{ item.display_total_price }}</td>
-        </tr>
-      {% endfor %}
-    </table>
-    {% if refund_form %}
-      <h2>{% translate "Confirm refund done" %}</h2>
+    </dl>
+  </section>
+
+  <section class="crm-section content">
+    {% translate "Invoice items" as table_title %}
+    {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+    <div class="crm-table-wrap">
+      <table class="crm-table">
+        {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+        <thead>
+          <tr>
+            <th scope="col">{% translate "Description" %}</th>
+            <th scope="col" class="crm-number">{% translate "Quantity" %}</th>
+            <th scope="col" class="crm-number">{% translate "Price" %}</th>
+            <th scope="col" class="crm-number">{% translate "Total" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in object.all_items %}
+            <tr>
+              <th scope="row">
+                {{ item.description }}
+                {% if item.has_date_range %}
+                  <span class="crm-muted">{{ item.get_date_range_display }}</span>
+                {% endif %}
+              </th>
+              <td class="crm-number">{{ item.display_quantity }}</td>
+              <td class="crm-number">{{ item.display_price }}</td>
+              <td class="crm-number">{{ item.display_total_price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {% if refund_form %}
+    <section class="crm-section content">
+      {% translate "Confirm refund done" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
       <p>{% translate "Use this after the refund or chargeback has been completed." %}</p>
-      <form method="post">
+      <form class="crm-form-panel crm-form-panel--compact" method="post">
         {% csrf_token %}
-        {{ refund_form }}
-        {% translate "Confirm refund done" as confirm_refund_label %}
-        <input type="submit" name="confirm_refund" value="{{ confirm_refund_label }}">
+        <div class="crm-form-panel__body">{{ refund_form }}</div>
+        <div class="crm-form-panel__actions">
+          {% translate "Confirm refund done" as confirm_refund_label %}
+          <input class="crm-button"
+                 type="submit"
+                 name="confirm_refund"
+                 value="{{ confirm_refund_label }}">
+        </div>
       </form>
-    {% endif %}
-    {% if convert_form %}
-      <h2>{% translate "Issue invoice" %}</h2>
+    </section>
+  {% endif %}
+
+  {% if convert_form %}
+    <section class="crm-section content">
+      {% translate "Issue invoice" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
       <details class="crm-danger-action">
         <summary>{% translate "Issue invoice from quote" %}</summary>
         <p>
           {% blocktranslate %}This creates a final invoice matching this quote. Use Download if you only need the quote PDF.{% endblocktranslate %}
         </p>
-        <form method="post">
+        <form class="crm-form-panel crm-form-panel--compact" method="post">
           {% csrf_token %}
-          {{ convert_form }}
-          <label>
-            <input type="checkbox" name="confirm_invoice" value="1" required>
-            {% translate "I confirm that I want to issue a final invoice." %}
-          </label>
-          <br>
-          {% translate "Issue invoice" as issue_invoice_label %}
-          <input type="submit" name="invoice" value="{{ issue_invoice_label }}">
+          <div class="crm-form-panel__body">
+            {{ convert_form }}
+            <label class="crm-check">
+              <input type="checkbox" name="confirm_invoice" value="1" required>
+              <span>{% translate "I confirm that I want to issue a final invoice." %}</span>
+            </label>
+          </div>
+          <div class="crm-form-panel__actions">
+            {% translate "Issue invoice" as issue_invoice_label %}
+            <input class="crm-button"
+                   type="submit"
+                   name="invoice"
+                   value="{{ issue_invoice_label }}">
+          </div>
         </form>
       </details>
-    {% endif %}
-  </section>
+    </section>
+  {% endif %}
 {% endblock content %}

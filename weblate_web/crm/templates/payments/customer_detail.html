@@ -1,162 +1,425 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static timestamps %}
+{% load i18n timestamps %}
 
 {% block breadcrum_list %}
-  › <a href="{% url "crm:customer-list" kind="all" %}">Customers</a>
+  <span aria-hidden="true">›</span>
+  <a href="{% url "crm:customer-list" kind="all" %}">{% translate "Customers" %}</a>
 {% endblock breadcrum_list %}
 
+{% block page_actions %}
+  <div class="crm-page-actions">
+    <a class="crm-button crm-button--secondary"
+       href="{% url "admin:payments_customer_change" object_id=object.pk %}">{% translate "Edit in admin" %}</a>
+  </div>
+{% endblock page_actions %}
+
 {% block content %}
-  <section class="content">
-    <p>
-      {{ object.name }}
-      <br>
-      {{ object.get_notify_emails|join:", " }}
-      <br>
-      {% if object.vat %}
-        {{ object.vat }} (
-        {% if object.vat_recently_validated %}
-          validated on {{ object.vat_validated }}
-        {% else %}
-          <strong>not validated</strong>
+  <nav class="crm-tab-list" aria-label="{% translate "Customer sections" %}">
+    <a href="{{ object.get_absolute_url }}"
+       class="{% if active_tab == "overview" %}is-active{% endif %}"
+       {% if active_tab == "overview" %}aria-current="page"{% endif %}>{% translate "Overview" %}</a>
+    <a href="{{ object.get_absolute_url }}?tab=interactions"
+       class="{% if active_tab == "interactions" %}is-active{% endif %}"
+       {% if active_tab == "interactions" %}aria-current="page"{% endif %}>{% translate "Interactions" %}</a>
+    <a href="{{ object.get_absolute_url }}?tab=invoices"
+       class="{% if active_tab == "invoices" %}is-active{% endif %}"
+       {% if active_tab == "invoices" %}aria-current="page"{% endif %}>{% translate "Invoices" %}</a>
+    <a href="{{ object.get_absolute_url }}?tab=payments"
+       class="{% if active_tab == "payments" %}is-active{% endif %}"
+       {% if active_tab == "payments" %}aria-current="page"{% endif %}>{% translate "Payments" %}</a>
+  </nav>
+
+  {% if active_tab == "overview" %}
+    <section class="crm-section content">
+      {% translate "Customer" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      <dl class="crm-detail-grid">
+        <div>
+          <dt>{% translate "Name" %}</dt>
+          <dd>
+            {{ object.name }}
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Notification e-mails" %}</dt>
+          <dd>
+            {{ object.get_notify_emails|join:", " }}
+          </dd>
+        </div>
+        {% if object.vat %}
+          <div>
+            <dt>{% translate "VAT" %}</dt>
+            <dd>
+              {{ object.vat }}
+              {% if object.vat_recently_validated %}
+                <span class="crm-muted">
+                  {% blocktranslate with validated=object.vat_validated %}validated on {{ validated }}{% endblocktranslate %}
+                </span>
+              {% else %}
+                <strong>{% translate "not validated" %}</strong>
+              {% endif %}
+            </dd>
+          </div>
         {% endif %}
-        )
-        <br>
-      {% endif %}
-      {{ object.address }},
-      {% if object.address2 %}{{ object.address2 }},{% endif %}
-      {{ object.city }}
-      <br>
-      {{ object.get_country_display }}
-      <br>
-      {% if object.end_client %}
-        End client: {{ object.end_client }}
-        <br>
-      {% endif %}
-      {% if object.contact_point %}
-        {% translate "Contact point" %}: {{ object.contact_point }}
-        <br>
-      {% endif %}
-      {% if object.accounting_reference %}
-        {% translate "Accounting reference" %}: {{ object.accounting_reference }}
-        <br>
-      {% endif %}
-      {% if object.upcoming_payment_notification_days %}
-        Additional upcoming payment notification:
-        {{ object.upcoming_payment_notification_days }} days before due date
-        <br>
-      {% endif %}
-      {% if object.zammad_id %}
-        <a href="https://care.weblate.org/#organization/profile/{{ object.zammad_id }}">View in Zammad</a>
-        <br />
-      {% endif %}
-      <a href="{% url "admin:payments_customer_change" object_id=object.pk %}">Edit</a>
-    </p>
-    <h2>Actions</h2>
-    <form action="{% url "crm:customer-merge" pk=object.pk %}" method="get">
-      {{ merge_form.merge.label_tag }}
-      {{ merge_form.merge }}
-      {% translate "Review merge" as review_merge_label %}
-      <input type="submit" value="{{ review_merge_label }}">
-    </form>
-    {% if can_add_customer_user %}
-      <form method="post">
-        <p>{% translate "Add user to customer" %}</p>
-        {% csrf_token %}
-        {{ customer_user_form }}
-        <input type="submit" name="add_customer_user" value="{% translate "Add user" %}">
-      </form>
-    {% endif %}
+        <div>
+          <dt>{% translate "Address" %}</dt>
+          <dd>
+            {{ object.address }}{% if object.address2 %}, {{ object.address2 }}{% endif %},
+            {{ object.city }}
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Country" %}</dt>
+          <dd>
+            {{ object.get_country_display }}
+          </dd>
+        </div>
+        {% if object.end_client %}
+          <div>
+            <dt>{% translate "End client" %}</dt>
+            <dd>
+              {{ object.end_client }}
+            </dd>
+          </div>
+        {% endif %}
+        {% if object.contact_point %}
+          <div>
+            <dt>{% translate "Contact point" %}</dt>
+            <dd>
+              {{ object.contact_point }}
+            </dd>
+          </div>
+        {% endif %}
+        {% if object.accounting_reference %}
+          <div>
+            <dt>{% translate "Accounting reference" %}</dt>
+            <dd>
+              {{ object.accounting_reference }}
+            </dd>
+          </div>
+        {% endif %}
+        {% if object.upcoming_payment_notification_days %}
+          <div>
+            <dt>{% translate "Payment reminder" %}</dt>
+            <dd>
+              {% blocktranslate count days=object.upcoming_payment_notification_days %}Additional notification {{ days }} day before due date{% plural %}Additional notification {{ days }} days before due date{% endblocktranslate %}
+            </dd>
+          </div>
+        {% endif %}
+        {% if object.zammad_id %}
+          <div>
+            <dt>{% translate "Zammad" %}</dt>
+            <dd>
+              <a href="https://care.weblate.org/#organization/profile/{{ object.zammad_id }}">{% translate "View in Zammad" %}</a>
+            </dd>
+          </div>
+        {% endif %}
+      </dl>
+    </section>
 
-    <h2>Services</h2>
-    {% include "weblate_web/service_list_content.html" with object_list=services %}
-    {% if not services %}
-      <form method="post">
-        <p>Invoice new service</p>
-        {% csrf_token %}
-        {{ new_subscription_form }}
-        <input type="submit" value="Create">
-      </form>
-    {% endif %}
-    <h2>Agreements</h2>
-    <table>
-      {% for agreement in object.agreement_set.order %}
-        <tr>
-          <td>{{ agreement.signed }}</td>
-          <td>{{ agreement.get_kind_display }}</td>
-          <td>
-            <a href="{% url 'agreement-download' pk=agreement.pk %}">Download</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-    {% if perms.legal.add_agreement %}
-      <a href="{% url "admin:legal_agreement_add" %}?customer={{ object.pk }}"
-         class="addlink">{% translate "Add new agreement" %}</a>
-    {% endif %}
-    <h2>Donations</h2>
-    <table>
-      {% for donation in donations %}
-        <tr>
-          <td>{{ donation.created }}</td>
-          <td>{{ donation.donation_subscription.package.donation_reward_display }}</td>
-          <td>{{ donation.get_donation_amount }} EUR</td>
-          <td>
-            <a href="{% url 'admin:weblate_web_service_change' object_id=donation.pk %}">Edit</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-    <h2>Invoices</h2>
-    <table>
-      {% include "invoices/invoice_list_content.html" with object_list=object.invoice_set.order %}
-    </table>
-    {% if perms.invoices.add_invoice %}
-      <a href="{% url "admin:invoices_invoice_add" %}?customer={{ object.pk }}"
-         class="addlink">{% translate "Issue new invoice" %}</a>
-    {% endif %}
-    <h2>Interactions</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ manual_interaction_form }}
-      <input type="submit" name="add_manual_note" value="{% translate "Add note" %}">
-    </form>
-    <table>
-      {% for interaction in object.interaction_set.order %}
-        <tr>
-          <td>{{ interaction.timestamp }}</td>
-          <td>{{ interaction.user.username }}</td>
-          <td>{{ interaction.get_origin_display }}</td>
-          <td>{{ interaction.summary }}</td>
-          <td>
-            {% with primary=interaction.primary_content %}
-              {% if primary and primary != interaction.summary %}{{ primary|linebreaksbr }}{% endif %}
-            {% endwith %}
-          </td>
-          <td>
-            {% if interaction.has_detail_page %}
-              <a href="{% url 'crm:interaction-detail' pk=interaction.pk %}" target="_blank">View</a>
-            {% endif %}
-            {% if interaction.attachment %}<a href="{{ interaction.attachment_download_url }}">Download</a>{% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-    <h2>Payments</h2>
-    <table>
-      {% for payment in object.payment_set.order %}
-        <tr>
-          <td>{{ payment.created }}</td>
-          <td>{{ payment.get_state_display }}</td>
-          <td>{{ payment.get_amount_display }} {{ payment.get_currency_display }}</td>
-          <td>{{ payment.description }}</td>
-          <td>
-            <a href="{% url 'admin:payments_payment_change' object_id=payment.pk %}">Edit</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
+    <section class="crm-section content">
+      {% translate "Actions" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      <div class="crm-form-grid">
+        <form class="crm-form-panel crm-form-panel--balanced"
+              action="{% url "crm:customer-merge" pk=object.pk %}"
+              method="get">
+          <h3>{% translate "Merge customer" %}</h3>
+          <div class="crm-form-panel__body">
+            <div class="crm-field">
+              {{ merge_form.merge.label_tag }}
+              {{ merge_form.merge }}
+            </div>
+          </div>
+          <div class="crm-form-panel__actions">
+            {% translate "Review merge" as review_merge_label %}
+            <input class="crm-button" type="submit" value="{{ review_merge_label }}">
+          </div>
+        </form>
 
-  </section>
+        {% if can_add_customer_user %}
+          <form class="crm-form-panel crm-form-panel--balanced" method="post">
+            <h3>{% translate "Add user to customer" %}</h3>
+            {% csrf_token %}
+            <div class="crm-form-panel__body">{{ customer_user_form }}</div>
+            <div class="crm-form-panel__actions">
+              <input class="crm-button"
+                     type="submit"
+                     name="add_customer_user"
+                     value="{% translate "Add user" %}">
+            </div>
+          </form>
+        {% endif %}
 
+        <form class="crm-form-panel crm-form-panel--balanced" method="post">
+          <h3>{% translate "Add note" %}</h3>
+          {% csrf_token %}
+          <div class="crm-form-panel__body">
+            {{ manual_interaction_form.non_field_errors }}
+            <div class="crm-field crm-field--fill">
+              {{ manual_interaction_form.note.errors }}
+              {{ manual_interaction_form.note.label_tag }}
+              {{ manual_interaction_form.note }}
+            </div>
+          </div>
+          <div class="crm-form-panel__actions">
+            <input class="crm-button"
+                   type="submit"
+                   name="add_manual_note"
+                   value="{% translate "Add note" %}">
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="crm-section content">
+      {% translate "Customer services" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% if services %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% include "crm/snippets/table_caption.html" with table_title=section_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Service" %}</th>
+                <th scope="col">{% translate "Customer" %}</th>
+                <th scope="col">{% translate "URL" %}</th>
+                <th scope="col">{% translate "Version" %}</th>
+                <th scope="col">{% translate "Status" %}</th>
+                <th scope="col">{% translate "Packages" %}</th>
+                <th scope="col">{% translate "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% include "weblate_web/service_list_content.html" with object_list=services %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--compact"
+              method="post">
+          <h3>{% translate "Invoice new service" %}</h3>
+          {% csrf_token %}
+          <div class="crm-form-panel__body">{{ new_subscription_form }}</div>
+          <div class="crm-form-panel__actions">
+            {% translate "Create" as create_label %}
+            <input class="crm-button" type="submit" value="{{ create_label }}">
+          </div>
+        </form>
+      {% endif %}
+    </section>
+
+    <section class="crm-section content">
+      {% translate "Agreements" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% if object.agreement_set.order %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% translate "Signed agreements" as table_title %}
+            {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Signed" %}</th>
+                <th scope="col">{% translate "Kind" %}</th>
+                <th scope="col">{% translate "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for agreement in object.agreement_set.order %}
+                <tr>
+                  <td>{{ agreement.signed }}</td>
+                  <td>{{ agreement.get_kind_display }}</td>
+                  <td>
+                    <div class="crm-row-actions">
+                      <a href="{% url "agreement-download" pk=agreement.pk %}">{% translate "Download" %}</a>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {% translate "No agreements recorded." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+      {% if perms.legal.add_agreement %}
+        <div class="crm-section-footer">
+          <a class="crm-button crm-button--secondary"
+             href="{% url "admin:legal_agreement_add" %}?customer={{ object.pk }}">{% translate "Add new agreement" %}</a>
+        </div>
+      {% endif %}
+    </section>
+
+    <section class="crm-section content">
+      {% translate "Donations" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% if donations %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% translate "Donation history" as table_title %}
+            {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Created" %}</th>
+                <th scope="col">{% translate "Reward" %}</th>
+                <th scope="col">{% translate "Amount" %}</th>
+                <th scope="col">{% translate "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for donation in donations %}
+                <tr>
+                  <td>{{ donation.created }}</td>
+                  <td>{{ donation.donation_subscription.package.donation_reward_display }}</td>
+                  <td>{{ donation.get_donation_amount }} EUR</td>
+                  <td>
+                    <div class="crm-row-actions">
+                      <a href="{% url "admin:weblate_web_service_change" object_id=donation.pk %}">{% translate "Edit" %}</a>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {% translate "No donations recorded." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if active_tab == "invoices" %}
+    <section class="crm-section content">
+      {% translate "Invoice history" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% with invoices=object.invoice_set.order %}
+        {% if invoices %}
+          <div class="crm-table-wrap">
+            <table class="crm-table">
+              {% include "crm/snippets/table_caption.html" with table_title=section_title only %}
+              <thead>
+                <tr>
+                  <th scope="col">{% translate "Number" %}</th>
+                  <th scope="col">{% translate "Status" %}</th>
+                  <th scope="col">{% translate "Kind" %}</th>
+                  <th scope="col" class="crm-number">{% translate "Amount" %}</th>
+                  <th scope="col">{% translate "Description" %}</th>
+                  <th scope="col">{% translate "Customer" %}</th>
+                  <th scope="col">{% translate "Actions" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% include "invoices/invoice_list_content.html" with object_list=invoices %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          {% translate "No invoices recorded." as empty_message %}
+          {% include "crm/snippets/empty.html" %}
+        {% endif %}
+      {% endwith %}
+      {% if perms.invoices.add_invoice %}
+        <div class="crm-section-footer">
+          <a class="crm-button crm-button--secondary"
+             href="{% url "admin:invoices_invoice_add" %}?customer={{ object.pk }}">{% translate "Issue new invoice" %}</a>
+        </div>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if active_tab == "interactions" %}
+    <section class="crm-section content">
+      {% translate "Interaction history" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% if object.interaction_set.order %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% include "crm/snippets/table_caption.html" with table_title=section_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Timestamp" %}</th>
+                <th scope="col">{% translate "User" %}</th>
+                <th scope="col">{% translate "Origin" %}</th>
+                <th scope="col">{% translate "Summary" %}</th>
+                <th scope="col">{% translate "Content" %}</th>
+                <th scope="col">{% translate "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for interaction in object.interaction_set.order %}
+                <tr>
+                  <td>{{ interaction.timestamp }}</td>
+                  <td>{{ interaction.user.username }}</td>
+                  <td>{{ interaction.get_origin_display }}</td>
+                  <td>{{ interaction.summary }}</td>
+                  <td>
+                    {% with primary=interaction.primary_content %}
+                      {% if primary and primary != interaction.summary %}{{ primary|linebreaksbr }}{% endif %}
+                    {% endwith %}
+                  </td>
+                  <td>
+                    <div class="crm-row-actions">
+                      {% if interaction.has_detail_page %}
+                        <a href="{% url "crm:interaction-detail" pk=interaction.pk %}" target="_blank">{% translate "View" %}</a>
+                      {% endif %}
+                      {% if interaction.attachment %}
+                        <a href="{{ interaction.attachment_download_url }}">{% translate "Download" %}</a>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {% translate "No interactions recorded." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if active_tab == "payments" %}
+    <section class="crm-section content">
+      {% translate "Payment history" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% if object.payment_set.order %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% include "crm/snippets/table_caption.html" with table_title=section_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Created" %}</th>
+                <th scope="col">{% translate "State" %}</th>
+                <th scope="col">{% translate "Amount" %}</th>
+                <th scope="col">{% translate "Description" %}</th>
+                <th scope="col">{% translate "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for payment in object.payment_set.order %}
+                <tr>
+                  <td>{{ payment.created }}</td>
+                  <td>{{ payment.get_state_display }}</td>
+                  <td>{{ payment.get_amount_display }} {{ payment.get_currency_display }}</td>
+                  <td>{{ payment.description }}</td>
+                  <td>
+                    <div class="crm-row-actions">
+                      <a href="{% url "admin:payments_payment_change" object_id=payment.pk %}">{% translate "Edit" %}</a>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {% translate "No payments recorded." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+    </section>
+  {% endif %}
 {% endblock content %}

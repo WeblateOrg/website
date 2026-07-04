@@ -1,37 +1,41 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static timestamps %}
+{% load i18n %}
 
 {% block breadcrum_list %}
-  › <a href="{% url "crm:customer-list" kind="all" %}">Customers</a>
+  <span aria-hidden="true">›</span>
+  <a href="{% url "crm:customer-list" kind="all" %}">{% translate "Customers" %}</a>
 {% endblock breadcrum_list %}
 
 {% block content %}
-  <section class="content">
-    <p>
-      <a href="{{ object.get_absolute_url }}">{{ object.name }} ({{ object.pk }})</a>
-      {% translate "will be merged into" %}
-      <a href="{{ merge.get_absolute_url }}">{{ merge.name }} ({{ merge.pk }})</a>.
-    </p>
-    <ul>
-      <li>
-        {% blocktranslate with source=object.name source_pk=object.pk target=merge.name target_pk=merge.pk trimmed %}
-          All content from {{ source }} ({{ source_pk }}) will be moved to {{ target }} ({{ target_pk }})
-        {% endblocktranslate %}
-      </li>
-      <li>
-        {% blocktranslate with source=object.name source_pk=object.pk trimmed %}
-          {{ source }} ({{ source_pk }}) will be removed
-        {% endblocktranslate %}
-      </li>
-    </ul>
-    <form method="post">
+  <section class="crm-section content">
+    {% translate "Review merge" as section_title %}
+    {% include "crm/snippets/section_header.html" %}
+    <div class="crm-warning">
+      <p>
+        <a href="{{ object.get_absolute_url }}">{{ object.name }} ({{ object.pk }})</a>
+        {% translate "will be merged into" %}
+        <a href="{{ merge.get_absolute_url }}">{{ merge.name }} ({{ merge.pk }})</a>.
+      </p>
+      <ul>
+        <li>
+          {% blocktranslate with source=object.name source_pk=object.pk target=merge.name target_pk=merge.pk trimmed %}
+            All content from {{ source }} ({{ source_pk }}) will be moved to {{ target }} ({{ target_pk }})
+          {% endblocktranslate %}
+        </li>
+        <li>
+          {% blocktranslate with source=object.name source_pk=object.pk trimmed %}
+            {{ source }} ({{ source_pk }}) will be removed
+          {% endblocktranslate %}
+        </li>
+      </ul>
+    </div>
+    <form class="crm-form-panel crm-form-panel--inline" method="post">
       {% csrf_token %}
       {{ merge_form.merge }}
       {% translate "Merge" as merge_label %}
-      <input type="submit" value="{{ merge_label }}">
-      <a href="{{ object.get_absolute_url }}">{% translate "Cancel" %}</a>
+      <input class="crm-button crm-button--danger" type="submit" value="{{ merge_label }}">
+      <a class="crm-button crm-button--secondary" href="{{ object.get_absolute_url }}">{% translate "Cancel" %}</a>
     </form>
   </section>
-
 {% endblock content %}

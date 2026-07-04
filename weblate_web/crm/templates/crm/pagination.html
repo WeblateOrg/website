@@ -1,15 +1,21 @@
-<div class="pagination">
-  <span class="step-links">
-    {% if page_obj.has_previous %}
-      <a href="?page=1">« first</a>
-      <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-    {% endif %}
+{% load i18n %}
 
-    <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+{% if is_paginated %}
+  <nav class="crm-pagination" aria-label="{% translate "Pagination" %}">
+    <div class="crm-pagination__links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if query %}&amp;q={{ query|urlencode }}{% endif %}">{% translate "First" %}</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}">{% translate "Previous" %}</a>
+      {% endif %}
 
-    {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}">next</a>
-      <a href="?page={{ page_obj.paginator.num_pages }}">last »</a>
-    {% endif %}
-  </span>
-</div>
+      <span>
+        {% blocktranslate with page=page_obj.number pages=page_obj.paginator.num_pages %}Page {{ page }} of {{ pages }}{% endblocktranslate %}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}">{% translate "Next" %}</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}">{% translate "Last" %}</a>
+      {% endif %}
+    </div>
+  </nav>
+{% endif %}

@@ -1,165 +1,168 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n %}
 
-{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
-
-{% block extrastyle %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
-{% endblock extrastyle %}
+{% block bodyclass %}dashboard{% endblock %}
 
 {% block content %}
-  <div id="content-main">
-    {% if is_monthly %}
-      <p>
-        <a href="{% url 'crm:income-year' current_year %}">← {% translate "Back to" %} {{ current_year }} {% translate "yearly view" %}</a>
-      </p>
-    {% endif %}
-
-    <div class="module">
-      <table>
-        <caption>{% translate "Year" %}</caption>
-        <tr>
-          {% for year in years %}
-            <td>
-              {% if year == current_year %}
-                <strong>{{ year }}</strong>
-              {% else %}
-                <a href="{% url 'crm:income-year' year %}">{{ year }}</a>
-              {% endif %}
-            </td>
-          {% endfor %}
-        </tr>
-      </table>
+  {% if is_monthly %}
+    <div class="crm-toolbar">
+      <a class="crm-button crm-button--secondary"
+         href="{% url "crm:income-year" current_year %}">
+        {% blocktranslate %}Back to {{ current_year }} yearly view{% endblocktranslate %}
+      </a>
     </div>
+  {% endif %}
 
-    <div class="module">
-      <h2>
-        {% if is_monthly %}
-          {% translate "Income by Category" %} - {{ current_year }}/{{ current_month|stringformat:"02d" }}
-        {% else %}
-          {% translate "Total Income" %} - {{ current_year }}
-        {% endif %}
-      </h2>
-      <p>
-        <strong>€{{ total_income|floatformat:0 }}</strong>
-      </p>
-    </div>
-
-    {% if rolling_trend %}
-      <div class="module">
-        <table>
-          <caption>{% translate "Rolling trend" %}</caption>
-          <tbody>
-            <tr>
-              <th scope="row">{% translate "Window ending" %}</th>
-              <td>{{ rolling_trend.period_year }}/{{ rolling_trend.period_month|stringformat:"02d" }}</td>
-            </tr>
-            <tr>
-              <th scope="row">{% translate "Window size" %}</th>
-              <td>
-                {% blocktranslate count months=rolling_trend.window_months %}{{ months }} month{% plural %}{{ months }} months{% endblocktranslate %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{% translate "Current window" %}</th>
-              <td class="align-right nowrap">€{{ rolling_trend.rolling_total|floatformat:0 }}</td>
-            </tr>
-            <tr>
-              <th scope="row">{% translate "Previous window" %}</th>
-              <td class="align-right nowrap">€{{ rolling_trend.previous_total|floatformat:0 }}</td>
-            </tr>
-            <tr>
-              <th scope="row">{% translate "Change" %}</th>
-              <td class="align-right nowrap">
-                {% if rolling_trend.change_amount > 0 %}+{% endif %}
-                €{{ rolling_trend.change_amount|floatformat:0 }}
-                {% if rolling_trend.has_change_percent %}
-                  (
-                  {% if rolling_trend.change_percent > 0 %}+{% endif %}
-                  {{ rolling_trend.change_percent|floatformat:1 }}%)
-                {% endif %}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    {% endif %}
-
-    <div class="module">
-      <h3>
-        {% if is_monthly %}
-          {% translate "Daily Income" %}
-        {% else %}
-          {% translate "Monthly Income with Category Breakdown" %}
-        {% endif %}
-      </h3>
-      {% if is_monthly %}
-        <div class="dashboard-chart">{{ daily_chart_svg|safe }}</div>
+  <nav class="crm-tab-list" aria-label="{% translate "Income years" %}">
+    {% for year in years %}
+      {% if year == current_year %}
+        <span class="is-active">{{ year }}</span>
       {% else %}
-        <div class="dashboard-chart">{{ chart_svg|safe }}</div>
+        <a href="{% url "crm:income-year" year %}">{{ year }}</a>
       {% endif %}
-    </div>
+    {% endfor %}
+  </nav>
 
-    <div class="module">
-      <h3>{% translate "Category Distribution" %}</h3>
-      <div class="dashboard-chart">{{ pie_chart_svg|safe }}</div>
-    </div>
-
+  <section class="crm-section content">
     {% if is_monthly %}
-      <div class="module">
-        <table>
-          <caption>{% translate "Income by Category" %}</caption>
+      {% blocktranslate with month=current_month|stringformat:"02d" asvar section_title %}Income by Category - {{ current_year }}/{{ month }}{% endblocktranslate %}
+    {% else %}
+      {% blocktranslate asvar section_title %}Total Income - {{ current_year }}{% endblocktranslate %}
+    {% endif %}
+    {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+    <p class="crm-metric">€{{ total_income|floatformat:0 }}</p>
+  </section>
+
+  {% if rolling_trend %}
+    <section class="crm-section content">
+      {% translate "Rolling trend" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      <dl class="crm-detail-grid crm-detail-grid--compact">
+        <div>
+          <dt>{% translate "Window ending" %}</dt>
+          <dd>
+            {{ rolling_trend.period_year }}/{{ rolling_trend.period_month|stringformat:"02d" }}
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Window size" %}</dt>
+          <dd>
+            {% blocktranslate count months=rolling_trend.window_months %}{{ months }} month{% plural %}{{ months }} months{% endblocktranslate %}
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Current window" %}</dt>
+          <dd>
+            €{{ rolling_trend.rolling_total|floatformat:0 }}
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Previous window" %}</dt>
+          <dd>
+            €{{ rolling_trend.previous_total|floatformat:0 }}
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Change" %}</dt>
+          <dd>
+            {% if rolling_trend.change_amount > 0 %}+{% endif %}
+            €{{ rolling_trend.change_amount|floatformat:0 }}
+            {% if rolling_trend.has_change_percent %}
+              (
+              {% if rolling_trend.change_percent > 0 %}+{% endif %}
+              {{ rolling_trend.change_percent|floatformat:1 }}%)
+            {% endif %}
+          </dd>
+        </div>
+      </dl>
+    </section>
+  {% endif %}
+
+  <div class="crm-report-grid">
+    <section class="crm-section content">
+      {% if is_monthly %}
+        {% translate "Daily Income" as section_title %}
+      {% else %}
+        {% translate "Monthly Income with Category Breakdown" as section_title %}
+      {% endif %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      <div class="crm-chart">
+        {% if is_monthly %}
+          {{ daily_chart_svg|safe }}
+        {% else %}
+          {{ chart_svg|safe }}
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="crm-section content">
+      {% translate "Category Distribution" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      <div class="crm-chart">{{ pie_chart_svg|safe }}</div>
+    </section>
+  </div>
+
+  {% if is_monthly %}
+    <section class="crm-section content">
+      {% translate "Category income" as table_title %}
+      {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+      <div class="crm-table-wrap">
+        <table class="crm-table crm-table--summary">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
           <thead>
             <tr>
-              <th>{% translate "Category" %}</th>
-              <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
+              <th scope="col">{% translate "Category" %}</th>
+              <th scope="col" class="crm-number">{% translate "Amount (EUR)" %}</th>
             </tr>
           </thead>
           <tbody>
             {% for category, amount in income_data.items %}
               <tr>
-                <td>{{ category }}</td>
-                <td class="align-right nowrap">€{{ amount|floatformat:0 }}</td>
+                <th scope="row">{{ category }}</th>
+                <td class="crm-number">€{{ amount|floatformat:0 }}</td>
               </tr>
             {% endfor %}
-            <tr class="total">
-              <td>{% translate "Total" %}</td>
-              <td class="align-right nowrap">€{{ total_income|floatformat:0 }}</td>
+            <tr class="crm-total-row">
+              <th scope="row">{% translate "Total" %}</th>
+              <td class="crm-number">€{{ total_income|floatformat:0 }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-    {% else %}
-      <div class="module">
-        <table>
-          <caption>{% translate "Monthly Breakdown" %}</caption>
+    </section>
+  {% else %}
+    <section class="crm-section content">
+      {% translate "Monthly income" as table_title %}
+      {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+      <div class="crm-table-wrap">
+        <table class="crm-table">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
           <thead>
             <tr>
-              <th>{% translate "Month" %}</th>
-              <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
-              <th class="align-right nowrap">{% translate "Rolling window" %}</th>
-              <th class="align-right nowrap">{% translate "Trend" %}</th>
-              <th>{% translate "Actions" %}</th>
+              <th scope="col">{% translate "Month" %}</th>
+              <th scope="col" class="crm-number">{% translate "Amount (EUR)" %}</th>
+              <th scope="col" class="crm-number">{% translate "Rolling window" %}</th>
+              <th scope="col" class="crm-number">{% translate "Trend" %}</th>
+              <th scope="col">{% translate "Actions" %}</th>
             </tr>
           </thead>
           <tbody>
             {% for row in monthly_breakdown_rows %}
               <tr>
-                <td>{{ current_year }}/{{ row.month }}</td>
-                <td class="align-right nowrap">€{{ row.amount|floatformat:0 }}</td>
-                <td class="align-right nowrap">
+                <th scope="row">{{ current_year }}/{{ row.month }}</th>
+                <td class="crm-number">€{{ row.amount|floatformat:0 }}</td>
+                <td class="crm-number">
                   {% if row.trend_available %}
                     €{{ row.rolling_total|floatformat:0 }}
                     (
                     {% blocktranslate count months=row.window_months %}{{ months }} month{% plural %}{{ months }} months{% endblocktranslate %}
                     )
                   {% else %}
-                    —
+                    -
                   {% endif %}
                 </td>
-                <td class="align-right nowrap">
+                <td class="crm-number">
                   {% if row.trend_available %}
                     {% if row.change_amount > 0 %}+{% endif %}
                     €{{ row.change_amount|floatformat:0 }}
@@ -169,17 +172,19 @@
                       {{ row.change_percent|floatformat:1 }}%)
                     {% endif %}
                   {% else %}
-                    —
+                    -
                   {% endif %}
                 </td>
                 <td>
-                  <a href="{% url 'crm:income-month' current_year row.month_number %}">{% translate "View details" %}</a>
+                  <div class="crm-row-actions">
+                    <a href="{% url "crm:income-month" current_year row.month_number %}">{% translate "View details" %}</a>
+                  </div>
                 </td>
               </tr>
             {% endfor %}
-            <tr class="total">
-              <td>{% translate "Total" %}</td>
-              <td class="align-right nowrap">€{{ total_income|floatformat:0 }}</td>
+            <tr class="crm-total-row">
+              <th scope="row">{% translate "Total" %}</th>
+              <td class="crm-number">€{{ total_income|floatformat:0 }}</td>
               <td></td>
               <td></td>
               <td></td>
@@ -187,26 +192,30 @@
           </tbody>
         </table>
       </div>
+    </section>
 
-      <div class="module">
-        <table>
-          <caption>{% translate "Income by Category (Full Year)" %}</caption>
+    <section class="crm-section content">
+      {% translate "Yearly category income" as table_title %}
+      {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+      <div class="crm-table-wrap">
+        <table class="crm-table crm-table--summary">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
           <thead>
             <tr>
-              <th>{% translate "Category" %}</th>
-              <th class="align-right nowrap">{% translate "Amount (EUR)" %}</th>
+              <th scope="col">{% translate "Category" %}</th>
+              <th scope="col" class="crm-number">{% translate "Amount (EUR)" %}</th>
             </tr>
           </thead>
           <tbody>
             {% for category, amount in income_data.items %}
               <tr>
-                <td>{{ category }}</td>
-                <td class="align-right nowrap">€{{ amount|floatformat:0 }}</td>
+                <th scope="row">{{ category }}</th>
+                <td class="crm-number">€{{ amount|floatformat:0 }}</td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-    {% endif %}
-  </div>
+    </section>
+  {% endif %}
 {% endblock content %}

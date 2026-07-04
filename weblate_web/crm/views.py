@@ -561,6 +561,15 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     permission = "payments.view_customer"
     add_customer_user_permission = "payments.change_customer"
     title = "Customer detail"
+    valid_tabs: ClassVar[frozenset[str]] = frozenset(
+        {"overview", "interactions", "invoices", "payments"}
+    )
+
+    def get_active_tab(self) -> str:
+        tab = self.request.GET.get("tab", "overview")
+        if tab in self.valid_tabs:
+            return tab
+        return "overview"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
@@ -590,7 +599,12 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["services"] = self.object.service_set.customer_services().order()
         context["donations"] = self.object.service_set.donations().order()
         context["customer_users"] = self.object.ordered_users
+        context["active_tab"] = self.get_active_tab()
         return context
+
+    @staticmethod
+    def get_tab_url(customer: Customer, tab: str) -> str:
+        return f"{customer.get_absolute_url()}?tab={tab}"
 
     @classmethod
     def check_add_customer_user_permission(
@@ -765,7 +779,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     content=note,
                     user=request.user,
                 )
-                return redirect(customer)
+                return redirect(self.get_tab_url(customer, "interactions"))
             return self.get(request, *args, **kwargs)
 
         subscription_form = NewSubscriptionForm(request.POST)
@@ -904,7 +918,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         non_zero_categories = [cat for cat, val in data.items() if val > 0]
 
         svg_parts = [
-            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="pie-chart">',
+            (
+                f'<svg viewBox="0 0 {width} {height}" '
+                f'width="{width}" height="{height}" '
+                'xmlns="http://www.w3.org/2000/svg" class="pie-chart">'
+            ),
         ]
 
         # Special case: if only one category, draw a circle instead of a pie slice
@@ -1021,7 +1039,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             max_value = self.MIN_CHART_VALUE
 
         svg_parts = [
-            f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" class="stacked-bar-chart">',
+            (
+                f'<svg viewBox="0 0 {width} {height}" '
+                f'width="{width}" height="{height}" '
+                'xmlns="http://www.w3.org/2000/svg" class="stacked-bar-chart">'
+            ),
         ]
 
         # Calculate bar properties

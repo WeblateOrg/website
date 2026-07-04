@@ -1,12 +1,35 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n %}
 
 {% block content %}
-  <section class="content">
-    <table>
-      {% include "invoices/invoice_list_content.html" %}
-    </table>
+  <section class="crm-section">
+    {% translate "Invoice list" as table_title %}
+    {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+    {% if object_list %}
+      <div class="crm-table-wrap">
+        <table class="crm-table">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+          <thead>
+            <tr>
+              <th scope="col">{% translate "Number" %}</th>
+              <th scope="col">{% translate "Status" %}</th>
+              <th scope="col">{% translate "Kind" %}</th>
+              <th scope="col" class="crm-number">{% translate "Amount" %}</th>
+              <th scope="col">{% translate "Description" %}</th>
+              <th scope="col">{% translate "Customer" %}</th>
+              <th scope="col">{% translate "Actions" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% include "invoices/invoice_list_content.html" %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      {% translate "No invoices match the current filters." as empty_message %}
+      {% include "crm/snippets/empty.html" %}
+    {% endif %}
   </section>
   {% include "crm/pagination.html" %}
 {% endblock content %}

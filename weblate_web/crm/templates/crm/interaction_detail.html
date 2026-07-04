@@ -3,72 +3,87 @@
 {% load i18n %}
 
 {% block breadcrum_list %}
-  › <a href="{% url "crm:customer-list" kind="all" %}">Customers</a>
-  › <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
+  <span aria-hidden="true">›</span>
+  <a href="{% url "crm:customer-list" kind="all" %}">{% translate "Customers" %}</a>
+  <span aria-hidden="true">›</span>
+  <a href="{% url "crm:customer-detail" pk=object.customer.pk %}?tab=interactions">{{ object.customer.verbose_name }}</a>
 {% endblock breadcrum_list %}
 
 {% block content %}
-  <section class="content">
-    <h2>{{ object.summary }}</h2>
-    <table>
-      <tr>
-        <th>{% translate "Timestamp" %}</th>
-        <td>{{ object.timestamp }}</td>
-      </tr>
-      <tr>
-        <th>{% translate "Customer" %}</th>
-        <td>
-          <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
-        </td>
-      </tr>
-      <tr>
-        <th>{% translate "User" %}</th>
-        <td>{{ object.user.username }}</td>
-      </tr>
-      <tr>
-        <th>{% translate "Origin" %}</th>
-        <td>{{ object.get_origin_display }}</td>
-      </tr>
-    </table>
+  <section class="crm-section content">
+    {% translate "Interaction" as section_title %}
+    {% include "crm/snippets/section_header.html" %}
+    <dl class="crm-detail-grid">
+      <div>
+        <dt>{% translate "Timestamp" %}</dt>
+        <dd>
+          {{ object.timestamp }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Customer" %}</dt>
+        <dd>
+          <a href="{% url "crm:customer-detail" pk=object.customer.pk %}?tab=interactions">{{ object.customer.verbose_name }}</a>
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "User" %}</dt>
+        <dd>
+          {{ object.user.username }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Origin" %}</dt>
+        <dd>
+          {{ object.get_origin_display }}
+        </dd>
+      </div>
+    </dl>
+  </section>
 
-    {% with detail_rows=object.detail_rows %}
-      {% if detail_rows or object.attachment %}
-        <h3>{% translate "Details" %}</h3>
-        <table>
+  {% with detail_rows=object.detail_rows %}
+    {% if detail_rows or object.attachment %}
+      <section class="crm-section content">
+        {% translate "Details" as section_title %}
+        {% include "crm/snippets/section_header.html" %}
+        <dl class="crm-detail-grid">
           {% for detail in detail_rows %}
-            <tr>
-              <th>{{ detail.label }}</th>
-              <td>
+            <div>
+              <dt>{{ detail.label }}</dt>
+              <dd>
                 {% if detail.url %}
                   <a href="{{ detail.url }}">{{ detail.value }}</a>
                 {% else %}
                   {{ detail.value }}
                 {% endif %}
-              </td>
-            </tr>
+              </dd>
+            </div>
           {% endfor %}
           {% if object.attachment %}
-            <tr>
-              <th>{% translate "Attachment" %}</th>
-              <td>
+            <div>
+              <dt>{% translate "Attachment" %}</dt>
+              <dd>
                 <a href="{{ object.attachment_download_url }}">{{ object.attachment_filename }}</a>
-              </td>
-            </tr>
+              </dd>
+            </div>
           {% endif %}
-        </table>
-      {% endif %}
-    {% endwith %}
+        </dl>
+      </section>
+    {% endif %}
+  {% endwith %}
 
-    {% if object.content %}
-      <h3>{% translate "Content" %}</h3>
+  {% if object.content %}
+    <section class="crm-section content">
+      {% translate "Content" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
       {% if object.content_is_html %}
         <iframe title="{% translate "Interaction content" %}"
                 class="interaction-content"
                 sandbox
                 srcdoc="{{ object.content }}"></iframe>
       {% else %}
-        <pre>{{ object.content }}</pre>
+        <pre class="crm-preformatted">{{ object.content }}</pre>
       {% endif %}
-    {% endif %}
-  </section>
+    </section>
+  {% endif %}
 {% endblock content %}

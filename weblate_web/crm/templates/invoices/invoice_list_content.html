@@ -1,26 +1,40 @@
+{% load i18n %}
+
 {% for invoice in object_list %}
   <tr>
-    <th>{{ invoice.number }}</th>
+    <th scope="row">
+      <a href="{{ invoice.get_absolute_url }}">{{ invoice.number }}</a>
+    </th>
     <td>
       {% if invoice.is_paid %}
-        paid
+        <span class="crm-badge crm-badge--success">{% translate "Paid" %}</span>
       {% elif invoice.is_payable %}
         {% if invoice.due_date > today.date %}
-          unpaid, due {{ invoice.due_date }}
+          <span class="crm-badge crm-badge--warning">{% translate "Unpaid" %}</span>
+          <span class="crm-muted">{{ invoice.due_date }}</span>
         {% else %}
-          <strong>unpaid, due {{ invoice.due_date }}</strong>
+          <span class="crm-badge crm-badge--danger">{% translate "Overdue" %}</span>
+          <span class="crm-muted">{{ invoice.due_date }}</span>
         {% endif %}
+      {% else %}
+        <span class="crm-muted">-</span>
       {% endif %}
     </td>
     <td>{{ invoice.get_kind_display }}</td>
-    <td>{{ invoice.display_total_amount }}</td>
+    <td class="crm-number">{{ invoice.display_total_amount }}</td>
     <td>{{ invoice.get_description }}</td>
-    <td>{{ invoice.customer }}</td>
     <td>
-      <a href="{{ invoice.get_absolute_url }}">View</a>
-      {% with download_url=invoice.get_download_url %}
-        {% if download_url %}<a href="{{ download_url }}">Download</a>{% endif %}
-      {% endwith %}
+      <a href="{{ invoice.customer.get_absolute_url }}">{{ invoice.customer.verbose_name }}</a>
+    </td>
+    <td>
+      <div class="crm-row-actions">
+        <a href="{{ invoice.get_absolute_url }}">{% translate "View" %}</a>
+        {% with download_url=invoice.get_download_url %}
+          {% if download_url %}
+            <a href="{{ download_url }}">{% translate "Download" %}</a>
+          {% endif %}
+        {% endwith %}
+      </div>
     </td>
   </tr>
 {% endfor %}

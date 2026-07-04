@@ -385,8 +385,12 @@ class CRMTestCase(BaseCRMTestCase):
             list(customer.payment_set.order()),
             [alpha_payment, beta_payment],
         )
+        response = self.client.get(customer.get_absolute_url(), {"tab": "interactions"})
         content = response.content.decode()
         self.assertLess(content.index("Alpha note"), content.index("Beta note"))
+
+        response = self.client.get(customer.get_absolute_url(), {"tab": "payments"})
+        content = response.content.decode()
         self.assertLess(content.index("Alpha payment"), content.index("Beta payment"))
 
     def test_customer_detail_hides_add_customer_user_for_readonly_staff(self):
@@ -445,7 +449,10 @@ class CRMTestCase(BaseCRMTestCase):
             {"add_manual_note": "1", "note": note},
         )
 
-        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertRedirects(
+            response,
+            f"{customer.get_absolute_url()}?tab=interactions",
+        )
         interaction = Interaction.objects.get(customer=customer)
         self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
         self.assertEqual(interaction.user, self.user)
@@ -455,7 +462,7 @@ class CRMTestCase(BaseCRMTestCase):
         )
         self.assertEqual(interaction.content, note)
 
-        response = self.client.get(customer.get_absolute_url())
+        response = self.client.get(customer.get_absolute_url(), {"tab": "interactions"})
         self.assertContains(response, "Manual note")
         self.assertContains(
             response, "Updated the invoice with correct PO# and sent it to customer."
@@ -1296,7 +1303,9 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(interaction.details["payment_id"], str(payment.pk))
         self.assertEqual(interaction.details["invoice"], invoice.number)
 
-        response = self.client.get(invoice.customer.get_absolute_url())
+        response = self.client.get(
+            invoice.customer.get_absolute_url(), {"tab": "interactions"}
+        )
         self.assertContains(response, description)
 
     @patch.object(Invoice, "generate_receipt")
@@ -1389,7 +1398,7 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(response, "billing@example.com")
         self.assertContains(response, "HTML body")
 
-    def test_customer_detail_keeps_interaction_details_on_detail_page(self):
+    def test_customer_detail_keeps_interaction_details_on_interactions_tab(self):
         customer = self.create_customer()
         interaction = customer.interaction_set.create(
             origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
@@ -1405,7 +1414,7 @@ class CRMTestCase(BaseCRMTestCase):
         )
         interaction.attachment.save("contract.pdf", ContentFile(b"PDF content"))
 
-        response = self.client.get(customer.get_absolute_url())
+        response = self.client.get(customer.get_absolute_url(), {"tab": "interactions"})
 
         self.assertContains(response, "contract.pdf")
         self.assertNotContains(response, "Ticket ID")
