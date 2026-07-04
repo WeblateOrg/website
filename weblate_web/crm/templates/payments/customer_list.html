@@ -1,30 +1,54 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n %}
 
 {% block content %}
-  <form>
-    {{ search_form.q.label_tag }}
-    {{ search_form.q }}
-    {% translate "Search" as search_label %}
-    <input type="submit" value="{{ search_label }}">
-  </form>
-  <section class="content">
-    <table>
-      {% for object in object_list %}
-        <tr>
-          <th>{{ object.name }}</th>
-          <th>{{ object.end_client }}</th>
-          <th>{{ object.email }}</th>
-          <td>{{ object.vat }}</td>
-          <td>{{ object.city }}</td>
-          <td>{{ object.get_country_display }}</td>
-          <td>
-            <a href="{{ object.get_absolute_url }}">Details</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
+  {% include "crm/snippets/search_form.html" %}
+
+  <section class="crm-section">
+    {% translate "Customer list" as table_title %}
+    {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+    {% if object_list %}
+      <div class="crm-table-wrap">
+        <table class="crm-table">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+          <thead>
+            <tr>
+              <th scope="col">{% translate "Customer" %}</th>
+              <th scope="col">{% translate "End client" %}</th>
+              <th scope="col">{% translate "E-mail" %}</th>
+              <th scope="col">{% translate "VAT" %}</th>
+              <th scope="col">{% translate "City" %}</th>
+              <th scope="col">{% translate "Country" %}</th>
+              <th scope="col">{% translate "Actions" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for object in object_list %}
+              <tr>
+                <th scope="row">
+                  <a href="{{ object.get_absolute_url }}">{{ object.name }}</a>
+                </th>
+                <td>{{ object.end_client|default:"-" }}</td>
+                <td>{{ object.email|default:"-" }}</td>
+                <td>{{ object.vat|default:"-" }}</td>
+                <td>{{ object.city|default:"-" }}</td>
+                <td>{{ object.get_country_display|default:"-" }}</td>
+                <td>
+                  <div class="crm-row-actions">
+                    <a href="{{ object.get_absolute_url }}">{% translate "Details" %}</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      {% translate "No customers match the current filters." as empty_message %}
+      {% include "crm/snippets/empty.html" %}
+    {% endif %}
   </section>
+
   {% include "crm/pagination.html" %}
 {% endblock content %}

@@ -1,167 +1,298 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n %}
 
 {% block breadcrum_list %}
-  › <a href="{% url "crm:service-list" kind="all" %}">Services</a>
+  <span aria-hidden="true">›</span>
+  <a href="{% url "crm:service-list" kind="all" %}">{% translate "Services" %}</a>
 {% endblock breadcrum_list %}
 
+{% block page_actions %}
+  <div class="crm-page-actions">
+    <a class="crm-button crm-button--secondary"
+       href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">{% translate "Edit in admin" %}</a>
+  </div>
+{% endblock page_actions %}
+
 {% block content %}
-  <section class="content">
-    <h2>{{ object.site_title }}</h2>
-    <p>
-      <a href="{% url 'crm:customer-detail' pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
-      <br>
-      <a href="{{ object.site_url }}">{{ object.site_url }}</a>
-      {% if object.site_url_lock %}<strong>locked</strong>{% endif %}
-      <br>
-      Weblate {{ object.site_version }}, {{ object.site_users }} users, {{ object.site_projects }} projects
-      <br>
-      Support status: {{ object.get_status_display }}
-    </br>
-    {% if object.secret %}
-      Activation key: {{ object.secret }}
-    </br>
-  {% endif %}
-  {% if object.backup_repository %}
-    Backup: {{ object.backup_repository }} ({{ object.backup_size|filesizeformat }} in {{ object.backup_directory }})
-    <br>
-  {% endif %}
-  {% if object.discoverable %}
-    Discoverable: {{ object.discover_text }}
-    <br>
-    {% if object.discover_image %}
-      <img class="discover-img" src="{{ object.discover_image.url }}" />
-      <br>
+  <section class="crm-section content">
+    {% translate "Service" as section_title %}
+    {% include "crm/snippets/section_header.html" %}
+    <dl class="crm-detail-grid">
+      <div>
+        <dt>{% translate "Customer" %}</dt>
+        <dd>
+          <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "URL" %}</dt>
+        <dd>
+          <a href="{{ object.site_url }}">{{ object.site_url }}</a>
+          {% if object.site_url_lock %}
+            <strong>{% translate "locked" %}</strong>
+          {% endif %}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Weblate" %}</dt>
+        <dd>
+          {{ object.site_version }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Users" %}</dt>
+        <dd>
+          {{ object.site_users }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Projects" %}</dt>
+        <dd>
+          {{ object.site_projects }}
+        </dd>
+      </div>
+      <div>
+        <dt>{% translate "Support status" %}</dt>
+        <dd>
+          {{ object.get_status_display }}
+        </dd>
+      </div>
+      {% if object.secret %}
+        <div class="crm-detail-grid__wide">
+          <dt>{% translate "Activation key" %}</dt>
+          <dd>
+            <code class="crm-activation-key">{{ object.secret }}</code>
+          </dd>
+        </div>
+      {% endif %}
+      {% if object.backup_repository %}
+        <div>
+          <dt>{% translate "Backup" %}</dt>
+          <dd>
+            {{ object.backup_repository }}
+            <span class="crm-muted">
+              {% blocktranslate with size=object.backup_size|filesizeformat directory=object.backup_directory %}{{ size }} in {{ directory }}{% endblocktranslate %}
+            </span>
+          </dd>
+        </div>
+      {% endif %}
+      {% if object.discoverable %}
+        <div>
+          <dt>{% translate "Discoverable" %}</dt>
+          <dd>
+            {{ object.discover_text }}
+          </dd>
+        </div>
+      {% endif %}
+    </dl>
+    {% if object.discoverable and object.discover_image %}
+      <div class="crm-media">
+        <img class="discover-img" src="{{ object.discover_image.url }}" alt="">
+      </div>
     {% endif %}
+  </section>
+
+  {% if maintenance_window_form %}
+    <section class="crm-section content">
+      {% translate "Maintenance window" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      <form class="crm-form-panel crm-form-panel--compact" method="post">
+        {% csrf_token %}
+        <div class="crm-form-panel__body">{{ maintenance_window_form }}</div>
+        <div class="crm-form-panel__actions">
+          <input class="crm-button"
+                 type="submit"
+                 name="update_maintenance_window"
+                 value="{% translate "Update maintenance window" %}">
+        </div>
+      </form>
+    </section>
   {% endif %}
-  <a href="{% url "admin:weblate_web_service_change" object_id=object.pk %}">Edit</a>
-</p>
-{% if maintenance_window_form %}
-  <h2>{% translate "Maintenance window" %}</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ maintenance_window_form }}
-    <input type="submit"
-           name="update_maintenance_window"
-           value="{% translate "Update maintenance window" %}">
-  </form>
-{% endif %}
-{% for subscription in object.subscription_set.all %}
-  <h2>{{ subscription.package }}</h2>
-  <p>
-    {% if not subscription.enabled %}
-      <strong>Service is terminated</strong>
-      <br>
-    {% endif %}
-    Expires: {{ subscription.expires }}
-    <br>
-    <form method="post">
-      {% csrf_token %}
-      {{ reference_form }}
-      <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-      <input type="submit" name="quote" value="{% translate "Issue renewal quote" %}">
-    </form>
-    <details class="crm-danger-action">
-      <summary>{% translate "Issue renewal invoice" %}</summary>
-      <p>
-        {% blocktranslate %}This creates a final invoice for the renewal. Use the renewal quote action if you only need a quote.{% endblocktranslate %}
-      </p>
-      <form method="post">
-        {% csrf_token %}
-        {{ reference_form }}
-        <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-        <input type="hidden" name="invoice" value="1">
-        <label>
-          <input type="checkbox" name="confirm_invoice" value="1" required>
-          {% translate "I confirm that I want to issue a final invoice." %}
-        </label>
-        <br>
-        <input type="submit" value="{% translate "Issue renewal invoice" %}">
-      </form>
-    </details>
 
-    {% for package in subscription.upgrade_packages %}
-      <br>
-      {% blocktranslate %}Upgrade to {{ package }} without extending the current subscription period.{% endblocktranslate %}
-      <form method="post">
-        {% csrf_token %}
-        {{ reference_form }}
-        <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-        <input type="hidden" name="package" value="{{ package.name }}">
-        <input type="submit"
-               name="upgrade_quote"
-               value="{% translate "Issue upgrade quote" %}">
-      </form>
-      <details class="crm-danger-action">
-        <summary>{% translate "Issue upgrade invoice" %}</summary>
-        <p>
-          {% blocktranslate %}This creates a final invoice for the upgrade. Use the upgrade quote action if you only need a quote.{% endblocktranslate %}
-        </p>
-        <form method="post">
-          {% csrf_token %}
-          {{ reference_form }}
-          <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-          <input type="hidden" name="package" value="{{ package.name }}">
-          <input type="hidden" name="upgrade_invoice" value="1">
-          <label>
-            <input type="checkbox" name="confirm_invoice" value="1" required>
-            {% translate "I confirm that I want to issue a final invoice." %}
-          </label>
-          <br>
-          <input type="submit" value="{% translate "Issue upgrade invoice" %}">
-        </form>
-      </details>
-    {% endfor %}
+  {% for subscription in object.subscription_set.all %}
+    <section class="crm-section content">
+      {% include "crm/snippets/section_header.html" with section_title=subscription.package %}
+      <div class="crm-subscription-summary">
+        <dl class="crm-detail-grid crm-detail-grid--compact">
+          <div>
+            <dt>{% translate "Status" %}</dt>
+            <dd>
+              {% if subscription.enabled %}
+                <span class="crm-badge crm-badge--success">{% translate "Active" %}</span>
+              {% else %}
+                <strong>{% translate "Service is terminated" %}</strong>
+              {% endif %}
+            </dd>
+          </div>
+          <div>
+            <dt>{% translate "Expires" %}</dt>
+            <dd>
+              {{ subscription.expires }}
+            </dd>
+          </div>
+        </dl>
+        <div class="crm-row-actions">
+          <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">{% translate "Edit subscription in admin" %}</a>
+        </div>
+      </div>
 
-    {% if subscription.enabled %}
-      <br>
-      <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-        <label>
-          <input type="checkbox" required>
-          Disable the subscription, no payments will be reminded or triggered, <strong>backups will be removed once subscription expires</strong>
-        </label>
-        <br>
-        <input type="submit" name="disable" value="Disable">
-      </form>
-    {% endif %}
-    <a href="{% url "admin:weblate_web_subscription_change" object_id=subscription.pk %}">Edit</a>
-  </p>
-{% endfor %}
+      <div class="crm-action-group">
+        <h3>{% translate "Renewal" %}</h3>
+        <div class="crm-form-grid">
+          <form class="crm-form-panel crm-form-panel--balanced" method="post">
+            <h3>{% translate "Renewal quote" %}</h3>
+            {% csrf_token %}
+            <div class="crm-form-panel__body">
+              {{ reference_form }}
+              <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+            </div>
+            <div class="crm-form-panel__actions">
+              <input class="crm-button"
+                     type="submit"
+                     name="quote"
+                     value="{% translate "Issue renewal quote" %}">
+            </div>
+          </form>
 
-{% if object.recent_reports %}
-  <h2>Recent reports</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Timestamp</th>
-        <th>Site URL</th>
-        <th>Site title</th>
-        <th>Weblate version</th>
-        <th>Users</th>
-        <th>Projects</th>
-        <th>Hosted strings</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for report in object.recent_reports %}
-        <tr>
-          <td>{{ report.timestamp }}</td>
-          <td>
-            <a href="{{ report.site_url }}">{{ report.site_url }}</a>
-          </td>
-          <td>{{ report.site_title }}</td>
-          <td>{{ report.version }}</td>
-          <td>{{ report.users }}</td>
-          <td>{{ report.projects }}</td>
-          <td>{{ report.hosted_strings }}</td>
-        </tr>
+          <details class="crm-danger-action">
+            <summary>{% translate "Issue renewal invoice" %}</summary>
+            <p>
+              {% blocktranslate %}This creates a final invoice for the renewal. Use the renewal quote action if you only need a quote.{% endblocktranslate %}
+            </p>
+            <form class="crm-form-panel crm-form-panel--compact" method="post">
+              {% csrf_token %}
+              <div class="crm-form-panel__body">
+                {{ reference_form }}
+                <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+                <input type="hidden" name="invoice" value="1">
+                <label class="crm-check">
+                  <input type="checkbox" name="confirm_invoice" value="1" required>
+                  <span>{% translate "I confirm that I want to issue a final invoice." %}</span>
+                </label>
+              </div>
+              <div class="crm-form-panel__actions">
+                <input class="crm-button"
+                       type="submit"
+                       value="{% translate "Issue renewal invoice" %}">
+              </div>
+            </form>
+          </details>
+        </div>
+      </div>
+
+      {% for package in subscription.upgrade_packages %}
+        <div class="crm-action-group">
+          <h3>{% translate "Upgrade" %}</h3>
+          <p>
+            {% blocktranslate %}Upgrade to {{ package }} without extending the current subscription period.{% endblocktranslate %}
+          </p>
+          <div class="crm-form-grid">
+            <form class="crm-form-panel crm-form-panel--balanced" method="post">
+              <h3>{% translate "Upgrade quote" %}</h3>
+              {% csrf_token %}
+              <div class="crm-form-panel__body">
+                {{ reference_form }}
+                <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+                <input type="hidden" name="package" value="{{ package.name }}">
+              </div>
+              <div class="crm-form-panel__actions">
+                <input class="crm-button"
+                       type="submit"
+                       name="upgrade_quote"
+                       value="{% translate "Issue upgrade quote" %}">
+              </div>
+            </form>
+            <details class="crm-danger-action">
+              <summary>{% translate "Issue upgrade invoice" %}</summary>
+              <p>
+                {% blocktranslate %}This creates a final invoice for the upgrade. Use the upgrade quote action if you only need a quote.{% endblocktranslate %}
+              </p>
+              <form class="crm-form-panel crm-form-panel--compact" method="post">
+                {% csrf_token %}
+                <div class="crm-form-panel__body">
+                  {{ reference_form }}
+                  <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+                  <input type="hidden" name="package" value="{{ package.name }}">
+                  <input type="hidden" name="upgrade_invoice" value="1">
+                  <label class="crm-check">
+                    <input type="checkbox" name="confirm_invoice" value="1" required>
+                    <span>{% translate "I confirm that I want to issue a final invoice." %}</span>
+                  </label>
+                </div>
+                <div class="crm-form-panel__actions">
+                  <input class="crm-button"
+                         type="submit"
+                         value="{% translate "Issue upgrade invoice" %}">
+                </div>
+              </form>
+            </details>
+          </div>
+        </div>
       {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
 
-</section>
+      {% if subscription.enabled %}
+        <div class="crm-action-group">
+          <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--danger"
+                method="post">
+            <h3>{% translate "Disable subscription" %}</h3>
+            {% csrf_token %}
+            <div class="crm-form-panel__body">
+              <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+              <label class="crm-check">
+                <input type="checkbox" required>
+                <span>
+                  {% blocktranslate %}Disable the subscription, no payments will be reminded or triggered, <strong>backups will be removed once subscription expires</strong>{% endblocktranslate %}
+                </span>
+              </label>
+            </div>
+            <div class="crm-form-panel__actions">
+              <input class="crm-button crm-button--danger"
+                     type="submit"
+                     name="disable"
+                     value="{% translate "Disable" %}">
+            </div>
+          </form>
+        </div>
+      {% endif %}
+    </section>
+  {% endfor %}
+
+  {% if object.recent_reports %}
+    <section class="crm-section content">
+      {% translate "Recent service reports" as table_title %}
+      {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+      <div class="crm-table-wrap">
+        <table class="crm-table">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+          <thead>
+            <tr>
+              <th scope="col">{% translate "Timestamp" %}</th>
+              <th scope="col">{% translate "Site URL" %}</th>
+              <th scope="col">{% translate "Site title" %}</th>
+              <th scope="col">{% translate "Weblate version" %}</th>
+              <th scope="col" class="crm-number">{% translate "Users" %}</th>
+              <th scope="col" class="crm-number">{% translate "Projects" %}</th>
+              <th scope="col" class="crm-number">{% translate "Hosted strings" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for report in object.recent_reports %}
+              <tr>
+                <td>{{ report.timestamp }}</td>
+                <td>
+                  <a href="{{ report.site_url }}">{{ report.site_url }}</a>
+                </td>
+                <td>{{ report.site_title }}</td>
+                <td>{{ report.version }}</td>
+                <td class="crm-number">{{ report.users }}</td>
+                <td class="crm-number">{{ report.projects }}</td>
+                <td class="crm-number">{{ report.hosted_strings }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
 {% endblock content %}

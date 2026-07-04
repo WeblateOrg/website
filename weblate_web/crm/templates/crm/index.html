@@ -1,248 +1,153 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n %}
 
-{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
-
-{% block extrastyle %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
-{% endblock extrastyle %}
+{% block bodyclass %}dashboard{% endblock %}
 
 {% block content %}
-  <div id="content-main">
-    <div class="module">
-      {% if perms.payments.view_customer %}
-        <table>
-          <caption>
-            Customers
-          </caption>
-          <tr>
-            <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:customer-list' kind="all" %}">Customers</a>
-            </th>
-
+  <div class="crm-dashboard-grid">
+    {% if perms.payments.view_customer %}
+      <section class="crm-section crm-dashboard-section">
+        {% translate "Customers" as section_title %}
+        {% include "crm/snippets/section_header.html" %}
+        <div class="crm-dashboard-list">
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:customer-list" kind="all" %}"
+               aria-label="{% translate "Customers" %}">
+              <strong>{% translate "Customers" %}</strong>
+              <span>{% translate "All customer records and billing contacts." %}</span>
+            </a>
             {% if perms.payments.add_customer %}
-              <td>
-                <a href="{% url "admin:payments_customer_add" %}"
-                   class="addlink"
-                   aria-describedby="row-invoices">{% translate "Add" %}</a>
-              </td>
-            {% else %}
-              <td></td>
+              <div class="crm-row-actions">
+                <a href="{% url "admin:payments_customer_add" %}">{% translate "Add" %}</a>
+              </div>
             {% endif %}
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:customer-list" kind="active" %}"
+               aria-label="{% translate "Active customers" %}">
+              <strong>{% translate "Active customers" %}</strong>
+              <span>{% translate "Customers with current services or payments." %}</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    {% endif %}
 
-            <td>
-              <a href="{% url 'crm:customer-list' kind="all" %}"
-                 class="viewlink"
-                 aria-describedby="row-invoices">{% translate "View" %}</a>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:customer-list' kind="active" %}">Active customers</a>
-            </th>
-
-            <td></td>
-
-            <td>
-              <a href="{% url 'crm:customer-list' kind="active" %}"
-                 class="viewlink"
-                 aria-describedby="row-invoices">{% translate "View" %}</a>
-            </td>
-          </tr>
-        </table>
-      {% endif %}
-      {% if perms.invoices %}
-        <table>
-          <caption>
-            Invoices
-          </caption>
-          <tr>
-            <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:invoice-list' kind="invoice" %}">Invoices</a>
-            </th>
-
+    {% if perms.invoices.view_invoice %}
+      <section class="crm-section crm-dashboard-section">
+        {% translate "Invoices" as section_title %}
+        {% include "crm/snippets/section_header.html" %}
+        <div class="crm-dashboard-list">
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:invoice-list" kind="invoice" %}"
+               aria-label="{% translate "Invoices" %}">
+              <strong>{% translate "Invoices" %}</strong>
+              <span>{% translate "Issued invoices and receipts." %}</span>
+            </a>
             {% if perms.invoices.add_invoice %}
-              <td>
-                <a href="{% url "admin:invoices_invoice_add" %}?kind=10"
-                   class="addlink"
-                   aria-describedby="row-invoices">{% translate "Add" %}</a>
-              </td>
-            {% else %}
-              <td></td>
+              <div class="crm-row-actions">
+                <a href="{% url "admin:invoices_invoice_add" %}?kind=10">{% translate "Add" %}</a>
+              </div>
             {% endif %}
-
-            <td>
-              <a href="{% url 'crm:invoice-list' kind="invoice" %}"
-                 class="viewlink"
-                 aria-describedby="row-invoices">{% translate "View" %}</a>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" id="row-quotes">
-              <a href="{% url 'crm:invoice-list' kind="quote" %}">Quotes</a>
-            </th>
-
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:invoice-list" kind="quote" %}"
+               aria-label="{% translate "Quotes" %}">
+              <strong>{% translate "Quotes" %}</strong>
+              <span>{% translate "Draft offers and renewal quotes." %}</span>
+            </a>
             {% if perms.invoices.add_invoice %}
-              <td>
-                <a href="{% url "admin:invoices_invoice_add" %}?kind=90"
-                   class="addlink"
-                   aria-describedby="row-invoices">{% translate "Add" %}</a>
-              </td>
-            {% else %}
-              <td></td>
+              <div class="crm-row-actions">
+                <a href="{% url "admin:invoices_invoice_add" %}?kind=90">{% translate "Add" %}</a>
+              </div>
             {% endif %}
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:invoice-list" kind="unpaid" %}"
+               aria-label="{% translate "Unpaid invoices" %}">
+              <strong>{% translate "Unpaid invoices" %}</strong>
+              <span>{% translate "Invoices that still need payment follow-up." %}</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    {% endif %}
 
-            <td>
-              <a href="{% url 'crm:invoice-list' kind="quote" %}"
-                 class="viewlink"
-                 aria-describedby="row-quotes">{% translate "View" %}</a>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" id="row-unpaid">
-              <a href="{% url 'crm:invoice-list' kind="unpaid" %}">Unpaid invoices</a>
-            </th>
-
-            <td></td>
-
-            <td>
-              <a href="{% url 'crm:invoice-list' kind="unpaid" %}"
-                 class="viewlink"
-                 aria-describedby="row-unpaid">{% translate "View" %}</a>
-            </td>
-          </tr>
-        </table>
-      {% endif %}
-      {% if perms.weblate_web.view_service %}
-        <table>
-          <caption>
-            Services
-          </caption>
-          <tr>
-            <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:service-list' kind="all" %}">All services</a>
-            </th>
-
+    {% if perms.weblate_web.view_service %}
+      <section class="crm-section crm-dashboard-section">
+        {% translate "Services" as section_title %}
+        {% include "crm/snippets/section_header.html" %}
+        <div class="crm-dashboard-list">
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:service-list" kind="all" %}"
+               aria-label="{% translate "All services" %}">
+              <strong>{% translate "All services" %}</strong>
+              <span>{% translate "Hosted, dedicated, and support services." %}</span>
+            </a>
             {% if perms.weblate_web.add_service %}
-              <td>
-                <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-invoices">{% translate "Add" %}</a>
-              </td>
-            {% else %}
-              <td></td>
+              <div class="crm-row-actions">
+                <a href="{% url "admin:weblate_web_service_add" %}">{% translate "Add" %}</a>
+              </div>
             {% endif %}
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:service-list" kind="expired" %}"
+               aria-label="{% translate "Expired services" %}">
+              <strong>{% translate "Expired services" %}</strong>
+              <span>{% translate "Renewable services past their expiration date." %}</span>
+            </a>
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:service-list" kind="dedicated" %}"
+               aria-label="{% translate "Dedicated hosting services" %}">
+              <strong>{% translate "Dedicated hosting services" %}</strong>
+              <span>{% translate "Dedicated hosting subscriptions." %}</span>
+            </a>
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:service-list" kind="extended" %}"
+               aria-label="{% translate "Extended support services" %}">
+              <strong>{% translate "Extended support services" %}</strong>
+              <span>{% translate "Extended support subscriptions." %}</span>
+            </a>
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:service-list" kind="premium" %}"
+               aria-label="{% translate "Premium support services" %}">
+              <strong>{% translate "Premium support services" %}</strong>
+              <span>{% translate "Premium support subscriptions." %}</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    {% endif %}
 
-            <td>
-              <a href="{% url 'crm:service-list' kind="all" %}"
-                 class="viewlink"
-                 aria-describedby="row-invoices">{% translate "View" %}</a>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:service-list' kind="expired" %}">Expired services</a>
-            </th>
-
-            <td></td>
-
-            <td>
-              <a href="{% url 'crm:service-list' kind="expired" %}"
-                 class="viewlink"
-                 aria-describedby="row-invoices">{% translate "View" %}</a>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" id="row-dedicated">
-              <a href="{% url 'crm:service-list' kind="dedicated" %}">Dedicated hosting services</a>
-            </th>
-
-            <td></td>
-
-            <td>
-              <a href="{% url 'crm:service-list' kind="dedicated" %}"
-                 class="viewlink"
-                 aria-describedby="row-dedicated">{% translate "View" %}</a>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:service-list' kind="extended" %}">Extended support services</a>
-            </th>
-
-            <td></td>
-
-            <td>
-              <a href="{% url 'crm:service-list' kind="extended" %}"
-                 class="viewlink"
-                 aria-describedby="row-invoices">{% translate "View" %}</a>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" id="row-invoices">
-              <a href="{% url 'crm:service-list' kind="premium" %}">Premium support services</a>
-            </th>
-
-            <td></td>
-
-            <td>
-              <a href="{% url 'crm:service-list' kind="premium" %}"
-                 class="viewlink"
-                 aria-describedby="row-invoices">{% translate "View" %}</a>
-            </td>
-          </tr>
-        </table>
-      {% endif %}
-      {% if perms.invoices.view_income %}
-        <table>
-          <caption>
-            Income Tracking
-          </caption>
-          <tr>
-            <th scope="row" id="row-income">
-              <a href="{% url 'crm:income' %}">Income</a>
-            </th>
-
-            <td></td>
-
-            <td>
-              <a href="{% url 'crm:income' %}" class="viewlink" aria-describedby="row-income">{% translate "View" %}</a>
-            </td>
-          </tr>
-        </table>
-      {% endif %}
-      {% comment %}
-      <table>
-        <caption>
-          <a href="TODO" class="section">{{ app.name }}xx</a>
-        </caption>
-        <tr>
-          <th scope="row" id="row-TODO">
-            <a href="TODO">TODO</a>
-          </th>
-
-          {% if model.add_url %}
-            <td>
-              <a href="{{ model.add_url }}" class="addlink" aria-describedby="row-TODO">{% translate 'Add' %}</a>
-            </td>
-          {% else %}
-            <td></td>
-          {% endif %}
-
-          {% if model.view_only %}
-            <td>
-              <a href="{{ model.admin_url }}" class="viewlink" aria-describedby="{{ app.app_label }}-{{ model_name }}">{% translate 'View' %}</a>
-            </td>
-          {% elif models.edit %}
-            <td>
-              <a href="{{ model.admin_url }}" class="changelink" aria-describedby="{{ app.app_label }}-{{ model_name }}">{% translate 'Change' %}</a>
-            </td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-      </table>
-      {% endcomment %}
-    </div>
+    {% if perms.invoices.view_income %}
+      <section class="crm-section crm-dashboard-section">
+        {% translate "Income tracking" as section_title %}
+        {% include "crm/snippets/section_header.html" %}
+        <div class="crm-dashboard-list">
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:income" %}"
+               aria-label="{% translate "Income" %}">
+              <strong>{% translate "Income" %}</strong>
+              <span>{% translate "Yearly and monthly income breakdowns." %}</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    {% endif %}
   </div>
 {% endblock content %}

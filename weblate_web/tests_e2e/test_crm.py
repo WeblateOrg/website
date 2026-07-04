@@ -21,7 +21,6 @@
 
 from __future__ import annotations
 
-import re
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
@@ -381,6 +380,66 @@ def assert_text_visible(page: Page, text: str, *, exact: bool = True) -> None:
     assert page.get_by_text(text, exact=exact).first.is_visible()
 
 
+def assert_customer_tab_selected(page: Page, name: str) -> None:
+    """Assert a customer detail tab is selected in the tab navigation."""
+    tab = page.get_by_label("Customer sections").get_by_role(
+        "link", name=name, exact=True
+    )
+    assert tab.get_attribute("aria-current") == "page"
+    assert "is-active" in (tab.get_attribute("class") or "")
+
+
+def assert_no_horizontal_overflow(page: Page) -> None:
+    """Assert the document fits the current viewport horizontally."""
+    assert page.evaluate(
+        "() => document.documentElement.scrollWidth <= "
+        "document.documentElement.clientWidth + 1"
+    )
+
+
+def assert_income_charts_fit(page: Page) -> None:
+    """Assert generated income charts scale inside their panels."""
+    charts = page.locator(".crm-chart")
+    assert charts.count() == 2
+    for index in range(charts.count()):
+        assert charts.nth(index).evaluate(
+            """element => {
+                const svg = element.querySelector("svg");
+                if (!svg) {
+                    return false;
+                }
+                const chartRect = element.getBoundingClientRect();
+                const svgRect = svg.getBoundingClientRect();
+                return svgRect.width > 0
+                    && svgRect.width <= chartRect.width + 1
+                    && element.scrollWidth <= element.clientWidth + 1;
+            }"""
+        )
+
+
+def assert_section_table_does_not_scroll(page: Page, heading: str) -> None:
+    """Assert a section table is not wider than its wrapping panel."""
+    section = page.locator(
+        "section.crm-section",
+        has=page.get_by_role("heading", name=heading, exact=True),
+    )
+    assert section.locator(".crm-table-wrap").evaluate(
+        "element => element.scrollWidth <= element.clientWidth + 1"
+    )
+
+
+def assert_summary_chips_same_height(page: Page) -> None:
+    """Assert invoice summary chips share the same visual height."""
+    assert page.locator(".crm-summary-line > span").evaluate_all(
+        """elements => {
+            const heights = elements.map(
+                element => Math.round(element.getBoundingClientRect().height)
+            );
+            return Math.max(...heights) - Math.min(...heights) <= 1;
+        }"""
+    )
+
+
 def log_in(page: Page, live_server, user: User) -> None:
     """Log in through Django admin using the CRM staff user."""
     response = page.goto(f"{live_server.url}/admin/login/")
@@ -404,7 +463,19 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         response = page.goto(absolute_url(live_server, reverse("crm:index")))
         assert_loaded(page, response, "CRM dashboard")
         assert page.get_by_role("link", name="Customers", exact=True).is_visible()
+        assert (
+            page.locator(".crm-brand span").evaluate(
+                "element => getComputedStyle(element).color"
+            )
+            == "rgb(255, 255, 255)"
+        )
         capture(page, "dashboard")
+
+        page.locator(".crm-dashboard-item").filter(has_text="Active customers").click()
+        page.wait_for_load_state("networkidle")
+        assert page.url == absolute_url(
+            live_server, reverse("crm:customer-list", kwargs={"kind": "active"})
+        )
 
         for kind in ("all", "active"):
             response = page.goto(
@@ -435,6 +506,12 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             assert_loaded(page, response, f"Service list {kind}")
             capture(page, f"services-{kind}")
 
+        page.get_by_label("CRM navigation").get_by_role("link", name="Invoices").click()
+        page.wait_for_load_state("networkidle")
+        assert page.url == absolute_url(
+            live_server, reverse("crm:invoice-list", kwargs={"kind": "invoice"})
+        )
+
         for kind in ("all", "invoice", "quote", "unpaid"):
             response = page.goto(
                 absolute_url(
@@ -459,6 +536,159 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         assert page.get_by_role("heading", name="Daily Income").is_visible()
         capture(page, "income-month")
 
+    def test_mobile_navigation_menu(
+        self, page: Page, live_server, crm_data: CrmData
+    ) -> None:
+        """Use the compact CRM navigation on a narrow viewport."""
+        page.set_viewport_size({"width": 390, "height": 800})
+        log_in(page, live_server, crm_data.staff)
+
+        response = page.goto(
+            absolute_url(
+                live_server, reverse("crm:service-list", kwargs={"kind": "all"})
+            )
+        )
+        assert_loaded(page, response, "Mobile service list")
+        assert (
+            page.locator("#crm-menu-toggle").evaluate("element => element.tabIndex")
+            == 0
+        )
+        page.get_by_text("Menu", exact=True).click()
+        page.get_by_label("CRM navigation").get_by_role("link", name="Invoices").click()
+        page.wait_for_load_state("networkidle")
+        assert page.url == absolute_url(
+            live_server, reverse("crm:invoice-list", kwargs={"kind": "invoice"})
+        )
+
+    def test_income_reports_mobile_layout(
+        self, page: Page, live_server, crm_data: CrmData
+    ) -> None:
+        """Check income charts and compact tables on a narrow viewport."""
+        page.set_viewport_size({"width": 390, "height": 900})
+        log_in(page, live_server, crm_data.staff)
+
+        response = page.goto(absolute_url(live_server, reverse("crm:income")))
+        assert_loaded(page, response, "Mobile income yearly report")
+        assert_no_horizontal_overflow(page)
+        assert_income_charts_fit(page)
+        assert_section_table_does_not_scroll(page, "Yearly category income")
+        capture(page, "income-year-mobile")
+
+        response = page.goto(
+            absolute_url(
+                live_server,
+                reverse("crm:income-month", kwargs={"year": 2026, "month": 3}),
+            )
+        )
+        assert_loaded(page, response, "Mobile income monthly report")
+        assert_no_horizontal_overflow(page)
+        assert_income_charts_fit(page)
+        assert_section_table_does_not_scroll(page, "Category income")
+        capture(page, "income-month-mobile")
+
+    def test_customer_detail_tabs(
+        self, page: Page, live_server, crm_data: CrmData
+    ) -> None:
+        """Visit every customer detail tab through its direct URL."""
+        log_in(page, live_server, crm_data.staff)
+        customer_url = absolute_url(live_server, crm_data.customer.get_absolute_url())
+
+        response = page.goto(customer_url)
+        assert_loaded(page, response, "Customer overview tab")
+        assert (
+            page.locator("#crm-menu-toggle").evaluate("element => element.tabIndex")
+            == -1
+        )
+        assert_customer_tab_selected(page, "Overview")
+        for heading in (
+            "Customer",
+            "Actions",
+            "Customer services",
+            "Agreements",
+            "Donations",
+        ):
+            assert page.get_by_role("heading", name=heading, exact=True).is_visible()
+        assert (
+            page.get_by_role("heading", name="Invoice history", exact=True).count() == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Interaction history", exact=True).count()
+            == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Payment history", exact=True).count() == 0
+        )
+        capture(page, "customer-tab-overview")
+
+        response = page.goto(f"{customer_url}?tab=interactions")
+        assert_loaded(page, response, "Customer interactions tab")
+        assert_customer_tab_selected(page, "Interactions")
+        assert page.get_by_role(
+            "heading", name="Interaction history", exact=True
+        ).first.is_visible()
+        assert_text_visible(page, "Payment completed")
+        assert_text_visible(page, "contract.pdf")
+        assert (
+            page.get_by_role("heading", name="Customer services", exact=True).count()
+            == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Invoice history", exact=True).count() == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Payment history", exact=True).count() == 0
+        )
+        capture(page, "customer-tab-interactions")
+
+        response = page.goto(f"{customer_url}?tab=invoices")
+        assert_loaded(page, response, "Customer invoices tab")
+        assert_customer_tab_selected(page, "Invoices")
+        assert page.get_by_role(
+            "heading", name="Invoice history", exact=True
+        ).is_visible()
+        assert_text_visible(page, "CRM hosted service invoice")
+        assert_text_visible(page, "Issue new invoice")
+        assert (
+            page.get_by_role("heading", name="Customer services", exact=True).count()
+            == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Interaction history", exact=True).count()
+            == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Payment history", exact=True).count() == 0
+        )
+        capture(page, "customer-tab-invoices")
+
+        response = page.goto(f"{customer_url}?tab=payments")
+        assert_loaded(page, response, "Customer payments tab")
+        assert_customer_tab_selected(page, "Payments")
+        assert page.get_by_role(
+            "heading", name="Payment history", exact=True
+        ).is_visible()
+        assert_text_visible(page, "Weblate extended self-hosted support (yearly)")
+        assert (
+            page.get_by_role("heading", name="Customer services", exact=True).count()
+            == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Invoice history", exact=True).count() == 0
+        )
+        assert (
+            page.get_by_role("heading", name="Interaction history", exact=True).count()
+            == 0
+        )
+        capture(page, "customer-tab-payments")
+
+        response = page.goto(f"{customer_url}?tab=unknown")
+        assert_loaded(page, response, "Customer invalid tab fallback")
+        assert_customer_tab_selected(page, "Overview")
+        assert page.get_by_role(
+            "heading", name="Customer services", exact=True
+        ).first.is_visible()
+        capture(page, "customer-tab-invalid")
+
     def test_customer_detail_actions(
         self, page: Page, live_server, crm_data: CrmData
     ) -> None:
@@ -471,13 +701,24 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         assert_loaded(page, response, "Customer detail")
         capture(page, "customer-detail")
 
+        merge_height = page.locator('input[name="merge"]').evaluate(
+            "element => element.getBoundingClientRect().height"
+        )
+        email_height = page.locator('input[name="email"]').evaluate(
+            "element => element.getBoundingClientRect().height"
+        )
+        assert round(merge_height) == round(email_height)
+
         page.fill('textarea[name="note"]', "Manual CRM note\nFollow-up requested.")
         with fixed_interaction_timestamp(FIXED_TIMESTAMP + timedelta(minutes=10)):
             page.click('input[name="add_manual_note"]')
             page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
+        assert "tab=interactions" in page.url
         assert_text_visible(page, "Manual CRM note", exact=False)
         capture(page, "customer-manual-note")
+        page.get_by_role("link", name="Overview").click()
+        page.wait_for_load_state("networkidle")
 
         hosted_payload = {
             "provider": get_default_saml_provider(),
@@ -695,6 +936,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         )
         assert_loaded(page, response, "Refund invoice detail")
         assert page.get_by_role("heading", name="Confirm refund done").is_visible()
+        assert_summary_chips_same_height(page)
         capture(page, "refund-detail")
         page.fill('input[name="description"]', "Refunded by bank transfer")
         with patch.object(Invoice, "generate_receipt"):
@@ -702,8 +944,8 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
         assert (
-            page.locator("section.content p")
-            .filter(has_text=re.compile(r"\bpaid\b"))
+            page.locator(".crm-summary-line .crm-badge--success")
+            .filter(has_text="Paid")
             .first.is_visible()
         )
         assert page.get_by_role("heading", name="Confirm refund done").count() == 0

@@ -1,0 +1,9 @@
+{% if section_title or section_description or section_actions %}
+  <header class="crm-section__header">
+    <div>
+      {% if section_title %}<h2>{{ section_title }}</h2>{% endif %}
+      {% if section_description %}<p>{{ section_description }}</p>{% endif %}
+    </div>
+    {% if section_actions %}<div class="crm-section__actions">{{ section_actions }}</div>{% endif %}
+  </header>
+{% endif %}

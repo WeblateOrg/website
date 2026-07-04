@@ -1,21 +1,78 @@
 {% extends "crm/base.html" %}
 
-{% load i18n static %}
+{% load i18n %}
+
+{% block page_header %}
+  {% if kind == "all" %}
+    <h1 class="crm-sr-only">{{ title|default:"CRM" }}</h1>
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock page_header %}
 
 {% block content %}
-  {% if kind == "expired" or kind == "all" %}
-    {% regroup object_list by package_kind as service_list %}
+  {% if object_list %}
+    {% if kind == "expired" or kind == "all" %}
+      {% regroup object_list by package_kind as service_list %}
 
-    {% for package_group in service_list %}
-      <h3>{{ package_group.grouper }}</h3>
-      <section class="content">
-        {% include "weblate_web/service_list_content.html" with object_list=package_group.list %}
+      {% for package_group in service_list %}
+        <section class="crm-section">
+          {% include "crm/snippets/section_header.html" with section_title=package_group.grouper only %}
+          <div class="crm-table-wrap">
+            <table class="crm-table">
+              {% include "crm/snippets/table_caption.html" with table_title=package_group.grouper only %}
+              <thead>
+                <tr>
+                  <th scope="col">{% translate "Service" %}</th>
+                  <th scope="col">{% translate "Customer" %}</th>
+                  <th scope="col">{% translate "URL" %}</th>
+                  <th scope="col">{% translate "Version" %}</th>
+                  <th scope="col">{% translate "Status" %}</th>
+                  <th scope="col">{% translate "Packages" %}</th>
+                  <th scope="col">{% translate "Actions" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% include "weblate_web/service_list_content.html" with object_list=package_group.list %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      {% endfor %}
+    {% else %}
+      <section class="crm-section">
+        {% translate "Services" as table_title %}
+        {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Service" %}</th>
+                <th scope="col">{% translate "Customer" %}</th>
+                <th scope="col">{% translate "URL" %}</th>
+                <th scope="col">{% translate "Version" %}</th>
+                <th scope="col">{% translate "Status" %}</th>
+                {% if kind == "extended" %}
+                  <th scope="col">{% translate "Maintenance" %}</th>
+                {% endif %}
+                <th scope="col">{% translate "Packages" %}</th>
+                <th scope="col">{% translate "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% include "weblate_web/service_list_content.html" %}
+            </tbody>
+          </table>
+        </div>
       </section>
-    {% endfor %}
-
+    {% endif %}
   {% else %}
-    <section class="content">
-      {% include "weblate_web/service_list_content.html" %}
+    <section class="crm-section">
+      {% translate "Services" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% translate "No services match the current filters." as empty_message %}
+      {% include "crm/snippets/empty.html" %}
     </section>
   {% endif %}
 {% endblock content %}

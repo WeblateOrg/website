@@ -1,35 +1,119 @@
-{% extends "admin/base.html" %}
+{% load i18n static %}
 
-{% load static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}"
+      dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description"
+          content="{% translate "Internal Weblate customer relationship management." %}">
+    <meta name="keywords" content="Weblate,CRM">
+    <title>
+      {% block title %}
+        {% if subtitle %}{{ subtitle }} |{% endif %}
+        {{ title }} | Weblate CRM
+      {% endblock title %}
 
-{% block extrastyle %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static "crm.css" %}">
-{% endblock extrastyle %}
+    </title>
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "logo-32.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "logo-16.png" %}">
+    <link rel="stylesheet" href="{% static "style.css" %}">
+    <link rel="stylesheet" href="{% static "weblate_fonts/source-sans-3.css" %}">
+    <link rel="stylesheet" href="{% static "weblate_fonts/source-code-pro.css" %}">
+    <link rel="stylesheet" href="{% static "crm.css" %}">
+    <script src="{% static "crm.js" %}" defer></script>
+    {% block extrastyle %}
+    {% endblock extrastyle %}
 
-{% block title %}
-  {% if subtitle %}{{ subtitle }} |{% endif %}
-  {{ title }} | Weblate CRM
-{% endblock title %}
+  </head>
+  <body class="crm-body {% block bodyclass %}{% endblock %}
+     ">
+    <a class="crm-skip-link" href="#crm-content">{% translate "Skip to main content" %}</a>
+    <header class="crm-header">
+      <div class="crm-header__inner">
+        <a class="crm-brand" href="{% url "crm:index" %}">
+          <img src="{% static "weblate-tiny.svg" %}" alt="">
+          <span>Weblate CRM</span>
+        </a>
 
-{% block branding %}
-  <div id="site-name">
-    <a href="{% url 'crm:index' %}">Weblate CRM</a>
-  </div>
-  {% if user.is_anonymous %}
-    {% include "admin/color_theme_toggle.html" %}
-  {% endif %}
-{% endblock branding %}
+        <input id="crm-menu-toggle"
+               class="crm-menu-toggle"
+               type="checkbox"
+               tabindex="-1"
+               aria-label="{% translate "Toggle navigation" %}">
+        <label class="crm-menu-button" for="crm-menu-toggle">{% translate "Menu" %}</label>
 
-{% block nav-global %}{% endblock %}
+        <div class="crm-menu-panel" id="crm-menu">
+          <nav class="crm-nav" aria-label="{% translate "CRM navigation" %}">
+            <a href="{% url "crm:index" %}"
+               class="{% if request.resolver_match.url_name == "index" %}is-active{% endif %}">{% translate "Dashboard" %}</a>
+            {% if perms.payments.view_customer %}
+              <a href="{% url "crm:customer-list" kind="all" %}"
+                 aria-label="{% translate "Customer records" %}"
+                 class="{% if request.resolver_match.url_name == "customer-list" or request.resolver_match.url_name == "customer-detail" or request.resolver_match.url_name == "customer-merge" or request.resolver_match.url_name == "interaction-detail" %}is-active{% endif %}">{% translate "Customers" %}</a>
+            {% endif %}
+            {% if perms.weblate_web.view_service %}
+              <a href="{% url "crm:service-list" kind="all" %}"
+                 class="{% if request.resolver_match.url_name == "service-list" or request.resolver_match.url_name == "service-detail" %}is-active{% endif %}">{% translate "Services" %}</a>
+            {% endif %}
+            {% if perms.invoices.view_invoice %}
+              <a href="{% url "crm:invoice-list" kind="invoice" %}"
+                 class="{% if request.resolver_match.url_name == "invoice-list" or request.resolver_match.url_name == "invoice-detail" %}is-active{% endif %}">{% translate "Invoices" %}</a>
+            {% endif %}
+            {% if perms.invoices.view_income %}
+              <a href="{% url "crm:income" %}"
+                 class="{% if request.resolver_match.url_name == "income" or request.resolver_match.url_name == "income-year" or request.resolver_match.url_name == "income-month" %}is-active{% endif %}">{% translate "Income" %}</a>
+            {% endif %}
+          </nav>
 
-{% block breadcrumbs %}
-  <div class="breadcrumbs">
-    <a href="{% url 'crm:index' %}">CRM</a>
+          <div class="crm-user-actions">
+            <a href="{% url "home" %}">{% translate "Website" %}</a>
+            <a href="{% url "admin:index" %}">{% translate "Admin" %}</a>
+            {% if user.is_authenticated %}
+              <form action="{% url "logout" %}" method="post">
+                {% csrf_token %}
+                <button type="submit">{% translate "Sign out" %}</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </header>
 
-    {% block breadcrum_list %}
-    {% endblock breadcrum_list %}
+    <main id="crm-content" class="crm-main">
+      <nav class="crm-breadcrumbs" aria-label="{% translate "Breadcrumbs" %}">
+        <a href="{% url "crm:index" %}">{% translate "CRM" %}</a>
+        {% block breadcrum_list %}
+        {% endblock breadcrum_list %}
 
-    {% if title and title != "CRM" %}› {{ title }}{% endif %}
-  </div>
-{% endblock breadcrumbs %}
+        {% if title and title != "CRM" %}<span aria-hidden="true">›</span><span>{{ title }}</span>{% endif %}
+      </nav>
+
+      {% block page_header %}
+        <div class="crm-page-header">
+          <div>
+            <h1>{{ title|default:"CRM" }}</h1>
+          </div>
+          {% block page_actions %}
+          {% endblock page_actions %}
+
+        </div>
+      {% endblock page_header %}
+
+      {% if messages %}
+        <section class="crm-messages" aria-label="{% translate "Messages" %}">
+          {% for message in messages %}
+            <div class="crm-alert {{ message.tags }}" role="alert">{{ message }}</div>
+          {% endfor %}
+        </section>
+      {% endif %}
+
+      {% block content %}
+      {% endblock content %}
+
+    </main>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<div class="crm-empty">
+  <p>
+    {% if empty_message %}
+      {{ empty_message }}
+    {% else %}
+      {% translate "No records found." %}
+    {% endif %}
+  </p>
+</div>
