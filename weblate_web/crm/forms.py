@@ -162,6 +162,43 @@ class ManualInteractionForm(forms.Form):
     )
 
 
+class CustomerFollowUpForm(forms.Form):
+    follow_up_at = forms.DateTimeField(
+        label=gettext_lazy("Follow-up date"),
+        input_formats=("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M"),
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local"},
+            format="%Y-%m-%dT%H:%M",
+        ),
+    )
+    follow_up_note = forms.CharField(
+        label=gettext_lazy("Follow-up note"),
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(),
+    )
+
+    def __init__(self, *args, instance: Customer, **kwargs):
+        self.instance = instance
+        kwargs.setdefault(
+            "initial",
+            {
+                "follow_up_at": instance.follow_up_at,
+                "follow_up_note": instance.follow_up_note,
+            },
+        )
+        super().__init__(*args, **kwargs)
+
+    def save(self, *, commit: bool = True) -> Customer:
+        self.instance.follow_up_at = self.cleaned_data["follow_up_at"]
+        self.instance.follow_up_note = self.cleaned_data["follow_up_note"]
+        if commit:
+            self.instance.save(
+                update_fields=["follow_up_at", "follow_up_note"],
+            )
+        return self.instance
+
+
 class CustomerUserForm(forms.Form):
     email = forms.EmailField(label=gettext_lazy("E-mail"))
     full_name = forms.CharField(label=gettext_lazy("Full name"), max_length=150)

@@ -332,6 +332,241 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
         self.assertNotContains(response, quote.number)
 
 
+class CRMFollowUpTestCase(BaseCRMTestCase):
+    user: User
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        self.client.force_login(self.user)
+
+    @staticmethod
+    def add_readonly_customer_permission(user: User) -> None:
+        user.user_permissions.add(
+            Permission.objects.get(
+                codename="view_customer",
+                content_type__app_label="payments",
+                content_type__model="customer",
+            )
+        )
+
+    def test_customer_follow_up_querysets(self):
+        due = self.create_customer("DUE CUSTOMER")
+        upcoming = self.create_customer("UPCOMING CUSTOMER")
+        without_follow_up = self.create_customer("NO FOLLOW-UP CUSTOMER")
+        due.follow_up_at = timezone.now() - timedelta(hours=1)
+        due.save(update_fields=["follow_up_at"])
+        upcoming.follow_up_at = timezone.now() + timedelta(days=1)
+        upcoming.save(update_fields=["follow_up_at"])
+
+        self.assertEqual(list(Customer.objects.followups()), [due, upcoming])
+        self.assertEqual(list(Customer.objects.due_followups()), [due])
+        self.assertEqual(list(Customer.objects.upcoming_followups()), [upcoming])
+        self.assertNotIn(without_follow_up, Customer.objects.followups())
+
+    def test_customer_merge_carries_source_follow_up(self):
+        target = self.create_customer("TARGET CUSTOMER")
+        source = self.create_customer("SOURCE CUSTOMER")
+        source.follow_up_at = timezone.now() + timedelta(days=1)
+        source.follow_up_note = "Send renewal quote"
+        source.save(update_fields=["follow_up_at", "follow_up_note"])
+
+        target.merge(source, user=self.user)
+
+        target.refresh_from_db()
+        self.assertFalse(Customer.objects.filter(pk=source.pk).exists())
+        self.assertEqual(target.follow_up_at, source.follow_up_at)
+        self.assertEqual(target.follow_up_note, "Send renewal quote")
+        self.assertEqual(list(Customer.objects.followups()), [target])
+
+    def test_customer_merge_keeps_existing_target_follow_up(self):
+        target = self.create_customer("TARGET CUSTOMER")
+        source = self.create_customer("SOURCE CUSTOMER")
+        target.follow_up_at = timezone.now() + timedelta(hours=1)
+        target.follow_up_note = "Call accounting"
+        target.save(update_fields=["follow_up_at", "follow_up_note"])
+        source.follow_up_at = timezone.now() + timedelta(days=1)
+        source.follow_up_note = "Send renewal quote"
+        source.save(update_fields=["follow_up_at", "follow_up_note"])
+
+        target.merge(source, user=self.user)
+
+        target.refresh_from_db()
+        self.assertEqual(target.follow_up_note, "Call accounting")
+        self.assertNotEqual(target.follow_up_at, source.follow_up_at)
+
+    def test_customer_follow_up_list(self):
+        due = self.create_customer("DUE CUSTOMER")
+        upcoming = self.create_customer("UPCOMING CUSTOMER")
+        without_follow_up = self.create_customer("NO FOLLOW-UP CUSTOMER")
+        due.follow_up_at = timezone.now() - timedelta(hours=1)
+        due.follow_up_note = "Send renewal quote"
+        due.save(update_fields=["follow_up_at", "follow_up_note"])
+        upcoming.follow_up_at = timezone.now() + timedelta(days=1)
+        upcoming.follow_up_note = "Check payment"
+        upcoming.save(update_fields=["follow_up_at", "follow_up_note"])
+
+        response = self.client.get(
+            reverse("crm:customer-list", kwargs={"kind": "followups"})
+        )
+
+        self.assertContains(response, due.name)
+        self.assertContains(response, upcoming.name)
+        self.assertContains(response, "Send renewal quote")
+        self.assertContains(response, "Check payment")
+        self.assertNotContains(response, without_follow_up.name)
+
+    def test_dashboard_shows_customer_follow_ups(self):
+        due = self.create_customer("DUE CUSTOMER")
+        due.follow_up_at = timezone.now() - timedelta(hours=1)
+        due.follow_up_note = "Send renewal quote"
+        due.save(update_fields=["follow_up_at", "follow_up_note"])
+
+        response = self.client.get(reverse("crm:index"))
+
+        self.assertContains(response, "Follow-ups")
+        self.assertContains(response, due.name)
+        self.assertContains(response, "Send renewal quote")
+
+    def test_customer_detail_renders_follow_up_form(self):
+        customer = self.create_customer()
+
+        response = self.client.get(customer.get_absolute_url())
+
+        self.assertContains(response, 'name="follow_up_at"')
+        self.assertContains(response, "Save follow-up")
+
+    def test_customer_detail_hides_follow_up_form_for_readonly_staff(self):
+        customer = self.create_customer()
+        readonly_user = User.objects.create_user(
+            username="readonly", email="readonly@example.com", is_staff=True
+        )
+        self.add_readonly_customer_permission(readonly_user)
+        self.client.force_login(readonly_user)
+
+        response = self.client.get(customer.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'name="set_follow_up"')
+
+    def test_customer_detail_rejects_follow_up_for_readonly_staff(self):
+        customer = self.create_customer()
+        readonly_user = User.objects.create_user(
+            username="readonly", email="readonly@example.com", is_staff=True
+        )
+        self.add_readonly_customer_permission(readonly_user)
+        self.client.force_login(readonly_user)
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "set_follow_up": "1",
+                "follow_up_at": "2026-07-06T10:00",
+                "follow_up_note": "Send quote",
+            },
+        )
+
+        self.assertEqual(response.status_code, 403)
+        customer.refresh_from_db()
+        self.assertIsNone(customer.follow_up_at)
+        self.assertEqual(customer.follow_up_note, "")
+
+    def test_customer_detail_sets_follow_up(self):
+        customer = self.create_customer()
+        follow_up_at = (timezone.now() + timedelta(days=1)).replace(
+            second=0, microsecond=0
+        )
+        form_value = timezone.localtime(follow_up_at).strftime("%Y-%m-%dT%H:%M")
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "set_follow_up": "1",
+                "follow_up_at": form_value,
+                "follow_up_note": "Send renewal quote",
+            },
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        customer.refresh_from_db()
+        self.assertEqual(customer.follow_up_at, follow_up_at)
+        self.assertEqual(customer.follow_up_note, "Send renewal quote")
+        interaction = Interaction.objects.get(customer=customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
+        self.assertEqual(interaction.summary, "Follow-up set")
+        self.assertEqual(interaction.user, self.user)
+        self.assertEqual(interaction.details["follow_up_note"], "Send renewal quote")
+        self.assertEqual(interaction.details["previous_follow_up_at"], "")
+
+    @patch("weblate_web.payments.models.validate_vatin")
+    def test_customer_detail_sets_follow_up_without_vat_validation(
+        self, mock_validate_vatin
+    ):
+        customer = self.create_customer()
+        Customer.objects.filter(pk=customer.pk).update(vat="CZ12345678")
+        follow_up_at = (timezone.now() + timedelta(days=1)).replace(
+            second=0, microsecond=0
+        )
+        form_value = timezone.localtime(follow_up_at).strftime("%Y-%m-%dT%H:%M")
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "set_follow_up": "1",
+                "follow_up_at": form_value,
+                "follow_up_note": "Send renewal quote",
+            },
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        mock_validate_vatin.assert_not_called()
+        customer.refresh_from_db()
+        self.assertEqual(customer.follow_up_at, follow_up_at)
+        self.assertEqual(customer.follow_up_note, "Send renewal quote")
+
+    def test_customer_detail_rejects_empty_follow_up_date(self):
+        customer = self.create_customer()
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "set_follow_up": "1",
+                "follow_up_at": "",
+                "follow_up_note": "Send renewal quote",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Interaction.objects.exists())
+        customer.refresh_from_db()
+        self.assertIsNone(customer.follow_up_at)
+        self.assertEqual(customer.follow_up_note, "")
+        self.assertContains(response, "This field is required")
+
+    def test_customer_detail_clears_follow_up(self):
+        customer = self.create_customer()
+        customer.follow_up_at = timezone.now() + timedelta(days=1)
+        customer.follow_up_note = "Send renewal quote"
+        customer.save(update_fields=["follow_up_at", "follow_up_note"])
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {"clear_follow_up": "1"},
+        )
+
+        self.assertRedirects(response, customer.get_absolute_url())
+        customer.refresh_from_db()
+        self.assertIsNone(customer.follow_up_at)
+        self.assertEqual(customer.follow_up_note, "")
+        interaction = Interaction.objects.get(customer=customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
+        self.assertEqual(interaction.summary, "Follow-up cleared")
+        self.assertEqual(
+            interaction.details["previous_follow_up_note"], "Send renewal quote"
+        )
+
+
 class CRMTestCase(BaseCRMTestCase):
     user: User
 

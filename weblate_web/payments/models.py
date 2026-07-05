@@ -106,6 +106,17 @@ class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
     def order(self) -> CustomerQuerySet:
         return self.order_by("name", "email", "pk")
 
+    def followups(self) -> CustomerQuerySet:
+        return self.filter(follow_up_at__isnull=False).order_by(
+            "follow_up_at", "name", "email", "pk"
+        )
+
+    def due_followups(self) -> CustomerQuerySet:
+        return self.followups().filter(follow_up_at__lte=timezone.now())
+
+    def upcoming_followups(self) -> CustomerQuerySet:
+        return self.followups().filter(follow_up_at__gt=timezone.now())
+
     def for_user(self, user: User) -> CustomerQuerySet:
         return self.filter(users=user).distinct()
 
@@ -224,6 +235,19 @@ class Customer(models.Model):
             ),
             MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
         ),
+    )
+    follow_up_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        db_index=True,
+        verbose_name=gettext_lazy("Follow-up date"),
+        help_text=gettext_lazy("Date and time when this customer needs attention."),
+    )
+    follow_up_note = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name=gettext_lazy("Follow-up note"),
+        help_text=gettext_lazy("Short description of the next action."),
     )
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
@@ -537,6 +561,10 @@ class Customer(models.Model):
         users = list(other.users.all())
         if users:
             self.users.add(*users)
+        if self.follow_up_at is None and other.follow_up_at is not None:
+            self.follow_up_at = other.follow_up_at
+            self.follow_up_note = other.follow_up_note
+            self.save(update_fields=["follow_up_at", "follow_up_note"])
         interaction = self.interaction_set.create(
             origin=Interaction.Origin.MERGE,
             summary=f"Merged with {other.name} ({other.pk})",

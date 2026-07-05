@@ -119,6 +119,53 @@
     </section>
 
     <section class="crm-section content">
+      {% translate "Follow-up" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      {% if object.follow_up_at %}
+        <div class="crm-summary-line">
+          <span>
+            {% blocktranslate with date=object.follow_up_at %}Next follow-up: {{ date }}{% endblocktranslate %}
+          </span>
+          {% if object.follow_up_note %}<strong>{{ object.follow_up_note }}</strong>{% endif %}
+        </div>
+      {% else %}
+        {% translate "No follow-up scheduled." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+      {% if can_change_customer %}
+        <form class="crm-form-panel crm-form-panel--compact" method="post">
+          <h3>{% translate "Set follow-up" %}</h3>
+          {% csrf_token %}
+          <div class="crm-form-panel__body">
+            {{ follow_up_form.non_field_errors }}
+            <div class="crm-field">
+              {{ follow_up_form.follow_up_at.errors }}
+              {{ follow_up_form.follow_up_at.label_tag }}
+              {{ follow_up_form.follow_up_at }}
+            </div>
+            <div class="crm-field">
+              {{ follow_up_form.follow_up_note.errors }}
+              {{ follow_up_form.follow_up_note.label_tag }}
+              {{ follow_up_form.follow_up_note }}
+            </div>
+          </div>
+          <div class="crm-form-panel__actions">
+            <input class="crm-button"
+                   type="submit"
+                   name="set_follow_up"
+                   value="{% translate "Save follow-up" %}">
+            {% if object.follow_up_at or object.follow_up_note %}
+              <button class="crm-button crm-button--secondary"
+                      type="submit"
+                      name="clear_follow_up"
+                      formnovalidate>{% translate "Clear follow-up" %}</button>
+            {% endif %}
+          </div>
+        </form>
+      {% endif %}
+    </section>
+
+    <section class="crm-section content">
       {% translate "Actions" as section_title %}
       {% include "crm/snippets/section_header.html" %}
       <div class="crm-form-grid">

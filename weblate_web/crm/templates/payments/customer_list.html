@@ -17,6 +17,10 @@
               <th scope="col">{% translate "Customer" %}</th>
               <th scope="col">{% translate "End client" %}</th>
               <th scope="col">{% translate "E-mail" %}</th>
+              {% if kind == "followups" %}
+                <th scope="col">{% translate "Follow-up" %}</th>
+                <th scope="col">{% translate "Next action" %}</th>
+              {% endif %}
               <th scope="col">{% translate "VAT" %}</th>
               <th scope="col">{% translate "City" %}</th>
               <th scope="col">{% translate "Country" %}</th>
@@ -31,6 +35,10 @@
                 </th>
                 <td>{{ object.end_client|default:"-" }}</td>
                 <td>{{ object.email|default:"-" }}</td>
+                {% if kind == "followups" %}
+                  <td>{{ object.follow_up_at }}</td>
+                  <td>{{ object.follow_up_note|default:"-" }}</td>
+                {% endif %}
                 <td>{{ object.vat|default:"-" }}</td>
                 <td>{{ object.city|default:"-" }}</td>
                 <td>{{ object.get_country_display|default:"-" }}</td>
