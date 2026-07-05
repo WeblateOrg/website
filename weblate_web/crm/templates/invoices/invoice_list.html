@@ -3,6 +3,8 @@
 {% load i18n %}
 
 {% block content %}
+  {% include "crm/snippets/search_form.html" %}
+
   <section class="crm-section">
     {% translate "Invoice list" as table_title %}
     {% include "crm/snippets/section_header.html" with section_title=table_title only %}

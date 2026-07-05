@@ -39,8 +39,8 @@ from django.utils.translation import gettext, override
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.crm.forms import (
+    CRMSearchForm,
     CustomerMergeForm,
-    CustomerSearchForm,
     CustomerUserForm,
     InvoiceConfirmationForm,
     ManualInteractionForm,
@@ -340,6 +340,7 @@ class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
     permission = "invoices.view_invoice"
     title = "Invoices"
     paginate_by = 100
+    _search_form: CRMSearchForm | None = None
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -353,22 +354,45 @@ class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
                 return "Invoices"
         raise ValueError(self.kwargs["kind"])
 
+    def get_search_form(self) -> CRMSearchForm:
+        if self._search_form is None:
+            self._search_form = CRMSearchForm(self.request.GET)
+        return self._search_form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        search_form = self.get_search_form()
+        context["search_form"] = search_form
+        context["query"] = search_form["q"].value() or ""
+        return context
+
     def get_queryset(self):
         qs = super().get_queryset().order_by("-number")
         match self.kwargs["kind"]:
             case "unpaid":
-                return qs.filter(
+                qs = qs.filter(
                     Q(paid_payment_set__state__in={Payment.NEW, Payment.PENDING})
                     | Q(paid_payment_set=None),
                     kind=InvoiceKind.INVOICE,
                 )
             case "quote":
-                return qs.filter(kind=InvoiceKind.QUOTE)
+                qs = qs.filter(kind=InvoiceKind.QUOTE)
             case "invoice":
-                return qs.filter(kind=InvoiceKind.INVOICE)
+                qs = qs.filter(kind=InvoiceKind.INVOICE)
             case "all":
-                return qs
-        raise ValueError(self.kwargs["kind"])
+                pass
+            case _:
+                raise ValueError(self.kwargs["kind"])
+
+        search_form = self.get_search_form()
+        if search_form.is_valid() and (query := search_form.cleaned_data["q"]):
+            qs = qs.filter(
+                Q(number__icontains=query)
+                | Q(customer__name__icontains=query)
+                | Q(customer__email__icontains=query)
+                | Q(invoiceitem__description__icontains=query)
+            ).distinct()
+        return qs
 
 
 class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
@@ -510,7 +534,7 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
     permission = "payments.view_customer"
     title = "Customers"
     paginate_by = 100
-    _search_form: CustomerSearchForm | None = None
+    _search_form: CRMSearchForm | None = None
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -520,9 +544,9 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
                 return "All customers"
         raise ValueError(self.kwargs["kind"])
 
-    def get_search_form(self) -> CustomerSearchForm:
+    def get_search_form(self) -> CRMSearchForm:
         if self._search_form is None:
-            self._search_form = CustomerSearchForm(self.request.GET)
+            self._search_form = CRMSearchForm(self.request.GET)
         return self._search_form
 
     def get_context_data(self, **kwargs):
