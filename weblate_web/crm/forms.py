@@ -48,7 +48,7 @@ class InvoiceConfirmationForm(forms.Form):
         return self.cleaned_data
 
 
-class CustomerSearchForm(forms.Form):
+class CRMSearchForm(forms.Form):
     q = forms.CharField(
         label=gettext_lazy("Search"),
         required=False,

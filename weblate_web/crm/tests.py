@@ -221,6 +221,117 @@ class CRMTransientViesMigrationTest(TransactionTestCase):
         )
 
 
+class CRMInvoiceSearchTestCase(BaseCRMTestCase):
+    user: User
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        self.client.force_login(self.user)
+
+    def create_search_invoice(
+        self,
+        *,
+        customer_name: str,
+        description: str,
+        customer_email: str = "",
+        kind: InvoiceKind = InvoiceKind.INVOICE,
+    ) -> Invoice:
+        customer = self.create_customer(customer_name)
+        if customer_email:
+            customer.email = customer_email
+            customer.save(update_fields=["email"])
+        invoice = Invoice.objects.create(
+            kind=kind,
+            category=InvoiceCategory.HOSTING,
+            customer=customer,
+            currency=Currency.EUR,
+        )
+        invoice.invoiceitem_set.create(
+            description=description, quantity=1, unit_price=Decimal(100)
+        )
+        invoice.refresh_from_db()
+        return invoice
+
+    def test_invoice_search(self):
+        invoice = self.create_search_invoice(
+            customer_name="Acme Search Customer",
+            customer_email="billing-search@example.com",
+            description="Hosted invoice search item",
+        )
+        other_invoice = self.create_search_invoice(
+            customer_name="Other Customer",
+            customer_email="other@example.com",
+            description="Consulting invoice item",
+        )
+
+        list_url = reverse("crm:invoice-list", kwargs={"kind": "all"})
+        response = self.client.get(list_url)
+        self.assertContains(response, invoice.number)
+        self.assertContains(response, other_invoice.number)
+        self.assertContains(response, 'type="search"')
+
+        searches = (
+            invoice.number,
+            "acme search",
+            "billing-search@example.com",
+            "hosted invoice search",
+        )
+        for query in searches:
+            with self.subTest(query=query):
+                response = self.client.get(list_url, {"q": query})
+
+                self.assertEqual(response.context["query"], query)
+                self.assertContains(response, invoice.number)
+                self.assertNotContains(response, other_invoice.number)
+
+    def test_invoice_search_deduplicates_line_item_matches(self):
+        invoice = self.create_search_invoice(
+            customer_name="Repeated Item Customer",
+            description="Repeated support item",
+        )
+        invoice.invoiceitem_set.create(
+            description="Repeated support item follow-up",
+            quantity=1,
+            unit_price=Decimal(50),
+        )
+
+        response = self.client.get(
+            reverse("crm:invoice-list", kwargs={"kind": "all"}),
+            {"q": "Repeated support item"},
+        )
+
+        self.assertContains(response, invoice.number, count=1)
+
+    def test_invoice_search_keeps_kind_filter(self):
+        invoice = self.create_search_invoice(
+            customer_name="Shared Search Customer",
+            description="Shared search invoice",
+        )
+        quote = self.create_search_invoice(
+            customer_name="Shared Search Customer",
+            description="Shared search quote",
+            kind=InvoiceKind.QUOTE,
+        )
+
+        response = self.client.get(
+            reverse("crm:invoice-list", kwargs={"kind": "quote"}),
+            {"q": "Shared Search Customer"},
+        )
+
+        self.assertContains(response, quote.number)
+        self.assertNotContains(response, invoice.number)
+
+        response = self.client.get(
+            reverse("crm:invoice-list", kwargs={"kind": "invoice"}),
+            {"q": "Shared Search Customer"},
+        )
+
+        self.assertContains(response, invoice.number)
+        self.assertNotContains(response, quote.number)
+
+
 class CRMTestCase(BaseCRMTestCase):
     user: User
 
