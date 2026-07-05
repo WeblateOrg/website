@@ -158,31 +158,29 @@
 
   {% if convert_form %}
     <section class="crm-section content">
-      {% translate "Issue invoice" as section_title %}
-      {% include "crm/snippets/section_header.html" %}
-      <details class="crm-danger-action">
-        <summary>{% translate "Issue invoice from quote" %}</summary>
+      {% translate "This creates a final invoice matching this quote. Use Download if you only need the quote PDF." as convert_invoice_message %}
+      <form class="crm-form-panel crm-form-panel--compact"
+            method="post"
+            data-crm-invoice-confirm
+            data-crm-invoice-always
+            data-crm-invoice-confirm-message="{{ convert_invoice_message }}">
+        <h3>{% translate "Issue invoice from quote" %}</h3>
         <p>
           {% blocktranslate %}This creates a final invoice matching this quote. Use Download if you only need the quote PDF.{% endblocktranslate %}
         </p>
-        <form class="crm-form-panel crm-form-panel--compact" method="post">
-          {% csrf_token %}
-          <div class="crm-form-panel__body">
-            {{ convert_form }}
-            <label class="crm-check">
-              <input type="checkbox" name="confirm_invoice" value="1" required>
-              <span>{% translate "I confirm that I want to issue a final invoice." %}</span>
-            </label>
-          </div>
-          <div class="crm-form-panel__actions">
-            {% translate "Issue invoice" as issue_invoice_label %}
-            <input class="crm-button"
-                   type="submit"
-                   name="invoice"
-                   value="{{ issue_invoice_label }}">
-          </div>
-        </form>
-      </details>
+        {% csrf_token %}
+        <div class="crm-form-panel__body">
+          {{ convert_form }}
+          <input type="hidden" name="confirm_invoice" value="">
+        </div>
+        <div class="crm-form-panel__actions">
+          {% translate "Issue invoice" as issue_invoice_label %}
+          <input class="crm-button"
+                 type="submit"
+                 name="invoice"
+                 value="{{ issue_invoice_label }}">
+        </div>
+      </form>
     </section>
   {% endif %}
 {% endblock content %}

@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<dialog class="crm-confirm-dialog" id="crm-invoice-confirm-dialog">
+  <form method="dialog">
+    <h2>{% translate "Issue final invoice?" %}</h2>
+    <p data-crm-invoice-confirm-message>
+      {% translate "This creates a final invoice. Use Quote if you only need an offer." %}
+    </p>
+    <div class="crm-confirm-dialog__actions">
+      <button class="crm-button crm-button--secondary" value="cancel">{% translate "Cancel" %}</button>
+      <button class="crm-button" value="confirm">{% translate "Issue invoice" %}</button>
+    </div>
+  </form>
+</dialog>

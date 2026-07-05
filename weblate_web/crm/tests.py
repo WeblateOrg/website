@@ -928,7 +928,11 @@ class CRMTestCase(BaseCRMTestCase):
         # Test renewal quote
         response = self.client.post(
             service.get_absolute_url(),
-            {"quote": 1, "subscription": subscription1.pk},
+            {
+                "action": "renewal",
+                "kind": InvoiceKind.QUOTE,
+                "subscription": subscription1.pk,
+            },
             follow=True,
         )
         invoice = Invoice.objects.get()
@@ -971,7 +975,8 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             service.get_absolute_url(),
             {
-                "invoice": 1,
+                "action": "renewal",
+                "kind": InvoiceKind.INVOICE,
                 "subscription": subscription2.pk,
                 "customer_reference": "PO1234",
                 "customer_note": "Custom note",
@@ -1017,7 +1022,8 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             service.get_absolute_url(),
             {
-                "invoice": 1,
+                "action": "renewal",
+                "kind": InvoiceKind.INVOICE,
                 "subscription": subscription.pk,
                 "customer_reference": "PO1234",
                 "customer_note": "Custom note",
@@ -1033,7 +1039,11 @@ class CRMTestCase(BaseCRMTestCase):
 
         response = self.client.post(
             service.get_absolute_url(),
-            {"quote": 1, "subscription": 999999},
+            {
+                "action": "renewal",
+                "kind": InvoiceKind.QUOTE,
+                "subscription": 999999,
+            },
             follow=True,
         )
 
@@ -1169,7 +1179,9 @@ class CRMTestCase(BaseCRMTestCase):
         customer = self.create_customer()
 
         response = self.client.get(customer.get_absolute_url())
-        self.assertContains(response, "Invoice new service")
+        self.assertContains(response, "New service purchase")
+        self.assertContains(response, "Quote")
+        self.assertContains(response, "Invoice")
 
         response = self.client.post(
             customer.get_absolute_url(),
@@ -1177,7 +1189,7 @@ class CRMTestCase(BaseCRMTestCase):
                 "package": package.id,
                 "customer_reference": "PO123456",
                 "currency": 1,
-                "kind": 90,
+                "kind": InvoiceKind.QUOTE,
             },
         )
         invoice = Invoice.objects.get()
@@ -1195,11 +1207,40 @@ class CRMTestCase(BaseCRMTestCase):
                 "package": package.id,
                 "customer_reference": "PO123456",
                 "currency": 1,
-                "kind": 90,
+                "kind": InvoiceKind.QUOTE,
             },
         )
         invoice = Invoice.objects.exclude(pk=invoice.pk).get()
         self.assertEqual(invoice.total_amount, 513)
+        self.assertRedirects(response, invoice.get_absolute_url())
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "package": package.id,
+                "customer_reference": "PO123456",
+                "currency": 1,
+                "kind": InvoiceKind.INVOICE,
+            },
+        )
+        self.assertEqual(Invoice.objects.count(), 2)
+        self.assertContains(
+            response, "Please confirm that you want to issue a final invoice."
+        )
+
+        existing_invoices = set(Invoice.objects.values_list("pk", flat=True))
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "package": package.id,
+                "customer_reference": "PO123456",
+                "currency": 1,
+                "kind": InvoiceKind.INVOICE,
+                "confirm_invoice": "1",
+            },
+        )
+        invoice = Invoice.objects.exclude(pk__in=existing_invoices).get()
+        self.assertEqual(invoice.kind, InvoiceKind.INVOICE)
         self.assertRedirects(response, invoice.get_absolute_url())
 
     def test_service_invalid_customer_reference(self):
@@ -1222,7 +1263,8 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             service.get_absolute_url(),
             {
-                "invoice": 1,
+                "action": "renewal",
+                "kind": InvoiceKind.INVOICE,
                 "subscription": subscription.pk,
                 "customer_reference": "x" * 101,
             },
@@ -2225,12 +2267,15 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         response = self.client.get(
             reverse("crm:service-detail", kwargs={"pk": service.pk})
         )
-        self.assertContains(response, "Issue upgrade quote")
+        self.assertContains(response, "Upgrade to Dedicated 640k")
+        self.assertContains(response, "For the rest of the current period.")
+        self.assertContains(response, "Invoice")
         response = self.client.post(
             reverse("crm:service-detail", kwargs={"pk": service.pk}),
             {
                 "subscription": subscription.pk,
-                "upgrade_quote": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.QUOTE,
                 "customer_reference": "PO-42",
                 "customer_note": "Upgrade approved",
             },
@@ -2253,7 +2298,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             {
                 "subscription": subscription.pk,
                 "package": target.name,
-                "upgrade_invoice": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.INVOICE,
                 "customer_reference": "PO-43",
                 "customer_note": "Upgrade invoice approved",
             },
@@ -2270,7 +2316,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             {
                 "subscription": subscription.pk,
                 "package": target.name,
-                "upgrade_invoice": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.INVOICE,
                 "customer_reference": "PO-43",
                 "customer_note": "Upgrade invoice approved",
                 "confirm_invoice": "1",
@@ -2324,7 +2371,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             {
                 "subscription": subscription.pk,
                 "package": target.name,
-                "upgrade_quote": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.QUOTE,
                 "customer_reference": "",
                 "customer_note": "",
             },
@@ -2368,7 +2416,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             {
                 "subscription": subscription.pk,
                 "package": target.name,
-                "upgrade_invoice": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.INVOICE,
                 "customer_reference": "",
                 "customer_note": "",
             },
@@ -2388,7 +2437,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             {
                 "subscription": subscription.pk,
                 "package": target.name,
-                "upgrade_quote": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.QUOTE,
                 "customer_reference": "",
                 "customer_note": "",
             },
@@ -2423,7 +2473,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             {
                 "subscription": subscription.pk,
                 "package": "missing-package",
-                "upgrade_quote": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.QUOTE,
                 "customer_reference": "",
                 "customer_note": "",
             },
@@ -2464,7 +2515,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             {
                 "subscription": subscription.pk,
                 "package": target.name,
-                "upgrade_quote": "1",
+                "action": "upgrade",
+                "kind": InvoiceKind.QUOTE,
                 "customer_reference": "",
                 "customer_note": "",
             },

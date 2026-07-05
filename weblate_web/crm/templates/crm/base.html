@@ -115,5 +115,8 @@
       {% endblock content %}
 
     </main>
+    {% if invoice_confirm_dialog %}
+      {% include "crm/snippets/invoice_confirm_dialog.html" %}
+    {% endif %}
   </body>
 </html>

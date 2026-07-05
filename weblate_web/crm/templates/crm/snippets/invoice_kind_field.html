@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<fieldset class="crm-choice-group">
+  <legend>{% translate "Kind" %}</legend>
+  {{ form.kind.errors }}
+  {% with kind_value=form.kind.value|stringformat:"s" quote_value=invoice_kind_quote|stringformat:"s" invoice_value=invoice_kind_invoice|stringformat:"s" %}
+    <label class="crm-choice">
+      <input type="radio"
+             name="kind"
+             value="{{ invoice_kind_quote }}"
+             {% if kind_value == quote_value or not kind_value %}checked{% endif %}>
+      <span>
+        <strong>{% translate "Quote" %}</strong>
+        <small>{% translate "Create a draft offer without issuing a final invoice." %}</small>
+      </span>
+    </label>
+    <label class="crm-choice">
+      <input type="radio"
+             name="kind"
+             value="{{ invoice_kind_invoice }}"
+             {% if kind_value == invoice_value %}checked{% endif %}>
+      <span>
+        <strong>{% translate "Invoice" %}</strong>
+        <small>{% translate "Create a final invoice after confirmation." %}</small>
+      </span>
+    </label>
+  {% endwith %}
+</fieldset>

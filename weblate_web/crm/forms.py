@@ -26,6 +26,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy
 
 from weblate_web.invoices.forms import CustomerReferenceForm
+from weblate_web.invoices.models import InvoiceKind
 from weblate_web.models import Package, Service, Subscription
 from weblate_web.payments.models import Customer
 
@@ -83,22 +84,33 @@ class CustomerMergeForm(forms.Form):
 
 
 class ServiceSubscriptionActionForm(CustomerReferenceForm):
-    ACTION_QUOTE = "quote"
-    ACTION_INVOICE = "invoice"
-    ACTION_UPGRADE_QUOTE = "upgrade_quote"
-    ACTION_UPGRADE_INVOICE = "upgrade_invoice"
+    ACTION_RENEWAL = "renewal"
+    ACTION_UPGRADE = "upgrade"
     ACTION_DISABLE = "disable"
 
-    ACTIONS = (
-        ACTION_QUOTE,
-        ACTION_INVOICE,
-        ACTION_UPGRADE_QUOTE,
-        ACTION_UPGRADE_INVOICE,
-        ACTION_DISABLE,
+    DOCUMENT_ACTIONS = (
+        ACTION_RENEWAL,
+        ACTION_UPGRADE,
     )
-    INVOICE_ACTIONS = (ACTION_INVOICE, ACTION_UPGRADE_INVOICE)
-    UPGRADE_ACTIONS = (ACTION_UPGRADE_QUOTE, ACTION_UPGRADE_INVOICE)
 
+    action = forms.ChoiceField(
+        choices=(
+            (ACTION_RENEWAL, gettext_lazy("Renewal")),
+            (ACTION_UPGRADE, gettext_lazy("Upgrade")),
+        ),
+        required=False,
+        widget=forms.HiddenInput,
+    )
+    kind = forms.TypedChoiceField(
+        choices=(
+            (InvoiceKind.QUOTE, gettext_lazy("Quote")),
+            (InvoiceKind.INVOICE, gettext_lazy("Invoice")),
+        ),
+        coerce=InvoiceKind.from_str,
+        initial=InvoiceKind.QUOTE,
+        required=False,
+        widget=forms.RadioSelect,
+    )
     subscription = forms.ModelChoiceField(queryset=Subscription.objects.none())
     package = forms.ModelChoiceField(
         queryset=Package.objects.all(),
@@ -116,16 +128,20 @@ class ServiceSubscriptionActionForm(CustomerReferenceForm):
 
     def clean(self):
         super().clean()
-        actions = [action for action in self.ACTIONS if action in self.data]
-        if len(actions) != 1:
-            raise ValidationError(gettext_lazy("Missing action."))
+        if self.ACTION_DISABLE in self.data:
+            if self.cleaned_data.get("action"):
+                raise ValidationError(gettext_lazy("Missing action."))
+            self.cleaned_data["action"] = self.ACTION_DISABLE
+            return self.cleaned_data
 
-        action = actions[0]
+        action = self.cleaned_data.get("action")
+        if action not in self.DOCUMENT_ACTIONS:
+            raise ValidationError(gettext_lazy("Missing action."))
         self.cleaned_data["action"] = action
-        if action in self.INVOICE_ACTIONS and not self.cleaned_data.get(
-            "confirm_invoice"
-        ):
+        kind = self.cleaned_data.get("kind") or InvoiceKind.QUOTE
+        if kind == InvoiceKind.INVOICE and not self.cleaned_data.get("confirm_invoice"):
             raise ValidationError(FINAL_INVOICE_CONFIRMATION_ERROR)
+        self.cleaned_data["kind"] = kind
         return self.cleaned_data
 
 

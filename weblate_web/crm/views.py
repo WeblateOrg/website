@@ -204,6 +204,12 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["reference_form"] = CustomerReferenceForm()
+        context["subscription_action_form"] = ServiceSubscriptionActionForm(
+            service=self.object
+        )
+        context["invoice_kind_quote"] = int(InvoiceKind.QUOTE)
+        context["invoice_kind_invoice"] = int(InvoiceKind.INVOICE)
+        context["invoice_confirm_dialog"] = True
         if self.object.has_active_extended_support:
             context["maintenance_window_form"] = ServiceMaintenanceWindowForm(
                 instance=self.object
@@ -267,20 +273,10 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
         upgrade: bool,
     ):
         subscription = form.cleaned_data["subscription"]
+        kind = form.cleaned_data["kind"]
         if upgrade:
-            kind = (
-                InvoiceKind.QUOTE
-                if form.cleaned_data["action"]
-                == ServiceSubscriptionActionForm.ACTION_UPGRADE_QUOTE
-                else InvoiceKind.INVOICE
-            )
             create_invoice = subscription.create_upgrade_invoice
         else:
-            is_quote = (
-                form.cleaned_data["action"]
-                == ServiceSubscriptionActionForm.ACTION_QUOTE
-            )
-            kind = InvoiceKind.QUOTE if is_quote else InvoiceKind.INVOICE
             create_invoice = subscription.create_invoice
 
         package = None
@@ -322,14 +318,11 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             return redirect(service)
 
         action = form.cleaned_data["action"]
-        if action in ServiceSubscriptionActionForm.UPGRADE_ACTIONS:
+        if action == ServiceSubscriptionActionForm.ACTION_UPGRADE:
             return self.create_subscription_invoice(
                 request, service, form, upgrade=True
             )
-        if action in {
-            ServiceSubscriptionActionForm.ACTION_QUOTE,
-            ServiceSubscriptionActionForm.ACTION_INVOICE,
-        }:
+        if action == ServiceSubscriptionActionForm.ACTION_RENEWAL:
             return self.create_subscription_invoice(
                 request, service, form, upgrade=False
             )
@@ -413,6 +406,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                     "customer_note": self.object.customer_note,
                 },
             )
+            context["invoice_confirm_dialog"] = True
         if self.can_confirm_refund() and self.can_confirm_refund_permission():
             context["refund_form"] = RefundConfirmationForm(
                 self.request.POST
@@ -573,6 +567,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        active_tab = self.get_active_tab()
         add_manual_note = (
             self.request.method == "POST" and "add_manual_note" in self.request.POST
         )
@@ -586,6 +581,8 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             and not add_customer_user
             else None
         )
+        context["invoice_kind_quote"] = int(InvoiceKind.QUOTE)
+        context["invoice_kind_invoice"] = int(InvoiceKind.INVOICE)
         context["manual_interaction_form"] = ManualInteractionForm(
             self.request.POST if add_manual_note else None
         )
@@ -596,10 +593,12 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             self.add_customer_user_permission
         )
         context["merge_form"] = CustomerMergeForm(customer=self.object)
-        context["services"] = self.object.service_set.customer_services().order()
+        services = self.object.service_set.customer_services().order()
+        context["services"] = services
+        context["invoice_confirm_dialog"] = active_tab == "overview" and not services
         context["donations"] = self.object.service_set.donations().order()
         context["customer_users"] = self.object.ordered_users
-        context["active_tab"] = self.get_active_tab()
+        context["active_tab"] = active_tab
         return context
 
     @staticmethod

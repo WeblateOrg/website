@@ -792,7 +792,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             absolute_url(live_server, crm_data.prospect.get_absolute_url())
         )
         assert_loaded(page, response, "Prospect detail")
-        assert_text_visible(page, "Invoice new service")
+        assert_text_visible(page, "New service purchase")
         page.select_option(
             'select[name="package"]', str(crm_data.new_subscription_package.pk)
         )
@@ -848,15 +848,15 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         )
         capture(page, "service-maintenance-window")
 
-        renewal_form = (
-            page.locator("form").filter(has=page.locator('input[name="quote"]')).first
-        )
+        renewal_form = page.locator(
+            'form:has(input[name="action"][value="renewal"])'
+        ).first
         renewal_form.locator('input[name="customer_reference"]').fill("PO-RENEW-001")
         renewal_form.locator('textarea[name="customer_note"]').fill(
             "Renewal quote from CRM."
         )
         with patch.object(Invoice, "generate_files"):
-            renewal_form.locator('input[name="quote"]').click()
+            renewal_form.locator('input[type="submit"]').click()
             page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
         assert_text_visible(page, "PO-RENEW-001", exact=False)
@@ -866,21 +866,24 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             absolute_url(live_server, crm_data.service.get_absolute_url())
         )
         assert_loaded(page, response, "Service detail for upgrade")
-        upgrade_invoice = (
-            page.locator("details.crm-danger-action")
-            .filter(has_text="Issue upgrade invoice")
-            .first
-        )
-        upgrade_invoice.locator("summary").click()
+        upgrade_invoice = page.locator(
+            'form:has(input[name="action"][value="upgrade"])'
+        ).first
+        upgrade_invoice.locator(
+            f'input[name="kind"][value="{int(InvoiceKind.INVOICE)}"]'
+        ).check()
         upgrade_invoice.locator('input[name="customer_reference"]').fill(
             "PO-UPGRADE-001"
         )
         upgrade_invoice.locator('textarea[name="customer_note"]').fill(
             "Upgrade invoice from CRM."
         )
-        upgrade_invoice.locator('input[name="confirm_invoice"]').check()
         with patch.object(Invoice, "generate_files"):
             upgrade_invoice.locator('input[type="submit"]').click()
+            page.locator("#crm-invoice-confirm-dialog").get_by_role(
+                "button", name="Issue invoice"
+            ).click()
+            page.wait_for_url("**/crm/invoices/detail/*/")
             page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
         assert_text_visible(page, "PO-UPGRADE-001", exact=False)
@@ -913,14 +916,17 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             )
         )
         assert_loaded(page, response, "Quote detail")
-        assert page.get_by_role("heading", name="Issue invoice").is_visible()
+        assert page.get_by_role("heading", name="Issue invoice from quote").is_visible()
         capture(page, "quote-detail")
-        page.locator("summary", has_text="Issue invoice from quote").click()
+        quote_url = page.url
         page.fill('input[name="customer_reference"]', "PO-CONVERTED-001")
         page.fill('textarea[name="customer_note"]', "Converted quote from CRM.")
-        page.check('input[name="confirm_invoice"]')
         with patch.object(Invoice, "generate_files"):
             page.click('input[name="invoice"]')
+            page.locator("#crm-invoice-confirm-dialog").get_by_role(
+                "button", name="Issue invoice"
+            ).click()
+            page.wait_for_url(lambda url: url != quote_url)
             page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
         assert_text_visible(page, "Generated from", exact=False)
