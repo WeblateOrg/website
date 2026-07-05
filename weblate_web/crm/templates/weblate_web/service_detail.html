@@ -60,17 +60,61 @@
       </div>
       {% if object.secret %}
         <div class="crm-detail-grid__wide">
-          <dt>{% translate "Activation key" %}</dt>
+          <dt class="crm-detail-heading">
+            <span>{% translate "Activation key" %}</span>
+            <button class="crm-icon-button crm-copy-button"
+                    type="button"
+                    data-crm-copy-text="{{ object.secret }}"
+                    data-crm-copy-success="{% translate "Copied" %}"
+                    data-crm-copy-error="{% translate "Copy failed" %}"
+                    aria-label="{% translate "Copy activation key" %}"
+                    title="{% translate "Copy activation key" %}">
+              <svg class="crm-icon crm-copy-icon crm-copy-icon--copy"
+                   viewBox="0 0 24 24"
+                   aria-hidden="true">
+                <path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h11v14Z">
+                </path>
+              </svg>
+              <svg class="crm-icon crm-copy-icon crm-copy-icon--success"
+                   viewBox="0 0 24 24"
+                   aria-hidden="true">
+                <path fill="currentColor" d="m9 16.2-3.5-3.5L4 14.2l5 5L20.5 7.7 19 6.2 9 16.2Z"></path>
+              </svg>
+            </button>
+            <span class="crm-sr-only" aria-live="polite" data-crm-copy-status></span>
+          </dt>
           <dd>
-            <code class="crm-activation-key">{{ object.secret }}</code>
+            <code class="crm-copy-value crm-activation-key">{{ object.secret }}</code>
           </dd>
         </div>
       {% endif %}
       {% if object.backup_repository %}
         <div>
-          <dt>{% translate "Backup" %}</dt>
+          <dt class="crm-detail-heading">
+            <span>{% translate "Backup" %}</span>
+            <button class="crm-icon-button crm-copy-button"
+                    type="button"
+                    data-crm-copy-text="{{ object.backup_repository }}"
+                    data-crm-copy-success="{% translate "Copied" %}"
+                    data-crm-copy-error="{% translate "Copy failed" %}"
+                    aria-label="{% translate "Copy backup SSH URL" %}"
+                    title="{% translate "Copy backup SSH URL" %}">
+              <svg class="crm-icon crm-copy-icon crm-copy-icon--copy"
+                   viewBox="0 0 24 24"
+                   aria-hidden="true">
+                <path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h11v14Z">
+                </path>
+              </svg>
+              <svg class="crm-icon crm-copy-icon crm-copy-icon--success"
+                   viewBox="0 0 24 24"
+                   aria-hidden="true">
+                <path fill="currentColor" d="m9 16.2-3.5-3.5L4 14.2l5 5L20.5 7.7 19 6.2 9 16.2Z"></path>
+              </svg>
+            </button>
+            <span class="crm-sr-only" aria-live="polite" data-crm-copy-status></span>
+          </dt>
           <dd>
-            {{ object.backup_repository }}
+            <code class="crm-copy-value">{{ object.backup_repository }}</code>
             <span class="crm-muted">
               {% blocktranslate with size=object.backup_size|filesizeformat directory=object.backup_directory %}{{ size }} in {{ directory }}{% endblocktranslate %}
             </span>
