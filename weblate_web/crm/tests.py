@@ -2257,7 +2257,13 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         )
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=100)
-        service = Service.objects.create(customer=customer)
+        backup_repository = "git@backup.example.com:weblate/service.git"
+        service = Service.objects.create(
+            customer=customer,
+            backup_repository=backup_repository,
+            backup_directory="/backups/service",
+            backup_size=4096,
+        )
         subscription = service.subscription_set.create(
             package=current,
             expires=timezone.now() + timedelta(days=30),
@@ -2270,6 +2276,10 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertContains(response, "Upgrade to Dedicated 640k")
         self.assertContains(response, "For the rest of the current period.")
         self.assertContains(response, "Invoice")
+        self.assertContains(response, "Copy activation key")
+        self.assertContains(response, f'data-crm-copy-text="{service.secret}"')
+        self.assertContains(response, "Copy backup SSH URL")
+        self.assertContains(response, f'data-crm-copy-text="{backup_repository}"')
         response = self.client.post(
             reverse("crm:service-detail", kwargs={"pk": service.pk}),
             {

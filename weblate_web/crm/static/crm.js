@@ -106,12 +106,99 @@ const initInvoiceConfirmation = () => {
   });
 };
 
+const copyText = async (text) => {
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.left = "-9999px";
+  textarea.style.position = "fixed";
+  textarea.style.top = "0";
+  document.body.append(textarea);
+  textarea.focus();
+  textarea.select();
+
+  try {
+    if (!document.execCommand("copy")) {
+      throw new Error("Copy command failed");
+    }
+  } finally {
+    textarea.remove();
+  }
+};
+
+const initClipboardActions = () => {
+  const buttons = document.querySelectorAll("[data-crm-copy-text]");
+  if (!buttons.length) {
+    return;
+  }
+
+  buttons.forEach((button) => {
+    const defaultLabel = button.getAttribute("aria-label") || "";
+    const defaultTitle = button.getAttribute("title") || "";
+    const status = button.parentElement?.querySelector(
+      "[data-crm-copy-status]",
+    );
+    let resetTimeout = null;
+
+    const resetButton = () => {
+      button.classList.remove("is-copied", "is-error");
+      button.setAttribute("aria-label", defaultLabel);
+      if (defaultTitle) {
+        button.setAttribute("title", defaultTitle);
+      }
+      if (status) {
+        status.textContent = "";
+      }
+    };
+
+    const showStatus = (message, className) => {
+      button.classList.remove("is-copied", "is-error");
+      button.classList.add(className);
+      button.setAttribute("aria-label", message);
+      if (defaultTitle) {
+        button.setAttribute("title", message);
+      }
+      if (status) {
+        status.textContent = message;
+      }
+
+      if (resetTimeout) {
+        window.clearTimeout(resetTimeout);
+      }
+      resetTimeout = window.setTimeout(resetButton, 2000);
+    };
+
+    button.addEventListener("click", async () => {
+      const text = button.dataset.crmCopyText;
+      if (!text) {
+        return;
+      }
+
+      try {
+        await copyText(text);
+      } catch {
+        showStatus(button.dataset.crmCopyError || defaultLabel, "is-error");
+        return;
+      }
+
+      showStatus(button.dataset.crmCopySuccess || defaultLabel, "is-copied");
+    });
+  });
+};
+
 if (document.readyState !== "loading") {
   updateCrmMenuTabStop();
   initInvoiceConfirmation();
+  initClipboardActions();
 } else {
   document.addEventListener("DOMContentLoaded", () => {
     updateCrmMenuTabStop();
     initInvoiceConfirmation();
+    initClipboardActions();
   });
 }
