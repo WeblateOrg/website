@@ -4,6 +4,7 @@ from decimal import Decimal
 from io import StringIO
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs
+from xml.etree import ElementTree  # noqa: S405
 
 import requests
 import responses
@@ -1818,6 +1819,82 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<svg")
         self.assertContains(response, "</svg>")
+
+    def test_income_monthly_svg_chart_uses_full_width(self):
+        """Test that daily income bars do not leave unused horizontal space."""
+        days = [str(day) for day in range(1, 32)]
+        daily_data = {day: Decimal(0) for day in days}
+        daily_category_data = {
+            day: {category: Decimal(0) for category in InvoiceCategory} for day in days
+        }
+        daily_data["31"] = Decimal(100)
+        daily_category_data["31"][InvoiceCategory.HOSTING] = Decimal(100)
+
+        svg = IncomeView().generate_svg_stacked_bar_chart(
+            daily_data, daily_category_data, 2026, 1
+        )
+        tree = ElementTree.fromstring(svg)  # noqa: S314
+        width = float(tree.attrib["viewBox"].split()[2])
+        label_positions = [
+            float(element.attrib["x"])
+            for element in tree.iter()
+            if element.tag.endswith("text")
+        ]
+
+        self.assertGreater(max(label_positions), width * 0.9)
+
+    def test_income_yearly_svg_chart_uses_plain_month_numbers(self):
+        """Test that yearly income chart labels months without leading zeroes."""
+        month_keys = [f"{month:02d}" for month in range(1, 13)]
+        monthly_data = {month: Decimal(0) for month in month_keys}
+        monthly_category_data = {
+            month: {category: Decimal(0) for category in InvoiceCategory}
+            for month in month_keys
+        }
+        monthly_data["12"] = Decimal(100)
+        monthly_category_data["12"][InvoiceCategory.HOSTING] = Decimal(100)
+
+        svg = IncomeView().generate_svg_stacked_bar_chart(
+            monthly_data, monthly_category_data, 2026
+        )
+        tree = ElementTree.fromstring(svg)  # noqa: S314
+        labels = [
+            element.text for element in tree.iter() if element.tag.endswith("text")
+        ]
+
+        self.assertIn("monthly-income-chart", tree.attrib["class"])
+        self.assertEqual(labels, [str(month) for month in range(1, 13)])
+
+    def test_income_pie_chart_labels_slices_without_legend(self):
+        """Test that the pie chart uses the SVG area without an external legend."""
+        view = IncomeView()
+        svg = view.generate_svg_pie_chart(
+            {
+                InvoiceCategory.HOSTING: Decimal(100),
+                InvoiceCategory.SUPPORT: Decimal(200),
+                InvoiceCategory.DEVEL: Decimal(300),
+                InvoiceCategory.DONATE: Decimal(400),
+            }
+        )
+        tree = ElementTree.fromstring(svg)  # noqa: S314
+        width, height = (float(value) for value in tree.attrib["viewBox"].split()[2:])
+        paths = [element for element in tree.iter() if element.tag.endswith("path")]
+        legend_markers = [
+            element for element in tree.iter() if element.tag.endswith("rect")
+        ]
+        slice_labels = [
+            element
+            for element in tree.iter()
+            if element.attrib.get("class") == "pie-chart-label"
+        ]
+        expected_radius = min(width, height) / 2 - view.PIE_CHART_MARGIN
+
+        self.assertEqual(width, height)
+        self.assertIn(f"A{expected_radius},{expected_radius}", paths[0].attrib["d"])
+        self.assertEqual(legend_markers, [])
+        self.assertEqual(len(slice_labels), 4)
+        self.assertEqual(slice_labels[0].attrib["stroke-width"], "1.2")
+        self.assertEqual(slice_labels[0].attrib["stroke-opacity"], ".6")
 
     @responses.activate
     def test_income_category_breakdown(self):

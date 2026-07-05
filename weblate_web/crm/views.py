@@ -871,6 +871,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     CHART_HEIGHT = 400
     CHART_PADDING = 60
     MIN_CHART_VALUE = Decimal(1)
+    PIE_CHART_WIDTH = 400
+    PIE_CHART_HEIGHT = 400
+    PIE_CHART_MARGIN = 6
     DECIMAL_OUTPUT_FIELD: ClassVar[DecimalField] = DecimalField(
         max_digits=16, decimal_places=3
     )
@@ -903,19 +906,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if not data or sum(data.values()) == 0:
             return ""
 
-        # Calculate required width based on legend text
-        # Longest category name is "Development / Consultations"
-        # Estimate: 420 (legend_x) + 20 (icon) + 300 (text) = 740, round to 750
-        width = 750
-        height = 400
-        radius = 120
-        center_x = 200
-        center_y = 200
+        width = self.PIE_CHART_WIDTH
+        height = self.PIE_CHART_HEIGHT
+        radius = min(width, height) / 2 - self.PIE_CHART_MARGIN
+        center_x = width / 2
+        center_y = height / 2
 
         total = sum(data.values())
 
         # Count non-zero categories
-        non_zero_categories = [cat for cat, val in data.items() if val > 0]
+        non_zero_items = [(cat, val) for cat, val in data.items() if val > 0]
+        non_zero_categories = [cat for cat, _val in non_zero_items]
 
         svg_parts = [
             (
@@ -936,9 +937,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 f"<title>{category.label}: €{value:,.0f} (100.0%)</title>"
                 f"</circle>"
             )
+            self._append_pie_label(
+                svg_parts,
+                category.label,
+                f"€{value:,.0f} (100%)",
+                center_x,
+                center_y,
+            )
         else:
             # Draw pie slices for multiple categories
             start_angle: float = 0
+            label_positions: list[tuple[str, str, float, float]] = []
             for category, value in data.items():
                 if value == 0:
                     continue
@@ -967,37 +976,50 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     f"</path>"
                 )
 
+                label_angle = math.radians(start_angle + angle / 2 - 90)
+                label_radius = radius * 0.58
+                label_positions.append(
+                    (
+                        category.label,
+                        f"€{value:,.0f} ({value / total * 100:.0f}%)",
+                        center_x + label_radius * math.cos(label_angle),
+                        center_y + label_radius * math.sin(label_angle),
+                    )
+                )
                 start_angle = end_angle
 
-        # Add legend
-        legend_x = 420
-        legend_y = 50
-        legend_spacing = 25
-
-        idx = 0
-        for category, value in data.items():
-            if value == 0:
-                continue
-
-            color = self.CATEGORY_COLORS.get(category, "#999")
-            y_pos = legend_y + idx * legend_spacing
-
-            # Legend color box
-            svg_parts.append(
-                f'<rect x="{legend_x}" y="{y_pos}" width="15" height="15" '
-                f'fill="{color}" stroke="white" stroke-width="1"/>'
-            )
-
-            # Legend text
-            svg_parts.append(
-                f'<text x="{legend_x + 20}" y="{y_pos + 12}" font-size="11" fill="#333">'
-                f"{category.label}: €{value:,.0f} ({value / total * 100:.0f}%)</text>"
-            )
-
-            idx += 1
+            for label, value_label, label_x, label_y in label_positions:
+                self._append_pie_label(svg_parts, label, value_label, label_x, label_y)
 
         svg_parts.append("</svg>")
         return "".join(svg_parts)
+
+    def _append_pie_label(
+        self,
+        svg_parts: list[str],
+        label: str,
+        value_label: str,
+        x: float,
+        y: float,
+    ) -> None:
+        label_parts = label.split(" / ", 1)
+        line_height = 12
+        first_y = y - line_height * (len(label_parts) / 2)
+
+        svg_parts.append(
+            f'<text class="pie-chart-label" x="{x}" y="{first_y}" '
+            'text-anchor="middle" font-size="10" font-weight="700" '
+            'fill="#fff" stroke="#253342" stroke-width="1.2" '
+            'stroke-opacity=".6" paint-order="stroke">'
+        )
+        for idx, label_part in enumerate(label_parts):
+            svg_parts.append(
+                f'<tspan x="{x}" dy="{line_height if idx else 0}">{label_part}</tspan>'
+            )
+        svg_parts.append(
+            f'<tspan x="{x}" dy="{line_height}" font-size="9">{value_label}</tspan>'
+        )
+        svg_parts.append("</text>")
 
     def generate_svg_stacked_bar_chart(  # noqa: PLR0914
         self,
@@ -1025,13 +1047,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if month:
             # Monthly view: show daily bars
             num_bars = calendar.monthrange(year, month)[1]
-            bar_labels = [str(d) for d in range(1, num_bars + 1)]
+            bar_keys = [str(day) for day in range(1, num_bars + 1)]
+            bar_labels = bar_keys
             label_prefix = "Day"
+            chart_class = "stacked-bar-chart daily-income-chart"
         else:
             # Yearly view: show monthly bars
             num_bars = 12
-            bar_labels = [f"{m:02d}" for m in range(1, 13)]
+            bar_keys = [f"{month_number:02d}" for month_number in range(1, 13)]
+            bar_labels = [str(month_number) for month_number in range(1, 13)]
             label_prefix = ""
+            chart_class = "stacked-bar-chart monthly-income-chart"
 
         # Get max value for scaling
         max_value = max(monthly_data.values()) if monthly_data.values() else Decimal(1)
@@ -1042,19 +1068,20 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             (
                 f'<svg viewBox="0 0 {width} {height}" '
                 f'width="{width}" height="{height}" '
-                'xmlns="http://www.w3.org/2000/svg" class="stacked-bar-chart">'
+                f'xmlns="http://www.w3.org/2000/svg" class="{chart_class}">'
             ),
         ]
 
         # Calculate bar properties
-        bar_spacing = chart_width / (num_bars * 1.5)
-        bar_width = bar_spacing * 0.8
+        bar_slot = chart_width / num_bars
+        bar_width = bar_slot * (0.72 if month else 0.62)
 
         # Draw each bar
         for idx in range(num_bars):
+            bar_key = bar_keys[idx]
             bar_label = bar_labels[idx]
-            x: float = padding + bar_spacing * (idx + 0.5)
-            category_totals = period_category_data.get(bar_label, {})
+            x: float = padding + bar_slot * idx + (bar_slot - bar_width) / 2
+            category_totals = period_category_data.get(bar_key, {})
 
             # Stack bars by category
             y_offset: float = height - padding
