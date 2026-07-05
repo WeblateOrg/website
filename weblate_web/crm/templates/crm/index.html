@@ -36,6 +36,52 @@
       </section>
     {% endif %}
 
+    {% if perms.payments.view_customer %}
+      <section class="crm-section crm-dashboard-section">
+        {% translate "Follow-ups" as section_title %}
+        {% include "crm/snippets/section_header.html" %}
+        <div class="crm-dashboard-list">
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:customer-list" kind="followups" %}"
+               aria-label="{% translate "All follow-ups" %}">
+              <strong>{% translate "All follow-ups" %}</strong>
+              <span>{% translate "Customers with scheduled next actions." %}</span>
+            </a>
+          </div>
+          {% for customer in due_followups %}
+            <div class="crm-dashboard-item crm-dashboard-item--attention">
+              <a class="crm-dashboard-link" href="{{ customer.get_absolute_url }}">
+                <strong>{{ customer.verbose_name }}</strong>
+                <span>
+                  {% blocktranslate with date=customer.follow_up_at %}Due {{ date }}{% endblocktranslate %}
+                  {% if customer.follow_up_note %}- {{ customer.follow_up_note }}{% endif %}
+                </span>
+              </a>
+            </div>
+          {% empty %}
+            <div class="crm-dashboard-item">
+              <span class="crm-dashboard-link">
+                <strong>{% translate "No due follow-ups" %}</strong>
+                <span>{% translate "No customer follow-up is due right now." %}</span>
+              </span>
+            </div>
+          {% endfor %}
+          {% for customer in upcoming_followups %}
+            <div class="crm-dashboard-item">
+              <a class="crm-dashboard-link" href="{{ customer.get_absolute_url }}">
+                <strong>{{ customer.verbose_name }}</strong>
+                <span>
+                  {% blocktranslate with date=customer.follow_up_at %}Upcoming {{ date }}{% endblocktranslate %}
+                  {% if customer.follow_up_note %}- {{ customer.follow_up_note }}{% endif %}
+                </span>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
     {% if perms.invoices.view_invoice %}
       <section class="crm-section crm-dashboard-section">
         {% translate "Invoices" as section_title %}

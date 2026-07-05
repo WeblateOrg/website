@@ -40,6 +40,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.crm.forms import (
     CRMSearchForm,
+    CustomerFollowUpForm,
     CustomerMergeForm,
     CustomerUserForm,
     InvoiceConfirmationForm,
@@ -128,6 +129,13 @@ class CRMMixin:
 
 class IndexView(CRMMixin, TemplateView):  # type: ignore[misc]
     template_name = "crm/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        if self.request.user.has_perm("payments.view_customer"):
+            context["due_followups"] = Customer.objects.due_followups()[:10]
+            context["upcoming_followups"] = Customer.objects.upcoming_followups()[:5]
+        return context
 
 
 class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
@@ -540,6 +548,8 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
         match self.kwargs["kind"]:
             case "active":
                 return "Active customer"
+            case "followups":
+                return "Customer follow-ups"
             case "all":
                 return "All customers"
         raise ValueError(self.kwargs["kind"])
@@ -554,6 +564,7 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
         search_form = self.get_search_form()
         context["search_form"] = search_form
         context["query"] = search_form["q"].value() or ""
+        context["kind"] = self.kwargs["kind"]
         return context
 
     def get_queryset(self) -> CustomerQuerySet:
@@ -569,6 +580,8 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
         match self.kwargs["kind"]:
             case "active":
                 return qs.active()
+            case "followups":
+                return qs.followups()
             case "all":
                 return qs
         raise ValueError(self.kwargs["kind"])
@@ -578,6 +591,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
     add_customer_user_permission = "payments.change_customer"
+    change_customer_permission = "payments.change_customer"
     title = "Customer detail"
     valid_tabs: ClassVar[frozenset[str]] = frozenset(
         {"overview", "interactions", "invoices", "payments"}
@@ -598,11 +612,15 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         add_customer_user = (
             self.request.method == "POST" and "add_customer_user" in self.request.POST
         )
+        set_follow_up = (
+            self.request.method == "POST" and "set_follow_up" in self.request.POST
+        )
         context["new_subscription_form"] = NewSubscriptionForm(
             self.request.POST
             if self.request.method == "POST"
             and not add_manual_note
             and not add_customer_user
+            and not set_follow_up
             else None
         )
         context["invoice_kind_quote"] = int(InvoiceKind.QUOTE)
@@ -613,8 +631,15 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["customer_user_form"] = CustomerUserForm(
             self.request.POST if add_customer_user else None
         )
+        context["follow_up_form"] = CustomerFollowUpForm(
+            self.request.POST if set_follow_up else None,
+            instance=self.object,
+        )
         context["can_add_customer_user"] = self.request.user.has_perm(
             self.add_customer_user_permission
+        )
+        context["can_change_customer"] = self.request.user.has_perm(
+            self.change_customer_permission
         )
         context["merge_form"] = CustomerMergeForm(customer=self.object)
         services = self.object.service_set.customer_services().order()
@@ -634,6 +659,13 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         cls, request: AuthenticatedHttpRequest
     ) -> None:
         if not request.user.has_perm(cls.add_customer_user_permission):
+            raise PermissionDenied
+
+    @classmethod
+    def check_change_customer_permission(
+        cls, request: AuthenticatedHttpRequest
+    ) -> None:
+        if not request.user.has_perm(cls.change_customer_permission):
             raise PermissionDenied
 
     def get_title(self) -> str:
@@ -787,24 +819,95 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             )
         return redirect(customer)
 
-    def post(self, request, *args, **kwargs):
-        customer = self.get_object()
-        if "add_customer_user" in request.POST:
-            return self.add_customer_user(request, customer, *args, **kwargs)
+    def create_follow_up_interaction(
+        self,
+        customer: Customer,
+        *,
+        summary: str,
+        content: str,
+        previous_follow_up_at,
+        previous_follow_up_note: str,
+    ) -> None:
+        customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            summary=summary[:200],
+            content=content,
+            details={
+                "follow_up_at": customer.follow_up_at.isoformat()
+                if customer.follow_up_at
+                else "",
+                "follow_up_note": customer.follow_up_note,
+                "previous_follow_up_at": previous_follow_up_at.isoformat()
+                if previous_follow_up_at
+                else "",
+                "previous_follow_up_note": previous_follow_up_note,
+            },
+            user=self.request.user,
+        )
 
-        if "add_manual_note" in request.POST:
-            manual_form = ManualInteractionForm(request.POST)
-            if manual_form.is_valid():
-                note = manual_form.cleaned_data["note"].strip()
-                customer.interaction_set.create(
-                    origin=Interaction.Origin.MANUAL_NOTE,
-                    summary=note.splitlines()[0][:200],
-                    content=note,
-                    user=request.user,
-                )
-                return redirect(self.get_tab_url(customer, "interactions"))
+    def set_follow_up(self, request, customer: Customer, *args, **kwargs):
+        self.check_change_customer_permission(request)
+        previous_follow_up_at = customer.follow_up_at
+        previous_follow_up_note = customer.follow_up_note
+        form = CustomerFollowUpForm(request.POST, instance=customer)
+        if not form.is_valid():
+            show_form_errors(request, form)
             return self.get(request, *args, **kwargs)
 
+        customer = form.save(commit=False)
+        follow_up_at = customer.follow_up_at
+        if follow_up_at is None:
+            raise ValueError("Missing follow-up date")
+        customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        local_follow_up_at = timezone.localtime(follow_up_at)
+        content = gettext("Follow-up scheduled for %(date)s.") % {
+            "date": local_follow_up_at,
+        }
+        if customer.follow_up_note:
+            content = f"{content}\n{customer.follow_up_note}"
+        self.create_follow_up_interaction(
+            customer,
+            summary=gettext("Follow-up set"),
+            content=content,
+            previous_follow_up_at=previous_follow_up_at,
+            previous_follow_up_note=previous_follow_up_note,
+        )
+        messages.success(request, gettext("Follow-up updated."))
+        return redirect(customer)
+
+    def clear_follow_up(self, request, customer: Customer):
+        self.check_change_customer_permission(request)
+        previous_follow_up_at = customer.follow_up_at
+        previous_follow_up_note = customer.follow_up_note
+        if previous_follow_up_at is None and not previous_follow_up_note:
+            return redirect(customer)
+        customer.follow_up_at = None
+        customer.follow_up_note = ""
+        customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        self.create_follow_up_interaction(
+            customer,
+            summary=gettext("Follow-up cleared"),
+            content=gettext("Follow-up cleared."),
+            previous_follow_up_at=previous_follow_up_at,
+            previous_follow_up_note=previous_follow_up_note,
+        )
+        messages.success(request, gettext("Follow-up cleared."))
+        return redirect(customer)
+
+    def add_manual_note(self, request, customer: Customer, *args, **kwargs):
+        manual_form = ManualInteractionForm(request.POST)
+        if manual_form.is_valid():
+            note = manual_form.cleaned_data["note"].strip()
+            customer.interaction_set.create(
+                origin=Interaction.Origin.MANUAL_NOTE,
+                summary=note.splitlines()[0][:200],
+                content=note,
+                user=request.user,
+            )
+            return redirect(self.get_tab_url(customer, "interactions"))
+        return self.get(request, *args, **kwargs)
+
+    def create_new_subscription(self, request, customer: Customer, *args, **kwargs):
         subscription_form = NewSubscriptionForm(request.POST)
         if subscription_form.is_valid():
             with override("en"):
@@ -822,6 +925,22 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             return redirect(invoice)
 
         return self.get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        customer = self.get_object()
+        if "add_customer_user" in request.POST:
+            return self.add_customer_user(request, customer, *args, **kwargs)
+
+        if "set_follow_up" in request.POST:
+            return self.set_follow_up(request, customer, *args, **kwargs)
+
+        if "clear_follow_up" in request.POST:
+            return self.clear_follow_up(request, customer)
+
+        if "add_manual_note" in request.POST:
+            return self.add_manual_note(request, customer, *args, **kwargs)
+
+        return self.create_new_subscription(request, customer, *args, **kwargs)
 
 
 class CustomerMergeView(CustomerDetailView):
