@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext
+from django.utils.translation import gettext, gettext_lazy
 
 from weblate_web.invoices.models import Currency, InvoiceKind
 from weblate_web.models import REWARD_LEVELS, REWARDS, Package, Service
@@ -32,12 +32,12 @@ from weblate_web.payments.models import RECURRENCE_CHOICES
 class NewSubscriptionForm(forms.Form):
     kind = forms.TypedChoiceField(
         choices=(
-            choice
-            for choice in InvoiceKind.choices
-            if choice[0] in {InvoiceKind.QUOTE, InvoiceKind.INVOICE}
+            (InvoiceKind.QUOTE, gettext_lazy("Quote")),
+            (InvoiceKind.INVOICE, gettext_lazy("Invoice")),
         ),
         initial=InvoiceKind.QUOTE,
         coerce=InvoiceKind.from_str,
+        widget=forms.RadioSelect,
     )
     package = forms.ModelChoiceField(Package.objects.all())
     currency = forms.TypedChoiceField(
@@ -45,10 +45,20 @@ class NewSubscriptionForm(forms.Form):
     )
     customer_reference = forms.CharField(required=False)
     customer_note = forms.CharField(required=False, widget=forms.Textarea)
+    confirm_invoice = forms.BooleanField(required=False, widget=forms.HiddenInput)
     skip_intro = forms.BooleanField(
         required=False,
         label="Skip sending introduction/creating Zammad ticket upon purchase",
     )
+
+    def clean(self):
+        super().clean()
+        is_invoice = self.cleaned_data.get("kind") == InvoiceKind.INVOICE
+        if is_invoice and not self.cleaned_data.get("confirm_invoice"):
+            raise ValidationError(
+                gettext_lazy("Please confirm that you want to issue a final invoice.")
+            )
+        return self.cleaned_data
 
 
 class MethodForm(forms.Form):

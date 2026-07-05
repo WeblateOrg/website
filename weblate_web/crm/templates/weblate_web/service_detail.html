@@ -138,98 +138,59 @@
       </div>
 
       <div class="crm-action-group">
-        <h3>{% translate "Renewal" %}</h3>
+        <h3>{% translate "Purchases" %}</h3>
         <div class="crm-form-grid">
-          <form class="crm-form-panel crm-form-panel--balanced" method="post">
-            <h3>{% translate "Renewal quote" %}</h3>
+          {% translate "This creates a final invoice for the renewal. Use Quote if you only need an offer." as renewal_invoice_message %}
+          <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--purchase"
+                method="post"
+                data-crm-invoice-confirm
+                data-crm-invoice-kind="{{ invoice_kind_invoice }}"
+                data-crm-invoice-confirm-message="{{ renewal_invoice_message }}">
+            <h3>{% translate "Renewal" %}</h3>
             {% csrf_token %}
             <div class="crm-form-panel__body">
               {{ reference_form }}
+              {% include "crm/snippets/invoice_kind_field.html" with form=subscription_action_form %}
               <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+              <input type="hidden"
+                     name="action"
+                     value="{{ subscription_action_form.ACTION_RENEWAL }}">
+              <input type="hidden" name="confirm_invoice" value="">
             </div>
             <div class="crm-form-panel__actions">
-              <input class="crm-button"
-                     type="submit"
-                     name="quote"
-                     value="{% translate "Issue renewal quote" %}">
+              <input class="crm-button" type="submit" value="{% translate "Create" %}">
             </div>
           </form>
 
-          <details class="crm-danger-action">
-            <summary>{% translate "Issue renewal invoice" %}</summary>
-            <p>
-              {% blocktranslate %}This creates a final invoice for the renewal. Use the renewal quote action if you only need a quote.{% endblocktranslate %}
-            </p>
-            <form class="crm-form-panel crm-form-panel--compact" method="post">
+          {% for package in subscription.upgrade_packages %}
+            {% blocktranslate asvar upgrade_title %}Upgrade to {{ package }}{% endblocktranslate %}
+            {% translate "For the rest of the current period." as upgrade_period_message %}
+            {% translate "This creates a final invoice for the upgrade. Use Quote if you only need an offer." as upgrade_invoice_message %}
+            <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--purchase"
+                  method="post"
+                  data-crm-invoice-confirm
+                  data-crm-invoice-kind="{{ invoice_kind_invoice }}"
+                  data-crm-invoice-confirm-message="{{ upgrade_invoice_message }}">
+              <h3>{{ upgrade_title }}</h3>
               {% csrf_token %}
               <div class="crm-form-panel__body">
+                <p class="crm-muted">{{ upgrade_period_message }}</p>
                 {{ reference_form }}
-                <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-                <input type="hidden" name="invoice" value="1">
-                <label class="crm-check">
-                  <input type="checkbox" name="confirm_invoice" value="1" required>
-                  <span>{% translate "I confirm that I want to issue a final invoice." %}</span>
-                </label>
-              </div>
-              <div class="crm-form-panel__actions">
-                <input class="crm-button"
-                       type="submit"
-                       value="{% translate "Issue renewal invoice" %}">
-              </div>
-            </form>
-          </details>
-        </div>
-      </div>
-
-      {% for package in subscription.upgrade_packages %}
-        <div class="crm-action-group">
-          <h3>{% translate "Upgrade" %}</h3>
-          <p>
-            {% blocktranslate %}Upgrade to {{ package }} without extending the current subscription period.{% endblocktranslate %}
-          </p>
-          <div class="crm-form-grid">
-            <form class="crm-form-panel crm-form-panel--balanced" method="post">
-              <h3>{% translate "Upgrade quote" %}</h3>
-              {% csrf_token %}
-              <div class="crm-form-panel__body">
-                {{ reference_form }}
+                {% include "crm/snippets/invoice_kind_field.html" with form=subscription_action_form %}
                 <input type="hidden" name="subscription" value="{{ subscription.pk }}">
                 <input type="hidden" name="package" value="{{ package.name }}">
+                <input type="hidden"
+                       name="action"
+                       value="{{ subscription_action_form.ACTION_UPGRADE }}">
+                <input type="hidden" name="confirm_invoice" value="">
               </div>
               <div class="crm-form-panel__actions">
-                <input class="crm-button"
-                       type="submit"
-                       name="upgrade_quote"
-                       value="{% translate "Issue upgrade quote" %}">
+                <input class="crm-button" type="submit" value="{% translate "Create" %}">
               </div>
             </form>
-            <details class="crm-danger-action">
-              <summary>{% translate "Issue upgrade invoice" %}</summary>
-              <p>
-                {% blocktranslate %}This creates a final invoice for the upgrade. Use the upgrade quote action if you only need a quote.{% endblocktranslate %}
-              </p>
-              <form class="crm-form-panel crm-form-panel--compact" method="post">
-                {% csrf_token %}
-                <div class="crm-form-panel__body">
-                  {{ reference_form }}
-                  <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-                  <input type="hidden" name="package" value="{{ package.name }}">
-                  <input type="hidden" name="upgrade_invoice" value="1">
-                  <label class="crm-check">
-                    <input type="checkbox" name="confirm_invoice" value="1" required>
-                    <span>{% translate "I confirm that I want to issue a final invoice." %}</span>
-                  </label>
-                </div>
-                <div class="crm-form-panel__actions">
-                  <input class="crm-button"
-                         type="submit"
-                         value="{% translate "Issue upgrade invoice" %}">
-                </div>
-              </form>
-            </details>
-          </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      </div>
 
       {% if subscription.enabled %}
         <div class="crm-action-group">

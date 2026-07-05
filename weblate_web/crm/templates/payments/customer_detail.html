@@ -197,11 +197,43 @@
           </table>
         </div>
       {% else %}
+        {% translate "This creates a final invoice for the new service. Use Quote if you only need an offer." as new_service_invoice_message %}
         <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--compact"
-              method="post">
-          <h3>{% translate "Invoice new service" %}</h3>
+              method="post"
+              data-crm-invoice-confirm
+              data-crm-invoice-kind="{{ invoice_kind_invoice }}"
+              data-crm-invoice-confirm-message="{{ new_service_invoice_message }}">
+          <h3>{% translate "New service purchase" %}</h3>
           {% csrf_token %}
-          <div class="crm-form-panel__body">{{ new_subscription_form }}</div>
+          <div class="crm-form-panel__body">
+            {{ new_subscription_form.non_field_errors }}
+            {{ new_subscription_form.confirm_invoice }}
+            <div class="crm-field">
+              {{ new_subscription_form.package.errors }}
+              {{ new_subscription_form.package.label_tag }}
+              {{ new_subscription_form.package }}
+            </div>
+            <div class="crm-field">
+              {{ new_subscription_form.currency.errors }}
+              {{ new_subscription_form.currency.label_tag }}
+              {{ new_subscription_form.currency }}
+            </div>
+            <div class="crm-field">
+              {{ new_subscription_form.customer_reference.errors }}
+              {{ new_subscription_form.customer_reference.label_tag }}
+              {{ new_subscription_form.customer_reference }}
+            </div>
+            <div class="crm-field">
+              {{ new_subscription_form.customer_note.errors }}
+              {{ new_subscription_form.customer_note.label_tag }}
+              {{ new_subscription_form.customer_note }}
+            </div>
+            {% include "crm/snippets/invoice_kind_field.html" with form=new_subscription_form %}
+            <label class="crm-check">
+              {{ new_subscription_form.skip_intro }}
+              <span>{{ new_subscription_form.skip_intro.label }}</span>
+            </label>
+          </div>
           <div class="crm-form-panel__actions">
             {% translate "Create" as create_label %}
             <input class="crm-button" type="submit" value="{{ create_label }}">

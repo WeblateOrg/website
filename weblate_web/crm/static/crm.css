@@ -768,6 +768,10 @@
   max-width: 720px;
 }
 
+.crm-form-panel--purchase .crm-form-panel__body {
+  align-content: end;
+}
+
 .crm-form-panel--inline {
   align-items: center;
   display: flex;
@@ -810,28 +814,88 @@
   margin-top: 0.2rem;
 }
 
-.crm-danger-action {
-  align-self: start;
-  background: var(--crm-red-soft);
-  border: 1px solid rgba(179, 38, 30, 0.24);
-  border-radius: 8px;
+.crm-choice-group {
+  border: 0;
+  display: grid;
+  gap: 0.55rem;
   margin: 0;
-  padding: 0.85rem;
+  min-inline-size: 0;
+  padding: 0;
 }
 
-.crm-danger-action summary {
+.crm-choice-group legend {
+  color: var(--crm-text);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  padding: 0;
+}
+
+.crm-choice {
+  align-items: flex-start;
   background: #fff;
-  border-bottom: 1px solid rgba(179, 38, 30, 0.24);
-  border-radius: 7px 7px 0 0;
-  color: var(--crm-red);
-  cursor: pointer;
-  font-weight: 800;
-  margin: -0.85rem -0.85rem 0;
-  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--crm-border);
+  border-radius: 6px;
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.65rem;
 }
 
-.crm-danger-action[open] summary {
-  margin-bottom: 0;
+.crm-choice:has(input:checked) {
+  border-color: var(--crm-green);
+  box-shadow: inset 0 0 0 1px var(--crm-green);
+}
+
+.crm-choice input {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+
+.crm-choice span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.crm-choice small {
+  color: var(--crm-muted);
+  font-weight: 400;
+}
+
+.crm-confirm-dialog {
+  border: 1px solid var(--crm-border);
+  border-radius: 8px;
+  box-shadow: var(--crm-shadow);
+  color: var(--crm-text);
+  max-width: min(92vw, 460px);
+  padding: 0;
+}
+
+.crm-confirm-dialog::backdrop {
+  background: rgba(37, 51, 66, 0.32);
+}
+
+.crm-confirm-dialog form {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+}
+
+.crm-confirm-dialog h2 {
+  color: var(--crm-green-dark);
+  font-size: 1.15rem;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.crm-confirm-dialog p {
+  margin: 0;
+}
+
+.crm-confirm-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .crm-warning {
