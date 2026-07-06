@@ -24,13 +24,15 @@
 # Takeru Mikenu <mikenu-jp@users.noreply.hosted.weblate.org>, 2025.
 # Nozomu Matsui <nozomu.matsui@gree.net>, 2026.
 # Automatic translation add-on <noreply-addon-autotranslate@weblate.org>, 2026.
+# GitHub webhook <noreply-webhook-github-integration@weblate.org>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-07-06 00:59-0500\n"
-"PO-Revision-Date: 2026-06-01 06:48+0000\n"
-"Last-Translator: GitHub webhook <noreply-webhook-github@weblate.org>\n"
+"PO-Revision-Date: 2026-07-07 05:02+0000\n"
+"Last-Translator: GitHub webhook <noreply-webhook-github-"
+"integration@weblate.org>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
 "ja/>\n"
 "Language: ja\n"
@@ -38,7 +40,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.6.dev0\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #: weblate_web/crm/forms.py:34 weblate_web/forms.py:59
 msgid "Please confirm that you want to issue a final invoice."
@@ -323,10 +325,8 @@ msgstr "サービス"
 #: weblate_web/crm/templates/crm/index.html:94
 #: weblate_web/crm/templates/invoices/invoice_detail.html:7
 #: weblate_web/crm/templates/payments/customer_detail.html:31
-#, fuzzy
-#| msgid "Invoice"
 msgid "Invoices"
-msgstr "請求書"
+msgstr "インボイス"
 
 #: weblate_web/crm/templates/crm/base.html:68
 #: weblate_web/crm/templates/crm/index.html:190
@@ -700,10 +700,8 @@ msgid "First"
 msgstr ""
 
 #: weblate_web/crm/templates/crm/pagination.html:8
-#, fuzzy
-#| msgid "Previous window"
 msgid "Previous"
-msgstr "前の集計期間"
+msgstr "前年"
 
 #: weblate_web/crm/templates/crm/pagination.html:12
 #, python-format
@@ -711,10 +709,8 @@ msgid "Page %(page)s of %(pages)s"
 msgstr ""
 
 #: weblate_web/crm/templates/crm/pagination.html:16
-#, fuzzy
-#| msgid "Next step"
 msgid "Next"
-msgstr "次のステップ"
+msgstr "次へ"
 
 #: weblate_web/crm/templates/crm/pagination.html:17
 msgid "Last"
@@ -851,8 +847,6 @@ msgid "Quantity"
 msgstr ""
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:117
-#, fuzzy
-#| msgid "Pricing"
 msgid "Price"
 msgstr "価格"
 
@@ -917,10 +911,8 @@ msgid "Customer sections"
 msgstr "カスタマイズのリスト"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:25
-#, fuzzy
-#| msgid "Service"
 msgid "Overview"
-msgstr "サービス"
+msgstr "概要"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:28
 #, fuzzy
@@ -1101,10 +1093,8 @@ msgstr "サービスの状態を表示する。"
 #: weblate_web/crm/templates/payments/customer_detail.html:281
 #: weblate_web/crm/templates/weblate_web/service_detail.html:205
 #: weblate_web/crm/templates/weblate_web/service_detail.html:232
-#, fuzzy
-#| msgid "Dedicated"
 msgid "Create"
-msgstr "専用"
+msgstr "作成"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:289
 #, fuzzy
@@ -1150,10 +1140,8 @@ msgstr "寄付"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:340
 #: weblate_web/crm/templates/payments/customer_detail.html:470
-#, fuzzy
-#| msgid "Dedicated"
 msgid "Created"
-msgstr "専用"
+msgstr "作成日時"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:341
 msgid "Reward"
@@ -1194,10 +1182,8 @@ msgid "Interaction history"
 msgstr "応対内容"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:421
-#, fuzzy
-#| msgid "Payment Summary"
 msgid "Summary"
-msgstr "支払いの概要"
+msgstr "概要"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:454
 #, fuzzy
@@ -1270,10 +1256,8 @@ msgid "locked"
 msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:38
-#, fuzzy
-#| msgid "Go Weblate!"
 msgid "Weblate"
-msgstr "Weblate 開始！"
+msgstr "Weblate"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:44
 #: weblate_web/crm/templates/weblate_web/service_detail.html:279
@@ -1283,17 +1267,12 @@ msgstr "ユーザー"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:50
 #: weblate_web/crm/templates/weblate_web/service_detail.html:280
-#, fuzzy
-#| msgctxt "Hosting plan parameter"
-#| msgid "Projects"
 msgid "Projects"
 msgstr "プロジェクト"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:56
-#, fuzzy
-#| msgid "Support portal"
 msgid "Support status"
-msgstr "サポート ポータル"
+msgstr "サポート状況"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:64
 #, fuzzy
@@ -1356,10 +1335,8 @@ msgid "Service is terminated"
 msgstr "サービスの状態"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:173
-#, fuzzy
-#| msgid "Expired"
 msgid "Expires"
-msgstr "期限切れ"
+msgstr "有効期限"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:180
 msgid "Edit subscription in admin"
@@ -1406,10 +1383,8 @@ msgid ""
 msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:258
-#, fuzzy
-#| msgid "Disable renewal"
 msgid "Disable"
-msgstr "更新を無効にする"
+msgstr "無効化"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:268
 msgid "Recent service reports"
@@ -1428,10 +1403,8 @@ msgid "Site title"
 msgstr "字幕ファイル"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:278
-#, fuzzy
-#| msgid "Weblate heroism"
 msgid "Weblate version"
-msgstr "英雄として Weblate を支援する"
+msgstr "Weblate バージョン"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:281
 #: weblate_web/templates/hosting.html:319
