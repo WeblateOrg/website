@@ -9,6 +9,10 @@
 
 {% block page_actions %}
   <div class="crm-page-actions">
+    {% if object.zammad_id %}
+      <a class="crm-button crm-button--secondary"
+         href="https://care.weblate.org/#organization/profile/{{ object.zammad_id }}">{% translate "View in Zammad" %}</a>
+    {% endif %}
     <a class="crm-button crm-button--secondary"
        href="{% url "admin:payments_customer_change" object_id=object.pk %}">{% translate "Edit in admin" %}</a>
   </div>
@@ -104,14 +108,6 @@
             <dt>{% translate "Payment reminder" %}</dt>
             <dd>
               {% blocktranslate count days=object.upcoming_payment_notification_days %}Additional notification {{ days }} day before due date{% plural %}Additional notification {{ days }} days before due date{% endblocktranslate %}
-            </dd>
-          </div>
-        {% endif %}
-        {% if object.zammad_id %}
-          <div>
-            <dt>{% translate "Zammad" %}</dt>
-            <dd>
-              <a href="https://care.weblate.org/#organization/profile/{{ object.zammad_id }}">{% translate "View in Zammad" %}</a>
             </dd>
           </div>
         {% endif %}
