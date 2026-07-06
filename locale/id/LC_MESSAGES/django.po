@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate 1.2\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-06-29 07:03-0500\n"
+"POT-Creation-Date: 2026-07-06 00:59-0500\n"
 "PO-Revision-Date: 2026-06-12 02:40+0000\n"
 "Last-Translator: Zahid Rizky Fakhri <zahidrizkyfakhri@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/weblate/"
@@ -36,26 +36,95 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#: weblate_web/crm/forms.py:30
+#: weblate_web/crm/forms.py:34 weblate_web/forms.py:59
+msgid "Please confirm that you want to issue a final invoice."
+msgstr "Harap konfirmasikan bahwa Anda ingin menerbitkan faktur akhir."
+
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:268
+#: weblate_web/crm/views.py:312 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
+msgid "This subscription can not be upgraded to the selected package."
+msgstr "Langganan ini tidak dapat ditingkatkan ke paket yang dipilih."
+
+#: weblate_web/crm/forms.py:53
+#: weblate_web/crm/templates/crm/snippets/search_form.html:9
+#: weblate_web/templates/discover.html:35
+msgid "Search"
+msgstr "Cari"
+
+#: weblate_web/crm/forms.py:61
+msgid "Merge with following customer object"
+msgstr ""
+
+#: weblate_web/crm/forms.py:65
+msgid "Select a valid customer to merge into."
+msgstr ""
+
+#: weblate_web/crm/forms.py:81
+msgid "A customer can not be merged into itself."
+msgstr ""
+
+#: weblate_web/crm/forms.py:98
+#: weblate_web/crm/templates/weblate_web/service_detail.html:193
+#, fuzzy
+#| msgid "No renewal"
+msgid "Renewal"
+msgstr "Tidak ada perpanjangan"
+
+#: weblate_web/crm/forms.py:99 weblate_web/models.py:1115
+msgid "Upgrade"
+msgstr "Tingkatkan"
+
+#: weblate_web/crm/forms.py:106
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:13
+#: weblate_web/forms.py:35
+msgid "Quote"
+msgstr ""
+
+#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:145
+#: weblate_web/crm/models.py:197
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:23
+#: weblate_web/crm/templates/invoices/invoice_detail.html:27
+#: weblate_web/forms.py:36
+msgid "Invoice"
+msgstr "Faktur"
+
+#: weblate_web/crm/forms.py:133 weblate_web/crm/forms.py:139
+#, fuzzy
+#| msgid "Git integration"
+msgid "Missing action."
+msgstr "Integrasi Git"
+
+#: weblate_web/crm/forms.py:150
 msgid "Refund description"
 msgstr "Deskripsi pengembalian dana"
 
-#: weblate_web/crm/forms.py:33
+#: weblate_web/crm/forms.py:153
 msgid "Optional note describing how the refund was done."
 msgstr ""
 "Catatan opsional yang menjelaskan bagaimana pengembalian dana dilakukan."
 
-#: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
+#: weblate_web/crm/forms.py:160 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "Catatan"
 
-#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/crm/forms.py:167 weblate_web/payments/models.py:243
+msgid "Follow-up date"
+msgstr ""
+
+#: weblate_web/crm/forms.py:175 weblate_web/payments/models.py:249
+msgid "Follow-up note"
+msgstr ""
+
+#: weblate_web/crm/forms.py:203
+#: weblate_web/crm/templates/payments/customer_list.html:19
+#: weblate_web/templates/about.html:182
 #: weblate_web/templates/snippets/customer-users.html:38
 #: weblate_web/templates/snippets/customer-users.html:40
 msgid "E-mail"
 msgstr "Surel"
 
-#: weblate_web/crm/forms.py:47
+#: weblate_web/crm/forms.py:204
 msgid "Full name"
 msgstr "Nama lengkap"
 
@@ -68,278 +137,643 @@ msgstr "Respons pengguna dihost tidak valid"
 msgid "Hosted user synchronization is disabled."
 msgstr "Sinkronisasi pengguna dihos dinonaktifkan."
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 msgid "Yes"
 msgstr "Ya"
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 msgid "No"
 msgstr "Tidak"
 
-#: weblate_web/crm/models.py:86
+#: weblate_web/crm/models.py:93
 msgid "not set"
 msgstr "belum diatur"
 
-#: weblate_web/crm/models.py:136
+#: weblate_web/crm/models.py:143
 msgid "Notification"
 msgstr "Notifikasi"
 
-#: weblate_web/crm/models.py:137
+#: weblate_web/crm/models.py:144
 msgid "Recipients"
 msgstr "Penerima"
 
-#: weblate_web/crm/models.py:138 weblate_web/crm/models.py:190
-msgid "Invoice"
-msgstr "Faktur"
-
-#: weblate_web/crm/models.py:139
-#: weblate_web/crm/templates/crm/interaction_detail.html:52
+#: weblate_web/crm/models.py:146
+#: weblate_web/crm/templates/crm/interaction_detail.html:64
 msgid "Attachment"
 msgstr "Lampiran"
 
-#: weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:153
 msgid "Merged customer"
 msgstr "Pelanggan gabungan"
 
-#: weblate_web/crm/models.py:150
+#: weblate_web/crm/models.py:157
 msgid "Merged customer ID"
 msgstr "ID pelanggan gabungan"
 
-#: weblate_web/crm/models.py:154
+#: weblate_web/crm/models.py:161
 msgid "Merged customer email"
 msgstr "Surel pelanggan gabungan"
 
-#: weblate_web/crm/models.py:159
+#: weblate_web/crm/models.py:166
 msgid "Merged customer end client"
 msgstr "Klien pelanggan akhir gabungan"
 
-#: weblate_web/crm/models.py:168
+#: weblate_web/crm/models.py:175
 msgid "Filename"
 msgstr "Nama berkas"
 
-#: weblate_web/crm/models.py:171
+#: weblate_web/crm/models.py:178
 msgid "Ticket ID"
 msgstr "ID tiket"
 
-#: weblate_web/crm/models.py:172
+#: weblate_web/crm/models.py:179
 msgid "Article ID"
 msgstr "ID artikel"
 
-#: weblate_web/crm/models.py:175
+#: weblate_web/crm/models.py:182
 msgid "Attachment ID"
 msgstr "ID lampiran"
 
-#: weblate_web/crm/models.py:182
+#: weblate_web/crm/models.py:189
 msgid "Automated"
 msgstr "Otomatis"
 
-#: weblate_web/crm/models.py:183
+#: weblate_web/crm/models.py:190
 msgid "Error code"
 msgstr "Kode galat"
 
-#: weblate_web/crm/models.py:184
+#: weblate_web/crm/models.py:191
 msgid "Error message"
 msgstr "Pesan galat"
 
-#: weblate_web/crm/models.py:191
+#: weblate_web/crm/models.py:198
+#: weblate_web/crm/templates/invoices/invoice_detail.html:59
+#: weblate_web/crm/templates/invoices/invoice_list.html:20
+#: weblate_web/crm/templates/payments/customer_detail.html:342
+#: weblate_web/crm/templates/payments/customer_detail.html:383
+#: weblate_web/crm/templates/payments/customer_detail.html:472
 msgid "Amount"
 msgstr "Jumlah"
 
-#: weblate_web/crm/models.py:194 weblate_web/templates/hosting.html:488
+#: weblate_web/crm/models.py:201 weblate_web/templates/hosting.html:488
 #: weblate_web/templates/support.html:173
 msgid "Payment"
 msgstr "Pembayaran"
 
-#: weblate_web/crm/models.py:200
+#: weblate_web/crm/models.py:207
 msgid "Confirmed by"
 msgstr "Dikonfirmasikan oleh"
 
-#: weblate_web/crm/models.py:201
+#: weblate_web/crm/models.py:208
 msgid "Confirmed at"
 msgstr "Dikonfirmasikan pada"
 
-#: weblate_web/crm/models.py:202
+#: weblate_web/crm/models.py:209
+#: weblate_web/crm/templates/invoices/invoice_detail.html:115
+#: weblate_web/crm/templates/invoices/invoice_list.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:384
+#: weblate_web/crm/templates/payments/customer_detail.html:473
 msgid "Description"
 msgstr "Deskripsi"
 
-#: weblate_web/crm/models.py:211 weblate_web/templates/service.html:6
-#: weblate_web/templates/service.html:13
+#: weblate_web/crm/models.py:218
+#: weblate_web/crm/templates/payments/customer_detail.html:228
+#: weblate_web/crm/templates/weblate_web/service_detail.html:19
+#: weblate_web/crm/templates/weblate_web/service_list.html:26
+#: weblate_web/crm/templates/weblate_web/service_list.html:51
+#: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
 msgid "Service"
 msgstr "Layanan"
 
-#: weblate_web/crm/models.py:218
+#: weblate_web/crm/models.py:225
 msgid "Previous maintenance window"
 msgstr "Jendela pemeliharaan sebelumnya"
 
-#: weblate_web/crm/models.py:224
-#: weblate_web/crm/templates/weblate_web/service_detail.html:41
+#: weblate_web/crm/models.py:231
+#: weblate_web/crm/templates/weblate_web/service_detail.html:142
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:747
+#: weblate_web/models.py:750
 msgid "Maintenance window"
 msgstr "Jendela pemeliharaan"
 
-#: weblate_web/crm/models.py:228
+#: weblate_web/crm/models.py:235
 msgid "Service URL"
 msgstr "URL layanan"
 
-#: weblate_web/crm/templates/crm/income.html:16
-msgid "Back to"
-msgstr "Kembali ke"
+#: weblate_web/crm/templates/crm/base.html:12
+msgid "Internal Weblate customer relationship management."
+msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:16
-msgid "yearly view"
-msgstr "tampilan tahunan"
+#: weblate_web/crm/templates/crm/base.html:34
+#, fuzzy
+#| msgid "Displaying context"
+msgid "Skip to main content"
+msgstr "Menampilkan konteks"
 
-#: weblate_web/crm/templates/crm/income.html:22
-msgid "Year"
-msgstr "Tahun"
+#: weblate_web/crm/templates/crm/base.html:46
+msgid "Toggle navigation"
+msgstr "Menu navigasi"
 
-#: weblate_web/crm/templates/crm/income.html:40
-#: weblate_web/crm/templates/crm/income.html:113
-msgid "Income by Category"
-msgstr "Pendapatan berdasarkan Kategori"
+#: weblate_web/crm/templates/crm/base.html:47
+msgid "Menu"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:42
-msgid "Total Income"
+#: weblate_web/crm/templates/crm/base.html:50
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "CRM navigation"
+msgstr "Menu navigasi"
+
+#: weblate_web/crm/templates/crm/base.html:52
+msgid "Dashboard"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:55
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer records"
+msgstr "Layanan pelanggan dan penjualan"
+
+#: weblate_web/crm/templates/crm/base.html:56
+#: weblate_web/crm/templates/crm/index.html:11
+#: weblate_web/crm/templates/crm/index.html:17
+#: weblate_web/crm/templates/crm/index.html:18
+#: weblate_web/crm/templates/crm/interaction_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:7
+#: weblate_web/crm/templates/payments/customer_merge.html:7
+#, fuzzy
+#| msgid "Customer"
+msgid "Customers"
+msgstr "Pelanggan"
+
+#: weblate_web/crm/templates/crm/base.html:60
+#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/weblate_web/service_detail.html:7
+#: weblate_web/crm/templates/weblate_web/service_list.html:44
+#: weblate_web/crm/templates/weblate_web/service_list.html:72
+#, fuzzy
+#| msgid "Service"
+msgid "Services"
+msgstr "Layanan"
+
+#: weblate_web/crm/templates/crm/base.html:64
+#: weblate_web/crm/templates/crm/index.html:87
+#: weblate_web/crm/templates/crm/index.html:93
+#: weblate_web/crm/templates/crm/index.html:94
+#: weblate_web/crm/templates/invoices/invoice_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:31
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoices"
+msgstr "Faktur"
+
+#: weblate_web/crm/templates/crm/base.html:68
+#: weblate_web/crm/templates/crm/index.html:190
+#: weblate_web/crm/templates/crm/index.html:191
+#, fuzzy
+#| msgid "Total Income"
+msgid "Income"
 msgstr "Pendapatan Total"
 
-#: weblate_web/crm/templates/crm/income.html:53
+#: weblate_web/crm/templates/crm/base.html:73
+msgid "Website"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:74
+msgid "Admin"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:78
+#: weblate_web/templates/base.html:92
+msgid "Sign out"
+msgstr "Log keluar"
+
+#: weblate_web/crm/templates/crm/base.html:87
+msgid "Breadcrumbs"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:88
+msgid "CRM"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:107
+msgid "Messages"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:12
+#, python-format
+msgid "Back to %(current_year)s yearly view"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:17
+#, fuzzy
+#| msgid "Income by Category"
+msgid "Income years"
+msgstr "Pendapatan berdasarkan Kategori"
+
+#: weblate_web/crm/templates/crm/income.html:29
+#, fuzzy, python-format
+#| msgid "Income by Category (Full Year)"
+msgid "Income by Category - %(current_year)s/%(month)s"
+msgstr "Pendapatan berdasarkan Kategori (Setahun Penuh)"
+
+#: weblate_web/crm/templates/crm/income.html:31
+#, python-format
+msgid "Total Income - %(current_year)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:39
 msgid "Rolling trend"
 msgstr "Tren bergulir"
 
-#: weblate_web/crm/templates/crm/income.html:56
+#: weblate_web/crm/templates/crm/income.html:43
 msgid "Window ending"
 msgstr "Akhir jendela"
 
-#: weblate_web/crm/templates/crm/income.html:60
+#: weblate_web/crm/templates/crm/income.html:49
 msgid "Window size"
 msgstr "Ukuran jendela"
 
-#: weblate_web/crm/templates/crm/income.html:62
-#: weblate_web/crm/templates/crm/income.html:156
+#: weblate_web/crm/templates/crm/income.html:51
+#: weblate_web/crm/templates/crm/income.html:159
 #, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
 msgstr[0] "%(months)s bulan"
 
-#: weblate_web/crm/templates/crm/income.html:66
+#: weblate_web/crm/templates/crm/income.html:55
 msgid "Current window"
 msgstr "Jendela saat ini"
 
-#: weblate_web/crm/templates/crm/income.html:70
+#: weblate_web/crm/templates/crm/income.html:61
 msgid "Previous window"
 msgstr "Jendela sebelumnya"
 
-#: weblate_web/crm/templates/crm/income.html:74
+#: weblate_web/crm/templates/crm/income.html:67
 msgid "Change"
 msgstr "Perubahan"
 
-#: weblate_web/crm/templates/crm/income.html:93
+#: weblate_web/crm/templates/crm/income.html:85
 msgid "Daily Income"
 msgstr "Pendapatan Harian"
 
-#: weblate_web/crm/templates/crm/income.html:95
+#: weblate_web/crm/templates/crm/income.html:87
 msgid "Monthly Income with Category Breakdown"
 msgstr "Pendapatan Bulanan dengan Rincian Kategori"
 
-#: weblate_web/crm/templates/crm/income.html:106
+#: weblate_web/crm/templates/crm/income.html:100
 msgid "Category Distribution"
 msgstr "Distribusi Kategori"
 
-#: weblate_web/crm/templates/crm/income.html:116
-#: weblate_web/crm/templates/crm/income.html:196
+#: weblate_web/crm/templates/crm/income.html:108
+#, fuzzy
+#| msgid "Category"
+msgid "Category income"
+msgstr "Kategori"
+
+#: weblate_web/crm/templates/crm/income.html:115
+#: weblate_web/crm/templates/crm/income.html:205
 msgid "Category"
 msgstr "Kategori"
 
-#: weblate_web/crm/templates/crm/income.html:117
-#: weblate_web/crm/templates/crm/income.html:141
-#: weblate_web/crm/templates/crm/income.html:197
+#: weblate_web/crm/templates/crm/income.html:116
+#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:206
 msgid "Amount (EUR)"
 msgstr "Jumlah (EUR)"
 
-#: weblate_web/crm/templates/crm/income.html:128
-#: weblate_web/crm/templates/crm/income.html:181
+#: weblate_web/crm/templates/crm/income.html:127
+#: weblate_web/crm/templates/crm/income.html:186
+#: weblate_web/crm/templates/invoices/invoice_detail.html:118
 msgid "Total"
 msgstr "Total"
 
-#: weblate_web/crm/templates/crm/income.html:137
-msgid "Monthly Breakdown"
-msgstr "Rincian Bulanan"
+#: weblate_web/crm/templates/crm/income.html:136
+#, fuzzy
+#| msgid "Total Income"
+msgid "Monthly income"
+msgstr "Pendapatan Total"
 
-#: weblate_web/crm/templates/crm/income.html:140
+#: weblate_web/crm/templates/crm/income.html:143
 msgid "Month"
 msgstr "Bulan"
 
-#: weblate_web/crm/templates/crm/income.html:142
+#: weblate_web/crm/templates/crm/income.html:145
 msgid "Rolling window"
 msgstr "Jendela bergulir"
 
-#: weblate_web/crm/templates/crm/income.html:143
+#: weblate_web/crm/templates/crm/income.html:146
 msgid "Trend"
 msgstr "Tren"
 
-#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:147
+#: weblate_web/crm/templates/invoices/invoice_list.html:23
+#: weblate_web/crm/templates/payments/customer_detail.html:165
+#: weblate_web/crm/templates/payments/customer_detail.html:234
+#: weblate_web/crm/templates/payments/customer_detail.html:300
+#: weblate_web/crm/templates/payments/customer_detail.html:343
+#: weblate_web/crm/templates/payments/customer_detail.html:386
+#: weblate_web/crm/templates/payments/customer_detail.html:423
+#: weblate_web/crm/templates/payments/customer_detail.html:474
+#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:32
+#: weblate_web/crm/templates/weblate_web/service_list.html:60
 msgid "Actions"
 msgstr "Tindakan"
 
-#: weblate_web/crm/templates/crm/income.html:176
+#: weblate_web/crm/templates/crm/income.html:180
 msgid "View details"
 msgstr "Lihat rincian"
 
-#: weblate_web/crm/templates/crm/income.html:193
-msgid "Income by Category (Full Year)"
-msgstr "Pendapatan berdasarkan Kategori (Setahun Penuh)"
+#: weblate_web/crm/templates/crm/income.html:198
+msgid "Yearly category income"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:29
-#: weblate_web/crm/templates/crm/index.html:70
-#: weblate_web/crm/templates/crm/index.html:91
-#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/crm/index.html:19
+msgid "All customer records and billing contacts."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:23
+#: weblate_web/crm/templates/crm/index.html:99
+#: weblate_web/crm/templates/crm/index.html:112
+#: weblate_web/crm/templates/crm/index.html:142
 msgid "Add"
 msgstr "Tambahkan"
 
-#: weblate_web/crm/templates/crm/index.html:38
-#: weblate_web/crm/templates/crm/index.html:51
-#: weblate_web/crm/templates/crm/index.html:79
-#: weblate_web/crm/templates/crm/index.html:100
-#: weblate_web/crm/templates/crm/index.html:113
-#: weblate_web/crm/templates/crm/index.html:139
-#: weblate_web/crm/templates/crm/index.html:152
-#: weblate_web/crm/templates/crm/index.html:165
-#: weblate_web/crm/templates/crm/index.html:178
-#: weblate_web/crm/templates/crm/index.html:191
-#: weblate_web/crm/templates/crm/index.html:209
-msgid "View"
-msgstr "Lihat"
+#: weblate_web/crm/templates/crm/index.html:30
+#: weblate_web/crm/templates/crm/index.html:31
+#, fuzzy
+#| msgid "Added customer user"
+msgid "Active customers"
+msgstr "Pelanggan pengguna ditambahkan"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:15
+#: weblate_web/crm/templates/crm/index.html:32
+msgid "Customers with current services or payments."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:41
+msgid "Follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:47
+#: weblate_web/crm/templates/crm/index.html:48
+msgid "All follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:49
+msgid "Customers with scheduled next actions."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:57
+#, python-format
+msgid "Due %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:65
+msgid "No due follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:66
+msgid "No customer follow-up is due right now."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:75
+#, python-format
+msgid "Upcoming %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:95
+#, fuzzy
+#| msgid "Issue invoice"
+msgid "Issued invoices and receipts."
+msgstr "Terbitkan faktur"
+
+#: weblate_web/crm/templates/crm/index.html:106
+#: weblate_web/crm/templates/crm/index.html:107
+msgid "Quotes"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:108
+msgid "Draft offers and renewal quotes."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:119
+#: weblate_web/crm/templates/crm/index.html:120
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Unpaid invoices"
+msgstr "Unduh faktur"
+
+#: weblate_web/crm/templates/crm/index.html:121
+msgid "Invoices that still need payment follow-up."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:136
+#: weblate_web/crm/templates/crm/index.html:137
+#, fuzzy
+#| msgid "Available services"
+msgid "All services"
+msgstr "Layanan yang tersedia"
+
+#: weblate_web/crm/templates/crm/index.html:138
+msgid "Hosted, dedicated, and support services."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:149
+#: weblate_web/crm/templates/crm/index.html:150
+#, fuzzy
+#| msgid "Expired service"
+msgid "Expired services"
+msgstr "Layanan kedaluarsa"
+
+#: weblate_web/crm/templates/crm/index.html:151
+msgid "Renewable services past their expiration date."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:157
+#: weblate_web/crm/templates/crm/index.html:158
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Dedicated hosting services"
+msgstr "Layanan yang dihos khusus"
+
+#: weblate_web/crm/templates/crm/index.html:159
+#, fuzzy
+#| msgctxt "Package category"
+#| msgid "Dedicated hosting"
+msgid "Dedicated hosting subscriptions."
+msgstr "Pengehosan khusus"
+
+#: weblate_web/crm/templates/crm/index.html:165
+#: weblate_web/crm/templates/crm/index.html:166
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support services"
+msgstr "Dukungan ekstensif"
+
+#: weblate_web/crm/templates/crm/index.html:167
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support subscriptions."
+msgstr "Dukungan ekstensif"
+
+#: weblate_web/crm/templates/crm/index.html:173
+#: weblate_web/crm/templates/crm/index.html:174
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support services"
+msgstr "Dukungan premium"
+
+#: weblate_web/crm/templates/crm/index.html:175
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support subscriptions."
+msgstr "Dukungan premium"
+
+#: weblate_web/crm/templates/crm/index.html:184
+msgid "Income tracking"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:192
+msgid "Yearly and monthly income breakdowns."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:14
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interaction"
+msgstr "API Integrasi"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:418
+#: weblate_web/crm/templates/weblate_web/service_detail.html:275
 msgid "Timestamp"
 msgstr "Stempel Waktu"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:19
+#: weblate_web/crm/templates/crm/interaction_detail.html:24
+#: weblate_web/crm/templates/invoices/invoice_list.html:22
+#: weblate_web/crm/templates/payments/customer_detail.html:39
+#: weblate_web/crm/templates/payments/customer_detail.html:229
+#: weblate_web/crm/templates/payments/customer_detail.html:385
+#: weblate_web/crm/templates/payments/customer_list.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:23
+#: weblate_web/crm/templates/weblate_web/service_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:52
 msgid "Customer"
 msgstr "Pelanggan"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:25
+#: weblate_web/crm/templates/crm/interaction_detail.html:30
+#: weblate_web/crm/templates/payments/customer_detail.html:419
 msgid "User"
 msgstr "Pengguna"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:29
+#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/payments/customer_detail.html:420
 msgid "Origin"
 msgstr "Asal"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/crm/interaction_detail.html:47
+#: weblate_web/crm/templates/payments/customer_list.html:47
+#: weblate_web/crm/templates/weblate_web/service_list_content.html:28
 msgid "Details"
 msgstr "Rincian"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:63
+#: weblate_web/crm/templates/crm/interaction_detail.html:77
+#: weblate_web/crm/templates/payments/customer_detail.html:422
 msgid "Content"
 msgstr "Konten"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:65
+#: weblate_web/crm/templates/crm/interaction_detail.html:80
 msgid "Interaction content"
 msgstr "Konten interaksi"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/crm/templates/crm/pagination.html:4
+#, fuzzy
+#| msgctxt "Service kind"
+#| msgid "Donation"
+msgid "Pagination"
+msgstr "Donasi"
+
+#: weblate_web/crm/templates/crm/pagination.html:7
+msgid "First"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:8
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous"
+msgstr "Jendela sebelumnya"
+
+#: weblate_web/crm/templates/crm/pagination.html:12
+#, python-format
+msgid "Page %(page)s of %(pages)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:16
+#, fuzzy
+#| msgid "Next step"
+msgid "Next"
+msgstr "Langkah selanjutnya"
+
+#: weblate_web/crm/templates/crm/pagination.html:17
+msgid "Last"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/empty.html:8
+msgid "No records found."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:5
+#, fuzzy
+#| msgid "Issue renewal invoice"
+msgid "Issue final invoice?"
+msgstr "Terbitkan faktur perpanjangan"
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:7
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the upgrade. Use the upgrade quote "
+#| "action if you only need a quote."
+msgid "This creates a final invoice. Use Quote if you only need an offer."
+msgstr ""
+"Ini membuat faktur akhir untuk peningkatan. Gunakan tindakan kutipan "
+"peningkatan jika Anda hanya memerlukan kutipan."
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:10
+#: weblate_web/crm/templates/payments/customer_merge.html:38
+msgid "Cancel"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:11
+#: weblate_web/crm/templates/invoices/invoice_detail.html:177
+msgid "Issue invoice"
+msgstr "Terbitkan faktur"
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:4
+#: weblate_web/crm/templates/invoices/invoice_list.html:19
+#: weblate_web/crm/templates/payments/customer_detail.html:299
+#: weblate_web/crm/templates/payments/customer_detail.html:382
+msgid "Kind"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:14
+#, fuzzy
+#| msgid "Please confirm that you want to issue a final invoice."
+msgid "Create a draft offer without issuing a final invoice."
+msgstr "Harap konfirmasikan bahwa Anda ingin menerbitkan faktur akhir."
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:24
+msgid "Create a final invoice after confirmation."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/search_form.html:11
+msgid "Clear"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:14
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:34
+#: weblate_web/crm/templates/payments/customer_detail.html:310
+#: weblate_web/crm/templates/payments/customer_detail.html:444
 #: weblate_web/templates/hosting.html:289
 #: weblate_web/templates/payment/customer-agreement.html:35
 #: weblate_web/templates/payment/customer-agreement.html:56
@@ -349,36 +783,95 @@ msgstr "Konten interaksi"
 msgid "Download"
 msgstr "Unduh"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+#: weblate_web/crm/templates/invoices/invoice_detail.html:16
 msgid "Receipt"
 msgstr "Tanda terima"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:55
-#: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
-#: weblate_web/templates/snippets/customer-address.html:10
-msgid "Edit"
-msgstr "Sunting"
+#: weblate_web/crm/templates/invoices/invoice_detail.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:13
+msgid "Edit in admin"
+msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:72
-#: weblate_web/crm/templates/invoices/invoice_detail.html:77
+#: weblate_web/crm/templates/invoices/invoice_detail.html:33
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:10
+msgid "Paid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:35
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:13
+msgid "Unpaid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:41
+#: weblate_web/crm/templates/invoices/invoice_list.html:17
+#: weblate_web/crm/templates/payments/customer_detail.html:380
+#, fuzzy
+#| msgid "D-U-N-S Number"
+msgid "Number"
+msgstr "Nomor D-U-N-S"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:47
+msgid "Issued"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:53
+msgid "Due"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:66
+#, fuzzy
+#| msgid "Discover"
+msgid "Discount"
+msgstr "Jelajahi"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:74
+msgid "Generated from"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+msgid "Followup as"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:90
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer reference"
+msgstr "Layanan pelanggan dan penjualan"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:98
+#, fuzzy
+#| msgid "Customer"
+msgid "Customer note"
+msgstr "Pelanggan"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:108
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoice items"
+msgstr "Faktur"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:116
+msgid "Quantity"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:117
+#, fuzzy
+#| msgid "Pricing"
+msgid "Price"
+msgstr "Harga"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:142
+#: weblate_web/crm/templates/invoices/invoice_detail.html:149
 msgid "Confirm refund done"
 msgstr "Konfirmasikan pengembalian dana selesai"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:73
+#: weblate_web/crm/templates/invoices/invoice_detail.html:144
 msgid "Use this after the refund or chargeback has been completed."
 msgstr "Gunakan ini setelah pengembalian dana atau chargeback telah selesai."
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:82
-#: weblate_web/crm/templates/invoices/invoice_detail.html:96
-msgid "Issue invoice"
-msgstr "Terbitkan faktur"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:84
-msgid "Issue invoice from quote"
-msgstr "Terbitkan faktur dari penawaran"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:86
+#: weblate_web/crm/templates/invoices/invoice_detail.html:161
+#: weblate_web/crm/templates/invoices/invoice_detail.html:169
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
@@ -386,137 +879,666 @@ msgstr ""
 "Ini membuat faktur akhir sesuai dengan penawaran ini. Gunakan Unduh jika "
 "Anda hanya memerlukan PDF kutipan."
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:93
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
-#: weblate_web/crm/templates/weblate_web/service_detail.html:109
-msgid "I confirm that I want to issue a final invoice."
-msgstr "Saya mengonfirmasikan bahwa saya ingin menerbitkan faktur akhir."
+#: weblate_web/crm/templates/invoices/invoice_detail.html:167
+msgid "Issue invoice from quote"
+msgstr "Terbitkan faktur dari penawaran"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:57
+#: weblate_web/crm/templates/invoices/invoice_list.html:9
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoice list"
+msgstr "Faktur"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:232
+#: weblate_web/crm/templates/payments/customer_detail.html:381
+#: weblate_web/crm/templates/weblate_web/service_detail.html:163
+#: weblate_web/crm/templates/weblate_web/service_list.html:30
+#: weblate_web/crm/templates/weblate_web/service_list.html:55
+msgid "Status"
+msgstr "Status"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:32
+msgid "No invoices match the current filters."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:16
+msgid "Overdue"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:31
+#: weblate_web/crm/templates/payments/customer_detail.html:441
+msgid "View"
+msgstr "Lihat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:14
+msgid "View in Zammad"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:22
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer sections"
+msgstr "Sesuaikan daftar"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:25
+#, fuzzy
+#| msgid "Service"
+msgid "Overview"
+msgstr "Layanan"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:28
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interactions"
+msgstr "API Integrasi"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:34
+#: weblate_web/templates/snippets/service.html:172
+#: weblate_web/templates/user.html:124
+msgid "Payments"
+msgstr "Pembayaran"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:43
+#: weblate_web/payments/models.py:170
+msgid "Name"
+msgstr "Nama"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:49
+#, fuzzy
+#| msgid "Notification"
+msgid "Notification e-mails"
+msgstr "Notifikasi"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:56
+#: weblate_web/crm/templates/payments/customer_list.html:24
+#, fuzzy
+#| msgid "VAT ID"
+msgid "VAT"
+msgstr "ID PPN"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:61
+#, python-format
+msgid "validated on %(validated)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:64
+#, fuzzy
+#| msgid "Invalid"
+msgid "not validated"
+msgstr "Tidak valid"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:70
+#: weblate_web/payments/models.py:179
+msgid "Address"
+msgstr "Alamat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:77
+#: weblate_web/crm/templates/payments/customer_list.html:26
+#: weblate_web/payments/models.py:199
+msgid "Country"
+msgstr "Negara"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:84
+#: weblate_web/crm/templates/payments/customer_list.html:18
+msgid "End client"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:92
+#: weblate_web/payments/models.py:211
+#, fuzzy
+#| msgid "Contact"
+msgid "Contact point"
+msgstr "Kontak"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:100
+#: weblate_web/payments/models.py:219
+#, fuzzy
+#| msgid "Payment address"
+msgid "Accounting reference"
+msgstr "Alamat pembayaran"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:108
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment reminder"
+msgstr "Kartu pembayaran"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:110
+#, python-format
+msgid "Additional notification %(days)s day before due date"
+msgid_plural "Additional notification %(days)s days before due date"
+msgstr[0] ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:118
+#: weblate_web/crm/templates/payments/customer_list.html:21
+msgid "Follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:123
+#, python-format
+msgid "Next follow-up: %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:128
+msgid "No follow-up scheduled."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:133
+msgid "Set follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:152
+msgid "Save follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:157
+msgid "Clear follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:171
+#, fuzzy
+#| msgid "Merged customer"
+msgid "Merge customer"
+msgstr "Pelanggan gabungan"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:179
+#: weblate_web/crm/templates/payments/customer_merge.html:12
+msgid "Review merge"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:186
 msgid "Add user to customer"
 msgstr "Tambahkan pengguna ke pelanggan"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:60
+#: weblate_web/crm/templates/payments/customer_detail.html:193
 msgid "Add user"
 msgstr "Tambahkan pengguna"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:88
-msgid "Add new agreement"
-msgstr "Tambahkan perjanjian baru"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:109
-msgid "Issue new invoice"
-msgstr "Terbitkan faktur baru"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:115
+#: weblate_web/crm/templates/payments/customer_detail.html:199
+#: weblate_web/crm/templates/payments/customer_detail.html:213
 msgid "Add note"
 msgstr "Tambahkan catatan"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:47
-msgid "Update maintenance window"
-msgstr "Perbarui jendela pemeliharaan"
+#: weblate_web/crm/templates/payments/customer_detail.html:220
+#, fuzzy
+#| msgid "Hosted service"
+msgid "Customer services"
+msgstr "Layanan yang dihos"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:63
-msgid "Issue renewal quote"
-msgstr "Terbitkan penawaran perpanjangan"
+#: weblate_web/crm/templates/payments/customer_detail.html:230
+#: weblate_web/crm/templates/weblate_web/service_detail.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:28
+#: weblate_web/crm/templates/weblate_web/service_list.html:53
+msgid "URL"
+msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:66
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
-msgid "Issue renewal invoice"
-msgstr "Terbitkan faktur perpanjangan"
+#: weblate_web/crm/templates/payments/customer_detail.html:231
+#: weblate_web/crm/templates/weblate_web/service_list.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:54
+#, fuzzy
+#| msgid "Version Control"
+msgid "Version"
+msgstr "Kontrol Versi"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+#: weblate_web/crm/templates/payments/customer_detail.html:233
+#: weblate_web/crm/templates/weblate_web/service_list.html:31
+#: weblate_web/crm/templates/weblate_web/service_list.html:59
+msgid "Packages"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:243
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the renewal. Use the renewal quote "
+#| "action if you only need a quote."
 msgid ""
-"This creates a final invoice for the renewal. Use the renewal quote action "
-"if you only need a quote."
+"This creates a final invoice for the new service. Use Quote if you only need "
+"an offer."
 msgstr ""
 "Ini membuat faktur akhir untuk perpanjangan. Gunakan tindakan kutipan "
 "perpanjangan jika Anda hanya memerlukan kutipan."
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:86
+#: weblate_web/crm/templates/payments/customer_detail.html:249
+#, fuzzy
+#| msgid "View service status."
+msgid "New service purchase"
+msgstr "Lihat status layanan."
+
+#: weblate_web/crm/templates/payments/customer_detail.html:281
+#: weblate_web/crm/templates/weblate_web/service_detail.html:205
+#: weblate_web/crm/templates/weblate_web/service_detail.html:232
+#, fuzzy
+#| msgid "created"
+msgid "Create"
+msgstr "dibuat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:289
+#, fuzzy
+#| msgid "New agreement"
+msgid "Agreements"
+msgstr "Perjanjian baru"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:294
+#, fuzzy
+#| msgid "New agreement"
+msgid "Signed agreements"
+msgstr "Perjanjian baru"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:298
+#, fuzzy
+#| msgid "Sign in"
+msgid "Signed"
+msgstr "Masuk"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:319
+#, fuzzy
+#| msgid "New agreement"
+msgid "No agreements recorded."
+msgstr "Perjanjian baru"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:325
+msgid "Add new agreement"
+msgstr "Tambahkan perjanjian baru"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:331
+#, fuzzy
+#| msgctxt "Service kind"
+#| msgid "Donation"
+msgid "Donations"
+msgstr "Donasi"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:336
+#, fuzzy
+#| msgctxt "Service kind"
+#| msgid "Donation"
+msgid "Donation history"
+msgstr "Donasi"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:340
+#: weblate_web/crm/templates/payments/customer_detail.html:470
+#, fuzzy
+#| msgid "created"
+msgid "Created"
+msgstr "dibuat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:341
+msgid "Reward"
+msgstr "Penghargaan"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:354
+#: weblate_web/crm/templates/payments/customer_detail.html:486
+#: weblate_web/templates/payment/customer-agreement.html:18
+#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/snippets/customer-address.html:10
+msgid "Edit"
+msgstr "Sunting"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:363
+#, fuzzy
+#| msgid "Documentation"
+msgid "No donations recorded."
+msgstr "Dokumentasi"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:371
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoice history"
+msgstr "Faktur"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:395
+msgid "No invoices recorded."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:402
+msgid "Issue new invoice"
+msgstr "Terbitkan faktur baru"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:410
+#, fuzzy
+#| msgid "Interaction content"
+msgid "Interaction history"
+msgstr "Konten interaksi"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:421
+#, fuzzy
+#| msgid "Payment Summary"
+msgid "Summary"
+msgstr "Ringkasan Pembayaran"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:454
+#, fuzzy
+#| msgid "Interaction content"
+msgid "No interactions recorded."
+msgstr "Konten interaksi"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:462
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment history"
+msgstr "Galat dalam pembayaran"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:471
+msgid "State"
+msgstr "Status"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:495
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Pembayaran dibatalkan"
+
+#: weblate_web/crm/templates/payments/customer_list.html:9
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer list"
+msgstr "Sesuaikan daftar"
+
+#: weblate_web/crm/templates/payments/customer_list.html:22
+#, fuzzy
+#| msgid "Notification"
+msgid "Next action"
+msgstr "Notifikasi"
+
+#: weblate_web/crm/templates/payments/customer_list.html:25
+#: weblate_web/payments/models.py:190
+msgid "City"
+msgstr "Kota"
+
+#: weblate_web/crm/templates/payments/customer_list.html:56
+#, fuzzy
+#| msgid "No servers matched your search."
+msgid "No customers match the current filters."
+msgstr "Tidak ada server yang cocok dengan pencarian Anda."
+
+#: weblate_web/crm/templates/payments/customer_merge.html:17
+msgid "will be merged into"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:22
 #, python-format
 msgid ""
-"Upgrade to %(package)s without extending the current subscription period."
+"All content from %(source)s (%(source_pk)s) will be moved to %(target)s "
+"(%(target_pk)s)"
 msgstr ""
-"Tingkatkan ke %(package)s tanpa memperpanjang periode langganan saat ini."
+
+#: weblate_web/crm/templates/payments/customer_merge.html:27
+#, python-format
+msgid "%(source)s (%(source_pk)s) will be removed"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:36
+msgid "Merge"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:33
+msgid "locked"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:38
+#, fuzzy
+#| msgid "Go Weblate!"
+msgid "Weblate"
+msgstr "Gunakan Weblate!"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:44
+#: weblate_web/crm/templates/weblate_web/service_detail.html:279
+#: weblate_web/templates/snippets/customer-users.html:3
+msgid "Users"
+msgstr "Pengguna"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:50
+#: weblate_web/crm/templates/weblate_web/service_detail.html:280
+#, fuzzy
+#| msgctxt "Hosting plan parameter"
+#| msgid "Projects"
+msgid "Projects"
+msgstr "Proyek"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:56
+#, fuzzy
+#| msgid "Support portal"
+msgid "Support status"
+msgstr "Portal dukungan"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:64
+#, fuzzy
+#| msgid "Activation token"
+msgid "Activation key"
+msgstr "Token aktivasi"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+#: weblate_web/crm/templates/weblate_web/service_detail.html:98
+msgid "Copied"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid "Copy failed"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:70
+#: weblate_web/crm/templates/weblate_web/service_detail.html:71
+#, fuzzy
+#| msgid "Activation token"
+msgid "Copy activation key"
+msgstr "Token aktivasi"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:94
-msgid "Issue upgrade quote"
-msgstr "Terbitkan kutipan peningkatan"
+#, fuzzy
+#| msgid "Backups"
+msgid "Backup"
+msgstr "Cadangan"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:97
-#: weblate_web/crm/templates/weblate_web/service_detail.html:112
-msgid "Issue upgrade invoice"
-msgstr "Terbitkan faktur peningkatan"
+#: weblate_web/crm/templates/weblate_web/service_detail.html:100
+#: weblate_web/crm/templates/weblate_web/service_detail.html:101
+msgid "Copy backup SSH URL"
+msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+#: weblate_web/crm/templates/weblate_web/service_detail.html:119
+#, python-format
+msgid "%(size)s in %(directory)s"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:126
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable"
+msgstr "Jelajahi"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:151
+msgid "Update maintenance window"
+msgstr "Perbarui jendela pemeliharaan"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:166
+#: weblate_web/templates/user.html:59
+msgid "Active"
+msgstr "Aktif"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:168
+#, fuzzy
+#| msgid "Service Status"
+msgid "Service is terminated"
+msgstr "Status Layanan"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:173
+#, fuzzy
+#| msgid "Expired"
+msgid "Expires"
+msgstr "Kedaluwarsa"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:180
+msgid "Edit subscription in admin"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:185
+#, fuzzy
+#| msgid "Merchandise"
+msgid "Purchases"
+msgstr "Pernak-Pernik"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:187
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the renewal. Use the renewal quote "
+#| "action if you only need a quote."
 msgid ""
-"This creates a final invoice for the upgrade. Use the upgrade quote action "
-"if you only need a quote."
+"This creates a final invoice for the renewal. Use Quote if you only need an "
+"offer."
+msgstr ""
+"Ini membuat faktur akhir untuk perpanjangan. Gunakan tindakan kutipan "
+"perpanjangan jika Anda hanya memerlukan kutipan."
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:210
+#, fuzzy, python-format
+#| msgid "Upgrade to %s"
+msgid "Upgrade to %(package)s"
+msgstr "Tingkatkan ke %s"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:211
+msgid "For the rest of the current period."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:212
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the upgrade. Use the upgrade quote "
+#| "action if you only need a quote."
+msgid ""
+"This creates a final invoice for the upgrade. Use Quote if you only need an "
+"offer."
 msgstr ""
 "Ini membuat faktur akhir untuk peningkatan. Gunakan tindakan kutipan "
 "peningkatan jika Anda hanya memerlukan kutipan."
 
-#: weblate_web/crm/views.py:95
-msgid "Please confirm that you want to issue a final invoice."
-msgstr "Harap konfirmasikan bahwa Anda ingin menerbitkan faktur akhir."
+#: weblate_web/crm/templates/weblate_web/service_detail.html:243
+#, fuzzy
+#| msgid "Description"
+msgid "Disable subscription"
+msgstr "Deskripsi"
 
-#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
-#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
-#: weblate_web/views.py:1077 weblate_web/views.py:1089
-msgid "This subscription can not be upgraded to the selected package."
-msgstr "Langganan ini tidak dapat ditingkatkan ke paket yang dipilih."
+#: weblate_web/crm/templates/weblate_web/service_detail.html:250
+msgid ""
+"Disable the subscription, no payments will be reminded or triggered, "
+"<strong>backups will be removed once subscription expires</strong>"
+msgstr ""
 
-#: weblate_web/crm/views.py:638
+#: weblate_web/crm/templates/weblate_web/service_detail.html:258
+msgid "Disable"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:268
+msgid "Recent service reports"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:276
+#, fuzzy
+#| msgid "Service URL"
+msgid "Site URL"
+msgstr "URL layanan"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:277
+#, fuzzy
+#| msgid "Subtitle files"
+msgid "Site title"
+msgstr "Berkas takarir"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:278
+#, fuzzy
+#| msgid "Weblate heroism"
+msgid "Weblate version"
+msgstr "Kepahlawanan Weblate"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:281
+#: weblate_web/templates/hosting.html:319
+#: weblate_web/templates/hosting.html:490
+msgid "Hosted strings"
+msgstr "String yang dihos"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:57
+#, fuzzy
+#| msgid "Maintenance window"
+msgid "Maintenance"
+msgstr "Jendela pemeliharaan"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:74
+#, fuzzy
+#| msgid "No servers matched your search."
+msgid "No services match the current filters."
+msgstr "Tidak ada server yang cocok dengan pencarian Anda."
+
+#: weblate_web/crm/views.py:719
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Nama pengguna dihos cocok dengan pengguna lokal yang memiliki surel berbeda."
 
-#: weblate_web/crm/views.py:652
+#: weblate_web/crm/views.py:733
 msgid "Hosted user was not linked."
 msgstr "Pengguna dihos tidak ditautkan."
 
-#: weblate_web/crm/views.py:655
+#: weblate_web/crm/views.py:736
 msgid "Hosted user is already linked to a different local user."
 msgstr "Pengguna dihos sudah ditautkan ke pengguna lokal berbeda."
 
-#: weblate_web/crm/views.py:662
+#: weblate_web/crm/views.py:743
 msgid "Added customer user"
 msgstr "Pelanggan pengguna ditambahkan"
 
-#: weblate_web/crm/views.py:664
+#: weblate_web/crm/views.py:745
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
 "%(email)s ditambahkan ke pengguna pelanggan. Pengguna dihos berstatus "
 "%(state)s."
 
-#: weblate_web/crm/views.py:668
+#: weblate_web/crm/views.py:749
 msgid "created"
 msgstr "dibuat"
 
-#: weblate_web/crm/views.py:670
+#: weblate_web/crm/views.py:751
 msgid "linked"
 msgstr "ditautkan"
 
-#: weblate_web/crm/views.py:697
+#: weblate_web/crm/views.py:778
 msgid "Multiple local users use this e-mail address"
 msgstr "Beberapa pengguna lokal menggunakan alamat surel ini"
 
-#: weblate_web/crm/views.py:725
+#: weblate_web/crm/views.py:806
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr "Tidak dapat menambahkan pengguna pelanggan: %(error)s"
 
-#: weblate_web/crm/views.py:732
+#: weblate_web/crm/views.py:813
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr "%(email)s ditambahkan ke pengguna pelanggan."
 
-#: weblate_web/crm/views.py:737
+#: weblate_web/crm/views.py:818
 #, python-format
 msgid "%(email)s is already a customer user."
 msgstr "%(email)s sudah menjadi pengguna pelanggan."
+
+#: weblate_web/crm/views.py:863
+#, python-format
+msgid "Follow-up scheduled for %(date)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:870
+msgid "Follow-up set"
+msgstr ""
+
+#: weblate_web/crm/views.py:875
+msgid "Follow-up updated."
+msgstr ""
+
+#: weblate_web/crm/views.py:889
+msgid "Follow-up cleared"
+msgstr ""
+
+#: weblate_web/crm/views.py:890 weblate_web/crm/views.py:894
+msgid "Follow-up cleared."
+msgstr ""
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -529,27 +1551,27 @@ msgstr ""
 "perangkat lunak bebas? Kemungkinan Anda untuk berkontribusi tidak terbatas "
 "di sini!"
 
-#: weblate_web/forms.py:88
+#: weblate_web/forms.py:98
 msgid "Insufficient donation for selected reward!"
 msgstr "Donasi kurang untuk imbalan yang dipilih!"
 
-#: weblate_web/invoices/models.py:209
+#: weblate_web/invoices/models.py:210
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/invoices/models.py:211 weblate_web/invoices/models.py:213
+#: weblate_web/invoices/models.py:212 weblate_web/invoices/models.py:214
 msgid "Account number"
 msgstr "Nomor rekening"
 
-#: weblate_web/invoices/models.py:215
+#: weblate_web/invoices/models.py:216
 msgid "BIC/SWIFT"
 msgstr "BIC/SWIFT"
 
-#: weblate_web/invoices/models.py:217
+#: weblate_web/invoices/models.py:218
 msgid "Issuing bank"
 msgstr "Bank penerbit"
 
-#: weblate_web/invoices/models.py:219
+#: weblate_web/invoices/models.py:220
 msgid "Account holder"
 msgstr "Pemegang rekening"
 
@@ -570,17 +1592,17 @@ msgid "Donation"
 msgstr "Donasi"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:781
+#: weblate_web/models.py:784
 msgid "Link text"
 msgstr "Teks tautan"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:784
+#: weblate_web/models.py:787
 msgid "Link URL"
 msgstr "URL tautan"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:787
+#: weblate_web/models.py:790
 msgid "Link image"
 msgstr "Gambar tautan"
 
@@ -677,123 +1699,119 @@ msgstr "Jenis gambar tidak didukung: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Silakan unggah gambar dengan ukuran 570 x 260 piksel."
 
-#: weblate_web/models.py:721
+#: weblate_web/models.py:724
 msgid "Community supported"
 msgstr "Didukung komunitas"
 
-#: weblate_web/models.py:722
+#: weblate_web/models.py:725
 msgid "Dedicated hosted service"
 msgstr "Layanan yang dihos khusus"
 
-#: weblate_web/models.py:723
+#: weblate_web/models.py:726
 msgid "Hosted service"
 msgstr "Layanan yang dihos"
 
-#: weblate_web/models.py:724 weblate_web/templates/support.html:77
+#: weblate_web/models.py:727 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Dukungan dasar yang dihos sendiri"
 
-#: weblate_web/models.py:725 weblate_web/templates/support.html:90
+#: weblate_web/models.py:728 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Dukungan yang diluaskan yang dihos sendiri"
 
-#: weblate_web/models.py:726 weblate_web/templates/support.html:109
+#: weblate_web/models.py:729 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Dukungan premium yang dihos sendiri"
 
-#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:755 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "URL server"
 
-#: weblate_web/models.py:766
+#: weblate_web/models.py:769
 msgid "Server description"
 msgstr "Deskripsi server"
 
-#: weblate_web/models.py:769
+#: weblate_web/models.py:772
 msgid "Server image"
 msgstr "Gambar server"
 
-#: weblate_web/models.py:773
+#: weblate_web/models.py:776
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "Gambar PNG atau JPG dengan ukuran 570 x 260 piksel."
 
-#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1047 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Dukungan dasar"
 
-#: weblate_web/models.py:1045
+#: weblate_web/models.py:1048
 msgid "Never get held back by a problem."
 msgstr "Jangan pernah terkekang oleh suatu masalah."
 
-#: weblate_web/models.py:1046
+#: weblate_web/models.py:1049
 msgid "Set priority for all your questions and reported bugs."
 msgstr "Atur prioritas untuk semua pertanyaan dan kesalahan yang dilaporkan."
 
-#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1051 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Dapatkan dukungan"
 
-#: weblate_web/models.py:1060 weblate_web/models.py:1077
-#: weblate_web/models.py:1108 weblate_web/models.py:1632
+#: weblate_web/models.py:1063 weblate_web/models.py:1080
+#: weblate_web/models.py:1111 weblate_web/models.py:1635
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Tingkatkan ke %s"
 
-#: weblate_web/models.py:1062
+#: weblate_web/models.py:1065
 msgid "Premium support"
 msgstr "Dukungan premium"
 
-#: weblate_web/models.py:1063
+#: weblate_web/models.py:1066
 msgid "Don’t wait with your work on hold."
 msgstr "Jangan menunggu dengan pekerjaan Anda tertunda."
 
-#: weblate_web/models.py:1064
+#: weblate_web/models.py:1067
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Ini menjamin Anda dalam menjawab NBD terbaru."
 
-#: weblate_web/models.py:1066
+#: weblate_web/models.py:1069
 msgid "Be premium"
 msgstr "Jadilah premium"
 
-#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1082 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Dukungan ekstensif"
 
-#: weblate_web/models.py:1080
+#: weblate_web/models.py:1083
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "Jangan puas dengan paket Dasar, dapatkan paket bebas khawatir."
 
-#: weblate_web/models.py:1081
+#: weblate_web/models.py:1084
 msgid "We will manage upgrades for you."
 msgstr "Kami akan mengelola peningkatan untuk Anda."
 
-#: weblate_web/models.py:1083
+#: weblate_web/models.py:1086
 msgid "Stay updated"
 msgstr "Selalu diperbarui"
 
-#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1095 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Layanan cadangan"
 
-#: weblate_web/models.py:1093
+#: weblate_web/models.py:1096
 msgid "Easily put your backups in a safe place."
 msgstr "Letakkan cadangan Anda dengan mudah di tempat yang aman."
 
-#: weblate_web/models.py:1094
+#: weblate_web/models.py:1097
 msgid "Encrypted and automatic, always available."
 msgstr "Terenkripsi dan otomatis, selalu tersedia."
 
-#: weblate_web/models.py:1096
+#: weblate_web/models.py:1099
 msgid "Back up daily"
 msgstr "Cadangkan setiap hari"
 
-#: weblate_web/models.py:1109
+#: weblate_web/models.py:1112
 msgid "Increase service limits to translate more content."
 msgstr "Tingkatkan batas layanan untuk menerjemahkan lebih banyak konten."
-
-#: weblate_web/models.py:1112
-msgid "Upgrade"
-msgstr "Tingkatkan"
 
 #: weblate_web/payments/backends.py:522
 msgid "Manual payment"
@@ -831,39 +1849,39 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
-#: weblate_web/payments/forms.py:82
+#: weblate_web/payments/forms.py:84
 msgid "You will receive a receipt here."
 msgstr "Anda akan menerima tanda terima di sini."
 
-#: weblate_web/payments/forms.py:83
+#: weblate_web/payments/forms.py:85
 msgid "E-mail address"
 msgstr "Alamat surel"
 
-#: weblate_web/payments/models.py:121
+#: weblate_web/payments/models.py:135
 msgid "Unknown"
 msgstr "Tidak diketahui"
 
-#: weblate_web/payments/models.py:122
+#: weblate_web/payments/models.py:136
 msgid "Valid"
 msgstr "Valid"
 
-#: weblate_web/payments/models.py:123
+#: weblate_web/payments/models.py:137
 msgid "Invalid"
 msgstr "Tidak valid"
 
-#: weblate_web/payments/models.py:130
+#: weblate_web/payments/models.py:144
 msgid "European VAT ID"
 msgstr "ID PPN Eropa"
 
-#: weblate_web/payments/models.py:132
+#: weblate_web/payments/models.py:146
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "Silakan isi ID PPN Uni Eropa, kosongkan jika tidak berlaku."
 
-#: weblate_web/payments/models.py:147
+#: weblate_web/payments/models.py:161
 msgid "Company identification number"
 msgstr "Nomor identifikasi perusahaan"
 
-#: weblate_web/payments/models.py:149
+#: weblate_web/payments/models.py:163
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
@@ -871,49 +1889,44 @@ msgstr ""
 "Silakan isi registrasi perusahaan Anda jika nomor tersebut akan tercantum "
 "pada faktur."
 
-#: weblate_web/payments/models.py:156
-msgid "Name"
-msgstr "Nama"
-
-#: weblate_web/payments/models.py:158
+#: weblate_web/payments/models.py:172
 msgid "Company or individual name as it should appear on the invoice."
 msgstr ""
 "Nama perusahaan atau individu sebagaimana yang seharusnya tercantum pada "
 "faktur."
 
-#: weblate_web/payments/models.py:165
-msgid "Address"
-msgstr "Alamat"
-
-#: weblate_web/payments/models.py:170
+#: weblate_web/payments/models.py:184
 msgid "Additional address information"
 msgstr "Informasi alamat tambahan"
 
-#: weblate_web/payments/models.py:176
-msgid "City"
-msgstr "Kota"
-
-#: weblate_web/payments/models.py:181
+#: weblate_web/payments/models.py:195
 msgid "Postcode"
 msgstr "Kode pos"
 
-#: weblate_web/payments/models.py:185
-msgid "Country"
-msgstr "Negara"
-
-#: weblate_web/payments/models.py:191
+#: weblate_web/payments/models.py:205
 msgid "Billing e-mail"
 msgstr "Surel tagihan"
 
-#: weblate_web/payments/models.py:192
+#: weblate_web/payments/models.py:206
 msgid "Additional e-mail to receive billing notifications"
 msgstr "Surel tambahan untuk menerima notifikasi tagihan"
 
-#: weblate_web/payments/models.py:197
+#: weblate_web/payments/models.py:213
+msgid "Person, team, or department to show as the invoice contact."
+msgstr ""
+
+#: weblate_web/payments/models.py:221
+msgid ""
+"Line-level accounting code for the customer's internal invoice processing, "
+"such as a cost center, project, internal order, or GL account. Separate from "
+"the customer reference or purchase order number."
+msgstr ""
+
+#: weblate_web/payments/models.py:229
 msgid "Additional upcoming payment notification"
 msgstr "Notifikasi pembayaran mendatang tambahan"
 
-#: weblate_web/payments/models.py:200
+#: weblate_web/payments/models.py:232
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
@@ -923,63 +1936,71 @@ msgstr ""
 "notifikasi pembayaran mendatang tambahan, dari 0 hingga {}. Atur ke 0 untuk "
 "hanya menggunakan notifikasi bawaan."
 
-#: weblate_web/payments/models.py:337
+#: weblate_web/payments/models.py:244
+msgid "Date and time when this customer needs attention."
+msgstr ""
+
+#: weblate_web/payments/models.py:250
+msgid "Short description of the next action."
+msgstr ""
+
+#: weblate_web/payments/models.py:382
 msgid "The country has to match your VAT code"
 msgstr "Negara harus sesuai dengan kode PPN Anda"
 
-#: weblate_web/payments/models.py:345
+#: weblate_web/payments/models.py:390
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr "Pilih hari yang berbeda dari notifikasi pembayaran bawaan: 2 dan 7."
 
-#: weblate_web/payments/models.py:368
+#: weblate_web/payments/models.py:413
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr "Pilih hari yang berbeda dari notifikasi pembayaran tahunan bawaan: 31."
 
-#: weblate_web/payments/models.py:584
+#: weblate_web/payments/models.py:640
 msgid "Annual"
 msgstr "Tahunan"
 
-#: weblate_web/payments/models.py:585
+#: weblate_web/payments/models.py:641
 msgid "Biannual"
 msgstr "Dwitahunan"
 
-#: weblate_web/payments/models.py:586 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:642 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "Triwulanan"
 
-#: weblate_web/payments/models.py:587 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:643 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "Bulanan"
 
-#: weblate_web/payments/models.py:588
+#: weblate_web/payments/models.py:644
 msgid "One-time"
 msgstr "Satu kali"
 
-#: weblate_web/payments/models.py:624
+#: weblate_web/payments/models.py:685
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Pembayaran baru"
 
-#: weblate_web/payments/models.py:625
+#: weblate_web/payments/models.py:686
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Menunggu Pembayaran"
 
-#: weblate_web/payments/models.py:626
+#: weblate_web/payments/models.py:687
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Pembayaran dibatalkan"
 
-#: weblate_web/payments/models.py:627
+#: weblate_web/payments/models.py:688
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Pembayaran diterima"
 
-#: weblate_web/payments/models.py:628
+#: weblate_web/payments/models.py:689
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Pembayaran diproses"
@@ -1262,6 +2283,7 @@ msgstr ""
 "berfokus pada lokalisasi dan Weblate."
 
 #: weblate_web/templates/about.html:179
+#: weblate_web/templates/snippets/customer_address.html:6
 msgid "Contact"
 msgstr "Kontak"
 
@@ -1310,10 +2332,6 @@ msgstr ""
 msgctxt "Keyword"
 msgid "translate"
 msgstr "terjemahkan"
-
-#: weblate_web/templates/base.html:92
-msgid "Sign out"
-msgstr "Log keluar"
 
 #: weblate_web/templates/base.html:102
 #: weblate_web/templates/snippets/main-menu.html:51
@@ -1621,10 +2639,6 @@ msgstr "Tambahkan milik Anda"
 #: weblate_web/templates/discover.html:33
 msgid "project name"
 msgstr "nama proyek"
-
-#: weblate_web/templates/discover.html:35
-msgid "Search"
-msgstr "Cari"
 
 #: weblate_web/templates/discover.html:59
 #, python-format
@@ -2725,11 +3739,6 @@ msgstr "<b>Uji coba gratis 14 hari</b> termasuk dalam semua paket cloud"
 msgid "Continuous localization"
 msgstr "Lokalisasi berkelanjutan"
 
-#: weblate_web/templates/hosting.html:319
-#: weblate_web/templates/hosting.html:490
-msgid "Hosted strings"
-msgstr "String yang dihos"
-
 #: weblate_web/templates/hosting.html:322
 msgid "Translation projects"
 msgstr "Proyek terjemahan"
@@ -3372,10 +4381,6 @@ msgstr ""
 "Kami adalah perusahaan kecil pembuat perangkat lunak bebas di mana setiap "
 "orang memiliki banyak ruang untuk berkembang."
 
-#: weblate_web/templates/snippets/customer-users.html:3
-msgid "Users"
-msgstr "Pengguna"
-
 #: weblate_web/templates/snippets/customer-users.html:17
 msgid "You can not remove yourself"
 msgstr "Anda tidak dapat menghapus diri Anda sendiri"
@@ -3682,11 +4687,6 @@ msgstr "Tingkatkan ke tahunan"
 msgid "and <strong>save 20%%</strong>."
 msgstr "dan <strong> hemat 20%%</strong>."
 
-#: weblate_web/templates/snippets/service.html:172
-#: weblate_web/templates/user.html:124
-msgid "Payments"
-msgstr "Pembayaran"
-
 #: weblate_web/templates/snippets/service.html:190
 msgid "Get more Weblate"
 msgstr "Dapatkan lebih banyak Weblate"
@@ -3983,10 +4983,6 @@ msgstr "Tautan"
 msgid "Edit reward"
 msgstr "Sunting imbalan"
 
-#: weblate_web/templates/user.html:59
-msgid "Active"
-msgstr "Aktif"
-
 #: weblate_web/templates/user.html:150
 msgid "Wanna see something nice here?"
 msgstr "Ingin melihat sesuatu yang bagus?"
@@ -4209,6 +5205,36 @@ msgstr "Pengguna tidak ditemukan!"
 msgid "Please confirm the upgrade from your account page."
 msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 
+#~ msgid "Back to"
+#~ msgstr "Kembali ke"
+
+#~ msgid "yearly view"
+#~ msgstr "tampilan tahunan"
+
+#~ msgid "Year"
+#~ msgstr "Tahun"
+
+#~ msgid "Monthly Breakdown"
+#~ msgstr "Rincian Bulanan"
+
+#~ msgid "I confirm that I want to issue a final invoice."
+#~ msgstr "Saya mengonfirmasikan bahwa saya ingin menerbitkan faktur akhir."
+
+#~ msgid "Issue renewal quote"
+#~ msgstr "Terbitkan penawaran perpanjangan"
+
+#, python-format
+#~ msgid ""
+#~ "Upgrade to %(package)s without extending the current subscription period."
+#~ msgstr ""
+#~ "Tingkatkan ke %(package)s tanpa memperpanjang periode langganan saat ini."
+
+#~ msgid "Issue upgrade quote"
+#~ msgstr "Terbitkan kutipan peningkatan"
+
+#~ msgid "Issue upgrade invoice"
+#~ msgstr "Terbitkan faktur peningkatan"
+
 #~ msgid "Create invoice"
 #~ msgstr "Buat faktur"
 
@@ -4399,9 +5425,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 #~ "Semuanya merupakan perangkat lunak gratis, semua kode dan permasalahan "
 #~ "kami terbuka untuk umum."
 
-#~ msgid "Customer care and sales"
-#~ msgstr "Layanan pelanggan dan penjualan"
-
 #~ msgid ""
 #~ "We're looking for a person who loves to speak with the people and will "
 #~ "help them in getting the most out of our product."
@@ -4578,9 +5601,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 #~ msgid "monthly"
 #~ msgstr "bulanan"
 
-#~ msgid "Expired service"
-#~ msgstr "Layanan kedaluarsa"
-
 #~ msgid "See all projects"
 #~ msgstr "Lihat semua proyek"
 
@@ -4645,9 +5665,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 #~ msgid "Creation date"
 #~ msgstr "Tanggal dibuat"
 
-#~ msgid "State"
-#~ msgstr "Status"
-
 #~ msgid "Switch to yearly"
 #~ msgstr "Ubah menjadi tahunan"
 
@@ -4686,9 +5703,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 #, python-format
 #~ msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 #~ msgstr "Ajukan pertanyaan di <a href=\"%(url)s\">Stack Overflow</a>."
-
-#~ msgid "Reward"
-#~ msgstr "Penghargaan"
 
 #~ msgid "Expiry date"
 #~ msgstr "Tanggal kedaluwarsa"
@@ -4813,9 +5827,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 
 #~ msgid "Own domain"
 #~ msgstr "Domain sendiri"
-
-#~ msgid "Status"
-#~ msgstr "Status"
 
 #~ msgid "Improve Weblate's user experience and make all users happier."
 #~ msgstr ""
@@ -5247,11 +6258,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 #~ "a>. Mendaftarlah di sana dan bekerjalah dengan nama pengguna Anda, atau "
 #~ "cukup gunakan: <code>demo</code> dengan kata sandi: <code>demo</code>."
 
-#, fuzzy
-#~| msgid "Documentation"
-#~ msgid "Donations welcome"
-#~ msgstr "Dokumentasi"
-
 #~ msgid "Custom features development"
 #~ msgstr "Pengembangan fitur khusus"
 
@@ -5264,11 +6270,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 #~| msgid "Weblate is free, but welcomes donations."
 #~ msgid "Weblate is provided free of charge &amp; welcomes donations."
 #~ msgstr "Weblate bebas, tetapi menyambut donasi."
-
-#, fuzzy
-#~| msgid "Payment address"
-#~ msgid "Donation recurrence"
-#~ msgstr "Alamat pembayaran"
 
 #, fuzzy
 #~| msgctxt "Hosting plan"
@@ -5606,9 +6607,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 #~ "Anda juga dapat <a href=\"%(download_url)s\">mengunduh</a> kode sumber "
 #~ "Weblate dan menjalankannya pada sistem Anda. Terdapat juga beberapa opsi "
 #~ "untuk memasang Weblate di awan."
-
-#~ msgid "Toggle navigation"
-#~ msgstr "Menu navigasi"
 
 #~ msgid ""
 #~ "Weblate is <a href=\"%(github_url)s\">free software</a> and welcomes <a "

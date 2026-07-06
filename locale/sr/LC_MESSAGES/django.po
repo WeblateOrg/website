@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-06-29 07:03-0500\n"
+"POT-Creation-Date: 2026-07-06 00:59-0500\n"
 "PO-Revision-Date: 2026-06-01 06:48+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github@weblate.org>\n"
 "Language-Team: Serbian <https://hosted.weblate.org/projects/weblate/website/"
@@ -27,27 +27,96 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.6.dev0\n"
 
-#: weblate_web/crm/forms.py:30
+#: weblate_web/crm/forms.py:34 weblate_web/forms.py:59
+msgid "Please confirm that you want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:268
+#: weblate_web/crm/views.py:312 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
+msgid "This subscription can not be upgraded to the selected package."
+msgstr ""
+
+#: weblate_web/crm/forms.py:53
+#: weblate_web/crm/templates/crm/snippets/search_form.html:9
+#: weblate_web/templates/discover.html:35
+msgid "Search"
+msgstr "Претрага"
+
+#: weblate_web/crm/forms.py:61
+msgid "Merge with following customer object"
+msgstr ""
+
+#: weblate_web/crm/forms.py:65
+msgid "Select a valid customer to merge into."
+msgstr ""
+
+#: weblate_web/crm/forms.py:81
+msgid "A customer can not be merged into itself."
+msgstr ""
+
+#: weblate_web/crm/forms.py:98
+#: weblate_web/crm/templates/weblate_web/service_detail.html:193
+#, fuzzy
+#| msgid "No renewal"
+msgid "Renewal"
+msgstr "Без обнове"
+
+#: weblate_web/crm/forms.py:99 weblate_web/models.py:1115
+msgid "Upgrade"
+msgstr "Надогради"
+
+#: weblate_web/crm/forms.py:106
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:13
+#: weblate_web/forms.py:35
+msgid "Quote"
+msgstr ""
+
+#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:145
+#: weblate_web/crm/models.py:197
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:23
+#: weblate_web/crm/templates/invoices/invoice_detail.html:27
+#: weblate_web/forms.py:36
+msgid "Invoice"
+msgstr ""
+
+#: weblate_web/crm/forms.py:133 weblate_web/crm/forms.py:139
+#, fuzzy
+#| msgid "Git integration"
+msgid "Missing action."
+msgstr "ГИТ интеграција"
+
+#: weblate_web/crm/forms.py:150
 #, fuzzy
 #| msgid "Payment description"
 msgid "Refund description"
 msgstr "Опис плаћања"
 
-#: weblate_web/crm/forms.py:33
+#: weblate_web/crm/forms.py:153
 msgid "Optional note describing how the refund was done."
 msgstr ""
 
-#: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
+#: weblate_web/crm/forms.py:160 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "Напомена"
 
-#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/crm/forms.py:167 weblate_web/payments/models.py:243
+msgid "Follow-up date"
+msgstr ""
+
+#: weblate_web/crm/forms.py:175 weblate_web/payments/models.py:249
+msgid "Follow-up note"
+msgstr ""
+
+#: weblate_web/crm/forms.py:203
+#: weblate_web/crm/templates/payments/customer_list.html:19
+#: weblate_web/templates/about.html:182
 #: weblate_web/templates/snippets/customer-users.html:38
 #: weblate_web/templates/snippets/customer-users.html:40
 msgid "E-mail"
 msgstr "Е-пошта"
 
-#: weblate_web/crm/forms.py:47
+#: weblate_web/crm/forms.py:204
 msgid "Full name"
 msgstr "Пуно име"
 
@@ -60,171 +129,269 @@ msgstr ""
 msgid "Hosted user synchronization is disabled."
 msgstr ""
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 msgid "Yes"
 msgstr ""
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 #, fuzzy
 #| msgid "Note"
 msgid "No"
 msgstr "Напомена"
 
-#: weblate_web/crm/models.py:86
+#: weblate_web/crm/models.py:93
 msgid "not set"
 msgstr ""
 
-#: weblate_web/crm/models.py:136
+#: weblate_web/crm/models.py:143
 msgid "Notification"
 msgstr "Обавештење"
 
-#: weblate_web/crm/models.py:137
+#: weblate_web/crm/models.py:144
 msgid "Recipients"
 msgstr ""
 
-#: weblate_web/crm/models.py:138 weblate_web/crm/models.py:190
-msgid "Invoice"
-msgstr ""
-
-#: weblate_web/crm/models.py:139
-#: weblate_web/crm/templates/crm/interaction_detail.html:52
+#: weblate_web/crm/models.py:146
+#: weblate_web/crm/templates/crm/interaction_detail.html:64
 msgid "Attachment"
 msgstr ""
 
-#: weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:153
 msgid "Merged customer"
 msgstr ""
 
-#: weblate_web/crm/models.py:150
+#: weblate_web/crm/models.py:157
 msgid "Merged customer ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:154
+#: weblate_web/crm/models.py:161
 msgid "Merged customer email"
 msgstr ""
 
-#: weblate_web/crm/models.py:159
+#: weblate_web/crm/models.py:166
 msgid "Merged customer end client"
 msgstr ""
 
-#: weblate_web/crm/models.py:168
+#: weblate_web/crm/models.py:175
 msgid "Filename"
 msgstr "Назив фајла"
 
-#: weblate_web/crm/models.py:171
+#: weblate_web/crm/models.py:178
 msgid "Ticket ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:172
+#: weblate_web/crm/models.py:179
 msgid "Article ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:175
+#: weblate_web/crm/models.py:182
 msgid "Attachment ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:182
+#: weblate_web/crm/models.py:189
 #, fuzzy
 #| msgid "Automatic renewal"
 msgid "Automated"
 msgstr "Аутоматско обнављање"
 
-#: weblate_web/crm/models.py:183
+#: weblate_web/crm/models.py:190
 msgid "Error code"
 msgstr ""
 
-#: weblate_web/crm/models.py:184
+#: weblate_web/crm/models.py:191
 msgid "Error message"
 msgstr "Порука о грешци"
 
-#: weblate_web/crm/models.py:191
+#: weblate_web/crm/models.py:198
+#: weblate_web/crm/templates/invoices/invoice_detail.html:59
+#: weblate_web/crm/templates/invoices/invoice_list.html:20
+#: weblate_web/crm/templates/payments/customer_detail.html:342
+#: weblate_web/crm/templates/payments/customer_detail.html:383
+#: weblate_web/crm/templates/payments/customer_detail.html:472
 #, fuzzy
 #| msgid "Country"
 msgid "Amount"
 msgstr "Држава"
 
-#: weblate_web/crm/models.py:194 weblate_web/templates/hosting.html:488
+#: weblate_web/crm/models.py:201 weblate_web/templates/hosting.html:488
 #: weblate_web/templates/support.html:173
 msgid "Payment"
 msgstr "Плаћање"
 
-#: weblate_web/crm/models.py:200
+#: weblate_web/crm/models.py:207
 msgid "Confirmed by"
 msgstr ""
 
-#: weblate_web/crm/models.py:201
+#: weblate_web/crm/models.py:208
 msgid "Confirmed at"
 msgstr ""
 
-#: weblate_web/crm/models.py:202
+#: weblate_web/crm/models.py:209
+#: weblate_web/crm/templates/invoices/invoice_detail.html:115
+#: weblate_web/crm/templates/invoices/invoice_list.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:384
+#: weblate_web/crm/templates/payments/customer_detail.html:473
 msgid "Description"
 msgstr "Опис"
 
-#: weblate_web/crm/models.py:211 weblate_web/templates/service.html:6
-#: weblate_web/templates/service.html:13
+#: weblate_web/crm/models.py:218
+#: weblate_web/crm/templates/payments/customer_detail.html:228
+#: weblate_web/crm/templates/weblate_web/service_detail.html:19
+#: weblate_web/crm/templates/weblate_web/service_list.html:26
+#: weblate_web/crm/templates/weblate_web/service_list.html:51
+#: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
 msgid "Service"
 msgstr "Услуга"
 
-#: weblate_web/crm/models.py:218
+#: weblate_web/crm/models.py:225
 msgid "Previous maintenance window"
 msgstr ""
 
-#: weblate_web/crm/models.py:224
-#: weblate_web/crm/templates/weblate_web/service_detail.html:41
+#: weblate_web/crm/models.py:231
+#: weblate_web/crm/templates/weblate_web/service_detail.html:142
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:747
+#: weblate_web/models.py:750
 msgid "Maintenance window"
 msgstr ""
 
-#: weblate_web/crm/models.py:228
+#: weblate_web/crm/models.py:235
 #, fuzzy
 #| msgid "Server URL"
 msgid "Service URL"
 msgstr "URL сервера"
 
-#: weblate_web/crm/templates/crm/income.html:16
-#, fuzzy
-#| msgid "Back to blog"
-msgid "Back to"
-msgstr "Назад на блог"
-
-#: weblate_web/crm/templates/crm/income.html:16
-#, fuzzy
-#| msgid "Yearly"
-msgid "yearly view"
-msgstr "Годишње"
-
-#: weblate_web/crm/templates/crm/income.html:22
-#, fuzzy
-#| msgid "Yearly"
-msgid "Year"
-msgstr "Годишње"
-
-#: weblate_web/crm/templates/crm/income.html:40
-#: weblate_web/crm/templates/crm/income.html:113
-msgid "Income by Category"
+#: weblate_web/crm/templates/crm/base.html:12
+msgid "Internal Weblate customer relationship management."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:42
-msgid "Total Income"
+#: weblate_web/crm/templates/crm/base.html:34
+#, fuzzy
+#| msgid "Displaying context"
+msgid "Skip to main content"
+msgstr "Приказ контекста"
+
+#: weblate_web/crm/templates/crm/base.html:46
+msgid "Toggle navigation"
+msgstr "Навигација"
+
+#: weblate_web/crm/templates/crm/base.html:47
+msgid "Menu"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:53
+#: weblate_web/crm/templates/crm/base.html:50
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "CRM navigation"
+msgstr "Навигација"
+
+#: weblate_web/crm/templates/crm/base.html:52
+msgid "Dashboard"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:55
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer records"
+msgstr "Брига о купцима и продаја"
+
+#: weblate_web/crm/templates/crm/base.html:56
+#: weblate_web/crm/templates/crm/index.html:11
+#: weblate_web/crm/templates/crm/index.html:17
+#: weblate_web/crm/templates/crm/index.html:18
+#: weblate_web/crm/templates/crm/interaction_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:7
+#: weblate_web/crm/templates/payments/customer_merge.html:7
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customers"
+msgstr "Прилагодљив"
+
+#: weblate_web/crm/templates/crm/base.html:60
+#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/weblate_web/service_detail.html:7
+#: weblate_web/crm/templates/weblate_web/service_list.html:44
+#: weblate_web/crm/templates/weblate_web/service_list.html:72
+#, fuzzy
+#| msgid "Service"
+msgid "Services"
+msgstr "Услуга"
+
+#: weblate_web/crm/templates/crm/base.html:64
+#: weblate_web/crm/templates/crm/index.html:87
+#: weblate_web/crm/templates/crm/index.html:93
+#: weblate_web/crm/templates/crm/index.html:94
+#: weblate_web/crm/templates/invoices/invoice_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:31
+msgid "Invoices"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:68
+#: weblate_web/crm/templates/crm/index.html:190
+#: weblate_web/crm/templates/crm/index.html:191
+msgid "Income"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:73
+msgid "Website"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:74
+msgid "Admin"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:78
+#: weblate_web/templates/base.html:92
+msgid "Sign out"
+msgstr "Одјава"
+
+#: weblate_web/crm/templates/crm/base.html:87
+msgid "Breadcrumbs"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:88
+msgid "CRM"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:107
+msgid "Messages"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:12
+#, python-format
+msgid "Back to %(current_year)s yearly view"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:17
+msgid "Income years"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:29
+#, python-format
+msgid "Income by Category - %(current_year)s/%(month)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:31
+#, python-format
+msgid "Total Income - %(current_year)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:39
 msgid "Rolling trend"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:56
+#: weblate_web/crm/templates/crm/income.html:43
 msgid "Window ending"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:60
+#: weblate_web/crm/templates/crm/income.html:49
 #, fuzzy
 #| msgid "Windows RC files"
 msgid "Window size"
 msgstr "Windows RC фајлови"
 
-#: weblate_web/crm/templates/crm/income.html:62
-#: weblate_web/crm/templates/crm/income.html:156
+#: weblate_web/crm/templates/crm/income.html:51
+#: weblate_web/crm/templates/crm/income.html:159
 #, fuzzy, python-format
 #| msgctxt "123 translations ..."
 #| msgid "this month"
@@ -234,135 +401,378 @@ msgstr[0] "овај месец"
 msgstr[1] "овај месец"
 msgstr[2] "овај месец"
 
-#: weblate_web/crm/templates/crm/income.html:66
+#: weblate_web/crm/templates/crm/income.html:55
 msgid "Current window"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:70
+#: weblate_web/crm/templates/crm/income.html:61
 msgid "Previous window"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:74
+#: weblate_web/crm/templates/crm/income.html:67
 #, fuzzy
 #| msgid "Change plan"
 msgid "Change"
 msgstr "Измени план"
 
-#: weblate_web/crm/templates/crm/income.html:93
+#: weblate_web/crm/templates/crm/income.html:85
 msgid "Daily Income"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:95
+#: weblate_web/crm/templates/crm/income.html:87
 msgid "Monthly Income with Category Breakdown"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:106
+#: weblate_web/crm/templates/crm/income.html:100
 #, fuzzy
 #| msgid "Translator attribution"
 msgid "Category Distribution"
 msgstr "Помињање преводиоца"
 
-#: weblate_web/crm/templates/crm/income.html:116
-#: weblate_web/crm/templates/crm/income.html:196
+#: weblate_web/crm/templates/crm/income.html:108
+#, fuzzy
+#| msgid "Category"
+msgid "Category income"
+msgstr "Категорија"
+
+#: weblate_web/crm/templates/crm/income.html:115
+#: weblate_web/crm/templates/crm/income.html:205
 msgid "Category"
 msgstr "Категорија"
 
-#: weblate_web/crm/templates/crm/income.html:117
-#: weblate_web/crm/templates/crm/income.html:141
-#: weblate_web/crm/templates/crm/income.html:197
+#: weblate_web/crm/templates/crm/income.html:116
+#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:206
 msgid "Amount (EUR)"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:128
-#: weblate_web/crm/templates/crm/income.html:181
+#: weblate_web/crm/templates/crm/income.html:127
+#: weblate_web/crm/templates/crm/income.html:186
+#: weblate_web/crm/templates/invoices/invoice_detail.html:118
 msgid "Total"
 msgstr "Укупно"
 
-#: weblate_web/crm/templates/crm/income.html:137
-msgid "Monthly Breakdown"
-msgstr ""
+#: weblate_web/crm/templates/crm/income.html:136
+#, fuzzy
+#| msgid "Monthly"
+msgid "Monthly income"
+msgstr "месечно"
 
-#: weblate_web/crm/templates/crm/income.html:140
+#: weblate_web/crm/templates/crm/income.html:143
 #, fuzzy
 #| msgid "Monthly"
 msgid "Month"
 msgstr "месечно"
 
-#: weblate_web/crm/templates/crm/income.html:142
+#: weblate_web/crm/templates/crm/income.html:145
 msgid "Rolling window"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:143
+#: weblate_web/crm/templates/crm/income.html:146
 msgid "Trend"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:147
+#: weblate_web/crm/templates/invoices/invoice_list.html:23
+#: weblate_web/crm/templates/payments/customer_detail.html:165
+#: weblate_web/crm/templates/payments/customer_detail.html:234
+#: weblate_web/crm/templates/payments/customer_detail.html:300
+#: weblate_web/crm/templates/payments/customer_detail.html:343
+#: weblate_web/crm/templates/payments/customer_detail.html:386
+#: weblate_web/crm/templates/payments/customer_detail.html:423
+#: weblate_web/crm/templates/payments/customer_detail.html:474
+#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:32
+#: weblate_web/crm/templates/weblate_web/service_list.html:60
 msgid "Actions"
 msgstr "Радње"
 
-#: weblate_web/crm/templates/crm/income.html:176
+#: weblate_web/crm/templates/crm/income.html:180
 msgid "View details"
 msgstr "Преглед детаља"
 
-#: weblate_web/crm/templates/crm/income.html:193
-msgid "Income by Category (Full Year)"
+#: weblate_web/crm/templates/crm/income.html:198
+msgid "Yearly category income"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:29
-#: weblate_web/crm/templates/crm/index.html:70
-#: weblate_web/crm/templates/crm/index.html:91
-#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/crm/index.html:19
+msgid "All customer records and billing contacts."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:23
+#: weblate_web/crm/templates/crm/index.html:99
+#: weblate_web/crm/templates/crm/index.html:112
+#: weblate_web/crm/templates/crm/index.html:142
 msgid "Add"
 msgstr "Додај"
 
-#: weblate_web/crm/templates/crm/index.html:38
-#: weblate_web/crm/templates/crm/index.html:51
-#: weblate_web/crm/templates/crm/index.html:79
-#: weblate_web/crm/templates/crm/index.html:100
-#: weblate_web/crm/templates/crm/index.html:113
-#: weblate_web/crm/templates/crm/index.html:139
-#: weblate_web/crm/templates/crm/index.html:152
-#: weblate_web/crm/templates/crm/index.html:165
-#: weblate_web/crm/templates/crm/index.html:178
-#: weblate_web/crm/templates/crm/index.html:191
-#: weblate_web/crm/templates/crm/index.html:209
-msgid "View"
-msgstr "Приказ"
+#: weblate_web/crm/templates/crm/index.html:30
+#: weblate_web/crm/templates/crm/index.html:31
+#, fuzzy
+#| msgid "Add a user"
+msgid "Active customers"
+msgstr "Додај корисника"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:15
+#: weblate_web/crm/templates/crm/index.html:32
+msgid "Customers with current services or payments."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:41
+msgid "Follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:47
+#: weblate_web/crm/templates/crm/index.html:48
+msgid "All follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:49
+msgid "Customers with scheduled next actions."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:57
+#, python-format
+msgid "Due %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:65
+msgid "No due follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:66
+msgid "No customer follow-up is due right now."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:75
+#, python-format
+msgid "Upcoming %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:95
+#, fuzzy
+#| msgid "Get support"
+msgid "Issued invoices and receipts."
+msgstr "Подршка"
+
+#: weblate_web/crm/templates/crm/index.html:106
+#: weblate_web/crm/templates/crm/index.html:107
+msgid "Quotes"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:108
+msgid "Draft offers and renewal quotes."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:119
+#: weblate_web/crm/templates/crm/index.html:120
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Unpaid invoices"
+msgstr "Преузми рачун"
+
+#: weblate_web/crm/templates/crm/index.html:121
+msgid "Invoices that still need payment follow-up."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:136
+#: weblate_web/crm/templates/crm/index.html:137
+#, fuzzy
+#| msgid "Available on request"
+msgid "All services"
+msgstr "Доступно на захтев"
+
+#: weblate_web/crm/templates/crm/index.html:138
+msgid "Hosted, dedicated, and support services."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:149
+#: weblate_web/crm/templates/crm/index.html:150
+#, fuzzy
+#| msgid "Expired service"
+msgid "Expired services"
+msgstr "Услуга истекла"
+
+#: weblate_web/crm/templates/crm/index.html:151
+msgid "Renewable services past their expiration date."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:157
+#: weblate_web/crm/templates/crm/index.html:158
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Dedicated hosting services"
+msgstr "Посвећена хостована услуга"
+
+#: weblate_web/crm/templates/crm/index.html:159
+#, fuzzy
+#| msgid "Dedicated instance"
+msgid "Dedicated hosting subscriptions."
+msgstr "Посебна инстанца"
+
+#: weblate_web/crm/templates/crm/index.html:165
+#: weblate_web/crm/templates/crm/index.html:166
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support services"
+msgstr "Обимнија подршка"
+
+#: weblate_web/crm/templates/crm/index.html:167
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support subscriptions."
+msgstr "Обимнија подршка"
+
+#: weblate_web/crm/templates/crm/index.html:173
+#: weblate_web/crm/templates/crm/index.html:174
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support services"
+msgstr "Премиум подршка"
+
+#: weblate_web/crm/templates/crm/index.html:175
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support subscriptions."
+msgstr "Премиум подршка"
+
+#: weblate_web/crm/templates/crm/index.html:184
+msgid "Income tracking"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:192
+msgid "Yearly and monthly income breakdowns."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:14
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interaction"
+msgstr "АПИ за интеграцију"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:418
+#: weblate_web/crm/templates/weblate_web/service_detail.html:275
 msgid "Timestamp"
 msgstr "Временска ознака"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:19
+#: weblate_web/crm/templates/crm/interaction_detail.html:24
+#: weblate_web/crm/templates/invoices/invoice_list.html:22
+#: weblate_web/crm/templates/payments/customer_detail.html:39
+#: weblate_web/crm/templates/payments/customer_detail.html:229
+#: weblate_web/crm/templates/payments/customer_detail.html:385
+#: weblate_web/crm/templates/payments/customer_list.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:23
+#: weblate_web/crm/templates/weblate_web/service_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:52
 #, fuzzy
 #| msgctxt "Hosting plan"
 #| msgid "Custom"
 msgid "Customer"
 msgstr "Прилагодљив"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:25
+#: weblate_web/crm/templates/crm/interaction_detail.html:30
+#: weblate_web/crm/templates/payments/customer_detail.html:419
 msgid "User"
 msgstr "Корисник"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:29
+#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/payments/customer_detail.html:420
 msgid "Origin"
 msgstr "Порекло"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/crm/interaction_detail.html:47
+#: weblate_web/crm/templates/payments/customer_list.html:47
+#: weblate_web/crm/templates/weblate_web/service_list_content.html:28
 msgid "Details"
 msgstr "Детаљи"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:63
+#: weblate_web/crm/templates/crm/interaction_detail.html:77
+#: weblate_web/crm/templates/payments/customer_detail.html:422
 msgid "Content"
 msgstr "Садржај"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:65
+#: weblate_web/crm/templates/crm/interaction_detail.html:80
 #, fuzzy
 #| msgid "Translation context"
 msgid "Interaction content"
 msgstr "Контекст превода"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/crm/templates/crm/pagination.html:4
+#, fuzzy
+#| msgid "Documentation"
+msgid "Pagination"
+msgstr "Документација"
+
+#: weblate_web/crm/templates/crm/pagination.html:7
+msgid "First"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:8
+msgid "Previous"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:12
+#, python-format
+msgid "Page %(page)s of %(pages)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:16
+#, fuzzy
+#| msgid "Next steps"
+msgid "Next"
+msgstr "Следећи кораци"
+
+#: weblate_web/crm/templates/crm/pagination.html:17
+msgid "Last"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/empty.html:8
+msgid "No records found."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:5
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue final invoice?"
+msgstr "Подршка"
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:7
+msgid "This creates a final invoice. Use Quote if you only need an offer."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:10
+#: weblate_web/crm/templates/payments/customer_merge.html:38
+msgid "Cancel"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:11
+#: weblate_web/crm/templates/invoices/invoice_detail.html:177
+msgid "Issue invoice"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:4
+#: weblate_web/crm/templates/invoices/invoice_list.html:19
+#: weblate_web/crm/templates/payments/customer_detail.html:299
+#: weblate_web/crm/templates/payments/customer_detail.html:382
+msgid "Kind"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:14
+msgid "Create a draft offer without issuing a final invoice."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:24
+msgid "Create a final invoice after confirmation."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/search_form.html:11
+msgid "Clear"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:14
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:34
+#: weblate_web/crm/templates/payments/customer_detail.html:310
+#: weblate_web/crm/templates/payments/customer_detail.html:444
 #: weblate_web/templates/hosting.html:289
 #: weblate_web/templates/payment/customer-agreement.html:35
 #: weblate_web/templates/payment/customer-agreement.html:56
@@ -372,177 +782,740 @@ msgstr "Контекст превода"
 msgid "Download"
 msgstr "Преузми"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+#: weblate_web/crm/templates/invoices/invoice_detail.html:16
 msgid "Receipt"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:55
+#: weblate_web/crm/templates/invoices/invoice_detail.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:13
+msgid "Edit in admin"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:33
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:10
+msgid "Paid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:35
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:13
+msgid "Unpaid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:41
+#: weblate_web/crm/templates/invoices/invoice_list.html:17
+#: weblate_web/crm/templates/payments/customer_detail.html:380
+msgid "Number"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:47
+msgid "Issued"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:53
+msgid "Due"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:66
+#, fuzzy
+#| msgid "Discover"
+msgid "Discount"
+msgstr "Истражи"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:74
+msgid "Generated from"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+msgid "Followup as"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:90
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer reference"
+msgstr "Брига о купцима и продаја"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:98
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer note"
+msgstr "Прилагодљив"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:108
+msgid "Invoice items"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:116
+msgid "Quantity"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:117
+#, fuzzy
+#| msgid "Pricing"
+msgid "Price"
+msgstr "Ценовник"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:142
+#: weblate_web/crm/templates/invoices/invoice_detail.html:149
+msgid "Confirm refund done"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:144
+msgid "Use this after the refund or chargeback has been completed."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:161
+#: weblate_web/crm/templates/invoices/invoice_detail.html:169
+msgid ""
+"This creates a final invoice matching this quote. Use Download if you only "
+"need the quote PDF."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:167
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue invoice from quote"
+msgstr "Подршка"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:9
+msgid "Invoice list"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:232
+#: weblate_web/crm/templates/payments/customer_detail.html:381
+#: weblate_web/crm/templates/weblate_web/service_detail.html:163
+#: weblate_web/crm/templates/weblate_web/service_list.html:30
+#: weblate_web/crm/templates/weblate_web/service_list.html:55
+msgid "Status"
+msgstr "Стање"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:32
+msgid "No invoices match the current filters."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:16
+msgid "Overdue"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:31
+#: weblate_web/crm/templates/payments/customer_detail.html:441
+msgid "View"
+msgstr "Приказ"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:14
+msgid "View in Zammad"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:22
+#, fuzzy
+#| msgid "Consulting"
+msgid "Customer sections"
+msgstr "Саветовање"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:25
+#, fuzzy
+#| msgid "Service"
+msgid "Overview"
+msgstr "Услуга"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:28
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interactions"
+msgstr "АПИ за интеграцију"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:34
+#: weblate_web/templates/snippets/service.html:172
+#: weblate_web/templates/user.html:124
+msgid "Payments"
+msgstr "Плаћања"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:43
+#: weblate_web/payments/models.py:170
+msgid "Name"
+msgstr "Име"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:49
+#, fuzzy
+#| msgid "Notification"
+msgid "Notification e-mails"
+msgstr "Обавештење"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:56
+#: weblate_web/crm/templates/payments/customer_list.html:24
+#, fuzzy
+#| msgid "VAT ID"
+msgid "VAT"
+msgstr "ПДВ ИД"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:61
+#, python-format
+msgid "validated on %(validated)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:64
+#, fuzzy
+#| msgid "Invalid image!"
+msgid "not validated"
+msgstr "Неисправна слика!"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:70
+#: weblate_web/payments/models.py:179
+msgid "Address"
+msgstr "Адреса"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:77
+#: weblate_web/crm/templates/payments/customer_list.html:26
+#: weblate_web/payments/models.py:199
+msgid "Country"
+msgstr "Држава"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:84
+#: weblate_web/crm/templates/payments/customer_list.html:18
+msgid "End client"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:92
+#: weblate_web/payments/models.py:211
+#, fuzzy
+#| msgid "Contact"
+msgid "Contact point"
+msgstr "Контакт"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:100
+#: weblate_web/payments/models.py:219
+#, fuzzy
+#| msgid "Donate"
+msgid "Accounting reference"
+msgstr "Донација"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:108
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment reminder"
+msgstr "Платна картица"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:110
+#, python-format
+msgid "Additional notification %(days)s day before due date"
+msgid_plural "Additional notification %(days)s days before due date"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:118
+#: weblate_web/crm/templates/payments/customer_list.html:21
+msgid "Follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:123
+#, python-format
+msgid "Next follow-up: %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:128
+msgid "No follow-up scheduled."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:133
+msgid "Set follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:152
+msgid "Save follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:157
+msgid "Clear follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:171
+#, fuzzy
+#| msgid "Add server to Discover Weblate"
+msgid "Merge customer"
+msgstr "Додајте сервер на истраживање Weblate-а"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:179
+#: weblate_web/crm/templates/payments/customer_merge.html:12
+msgid "Review merge"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:186
+#, fuzzy
+#| msgid "Add server to Discover Weblate"
+msgid "Add user to customer"
+msgstr "Додајте сервер на истраживање Weblate-а"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:193
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add user"
+msgstr "Додај корисника"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:199
+#: weblate_web/crm/templates/payments/customer_detail.html:213
+msgid "Add note"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:220
+#, fuzzy
+#| msgid "Hosted service"
+msgid "Customer services"
+msgstr "Хостована услуга"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:230
+#: weblate_web/crm/templates/weblate_web/service_detail.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:28
+#: weblate_web/crm/templates/weblate_web/service_list.html:53
+msgid "URL"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:231
+#: weblate_web/crm/templates/weblate_web/service_list.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:54
+#, fuzzy
+#| msgid "Version Control"
+msgid "Version"
+msgstr "Контрола верзије"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:233
+#: weblate_web/crm/templates/weblate_web/service_list.html:31
+#: weblate_web/crm/templates/weblate_web/service_list.html:59
+msgid "Packages"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:243
+msgid ""
+"This creates a final invoice for the new service. Use Quote if you only need "
+"an offer."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:249
+#, fuzzy
+#| msgid "Service Status"
+msgid "New service purchase"
+msgstr "Стање услуге"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:281
+#: weblate_web/crm/templates/weblate_web/service_detail.html:205
+#: weblate_web/crm/templates/weblate_web/service_detail.html:232
+#, fuzzy
+#| msgid "Creation date"
+msgid "Create"
+msgstr "Датум стварања"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:289
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "New payment"
+msgid "Agreements"
+msgstr "Ново плаћање"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:294
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "New payment"
+msgid "Signed agreements"
+msgstr "Ново плаћање"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:298
+#, fuzzy
+#| msgid "Sign in"
+msgid "Signed"
+msgstr "Пријава"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:319
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "New payment"
+msgid "No agreements recorded."
+msgstr "Ново плаћање"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:325
+msgid "Add new agreement"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:331
+#, fuzzy
+#| msgid "Documentation"
+msgid "Donations"
+msgstr "Документација"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:336
+#, fuzzy
+#| msgid "Documentation"
+msgid "Donation history"
+msgstr "Документација"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:340
+#: weblate_web/crm/templates/payments/customer_detail.html:470
+#, fuzzy
+#| msgid "Creation date"
+msgid "Created"
+msgstr "Датум стварања"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:341
+msgid "Reward"
+msgstr "Награде"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:354
+#: weblate_web/crm/templates/payments/customer_detail.html:486
 #: weblate_web/templates/payment/customer-agreement.html:18
 #: weblate_web/templates/payment/payment.html:70
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "Уреди"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:72
-#: weblate_web/crm/templates/invoices/invoice_detail.html:77
-msgid "Confirm refund done"
-msgstr ""
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:73
-msgid "Use this after the refund or chargeback has been completed."
-msgstr ""
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:82
-#: weblate_web/crm/templates/invoices/invoice_detail.html:96
-msgid "Issue invoice"
-msgstr ""
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:84
+#: weblate_web/crm/templates/payments/customer_detail.html:363
 #, fuzzy
-#| msgid "Get support"
-msgid "Issue invoice from quote"
-msgstr "Подршка"
+#| msgid "Documentation"
+msgid "No donations recorded."
+msgstr "Документација"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:86
-msgid ""
-"This creates a final invoice matching this quote. Use Download if you only "
-"need the quote PDF."
+#: weblate_web/crm/templates/payments/customer_detail.html:371
+msgid "Invoice history"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:93
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
-#: weblate_web/crm/templates/weblate_web/service_detail.html:109
-msgid "I confirm that I want to issue a final invoice."
+#: weblate_web/crm/templates/payments/customer_detail.html:395
+msgid "No invoices recorded."
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:57
-#, fuzzy
-#| msgid "Add server to Discover Weblate"
-msgid "Add user to customer"
-msgstr "Додајте сервер на истраживање Weblate-а"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:60
-#, fuzzy
-#| msgid "Add a user"
-msgid "Add user"
-msgstr "Додај корисника"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:88
-msgid "Add new agreement"
-msgstr ""
-
-#: weblate_web/crm/templates/payments/customer_detail.html:109
+#: weblate_web/crm/templates/payments/customer_detail.html:402
 msgid "Issue new invoice"
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:115
-msgid "Add note"
+#: weblate_web/crm/templates/payments/customer_detail.html:410
+#, fuzzy
+#| msgid "Translation context"
+msgid "Interaction history"
+msgstr "Контекст превода"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:421
+#, fuzzy
+#| msgid "Payment Summary"
+msgid "Summary"
+msgstr "Сажетак плаћања"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:454
+#, fuzzy
+#| msgid "Translation context"
+msgid "No interactions recorded."
+msgstr "Контекст превода"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:462
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment history"
+msgstr "Грешка при плаћању"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:471
+msgid "State"
+msgstr "Стање"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:495
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Плаћање одбијено"
+
+#: weblate_web/crm/templates/payments/customer_list.html:9
+#, fuzzy
+#| msgid "Consulting"
+msgid "Customer list"
+msgstr "Саветовање"
+
+#: weblate_web/crm/templates/payments/customer_list.html:22
+#, fuzzy
+#| msgid "Notification"
+msgid "Next action"
+msgstr "Обавештење"
+
+#: weblate_web/crm/templates/payments/customer_list.html:25
+#: weblate_web/payments/models.py:190
+msgid "City"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:47
+#: weblate_web/crm/templates/payments/customer_list.html:56
+msgid "No customers match the current filters."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:17
+msgid "will be merged into"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:22
+#, python-format
+msgid ""
+"All content from %(source)s (%(source_pk)s) will be moved to %(target)s "
+"(%(target_pk)s)"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:27
+#, python-format
+msgid "%(source)s (%(source_pk)s) will be removed"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:36
+msgid "Merge"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:33
+msgid "locked"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:38
+#, fuzzy
+#| msgid "Go Weblate!"
+msgid "Weblate"
+msgstr "Иди на Weblate!"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:44
+#: weblate_web/crm/templates/weblate_web/service_detail.html:279
+#: weblate_web/templates/snippets/customer-users.html:3
+msgid "Users"
+msgstr "Корисници"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:50
+#: weblate_web/crm/templates/weblate_web/service_detail.html:280
+#, fuzzy
+#| msgctxt "Hosting plan parameter"
+#| msgid "Projects"
+msgid "Projects"
+msgstr "Пројекти"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:56
+#, fuzzy
+#| msgid "Supporters"
+msgid "Support status"
+msgstr "Присталице"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:64
+#, fuzzy
+#| msgid "Activation token"
+msgid "Activation key"
+msgstr "Активациони жетон"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+#: weblate_web/crm/templates/weblate_web/service_detail.html:98
+msgid "Copied"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid "Copy failed"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:70
+#: weblate_web/crm/templates/weblate_web/service_detail.html:71
+#, fuzzy
+#| msgid "Activation token"
+msgid "Copy activation key"
+msgstr "Активациони жетон"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:94
+#, fuzzy
+#| msgid "Backups"
+msgid "Backup"
+msgstr "Резервне копије"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:100
+#: weblate_web/crm/templates/weblate_web/service_detail.html:101
+msgid "Copy backup SSH URL"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:119
+#, python-format
+msgid "%(size)s in %(directory)s"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:126
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable"
+msgstr "Истражи"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:151
 #, fuzzy
 #| msgid "System maintenance"
 msgid "Update maintenance window"
 msgstr "Одржавање система"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:63
+#: weblate_web/crm/templates/weblate_web/service_detail.html:166
+#: weblate_web/templates/user.html:59
+msgid "Active"
+msgstr "Активно"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:168
 #, fuzzy
-#| msgid "Get support"
-msgid "Issue renewal quote"
-msgstr "Подршка"
+#| msgid "Service Status"
+msgid "Service is terminated"
+msgstr "Стање услуге"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:66
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
-msgid "Issue renewal invoice"
-msgstr ""
-
-#: weblate_web/crm/templates/weblate_web/service_detail.html:68
-msgid ""
-"This creates a final invoice for the renewal. Use the renewal quote action "
-"if you only need a quote."
-msgstr ""
-
-#: weblate_web/crm/templates/weblate_web/service_detail.html:86
-#, python-format
-msgid ""
-"Upgrade to %(package)s without extending the current subscription period."
-msgstr ""
-
-#: weblate_web/crm/templates/weblate_web/service_detail.html:94
+#: weblate_web/crm/templates/weblate_web/service_detail.html:173
 #, fuzzy
-#| msgid "Get support"
-msgid "Issue upgrade quote"
-msgstr "Подршка"
+#| msgid "Expired"
+msgid "Expires"
+msgstr "Истекло"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:97
-#: weblate_web/crm/templates/weblate_web/service_detail.html:112
-msgid "Issue upgrade invoice"
+#: weblate_web/crm/templates/weblate_web/service_detail.html:180
+msgid "Edit subscription in admin"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+#: weblate_web/crm/templates/weblate_web/service_detail.html:185
+#, fuzzy
+#| msgid "Merchandise"
+msgid "Purchases"
+msgstr "Продавница"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:187
 msgid ""
-"This creates a final invoice for the upgrade. Use the upgrade quote action "
-"if you only need a quote."
+"This creates a final invoice for the renewal. Use Quote if you only need an "
+"offer."
 msgstr ""
 
-#: weblate_web/crm/views.py:95
-msgid "Please confirm that you want to issue a final invoice."
+#: weblate_web/crm/templates/weblate_web/service_detail.html:210
+#, fuzzy, python-format
+#| msgid "Current subscription: %(package)s"
+msgid "Upgrade to %(package)s"
+msgstr "Тренутна претплата: %(package)s"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:211
+msgid "For the rest of the current period."
 msgstr ""
 
-#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
-#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
-#: weblate_web/views.py:1077 weblate_web/views.py:1089
-msgid "This subscription can not be upgraded to the selected package."
+#: weblate_web/crm/templates/weblate_web/service_detail.html:212
+msgid ""
+"This creates a final invoice for the upgrade. Use Quote if you only need an "
+"offer."
 msgstr ""
 
-#: weblate_web/crm/views.py:638
+#: weblate_web/crm/templates/weblate_web/service_detail.html:243
+#, fuzzy
+#| msgid "Description"
+msgid "Disable subscription"
+msgstr "Опис"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:250
+msgid ""
+"Disable the subscription, no payments will be reminded or triggered, "
+"<strong>backups will be removed once subscription expires</strong>"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:258
+msgid "Disable"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:268
+msgid "Recent service reports"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:276
+#, fuzzy
+#| msgid "Server URL"
+msgid "Site URL"
+msgstr "URL сервера"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:277
+#, fuzzy
+#| msgid "Subtitles"
+msgid "Site title"
+msgstr "Титлови"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:278
+#, fuzzy
+#| msgid "Weblate heroism"
+msgid "Weblate version"
+msgstr "Weblate хероји"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:281
+#: weblate_web/templates/hosting.html:319
+#: weblate_web/templates/hosting.html:490
+msgid "Hosted strings"
+msgstr "Хостоване ниске"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:57
+#, fuzzy
+#| msgid "System maintenance"
+msgid "Maintenance"
+msgstr "Одржавање система"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:74
+msgid "No services match the current filters."
+msgstr ""
+
+#: weblate_web/crm/views.py:719
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 
-#: weblate_web/crm/views.py:652
+#: weblate_web/crm/views.py:733
 msgid "Hosted user was not linked."
 msgstr ""
 
-#: weblate_web/crm/views.py:655
+#: weblate_web/crm/views.py:736
 msgid "Hosted user is already linked to a different local user."
 msgstr ""
 
-#: weblate_web/crm/views.py:662
+#: weblate_web/crm/views.py:743
 #, fuzzy
 #| msgid "Add a user"
 msgid "Added customer user"
 msgstr "Додај корисника"
 
-#: weblate_web/crm/views.py:664
+#: weblate_web/crm/views.py:745
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:668
+#: weblate_web/crm/views.py:749
 msgid "created"
 msgstr ""
 
-#: weblate_web/crm/views.py:670
+#: weblate_web/crm/views.py:751
 msgid "linked"
 msgstr ""
 
-#: weblate_web/crm/views.py:697
+#: weblate_web/crm/views.py:778
 msgid "Multiple local users use this e-mail address"
 msgstr ""
 
-#: weblate_web/crm/views.py:725
+#: weblate_web/crm/views.py:806
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr ""
 
-#: weblate_web/crm/views.py:732
+#: weblate_web/crm/views.py:813
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr ""
 
-#: weblate_web/crm/views.py:737
+#: weblate_web/crm/views.py:818
 #, python-format
 msgid "%(email)s is already a customer user."
+msgstr ""
+
+#: weblate_web/crm/views.py:863
+#, python-format
+msgid "Follow-up scheduled for %(date)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:870
+msgid "Follow-up set"
+msgstr ""
+
+#: weblate_web/crm/views.py:875
+msgid "Follow-up updated."
+msgstr ""
+
+#: weblate_web/crm/views.py:889
+msgid "Follow-up cleared"
+msgstr ""
+
+#: weblate_web/crm/views.py:890 weblate_web/crm/views.py:894
+msgid "Follow-up cleared."
 msgstr ""
 
 #: weblate_web/fake.py:25
@@ -555,27 +1528,27 @@ msgstr ""
 "пројеката, као и сам Weblate! Волите слободан софтвер? Ваше могућности "
 "доприноса су овде неограничене!"
 
-#: weblate_web/forms.py:88
+#: weblate_web/forms.py:98
 msgid "Insufficient donation for selected reward!"
 msgstr "Недовољна донација за изабрану награду!"
 
-#: weblate_web/invoices/models.py:209
+#: weblate_web/invoices/models.py:210
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/invoices/models.py:211 weblate_web/invoices/models.py:213
+#: weblate_web/invoices/models.py:212 weblate_web/invoices/models.py:214
 msgid "Account number"
 msgstr "Број рачуна"
 
-#: weblate_web/invoices/models.py:215
+#: weblate_web/invoices/models.py:216
 msgid "BIC/SWIFT"
 msgstr ""
 
-#: weblate_web/invoices/models.py:217
+#: weblate_web/invoices/models.py:218
 msgid "Issuing bank"
 msgstr "Банка издавач"
 
-#: weblate_web/invoices/models.py:219
+#: weblate_web/invoices/models.py:220
 msgid "Account holder"
 msgstr "Власник рачуна"
 
@@ -598,17 +1571,17 @@ msgid "Donation"
 msgstr "Документација"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:781
+#: weblate_web/models.py:784
 msgid "Link text"
 msgstr "Текст линка"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:784
+#: weblate_web/models.py:787
 msgid "Link URL"
 msgstr "URL линка"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:787
+#: weblate_web/models.py:790
 msgid "Link image"
 msgstr "Слика линка"
 
@@ -713,127 +1686,123 @@ msgstr "Неподржан тип слике: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Отпремите слику резолуције 570 x 260 пиксела."
 
-#: weblate_web/models.py:721
+#: weblate_web/models.py:724
 msgid "Community supported"
 msgstr "Подржано од заједнице"
 
-#: weblate_web/models.py:722
+#: weblate_web/models.py:725
 msgid "Dedicated hosted service"
 msgstr "Посвећена хостована услуга"
 
-#: weblate_web/models.py:723
+#: weblate_web/models.py:726
 msgid "Hosted service"
 msgstr "Хостована услуга"
 
-#: weblate_web/models.py:724 weblate_web/templates/support.html:77
+#: weblate_web/models.py:727 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Основна подршка за сопствено хостовање"
 
-#: weblate_web/models.py:725 weblate_web/templates/support.html:90
+#: weblate_web/models.py:728 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Продужена подршка за сопствено хостовање"
 
-#: weblate_web/models.py:726 weblate_web/templates/support.html:109
+#: weblate_web/models.py:729 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Премијум подршка за сопствено хостовање"
 
-#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:755 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "URL сервера"
 
-#: weblate_web/models.py:766
+#: weblate_web/models.py:769
 msgid "Server description"
 msgstr "Опис сервера"
 
-#: weblate_web/models.py:769
+#: weblate_web/models.py:772
 msgid "Server image"
 msgstr "Слика сервера"
 
-#: weblate_web/models.py:773
+#: weblate_web/models.py:776
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG или JPG слика резолуције 570 x 260 пиксела."
 
-#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1047 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Основна подршка"
 
-#: weblate_web/models.py:1045
+#: weblate_web/models.py:1048
 msgid "Never get held back by a problem."
 msgstr ""
 
-#: weblate_web/models.py:1046
+#: weblate_web/models.py:1049
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 
-#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1051 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Подршка"
 
-#: weblate_web/models.py:1060 weblate_web/models.py:1077
-#: weblate_web/models.py:1108 weblate_web/models.py:1632
+#: weblate_web/models.py:1063 weblate_web/models.py:1080
+#: weblate_web/models.py:1111 weblate_web/models.py:1635
 #, python-format
 msgid "Upgrade to %s"
 msgstr ""
 
-#: weblate_web/models.py:1062
+#: weblate_web/models.py:1065
 msgid "Premium support"
 msgstr "Премиум подршка"
 
-#: weblate_web/models.py:1063
+#: weblate_web/models.py:1066
 msgid "Don’t wait with your work on hold."
 msgstr ""
 
-#: weblate_web/models.py:1064
+#: weblate_web/models.py:1067
 msgid "This guarantees you answers the NBD at the latest."
 msgstr ""
 
-#: weblate_web/models.py:1066
+#: weblate_web/models.py:1069
 #, fuzzy
 #| msgid "Be Premium"
 msgid "Be premium"
 msgstr "Будите премијум"
 
-#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1082 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Обимнија подршка"
 
-#: weblate_web/models.py:1080
+#: weblate_web/models.py:1083
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr ""
 
-#: weblate_web/models.py:1081
+#: weblate_web/models.py:1084
 msgid "We will manage upgrades for you."
 msgstr ""
 
-#: weblate_web/models.py:1083
+#: weblate_web/models.py:1086
 msgid "Stay updated"
 msgstr ""
 
-#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1095 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Услуга за резервне копије"
 
-#: weblate_web/models.py:1093
+#: weblate_web/models.py:1096
 msgid "Easily put your backups in a safe place."
 msgstr ""
 
-#: weblate_web/models.py:1094
+#: weblate_web/models.py:1097
 msgid "Encrypted and automatic, always available."
 msgstr ""
 
-#: weblate_web/models.py:1096
+#: weblate_web/models.py:1099
 #, fuzzy
 #| msgid "Backups"
 msgid "Back up daily"
 msgstr "Резервне копије"
 
-#: weblate_web/models.py:1109
+#: weblate_web/models.py:1112
 msgid "Increase service limits to translate more content."
 msgstr ""
-
-#: weblate_web/models.py:1112
-msgid "Upgrade"
-msgstr "Надогради"
 
 #: weblate_web/payments/backends.py:522
 #, fuzzy
@@ -876,47 +1845,47 @@ msgstr ""
 msgid "Apple Pay"
 msgstr ""
 
-#: weblate_web/payments/forms.py:82
+#: weblate_web/payments/forms.py:84
 msgid "You will receive a receipt here."
 msgstr ""
 
-#: weblate_web/payments/forms.py:83
+#: weblate_web/payments/forms.py:85
 #, fuzzy
 #| msgid "Your e-mail address…"
 msgid "E-mail address"
 msgstr "Ваша адреса е-поште…"
 
-#: weblate_web/payments/models.py:121
+#: weblate_web/payments/models.py:135
 msgid "Unknown"
 msgstr "Непознато"
 
-#: weblate_web/payments/models.py:122
+#: weblate_web/payments/models.py:136
 #, fuzzy
 #| msgid "Validity"
 msgid "Valid"
 msgstr "Важење"
 
-#: weblate_web/payments/models.py:123
+#: weblate_web/payments/models.py:137
 #, fuzzy
 #| msgid "Invalid image!"
 msgid "Invalid"
 msgstr "Неисправна слика!"
 
-#: weblate_web/payments/models.py:130
+#: weblate_web/payments/models.py:144
 msgid "European VAT ID"
 msgstr "Европски ПДВ ИД"
 
-#: weblate_web/payments/models.py:132
+#: weblate_web/payments/models.py:146
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "Попуните европски ПДВ ИД. Оставите празно ако се не примењује."
 
-#: weblate_web/payments/models.py:147
+#: weblate_web/payments/models.py:161
 #, fuzzy
 #| msgid "Company or individual name"
 msgid "Company identification number"
 msgstr "Предузеће или лично име"
 
-#: weblate_web/payments/models.py:149
+#: weblate_web/payments/models.py:163
 #, fuzzy
 #| msgid ""
 #| "Please fill in your tax registration if it should appear on the invoice."
@@ -925,121 +1894,124 @@ msgid ""
 "invoice."
 msgstr "Попуните своју пореску пријаву ако је потребно да се појави на рачуну."
 
-#: weblate_web/payments/models.py:156
-msgid "Name"
-msgstr "Име"
-
-#: weblate_web/payments/models.py:158
+#: weblate_web/payments/models.py:172
 #, fuzzy
 #| msgid ""
 #| "Please fill in your tax registration if it should appear on the invoice."
 msgid "Company or individual name as it should appear on the invoice."
 msgstr "Попуните своју пореску пријаву ако је потребно да се појави на рачуну."
 
-#: weblate_web/payments/models.py:165
-msgid "Address"
-msgstr "Адреса"
-
-#: weblate_web/payments/models.py:170
+#: weblate_web/payments/models.py:184
 #, fuzzy
 #| msgid "Billing information"
 msgid "Additional address information"
 msgstr "Подаци за наплату"
 
-#: weblate_web/payments/models.py:176
-msgid "City"
-msgstr ""
-
-#: weblate_web/payments/models.py:181
+#: weblate_web/payments/models.py:195
 #, fuzzy
 #| msgid "Postcode and city"
 msgid "Postcode"
 msgstr "Поштански број и место"
 
-#: weblate_web/payments/models.py:185
-msgid "Country"
-msgstr "Држава"
-
-#: weblate_web/payments/models.py:191
+#: weblate_web/payments/models.py:205
 #, fuzzy
 #| msgid "Billing information"
 msgid "Billing e-mail"
 msgstr "Подаци за наплату"
 
-#: weblate_web/payments/models.py:192
+#: weblate_web/payments/models.py:206
 msgid "Additional e-mail to receive billing notifications"
 msgstr ""
 
-#: weblate_web/payments/models.py:197
+#: weblate_web/payments/models.py:213
+msgid "Person, team, or department to show as the invoice contact."
+msgstr ""
+
+#: weblate_web/payments/models.py:221
+msgid ""
+"Line-level accounting code for the customer's internal invoice processing, "
+"such as a cost center, project, internal order, or GL account. Separate from "
+"the customer reference or purchase order number."
+msgstr ""
+
+#: weblate_web/payments/models.py:229
 #, fuzzy
 #| msgid "Your upcoming payment on weblate.org"
 msgid "Additional upcoming payment notification"
 msgstr "Наступајућа плаћања на weblate.org"
 
-#: weblate_web/payments/models.py:200
+#: weblate_web/payments/models.py:232
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
 
-#: weblate_web/payments/models.py:337
+#: weblate_web/payments/models.py:244
+msgid "Date and time when this customer needs attention."
+msgstr ""
+
+#: weblate_web/payments/models.py:250
+msgid "Short description of the next action."
+msgstr ""
+
+#: weblate_web/payments/models.py:382
 msgid "The country has to match your VAT code"
 msgstr "Држава мора да се поклапа са ПДВ кодом"
 
-#: weblate_web/payments/models.py:345
+#: weblate_web/payments/models.py:390
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
 
-#: weblate_web/payments/models.py:368
+#: weblate_web/payments/models.py:413
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
 
-#: weblate_web/payments/models.py:584
+#: weblate_web/payments/models.py:640
 msgid "Annual"
 msgstr "годишње"
 
-#: weblate_web/payments/models.py:585
+#: weblate_web/payments/models.py:641
 msgid "Biannual"
 msgstr "двогодишње"
 
-#: weblate_web/payments/models.py:586 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:642 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "квартално"
 
-#: weblate_web/payments/models.py:587 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:643 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "месечно"
 
-#: weblate_web/payments/models.py:588
+#: weblate_web/payments/models.py:644
 msgid "One-time"
 msgstr "Једнократно"
 
-#: weblate_web/payments/models.py:624
+#: weblate_web/payments/models.py:685
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Ново плаћање"
 
-#: weblate_web/payments/models.py:625
+#: weblate_web/payments/models.py:686
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Чека плаћање"
 
-#: weblate_web/payments/models.py:626
+#: weblate_web/payments/models.py:687
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Плаћање одбијено"
 
-#: weblate_web/payments/models.py:627
+#: weblate_web/payments/models.py:688
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Плаћање прихваћено"
 
-#: weblate_web/payments/models.py:628
+#: weblate_web/payments/models.py:689
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Уплата је обрађена"
@@ -1323,6 +2295,7 @@ msgstr ""
 "услуга компанијама са нагласком на локализацију и Weblate."
 
 #: weblate_web/templates/about.html:179
+#: weblate_web/templates/snippets/customer_address.html:6
 msgid "Contact"
 msgstr "Контакт"
 
@@ -1375,10 +2348,6 @@ msgstr ""
 msgctxt "Keyword"
 msgid "translate"
 msgstr "преведи"
-
-#: weblate_web/templates/base.html:92
-msgid "Sign out"
-msgstr "Одјава"
 
 #: weblate_web/templates/base.html:102
 #: weblate_web/templates/snippets/main-menu.html:51
@@ -1686,10 +2655,6 @@ msgstr "Додај своје"
 #: weblate_web/templates/discover.html:33
 msgid "project name"
 msgstr "име пројекта"
-
-#: weblate_web/templates/discover.html:35
-msgid "Search"
-msgstr "Претрага"
 
 #: weblate_web/templates/discover.html:59
 #, python-format
@@ -2821,11 +3786,6 @@ msgstr ""
 msgid "Continuous localization"
 msgstr "Континуирана локализација"
 
-#: weblate_web/templates/hosting.html:319
-#: weblate_web/templates/hosting.html:490
-msgid "Hosted strings"
-msgstr "Хостоване ниске"
-
 #: weblate_web/templates/hosting.html:322
 msgid "Translation projects"
 msgstr "Преводилачки пројекти"
@@ -3510,10 +4470,6 @@ msgid ""
 "grow."
 msgstr ""
 
-#: weblate_web/templates/snippets/customer-users.html:3
-msgid "Users"
-msgstr "Корисници"
-
 #: weblate_web/templates/snippets/customer-users.html:17
 msgid "You can not remove yourself"
 msgstr ""
@@ -3821,11 +4777,6 @@ msgstr ""
 msgid "and <strong>save 20%%</strong>."
 msgstr "преко <strong>%(count)s</strong>"
 
-#: weblate_web/templates/snippets/service.html:172
-#: weblate_web/templates/user.html:124
-msgid "Payments"
-msgstr "Плаћања"
-
 #: weblate_web/templates/snippets/service.html:190
 msgid "Get more Weblate"
 msgstr "Набавите више Weblate-а"
@@ -4128,10 +5079,6 @@ msgstr "Веза"
 msgid "Edit reward"
 msgstr "Уреди награде"
 
-#: weblate_web/templates/user.html:59
-msgid "Active"
-msgstr "Активно"
-
 #: weblate_web/templates/user.html:150
 msgid "Wanna see something nice here?"
 msgstr "Желите ли видети нешто лепо овде?"
@@ -4354,6 +5301,26 @@ msgid "Please confirm the upgrade from your account page."
 msgstr ""
 
 #, fuzzy
+#~| msgid "Back to blog"
+#~ msgid "Back to"
+#~ msgstr "Назад на блог"
+
+#, fuzzy
+#~| msgid "Yearly"
+#~ msgid "yearly view"
+#~ msgstr "Годишње"
+
+#, fuzzy
+#~| msgid "Yearly"
+#~ msgid "Year"
+#~ msgstr "Годишње"
+
+#, fuzzy
+#~| msgid "Get support"
+#~ msgid "Issue upgrade quote"
+#~ msgstr "Подршка"
+
+#, fuzzy
 #~| msgid "Download invoice"
 #~ msgid "Create invoice"
 #~ msgstr "Преузми рачун"
@@ -4420,9 +5387,6 @@ msgstr ""
 #~ "It is all libre software, all our code and issues are open to the public."
 #~ msgstr ""
 #~ "То је све слободан софтвер, сав наш код и питања су отворени за јавност."
-
-#~ msgid "Customer care and sales"
-#~ msgstr "Брига о купцима и продаја"
 
 #~ msgid ""
 #~ "We're looking for a person who loves to speak with the people and will "
@@ -4578,9 +5542,6 @@ msgstr ""
 #~ msgid "monthly"
 #~ msgstr "месечно"
 
-#~ msgid "Expired service"
-#~ msgstr "Услуга истекла"
-
 #~ msgid "See all projects"
 #~ msgstr "Погледајте све пројекте"
 
@@ -4630,12 +5591,6 @@ msgstr ""
 #~ msgid "See documentation on subscription management."
 #~ msgstr "Погледајте документацију за управљање претплатом."
 
-#~ msgid "Creation date"
-#~ msgstr "Датум стварања"
-
-#~ msgid "State"
-#~ msgstr "Стање"
-
 #~ msgid "Switch to yearly"
 #~ msgstr "Пређи на годишње"
 
@@ -4665,9 +5620,6 @@ msgstr ""
 #, python-format
 #~ msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 #~ msgstr "Питања поставите на <a href=\"%(url)s\">Стек оверфлоу</a>."
-
-#~ msgid "Reward"
-#~ msgstr "Награде"
 
 #~ msgid "Expiry date"
 #~ msgstr "Истиче"
@@ -4750,9 +5702,6 @@ msgstr ""
 
 #~ msgid "Own domain"
 #~ msgstr "Сопствени домен"
-
-#~ msgid "Status"
-#~ msgstr "Стање"
 
 #~ msgid "VCS repositories"
 #~ msgstr "ВЦС складишта"
@@ -5101,11 +6050,6 @@ msgstr ""
 #~ "серверу</a>. Можете се регистровати и радити под вашим корисничким именом "
 #~ "или користити <code>demo</code> налог са <code>demo</code> лозинком."
 
-#, fuzzy
-#~| msgid "Documentation"
-#~ msgid "Donations welcome"
-#~ msgstr "Документација"
-
 #~ msgid "Custom features development"
 #~ msgstr "Развијање посебних могућности"
 
@@ -5118,11 +6062,6 @@ msgstr ""
 #~| msgid "Weblate is free, but welcomes donations."
 #~ msgid "Weblate is provided free of charge &amp; welcomes donations."
 #~ msgstr "Веблејт је слободан али донације су добродошле."
-
-#, fuzzy
-#~| msgid "Donate"
-#~ msgid "Donation recurrence"
-#~ msgstr "Донација"
 
 #, fuzzy
 #~| msgctxt "Hosting plan"
@@ -5445,9 +6384,6 @@ msgstr ""
 #~ "Такође можете да <a href=\"%(download_url)s\">преузмете</a> Веблејт "
 #~ "изворни кôд и покренете га на вашем систему. Такође постоји неколико "
 #~ "могућности за употребу Веблејта у облаку."
-
-#~ msgid "Toggle navigation"
-#~ msgstr "Навигација"
 
 #~ msgid ""
 #~ "Weblate is <a href=\"%(github_url)s\">free software</a> and welcomes <a "
