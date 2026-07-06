@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-06-29 07:03-0500\n"
+"POT-Creation-Date: 2026-07-06 00:59-0500\n"
 "PO-Revision-Date: 2026-06-01 06:48+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github@weblate.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/weblate/website/"
@@ -29,27 +29,94 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.6.dev0\n"
 
-#: weblate_web/crm/forms.py:30
+#: weblate_web/crm/forms.py:34 weblate_web/forms.py:59
+msgid "Please confirm that you want to issue a final invoice."
+msgstr ""
+
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:268
+#: weblate_web/crm/views.py:312 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
+msgid "This subscription can not be upgraded to the selected package."
+msgstr ""
+
+#: weblate_web/crm/forms.py:53
+#: weblate_web/crm/templates/crm/snippets/search_form.html:9
+#: weblate_web/templates/discover.html:35
+msgid "Search"
+msgstr "Cerca"
+
+#: weblate_web/crm/forms.py:61
+msgid "Merge with following customer object"
+msgstr ""
+
+#: weblate_web/crm/forms.py:65
+msgid "Select a valid customer to merge into."
+msgstr ""
+
+#: weblate_web/crm/forms.py:81
+msgid "A customer can not be merged into itself."
+msgstr ""
+
+#: weblate_web/crm/forms.py:98
+#: weblate_web/crm/templates/weblate_web/service_detail.html:193
+msgid "Renewal"
+msgstr "Renovació"
+
+#: weblate_web/crm/forms.py:99 weblate_web/models.py:1115
+msgid "Upgrade"
+msgstr "Actualitza"
+
+#: weblate_web/crm/forms.py:106
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:13
+#: weblate_web/forms.py:35
+msgid "Quote"
+msgstr ""
+
+#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:145
+#: weblate_web/crm/models.py:197
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:23
+#: weblate_web/crm/templates/invoices/invoice_detail.html:27
+#: weblate_web/forms.py:36
+msgid "Invoice"
+msgstr ""
+
+#: weblate_web/crm/forms.py:133 weblate_web/crm/forms.py:139
+#, fuzzy
+#| msgid "Git integration"
+msgid "Missing action."
+msgstr "Integració amb el Git"
+
+#: weblate_web/crm/forms.py:150
 #, fuzzy
 #| msgid "Payment description"
 msgid "Refund description"
 msgstr "Descripció del pagament"
 
-#: weblate_web/crm/forms.py:33
+#: weblate_web/crm/forms.py:153
 msgid "Optional note describing how the refund was done."
 msgstr ""
 
-#: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
+#: weblate_web/crm/forms.py:160 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "Nota"
 
-#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/crm/forms.py:167 weblate_web/payments/models.py:243
+msgid "Follow-up date"
+msgstr ""
+
+#: weblate_web/crm/forms.py:175 weblate_web/payments/models.py:249
+msgid "Follow-up note"
+msgstr ""
+
+#: weblate_web/crm/forms.py:203
+#: weblate_web/crm/templates/payments/customer_list.html:19
+#: weblate_web/templates/about.html:182
 #: weblate_web/templates/snippets/customer-users.html:38
 #: weblate_web/templates/snippets/customer-users.html:40
 msgid "E-mail"
 msgstr "Adreça electrònica"
 
-#: weblate_web/crm/forms.py:47
+#: weblate_web/crm/forms.py:204
 msgid "Full name"
 msgstr "Nom complet"
 
@@ -62,298 +129,657 @@ msgstr ""
 msgid "Hosted user synchronization is disabled."
 msgstr ""
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 msgid "Yes"
 msgstr ""
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 #, fuzzy
 #| msgid "Note"
 msgid "No"
 msgstr "Nota"
 
-#: weblate_web/crm/models.py:86
+#: weblate_web/crm/models.py:93
 msgid "not set"
 msgstr ""
 
-#: weblate_web/crm/models.py:136
+#: weblate_web/crm/models.py:143
 msgid "Notification"
 msgstr "Notificació"
 
-#: weblate_web/crm/models.py:137
+#: weblate_web/crm/models.py:144
 #, fuzzy
 #| msgid "Requirements:"
 msgid "Recipients"
 msgstr "Requisits:"
 
-#: weblate_web/crm/models.py:138 weblate_web/crm/models.py:190
-msgid "Invoice"
-msgstr ""
-
-#: weblate_web/crm/models.py:139
-#: weblate_web/crm/templates/crm/interaction_detail.html:52
+#: weblate_web/crm/models.py:146
+#: weblate_web/crm/templates/crm/interaction_detail.html:64
 msgid "Attachment"
 msgstr ""
 
-#: weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:153
 msgid "Merged customer"
 msgstr ""
 
-#: weblate_web/crm/models.py:150
+#: weblate_web/crm/models.py:157
 msgid "Merged customer ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:154
+#: weblate_web/crm/models.py:161
 msgid "Merged customer email"
 msgstr ""
 
-#: weblate_web/crm/models.py:159
+#: weblate_web/crm/models.py:166
 msgid "Merged customer end client"
 msgstr ""
 
-#: weblate_web/crm/models.py:168
+#: weblate_web/crm/models.py:175
 msgid "Filename"
 msgstr "Nom del fitxer"
 
-#: weblate_web/crm/models.py:171
+#: weblate_web/crm/models.py:178
 msgid "Ticket ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:172
+#: weblate_web/crm/models.py:179
 msgid "Article ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:175
+#: weblate_web/crm/models.py:182
 msgid "Attachment ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:182
+#: weblate_web/crm/models.py:189
 #, fuzzy
 #| msgid "Automatic renewal"
 msgid "Automated"
 msgstr "Renovació automàtica"
 
-#: weblate_web/crm/models.py:183
+#: weblate_web/crm/models.py:190
 msgid "Error code"
 msgstr ""
 
-#: weblate_web/crm/models.py:184
+#: weblate_web/crm/models.py:191
 msgid "Error message"
 msgstr "Missatge d’error"
 
-#: weblate_web/crm/models.py:191
+#: weblate_web/crm/models.py:198
+#: weblate_web/crm/templates/invoices/invoice_detail.html:59
+#: weblate_web/crm/templates/invoices/invoice_list.html:20
+#: weblate_web/crm/templates/payments/customer_detail.html:342
+#: weblate_web/crm/templates/payments/customer_detail.html:383
+#: weblate_web/crm/templates/payments/customer_detail.html:472
 #, fuzzy
 #| msgid "Amount (EUR)"
 msgid "Amount"
 msgstr "Import (EUR)"
 
-#: weblate_web/crm/models.py:194 weblate_web/templates/hosting.html:488
+#: weblate_web/crm/models.py:201 weblate_web/templates/hosting.html:488
 #: weblate_web/templates/support.html:173
 msgid "Payment"
 msgstr "Pagament"
 
-#: weblate_web/crm/models.py:200
+#: weblate_web/crm/models.py:207
 msgid "Confirmed by"
 msgstr ""
 
-#: weblate_web/crm/models.py:201
+#: weblate_web/crm/models.py:208
 msgid "Confirmed at"
 msgstr ""
 
-#: weblate_web/crm/models.py:202
+#: weblate_web/crm/models.py:209
+#: weblate_web/crm/templates/invoices/invoice_detail.html:115
+#: weblate_web/crm/templates/invoices/invoice_list.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:384
+#: weblate_web/crm/templates/payments/customer_detail.html:473
 msgid "Description"
 msgstr "Descripció"
 
-#: weblate_web/crm/models.py:211 weblate_web/templates/service.html:6
-#: weblate_web/templates/service.html:13
+#: weblate_web/crm/models.py:218
+#: weblate_web/crm/templates/payments/customer_detail.html:228
+#: weblate_web/crm/templates/weblate_web/service_detail.html:19
+#: weblate_web/crm/templates/weblate_web/service_list.html:26
+#: weblate_web/crm/templates/weblate_web/service_list.html:51
+#: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
 msgid "Service"
 msgstr "Servei"
 
-#: weblate_web/crm/models.py:218
+#: weblate_web/crm/models.py:225
 #, fuzzy
 #| msgid "Previous window"
 msgid "Previous maintenance window"
 msgstr "Finestra anterior"
 
-#: weblate_web/crm/models.py:224
-#: weblate_web/crm/templates/weblate_web/service_detail.html:41
+#: weblate_web/crm/models.py:231
+#: weblate_web/crm/templates/weblate_web/service_detail.html:142
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:747
+#: weblate_web/models.py:750
 msgid "Maintenance window"
 msgstr ""
 
-#: weblate_web/crm/models.py:228
+#: weblate_web/crm/models.py:235
 #, fuzzy
 #| msgid "Server URL"
 msgid "Service URL"
 msgstr "URL del servidor"
 
-#: weblate_web/crm/templates/crm/income.html:16
-msgid "Back to"
-msgstr "Torna a"
+#: weblate_web/crm/templates/crm/base.html:12
+msgid "Internal Weblate customer relationship management."
+msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:16
-msgid "yearly view"
-msgstr "vista anual"
+#: weblate_web/crm/templates/crm/base.html:34
+#, fuzzy
+#| msgid "Displaying context"
+msgid "Skip to main content"
+msgstr "Visualització del context"
 
-#: weblate_web/crm/templates/crm/income.html:22
-msgid "Year"
-msgstr "Any"
+#: weblate_web/crm/templates/crm/base.html:46
+msgid "Toggle navigation"
+msgstr "Commuta la navegació"
 
-#: weblate_web/crm/templates/crm/income.html:40
-#: weblate_web/crm/templates/crm/income.html:113
-msgid "Income by Category"
-msgstr "Ingressos per categoria"
+#: weblate_web/crm/templates/crm/base.html:47
+msgid "Menu"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:42
-msgid "Total Income"
+#: weblate_web/crm/templates/crm/base.html:50
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "CRM navigation"
+msgstr "Commuta la navegació"
+
+#: weblate_web/crm/templates/crm/base.html:52
+msgid "Dashboard"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:55
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer records"
+msgstr "Atenció al client i vendes"
+
+#: weblate_web/crm/templates/crm/base.html:56
+#: weblate_web/crm/templates/crm/index.html:11
+#: weblate_web/crm/templates/crm/index.html:17
+#: weblate_web/crm/templates/crm/index.html:18
+#: weblate_web/crm/templates/crm/interaction_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:7
+#: weblate_web/crm/templates/payments/customer_merge.html:7
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customers"
+msgstr "Personalitzat"
+
+#: weblate_web/crm/templates/crm/base.html:60
+#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/weblate_web/service_detail.html:7
+#: weblate_web/crm/templates/weblate_web/service_list.html:44
+#: weblate_web/crm/templates/weblate_web/service_list.html:72
+#, fuzzy
+#| msgid "Service"
+msgid "Services"
+msgstr "Servei"
+
+#: weblate_web/crm/templates/crm/base.html:64
+#: weblate_web/crm/templates/crm/index.html:87
+#: weblate_web/crm/templates/crm/index.html:93
+#: weblate_web/crm/templates/crm/index.html:94
+#: weblate_web/crm/templates/invoices/invoice_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:31
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Invoices"
+msgstr "Emet una factura nova"
+
+#: weblate_web/crm/templates/crm/base.html:68
+#: weblate_web/crm/templates/crm/index.html:190
+#: weblate_web/crm/templates/crm/index.html:191
+#, fuzzy
+#| msgid "Total Income"
+msgid "Income"
 msgstr "Ingressos totals"
 
-#: weblate_web/crm/templates/crm/income.html:53
+#: weblate_web/crm/templates/crm/base.html:73
+msgid "Website"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:74
+msgid "Admin"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:78
+#: weblate_web/templates/base.html:92
+msgid "Sign out"
+msgstr "Tanca la sessió"
+
+#: weblate_web/crm/templates/crm/base.html:87
+msgid "Breadcrumbs"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:88
+msgid "CRM"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:107
+msgid "Messages"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:12
+#, python-format
+msgid "Back to %(current_year)s yearly view"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:17
+#, fuzzy
+#| msgid "Income by Category"
+msgid "Income years"
+msgstr "Ingressos per categoria"
+
+#: weblate_web/crm/templates/crm/income.html:29
+#, fuzzy, python-format
+#| msgid "Income by Category (Full Year)"
+msgid "Income by Category - %(current_year)s/%(month)s"
+msgstr "Ingressor per categoria (any sencer)"
+
+#: weblate_web/crm/templates/crm/income.html:31
+#, python-format
+msgid "Total Income - %(current_year)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:39
 msgid "Rolling trend"
 msgstr "Tendència en marxa"
 
-#: weblate_web/crm/templates/crm/income.html:56
+#: weblate_web/crm/templates/crm/income.html:43
 msgid "Window ending"
 msgstr "Fi de finestra"
 
-#: weblate_web/crm/templates/crm/income.html:60
+#: weblate_web/crm/templates/crm/income.html:49
 msgid "Window size"
 msgstr "Mida de la finestra"
 
-#: weblate_web/crm/templates/crm/income.html:62
-#: weblate_web/crm/templates/crm/income.html:156
+#: weblate_web/crm/templates/crm/income.html:51
+#: weblate_web/crm/templates/crm/income.html:159
 #, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
 msgstr[0] "%(months)s mes"
 msgstr[1] "%(months)s mesos"
 
-#: weblate_web/crm/templates/crm/income.html:66
+#: weblate_web/crm/templates/crm/income.html:55
 msgid "Current window"
 msgstr "Finestra actual"
 
-#: weblate_web/crm/templates/crm/income.html:70
+#: weblate_web/crm/templates/crm/income.html:61
 msgid "Previous window"
 msgstr "Finestra anterior"
 
-#: weblate_web/crm/templates/crm/income.html:74
+#: weblate_web/crm/templates/crm/income.html:67
 msgid "Change"
 msgstr "Canvia"
 
-#: weblate_web/crm/templates/crm/income.html:93
+#: weblate_web/crm/templates/crm/income.html:85
 msgid "Daily Income"
 msgstr "Ingressos diaris"
 
-#: weblate_web/crm/templates/crm/income.html:95
+#: weblate_web/crm/templates/crm/income.html:87
 msgid "Monthly Income with Category Breakdown"
 msgstr "Ingressos mensuals amb desglossament per categories"
 
-#: weblate_web/crm/templates/crm/income.html:106
+#: weblate_web/crm/templates/crm/income.html:100
 msgid "Category Distribution"
 msgstr "Distribució per categories"
 
-#: weblate_web/crm/templates/crm/income.html:116
-#: weblate_web/crm/templates/crm/income.html:196
+#: weblate_web/crm/templates/crm/income.html:108
+#, fuzzy
+#| msgid "Category"
+msgid "Category income"
+msgstr "Categoria"
+
+#: weblate_web/crm/templates/crm/income.html:115
+#: weblate_web/crm/templates/crm/income.html:205
 msgid "Category"
 msgstr "Categoria"
 
-#: weblate_web/crm/templates/crm/income.html:117
-#: weblate_web/crm/templates/crm/income.html:141
-#: weblate_web/crm/templates/crm/income.html:197
+#: weblate_web/crm/templates/crm/income.html:116
+#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:206
 msgid "Amount (EUR)"
 msgstr "Import (EUR)"
 
-#: weblate_web/crm/templates/crm/income.html:128
-#: weblate_web/crm/templates/crm/income.html:181
+#: weblate_web/crm/templates/crm/income.html:127
+#: weblate_web/crm/templates/crm/income.html:186
+#: weblate_web/crm/templates/invoices/invoice_detail.html:118
 msgid "Total"
 msgstr "Total"
 
-#: weblate_web/crm/templates/crm/income.html:137
-msgid "Monthly Breakdown"
-msgstr "Desglossament mensual"
+#: weblate_web/crm/templates/crm/income.html:136
+#, fuzzy
+#| msgid "Total Income"
+msgid "Monthly income"
+msgstr "Ingressos totals"
 
-#: weblate_web/crm/templates/crm/income.html:140
+#: weblate_web/crm/templates/crm/income.html:143
 msgid "Month"
 msgstr "Mes"
 
-#: weblate_web/crm/templates/crm/income.html:142
+#: weblate_web/crm/templates/crm/income.html:145
 msgid "Rolling window"
 msgstr "Finestra mòbil"
 
-#: weblate_web/crm/templates/crm/income.html:143
+#: weblate_web/crm/templates/crm/income.html:146
 msgid "Trend"
 msgstr "Tendència"
 
-#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:147
+#: weblate_web/crm/templates/invoices/invoice_list.html:23
+#: weblate_web/crm/templates/payments/customer_detail.html:165
+#: weblate_web/crm/templates/payments/customer_detail.html:234
+#: weblate_web/crm/templates/payments/customer_detail.html:300
+#: weblate_web/crm/templates/payments/customer_detail.html:343
+#: weblate_web/crm/templates/payments/customer_detail.html:386
+#: weblate_web/crm/templates/payments/customer_detail.html:423
+#: weblate_web/crm/templates/payments/customer_detail.html:474
+#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:32
+#: weblate_web/crm/templates/weblate_web/service_list.html:60
 msgid "Actions"
 msgstr "Accions"
 
-#: weblate_web/crm/templates/crm/income.html:176
+#: weblate_web/crm/templates/crm/income.html:180
 msgid "View details"
 msgstr "Mostra’n els detalls"
 
-#: weblate_web/crm/templates/crm/income.html:193
-msgid "Income by Category (Full Year)"
-msgstr "Ingressor per categoria (any sencer)"
+#: weblate_web/crm/templates/crm/income.html:198
+msgid "Yearly category income"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:29
-#: weblate_web/crm/templates/crm/index.html:70
-#: weblate_web/crm/templates/crm/index.html:91
-#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/crm/index.html:19
+msgid "All customer records and billing contacts."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:23
+#: weblate_web/crm/templates/crm/index.html:99
+#: weblate_web/crm/templates/crm/index.html:112
+#: weblate_web/crm/templates/crm/index.html:142
 msgid "Add"
 msgstr "Afegeix"
 
-#: weblate_web/crm/templates/crm/index.html:38
-#: weblate_web/crm/templates/crm/index.html:51
-#: weblate_web/crm/templates/crm/index.html:79
-#: weblate_web/crm/templates/crm/index.html:100
-#: weblate_web/crm/templates/crm/index.html:113
-#: weblate_web/crm/templates/crm/index.html:139
-#: weblate_web/crm/templates/crm/index.html:152
-#: weblate_web/crm/templates/crm/index.html:165
-#: weblate_web/crm/templates/crm/index.html:178
-#: weblate_web/crm/templates/crm/index.html:191
-#: weblate_web/crm/templates/crm/index.html:209
-msgid "View"
-msgstr "Mostra"
+#: weblate_web/crm/templates/crm/index.html:30
+#: weblate_web/crm/templates/crm/index.html:31
+#, fuzzy
+#| msgid "Add a user"
+msgid "Active customers"
+msgstr "Afegeix un usuari"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:15
+#: weblate_web/crm/templates/crm/index.html:32
+msgid "Customers with current services or payments."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:41
+msgid "Follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:47
+#: weblate_web/crm/templates/crm/index.html:48
+msgid "All follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:49
+msgid "Customers with scheduled next actions."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:57
+#, python-format
+msgid "Due %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:65
+msgid "No due follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:66
+msgid "No customer follow-up is due right now."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:75
+#, python-format
+msgid "Upcoming %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:95
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issued invoices and receipts."
+msgstr "Emet una factura nova"
+
+#: weblate_web/crm/templates/crm/index.html:106
+#: weblate_web/crm/templates/crm/index.html:107
+msgid "Quotes"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:108
+msgid "Draft offers and renewal quotes."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:119
+#: weblate_web/crm/templates/crm/index.html:120
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Unpaid invoices"
+msgstr "Baixa la factura"
+
+#: weblate_web/crm/templates/crm/index.html:121
+msgid "Invoices that still need payment follow-up."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:136
+#: weblate_web/crm/templates/crm/index.html:137
+#, fuzzy
+#| msgid "Available services"
+msgid "All services"
+msgstr "Serveis disponibles"
+
+#: weblate_web/crm/templates/crm/index.html:138
+msgid "Hosted, dedicated, and support services."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:149
+#: weblate_web/crm/templates/crm/index.html:150
+#, fuzzy
+#| msgid "Expired service"
+msgid "Expired services"
+msgstr "Servei caducat"
+
+#: weblate_web/crm/templates/crm/index.html:151
+msgid "Renewable services past their expiration date."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:157
+#: weblate_web/crm/templates/crm/index.html:158
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Dedicated hosting services"
+msgstr "Servei d’allotjament dedicat"
+
+#: weblate_web/crm/templates/crm/index.html:159
+#, fuzzy
+#| msgctxt "Package category"
+#| msgid "Dedicated hosting"
+msgid "Dedicated hosting subscriptions."
+msgstr "Allotjament dedicat"
+
+#: weblate_web/crm/templates/crm/index.html:165
+#: weblate_web/crm/templates/crm/index.html:166
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support services"
+msgstr "Assistència ampliada"
+
+#: weblate_web/crm/templates/crm/index.html:167
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support subscriptions."
+msgstr "Assistència ampliada"
+
+#: weblate_web/crm/templates/crm/index.html:173
+#: weblate_web/crm/templates/crm/index.html:174
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support services"
+msgstr "Assistència premium"
+
+#: weblate_web/crm/templates/crm/index.html:175
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support subscriptions."
+msgstr "Assistència premium"
+
+#: weblate_web/crm/templates/crm/index.html:184
+msgid "Income tracking"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:192
+msgid "Yearly and monthly income breakdowns."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:14
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interaction"
+msgstr "API d’integració"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:418
+#: weblate_web/crm/templates/weblate_web/service_detail.html:275
 msgid "Timestamp"
 msgstr "Marca de temps"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:19
+#: weblate_web/crm/templates/crm/interaction_detail.html:24
+#: weblate_web/crm/templates/invoices/invoice_list.html:22
+#: weblate_web/crm/templates/payments/customer_detail.html:39
+#: weblate_web/crm/templates/payments/customer_detail.html:229
+#: weblate_web/crm/templates/payments/customer_detail.html:385
+#: weblate_web/crm/templates/payments/customer_list.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:23
+#: weblate_web/crm/templates/weblate_web/service_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:52
 #, fuzzy
 #| msgctxt "Hosting plan"
 #| msgid "Custom"
 msgid "Customer"
 msgstr "Personalitzat"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:25
+#: weblate_web/crm/templates/crm/interaction_detail.html:30
+#: weblate_web/crm/templates/payments/customer_detail.html:419
 msgid "User"
 msgstr "Usuari"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:29
+#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/payments/customer_detail.html:420
 msgid "Origin"
 msgstr "Origen"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/crm/interaction_detail.html:47
+#: weblate_web/crm/templates/payments/customer_list.html:47
+#: weblate_web/crm/templates/weblate_web/service_list_content.html:28
 msgid "Details"
 msgstr "Detalls"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:63
+#: weblate_web/crm/templates/crm/interaction_detail.html:77
+#: weblate_web/crm/templates/payments/customer_detail.html:422
 #, fuzzy
 #| msgid "Contact"
 msgid "Content"
 msgstr "Contacte"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:65
+#: weblate_web/crm/templates/crm/interaction_detail.html:80
 #, fuzzy
 #| msgid "Translation context"
 msgid "Interaction content"
 msgstr "Context de la traducció"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/crm/templates/crm/pagination.html:4
+#, fuzzy
+#| msgid "Documentation"
+msgid "Pagination"
+msgstr "Documentació"
+
+#: weblate_web/crm/templates/crm/pagination.html:7
+msgid "First"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:8
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous"
+msgstr "Finestra anterior"
+
+#: weblate_web/crm/templates/crm/pagination.html:12
+#, python-format
+msgid "Page %(page)s of %(pages)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:16
+#, fuzzy
+#| msgid "Next step"
+msgid "Next"
+msgstr "Pas següent"
+
+#: weblate_web/crm/templates/crm/pagination.html:17
+msgid "Last"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/empty.html:8
+msgid "No records found."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:5
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue final invoice?"
+msgstr "Emet una factura nova"
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:7
+msgid "This creates a final invoice. Use Quote if you only need an offer."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:10
+#: weblate_web/crm/templates/payments/customer_merge.html:38
+msgid "Cancel"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:11
+#: weblate_web/crm/templates/invoices/invoice_detail.html:177
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice"
+msgstr "Emet una factura nova"
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:4
+#: weblate_web/crm/templates/invoices/invoice_list.html:19
+#: weblate_web/crm/templates/payments/customer_detail.html:299
+#: weblate_web/crm/templates/payments/customer_detail.html:382
+msgid "Kind"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:14
+msgid "Create a draft offer without issuing a final invoice."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:24
+msgid "Create a final invoice after confirmation."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/search_form.html:11
+msgid "Clear"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:14
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:34
+#: weblate_web/crm/templates/payments/customer_detail.html:310
+#: weblate_web/crm/templates/payments/customer_detail.html:444
 #: weblate_web/templates/hosting.html:289
 #: weblate_web/templates/payment/customer-agreement.html:35
 #: weblate_web/templates/payment/customer-agreement.html:56
@@ -363,185 +789,748 @@ msgstr "Context de la traducció"
 msgid "Download"
 msgstr "Baixa"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+#: weblate_web/crm/templates/invoices/invoice_detail.html:16
 msgid "Receipt"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:55
+#: weblate_web/crm/templates/invoices/invoice_detail.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:13
+msgid "Edit in admin"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:33
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:10
+msgid "Paid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:35
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:13
+msgid "Unpaid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:41
+#: weblate_web/crm/templates/invoices/invoice_list.html:17
+#: weblate_web/crm/templates/payments/customer_detail.html:380
+#, fuzzy
+#| msgid "D-U-N-S Number"
+msgid "Number"
+msgstr "Número D-U-N-S"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:47
+msgid "Issued"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:53
+msgid "Due"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:66
+#, fuzzy
+#| msgid "Discover"
+msgid "Discount"
+msgstr "Descobriu"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:74
+msgid "Generated from"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+msgid "Followup as"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:90
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer reference"
+msgstr "Atenció al client i vendes"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:98
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer note"
+msgstr "Personalitzat"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:108
+msgid "Invoice items"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:116
+msgid "Quantity"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:117
+#, fuzzy
+#| msgid "Pricing"
+msgid "Price"
+msgstr "Tarifes"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:142
+#: weblate_web/crm/templates/invoices/invoice_detail.html:149
+msgid "Confirm refund done"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:144
+msgid "Use this after the refund or chargeback has been completed."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:161
+#: weblate_web/crm/templates/invoices/invoice_detail.html:169
+msgid ""
+"This creates a final invoice matching this quote. Use Download if you only "
+"need the quote PDF."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:167
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue invoice from quote"
+msgstr "Emet una factura nova"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:9
+msgid "Invoice list"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:232
+#: weblate_web/crm/templates/payments/customer_detail.html:381
+#: weblate_web/crm/templates/weblate_web/service_detail.html:163
+#: weblate_web/crm/templates/weblate_web/service_list.html:30
+#: weblate_web/crm/templates/weblate_web/service_list.html:55
+msgid "Status"
+msgstr "Estat"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:32
+msgid "No invoices match the current filters."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:16
+msgid "Overdue"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:31
+#: weblate_web/crm/templates/payments/customer_detail.html:441
+msgid "View"
+msgstr "Mostra"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:14
+msgid "View in Zammad"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:22
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer sections"
+msgstr "Personalitza la visualització"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:25
+#, fuzzy
+#| msgid "Service"
+msgid "Overview"
+msgstr "Servei"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:28
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interactions"
+msgstr "API d’integració"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:34
+#: weblate_web/templates/snippets/service.html:172
+#: weblate_web/templates/user.html:124
+msgid "Payments"
+msgstr "Pagaments"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:43
+#: weblate_web/payments/models.py:170
+msgid "Name"
+msgstr "Nom"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:49
+#, fuzzy
+#| msgid "Notification"
+msgid "Notification e-mails"
+msgstr "Notificació"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:56
+#: weblate_web/crm/templates/payments/customer_list.html:24
+#, fuzzy
+#| msgid "VAT ID"
+msgid "VAT"
+msgstr "Identificador de l’IVA"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:61
+#, python-format
+msgid "validated on %(validated)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:64
+#, fuzzy
+#| msgid "Invalid image!"
+msgid "not validated"
+msgstr "Imatge no vàlida!"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:70
+#: weblate_web/payments/models.py:179
+msgid "Address"
+msgstr "Adreça"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:77
+#: weblate_web/crm/templates/payments/customer_list.html:26
+#: weblate_web/payments/models.py:199
+msgid "Country"
+msgstr "País"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:84
+#: weblate_web/crm/templates/payments/customer_list.html:18
+msgid "End client"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:92
+#: weblate_web/payments/models.py:211
+#, fuzzy
+#| msgid "Contact"
+msgid "Contact point"
+msgstr "Contacte"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:100
+#: weblate_web/payments/models.py:219
+#, fuzzy
+#| msgid "Donation recurrence"
+msgid "Accounting reference"
+msgstr "Recurrència del donatiu"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:108
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment reminder"
+msgstr "Targeta de pagament"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:110
+#, python-format
+msgid "Additional notification %(days)s day before due date"
+msgid_plural "Additional notification %(days)s days before due date"
+msgstr[0] ""
+msgstr[1] ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:118
+#: weblate_web/crm/templates/payments/customer_list.html:21
+msgid "Follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:123
+#, python-format
+msgid "Next follow-up: %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:128
+msgid "No follow-up scheduled."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:133
+msgid "Set follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:152
+msgid "Save follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:157
+msgid "Clear follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:171
+#, fuzzy
+#| msgid "Add server to Discover Weblate"
+msgid "Merge customer"
+msgstr "Afegeix el servidor a Descobriu el Weblate"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:179
+#: weblate_web/crm/templates/payments/customer_merge.html:12
+msgid "Review merge"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:186
+#, fuzzy
+#| msgid "Add server to Discover Weblate"
+msgid "Add user to customer"
+msgstr "Afegeix el servidor a Descobriu el Weblate"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:193
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add user"
+msgstr "Afegeix un usuari"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:199
+#: weblate_web/crm/templates/payments/customer_detail.html:213
+msgid "Add note"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:220
+#, fuzzy
+#| msgid "Hosted service"
+msgid "Customer services"
+msgstr "Servei allotjat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:230
+#: weblate_web/crm/templates/weblate_web/service_detail.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:28
+#: weblate_web/crm/templates/weblate_web/service_list.html:53
+msgid "URL"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:231
+#: weblate_web/crm/templates/weblate_web/service_list.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:54
+#, fuzzy
+#| msgid "Version Control"
+msgid "Version"
+msgstr "Control de versions"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:233
+#: weblate_web/crm/templates/weblate_web/service_list.html:31
+#: weblate_web/crm/templates/weblate_web/service_list.html:59
+msgid "Packages"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:243
+msgid ""
+"This creates a final invoice for the new service. Use Quote if you only need "
+"an offer."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:249
+#, fuzzy
+#| msgid "View service status."
+msgid "New service purchase"
+msgstr "Mostra l’estat del servei."
+
+#: weblate_web/crm/templates/payments/customer_detail.html:281
+#: weblate_web/crm/templates/weblate_web/service_detail.html:205
+#: weblate_web/crm/templates/weblate_web/service_detail.html:232
+#, fuzzy
+#| msgid "Dedicated"
+msgid "Create"
+msgstr "Dedicat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:289
+#, fuzzy
+#| msgid "New agreement"
+msgid "Agreements"
+msgstr "Acord nou"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:294
+#, fuzzy
+#| msgid "New agreement"
+msgid "Signed agreements"
+msgstr "Acord nou"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:298
+#, fuzzy
+#| msgid "Sign in"
+msgid "Signed"
+msgstr "Inicia la sessió"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:319
+#, fuzzy
+#| msgid "New agreement"
+msgid "No agreements recorded."
+msgstr "Acord nou"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:325
+msgid "Add new agreement"
+msgstr "Afegeix un acord nou"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:331
+#, fuzzy
+#| msgid "Documentation"
+msgid "Donations"
+msgstr "Documentació"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:336
+#, fuzzy
+#| msgid "Documentation"
+msgid "Donation history"
+msgstr "Documentació"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:340
+#: weblate_web/crm/templates/payments/customer_detail.html:470
+#, fuzzy
+#| msgid "Dedicated"
+msgid "Created"
+msgstr "Dedicat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:341
+msgid "Reward"
+msgstr "Recompensa"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:354
+#: weblate_web/crm/templates/payments/customer_detail.html:486
 #: weblate_web/templates/payment/customer-agreement.html:18
 #: weblate_web/templates/payment/payment.html:70
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "Edita"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:72
-#: weblate_web/crm/templates/invoices/invoice_detail.html:77
-msgid "Confirm refund done"
+#: weblate_web/crm/templates/payments/customer_detail.html:363
+#, fuzzy
+#| msgid "Donations"
+msgid "No donations recorded."
+msgstr "Donatius"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:371
+msgid "Invoice history"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:73
-msgid "Use this after the refund or chargeback has been completed."
+#: weblate_web/crm/templates/payments/customer_detail.html:395
+msgid "No invoices recorded."
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:82
-#: weblate_web/crm/templates/invoices/invoice_detail.html:96
-#, fuzzy
-#| msgid "Issue new invoice"
-msgid "Issue invoice"
-msgstr "Emet una factura nova"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:84
-#, fuzzy
-#| msgid "Issue new invoice"
-msgid "Issue invoice from quote"
-msgstr "Emet una factura nova"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:86
-msgid ""
-"This creates a final invoice matching this quote. Use Download if you only "
-"need the quote PDF."
-msgstr ""
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:93
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
-#: weblate_web/crm/templates/weblate_web/service_detail.html:109
-msgid "I confirm that I want to issue a final invoice."
-msgstr ""
-
-#: weblate_web/crm/templates/payments/customer_detail.html:57
-#, fuzzy
-#| msgid "Add server to Discover Weblate"
-msgid "Add user to customer"
-msgstr "Afegeix el servidor a Descobriu el Weblate"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:60
-#, fuzzy
-#| msgid "Add a user"
-msgid "Add user"
-msgstr "Afegeix un usuari"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:88
-msgid "Add new agreement"
-msgstr "Afegeix un acord nou"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:109
+#: weblate_web/crm/templates/payments/customer_detail.html:402
 msgid "Issue new invoice"
 msgstr "Emet una factura nova"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:115
-msgid "Add note"
+#: weblate_web/crm/templates/payments/customer_detail.html:410
+#, fuzzy
+#| msgid "Translation context"
+msgid "Interaction history"
+msgstr "Context de la traducció"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:421
+#, fuzzy
+#| msgid "Payment Summary"
+msgid "Summary"
+msgstr "Resum del pagament"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:454
+#, fuzzy
+#| msgid "Translation context"
+msgid "No interactions recorded."
+msgstr "Context de la traducció"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:462
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment history"
+msgstr "S’ha produït un error de pagament"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:471
+msgid "State"
+msgstr "Estat"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:495
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Pagament rebutjat"
+
+#: weblate_web/crm/templates/payments/customer_list.html:9
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer list"
+msgstr "Personalitza la visualització"
+
+#: weblate_web/crm/templates/payments/customer_list.html:22
+#, fuzzy
+#| msgid "Notification"
+msgid "Next action"
+msgstr "Notificació"
+
+#: weblate_web/crm/templates/payments/customer_list.html:25
+#: weblate_web/payments/models.py:190
+msgid "City"
+msgstr "Ciutat"
+
+#: weblate_web/crm/templates/payments/customer_list.html:56
+#, fuzzy
+#| msgid "No servers matched your search."
+msgid "No customers match the current filters."
+msgstr "No hi ha cap servidor que coincideixi amb la vostra cerca."
+
+#: weblate_web/crm/templates/payments/customer_merge.html:17
+msgid "will be merged into"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:47
+#: weblate_web/crm/templates/payments/customer_merge.html:22
+#, python-format
+msgid ""
+"All content from %(source)s (%(source_pk)s) will be moved to %(target)s "
+"(%(target_pk)s)"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:27
+#, python-format
+msgid "%(source)s (%(source_pk)s) will be removed"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:36
+msgid "Merge"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:33
+msgid "locked"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:38
+#, fuzzy
+#| msgid "Go Weblate!"
+msgid "Weblate"
+msgstr "Entra al Weblate!"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:44
+#: weblate_web/crm/templates/weblate_web/service_detail.html:279
+#: weblate_web/templates/snippets/customer-users.html:3
+msgid "Users"
+msgstr "Usuaris"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:50
+#: weblate_web/crm/templates/weblate_web/service_detail.html:280
+#, fuzzy
+#| msgctxt "Hosting plan parameter"
+#| msgid "Projects"
+msgid "Projects"
+msgstr "Projectes"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:56
+#, fuzzy
+#| msgid "Support portal"
+msgid "Support status"
+msgstr "Portal d’assistència"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:64
+#, fuzzy
+#| msgid "Activation token"
+msgid "Activation key"
+msgstr "Testimoni d’activació"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+#: weblate_web/crm/templates/weblate_web/service_detail.html:98
+msgid "Copied"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid "Copy failed"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:70
+#: weblate_web/crm/templates/weblate_web/service_detail.html:71
+#, fuzzy
+#| msgid "Activation token"
+msgid "Copy activation key"
+msgstr "Testimoni d’activació"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:94
+#, fuzzy
+#| msgid "Backups"
+msgid "Backup"
+msgstr "Còpies de seguretat"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:100
+#: weblate_web/crm/templates/weblate_web/service_detail.html:101
+msgid "Copy backup SSH URL"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:119
+#, python-format
+msgid "%(size)s in %(directory)s"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:126
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable"
+msgstr "Descobriu"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:151
 #, fuzzy
 #| msgid "System maintenance"
 msgid "Update maintenance window"
 msgstr "Manteniment del sistema"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:63
-#, fuzzy
-#| msgid "Get a quote"
-msgid "Issue renewal quote"
-msgstr "Obtén un pressupost"
+#: weblate_web/crm/templates/weblate_web/service_detail.html:166
+#: weblate_web/templates/user.html:59
+msgid "Active"
+msgstr "Actiu"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:66
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
+#: weblate_web/crm/templates/weblate_web/service_detail.html:168
 #, fuzzy
-#| msgid "Issue new invoice"
-msgid "Issue renewal invoice"
-msgstr "Emet una factura nova"
+#| msgid "Service Status"
+msgid "Service is terminated"
+msgstr "Estat dels serveis"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+#: weblate_web/crm/templates/weblate_web/service_detail.html:173
+#, fuzzy
+#| msgid "Expired"
+msgid "Expires"
+msgstr "Caducat"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:180
+msgid "Edit subscription in admin"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:185
+#, fuzzy
+#| msgid "Merchandise"
+msgid "Purchases"
+msgstr "Marxandatge"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:187
 msgid ""
-"This creates a final invoice for the renewal. Use the renewal quote action "
-"if you only need a quote."
+"This creates a final invoice for the renewal. Use Quote if you only need an "
+"offer."
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:86
-#, python-format
+#: weblate_web/crm/templates/weblate_web/service_detail.html:210
+#, fuzzy, python-format
+#| msgid "Upgrade to %s"
+msgid "Upgrade to %(package)s"
+msgstr "Actualitzeu a %s"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:211
+msgid "For the rest of the current period."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:212
 msgid ""
-"Upgrade to %(package)s without extending the current subscription period."
+"This creates a final invoice for the upgrade. Use Quote if you only need an "
+"offer."
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:94
+#: weblate_web/crm/templates/weblate_web/service_detail.html:243
 #, fuzzy
-#| msgid "Get a quote"
-msgid "Issue upgrade quote"
-msgstr "Obtén un pressupost"
+#| msgid "Description"
+msgid "Disable subscription"
+msgstr "Descripció"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:97
-#: weblate_web/crm/templates/weblate_web/service_detail.html:112
-#, fuzzy
-#| msgid "Issue new invoice"
-msgid "Issue upgrade invoice"
-msgstr "Emet una factura nova"
-
-#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+#: weblate_web/crm/templates/weblate_web/service_detail.html:250
 msgid ""
-"This creates a final invoice for the upgrade. Use the upgrade quote action "
-"if you only need a quote."
+"Disable the subscription, no payments will be reminded or triggered, "
+"<strong>backups will be removed once subscription expires</strong>"
 msgstr ""
 
-#: weblate_web/crm/views.py:95
-msgid "Please confirm that you want to issue a final invoice."
-msgstr ""
+#: weblate_web/crm/templates/weblate_web/service_detail.html:258
+#, fuzzy
+#| msgid "Disable renewal"
+msgid "Disable"
+msgstr "Desactiva la renovació"
 
-#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
-#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
-#: weblate_web/views.py:1077 weblate_web/views.py:1089
-msgid "This subscription can not be upgraded to the selected package."
-msgstr ""
+#: weblate_web/crm/templates/weblate_web/service_detail.html:268
+#, fuzzy
+#| msgid "Exceeding service limits"
+msgid "Recent service reports"
+msgstr "Supereu els límits del servei"
 
-#: weblate_web/crm/views.py:638
+#: weblate_web/crm/templates/weblate_web/service_detail.html:276
+#, fuzzy
+#| msgid "Server URL"
+msgid "Site URL"
+msgstr "URL del servidor"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:277
+#, fuzzy
+#| msgid "Subtitle files"
+msgid "Site title"
+msgstr "Fitxers de subtítols"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:278
+#, fuzzy
+#| msgid "Weblate heroism"
+msgid "Weblate version"
+msgstr "Heroisme del Weblate"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:281
+#: weblate_web/templates/hosting.html:319
+#: weblate_web/templates/hosting.html:490
+msgid "Hosted strings"
+msgstr "Cadenes allotjades"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:57
+#, fuzzy
+#| msgid "System maintenance"
+msgid "Maintenance"
+msgstr "Manteniment del sistema"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:74
+#, fuzzy
+#| msgid "No servers matched your search."
+msgid "No services match the current filters."
+msgstr "No hi ha cap servidor que coincideixi amb la vostra cerca."
+
+#: weblate_web/crm/views.py:719
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 
-#: weblate_web/crm/views.py:652
+#: weblate_web/crm/views.py:733
 msgid "Hosted user was not linked."
 msgstr ""
 
-#: weblate_web/crm/views.py:655
+#: weblate_web/crm/views.py:736
 msgid "Hosted user is already linked to a different local user."
 msgstr ""
 
-#: weblate_web/crm/views.py:662
+#: weblate_web/crm/views.py:743
 #, fuzzy
 #| msgid "Add a user"
 msgid "Added customer user"
 msgstr "Afegeix un usuari"
 
-#: weblate_web/crm/views.py:664
+#: weblate_web/crm/views.py:745
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:668
+#: weblate_web/crm/views.py:749
 #, fuzzy
 #| msgid "Dedicated"
 msgid "created"
 msgstr "Dedicat"
 
-#: weblate_web/crm/views.py:670
+#: weblate_web/crm/views.py:751
 msgid "linked"
 msgstr ""
 
-#: weblate_web/crm/views.py:697
+#: weblate_web/crm/views.py:778
 msgid "Multiple local users use this e-mail address"
 msgstr ""
 
-#: weblate_web/crm/views.py:725
+#: weblate_web/crm/views.py:806
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr ""
 
-#: weblate_web/crm/views.py:732
+#: weblate_web/crm/views.py:813
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr ""
 
-#: weblate_web/crm/views.py:737
+#: weblate_web/crm/views.py:818
 #, python-format
 msgid "%(email)s is already a customer user."
+msgstr ""
+
+#: weblate_web/crm/views.py:863
+#, python-format
+msgid "Follow-up scheduled for %(date)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:870
+msgid "Follow-up set"
+msgstr ""
+
+#: weblate_web/crm/views.py:875
+msgid "Follow-up updated."
+msgstr ""
+
+#: weblate_web/crm/views.py:889
+msgid "Follow-up cleared"
+msgstr ""
+
+#: weblate_web/crm/views.py:890 weblate_web/crm/views.py:894
+msgid "Follow-up cleared."
 msgstr ""
 
 #: weblate_web/fake.py:25
@@ -554,27 +1543,27 @@ msgstr ""
 "lliures i privats. I del Weblate mateix! Estimeu el programari lliure? Aquí "
 "hi teniu possibilitats sense límits de col·laborar-hi!"
 
-#: weblate_web/forms.py:88
+#: weblate_web/forms.py:98
 msgid "Insufficient donation for selected reward!"
 msgstr "La donació no és suficient per a la recompensa seleccionada."
 
-#: weblate_web/invoices/models.py:209
+#: weblate_web/invoices/models.py:210
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/invoices/models.py:211 weblate_web/invoices/models.py:213
+#: weblate_web/invoices/models.py:212 weblate_web/invoices/models.py:214
 msgid "Account number"
 msgstr "Número de compte"
 
-#: weblate_web/invoices/models.py:215
+#: weblate_web/invoices/models.py:216
 msgid "BIC/SWIFT"
 msgstr "BIC/SWIFT"
 
-#: weblate_web/invoices/models.py:217
+#: weblate_web/invoices/models.py:218
 msgid "Issuing bank"
 msgstr "Banc emissor"
 
-#: weblate_web/invoices/models.py:219
+#: weblate_web/invoices/models.py:220
 msgid "Account holder"
 msgstr "Titular del compte"
 
@@ -598,17 +1587,17 @@ msgid "Donation"
 msgstr "Documentació"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:781
+#: weblate_web/models.py:784
 msgid "Link text"
 msgstr "Text de l’enllaç"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:784
+#: weblate_web/models.py:787
 msgid "Link URL"
 msgstr "URL de l’enllaç"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:787
+#: weblate_web/models.py:790
 msgid "Link image"
 msgstr "Imatge de l’enllaç"
 
@@ -707,129 +1696,125 @@ msgstr "No s’admet el tipus d’imatge: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Pugeu una imatge amb una resolució de 570 × 260 píxels."
 
-#: weblate_web/models.py:721
+#: weblate_web/models.py:724
 msgid "Community supported"
 msgstr "Amb assistència comunitària"
 
-#: weblate_web/models.py:722
+#: weblate_web/models.py:725
 msgid "Dedicated hosted service"
 msgstr "Servei d’allotjament dedicat"
 
-#: weblate_web/models.py:723
+#: weblate_web/models.py:726
 msgid "Hosted service"
 msgstr "Servei allotjat"
 
-#: weblate_web/models.py:724 weblate_web/templates/support.html:77
+#: weblate_web/models.py:727 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Assistència bàsica per a allotjament propi"
 
-#: weblate_web/models.py:725 weblate_web/templates/support.html:90
+#: weblate_web/models.py:728 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Assistència ampliada per a allotjament propi"
 
-#: weblate_web/models.py:726 weblate_web/templates/support.html:109
+#: weblate_web/models.py:729 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Assistència premium per a allotjament propi"
 
-#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:755 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "URL del servidor"
 
-#: weblate_web/models.py:766
+#: weblate_web/models.py:769
 msgid "Server description"
 msgstr "Descripció del servidor"
 
-#: weblate_web/models.py:769
+#: weblate_web/models.py:772
 msgid "Server image"
 msgstr "Imatge del servidor"
 
-#: weblate_web/models.py:773
+#: weblate_web/models.py:776
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "Una imatge PNG o JPG amb una resolució de 570 x 260 píxels."
 
-#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1047 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Assistència bàsica"
 
-#: weblate_web/models.py:1045
+#: weblate_web/models.py:1048
 msgid "Never get held back by a problem."
 msgstr "Que no us aturi cap problema."
 
-#: weblate_web/models.py:1046
+#: weblate_web/models.py:1049
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 "Definiu una prioritat per a totes les vostres qüestions i informes d’errors."
 
-#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1051 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Obtén assistència"
 
-#: weblate_web/models.py:1060 weblate_web/models.py:1077
-#: weblate_web/models.py:1108 weblate_web/models.py:1632
+#: weblate_web/models.py:1063 weblate_web/models.py:1080
+#: weblate_web/models.py:1111 weblate_web/models.py:1635
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Actualitzeu a %s"
 
-#: weblate_web/models.py:1062
+#: weblate_web/models.py:1065
 msgid "Premium support"
 msgstr "Assistència premium"
 
-#: weblate_web/models.py:1063
+#: weblate_web/models.py:1066
 msgid "Don’t wait with your work on hold."
 msgstr "No espereu amb la feina en pausa."
 
-#: weblate_web/models.py:1064
+#: weblate_web/models.py:1067
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Us garantim respostes en el següent dia feiner com a màxim."
 
-#: weblate_web/models.py:1066
+#: weblate_web/models.py:1069
 #, fuzzy
 #| msgid "Be Premium"
 msgid "Be premium"
 msgstr "Vull ser premium"
 
-#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1082 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Assistència ampliada"
 
-#: weblate_web/models.py:1080
+#: weblate_web/models.py:1083
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr ""
 "No us conformeu amb el pla bàsic; obtingueu un paquet que us evitarà "
 "maldecaps."
 
-#: weblate_web/models.py:1081
+#: weblate_web/models.py:1084
 msgid "We will manage upgrades for you."
 msgstr "Gestionarem les actualitzacions per vós."
 
-#: weblate_web/models.py:1083
+#: weblate_web/models.py:1086
 msgid "Stay updated"
 msgstr "Mantingueu-vos al dia"
 
-#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1095 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Servei de còpia de seguretat"
 
-#: weblate_web/models.py:1093
+#: weblate_web/models.py:1096
 msgid "Easily put your backups in a safe place."
 msgstr ""
 "Deseu les vostres còpies de seguretat en un lloc segur de manera fàcil."
 
-#: weblate_web/models.py:1094
+#: weblate_web/models.py:1097
 msgid "Encrypted and automatic, always available."
 msgstr "Automàtiques i xifrades, sempre disponibles."
 
-#: weblate_web/models.py:1096
+#: weblate_web/models.py:1099
 msgid "Back up daily"
 msgstr "Còpies de seguretat diàries"
 
-#: weblate_web/models.py:1109
+#: weblate_web/models.py:1112
 msgid "Increase service limits to translate more content."
 msgstr "Augmenteu els límits del servei per a traduir més contingut."
-
-#: weblate_web/models.py:1112
-msgid "Upgrade"
-msgstr "Actualitza"
 
 #: weblate_web/payments/backends.py:522
 #, fuzzy
@@ -869,45 +1854,45 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
-#: weblate_web/payments/forms.py:82
+#: weblate_web/payments/forms.py:84
 msgid "You will receive a receipt here."
 msgstr "Rebreu un rebut aquí."
 
-#: weblate_web/payments/forms.py:83
+#: weblate_web/payments/forms.py:85
 msgid "E-mail address"
 msgstr "Adreça electrònica"
 
-#: weblate_web/payments/models.py:121
+#: weblate_web/payments/models.py:135
 msgid "Unknown"
 msgstr "Desconegut"
 
-#: weblate_web/payments/models.py:122
+#: weblate_web/payments/models.py:136
 #, fuzzy
 #| msgid "Validity"
 msgid "Valid"
 msgstr "Validesa"
 
-#: weblate_web/payments/models.py:123
+#: weblate_web/payments/models.py:137
 #, fuzzy
 #| msgid "Invalid image!"
 msgid "Invalid"
 msgstr "Imatge no vàlida!"
 
-#: weblate_web/payments/models.py:130
+#: weblate_web/payments/models.py:144
 msgid "European VAT ID"
 msgstr "Identificador d’IVA europeu"
 
-#: weblate_web/payments/models.py:132
+#: weblate_web/payments/models.py:146
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Ompliu l’identificador d’IVA de la Unió Europea, o deixeu-lo en blanc si no "
 "aplica."
 
-#: weblate_web/payments/models.py:147
+#: weblate_web/payments/models.py:161
 msgid "Company identification number"
 msgstr "Número d’identificació de l’empresa"
 
-#: weblate_web/payments/models.py:149
+#: weblate_web/payments/models.py:163
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
@@ -915,48 +1900,43 @@ msgstr ""
 "Ompliu el número de registre de la vostra empresa, si cal que aparegui a la "
 "factura."
 
-#: weblate_web/payments/models.py:156
-msgid "Name"
-msgstr "Nom"
-
-#: weblate_web/payments/models.py:158
+#: weblate_web/payments/models.py:172
 msgid "Company or individual name as it should appear on the invoice."
 msgstr "Nom individual o de la companyia, com hauria d'aparéixer a la factura."
 
-#: weblate_web/payments/models.py:165
-msgid "Address"
-msgstr "Adreça"
-
-#: weblate_web/payments/models.py:170
+#: weblate_web/payments/models.py:184
 msgid "Additional address information"
 msgstr "Informació addicional de l’adreça"
 
-#: weblate_web/payments/models.py:176
-msgid "City"
-msgstr "Ciutat"
-
-#: weblate_web/payments/models.py:181
+#: weblate_web/payments/models.py:195
 msgid "Postcode"
 msgstr "Codi postal"
 
-#: weblate_web/payments/models.py:185
-msgid "Country"
-msgstr "País"
-
-#: weblate_web/payments/models.py:191
+#: weblate_web/payments/models.py:205
 msgid "Billing e-mail"
 msgstr "Adreça electrònica de facturació"
 
-#: weblate_web/payments/models.py:192
+#: weblate_web/payments/models.py:206
 msgid "Additional e-mail to receive billing notifications"
 msgstr ""
 "Adreça electrònica addicional per a rebre-hi notificacions de facturació"
 
-#: weblate_web/payments/models.py:197
+#: weblate_web/payments/models.py:213
+msgid "Person, team, or department to show as the invoice contact."
+msgstr ""
+
+#: weblate_web/payments/models.py:221
+msgid ""
+"Line-level accounting code for the customer's internal invoice processing, "
+"such as a cost center, project, internal order, or GL account. Separate from "
+"the customer reference or purchase order number."
+msgstr ""
+
+#: weblate_web/payments/models.py:229
 msgid "Additional upcoming payment notification"
 msgstr "Notificació addicional de pagament pròxim"
 
-#: weblate_web/payments/models.py:200
+#: weblate_web/payments/models.py:232
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
@@ -966,66 +1946,74 @@ msgstr ""
 "notificació de pagament extra, de 0 a {}. Definiu-lo a 0 per a fer servir "
 "només les notificacions predefinides."
 
-#: weblate_web/payments/models.py:337
+#: weblate_web/payments/models.py:244
+msgid "Date and time when this customer needs attention."
+msgstr ""
+
+#: weblate_web/payments/models.py:250
+msgid "Short description of the next action."
+msgstr ""
+
+#: weblate_web/payments/models.py:382
 msgid "The country has to match your VAT code"
 msgstr "El país ha de coincidir amb el vostre codi d’IVA"
 
-#: weblate_web/payments/models.py:345
+#: weblate_web/payments/models.py:390
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
 "Trieu un dia diferent del de les notificacions de pagament predefinides: 2 i "
 "7."
 
-#: weblate_web/payments/models.py:368
+#: weblate_web/payments/models.py:413
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
 "Trieu un dia diferent del de la notificació de pagament anual predefinit: 31."
 
-#: weblate_web/payments/models.py:584
+#: weblate_web/payments/models.py:640
 msgid "Annual"
 msgstr "Anual"
 
-#: weblate_web/payments/models.py:585
+#: weblate_web/payments/models.py:641
 msgid "Biannual"
 msgstr "Semestral"
 
-#: weblate_web/payments/models.py:586 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:642 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "Cada trimestre"
 
-#: weblate_web/payments/models.py:587 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:643 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "Cada mes"
 
-#: weblate_web/payments/models.py:588
+#: weblate_web/payments/models.py:644
 msgid "One-time"
 msgstr "Una única vegada"
 
-#: weblate_web/payments/models.py:624
+#: weblate_web/payments/models.py:685
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Pagament nou"
 
-#: weblate_web/payments/models.py:625
+#: weblate_web/payments/models.py:686
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Pagament pendent"
 
-#: weblate_web/payments/models.py:626
+#: weblate_web/payments/models.py:687
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Pagament rebutjat"
 
-#: weblate_web/payments/models.py:627
+#: weblate_web/payments/models.py:688
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Pagament acceptat"
 
-#: weblate_web/payments/models.py:628
+#: weblate_web/payments/models.py:689
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Pagament processat"
@@ -1308,6 +2296,7 @@ msgstr ""
 "del sector de la localització i al Weblate."
 
 #: weblate_web/templates/about.html:179
+#: weblate_web/templates/snippets/customer_address.html:6
 msgid "Contact"
 msgstr "Contacte"
 
@@ -1355,10 +2344,6 @@ msgstr ""
 msgctxt "Keyword"
 msgid "translate"
 msgstr "traducció"
-
-#: weblate_web/templates/base.html:92
-msgid "Sign out"
-msgstr "Tanca la sessió"
 
 #: weblate_web/templates/base.html:102
 #: weblate_web/templates/snippets/main-menu.html:51
@@ -1669,10 +2654,6 @@ msgstr "Afegiu-hi el vostre"
 #: weblate_web/templates/discover.html:33
 msgid "project name"
 msgstr "nom del projecte"
-
-#: weblate_web/templates/discover.html:35
-msgid "Search"
-msgstr "Cerca"
 
 #: weblate_web/templates/discover.html:59
 #, python-format
@@ -2790,11 +3771,6 @@ msgstr ""
 msgid "Continuous localization"
 msgstr "Localització contínua"
 
-#: weblate_web/templates/hosting.html:319
-#: weblate_web/templates/hosting.html:490
-msgid "Hosted strings"
-msgstr "Cadenes allotjades"
-
 #: weblate_web/templates/hosting.html:322
 msgid "Translation projects"
 msgstr "Projectes de traducció"
@@ -3437,10 +4413,6 @@ msgstr ""
 "Som una empresa petita de programari lliure on tothom té molt d’espai per a "
 "créixer."
 
-#: weblate_web/templates/snippets/customer-users.html:3
-msgid "Users"
-msgstr "Usuaris"
-
 #: weblate_web/templates/snippets/customer-users.html:17
 msgid "You can not remove yourself"
 msgstr "No us podeu suprimir a vós mateix"
@@ -3754,11 +4726,6 @@ msgstr "Actualitzeu al pla anual"
 msgid "and <strong>save 20%%</strong>."
 msgstr "i <strong>estalvieu un 20%%</strong>."
 
-#: weblate_web/templates/snippets/service.html:172
-#: weblate_web/templates/user.html:124
-msgid "Payments"
-msgstr "Pagaments"
-
 #: weblate_web/templates/snippets/service.html:190
 msgid "Get more Weblate"
 msgstr "Obtingueu més funcionalitats del Weblate"
@@ -4056,10 +5023,6 @@ msgstr "Enllaç"
 msgid "Edit reward"
 msgstr "Edita la recompensa"
 
-#: weblate_web/templates/user.html:59
-msgid "Active"
-msgstr "Actiu"
-
 #: weblate_web/templates/user.html:150
 msgid "Wanna see something nice here?"
 msgstr "Voleu veure alguna cosa bonica aquí?"
@@ -4282,6 +5245,33 @@ msgstr "No s’ha trobat l’usuari!"
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
 
+#~ msgid "Back to"
+#~ msgstr "Torna a"
+
+#~ msgid "yearly view"
+#~ msgstr "vista anual"
+
+#~ msgid "Year"
+#~ msgstr "Any"
+
+#~ msgid "Monthly Breakdown"
+#~ msgstr "Desglossament mensual"
+
+#, fuzzy
+#~| msgid "Get a quote"
+#~ msgid "Issue renewal quote"
+#~ msgstr "Obtén un pressupost"
+
+#, fuzzy
+#~| msgid "Get a quote"
+#~ msgid "Issue upgrade quote"
+#~ msgstr "Obtén un pressupost"
+
+#, fuzzy
+#~| msgid "Issue new invoice"
+#~ msgid "Issue upgrade invoice"
+#~ msgstr "Emet una factura nova"
+
 #, fuzzy
 #~| msgid "Issue new invoice"
 #~ msgid "Create invoice"
@@ -4473,9 +5463,6 @@ msgstr ""
 #~ "Tot és programari lliure, tot el nostre codi i les incidències són oberts "
 #~ "al públic."
 
-#~ msgid "Customer care and sales"
-#~ msgstr "Atenció al client i vendes"
-
 #~ msgid ""
 #~ "We're looking for a person who loves to speak with the people and will "
 #~ "help them in getting the most out of our product."
@@ -4651,9 +5638,6 @@ msgstr ""
 #~ msgid "monthly"
 #~ msgstr "cada mes"
 
-#~ msgid "Expired service"
-#~ msgstr "Servei caducat"
-
 #~ msgid "See all projects"
 #~ msgstr "Mostra tots els projectes"
 
@@ -4724,9 +5708,6 @@ msgstr ""
 #~ msgid "Creation date"
 #~ msgstr "Data de creació"
 
-#~ msgid "State"
-#~ msgstr "Estat"
-
 #~ msgid "Switch to yearly"
 #~ msgstr "Canvia a anual"
 
@@ -4765,9 +5746,6 @@ msgstr ""
 #, python-format
 #~ msgid "Pose questions on <a href=\"%(url)s\">Stack Overflow</a>."
 #~ msgstr "Plantegeu qüestions a <a href=\"%(url)s\">Stack Overflow</a>."
-
-#~ msgid "Reward"
-#~ msgstr "Recompensa"
 
 #~ msgid "Expiry date"
 #~ msgstr "Data d'expiració"
@@ -4910,9 +5888,6 @@ msgstr ""
 #~ msgid "Own domain"
 #~ msgstr "Domini propi"
 
-#~ msgid "Status"
-#~ msgstr "Estat"
-
 #~ msgid "Improve Weblate's user experience and make all users happier."
 #~ msgstr ""
 #~ "Milloreu l'experiència d'usuari amb el Weblate i feu que tots els usuaris "
@@ -4926,9 +5901,6 @@ msgstr ""
 #~ "El Weblate és programari lliure i copyleft amb suport de la comunitat. "
 #~ "Els subscriptors reben suport prioritari sense càrrecs addicionals. Hi ha "
 #~ "paquets d'ajuda de pagament a l'avançada disponibles per a tothom."
-
-#~ msgid "Exceeding service limits"
-#~ msgstr "Supereu els límits del servei"
 
 #~ msgid "Regenerate activation token"
 #~ msgstr "Regenera el testimoni d'activació"
@@ -5344,11 +6316,6 @@ msgstr ""
 #~ "d'usuari o utilitzeu l'usuari <code>demo</code> amb la contrasenya "
 #~ "<code>demo</code>."
 
-#, fuzzy
-#~| msgid "Donations"
-#~ msgid "Donations welcome"
-#~ msgstr "Donatius"
-
 #~ msgid "Custom features development"
 #~ msgstr "Desenvolupament de característiques personalitzades"
 
@@ -5356,9 +6323,6 @@ msgstr ""
 #~| msgid "Weblate support"
 #~ msgid "Request support"
 #~ msgstr "Suport de Weblate"
-
-#~ msgid "Renewal"
-#~ msgstr "Renovació"
 
 #~ msgid "Weblate is provided free of charge &amp; welcomes donations."
 #~ msgstr "El Weblate és gratuït, però agraeix els donatius."
@@ -5374,9 +6338,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Trieu la recompensa per al donatiu o introduïu una quantitat "
 #~ "personalitzada."
-
-#~ msgid "Donation recurrence"
-#~ msgstr "Recurrència del donatiu"
 
 #~ msgid "The minimal amount is %d EUR."
 #~ msgstr "La quantitat mínima és %d euros."
@@ -5396,9 +6357,6 @@ msgstr ""
 #~| msgid "Report issue"
 #~ msgid "Report issue to GitHub"
 #~ msgstr "Informa d'un error"
-
-#~ msgid "Disable renewal"
-#~ msgstr "Desactiva la renovació"
 
 #~ msgid "Try"
 #~ msgstr "Proveu-lo"
@@ -5748,9 +6706,6 @@ msgstr ""
 #~ "També podeu <a href=\"%(download_url)s\">baixar</a> el codi font del "
 #~ "Weblate i executar-lo als vostres sistemes. Hi ha diverses opcions per a "
 #~ "desplegar el Weblate al núvol."
-
-#~ msgid "Toggle navigation"
-#~ msgstr "Commuta la navegació"
 
 #~ msgid ""
 #~ "Weblate is <a href=\"%(github_url)s\">free software</a> and welcomes <a "

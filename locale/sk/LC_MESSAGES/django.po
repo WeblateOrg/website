@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-06-29 07:03-0500\n"
+"POT-Creation-Date: 2026-07-06 00:59-0500\n"
 "PO-Revision-Date: 2026-06-22 07:54+0000\n"
 "Last-Translator: Peter Vančo <petervanco347@gmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/weblate/website/"
@@ -37,25 +37,92 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#: weblate_web/crm/forms.py:30
+#: weblate_web/crm/forms.py:34 weblate_web/forms.py:59
+msgid "Please confirm that you want to issue a final invoice."
+msgstr "Prosím, potvrďte, že chcete vystaviť konečnú faktúru."
+
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:268
+#: weblate_web/crm/views.py:312 weblate_web/views.py:1066
+#: weblate_web/views.py:1077 weblate_web/views.py:1089
+msgid "This subscription can not be upgraded to the selected package."
+msgstr "Toto predplatné nie je možné prepnúť na vybraný balík."
+
+#: weblate_web/crm/forms.py:53
+#: weblate_web/crm/templates/crm/snippets/search_form.html:9
+#: weblate_web/templates/discover.html:35
+msgid "Search"
+msgstr "Hľadať"
+
+#: weblate_web/crm/forms.py:61
+msgid "Merge with following customer object"
+msgstr ""
+
+#: weblate_web/crm/forms.py:65
+msgid "Select a valid customer to merge into."
+msgstr ""
+
+#: weblate_web/crm/forms.py:81
+msgid "A customer can not be merged into itself."
+msgstr ""
+
+#: weblate_web/crm/forms.py:98
+#: weblate_web/crm/templates/weblate_web/service_detail.html:193
+msgid "Renewal"
+msgstr "Obnova"
+
+#: weblate_web/crm/forms.py:99 weblate_web/models.py:1115
+msgid "Upgrade"
+msgstr "Prepnúť"
+
+#: weblate_web/crm/forms.py:106
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:13
+#: weblate_web/forms.py:35
+msgid "Quote"
+msgstr ""
+
+#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:145
+#: weblate_web/crm/models.py:197
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:23
+#: weblate_web/crm/templates/invoices/invoice_detail.html:27
+#: weblate_web/forms.py:36
+msgid "Invoice"
+msgstr "Faktúra"
+
+#: weblate_web/crm/forms.py:133 weblate_web/crm/forms.py:139
+#, fuzzy
+#| msgid "Git integration"
+msgid "Missing action."
+msgstr "Integráciu s Gitom"
+
+#: weblate_web/crm/forms.py:150
 msgid "Refund description"
 msgstr "Popis vrátenia peňazí"
 
-#: weblate_web/crm/forms.py:33
+#: weblate_web/crm/forms.py:153
 msgid "Optional note describing how the refund was done."
 msgstr "Voliteľná poznámka opisujúca spôsob vrátenia peňazí."
 
-#: weblate_web/crm/forms.py:40 weblate_web/templates/snippets/service.html:119
+#: weblate_web/crm/forms.py:160 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "Poznámka"
 
-#: weblate_web/crm/forms.py:46 weblate_web/templates/about.html:182
+#: weblate_web/crm/forms.py:167 weblate_web/payments/models.py:243
+msgid "Follow-up date"
+msgstr ""
+
+#: weblate_web/crm/forms.py:175 weblate_web/payments/models.py:249
+msgid "Follow-up note"
+msgstr ""
+
+#: weblate_web/crm/forms.py:203
+#: weblate_web/crm/templates/payments/customer_list.html:19
+#: weblate_web/templates/about.html:182
 #: weblate_web/templates/snippets/customer-users.html:38
 #: weblate_web/templates/snippets/customer-users.html:40
 msgid "E-mail"
 msgstr "E-mail"
 
-#: weblate_web/crm/forms.py:47
+#: weblate_web/crm/forms.py:204
 msgid "Full name"
 msgstr "Celé meno"
 
@@ -68,155 +135,265 @@ msgstr "Neplatná odpoveď hosťovaného používateľa"
 msgid "Hosted user synchronization is disabled."
 msgstr "Synchronizácia hosťovaného používateľa je vypnutá."
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 msgid "Yes"
 msgstr "Áno"
 
-#: weblate_web/crm/models.py:66
+#: weblate_web/crm/models.py:73
 msgid "No"
 msgstr "Nie"
 
-#: weblate_web/crm/models.py:86
+#: weblate_web/crm/models.py:93
 msgid "not set"
 msgstr "nenastavené"
 
-#: weblate_web/crm/models.py:136
+#: weblate_web/crm/models.py:143
 msgid "Notification"
 msgstr "Notifikácia"
 
-#: weblate_web/crm/models.py:137
+#: weblate_web/crm/models.py:144
 msgid "Recipients"
 msgstr "Príjemcovia"
 
-#: weblate_web/crm/models.py:138 weblate_web/crm/models.py:190
-msgid "Invoice"
-msgstr "Faktúra"
-
-#: weblate_web/crm/models.py:139
-#: weblate_web/crm/templates/crm/interaction_detail.html:52
+#: weblate_web/crm/models.py:146
+#: weblate_web/crm/templates/crm/interaction_detail.html:64
 msgid "Attachment"
 msgstr "Príloha"
 
-#: weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:153
 msgid "Merged customer"
 msgstr "Zlúčený zákazník"
 
-#: weblate_web/crm/models.py:150
+#: weblate_web/crm/models.py:157
 msgid "Merged customer ID"
 msgstr "ID zlúčeného zákazníka"
 
-#: weblate_web/crm/models.py:154
+#: weblate_web/crm/models.py:161
 msgid "Merged customer email"
 msgstr "E-mail zlúčeného zákazníka"
 
-#: weblate_web/crm/models.py:159
+#: weblate_web/crm/models.py:166
 msgid "Merged customer end client"
 msgstr "Koncový klient zlúčeného zákazníka"
 
-#: weblate_web/crm/models.py:168
+#: weblate_web/crm/models.py:175
 msgid "Filename"
 msgstr "Názov súboru"
 
-#: weblate_web/crm/models.py:171
+#: weblate_web/crm/models.py:178
 msgid "Ticket ID"
 msgstr "ID požiadavky"
 
-#: weblate_web/crm/models.py:172
+#: weblate_web/crm/models.py:179
 msgid "Article ID"
 msgstr "ID článku"
 
-#: weblate_web/crm/models.py:175
+#: weblate_web/crm/models.py:182
 msgid "Attachment ID"
 msgstr "ID prílohy"
 
-#: weblate_web/crm/models.py:182
+#: weblate_web/crm/models.py:189
 msgid "Automated"
 msgstr "Automatické"
 
-#: weblate_web/crm/models.py:183
+#: weblate_web/crm/models.py:190
 msgid "Error code"
 msgstr "Kód chyby"
 
-#: weblate_web/crm/models.py:184
+#: weblate_web/crm/models.py:191
 msgid "Error message"
 msgstr "Chybová správa"
 
-#: weblate_web/crm/models.py:191
+#: weblate_web/crm/models.py:198
+#: weblate_web/crm/templates/invoices/invoice_detail.html:59
+#: weblate_web/crm/templates/invoices/invoice_list.html:20
+#: weblate_web/crm/templates/payments/customer_detail.html:342
+#: weblate_web/crm/templates/payments/customer_detail.html:383
+#: weblate_web/crm/templates/payments/customer_detail.html:472
 msgid "Amount"
 msgstr "Suma"
 
-#: weblate_web/crm/models.py:194 weblate_web/templates/hosting.html:488
+#: weblate_web/crm/models.py:201 weblate_web/templates/hosting.html:488
 #: weblate_web/templates/support.html:173
 msgid "Payment"
 msgstr "Platba"
 
-#: weblate_web/crm/models.py:200
+#: weblate_web/crm/models.py:207
 msgid "Confirmed by"
 msgstr "Potvrdené používateľom"
 
-#: weblate_web/crm/models.py:201
+#: weblate_web/crm/models.py:208
 msgid "Confirmed at"
 msgstr "Potvrdené o"
 
-#: weblate_web/crm/models.py:202
+#: weblate_web/crm/models.py:209
+#: weblate_web/crm/templates/invoices/invoice_detail.html:115
+#: weblate_web/crm/templates/invoices/invoice_list.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:384
+#: weblate_web/crm/templates/payments/customer_detail.html:473
 msgid "Description"
 msgstr "Popis"
 
-#: weblate_web/crm/models.py:211 weblate_web/templates/service.html:6
-#: weblate_web/templates/service.html:13
+#: weblate_web/crm/models.py:218
+#: weblate_web/crm/templates/payments/customer_detail.html:228
+#: weblate_web/crm/templates/weblate_web/service_detail.html:19
+#: weblate_web/crm/templates/weblate_web/service_list.html:26
+#: weblate_web/crm/templates/weblate_web/service_list.html:51
+#: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
 msgid "Service"
 msgstr "Služba"
 
-#: weblate_web/crm/models.py:218
+#: weblate_web/crm/models.py:225
 msgid "Previous maintenance window"
 msgstr "Predchádzajúce okno údržby"
 
-#: weblate_web/crm/models.py:224
-#: weblate_web/crm/templates/weblate_web/service_detail.html:41
+#: weblate_web/crm/models.py:231
+#: weblate_web/crm/templates/weblate_web/service_detail.html:142
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:747
+#: weblate_web/models.py:750
 msgid "Maintenance window"
 msgstr "Okno údržby"
 
-#: weblate_web/crm/models.py:228
+#: weblate_web/crm/models.py:235
 msgid "Service URL"
 msgstr "URL služby"
 
-#: weblate_web/crm/templates/crm/income.html:16
-msgid "Back to"
-msgstr "Späť na"
+#: weblate_web/crm/templates/crm/base.html:12
+msgid "Internal Weblate customer relationship management."
+msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:16
-msgid "yearly view"
-msgstr "ročný prehľad"
+#: weblate_web/crm/templates/crm/base.html:34
+#, fuzzy
+#| msgid "Displaying context"
+msgid "Skip to main content"
+msgstr "Zobrazenie kontextu"
 
-#: weblate_web/crm/templates/crm/income.html:22
-msgid "Year"
-msgstr "Rok"
+#: weblate_web/crm/templates/crm/base.html:46
+msgid "Toggle navigation"
+msgstr "Prepnúť navigáciu"
 
-#: weblate_web/crm/templates/crm/income.html:40
-#: weblate_web/crm/templates/crm/income.html:113
-msgid "Income by Category"
-msgstr "Príjmy podľa kategórie"
+#: weblate_web/crm/templates/crm/base.html:47
+msgid "Menu"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:42
-msgid "Total Income"
+#: weblate_web/crm/templates/crm/base.html:50
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "CRM navigation"
+msgstr "Prepnúť navigáciu"
+
+#: weblate_web/crm/templates/crm/base.html:52
+msgid "Dashboard"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:55
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer records"
+msgstr "Starostlivosť o zákazníkov a predaj"
+
+#: weblate_web/crm/templates/crm/base.html:56
+#: weblate_web/crm/templates/crm/index.html:11
+#: weblate_web/crm/templates/crm/index.html:17
+#: weblate_web/crm/templates/crm/index.html:18
+#: weblate_web/crm/templates/crm/interaction_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:7
+#: weblate_web/crm/templates/payments/customer_merge.html:7
+#, fuzzy
+#| msgid "Customer"
+msgid "Customers"
+msgstr "Zákazník"
+
+#: weblate_web/crm/templates/crm/base.html:60
+#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/weblate_web/service_detail.html:7
+#: weblate_web/crm/templates/weblate_web/service_list.html:44
+#: weblate_web/crm/templates/weblate_web/service_list.html:72
+#, fuzzy
+#| msgid "Service"
+msgid "Services"
+msgstr "Služba"
+
+#: weblate_web/crm/templates/crm/base.html:64
+#: weblate_web/crm/templates/crm/index.html:87
+#: weblate_web/crm/templates/crm/index.html:93
+#: weblate_web/crm/templates/crm/index.html:94
+#: weblate_web/crm/templates/invoices/invoice_detail.html:7
+#: weblate_web/crm/templates/payments/customer_detail.html:31
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoices"
+msgstr "Faktúra"
+
+#: weblate_web/crm/templates/crm/base.html:68
+#: weblate_web/crm/templates/crm/index.html:190
+#: weblate_web/crm/templates/crm/index.html:191
+#, fuzzy
+#| msgid "Total Income"
+msgid "Income"
 msgstr "Celkové príjmy"
 
-#: weblate_web/crm/templates/crm/income.html:53
+#: weblate_web/crm/templates/crm/base.html:73
+msgid "Website"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:74
+msgid "Admin"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:78
+#: weblate_web/templates/base.html:92
+msgid "Sign out"
+msgstr "Odhlásiť sa"
+
+#: weblate_web/crm/templates/crm/base.html:87
+msgid "Breadcrumbs"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:88
+msgid "CRM"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/base.html:107
+msgid "Messages"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:12
+#, python-format
+msgid "Back to %(current_year)s yearly view"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:17
+#, fuzzy
+#| msgid "Income by Category"
+msgid "Income years"
+msgstr "Príjmy podľa kategórie"
+
+#: weblate_web/crm/templates/crm/income.html:29
+#, fuzzy, python-format
+#| msgid "Income by Category (Full Year)"
+msgid "Income by Category - %(current_year)s/%(month)s"
+msgstr "Príjmy podľa kategórií (za celý rok)"
+
+#: weblate_web/crm/templates/crm/income.html:31
+#, python-format
+msgid "Total Income - %(current_year)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:39
 msgid "Rolling trend"
 msgstr "Kĺzavý trend"
 
-#: weblate_web/crm/templates/crm/income.html:56
+#: weblate_web/crm/templates/crm/income.html:43
 msgid "Window ending"
 msgstr "Koniec okna"
 
-#: weblate_web/crm/templates/crm/income.html:60
+#: weblate_web/crm/templates/crm/income.html:49
 msgid "Window size"
 msgstr "Veľkosť okna"
 
-#: weblate_web/crm/templates/crm/income.html:62
-#: weblate_web/crm/templates/crm/income.html:156
+#: weblate_web/crm/templates/crm/income.html:51
+#: weblate_web/crm/templates/crm/income.html:159
 #, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
@@ -224,124 +401,379 @@ msgstr[0] "%(months)s mesiac"
 msgstr[1] "%(months)s mesiace"
 msgstr[2] "%(months)s mesiacov"
 
-#: weblate_web/crm/templates/crm/income.html:66
+#: weblate_web/crm/templates/crm/income.html:55
 msgid "Current window"
 msgstr "Aktuálne okno"
 
-#: weblate_web/crm/templates/crm/income.html:70
+#: weblate_web/crm/templates/crm/income.html:61
 msgid "Previous window"
 msgstr "Predchádzajúce okno"
 
-#: weblate_web/crm/templates/crm/income.html:74
+#: weblate_web/crm/templates/crm/income.html:67
 msgid "Change"
 msgstr "Zmeniť"
 
-#: weblate_web/crm/templates/crm/income.html:93
+#: weblate_web/crm/templates/crm/income.html:85
 msgid "Daily Income"
 msgstr "Denné príjmy"
 
-#: weblate_web/crm/templates/crm/income.html:95
+#: weblate_web/crm/templates/crm/income.html:87
 msgid "Monthly Income with Category Breakdown"
 msgstr "Mesačné príjmy s rozpisom podľa kategórií"
 
-#: weblate_web/crm/templates/crm/income.html:106
+#: weblate_web/crm/templates/crm/income.html:100
 msgid "Category Distribution"
 msgstr "Rozloženie podľa kategórií"
 
-#: weblate_web/crm/templates/crm/income.html:116
-#: weblate_web/crm/templates/crm/income.html:196
+#: weblate_web/crm/templates/crm/income.html:108
+#, fuzzy
+#| msgid "Category"
+msgid "Category income"
+msgstr "Kategória"
+
+#: weblate_web/crm/templates/crm/income.html:115
+#: weblate_web/crm/templates/crm/income.html:205
 msgid "Category"
 msgstr "Kategória"
 
-#: weblate_web/crm/templates/crm/income.html:117
-#: weblate_web/crm/templates/crm/income.html:141
-#: weblate_web/crm/templates/crm/income.html:197
+#: weblate_web/crm/templates/crm/income.html:116
+#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:206
 msgid "Amount (EUR)"
 msgstr "Suma (EUR)"
 
-#: weblate_web/crm/templates/crm/income.html:128
-#: weblate_web/crm/templates/crm/income.html:181
+#: weblate_web/crm/templates/crm/income.html:127
+#: weblate_web/crm/templates/crm/income.html:186
+#: weblate_web/crm/templates/invoices/invoice_detail.html:118
 msgid "Total"
 msgstr "Celkom"
 
-#: weblate_web/crm/templates/crm/income.html:137
-msgid "Monthly Breakdown"
-msgstr "Mesačný rozpis"
+#: weblate_web/crm/templates/crm/income.html:136
+#, fuzzy
+#| msgid "Total Income"
+msgid "Monthly income"
+msgstr "Celkové príjmy"
 
-#: weblate_web/crm/templates/crm/income.html:140
+#: weblate_web/crm/templates/crm/income.html:143
 msgid "Month"
 msgstr "Mesiac"
 
-#: weblate_web/crm/templates/crm/income.html:142
+#: weblate_web/crm/templates/crm/income.html:145
 msgid "Rolling window"
 msgstr "Kĺzavé okno"
 
-#: weblate_web/crm/templates/crm/income.html:143
+#: weblate_web/crm/templates/crm/income.html:146
 msgid "Trend"
 msgstr "Trend"
 
-#: weblate_web/crm/templates/crm/income.html:144
+#: weblate_web/crm/templates/crm/income.html:147
+#: weblate_web/crm/templates/invoices/invoice_list.html:23
+#: weblate_web/crm/templates/payments/customer_detail.html:165
+#: weblate_web/crm/templates/payments/customer_detail.html:234
+#: weblate_web/crm/templates/payments/customer_detail.html:300
+#: weblate_web/crm/templates/payments/customer_detail.html:343
+#: weblate_web/crm/templates/payments/customer_detail.html:386
+#: weblate_web/crm/templates/payments/customer_detail.html:423
+#: weblate_web/crm/templates/payments/customer_detail.html:474
+#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:32
+#: weblate_web/crm/templates/weblate_web/service_list.html:60
 msgid "Actions"
 msgstr "Akcie"
 
-#: weblate_web/crm/templates/crm/income.html:176
+#: weblate_web/crm/templates/crm/income.html:180
 msgid "View details"
 msgstr "Zobraziť podrobnosti"
 
-#: weblate_web/crm/templates/crm/income.html:193
-msgid "Income by Category (Full Year)"
-msgstr "Príjmy podľa kategórií (za celý rok)"
+#: weblate_web/crm/templates/crm/income.html:198
+msgid "Yearly category income"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:29
-#: weblate_web/crm/templates/crm/index.html:70
-#: weblate_web/crm/templates/crm/index.html:91
-#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/crm/index.html:19
+msgid "All customer records and billing contacts."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:23
+#: weblate_web/crm/templates/crm/index.html:99
+#: weblate_web/crm/templates/crm/index.html:112
+#: weblate_web/crm/templates/crm/index.html:142
 msgid "Add"
 msgstr "Pridať"
 
-#: weblate_web/crm/templates/crm/index.html:38
-#: weblate_web/crm/templates/crm/index.html:51
-#: weblate_web/crm/templates/crm/index.html:79
-#: weblate_web/crm/templates/crm/index.html:100
-#: weblate_web/crm/templates/crm/index.html:113
-#: weblate_web/crm/templates/crm/index.html:139
-#: weblate_web/crm/templates/crm/index.html:152
-#: weblate_web/crm/templates/crm/index.html:165
-#: weblate_web/crm/templates/crm/index.html:178
-#: weblate_web/crm/templates/crm/index.html:191
-#: weblate_web/crm/templates/crm/index.html:209
-msgid "View"
-msgstr "Zobraziť"
+#: weblate_web/crm/templates/crm/index.html:30
+#: weblate_web/crm/templates/crm/index.html:31
+#, fuzzy
+#| msgid "Added customer user"
+msgid "Active customers"
+msgstr "Používateľ zákazníka pridaný"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:15
+#: weblate_web/crm/templates/crm/index.html:32
+msgid "Customers with current services or payments."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:41
+msgid "Follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:47
+#: weblate_web/crm/templates/crm/index.html:48
+msgid "All follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:49
+msgid "Customers with scheduled next actions."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:57
+#, python-format
+msgid "Due %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:65
+msgid "No due follow-ups"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:66
+msgid "No customer follow-up is due right now."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:75
+#, python-format
+msgid "Upcoming %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:95
+#, fuzzy
+#| msgid "Issue invoice"
+msgid "Issued invoices and receipts."
+msgstr "Vystaviť faktúru"
+
+#: weblate_web/crm/templates/crm/index.html:106
+#: weblate_web/crm/templates/crm/index.html:107
+msgid "Quotes"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:108
+msgid "Draft offers and renewal quotes."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:119
+#: weblate_web/crm/templates/crm/index.html:120
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Unpaid invoices"
+msgstr "Stiahnuť faktúru"
+
+#: weblate_web/crm/templates/crm/index.html:121
+msgid "Invoices that still need payment follow-up."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:136
+#: weblate_web/crm/templates/crm/index.html:137
+#, fuzzy
+#| msgid "Available services"
+msgid "All services"
+msgstr "Dostupné služby"
+
+#: weblate_web/crm/templates/crm/index.html:138
+msgid "Hosted, dedicated, and support services."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:149
+#: weblate_web/crm/templates/crm/index.html:150
+#, fuzzy
+#| msgid "Expired service"
+msgid "Expired services"
+msgstr "Exspirovaná služba"
+
+#: weblate_web/crm/templates/crm/index.html:151
+msgid "Renewable services past their expiration date."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:157
+#: weblate_web/crm/templates/crm/index.html:158
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Dedicated hosting services"
+msgstr "Vyhradená hosťovaná služba"
+
+#: weblate_web/crm/templates/crm/index.html:159
+#, fuzzy
+#| msgctxt "Package category"
+#| msgid "Dedicated hosting"
+msgid "Dedicated hosting subscriptions."
+msgstr "Vyhradený hosting"
+
+#: weblate_web/crm/templates/crm/index.html:165
+#: weblate_web/crm/templates/crm/index.html:166
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support services"
+msgstr "Rozšírená podpora"
+
+#: weblate_web/crm/templates/crm/index.html:167
+#, fuzzy
+#| msgid "Extended support"
+msgid "Extended support subscriptions."
+msgstr "Rozšírená podpora"
+
+#: weblate_web/crm/templates/crm/index.html:173
+#: weblate_web/crm/templates/crm/index.html:174
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support services"
+msgstr "Prémiová podpora"
+
+#: weblate_web/crm/templates/crm/index.html:175
+#, fuzzy
+#| msgid "Premium support"
+msgid "Premium support subscriptions."
+msgstr "Prémiová podpora"
+
+#: weblate_web/crm/templates/crm/index.html:184
+msgid "Income tracking"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/index.html:192
+msgid "Yearly and monthly income breakdowns."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:14
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interaction"
+msgstr "Integračné API"
+
+#: weblate_web/crm/templates/crm/interaction_detail.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:418
+#: weblate_web/crm/templates/weblate_web/service_detail.html:275
 msgid "Timestamp"
 msgstr "Časová pečiatka"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:19
+#: weblate_web/crm/templates/crm/interaction_detail.html:24
+#: weblate_web/crm/templates/invoices/invoice_list.html:22
+#: weblate_web/crm/templates/payments/customer_detail.html:39
+#: weblate_web/crm/templates/payments/customer_detail.html:229
+#: weblate_web/crm/templates/payments/customer_detail.html:385
+#: weblate_web/crm/templates/payments/customer_list.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:23
+#: weblate_web/crm/templates/weblate_web/service_list.html:27
+#: weblate_web/crm/templates/weblate_web/service_list.html:52
 msgid "Customer"
 msgstr "Zákazník"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:25
+#: weblate_web/crm/templates/crm/interaction_detail.html:30
+#: weblate_web/crm/templates/payments/customer_detail.html:419
 msgid "User"
 msgstr "Používateľ"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:29
+#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/payments/customer_detail.html:420
 msgid "Origin"
 msgstr "Pôvod"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:36
+#: weblate_web/crm/templates/crm/interaction_detail.html:47
+#: weblate_web/crm/templates/payments/customer_list.html:47
+#: weblate_web/crm/templates/weblate_web/service_list_content.html:28
 msgid "Details"
 msgstr "Podrobnosti"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:63
+#: weblate_web/crm/templates/crm/interaction_detail.html:77
+#: weblate_web/crm/templates/payments/customer_detail.html:422
 msgid "Content"
 msgstr "Obsah"
 
-#: weblate_web/crm/templates/crm/interaction_detail.html:65
+#: weblate_web/crm/templates/crm/interaction_detail.html:80
 msgid "Interaction content"
 msgstr "Obsah interakcie"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:49
+#: weblate_web/crm/templates/crm/pagination.html:4
+#, fuzzy
+#| msgctxt "Service kind"
+#| msgid "Donation"
+msgid "Pagination"
+msgstr "Dar"
+
+#: weblate_web/crm/templates/crm/pagination.html:7
+msgid "First"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:8
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous"
+msgstr "Predchádzajúce okno"
+
+#: weblate_web/crm/templates/crm/pagination.html:12
+#, python-format
+msgid "Page %(page)s of %(pages)s"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/pagination.html:16
+#, fuzzy
+#| msgid "Next step"
+msgid "Next"
+msgstr "Ďalší krok"
+
+#: weblate_web/crm/templates/crm/pagination.html:17
+msgid "Last"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/empty.html:8
+msgid "No records found."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:5
+#, fuzzy
+#| msgid "Issue renewal invoice"
+msgid "Issue final invoice?"
+msgstr "Vystaviť faktúru na obnovu"
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:7
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the upgrade. Use the upgrade quote "
+#| "action if you only need a quote."
+msgid "This creates a final invoice. Use Quote if you only need an offer."
+msgstr ""
+"Toto vytvorí konečnú faktúru za rozšírenie. Použite akciu cenovej ponuky na "
+"rozšírenie, ak potrebujete iba cenovú ponuku."
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:10
+#: weblate_web/crm/templates/payments/customer_merge.html:38
+msgid "Cancel"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:11
+#: weblate_web/crm/templates/invoices/invoice_detail.html:177
+msgid "Issue invoice"
+msgstr "Vystaviť faktúru"
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:4
+#: weblate_web/crm/templates/invoices/invoice_list.html:19
+#: weblate_web/crm/templates/payments/customer_detail.html:299
+#: weblate_web/crm/templates/payments/customer_detail.html:382
+msgid "Kind"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:14
+#, fuzzy
+#| msgid "Please confirm that you want to issue a final invoice."
+msgid "Create a draft offer without issuing a final invoice."
+msgstr "Prosím, potvrďte, že chcete vystaviť konečnú faktúru."
+
+#: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:24
+msgid "Create a final invoice after confirmation."
+msgstr ""
+
+#: weblate_web/crm/templates/crm/snippets/search_form.html:11
+msgid "Clear"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:14
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:34
+#: weblate_web/crm/templates/payments/customer_detail.html:310
+#: weblate_web/crm/templates/payments/customer_detail.html:444
 #: weblate_web/templates/hosting.html:289
 #: weblate_web/templates/payment/customer-agreement.html:35
 #: weblate_web/templates/payment/customer-agreement.html:56
@@ -351,36 +783,95 @@ msgstr "Obsah interakcie"
 msgid "Download"
 msgstr "Stiahnuť"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:51
+#: weblate_web/crm/templates/invoices/invoice_detail.html:16
 msgid "Receipt"
 msgstr "Potvrdenka"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:55
-#: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
-#: weblate_web/templates/snippets/customer-address.html:10
-msgid "Edit"
-msgstr "Upraviť"
+#: weblate_web/crm/templates/invoices/invoice_detail.html:21
+#: weblate_web/crm/templates/payments/customer_detail.html:17
+#: weblate_web/crm/templates/weblate_web/service_detail.html:13
+msgid "Edit in admin"
+msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:72
-#: weblate_web/crm/templates/invoices/invoice_detail.html:77
+#: weblate_web/crm/templates/invoices/invoice_detail.html:33
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:10
+msgid "Paid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:35
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:13
+msgid "Unpaid"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:41
+#: weblate_web/crm/templates/invoices/invoice_list.html:17
+#: weblate_web/crm/templates/payments/customer_detail.html:380
+#, fuzzy
+#| msgid "D-U-N-S Number"
+msgid "Number"
+msgstr "Číslo D-U-N-S"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:47
+msgid "Issued"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:53
+msgid "Due"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:66
+#, fuzzy
+#| msgid "Discover"
+msgid "Discount"
+msgstr "Objavte"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:74
+msgid "Generated from"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+msgid "Followup as"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:90
+#, fuzzy
+#| msgid "Customer care and sales"
+msgid "Customer reference"
+msgstr "Starostlivosť o zákazníkov a predaj"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:98
+#, fuzzy
+#| msgid "Customer"
+msgid "Customer note"
+msgstr "Zákazník"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:108
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoice items"
+msgstr "Faktúra"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:116
+msgid "Quantity"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:117
+#, fuzzy
+#| msgid "Pricing"
+msgid "Price"
+msgstr "Cenník"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:142
+#: weblate_web/crm/templates/invoices/invoice_detail.html:149
 msgid "Confirm refund done"
 msgstr "Potvrdiť vrátenie peňazí"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:73
+#: weblate_web/crm/templates/invoices/invoice_detail.html:144
 msgid "Use this after the refund or chargeback has been completed."
 msgstr "Použite po dokončení vrátenia peňazí alebo reklamácie."
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:82
-#: weblate_web/crm/templates/invoices/invoice_detail.html:96
-msgid "Issue invoice"
-msgstr "Vystaviť faktúru"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:84
-msgid "Issue invoice from quote"
-msgstr "Vystaviť faktúru z cenovej ponuky"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:86
+#: weblate_web/crm/templates/invoices/invoice_detail.html:161
+#: weblate_web/crm/templates/invoices/invoice_detail.html:169
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
@@ -388,138 +879,671 @@ msgstr ""
 "Toto vytvorí konečnú faktúru zodpovedajúcu tejto cenovej ponuke. Použite "
 "Stiahnuť, ak potrebujete iba PDF cenovej ponuky."
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:93
-#: weblate_web/crm/templates/weblate_web/service_detail.html:77
-#: weblate_web/crm/templates/weblate_web/service_detail.html:109
-msgid "I confirm that I want to issue a final invoice."
-msgstr "Potvrdzujem, že chcem vystaviť konečnú faktúru."
+#: weblate_web/crm/templates/invoices/invoice_detail.html:167
+msgid "Issue invoice from quote"
+msgstr "Vystaviť faktúru z cenovej ponuky"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:57
+#: weblate_web/crm/templates/invoices/invoice_list.html:9
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoice list"
+msgstr "Faktúra"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:18
+#: weblate_web/crm/templates/payments/customer_detail.html:232
+#: weblate_web/crm/templates/payments/customer_detail.html:381
+#: weblate_web/crm/templates/weblate_web/service_detail.html:163
+#: weblate_web/crm/templates/weblate_web/service_list.html:30
+#: weblate_web/crm/templates/weblate_web/service_list.html:55
+msgid "Status"
+msgstr "Stav"
+
+#: weblate_web/crm/templates/invoices/invoice_list.html:32
+msgid "No invoices match the current filters."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:16
+msgid "Overdue"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:31
+#: weblate_web/crm/templates/payments/customer_detail.html:441
+msgid "View"
+msgstr "Zobraziť"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:14
+msgid "View in Zammad"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:22
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer sections"
+msgstr "Prispôsobte zoznam"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:25
+#, fuzzy
+#| msgid "Service"
+msgid "Overview"
+msgstr "Služba"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:28
+#, fuzzy
+#| msgid "Integration API"
+msgid "Interactions"
+msgstr "Integračné API"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:34
+#: weblate_web/templates/snippets/service.html:172
+#: weblate_web/templates/user.html:124
+msgid "Payments"
+msgstr "Platby"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:43
+#: weblate_web/payments/models.py:170
+msgid "Name"
+msgstr "Názov"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:49
+#, fuzzy
+#| msgid "Notification"
+msgid "Notification e-mails"
+msgstr "Notifikácia"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:56
+#: weblate_web/crm/templates/payments/customer_list.html:24
+#, fuzzy
+#| msgid "VAT ID"
+msgid "VAT"
+msgstr "IČ DPH"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:61
+#, python-format
+msgid "validated on %(validated)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:64
+#, fuzzy
+#| msgid "Invalid"
+msgid "not validated"
+msgstr "Neplatné"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:70
+#: weblate_web/payments/models.py:179
+msgid "Address"
+msgstr "Adresa"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:77
+#: weblate_web/crm/templates/payments/customer_list.html:26
+#: weblate_web/payments/models.py:199
+msgid "Country"
+msgstr "Krajina"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:84
+#: weblate_web/crm/templates/payments/customer_list.html:18
+msgid "End client"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:92
+#: weblate_web/payments/models.py:211
+#, fuzzy
+#| msgid "Contact"
+msgid "Contact point"
+msgstr "Kontakt"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:100
+#: weblate_web/payments/models.py:219
+#, fuzzy
+#| msgid "Donation recurrence"
+msgid "Accounting reference"
+msgstr "Opakovanie príspevku"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:108
+#, fuzzy
+#| msgid "Payment card"
+msgid "Payment reminder"
+msgstr "Platobná karta"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:110
+#, python-format
+msgid "Additional notification %(days)s day before due date"
+msgid_plural "Additional notification %(days)s days before due date"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:118
+#: weblate_web/crm/templates/payments/customer_list.html:21
+msgid "Follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:123
+#, python-format
+msgid "Next follow-up: %(date)s"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:128
+msgid "No follow-up scheduled."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:133
+msgid "Set follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:152
+msgid "Save follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:157
+msgid "Clear follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:171
+#, fuzzy
+#| msgid "Merged customer"
+msgid "Merge customer"
+msgstr "Zlúčený zákazník"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:179
+#: weblate_web/crm/templates/payments/customer_merge.html:12
+msgid "Review merge"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:186
 msgid "Add user to customer"
 msgstr "Pridať používateľa k zákazníkovi"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:60
+#: weblate_web/crm/templates/payments/customer_detail.html:193
 msgid "Add user"
 msgstr "Pridať používateľa"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:88
-msgid "Add new agreement"
-msgstr "Pridať novú zmluvu"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:109
-msgid "Issue new invoice"
-msgstr "Vystaviť novú faktúru"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:115
+#: weblate_web/crm/templates/payments/customer_detail.html:199
+#: weblate_web/crm/templates/payments/customer_detail.html:213
 msgid "Add note"
 msgstr "Pridať poznámku"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:47
-msgid "Update maintenance window"
-msgstr "Aktualizovať okno údržby"
+#: weblate_web/crm/templates/payments/customer_detail.html:220
+#, fuzzy
+#| msgid "Hosted service"
+msgid "Customer services"
+msgstr "Hosťovaná služba"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:63
-msgid "Issue renewal quote"
-msgstr "Vystaviť cenovú ponuku na obnovu"
+#: weblate_web/crm/templates/payments/customer_detail.html:230
+#: weblate_web/crm/templates/weblate_web/service_detail.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:28
+#: weblate_web/crm/templates/weblate_web/service_list.html:53
+msgid "URL"
+msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:66
-#: weblate_web/crm/templates/weblate_web/service_detail.html:80
-msgid "Issue renewal invoice"
-msgstr "Vystaviť faktúru na obnovu"
+#: weblate_web/crm/templates/payments/customer_detail.html:231
+#: weblate_web/crm/templates/weblate_web/service_list.html:29
+#: weblate_web/crm/templates/weblate_web/service_list.html:54
+#, fuzzy
+#| msgid "Version Control"
+msgid "Version"
+msgstr "Správa revízií"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+#: weblate_web/crm/templates/payments/customer_detail.html:233
+#: weblate_web/crm/templates/weblate_web/service_list.html:31
+#: weblate_web/crm/templates/weblate_web/service_list.html:59
+msgid "Packages"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:243
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the renewal. Use the renewal quote "
+#| "action if you only need a quote."
 msgid ""
-"This creates a final invoice for the renewal. Use the renewal quote action "
-"if you only need a quote."
+"This creates a final invoice for the new service. Use Quote if you only need "
+"an offer."
 msgstr ""
 "Toto vytvorí konečnú faktúru na obnovu. Použite akciu cenovej ponuky na "
 "obnovu, ak potrebujete iba cenovú ponuku."
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:86
+#: weblate_web/crm/templates/payments/customer_detail.html:249
+#, fuzzy
+#| msgid "View service status."
+msgid "New service purchase"
+msgstr "Zobraziť stav služby."
+
+#: weblate_web/crm/templates/payments/customer_detail.html:281
+#: weblate_web/crm/templates/weblate_web/service_detail.html:205
+#: weblate_web/crm/templates/weblate_web/service_detail.html:232
+#, fuzzy
+#| msgid "created"
+msgid "Create"
+msgstr "vytvorený"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:289
+#, fuzzy
+#| msgid "New agreement"
+msgid "Agreements"
+msgstr "Nová zmluva"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:294
+#, fuzzy
+#| msgid "New agreement"
+msgid "Signed agreements"
+msgstr "Nová zmluva"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:298
+#, fuzzy
+#| msgid "Sign in"
+msgid "Signed"
+msgstr "Prihlásiť sa"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:319
+#, fuzzy
+#| msgid "New agreement"
+msgid "No agreements recorded."
+msgstr "Nová zmluva"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:325
+msgid "Add new agreement"
+msgstr "Pridať novú zmluvu"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:331
+#, fuzzy
+#| msgctxt "Service kind"
+#| msgid "Donation"
+msgid "Donations"
+msgstr "Dar"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:336
+#, fuzzy
+#| msgctxt "Service kind"
+#| msgid "Donation"
+msgid "Donation history"
+msgstr "Dar"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:340
+#: weblate_web/crm/templates/payments/customer_detail.html:470
+#, fuzzy
+#| msgid "created"
+msgid "Created"
+msgstr "vytvorený"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:341
+msgid "Reward"
+msgstr "Odmena"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:354
+#: weblate_web/crm/templates/payments/customer_detail.html:486
+#: weblate_web/templates/payment/customer-agreement.html:18
+#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/snippets/customer-address.html:10
+msgid "Edit"
+msgstr "Upraviť"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:363
+#, fuzzy
+#| msgid "Donations"
+msgid "No donations recorded."
+msgstr "Príspevky"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:371
+#, fuzzy
+#| msgid "Invoice"
+msgid "Invoice history"
+msgstr "Faktúra"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:395
+msgid "No invoices recorded."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:402
+msgid "Issue new invoice"
+msgstr "Vystaviť novú faktúru"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:410
+#, fuzzy
+#| msgid "Interaction content"
+msgid "Interaction history"
+msgstr "Obsah interakcie"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:421
+#, fuzzy
+#| msgid "Payment Summary"
+msgid "Summary"
+msgstr "Zhrnutie platby"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:454
+#, fuzzy
+#| msgid "Interaction content"
+msgid "No interactions recorded."
+msgstr "Obsah interakcie"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:462
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment history"
+msgstr "Chyba platby"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:471
+msgid "State"
+msgstr "Stav"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:495
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Platba zamietnutá"
+
+#: weblate_web/crm/templates/payments/customer_list.html:9
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer list"
+msgstr "Prispôsobte zoznam"
+
+#: weblate_web/crm/templates/payments/customer_list.html:22
+#, fuzzy
+#| msgid "Notification"
+msgid "Next action"
+msgstr "Notifikácia"
+
+#: weblate_web/crm/templates/payments/customer_list.html:25
+#: weblate_web/payments/models.py:190
+msgid "City"
+msgstr "Mesto"
+
+#: weblate_web/crm/templates/payments/customer_list.html:56
+#, fuzzy
+#| msgid "No servers matched your search."
+msgid "No customers match the current filters."
+msgstr "Vášmu vyhľadávaniu nezodpovedajú žiadne servery."
+
+#: weblate_web/crm/templates/payments/customer_merge.html:17
+msgid "will be merged into"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:22
 #, python-format
 msgid ""
-"Upgrade to %(package)s without extending the current subscription period."
+"All content from %(source)s (%(source_pk)s) will be moved to %(target)s "
+"(%(target_pk)s)"
 msgstr ""
-"Prepnite na %(package)s bez predĺženia aktuálneho obdobia predplatného."
+
+#: weblate_web/crm/templates/payments/customer_merge.html:27
+#, python-format
+msgid "%(source)s (%(source_pk)s) will be removed"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_merge.html:36
+msgid "Merge"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:33
+msgid "locked"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:38
+#, fuzzy
+#| msgid "Go Weblate!"
+msgid "Weblate"
+msgstr "O Weblate!"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:44
+#: weblate_web/crm/templates/weblate_web/service_detail.html:279
+#: weblate_web/templates/snippets/customer-users.html:3
+msgid "Users"
+msgstr "Používatelia"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:50
+#: weblate_web/crm/templates/weblate_web/service_detail.html:280
+#, fuzzy
+#| msgctxt "Hosting plan parameter"
+#| msgid "Projects"
+msgid "Projects"
+msgstr "Projekty"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:56
+#, fuzzy
+#| msgid "Support portal"
+msgid "Support status"
+msgstr "Portál podpory"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:64
+#, fuzzy
+#| msgid "Activation token"
+msgid "Activation key"
+msgstr "Aktivačný token"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:68
+#: weblate_web/crm/templates/weblate_web/service_detail.html:98
+msgid "Copied"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:69
+#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+msgid "Copy failed"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:70
+#: weblate_web/crm/templates/weblate_web/service_detail.html:71
+#, fuzzy
+#| msgid "Activation token"
+msgid "Copy activation key"
+msgstr "Aktivačný token"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:94
-msgid "Issue upgrade quote"
-msgstr "Vystaviť cenovú ponuku na rozšírenie"
+#, fuzzy
+#| msgid "Backups"
+msgid "Backup"
+msgstr "Zálohy"
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:97
-#: weblate_web/crm/templates/weblate_web/service_detail.html:112
-msgid "Issue upgrade invoice"
-msgstr "Vystaviť faktúru za rozšírenie"
+#: weblate_web/crm/templates/weblate_web/service_detail.html:100
+#: weblate_web/crm/templates/weblate_web/service_detail.html:101
+msgid "Copy backup SSH URL"
+msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+#: weblate_web/crm/templates/weblate_web/service_detail.html:119
+#, python-format
+msgid "%(size)s in %(directory)s"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:126
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable"
+msgstr "Objavte"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:151
+msgid "Update maintenance window"
+msgstr "Aktualizovať okno údržby"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:166
+#: weblate_web/templates/user.html:59
+msgid "Active"
+msgstr "Aktívne"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:168
+#, fuzzy
+#| msgid "Service Status"
+msgid "Service is terminated"
+msgstr "Stav služby"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:173
+#, fuzzy
+#| msgid "Expired"
+msgid "Expires"
+msgstr "Vypršané"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:180
+msgid "Edit subscription in admin"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:185
+#, fuzzy
+#| msgid "Merchandise"
+msgid "Purchases"
+msgstr "Obchod"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:187
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the renewal. Use the renewal quote "
+#| "action if you only need a quote."
 msgid ""
-"This creates a final invoice for the upgrade. Use the upgrade quote action "
-"if you only need a quote."
+"This creates a final invoice for the renewal. Use Quote if you only need an "
+"offer."
+msgstr ""
+"Toto vytvorí konečnú faktúru na obnovu. Použite akciu cenovej ponuky na "
+"obnovu, ak potrebujete iba cenovú ponuku."
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:210
+#, fuzzy, python-format
+#| msgid "Upgrade to %s"
+msgid "Upgrade to %(package)s"
+msgstr "Prepnite na %s"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:211
+msgid "For the rest of the current period."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:212
+#, fuzzy
+#| msgid ""
+#| "This creates a final invoice for the upgrade. Use the upgrade quote "
+#| "action if you only need a quote."
+msgid ""
+"This creates a final invoice for the upgrade. Use Quote if you only need an "
+"offer."
 msgstr ""
 "Toto vytvorí konečnú faktúru za rozšírenie. Použite akciu cenovej ponuky na "
 "rozšírenie, ak potrebujete iba cenovú ponuku."
 
-#: weblate_web/crm/views.py:95
-msgid "Please confirm that you want to issue a final invoice."
-msgstr "Prosím, potvrďte, že chcete vystaviť konečnú faktúru."
+#: weblate_web/crm/templates/weblate_web/service_detail.html:243
+#, fuzzy
+#| msgid "Description"
+msgid "Disable subscription"
+msgstr "Popis"
 
-#: weblate_web/crm/views.py:252 weblate_web/crm/views.py:265
-#: weblate_web/crm/views.py:314 weblate_web/views.py:1066
-#: weblate_web/views.py:1077 weblate_web/views.py:1089
-msgid "This subscription can not be upgraded to the selected package."
-msgstr "Toto predplatné nie je možné prepnúť na vybraný balík."
+#: weblate_web/crm/templates/weblate_web/service_detail.html:250
+msgid ""
+"Disable the subscription, no payments will be reminded or triggered, "
+"<strong>backups will be removed once subscription expires</strong>"
+msgstr ""
 
-#: weblate_web/crm/views.py:638
+#: weblate_web/crm/templates/weblate_web/service_detail.html:258
+#, fuzzy
+#| msgid "Disable renewal"
+msgid "Disable"
+msgstr "Vypnúť obnovovanie"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:268
+msgid "Recent service reports"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:276
+#, fuzzy
+#| msgid "Service URL"
+msgid "Site URL"
+msgstr "URL služby"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:277
+#, fuzzy
+#| msgid "Subtitle files"
+msgid "Site title"
+msgstr "Súbory titulkov"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:278
+#, fuzzy
+#| msgid "Weblate heroism"
+msgid "Weblate version"
+msgstr "Hrdinstvo Weblate"
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:281
+#: weblate_web/templates/hosting.html:319
+#: weblate_web/templates/hosting.html:490
+msgid "Hosted strings"
+msgstr "Hosťovaných reťazcov"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:57
+#, fuzzy
+#| msgid "Maintenance window"
+msgid "Maintenance"
+msgstr "Okno údržby"
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:74
+#, fuzzy
+#| msgid "No servers matched your search."
+msgid "No services match the current filters."
+msgstr "Vášmu vyhľadávaniu nezodpovedajú žiadne servery."
+
+#: weblate_web/crm/views.py:719
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Meno hosťovaného používateľa zodpovedá lokálnemu používateľovi s iným e-"
 "mailom."
 
-#: weblate_web/crm/views.py:652
+#: weblate_web/crm/views.py:733
 msgid "Hosted user was not linked."
 msgstr "Hosťovaný používateľ nebol prepojený."
 
-#: weblate_web/crm/views.py:655
+#: weblate_web/crm/views.py:736
 msgid "Hosted user is already linked to a different local user."
 msgstr "Hosťovaný používateľ je už prepojený s iným lokálnym používateľom."
 
-#: weblate_web/crm/views.py:662
+#: weblate_web/crm/views.py:743
 msgid "Added customer user"
 msgstr "Používateľ zákazníka pridaný"
 
-#: weblate_web/crm/views.py:664
+#: weblate_web/crm/views.py:745
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
 "Používateľ %(email)s pridaný k zákazníkom. Stav hosťovaného používateľa: "
 "%(state)s."
 
-#: weblate_web/crm/views.py:668
+#: weblate_web/crm/views.py:749
 msgid "created"
 msgstr "vytvorený"
 
-#: weblate_web/crm/views.py:670
+#: weblate_web/crm/views.py:751
 msgid "linked"
 msgstr "prepojený"
 
-#: weblate_web/crm/views.py:697
+#: weblate_web/crm/views.py:778
 msgid "Multiple local users use this e-mail address"
 msgstr "Túto e-mailovú adresu používa viacero lokálnych používateľov"
 
-#: weblate_web/crm/views.py:725
+#: weblate_web/crm/views.py:806
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr "Nepodarilo sa pridať používateľa zákazníka: %(error)s"
 
-#: weblate_web/crm/views.py:732
+#: weblate_web/crm/views.py:813
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr "Používateľ %(email)s pridaný k zákazníkom."
 
-#: weblate_web/crm/views.py:737
+#: weblate_web/crm/views.py:818
 #, python-format
 msgid "%(email)s is already a customer user."
 msgstr "%(email)s je už používateľom zákazníka."
+
+#: weblate_web/crm/views.py:863
+#, python-format
+msgid "Follow-up scheduled for %(date)s."
+msgstr ""
+
+#: weblate_web/crm/views.py:870
+msgid "Follow-up set"
+msgstr ""
+
+#: weblate_web/crm/views.py:875
+msgid "Follow-up updated."
+msgstr ""
+
+#: weblate_web/crm/views.py:889
+msgid "Follow-up cleared"
+msgstr ""
+
+#: weblate_web/crm/views.py:890 weblate_web/crm/views.py:894
+msgid "Follow-up cleared."
+msgstr ""
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -531,27 +1555,27 @@ msgstr ""
 "súkromných projektov. Vrátane Weblate! Máte radi slobodný softvér? Vaše "
 "možnosti prispievania sú tu neobmedzené!"
 
-#: weblate_web/forms.py:88
+#: weblate_web/forms.py:98
 msgid "Insufficient donation for selected reward!"
 msgstr "Nedostatočný príspevok na vybranú odmenu!"
 
-#: weblate_web/invoices/models.py:209
+#: weblate_web/invoices/models.py:210
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/invoices/models.py:211 weblate_web/invoices/models.py:213
+#: weblate_web/invoices/models.py:212 weblate_web/invoices/models.py:214
 msgid "Account number"
 msgstr "Číslo účtu"
 
-#: weblate_web/invoices/models.py:215
+#: weblate_web/invoices/models.py:216
 msgid "BIC/SWIFT"
 msgstr "BIC/SWIFT"
 
-#: weblate_web/invoices/models.py:217
+#: weblate_web/invoices/models.py:218
 msgid "Issuing bank"
 msgstr "Vydávajúca banka"
 
-#: weblate_web/invoices/models.py:219
+#: weblate_web/invoices/models.py:220
 msgid "Account holder"
 msgstr "Držiteľ účtu"
 
@@ -574,17 +1598,17 @@ msgid "Donation"
 msgstr "Dar"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:781
+#: weblate_web/models.py:784
 msgid "Link text"
 msgstr "Text odkazu"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:784
+#: weblate_web/models.py:787
 msgid "Link URL"
 msgstr "URL odkazu"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:787
+#: weblate_web/models.py:790
 msgid "Link image"
 msgstr "Obrázok odkazu"
 
@@ -681,123 +1705,119 @@ msgstr "Nepodporovaný typ obrázka: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Nahrajte obrázok s rozlíšením 570 x 260 pixelov."
 
-#: weblate_web/models.py:721
+#: weblate_web/models.py:724
 msgid "Community supported"
 msgstr "Podporované komunitou"
 
-#: weblate_web/models.py:722
+#: weblate_web/models.py:725
 msgid "Dedicated hosted service"
 msgstr "Vyhradená hosťovaná služba"
 
-#: weblate_web/models.py:723
+#: weblate_web/models.py:726
 msgid "Hosted service"
 msgstr "Hosťovaná služba"
 
-#: weblate_web/models.py:724 weblate_web/templates/support.html:77
+#: weblate_web/models.py:727 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Základná vlastná podpora"
 
-#: weblate_web/models.py:725 weblate_web/templates/support.html:90
+#: weblate_web/models.py:728 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Rozšírená vlastná podpora"
 
-#: weblate_web/models.py:726 weblate_web/templates/support.html:109
+#: weblate_web/models.py:729 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Prémiová vlastná podpora"
 
-#: weblate_web/models.py:752 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:755 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "URL adresa servera"
 
-#: weblate_web/models.py:766
+#: weblate_web/models.py:769
 msgid "Server description"
 msgstr "Popis servera"
 
-#: weblate_web/models.py:769
+#: weblate_web/models.py:772
 msgid "Server image"
 msgstr "Obraz servera"
 
-#: weblate_web/models.py:773
+#: weblate_web/models.py:776
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "Obrázok PNG alebo JPG s rozlíšením 570 x 260 pixelov."
 
-#: weblate_web/models.py:1044 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1047 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Základná podpora"
 
-#: weblate_web/models.py:1045
+#: weblate_web/models.py:1048
 msgid "Never get held back by a problem."
 msgstr "Nikdy sa nenechajte zdržať problémom."
 
-#: weblate_web/models.py:1046
+#: weblate_web/models.py:1049
 msgid "Set priority for all your questions and reported bugs."
 msgstr "Nastavte si prioritu pre všetky vaše otázky a nahlásené chyby."
 
-#: weblate_web/models.py:1048 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1051 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Získajte podporu"
 
-#: weblate_web/models.py:1060 weblate_web/models.py:1077
-#: weblate_web/models.py:1108 weblate_web/models.py:1632
+#: weblate_web/models.py:1063 weblate_web/models.py:1080
+#: weblate_web/models.py:1111 weblate_web/models.py:1635
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Prepnite na %s"
 
-#: weblate_web/models.py:1062
+#: weblate_web/models.py:1065
 msgid "Premium support"
 msgstr "Prémiová podpora"
 
-#: weblate_web/models.py:1063
+#: weblate_web/models.py:1066
 msgid "Don’t wait with your work on hold."
 msgstr "Nečakajte s odloženou prácou."
 
-#: weblate_web/models.py:1064
+#: weblate_web/models.py:1067
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "To vám garantuje odpovede do ďalšieho pracovného dňa."
 
-#: weblate_web/models.py:1066
+#: weblate_web/models.py:1069
 msgid "Be premium"
 msgstr "Buďte prémioví"
 
-#: weblate_web/models.py:1079 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1082 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Rozšírená podpora"
 
-#: weblate_web/models.py:1080
+#: weblate_web/models.py:1083
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "Neuspokojte sa so základom, získajte balík bez starostí."
 
-#: weblate_web/models.py:1081
+#: weblate_web/models.py:1084
 msgid "We will manage upgrades for you."
 msgstr "Aktualizácie budeme spravovať za vás."
 
-#: weblate_web/models.py:1083
+#: weblate_web/models.py:1086
 msgid "Stay updated"
 msgstr "Zostaňte informovaní"
 
-#: weblate_web/models.py:1092 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1095 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Zálohovacia služba"
 
-#: weblate_web/models.py:1093
+#: weblate_web/models.py:1096
 msgid "Easily put your backups in a safe place."
 msgstr "Svoje zálohy môžete ľahko uložiť na bezpečné miesto."
 
-#: weblate_web/models.py:1094
+#: weblate_web/models.py:1097
 msgid "Encrypted and automatic, always available."
 msgstr "Šifrované a automatizované, vždy k dispozícii."
 
-#: weblate_web/models.py:1096
+#: weblate_web/models.py:1099
 msgid "Back up daily"
 msgstr "Zálohujte denne"
 
-#: weblate_web/models.py:1109
+#: weblate_web/models.py:1112
 msgid "Increase service limits to translate more content."
 msgstr "Zvýšiť limity služby pre viac prekladov obsahu."
-
-#: weblate_web/models.py:1112
-msgid "Upgrade"
-msgstr "Prepnúť"
 
 #: weblate_web/payments/backends.py:522
 msgid "Manual payment"
@@ -835,41 +1855,41 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
-#: weblate_web/payments/forms.py:82
+#: weblate_web/payments/forms.py:84
 msgid "You will receive a receipt here."
 msgstr "Tu dostanete potvrdenku."
 
-#: weblate_web/payments/forms.py:83
+#: weblate_web/payments/forms.py:85
 msgid "E-mail address"
 msgstr "E-mailová adresa"
 
-#: weblate_web/payments/models.py:121
+#: weblate_web/payments/models.py:135
 msgid "Unknown"
 msgstr "Neznámy"
 
-#: weblate_web/payments/models.py:122
+#: weblate_web/payments/models.py:136
 msgid "Valid"
 msgstr "Platné"
 
-#: weblate_web/payments/models.py:123
+#: weblate_web/payments/models.py:137
 msgid "Invalid"
 msgstr "Neplatné"
 
-#: weblate_web/payments/models.py:130
+#: weblate_web/payments/models.py:144
 msgid "European VAT ID"
 msgstr "Európske IČ DPH"
 
-#: weblate_web/payments/models.py:132
+#: weblate_web/payments/models.py:146
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Vyplňte, prosím, IČ DPH Európskej únie alebo nechajte prázdne, ak nie je "
 "použiteľné."
 
-#: weblate_web/payments/models.py:147
+#: weblate_web/payments/models.py:161
 msgid "Company identification number"
 msgstr "Identifikačné číslo organizácie"
 
-#: weblate_web/payments/models.py:149
+#: weblate_web/payments/models.py:163
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
@@ -877,47 +1897,42 @@ msgstr ""
 "Vyplňte, prosím, identifikačné číslo vašej spoločnosti, ak sa má zobraziť na "
 "faktúre."
 
-#: weblate_web/payments/models.py:156
-msgid "Name"
-msgstr "Názov"
-
-#: weblate_web/payments/models.py:158
+#: weblate_web/payments/models.py:172
 msgid "Company or individual name as it should appear on the invoice."
 msgstr "Názov spoločnosti alebo meno osoby, ako sa má zobraziť na faktúre."
 
-#: weblate_web/payments/models.py:165
-msgid "Address"
-msgstr "Adresa"
-
-#: weblate_web/payments/models.py:170
+#: weblate_web/payments/models.py:184
 msgid "Additional address information"
 msgstr "Doplňujúce informácie o adrese"
 
-#: weblate_web/payments/models.py:176
-msgid "City"
-msgstr "Mesto"
-
-#: weblate_web/payments/models.py:181
+#: weblate_web/payments/models.py:195
 msgid "Postcode"
 msgstr "PSČ"
 
-#: weblate_web/payments/models.py:185
-msgid "Country"
-msgstr "Krajina"
-
-#: weblate_web/payments/models.py:191
+#: weblate_web/payments/models.py:205
 msgid "Billing e-mail"
 msgstr "Fakturačný e-mail"
 
-#: weblate_web/payments/models.py:192
+#: weblate_web/payments/models.py:206
 msgid "Additional e-mail to receive billing notifications"
 msgstr "Ďalší e-mail na zasielanie fakturačných oznámení"
 
-#: weblate_web/payments/models.py:197
+#: weblate_web/payments/models.py:213
+msgid "Person, team, or department to show as the invoice contact."
+msgstr ""
+
+#: weblate_web/payments/models.py:221
+msgid ""
+"Line-level accounting code for the customer's internal invoice processing, "
+"such as a cost center, project, internal order, or GL account. Separate from "
+"the customer reference or purchase order number."
+msgstr ""
+
+#: weblate_web/payments/models.py:229
 msgid "Additional upcoming payment notification"
 msgstr "Dodatočné upozornenie na nadchádzajúcu platbu"
 
-#: weblate_web/payments/models.py:200
+#: weblate_web/payments/models.py:232
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
@@ -927,63 +1942,71 @@ msgstr ""
 "upozornenia na nadchádzajúcu platbu, od 0 do {}. Nastavte na 0, ak chcete "
 "používať iba predvolené upozornenia."
 
-#: weblate_web/payments/models.py:337
+#: weblate_web/payments/models.py:244
+msgid "Date and time when this customer needs attention."
+msgstr ""
+
+#: weblate_web/payments/models.py:250
+msgid "Short description of the next action."
+msgstr ""
+
+#: weblate_web/payments/models.py:382
 msgid "The country has to match your VAT code"
 msgstr "Krajina sa musí zhodovať s vaším IČ DPH"
 
-#: weblate_web/payments/models.py:345
+#: weblate_web/payments/models.py:390
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr "Vyberte deň odlišný od predvolených upozornení na platbu: 2 a 7."
 
-#: weblate_web/payments/models.py:368
+#: weblate_web/payments/models.py:413
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr "Vyberte deň odlišný od predvoleného ročného upozornenia na platbu: 31."
 
-#: weblate_web/payments/models.py:584
+#: weblate_web/payments/models.py:640
 msgid "Annual"
 msgstr "Ročne"
 
-#: weblate_web/payments/models.py:585
+#: weblate_web/payments/models.py:641
 msgid "Biannual"
 msgstr "Polročne"
 
-#: weblate_web/payments/models.py:586 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:642 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "Štvrťročne"
 
-#: weblate_web/payments/models.py:587 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:643 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "Mesačne"
 
-#: weblate_web/payments/models.py:588
+#: weblate_web/payments/models.py:644
 msgid "One-time"
 msgstr "Jednorazové"
 
-#: weblate_web/payments/models.py:624
+#: weblate_web/payments/models.py:685
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Nová platba"
 
-#: weblate_web/payments/models.py:625
+#: weblate_web/payments/models.py:686
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Očakávaná platba"
 
-#: weblate_web/payments/models.py:626
+#: weblate_web/payments/models.py:687
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Platba zamietnutá"
 
-#: weblate_web/payments/models.py:627
+#: weblate_web/payments/models.py:688
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Platba prijatá"
 
-#: weblate_web/payments/models.py:628
+#: weblate_web/payments/models.py:689
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Platba spracovaná"
@@ -1260,6 +2283,7 @@ msgstr ""
 "zameraným na lokalizáciu a projektu Weblate."
 
 #: weblate_web/templates/about.html:179
+#: weblate_web/templates/snippets/customer_address.html:6
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -1306,10 +2330,6 @@ msgstr "Weblate je slobodný webový nástroj pre kontinuálnu lokalizáciu."
 msgctxt "Keyword"
 msgid "translate"
 msgstr "prekladanie"
-
-#: weblate_web/templates/base.html:92
-msgid "Sign out"
-msgstr "Odhlásiť sa"
 
 #: weblate_web/templates/base.html:102
 #: weblate_web/templates/snippets/main-menu.html:51
@@ -1615,10 +2635,6 @@ msgstr "Pridajte svoj"
 #: weblate_web/templates/discover.html:33
 msgid "project name"
 msgstr "názov projektu"
-
-#: weblate_web/templates/discover.html:35
-msgid "Search"
-msgstr "Hľadať"
 
 #: weblate_web/templates/discover.html:59
 #, python-format
@@ -2718,11 +3734,6 @@ msgstr ""
 msgid "Continuous localization"
 msgstr "Nepretržitá lokalizácia"
 
-#: weblate_web/templates/hosting.html:319
-#: weblate_web/templates/hosting.html:490
-msgid "Hosted strings"
-msgstr "Hosťovaných reťazcov"
-
 #: weblate_web/templates/hosting.html:322
 msgid "Translation projects"
 msgstr "Prekladové projekty"
@@ -3355,10 +4366,6 @@ msgstr ""
 "Sme malou otvorenou softvérovou spoločnosťou, kde má každý mnoho priestoru "
 "pre rast."
 
-#: weblate_web/templates/snippets/customer-users.html:3
-msgid "Users"
-msgstr "Používatelia"
-
 #: weblate_web/templates/snippets/customer-users.html:17
 msgid "You can not remove yourself"
 msgstr "Nemôžete sa odstrániť"
@@ -3664,11 +4671,6 @@ msgstr "Prepnite na ročný"
 msgid "and <strong>save 20%%</strong>."
 msgstr "a <strong>ušetrite 20%%</strong>."
 
-#: weblate_web/templates/snippets/service.html:172
-#: weblate_web/templates/user.html:124
-msgid "Payments"
-msgstr "Platby"
-
 #: weblate_web/templates/snippets/service.html:190
 msgid "Get more Weblate"
 msgstr "Získajte z Weblate viac"
@@ -3963,10 +4965,6 @@ msgstr "Odkaz"
 msgid "Edit reward"
 msgstr "Upraviť odmenu"
 
-#: weblate_web/templates/user.html:59
-msgid "Active"
-msgstr "Aktívne"
-
 #: weblate_web/templates/user.html:150
 msgid "Wanna see something nice here?"
 msgstr "Chcete tu vidieť niečo pekné?"
@@ -4190,6 +5188,36 @@ msgstr "Používateľ nenájdený!"
 msgid "Please confirm the upgrade from your account page."
 msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 
+#~ msgid "Back to"
+#~ msgstr "Späť na"
+
+#~ msgid "yearly view"
+#~ msgstr "ročný prehľad"
+
+#~ msgid "Year"
+#~ msgstr "Rok"
+
+#~ msgid "Monthly Breakdown"
+#~ msgstr "Mesačný rozpis"
+
+#~ msgid "I confirm that I want to issue a final invoice."
+#~ msgstr "Potvrdzujem, že chcem vystaviť konečnú faktúru."
+
+#~ msgid "Issue renewal quote"
+#~ msgstr "Vystaviť cenovú ponuku na obnovu"
+
+#, python-format
+#~ msgid ""
+#~ "Upgrade to %(package)s without extending the current subscription period."
+#~ msgstr ""
+#~ "Prepnite na %(package)s bez predĺženia aktuálneho obdobia predplatného."
+
+#~ msgid "Issue upgrade quote"
+#~ msgstr "Vystaviť cenovú ponuku na rozšírenie"
+
+#~ msgid "Issue upgrade invoice"
+#~ msgstr "Vystaviť faktúru za rozšírenie"
+
 #~ msgid "Create invoice"
 #~ msgstr "Vytvoriť faktúru"
 
@@ -4282,9 +5310,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~ msgid ""
 #~ "It is all libre software, all our code and issues are open to the public."
 #~ msgstr "Všetko je slobodný softvér, všetky naše kódy a problémy sú verejné."
-
-#~ msgid "Customer care and sales"
-#~ msgstr "Starostlivosť o zákazníkov a predaj"
 
 #~ msgid ""
 #~ "We're looking for a person who loves to speak with the people and will "
@@ -4460,9 +5485,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~ msgid "monthly"
 #~ msgstr "Mesačne"
 
-#~ msgid "Expired service"
-#~ msgstr "Exspirovaná služba"
-
 #~ msgid "See all projects"
 #~ msgstr "Zobraziť všetky projekty"
 
@@ -4527,9 +5549,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~ msgid "Creation date"
 #~ msgstr "Dátum vytvorenia"
 
-#~ msgid "State"
-#~ msgstr "Stav"
-
 #~ msgid "Switch to yearly"
 #~ msgstr "Prepnúť na ročný"
 
@@ -4570,9 +5589,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~ msgstr ""
 #~ "Súvisiace otázky môžete položiť prostredníctvom služby <a "
 #~ "href=\"%(url)s\">Stack Overflow</a>."
-
-#~ msgid "Reward"
-#~ msgstr "Odmena"
 
 #~ msgid "Expiry date"
 #~ msgstr "Dátum expirácie"
@@ -4674,9 +5690,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 
 #~ msgid "Own domain"
 #~ msgstr "Vlastná doména"
-
-#~ msgid "Status"
-#~ msgstr "Stav"
 
 #~ msgid "VCS repositories"
 #~ msgstr "VCS repozitáre"
@@ -5090,11 +6103,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~ "a>. Zaregistrujte sa a pracujte pod svojím menom alebo len využite meno "
 #~ "<code>demo</code> s heslom <code>demo</code>."
 
-#, fuzzy
-#~| msgid "Donations"
-#~ msgid "Donations welcome"
-#~ msgstr "Príspevky"
-
 #~ msgid "Custom features development"
 #~ msgstr "Vývoj špecifických vlastností"
 
@@ -5103,16 +6111,10 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~ msgid "Request support"
 #~ msgstr "Podpora pre Weblate"
 
-#~ msgid "Renewal"
-#~ msgstr "Obnova"
-
 #, fuzzy
 #~| msgid "Weblate is provided free of charge, and welcomes donations."
 #~ msgid "Weblate is provided free of charge &amp; welcomes donations."
 #~ msgstr "Weblate je poskytovaný zdarma, ale víta vaše príspevky."
-
-#~ msgid "Donation recurrence"
-#~ msgstr "Opakovanie príspevku"
 
 #~ msgid "The minimal amount is %d EUR."
 #~ msgstr "Minimálna čiastka je %d EUR."
@@ -5130,9 +6132,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~| msgid "Report issue"
 #~ msgid "Report issue to GitHub"
 #~ msgstr "Nahlásiť chybu"
-
-#~ msgid "Disable renewal"
-#~ msgstr "Vypnúť obnovovanie"
 
 #~ msgid "Try"
 #~ msgstr "Vyskúšajte"
@@ -5457,9 +6456,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 #~ "Môžete si taktiež <a href=\"%(download_url)s\">stiahnúť</a>  zdrojové "
 #~ "kódy Weblate a prevádzkovať ich na svojich systémoch. Existuje aj "
 #~ "niekoľko možností pre prevádzovanie Weblate v cloude."
-
-#~ msgid "Toggle navigation"
-#~ msgstr "Prepnúť navigáciu"
 
 #~ msgid ""
 #~ "Weblate is <a href=\"%(github_url)s\">free software</a> and welcomes <a "
