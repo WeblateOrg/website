@@ -31,10 +31,12 @@ from .views import (
     InvoiceListView,
     ServiceDetailView,
     ServiceListView,
+    WorkQueueView,
 )
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
+    path("work/", WorkQueueView.as_view(), name="work-queue"),
     path("services/<slug:kind>/", ServiceListView.as_view(), name="service-list"),
     path(
         "services/detail/<int:pk>/", ServiceDetailView.as_view(), name="service-detail"

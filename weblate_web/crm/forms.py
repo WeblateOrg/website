@@ -26,7 +26,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy
 
 from weblate_web.invoices.forms import CustomerReferenceForm
-from weblate_web.invoices.models import InvoiceKind
+from weblate_web.invoices.models import InvoiceKind, QuoteStatus
 from weblate_web.models import Package, Service, Subscription
 from weblate_web.payments.models import Customer
 
@@ -152,6 +152,29 @@ class RefundConfirmationForm(forms.Form):
         max_length=200,
         help_text=gettext_lazy("Optional note describing how the refund was done."),
         widget=forms.TextInput(),
+    )
+
+
+class QuoteStatusForm(forms.Form):
+    quote_status = forms.TypedChoiceField(
+        label=gettext_lazy("Quote status"),
+        help_text=gettext_lazy("Why this quote should no longer be followed up."),
+        choices=(
+            (QuoteStatus.LOST, QuoteStatus.LOST.label),
+            (QuoteStatus.SUPERSEDED, QuoteStatus.SUPERSEDED.label),
+            (QuoteStatus.ACCEPTED_ELSEWHERE, QuoteStatus.ACCEPTED_ELSEWHERE.label),
+            (QuoteStatus.ARCHIVED, QuoteStatus.ARCHIVED.label),
+        ),
+        coerce=QuoteStatus.from_str,
+    )
+    quote_status_note = forms.CharField(
+        label=gettext_lazy("Quote status note"),
+        help_text=gettext_lazy(
+            "Optional internal note, such as a rejection reason or accepted "
+            "alternative invoice."
+        ),
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 3}),
     )
 
 

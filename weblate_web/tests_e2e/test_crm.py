@@ -36,7 +36,13 @@ from django.urls import reverse
 from django.utils import timezone
 
 from weblate_web.crm.models import CRM_STORAGE, Interaction
-from weblate_web.invoices.models import Currency, Invoice, InvoiceCategory, InvoiceKind
+from weblate_web.invoices.models import (
+    Currency,
+    Invoice,
+    InvoiceCategory,
+    InvoiceKind,
+    QuoteStatus,
+)
 from weblate_web.models import Package, Service
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.saml import get_default_saml_provider
@@ -451,6 +457,126 @@ def log_in(page: Page, live_server, user: User) -> None:
     assert_no_server_error(page)
 
 
+def create_work_queue_visual_data(data: CrmData) -> Invoice:
+    """Create records that exercise every Today queue section."""
+    data.customer.follow_up_at = FIXED_TIMESTAMP - timedelta(hours=4)
+    data.customer.follow_up_note = "Call about renewal quote."
+    data.customer.save(update_fields=["follow_up_at", "follow_up_note"])
+    data.prospect.follow_up_at = FIXED_TIMESTAMP + timedelta(days=3)
+    data.prospect.follow_up_note = "Send onboarding check-in."
+    data.prospect.save(update_fields=["follow_up_at", "follow_up_note"])
+
+    old_invoice_customer = create_customer(
+        "CRM Work Queue Invoice", "work-invoice@example.test"
+    )
+    create_invoice(
+        old_invoice_customer,
+        InvoiceFixture(
+            InvoiceKind.INVOICE,
+            InvoiceCategory.HOSTING,
+            Decimal(640),
+            date(2025, 12, 30),
+            "CRM old unpaid invoice",
+        ),
+    )
+    stale_quote_customer = create_customer(
+        "CRM Work Queue Quote", "work-quote@example.test"
+    )
+    stale_quote = create_invoice(
+        stale_quote_customer,
+        InvoiceFixture(
+            InvoiceKind.QUOTE,
+            InvoiceCategory.SUPPORT,
+            Decimal(360),
+            date(2025, 12, 20),
+            "CRM stale quote",
+        ),
+    )
+    closed_quote_customer = create_customer(
+        "CRM Closed Work Queue Quote", "closed-work-quote@example.test"
+    )
+    closed_quote = create_invoice(
+        closed_quote_customer,
+        InvoiceFixture(
+            InvoiceKind.QUOTE,
+            InvoiceCategory.SUPPORT,
+            Decimal(280),
+            date(2025, 12, 18),
+            "CRM closed stale quote",
+        ),
+    )
+    closed_quote.quote_status = QuoteStatus.LOST
+    closed_quote.quote_status_note = "Customer rejected the offer."
+    closed_quote.save(update_fields=["quote_status", "quote_status_note"])
+    expired_service_customer = create_customer(
+        "CRM Work Queue Service", "work-service@example.test"
+    )
+    create_service(
+        expired_service_customer,
+        ServiceFixture(
+            "basic",
+            "Queue Expired Support",
+            timedelta(days=-20),
+            url="https://queue-expired.example.test/",
+        ),
+    )
+    return stale_quote
+
+
+def assert_work_queue_items(page: Page) -> None:
+    """Assert the full queue shows actionable work and hides closed quotes."""
+    for heading in ("Follow-ups", "Billing", "Services"):
+        assert page.get_by_role("heading", name=heading, exact=True).is_visible()
+    for text in (
+        "Manual follow-up",
+        "Call about renewal quote.",
+        "Upcoming follow-up",
+        "Send onboarding check-in.",
+        "Unpaid invoice",
+        "CRM Work Queue Invoice",
+        "Stale quote",
+        "CRM Work Queue Quote",
+        "Expired service",
+        "Queue Expired Support",
+    ):
+        assert_text_visible(page, text, exact=False)
+    assert page.get_by_text("CRM Closed Work Queue Quote").count() == 0
+
+
+def capture_quote_status_actions(page: Page, live_server, stale_quote: Invoice) -> None:
+    """Close and reopen a quote while capturing the CRM quote status UI."""
+    response = page.goto(
+        absolute_url(
+            live_server,
+            reverse("crm:invoice-detail", kwargs={"pk": stale_quote.pk}),
+        )
+    )
+    assert_loaded(page, response, "Quote detail with status controls")
+    assert page.get_by_role("heading", name="Quote status").is_visible()
+    assert page.locator('select[name="quote_status"]').is_visible()
+    capture(page, "quote-status-open")
+
+    page.select_option('select[name="quote_status"]', str(int(QuoteStatus.SUPERSEDED)))
+    page.fill(
+        'textarea[name="quote_status_note"]',
+        "Customer accepted an alternative quote.",
+    )
+    page.click('input[name="close_quote"]')
+    page.wait_for_load_state("networkidle")
+    assert_no_server_error(page)
+    assert_text_visible(page, "Superseded", exact=False)
+    assert_text_visible(page, "Customer accepted an alternative quote.")
+    assert page.locator('input[name="reopen_quote"]').is_visible()
+    capture(page, "quote-status-closed")
+
+    page.click('input[name="reopen_quote"]')
+    page.wait_for_load_state("networkidle")
+    assert_no_server_error(page)
+    assert_text_visible(page, "Open", exact=False)
+    assert page.locator('input[name="close_quote"]').is_visible()
+    capture(page, "quote-status-reopened")
+
+
 class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
     """Browser coverage for existing CRM screens and workflows."""
 
@@ -535,6 +661,37 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         assert_loaded(page, response, "Income monthly report")
         assert page.get_by_role("heading", name="Daily Income").is_visible()
         capture(page, "income-month")
+
+    def test_work_queue_dashboard_and_full_page(
+        self, page: Page, live_server, crm_data: CrmData
+    ) -> None:
+        """Capture the CRM Today queue on dashboard, desktop, and mobile."""
+        stale_quote = create_work_queue_visual_data(crm_data)
+        log_in(page, live_server, crm_data.staff)
+        response = page.goto(absolute_url(live_server, reverse("crm:index")))
+        assert_loaded(page, response, "CRM dashboard with Today queue")
+        today_section = page.locator(
+            "section.crm-section",
+            has=page.get_by_role("heading", name="Today", exact=True),
+        )
+        assert today_section.get_by_text("Manual follow-up").is_visible()
+        assert today_section.get_by_text("Unpaid invoice").is_visible()
+        assert today_section.get_by_text("Expired service").first.is_visible()
+        capture(page, "work-queue-dashboard")
+
+        today_section.locator(f'a[href="{reverse("crm:work-queue")}"]').click()
+        page.wait_for_load_state("networkidle")
+        assert page.url == absolute_url(live_server, reverse("crm:work-queue"))
+        assert_work_queue_items(page)
+        capture(page, "work-queue")
+
+        capture_quote_status_actions(page, live_server, stale_quote)
+        page.set_viewport_size({"width": 390, "height": 900})
+        response = page.goto(absolute_url(live_server, reverse("crm:work-queue")))
+        assert_loaded(page, response, "Mobile CRM Today queue")
+        assert_no_horizontal_overflow(page)
+        assert page.get_by_role("heading", name="Today", exact=True).is_visible()
+        capture(page, "work-queue-mobile")
 
     def test_mobile_navigation_menu(
         self, page: Page, live_server, crm_data: CrmData

@@ -36,48 +36,28 @@
       </section>
     {% endif %}
 
-    {% if perms.payments.view_customer %}
+    {% if perms.payments.view_customer or perms.invoices.view_invoice or perms.weblate_web.view_service or perms.weblate_web.change_service %}
       <section class="crm-section crm-dashboard-section">
-        {% translate "Follow-ups" as section_title %}
+        {% translate "Today" as section_title %}
         {% include "crm/snippets/section_header.html" %}
+        {% translate "No work items" as empty_title %}
+        {% translate "There is no CRM work needing attention right now." as empty_message %}
+        {% include "crm/snippets/work_queue_items.html" with items=work_queue_items empty_title=empty_title empty_message=empty_message %}
         <div class="crm-dashboard-list">
           <div class="crm-dashboard-item">
             <a class="crm-dashboard-link"
-               href="{% url "crm:customer-list" kind="followups" %}"
-               aria-label="{% translate "All follow-ups" %}">
-              <strong>{% translate "All follow-ups" %}</strong>
-              <span>{% translate "Customers with scheduled next actions." %}</span>
+               href="{% url "crm:work-queue" %}"
+               aria-label="{% translate "Full work queue" %}">
+              <strong>{% translate "Full work queue" %}</strong>
+              <span>
+                {% if work_queue_more_count %}
+                  {% blocktranslate count count=work_queue_more_count %}{{ count }} more item needs attention.{% plural %}{{ count }} more items need attention.{% endblocktranslate %}
+                {% else %}
+                  {% translate "All suggested CRM work in one place." %}
+                {% endif %}
+              </span>
             </a>
           </div>
-          {% for customer in due_followups %}
-            <div class="crm-dashboard-item crm-dashboard-item--attention">
-              <a class="crm-dashboard-link" href="{{ customer.get_absolute_url }}">
-                <strong>{{ customer.verbose_name }}</strong>
-                <span>
-                  {% blocktranslate with date=customer.follow_up_at %}Due {{ date }}{% endblocktranslate %}
-                  {% if customer.follow_up_note %}- {{ customer.follow_up_note }}{% endif %}
-                </span>
-              </a>
-            </div>
-          {% empty %}
-            <div class="crm-dashboard-item">
-              <span class="crm-dashboard-link">
-                <strong>{% translate "No due follow-ups" %}</strong>
-                <span>{% translate "No customer follow-up is due right now." %}</span>
-              </span>
-            </div>
-          {% endfor %}
-          {% for customer in upcoming_followups %}
-            <div class="crm-dashboard-item">
-              <a class="crm-dashboard-link" href="{{ customer.get_absolute_url }}">
-                <strong>{{ customer.verbose_name }}</strong>
-                <span>
-                  {% blocktranslate with date=customer.follow_up_at %}Upcoming {{ date }}{% endblocktranslate %}
-                  {% if customer.follow_up_note %}- {{ customer.follow_up_note }}{% endif %}
-                </span>
-              </a>
-            </div>
-          {% endfor %}
         </div>
       </section>
     {% endif %}

@@ -30,6 +30,7 @@ from weblate_web.invoices.models import (
     Invoice,
     InvoiceCategory,
     InvoiceKind,
+    QuoteStatus,
 )
 from weblate_web.management.commands.zammad_sync import Command as ZammadSyncCommand
 from weblate_web.management.commands.zammad_sync import InvalidSubscriptionError
@@ -331,6 +332,69 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
         self.assertContains(response, invoice.number)
         self.assertNotContains(response, quote.number)
 
+    def test_invoice_list_shows_quote_status_badges(self):
+        open_quote = self.create_search_invoice(
+            customer_name="Open Quote Customer",
+            description="Open quote badge",
+            kind=InvoiceKind.QUOTE,
+        )
+        closed_quote = self.create_search_invoice(
+            customer_name="Closed Quote Customer",
+            description="Closed quote badge",
+            kind=InvoiceKind.QUOTE,
+        )
+        closed_quote.quote_status = QuoteStatus.SUPERSEDED
+        closed_quote.save(update_fields=["quote_status"])
+        converted_quote = self.create_search_invoice(
+            customer_name="Converted Quote Customer",
+            description="Converted quote badge",
+            kind=InvoiceKind.QUOTE,
+        )
+        converted_invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=converted_quote.customer,
+            currency=Currency.EUR,
+            parent=converted_quote,
+        )
+        converted_invoice.invoiceitem_set.create(
+            description="Converted quote invoice", quantity=1, unit_price=Decimal(100)
+        )
+
+        response = self.client.get(
+            reverse("crm:invoice-list", kwargs={"kind": "quote"})
+        )
+
+        self.assertContains(response, open_quote.number)
+        self.assertContains(response, closed_quote.number)
+        self.assertContains(response, converted_quote.number)
+        self.assertContains(
+            response,
+            '<span class="crm-badge crm-badge--warning">Open</span>',
+            html=True,
+        )
+        self.assertContains(
+            response,
+            '<span class="crm-badge crm-badge--muted">Superseded</span>',
+            html=True,
+        )
+        self.assertContains(
+            response,
+            '<span class="crm-badge crm-badge--success">Converted</span>',
+            html=True,
+        )
+
+    def test_invoice_status_badge_reuses_payment_lookup(self):
+        invoice = self.create_search_invoice(
+            customer_name="Badge Query Customer",
+            description="Invoice badge query",
+        )
+
+        with self.assertNumQueries(1):
+            self.assertEqual(invoice.status_badge_label, "Unpaid")
+            self.assertEqual(invoice.status_badge_class, "warning")
+            self.assertTrue(invoice.show_status_due_date)
+
 
 class CRMFollowUpTestCase(BaseCRMTestCase):
     user: User
@@ -425,7 +489,7 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
 
         response = self.client.get(reverse("crm:index"))
 
-        self.assertContains(response, "Follow-ups")
+        self.assertContains(response, "Today")
         self.assertContains(response, due.name)
         self.assertContains(response, "Send renewal quote")
 
@@ -565,6 +629,506 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
         self.assertEqual(
             interaction.details["previous_follow_up_note"], "Send renewal quote"
         )
+
+
+class CRMWorkQueueTestCase(BaseCRMTestCase):
+    user: User
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        self.client.force_login(self.user)
+
+    @staticmethod
+    def add_permission(
+        user: User, *, app_label: str, model: str, codename: str
+    ) -> None:
+        user.user_permissions.add(
+            Permission.objects.get(
+                codename=codename,
+                content_type__app_label=app_label,
+                content_type__model=model,
+            )
+        )
+
+    def create_queue_invoice(
+        self,
+        customer_name: str,
+        *,
+        age_days: int,
+        kind: InvoiceKind = InvoiceKind.INVOICE,
+        paid: bool = False,
+        converted: bool = False,
+    ) -> Invoice:
+        issue_date = timezone.localdate() - timedelta(days=age_days)
+        customer = self.create_customer(customer_name)
+        invoice = Invoice.objects.create(
+            kind=kind,
+            category=InvoiceCategory.HOSTING,
+            customer=customer,
+            currency=Currency.EUR,
+            issue_date=issue_date,
+            due_date=issue_date + timedelta(days=14),
+            tax_date=issue_date,
+        )
+        invoice.invoiceitem_set.create(
+            description="Queue invoice item", quantity=1, unit_price=Decimal(100)
+        )
+        invoice.refresh_from_db()
+        if paid:
+            Payment.objects.create(
+                customer=customer,
+                amount=100,
+                description="Processed invoice payment",
+                paid_invoice=invoice,
+                state=Payment.PROCESSED,
+            )
+        if converted:
+            child_invoice = Invoice.objects.create(
+                kind=InvoiceKind.INVOICE,
+                category=InvoiceCategory.HOSTING,
+                customer=customer,
+                currency=Currency.EUR,
+                parent=invoice,
+            )
+            child_invoice.invoiceitem_set.create(
+                description="Converted quote item",
+                quantity=1,
+                unit_price=Decimal(100),
+            )
+        return invoice
+
+    def create_queue_service(self, customer_name: str, *, expires) -> Service:
+        Package.objects.get_or_create(name="community", defaults={"price": 0})
+        package, _ = Package.objects.get_or_create(
+            name="basic",
+            defaults={
+                "verbose": "Basic support",
+                "price": 300,
+                "category": PackageCategory.PACKAGE_SUPPORT,
+            },
+        )
+        customer = self.create_customer(customer_name)
+        payment = Payment.objects.create(customer=customer, amount=1)
+        service = Service.objects.create(customer=customer)
+        service.subscription_set.create(
+            package=package,
+            expires=expires,
+            payment=payment,
+        )
+        return service
+
+    def test_work_queue_shows_manual_followups(self):
+        due = self.create_customer("DUE QUEUE CUSTOMER")
+        upcoming = self.create_customer("UPCOMING QUEUE CUSTOMER")
+        due.follow_up_at = timezone.now() - timedelta(hours=1)
+        due.follow_up_note = "Send renewal quote"
+        due.save(update_fields=["follow_up_at", "follow_up_note"])
+        upcoming.follow_up_at = timezone.now() + timedelta(days=1)
+        upcoming.follow_up_note = "Check payment"
+        upcoming.save(update_fields=["follow_up_at", "follow_up_note"])
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Follow-ups")
+        self.assertContains(response, due.name)
+        self.assertContains(response, "Manual follow-up")
+        self.assertContains(response, "Send renewal quote")
+        self.assertContains(response, upcoming.name)
+        self.assertContains(response, "Upcoming follow-up")
+        self.assertContains(response, "Check payment")
+
+    def test_work_queue_suggests_unpaid_old_invoices_only(self):
+        old_invoice = self.create_queue_invoice("OLD INVOICE CUSTOMER", age_days=8)
+        fresh_invoice = self.create_queue_invoice("FRESH INVOICE CUSTOMER", age_days=6)
+        paid_invoice = self.create_queue_invoice(
+            "PAID INVOICE CUSTOMER", age_days=8, paid=True
+        )
+        paid_retry_invoice = self.create_queue_invoice(
+            "PAID RETRY INVOICE CUSTOMER", age_days=8
+        )
+        Payment.objects.create(
+            customer=paid_retry_invoice.customer,
+            amount=100,
+            description="Pending payment attempt",
+            paid_invoice=paid_retry_invoice,
+            state=Payment.PENDING,
+        )
+        Payment.objects.create(
+            customer=paid_retry_invoice.customer,
+            amount=100,
+            description="Processed payment attempt",
+            paid_invoice=paid_retry_invoice,
+            state=Payment.PROCESSED,
+        )
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertContains(response, f"Invoice {old_invoice.number}")
+        self.assertContains(response, "OLD INVOICE CUSTOMER")
+        self.assertNotContains(response, fresh_invoice.number)
+        self.assertNotContains(response, paid_invoice.number)
+        self.assertNotContains(response, paid_retry_invoice.number)
+
+    def test_work_queue_suggests_stale_unconverted_quotes_only(self):
+        stale_quote = self.create_queue_invoice(
+            "STALE QUOTE CUSTOMER", age_days=15, kind=InvoiceKind.QUOTE
+        )
+        fresh_quote = self.create_queue_invoice(
+            "FRESH QUOTE CUSTOMER", age_days=13, kind=InvoiceKind.QUOTE
+        )
+        converted_quote = self.create_queue_invoice(
+            "CONVERTED QUOTE CUSTOMER",
+            age_days=15,
+            kind=InvoiceKind.QUOTE,
+            converted=True,
+        )
+        closed_quotes = []
+        for quote_status in (
+            QuoteStatus.LOST,
+            QuoteStatus.SUPERSEDED,
+            QuoteStatus.ACCEPTED_ELSEWHERE,
+            QuoteStatus.ARCHIVED,
+        ):
+            closed_quote = self.create_queue_invoice(
+                f"CLOSED QUOTE CUSTOMER {quote_status.label}",
+                age_days=15,
+                kind=InvoiceKind.QUOTE,
+            )
+            closed_quote.quote_status = quote_status
+            closed_quote.save(update_fields=["quote_status"])
+            closed_quotes.append(closed_quote)
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertContains(response, f"Quote {stale_quote.number}")
+        self.assertContains(response, "STALE QUOTE CUSTOMER")
+        self.assertNotContains(response, fresh_quote.number)
+        self.assertNotContains(response, converted_quote.number)
+        for closed_quote in closed_quotes:
+            self.assertNotContains(response, closed_quote.number)
+
+    def test_work_queue_suggests_expired_services_only(self):
+        expired_service = self.create_queue_service(
+            "EXPIRED SERVICE CUSTOMER", expires=timezone.now() - timedelta(days=1)
+        )
+        active_service = self.create_queue_service(
+            "ACTIVE SERVICE CUSTOMER", expires=timezone.now() + timedelta(days=1)
+        )
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertContains(response, "Expired service")
+        self.assertContains(response, expired_service.customer.name)
+        self.assertNotContains(response, active_service.customer.name)
+
+        response = self.client.get(
+            reverse("crm:service-list", kwargs={"kind": "expired"})
+        )
+
+        self.assertContains(response, expired_service.customer.name)
+        self.assertNotContains(response, active_service.customer.name)
+
+    def test_work_queue_service_items_require_detail_permission(self):
+        service = self.create_queue_service(
+            "SERVICE VIEW-ONLY CUSTOMER", expires=timezone.now() - timedelta(days=1)
+        )
+        view_user = User.objects.create_user(
+            username="service-viewer",
+            email="service-viewer@example.com",
+            is_staff=True,
+        )
+        self.add_permission(
+            view_user,
+            app_label="weblate_web",
+            model="service",
+            codename="view_service",
+        )
+        self.client.force_login(view_user)
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, service.customer.name)
+
+        change_user = User.objects.create_user(
+            username="service-changer",
+            email="service-changer@example.com",
+            is_staff=True,
+        )
+        self.add_permission(
+            change_user,
+            app_label="weblate_web",
+            model="service",
+            codename="change_service",
+        )
+        self.client.force_login(change_user)
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, service.customer.name)
+
+        response = self.client.get(reverse("crm:index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Today")
+        self.assertContains(response, reverse("crm:work-queue"))
+        self.assertContains(response, service.customer.name)
+
+    def test_work_queue_filters_items_by_permission(self):
+        due = self.create_customer("PERMISSION FOLLOWUP CUSTOMER")
+        due.follow_up_at = timezone.now() - timedelta(hours=1)
+        due.save(update_fields=["follow_up_at"])
+        invoice = self.create_queue_invoice("PERMISSION INVOICE CUSTOMER", age_days=8)
+        service = self.create_queue_service(
+            "PERMISSION SERVICE CUSTOMER", expires=timezone.now() - timedelta(days=1)
+        )
+        readonly_user = User.objects.create_user(
+            username="invoice-viewer",
+            email="invoice-viewer@example.com",
+            is_staff=True,
+        )
+        self.add_permission(
+            readonly_user,
+            app_label="invoices",
+            model="invoice",
+            codename="view_invoice",
+        )
+        self.client.force_login(readonly_user)
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, invoice.number)
+        self.assertNotContains(response, due.name)
+        self.assertNotContains(response, service.customer.name)
+
+    def test_dashboard_limits_items_and_links_full_queue(self):
+        now = timezone.now()
+        customers = []
+        for index in range(11):
+            customer = self.create_customer(f"QUEUE CUSTOMER {index:02d}")
+            customer.follow_up_at = now - timedelta(days=11 - index)
+            customer.save(update_fields=["follow_up_at"])
+            customers.append(customer)
+
+        response = self.client.get(reverse("crm:index"))
+
+        self.assertContains(response, "Full work queue")
+        self.assertContains(response, "1 more item needs attention.")
+        for customer in customers[:10]:
+            self.assertContains(response, customer.name)
+        self.assertNotContains(response, customers[10].name)
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertContains(response, customers[10].name)
+
+
+class CRMQuoteStatusTestCase(BaseCRMTestCase):
+    user: User
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        self.client.force_login(self.user)
+
+    @staticmethod
+    def add_invoice_permission(user: User, codename: str) -> None:
+        user.user_permissions.add(
+            Permission.objects.get(
+                codename=codename,
+                content_type__app_label="invoices",
+                content_type__model="invoice",
+            )
+        )
+
+    def create_invoice(
+        self, amount: Decimal, kind: InvoiceKind = InvoiceKind.INVOICE
+    ) -> Invoice:
+        invoice = Invoice.objects.create(
+            kind=kind,
+            category=InvoiceCategory.HOSTING,
+            customer=self.create_customer(),
+            currency=Currency.EUR,
+        )
+        invoice.invoiceitem_set.create(description="Quote status", unit_price=amount)
+        return invoice
+
+    def test_quote_conversion_requires_confirmation(self):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+
+        response = self.client.post(quote.get_absolute_url(), follow=True)
+
+        self.assertEqual(quote.invoice_set.count(), 0)
+        self.assertContains(
+            response, "Please confirm that you want to issue a final invoice."
+        )
+
+    def test_invoice_detail_breadcrumb_links_to_kind_list(self):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+        invoice = self.create_invoice(Decimal(42), kind=InvoiceKind.INVOICE)
+
+        response = self.client.get(quote.get_absolute_url())
+
+        self.assertContains(
+            response,
+            f'<a href="{reverse("crm:invoice-list", kwargs={"kind": "quote"})}">'
+            "Quotes</a>",
+            html=True,
+        )
+
+        response = self.client.get(invoice.get_absolute_url())
+
+        self.assertContains(
+            response,
+            f'<a href="{reverse("crm:invoice-list", kwargs={"kind": "invoice"})}">'
+            "Invoices</a>",
+            html=True,
+        )
+
+    def test_converted_quote_detail_shows_converted_status(self):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+        invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=quote.customer,
+            currency=Currency.EUR,
+            parent=quote,
+        )
+        invoice.invoiceitem_set.create(
+            description="Converted quote item", quantity=1, unit_price=Decimal(42)
+        )
+
+        response = self.client.get(quote.get_absolute_url())
+
+        self.assertContains(response, "Quote status")
+        self.assertContains(response, "Converted")
+        self.assertContains(
+            response,
+            '<span class="crm-badge crm-badge--success">Converted</span>',
+            html=True,
+        )
+        self.assertNotContains(response, "Close quote")
+        self.assertNotContains(response, "Issue invoice from quote")
+
+    def test_quote_detail_closes_and_reopens_quote(self):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+
+        response = self.client.get(quote.get_absolute_url())
+
+        self.assertContains(response, "Quote status")
+        self.assertContains(response, "Open")
+        self.assertContains(
+            response,
+            '<span class="crm-badge crm-badge--warning">Open</span>',
+            html=True,
+        )
+        self.assertContains(response, "Close quote")
+        self.assertContains(response, "Issue invoice from quote")
+
+        response = self.client.post(
+            quote.get_absolute_url(),
+            {
+                "close_quote": "1",
+                "quote_status": QuoteStatus.SUPERSEDED,
+                "quote_status_note": "Customer accepted a different quote.",
+            },
+            follow=True,
+        )
+
+        quote.refresh_from_db()
+        self.assertEqual(quote.quote_status, QuoteStatus.SUPERSEDED)
+        self.assertEqual(
+            quote.quote_status_note, "Customer accepted a different quote."
+        )
+        self.assertContains(response, "Superseded")
+        self.assertContains(
+            response,
+            '<span class="crm-badge crm-badge--muted">Superseded</span>',
+            html=True,
+        )
+        self.assertContains(response, "Customer accepted a different quote.")
+        self.assertContains(response, "Reopen quote")
+        self.assertNotContains(response, "Issue invoice from quote")
+        interaction = Interaction.objects.get(customer=quote.customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.QUOTE_STATUS)
+        self.assertEqual(
+            interaction.summary, f"Quote {quote.number} marked as Superseded"
+        )
+        self.assertEqual(
+            interaction.details["quote_status_note"],
+            "Customer accepted a different quote.",
+        )
+
+        response = self.client.post(
+            quote.get_absolute_url(), {"reopen_quote": "1"}, follow=True
+        )
+
+        quote.refresh_from_db()
+        self.assertEqual(quote.quote_status, QuoteStatus.OPEN)
+        self.assertEqual(quote.quote_status_note, "")
+        self.assertContains(response, "Open")
+        self.assertContains(response, "Close quote")
+        self.assertContains(response, "Issue invoice from quote")
+        interactions = list(Interaction.objects.filter(customer=quote.customer))
+        self.assertEqual(len(interactions), 2)
+        reopen_interaction = interactions[0]
+        self.assertEqual(reopen_interaction.origin, Interaction.Origin.QUOTE_STATUS)
+        self.assertEqual(
+            reopen_interaction.summary, f"Quote {quote.number} marked as Open"
+        )
+        self.assertEqual(reopen_interaction.details["quote_status"], "Open")
+        self.assertEqual(
+            reopen_interaction.details["previous_quote_status"], "Superseded"
+        )
+        self.assertEqual(
+            reopen_interaction.details["previous_quote_status_note"],
+            "Customer accepted a different quote.",
+        )
+
+    def test_quote_detail_status_requires_change_permission(self):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+        readonly_user = User.objects.create_user(
+            username="invoice-viewer",
+            email="invoice-viewer@example.com",
+            is_staff=True,
+        )
+        self.add_invoice_permission(readonly_user, "view_invoice")
+        self.client.force_login(readonly_user)
+
+        response = self.client.get(quote.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Quote status")
+        self.assertContains(response, "Open")
+        self.assertNotContains(response, "Close quote")
+
+        response = self.client.post(
+            quote.get_absolute_url(),
+            {
+                "close_quote": "1",
+                "quote_status": QuoteStatus.LOST,
+                "quote_status_note": "No budget.",
+            },
+        )
+
+        self.assertEqual(response.status_code, 403)
+        quote.refresh_from_db()
+        self.assertEqual(quote.quote_status, QuoteStatus.OPEN)
+        self.assertEqual(quote.quote_status_note, "")
+
+    def test_invoice_detail_hides_quote_status_controls_for_invoices(self):
+        invoice = self.create_invoice(Decimal(42), kind=InvoiceKind.INVOICE)
+
+        response = self.client.get(invoice.get_absolute_url())
+
+        self.assertNotContains(response, "Close quote")
+        self.assertNotContains(response, "Reopen quote")
 
 
 class CRMTestCase(BaseCRMTestCase):
@@ -1350,16 +1914,6 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, service.get_absolute_url())
         subscription1.refresh_from_db()
         self.assertFalse(subscription1.enabled)
-
-    def test_quote_conversion_requires_confirmation(self):
-        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
-
-        response = self.client.post(quote.get_absolute_url(), follow=True)
-
-        self.assertEqual(quote.invoice_set.count(), 0)
-        self.assertContains(
-            response, "Please confirm that you want to issue a final invoice."
-        )
 
     def test_service_invoice_requires_confirmation(self):
         service = self.create_extended_service()

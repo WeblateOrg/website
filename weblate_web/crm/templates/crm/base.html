@@ -50,6 +50,10 @@
           <nav class="crm-nav" aria-label="{% translate "CRM navigation" %}">
             <a href="{% url "crm:index" %}"
                class="{% if request.resolver_match.url_name == "index" %}is-active{% endif %}">{% translate "Dashboard" %}</a>
+            {% if perms.payments.view_customer or perms.invoices.view_invoice or perms.weblate_web.view_service or perms.weblate_web.change_service %}
+              <a href="{% url "crm:work-queue" %}"
+                 class="{% if request.resolver_match.url_name == "work-queue" %}is-active{% endif %}">{% translate "Today" %}</a>
+            {% endif %}
             {% if perms.payments.view_customer %}
               <a href="{% url "crm:customer-list" kind="all" %}"
                  aria-label="{% translate "Customer records" %}"

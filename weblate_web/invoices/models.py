@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import datetime
 import uuid
+from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
 from shutil import copyfile
@@ -40,7 +41,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
-from django.utils.translation import gettext, override
+from django.utils.translation import gettext, gettext_lazy, override, pgettext_lazy
 from lxml import etree
 from pycheval import (
     BankAccount,
@@ -282,6 +283,34 @@ class InvoiceCategory(models.IntegerChoices):
     DONATE = 4, "Donation"
 
 
+class QuoteStatus(models.IntegerChoices):
+    OPEN = 0, pgettext_lazy("Quote status", "Open")
+    LOST = 10, pgettext_lazy("Quote status", "Lost")
+    SUPERSEDED = 20, pgettext_lazy("Quote status", "Superseded")
+    ACCEPTED_ELSEWHERE = 30, pgettext_lazy("Quote status", "Accepted elsewhere")
+    ARCHIVED = 40, pgettext_lazy("Quote status", "Archived")
+
+    @staticmethod
+    def from_str(value: str) -> QuoteStatus:
+        return QuoteStatus(int(value))
+
+
+QUOTE_STATUS_BADGE_CLASS = {
+    QuoteStatus.OPEN: "warning",
+    QuoteStatus.LOST: "danger",
+    QuoteStatus.SUPERSEDED: "muted",
+    QuoteStatus.ACCEPTED_ELSEWHERE: "muted",
+    QuoteStatus.ARCHIVED: "muted",
+}
+
+
+@dataclass(frozen=True)
+class InvoiceStatusBadge:
+    label: object
+    css_class: str
+    show_due_date: bool = False
+
+
 class Discount(models.Model):
     description = models.CharField(max_length=200, unique=True)
     percents = models.IntegerField(
@@ -338,6 +367,17 @@ class Invoice(models.Model):  # noqa: PLR0904
     customer_note = models.TextField(
         blank=True,
         help_text="Text will be shown on the generated invoice",
+    )
+    quote_status = models.IntegerField(
+        choices=QuoteStatus,
+        default=QuoteStatus.OPEN,
+        verbose_name=gettext_lazy("Quote status"),
+        help_text=gettext_lazy("CRM status for quote follow-up."),
+    )
+    quote_status_note = models.TextField(
+        blank=True,
+        verbose_name=gettext_lazy("Quote status note"),
+        help_text=gettext_lazy("Internal note explaining why the quote was closed."),
     )
     discount = models.ForeignKey(
         Discount,
@@ -542,6 +582,45 @@ class Invoice(models.Model):  # noqa: PLR0904
     @property
     def display_total_amount(self) -> str:
         return self.render_amount(self.total_amount)
+
+    @cached_property
+    def is_converted_quote(self) -> bool:
+        if self.kind != InvoiceKind.QUOTE:
+            return False
+        has_child_invoice = getattr(self, "has_child_invoice", None)
+        if has_child_invoice is not None:
+            return bool(has_child_invoice)
+        return self.invoice_set.exists()
+
+    @cached_property
+    def status_badge(self) -> InvoiceStatusBadge:
+        if self.kind == InvoiceKind.QUOTE:
+            if self.is_converted_quote:
+                return InvoiceStatusBadge(gettext("Converted"), "success")
+            quote_status = QuoteStatus(self.quote_status)
+            return InvoiceStatusBadge(
+                self.get_quote_status_display(),
+                QUOTE_STATUS_BADGE_CLASS[quote_status],
+            )
+        if self.is_paid:
+            return InvoiceStatusBadge(gettext("Paid"), "success")
+        if self.is_payable:
+            if self.due_date > now().date():
+                return InvoiceStatusBadge(gettext("Unpaid"), "warning", True)
+            return InvoiceStatusBadge(gettext("Overdue"), "danger", True)
+        return InvoiceStatusBadge("", "")
+
+    @property
+    def status_badge_label(self) -> object:
+        return self.status_badge.label
+
+    @property
+    def status_badge_class(self) -> str:
+        return self.status_badge.css_class
+
+    @property
+    def show_status_due_date(self) -> bool:
+        return self.status_badge.show_due_date
 
     @cached_property
     def all_items(self) -> models.QuerySet[InvoiceItem]:

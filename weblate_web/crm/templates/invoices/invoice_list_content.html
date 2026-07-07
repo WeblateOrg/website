@@ -6,19 +6,14 @@
       <a href="{{ invoice.get_absolute_url }}">{{ invoice.number }}</a>
     </th>
     <td>
-      {% if invoice.is_paid %}
-        <span class="crm-badge crm-badge--success">{% translate "Paid" %}</span>
-      {% elif invoice.is_payable %}
-        {% if invoice.due_date > today.date %}
-          <span class="crm-badge crm-badge--warning">{% translate "Unpaid" %}</span>
-          <span class="crm-muted">{{ invoice.due_date }}</span>
+      {% with status_badge_label=invoice.status_badge_label status_badge_class=invoice.status_badge_class %}
+        {% if status_badge_label %}
+          <span class="crm-badge crm-badge--{{ status_badge_class }}">{{ status_badge_label }}</span>
+          {% if invoice.show_status_due_date %}<span class="crm-muted">{{ invoice.due_date }}</span>{% endif %}
         {% else %}
-          <span class="crm-badge crm-badge--danger">{% translate "Overdue" %}</span>
-          <span class="crm-muted">{{ invoice.due_date }}</span>
+          <span class="crm-muted">-</span>
         {% endif %}
-      {% else %}
-        <span class="crm-muted">-</span>
-      {% endif %}
+      {% endwith %}
     </td>
     <td>{{ invoice.get_kind_display }}</td>
     <td class="crm-number">{{ invoice.display_total_amount }}</td>
