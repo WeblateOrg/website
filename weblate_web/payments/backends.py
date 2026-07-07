@@ -368,6 +368,9 @@ class Backend:
             return False
         if status:
             return self.success()
+        if self.get_duplicate_invoice_payment():
+            self.failure(notify=False)
+            return False
         self.failure()
         return False
 
@@ -561,18 +564,6 @@ class Backend:
             return None
         return self.payment.draft_invoice, paid_payment
 
-    def reject_other_invoice_payments(self) -> None:
-        invoice = self.payment.paid_invoice
-        if invoice is None:
-            return
-        reason = gettext("Invoice already paid")
-        for payment in invoice.draft_payment_set.filter(
-            backend__gt="", state__in={Payment.NEW, Payment.PENDING}
-        ).exclude(pk=self.payment.pk):
-            payment.state = Payment.REJECTED
-            payment.details["reject_reason"] = reason
-            payment.save(update_fields=["state", "details"])
-
     def success(self) -> bool:
         if duplicate_invoice_payment := self.get_duplicate_invoice_payment():
             invoice, paid_payment = duplicate_invoice_payment
@@ -585,16 +576,16 @@ class Backend:
 
         self.generate_invoice()
         self.payment.save()
-        self.reject_other_invoice_payments()
 
         self.send_notification("payment_completed")
         return True
 
-    def failure(self) -> None:
+    def failure(self, *, notify: bool = True) -> None:
         self.payment.state = Payment.REJECTED
         self.payment.save()
 
-        self.send_notification("payment_failed")
+        if notify:
+            self.send_notification("payment_failed")
 
 
 @register_backend
@@ -824,6 +815,7 @@ class FioBank(Backend):
                         )
 
                 processed = False
+                duplicate_matches: list[Invoice] = []
 
                 # Process all matches
                 for invoice in Invoice.objects.filter(
@@ -843,19 +835,13 @@ class FioBank(Backend):
                             f"{invoice.number}: skipping, underpaid, {amount} instead of {invoice.total_amount}"
                         )
                         continue
-                    if invoice.paid_payment_set.exists():
-                        cls.record_duplicate_bank_payment(
-                            invoice, entry, amount, currency
-                        )
-                        processed = True
-                        continue
-                    if invoice.draft_payment_set.filter(
-                        paid_invoice__isnull=False
-                    ).exists():
-                        cls.record_duplicate_bank_payment(
-                            invoice, entry, amount, currency
-                        )
-                        processed = True
+                    if (
+                        invoice.paid_payment_set.exists()
+                        or invoice.draft_payment_set.filter(
+                            paid_invoice__isnull=False
+                        ).exists()
+                    ):
+                        duplicate_matches.append(invoice)
                         continue
 
                     # Fetch payment(s)
@@ -883,6 +869,13 @@ class FioBank(Backend):
                     backend.success()
                     processed = True
                     break
+
+                if not processed and duplicate_matches:
+                    for invoice in duplicate_matches:
+                        cls.record_duplicate_bank_payment(
+                            invoice, entry, amount, currency
+                        )
+                    processed = True
 
                 # Warn about not processed payment
                 if not processed and entry["account_number"] not in SKIP_ACCOUNTS:

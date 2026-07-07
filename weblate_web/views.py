@@ -393,6 +393,19 @@ class PaymentView(FormView, SingleObjectMixin):
             f"{self.object.customer.origin}?payment={self.object.pk}"
         )
 
+    def is_draft_invoice_paid(self) -> bool:
+        draft_invoice = self.object.draft_invoice
+        return draft_invoice is not None and draft_invoice.is_paid
+
+    def redirect_paid_draft_invoice(self) -> HttpResponse:
+        messages.info(
+            self.request,
+            gettext(
+                "This invoice has already been paid. Please sign in to view details."
+            ),
+        )
+        return redirect("home")
+
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         kwargs["can_pay"] = self.can_pay
@@ -440,6 +453,8 @@ class PaymentView(FormView, SingleObjectMixin):
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         with transaction.atomic():
             self.object = self.get_object()
+            if self.object.state == Payment.NEW and self.is_draft_invoice_paid():
+                return self.redirect_paid_draft_invoice()
             customer = self.object.customer
             self.can_pay = not customer.is_empty
             result = self.validate_customer(customer)
@@ -584,6 +599,8 @@ class CompleteView(PaymentView):
 
             # User should choose method for new payment
             if self.object.state == Payment.NEW:
+                if self.is_draft_invoice_paid():
+                    return self.redirect_paid_draft_invoice()
                 return redirect("payment", pk=self.object.pk)
 
             # Get backend and refetch payment from the database
@@ -604,6 +621,8 @@ class CompleteView(PaymentView):
             backend.complete(self.request)
             # If payment is still pending, display info page
             if backend.payment.state == Payment.PENDING:
+                if self.is_draft_invoice_paid():
+                    return self.redirect_paid_draft_invoice()
                 if backend.name == "fio-bank":
                     messages.info(
                         request,
