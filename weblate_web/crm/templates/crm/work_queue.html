@@ -1,0 +1,30 @@
+{% extends "crm/base.html" %}
+
+{% load i18n %}
+
+{% block breadcrum_list %}
+  <span aria-hidden="true">›</span><a href="{% url "crm:work-queue" %}">{% translate "Today" %}</a>
+{% endblock breadcrum_list %}
+
+{% block content %}
+  {% if work_queue_sections %}
+    <div class="crm-dashboard-grid">
+      {% for section in work_queue_sections %}
+        <section class="crm-section crm-dashboard-section">
+          {% with section_title=section.title %}
+            {% include "crm/snippets/section_header.html" %}
+          {% endwith %}
+          {% translate "No work items" as empty_title %}
+          {% translate "There is no CRM work in this section." as empty_message %}
+          {% include "crm/snippets/work_queue_items.html" with items=section.items empty_title=empty_title empty_message=empty_message %}
+        </section>
+      {% endfor %}
+    </div>
+  {% else %}
+    <section class="crm-section">
+      {% translate "No work items" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      <p>{% translate "There is no CRM work needing attention right now." %}</p>
+    </section>
+  {% endif %}
+{% endblock content %}

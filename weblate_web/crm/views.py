@@ -15,8 +15,10 @@ from django.db import DataError, IntegrityError, transaction
 from django.db.models import (
     Case,
     DecimalField,
+    Exists,
     ExpressionWrapper,
     F,
+    OuterRef,
     Q,
     Sum,
     Value,
@@ -45,11 +47,19 @@ from weblate_web.crm.forms import (
     CustomerUserForm,
     InvoiceConfirmationForm,
     ManualInteractionForm,
+    QuoteStatusForm,
     RefundConfirmationForm,
     ServiceMaintenanceWindowForm,
     ServiceSubscriptionActionForm,
 )
 from weblate_web.crm.hosted import HostedUserEnsureError, ensure_hosted_user
+from weblate_web.crm.workqueue import (
+    DASHBOARD_WORK_QUEUE_LIMIT,
+    get_crm_work_items,
+    get_crm_work_queue_sections,
+    get_expired_service_ids,
+    get_unpaid_invoice_queryset,
+)
 from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import (
@@ -57,6 +67,7 @@ from weblate_web.invoices.models import (
     Invoice,
     InvoiceCategory,
     InvoiceKind,
+    QuoteStatus,
 )
 from weblate_web.models import (
     PackageCategory,
@@ -132,9 +143,21 @@ class IndexView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
-        if self.request.user.has_perm("payments.view_customer"):
-            context["due_followups"] = Customer.objects.due_followups()[:10]
-            context["upcoming_followups"] = Customer.objects.upcoming_followups()[:5]
+        work_queue_items = get_crm_work_items(self.request.user)
+        context["work_queue_items"] = work_queue_items[:DASHBOARD_WORK_QUEUE_LIMIT]
+        context["work_queue_more_count"] = max(
+            len(work_queue_items) - DASHBOARD_WORK_QUEUE_LIMIT, 0
+        )
+        return context
+
+
+class WorkQueueView(CRMMixin, TemplateView):  # type: ignore[misc]
+    template_name = "crm/work_queue.html"
+    title = "Today"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        context["work_queue_sections"] = get_crm_work_queue_sections(self.request.user)
         return context
 
 
@@ -169,19 +192,7 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
             case "all":
                 return sorted(qs, key=attrgetter("package_kind"))
             case "expired":
-                possible_subscriptions = (
-                    Subscription.objects.customer_services()
-                    .filter(expires__lte=timezone.now(), enabled=True)
-                    .exclude(payment=None)
-                )
-                subscriptions = []
-                for subscription in possible_subscriptions:
-                    # Skip one-time payments and the ones with recurrence configured
-                    if not subscription.package.get_repeat():
-                        continue
-                    if not subscription.could_be_obsolete():
-                        subscriptions.append(subscription.pk)
-                expired = qs.filter(subscription__id__in=subscriptions).distinct()
+                expired = qs.filter(pk__in=get_expired_service_ids()).distinct()
                 return sorted(expired, key=attrgetter("package_kind"))
             case "extended":
                 return qs.filter(
@@ -376,13 +387,13 @@ class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
 
     def get_queryset(self):
         qs = super().get_queryset().order_by("-number")
+        if self.kwargs["kind"] in {"all", "quote"}:
+            qs = qs.annotate(
+                has_child_invoice=Exists(Invoice.objects.filter(parent=OuterRef("pk")))
+            )
         match self.kwargs["kind"]:
             case "unpaid":
-                qs = qs.filter(
-                    Q(paid_payment_set__state__in={Payment.NEW, Payment.PENDING})
-                    | Q(paid_payment_set=None),
-                    kind=InvoiceKind.INVOICE,
-                )
+                qs = get_unpaid_invoice_queryset().order_by("-number")
             case "quote":
                 qs = qs.filter(kind=InvoiceKind.QUOTE)
             case "invoice":
@@ -407,15 +418,37 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     refund_permission = "payments.add_payment"
+    quote_status_permission = "invoices.change_invoice"
     title = "Invoice detail"
 
     def get_title(self) -> str:
         return f"{self.object.get_kind_display()} {self.object.number}"
 
+    def is_unconverted_quote(self) -> bool:
+        return (
+            self.object.kind == InvoiceKind.QUOTE and not self.object.is_converted_quote
+        )
+
     def can_convert(self) -> bool:
         return (
-            self.object.kind == InvoiceKind.QUOTE
-            and not self.object.invoice_set.exists()
+            self.is_unconverted_quote() and self.object.quote_status == QuoteStatus.OPEN
+        )
+
+    def can_update_quote_status_permission(self) -> bool:
+        return self.request.user.has_perm(self.quote_status_permission)
+
+    def can_close_quote(self) -> bool:
+        return (
+            self.can_update_quote_status_permission()
+            and self.is_unconverted_quote()
+            and self.object.quote_status == QuoteStatus.OPEN
+        )
+
+    def can_reopen_quote(self) -> bool:
+        return (
+            self.can_update_quote_status_permission()
+            and self.is_unconverted_quote()
+            and self.object.quote_status != QuoteStatus.OPEN
         )
 
     def can_confirm_refund(self) -> bool:
@@ -430,6 +463,8 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        context["invoice_kind_quote"] = int(InvoiceKind.QUOTE)
+        context["invoice_kind_invoice"] = int(InvoiceKind.INVOICE)
         if self.can_convert():
             context["convert_form"] = CustomerReferenceForm(
                 self.request.POST if self.request.method == "POST" else None,
@@ -446,7 +481,71 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                 and "confirm_refund" in self.request.POST
                 else None
             )
+        if self.can_close_quote():
+            context["quote_status_form"] = QuoteStatusForm(
+                self.request.POST
+                if self.request.method == "POST" and "close_quote" in self.request.POST
+                else None
+            )
+        context["can_reopen_quote"] = self.can_reopen_quote()
         return context
+
+    def create_quote_status_interaction(
+        self, *, previous_status: QuoteStatus, previous_note: str
+    ) -> None:
+        quote_status = QuoteStatus(self.object.quote_status)
+        self.object.customer.interaction_set.create(
+            origin=Interaction.Origin.QUOTE_STATUS,
+            summary=f"Quote {self.object.number} marked as {quote_status.label}",
+            content=self.object.quote_status_note,
+            details={
+                "invoice": self.object.number,
+                "quote_status": str(quote_status.label),
+                "quote_status_note": self.object.quote_status_note,
+                "previous_quote_status": str(previous_status.label),
+                "previous_quote_status_note": previous_note,
+            },
+            user=self.request.user,
+        )
+
+    def close_quote(self, request, *args, **kwargs):
+        if not self.can_update_quote_status_permission():
+            raise PermissionDenied
+        if not self.can_close_quote():
+            return redirect(self.object)
+
+        form = QuoteStatusForm(request.POST)
+        if not form.is_valid():
+            show_form_errors(request, form)
+            return self.get(request, *args, **kwargs)
+
+        previous_status = QuoteStatus(self.object.quote_status)
+        previous_note = self.object.quote_status_note
+        self.object.quote_status = form.cleaned_data["quote_status"]
+        self.object.quote_status_note = form.cleaned_data["quote_status_note"]
+        self.object.save(update_fields=["quote_status", "quote_status_note"])
+        self.create_quote_status_interaction(
+            previous_status=previous_status,
+            previous_note=previous_note,
+        )
+        return redirect(self.object)
+
+    def reopen_quote(self, request):
+        if not self.can_update_quote_status_permission():
+            raise PermissionDenied
+        if not self.can_reopen_quote():
+            return redirect(self.object)
+
+        previous_status = QuoteStatus(self.object.quote_status)
+        previous_note = self.object.quote_status_note
+        self.object.quote_status = QuoteStatus.OPEN
+        self.object.quote_status_note = ""
+        self.object.save(update_fields=["quote_status", "quote_status_note"])
+        self.create_quote_status_interaction(
+            previous_status=previous_status,
+            previous_note=previous_note,
+        )
+        return redirect(self.object)
 
     def confirm_refund(self, description: str) -> Payment | None:
         if not self.can_confirm_refund_permission():
@@ -505,8 +604,20 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
 
         return payment
 
+    def handle_quote_status_post(self, request, *args, **kwargs):
+        if "close_quote" in request.POST:
+            return self.close_quote(request, *args, **kwargs)
+        if "reopen_quote" in request.POST:
+            return self.reopen_quote(request)
+        return None
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if quote_status_response := self.handle_quote_status_post(
+            request, *args, **kwargs
+        ):
+            return quote_status_response
+
         if "confirm_refund" in request.POST:
             if not self.can_confirm_refund_permission():
                 raise PermissionDenied

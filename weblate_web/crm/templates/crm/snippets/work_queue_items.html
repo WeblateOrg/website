@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="crm-dashboard-list">
+  {% for item in items %}
+    <div class="crm-dashboard-item{% if item.attention %} crm-dashboard-item--attention{% endif %}">
+      <a class="crm-dashboard-link" href="{{ item.url }}">
+        <strong>{{ item.title }}</strong>
+        <span>
+          {{ item.label }} - {{ item.date }}
+          {% if item.summary %}- {{ item.summary }}{% endif %}
+        </span>
+      </a>
+    </div>
+  {% empty %}
+    <div class="crm-dashboard-item">
+      <span class="crm-dashboard-link">
+        <strong>{{ empty_title }}</strong>
+        <span>{{ empty_message }}</span>
+      </span>
+    </div>
+  {% endfor %}
+</div>

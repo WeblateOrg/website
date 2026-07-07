@@ -4,7 +4,13 @@
 
 {% block breadcrum_list %}
   <span aria-hidden="true">›</span>
-  <a href="{% url "crm:invoice-list" kind="all" %}">{% translate "Invoices" %}</a>
+  {% if object.kind == invoice_kind_quote %}
+    <a href="{% url "crm:invoice-list" kind="quote" %}">{% translate "Quotes" %}</a>
+  {% elif object.kind == invoice_kind_invoice %}
+    <a href="{% url "crm:invoice-list" kind="invoice" %}">{% translate "Invoices" %}</a>
+  {% else %}
+    <a href="{% url "crm:invoice-list" kind="all" %}">{% translate "Invoices" %}</a>
+  {% endif %}
 {% endblock breadcrum_list %}
 
 {% block page_actions %}
@@ -29,11 +35,11 @@
     <p class="crm-summary-line">
       <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
       <span>{{ object.get_kind_display }}</span>
-      {% if object.is_paid %}
-        <span class="crm-badge crm-badge--success">{% translate "Paid" %}</span>
-      {% elif object.is_payable %}
-        <span class="crm-badge crm-badge--warning">{% translate "Unpaid" %}</span>
-      {% endif %}
+      {% with status_badge_label=object.status_badge_label status_badge_class=object.status_badge_class %}
+        {% if status_badge_label %}
+          <span class="crm-badge crm-badge--{{ status_badge_class }}">{{ status_badge_label }}</span>
+        {% endif %}
+      {% endwith %}
       <span>{{ object.get_category_display }}</span>
     </p>
     <dl class="crm-detail-grid">
@@ -101,6 +107,22 @@
           </dd>
         </div>
       {% endif %}
+      {% if object.kind == invoice_kind_quote %}
+        <div>
+          <dt>{% translate "Quote status" %}</dt>
+          <dd>
+            {{ object.status_badge_label }}
+          </dd>
+        </div>
+        {% if object.quote_status_note %}
+          <div>
+            <dt>{% translate "Quote status note" %}</dt>
+            <dd>
+              {{ object.quote_status_note|linebreaksbr }}
+            </dd>
+          </div>
+        {% endif %}
+      {% endif %}
     </dl>
   </section>
 
@@ -137,6 +159,72 @@
     </div>
   </section>
 
+  {% if convert_form or quote_status_form or can_reopen_quote %}
+    <section class="crm-section content">
+      {% translate "Quote actions" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      <div class="crm-form-grid">
+        {% if convert_form %}
+          {% translate "This creates a final invoice matching this quote. Use Download if you only need the quote PDF." as convert_invoice_message %}
+          <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--compact"
+                method="post"
+                data-crm-invoice-confirm
+                data-crm-invoice-always
+                data-crm-invoice-confirm-message="{{ convert_invoice_message }}">
+            <h3>{% translate "Issue invoice from quote" %}</h3>
+            <p>
+              {% blocktranslate %}This creates a final invoice matching this quote. Use Download if you only need the quote PDF.{% endblocktranslate %}
+            </p>
+            {% csrf_token %}
+            <div class="crm-form-panel__body">
+              {{ convert_form }}
+              <input type="hidden" name="confirm_invoice" value="">
+            </div>
+            <div class="crm-form-panel__actions">
+              {% translate "Issue invoice" as issue_invoice_label %}
+              <input class="crm-button"
+                     type="submit"
+                     name="invoice"
+                     value="{{ issue_invoice_label }}">
+            </div>
+          </form>
+        {% endif %}
+        {% if quote_status_form %}
+          <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--compact"
+                method="post">
+            <h3>{% translate "Quote status" %}</h3>
+            <p>{% translate "Use this when a quote should no longer appear as suggested follow-up work." %}</p>
+            {% csrf_token %}
+            <div class="crm-form-panel__body">{{ quote_status_form }}</div>
+            <div class="crm-form-panel__actions">
+              {% translate "Close quote" as close_quote_label %}
+              <input class="crm-button"
+                     type="submit"
+                     name="close_quote"
+                     value="{{ close_quote_label }}">
+            </div>
+          </form>
+        {% elif can_reopen_quote %}
+          <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--compact"
+                method="post">
+            <h3>{% translate "Quote status" %}</h3>
+            {% csrf_token %}
+            <div class="crm-form-panel__body">
+              <p>{% translate "This quote is closed and hidden from stale quote suggestions." %}</p>
+            </div>
+            <div class="crm-form-panel__actions">
+              {% translate "Reopen quote" as reopen_quote_label %}
+              <input class="crm-button"
+                     type="submit"
+                     name="reopen_quote"
+                     value="{{ reopen_quote_label }}">
+            </div>
+          </form>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
   {% if refund_form %}
     <section class="crm-section content">
       {% translate "Confirm refund done" as section_title %}
@@ -156,31 +244,4 @@
     </section>
   {% endif %}
 
-  {% if convert_form %}
-    <section class="crm-section content">
-      {% translate "This creates a final invoice matching this quote. Use Download if you only need the quote PDF." as convert_invoice_message %}
-      <form class="crm-form-panel crm-form-panel--compact"
-            method="post"
-            data-crm-invoice-confirm
-            data-crm-invoice-always
-            data-crm-invoice-confirm-message="{{ convert_invoice_message }}">
-        <h3>{% translate "Issue invoice from quote" %}</h3>
-        <p>
-          {% blocktranslate %}This creates a final invoice matching this quote. Use Download if you only need the quote PDF.{% endblocktranslate %}
-        </p>
-        {% csrf_token %}
-        <div class="crm-form-panel__body">
-          {{ convert_form }}
-          <input type="hidden" name="confirm_invoice" value="">
-        </div>
-        <div class="crm-form-panel__actions">
-          {% translate "Issue invoice" as issue_invoice_label %}
-          <input class="crm-button"
-                 type="submit"
-                 name="invoice"
-                 value="{{ issue_invoice_label }}">
-        </div>
-      </form>
-    </section>
-  {% endif %}
 {% endblock content %}
