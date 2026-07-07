@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import datetime
 import re
+from dataclasses import dataclass
 from decimal import Decimal
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any, cast
@@ -33,7 +34,7 @@ from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import http_date
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from django.utils.translation import get_language, gettext, gettext_lazy
 from django.views.decorators.debug import sensitive_variables
 
@@ -44,6 +45,16 @@ if TYPE_CHECKING:
     from django_stubs_ext import StrOrPromise
 
     from weblate_web.invoices.models import Invoice
+
+
+@dataclass(frozen=True)
+class DuplicatePaymentRecord:
+    duplicate_key: str
+    summary: str
+    content: str
+    details: dict[str, Any]
+    paid_payment: Payment | None = None
+
 
 BACKENDS: dict[str, type[Backend]] = {}
 INVOICE_MATCH_RE = re.compile(
@@ -356,8 +367,7 @@ class Backend:
         if status is None:
             return False
         if status:
-            self.success()
-            return True
+            return self.success()
         self.failure()
         return False
 
@@ -447,15 +457,138 @@ class Backend:
     def get_invoice_kwargs(self):
         return {"payment_id": str(self.payment.pk), "payment_method": self.description}
 
-    def success(self) -> None:
+    @classmethod
+    def get_paid_invoice_payment(
+        cls, invoice: Invoice, *, exclude_payment: Payment | None = None
+    ) -> Payment | None:
+        paid_payments = invoice.paid_payment_set.order_by("-created")
+        if exclude_payment:
+            paid_payments = paid_payments.exclude(pk=exclude_payment.pk)
+        if paid_payment := paid_payments.first():
+            return paid_payment
+
+        draft_payments = invoice.draft_payment_set.filter(
+            paid_invoice__isnull=False
+        ).order_by("-created")
+        if exclude_payment:
+            draft_payments = draft_payments.exclude(pk=exclude_payment.pk)
+        return draft_payments.first()
+
+    @staticmethod
+    def get_duplicate_payment_key(invoice: Invoice, payment: Payment) -> str:
+        return f"{invoice.number}:payment:{payment.pk}"
+
+    @staticmethod
+    def record_duplicate_payment(
+        invoice: Invoice,
+        record: DuplicatePaymentRecord,
+    ) -> bool:
+        from weblate_web.crm.models import Interaction  # noqa: PLC0415
+
+        paid_payment = record.paid_payment
+        if paid_payment is None:
+            paid_payment = Backend.get_paid_invoice_payment(invoice)
+
+        customer = invoice.customer
+        interactions = customer.interaction_set.filter(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            details__duplicate_payment_key=record.duplicate_key,
+        )
+        if interactions.exists():
+            return False
+
+        follow_up_at = now()
+        previous_follow_up_at = customer.follow_up_at
+        previous_follow_up_note = customer.follow_up_note
+        details = {
+            "duplicate_payment_key": record.duplicate_key,
+            "invoice": invoice.number,
+            "existing_payment_id": str(paid_payment.pk) if paid_payment else "",
+            "existing_payment_backend": paid_payment.backend if paid_payment else "",
+            "existing_payment_state": paid_payment.state if paid_payment else "",
+            "follow_up_at": follow_up_at.isoformat(),
+            "follow_up_note": record.summary,
+            "previous_follow_up_at": previous_follow_up_at.isoformat()
+            if previous_follow_up_at
+            else "",
+            "previous_follow_up_note": previous_follow_up_note,
+            **record.details,
+        }
+        customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            summary=record.summary,
+            content=record.content,
+            details=details,
+        )
+        customer.follow_up_at = follow_up_at
+        customer.follow_up_note = record.summary
+        customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        return True
+
+    def reject_duplicate_payment(self, invoice: Invoice, paid_payment: Payment) -> None:
+        reason = gettext("Invoice already paid")
+        summary = f"Duplicate payment for paid invoice {invoice.number}"
+        self.payment.state = Payment.REJECTED
+        self.payment.details["reject_reason"] = reason
+        self.payment.save(update_fields=["state", "details"])
+        self.record_duplicate_payment(
+            invoice,
+            DuplicatePaymentRecord(
+                duplicate_key=Backend.get_duplicate_payment_key(invoice, self.payment),
+                summary=summary,
+                content=(
+                    "Successful payment notification matched an invoice that already "
+                    "has a paid payment."
+                ),
+                details={
+                    "duplicate_payment_id": str(self.payment.pk),
+                    "duplicate_payment_backend": self.payment.backend,
+                    "duplicate_payment_state": self.payment.state,
+                    "duplicate_payment_amount": str(self.payment.vat_amount),
+                    "duplicate_payment_currency": self.payment.get_currency_display(),
+                },
+                paid_payment=paid_payment,
+            ),
+        )
+
+    def get_duplicate_invoice_payment(self) -> tuple[Invoice, Payment] | None:
+        if self.payment.draft_invoice is None:
+            return None
+        paid_payment = self.get_paid_invoice_payment(
+            self.payment.draft_invoice, exclude_payment=self.payment
+        )
+        if paid_payment is None:
+            return None
+        return self.payment.draft_invoice, paid_payment
+
+    def reject_other_invoice_payments(self) -> None:
+        invoice = self.payment.paid_invoice
+        if invoice is None:
+            return
+        reason = gettext("Invoice already paid")
+        for payment in invoice.draft_payment_set.filter(
+            backend__gt="", state__in={Payment.NEW, Payment.PENDING}
+        ).exclude(pk=self.payment.pk):
+            payment.state = Payment.REJECTED
+            payment.details["reject_reason"] = reason
+            payment.save(update_fields=["state", "details"])
+
+    def success(self) -> bool:
+        if duplicate_invoice_payment := self.get_duplicate_invoice_payment():
+            invoice, paid_payment = duplicate_invoice_payment
+            self.reject_duplicate_payment(invoice, paid_payment)
+            return False
+
         self.payment.state = Payment.ACCEPTED
         if not self.recurring:
             self.payment.recurring = ""
 
         self.generate_invoice()
         self.payment.save()
+        self.reject_other_invoice_payments()
 
         self.send_notification("payment_completed")
+        return True
 
     def failure(self) -> None:
         self.payment.state = Payment.REJECTED
@@ -562,8 +695,101 @@ class FioBank(Backend):
         return instructions
 
     @classmethod
+    def get_invoice_payment(cls, invoice: Invoice) -> Payment:
+        payment = (
+            invoice.draft_payment_set.filter(
+                backend=cls.name,
+                paid_invoice__isnull=True,
+                state__in={Payment.NEW, Payment.PENDING, Payment.REJECTED},
+            )
+            .order_by("-created", "-pk")
+            .first()
+        )
+        if payment is not None:
+            return payment
+        return invoice.create_payment(backend=cls.name)
+
+    @classmethod
+    def get_duplicate_bank_payment_key(
+        cls, invoice: Invoice, entry: dict[str, Any], amount: Decimal, currency: str
+    ) -> str:
+        if transaction_id := entry.get("transaction_id"):
+            return f"{invoice.number}:{transaction_id}"
+        account = entry.get("account_number_full") or entry.get("account_number") or ""
+        message = entry.get("recipient_message") or ""
+        return f"{invoice.number}:{entry['date'].isoformat()}:{amount}:{currency}:{account}:{message}"
+
+    @staticmethod
+    def is_same_bank_transaction(
+        payment: Payment, entry: dict[str, Any], currency: str
+    ) -> bool:
+        stored_transaction = payment.details.get("transaction")
+        if not isinstance(stored_transaction, dict):
+            return False
+        if transaction_id := entry.get("transaction_id"):
+            return stored_transaction.get("transaction_id") == transaction_id
+        stored_account = stored_transaction.get(
+            "account_number_full"
+        ) or stored_transaction.get("account_number")
+        account = entry.get("account_number_full") or entry.get("account_number")
+        return (
+            str(stored_transaction.get("date")) == entry["date"].isoformat()
+            and str(stored_transaction.get("amount")) == str(entry["amount"])
+            and payment.details.get("transaction_currency") == currency
+            and stored_account == account
+            and stored_transaction.get("recipient_message")
+            == entry.get("recipient_message")
+        )
+
+    @classmethod
+    def record_duplicate_bank_payment(
+        cls, invoice: Invoice, entry: dict[str, Any], amount: Decimal, currency: str
+    ) -> None:
+        paid_payment = cls.get_paid_invoice_payment(invoice)
+        if (
+            paid_payment is not None
+            and paid_payment.backend == cls.name
+            and cls.is_same_bank_transaction(paid_payment, entry, currency)
+        ):
+            print(f"{invoice.number}: skipping, already paid")
+            return
+
+        duplicate_key = cls.get_duplicate_bank_payment_key(
+            invoice, entry, amount, currency
+        )
+        summary = f"Duplicate bank transfer for paid invoice {invoice.number}"
+        created = Backend.record_duplicate_payment(
+            invoice,
+            DuplicatePaymentRecord(
+                duplicate_key=duplicate_key,
+                summary=summary,
+                content=(
+                    "Incoming bank transfer matched an invoice that already has "
+                    "a paid payment."
+                ),
+                details={
+                    "duplicate_bank_payment_key": duplicate_key,
+                    "amount": str(amount),
+                    "currency": currency,
+                    "date": entry["date"].isoformat(),
+                    "transaction_id": entry.get("transaction_id"),
+                    "account_number": entry.get("account_number"),
+                    "account_number_full": entry.get("account_number_full"),
+                    "account_name": entry.get("account_name"),
+                    "bank_code": entry.get("bank_code"),
+                    "transaction": entry,
+                },
+                paid_payment=paid_payment,
+            ),
+        )
+        if created:
+            print(f"{invoice.number}: duplicate bank payment noted")
+        else:
+            print(f"{invoice.number}: skipping, already paid (duplicate noted)")
+
+    @classmethod
     @method_decorator(sensitive_variables("tokens", "token"))
-    def fetch_payments(cls, from_date: str | None = None) -> None:  # noqa: C901, PLR0915, PLR0912
+    def fetch_payments(cls, from_date: str | None = None) -> None:
         from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
 
         tokens: list[str]
@@ -605,47 +831,35 @@ class FioBank(Backend):
                     kind__in=(InvoiceKind.PROFORMA, InvoiceKind.INVOICE),
                 ):
                     # Match validation
-                    if invoice.paid_payment_set.exists():
-                        print(f"{invoice.number}: skipping, already paid")
-                        continue
                     expected_currency = invoice.get_currency_display()
                     if expected_currency != currency:
                         print(
                             f"{invoice.number}: skipping, currency mismatch, {currency} instead of {expected_currency}"
                         )
                         continue
-                    if (
-                        amount < invoice.total_amount
-                        and "[underpaid]" not in entry["comment"]
-                    ):
+                    comment = entry.get("comment") or ""
+                    if amount < invoice.total_amount and "[underpaid]" not in comment:
                         print(
                             f"{invoice.number}: skipping, underpaid, {amount} instead of {invoice.total_amount}"
                         )
                         continue
+                    if invoice.paid_payment_set.exists():
+                        cls.record_duplicate_bank_payment(
+                            invoice, entry, amount, currency
+                        )
+                        processed = True
+                        continue
+                    if invoice.draft_payment_set.filter(
+                        paid_invoice__isnull=False
+                    ).exists():
+                        cls.record_duplicate_bank_payment(
+                            invoice, entry, amount, currency
+                        )
+                        processed = True
+                        continue
 
                     # Fetch payment(s)
-                    payments = invoice.draft_payment_set.all()
-                    if len(payments) > 1:
-                        print(
-                            f"{invoice.number}: skipping, has {len(payments)} draft payments"
-                        )
-                        continue
-                    if not payments:
-                        payment = invoice.create_payment(backend=cls.name)
-                    else:
-                        payment = payments[0]
-                        if payment.paid_invoice:
-                            print(f"{invoice.number}: skipping, already paid")
-                            continue
-                    if not payment.backend:
-                        # Initialize backend if not set
-                        payment.backend = cls.name
-                        payment.save(update_fields=["backend"])
-                    elif payment.backend != cls.name:
-                        print(
-                            f"{invoice.number}: skipping, wrong backend: {payment.backend}"
-                        )
-                        continue
+                    payment = cls.get_invoice_payment(invoice)
 
                     print(f"{invoice.number}: received payment")
 
@@ -662,6 +876,7 @@ class FioBank(Backend):
 
                     # Store transaction details
                     backend.payment.details["transaction"] = entry
+                    backend.payment.details["transaction_currency"] = currency
                     # Saved later via backend.success()
 
                     # Complete processing and save updated payment
