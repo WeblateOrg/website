@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 from datetime import date
-from typing import cast
+from typing import Any, cast
 from unittest.mock import patch
 
 import responses
@@ -32,6 +32,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
+from django.utils import timezone
 
 from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
@@ -329,6 +330,63 @@ class BackendBaseTestCase(TestCase):
 
 @override_settings(PAYMENT_DEBUG=True)
 class BackendTest(BackendBaseTestCase):
+    def create_invoice(self) -> Invoice:
+        mock_vies()
+        cnb_mock_rates()
+        invoice = Invoice.objects.create(
+            customer=self.customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        invoice.invoiceitem_set.create(
+            description="Test item",
+            unit_price=100,
+        )
+        invoice.generate_files()
+        return invoice
+
+    def mock_fio_payment(  # noqa: PLR0913
+        self,
+        invoice: Invoice,
+        payment_message: str = "",
+        *,
+        amount: int | None = None,
+        currency: str = "EUR",
+        sender_account: str | None = None,
+        transaction_id: int | None = 12210832097,
+        replace: bool = False,
+    ) -> None:
+        received: dict[str, Any] = deepcopy(FIO_TRASACTIONS)
+        received["accountStatement"]["info"]["currency"] = currency
+        transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
+        if not payment_message:
+            payment_message = invoice.number
+        transaction[0]["column16"]["value"] = payment_message
+        transaction[1]["column16"]["value"] = payment_message
+        transaction[1]["column1"]["value"] = (
+            int(invoice.total_amount) if amount is None else amount
+        )
+        if sender_account is not None:
+            transaction[1]["column2"] = {
+                "name": "Protiúčet",
+                "value": sender_account,
+                "id": 2,
+            }
+            transaction[1]["column3"] = {
+                "name": "Kód banky",
+                "value": "0100",
+                "id": 3,
+            }
+        if transaction_id is None:
+            transaction[1]["column22"] = None
+        else:
+            transaction[1]["column22"]["value"] = transaction_id
+        if replace:
+            responses.replace(responses.GET, FIO_API, body=json.dumps(received))
+        else:
+            responses.add(responses.GET, FIO_API, body=json.dumps(received))
+
     def test_pay(self) -> None:
         backend = get_backend("pay")(self.payment)
         self.assertIsNone(backend.initiate(None, "", ""))
@@ -506,33 +564,18 @@ class BackendTest(BackendBaseTestCase):
         FIO_TOKEN="test-token",  # noqa: S106
     )
     def test_invoice_url(self) -> None:
-        mock_vies()
-        cnb_mock_rates()
-        customer = Customer.objects.create(**CUSTOMER)
-        invoice = Invoice.objects.create(
-            customer=customer,
-            kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
-            vat_rate=21,
-        )
-        invoice.invoiceitem_set.create(
-            description="Test item",
-            unit_price=100,
-        )
-        invoice.generate_files()
+        invoice = self.create_invoice()
 
         url = cast("str", invoice.get_payment_url())
         self.assertIsNotNone(url)
 
         # Trigger payment what creates an empty payment object
         self.client.get(url, follow=True)
+        placeholder = invoice.draft_payment_set.get()
+        self.assertEqual(placeholder.backend, "")
+        self.assertEqual(placeholder.state, Payment.NEW)
 
-        received = deepcopy(FIO_TRASACTIONS)
-        transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
-        transaction[0]["column16"]["value"] = invoice.number
-        transaction[1]["column16"]["value"] = invoice.number
-        transaction[1]["column1"]["value"] = int(invoice.total_amount)
-        responses.add(responses.GET, FIO_API, body=json.dumps(received))
+        self.mock_fio_payment(invoice)
         FioBank.fetch_payments()
         self.assertTrue(invoice.paid_payment_set.exists())
         payment = invoice.paid_payment_set.get()
@@ -540,11 +583,273 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(
             payment.details["transaction"]["recipient_message"], invoice.number
         )
+        placeholder.refresh_from_db()
+        self.assertEqual(placeholder.backend, "")
+        self.assertEqual(placeholder.state, Payment.NEW)
+        response = self.client.get(placeholder.get_payment_url())
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
         mail.outbox = []
 
         FioBank.fetch_payments()
+        self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank_ignores_other_draft_backends(self) -> None:
+        invoice = self.create_invoice()
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        card_payment.state = Payment.PENDING
+        card_payment.details["pay_url"] = "https://gate.thepay.cz/12345/pay"
+        card_payment.save(update_fields=["state", "details"])
+
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+
+        payment = invoice.paid_payment_set.get()
+        self.assertNotEqual(payment.pk, card_payment.pk)
+        self.assertEqual(payment.backend, "fio-bank")
+        self.assertEqual(payment.state, Payment.ACCEPTED)
+        self.assertEqual(
+            payment.details["transaction"]["recipient_message"], invoice.number
+        )
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.backend, "thepay2-card")
+        self.assertEqual(card_payment.state, Payment.REJECTED)
+        self.assertEqual(card_payment.details["reject_reason"], "Invoice already paid")
+        self.assertIsNone(card_payment.paid_invoice)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank_reuses_matching_draft_backend(self) -> None:
+        invoice = self.create_invoice()
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        old_fio_payment = invoice.create_payment(backend="fio-bank")
+        old_fio_payment.state = Payment.PENDING
+        old_fio_payment.save(update_fields=["state"])
+        fio_payment = invoice.create_payment(backend="fio-bank")
+        fio_payment.state = Payment.PENDING
+        fio_payment.save(update_fields=["state"])
+
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+
+        payment = invoice.paid_payment_set.get()
+        self.assertEqual(payment.pk, fio_payment.pk)
+        self.assertEqual(payment.backend, "fio-bank")
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.backend, "thepay2-card")
+        self.assertEqual(card_payment.state, Payment.REJECTED)
+        self.assertEqual(card_payment.details["reject_reason"], "Invoice already paid")
+        self.assertIsNone(card_payment.paid_invoice)
+        old_fio_payment.refresh_from_db()
+        self.assertEqual(old_fio_payment.state, Payment.REJECTED)
+        self.assertEqual(
+            old_fio_payment.details["reject_reason"], "Invoice already paid"
+        )
+        self.assertIsNone(old_fio_payment.paid_invoice)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    def test_late_card_completion_after_bank_payment_records_duplicate(self) -> None:
+        invoice = self.create_invoice()
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        card_payment.state = Payment.PENDING
+        card_payment.save(update_fields=["state"])
+
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.state, Payment.REJECTED)
+        self.assertIsNone(card_payment.paid_invoice)
+        mail.outbox = []
+
+        thepay_mock_payment(card_payment.pk)
+        backend = get_backend("thepay2-card")(card_payment)
+        self.assertFalse(backend.complete(None))
+
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.state, Payment.REJECTED)
+        self.assertEqual(card_payment.details["reject_reason"], "Invoice already paid")
+        self.assertIsNone(card_payment.paid_invoice)
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+        interaction = self.customer.interaction_set.get(
+            origin=Interaction.Origin.MANUAL_NOTE
+        )
+        self.assertEqual(
+            interaction.summary,
+            f"Duplicate payment for paid invoice {invoice.number}",
+        )
+        self.assertEqual(
+            interaction.details["duplicate_payment_backend"], "thepay2-card"
+        )
+        self.assertEqual(interaction.details["existing_payment_backend"], "fio-bank")
+        self.customer.refresh_from_db()
+        self.assertEqual(
+            self.customer.follow_up_note,
+            f"Duplicate payment for paid invoice {invoice.number}",
+        )
+        self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank_records_duplicate_payment(self) -> None:
+        invoice = self.create_invoice()
+        previous_follow_up_at = timezone.now()
+        self.customer.follow_up_at = previous_follow_up_at
+        self.customer.follow_up_note = "Check renewal"
+        self.customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        get_backend("thepay2-card")(card_payment).success()
+        card_payment.refresh_from_db()
+        mail.outbox = []
+
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+        interaction = self.customer.interaction_set.get(
+            origin=Interaction.Origin.MANUAL_NOTE
+        )
+        self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
+        self.assertEqual(
+            interaction.summary,
+            f"Duplicate bank transfer for paid invoice {invoice.number}",
+        )
+        self.assertEqual(interaction.details["invoice"], invoice.number)
+        self.assertEqual(
+            interaction.details["existing_payment_id"], str(card_payment.pk)
+        )
+        self.assertEqual(
+            interaction.details["existing_payment_backend"], "thepay2-card"
+        )
+        self.assertEqual(
+            interaction.details["transaction"]["recipient_message"], invoice.number
+        )
+        self.assertEqual(
+            interaction.details["follow_up_note"],
+            f"Duplicate bank transfer for paid invoice {invoice.number}",
+        )
+        self.assertEqual(
+            interaction.details["previous_follow_up_at"],
+            previous_follow_up_at.isoformat(),
+        )
+        self.assertEqual(
+            interaction.details["previous_follow_up_note"], "Check renewal"
+        )
+        self.customer.refresh_from_db()
+        self.assertIsNotNone(self.customer.follow_up_at)
+        self.assertLessEqual(self.customer.follow_up_at, timezone.now())
+        self.assertEqual(
+            self.customer.follow_up_note,
+            f"Duplicate bank transfer for paid invoice {invoice.number}",
+        )
+        self.assertEqual(len(mail.outbox), 0)
+
+        FioBank.fetch_payments()
+        self.assertEqual(
+            self.customer.interaction_set.filter(
+                origin=Interaction.Origin.MANUAL_NOTE
+            ).count(),
+            1,
+        )
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank_skips_duplicate_with_wrong_amount(self) -> None:
+        invoice = self.create_invoice()
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        get_backend("thepay2-card")(card_payment).success()
+        mail.outbox = []
+
+        self.mock_fio_payment(invoice, amount=int(invoice.total_amount) - 1)
+        FioBank.fetch_payments()
+
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+        self.assertFalse(
+            self.customer.interaction_set.filter(
+                origin=Interaction.Origin.MANUAL_NOTE
+            ).exists()
+        )
+        self.customer.refresh_from_db()
+        self.assertIsNone(self.customer.follow_up_at)
+        self.assertEqual(self.customer.follow_up_note, "")
+        self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank_skips_duplicate_with_wrong_currency(self) -> None:
+        invoice = self.create_invoice()
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        get_backend("thepay2-card")(card_payment).success()
+        mail.outbox = []
+
+        self.mock_fio_payment(invoice, currency="USD")
+        FioBank.fetch_payments()
+
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+        self.assertFalse(
+            self.customer.interaction_set.filter(
+                origin=Interaction.Origin.MANUAL_NOTE
+            ).exists()
+        )
+        self.customer.refresh_from_db()
+        self.assertIsNone(self.customer.follow_up_at)
+        self.assertEqual(self.customer.follow_up_note, "")
+        self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank_records_fallback_duplicate_from_different_account(
+        self,
+    ) -> None:
+        invoice = self.create_invoice()
+        self.mock_fio_payment(invoice, sender_account="111111", transaction_id=None)
+        FioBank.fetch_payments()
+        payment = invoice.paid_payment_set.get()
+        self.assertEqual(payment.backend, "fio-bank")
+        self.assertEqual(payment.details["transaction_currency"], "EUR")
+        mail.outbox = []
+
+        self.mock_fio_payment(
+            invoice,
+            sender_account="222222",
+            transaction_id=None,
+            replace=True,
+        )
+        FioBank.fetch_payments()
+
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+        interaction = self.customer.interaction_set.get(
+            origin=Interaction.Origin.MANUAL_NOTE
+        )
+        self.assertEqual(
+            interaction.summary,
+            f"Duplicate bank transfer for paid invoice {invoice.number}",
+        )
+        self.assertEqual(interaction.details["account_number"], "222222")
+        self.assertEqual(interaction.details["currency"], "EUR")
         self.assertEqual(len(mail.outbox), 0)
 
 
