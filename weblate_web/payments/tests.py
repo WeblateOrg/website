@@ -587,7 +587,14 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(placeholder.backend, "")
         self.assertEqual(placeholder.state, Payment.NEW)
         response = self.client.get(placeholder.get_payment_url())
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, "/en/", fetch_redirect_response=False)
+        response = self.client.post(
+            placeholder.get_payment_url(), {"method": "thepay2-card"}
+        )
+        self.assertRedirects(response, "/en/", fetch_redirect_response=False)
+        placeholder.refresh_from_db()
+        self.assertEqual(placeholder.backend, "")
+        self.assertEqual(placeholder.state, Payment.NEW)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
         mail.outbox = []
@@ -618,8 +625,8 @@ class BackendTest(BackendBaseTestCase):
         )
         card_payment.refresh_from_db()
         self.assertEqual(card_payment.backend, "thepay2-card")
-        self.assertEqual(card_payment.state, Payment.REJECTED)
-        self.assertEqual(card_payment.details["reject_reason"], "Invoice already paid")
+        self.assertEqual(card_payment.state, Payment.PENDING)
+        self.assertNotIn("reject_reason", card_payment.details)
         self.assertIsNone(card_payment.paid_invoice)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
@@ -646,14 +653,12 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(payment.backend, "fio-bank")
         card_payment.refresh_from_db()
         self.assertEqual(card_payment.backend, "thepay2-card")
-        self.assertEqual(card_payment.state, Payment.REJECTED)
-        self.assertEqual(card_payment.details["reject_reason"], "Invoice already paid")
+        self.assertEqual(card_payment.state, Payment.NEW)
+        self.assertNotIn("reject_reason", card_payment.details)
         self.assertIsNone(card_payment.paid_invoice)
         old_fio_payment.refresh_from_db()
-        self.assertEqual(old_fio_payment.state, Payment.REJECTED)
-        self.assertEqual(
-            old_fio_payment.details["reject_reason"], "Invoice already paid"
-        )
+        self.assertEqual(old_fio_payment.state, Payment.PENDING)
+        self.assertNotIn("reject_reason", old_fio_payment.details)
         self.assertIsNone(old_fio_payment.paid_invoice)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
@@ -672,7 +677,8 @@ class BackendTest(BackendBaseTestCase):
         self.mock_fio_payment(invoice)
         FioBank.fetch_payments()
         card_payment.refresh_from_db()
-        self.assertEqual(card_payment.state, Payment.REJECTED)
+        self.assertEqual(card_payment.state, Payment.PENDING)
+        self.assertNotIn("reject_reason", card_payment.details)
         self.assertIsNone(card_payment.paid_invoice)
         mail.outbox = []
 
@@ -702,6 +708,124 @@ class BackendTest(BackendBaseTestCase):
             f"Duplicate payment for paid invoice {invoice.number}",
         )
         self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    def test_late_card_failure_after_bank_payment_skips_failed_mail(self) -> None:
+        invoice = self.create_invoice()
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        card_payment.state = Payment.PENDING
+        card_payment.save(update_fields=["state"])
+
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.state, Payment.PENDING)
+        mail.outbox = []
+
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{card_payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "uid": str(card_payment.pk),
+                "project_id": 1,
+                "order_id": "CZ12131415",
+                "state": "error",
+                "events": [
+                    {
+                        "occured_at": "2021-04-20T11:05:49.000000Z",
+                        "type": "payment_cancelled",
+                    }
+                ],
+            },
+        )
+        backend = get_backend("thepay2-card")(card_payment)
+        self.assertFalse(backend.complete(None))
+
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.state, Payment.REJECTED)
+        self.assertEqual(card_payment.details["reject_reason"], "Payment cancelled")
+        self.assertIsNone(card_payment.paid_invoice)
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+        self.assertFalse(
+            self.customer.interaction_set.filter(
+                origin=Interaction.Origin.MANUAL_NOTE
+            ).exists()
+        )
+        self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    def test_late_pending_card_after_bank_payment_hides_payment_link(self) -> None:
+        invoice = self.create_invoice()
+        card_payment = invoice.create_payment(backend="thepay2-card")
+        card_payment.state = Payment.PENDING
+        card_payment.details["pay_url"] = "https://gate.thepay.cz/12345/pay"
+        card_payment.save(update_fields=["state", "details"])
+
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.state, Payment.PENDING)
+        mail.outbox = []
+
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{card_payment.pk}?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={
+                "uid": str(card_payment.pk),
+                "project_id": 1,
+                "order_id": "CZ12131415",
+                "state": "waiting_for_payment",
+            },
+        )
+        response = self.client.get(f"/en/payment/{card_payment.pk}/complete/")
+        self.assertRedirects(response, "/en/", fetch_redirect_response=False)
+
+        card_payment.refresh_from_db()
+        self.assertEqual(card_payment.state, Payment.PENDING)
+        self.assertEqual(
+            card_payment.details["pay_url"], "https://gate.thepay.cz/12345/pay"
+        )
+        self.assertIsNone(card_payment.paid_invoice)
+        self.assertEqual(invoice.paid_payment_set.count(), 1)
+        self.assertEqual(len(mail.outbox), 0)
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # noqa: S106
+    )
+    def test_invoice_bank_defers_duplicate_when_transfer_pays_other_invoice(
+        self,
+    ) -> None:
+        paid_invoice = self.create_invoice()
+        card_payment = paid_invoice.create_payment(backend="thepay2-card")
+        get_backend("thepay2-card")(card_payment).success()
+        unpaid_invoice = self.create_invoice()
+        mail.outbox = []
+
+        self.mock_fio_payment(
+            unpaid_invoice,
+            payment_message=f"{paid_invoice.number} {unpaid_invoice.number}",
+        )
+        FioBank.fetch_payments()
+
+        self.assertEqual(paid_invoice.paid_payment_set.count(), 1)
+        self.assertTrue(unpaid_invoice.paid_payment_set.exists())
+        self.assertFalse(
+            self.customer.interaction_set.filter(
+                origin=Interaction.Origin.MANUAL_NOTE
+            ).exists()
+        )
+        self.customer.refresh_from_db()
+        self.assertIsNone(self.customer.follow_up_at)
+        self.assertEqual(self.customer.follow_up_note, "")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
     @responses.activate
     @override_settings(
