@@ -182,11 +182,35 @@ def fixed_interaction_timestamp(timestamp: datetime) -> Iterator[None]:
     """Pin action-created interaction timestamps before visual captures."""
     field = Interaction._meta.get_field("timestamp")  # pylint: disable=protected-access
     original_default = field.default
+    original_cached_default = field.__dict__.pop("_get_default", None)
     field.default = lambda: timestamp
     try:
         yield
     finally:
         field.default = original_default
+        field.__dict__.pop("_get_default", None)
+        if original_cached_default is not None:
+            field.__dict__["_get_default"] = original_cached_default
+
+
+def test_fixed_interaction_timestamp_rebuilds_cached_default(  # pylint: disable=redefined-outer-name
+    crm_data: CrmData,
+) -> None:
+    """Ensure visual-test interactions use the pinned timestamp."""
+    field = Interaction._meta.get_field("timestamp")  # pylint: disable=protected-access
+    field.get_default()
+
+    timestamp = FIXED_TIMESTAMP + timedelta(minutes=10)
+    with fixed_interaction_timestamp(timestamp):
+        interaction = crm_data.customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            summary="Manual CRM note",
+            content="Manual CRM note",
+            user=crm_data.staff,
+        )
+
+    assert interaction.timestamp == timestamp
+    assert Interaction.objects.get(pk=interaction.pk).timestamp == timestamp
 
 
 @pytest.fixture
