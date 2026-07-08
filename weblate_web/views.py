@@ -80,6 +80,7 @@ from weblate_web.models import (
     add_subscription_past_payments,
     get_donation_package_verbose,
     get_donation_reward_package_names,
+    is_pending_discovery_activation,
     process_donation,
     process_subscription,
 )
@@ -174,6 +175,11 @@ def get_customer(
     )[0]
     customer.users.add(request.user)
     return customer
+
+
+def prepare_service_for_render(service: Service) -> Service:
+    service.is_pending_discovery_activation = is_pending_discovery_activation(service)
+    return service
 
 
 @require_POST
@@ -313,7 +319,7 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
 @csrf_exempt
 def api_support(request: HttpRequest) -> JsonResponse:
     service = get_object_or_404(Service, secret=request.POST.get("secret", ""))
-    service.report_set.create(
+    report = service.report_set.create(
         site_url=request.POST.get("site_url", ""),
         site_title=request.POST.get("site_title", ""),
         ssh_key=request.POST.get("ssh_key", ""),
@@ -327,9 +333,10 @@ def api_support(request: HttpRequest) -> JsonResponse:
         version=extract_weblate_version(request),
         discoverable=bool(request.POST.get("discoverable")),
     )
+    is_valid_site_url = report.is_valid_site_url()
     service.update_status()
     service.create_backup()
-    if "public_projects" in request.POST:
+    if is_valid_site_url and "public_projects" in request.POST:
         current_projects = set(service.project_set.values_list("name", "url", "web"))
         for project in json.loads(request.POST["public_projects"]):
             # Skip unexpected data
@@ -354,7 +361,7 @@ def api_support(request: HttpRequest) -> JsonResponse:
             else "",
             "expiry": service.expires,
             "backup_repository": service.backup_repository,
-            "in_limits": service.check_in_limits(),
+            "in_limits": is_valid_site_url and service.check_in_limits(),
             "limits": service.get_limits(),
             "has_subscription": service.latest_subscription is not None,
         }
@@ -883,6 +890,8 @@ class AddDiscoveryView(CreateView):
         """If the form is valid, save the associated model."""
         instance = form.instance
         instance.customer = get_customer(self.request, instance)
+        instance.site_url = instance.site_url.rstrip("/")
+        instance.site_url_lock = True
         discover_url = instance.site_url
         discover_text = form.cleaned_data.get("discover_text", "N/A")
         mail_admins(
@@ -891,9 +900,13 @@ class AddDiscoveryView(CreateView):
         )
         result = super().form_valid(form)
         instance.customer.users.add(self.request.user)
-        if instance.site_url:
-            url = instance.site_url.rstrip("/")
-            return redirect(f"{url}/manage/?activation={instance.secret}")
+        messages.info(
+            self.request,
+            gettext(
+                "Activate the listing from your Weblate management page using the "
+                "activation token shown below."
+            ),
+        )
         return result
 
 
@@ -1051,6 +1064,7 @@ def customer_user(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def subscription_view(request, pk):
     service = get_object_or_404(Service, pk=pk)
+    prepare_service_for_render(service)
     return render(request, "service.html", {"service": service})
 
 
@@ -1251,9 +1265,12 @@ class UserView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data["user_services"] = Service.objects.customer_services().filter(
-            customer__users=self.request.user,
-        )
+        data["user_services"] = [
+            prepare_service_for_render(service)
+            for service in Service.objects.customer_services().filter(
+                customer__users=self.request.user,
+            )
+        ]
         data["user_donations"] = Service.objects.donations().filter(
             customer__users=self.request.user,
         )
