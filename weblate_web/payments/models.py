@@ -106,17 +106,6 @@ class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
     def order(self) -> CustomerQuerySet:
         return self.order_by("name", "email", "pk")
 
-    def followups(self) -> CustomerQuerySet:
-        return self.filter(follow_up_at__isnull=False).order_by(
-            "follow_up_at", "name", "email", "pk"
-        )
-
-    def due_followups(self) -> CustomerQuerySet:
-        return self.followups().filter(follow_up_at__lte=timezone.now())
-
-    def upcoming_followups(self) -> CustomerQuerySet:
-        return self.followups().filter(follow_up_at__gt=timezone.now())
-
     def for_user(self, user: User) -> CustomerQuerySet:
         return self.filter(users=user).distinct()
 
@@ -128,6 +117,19 @@ class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
             service__subscription__expires__gte=timezone.now()
             - timedelta(days=4 * 365),
         ).distinct()
+
+
+class CustomerFollowUpQuerySet(models.QuerySet["CustomerFollowUp", "CustomerFollowUp"]):
+    def order(self) -> CustomerFollowUpQuerySet:
+        return self.select_related("customer", "service").order_by(
+            "follow_up_at", "customer__name", "customer__email", "pk"
+        )
+
+    def due(self) -> CustomerFollowUpQuerySet:
+        return self.order().filter(follow_up_at__lte=timezone.now())
+
+    def upcoming(self) -> CustomerFollowUpQuerySet:
+        return self.order().filter(follow_up_at__gt=timezone.now())
 
 
 class Customer(models.Model):
@@ -235,19 +237,6 @@ class Customer(models.Model):
             ),
             MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
         ),
-    )
-    follow_up_at = models.DateTimeField(
-        blank=True,
-        null=True,
-        db_index=True,
-        verbose_name=gettext_lazy("Follow-up date"),
-        help_text=gettext_lazy("Date and time when this customer needs attention."),
-    )
-    follow_up_note = models.CharField(
-        max_length=200,
-        blank=True,
-        verbose_name=gettext_lazy("Follow-up note"),
-        help_text=gettext_lazy("Short description of the next action."),
     )
     origin = models.URLField(max_length=300)
     user_id = models.IntegerField()
@@ -558,13 +547,10 @@ class Customer(models.Model):
         other.agreement_set.update(customer=self)
         other.service_set.update(customer=self)
         other.interaction_set.update(customer=self)
+        other.followups.update(customer=self)
         users = list(other.users.all())
         if users:
             self.users.add(*users)
-        if self.follow_up_at is None and other.follow_up_at is not None:
-            self.follow_up_at = other.follow_up_at
-            self.follow_up_note = other.follow_up_note
-            self.save(update_fields=["follow_up_at", "follow_up_note"])
         interaction = self.interaction_set.create(
             origin=Interaction.Origin.MERGE,
             summary=f"Merged with {other.name} ({other.pk})",
@@ -634,6 +620,59 @@ class Customer(models.Model):
             raise
         self._set_vat_valid()
         self.save(update_fields=self._vat_validation_update_fields)
+
+
+class CustomerFollowUp(models.Model):
+    class Type(models.IntegerChoices):
+        MANUAL = 1, gettext_lazy("Manual")
+        DUPLICATE_PAYMENT = 2, gettext_lazy("Duplicate payment")
+        LOCKED_SITE_URL = 3, gettext_lazy("Locked site URL")
+
+    customer = models.ForeignKey(
+        Customer, related_name="followups", on_delete=models.deletion.CASCADE
+    )
+    service = models.ForeignKey(
+        "weblate_web.Service",
+        related_name="followups",
+        on_delete=models.deletion.CASCADE,
+        blank=True,
+        null=True,
+    )
+    follow_up_at = models.DateTimeField(
+        db_index=True,
+        verbose_name=gettext_lazy("Follow-up date"),
+        help_text=gettext_lazy("Date and time when this customer needs attention."),
+    )
+    note = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name=gettext_lazy("Follow-up note"),
+        help_text=gettext_lazy("Short description of the next action."),
+    )
+    type = models.PositiveSmallIntegerField(
+        choices=Type,
+        default=Type.MANUAL,
+        db_index=True,
+        verbose_name=gettext_lazy("Follow-up type"),
+    )
+    details = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
+
+    objects = CustomerFollowUpQuerySet.as_manager()
+
+    class Meta:
+        ordering = ["follow_up_at"]
+        verbose_name = "Customer follow-up"
+        verbose_name_plural = "Customer follow-ups"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("service", "type"),
+                condition=models.Q(service__isnull=False, type=3),
+                name="unique_locked_site_url_followup_per_service",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.customer}: {self.note or self.get_type_display()}"
 
 
 RECURRENCE_CHOICES = [

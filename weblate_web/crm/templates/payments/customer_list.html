@@ -19,6 +19,7 @@
               <th scope="col">{% translate "E-mail" %}</th>
               {% if kind == "followups" %}
                 <th scope="col">{% translate "Follow-up" %}</th>
+                <th scope="col">{% translate "Type" %}</th>
                 <th scope="col">{% translate "Next action" %}</th>
               {% endif %}
               <th scope="col">{% translate "VAT" %}</th>
@@ -30,23 +31,38 @@
           <tbody>
             {% for object in object_list %}
               <tr>
-                <th scope="row">
-                  <a href="{{ object.get_absolute_url }}">{{ object.name }}</a>
-                </th>
-                <td>{{ object.end_client|default:"-" }}</td>
-                <td>{{ object.email|default:"-" }}</td>
                 {% if kind == "followups" %}
+                  <th scope="row">
+                    <a href="{{ object.customer.get_absolute_url }}">{{ object.customer.name }}</a>
+                  </th>
+                  <td>{{ object.customer.end_client|default:"-" }}</td>
+                  <td>{{ object.customer.email|default:"-" }}</td>
                   <td>{{ object.follow_up_at }}</td>
-                  <td>{{ object.follow_up_note|default:"-" }}</td>
+                  <td>{{ object.get_type_display }}</td>
+                  <td>{{ object.note|default:"-" }}</td>
+                  <td>{{ object.customer.vat|default:"-" }}</td>
+                  <td>{{ object.customer.city|default:"-" }}</td>
+                  <td>{{ object.customer.get_country_display|default:"-" }}</td>
+                  <td>
+                    <div class="crm-row-actions">
+                      <a href="{{ object.customer.get_absolute_url }}">{% translate "Details" %}</a>
+                    </div>
+                  </td>
+                {% else %}
+                  <th scope="row">
+                    <a href="{{ object.get_absolute_url }}">{{ object.name }}</a>
+                  </th>
+                  <td>{{ object.end_client|default:"-" }}</td>
+                  <td>{{ object.email|default:"-" }}</td>
+                  <td>{{ object.vat|default:"-" }}</td>
+                  <td>{{ object.city|default:"-" }}</td>
+                  <td>{{ object.get_country_display|default:"-" }}</td>
+                  <td>
+                    <div class="crm-row-actions">
+                      <a href="{{ object.get_absolute_url }}">{% translate "Details" %}</a>
+                    </div>
+                  </td>
                 {% endif %}
-                <td>{{ object.vat|default:"-" }}</td>
-                <td>{{ object.city|default:"-" }}</td>
-                <td>{{ object.get_country_display|default:"-" }}</td>
-                <td>
-                  <div class="crm-row-actions">
-                    <a href="{{ object.get_absolute_url }}">{% translate "Details" %}</a>
-                  </div>
-                </td>
               </tr>
             {% endfor %}
           </tbody>

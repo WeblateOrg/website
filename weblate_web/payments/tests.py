@@ -45,7 +45,7 @@ from weblate_web.tests import (
 )
 
 from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
-from .models import Customer, Payment
+from .models import Customer, CustomerFollowUp, Payment
 from .validators import validate_vatin
 
 CUSTOMER = {
@@ -702,9 +702,10 @@ class BackendTest(BackendBaseTestCase):
             interaction.details["duplicate_payment_backend"], "thepay2-card"
         )
         self.assertEqual(interaction.details["existing_payment_backend"], "fio-bank")
-        self.customer.refresh_from_db()
+        followup = self.customer.followups.get()
+        self.assertEqual(followup.type, CustomerFollowUp.Type.DUPLICATE_PAYMENT)
         self.assertEqual(
-            self.customer.follow_up_note,
+            followup.note,
             f"Duplicate payment for paid invoice {invoice.number}",
         )
         self.assertEqual(len(mail.outbox), 0)
@@ -821,9 +822,7 @@ class BackendTest(BackendBaseTestCase):
                 origin=Interaction.Origin.MANUAL_NOTE
             ).exists()
         )
-        self.customer.refresh_from_db()
-        self.assertIsNone(self.customer.follow_up_at)
-        self.assertEqual(self.customer.follow_up_note, "")
+        self.assertFalse(self.customer.followups.exists())
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
 
@@ -834,9 +833,12 @@ class BackendTest(BackendBaseTestCase):
     def test_invoice_bank_records_duplicate_payment(self) -> None:
         invoice = self.create_invoice()
         previous_follow_up_at = timezone.now()
-        self.customer.follow_up_at = previous_follow_up_at
-        self.customer.follow_up_note = "Check renewal"
-        self.customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        existing_followup = CustomerFollowUp.objects.create(
+            customer=self.customer,
+            follow_up_at=previous_follow_up_at,
+            note="Check renewal",
+            type=CustomerFollowUp.Type.MANUAL,
+        )
         card_payment = invoice.create_payment(backend="thepay2-card")
         get_backend("thepay2-card")(card_payment).success()
         card_payment.refresh_from_db()
@@ -864,22 +866,17 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(
             interaction.details["transaction"]["recipient_message"], invoice.number
         )
+        self.assertNotIn("follow_up_at", interaction.details)
+        self.assertNotIn("follow_up_note", interaction.details)
+        self.assertNotIn("previous_follow_up_at", interaction.details)
+        self.assertNotIn("previous_follow_up_note", interaction.details)
+        followups = list(self.customer.followups.order_by("type"))
+        self.assertEqual(len(followups), 2)
+        self.assertEqual(followups[0], existing_followup)
+        self.assertEqual(followups[1].type, CustomerFollowUp.Type.DUPLICATE_PAYMENT)
+        self.assertLessEqual(followups[1].follow_up_at, timezone.now())
         self.assertEqual(
-            interaction.details["follow_up_note"],
-            f"Duplicate bank transfer for paid invoice {invoice.number}",
-        )
-        self.assertEqual(
-            interaction.details["previous_follow_up_at"],
-            previous_follow_up_at.isoformat(),
-        )
-        self.assertEqual(
-            interaction.details["previous_follow_up_note"], "Check renewal"
-        )
-        self.customer.refresh_from_db()
-        self.assertIsNotNone(self.customer.follow_up_at)
-        self.assertLessEqual(self.customer.follow_up_at, timezone.now())
-        self.assertEqual(
-            self.customer.follow_up_note,
+            followups[1].note,
             f"Duplicate bank transfer for paid invoice {invoice.number}",
         )
         self.assertEqual(len(mail.outbox), 0)
@@ -912,9 +909,7 @@ class BackendTest(BackendBaseTestCase):
                 origin=Interaction.Origin.MANUAL_NOTE
             ).exists()
         )
-        self.customer.refresh_from_db()
-        self.assertIsNone(self.customer.follow_up_at)
-        self.assertEqual(self.customer.follow_up_note, "")
+        self.assertFalse(self.customer.followups.exists())
         self.assertEqual(len(mail.outbox), 0)
 
     @responses.activate
@@ -936,9 +931,7 @@ class BackendTest(BackendBaseTestCase):
                 origin=Interaction.Origin.MANUAL_NOTE
             ).exists()
         )
-        self.customer.refresh_from_db()
-        self.assertIsNone(self.customer.follow_up_at)
-        self.assertEqual(self.customer.follow_up_note, "")
+        self.assertFalse(self.customer.followups.exists())
         self.assertEqual(len(mail.outbox), 0)
 
     @responses.activate

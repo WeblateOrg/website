@@ -28,7 +28,7 @@ from django.utils.translation import gettext as _
 
 from weblate_web.invoices.models import Invoice, InvoiceKind, QuoteStatus
 from weblate_web.models import Subscription
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.models import CustomerFollowUp, Payment
 
 if TYPE_CHECKING:
     from django.contrib.auth.models import User
@@ -161,38 +161,45 @@ def get_crm_work_queue_sections(user: User) -> list[CRMWorkQueueSection]:
 
 def get_customer_follow_up_items() -> list[CRMWorkItem]:
     items = []
-    for customer in Customer.objects.due_followups():
-        follow_up_at = customer.follow_up_at
-        if follow_up_at is None:
-            continue
+    for followup in CustomerFollowUp.objects.due():
+        customer = followup.customer
         items.append(
             CRMWorkItem(
                 group=WORK_QUEUE_GROUP_FOLLOWUPS,
-                label=_("Manual follow-up"),
+                label=get_followup_label(followup, due=True),
                 title=customer.verbose_name,
-                summary=customer.follow_up_note or _("Customer follow-up is due."),
+                summary=followup.note or _("Customer follow-up is due."),
                 url=customer.get_absolute_url(),
-                date=follow_up_at,
+                date=followup.follow_up_at,
                 severity=10,
             )
         )
-    for customer in Customer.objects.upcoming_followups():
-        follow_up_at = customer.follow_up_at
-        if follow_up_at is None:
-            continue
+    for followup in CustomerFollowUp.objects.upcoming():
+        customer = followup.customer
         items.append(
             CRMWorkItem(
                 group=WORK_QUEUE_GROUP_FOLLOWUPS,
-                label=_("Upcoming follow-up"),
+                label=get_followup_label(followup, due=False),
                 title=customer.verbose_name,
-                summary=customer.follow_up_note or _("Scheduled customer follow-up."),
+                summary=followup.note or _("Scheduled customer follow-up."),
                 url=customer.get_absolute_url(),
-                date=follow_up_at,
+                date=followup.follow_up_at,
                 severity=50,
                 attention=False,
             )
         )
     return items
+
+
+def get_followup_label(followup: CustomerFollowUp, *, due: bool) -> str:
+    match followup.type:
+        case CustomerFollowUp.Type.MANUAL:
+            return _("Manual follow-up") if due else _("Upcoming follow-up")
+        case CustomerFollowUp.Type.DUPLICATE_PAYMENT:
+            return _("Duplicate payment")
+        case CustomerFollowUp.Type.LOCKED_SITE_URL:
+            return _("Locked URL")
+    return str(followup.get_type_display())
 
 
 def get_invoice_follow_up_items() -> list[CRMWorkItem]:

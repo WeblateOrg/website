@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from django.contrib import admin
 
-from .models import Customer, Payment
+from .models import Customer, CustomerFollowUp, Payment
 
 
 @admin.register(Customer)
@@ -31,15 +31,13 @@ class CustomerAdmin(admin.ModelAdmin):
         "email",
         "country",
         "vat",
-        "follow_up_at",
         "origin",
     )
-    list_filter = ("country", "origin", ("follow_up_at", admin.EmptyFieldListFilter))
+    list_filter = ("country", "origin")
     search_fields = (
         "name",
         "contact_point",
         "accounting_reference",
-        "follow_up_note",
         "email",
         "users__email",
         "end_client",
@@ -52,6 +50,21 @@ class CustomerAdmin(admin.ModelAdmin):
         "vat_validation_state",
         "vat_validation_error",
     )
+
+
+@admin.register(CustomerFollowUp)
+class CustomerFollowUpAdmin(admin.ModelAdmin):
+    list_display = ("customer", "type", "follow_up_at", "note", "service")
+    list_filter = ("type", "follow_up_at")
+    search_fields = (
+        "customer__name",
+        "customer__email",
+        "customer__end_client",
+        "note",
+    )
+    autocomplete_fields = ("customer", "service")
+    readonly_fields = ("details",)
+    ordering = ("follow_up_at", "customer__name", "pk")
 
 
 @admin.register(Payment)

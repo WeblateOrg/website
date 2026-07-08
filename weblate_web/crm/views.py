@@ -32,7 +32,7 @@ from django.db.models.functions import (
     TruncMonth,
 )
 from django.http import FileResponse, Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -75,7 +75,7 @@ from weblate_web.models import (
     Service,
     Subscription,
 )
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 from weblate_web.saml import (
     get_default_saml_provider,
     normalize_external_id,
@@ -91,7 +91,6 @@ if TYPE_CHECKING:
     from django.http import HttpRequest
 
     from weblate_web.invoices.models import Currency
-    from weblate_web.payments.models import CustomerQuerySet
     from weblate_web.views import AuthenticatedHttpRequest
 
 
@@ -648,10 +647,11 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
         return self.get(request, *args, **kwargs)
 
 
-class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
+class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
     title = "Customers"
+    template_name = "payments/customer_list.html"
     paginate_by = 100
     _search_form: CRMSearchForm | None = None
 
@@ -678,8 +678,8 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
         context["kind"] = self.kwargs["kind"]
         return context
 
-    def get_queryset(self) -> CustomerQuerySet:
-        qs = cast("CustomerQuerySet", super().get_queryset()).order()
+    def get_customer_queryset(self):
+        qs = Customer.objects.order()
         search_form = self.get_search_form()
         if search_form.is_valid() and (query := search_form.cleaned_data["q"]):
             qs = qs.filter(
@@ -688,11 +688,28 @@ class CustomerListView(CRMMixin, ListView[Customer]):  # type: ignore[misc]
                 | Q(users__email__icontains=query)
                 | Q(end_client__icontains=query)
             ).distinct()
+        return qs
+
+    def get_followup_queryset(self):
+        qs = CustomerFollowUp.objects.order()
+        search_form = self.get_search_form()
+        if search_form.is_valid() and (query := search_form.cleaned_data["q"]):
+            qs = qs.filter(
+                Q(customer__name__icontains=query)
+                | Q(customer__email__icontains=query)
+                | Q(customer__users__email__icontains=query)
+                | Q(customer__end_client__icontains=query)
+                | Q(note__icontains=query)
+            ).distinct()
+        return qs
+
+    def get_queryset(self):
+        qs = self.get_customer_queryset()
         match self.kwargs["kind"]:
             case "active":
                 return qs.active()
             case "followups":
-                return qs.followups()
+                return self.get_followup_queryset()
             case "all":
                 return qs
         raise ValueError(self.kwargs["kind"])
@@ -744,8 +761,11 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         )
         context["follow_up_form"] = CustomerFollowUpForm(
             self.request.POST if set_follow_up else None,
-            instance=self.object,
+            customer=self.object,
         )
+        context["followups"] = CustomerFollowUp.objects.filter(
+            customer=self.object
+        ).order()
         context["can_add_customer_user"] = self.request.user.has_perm(
             self.add_customer_user_permission
         )
@@ -934,74 +954,58 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         self,
         customer: Customer,
         *,
+        followup: CustomerFollowUp,
         summary: str,
         content: str,
-        previous_follow_up_at,
-        previous_follow_up_note: str,
     ) -> None:
         customer.interaction_set.create(
             origin=Interaction.Origin.MANUAL_NOTE,
             summary=summary[:200],
             content=content,
             details={
-                "follow_up_at": customer.follow_up_at.isoformat()
-                if customer.follow_up_at
-                else "",
-                "follow_up_note": customer.follow_up_note,
-                "previous_follow_up_at": previous_follow_up_at.isoformat()
-                if previous_follow_up_at
-                else "",
-                "previous_follow_up_note": previous_follow_up_note,
+                "follow_up_id": followup.pk,
+                "follow_up_at": followup.follow_up_at.isoformat(),
+                "follow_up_note": followup.note,
+                "follow_up_type": followup.get_type_display(),
             },
             user=self.request.user,
         )
 
     def set_follow_up(self, request, customer: Customer, *args, **kwargs):
         self.check_change_customer_permission(request)
-        previous_follow_up_at = customer.follow_up_at
-        previous_follow_up_note = customer.follow_up_note
-        form = CustomerFollowUpForm(request.POST, instance=customer)
+        form = CustomerFollowUpForm(request.POST, customer=customer)
         if not form.is_valid():
             show_form_errors(request, form)
             return self.get(request, *args, **kwargs)
 
-        customer = form.save(commit=False)
-        follow_up_at = customer.follow_up_at
-        if follow_up_at is None:
-            raise ValueError("Missing follow-up date")
-        customer.save(update_fields=["follow_up_at", "follow_up_note"])
-        local_follow_up_at = timezone.localtime(follow_up_at)
+        followup = form.save()
+        local_follow_up_at = timezone.localtime(followup.follow_up_at)
         content = gettext("Follow-up scheduled for %(date)s.") % {
             "date": local_follow_up_at,
         }
-        if customer.follow_up_note:
-            content = f"{content}\n{customer.follow_up_note}"
+        if followup.note:
+            content = f"{content}\n{followup.note}"
         self.create_follow_up_interaction(
             customer,
+            followup=followup,
             summary=gettext("Follow-up set"),
             content=content,
-            previous_follow_up_at=previous_follow_up_at,
-            previous_follow_up_note=previous_follow_up_note,
         )
-        messages.success(request, gettext("Follow-up updated."))
+        messages.success(request, gettext("Follow-up added."))
         return redirect(customer)
 
     def clear_follow_up(self, request, customer: Customer):
         self.check_change_customer_permission(request)
-        previous_follow_up_at = customer.follow_up_at
-        previous_follow_up_note = customer.follow_up_note
-        if previous_follow_up_at is None and not previous_follow_up_note:
-            return redirect(customer)
-        customer.follow_up_at = None
-        customer.follow_up_note = ""
-        customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        followup = get_object_or_404(
+            CustomerFollowUp, customer=customer, pk=request.POST.get("follow_up")
+        )
         self.create_follow_up_interaction(
             customer,
+            followup=followup,
             summary=gettext("Follow-up cleared"),
             content=gettext("Follow-up cleared."),
-            previous_follow_up_at=previous_follow_up_at,
-            previous_follow_up_note=previous_follow_up_note,
         )
+        followup.delete()
         messages.success(request, gettext("Follow-up cleared."))
         return redirect(customer)
 

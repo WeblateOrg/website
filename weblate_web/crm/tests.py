@@ -42,7 +42,7 @@ from weblate_web.models import (
     ServiceKind,
     get_donation_package,
 )
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 from weblate_web.tests import TEST_CUSTOMER, cnb_mock_rates
 from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_client
 
@@ -66,6 +66,23 @@ class BaseCRMTestCase(TestCase):
             postcode=TEST_CUSTOMER["postcode"],
             # Use non-EU country to avoid VAT on generated invoices
             country="US",
+        )
+
+    @staticmethod
+    def create_followup(
+        customer: Customer,
+        *,
+        follow_up_at=None,
+        note: str = "",
+        followup_type: CustomerFollowUp.Type = CustomerFollowUp.Type.MANUAL,
+    ) -> CustomerFollowUp:
+        if follow_up_at is None:
+            follow_up_at = timezone.now()
+        return CustomerFollowUp.objects.create(
+            customer=customer,
+            follow_up_at=follow_up_at,
+            note=note,
+            type=followup_type,
         )
 
 
@@ -419,57 +436,73 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
         due = self.create_customer("DUE CUSTOMER")
         upcoming = self.create_customer("UPCOMING CUSTOMER")
         without_follow_up = self.create_customer("NO FOLLOW-UP CUSTOMER")
-        due.follow_up_at = timezone.now() - timedelta(hours=1)
-        due.save(update_fields=["follow_up_at"])
-        upcoming.follow_up_at = timezone.now() + timedelta(days=1)
-        upcoming.save(update_fields=["follow_up_at"])
+        due_followup = self.create_followup(
+            due, follow_up_at=timezone.now() - timedelta(hours=1)
+        )
+        upcoming_followup = self.create_followup(
+            upcoming, follow_up_at=timezone.now() + timedelta(days=1)
+        )
 
-        self.assertEqual(list(Customer.objects.followups()), [due, upcoming])
-        self.assertEqual(list(Customer.objects.due_followups()), [due])
-        self.assertEqual(list(Customer.objects.upcoming_followups()), [upcoming])
-        self.assertNotIn(without_follow_up, Customer.objects.followups())
+        self.assertEqual(
+            list(CustomerFollowUp.objects.order()), [due_followup, upcoming_followup]
+        )
+        self.assertEqual(list(CustomerFollowUp.objects.due()), [due_followup])
+        self.assertEqual(list(CustomerFollowUp.objects.upcoming()), [upcoming_followup])
+        self.assertFalse(without_follow_up.followups.exists())
 
     def test_customer_merge_carries_source_follow_up(self):
         target = self.create_customer("TARGET CUSTOMER")
         source = self.create_customer("SOURCE CUSTOMER")
-        source.follow_up_at = timezone.now() + timedelta(days=1)
-        source.follow_up_note = "Send renewal quote"
-        source.save(update_fields=["follow_up_at", "follow_up_note"])
+        source_followup = self.create_followup(
+            source,
+            follow_up_at=timezone.now() + timedelta(days=1),
+            note="Send renewal quote",
+        )
 
         target.merge(source, user=self.user)
 
         target.refresh_from_db()
         self.assertFalse(Customer.objects.filter(pk=source.pk).exists())
-        self.assertEqual(target.follow_up_at, source.follow_up_at)
-        self.assertEqual(target.follow_up_note, "Send renewal quote")
-        self.assertEqual(list(Customer.objects.followups()), [target])
+        followup = target.followups.get(pk=source_followup.pk)
+        self.assertEqual(followup.note, "Send renewal quote")
+        self.assertEqual(list(CustomerFollowUp.objects.order()), [followup])
 
-    def test_customer_merge_keeps_existing_target_follow_up(self):
+    def test_customer_merge_carries_all_follow_ups(self):
         target = self.create_customer("TARGET CUSTOMER")
         source = self.create_customer("SOURCE CUSTOMER")
-        target.follow_up_at = timezone.now() + timedelta(hours=1)
-        target.follow_up_note = "Call accounting"
-        target.save(update_fields=["follow_up_at", "follow_up_note"])
-        source.follow_up_at = timezone.now() + timedelta(days=1)
-        source.follow_up_note = "Send renewal quote"
-        source.save(update_fields=["follow_up_at", "follow_up_note"])
+        target_followup = self.create_followup(
+            target,
+            follow_up_at=timezone.now() + timedelta(hours=1),
+            note="Call accounting",
+        )
+        source_followup = self.create_followup(
+            source,
+            follow_up_at=timezone.now() + timedelta(days=1),
+            note="Send renewal quote",
+        )
 
         target.merge(source, user=self.user)
 
         target.refresh_from_db()
-        self.assertEqual(target.follow_up_note, "Call accounting")
-        self.assertNotEqual(target.follow_up_at, source.follow_up_at)
+        self.assertEqual(
+            set(target.followups.values_list("pk", flat=True)),
+            {target_followup.pk, source_followup.pk},
+        )
 
     def test_customer_follow_up_list(self):
         due = self.create_customer("DUE CUSTOMER")
         upcoming = self.create_customer("UPCOMING CUSTOMER")
         without_follow_up = self.create_customer("NO FOLLOW-UP CUSTOMER")
-        due.follow_up_at = timezone.now() - timedelta(hours=1)
-        due.follow_up_note = "Send renewal quote"
-        due.save(update_fields=["follow_up_at", "follow_up_note"])
-        upcoming.follow_up_at = timezone.now() + timedelta(days=1)
-        upcoming.follow_up_note = "Check payment"
-        upcoming.save(update_fields=["follow_up_at", "follow_up_note"])
+        self.create_followup(
+            due,
+            follow_up_at=timezone.now() - timedelta(hours=1),
+            note="Send renewal quote",
+        )
+        self.create_followup(
+            upcoming,
+            follow_up_at=timezone.now() + timedelta(days=1),
+            note="Check payment",
+        )
 
         response = self.client.get(
             reverse("crm:customer-list", kwargs={"kind": "followups"})
@@ -483,9 +516,11 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
 
     def test_dashboard_shows_customer_follow_ups(self):
         due = self.create_customer("DUE CUSTOMER")
-        due.follow_up_at = timezone.now() - timedelta(hours=1)
-        due.follow_up_note = "Send renewal quote"
-        due.save(update_fields=["follow_up_at", "follow_up_note"])
+        self.create_followup(
+            due,
+            follow_up_at=timezone.now() - timedelta(hours=1),
+            note="Send renewal quote",
+        )
 
         response = self.client.get(reverse("crm:index"))
 
@@ -532,9 +567,7 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
         )
 
         self.assertEqual(response.status_code, 403)
-        customer.refresh_from_db()
-        self.assertIsNone(customer.follow_up_at)
-        self.assertEqual(customer.follow_up_note, "")
+        self.assertFalse(customer.followups.exists())
 
     def test_customer_detail_sets_follow_up(self):
         customer = self.create_customer()
@@ -553,15 +586,16 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
         )
 
         self.assertRedirects(response, customer.get_absolute_url())
-        customer.refresh_from_db()
-        self.assertEqual(customer.follow_up_at, follow_up_at)
-        self.assertEqual(customer.follow_up_note, "Send renewal quote")
+        followup = customer.followups.get()
+        self.assertEqual(followup.follow_up_at, follow_up_at)
+        self.assertEqual(followup.note, "Send renewal quote")
+        self.assertEqual(followup.type, CustomerFollowUp.Type.MANUAL)
         interaction = Interaction.objects.get(customer=customer)
         self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
         self.assertEqual(interaction.summary, "Follow-up set")
         self.assertEqual(interaction.user, self.user)
         self.assertEqual(interaction.details["follow_up_note"], "Send renewal quote")
-        self.assertEqual(interaction.details["previous_follow_up_at"], "")
+        self.assertEqual(interaction.details["follow_up_id"], followup.pk)
 
     @patch("weblate_web.payments.models.validate_vatin")
     def test_customer_detail_sets_follow_up_without_vat_validation(
@@ -585,9 +619,9 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
 
         self.assertRedirects(response, customer.get_absolute_url())
         mock_validate_vatin.assert_not_called()
-        customer.refresh_from_db()
-        self.assertEqual(customer.follow_up_at, follow_up_at)
-        self.assertEqual(customer.follow_up_note, "Send renewal quote")
+        followup = customer.followups.get()
+        self.assertEqual(followup.follow_up_at, follow_up_at)
+        self.assertEqual(followup.note, "Send renewal quote")
 
     def test_customer_detail_rejects_empty_follow_up_date(self):
         customer = self.create_customer()
@@ -603,32 +637,28 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Interaction.objects.exists())
-        customer.refresh_from_db()
-        self.assertIsNone(customer.follow_up_at)
-        self.assertEqual(customer.follow_up_note, "")
+        self.assertFalse(customer.followups.exists())
         self.assertContains(response, "This field is required")
 
     def test_customer_detail_clears_follow_up(self):
         customer = self.create_customer()
-        customer.follow_up_at = timezone.now() + timedelta(days=1)
-        customer.follow_up_note = "Send renewal quote"
-        customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        followup = self.create_followup(
+            customer,
+            follow_up_at=timezone.now() + timedelta(days=1),
+            note="Send renewal quote",
+        )
 
         response = self.client.post(
             customer.get_absolute_url(),
-            {"clear_follow_up": "1"},
+            {"clear_follow_up": "1", "follow_up": followup.pk},
         )
 
         self.assertRedirects(response, customer.get_absolute_url())
-        customer.refresh_from_db()
-        self.assertIsNone(customer.follow_up_at)
-        self.assertEqual(customer.follow_up_note, "")
+        self.assertFalse(customer.followups.exists())
         interaction = Interaction.objects.get(customer=customer)
         self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
         self.assertEqual(interaction.summary, "Follow-up cleared")
-        self.assertEqual(
-            interaction.details["previous_follow_up_note"], "Send renewal quote"
-        )
+        self.assertEqual(interaction.details["follow_up_note"], "Send renewal quote")
 
 
 class CRMWorkQueueTestCase(BaseCRMTestCase):
@@ -722,12 +752,16 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
     def test_work_queue_shows_manual_followups(self):
         due = self.create_customer("DUE QUEUE CUSTOMER")
         upcoming = self.create_customer("UPCOMING QUEUE CUSTOMER")
-        due.follow_up_at = timezone.now() - timedelta(hours=1)
-        due.follow_up_note = "Send renewal quote"
-        due.save(update_fields=["follow_up_at", "follow_up_note"])
-        upcoming.follow_up_at = timezone.now() + timedelta(days=1)
-        upcoming.follow_up_note = "Check payment"
-        upcoming.save(update_fields=["follow_up_at", "follow_up_note"])
+        self.create_followup(
+            due,
+            follow_up_at=timezone.now() - timedelta(hours=1),
+            note="Send renewal quote",
+        )
+        self.create_followup(
+            upcoming,
+            follow_up_at=timezone.now() + timedelta(days=1),
+            note="Check payment",
+        )
 
         response = self.client.get(reverse("crm:work-queue"))
 
@@ -880,8 +914,7 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
 
     def test_work_queue_filters_items_by_permission(self):
         due = self.create_customer("PERMISSION FOLLOWUP CUSTOMER")
-        due.follow_up_at = timezone.now() - timedelta(hours=1)
-        due.save(update_fields=["follow_up_at"])
+        self.create_followup(due, follow_up_at=timezone.now() - timedelta(hours=1))
         invoice = self.create_queue_invoice("PERMISSION INVOICE CUSTOMER", age_days=8)
         service = self.create_queue_service(
             "PERMISSION SERVICE CUSTOMER", expires=timezone.now() - timedelta(days=1)
@@ -911,8 +944,9 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
         customers = []
         for index in range(11):
             customer = self.create_customer(f"QUEUE CUSTOMER {index:02d}")
-            customer.follow_up_at = now - timedelta(days=11 - index)
-            customer.save(update_fields=["follow_up_at"])
+            self.create_followup(
+                customer, follow_up_at=now - timedelta(days=11 - index)
+            )
             customers.append(customer)
 
         response = self.client.get(reverse("crm:index"))
