@@ -51,7 +51,7 @@ from weblate_web.invoices.models import (
     InvoiceCategory,
     round_decimal,
 )
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 from weblate_web.payments.utils import send_notification
 from weblate_web.zammad import create_dedicated_hosting_ticket
 
@@ -1714,6 +1714,7 @@ class Report(models.Model):
             update_fields=update_fields,
         )
         if not self.is_valid_site_url():
+            self.create_locked_site_url_followup()
             return
 
         self.service.discoverable = self.discoverable
@@ -1735,6 +1736,24 @@ class Report(models.Model):
 
     def is_valid_site_url(self) -> bool:
         return not self.service.site_url_lock or self.site_url == self.service.site_url
+
+    def create_locked_site_url_followup(self) -> None:
+        note = _("Locked URL mismatch: %(url)s") % {"url": self.site_url}
+        CustomerFollowUp.objects.update_or_create(
+            service=self.service,
+            type=CustomerFollowUp.Type.LOCKED_SITE_URL,
+            defaults={
+                "customer": self.service.customer,
+                "follow_up_at": timezone.now(),
+                "note": note[:200],
+                "details": {
+                    "service_id": self.service_id,
+                    "report_id": self.pk,
+                    "locked_site_url": self.service.site_url,
+                    "reported_site_url": self.site_url,
+                },
+            },
+        )
 
 
 class Project(models.Model):

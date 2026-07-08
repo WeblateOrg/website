@@ -117,12 +117,43 @@
     <section class="crm-section content">
       {% translate "Follow-up" as section_title %}
       {% include "crm/snippets/section_header.html" %}
-      {% if object.follow_up_at %}
-        <div class="crm-summary-line">
-          <span>
-            {% blocktranslate with date=object.follow_up_at %}Next follow-up: {{ date }}{% endblocktranslate %}
-          </span>
-          {% if object.follow_up_note %}<strong>{{ object.follow_up_note }}</strong>{% endif %}
+      {% if followups %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% translate "Customer follow-ups" as table_title %}
+            {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Follow-up" %}</th>
+                <th scope="col">{% translate "Type" %}</th>
+                <th scope="col">{% translate "Next action" %}</th>
+                {% if can_change_customer %}
+                  <th scope="col">{% translate "Actions" %}</th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for followup in followups %}
+                <tr>
+                  <td>{% blocktranslate with date=followup.follow_up_at %}Next follow-up: {{ date }}{% endblocktranslate %}</td>
+                  <td>{{ followup.get_type_display }}</td>
+                  <td>{{ followup.note|default:"-" }}</td>
+                  {% if can_change_customer %}
+                    <td>
+                      <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="follow_up" value="{{ followup.pk }}">
+                        <button class="crm-button crm-button--secondary"
+                                type="submit"
+                                name="clear_follow_up"
+                                formnovalidate>{% translate "Clear follow-up" %}</button>
+                      </form>
+                    </td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       {% else %}
         {% translate "No follow-up scheduled." as empty_message %}
@@ -150,12 +181,6 @@
                    type="submit"
                    name="set_follow_up"
                    value="{% translate "Save follow-up" %}">
-            {% if object.follow_up_at or object.follow_up_note %}
-              <button class="crm-button crm-button--secondary"
-                      type="submit"
-                      name="clear_follow_up"
-                      formnovalidate>{% translate "Clear follow-up" %}</button>
-            {% endif %}
           </div>
         </form>
       {% endif %}

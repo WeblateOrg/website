@@ -44,7 +44,7 @@ from weblate_web.invoices.models import (
     QuoteStatus,
 )
 from weblate_web.models import Package, Service
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 from weblate_web.saml import get_default_saml_provider
 
 if TYPE_CHECKING:
@@ -483,12 +483,18 @@ def log_in(page: Page, live_server, user: User) -> None:
 
 def create_work_queue_visual_data(data: CrmData) -> Invoice:
     """Create records that exercise every Today queue section."""
-    data.customer.follow_up_at = FIXED_TIMESTAMP - timedelta(hours=4)
-    data.customer.follow_up_note = "Call about renewal quote."
-    data.customer.save(update_fields=["follow_up_at", "follow_up_note"])
-    data.prospect.follow_up_at = FIXED_TIMESTAMP + timedelta(days=3)
-    data.prospect.follow_up_note = "Send onboarding check-in."
-    data.prospect.save(update_fields=["follow_up_at", "follow_up_note"])
+    CustomerFollowUp.objects.create(
+        customer=data.customer,
+        follow_up_at=FIXED_TIMESTAMP - timedelta(hours=4),
+        note="Call about renewal quote.",
+        type=CustomerFollowUp.Type.MANUAL,
+    )
+    CustomerFollowUp.objects.create(
+        customer=data.prospect,
+        follow_up_at=FIXED_TIMESTAMP + timedelta(days=3),
+        note="Send onboarding check-in.",
+        type=CustomerFollowUp.Type.MANUAL,
+    )
 
     old_invoice_customer = create_customer(
         "CRM Work Queue Invoice", "work-invoice@example.test"

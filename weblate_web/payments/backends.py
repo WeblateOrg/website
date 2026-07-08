@@ -38,7 +38,7 @@ from django.utils.timezone import make_aware, now
 from django.utils.translation import get_language, gettext, gettext_lazy
 from django.views.decorators.debug import sensitive_variables
 
-from .models import Payment
+from .models import CustomerFollowUp, Payment
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponseRedirect
@@ -500,21 +500,12 @@ class Backend:
         if interactions.exists():
             return False
 
-        follow_up_at = now()
-        previous_follow_up_at = customer.follow_up_at
-        previous_follow_up_note = customer.follow_up_note
         details = {
             "duplicate_payment_key": record.duplicate_key,
             "invoice": invoice.number,
             "existing_payment_id": str(paid_payment.pk) if paid_payment else "",
             "existing_payment_backend": paid_payment.backend if paid_payment else "",
             "existing_payment_state": paid_payment.state if paid_payment else "",
-            "follow_up_at": follow_up_at.isoformat(),
-            "follow_up_note": record.summary,
-            "previous_follow_up_at": previous_follow_up_at.isoformat()
-            if previous_follow_up_at
-            else "",
-            "previous_follow_up_note": previous_follow_up_note,
             **record.details,
         }
         customer.interaction_set.create(
@@ -523,9 +514,13 @@ class Backend:
             content=record.content,
             details=details,
         )
-        customer.follow_up_at = follow_up_at
-        customer.follow_up_note = record.summary
-        customer.save(update_fields=["follow_up_at", "follow_up_note"])
+        CustomerFollowUp.objects.create(
+            customer=customer,
+            follow_up_at=now(),
+            note=record.summary,
+            type=CustomerFollowUp.Type.DUPLICATE_PAYMENT,
+            details=details,
+        )
         return True
 
     def reject_duplicate_payment(self, invoice: Invoice, paid_payment: Payment) -> None:

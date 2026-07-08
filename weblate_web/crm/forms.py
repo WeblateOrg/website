@@ -28,7 +28,7 @@ from django.utils.translation import gettext_lazy
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import InvoiceKind, QuoteStatus
 from weblate_web.models import Package, Service, Subscription
-from weblate_web.payments.models import Customer
+from weblate_web.payments.models import Customer, CustomerFollowUp
 
 FINAL_INVOICE_CONFIRMATION_ERROR = gettext_lazy(
     "Please confirm that you want to issue a final invoice."
@@ -201,25 +201,20 @@ class CustomerFollowUpForm(forms.Form):
         widget=forms.TextInput(),
     )
 
-    def __init__(self, *args, instance: Customer, **kwargs):
-        self.instance = instance
-        kwargs.setdefault(
-            "initial",
-            {
-                "follow_up_at": instance.follow_up_at,
-                "follow_up_note": instance.follow_up_note,
-            },
-        )
+    def __init__(self, *args, customer: Customer, **kwargs):
+        self.customer = customer
         super().__init__(*args, **kwargs)
 
-    def save(self, *, commit: bool = True) -> Customer:
-        self.instance.follow_up_at = self.cleaned_data["follow_up_at"]
-        self.instance.follow_up_note = self.cleaned_data["follow_up_note"]
+    def save(self, *, commit: bool = True) -> CustomerFollowUp:
+        followup = CustomerFollowUp(
+            customer=self.customer,
+            follow_up_at=self.cleaned_data["follow_up_at"],
+            note=self.cleaned_data["follow_up_note"],
+            type=CustomerFollowUp.Type.MANUAL,
+        )
         if commit:
-            self.instance.save(
-                update_fields=["follow_up_at", "follow_up_note"],
-            )
-        return self.instance
+            followup.save()
+        return followup
 
 
 class CustomerUserForm(forms.Form):

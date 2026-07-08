@@ -38,7 +38,7 @@ from requests.exceptions import HTTPError
 from wlc import WeblateException
 
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 
 from .exchange_rates import ExchangeRates, UncachedExchangeRates
 from .hetzner import generate_random_password
@@ -89,6 +89,7 @@ from .views import PostView, server_error
 if TYPE_CHECKING:
     from uuid import UUID
 
+    from django.apps.registry import Apps
     from django.core.mail.message import EmailMultiAlternatives
 
 TEST_DATA = Path(__file__).parent / "test-data"
@@ -124,6 +125,44 @@ def migrate_to_current_payments_head(executor: MigrationExecutor) -> None:
     executor.migrate(
         [node for node in executor.loader.graph.leaf_nodes() if node[0] == "payments"]
     )
+
+
+def create_customer_for_historical_migration(apps: Apps) -> int:
+    customer_model = apps.get_model("payments", "Customer")
+    values = {
+        "vat": "",
+        "vat_validated": None,
+        "vat_validation_state": 0,
+        "vat_validation_error": "{}",
+        "tax": "",
+        "name": TEST_CUSTOMER["name"],
+        "address": TEST_CUSTOMER["address"],
+        "address_2": "",
+        "city": TEST_CUSTOMER["city"],
+        "postcode": TEST_CUSTOMER["postcode"],
+        "country": "US",
+        "email": "",
+        "contact_point": "",
+        "accounting_reference": "",
+        "upcoming_payment_notification_days": 0,
+        "follow_up_at": None,
+        "follow_up_note": "",
+        "origin": PAYMENTS_ORIGIN,
+        "user_id": -1,
+        "discount_id": None,
+        "end_client": "",
+        "note": "",
+        "created": timezone.now(),
+        "zammad_id": 0,
+    }
+    field_names = {
+        field.name
+        for field in customer_model._meta.fields  # pylint: disable=protected-access
+    }
+    customer = customer_model.objects.create(
+        **{field: value for field, value in values.items() if field in field_names}
+    )
+    return customer.pk
 
 
 @dataclass
@@ -1307,8 +1346,14 @@ class FakturaceTestCase(UserTestCase):
 
 
 class DonationMigration0049Test(TransactionTestCase):
-    migrate_from = [("weblate_web", "0048_service_maintenance_window")]
-    migrate_to = [("weblate_web", "0049_consolidate_donations")]
+    migrate_from = [
+        ("payments", "0060_customer_follow_up"),
+        ("weblate_web", "0048_service_maintenance_window"),
+    ]
+    migrate_to = [
+        ("payments", "0060_customer_follow_up"),
+        ("weblate_web", "0049_consolidate_donations"),
+    ]
 
     def setUp(self) -> None:
         super().setUp()
@@ -1319,6 +1364,8 @@ class DonationMigration0049Test(TransactionTestCase):
     def tearDown(self) -> None:
         self.executor = MigrationExecutor(connection)
         migrate_to_current_weblate_web_head(self.executor)
+        self.executor = MigrationExecutor(connection)
+        migrate_to_current_payments_head(self.executor)
         super().tearDown()
 
     def test_donation_rewards_are_migrated_to_subscription_packages(  # noqa: PLR0914
@@ -1327,27 +1374,19 @@ class DonationMigration0049Test(TransactionTestCase):
         donation_model = self.old_apps.get_model("weblate_web", "Donation")
         past_payments_model = self.old_apps.get_model("weblate_web", "PastPayments")
 
-        customer = Customer.objects.create(
-            user_id=-1,
-            origin=PAYMENTS_ORIGIN,
-            name=TEST_CUSTOMER["name"],
-            address=TEST_CUSTOMER["address"],
-            city=TEST_CUSTOMER["city"],
-            postcode=TEST_CUSTOMER["postcode"],
-            country="US",
-        )
+        customer_id = create_customer_for_historical_migration(self.old_apps)
         created = timezone.now() - timedelta(days=30)
         expires = timezone.now() + timedelta(days=30)
         donations = []
         for reward in range(4):
             payment = Payment.objects.create(
-                customer=customer,
+                customer_id=customer_id,
                 amount=100 + reward,
                 description=f"Donation {reward}",
                 state=Payment.PROCESSED,
             )
             donation = donation_model.objects.create(
-                customer_id=customer.pk,
+                customer_id=customer_id,
                 payment=payment.pk,
                 reward=reward,
                 link_text=f"Donor {reward}",
@@ -1361,7 +1400,7 @@ class DonationMigration0049Test(TransactionTestCase):
             donations.append(donation)
 
         past_payment = Payment.objects.create(
-            customer=customer,
+            customer_id=customer_id,
             amount=42,
             description="Past donation",
             state=Payment.PROCESSED,
@@ -1417,8 +1456,14 @@ class DonationMigration0049Test(TransactionTestCase):
 
 
 class SubscriptionPaymentMigration0050Test(TransactionTestCase):
-    migrate_from = [("weblate_web", "0049_consolidate_donations")]
-    migrate_to = [("weblate_web", "0050_subscription_payment_fk")]
+    migrate_from = [
+        ("payments", "0060_customer_follow_up"),
+        ("weblate_web", "0049_consolidate_donations"),
+    ]
+    migrate_to = [
+        ("payments", "0060_customer_follow_up"),
+        ("weblate_web", "0050_subscription_payment_fk"),
+    ]
 
     def setUp(self) -> None:
         super().setUp()
@@ -1429,6 +1474,8 @@ class SubscriptionPaymentMigration0050Test(TransactionTestCase):
     def tearDown(self) -> None:
         self.executor = MigrationExecutor(connection)
         migrate_to_current_weblate_web_head(self.executor)
+        self.executor = MigrationExecutor(connection)
+        migrate_to_current_payments_head(self.executor)
         super().tearDown()
 
     def test_subscription_payments_are_migrated_to_relations(self) -> None:
@@ -1437,27 +1484,19 @@ class SubscriptionPaymentMigration0050Test(TransactionTestCase):
         service_model = self.old_apps.get_model("weblate_web", "Service")
         subscription_model = self.old_apps.get_model("weblate_web", "Subscription")
 
-        customer = Customer.objects.create(
-            user_id=-1,
-            origin=PAYMENTS_ORIGIN,
-            name=TEST_CUSTOMER["name"],
-            address=TEST_CUSTOMER["address"],
-            city=TEST_CUSTOMER["city"],
-            postcode=TEST_CUSTOMER["postcode"],
-            country="US",
-        )
+        customer_id = create_customer_for_historical_migration(self.old_apps)
         package = package_model.objects.create(
             name="migration-test", verbose="Migration test", price=42
         )
-        service = service_model.objects.create(customer_id=customer.pk)
+        service = service_model.objects.create(customer_id=customer_id)
         current_payment = Payment.objects.create(
-            customer=customer,
+            customer_id=customer_id,
             amount=100,
             description="Current payment",
             state=Payment.PROCESSED,
         )
         past_payment = Payment.objects.create(
-            customer=customer,
+            customer_id=customer_id,
             amount=50,
             description="Past payment",
             state=Payment.PROCESSED,
@@ -1501,19 +1540,11 @@ class SubscriptionPaymentMigration0050Test(TransactionTestCase):
             validate_payment_references_migration,
         )
 
-        customer = Customer.objects.create(
-            user_id=-1,
-            origin=PAYMENTS_ORIGIN,
-            name=TEST_CUSTOMER["name"],
-            address=TEST_CUSTOMER["address"],
-            city=TEST_CUSTOMER["city"],
-            postcode=TEST_CUSTOMER["postcode"],
-            country="US",
-        )
+        customer_id = create_customer_for_historical_migration(self.old_apps)
         package = package_model.objects.create(
             name="migration-orphan-test", verbose="Migration orphan test", price=42
         )
-        service = service_model.objects.create(customer_id=customer.pk)
+        service = service_model.objects.create(customer_id=customer_id)
         subscription = subscription_model.objects.create(
             service_id=service.pk,
             package_id=package.pk,
@@ -3131,6 +3162,33 @@ class APITest(UserTestCase):
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
         self.assertEqual(service.site_url, "https://allowed.example.com")
+        followup = service.followups.get()
+        self.assertEqual(followup.customer, service.customer)
+        self.assertEqual(followup.type, CustomerFollowUp.Type.LOCKED_SITE_URL)
+        self.assertEqual(followup.details["service_id"], service.pk)
+        self.assertEqual(
+            followup.details["locked_site_url"], "https://allowed.example.com"
+        )
+        self.assertEqual(
+            followup.details["reported_site_url"], "https://wrong.example.com"
+        )
+
+        response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://other-wrong.example.com",
+                "discoverable": "1",
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(service.followups.count(), 1)
+        followup.refresh_from_db()
+        self.assertEqual(
+            followup.details["reported_site_url"],
+            "https://other-wrong.example.com",
+        )
 
         response = self.client.post(
             "/api/support/",
@@ -3144,6 +3202,12 @@ class APITest(UserTestCase):
         self.assertEqual(response.status_code, 200)
         service = Service.objects.get(pk=service.pk)
         self.assertTrue(service.discoverable)
+        self.assertEqual(service.followups.count(), 1)
+        followup.refresh_from_db()
+        self.assertEqual(
+            followup.details["reported_site_url"],
+            "https://other-wrong.example.com",
+        )
 
     def test_user(self) -> None:
         user = self.create_user()
