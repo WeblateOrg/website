@@ -19,7 +19,10 @@
 
 from __future__ import annotations
 
+from urllib.parse import urlsplit
+
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext, gettext_lazy
 
@@ -135,6 +138,45 @@ class AddDiscoveryForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["site_url"].required = True
         self.fields["discover_text"].required = True
+
+
+class DiscoveryRegistrationForm(AddDiscoveryForm):
+    callback_url = forms.URLField(widget=forms.HiddenInput)
+    state = forms.CharField(max_length=400, widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields["site_url"].widget.attrs["readonly"] = "readonly"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        site_url = cleaned_data.get("site_url")
+        callback_url = cleaned_data.get("callback_url")
+        if not site_url or not callback_url:
+            return cleaned_data
+
+        try:
+            site_parts = urlsplit(site_url)
+            callback_parts = urlsplit(callback_url)
+        except ValueError as error:
+            raise ValidationError(gettext("Invalid server URL.")) from error
+
+        if not settings.DEBUG and callback_parts.scheme != "https":
+            raise ValidationError(gettext("Callback URL must use HTTPS."))
+
+        if (
+            site_parts.hostname != callback_parts.hostname
+            or site_parts.port != callback_parts.port
+        ):
+            raise ValidationError(
+                gettext("Callback URL must belong to the registered server.")
+            )
+
+        callback_path = callback_parts.path.rstrip("/")
+        if not callback_path.endswith("/manage/discovery/callback"):
+            raise ValidationError(gettext("Invalid callback URL."))
+
+        return cleaned_data
 
 
 class AgreementForm(forms.Form):

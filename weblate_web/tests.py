@@ -48,6 +48,7 @@ from .management.commands.sync_hosted_users import USER_SYNC_RESPONSE_SALT
 from .middleware import SecurityMiddleware
 from .models import (
     REWARD_LEVELS,
+    DiscoveryActivation,
     ExternalSyncState,
     Package,
     PackageCategory,
@@ -5735,3 +5736,86 @@ class DiscoveryTestCase(UserTestCase):
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(is_pending_discovery_activation(service))
         self.assertTrue(service.discoverable)
+
+    def test_registration_handoff(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com",
+                "callback_url": "https://example.com/manage/discovery/callback/",
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        service = Service.objects.get()
+        activation = DiscoveryActivation.objects.get()
+        self.assertEqual(service.site_url, "https://example.com")
+        self.assertTrue(service.site_url_lock)
+        self.assertEqual(activation.service, service)
+        self.assertTrue(activation.code.startswith("discovery_"))
+        self.assertFalse(service.secret.startswith("discovery_"))
+        self.assertRedirects(
+            response,
+            f"https://example.com/manage/discovery/callback/?code={activation.code}&state=state-123",
+            fetch_redirect_response=False,
+        )
+        self.assertNotIn(service.secret, response["Location"])
+
+        response = self.client.post(
+            "/api/support/activation/", {"code": activation.code}
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["secret"], service.secret)
+        activation = DiscoveryActivation.objects.get(pk=activation.pk)
+        self.assertIsNotNone(activation.used_at)
+
+        response = self.client.post(
+            "/api/support/activation/", {"code": activation.code}
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_registration_rejects_mismatched_callback(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com",
+                "callback_url": "https://evil.example/manage/discovery/callback/",
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "Callback URL must belong to the registered server."
+        )
+        self.assertFalse(Service.objects.exists())
+        self.assertFalse(DiscoveryActivation.objects.exists())
+
+    def test_registration_exchange_rejects_expired_code(self) -> None:
+        user = self.login()
+        customer = Customer.objects.create(
+            user_id=user.id, origin=PAYMENTS_ORIGIN, email=user.email
+        )
+        customer.users.add(user)
+        service = Service.objects.create(
+            customer=customer,
+            site_url="https://example.com",
+            site_url_lock=True,
+        )
+        activation = DiscoveryActivation.create_for_service(
+            service,
+            state="state-123",
+            callback_url="https://example.com/manage/discovery/callback/",
+        )
+        activation.expires = timezone.now() - timedelta(minutes=1)
+        activation.save(update_fields=["expires"])
+
+        response = self.client.post(
+            "/api/support/activation/", {"code": activation.code}
+        )
+        self.assertEqual(response.status_code, 400)
+        activation = DiscoveryActivation.objects.get(pk=activation.pk)
+        self.assertIsNone(activation.used_at)

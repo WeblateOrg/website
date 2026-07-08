@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Register Discover Weblate listing" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title min-m">{% translate "Register Discover Weblate listing" %}</h1>
+        <div class="payment-form">
+          <div class="form-line">
+            <div class="line-left">{% translate "Discover Weblate" %}</div>
+            <div class="line-right">
+              <p>{% translate "Confirm the server you want to list on Discover Weblate." %}</p>
+              <p class="text-muted">
+                {% translate "After confirmation, you will return to that Weblate server to complete activation." %}
+              </p>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+            {% for field in form.visible_fields %}
+              <div class="form-line">
+                <div class="line-left">{{ field.label }}</div>
+                <div class="line-right">
+                  {{ field.errors }}
+                  {{ field }}
+                  {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
+                </div>
+                <div class="clear"></div>
+              </div>
+            {% endfor %}
+            {{ form.non_field_errors }}
+            <div class="payment-pick"></div>
+            <input type="submit"
+                   class="button center make-payment"
+                   value="{% translate "Register" %}" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
