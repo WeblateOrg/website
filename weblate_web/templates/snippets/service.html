@@ -28,13 +28,13 @@
 
   <div class="form-line clear"></div>
 
-  {% if service.needs_token %}
+  {% if service.needs_token or service.is_pending_discovery_activation %}
     <div class="form-line service-text-formatting bdr-btm">
       <div class="line-left p-top">{% translate "Activation token" %}</div>
       <div class="line-right">
         <input value="{{ service.secret }}" readonly class="fullwidth">
         <br />
-        {% if service.site_url %}
+        {% if service.site_url and service.needs_token and not service.is_pending_discovery_activation %}
           <a class="button button-med-100 inline"
              href="{{ service.site_url }}/manage/?activation={{ service.secret }}">{% translate "Activate" %}</a>
         {% endif %}

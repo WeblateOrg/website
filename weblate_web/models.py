@@ -24,6 +24,7 @@ from decimal import ROUND_CEILING, Decimal
 from io import BytesIO
 from math import ceil
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlsplit, urlunsplit
 from uuid import uuid4
 
 import html2text
@@ -76,6 +77,39 @@ if TYPE_CHECKING:
     from weblate_web.invoices.models import InvoiceKind
 
 ServiceSuggestion = tuple[str, str, str, str, str, str, int | None]
+
+
+def normalize_site_url_for_lock(url: str) -> str:
+    try:
+        parts = urlsplit(url)
+        scheme = parts.scheme.lower()
+        hostname = parts.hostname
+        port = parts.port
+    except ValueError:
+        return url.rstrip("/")
+
+    netloc = parts.netloc.lower()
+    if hostname:
+        host = hostname.lower()
+        if ":" in host:
+            host = f"[{host}]"
+        if port and (scheme, port) not in {("http", 80), ("https", 443)}:
+            host = f"{host}:{port}"
+        userinfo = ""
+        if "@" in parts.netloc:
+            userinfo = f"{parts.netloc.rsplit('@', 1)[0]}@"
+        netloc = f"{userinfo}{host}"
+
+    return urlunsplit(
+        (
+            scheme,
+            netloc,
+            parts.path.rstrip("/"),
+            parts.query,
+            parts.fragment,
+        )
+    )
+
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 PILLOW_VALIDATION_ERRORS = (
@@ -794,6 +828,7 @@ class Service(models.Model):
     # Discover integration
     matched_projects: list[Project]
     non_matched_projects_count: int
+    is_pending_discovery_activation: bool
 
     objects = ServiceQuerySet.as_manager()
 
@@ -832,12 +867,11 @@ class Service(models.Model):
         return self.site_url
 
     @property
-    def needs_token(self):
+    def needs_token(self) -> bool:
         if self.is_donation:
             return False
-        return (
-            self.status not in {"hosted", "shared", "community"}
-            or self.backup_subscriptions
+        return self.status not in {"hosted", "shared", "community"} or bool(
+            self.backup_subscriptions
         )
 
     def projects_limit(self) -> str:
@@ -1226,6 +1260,15 @@ class Service(models.Model):
         if self.site_url_lock:
             reports = reports.filter(site_url=self.site_url)
         return reports.order_by("-timestamp")[:10]
+
+
+def is_pending_discovery_activation(service: Service) -> bool:
+    return (
+        not service.is_donation
+        and service.site_url_lock
+        and bool(service.site_url)
+        and service.last_report is None
+    )
 
 
 class SubscriptionQuerySet(models.QuerySet["Subscription"]):
@@ -1707,6 +1750,7 @@ class Report(models.Model):
         using=None,
         update_fields=None,
     ) -> None:
+        self.site_url = normalize_site_url_for_lock(self.site_url)
         super().save(
             force_insert=force_insert,
             force_update=force_update,
@@ -1718,7 +1762,11 @@ class Report(models.Model):
             return
 
         self.service.discoverable = self.discoverable
-        self.service.site_url = self.site_url
+        self.service.site_url = (
+            normalize_site_url_for_lock(self.site_url)
+            if self.service.site_url_lock
+            else self.site_url
+        )
         self.service.site_title = self.site_title
         self.service.site_version = self.version
         self.service.site_users = self.users
@@ -1735,7 +1783,9 @@ class Report(models.Model):
         )
 
     def is_valid_site_url(self) -> bool:
-        return not self.service.site_url_lock or self.site_url == self.service.site_url
+        return not self.service.site_url_lock or normalize_site_url_for_lock(
+            self.site_url
+        ) == normalize_site_url_for_lock(self.service.site_url)
 
     def create_locked_site_url_followup(self) -> None:
         note = _("Locked URL mismatch: %(url)s") % {"url": self.site_url}

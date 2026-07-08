@@ -61,6 +61,8 @@ from .models import (
     add_subscription_past_payments,
     get_donation_package,
     get_donation_reward_package_name,
+    is_pending_discovery_activation,
+    normalize_site_url_for_lock,
     process_payment,
     sync_packages,
     validate_bitmap,
@@ -3050,6 +3052,28 @@ class APITest(UserTestCase):
             raise ValueError("Missing package expectation!")
         return service
 
+    def _post_support_report(
+        self,
+        service: Service,
+        site_url: str,
+        *,
+        public_projects: list[dict[str, str]] | None = None,
+    ):
+        data: dict[str, Any] = {
+            "secret": service.secret,
+            "site_url": site_url,
+            "discoverable": "1",
+        }
+        if public_projects is not None:
+            data["public_projects"] = json.dumps(public_projects)
+        response = self.client.post(
+            "/api/support/",
+            data,
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+        self.assertEqual(response.status_code, 200)
+        return response
+
     def test_support(self) -> None:
         self.perform_support()
 
@@ -3144,21 +3168,26 @@ class APITest(UserTestCase):
         self.assertEqual(service.project_set.count(), 0)
 
     def test_support_site_url_lock(self) -> None:
+        self.assertEqual(
+            normalize_site_url_for_lock("HTTPS://Allowed.Example.com:443/"),
+            "https://allowed.example.com",
+        )
+        self.assertEqual(
+            normalize_site_url_for_lock("http://allowed.example.com:80/"),
+            "http://allowed.example.com",
+        )
+        self.assertEqual(
+            normalize_site_url_for_lock("https://allowed.example.com:8443/"),
+            "https://allowed.example.com:8443",
+        )
+
         service = self.perform_support()
         service.site_url = "https://allowed.example.com"
         service.site_url_lock = True
         service.save(update_fields=["site_url", "site_url_lock"])
 
-        response = self.client.post(
-            "/api/support/",
-            {
-                "secret": service.secret,
-                "site_url": "https://wrong.example.com",
-                "discoverable": "1",
-            },
-            headers={"user-agent": "Weblate/1.2.3"},
-        )
-        self.assertEqual(response.status_code, 200)
+        response = self._post_support_report(service, "https://wrong.example.com")
+        self.assertFalse(response.json()["in_limits"])
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
         self.assertEqual(service.site_url, "https://allowed.example.com")
@@ -3173,16 +3202,7 @@ class APITest(UserTestCase):
             followup.details["reported_site_url"], "https://wrong.example.com"
         )
 
-        response = self.client.post(
-            "/api/support/",
-            {
-                "secret": service.secret,
-                "site_url": "https://other-wrong.example.com",
-                "discoverable": "1",
-            },
-            headers={"user-agent": "Weblate/1.2.3"},
-        )
-        self.assertEqual(response.status_code, 200)
+        self._post_support_report(service, "https://other-wrong.example.com")
         self.assertEqual(service.followups.count(), 1)
         followup.refresh_from_db()
         self.assertEqual(
@@ -3190,16 +3210,7 @@ class APITest(UserTestCase):
             "https://other-wrong.example.com",
         )
 
-        response = self.client.post(
-            "/api/support/",
-            {
-                "secret": service.secret,
-                "site_url": "https://allowed.example.com",
-                "discoverable": "1",
-            },
-            headers={"user-agent": "Weblate/1.2.3"},
-        )
-        self.assertEqual(response.status_code, 200)
+        self._post_support_report(service, "https://allowed.example.com")
         service = Service.objects.get(pk=service.pk)
         self.assertTrue(service.discoverable)
         self.assertEqual(service.followups.count(), 1)
@@ -3208,6 +3219,46 @@ class APITest(UserTestCase):
             followup.details["reported_site_url"],
             "https://other-wrong.example.com",
         )
+
+        self._post_support_report(service, "https://allowed.example.com:443/")
+        service = Service.objects.get(pk=service.pk)
+        self.assertTrue(service.discoverable)
+
+        self._post_support_report(
+            service,
+            "https://allowed.example.com",
+            public_projects=[
+                {
+                    "name": "Allowed project",
+                    "url": "/projects/allowed/",
+                    "web": "https://allowed.example.com/projects/allowed/",
+                }
+            ],
+        )
+        self.assertEqual(service.project_set.count(), 1)
+        project = service.project_set.get()
+        self.assertEqual(project.name, "Allowed project")
+
+        response = self._post_support_report(
+            service,
+            "https://wrong.example.com",
+            public_projects=[
+                {
+                    "name": "Wrong project",
+                    "url": "/projects/wrong/",
+                    "web": "https://wrong.example.com/projects/wrong/",
+                }
+            ],
+        )
+        self.assertFalse(response.json()["in_limits"])
+        self.assertEqual(service.project_set.count(), 1)
+        project = service.project_set.get()
+        self.assertEqual(project.name, "Allowed project")
+
+        response = self._post_support_report(service, "http://[")
+        self.assertFalse(response.json()["in_limits"])
+        service = Service.objects.get(pk=service.pk)
+        self.assertEqual(service.site_url, "https://allowed.example.com")
 
     def test_user(self) -> None:
         user = self.create_user()
@@ -5592,9 +5643,17 @@ class StorageBoxTestCase(FakturaceTestCase):
 class DiscoveryTestCase(UserTestCase):
     def test_create(self):
         # This requires login
-        response = self.client.get("/subscription/discovery/", follow=True)
+        response = self.client.get("/subscription/discovery/")
         self.assertRedirects(
-            response, "/admin/login/?next=%2Fen%2Fsubscription%2Fdiscovery%2F"
+            response,
+            "/en/subscription/discovery/",
+            fetch_redirect_response=False,
+        )
+        response = self.client.get("/en/subscription/discovery/")
+        self.assertRedirects(
+            response,
+            f"{settings.LOGIN_URL}?next=/en/subscription/discovery/",
+            fetch_redirect_response=False,
         )
         self.login()
         # Test exact URL because that is used from Weblate
@@ -5612,9 +5671,67 @@ class DiscoveryTestCase(UserTestCase):
         )
         service = Service.objects.get()
         self.assertEqual(service.site_url, "http://localhost")
+        self.assertTrue(service.site_url_lock)
         self.assertNotEqual(service.secret, "")
+        self.assertFalse(service.needs_token)
+        self.assertTrue(is_pending_discovery_activation(service))
         self.assertRedirects(
             response,
-            f"http://localhost/manage/?activation={service.secret}",
+            "/user/",
             fetch_redirect_response=False,
         )
+        self.assertNotIn("activation=", response["Location"])
+        self.assertNotIn("http://localhost", response["Location"])
+
+        regular_service = Service.objects.create(
+            customer=service.customer,
+            status="basic",
+            site_url="https://support.example.com",
+        )
+        self.assertTrue(regular_service.needs_token)
+        self.assertFalse(is_pending_discovery_activation(regular_service))
+        response = self.client.get("/en/user/")
+        self.assertContains(
+            response,
+            f'href="https://support.example.com/manage/?activation={regular_service.secret}"',
+        )
+
+    def test_create_does_not_redirect_to_site_url(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/en/subscription/discovery/",
+            {
+                "site_url": "https://evil.example/",
+                "discover_text": "Discover evil",
+            },
+            follow=True,
+        )
+        service = Service.objects.get()
+        self.assertEqual(service.site_url, "https://evil.example")
+        self.assertTrue(service.site_url_lock)
+        self.assertNotEqual(service.secret, "")
+        self.assertTrue(is_pending_discovery_activation(service))
+        self.assertRedirects(
+            response,
+            "/en/user/",
+        )
+        self.assertContains(response, "Activation token")
+        self.assertContains(response, service.secret)
+        self.assertContains(response, "data-clipboard-text")
+        self.assertNotContains(response, "activation=")
+        self.assertNotContains(response, "evil.example/manage/")
+
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        api_response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://evil.example/",
+                "discoverable": "1",
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+        self.assertEqual(api_response.status_code, 200)
+        service = Service.objects.get(pk=service.pk)
+        self.assertFalse(is_pending_discovery_activation(service))
+        self.assertTrue(service.discoverable)
