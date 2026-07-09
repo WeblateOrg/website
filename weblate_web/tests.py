@@ -5899,7 +5899,6 @@ class DiscoveryTestCase(UserTestCase):
         activation = DiscoveryActivation.create_for_service(
             service,
             state="state-123",
-            callback_url="https://example.com/manage/discovery/callback/",
         )
         activation.expires = timezone.now() - timedelta(minutes=1)
         activation.save(update_fields=["expires"])

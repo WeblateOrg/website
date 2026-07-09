@@ -1284,7 +1284,6 @@ class DiscoveryActivation(models.Model):
     )
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     state = models.CharField(max_length=400)
-    callback_url = models.URLField(max_length=500)
     expires = models.DateTimeField(db_index=True)
     used_at = models.DateTimeField(blank=True, null=True, db_index=True)
 
@@ -1296,13 +1295,10 @@ class DiscoveryActivation(models.Model):
         return f"{self.service_id}:{self.expires}"
 
     @classmethod
-    def create_for_service(
-        cls, service: Service, *, state: str, callback_url: str
-    ) -> DiscoveryActivation:
+    def create_for_service(cls, service: Service, *, state: str) -> DiscoveryActivation:
         return cls.objects.create(
             service=service,
             state=state,
-            callback_url=callback_url,
             expires=timezone.now() + DISCOVERY_ACTIVATION_CODE_AGE,
         )
 

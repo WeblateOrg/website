@@ -974,10 +974,9 @@ class DiscoveryRegistrationView(FormView):
         activation = DiscoveryActivation.create_for_service(
             instance,
             state=form.cleaned_data["state"],
-            callback_url=get_discovery_callback_url(instance.site_url),
         )
         query = urlencode({"code": activation.code, "state": activation.state})
-        return redirect(f"{activation.callback_url}?{query}")
+        return redirect(f"{get_discovery_callback_url(instance.site_url)}?{query}")
 
 
 class NewsArchiveView(ArchiveIndexView):

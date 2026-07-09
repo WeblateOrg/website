@@ -54,7 +54,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("state", models.CharField(max_length=400)),
-                ("callback_url", models.URLField(max_length=500)),
                 ("expires", models.DateTimeField(db_index=True)),
                 ("used_at", models.DateTimeField(blank=True, db_index=True, null=True)),
                 (
