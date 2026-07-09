@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 from django import forms
 from django.conf import settings
@@ -150,7 +150,7 @@ DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback/"
 
 
 def has_dot_segment_path(path: str) -> bool:
-    return any(segment in {".", ".."} for segment in path.split("/"))
+    return any(segment in {".", ".."} for segment in unquote(path).split("/"))
 
 
 def normalize_discovery_url(url: str, message: str) -> str:
