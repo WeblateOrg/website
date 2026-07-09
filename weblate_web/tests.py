@@ -5794,6 +5794,44 @@ class DiscoveryTestCase(UserTestCase):
         self.assertFalse(Service.objects.exists())
         self.assertFalse(DiscoveryActivation.objects.exists())
 
+    def test_registration_allows_default_callback_port(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com",
+                "callback_url": "https://example.com:443/manage/discovery/callback/",
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        service = Service.objects.get()
+        activation = DiscoveryActivation.objects.get()
+        self.assertEqual(service.site_url, "https://example.com")
+        self.assertRedirects(
+            response,
+            f"https://example.com:443/manage/discovery/callback/?code={activation.code}&state=state-123",
+            fetch_redirect_response=False,
+        )
+
+    def test_registration_rejects_fragmented_callback(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com",
+                "callback_url": (
+                    "https://example.com/manage/discovery/callback/#fragment"
+                ),
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Callback URL must not include a fragment.")
+        self.assertFalse(Service.objects.exists())
+        self.assertFalse(DiscoveryActivation.objects.exists())
+
     def test_registration_exchange_rejects_expired_code(self) -> None:
         user = self.login()
         customer = Customer.objects.create(

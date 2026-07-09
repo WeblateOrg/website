@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from urllib.parse import urlsplit
+from urllib.parse import SplitResult, urlsplit
 
 from django import forms
 from django.conf import settings
@@ -140,6 +140,17 @@ class AddDiscoveryForm(forms.ModelForm):
         self.fields["discover_text"].required = True
 
 
+def get_effective_url_port(parts: SplitResult) -> int | None:
+    port = parts.port
+    if port is not None:
+        return port
+    if parts.scheme == "http":
+        return 80
+    if parts.scheme == "https":
+        return 443
+    return None
+
+
 class DiscoveryRegistrationForm(AddDiscoveryForm):
     callback_url = forms.URLField(widget=forms.HiddenInput)
     state = forms.CharField(max_length=400, widget=forms.HiddenInput)
@@ -160,16 +171,18 @@ class DiscoveryRegistrationForm(AddDiscoveryForm):
         try:
             site_parts = urlsplit(site_url)
             callback_parts = urlsplit(callback_url)
+            site_port = get_effective_url_port(site_parts)
+            callback_port = get_effective_url_port(callback_parts)
         except ValueError as error:
             raise ValidationError(gettext("Invalid server URL.")) from error
 
         if not settings.DEBUG and callback_parts.scheme != "https":
             raise ValidationError(gettext("Callback URL must use HTTPS."))
 
-        if (
-            site_parts.hostname != callback_parts.hostname
-            or site_parts.port != callback_parts.port
-        ):
+        if callback_parts.fragment:
+            raise ValidationError(gettext("Callback URL must not include a fragment."))
+
+        if site_parts.hostname != callback_parts.hostname or site_port != callback_port:
             raise ValidationError(
                 gettext("Callback URL must belong to the registered server.")
             )
