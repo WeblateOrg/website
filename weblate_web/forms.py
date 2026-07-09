@@ -150,6 +150,8 @@ class DiscoveryRegistrationForm(AddDiscoveryForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        if cleaned_data is None:
+            return {}
         site_url = cleaned_data.get("site_url")
         callback_url = cleaned_data.get("callback_url")
         if not site_url or not callback_url:
