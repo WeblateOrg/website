@@ -54,6 +54,32 @@ def capture(page: Page, name: str) -> None:
 class TestDiscoveryRegistration:
     """Test suite for Discover Weblate registration."""
 
+    def test_discovery_registration_handoff_page(
+        self, page: Page, live_server, authenticated_user
+    ):
+        """Test the Weblate-to-website registration handoff confirmation page."""
+        page.goto(f"{live_server.url}/admin/login/")
+        page.fill('input[name="username"]', "testuser")
+        page.fill('input[name="password"]', "testpassword123")
+        page.click('input[type="submit"]')
+        page.wait_for_load_state("networkidle")
+
+        response = page.goto(
+            f"{live_server.url}/subscription/discovery/register/"
+            "?site_url=https://example.com/translations&state=e2e-state"
+        )
+        assert response is not None
+        assert response.ok, f"Discovery handoff returned status {response.status}"
+        assert page.get_by_text("Register Discover Weblate listing").is_visible()
+        assert page.locator('input[name="site_url"][readonly]').input_value() == (
+            "https://example.com/translations"
+        )
+        assert page.locator('input[name="state"]').input_value() == "e2e-state"
+        assert page.get_by_text(
+            "After confirmation, you will return to that Weblate server to complete activation."
+        ).is_visible()
+        capture(page, "registration-handoff")
+
     def test_discovery_registration_stays_on_website(
         self, page: Page, live_server, authenticated_user
     ):

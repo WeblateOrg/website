@@ -24,6 +24,7 @@ import random
 import re
 from datetime import datetime, time, timedelta
 from typing import TYPE_CHECKING
+from urllib.parse import urlencode
 
 import django.views.defaults
 import sentry_sdk
@@ -58,18 +59,21 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from weblate_web.forms import (
     AddDiscoveryForm,
     AgreementForm,
+    DiscoveryRegistrationForm,
     DonateForm,
     EditDiscoveryForm,
     EditImageForm,
     EditLinkForm,
     EditNameForm,
     MethodForm,
+    get_discovery_callback_url,
 )
 from weblate_web.invoices.models import InvoiceKind
 from weblate_web.legal.models import Agreement, AgreementKind
 from weblate_web.models import (
     REWARD_LEVELS,
     TOPIC_DICT,
+    DiscoveryActivation,
     Package,
     PackageCategory,
     Post,
@@ -81,6 +85,7 @@ from weblate_web.models import (
     get_donation_package_verbose,
     get_donation_reward_package_names,
     is_pending_discovery_activation,
+    normalize_site_url_for_lock,
     process_donation,
     process_subscription,
 )
@@ -180,6 +185,20 @@ def get_customer(
 def prepare_service_for_render(service: Service) -> Service:
     service.is_pending_discovery_activation = is_pending_discovery_activation(service)
     return service
+
+
+def get_support_payload(service: Service, *, in_limits: bool) -> dict[str, object]:
+    return {
+        "name": service.status,
+        "package": service.current_subscription.package.verbose
+        if service.current_subscription
+        else "",
+        "expiry": service.expires,
+        "backup_repository": service.backup_repository,
+        "in_limits": in_limits,
+        "limits": service.get_limits(),
+        "has_subscription": service.latest_subscription is not None,
+    }
 
 
 @require_POST
@@ -354,18 +373,29 @@ def api_support(request: HttpRequest) -> JsonResponse:
             service.project_set.filter(name=name, url=url, web=web).delete()
 
     return JsonResponse(
-        data={
-            "name": service.status,
-            "package": service.current_subscription.package.verbose
-            if service.current_subscription
-            else "",
-            "expiry": service.expires,
-            "backup_repository": service.backup_repository,
-            "in_limits": is_valid_site_url and service.check_in_limits(),
-            "limits": service.get_limits(),
-            "has_subscription": service.latest_subscription is not None,
-        }
+        data=get_support_payload(
+            service, in_limits=is_valid_site_url and service.check_in_limits()
+        )
     )
+
+
+@require_POST
+@csrf_exempt
+def api_support_activation(request: HttpRequest) -> JsonResponse:
+    code = request.POST.get("code", "")
+    if not code:
+        raise Http404
+    try:
+        activation = DiscoveryActivation.exchange(code)
+    except DiscoveryActivation.DoesNotExist as error:
+        raise Http404 from error
+    except ValidationError as error:
+        return JsonResponse({"error": error.messages}, status=400)
+
+    service = activation.service
+    payload = get_support_payload(service, in_limits=service.check_in_limits())
+    payload["secret"] = service.secret
+    return JsonResponse(data=payload)
 
 
 @require_POST
@@ -908,6 +938,45 @@ class AddDiscoveryView(CreateView):
             ),
         )
         return result
+
+
+@method_decorator(login_required, name="dispatch")
+class DiscoveryRegistrationView(FormView):
+    template_name = "subscription/discovery-register.html"
+    form_class = DiscoveryRegistrationForm
+    request: AuthenticatedHttpRequest
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial.update(
+            {
+                "site_url": self.request.GET.get("site_url", ""),
+                "state": self.request.GET.get("state", ""),
+            }
+        )
+        return initial
+
+    def form_valid(self, form):
+        """Create the discovery service and return a one-time code."""
+        instance = form.save(commit=False)
+        instance.customer = get_customer(self.request, instance)
+        instance.site_url = normalize_site_url_for_lock(instance.site_url)
+        instance.site_url_lock = True
+        discover_url = instance.site_url
+        discover_text = form.cleaned_data.get("discover_text", "N/A")
+        mail_admins(
+            "Weblate: discovery registered",
+            f"Service link: {discover_url}\nNew text: {discover_text}\n",
+        )
+        instance.save()
+        form.save_m2m()
+        instance.customer.users.add(self.request.user)
+        activation = DiscoveryActivation.create_for_service(
+            instance,
+            state=form.cleaned_data["state"],
+        )
+        query = urlencode({"code": activation.code, "state": activation.state})
+        return redirect(f"{get_discovery_callback_url(instance.site_url)}?{query}")
 
 
 class NewsArchiveView(ArchiveIndexView):

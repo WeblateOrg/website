@@ -19,12 +19,21 @@
 
 from __future__ import annotations
 
+from urllib.parse import unquote, urlsplit
+
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext, gettext_lazy
 
 from weblate_web.invoices.models import Currency, InvoiceKind
-from weblate_web.models import REWARD_LEVELS, REWARDS, Package, Service
+from weblate_web.models import (
+    REWARD_LEVELS,
+    REWARDS,
+    Package,
+    Service,
+    normalize_site_url_for_lock,
+)
 from weblate_web.payments.backends import list_backends
 from weblate_web.payments.models import RECURRENCE_CHOICES
 
@@ -135,6 +144,63 @@ class AddDiscoveryForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["site_url"].required = True
         self.fields["discover_text"].required = True
+
+
+DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback/"
+
+
+def has_dot_segment_path(path: str) -> bool:
+    return any(segment in {".", ".."} for segment in unquote(path).split("/"))
+
+
+def normalize_discovery_url(url: str, message: str) -> str:
+    try:
+        parts = urlsplit(url)
+        port = parts.port
+    except ValueError as error:
+        raise ValidationError(message) from error
+
+    invalid_url = parts.scheme not in {"http", "https"} or not parts.netloc
+    has_delimiter = "?" in url or "#" in url
+    has_extra_parts = any((parts.username, parts.password, parts.query, parts.fragment))
+    if (
+        invalid_url
+        or has_delimiter
+        or has_extra_parts
+        or has_dot_segment_path(parts.path)
+        or port == 0
+    ):
+        raise ValidationError(message)
+
+    return normalize_site_url_for_lock(url)
+
+
+def get_discovery_callback_url(site_url: str) -> str:
+    return f"{site_url}{DISCOVERY_CALLBACK_PATH}"
+
+
+class DiscoveryRegistrationForm(AddDiscoveryForm):
+    state = forms.CharField(max_length=400, widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields["site_url"].widget.attrs["readonly"] = "readonly"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data is None:
+            return {}
+        site_url = cleaned_data.get("site_url")
+        if not site_url:
+            return cleaned_data
+
+        site_url = normalize_discovery_url(site_url, gettext("Invalid server URL."))
+        cleaned_data["site_url"] = site_url
+
+        if not settings.DEBUG and urlsplit(site_url).scheme != "https":
+            raise ValidationError(gettext("Server URL must use HTTPS."))
+
+        return cleaned_data
 
 
 class AgreementForm(forms.Form):

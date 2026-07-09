@@ -643,6 +643,10 @@ def generate_secret():
     return get_random_string(64)
 
 
+def generate_discovery_activation_code():
+    return f"discovery_{get_random_string(64)}"
+
+
 class ServiceKind(IntegerChoices):
     SERVICE = 0, pgettext_lazy("Service kind", "Service")
     DONATION = 10, pgettext_lazy("Service kind", "Donation")
@@ -1269,6 +1273,46 @@ def is_pending_discovery_activation(service: Service) -> bool:
         and bool(service.site_url)
         and service.last_report is None
     )
+
+
+DISCOVERY_ACTIVATION_CODE_AGE = timedelta(minutes=10)
+
+
+class DiscoveryActivation(models.Model):
+    code = models.CharField(
+        max_length=100, unique=True, default=generate_discovery_activation_code
+    )
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    state = models.CharField(max_length=400)
+    expires = models.DateTimeField(db_index=True)
+    used_at = models.DateTimeField(blank=True, null=True, db_index=True)
+
+    class Meta:
+        verbose_name = "Discovery activation"
+        verbose_name_plural = "Discovery activations"
+
+    def __str__(self) -> str:
+        return f"{self.service_id}:{self.expires}"
+
+    @classmethod
+    def create_for_service(cls, service: Service, *, state: str) -> DiscoveryActivation:
+        return cls.objects.create(
+            service=service,
+            state=state,
+            expires=timezone.now() + DISCOVERY_ACTIVATION_CODE_AGE,
+        )
+
+    @classmethod
+    def exchange(cls, code: str) -> DiscoveryActivation:
+        with transaction.atomic():
+            activation = cls.objects.select_for_update().get(code=code)
+            if activation.used_at:
+                raise ValidationError(_("Activation code has already been used."))
+            if activation.expires < timezone.now():
+                raise ValidationError(_("Activation code has expired."))
+            activation.used_at = timezone.now()
+            activation.save(update_fields=["used_at"])
+        return activation
 
 
 class SubscriptionQuerySet(models.QuerySet["Subscription"]):
