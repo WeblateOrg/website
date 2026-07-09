@@ -66,6 +66,7 @@ from weblate_web.forms import (
     EditLinkForm,
     EditNameForm,
     MethodForm,
+    get_discovery_callback_url,
 )
 from weblate_web.invoices.models import InvoiceKind
 from weblate_web.legal.models import Agreement, AgreementKind
@@ -950,7 +951,6 @@ class DiscoveryRegistrationView(FormView):
         initial.update(
             {
                 "site_url": self.request.GET.get("site_url", ""),
-                "callback_url": self.request.GET.get("callback_url", ""),
                 "state": self.request.GET.get("state", ""),
             }
         )
@@ -974,11 +974,10 @@ class DiscoveryRegistrationView(FormView):
         activation = DiscoveryActivation.create_for_service(
             instance,
             state=form.cleaned_data["state"],
-            callback_url=form.cleaned_data["callback_url"],
+            callback_url=get_discovery_callback_url(instance.site_url),
         )
         query = urlencode({"code": activation.code, "state": activation.state})
-        separator = "&" if "?" in activation.callback_url else "?"
-        return redirect(f"{activation.callback_url}{separator}{query}")
+        return redirect(f"{activation.callback_url}?{query}")
 
 
 class NewsArchiveView(ArchiveIndexView):

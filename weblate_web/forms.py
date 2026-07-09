@@ -146,7 +146,7 @@ class AddDiscoveryForm(forms.ModelForm):
         self.fields["discover_text"].required = True
 
 
-DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback"
+DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback/"
 
 
 def normalize_discovery_url(url: str, message: str) -> str:
@@ -157,15 +157,19 @@ def normalize_discovery_url(url: str, message: str) -> str:
         raise ValidationError(message) from error
 
     invalid_url = parts.scheme not in {"http", "https"} or not parts.netloc
+    has_delimiter = "?" in url or "#" in url
     has_extra_parts = any((parts.username, parts.password, parts.query, parts.fragment))
-    if invalid_url or has_extra_parts or port == 0:
+    if invalid_url or has_delimiter or has_extra_parts or port == 0:
         raise ValidationError(message)
 
     return normalize_site_url_for_lock(url)
 
 
+def get_discovery_callback_url(site_url: str) -> str:
+    return f"{site_url}{DISCOVERY_CALLBACK_PATH}"
+
+
 class DiscoveryRegistrationForm(AddDiscoveryForm):
-    callback_url = forms.URLField(widget=forms.HiddenInput)
     state = forms.CharField(max_length=400, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs) -> None:
@@ -177,22 +181,14 @@ class DiscoveryRegistrationForm(AddDiscoveryForm):
         if cleaned_data is None:
             return {}
         site_url = cleaned_data.get("site_url")
-        callback_url = cleaned_data.get("callback_url")
-        if not site_url or not callback_url:
+        if not site_url:
             return cleaned_data
 
         site_url = normalize_discovery_url(site_url, gettext("Invalid server URL."))
-        callback_url = normalize_discovery_url(
-            callback_url, gettext("Invalid callback URL.")
-        )
+        cleaned_data["site_url"] = site_url
 
-        if not settings.DEBUG and urlsplit(callback_url).scheme != "https":
-            raise ValidationError(gettext("Callback URL must use HTTPS."))
-
-        if callback_url != f"{site_url}{DISCOVERY_CALLBACK_PATH}":
-            raise ValidationError(
-                gettext("Callback URL must belong to the registered server.")
-            )
+        if not settings.DEBUG and urlsplit(site_url).scheme != "https":
+            raise ValidationError(gettext("Server URL must use HTTPS."))
 
         return cleaned_data
 

@@ -5743,7 +5743,6 @@ class DiscoveryTestCase(UserTestCase):
             "/subscription/discovery/register/",
             {
                 "site_url": "https://example.com",
-                "callback_url": "https://example.com/manage/discovery/callback/",
                 "state": "state-123",
                 "discover_text": "Discover example",
             },
@@ -5782,9 +5781,6 @@ class DiscoveryTestCase(UserTestCase):
             "/subscription/discovery/register/",
             {
                 "site_url": "https://example.com/translations",
-                "callback_url": (
-                    "https://example.com/translations/manage/discovery/callback/"
-                ),
                 "state": "state-123",
                 "discover_text": "Discover example",
             },
@@ -5798,7 +5794,7 @@ class DiscoveryTestCase(UserTestCase):
             fetch_redirect_response=False,
         )
 
-    def test_registration_rejects_mismatched_callback(self) -> None:
+    def test_registration_ignores_supplied_callback(self) -> None:
         self.login()
         response = self.client.post(
             "/subscription/discovery/register/",
@@ -5809,20 +5805,22 @@ class DiscoveryTestCase(UserTestCase):
                 "discover_text": "Discover example",
             },
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response, "Callback URL must belong to the registered server."
+        service = Service.objects.get()
+        activation = DiscoveryActivation.objects.get()
+        self.assertEqual(service.site_url, "https://example.com")
+        self.assertRedirects(
+            response,
+            f"https://example.com/manage/discovery/callback/?code={activation.code}&state=state-123",
+            fetch_redirect_response=False,
         )
-        self.assertFalse(Service.objects.exists())
-        self.assertFalse(DiscoveryActivation.objects.exists())
+        self.assertNotIn("evil.example", response["Location"])
 
-    def test_registration_allows_default_callback_port(self) -> None:
+    def test_registration_normalizes_default_site_port(self) -> None:
         self.login()
         response = self.client.post(
             "/subscription/discovery/register/",
             {
-                "site_url": "https://example.com",
-                "callback_url": "https://example.com:443/manage/discovery/callback/",
+                "site_url": "https://example.com:443",
                 "state": "state-123",
                 "discover_text": "Discover example",
             },
@@ -5832,63 +5830,60 @@ class DiscoveryTestCase(UserTestCase):
         self.assertEqual(service.site_url, "https://example.com")
         self.assertRedirects(
             response,
-            f"https://example.com:443/manage/discovery/callback/?code={activation.code}&state=state-123",
+            f"https://example.com/manage/discovery/callback/?code={activation.code}&state=state-123",
             fetch_redirect_response=False,
         )
 
-    def test_registration_rejects_mismatched_callback_scheme(self) -> None:
+    def test_registration_rejects_server_url_fragment(self) -> None:
         self.login()
         response = self.client.post(
             "/subscription/discovery/register/",
             {
-                "site_url": "http://example.com:443",
-                "callback_url": "https://example.com/manage/discovery/callback/",
+                "site_url": "https://example.com/#fragment",
                 "state": "state-123",
                 "discover_text": "Discover example",
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response, "Callback URL must belong to the registered server."
-        )
+        self.assertContains(response, "Invalid server URL.")
         self.assertFalse(Service.objects.exists())
         self.assertFalse(DiscoveryActivation.objects.exists())
 
-    def test_registration_rejects_mismatched_callback_path(self) -> None:
+    def test_registration_rejects_bare_server_url_fragment(self) -> None:
         self.login()
         response = self.client.post(
             "/subscription/discovery/register/",
             {
-                "site_url": "https://example.com/a",
-                "callback_url": "https://example.com/b/manage/discovery/callback/",
+                "site_url": "https://example.com/#",
                 "state": "state-123",
                 "discover_text": "Discover example",
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response, "Callback URL must belong to the registered server."
-        )
+        self.assertContains(response, "Invalid server URL.")
         self.assertFalse(Service.objects.exists())
         self.assertFalse(DiscoveryActivation.objects.exists())
 
-    def test_registration_rejects_fragmented_callback(self) -> None:
+    def test_registration_ignores_fragmented_callback_parameter(self) -> None:
         self.login()
         response = self.client.post(
             "/subscription/discovery/register/",
             {
                 "site_url": "https://example.com",
-                "callback_url": (
-                    "https://example.com/manage/discovery/callback/#fragment"
-                ),
+                "callback_url": "https://evil.example/manage/discovery/callback/#",
                 "state": "state-123",
                 "discover_text": "Discover example",
             },
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Invalid callback URL.")
-        self.assertFalse(Service.objects.exists())
-        self.assertFalse(DiscoveryActivation.objects.exists())
+        service = Service.objects.get()
+        activation = DiscoveryActivation.objects.get()
+        self.assertEqual(service.site_url, "https://example.com")
+        self.assertRedirects(
+            response,
+            f"https://example.com/manage/discovery/callback/?code={activation.code}&state=state-123",
+            fetch_redirect_response=False,
+        )
+        self.assertNotIn("#", response["Location"])
 
     def test_registration_exchange_rejects_expired_code(self) -> None:
         user = self.login()
