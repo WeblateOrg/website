@@ -5776,6 +5776,28 @@ class DiscoveryTestCase(UserTestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_registration_handoff_with_site_path(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com/translations",
+                "callback_url": (
+                    "https://example.com/translations/manage/discovery/callback/"
+                ),
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        service = Service.objects.get()
+        activation = DiscoveryActivation.objects.get()
+        self.assertEqual(service.site_url, "https://example.com/translations")
+        self.assertRedirects(
+            response,
+            f"https://example.com/translations/manage/discovery/callback/?code={activation.code}&state=state-123",
+            fetch_redirect_response=False,
+        )
+
     def test_registration_rejects_mismatched_callback(self) -> None:
         self.login()
         response = self.client.post(
@@ -5814,6 +5836,42 @@ class DiscoveryTestCase(UserTestCase):
             fetch_redirect_response=False,
         )
 
+    def test_registration_rejects_mismatched_callback_scheme(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "http://example.com:443",
+                "callback_url": "https://example.com/manage/discovery/callback/",
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "Callback URL must belong to the registered server."
+        )
+        self.assertFalse(Service.objects.exists())
+        self.assertFalse(DiscoveryActivation.objects.exists())
+
+    def test_registration_rejects_mismatched_callback_path(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com/a",
+                "callback_url": "https://example.com/b/manage/discovery/callback/",
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "Callback URL must belong to the registered server."
+        )
+        self.assertFalse(Service.objects.exists())
+        self.assertFalse(DiscoveryActivation.objects.exists())
+
     def test_registration_rejects_fragmented_callback(self) -> None:
         self.login()
         response = self.client.post(
@@ -5828,7 +5886,7 @@ class DiscoveryTestCase(UserTestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Callback URL must not include a fragment.")
+        self.assertContains(response, "Invalid callback URL.")
         self.assertFalse(Service.objects.exists())
         self.assertFalse(DiscoveryActivation.objects.exists())
 

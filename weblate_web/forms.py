@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from urllib.parse import SplitResult, urlsplit
+from urllib.parse import urlsplit
 
 from django import forms
 from django.conf import settings
@@ -27,7 +27,13 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext, gettext_lazy
 
 from weblate_web.invoices.models import Currency, InvoiceKind
-from weblate_web.models import REWARD_LEVELS, REWARDS, Package, Service
+from weblate_web.models import (
+    REWARD_LEVELS,
+    REWARDS,
+    Package,
+    Service,
+    normalize_site_url_for_lock,
+)
 from weblate_web.payments.backends import list_backends
 from weblate_web.payments.models import RECURRENCE_CHOICES
 
@@ -140,15 +146,22 @@ class AddDiscoveryForm(forms.ModelForm):
         self.fields["discover_text"].required = True
 
 
-def get_effective_url_port(parts: SplitResult) -> int | None:
-    port = parts.port
-    if port is not None:
-        return port
-    if parts.scheme == "http":
-        return 80
-    if parts.scheme == "https":
-        return 443
-    return None
+DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback"
+
+
+def normalize_discovery_url(url: str, message: str) -> str:
+    try:
+        parts = urlsplit(url)
+        port = parts.port
+    except ValueError as error:
+        raise ValidationError(message) from error
+
+    invalid_url = parts.scheme not in {"http", "https"} or not parts.netloc
+    has_extra_parts = any((parts.username, parts.password, parts.query, parts.fragment))
+    if invalid_url or has_extra_parts or port == 0:
+        raise ValidationError(message)
+
+    return normalize_site_url_for_lock(url)
 
 
 class DiscoveryRegistrationForm(AddDiscoveryForm):
@@ -168,28 +181,18 @@ class DiscoveryRegistrationForm(AddDiscoveryForm):
         if not site_url or not callback_url:
             return cleaned_data
 
-        try:
-            site_parts = urlsplit(site_url)
-            callback_parts = urlsplit(callback_url)
-            site_port = get_effective_url_port(site_parts)
-            callback_port = get_effective_url_port(callback_parts)
-        except ValueError as error:
-            raise ValidationError(gettext("Invalid server URL.")) from error
+        site_url = normalize_discovery_url(site_url, gettext("Invalid server URL."))
+        callback_url = normalize_discovery_url(
+            callback_url, gettext("Invalid callback URL.")
+        )
 
-        if not settings.DEBUG and callback_parts.scheme != "https":
+        if not settings.DEBUG and urlsplit(callback_url).scheme != "https":
             raise ValidationError(gettext("Callback URL must use HTTPS."))
 
-        if callback_parts.fragment:
-            raise ValidationError(gettext("Callback URL must not include a fragment."))
-
-        if site_parts.hostname != callback_parts.hostname or site_port != callback_port:
+        if callback_url != f"{site_url}{DISCOVERY_CALLBACK_PATH}":
             raise ValidationError(
                 gettext("Callback URL must belong to the registered server.")
             )
-
-        callback_path = callback_parts.path.rstrip("/")
-        if not callback_path.endswith("/manage/discovery/callback"):
-            raise ValidationError(gettext("Invalid callback URL."))
 
         return cleaned_data
 
