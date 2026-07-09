@@ -5794,6 +5794,36 @@ class DiscoveryTestCase(UserTestCase):
             fetch_redirect_response=False,
         )
 
+    def test_registration_rejects_parent_site_path(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com/a/../b",
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Invalid server URL.")
+        self.assertFalse(Service.objects.exists())
+        self.assertFalse(DiscoveryActivation.objects.exists())
+
+    def test_registration_rejects_current_site_path(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/subscription/discovery/register/",
+            {
+                "site_url": "https://example.com/./translations",
+                "state": "state-123",
+                "discover_text": "Discover example",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Invalid server URL.")
+        self.assertFalse(Service.objects.exists())
+        self.assertFalse(DiscoveryActivation.objects.exists())
+
     def test_registration_ignores_supplied_callback(self) -> None:
         self.login()
         response = self.client.post(

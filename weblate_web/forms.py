@@ -149,6 +149,10 @@ class AddDiscoveryForm(forms.ModelForm):
 DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback/"
 
 
+def has_dot_segment_path(path: str) -> bool:
+    return any(segment in {".", ".."} for segment in path.split("/"))
+
+
 def normalize_discovery_url(url: str, message: str) -> str:
     try:
         parts = urlsplit(url)
@@ -159,7 +163,13 @@ def normalize_discovery_url(url: str, message: str) -> str:
     invalid_url = parts.scheme not in {"http", "https"} or not parts.netloc
     has_delimiter = "?" in url or "#" in url
     has_extra_parts = any((parts.username, parts.password, parts.query, parts.fragment))
-    if invalid_url or has_delimiter or has_extra_parts or port == 0:
+    if (
+        invalid_url
+        or has_delimiter
+        or has_extra_parts
+        or has_dot_segment_path(parts.path)
+        or port == 0
+    ):
         raise ValidationError(message)
 
     return normalize_site_url_for_lock(url)
