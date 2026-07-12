@@ -47,7 +47,7 @@ class PlainAutoLink(span_token.AutoLink):
     """Autolink only plain HTTP(S) URLs."""
 
     pattern = re.compile(
-        r"\b(https?://[A-Za-z0-9.!#$%&'*+/=?^_`{|}()~:-]*"
+        r"\b((https?)://[A-Za-z0-9.!#$%&'*+/=?^_`{|}()~:-]*"
         r"[A-Za-z0-9/#%&=+_~:-])(?=\W|$)"
     )
 
