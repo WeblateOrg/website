@@ -26,9 +26,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-07-13 00:08-0500\n"
-"PO-Revision-Date: 2026-07-13 07:37+0000\n"
-"Last-Translator: GitHub webhook <noreply-webhook-github-"
-"integration@weblate.org>\n"
+"PO-Revision-Date: 2026-07-14 15:01+0000\n"
+"Last-Translator: Adam Havránek <adamhavra@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/"
 "cs/>\n"
 "Language: cs\n"
@@ -36,7 +35,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.7.1.dev0\n"
+"X-Generator: Weblate 2026.8.dev0\n"
 
 #: weblate_web/crm/forms.py:34 weblate_web/forms.py:68
 msgid "Please confirm that you want to issue a final invoice."
@@ -106,28 +105,26 @@ msgstr "Volitelná poznámka popisující, jak bylo provedeno vrácení peněz."
 #: weblate_web/crm/templates/invoices/invoice_detail.html:195
 #: weblate_web/crm/templates/invoices/invoice_detail.html:210
 #: weblate_web/invoices/models.py:374
-#, fuzzy
-#| msgid "Support status"
 msgid "Quote status"
-msgstr "Stav podpory"
+msgstr "Stav nabídky"
 
 #: weblate_web/crm/forms.py:161
 msgid "Why this quote should no longer be followed up."
-msgstr ""
+msgstr "Proč by se tato nabídka neměla dále realizovat."
 
 #: weblate_web/crm/forms.py:171
 #: weblate_web/crm/templates/invoices/invoice_detail.html:119
 #: weblate_web/invoices/models.py:379
-#, fuzzy
-#| msgid "Support status"
 msgid "Quote status note"
-msgstr "Stav podpory"
+msgstr "Poznámka ke stavu nabídky"
 
 #: weblate_web/crm/forms.py:173
 msgid ""
 "Optional internal note, such as a rejection reason or accepted alternative "
 "invoice."
 msgstr ""
+"Volitelná interní poznámka, například důvod zamítnutí nebo přijatá náhradní "
+"faktura."
 
 #: weblate_web/crm/forms.py:183 weblate_web/templates/snippets/service.html:119
 msgid "Note"
@@ -530,31 +527,31 @@ msgstr ""
 #: weblate_web/crm/templates/crm/work_queue.html:17
 #: weblate_web/crm/templates/crm/work_queue.html:25
 msgid "No work items"
-msgstr ""
+msgstr "Žádné pracovní položky"
 
 #: weblate_web/crm/templates/crm/index.html:44
 #: weblate_web/crm/templates/crm/work_queue.html:27
 msgid "There is no CRM work needing attention right now."
 msgstr ""
+"V současné době není třeba věnovat pozornost žádným úkolům souvisejícím s "
+"CRM."
 
 #: weblate_web/crm/templates/crm/index.html:50
 #: weblate_web/crm/templates/crm/index.html:51
 msgid "Full work queue"
-msgstr ""
+msgstr "Plná pracovní fronta"
 
 #: weblate_web/crm/templates/crm/index.html:54
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s more item needs attention."
 msgid_plural "%(count)s more items need attention."
-msgstr[0] "%(count)s překlad"
-msgstr[1] "%(count)s překlady"
-msgstr[2] "%(count)s překladů"
+msgstr[0] "Ještě %(count)s položka vyžaduje pozornost."
+msgstr[1] "Ještě %(count)s položky vyžadují pozornost."
+msgstr[2] "Ještě %(count)s položek vyžaduje pozornost."
 
 #: weblate_web/crm/templates/crm/index.html:56
 msgid "All suggested CRM work in one place."
-msgstr ""
+msgstr "Všechny navrhované úkoly v rámci CRM na jednom místě."
 
 #: weblate_web/crm/templates/crm/index.html:75
 msgid "Issued invoices and receipts."
@@ -750,7 +747,7 @@ msgstr "Vymazat"
 
 #: weblate_web/crm/templates/crm/work_queue.html:18
 msgid "There is no CRM work in this section."
-msgstr ""
+msgstr "V této sekci nejsou žádné úkoly související s CRM."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:20
 #: weblate_web/crm/templates/invoices/invoice_list_content.html:29
@@ -822,10 +819,8 @@ msgid "Price"
 msgstr "Cena"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:164
-#, fuzzy
-#| msgid "Interactions"
 msgid "Quote actions"
-msgstr "Interakce"
+msgstr "Akce s citacemi"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:168
 #: weblate_web/crm/templates/invoices/invoice_detail.html:176
@@ -844,22 +839,20 @@ msgstr "Vystavit fakturu na základě nabídky"
 msgid ""
 "Use this when a quote should no longer appear as suggested follow-up work."
 msgstr ""
+"Tuto možnost použijte v případě, že se daná nabídka již nemá zobrazovat jako "
+"navrhovaná následná zakázka."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:200
-#, fuzzy
-#| msgid "Get a quote"
 msgid "Close quote"
-msgstr "Získejte cenovou nabídku"
+msgstr "Konec citátu"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:213
 msgid "This quote is closed and hidden from stale quote suggestions."
-msgstr ""
+msgstr "Tento citát je uzavřený a skrytý před zastaralými návrhy citátů."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:216
-#, fuzzy
-#| msgid "Get a quote"
 msgid "Reopen quote"
-msgstr "Získejte cenovou nabídku"
+msgstr "Znovu otevřít nabídku"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:230
 #: weblate_web/crm/templates/invoices/invoice_detail.html:237
@@ -982,15 +975,13 @@ msgid "Follow-up"
 msgstr "Další kroky"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:123
-#, fuzzy
-#| msgid "Clear follow-up"
 msgid "Customer follow-ups"
-msgstr "Vymazat další kroky"
+msgstr "Následná komunikace se zákazníky"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:128
 #: weblate_web/crm/templates/payments/customer_list.html:22
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:129
 #: weblate_web/crm/templates/payments/customer_list.html:23
@@ -1418,10 +1409,8 @@ msgid "Follow-up set"
 msgstr "Následná kontrola nastavena"
 
 #: weblate_web/crm/views.py:994
-#, fuzzy
-#| msgid "Follow-up updated."
 msgid "Follow-up added."
-msgstr "Následná kontrola aktualizována."
+msgstr "Bylo doplněno pokračování."
 
 #: weblate_web/crm/views.py:1005
 msgid "Follow-up cleared"
@@ -1441,41 +1430,28 @@ msgid "Billing"
 msgstr "Fakturace"
 
 #: weblate_web/crm/workqueue.py:171
-#, fuzzy
-#| msgid "No customer follow-up is due right now."
 msgid "Customer follow-up is due."
-msgstr ""
-"V tuto chvíli není třeba provádět žádné následné kroky vůči zákazníkům."
+msgstr "Je třeba provést následnou komunikaci se zákazníkem."
 
 #: weblate_web/crm/workqueue.py:184
-#, fuzzy
-#| msgid "Set follow-up"
 msgid "Scheduled customer follow-up."
-msgstr "Nastavit další kroky"
+msgstr "Plánované navázání kontaktu se zákazníkem."
 
 #: weblate_web/crm/workqueue.py:197
-#, fuzzy
-#| msgid "All follow-ups"
 msgid "Manual follow-up"
-msgstr "Všechny následné kroky"
+msgstr "Ruční sledování"
 
 #: weblate_web/crm/workqueue.py:197
-#, fuzzy
-#| msgid "Set follow-up"
 msgid "Upcoming follow-up"
-msgstr "Nastavit další kroky"
+msgstr "Nadcházející následná kontrola"
 
 #: weblate_web/crm/workqueue.py:199 weblate_web/payments/models.py:628
-#, fuzzy
-#| msgid "Weblate payment"
 msgid "Duplicate payment"
-msgstr "Platba Weblate"
+msgstr "Dvojí platba"
 
 #: weblate_web/crm/workqueue.py:201
-#, fuzzy
-#| msgid "Link URL"
 msgid "Locked URL"
-msgstr "URL odkazu"
+msgstr "Zablokovaná URL adresa"
 
 #: weblate_web/crm/workqueue.py:210
 #, fuzzy
