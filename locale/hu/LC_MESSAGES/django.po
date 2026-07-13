@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-06 00:59-0500\n"
+"POT-Creation-Date: 2026-07-13 00:08-0500\n"
 "PO-Revision-Date: 2026-07-07 05:02+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
@@ -39,13 +39,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.7.1.dev0\n"
 
-#: weblate_web/crm/forms.py:34 weblate_web/forms.py:59
+#: weblate_web/crm/forms.py:34 weblate_web/forms.py:68
 msgid "Please confirm that you want to issue a final invoice."
 msgstr ""
 
-#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:268
-#: weblate_web/crm/views.py:312 weblate_web/views.py:1066
-#: weblate_web/views.py:1077 weblate_web/views.py:1089
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
+#: weblate_web/crm/views.py:322 weblate_web/views.py:1168
+#: weblate_web/views.py:1179 weblate_web/views.py:1191
 msgid "This subscription can not be upgraded to the selected package."
 msgstr ""
 
@@ -72,21 +72,21 @@ msgstr ""
 msgid "Renewal"
 msgstr "Megújítása"
 
-#: weblate_web/crm/forms.py:99 weblate_web/models.py:1115
+#: weblate_web/crm/forms.py:99 weblate_web/models.py:1153
 msgid "Upgrade"
 msgstr "Frissítés"
 
 #: weblate_web/crm/forms.py:106
 #: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:13
-#: weblate_web/forms.py:35
+#: weblate_web/forms.py:44
 msgid "Quote"
 msgstr ""
 
-#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:145
-#: weblate_web/crm/models.py:197
+#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:198
 #: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:23
-#: weblate_web/crm/templates/invoices/invoice_detail.html:27
-#: weblate_web/forms.py:36
+#: weblate_web/crm/templates/invoices/invoice_detail.html:33
+#: weblate_web/forms.py:45
 msgid "Invoice"
 msgstr ""
 
@@ -106,19 +106,47 @@ msgstr "Fizetés leírása"
 msgid "Optional note describing how the refund was done."
 msgstr ""
 
-#: weblate_web/crm/forms.py:160 weblate_web/templates/snippets/service.html:119
+#: weblate_web/crm/forms.py:160
+#: weblate_web/crm/templates/invoices/invoice_detail.html:112
+#: weblate_web/crm/templates/invoices/invoice_detail.html:195
+#: weblate_web/crm/templates/invoices/invoice_detail.html:210
+#: weblate_web/invoices/models.py:374
+#, fuzzy
+#| msgid "Support status"
+msgid "Quote status"
+msgstr "Támogatási állapot"
+
+#: weblate_web/crm/forms.py:161
+msgid "Why this quote should no longer be followed up."
+msgstr ""
+
+#: weblate_web/crm/forms.py:171
+#: weblate_web/crm/templates/invoices/invoice_detail.html:119
+#: weblate_web/invoices/models.py:379
+#, fuzzy
+#| msgid "Support status"
+msgid "Quote status note"
+msgstr "Támogatási állapot"
+
+#: weblate_web/crm/forms.py:173
+msgid ""
+"Optional internal note, such as a rejection reason or accepted alternative "
+"invoice."
+msgstr ""
+
+#: weblate_web/crm/forms.py:183 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "Megjegyzés"
 
-#: weblate_web/crm/forms.py:167 weblate_web/payments/models.py:243
+#: weblate_web/crm/forms.py:190 weblate_web/payments/models.py:643
 msgid "Follow-up date"
 msgstr ""
 
-#: weblate_web/crm/forms.py:175 weblate_web/payments/models.py:249
+#: weblate_web/crm/forms.py:198 weblate_web/payments/models.py:649
 msgid "Follow-up note"
 msgstr ""
 
-#: weblate_web/crm/forms.py:203
+#: weblate_web/crm/forms.py:221
 #: weblate_web/crm/templates/payments/customer_list.html:19
 #: weblate_web/templates/about.html:182
 #: weblate_web/templates/snippets/customer-users.html:38
@@ -126,7 +154,7 @@ msgstr ""
 msgid "E-mail"
 msgstr "E-mail"
 
-#: weblate_web/crm/forms.py:204
+#: weblate_web/crm/forms.py:222
 msgid "Full name"
 msgstr "Teljes név"
 
@@ -139,115 +167,115 @@ msgstr ""
 msgid "Hosted user synchronization is disabled."
 msgstr ""
 
-#: weblate_web/crm/models.py:73
+#: weblate_web/crm/models.py:74
 msgid "Yes"
 msgstr ""
 
-#: weblate_web/crm/models.py:73
+#: weblate_web/crm/models.py:74
 #, fuzzy
 #| msgid "Note"
 msgid "No"
 msgstr "Megjegyzés"
 
-#: weblate_web/crm/models.py:93
+#: weblate_web/crm/models.py:94
 msgid "not set"
 msgstr ""
 
-#: weblate_web/crm/models.py:143
+#: weblate_web/crm/models.py:144
 msgid "Notification"
 msgstr "Értesítés"
 
-#: weblate_web/crm/models.py:144
+#: weblate_web/crm/models.py:145
 #, fuzzy
 #| msgid "Requirements:"
 msgid "Recipients"
 msgstr "Követelmények:"
 
-#: weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:147
 #: weblate_web/crm/templates/crm/interaction_detail.html:64
 msgid "Attachment"
 msgstr ""
 
-#: weblate_web/crm/models.py:153
+#: weblate_web/crm/models.py:154
 msgid "Merged customer"
 msgstr ""
 
-#: weblate_web/crm/models.py:157
+#: weblate_web/crm/models.py:158
 msgid "Merged customer ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:161
+#: weblate_web/crm/models.py:162
 msgid "Merged customer email"
 msgstr ""
 
-#: weblate_web/crm/models.py:166
+#: weblate_web/crm/models.py:167
 msgid "Merged customer end client"
 msgstr ""
 
-#: weblate_web/crm/models.py:175
+#: weblate_web/crm/models.py:176
 msgid "Filename"
 msgstr "Fájlnév"
 
-#: weblate_web/crm/models.py:178
+#: weblate_web/crm/models.py:179
 msgid "Ticket ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:179
+#: weblate_web/crm/models.py:180
 msgid "Article ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:182
+#: weblate_web/crm/models.py:183
 msgid "Attachment ID"
 msgstr ""
 
-#: weblate_web/crm/models.py:189
+#: weblate_web/crm/models.py:190
 #, fuzzy
 #| msgid "Automatic renewal"
 msgid "Automated"
 msgstr "Automatikus megújítás"
 
-#: weblate_web/crm/models.py:190
+#: weblate_web/crm/models.py:191
 msgid "Error code"
 msgstr ""
 
-#: weblate_web/crm/models.py:191
+#: weblate_web/crm/models.py:192
 msgid "Error message"
 msgstr "Hibaüzenet"
 
-#: weblate_web/crm/models.py:198
-#: weblate_web/crm/templates/invoices/invoice_detail.html:59
+#: weblate_web/crm/models.py:199
+#: weblate_web/crm/templates/invoices/invoice_detail.html:65
 #: weblate_web/crm/templates/invoices/invoice_list.html:20
-#: weblate_web/crm/templates/payments/customer_detail.html:342
-#: weblate_web/crm/templates/payments/customer_detail.html:383
-#: weblate_web/crm/templates/payments/customer_detail.html:472
+#: weblate_web/crm/templates/payments/customer_detail.html:367
+#: weblate_web/crm/templates/payments/customer_detail.html:408
+#: weblate_web/crm/templates/payments/customer_detail.html:497
 #, fuzzy
 #| msgid "Amount (EUR)"
 msgid "Amount"
 msgstr "Összeg (EUR)"
 
-#: weblate_web/crm/models.py:201 weblate_web/templates/hosting.html:488
+#: weblate_web/crm/models.py:202 weblate_web/templates/hosting.html:488
 #: weblate_web/templates/support.html:173
 msgid "Payment"
 msgstr "Fizetés"
 
-#: weblate_web/crm/models.py:207
+#: weblate_web/crm/models.py:208
 msgid "Confirmed by"
 msgstr ""
 
-#: weblate_web/crm/models.py:208
+#: weblate_web/crm/models.py:209
 msgid "Confirmed at"
 msgstr ""
 
-#: weblate_web/crm/models.py:209
-#: weblate_web/crm/templates/invoices/invoice_detail.html:115
+#: weblate_web/crm/models.py:210
+#: weblate_web/crm/templates/invoices/invoice_detail.html:137
 #: weblate_web/crm/templates/invoices/invoice_list.html:21
-#: weblate_web/crm/templates/payments/customer_detail.html:384
-#: weblate_web/crm/templates/payments/customer_detail.html:473
+#: weblate_web/crm/templates/payments/customer_detail.html:409
+#: weblate_web/crm/templates/payments/customer_detail.html:498
 msgid "Description"
 msgstr "Leírás"
 
-#: weblate_web/crm/models.py:218
-#: weblate_web/crm/templates/payments/customer_detail.html:228
+#: weblate_web/crm/models.py:219
+#: weblate_web/crm/templates/payments/customer_detail.html:253
 #: weblate_web/crm/templates/weblate_web/service_detail.html:19
 #: weblate_web/crm/templates/weblate_web/service_list.html:26
 #: weblate_web/crm/templates/weblate_web/service_list.html:51
@@ -255,18 +283,18 @@ msgstr "Leírás"
 msgid "Service"
 msgstr "Szolgáltatás"
 
-#: weblate_web/crm/models.py:225
+#: weblate_web/crm/models.py:226
 msgid "Previous maintenance window"
 msgstr ""
 
-#: weblate_web/crm/models.py:231
+#: weblate_web/crm/models.py:232
 #: weblate_web/crm/templates/weblate_web/service_detail.html:142
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:750
+#: weblate_web/models.py:788
 msgid "Maintenance window"
 msgstr ""
 
-#: weblate_web/crm/models.py:235
+#: weblate_web/crm/models.py:236
 #, fuzzy
 #| msgid "Server URL"
 msgid "Service URL"
@@ -276,37 +304,44 @@ msgstr "Kiszolgáló URL-je"
 msgid "Internal Weblate customer relationship management."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/base.html:34
+#: weblate_web/crm/templates/crm/base.html:33
 #, fuzzy
 #| msgid "Displaying context"
 msgid "Skip to main content"
 msgstr "Szövegkörnyezet megjelenítése"
 
-#: weblate_web/crm/templates/crm/base.html:46
+#: weblate_web/crm/templates/crm/base.html:45
 msgid "Toggle navigation"
 msgstr "Navigáció ki- vagy bekapcsolása"
 
-#: weblate_web/crm/templates/crm/base.html:47
+#: weblate_web/crm/templates/crm/base.html:46
 msgid "Menu"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/base.html:50
+#: weblate_web/crm/templates/crm/base.html:49
 #, fuzzy
 #| msgid "Toggle navigation"
 msgid "CRM navigation"
 msgstr "Navigáció ki- vagy bekapcsolása"
 
-#: weblate_web/crm/templates/crm/base.html:52
+#: weblate_web/crm/templates/crm/base.html:51
 msgid "Dashboard"
 msgstr "Vezérlőpult"
 
-#: weblate_web/crm/templates/crm/base.html:55
+#: weblate_web/crm/templates/crm/base.html:54
+#: weblate_web/crm/templates/crm/index.html:41
+#: weblate_web/crm/templates/crm/work_queue.html:6
+#: weblate_web/templates/about.html:68
+msgid "Today"
+msgstr "Ma"
+
+#: weblate_web/crm/templates/crm/base.html:58
 #, fuzzy
 #| msgid "Customer care and sales"
 msgid "Customer records"
 msgstr "Ügyfélszolgálat és értékesítés"
 
-#: weblate_web/crm/templates/crm/base.html:56
+#: weblate_web/crm/templates/crm/base.html:59
 #: weblate_web/crm/templates/crm/index.html:11
 #: weblate_web/crm/templates/crm/index.html:17
 #: weblate_web/crm/templates/crm/index.html:18
@@ -319,55 +354,57 @@ msgstr "Ügyfélszolgálat és értékesítés"
 msgid "Customers"
 msgstr "Egyedi"
 
-#: weblate_web/crm/templates/crm/base.html:60
-#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/crm/base.html:63
+#: weblate_web/crm/templates/crm/index.html:110
 #: weblate_web/crm/templates/weblate_web/service_detail.html:7
 #: weblate_web/crm/templates/weblate_web/service_list.html:44
 #: weblate_web/crm/templates/weblate_web/service_list.html:72
+#: weblate_web/crm/workqueue.py:153
 #, fuzzy
 #| msgid "Service"
 msgid "Services"
 msgstr "Szolgáltatás"
 
-#: weblate_web/crm/templates/crm/base.html:64
-#: weblate_web/crm/templates/crm/index.html:87
-#: weblate_web/crm/templates/crm/index.html:93
-#: weblate_web/crm/templates/crm/index.html:94
-#: weblate_web/crm/templates/invoices/invoice_detail.html:7
+#: weblate_web/crm/templates/crm/base.html:67
+#: weblate_web/crm/templates/crm/index.html:67
+#: weblate_web/crm/templates/crm/index.html:73
+#: weblate_web/crm/templates/crm/index.html:74
+#: weblate_web/crm/templates/invoices/invoice_detail.html:10
+#: weblate_web/crm/templates/invoices/invoice_detail.html:12
 #: weblate_web/crm/templates/payments/customer_detail.html:31
 msgid "Invoices"
 msgstr "Számlák"
 
-#: weblate_web/crm/templates/crm/base.html:68
-#: weblate_web/crm/templates/crm/index.html:190
-#: weblate_web/crm/templates/crm/index.html:191
+#: weblate_web/crm/templates/crm/base.html:71
+#: weblate_web/crm/templates/crm/index.html:170
+#: weblate_web/crm/templates/crm/index.html:171
 #, fuzzy
 #| msgid "Total Income"
 msgid "Income"
 msgstr "Összbevétel"
 
-#: weblate_web/crm/templates/crm/base.html:73
+#: weblate_web/crm/templates/crm/base.html:76
 msgid "Website"
 msgstr "Webhely"
 
-#: weblate_web/crm/templates/crm/base.html:74
+#: weblate_web/crm/templates/crm/base.html:77
 msgid "Admin"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/base.html:78
-#: weblate_web/templates/base.html:92
+#: weblate_web/crm/templates/crm/base.html:81
+#: weblate_web/templates/base.html:91
 msgid "Sign out"
 msgstr "Kijelentkezés"
 
-#: weblate_web/crm/templates/crm/base.html:87
+#: weblate_web/crm/templates/crm/base.html:90
 msgid "Breadcrumbs"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/base.html:88
+#: weblate_web/crm/templates/crm/base.html:91
 msgid "CRM"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/base.html:107
+#: weblate_web/crm/templates/crm/base.html:110
 msgid "Messages"
 msgstr ""
 
@@ -462,7 +499,7 @@ msgstr "Összeg (EUR)"
 
 #: weblate_web/crm/templates/crm/income.html:127
 #: weblate_web/crm/templates/crm/income.html:186
-#: weblate_web/crm/templates/invoices/invoice_detail.html:118
+#: weblate_web/crm/templates/invoices/invoice_detail.html:140
 msgid "Total"
 msgstr "Összesen"
 
@@ -486,14 +523,15 @@ msgstr ""
 
 #: weblate_web/crm/templates/crm/income.html:147
 #: weblate_web/crm/templates/invoices/invoice_list.html:23
-#: weblate_web/crm/templates/payments/customer_detail.html:165
-#: weblate_web/crm/templates/payments/customer_detail.html:234
-#: weblate_web/crm/templates/payments/customer_detail.html:300
-#: weblate_web/crm/templates/payments/customer_detail.html:343
-#: weblate_web/crm/templates/payments/customer_detail.html:386
-#: weblate_web/crm/templates/payments/customer_detail.html:423
-#: weblate_web/crm/templates/payments/customer_detail.html:474
-#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/crm/templates/payments/customer_detail.html:131
+#: weblate_web/crm/templates/payments/customer_detail.html:190
+#: weblate_web/crm/templates/payments/customer_detail.html:259
+#: weblate_web/crm/templates/payments/customer_detail.html:325
+#: weblate_web/crm/templates/payments/customer_detail.html:368
+#: weblate_web/crm/templates/payments/customer_detail.html:411
+#: weblate_web/crm/templates/payments/customer_detail.html:448
+#: weblate_web/crm/templates/payments/customer_detail.html:499
+#: weblate_web/crm/templates/payments/customer_list.html:28
 #: weblate_web/crm/templates/weblate_web/service_list.html:32
 #: weblate_web/crm/templates/weblate_web/service_list.html:60
 msgid "Actions"
@@ -512,9 +550,9 @@ msgid "All customer records and billing contacts."
 msgstr ""
 
 #: weblate_web/crm/templates/crm/index.html:23
-#: weblate_web/crm/templates/crm/index.html:99
-#: weblate_web/crm/templates/crm/index.html:112
-#: weblate_web/crm/templates/crm/index.html:142
+#: weblate_web/crm/templates/crm/index.html:79
+#: weblate_web/crm/templates/crm/index.html:92
+#: weblate_web/crm/templates/crm/index.html:122
 msgid "Add"
 msgstr "Hozzáadás"
 
@@ -529,130 +567,129 @@ msgstr "Felhasználó hozzáadása"
 msgid "Customers with current services or payments."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:41
-msgid "Follow-ups"
+#: weblate_web/crm/templates/crm/index.html:43
+#: weblate_web/crm/templates/crm/work_queue.html:17
+#: weblate_web/crm/templates/crm/work_queue.html:25
+msgid "No work items"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:47
-#: weblate_web/crm/templates/crm/index.html:48
-msgid "All follow-ups"
+#: weblate_web/crm/templates/crm/index.html:44
+#: weblate_web/crm/templates/crm/work_queue.html:27
+msgid "There is no CRM work needing attention right now."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:49
-msgid "Customers with scheduled next actions."
+#: weblate_web/crm/templates/crm/index.html:50
+#: weblate_web/crm/templates/crm/index.html:51
+msgid "Full work queue"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:57
-#, python-format
-msgid "Due %(date)s"
-msgstr ""
+#: weblate_web/crm/templates/crm/index.html:54
+#, fuzzy, python-format
+#| msgid "%(count)s translation"
+#| msgid_plural "%(count)s translations"
+msgid "%(count)s more item needs attention."
+msgid_plural "%(count)s more items need attention."
+msgstr[0] "%(count)s fordítás"
+msgstr[1] "%(count)s fordítás"
 
-#: weblate_web/crm/templates/crm/index.html:65
-msgid "No due follow-ups"
-msgstr ""
-
-#: weblate_web/crm/templates/crm/index.html:66
-msgid "No customer follow-up is due right now."
+#: weblate_web/crm/templates/crm/index.html:56
+msgid "All suggested CRM work in one place."
 msgstr ""
 
 #: weblate_web/crm/templates/crm/index.html:75
-#, python-format
-msgid "Upcoming %(date)s"
-msgstr ""
-
-#: weblate_web/crm/templates/crm/index.html:95
 #, fuzzy
 #| msgid "Issue new invoice"
 msgid "Issued invoices and receipts."
 msgstr "Új számla kiállítása"
 
-#: weblate_web/crm/templates/crm/index.html:106
-#: weblate_web/crm/templates/crm/index.html:107
+#: weblate_web/crm/templates/crm/index.html:86
+#: weblate_web/crm/templates/crm/index.html:87
+#: weblate_web/crm/templates/invoices/invoice_detail.html:8
 msgid "Quotes"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:108
+#: weblate_web/crm/templates/crm/index.html:88
 msgid "Draft offers and renewal quotes."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:119
-#: weblate_web/crm/templates/crm/index.html:120
+#: weblate_web/crm/templates/crm/index.html:99
+#: weblate_web/crm/templates/crm/index.html:100
 #, fuzzy
 #| msgid "Download invoice"
 msgid "Unpaid invoices"
 msgstr "Számla letöltése"
 
-#: weblate_web/crm/templates/crm/index.html:121
+#: weblate_web/crm/templates/crm/index.html:101
 msgid "Invoices that still need payment follow-up."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:136
-#: weblate_web/crm/templates/crm/index.html:137
+#: weblate_web/crm/templates/crm/index.html:116
+#: weblate_web/crm/templates/crm/index.html:117
 #, fuzzy
 #| msgid "Available services"
 msgid "All services"
 msgstr "Elérhető szolgáltatások"
 
-#: weblate_web/crm/templates/crm/index.html:138
+#: weblate_web/crm/templates/crm/index.html:118
 msgid "Hosted, dedicated, and support services."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:149
-#: weblate_web/crm/templates/crm/index.html:150
+#: weblate_web/crm/templates/crm/index.html:129
+#: weblate_web/crm/templates/crm/index.html:130
 #, fuzzy
 #| msgid "Expired service"
 msgid "Expired services"
 msgstr "Lejárt szolgáltatás"
 
-#: weblate_web/crm/templates/crm/index.html:151
+#: weblate_web/crm/templates/crm/index.html:131
 msgid "Renewable services past their expiration date."
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:157
-#: weblate_web/crm/templates/crm/index.html:158
+#: weblate_web/crm/templates/crm/index.html:137
+#: weblate_web/crm/templates/crm/index.html:138
 #, fuzzy
 #| msgid "Dedicated hosted service"
 msgid "Dedicated hosting services"
 msgstr "Dedikált kiszolgálón futó szolgáltatás"
 
-#: weblate_web/crm/templates/crm/index.html:159
+#: weblate_web/crm/templates/crm/index.html:139
 #, fuzzy
 #| msgctxt "Package category"
 #| msgid "Dedicated hosting"
 msgid "Dedicated hosting subscriptions."
 msgstr "Dedikált tárhelyszolgáltatás"
 
-#: weblate_web/crm/templates/crm/index.html:165
-#: weblate_web/crm/templates/crm/index.html:166
+#: weblate_web/crm/templates/crm/index.html:145
+#: weblate_web/crm/templates/crm/index.html:146
 #, fuzzy
 #| msgid "Extended support"
 msgid "Extended support services"
 msgstr "Bővített támogatás"
 
-#: weblate_web/crm/templates/crm/index.html:167
+#: weblate_web/crm/templates/crm/index.html:147
 #, fuzzy
 #| msgid "Extended support"
 msgid "Extended support subscriptions."
 msgstr "Bővített támogatás"
 
-#: weblate_web/crm/templates/crm/index.html:173
-#: weblate_web/crm/templates/crm/index.html:174
+#: weblate_web/crm/templates/crm/index.html:153
+#: weblate_web/crm/templates/crm/index.html:154
 #, fuzzy
 #| msgid "Premium support"
 msgid "Premium support services"
 msgstr "Prémium támogatás"
 
-#: weblate_web/crm/templates/crm/index.html:175
+#: weblate_web/crm/templates/crm/index.html:155
 #, fuzzy
 #| msgid "Premium support"
 msgid "Premium support subscriptions."
 msgstr "Prémium támogatás"
 
-#: weblate_web/crm/templates/crm/index.html:184
+#: weblate_web/crm/templates/crm/index.html:164
 msgid "Income tracking"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:192
+#: weblate_web/crm/templates/crm/index.html:172
 msgid "Yearly and monthly income breakdowns."
 msgstr ""
 
@@ -663,7 +700,7 @@ msgid "Interaction"
 msgstr "Integrációs API"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:18
-#: weblate_web/crm/templates/payments/customer_detail.html:418
+#: weblate_web/crm/templates/payments/customer_detail.html:443
 #: weblate_web/crm/templates/weblate_web/service_detail.html:275
 msgid "Timestamp"
 msgstr "Időbélyeg"
@@ -671,8 +708,8 @@ msgstr "Időbélyeg"
 #: weblate_web/crm/templates/crm/interaction_detail.html:24
 #: weblate_web/crm/templates/invoices/invoice_list.html:22
 #: weblate_web/crm/templates/payments/customer_detail.html:39
-#: weblate_web/crm/templates/payments/customer_detail.html:229
-#: weblate_web/crm/templates/payments/customer_detail.html:385
+#: weblate_web/crm/templates/payments/customer_detail.html:254
+#: weblate_web/crm/templates/payments/customer_detail.html:410
 #: weblate_web/crm/templates/payments/customer_list.html:17
 #: weblate_web/crm/templates/weblate_web/service_detail.html:23
 #: weblate_web/crm/templates/weblate_web/service_list.html:27
@@ -684,23 +721,24 @@ msgid "Customer"
 msgstr "Egyedi"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:30
-#: weblate_web/crm/templates/payments/customer_detail.html:419
+#: weblate_web/crm/templates/payments/customer_detail.html:444
 msgid "User"
 msgstr "Felhasználó"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:36
-#: weblate_web/crm/templates/payments/customer_detail.html:420
+#: weblate_web/crm/templates/payments/customer_detail.html:445
 msgid "Origin"
 msgstr "Eredet"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:47
-#: weblate_web/crm/templates/payments/customer_list.html:47
+#: weblate_web/crm/templates/payments/customer_list.html:48
+#: weblate_web/crm/templates/payments/customer_list.html:62
 #: weblate_web/crm/templates/weblate_web/service_list_content.html:28
 msgid "Details"
 msgstr "Részletek"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:77
-#: weblate_web/crm/templates/payments/customer_detail.html:422
+#: weblate_web/crm/templates/payments/customer_detail.html:447
 msgid "Content"
 msgstr "Tartalom"
 
@@ -757,7 +795,7 @@ msgid "Cancel"
 msgstr ""
 
 #: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:11
-#: weblate_web/crm/templates/invoices/invoice_detail.html:177
+#: weblate_web/crm/templates/invoices/invoice_detail.html:184
 #, fuzzy
 #| msgid "Issue new invoice"
 msgid "Issue invoice"
@@ -765,8 +803,8 @@ msgstr "Új számla kiállítása"
 
 #: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:4
 #: weblate_web/crm/templates/invoices/invoice_list.html:19
-#: weblate_web/crm/templates/payments/customer_detail.html:299
-#: weblate_web/crm/templates/payments/customer_detail.html:382
+#: weblate_web/crm/templates/payments/customer_detail.html:324
+#: weblate_web/crm/templates/payments/customer_detail.html:407
 msgid "Kind"
 msgstr ""
 
@@ -782,10 +820,14 @@ msgstr ""
 msgid "Clear"
 msgstr "Törlés"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:14
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:34
-#: weblate_web/crm/templates/payments/customer_detail.html:310
-#: weblate_web/crm/templates/payments/customer_detail.html:444
+#: weblate_web/crm/templates/crm/work_queue.html:18
+msgid "There is no CRM work in this section."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:20
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:29
+#: weblate_web/crm/templates/payments/customer_detail.html:335
+#: weblate_web/crm/templates/payments/customer_detail.html:469
 #: weblate_web/templates/hosting.html:289
 #: weblate_web/templates/payment/customer-agreement.html:35
 #: weblate_web/templates/payment/customer-agreement.html:56
@@ -795,110 +837,127 @@ msgstr "Törlés"
 msgid "Download"
 msgstr "Letöltés"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:16
+#: weblate_web/crm/templates/invoices/invoice_detail.html:22
 msgid "Receipt"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:21
+#: weblate_web/crm/templates/invoices/invoice_detail.html:27
 #: weblate_web/crm/templates/payments/customer_detail.html:17
 #: weblate_web/crm/templates/weblate_web/service_detail.html:13
 msgid "Edit in admin"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:33
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:10
-msgid "Paid"
-msgstr "Fizetett"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:35
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:13
-msgid "Unpaid"
-msgstr ""
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:41
+#: weblate_web/crm/templates/invoices/invoice_detail.html:47
 #: weblate_web/crm/templates/invoices/invoice_list.html:17
-#: weblate_web/crm/templates/payments/customer_detail.html:380
+#: weblate_web/crm/templates/payments/customer_detail.html:405
 #, fuzzy
 #| msgid "D-U-N-S Number"
 msgid "Number"
 msgstr "D-U-N-S-szám"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:47
+#: weblate_web/crm/templates/invoices/invoice_detail.html:53
 msgid "Issued"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:53
+#: weblate_web/crm/templates/invoices/invoice_detail.html:59
 msgid "Due"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:66
+#: weblate_web/crm/templates/invoices/invoice_detail.html:72
 #, fuzzy
 #| msgid "Discover"
 msgid "Discount"
 msgstr "Felfedezés"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:74
+#: weblate_web/crm/templates/invoices/invoice_detail.html:80
 msgid "Generated from"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+#: weblate_web/crm/templates/invoices/invoice_detail.html:88
 msgid "Followup as"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:90
+#: weblate_web/crm/templates/invoices/invoice_detail.html:96
 #, fuzzy
 #| msgid "Customer care and sales"
 msgid "Customer reference"
 msgstr "Ügyfélszolgálat és értékesítés"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:98
+#: weblate_web/crm/templates/invoices/invoice_detail.html:104
 #, fuzzy
 #| msgctxt "Hosting plan"
 #| msgid "Custom"
 msgid "Customer note"
 msgstr "Egyedi"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:108
+#: weblate_web/crm/templates/invoices/invoice_detail.html:130
 msgid "Invoice items"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:116
+#: weblate_web/crm/templates/invoices/invoice_detail.html:138
 msgid "Quantity"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:117
+#: weblate_web/crm/templates/invoices/invoice_detail.html:139
 msgid "Price"
 msgstr "Ár"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:142
-#: weblate_web/crm/templates/invoices/invoice_detail.html:149
-msgid "Confirm refund done"
-msgstr ""
+#: weblate_web/crm/templates/invoices/invoice_detail.html:164
+#, fuzzy
+#| msgid "Integration API"
+msgid "Quote actions"
+msgstr "Integrációs API"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:144
-msgid "Use this after the refund or chargeback has been completed."
-msgstr ""
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:161
-#: weblate_web/crm/templates/invoices/invoice_detail.html:169
+#: weblate_web/crm/templates/invoices/invoice_detail.html:168
+#: weblate_web/crm/templates/invoices/invoice_detail.html:176
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:167
+#: weblate_web/crm/templates/invoices/invoice_detail.html:174
 #, fuzzy
 #| msgid "Issue new invoice"
 msgid "Issue invoice from quote"
 msgstr "Új számla kiállítása"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:196
+msgid ""
+"Use this when a quote should no longer appear as suggested follow-up work."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:200
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Close quote"
+msgstr "Árajánlat kérése"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:213
+msgid "This quote is closed and hidden from stale quote suggestions."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:216
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Reopen quote"
+msgstr "Árajánlat kérése"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:230
+#: weblate_web/crm/templates/invoices/invoice_detail.html:237
+msgid "Confirm refund done"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:232
+msgid "Use this after the refund or chargeback has been completed."
+msgstr ""
 
 #: weblate_web/crm/templates/invoices/invoice_list.html:9
 msgid "Invoice list"
 msgstr ""
 
 #: weblate_web/crm/templates/invoices/invoice_list.html:18
-#: weblate_web/crm/templates/payments/customer_detail.html:232
-#: weblate_web/crm/templates/payments/customer_detail.html:381
+#: weblate_web/crm/templates/payments/customer_detail.html:257
+#: weblate_web/crm/templates/payments/customer_detail.html:406
 #: weblate_web/crm/templates/weblate_web/service_detail.html:163
 #: weblate_web/crm/templates/weblate_web/service_list.html:30
 #: weblate_web/crm/templates/weblate_web/service_list.html:55
@@ -909,12 +968,8 @@ msgstr "Állapot"
 msgid "No invoices match the current filters."
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:16
-msgid "Overdue"
-msgstr ""
-
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:31
-#: weblate_web/crm/templates/payments/customer_detail.html:441
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:26
+#: weblate_web/crm/templates/payments/customer_detail.html:466
 msgid "View"
 msgstr "Megtekintés"
 
@@ -945,7 +1000,7 @@ msgid "Payments"
 msgstr "Fizetések"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:43
-#: weblate_web/payments/models.py:170
+#: weblate_web/payments/models.py:172
 msgid "Name"
 msgstr "Név"
 
@@ -956,7 +1011,7 @@ msgid "Notification e-mails"
 msgstr "Értesítés"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:56
-#: weblate_web/crm/templates/payments/customer_list.html:24
+#: weblate_web/crm/templates/payments/customer_list.html:25
 #, fuzzy
 #| msgid "VAT ID"
 msgid "VAT"
@@ -974,13 +1029,13 @@ msgid "not validated"
 msgstr "Érvénytelen kép!"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:70
-#: weblate_web/payments/models.py:179
+#: weblate_web/payments/models.py:181
 msgid "Address"
 msgstr "Cím"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:77
-#: weblate_web/crm/templates/payments/customer_list.html:26
-#: weblate_web/payments/models.py:199
+#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/payments/models.py:201
 msgid "Country"
 msgstr "Ország"
 
@@ -990,14 +1045,14 @@ msgid "End client"
 msgstr ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:92
-#: weblate_web/payments/models.py:211
+#: weblate_web/payments/models.py:213
 #, fuzzy
 #| msgid "Contact"
 msgid "Contact point"
 msgstr "Kapcsolat"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:100
-#: weblate_web/payments/models.py:219
+#: weblate_web/payments/models.py:221
 #, fuzzy
 #| msgid "Donation recurrence"
 msgid "Accounting reference"
@@ -1017,73 +1072,92 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:118
+#: weblate_web/crm/templates/payments/customer_detail.html:127
 #: weblate_web/crm/templates/payments/customer_list.html:21
 msgid "Follow-up"
 msgstr ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:123
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer follow-ups"
+msgstr "Lista testreszabása"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:128
+#: weblate_web/crm/templates/payments/customer_list.html:22
+msgid "Type"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:129
+#: weblate_web/crm/templates/payments/customer_list.html:23
+#, fuzzy
+#| msgid "Notification"
+msgid "Next action"
+msgstr "Értesítés"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:138
 #, python-format
 msgid "Next follow-up: %(date)s"
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:128
-msgid "No follow-up scheduled."
-msgstr ""
-
-#: weblate_web/crm/templates/payments/customer_detail.html:133
-msgid "Set follow-up"
-msgstr ""
-
-#: weblate_web/crm/templates/payments/customer_detail.html:152
-msgid "Save follow-up"
-msgstr ""
-
-#: weblate_web/crm/templates/payments/customer_detail.html:157
+#: weblate_web/crm/templates/payments/customer_detail.html:149
 msgid "Clear follow-up"
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:171
+#: weblate_web/crm/templates/payments/customer_detail.html:159
+msgid "No follow-up scheduled."
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:164
+msgid "Set follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:183
+msgid "Save follow-up"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:196
 #, fuzzy
 #| msgid "Add server to Discover Weblate"
 msgid "Merge customer"
 msgstr "Kiszolgáló hozzáadása a Weblate-felfedezéshez"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:179
+#: weblate_web/crm/templates/payments/customer_detail.html:204
 #: weblate_web/crm/templates/payments/customer_merge.html:12
 msgid "Review merge"
 msgstr "Összefésülés felülvizsgálata"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:186
+#: weblate_web/crm/templates/payments/customer_detail.html:211
 #, fuzzy
 #| msgid "Add server to Discover Weblate"
 msgid "Add user to customer"
 msgstr "Kiszolgáló hozzáadása a Weblate-felfedezéshez"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:193
+#: weblate_web/crm/templates/payments/customer_detail.html:218
 #, fuzzy
 #| msgid "Add a user"
 msgid "Add user"
 msgstr "Felhasználó hozzáadása"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:199
-#: weblate_web/crm/templates/payments/customer_detail.html:213
+#: weblate_web/crm/templates/payments/customer_detail.html:224
+#: weblate_web/crm/templates/payments/customer_detail.html:238
 msgid "Add note"
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:220
+#: weblate_web/crm/templates/payments/customer_detail.html:245
 #, fuzzy
 #| msgid "Hosted service"
 msgid "Customer services"
 msgstr "Kiszolgálón biztosított szolgáltatás"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:230
+#: weblate_web/crm/templates/payments/customer_detail.html:255
 #: weblate_web/crm/templates/weblate_web/service_detail.html:29
 #: weblate_web/crm/templates/weblate_web/service_list.html:28
 #: weblate_web/crm/templates/weblate_web/service_list.html:53
 msgid "URL"
 msgstr "URL"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:231
+#: weblate_web/crm/templates/payments/customer_detail.html:256
 #: weblate_web/crm/templates/weblate_web/service_list.html:29
 #: weblate_web/crm/templates/weblate_web/service_list.html:54
 #, fuzzy
@@ -1091,132 +1165,132 @@ msgstr "URL"
 msgid "Version"
 msgstr "Verziókezelés"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:233
+#: weblate_web/crm/templates/payments/customer_detail.html:258
 #: weblate_web/crm/templates/weblate_web/service_list.html:31
 #: weblate_web/crm/templates/weblate_web/service_list.html:59
 msgid "Packages"
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:243
+#: weblate_web/crm/templates/payments/customer_detail.html:268
 msgid ""
 "This creates a final invoice for the new service. Use Quote if you only need "
 "an offer."
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:249
+#: weblate_web/crm/templates/payments/customer_detail.html:274
 #, fuzzy
 #| msgid "View service status."
 msgid "New service purchase"
 msgstr "Szolgáltatás állapotának megtekintése."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:281
+#: weblate_web/crm/templates/payments/customer_detail.html:306
 #: weblate_web/crm/templates/weblate_web/service_detail.html:205
 #: weblate_web/crm/templates/weblate_web/service_detail.html:232
 msgid "Create"
 msgstr "Létrehozás"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:289
+#: weblate_web/crm/templates/payments/customer_detail.html:314
 #, fuzzy
 #| msgid "New agreement"
 msgid "Agreements"
 msgstr "Új megállapodás"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:294
+#: weblate_web/crm/templates/payments/customer_detail.html:319
 #, fuzzy
 #| msgid "New agreement"
 msgid "Signed agreements"
 msgstr "Új megállapodás"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:298
+#: weblate_web/crm/templates/payments/customer_detail.html:323
 #, fuzzy
 #| msgid "Sign in"
 msgid "Signed"
 msgstr "Bejelentkezés"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:319
+#: weblate_web/crm/templates/payments/customer_detail.html:344
 #, fuzzy
 #| msgid "New agreement"
 msgid "No agreements recorded."
 msgstr "Új megállapodás"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:325
+#: weblate_web/crm/templates/payments/customer_detail.html:350
 msgid "Add new agreement"
 msgstr "Új megállapodás hozzáadása"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:331
+#: weblate_web/crm/templates/payments/customer_detail.html:356
 #, fuzzy
 #| msgid "Documentation"
 msgid "Donations"
 msgstr "Dokumentáció"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:336
+#: weblate_web/crm/templates/payments/customer_detail.html:361
 #, fuzzy
 #| msgid "Documentation"
 msgid "Donation history"
 msgstr "Dokumentáció"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:340
-#: weblate_web/crm/templates/payments/customer_detail.html:470
+#: weblate_web/crm/templates/payments/customer_detail.html:365
+#: weblate_web/crm/templates/payments/customer_detail.html:495
 msgid "Created"
 msgstr "Létrehozva"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:341
+#: weblate_web/crm/templates/payments/customer_detail.html:366
 msgid "Reward"
 msgstr "Jutalom"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:354
-#: weblate_web/crm/templates/payments/customer_detail.html:486
+#: weblate_web/crm/templates/payments/customer_detail.html:379
+#: weblate_web/crm/templates/payments/customer_detail.html:511
 #: weblate_web/templates/payment/customer-agreement.html:18
 #: weblate_web/templates/payment/payment.html:70
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:363
+#: weblate_web/crm/templates/payments/customer_detail.html:388
 #, fuzzy
 #| msgid "Donations"
 msgid "No donations recorded."
 msgstr "Adományok"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:371
+#: weblate_web/crm/templates/payments/customer_detail.html:396
 msgid "Invoice history"
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:395
+#: weblate_web/crm/templates/payments/customer_detail.html:420
 msgid "No invoices recorded."
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:402
+#: weblate_web/crm/templates/payments/customer_detail.html:427
 msgid "Issue new invoice"
 msgstr "Új számla kiállítása"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:410
+#: weblate_web/crm/templates/payments/customer_detail.html:435
 #, fuzzy
 #| msgid "Translation context"
 msgid "Interaction history"
 msgstr "Fordítási környezet"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:421
+#: weblate_web/crm/templates/payments/customer_detail.html:446
 msgid "Summary"
 msgstr "Összefoglaló"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:454
+#: weblate_web/crm/templates/payments/customer_detail.html:479
 #, fuzzy
 #| msgid "Translation context"
 msgid "No interactions recorded."
 msgstr "Fordítási környezet"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:462
+#: weblate_web/crm/templates/payments/customer_detail.html:487
 #, fuzzy
 #| msgid "Payment error"
 msgid "Payment history"
 msgstr "Fizetési hiba"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:471
+#: weblate_web/crm/templates/payments/customer_detail.html:496
 msgid "State"
 msgstr "Állapot"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:495
+#: weblate_web/crm/templates/payments/customer_detail.html:520
 #, fuzzy
 #| msgctxt "Payment state"
 #| msgid "Payment rejected"
@@ -1229,18 +1303,12 @@ msgstr "Fizetés elutasítva"
 msgid "Customer list"
 msgstr "Lista testreszabása"
 
-#: weblate_web/crm/templates/payments/customer_list.html:22
-#, fuzzy
-#| msgid "Notification"
-msgid "Next action"
-msgstr "Értesítés"
-
-#: weblate_web/crm/templates/payments/customer_list.html:25
-#: weblate_web/payments/models.py:190
+#: weblate_web/crm/templates/payments/customer_list.html:26
+#: weblate_web/payments/models.py:192
 msgid "City"
 msgstr "Település"
 
-#: weblate_web/crm/templates/payments/customer_list.html:56
+#: weblate_web/crm/templates/payments/customer_list.html:72
 #, fuzzy
 #| msgid "No servers matched your search."
 msgid "No customers match the current filters."
@@ -1441,76 +1509,145 @@ msgstr "Rendszerkarbantartás"
 msgid "No services match the current filters."
 msgstr "Nincs a keresési feltételeknek megfelelő kiszolgáló."
 
-#: weblate_web/crm/views.py:719
+#: weblate_web/crm/views.py:850
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 
-#: weblate_web/crm/views.py:733
+#: weblate_web/crm/views.py:864
 msgid "Hosted user was not linked."
 msgstr ""
 
-#: weblate_web/crm/views.py:736
+#: weblate_web/crm/views.py:867
 msgid "Hosted user is already linked to a different local user."
 msgstr ""
 
-#: weblate_web/crm/views.py:743
+#: weblate_web/crm/views.py:874
 #, fuzzy
 #| msgid "Add a user"
 msgid "Added customer user"
 msgstr "Felhasználó hozzáadása"
 
-#: weblate_web/crm/views.py:745
+#: weblate_web/crm/views.py:876
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:749
+#: weblate_web/crm/views.py:880
 msgid "created"
 msgstr ""
 
-#: weblate_web/crm/views.py:751
+#: weblate_web/crm/views.py:882
 msgid "linked"
 msgstr ""
 
-#: weblate_web/crm/views.py:778
+#: weblate_web/crm/views.py:909
 msgid "Multiple local users use this e-mail address"
 msgstr ""
 
-#: weblate_web/crm/views.py:806
+#: weblate_web/crm/views.py:937
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr ""
 
-#: weblate_web/crm/views.py:813
+#: weblate_web/crm/views.py:944
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr ""
 
-#: weblate_web/crm/views.py:818
+#: weblate_web/crm/views.py:949
 #, python-format
 msgid "%(email)s is already a customer user."
 msgstr ""
 
-#: weblate_web/crm/views.py:863
+#: weblate_web/crm/views.py:983
 #, python-format
 msgid "Follow-up scheduled for %(date)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:870
+#: weblate_web/crm/views.py:991
 msgid "Follow-up set"
 msgstr ""
 
-#: weblate_web/crm/views.py:875
-msgid "Follow-up updated."
+#: weblate_web/crm/views.py:994
+msgid "Follow-up added."
 msgstr ""
 
-#: weblate_web/crm/views.py:889
+#: weblate_web/crm/views.py:1005
 msgid "Follow-up cleared"
 msgstr ""
 
-#: weblate_web/crm/views.py:890 weblate_web/crm/views.py:894
+#: weblate_web/crm/views.py:1006 weblate_web/crm/views.py:1009
 msgid "Follow-up cleared."
 msgstr ""
+
+#: weblate_web/crm/workqueue.py:151
+msgid "Follow-ups"
+msgstr ""
+
+#: weblate_web/crm/workqueue.py:152
+#: weblate_web/templates/snippets/service.html:134
+msgid "Billing"
+msgstr "Számlázás"
+
+#: weblate_web/crm/workqueue.py:171
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer follow-up is due."
+msgstr "Lista testreszabása"
+
+#: weblate_web/crm/workqueue.py:184
+msgid "Scheduled customer follow-up."
+msgstr ""
+
+#: weblate_web/crm/workqueue.py:197
+msgid "Manual follow-up"
+msgstr ""
+
+#: weblate_web/crm/workqueue.py:197
+msgid "Upcoming follow-up"
+msgstr ""
+
+#: weblate_web/crm/workqueue.py:199 weblate_web/payments/models.py:628
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Duplicate payment"
+msgstr "Weblate fizetés"
+
+#: weblate_web/crm/workqueue.py:201
+#, fuzzy
+#| msgid "Link URL"
+msgid "Locked URL"
+msgstr "Hivatkozás URL-je"
+
+#: weblate_web/crm/workqueue.py:210
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Unpaid invoice"
+msgstr "Számla letöltése"
+
+#: weblate_web/crm/workqueue.py:211
+#, fuzzy, python-format
+#| msgid "Invoices"
+msgid "Invoice %(number)s"
+msgstr "Számlák"
+
+#: weblate_web/crm/workqueue.py:228
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Stale quote"
+msgstr "Árajánlat kérése"
+
+#: weblate_web/crm/workqueue.py:229
+#, fuzzy, python-format
+#| msgid "Account number"
+msgid "Quote %(number)s"
+msgstr "Bankszámlaszám"
+
+#: weblate_web/crm/workqueue.py:250
+#, fuzzy
+#| msgid "Expired service"
+msgid "Expired service"
+msgstr "Lejárt szolgáltatás"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -1522,44 +1659,108 @@ msgstr ""
 "otthona. Köztük maga a Weblate is! Szereti a szabad szoftvereket? Itt "
 "korlátlanul hozzájárulhat!"
 
-#: weblate_web/forms.py:98
+#: weblate_web/forms.py:107
 msgid "Insufficient donation for selected reward!"
 msgstr "A kiválasztott jutalomhoz nem elegendő az adomány!"
 
-#: weblate_web/invoices/models.py:210
+#: weblate_web/forms.py:197
+#, fuzzy
+#| msgid "Server URL"
+msgid "Invalid server URL."
+msgstr "Kiszolgáló URL-je"
+
+#: weblate_web/forms.py:201
+msgid "Server URL must use HTTPS."
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
+#: weblate_web/invoices/models.py:287
+msgctxt "Quote status"
+msgid "Open"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
+#: weblate_web/invoices/models.py:288
+msgctxt "Quote status"
+msgid "Lost"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
+#: weblate_web/invoices/models.py:289
+msgctxt "Quote status"
+msgid "Superseded"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
+#: weblate_web/invoices/models.py:290
+msgctxt "Quote status"
+msgid "Accepted elsewhere"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
+#: weblate_web/invoices/models.py:291
+msgctxt "Quote status"
+msgid "Archived"
+msgstr ""
+
+#: weblate_web/invoices/models.py:211
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/invoices/models.py:212 weblate_web/invoices/models.py:214
+#: weblate_web/invoices/models.py:213 weblate_web/invoices/models.py:215
 msgid "Account number"
 msgstr "Bankszámlaszám"
 
-#: weblate_web/invoices/models.py:216
+#: weblate_web/invoices/models.py:217
 msgid "BIC/SWIFT"
 msgstr "BIC/SWIFT"
 
-#: weblate_web/invoices/models.py:218
+#: weblate_web/invoices/models.py:219
 msgid "Issuing bank"
 msgstr "Kibocsátó bank"
 
-#: weblate_web/invoices/models.py:220
+#: weblate_web/invoices/models.py:221
 msgid "Account holder"
 msgstr "Számlatulajdonos"
 
-#: weblate_web/invoices/views.py:51
+#: weblate_web/invoices/models.py:375
+msgid "CRM status for quote follow-up."
+msgstr ""
+
+#: weblate_web/invoices/models.py:380
+msgid "Internal note explaining why the quote was closed."
+msgstr ""
+
+#: weblate_web/invoices/models.py:599
+msgid "Converted"
+msgstr ""
+
+#: weblate_web/invoices/models.py:606
+msgid "Paid"
+msgstr "Fizetett"
+
+#: weblate_web/invoices/models.py:609
+msgid "Unpaid"
+msgstr ""
+
+#: weblate_web/invoices/models.py:610
+msgid "Overdue"
+msgstr ""
+
+#: weblate_web/invoices/views.py:51 weblate_web/views.py:441
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "Ez a számla már ki lett fizetve. Kérjük, jelentkezzen be a részletek "
 "megtekintéséhez."
 
 #: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:613
+#: weblate_web/models.py:651
 msgctxt "Service kind"
 msgid "Service"
 msgstr "Szolgáltatás"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:614
+#: weblate_web/models.py:652
 #, fuzzy
 #| msgid "Documentation"
 msgctxt "Service kind"
@@ -1567,266 +1768,283 @@ msgid "Donation"
 msgstr "Dokumentáció"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:784
+#: weblate_web/models.py:822
 msgid "Link text"
 msgstr "Hivatkozás szövege"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:787
+#: weblate_web/models.py:825
 msgid "Link URL"
 msgstr "Hivatkozás URL-je"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:790
+#: weblate_web/models.py:828
 msgid "Link image"
 msgstr "Hivatkozás képe"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:618
+#: weblate_web/models.py:656
 msgctxt "Package category"
 msgid "None"
 msgstr "Nincs"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:619
+#: weblate_web/models.py:657
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr "Dedikált tárhelyszolgáltatás"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:620
+#: weblate_web/models.py:658
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr "Megosztott tárhelyszolgáltatás"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:621
+#: weblate_web/models.py:659
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "Saját kiszolgálású támogatás"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:622
+#: weblate_web/models.py:660
 #, fuzzy
 #| msgid "Documentation"
 msgctxt "Package category"
 msgid "Donation"
 msgstr "Dokumentáció"
 
-#: weblate_web/models.py:131
+#: weblate_web/models.py:165
 msgid "No reward"
 msgstr "Nincs jutalom"
 
-#: weblate_web/models.py:132 weblate_web/templates/donate.html:45
+#: weblate_web/models.py:166 weblate_web/templates/donate.html:45
 msgid "Name in the list of supporters"
 msgstr "Név a támogatók listáján"
 
-#: weblate_web/models.py:133 weblate_web/templates/donate.html:52
+#: weblate_web/models.py:167 weblate_web/templates/donate.html:52
 #: weblate_web/templates/donate/form.html:92
 msgid "Link in the list of supporters"
 msgstr "Hivatkozás a támogatók listáján"
 
-#: weblate_web/models.py:134 weblate_web/templates/donate.html:59
+#: weblate_web/models.py:168 weblate_web/templates/donate.html:59
 #: weblate_web/templates/donate/form.html:106
 msgid "Logo and link on the Weblate website"
 msgstr "Logó és hivatkozás a Weblate webhelyén"
 
-#: weblate_web/models.py:154
+#: weblate_web/models.py:188
 #: weblate_web/templates/weblate_web/post_detail.html:56
 msgid "Release"
 msgstr "Kiadás"
 
-#: weblate_web/models.py:155 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/models.py:189 weblate_web/templates/snippets/main-menu.html:6
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Features"
 msgstr "Funkciók"
 
-#: weblate_web/models.py:156
+#: weblate_web/models.py:190
 msgid "Announcement"
 msgstr "Bejelentés"
 
-#: weblate_web/models.py:157
+#: weblate_web/models.py:191
 msgid "Conferences"
 msgstr "Konferenciák"
 
-#: weblate_web/models.py:158 weblate_web/templates/hosting.html:66
+#: weblate_web/models.py:192 weblate_web/templates/hosting.html:66
 msgid "Hosted Weblate"
 msgstr "Hosted Weblate"
 
-#: weblate_web/models.py:159
+#: weblate_web/models.py:193
 #: weblate_web/templates/weblate_web/post_detail.html:60
 msgid "Development"
 msgstr "Fejlesztés"
 
-#: weblate_web/models.py:160
+#: weblate_web/models.py:194
 #: weblate_web/templates/weblate_web/post_detail.html:62
 msgid "Localization"
 msgstr "Lokalizáció"
 
-#: weblate_web/models.py:215 weblate_web/models.py:223
+#: weblate_web/models.py:249 weblate_web/models.py:257
 msgid "Invalid image!"
 msgstr "Érvénytelen kép!"
 
-#: weblate_web/models.py:237
+#: weblate_web/models.py:271
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Nem támogatott képformátum: %s"
 
-#: weblate_web/models.py:243
+#: weblate_web/models.py:277
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Töltsön fel egy 570×260 képpont felbontású képet."
 
-#: weblate_web/models.py:724
+#: weblate_web/models.py:762
 msgid "Community supported"
 msgstr "Közösség által támogatott"
 
-#: weblate_web/models.py:725
+#: weblate_web/models.py:763
 msgid "Dedicated hosted service"
 msgstr "Dedikált kiszolgálón futó szolgáltatás"
 
-#: weblate_web/models.py:726
+#: weblate_web/models.py:764
 msgid "Hosted service"
 msgstr "Kiszolgálón biztosított szolgáltatás"
 
-#: weblate_web/models.py:727 weblate_web/templates/support.html:77
+#: weblate_web/models.py:765 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Alapszintű támogatás saját üzemeltetéshez"
 
-#: weblate_web/models.py:728 weblate_web/templates/support.html:90
+#: weblate_web/models.py:766 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Bővített támogatás saját üzemeltetéshez"
 
-#: weblate_web/models.py:729 weblate_web/templates/support.html:109
+#: weblate_web/models.py:767 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Prémium támogatás saját üzemeltetéshez"
 
-#: weblate_web/models.py:755 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:793 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "Kiszolgáló URL-je"
 
-#: weblate_web/models.py:769
+#: weblate_web/models.py:807
 msgid "Server description"
 msgstr "Kiszolgáló leírása"
 
-#: weblate_web/models.py:772
+#: weblate_web/models.py:810
 msgid "Server image"
 msgstr "Kiszolgáló képe"
 
-#: weblate_web/models.py:776
+#: weblate_web/models.py:814
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG vagy JPG kép 570 × 260 képpontos felbontással."
 
-#: weblate_web/models.py:1047 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1085 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Alapszintű támogatás"
 
-#: weblate_web/models.py:1048
+#: weblate_web/models.py:1086
 msgid "Never get held back by a problem."
 msgstr "Soha ne akadjon el egy probléma miatt."
 
-#: weblate_web/models.py:1049
+#: weblate_web/models.py:1087
 msgid "Set priority for all your questions and reported bugs."
 msgstr "Állítson be prioritást minden kérdéséhez és jelentett hibájához."
 
-#: weblate_web/models.py:1051 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1089 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Támogatás kérése"
 
-#: weblate_web/models.py:1063 weblate_web/models.py:1080
-#: weblate_web/models.py:1111 weblate_web/models.py:1635
+#: weblate_web/models.py:1101 weblate_web/models.py:1118
+#: weblate_web/models.py:1149 weblate_web/models.py:1722
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Frissítés a következőre: %s"
 
-#: weblate_web/models.py:1065
+#: weblate_web/models.py:1103
 msgid "Premium support"
 msgstr "Prémium támogatás"
 
-#: weblate_web/models.py:1066
+#: weblate_web/models.py:1104
 msgid "Don’t wait with your work on hold."
 msgstr "Ne várakozzon munka közben tétlenül."
 
-#: weblate_web/models.py:1067
+#: weblate_web/models.py:1105
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Ez garantálja, hogy legkésőbb a következő munkanapon választ kap."
 
-#: weblate_web/models.py:1069
+#: weblate_web/models.py:1107
 #, fuzzy
 #| msgid "Be Premium"
 msgid "Be premium"
 msgstr "Legyen Prémium előfizető"
 
-#: weblate_web/models.py:1082 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1120 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Bővített támogatás"
 
-#: weblate_web/models.py:1083
+#: weblate_web/models.py:1121
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "Ne elégedjen meg az Alapszinttel — válassza a gondtalan csomagot."
 
-#: weblate_web/models.py:1084
+#: weblate_web/models.py:1122
 msgid "We will manage upgrades for you."
 msgstr "A frissítéseket mi kezeljük Ön helyett."
 
-#: weblate_web/models.py:1086
+#: weblate_web/models.py:1124
 msgid "Stay updated"
 msgstr "Mindig naprakészen"
 
-#: weblate_web/models.py:1095 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1133 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Biztonsági mentési szolgáltatás"
 
-#: weblate_web/models.py:1096
+#: weblate_web/models.py:1134
 msgid "Easily put your backups in a safe place."
 msgstr "Mentéseit könnyedén biztonságos helyre helyezheti."
 
-#: weblate_web/models.py:1097
+#: weblate_web/models.py:1135
 msgid "Encrypted and automatic, always available."
 msgstr "Titkosított és automatikus – mindig elérhető."
 
-#: weblate_web/models.py:1099
+#: weblate_web/models.py:1137
 msgid "Back up daily"
 msgstr "Napi biztonsági mentés"
 
-#: weblate_web/models.py:1112
+#: weblate_web/models.py:1150
 msgid "Increase service limits to translate more content."
 msgstr "Növelje a szolgáltatási korlátokat, hogy több tartalmat fordíthasson."
 
-#: weblate_web/payments/backends.py:522
+#: weblate_web/models.py:1310
+msgid "Activation code has already been used."
+msgstr ""
+
+#: weblate_web/models.py:1312
+msgid "Activation code has expired."
+msgstr ""
+
+#: weblate_web/models.py:1835
+#, python-format
+msgid "Locked URL mismatch: %(url)s"
+msgstr ""
+
+#: weblate_web/payments/backends.py:527
+msgid "Invoice already paid"
+msgstr ""
+
+#: weblate_web/payments/backends.py:641
 #, fuzzy
 #| msgid "Single payment"
 msgid "Manual payment"
 msgstr "Egyszeri befizetés"
 
-#: weblate_web/payments/backends.py:539
+#: weblate_web/payments/backends.py:658
 msgid "IBAN bank transfer"
 msgstr "Nemzetközi banki átutalás (IBAN)"
 
-#: weblate_web/payments/backends.py:561
+#: weblate_web/payments/backends.py:680
 msgid "Reference"
 msgstr "Közlemény"
 
-#: weblate_web/payments/backends.py:682
+#: weblate_web/payments/backends.py:885
 msgid "Payment card"
 msgstr "Bankkártya"
 
-#: weblate_web/payments/backends.py:857
+#: weblate_web/payments/backends.py:1060
 msgid "Payment error"
 msgstr "Fizetési hiba"
 
-#: weblate_web/payments/backends.py:859
+#: weblate_web/payments/backends.py:1062
 msgid "Payment cancelled"
 msgstr "Fizetés megszakítva"
 
-#: weblate_web/payments/backends.py:874
+#: weblate_web/payments/backends.py:1077
 msgid "Crypto payment"
 msgstr "Kriptovaluta fizetés"
 
-#: weblate_web/payments/backends.py:884
+#: weblate_web/payments/backends.py:1087
 msgid "Google Pay"
 msgstr "Google Pay"
 
-#: weblate_web/payments/backends.py:892
+#: weblate_web/payments/backends.py:1095
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
@@ -1840,35 +2058,35 @@ msgstr "Itt fogja megkapni a nyugtát."
 msgid "E-mail address"
 msgstr "Adja meg az e-mail címét"
 
-#: weblate_web/payments/models.py:135
+#: weblate_web/payments/models.py:137
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: weblate_web/payments/models.py:136
+#: weblate_web/payments/models.py:138
 msgid "Valid"
 msgstr ""
 
-#: weblate_web/payments/models.py:137
+#: weblate_web/payments/models.py:139
 #, fuzzy
 #| msgid "Invalid image!"
 msgid "Invalid"
 msgstr "Érvénytelen kép!"
 
-#: weblate_web/payments/models.py:144
+#: weblate_web/payments/models.py:146
 msgid "European VAT ID"
 msgstr "Közösségi adószám"
 
-#: weblate_web/payments/models.py:146
+#: weblate_web/payments/models.py:148
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Töltse ki a közösségi adószámot (ha rendelkezik ilyennel). A mező üresen "
 "hagyható."
 
-#: weblate_web/payments/models.py:161
+#: weblate_web/payments/models.py:163
 msgid "Company identification number"
 msgstr "Cég azonosító száma"
 
-#: weblate_web/payments/models.py:163
+#: weblate_web/payments/models.py:165
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
@@ -1876,7 +2094,7 @@ msgstr ""
 "Kérjük, töltse ki a cégnyilvántartási számát, ha szeretné, hogy szerepeljen "
 "a számlán."
 
-#: weblate_web/payments/models.py:172
+#: weblate_web/payments/models.py:174
 #, fuzzy
 #| msgid ""
 #| "Please fill in your company registration number if it should appear on "
@@ -1886,111 +2104,127 @@ msgstr ""
 "Kérjük, töltse ki a cégnyilvántartási számát, ha szeretné, hogy szerepeljen "
 "a számlán."
 
-#: weblate_web/payments/models.py:184
+#: weblate_web/payments/models.py:186
 msgid "Additional address information"
 msgstr "További címadatok"
 
-#: weblate_web/payments/models.py:195
+#: weblate_web/payments/models.py:197
 msgid "Postcode"
 msgstr "Irányítószám"
 
-#: weblate_web/payments/models.py:205
+#: weblate_web/payments/models.py:207
 msgid "Billing e-mail"
 msgstr "Számlázási e-mail"
 
-#: weblate_web/payments/models.py:206
+#: weblate_web/payments/models.py:208
 msgid "Additional e-mail to receive billing notifications"
 msgstr "További e-mail a számlázási értesítésekhez"
 
-#: weblate_web/payments/models.py:213
+#: weblate_web/payments/models.py:215
 msgid "Person, team, or department to show as the invoice contact."
 msgstr ""
 
-#: weblate_web/payments/models.py:221
+#: weblate_web/payments/models.py:223
 msgid ""
 "Line-level accounting code for the customer's internal invoice processing, "
 "such as a cost center, project, internal order, or GL account. Separate from "
 "the customer reference or purchase order number."
 msgstr ""
 
-#: weblate_web/payments/models.py:229
+#: weblate_web/payments/models.py:231
 #, fuzzy
 #| msgid "Additional e-mail to receive billing notifications"
 msgid "Additional upcoming payment notification"
 msgstr "További e-mail a számlázási értesítésekhez"
 
-#: weblate_web/payments/models.py:232
+#: weblate_web/payments/models.py:234
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
 "notifications."
 msgstr ""
 
-#: weblate_web/payments/models.py:244
-msgid "Date and time when this customer needs attention."
-msgstr ""
-
-#: weblate_web/payments/models.py:250
-msgid "Short description of the next action."
-msgstr ""
-
-#: weblate_web/payments/models.py:382
+#: weblate_web/payments/models.py:371
 msgid "The country has to match your VAT code"
 msgstr "Az országnak meg kell egyeznie a közösségi adószám országkódjával"
 
-#: weblate_web/payments/models.py:390
+#: weblate_web/payments/models.py:379
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
 
-#: weblate_web/payments/models.py:413
+#: weblate_web/payments/models.py:402
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
 
-#: weblate_web/payments/models.py:640
+#: weblate_web/payments/models.py:627
+#, fuzzy
+#| msgid "Biannual"
+msgid "Manual"
+msgstr "Féléves"
+
+#: weblate_web/payments/models.py:629
+#, fuzzy
+#| msgid "Server URL"
+msgid "Locked site URL"
+msgstr "Kiszolgáló URL-je"
+
+#: weblate_web/payments/models.py:644
+msgid "Date and time when this customer needs attention."
+msgstr ""
+
+#: weblate_web/payments/models.py:650
+msgid "Short description of the next action."
+msgstr ""
+
+#: weblate_web/payments/models.py:656
+msgid "Follow-up type"
+msgstr ""
+
+#: weblate_web/payments/models.py:679
 msgid "Annual"
 msgstr "Éves"
 
-#: weblate_web/payments/models.py:641
+#: weblate_web/payments/models.py:680
 msgid "Biannual"
 msgstr "Féléves"
 
-#: weblate_web/payments/models.py:642 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:681 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "Negyedéves"
 
-#: weblate_web/payments/models.py:643 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:682 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "Havi"
 
-#: weblate_web/payments/models.py:644
+#: weblate_web/payments/models.py:683
 msgid "One-time"
 msgstr "Egyszeri"
 
-#: weblate_web/payments/models.py:685
+#: weblate_web/payments/models.py:724
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Új fizetés"
 
-#: weblate_web/payments/models.py:686
+#: weblate_web/payments/models.py:725
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Fizetésre vár"
 
-#: weblate_web/payments/models.py:687
+#: weblate_web/payments/models.py:726
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Fizetés elutasítva"
 
-#: weblate_web/payments/models.py:688
+#: weblate_web/payments/models.py:727
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Fizetés elfogadva"
 
-#: weblate_web/payments/models.py:689
+#: weblate_web/payments/models.py:728
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Fizetés feldolgozva"
@@ -2130,10 +2364,6 @@ msgstr "Fordítások átgondolt összevonása"
 #: weblate_web/templates/about.html:64
 msgid "Consistency checks"
 msgstr "Következetesség-ellenőrzések"
-
-#: weblate_web/templates/about.html:68
-msgid "Today"
-msgstr "Ma"
 
 #: weblate_web/templates/about.html:69
 msgid "Weblate grows and the future is open to new opportunities."
@@ -2324,28 +2554,28 @@ msgctxt "Keyword"
 msgid "translate"
 msgstr "fordítás"
 
-#: weblate_web/templates/base.html:102
+#: weblate_web/templates/base.html:101
 #: weblate_web/templates/snippets/main-menu.html:51
 msgid "Go Weblate!"
 msgstr "Irány a Weblate!"
 
-#: weblate_web/templates/base.html:153
+#: weblate_web/templates/base.html:152
 msgid "Service Status"
 msgstr "Szolgáltatás állapota"
 
-#: weblate_web/templates/base.html:156
+#: weblate_web/templates/base.html:155
 msgid "Licensed GNU GPLv3+"
 msgstr "GNU GPLv3+ szerint licencelt"
 
-#: weblate_web/templates/base.html:159
+#: weblate_web/templates/base.html:158
 msgid "Terms"
 msgstr "Felhasználási feltételek"
 
-#: weblate_web/templates/base.html:159
+#: weblate_web/templates/base.html:158
 msgid "Privacy"
 msgstr "Adatvédelem"
 
-#: weblate_web/templates/base.html:159
+#: weblate_web/templates/base.html:158
 #, python-format
 msgid "Design by %(author)s"
 msgstr "Tervezte: %(author)s"
@@ -2607,6 +2837,7 @@ msgstr "Fordítás állapota"
 #: weblate_web/templates/snippets/users.html:19
 #: weblate_web/templates/subscription/discovery-add.html:6
 #: weblate_web/templates/subscription/discovery-add.html:16
+#: weblate_web/templates/subscription/discovery-register.html:16
 #: weblate_web/templates/subscription/discovery.html:6
 msgid "Discover Weblate"
 msgstr "Weblate-felfedezés"
@@ -3927,7 +4158,7 @@ msgstr "Előállítva ekkor: %(timestamp)s."
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:699
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:755
 #, fuzzy
 #| msgid "Thank you for your donation."
 msgid "You are the heart of Weblate. Thank you for your donation."
@@ -4668,10 +4899,6 @@ msgstr "Előfizetés"
 msgid "Change plan"
 msgstr "Csomag módosítása"
 
-#: weblate_web/templates/snippets/service.html:134
-msgid "Billing"
-msgstr "Számlázás"
-
 #: weblate_web/templates/snippets/service.html:141
 #: weblate_web/templates/user.html:95
 msgid "Turn off renewal"
@@ -4781,8 +5008,35 @@ msgstr "Következő lépés"
 
 #: weblate_web/templates/subscription/discovery-add.html:42
 msgid ""
-"You will be redirected to the server in question to confirm its listing."
-msgstr "Átirányítjuk az érintett szerverre, ahol megerősítheti a listázást."
+"Activate the listing from your Weblate management page using the activation "
+"token shown after saving."
+msgstr ""
+
+#: weblate_web/templates/subscription/discovery-register.html:6
+#: weblate_web/templates/subscription/discovery-register.html:13
+#, fuzzy
+#| msgid "Customize Discover Weblate listing"
+msgid "Register Discover Weblate listing"
+msgstr "Weblate-felfedezés bejegyzés testreszabása"
+
+#: weblate_web/templates/subscription/discovery-register.html:18
+#, fuzzy
+#| msgid "Add server to Discover Weblate"
+msgid "Confirm the server you want to list on Discover Weblate."
+msgstr "Kiszolgáló hozzáadása a Weblate-felfedezéshez"
+
+#: weblate_web/templates/subscription/discovery-register.html:20
+msgid ""
+"After confirmation, you will return to that Weblate server to complete "
+"activation."
+msgstr ""
+
+#: weblate_web/templates/subscription/discovery-register.html:43
+#, fuzzy
+#| msgctxt "Sign up for the mailing list"
+#| msgid "Register"
+msgid "Register"
+msgstr "Regisztráció"
 
 #: weblate_web/templates/subscription/discovery.html:13
 msgid "Customize Discover Weblate listing"
@@ -5015,7 +5269,7 @@ msgid "Other topics"
 msgstr "Egyéb témák"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:916
+#: weblate_web/views.py:1017
 msgid "Milestones"
 msgstr "Mérföldkövek"
 
@@ -5136,39 +5390,39 @@ msgstr[1] "%d nap van hátra"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Hiba a(z) %(field)s paraméterben: %(error)s"
 
-#: weblate_web/views.py:389
+#: weblate_web/views.py:426
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Köszönjük az adományát, és élvezze a FOSDEM-et."
 
-#: weblate_web/views.py:416
+#: weblate_web/views.py:466
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
 
-#: weblate_web/views.py:423 weblate_web/views.py:457
+#: weblate_web/views.py:473 weblate_web/views.py:509
 msgid "Please provide your billing information to complete the payment."
 msgstr "Adja meg számlázási adatait a fizetés befejezéséhez."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:485
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Az adószáma már nem érvényes, frissítse azt."
 
-#: weblate_web/views.py:452
+#: weblate_web/views.py:504
 msgid "Please choose a payment method."
 msgstr "Válasszon fizetési módot."
 
-#: weblate_web/views.py:485
+#: weblate_web/views.py:537
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Nem sikerült végrehajtani a fizetést: %s"
 
-#: weblate_web/views.py:495
+#: weblate_web/views.py:547
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Nem sikerült befejezni a fizetést: %s"
 
-#: weblate_web/views.py:552
+#: weblate_web/views.py:604
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
@@ -5176,45 +5430,55 @@ msgstr ""
 "Kérjük, használja a már létrehozott megállapodást, új megállapodást 30 nap "
 "után tud létrehozni."
 
-#: weblate_web/views.py:559
+#: weblate_web/views.py:611
 msgid "New agreement created, you can download it below."
 msgstr "Új megállapodás létrehozva, lent letöltheti."
 
-#: weblate_web/views.py:611
+#: weblate_web/views.py:667
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 "Új cég, új bankszámlaszám! Figyeljen az aktuális számlára a fizetésnél."
 
-#: weblate_web/views.py:670
+#: weblate_web/views.py:726
 msgid "Payment not yet processed, please retry."
 msgstr "A fizetés még nem került feldolgozásra, próbálja meg újra."
 
-#: weblate_web/views.py:674
+#: weblate_web/views.py:730
 msgid "The payment was rejected: {}"
 msgstr "A fizetés el lett utasítva: {}"
 
-#: weblate_web/views.py:675
+#: weblate_web/views.py:731
 msgid "Unknown reason"
 msgstr "Ismeretlen ok"
 
-#: weblate_web/views.py:687
+#: weblate_web/views.py:743
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr ""
 
-#: weblate_web/views.py:692
+#: weblate_web/views.py:748
 msgid "Thank you for your subscription."
 msgstr "Köszönjük előfizetését."
 
-#: weblate_web/views.py:1022
+#: weblate_web/views.py:936
+msgid ""
+"Activate the listing from your Weblate management page using the activation "
+"token shown below."
+msgstr ""
+
+#: weblate_web/views.py:1123
 msgid "User not found!"
 msgstr "Felhasználó nem található!"
 
-#: weblate_web/views.py:1145
+#: weblate_web/views.py:1247
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#~ msgid ""
+#~ "You will be redirected to the server in question to confirm its listing."
+#~ msgstr "Átirányítjuk az érintett szerverre, ahol megerősítheti a listázást."
 
 #~ msgid "Back to"
 #~ msgstr "Vissza"
@@ -5633,10 +5897,6 @@ msgstr ""
 
 #~ msgid "Mailing lists"
 #~ msgstr "Levelezőlisták"
-
-#~ msgctxt "Sign up for the mailing list"
-#~ msgid "Register"
-#~ msgstr "Regisztráció"
 
 #, fuzzy, python-format
 #~| msgid ""

@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-06 00:59-0500\n"
+"POT-Creation-Date: 2026-07-13 00:08-0500\n"
 "PO-Revision-Date: 2026-07-11 15:01+0000\n"
 "Last-Translator: Ulrik <ulrik@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Danish <https://hosted.weblate.org/projects/weblate/website/"
@@ -38,13 +38,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.7.1.dev0\n"
 
-#: weblate_web/crm/forms.py:34 weblate_web/forms.py:59
+#: weblate_web/crm/forms.py:34 weblate_web/forms.py:68
 msgid "Please confirm that you want to issue a final invoice."
 msgstr "Bekræft venligst, at du ønsker at udstede en slutfaktura."
 
-#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:268
-#: weblate_web/crm/views.py:312 weblate_web/views.py:1066
-#: weblate_web/views.py:1077 weblate_web/views.py:1089
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
+#: weblate_web/crm/views.py:322 weblate_web/views.py:1168
+#: weblate_web/views.py:1179 weblate_web/views.py:1191
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "Dette abonnement kan ikke opgraderes til den valgte pakke."
 
@@ -71,21 +71,21 @@ msgstr "En kunde kan ikke flettes med sig selv."
 msgid "Renewal"
 msgstr "Fornyelse"
 
-#: weblate_web/crm/forms.py:99 weblate_web/models.py:1115
+#: weblate_web/crm/forms.py:99 weblate_web/models.py:1153
 msgid "Upgrade"
 msgstr "Opgradér"
 
 #: weblate_web/crm/forms.py:106
 #: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:13
-#: weblate_web/forms.py:35
+#: weblate_web/forms.py:44
 msgid "Quote"
 msgstr "Tilbud"
 
-#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:145
-#: weblate_web/crm/models.py:197
+#: weblate_web/crm/forms.py:107 weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:198
 #: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:23
-#: weblate_web/crm/templates/invoices/invoice_detail.html:27
-#: weblate_web/forms.py:36
+#: weblate_web/crm/templates/invoices/invoice_detail.html:33
+#: weblate_web/forms.py:45
 msgid "Invoice"
 msgstr "Faktura"
 
@@ -101,19 +101,47 @@ msgstr "Beskrivelse af refusionen"
 msgid "Optional note describing how the refund was done."
 msgstr "Valgfri bemærkning, der beskriver, hvordan refusionen blev gennemført."
 
-#: weblate_web/crm/forms.py:160 weblate_web/templates/snippets/service.html:119
+#: weblate_web/crm/forms.py:160
+#: weblate_web/crm/templates/invoices/invoice_detail.html:112
+#: weblate_web/crm/templates/invoices/invoice_detail.html:195
+#: weblate_web/crm/templates/invoices/invoice_detail.html:210
+#: weblate_web/invoices/models.py:374
+#, fuzzy
+#| msgid "Support status"
+msgid "Quote status"
+msgstr "Status for support"
+
+#: weblate_web/crm/forms.py:161
+msgid "Why this quote should no longer be followed up."
+msgstr ""
+
+#: weblate_web/crm/forms.py:171
+#: weblate_web/crm/templates/invoices/invoice_detail.html:119
+#: weblate_web/invoices/models.py:379
+#, fuzzy
+#| msgid "Support status"
+msgid "Quote status note"
+msgstr "Status for support"
+
+#: weblate_web/crm/forms.py:173
+msgid ""
+"Optional internal note, such as a rejection reason or accepted alternative "
+"invoice."
+msgstr ""
+
+#: weblate_web/crm/forms.py:183 weblate_web/templates/snippets/service.html:119
 msgid "Note"
 msgstr "Note"
 
-#: weblate_web/crm/forms.py:167 weblate_web/payments/models.py:243
+#: weblate_web/crm/forms.py:190 weblate_web/payments/models.py:643
 msgid "Follow-up date"
 msgstr "Opfølgningsdato"
 
-#: weblate_web/crm/forms.py:175 weblate_web/payments/models.py:249
+#: weblate_web/crm/forms.py:198 weblate_web/payments/models.py:649
 msgid "Follow-up note"
 msgstr "Opfølgningsnotat"
 
-#: weblate_web/crm/forms.py:203
+#: weblate_web/crm/forms.py:221
 #: weblate_web/crm/templates/payments/customer_list.html:19
 #: weblate_web/templates/about.html:182
 #: weblate_web/templates/snippets/customer-users.html:38
@@ -121,7 +149,7 @@ msgstr "Opfølgningsnotat"
 msgid "E-mail"
 msgstr "Email"
 
-#: weblate_web/crm/forms.py:204
+#: weblate_web/crm/forms.py:222
 msgid "Full name"
 msgstr "Fulde navn"
 
@@ -134,107 +162,107 @@ msgstr "Ugyldigt svar fra en hostet bruger"
 msgid "Hosted user synchronization is disabled."
 msgstr "Synkronisering af hostede brugere er deaktiveret."
 
-#: weblate_web/crm/models.py:73
+#: weblate_web/crm/models.py:74
 msgid "Yes"
 msgstr "Ja"
 
-#: weblate_web/crm/models.py:73
+#: weblate_web/crm/models.py:74
 msgid "No"
 msgstr "Nej"
 
-#: weblate_web/crm/models.py:93
+#: weblate_web/crm/models.py:94
 msgid "not set"
 msgstr "ikke angivet"
 
-#: weblate_web/crm/models.py:143
+#: weblate_web/crm/models.py:144
 msgid "Notification"
 msgstr "Notifikation"
 
-#: weblate_web/crm/models.py:144
+#: weblate_web/crm/models.py:145
 msgid "Recipients"
 msgstr "Modtagere"
 
-#: weblate_web/crm/models.py:146
+#: weblate_web/crm/models.py:147
 #: weblate_web/crm/templates/crm/interaction_detail.html:64
 msgid "Attachment"
 msgstr "Vedhæftning"
 
-#: weblate_web/crm/models.py:153
+#: weblate_web/crm/models.py:154
 msgid "Merged customer"
 msgstr "Flettet kunde"
 
-#: weblate_web/crm/models.py:157
+#: weblate_web/crm/models.py:158
 msgid "Merged customer ID"
 msgstr "Flettet kunde-ID"
 
-#: weblate_web/crm/models.py:161
+#: weblate_web/crm/models.py:162
 msgid "Merged customer email"
 msgstr "Flettet kunde-email"
 
-#: weblate_web/crm/models.py:166
+#: weblate_web/crm/models.py:167
 msgid "Merged customer end client"
 msgstr "Flettet kunde og slutklient"
 
-#: weblate_web/crm/models.py:175
+#: weblate_web/crm/models.py:176
 msgid "Filename"
 msgstr "Filnavn"
 
-#: weblate_web/crm/models.py:178
+#: weblate_web/crm/models.py:179
 msgid "Ticket ID"
 msgstr "Billet ID"
 
-#: weblate_web/crm/models.py:179
+#: weblate_web/crm/models.py:180
 msgid "Article ID"
 msgstr "Artikel-ID"
 
-#: weblate_web/crm/models.py:182
+#: weblate_web/crm/models.py:183
 msgid "Attachment ID"
 msgstr "Vedhæftet fil-ID"
 
-#: weblate_web/crm/models.py:189
+#: weblate_web/crm/models.py:190
 msgid "Automated"
 msgstr "Automatiseret"
 
-#: weblate_web/crm/models.py:190
+#: weblate_web/crm/models.py:191
 msgid "Error code"
 msgstr "Fejlkode"
 
-#: weblate_web/crm/models.py:191
+#: weblate_web/crm/models.py:192
 msgid "Error message"
 msgstr "Fejlbesked"
 
-#: weblate_web/crm/models.py:198
-#: weblate_web/crm/templates/invoices/invoice_detail.html:59
+#: weblate_web/crm/models.py:199
+#: weblate_web/crm/templates/invoices/invoice_detail.html:65
 #: weblate_web/crm/templates/invoices/invoice_list.html:20
-#: weblate_web/crm/templates/payments/customer_detail.html:342
-#: weblate_web/crm/templates/payments/customer_detail.html:383
-#: weblate_web/crm/templates/payments/customer_detail.html:472
+#: weblate_web/crm/templates/payments/customer_detail.html:367
+#: weblate_web/crm/templates/payments/customer_detail.html:408
+#: weblate_web/crm/templates/payments/customer_detail.html:497
 msgid "Amount"
 msgstr "Beløb"
 
-#: weblate_web/crm/models.py:201 weblate_web/templates/hosting.html:488
+#: weblate_web/crm/models.py:202 weblate_web/templates/hosting.html:488
 #: weblate_web/templates/support.html:173
 msgid "Payment"
 msgstr "Betaling"
 
-#: weblate_web/crm/models.py:207
+#: weblate_web/crm/models.py:208
 msgid "Confirmed by"
 msgstr "Bekræftet af"
 
-#: weblate_web/crm/models.py:208
+#: weblate_web/crm/models.py:209
 msgid "Confirmed at"
 msgstr "Bekræftet"
 
-#: weblate_web/crm/models.py:209
-#: weblate_web/crm/templates/invoices/invoice_detail.html:115
+#: weblate_web/crm/models.py:210
+#: weblate_web/crm/templates/invoices/invoice_detail.html:137
 #: weblate_web/crm/templates/invoices/invoice_list.html:21
-#: weblate_web/crm/templates/payments/customer_detail.html:384
-#: weblate_web/crm/templates/payments/customer_detail.html:473
+#: weblate_web/crm/templates/payments/customer_detail.html:409
+#: weblate_web/crm/templates/payments/customer_detail.html:498
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: weblate_web/crm/models.py:218
-#: weblate_web/crm/templates/payments/customer_detail.html:228
+#: weblate_web/crm/models.py:219
+#: weblate_web/crm/templates/payments/customer_detail.html:253
 #: weblate_web/crm/templates/weblate_web/service_detail.html:19
 #: weblate_web/crm/templates/weblate_web/service_list.html:26
 #: weblate_web/crm/templates/weblate_web/service_list.html:51
@@ -242,18 +270,18 @@ msgstr "Beskrivelse"
 msgid "Service"
 msgstr "Tjeneste"
 
-#: weblate_web/crm/models.py:225
+#: weblate_web/crm/models.py:226
 msgid "Previous maintenance window"
 msgstr "Forrige vedligeholdelsesperiode"
 
-#: weblate_web/crm/models.py:231
+#: weblate_web/crm/models.py:232
 #: weblate_web/crm/templates/weblate_web/service_detail.html:142
 #: weblate_web/migrations/0048_service_maintenance_window.py:38
-#: weblate_web/models.py:750
+#: weblate_web/models.py:788
 msgid "Maintenance window"
 msgstr "Vedligeholdelsesperiode"
 
-#: weblate_web/crm/models.py:235
+#: weblate_web/crm/models.py:236
 msgid "Service URL"
 msgstr "Tjeneste-URL"
 
@@ -261,31 +289,38 @@ msgstr "Tjeneste-URL"
 msgid "Internal Weblate customer relationship management."
 msgstr "Weblates interne system til styring af kundeforhold."
 
-#: weblate_web/crm/templates/crm/base.html:34
+#: weblate_web/crm/templates/crm/base.html:33
 msgid "Skip to main content"
 msgstr "Gå til indholdet"
 
-#: weblate_web/crm/templates/crm/base.html:46
+#: weblate_web/crm/templates/crm/base.html:45
 msgid "Toggle navigation"
 msgstr "Navigation til/fra"
 
-#: weblate_web/crm/templates/crm/base.html:47
+#: weblate_web/crm/templates/crm/base.html:46
 msgid "Menu"
 msgstr "Menu"
 
-#: weblate_web/crm/templates/crm/base.html:50
+#: weblate_web/crm/templates/crm/base.html:49
 msgid "CRM navigation"
 msgstr "CRM-navigation"
 
-#: weblate_web/crm/templates/crm/base.html:52
+#: weblate_web/crm/templates/crm/base.html:51
 msgid "Dashboard"
 msgstr "Kontrolpanel"
 
-#: weblate_web/crm/templates/crm/base.html:55
+#: weblate_web/crm/templates/crm/base.html:54
+#: weblate_web/crm/templates/crm/index.html:41
+#: weblate_web/crm/templates/crm/work_queue.html:6
+#: weblate_web/templates/about.html:68
+msgid "Today"
+msgstr "I dag"
+
+#: weblate_web/crm/templates/crm/base.html:58
 msgid "Customer records"
 msgstr "Kunderegistreringer"
 
-#: weblate_web/crm/templates/crm/base.html:56
+#: weblate_web/crm/templates/crm/base.html:59
 #: weblate_web/crm/templates/crm/index.html:11
 #: weblate_web/crm/templates/crm/index.html:17
 #: weblate_web/crm/templates/crm/index.html:18
@@ -295,51 +330,53 @@ msgstr "Kunderegistreringer"
 msgid "Customers"
 msgstr "Kunder"
 
-#: weblate_web/crm/templates/crm/base.html:60
-#: weblate_web/crm/templates/crm/index.html:130
+#: weblate_web/crm/templates/crm/base.html:63
+#: weblate_web/crm/templates/crm/index.html:110
 #: weblate_web/crm/templates/weblate_web/service_detail.html:7
 #: weblate_web/crm/templates/weblate_web/service_list.html:44
 #: weblate_web/crm/templates/weblate_web/service_list.html:72
+#: weblate_web/crm/workqueue.py:153
 msgid "Services"
 msgstr "Tjenester"
 
-#: weblate_web/crm/templates/crm/base.html:64
-#: weblate_web/crm/templates/crm/index.html:87
-#: weblate_web/crm/templates/crm/index.html:93
-#: weblate_web/crm/templates/crm/index.html:94
-#: weblate_web/crm/templates/invoices/invoice_detail.html:7
+#: weblate_web/crm/templates/crm/base.html:67
+#: weblate_web/crm/templates/crm/index.html:67
+#: weblate_web/crm/templates/crm/index.html:73
+#: weblate_web/crm/templates/crm/index.html:74
+#: weblate_web/crm/templates/invoices/invoice_detail.html:10
+#: weblate_web/crm/templates/invoices/invoice_detail.html:12
 #: weblate_web/crm/templates/payments/customer_detail.html:31
 msgid "Invoices"
 msgstr "Fakturaer"
 
-#: weblate_web/crm/templates/crm/base.html:68
-#: weblate_web/crm/templates/crm/index.html:190
-#: weblate_web/crm/templates/crm/index.html:191
+#: weblate_web/crm/templates/crm/base.html:71
+#: weblate_web/crm/templates/crm/index.html:170
+#: weblate_web/crm/templates/crm/index.html:171
 msgid "Income"
 msgstr "Indkomst"
 
-#: weblate_web/crm/templates/crm/base.html:73
+#: weblate_web/crm/templates/crm/base.html:76
 msgid "Website"
 msgstr "Hjemmeside"
 
-#: weblate_web/crm/templates/crm/base.html:74
+#: weblate_web/crm/templates/crm/base.html:77
 msgid "Admin"
 msgstr "Admin"
 
-#: weblate_web/crm/templates/crm/base.html:78
-#: weblate_web/templates/base.html:92
+#: weblate_web/crm/templates/crm/base.html:81
+#: weblate_web/templates/base.html:91
 msgid "Sign out"
 msgstr "Log ud"
 
-#: weblate_web/crm/templates/crm/base.html:87
+#: weblate_web/crm/templates/crm/base.html:90
 msgid "Breadcrumbs"
 msgstr "Brødkrummer"
 
-#: weblate_web/crm/templates/crm/base.html:88
+#: weblate_web/crm/templates/crm/base.html:91
 msgid "CRM"
 msgstr "CRM"
 
-#: weblate_web/crm/templates/crm/base.html:107
+#: weblate_web/crm/templates/crm/base.html:110
 msgid "Messages"
 msgstr "Beskeder"
 
@@ -423,7 +460,7 @@ msgstr "Beløb (EUR)"
 
 #: weblate_web/crm/templates/crm/income.html:127
 #: weblate_web/crm/templates/crm/income.html:186
-#: weblate_web/crm/templates/invoices/invoice_detail.html:118
+#: weblate_web/crm/templates/invoices/invoice_detail.html:140
 msgid "Total"
 msgstr "I alt"
 
@@ -445,14 +482,15 @@ msgstr "Tendens"
 
 #: weblate_web/crm/templates/crm/income.html:147
 #: weblate_web/crm/templates/invoices/invoice_list.html:23
-#: weblate_web/crm/templates/payments/customer_detail.html:165
-#: weblate_web/crm/templates/payments/customer_detail.html:234
-#: weblate_web/crm/templates/payments/customer_detail.html:300
-#: weblate_web/crm/templates/payments/customer_detail.html:343
-#: weblate_web/crm/templates/payments/customer_detail.html:386
-#: weblate_web/crm/templates/payments/customer_detail.html:423
-#: weblate_web/crm/templates/payments/customer_detail.html:474
-#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/crm/templates/payments/customer_detail.html:131
+#: weblate_web/crm/templates/payments/customer_detail.html:190
+#: weblate_web/crm/templates/payments/customer_detail.html:259
+#: weblate_web/crm/templates/payments/customer_detail.html:325
+#: weblate_web/crm/templates/payments/customer_detail.html:368
+#: weblate_web/crm/templates/payments/customer_detail.html:411
+#: weblate_web/crm/templates/payments/customer_detail.html:448
+#: weblate_web/crm/templates/payments/customer_detail.html:499
+#: weblate_web/crm/templates/payments/customer_list.html:28
 #: weblate_web/crm/templates/weblate_web/service_list.html:32
 #: weblate_web/crm/templates/weblate_web/service_list.html:60
 msgid "Actions"
@@ -471,9 +509,9 @@ msgid "All customer records and billing contacts."
 msgstr "Alle kunderegistreringer og faktureringskontakter."
 
 #: weblate_web/crm/templates/crm/index.html:23
-#: weblate_web/crm/templates/crm/index.html:99
-#: weblate_web/crm/templates/crm/index.html:112
-#: weblate_web/crm/templates/crm/index.html:142
+#: weblate_web/crm/templates/crm/index.html:79
+#: weblate_web/crm/templates/crm/index.html:92
+#: weblate_web/crm/templates/crm/index.html:122
 msgid "Add"
 msgstr "Tilføj"
 
@@ -486,109 +524,108 @@ msgstr "Aktive kunder"
 msgid "Customers with current services or payments."
 msgstr "Kunder med løbende tjenester eller betalinger."
 
-#: weblate_web/crm/templates/crm/index.html:41
-msgid "Follow-ups"
-msgstr "Opfølgninger"
+#: weblate_web/crm/templates/crm/index.html:43
+#: weblate_web/crm/templates/crm/work_queue.html:17
+#: weblate_web/crm/templates/crm/work_queue.html:25
+msgid "No work items"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:47
-#: weblate_web/crm/templates/crm/index.html:48
-msgid "All follow-ups"
-msgstr "Alle opfølgninger"
+#: weblate_web/crm/templates/crm/index.html:44
+#: weblate_web/crm/templates/crm/work_queue.html:27
+msgid "There is no CRM work needing attention right now."
+msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:49
-msgid "Customers with scheduled next actions."
-msgstr "Kunder med planlagte næste handlinger."
+#: weblate_web/crm/templates/crm/index.html:50
+#: weblate_web/crm/templates/crm/index.html:51
+msgid "Full work queue"
+msgstr ""
 
-#: weblate_web/crm/templates/crm/index.html:57
-#, python-format
-msgid "Due %(date)s"
-msgstr "Forfalder %(date)s"
+#: weblate_web/crm/templates/crm/index.html:54
+#, fuzzy, python-format
+#| msgid "%(count)s translation"
+#| msgid_plural "%(count)s translations"
+msgid "%(count)s more item needs attention."
+msgid_plural "%(count)s more items need attention."
+msgstr[0] "%(count)s oversættelse"
+msgstr[1] "%(count)s oversættelser"
 
-#: weblate_web/crm/templates/crm/index.html:65
-msgid "No due follow-ups"
-msgstr "Ingen opfølgning"
-
-#: weblate_web/crm/templates/crm/index.html:66
-msgid "No customer follow-up is due right now."
-msgstr "Der er ingen kundeopfølgning, der skal foretages lige nu."
+#: weblate_web/crm/templates/crm/index.html:56
+msgid "All suggested CRM work in one place."
+msgstr ""
 
 #: weblate_web/crm/templates/crm/index.html:75
-#, python-format
-msgid "Upcoming %(date)s"
-msgstr "Kommende %(date)s"
-
-#: weblate_web/crm/templates/crm/index.html:95
 msgid "Issued invoices and receipts."
 msgstr "Udstedte fakturaer og kvitteringer."
 
-#: weblate_web/crm/templates/crm/index.html:106
-#: weblate_web/crm/templates/crm/index.html:107
+#: weblate_web/crm/templates/crm/index.html:86
+#: weblate_web/crm/templates/crm/index.html:87
+#: weblate_web/crm/templates/invoices/invoice_detail.html:8
 msgid "Quotes"
 msgstr "Tilbud"
 
-#: weblate_web/crm/templates/crm/index.html:108
+#: weblate_web/crm/templates/crm/index.html:88
 msgid "Draft offers and renewal quotes."
 msgstr "Udkast til tilbud og fornyelsestilbud."
 
-#: weblate_web/crm/templates/crm/index.html:119
-#: weblate_web/crm/templates/crm/index.html:120
+#: weblate_web/crm/templates/crm/index.html:99
+#: weblate_web/crm/templates/crm/index.html:100
 msgid "Unpaid invoices"
 msgstr "Ubetalte fakturaer"
 
-#: weblate_web/crm/templates/crm/index.html:121
+#: weblate_web/crm/templates/crm/index.html:101
 msgid "Invoices that still need payment follow-up."
 msgstr "Fakturaer, hvor der stadig mangler opfølgning på betalingen."
 
-#: weblate_web/crm/templates/crm/index.html:136
-#: weblate_web/crm/templates/crm/index.html:137
+#: weblate_web/crm/templates/crm/index.html:116
+#: weblate_web/crm/templates/crm/index.html:117
 msgid "All services"
 msgstr "Alle ydelser"
 
-#: weblate_web/crm/templates/crm/index.html:138
+#: weblate_web/crm/templates/crm/index.html:118
 msgid "Hosted, dedicated, and support services."
 msgstr "Hosting-, dedikerede og supporttjenester."
 
-#: weblate_web/crm/templates/crm/index.html:149
-#: weblate_web/crm/templates/crm/index.html:150
+#: weblate_web/crm/templates/crm/index.html:129
+#: weblate_web/crm/templates/crm/index.html:130
 msgid "Expired services"
 msgstr "Udløbne tjenester"
 
-#: weblate_web/crm/templates/crm/index.html:151
+#: weblate_web/crm/templates/crm/index.html:131
 msgid "Renewable services past their expiration date."
 msgstr "Fornybare tjenester hvis udløbsdato er overskredet."
 
-#: weblate_web/crm/templates/crm/index.html:157
-#: weblate_web/crm/templates/crm/index.html:158
+#: weblate_web/crm/templates/crm/index.html:137
+#: weblate_web/crm/templates/crm/index.html:138
 msgid "Dedicated hosting services"
 msgstr "Dedikerede hosting-tjenester"
 
-#: weblate_web/crm/templates/crm/index.html:159
+#: weblate_web/crm/templates/crm/index.html:139
 msgid "Dedicated hosting subscriptions."
 msgstr "Abonnementer på dedikeret hosting."
 
-#: weblate_web/crm/templates/crm/index.html:165
-#: weblate_web/crm/templates/crm/index.html:166
+#: weblate_web/crm/templates/crm/index.html:145
+#: weblate_web/crm/templates/crm/index.html:146
 msgid "Extended support services"
 msgstr "Udvidede supporttjenester"
 
-#: weblate_web/crm/templates/crm/index.html:167
+#: weblate_web/crm/templates/crm/index.html:147
 msgid "Extended support subscriptions."
 msgstr "Abonnementer på udvidet support."
 
-#: weblate_web/crm/templates/crm/index.html:173
-#: weblate_web/crm/templates/crm/index.html:174
+#: weblate_web/crm/templates/crm/index.html:153
+#: weblate_web/crm/templates/crm/index.html:154
 msgid "Premium support services"
 msgstr "Førsteklasses supporttjenester"
 
-#: weblate_web/crm/templates/crm/index.html:175
+#: weblate_web/crm/templates/crm/index.html:155
 msgid "Premium support subscriptions."
 msgstr "Premium-supportabonnementer."
 
-#: weblate_web/crm/templates/crm/index.html:184
+#: weblate_web/crm/templates/crm/index.html:164
 msgid "Income tracking"
 msgstr "Indtægtsoversigt"
 
-#: weblate_web/crm/templates/crm/index.html:192
+#: weblate_web/crm/templates/crm/index.html:172
 msgid "Yearly and monthly income breakdowns."
 msgstr "Oversigt over indtægter på års- og månedsbasis."
 
@@ -597,7 +634,7 @@ msgid "Interaction"
 msgstr "Interaktion"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:18
-#: weblate_web/crm/templates/payments/customer_detail.html:418
+#: weblate_web/crm/templates/payments/customer_detail.html:443
 #: weblate_web/crm/templates/weblate_web/service_detail.html:275
 msgid "Timestamp"
 msgstr "Tidsstempel"
@@ -605,8 +642,8 @@ msgstr "Tidsstempel"
 #: weblate_web/crm/templates/crm/interaction_detail.html:24
 #: weblate_web/crm/templates/invoices/invoice_list.html:22
 #: weblate_web/crm/templates/payments/customer_detail.html:39
-#: weblate_web/crm/templates/payments/customer_detail.html:229
-#: weblate_web/crm/templates/payments/customer_detail.html:385
+#: weblate_web/crm/templates/payments/customer_detail.html:254
+#: weblate_web/crm/templates/payments/customer_detail.html:410
 #: weblate_web/crm/templates/payments/customer_list.html:17
 #: weblate_web/crm/templates/weblate_web/service_detail.html:23
 #: weblate_web/crm/templates/weblate_web/service_list.html:27
@@ -615,23 +652,24 @@ msgid "Customer"
 msgstr "Kunde"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:30
-#: weblate_web/crm/templates/payments/customer_detail.html:419
+#: weblate_web/crm/templates/payments/customer_detail.html:444
 msgid "User"
 msgstr "Bruger"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:36
-#: weblate_web/crm/templates/payments/customer_detail.html:420
+#: weblate_web/crm/templates/payments/customer_detail.html:445
 msgid "Origin"
 msgstr "Oprindelse"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:47
-#: weblate_web/crm/templates/payments/customer_list.html:47
+#: weblate_web/crm/templates/payments/customer_list.html:48
+#: weblate_web/crm/templates/payments/customer_list.html:62
 #: weblate_web/crm/templates/weblate_web/service_list_content.html:28
 msgid "Details"
 msgstr "Detaljer"
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:77
-#: weblate_web/crm/templates/payments/customer_detail.html:422
+#: weblate_web/crm/templates/payments/customer_detail.html:447
 msgid "Content"
 msgstr "Indhold"
 
@@ -684,14 +722,14 @@ msgid "Cancel"
 msgstr "Annullér"
 
 #: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:11
-#: weblate_web/crm/templates/invoices/invoice_detail.html:177
+#: weblate_web/crm/templates/invoices/invoice_detail.html:184
 msgid "Issue invoice"
 msgstr "Udsted faktura"
 
 #: weblate_web/crm/templates/crm/snippets/invoice_kind_field.html:4
 #: weblate_web/crm/templates/invoices/invoice_list.html:19
-#: weblate_web/crm/templates/payments/customer_detail.html:299
-#: weblate_web/crm/templates/payments/customer_detail.html:382
+#: weblate_web/crm/templates/payments/customer_detail.html:324
+#: weblate_web/crm/templates/payments/customer_detail.html:407
 msgid "Kind"
 msgstr "Type"
 
@@ -707,10 +745,14 @@ msgstr "Udarbejd en endelig faktura efter bekræftelsen."
 msgid "Clear"
 msgstr "Ryd"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:14
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:34
-#: weblate_web/crm/templates/payments/customer_detail.html:310
-#: weblate_web/crm/templates/payments/customer_detail.html:444
+#: weblate_web/crm/templates/crm/work_queue.html:18
+msgid "There is no CRM work in this section."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:20
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:29
+#: weblate_web/crm/templates/payments/customer_detail.html:335
+#: weblate_web/crm/templates/payments/customer_detail.html:469
 #: weblate_web/templates/hosting.html:289
 #: weblate_web/templates/payment/customer-agreement.html:35
 #: weblate_web/templates/payment/customer-agreement.html:56
@@ -720,101 +762,118 @@ msgstr "Ryd"
 msgid "Download"
 msgstr "Download"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:16
+#: weblate_web/crm/templates/invoices/invoice_detail.html:22
 msgid "Receipt"
 msgstr "Kvittering"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:21
+#: weblate_web/crm/templates/invoices/invoice_detail.html:27
 #: weblate_web/crm/templates/payments/customer_detail.html:17
 #: weblate_web/crm/templates/weblate_web/service_detail.html:13
 msgid "Edit in admin"
 msgstr "Redigér i admin"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:33
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:10
-msgid "Paid"
-msgstr "Betalt"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:35
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:13
-msgid "Unpaid"
-msgstr "Ikke betalt"
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:41
+#: weblate_web/crm/templates/invoices/invoice_detail.html:47
 #: weblate_web/crm/templates/invoices/invoice_list.html:17
-#: weblate_web/crm/templates/payments/customer_detail.html:380
+#: weblate_web/crm/templates/payments/customer_detail.html:405
 msgid "Number"
 msgstr "Nummer"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:47
+#: weblate_web/crm/templates/invoices/invoice_detail.html:53
 msgid "Issued"
 msgstr "Udstedt"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:53
+#: weblate_web/crm/templates/invoices/invoice_detail.html:59
 msgid "Due"
 msgstr "Betalingsdato"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:66
+#: weblate_web/crm/templates/invoices/invoice_detail.html:72
 msgid "Discount"
 msgstr "Rabat"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:74
+#: weblate_web/crm/templates/invoices/invoice_detail.html:80
 msgid "Generated from"
 msgstr "Genereret fra"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:82
+#: weblate_web/crm/templates/invoices/invoice_detail.html:88
 msgid "Followup as"
 msgstr "Opfølgning som"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:90
+#: weblate_web/crm/templates/invoices/invoice_detail.html:96
 msgid "Customer reference"
 msgstr "Kundereference"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:98
+#: weblate_web/crm/templates/invoices/invoice_detail.html:104
 msgid "Customer note"
 msgstr "Besked fra køber"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:108
+#: weblate_web/crm/templates/invoices/invoice_detail.html:130
 msgid "Invoice items"
 msgstr "Fakturerede varer"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:116
+#: weblate_web/crm/templates/invoices/invoice_detail.html:138
 msgid "Quantity"
 msgstr "Antal"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:117
+#: weblate_web/crm/templates/invoices/invoice_detail.html:139
 msgid "Price"
 msgstr "Pris"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:142
-#: weblate_web/crm/templates/invoices/invoice_detail.html:149
-msgid "Confirm refund done"
-msgstr "Bekræft, at refusionen er gennemført"
+#: weblate_web/crm/templates/invoices/invoice_detail.html:164
+#, fuzzy
+#| msgid "Interactions"
+msgid "Quote actions"
+msgstr "Interaktioner"
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:144
-msgid "Use this after the refund or chargeback has been completed."
-msgstr "Brug dette, når refusionen eller tilbageførslen er gennemført."
-
-#: weblate_web/crm/templates/invoices/invoice_detail.html:161
-#: weblate_web/crm/templates/invoices/invoice_detail.html:169
+#: weblate_web/crm/templates/invoices/invoice_detail.html:168
+#: weblate_web/crm/templates/invoices/invoice_detail.html:176
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
 msgstr ""
-"Dette genererer en endelig faktura, der svarer til dette tilbud. Brug »"
-"Download«, hvis du kun har brug for tilbuddet som PDF-fil."
+"Dette genererer en endelig faktura, der svarer til dette tilbud. Brug "
+"»Download«, hvis du kun har brug for tilbuddet som PDF-fil."
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:167
+#: weblate_web/crm/templates/invoices/invoice_detail.html:174
 msgid "Issue invoice from quote"
 msgstr "Udsted faktura på baggrund af tilbuddet"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:196
+msgid ""
+"Use this when a quote should no longer appear as suggested follow-up work."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:200
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Close quote"
+msgstr "Få et tilbud"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:213
+msgid "This quote is closed and hidden from stale quote suggestions."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:216
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Reopen quote"
+msgstr "Få et tilbud"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:230
+#: weblate_web/crm/templates/invoices/invoice_detail.html:237
+msgid "Confirm refund done"
+msgstr "Bekræft, at refusionen er gennemført"
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:232
+msgid "Use this after the refund or chargeback has been completed."
+msgstr "Brug dette, når refusionen eller tilbageførslen er gennemført."
 
 #: weblate_web/crm/templates/invoices/invoice_list.html:9
 msgid "Invoice list"
 msgstr "Fakturaliste"
 
 #: weblate_web/crm/templates/invoices/invoice_list.html:18
-#: weblate_web/crm/templates/payments/customer_detail.html:232
-#: weblate_web/crm/templates/payments/customer_detail.html:381
+#: weblate_web/crm/templates/payments/customer_detail.html:257
+#: weblate_web/crm/templates/payments/customer_detail.html:406
 #: weblate_web/crm/templates/weblate_web/service_detail.html:163
 #: weblate_web/crm/templates/weblate_web/service_list.html:30
 #: weblate_web/crm/templates/weblate_web/service_list.html:55
@@ -825,12 +884,8 @@ msgstr "Status"
 msgid "No invoices match the current filters."
 msgstr "Der er ingen fakturaer, der matcher de aktuelle filtre."
 
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:16
-msgid "Overdue"
-msgstr "Forfalden"
-
-#: weblate_web/crm/templates/invoices/invoice_list_content.html:31
-#: weblate_web/crm/templates/payments/customer_detail.html:441
+#: weblate_web/crm/templates/invoices/invoice_list_content.html:26
+#: weblate_web/crm/templates/payments/customer_detail.html:466
 msgid "View"
 msgstr "Se"
 
@@ -857,7 +912,7 @@ msgid "Payments"
 msgstr "Betalinger"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:43
-#: weblate_web/payments/models.py:170
+#: weblate_web/payments/models.py:172
 msgid "Name"
 msgstr "Navn"
 
@@ -866,7 +921,7 @@ msgid "Notification e-mails"
 msgstr "Notifikations-emails"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:56
-#: weblate_web/crm/templates/payments/customer_list.html:24
+#: weblate_web/crm/templates/payments/customer_list.html:25
 msgid "VAT"
 msgstr "Moms"
 
@@ -880,13 +935,13 @@ msgid "not validated"
 msgstr "ikke valideret"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:70
-#: weblate_web/payments/models.py:179
+#: weblate_web/payments/models.py:181
 msgid "Address"
 msgstr "Adresse"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:77
-#: weblate_web/crm/templates/payments/customer_list.html:26
-#: weblate_web/payments/models.py:199
+#: weblate_web/crm/templates/payments/customer_list.html:27
+#: weblate_web/payments/models.py:201
 msgid "Country"
 msgstr "Land"
 
@@ -896,12 +951,12 @@ msgid "End client"
 msgstr "Slutkunde"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:92
-#: weblate_web/payments/models.py:211
+#: weblate_web/payments/models.py:213
 msgid "Contact point"
 msgstr "Kontaktpunkt"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:100
-#: weblate_web/payments/models.py:219
+#: weblate_web/payments/models.py:221
 msgid "Accounting reference"
 msgstr "Regnskabshenvisning"
 
@@ -917,77 +972,94 @@ msgstr[0] "Yderligere notifikation %(days)s dag før forfaldsdato"
 msgstr[1] "Yderligere notifikation %(days)s dage før forfaldsdato"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:118
+#: weblate_web/crm/templates/payments/customer_detail.html:127
 #: weblate_web/crm/templates/payments/customer_list.html:21
 msgid "Follow-up"
 msgstr "Opfølgning"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:123
+#, fuzzy
+#| msgid "Clear follow-up"
+msgid "Customer follow-ups"
+msgstr "Ryd opfølgning"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:128
+#: weblate_web/crm/templates/payments/customer_list.html:22
+msgid "Type"
+msgstr ""
+
+#: weblate_web/crm/templates/payments/customer_detail.html:129
+#: weblate_web/crm/templates/payments/customer_list.html:23
+msgid "Next action"
+msgstr "Næste handling"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:138
 #, python-format
 msgid "Next follow-up: %(date)s"
 msgstr "Næste opfølgning: %(date)s"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:128
-msgid "No follow-up scheduled."
-msgstr "Der er ikke planlagt nogen opfølgning."
-
-#: weblate_web/crm/templates/payments/customer_detail.html:133
-msgid "Set follow-up"
-msgstr "Indstil opfølgning"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:152
-msgid "Save follow-up"
-msgstr "Gem opfølgning"
-
-#: weblate_web/crm/templates/payments/customer_detail.html:157
+#: weblate_web/crm/templates/payments/customer_detail.html:149
 msgid "Clear follow-up"
 msgstr "Ryd opfølgning"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:171
+#: weblate_web/crm/templates/payments/customer_detail.html:159
+msgid "No follow-up scheduled."
+msgstr "Der er ikke planlagt nogen opfølgning."
+
+#: weblate_web/crm/templates/payments/customer_detail.html:164
+msgid "Set follow-up"
+msgstr "Indstil opfølgning"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:183
+msgid "Save follow-up"
+msgstr "Gem opfølgning"
+
+#: weblate_web/crm/templates/payments/customer_detail.html:196
 msgid "Merge customer"
 msgstr "Flet kunde"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:179
+#: weblate_web/crm/templates/payments/customer_detail.html:204
 #: weblate_web/crm/templates/payments/customer_merge.html:12
 msgid "Review merge"
 msgstr "Gennemgang af fletning"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:186
+#: weblate_web/crm/templates/payments/customer_detail.html:211
 msgid "Add user to customer"
 msgstr "Tilføj bruger til kunde"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:193
+#: weblate_web/crm/templates/payments/customer_detail.html:218
 msgid "Add user"
 msgstr "Tilføj bruger"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:199
-#: weblate_web/crm/templates/payments/customer_detail.html:213
+#: weblate_web/crm/templates/payments/customer_detail.html:224
+#: weblate_web/crm/templates/payments/customer_detail.html:238
 msgid "Add note"
 msgstr "Tilføj note"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:220
+#: weblate_web/crm/templates/payments/customer_detail.html:245
 msgid "Customer services"
 msgstr "Kundeservice"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:230
+#: weblate_web/crm/templates/payments/customer_detail.html:255
 #: weblate_web/crm/templates/weblate_web/service_detail.html:29
 #: weblate_web/crm/templates/weblate_web/service_list.html:28
 #: weblate_web/crm/templates/weblate_web/service_list.html:53
 msgid "URL"
 msgstr "URL"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:231
+#: weblate_web/crm/templates/payments/customer_detail.html:256
 #: weblate_web/crm/templates/weblate_web/service_list.html:29
 #: weblate_web/crm/templates/weblate_web/service_list.html:54
 msgid "Version"
 msgstr "Version"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:233
+#: weblate_web/crm/templates/payments/customer_detail.html:258
 #: weblate_web/crm/templates/weblate_web/service_list.html:31
 #: weblate_web/crm/templates/weblate_web/service_list.html:59
 msgid "Packages"
 msgstr "Pakker"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:243
+#: weblate_web/crm/templates/payments/customer_detail.html:268
 msgid ""
 "This creates a final invoice for the new service. Use Quote if you only need "
 "an offer."
@@ -995,98 +1067,98 @@ msgstr ""
 "Dette opretter en endelig faktura for den nye ydelse. Brug »Tilbud«, hvis du "
 "kun har brug for et tilbud."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:249
+#: weblate_web/crm/templates/payments/customer_detail.html:274
 msgid "New service purchase"
 msgstr "Køb af ny tjeneste"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:281
+#: weblate_web/crm/templates/payments/customer_detail.html:306
 #: weblate_web/crm/templates/weblate_web/service_detail.html:205
 #: weblate_web/crm/templates/weblate_web/service_detail.html:232
 msgid "Create"
 msgstr "Opret"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:289
+#: weblate_web/crm/templates/payments/customer_detail.html:314
 msgid "Agreements"
 msgstr "Aftaler"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:294
+#: weblate_web/crm/templates/payments/customer_detail.html:319
 msgid "Signed agreements"
 msgstr "Underskrevne aftaler"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:298
+#: weblate_web/crm/templates/payments/customer_detail.html:323
 msgid "Signed"
 msgstr "Underskrevet"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:319
+#: weblate_web/crm/templates/payments/customer_detail.html:344
 msgid "No agreements recorded."
 msgstr "Der er ikke registreret nogen aftaler."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:325
+#: weblate_web/crm/templates/payments/customer_detail.html:350
 msgid "Add new agreement"
 msgstr "Tilføj ny aftale"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:331
+#: weblate_web/crm/templates/payments/customer_detail.html:356
 msgid "Donations"
 msgstr "Bidragsydere"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:336
+#: weblate_web/crm/templates/payments/customer_detail.html:361
 msgid "Donation history"
 msgstr "Donationshistorik"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:340
-#: weblate_web/crm/templates/payments/customer_detail.html:470
+#: weblate_web/crm/templates/payments/customer_detail.html:365
+#: weblate_web/crm/templates/payments/customer_detail.html:495
 msgid "Created"
 msgstr "Oprettet"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:341
+#: weblate_web/crm/templates/payments/customer_detail.html:366
 msgid "Reward"
 msgstr "Dusør"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:354
-#: weblate_web/crm/templates/payments/customer_detail.html:486
+#: weblate_web/crm/templates/payments/customer_detail.html:379
+#: weblate_web/crm/templates/payments/customer_detail.html:511
 #: weblate_web/templates/payment/customer-agreement.html:18
 #: weblate_web/templates/payment/payment.html:70
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "Redigér"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:363
+#: weblate_web/crm/templates/payments/customer_detail.html:388
 msgid "No donations recorded."
 msgstr "Der er ikke registreret nogen donationer."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:371
+#: weblate_web/crm/templates/payments/customer_detail.html:396
 msgid "Invoice history"
 msgstr "Fakturahistorik"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:395
+#: weblate_web/crm/templates/payments/customer_detail.html:420
 msgid "No invoices recorded."
 msgstr "Der er ikke registreret nogen fakturaer."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:402
+#: weblate_web/crm/templates/payments/customer_detail.html:427
 msgid "Issue new invoice"
 msgstr "Udsted ny faktura"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:410
+#: weblate_web/crm/templates/payments/customer_detail.html:435
 msgid "Interaction history"
 msgstr "Interaktionshistorik"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:421
+#: weblate_web/crm/templates/payments/customer_detail.html:446
 msgid "Summary"
 msgstr "Opsummering"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:454
+#: weblate_web/crm/templates/payments/customer_detail.html:479
 msgid "No interactions recorded."
 msgstr "Der er ikke registreret nogen interaktioner."
 
-#: weblate_web/crm/templates/payments/customer_detail.html:462
+#: weblate_web/crm/templates/payments/customer_detail.html:487
 msgid "Payment history"
 msgstr "Betalingshistorie"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:471
+#: weblate_web/crm/templates/payments/customer_detail.html:496
 msgid "State"
 msgstr "Tilstand"
 
-#: weblate_web/crm/templates/payments/customer_detail.html:495
+#: weblate_web/crm/templates/payments/customer_detail.html:520
 msgid "No payments recorded."
 msgstr "Der er ikke registreret nogen betalinger."
 
@@ -1094,16 +1166,12 @@ msgstr "Der er ikke registreret nogen betalinger."
 msgid "Customer list"
 msgstr "Kundeliste"
 
-#: weblate_web/crm/templates/payments/customer_list.html:22
-msgid "Next action"
-msgstr "Næste handling"
-
-#: weblate_web/crm/templates/payments/customer_list.html:25
-#: weblate_web/payments/models.py:190
+#: weblate_web/crm/templates/payments/customer_list.html:26
+#: weblate_web/payments/models.py:192
 msgid "City"
 msgstr "By"
 
-#: weblate_web/crm/templates/payments/customer_list.html:56
+#: weblate_web/crm/templates/payments/customer_list.html:72
 msgid "No customers match the current filters."
 msgstr "Der er ingen kunder, der matcher de aktuelle filtre."
 
@@ -1286,76 +1354,153 @@ msgstr "Vedligeholdelse"
 msgid "No services match the current filters."
 msgstr "Der er ingen tjenester, der matcher de aktuelle filtre."
 
-#: weblate_web/crm/views.py:719
+#: weblate_web/crm/views.py:850
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Det indtastede brugernavn svarer til en lokal bruger med en anden email-"
 "adresse."
 
-#: weblate_web/crm/views.py:733
+#: weblate_web/crm/views.py:864
 msgid "Hosted user was not linked."
 msgstr "Den hostede bruger var ikke tilknyttet."
 
-#: weblate_web/crm/views.py:736
+#: weblate_web/crm/views.py:867
 msgid "Hosted user is already linked to a different local user."
 msgstr "Den hostede bruger er allerede knyttet til en anden lokal bruger."
 
-#: weblate_web/crm/views.py:743
+#: weblate_web/crm/views.py:874
 msgid "Added customer user"
 msgstr "Kundebruger tilføjet"
 
-#: weblate_web/crm/views.py:745
+#: weblate_web/crm/views.py:876
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr "Tilføjede %(email)s til kundebrugerne. Hostet bruger var %(state)s."
 
-#: weblate_web/crm/views.py:749
+#: weblate_web/crm/views.py:880
 msgid "created"
 msgstr "oprettet"
 
-#: weblate_web/crm/views.py:751
+#: weblate_web/crm/views.py:882
 msgid "linked"
 msgstr "knyttet"
 
-#: weblate_web/crm/views.py:778
+#: weblate_web/crm/views.py:909
 msgid "Multiple local users use this e-mail address"
 msgstr "Flere lokale brugere benytter denne email-adresse"
 
-#: weblate_web/crm/views.py:806
+#: weblate_web/crm/views.py:937
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr "Det var ikke muligt at tilføje brugeren %(error)s"
 
-#: weblate_web/crm/views.py:813
+#: weblate_web/crm/views.py:944
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr "%(email)s er blevet tilføjet til kundebrugerne."
 
-#: weblate_web/crm/views.py:818
+#: weblate_web/crm/views.py:949
 #, python-format
 msgid "%(email)s is already a customer user."
 msgstr "%(email)s er allerede en bruger hos os."
 
-#: weblate_web/crm/views.py:863
+#: weblate_web/crm/views.py:983
 #, python-format
 msgid "Follow-up scheduled for %(date)s."
 msgstr "Opfølgning planlagt til %(date)s."
 
-#: weblate_web/crm/views.py:870
+#: weblate_web/crm/views.py:991
 msgid "Follow-up set"
 msgstr "Opfølgningssæt"
 
-#: weblate_web/crm/views.py:875
-msgid "Follow-up updated."
+#: weblate_web/crm/views.py:994
+#, fuzzy
+#| msgid "Follow-up updated."
+msgid "Follow-up added."
 msgstr "Opfølgningen er opdateret."
 
-#: weblate_web/crm/views.py:889
+#: weblate_web/crm/views.py:1005
 msgid "Follow-up cleared"
 msgstr "Opfølgning godkendt"
 
-#: weblate_web/crm/views.py:890 weblate_web/crm/views.py:894
+#: weblate_web/crm/views.py:1006 weblate_web/crm/views.py:1009
 msgid "Follow-up cleared."
 msgstr "Opfølgning godkendt."
+
+#: weblate_web/crm/workqueue.py:151
+msgid "Follow-ups"
+msgstr "Opfølgninger"
+
+#: weblate_web/crm/workqueue.py:152
+#: weblate_web/templates/snippets/service.html:134
+msgid "Billing"
+msgstr "Fakturering"
+
+#: weblate_web/crm/workqueue.py:171
+#, fuzzy
+#| msgid "No customer follow-up is due right now."
+msgid "Customer follow-up is due."
+msgstr "Der er ingen kundeopfølgning, der skal foretages lige nu."
+
+#: weblate_web/crm/workqueue.py:184
+#, fuzzy
+#| msgid "Set follow-up"
+msgid "Scheduled customer follow-up."
+msgstr "Indstil opfølgning"
+
+#: weblate_web/crm/workqueue.py:197
+#, fuzzy
+#| msgid "All follow-ups"
+msgid "Manual follow-up"
+msgstr "Alle opfølgninger"
+
+#: weblate_web/crm/workqueue.py:197
+#, fuzzy
+#| msgid "Set follow-up"
+msgid "Upcoming follow-up"
+msgstr "Indstil opfølgning"
+
+#: weblate_web/crm/workqueue.py:199 weblate_web/payments/models.py:628
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Duplicate payment"
+msgstr "Weblate-betaling"
+
+#: weblate_web/crm/workqueue.py:201
+#, fuzzy
+#| msgid "Link URL"
+msgid "Locked URL"
+msgstr "Link-URL"
+
+#: weblate_web/crm/workqueue.py:210
+#, fuzzy
+#| msgid "Unpaid invoices"
+msgid "Unpaid invoice"
+msgstr "Ubetalte fakturaer"
+
+#: weblate_web/crm/workqueue.py:211
+#, fuzzy, python-format
+#| msgid "Invoice items"
+msgid "Invoice %(number)s"
+msgstr "Fakturerede varer"
+
+#: weblate_web/crm/workqueue.py:228
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Stale quote"
+msgstr "Få et tilbud"
+
+#: weblate_web/crm/workqueue.py:229
+#, fuzzy, python-format
+#| msgid "Account number"
+msgid "Quote %(number)s"
+msgstr "Kontonummer"
+
+#: weblate_web/crm/workqueue.py:250
+#, fuzzy
+#| msgid "Expired services"
+msgid "Expired service"
+msgstr "Udløbne tjenester"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -1367,303 +1512,388 @@ msgstr ""
 "private projekter. Og Weblate selv! Elsker du fri software? Dine muligheder "
 "for at bidrage er ubegrænsede her!"
 
-#: weblate_web/forms.py:98
+#: weblate_web/forms.py:107
 msgid "Insufficient donation for selected reward!"
 msgstr "Utilstrækkelig donation til den valgte belønning!"
 
-#: weblate_web/invoices/models.py:210
+#: weblate_web/forms.py:197
+#, fuzzy
+#| msgid "Server URL"
+msgid "Invalid server URL."
+msgstr "Server-URL"
+
+#: weblate_web/forms.py:201
+msgid "Server URL must use HTTPS."
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
+#: weblate_web/invoices/models.py:287
+msgctxt "Quote status"
+msgid "Open"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
+#: weblate_web/invoices/models.py:288
+msgctxt "Quote status"
+msgid "Lost"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
+#: weblate_web/invoices/models.py:289
+msgctxt "Quote status"
+msgid "Superseded"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
+#: weblate_web/invoices/models.py:290
+msgctxt "Quote status"
+msgid "Accepted elsewhere"
+msgstr ""
+
+#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
+#: weblate_web/invoices/models.py:291
+msgctxt "Quote status"
+msgid "Archived"
+msgstr ""
+
+#: weblate_web/invoices/models.py:211
 msgid "IBAN"
 msgstr "IBAN"
 
-#: weblate_web/invoices/models.py:212 weblate_web/invoices/models.py:214
+#: weblate_web/invoices/models.py:213 weblate_web/invoices/models.py:215
 msgid "Account number"
 msgstr "Kontonummer"
 
-#: weblate_web/invoices/models.py:216
+#: weblate_web/invoices/models.py:217
 msgid "BIC/SWIFT"
 msgstr "BIC/SWIFT"
 
-#: weblate_web/invoices/models.py:218
+#: weblate_web/invoices/models.py:219
 msgid "Issuing bank"
 msgstr "Udstedende bank"
 
-#: weblate_web/invoices/models.py:220
+#: weblate_web/invoices/models.py:221
 msgid "Account holder"
 msgstr "Kontoindehaver"
 
-#: weblate_web/invoices/views.py:51
+#: weblate_web/invoices/models.py:375
+msgid "CRM status for quote follow-up."
+msgstr ""
+
+#: weblate_web/invoices/models.py:380
+#, fuzzy
+#| msgid "Optional note describing how the refund was done."
+msgid "Internal note explaining why the quote was closed."
+msgstr "Valgfri bemærkning, der beskriver, hvordan refusionen blev gennemført."
+
+#: weblate_web/invoices/models.py:599
+msgid "Converted"
+msgstr ""
+
+#: weblate_web/invoices/models.py:606
+msgid "Paid"
+msgstr "Betalt"
+
+#: weblate_web/invoices/models.py:609
+msgid "Unpaid"
+msgstr "Ikke betalt"
+
+#: weblate_web/invoices/models.py:610
+msgid "Overdue"
+msgstr "Forfalden"
+
+#: weblate_web/invoices/views.py:51 weblate_web/views.py:441
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "Denne faktura er allerede blevet betalt. Log venligst ind for at se "
 "detaljerne."
 
 #: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:613
+#: weblate_web/models.py:651
 msgctxt "Service kind"
 msgid "Service"
 msgstr "Tjeneste"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:614
+#: weblate_web/models.py:652
 msgctxt "Service kind"
 msgid "Donation"
 msgstr "Donation"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:784
+#: weblate_web/models.py:822
 msgid "Link text"
 msgstr "Link-tekst"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:787
+#: weblate_web/models.py:825
 msgid "Link URL"
 msgstr "Link-URL"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:790
+#: weblate_web/models.py:828
 msgid "Link image"
 msgstr "Link-billede"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:618
+#: weblate_web/models.py:656
 msgctxt "Package category"
 msgid "None"
 msgstr "Ingen"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:619
+#: weblate_web/models.py:657
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr "Dedikeret hosting"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:620
+#: weblate_web/models.py:658
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr "Delt hosting"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:621
+#: weblate_web/models.py:659
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr "Support til selvhosting"
 
 #: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:622
+#: weblate_web/models.py:660
 msgctxt "Package category"
 msgid "Donation"
 msgstr "Donation"
 
-#: weblate_web/models.py:131
+#: weblate_web/models.py:165
 msgid "No reward"
 msgstr "Ingen belønning"
 
-#: weblate_web/models.py:132 weblate_web/templates/donate.html:45
+#: weblate_web/models.py:166 weblate_web/templates/donate.html:45
 msgid "Name in the list of supporters"
 msgstr "Navn på listen over støtter"
 
-#: weblate_web/models.py:133 weblate_web/templates/donate.html:52
+#: weblate_web/models.py:167 weblate_web/templates/donate.html:52
 #: weblate_web/templates/donate/form.html:92
 msgid "Link in the list of supporters"
 msgstr "Link på listen over støtter"
 
-#: weblate_web/models.py:134 weblate_web/templates/donate.html:59
+#: weblate_web/models.py:168 weblate_web/templates/donate.html:59
 #: weblate_web/templates/donate/form.html:106
 msgid "Logo and link on the Weblate website"
 msgstr "Logo og link på Weblate-hjemmesiden"
 
-#: weblate_web/models.py:154
+#: weblate_web/models.py:188
 #: weblate_web/templates/weblate_web/post_detail.html:56
 msgid "Release"
 msgstr "Udgivelse"
 
-#: weblate_web/models.py:155 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/models.py:189 weblate_web/templates/snippets/main-menu.html:6
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Features"
 msgstr "Funktioner"
 
-#: weblate_web/models.py:156
+#: weblate_web/models.py:190
 msgid "Announcement"
 msgstr "Meddelelse"
 
-#: weblate_web/models.py:157
+#: weblate_web/models.py:191
 msgid "Conferences"
 msgstr "Konferencer"
 
-#: weblate_web/models.py:158 weblate_web/templates/hosting.html:66
+#: weblate_web/models.py:192 weblate_web/templates/hosting.html:66
 msgid "Hosted Weblate"
 msgstr "Hosted Weblate"
 
-#: weblate_web/models.py:159
+#: weblate_web/models.py:193
 #: weblate_web/templates/weblate_web/post_detail.html:60
 msgid "Development"
 msgstr "Udvikling"
 
-#: weblate_web/models.py:160
+#: weblate_web/models.py:194
 #: weblate_web/templates/weblate_web/post_detail.html:62
 msgid "Localization"
 msgstr "Lokalisering"
 
-#: weblate_web/models.py:215 weblate_web/models.py:223
+#: weblate_web/models.py:249 weblate_web/models.py:257
 msgid "Invalid image!"
 msgstr "Ugyldigt billede!"
 
-#: weblate_web/models.py:237
+#: weblate_web/models.py:271
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Ikke-understøttet billedtype: %s"
 
-#: weblate_web/models.py:243
+#: weblate_web/models.py:277
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Upload venligst et billede med en opløsning på 570 x 260 pixels."
 
-#: weblate_web/models.py:724
+#: weblate_web/models.py:762
 msgid "Community supported"
 msgstr "Støttet af fællesskabet"
 
-#: weblate_web/models.py:725
+#: weblate_web/models.py:763
 msgid "Dedicated hosted service"
 msgstr "Dedikeret hostet tjeneste"
 
-#: weblate_web/models.py:726
+#: weblate_web/models.py:764
 msgid "Hosted service"
 msgstr "Hostet tjeneste"
 
-#: weblate_web/models.py:727 weblate_web/templates/support.html:77
+#: weblate_web/models.py:765 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr "Basal support til selvhosting"
 
-#: weblate_web/models.py:728 weblate_web/templates/support.html:90
+#: weblate_web/models.py:766 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr "Udvidet support til selvhosting"
 
-#: weblate_web/models.py:729 weblate_web/templates/support.html:109
+#: weblate_web/models.py:767 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr "Premium support til selvhosting"
 
-#: weblate_web/models.py:755 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:793 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr "Server-URL"
 
-#: weblate_web/models.py:769
+#: weblate_web/models.py:807
 msgid "Server description"
 msgstr "Serverbeskrivelse"
 
-#: weblate_web/models.py:772
+#: weblate_web/models.py:810
 msgid "Server image"
 msgstr "Serverbillede"
 
-#: weblate_web/models.py:776
+#: weblate_web/models.py:814
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG- eller JPG-billede med en opløsning på 570 x 260 pixels."
 
-#: weblate_web/models.py:1047 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1085 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr "Basal support"
 
-#: weblate_web/models.py:1048
+#: weblate_web/models.py:1086
 msgid "Never get held back by a problem."
 msgstr "Bliv aldrig holdt tilbage af et problem."
 
-#: weblate_web/models.py:1049
+#: weblate_web/models.py:1087
 msgid "Set priority for all your questions and reported bugs."
 msgstr "Indstil prioritet for alle dine spørgsmål og fejlmeldinger."
 
-#: weblate_web/models.py:1051 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1089 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr "Få support"
 
-#: weblate_web/models.py:1063 weblate_web/models.py:1080
-#: weblate_web/models.py:1111 weblate_web/models.py:1635
+#: weblate_web/models.py:1101 weblate_web/models.py:1118
+#: weblate_web/models.py:1149 weblate_web/models.py:1722
 #, python-format
 msgid "Upgrade to %s"
 msgstr "Opgradér til %s"
 
-#: weblate_web/models.py:1065
+#: weblate_web/models.py:1103
 msgid "Premium support"
 msgstr "Premium-support"
 
-#: weblate_web/models.py:1066
+#: weblate_web/models.py:1104
 msgid "Don’t wait with your work on hold."
 msgstr "Lad ikke dit arbejde ligge på hylden."
 
-#: weblate_web/models.py:1067
+#: weblate_web/models.py:1105
 msgid "This guarantees you answers the NBD at the latest."
 msgstr "Dette garanterer, at du får svar senest næste arbejdsdag."
 
-#: weblate_web/models.py:1069
+#: weblate_web/models.py:1107
 msgid "Be premium"
 msgstr "Vær premium"
 
-#: weblate_web/models.py:1082 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1120 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr "Udvidet support"
 
-#: weblate_web/models.py:1083
+#: weblate_web/models.py:1121
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr "Lad dig ikke nøjes med det basale; få en bekymringsfri pakke."
 
-#: weblate_web/models.py:1084
+#: weblate_web/models.py:1122
 msgid "We will manage upgrades for you."
 msgstr "Vi håndterer opgraderinger for dig."
 
-#: weblate_web/models.py:1086
+#: weblate_web/models.py:1124
 msgid "Stay updated"
 msgstr "Hold dig opdateret"
 
-#: weblate_web/models.py:1095 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1133 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr "Sikkerhedskopieringstjeneste"
 
-#: weblate_web/models.py:1096
+#: weblate_web/models.py:1134
 msgid "Easily put your backups in a safe place."
 msgstr "Gem nemt dine sikkerhedskopier et sikkert sted."
 
-#: weblate_web/models.py:1097
+#: weblate_web/models.py:1135
 msgid "Encrypted and automatic, always available."
 msgstr "Krypteret og automatisk, altid tilgængelig."
 
-#: weblate_web/models.py:1099
+#: weblate_web/models.py:1137
 msgid "Back up daily"
 msgstr "Sikkerhedskopiér dagligt"
 
-#: weblate_web/models.py:1112
+#: weblate_web/models.py:1150
 msgid "Increase service limits to translate more content."
 msgstr "Øg tjenestegrænser for at oversætte mere indhold."
 
-#: weblate_web/payments/backends.py:522
+#: weblate_web/models.py:1310
+msgid "Activation code has already been used."
+msgstr ""
+
+#: weblate_web/models.py:1312
+msgid "Activation code has expired."
+msgstr ""
+
+#: weblate_web/models.py:1835
+#, python-format
+msgid "Locked URL mismatch: %(url)s"
+msgstr ""
+
+#: weblate_web/payments/backends.py:527
+#, fuzzy
+#| msgid "Invoice list"
+msgid "Invoice already paid"
+msgstr "Fakturaliste"
+
+#: weblate_web/payments/backends.py:641
 msgid "Manual payment"
 msgstr "Manuel betaling"
 
-#: weblate_web/payments/backends.py:539
+#: weblate_web/payments/backends.py:658
 msgid "IBAN bank transfer"
 msgstr "IBAN-bankoverførsel"
 
-#: weblate_web/payments/backends.py:561
+#: weblate_web/payments/backends.py:680
 msgid "Reference"
 msgstr "Reference"
 
-#: weblate_web/payments/backends.py:682
+#: weblate_web/payments/backends.py:885
 msgid "Payment card"
 msgstr "Betalingskort"
 
-#: weblate_web/payments/backends.py:857
+#: weblate_web/payments/backends.py:1060
 msgid "Payment error"
 msgstr "Betalingsfejl"
 
-#: weblate_web/payments/backends.py:859
+#: weblate_web/payments/backends.py:1062
 msgid "Payment cancelled"
 msgstr "Betaling annulleret"
 
-#: weblate_web/payments/backends.py:874
+#: weblate_web/payments/backends.py:1077
 msgid "Crypto payment"
 msgstr "Kryptobetaling"
 
-#: weblate_web/payments/backends.py:884
+#: weblate_web/payments/backends.py:1087
 msgid "Google Pay"
 msgstr "Google Pay"
 
-#: weblate_web/payments/backends.py:892
+#: weblate_web/payments/backends.py:1095
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
@@ -1675,33 +1905,33 @@ msgstr "Du modtager en kvittering her."
 msgid "E-mail address"
 msgstr "Email-adresse"
 
-#: weblate_web/payments/models.py:135
+#: weblate_web/payments/models.py:137
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: weblate_web/payments/models.py:136
+#: weblate_web/payments/models.py:138
 msgid "Valid"
 msgstr "Gyldig"
 
-#: weblate_web/payments/models.py:137
+#: weblate_web/payments/models.py:139
 msgid "Invalid"
 msgstr "Ugyldig"
 
-#: weblate_web/payments/models.py:144
+#: weblate_web/payments/models.py:146
 msgid "European VAT ID"
 msgstr "Europæisk momsnummer"
 
-#: weblate_web/payments/models.py:146
+#: weblate_web/payments/models.py:148
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr ""
 "Udfyld venligst momsnummer for EU. Lad det stå tomt, hvis det ikke er "
 "relevant."
 
-#: weblate_web/payments/models.py:161
+#: weblate_web/payments/models.py:163
 msgid "Company identification number"
 msgstr "Virksomhedsidentifikationsnummer"
 
-#: weblate_web/payments/models.py:163
+#: weblate_web/payments/models.py:165
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
@@ -1709,31 +1939,31 @@ msgstr ""
 "Udfyld venligst din virksomheds registreringsnummer, hvis det skal vises på "
 "fakturaen."
 
-#: weblate_web/payments/models.py:172
+#: weblate_web/payments/models.py:174
 msgid "Company or individual name as it should appear on the invoice."
 msgstr "Virksomhedens eller personens navn, som det skal fremgå af fakturaen."
 
-#: weblate_web/payments/models.py:184
+#: weblate_web/payments/models.py:186
 msgid "Additional address information"
 msgstr "Yderligere adresseoplysninger"
 
-#: weblate_web/payments/models.py:195
+#: weblate_web/payments/models.py:197
 msgid "Postcode"
 msgstr "Postnummer"
 
-#: weblate_web/payments/models.py:205
+#: weblate_web/payments/models.py:207
 msgid "Billing e-mail"
 msgstr "Faktura-email"
 
-#: weblate_web/payments/models.py:206
+#: weblate_web/payments/models.py:208
 msgid "Additional e-mail to receive billing notifications"
 msgstr "Ekstra email til modtagelse af faktureringsmeddelelser"
 
-#: weblate_web/payments/models.py:213
+#: weblate_web/payments/models.py:215
 msgid "Person, team, or department to show as the invoice contact."
 msgstr "Person, team eller afdeling, der skal angives som fakturakontakt."
 
-#: weblate_web/payments/models.py:221
+#: weblate_web/payments/models.py:223
 msgid ""
 "Line-level accounting code for the customer's internal invoice processing, "
 "such as a cost center, project, internal order, or GL account. Separate from "
@@ -1743,11 +1973,11 @@ msgstr ""
 "et omkostningscenter, et projekt, en intern ordre eller en hovedbogskonto. "
 "Skal holdes adskilt fra kundereferencen eller indkøbsordrenummeret."
 
-#: weblate_web/payments/models.py:229
+#: weblate_web/payments/models.py:231
 msgid "Additional upcoming payment notification"
 msgstr "Meddelelse om yderligere kommende betaling"
 
-#: weblate_web/payments/models.py:232
+#: weblate_web/payments/models.py:234
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
@@ -1757,73 +1987,91 @@ msgstr ""
 "den kommende betaling, fra 0 til {}. Indstil til 0 for kun at bruge "
 "standardpåmindelser."
 
-#: weblate_web/payments/models.py:244
-msgid "Date and time when this customer needs attention."
-msgstr "Dato og klokkeslæt, hvor denne kunde har brug for opmærksomhed."
-
-#: weblate_web/payments/models.py:250
-msgid "Short description of the next action."
-msgstr "Kort beskrivelse af den næste handling."
-
-#: weblate_web/payments/models.py:382
+#: weblate_web/payments/models.py:371
 msgid "The country has to match your VAT code"
 msgstr "Landet skal matche din momskode"
 
-#: weblate_web/payments/models.py:390
+#: weblate_web/payments/models.py:379
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr ""
 "Vælg en anden dag end standarddatoerne for betalingspåmindelser: 2 og 7."
 
-#: weblate_web/payments/models.py:413
+#: weblate_web/payments/models.py:402
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr ""
 "Vælg en anden dato end standarddatoen for den årlige betalingspåmindelse: 31."
 
-#: weblate_web/payments/models.py:640
+#: weblate_web/payments/models.py:627
+#, fuzzy
+#| msgid "Biannual"
+msgid "Manual"
+msgstr "Halvårligt"
+
+#: weblate_web/payments/models.py:629
+#, fuzzy
+#| msgid "Site URL"
+msgid "Locked site URL"
+msgstr "Websteds URL"
+
+#: weblate_web/payments/models.py:644
+msgid "Date and time when this customer needs attention."
+msgstr "Dato og klokkeslæt, hvor denne kunde har brug for opmærksomhed."
+
+#: weblate_web/payments/models.py:650
+msgid "Short description of the next action."
+msgstr "Kort beskrivelse af den næste handling."
+
+#: weblate_web/payments/models.py:656
+#, fuzzy
+#| msgid "Follow-up date"
+msgid "Follow-up type"
+msgstr "Opfølgningsdato"
+
+#: weblate_web/payments/models.py:679
 msgid "Annual"
 msgstr "Årligt"
 
-#: weblate_web/payments/models.py:641
+#: weblate_web/payments/models.py:680
 msgid "Biannual"
 msgstr "Halvårligt"
 
-#: weblate_web/payments/models.py:642 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:681 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "Kvartalsvis"
 
-#: weblate_web/payments/models.py:643 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:682 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "Månedligt"
 
-#: weblate_web/payments/models.py:644
+#: weblate_web/payments/models.py:683
 msgid "One-time"
 msgstr "Engangs"
 
-#: weblate_web/payments/models.py:685
+#: weblate_web/payments/models.py:724
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "Ny betaling"
 
-#: weblate_web/payments/models.py:686
+#: weblate_web/payments/models.py:725
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "Afventer betaling"
 
-#: weblate_web/payments/models.py:687
+#: weblate_web/payments/models.py:726
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "Betaling afvist"
 
-#: weblate_web/payments/models.py:688
+#: weblate_web/payments/models.py:727
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "Betaling accepteret"
 
-#: weblate_web/payments/models.py:689
+#: weblate_web/payments/models.py:728
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Betaling behandlet"
@@ -1961,10 +2209,6 @@ msgstr "Fornuftig fletning af oversættelser"
 #: weblate_web/templates/about.html:64
 msgid "Consistency checks"
 msgstr "Konsistenskontrol"
-
-#: weblate_web/templates/about.html:68
-msgid "Today"
-msgstr "I dag"
 
 #: weblate_web/templates/about.html:69
 msgid "Weblate grows and the future is open to new opportunities."
@@ -2155,28 +2399,28 @@ msgctxt "Keyword"
 msgid "translate"
 msgstr "oversæt"
 
-#: weblate_web/templates/base.html:102
+#: weblate_web/templates/base.html:101
 #: weblate_web/templates/snippets/main-menu.html:51
 msgid "Go Weblate!"
 msgstr "Gå til Weblate!"
 
-#: weblate_web/templates/base.html:153
+#: weblate_web/templates/base.html:152
 msgid "Service Status"
 msgstr "Driftstatus"
 
-#: weblate_web/templates/base.html:156
+#: weblate_web/templates/base.html:155
 msgid "Licensed GNU GPLv3+"
 msgstr "Licenseret GNU GPLv3+"
 
-#: weblate_web/templates/base.html:159
+#: weblate_web/templates/base.html:158
 msgid "Terms"
 msgstr "Vilkår"
 
-#: weblate_web/templates/base.html:159
+#: weblate_web/templates/base.html:158
 msgid "Privacy"
 msgstr "Privatliv"
 
-#: weblate_web/templates/base.html:159
+#: weblate_web/templates/base.html:158
 #, python-format
 msgid "Design by %(author)s"
 msgstr "Design af %(author)s"
@@ -2431,6 +2675,7 @@ msgstr "Oversættelsesstatus"
 #: weblate_web/templates/snippets/users.html:19
 #: weblate_web/templates/subscription/discovery-add.html:6
 #: weblate_web/templates/subscription/discovery-add.html:16
+#: weblate_web/templates/subscription/discovery-register.html:16
 #: weblate_web/templates/subscription/discovery.html:6
 msgid "Discover Weblate"
 msgstr "Opdag Weblate"
@@ -3726,7 +3971,7 @@ msgstr "Genereret %(timestamp)s."
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:699
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:755
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr "Du er hjertet i Weblate. Tak for dit bidrag."
 
@@ -4446,10 +4691,6 @@ msgstr "Abonnement"
 msgid "Change plan"
 msgstr "Skift plan"
 
-#: weblate_web/templates/snippets/service.html:134
-msgid "Billing"
-msgstr "Fakturering"
-
 #: weblate_web/templates/snippets/service.html:141
 #: weblate_web/templates/user.html:95
 msgid "Turn off renewal"
@@ -4557,10 +4798,35 @@ msgstr "Næste trin"
 
 #: weblate_web/templates/subscription/discovery-add.html:42
 msgid ""
-"You will be redirected to the server in question to confirm its listing."
+"Activate the listing from your Weblate management page using the activation "
+"token shown after saving."
 msgstr ""
-"Du bliver omdirigeret til den pågældende server for at bekræfte dens "
-"opførelse."
+
+#: weblate_web/templates/subscription/discovery-register.html:6
+#: weblate_web/templates/subscription/discovery-register.html:13
+#, fuzzy
+#| msgid "Customize Discover Weblate listing"
+msgid "Register Discover Weblate listing"
+msgstr "Tilpas Opdag Weblate-opførelse"
+
+#: weblate_web/templates/subscription/discovery-register.html:18
+#, fuzzy
+#| msgid "Add server to Discover Weblate"
+msgid "Confirm the server you want to list on Discover Weblate."
+msgstr "Føj server til Opdag Weblate"
+
+#: weblate_web/templates/subscription/discovery-register.html:20
+msgid ""
+"After confirmation, you will return to that Weblate server to complete "
+"activation."
+msgstr ""
+
+#: weblate_web/templates/subscription/discovery-register.html:43
+#, fuzzy
+#| msgctxt "Sign up for the mailing list"
+#| msgid "Register"
+msgid "Register"
+msgstr "Registrering"
 
 #: weblate_web/templates/subscription/discovery.html:13
 msgid "Customize Discover Weblate listing"
@@ -4787,7 +5053,7 @@ msgid "Other topics"
 msgstr "Andre emner"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:916
+#: weblate_web/views.py:1017
 msgid "Milestones"
 msgstr "Milepæle"
 
@@ -4908,11 +5174,11 @@ msgstr[1] "%d dage tilbage"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Fejl i parameter %(field)s: %(error)s"
 
-#: weblate_web/views.py:389
+#: weblate_web/views.py:426
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Tak for din donation og nyd FOSDEM."
 
-#: weblate_web/views.py:416
+#: weblate_web/views.py:466
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -4920,30 +5186,30 @@ msgstr ""
 "Angiv venligst dit navn for at gennemføre betalingen. Angiv eventuelle "
 "yderligere faktureringsoplysninger, hvis de skal fremgå af kvitteringen."
 
-#: weblate_web/views.py:423 weblate_web/views.py:457
+#: weblate_web/views.py:473 weblate_web/views.py:509
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 "Angiv venligst dine faktureringsoplysninger for at gennemføre betalingen."
 
-#: weblate_web/views.py:435
+#: weblate_web/views.py:485
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "Momsnummeret er ikke længere gyldigt. Opdatér det venligst."
 
-#: weblate_web/views.py:452
+#: weblate_web/views.py:504
 msgid "Please choose a payment method."
 msgstr "Vælg venligst en betalingsmetode."
 
-#: weblate_web/views.py:485
+#: weblate_web/views.py:537
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Kunne ikke udføre betaling: %s"
 
-#: weblate_web/views.py:495
+#: weblate_web/views.py:547
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Kunne ikke gennemføre betaling: %s"
 
-#: weblate_web/views.py:552
+#: weblate_web/views.py:604
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
@@ -4951,30 +5217,30 @@ msgstr ""
 "Benyt venligst den allerede genererede aftale. Du kan generere en ny efter "
 "30 dage."
 
-#: weblate_web/views.py:559
+#: weblate_web/views.py:611
 msgid "New agreement created, you can download it below."
 msgstr "Ny aftale oprettet. Du kan downloade den herunder."
 
-#: weblate_web/views.py:611
+#: weblate_web/views.py:667
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 "Ny virksomhed, nye bankinformationer! Betal med hensyn til den aktuelle "
 "faktura."
 
-#: weblate_web/views.py:670
+#: weblate_web/views.py:726
 msgid "Payment not yet processed, please retry."
 msgstr "Betaling endnu ikke behandlet. Prøv venligst igen."
 
-#: weblate_web/views.py:674
+#: weblate_web/views.py:730
 msgid "The payment was rejected: {}"
 msgstr "Betalingen blev afvist: {}"
 
-#: weblate_web/views.py:675
+#: weblate_web/views.py:731
 msgid "Unknown reason"
 msgstr "Ukendt årsag"
 
-#: weblate_web/views.py:687
+#: weblate_web/views.py:743
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
@@ -4982,17 +5248,43 @@ msgstr ""
 "Betalingen er gennemført, men abonnementet kunne ikke opdateres. Kontakt os "
 "venligst."
 
-#: weblate_web/views.py:692
+#: weblate_web/views.py:748
 msgid "Thank you for your subscription."
 msgstr "Tak for dit abonnement."
 
-#: weblate_web/views.py:1022
+#: weblate_web/views.py:936
+msgid ""
+"Activate the listing from your Weblate management page using the activation "
+"token shown below."
+msgstr ""
+
+#: weblate_web/views.py:1123
 msgid "User not found!"
 msgstr "Bruger ikke fundet!"
 
-#: weblate_web/views.py:1145
+#: weblate_web/views.py:1247
 msgid "Please confirm the upgrade from your account page."
 msgstr "Bekræft venligst opgraderingen fra din kontoside."
+
+#~ msgid "Customers with scheduled next actions."
+#~ msgstr "Kunder med planlagte næste handlinger."
+
+#, python-format
+#~ msgid "Due %(date)s"
+#~ msgstr "Forfalder %(date)s"
+
+#~ msgid "No due follow-ups"
+#~ msgstr "Ingen opfølgning"
+
+#, python-format
+#~ msgid "Upcoming %(date)s"
+#~ msgstr "Kommende %(date)s"
+
+#~ msgid ""
+#~ "You will be redirected to the server in question to confirm its listing."
+#~ msgstr ""
+#~ "Du bliver omdirigeret til den pågældende server for at bekræfte dens "
+#~ "opførelse."
 
 #~ msgid "Back to"
 #~ msgstr "Tilbage til"
@@ -5413,10 +5705,6 @@ msgstr "Bekræft venligst opgraderingen fra din kontoside."
 #~| msgid "Users and developers mailing list"
 #~ msgid "Users and developers"
 #~ msgstr "Postliste for brugere og udviklere"
-
-#~ msgctxt "Sign up for the mailing list"
-#~ msgid "Register"
-#~ msgstr "Registrering"
 
 #, fuzzy
 #~| msgid ""
