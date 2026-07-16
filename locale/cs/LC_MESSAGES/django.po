@@ -26,8 +26,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-07-13 00:08-0500\n"
-"PO-Revision-Date: 2026-07-14 15:01+0000\n"
-"Last-Translator: Adam Havránek <adamhavra@seznam.cz>\n"
+"PO-Revision-Date: 2026-07-17 00:18+0000\n"
+"Last-Translator: Fjuro <fjuro@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/"
 "cs/>\n"
 "Language: cs\n"
@@ -588,7 +588,7 @@ msgstr "Hostingové, dedikované a podpůrné služby."
 #: weblate_web/crm/templates/crm/index.html:129
 #: weblate_web/crm/templates/crm/index.html:130
 msgid "Expired services"
-msgstr "Služby, jejichž platnost vypršela"
+msgstr "Expirované služby"
 
 #: weblate_web/crm/templates/crm/index.html:131
 msgid "Renewable services past their expiration date."
@@ -1454,34 +1454,26 @@ msgid "Locked URL"
 msgstr "Zablokovaná URL adresa"
 
 #: weblate_web/crm/workqueue.py:210
-#, fuzzy
-#| msgid "Unpaid invoices"
 msgid "Unpaid invoice"
-msgstr "Neuhrazené faktury"
+msgstr "Neuhrazená faktura"
 
 #: weblate_web/crm/workqueue.py:211
-#, fuzzy, python-format
-#| msgid "Invoice items"
+#, python-format
 msgid "Invoice %(number)s"
-msgstr "Položky faktury"
+msgstr "Faktura %(number)s"
 
 #: weblate_web/crm/workqueue.py:228
-#, fuzzy
-#| msgid "Get a quote"
 msgid "Stale quote"
-msgstr "Získejte cenovou nabídku"
+msgstr "Zastaralá nabídka"
 
 #: weblate_web/crm/workqueue.py:229
-#, fuzzy, python-format
-#| msgid "Account number"
+#, python-format
 msgid "Quote %(number)s"
-msgstr "Číslo účtu"
+msgstr "Nabídka %(number)s"
 
 #: weblate_web/crm/workqueue.py:250
-#, fuzzy
-#| msgid "Expired services"
 msgid "Expired service"
-msgstr "Služby, jejichž platnost vypršela"
+msgstr "Expirovaná služba"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -1498,44 +1490,42 @@ msgid "Insufficient donation for selected reward!"
 msgstr "Výše daru je nedostatečná pro zvolenou odměnu!"
 
 #: weblate_web/forms.py:197
-#, fuzzy
-#| msgid "Server URL"
 msgid "Invalid server URL."
-msgstr "URL serveru"
+msgstr "Neplatná adresa URL serveru."
 
 #: weblate_web/forms.py:201
 msgid "Server URL must use HTTPS."
-msgstr ""
+msgstr "Adresa URL serveru musí používat HTTPS."
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
 #: weblate_web/invoices/models.py:287
 msgctxt "Quote status"
 msgid "Open"
-msgstr ""
+msgstr "Otevřená"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
 #: weblate_web/invoices/models.py:288
 msgctxt "Quote status"
 msgid "Lost"
-msgstr ""
+msgstr "Ztracená"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
 #: weblate_web/invoices/models.py:289
 msgctxt "Quote status"
 msgid "Superseded"
-msgstr ""
+msgstr "Nahrazená"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
 #: weblate_web/invoices/models.py:290
 msgctxt "Quote status"
 msgid "Accepted elsewhere"
-msgstr ""
+msgstr "Přijatá jinde"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
 #: weblate_web/invoices/models.py:291
 msgctxt "Quote status"
 msgid "Archived"
-msgstr ""
+msgstr "Archivovaná"
 
 #: weblate_web/invoices/models.py:211
 msgid "IBAN"
@@ -1559,17 +1549,15 @@ msgstr "Majitel účtu"
 
 #: weblate_web/invoices/models.py:375
 msgid "CRM status for quote follow-up."
-msgstr ""
+msgstr "Stav v systému CRM pro sledování nabídky."
 
 #: weblate_web/invoices/models.py:380
-#, fuzzy
-#| msgid "Optional note describing how the refund was done."
 msgid "Internal note explaining why the quote was closed."
-msgstr "Volitelná poznámka popisující, jak bylo provedeno vrácení peněz."
+msgstr "Interní poznámka vysvětlující, proč byla nabídka uzavřena."
 
 #: weblate_web/invoices/models.py:599
 msgid "Converted"
-msgstr ""
+msgstr "Převedená"
 
 #: weblate_web/invoices/models.py:606
 msgid "Paid"
@@ -1824,22 +1812,20 @@ msgstr "Zvýšit limity služby pro vice překladů obsahu."
 
 #: weblate_web/models.py:1310
 msgid "Activation code has already been used."
-msgstr ""
+msgstr "Aktivační kód již byl použit."
 
 #: weblate_web/models.py:1312
 msgid "Activation code has expired."
-msgstr ""
+msgstr "Aktivační kód vypršel."
 
 #: weblate_web/models.py:1835
 #, python-format
 msgid "Locked URL mismatch: %(url)s"
-msgstr ""
+msgstr "Neshoda uzamčené adresy URL: %(url)s"
 
 #: weblate_web/payments/backends.py:527
-#, fuzzy
-#| msgid "Invoice list"
 msgid "Invoice already paid"
-msgstr "Seznam faktur"
+msgstr "Faktura již byla zaplacena"
 
 #: weblate_web/payments/backends.py:641
 msgid "Manual payment"
@@ -1983,16 +1969,12 @@ msgid ""
 msgstr "Vyberte den různý od výchozího ročního oznámení: 31."
 
 #: weblate_web/payments/models.py:627
-#, fuzzy
-#| msgid "Biannual"
 msgid "Manual"
-msgstr "Pololetní"
+msgstr "Ruční"
 
 #: weblate_web/payments/models.py:629
-#, fuzzy
-#| msgid "Site URL"
 msgid "Locked site URL"
-msgstr "Adresa webu"
+msgstr "Zamknutá adresa URL webu"
 
 #: weblate_web/payments/models.py:644
 msgid "Date and time when this customer needs attention."
@@ -2003,10 +1985,8 @@ msgid "Short description of the next action."
 msgstr "Stručný popis dalšího kroku."
 
 #: weblate_web/payments/models.py:656
-#, fuzzy
-#| msgid "Follow-up date"
 msgid "Follow-up type"
-msgstr "Termín další kontroly"
+msgstr "Typ další kontroly"
 
 #: weblate_web/payments/models.py:679
 msgid "Annual"
@@ -4785,25 +4765,24 @@ msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown after saving."
 msgstr ""
+"Aktivujte záznam na stránce pro správu Weblate pomocí aktivačního tokenu, "
+"který se zobrazí po uložení."
 
 #: weblate_web/templates/subscription/discovery-register.html:6
 #: weblate_web/templates/subscription/discovery-register.html:13
-#, fuzzy
-#| msgid "Customize Discover Weblate listing"
 msgid "Register Discover Weblate listing"
-msgstr "Přizpůsobení výpisu Objevte Weblate"
+msgstr "Registrovat zobrazení na Objevte Weblate"
 
 #: weblate_web/templates/subscription/discovery-register.html:18
-#, fuzzy
-#| msgid "Add server to Discover Weblate"
 msgid "Confirm the server you want to list on Discover Weblate."
-msgstr "Přidejte server do Objevte Weblate"
+msgstr "Potvrďte server, který chcete zobrazit na Objevte Weblate."
 
 #: weblate_web/templates/subscription/discovery-register.html:20
 msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
 msgstr ""
+"Po potvrzení budete navráceni na daný server Weblate pro potvrzení aktivace."
 
 #: weblate_web/templates/subscription/discovery-register.html:43
 msgid "Register"
@@ -5239,6 +5218,8 @@ msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
+"Aktivujte zobrazení z vaší stránky pro správu Weblate pomocí aktivačního "
+"tokenu zobrazeného níže."
 
 #: weblate_web/views.py:1123
 msgid "User not found!"
