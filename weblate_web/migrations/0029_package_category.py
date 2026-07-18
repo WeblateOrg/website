@@ -16,7 +16,7 @@ def update_category(apps, schema_editor) -> None:
         elif package.name in {"basic", "extended", "premium", "backup"}:
             package.category = PackageCategory.PACKAGE_SUPPORT
         else:
-            print(f"Warning: no package category for {package.name}!")  # noqa: T201
+            print(f"Warning: no package category for {package.name}!")  # ruff:ignore[print]
         package.save(update_fields=["category"])
 
 

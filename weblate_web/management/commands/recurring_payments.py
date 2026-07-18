@@ -135,7 +135,7 @@ class Command(BaseCommand):
             service.create_backup()
 
     @staticmethod
-    def peform_payment(  # noqa: PLR0913
+    def peform_payment(  # ruff:ignore[too-many-arguments]
         payment,
         past_payments,
         *,

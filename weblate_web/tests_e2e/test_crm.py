@@ -58,7 +58,7 @@ pytestmark = [
 ]
 
 SCREENSHOT_DIR = Path("test-results")
-CRM_PASSWORD = "testpassword123"  # noqa: S105
+CRM_PASSWORD = "testpassword123"  # ruff:ignore[hardcoded-password-string]
 FIXED_TIMESTAMP = datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC)
 
 

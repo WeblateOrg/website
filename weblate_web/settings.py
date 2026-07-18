@@ -58,7 +58,7 @@ DATABASES = {
 # Configure CI database
 if (ci_database := os.environ.get("CI_DATABASE")) and ci_database != "sqlite":
     DATABASES["default"]["NAME"] = "weblate"
-    DATABASES["default"]["PASSWORD"] = "weblate"  # noqa: S105
+    DATABASES["default"]["PASSWORD"] = "weblate"  # ruff:ignore[hardcoded-password-string]
     DATABASES["default"]["HOST"] = "127.0.0.1"
     if ci_database == "mariadb":
         DATABASES["default"]["ENGINE"] = "django.db.backends.mysql"
@@ -185,7 +185,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = "secret key used for tests only"  # noqa: S105
+SECRET_KEY = "secret key used for tests only"  # ruff:ignore[hardcoded-password-string]
 
 # Templates settings
 TEMPLATES = [
@@ -489,4 +489,4 @@ LOCAL = Path(BASE_DIR) / "weblate_web" / "settings_local.py"
 if LOCAL.exists():
     local_settings = LOCAL.read_text()
     # pylint: disable-next=exec-used
-    exec(local_settings)  # noqa: S102
+    exec(local_settings)  # ruff:ignore[exec-builtin]

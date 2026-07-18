@@ -288,7 +288,7 @@ def create_user(
 
 
 @transaction.atomic
-def sync_saml_identity(  # noqa: PLR0913
+def sync_saml_identity(  # ruff:ignore[too-many-arguments]
     *,
     provider: str,
     external_id: str,
@@ -392,7 +392,7 @@ class HostedSaml2Backend(Saml2Backend):
     ) -> tuple[str, str | None]:
         return extract_user_identifier_params(session_info)
 
-    def get_or_create_user(  # noqa: PLR0913,PLR0917
+    def get_or_create_user(  # ruff:ignore[too-many-arguments, too-many-positional-arguments]
         self,
         user_lookup_key: str,
         user_lookup_value: Any,

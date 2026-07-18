@@ -123,7 +123,7 @@ class Command(BaseCommand):
             self.stdout.write(f"Updating zammad_id for {customer}: {zammad_id}")
             customer.save(update_fields=["zammad_id"])
 
-    def handle_organizations(self) -> None:  # noqa: PLR0915,C901
+    def handle_organizations(self) -> None:  # ruff:ignore[too-many-statements, complex-structure]
         # Fetch all active customers
         self.fetch_customers()
         # Fetch organizations all using pagination

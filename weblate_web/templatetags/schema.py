@@ -40,7 +40,7 @@ JSON_LD_ESCAPES = {
 
 @register.filter
 def json_ld(value: Any) -> SafeString:
-    return mark_safe(  # noqa: S308
+    return mark_safe(  # ruff:ignore[suspicious-mark-safe-usage]
         json.dumps(value, cls=DjangoJSONEncoder, separators=(",", ":")).translate(
             JSON_LD_ESCAPES
         )

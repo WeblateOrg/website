@@ -376,7 +376,7 @@ class Backend:
 
     @transaction.atomic
     def generate_invoice(self, *, proforma: bool = False) -> None:
-        from weblate_web.invoices.models import (  # noqa: PLC0415
+        from weblate_web.invoices.models import (  # ruff:ignore[import-outside-top-level]
             Currency,
             Invoice,
             InvoiceCategory,
@@ -486,7 +486,9 @@ class Backend:
         invoice: Invoice,
         record: DuplicatePaymentRecord,
     ) -> bool:
-        from weblate_web.crm.models import Interaction  # noqa: PLC0415
+        from weblate_web.crm.models import (
+            Interaction,
+        )
 
         paid_payment = record.paid_payment
         if paid_payment is None:
@@ -776,7 +778,10 @@ class FioBank(Backend):
     @classmethod
     @method_decorator(sensitive_variables("tokens", "token"))
     def fetch_payments(cls, from_date: str | None = None) -> None:
-        from weblate_web.invoices.models import Invoice, InvoiceKind  # noqa: PLC0415
+        from weblate_web.invoices.models import (  # ruff:ignore[import-outside-top-level]
+            Invoice,
+            InvoiceKind,
+        )
 
         tokens: list[str]
         if isinstance(settings.FIO_TOKEN, str):

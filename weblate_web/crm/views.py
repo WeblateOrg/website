@@ -1158,7 +1158,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return f"Income Tracking - {year}/{month:02d}"
         return f"Income Tracking - {year}"
 
-    def generate_svg_pie_chart(self, data: dict[InvoiceCategory, Decimal]) -> str:  # noqa: PLR0914
+    def generate_svg_pie_chart(self, data: dict[InvoiceCategory, Decimal]) -> str:  # ruff:ignore[too-many-locals]
         """Generate a simple SVG pie chart for category distribution with legend."""
         if not data or sum(data.values()) == 0:
             return ""
@@ -1278,7 +1278,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         )
         svg_parts.append("</text>")
 
-    def generate_svg_stacked_bar_chart(  # noqa: PLR0914
+    def generate_svg_stacked_bar_chart(  # ruff:ignore[too-many-locals]
         self,
         monthly_data: dict[str, Decimal],
         period_category_data: dict[str, dict[InvoiceCategory, Decimal]],

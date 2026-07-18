@@ -1595,7 +1595,7 @@ class Subscription(models.Model):
         )
 
     @classmethod
-    def _create_invoice(  # noqa: PLR0913
+    def _create_invoice(  # ruff:ignore[too-many-arguments]
         cls,
         *,
         kind: InvoiceKind,
@@ -1635,7 +1635,7 @@ class Subscription(models.Model):
         return invoice
 
     @classmethod
-    def new_subscription_invoice(  # noqa: PLR0913
+    def new_subscription_invoice(  # ruff:ignore[too-many-arguments]
         cls,
         *,
         kind: InvoiceKind,

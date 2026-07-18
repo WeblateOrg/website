@@ -44,7 +44,7 @@ def add_site_url(content):
             continue
         if url.startswith("/"):
             link.set("src", f"https://weblate.org{url}")
-    return mark_safe(  # noqa: S308
+    return mark_safe(  # ruff:ignore[suspicious-mark-safe-usage]
         etree.tostring(
             tree.getroot(), pretty_print=True, method="html", encoding="unicode"
         )

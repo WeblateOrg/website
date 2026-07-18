@@ -346,7 +346,7 @@ class BackendTest(BackendBaseTestCase):
         invoice.generate_files()
         return invoice
 
-    def mock_fio_payment(  # noqa: PLR0913
+    def mock_fio_payment(  # ruff:ignore[too-many-arguments]
         self,
         invoice: Invoice,
         payment_message: str = "",
@@ -457,7 +457,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_proforma(self) -> None:
         mock_vies()
@@ -497,7 +497,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank(self, format_string="{}") -> None:
         mock_vies()
@@ -545,7 +545,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_vs(self) -> None:
         # Czech bank notation
@@ -553,7 +553,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_in_text(self) -> None:
         # Czech bank notation
@@ -561,7 +561,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_url(self) -> None:
         invoice = self.create_invoice()
@@ -604,7 +604,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank_ignores_other_draft_backends(self) -> None:
         invoice = self.create_invoice()
@@ -633,7 +633,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank_reuses_matching_draft_backend(self) -> None:
         invoice = self.create_invoice()
@@ -665,7 +665,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     def test_late_card_completion_after_bank_payment_records_duplicate(self) -> None:
@@ -712,7 +712,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     def test_late_card_failure_after_bank_payment_skips_failed_mail(self) -> None:
@@ -759,7 +759,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     def test_late_pending_card_after_bank_payment_hides_payment_link(self) -> None:
@@ -798,7 +798,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank_defers_duplicate_when_transfer_pays_other_invoice(
         self,
@@ -828,7 +828,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank_records_duplicate_payment(self) -> None:
         invoice = self.create_invoice()
@@ -892,7 +892,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank_skips_duplicate_with_wrong_amount(self) -> None:
         invoice = self.create_invoice()
@@ -914,7 +914,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank_skips_duplicate_with_wrong_currency(self) -> None:
         invoice = self.create_invoice()
@@ -936,7 +936,7 @@ class BackendTest(BackendBaseTestCase):
 
     @responses.activate
     @override_settings(
-        FIO_TOKEN="test-token",  # noqa: S106
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
     def test_invoice_bank_records_fallback_duplicate_from_different_account(
         self,
