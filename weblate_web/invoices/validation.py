@@ -164,7 +164,7 @@ class EN16931Validator:
         parsed = False
         for fmt in formats:
             try:
-                datetime.strptime(date_str, fmt)  # noqa: DTZ007
+                datetime.strptime(date_str, fmt)  # ruff:ignore[call-datetime-strptime-without-zone]
                 parsed = True
                 break
             except ValueError:

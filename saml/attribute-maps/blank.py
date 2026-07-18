@@ -1,4 +1,4 @@
-# noqa: INP001
+# ruff:ignore[implicit-namespace-package]
 
 MAP = {
     "identifier": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",

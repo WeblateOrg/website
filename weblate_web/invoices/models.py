@@ -25,7 +25,7 @@ from decimal import Decimal
 from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Literal, cast
-from xml.etree import ElementTree  # noqa: S405
+from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
 
 import qrcode
 import qrcode.image.svg
@@ -160,7 +160,7 @@ InfoType = Literal["number", "short_number", "iban", "bic", "bank", "holder"]
 
 
 class BankAccountInfo:
-    def __init__(  # noqa: PLR0913
+    def __init__(  # ruff:ignore[too-many-arguments]
         self,
         *,
         number: str,
@@ -330,7 +330,7 @@ class InvoiceQuerySet(models.QuerySet["Invoice", "Invoice"]):
         return self.order_by("-issue_date", "-number")
 
 
-class Invoice(models.Model):  # noqa: PLR0904
+class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sequence = models.IntegerField(editable=False)
     number = models.GeneratedField(
@@ -709,7 +709,7 @@ class Invoice(models.Model):  # noqa: PLR0904
             copyfile(self.path, output_dir / self.filename)
             copyfile(self.xml_path, output_dir / self.get_filename("xml"))
 
-    def get_money_s3_xml_tree(self, invoices: etree._Element) -> None:  # noqa: PLR0915,C901
+    def get_money_s3_xml_tree(self, invoices: etree._Element) -> None:  # ruff:ignore[too-many-statements, complex-structure]
         """Create XML tree for Money S3 invoice XML."""
 
         def add_element(root, name: str, text: str | Decimal | int | None = None):
@@ -1079,7 +1079,7 @@ class Invoice(models.Model):  # noqa: PLR0904
             attachments=attachments,
         )
 
-    def duplicate(  # noqa: PLR0913
+    def duplicate(  # ruff:ignore[too-many-arguments]
         self,
         *,
         kind: InvoiceKind,
@@ -1166,7 +1166,8 @@ class Invoice(models.Model):  # noqa: PLR0904
         return None
 
     def get_upcoming_payment_url(self) -> str | None:
-        from weblate_web.payments.models import Payment  # noqa: PLC0415
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.payments.models import Payment
 
         payment: Payment | None = None
         if self.kind == InvoiceKind.PROFORMA:
@@ -1223,7 +1224,7 @@ EUR{self.total_amount}
         else:
             return ""
 
-        return mark_safe(  # noqa: S308
+        return mark_safe(  # ruff:ignore[suspicious-mark-safe-usage]
             qrcode.make(data, image_factory=qrcode.image.svg.SvgPathImage).to_string(
                 encoding="unicode"
             )
@@ -1282,7 +1283,8 @@ class InvoiceItem(models.Model):
         using=None,
         update_fields=None,
     ) -> None:
-        from weblate_web.models import get_period_delta  # noqa: PLC0415
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.models import get_period_delta
 
         extra_fields: list[str] = []
 

@@ -37,7 +37,7 @@ def mock_external_apis():
     original_secret_default = secret_field.default
     issue_date_field = Invoice._meta.get_field("issue_date")  # pylint: disable=protected-access
     original_issue_date_default = issue_date_field.default
-    fixed_secret = "e2e-fixed-service-secret-token-0123456789abcdef0123456789abcd"  # noqa: S105
+    fixed_secret = "e2e-fixed-service-secret-token-0123456789abcdef0123456789abcd"  # ruff:ignore[hardcoded-password-string]
     fixed_issue_date = date(2026, 1, 15)
     fixed_now = datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC)
     secret_field.default = fixed_secret
@@ -97,7 +97,7 @@ def authenticated_user(db):
     user = User.objects.create_user(
         username="testuser",
         email="test@example.com",
-        password="testpassword123",  # noqa: S106
+        password="testpassword123",  # ruff:ignore[hardcoded-password-func-arg]
     )
     # Make user staff so they can use admin login for E2E tests
     user.is_staff = True

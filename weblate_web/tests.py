@@ -12,7 +12,7 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
 from uuid import uuid4
-from xml.etree import ElementTree  # noqa: S405
+from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
 from zlib import crc32
 
 import responses
@@ -1001,7 +1001,7 @@ class ViewTestCase(PostTestCase):
         self.assertContains(response, "<sitemapindex")
 
         # Parse it
-        tree = ElementTree.fromstring(response.content)  # noqa: S314
+        tree = ElementTree.fromstring(response.content)  # ruff:ignore[suspicious-xml-element-tree-usage]
         sitemaps = tree.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}sitemap")
         for sitemap in sitemaps:
             location = sitemap.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
@@ -1011,7 +1011,7 @@ class ViewTestCase(PostTestCase):
             )
             self.assertContains(response, "<urlset")
             # Try if it's a valid XML
-            ElementTree.fromstring(response.content)  # noqa: S314
+            ElementTree.fromstring(response.content)  # ruff:ignore[suspicious-xml-element-tree-usage]
 
 
 class UtilTestCase(TestCase):
@@ -1371,7 +1371,7 @@ class DonationMigration0049Test(TransactionTestCase):
         migrate_to_current_payments_head(self.executor)
         super().tearDown()
 
-    def test_donation_rewards_are_migrated_to_subscription_packages(  # noqa: PLR0914
+    def test_donation_rewards_are_migrated_to_subscription_packages(  # ruff:ignore[too-many-locals]
         self,
     ) -> None:
         donation_model = self.old_apps.get_model("weblate_web", "Donation")
@@ -2255,7 +2255,7 @@ class PaymentTest(FakturaceTestCase):
 
     @override_settings(**THEPAY2_MOCK_SETTINGS, **SIGNATURE_MOCK_SETTINGS)
     @responses.activate
-    def test_service_workflow_card(self) -> None:  # noqa: PLR0915
+    def test_service_workflow_card(self) -> None:  # ruff:ignore[too-many-statements]
         self.login()
         thepay_mock_create_payment()
         Package.objects.create(name="community", verbose="Community support", price=0)
@@ -2422,7 +2422,7 @@ class PaymentTest(FakturaceTestCase):
 
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
-    def test_donation_workflow_card(self, reward=0) -> None:  # noqa: PLR0915
+    def test_donation_workflow_card(self, reward=0) -> None:  # ruff:ignore[too-many-statements]
         self.login()
         thepay_mock_create_payment()
         response = self.client.post(
@@ -4104,7 +4104,7 @@ class ExpiryTest(FakturaceTestCase):
 
         return invoice, payment_urls
 
-    def _prepare_upcoming_invoice_cases(  # noqa: PLR0914
+    def _prepare_upcoming_invoice_cases(  # ruff:ignore[too-many-locals]
         self, customer: Customer
     ) -> UpcomingInvoiceCases:
         proforma, proforma_urls = self._create_invoice_case(
@@ -4637,7 +4637,7 @@ class ServiceTest(FakturaceTestCase):
             timezone.now().date() + timedelta(days=3) + relativedelta(years=1),
         )
 
-    @override_settings(ZAMMAD_TOKEN="test")  # noqa: S106
+    @override_settings(ZAMMAD_TOKEN="test")  # ruff:ignore[hardcoded-password-func-arg]
     @responses.activate
     def test_dedicated_new(self) -> None:
         mock_vies()

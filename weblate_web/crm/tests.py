@@ -4,7 +4,7 @@ from decimal import Decimal
 from io import StringIO
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs
-from xml.etree import ElementTree  # noqa: S405
+from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
 
 import requests
 import responses
@@ -49,8 +49,8 @@ from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_clien
 VIES_MS_UNAVAILABLE = "MS_UNAVAILABLE"
 VIES_MS_MAX_CONCURRENT_REQ = "MS_MAX_CONCURRENT_REQ"
 VIES_TIMEOUT = "TIMEOUT"
-TEST_PAYMENT_SECRET = "secret"  # noqa: S105
-TEST_ZAMMAD_TOKEN = "test-token"  # noqa: S105
+TEST_PAYMENT_SECRET = "secret"  # ruff:ignore[hardcoded-password-string]
+TEST_ZAMMAD_TOKEN = "test-token"  # ruff:ignore[hardcoded-password-string]
 
 
 class BaseCRMTestCase(TestCase):
@@ -2809,7 +2809,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         svg = IncomeView().generate_svg_stacked_bar_chart(
             daily_data, daily_category_data, 2026, 1
         )
-        tree = ElementTree.fromstring(svg)  # noqa: S314
+        tree = ElementTree.fromstring(svg)  # ruff:ignore[suspicious-xml-element-tree-usage]
         width = float(tree.attrib["viewBox"].split()[2])
         label_positions = [
             float(element.attrib["x"])
@@ -2833,7 +2833,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         svg = IncomeView().generate_svg_stacked_bar_chart(
             monthly_data, monthly_category_data, 2026
         )
-        tree = ElementTree.fromstring(svg)  # noqa: S314
+        tree = ElementTree.fromstring(svg)  # ruff:ignore[suspicious-xml-element-tree-usage]
         labels = [
             element.text for element in tree.iter() if element.tag.endswith("text")
         ]
@@ -2852,7 +2852,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 InvoiceCategory.DONATE: Decimal(400),
             }
         )
-        tree = ElementTree.fromstring(svg)  # noqa: S314
+        tree = ElementTree.fromstring(svg)  # ruff:ignore[suspicious-xml-element-tree-usage]
         width, height = (float(value) for value in tree.attrib["viewBox"].split()[2:])
         paths = [element for element in tree.iter() if element.tag.endswith("path")]
         legend_markers = [

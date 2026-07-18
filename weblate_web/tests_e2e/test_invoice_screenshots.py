@@ -21,7 +21,7 @@
 
 from __future__ import annotations
 
-import subprocess  # noqa: S404
+import subprocess  # ruff:ignore[suspicious-subprocess-import]
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal

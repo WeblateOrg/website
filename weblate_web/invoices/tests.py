@@ -57,7 +57,7 @@ class InvoiceTestCase(UserTestCase):
             accounting_reference=accounting_reference,
         )
 
-    def create_invoice_base(  # noqa: PLR0913
+    def create_invoice_base(  # ruff:ignore[too-many-arguments]
         self,
         *,
         discount: Discount | None = None,
@@ -112,7 +112,7 @@ class InvoiceTestCase(UserTestCase):
         invoice.invoiceitem_set.create(package=package)
         return invoice
 
-    def create_invoice(  # noqa: PLR0913
+    def create_invoice(  # ruff:ignore[too-many-arguments]
         self,
         *,
         discount: Discount | None = None,
