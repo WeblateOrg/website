@@ -486,9 +486,8 @@ class Backend:
         invoice: Invoice,
         record: DuplicatePaymentRecord,
     ) -> bool:
-        from weblate_web.crm.models import (
-            Interaction,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.crm.models import Interaction
 
         paid_payment = record.paid_payment
         if paid_payment is None:

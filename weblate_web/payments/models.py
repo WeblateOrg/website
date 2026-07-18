@@ -110,9 +110,8 @@ class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
         return self.filter(users=user).distinct()
 
     def active(self) -> CustomerQuerySet:
-        from weblate_web.models import (
-            ServiceKind,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.models import ServiceKind
 
         return self.filter(
             service__kind=ServiceKind.SERVICE,
@@ -449,9 +448,8 @@ class Customer(models.Model):
         return self.users.order_by("email", "username", "pk")
 
     def get_upcoming_payment_invoices(self) -> models.QuerySet[Invoice]:
-        from weblate_web.invoices.models import (
-            InvoiceKind,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.invoices.models import InvoiceKind
 
         recent = timezone.now().date() - timedelta(days=31)
         return (
@@ -499,9 +497,8 @@ class Customer(models.Model):
     def send_notification(
         self, notification: str, invoice: Invoice | None = None, **kwargs
     ) -> None:
-        from weblate_web.crm.models import (
-            Interaction,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.crm.models import Interaction
 
         if (
             notification == "payment_upcoming"
@@ -546,9 +543,8 @@ class Customer(models.Model):
         )
 
     def merge(self, other: Customer, *, user: User | None = None) -> None:
-        from weblate_web.crm.models import (
-            Interaction,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.crm.models import Interaction
 
         other.payment_set.update(customer=self)
         other.invoice_set.update(customer=self)
@@ -595,9 +591,8 @@ class Customer(models.Model):
         )
 
     def prepayment_validation(self, *, automated: bool = False):
-        from weblate_web.crm.models import (
-            Interaction,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.crm.models import Interaction
 
         # Skip payment originated validation if we have validated recently
         if not automated and self.vat_recently_validated:
@@ -904,9 +899,8 @@ class Payment(models.Model):
 
     def trigger_recurring(self) -> None:
         """Trigger recurring payment."""
-        from weblate_web.models import (
-            process_payment,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.models import process_payment
 
         # Initiate the payment
         with transaction.atomic():

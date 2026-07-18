@@ -1166,9 +1166,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         return None
 
     def get_upcoming_payment_url(self) -> str | None:
-        from weblate_web.payments.models import (
-            Payment,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.payments.models import Payment
 
         payment: Payment | None = None
         if self.kind == InvoiceKind.PROFORMA:
