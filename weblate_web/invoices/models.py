@@ -1283,9 +1283,8 @@ class InvoiceItem(models.Model):
         using=None,
         update_fields=None,
     ) -> None:
-        from weblate_web.models import (
-            get_period_delta,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.models import get_period_delta
 
         extra_fields: list[str] = []
 
