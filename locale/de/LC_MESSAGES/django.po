@@ -40,7 +40,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-07-20 00:51-0500\n"
-"PO-Revision-Date: 2026-07-19 08:41+0000\n"
+"PO-Revision-Date: 2026-07-20 12:01+0000\n"
 "Last-Translator: VfBFan <vfbfan@users.noreply.hosted.weblate.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/weblate/website/"
 "de/>\n"
@@ -851,6 +851,8 @@ msgstr "Rechnung aus Angebot ausstellen"
 msgid ""
 "Use this when a quote should no longer appear as suggested follow-up work."
 msgstr ""
+"Verwenden Sie dies, wenn ein Angebot nicht mehr als vorgeschlagene "
+"Folgeaufgabe angezeigt werden soll."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:200
 msgid "Close quote"
@@ -859,6 +861,8 @@ msgstr "Angebot schließen"
 #: weblate_web/crm/templates/invoices/invoice_detail.html:213
 msgid "This quote is closed and hidden from stale quote suggestions."
 msgstr ""
+"Dieses Angebot ist geschlossen und wird in den abgelaufenen "
+"Angebotsvorschlägen nicht mehr angezeigt."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:216
 msgid "Reopen quote"
@@ -890,7 +894,7 @@ msgstr "Status"
 
 #: weblate_web/crm/templates/invoices/invoice_list.html:32
 msgid "No invoices match the current filters."
-msgstr ""
+msgstr "Keine Rechnungen entsprechen den aktuellen Filtern."
 
 #: weblate_web/crm/templates/invoices/invoice_list_content.html:26
 #: weblate_web/crm/templates/payments/customer_detail.html:466
@@ -1171,10 +1175,8 @@ msgid "No payments recorded."
 msgstr "Keine Zahlung erfasst."
 
 #: weblate_web/crm/templates/payments/customer_list.html:9
-#, fuzzy
-#| msgid "Customize listing"
 msgid "Customer list"
-msgstr "Anpassen des Eintrags"
+msgstr "Kundenliste"
 
 #: weblate_web/crm/templates/payments/customer_list.html:26
 #: weblate_web/payments/models.py:193
@@ -1182,14 +1184,12 @@ msgid "City"
 msgstr "Ort"
 
 #: weblate_web/crm/templates/payments/customer_list.html:72
-#, fuzzy
-#| msgid "No servers matched your search."
 msgid "No customers match the current filters."
-msgstr "Es wurden keine Server gefunden, die Ihrer Suche entsprechen."
+msgstr "Keine Kunden entsprechen den aktuellen Filtern."
 
 #: weblate_web/crm/templates/payments/customer_merge.html:17
 msgid "will be merged into"
-msgstr ""
+msgstr "wird zusammengeführt mit"
 
 #: weblate_web/crm/templates/payments/customer_merge.html:22
 #, python-format
@@ -1197,11 +1197,13 @@ msgid ""
 "All content from %(source)s (%(source_pk)s) will be moved to %(target)s "
 "(%(target_pk)s)"
 msgstr ""
+"Alle Inhalte aus %(source)s (%(source_pk)s) werden nach %(target)s (%"
+"(target_pk)s) verschoben"
 
 #: weblate_web/crm/templates/payments/customer_merge.html:27
 #, python-format
 msgid "%(source)s (%(source_pk)s) will be removed"
-msgstr ""
+msgstr "%(source)s (%(source_pk)s) wird entfernt"
 
 #: weblate_web/crm/templates/payments/customer_merge.html:36
 msgid "Merge"
@@ -1286,7 +1288,7 @@ msgstr "Läuft ab"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:180
 msgid "Edit subscription in admin"
-msgstr ""
+msgstr "Abonnement in Admin bearbeiten"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:185
 msgid "Purchases"
@@ -1307,7 +1309,7 @@ msgstr "Upgrade auf %(package)s"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:211
 msgid "For the rest of the current period."
-msgstr ""
+msgstr "Für den Rest des aktuellen Zeitraums."
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:212
 msgid ""
@@ -1326,6 +1328,9 @@ msgid ""
 "Disable the subscription, no payments will be reminded or triggered, "
 "<strong>backups will be removed once subscription expires</strong>"
 msgstr ""
+"Deaktiviert das Abonnement. Es werden keine Zahlungserinnerungen mehr "
+"versendet und keine Zahlungen mehr ausgelöst, <strong>Sicherungen werden "
+"nach Ablauf des Abonnements gelöscht</strong>"
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:258
 msgid "Disable"
@@ -1472,10 +1477,8 @@ msgid "Duplicate payment"
 msgstr "Weblate-Zahlung"
 
 #: weblate_web/crm/workqueue.py:201
-#, fuzzy
-#| msgid "Link URL"
 msgid "Locked URL"
-msgstr "URL-Link"
+msgstr "Gesperrte URL"
 
 #: weblate_web/crm/workqueue.py:210
 msgid "Unpaid invoice"
@@ -1525,25 +1528,25 @@ msgstr "Server-URL muss HTTPS verwenden."
 #: weblate_web/invoices/models.py:287
 msgctxt "Quote status"
 msgid "Open"
-msgstr ""
+msgstr "Offen"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
 #: weblate_web/invoices/models.py:288
 msgctxt "Quote status"
 msgid "Lost"
-msgstr ""
+msgstr "Verloren"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
 #: weblate_web/invoices/models.py:289
 msgctxt "Quote status"
 msgid "Superseded"
-msgstr ""
+msgstr "Ersetzt"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
 #: weblate_web/invoices/models.py:290
 msgctxt "Quote status"
 msgid "Accepted elsewhere"
-msgstr ""
+msgstr "Anderswo angenommen"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
 #: weblate_web/invoices/models.py:291
@@ -1576,14 +1579,12 @@ msgid "CRM status for quote follow-up."
 msgstr ""
 
 #: weblate_web/invoices/models.py:380
-#, fuzzy
-#| msgid "Optional note describing how the refund was done."
 msgid "Internal note explaining why the quote was closed."
-msgstr "Optionaler Vermerk, der beschreibt, wie die Rückerstattung erfolgte."
+msgstr "Interner Vermerk, warum das Angebot geschlossen wurde."
 
 #: weblate_web/invoices/models.py:599
 msgid "Converted"
-msgstr ""
+msgstr "Umgewandelt"
 
 #: weblate_web/invoices/models.py:606
 msgid "Paid"
@@ -1842,22 +1843,20 @@ msgstr "Erhöhen Sie die Dienstgrenzen, um mehr Inhalte zu übersetzen."
 
 #: weblate_web/models.py:1310
 msgid "Activation code has already been used."
-msgstr ""
+msgstr "Aktivierungscode wurde bereits verwendet."
 
 #: weblate_web/models.py:1312
 msgid "Activation code has expired."
-msgstr ""
+msgstr "Aktivierungscode ist abgelaufen."
 
 #: weblate_web/models.py:1835
 #, python-format
 msgid "Locked URL mismatch: %(url)s"
-msgstr ""
+msgstr "Nicht übereinstimmende gesperrte URL: %(url)s"
 
 #: weblate_web/payments/backends.py:528
-#, fuzzy
-#| msgid "Invoice"
 msgid "Invoice already paid"
-msgstr "Rechnung"
+msgstr "Rechnung bereits bezahlt"
 
 #: weblate_web/payments/backends.py:642
 msgid "Manual payment"
@@ -1963,6 +1962,8 @@ msgstr ""
 #: weblate_web/payments/models.py:216
 msgid "Person, team, or department to show as the invoice contact."
 msgstr ""
+"Person, Team oder Abteilung, die als Ansprechstelle für die Rechnung "
+"angegeben werden soll."
 
 #: weblate_web/payments/models.py:224
 msgid ""
@@ -1970,6 +1971,9 @@ msgid ""
 "such as a cost center, project, internal order, or GL account. Separate from "
 "the customer reference or purchase order number."
 msgstr ""
+"Buchungskennzeichen auf Zeilenebene für die interne Rechnungsbearbeitung des "
+"Kunden, z. B. eine Kostenstelle, ein Projekt, ein interner Auftrag oder ein "
+"Sachkonto. Unabhängig von der Kundenreferenz oder Bestellnummer."
 
 #: weblate_web/payments/models.py:232
 msgid "Additional upcoming payment notification"
@@ -2004,24 +2008,20 @@ msgstr ""
 "Zahlungsbenachrichtigung: 31."
 
 #: weblate_web/payments/models.py:632
-#, fuzzy
-#| msgid "Biannual"
 msgid "Manual"
-msgstr "Halbjährlich"
+msgstr "Manuell"
 
 #: weblate_web/payments/models.py:634
-#, fuzzy
-#| msgid "Service URL"
 msgid "Locked site URL"
-msgstr "Dienst-URL"
+msgstr "Gesperrte Website-URL"
 
 #: weblate_web/payments/models.py:649
 msgid "Date and time when this customer needs attention."
-msgstr ""
+msgstr "Datum und Uhrzeit, zu denen dieser Kunde betreut werden muss."
 
 #: weblate_web/payments/models.py:655
 msgid "Short description of the next action."
-msgstr ""
+msgstr "Kurzbeschreibung der nächsten Aktion."
 
 #: weblate_web/payments/models.py:661
 #, fuzzy
@@ -4867,6 +4867,8 @@ msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown after saving."
 msgstr ""
+"Aktivieren Sie die Auflistung über die Weblate-Verwaltungsseite mithilfe des "
+"Aktivierungstokens, das nach dem Speichern angezeigt wird."
 
 #: weblate_web/templates/subscription/discovery-register.html:6
 #: weblate_web/templates/subscription/discovery-register.html:13
@@ -4883,6 +4885,8 @@ msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
 msgstr ""
+"Nach der Bestätigung werden Sie zurück zu diesem Weblate-Server "
+"weitergeleitet, um die Aktivierung abzuschließen."
 
 #: weblate_web/templates/subscription/discovery-register.html:43
 msgid "Register"
@@ -5320,6 +5324,8 @@ msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
+"Aktivieren Sie die Auflistung über die Weblate-Verwaltungsseite mithilfe des "
+"unten angezeigten Aktivierungstokens."
 
 #: weblate_web/views.py:1123
 msgid "User not found!"
