@@ -37,7 +37,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-13 00:08-0500\n"
+"POT-Creation-Date: 2026-07-20 00:51-0500\n"
 "PO-Revision-Date: 2026-07-18 09:01+0000\n"
 "Last-Translator: Lee Vincent <vincentlee986@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -140,11 +140,11 @@ msgstr "選填的內部備註，例如拒絕原因或已接受的替代發票。
 msgid "Note"
 msgstr "備註"
 
-#: weblate_web/crm/forms.py:190 weblate_web/payments/models.py:643
+#: weblate_web/crm/forms.py:190 weblate_web/payments/models.py:648
 msgid "Follow-up date"
 msgstr "追蹤日期"
 
-#: weblate_web/crm/forms.py:198 weblate_web/payments/models.py:649
+#: weblate_web/crm/forms.py:198 weblate_web/payments/models.py:654
 msgid "Follow-up note"
 msgstr "追蹤備註"
 
@@ -828,7 +828,8 @@ msgstr "報價單操作"
 msgid ""
 "This creates a final invoice matching this quote. Use Download if you only "
 "need the quote PDF."
-msgstr "這會建立與此報價單相符的正式發票。如果您只需要報價單 PDF，請使用 [下載]。"
+msgstr ""
+"這會建立與此報價單相符的正式發票。如果您只需要報價單 PDF，請使用 [下載]。"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:174
 msgid "Issue invoice from quote"
@@ -905,7 +906,7 @@ msgid "Payments"
 msgstr "支付"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:43
-#: weblate_web/payments/models.py:172
+#: weblate_web/payments/models.py:173
 msgid "Name"
 msgstr "名稱"
 
@@ -928,13 +929,13 @@ msgid "not validated"
 msgstr "未驗證"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:70
-#: weblate_web/payments/models.py:181
+#: weblate_web/payments/models.py:182
 msgid "Address"
 msgstr "地址"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:77
 #: weblate_web/crm/templates/payments/customer_list.html:27
-#: weblate_web/payments/models.py:201
+#: weblate_web/payments/models.py:202
 msgid "Country"
 msgstr "國家"
 
@@ -944,12 +945,12 @@ msgid "End client"
 msgstr "終端客戶"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:92
-#: weblate_web/payments/models.py:213
+#: weblate_web/payments/models.py:214
 msgid "Contact point"
 msgstr "聯絡窗口"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:100
-#: weblate_web/payments/models.py:221
+#: weblate_web/payments/models.py:222
 msgid "Accounting reference"
 msgstr "會計參考資料"
 
@@ -1155,7 +1156,7 @@ msgid "Customer list"
 msgstr "客戶清單"
 
 #: weblate_web/crm/templates/payments/customer_list.html:26
-#: weblate_web/payments/models.py:192
+#: weblate_web/payments/models.py:193
 msgid "City"
 msgstr "城市"
 
@@ -1172,7 +1173,8 @@ msgstr "將合併至"
 msgid ""
 "All content from %(source)s (%(source_pk)s) will be moved to %(target)s "
 "(%(target_pk)s)"
-msgstr "%(source)s (%(source_pk)s) 的所有內容都會移至 %(target)s (%(target_pk)s)"
+msgstr ""
+"%(source)s (%(source_pk)s) 的所有內容都會移至 %(target)s (%(target_pk)s)"
 
 #: weblate_web/crm/templates/payments/customer_merge.html:27
 #, python-format
@@ -1354,7 +1356,8 @@ msgstr "已新增客戶使用者"
 #: weblate_web/crm/views.py:876
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
-msgstr "已將 %(email)s 新增至客戶的使用者清單。託管服務的使用者處理結果為 %(state)s。"
+msgstr ""
+"已將 %(email)s 新增至客戶的使用者清單。託管服務的使用者處理結果為 %(state)s。"
 
 #: weblate_web/crm/views.py:880
 msgid "created"
@@ -1429,7 +1432,7 @@ msgstr "手動後續追蹤"
 msgid "Upcoming follow-up"
 msgstr "即將進行的後續追蹤"
 
-#: weblate_web/crm/workqueue.py:199 weblate_web/payments/models.py:628
+#: weblate_web/crm/workqueue.py:199 weblate_web/payments/models.py:633
 msgid "Duplicate payment"
 msgstr "重複付款"
 
@@ -1805,43 +1808,43 @@ msgstr "啟用碼已過期。"
 msgid "Locked URL mismatch: %(url)s"
 msgstr "鎖定的 URL 不相符: %(url)s"
 
-#: weblate_web/payments/backends.py:527
+#: weblate_web/payments/backends.py:528
 msgid "Invoice already paid"
 msgstr "發票已付款"
 
-#: weblate_web/payments/backends.py:641
+#: weblate_web/payments/backends.py:642
 msgid "Manual payment"
 msgstr "手動支付"
 
-#: weblate_web/payments/backends.py:658
+#: weblate_web/payments/backends.py:659
 msgid "IBAN bank transfer"
 msgstr "IBAN 銀行電匯"
 
-#: weblate_web/payments/backends.py:680
+#: weblate_web/payments/backends.py:681
 msgid "Reference"
 msgstr "參考"
 
-#: weblate_web/payments/backends.py:885
+#: weblate_web/payments/backends.py:889
 msgid "Payment card"
 msgstr "付款卡"
 
-#: weblate_web/payments/backends.py:1060
+#: weblate_web/payments/backends.py:1064
 msgid "Payment error"
 msgstr "付款錯誤"
 
-#: weblate_web/payments/backends.py:1062
+#: weblate_web/payments/backends.py:1066
 msgid "Payment cancelled"
 msgstr "付款已取消"
 
-#: weblate_web/payments/backends.py:1077
+#: weblate_web/payments/backends.py:1081
 msgid "Crypto payment"
 msgstr "加密貨幣付款"
 
-#: weblate_web/payments/backends.py:1087
+#: weblate_web/payments/backends.py:1091
 msgid "Google Pay"
 msgstr "Google Pay"
 
-#: weblate_web/payments/backends.py:1095
+#: weblate_web/payments/backends.py:1099
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
@@ -1853,61 +1856,61 @@ msgstr "您將在這裡收到收據。"
 msgid "E-mail address"
 msgstr "電子郵件位址"
 
-#: weblate_web/payments/models.py:137
+#: weblate_web/payments/models.py:138
 msgid "Unknown"
 msgstr "未知"
 
-#: weblate_web/payments/models.py:138
+#: weblate_web/payments/models.py:139
 msgid "Valid"
 msgstr "有效"
 
-#: weblate_web/payments/models.py:139
+#: weblate_web/payments/models.py:140
 msgid "Invalid"
 msgstr "無效"
 
-#: weblate_web/payments/models.py:146
+#: weblate_web/payments/models.py:147
 msgid "European VAT ID"
 msgstr "歐盟 VAT ID"
 
-#: weblate_web/payments/models.py:148
+#: weblate_web/payments/models.py:149
 msgid "Please fill in European Union VAT ID, leave blank if not applicable."
 msgstr "請填入歐盟 VAT ID，如果不適用請留空。"
 
-#: weblate_web/payments/models.py:163
+#: weblate_web/payments/models.py:164
 msgid "Company identification number"
 msgstr "統一編號"
 
-#: weblate_web/payments/models.py:165
+#: weblate_web/payments/models.py:166
 msgid ""
 "Please fill in your company registration number if it should appear on the "
 "invoice."
 msgstr "如果統一編號應顯示於發票上，請填入相關資訊。"
 
-#: weblate_web/payments/models.py:174
+#: weblate_web/payments/models.py:175
 msgid "Company or individual name as it should appear on the invoice."
 msgstr "發票上應顯示的公司或個人名稱。"
 
-#: weblate_web/payments/models.py:186
+#: weblate_web/payments/models.py:187
 msgid "Additional address information"
 msgstr "額外地址資訊"
 
-#: weblate_web/payments/models.py:197
+#: weblate_web/payments/models.py:198
 msgid "Postcode"
 msgstr "郵遞區號"
 
-#: weblate_web/payments/models.py:207
+#: weblate_web/payments/models.py:208
 msgid "Billing e-mail"
 msgstr "帳單電子郵件"
 
-#: weblate_web/payments/models.py:208
+#: weblate_web/payments/models.py:209
 msgid "Additional e-mail to receive billing notifications"
 msgstr "額外接收帳單通知的電子郵件"
 
-#: weblate_web/payments/models.py:215
+#: weblate_web/payments/models.py:216
 msgid "Person, team, or department to show as the invoice contact."
 msgstr "顯示為發票聯絡人的個人、團隊或部門。"
 
-#: weblate_web/payments/models.py:223
+#: weblate_web/payments/models.py:224
 msgid ""
 "Line-level accounting code for the customer's internal invoice processing, "
 "such as a cost center, project, internal order, or GL account. Separate from "
@@ -1916,11 +1919,11 @@ msgstr ""
 "供客戶內部處理發票時使用的明細項目層級會計代碼，例如成本中心、專案、內部訂單"
 "或總帳科目。此欄位不同於客戶參考資料或採購單編號。"
 
-#: weblate_web/payments/models.py:231
+#: weblate_web/payments/models.py:232
 msgid "Additional upcoming payment notification"
 msgstr "其他即將到期的款項通知"
 
-#: weblate_web/payments/models.py:234
+#: weblate_web/payments/models.py:235
 msgid ""
 "Number of days before the payment due date to send one extra upcoming "
 "payment notification, from 0 to {}. Set to 0 to use only default "
@@ -1929,83 +1932,83 @@ msgstr ""
 "於付款到期日前幾天發送額外通知，設定範圍為 0 至 {}。設定為 0 則僅發送預設通"
 "知。"
 
-#: weblate_web/payments/models.py:371
+#: weblate_web/payments/models.py:372
 msgid "The country has to match your VAT code"
 msgstr "國家必須與您的 VAT 代碼相符"
 
-#: weblate_web/payments/models.py:379
+#: weblate_web/payments/models.py:380
 msgid "Choose a day different from the default payment notifications: 2 and 7."
 msgstr "選擇與預設付款通知不同的天數：2 天和 7 天。"
 
-#: weblate_web/payments/models.py:402
+#: weblate_web/payments/models.py:403
 msgid ""
 "Choose a day different from the default yearly payment notification: 31."
 msgstr "選擇與預設年度付款通知不同的天數：31 天。"
 
-#: weblate_web/payments/models.py:627
+#: weblate_web/payments/models.py:632
 msgid "Manual"
 msgstr "手動"
 
-#: weblate_web/payments/models.py:629
+#: weblate_web/payments/models.py:634
 msgid "Locked site URL"
 msgstr "鎖定的網站 URL"
 
-#: weblate_web/payments/models.py:644
+#: weblate_web/payments/models.py:649
 msgid "Date and time when this customer needs attention."
 msgstr "需要後續追蹤此客戶的日期與時間。"
 
-#: weblate_web/payments/models.py:650
+#: weblate_web/payments/models.py:655
 msgid "Short description of the next action."
 msgstr "下一步處理事項的簡短說明。"
 
-#: weblate_web/payments/models.py:656
+#: weblate_web/payments/models.py:661
 msgid "Follow-up type"
 msgstr "後續追蹤類型"
 
-#: weblate_web/payments/models.py:679
+#: weblate_web/payments/models.py:684
 msgid "Annual"
 msgstr "每年"
 
-#: weblate_web/payments/models.py:680
+#: weblate_web/payments/models.py:685
 msgid "Biannual"
 msgstr "每半年"
 
-#: weblate_web/payments/models.py:681 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:686 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr "每季"
 
-#: weblate_web/payments/models.py:682 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:687 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr "每月"
 
-#: weblate_web/payments/models.py:683
+#: weblate_web/payments/models.py:688
 msgid "One-time"
 msgstr "一次性"
 
-#: weblate_web/payments/models.py:724
+#: weblate_web/payments/models.py:729
 msgctxt "Payment state"
 msgid "New payment"
 msgstr "新付款"
 
-#: weblate_web/payments/models.py:725
+#: weblate_web/payments/models.py:730
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr "等候付款"
 
-#: weblate_web/payments/models.py:726
+#: weblate_web/payments/models.py:731
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr "付款已拒絕"
 
-#: weblate_web/payments/models.py:727
+#: weblate_web/payments/models.py:732
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr "付款已接受"
 
-#: weblate_web/payments/models.py:728
+#: weblate_web/payments/models.py:733
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "付款已處理"
@@ -2080,7 +2083,8 @@ msgstr "尋找 Pootle 的替代方案"
 msgid ""
 "…The key feature is full integration with Git. Changes are committed to a "
 "local Git branch and easily merged back."
-msgstr "…關鍵功能是與 Git 完全整合。變更會提交至本機 Git 分支，並可輕鬆合併回去。"
+msgstr ""
+"…關鍵功能是與 Git 完全整合。變更會提交至本機 Git 分支，並可輕鬆合併回去。"
 
 #: weblate_web/templates/about.html:38
 msgid "March 2012"
@@ -3622,8 +3626,9 @@ msgid ""
 "find the perfect solution."
 msgstr ""
 "Hosted Weblate 可讓您在無需額外投入的情況下完成在地化，並享有由核心開發者與專"
-"業翻譯人員提供的 <strong>Premium 支援</strong>。如需代管大型專案或有任何問題"
-"，歡迎<a href=\"%(contact)s\">聯絡我們</a>，我們會協助您找到合適的解決方案。"
+"業翻譯人員提供的 <strong>Premium 支援</strong>。如需代管大型專案或有任何問"
+"題，歡迎<a href=\"%(contact)s\">聯絡我們</a>，我們會協助您找到合適的解決方"
+"案。"
 
 #: weblate_web/templates/hosting.html:305
 msgid ""
@@ -4189,8 +4194,8 @@ msgid ""
 "Dive in, or leverage extensive skills and experience from our team of "
 "professionals, giving focused advice attentive to your exact needs."
 msgstr ""
-"您可以立即開始，或由我們的專業團隊憑藉豐富經驗，依據您的精準需求提供專屬建議"
-"。"
+"您可以立即開始，或由我們的專業團隊憑藉豐富經驗，依據您的精準需求提供專屬建"
+"議。"
 
 #: weblate_web/templates/snippets/box-donate.html:5
 msgid "<strong>Donate</strong>—to make the world a better place"
