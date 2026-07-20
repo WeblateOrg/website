@@ -34,6 +34,7 @@ if TYPE_CHECKING:
 PAYMENTS_ORIGIN = "https://weblate.org/donate/process/"
 FOSDEM_ORIGIN = "https://weblate.org/fosdem/"
 AUTO_ORIGIN = "https://weblate.org/auto"
+HOSTED_ORIGIN = "https://hosted.weblate.org/create/billing/"
 
 
 def get_site_url(name: str, *, strip_language: bool = True, **kwargs) -> str:
