@@ -9,7 +9,10 @@ from unittest.mock import patch
 
 import requests
 import responses
+from django.core.exceptions import ValidationError
 from django.test.utils import override_settings
+from django.urls import reverse
+from django.utils.translation import override
 from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
 from pycheval import generate_xml
@@ -490,6 +493,23 @@ class InvoiceTestCase(UserTestCase):
             self.validate_invoice(invoice)
 
     @override_settings(PAYMENT_DEBUG=True)
+    def test_final_invoice_payment_skips_customer_revalidation(self) -> None:
+        invoice = self.create_invoice_package()
+
+        with patch.object(
+            Customer,
+            "prepayment_validation",
+            side_effect=ValidationError("VIES unavailable"),
+        ) as prepayment_validation:
+            response = self.client.get(
+                cast("str", invoice.get_payment_url()), follow=True
+            )
+
+        self.assertContains(response, "Payment Summary")
+        self.assertContains(response, 'name="method"')
+        prepayment_validation.assert_not_called()
+
+    @override_settings(PAYMENT_DEBUG=True)
     @responses.activate
     def test_pay_link(self) -> None:
         self.mock_requests()
@@ -498,13 +518,35 @@ class InvoiceTestCase(UserTestCase):
         url = cast("str", invoice.get_payment_url())
         self.assertIsNotNone(url)
 
-        # Unauthenticated should redirect to login
+        # Unauthenticated users can open a manually issued invoice payment.
         response = self.client.get(url, follow=True)
         self.assertContains(response, "Payment Summary")
         # Unauthenticated user should see note about terms
         self.assertContains(response, "By performing the payment, you accept our")
         self.assertNotContains(response, "Billing information")
         self.assertEqual(invoice.draft_payment_set.count(), 1)
+
+        # The invoice payment capability does not permit editing its customer.
+        payment = invoice.draft_payment_set.get()
+        with override("en"):
+            customer_url = reverse("payment-customer", kwargs={"pk": payment.pk})
+        original_name = invoice.customer.name
+        self.assertEqual(self.client.get(customer_url).status_code, 404)
+        self.assertEqual(
+            self.client.post(
+                customer_url,
+                {
+                    "name": "Unauthorized Customer",
+                    "address": "Unauthorized address",
+                    "city": "Unauthorized city",
+                    "postcode": "12345",
+                    "country": "CZ",
+                },
+            ).status_code,
+            404,
+        )
+        invoice.customer.refresh_from_db()
+        self.assertEqual(invoice.customer.name, original_name)
 
         # Repeated access should reuse existing payment
         self.login()
@@ -516,7 +558,6 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.draft_payment_set.count(), 1)
 
         # Pay
-        payment = invoice.draft_payment_set.get()
         payment_url = payment.get_payment_url()
         self.client.post(payment_url, {"method": "pay"})
 

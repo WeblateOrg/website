@@ -31,7 +31,7 @@ import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AnonymousUser, User
 from django.core.exceptions import BadRequest, SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
@@ -103,6 +103,7 @@ from weblate_web.schema import get_blog_post_schema
 from weblate_web.utils import (
     AUTO_ORIGIN,
     FOSDEM_ORIGIN,
+    HOSTED_ORIGIN,
     PAYMENTS_ORIGIN,
     show_form_errors,
 )
@@ -407,8 +408,37 @@ def fetch_vat(request: AuthenticatedHttpRequest) -> JsonResponse:
     return JsonResponse(data=vies_data)
 
 
-class PaymentView(FormView, SingleObjectMixin):
+class PaymentObjectMixin(SingleObjectMixin):
     model = Payment
+
+    def get_queryset(self):
+        return super().get_queryset().select_related("customer", "draft_invoice")
+
+
+def can_edit_payment_customer(payment: Payment, user: User | AnonymousUser) -> bool:
+    """Return whether user can edit customer through a payment."""
+    if payment.state != Payment.NEW:
+        return False
+    if is_payment_customer_locked(payment):
+        return False
+    if payment.customer.origin == FOSDEM_ORIGIN:
+        return True
+    if payment.customer.origin == HOSTED_ORIGIN:
+        # Hosted creates the payment in the shared database and redirects here
+        # with only its UUID. This remains bearer authorization for editing the
+        # shared customer until Hosted billing is merged into this application.
+        # TODO: Remove this exception after the Hosted billing merge.
+        return True
+    return user.is_authenticated and payment.customer.users.filter(pk=user.pk).exists()
+
+
+def is_payment_customer_locked(payment: Payment) -> bool:
+    """Return whether invoice state prevents changing the payment customer."""
+    invoice = payment.draft_invoice
+    return invoice is not None and (invoice.is_final or invoice.is_paid)
+
+
+class PaymentView(FormView, PaymentObjectMixin):
     form_class: type[forms.BaseForm] = MethodForm
     template_name = "payment/payment.html"
     check_customer = True
@@ -446,6 +476,9 @@ class PaymentView(FormView, SingleObjectMixin):
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         kwargs["can_pay"] = self.can_pay
+        kwargs["can_edit_customer"] = can_edit_payment_customer(
+            self.object, self.request.user
+        )
         kwargs["backends"] = [
             backend(self.object)
             for backend in list_backends(
@@ -493,22 +526,15 @@ class PaymentView(FormView, SingleObjectMixin):
             if self.object.state == Payment.NEW and self.is_draft_invoice_paid():
                 return self.redirect_paid_draft_invoice()
             customer = self.object.customer
-            self.can_pay = not customer.is_empty
-            result = self.validate_customer(customer)
+            customer_locked = is_payment_customer_locked(self.object)
+            self.can_pay = customer_locked or not customer.is_empty
+            result = None if customer_locked else self.validate_customer(customer)
             if result is not None:
                 return result
             return super().dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form):
-        if self.form_class == MethodForm:
-            messages.error(self.request, gettext("Please choose a payment method."))
-        else:
-            messages.error(
-                self.request,
-                gettext(
-                    "Please provide your billing information to complete the payment."
-                ),
-            )
+        messages.error(self.request, gettext("Please choose a payment method."))
         return super().form_invalid(form)
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
@@ -550,10 +576,28 @@ class PaymentView(FormView, SingleObjectMixin):
         return self.redirect_origin()
 
 
-class CustomerView(PaymentView):
+class CustomerView(FormView, PaymentObjectMixin):
     form_class: type[forms.BaseForm] = CustomerForm
     template_name = "payment/customer.html"
-    check_customer = False
+
+    def get_queryset(self):
+        # Payment backends lock this same row before changing payment state.
+        # Do not join related objects here: the lock must target just Payment.
+        return Payment.objects.select_for_update()
+
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
+        with transaction.atomic():
+            self.object = self.get_object()
+            if not can_edit_payment_customer(self.object, request.user):
+                raise Http404("Payment customer is not editable")
+            return super().dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            gettext("Please provide your billing information to complete the payment."),
+        )
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         form.save()
@@ -1402,6 +1446,7 @@ def fosdem_donation(request):
             user_id=request.user.id,
             defaults={"email": request.user.email},
         )[0]
+        customer.users.add(request.user)
     else:
         customer = Customer.objects.create(
             origin=FOSDEM_ORIGIN, user_id=-1, country="BE"

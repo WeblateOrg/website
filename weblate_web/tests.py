@@ -86,8 +86,8 @@ from .saml import (
 )
 from .templatetags.downloads import downloadlink, filesizeformat
 from .templatetags.prices import price_format
-from .utils import FOSDEM_ORIGIN, PAYMENTS_ORIGIN
-from .views import PostView, server_error
+from .utils import FOSDEM_ORIGIN, HOSTED_ORIGIN, PAYMENTS_ORIGIN
+from .views import CustomerView, PostView, server_error
 
 if TYPE_CHECKING:
     from uuid import UUID
@@ -1226,6 +1226,128 @@ def create_payment(
     )
 
 
+class PaymentCustomerAccessTest(UserTestCase):
+    edit_data = {
+        "name": "Updated Customer",
+        "address": "Updated address",
+        "city": "Updated city",
+        "postcode": "12345",
+        "country": "CZ",
+    }
+
+    def create_customer(self, user: User, *, origin: str = PAYMENTS_ORIGIN) -> Customer:
+        customer = Customer.objects.create(
+            name="Original Customer",
+            address="Original address",
+            city="Original city",
+            postcode="54321",
+            country="CZ",
+            email=user.email,
+            origin=origin,
+            user_id=user.pk,
+        )
+        customer.users.add(user)
+        return customer
+
+    def create_payment(
+        self, user: User, customer: Customer
+    ) -> tuple[Payment, str, str]:
+        with override("en"):
+            return create_payment(user=user, customer=customer)
+
+    def test_anonymous_user_can_not_edit_website_payment_customer(self) -> None:
+        owner = self.create_user()
+        customer = self.create_customer(owner)
+        payment, payment_url, customer_url = self.create_payment(owner, customer)
+
+        response = self.client.get(payment_url)
+        self.assertNotContains(response, customer_url)
+        self.assertEqual(self.client.get(customer_url).status_code, 404)
+        self.assertEqual(
+            self.client.post(customer_url, self.edit_data).status_code, 404
+        )
+
+        customer.refresh_from_db()
+        self.assertEqual(customer.name, "Original Customer")
+        self.assertEqual(payment.state, Payment.NEW)
+
+    def test_owner_can_edit_website_payment_customer(self) -> None:
+        owner = self.login()
+        customer = self.create_customer(owner)
+        _payment, payment_url, customer_url = self.create_payment(owner, customer)
+
+        self.assertContains(self.client.get(payment_url), customer_url)
+        self.assertEqual(self.client.get(customer_url).status_code, 200)
+        response = self.client.post(customer_url, self.edit_data)
+        self.assertRedirects(response, payment_url)
+
+        customer.refresh_from_db()
+        self.assertEqual(customer.name, self.edit_data["name"])
+
+    def test_other_user_can_not_edit_website_payment_customer(self) -> None:
+        owner = User.objects.create_user(username="owner", email="owner@example.com")
+        customer = self.create_customer(owner)
+        _payment, _payment_url, customer_url = self.create_payment(owner, customer)
+        self.login()
+
+        self.assertEqual(self.client.get(customer_url).status_code, 404)
+        self.assertEqual(
+            self.client.post(customer_url, self.edit_data).status_code, 404
+        )
+
+        customer.refresh_from_db()
+        self.assertEqual(customer.name, "Original Customer")
+
+    def test_non_new_payment_customer_can_not_be_edited(self) -> None:
+        owner = self.login()
+        customer = self.create_customer(owner)
+        payment, _payment_url, customer_url = self.create_payment(owner, customer)
+
+        for state in (
+            Payment.PENDING,
+            Payment.REJECTED,
+            Payment.ACCEPTED,
+            Payment.PROCESSED,
+        ):
+            with self.subTest(state=state):
+                payment.state = state
+                payment.save(update_fields=["state"])
+                self.assertEqual(
+                    self.client.post(customer_url, self.edit_data).status_code, 404
+                )
+
+        customer.refresh_from_db()
+        self.assertEqual(customer.name, "Original Customer")
+
+    def test_customer_edit_locks_payment_row(self) -> None:
+        query = CustomerView().get_queryset().query
+
+        self.assertTrue(query.select_for_update)
+
+    def test_hosted_payment_customer_remains_bearer_editable(self) -> None:
+        hosted_user = self.create_user()
+        customer = self.create_customer(hosted_user, origin=HOSTED_ORIGIN)
+        customer.users.clear()
+        _payment, payment_url, customer_url = self.create_payment(hosted_user, customer)
+        customer.users.clear()
+
+        self.assertEqual(self.client.get(customer_url).status_code, 200)
+        response = self.client.post(customer_url, self.edit_data)
+        self.assertRedirects(response, payment_url)
+
+        customer.refresh_from_db()
+        self.assertEqual(customer.name, self.edit_data["name"])
+
+    def test_authenticated_fosdem_customer_is_linked_to_user(self) -> None:
+        user = self.login()
+
+        response = self.client.get("/fosdem/donate/", follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        payment = Payment.objects.get()
+        self.assertTrue(payment.customer.users.filter(pk=user.pk).exists())
+
+
 class FakturaceTestCase(UserTestCase):
     def assert_notifications(self, *subjects: str) -> list[EmailMultiAlternatives]:
         self.assertEqual(sorted(m.subject for m in mail.outbox), sorted(subjects))
@@ -1657,8 +1779,9 @@ class PaymentsTest(FakturaceTestCase):
         )
 
     def prepare_payment(self):
+        user = self.login()
         with override("en"):
-            payment, url, customer_url = create_payment(user=self.create_user())
+            payment, url, customer_url = create_payment(user=user)
             response = self.client.get(url, follow=True)
             self.assertRedirects(response, customer_url)
             self.assertContains(response, "Please provide your billing")
