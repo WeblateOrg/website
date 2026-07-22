@@ -27,9 +27,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-07-20 00:51-0500\n"
-"PO-Revision-Date: 2026-07-13 07:37+0000\n"
-"Last-Translator: GitHub webhook <noreply-webhook-github-"
-"integration@weblate.org>\n"
+"PO-Revision-Date: 2026-07-23 00:19+0000\n"
+"Last-Translator: Ulrik <ulrik@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Danish <https://hosted.weblate.org/projects/weblate/website/"
 "da/>\n"
 "Language: da\n"
@@ -37,7 +36,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.7.1.dev0\n"
+"X-Generator: Weblate 2026.8.dev0\n"
 
 #: weblate_web/crm/forms.py:34 weblate_web/forms.py:68
 msgid "Please confirm that you want to issue a final invoice."
@@ -107,28 +106,26 @@ msgstr "Valgfri bemærkning, der beskriver, hvordan refusionen blev gennemført.
 #: weblate_web/crm/templates/invoices/invoice_detail.html:195
 #: weblate_web/crm/templates/invoices/invoice_detail.html:210
 #: weblate_web/invoices/models.py:374
-#, fuzzy
-#| msgid "Support status"
 msgid "Quote status"
-msgstr "Status for support"
+msgstr "Tilbudsstatus"
 
 #: weblate_web/crm/forms.py:161
 msgid "Why this quote should no longer be followed up."
-msgstr ""
+msgstr "Årsag til, at tilbuddet ikke længere skal følges op."
 
 #: weblate_web/crm/forms.py:171
 #: weblate_web/crm/templates/invoices/invoice_detail.html:119
 #: weblate_web/invoices/models.py:379
-#, fuzzy
-#| msgid "Support status"
 msgid "Quote status note"
-msgstr "Status for support"
+msgstr "Bemærkning til tilbudsstatus"
 
 #: weblate_web/crm/forms.py:173
 msgid ""
 "Optional internal note, such as a rejection reason or accepted alternative "
 "invoice."
 msgstr ""
+"Valgfri intern bemærkning, f.eks. en årsag til afvisning eller en accepteret "
+"alternativ faktura."
 
 #: weblate_web/crm/forms.py:183 weblate_web/templates/snippets/service.html:119
 msgid "Note"
@@ -529,26 +526,24 @@ msgstr "Kunder med løbende tjenester eller betalinger."
 #: weblate_web/crm/templates/crm/work_queue.html:17
 #: weblate_web/crm/templates/crm/work_queue.html:25
 msgid "No work items"
-msgstr ""
+msgstr "Ingen arbejdsopgaver"
 
 #: weblate_web/crm/templates/crm/index.html:44
 #: weblate_web/crm/templates/crm/work_queue.html:27
 msgid "There is no CRM work needing attention right now."
-msgstr ""
+msgstr "Der er ingen CRM-opgaver, der kræver opmærksomhed lige nu."
 
 #: weblate_web/crm/templates/crm/index.html:50
 #: weblate_web/crm/templates/crm/index.html:51
 msgid "Full work queue"
-msgstr ""
+msgstr "Fuld opgavekø"
 
 #: weblate_web/crm/templates/crm/index.html:54
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s more item needs attention."
 msgid_plural "%(count)s more items need attention."
-msgstr[0] "%(count)s oversættelse"
-msgstr[1] "%(count)s oversættelser"
+msgstr[0] "%(count)s element kræver din opmærksomhed"
+msgstr[1] "%(count)s elementer kræver din opmærksomhed"
 
 #: weblate_web/crm/templates/crm/index.html:56
 msgid "All suggested CRM work in one place."
@@ -987,7 +982,7 @@ msgstr "Ryd opfølgning"
 #: weblate_web/crm/templates/payments/customer_detail.html:128
 #: weblate_web/crm/templates/payments/customer_list.html:22
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:129
 #: weblate_web/crm/templates/payments/customer_list.html:23
@@ -1531,19 +1526,19 @@ msgstr ""
 #: weblate_web/invoices/models.py:287
 msgctxt "Quote status"
 msgid "Open"
-msgstr ""
+msgstr "Åben"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
 #: weblate_web/invoices/models.py:288
 msgctxt "Quote status"
 msgid "Lost"
-msgstr ""
+msgstr "Tabt"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
 #: weblate_web/invoices/models.py:289
 msgctxt "Quote status"
 msgid "Superseded"
-msgstr ""
+msgstr "Erstattet"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
 #: weblate_web/invoices/models.py:290
@@ -2468,7 +2463,7 @@ msgid ""
 "Browse the <a href=\"%(issues)s\">open issues</a> to gain insight into what "
 "we are looking for."
 msgstr ""
-"Gennemse de <a href=\"%(issues)s\">åbne problemer</a> for at få indblik i, "
+"Gennemsé de <a href=\"%(issues)s\">åbne problemer</a> for at få indblik i, "
 "hvad vi leder efter."
 
 #: weblate_web/templates/careers.html:215
@@ -2507,7 +2502,7 @@ msgstr "Oversæt appen"
 
 #: weblate_web/templates/contribute.html:34
 msgid "Found a <strong>bug</strong> in Weblate?"
-msgstr "Fandt en <strong>fejl</strong> i Weblate?"
+msgstr "Fundet en <strong>fejl</strong> i Weblate?"
 
 #: weblate_web/templates/contribute.html:38
 #, python-format
@@ -2559,7 +2554,7 @@ msgstr "Har du en <strong>rettelse</strong>, der løser en fejl?"
 #: weblate_web/templates/contribute.html:58
 #, python-format
 msgid "Open a new <a href=\"%(url)s\">GitHub pull request</a> with the patch."
-msgstr "Opret en ny <a href=\"%(url)s\">GitHub pull request</a> med rettelsen."
+msgstr "Opret en ny <a href=\"%(url)s\">GitHub-pull request</a> med rettelsen."
 
 #: weblate_web/templates/contribute.html:61
 msgid ""
@@ -2584,7 +2579,7 @@ msgstr "Foreslå din ændring i <a href=\"%(url)s\">GitHub-problemer</a>."
 
 #: weblate_web/templates/contribute.html:84
 msgid "<strong>Source code</strong> related questions?"
-msgstr "Spørgsmål angående<strong>kildekode</strong>?"
+msgstr "Spørgsmål angående<strong> kildekode</strong>?"
 
 #: weblate_web/templates/contribute.html:88
 #, python-format
@@ -3178,7 +3173,7 @@ msgid ""
 "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
 "more."
 msgstr ""
-"Gennemse <a href=\"https://docs.weblate.org/\">dokumentationen</a> for at "
+"Gennemsé <a href=\"https://docs.weblate.org/\">dokumentationen</a> for at "
 "lære mere."
 
 #: weblate_web/templates/features.html:32
@@ -4805,10 +4800,8 @@ msgstr ""
 
 #: weblate_web/templates/subscription/discovery-register.html:6
 #: weblate_web/templates/subscription/discovery-register.html:13
-#, fuzzy
-#| msgid "Customize Discover Weblate listing"
 msgid "Register Discover Weblate listing"
-msgstr "Tilpas Opdag Weblate-opførelse"
+msgstr "Registrér Opdag Weblate-opførelse"
 
 #: weblate_web/templates/subscription/discovery-register.html:18
 #, fuzzy
@@ -4988,7 +4981,7 @@ msgstr "Bed om hjælp"
 #: weblate_web/templates/support.html:177
 #, python-format
 msgid "Discuss with community on <a href=\"%(url)s\">GitHub</a>."
-msgstr "Diskuter med fællesskabet på <a href=\"%(url)s\">GitHub</a>."
+msgstr "Diskutér med fællesskabet på <a href=\"%(url)s\">GitHub</a>."
 
 #: weblate_web/templates/terms.html:21
 msgid ""
