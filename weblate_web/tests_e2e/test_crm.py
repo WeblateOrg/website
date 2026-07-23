@@ -747,6 +747,24 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             live_server, reverse("crm:invoice-list", kwargs={"kind": "invoice"})
         )
 
+    def test_mobile_search_layout(
+        self, page: Page, live_server, crm_data: CrmData
+    ) -> None:
+        """Keep the CRM listing search compact on a narrow viewport."""
+        page.set_viewport_size({"width": 390, "height": 800})
+        log_in(page, live_server, crm_data.staff)
+
+        response = page.goto(
+            absolute_url(
+                live_server, reverse("crm:customer-list", kwargs={"kind": "all"})
+            )
+        )
+        assert_loaded(page, response, "Mobile customer list")
+        assert page.locator(".crm-search .crm-field--inline").evaluate(
+            "element => element.getBoundingClientRect().height < 100"
+        )
+        capture(page, "customers-search-mobile")
+
     def test_income_reports_mobile_layout(
         self, page: Page, live_server, crm_data: CrmData
     ) -> None:
