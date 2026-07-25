@@ -19,19 +19,19 @@
                 {% if form.is_fosdem and field.name == "vat" %}
                   <details>
                     <summary>Need a proper invoice? Click here to fill in the billing details.</summary>
-                  {% endif %}
-                  <div class="form-line">
-                    <div class="line-left">{{ field.label }}</div>
-                    <div class="line-right">
-                      {{ field.errors }}
-                      {{ field }}
-                      {% if field.help_text %}
-                        <p class="help">{{ field.help_text|safe }}</p>
-                      {% endif %}
-                    </div>
-                    <div class="clear"></div>
+                {% endif %}
+                <div class="form-line">
+                  <div class="line-left">{{ field.label }}</div>
+                  <div class="line-right">
+                    {{ field.errors }}
+                    {{ field }}
+                    {% if field.help_text %}
+                      <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
                   </div>
-                  {% if form.is_fosdem and field.name == "email" %}
+                  <div class="clear"></div>
+                </div>
+                {% if form.is_fosdem and field.name == "email" %}
                   </details>
                 {% endif %}
               {% else %}
