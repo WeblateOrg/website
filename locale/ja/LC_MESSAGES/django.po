@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-20 00:51-0500\n"
+"POT-Creation-Date: 2026-07-27 00:10-0500\n"
 "PO-Revision-Date: 2026-07-25 11:01+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -46,8 +46,8 @@ msgid "Please confirm that you want to issue a final invoice."
 msgstr "最終請求書を発行するかどうかご確認してください。"
 
 #: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
-#: weblate_web/crm/views.py:322 weblate_web/views.py:1168
-#: weblate_web/views.py:1179 weblate_web/views.py:1191
+#: weblate_web/crm/views.py:322 weblate_web/views.py:1212
+#: weblate_web/views.py:1223 weblate_web/views.py:1235
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "このサブスクリプションは、選択したプランにはアップグレードできません。"
 
@@ -1195,7 +1195,7 @@ msgstr "報酬"
 #: weblate_web/crm/templates/payments/customer_detail.html:379
 #: weblate_web/crm/templates/payments/customer_detail.html:511
 #: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/payment/payment.html:71
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "編集"
@@ -1705,7 +1705,7 @@ msgstr ""
 msgid "Overdue"
 msgstr ""
 
-#: weblate_web/invoices/views.py:51 weblate_web/views.py:441
+#: weblate_web/invoices/views.py:51 weblate_web/views.py:471
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "この請求書はすでに支払い済みです。詳細を確認するにはサインインしてください。"
@@ -4052,7 +4052,7 @@ msgstr "%(timestamp)s に生成。"
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:755
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:799
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr "あなたの存在が Weblate を支えています。ご寄付に心より感謝いたします。"
 
@@ -4391,11 +4391,11 @@ msgstr ""
 msgid "Billing information"
 msgstr "請求情報"
 
-#: weblate_web/templates/payment/payment.html:77
+#: weblate_web/templates/payment/payment.html:79
 msgid "Please choose payment method"
 msgstr "支払い方法を選択してください"
 
-#: weblate_web/templates/payment/payment.html:90
+#: weblate_web/templates/payment/payment.html:92
 msgid "Make Payment"
 msgstr "支払う"
 
@@ -5129,7 +5129,7 @@ msgid "Other topics"
 msgstr "その他のトピック"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:1017
+#: weblate_web/views.py:1061
 msgid "Milestones"
 msgstr "マイルストーン"
 
@@ -5243,16 +5243,16 @@ msgid "%d day remaining"
 msgid_plural "%d days remaining"
 msgstr[0] "残り %d 日"
 
-#: weblate_web/utils.py:61
+#: weblate_web/utils.py:62
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "パラメータ %(field)s 内でエラー: %(error)s"
 
-#: weblate_web/views.py:426
+#: weblate_web/views.py:456
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "ご寄付ありがとうございます。FOSDEM をお楽しみください。"
 
-#: weblate_web/views.py:466
+#: weblate_web/views.py:499
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -5260,29 +5260,29 @@ msgstr ""
 "お名前をご記入の上、お支払いを完了させてください。 領収書に追加したい請求情報"
 "があれば入力して下さい."
 
-#: weblate_web/views.py:473 weblate_web/views.py:509
+#: weblate_web/views.py:506 weblate_web/views.py:598
 msgid "Please provide your billing information to complete the payment."
 msgstr "支払いを完了するには、お支払い情報を入力してください。"
 
-#: weblate_web/views.py:485
+#: weblate_web/views.py:518
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "VAT ID が有効ではなくなっています。更新してください。"
 
-#: weblate_web/views.py:504
+#: weblate_web/views.py:537
 msgid "Please choose a payment method."
 msgstr "お支払い方法を選択してください。"
 
-#: weblate_web/views.py:537
+#: weblate_web/views.py:563
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "決済処理に失敗しました: %s"
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:573
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "支払処理を完了できません: %s"
 
-#: weblate_web/views.py:604
+#: weblate_web/views.py:648
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
@@ -5290,30 +5290,30 @@ msgstr ""
 "すでに生成済みの合意書を使用してください。新しい合意書は30日後に生成可能にな"
 "ります。"
 
-#: weblate_web/views.py:611
+#: weblate_web/views.py:655
 msgid "New agreement created, you can download it below."
 msgstr "新しい合意書が作成されました。以下からダウンロードできます。"
 
-#: weblate_web/views.py:667
+#: weblate_web/views.py:711
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 "会社情報と銀行口座が新しくなりました！お支払いの際は、現在の請求書を必ずご確"
 "認ください。"
 
-#: weblate_web/views.py:726
+#: weblate_web/views.py:770
 msgid "Payment not yet processed, please retry."
 msgstr "支払いはまだ処理されていません。もう一度お試しください。"
 
-#: weblate_web/views.py:730
+#: weblate_web/views.py:774
 msgid "The payment was rejected: {}"
 msgstr "拒否された支払い: {}"
 
-#: weblate_web/views.py:731
+#: weblate_web/views.py:775
 msgid "Unknown reason"
 msgstr "理由不明"
 
-#: weblate_web/views.py:743
+#: weblate_web/views.py:787
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
@@ -5321,21 +5321,21 @@ msgstr ""
 "お支払いは正常に処理されましたが、サブスクリプションを更新できませんでした。"
 "サポートまでお問い合わせください。"
 
-#: weblate_web/views.py:748
+#: weblate_web/views.py:792
 msgid "Thank you for your subscription."
 msgstr "お申し込みありがとうございます。"
 
-#: weblate_web/views.py:936
+#: weblate_web/views.py:980
 msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
 
-#: weblate_web/views.py:1123
+#: weblate_web/views.py:1167
 msgid "User not found!"
 msgstr "利用者が見つかりません！"
 
-#: weblate_web/views.py:1247
+#: weblate_web/views.py:1291
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
 

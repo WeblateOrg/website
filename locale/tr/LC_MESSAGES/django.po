@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-20 00:51-0500\n"
+"POT-Creation-Date: 2026-07-27 00:10-0500\n"
 "PO-Revision-Date: 2026-07-13 07:37+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -45,8 +45,8 @@ msgid "Please confirm that you want to issue a final invoice."
 msgstr ""
 
 #: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
-#: weblate_web/crm/views.py:322 weblate_web/views.py:1168
-#: weblate_web/views.py:1179 weblate_web/views.py:1191
+#: weblate_web/crm/views.py:322 weblate_web/views.py:1212
+#: weblate_web/views.py:1223 weblate_web/views.py:1235
 msgid "This subscription can not be upgraded to the selected package."
 msgstr ""
 
@@ -1238,7 +1238,7 @@ msgstr "Ödül"
 #: weblate_web/crm/templates/payments/customer_detail.html:379
 #: weblate_web/crm/templates/payments/customer_detail.html:511
 #: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/payment/payment.html:71
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "Düzenle"
@@ -1749,7 +1749,7 @@ msgstr ""
 msgid "Overdue"
 msgstr ""
 
-#: weblate_web/invoices/views.py:51 weblate_web/views.py:441
+#: weblate_web/invoices/views.py:51 weblate_web/views.py:471
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "Bu fatura zaten ödenmiş. Ayrıntıları görmek için oturum açın."
 
@@ -4130,7 +4130,7 @@ msgstr "%(timestamp)s tarihinde oluşturuldu."
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:755
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:799
 #, fuzzy
 #| msgid "Thank you for your donation."
 msgid "You are the heart of Weblate. Thank you for your donation."
@@ -4474,11 +4474,11 @@ msgstr ""
 msgid "Billing information"
 msgstr "Fatura bilgileri"
 
-#: weblate_web/templates/payment/payment.html:77
+#: weblate_web/templates/payment/payment.html:79
 msgid "Please choose payment method"
 msgstr "Lütfen ödeme yöntemini seçin"
 
-#: weblate_web/templates/payment/payment.html:90
+#: weblate_web/templates/payment/payment.html:92
 msgid "Make Payment"
 msgstr "Öde"
 
@@ -5217,7 +5217,7 @@ msgid "Other topics"
 msgstr "Diğer konular"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:1017
+#: weblate_web/views.py:1061
 msgid "Milestones"
 msgstr "Aşamalar"
 
@@ -5333,16 +5333,16 @@ msgid_plural "%d days remaining"
 msgstr[0] "%d gün kaldı"
 msgstr[1] "%d gün kaldı"
 
-#: weblate_web/utils.py:61
+#: weblate_web/utils.py:62
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "%(field)s parametresinde hata: %(error)s"
 
-#: weblate_web/views.py:426
+#: weblate_web/views.py:456
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Bağışınız için teşekkürler FOSDEM tadını çıkarın."
 
-#: weblate_web/views.py:466
+#: weblate_web/views.py:499
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -5350,29 +5350,29 @@ msgstr ""
 "Ödemeyi tamamlamak için lütfen adınızı belirtin. Alındı için gerek "
 "duyduğunuz diğer fatura bilgilerini de ekleyin."
 
-#: weblate_web/views.py:473 weblate_web/views.py:509
+#: weblate_web/views.py:506 weblate_web/views.py:598
 msgid "Please provide your billing information to complete the payment."
 msgstr "Ödemeyi tamamlamak için lütfen fatura bilgilerinizi yazın."
 
-#: weblate_web/views.py:485
+#: weblate_web/views.py:518
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "KDV kimliği artık geçerli değil. Lütfen güncelleyin."
 
-#: weblate_web/views.py:504
+#: weblate_web/views.py:537
 msgid "Please choose a payment method."
 msgstr "Lütfen bir ödeme yöntemi seçin."
 
-#: weblate_web/views.py:537
+#: weblate_web/views.py:563
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "Ödeme işlemi yapılamadı: %s"
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:573
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "Ödeme işlemi tamamlanamadı: %s"
 
-#: weblate_web/views.py:604
+#: weblate_web/views.py:648
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
@@ -5380,48 +5380,48 @@ msgstr ""
 "Lütfen önceden hazırlanmış sözleşmeyi kullanın. 30 gün sonra yeni bir "
 "sözleşme oluşturabilirsiniz."
 
-#: weblate_web/views.py:611
+#: weblate_web/views.py:655
 msgid "New agreement created, you can download it below."
 msgstr "Yeni sözleşme oluşturuldu, aşağıdan indirebilirsiniz."
 
-#: weblate_web/views.py:667
+#: weblate_web/views.py:711
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr "Yeni kuruluş, yeni banka bilgileri! Var olan faturaya iyi inceleyin."
 
-#: weblate_web/views.py:726
+#: weblate_web/views.py:770
 msgid "Payment not yet processed, please retry."
 msgstr "Ödeme henüz alınmadı. Lütfen yeniden deneyin."
 
-#: weblate_web/views.py:730
+#: weblate_web/views.py:774
 msgid "The payment was rejected: {}"
 msgstr "Ödeme reddedildi: {}"
 
-#: weblate_web/views.py:731
+#: weblate_web/views.py:775
 msgid "Unknown reason"
 msgstr "Nedeni bilinmiyor"
 
-#: weblate_web/views.py:743
+#: weblate_web/views.py:787
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr ""
 
-#: weblate_web/views.py:748
+#: weblate_web/views.py:792
 msgid "Thank you for your subscription."
 msgstr "Aboneliğiniz için teşekkürler."
 
-#: weblate_web/views.py:936
+#: weblate_web/views.py:980
 msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
 
-#: weblate_web/views.py:1123
+#: weblate_web/views.py:1167
 msgid "User not found!"
 msgstr "Kullanıcı bulunamadı!"
 
-#: weblate_web/views.py:1247
+#: weblate_web/views.py:1291
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
 
