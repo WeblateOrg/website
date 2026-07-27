@@ -37,7 +37,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-20 00:51-0500\n"
+"POT-Creation-Date: 2026-07-27 00:10-0500\n"
 "PO-Revision-Date: 2026-07-13 07:37+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -55,8 +55,8 @@ msgid "Please confirm that you want to issue a final invoice."
 msgstr "최종 청구서를 발급할지 확인하세요."
 
 #: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
-#: weblate_web/crm/views.py:322 weblate_web/views.py:1168
-#: weblate_web/views.py:1179 weblate_web/views.py:1191
+#: weblate_web/crm/views.py:322 weblate_web/views.py:1212
+#: weblate_web/views.py:1223 weblate_web/views.py:1235
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "이 구독을 선택한 패키지로 업그레이드할 수 없습니다."
 
@@ -1240,7 +1240,7 @@ msgstr "보상"
 #: weblate_web/crm/templates/payments/customer_detail.html:379
 #: weblate_web/crm/templates/payments/customer_detail.html:511
 #: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/payment/payment.html:71
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "편집"
@@ -1761,7 +1761,7 @@ msgstr ""
 msgid "Overdue"
 msgstr ""
 
-#: weblate_web/invoices/views.py:51 weblate_web/views.py:441
+#: weblate_web/invoices/views.py:51 weblate_web/views.py:471
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "해당 인보이스는 이미 결제되었습니다. 자세한 내용을 보려면 로그인하세요."
@@ -4080,7 +4080,7 @@ msgstr "%(timestamp)s에 생성됨."
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:755
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:799
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr "당신 덕분에 Weblate가 존재합니다. 기부해 주셔서 감사합니다."
 
@@ -4407,11 +4407,11 @@ msgstr ""
 msgid "Billing information"
 msgstr "결제 정보"
 
-#: weblate_web/templates/payment/payment.html:77
+#: weblate_web/templates/payment/payment.html:79
 msgid "Please choose payment method"
 msgstr "결제 방법을 선택하세요"
 
-#: weblate_web/templates/payment/payment.html:90
+#: weblate_web/templates/payment/payment.html:92
 msgid "Make Payment"
 msgstr "결제하기"
 
@@ -5130,7 +5130,7 @@ msgid "Other topics"
 msgstr "다른 주제"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:1017
+#: weblate_web/views.py:1061
 msgid "Milestones"
 msgstr "마일스톤"
 
@@ -5244,16 +5244,16 @@ msgid "%d day remaining"
 msgid_plural "%d days remaining"
 msgstr[0] "%d일 남음"
 
-#: weblate_web/utils.py:61
+#: weblate_web/utils.py:62
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "매개변수 %(field)s 오류: %(error)s"
 
-#: weblate_web/views.py:426
+#: weblate_web/views.py:456
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "기부해 주셔서 감사합니다. FOSDEM을 즐기세요."
 
-#: weblate_web/views.py:466
+#: weblate_web/views.py:499
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -5261,77 +5261,77 @@ msgstr ""
 "결제를 완료하려면 이름을 입력하세요. 영수증에 다른 결제 정보가 필요하면 함께 "
 "입력하세요."
 
-#: weblate_web/views.py:473 weblate_web/views.py:509
+#: weblate_web/views.py:506 weblate_web/views.py:598
 msgid "Please provide your billing information to complete the payment."
 msgstr "결제를 완료하려면 결제 정보를 입력하세요."
 
-#: weblate_web/views.py:485
+#: weblate_web/views.py:518
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "VAT ID가 더 이상 유효하지 않습니다. 업데이트해 주세요."
 
-#: weblate_web/views.py:504
+#: weblate_web/views.py:537
 msgid "Please choose a payment method."
 msgstr "결제 방법을 선택하세요."
 
-#: weblate_web/views.py:537
+#: weblate_web/views.py:563
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "결제를 처리할 수 없습니다: %s"
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:573
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "결제를 완료할 수 없습니다: %s"
 
-#: weblate_web/views.py:604
+#: weblate_web/views.py:648
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr "이미 생성된 계약서를 사용하세요. 30일 후에 새로 생성할 수 있습니다."
 
-#: weblate_web/views.py:611
+#: weblate_web/views.py:655
 msgid "New agreement created, you can download it below."
 msgstr "새 계약서가 생성되었습니다. 아래에서 다운로드할 수 있습니다."
 
-#: weblate_web/views.py:667
+#: weblate_web/views.py:711
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr "새 회사, 새 은행 정보! 현재 인보이스를 확인하고 결제해 주세요."
 
-#: weblate_web/views.py:726
+#: weblate_web/views.py:770
 msgid "Payment not yet processed, please retry."
 msgstr "결제가 아직 처리되지 않았습니다. 다시 시도해 주세요."
 
-#: weblate_web/views.py:730
+#: weblate_web/views.py:774
 msgid "The payment was rejected: {}"
 msgstr "결제가 거부되었습니다: {}"
 
-#: weblate_web/views.py:731
+#: weblate_web/views.py:775
 msgid "Unknown reason"
 msgstr "알 수 없는 이유"
 
-#: weblate_web/views.py:743
+#: weblate_web/views.py:787
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr ""
 "결제가 처리되었으나, 구독을 갱신할 수 없었습니다. 저희에게 문의해 주십시오."
 
-#: weblate_web/views.py:748
+#: weblate_web/views.py:792
 msgid "Thank you for your subscription."
 msgstr "구독해 주셔서 감사합니다."
 
-#: weblate_web/views.py:936
+#: weblate_web/views.py:980
 msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
 
-#: weblate_web/views.py:1123
+#: weblate_web/views.py:1167
 msgid "User not found!"
 msgstr "사용자를 찾을 수 없습니다!"
 
-#: weblate_web/views.py:1247
+#: weblate_web/views.py:1291
 msgid "Please confirm the upgrade from your account page."
 msgstr "계정 페이지에서 업그레이드를 확인하세요."
 

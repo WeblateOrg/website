@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-20 00:51-0500\n"
+"POT-Creation-Date: 2026-07-27 00:10-0500\n"
 "PO-Revision-Date: 2026-07-24 08:01+0000\n"
 "Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/weblate/website/"
@@ -41,8 +41,8 @@ msgid "Please confirm that you want to issue a final invoice."
 msgstr "Confirme que desea emitir una factura final."
 
 #: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
-#: weblate_web/crm/views.py:322 weblate_web/views.py:1168
-#: weblate_web/views.py:1179 weblate_web/views.py:1191
+#: weblate_web/crm/views.py:322 weblate_web/views.py:1212
+#: weblate_web/views.py:1223 weblate_web/views.py:1235
 msgid "This subscription can not be upgraded to the selected package."
 msgstr ""
 "Esta suscripción no puede realizar la migración al paquete seleccionado."
@@ -1107,7 +1107,7 @@ msgstr "Recompensa"
 #: weblate_web/crm/templates/payments/customer_detail.html:379
 #: weblate_web/crm/templates/payments/customer_detail.html:511
 #: weblate_web/templates/payment/customer-agreement.html:18
-#: weblate_web/templates/payment/payment.html:70
+#: weblate_web/templates/payment/payment.html:71
 #: weblate_web/templates/snippets/customer-address.html:10
 msgid "Edit"
 msgstr "Editar"
@@ -1568,7 +1568,7 @@ msgstr "No pagado"
 msgid "Overdue"
 msgstr "Atrasado"
 
-#: weblate_web/invoices/views.py:51 weblate_web/views.py:441
+#: weblate_web/invoices/views.py:51 weblate_web/views.py:471
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "Este ingreso ya ha sido abonado. Acceda para ver los detalles."
 
@@ -2424,8 +2424,9 @@ msgid ""
 "Showcase your skills by tackling one of our <a href=\"%(issues)s\">good "
 "first issues</a> and making a tangible impact."
 msgstr ""
-"Demuestre sus habilidades abordando uno de nuestras <a href=\"%(issues)s\">"
-"primeras incidencias buenas</a> y tenga un impacto tangible."
+"Demuestre sus habilidades abordando uno de nuestras <a "
+"href=\"%(issues)s\">primeras incidencias buenas</a> y tenga un impacto "
+"tangible."
 
 #: weblate_web/templates/careers.html:214
 #, python-format
@@ -3974,7 +3975,7 @@ msgstr "Generado el %(timestamp)s."
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:755
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:799
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr "Eres el corazón de Weblate.Gracias por su donativo."
 
@@ -4313,11 +4314,11 @@ msgstr ""
 msgid "Billing information"
 msgstr "Datos de facturación"
 
-#: weblate_web/templates/payment/payment.html:77
+#: weblate_web/templates/payment/payment.html:79
 msgid "Please choose payment method"
 msgstr "Elija un método de pago"
 
-#: weblate_web/templates/payment/payment.html:90
+#: weblate_web/templates/payment/payment.html:92
 msgid "Make Payment"
 msgstr "Pagar"
 
@@ -5060,7 +5061,7 @@ msgid "Other topics"
 msgstr "Otros temas"
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:1017
+#: weblate_web/views.py:1061
 msgid "Milestones"
 msgstr "Hitos"
 
@@ -5176,16 +5177,16 @@ msgid_plural "%d days remaining"
 msgstr[0] "Queda %d día"
 msgstr[1] "Quedan %d días"
 
-#: weblate_web/utils.py:61
+#: weblate_web/utils.py:62
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Error en el parámetro %(field)s: %(error)s"
 
-#: weblate_web/views.py:426
+#: weblate_web/views.py:456
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Gracias por su donativo y disfrute de FOSDEM."
 
-#: weblate_web/views.py:466
+#: weblate_web/views.py:499
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
@@ -5193,58 +5194,58 @@ msgstr ""
 "Proporcione su nombre para completar el pago. Incluya otra información de "
 "cargo si lo necesita en el recibo."
 
-#: weblate_web/views.py:473 weblate_web/views.py:509
+#: weblate_web/views.py:506 weblate_web/views.py:598
 msgid "Please provide your billing information to complete the payment."
 msgstr "Proporcione su información de facturación para completar el pago."
 
-#: weblate_web/views.py:485
+#: weblate_web/views.py:518
 msgid "The VAT ID is no longer valid, please update it."
 msgstr "La cantidad del IVA ya no es válido, actualícelo ."
 
-#: weblate_web/views.py:504
+#: weblate_web/views.py:537
 msgid "Please choose a payment method."
 msgstr "Elija un método de pago."
 
-#: weblate_web/views.py:537
+#: weblate_web/views.py:563
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr "No se ha podido realizar el pago: %s"
 
-#: weblate_web/views.py:547
+#: weblate_web/views.py:573
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr "No se ha podido completar el pago: %s"
 
-#: weblate_web/views.py:604
+#: weblate_web/views.py:648
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr "Utilice un acuerdo ya generado, puede genera uno nuevo tras 30 días."
 
-#: weblate_web/views.py:611
+#: weblate_web/views.py:655
 msgid "New agreement created, you can download it below."
 msgstr "Acuerdo nuevo creado, puede descargarlo a continuación."
 
-#: weblate_web/views.py:667
+#: weblate_web/views.py:711
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 "¡Compañía nueva, detalles de banco nuevo! Abone con atención al ingreso "
 "actual."
 
-#: weblate_web/views.py:726
+#: weblate_web/views.py:770
 msgid "Payment not yet processed, please retry."
 msgstr "El pago aún no fue procesado; intente de nuevo."
 
-#: weblate_web/views.py:730
+#: weblate_web/views.py:774
 msgid "The payment was rejected: {}"
 msgstr "Se rechazó el pago: {}"
 
-#: weblate_web/views.py:731
+#: weblate_web/views.py:775
 msgid "Unknown reason"
 msgstr "Motivo desconocido"
 
-#: weblate_web/views.py:743
+#: weblate_web/views.py:787
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
@@ -5252,11 +5253,11 @@ msgstr ""
 "El pago se tramitó, pero no se pudo actualizar la suscripción. Por favor "
 "contáctenos."
 
-#: weblate_web/views.py:748
+#: weblate_web/views.py:792
 msgid "Thank you for your subscription."
 msgstr "Gracias por suscribirse."
 
-#: weblate_web/views.py:936
+#: weblate_web/views.py:980
 msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
@@ -5264,11 +5265,11 @@ msgstr ""
 "Activa el listado desde su página de gestión Weblate utilizando el vale de "
 "activación mostrado a continuación."
 
-#: weblate_web/views.py:1123
+#: weblate_web/views.py:1167
 msgid "User not found!"
 msgstr "¡Usuario no encontrado!"
 
-#: weblate_web/views.py:1247
+#: weblate_web/views.py:1291
 msgid "Please confirm the upgrade from your account page."
 msgstr "Confirme por favor la migración desde su página de cuenta."
 
