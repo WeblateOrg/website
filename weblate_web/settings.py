@@ -115,6 +115,7 @@ LANGUAGES = (
     ("kab", "Taqbaylit"),
     ("kk", "Қазақ тілі"),
     ("ko", "한국어"),
+    ("lo", "ລາວ"),
     ("lt", "Lietuvių"),
     ("lv", "Latviešu"),
     ("nb", "Norsk bokmål"),
@@ -136,6 +137,7 @@ LANGUAGES = (
     ("tr", "Türkçe"),
     ("ug", "ئۇيغۇرچە"),
     ("uk", "Українська"),
+    ("vi", "Tiếng việt"),
     ("zh-hans", "简体中文"),
     ("zh-hant", "正體中文"),
 )
