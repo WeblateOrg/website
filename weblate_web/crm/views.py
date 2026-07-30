@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import calendar
 import math
-from datetime import date
+from datetime import date, datetime, time
 from decimal import Decimal
 from operator import attrgetter
-from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
+from typing import TYPE_CHECKING, ClassVar, Literal, TypeAlias, TypedDict, cast
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,9 @@ from django.db.models import (
     Exists,
     ExpressionWrapper,
     F,
+    Min,
     OuterRef,
+    Prefetch,
     Q,
     Sum,
     Value,
@@ -60,19 +62,24 @@ from weblate_web.crm.workqueue import (
     get_expired_service_ids,
     get_unpaid_invoice_queryset,
 )
+from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.forms import NewSubscriptionForm
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import (
     CURRENCY_MAP,
+    CURRENCY_MAP_FROM_PAYMENT,
+    Currency,
     Invoice,
     InvoiceCategory,
     InvoiceKind,
     QuoteStatus,
 )
 from weblate_web.models import (
+    Package,
     PackageCategory,
     SamlIdentity,
     Service,
+    ServiceKind,
     Subscription,
 )
 from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
@@ -90,15 +97,23 @@ if TYPE_CHECKING:
 
     from django.http import HttpRequest
 
-    from weblate_web.invoices.models import Currency
     from weblate_web.views import AuthenticatedHttpRequest
 
 
-class InvoiceSummaryRow(TypedDict):
+IncomeCategory: TypeAlias = InvoiceCategory | None
+IncomePeriod: TypeAlias = Literal["day", "month", "month_start"]
+
+
+class IncomeSummaryRow(TypedDict):
     pk: UUID
-    category: int
+    category: int | None
     period: date | int
     total_no_vat: Decimal
+
+
+class InvoiceSummaryRow(IncomeSummaryRow):
+    currency: int
+    tax_date: date
 
 
 def has_invoice_confirmation(request: HttpRequest) -> bool:
@@ -1122,6 +1137,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     permission = "invoices.view_income"
     title = "Income Tracking"
     MAX_MONTH_INDEX = date.max.year * 12 - 1
+    INVOICE_DATA_START = date(2024, 11, 1)
 
     # Chart configuration
     CHART_WIDTH = 800
@@ -1141,7 +1157,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         InvoiceCategory.SUPPORT: "#79aec8",
         InvoiceCategory.DEVEL: "#5b80b2",
         InvoiceCategory.DONATE: "#9fc5e8",
+        None: "#7f8c8d",
     }
+    INCOME_CATEGORIES: tuple[IncomeCategory, ...] = (*InvoiceCategory, None)
 
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
@@ -1158,7 +1176,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return f"Income Tracking - {year}/{month:02d}"
         return f"Income Tracking - {year}"
 
-    def generate_svg_pie_chart(self, data: dict[InvoiceCategory, Decimal]) -> str:  # ruff:ignore[too-many-locals]
+    def _get_category_label(self, category: IncomeCategory) -> str:
+        if category is None:
+            return gettext("Uncategorized")
+        return category.label
+
+    def generate_svg_pie_chart(self, data: dict[IncomeCategory, Decimal]) -> str:  # ruff:ignore[too-many-locals]
         """Generate a simple SVG pie chart for category distribution with legend."""
         if not data or sum(data.values()) == 0:
             return ""
@@ -1188,15 +1211,16 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             category = non_zero_categories[0]
             value = data[category]
             color = self.CATEGORY_COLORS.get(category, "#999")
+            category_label = self._get_category_label(category)
             svg_parts.append(
                 f'<circle cx="{center_x}" cy="{center_y}" r="{radius}" '
                 f'fill="{color}" stroke="white" stroke-width="2">'
-                f"<title>{category.label}: €{value:,.0f} (100.0%)</title>"
+                f"<title>{category_label}: €{value:,.0f} (100.0%)</title>"
                 f"</circle>"
             )
             self._append_pie_label(
                 svg_parts,
-                category.label,
+                category_label,
                 f"€{value:,.0f} (100%)",
                 center_x,
                 center_y,
@@ -1225,11 +1249,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 large_arc = 1 if angle > 180 else 0
 
                 color = self.CATEGORY_COLORS.get(category, "#999")
+                category_label = self._get_category_label(category)
                 svg_parts.append(
                     f'<path d="M{center_x},{center_y} L{start_x},{start_y} '
                     f'A{radius},{radius} 0 {large_arc},1 {end_x},{end_y} Z" '
                     f'fill="{color}" stroke="white" stroke-width="2">'
-                    f"<title>{category.label}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
+                    f"<title>{category_label}: €{value:,.0f} ({value / total * 100:.1f}%)</title>"
                     f"</path>"
                 )
 
@@ -1237,7 +1262,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 label_radius = radius * 0.58
                 label_positions.append(
                     (
-                        category.label,
+                        category_label,
                         f"€{value:,.0f} ({value / total * 100:.0f}%)",
                         center_x + label_radius * math.cos(label_angle),
                         center_y + label_radius * math.sin(label_angle),
@@ -1281,7 +1306,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     def generate_svg_stacked_bar_chart(  # ruff:ignore[too-many-locals]
         self,
         monthly_data: dict[str, Decimal],
-        period_category_data: dict[str, dict[InvoiceCategory, Decimal]],
+        period_category_data: dict[str, dict[IncomeCategory, Decimal]],
         year: int,
         month: int | None = None,
     ) -> str:
@@ -1342,7 +1367,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
             # Stack bars by category
             y_offset: float = height - padding
-            for category in InvoiceCategory:
+            for category in self.INCOME_CATEGORIES:
                 category_total = category_totals.get(category, Decimal(0))
 
                 if category_total > 0:
@@ -1352,10 +1377,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     title_label = (
                         f"{label_prefix} {bar_label}" if label_prefix else bar_label
                     )
+                    category_label = self._get_category_label(category)
                     svg_parts.append(
                         f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" '
                         f'fill="{self.CATEGORY_COLORS.get(category, "#999")}" stroke="white" stroke-width="1">'
-                        f"<title>{category.label} - {title_label}: €{category_total:,.0f}</title>"
+                        f"<title>{category_label} - {title_label}: €{category_total:,.0f}</title>"
                         f"</rect>"
                     )
                     y_offset = y
@@ -1397,6 +1423,40 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             current_month = self._shift_month(current_month, 1)
         return month_starts
 
+    def _get_payment_cutoff(self) -> datetime:
+        return timezone.make_aware(
+            datetime.combine(self.INVOICE_DATA_START, time.min),
+            timezone.get_current_timezone(),
+        )
+
+    def _get_exchange_rate(self, currency: str, rate_date: date) -> Decimal:
+        cache = getattr(self, "_income_exchange_rate_cache", None)
+        if cache is None:
+            cache = {}
+            self._income_exchange_rate_cache = cache
+        key = (currency, rate_date)
+        if key not in cache:
+            cache[key] = ExchangeRates.get(currency, rate_date)
+        return cache[key]
+
+    def _convert_to_eur(
+        self, amount: Decimal, currency: Currency, rate_date: date
+    ) -> Decimal:
+        if currency == Currency.EUR:
+            return amount
+        return (
+            amount
+            * self._get_exchange_rate(currency.label, rate_date)
+            / self._get_exchange_rate(Currency.EUR.label, rate_date)
+        )
+
+    def _get_period_expression(self, period: IncomePeriod):
+        if period == "day":
+            return ExtractDay("issue_date")
+        if period == "month":
+            return ExtractMonth("issue_date")
+        return TruncMonth("issue_date")
+
     def _get_invoice_summary_rows(
         self,
         year: int | None = None,
@@ -1404,8 +1464,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         *,
         start_date: date | None = None,
         end_date: date | None = None,
-        period_expr=None,
-    ) -> list[InvoiceSummaryRow]:
+        period: IncomePeriod,
+    ) -> list[IncomeSummaryRow]:
         """Fetch per-invoice totals for the report using SQL aggregation."""
         zero = Value(Decimal(0), output_field=self.DECIMAL_OUTPUT_FIELD)
         line_total = ExpressionWrapper(
@@ -1415,6 +1475,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         query = Invoice.objects.filter(
             kind=InvoiceKind.INVOICE,
+            issue_date__gte=self.INVOICE_DATA_START,
         )
         if year is not None:
             query = query.filter(issue_date__year=year)
@@ -1425,16 +1486,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if end_date is not None:
             query = query.filter(issue_date__lt=end_date)
 
-        if period_expr is None:
-            period_expr = (
-                ExtractDay("issue_date") if month else ExtractMonth("issue_date")
-            )
-
-        return cast(
+        raw_rows = cast(
             "list[InvoiceSummaryRow]",
             list(
-                query.annotate(period=period_expr)
-                .values("pk", "category", "period")
+                query.annotate(period=self._get_period_expression(period))
+                .values("pk", "category", "currency", "tax_date", "period")
                 .annotate(
                     items_total=Coalesce(Sum(line_total), zero),
                     positive_items_total=Coalesce(
@@ -1472,18 +1528,269 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                         output_field=self.DECIMAL_OUTPUT_FIELD,
                     )
                 )
-                .values("pk", "category", "period", "total_no_vat")
+                .values(
+                    "pk",
+                    "category",
+                    "currency",
+                    "tax_date",
+                    "period",
+                    "total_no_vat",
+                )
             ),
         )
 
-    def _get_empty_category_totals(self) -> dict[InvoiceCategory, Decimal]:
-        return {category: Decimal(0) for category in InvoiceCategory}
+        return [
+            {
+                "pk": row["pk"],
+                "category": row["category"],
+                "period": row["period"],
+                "total_no_vat": self._convert_to_eur(
+                    row["total_no_vat"],
+                    Currency(row["currency"]),
+                    row["tax_date"],
+                ),
+            }
+            for row in raw_rows
+        ]
+
+    def _get_payment_period(
+        self, payment_date: date, period: IncomePeriod
+    ) -> date | int:
+        if period == "day":
+            return payment_date.day
+        if period == "month":
+            return payment_date.month
+        return payment_date.replace(day=1)
+
+    def _get_subscription_category(self, subscription: Subscription) -> InvoiceCategory:
+        if subscription.service.kind == ServiceKind.DONATION:
+            return InvoiceCategory.DONATE
+        return subscription.package.get_invoice_category()
+
+    def _get_payment_metadata_category(
+        self,
+        payment: Payment,
+        packages: dict[str, Package],
+        subscriptions: dict[int, Subscription],
+    ) -> IncomeCategory:
+        category: IncomeCategory = None
+        if payment.paid_invoice:
+            category = InvoiceCategory(payment.paid_invoice.category)
+        elif payment.draft_invoice:
+            category = InvoiceCategory(payment.draft_invoice.category)
+        elif payment.extra.get("category") == "donate" or any(
+            key in payment.extra for key in ("donation", "donation_service", "reward")
+        ):
+            category = InvoiceCategory.DONATE
+        elif "plan" in payment.extra:
+            category = InvoiceCategory.HOSTING
+
+        subscription_value = payment.extra.get("subscription")
+        if category is None and isinstance(subscription_value, str):
+            package = packages.get(subscription_value)
+            if package is not None:
+                category = package.get_invoice_category()
+        elif category is None and isinstance(subscription_value, int):
+            subscription = subscriptions.get(subscription_value)
+            if subscription is not None:
+                category = self._get_subscription_category(subscription)
+
+        return category
+
+    def _get_payment_category(
+        self,
+        payment: Payment,
+        packages: dict[str, Package],
+        subscriptions: dict[int, Subscription],
+    ) -> IncomeCategory:
+        category = self._get_payment_metadata_category(payment, packages, subscriptions)
+        if category is not None:
+            return category
+
+        if payment.repeat is not None:
+            category = self._get_payment_metadata_category(
+                payment.repeat, packages, subscriptions
+            )
+            if category is not None:
+                return category
+
+        related_subscriptions = [
+            *payment.subscription_set.all(),
+            *payment.past_subscription_set.all(),
+        ]
+        categories = {
+            self._get_subscription_category(subscription)
+            for subscription in related_subscriptions
+        }
+        if len(categories) == 1:
+            return categories.pop()
+        return None
+
+    def _get_payment_summary_rows(
+        self,
+        year: int | None = None,
+        month: int | None = None,
+        *,
+        start_date: date | None = None,
+        end_date: date | None = None,
+        period: IncomePeriod,
+    ) -> list[IncomeSummaryRow]:
+        if year == date.min.year:
+            return []
+        query = (
+            Payment.objects.filter(
+                state=Payment.PROCESSED,
+                created__lt=self._get_payment_cutoff(),
+            )
+            .exclude(paid_invoice__issue_date__gte=self.INVOICE_DATA_START)
+            .select_related(
+                "customer",
+                "draft_invoice",
+                "paid_invoice",
+                "repeat",
+                "repeat__draft_invoice",
+                "repeat__paid_invoice",
+            )
+            .prefetch_related(
+                Prefetch(
+                    "subscription_set",
+                    queryset=Subscription.objects.select_related("package", "service"),
+                ),
+                Prefetch(
+                    "past_subscription_set",
+                    queryset=Subscription.objects.select_related("package", "service"),
+                ),
+            )
+        )
+        if year is not None:
+            query = query.filter(created__year=year)
+        if month:
+            query = query.filter(created__month=month)
+        if start_date is not None:
+            query = query.filter(
+                created__gte=timezone.make_aware(
+                    datetime.combine(start_date, time.min),
+                    timezone.get_current_timezone(),
+                )
+            )
+        if end_date is not None:
+            query = query.filter(
+                created__lt=timezone.make_aware(
+                    datetime.combine(end_date, time.min),
+                    timezone.get_current_timezone(),
+                )
+            )
+
+        payments = list(query)
+        package_names: set[str] = set()
+        subscription_ids: set[int] = set()
+        for payment in payments:
+            for category_source in (payment, payment.repeat):
+                if category_source is None:
+                    continue
+                subscription_value = category_source.extra.get("subscription")
+                if isinstance(subscription_value, str):
+                    package_names.add(subscription_value)
+                elif isinstance(subscription_value, int):
+                    subscription_ids.add(subscription_value)
+
+        packages = Package.objects.in_bulk(package_names, field_name="name")
+        subscriptions = {
+            subscription.pk: subscription
+            for subscription in Subscription.objects.filter(
+                pk__in=subscription_ids
+            ).select_related("package", "service")
+        }
+
+        summary_rows: list[IncomeSummaryRow] = []
+        excluded_btc_ids = getattr(self, "_excluded_btc_payment_ids", None)
+        if excluded_btc_ids is None:
+            excluded_btc_ids = set()
+            self._excluded_btc_payment_ids = excluded_btc_ids
+
+        for payment in payments:
+            if payment.currency == Payment.CURRENCY_BTC:
+                excluded_btc_ids.add(payment.pk)
+                continue
+
+            payment_date = timezone.localtime(payment.created).date()
+            payment_currency = Currency(CURRENCY_MAP_FROM_PAYMENT[payment.currency])
+            summary_rows.append(
+                {
+                    "pk": payment.pk,
+                    "category": self._get_payment_category(
+                        payment, packages, subscriptions
+                    ),
+                    "period": self._get_payment_period(payment_date, period),
+                    "total_no_vat": self._convert_to_eur(
+                        Decimal(str(payment.amount_without_vat)),
+                        payment_currency,
+                        payment_date,
+                    ),
+                }
+            )
+        return summary_rows
+
+    def _get_income_summary_rows(
+        self,
+        year: int | None = None,
+        month: int | None = None,
+        *,
+        start_date: date | None = None,
+        end_date: date | None = None,
+        period: IncomePeriod | None = None,
+    ) -> list[IncomeSummaryRow]:
+        if period is None:
+            period = "day" if month else "month"
+        include_payments = (
+            (year is None or year <= self.INVOICE_DATA_START.year)
+            and (
+                year != self.INVOICE_DATA_START.year
+                or month is None
+                or month < self.INVOICE_DATA_START.month
+            )
+            and (start_date is None or start_date < self.INVOICE_DATA_START)
+        )
+        include_invoices = (
+            (year is None or year >= self.INVOICE_DATA_START.year)
+            and (
+                year != self.INVOICE_DATA_START.year
+                or month is None
+                or month >= self.INVOICE_DATA_START.month
+            )
+            and (end_date is None or end_date > self.INVOICE_DATA_START)
+        )
+        rows: list[IncomeSummaryRow] = []
+        if include_payments:
+            rows.extend(
+                self._get_payment_summary_rows(
+                    year,
+                    month,
+                    start_date=start_date,
+                    end_date=end_date,
+                    period=period,
+                )
+            )
+        if include_invoices:
+            rows.extend(
+                self._get_invoice_summary_rows(
+                    year,
+                    month,
+                    start_date=start_date,
+                    end_date=end_date,
+                    period=period,
+                )
+            )
+        return rows
+
+    def _get_empty_category_totals(self) -> dict[IncomeCategory, Decimal]:
+        return {category: Decimal(0) for category in self.INCOME_CATEGORIES}
 
     def _aggregate_period_totals(
         self,
-        summary_rows: list[InvoiceSummaryRow],
+        summary_rows: list[IncomeSummaryRow],
         period_keys: list[str],
-    ) -> tuple[dict[str, Decimal], dict[str, dict[InvoiceCategory, Decimal]]]:
+    ) -> tuple[dict[str, Decimal], dict[str, dict[IncomeCategory, Decimal]]]:
         period_totals = {key: Decimal(0) for key in period_keys}
         period_category_data = {
             key: self._get_empty_category_totals() for key in period_keys
@@ -1496,7 +1803,10 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 if use_zero_padding
                 else str(cast("int", row["period"]))
             )
-            category = InvoiceCategory(cast("int", row["category"]))
+            raw_category = row["category"]
+            category = (
+                InvoiceCategory(raw_category) if raw_category is not None else None
+            )
             total = cast("Decimal", row["total_no_vat"])
             period_totals[key] += total
             period_category_data[key][category] += total
@@ -1523,15 +1833,15 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         }
         end_date = self._shift_month(end_month, 1)
         if end_date is None:
-            rows = self._get_invoice_summary_rows(
+            rows = self._get_income_summary_rows(
                 start_date=start_month,
-                period_expr=TruncMonth("issue_date"),
+                period="month_start",
             )
         else:
-            rows = self._get_invoice_summary_rows(
+            rows = self._get_income_summary_rows(
                 start_date=start_month,
                 end_date=end_date,
-                period_expr=TruncMonth("issue_date"),
+                period="month_start",
             )
 
         earliest_month: date | None = None
@@ -1713,52 +2023,84 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_income_data(
         self, year: int, month: int | None = None
-    ) -> dict[InvoiceCategory, Decimal]:
+    ) -> dict[IncomeCategory, Decimal]:
         """Get income data aggregated by category."""
+        return self._get_income_data_from_rows(
+            self._get_income_summary_rows(year, month)
+        )
+
+    def _get_income_data_from_rows(
+        self, summary_rows: list[IncomeSummaryRow]
+    ) -> dict[IncomeCategory, Decimal]:
         category_data = self._get_empty_category_totals()
-        for row in self._get_invoice_summary_rows(year, month):
-            category = InvoiceCategory(cast("int", row["category"]))
+        for row in summary_rows:
+            raw_category = row["category"]
+            category = (
+                InvoiceCategory(raw_category) if raw_category is not None else None
+            )
             category_data[category] += cast("Decimal", row["total_no_vat"])
 
         return category_data
 
     def get_monthly_data(
         self, year: int
-    ) -> tuple[dict[str, Decimal], dict[str, dict[InvoiceCategory, Decimal]]]:
+    ) -> tuple[dict[str, Decimal], dict[str, dict[IncomeCategory, Decimal]]]:
         """Get monthly income data for the year."""
         monthly_keys = [f"{month:02d}" for month in range(1, 13)]
         return self._aggregate_period_totals(
-            self._get_invoice_summary_rows(year),
+            self._get_income_summary_rows(year),
             monthly_keys,
         )
 
     def get_daily_data(
         self, year: int, month: int
-    ) -> tuple[dict[str, Decimal], dict[str, dict[InvoiceCategory, Decimal]]]:
+    ) -> tuple[dict[str, Decimal], dict[str, dict[IncomeCategory, Decimal]]]:
         """Get daily income data for a specific month."""
         num_days = calendar.monthrange(year, month)[1]
         daily_keys = [str(day) for day in range(1, num_days + 1)]
         return self._aggregate_period_totals(
-            self._get_invoice_summary_rows(year, month),
+            self._get_income_summary_rows(year, month),
             daily_keys,
         )
 
+    def get_navigation_years(self, current_year: int) -> list[int]:
+        earliest_year = current_year - 5
+        earliest_payment = Payment.objects.filter(
+            state=Payment.PROCESSED,
+            created__lt=self._get_payment_cutoff(),
+        ).aggregate(earliest=Min("created"))["earliest"]
+        if earliest_payment is not None:
+            earliest_year = min(
+                earliest_year, timezone.localtime(earliest_payment).year
+            )
+
+        earliest_invoice = Invoice.objects.filter(
+            kind=InvoiceKind.INVOICE,
+            issue_date__gte=self.INVOICE_DATA_START,
+        ).aggregate(earliest=Min("issue_date"))["earliest"]
+        if earliest_invoice is not None:
+            earliest_year = min(earliest_year, earliest_invoice.year)
+        return list(range(earliest_year, current_year + 2))
+
     def get_context_data(self, **kwargs):
+        self._excluded_btc_payment_ids = set()
         context = super().get_context_data(**kwargs)
         year = self.get_year()
         month = self.get_month()
 
-        # Get income data (returns dict with InvoiceCategory keys)
-        income_data = self.get_income_data(year, month)
+        summary_rows = self._get_income_summary_rows(year, month)
+        income_data = self._get_income_data_from_rows(summary_rows)
 
         # Convert to label-keyed dict for template display
-        income_data_labels = {cat.label: amount for cat, amount in income_data.items()}
+        income_data_labels = {
+            self._get_category_label(category): amount
+            for category, amount in income_data.items()
+        }
         context["income_data"] = income_data_labels
         context["total_income"] = sum(income_data.values())
 
-        # Navigation years (show last 5 years and next year)
         current_year = self._get_current_date().year
-        context["years"] = list(range(current_year - 5, current_year + 2))
+        context["years"] = self.get_navigation_years(current_year)
         context["current_year"] = year
         context["current_month"] = month
 
@@ -1768,7 +2110,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         if month:
             # For monthly view, show daily stacked chart
-            daily_data, daily_category_data = self.get_daily_data(year, month)
+            num_days = calendar.monthrange(year, month)[1]
+            daily_data, daily_category_data = self._aggregate_period_totals(
+                summary_rows,
+                [str(day) for day in range(1, num_days + 1)],
+            )
             context["daily_chart_svg"] = self.generate_svg_stacked_bar_chart(
                 daily_data, daily_category_data, year, month
             )
@@ -1776,7 +2122,10 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             context["rolling_trend"] = self.get_rolling_window_summary(year, month)
         else:
             # For yearly view, show monthly stacked chart
-            monthly_data, monthly_category_data = self.get_monthly_data(year)
+            monthly_data, monthly_category_data = self._aggregate_period_totals(
+                summary_rows,
+                [f"{month_number:02d}" for month_number in range(1, 13)],
+            )
             context["chart_svg"] = self.generate_svg_stacked_bar_chart(
                 monthly_data, monthly_category_data, year
             )
@@ -1790,4 +2139,5 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             )
             context["is_monthly"] = False
 
+        context["excluded_btc_count"] = len(self._excluded_btc_payment_ids)
         return context
