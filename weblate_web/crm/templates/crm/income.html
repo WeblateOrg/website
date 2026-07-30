@@ -79,6 +79,14 @@
     </section>
   {% endif %}
 
+  {% if annual_trend_chart_svg %}
+    <section class="crm-section content">
+      {% translate "Annual income trend" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      <div class="crm-chart">{{ annual_trend_chart_svg|safe }}</div>
+    </section>
+  {% endif %}
+
   <div class="crm-report-grid">
     <section class="crm-section content">
       {% if is_monthly %}

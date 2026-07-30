@@ -427,10 +427,10 @@ def assert_no_horizontal_overflow(page: Page) -> None:
     )
 
 
-def assert_income_charts_fit(page: Page) -> None:
+def assert_income_charts_fit(page: Page, expected_count: int) -> None:
     """Assert generated income charts scale inside their panels."""
     charts = page.locator(".crm-chart")
-    assert charts.count() == 2
+    assert charts.count() == expected_count
     for index in range(charts.count()):
         assert charts.nth(index).evaluate(
             """element => {
@@ -775,7 +775,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         response = page.goto(absolute_url(live_server, reverse("crm:income")))
         assert_loaded(page, response, "Mobile income yearly report")
         assert_no_horizontal_overflow(page)
-        assert_income_charts_fit(page)
+        assert_income_charts_fit(page, 3)
         assert_section_table_does_not_scroll(page, "Yearly category income")
         capture(page, "income-year-mobile")
 
@@ -787,7 +787,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         )
         assert_loaded(page, response, "Mobile income monthly report")
         assert_no_horizontal_overflow(page)
-        assert_income_charts_fit(page)
+        assert_income_charts_fit(page, 2)
         assert_section_table_does_not_scroll(page, "Category income")
         capture(page, "income-month-mobile")
 
