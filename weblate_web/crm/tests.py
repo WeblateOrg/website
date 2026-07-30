@@ -1,5 +1,5 @@
 from collections import UserList
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from io import StringIO
 from unittest.mock import MagicMock, patch
@@ -24,6 +24,7 @@ from django.utils import timezone
 from weblate_web.crm.hosted import USER_ENSURE_RESPONSE_SALT, USER_ENSURE_SALT
 from weblate_web.crm.models import Interaction, ZammadSyncLog
 from weblate_web.crm.views import IncomeView
+from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.invoices.models import (
     Currency,
     Discount,
@@ -2437,7 +2438,7 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-@override_settings(
+@override_settings(  # ruff:ignore[too-many-public-methods]
     CACHES={
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -2463,21 +2464,63 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.customer = self.create_customer()
 
     def create_test_invoice(self, year, month, category, amount):
-        """Create a test invoice with the specified parameters."""
+        """Create a test income record with the specified parameters."""
         # Mock exchange rates
         cnb_mock_rates()
 
+        issue_date = date(year, month, 15)
         invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
             category=category,
             customer=self.customer,
-            issue_date=date(year, month, 15),
+            issue_date=issue_date,
             currency=Currency.EUR,
         )
         invoice.invoiceitem_set.create(
             description="Test item", quantity=1, unit_price=amount
         )
+        if issue_date < IncomeView.INVOICE_DATA_START:
+            payment = Payment.objects.create(
+                amount=int(amount),
+                currency=Payment.CURRENCY_EUR,
+                customer=self.customer,
+                description="Historical test payment",
+                paid_invoice=invoice,
+                state=Payment.PROCESSED,
+            )
+            Payment.objects.filter(pk=payment.pk).update(
+                created=timezone.make_aware(
+                    datetime.combine(issue_date, datetime.min.time())
+                )
+            )
         return invoice
+
+    def create_historical_payment(  # ruff:ignore[too-many-arguments]
+        self,
+        payment_date: date,
+        amount: int,
+        *,
+        currency: int = Payment.CURRENCY_EUR,
+        extra: dict | None = None,
+        paid_invoice: Invoice | None = None,
+        state: int = Payment.PROCESSED,
+    ) -> Payment:
+        payment = Payment.objects.create(
+            amount=amount,
+            currency=currency,
+            customer=self.customer,
+            description="Historical test payment",
+            extra=extra or {},
+            paid_invoice=paid_invoice,
+            state=state,
+        )
+        Payment.objects.filter(pk=payment.pk).update(
+            created=timezone.make_aware(
+                datetime.combine(payment_date, datetime.min.time())
+            )
+        )
+        payment.refresh_from_db()
+        return payment
 
     def test_income_permission_required(self):
         """Test that income view requires permission."""
@@ -2511,6 +2554,182 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Income Tracking")
         self.assertContains(response, str(current_year))
+
+    def test_income_uses_hybrid_cutoff_without_duplicates(self):
+        historical_invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=self.customer,
+            issue_date=date(2024, 10, 31),
+            currency=Currency.EUR,
+        )
+        historical_invoice.invoiceitem_set.create(
+            description="Ignored historical invoice",
+            quantity=1,
+            unit_price=Decimal(900),
+        )
+        self.create_historical_payment(
+            date(2024, 10, 31),
+            100,
+            paid_invoice=historical_invoice,
+        )
+
+        cutoff_invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.SUPPORT,
+            customer=self.customer,
+            issue_date=IncomeView.INVOICE_DATA_START,
+            currency=Currency.EUR,
+        )
+        cutoff_invoice.invoiceitem_set.create(
+            description="Authoritative cutoff invoice",
+            quantity=1,
+            unit_price=Decimal(200),
+        )
+        self.create_historical_payment(
+            date(2024, 10, 31),
+            700,
+            paid_invoice=cutoff_invoice,
+        )
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2024}))
+
+        self.assertEqual(response.context["total_income"], Decimal(300))
+        self.assertEqual(response.context["monthly_data"]["10"], Decimal(100))
+        self.assertEqual(response.context["monthly_data"]["11"], Decimal(200))
+
+    def test_income_includes_only_processed_historical_payments(self):
+        self.create_historical_payment(date(2023, 1, 1), 100)
+        for state in (
+            Payment.NEW,
+            Payment.PENDING,
+            Payment.REJECTED,
+            Payment.ACCEPTED,
+        ):
+            self.create_historical_payment(date(2023, 1, 1), 1000, state=state)
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
+
+        self.assertEqual(response.context["total_income"], Decimal(100))
+
+    def test_income_uses_historical_payment_amount_without_vat(self):
+        customer = self.create_customer()
+        customer.country = "CZ"
+        customer.save(update_fields=["country"])
+        payment = Payment.objects.create(
+            amount=121,
+            amount_fixed=True,
+            customer=customer,
+            description="Historical VAT payment",
+            state=Payment.PROCESSED,
+        )
+        Payment.objects.filter(pk=payment.pk).update(
+            created=timezone.make_aware(
+                datetime.combine(date(2023, 1, 1), datetime.min.time())
+            )
+        )
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
+
+        self.assertEqual(response.context["total_income"], Decimal(100))
+
+    def test_income_infers_historical_categories_and_keeps_unknown(self):
+        support_package = Package.objects.create(
+            name="historical-support",
+            verbose="Historical support",
+            price=100,
+            category=PackageCategory.PACKAGE_SUPPORT,
+        )
+        self.create_historical_payment(
+            date(2023, 1, 1),
+            100,
+            extra={"reward": 1},
+        )
+        self.create_historical_payment(
+            date(2023, 1, 2),
+            200,
+            extra={"plan": 1},
+        )
+        self.create_historical_payment(
+            date(2023, 1, 3),
+            300,
+            extra={"subscription": support_package.name},
+        )
+        self.create_historical_payment(date(2023, 1, 4), 400)
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
+
+        self.assertEqual(response.context["income_data"]["Donation"], Decimal(100))
+        self.assertEqual(response.context["income_data"]["Hosting"], Decimal(200))
+        self.assertEqual(response.context["income_data"]["Support"], Decimal(300))
+        self.assertEqual(response.context["income_data"]["Uncategorized"], Decimal(400))
+
+    def test_income_converts_historical_fiat_payments_to_eur(self):
+        payment_date = date(2023, 2, 1)
+        ExchangeRates.datacache[payment_date.isoformat()] = {
+            "EUR": Decimal(25),
+            "USD": Decimal(20),
+            "GBP": Decimal(30),
+        }
+        self.create_historical_payment(
+            payment_date,
+            100,
+            currency=Payment.CURRENCY_CZK,
+        )
+        self.create_historical_payment(
+            payment_date,
+            100,
+            currency=Payment.CURRENCY_USD,
+        )
+        self.create_historical_payment(
+            payment_date,
+            100,
+            currency=Payment.CURRENCY_GBP,
+        )
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
+
+        self.assertEqual(response.context["total_income"], Decimal(204))
+
+    def test_income_converts_non_eur_invoice_to_eur(self):
+        invoice_date = date(2025, 2, 1)
+        ExchangeRates.datacache[invoice_date.isoformat()] = {
+            "EUR": Decimal(25),
+            "USD": Decimal(20),
+        }
+        invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=self.customer,
+            issue_date=invoice_date,
+            currency=Currency.USD,
+        )
+        invoice.invoiceitem_set.create(
+            description="USD invoice",
+            quantity=1,
+            unit_price=Decimal(100),
+        )
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2025}))
+
+        self.assertEqual(response.context["total_income"], Decimal(80))
+
+    def test_income_excludes_btc_with_disclosure(self):
+        self.create_historical_payment(
+            date(2023, 3, 1),
+            100_000_000,
+            currency=Payment.CURRENCY_BTC,
+        )
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
+
+        self.assertEqual(response.context["total_income"], Decimal(0))
+        self.assertEqual(response.context["excluded_btc_count"], 1)
+        self.assertContains(
+            response,
+            "1 BTC payment is excluded because no deterministic EUR conversion "
+            "rate is available.",
+        )
 
     @responses.activate
     def test_income_monthly_view(self):
@@ -2756,6 +2975,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_year_navigation(self):
         """Test year navigation."""
         current_year = timezone.localdate().year
+        self.create_historical_payment(date(2018, 1, 1), 100)
 
         response = self.client.get(
             reverse("crm:income-year", kwargs={"year": current_year})
@@ -2766,6 +2986,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertContains(response, str(current_year - 1))
         self.assertContains(response, str(current_year))
         self.assertContains(response, str(current_year + 1))
+        self.assertIn(2018, response.context["years"])
 
     def test_income_yearly_view_handles_low_boundary_year(self):
         """Test yearly income view does not fail for low boundary years."""
@@ -2801,7 +3022,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         days = [str(day) for day in range(1, 32)]
         daily_data = {day: Decimal(0) for day in days}
         daily_category_data = {
-            day: {category: Decimal(0) for category in InvoiceCategory} for day in days
+            day: {category: Decimal(0) for category in IncomeView.INCOME_CATEGORIES}
+            for day in days
         }
         daily_data["31"] = Decimal(100)
         daily_category_data["31"][InvoiceCategory.HOSTING] = Decimal(100)
@@ -2824,7 +3046,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         month_keys = [f"{month:02d}" for month in range(1, 13)]
         monthly_data = {month: Decimal(0) for month in month_keys}
         monthly_category_data = {
-            month: {category: Decimal(0) for category in InvoiceCategory}
+            month: {category: Decimal(0) for category in IncomeView.INCOME_CATEGORIES}
             for month in month_keys
         }
         monthly_data["12"] = Decimal(100)
@@ -3052,8 +3274,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertFalse(april_row["trend_available"])
 
     @responses.activate
-    def test_income_yearly_breakdown_trend_uses_single_query(self):
-        """Test yearly trend breakdown stays constant-query."""
+    def test_income_yearly_breakdown_trend_uses_bounded_queries(self):
+        """Test yearly trend breakdown uses one query per income source."""
         cnb_mock_rates()
         selected_year = timezone.localdate().year - 1
 
@@ -3067,7 +3289,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         view = IncomeView()
         monthly_data, _ = view.get_monthly_data(selected_year)
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(2):
             rows = view.get_yearly_breakdown_rows(selected_year, monthly_data)
 
         self.assertEqual(len(rows), 12)
@@ -3089,7 +3311,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         view = IncomeView()
         view.kwargs = {"year": selected_year}
 
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(5):
             context = view.get_context_data()
 
         self.assertEqual(context["rolling_trend"]["rolling_total"], Decimal(200))
@@ -3100,7 +3322,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         view = IncomeView()
         view.kwargs = {"year": future_year}
 
-        with self.assertNumQueries(2):
+        with self.assertNumQueries(3):
             context = view.get_context_data()
 
         self.assertIsNone(context["rolling_trend"])

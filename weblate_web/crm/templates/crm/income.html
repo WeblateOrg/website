@@ -24,6 +24,18 @@
     {% endfor %}
   </nav>
 
+  {% if excluded_btc_count %}
+    <div class="crm-warning">
+      <p>
+        {% blocktranslate count count=excluded_btc_count trimmed %}
+          {{ count }} BTC payment is excluded because no deterministic EUR conversion rate is available.
+        {% plural %}
+          {{ count }} BTC payments are excluded because no deterministic EUR conversion rate is available.
+        {% endblocktranslate %}
+      </p>
+    </div>
+  {% endif %}
+
   <section class="crm-section content">
     {% if is_monthly %}
       {% blocktranslate with month=current_month|stringformat:"02d" asvar section_title %}Income by Category - {{ current_year }}/{{ month }}{% endblocktranslate %}
