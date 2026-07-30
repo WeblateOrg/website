@@ -10,6 +10,7 @@ import requests
 import responses
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
+from django.core.cache import cache
 from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
@@ -2450,6 +2451,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     customer: Customer
 
     def setUp(self):
+        cache.clear()
         self.user = User.objects.create_superuser(
             username="admin", email="admin@example.com"
         )
@@ -2554,6 +2556,47 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Income Tracking")
         self.assertContains(response, str(current_year))
+
+    @responses.activate
+    def test_income_yearly_view_shows_annual_trend_with_ytd(self):
+        self.create_historical_payment(date(2023, 6, 1), 100)
+        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(300))
+        self.create_test_invoice(2025, 12, InvoiceCategory.HOSTING, Decimal(900))
+
+        with patch.object(
+            IncomeView, "_get_current_date", return_value=date(2025, 6, 30)
+        ):
+            response = self.client.get(
+                reverse("crm:income-year", kwargs={"year": 2025})
+            )
+
+        trend_rows = {row["year"]: row for row in response.context["annual_trend_rows"]}
+        self.assertEqual(trend_rows[2023]["amount"], Decimal(100))
+        self.assertEqual(trend_rows[2025]["amount"], Decimal(300))
+        self.assertTrue(trend_rows[2025]["is_ytd"])
+        chart = ElementTree.fromstring(  # ruff:ignore[suspicious-xml-element-tree-usage]
+            response.context["annual_trend_chart_svg"]
+        )
+        self.assertEqual(chart.attrib["class"], "annual-income-chart")
+        self.assertContains(response, "Annual income trend")
+        self.assertContains(response, "annual-income-chart")
+        self.assertContains(response, "YTD")
+
+    @responses.activate
+    def test_annual_income_trend_uses_bounded_queries_and_cache(self):
+        self.create_historical_payment(date(2023, 6, 1), 100)
+        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(300))
+        view = IncomeView()
+        years = [2023, 2024, 2025]
+        current_date = date(2025, 6, 30)
+
+        with self.assertNumQueries(2):
+            rows = view.get_annual_trend_rows(years, current_date)
+        with self.assertNumQueries(0):
+            cached_rows = view.get_annual_trend_rows(years, current_date)
+
+        self.assertEqual(rows, cached_rows)
+        self.assertEqual([row["year"] for row in rows], years)
 
     def test_income_uses_hybrid_cutoff_without_duplicates(self):
         historical_invoice = Invoice.objects.create(
@@ -3310,18 +3353,18 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         view = IncomeView()
         view.kwargs = {"year": selected_year}
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(7):
             context = view.get_context_data()
 
         self.assertEqual(context["rolling_trend"]["rolling_total"], Decimal(200))
 
-    def test_income_future_year_skips_yearly_trend_aggregation(self):
-        """Test future yearly view skips unused trend aggregation."""
+    def test_income_future_year_skips_rolling_trend_aggregation(self):
+        """Test future yearly view skips unused rolling trend aggregation."""
         future_year = timezone.localdate().year + 1
         view = IncomeView()
         view.kwargs = {"year": future_year}
 
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(5):
             context = view.get_context_data()
 
         self.assertIsNone(context["rolling_trend"])

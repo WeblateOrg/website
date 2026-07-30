@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import calendar
 import math
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, ClassVar, Literal, TypeAlias, TypedDict, cast
@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, ClassVar, Literal, TypeAlias, TypedDict, cast
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.db import DataError, IntegrityError, transaction
 from django.db.models import (
@@ -38,7 +39,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.html import format_html, format_html_join
+from django.utils.html import escape, format_html, format_html_join
 from django.utils.translation import gettext, override
 from django.views.generic import DetailView, ListView, TemplateView
 
@@ -114,6 +115,12 @@ class IncomeSummaryRow(TypedDict):
 class InvoiceSummaryRow(IncomeSummaryRow):
     currency: int
     tax_date: date
+
+
+class AnnualIncomeTrendRow(TypedDict):
+    year: int
+    amount: Decimal
+    is_ytd: bool
 
 
 def has_invoice_confirmation(request: HttpRequest) -> bool:
@@ -1139,6 +1146,9 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     MAX_MONTH_INDEX = date.max.year * 12 - 1
     INVOICE_DATA_START = date(2024, 11, 1)
     SATOSHIS_PER_BTC = Decimal(100_000_000)
+    ANNUAL_TREND_CACHE_VERSION = 1
+    ANNUAL_TREND_COMPLETE_CACHE_TIMEOUT = 24 * 60 * 60
+    ANNUAL_TREND_YTD_CACHE_TIMEOUT = 15 * 60
 
     # Chart configuration
     CHART_WIDTH = 800
@@ -1401,6 +1411,77 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
+    def generate_svg_annual_income_chart(  # ruff:ignore[too-many-locals]
+        self, rows: list[AnnualIncomeTrendRow]
+    ) -> str:
+        if not rows:
+            return ""
+
+        width = self.CHART_WIDTH
+        height = self.CHART_HEIGHT
+        padding = self.CHART_PADDING
+        chart_width = width - 2 * padding
+        chart_height = height - 2 * padding
+        max_value = max(row["amount"] for row in rows)
+        if max_value <= 0:
+            max_value = self.MIN_CHART_VALUE
+
+        chart_label = escape(gettext("Annual income trend"))
+        ytd_label = escape(gettext("YTD"))
+        bar_slot = chart_width / len(rows)
+        bar_width = bar_slot * 0.56
+        baseline = height - padding
+        svg_parts = [
+            (
+                f'<svg viewBox="0 0 {width} {height}" '
+                f'width="{width}" height="{height}" '
+                'xmlns="http://www.w3.org/2000/svg" '
+                f'class="annual-income-chart" role="img" aria-label="{chart_label}">'
+            ),
+            f"<title>{chart_label}</title>",
+            (
+                f'<line x1="{padding}" y1="{baseline}" x2="{width - padding}" '
+                f'y2="{baseline}" stroke="#d7ddd9" stroke-width="1" />'
+            ),
+        ]
+
+        for index, row in enumerate(rows):
+            amount = row["amount"]
+            positive_amount = max(amount, Decimal(0))
+            bar_height = float(positive_amount / max_value * chart_height)
+            x = padding + bar_slot * index + (bar_slot - bar_width) / 2
+            y = baseline - bar_height
+            label_x = x + bar_width / 2
+            fill = "#79aec8" if row["is_ytd"] else "#417690"
+            period_label = (
+                f"{row['year']} ({ytd_label})" if row["is_ytd"] else str(row["year"])
+            )
+            if positive_amount:
+                svg_parts.append(
+                    f'<rect x="{x}" y="{y}" width="{bar_width}" '
+                    f'height="{bar_height}" fill="{fill}">'
+                    f"<title>{period_label}: €{amount:,.0f}</title>"
+                    "</rect>"
+                )
+            svg_parts.append(
+                f'<text x="{label_x}" y="{max(y - 8, 14)}" text-anchor="middle" '
+                f'font-size="10" fill="#253342">€{amount:,.0f}</text>'
+            )
+            svg_parts.append(
+                f'<text x="{label_x}" y="{baseline + 16}" text-anchor="middle" '
+                'font-size="10" fill="#666">'
+                f"<tspan>{row['year']}</tspan>"
+                + (
+                    f'<tspan x="{label_x}" dy="12">{ytd_label}</tspan>'
+                    if row["is_ytd"]
+                    else ""
+                )
+                + "</text>"
+            )
+
+        svg_parts.append("</svg>")
+        return "".join(svg_parts)
+
     def _get_month_start(self, year: int, month: int) -> date:
         return date(year, month, 1)
 
@@ -1430,15 +1511,26 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             timezone.get_current_timezone(),
         )
 
+    def _get_payment_total_eur(self, payment: Payment, payment_date: date) -> Decimal:
+        amount = Decimal(str(payment.amount_without_vat))
+        if payment.currency == Payment.CURRENCY_BTC:
+            amount /= self.SATOSHIS_PER_BTC
+            payment_currency = "BTC"
+        else:
+            payment_currency = Currency(
+                CURRENCY_MAP_FROM_PAYMENT[payment.currency]
+            ).label
+        return self._convert_to_eur(amount, payment_currency, payment_date)
+
     def _get_exchange_rate(self, currency: str, rate_date: date) -> Decimal:
-        cache = getattr(self, "_income_exchange_rate_cache", None)
-        if cache is None:
-            cache = {}
-            self._income_exchange_rate_cache = cache
+        rate_cache = getattr(self, "_income_exchange_rate_cache", None)
+        if rate_cache is None:
+            rate_cache = {}
+            self._income_exchange_rate_cache = rate_cache
         key = (currency, rate_date)
-        if key not in cache:
-            cache[key] = ExchangeRates.get(currency, rate_date)
-        return cache[key]
+        if key not in rate_cache:
+            rate_cache[key] = ExchangeRates.get(currency, rate_date)
+        return rate_cache[key]
 
     def _convert_to_eur(
         self, amount: Decimal, currency: str, rate_date: date
@@ -1705,14 +1797,6 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
         summary_rows: list[IncomeSummaryRow] = []
         for payment in payments:
-            amount = Decimal(str(payment.amount_without_vat))
-            if payment.currency == Payment.CURRENCY_BTC:
-                amount /= self.SATOSHIS_PER_BTC
-                payment_currency = "BTC"
-            else:
-                payment_currency = Currency(
-                    CURRENCY_MAP_FROM_PAYMENT[payment.currency]
-                ).label
             payment_date = timezone.localtime(payment.created).date()
             summary_rows.append(
                 {
@@ -1721,11 +1805,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                         payment, packages, subscriptions
                     ),
                     "period": self._get_payment_period(payment_date, period),
-                    "total_no_vat": self._convert_to_eur(
-                        amount,
-                        payment_currency,
-                        payment_date,
-                    ),
+                    "total_no_vat": self._get_payment_total_eur(payment, payment_date),
                 }
             )
         return summary_rows
@@ -1781,6 +1861,115 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 )
             )
         return rows
+
+    def _get_annual_payment_totals(
+        self, start_date: date, end_date: date
+    ) -> dict[int, Decimal]:
+        query = (
+            Payment.objects.filter(
+                state=Payment.PROCESSED,
+                created__gte=timezone.make_aware(
+                    datetime.combine(start_date, time.min),
+                    timezone.get_current_timezone(),
+                ),
+                created__lt=timezone.make_aware(
+                    datetime.combine(end_date, time.min),
+                    timezone.get_current_timezone(),
+                ),
+            )
+            .filter(created__lt=self._get_payment_cutoff())
+            .exclude(paid_invoice__issue_date__gte=self.INVOICE_DATA_START)
+            .select_related("customer")
+        )
+
+        totals: dict[int, Decimal] = {}
+        for payment in query.iterator():
+            payment_date = timezone.localtime(payment.created).date()
+            totals[payment_date.year] = totals.get(
+                payment_date.year, Decimal(0)
+            ) + self._get_payment_total_eur(payment, payment_date)
+        return totals
+
+    def _calculate_annual_income_totals(
+        self, start_date: date, end_date: date
+    ) -> dict[int, Decimal]:
+        totals: dict[int, Decimal] = {}
+        if start_date < self.INVOICE_DATA_START:
+            payment_end = min(end_date, self.INVOICE_DATA_START)
+            if start_date < payment_end:
+                totals.update(self._get_annual_payment_totals(start_date, payment_end))
+
+        invoice_start = max(start_date, self.INVOICE_DATA_START)
+        if invoice_start < end_date:
+            for row in self._get_invoice_summary_rows(
+                start_date=invoice_start,
+                end_date=end_date,
+                period="month_start",
+            ):
+                invoice_period = cast("date", row["period"])
+                totals[invoice_period.year] = totals.get(
+                    invoice_period.year, Decimal(0)
+                ) + cast("Decimal", row["total_no_vat"])
+        return totals
+
+    def _get_annual_trend_cache_key(self, year: int) -> str:
+        return f"crm-income-annual-v{self.ANNUAL_TREND_CACHE_VERSION}-{year}"
+
+    def get_annual_trend_rows(
+        self, years: list[int], current_date: date
+    ) -> list[AnnualIncomeTrendRow]:
+        trend_years = sorted({year for year in years if year <= current_date.year})
+        if not trend_years:
+            return []
+
+        cache_keys = {
+            year: self._get_annual_trend_cache_key(year) for year in trend_years
+        }
+        cached_totals = cache.get_many(cache_keys.values())
+        totals = {
+            year: cast("Decimal", cached_totals[key])
+            for year, key in cache_keys.items()
+            if key in cached_totals
+        }
+        missing_years = [year for year in trend_years if year not in totals]
+        if missing_years:
+            first_missing_year = min(missing_years)
+            last_missing_year = max(missing_years)
+            range_start = date(first_missing_year, 1, 1)
+            range_end = (
+                current_date + timedelta(days=1)
+                if last_missing_year == current_date.year
+                else date(last_missing_year + 1, 1, 1)
+            )
+            calculated_totals = self._calculate_annual_income_totals(
+                range_start, range_end
+            )
+            for year in missing_years:
+                total = calculated_totals.get(year, Decimal(0))
+                totals[year] = total
+                cache.set(
+                    cache_keys[year],
+                    total,
+                    timeout=(
+                        self.ANNUAL_TREND_YTD_CACHE_TIMEOUT
+                        if year == current_date.year
+                        else self.ANNUAL_TREND_COMPLETE_CACHE_TIMEOUT
+                    ),
+                )
+
+        rows: list[AnnualIncomeTrendRow] = [
+            {
+                "year": year,
+                "amount": totals[year],
+                "is_ytd": year == current_date.year,
+            }
+            for year in trend_years
+        ]
+        first_nonzero = next(
+            (index for index, row in enumerate(rows) if row["amount"] != 0),
+            None,
+        )
+        return rows[first_nonzero:] if first_nonzero is not None else []
 
     def _get_empty_category_totals(self) -> dict[IncomeCategory, Decimal]:
         return {category: Decimal(0) for category in self.INCOME_CATEGORIES}
@@ -2097,7 +2286,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         context["income_data"] = income_data_labels
         context["total_income"] = sum(income_data.values())
 
-        current_year = self._get_current_date().year
+        current_date = self._get_current_date()
+        current_year = current_date.year
         context["years"] = self.get_navigation_years(current_year)
         context["current_year"] = year
         context["current_month"] = month
@@ -2120,6 +2310,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             context["rolling_trend"] = self.get_rolling_window_summary(year, month)
         else:
             # For yearly view, show monthly stacked chart
+            context["annual_trend_rows"] = self.get_annual_trend_rows(
+                context["years"], current_date
+            )
+            context["annual_trend_chart_svg"] = self.generate_svg_annual_income_chart(
+                context["annual_trend_rows"]
+            )
             monthly_data, monthly_category_data = self._aggregate_period_totals(
                 summary_rows,
                 [f"{month_number:02d}" for month_number in range(1, 13)],
