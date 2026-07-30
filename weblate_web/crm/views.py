@@ -1138,6 +1138,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     title = "Income Tracking"
     MAX_MONTH_INDEX = date.max.year * 12 - 1
     INVOICE_DATA_START = date(2024, 11, 1)
+    SATOSHIS_PER_BTC = Decimal(100_000_000)
 
     # Chart configuration
     CHART_WIDTH = 800
@@ -1440,13 +1441,13 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return cache[key]
 
     def _convert_to_eur(
-        self, amount: Decimal, currency: Currency, rate_date: date
+        self, amount: Decimal, currency: str, rate_date: date
     ) -> Decimal:
-        if currency == Currency.EUR:
+        if currency == Currency.EUR.label:
             return amount
         return (
             amount
-            * self._get_exchange_rate(currency.label, rate_date)
+            * self._get_exchange_rate(currency, rate_date)
             / self._get_exchange_rate(Currency.EUR.label, rate_date)
         )
 
@@ -1546,7 +1547,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 "period": row["period"],
                 "total_no_vat": self._convert_to_eur(
                     row["total_no_vat"],
-                    Currency(row["currency"]),
+                    Currency(row["currency"]).label,
                     row["tax_date"],
                 ),
             }
@@ -1703,18 +1704,16 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         }
 
         summary_rows: list[IncomeSummaryRow] = []
-        excluded_btc_ids = getattr(self, "_excluded_btc_payment_ids", None)
-        if excluded_btc_ids is None:
-            excluded_btc_ids = set()
-            self._excluded_btc_payment_ids = excluded_btc_ids
-
         for payment in payments:
+            amount = Decimal(str(payment.amount_without_vat))
             if payment.currency == Payment.CURRENCY_BTC:
-                excluded_btc_ids.add(payment.pk)
-                continue
-
+                amount /= self.SATOSHIS_PER_BTC
+                payment_currency = "BTC"
+            else:
+                payment_currency = Currency(
+                    CURRENCY_MAP_FROM_PAYMENT[payment.currency]
+                ).label
             payment_date = timezone.localtime(payment.created).date()
-            payment_currency = Currency(CURRENCY_MAP_FROM_PAYMENT[payment.currency])
             summary_rows.append(
                 {
                     "pk": payment.pk,
@@ -1723,7 +1722,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     ),
                     "period": self._get_payment_period(payment_date, period),
                     "total_no_vat": self._convert_to_eur(
-                        Decimal(str(payment.amount_without_vat)),
+                        amount,
                         payment_currency,
                         payment_date,
                     ),
@@ -2083,7 +2082,6 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         return list(range(earliest_year, current_year + 2))
 
     def get_context_data(self, **kwargs):
-        self._excluded_btc_payment_ids = set()
         context = super().get_context_data(**kwargs)
         year = self.get_year()
         month = self.get_month()
@@ -2139,5 +2137,4 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             )
             context["is_monthly"] = False
 
-        context["excluded_btc_count"] = len(self._excluded_btc_payment_ids)
         return context
