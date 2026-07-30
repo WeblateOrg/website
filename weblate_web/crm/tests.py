@@ -2714,22 +2714,21 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         self.assertEqual(response.context["total_income"], Decimal(80))
 
-    def test_income_excludes_btc_with_disclosure(self):
+    def test_income_converts_historical_btc_payments_to_eur(self):
+        payment_date = date(2023, 3, 1)
+        ExchangeRates.datacache[payment_date.isoformat()] = {
+            "EUR": Decimal(25),
+        }
+        ExchangeRates.btc_datacache[payment_date.isoformat()] = Decimal(1_000_000)
         self.create_historical_payment(
-            date(2023, 3, 1),
+            payment_date,
             100_000_000,
             currency=Payment.CURRENCY_BTC,
         )
 
         response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
 
-        self.assertEqual(response.context["total_income"], Decimal(0))
-        self.assertEqual(response.context["excluded_btc_count"], 1)
-        self.assertContains(
-            response,
-            "1 BTC payment is excluded because no deterministic EUR conversion "
-            "rate is available.",
-        )
+        self.assertEqual(response.context["total_income"], Decimal(40_000))
 
     @responses.activate
     def test_income_monthly_view(self):

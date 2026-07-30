@@ -40,7 +40,7 @@ from wlc import WeblateException
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 
-from .exchange_rates import ExchangeRates, UncachedExchangeRates
+from .exchange_rates import BTC_RATE_URL, ExchangeRates, UncachedExchangeRates
 from .hetzner import generate_random_password
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
@@ -5511,6 +5511,19 @@ class ExchangeRatesTestCase(SimpleTestCase):
     @responses.activate
     def test_czk(self):
         self.assertEqual(UncachedExchangeRates.get("CZK", date(2000, 1, 1)), Decimal(1))
+
+    @responses.activate
+    def test_btc(self):
+        self.mock_rate()
+        responses.get(
+            BTC_RATE_URL,
+            json=[[946684800, 7000, 7200, 7100, 7150, 10]],
+        )
+
+        self.assertEqual(
+            UncachedExchangeRates.get("BTC", date(2000, 1, 1)),
+            Decimal("158887.300"),
+        )
 
     @responses.activate
     def test_fallback(self):
