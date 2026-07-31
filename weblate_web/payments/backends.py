@@ -791,7 +791,7 @@ class FioBank(Backend):
             client = fiobank.FioBank(token=token, decimal=True)
             try:
                 info, transactions = client.last_transactions(from_date=from_date)
-            except requests.RequestException as error:
+            except (fiobank.ThrottlingError, requests.RequestException) as error:
                 sentry_sdk.capture_exception()
                 print(f"Failed to fetch payments: {error}")
                 continue
