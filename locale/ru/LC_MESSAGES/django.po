@@ -47,7 +47,7 @@ msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-07-27 00:10-0500\n"
-"PO-Revision-Date: 2026-07-14 15:01+0000\n"
+"PO-Revision-Date: 2026-07-31 18:49+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
 "ru/>\n"
@@ -128,28 +128,27 @@ msgstr "Необязательное примечание с описанием 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:195
 #: weblate_web/crm/templates/invoices/invoice_detail.html:210
 #: weblate_web/invoices/models.py:374
-#, fuzzy
-#| msgid "Support status"
 msgid "Quote status"
-msgstr "Статус поддержки"
+msgstr "Статус коммерческого предложения"
 
 #: weblate_web/crm/forms.py:161
 msgid "Why this quote should no longer be followed up."
 msgstr ""
+"Почему это коммерческое предложение больше не требует дальнейшего внимания."
 
 #: weblate_web/crm/forms.py:171
 #: weblate_web/crm/templates/invoices/invoice_detail.html:119
 #: weblate_web/invoices/models.py:379
-#, fuzzy
-#| msgid "Support status"
 msgid "Quote status note"
-msgstr "Статус поддержки"
+msgstr "Примечание к статусу коммерческого предложения"
 
 #: weblate_web/crm/forms.py:173
 msgid ""
 "Optional internal note, such as a rejection reason or accepted alternative "
 "invoice."
 msgstr ""
+"Необязательная внутренняя заметка, например, причина отклонения или принятый "
+"альтернативный счёт."
 
 #: weblate_web/crm/forms.py:183 weblate_web/templates/snippets/service.html:119
 msgid "Note"
@@ -551,31 +550,29 @@ msgstr "Клиенты с действующими услугами или пл�
 #: weblate_web/crm/templates/crm/work_queue.html:17
 #: weblate_web/crm/templates/crm/work_queue.html:25
 msgid "No work items"
-msgstr ""
+msgstr "Нет задач"
 
 #: weblate_web/crm/templates/crm/index.html:44
 #: weblate_web/crm/templates/crm/work_queue.html:27
 msgid "There is no CRM work needing attention right now."
-msgstr ""
+msgstr "В настоящее время нет задач CRM, требующих внимания."
 
 #: weblate_web/crm/templates/crm/index.html:50
 #: weblate_web/crm/templates/crm/index.html:51
 msgid "Full work queue"
-msgstr ""
+msgstr "Полная очередь задач"
 
 #: weblate_web/crm/templates/crm/index.html:54
-#, fuzzy, python-format
-#| msgid "%(count)s translation"
-#| msgid_plural "%(count)s translations"
+#, python-format
 msgid "%(count)s more item needs attention."
 msgid_plural "%(count)s more items need attention."
-msgstr[0] "%(count)s перевод"
-msgstr[1] "%(count)s перевода"
-msgstr[2] "%(count)s переводов"
+msgstr[0] "Ещё %(count)s задача требует внимания."
+msgstr[1] "Ещё %(count)s задачи требуют внимания."
+msgstr[2] "Ещё %(count)s задач требуют внимания."
 
 #: weblate_web/crm/templates/crm/index.html:56
 msgid "All suggested CRM work in one place."
-msgstr ""
+msgstr "Вся предлагаемая работа CRM в одном месте."
 
 #: weblate_web/crm/templates/crm/index.html:75
 msgid "Issued invoices and receipts."
@@ -771,7 +768,7 @@ msgstr "Очистить"
 
 #: weblate_web/crm/templates/crm/work_queue.html:18
 msgid "There is no CRM work in this section."
-msgstr ""
+msgstr "В этом разделе нет задач CRM."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:20
 #: weblate_web/crm/templates/invoices/invoice_list_content.html:29
@@ -843,10 +840,8 @@ msgid "Price"
 msgstr "Цена"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:164
-#, fuzzy
-#| msgid "Interactions"
 msgid "Quote actions"
-msgstr "Взаимодействия"
+msgstr "Действия с коммерческим предложением"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:168
 #: weblate_web/crm/templates/invoices/invoice_detail.html:176
@@ -866,22 +861,22 @@ msgstr "Выставить счёт из коммерческого предло
 msgid ""
 "Use this when a quote should no longer appear as suggested follow-up work."
 msgstr ""
+"Используйте это, когда коммерческое предложение больше не должно появляться "
+"как предлагаемая задача для дальнейшего внимания."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:200
-#, fuzzy
-#| msgid "Get a quote"
 msgid "Close quote"
-msgstr "Получить расценку"
+msgstr "Закрыть коммерческое предложение"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:213
 msgid "This quote is closed and hidden from stale quote suggestions."
 msgstr ""
+"Это коммерческое предложение закрыто и скрыто из предложений устаревших "
+"коммерческих предложений."
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:216
-#, fuzzy
-#| msgid "Get a quote"
 msgid "Reopen quote"
-msgstr "Получить расценку"
+msgstr "Открыть коммерческое предложение заново"
 
 #: weblate_web/crm/templates/invoices/invoice_detail.html:230
 #: weblate_web/crm/templates/invoices/invoice_detail.html:237
@@ -1004,10 +999,8 @@ msgid "Follow-up"
 msgstr "Последующий контакт"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:123
-#, fuzzy
-#| msgid "Clear follow-up"
 msgid "Customer follow-ups"
-msgstr "Очистить последующий контакт"
+msgstr "Последующие контакты с клиентом"
 
 #: weblate_web/crm/templates/payments/customer_detail.html:128
 #: weblate_web/crm/templates/payments/customer_list.html:22
@@ -1442,10 +1435,8 @@ msgid "Follow-up set"
 msgstr "Последующий контакт установлен"
 
 #: weblate_web/crm/views.py:994
-#, fuzzy
-#| msgid "Follow-up updated."
 msgid "Follow-up added."
-msgstr "Последующий контакт обновлён."
+msgstr "Последующий контакт добавлен."
 
 #: weblate_web/crm/views.py:1005
 msgid "Follow-up cleared"
@@ -1465,70 +1456,50 @@ msgid "Billing"
 msgstr "Выставление счетов"
 
 #: weblate_web/crm/workqueue.py:171
-#, fuzzy
-#| msgid "No customer follow-up is due right now."
 msgid "Customer follow-up is due."
-msgstr "В данный момент нет запланированных последующих контактов с клиентами."
+msgstr "Наступил срок последующего контакта с клиентом."
 
 #: weblate_web/crm/workqueue.py:184
-#, fuzzy
-#| msgid "Set follow-up"
 msgid "Scheduled customer follow-up."
-msgstr "Установить последующий контакт"
+msgstr "Запланированный последующий контакт с клиентом."
 
 #: weblate_web/crm/workqueue.py:197
-#, fuzzy
-#| msgid "All follow-ups"
 msgid "Manual follow-up"
-msgstr "Все последующие контакты"
+msgstr "Ручной последующий контакт"
 
 #: weblate_web/crm/workqueue.py:197
-#, fuzzy
-#| msgid "Set follow-up"
 msgid "Upcoming follow-up"
-msgstr "Установить последующий контакт"
+msgstr "Предстоящий последующий контакт"
 
 #: weblate_web/crm/workqueue.py:199 weblate_web/payments/models.py:633
-#, fuzzy
-#| msgid "Weblate payment"
 msgid "Duplicate payment"
-msgstr "Платёж Weblate"
+msgstr "Дублирующийся платёж"
 
 #: weblate_web/crm/workqueue.py:201
-#, fuzzy
-#| msgid "Link URL"
 msgid "Locked URL"
-msgstr "URL ссылки"
+msgstr "Заблокированный URL"
 
 #: weblate_web/crm/workqueue.py:210
-#, fuzzy
-#| msgid "Unpaid invoices"
 msgid "Unpaid invoice"
-msgstr "Неоплаченные счета"
+msgstr "Неоплаченный счёт"
 
 #: weblate_web/crm/workqueue.py:211
-#, fuzzy, python-format
-#| msgid "Invoice items"
+#, python-format
 msgid "Invoice %(number)s"
-msgstr "Позиции счёта"
+msgstr "Счёт %(number)s"
 
 #: weblate_web/crm/workqueue.py:228
-#, fuzzy
-#| msgid "Get a quote"
 msgid "Stale quote"
-msgstr "Получить расценку"
+msgstr "Устаревшее коммерческое предложение"
 
 #: weblate_web/crm/workqueue.py:229
-#, fuzzy, python-format
-#| msgid "Account number"
+#, python-format
 msgid "Quote %(number)s"
-msgstr "Номер счёта"
+msgstr "Коммерческое предложение %(number)s"
 
 #: weblate_web/crm/workqueue.py:250
-#, fuzzy
-#| msgid "Expired services"
 msgid "Expired service"
-msgstr "Истекшие услуги"
+msgstr "Истекшая услуга"
 
 #: weblate_web/fake.py:25
 msgid ""
@@ -1545,44 +1516,42 @@ msgid "Insufficient donation for selected reward!"
 msgstr "Недостаточно пожертвований для выбранного вознаграждения!"
 
 #: weblate_web/forms.py:197
-#, fuzzy
-#| msgid "Server URL"
 msgid "Invalid server URL."
-msgstr "URL сервера"
+msgstr "Недействительный URL сервера."
 
 #: weblate_web/forms.py:201
 msgid "Server URL must use HTTPS."
-msgstr ""
+msgstr "URL сервера должен использовать HTTPS."
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
 #: weblate_web/invoices/models.py:287
 msgctxt "Quote status"
 msgid "Open"
-msgstr ""
+msgstr "Открыто"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
 #: weblate_web/invoices/models.py:288
 msgctxt "Quote status"
 msgid "Lost"
-msgstr ""
+msgstr "Проиграно"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
 #: weblate_web/invoices/models.py:289
 msgctxt "Quote status"
 msgid "Superseded"
-msgstr ""
+msgstr "Заменено"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
 #: weblate_web/invoices/models.py:290
 msgctxt "Quote status"
 msgid "Accepted elsewhere"
-msgstr ""
+msgstr "Принято в другом месте"
 
 #: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
 #: weblate_web/invoices/models.py:291
 msgctxt "Quote status"
 msgid "Archived"
-msgstr ""
+msgstr "Архивировано"
 
 #: weblate_web/invoices/models.py:211
 msgid "IBAN"
@@ -1606,17 +1575,17 @@ msgstr "Владелец счёта"
 
 #: weblate_web/invoices/models.py:375
 msgid "CRM status for quote follow-up."
-msgstr ""
+msgstr "Статус CRM для дальнейшего внимания к коммерческому предложению."
 
 #: weblate_web/invoices/models.py:380
-#, fuzzy
-#| msgid "Optional note describing how the refund was done."
 msgid "Internal note explaining why the quote was closed."
-msgstr "Необязательное примечание с описанием того, как был выполнен возврат."
+msgstr ""
+"Внутренняя заметка, объясняющая, почему коммерческое предложение было "
+"закрыто."
 
 #: weblate_web/invoices/models.py:599
 msgid "Converted"
-msgstr ""
+msgstr "Преобразовано"
 
 #: weblate_web/invoices/models.py:606
 msgid "Paid"
@@ -1874,22 +1843,20 @@ msgstr "Увеличьте пределы обслуживания, чтобы �
 
 #: weblate_web/models.py:1310
 msgid "Activation code has already been used."
-msgstr ""
+msgstr "Код активации уже был использован."
 
 #: weblate_web/models.py:1312
 msgid "Activation code has expired."
-msgstr ""
+msgstr "Срок действия кода активации истёк."
 
 #: weblate_web/models.py:1835
 #, python-format
 msgid "Locked URL mismatch: %(url)s"
-msgstr ""
+msgstr "Несоответствие заблокированного URL: %(url)s"
 
 #: weblate_web/payments/backends.py:528
-#, fuzzy
-#| msgid "Invoice list"
 msgid "Invoice already paid"
-msgstr "Список счетов"
+msgstr "Счёт уже оплачен"
 
 #: weblate_web/payments/backends.py:642
 msgid "Manual payment"
@@ -2037,16 +2004,12 @@ msgstr ""
 "ежегодной оплате: 31."
 
 #: weblate_web/payments/models.py:632
-#, fuzzy
-#| msgid "Biannual"
 msgid "Manual"
-msgstr "Двухгодично"
+msgstr "Вручную"
 
 #: weblate_web/payments/models.py:634
-#, fuzzy
-#| msgid "Site URL"
 msgid "Locked site URL"
-msgstr "URL-адрес сайта"
+msgstr "Заблокированный URL сайта"
 
 #: weblate_web/payments/models.py:649
 msgid "Date and time when this customer needs attention."
@@ -2057,10 +2020,8 @@ msgid "Short description of the next action."
 msgstr "Краткое описание следующего действия."
 
 #: weblate_web/payments/models.py:661
-#, fuzzy
-#| msgid "Follow-up date"
 msgid "Follow-up type"
-msgstr "Дата следующего контакта"
+msgstr "Тип последующего контакта"
 
 #: weblate_web/payments/models.py:684
 msgid "Annual"
@@ -4880,25 +4841,25 @@ msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown after saving."
 msgstr ""
+"Активируйте отображение на странице управления Weblate, используя токен "
+"активации, показанный после сохранения."
 
 #: weblate_web/templates/subscription/discovery-register.html:6
 #: weblate_web/templates/subscription/discovery-register.html:13
-#, fuzzy
-#| msgid "Customize Discover Weblate listing"
 msgid "Register Discover Weblate listing"
-msgstr "Настроить список навигатора Weblate"
+msgstr "Зарегистрировать отображение в Discover Weblate"
 
 #: weblate_web/templates/subscription/discovery-register.html:18
-#, fuzzy
-#| msgid "Add server to Discover Weblate"
 msgid "Confirm the server you want to list on Discover Weblate."
-msgstr "Добавить сервер в навигатор Weblate"
+msgstr "Подтвердите сервер, который вы хотите добавить в Discover Weblate."
 
 #: weblate_web/templates/subscription/discovery-register.html:20
 msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
 msgstr ""
+"После подтверждения вы вернётесь на этот сервер Weblate для завершения "
+"активации."
 
 #: weblate_web/templates/subscription/discovery-register.html:43
 msgid "Register"
@@ -5341,6 +5302,8 @@ msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
+"Активируйте отображение на странице управления Weblate, используя показанный "
+"ниже токен активации."
 
 #: weblate_web/views.py:1167
 msgid "User not found!"
