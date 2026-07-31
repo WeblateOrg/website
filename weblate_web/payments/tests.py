@@ -25,6 +25,7 @@ from datetime import date
 from typing import Any, cast
 from unittest.mock import patch
 
+import fiobank
 import responses
 from django.contrib.auth.models import User
 from django.core import mail
@@ -157,6 +158,20 @@ FIO_TRASACTIONS = {
 
 
 class ModelTest(SimpleTestCase):
+    @override_settings(
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
+    )
+    @patch("weblate_web.payments.backends.sentry_sdk.capture_exception")
+    @patch("weblate_web.payments.backends.fiobank.FioBank.last_transactions")
+    def test_invoice_bank_throttling(
+        self, last_transactions, capture_exception
+    ) -> None:
+        last_transactions.side_effect = fiobank.ThrottlingError("API throttled")
+
+        FioBank.fetch_payments()
+
+        capture_exception.assert_called_once_with()
+
     def test_vat(self) -> None:
         customer = Customer()
         self.assertFalse(customer.needs_vat)
