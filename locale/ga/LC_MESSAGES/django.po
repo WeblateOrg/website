@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-27 00:10-0500\n"
+"POT-Creation-Date: 2026-08-03 03:33-0500\n"
 "PO-Revision-Date: 2026-07-13 14:22+0000\n"
 "Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
 "Language-Team: Irish <https://hosted.weblate.org/projects/weblate/website/ga/"
@@ -27,8 +27,8 @@ msgstr ""
 msgid "Please confirm that you want to issue a final invoice."
 msgstr "Deimhnigh le do thoil gur mian leat sonrasc deiridh a eisiúint."
 
-#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
-#: weblate_web/crm/views.py:322 weblate_web/views.py:1212
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:300
+#: weblate_web/crm/views.py:344 weblate_web/views.py:1212
 #: weblate_web/views.py:1223 weblate_web/views.py:1235
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "Ní féidir an síntiús seo a uasghrádú chuig an bpacáiste roghnaithe."
@@ -396,7 +396,7 @@ msgid "Window size"
 msgstr "Méid na fuinneoige"
 
 #: weblate_web/crm/templates/crm/income.html:51
-#: weblate_web/crm/templates/crm/income.html:159
+#: weblate_web/crm/templates/crm/income.html:167
 #, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
@@ -418,56 +418,60 @@ msgstr "Fuinneog roimhe seo"
 msgid "Change"
 msgstr "Athraigh"
 
-#: weblate_web/crm/templates/crm/income.html:85
+#: weblate_web/crm/templates/crm/income.html:84 weblate_web/crm/views.py:1429
+msgid "Annual income trend"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:93
 msgid "Daily Income"
 msgstr "Ioncam Laethúil"
 
-#: weblate_web/crm/templates/crm/income.html:87
+#: weblate_web/crm/templates/crm/income.html:95
 msgid "Monthly Income with Category Breakdown"
 msgstr "Ioncam Míosúil le Miondealú Catagóire"
 
-#: weblate_web/crm/templates/crm/income.html:100
+#: weblate_web/crm/templates/crm/income.html:108
 msgid "Category Distribution"
 msgstr "Dáileadh Catagóire"
 
-#: weblate_web/crm/templates/crm/income.html:108
+#: weblate_web/crm/templates/crm/income.html:116
 msgid "Category income"
 msgstr "Ioncam catagóire"
 
-#: weblate_web/crm/templates/crm/income.html:115
-#: weblate_web/crm/templates/crm/income.html:205
+#: weblate_web/crm/templates/crm/income.html:123
+#: weblate_web/crm/templates/crm/income.html:213
 msgid "Category"
 msgstr "Catagóir"
 
-#: weblate_web/crm/templates/crm/income.html:116
-#: weblate_web/crm/templates/crm/income.html:144
-#: weblate_web/crm/templates/crm/income.html:206
+#: weblate_web/crm/templates/crm/income.html:124
+#: weblate_web/crm/templates/crm/income.html:152
+#: weblate_web/crm/templates/crm/income.html:214
 msgid "Amount (EUR)"
 msgstr "Méid (EUR)"
 
-#: weblate_web/crm/templates/crm/income.html:127
-#: weblate_web/crm/templates/crm/income.html:186
+#: weblate_web/crm/templates/crm/income.html:135
+#: weblate_web/crm/templates/crm/income.html:194
 #: weblate_web/crm/templates/invoices/invoice_detail.html:140
 msgid "Total"
 msgstr "Iomlán"
 
-#: weblate_web/crm/templates/crm/income.html:136
+#: weblate_web/crm/templates/crm/income.html:144
 msgid "Monthly income"
 msgstr "Ioncam míosúil"
 
-#: weblate_web/crm/templates/crm/income.html:143
+#: weblate_web/crm/templates/crm/income.html:151
 msgid "Month"
 msgstr "Mí"
 
-#: weblate_web/crm/templates/crm/income.html:145
+#: weblate_web/crm/templates/crm/income.html:153
 msgid "Rolling window"
 msgstr "Fuinneog rollta"
 
-#: weblate_web/crm/templates/crm/income.html:146
+#: weblate_web/crm/templates/crm/income.html:154
 msgid "Trend"
 msgstr "Treocht"
 
-#: weblate_web/crm/templates/crm/income.html:147
+#: weblate_web/crm/templates/crm/income.html:155
 #: weblate_web/crm/templates/invoices/invoice_list.html:23
 #: weblate_web/crm/templates/payments/customer_detail.html:131
 #: weblate_web/crm/templates/payments/customer_detail.html:190
@@ -483,11 +487,11 @@ msgstr "Treocht"
 msgid "Actions"
 msgstr "Gníomhartha"
 
-#: weblate_web/crm/templates/crm/income.html:180
+#: weblate_web/crm/templates/crm/income.html:188
 msgid "View details"
 msgstr "Féach ar na sonraí"
 
-#: weblate_web/crm/templates/crm/income.html:198
+#: weblate_web/crm/templates/crm/income.html:206
 msgid "Yearly category income"
 msgstr "Ioncam bliantúil sa chatagóir"
 
@@ -1342,80 +1346,88 @@ msgstr "Cothabháil"
 msgid "No services match the current filters."
 msgstr "Níl aon seirbhísí a mheaitseálann na scagairí reatha."
 
-#: weblate_web/crm/views.py:850
+#: weblate_web/crm/views.py:872
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Tá ainm úsáideora óstáilte ag teacht le húsáideoir áitiúil le ríomhphost "
 "difriúil."
 
-#: weblate_web/crm/views.py:864
+#: weblate_web/crm/views.py:886
 msgid "Hosted user was not linked."
 msgstr "Ní raibh an t-úsáideoir óstáilte nasctha."
 
-#: weblate_web/crm/views.py:867
+#: weblate_web/crm/views.py:889
 msgid "Hosted user is already linked to a different local user."
 msgstr ""
 "Tá an t-úsáideoir óstáilte nasctha le húsáideoir áitiúil difriúil cheana "
 "féin."
 
-#: weblate_web/crm/views.py:874
+#: weblate_web/crm/views.py:896
 msgid "Added customer user"
 msgstr "Úsáideoir custaiméara curtha leis"
 
-#: weblate_web/crm/views.py:876
+#: weblate_web/crm/views.py:898
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
 "Cuireadh %(email)s leis na húsáideoirí custaiméirí. Ba é %(state)s an t-"
 "úsáideoir óstáilte."
 
-#: weblate_web/crm/views.py:880
+#: weblate_web/crm/views.py:902
 msgid "created"
 msgstr "cruthaithe"
 
-#: weblate_web/crm/views.py:882
+#: weblate_web/crm/views.py:904
 msgid "linked"
 msgstr "nasctha"
 
-#: weblate_web/crm/views.py:909
+#: weblate_web/crm/views.py:931
 msgid "Multiple local users use this e-mail address"
 msgstr "Úsáideann roinnt úsáideoirí áitiúla an seoladh ríomhphoist seo"
 
-#: weblate_web/crm/views.py:937
+#: weblate_web/crm/views.py:959
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr "Níorbh fhéidir an custaiméir a chur leis an úsáideoir: %(error)s"
 
-#: weblate_web/crm/views.py:944
+#: weblate_web/crm/views.py:966
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr "Cuir %(email)s le húsáideoirí custaiméirí."
 
-#: weblate_web/crm/views.py:949
+#: weblate_web/crm/views.py:971
 #, python-format
 msgid "%(email)s is already a customer user."
 msgstr "Is custaiméir úsáideoir cheana féin é %(email)s."
 
-#: weblate_web/crm/views.py:983
+#: weblate_web/crm/views.py:1005
 #, python-format
 msgid "Follow-up scheduled for %(date)s."
 msgstr "Leanúint sceidealaithe do %(date)s."
 
-#: weblate_web/crm/views.py:991
+#: weblate_web/crm/views.py:1013
 msgid "Follow-up set"
 msgstr "Tacar leantach"
 
-#: weblate_web/crm/views.py:994
+#: weblate_web/crm/views.py:1016
 msgid "Follow-up added."
 msgstr "Leantach curtha leis."
 
-#: weblate_web/crm/views.py:1005
+#: weblate_web/crm/views.py:1027
 msgid "Follow-up cleared"
 msgstr "Glanadh an obair leantach"
 
-#: weblate_web/crm/views.py:1006 weblate_web/crm/views.py:1009
+#: weblate_web/crm/views.py:1028 weblate_web/crm/views.py:1031
 msgid "Follow-up cleared."
 msgstr "Glanadh an obair leantach."
+
+#: weblate_web/crm/views.py:1192
+msgid "Uncategorized"
+msgstr ""
+
+#: weblate_web/crm/views.py:1430
+msgid "YTD"
+msgstr ""
 
 #: weblate_web/crm/workqueue.py:151
 msgid "Follow-ups"
