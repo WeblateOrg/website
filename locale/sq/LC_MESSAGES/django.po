@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-07-27 00:10-0500\n"
+"POT-Creation-Date: 2026-08-03 03:33-0500\n"
 "PO-Revision-Date: 2026-07-13 07:37+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -31,8 +31,8 @@ msgstr ""
 msgid "Please confirm that you want to issue a final invoice."
 msgstr "Ju lutemi, ripohoni se doni të emetohet një faturë përfundimtare."
 
-#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:278
-#: weblate_web/crm/views.py:322 weblate_web/views.py:1212
+#: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:300
+#: weblate_web/crm/views.py:344 weblate_web/views.py:1212
 #: weblate_web/views.py:1223 weblate_web/views.py:1235
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "Ky pajtim s’mund të përmirësohet me paketën e përzgjedhur."
@@ -416,7 +416,7 @@ msgid "Window size"
 msgstr "Madhësi dritareje"
 
 #: weblate_web/crm/templates/crm/income.html:51
-#: weblate_web/crm/templates/crm/income.html:159
+#: weblate_web/crm/templates/crm/income.html:167
 #, python-format
 msgid "%(months)s month"
 msgid_plural "%(months)s months"
@@ -435,60 +435,64 @@ msgstr "Dritarja e mëparshme"
 msgid "Change"
 msgstr "Ndryshoje"
 
-#: weblate_web/crm/templates/crm/income.html:85
+#: weblate_web/crm/templates/crm/income.html:84 weblate_web/crm/views.py:1429
+msgid "Annual income trend"
+msgstr ""
+
+#: weblate_web/crm/templates/crm/income.html:93
 msgid "Daily Income"
 msgstr "Të ardhura Ditore"
 
-#: weblate_web/crm/templates/crm/income.html:87
+#: weblate_web/crm/templates/crm/income.html:95
 msgid "Monthly Income with Category Breakdown"
 msgstr "Të ardhura Mujore me Zbërthim Sipas Kategorish"
 
-#: weblate_web/crm/templates/crm/income.html:100
+#: weblate_web/crm/templates/crm/income.html:108
 msgid "Category Distribution"
 msgstr "Shpërndarje Sipas Kategorish"
 
-#: weblate_web/crm/templates/crm/income.html:108
+#: weblate_web/crm/templates/crm/income.html:116
 #, fuzzy
 #| msgid "Category"
 msgid "Category income"
 msgstr "Kategori"
 
-#: weblate_web/crm/templates/crm/income.html:115
-#: weblate_web/crm/templates/crm/income.html:205
+#: weblate_web/crm/templates/crm/income.html:123
+#: weblate_web/crm/templates/crm/income.html:213
 msgid "Category"
 msgstr "Kategori"
 
-#: weblate_web/crm/templates/crm/income.html:116
-#: weblate_web/crm/templates/crm/income.html:144
-#: weblate_web/crm/templates/crm/income.html:206
+#: weblate_web/crm/templates/crm/income.html:124
+#: weblate_web/crm/templates/crm/income.html:152
+#: weblate_web/crm/templates/crm/income.html:214
 msgid "Amount (EUR)"
 msgstr "Vlerë (EUR)"
 
-#: weblate_web/crm/templates/crm/income.html:127
-#: weblate_web/crm/templates/crm/income.html:186
+#: weblate_web/crm/templates/crm/income.html:135
+#: weblate_web/crm/templates/crm/income.html:194
 #: weblate_web/crm/templates/invoices/invoice_detail.html:140
 msgid "Total"
 msgstr "Gjithsej"
 
-#: weblate_web/crm/templates/crm/income.html:136
+#: weblate_web/crm/templates/crm/income.html:144
 #, fuzzy
 #| msgid "Total Income"
 msgid "Monthly income"
 msgstr "Të ardhura Gjithsej"
 
-#: weblate_web/crm/templates/crm/income.html:143
+#: weblate_web/crm/templates/crm/income.html:151
 msgid "Month"
 msgstr "Muaj"
 
-#: weblate_web/crm/templates/crm/income.html:145
+#: weblate_web/crm/templates/crm/income.html:153
 msgid "Rolling window"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:146
+#: weblate_web/crm/templates/crm/income.html:154
 msgid "Trend"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:147
+#: weblate_web/crm/templates/crm/income.html:155
 #: weblate_web/crm/templates/invoices/invoice_list.html:23
 #: weblate_web/crm/templates/payments/customer_detail.html:131
 #: weblate_web/crm/templates/payments/customer_detail.html:190
@@ -504,11 +508,11 @@ msgstr ""
 msgid "Actions"
 msgstr "Veprime"
 
-#: weblate_web/crm/templates/crm/income.html:180
+#: weblate_web/crm/templates/crm/income.html:188
 msgid "View details"
 msgstr "Shihni hollësitë"
 
-#: weblate_web/crm/templates/crm/income.html:198
+#: weblate_web/crm/templates/crm/income.html:206
 msgid "Yearly category income"
 msgstr ""
 
@@ -1497,73 +1501,81 @@ msgstr "Dritare mirëmbajtjeje"
 msgid "No services match the current filters."
 msgstr "S’u gjet shërbyes me përputhje me kërkimin tuaj."
 
-#: weblate_web/crm/views.py:850
+#: weblate_web/crm/views.py:872
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 
-#: weblate_web/crm/views.py:864
+#: weblate_web/crm/views.py:886
 msgid "Hosted user was not linked."
 msgstr ""
 
-#: weblate_web/crm/views.py:867
+#: weblate_web/crm/views.py:889
 msgid "Hosted user is already linked to a different local user."
 msgstr ""
 
-#: weblate_web/crm/views.py:874
+#: weblate_web/crm/views.py:896
 msgid "Added customer user"
 msgstr ""
 
-#: weblate_web/crm/views.py:876
+#: weblate_web/crm/views.py:898
 #, python-format
 msgid "Added %(email)s to customer users. Hosted user was %(state)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:880
+#: weblate_web/crm/views.py:902
 msgid "created"
 msgstr ""
 
-#: weblate_web/crm/views.py:882
+#: weblate_web/crm/views.py:904
 msgid "linked"
 msgstr ""
 
-#: weblate_web/crm/views.py:909
+#: weblate_web/crm/views.py:931
 msgid "Multiple local users use this e-mail address"
 msgstr "Kjo adresë email përdoret nga disa përdorues vendorë"
 
-#: weblate_web/crm/views.py:937
+#: weblate_web/crm/views.py:959
 #, python-format
 msgid "Could not add customer user: %(error)s"
 msgstr ""
 
-#: weblate_web/crm/views.py:944
+#: weblate_web/crm/views.py:966
 #, python-format
 msgid "Added %(email)s to customer users."
 msgstr ""
 
-#: weblate_web/crm/views.py:949
+#: weblate_web/crm/views.py:971
 #, python-format
 msgid "%(email)s is already a customer user."
 msgstr ""
 
-#: weblate_web/crm/views.py:983
+#: weblate_web/crm/views.py:1005
 #, python-format
 msgid "Follow-up scheduled for %(date)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:991
+#: weblate_web/crm/views.py:1013
 msgid "Follow-up set"
 msgstr ""
 
-#: weblate_web/crm/views.py:994
+#: weblate_web/crm/views.py:1016
 msgid "Follow-up added."
 msgstr ""
 
-#: weblate_web/crm/views.py:1005
+#: weblate_web/crm/views.py:1027
 msgid "Follow-up cleared"
 msgstr ""
 
-#: weblate_web/crm/views.py:1006 weblate_web/crm/views.py:1009
+#: weblate_web/crm/views.py:1028 weblate_web/crm/views.py:1031
 msgid "Follow-up cleared."
+msgstr ""
+
+#: weblate_web/crm/views.py:1192
+msgid "Uncategorized"
+msgstr ""
+
+#: weblate_web/crm/views.py:1430
+msgid "YTD"
 msgstr ""
 
 #: weblate_web/crm/workqueue.py:151
