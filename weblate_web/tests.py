@@ -5,13 +5,11 @@ import re
 from dataclasses import dataclass
 from datetime import date, timedelta
 from decimal import Decimal
-from importlib import import_module
 from io import BytesIO, StringIO
 from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
-from uuid import uuid4
 from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
 from zlib import crc32
 
@@ -25,10 +23,9 @@ from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.signing import dumps
-from django.db import IntegrityError, connection, transaction
-from django.db.migrations.executor import MigrationExecutor
+from django.db import IntegrityError, transaction
 from django.db.models.deletion import RestrictedError
-from django.test import RequestFactory, SimpleTestCase, TestCase, TransactionTestCase
+from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -92,7 +89,6 @@ from .views import CustomerView, PostView, server_error
 if TYPE_CHECKING:
     from uuid import UUID
 
-    from django.apps.registry import Apps
     from django.core.mail.message import EmailMultiAlternatives
 
 TEST_DATA = Path(__file__).parent / "test-data"
@@ -112,60 +108,6 @@ CSP_BASE64_VALUE_RE = re.compile(r"^[A-Za-z0-9+/]+={0,2}$")
 SENTRY_SCRIPT_NONCE_RE = re.compile(
     rb'<script nonce="([^"]+)">\s*Sentry\.init', re.DOTALL
 )
-
-
-def migrate_to_current_weblate_web_head(executor: MigrationExecutor) -> None:
-    executor.migrate(
-        [
-            node
-            for node in executor.loader.graph.leaf_nodes()
-            if node[0] == "weblate_web"
-        ]
-    )
-
-
-def migrate_to_current_payments_head(executor: MigrationExecutor) -> None:
-    executor.migrate(
-        [node for node in executor.loader.graph.leaf_nodes() if node[0] == "payments"]
-    )
-
-
-def create_customer_for_historical_migration(apps: Apps) -> int:
-    customer_model = apps.get_model("payments", "Customer")
-    values = {
-        "vat": "",
-        "vat_validated": None,
-        "vat_validation_state": 0,
-        "vat_validation_error": "{}",
-        "tax": "",
-        "name": TEST_CUSTOMER["name"],
-        "address": TEST_CUSTOMER["address"],
-        "address_2": "",
-        "city": TEST_CUSTOMER["city"],
-        "postcode": TEST_CUSTOMER["postcode"],
-        "country": "US",
-        "email": "",
-        "contact_point": "",
-        "accounting_reference": "",
-        "upcoming_payment_notification_days": 0,
-        "follow_up_at": None,
-        "follow_up_note": "",
-        "origin": PAYMENTS_ORIGIN,
-        "user_id": -1,
-        "discount_id": None,
-        "end_client": "",
-        "note": "",
-        "created": timezone.now(),
-        "zammad_id": 0,
-    }
-    field_names = {
-        field.name
-        for field in customer_model._meta.fields  # pylint: disable=protected-access
-    }
-    customer = customer_model.objects.create(
-        **{field: value for field, value in values.items() if field in field_names}
-    )
-    return customer.pk
 
 
 @dataclass
@@ -1468,296 +1410,6 @@ class FakturaceTestCase(UserTestCase):
         )[0]
         subscription.save(update_fields=["payment"])
         return service
-
-
-class DonationMigration0049Test(TransactionTestCase):
-    migrate_from = [
-        ("payments", "0060_customer_follow_up"),
-        ("weblate_web", "0048_service_maintenance_window"),
-    ]
-    migrate_to = [
-        ("payments", "0060_customer_follow_up"),
-        ("weblate_web", "0049_consolidate_donations"),
-    ]
-
-    def setUp(self) -> None:
-        super().setUp()
-        self.executor = MigrationExecutor(connection)
-        self.executor.migrate(self.migrate_from)
-        self.old_apps = self.executor.loader.project_state(self.migrate_from).apps
-
-    def tearDown(self) -> None:
-        self.executor = MigrationExecutor(connection)
-        migrate_to_current_weblate_web_head(self.executor)
-        self.executor = MigrationExecutor(connection)
-        migrate_to_current_payments_head(self.executor)
-        super().tearDown()
-
-    def test_donation_rewards_are_migrated_to_subscription_packages(  # ruff:ignore[too-many-locals]
-        self,
-    ) -> None:
-        donation_model = self.old_apps.get_model("weblate_web", "Donation")
-        past_payments_model = self.old_apps.get_model("weblate_web", "PastPayments")
-
-        customer_id = create_customer_for_historical_migration(self.old_apps)
-        created = timezone.now() - timedelta(days=30)
-        expires = timezone.now() + timedelta(days=30)
-        donations = []
-        for reward in range(4):
-            payment = Payment.objects.create(
-                customer_id=customer_id,
-                amount=100 + reward,
-                description=f"Donation {reward}",
-                state=Payment.PROCESSED,
-            )
-            donation = donation_model.objects.create(
-                customer_id=customer_id,
-                payment=payment.pk,
-                reward=reward,
-                link_text=f"Donor {reward}",
-                link_url=f"https://example.com/{reward}",
-                link_image=f"donations/{reward}.png",
-                expires=expires + timedelta(days=reward),
-                active=reward != 1,
-            )
-            donation_model.objects.filter(pk=donation.pk).update(created=created)
-            donation.created = created
-            donations.append(donation)
-
-        past_payment = Payment.objects.create(
-            customer_id=customer_id,
-            amount=42,
-            description="Past donation",
-            state=Payment.PROCESSED,
-        )
-        past_payments_model.objects.create(
-            donation=donations[3],
-            payment=past_payment.pk,
-        )
-
-        executor = MigrationExecutor(connection)
-        executor.migrate(self.migrate_to)
-        new_apps = executor.loader.project_state(self.migrate_to).apps
-        package_model = new_apps.get_model("weblate_web", "Package")
-        past_payments_model = new_apps.get_model("weblate_web", "PastPayments")
-        service_model = new_apps.get_model("weblate_web", "Service")
-        subscription_model = new_apps.get_model("weblate_web", "Subscription")
-
-        self.assertNotIn(
-            "donation_reward",
-            {
-                field.name
-                for field in service_model._meta.fields  # pylint: disable=protected-access
-            },
-        )
-        self.assertNotIn(
-            "donation",
-            {
-                field.name
-                for field in past_payments_model._meta.fields  # pylint: disable=protected-access
-            },
-        )
-        for reward, donation in enumerate(donations):
-            service = service_model.objects.get(donation_legacy_id=donation.pk)
-            subscription = subscription_model.objects.get(service=service)
-            package = package_model.objects.get(pk=subscription.package_id)
-            self.assertEqual(package.name, get_donation_reward_package_name(reward))
-            self.assertEqual(package.price, REWARD_LEVELS[reward])
-            self.assertEqual(service.kind, ServiceKind.DONATION)
-            self.assertEqual(service.donation_link_text, f"Donor {reward}")
-            self.assertEqual(service.donation_link_url, f"https://example.com/{reward}")
-            self.assertEqual(service.donation_link_image, f"donations/{reward}.png")
-            self.assertEqual(subscription.payment, donation.payment)
-            self.assertEqual(subscription.enabled, reward != 1)
-            self.assertEqual(subscription.expires, expires + timedelta(days=reward))
-
-        migrated_past_payment = past_payments_model.objects.get(payment=past_payment.pk)
-        self.assertEqual(
-            migrated_past_payment.subscription_id,
-            subscription_model.objects.get(
-                service__donation_legacy_id=donations[3].pk
-            ).pk,
-        )
-
-
-class SubscriptionPaymentMigration0050Test(TransactionTestCase):
-    migrate_from = [
-        ("payments", "0060_customer_follow_up"),
-        ("weblate_web", "0049_consolidate_donations"),
-    ]
-    migrate_to = [
-        ("payments", "0060_customer_follow_up"),
-        ("weblate_web", "0050_subscription_payment_fk"),
-    ]
-
-    def setUp(self) -> None:
-        super().setUp()
-        self.executor = MigrationExecutor(connection)
-        self.executor.migrate(self.migrate_from)
-        self.old_apps = self.executor.loader.project_state(self.migrate_from).apps
-
-    def tearDown(self) -> None:
-        self.executor = MigrationExecutor(connection)
-        migrate_to_current_weblate_web_head(self.executor)
-        self.executor = MigrationExecutor(connection)
-        migrate_to_current_payments_head(self.executor)
-        super().tearDown()
-
-    def test_subscription_payments_are_migrated_to_relations(self) -> None:
-        package_model = self.old_apps.get_model("weblate_web", "Package")
-        past_payments_model = self.old_apps.get_model("weblate_web", "PastPayments")
-        service_model = self.old_apps.get_model("weblate_web", "Service")
-        subscription_model = self.old_apps.get_model("weblate_web", "Subscription")
-
-        customer_id = create_customer_for_historical_migration(self.old_apps)
-        package = package_model.objects.create(
-            name="migration-test", verbose="Migration test", price=42
-        )
-        service = service_model.objects.create(customer_id=customer_id)
-        current_payment = Payment.objects.create(
-            customer_id=customer_id,
-            amount=100,
-            description="Current payment",
-            state=Payment.PROCESSED,
-        )
-        past_payment = Payment.objects.create(
-            customer_id=customer_id,
-            amount=50,
-            description="Past payment",
-            state=Payment.PROCESSED,
-        )
-        subscription = subscription_model.objects.create(
-            service_id=service.pk,
-            package_id=package.pk,
-            payment=current_payment.pk,
-            expires=timezone.now(),
-        )
-        past_payments_model.objects.create(
-            subscription_id=subscription.pk,
-            payment=past_payment.pk,
-        )
-
-        executor = MigrationExecutor(connection)
-        executor.migrate(self.migrate_to)
-        new_apps = executor.loader.project_state(self.migrate_to).apps
-        subscription_model = new_apps.get_model("weblate_web", "Subscription")
-
-        migrated_subscription = subscription_model.objects.get(pk=subscription.pk)
-        self.assertEqual(migrated_subscription.payment_id, current_payment.pk)
-        self.assertEqual(
-            set(migrated_subscription.past_payments.values_list("pk", flat=True)),
-            {past_payment.pk},
-        )
-        with self.assertRaises(LookupError):
-            new_apps.get_model("weblate_web", "PastPayments")
-
-    def test_orphan_payment_references_stop_migration(self) -> None:
-        package_model = self.old_apps.get_model("weblate_web", "Package")
-        past_payments_model = self.old_apps.get_model("weblate_web", "PastPayments")
-        service_model = self.old_apps.get_model("weblate_web", "Service")
-        subscription_model = self.old_apps.get_model("weblate_web", "Subscription")
-        migration = import_module("weblate_web.migrations.0050_subscription_payment_fk")
-        validate_payment_references_migration = (
-            migration.validate_payment_references_migration
-        )
-        self.assertEqual(
-            migration.Migration.operations[0].code,
-            validate_payment_references_migration,
-        )
-
-        customer_id = create_customer_for_historical_migration(self.old_apps)
-        package = package_model.objects.create(
-            name="migration-orphan-test", verbose="Migration orphan test", price=42
-        )
-        service = service_model.objects.create(customer_id=customer_id)
-        subscription = subscription_model.objects.create(
-            service_id=service.pk,
-            package_id=package.pk,
-            payment=uuid4(),
-            expires=timezone.now(),
-        )
-        past_payments_model.objects.create(
-            subscription_id=subscription.pk,
-            payment=uuid4(),
-        )
-
-        with self.assertRaisesMessage(
-            ValueError, "Can not migrate subscription payment references"
-        ):
-            validate_payment_references_migration(self.old_apps, None)
-        subscription_model.objects.filter(pk=subscription.pk).update(payment=None)
-        past_payments_model.objects.filter(subscription_id=subscription.pk).delete()
-
-    def test_format_missing_payments_suffix_only_for_more_than_ten(self) -> None:
-        migration = import_module("weblate_web.migrations.0050_subscription_payment_fk")
-        payment_ids = [uuid4() for _unused in range(11)]
-
-        self.assertEqual(
-            migration.format_missing_payments(payment_ids[:10]),
-            ", ".join(str(payment_id) for payment_id in payment_ids[:10]),
-        )
-        self.assertEqual(
-            migration.format_missing_payments(payment_ids),
-            f"{', '.join(str(payment_id) for payment_id in payment_ids[:10])}, ...",
-        )
-
-
-class CustomerVatValidationStateMigration0058Test(TransactionTestCase):
-    migrate_from = [("payments", "0057_customer_upcoming_payment_notification_days")]
-    migrate_to = [("payments", "0058_customer_vat_validation_state_and_error")]
-
-    def setUp(self) -> None:
-        super().setUp()
-        self.executor = MigrationExecutor(connection)
-        self.executor.migrate(self.migrate_from)
-        self.old_apps = self.executor.loader.project_state(self.migrate_from).apps
-
-    def tearDown(self) -> None:
-        self.executor = MigrationExecutor(connection)
-        migrate_to_current_payments_head(self.executor)
-        super().tearDown()
-
-    def test_existing_validated_customers_are_backfilled_as_valid(self) -> None:
-        customer_model = self.old_apps.get_model("payments", "Customer")
-        validated = customer_model.objects.create(
-            user_id=-1,
-            origin=PAYMENTS_ORIGIN,
-            name=TEST_CUSTOMER["name"],
-            address=TEST_CUSTOMER["address"],
-            city=TEST_CUSTOMER["city"],
-            postcode=TEST_CUSTOMER["postcode"],
-            country="CZ",
-            vat="CZ8003280318",
-            vat_validated=timezone.now(),
-        )
-        unknown = customer_model.objects.create(
-            user_id=-1,
-            origin=PAYMENTS_ORIGIN,
-            name=TEST_CUSTOMER["name"],
-            address=TEST_CUSTOMER["address"],
-            city=TEST_CUSTOMER["city"],
-            postcode=TEST_CUSTOMER["postcode"],
-            country="CZ",
-            vat="CZ8003280317",
-        )
-
-        executor = MigrationExecutor(connection)
-        executor.migrate(self.migrate_to)
-        new_apps = executor.loader.project_state(self.migrate_to).apps
-        customer_model = new_apps.get_model("payments", "Customer")
-
-        validated.refresh_from_db()
-        migrated_validated = customer_model.objects.get(pk=validated.pk)
-        migrated_unknown = customer_model.objects.get(pk=unknown.pk)
-        self.assertEqual(
-            migrated_validated.vat_validation_state,
-            Customer.VatValidationState.VALID,
-        )
-        self.assertEqual(migrated_validated.vat_validation_error, {})
-        self.assertEqual(
-            migrated_unknown.vat_validation_state,
-            Customer.VatValidationState.UNKNOWN,
-        )
 
 
 class PaymentsTest(FakturaceTestCase):

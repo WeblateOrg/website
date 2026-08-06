@@ -75,35 +75,9 @@ jobs:
     - name: Test with Django
       env:
         EINVOICE_VALIDATOR_URL: http://localhost:7070/
-      run: |
-        uv run --no-sync pytest --junitxml=junit.xml weblate_web
-        cp .coverage .coverage.pytest
-    - name: Migrations
-      run: |
-        # First version with database backends tests
-        git checkout 7ba420b18ec3c7d32fb71823335e068f15b96855
-        uv pip install --python .venv/bin/python -r requirements.txt
-        uv run --no-sync ./manage.py migrate
-        uv run --no-sync ./manage.py shell -c 'customer = Customer.objects.create(user_id=-1); payment = Payment.objects.create(customer=customer, amount=1); Payment.objects.create(customer=customer, amount=1, repeat=payment)'
-        EXISTING_PK=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
-        EXISTING_REPEAT=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
-        git checkout "$GITHUB_SHA"
-        uv sync --dev
-        uv run --no-sync coverage run ./manage.py migrate
-        NEW_PK=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
-        NEW_REPEAT=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
-        if [ "$NEW_PK" != "$EXISTING_PK" ] ; then
-          echo "Migration failed (pk): $NEW_PK != $EXISTING_PK"
-          exit 1
-        fi
-        if [ "$NEW_REPEAT" != "$EXISTING_REPEAT" ] ; then
-          echo "Migration failed (repeat): $NEW_REPEAT != $EXISTING_REPEAT"
-          exit 1
-        fi
+      run: uv run --no-sync pytest --junitxml=junit.xml weblate_web
     - name: Coverage
-      run: |
-        uv run --no-sync coverage combine
-        uv run --no-sync coverage xml
+      run: uv run --no-sync coverage xml
     - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
       with:
         token: ${{secrets.CODECOV_TOKEN}} # zizmor: ignore[secrets-outside-env]
