@@ -29,16 +29,16 @@ This file captures agent-specific guidance for working in the Weblate website co
 
 ## Testing and linting instructions
 
-- Install the development dependencies first using
-  `uv venv .venv; uv pip install -r requirements-dev.txt`.
-- After syncing, you can also activate it with `source .venv/bin/activate` or invoke tools from `.venv/bin/`.
-- Prefer `prek run --all-files` as the primary linting/formatting command because
-  it runs the repository's configured pre-commit framework checks.
+- Install the development dependencies first using `uv sync --dev`.
+- After syncing, you can also activate it with `source .venv/bin/activate` or
+  invoke tools using `uv run`.
+- Prefer `uv run prek run --all-files` as the primary linting/formatting command
+  because it runs the repository's configured pre-commit framework checks.
 - `prek` is a third-party reimplementation of the `pre-commit` tool.
 - End-to-end screenshots are used for visual comparison and must remain
   deterministic between test runs. Avoid runtime-dependent content such as
   current timestamps in captured screenshots.
-- Use `pytest` to run the test suite: `pytest weblate_web`.
-- Use `pylint` to lint the Python code: `pylint weblate_web/`
-- Use `mypy` to type check the code: `mypy weblate_web/`
+- Use `pytest` to run the test suite: `uv run pytest weblate_web`.
+- Use `pylint` to lint the Python code: `uv run pylint weblate_web/`
+- Use `mypy` to type check the code: `uv run mypy weblate_web/`
 - All mentioned linting tools MUST pass.

@@ -21,22 +21,22 @@ jobs:
         cache-suffix: e2e
 
     - name: Install Playwright browsers
-      run: playwright install --with-deps chromium
+      run: uv run --no-sync playwright install --with-deps chromium
 
     - name: Install PDF screenshot tools
       run: sudo apt-get update && sudo apt-get install --no-install-recommends --yes ghostscript
 
     - name: Create database
-      run: ./manage.py migrate
+      run: uv run --no-sync ./manage.py migrate
 
     - name: Sync packages
-      run: ./manage.py sync_packages
+      run: uv run --no-sync ./manage.py sync_packages
 
     - name: Run E2E tests
       env:
         DJANGO_ALLOW_ASYNC_UNSAFE: 'true'
       run: |
-        pytest weblate_web/tests_e2e/ -v --screenshot=only-on-failure --video=retain-on-failure
+        uv run --no-sync pytest weblate_web/tests_e2e/ -v --screenshot=only-on-failure --video=retain-on-failure
 
     - name: Argos CI upload
       env:
