@@ -64,34 +64,34 @@ jobs:
       with:
         cache-suffix: test
         version: 0.12.1
-    - name: Install pip dependencies
-      run: uv pip install --system -r requirements-dev.txt
+    - name: Install Python dependencies
+      run: uv sync --dev
     - name: Compile MO files
-      run: ./scripts/generate-locales
+      run: uv run --no-sync ./scripts/generate-locales
     - name: Collect static files
-      run: ./manage.py collectstatic
+      run: uv run --no-sync ./manage.py collectstatic
     - name: Django checks
-      run: ./manage.py check
+      run: uv run --no-sync ./manage.py check
     - name: Test with Django
       env:
         EINVOICE_VALIDATOR_URL: http://localhost:7070/
       run: |
-        pytest --junitxml=junit.xml weblate_web
+        uv run --no-sync pytest --junitxml=junit.xml weblate_web
         cp .coverage .coverage.pytest
     - name: Migrations
       run: |
         # First version with database backends tests
         git checkout 7ba420b18ec3c7d32fb71823335e068f15b96855
-        uv pip install --system -r requirements.txt
-        ./manage.py migrate
-        ./manage.py shell -c 'customer = Customer.objects.create(user_id=-1); payment = Payment.objects.create(customer=customer, amount=1); Payment.objects.create(customer=customer, amount=1, repeat=payment)'
-        EXISTING_PK=$(./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
-        EXISTING_REPEAT=$(./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
+        uv pip install --python .venv/bin/python -r requirements.txt
+        uv run --no-sync ./manage.py migrate
+        uv run --no-sync ./manage.py shell -c 'customer = Customer.objects.create(user_id=-1); payment = Payment.objects.create(customer=customer, amount=1); Payment.objects.create(customer=customer, amount=1, repeat=payment)'
+        EXISTING_PK=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
+        EXISTING_REPEAT=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
         git checkout "$GITHUB_SHA"
-        uv pip install --system -r requirements-dev.txt
-        coverage run ./manage.py migrate
-        NEW_PK=$(./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
-        NEW_REPEAT=$(./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
+        uv sync --dev
+        uv run --no-sync coverage run ./manage.py migrate
+        NEW_PK=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].pk' | tr -d - | sort)
+        NEW_REPEAT=$(uv run --no-sync ./manage.py dumpdata payments.Payment | jq '.[].fields.repeat' | tr -d - | sort)
         if [ "$NEW_PK" != "$EXISTING_PK" ] ; then
           echo "Migration failed (pk): $NEW_PK != $EXISTING_PK"
           exit 1
@@ -102,8 +102,8 @@ jobs:
         fi
     - name: Coverage
       run: |
-        coverage combine
-        coverage xml
+        uv run --no-sync coverage combine
+        uv run --no-sync coverage xml
     - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
       with:
         token: ${{secrets.CODECOV_TOKEN}} # zizmor: ignore[secrets-outside-env]

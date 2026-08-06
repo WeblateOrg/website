@@ -17,13 +17,13 @@ Before running the E2E tests, you need to:
 1. Install all dependencies:
 
    ```bash
-   uv pip install -r requirements-dev.txt
+   uv sync --dev
    ```
 
 1. Install Playwright browsers:
 
    ```bash
-   playwright install chromium
+   uv run playwright install chromium
    ```
 
 1. Install PDF screenshot tooling:
@@ -35,15 +35,15 @@ Before running the E2E tests, you need to:
 1. Set up the database and static files:
 
    ```bash
-   ./manage.py migrate
-   ./manage.py sync_packages
-   ./manage.py collectstatic --noinput
+   uv run ./manage.py migrate
+   uv run ./manage.py sync_packages
+   uv run ./manage.py collectstatic --noinput
    ```
 
 1. Compile translation files (optional):
 
    ```bash
-   ./scripts/generate-locales
+   uv run ./scripts/generate-locales
    ```
 
 ## Running Tests
@@ -51,50 +51,50 @@ Before running the E2E tests, you need to:
 ### Run all E2E tests
 
 ```bash
-pytest weblate_web/tests_e2e/
+uv run pytest weblate_web/tests_e2e/
 ```
 
 ### Run specific test file
 
 ```bash
-pytest weblate_web/tests_e2e/test_navigation.py
+uv run pytest weblate_web/tests_e2e/test_navigation.py
 ```
 
 ### Run specific test
 
 ```bash
-pytest weblate_web/tests_e2e/test_navigation.py::TestWebsiteNavigation::test_new_user_visits_homepage
+uv run pytest weblate_web/tests_e2e/test_navigation.py::TestWebsiteNavigation::test_new_user_visits_homepage
 ```
 
 ### Run tests with visible browser (headed mode)
 
 ```bash
-pytest weblate_web/tests_e2e/ --headed
+uv run pytest weblate_web/tests_e2e/ --headed
 ```
 
 ### Run tests with different browsers
 
 ```bash
 # Chromium (default)
-pytest weblate_web/tests_e2e/ --browser chromium
+uv run pytest weblate_web/tests_e2e/ --browser chromium
 
 # Firefox
-pytest weblate_web/tests_e2e/ --browser firefox
+uv run pytest weblate_web/tests_e2e/ --browser firefox
 
 # WebKit
-pytest weblate_web/tests_e2e/ --browser webkit
+uv run pytest weblate_web/tests_e2e/ --browser webkit
 ```
 
 ### Run tests with video recording
 
 ```bash
-pytest weblate_web/tests_e2e/ --video=on
+uv run pytest weblate_web/tests_e2e/ --video=on
 ```
 
 ### Run tests with screenshots on failure
 
 ```bash
-pytest weblate_web/tests_e2e/ --screenshot=only-on-failure
+uv run pytest weblate_web/tests_e2e/ --screenshot=only-on-failure
 ```
 
 ## Test Structure
@@ -128,7 +128,7 @@ Make sure the `DJANGO_ALLOW_ASYNC_UNSAFE` environment variable is set:
 
 ```bash
 export DJANGO_ALLOW_ASYNC_UNSAFE=true
-pytest weblate_web/tests_e2e/
+uv run pytest weblate_web/tests_e2e/
 ```
 
 ### Tests fail to connect to live server
@@ -140,7 +140,7 @@ The tests use Django's `live_server` fixture which starts a test server automati
 If you get an error about missing browser, run:
 
 ```bash
-playwright install chromium
+uv run playwright install chromium
 ```
 
 ## Writing New Tests

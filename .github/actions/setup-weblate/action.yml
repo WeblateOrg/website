@@ -29,14 +29,14 @@ runs:
       cache-suffix: ${{ inputs.cache-suffix }}
       version: 0.12.1
 
-  - name: Install pip dependencies
+  - name: Install Python dependencies
     shell: bash
-    run: uv pip install --system -r requirements-dev.txt
+    run: uv sync --dev
 
   - name: Compile MO files
     shell: bash
-    run: ./scripts/generate-locales
+    run: uv run --no-sync ./scripts/generate-locales
 
   - name: Collect static files
     shell: bash
-    run: ./manage.py collectstatic --noinput
+    run: uv run --no-sync ./manage.py collectstatic --noinput
