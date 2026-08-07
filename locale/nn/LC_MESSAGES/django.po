@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-03 03:33-0500\n"
+"POT-Creation-Date: 2026-08-07 07:22-0500\n"
 "PO-Revision-Date: 2026-07-07 05:03+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
@@ -280,7 +280,6 @@ msgstr ""
 
 #: weblate_web/crm/models.py:232
 #: weblate_web/crm/templates/weblate_web/service_detail.html:142
-#: weblate_web/migrations/0048_service_maintenance_window.py:38
 #: weblate_web/models.py:788
 msgid "Maintenance window"
 msgstr ""
@@ -1702,36 +1701,6 @@ msgstr "Tenarnettadresse"
 msgid "Server URL must use HTTPS."
 msgstr ""
 
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
-#: weblate_web/invoices/models.py:287
-msgctxt "Quote status"
-msgid "Open"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
-#: weblate_web/invoices/models.py:288
-msgctxt "Quote status"
-msgid "Lost"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
-#: weblate_web/invoices/models.py:289
-msgctxt "Quote status"
-msgid "Superseded"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
-#: weblate_web/invoices/models.py:290
-msgctxt "Quote status"
-msgid "Accepted elsewhere"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
-#: weblate_web/invoices/models.py:291
-msgctxt "Quote status"
-msgid "Archived"
-msgstr ""
-
 #: weblate_web/invoices/models.py:211
 msgid "IBAN"
 msgstr "IBAN"
@@ -1751,6 +1720,31 @@ msgstr "Utferdande bank"
 #: weblate_web/invoices/models.py:221
 msgid "Account holder"
 msgstr "Kontoeigar"
+
+#: weblate_web/invoices/models.py:287
+msgctxt "Quote status"
+msgid "Open"
+msgstr ""
+
+#: weblate_web/invoices/models.py:288
+msgctxt "Quote status"
+msgid "Lost"
+msgstr ""
+
+#: weblate_web/invoices/models.py:289
+msgctxt "Quote status"
+msgid "Superseded"
+msgstr ""
+
+#: weblate_web/invoices/models.py:290
+msgctxt "Quote status"
+msgid "Accepted elsewhere"
+msgstr ""
+
+#: weblate_web/invoices/models.py:291
+msgctxt "Quote status"
+msgid "Archived"
+msgstr ""
 
 #: weblate_web/invoices/models.py:375
 msgid "CRM status for quote follow-up."
@@ -1779,71 +1773,6 @@ msgstr ""
 #: weblate_web/invoices/views.py:51 weblate_web/views.py:471
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
-
-#: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:651
-msgctxt "Service kind"
-msgid "Service"
-msgstr "Teneste"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:652
-#, fuzzy
-#| msgid "Documentation"
-msgctxt "Service kind"
-msgid "Donation"
-msgstr "Dokumentasjon"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:822
-msgid "Link text"
-msgstr "Lenkjetekst"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:825
-msgid "Link URL"
-msgstr "Lenkjenettadresse"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:828
-msgid "Link image"
-msgstr "Lenkjebilete"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:656
-msgctxt "Package category"
-msgid "None"
-msgstr "Ingen"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:657
-#, fuzzy
-#| msgid "Dedicated instance"
-msgctxt "Package category"
-msgid "Dedicated hosting"
-msgstr "Dedikert instans"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:658
-msgctxt "Package category"
-msgid "Shared hosting"
-msgstr ""
-
-#: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:659
-#, fuzzy
-#| msgid "Basic self-hosted support"
-msgctxt "Package category"
-msgid "Self-hosted support"
-msgstr "Grunnleggjande støtte for lagring på eigen vert"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:660
-#, fuzzy
-#| msgid "Documentation"
-msgctxt "Package category"
-msgid "Donation"
-msgstr "Dokumentasjon"
 
 #: weblate_web/models.py:165
 msgid "No reward"
@@ -1908,6 +1837,49 @@ msgstr "Ustøtta biletetype: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Last opp eit bilete med oppløysing på 570 x 260 pikslar."
 
+#: weblate_web/models.py:651
+msgctxt "Service kind"
+msgid "Service"
+msgstr "Teneste"
+
+#: weblate_web/models.py:652
+#, fuzzy
+#| msgid "Documentation"
+msgctxt "Service kind"
+msgid "Donation"
+msgstr "Dokumentasjon"
+
+#: weblate_web/models.py:656
+msgctxt "Package category"
+msgid "None"
+msgstr "Ingen"
+
+#: weblate_web/models.py:657
+#, fuzzy
+#| msgid "Dedicated instance"
+msgctxt "Package category"
+msgid "Dedicated hosting"
+msgstr "Dedikert instans"
+
+#: weblate_web/models.py:658
+msgctxt "Package category"
+msgid "Shared hosting"
+msgstr ""
+
+#: weblate_web/models.py:659
+#, fuzzy
+#| msgid "Basic self-hosted support"
+msgctxt "Package category"
+msgid "Self-hosted support"
+msgstr "Grunnleggjande støtte for lagring på eigen vert"
+
+#: weblate_web/models.py:660
+#, fuzzy
+#| msgid "Documentation"
+msgctxt "Package category"
+msgid "Donation"
+msgstr "Dokumentasjon"
+
 #: weblate_web/models.py:762
 msgid "Community supported"
 msgstr "Støtta av fellesskapet"
@@ -1947,6 +1919,18 @@ msgstr "Tenaravtrykk"
 #: weblate_web/models.py:814
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG- eller JPG-bilete med ei oppløysing på 570 x 260 pikslar."
+
+#: weblate_web/models.py:822
+msgid "Link text"
+msgstr "Lenkjetekst"
+
+#: weblate_web/models.py:825
+msgid "Link URL"
+msgstr "Lenkjenettadresse"
+
+#: weblate_web/models.py:828
+msgid "Link image"
+msgstr "Lenkjebilete"
 
 #: weblate_web/models.py:1085 weblate_web/templates/hosting.html:168
 msgid "Basic support"
@@ -2633,7 +2617,7 @@ msgstr "Weblate, den frie lokaliseringsplattforma, vil ha deg med på laget!"
 msgid "Learn more"
 msgstr "Lær meir"
 
-#: weblate_web/templates/careers.html:69 weblate_web/templates/careers.html:111
+#: weblate_web/templates/careers.html:70 weblate_web/templates/careers.html:111
 #: weblate_web/templates/careers.html:159
 msgid "Apply now"
 msgstr "Søk no"

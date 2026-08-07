@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-03 03:33-0500\n"
+"POT-Creation-Date: 2026-08-07 07:22-0500\n"
 "PO-Revision-Date: 2026-07-13 07:37+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -275,7 +275,6 @@ msgstr "Προηγούμενο παράθυρο συντήρησης"
 
 #: weblate_web/crm/models.py:232
 #: weblate_web/crm/templates/weblate_web/service_detail.html:142
-#: weblate_web/migrations/0048_service_maintenance_window.py:38
 #: weblate_web/models.py:788
 msgid "Maintenance window"
 msgstr "Παράθυρο συντήρησης"
@@ -1685,36 +1684,6 @@ msgstr "URL διακομιστή"
 msgid "Server URL must use HTTPS."
 msgstr ""
 
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
-#: weblate_web/invoices/models.py:287
-msgctxt "Quote status"
-msgid "Open"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
-#: weblate_web/invoices/models.py:288
-msgctxt "Quote status"
-msgid "Lost"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
-#: weblate_web/invoices/models.py:289
-msgctxt "Quote status"
-msgid "Superseded"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
-#: weblate_web/invoices/models.py:290
-msgctxt "Quote status"
-msgid "Accepted elsewhere"
-msgstr ""
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
-#: weblate_web/invoices/models.py:291
-msgctxt "Quote status"
-msgid "Archived"
-msgstr ""
-
 #: weblate_web/invoices/models.py:211
 msgid "IBAN"
 msgstr "IBAN"
@@ -1734,6 +1703,31 @@ msgstr "Εκδότρια τράπεζα"
 #: weblate_web/invoices/models.py:221
 msgid "Account holder"
 msgstr "Κάτοχος λογαριασμού"
+
+#: weblate_web/invoices/models.py:287
+msgctxt "Quote status"
+msgid "Open"
+msgstr ""
+
+#: weblate_web/invoices/models.py:288
+msgctxt "Quote status"
+msgid "Lost"
+msgstr ""
+
+#: weblate_web/invoices/models.py:289
+msgctxt "Quote status"
+msgid "Superseded"
+msgstr ""
+
+#: weblate_web/invoices/models.py:290
+msgctxt "Quote status"
+msgid "Accepted elsewhere"
+msgstr ""
+
+#: weblate_web/invoices/models.py:291
+msgctxt "Quote status"
+msgid "Archived"
+msgstr ""
 
 #: weblate_web/invoices/models.py:375
 msgid "CRM status for quote follow-up."
@@ -1766,63 +1760,6 @@ msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "Αυτό το τιμολόγιο έχει ήδη πληρωθεί. Παρακαλούμε συνδεθείτε για να δείτε "
 "λεπτομέρειες."
-
-#: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:651
-msgctxt "Service kind"
-msgid "Service"
-msgstr "Υπηρεσία"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:652
-msgctxt "Service kind"
-msgid "Donation"
-msgstr "Δωρεά"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:822
-msgid "Link text"
-msgstr "Κείμενο συνδέσμου"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:825
-msgid "Link URL"
-msgstr "Σύνδεσμος URL"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:828
-msgid "Link image"
-msgstr "Εικόνα συνδέσμου"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:656
-msgctxt "Package category"
-msgid "None"
-msgstr "Κανένα"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:657
-msgctxt "Package category"
-msgid "Dedicated hosting"
-msgstr "Εξειδικευμένο hosting"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:658
-msgctxt "Package category"
-msgid "Shared hosting"
-msgstr "Κοινόχρηστο hosting"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:659
-msgctxt "Package category"
-msgid "Self-hosted support"
-msgstr "Αυτοφιλοξενούμενη υποστήριξη"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:660
-msgctxt "Package category"
-msgid "Donation"
-msgstr "Δωρεά"
 
 #: weblate_web/models.py:165
 msgid "No reward"
@@ -1887,6 +1824,41 @@ msgstr "Μη υποστηριζόμενος τύπος εικόνας: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Παρακαλούμε ανεβάστε μια εικόνα με ανάλυση 570 x 260 εικονοστοιχείων."
 
+#: weblate_web/models.py:651
+msgctxt "Service kind"
+msgid "Service"
+msgstr "Υπηρεσία"
+
+#: weblate_web/models.py:652
+msgctxt "Service kind"
+msgid "Donation"
+msgstr "Δωρεά"
+
+#: weblate_web/models.py:656
+msgctxt "Package category"
+msgid "None"
+msgstr "Κανένα"
+
+#: weblate_web/models.py:657
+msgctxt "Package category"
+msgid "Dedicated hosting"
+msgstr "Εξειδικευμένο hosting"
+
+#: weblate_web/models.py:658
+msgctxt "Package category"
+msgid "Shared hosting"
+msgstr "Κοινόχρηστο hosting"
+
+#: weblate_web/models.py:659
+msgctxt "Package category"
+msgid "Self-hosted support"
+msgstr "Αυτοφιλοξενούμενη υποστήριξη"
+
+#: weblate_web/models.py:660
+msgctxt "Package category"
+msgid "Donation"
+msgstr "Δωρεά"
+
 #: weblate_web/models.py:762
 msgid "Community supported"
 msgstr "Με υποστήριξη από την κοινότητα"
@@ -1926,6 +1898,18 @@ msgstr "Εικόνα διακομιστή"
 #: weblate_web/models.py:814
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "Εικόνα PNG ή JPG με ανάλυση 570 x 260 pixels."
+
+#: weblate_web/models.py:822
+msgid "Link text"
+msgstr "Κείμενο συνδέσμου"
+
+#: weblate_web/models.py:825
+msgid "Link URL"
+msgstr "Σύνδεσμος URL"
+
+#: weblate_web/models.py:828
+msgid "Link image"
+msgstr "Εικόνα συνδέσμου"
 
 #: weblate_web/models.py:1085 weblate_web/templates/hosting.html:168
 msgid "Basic support"
@@ -2599,7 +2583,7 @@ msgstr ""
 msgid "Learn more"
 msgstr "Μάθε περισσότερα"
 
-#: weblate_web/templates/careers.html:69 weblate_web/templates/careers.html:111
+#: weblate_web/templates/careers.html:70 weblate_web/templates/careers.html:111
 #: weblate_web/templates/careers.html:159
 msgid "Apply now"
 msgstr "Κάνε αίτηση τώρα"

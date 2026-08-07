@@ -46,7 +46,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-03 03:33-0500\n"
+"POT-Creation-Date: 2026-08-07 07:22-0500\n"
 "PO-Revision-Date: 2026-08-04 09:01+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
@@ -297,7 +297,6 @@ msgstr "Предыдущее окно обслуживания"
 
 #: weblate_web/crm/models.py:232
 #: weblate_web/crm/templates/weblate_web/service_detail.html:142
-#: weblate_web/migrations/0048_service_maintenance_window.py:38
 #: weblate_web/models.py:788
 msgid "Maintenance window"
 msgstr "Окно обслуживания"
@@ -1535,36 +1534,6 @@ msgstr "Недействительный URL сервера."
 msgid "Server URL must use HTTPS."
 msgstr "URL сервера должен использовать HTTPS."
 
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
-#: weblate_web/invoices/models.py:287
-msgctxt "Quote status"
-msgid "Open"
-msgstr "Открыто"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
-#: weblate_web/invoices/models.py:288
-msgctxt "Quote status"
-msgid "Lost"
-msgstr "Проиграно"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
-#: weblate_web/invoices/models.py:289
-msgctxt "Quote status"
-msgid "Superseded"
-msgstr "Заменено"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
-#: weblate_web/invoices/models.py:290
-msgctxt "Quote status"
-msgid "Accepted elsewhere"
-msgstr "Принято в другом месте"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
-#: weblate_web/invoices/models.py:291
-msgctxt "Quote status"
-msgid "Archived"
-msgstr "Архивировано"
-
 #: weblate_web/invoices/models.py:211
 msgid "IBAN"
 msgstr "IBAN"
@@ -1584,6 +1553,31 @@ msgstr "Банк-эмитент"
 #: weblate_web/invoices/models.py:221
 msgid "Account holder"
 msgstr "Владелец счёта"
+
+#: weblate_web/invoices/models.py:287
+msgctxt "Quote status"
+msgid "Open"
+msgstr "Открыто"
+
+#: weblate_web/invoices/models.py:288
+msgctxt "Quote status"
+msgid "Lost"
+msgstr "Проиграно"
+
+#: weblate_web/invoices/models.py:289
+msgctxt "Quote status"
+msgid "Superseded"
+msgstr "Заменено"
+
+#: weblate_web/invoices/models.py:290
+msgctxt "Quote status"
+msgid "Accepted elsewhere"
+msgstr "Принято в другом месте"
+
+#: weblate_web/invoices/models.py:291
+msgctxt "Quote status"
+msgid "Archived"
+msgstr "Архивировано"
 
 #: weblate_web/invoices/models.py:375
 msgid "CRM status for quote follow-up."
@@ -1615,63 +1609,6 @@ msgstr "Просрочено"
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "Этот счёт уже оплачен. Пожалуйста, войдите, чтобы просмотреть подробности."
-
-#: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:651
-msgctxt "Service kind"
-msgid "Service"
-msgstr "Служба"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:652
-msgctxt "Service kind"
-msgid "Donation"
-msgstr "Пожертвование"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:822
-msgid "Link text"
-msgstr "Текст ссылки"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:825
-msgid "Link URL"
-msgstr "URL ссылки"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:828
-msgid "Link image"
-msgstr "Ссылка на изображение"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:656
-msgctxt "Package category"
-msgid "None"
-msgstr "Нет"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:657
-msgctxt "Package category"
-msgid "Dedicated hosting"
-msgstr "Выделенный хостинг"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:658
-msgctxt "Package category"
-msgid "Shared hosting"
-msgstr "Виртуальный хостинг"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:659
-msgctxt "Package category"
-msgid "Self-hosted support"
-msgstr "Поддержка вашего собственного хостинга"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:660
-msgctxt "Package category"
-msgid "Donation"
-msgstr "Пожертвование"
 
 #: weblate_web/models.py:165
 msgid "No reward"
@@ -1736,6 +1673,41 @@ msgstr "Неподдерживаемый тип изображения: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Пожалуйста, загрузите изображение с разрешением 570 x 260 пикселей."
 
+#: weblate_web/models.py:651
+msgctxt "Service kind"
+msgid "Service"
+msgstr "Служба"
+
+#: weblate_web/models.py:652
+msgctxt "Service kind"
+msgid "Donation"
+msgstr "Пожертвование"
+
+#: weblate_web/models.py:656
+msgctxt "Package category"
+msgid "None"
+msgstr "Нет"
+
+#: weblate_web/models.py:657
+msgctxt "Package category"
+msgid "Dedicated hosting"
+msgstr "Выделенный хостинг"
+
+#: weblate_web/models.py:658
+msgctxt "Package category"
+msgid "Shared hosting"
+msgstr "Виртуальный хостинг"
+
+#: weblate_web/models.py:659
+msgctxt "Package category"
+msgid "Self-hosted support"
+msgstr "Поддержка вашего собственного хостинга"
+
+#: weblate_web/models.py:660
+msgctxt "Package category"
+msgid "Donation"
+msgstr "Пожертвование"
+
 #: weblate_web/models.py:762
 msgid "Community supported"
 msgstr "Поддержанный сообществом"
@@ -1775,6 +1747,18 @@ msgstr "Изображение сервера"
 #: weblate_web/models.py:814
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "Изображение PNG или JPG с разрешением 570 x 260 пикселей."
+
+#: weblate_web/models.py:822
+msgid "Link text"
+msgstr "Текст ссылки"
+
+#: weblate_web/models.py:825
+msgid "Link URL"
+msgstr "URL ссылки"
+
+#: weblate_web/models.py:828
+msgid "Link image"
+msgstr "Ссылка на изображение"
 
 #: weblate_web/models.py:1085 weblate_web/templates/hosting.html:168
 msgid "Basic support"
@@ -2445,7 +2429,7 @@ msgstr ""
 msgid "Learn more"
 msgstr "Подробнее"
 
-#: weblate_web/templates/careers.html:69 weblate_web/templates/careers.html:111
+#: weblate_web/templates/careers.html:70 weblate_web/templates/careers.html:111
 #: weblate_web/templates/careers.html:159
 msgid "Apply now"
 msgstr "Подать заявление"
