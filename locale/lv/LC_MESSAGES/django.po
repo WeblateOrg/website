@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-03 03:33-0500\n"
+"POT-Creation-Date: 2026-08-07 07:22-0500\n"
 "PO-Revision-Date: 2026-07-28 07:01+0000\n"
 "Last-Translator: \"ℂ𝕠𝕠𝕠𝕝 (𝕘𝕚𝕥𝕙𝕦𝕓.𝕔𝕠𝕞/ℂ𝕠𝕠𝕠𝕝)\" <coool@mail.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/weblate/website/"
@@ -263,7 +263,6 @@ msgstr ""
 
 #: weblate_web/crm/models.py:232
 #: weblate_web/crm/templates/weblate_web/service_detail.html:142
-#: weblate_web/migrations/0048_service_maintenance_window.py:38
 #: weblate_web/models.py:788
 msgid "Maintenance window"
 msgstr ""
@@ -1549,36 +1548,6 @@ msgstr "Nederīga servera URL adrese."
 msgid "Server URL must use HTTPS."
 msgstr ""
 
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:18
-#: weblate_web/invoices/models.py:287
-msgctxt "Quote status"
-msgid "Open"
-msgstr "Atvērts"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:21
-#: weblate_web/invoices/models.py:288
-msgctxt "Quote status"
-msgid "Lost"
-msgstr "Noraidīts"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:26
-#: weblate_web/invoices/models.py:289
-msgctxt "Quote status"
-msgid "Superseded"
-msgstr "Aizstāts ar jaunu cenu"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:32
-#: weblate_web/invoices/models.py:290
-msgctxt "Quote status"
-msgid "Accepted elsewhere"
-msgstr "Noslēgts/Pieņemts citur"
-
-#: weblate_web/invoices/migrations/0025_invoice_quote_status.py:38
-#: weblate_web/invoices/models.py:291
-msgctxt "Quote status"
-msgid "Archived"
-msgstr "Arhivēts"
-
 #: weblate_web/invoices/models.py:211
 msgid "IBAN"
 msgstr "IBAN"
@@ -1598,6 +1567,31 @@ msgstr "Izdevēja banka"
 #: weblate_web/invoices/models.py:221
 msgid "Account holder"
 msgstr "Konta īpašnieks"
+
+#: weblate_web/invoices/models.py:287
+msgctxt "Quote status"
+msgid "Open"
+msgstr "Atvērts"
+
+#: weblate_web/invoices/models.py:288
+msgctxt "Quote status"
+msgid "Lost"
+msgstr "Noraidīts"
+
+#: weblate_web/invoices/models.py:289
+msgctxt "Quote status"
+msgid "Superseded"
+msgstr "Aizstāts ar jaunu cenu"
+
+#: weblate_web/invoices/models.py:290
+msgctxt "Quote status"
+msgid "Accepted elsewhere"
+msgstr "Noslēgts/Pieņemts citur"
+
+#: weblate_web/invoices/models.py:291
+msgctxt "Quote status"
+msgid "Archived"
+msgstr "Arhivēts"
 
 #: weblate_web/invoices/models.py:375
 msgid "CRM status for quote follow-up."
@@ -1626,63 +1620,6 @@ msgstr "Savlaicīgi neapmaksāts (Kavēts)"
 #: weblate_web/invoices/views.py:51 weblate_web/views.py:471
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
-
-#: weblate_web/migrations/0049_consolidate_donations.py:104
-#: weblate_web/models.py:651
-msgctxt "Service kind"
-msgid "Service"
-msgstr "Pakalpojums"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:105
-#: weblate_web/models.py:652
-msgctxt "Service kind"
-msgid "Donation"
-msgstr "Ziedojums"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:114
-#: weblate_web/models.py:822
-msgid "Link text"
-msgstr "Saites teksts"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:120
-#: weblate_web/models.py:825
-msgid "Link URL"
-msgstr "Saites URL"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:128
-#: weblate_web/models.py:828
-msgid "Link image"
-msgstr "Saites attēls"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:141
-#: weblate_web/models.py:656
-msgctxt "Package category"
-msgid "None"
-msgstr "Neviena"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:142
-#: weblate_web/models.py:657
-msgctxt "Package category"
-msgid "Dedicated hosting"
-msgstr "Īpaši izdalīta izmitināšana"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:143
-#: weblate_web/models.py:658
-msgctxt "Package category"
-msgid "Shared hosting"
-msgstr "Dalīta izmitināšana"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:144
-#: weblate_web/models.py:659
-msgctxt "Package category"
-msgid "Self-hosted support"
-msgstr "Pašizmitinātas instalācijas atbalsts"
-
-#: weblate_web/migrations/0049_consolidate_donations.py:145
-#: weblate_web/models.py:660
-msgctxt "Package category"
-msgid "Donation"
-msgstr "Ziedojums"
 
 #: weblate_web/models.py:165
 msgid "No reward"
@@ -1747,6 +1684,41 @@ msgstr "Neatbalstīts attēla formāts: %s"
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr "Lūdzu, augšupielādējiet attēlu ar 570 x 260 pikseļu izšķirtspēju."
 
+#: weblate_web/models.py:651
+msgctxt "Service kind"
+msgid "Service"
+msgstr "Pakalpojums"
+
+#: weblate_web/models.py:652
+msgctxt "Service kind"
+msgid "Donation"
+msgstr "Ziedojums"
+
+#: weblate_web/models.py:656
+msgctxt "Package category"
+msgid "None"
+msgstr "Neviena"
+
+#: weblate_web/models.py:657
+msgctxt "Package category"
+msgid "Dedicated hosting"
+msgstr "Īpaši izdalīta izmitināšana"
+
+#: weblate_web/models.py:658
+msgctxt "Package category"
+msgid "Shared hosting"
+msgstr "Dalīta izmitināšana"
+
+#: weblate_web/models.py:659
+msgctxt "Package category"
+msgid "Self-hosted support"
+msgstr "Pašizmitinātas instalācijas atbalsts"
+
+#: weblate_web/models.py:660
+msgctxt "Package category"
+msgid "Donation"
+msgstr "Ziedojums"
+
 #: weblate_web/models.py:762
 msgid "Community supported"
 msgstr "Sabiedrības atbalstīts"
@@ -1786,6 +1758,18 @@ msgstr "Servera attēls"
 #: weblate_web/models.py:814
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr "PNG vai JPG attēls ar 570 x 260 pikseļu izšķirtspēju."
+
+#: weblate_web/models.py:822
+msgid "Link text"
+msgstr "Saites teksts"
+
+#: weblate_web/models.py:825
+msgid "Link URL"
+msgstr "Saites URL"
+
+#: weblate_web/models.py:828
+msgid "Link image"
+msgstr "Saites attēls"
 
 #: weblate_web/models.py:1085 weblate_web/templates/hosting.html:168
 msgid "Basic support"
@@ -2457,7 +2441,7 @@ msgstr "Weblate, brīvās lokalizācijas platforma, vēlas tevi savā komandā!"
 msgid "Learn more"
 msgstr "Uzzināt vairāk"
 
-#: weblate_web/templates/careers.html:69 weblate_web/templates/careers.html:111
+#: weblate_web/templates/careers.html:70 weblate_web/templates/careers.html:111
 #: weblate_web/templates/careers.html:159
 msgid "Apply now"
 msgstr "Iesniegt pieteikumu tagad"
