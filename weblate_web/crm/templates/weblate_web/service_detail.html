@@ -1,6 +1,6 @@
 {% extends "crm/base.html" %}
 
-{% load i18n %}
+{% load i18n site_url %}
 
 {% block breadcrum_list %}
   <span aria-hidden="true">›</span>
@@ -28,7 +28,7 @@
       <div>
         <dt>{% translate "URL" %}</dt>
         <dd>
-          <a href="{{ object.site_url }}">{{ object.site_url }}</a>
+          <a href="{{ object.site_url|safe_site_url }}">{{ object.site_url }}</a>
           {% if object.site_url_lock %}
             <strong>{% translate "locked" %}</strong>
           {% endif %}
@@ -286,7 +286,7 @@
               <tr>
                 <td>{{ report.timestamp }}</td>
                 <td>
-                  <a href="{{ report.site_url }}">{{ report.site_url }}</a>
+                  <a href="{{ report.site_url|safe_site_url }}">{{ report.site_url }}</a>
                 </td>
                 <td>{{ report.site_title }}</td>
                 <td>{{ report.version }}</td>

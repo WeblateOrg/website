@@ -24,7 +24,6 @@ from decimal import ROUND_CEILING, Decimal
 from io import BytesIO
 from math import ceil
 from typing import TYPE_CHECKING, Any
-from urllib.parse import urlsplit, urlunsplit
 from uuid import uuid4
 
 import html2text
@@ -69,46 +68,15 @@ from .packages import (
     PACKAGES,
     SUPPORT_PACKAGES,
 )
+from .url_utils import normalize_site_url, normalize_site_url_for_lock
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Collection, Generator
     from datetime import date
 
     from weblate_web.invoices.models import InvoiceKind
 
 ServiceSuggestion = tuple[str, str, str, str, str, str, int | None]
-
-
-def normalize_site_url_for_lock(url: str) -> str:
-    try:
-        parts = urlsplit(url)
-        scheme = parts.scheme.lower()
-        hostname = parts.hostname
-        port = parts.port
-    except ValueError:
-        return url.rstrip("/")
-
-    netloc = parts.netloc.lower()
-    if hostname:
-        host = hostname.lower()
-        if ":" in host:
-            host = f"[{host}]"
-        if port and (scheme, port) not in {("http", 80), ("https", 443)}:
-            host = f"{host}:{port}"
-        userinfo = ""
-        if "@" in parts.netloc:
-            userinfo = f"{parts.netloc.rsplit('@', 1)[0]}@"
-        netloc = f"{userinfo}{host}"
-
-    return urlunsplit(
-        (
-            scheme,
-            netloc,
-            parts.path.rstrip("/"),
-            parts.query,
-            parts.fragment,
-        )
-    )
 
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
@@ -752,7 +720,7 @@ class ServiceQuerySet(models.QuerySet["Service", "Service"]):
         return self.filter(kind=ServiceKind.DONATION)
 
 
-class Service(models.Model):
+class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     secret = models.CharField(max_length=100, default=generate_secret, db_index=True)
     customer = models.ForeignKey(Customer, on_delete=models.deletion.PROTECT)
     kind = models.IntegerField(default=ServiceKind.SERVICE, choices=ServiceKind)
@@ -850,10 +818,36 @@ class Service(models.Model):
         self.was_created = False
         self.skip_intro = False
 
+    def save(  # type: ignore[override]
+        self,
+        *,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using=None,
+        update_fields=None,
+    ) -> None:
+        if update_fields is None or "site_url" in update_fields:
+            self.site_url = normalize_site_url(self.site_url, allow_empty=True)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
+
     def get_absolute_url(self):
         if self.is_donation:
             return reverse("donate-edit", kwargs={"pk": self.pk})
         return reverse("crm:service-detail", kwargs={"pk": self.pk})
+
+    def clean_fields(self, exclude: Collection[str] | None = None) -> None:
+        super().clean_fields(exclude=exclude)
+        if exclude is not None and "site_url" in exclude:
+            return
+        try:
+            self.site_url = normalize_site_url(self.site_url, allow_empty=True)
+        except ValidationError as error:
+            raise ValidationError({"site_url": error}) from error
 
     @property
     def is_donation(self) -> bool:
@@ -1794,7 +1788,7 @@ class Report(models.Model):
         using=None,
         update_fields=None,
     ) -> None:
-        self.site_url = normalize_site_url_for_lock(self.site_url)
+        self.site_url = normalize_site_url(self.site_url, allow_empty=True)
         super().save(
             force_insert=force_insert,
             force_update=force_update,

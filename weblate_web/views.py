@@ -66,6 +66,7 @@ from weblate_web.forms import (
     EditLinkForm,
     EditNameForm,
     MethodForm,
+    SupportReportForm,
     get_discovery_callback_url,
 )
 from weblate_web.invoices.models import InvoiceKind
@@ -339,20 +340,20 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
 @csrf_exempt
 def api_support(request: HttpRequest) -> JsonResponse:
     service = get_object_or_404(Service, secret=request.POST.get("secret", ""))
-    report = service.report_set.create(
-        site_url=request.POST.get("site_url", ""),
-        site_title=request.POST.get("site_title", ""),
-        ssh_key=request.POST.get("ssh_key", ""),
-        users=request.POST.get("users", 0),
-        projects=request.POST.get("projects", 0),
-        components=request.POST.get("components", 0),
-        languages=request.POST.get("languages", 0),
-        source_strings=request.POST.get("source_strings", 0),
-        hosted_words=request.POST.get("words", 0),
-        hosted_strings=request.POST.get("strings", 0),
-        version=extract_weblate_version(request),
-        discoverable=bool(request.POST.get("discoverable")),
-    )
+    version = extract_weblate_version(request)
+    form = SupportReportForm(request.POST)
+    if not form.is_valid():
+        error_messages = [
+            str(message)
+            for field_errors in form.errors.values()
+            for message in field_errors
+        ]
+        return JsonResponse({"error": error_messages}, status=400)
+
+    report = form.save(commit=False)
+    report.service = service
+    report.version = version
+    report.save()
     is_valid_site_url = report.is_valid_site_url()
     service.update_status()
     service.create_backup()

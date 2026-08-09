@@ -1,4 +1,4 @@
-{% load i18n prices timestamps %}
+{% load i18n prices site_url timestamps %}
 
 <p>
   {% blocktranslate with package=subscription.package %}Current subscription: {{ package }}{% endblocktranslate %}
@@ -18,6 +18,6 @@
 </p>
 {% if subscription.service.site_url %}
   <p>
-    {% blocktranslate with url=subscription.service.site_url %}Subscription is for <a href="{{ url }}">{{ url }}</a>.{% endblocktranslate %}
+    {% blocktranslate with url=subscription.service.site_url|safe_site_url %}Subscription is for <a href="{{ url }}">{{ url }}</a>.{% endblocktranslate %}
   </p>
 {% endif %}
