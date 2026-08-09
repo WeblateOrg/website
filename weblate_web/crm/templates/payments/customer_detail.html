@@ -206,16 +206,16 @@
           </div>
         </form>
 
-        {% if can_add_customer_user %}
+        {% if can_add_customer_owner %}
           <form class="crm-form-panel crm-form-panel--balanced" method="post">
-            <h3>{% translate "Add user to customer" %}</h3>
+            <h3>{% translate "Add owner to customer" %}</h3>
             {% csrf_token %}
-            <div class="crm-form-panel__body">{{ customer_user_form }}</div>
+            <div class="crm-form-panel__body">{{ customer_owner_form }}</div>
             <div class="crm-form-panel__actions">
               <input class="crm-button"
                      type="submit"
-                     name="add_customer_user"
-                     value="{% translate "Add user" %}">
+                     name="add_customer_owner"
+                     value="{% translate "Add owner" %}">
             </div>
           </form>
         {% endif %}

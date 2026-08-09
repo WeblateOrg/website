@@ -59,7 +59,7 @@ def create_active_subscription(user: User, package_name: str) -> Subscription:
         postcode="12345",
         country="US",
     )
-    customer.users.add(user)
+    customer.owners.add(user)
     package = Package.objects.get(name=package_name)
     payment = Payment.objects.create(
         amount=package.price,

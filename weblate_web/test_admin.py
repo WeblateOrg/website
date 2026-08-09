@@ -68,7 +68,7 @@ class AdminSiteTestCase(TestCase):
             {
                 "app_label": "payments",
                 "model_name": "customer",
-                "field_name": "users",
+                "field_name": "owners",
                 "term": "admin",
             },
         )

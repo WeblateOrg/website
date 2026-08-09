@@ -25,6 +25,7 @@ from django.core.management import call_command
 from django.core.signing import dumps
 from django.db import IntegrityError, transaction
 from django.db.models.deletion import RestrictedError
+from django.template.loader import render_to_string
 from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -34,6 +35,7 @@ from PIL import Image as PILImage
 from requests.exceptions import HTTPError
 from wlc import WeblateException
 
+from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
 from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 
@@ -1153,7 +1155,7 @@ def create_payment(
             user_id=user.pk,
             origin=PAYMENTS_ORIGIN,
         )
-    customer.users.add(user)
+    customer.owners.add(user)
     payment = Payment.objects.create(
         customer=customer,
         amount=100,
@@ -1189,7 +1191,7 @@ class PaymentCustomerAccessTest(UserTestCase):
             origin=origin,
             user_id=user.pk,
         )
-        customer.users.add(user)
+        customer.owners.add(user)
         return customer
 
     def create_payment(
@@ -1270,9 +1272,9 @@ class PaymentCustomerAccessTest(UserTestCase):
     def test_hosted_payment_customer_remains_bearer_editable(self) -> None:
         hosted_user = self.create_user()
         customer = self.create_customer(hosted_user, origin=HOSTED_ORIGIN)
-        customer.users.clear()
+        customer.owners.clear()
         _payment, payment_url, customer_url = self.create_payment(hosted_user, customer)
-        customer.users.clear()
+        customer.owners.clear()
 
         self.assertEqual(self.client.get(customer_url).status_code, 200)
         response = self.client.post(customer_url, self.edit_data)
@@ -1288,7 +1290,121 @@ class PaymentCustomerAccessTest(UserTestCase):
 
         self.assertEqual(response.status_code, 200)
         payment = Payment.objects.get()
-        self.assertTrue(payment.customer.users.filter(pk=user.pk).exists())
+        self.assertTrue(payment.customer.owners.filter(pk=user.pk).exists())
+
+
+class CustomerOwnerAccessTest(UserTestCase):
+    def setUp(self) -> None:
+        self.owner = self.login()
+        self.customer = Customer.objects.create(
+            email=self.owner.email,
+            origin=PAYMENTS_ORIGIN,
+            user_id=self.owner.pk,
+        )
+        self.customer.owners.add(self.owner)
+        with override("en"):
+            self.url = reverse("customer-owner", kwargs={"pk": self.customer.pk})
+            self.user_url = reverse("user")
+
+    def test_owner_can_add_unrelated_owner_with_full_control(self) -> None:
+        new_owner = User.objects.create_user(
+            username="new-owner", email="new-owner@example.com"
+        )
+
+        response = self.client.post(self.url, {"email": new_owner.email})
+
+        self.assertRedirects(response, self.user_url)
+        self.assertIn(new_owner, self.customer.owners.all())
+        interaction = Interaction.objects.get(customer=self.customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.CUSTOMER_OWNER)
+        self.assertEqual(interaction.summary, "Added customer owner")
+        self.assertEqual(interaction.user, self.owner)
+        self.assertEqual(
+            interaction.details,
+            {
+                "action": "add",
+                "owner": new_owner.pk,
+                "email": new_owner.email,
+            },
+        )
+
+        another_owner = User.objects.create_user(
+            username="another-owner", email="another-owner@example.com"
+        )
+        self.client.force_login(new_owner)
+        response = self.client.post(self.url, {"email": another_owner.email})
+
+        self.assertRedirects(response, self.user_url)
+        self.assertIn(another_owner, self.customer.owners.all())
+
+    def test_owner_can_remove_original_owner(self) -> None:
+        peer_owner = User.objects.create_user(
+            username="peer-owner", email="peer-owner@example.com"
+        )
+        self.customer.owners.add(peer_owner)
+        self.client.force_login(peer_owner)
+
+        response = self.client.post(
+            self.url,
+            {"email": self.owner.email, "remove": "1"},
+        )
+
+        self.assertRedirects(response, self.user_url)
+        self.assertNotIn(self.owner, self.customer.owners.all())
+        interaction = Interaction.objects.get(customer=self.customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.CUSTOMER_OWNER)
+        self.assertEqual(interaction.summary, "Removed customer owner")
+        self.assertEqual(interaction.user, peer_owner)
+        self.assertEqual(interaction.details["action"], "remove")
+        self.assertEqual(interaction.details["owner"], self.owner.pk)
+
+    def test_owner_can_not_remove_self(self) -> None:
+        response = self.client.post(
+            self.url,
+            {"email": self.owner.email, "remove": "1"},
+            follow=True,
+        )
+
+        self.assertContains(response, "You can not remove yourself.")
+        self.assertIn(self.owner, self.customer.owners.all())
+        self.assertFalse(Interaction.objects.filter(customer=self.customer).exists())
+
+    def test_outsider_can_not_change_owners(self) -> None:
+        outsider = User.objects.create_user(
+            username="outsider", email="outsider@example.com"
+        )
+        target = User.objects.create_user(username="target", email="target@example.com")
+        self.client.force_login(outsider)
+
+        response = self.client.post(self.url, {"email": target.email})
+
+        self.assertEqual(response.status_code, 404)
+        self.assertNotIn(target, self.customer.owners.all())
+        self.assertFalse(Interaction.objects.filter(customer=self.customer).exists())
+
+    def test_no_op_owner_changes_are_not_logged(self) -> None:
+        non_owner = User.objects.create_user(
+            username="non-owner", email="non-owner@example.com"
+        )
+
+        self.client.post(self.url, {"email": self.owner.email})
+        self.client.post(
+            self.url,
+            {"email": non_owner.email, "remove": "1"},
+        )
+
+        self.assertFalse(Interaction.objects.filter(customer=self.customer).exists())
+
+    def test_owner_controls_explain_full_access(self) -> None:
+        content = render_to_string(
+            "snippets/customer-owners.html",
+            {"customer": self.customer, "user": self.owner},
+        )
+
+        self.assertIn("Owners", content)
+        self.assertIn("Owners have full control over this customer account", content)
+        self.assertIn("Only add people you trust.", content)
+        self.assertIn("Add owner", content)
 
 
 class FakturaceTestCase(UserTestCase):
@@ -1315,7 +1431,7 @@ class FakturaceTestCase(UserTestCase):
             postcode=TEST_CUSTOMER["postcode"],
             country=TEST_CUSTOMER["country"],
         )
-        customer.users.add(user)
+        customer.owners.add(user)
         service = Service.objects.create(
             customer=customer,
             kind=ServiceKind.DONATION,
@@ -1396,7 +1512,7 @@ class FakturaceTestCase(UserTestCase):
             postcode=TEST_CUSTOMER["postcode"],
             country=TEST_CUSTOMER["country"],
         )
-        customer.users.add(user)
+        customer.owners.add(user)
         service = Service.objects.create(customer=customer)
         subscription = service.subscription_set.create(
             package=Package.objects.get_or_create(name=package)[0],
@@ -1495,7 +1611,7 @@ class PaymentsTest(FakturaceTestCase):
             postcode=TEST_CUSTOMER["postcode"],
             country=TEST_CUSTOMER["country"],
         )
-        customer.users.add(user)
+        customer.owners.add(user)
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
@@ -1532,7 +1648,7 @@ class PaymentsTest(FakturaceTestCase):
             postcode=TEST_CUSTOMER["postcode"],
             country=TEST_CUSTOMER["country"],
         )
-        customer.users.add(user)
+        customer.owners.add(user)
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.PROFORMA,
@@ -2352,7 +2468,7 @@ class PaymentTest(FakturaceTestCase):
                 user_id=-1,
                 origin=PAYMENTS_ORIGIN,
             )
-            customer.users.add(user)
+            customer.owners.add(user)
             # Donation show show up
             service = Service.objects.create(
                 customer=customer,
@@ -3026,7 +3142,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertContains(response, 'href="#/projects/"')
 
         user = self.login()
-        service.customer.users.add(user)
+        service.customer.owners.add(user)
         response = self.client.get("/en/user/")
         self.assertNotContains(response, 'href="javascript:')
         self.assertContains(response, 'href="#"')
@@ -4459,7 +4575,7 @@ class ServiceTest(FakturaceTestCase):
         service = self.create_service()
         subscription = service.subscription_set.get()
         past_payment = create_payment(
-            user=service.customer.users.get(),
+            user=service.customer.owners.get(),
             customer=service.customer,
             state=Payment.PROCESSED,
         )[0]
@@ -4472,7 +4588,7 @@ class ServiceTest(FakturaceTestCase):
         service = self.create_service()
         subscription = service.subscription_set.get()
         past_payment = create_payment(
-            user=service.customer.users.get(),
+            user=service.customer.owners.get(),
             customer=service.customer,
             state=Payment.PROCESSED,
         )[0]
@@ -5924,7 +6040,7 @@ class DiscoveryTestCase(UserTestCase):
         customer = Customer.objects.create(
             user_id=user.id, origin=PAYMENTS_ORIGIN, email=user.email
         )
-        customer.users.add(user)
+        customer.owners.add(user)
         service = Service.objects.create(
             customer=customer,
             site_url="https://example.com",

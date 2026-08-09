@@ -56,6 +56,7 @@ from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
+from weblate_web.crm.models import Interaction
 from weblate_web.forms import (
     AddDiscoveryForm,
     AgreementForm,
@@ -170,7 +171,7 @@ def get_customer(
         return obj.customer
 
     # Use existing customer for user
-    customers = Customer.objects.for_user(request.user)
+    customers = Customer.objects.for_owner(request.user)
     if len(customers) == 1:
         return customers[0]
 
@@ -180,7 +181,7 @@ def get_customer(
         user_id=request.user.id,
         defaults={"email": request.user.email},
     )[0]
-    customer.users.add(request.user)
+    customer.owners.add(request.user)
     return customer
 
 
@@ -308,9 +309,9 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
         # Link past payments
         add_subscription_past_payments(subscription, *payments[:-1])
 
-    # Link users which are supposed to have access
+    # Hosted service users are customer owners with full account access.
     for user in payload["users"]:
-        service.customer.users.add(User.objects.get_or_create(username=user)[0])
+        service.customer.owners.add(User.objects.get_or_create(username=user)[0])
 
     # Collect stats
     report = service.report_set.create(
@@ -430,7 +431,7 @@ def can_edit_payment_customer(payment: Payment, user: User | AnonymousUser) -> b
         # shared customer until Hosted billing is merged into this application.
         # TODO: Remove this exception after the Hosted billing merge.
         return True
-    return user.is_authenticated and payment.customer.users.filter(pk=user.pk).exists()
+    return user.is_authenticated and payment.customer.owners.filter(pk=user.pk).exists()
 
 
 def is_payment_customer_locked(payment: Payment) -> bool:
@@ -616,7 +617,7 @@ class CustomerBaseView(DetailView):
     request: AuthenticatedHttpRequest
 
     def get_queryset(self):
-        return super().get_queryset().for_user(self.request.user)  # type: ignore[attr-defined]
+        return super().get_queryset().for_owner(self.request.user)  # type: ignore[attr-defined]
 
 
 @method_decorator(login_required, name="dispatch")
@@ -664,7 +665,7 @@ def agreement_download_view(request: AuthenticatedHttpRequest, pk: int):
         agreement = get_object_or_404(Agreement, pk=pk)
     else:
         agreement = get_object_or_404(
-            Agreement, pk=pk, customer__in=Customer.objects.for_user(request.user)
+            Agreement, pk=pk, customer__in=Customer.objects.for_owner(request.user)
         )
     return FileResponse(
         agreement.path.open("rb"),
@@ -761,7 +762,7 @@ def process_payment(request):
         payment = Payment.objects.get(
             pk=request.GET["payment"],
             customer__origin=PAYMENTS_ORIGIN,
-            customer__users=request.user,
+            customer__owners=request.user,
         )
     except (KeyError, Payment.DoesNotExist):
         return redirect(reverse("user"))
@@ -811,7 +812,7 @@ def can_download_payment_invoice(
     request: AuthenticatedHttpRequest, payment: Payment
 ) -> bool:
     user = request.user
-    if payment.customer.users.filter(pk=user.pk).exists():
+    if payment.customer.owners.filter(pk=user.pk).exists():
         return True
 
     if (
@@ -821,7 +822,7 @@ def can_download_payment_invoice(
         return True
 
     return Service.objects.filter(
-        Q(customer__users=user)
+        Q(customer__owners=user)
         & (Q(subscription__payment=payment) | Q(subscription__past_payments=payment))
     ).exists()
 
@@ -882,7 +883,7 @@ def disable_repeat(request, pk):
     donation = get_object_or_404(
         Service.objects.donations(),
         pk=pk,
-        customer__users=request.user,
+        customer__owners=request.user,
     )
     subscription = donation.donation_subscription
     if subscription is None:
@@ -914,7 +915,7 @@ class EditLinkView(UpdateView):
         return (
             Service.objects.donations()
             .filter(
-                customer__users=self.request.user,
+                customer__owners=self.request.user,
                 subscription__package__name__in=get_donation_reward_package_names(),
             )
             .distinct()
@@ -940,7 +941,7 @@ class EditDiscoveryView(UpdateView):
 
     def get_queryset(self):
         return Service.objects.customer_services().filter(
-            customer__users=self.request.user,
+            customer__owners=self.request.user,
         )
 
     def form_valid(self, form):
@@ -974,7 +975,7 @@ class AddDiscoveryView(CreateView):
             f"Service link: {discover_url}\nNew text: {discover_text}\n",
         )
         result = super().form_valid(form)
-        instance.customer.users.add(self.request.user)
+        instance.customer.owners.add(self.request.user)
         messages.info(
             self.request,
             gettext(
@@ -1015,7 +1016,7 @@ class DiscoveryRegistrationView(FormView):
         )
         instance.save()
         form.save_m2m()
-        instance.customer.users.add(self.request.user)
+        instance.customer.owners.add(self.request.user)
         activation = DiscoveryActivation.create_for_service(
             instance,
             state=form.cleaned_data["state"],
@@ -1142,7 +1143,7 @@ def activity_svg(request):
 @login_required
 def subscription_disable_repeat(request, pk):
     subscription = get_object_or_404(
-        Subscription, pk=pk, service__customer__users=request.user
+        Subscription, pk=pk, service__customer__owners=request.user
     )
     payment = subscription.payment_obj
     payment.recurring = ""
@@ -1153,24 +1154,53 @@ def subscription_disable_repeat(request, pk):
 @require_POST
 @login_required
 def service_token(request, pk):
-    service = get_object_or_404(Service, pk=pk, customer__users=request.user)
+    service = get_object_or_404(Service, pk=pk, customer__owners=request.user)
     service.regenerate()
     return redirect(reverse("user"))
 
 
 @require_POST
 @login_required
-def customer_user(request, pk):
-    customer = get_object_or_404(Customer, pk=pk, users=request.user)
+def customer_owner(request, pk):
+    customer = get_object_or_404(Customer, pk=pk, owners=request.user)
     try:
-        user = User.objects.get(email__iexact=request.POST.get("email"))
+        owner = User.objects.get(email__iexact=request.POST.get("email"))
     except User.DoesNotExist:
         messages.error(request, gettext("User not found!"))
     else:
         if "remove" in request.POST:
-            customer.users.remove(user)
-        else:
-            customer.users.add(user)
+            if owner == request.user:
+                messages.error(request, gettext("You can not remove yourself."))
+            elif customer.owners.filter(pk=owner.pk).exists():
+                with transaction.atomic():
+                    customer.owners.remove(owner)
+                    customer.interaction_set.create(
+                        origin=Interaction.Origin.CUSTOMER_OWNER,
+                        summary=gettext("Removed customer owner"),
+                        content=gettext("Removed %(email)s from customer owners.")
+                        % {"email": owner.email},
+                        details={
+                            "action": "remove",
+                            "owner": owner.pk,
+                            "email": owner.email,
+                        },
+                        user=request.user,
+                    )
+        elif not customer.owners.filter(pk=owner.pk).exists():
+            with transaction.atomic():
+                customer.owners.add(owner)
+                customer.interaction_set.create(
+                    origin=Interaction.Origin.CUSTOMER_OWNER,
+                    summary=gettext("Added customer owner"),
+                    content=gettext("Added %(email)s to customer owners.")
+                    % {"email": owner.email},
+                    details={
+                        "action": "add",
+                        "owner": owner.pk,
+                        "email": owner.email,
+                    },
+                    user=request.user,
+                )
     return redirect(reverse("user"))
 
 
@@ -1186,7 +1216,7 @@ def subscription_view(request, pk):
 @login_required
 def subscription_pay(request, pk):
     subscription = get_object_or_404(
-        Subscription, pk=pk, service__customer__users=request.user
+        Subscription, pk=pk, service__customer__owners=request.user
     )
     if "switch_yearly" in request.POST and subscription.yearly_package:
         subscription.package = subscription.yearly_package
@@ -1201,7 +1231,7 @@ def subscription_pay(request, pk):
 @login_required
 def subscription_upgrade(request, pk):
     subscription = get_object_or_404(
-        Subscription, pk=pk, service__customer__users=request.user
+        Subscription, pk=pk, service__customer__owners=request.user
     )
     package = None
     if package_name := request.POST.get("package"):
@@ -1247,7 +1277,7 @@ def donate_pay(request, pk):
     donation = get_object_or_404(
         Service.objects.donations(),
         pk=pk,
-        customer__users=request.user,
+        customer__owners=request.user,
     )
     subscription = donation.donation_subscription
     if subscription is None or subscription.payment is None:
@@ -1274,7 +1304,7 @@ def subscription_new(request):
     service: Service | None
     if "service" in request.GET:
         service = get_object_or_404(
-            Service, pk=request.GET["service"], customer__users=request.user
+            Service, pk=request.GET["service"], customer__owners=request.user
         )
     else:
         service = None
@@ -1362,7 +1392,7 @@ class DiscoverView(TemplateView):
             data["user_services"] = set(
                 Service.objects.customer_services()
                 .filter(
-                    customer__users=self.request.user,
+                    customer__owners=self.request.user,
                 )
                 .values_list("pk", flat=True)
             )
@@ -1382,11 +1412,11 @@ class UserView(TemplateView):
         data["user_services"] = [
             prepare_service_for_render(service)
             for service in Service.objects.customer_services().filter(
-                customer__users=self.request.user,
+                customer__owners=self.request.user,
             )
         ]
         data["user_donations"] = Service.objects.donations().filter(
-            customer__users=self.request.user,
+            customer__owners=self.request.user,
         )
         return data
 
@@ -1447,7 +1477,7 @@ def fosdem_donation(request):
             user_id=request.user.id,
             defaults={"email": request.user.email},
         )[0]
-        customer.users.add(request.user)
+        customer.owners.add(request.user)
     else:
         customer = Customer.objects.create(
             origin=FOSDEM_ORIGIN, user_id=-1, country="BE"

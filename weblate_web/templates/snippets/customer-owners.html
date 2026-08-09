@@ -1,11 +1,14 @@
 {% load i18n static %}
 
-<div class="line-left">{% translate "Users" %}</div>
+<div class="line-left">{% translate "Owners" %}</div>
 <div class="line-right">
-  {% for owner in customer_users|default:customer.ordered_users %}
-    <form id="server_user_{{ owner.id }}_form"
+  <p>
+    {% translate "Owners have full control over this customer account, including billing, services, secrets, and other owners. Only add people you trust." %}
+  </p>
+  {% for owner in customer_owners|default:customer.ordered_owners %}
+    <form id="server_owner_{{ owner.id }}_form"
           method="post"
-          action="{% url 'customer-user' pk=customer.pk %}">
+          action="{% url 'customer-owner' pk=customer.pk %}">
       <div class="user-slot">
         <div class="user-slot-content">
           <p>{{ owner.last_name }}</p>
@@ -15,12 +18,12 @@
           <div class="user-img">
             <img src="{% static "img/Shield.png" %}"
                  title="{% translate "You can not remove yourself" %}"
-                 alt="{% translate "Protected user" %}">
+                 alt="{% translate "Protected owner" %}">
           </div>
         {% else %}
           {% csrf_token %}
           <button class="user-img">
-            <img src="{% static "img/delete.png" %}" alt="{% translate "Remove user" %}">
+            <img src="{% static "img/delete.png" %}" alt="{% translate "Remove owner" %}">
           </button>
         {% endif %}
       </div>
@@ -31,7 +34,7 @@
       {% endif %}
     </form>
   {% endfor %}
-  <form method="post" action="{% url 'customer-user' pk=customer.pk %}">
+  <form method="post" action="{% url 'customer-owner' pk=customer.pk %}">
     {% csrf_token %}
     <input type="email"
            class="grey-input"
@@ -40,7 +43,7 @@
            aria-label="{% translate "E-mail" %}" />
     <input type="submit"
            class="button button-med-120 inline border rev"
-           value="{% translate "Add a user" %}" />
+           value="{% translate "Add owner" %}" />
   </form>
 </div>
 <div class="clear"></div>

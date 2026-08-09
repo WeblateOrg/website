@@ -59,7 +59,7 @@ from weblate_web.views import (
     api_support,
     api_support_activation,
     api_user,
-    customer_user,
+    customer_owner,
     disable_repeat,
     donate_pay,
     download_payment_invoice,
@@ -247,7 +247,7 @@ urlpatterns = [
             name="payment-complete",
         ),
         path("customer/<int:pk>/", EditCustomerView.as_view(), name="edit-customer"),
-        path("customer/<int:pk>/users/", customer_user, name="customer-user"),
+        path("customer/<int:pk>/owners/", customer_owner, name="customer-owner"),
         path(
             "customer/<int:pk>/agreement/",
             CustomerDPAView.as_view(),

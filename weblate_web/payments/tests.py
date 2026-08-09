@@ -258,16 +258,16 @@ class ModelObjectsTestCase(TestCase):
 
     def test_merge(self) -> None:
         customer = Customer.objects.create(**CUSTOMER)
-        self.assertEqual(0, customer.users.count())
+        self.assertEqual(0, customer.owners.count())
         Payment.objects.create(customer=customer, amount=100)
         customer2 = Customer.objects.create(**CUSTOMER)
         Payment.objects.create(customer=customer2, amount=100)
         customer.merge(customer2)
         self.assertEqual(2, customer.payment_set.count())
         customer2 = Customer.objects.create(**CUSTOMER)
-        customer2.users.add(User.objects.create())
+        customer2.owners.add(User.objects.create())
         customer.merge(customer2)
-        self.assertEqual(1, customer.users.count())
+        self.assertEqual(1, customer.owners.count())
 
     def test_automated_vies_transient_fault_is_not_logged(self) -> None:
         for code in (

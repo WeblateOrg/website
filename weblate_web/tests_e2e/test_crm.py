@@ -943,7 +943,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         ):
             page.fill('input[name="email"]', "crm-linked@example.test")
             page.fill('input[name="full_name"]', "CRM Linked User")
-            page.click('input[name="add_customer_user"]')
+            page.click('input[name="add_customer_owner"]')
             page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
         assert_text_visible(page, "crm-linked@example.test", exact=False)

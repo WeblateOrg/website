@@ -47,7 +47,7 @@ from weblate_web.crm.forms import (
     CRMSearchForm,
     CustomerFollowUpForm,
     CustomerMergeForm,
-    CustomerUserForm,
+    CustomerOwnerForm,
     InvoiceConfirmationForm,
     ManualInteractionForm,
     QuoteStatusForm,
@@ -707,7 +707,7 @@ class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
             qs = qs.filter(
                 Q(name__icontains=query)
                 | Q(email__icontains=query)
-                | Q(users__email__icontains=query)
+                | Q(owners__email__icontains=query)
                 | Q(end_client__icontains=query)
             ).distinct()
         return qs
@@ -719,7 +719,7 @@ class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
             qs = qs.filter(
                 Q(customer__name__icontains=query)
                 | Q(customer__email__icontains=query)
-                | Q(customer__users__email__icontains=query)
+                | Q(customer__owners__email__icontains=query)
                 | Q(customer__end_client__icontains=query)
                 | Q(note__icontains=query)
             ).distinct()
@@ -740,7 +740,7 @@ class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
 class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
-    add_customer_user_permission = "payments.change_customer"
+    add_customer_owner_permission = "payments.change_customer"
     change_customer_permission = "payments.change_customer"
     title = "Customer detail"
     valid_tabs: ClassVar[frozenset[str]] = frozenset(
@@ -759,8 +759,8 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         add_manual_note = (
             self.request.method == "POST" and "add_manual_note" in self.request.POST
         )
-        add_customer_user = (
-            self.request.method == "POST" and "add_customer_user" in self.request.POST
+        add_customer_owner = (
+            self.request.method == "POST" and "add_customer_owner" in self.request.POST
         )
         set_follow_up = (
             self.request.method == "POST" and "set_follow_up" in self.request.POST
@@ -769,7 +769,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             self.request.POST
             if self.request.method == "POST"
             and not add_manual_note
-            and not add_customer_user
+            and not add_customer_owner
             and not set_follow_up
             else None
         )
@@ -778,8 +778,8 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["manual_interaction_form"] = ManualInteractionForm(
             self.request.POST if add_manual_note else None
         )
-        context["customer_user_form"] = CustomerUserForm(
-            self.request.POST if add_customer_user else None
+        context["customer_owner_form"] = CustomerOwnerForm(
+            self.request.POST if add_customer_owner else None
         )
         context["follow_up_form"] = CustomerFollowUpForm(
             self.request.POST if set_follow_up else None,
@@ -788,8 +788,8 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["followups"] = CustomerFollowUp.objects.filter(
             customer=self.object
         ).order()
-        context["can_add_customer_user"] = self.request.user.has_perm(
-            self.add_customer_user_permission
+        context["can_add_customer_owner"] = self.request.user.has_perm(
+            self.add_customer_owner_permission
         )
         context["can_change_customer"] = self.request.user.has_perm(
             self.change_customer_permission
@@ -799,7 +799,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["services"] = services
         context["invoice_confirm_dialog"] = active_tab == "overview" and not services
         context["donations"] = self.object.service_set.donations().order()
-        context["customer_users"] = self.object.ordered_users
+        context["customer_owners"] = self.object.ordered_owners
         context["active_tab"] = active_tab
         return context
 
@@ -808,10 +808,10 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         return f"{customer.get_absolute_url()}?tab={tab}"
 
     @classmethod
-    def check_add_customer_user_permission(
+    def check_add_customer_owner_permission(
         cls, request: AuthenticatedHttpRequest
     ) -> None:
-        if not request.user.has_perm(cls.add_customer_user_permission):
+        if not request.user.has_perm(cls.add_customer_owner_permission):
             raise PermissionDenied
 
     @classmethod
@@ -872,7 +872,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                 gettext("Hosted username matches a local user with a different e-mail.")
             )
 
-    def link_customer_hosted_user(
+    def link_customer_hosted_owner(
         self,
         request,
         customer: Customer,
@@ -888,14 +888,14 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                 raise HostedUserEnsureError(
                     gettext("Hosted user is already linked to a different local user.")
                 )
-            if customer.users.filter(pk=user.pk).exists():
+            if customer.owners.filter(pk=user.pk).exists():
                 return False
-            customer.users.add(user)
+            customer.owners.add(user)
             customer.interaction_set.create(
-                origin=Interaction.Origin.MANUAL_NOTE,
-                summary=gettext("Added customer user"),
+                origin=Interaction.Origin.CUSTOMER_OWNER,
+                summary=gettext("Added customer owner"),
                 content=gettext(
-                    "Added %(email)s to customer users. Hosted user was %(state)s."
+                    "Added %(email)s to customer owners. Hosted user was %(state)s."
                 )
                 % {
                     "email": context["email"],
@@ -904,7 +904,8 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     else gettext("linked"),
                 },
                 details={
-                    "user": user.pk,
+                    "action": "add",
+                    "owner": user.pk,
                     "email": context["email"],
                     "hosted_created": context["hosted_created"],
                     "local_created": created,
@@ -913,12 +914,12 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             )
             return True
 
-    def add_customer_user(self, request, customer: Customer, *args, **kwargs):
-        self.check_add_customer_user_permission(request)
-        form = CustomerUserForm(request.POST)
+    def add_customer_owner(self, request, customer: Customer):
+        self.check_add_customer_owner_permission(request)
+        form = CustomerOwnerForm(request.POST)
         if not form.is_valid():
             show_form_errors(request, form)
-            return self.get(request, *args, **kwargs)
+            return self.get(request)
 
         email = form.cleaned_data["email"]
         full_name = form.cleaned_data["full_name"]
@@ -932,11 +933,11 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     self.get_user_admin_links(email_users),
                 ),
             )
-            return self.get(request, *args, **kwargs)
+            return self.get(request)
 
         try:
             hosted_payload, hosted_created = ensure_hosted_user(email, full_name)
-            added = self.link_customer_hosted_user(
+            added = self.link_customer_hosted_owner(
                 request,
                 customer,
                 hosted_payload,
@@ -956,19 +957,19 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         ) as error:
             messages.error(
                 request,
-                gettext("Could not add customer user: %(error)s") % {"error": error},
+                gettext("Could not add customer owner: %(error)s") % {"error": error},
             )
-            return self.get(request, *args, **kwargs)
+            return self.get(request)
 
         if added:
             messages.success(
                 request,
-                gettext("Added %(email)s to customer users.") % {"email": email},
+                gettext("Added %(email)s to customer owners.") % {"email": email},
             )
         else:
             messages.info(
                 request,
-                gettext("%(email)s is already a customer user.") % {"email": email},
+                gettext("%(email)s is already a customer owner.") % {"email": email},
             )
         return redirect(customer)
 
@@ -993,12 +994,12 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             user=self.request.user,
         )
 
-    def set_follow_up(self, request, customer: Customer, *args, **kwargs):
+    def set_follow_up(self, request, customer: Customer):
         self.check_change_customer_permission(request)
         form = CustomerFollowUpForm(request.POST, customer=customer)
         if not form.is_valid():
             show_form_errors(request, form)
-            return self.get(request, *args, **kwargs)
+            return self.get(request)
 
         followup = form.save()
         local_follow_up_at = timezone.localtime(followup.follow_up_at)
@@ -1031,7 +1032,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         messages.success(request, gettext("Follow-up cleared."))
         return redirect(customer)
 
-    def add_manual_note(self, request, customer: Customer, *args, **kwargs):
+    def add_manual_note(self, request, customer: Customer):
         manual_form = ManualInteractionForm(request.POST)
         if manual_form.is_valid():
             note = manual_form.cleaned_data["note"].strip()
@@ -1042,9 +1043,9 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                 user=request.user,
             )
             return redirect(self.get_tab_url(customer, "interactions"))
-        return self.get(request, *args, **kwargs)
+        return self.get(request)
 
-    def create_new_subscription(self, request, customer: Customer, *args, **kwargs):
+    def create_new_subscription(self, request, customer: Customer):
         subscription_form = NewSubscriptionForm(request.POST)
         if subscription_form.is_valid():
             with override("en"):
@@ -1061,23 +1062,23 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                 )
             return redirect(invoice)
 
-        return self.get(request, *args, **kwargs)
+        return self.get(request)
 
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
-        if "add_customer_user" in request.POST:
-            return self.add_customer_user(request, customer, *args, **kwargs)
+        if "add_customer_owner" in request.POST:
+            return self.add_customer_owner(request, customer)
 
         if "set_follow_up" in request.POST:
-            return self.set_follow_up(request, customer, *args, **kwargs)
+            return self.set_follow_up(request, customer)
 
         if "clear_follow_up" in request.POST:
             return self.clear_follow_up(request, customer)
 
         if "add_manual_note" in request.POST:
-            return self.add_manual_note(request, customer, *args, **kwargs)
+            return self.add_manual_note(request, customer)
 
-        return self.create_new_subscription(request, customer, *args, **kwargs)
+        return self.create_new_subscription(request, customer)
 
 
 class CustomerMergeView(CustomerDetailView):
