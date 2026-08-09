@@ -1103,7 +1103,7 @@ class CRMTestCase(BaseCRMTestCase):
         user = User.objects.create_user(
             username="customer-user", email="user@example.com"
         )
-        customer2.users.add(user)
+        customer2.owners.add(user)
 
         response = self.client.get(list_url, {"q": "billing@example.com"})
 
@@ -1129,7 +1129,7 @@ class CRMTestCase(BaseCRMTestCase):
         customer.save(update_fields=["email"])
         user_b = User.objects.create_user(username="user-b", email="b@example.com")
         user_a = User.objects.create_user(username="user-a", email="a@example.com")
-        customer.users.add(user_b, user_a)
+        customer.owners.add(user_b, user_a)
 
         timestamp = timezone.now()
         beta_interaction = customer.interaction_set.create(
@@ -1163,7 +1163,7 @@ class CRMTestCase(BaseCRMTestCase):
             ["a@example.com", "b@example.com", "billing@example.com"],
         )
         self.assertEqual(
-            [user.email for user in response.context["customer_users"]],
+            [user.email for user in response.context["customer_owners"]],
             ["a@example.com", "b@example.com"],
         )
         self.assertEqual(
@@ -1182,7 +1182,7 @@ class CRMTestCase(BaseCRMTestCase):
         content = response.content.decode()
         self.assertLess(content.index("Alpha payment"), content.index("Beta payment"))
 
-    def test_customer_detail_hides_add_customer_user_for_readonly_staff(self):
+    def test_customer_detail_hides_add_customer_owner_for_readonly_staff(self):
         customer = self.create_customer()
         readonly_user = User.objects.create_user(
             username="readonly", email="readonly@example.com", is_staff=True
@@ -1199,9 +1199,9 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.get(customer.get_absolute_url())
 
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, 'name="add_customer_user"')
+        self.assertNotContains(response, 'name="add_customer_owner"')
 
-    def test_customer_detail_rejects_add_customer_user_for_readonly_staff(self):
+    def test_customer_detail_rejects_add_customer_owner_for_readonly_staff(self):
         customer = self.create_customer()
         readonly_user = User.objects.create_user(
             username="readonly", email="readonly@example.com", is_staff=True
@@ -1218,7 +1218,7 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "new@example.com",
                 "full_name": "New User",
             },
@@ -1302,7 +1302,7 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "new@example.com",
                 "full_name": "New User",
             },
@@ -1314,9 +1314,12 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertTrue(
             SamlIdentity.objects.filter(user=user, external_id="42").exists()
         )
-        self.assertIn(user, customer.users.all())
+        self.assertIn(user, customer.owners.all())
         interaction = Interaction.objects.get(customer=customer)
-        self.assertEqual(interaction.summary, "Added customer user")
+        self.assertEqual(interaction.origin, Interaction.Origin.CUSTOMER_OWNER)
+        self.assertEqual(interaction.summary, "Added customer owner")
+        self.assertEqual(interaction.details["action"], "add")
+        self.assertEqual(interaction.details["owner"], user.pk)
         self.assertTrue(interaction.details["hosted_created"])
 
         request_body = responses.calls[0].request.body
@@ -1374,14 +1377,14 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "existing@example.com",
                 "full_name": "Existing User",
             },
         )
 
         self.assertRedirects(response, customer.get_absolute_url())
-        self.assertIn(existing, customer.users.all())
+        self.assertIn(existing, customer.owners.all())
         self.assertTrue(
             SamlIdentity.objects.filter(user=existing, external_id="43").exists()
         )
@@ -1394,7 +1397,7 @@ class CRMTestCase(BaseCRMTestCase):
         PAYMENT_SECRET=TEST_PAYMENT_SECRET,
     )
     @responses.activate
-    def test_customer_detail_does_not_log_duplicate_customer_user(self):
+    def test_customer_detail_does_not_log_duplicate_customer_owner(self):
         customer = self.create_customer()
         existing = User.objects.create_user(
             username="existing", email="existing@example.com"
@@ -1404,7 +1407,7 @@ class CRMTestCase(BaseCRMTestCase):
             external_id="43",
             user=existing,
         )
-        customer.users.add(existing)
+        customer.owners.add(existing)
         responses.add(
             responses.POST,
             "https://hosted.example/users/ensure/",
@@ -1431,14 +1434,14 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "existing@example.com",
                 "full_name": "Existing User",
             },
         )
 
         self.assertRedirects(response, customer.get_absolute_url())
-        self.assertEqual(customer.users.count(), 1)
+        self.assertEqual(customer.owners.count(), 1)
         self.assertTrue(
             SamlIdentity.objects.filter(user=existing, external_id="43").exists()
         )
@@ -1457,7 +1460,7 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "dup@example.com",
                 "full_name": "Duplicate User",
             },
@@ -1471,7 +1474,7 @@ class CRMTestCase(BaseCRMTestCase):
                 for call in responses.calls
             )
         )
-        self.assertFalse(customer.users.exists())
+        self.assertFalse(customer.owners.exists())
         self.assertContains(response, "Multiple local users use this e-mail address")
 
     @override_settings(
@@ -1510,14 +1513,14 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "invited@example.com",
                 "full_name": "Invited User",
             },
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(customer.users.exists())
+        self.assertFalse(customer.owners.exists())
         self.assertFalse(SamlIdentity.objects.filter(external_id="44").exists())
         existing.refresh_from_db()
         self.assertEqual(existing.email, "other@example.com")
@@ -1561,14 +1564,14 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "invited@example.com",
                 "full_name": "Invited User",
             },
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(customer.users.exists())
+        self.assertFalse(customer.owners.exists())
         self.assertFalse(SamlIdentity.objects.filter(external_id="45").exists())
         existing.refresh_from_db()
         self.assertEqual(existing.email, "other@example.com")
@@ -1616,14 +1619,14 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "invited@example.com",
                 "full_name": "Invited User",
             },
         )
 
         self.assertRedirects(response, customer.get_absolute_url())
-        self.assertIn(existing, customer.users.all())
+        self.assertIn(existing, customer.owners.all())
         existing.refresh_from_db()
         self.assertEqual(existing.email, "invited@example.com")
 
@@ -1643,16 +1646,16 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "broken@example.com",
                 "full_name": "Broken User",
             },
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(customer.users.exists())
+        self.assertFalse(customer.owners.exists())
         self.assertFalse(User.objects.filter(email="broken@example.com").exists())
-        self.assertContains(response, "Could not add customer user")
+        self.assertContains(response, "Could not add customer owner")
 
     @override_settings(
         HOSTED_USER_CREATE_API="https://hosted.example/users/ensure/",
@@ -1670,16 +1673,16 @@ class CRMTestCase(BaseCRMTestCase):
         response = self.client.post(
             customer.get_absolute_url(),
             {
-                "add_customer_user": "1",
+                "add_customer_owner": "1",
                 "email": "broken@example.com",
                 "full_name": "Broken User",
             },
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(customer.users.exists())
+        self.assertFalse(customer.owners.exists())
         self.assertFalse(User.objects.filter(email="broken@example.com").exists())
-        self.assertContains(response, "Could not add customer user")
+        self.assertContains(response, "Could not add customer owner")
 
     def test_service(self):
         Package.objects.create(name="community", price=0)

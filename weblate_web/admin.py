@@ -60,7 +60,7 @@ class ServiceAdmin(admin.ModelAdmin):
     list_filter = ("kind", "status", "discoverable")
     search_fields = (
         "customer__email",
-        "customer__users__email",
+        "customer__owners__email",
         "report__site_url",
         "report__site_title",
         "customer__name",
@@ -102,7 +102,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fields = (
         "service__customer__email",
         "service__customer__name",
-        "service__customer__users__email",
+        "service__customer__owners__email",
         "service__report__site_url",
         "service__report__site_title",
         "service__site_url",

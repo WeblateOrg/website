@@ -39,11 +39,11 @@ class CustomerAdmin(admin.ModelAdmin):
         "contact_point",
         "accounting_reference",
         "email",
-        "users__email",
+        "owners__email",
         "end_client",
     )
     ordering = ("name",)
-    autocomplete_fields = ("users",)
+    autocomplete_fields = ("owners",)
     readonly_fields = (
         "created",
         "vat_validated",

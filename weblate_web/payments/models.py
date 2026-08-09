@@ -106,8 +106,8 @@ class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
     def order(self) -> CustomerQuerySet:
         return self.order_by("name", "email", "pk")
 
-    def for_user(self, user: User) -> CustomerQuerySet:
-        return self.filter(users=user).distinct()
+    def for_owner(self, user: User) -> CustomerQuerySet:
+        return self.filter(owners=user).distinct()
 
     def active(self) -> CustomerQuerySet:
         # ruff:ignore[import-outside-top-level]
@@ -254,7 +254,14 @@ class Customer(models.Model):
         verbose_name="End client name",
     )
     note = models.TextField(blank=True, verbose_name="Note")
-    users = models.ManyToManyField(User, blank=True)
+    owners = models.ManyToManyField(
+        User,
+        blank=True,
+        help_text=gettext_lazy(
+            "Owners have full control over the customer account, including billing, "
+            "services, and other owners."
+        ),
+    )
     created = models.DateTimeField(auto_now_add=True)
 
     zammad_id = models.IntegerField(default=0, editable=False)
@@ -437,15 +444,15 @@ class Customer(models.Model):
         return 0
 
     def get_notify_emails(self) -> list[str]:
-        mails = {self.email, *self.users.values_list("email", flat=True)}
+        mails = {self.email, *self.owners.values_list("email", flat=True)}
         return sorted(
             (mail for mail in mails if mail and not DELETED_MAIL.match(mail)),
             key=str.casefold,
         )
 
     @property
-    def ordered_users(self) -> models.QuerySet[User, User]:
-        return self.users.order_by("email", "username", "pk")
+    def ordered_owners(self) -> models.QuerySet[User, User]:
+        return self.owners.order_by("email", "username", "pk")
 
     def get_upcoming_payment_invoices(self) -> models.QuerySet[Invoice]:
         # ruff:ignore[import-outside-top-level]
@@ -552,9 +559,9 @@ class Customer(models.Model):
         other.service_set.update(customer=self)
         other.interaction_set.update(customer=self)
         other.followups.update(customer=self)
-        users = list(other.users.all())
-        if users:
-            self.users.add(*users)
+        owners = list(other.owners.all())
+        if owners:
+            self.owners.add(*owners)
         interaction = self.interaction_set.create(
             origin=Interaction.Origin.MERGE,
             summary=f"Merged with {other.name} ({other.pk})",

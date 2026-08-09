@@ -217,7 +217,7 @@ class CustomerFollowUpForm(forms.Form):
         return followup
 
 
-class CustomerUserForm(forms.Form):
+class CustomerOwnerForm(forms.Form):
     email = forms.EmailField(label=gettext_lazy("E-mail"))
     full_name = forms.CharField(label=gettext_lazy("Full name"), max_length=150)
 

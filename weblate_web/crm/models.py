@@ -43,6 +43,7 @@ class Interaction(models.Model):
         MAINTENANCE_WINDOW = 6, "Maintenance window"
         MANUAL_NOTE = 7, "Manual note"
         QUOTE_STATUS = 8, "Quote status"
+        CUSTOMER_OWNER = 9, "Customer ownership"
 
     timestamp = models.DateTimeField(default=timezone.now, verbose_name="Timestamp")
     origin = models.IntegerField(choices=Origin, verbose_name="Origin")

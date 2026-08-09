@@ -62,7 +62,7 @@ class Command(BaseCommand):
 
         for customer in Customer.objects.filter(
             service__isnull=True,
-            users__isnull=True,
+            owners__isnull=True,
             payment__isnull=True,
             interaction__isnull=True,
             invoice__isnull=True,

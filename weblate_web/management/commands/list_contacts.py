@@ -29,7 +29,7 @@ class Command(BaseCommand):
         emails = set()
         for service in Service.objects.filter(
             status__in={"hosted", "shared", "basic", "extended", "premium"}
-        ).prefetch_related("customer__users"):
+        ).prefetch_related("customer__owners"):
             emails.update(service.customer.get_notify_emails())
 
         emails.discard("")
