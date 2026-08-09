@@ -21,10 +21,24 @@
 from io import StringIO
 
 from django import template
+from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from lxml import etree
 
+from weblate_web.url_utils import normalize_site_url
+
 register = template.Library()
+
+
+@register.filter
+def safe_site_url(url: object) -> str:
+    """Return a safe HTTP(S) site URL for use in links."""
+    if not isinstance(url, str):
+        return "#"
+    try:
+        return normalize_site_url(url)
+    except ValidationError:
+        return "#"
 
 
 @register.filter

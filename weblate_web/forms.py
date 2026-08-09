@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from urllib.parse import unquote, urlsplit
+from urllib.parse import urlsplit
 
 from django import forms
 from django.conf import settings
@@ -31,11 +31,12 @@ from weblate_web.models import (
     REWARD_LEVELS,
     REWARDS,
     Package,
+    Report,
     Service,
-    normalize_site_url_for_lock,
 )
 from weblate_web.payments.backends import list_backends
 from weblate_web.payments.models import RECURRENCE_CHOICES
+from weblate_web.url_utils import SITE_URL_MAX_LENGTH, normalize_site_url
 
 
 class NewSubscriptionForm(forms.Form):
@@ -81,6 +82,67 @@ class MethodForm(forms.Form):
         self.fields["method"].choices = [  # type: ignore[attr-defined]
             (backend.name, backend.verbose) for backend in list_backends()
         ]
+
+
+SUPPORT_REPORT_INTEGER_FIELDS = (
+    "users",
+    "projects",
+    "components",
+    "languages",
+    "source_strings",
+    "words",
+    "strings",
+)
+
+
+class SupportReportForm(forms.ModelForm):
+    site_url = forms.CharField(required=False, max_length=SITE_URL_MAX_LENGTH)
+    words = forms.IntegerField(required=False)
+    strings = forms.IntegerField(required=False)
+
+    class Meta:
+        model = Report
+        fields = (
+            "site_url",
+            "site_title",
+            "ssh_key",
+            "users",
+            "projects",
+            "components",
+            "languages",
+            "source_strings",
+            "words",
+            "strings",
+            "discoverable",
+        )
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = False
+
+    def clean_site_url(self) -> str:
+        return normalize_site_url(
+            self.cleaned_data.get("site_url", ""), allow_empty=True
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data is None:
+            return {}
+        for field_name in SUPPORT_REPORT_INTEGER_FIELDS:
+            if cleaned_data.get(field_name) is None:
+                cleaned_data[field_name] = 0
+        return cleaned_data
+
+    def save(self, commit: bool = True) -> Report:
+        report = super().save(commit=False)
+        report.hosted_words = self.cleaned_data["words"]
+        report.hosted_strings = self.cleaned_data["strings"]
+        if commit:
+            report.save()
+            self.save_m2m()
+        return report
 
 
 class DonateForm(forms.Form):
@@ -149,32 +211,6 @@ class AddDiscoveryForm(forms.ModelForm):
 DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback/"
 
 
-def has_dot_segment_path(path: str) -> bool:
-    return any(segment in {".", ".."} for segment in unquote(path).split("/"))
-
-
-def normalize_discovery_url(url: str, message: str) -> str:
-    try:
-        parts = urlsplit(url)
-        port = parts.port
-    except ValueError as error:
-        raise ValidationError(message) from error
-
-    invalid_url = parts.scheme not in {"http", "https"} or not parts.netloc
-    has_delimiter = "?" in url or "#" in url
-    has_extra_parts = any((parts.username, parts.password, parts.query, parts.fragment))
-    if (
-        invalid_url
-        or has_delimiter
-        or has_extra_parts
-        or has_dot_segment_path(parts.path)
-        or port == 0
-    ):
-        raise ValidationError(message)
-
-    return normalize_site_url_for_lock(url)
-
-
 def get_discovery_callback_url(site_url: str) -> str:
     return f"{site_url}{DISCOVERY_CALLBACK_PATH}"
 
@@ -194,7 +230,7 @@ class DiscoveryRegistrationForm(AddDiscoveryForm):
         if not site_url:
             return cleaned_data
 
-        site_url = normalize_discovery_url(site_url, gettext("Invalid server URL."))
+        site_url = normalize_site_url(site_url, gettext("Invalid server URL."))
         cleaned_data["site_url"] = site_url
 
         if not settings.DEBUG and urlsplit(site_url).scheme != "https":

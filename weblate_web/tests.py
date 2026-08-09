@@ -83,6 +83,7 @@ from .saml import (
 )
 from .templatetags.downloads import downloadlink, filesizeformat
 from .templatetags.prices import price_format
+from .templatetags.site_url import safe_site_url
 from .utils import FOSDEM_ORIGIN, HOSTED_ORIGIN, PAYMENTS_ORIGIN
 from .views import CustomerView, PostView, server_error
 
@@ -2673,7 +2674,7 @@ class PostTest(PostTestCase):
         self.assertNotContains(response, "onerror")
 
 
-class APITest(UserTestCase):
+class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
     def test_hosted(self) -> None:
         Package.objects.create(name="community", verbose="Community support", price=0)
         Package.objects.create(name="shared:test", verbose="Test package", price=0)
@@ -2853,6 +2854,65 @@ class APITest(UserTestCase):
     def test_support(self) -> None:
         self.perform_support()
 
+    def test_support_report_payload(self) -> None:
+        service = self.perform_support()
+        response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "HTTPS://Example.COM:443/",
+                "site_title": "Example service",
+                "ssh_key": "ssh-ed25519 test",
+                "users": "1",
+                "projects": "2",
+                "components": "3",
+                "languages": "4",
+                "source_strings": "5",
+                "words": "6",
+                "strings": "7",
+                "discoverable": "1",
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        report = service.report_set.latest("pk")
+        self.assertEqual(report.site_url, "https://example.com")
+        self.assertEqual(report.site_title, "Example service")
+        self.assertEqual(report.ssh_key, "ssh-ed25519 test")
+        self.assertEqual(report.users, 1)
+        self.assertEqual(report.projects, 2)
+        self.assertEqual(report.components, 3)
+        self.assertEqual(report.languages, 4)
+        self.assertEqual(report.source_strings, 5)
+        self.assertEqual(report.hosted_words, 6)
+        self.assertEqual(report.hosted_strings, 7)
+        self.assertTrue(report.discoverable)
+
+    def test_support_rejects_invalid_report_payload(self) -> None:
+        service = self.perform_support()
+        report_count = service.report_set.count()
+
+        response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://example.com",
+                "site_title": "Invalid report",
+                "users": "not-a-number",
+                "discoverable": "1",
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"error": ["Enter a whole number."]})
+        service.refresh_from_db()
+        self.assertEqual(service.site_url, "")
+        self.assertEqual(service.site_title, "")
+        self.assertFalse(service.discoverable)
+        self.assertEqual(service.report_set.count(), report_count)
+
     def test_support_expired(self) -> None:
         self.perform_support(delta=-1, expected="community")
 
@@ -2874,6 +2934,110 @@ class APITest(UserTestCase):
         )
         service = Service.objects.get(pk=service.pk)
         self.assertFalse(service.discoverable)
+
+    def test_support_rejects_invalid_site_url(self) -> None:
+        service = self.perform_support()
+        report_count = service.report_set.count()
+
+        invalid_urls = (
+            "javascript:alert(document.domain)",
+            "data:text/html,<script>alert(1)</script>",
+            "ftp://example.com",
+            "https://user:password@example.com",
+            "https://example.com?query",
+            "https://example.com#fragment",
+            "https://example.com/a/../b",
+            "https://example.com/a/%2e%2e/b",
+            "https://example.com:0",
+            "https:///missing-host",
+            "http://[",
+        )
+        for site_url in invalid_urls:
+            with self.subTest(site_url=site_url):
+                response = self.client.post(
+                    "/api/support/",
+                    {
+                        "secret": service.secret,
+                        "site_url": site_url,
+                        "site_title": "Unsafe service",
+                        "discoverable": "1",
+                        "public_projects": json.dumps(
+                            [
+                                {
+                                    "name": "Unsafe project",
+                                    "url": "/projects/unsafe/",
+                                    "web": "https://example.com/projects/unsafe/",
+                                }
+                            ]
+                        ),
+                    },
+                    headers={"user-agent": "Weblate/1.2.3"},
+                )
+
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(response.json(), {"error": ["Invalid server URL."]})
+                service.refresh_from_db()
+                self.assertEqual(service.site_url, "")
+                self.assertEqual(service.site_title, "")
+                self.assertFalse(service.discoverable)
+                self.assertEqual(service.report_set.count(), report_count)
+                self.assertFalse(service.project_set.exists())
+
+    def test_site_url_model_validation(self) -> None:
+        customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
+
+        with self.assertRaisesMessage(ValidationError, "Invalid server URL."):
+            Service.objects.create(
+                customer=customer,
+                site_url="javascript:alert(document.domain)",
+            )
+
+        service = Service.objects.create(
+            customer=customer,
+            site_url="HTTPS://Example.COM:443/",
+        )
+        self.assertEqual(service.site_url, "https://example.com")
+        with self.assertRaisesMessage(ValidationError, "Invalid server URL."):
+            Report.objects.create(
+                service=service,
+                site_url="javascript:alert(document.domain)",
+            )
+
+    def test_legacy_unsafe_site_url_is_not_rendered_as_link(self) -> None:
+        service = self.perform_support()
+        service.project_set.create(
+            name="Test project",
+            url="/projects/test/",
+            web="https://example.com/projects/test/",
+        )
+        payload = "javascript:alert(document.domain)"
+        Service.objects.filter(pk=service.pk).update(
+            site_url=payload,
+            site_title="Unsafe service",
+            site_projects=2,
+            discoverable=True,
+        )
+        service.report_set.update(site_url=payload, site_title="Unsafe service")
+
+        response = self.client.get("/en/discover/")
+        self.assertNotContains(response, 'href="javascript:')
+        self.assertContains(response, 'href="#"')
+        self.assertContains(response, 'href="#/projects/test/"')
+        self.assertContains(response, 'href="#/projects/"')
+
+        user = self.login()
+        service.customer.users.add(user)
+        response = self.client.get("/en/user/")
+        self.assertNotContains(response, 'href="javascript:')
+        self.assertContains(response, 'href="#"')
+        self.assertContains(response, f'href="#/manage/?activation={service.secret}"')
+
+    def test_safe_site_url(self) -> None:
+        self.assertEqual(safe_site_url("javascript:alert(1)"), "#")
+        self.assertEqual(safe_site_url("data:text/html,unsafe"), "#")
+        self.assertEqual(
+            safe_site_url("HTTPS://Example.COM:443/"), "https://example.com"
+        )
 
     def test_support_discovery_projects(self) -> None:
         service = self.perform_support()
@@ -3031,8 +3195,16 @@ class APITest(UserTestCase):
         project = service.project_set.get()
         self.assertEqual(project.name, "Allowed project")
 
-        response = self._post_support_report(service, "http://[")
-        self.assertFalse(response.json()["in_limits"])
+        response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "http://[",
+                "discoverable": "1",
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+        self.assertEqual(response.status_code, 400)
         service = Service.objects.get(pk=service.pk)
         self.assertEqual(service.site_url, "https://allowed.example.com")
 
@@ -5430,6 +5602,20 @@ class StorageBoxTestCase(FakturaceTestCase):
 
 
 class DiscoveryTestCase(UserTestCase):
+    def test_create_rejects_disallowed_site_url(self) -> None:
+        self.login()
+        response = self.client.post(
+            "/en/subscription/discovery/",
+            {
+                "site_url": "https://example.com?query",
+                "discover_text": "Discover example",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Invalid server URL.")
+        self.assertFalse(Service.objects.exists())
+
     def test_create(self):
         # This requires login
         response = self.client.get("/subscription/discovery/")

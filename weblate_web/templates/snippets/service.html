@@ -1,4 +1,4 @@
-{% load i18n static timestamps %}
+{% load i18n site_url static timestamps %}
 
 <div class="payment-form pt-pb">
   <div class="form-line service-text-formatting bdr-btm">
@@ -36,7 +36,7 @@
         <br />
         {% if service.site_url and service.needs_token and not service.is_pending_discovery_activation %}
           <a class="button button-med-100 inline"
-             href="{{ service.site_url }}/manage/?activation={{ service.secret }}">{% translate "Activate" %}</a>
+             href="{{ service.site_url|safe_site_url }}/manage/?activation={{ service.secret }}">{% translate "Activate" %}</a>
         {% endif %}
         <a class="button button-med-100 inline" data-clipboard-text="{{ service.secret }}">{% translate "Copy" %}</a>
         <form class="form-inline"
@@ -69,7 +69,7 @@
     <div class="line-left">{% translate "Server URL" %}</div>
     <div class="line-right">
       {% if service.last_report %}
-        <a class="link" href="{{ service.last_report.site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
+        <a class="link" href="{{ service.last_report.site_url|safe_site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
       {% else %}
         <p class="text-muted">
           {% blocktranslate with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For increased comfort, use the activation token to connect your Weblate installation to the support portal. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktranslate %}

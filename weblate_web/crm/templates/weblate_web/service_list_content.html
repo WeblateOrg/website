@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n site_url %}
 
 {% for object in object_list %}
   <tr>
@@ -9,7 +9,7 @@
       <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
     </td>
     <td>
-      <a href="{{ object.site_url }}">{{ object.site_url }}</a>
+      <a href="{{ object.site_url|safe_site_url }}">{{ object.site_url }}</a>
     </td>
     <td>{{ object.site_version|default:"-" }}</td>
     <td>
