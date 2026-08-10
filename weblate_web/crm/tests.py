@@ -82,6 +82,21 @@ class BaseCRMTestCase(TestCase):
             type=followup_type,
         )
 
+    def create_readonly_customer_user(self) -> User:
+        user = User.objects.create_user(
+            username="readonly", email="readonly@example.com", is_staff=True
+        )
+        user.user_permissions.add(
+            Permission.objects.get(
+                codename="view_customer",
+                content_type__app_label="payments",
+                content_type__model="customer",
+            )
+        )
+        self.assertTrue(user.has_perm("payments.view_customer"))
+        self.assertFalse(user.has_perm("payments.change_customer"))
+        return user
+
 
 class CRMInvoiceSearchTestCase(BaseCRMTestCase):
     user: User
@@ -266,16 +281,6 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
         )
         self.client.force_login(self.user)
 
-    @staticmethod
-    def add_readonly_customer_permission(user: User) -> None:
-        user.user_permissions.add(
-            Permission.objects.get(
-                codename="view_customer",
-                content_type__app_label="payments",
-                content_type__model="customer",
-            )
-        )
-
     def test_customer_follow_up_querysets(self):
         due = self.create_customer("DUE CUSTOMER")
         upcoming = self.create_customer("UPCOMING CUSTOMER")
@@ -382,11 +387,7 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
 
     def test_customer_detail_hides_follow_up_form_for_readonly_staff(self):
         customer = self.create_customer()
-        readonly_user = User.objects.create_user(
-            username="readonly", email="readonly@example.com", is_staff=True
-        )
-        self.add_readonly_customer_permission(readonly_user)
-        self.client.force_login(readonly_user)
+        self.client.force_login(self.create_readonly_customer_user())
 
         response = self.client.get(customer.get_absolute_url())
 
@@ -395,11 +396,7 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
 
     def test_customer_detail_rejects_follow_up_for_readonly_staff(self):
         customer = self.create_customer()
-        readonly_user = User.objects.create_user(
-            username="readonly", email="readonly@example.com", is_staff=True
-        )
-        self.add_readonly_customer_permission(readonly_user)
-        self.client.force_login(readonly_user)
+        self.client.force_login(self.create_readonly_customer_user())
 
         response = self.client.post(
             customer.get_absolute_url(),
@@ -412,6 +409,20 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertFalse(customer.followups.exists())
+
+    def test_customer_detail_rejects_clear_follow_up_for_readonly_staff(self):
+        customer = self.create_customer()
+        followup = self.create_followup(customer)
+        self.client.force_login(self.create_readonly_customer_user())
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {"clear_follow_up": "1", "follow_up": followup.pk},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(CustomerFollowUp.objects.filter(pk=followup.pk).exists())
+        self.assertFalse(Interaction.objects.filter(customer=customer).exists())
 
     def test_customer_detail_sets_follow_up(self):
         customer = self.create_customer()
@@ -847,6 +858,70 @@ class CRMQuoteStatusTestCase(BaseCRMTestCase):
             response, "Please confirm that you want to issue a final invoice."
         )
 
+    @patch.object(Invoice, "generate_files")
+    def test_quote_conversion_requires_add_permission(self, mock_generate_files):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+        readonly_user = User.objects.create_user(
+            username="invoice-viewer",
+            email="invoice-viewer@example.com",
+            is_staff=True,
+        )
+        self.add_invoice_permission(readonly_user, "view_invoice")
+        self.assertTrue(readonly_user.has_perm("invoices.view_invoice"))
+        self.assertFalse(readonly_user.has_perm("invoices.add_invoice"))
+        self.assertFalse(readonly_user.has_perm("invoices.change_invoice"))
+        self.client.force_login(readonly_user)
+
+        response = self.client.get(quote.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Issue invoice from quote")
+
+        response = self.client.post(
+            quote.get_absolute_url(),
+            {"confirm_invoice": "1", "invoice": "1"},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(quote.invoice_set.exists())
+        mock_generate_files.assert_not_called()
+
+    @patch.object(Invoice, "generate_files")
+    def test_quote_conversion_with_add_permission(self, mock_generate_files):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+        invoice_user = User.objects.create_user(
+            username="invoice-creator",
+            email="invoice-creator@example.com",
+            is_staff=True,
+        )
+        self.add_invoice_permission(invoice_user, "view_invoice")
+        self.add_invoice_permission(invoice_user, "add_invoice")
+        self.assertFalse(invoice_user.has_perm("invoices.change_invoice"))
+        self.client.force_login(invoice_user)
+
+        response = self.client.get(quote.get_absolute_url())
+
+        self.assertContains(response, "Issue invoice from quote")
+
+        response = self.client.post(
+            quote.get_absolute_url(),
+            {
+                "confirm_invoice": "1",
+                "invoice": "1",
+                "customer_reference": "PO-42",
+                "customer_note": "Approved quote",
+            },
+        )
+
+        invoice = quote.invoice_set.get()
+        self.assertRedirects(
+            response, invoice.get_absolute_url(), fetch_redirect_response=False
+        )
+        self.assertEqual(invoice.kind, InvoiceKind.INVOICE)
+        self.assertEqual(invoice.customer_reference, "PO-42")
+        self.assertEqual(invoice.customer_note, "Approved quote")
+        mock_generate_files.assert_called_once_with()
+
     def test_invoice_detail_breadcrumb_links_to_kind_list(self):
         quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
         invoice = self.create_invoice(Decimal(42), kind=InvoiceKind.INVOICE)
@@ -1083,6 +1158,28 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, customer2.get_absolute_url())
         self.assertFalse(Customer.objects.filter(pk=customer1.pk).exists())
 
+    def test_customer_merge_rejects_readonly_staff(self):
+        source = self.create_customer("SOURCE CUSTOMER")
+        target = self.create_customer("TARGET CUSTOMER")
+        self.client.force_login(self.create_readonly_customer_user())
+
+        response = self.client.get(
+            reverse("crm:customer-merge", kwargs={"pk": source.pk}),
+            {"merge": target.pk},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'name="merge"')
+
+        response = self.client.post(
+            reverse("crm:customer-merge", kwargs={"pk": source.pk}),
+            {"merge": target.pk},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Customer.objects.filter(pk=source.pk).exists())
+        self.assertTrue(Customer.objects.filter(pk=target.pk).exists())
+
     def test_customer_search(self):
         customer1 = self.create_customer("TEST CUSTOMER 1")
         customer2 = self.create_customer("TEST CUSTOMER 2", end_client="END")
@@ -1182,38 +1279,21 @@ class CRMTestCase(BaseCRMTestCase):
         content = response.content.decode()
         self.assertLess(content.index("Alpha payment"), content.index("Beta payment"))
 
-    def test_customer_detail_hides_add_customer_owner_for_readonly_staff(self):
+    def test_customer_detail_hides_actions_for_readonly_staff(self):
         customer = self.create_customer()
-        readonly_user = User.objects.create_user(
-            username="readonly", email="readonly@example.com", is_staff=True
-        )
-        readonly_user.user_permissions.add(
-            Permission.objects.get(
-                codename="view_customer",
-                content_type__app_label="payments",
-                content_type__model="customer",
-            )
-        )
-        self.client.force_login(readonly_user)
+        self.client.force_login(self.create_readonly_customer_user())
 
         response = self.client.get(customer.get_absolute_url())
 
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, 'name="add_customer_owner"')
+        self.assertNotContains(response, 'name="add_manual_note"')
+        self.assertNotContains(response, "Merge customer")
+        self.assertNotContains(response, "New service purchase")
 
     def test_customer_detail_rejects_add_customer_owner_for_readonly_staff(self):
         customer = self.create_customer()
-        readonly_user = User.objects.create_user(
-            username="readonly", email="readonly@example.com", is_staff=True
-        )
-        readonly_user.user_permissions.add(
-            Permission.objects.get(
-                codename="view_customer",
-                content_type__app_label="payments",
-                content_type__model="customer",
-            )
-        )
-        self.client.force_login(readonly_user)
+        self.client.force_login(self.create_readonly_customer_user())
 
         response = self.client.post(
             customer.get_absolute_url(),
@@ -1225,6 +1305,35 @@ class CRMTestCase(BaseCRMTestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_customer_detail_rejects_manual_note_for_readonly_staff(self):
+        customer = self.create_customer()
+        self.client.force_login(self.create_readonly_customer_user())
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {"add_manual_note": "1", "note": "Unauthorized note"},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Interaction.objects.filter(customer=customer).exists())
+
+    def test_customer_detail_rejects_quote_for_readonly_staff(self):
+        customer = self.create_customer()
+        package = Package.objects.create(name="x1", verbose="pkg1", price=42)
+        self.client.force_login(self.create_readonly_customer_user())
+
+        response = self.client.post(
+            customer.get_absolute_url(),
+            {
+                "package": package.pk,
+                "currency": Currency.EUR,
+                "kind": InvoiceKind.QUOTE,
+            },
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Invoice.objects.filter(customer=customer).exists())
 
     def test_customer_detail_adds_manual_note(self):
         customer = self.create_customer()
