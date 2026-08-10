@@ -828,6 +828,7 @@ class FioBank(Backend):
                             f"{invoice.number}: skipping, currency mismatch, {currency} instead of {expected_currency}"
                         )
                         continue
+                    # The comment is not coming from the transaction, but can be only edited in the bank application
                     comment = entry.get("comment") or ""
                     if amount < invoice.total_amount and "[underpaid]" not in comment:
                         print(
