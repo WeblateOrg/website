@@ -30,12 +30,14 @@
         </li>
       </ul>
     </div>
-    <form class="crm-form-panel crm-form-panel--inline" method="post">
-      {% csrf_token %}
-      {{ merge_form.merge }}
-      {% translate "Merge" as merge_label %}
-      <input class="crm-button crm-button--danger" type="submit" value="{{ merge_label }}">
-      <a class="crm-button crm-button--secondary" href="{{ object.get_absolute_url }}">{% translate "Cancel" %}</a>
-    </form>
+    {% if can_change_customer %}
+      <form class="crm-form-panel crm-form-panel--inline" method="post">
+        {% csrf_token %}
+        {{ merge_form.merge }}
+        {% translate "Merge" as merge_label %}
+        <input class="crm-button crm-button--danger" type="submit" value="{{ merge_label }}">
+        <a class="crm-button crm-button--secondary" href="{{ object.get_absolute_url }}">{% translate "Cancel" %}</a>
+      </form>
+    {% endif %}
   </section>
 {% endblock content %}

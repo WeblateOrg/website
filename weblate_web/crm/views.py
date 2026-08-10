@@ -438,6 +438,7 @@ class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
 class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
+    convert_permission = "invoices.add_invoice"
     refund_permission = "payments.add_payment"
     quote_status_permission = "invoices.change_invoice"
     title = "Invoice detail"
@@ -454,6 +455,9 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
         return (
             self.is_unconverted_quote() and self.object.quote_status == QuoteStatus.OPEN
         )
+
+    def can_convert_permission(self) -> bool:
+        return self.request.user.has_perm(self.convert_permission)
 
     def can_update_quote_status_permission(self) -> bool:
         return self.request.user.has_perm(self.quote_status_permission)
@@ -486,7 +490,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
         context["invoice_kind_quote"] = int(InvoiceKind.QUOTE)
         context["invoice_kind_invoice"] = int(InvoiceKind.INVOICE)
-        if self.can_convert():
+        if self.can_convert() and self.can_convert_permission():
             context["convert_form"] = CustomerReferenceForm(
                 self.request.POST if self.request.method == "POST" else None,
                 initial={
@@ -650,6 +654,9 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                 return redirect(self.object)
             show_form_errors(self.request, refund_form)
             return self.get(request, *args, **kwargs)
+
+        if not self.can_convert_permission():
+            raise PermissionDenied
 
         quote = self.object
         convert_form = CustomerReferenceForm(request.POST)
@@ -1066,6 +1073,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
 
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
+        self.check_change_customer_permission(request)
         if "add_customer_owner" in request.POST:
             return self.add_customer_owner(request, customer)
 
@@ -1110,6 +1118,7 @@ class CustomerMergeView(CustomerDetailView):
 
     def post(self, request, *args, **kwargs):
         customer = self.get_object()
+        self.check_change_customer_permission(request)
         form = CustomerMergeForm(request.POST, customer=customer)
         if not form.is_valid():
             show_form_errors(request, form)
