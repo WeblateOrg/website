@@ -22,6 +22,9 @@
             </div>
             <div class="clear"></div>
           </div>
+          <div class="alert warning" role="alert">
+            {% blocktranslate with server_url=form.site_url_for_display %}The server address {{ server_url }} was supplied by the registration request and has not been verified. Continue only if you initiated registration from this server.{% endblocktranslate %}
+          </div>
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in form.hidden_fields %}{{ field }}{% endfor %}

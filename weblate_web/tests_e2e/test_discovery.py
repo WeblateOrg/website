@@ -78,6 +78,11 @@ class TestDiscoveryRegistration:
         assert page.get_by_text(
             "After confirmation, you will return to that Weblate server to complete activation."
         ).is_visible()
+        assert page.get_by_text(
+            "The server address https://example.com/translations was supplied by the "
+            "registration request and has not been verified. Continue only if you "
+            "initiated registration from this server."
+        ).is_visible()
         capture(page, "registration-handoff")
 
     def test_discovery_registration_stays_on_website(
