@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit, urlunsplit
 
 from django import forms
 from django.conf import settings
@@ -221,6 +221,30 @@ class DiscoveryRegistrationForm(AddDiscoveryForm):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.fields["site_url"].widget.attrs["readonly"] = "readonly"
+
+    @property
+    def site_url_for_display(self) -> str:
+        site_url = str(self["site_url"].value() or "")
+        try:
+            parts = urlsplit(site_url)
+            hostname = parts.hostname
+            port = parts.port
+        except ValueError:
+            return site_url.encode("ascii", "backslashreplace").decode()
+
+        if not hostname:
+            return site_url.encode("ascii", "backslashreplace").decode()
+
+        try:
+            hostname = hostname.encode("idna").decode("ascii")
+        except UnicodeError:
+            hostname = hostname.encode("ascii", "backslashreplace").decode()
+
+        if ":" in hostname:
+            hostname = f"[{hostname}]"
+        netloc = hostname if port is None else f"{hostname}:{port}"
+        path = quote(parts.path, safe="/%:@!$&'()*+,;=-._~")
+        return urlunsplit((parts.scheme.lower(), netloc, path, "", ""))
 
     def clean(self):
         cleaned_data = super().clean()

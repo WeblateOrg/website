@@ -5865,6 +5865,25 @@ class DiscoveryTestCase(UserTestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_registration_displays_ascii_server_url(self) -> None:
+        self.login()
+        response = self.client.get(
+            "/subscription/discovery/register/",
+            {
+                "site_url": (
+                    "https://\N{CYRILLIC SMALL LETTER ER}"
+                    "\N{CYRILLIC SMALL LETTER A}ypal.example/translations"
+                ),
+                "state": "state-123",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context["form"].site_url_for_display,
+            "https://xn--ypal-43d9g.example/translations",
+        )
+
     def test_registration_handoff_with_site_path(self) -> None:
         self.login()
         response = self.client.post(
