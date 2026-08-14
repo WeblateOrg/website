@@ -687,7 +687,7 @@ class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
     def get_title(self) -> str:
         match self.kwargs["kind"]:
             case "active":
-                return "Active customer"
+                return "Active customers"
             case "followups":
                 return "Customer follow-ups"
             case "all":
