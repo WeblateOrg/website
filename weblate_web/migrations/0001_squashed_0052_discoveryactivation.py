@@ -31,6 +31,14 @@ from django.db import migrations, models
 import weblate_web.models
 
 
+def create_project_name_fulltext_index(apps, schema_editor) -> None:
+    if schema_editor.connection.vendor == "mysql":
+        schema_editor.execute(
+            "CREATE FULLTEXT INDEX weblate_web_project_name_fulltext "
+            "ON weblate_web_project(name)"
+        )
+
+
 class Migration(migrations.Migration):
     replaces = [
         ("weblate_web", "0001_squashed_0030_service_note"),
@@ -485,6 +493,7 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "Weblate projects",
             },
         ),
+        migrations.RunPython(code=create_project_name_fulltext_index, atomic=False),
         migrations.CreateModel(
             name="DiscoveryActivation",
             fields=[
