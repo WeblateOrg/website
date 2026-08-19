@@ -1200,6 +1200,24 @@ class PaymentCustomerAccessTest(UserTestCase):
         with override("en"):
             return create_payment(user=user, customer=customer)
 
+    def create_draft_payment(
+        self, customer: Customer
+    ) -> tuple[Invoice, Payment, str, str]:
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.DRAFT,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=customer.vat_rate,
+        )
+        invoice.invoiceitem_set.create(description="Test service", unit_price=100)
+        payment = invoice.create_payment()
+        return (
+            invoice,
+            payment,
+            reverse("payment", kwargs={"pk": payment.pk}),
+            reverse("payment-customer", kwargs={"pk": payment.pk}),
+        )
+
     def test_anonymous_user_can_not_edit_website_payment_customer(self) -> None:
         owner = self.create_user()
         customer = self.create_customer(owner)
@@ -1228,6 +1246,76 @@ class PaymentCustomerAccessTest(UserTestCase):
 
         customer.refresh_from_db()
         self.assertEqual(customer.name, self.edit_data["name"])
+
+    def test_customer_edit_adds_vat_to_linked_draft_and_payment(self) -> None:
+        owner = self.login()
+        customer = self.create_customer(owner)
+        customer.country = "US"
+        customer.save(update_fields=["country"])
+        invoice, payment, payment_url, customer_url = self.create_draft_payment(
+            customer
+        )
+        self.assertEqual(invoice.vat_rate, 0)
+        self.assertEqual(payment.amount, 100)
+
+        response = self.client.post(customer_url, self.edit_data, follow=True)
+
+        self.assertRedirects(response, payment_url)
+        self.assertContains(response, "€121")
+        self.assertContains(response, "(including VAT)")
+        invoice.refresh_from_db()
+        payment.refresh_from_db()
+        self.assertEqual(invoice.vat_rate, 21)
+        self.assertEqual(payment.amount, 121)
+        self.assertTrue(payment.amount_fixed)
+
+    def test_customer_edit_removes_vat_from_linked_draft_and_payment(self) -> None:
+        owner = self.login()
+        customer = self.create_customer(owner)
+        invoice, payment, payment_url, customer_url = self.create_draft_payment(
+            customer
+        )
+        self.assertEqual(invoice.vat_rate, 21)
+        self.assertEqual(payment.amount, 121)
+        edit_data = {**self.edit_data, "country": "US"}
+
+        response = self.client.post(customer_url, edit_data, follow=True)
+
+        self.assertRedirects(response, payment_url)
+        self.assertContains(response, "€100")
+        self.assertNotContains(response, "(including VAT)")
+        invoice.refresh_from_db()
+        payment.refresh_from_db()
+        self.assertEqual(invoice.vat_rate, 0)
+        self.assertEqual(payment.amount, 100)
+        self.assertTrue(payment.amount_fixed)
+
+    def test_customer_edit_does_not_update_linked_proforma(self) -> None:
+        owner = self.login()
+        customer = self.create_customer(owner)
+        invoice = Invoice.objects.create(
+            customer=customer,
+            kind=InvoiceKind.PROFORMA,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        invoice.invoiceitem_set.create(description="Test service", unit_price=100)
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=121,
+            amount_fixed=True,
+            description="Test service",
+            draft_invoice=invoice,
+        )
+        customer_url = reverse("payment-customer", kwargs={"pk": payment.pk})
+        edit_data = {**self.edit_data, "country": "US"}
+
+        self.client.post(customer_url, edit_data)
+
+        invoice.refresh_from_db()
+        payment.refresh_from_db()
+        self.assertEqual(invoice.vat_rate, 21)
+        self.assertEqual(payment.amount, 121)
 
     def test_other_user_can_not_edit_website_payment_customer(self) -> None:
         owner = User.objects.create_user(username="owner", email="owner@example.com")
@@ -1277,8 +1365,10 @@ class PaymentCustomerAccessTest(UserTestCase):
         customer.owners.clear()
 
         self.assertEqual(self.client.get(customer_url).status_code, 200)
-        response = self.client.post(customer_url, self.edit_data)
+        response = self.client.post(customer_url, self.edit_data, follow=True)
         self.assertRedirects(response, payment_url)
+        self.assertContains(response, "€121")
+        self.assertContains(response, "(including VAT)")
 
         customer.refresh_from_db()
         self.assertEqual(customer.name, self.edit_data["name"])
@@ -2156,11 +2246,15 @@ class PaymentTest(FakturaceTestCase):
         self.assertContains(response, "Please provide your billing")
         payment = Payment.objects.all().get()
         self.assertEqual(payment.state, Payment.NEW)
+        self.assertEqual(payment.amount, 50)
+        self.assertEqual(cast("Invoice", payment.draft_invoice).vat_rate, 21)
         customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
         payment_url = reverse("payment", kwargs={"pk": payment.uuid})
         self.assertRedirects(response, customer_url)
         response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
         self.assertContains(response, "Please choose payment method")
+        self.assertContains(response, "€50")
+        self.assertContains(response, "(including VAT)")
         response = self.client.post(payment_url, {"method": "thepay2-card"})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith("https://gate.thepay.cz/"))  # type: ignore[attr-defined]
@@ -2181,6 +2275,7 @@ class PaymentTest(FakturaceTestCase):
 
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
+        self.assertEqual(cast("Invoice", payment.paid_invoice).vat_rate, 21)
 
         # Edit customer info
         customer = Customer.objects.get()

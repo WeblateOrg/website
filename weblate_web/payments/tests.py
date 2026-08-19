@@ -174,20 +174,25 @@ class ModelTest(SimpleTestCase):
 
     def test_vat(self) -> None:
         customer = Customer()
-        self.assertFalse(customer.needs_vat)
+        self.assertTrue(customer.needs_vat)
+        self.assertEqual(customer.vat_rate, 21)
         customer = Customer(**CUSTOMER)
         # Czech customer needs VAT
         self.assertTrue(customer.needs_vat)
+        self.assertEqual(customer.vat_rate, 21)
         # EU enduser needs VAT
         customer.vat = ""
         self.assertTrue(customer.needs_vat)
+        self.assertEqual(customer.vat_rate, 21)
         # EU company does not need VAT
         customer.vat = "IE6388047V"
         self.assertFalse(customer.needs_vat)
+        self.assertEqual(customer.vat_rate, 0)
         # Non EU customer does not need VAT
         customer.vat = ""
         customer.country = "US"
         self.assertFalse(customer.needs_vat)
+        self.assertEqual(customer.vat_rate, 0)
 
     def test_empty(self) -> None:
         customer = Customer(country="CZ")

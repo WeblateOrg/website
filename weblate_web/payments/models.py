@@ -435,7 +435,9 @@ class Customer(models.Model):
 
     @property
     def needs_vat(self) -> bool:
-        return self.vat_country_code == "CZ" or self.is_eu_enduser
+        return (
+            not self.country_code or self.vat_country_code == "CZ" or self.is_eu_enduser
+        )
 
     @property
     def vat_rate(self) -> int:

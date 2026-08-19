@@ -70,7 +70,7 @@ from weblate_web.forms import (
     SupportReportForm,
     get_discovery_callback_url,
 )
-from weblate_web.invoices.models import InvoiceKind
+from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.legal.models import Agreement, AgreementKind
 from weblate_web.models import (
     REWARD_LEVELS,
@@ -602,7 +602,16 @@ class CustomerView(FormView, PaymentObjectMixin):
         return super().form_invalid(form)
 
     def form_valid(self, form):
-        form.save()
+        customer = form.save()
+        if self.object.draft_invoice_id:
+            invoice = Invoice.objects.select_for_update().get(
+                pk=self.object.draft_invoice_id
+            )
+            if invoice.kind == InvoiceKind.DRAFT:
+                invoice.vat_rate = customer.vat_rate
+                invoice.save(update_fields=["vat_rate"])
+                self.object.amount = int(invoice.total_amount)
+                self.object.save(update_fields=["amount"])
         return redirect("payment", pk=self.object.pk)
 
     def get_form_kwargs(self):
