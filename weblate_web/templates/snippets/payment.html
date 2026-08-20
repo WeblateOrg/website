@@ -26,8 +26,8 @@
     {% elif payment.state != 5 %}
       {% if payment.is_waiting_for_user %}
         <a class="link invoice-link" href="{{ payment.get_absolute_url }}">{% translate "Pay now" %}</a>
-      {% elif payment.details.reject_reason %}
-        {{ payment.get_state_display }}: {{ payment.details.reject_reason }}
+      {% elif payment.get_reject_reason %}
+        {{ payment.get_state_display }}: {{ payment.get_reject_reason }}
       {% else %}
         {{ payment.get_state_display }}
       {% endif %}

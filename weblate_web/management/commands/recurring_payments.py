@@ -23,9 +23,11 @@ from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.db.models import Max
 from django.utils import timezone
+from django.utils.html import strip_tags
 
 from weblate_web.invoices.models import InvoiceKind
 from weblate_web.models import Service, ServiceKind, Subscription, get_period_delta
@@ -145,10 +147,18 @@ class Command(BaseCommand):
         extra: dict[str, int],
     ) -> None:
         # Allow at most three failures of current payment method
-        rejected_payments = past_payments.filter(
-            state=Payment.REJECTED, repeat=payment.repeat or payment
+        repeated_payments = past_payments.filter(repeat=payment.repeat or payment)
+        rejected_payments = repeated_payments.filter(state=Payment.REJECTED)
+        last_processed = (
+            repeated_payments.filter(state=Payment.PROCESSED)
+            .order_by("-created")
+            .first()
         )
-        if rejected_payments.count() > 3:
+        if last_processed is not None:
+            rejected_payments = rejected_payments.filter(
+                created__gt=last_processed.created
+            )
+        if rejected_payments.count() >= 3:
             payment.recurring = ""
             payment.save()
             return
@@ -177,6 +187,28 @@ class Command(BaseCommand):
             payment.recurring = ""
             payment.save()
             return
+
+        if repeated.customer.vat:
+            validation_failed = False
+            validation_detail = ""
+            try:
+                repeated.customer.prepayment_validation(automated=True)
+            except ValidationError as error:
+                validation_failed = True
+                validation_detail = strip_tags(str(error.message))
+            if repeated.customer.vat_recently_invalid:
+                validation_failed = True
+                validation_detail = strip_tags(
+                    repeated.customer.vat_validation_error["message"]
+                )
+            if validation_failed:
+                repeated.state = Payment.REJECTED
+                repeated.details["failure_code"] = Payment.VAT_VALIDATION_FAILURE
+                if validation_detail:
+                    repeated.details["failure_detail"] = validation_detail
+                repeated.save(update_fields=["state", "details"])
+                repeated.customer.send_notification("payment_failed", payment=repeated)
+                return
 
         # Trigger of the payment
         repeated.trigger_recurring()

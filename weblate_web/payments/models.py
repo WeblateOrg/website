@@ -40,7 +40,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.text import format_lazy
-from django.utils.translation import gettext_lazy, pgettext_lazy
+from django.utils.translation import gettext, gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
 from unidecode import unidecode
 from vies.models import VATINField
@@ -721,6 +721,8 @@ class Payment(models.Model):
     ACCEPTED = 4
     PROCESSED = 5
 
+    VAT_VALIDATION_FAILURE = "vat_validation"
+
     CURRENCY_EUR = 0
     CURRENCY_BTC = 1
     CURRENCY_USD = 2
@@ -796,6 +798,18 @@ class Payment(models.Model):
 
     def get_absolute_url(self):
         return reverse("payment", kwargs={"pk": self.pk})
+
+    def get_reject_reason(self) -> str:
+        if self.details.get("failure_code") == self.VAT_VALIDATION_FAILURE:
+            if failure_detail := self.details.get("failure_detail"):
+                return gettext(
+                    "The VAT ID could not be validated, so the recurring payment was "
+                    "not attempted. Validation service response: {}"
+                ).format(failure_detail)
+            return gettext(
+                "The VAT ID could not be validated, so the recurring payment was not attempted."
+            )
+        return str(self.details.get("reject_reason") or "")
 
     @property
     def is_waiting_for_user(self):

@@ -783,7 +783,7 @@ def process_payment(request):
         messages.error(
             request,
             gettext("The payment was rejected: {}").format(
-                payment.details.get("reject_reason", gettext("Unknown reason"))
+                payment.get_reject_reason() or gettext("Unknown reason")
             ),
         )
     elif payment.state == Payment.ACCEPTED:

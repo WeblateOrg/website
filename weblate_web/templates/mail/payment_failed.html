@@ -5,12 +5,14 @@
 {% block content %}
   <p>{% translate "Your payment on weblate.org has failed." %}</p>
 
-  {% if payment.details.reject_reason %}
-    <p>
-      {% translate "Detailed failure from the payment gateway:" %}
-      {{ payment.details.reject_reason }}
-    </p>
-  {% endif %}
+  {% with reject_reason=payment.get_reject_reason %}
+    {% if reject_reason %}
+      <p>
+        {% translate "Detailed failure reason:" %}
+        {{ reject_reason }}
+      </p>
+    {% endif %}
+  {% endwith %}
 
   <p>{% translate "If concerning a recurring payment, it is retried three times, and if still failing, cancelled." %}</p>
 
