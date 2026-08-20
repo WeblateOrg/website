@@ -311,6 +311,13 @@ class InvoiceStatusBadge:
     show_due_date: bool = False
 
 
+@dataclass(frozen=True)
+class _EN16931TaxDetails:
+    category: TaxCategoryCode
+    rate: Decimal | None
+    exemption_reason: str | None
+
+
 class Discount(models.Model):
     description = models.CharField(max_length=200, unique=True)
     percents = models.IntegerField(
@@ -758,12 +765,10 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         add_element(output, "PlnenoDPH", self.tax_date.isoformat())
         add_element(output, "Splatno", self.due_date.isoformat())
         add_element(output, "DatSkPoh", self.tax_date.isoformat())
-        if self.customer.country == "CZ":
+        if self.customer.country == "CZ" or self.vat_rate:
             add_element(output, "KodDPH", "19Ř01,02")
-        elif self.customer.vat:
+        elif self.customer.is_eu:
             add_element(output, "KodDPH", "19Ř21")
-        elif self.customer.is_eu_enduser:
-            add_element(output, "KodDPH", "19Ř01,02")
         else:
             add_element(output, "KodDPH", "19Ř26")
         add_element(output, "ZjednD", "0")
@@ -855,6 +860,27 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             email=self.customer.email or None,
         )
 
+    def _get_en_16931_tax_details(self) -> _EN16931TaxDetails:
+        if self.vat_rate:
+            return _EN16931TaxDetails(
+                category=TaxCategoryCode.STANDARD_RATE,
+                rate=Decimal(self.vat_rate),
+                exemption_reason=None,
+            )
+        if self.customer.is_eu:
+            return _EN16931TaxDetails(
+                category=TaxCategoryCode.REVERSE_CHARGE,
+                rate=Decimal(0),
+                exemption_reason="Reverse charge",
+            )
+        return _EN16931TaxDetails(
+            category=TaxCategoryCode.OUT_OF_SCOPE,
+            rate=None,
+            exemption_reason=(
+                "Not subject to VAT because the place of supply is outside the EU"
+            ),
+        )
+
     def get_en_16931_xml(self) -> EN16931Invoice:
         if self.kind == InvoiceKind.INVOICE:
             type_code = DocumentTypeCode.INVOICE
@@ -871,17 +897,13 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         )
         tax_basis_amount = Money(self.total_amount_no_vat, self.get_currency_display())
 
-        tax_category = (
-            TaxCategoryCode.STANDARD_RATE
-            if self.vat_rate
-            else TaxCategoryCode.REVERSE_CHARGE
-        )
+        tax_details = self._get_en_16931_tax_details()
         tax = Tax(
-            category_code=tax_category,
+            category_code=tax_details.category,
             calculated_amount=tax_amount,
             basis_amount=tax_basis_amount,
-            rate_percent=Decimal(self.vat_rate),
-            exemption_reason="Reverse charge" if not self.vat_rate else None,
+            rate_percent=tax_details.rate,
+            exemption_reason=tax_details.exemption_reason,
         )
 
         line_items: list[EN16931LineItem] = []
@@ -903,8 +925,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                         actual_amount=Money(
                             -item.total_price, self.get_currency_display()
                         ),
-                        tax_rate=Decimal(self.vat_rate),
-                        tax_category=tax_category,
+                        tax_rate=tax_details.rate,
+                        tax_category=tax_details.category,
                     )
                 )
                 line_total_amount.amount -= item.total_price
@@ -927,8 +949,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                         billed_total=Money(
                             item.total_price, self.get_currency_display()
                         ),
-                        tax_rate=Decimal(self.vat_rate),
-                        tax_category=tax_category,
+                        tax_rate=tax_details.rate,
+                        tax_category=tax_details.category,
                         billing_period=(item.start_date, item.end_date)
                         if item.start_date and item.end_date
                         else None,
@@ -945,8 +967,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                     net_price=Money(Decimal(0), self.get_currency_display()),
                     billed_quantity=(Decimal(0), QuantityCode.ONE),
                     billed_total=Money(Decimal(0), self.get_currency_display()),
-                    tax_rate=Decimal(self.vat_rate),
-                    tax_category=tax_category,
+                    tax_rate=tax_details.rate,
+                    tax_category=tax_details.category,
                     billing_period=None,
                 )
             )
@@ -960,8 +982,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                     actual_amount=Money(
                         -self.total_discount, self.get_currency_display()
                     ),
-                    tax_rate=Decimal(self.vat_rate),
-                    tax_category=tax_category,
+                    tax_rate=tax_details.rate,
+                    tax_category=tax_details.category,
                 )
             )
 
@@ -1014,7 +1036,16 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                     city=COMPANY_CITY,
                     line_one=COMPANY_ADDRESS,
                 ),
-                vat_id=COMPANY_VAT_ID,
+                vat_id=(
+                    None
+                    if tax_details.category == TaxCategoryCode.OUT_OF_SCOPE
+                    else COMPANY_VAT_ID
+                ),
+                tax_number=(
+                    COMPANY_ID
+                    if tax_details.category == TaxCategoryCode.OUT_OF_SCOPE
+                    else None
+                ),
                 email=COMPANY_SALES_EMAIL,
             ),
             buyer=TradeParty(
@@ -1026,7 +1057,11 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                     line_one=self.customer.address,
                     line_two=self.customer.address_2 or None,
                 ),
-                vat_id=self.customer.vat or None,
+                vat_id=(
+                    None
+                    if tax_details.category == TaxCategoryCode.OUT_OF_SCOPE
+                    else self.customer.vat or None
+                ),
                 email=self.customer.email or None,
                 contact=self.get_buyer_trade_contact(),
             ),
