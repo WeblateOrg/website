@@ -98,6 +98,11 @@ EU_VAT_RATES = {
     "SE": 25,
 }
 
+VAT_COUNTRY_CODE_ALIASES = {
+    "CHE": "CH",
+    "EL": "GR",
+    "XI": "GB",
+}
 VAT_RATE = 21
 DELETED_MAIL = re.compile(r"noreply\+[0-9]+@weblate.org")
 
@@ -374,7 +379,13 @@ class Customer(models.Model):
         return None
 
     def clean(self) -> None:
-        if self.vat and self.vat_country_code != self.country_code:
+        vat_country_code = self.vat_country_code
+        country_code = self.country_code
+        if vat_country_code:
+            vat_country_code = VAT_COUNTRY_CODE_ALIASES.get(
+                vat_country_code, vat_country_code
+            )
+        if self.vat and vat_country_code != country_code:
             raise ValidationError(
                 {"country": gettext_lazy("The country has to match your VAT code")}
             )
