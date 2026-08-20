@@ -16,9 +16,14 @@ This file captures agent-specific guidance for working in the Weblate website co
   modules.
 - Use `TYPE_CHECKING` imports for type-only dependencies when that avoids
   runtime import cycles.
-- All user-facing strings must be translatable using Django i18n helpers.
-- In templates, use `{% translate %}` / `{% blocktranslate %}` for translatable
-  text.
+- Make locale-aware user-facing strings translatable using Django i18n helpers.
+- Do not translate values before storing them in the database, such as error
+  messages, because they may later be rendered in a different locale. Store a
+  locale-independent value and translate it when rendering locale-aware output.
+- Generated invoice PDF and XML documents are English-only. Keep their fixed
+  document text in English without Django translation helpers or template tags.
+- In locale-aware templates, use `{% translate %}` / `{% blocktranslate %}` for
+  translatable text.
 - Preserve accessibility and the existing Bootstrap/jQuery-based frontend
   patterns.
 - Write commit messages using the Conventional Commits format
