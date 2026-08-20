@@ -345,6 +345,21 @@ class ModelObjectsTestCase(TestCase):
             },
         )
 
+    def test_automated_recent_invalid_vat_skips_validation(self) -> None:
+        customer = self.create_customer_for_vat_validation()
+        customer.vat_validated = timezone.now()
+        customer.vat_validation_state = Customer.VatValidationState.INVALID
+        customer.vat_validation_error = {
+            "vat": str(customer.vat),
+            "code": "INVALID_INPUT",
+            "message": "The VIES service rejected the VAT ID",
+        }
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            customer.prepayment_validation(automated=True)
+
+        validate.assert_not_called()
+
 
 class BackendBaseTestCase(TestCase):
     backend_name: str = ""

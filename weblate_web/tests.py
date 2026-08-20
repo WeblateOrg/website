@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -4624,6 +4624,186 @@ class ExpiryTest(FakturaceTestCase):
     PAYMENT_DEBUG=True,
 )
 class ServiceTest(FakturaceTestCase):
+    @staticmethod
+    def set_customer_vat(
+        service: Service,
+        *,
+        state: Customer.VatValidationState = Customer.VatValidationState.VALID,
+        validated: datetime | None = None,
+        error: dict[str, str] | None = None,
+    ) -> None:
+        vat = f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}"
+        Customer.objects.filter(pk=service.customer_id).update(
+            vat=vat,
+            vat_validated=validated or timezone.now(),
+            vat_validation_state=state,
+            vat_validation_error=error or {},
+        )
+
+    def test_recurring_payment_revalidates_vat(self) -> None:
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        expires = subscription.expires
+        self.set_customer_vat(service)
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        validate.assert_called_once()
+        repeated = subscription.payment_obj.payment_set.get()
+        self.assertEqual(repeated.state, Payment.PROCESSED)
+        subscription.refresh_from_db()
+        self.assertGreater(subscription.expires, expires)
+
+    def test_recurring_payment_rejects_invalid_vat(self) -> None:
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        expires = subscription.expires
+        self.set_customer_vat(
+            service,
+            validated=timezone.now() - timedelta(days=VAT_VALIDITY_DAYS),
+        )
+        error = ValidationError(
+            "The VIES service rejected the VAT ID", code="INVALID_INPUT"
+        )
+
+        with patch("weblate_web.payments.models.validate_vatin", side_effect=error):
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        repeated = subscription.payment_obj.payment_set.get()
+        self.assertEqual(repeated.state, Payment.REJECTED)
+        self.assertEqual(
+            repeated.details,
+            {
+                "failure_code": Payment.VAT_VALIDATION_FAILURE,
+                "failure_detail": "The VIES service rejected the VAT ID",
+            },
+        )
+        self.assertEqual(
+            repeated.get_reject_reason(),
+            "The VAT ID could not be validated, so the recurring payment was not attempted. Validation service response: The VIES service rejected the VAT ID",
+        )
+        with patch(
+            "weblate_web.payments.models.gettext",
+            return_value="Localized VAT validation failure: {}",
+        ):
+            localized_email = render_to_string(
+                "mail/payment_failed.html", {"payment": repeated}
+            )
+        self.assertIn(
+            "Localized VAT validation failure: The VIES service rejected the VAT ID",
+            localized_email,
+        )
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.expires, expires)
+        self.assertEqual(
+            set(service.customer.interaction_set.values_list("origin", flat=True)),
+            {Interaction.Origin.EMAIL, Interaction.Origin.VIES},
+        )
+        messages = self.assert_notifications("Your payment on weblate.org failed")
+        html_content = cast("str", messages[0].alternatives[0][0])
+        self.assertIn("Detailed failure reason:", html_content)
+        self.assertIn(repeated.get_reject_reason(), html_content)
+
+    def test_recurring_payment_rejects_transient_vat_failure(self) -> None:
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        expires = subscription.expires
+        self.set_customer_vat(
+            service,
+            validated=timezone.now() - timedelta(days=VAT_VALIDITY_DAYS),
+        )
+        error = ValidationError(
+            "The VIES service is unavailable", code="other:Error: TIMEOUT"
+        )
+
+        with patch("weblate_web.payments.models.validate_vatin", side_effect=error):
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        repeated = subscription.payment_obj.payment_set.get()
+        self.assertEqual(repeated.state, Payment.REJECTED)
+        self.assertEqual(
+            repeated.details["failure_detail"], "The VIES service is unavailable"
+        )
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.expires, expires)
+        self.assertFalse(
+            service.customer.interaction_set.filter(
+                origin=Interaction.Origin.VIES
+            ).exists()
+        )
+        self.assert_notifications("Your payment on weblate.org failed")
+
+    def test_recurring_invoice_reuses_invalid_vat_and_stops_after_retries(
+        self,
+    ) -> None:
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        payment = subscription.payment_obj
+        payment.paid_invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment.save(update_fields=["paid_invoice"])
+        vat = f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}"
+        self.set_customer_vat(
+            service,
+            state=Customer.VatValidationState.INVALID,
+            error={
+                "vat": vat,
+                "code": "INVALID_INPUT",
+                "message": "The VIES service rejected the VAT ID",
+            },
+        )
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            for _attempt in range(4):
+                RecurringPaymentsCommand.handle_subscriptions()
+
+        validate.assert_not_called()
+        payment.refresh_from_db()
+        self.assertEqual(payment.recurring, "")
+        self.assertEqual(payment.payment_set.filter(state=Payment.REJECTED).count(), 3)
+        self.assert_notifications(*["Your payment on weblate.org failed"] * 3)
+
+    def test_recurring_invoice_success_resets_vat_failure_count(self) -> None:
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        payment = subscription.payment_obj
+        payment.paid_invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment.save(update_fields=["paid_invoice"])
+        vat = f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}"
+        invalid_vat = {
+            "vat": vat,
+            "code": "INVALID_INPUT",
+            "message": "The VIES service rejected the VAT ID",
+        }
+        self.set_customer_vat(
+            service,
+            state=Customer.VatValidationState.INVALID,
+            error=invalid_vat,
+        )
+
+        for _attempt in range(2):
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        self.set_customer_vat(service)
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            RecurringPaymentsCommand.handle_subscriptions()
+        validate.assert_called_once()
+        self.assertEqual(payment.payment_set.filter(state=Payment.PROCESSED).count(), 1)
+
+        subscription.expires = timezone.now() - timedelta(days=2)
+        subscription.save(update_fields=["expires"])
+        self.set_customer_vat(
+            service,
+            state=Customer.VatValidationState.INVALID,
+            error=invalid_vat,
+        )
+        for _attempt in range(2):
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.recurring, "y")
+        self.assertEqual(payment.payment_set.filter(state=Payment.REJECTED).count(), 4)
+
     @responses.activate
     def test_upcoming_payment(self) -> None:
         service = self.create_service(
