@@ -17,6 +17,7 @@ from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
 from pycheval import generate_xml
 from pycheval.quantities import QuantityCode
+from pycheval.type_codes import TaxCategoryCode
 
 from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer
@@ -46,13 +47,14 @@ class InvoiceTestCase(UserTestCase):
         contact_point: str = "",
         email: str = "",
         accounting_reference: str = "",
+        country: str = "cz",
     ) -> Customer:
         return Customer.objects.create(
             name="Zkušební zákazník",
             address="Street 42",
             city="City",
             postcode="424242",
-            country="cz",
+            country=country,
             user_id=-1,
             vat=vat,
             contact_point=contact_point,
@@ -70,6 +72,7 @@ class InvoiceTestCase(UserTestCase):
         customer_contact_point: str = "",
         customer_email: str = "",
         accounting_reference: str = "",
+        country: str = "cz",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         currency: Currency = Currency.EUR,
@@ -86,6 +89,7 @@ class InvoiceTestCase(UserTestCase):
                 contact_point=customer_contact_point,
                 email=customer_email,
                 accounting_reference=accounting_reference,
+                country=country,
             ),
             discount=discount,
             vat_rate=vat_rate,
@@ -125,6 +129,7 @@ class InvoiceTestCase(UserTestCase):
         customer_contact_point: str = "",
         customer_email: str = "",
         accounting_reference: str = "",
+        country: str = "cz",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         tax_date: date | None = None,
@@ -140,6 +145,7 @@ class InvoiceTestCase(UserTestCase):
             customer_contact_point=customer_contact_point,
             customer_email=customer_email,
             accounting_reference=accounting_reference,
+            country=country,
             vat=vat,
             kind=kind,
             tax_date=tax_date,
@@ -212,6 +218,130 @@ class InvoiceTestCase(UserTestCase):
 
     def get_einvoice_xml_tree(self, invoice: Invoice) -> etree._Element:
         return etree.fromstring(generate_xml(invoice.get_en_16931_xml()).encode())
+
+    def get_money_s3_xml_tree(self, invoice: Invoice) -> etree._Element:
+        document, invoices = invoice.get_invoice_xml_root()
+        invoice.get_money_s3_xml_tree(invoices)
+        return document
+
+    def test_accounting_export_tax_classifications(self) -> None:
+        cases = (
+            (
+                "Czech standard rate",
+                "CZ",
+                21,
+                "",
+                TaxCategoryCode.STANDARD_RATE,
+                Decimal(21),
+                None,
+                "19Ř01,02",
+            ),
+            (
+                "EU reverse charge",
+                "DE",
+                0,
+                "DE123456789",
+                TaxCategoryCode.REVERSE_CHARGE,
+                Decimal(0),
+                "Reverse charge",
+                "19Ř21",
+            ),
+            (
+                "outside EU",
+                "US",
+                0,
+                "US123456789",
+                TaxCategoryCode.OUT_OF_SCOPE,
+                None,
+                "Not subject to VAT because the place of supply is outside the EU",
+                "19Ř26",
+            ),
+        )
+
+        for (
+            name,
+            country,
+            vat_rate,
+            vat,
+            expected_category,
+            expected_rate,
+            expected_reason,
+            expected_money_s3_code,
+        ) in cases:
+            with self.subTest(name):
+                invoice = self.create_invoice(
+                    country=country,
+                    vat_rate=vat_rate,
+                    vat=vat,
+                )
+
+                einvoice = invoice.get_en_16931_xml()
+                self.assertEqual(einvoice.tax[0].category_code, expected_category)
+                self.assertEqual(einvoice.tax[0].rate_percent, expected_rate)
+                self.assertEqual(einvoice.tax[0].exemption_reason, expected_reason)
+                self.assertEqual(
+                    {item.tax_category for item in einvoice.line_items},
+                    {expected_category},
+                )
+                self.assertEqual(
+                    {item.tax_rate for item in einvoice.line_items}, {expected_rate}
+                )
+
+                money_s3 = self.get_money_s3_xml_tree(invoice)
+                S3_SCHEMA.assertValid(money_s3)
+                self.assertEqual(
+                    money_s3.findtext(".//FaktVyd/KodDPH"), expected_money_s3_code
+                )
+
+    def test_outside_eu_en_16931_omits_vat_details(self) -> None:
+        invoice = self.create_invoice(
+            country="US",
+            vat="US123456789",
+            discount=Discount.objects.create(
+                description="Outside EU discount", percents=10
+            ),
+        )
+        invoice.invoiceitem_set.create(description="Credit", unit_price=-10)
+
+        einvoice = invoice.get_en_16931_xml()
+        self.assertEqual(
+            {allowance.tax_category for allowance in einvoice.allowances},
+            {TaxCategoryCode.OUT_OF_SCOPE},
+        )
+        self.assertEqual(
+            {allowance.tax_rate for allowance in einvoice.allowances}, {None}
+        )
+
+        xml = generate_xml(einvoice).encode()
+        validate_xml(xml, "FACTUR-X_EN16931")
+        root = etree.fromstring(xml)
+        namespaces = EN16931Validator().namespaces
+        categories = root.xpath(
+            ".//ram:ApplicableTradeTax/ram:CategoryCode/text() | "
+            ".//ram:CategoryTradeTax/ram:CategoryCode/text()",
+            namespaces=namespaces,
+        )
+        self.assertTrue(categories)
+        self.assertEqual(set(categories), {TaxCategoryCode.OUT_OF_SCOPE})
+        self.assertEqual(
+            root.xpath(".//ram:RateApplicablePercent", namespaces=namespaces), []
+        )
+        self.assertEqual(
+            root.xpath(
+                ".//ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA']",
+                namespaces=namespaces,
+            ),
+            [],
+        )
+        self.assertEqual(root.xpath(".//ram:TaxTotalAmount", namespaces=namespaces), [])
+        self.assertEqual(
+            root.xpath(".//ram:ExemptionReason/text()", namespaces=namespaces),
+            ["Not subject to VAT because the place of supply is outside the EU"],
+        )
+        self.assertEqual(
+            root.xpath(".//ram:CalculatedAmount/text()", namespaces=namespaces),
+            ["0.00"],
+        )
 
     def test_customer_reference_is_buyer_order_reference(self) -> None:
         invoice = self.create_invoice(customer_reference="PO123456")
