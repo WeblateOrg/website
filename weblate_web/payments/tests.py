@@ -34,6 +34,7 @@ from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.utils import timezone
+from vies.types import VATIN
 
 from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
@@ -210,6 +211,22 @@ class ModelTest(SimpleTestCase):
         customer.country = "IE"
         with self.assertRaises(ValidationError):
             customer.clean()
+
+    def test_clean_vat_country_code_aliases(self) -> None:
+        for vat_country_code, country_code in (
+            ("CHE", "CH"),
+            ("EL", "GR"),
+            ("XI", "GB"),
+        ):
+            with self.subTest(vat_country_code=vat_country_code):
+                customer = Customer(
+                    **{
+                        **CUSTOMER,
+                        "country": country_code,
+                        "vat": VATIN(vat_country_code, "123456789"),
+                    }
+                )
+                customer.clean()
 
     def test_vat_calculation(self) -> None:
         customer = Customer(**CUSTOMER)
