@@ -23,6 +23,7 @@ import os.path
 import re
 import uuid
 from datetime import timedelta
+from decimal import Decimal
 from email.message import Message
 from typing import TYPE_CHECKING, cast
 
@@ -824,11 +825,12 @@ class Payment(models.Model):
         return self.amount
 
     @property
-    def vat_amount(self):
+    def vat_amount(self) -> Decimal:
+        amount = Decimal(self.amount)
         if self.customer.needs_vat and not self.amount_fixed:
             rate = 100 + self.customer.vat_rate
-            return round(rate * self.amount / 100, 2)
-        return self.amount
+            return rate * amount / 100
+        return amount
 
     @property
     def amount_without_vat(self):
