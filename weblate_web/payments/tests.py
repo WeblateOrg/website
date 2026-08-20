@@ -22,6 +22,7 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 from datetime import date
+from decimal import Decimal
 from typing import Any, cast
 from unittest.mock import patch
 
@@ -231,17 +232,22 @@ class ModelTest(SimpleTestCase):
     def test_vat_calculation(self) -> None:
         customer = Customer(**CUSTOMER)
         payment = Payment(customer=customer, amount=100)
-        self.assertEqual(payment.vat_amount, 121)
+        self.assertEqual(payment.vat_amount, Decimal(121))
         payment = Payment(customer=customer, amount=100, amount_fixed=True)
-        self.assertEqual(payment.vat_amount, 100)
+        self.assertEqual(payment.vat_amount, Decimal(100))
         self.assertAlmostEqual(payment.amount_without_vat, 82.64, places=2)
 
         customer.vat = "IE6388047V"
         payment = Payment(customer=customer, amount=100)
-        self.assertEqual(payment.vat_amount, 100)
+        self.assertEqual(payment.vat_amount, Decimal(100))
         payment = Payment(customer=customer, amount=100, amount_fixed=True)
-        self.assertEqual(payment.vat_amount, 100)
+        self.assertEqual(payment.vat_amount, Decimal(100))
         self.assertEqual(payment.amount_without_vat, 100)
+
+    def test_vat_calculation_rounding(self) -> None:
+        payment = Payment(customer=Customer(**CUSTOMER), amount=15)
+        self.assertEqual(payment.vat_amount, Decimal("18.15"))
+        self.assertEqual(int(payment.vat_amount * 100), 1815)
 
     def test_short_filename(self) -> None:
         customer = Customer()
