@@ -300,6 +300,7 @@ def test_invoice_pdf_screenshots(settings, tmp_path):
             slug="quote-support",
             kind=InvoiceKind.QUOTE,
             country="FR",
+            vat="FR40303265045",
             customer_reference="RFQ-26-42",
             items=(
                 InvoiceItemData(

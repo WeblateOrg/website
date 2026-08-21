@@ -610,8 +610,12 @@ class CustomerView(FormView, PaymentObjectMixin):
             if invoice.kind == InvoiceKind.DRAFT:
                 invoice.vat_rate = customer.vat_rate
                 invoice.save(update_fields=["vat_rate"])
-                self.object.amount = int(invoice.total_amount)
-                self.object.save(update_fields=["amount"])
+                self.object.amount = invoice.total_amount
+                self.object.requested_amount = invoice.total_amount
+                self.object.save(update_fields=["amount", "requested_amount"])
+        elif self.object.amount_fixed:
+            self.object.normalize_fixed_amount()
+            self.object.save(update_fields=["amount", "requested_amount"])
         return redirect("payment", pk=self.object.pk)
 
     def get_form_kwargs(self):

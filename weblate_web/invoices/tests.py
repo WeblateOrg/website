@@ -3,30 +3,34 @@ from __future__ import annotations
 import os
 from datetime import date, timedelta
 from decimal import Decimal
+from importlib import import_module
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import cast
 from unittest.mock import patch
 
 import requests
 import responses
+from django.apps import apps
 from django.core.exceptions import ValidationError
+from django.forms import modelform_factory
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.translation import override
 from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
-from pycheval import generate_xml
 from pycheval.quantities import QuantityCode
 from pycheval.type_codes import TaxCategoryCode
 
 from weblate_web.models import Package, PackageCategory
-from weblate_web.payments.models import Customer
+from weblate_web.payments.models import Customer, Payment
 from weblate_web.tests import UserTestCase, cnb_mock_rates, mock_vies
 
 from .models import (
     Currency,
     Discount,
     Invoice,
+    InvoiceCalculationVersion,
     InvoiceCategory,
     InvoiceKind,
     QuantityUnit,
@@ -39,7 +43,7 @@ S3_SCHEMA_PATH = (
 S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))
 
 
-class InvoiceTestCase(UserTestCase):
+class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
     def create_customer(
         self,
         *,
@@ -47,7 +51,7 @@ class InvoiceTestCase(UserTestCase):
         contact_point: str = "",
         email: str = "",
         accounting_reference: str = "",
-        country: str = "cz",
+        country: str = "DE",
     ) -> Customer:
         return Customer.objects.create(
             name="Zkušební zákazník",
@@ -72,7 +76,7 @@ class InvoiceTestCase(UserTestCase):
         customer_contact_point: str = "",
         customer_email: str = "",
         accounting_reference: str = "",
-        country: str = "cz",
+        country: str = "DE",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         currency: Currency = Currency.EUR,
@@ -80,9 +84,9 @@ class InvoiceTestCase(UserTestCase):
         due_date: date | None = None,
         prepaid: bool = False,
     ) -> Invoice:
-        if vat_rate == 0 and not vat:
+        if vat_rate == 0 and not vat and country.upper() == "DE":
             # Ensure VAT ID is present for invoices without VAT
-            vat = "CZ21668027"
+            vat = "DE123456789"
         return Invoice.objects.create(
             customer=self.create_customer(
                 vat=vat,
@@ -129,12 +133,12 @@ class InvoiceTestCase(UserTestCase):
         customer_contact_point: str = "",
         customer_email: str = "",
         accounting_reference: str = "",
-        country: str = "cz",
+        country: str = "DE",
         vat: str = "",
         kind: InvoiceKind = InvoiceKind.INVOICE,
         tax_date: date | None = None,
         due_date: date | None = None,
-        unit_price: int = 100,
+        unit_price: int | Decimal = 100,
         prepaid: bool = False,
     ) -> Invoice:
         invoice = self.create_invoice_base(
@@ -217,7 +221,7 @@ class InvoiceTestCase(UserTestCase):
             self.assertEqual(result["result"], "SUCCESS", result["reports"])
 
     def get_einvoice_xml_tree(self, invoice: Invoice) -> etree._Element:
-        return etree.fromstring(generate_xml(invoice.get_en_16931_xml()).encode())
+        return etree.fromstring(invoice.get_en_16931_xml_string().encode())
 
     def get_money_s3_xml_tree(self, invoice: Invoice) -> etree._Element:
         document, invoices = invoice.get_invoice_xml_root()
@@ -312,7 +316,7 @@ class InvoiceTestCase(UserTestCase):
             {allowance.tax_rate for allowance in einvoice.allowances}, {None}
         )
 
-        xml = generate_xml(einvoice).encode()
+        xml = invoice.get_en_16931_xml_string().encode()
         validate_xml(xml, "FACTUR-X_EN16931")
         root = etree.fromstring(xml)
         namespaces = EN16931Validator().namespaces
@@ -342,6 +346,168 @@ class InvoiceTestCase(UserTestCase):
             root.xpath(".//ram:CalculatedAmount/text()", namespaces=namespaces),
             ["0.00"],
         )
+
+    def test_invalid_zero_vat_states_are_rejected_before_generation(self) -> None:
+        cases = (
+            ("CZ", "CZ21668027"),
+            ("DE", ""),
+        )
+        for country, vat in cases:
+            with (
+                self.subTest(country=country),
+                TemporaryDirectory() as temp_dir,
+                override_settings(INVOICES_PATH=Path(temp_dir)),
+            ):
+                invoice = self.create_invoice(country=country, vat=vat)
+                if not vat:
+                    invoice.customer.vat = ""
+                    invoice.customer.save(update_fields=["vat"])
+
+                with self.assertRaises(ValidationError):
+                    invoice.full_clean()
+                with self.assertRaises(ValidationError):
+                    invoice.generate_files()
+
+                self.assertFalse(invoice.xml_path.exists())
+                self.assertFalse(invoice.en_16931_xml_path.exists())
+                self.assertFalse(invoice.path.exists())
+
+    def test_draft_validation_allows_incomplete_tax_state(self) -> None:
+        invoice = self.create_invoice(
+            country="CZ", vat="CZ21668027", kind=InvoiceKind.DRAFT
+        )
+
+        invoice.full_clean()
+        with self.assertRaises(ValidationError):
+            invoice.generate_files()
+
+    def test_quote_validation_rejects_incomplete_tax_state(self) -> None:
+        invoice = self.create_invoice(country="FR", kind=InvoiceKind.QUOTE)
+
+        with self.assertRaises(ValidationError):
+            invoice.full_clean()
+        with self.assertRaises(ValidationError):
+            invoice.generate_files()
+
+    def test_validation_without_customer_reports_field_error(self) -> None:
+        invoice_form = modelform_factory(
+            Invoice,
+            fields=("kind", "category", "customer", "vat_rate", "currency"),
+        )
+        form = invoice_form(
+            data={
+                "kind": InvoiceKind.INVOICE,
+                "category": InvoiceCategory.HOSTING,
+                "customer": "",
+                "vat_rate": 0,
+                "currency": Currency.EUR,
+            }
+        )
+
+        self.assertFalse(form.is_valid())
+        self.assertIn("customer", form.errors)
+
+    def test_tax_point_date_is_exported_only_for_final_invoice(self) -> None:
+        tax_date = date(2025, 6, 30)
+        final_invoice = self.create_invoice(vat_rate=21, tax_date=tax_date)
+        proforma = self.create_invoice(
+            vat_rate=21, tax_date=tax_date, kind=InvoiceKind.PROFORMA
+        )
+        namespaces = EN16931Validator().namespaces
+
+        final_root = self.get_einvoice_xml_tree(final_invoice)
+        self.assertEqual(
+            final_root.xpath(
+                ".//ram:TaxPointDate/udt:DateString/text()",
+                namespaces=namespaces,
+            ),
+            ["20250630"],
+        )
+        proforma_root = self.get_einvoice_xml_tree(proforma)
+        self.assertEqual(
+            proforma_root.xpath(".//ram:TaxPointDate", namespaces=namespaces), []
+        )
+
+    def test_validator_rejects_three_decimal_monetary_amounts(self) -> None:
+        root = self.get_einvoice_xml_tree(self.create_invoice(vat_rate=21))
+        namespaces = EN16931Validator().namespaces
+        mutations = (
+            (
+                (
+                    ".//ram:SpecifiedTradeSettlementLineMonetarySummation/"
+                    "ram:LineTotalAmount"
+                ),
+                "BR-DEC-23",
+            ),
+            (
+                (
+                    ".//ram:SpecifiedTradeSettlementHeaderMonetarySummation/"
+                    "ram:LineTotalAmount"
+                ),
+                "BR-DEC-09",
+            ),
+            (
+                (
+                    ".//ram:SpecifiedTradeSettlementHeaderMonetarySummation/"
+                    "ram:TaxBasisTotalAmount"
+                ),
+                "BR-DEC-12",
+            ),
+        )
+        for xpath, expected_rule in mutations:
+            with self.subTest(rule=expected_rule):
+                mutated = etree.fromstring(etree.tostring(root))
+                element = mutated.find(xpath, namespaces)
+                self.assertIsNotNone(element)
+                if element is None:
+                    self.fail(f"Missing test element for {expected_rule}")
+                element.text = "100.001"
+
+                is_valid, errors, _warnings = EN16931Validator().validate_bytes(
+                    etree.tostring(mutated)
+                )
+
+                self.assertFalse(is_valid)
+                self.assertIn(expected_rule, {error.rule for error in errors})
+
+    def test_validator_rejects_incomplete_reverse_charge(self) -> None:
+        invoice = self.create_invoice(
+            discount=Discount.objects.create(
+                description="Reverse charge discount", percents=10
+            )
+        )
+        root = self.get_einvoice_xml_tree(invoice)
+        namespaces = EN16931Validator().namespaces
+        buyer_vat = root.find(
+            ".//ram:BuyerTradeParty/ram:SpecifiedTaxRegistration/"
+            "ram:ID[@schemeID='VA']",
+            namespaces,
+        )
+        exemption_reason = root.find(
+            ".//ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax/"
+            "ram:ExemptionReason",
+            namespaces,
+        )
+        self.assertIsNotNone(buyer_vat)
+        self.assertIsNotNone(exemption_reason)
+        if buyer_vat is None or exemption_reason is None:
+            self.fail("Generated reverse-charge test data is incomplete")
+        buyer_vat_parent = buyer_vat.getparent()
+        exemption_reason_parent = exemption_reason.getparent()
+        if buyer_vat_parent is None or exemption_reason_parent is None:
+            self.fail("Generated reverse-charge elements have no parent")
+        buyer_vat_parent.remove(buyer_vat)
+        exemption_reason_parent.remove(exemption_reason)
+
+        is_valid, errors, _warnings = EN16931Validator().validate_bytes(
+            etree.tostring(root)
+        )
+
+        self.assertFalse(is_valid)
+        rules = {error.rule for error in errors}
+        required_rules = {"BR-AE-02", "BR-AE-03", "BR-AE-04"}
+        self.assertSetEqual(required_rules & rules, required_rules)
+        self.assertIn("BR-AE-10", rules)
 
     def test_customer_reference_is_buyer_order_reference(self) -> None:
         invoice = self.create_invoice(customer_reference="PO123456")
@@ -513,6 +679,61 @@ class InvoiceTestCase(UserTestCase):
         self.assertEqual(invoice.total_amount, 121)
         self.validate_invoice(invoice)
 
+    def test_amounts_are_calculated_once(self) -> None:
+        invoice = self.create_invoice(vat_rate=21)
+
+        with patch.object(
+            invoice,
+            "_get_en_16931_amounts",
+            wraps=invoice._get_en_16931_amounts,  # pylint: disable=protected-access
+        ) as calculate_amounts:
+            self.assertEqual(invoice.total_amount_no_vat, 100)
+            self.assertEqual(invoice.total_vat, 21)
+            self.assertEqual(invoice.total_amount, 121)
+
+        calculate_amounts.assert_called_once_with()
+
+    def test_half_up_vat_rounding_is_shared_by_all_formats(self) -> None:
+        invoice = self.create_invoice(vat_rate=21, unit_price=Decimal("0.50"))
+
+        self.assertEqual(invoice.total_amount_no_vat, Decimal("0.50"))
+        self.assertEqual(invoice.total_vat, Decimal("0.11"))
+        self.assertEqual(invoice.total_amount, Decimal("0.61"))
+        self.assertIn("€0.11", invoice.render_html())
+
+        einvoice = invoice.get_en_16931_xml()
+        self.assertEqual(einvoice.tax_basis_total_amount.amount, Decimal("0.50"))
+        self.assertEqual(einvoice.tax_total_amounts[0].amount, Decimal("0.11"))
+        self.assertEqual(einvoice.grand_total_amount.amount, Decimal("0.61"))
+
+        money_s3 = self.get_money_s3_xml_tree(invoice)
+        self.assertEqual(money_s3.findtext(".//Valuty/SouhrnDPH/Zaklad22"), "0.50")
+        self.assertEqual(money_s3.findtext(".//Valuty/SouhrnDPH/DPH22"), "0.11")
+        self.assertEqual(money_s3.findtext(".//Valuty/Celkem"), "0.61")
+
+    def test_linked_payment_does_not_change_invoice_amounts(self) -> None:
+        invoice = self.create_invoice(
+            vat_rate=21, unit_price=Decimal("50.00"), prepaid=True
+        )
+        Payment.objects.create(
+            amount=60,
+            amount_fixed=True,
+            customer=invoice.customer,
+            currency=Payment.CURRENCY_EUR,
+            description="Legacy truncated payment",
+            paid_invoice=invoice,
+            state=Payment.PROCESSED,
+        )
+
+        self.assertEqual(invoice.total_amount_no_vat, Decimal("50.00"))
+        self.assertEqual(invoice.total_vat, Decimal("10.50"))
+        self.assertEqual(invoice.total_amount, Decimal("60.50"))
+        xml = invoice.get_en_16931_xml_string().encode()
+        validate_xml(xml, "FACTUR-X_EN16931")
+        is_valid, errors, warnings = EN16931Validator().validate_bytes(xml)
+        self.assertTrue(is_valid, errors)
+        self.assertEqual(warnings, [])
+
     @responses.activate
     def test_total_vat_note(self) -> None:
         self.mock_requests()
@@ -570,6 +791,71 @@ class InvoiceTestCase(UserTestCase):
         )
         self.assertEqual(invoice.total_amount, 50)
         self.validate_invoice(invoice)
+
+    def test_legacy_discount_rounding_is_preserved(self) -> None:
+        discount = Discount.objects.create(description="Legacy discount", percents=50)
+        invoice = self.create_invoice(discount=discount, unit_price=Decimal(101))
+        self.assertEqual(invoice.total_amount, Decimal("50.50"))
+
+        invoice.calculation_version = InvoiceCalculationVersion.LEGACY
+        invoice.save(update_fields=["calculation_version"])
+        self.assertEqual(invoice.total_discount, Decimal(-50))
+        self.assertEqual(invoice.total_amount_no_vat, Decimal(51))
+        self.assertEqual(invoice.total_amount, Decimal(51))
+
+        einvoice = invoice.get_en_16931_xml()
+        allowance_total = einvoice.allowance_total_amount
+        if allowance_total is None:
+            self.fail("Legacy discount invoice has no allowance total")
+        self.assertEqual(allowance_total.amount, Decimal(50))
+        self.assertEqual(einvoice.tax_basis_total_amount.amount, Decimal(51))
+        self.assertEqual(einvoice.grand_total_amount.amount, Decimal(51))
+
+    def test_draft_migration_preserves_in_flight_calculation(self) -> None:
+        in_flight = self.create_invoice(kind=InvoiceKind.DRAFT)
+        convertible = self.create_invoice(kind=InvoiceKind.DRAFT)
+        Invoice.objects.filter(pk__in=(in_flight.pk, convertible.pk)).update(
+            calculation_version=InvoiceCalculationVersion.LEGACY
+        )
+        Payment.objects.create(
+            amount=100,
+            customer=in_flight.customer,
+            description="In-flight draft",
+            draft_invoice=in_flight,
+            state=Payment.PENDING,
+        )
+
+        migration = import_module(
+            "weblate_web.invoices.migrations.0003_invoice_calculation_version"
+        )
+        migration.use_current_calculation_for_drafts(apps, None)
+
+        in_flight.refresh_from_db()
+        convertible.refresh_from_db()
+        self.assertEqual(
+            in_flight.calculation_version, InvoiceCalculationVersion.LEGACY
+        )
+        self.assertEqual(
+            convertible.calculation_version, InvoiceCalculationVersion.EN_16931
+        )
+
+    def test_duplicate_preserves_calculation_version(self) -> None:
+        discount = Discount.objects.create(description="Proforma discount", percents=50)
+        proforma = self.create_invoice(
+            discount=discount,
+            kind=InvoiceKind.PROFORMA,
+            unit_price=Decimal(101),
+        )
+        proforma.calculation_version = InvoiceCalculationVersion.LEGACY
+        proforma.save(update_fields=["calculation_version"])
+
+        invoice = proforma.duplicate(
+            kind=InvoiceKind.INVOICE,
+            tax_date=proforma.tax_date,
+        )
+
+        self.assertEqual(invoice.calculation_version, InvoiceCalculationVersion.LEGACY)
+        self.assertEqual(invoice.total_amount, Decimal(51))
 
     @responses.activate
     def test_discount_negative(self) -> None:

@@ -1290,6 +1290,38 @@ class PaymentCustomerAccessTest(UserTestCase):
         self.assertEqual(payment.amount, 100)
         self.assertTrue(payment.amount_fixed)
 
+    def test_customer_edit_recalculates_fixed_donation_from_request(self) -> None:
+        owner = self.login()
+        customer = self.create_customer(owner)
+        customer.country = "US"
+        customer.save(update_fields=["country"])
+        payment, payment_url, customer_url = self.create_payment(owner, customer)
+        payment.amount = Decimal("4.00")
+        payment.requested_amount = Decimal("4.00")
+        payment.amount_fixed = True
+        payment.extra = {"category": "donate", "reward": 1}
+        payment.save(
+            update_fields=["amount", "requested_amount", "amount_fixed", "extra"]
+        )
+        self.assertEqual(payment.amount, Decimal("4.00"))
+
+        response = self.client.post(customer_url, self.edit_data, follow=True)
+
+        self.assertRedirects(response, payment_url)
+        self.assertContains(response, "requested donation of €4")
+        self.assertContains(response, "adjusted down to €3.99")
+        payment.refresh_from_db()
+        self.assertEqual(payment.requested_amount, Decimal("4.00"))
+        self.assertEqual(payment.amount, Decimal("3.99"))
+
+        response = self.client.post(
+            customer_url, {**self.edit_data, "country": "US"}, follow=True
+        )
+        self.assertNotContains(response, "Donation adjustment")
+        payment.refresh_from_db()
+        self.assertEqual(payment.requested_amount, Decimal("4.00"))
+        self.assertEqual(payment.amount, Decimal("4.00"))
+
     def test_customer_edit_does_not_update_linked_proforma(self) -> None:
         owner = self.login()
         customer = self.create_customer(owner)
@@ -2246,14 +2278,14 @@ class PaymentTest(FakturaceTestCase):
         self.assertContains(response, "Please provide your billing")
         payment = Payment.objects.all().get()
         self.assertEqual(payment.state, Payment.NEW)
-        self.assertEqual(payment.amount, 50)
+        self.assertEqual(payment.amount, Decimal("50.82"))
         self.assertEqual(cast("Invoice", payment.draft_invoice).vat_rate, 21)
         customer_url = reverse("payment-customer", kwargs={"pk": payment.uuid})
         payment_url = reverse("payment", kwargs={"pk": payment.uuid})
         self.assertRedirects(response, customer_url)
         response = self.client.post(customer_url, TEST_CUSTOMER, follow=True)
         self.assertContains(response, "Please choose payment method")
-        self.assertContains(response, "€50")
+        self.assertContains(response, "€50.82")
         self.assertContains(response, "(including VAT)")
         response = self.client.post(payment_url, {"method": "thepay2-card"})
         self.assertEqual(response.status_code, 302)
@@ -4375,11 +4407,22 @@ class ExpiryTest(FakturaceTestCase):
         self.assertFalse(subscription.enabled)
 
     def test_expiring_recurring_donate(self) -> None:
-        self.create_donation(years=0, days=-2)
+        donation = self.create_donation(years=0, days=-2)
+        subscription = cast("Subscription", donation.donation_subscription)
+        payment = subscription.payment_obj
+        payment.paid_invoice = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.DONATE,
+            customer=payment.customer,
+        )
+        payment.save(update_fields=["paid_invoice"])
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
         self.assert_notifications()
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications("Your payment on weblate.org")
+        repeated = Payment.objects.get(repeat=payment)
+        repeated_invoice = cast("Invoice", repeated.paid_invoice)
+        self.assertEqual(repeated_invoice.category, InvoiceCategory.DONATE)
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
 
@@ -4819,7 +4862,13 @@ class ServiceTest(FakturaceTestCase):
 
         discount.percents = 10
         discount.save()
-        self.assertEqual(subscription.get_expected_payment_amount(), 37)
+        self.assertEqual(subscription.get_expected_payment_amount(), Decimal("37.80"))
+
+        subscription.package.price = 1027
+        subscription.package.save(update_fields=["price"])
+        discount.percents = 50
+        discount.save(update_fields=["percents"])
+        self.assertEqual(subscription.get_expected_payment_amount(), Decimal("513.50"))
 
     def test_recurring_donation_payment_uses_previous_amount_and_donation_extra(
         self,
@@ -4828,7 +4877,11 @@ class ServiceTest(FakturaceTestCase):
         subscription = cast("Subscription", donation.donation_subscription)
         self.assertIsNotNone(subscription.payment)
         payment = cast("Payment", subscription.payment)
-        Payment.objects.filter(pk=payment.pk).update(amount=123)
+        Payment.objects.filter(pk=payment.pk).update(
+            amount=Decimal("122.99"),
+            amount_fixed=True,
+            requested_amount=Decimal("123.00"),
+        )
 
         with patch.object(
             RecurringPaymentsCommand, "peform_payment"
@@ -4839,7 +4892,7 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(
             perform_payment.call_args.kwargs,
             {
-                "amount": 123,
+                "amount": Decimal("123.00"),
                 "recurring": "y",
                 "end_date": subscription.expires,
                 "extra": {"donation_service": donation.pk},
@@ -4938,7 +4991,7 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(len(hosted), 1)
         self.assertEqual(hosted[0].package.name, "test:test-1-m")
         payment = hosted[0].payment_obj
-        self.assertEqual(payment.amount, 50)
+        self.assertEqual(payment.amount, Decimal("50.82"))
         self.assertEqual(
             hosted[0].expires.date(),
             timezone.now().date() + timedelta(days=3) + relativedelta(months=1),
@@ -4969,7 +5022,7 @@ class ServiceTest(FakturaceTestCase):
         hosted = service.hosted_subscriptions
         self.assertEqual(len(hosted), 1)
         self.assertEqual(hosted[0].package.name, "test:test-1")
-        self.assertEqual(hosted[0].payment_obj.amount, 508)
+        self.assertEqual(hosted[0].payment_obj.amount, Decimal("508.20"))
         self.assertEqual(
             hosted[0].expires.date(),
             timezone.now().date() + timedelta(days=3) + relativedelta(years=1),
