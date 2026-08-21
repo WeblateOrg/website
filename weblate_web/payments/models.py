@@ -482,9 +482,17 @@ class Customer(models.Model):
         return self.is_eu and not self.vat
 
     @property
+    def has_valid_vat(self) -> bool:
+        return bool(
+            self.vat and self.vat_validation_state == self.VatValidationState.VALID
+        )
+
+    @property
     def needs_vat(self) -> bool:
         return (
-            not self.country_code or self.vat_country_code == "CZ" or self.is_eu_enduser
+            not self.country_code
+            or self.vat_country_code == "CZ"
+            or (self.is_eu and not self.has_valid_vat)
         )
 
     @property

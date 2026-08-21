@@ -164,6 +164,35 @@ class Command(BaseCommand):
             payment.save()
             return
 
+        if payment.customer.vat:
+            validation_failed = False
+            validation_detail = ""
+            try:
+                payment.customer.prepayment_validation(automated=True)
+            except ValidationError as error:
+                validation_failed = True
+                validation_detail = strip_tags(str(error.message))
+            if payment.customer.vat_recently_invalid:
+                validation_failed = True
+                validation_detail = strip_tags(
+                    payment.customer.vat_validation_error["message"]
+                )
+            if validation_failed:
+                repeated = payment.repeat_payment(
+                    skip_previous=True, amount=amount, extra=extra
+                )
+                if not repeated:
+                    payment.recurring = ""
+                    payment.save()
+                    return
+                repeated.state = Payment.REJECTED
+                repeated.details["failure_code"] = Payment.VAT_VALIDATION_FAILURE
+                if validation_detail:
+                    repeated.details["failure_detail"] = validation_detail
+                repeated.save(update_fields=["state", "details"])
+                repeated.customer.send_notification("payment_failed", payment=repeated)
+                return
+
         # Create repeated payment
         if payment.paid_invoice and "donation_service" not in extra:
             if subscription_id := extra.get("subscription"):
@@ -188,28 +217,6 @@ class Command(BaseCommand):
             payment.recurring = ""
             payment.save()
             return
-
-        if repeated.customer.vat:
-            validation_failed = False
-            validation_detail = ""
-            try:
-                repeated.customer.prepayment_validation(automated=True)
-            except ValidationError as error:
-                validation_failed = True
-                validation_detail = strip_tags(str(error.message))
-            if repeated.customer.vat_recently_invalid:
-                validation_failed = True
-                validation_detail = strip_tags(
-                    repeated.customer.vat_validation_error["message"]
-                )
-            if validation_failed:
-                repeated.state = Payment.REJECTED
-                repeated.details["failure_code"] = Payment.VAT_VALIDATION_FAILURE
-                if validation_detail:
-                    repeated.details["failure_detail"] = validation_detail
-                repeated.save(update_fields=["state", "details"])
-                repeated.customer.send_notification("payment_failed", payment=repeated)
-                return
 
         # Trigger of the payment
         repeated.trigger_recurring()

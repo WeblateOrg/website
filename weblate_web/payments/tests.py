@@ -188,6 +188,15 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(customer.vat_rate, 21)
         # EU company does not need VAT
         customer.vat = "IE6388047V"
+        self.assertFalse(customer.has_valid_vat)
+        self.assertTrue(customer.needs_vat)
+        self.assertEqual(customer.vat_rate, 21)
+        customer.vat_validation_state = Customer.VatValidationState.INVALID
+        self.assertFalse(customer.has_valid_vat)
+        self.assertTrue(customer.needs_vat)
+        self.assertEqual(customer.vat_rate, 21)
+        customer.vat_validation_state = Customer.VatValidationState.VALID
+        self.assertTrue(customer.has_valid_vat)
         self.assertFalse(customer.needs_vat)
         self.assertEqual(customer.vat_rate, 0)
         # Non EU customer does not need VAT
@@ -238,6 +247,7 @@ class ModelTest(SimpleTestCase):
         self.assertAlmostEqual(payment.amount_without_vat, Decimal("82.64"), places=2)
 
         customer.vat = "IE6388047V"
+        customer.vat_validation_state = Customer.VatValidationState.VALID
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, Decimal(100))
         payment = Payment(customer=customer, amount=100, amount_fixed=True)

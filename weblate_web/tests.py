@@ -4687,7 +4687,11 @@ class ServiceTest(FakturaceTestCase):
         service = self.create_service(years=0, days=-2)
         subscription = service.subscription_set.get()
         expires = subscription.expires
-        self.set_customer_vat(service)
+        self.set_customer_vat(
+            service,
+            state=Customer.VatValidationState.UNKNOWN,
+            validated=timezone.now() - timedelta(days=VAT_VALIDITY_DAYS),
+        )
 
         with patch("weblate_web.payments.models.validate_vatin") as validate:
             RecurringPaymentsCommand.handle_subscriptions()
@@ -4695,8 +4699,36 @@ class ServiceTest(FakturaceTestCase):
         validate.assert_called_once()
         repeated = subscription.payment_obj.payment_set.get()
         self.assertEqual(repeated.state, Payment.PROCESSED)
+        self.assertEqual(repeated.amount, subscription.get_renewal_amount())
         subscription.refresh_from_db()
         self.assertGreater(subscription.expires, expires)
+
+    def test_recurring_invoice_validates_vat_before_pricing(self) -> None:
+        service = self.create_service(years=0, days=-2)
+        Customer.objects.filter(pk=service.customer_id).update(
+            country="DE",
+            vat="DE123456789",
+            vat_validated=timezone.now(),
+            vat_validation_state=Customer.VatValidationState.VALID,
+        )
+        subscription = Subscription.objects.get(pk=service.subscription_set.get().pk)
+        payment = subscription.payment_obj
+        payment.paid_invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment.save(update_fields=["paid_invoice"])
+        Customer.objects.filter(pk=service.customer_id).update(
+            vat_validated=timezone.now() - timedelta(days=VAT_VALIDITY_DAYS),
+            vat_validation_state=Customer.VatValidationState.UNKNOWN,
+        )
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            RecurringPaymentsCommand.handle_subscriptions()
+
+        validate.assert_called_once()
+        repeated = payment.payment_set.get()
+        self.assertEqual(repeated.state, Payment.PROCESSED)
+        self.assertEqual(repeated.amount, subscription.get_renewal_amount())
+        self.assertEqual(cast("Invoice", repeated.draft_invoice).vat_rate, 0)
+        self.assertEqual(cast("Invoice", repeated.paid_invoice).vat_rate, 0)
 
     def test_recurring_payment_rejects_invalid_vat(self) -> None:
         service = self.create_service(years=0, days=-2)
@@ -4715,6 +4747,7 @@ class ServiceTest(FakturaceTestCase):
 
         repeated = subscription.payment_obj.payment_set.get()
         self.assertEqual(repeated.state, Payment.REJECTED)
+        self.assertIsNone(repeated.draft_invoice)
         self.assertEqual(
             repeated.details,
             {

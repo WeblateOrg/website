@@ -478,6 +478,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         if self.extra is None:
             self.extra = {}
         extra_fields: list[str] = []
+        if self._derive_initial_vat_rate():
+            extra_fields.append("vat_rate")
         if not self.tax_date:
             self.tax_date = self.issue_date
             extra_fields.append("tax_date")
@@ -515,12 +517,36 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
     def clean(self) -> None:
         super().clean()
+        self._derive_initial_vat_rate()
         if self.customer_id and self.kind in {
             InvoiceKind.INVOICE,
             InvoiceKind.PROFORMA,
             InvoiceKind.QUOTE,
         }:
             self._get_en_16931_tax_details()
+
+    def _derive_initial_vat_rate(self) -> bool:
+        if not self._state.adding or self.parent_id or not self.customer_id:
+            return False
+        if (
+            self.customer.is_eu
+            and self.customer.country_code != "CZ"
+            and self.customer.vat
+            and not self.customer.has_valid_vat
+        ):
+            raise ValidationError(
+                {
+                    "vat_rate": gettext(
+                        "EU reverse-charge invoices require a valid buyer VAT ID."
+                    )
+                }
+            )
+        if not self.vat_rate:
+            vat_rate = self.customer.vat_rate
+            if vat_rate != self.vat_rate:
+                self.vat_rate = vat_rate
+                return True
+        return False
 
     def is_editable(self) -> bool:
         if self.kind == InvoiceKind.INVOICE:
@@ -985,11 +1011,11 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                 {"vat_rate": gettext("Czech invoices cannot use a zero VAT rate.")}
             )
         if self.customer.is_eu:
-            if not self.customer.vat:
+            if not self.customer.has_valid_vat:
                 raise ValidationError(
                     {
                         "vat_rate": gettext(
-                            "EU reverse-charge invoices require a buyer VAT ID."
+                            "EU reverse-charge invoices require a valid buyer VAT ID."
                         )
                     }
                 )
