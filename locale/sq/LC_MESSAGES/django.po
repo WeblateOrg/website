@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-14 05:54-0500\n"
+"POT-Creation-Date: 2026-08-21 07:00-0500\n"
 "PO-Revision-Date: 2026-07-13 07:37+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -1246,6 +1246,12 @@ msgstr ""
 msgid "Overdue"
 msgstr ""
 
+msgid "Czech invoices cannot use a zero VAT rate."
+msgstr ""
+
+msgid "EU reverse-charge invoices require a buyer VAT ID."
+msgstr ""
+
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "Kjo faturë është paguar tashmë. Ju lutemi, që të shihni hollësi, bëni hyrjen "
@@ -1597,6 +1603,16 @@ msgstr "Pagesa u pranua"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Pagesa u përpunua"
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted. Validation service response: {}"
+msgstr ""
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted."
+msgstr ""
 
 msgid "Enter a valid e-mail address."
 msgstr "Jepni një adresë email të vlefshme."
@@ -3111,7 +3127,9 @@ msgstr "Pagesa juaj e skaduar në weblate.org"
 msgid "Your payment on weblate.org has failed."
 msgstr "Pagesa juaj në weblate.org dështoi."
 
-msgid "Detailed failure from the payment gateway:"
+#, fuzzy
+#| msgid "Detailed failure from the payment gateway:"
+msgid "Detailed failure reason:"
 msgstr "Hollësi dështimi prej kanalit të pagesave:"
 
 msgid ""
@@ -3295,6 +3313,17 @@ msgstr "Të dhëna tuajat për faturim"
 
 msgid "Payment Summary"
 msgstr "Përmbledhje Pagese"
+
+#, fuzzy
+#| msgid "Donation address"
+msgid "Donation adjustment"
+msgstr "Adresë dhurimesh"
+
+#, python-format
+msgid ""
+"The requested donation of %(requested)s was adjusted down to %(charged)s so "
+"that VAT can be calculated correctly."
+msgstr ""
 
 msgid "Payment description"
 msgstr "Përshkrim pagese"
@@ -3732,6 +3761,13 @@ msgstr "Shtoni shërbyes te Zbuloni Weblate-in"
 msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
+msgstr ""
+
+#, python-format
+msgid ""
+"The server address %(server_url)s was supplied by the registration request "
+"and has not been verified. Continue only if you initiated registration from "
+"this server."
 msgstr ""
 
 msgid "Register"

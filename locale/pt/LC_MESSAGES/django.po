@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-14 05:54-0500\n"
+"POT-Creation-Date: 2026-08-21 07:00-0500\n"
 "PO-Revision-Date: 2026-08-16 13:51+0000\n"
 "Last-Translator: António Oliveira <antonio.oliveira5487@gmail.com>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/weblate/"
@@ -914,8 +914,8 @@ msgstr "Adicionar proprietário cliente"
 #, python-format
 msgid "Added %(email)s to customer owners. Hosted user was %(state)s."
 msgstr ""
-"Adicionado %(email)s a proprietários cliente. O utilizador alojado era %"
-"(state)s."
+"Adicionado %(email)s a proprietários cliente. O utilizador alojado era "
+"%(state)s."
 
 msgid "created"
 msgstr "criado"
@@ -1072,6 +1072,12 @@ msgstr "Não pago"
 
 msgid "Overdue"
 msgstr "Em atraso"
+
+msgid "Czech invoices cannot use a zero VAT rate."
+msgstr ""
+
+msgid "EU reverse-charge invoices require a buyer VAT ID."
+msgstr ""
 
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
@@ -1423,6 +1429,16 @@ msgstr "Pagamento aceite"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Pagamento processado"
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted. Validation service response: {}"
+msgstr ""
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted."
+msgstr ""
 
 msgid "Enter a valid e-mail address."
 msgstr "Insira um endereço de correio eletrónico válido."
@@ -2936,7 +2952,9 @@ msgstr "O seu pagamento expirado em weblate.org"
 msgid "Your payment on weblate.org has failed."
 msgstr "O seu pagamento no weblate.org falhou."
 
-msgid "Detailed failure from the payment gateway:"
+#, fuzzy
+#| msgid "Detailed failure from the payment gateway:"
+msgid "Detailed failure reason:"
 msgstr "Pormenores da falha do portal de pagamento:"
 
 msgid ""
@@ -3118,6 +3136,17 @@ msgstr "A sua informação de faturação"
 
 msgid "Payment Summary"
 msgstr "Resumo do Pagamento"
+
+#, fuzzy
+#| msgid "Donation address"
+msgid "Donation adjustment"
+msgstr "Endereço da doação"
+
+#, python-format
+msgid ""
+"The requested donation of %(requested)s was adjusted down to %(charged)s so "
+"that VAT can be calculated correctly."
+msgstr ""
 
 msgid "Payment description"
 msgstr "Descrição do pagamento"
@@ -3554,6 +3583,13 @@ msgid ""
 msgstr ""
 "Após confirmação, retornará àquele servidor Weblate para completar a "
 "ativação."
+
+#, python-format
+msgid ""
+"The server address %(server_url)s was supplied by the registration request "
+"and has not been verified. Continue only if you initiated registration from "
+"this server."
+msgstr ""
 
 msgid "Register"
 msgstr "Registar"

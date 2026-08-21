@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-14 05:54-0500\n"
+"POT-Creation-Date: 2026-08-21 07:00-0500\n"
 "PO-Revision-Date: 2026-08-15 02:39+0000\n"
 "Last-Translator: Peter Vančo <petervanco347@gmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/weblate/website/"
@@ -1076,6 +1076,12 @@ msgstr "Nezaplatené"
 msgid "Overdue"
 msgstr "Po splatnosti"
 
+msgid "Czech invoices cannot use a zero VAT rate."
+msgstr ""
+
+msgid "EU reverse-charge invoices require a buyer VAT ID."
+msgstr ""
+
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "Táto faktúra už bola zaplatená. Pre zobrazenie podrobností sa prosím "
@@ -1424,6 +1430,16 @@ msgstr "Platba prijatá"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Platba spracovaná"
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted. Validation service response: {}"
+msgstr ""
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted."
+msgstr ""
 
 msgid "Enter a valid e-mail address."
 msgstr "Zadajte platnú e-mailovú adresu."
@@ -2921,7 +2937,9 @@ msgstr "Vaša expirovaná platba na weblate.org"
 msgid "Your payment on weblate.org has failed."
 msgstr "Vaša platba na weblate.org zlyhala."
 
-msgid "Detailed failure from the payment gateway:"
+#, fuzzy
+#| msgid "Detailed failure from the payment gateway:"
+msgid "Detailed failure reason:"
 msgstr "Detailné zlyhanie platobnej brány:"
 
 msgid ""
@@ -3097,6 +3115,17 @@ msgstr "Vaše fakturačné údaje"
 
 msgid "Payment Summary"
 msgstr "Zhrnutie platby"
+
+#, fuzzy
+#| msgid "Donation address"
+msgid "Donation adjustment"
+msgstr "Adresa pre dar"
+
+#, python-format
+msgid ""
+"The requested donation of %(requested)s was adjusted down to %(charged)s so "
+"that VAT can be calculated correctly."
+msgstr ""
 
 msgid "Payment description"
 msgstr "Popis platby"
@@ -3527,6 +3556,13 @@ msgid ""
 "activation."
 msgstr ""
 "Po potvrdení sa vrátite na daný server Weblate, aby ste dokončili aktiváciu."
+
+#, python-format
+msgid ""
+"The server address %(server_url)s was supplied by the registration request "
+"and has not been verified. Continue only if you initiated registration from "
+"this server."
+msgstr ""
 
 msgid "Register"
 msgstr "Registrovať"

@@ -54,7 +54,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-14 05:54-0500\n"
+"POT-Creation-Date: 2026-08-21 07:00-0500\n"
 "PO-Revision-Date: 2026-08-15 11:23+0000\n"
 "Last-Translator: Hosted Weblate user 54392 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
@@ -1077,6 +1077,12 @@ msgstr "未付款"
 msgid "Overdue"
 msgstr "逾期"
 
+msgid "Czech invoices cannot use a zero VAT rate."
+msgstr ""
+
+msgid "EU reverse-charge invoices require a buyer VAT ID."
+msgstr ""
+
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "该发票已付款。请登录查看详情。"
 
@@ -1415,6 +1421,16 @@ msgstr "付款已接受"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "付款已处理"
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted. Validation service response: {}"
+msgstr ""
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted."
+msgstr ""
 
 msgid "Enter a valid e-mail address."
 msgstr "请输入有效的电子邮件地址。"
@@ -2812,7 +2828,9 @@ msgstr "您在 weblate.org 上的过期付款"
 msgid "Your payment on weblate.org has failed."
 msgstr "您在 weblate.org 上的付款失败。"
 
-msgid "Detailed failure from the payment gateway:"
+#, fuzzy
+#| msgid "Detailed failure from the payment gateway:"
+msgid "Detailed failure reason:"
 msgstr "来自支付网关的详细失败信息："
 
 msgid ""
@@ -2975,6 +2993,17 @@ msgstr "您的账单信息"
 
 msgid "Payment Summary"
 msgstr "付款汇总"
+
+#, fuzzy
+#| msgid "Donation address"
+msgid "Donation adjustment"
+msgstr "捐赠地址"
+
+#, python-format
+msgid ""
+"The requested donation of %(requested)s was adjusted down to %(charged)s so "
+"that VAT can be calculated correctly."
+msgstr ""
 
 msgid "Payment description"
 msgstr "付款说明"
@@ -3378,6 +3407,13 @@ msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
 msgstr "确认后会返回那个 Weblate 服务器完成激活。"
+
+#, python-format
+msgid ""
+"The server address %(server_url)s was supplied by the registration request "
+"and has not been verified. Continue only if you initiated registration from "
+"this server."
+msgstr ""
 
 msgid "Register"
 msgstr "注册"

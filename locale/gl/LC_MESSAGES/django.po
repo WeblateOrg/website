@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-14 05:54-0500\n"
+"POT-Creation-Date: 2026-08-21 07:00-0500\n"
 "PO-Revision-Date: 2026-07-13 07:36+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -1247,6 +1247,12 @@ msgstr ""
 msgid "Overdue"
 msgstr ""
 
+msgid "Czech invoices cannot use a zero VAT rate."
+msgstr ""
+
+msgid "EU reverse-charge invoices require a buyer VAT ID."
+msgstr ""
+
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr "Esta factura xa foi paga. Acceda para ver os detalles."
 
@@ -1607,6 +1613,16 @@ msgstr "O pagamento foi aceptado"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "O pagamento foi procesado"
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted. Validation service response: {}"
+msgstr ""
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted."
+msgstr ""
 
 msgid "Enter a valid e-mail address."
 msgstr "Introduza un enderezo de correo-e válido."
@@ -3139,7 +3155,9 @@ msgstr "O seu pagamento caducado en weblate.org"
 msgid "Your payment on weblate.org has failed."
 msgstr "Produciuse un fallo no seu pagamento en weblate.org."
 
-msgid "Detailed failure from the payment gateway:"
+#, fuzzy
+#| msgid "Detailed failure from the payment gateway:"
+msgid "Detailed failure reason:"
 msgstr "Fallo detallado da pasarela de pago:"
 
 msgid ""
@@ -3320,6 +3338,17 @@ msgstr "A súa información de facturación"
 
 msgid "Payment Summary"
 msgstr "Resumo do pagamento"
+
+#, fuzzy
+#| msgid "Donation address"
+msgid "Donation adjustment"
+msgstr "Enderezo das doazóns"
+
+#, python-format
+msgid ""
+"The requested donation of %(requested)s was adjusted down to %(charged)s so "
+"that VAT can be calculated correctly."
+msgstr ""
 
 msgid "Payment description"
 msgstr "Descrición do pagamento"
@@ -3765,6 +3794,13 @@ msgstr "Engadir o servidor a «Detectar Weblate»"
 msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
+msgstr ""
+
+#, python-format
+msgid ""
+"The server address %(server_url)s was supplied by the registration request "
+"and has not been verified. Continue only if you initiated registration from "
+"this server."
 msgstr ""
 
 msgid "Register"
