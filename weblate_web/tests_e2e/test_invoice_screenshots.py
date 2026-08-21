@@ -102,8 +102,12 @@ def create_customer(case: InvoiceData) -> Customer:
         accounting_reference=case.accounting_reference,
     )
     if case.vat:
-        Customer.objects.filter(pk=customer.pk).update(vat=case.vat)
+        Customer.objects.filter(pk=customer.pk).update(
+            vat=case.vat,
+            vat_validation_state=Customer.VatValidationState.VALID,
+        )
         customer.vat = case.vat
+        customer.vat_validation_state = Customer.VatValidationState.VALID
     return customer
 
 

@@ -53,7 +53,7 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         accounting_reference: str = "",
         country: str = "DE",
     ) -> Customer:
-        return Customer.objects.create(
+        customer = Customer.objects.create(
             name="Zkušební zákazník",
             address="Street 42",
             city="City",
@@ -65,6 +65,10 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
             email=email,
             accounting_reference=accounting_reference,
         )
+        if vat:
+            customer.vat_validation_state = Customer.VatValidationState.VALID
+            customer.save(update_fields=["vat_validation_state"])
+        return customer
 
     def create_invoice_base(  # ruff:ignore[too-many-arguments]
         self,
@@ -228,6 +232,106 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         invoice.get_money_s3_xml_tree(invoices)
         return document
 
+    def test_initial_vat_rate_is_derived_from_customer(self) -> None:
+        cases = (
+            ("Czech customer", "CZ", "", Customer.VatValidationState.UNKNOWN, 21),
+            ("EU end user", "DE", "", Customer.VatValidationState.UNKNOWN, 21),
+            (
+                "EU customer with valid VAT",
+                "DE",
+                "DE123456789",
+                Customer.VatValidationState.VALID,
+                0,
+            ),
+            ("non-EU customer", "US", "", Customer.VatValidationState.UNKNOWN, 0),
+        )
+
+        for name, country, vat, validation_state, expected_rate in cases:
+            with self.subTest(name):
+                customer = self.create_customer(country=country, vat=vat)
+                customer.vat_validation_state = validation_state
+                customer.save(update_fields=["vat_validation_state"])
+
+                invoice = Invoice.objects.create(
+                    customer=customer,
+                    kind=InvoiceKind.DRAFT,
+                    category=InvoiceCategory.HOSTING,
+                )
+
+                self.assertEqual(invoice.vat_rate, expected_rate)
+
+    def test_initial_vat_rate_rejects_unvalidated_eu_vat(self) -> None:
+        for validation_state in (
+            Customer.VatValidationState.UNKNOWN,
+            Customer.VatValidationState.INVALID,
+        ):
+            with self.subTest(validation_state=validation_state):
+                customer = self.create_customer(country="DE", vat="DE123456789")
+                customer.vat_validation_state = validation_state
+                customer.save(update_fields=["vat_validation_state"])
+
+                with self.assertRaisesMessage(
+                    ValidationError,
+                    "EU reverse-charge invoices require a valid buyer VAT ID.",
+                ):
+                    Invoice.objects.create(
+                        customer=customer,
+                        kind=InvoiceKind.DRAFT,
+                        category=InvoiceCategory.HOSTING,
+                    )
+
+    def test_initial_positive_vat_rate_is_preserved(self) -> None:
+        invoice = Invoice.objects.create(
+            customer=self.create_customer(country="DE"),
+            kind=InvoiceKind.DRAFT,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=19,
+        )
+
+        self.assertEqual(invoice.vat_rate, 19)
+
+        invoice.vat_rate = 7
+        invoice.save(update_fields=["vat_rate"])
+        invoice.refresh_from_db()
+        self.assertEqual(invoice.vat_rate, 7)
+
+    def test_invoice_form_rejects_unvalidated_eu_vat(self) -> None:
+        customer = self.create_customer(country="DE", vat="DE123456789")
+        customer.vat_validation_state = Customer.VatValidationState.INVALID
+        customer.save(update_fields=["vat_validation_state"])
+        invoice_form = modelform_factory(
+            Invoice,
+            fields=("kind", "category", "customer", "vat_rate", "currency"),
+        )
+        form = invoice_form(
+            data={
+                "kind": InvoiceKind.INVOICE,
+                "category": InvoiceCategory.HOSTING,
+                "customer": customer.pk,
+                "vat_rate": 0,
+                "currency": Currency.EUR,
+            }
+        )
+
+        self.assertFalse(form.is_valid())
+        self.assertFormError(
+            form,
+            "vat_rate",
+            "EU reverse-charge invoices require a valid buyer VAT ID.",
+        )
+
+    def test_duplicate_preserves_explicit_zero_vat_rate(self) -> None:
+        invoice = self.create_invoice(
+            country="DE", vat="DE123456789", kind=InvoiceKind.DRAFT
+        )
+        invoice.customer.vat_validation_state = Customer.VatValidationState.UNKNOWN
+        invoice.customer.save(update_fields=["vat_validation_state"])
+
+        duplicate = invoice.duplicate(kind=InvoiceKind.DRAFT)
+
+        self.assertEqual(duplicate.vat_rate, 0)
+        self.assertEqual(duplicate.total_amount, invoice.total_amount)
+
     def test_accounting_export_tax_classifications(self) -> None:
         cases = (
             (
@@ -349,19 +453,24 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
     def test_invalid_zero_vat_states_are_rejected_before_generation(self) -> None:
         cases = (
-            ("CZ", "CZ21668027"),
-            ("DE", ""),
+            ("CZ", "CZ21668027", Customer.VatValidationState.VALID),
+            ("DE", "", Customer.VatValidationState.UNKNOWN),
+            ("DE", "DE123456789", Customer.VatValidationState.UNKNOWN),
+            ("DE", "DE123456789", Customer.VatValidationState.INVALID),
         )
-        for country, vat in cases:
+        for country, vat, validation_state in cases:
             with (
-                self.subTest(country=country),
+                self.subTest(
+                    country=country, vat=vat, validation_state=validation_state
+                ),
                 TemporaryDirectory() as temp_dir,
                 override_settings(INVOICES_PATH=Path(temp_dir)),
             ):
                 invoice = self.create_invoice(country=country, vat=vat)
-                if not vat:
-                    invoice.customer.vat = ""
-                    invoice.customer.save(update_fields=["vat"])
+                invoice.customer.vat_validation_state = validation_state
+                invoice.customer.save(update_fields=["vat_validation_state"])
+                invoice.vat_rate = 0
+                invoice.save(update_fields=["vat_rate"])
 
                 with self.assertRaises(ValidationError):
                     invoice.full_clean()
@@ -376,6 +485,8 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         invoice = self.create_invoice(
             country="CZ", vat="CZ21668027", kind=InvoiceKind.DRAFT
         )
+        invoice.vat_rate = 0
+        invoice.save(update_fields=["vat_rate"])
 
         invoice.full_clean()
         with self.assertRaises(ValidationError):
@@ -383,6 +494,8 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
     def test_quote_validation_rejects_incomplete_tax_state(self) -> None:
         invoice = self.create_invoice(country="FR", kind=InvoiceKind.QUOTE)
+        invoice.vat_rate = 0
+        invoice.save(update_fields=["vat_rate"])
 
         with self.assertRaises(ValidationError):
             invoice.full_clean()
@@ -668,7 +781,7 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
     @responses.activate
     def test_total(self) -> None:
         self.mock_requests()
-        invoice = self.create_invoice(vat="CZ8003280318")
+        invoice = self.create_invoice(vat="DE123456789")
         self.assertEqual(invoice.total_amount, 100)
         self.validate_invoice(invoice)
 
