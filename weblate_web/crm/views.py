@@ -71,6 +71,7 @@ from weblate_web.invoices.models import (
     CURRENCY_MAP_FROM_PAYMENT,
     Currency,
     Invoice,
+    InvoiceCalculationVersion,
     InvoiceCategory,
     InvoiceKind,
     QuoteStatus,
@@ -587,7 +588,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
             )
             confirmed_at = timezone.now()
             payment = Payment.objects.create(
-                amount=int(self.object.total_amount),
+                amount=self.object.total_amount,
                 amount_fixed=True,
                 backend="manual",
                 currency=CURRENCY_MAP[cast("Currency", self.object.currency)],
@@ -1571,8 +1572,20 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     ) -> list[IncomeSummaryRow]:
         """Fetch per-invoice totals for the report using SQL aggregation."""
         zero = Value(Decimal(0), output_field=self.DECIMAL_OUTPUT_FIELD)
-        line_total = ExpressionWrapper(
+        raw_line_total = ExpressionWrapper(
             F("invoiceitem__unit_price") * F("invoiceitem__quantity"),
+            output_field=self.DECIMAL_OUTPUT_FIELD,
+        )
+        line_total = Case(
+            When(
+                calculation_version=InvoiceCalculationVersion.EN_16931,
+                then=Round(raw_line_total, precision=2),
+            ),
+            default=raw_line_total,
+            output_field=self.DECIMAL_OUTPUT_FIELD,
+        )
+        discount = ExpressionWrapper(
+            -F("positive_items_total") * F("discount__percents") / Value(100),
             output_field=self.DECIMAL_OUTPUT_FIELD,
         )
 
@@ -1611,15 +1624,12 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                     discount_amount=Case(
                         When(
                             discount__isnull=False,
-                            then=Round(
-                                ExpressionWrapper(
-                                    -F("positive_items_total")
-                                    * F("discount__percents")
-                                    / Value(100),
-                                    output_field=self.DECIMAL_OUTPUT_FIELD,
-                                ),
-                                precision=0,
-                            ),
+                            calculation_version=InvoiceCalculationVersion.LEGACY,
+                            then=Round(discount, precision=0),
+                        ),
+                        When(
+                            discount__isnull=False,
+                            then=Round(discount, precision=2),
                         ),
                         default=zero,
                         output_field=self.DECIMAL_OUTPUT_FIELD,

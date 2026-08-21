@@ -8,6 +8,7 @@ EN 16931 Invoice XML Validator.
 
 import re
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 
 from lxml import etree
 
@@ -86,6 +87,7 @@ class EN16931Validator:
 
         # Validate seller and buyer
         self._validate_seller_buyer_cii(transaction)
+        self._validate_reverse_charge_cii(transaction)
 
         # Validate invoice lines
         lines = transaction.findall(
@@ -189,20 +191,35 @@ class EN16931Validator:
                 )
             )
 
-    def _get_decimal(self, element) -> float:
+    def _get_decimal(self, element) -> Decimal:
         """Safely extract decimal value from element."""
         if element is None or not element.text:
-            return 0.0
+            return Decimal(0)
         try:
-            return float(element.text)
-        except (ValueError, TypeError):
-            return 0.0
+            return Decimal(element.text)
+        except (InvalidOperation, TypeError):
+            return Decimal(0)
 
     def _amounts_equal(
-        self, amount1: float, amount2: float, tolerance: float = 0.02
+        self,
+        amount1: Decimal,
+        amount2: Decimal,
+        tolerance: Decimal = Decimal("0.02"),
     ) -> bool:
         """Check if two amounts are equal within a tolerance (for rounding differences)."""
         return abs(amount1 - amount2) < tolerance
+
+    def _validate_decimal_places(self, element, rule: str, field_name: str) -> None:
+        if element is None or not element.text:
+            return
+        fraction = element.text.partition(".")[2]
+        if len(fraction) > 2:
+            self.errors.append(
+                ValidationError(
+                    rule,
+                    f"{field_name} must have no more than two decimal places",
+                )
+            )
 
     def _validate_seller_buyer_cii(self, transaction):
         """Validate seller and buyer information for CII format."""
@@ -280,6 +297,91 @@ class EN16931Validator:
                 else:
                     self._validate_country_code(country.text, "BT-55")
 
+    def _validate_reverse_charge_cii(self, transaction) -> None:
+        line_taxes = transaction.xpath(
+            "./ram:IncludedSupplyChainTradeLineItem/"
+            "ram:SpecifiedLineTradeSettlement/ram:ApplicableTradeTax"
+            "[ram:CategoryCode='AE']",
+            namespaces=self.namespaces,
+        )
+        allowance_taxes = transaction.xpath(
+            "./ram:ApplicableHeaderTradeSettlement/"
+            "ram:SpecifiedTradeAllowanceCharge/ram:CategoryTradeTax"
+            "[ram:CategoryCode='AE']",
+            namespaces=self.namespaces,
+        )
+        breakdown_taxes = transaction.xpath(
+            "./ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax"
+            "[ram:CategoryCode='AE']",
+            namespaces=self.namespaces,
+        )
+        tax_groups = (
+            ("BR-AE-02", line_taxes),
+            ("BR-AE-03", allowance_taxes),
+            ("BR-AE-04", breakdown_taxes),
+        )
+        if not any(taxes for _, taxes in tax_groups):
+            return
+
+        seller_ids = transaction.xpath(
+            "./ram:ApplicableHeaderTradeAgreement/ram:SellerTradeParty/"
+            "ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA' or @schemeID='FC']"
+            " | ./ram:ApplicableHeaderTradeAgreement/"
+            "ram:SellerTaxRepresentativeTradeParty/ram:SpecifiedTaxRegistration/"
+            "ram:ID[@schemeID='VA']",
+            namespaces=self.namespaces,
+        )
+        buyer_ids = transaction.xpath(
+            "./ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/"
+            "ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA']"
+            " | ./ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/"
+            "ram:SpecifiedLegalOrganization/ram:ID",
+            namespaces=self.namespaces,
+        )
+        has_seller_id = any(element.text for element in seller_ids)
+        has_buyer_id = any(element.text for element in buyer_ids)
+        for rule, taxes in tax_groups:
+            if taxes and (not has_seller_id or not has_buyer_id):
+                self.errors.append(
+                    ValidationError(
+                        rule,
+                        "Reverse charge requires seller and buyer tax or legal identifiers",
+                    )
+                )
+
+        for rule, taxes in (
+            ("BR-AE-05", line_taxes),
+            ("BR-AE-06", allowance_taxes),
+            ("BR-AE-07", breakdown_taxes),
+        ):
+            for tax in taxes:
+                rate = tax.find("ram:RateApplicablePercent", self.namespaces)
+                if rate is None or self._get_decimal(rate) != 0:
+                    self.errors.append(
+                        ValidationError(rule, "Reverse-charge VAT rate must be zero")
+                    )
+
+        for tax in breakdown_taxes:
+            calculated = tax.find("ram:CalculatedAmount", self.namespaces)
+            if calculated is None or self._get_decimal(calculated) != 0:
+                self.errors.append(
+                    ValidationError(
+                        "BR-AE-09", "Reverse-charge VAT amount must be zero"
+                    )
+                )
+            reason = tax.find("ram:ExemptionReason", self.namespaces)
+            reason_code = tax.find("ram:ExemptionReasonCode", self.namespaces)
+            if not (
+                (reason is not None and reason.text)
+                or (reason_code is not None and reason_code.text)
+            ):
+                self.errors.append(
+                    ValidationError(
+                        "BR-AE-10",
+                        "Reverse charge requires a VAT exemption reason or code",
+                    )
+                )
+
     def _validate_country_code(self, code: str, bt_code: str):
         """Validate ISO 3166-1 alpha-2 country code."""
         if not re.match(r"^[A-Z]{2}$", code):
@@ -339,6 +441,12 @@ class EN16931Validator:
                             "BR-24",
                             f"Line {line_num}: Line net amount (BT-131) is mandatory",
                         )
+                    )
+                else:
+                    self._validate_decimal_places(
+                        line_amount,
+                        "BR-DEC-23",
+                        f"Line {line_num} net amount (BT-131)",
                     )
 
         # BR-26: Item name
@@ -500,6 +608,39 @@ class EN16931Validator:
                 ValidationError("BR-15", "Amount due for payment (BT-115) is mandatory")
             )
 
+        for element, rule, field_name in (
+            (line_total, "BR-DEC-09", "Sum of line net amounts (BT-106)"),
+            (
+                monetary.find(".//ram:AllowanceTotalAmount", self.namespaces),
+                "BR-DEC-10",
+                "Sum of allowances (BT-107)",
+            ),
+            (
+                monetary.find(".//ram:ChargeTotalAmount", self.namespaces),
+                "BR-DEC-11",
+                "Sum of charges (BT-108)",
+            ),
+            (tax_basis_total, "BR-DEC-12", "Invoice total without VAT (BT-109)"),
+            (grand_total, "BR-DEC-14", "Invoice total with VAT (BT-112)"),
+            (
+                monetary.find(".//ram:TotalPrepaidAmount", self.namespaces),
+                "BR-DEC-16",
+                "Paid amount (BT-113)",
+            ),
+            (
+                monetary.find(".//ram:RoundingAmount", self.namespaces),
+                "BR-DEC-17",
+                "Rounding amount (BT-114)",
+            ),
+            (due_payable, "BR-DEC-18", "Amount due for payment (BT-115)"),
+        ):
+            self._validate_decimal_places(element, rule, field_name)
+
+        for tax_total in monetary.findall(".//ram:TaxTotalAmount", self.namespaces):
+            self._validate_decimal_places(
+                tax_total, "BR-DEC-13", "Invoice total VAT amount (BT-110)"
+            )
+
         # Validate VAT breakdown
         self._validate_vat_breakdown(settlement)
 
@@ -543,6 +684,10 @@ class EN16931Validator:
                         f"VAT breakdown {idx}: Taxable amount (BT-116) is mandatory",
                     )
                 )
+            else:
+                self._validate_decimal_places(
+                    basis, "BR-DEC-19", f"VAT breakdown {idx} taxable amount (BT-116)"
+                )
 
             # BR-AE-13: VAT category tax amount
             tax_amount = vat.find(".//ram:CalculatedAmount", self.namespaces)
@@ -552,6 +697,12 @@ class EN16931Validator:
                         "BR-AE-13",
                         f"VAT breakdown {idx}: Tax amount (BT-117) is mandatory",
                     )
+                )
+            else:
+                self._validate_decimal_places(
+                    tax_amount,
+                    "BR-DEC-20",
+                    f"VAT breakdown {idx} tax amount (BT-117)",
                 )
 
             # BR-AE-14: For standard rate, rate must be present
@@ -617,7 +768,7 @@ class EN16931Validator:
         currency_elem = settlement.find(".//ram:InvoiceCurrencyCode", self.namespaces)
         invoice_currency = currency_elem.text if currency_elem is not None else None
 
-        tax_total = 0.0
+        tax_total = Decimal(0)
         for tax_elem in tax_totals:
             currency_id = tax_elem.get("currencyID")
             if currency_id == invoice_currency or not currency_id:
@@ -641,7 +792,7 @@ class EN16931Validator:
         lines = transaction.findall(
             ".//ram:IncludedSupplyChainTradeLineItem", self.namespaces
         )
-        calculated_line_total = 0.0
+        calculated_line_total = Decimal(0)
         for line in lines:
             line_settlement = line.find(
                 ".//ram:SpecifiedLineTradeSettlement", self.namespaces
@@ -705,7 +856,7 @@ class EN16931Validator:
         trade_tax_totals = settlement.findall(
             ".//ram:ApplicableTradeTax", self.namespaces
         )
-        calculated_vat_total = 0.0
+        calculated_vat_total = Decimal(0)
         for tax in trade_tax_totals:
             calculated_vat_total += self._get_decimal(
                 tax.find(".//ram:CalculatedAmount", self.namespaces)
@@ -755,7 +906,7 @@ class EN16931Validator:
         lines = transaction.findall(
             ".//ram:IncludedSupplyChainTradeLineItem", self.namespaces
         )
-        category_line_total = 0.0
+        category_line_total = Decimal(0)
 
         for line in lines:
             line_tax = line.find(
@@ -858,21 +1009,33 @@ class EN16931Validator:
             ".//ram:SpecifiedTradeAllowanceCharge", self.namespaces
         )
 
-        total_allowances = 0.0
-        total_charges = 0.0
+        total_allowances = Decimal(0)
+        total_charges = Decimal(0)
 
         for ac in all_line_ac:
             charge_indicator = ac.find(
                 ".//ram:ChargeIndicator/udt:Indicator", self.namespaces
             )
-            ac_amount = self._get_decimal(
-                ac.find(".//ram:ActualAmount", self.namespaces)
-            )
+            ac_amount_element = ac.find(".//ram:ActualAmount", self.namespaces)
+            basis_element = ac.find(".//ram:BasisAmount", self.namespaces)
+            ac_amount = self._get_decimal(ac_amount_element)
 
             if charge_indicator is not None and charge_indicator.text:
                 if charge_indicator.text.lower() == "false":
+                    self._validate_decimal_places(
+                        ac_amount_element, "BR-DEC-01", "Line allowance amount (BT-136)"
+                    )
+                    self._validate_decimal_places(
+                        basis_element, "BR-DEC-02", "Line allowance base (BT-137)"
+                    )
                     total_allowances += ac_amount
                 elif charge_indicator.text.lower() == "true":
+                    self._validate_decimal_places(
+                        ac_amount_element, "BR-DEC-05", "Line charge amount (BT-141)"
+                    )
+                    self._validate_decimal_places(
+                        basis_element, "BR-DEC-06", "Line charge base (BT-142)"
+                    )
                     total_charges += ac_amount
 
         # BR-CO-03: Invoice line net amount = (quantity × price) - line allowances + line charges
@@ -919,7 +1082,27 @@ class EN16931Validator:
             percentage = self._get_decimal(
                 ac.find(".//ram:CalculationPercent", self.namespaces)
             )
-            amount = self._get_decimal(ac.find(".//ram:ActualAmount", self.namespaces))
+            amount_element = ac.find(".//ram:ActualAmount", self.namespaces)
+            amount = self._get_decimal(amount_element)
+
+            if charge_indicator.text.lower() == "false":
+                self._validate_decimal_places(
+                    amount_element, "BR-DEC-24", "Document allowance amount (BT-92)"
+                )
+                self._validate_decimal_places(
+                    ac.find(".//ram:BasisAmount", self.namespaces),
+                    "BR-DEC-25",
+                    "Document allowance base (BT-93)",
+                )
+            elif charge_indicator.text.lower() == "true":
+                self._validate_decimal_places(
+                    amount_element, "BR-DEC-27", "Document charge amount (BT-99)"
+                )
+                self._validate_decimal_places(
+                    ac.find(".//ram:BasisAmount", self.namespaces),
+                    "BR-DEC-28",
+                    "Document charge base (BT-100)",
+                )
 
             if base_amount > 0 and percentage > 0:
                 calculated_amount = base_amount * (percentage / 100)

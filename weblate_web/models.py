@@ -50,6 +50,7 @@ from weblate_web.invoices.models import (
     Invoice,
     InvoiceCategory,
     round_decimal,
+    round_money,
 )
 from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 from weblate_web.payments.utils import send_notification
@@ -1026,11 +1027,14 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
             and subscription.expires >= timezone.now()
         )
 
-    def get_donation_amount(self) -> int:
+    def get_donation_amount(self) -> Decimal:
         subscription = self.donation_subscription
         if subscription is None or not subscription.payment:
-            return 0
-        return subscription.payment_obj.amount
+            return Decimal(0)
+        payment = subscription.payment_obj
+        if payment.amount_fixed and payment.requested_amount is not None:
+            return payment.requested_amount
+        return payment.amount
 
     def get_donation_payment_description(self) -> str:
         subscription = self.donation_subscription
@@ -1560,10 +1564,10 @@ class Subscription(models.Model):
                 return ""
         return self.package.get_repeat()
 
-    def get_renewal_amount(self) -> int:
+    def get_renewal_amount(self) -> Decimal:
         if self.service.is_donation:
             return self.service.get_donation_amount()
-        return self.package.price
+        return Decimal(self.package.price)
 
     def get_renewal_extra(self) -> dict[str, int]:
         if self.service.is_donation:
@@ -1717,12 +1721,16 @@ class Subscription(models.Model):
             unit_price=self.get_upgrade_unit_price(package, currency),
         )
 
-    def get_expected_payment_amount(self) -> int:
+    def get_expected_payment_amount(self) -> Decimal:
         if self.service.is_donation:
             return self.get_renewal_amount()
         if discount := self.service.customer.discount:
-            return self.package.price * (100 - discount.percents) // 100
-        return self.package.price
+            return round_money(
+                Decimal(self.package.price)
+                * Decimal(100 - discount.percents)
+                / Decimal(100)
+            )
+        return Decimal(self.package.price)
 
 
 class SubscriptionPastPayment(models.Model):

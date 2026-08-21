@@ -235,19 +235,23 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.vat_amount, Decimal(121))
         payment = Payment(customer=customer, amount=100, amount_fixed=True)
         self.assertEqual(payment.vat_amount, Decimal(100))
-        self.assertAlmostEqual(payment.amount_without_vat, 82.64, places=2)
+        self.assertAlmostEqual(payment.amount_without_vat, Decimal("82.64"), places=2)
 
         customer.vat = "IE6388047V"
         payment = Payment(customer=customer, amount=100)
         self.assertEqual(payment.vat_amount, Decimal(100))
         payment = Payment(customer=customer, amount=100, amount_fixed=True)
         self.assertEqual(payment.vat_amount, Decimal(100))
-        self.assertEqual(payment.amount_without_vat, 100)
+        self.assertEqual(payment.amount_without_vat, Decimal(100))
 
     def test_vat_calculation_rounding(self) -> None:
-        payment = Payment(customer=Customer(**CUSTOMER), amount=15)
+        customer = Customer(**CUSTOMER)
+        payment = Payment(customer=customer, amount=15)
         self.assertEqual(payment.vat_amount, Decimal("18.15"))
-        self.assertEqual(int(payment.vat_amount * 100), 1815)
+        self.assertEqual(payment.vat_amount_minor, 1815)
+        payment.amount = Decimal("0.50")
+        self.assertEqual(payment.vat_amount, Decimal("0.61"))
+        self.assertEqual(payment.vat_amount_minor, 61)
 
     def test_short_filename(self) -> None:
         customer = Customer()
@@ -296,6 +300,80 @@ class ModelObjectsTestCase(TestCase):
         customer2.owners.add(User.objects.create())
         customer.merge(customer2)
         self.assertEqual(1, customer.owners.count())
+
+    def test_fixed_payment_is_adjusted_to_compliant_gross(self) -> None:
+        customer = Customer.objects.create(**CUSTOMER)
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=4,
+            amount_fixed=True,
+            description="Donation",
+        )
+
+        self.assertEqual(payment.requested_amount, Decimal("4.00"))
+        self.assertEqual(payment.amount, Decimal("3.99"))
+        self.assertEqual(payment.amount_without_vat, Decimal("3.30"))
+        self.assertEqual(payment.vat_amount, Decimal("3.99"))
+        self.assertTrue(payment.amount_was_adjusted)
+
+        compatible = Payment.objects.create(
+            customer=customer,
+            amount=121,
+            amount_fixed=True,
+            description="Compatible donation",
+        )
+        self.assertEqual(compatible.amount, Decimal("121.00"))
+        self.assertFalse(compatible.amount_was_adjusted)
+
+        refund = Payment.objects.create(
+            customer=customer,
+            amount=-121,
+            amount_fixed=True,
+            description="Refund",
+        )
+        self.assertEqual(refund.amount, Decimal("-121.00"))
+        self.assertEqual(refund.amount_without_vat, Decimal("-100.00"))
+
+    def test_fixed_payment_recalculation_uses_requested_amount(self) -> None:
+        customer = Customer.objects.create(**CUSTOMER)
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=4,
+            amount_fixed=True,
+            description="Recurring donation",
+            backend="pay",
+            recurring="y",
+        )
+        self.assertEqual(payment.amount, Decimal("3.99"))
+
+        customer.country = "US"
+        customer.vat = ""
+        customer.save(update_fields=["country", "vat"])
+        payment.normalize_fixed_amount()
+        payment.save(update_fields=["amount", "requested_amount"])
+        self.assertEqual(payment.amount, Decimal("4.00"))
+
+        customer.country = "CZ"
+        customer.save(update_fields=["country"])
+        repeated = payment.repeat_payment(skip_previous=True)
+        self.assertIsInstance(repeated, Payment)
+        if not isinstance(repeated, Payment):
+            self.fail("Recurring payment was not created")
+        self.assertEqual(repeated.requested_amount, Decimal("4.00"))
+        self.assertEqual(repeated.amount, Decimal("3.99"))
+
+    def test_btc_amount_keeps_satoshi_representation(self) -> None:
+        customer = Customer.objects.create(**CUSTOMER)
+        payment = Payment.objects.create(
+            customer=customer,
+            amount=100_000_000,
+            amount_fixed=True,
+            currency=Payment.CURRENCY_BTC,
+            description="Historical Bitcoin payment",
+        )
+
+        self.assertEqual(payment.amount, Decimal(100000000))
+        self.assertEqual(payment.get_amount_display(), Decimal(1))
 
     def test_automated_vies_transient_fault_is_not_logged(self) -> None:
         for code in (
@@ -409,7 +487,7 @@ class BackendTest(BackendBaseTestCase):
         invoice: Invoice,
         payment_message: str = "",
         *,
-        amount: int | None = None,
+        amount: Decimal | int | None = None,
         currency: str = "EUR",
         sender_account: str | None = None,
         transaction_id: int | None = 12210832097,
@@ -422,8 +500,8 @@ class BackendTest(BackendBaseTestCase):
             payment_message = invoice.number
         transaction[0]["column16"]["value"] = payment_message
         transaction[1]["column16"]["value"] = payment_message
-        transaction[1]["column1"]["value"] = (
-            int(invoice.total_amount) if amount is None else amount
+        transaction[1]["column1"]["value"] = float(
+            invoice.total_amount if amount is None else amount
         )
         if sender_account is not None:
             transaction[1]["column2"] = {
@@ -468,6 +546,48 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
         self.assertIn("You are the heart of Weblate", mail.outbox[0].body)
         self.assertNotIn("Thank you for your payment", mail.outbox[0].body)
+
+    def test_fixed_donation_generates_compliant_invoice(self) -> None:
+        payment = Payment.objects.create(
+            customer=self.customer,
+            amount=4,
+            amount_fixed=True,
+            description="Fixed donation",
+            backend="pay",
+            extra={"category": "donate"},
+        )
+        backend = get_backend("pay")(payment)
+
+        self.assertEqual(payment.requested_amount, Decimal("4.00"))
+        self.assertEqual(payment.amount, Decimal("3.99"))
+        self.assertTrue(backend.success())
+
+        payment.refresh_from_db()
+        invoice = cast("Invoice", payment.paid_invoice)
+        self.assertEqual(invoice.total_amount_no_vat, Decimal("3.30"))
+        self.assertEqual(invoice.total_vat, Decimal("0.69"))
+        self.assertEqual(invoice.total_amount, Decimal("3.99"))
+
+    def test_linked_fixed_payment_is_not_renormalized(self) -> None:
+        self.customer.country = "US"
+        self.customer.vat = ""
+        self.customer.save(update_fields=["country", "vat"])
+        invoice = Invoice.objects.create(
+            customer=self.customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+        )
+        invoice.invoiceitem_set.create(description="Fixed invoice", unit_price=4)
+
+        self.customer.country = "CZ"
+        self.customer.save(update_fields=["country"])
+        payment = invoice.create_payment(backend="pay")
+        self.assertEqual(payment.amount, Decimal("4.00"))
+        backend = get_backend("pay")(payment)
+        self.assertIsNone(backend.initiate(None, "", ""))
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.amount, Decimal("4.00"))
 
     def test_reject(self) -> None:
         backend = get_backend("reject")(self.payment)
@@ -538,7 +658,7 @@ class BackendTest(BackendBaseTestCase):
         transaction = received["accountStatement"]["transactionList"]["transaction"]  # type: ignore[index]
         transaction[0]["column16"]["value"] = proforma_id
         transaction[1]["column16"]["value"] = proforma_id
-        transaction[1]["column1"]["value"] = backend.payment.amount * 1.21
+        transaction[1]["column1"]["value"] = float(backend.payment.vat_amount)
         responses.replace(responses.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
         payment = self.check_payment(Payment.ACCEPTED)
@@ -583,7 +703,7 @@ class BackendTest(BackendBaseTestCase):
         payment_message = format_string.format(invoice.number)
         transaction[0]["column16"]["value"] = payment_message
         transaction[1]["column16"]["value"] = payment_message
-        transaction[1]["column1"]["value"] = int(invoice.total_amount)
+        transaction[1]["column1"]["value"] = float(invoice.total_amount)
         responses.replace(responses.GET, FIO_API, body=json.dumps(received))
         FioBank.fetch_payments()
         self.assertTrue(invoice.paid_payment_set.exists())
@@ -608,6 +728,31 @@ class BackendTest(BackendBaseTestCase):
     def test_invoice_vs(self) -> None:
         # Czech bank notation
         self.test_invoice_bank(format_string="VS{}/SS/KS")
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
+    )
+    def test_invoice_bank_matches_cent_amount(self) -> None:
+        mock_vies()
+        cnb_mock_rates()
+        invoice = Invoice.objects.create(
+            customer=self.customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        invoice.invoiceitem_set.create(
+            description="Cent-bearing item", unit_price=Decimal("50.00")
+        )
+        invoice.generate_files()
+
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+
+        payment = invoice.paid_payment_set.get()
+        self.assertEqual(payment.amount, Decimal("60.50"))
+        self.assertEqual(invoice.total_amount, Decimal("60.50"))
 
     @responses.activate
     @override_settings(
@@ -1052,6 +1197,50 @@ class ThePay2Test(BackendBaseTestCase):
         self.check_payment(Payment.ACCEPTED)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
+
+    @responses.activate
+    def test_cent_amount_is_sent_as_minor_units(self) -> None:
+        self.payment.amount = Decimal("0.50")
+        self.payment.save(update_fields=["amount"])
+        backend = self.payment.get_payment_backend()
+        thepay_mock_create_payment()
+
+        backend.initiate(None, "", "")
+
+        payload = json.loads(cast("bytes", responses.calls[0].request.body))
+        self.assertEqual(payload["amount"], 61)
+
+    @responses.activate
+    def test_fixed_amount_is_renormalized_before_initiation(self) -> None:
+        self.customer.country = "US"
+        self.customer.vat = ""
+        self.customer.save(update_fields=["country", "vat"])
+        payment = Payment.objects.create(
+            customer=self.customer,
+            amount=4,
+            amount_fixed=True,
+            description="Fixed donation",
+            backend="thepay2-card",
+            extra={"category": "donate"},
+        )
+        self.assertEqual(payment.amount, Decimal("4.00"))
+
+        self.customer.country = "CZ"
+        self.customer.save(update_fields=["country"])
+        backend = payment.get_payment_backend()
+        thepay_mock_create_payment()
+        cnb_mock_rates()
+
+        backend.initiate(None, "", "")
+
+        payload = json.loads(cast("bytes", responses.calls[0].request.body))
+        self.assertEqual(payload["amount"], 399)
+        self.assertEqual(backend.payment.amount, Decimal("3.99"))
+        self.assertTrue(backend.success())
+        invoice = cast("Invoice", backend.payment.paid_invoice)
+        self.assertEqual(invoice.total_amount_no_vat, Decimal("3.30"))
+        self.assertEqual(invoice.total_vat, Decimal("0.69"))
+        self.assertEqual(invoice.total_amount, Decimal("3.99"))
 
     @responses.activate
     def test_unpaid(self) -> None:

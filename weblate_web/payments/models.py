@@ -23,7 +23,7 @@ import os.path
 import re
 import uuid
 from datetime import timedelta
-from decimal import Decimal
+from decimal import ROUND_FLOOR, ROUND_HALF_UP, Decimal
 from email.message import Message
 from typing import TYPE_CHECKING, cast
 
@@ -106,6 +106,42 @@ VAT_COUNTRY_CODE_ALIASES = {
 }
 VAT_RATE = 21
 DELETED_MAIL = re.compile(r"noreply\+[0-9]+@weblate.org")
+PAYMENT_QUANTUM = Decimal("0.01")
+
+
+def round_payment_amount(amount: Decimal | int) -> Decimal:
+    """Round a fiat payment amount to cents."""
+    return Decimal(amount).quantize(PAYMENT_QUANTUM, rounding=ROUND_HALF_UP)
+
+
+def calculate_vat_amount(tax_basis: Decimal, vat_rate: int) -> Decimal:
+    """Calculate VAT from a cent-denominated tax basis."""
+    return round_payment_amount(tax_basis * Decimal(vat_rate) / Decimal(100))
+
+
+def get_compliant_fixed_amount(
+    requested_amount: Decimal | int, vat_rate: int
+) -> tuple[Decimal, Decimal]:
+    """Return the greatest compliant tax basis and gross not above requested."""
+    requested = round_payment_amount(requested_amount)
+    if not requested or vat_rate <= 0:
+        return requested, requested
+    sign = Decimal(-1) if requested < 0 else Decimal(1)
+    requested = abs(requested)
+
+    rate = Decimal(100 + vat_rate)
+    tax_basis = (requested * Decimal(100) / rate).quantize(
+        PAYMENT_QUANTUM, rounding=ROUND_FLOOR
+    )
+
+    def get_gross(candidate: Decimal) -> Decimal:
+        return candidate + calculate_vat_amount(candidate, vat_rate)
+
+    while get_gross(tax_basis) > requested:
+        tax_basis -= PAYMENT_QUANTUM
+    while get_gross(tax_basis + PAYMENT_QUANTUM) <= requested:
+        tax_basis += PAYMENT_QUANTUM
+    return sign * tax_basis, sign * get_gross(tax_basis)
 
 
 class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
@@ -731,7 +767,10 @@ class Payment(models.Model):
     CURRENCY_GBP = 4
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    amount = models.IntegerField()
+    amount = models.DecimalField(decimal_places=2, max_digits=12)
+    requested_amount = models.DecimalField(
+        blank=True, decimal_places=2, max_digits=12, null=True
+    )
     currency = models.IntegerField(
         choices=(
             (CURRENCY_EUR, "EUR"),
@@ -797,8 +836,50 @@ class Payment(models.Model):
     def __str__(self) -> str:
         return f"payment:{self.pk}"
 
+    def save(  # type: ignore[override]
+        self,
+        *,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using=None,
+        update_fields=None,
+    ) -> None:
+        if self._state.adding:
+            if self.currency != self.CURRENCY_BTC:
+                self.amount = round_payment_amount(self.amount)
+            if self.amount_fixed and self.requested_amount is None:
+                self.requested_amount = self.amount
+            if self.state == self.NEW:
+                self.normalize_fixed_amount()
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
+
     def get_absolute_url(self):
         return reverse("payment", kwargs={"pk": self.pk})
+
+    def normalize_fixed_amount(self) -> None:
+        """Recalculate a new fixed payment from the originally requested amount."""
+        if (
+            not self.amount_fixed
+            or self.currency == self.CURRENCY_BTC
+            or self.draft_invoice_id
+            or self.paid_invoice_id
+        ):
+            return
+        requested = round_payment_amount(
+            self.amount if self.requested_amount is None else self.requested_amount
+        )
+        self.requested_amount = requested
+        if self.customer.needs_vat:
+            self.amount = get_compliant_fixed_amount(requested, self.customer.vat_rate)[
+                1
+            ]
+        else:
+            self.amount = requested
 
     def get_reject_reason(self) -> str:
         if self.details.get("failure_code") == self.VAT_VALIDATION_FAILURE:
@@ -835,22 +916,38 @@ class Payment(models.Model):
 
     def get_amount_display(self):
         if self.currency == self.CURRENCY_BTC:
-            return self.amount / 100000000
+            return self.amount / Decimal(100000000)
         return self.amount
+
+    @property
+    def amount_was_adjusted(self) -> bool:
+        return (
+            self.requested_amount is not None
+            and self.currency != self.CURRENCY_BTC
+            and round_payment_amount(self.requested_amount)
+            != round_payment_amount(self.amount)
+        )
 
     @property
     def vat_amount(self) -> Decimal:
-        amount = Decimal(self.amount)
+        amount = round_payment_amount(self.amount)
         if self.customer.needs_vat and not self.amount_fixed:
-            rate = 100 + self.customer.vat_rate
-            return rate * amount / 100
+            return amount + calculate_vat_amount(amount, self.customer.vat_rate)
         return amount
 
     @property
-    def amount_without_vat(self):
+    def vat_amount_minor(self) -> int:
+        """Charged fiat amount in minor currency units."""
+        return int(self.vat_amount * 100)
+
+    @property
+    def amount_without_vat(self) -> Decimal:
         if self.customer.needs_vat and self.amount_fixed:
-            return 100.0 * self.amount / (100 + self.customer.vat_rate)
-        return self.amount
+            tax_basis, _gross = get_compliant_fixed_amount(
+                self.amount, self.customer.vat_rate
+            )
+            return tax_basis
+        return round_payment_amount(self.amount)
 
     def get_payment_url(self) -> str:
         return get_site_url("payment", strip_language=False, pk=self.pk)
@@ -893,7 +990,7 @@ class Payment(models.Model):
     def repeat_payment(
         self,
         skip_previous: bool = False,
-        amount: int | None = None,
+        amount: Decimal | int | None = None,
         extra: dict[str, int] | None = None,
         **kwargs,
     ):
@@ -922,9 +1019,18 @@ class Payment(models.Model):
             # Create new payment object
             if extra is None:
                 extra = {**self.extra, **kwargs}
+            repeated_amount = self.amount if amount is None else Decimal(amount)
+            requested_amount = None
+            if self.amount_fixed:
+                requested_amount = (
+                    self.requested_amount if amount is None else repeated_amount
+                )
+                repeated_amount = requested_amount or repeated_amount
             return Payment.objects.create(
-                amount=self.amount if amount is None else amount,
+                amount=repeated_amount,
+                requested_amount=requested_amount,
                 backend=self.backend,
+                currency=self.currency,
                 description=self.description,
                 recurring="",
                 customer=self.customer,

@@ -37,6 +37,7 @@ from weblate_web.payments.utils import send_notification
 if TYPE_CHECKING:
     from collections.abc import Iterable
     from datetime import datetime
+    from decimal import Decimal
 
 
 class Command(BaseCommand):
@@ -143,7 +144,7 @@ class Command(BaseCommand):
         *,
         recurring: str,
         end_date: datetime,
-        amount: int | None = None,
+        amount: Decimal | int | None = None,
         extra: dict[str, int],
     ) -> None:
         # Allow at most three failures of current payment method
@@ -164,7 +165,7 @@ class Command(BaseCommand):
             return
 
         # Create repeated payment
-        if payment.paid_invoice:
+        if payment.paid_invoice and "donation_service" not in extra:
             if subscription_id := extra.get("subscription"):
                 subscription = Subscription.objects.get(pk=subscription_id)
                 invoice = subscription.create_invoice(kind=InvoiceKind.DRAFT)

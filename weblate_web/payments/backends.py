@@ -22,7 +22,7 @@ from __future__ import annotations
 import datetime
 import re
 from dataclasses import dataclass
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any, cast
 
@@ -342,6 +342,14 @@ class Backend:
         if self.payment.repeat and not self.recurring:
             raise InvalidState(self.payment.get_state_display())
 
+        if (
+            self.payment.amount_fixed
+            and not self.payment.draft_invoice_id
+            and not self.payment.paid_invoice_id
+        ):
+            self.payment.normalize_fixed_amount()
+            self.payment.save(update_fields=["amount", "requested_amount"])
+
         result = self.perform(request, back_url, complete_url)
 
         # Update payment state
@@ -384,7 +392,6 @@ class Backend:
         )
 
         generate = True
-
         if self.payment.paid_invoice:
             raise ValueError("Invoice already exists!")
         invoice_kind = InvoiceKind.PROFORMA if proforma else InvoiceKind.INVOICE
@@ -408,7 +415,10 @@ class Backend:
                 )
         else:
             category = InvoiceCategory.HOSTING
-            if self.payment.extra.get("category") == "donate":
+            if (
+                self.payment.extra.get("category") == "donate"
+                or "donation_service" in self.payment.extra
+            ):
                 category = InvoiceCategory.DONATE
             # Generate manually if no draft is present (hosted integration)
             invoice = Invoice.objects.create(
@@ -422,7 +432,9 @@ class Backend:
             )
             invoice.invoiceitem_set.create(
                 description=self.payment.description,
-                unit_price=round(Decimal(self.payment.amount_without_vat), 3),
+                unit_price=self.payment.amount_without_vat.quantize(
+                    Decimal("0.001"), rounding=ROUND_HALF_UP
+                ),
             )
         if proforma:
             self.payment.draft_invoice = invoice
@@ -960,7 +972,7 @@ class ThePay2Card(Backend):
             payload = {
                 "uid": str(self.payment.pk),
                 "value": {
-                    "amount": str(int(self.payment.vat_amount * 100)),
+                    "amount": str(self.payment.vat_amount_minor),
                     "currency": self.payment.get_currency_display(),
                 },
                 "notif_url": complete_url,
@@ -980,7 +992,7 @@ class ThePay2Card(Backend):
             "can_customer_change_method": False,
             "is_customer_notification_enabled": False,
             "payment_method_code": self.thepay_method_code,
-            "amount": int(self.payment.vat_amount * 100),
+            "amount": self.payment.vat_amount_minor,
             "currency_code": self.payment.get_currency_display(),
             "uid": str(self.payment.pk),
             "description_for_customer": self.payment.description,

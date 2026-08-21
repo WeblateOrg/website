@@ -2101,7 +2101,7 @@ class CRMTestCase(BaseCRMTestCase):
             },
         )
         invoice = Invoice.objects.exclude(pk=invoice.pk).get()
-        self.assertEqual(invoice.total_amount, 513)
+        self.assertEqual(invoice.total_amount, Decimal("513.50"))
         self.assertRedirects(response, invoice.get_absolute_url())
 
         response = self.client.post(
@@ -2594,6 +2594,39 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.context["total_income"], Decimal(300))
         self.assertEqual(response.context["monthly_data"]["10"], Decimal(100))
         self.assertEqual(response.context["monthly_data"]["11"], Decimal(200))
+
+    def test_invoice_summary_rounding_stays_in_single_query(self) -> None:
+        issue_date = IncomeView.INVOICE_DATA_START
+        discount = Discount.objects.create(description="Half price", percents=50)
+        rounded_line = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=self.customer,
+            issue_date=issue_date,
+            currency=Currency.EUR,
+        )
+        rounded_line.invoiceitem_set.create(
+            description="Fractional-cent line", unit_price=Decimal("0.005")
+        )
+        discounted = Invoice.objects.create(
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            customer=self.customer,
+            issue_date=issue_date,
+            currency=Currency.EUR,
+            discount=discount,
+        )
+        discounted.invoiceitem_set.create(description="Discounted", unit_price=101)
+        with self.assertNumQueries(1):
+            rows = IncomeView()._get_invoice_summary_rows(  # pylint: disable=protected-access
+                year=issue_date.year,
+                month=issue_date.month,
+                period="month",
+            )
+
+        totals = {row["pk"]: row["total_no_vat"] for row in rows}
+        self.assertEqual(totals[rounded_line.pk], Decimal("0.01"))
+        self.assertEqual(totals[discounted.pk], Decimal("50.50"))
 
     def test_income_includes_only_processed_historical_payments(self):
         self.create_historical_payment(date(2023, 1, 1), 100)

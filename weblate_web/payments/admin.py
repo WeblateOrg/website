@@ -72,6 +72,7 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = (
         "description",
         "amount",
+        "requested_amount",
         "customer",
         "state",
         "backend",

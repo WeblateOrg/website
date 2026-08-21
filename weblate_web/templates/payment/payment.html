@@ -24,6 +24,17 @@
               </div>
               <div class="clear"></div>
             </div>
+            {% if object.amount_was_adjusted %}
+              <div class="form-line">
+                <div class="line-left">{% translate "Donation adjustment" %}</div>
+                <div class="line-right">
+                  <span class="text-muted">
+                    {% blocktranslate with requested=object.requested_amount|price_format:object.get_currency_display charged=object.vat_amount|price_format:object.get_currency_display %}The requested donation of {{ requested }} was adjusted down to {{ charged }} so that VAT can be calculated correctly.{% endblocktranslate %}
+                  </span>
+                </div>
+                <div class="clear"></div>
+              </div>
+            {% endif %}
             <div class="form-line">
               <div class="line-left">{% translate "Payment description" %}</div>
               <div class="line-right" lang="en" dir="ltr">{{ object.description }}</div>

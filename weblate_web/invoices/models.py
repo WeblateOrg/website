@@ -21,7 +21,7 @@ from __future__ import annotations
 import datetime
 import uuid
 from dataclasses import dataclass
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Literal, cast
@@ -56,7 +56,6 @@ from pycheval import (
     TradeContact,
     TradeParty,
     generate_et,
-    generate_xml,
 )
 from pycheval.quantities import QuantityCode
 from pycheval.type_codes import DocumentTypeCode, PaymentMeansCode, TaxCategoryCode
@@ -88,6 +87,7 @@ if TYPE_CHECKING:
 INVOICES_URL = "invoices:"
 STATIC_URL = "static:"
 TEMPLATES_PATH = Path(__file__).parent / "templates"
+MONEY_QUANTUM = Decimal("0.01")
 
 
 def date_format(value: datetime.datetime | datetime.date) -> str:
@@ -102,6 +102,11 @@ def round_decimal(num: Decimal, max_decimals: int = 3) -> Decimal:
     if not num % Decimal("0.1"):
         return round(num, 1)
     return round(num, 2)
+
+
+def round_money(num: Decimal) -> Decimal:
+    """Round a document monetary amount to cents."""
+    return num.quantize(MONEY_QUANTUM, rounding=ROUND_HALF_UP)
 
 
 def url_fetcher(url: str) -> dict[str, str | bytes]:
@@ -276,6 +281,11 @@ class InvoiceKind(models.IntegerChoices):
         return InvoiceKind(int(value))
 
 
+class InvoiceCalculationVersion(models.IntegerChoices):
+    LEGACY = 0, "Legacy"
+    EN_16931 = 1, "EN 16931"
+
+
 class InvoiceCategory(models.IntegerChoices):
     HOSTING = 1, "Hosting"
     SUPPORT = 2, "Support"
@@ -316,6 +326,19 @@ class _EN16931TaxDetails:
     category: TaxCategoryCode
     rate: Decimal | None
     exemption_reason: str | None
+    money_s3_code: str
+
+
+@dataclass(frozen=True)
+class _InvoiceAmounts:
+    items: Decimal
+    positive_items: Decimal
+    discount: Decimal
+    line_total: Decimal
+    allowance_total: Decimal
+    tax_basis: Decimal
+    vat: Decimal
+    grand_total: Decimal
 
 
 class Discount(models.Model):
@@ -399,6 +422,11 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         help_text="VAT rate in percents to apply on the invoice",
     )
     currency = models.IntegerField(choices=Currency, default=Currency.EUR)
+    calculation_version = models.IntegerField(
+        choices=InvoiceCalculationVersion,
+        default=InvoiceCalculationVersion.EN_16931,
+        editable=False,
+    )
 
     # Invoice chaining Proforma -> Invoice, or Draft -> Invoice
     parent = models.ForeignKey(
@@ -446,6 +474,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         using=None,
         update_fields=None,
     ) -> None:
+        self.__dict__.pop("_amounts", None)
         if self.extra is None:
             self.extra = {}
         extra_fields: list[str] = []
@@ -483,6 +512,15 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
     def get_absolute_url(self) -> str:
         return reverse("crm:invoice-detail", kwargs={"pk": self.pk})
+
+    def clean(self) -> None:
+        super().clean()
+        if self.customer_id and self.kind in {
+            InvoiceKind.INVOICE,
+            InvoiceKind.PROFORMA,
+            InvoiceKind.QUOTE,
+        }:
+            self._get_en_16931_tax_details()
 
     def is_editable(self) -> bool:
         if self.kind == InvoiceKind.INVOICE:
@@ -524,67 +562,143 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         """Exchange rate from currency to EUR."""
         return ExchangeRates.get("EUR", self.tax_date) / self.exchange_rate_czk
 
-    @cached_property
-    def total_items_amount(self) -> Decimal:
-        return sum(
-            (item.unit_price * item.quantity for item in self.all_items),
+    def _get_legacy_amounts(self) -> _InvoiceAmounts:
+        invoice_items = list(self.all_items)
+        raw_item_amounts = [item.unit_price * item.quantity for item in invoice_items]
+        items = sum(raw_item_amounts, start=Decimal(0))
+        positive_items = sum(
+            (amount for amount in raw_item_amounts if amount > 0),
             start=Decimal(0),
         )
-
-    @cached_property
-    def total_plus_items_amount(self) -> Decimal:
-        return sum(
+        negative_allowances = -sum(
             (
-                item.unit_price * item.quantity
-                for item in self.all_items
-                if item.unit_price > 0
+                item.total_price
+                for item, amount in zip(invoice_items, raw_item_amounts, strict=True)
+                if amount < 0
             ),
             start=Decimal(0),
         )
+        discount = (
+            round(positive_items * self.discount.percents / Decimal(100), 0)
+            if self.discount
+            else Decimal(0)
+        )
+        allowance_total = negative_allowances + discount
+        tax_basis = round_decimal(items - discount)
+        if not self.vat_rate:
+            vat = Decimal(0)
+        else:
+            vat = round_decimal(tax_basis * Decimal(self.vat_rate) / Decimal(100))
+        grand_total = round_decimal(tax_basis + vat, max_decimals=2)
+        return _InvoiceAmounts(
+            items=items,
+            positive_items=positive_items,
+            discount=discount,
+            line_total=tax_basis + allowance_total,
+            allowance_total=allowance_total,
+            tax_basis=tax_basis,
+            vat=vat,
+            grand_total=grand_total,
+        )
+
+    def _get_en_16931_amounts(self) -> _InvoiceAmounts:
+        item_amounts = [item.total_price for item in self.all_items]
+        items = sum(item_amounts, start=Decimal("0.00"))
+        positive_items = sum(
+            (amount for amount in item_amounts if amount > 0),
+            start=Decimal("0.00"),
+        )
+        negative_allowances = -sum(
+            (amount for amount in item_amounts if amount < 0),
+            start=Decimal("0.00"),
+        )
+        discount = (
+            round_money(positive_items * self.discount.percents / Decimal(100))
+            if self.discount
+            else Decimal("0.00")
+        )
+        allowance_total = negative_allowances + discount
+        tax_basis = round_money(positive_items - allowance_total)
+        if not self.vat_rate:
+            vat = Decimal("0.00")
+            grand_total = tax_basis
+        else:
+            vat = round_money(tax_basis * Decimal(self.vat_rate) / Decimal(100))
+            grand_total = tax_basis + vat
+        return _InvoiceAmounts(
+            items=items,
+            positive_items=positive_items,
+            discount=discount,
+            line_total=positive_items,
+            allowance_total=allowance_total,
+            tax_basis=tax_basis,
+            vat=vat,
+            grand_total=grand_total,
+        )
 
     @cached_property
+    def _amounts(self) -> _InvoiceAmounts:
+        if self.calculation_version == InvoiceCalculationVersion.LEGACY:
+            return self._get_legacy_amounts()
+        return self._get_en_16931_amounts()
+
+    @property
+    def total_items_amount(self) -> Decimal:
+        return self._amounts.items
+
+    @property
+    def total_plus_items_amount(self) -> Decimal:
+        return self._amounts.positive_items
+
+    @property
     def total_discount(self) -> Decimal:
-        if not self.discount:
-            return Decimal(0)
-        return round(-self.total_plus_items_amount * self.discount.percents / 100, 0)
+        return -self._amounts.discount
 
     @property
     def display_total_discount(self) -> str:
         return self.render_amount(self.total_discount)
 
-    @cached_property
+    @property
     def total_amount_no_vat(self) -> Decimal:
-        return round_decimal(self.total_items_amount + self.total_discount)
+        return self._amounts.tax_basis
 
     @property
     def total_amount_no_vat_czk(self) -> Decimal:
-        return round(self.total_amount_no_vat * self.exchange_rate_czk, 2)
+        if self.calculation_version == InvoiceCalculationVersion.LEGACY:
+            return round(self.total_amount_no_vat * self.exchange_rate_czk, 2)
+        return round_money(self.total_amount_no_vat * self.exchange_rate_czk)
 
     @property
     def display_total_amount_no_vat(self) -> str:
         return self.render_amount(self.total_amount_no_vat)
 
-    @cached_property
+    @property
     def total_vat(self) -> Decimal:
-        if not self.vat_rate:
-            return Decimal(0)
-        return round_decimal(self.total_amount_no_vat * self.vat_rate / 100)
+        return self._amounts.vat
 
     @property
     def total_vat_czk(self) -> Decimal:
-        return round_decimal(self.total_vat * self.exchange_rate_czk, max_decimals=2)
+        if self.calculation_version == InvoiceCalculationVersion.LEGACY:
+            return round_decimal(
+                self.total_vat * self.exchange_rate_czk, max_decimals=2
+            )
+        return round_money(self.total_vat * self.exchange_rate_czk)
 
     @property
     def display_total_vat(self) -> str:
         return self.render_amount(self.total_vat)
 
-    @cached_property
+    @property
     def total_amount(self) -> Decimal:
-        return round_decimal(self.total_amount_no_vat + self.total_vat, max_decimals=2)
+        return self._amounts.grand_total
 
     @property
     def total_amount_czk(self) -> Decimal:
-        return round_decimal(self.total_amount * self.exchange_rate_czk, max_decimals=2)
+        if self.calculation_version == InvoiceCalculationVersion.LEGACY:
+            return round_decimal(
+                self.total_amount * self.exchange_rate_czk, max_decimals=2
+            )
+        return round_money(self.total_amount * self.exchange_rate_czk)
 
     @property
     def display_total_amount(self) -> str:
@@ -697,6 +811,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         return settings.INVOICES_PATH / self.get_filename("einvoice.xml")
 
     def generate_files(self) -> None:
+        # Validate accounting data before any document is written.
+        self._get_en_16931_tax_details()
         self.generate_money_s3_xml()
         self.generate_en_16931_xml()
         self.generate_pdf()
@@ -718,6 +834,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
     def get_money_s3_xml_tree(self, invoices: etree._Element) -> None:  # ruff:ignore[too-many-statements, complex-structure]
         """Create XML tree for Money S3 invoice XML."""
+        tax_details = self._get_en_16931_tax_details()
 
         def add_element(root, name: str, text: str | Decimal | int | None = None):
             added = etree.SubElement(root, name)
@@ -765,12 +882,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         add_element(output, "PlnenoDPH", self.tax_date.isoformat())
         add_element(output, "Splatno", self.due_date.isoformat())
         add_element(output, "DatSkPoh", self.tax_date.isoformat())
-        if self.customer.country == "CZ" or self.vat_rate:
-            add_element(output, "KodDPH", "19Ř01,02")
-        elif self.customer.is_eu:
-            add_element(output, "KodDPH", "19Ř21")
-        else:
-            add_element(output, "KodDPH", "19Ř26")
+        add_element(output, "KodDPH", tax_details.money_s3_code)
         add_element(output, "ZjednD", "0")
         add_element(output, "VarSymbol", self.number)
 
@@ -866,12 +978,26 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                 category=TaxCategoryCode.STANDARD_RATE,
                 rate=Decimal(self.vat_rate),
                 exemption_reason=None,
+                money_s3_code="19Ř01,02",
+            )
+        if self.customer.country_code == "CZ":
+            raise ValidationError(
+                {"vat_rate": gettext("Czech invoices cannot use a zero VAT rate.")}
             )
         if self.customer.is_eu:
+            if not self.customer.vat:
+                raise ValidationError(
+                    {
+                        "vat_rate": gettext(
+                            "EU reverse-charge invoices require a buyer VAT ID."
+                        )
+                    }
+                )
             return _EN16931TaxDetails(
                 category=TaxCategoryCode.REVERSE_CHARGE,
                 rate=Decimal(0),
                 exemption_reason="Reverse charge",
+                money_s3_code="19Ř21",
             )
         return _EN16931TaxDetails(
             category=TaxCategoryCode.OUT_OF_SCOPE,
@@ -879,9 +1005,10 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             exemption_reason=(
                 "Not subject to VAT because the place of supply is outside the EU"
             ),
+            money_s3_code="19Ř26",
         )
 
-    def get_en_16931_xml(self) -> EN16931Invoice:
+    def get_en_16931_xml(self) -> EN16931Invoice:  # ruff:ignore[too-many-locals]
         if self.kind == InvoiceKind.INVOICE:
             type_code = DocumentTypeCode.INVOICE
         elif self.kind == InvoiceKind.PROFORMA:
@@ -891,10 +1018,11 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
         total_amount = Money(self.total_amount, self.get_currency_display())
 
-        # Ensure tax has two decimals, see https://github.com/zfutura/pycheval/issues/30
-        tax_amount = Money(
-            self.total_vat.quantize(Decimal("0.01")), self.get_currency_display()
-        )
+        tax_value = self.total_vat
+        if self.calculation_version == InvoiceCalculationVersion.LEGACY:
+            # Legacy documents quantized the VAT only for Factur-X output.
+            tax_value = tax_value.quantize(MONEY_QUANTUM)
+        tax_amount = Money(tax_value, self.get_currency_display())
         tax_basis_amount = Money(self.total_amount_no_vat, self.get_currency_display())
 
         tax_details = self._get_en_16931_tax_details()
@@ -904,16 +1032,15 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             basis_amount=tax_basis_amount,
             rate_percent=tax_details.rate,
             exemption_reason=tax_details.exemption_reason,
+            tax_point_date=self.tax_date if self.is_final else None,
         )
 
         line_items: list[EN16931LineItem] = []
         allowances: list[DocumentAllowance] = []
-
-        line_total_amount = Money(
-            self.total_amount_no_vat - self.total_discount, self.get_currency_display()
-        )
+        amounts = self._amounts
+        line_total_amount = Money(amounts.line_total, self.get_currency_display())
         allowance_total_amount = Money(
-            -self.total_discount, self.get_currency_display()
+            amounts.allowance_total, self.get_currency_display()
         )
 
         for item in self.all_items:
@@ -929,17 +1056,15 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                         tax_category=tax_details.category,
                     )
                 )
-                line_total_amount.amount -= item.total_price
-                allowance_total_amount.amount -= item.total_price
             else:
+                net_price = item.unit_price
+                if self.calculation_version == InvoiceCalculationVersion.LEGACY:
+                    net_price = item.total_price / item.quantity
                 line_items.append(
                     EN16931LineItem(
                         id=item.package.name if item.package else f"ITEM-{item.id}",
                         name=item.description,
-                        net_price=Money(
-                            item.total_price / item.quantity,
-                            self.get_currency_display(),
-                        ),
+                        net_price=Money(net_price, self.get_currency_display()),
                         billed_quantity=(
                             Decimal(item.quantity),
                             QuantityCode.HOUR
@@ -1068,15 +1193,27 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             tax=[tax],
         )
 
+    def get_en_16931_xml_tree(self) -> ElementTree.Element[str]:
+        """Generate schema-compatible EN 16931 XML."""
+        xml_tree = generate_et(self.get_en_16931_xml())
+        # pycheval 0.3.3 emits DateTimeString here, but the CII schema uses
+        # DateString for ApplicableTradeTax/TaxPointDate.
+        # Reported at https://github.com/zfutura/pycheval/issues/64
+        # TODO: Use pycheval.generate_xml once this is fixed
+        for tax_point in xml_tree.iter("ram:TaxPointDate"):
+            date_element = tax_point.find("udt:DateTimeString")
+            if date_element is not None:
+                date_element.tag = "udt:DateString"
+        return xml_tree
+
+    def get_en_16931_xml_string(self) -> str:
+        xml_tree = self.get_en_16931_xml_tree()
+        ElementTree.indent(xml_tree)
+        return ElementTree.tostring(xml_tree, encoding="unicode", xml_declaration=True)
+
     def generate_en_16931_xml(self) -> None:
         if self.supports_en_16931:
-            invoice = self.get_en_16931_xml()
-            xml_tree = generate_et(invoice)
-            ElementTree.indent(xml_tree)
-            xml_string = ElementTree.tostring(
-                xml_tree, encoding="unicode", xml_declaration=True
-            )
-            self.en_16931_xml_path.write_text(xml_string)
+            self.en_16931_xml_path.write_text(self.get_en_16931_xml_string())
 
     def _generate_pdf(
         self,
@@ -1104,7 +1241,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         if self.supports_en_16931:
             attachments = [
                 Attachment(
-                    string=generate_xml(self.get_en_16931_xml()),
+                    string=self.get_en_16931_xml_string(),
                     base_url="factur-x.xml",
                     description="Factur-x invoice",
                 )
@@ -1136,6 +1273,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             discount=self.discount,
             vat_rate=self.vat_rate,
             currency=self.currency,
+            calculation_version=self.calculation_version,
             tax_date=cast("datetime.date", tax_date),
             parent=self,
             prepaid=prepaid,
@@ -1169,7 +1307,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         if not self.can_be_paid(InvoiceKind.DRAFT):
             raise ValueError("Payment already exists for this invoice!")
         return self.draft_payment_set.create(
-            amount=int(self.total_amount),
+            amount=self.total_amount,
+            requested_amount=self.total_amount,
             amount_fixed=True,
             description=self.get_description(),
             recurring=recurring,
@@ -1384,13 +1523,24 @@ class InvoiceItem(models.Model):
 
     @property
     def total_price(self) -> Decimal:
-        return round_decimal(self.unit_price * self.quantity)
+        amount = self.unit_price * self.quantity
+        if self.invoice.calculation_version == InvoiceCalculationVersion.LEGACY:
+            return round_decimal(amount)
+        return round_money(amount)
 
     @cached_property
     def total_vat(self) -> Decimal:
         if not self.invoice.vat_rate:
-            return Decimal(0)
-        return round_decimal(self.total_price * self.invoice.vat_rate / 100)
+            if self.invoice.calculation_version == InvoiceCalculationVersion.LEGACY:
+                return Decimal(0)
+            return Decimal("0.00")
+        if self.invoice.calculation_version == InvoiceCalculationVersion.LEGACY:
+            return round_decimal(
+                self.total_price * Decimal(self.invoice.vat_rate) / Decimal(100)
+            )
+        return round_money(
+            self.total_price * Decimal(self.invoice.vat_rate) / Decimal(100)
+        )
 
     @cached_property
     def total_vat_price(self) -> Decimal:
