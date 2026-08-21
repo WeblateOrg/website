@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-14 05:54-0500\n"
+"POT-Creation-Date: 2026-08-21 07:00-0500\n"
 "PO-Revision-Date: 2026-07-13 07:37+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -1253,6 +1253,12 @@ msgstr ""
 msgid "Overdue"
 msgstr ""
 
+msgid "Czech invoices cannot use a zero VAT rate."
+msgstr ""
+
+msgid "EU reverse-charge invoices require a buyer VAT ID."
+msgstr ""
+
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 "Ez a számla már ki lett fizetve. Kérjük, jelentkezzen be a részletek "
@@ -1617,6 +1623,16 @@ msgstr "Fizetés elfogadva"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Fizetés feldolgozva"
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted. Validation service response: {}"
+msgstr ""
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted."
+msgstr ""
 
 msgid "Enter a valid e-mail address."
 msgstr "Adjon meg egy érvényes e-mail címet."
@@ -3138,7 +3154,9 @@ msgstr "Lejárt fizetése a weblate.org oldalon"
 msgid "Your payment on weblate.org has failed."
 msgstr "Fizetése a weblate.org oldalon sikertelen volt."
 
-msgid "Detailed failure from the payment gateway:"
+#, fuzzy
+#| msgid "Detailed failure from the payment gateway:"
+msgid "Detailed failure reason:"
 msgstr "A fizetési szolgáltató részletes hibaüzenete:"
 
 msgid ""
@@ -3323,6 +3341,17 @@ msgstr "Számlázási adatok"
 
 msgid "Payment Summary"
 msgstr "Fizetési összegzés"
+
+#, fuzzy
+#| msgid "Donation address"
+msgid "Donation adjustment"
+msgstr "Adományozási cím"
+
+#, python-format
+msgid ""
+"The requested donation of %(requested)s was adjusted down to %(charged)s so "
+"that VAT can be calculated correctly."
+msgstr ""
 
 msgid "Payment description"
 msgstr "Fizetés leírása"
@@ -3768,6 +3797,13 @@ msgstr "Kiszolgáló hozzáadása a Weblate-felfedezéshez"
 msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
+msgstr ""
+
+#, python-format
+msgid ""
+"The server address %(server_url)s was supplied by the registration request "
+"and has not been verified. Continue only if you initiated registration from "
+"this server."
 msgstr ""
 
 msgid "Register"

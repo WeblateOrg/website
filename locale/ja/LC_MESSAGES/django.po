@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-14 05:54-0500\n"
+"POT-Creation-Date: 2026-08-21 07:00-0500\n"
 "PO-Revision-Date: 2026-08-19 12:51+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -867,8 +867,8 @@ msgid ""
 "Disable the subscription, no payments will be reminded or triggered, "
 "<strong>backups will be removed once subscription expires</strong>"
 msgstr ""
-"サブスクリプションを無効化すると、支払いに関する通知や請求処理は停止され"
-"、<strong>サブスクリプションが期限切れになるとバックアップは削除されます</"
+"サブスクリプションを無効化すると、支払いに関する通知や請求処理は停止され、"
+"<strong>サブスクリプションが期限切れになるとバックアップは削除されます</"
 "strong>"
 
 msgid "Disable"
@@ -911,7 +911,8 @@ msgstr "顧客担当者を追加しました"
 
 #, python-format
 msgid "Added %(email)s to customer owners. Hosted user was %(state)s."
-msgstr "%(email)s を顧客担当者に追加しました。ホスト側ユーザーは %(state)s でした。"
+msgstr ""
+"%(email)s を顧客担当者に追加しました。ホスト側ユーザーは %(state)s でした。"
 
 msgid "created"
 msgstr "作成しました"
@@ -1067,6 +1068,12 @@ msgstr "未払い"
 
 msgid "Overdue"
 msgstr "延滞"
+
+msgid "Czech invoices cannot use a zero VAT rate."
+msgstr ""
+
+msgid "EU reverse-charge invoices require a buyer VAT ID."
+msgstr ""
 
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
@@ -1331,9 +1338,9 @@ msgid ""
 "such as a cost center, project, internal order, or GL account. Separate from "
 "the customer reference or purchase order number."
 msgstr ""
-"顧客の社内請求処理で使用される行レベルの会計コードを入力します。"
-"コストセンター、プロジェクト、社内発注、GL 勘定科目などに利用されます。顧客参"
-"照番号や購買注文番号とは別の項目です。"
+"顧客の社内請求処理で使用される行レベルの会計コードを入力します。コストセン"
+"ター、プロジェクト、社内発注、GL 勘定科目などに利用されます。顧客参照番号や購"
+"買注文番号とは別の項目です。"
 
 msgid "Additional upcoming payment notification"
 msgstr "支払い通知の追加"
@@ -1412,6 +1419,16 @@ msgstr "支払い承認"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "支払処理完了"
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted. Validation service response: {}"
+msgstr ""
+
+msgid ""
+"The VAT ID could not be validated, so the recurring payment was not "
+"attempted."
+msgstr ""
 
 msgid "Enter a valid e-mail address."
 msgstr "正確なメールアドレスを入力してください。"
@@ -2886,7 +2903,9 @@ msgstr "weblate.org への未払い"
 msgid "Your payment on weblate.org has failed."
 msgstr "weblate.org へのお支払いに失敗しました。"
 
-msgid "Detailed failure from the payment gateway:"
+#, fuzzy
+#| msgid "Detailed failure from the payment gateway:"
+msgid "Detailed failure reason:"
 msgstr "支払いゲートウェイからの詳細な障害:"
 
 msgid ""
@@ -3064,6 +3083,17 @@ msgstr "お支払い情報"
 msgid "Payment Summary"
 msgstr "支払いの概要"
 
+#, fuzzy
+#| msgid "Donation address"
+msgid "Donation adjustment"
+msgstr "寄付のアドレス"
+
+#, python-format
+msgid ""
+"The requested donation of %(requested)s was adjusted down to %(charged)s so "
+"that VAT can be calculated correctly."
+msgstr ""
+
 msgid "Payment description"
 msgstr "支払いの説明"
 
@@ -3197,8 +3227,8 @@ msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
 msgstr ""
-"担当者は、請求・サービス・シークレット・他の担当者管理を含む、この顧客"
-"アカウント全体を操作できます。信頼できる人物のみを追加してください。"
+"担当者は、請求・サービス・シークレット・他の担当者管理を含む、この顧客アカウ"
+"ント全体を操作できます。信頼できる人物のみを追加してください。"
 
 msgid "You can not remove yourself"
 msgstr "自分自身の削除はできません"
@@ -3485,7 +3515,15 @@ msgstr "Discover Weblate に掲載するサーバーが正しいことを確認�
 msgid ""
 "After confirmation, you will return to that Weblate server to complete "
 "activation."
-msgstr "確認後、アクティベーションを完了するために、その Weblate サーバーへ戻ります。"
+msgstr ""
+"確認後、アクティベーションを完了するために、その Weblate サーバーへ戻ります。"
+
+#, python-format
+msgid ""
+"The server address %(server_url)s was supplied by the registration request "
+"and has not been verified. Continue only if you initiated registration from "
+"this server."
+msgstr ""
 
 msgid "Register"
 msgstr "登録"
