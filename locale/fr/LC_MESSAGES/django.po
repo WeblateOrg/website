@@ -34,7 +34,7 @@ msgstr ""
 "Project-Id-Version: French (Weblate)\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-08-28 00:59-0500\n"
-"PO-Revision-Date: 2026-08-11 21:51+0000\n"
+"PO-Revision-Date: 2026-08-31 12:23+0000\n"
 "Last-Translator: Mickaël Binos <mickaelbinos@outlook.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/weblate/website/"
 "fr/>\n"
@@ -675,15 +675,11 @@ msgstr "Fusionner un client"
 msgid "Review merge"
 msgstr "Fusionner la révision"
 
-#, fuzzy
-#| msgid "Add user to customer"
 msgid "Add owner to customer"
-msgstr "Ajouter un utilisateur à un client"
+msgstr "Ajouter le propriétaire au client"
 
-#, fuzzy
-#| msgid "Add user"
 msgid "Add owner"
-msgstr "Ajouter un utilisateur"
+msgstr "Ajouter un propriétaire"
 
 msgid "Add note"
 msgstr "Ajouter une note"
@@ -925,17 +921,14 @@ msgstr "L'utilisateur hébergé n'était pas associé."
 msgid "Hosted user is already linked to a different local user."
 msgstr "L'utilisateur hébergé est déjà associé à un autre utilisateur local."
 
-#, fuzzy
-#| msgid "Added customer user"
 msgid "Added customer owner"
-msgstr "Utilisateur client ajouté"
+msgstr "Ajout d'un propriétaire du compte client"
 
-#, fuzzy, python-format
-#| msgid "Added %(email)s to customer users. Hosted user was %(state)s."
+#, python-format
 msgid "Added %(email)s to customer owners. Hosted user was %(state)s."
 msgstr ""
-"%(email)s ajoutés aux utilisateurs clients. L'utilisateur hébergé était "
-"%(state)s."
+"Ajout de %(email)s à la liste des clients propriétaires. L'utilisateur "
+"hébergé était %(state)s."
 
 msgid "created"
 msgstr "créé"
@@ -946,20 +939,19 @@ msgstr "lié"
 msgid "Multiple local users use this e-mail address"
 msgstr "Plusieurs utilisateurs locaux utilisent cette adresse e-mail"
 
-#, fuzzy, python-format
-#| msgid "Could not add customer user: %(error)s"
+#, python-format
 msgid "Could not add customer owner: %(error)s"
-msgstr "Impossible d'ajouter l'utilisateur client : %(error)s"
+msgstr "Impossible d'ajouter le propriétaire du client : %(error)s"
 
-#, fuzzy, python-format
-#| msgid "Added %(email)s to customer users."
+#, python-format
 msgid "Added %(email)s to customer owners."
-msgstr "Les adresses %(email)s ont été ajoutées au client."
+msgstr ""
+"Les adresses e-mail %(email)s ont été ajoutées à la liste des clients "
+"propriétaires."
 
-#, fuzzy, python-format
-#| msgid "%(email)s is already a customer user."
+#, python-format
 msgid "%(email)s is already a customer owner."
-msgstr "%(email)s est déjà un utilisateur client."
+msgstr "%(email)s est déjà titulaire d'un compte client."
 
 #, python-format
 msgid "Follow-up scheduled for %(date)s."
@@ -1085,6 +1077,8 @@ msgstr "Note interne expliquant pourquoi le devis a été clôturé."
 
 msgid "EU reverse-charge invoices require a valid buyer VAT ID."
 msgstr ""
+"Les factures relevant du mécanisme d'autoliquidation de l'UE nécessitent un "
+"numéro de TVA valide de la part de l'acheteur."
 
 msgid "Converted"
 msgstr "Converti"
@@ -1099,7 +1093,7 @@ msgid "Overdue"
 msgstr "En retard"
 
 msgid "Czech invoices cannot use a zero VAT rate."
-msgstr ""
+msgstr "Les factures tchèques ne peuvent pas mentionner un taux de TVA nul."
 
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
@@ -1393,6 +1387,9 @@ msgid ""
 "Owners have full control over the customer account, including billing, "
 "services, and other owners."
 msgstr ""
+"Les propriétaires disposent d'un contrôle total sur le compte client, "
+"notamment en matière de facturation, de services et de gestion des autres "
+"propriétaires."
 
 msgid "The country has to match your VAT code"
 msgstr "Le pays doit correspondre au code de TVA européen"
@@ -1462,11 +1459,15 @@ msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted. Validation service response: {}"
 msgstr ""
+"Le numéro de TVA n'a pas pu être validé ; le paiement récurrent n'a donc pas "
+"été effectué. Réponse du service de validation : {}"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted."
 msgstr ""
+"Le numéro de TVA n'a pas pu être validé ; le paiement récurrent n'a donc pas "
+"été effectué."
 
 msgid "Enter a valid e-mail address."
 msgstr "Saisissez une adresse courriel valide."
@@ -1726,7 +1727,7 @@ msgid "translate"
 msgstr "traduire"
 
 msgid "Go Weblate!"
-msgstr "Accéder à Weblate"
+msgstr "Allez, Weblate !"
 
 msgid "Service Status"
 msgstr "État des services"
@@ -2742,7 +2743,7 @@ msgid "Complete configuration customization"
 msgstr "Personnalisation totale de la configuration"
 
 msgid "Single sign-on"
-msgstr "Authentification unique (SSO)"
+msgstr "Authentification unique"
 
 msgid "Priority e-mail support"
 msgstr "Assistance prioritaire par courriel"
@@ -2841,7 +2842,7 @@ msgstr "Annuel"
 
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
-msgstr "<strong>Économisez 20 %%</strong> grâce à l’abonnement annuel."
+msgstr "<strong>Économisez 20 %%</strong> grâce à l’abonnement annuel !"
 
 msgid "Gratis trial"
 msgstr "Essai gratuit"
@@ -2992,10 +2993,8 @@ msgstr "Votre paiement expiré sur weblate.org"
 msgid "Your payment on weblate.org has failed."
 msgstr "Votre paiement sur weblate.org a échoué."
 
-#, fuzzy
-#| msgid "Detailed failure from the payment gateway:"
 msgid "Detailed failure reason:"
-msgstr "Détails des erreurs de la passerelle de paiement :"
+msgstr "Motif détaillé de l'échec :"
 
 msgid ""
 "If concerning a recurring payment, it is retried three times, and if still "
@@ -3178,16 +3177,16 @@ msgstr "Vos informations de facturation"
 msgid "Payment Summary"
 msgstr "Résumé du paiement"
 
-#, fuzzy
-#| msgid "Donation address"
 msgid "Donation adjustment"
-msgstr "Adresse pour les dons"
+msgstr "Ajustement des dons"
 
 #, python-format
 msgid ""
 "The requested donation of %(requested)s was adjusted down to %(charged)s so "
 "that VAT can be calculated correctly."
 msgstr ""
+"Le montant du don demandé, soit %(requested)s, a été revu à la baisse pour "
+"s'établir à %(charged)s afin que la TVA puisse être calculée correctement."
 
 msgid "Payment description"
 msgstr "Description du paiement"
@@ -3298,9 +3297,9 @@ msgid ""
 "communities of libre software. We learn and grow together and we connect the "
 "world."
 msgstr ""
-"Weblate est la plateforme d’une des communautés les plus positive et "
-"stimulante du logiciel libre. Nous apprenons et grandissons ensemble et nous "
-"connectons le monde !"
+"Weblate est une plateforme dédiée à l'une des communautés les plus positives "
+"et les plus stimulantes du monde des logiciels libres. Nous apprenons et "
+"évoluons ensemble, et nous relions le monde entier."
 
 msgid "Contribute with us"
 msgstr "Rejoignez-nous"
@@ -3320,25 +3319,25 @@ msgstr ""
 "nombreuses, permettent à chacun de se développer."
 
 msgid "Owners"
-msgstr ""
+msgstr "Propriétaires"
 
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
 msgstr ""
+"Les propriétaires ont un contrôle total sur ce compte client, notamment en "
+"ce qui concerne la facturation, les services, les informations "
+"confidentielles et les autres propriétaires. N'ajoutez que des personnes en "
+"qui vous avez confiance."
 
 msgid "You can not remove yourself"
 msgstr "Impossible de vous supprimer vous-même 😊"
 
-#, fuzzy
-#| msgid "Protected user"
 msgid "Protected owner"
-msgstr "Utilisateur protégé"
+msgstr "Propriétaire protégé"
 
-#, fuzzy
-#| msgid "Remove user"
 msgid "Remove owner"
-msgstr "Supprimer l’utilisateur"
+msgstr "Supprimer le propriétaire"
 
 msgid "Remove"
 msgstr "Supprimer"
@@ -3637,6 +3636,9 @@ msgid ""
 "and has not been verified. Continue only if you initiated registration from "
 "this server."
 msgstr ""
+"L'adresse du serveur %(server_url)s a été fournie dans la demande "
+"d'enregistrement et n'a pas été vérifiée. Ne continuez que si vous avez "
+"lancé l'enregistrement à partir de ce serveur."
 
 msgid "Register"
 msgstr "S’inscrire"
@@ -3724,7 +3726,7 @@ msgid "Installation on your Linux server"
 msgstr "Installation sur votre serveur Linux"
 
 msgid "One-time installation of Weblate"
-msgstr "Une installation de Weblate"
+msgstr "Installation unique de Weblate"
 
 msgid "Docker-based installation"
 msgstr "Installation via Docker"
@@ -3993,20 +3995,15 @@ msgstr ""
 msgid "User not found!"
 msgstr "Utilisateur introuvable !"
 
-#, fuzzy
-#| msgid "You can not remove yourself"
 msgid "You can not remove yourself."
-msgstr "Impossible de vous supprimer vous-même 😊"
+msgstr "Vous ne pouvez pas vous retirer."
 
-#, fuzzy
-#| msgid "Added customer user"
 msgid "Removed customer owner"
-msgstr "Utilisateur client ajouté"
+msgstr "Suppression du propriétaire du client"
 
-#, fuzzy, python-format
-#| msgid "Added %(email)s to customer users."
+#, python-format
 msgid "Removed %(email)s from customer owners."
-msgstr "Les adresses %(email)s ont été ajoutées au client."
+msgstr "Les %(email)s ont été supprimés des propriétaires de clients."
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Veuillez confirmer la mise à niveau depuis la page de votre compte."
