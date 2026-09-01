@@ -998,7 +998,7 @@ class ThePay2Card(Backend):
             "description_for_customer": self.payment.description,
             "return_url": complete_url,
             "notif_url": complete_url,
-            "save_authorization": bool(self.payment.recurring),
+            "save_authorization": bool(self.payment.recurring and self.recurring),
             "language_code": self.get_language(),
             "customer": {
                 "name": self.payment.customer.name,

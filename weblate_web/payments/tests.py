@@ -1221,6 +1221,32 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(payload["amount"], 61)
 
     @responses.activate
+    def test_recurring_payment_saves_authorization(self) -> None:
+        self.payment.recurring = "y"
+        self.payment.save(update_fields=["recurring"])
+        backend = self.payment.get_payment_backend()
+        thepay_mock_create_payment()
+
+        backend.initiate(None, "", "")
+
+        payload = json.loads(cast("bytes", responses.calls[0].request.body))
+        self.assertIs(payload["save_authorization"], True)
+
+    @responses.activate
+    def test_nonrecurring_method_does_not_save_authorization(self) -> None:
+        self.payment.backend = "thepay2-bitcoin"
+        self.payment.recurring = "y"
+        self.payment.save(update_fields=["backend", "recurring"])
+        backend = self.payment.get_payment_backend()
+        thepay_mock_create_payment()
+
+        backend.initiate(None, "", "")
+
+        payload = json.loads(cast("bytes", responses.calls[0].request.body))
+        self.assertEqual(payload["payment_method_code"], "bitcoin")
+        self.assertIs(payload["save_authorization"], False)
+
+    @responses.activate
     def test_fixed_amount_is_renormalized_before_initiation(self) -> None:
         self.customer.country = "US"
         self.customer.vat = ""
