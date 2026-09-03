@@ -137,7 +137,7 @@
                 <tr>
                   <td>{% blocktranslate with date=followup.follow_up_at %}Next follow-up: {{ date }}{% endblocktranslate %}</td>
                   <td>{{ followup.get_type_display }}</td>
-                  <td>{{ followup.note|default:"-" }}</td>
+                  <td>{{ followup.display_note|default:"-" }}</td>
                   {% if can_change_customer %}
                     <td>
                       <form method="post">

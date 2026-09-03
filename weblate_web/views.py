@@ -313,6 +313,8 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
     for user in payload["users"]:
         service.customer.owners.add(User.objects.get_or_create(username=user)[0])
 
+    service.update_status()
+
     # Collect stats
     report = service.report_set.create(
         site_url="https://hosted.weblate.org/",
@@ -325,7 +327,6 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
         hosted_strings=payload.get("strings", 0),
         version=extract_weblate_version(request),
     )
-    service.update_status()
     return JsonResponse(
         data={
             "name": service.status,
@@ -354,9 +355,9 @@ def api_support(request: HttpRequest) -> JsonResponse:
     report = form.save(commit=False)
     report.service = service
     report.version = version
+    service.update_status()
     report.save()
     is_valid_site_url = report.is_valid_site_url()
-    service.update_status()
     service.create_backup()
     if is_valid_site_url and "public_projects" in request.POST:
         current_projects = set(service.project_set.values_list("name", "url", "web"))

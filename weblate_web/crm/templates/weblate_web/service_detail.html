@@ -56,6 +56,9 @@
         <dt>{% translate "Support status" %}</dt>
         <dd>
           {{ object.get_status_display }}
+          {% if object.is_over_limits %}
+            <span class="crm-badge crm-badge--danger">{% translate "Over limits" %}</span>
+          {% endif %}
         </dd>
       </div>
       {% if object.secret %}
@@ -136,6 +139,42 @@
       </div>
     {% endif %}
   </section>
+
+  {% if object.status == "hosted" and object.limit_usage %}
+    <section class="crm-section content">
+      {% translate "Service limits" as table_title %}
+      {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+      <div class="crm-table-wrap">
+        <table class="crm-table">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+          <thead>
+            <tr>
+              <th scope="col">{% translate "Metric" %}</th>
+              <th scope="col" class="crm-number">{% translate "Usage" %}</th>
+              <th scope="col" class="crm-number">{% translate "Limit" %}</th>
+              <th scope="col">{% translate "Status" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in object.limit_usage %}
+              <tr>
+                <th scope="row">{{ item.label }}</th>
+                <td class="crm-number">{{ item.usage }}</td>
+                <td class="crm-number">{{ item.limit }}</td>
+                <td>
+                  {% if item.exceeded %}
+                    <span class="crm-badge crm-badge--danger">{% translate "Over limit" %}</span>
+                  {% else %}
+                    <span class="crm-badge crm-badge--success">{% translate "Within limit" %}</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
 
   {% if maintenance_window_form %}
     <section class="crm-section content">

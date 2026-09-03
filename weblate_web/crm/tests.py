@@ -629,6 +629,27 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
         self.assertContains(response, "Upcoming follow-up")
         self.assertContains(response, "Check payment")
 
+    @override_settings(
+        CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+    )
+    def test_work_queue_shows_over_limit_followup(self):
+        customer = self.create_customer("OVER LIMIT CUSTOMER")
+        service = Service.objects.create(customer=customer)
+        CustomerFollowUp.objects.create(
+            customer=customer,
+            service=service,
+            follow_up_at=timezone.now(),
+            type=CustomerFollowUp.Type.OVER_LIMIT,
+        )
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertContains(response, "Over limits")
+        self.assertContains(
+            response, "Review usage and upgrade the dedicated instance."
+        )
+        self.assertContains(response, customer.get_absolute_url())
+
     def test_work_queue_suggests_unpaid_old_invoices_only(self):
         old_invoice = self.create_queue_invoice("OLD INVOICE CUSTOMER", age_days=8)
         fresh_invoice = self.create_queue_invoice("FRESH INVOICE CUSTOMER", age_days=6)
@@ -3526,6 +3547,43 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(upgrade_invoice.customer_note, "Upgrade invoice approved")
         self.assertEqual(upgrade_invoice.extra["subscription_upgrade"], subscription.pk)
         self.assertEqual(upgrade_invoice.extra["package"], target.name)
+
+    def test_service_detail_shows_dedicated_limit_usage(self):
+        Package.objects.create(name="community", price=0)
+        package = Package.objects.create(
+            name="dedicated:limits",
+            verbose="Dedicated limits",
+            price=100,
+            category=PackageCategory.PACKAGE_DEDICATED,
+            limit_projects=10,
+            limit_hosted_strings=1_000,
+        )
+        payment = Payment.objects.create(customer=self.customer, amount=100)
+        service = Service.objects.create(customer=self.customer)
+        service.subscription_set.create(
+            package=package,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+        service.update_status()
+        service.report_set.create(
+            site_url="https://limits.example.com",
+            site_title="Over limit service",
+            projects=10,
+            hosted_strings=1_001,
+        )
+
+        response = self.client.get(
+            reverse("crm:service-detail", kwargs={"pk": service.pk})
+        )
+
+        self.assertContains(response, "Service limits")
+        self.assertContains(response, "Over limits")
+        self.assertContains(response, "Over limit")
+        self.assertContains(response, "Within limit")
+        self.assertContains(response, "1001")
+        self.assertContains(response, "1000")
+        self.assertEqual(service.followups.get().type, CustomerFollowUp.Type.OVER_LIMIT)
 
     def test_service_detail_support_upgrade_invoice(self):
         Package.objects.create(name="community", price=0)
