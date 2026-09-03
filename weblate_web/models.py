@@ -79,6 +79,14 @@ if TYPE_CHECKING:
 
 ServiceSuggestion = tuple[str, str, str, str, str, str, int | None]
 
+SERVICE_LIMIT_FIELDS = (
+    "hosted_words",
+    "hosted_strings",
+    "source_strings",
+    "projects",
+    "languages",
+)
+
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 PILLOW_VALIDATION_ERRORS = (
@@ -1230,27 +1238,52 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
             "languages": self.limit_languages,
         }
 
-    def check_in_limits(self):
-        last_report = self.last_report
-        return last_report is not None and (
-            (
-                not self.limit_hosted_strings
-                or last_report.hosted_strings <= self.limit_hosted_strings
-            )
-            and (
-                not self.limit_hosted_words
-                or last_report.hosted_words <= self.limit_hosted_words
-            )
-            and (
-                not self.limit_source_strings
-                or last_report.source_strings <= self.limit_source_strings
-            )
-            and (not self.limit_projects or last_report.projects <= self.limit_projects)
-            and (
-                not self.limit_languages
-                or last_report.languages <= self.limit_languages
-            )
-        )
+    def get_exceeded_limits(
+        self, report: Report | None = None
+    ) -> dict[str, dict[str, int]]:
+        if report is None:
+            report = self.last_report
+        if report is None:
+            return {}
+        return {
+            field: {"usage": usage, "limit": limit}
+            for field in SERVICE_LIMIT_FIELDS
+            if (limit := getattr(self, f"limit_{field}"))
+            and (usage := getattr(report, field)) > limit
+        }
+
+    def check_in_limits(self, report: Report | None = None) -> bool:
+        if report is None and self.last_report is None:
+            return False
+        return not self.get_exceeded_limits(report)
+
+    @property
+    def is_over_limits(self) -> bool:
+        return self.status == "hosted" and bool(self.get_exceeded_limits())
+
+    @property
+    def limit_usage(self) -> list[dict[str, object]]:
+        report = self.last_report
+        if report is None:
+            return []
+        labels = {
+            "hosted_words": _("Hosted words"),
+            "hosted_strings": _("Hosted strings"),
+            "source_strings": _("Source strings"),
+            "projects": _("Projects"),
+            "languages": _("Languages"),
+        }
+        return [
+            {
+                "label": labels[field],
+                "usage": usage,
+                "limit": limit,
+                "exceeded": bool(limit and usage > limit),
+            }
+            for field in SERVICE_LIMIT_FIELDS
+            if (limit := getattr(self, f"limit_{field}"))
+            and (usage := getattr(report, field)) is not None
+        ]
 
     def regenerate(self) -> None:
         self.secret = generate_secret()
@@ -1807,6 +1840,11 @@ class Report(models.Model):
             self.create_locked_site_url_followup()
             return
 
+        if self.service.status == "hosted" and (
+            exceeded_limits := self.service.get_exceeded_limits(self)
+        ):
+            self.create_over_limit_followup(exceeded_limits)
+
         self.service.discoverable = self.discoverable
         self.service.site_url = (
             normalize_site_url_for_lock(self.site_url)
@@ -1847,6 +1885,24 @@ class Report(models.Model):
                     "report_id": self.pk,
                     "locked_site_url": self.service.site_url,
                     "reported_site_url": self.site_url,
+                },
+            },
+        )
+
+    def create_over_limit_followup(
+        self, exceeded_limits: dict[str, dict[str, int]]
+    ) -> None:
+        CustomerFollowUp.objects.update_or_create(
+            service=self.service,
+            type=CustomerFollowUp.Type.OVER_LIMIT,
+            defaults={
+                "customer": self.service.customer,
+                "follow_up_at": timezone.now(),
+                "details": {
+                    "service_id": self.service_id,
+                    "report_id": self.pk,
+                    "site_url": self.site_url,
+                    "exceeded_limits": exceeded_limits,
                 },
             },
         )

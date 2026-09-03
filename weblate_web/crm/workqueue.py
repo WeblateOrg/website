@@ -168,7 +168,7 @@ def get_customer_follow_up_items() -> list[CRMWorkItem]:
                 group=WORK_QUEUE_GROUP_FOLLOWUPS,
                 label=get_followup_label(followup, due=True),
                 title=customer.verbose_name,
-                summary=followup.note or _("Customer follow-up is due."),
+                summary=followup.display_note or _("Customer follow-up is due."),
                 url=customer.get_absolute_url(),
                 date=followup.follow_up_at,
                 severity=10,
@@ -181,7 +181,7 @@ def get_customer_follow_up_items() -> list[CRMWorkItem]:
                 group=WORK_QUEUE_GROUP_FOLLOWUPS,
                 label=get_followup_label(followup, due=False),
                 title=customer.verbose_name,
-                summary=followup.note or _("Scheduled customer follow-up."),
+                summary=followup.display_note or _("Scheduled customer follow-up."),
                 url=customer.get_absolute_url(),
                 date=followup.follow_up_at,
                 severity=50,
@@ -199,6 +199,8 @@ def get_followup_label(followup: CustomerFollowUp, *, due: bool) -> str:
             return _("Duplicate payment")
         case CustomerFollowUp.Type.LOCKED_SITE_URL:
             return _("Locked URL")
+        case CustomerFollowUp.Type.OVER_LIMIT:
+            return _("Over limits")
     return str(followup.get_type_display())
 
 

@@ -3132,6 +3132,106 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(report.hosted_strings, 7)
         self.assertTrue(report.discoverable)
 
+    def test_dedicated_report_creates_over_limit_followup(self) -> None:
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        package = Package.objects.create(
+            name="dedicated:test",
+            verbose="Dedicated test",
+            price=100,
+            category=PackageCategory.PACKAGE_DEDICATED,
+            limit_projects=10,
+            limit_languages=20,
+            limit_source_strings=1_000,
+            limit_hosted_words=2_000,
+            limit_hosted_strings=3_000,
+        )
+        customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
+        service = Service.objects.create(
+            customer=customer, backup_repository="already-configured"
+        )
+        service.subscription_set.create(
+            package=package, expires=timezone.now() + timedelta(days=30)
+        )
+
+        response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://dedicated.example.com",
+                "projects": 11,
+                "languages": 20,
+                "source_strings": 1_000,
+                "words": 2_001,
+                "strings": 3_000,
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()["in_limits"])
+        followup = service.followups.get(type=CustomerFollowUp.Type.OVER_LIMIT)
+        self.assertEqual(followup.customer, customer)
+        self.assertEqual(
+            followup.details["exceeded_limits"],
+            {
+                "hosted_words": {"usage": 2_001, "limit": 2_000},
+                "projects": {"usage": 11, "limit": 10},
+            },
+        )
+
+        response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://dedicated.example.com",
+                "projects": 12,
+                "words": 2_000,
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            service.followups.filter(type=CustomerFollowUp.Type.OVER_LIMIT).count(),
+            1,
+        )
+        followup.refresh_from_db()
+        self.assertEqual(
+            followup.details["exceeded_limits"],
+            {"projects": {"usage": 12, "limit": 10}},
+        )
+
+    def test_shared_report_does_not_create_over_limit_followup(self) -> None:
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        package = Package.objects.create(
+            name="shared:test",
+            verbose="Shared test",
+            price=100,
+            category=PackageCategory.PACKAGE_SHARED,
+            limit_projects=10,
+        )
+        customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
+        service = Service.objects.create(customer=customer)
+        service.subscription_set.create(
+            package=package, expires=timezone.now() + timedelta(days=30)
+        )
+
+        response = self.client.post(
+            "/api/support/",
+            {
+                "secret": service.secret,
+                "site_url": "https://shared.example.com",
+                "projects": 11,
+            },
+            headers={"user-agent": "Weblate/1.2.3"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()["in_limits"])
+        self.assertFalse(
+            service.followups.filter(type=CustomerFollowUp.Type.OVER_LIMIT).exists()
+        )
+
     def test_support_rejects_invalid_report_payload(self) -> None:
         service = self.perform_support()
         report_count = service.report_set.count()
