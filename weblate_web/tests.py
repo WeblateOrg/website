@@ -3232,6 +3232,103 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             service.followups.filter(type=CustomerFollowUp.Type.OVER_LIMIT).exists()
         )
 
+    def test_expired_dedicated_report_creates_stop_followup(self) -> None:
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        package = Package.objects.create(
+            name="dedicated:expired",
+            verbose="Expired dedicated",
+            price=100,
+            category=PackageCategory.PACKAGE_DEDICATED,
+        )
+        customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
+        service = Service.objects.create(
+            customer=customer, backup_repository="already-configured"
+        )
+        subscription = service.subscription_set.create(
+            package=package,
+            expires=timezone.now() - timedelta(days=61),
+        )
+
+        self._post_support_report(service, "https://expired.example.com")
+
+        followup = service.followups.get(type=CustomerFollowUp.Type.EXPIRED_DEDICATED)
+        first_followup_id = followup.pk
+        first_report_id = followup.details["report_id"]
+        self.assertEqual(followup.customer, customer)
+        self.assertEqual(followup.details["service_id"], service.pk)
+        self.assertEqual(
+            followup.details["contract_expired_at"], subscription.expires.isoformat()
+        )
+        self.assertEqual(followup.details["site_url"], "https://expired.example.com")
+
+        self._post_support_report(service, "https://expired.example.com")
+
+        followup.refresh_from_db()
+        self.assertEqual(followup.pk, first_followup_id)
+        self.assertNotEqual(followup.details["report_id"], first_report_id)
+        self.assertEqual(
+            service.followups.filter(
+                type=CustomerFollowUp.Type.EXPIRED_DEDICATED
+            ).count(),
+            1,
+        )
+
+        subscription.expires = timezone.now() + timedelta(days=30)
+        subscription.save(update_fields=["expires"])
+        self._post_support_report(service, "https://expired.example.com")
+
+        self.assertFalse(
+            service.followups.filter(
+                type=CustomerFollowUp.Type.EXPIRED_DEDICATED
+            ).exists()
+        )
+
+    def test_dedicated_report_waits_for_contract_grace_period(self) -> None:
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        package = Package.objects.create(
+            name="dedicated:grace",
+            verbose="Dedicated in grace period",
+            price=100,
+            category=PackageCategory.PACKAGE_DEDICATED,
+        )
+        customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
+        service = Service.objects.create(customer=customer)
+        service.subscription_set.create(
+            package=package,
+            expires=timezone.now() - timedelta(days=59),
+        )
+
+        self._post_support_report(service, "https://grace.example.com")
+
+        self.assertFalse(
+            service.followups.filter(
+                type=CustomerFollowUp.Type.EXPIRED_DEDICATED
+            ).exists()
+        )
+
+    def test_non_dedicated_report_does_not_create_stop_followup(self) -> None:
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        package = Package.objects.create(
+            name="shared:expired",
+            verbose="Expired shared hosting",
+            price=100,
+            category=PackageCategory.PACKAGE_SHARED,
+        )
+        customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
+        service = Service.objects.create(customer=customer)
+        service.subscription_set.create(
+            package=package,
+            expires=timezone.now() - timedelta(days=61),
+        )
+
+        self._post_support_report(service, "https://shared-expired.example.com")
+
+        self.assertFalse(
+            service.followups.filter(
+                type=CustomerFollowUp.Type.EXPIRED_DEDICATED
+            ).exists()
+        )
+
     def test_support_rejects_invalid_report_payload(self) -> None:
         service = self.perform_support()
         report_count = service.report_set.count()

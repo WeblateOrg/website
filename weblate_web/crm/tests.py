@@ -650,6 +650,29 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
         )
         self.assertContains(response, customer.get_absolute_url())
 
+    @override_settings(
+        CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+    )
+    def test_work_queue_shows_expired_dedicated_followup(self):
+        customer = self.create_customer("EXPIRED DEDICATED CUSTOMER")
+        service = Service.objects.create(customer=customer)
+        CustomerFollowUp.objects.create(
+            customer=customer,
+            service=service,
+            follow_up_at=timezone.now(),
+            type=CustomerFollowUp.Type.EXPIRED_DEDICATED,
+        )
+
+        response = self.client.get(reverse("crm:work-queue"))
+
+        self.assertContains(response, "Stop server")
+        self.assertContains(
+            response,
+            "Stop the dedicated instance because its support contract expired over "
+            "two months ago.",
+        )
+        self.assertContains(response, customer.get_absolute_url())
+
     def test_work_queue_suggests_unpaid_old_invoices_only(self):
         old_invoice = self.create_queue_invoice("OLD INVOICE CUSTOMER", age_days=8)
         fresh_invoice = self.create_queue_invoice("FRESH INVOICE CUSTOMER", age_days=6)

@@ -698,6 +698,7 @@ class CustomerFollowUp(models.Model):
         DUPLICATE_PAYMENT = 2, gettext_lazy("Duplicate payment")
         LOCKED_SITE_URL = 3, gettext_lazy("Locked site URL")
         OVER_LIMIT = 4, gettext_lazy("Service over limits")
+        EXPIRED_DEDICATED = 5, gettext_lazy("Expired dedicated service")
 
     customer = models.ForeignKey(
         Customer, related_name="followups", on_delete=models.deletion.CASCADE
@@ -745,6 +746,11 @@ class CustomerFollowUp(models.Model):
                 condition=models.Q(service__isnull=False, type=4),
                 name="unique_over_limit_followup_per_service",
             ),
+            models.UniqueConstraint(
+                fields=("service", "type"),
+                condition=models.Q(service__isnull=False, type=5),
+                name="unique_expired_dedicated_followup_per_service",
+            ),
         ]
 
     def __str__(self) -> str:
@@ -756,6 +762,11 @@ class CustomerFollowUp(models.Model):
             return self.note
         if self.type == self.Type.OVER_LIMIT:
             return gettext("Review usage and upgrade the dedicated instance.")
+        if self.type == self.Type.EXPIRED_DEDICATED:
+            return gettext(
+                "Stop the dedicated instance because its support contract expired "
+                "over two months ago."
+            )
         return ""
 
 

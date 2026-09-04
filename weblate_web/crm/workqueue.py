@@ -201,6 +201,8 @@ def get_followup_label(followup: CustomerFollowUp, *, due: bool) -> str:
             return _("Locked URL")
         case CustomerFollowUp.Type.OVER_LIMIT:
             return _("Over limits")
+        case CustomerFollowUp.Type.EXPIRED_DEDICATED:
+            return _("Stop server")
     return str(followup.get_type_display())
 
 
