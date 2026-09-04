@@ -87,6 +87,8 @@ SERVICE_LIMIT_FIELDS = (
     "languages",
 )
 
+DEDICATED_CONTRACT_GRACE_PERIOD = timedelta(days=60)
+
 
 ALLOWED_IMAGES = {"image/jpeg", "image/png"}
 PILLOW_VALIDATION_ERRORS = (
@@ -1840,6 +1842,8 @@ class Report(models.Model):
             self.create_locked_site_url_followup()
             return
 
+        self.reconcile_expired_dedicated_followup()
+
         if self.service.status == "hosted" and (
             exceeded_limits := self.service.get_exceeded_limits(self)
         ):
@@ -1903,6 +1907,35 @@ class Report(models.Model):
                     "report_id": self.pk,
                     "site_url": self.site_url,
                     "exceeded_limits": exceeded_limits,
+                },
+            },
+        )
+
+    def reconcile_expired_dedicated_followup(self) -> None:
+        latest_subscription = self.service.hosted_subscriptions.first()
+        if latest_subscription is None:
+            return
+
+        current_time = timezone.now()
+        if latest_subscription.expires > current_time:
+            self.service.followups.filter(
+                type=CustomerFollowUp.Type.EXPIRED_DEDICATED
+            ).delete()
+            return
+        if latest_subscription.expires > current_time - DEDICATED_CONTRACT_GRACE_PERIOD:
+            return
+
+        CustomerFollowUp.objects.update_or_create(
+            service=self.service,
+            type=CustomerFollowUp.Type.EXPIRED_DEDICATED,
+            defaults={
+                "customer": self.service.customer,
+                "follow_up_at": current_time,
+                "details": {
+                    "service_id": self.service_id,
+                    "report_id": self.pk,
+                    "site_url": self.site_url,
+                    "contract_expired_at": latest_subscription.expires.isoformat(),
                 },
             },
         )
