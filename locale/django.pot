@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate / Website\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-08-28 00:59-0500\n"
+"POT-Creation-Date: 2026-09-04 00:15-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,15 +14,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 #: weblate_web/crm/forms.py:34 weblate_web/forms.py:69
 msgid "Please confirm that you want to issue a final invoice."
 msgstr ""
 
 #: weblate_web/crm/forms.py:37 weblate_web/crm/views.py:301
-#: weblate_web/crm/views.py:345 weblate_web/views.py:1256
-#: weblate_web/views.py:1267 weblate_web/views.py:1279
+#: weblate_web/crm/views.py:345 weblate_web/views.py:1257
+#: weblate_web/views.py:1268 weblate_web/views.py:1280
 msgid "This subscription can not be upgraded to the selected package."
 msgstr ""
 
@@ -45,11 +45,11 @@ msgid "A customer can not be merged into itself."
 msgstr ""
 
 #: weblate_web/crm/forms.py:98
-#: weblate_web/crm/templates/weblate_web/service_detail.html:193
+#: weblate_web/crm/templates/weblate_web/service_detail.html:232
 msgid "Renewal"
 msgstr ""
 
-#: weblate_web/crm/forms.py:99 weblate_web/models.py:1151
+#: weblate_web/crm/forms.py:99 weblate_web/models.py:1161
 msgid "Upgrade"
 msgstr ""
 
@@ -107,11 +107,11 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
-#: weblate_web/crm/forms.py:190 weblate_web/payments/models.py:713
+#: weblate_web/crm/forms.py:190 weblate_web/payments/models.py:715
 msgid "Follow-up date"
 msgstr ""
 
-#: weblate_web/crm/forms.py:198 weblate_web/payments/models.py:719
+#: weblate_web/crm/forms.py:198 weblate_web/payments/models.py:721
 msgid "Follow-up note"
 msgstr ""
 
@@ -249,8 +249,8 @@ msgid "Previous maintenance window"
 msgstr ""
 
 #: weblate_web/crm/models.py:233
-#: weblate_web/crm/templates/weblate_web/service_detail.html:142
-#: weblate_web/models.py:757
+#: weblate_web/crm/templates/weblate_web/service_detail.html:181
+#: weblate_web/models.py:767
 msgid "Maintenance window"
 msgstr ""
 
@@ -610,7 +610,7 @@ msgstr ""
 
 #: weblate_web/crm/templates/crm/interaction_detail.html:18
 #: weblate_web/crm/templates/payments/customer_detail.html:449
-#: weblate_web/crm/templates/weblate_web/service_detail.html:275
+#: weblate_web/crm/templates/weblate_web/service_detail.html:314
 msgid "Timestamp"
 msgstr ""
 
@@ -839,7 +839,8 @@ msgstr ""
 #: weblate_web/crm/templates/invoices/invoice_list.html:18
 #: weblate_web/crm/templates/payments/customer_detail.html:263
 #: weblate_web/crm/templates/payments/customer_detail.html:412
-#: weblate_web/crm/templates/weblate_web/service_detail.html:163
+#: weblate_web/crm/templates/weblate_web/service_detail.html:155
+#: weblate_web/crm/templates/weblate_web/service_detail.html:202
 #: weblate_web/crm/templates/weblate_web/service_list.html:30
 #: weblate_web/crm/templates/weblate_web/service_list.html:55
 msgid "Status"
@@ -1034,8 +1035,8 @@ msgid "New service purchase"
 msgstr ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:312
-#: weblate_web/crm/templates/weblate_web/service_detail.html:205
-#: weblate_web/crm/templates/weblate_web/service_detail.html:232
+#: weblate_web/crm/templates/weblate_web/service_detail.html:244
+#: weblate_web/crm/templates/weblate_web/service_detail.html:271
 msgid "Create"
 msgstr ""
 
@@ -1166,12 +1167,13 @@ msgid "Weblate"
 msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:44
-#: weblate_web/crm/templates/weblate_web/service_detail.html:279
+#: weblate_web/crm/templates/weblate_web/service_detail.html:318
 msgid "Users"
 msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:50
-#: weblate_web/crm/templates/weblate_web/service_detail.html:280
+#: weblate_web/crm/templates/weblate_web/service_detail.html:319
+#: weblate_web/models.py:1275
 msgid "Projects"
 msgstr ""
 
@@ -1179,121 +1181,150 @@ msgstr ""
 msgid "Support status"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:64
+#: weblate_web/crm/templates/weblate_web/service_detail.html:60
+#: weblate_web/crm/workqueue.py:203
+msgid "Over limits"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:67
 msgid "Activation key"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:68
-#: weblate_web/crm/templates/weblate_web/service_detail.html:98
+#: weblate_web/crm/templates/weblate_web/service_detail.html:71
+#: weblate_web/crm/templates/weblate_web/service_detail.html:101
 msgid "Copied"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:69
-#: weblate_web/crm/templates/weblate_web/service_detail.html:99
+#: weblate_web/crm/templates/weblate_web/service_detail.html:72
+#: weblate_web/crm/templates/weblate_web/service_detail.html:102
 msgid "Copy failed"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:70
-#: weblate_web/crm/templates/weblate_web/service_detail.html:71
+#: weblate_web/crm/templates/weblate_web/service_detail.html:73
+#: weblate_web/crm/templates/weblate_web/service_detail.html:74
 msgid "Copy activation key"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:94
+#: weblate_web/crm/templates/weblate_web/service_detail.html:97
 msgid "Backup"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:100
-#: weblate_web/crm/templates/weblate_web/service_detail.html:101
+#: weblate_web/crm/templates/weblate_web/service_detail.html:103
+#: weblate_web/crm/templates/weblate_web/service_detail.html:104
 msgid "Copy backup SSH URL"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:119
+#: weblate_web/crm/templates/weblate_web/service_detail.html:122
 #, python-format
 msgid "%(size)s in %(directory)s"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:126
+#: weblate_web/crm/templates/weblate_web/service_detail.html:129
 msgid "Discoverable"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:151
-msgid "Update maintenance window"
+#: weblate_web/crm/templates/weblate_web/service_detail.html:145
+msgid "Service limits"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:152
+msgid "Metric"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:153
+msgid "Usage"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:154
+msgid "Limit"
 msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:166
+msgid "Over limit"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:168
+msgid "Within limit"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:190
+msgid "Update maintenance window"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_detail.html:205
 #: weblate_web/templates/user.html:59
 msgid "Active"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:168
+#: weblate_web/crm/templates/weblate_web/service_detail.html:207
 msgid "Service is terminated"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:173
+#: weblate_web/crm/templates/weblate_web/service_detail.html:212
 msgid "Expires"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:180
+#: weblate_web/crm/templates/weblate_web/service_detail.html:219
 msgid "Edit subscription in admin"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:185
+#: weblate_web/crm/templates/weblate_web/service_detail.html:224
 msgid "Purchases"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:187
+#: weblate_web/crm/templates/weblate_web/service_detail.html:226
 msgid ""
 "This creates a final invoice for the renewal. Use Quote if you only need an "
 "offer."
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:210
+#: weblate_web/crm/templates/weblate_web/service_detail.html:249
 #, python-format
 msgid "Upgrade to %(package)s"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:211
+#: weblate_web/crm/templates/weblate_web/service_detail.html:250
 msgid "For the rest of the current period."
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:212
+#: weblate_web/crm/templates/weblate_web/service_detail.html:251
 msgid ""
 "This creates a final invoice for the upgrade. Use Quote if you only need an "
 "offer."
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:243
+#: weblate_web/crm/templates/weblate_web/service_detail.html:282
 msgid "Disable subscription"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:250
+#: weblate_web/crm/templates/weblate_web/service_detail.html:289
 msgid ""
 "Disable the subscription, no payments will be reminded or triggered, "
 "<strong>backups will be removed once subscription expires</strong>"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:258
+#: weblate_web/crm/templates/weblate_web/service_detail.html:297
 msgid "Disable"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:268
+#: weblate_web/crm/templates/weblate_web/service_detail.html:307
 msgid "Recent service reports"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:276
+#: weblate_web/crm/templates/weblate_web/service_detail.html:315
 msgid "Site URL"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:277
+#: weblate_web/crm/templates/weblate_web/service_detail.html:316
 msgid "Site title"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:278
+#: weblate_web/crm/templates/weblate_web/service_detail.html:317
 msgid "Weblate version"
 msgstr ""
 
-#: weblate_web/crm/templates/weblate_web/service_detail.html:281
-#: weblate_web/templates/hosting.html:319
+#: weblate_web/crm/templates/weblate_web/service_detail.html:320
+#: weblate_web/models.py:1273 weblate_web/templates/hosting.html:319
 #: weblate_web/templates/hosting.html:490
 msgid "Hosted strings"
 msgstr ""
@@ -1318,7 +1349,7 @@ msgstr ""
 msgid "Hosted user is already linked to a different local user."
 msgstr ""
 
-#: weblate_web/crm/views.py:904 weblate_web/views.py:1207
+#: weblate_web/crm/views.py:904 weblate_web/views.py:1208
 msgid "Added customer owner"
 msgstr ""
 
@@ -1344,7 +1375,7 @@ msgstr ""
 msgid "Could not add customer owner: %(error)s"
 msgstr ""
 
-#: weblate_web/crm/views.py:975 weblate_web/views.py:1208
+#: weblate_web/crm/views.py:975 weblate_web/views.py:1209
 #, python-format
 msgid "Added %(email)s to customer owners."
 msgstr ""
@@ -1416,25 +1447,29 @@ msgstr ""
 msgid "Locked URL"
 msgstr ""
 
-#: weblate_web/crm/workqueue.py:210
+#: weblate_web/crm/workqueue.py:205
+msgid "Stop server"
+msgstr ""
+
+#: weblate_web/crm/workqueue.py:214
 msgid "Unpaid invoice"
 msgstr ""
 
-#: weblate_web/crm/workqueue.py:211
+#: weblate_web/crm/workqueue.py:215
 #, python-format
 msgid "Invoice %(number)s"
 msgstr ""
 
-#: weblate_web/crm/workqueue.py:228
+#: weblate_web/crm/workqueue.py:232
 msgid "Stale quote"
 msgstr ""
 
-#: weblate_web/crm/workqueue.py:229
+#: weblate_web/crm/workqueue.py:233
 #, python-format
 msgid "Quote %(number)s"
 msgstr ""
 
-#: weblate_web/crm/workqueue.py:250
+#: weblate_web/crm/workqueue.py:254
 msgid "Expired service"
 msgstr ""
 
@@ -1534,243 +1569,255 @@ msgstr ""
 msgid "Czech invoices cannot use a zero VAT rate."
 msgstr ""
 
-#: weblate_web/invoices/views.py:51 weblate_web/views.py:473
+#: weblate_web/invoices/views.py:51 weblate_web/views.py:474
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 
-#: weblate_web/models.py:134
+#: weblate_web/models.py:144
 msgid "No reward"
 msgstr ""
 
-#: weblate_web/models.py:135 weblate_web/templates/donate.html:45
+#: weblate_web/models.py:145 weblate_web/templates/donate.html:45
 msgid "Name in the list of supporters"
 msgstr ""
 
-#: weblate_web/models.py:136 weblate_web/templates/donate.html:52
+#: weblate_web/models.py:146 weblate_web/templates/donate.html:52
 #: weblate_web/templates/donate/form.html:92
 msgid "Link in the list of supporters"
 msgstr ""
 
-#: weblate_web/models.py:137 weblate_web/templates/donate.html:59
+#: weblate_web/models.py:147 weblate_web/templates/donate.html:59
 #: weblate_web/templates/donate/form.html:106
 msgid "Logo and link on the Weblate website"
 msgstr ""
 
-#: weblate_web/models.py:157
+#: weblate_web/models.py:167
 #: weblate_web/templates/weblate_web/post_detail.html:56
 msgid "Release"
 msgstr ""
 
-#: weblate_web/models.py:158 weblate_web/templates/snippets/main-menu.html:6
+#: weblate_web/models.py:168 weblate_web/templates/snippets/main-menu.html:6
 #: weblate_web/templates/weblate_web/post_detail.html:58
 msgid "Features"
 msgstr ""
 
-#: weblate_web/models.py:159
+#: weblate_web/models.py:169
 msgid "Announcement"
 msgstr ""
 
-#: weblate_web/models.py:160
+#: weblate_web/models.py:170
 msgid "Conferences"
 msgstr ""
 
-#: weblate_web/models.py:161 weblate_web/templates/hosting.html:66
+#: weblate_web/models.py:171 weblate_web/templates/hosting.html:66
 msgid "Hosted Weblate"
 msgstr ""
 
-#: weblate_web/models.py:162
+#: weblate_web/models.py:172
 #: weblate_web/templates/weblate_web/post_detail.html:60
 msgid "Development"
 msgstr ""
 
-#: weblate_web/models.py:163
+#: weblate_web/models.py:173
 #: weblate_web/templates/weblate_web/post_detail.html:62
 msgid "Localization"
 msgstr ""
 
-#: weblate_web/models.py:218 weblate_web/models.py:226
+#: weblate_web/models.py:228 weblate_web/models.py:236
 msgid "Invalid image!"
 msgstr ""
 
-#: weblate_web/models.py:240
+#: weblate_web/models.py:250
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr ""
 
-#: weblate_web/models.py:246
+#: weblate_web/models.py:256
 msgid "Please upload an image with a resolution of 570 x 260 pixels."
 msgstr ""
 
-#: weblate_web/models.py:620
+#: weblate_web/models.py:630
 msgctxt "Service kind"
 msgid "Service"
 msgstr ""
 
-#: weblate_web/models.py:621
+#: weblate_web/models.py:631
 msgctxt "Service kind"
 msgid "Donation"
 msgstr ""
 
-#: weblate_web/models.py:625
+#: weblate_web/models.py:635
 msgctxt "Package category"
 msgid "None"
 msgstr ""
 
-#: weblate_web/models.py:626
+#: weblate_web/models.py:636
 msgctxt "Package category"
 msgid "Dedicated hosting"
 msgstr ""
 
-#: weblate_web/models.py:627
+#: weblate_web/models.py:637
 msgctxt "Package category"
 msgid "Shared hosting"
 msgstr ""
 
-#: weblate_web/models.py:628
+#: weblate_web/models.py:638
 msgctxt "Package category"
 msgid "Self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:629
+#: weblate_web/models.py:639
 msgctxt "Package category"
 msgid "Donation"
 msgstr ""
 
-#: weblate_web/models.py:731
+#: weblate_web/models.py:741
 msgid "Community supported"
 msgstr ""
 
-#: weblate_web/models.py:732
+#: weblate_web/models.py:742
 msgid "Dedicated hosted service"
 msgstr ""
 
-#: weblate_web/models.py:733
+#: weblate_web/models.py:743
 msgid "Hosted service"
 msgstr ""
 
-#: weblate_web/models.py:734 weblate_web/templates/support.html:77
+#: weblate_web/models.py:744 weblate_web/templates/support.html:77
 msgid "Basic self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:735 weblate_web/templates/support.html:90
+#: weblate_web/models.py:745 weblate_web/templates/support.html:90
 msgid "Extended self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:736 weblate_web/templates/support.html:109
+#: weblate_web/models.py:746 weblate_web/templates/support.html:109
 msgid "Premium self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:762 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:772 weblate_web/templates/snippets/service.html:69
 msgid "Server URL"
 msgstr ""
 
-#: weblate_web/models.py:776
+#: weblate_web/models.py:786
 msgid "Server description"
 msgstr ""
 
-#: weblate_web/models.py:779
+#: weblate_web/models.py:789
 msgid "Server image"
 msgstr ""
 
-#: weblate_web/models.py:783
+#: weblate_web/models.py:793
 msgid "PNG or JPG image with a resolution of 570 x 260 pixels."
 msgstr ""
 
-#: weblate_web/models.py:791
+#: weblate_web/models.py:801
 msgid "Link text"
 msgstr ""
 
-#: weblate_web/models.py:794
+#: weblate_web/models.py:804
 msgid "Link URL"
 msgstr ""
 
-#: weblate_web/models.py:797
+#: weblate_web/models.py:807
 msgid "Link image"
 msgstr ""
 
-#: weblate_web/models.py:1083 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1093 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr ""
 
-#: weblate_web/models.py:1084
+#: weblate_web/models.py:1094
 msgid "Never get held back by a problem."
 msgstr ""
 
-#: weblate_web/models.py:1085
+#: weblate_web/models.py:1095
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 
-#: weblate_web/models.py:1087 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1097 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr ""
 
-#: weblate_web/models.py:1099 weblate_web/models.py:1116
-#: weblate_web/models.py:1147 weblate_web/models.py:1720
+#: weblate_web/models.py:1109 weblate_web/models.py:1126
+#: weblate_web/models.py:1157 weblate_web/models.py:1755
 #, python-format
 msgid "Upgrade to %s"
 msgstr ""
 
-#: weblate_web/models.py:1101
+#: weblate_web/models.py:1111
 msgid "Premium support"
 msgstr ""
 
-#: weblate_web/models.py:1102
+#: weblate_web/models.py:1112
 msgid "Don’t wait with your work on hold."
 msgstr ""
 
-#: weblate_web/models.py:1103
+#: weblate_web/models.py:1113
 msgid "This guarantees you answers the NBD at the latest."
 msgstr ""
 
-#: weblate_web/models.py:1105
+#: weblate_web/models.py:1115
 msgid "Be premium"
 msgstr ""
 
-#: weblate_web/models.py:1118 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1128 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr ""
 
-#: weblate_web/models.py:1119
+#: weblate_web/models.py:1129
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr ""
 
-#: weblate_web/models.py:1120
+#: weblate_web/models.py:1130
 msgid "We will manage upgrades for you."
 msgstr ""
 
-#: weblate_web/models.py:1122
+#: weblate_web/models.py:1132
 msgid "Stay updated"
 msgstr ""
 
-#: weblate_web/models.py:1131 weblate_web/templates/support.html:143
+#: weblate_web/models.py:1141 weblate_web/templates/support.html:143
 msgid "Backup service"
 msgstr ""
 
-#: weblate_web/models.py:1132
+#: weblate_web/models.py:1142
 msgid "Easily put your backups in a safe place."
 msgstr ""
 
-#: weblate_web/models.py:1133
+#: weblate_web/models.py:1143
 msgid "Encrypted and automatic, always available."
 msgstr ""
 
-#: weblate_web/models.py:1135
+#: weblate_web/models.py:1145
 msgid "Back up daily"
 msgstr ""
 
-#: weblate_web/models.py:1148
+#: weblate_web/models.py:1158
 msgid "Increase service limits to translate more content."
 msgstr ""
 
-#: weblate_web/models.py:1308
+#: weblate_web/models.py:1272
+msgid "Hosted words"
+msgstr ""
+
+#: weblate_web/models.py:1274
+msgid "Source strings"
+msgstr ""
+
+#: weblate_web/models.py:1276
+msgid "Languages"
+msgstr ""
+
+#: weblate_web/models.py:1343
 msgid "Activation code has already been used."
 msgstr ""
 
-#: weblate_web/models.py:1310
+#: weblate_web/models.py:1345
 msgid "Activation code has expired."
 msgstr ""
 
-#: weblate_web/models.py:1837
+#: weblate_web/models.py:1879
 #, python-format
 msgid "Locked URL mismatch: %(url)s"
 msgstr ""
@@ -1922,73 +1969,91 @@ msgstr ""
 msgid "Locked site URL"
 msgstr ""
 
-#: weblate_web/payments/models.py:714
+#: weblate_web/payments/models.py:700
+msgid "Service over limits"
+msgstr ""
+
+#: weblate_web/payments/models.py:701
+msgid "Expired dedicated service"
+msgstr ""
+
+#: weblate_web/payments/models.py:716
 msgid "Date and time when this customer needs attention."
 msgstr ""
 
-#: weblate_web/payments/models.py:720
+#: weblate_web/payments/models.py:722
 msgid "Short description of the next action."
 msgstr ""
 
-#: weblate_web/payments/models.py:726
+#: weblate_web/payments/models.py:728
 msgid "Follow-up type"
 msgstr ""
 
-#: weblate_web/payments/models.py:749
+#: weblate_web/payments/models.py:764
+msgid "Review usage and upgrade the dedicated instance."
+msgstr ""
+
+#: weblate_web/payments/models.py:767
+msgid ""
+"Stop the dedicated instance because its support contract expired over two "
+"months ago."
+msgstr ""
+
+#: weblate_web/payments/models.py:774
 msgid "Annual"
 msgstr ""
 
-#: weblate_web/payments/models.py:750
+#: weblate_web/payments/models.py:775
 msgid "Biannual"
 msgstr ""
 
-#: weblate_web/payments/models.py:751 weblate_web/templates/donate/form.html:57
+#: weblate_web/payments/models.py:776 weblate_web/templates/donate/form.html:57
 msgid "Quarterly"
 msgstr ""
 
-#: weblate_web/payments/models.py:752 weblate_web/templates/donate/form.html:50
+#: weblate_web/payments/models.py:777 weblate_web/templates/donate/form.html:50
 #: weblate_web/templates/hosting.html:388
 #: weblate_web/templates/hosting.html:406
 #: weblate_web/templates/snippets/pricing.html:43
 msgid "Monthly"
 msgstr ""
 
-#: weblate_web/payments/models.py:753
+#: weblate_web/payments/models.py:778
 msgid "One-time"
 msgstr ""
 
-#: weblate_web/payments/models.py:799
+#: weblate_web/payments/models.py:824
 msgctxt "Payment state"
 msgid "New payment"
 msgstr ""
 
-#: weblate_web/payments/models.py:800
+#: weblate_web/payments/models.py:825
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr ""
 
-#: weblate_web/payments/models.py:801
+#: weblate_web/payments/models.py:826
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr ""
 
-#: weblate_web/payments/models.py:802
+#: weblate_web/payments/models.py:827
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr ""
 
-#: weblate_web/payments/models.py:803
+#: weblate_web/payments/models.py:828
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr ""
 
-#: weblate_web/payments/models.py:896
+#: weblate_web/payments/models.py:921
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted. Validation service response: {}"
 msgstr ""
 
-#: weblate_web/payments/models.py:900
+#: weblate_web/payments/models.py:925
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted."
@@ -3731,7 +3796,7 @@ msgstr ""
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:814
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:815
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr ""
 
@@ -4763,7 +4828,7 @@ msgid "Other topics"
 msgstr ""
 
 #: weblate_web/templates/weblate_web/post_detail.html:63
-#: weblate_web/views.py:1076
+#: weblate_web/views.py:1077
 msgid "Milestones"
 msgstr ""
 
@@ -4884,98 +4949,98 @@ msgstr[1] ""
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
 
-#: weblate_web/views.py:458
+#: weblate_web/views.py:459
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr ""
 
-#: weblate_web/views.py:501
+#: weblate_web/views.py:502
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
 
-#: weblate_web/views.py:508 weblate_web/views.py:600
+#: weblate_web/views.py:509 weblate_web/views.py:601
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:520
+#: weblate_web/views.py:521
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:539
+#: weblate_web/views.py:540
 msgid "Please choose a payment method."
 msgstr ""
 
-#: weblate_web/views.py:565
+#: weblate_web/views.py:566
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr ""
 
-#: weblate_web/views.py:575
+#: weblate_web/views.py:576
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr ""
 
-#: weblate_web/views.py:663
+#: weblate_web/views.py:664
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr ""
 
-#: weblate_web/views.py:670
+#: weblate_web/views.py:671
 msgid "New agreement created, you can download it below."
 msgstr ""
 
-#: weblate_web/views.py:726
+#: weblate_web/views.py:727
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 
-#: weblate_web/views.py:785
+#: weblate_web/views.py:786
 msgid "Payment not yet processed, please retry."
 msgstr ""
 
-#: weblate_web/views.py:789
+#: weblate_web/views.py:790
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:790
+#: weblate_web/views.py:791
 msgid "Unknown reason"
 msgstr ""
 
-#: weblate_web/views.py:802
+#: weblate_web/views.py:803
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr ""
 
-#: weblate_web/views.py:807
+#: weblate_web/views.py:808
 msgid "Thank you for your subscription."
 msgstr ""
 
-#: weblate_web/views.py:995
+#: weblate_web/views.py:996
 msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
 
-#: weblate_web/views.py:1182
+#: weblate_web/views.py:1183
 msgid "User not found!"
 msgstr ""
 
-#: weblate_web/views.py:1186
+#: weblate_web/views.py:1187
 msgid "You can not remove yourself."
 msgstr ""
 
-#: weblate_web/views.py:1192
+#: weblate_web/views.py:1193
 msgid "Removed customer owner"
 msgstr ""
 
-#: weblate_web/views.py:1193
+#: weblate_web/views.py:1194
 #, python-format
 msgid "Removed %(email)s from customer owners."
 msgstr ""
 
-#: weblate_web/views.py:1335
+#: weblate_web/views.py:1336
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
