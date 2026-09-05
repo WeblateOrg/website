@@ -28,7 +28,8 @@
         {% endif %}
         <div class="page-desc">
           <a class="button inline" href="{% url "support" %}">{% translate "Get support" %}</a>
-          <a class="button inline border rev" href="{% url "service-discovery-add" %}">{% translate "Add server to Discover Weblate" %}</a>
+          <a class="button inline border rev"
+             href="{% url "service-discovery-add" %}">{% translate "Add server to Discover Weblate" %}</a>
         </div>
 
         <h1>{% translate "My donations" %}</h1>
@@ -50,7 +51,8 @@
                       <div class="line-left">{% translate "Link" %}</div>
                       <div class="line-right user-text-formatting-donation">
                         {{ donation.donation_link_url }}
-                        <a class="button small inline" href="{% url "donate-edit" pk=donation.pk %}">{% translate "Edit reward" %}</a>
+                        <a class="button small inline"
+                           href="{% url "donate-edit" pk=donation.pk %}">{% translate "Edit reward" %}</a>
                       </div>
                       <div class="clear"></div>
                     </div>

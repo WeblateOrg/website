@@ -469,7 +469,8 @@
                   <td>
                     <div class="crm-row-actions">
                       {% if interaction.has_detail_page %}
-                        <a href="{% url "crm:interaction-detail" pk=interaction.pk %}" target="_blank">{% translate "View" %}</a>
+                        <a href="{% url "crm:interaction-detail" pk=interaction.pk %}"
+                           target="_blank">{% translate "View" %}</a>
                       {% endif %}
                       {% if interaction.attachment %}
                         <a href="{{ interaction.attachment_download_url }}">{% translate "Download" %}</a>

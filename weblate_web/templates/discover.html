@@ -24,7 +24,8 @@
           </p>
         </div>
         <div class="search-bar">
-          <a href="{% url "service-discovery-add" %}" class="link float-right discover-add">{% translate "Add yours" %}</a>
+          <a href="{% url "service-discovery-add" %}"
+             class="link float-right discover-add">{% translate "Add yours" %}</a>
           <form action="{% url 'discover' %}">
             <input type="text"
                    class="search-input"
@@ -99,7 +100,8 @@
               </div>
             </div>
           {% empty %}
-            <h2 id="which" class="section-title payment-conditions">{% translate "No servers matched your search." %}</h2>
+            <h2 id="which"
+                class="section-title payment-conditions">{% translate "No servers matched your search." %}</h2>
           {% endfor %}
         </div>
       </div>

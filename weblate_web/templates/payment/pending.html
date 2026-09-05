@@ -42,7 +42,8 @@
                 </div>
               {% endfor %}
               {% if object.paid_invoice or object.draft_invoice %}
-                <a class="button center make-payment" href="{% url 'user-invoice' pk=object.pk %}">{% translate "Download pro forma invoice" %}</a>
+                <a class="button center make-payment"
+                   href="{% url 'user-invoice' pk=object.pk %}">{% translate "Download pro forma invoice" %}</a>
               {% endif %}
             </div>
           </div>

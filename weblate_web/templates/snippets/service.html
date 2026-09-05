@@ -69,7 +69,8 @@
     <div class="line-left">{% translate "Server URL" %}</div>
     <div class="line-right">
       {% if service.last_report %}
-        <a class="link" href="{{ service.last_report.site_url|safe_site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
+        <a class="link"
+           href="{{ service.last_report.site_url|safe_site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
       {% else %}
         <p class="text-muted">
           {% blocktranslate with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For increased comfort, use the activation token to connect your Weblate installation to the support portal. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktranslate %}
@@ -83,7 +84,8 @@
     <div class="line-right">
       {% if service.discoverable %}
         <a class="link" href="{% url 'discover' %}#d{{ service.pk }}">{% translate "View your listing" %}</a>
-        <a class="button small inline" href="{% url "service-discovery" pk=service.pk %}">{% translate "Customize listing" %}</a>
+        <a class="button small inline"
+           href="{% url "service-discovery" pk=service.pk %}">{% translate "Customize listing" %}</a>
       {% endif %}
       <p class="text-muted">
         {% blocktranslate with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate server. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktranslate %}
