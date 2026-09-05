@@ -79,7 +79,8 @@
               <li>{% translate "Issues in your environment fixed immediately." %}</li>
               <li>{% translate "Priority e-mail support." %}</li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=basic" class="format-item bottom-left">{{ basic_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
+            <a href="{% url 'subscription-new' %}?plan=basic"
+               class="format-item bottom-left">{{ basic_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=basic"
                class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
@@ -150,7 +151,8 @@
                 <a href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% translate "Read more in the documentation." %}</a>
               </li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=backup" class="format-item bottom-left">{{ backup_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
+            <a href="{% url 'subscription-new' %}?plan=backup"
+               class="format-item bottom-left">{{ backup_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
             <a href="{% url 'subscription-new' %}?plan=backup"
                class="button black right bottom-right">{% translate "Buy now" %}</a>
           </div>
