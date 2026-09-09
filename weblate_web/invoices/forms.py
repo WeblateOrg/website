@@ -20,8 +20,56 @@
 from __future__ import annotations
 
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext
 
-from .models import Invoice
+from .models import Invoice, InvoiceKind
+
+
+class InvoiceAdminForm(forms.ModelForm):
+    vat_validation_warning: ValidationError | None = None
+
+    class Meta:
+        fields = (
+            "issue_date",
+            "due_date",
+            "tax_date",
+            "kind",
+            "category",
+            "customer",
+            "customer_reference",
+            "customer_note",
+            "quote_status",
+            "quote_status_note",
+            "discount",
+            "vat_rate",
+            "currency",
+            "parent",
+            "prepaid",
+            "extra",
+        )
+        model = Invoice
+
+    def clean(self):
+        cleaned_data = super().clean() or {}
+        customer = cleaned_data.get("customer")
+        if (
+            self.instance._state.adding  # pylint: disable=protected-access
+            and cleaned_data.get("kind") == InvoiceKind.INVOICE
+            and customer is not None
+        ):
+            try:
+                self.vat_validation_warning = customer.validate_vat_for_issuance()
+            except ValidationError:
+                self.add_error(
+                    "customer",
+                    gettext(
+                        "The customer's VAT ID could not be validated, so the "
+                        "invoice was not issued. Update the customer data or try "
+                        "again later."
+                    ),
+                )
+        return cleaned_data
 
 
 class CustomerReferenceForm(forms.ModelForm):

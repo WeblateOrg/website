@@ -11,6 +11,7 @@ import responses
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
@@ -965,6 +966,86 @@ class CRMQuoteStatusTestCase(BaseCRMTestCase):
         self.assertEqual(invoice.customer_reference, "PO-42")
         self.assertEqual(invoice.customer_note, "Approved quote")
         mock_generate_files.assert_called_once_with()
+
+    @patch.object(Invoice, "generate_files")
+    def test_quote_conversion_blocks_failed_vat_validation(self, mock_generate_files):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+
+        with patch.object(
+            Customer,
+            "validate_vat_for_issuance",
+            side_effect=ValidationError("Invalid VAT"),
+        ):
+            response = self.client.post(
+                quote.get_absolute_url(),
+                {"confirm_invoice": "1", "invoice": "1"},
+                follow=True,
+            )
+
+        self.assertFalse(quote.invoice_set.exists())
+        self.assertContains(response, "VAT ID could not be validated")
+        mock_generate_files.assert_not_called()
+
+    @patch.object(Invoice, "generate_files")
+    def test_quote_conversion_records_vat_outage(self, mock_generate_files):
+        quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
+        Customer.objects.filter(pk=quote.customer.pk).update(
+            vat="DE136695976", vat_validated=timezone.now()
+        )
+        quote.customer.refresh_from_db()
+        warning = ValidationError(
+            '<a href="https://example.com/status">Localized VIES warning</a>',
+            code="MS_UNAVAILABLE",
+        )
+
+        with patch.object(Customer, "validate_vat_for_issuance", return_value=warning):
+            response = self.client.post(
+                quote.get_absolute_url(),
+                {"confirm_invoice": "1", "invoice": "1"},
+                follow=True,
+            )
+
+        invoice = quote.invoice_set.get()
+        interaction = Interaction.objects.get(customer=quote.customer)
+        self.assertEqual(interaction.summary, Interaction.VIES_OUTAGE_INVOICE_ISSUED)
+        self.assertEqual(interaction.content, "")
+        self.assertEqual(interaction.details["invoice"], invoice.number)
+        self.assertTrue(interaction.details["stale_validation_used"])
+        self.assertNotIn("message", interaction.details)
+        self.assertIn("Invoice issued during VIES outage", str(interaction))
+        self.assertNotIn(Interaction.VIES_OUTAGE_INVOICE_ISSUED, str(interaction))
+        detail_rows = {
+            str(row.label): (str(row.value), row.url) for row in interaction.detail_rows
+        }
+        self.assertEqual(detail_rows["Automated"][0], "No")
+        self.assertEqual(
+            detail_rows["Invoice"],
+            (invoice.number, invoice.get_absolute_url()),
+        )
+        self.assertEqual(detail_rows["VAT ID"][0], "DE136695976")
+        self.assertEqual(detail_rows["Stale validation used"][0], "Yes")
+        self.assertEqual(detail_rows["Error code"][0], "MS_UNAVAILABLE")
+        self.assertEqual(
+            detail_rows["Error message"][0], "VIES was temporarily unavailable."
+        )
+        self.assertContains(response, "VIES is temporarily unavailable")
+        mock_generate_files.assert_called_once_with()
+
+        response = self.client.get(
+            quote.customer.get_absolute_url(), {"tab": "interactions"}
+        )
+        self.assertContains(response, "Invoice issued during VIES outage")
+        self.assertContains(response, "VIES was temporarily unavailable")
+        self.assertNotContains(response, Interaction.VIES_OUTAGE_INVOICE_ISSUED)
+        self.assertNotContains(response, "Localized VIES warning")
+
+        response = self.client.get(
+            reverse("crm:interaction-detail", kwargs={"pk": interaction.pk})
+        )
+        self.assertContains(response, "Invoice issued during VIES outage")
+        self.assertContains(response, "VIES was temporarily unavailable.")
+        self.assertNotContains(response, Interaction.VIES_OUTAGE_INVOICE_ISSUED)
+        self.assertNotContains(response, "Localized VIES warning")
 
     def test_invoice_detail_breadcrumb_links_to_kind_list(self):
         quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
@@ -2437,6 +2518,111 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 404)
 
 
+class CRMVATIssuanceTestCase(BaseCRMTestCase):
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        self.client.force_login(self.user)
+
+    def test_service_invoice_blocks_failed_vat_validation(self):
+        Package.objects.create(name="community", price=0)
+        package = Package.objects.create(name="x1", verbose="pkg1", price=42)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=1)
+        service = Service.objects.create(customer=customer)
+        subscription = service.subscription_set.create(
+            package=package,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+
+        with patch.object(
+            Customer,
+            "validate_vat_for_issuance",
+            side_effect=ValidationError("Invalid VAT"),
+        ):
+            response = self.client.post(
+                service.get_absolute_url(),
+                {
+                    "action": "renewal",
+                    "kind": InvoiceKind.INVOICE,
+                    "subscription": subscription.pk,
+                    "confirm_invoice": "1",
+                },
+                follow=True,
+            )
+
+        self.assertFalse(Invoice.objects.exists())
+        self.assertContains(response, "VAT ID could not be validated")
+
+    def test_customer_invoice_blocks_failed_vat_validation(self):
+        package = Package.objects.create(name="x1", verbose="pkg1", price=42)
+        customer = self.create_customer()
+
+        with patch.object(
+            Customer,
+            "validate_vat_for_issuance",
+            side_effect=ValidationError("Invalid VAT"),
+        ):
+            response = self.client.post(
+                customer.get_absolute_url(),
+                {
+                    "package": package.pk,
+                    "currency": Currency.EUR,
+                    "kind": InvoiceKind.INVOICE,
+                    "confirm_invoice": "1",
+                },
+                follow=True,
+            )
+
+        self.assertFalse(Invoice.objects.exists())
+        self.assertContains(response, "VAT ID could not be validated")
+
+    @patch.object(Invoice, "generate_files")
+    def test_service_invoice_records_vat_outage(self, generate_files):
+        Package.objects.create(name="community", price=0)
+        package = Package.objects.create(
+            name="x1",
+            verbose="pkg1",
+            price=42,
+            category=PackageCategory.PACKAGE_SHARED,
+        )
+        customer = self.create_customer()
+        Customer.objects.filter(pk=customer.pk).update(
+            vat="DE136695976", vat_validated=timezone.now()
+        )
+        customer.refresh_from_db()
+        payment = Payment.objects.create(customer=customer, amount=1)
+        service = Service.objects.create(customer=customer)
+        subscription = service.subscription_set.create(
+            package=package,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+        warning = ValidationError("VIES unavailable", code="MS_UNAVAILABLE")
+
+        with patch.object(Customer, "validate_vat_for_issuance", return_value=warning):
+            response = self.client.post(
+                service.get_absolute_url(),
+                {
+                    "action": "renewal",
+                    "kind": InvoiceKind.INVOICE,
+                    "subscription": subscription.pk,
+                    "confirm_invoice": "1",
+                },
+                follow=True,
+            )
+
+        invoice = Invoice.objects.get()
+        interaction = Interaction.objects.get(customer=customer)
+        self.assertRedirects(response, invoice.get_absolute_url())
+        self.assertContains(response, "VIES is temporarily unavailable")
+        self.assertEqual(interaction.details["invoice"], invoice.number)
+        self.assertEqual(interaction.details["code"], "MS_UNAVAILABLE")
+        generate_files.assert_called_once_with()
+
+
 @override_settings(  # ruff:ignore[too-many-public-methods]
     CACHES={
         "default": {
@@ -3708,20 +3894,27 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(subscription.package, current)
         self.assertEqual(Invoice.objects.count(), 0)
 
-        response = self.client.post(
-            reverse("crm:service-detail", kwargs={"pk": service.pk}),
-            {
-                "subscription": subscription.pk,
-                "package": target.name,
-                "action": "upgrade",
-                "kind": InvoiceKind.QUOTE,
-                "customer_reference": "",
-                "customer_note": "",
-            },
-            follow=True,
-        )
+        with patch.object(
+            Customer,
+            "validate_vat_for_issuance",
+            side_effect=ValidationError("Invalid VAT"),
+        ) as validate_vat:
+            response = self.client.post(
+                reverse("crm:service-detail", kwargs={"pk": service.pk}),
+                {
+                    "subscription": subscription.pk,
+                    "package": target.name,
+                    "action": "upgrade",
+                    "kind": InvoiceKind.INVOICE,
+                    "customer_reference": "",
+                    "customer_note": "",
+                    "confirm_invoice": "1",
+                },
+                follow=True,
+            )
 
         self.assertRedirects(response, service.get_absolute_url())
+        validate_vat.assert_not_called()
         subscription.refresh_from_db()
         self.assertEqual(subscription.package, target)
         self.assertEqual(subscription.payment, payment)

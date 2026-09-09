@@ -105,6 +105,7 @@ VAT_COUNTRY_CODE_ALIASES = {
     "XI": "GB",
 }
 VAT_RATE = 21
+VAT_ISSUANCE_GRACE_DAYS = 30
 DELETED_MAIL = re.compile(r"noreply\+[0-9]+@weblate.org")
 PAYMENT_QUANTUM = Decimal("0.01")
 
@@ -655,21 +656,26 @@ class Customer(models.Model):
             and self.vat_validation_error.get("vat") == str(self.vat)
         )
 
-    def prepayment_validation(self, *, automated: bool = False):
+    def prepayment_validation(
+        self, *, automated: bool = False, force: bool = False
+    ) -> None:
         # ruff:ignore[import-outside-top-level]
         from weblate_web.crm.models import Interaction
 
         # Skip payment originated validation if we have validated recently
-        if not automated and self.vat_recently_validated:
+        if not force and not automated and self.vat_recently_validated:
             # Perform offline validation only
             validate_vatin_offline(self.vat)
             return
-        if automated and self.vat_recently_invalid:
+        if not force and automated and self.vat_recently_invalid:
             return
 
         previous_state = self.vat_validation_state
         try:
-            validate_vatin(self.vat, force=not automated and self.vat_recently_invalid)
+            validate_vatin(
+                self.vat,
+                force=force or (not automated and self.vat_recently_invalid),
+            )
         except ValidationError as error:
             if is_vies_transient_validation_error(error):
                 raise
@@ -690,6 +696,57 @@ class Customer(models.Model):
             raise
         self._set_vat_valid()
         self.save(update_fields=self._vat_validation_update_fields)
+
+    def validate_vat_for_issuance(self) -> ValidationError | None:
+        """Validate reverse-charge eligibility before issuing an invoice."""
+        if not (self.is_eu and self.country_code != "CZ" and self.vat):
+            return None
+
+        if self.vat_recently_validated:
+            self.prepayment_validation()
+            return None
+
+        previously_valid = self.has_valid_vat
+        previous_validation = self.vat_validated
+        try:
+            self.prepayment_validation(force=True)
+        except ValidationError as error:
+            if (
+                is_vies_transient_validation_error(error)
+                and previously_valid
+                and previous_validation is not None
+                and previous_validation
+                >= timezone.now() - timedelta(days=VAT_ISSUANCE_GRACE_DAYS)
+            ):
+                return error
+            raise
+        return None
+
+    def record_stale_vat_issuance(
+        self, *, invoice: Invoice, user: User, warning: ValidationError
+    ) -> None:
+        """Record an invoice issued during a transient VIES outage."""
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.crm.models import Interaction
+
+        self.interaction_set.create(
+            origin=Interaction.Origin.VIES,
+            summary=Interaction.VIES_OUTAGE_INVOICE_ISSUED,
+            content="",
+            details={
+                "automated": False,
+                "invoice": invoice.number,
+                "invoice_id": str(invoice.pk),
+                "vat": str(self.vat),
+                "validated": self.vat_validated.isoformat()
+                if self.vat_validated
+                else None,
+                "stale_validation_used": True,
+                "code": str(warning.code) if warning.code else "",
+                "issued_by": user.get_username(),
+            },
+            user=user,
+        )
 
 
 class CustomerFollowUp(models.Model):

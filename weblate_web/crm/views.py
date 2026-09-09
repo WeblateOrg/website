@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import DataError, IntegrityError, transaction
 from django.db.models import (
     Case,
@@ -100,6 +100,48 @@ if TYPE_CHECKING:
     from django.http import HttpRequest
 
     from weblate_web.views import AuthenticatedHttpRequest
+
+
+def _validate_vat_for_invoice(
+    request: HttpRequest, customer: Customer
+) -> tuple[bool, ValidationError | None]:
+    try:
+        return True, customer.validate_vat_for_issuance()
+    except ValidationError:
+        messages.error(
+            request,
+            gettext(
+                "The customer's VAT ID could not be validated, so the invoice "
+                "was not issued. Update the customer data or try again later."
+            ),
+        )
+        return False, None
+
+
+def _record_vat_issuance_warning(
+    request: HttpRequest,
+    customer: Customer,
+    invoice: Invoice,
+    warning: ValidationError,
+) -> None:
+    customer.record_stale_vat_issuance(
+        invoice=invoice,
+        user=cast("User", request.user),
+        warning=warning,
+    )
+    validated = gettext("an earlier successful check")
+    if customer.vat_validated is not None:
+        validated = timezone.localtime(customer.vat_validated).strftime(
+            "%Y-%m-%d %H:%M %Z"
+        )
+    messages.warning(
+        request,
+        gettext(
+            "VIES is temporarily unavailable. The invoice was issued using the "
+            "VAT validation from %(validated)s."
+        )
+        % {"validated": validated},
+    )
 
 
 IncomeCategory: TypeAlias = InvoiceCategory | None
@@ -328,6 +370,14 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             if response is not None:
                 return response
 
+        vat_warning = None
+        if kind == InvoiceKind.INVOICE:
+            vat_valid, vat_warning = _validate_vat_for_invoice(
+                request, service.customer
+            )
+            if not vat_valid:
+                return redirect(service)
+
         with override("en"):
             kwargs = {
                 "kind": kind,
@@ -346,6 +396,10 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
                     ),
                 )
                 return redirect(service)
+        if vat_warning is not None:
+            _record_vat_issuance_warning(
+                request, service.customer, invoice, vat_warning
+            )
         return redirect(invoice)
 
     def post(self, request, *args, **kwargs):
@@ -637,6 +691,26 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
             return self.reopen_quote(request)
         return None
 
+    def convert_quote(
+        self,
+        request: HttpRequest,
+        quote: Invoice,
+        convert_form: CustomerReferenceForm,
+    ):
+        vat_valid, vat_warning = _validate_vat_for_invoice(request, quote.customer)
+        if not vat_valid:
+            return redirect(quote)
+        with override("en"):
+            invoice = quote.duplicate(
+                kind=InvoiceKind.INVOICE,
+                customer_reference=convert_form.cleaned_data["customer_reference"],
+                customer_note=convert_form.cleaned_data["customer_note"],
+            )
+            invoice.generate_files()
+        if vat_warning is not None:
+            _record_vat_issuance_warning(request, quote.customer, invoice, vat_warning)
+        return redirect(invoice)
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if quote_status_response := self.handle_quote_status_post(
@@ -666,14 +740,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
             and self.can_convert()
             and has_invoice_confirmation(request)
         ):
-            with override("en"):
-                invoice = quote.duplicate(
-                    kind=InvoiceKind.INVOICE,
-                    customer_reference=convert_form.cleaned_data["customer_reference"],
-                    customer_note=convert_form.cleaned_data["customer_note"],
-                )
-                invoice.generate_files()
-            return redirect(invoice)
+            return self.convert_quote(request, quote, convert_form)
         return self.get(request, *args, **kwargs)
 
 
@@ -1056,9 +1123,15 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     def create_new_subscription(self, request, customer: Customer):
         subscription_form = NewSubscriptionForm(request.POST)
         if subscription_form.is_valid():
+            kind = subscription_form.cleaned_data["kind"]
+            vat_warning = None
+            if kind == InvoiceKind.INVOICE:
+                vat_valid, vat_warning = _validate_vat_for_invoice(request, customer)
+                if not vat_valid:
+                    return redirect(customer)
             with override("en"):
                 invoice = Subscription.new_subscription_invoice(
-                    kind=subscription_form.cleaned_data["kind"],
+                    kind=kind,
                     customer=customer,
                     package=subscription_form.cleaned_data["package"],
                     currency=subscription_form.cleaned_data["currency"],
@@ -1068,6 +1141,8 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     customer_note=subscription_form.cleaned_data["customer_note"],
                     skip_intro=subscription_form.cleaned_data.get("skip_intro", False),
                 )
+            if vat_warning is not None:
+                _record_vat_issuance_warning(request, customer, invoice, vat_warning)
             return redirect(invoice)
 
         return self.get(request)
@@ -1136,7 +1211,7 @@ class InteractionDetailView(CRMMixin, DetailView[Interaction]):  # type: ignore[
     title = "Interaction detail"
 
     def get_title(self) -> str:
-        return self.object.summary
+        return self.object.display_summary
 
 
 class InteractionDownloadView(InteractionDetailView):

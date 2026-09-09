@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 from typing import Any, cast
 from unittest.mock import patch
@@ -48,7 +48,12 @@ from weblate_web.tests import (
 )
 
 from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
-from .models import Customer, CustomerFollowUp, Payment
+from .models import (
+    VAT_ISSUANCE_GRACE_DAYS,
+    Customer,
+    CustomerFollowUp,
+    Payment,
+)
 from .validators import validate_vatin
 
 CUSTOMER = {
@@ -297,6 +302,107 @@ class ModelObjectsTestCase(TestCase):
         customer.vat = cast("str", CUSTOMER["vat"])
         customer.vat_validation_state = Customer.VatValidationState.VALID
         return customer
+
+    def create_foreign_eu_customer_for_vat_validation(
+        self,
+        *,
+        state: Customer.VatValidationState = Customer.VatValidationState.VALID,
+        age: timedelta = timedelta(days=VAT_ISSUANCE_GRACE_DAYS),
+    ) -> Customer:
+        customer = self.create_customer_for_vat_validation()
+        Customer.objects.filter(pk=customer.pk).update(
+            country="DE",
+            vat="DE136695976",
+            vat_validated=timezone.now() - age,
+            vat_validation_state=state,
+            vat_validation_error={},
+        )
+        customer.refresh_from_db()
+        return customer
+
+    def test_vat_issuance_accepts_recent_validation(self) -> None:
+        customer = self.create_foreign_eu_customer_for_vat_validation(
+            age=timedelta(days=1)
+        )
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            warning = customer.validate_vat_for_issuance()
+
+        self.assertIsNone(warning)
+        validate.assert_not_called()
+
+    def test_vat_issuance_forces_stale_validation(self) -> None:
+        customer = self.create_foreign_eu_customer_for_vat_validation(
+            age=timedelta(days=8)
+        )
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            warning = customer.validate_vat_for_issuance()
+
+        self.assertIsNone(warning)
+        self.assertEqual(validate.call_args.kwargs, {"force": True})
+        customer.refresh_from_db()
+        self.assertTrue(customer.vat_recently_validated)
+
+    def test_vat_issuance_allows_recent_valid_state_during_outage(self) -> None:
+        customer = self.create_foreign_eu_customer_for_vat_validation(
+            age=timedelta(days=VAT_ISSUANCE_GRACE_DAYS - 1)
+        )
+        error = ValidationError("Temporary VIES failure", code="MS_UNAVAILABLE")
+
+        with patch(
+            "weblate_web.payments.models.validate_vatin", side_effect=error
+        ) as validate:
+            warning = customer.validate_vat_for_issuance()
+
+        self.assertIs(warning, error)
+        self.assertEqual(validate.call_args.kwargs, {"force": True})
+        customer.refresh_from_db()
+        self.assertEqual(
+            customer.vat_validation_state, customer.VatValidationState.VALID
+        )
+
+    def test_vat_issuance_blocks_old_valid_state_during_outage(self) -> None:
+        customer = self.create_foreign_eu_customer_for_vat_validation(
+            age=timedelta(days=VAT_ISSUANCE_GRACE_DAYS + 1)
+        )
+        error = ValidationError("Temporary VIES failure", code="MS_UNAVAILABLE")
+
+        with (
+            patch("weblate_web.payments.models.validate_vatin", side_effect=error),
+            self.assertRaises(ValidationError),
+        ):
+            customer.validate_vat_for_issuance()
+
+    def test_vat_issuance_blocks_unknown_state_during_outage(self) -> None:
+        customer = self.create_foreign_eu_customer_for_vat_validation(
+            state=Customer.VatValidationState.UNKNOWN,
+            age=timedelta(days=1),
+        )
+        error = ValidationError("Temporary VIES failure", code="MS_UNAVAILABLE")
+
+        with (
+            patch("weblate_web.payments.models.validate_vatin", side_effect=error),
+            self.assertRaises(ValidationError),
+        ):
+            customer.validate_vat_for_issuance()
+
+    def test_vat_issuance_blocks_definitively_invalid_vat(self) -> None:
+        customer = self.create_foreign_eu_customer_for_vat_validation(
+            age=timedelta(days=8)
+        )
+        error = ValidationError("Invalid VAT", code="Invalid VAT")
+
+        with (
+            patch("weblate_web.payments.models.validate_vatin", side_effect=error),
+            self.assertRaises(ValidationError),
+        ):
+            customer.validate_vat_for_issuance()
+
+        customer.refresh_from_db()
+        self.assertEqual(
+            customer.vat_validation_state, Customer.VatValidationState.INVALID
+        )
 
     def test_merge(self) -> None:
         customer = Customer.objects.create(**CUSTOMER)

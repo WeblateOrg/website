@@ -34,6 +34,8 @@ class InteractionQuerySet(models.QuerySet["Interaction", "Interaction"]):
 
 
 class Interaction(models.Model):
+    VIES_OUTAGE_INVOICE_ISSUED = "vies-outage-invoice-issued"
+
     class Origin(models.IntegerChoices):
         EMAIL = 1, "Outbound e-mail"
         MERGE = 2, "Merged customer"
@@ -67,7 +69,7 @@ class Interaction(models.Model):
         ordering = ["-timestamp"]
 
     def __str__(self):
-        return f"{self.timestamp.isoformat()} [{self.customer}:{self.get_origin_display()}]: {self.summary}"
+        return f"{self.timestamp.isoformat()} [{self.customer}:{self.get_origin_display()}]: {self.display_summary}"
 
     @staticmethod
     def _format_detail_value(value: Any) -> object:
@@ -104,7 +106,25 @@ class Interaction(models.Model):
         return self.origin == self.Origin.EMAIL
 
     @property
+    def display_summary(self) -> str:
+        if (
+            self.origin == self.Origin.VIES
+            and self.summary == self.VIES_OUTAGE_INVOICE_ISSUED
+        ):
+            return str(_("Invoice issued during VIES outage"))
+        return self.summary
+
+    @property
     def primary_content(self) -> str:
+        if self.origin == self.Origin.VIES and self.details.get(
+            "stale_validation_used"
+        ):
+            return str(
+                _(
+                    "VIES was temporarily unavailable; the invoice was issued "
+                    "using a recent successful VAT validation."
+                )
+            )
         if self.origin == self.Origin.EMAIL:
             return str(self.details.get("subject") or self.summary)
         if self.content:
@@ -189,8 +209,26 @@ class Interaction(models.Model):
     def _vies_detail_rows(self) -> list[InteractionDetailRow]:
         rows: list[InteractionDetailRow] = []
         self._add_row(rows, _("Automated"), self.details.get("automated"))
+        invoice_id = self.details.get("invoice_id")
+        self._add_row(
+            rows,
+            _("Invoice"),
+            self.details.get("invoice"),
+            self._make_url("crm:invoice-detail", pk=invoice_id) if invoice_id else "",
+        )
+        self._add_row(rows, _("VAT ID"), self.details.get("vat"))
+        self._add_row(rows, _("Previous validation"), self.details.get("validated"))
+        self._add_row(
+            rows,
+            _("Stale validation used"),
+            self.details.get("stale_validation_used"),
+        )
         self._add_row(rows, _("Error code"), self.details.get("code"))
-        self._add_row(rows, _("Error message"), self.details.get("message"))
+        error_message = self.details.get("message")
+        if self.details.get("stale_validation_used"):
+            error_message = _("VIES was temporarily unavailable.")
+        self._add_row(rows, _("Error message"), error_message)
+        self._add_row(rows, _("Issued by"), self.details.get("issued_by"))
         return rows
 
     def _manual_payment_detail_rows(self) -> list[InteractionDetailRow]:
