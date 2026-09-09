@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
@@ -2065,7 +2066,7 @@ class PaymentsTest(FakturaceTestCase):
         )
         self.assertTrue(
             all(
-                call.kwargs == {"automated": True}
+                call.kwargs == {"automated": True, "force": True}
                 for call in prepayment_validation.call_args_list
             )
         )
@@ -2081,6 +2082,55 @@ class PaymentsTest(FakturaceTestCase):
         self.assertEqual(
             {call.args[0].pk for call in prepayment_validation.call_args_list},
             {recent.pk},
+        )
+        self.assertEqual(
+            prepayment_validation.call_args.kwargs,
+            {"automated": True, "force": True},
+        )
+
+    def test_background_vat_silences_vies_and_zeep_logs(self) -> None:
+        def noisy_fetch(*, fetch_all: bool, delay: int) -> None:
+            logging.getLogger("vies").error("MS_MAX_CONCURRENT_REQ")
+            logging.getLogger("zeep.wsdl.bindings.soap").warning(
+                "Forcing soap:address location to HTTPS"
+            )
+
+        with (
+            patch(
+                "weblate_web.management.commands.background_vat.fetch_vat_info",
+                side_effect=noisy_fetch,
+            ),
+            self.assertNoLogs(level="WARNING"),
+        ):
+            call_command("background_vat", delay=0)
+
+    def test_background_vat_restores_loggers_after_failure(self) -> None:
+        vies_logger = logging.getLogger("vies")
+        zeep_logger = logging.getLogger("zeep")
+        original_configuration = (
+            list(vies_logger.handlers),
+            vies_logger.propagate,
+            list(zeep_logger.handlers),
+            zeep_logger.propagate,
+        )
+
+        with (
+            patch(
+                "weblate_web.management.commands.background_vat.fetch_vat_info",
+                side_effect=RuntimeError("Unexpected failure"),
+            ),
+            self.assertRaises(RuntimeError),
+        ):
+            call_command("background_vat", delay=0)
+
+        self.assertEqual(
+            (
+                vies_logger.handlers,
+                vies_logger.propagate,
+                zeep_logger.handlers,
+                zeep_logger.propagate,
+            ),
+            original_configuration,
         )
 
     def test_prefetch_vat_transient_errors_retry_without_interaction(self) -> None:
@@ -2138,7 +2188,7 @@ class PaymentsTest(FakturaceTestCase):
             },
         )
         self.assertEqual(customer.interaction_set.count(), 0)
-        self.assertEqual(validate.call_count, 1)
+        self.assertEqual(validate.call_count, 2)
 
     def test_prefetch_vat_valid_to_invalid_creates_interaction(self) -> None:
         customer = self.create_vat_customer()

@@ -5,6 +5,7 @@ from unittest.mock import Mock, patch
 
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
@@ -16,7 +17,9 @@ from weblate_web.admin import (
 )
 from weblate_web.admin_app import CustomAdminConfig
 from weblate_web.admin_site import UserAutocompleteJsonView
+from weblate_web.crm.models import Interaction
 from weblate_web.invoices.admin import InvoiceAdmin
+from weblate_web.invoices.forms import InvoiceAdminForm
 from weblate_web.invoices.models import (
     Invoice,
     InvoiceCategory,
@@ -175,8 +178,44 @@ class InvoiceAdminTestCase(TestCase):
     def make_mock_form(self, invoice: Invoice):
         form = Mock()
         form.instance = invoice
+        form.vat_validation_warning = None
         form.save_m2m = lambda: None
         return form
+
+    def get_form_data(self, customer: Customer) -> dict[str, object]:
+        return {
+            "issue_date": timezone.localdate(),
+            "kind": InvoiceKind.INVOICE,
+            "category": InvoiceCategory.HOSTING,
+            "customer": customer.pk,
+            "quote_status": 0,
+            "vat_rate": 21,
+            "currency": 0,
+            "extra": "{}",
+        }
+
+    def test_add_form_blocks_failed_vat_validation(self) -> None:
+        customer = self.create_customer()
+        with patch.object(
+            Customer,
+            "validate_vat_for_issuance",
+            side_effect=ValidationError("Invalid VAT"),
+        ):
+            form = InvoiceAdminForm(data=self.get_form_data(customer))
+            is_valid = form.is_valid()
+
+        self.assertFalse(is_valid)
+        self.assertIn("customer", form.errors)
+
+    def test_add_form_preserves_vat_outage_warning(self) -> None:
+        customer = self.create_customer()
+        warning = ValidationError("VIES unavailable", code="MS_UNAVAILABLE")
+        with patch.object(Customer, "validate_vat_for_issuance", return_value=warning):
+            form = InvoiceAdminForm(data=self.get_form_data(customer))
+            is_valid = form.is_valid()
+
+        self.assertTrue(is_valid, form.errors)
+        self.assertIs(form.vat_validation_warning, warning)
 
     def test_has_delete_permission_always_false(self) -> None:
         request = self.factory.get("/")
@@ -296,4 +335,33 @@ class InvoiceAdminTestCase(TestCase):
 
         invoice.refresh_from_db()
         self.assertFalse(invoice.prepaid)
+        mock_generate.assert_called_once()
+
+    @patch.object(Invoice, "generate_files")
+    def test_save_related_records_vat_outage(self, mock_generate) -> None:
+        invoice = self.create_invoice(kind=InvoiceKind.INVOICE)
+        invoice.invoiceitem_set.create(description="Service", unit_price=100)
+        invoice.customer.vat = "DE136695976"
+        invoice.customer.vat_validated = timezone.now()
+
+        request = self.factory.get("/")
+        request.user = self.user
+        form = self.make_mock_form(invoice)
+        form.vat_validation_warning = ValidationError(
+            "VIES unavailable", code="MS_UNAVAILABLE"
+        )
+
+        with patch.object(self.invoice_admin, "message_user") as message_user:
+            self.invoice_admin.save_related(request, form, formsets=[], change=False)
+
+        interaction = Interaction.objects.get(customer=invoice.customer)
+        self.assertEqual(interaction.origin, Interaction.Origin.VIES)
+        self.assertEqual(interaction.summary, Interaction.VIES_OUTAGE_INVOICE_ISSUED)
+        self.assertEqual(interaction.content, "")
+        self.assertEqual(interaction.details["invoice"], invoice.number)
+        self.assertEqual(interaction.details["vat"], "DE136695976")
+        self.assertTrue(interaction.details["stale_validation_used"])
+        self.assertNotIn("message", interaction.details)
+        self.assertEqual(interaction.user, self.user)
+        message_user.assert_called_once()
         mock_generate.assert_called_once()

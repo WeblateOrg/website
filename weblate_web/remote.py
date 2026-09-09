@@ -200,6 +200,6 @@ def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
 
         # Actually fetch data
         try:
-            customer.prepayment_validation(automated=True)
+            customer.prepayment_validation(automated=True, force=True)
         except ValidationError:
             continue

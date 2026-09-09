@@ -460,10 +460,10 @@
                   <td>{{ interaction.timestamp }}</td>
                   <td>{{ interaction.user.username }}</td>
                   <td>{{ interaction.get_origin_display }}</td>
-                  <td>{{ interaction.summary }}</td>
+                  <td>{{ interaction.display_summary }}</td>
                   <td>
                     {% with primary=interaction.primary_content %}
-                      {% if primary and primary != interaction.summary %}{{ primary|linebreaksbr }}{% endif %}
+                      {% if primary and primary != interaction.display_summary %}{{ primary|linebreaksbr }}{% endif %}
                     {% endwith %}
                   </td>
                   <td>

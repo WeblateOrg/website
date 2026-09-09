@@ -17,10 +17,36 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
+import logging
+from contextlib import contextmanager
+from typing import TYPE_CHECKING
 
 from django.core.management.base import BaseCommand
 
 from weblate_web.remote import fetch_vat_info
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+
+@contextmanager
+def silence_vat_loggers() -> Iterator[None]:
+    """Suppress noisy VIES and Zeep output for this background command."""
+    loggers = [logging.getLogger(name) for name in ("vies", "zeep")]
+    original_configuration = [
+        (logger, logger.handlers, logger.propagate) for logger in loggers
+    ]
+    try:
+        for logger in loggers:
+            logger.handlers = [logging.NullHandler()]
+            logger.propagate = False
+        yield
+    finally:
+        for logger, handlers, propagate in original_configuration:
+            logger.handlers = handlers
+            logger.propagate = propagate
 
 
 class Command(BaseCommand):
@@ -41,4 +67,5 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options) -> None:
-        fetch_vat_info(fetch_all=options["all"], delay=options["delay"])
+        with silence_vat_loggers():
+            fetch_vat_info(fetch_all=options["all"], delay=options["delay"])

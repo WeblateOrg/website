@@ -19,13 +19,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.utils import timezone
+from django.utils.translation import gettext
 
+from .forms import InvoiceAdminForm
 from .models import Discount, Invoice, InvoiceItem, InvoiceKind
 
 if TYPE_CHECKING:
+    from django.contrib.auth.models import User
     from django.http.request import HttpRequest
 
 
@@ -43,6 +47,7 @@ class InvoiceItemAdmin(admin.TabularInline):
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
+    form = InvoiceAdminForm
     date_hierarchy = "issue_date"
     ordering = ("-issue_date",)
     autocomplete_fields = ("customer", "parent")
@@ -68,6 +73,24 @@ class InvoiceAdmin(admin.ModelAdmin):
                 invoice.prepaid = True
                 invoice.save(update_fields=["prepaid"])
             invoice.generate_files()
+        if form.vat_validation_warning is not None:
+            invoice.customer.record_stale_vat_issuance(
+                invoice=invoice,
+                user=cast("User", request.user),
+                warning=form.vat_validation_warning,
+            )
+            validated = timezone.localtime(invoice.customer.vat_validated).strftime(
+                "%Y-%m-%d %H:%M %Z"
+            )
+            self.message_user(
+                request,
+                gettext(
+                    "VIES is temporarily unavailable. The invoice was issued using "
+                    "the VAT validation from %(validated)s."
+                )
+                % {"validated": validated},
+                level=messages.WARNING,
+            )
 
     def view_on_site(self, obj: Invoice) -> str | None:
         return obj.get_download_url()
