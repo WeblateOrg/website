@@ -756,6 +756,7 @@ class CustomerFollowUp(models.Model):
         LOCKED_SITE_URL = 3, gettext_lazy("Locked site URL")
         OVER_LIMIT = 4, gettext_lazy("Service over limits")
         EXPIRED_DEDICATED = 5, gettext_lazy("Expired dedicated service")
+        ACTIVITY_DROP = 6, gettext_lazy("Activity drop")
 
     customer = models.ForeignKey(
         Customer, related_name="followups", on_delete=models.deletion.CASCADE
@@ -795,6 +796,11 @@ class CustomerFollowUp(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=("service", "type"),
+                condition=models.Q(service__isnull=False, type=6),
+                name="unique_activity_drop_followup_per_service",
+            ),
+            models.UniqueConstraint(
+                fields=("service", "type"),
                 condition=models.Q(service__isnull=False, type=3),
                 name="unique_locked_site_url_followup_per_service",
             ),
@@ -814,9 +820,15 @@ class CustomerFollowUp(models.Model):
         return f"{self.customer}: {self.note or self.get_type_display()}"
 
     @property
+    def is_activity_drop(self) -> bool:
+        return self.type == self.Type.ACTIVITY_DROP
+
+    @property
     def display_note(self) -> str:
         if self.note:
             return self.note
+        if self.type == self.Type.ACTIVITY_DROP:
+            return gettext("Contact the customer to understand the activity decrease.")
         if self.type == self.Type.OVER_LIMIT:
             return gettext("Review usage and upgrade the dedicated instance.")
         if self.type == self.Type.EXPIRED_DEDICATED:

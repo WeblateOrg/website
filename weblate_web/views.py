@@ -36,7 +36,7 @@ from django.core.exceptions import BadRequest, SuspiciousOperation, ValidationEr
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import DataError, IntegrityError, connection, transaction
-from django.db.models import Q
+from django.db.models import F, OuterRef, Q, Subquery
 from django.http import (
     FileResponse,
     Http404,
@@ -56,6 +56,7 @@ from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
+from weblate_web.activity import record_activity
 from weblate_web.crm.models import Interaction
 from weblate_web.forms import (
     AddDiscoveryForm,
@@ -81,6 +82,7 @@ from weblate_web.models import (
     Post,
     Project,
     Service,
+    ServiceActivity,
     Subscription,
     UnprocessablePaymentError,
     add_subscription_past_payments,
@@ -365,6 +367,8 @@ def api_support(request: HttpRequest) -> JsonResponse:
     service.update_status()
     report.save()
     is_valid_site_url = report.is_valid_site_url()
+    if is_valid_site_url and form.cleaned_data["activity"]:
+        record_activity(report, form.cleaned_data["activity"])
     service.create_backup()
     if is_valid_site_url and "public_projects" in request.POST:
         current_projects = set(service.project_set.values_list("name", "url", "web"))
@@ -1375,8 +1379,25 @@ class DiscoverView(TemplateView):
         services: Iterable[Service]
         projects: Iterable[Project]
 
-        discoverable_services = Service.objects.customer_services().filter(
-            discoverable=True
+        last_month = (timezone.localdate().replace(day=1) - timedelta(days=1)).replace(
+            day=1
+        )
+        discoverable_services = (
+            Service.objects.customer_services()
+            .filter(discoverable=True)
+            .annotate(
+                monthly_changes=Subquery(
+                    ServiceActivity.objects.filter(
+                        service_id=OuterRef("pk"), month=last_month
+                    ).values("changes")[:1]
+                )
+            )
+            .order_by(
+                F("monthly_changes").desc(nulls_last=True),
+                "site_title",
+                "site_url",
+                "pk",
+            )
         )
         services = discoverable_services.prefetch_related("project_set")
         query = self.request.GET.get("q", "").strip().lower()
@@ -1395,7 +1416,9 @@ class DiscoverView(TemplateView):
                     service.matched_projects = []
                 service.matched_projects.append(project)
 
-            services = list(services_dict.values())
+            services = list(discoverable_services.filter(pk__in=services_dict))
+            for service in services:
+                service.matched_projects = services_dict[service.pk].matched_projects
         else:
             for service in services:
                 projects = list(service.project_set.all())

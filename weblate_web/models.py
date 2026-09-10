@@ -781,6 +781,7 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     site_version = models.TextField(default="", blank=True)
     site_users = models.IntegerField(default=0)
     site_projects = models.IntegerField(default=0)
+    activity_drop_state = models.JSONField(default=dict, blank=True)
 
     discover_text = models.CharField(
         verbose_name=gettext_lazy("Server description"), max_length=200, blank=True
@@ -1196,7 +1197,16 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
             self.limit_hosted_strings = package.limit_hosted_strings
             self.limit_languages = package.limit_languages
             self.limit_projects = package.limit_projects
-            self.save()
+            self.save(
+                update_fields=[
+                    "status",
+                    "limit_source_strings",
+                    "limit_hosted_words",
+                    "limit_hosted_strings",
+                    "limit_languages",
+                    "limit_projects",
+                ]
+            )
 
     def has_paid_backup(self) -> bool:
         subscriptions = self.hosted_subscriptions | self.backup_subscriptions
@@ -1798,6 +1808,29 @@ def add_subscription_past_payments(
         ],
         ignore_conflicts=True,
     )
+
+
+class ServiceActivity(models.Model):
+    service = models.ForeignKey(
+        Service, related_name="activity", on_delete=models.CASCADE
+    )
+    month = models.DateField()
+    changes = models.PositiveBigIntegerField()
+
+    class Meta:
+        ordering = ["month"]
+        verbose_name_plural = "Service activity"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("service", "month"), name="unique_service_activity_month"
+            ),
+            models.CheckConstraint(
+                condition=Q(month__day=1), name="service_activity_month_start"
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.service_id}: {self.month}: {self.changes}"
 
 
 class Report(models.Model):

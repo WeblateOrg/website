@@ -168,7 +168,17 @@ class Command(BaseCommand):
             service.backup_subaccount = 0
             service.backup_size = 0
             service.backup_timestamp = None
-            service.save()
+            service.save(
+                update_fields=[
+                    "backup_removed",
+                    "backup_repository",
+                    "backup_box",
+                    "backup_directory",
+                    "backup_subaccount",
+                    "backup_size",
+                    "backup_timestamp",
+                ]
+            )
 
     def check_unpaid(self, backup_services: dict[str, Service]) -> None:
         for service in backup_services.values():
