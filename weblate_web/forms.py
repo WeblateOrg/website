@@ -19,11 +19,13 @@
 
 from __future__ import annotations
 
+from datetime import date
 from urllib.parse import quote, urlsplit, urlunsplit
 
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy
 
 from weblate_web.invoices.models import Currency, InvoiceKind
@@ -99,6 +101,7 @@ class SupportReportForm(forms.ModelForm):
     site_url = forms.CharField(required=False, max_length=SITE_URL_MAX_LENGTH)
     words = forms.IntegerField(required=False)
     strings = forms.IntegerField(required=False)
+    activity = forms.JSONField(required=False)
 
     class Meta:
         model = Report
@@ -125,6 +128,35 @@ class SupportReportForm(forms.ModelForm):
         return normalize_site_url(
             self.cleaned_data.get("site_url", ""), allow_empty=True
         )
+
+    def clean_activity(self) -> dict[date, int]:
+        activity = self.cleaned_data.get("activity")
+        if activity is None or activity == []:
+            return {}
+        error = gettext("Invalid monthly activity data.")
+        if not isinstance(activity, list) or len(activity) > 24:
+            raise ValidationError(error)
+        result: dict[date, int] = {}
+        current_month = timezone.localdate().replace(day=1)
+        for item in activity:
+            if (
+                not isinstance(item, dict)
+                or set(item) != {"year", "month", "changes"}
+                or any(
+                    isinstance(value, bool) or not isinstance(value, int)
+                    for value in item.values()
+                )
+                or not 0 <= item["changes"] <= 2**63 - 1
+            ):
+                raise ValidationError(error)
+            try:
+                month = date(item["year"], item["month"], 1)
+            except (ValueError, OverflowError) as exc:
+                raise ValidationError(error) from exc
+            if month >= current_month or month in result:
+                raise ValidationError(error)
+            result[month] = item["changes"]
+        return dict(sorted(result.items()))
 
     def clean(self):
         cleaned_data = super().clean()

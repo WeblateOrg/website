@@ -137,7 +137,22 @@
                 <tr>
                   <td>{% blocktranslate with date=followup.follow_up_at %}Next follow-up: {{ date }}{% endblocktranslate %}</td>
                   <td>{{ followup.get_type_display }}</td>
-                  <td>{{ followup.display_note|default:"-" }}</td>
+                  <td>
+                    {{ followup.display_note|default:"-" }}
+                    {% if followup.is_activity_drop %}
+                      <p><a href="{{ followup.service.get_absolute_url }}">{{ followup.service.site_title }}</a></p>
+                      <p>{% blocktranslate with average=followup.details.baseline_average|floatformat:1 %}Baseline: {{ average }} changes per month.{% endblocktranslate %}</p>
+                      <ul>
+                        {% for month in followup.details.baseline_months %}
+                          <li>{% blocktranslate with month=month.month changes=month.changes %}{{ month }}: {{ changes }} changes{% endblocktranslate %}</li>
+                        {% endfor %}
+                        {% for month in followup.details.low_months %}
+                          <li>{% blocktranslate with month=month.month changes=month.changes decrease=month.decrease_percent|floatformat:1 %}{{ month }}: {{ changes }} changes ({{ decrease }}% decrease){% endblocktranslate %}</li>
+                        {% endfor %}
+                      </ul>
+                      <p>{% blocktranslate with month=followup.details.latest_month changes=followup.details.latest_changes %}Latest activity ({{ month }}): {{ changes }} changes{% endblocktranslate %}</p>
+                    {% endif %}
+                  </td>
                   {% if can_change_customer %}
                     <td>
                       <form method="post">
