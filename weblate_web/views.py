@@ -190,6 +190,13 @@ def prepare_service_for_render(service: Service) -> Service:
     return service
 
 
+def get_api_signing_key() -> str:
+    key = settings.PAYMENT_SECRET
+    if not isinstance(key, str) or not key.strip():
+        raise BadRequest("Invalid signature")
+    return key
+
+
 def get_support_payload(service: Service, *, in_limits: bool) -> dict[str, object]:
     return {
         "name": service.status,
@@ -210,7 +217,7 @@ def api_user(request: HttpRequest) -> JsonResponse:
     try:
         payload = loads(
             request.POST.get("payload", ""),
-            key=settings.PAYMENT_SECRET,
+            key=get_api_signing_key(),
             max_age=300,
             salt="weblate.user",
         )
@@ -251,7 +258,7 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
     try:
         payload = loads(
             request.POST.get("payload", ""),
-            key=settings.PAYMENT_SECRET,
+            key=get_api_signing_key(),
             max_age=300,
             salt="weblate.hosted",
         )

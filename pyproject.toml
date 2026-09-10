@@ -126,7 +126,7 @@ omit = [
 ]
 
 [tool.django-stubs]
-django_settings_module = "weblate_web.settings"
+django_settings_module = "weblate_web.settings_test"
 
 # strict_settings = false
 [tool.djlint]
@@ -211,7 +211,7 @@ disable = [
 ]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "weblate_web.settings"
+DJANGO_SETTINGS_MODULE = "weblate_web.settings_test"
 addopts = "--reuse-db --cov=weblate_web --cov-report= --ignore=weblate_web/tests_e2e"
 python_files = ["test_*.py", "tests.py"]
 

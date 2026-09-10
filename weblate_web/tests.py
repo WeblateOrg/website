@@ -20,7 +20,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
 from django.core.cache import cache
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.signing import dumps
@@ -45,7 +45,7 @@ from .hetzner import generate_random_password
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .management.commands.sync_hosted_users import USER_SYNC_RESPONSE_SALT
-from .middleware import SecurityMiddleware
+from .middleware import CSRFSecurityMiddleware, SecurityMiddleware
 from .models import (
     REWARD_LEVELS,
     DiscoveryActivation,
@@ -68,6 +68,7 @@ from .models import (
     sync_packages,
     validate_bitmap,
 )
+from .payments.models import PaymentConf
 from .payments.validators import VAT_VALIDITY_DAYS
 from .remote import (
     ACTIVITY_URL,
@@ -2968,6 +2969,28 @@ class PostTest(PostTestCase):
 
 
 class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
+    def test_payment_secret_configuration(self) -> None:
+        payment_conf = PaymentConf()
+        for value in (None, "", "   "):
+            with (
+                self.subTest(value=value),
+                self.assertRaisesMessage(
+                    ImproperlyConfigured,
+                    "PAYMENT_SECRET must be configured with a non-empty value.",
+                ),
+            ):
+                payment_conf.configure_secret(value)
+        self.assertEqual(payment_conf.configure_secret(" configured "), " configured ")
+
+    @override_settings(PAYMENT_SECRET="")
+    def test_empty_payment_secret_does_not_disable_csrf(self) -> None:
+        request = RequestFactory().post("/", {"secret": ""})
+        middleware = CSRFSecurityMiddleware(lambda _request: None)
+
+        middleware(request)
+
+        self.assertFalse(hasattr(request, "_dont_enforce_csrf_checks"))
+
     def test_hosted(self) -> None:
         Package.objects.create(name="community", verbose="Community support", price=0)
         Package.objects.create(name="shared:test", verbose="Test package", price=0)
@@ -3071,6 +3094,11 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
     def test_hosted_invalid(self) -> None:
         response = self.client.post("/api/hosted/", {"payload": dumps({}, key="dummy")})
+        self.assertEqual(response.status_code, 400)
+
+    @override_settings(PAYMENT_SECRET="")
+    def test_hosted_empty_secret(self) -> None:
+        response = self.client.post("/api/hosted/", {"payload": dumps({}, key="")})
         self.assertEqual(response.status_code, 400)
 
     def test_hosted_missing(self) -> None:
@@ -3746,6 +3774,41 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
     def test_user_invalid(self) -> None:
         response = self.client.post("/api/user/", {"payload": dumps({}, key="dummy")})
         self.assertEqual(response.status_code, 400)
+
+    @override_settings(PAYMENT_SECRET="")
+    def test_user_empty_secret(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "forged",
+                        "username": "forged-user",
+                    },
+                    key="",
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(username="forged-user").exists())
+
+    def test_user_default_secret(self) -> None:
+        response = self.client.post(
+            "/api/user/",
+            {
+                "payload": dumps(
+                    {
+                        "external_id": "forged",
+                        "username": "forged-user",
+                    },
+                    key="secret",
+                    salt="weblate.user",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(username="forged-user").exists())
 
     def test_user_missing(self) -> None:
         response = self.client.post("/api/user/")
