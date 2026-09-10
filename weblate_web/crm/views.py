@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import calendar
+import logging
 import math
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
@@ -84,6 +85,7 @@ from weblate_web.models import (
     ServiceKind,
     Subscription,
 )
+from weblate_web.payments.invitations import fulfill_pending_invitations_by_staff
 from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 from weblate_web.saml import (
     get_default_saml_provider,
@@ -93,6 +95,8 @@ from weblate_web.saml import (
 from weblate_web.utils import show_form_errors
 
 from .models import Interaction
+
+LOGGER = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from uuid import UUID
@@ -819,10 +823,12 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     change_customer_permission = "payments.change_customer"
     title = "Customer detail"
     valid_tabs: ClassVar[frozenset[str]] = frozenset(
-        {"overview", "interactions", "invoices", "payments"}
+        {"overview", "owners", "interactions", "invoices", "payments"}
     )
 
     def get_active_tab(self) -> str:
+        if self.request.method == "POST" and "add_customer_owner" in self.request.POST:
+            return "owners"
         tab = self.request.GET.get("tab", "overview")
         if tab in self.valid_tabs:
             return tab
@@ -875,6 +881,9 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         context["invoice_confirm_dialog"] = active_tab == "overview" and not services
         context["donations"] = self.object.service_set.donations().order()
         context["customer_owners"] = self.object.ordered_owners
+        context["owner_invitations"] = (
+            self.object.pending_owner_invitations.select_related("invited_by")
+        )
         context["active_tab"] = active_tab
         return context
 
@@ -953,7 +962,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         customer: Customer,
         hosted_payload,
         context: CustomerHostedUserContext,
-    ) -> bool:
+    ) -> User | None:
         self.reject_username_only_hosted_match(hosted_payload, context)
         with transaction.atomic():
             user, created = sync_saml_payload(hosted_payload)
@@ -964,8 +973,14 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     gettext("Hosted user is already linked to a different local user.")
                 )
             if customer.owners.filter(pk=user.pk).exists():
-                return False
+                fulfill_pending_invitations_by_staff(
+                    customer, context["email"], request.user
+                )
+                return None
             customer.owners.add(user)
+            fulfill_pending_invitations_by_staff(
+                customer, context["email"], request.user
+            )
             customer.interaction_set.create(
                 origin=Interaction.Origin.CUSTOMER_OWNER,
                 summary=gettext("Added customer owner"),
@@ -987,7 +1002,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                 },
                 user=request.user,
             )
-            return True
+            return user
 
     def add_customer_owner(self, request, customer: Customer):
         self.check_add_customer_owner_permission(request)
@@ -1012,7 +1027,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
 
         try:
             hosted_payload, hosted_created = ensure_hosted_user(email, full_name)
-            added = self.link_customer_hosted_owner(
+            added_user = self.link_customer_hosted_owner(
                 request,
                 customer,
                 hosted_payload,
@@ -1036,17 +1051,35 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             )
             return self.get(request)
 
-        if added:
-            messages.success(
-                request,
-                gettext("Added %(email)s to customer owners.") % {"email": email},
-            )
+        if added_user is not None:
+            try:
+                customer.send_notification(
+                    "customer_owner_added",
+                    recipients=[added_user.email],
+                    customer=customer,
+                )
+            except Exception:  # pylint: disable=broad-exception-caught
+                LOGGER.exception("Could not send customer owner added notification")
+                messages.warning(
+                    request,
+                    gettext(
+                        "Added %(email)s to customer owners, but the notification "
+                        "could not be sent."
+                    )
+                    % {"email": email},
+                )
+            else:
+                messages.success(
+                    request,
+                    gettext("Added %(email)s to customer owners and notified them.")
+                    % {"email": email},
+                )
         else:
             messages.info(
                 request,
                 gettext("%(email)s is already a customer owner.") % {"email": email},
             )
-        return redirect(customer)
+        return redirect(self.get_tab_url(customer, "owners"))
 
     def create_follow_up_interaction(
         self,

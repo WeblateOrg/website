@@ -10,6 +10,7 @@ import requests
 import responses
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
+from django.core import mail
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
@@ -43,7 +44,12 @@ from weblate_web.models import (
     ServiceKind,
     get_donation_package,
 )
-from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
+from weblate_web.payments.models import (
+    Customer,
+    CustomerFollowUp,
+    CustomerOwnerInvitation,
+    Payment,
+)
 from weblate_web.tests import TEST_CUSTOMER, cnb_mock_rates
 from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_client
 
@@ -1209,6 +1215,81 @@ class CRMQuoteStatusTestCase(BaseCRMTestCase):
         self.assertNotContains(response, "Reopen quote")
 
 
+class CustomerMergeInvitationTestCase(BaseCRMTestCase):
+    def test_customer_merge_carries_owner_invitations(self):
+        user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        source = self.create_customer("SOURCE CUSTOMER")
+        target = self.create_customer("TARGET CUSTOMER")
+        invitation = CustomerOwnerInvitation.objects.create(
+            customer=source,
+            email="invitee@example.com",
+            invited_by=user,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+
+        target.merge(source, user=user)
+
+        invitation.refresh_from_db()
+        self.assertEqual(invitation.customer, target)
+        self.assertFalse(Customer.objects.filter(pk=source.pk).exists())
+
+    def test_customer_merge_fulfills_invitations_for_owners(self):
+        user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        owner = User.objects.create_user(username="owner", email="owner@example.com")
+        source = self.create_customer("SOURCE CUSTOMER")
+        target = self.create_customer("TARGET CUSTOMER")
+        target.owners.add(owner)
+        invitation = CustomerOwnerInvitation.objects.create(
+            customer=source,
+            email="OWNER@example.com",
+            invited_by=user,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+
+        target.merge(source, user=user)
+
+        invitation.refresh_from_db()
+        self.assertEqual(
+            invitation.status,
+            CustomerOwnerInvitation.Status.FULFILLED_BY_STAFF,
+        )
+        interaction = target.interaction_set.get(
+            details__action="reconcile_invitations_after_merge"
+        )
+        self.assertIn(str(invitation.pk), interaction.details["fulfilled_invitations"])
+
+    def test_customer_merge_deduplicates_pending_invitations(self):
+        user = User.objects.create_superuser(
+            username="admin", email="admin@example.com"
+        )
+        source = self.create_customer("SOURCE CUSTOMER")
+        target = self.create_customer("TARGET CUSTOMER")
+        superseded = CustomerOwnerInvitation.objects.create(
+            customer=target,
+            email="invitee@example.com",
+            invited_by=user,
+            expires_at=timezone.now() + timedelta(days=3),
+        )
+        retained = CustomerOwnerInvitation.objects.create(
+            customer=source,
+            email="INVITEE@example.com",
+            invited_by=user,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+
+        target.merge(source, user=user)
+
+        superseded.refresh_from_db()
+        retained.refresh_from_db()
+        self.assertEqual(superseded.status, CustomerOwnerInvitation.Status.REVOKED)
+        self.assertEqual(retained.status, CustomerOwnerInvitation.Status.PENDING)
+        self.assertEqual(retained.customer, target)
+
+
 class CRMTestCase(BaseCRMTestCase):
     user: User
 
@@ -1542,19 +1623,25 @@ class CRMTestCase(BaseCRMTestCase):
             },
         )
 
-        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertRedirects(response, f"{customer.get_absolute_url()}?tab=owners")
         user = User.objects.get(email="new@example.com")
         self.assertEqual(user.last_name, "New User")
         self.assertTrue(
             SamlIdentity.objects.filter(user=user, external_id="42").exists()
         )
         self.assertIn(user, customer.owners.all())
-        interaction = Interaction.objects.get(customer=customer)
+        interaction = Interaction.objects.get(
+            customer=customer, origin=Interaction.Origin.CUSTOMER_OWNER
+        )
         self.assertEqual(interaction.origin, Interaction.Origin.CUSTOMER_OWNER)
         self.assertEqual(interaction.summary, "Added customer owner")
         self.assertEqual(interaction.details["action"], "add")
         self.assertEqual(interaction.details["owner"], user.pk)
         self.assertTrue(interaction.details["hosted_created"])
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, [user.email])
+        self.assertIn("You were added as an owner", mail.outbox[0].subject)
+        self.assertIn(customer.verbose_name, mail.outbox[0].body)
 
         request_body = responses.calls[0].request.body
         if isinstance(request_body, bytes):
@@ -1584,6 +1671,12 @@ class CRMTestCase(BaseCRMTestCase):
             provider=settings.HOSTED_SAML_PROVIDER,
             external_id="43",
             user=existing,
+        )
+        invitation = CustomerOwnerInvitation.objects.create(
+            customer=customer,
+            email=existing.email,
+            invited_by=self.user,
+            expires_at=timezone.now() + timedelta(days=7),
         )
         responses.add(
             responses.POST,
@@ -1617,13 +1710,25 @@ class CRMTestCase(BaseCRMTestCase):
             },
         )
 
-        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertRedirects(response, f"{customer.get_absolute_url()}?tab=owners")
         self.assertIn(existing, customer.owners.all())
         self.assertTrue(
             SamlIdentity.objects.filter(user=existing, external_id="43").exists()
         )
         self.assertFalse(
-            Interaction.objects.get(customer=customer).details["hosted_created"]
+            Interaction.objects.get(
+                customer=customer, summary="Added customer owner"
+            ).details["hosted_created"]
+        )
+        self.assertTrue(
+            Interaction.objects.filter(
+                customer=customer,
+                summary="Customer owner invitation fulfilled by staff",
+            ).exists()
+        )
+        invitation.refresh_from_db()
+        self.assertEqual(
+            invitation.status, CustomerOwnerInvitation.Status.FULFILLED_BY_STAFF
         )
 
     @override_settings(
@@ -1674,7 +1779,7 @@ class CRMTestCase(BaseCRMTestCase):
             },
         )
 
-        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertRedirects(response, f"{customer.get_absolute_url()}?tab=owners")
         self.assertEqual(customer.owners.count(), 1)
         self.assertTrue(
             SamlIdentity.objects.filter(user=existing, external_id="43").exists()
@@ -1859,7 +1964,7 @@ class CRMTestCase(BaseCRMTestCase):
             },
         )
 
-        self.assertRedirects(response, customer.get_absolute_url())
+        self.assertRedirects(response, f"{customer.get_absolute_url()}?tab=owners")
         self.assertIn(existing, customer.owners.all())
         existing.refresh_from_db()
         self.assertEqual(existing.email, "invited@example.com")

@@ -50,7 +50,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import SingleObjectMixin
@@ -98,8 +98,16 @@ from weblate_web.payments.backends import (
     get_backend,
     list_backends,
 )
-from weblate_web.payments.forms import CustomerForm
-from weblate_web.payments.models import Customer, Payment
+from weblate_web.payments.forms import CustomerForm, CustomerOwnerInvitationForm
+from weblate_web.payments.invitations import (
+    accept_invitation,
+    check_invitation_rate_limit,
+    create_invitation,
+    normalize_email,
+    resolve_invitation,
+    revoke_invitation,
+)
+from weblate_web.payments.models import Customer, CustomerOwnerInvitation, Payment
 from weblate_web.payments.validators import cache_vies_data
 from weblate_web.remote import get_activity
 from weblate_web.saml import sync_saml_payload
@@ -1188,45 +1196,76 @@ def service_token(request, pk):
 @login_required
 def customer_owner(request, pk):
     customer = get_object_or_404(Customer, pk=pk, owners=request.user)
-    try:
-        owner = User.objects.get(email__iexact=request.POST.get("email"))
-    except User.DoesNotExist:
-        messages.error(request, gettext("User not found!"))
-    else:
-        if "remove" in request.POST:
-            if owner == request.user:
-                messages.error(request, gettext("You can not remove yourself."))
-            elif customer.owners.filter(pk=owner.pk).exists():
-                with transaction.atomic():
-                    customer.owners.remove(owner)
-                    customer.interaction_set.create(
-                        origin=Interaction.Origin.CUSTOMER_OWNER,
-                        summary=gettext("Removed customer owner"),
-                        content=gettext("Removed %(email)s from customer owners.")
-                        % {"email": owner.email},
-                        details={
-                            "action": "remove",
-                            "owner": owner.pk,
-                            "email": owner.email,
-                        },
-                        user=request.user,
-                    )
-        elif not customer.owners.filter(pk=owner.pk).exists():
+    if "remove" in request.POST:
+        owner = get_object_or_404(customer.owners, pk=request.POST.get("owner"))
+        if owner == request.user:
+            messages.error(request, gettext("You can not remove yourself."))
+        else:
             with transaction.atomic():
-                customer.owners.add(owner)
+                customer.owners.remove(owner)
                 customer.interaction_set.create(
                     origin=Interaction.Origin.CUSTOMER_OWNER,
-                    summary=gettext("Added customer owner"),
-                    content=gettext("Added %(email)s to customer owners.")
-                    % {"email": owner.email},
+                    summary="Removed customer owner",
+                    content=f"Removed {owner.email} from customer owners.",
                     details={
-                        "action": "add",
+                        "action": "remove",
                         "owner": owner.pk,
                         "email": owner.email,
                     },
                     user=request.user,
                 )
+    elif "revoke" in request.POST:
+        invitation = get_object_or_404(
+            customer.owner_invitations,
+            pk=request.POST.get("invitation"),
+        )
+        revoke_invitation(invitation, request.user)
+    else:
+        form = CustomerOwnerInvitationForm(request.POST)
+        if not form.is_valid():
+            show_form_errors(request, form)
+        elif not check_invitation_rate_limit(request.user):
+            messages.error(
+                request,
+                gettext("Too many owner invitations. Please try again later."),
+            )
+        else:
+            create_invitation(customer, form.cleaned_data["email"], request.user)
+            messages.info(
+                request,
+                gettext(
+                    "If the address is valid, a customer owner invitation has been sent."
+                ),
+            )
     return redirect(reverse("user"))
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def customer_owner_invitation(request, token):
+    invitation = resolve_invitation(token)
+    if (
+        invitation is None
+        or invitation.status != CustomerOwnerInvitation.Status.PENDING
+        or invitation.expires_at <= timezone.now()
+        or invitation.email != normalize_email(request.user.email)
+    ):
+        messages.error(request, gettext("This customer owner invitation is invalid."))
+        return redirect("user")
+    if request.method == "POST":
+        if accept_invitation(invitation, request.user) is None:
+            messages.error(
+                request,
+                gettext("This invitation is not available for your account."),
+            )
+        else:
+            messages.success(request, gettext("Customer owner invitation accepted."))
+        return redirect("user")
+    return render(
+        request,
+        "customer-owner-invitation.html",
+        {"invitation": invitation, "token": token},
+    )
 
 
 @login_required

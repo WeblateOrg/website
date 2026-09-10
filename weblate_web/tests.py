@@ -38,7 +38,13 @@ from wlc import WeblateException
 
 from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
-from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
+from weblate_web.payments.invitations import create_invitation, get_invitation_token
+from weblate_web.payments.models import (
+    Customer,
+    CustomerFollowUp,
+    CustomerOwnerInvitation,
+    Payment,
+)
 
 from .exchange_rates import BTC_RATE_URL, ExchangeRates, UncachedExchangeRates
 from .hetzner import generate_random_password
@@ -81,6 +87,7 @@ from .remote import (
     get_release,
 )
 from .saml import (
+    EMAIL_ALLOCATION_LOCK_KEY,
     extract_user_identifier_params,
     get_username_max_length,
     sync_saml_identity,
@@ -1419,6 +1426,7 @@ class PaymentCustomerAccessTest(UserTestCase):
 
 class CustomerOwnerAccessTest(UserTestCase):
     def setUp(self) -> None:
+        cache.clear()
         self.owner = self.login()
         self.customer = Customer.objects.create(
             email=self.owner.email,
@@ -1430,7 +1438,7 @@ class CustomerOwnerAccessTest(UserTestCase):
             self.url = reverse("customer-owner", kwargs={"pk": self.customer.pk})
             self.user_url = reverse("user")
 
-    def test_owner_can_add_unrelated_owner_with_full_control(self) -> None:
+    def test_owner_invitation_requires_acceptance(self) -> None:
         new_owner = User.objects.create_user(
             username="new-owner", email="new-owner@example.com"
         )
@@ -1438,28 +1446,195 @@ class CustomerOwnerAccessTest(UserTestCase):
         response = self.client.post(self.url, {"email": new_owner.email})
 
         self.assertRedirects(response, self.user_url)
-        self.assertIn(new_owner, self.customer.owners.all())
-        interaction = Interaction.objects.get(customer=self.customer)
-        self.assertEqual(interaction.origin, Interaction.Origin.CUSTOMER_OWNER)
-        self.assertEqual(interaction.summary, "Added customer owner")
-        self.assertEqual(interaction.user, self.owner)
-        self.assertEqual(
-            interaction.details,
-            {
-                "action": "add",
-                "owner": new_owner.pk,
-                "email": new_owner.email,
-            },
-        )
+        self.assertNotIn(new_owner, self.customer.owners.all())
+        self.assertNotIn(new_owner.email, self.customer.get_notify_emails())
+        invitation = CustomerOwnerInvitation.objects.get(customer=self.customer)
+        self.assertEqual(invitation.email, new_owner.email)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(self.customer.verbose_name, mail.outbox[0].subject)
+        self.assertIn(self.customer.verbose_name, mail.outbox[0].body)
 
-        another_owner = User.objects.create_user(
-            username="another-owner", email="another-owner@example.com"
-        )
         self.client.force_login(new_owner)
-        response = self.client.post(self.url, {"email": another_owner.email})
+        accept_url = reverse(
+            "customer-owner-invitation",
+            kwargs={"token": get_invitation_token(invitation)},
+        )
+        response = self.client.post(accept_url)
 
         self.assertRedirects(response, self.user_url)
-        self.assertIn(another_owner, self.customer.owners.all())
+        invitation.refresh_from_db()
+        self.assertEqual(invitation.status, CustomerOwnerInvitation.Status.ACCEPTED)
+        self.assertIn(new_owner, self.customer.owners.all())
+        self.assertIn(new_owner.email, self.customer.get_notify_emails())
+
+    def test_invitation_response_does_not_disclose_account_existence(self) -> None:
+        User.objects.create_user(username="existing", email="existing@example.com")
+
+        existing = self.client.post(
+            self.url, {"email": "existing@example.com"}, follow=True
+        )
+        missing = self.client.post(
+            self.url, {"email": "missing@example.com"}, follow=True
+        )
+
+        confirmation = (
+            "If the address is valid, a customer owner invitation has been sent."
+        )
+        self.assertContains(existing, confirmation)
+        self.assertContains(missing, confirmation)
+        self.assertNotContains(existing, "User not found")
+        self.assertNotContains(missing, "User not found")
+        self.assertEqual(self.customer.owner_invitations.count(), 2)
+
+    def test_pending_invitation_is_resent(self) -> None:
+        self.client.post(self.url, {"email": "invitee@example.com"})
+        invitation = CustomerOwnerInvitation.objects.get(customer=self.customer)
+        original_expiry = invitation.expires_at
+
+        with patch("weblate_web.payments.invitations.timezone.now") as now:
+            now.return_value = original_expiry - timedelta(days=6)
+            self.client.post(self.url, {"email": "INVITEE@example.com"})
+
+        invitation.refresh_from_db()
+        self.assertEqual(self.customer.owner_invitations.count(), 1)
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertGreater(invitation.expires_at, original_expiry)
+        self.assertEqual(
+            list(
+                self.customer.interaction_set.order_by("timestamp", "pk").values_list(
+                    "details__action", flat=True
+                )
+            ),
+            ["invite", "resend_invitation"],
+        )
+
+    def test_failed_send_does_not_overwrite_successful_resend(self) -> None:
+        initial_now = timezone.now()
+        retry_now = initial_now + timedelta(minutes=1)
+        send_count = 0
+
+        def resend_then_fail(*_args, **_kwargs):
+            nonlocal send_count
+            send_count += 1
+            if send_count == 1:
+                with patch(
+                    "weblate_web.payments.invitations.timezone.now",
+                    return_value=retry_now,
+                ):
+                    create_invitation(self.customer, "invitee@example.com", self.owner)
+                raise RuntimeError("Initial delivery failed")
+
+        with (
+            patch(
+                "weblate_web.payments.invitations.timezone.now",
+                return_value=initial_now,
+            ),
+            patch(
+                "weblate_web.payments.invitations.send_notification",
+                side_effect=resend_then_fail,
+            ),
+        ):
+            invitation = create_invitation(
+                self.customer, "invitee@example.com", self.owner
+            )
+
+        assert invitation is not None
+        invitation.refresh_from_db()
+        self.assertEqual(invitation.status, CustomerOwnerInvitation.Status.PENDING)
+        self.assertEqual(invitation.expires_at, retry_now + timedelta(days=7))
+        self.assertEqual(send_count, 2)
+
+    def test_existing_owner_is_not_invited(self) -> None:
+        invitation = CustomerOwnerInvitation.objects.create(
+            customer=self.customer,
+            email=self.owner.email,
+            invited_by=self.owner,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+
+        self.client.post(self.url, {"email": self.owner.email})
+
+        invitation.refresh_from_db()
+        self.assertEqual(invitation.status, CustomerOwnerInvitation.Status.REVOKED)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(
+            self.customer.interaction_set.get().details["action"],
+            "skip_existing_owner",
+        )
+
+    def test_invitation_rate_limit(self) -> None:
+        cache.clear()
+        for index in range(10):
+            self.client.post(self.url, {"email": f"invitee-{index}@example.com"})
+
+        response = self.client.post(
+            self.url, {"email": "blocked@example.com"}, follow=True
+        )
+
+        self.assertContains(response, "Too many owner invitations")
+        self.assertEqual(self.customer.owner_invitations.count(), 10)
+
+    def test_invitation_rejects_wrong_or_duplicate_account(self) -> None:
+        invitee = User.objects.create_user(
+            username="invitee", email="duplicate@example.com"
+        )
+        User.objects.create_user(username="duplicate", email="DUPLICATE@example.com")
+        invitation = CustomerOwnerInvitation.objects.create(
+            customer=self.customer,
+            email="duplicate@example.com",
+            invited_by=self.owner,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+        self.client.force_login(invitee)
+
+        response = self.client.post(
+            reverse(
+                "customer-owner-invitation",
+                kwargs={"token": get_invitation_token(invitation)},
+            ),
+            follow=True,
+        )
+
+        self.assertContains(response, "not available for your account")
+        self.assertNotIn(invitee, self.customer.owners.all())
+
+    def test_owner_can_revoke_invitation(self) -> None:
+        invitation = CustomerOwnerInvitation.objects.create(
+            customer=self.customer,
+            email="invitee@example.com",
+            invited_by=self.owner,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+
+        self.client.post(
+            self.url,
+            {"revoke": "1", "invitation": invitation.pk},
+        )
+
+        invitation.refresh_from_db()
+        self.assertEqual(invitation.status, CustomerOwnerInvitation.Status.REVOKED)
+
+    def test_owner_can_not_revoke_accepted_invitation(self) -> None:
+        invitation = CustomerOwnerInvitation.objects.create(
+            customer=self.customer,
+            email="invitee@example.com",
+            invited_by=self.owner,
+            status=CustomerOwnerInvitation.Status.ACCEPTED,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+
+        self.client.post(
+            self.url,
+            {"revoke": "1", "invitation": invitation.pk},
+        )
+
+        invitation.refresh_from_db()
+        self.assertEqual(invitation.status, CustomerOwnerInvitation.Status.ACCEPTED)
+        self.assertFalse(
+            self.customer.interaction_set.filter(
+                details__action="revoke_invitation"
+            ).exists()
+        )
 
     def test_owner_can_remove_original_owner(self) -> None:
         peer_owner = User.objects.create_user(
@@ -1470,7 +1645,7 @@ class CustomerOwnerAccessTest(UserTestCase):
 
         response = self.client.post(
             self.url,
-            {"email": self.owner.email, "remove": "1"},
+            {"owner": self.owner.pk, "remove": "1"},
         )
 
         self.assertRedirects(response, self.user_url)
@@ -1485,7 +1660,7 @@ class CustomerOwnerAccessTest(UserTestCase):
     def test_owner_can_not_remove_self(self) -> None:
         response = self.client.post(
             self.url,
-            {"email": self.owner.email, "remove": "1"},
+            {"owner": self.owner.pk, "remove": "1"},
             follow=True,
         )
 
@@ -1511,10 +1686,9 @@ class CustomerOwnerAccessTest(UserTestCase):
             username="non-owner", email="non-owner@example.com"
         )
 
-        self.client.post(self.url, {"email": self.owner.email})
         self.client.post(
             self.url,
-            {"email": non_owner.email, "remove": "1"},
+            {"owner": non_owner.pk, "remove": "1"},
         )
 
         self.assertFalse(Interaction.objects.filter(customer=self.customer).exists())
@@ -1528,7 +1702,7 @@ class CustomerOwnerAccessTest(UserTestCase):
         self.assertIn("Owners", content)
         self.assertIn("Owners have full control over this customer account", content)
         self.assertIn("Only add people you trust.", content)
-        self.assertIn("Add owner", content)
+        self.assertIn("Invite owner", content)
 
 
 class FakturaceTestCase(UserTestCase):
@@ -4105,6 +4279,41 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(user.email, "renamed@example.com")
         self.assertEqual(user.password, old_password)
 
+    def test_linked_saml_user_retains_duplicate_email(self) -> None:
+        user = User.objects.create_user(
+            username="linked-user", email="duplicate@example.com"
+        )
+        User.objects.create_user(
+            username="historical-duplicate", email="DUPLICATE@example.com"
+        )
+        SamlIdentity.objects.create(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="42",
+            user=user,
+        )
+
+        synced_user, created = sync_saml_identity(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="42",
+            profile={"email": "duplicate@example.com"},
+        )
+
+        self.assertFalse(created)
+        self.assertEqual(synced_user, user)
+        user.refresh_from_db()
+        self.assertEqual(user.email, "duplicate@example.com")
+
+    def test_saml_sync_serializes_email_allocation(self) -> None:
+        sync_saml_identity(
+            provider="https://hosted.weblate.org/idp/metadata",
+            external_id="email-lock",
+            profile={"email": "serialized@example.com"},
+        )
+
+        self.assertTrue(
+            ExternalSyncState.objects.filter(key=EMAIL_ALLOCATION_LOCK_KEY).exists()
+        )
+
     def test_saml_backend_rejects_empty_nameid(self) -> None:
         self.assertEqual(
             extract_user_identifier_params({"name_id": SimpleNamespace(text=None)}),
@@ -4200,9 +4409,9 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().email, "remote@example.com")
 
-    def test_user_external_id_ignores_duplicate_email_candidates(self) -> None:
+    def test_user_external_id_rejects_duplicate_email_candidates(self) -> None:
         User.objects.create_user(username="first", email="dup@example.com")
-        User.objects.create_user(username="second", email="dup@example.com")
+        User.objects.create_user(username="second", email="DUP@example.com")
         response = self.client.post(
             "/api/user/",
             {
@@ -4219,11 +4428,11 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
                 )
             },
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.filter(email="dup@example.com").count(), 3)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            SamlIdentity.objects.get(external_id="42").user.username, "remote"
+            User.objects.filter(email__iexact="dup@example.com").count(), 2
         )
+        self.assertFalse(SamlIdentity.objects.filter(external_id="42").exists())
 
     def test_user_database_error(self) -> None:
         with patch(
@@ -4315,6 +4524,42 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertIn("Not advancing hosted user sync cursor", error.getvalue())
         self.assertTrue(User.objects.filter(username="remote").exists())
         self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
+
+    @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
+    @responses.activate
+    def test_sync_hosted_users_ignores_unrelated_duplicate_emails(self) -> None:
+        User.objects.create_user(username="duplicate-a", email="dup@example.com")
+        User.objects.create_user(username="duplicate-b", email="DUP@example.com")
+        responses.add(
+            responses.POST,
+            "https://hosted.example/users/",
+            json={
+                "payload": dumps(
+                    {
+                        "cursor": "cursor-after-duplicates",
+                        "users": [
+                            {
+                                "external_id": "unrelated",
+                                "profile": {
+                                    "username": "unrelated",
+                                    "email": "unrelated@example.com",
+                                },
+                            }
+                        ],
+                    },
+                    key=settings.PAYMENT_SECRET,
+                    salt=USER_SYNC_RESPONSE_SALT,
+                )
+            },
+        )
+
+        call_command("sync_hosted_users")
+
+        self.assertTrue(User.objects.filter(username="unrelated").exists())
+        self.assertEqual(
+            ExternalSyncState.objects.get(key="hosted-users").cursor,
+            "cursor-after-duplicates",
+        )
 
     @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
     @responses.activate
