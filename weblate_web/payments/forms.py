@@ -18,7 +18,7 @@
 #
 
 from django import forms
-from django.utils.translation import gettext
+from django.utils.translation import gettext, gettext_lazy
 from vies.forms.fields import VATINField
 from vies.forms.widgets import VATINWidget
 from vies.types import VIES_COUNTRY_CHOICES
@@ -26,6 +26,10 @@ from vies.types import VIES_COUNTRY_CHOICES
 from weblate_web.utils import FOSDEM_ORIGIN
 
 from .models import Customer
+
+
+class CustomerOwnerInvitationForm(forms.Form):
+    email = forms.EmailField(label=gettext_lazy("E-mail"))
 
 
 class BootstrapVATINWidget(VATINWidget):

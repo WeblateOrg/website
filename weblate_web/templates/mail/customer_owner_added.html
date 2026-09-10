@@ -1,0 +1,11 @@
+{% extends "mail/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+  <p>
+    {% blocktranslate with customer_name=customer.verbose_name %}Weblate staff added you as an owner of the customer account <strong>{{ customer_name }}</strong>.{% endblocktranslate %}
+  </p>
+  <p>{% translate "You now have full control over its billing, services, secrets, and other owners. No action is required." %}</p>
+  <p>{% translate "If you did not expect this change, please contact Weblate support." %}</p>
+{% endblock content %}

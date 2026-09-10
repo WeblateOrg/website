@@ -23,6 +23,9 @@
     <a href="{{ object.get_absolute_url }}"
        class="{% if active_tab == "overview" %}is-active{% endif %}"
        {% if active_tab == "overview" %}aria-current="page"{% endif %}>{% translate "Overview" %}</a>
+    <a href="{{ object.get_absolute_url }}?tab=owners"
+       class="{% if active_tab == "owners" %}is-active{% endif %}"
+       {% if active_tab == "owners" %}aria-current="page"{% endif %}>{% translate "Owners" %}</a>
     <a href="{{ object.get_absolute_url }}?tab=interactions"
        class="{% if active_tab == "interactions" %}is-active{% endif %}"
        {% if active_tab == "interactions" %}aria-current="page"{% endif %}>{% translate "Interactions" %}</a>
@@ -201,7 +204,7 @@
       {% endif %}
     </section>
 
-    {% if can_change_customer or can_add_customer_owner %}
+    {% if can_change_customer %}
       <section class="crm-section content">
         {% translate "Actions" as section_title %}
         {% include "crm/snippets/section_header.html" %}
@@ -220,20 +223,6 @@
               <div class="crm-form-panel__actions">
                 {% translate "Review merge" as review_merge_label %}
                 <input class="crm-button" type="submit" value="{{ review_merge_label }}">
-              </div>
-            </form>
-          {% endif %}
-
-          {% if can_add_customer_owner %}
-            <form class="crm-form-panel crm-form-panel--balanced" method="post">
-              <h3>{% translate "Add owner to customer" %}</h3>
-              {% csrf_token %}
-              <div class="crm-form-panel__body">{{ customer_owner_form }}</div>
-              <div class="crm-form-panel__actions">
-                <input class="crm-button"
-                       type="submit"
-                       name="add_customer_owner"
-                       value="{% translate "Add owner" %}">
               </div>
             </form>
           {% endif %}
@@ -410,6 +399,90 @@
         {% include "crm/snippets/empty.html" %}
       {% endif %}
     </section>
+  {% endif %}
+
+  {% if active_tab == "owners" %}
+    <section class="crm-section content">
+      {% translate "Customer owners" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% if customer_owners %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% include "crm/snippets/table_caption.html" with table_title=section_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "E-mail" %}</th>
+                <th scope="col">{% translate "Username" %}</th>
+                <th scope="col">{% translate "Name" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for owner in customer_owners %}
+                <tr>
+                  <td>{{ owner.email }}</td>
+                  <td>{{ owner.username }}</td>
+                  <td>{{ owner.get_full_name|default:"-" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {% translate "No customer owners." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+    </section>
+
+    <section class="crm-section content">
+      {% translate "Pending owner invitations" as section_title %}
+      {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+      {% if owner_invitations %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% include "crm/snippets/table_caption.html" with table_title=section_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "E-mail" %}</th>
+                <th scope="col">{% translate "Invited by" %}</th>
+                <th scope="col">{% translate "Invited" %}</th>
+                <th scope="col">{% translate "Expires" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for invitation in owner_invitations %}
+                <tr>
+                  <td>{{ invitation.email }}</td>
+                  <td>{{ invitation.invited_by.username|default:"-" }}</td>
+                  <td>{{ invitation.created }}</td>
+                  <td>{{ invitation.expires_at }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {% translate "No pending owner invitations." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+    </section>
+
+    {% if can_add_customer_owner %}
+      <section class="crm-section content">
+        {% translate "Add customer owner" as section_title %}
+        {% include "crm/snippets/section_header.html" with section_title=section_title only %}
+        <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--compact"
+              method="post">
+          {% csrf_token %}
+          <div class="crm-form-panel__body">{{ customer_owner_form }}</div>
+          <div class="crm-form-panel__actions">
+            <input class="crm-button"
+                   type="submit"
+                   name="add_customer_owner"
+                   value="{% translate "Add owner" %}">
+          </div>
+        </form>
+      </section>
+    {% endif %}
   {% endif %}
 
   {% if active_tab == "invoices" %}

@@ -282,7 +282,8 @@ max-complexity = 16
 "scripts/*" = ["T201"]
 "weblate_web/invoices/validation.py" = ["RUF003", "PLR0914"]
 "weblate_web/payments/backends.py" = ["T201"]
-"weblate_web/tests_e2e/*" = ["S101"] # assert usage is normal in tests
+"weblate_web/test*.py" = ["S101"] # assert usage is normal in tests
+"weblate_web/*/test*.py" = ["S101"]
 
 [tool.ruff.lint.pylint]
 # TODO: all these should be lower (or use defaults)

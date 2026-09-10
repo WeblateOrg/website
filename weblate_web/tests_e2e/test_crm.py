@@ -44,7 +44,12 @@ from weblate_web.invoices.models import (
     QuoteStatus,
 )
 from weblate_web.models import Package, Service
-from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
+from weblate_web.payments.models import (
+    Customer,
+    CustomerFollowUp,
+    CustomerOwnerInvitation,
+    Payment,
+)
 from weblate_web.saml import get_default_saml_provider
 
 if TYPE_CHECKING:
@@ -238,6 +243,14 @@ def crm_data(  # pylint: disable=redefined-outer-name
             "CRM Primary Customer",
             "billing-primary@example.test",
             end_client="End Client One",
+        )
+        customer.owners.add(crm_staff_user)
+        CustomerOwnerInvitation.objects.create(
+            customer=customer,
+            email="pending-owner@example.test",
+            invited_by=crm_staff_user,
+            created=FIXED_TIMESTAMP,
+            expires_at=FIXED_TIMESTAMP + timedelta(days=3650),
         )
         prospect = create_customer("CRM Prospect", "prospect@example.test")
         merge_source = create_customer("CRM Merge Source", "merge-source@example.test")
@@ -894,6 +907,28 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         ).first.is_visible()
         capture(page, "customer-tab-invalid")
 
+    def test_customer_detail_owners_tab(
+        self, page: Page, live_server, crm_data: CrmData
+    ) -> None:
+        """Show owners, pending invitations, and owner creation together."""
+        log_in(page, live_server, crm_data.staff)
+        customer_url = absolute_url(live_server, crm_data.customer.get_absolute_url())
+
+        response = page.goto(f"{customer_url}?tab=owners")
+
+        assert_loaded(page, response, "Customer owners tab")
+        assert_customer_tab_selected(page, "Owners")
+        for heading in (
+            "Customer owners",
+            "Pending owner invitations",
+            "Add customer owner",
+        ):
+            assert page.get_by_role("heading", name=heading, exact=True).is_visible()
+        assert_text_visible(page, crm_data.staff.email)
+        assert_text_visible(page, "pending-owner@example.test")
+        assert page.locator('input[name="add_customer_owner"]').is_visible()
+        capture(page, "customer-tab-owners")
+
     def test_customer_detail_actions(
         self, page: Page, live_server, crm_data: CrmData
     ) -> None:
@@ -906,14 +941,6 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         assert_loaded(page, response, "Customer detail")
         capture(page, "customer-detail")
 
-        merge_height = page.locator('input[name="merge"]').evaluate(
-            "element => element.getBoundingClientRect().height"
-        )
-        email_height = page.locator('input[name="email"]').evaluate(
-            "element => element.getBoundingClientRect().height"
-        )
-        assert round(merge_height) == round(email_height)
-
         page.fill('textarea[name="note"]', "Manual CRM note\nFollow-up requested.")
         with fixed_interaction_timestamp(FIXED_TIMESTAMP + timedelta(minutes=10)):
             page.click('input[name="add_manual_note"]')
@@ -922,7 +949,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         assert "tab=interactions" in page.url
         assert_text_visible(page, "Manual CRM note", exact=False)
         capture(page, "customer-manual-note")
-        page.get_by_role("link", name="Overview").click()
+        page.get_by_role("link", name="Owners").click()
         page.wait_for_load_state("networkidle")
 
         hosted_payload = {
@@ -947,6 +974,11 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             page.wait_for_load_state("networkidle")
         assert_no_server_error(page)
         assert_text_visible(page, "crm-linked@example.test", exact=False)
+        assert "crm-linked@example.test" in crm_data.customer.get_notify_emails()
+        assert not CustomerOwnerInvitation.objects.filter(
+            customer=crm_data.customer,
+            email="crm-linked@example.test",
+        ).exists()
         capture(page, "customer-add-user")
 
     def test_interaction_detail_and_download(

@@ -30,7 +30,7 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from djangosaml2.backends import Saml2Backend  # type: ignore[import-untyped]
 
-from weblate_web.models import SamlIdentity
+from weblate_web.models import ExternalSyncState, SamlIdentity
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -47,6 +47,7 @@ USERNAME_INTEGRITY_MARKERS = (
     "user_username",
 )
 CREATE_USER_RETRIES = 5
+EMAIL_ALLOCATION_LOCK_KEY = "saml-email-allocation"
 
 
 def get_default_saml_provider() -> str:
@@ -109,6 +110,7 @@ class SamlSyncContext:
     def __init__(self) -> None:
         self.identities: dict[tuple[str, str], SamlIdentity] = {}
         self.username_owner: dict[str, int] = {}
+        self.email_owners: dict[str, set[int]] = defaultdict(set)
 
     @classmethod
     def preload(cls, payloads: Iterable[object]) -> SamlSyncContext:
@@ -128,8 +130,12 @@ class SamlSyncContext:
         return context
 
     def preload_username_owners(self) -> None:
-        for user_id, username in User.objects.values_list("id", "username").iterator():
+        for user_id, username, email in User.objects.values_list(
+            "id", "username", "email"
+        ).iterator():
             self.username_owner[username.casefold()] = user_id
+            if email:
+                self.email_owners[email.casefold()].add(user_id)
 
     def preload_identities(self, providers_external_ids: dict[str, set[str]]) -> None:
         for provider, external_ids in providers_external_ids.items():
@@ -158,6 +164,17 @@ class SamlSyncContext:
                 del self.username_owner[old_key]
         self.username_owner[user.username.casefold()] = user.pk
 
+    def email_exists(self, email: str, user: User | None = None) -> bool:
+        owners = self.email_owners.get(email.casefold(), set())
+        return any(user is None or owner != user.pk for owner in owners)
+
+    def set_email_owner(self, user: User, old_email: str | None = None) -> None:
+        if old_email:
+            owners = self.email_owners.get(old_email.casefold(), set())
+            owners.discard(user.pk)
+        if user.email:
+            self.email_owners[user.email.casefold()].add(user.pk)
+
 
 def profile_from_saml_attributes(
     attributes: dict[str, list[Any]], attribute_mapping: dict[str, tuple[str, ...]]
@@ -182,6 +199,25 @@ def username_exists(
     if user is not None and user.pk:
         users = users.exclude(pk=user.pk)
     return users.exists()
+
+
+def validate_email_available(
+    email: object,
+    user: User | None = None,
+    context: SamlSyncContext | None = None,
+) -> str:
+    normalized = str(email or "").strip()
+    if not normalized:
+        return ""
+    users = User.objects.filter(email__iexact=normalized)
+    if user is not None and user.pk:
+        users = users.exclude(pk=user.pk)
+    exists = users.exists()
+    if context is not None:
+        exists = exists or context.email_exists(normalized, user)
+    if exists:
+        raise ValueError("E-mail address is already used by another local user.")
+    return normalized
 
 
 def make_unique_username(
@@ -221,6 +257,7 @@ def apply_profile(
 ) -> None:
     changed_fields: set[str] = set()
     old_username = user.username
+    old_email = user.email
     for field in PROFILE_FIELDS:
         if field not in profile:
             continue
@@ -229,6 +266,10 @@ def apply_profile(
             if value is None:
                 continue
             value = make_unique_username(str(value), user, context)
+        elif field == "email":
+            value = str(value or "").strip()
+            if value.casefold() != user.email.strip().casefold():
+                value = validate_email_available(value, user, context)
         elif value is None:
             value = ""
         if getattr(user, field) != value:
@@ -248,6 +289,8 @@ def apply_profile(
         user.save(update_fields=sorted(changed_fields))
         if context is not None and "username" in changed_fields:
             context.set_username_owner(user, old_username=old_username)
+        if context is not None and "email" in changed_fields:
+            context.set_email_owner(user, old_email=old_email)
 
 
 def create_user(
@@ -261,7 +304,7 @@ def create_user(
             username=make_unique_username(
                 base_username, context=context, excluded_usernames=excluded_usernames
             ),
-            email=profile.get("email") or "",
+            email=validate_email_available(profile.get("email"), context=context),
             last_name=profile.get("last_name") or "",
         )
         for field in ACTIVE_FIELDS:
@@ -281,6 +324,7 @@ def create_user(
             continue
         if context is not None:
             context.set_username_owner(user)
+            context.set_email_owner(user)
         return user
 
     msg = f"Could not allocate a unique username for hosted user {external_id}"
@@ -301,6 +345,11 @@ def sync_saml_identity(  # ruff:ignore[too-many-arguments]
     external_id = normalize_external_id(external_id)
     if not external_id:
         return None, False
+
+    if "email" in profile:
+        ExternalSyncState.objects.select_for_update().get_or_create(
+            key=EMAIL_ALLOCATION_LOCK_KEY
+        )
 
     if context is None:
         identity = (

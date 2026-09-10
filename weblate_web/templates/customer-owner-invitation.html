@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Customer owner invitation" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1>{% translate "Customer owner invitation" %}</h1>
+        <form class="payment-form owner-invitation-form" method="post">
+          {% csrf_token %}
+          <h2 class="title">{% translate "Review access" %}</h2>
+          <div class="owner-invitation-account">
+            <span>{% translate "Customer account" %}</span>
+            <strong>{{ invitation.customer.verbose_name }}</strong>
+          </div>
+          <p class="owner-invitation-description">{% translate "Accepting gives you full control over this customer account, including billing, services, secrets, and other owners." %}</p>
+          <input type="submit" class="button center" value="{% translate "Accept invitation" %}">
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

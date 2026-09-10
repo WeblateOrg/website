@@ -1,0 +1,12 @@
+{% extends "mail/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+  <p>
+    {% blocktranslate with customer_name=customer.verbose_name %}You have been invited to manage the customer account <strong>{{ customer_name }}</strong> on Weblate.{% endblocktranslate %}
+  </p>
+  <p>{% translate "Accepting gives you full control over its billing, services, secrets, and other owners." %}</p>
+  <a class="button" href="{{ invitation_url }}">{% translate "Review invitation" %}</a>
+  <p>{% translate "This invitation expires in seven days. If you did not expect it, you can ignore this message." %}</p>
+{% endblock content %}

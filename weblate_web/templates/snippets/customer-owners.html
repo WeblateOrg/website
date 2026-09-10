@@ -29,9 +29,25 @@
       </div>
       {% csrf_token %}
       {% if owner != user %}
-        <input type="hidden" name="email" value="{{ owner.email }}" />
+        <input type="hidden" name="owner" value="{{ owner.pk }}" />
         <input type="hidden" name="remove" value="{% translate "Remove" %}" />
       {% endif %}
+    </form>
+  {% endfor %}
+  {% for invitation in customer.pending_owner_invitations %}
+    <form method="post" action="{% url 'customer-owner' pk=customer.pk %}">
+      {% csrf_token %}
+      <div class="user-slot">
+        <div class="user-slot-content">
+          <p>{% translate "Pending invitation" %}</p>
+          <t>{{ invitation.email }}</t>
+        </div>
+        <button type="submit" class="user-img">
+          <img src="{% static "img/delete.png" %}" alt="{% translate "Revoke invitation" %}">
+        </button>
+      </div>
+      <input type="hidden" name="invitation" value="{{ invitation.pk }}" />
+      <input type="hidden" name="revoke" value="1" />
     </form>
   {% endfor %}
   <form method="post" action="{% url 'customer-owner' pk=customer.pk %}">
@@ -43,7 +59,7 @@
            aria-label="{% translate "E-mail" %}" />
     <input type="submit"
            class="button button-med-120 inline border rev"
-           value="{% translate "Add owner" %}" />
+           value="{% translate "Invite owner" %}" />
   </form>
 </div>
 <div class="clear"></div>

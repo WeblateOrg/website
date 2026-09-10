@@ -61,6 +61,8 @@ from .validators import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from django_countries.fields import Country
 
     from weblate_web.invoices.models import Invoice
@@ -510,6 +512,13 @@ class Customer(models.Model):
         )
 
     @property
+    def pending_owner_invitations(self):
+        return self.owner_invitations.filter(
+            status=CustomerOwnerInvitation.Status.PENDING,
+            expires_at__gt=timezone.now(),
+        ).order_by("email", "created")
+
+    @property
     def ordered_owners(self) -> models.QuerySet[User, User]:
         return self.owners.order_by("email", "username", "pk")
 
@@ -561,7 +570,12 @@ class Customer(models.Model):
         )
 
     def send_notification(
-        self, notification: str, invoice: Invoice | None = None, **kwargs
+        self,
+        notification: str,
+        invoice: Invoice | None = None,
+        *,
+        recipients: Sequence[str] | None = None,
+        **kwargs,
     ) -> None:
         # ruff:ignore[import-outside-top-level]
         from weblate_web.crm.models import Interaction
@@ -572,8 +586,17 @@ class Customer(models.Model):
         ):
             kwargs["upcoming_payment_invoices"] = self.get_upcoming_payment_invoices()
 
-        recipients = self.get_notify_emails()
-        email = send_notification(notification, recipients, invoice=invoice, **kwargs)
+        notification_recipients = (
+            self.get_notify_emails()
+            if recipients is None
+            else sorted(set(recipients), key=str.casefold)
+        )
+        email = send_notification(
+            notification,
+            notification_recipients,
+            invoice=invoice,
+            **kwargs,
+        )
 
         # Extract HTML content
         content = ""
@@ -596,7 +619,7 @@ class Customer(models.Model):
             content=content,
             details={
                 "notification": notification,
-                "recipients": list(recipients),
+                "recipients": list(notification_recipients),
                 "subject": str(email.subject),
                 "invoice": invoice.number if invoice else "",
                 "attachment": attachment_filename,
@@ -608,6 +631,63 @@ class Customer(models.Model):
             ContentFile(email.message().as_bytes()),
         )
 
+    def _reconcile_owner_invitations(self, user: User | None) -> None:
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.crm.models import Interaction
+
+        now = timezone.now()
+        owner_emails = {
+            email.casefold()
+            for email in self.owners.exclude(email="").values_list("email", flat=True)
+        }
+        retained_emails: set[str] = set()
+        fulfilled: list[str] = []
+        revoked: list[str] = []
+        invitations = list(
+            self.owner_invitations.select_for_update()
+            .filter(status=CustomerOwnerInvitation.Status.PENDING)
+            .order_by("-expires_at", "-created", "pk")
+        )
+        for invitation in invitations:
+            normalized_email = invitation.email.casefold()
+            if normalized_email in owner_emails:
+                invitation.status = CustomerOwnerInvitation.Status.FULFILLED_BY_STAFF
+                fulfilled.append(str(invitation.pk))
+            elif invitation.expires_at <= now or normalized_email in retained_emails:
+                invitation.status = CustomerOwnerInvitation.Status.REVOKED
+                revoked.append(str(invitation.pk))
+            else:
+                retained_emails.add(normalized_email)
+                continue
+            invitation.acted_at = now
+            invitation.acted_by = user
+
+        changed = [
+            invitation
+            for invitation in invitations
+            if invitation.status != CustomerOwnerInvitation.Status.PENDING
+        ]
+        if not changed:
+            return
+        CustomerOwnerInvitation.objects.bulk_update(
+            changed, ("status", "acted_at", "acted_by")
+        )
+        self.interaction_set.create(
+            origin=Interaction.Origin.CUSTOMER_OWNER,
+            summary="Reconciled customer owner invitations after merge",
+            content=(
+                f"Fulfilled {len(fulfilled)} and revoked {len(revoked)} customer "
+                "owner invitations after merging customers."
+            ),
+            details={
+                "action": "reconcile_invitations_after_merge",
+                "fulfilled_invitations": fulfilled,
+                "revoked_invitations": revoked,
+            },
+            user=user,
+        )
+
+    @transaction.atomic
     def merge(self, other: Customer, *, user: User | None = None) -> None:
         # ruff:ignore[import-outside-top-level]
         from weblate_web.crm.models import Interaction
@@ -618,9 +698,11 @@ class Customer(models.Model):
         other.service_set.update(customer=self)
         other.interaction_set.update(customer=self)
         other.followups.update(customer=self)
+        other.owner_invitations.update(customer=self)
         owners = list(other.owners.all())
         if owners:
             self.owners.add(*owners)
+        self._reconcile_owner_invitations(user)
         interaction = self.interaction_set.create(
             origin=Interaction.Origin.MERGE,
             summary=f"Merged with {other.name} ({other.pk})",
@@ -851,6 +933,46 @@ RECURRENCE_CHOICES = [
 class PaymentQuerySet(models.QuerySet["Payment", "Payment"]):
     def order(self) -> PaymentQuerySet:
         return self.order_by("-created", "description", "uuid")
+
+
+class CustomerOwnerInvitation(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", gettext_lazy("Pending")
+        ACCEPTED = "accepted", gettext_lazy("Accepted")
+        REVOKED = "revoked", gettext_lazy("Revoked")
+        DELIVERY_FAILED = "delivery_failed", gettext_lazy("Delivery failed")
+        FULFILLED_BY_STAFF = "fulfilled_by_staff", gettext_lazy("Fulfilled by staff")
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, related_name="owner_invitations"
+    )
+    email = models.EmailField()
+    invited_by = models.ForeignKey(
+        User,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="customer_owner_invitations",
+    )
+    status = models.CharField(
+        max_length=20, choices=Status, default=Status.PENDING, db_index=True
+    )
+    created = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+    acted_at = models.DateTimeField(null=True, blank=True)
+    acted_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="acted_customer_owner_invitations",
+    )
+
+    class Meta:
+        ordering = ("-created", "pk")
+
+    def __str__(self) -> str:
+        return f"{self.email} → {self.customer}"
 
 
 class Payment(models.Model):

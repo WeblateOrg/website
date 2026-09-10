@@ -60,6 +60,7 @@ from weblate_web.views import (
     api_support_activation,
     api_user,
     customer_owner,
+    customer_owner_invitation,
     disable_repeat,
     donate_pay,
     download_payment_invoice,
@@ -248,6 +249,11 @@ urlpatterns = [
         ),
         path("customer/<int:pk>/", EditCustomerView.as_view(), name="edit-customer"),
         path("customer/<int:pk>/owners/", customer_owner, name="customer-owner"),
+        path(
+            "customer/owner-invitation/<str:token>/",
+            customer_owner_invitation,
+            name="customer-owner-invitation",
+        ),
         path(
             "customer/<int:pk>/agreement/",
             CustomerDPAView.as_view(),
