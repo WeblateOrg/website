@@ -51,6 +51,9 @@ Create ``weblate_web/settings_local.py`` which adjust your settings:
    # Disable SAML login, use local
    LOGIN_URL = "/admin/login/"
 
+   # Required signing key shared with the hosted infrastructure
+   PAYMENT_SECRET = os.environ["PAYMENT_SECRET"]
+
    # You can also configure API keys and other things, see weblate_web/settings.py
 
    # Do not send real e-mails, log them to the console

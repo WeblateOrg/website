@@ -31,7 +31,7 @@ from appconf import AppConf
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import serializers
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.base import ContentFile
 from django.core.mail import EmailAlternative
 from django.core.serializers.json import DjangoJSONEncoder
@@ -1156,13 +1156,20 @@ class Payment(models.Model):
 
 class PaymentConf(AppConf):
     DEBUG = False
-    SECRET = "secret"  # ruff:ignore[hardcoded-password-string]
+    SECRET = None
     FAKTURACE = None
     THEPAY_MERCHANTID = None
     THEPAY_ACCOUNTID = None
     THEPAY_PASSWORD = None
     THEPAY_DATAAPI = None
     FIO_TOKEN = None
+
+    def configure_secret(self, value: str | None) -> str:
+        if not isinstance(value, str) or not value.strip():
+            raise ImproperlyConfigured(
+                "PAYMENT_SECRET must be configured with a non-empty value."
+            )
+        return value
 
     class Meta:
         prefix = "PAYMENT"
