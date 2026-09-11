@@ -23,11 +23,16 @@ import json
 from copy import deepcopy
 from datetime import date, timedelta
 from decimal import Decimal
-from typing import Any, cast
-from unittest.mock import patch
+from email import policy
+from email.parser import BytesParser
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from typing import TYPE_CHECKING, Any, cast
+from unittest.mock import Mock, patch
 
 import fiobank
 import responses
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
 from django.core.cache import cache
@@ -54,7 +59,11 @@ from .models import (
     CustomerFollowUp,
     Payment,
 )
+from .utils import send_notification
 from .validators import validate_vatin
+
+if TYPE_CHECKING:
+    from django.core.mail import EmailMultiAlternatives
 
 CUSTOMER = {
     "name": "Michal Čihař",
@@ -162,6 +171,132 @@ FIO_TRASACTIONS = {
         },
     }
 }
+
+
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    STATIC_ROOT=Path(__file__).resolve().parents[1] / "static",
+)
+class NotificationEmailTest(SimpleTestCase):
+    def test_inline_images(self) -> None:
+        previous_ids: set[str] = set()
+        for address in ("first@example.com", "second@example.com"):
+            outgoing = send_notification("payment_failed", [address])
+            message = BytesParser(policy=policy.default).parsebytes(
+                outgoing.message().as_bytes()
+            )
+            self.assertEqual(message["Subject"], outgoing.subject)
+            self.assertEqual(message["From"], outgoing.from_email)
+            self.assertEqual(message["To"], address)
+            self.assertEqual(message.get_content_type(), "multipart/alternative")
+            plain, related = message.iter_parts()
+            self.assertEqual(plain.get_content_type(), "text/plain")
+            self.assertEqual(plain.get_content(), outgoing.body)
+            self.assertEqual(related.get_content_type(), "multipart/related")
+            self.assertEqual(related.get_param("type"), "text/html")
+            html, *images = related.iter_parts()
+            self.assertEqual(html.get_content_type(), "text/html")
+            self.assertEqual(html.get_content(), outgoing.alternatives[0][0])
+            self.assertEqual(len(images), 2)
+            content_ids: set[str] = set()
+            for name, image in zip(
+                ("email-logo.png", "email-logo-footer.png"), images, strict=True
+            ):
+                self.assertEqual(image.get_content_type(), "image/png")
+                self.assertEqual(image.get_content_disposition(), "inline")
+                self.assertEqual(image.get_filename(), name)
+                self.assertEqual(image["Content-Transfer-Encoding"], "base64")
+                self.assertEqual(
+                    image.get_payload(decode=True),
+                    (Path(settings.STATIC_ROOT) / name).read_bytes(),
+                )
+                cid = str(image["Content-ID"])
+                self.assertTrue(cid.startswith("<") and cid.endswith(">"))
+                self.assertIn(f"cid:{cid[1:-1]}", html.get_content())
+                self.assertNotIn(f"cid:{name}@cid.weblate.org", html.get_content())
+                content_ids.add(cid)
+            self.assertEqual(len(content_ids), 2)
+            self.assertTrue(content_ids.isdisjoint(previous_ids))
+            previous_ids.update(content_ids)
+            repeated = outgoing.message()
+            self.assertEqual(
+                [part.get_content_type() for part in repeated.walk()],
+                [part.get_content_type() for part in message.walk()],
+            )
+            self.assertEqual(
+                {part["Content-ID"] for part in repeated.walk() if part["Content-ID"]},
+                content_ids,
+            )
+        self.assertEqual(len(mail.outbox), 2)
+
+    def test_invoice_attachments(self) -> None:
+        with TemporaryDirectory() as directory:
+            invoice = Mock(spec=Invoice)
+            invoice.filename = "invoice.pdf"
+            invoice.receipt_filename = "receipt.pdf"
+            invoice.path = Path(directory) / invoice.filename
+            invoice.receipt_path = Path(directory) / invoice.receipt_filename
+            invoice.path.write_bytes(b"%PDF-1.4 invoice")
+            invoice.receipt_path.write_bytes(b"%PDF-1.4 receipt")
+            for draft, paid in ((True, False), (False, False), (False, True)):
+                with self.subTest(draft=draft, paid=paid):
+                    invoice.is_draft = draft
+                    invoice.is_paid = paid
+                    outgoing = send_notification("payment_failed", [], invoice=invoice)
+                    message = BytesParser(policy=policy.default).parsebytes(
+                        outgoing.message().as_bytes()
+                    )
+                    if draft:
+                        self.assertEqual(
+                            message.get_content_type(), "multipart/alternative"
+                        )
+                        self.assertEqual(list(message.iter_attachments()), [])
+                        continue
+                    self.assertEqual(message.get_content_type(), "multipart/mixed")
+                    alternative, *attachments = message.iter_parts()
+                    self.assertEqual(
+                        alternative.get_content_type(), "multipart/alternative"
+                    )
+                    plain, related = alternative.iter_parts()
+                    self.assertEqual(plain.get_content_type(), "text/plain")
+                    self.assertEqual(related.get_content_type(), "multipart/related")
+                    self.assertEqual(
+                        [part.get_content_type() for part in related.iter_parts()],
+                        ["text/html", "image/png", "image/png"],
+                    )
+                    paths = [invoice.path]
+                    if paid:
+                        paths.append(invoice.receipt_path)
+                    self.assertEqual(len(attachments), len(paths))
+                    for attachment, path in zip(attachments, paths, strict=True):
+                        self.assertEqual(
+                            attachment.get_content_type(), "application/pdf"
+                        )
+                        self.assertEqual(
+                            attachment.get_content_disposition(), "attachment"
+                        )
+                        self.assertEqual(attachment.get_filename(), path.name)
+                        self.assertEqual(
+                            attachment.get_payload(decode=True), path.read_bytes()
+                        )
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_unicode_without_recipients(self) -> None:
+        subject = "Překlad změněn"
+        body = f'<p>{subject}</p><img src="cid:email-logo.png@cid.weblate.org">'
+        with patch(
+            "weblate_web.payments.utils.render_to_string", side_effect=[subject, body]
+        ):
+            outgoing = send_notification("payment_failed", [])
+        message = BytesParser(policy=policy.default).parsebytes(
+            outgoing.message().as_bytes()
+        )
+        self.assertEqual(message["Subject"], subject)
+        plain, related = message.iter_parts()
+        html, *_images = related.iter_parts()
+        self.assertIn(subject, plain.get_content())
+        self.assertIn(subject, html.get_content())
+        self.assertEqual(len(mail.outbox), 0)
 
 
 class ModelTest(SimpleTestCase):
@@ -649,6 +784,36 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org")
         self.assertIn("Thank you for your payment", mail.outbox[0].body)
         self.assertNotIn("You are the heart of Weblate", mail.outbox[0].body)
+
+        outgoing = cast("EmailMultiAlternatives", mail.outbox[0])
+        interaction = self.customer.interaction_set.get(origin=Interaction.Origin.EMAIL)
+        self.assertEqual(interaction.content, outgoing.alternatives[0][0])
+        self.assertIn("Thank you for your payment", interaction.content)
+        with interaction.attachment.open("rb") as attachment:
+            message = BytesParser(policy=policy.default).parsebytes(attachment.read())
+        self.assertEqual(message.get_content_type(), "multipart/mixed")
+        alternative, *attachments = message.iter_parts()
+        self.assertEqual(alternative.get_content_type(), "multipart/alternative")
+        self.assertEqual(len(attachments), 2)
+        for pdf in attachments:
+            self.assertEqual(pdf.get_content_type(), "application/pdf")
+            self.assertEqual(pdf.get_content_disposition(), "attachment")
+        plain, related = alternative.iter_parts()
+        self.assertEqual(plain.get_content_type(), "text/plain")
+        self.assertEqual(related.get_content_type(), "multipart/related")
+        html, *images = related.iter_parts()
+        self.assertEqual(html.get_content(), interaction.content)
+        self.assertEqual(len(images), 2)
+        self.assertEqual(
+            {part["Content-ID"] for part in images},
+            {
+                part["Content-ID"]
+                for part in outgoing.message().walk()
+                if part["Content-ID"]
+            },
+        )
+        for image in images:
+            self.assertIn(f"cid:{image['Content-ID'][1:-1]}", html.get_content())
 
     def test_donation_pay(self) -> None:
         self.payment.extra = {"category": "donate"}

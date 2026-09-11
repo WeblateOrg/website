@@ -28,12 +28,14 @@ from __future__ import annotations
 
 import re
 from email.mime.image import MIMEImage
+from email.utils import make_msgid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
+from django.core.mail.message import SafeMIMEMultipart
 from django.core.validators import validate_email as validate_email_django
 from django.template.loader import render_to_string
 from django.utils.translation import get_language, get_language_bidi
@@ -44,6 +46,7 @@ from weblate_web.const import COMPANY_BILLING_EMAIL
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from email.message import Message
 
     from weblate_web.invoices.models import Invoice
 
@@ -61,6 +64,37 @@ def validate_email(value) -> None:
         raise ValidationError(_("Enter a valid e-mail address."))
 
 
+class NotificationEmail(EmailMultiAlternatives):
+    """Keep branding images within the HTML alternative."""
+
+    inline_images: tuple[tuple[str, bytes, str], ...] = ()
+
+    def _create_alternatives(self, msg: Message) -> Message:
+        # Django's stubs omit this MIME construction hook.
+        message = super()._create_alternatives(msg)  # type: ignore[misc]
+        if not self.inline_images or not message.is_multipart():
+            return message
+        parts = []
+        for part in message.get_payload():
+            if part.get_content_type() == "text/html":
+                related = SafeMIMEMultipart(
+                    _subtype="related",
+                    encoding=self.encoding or settings.DEFAULT_CHARSET,
+                    type="text/html",
+                )
+                related.attach(part)
+                for name, content, cid in self.inline_images:
+                    image = MIMEImage(content, _subtype="png")
+                    image.add_header("Content-ID", cid)
+                    image.add_header("Content-Disposition", "inline", filename=name)
+                    related.attach(image)
+                parts.append(related)
+            else:
+                parts.append(part)
+        message.set_payload(parts)
+        return message
+
+
 def send_notification(
     notification: str,
     recipients: Sequence[str],
@@ -74,13 +108,14 @@ def send_notification(
     html2text.pad_tables = True
 
     # Logos
-    images = []
-    for name in ("email-logo.png", "email-logo-footer.png"):
-        filename = Path(settings.STATIC_ROOT) / name
-        image = MIMEImage(filename.read_bytes())
-        image.add_header("Content-ID", f"<{name}@cid.weblate.org>")
-        image.add_header("Content-Disposition", "inline", filename=name)
-        images.append(image)
+    images = tuple(
+        (
+            name,
+            (Path(settings.STATIC_ROOT) / name).read_bytes(),
+            make_msgid(domain="cid.weblate.org"),
+        )
+        for name in ("email-logo.png", "email-logo-footer.png")
+    )
 
     # Context and subject
     context = {
@@ -95,15 +130,15 @@ def send_notification(
     body = render_to_string(f"mail/{notification}.html", context).strip()
 
     # Prepare e-mail
-    email = EmailMultiAlternatives(
+    email = NotificationEmail(
         subject,
         html2text.handle(body),
         COMPANY_BILLING_EMAIL,
         recipients,
     )
-    email.mixed_subtype = "related"
-    for image in images:
-        email.attach(image)
+    email.inline_images = images
+    for name, _content, cid in images:
+        body = body.replace(f"cid:{name}@cid.weblate.org", f"cid:{cid[1:-1]}")
     email.attach_alternative(body, "text/html")
     # Include invoice PDF if exists
     if invoice is not None and not invoice.is_draft:
