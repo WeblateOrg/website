@@ -37,7 +37,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-05 05:52+0000\n"
 "Last-Translator: justcontributor <kty5663@gmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/weblate/website/"
@@ -134,6 +134,14 @@ msgstr "아니오"
 msgid "not set"
 msgstr "미설정"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "알림"
 
@@ -170,11 +178,32 @@ msgstr "첨부 ID"
 msgid "Automated"
 msgstr "자동화됨"
 
+msgid "VAT ID"
+msgstr "VAT ID"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "이전 창"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "미확인"
+
 msgid "Error code"
 msgstr "오류 코드"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "오류 메시지"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "발급됨"
 
 msgid "Amount"
 msgstr "금액"
@@ -651,6 +680,22 @@ msgstr "다음 작업"
 msgid "Next follow-up: %(date)s"
 msgstr "다음 후속 조치: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "후속 조치 지우기"
 
@@ -924,6 +969,24 @@ msgstr "유지보수"
 msgid "No services match the current filters."
 msgstr "현재 필터에 해당하는 서비스가 없습니다."
 
+#, fuzzy
+#| msgid ""
+#| "The VAT ID could not be validated, so the recurring payment was not "
+#| "attempted."
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr "VAT ID를 확인할 수 없어, 정기 결제를 시도하지 않았습니다."
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr "호스팅 사용자 이름이 이메일이 다른 로컬 사용자와 일치합니다."
 
@@ -1037,6 +1100,9 @@ msgstr ""
 "세계에서 가장 큰 Weblate 서버에는 수백 개의 자유 소프트웨어 프로젝트와 비공"
 "개 프로젝트가 호스팅되고 있습니다. Weblate도 포함해서요! 자유 소프트웨어를 사"
 "랑하시나요? 이곳에서는 기여할 수 있는 가능성이 무한합니다!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "후원금이 선택한 보상 기준에 미달합니다!"
@@ -1418,6 +1484,11 @@ msgstr "서비스 제한이 초과되었습니다"
 msgid "Expired dedicated service"
 msgstr "만료된 전용 서비스"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "기부 활성화"
+
 msgid "Date and time when this customer needs attention."
 msgstr "고객의 주의가 필요한 일시입니다."
 
@@ -1427,13 +1498,17 @@ msgstr "다음 동작에 대한 짧은 설명입니다."
 msgid "Follow-up type"
 msgstr "후속 조치 유형"
 
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
+
 msgid "Review usage and upgrade the dedicated instance."
 msgstr "사용량을 검토하고 전용 인스턴스를 업그레이드합니다."
 
 msgid ""
 "Stop the dedicated instance because its support contract expired over two "
 "months ago."
-msgstr "서비스 계약이 두 달 이상 전에 만료되었으므로 전용 인스턴스를 중지합니다."
+msgstr ""
+"서비스 계약이 두 달 이상 전에 만료되었으므로 전용 인스턴스를 중지합니다."
 
 msgid "Annual"
 msgstr "연 1회"
@@ -1705,9 +1780,6 @@ msgstr "체코"
 
 msgid "Business ID"
 msgstr "사업자 ID"
-
-msgid "VAT ID"
-msgstr "VAT ID"
 
 msgid "D-U-N-S Number"
 msgstr "D-U-N-S 번호"
@@ -3941,9 +4013,6 @@ msgstr "계정 페이지에서 업그레이드를 확인하세요."
 
 #~ msgid "Payment was added."
 #~ msgstr "결제가 추가되었습니다."
-
-#~ msgid "Activate donation"
-#~ msgstr "기부 활성화"
 
 #~ msgid "Bitcoin"
 #~ msgstr "비트코인"

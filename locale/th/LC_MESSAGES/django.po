@@ -17,12 +17,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-05 05:51+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
-"Language-Team: Thai <https://hosted.weblate.org/projects/weblate/website/th/>"
-"\n"
+"Language-Team: Thai <https://hosted.weblate.org/projects/weblate/website/th/"
+">\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -125,6 +125,14 @@ msgstr "หมายเหตุ"
 msgid "not set"
 msgstr ""
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 #, fuzzy
 #| msgid "Smart Notifications"
 msgid "Notification"
@@ -165,11 +173,30 @@ msgstr ""
 msgid "Automated"
 msgstr "การต่ออายุอัตโนมัติ"
 
+msgid "VAT ID"
+msgstr "เลขประจำตัวผู้เสียภาษี (VAT)"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "หน้าต่างก่อนหน้า"
+
+#, fuzzy
+#| msgid "Invalid image!"
+msgid "Stale validation used"
+msgstr "รูปภาพไม่ถูกต้อง!"
+
 msgid "Error code"
+msgstr ""
+
+msgid "VIES was temporarily unavailable."
 msgstr ""
 
 msgid "Error message"
 msgstr "ข้อความผิดพลาด"
+
+msgid "Issued by"
+msgstr ""
 
 #, fuzzy
 #| msgid "Amount (EUR)"
@@ -750,6 +777,22 @@ msgstr "การแจ้งเตือนอัจฉริยะ"
 msgid "Next follow-up: %(date)s"
 msgstr ""
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr ""
 
@@ -1091,6 +1134,20 @@ msgstr "การบำรุงรักษาระบบ"
 msgid "No services match the current filters."
 msgstr "ไม่พบเซิร์ฟเวอร์ที่ตรงกับการค้นหาของคุณ"
 
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr ""
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 
@@ -1219,6 +1276,9 @@ msgstr ""
 "เซิร์ฟเวอร์ Weblate "
 "ที่ใหญ่ที่สุดในโลกเป็นที่ตั้งของโครงการซอฟต์แวร์เสรีและแบบส่วนตัวหลายร้อยโครงการ รวมถึงตัว "
 "Weblate เอง! รักซอฟต์แวร์เสรีใช่ไหม โอกาสในการมีส่วนร่วมของคุณที่นี่ไร้ขีดจำกัด!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "ยอดเงินบริจาคไม่เพียงพอสำหรับของรางวัลที่เลือก!"
@@ -1618,6 +1678,11 @@ msgstr "สถานะบริการ"
 msgid "Expired dedicated service"
 msgstr "บริการที่หมดอายุแล้ว"
 
+#, fuzzy
+#| msgid "Documentation"
+msgid "Activity drop"
+msgstr "เอกสารประกอบ"
+
 msgid "Date and time when this customer needs attention."
 msgstr ""
 
@@ -1625,6 +1690,9 @@ msgid "Short description of the next action."
 msgstr ""
 
 msgid "Follow-up type"
+msgstr ""
+
+msgid "Contact the customer to understand the activity decrease."
 msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
@@ -1900,9 +1968,6 @@ msgstr "เช็กเกีย"
 
 msgid "Business ID"
 msgstr "เลขทะเบียนนิติบุคคล"
-
-msgid "VAT ID"
-msgstr "เลขประจำตัวผู้เสียภาษี (VAT)"
 
 msgid "D-U-N-S Number"
 msgstr "หมายเลข D-U-N-S"
@@ -4131,11 +4196,6 @@ msgstr ""
 #~| msgid "Payment card"
 #~ msgid "Payment was added."
 #~ msgstr "บัตรชำระเงิน"
-
-#, fuzzy
-#~| msgid "Documentation"
-#~ msgid "Activate donation"
-#~ msgstr "เอกสารประกอบ"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

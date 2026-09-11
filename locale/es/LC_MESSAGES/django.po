@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-05 05:51+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -124,6 +124,14 @@ msgstr "No"
 msgid "not set"
 msgstr "no establecido"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "Notificación"
 
@@ -160,11 +168,32 @@ msgstr "ID de Adjunto"
 msgid "Automated"
 msgstr "Automatizado"
 
+msgid "VAT ID"
+msgstr "ID IVA"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "Ventana anterior"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "no validado"
+
 msgid "Error code"
 msgstr "Código de error"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "Mensaje de error"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "Emitido"
 
 msgid "Amount"
 msgstr "Cantidad"
@@ -647,6 +676,22 @@ msgstr "Acción siguiente"
 msgid "Next follow-up: %(date)s"
 msgstr "Siguiente seguimiento: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "Purgar seguimiento"
 
@@ -927,6 +972,20 @@ msgstr "Mantenimiento"
 msgid "No services match the current filters."
 msgstr "Ningún servidor coincide con sus filtros actuales."
 
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr ""
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "El nombre de usuario de alojamiento coincide con un usuario local que tiene "
@@ -1050,6 +1109,9 @@ msgstr ""
 "El servidor Weblate más grande del mundo alberga cientos de proyectos libres "
 "y privados, ¡además del propio Weblate! ¿Adoras el software libre? ¡Tus "
 "posibilidades de contribuir son ilimitadas!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "¡Donación insuficiente para la recompensa elegida!"
@@ -1448,6 +1510,11 @@ msgstr "El servicio está terminado"
 msgid "Expired dedicated service"
 msgstr "Servicio vencido"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "Activar donativo"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Fecha y hora cuando este cliente necesita atención."
 
@@ -1456,6 +1523,9 @@ msgstr "Descripción breve de la siguiente acción."
 
 msgid "Follow-up type"
 msgstr "Tipo de seguimiento"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr ""
@@ -1743,9 +1813,6 @@ msgstr "Chequia"
 
 msgid "Business ID"
 msgstr "Identificador de empresa"
-
-msgid "VAT ID"
-msgstr "ID IVA"
 
 msgid "D-U-N-S Number"
 msgstr "Número D-U-N-S"
@@ -4112,9 +4179,6 @@ msgstr "Confirme por favor la migración desde su página de cuenta."
 
 #~ msgid "Payment was added."
 #~ msgstr "Se añadió la forma pago."
-
-#~ msgid "Activate donation"
-#~ msgstr "Activar donativo"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

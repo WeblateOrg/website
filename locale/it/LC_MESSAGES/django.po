@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate v. 2017.09.28\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-05 05:51+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -128,6 +128,14 @@ msgstr "No"
 msgid "not set"
 msgstr "non impostato"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "Notifica"
 
@@ -164,11 +172,32 @@ msgstr "ID allegato"
 msgid "Automated"
 msgstr "Automatizzato"
 
+msgid "VAT ID"
+msgstr "ID IVA"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "Finestra precedente"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "Non valido"
+
 msgid "Error code"
 msgstr "Codice di errore"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "Messaggio di errore"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "Emessa"
 
 msgid "Amount"
 msgstr "Importo"
@@ -653,6 +682,22 @@ msgstr "Notifica"
 msgid "Next follow-up: %(date)s"
 msgstr "Prossimo richiamo: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "Rimuovi richiamo"
 
@@ -930,6 +975,26 @@ msgstr "Finestre di manutenzione"
 msgid "No services match the current filters."
 msgstr "Nessun server corrisponde alla tua ricerca."
 
+#, fuzzy
+#| msgid ""
+#| "The VAT ID could not be validated, so the recurring payment was not "
+#| "attempted."
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr ""
+"Impossibile convalidare la partita IVA, pertanto il pagamento originale non "
+"è stato tentato."
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Nome utente hosted corrisponde a un utente locale con una e-mail diversa."
@@ -1046,6 +1111,9 @@ msgstr ""
 "Il più grande server mondiale di Weblate ospita centinaia di progetti liberi "
 "e privati. E Weblate stesso! Ami il software libero? Qui, le possibilità per "
 "collaborare sono illimitate!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "Donazione insufficiente per la ricompensa selezionata!"
@@ -1444,6 +1512,11 @@ msgstr "Stato del servizio"
 msgid "Expired dedicated service"
 msgstr "Servizio scaduto"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "Attiva donazione"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Data e ora in cui questo cliente richiede attenzione."
 
@@ -1452,6 +1525,9 @@ msgstr "Breve descrizione della prossima azione."
 
 msgid "Follow-up type"
 msgstr "Tipo di richiamo"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr ""
@@ -1742,9 +1818,6 @@ msgstr "Cechia"
 
 msgid "Business ID"
 msgstr "ID business"
-
-msgid "VAT ID"
-msgstr "ID IVA"
 
 msgid "D-U-N-S Number"
 msgstr "Numero D-U-N-S"
@@ -4069,9 +4142,6 @@ msgstr "Conferma l'aggiornamento dalla pagina del tuo account."
 
 #~ msgid "Payment was added."
 #~ msgstr "È stato aggiunto il pagamento."
-
-#~ msgid "Activate donation"
-#~ msgstr "Attiva donazione"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"
