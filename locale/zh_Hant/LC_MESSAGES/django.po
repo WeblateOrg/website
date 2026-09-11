@@ -38,7 +38,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-09 09:51+0000\n"
 "Last-Translator: Tony Ng <tonyngkh@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -133,6 +133,14 @@ msgstr "否"
 msgid "not set"
 msgstr "未設定"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "通知"
 
@@ -169,11 +177,32 @@ msgstr "附件 ID"
 msgid "Automated"
 msgstr "自動"
 
+msgid "VAT ID"
+msgstr "VAT ID"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "前期統計"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "未驗證"
+
 msgid "Error code"
 msgstr "錯誤碼"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "錯誤訊息"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "已開立"
 
 msgid "Amount"
 msgstr "金額"
@@ -647,6 +676,22 @@ msgstr "下一步處理事項"
 msgid "Next follow-up: %(date)s"
 msgstr "下次後續追蹤: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "清除後續追蹤"
 
@@ -915,6 +960,24 @@ msgstr "維護"
 msgid "No services match the current filters."
 msgstr "沒有服務符合目前的篩選條件。"
 
+#, fuzzy
+#| msgid ""
+#| "The VAT ID could not be validated, so the recurring payment was not "
+#| "attempted."
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr "無法驗證 VAT ID，因此未嘗試進行定期扣款。"
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr "託管服務的使用者名稱與某位本機使用者相符，但電子郵件不同。"
 
@@ -1026,6 +1089,9 @@ msgid ""
 msgstr ""
 "全球最大的 Weblate 伺服器託管了數百個自由與私有專案，Weblate 本身也在其中！熱"
 "愛自由軟體嗎？在這裡，您能以無數方式貢獻心力！"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "捐款金額不足，無法取得所選回饋！"
@@ -1409,6 +1475,11 @@ msgstr "服務已終止"
 msgid "Expired dedicated service"
 msgstr "過期的服務"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "開始捐款"
+
 msgid "Date and time when this customer needs attention."
 msgstr "需要後續追蹤此客戶的日期與時間。"
 
@@ -1417,6 +1488,9 @@ msgstr "下一步處理事項的簡短說明。"
 
 msgid "Follow-up type"
 msgstr "後續追蹤類型"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr ""
@@ -1679,9 +1753,6 @@ msgstr "捷克"
 
 msgid "Business ID"
 msgstr "公司登記號碼"
-
-msgid "VAT ID"
-msgstr "VAT ID"
 
 msgid "D-U-N-S Number"
 msgstr "鄧白氏環球編碼"
@@ -3852,9 +3923,6 @@ msgstr "請在帳號頁面確認升級。"
 
 #~ msgid "Payment was added."
 #~ msgstr "付款方式已新增。"
-
-#~ msgid "Activate donation"
-#~ msgstr "開始捐款"
 
 #~ msgid "Bitcoin"
 #~ msgstr "比特幣"

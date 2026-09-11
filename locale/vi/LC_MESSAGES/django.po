@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-07 15:51+0000\n"
 "Last-Translator: hoanghuy309 <hoanghuy309@gmail.com>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/weblate/"
@@ -121,6 +121,14 @@ msgstr "Không"
 msgid "not set"
 msgstr "chưa thiết lập"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "Thông báo"
 
@@ -157,11 +165,32 @@ msgstr "ID Đính kèm"
 msgid "Automated"
 msgstr "Tự động"
 
+msgid "VAT ID"
+msgstr "Mã số thuế GTGT"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "Cửa sổ trước đó"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "chưa được xác thực"
+
 msgid "Error code"
 msgstr "Mã lỗi"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "Thông báo lỗi"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "Đã phát hành"
 
 msgid "Amount"
 msgstr "Tổng cộng"
@@ -642,6 +671,22 @@ msgstr "Hành động tiếp theo"
 msgid "Next follow-up: %(date)s"
 msgstr "Lần theo dõi tiếp theo: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "Xóa theo dõi"
 
@@ -915,6 +960,26 @@ msgstr "Bảo trì"
 msgid "No services match the current filters."
 msgstr "Không có dịch vụ nào phù hợp với bộ lọc hiện tại."
 
+#, fuzzy
+#| msgid ""
+#| "The VAT ID could not be validated, so the recurring payment was not "
+#| "attempted."
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr ""
+"ID VAT không xác thực được, do đó giao dịch thanh toán định kỳ không được "
+"thực hiện."
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Tên người dùng được lưu trữ trùng khớp với người dùng cục bộ có địa chỉ "
@@ -1031,6 +1096,9 @@ msgstr ""
 "Máy chủ Weblate lớn nhất thế giới là nơi lưu trữ hàng trăm dự án tự do và "
 "riêng tư. Và chính Weblate! Bạn thích phần mềm tự do? Cơ hội đóng góp của "
 "bạn ở đây là vô hạn!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "Đóng góp không đủ cho phần thưởng đã chọn!"
@@ -1419,6 +1487,11 @@ msgstr "Dịch vụ vượt quá giới hạn"
 msgid "Expired dedicated service"
 msgstr "Dịch vụ chuyên dụng đã hết hạn"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "Kích hoạt quyên góp"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Ngày và giờ khách hàng này cần được chú ý."
 
@@ -1427,6 +1500,9 @@ msgstr "Mô tả ngắn gọn về hành động tiếp theo."
 
 msgid "Follow-up type"
 msgstr "Loại theo dõi"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr "Xem lại mức sử dụng và nâng cấp phiên bản chuyên dụng."
@@ -1716,9 +1792,6 @@ msgstr "Cộng hòa Séc"
 
 msgid "Business ID"
 msgstr "ID doanh nghiệp"
-
-msgid "VAT ID"
-msgstr "Mã số thuế GTGT"
 
 msgid "D-U-N-S Number"
 msgstr "Số D-U-N-S"
@@ -4055,9 +4128,6 @@ msgstr "Vui lòng xác nhận nâng cấp từ trang tài khoản của bạn."
 #~| msgid "Payment card"
 #~ msgid "Payment was added."
 #~ msgstr "Thẻ thanh toán"
-
-#~ msgid "Activate donation"
-#~ msgstr "Kích hoạt quyên góp"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

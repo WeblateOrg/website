@@ -25,11 +25,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-07 15:51+0000\n"
 "Last-Translator: Fjuro <fjuro@users.noreply.hosted.weblate.org>\n"
-"Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/"
-"cs/>\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/weblate/website/cs/"
+">\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -122,6 +122,14 @@ msgstr "Ne"
 msgid "not set"
 msgstr "nenastaveno"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "Oznámení"
 
@@ -158,11 +166,32 @@ msgstr "ID přílohy"
 msgid "Automated"
 msgstr "Automatické"
 
+msgid "VAT ID"
+msgstr "DIČ"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "Předchozí okno"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "nebylo ověřeno"
+
 msgid "Error code"
 msgstr "Chybový kód"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "Chybová zpráva"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "Vydáno"
 
 msgid "Amount"
 msgstr "Částka"
@@ -650,6 +679,22 @@ msgstr "Další akce"
 msgid "Next follow-up: %(date)s"
 msgstr "Příští kontrola: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "Vymazat další kroky"
 
@@ -924,6 +969,24 @@ msgstr "Údržba"
 msgid "No services match the current filters."
 msgstr "Žádné služby neodpovídají aktuálním filtrům."
 
+#, fuzzy
+#| msgid ""
+#| "The VAT ID could not be validated, so the recurring payment was not "
+#| "attempted."
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr "DIČ nebylo možné ověřit, proto se opakovaná platba neprovedla."
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Hostované uživatelské jméno odpovídá lokálnímu uživateli s jiným e-mailem."
@@ -1037,6 +1100,9 @@ msgstr ""
 "Největší Weblate server na světě je domovem pro stovky svobodných i "
 "komerčních projektů včetně Weblate samotného. Milujete svobodný software? "
 "Pak nabízí neomezené možnosti přispívání!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "Výše daru je nedostatečná pro zvolenou odměnu!"
@@ -1429,6 +1495,11 @@ msgstr "Služba nad limity"
 msgid "Expired dedicated service"
 msgstr "Expirovaná dedikovaná služba"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "Začněte darovat"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Datum a čas, kdy je třeba se tomuto zákazníkovi věnovat."
 
@@ -1437,6 +1508,9 @@ msgstr "Stručný popis dalšího kroku."
 
 msgid "Follow-up type"
 msgstr "Typ další kontroly"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr "Zkontrolovat využití a vylepšit dedikovanou instanci."
@@ -1720,9 +1794,6 @@ msgstr "Česko"
 
 msgid "Business ID"
 msgstr "IČO"
-
-msgid "VAT ID"
-msgstr "DIČ"
 
 msgid "D-U-N-S Number"
 msgstr "Číslo D-U-N-S"
@@ -4052,9 +4123,6 @@ msgstr "Potvrďte prosím upgrade ze stránky vašeho účtu."
 
 #~ msgid "Payment was added."
 #~ msgstr "Platba byla přidána."
-
-#~ msgid "Activate donation"
-#~ msgstr "Začněte darovat"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

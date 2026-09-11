@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-05 05:51+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -124,6 +124,14 @@ msgstr "Nie"
 msgid "not set"
 msgstr "nenastavené"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "Notifikácia"
 
@@ -160,11 +168,32 @@ msgstr "ID prílohy"
 msgid "Automated"
 msgstr "Automatické"
 
+msgid "VAT ID"
+msgstr "IČ DPH"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "Predchádzajúce okno"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "neoverené"
+
 msgid "Error code"
 msgstr "Kód chyby"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "Chybová správa"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "Vystavené"
 
 msgid "Amount"
 msgstr "Suma"
@@ -650,6 +679,22 @@ msgstr "Ďalšia akcia"
 msgid "Next follow-up: %(date)s"
 msgstr "Ďalšia nadväzujúca akcia: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "Vymazať nadväzujúcu akciu"
 
@@ -925,6 +970,24 @@ msgstr "Údržba"
 msgid "No services match the current filters."
 msgstr "Žiadne služby nezodpovedajú aktuálnym filtrom."
 
+#, fuzzy
+#| msgid ""
+#| "The VAT ID could not be validated, so the recurring payment was not "
+#| "attempted."
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr "IČ DPH sa nepodarilo overiť, preto nebola vykonaná opakovaná platba."
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Meno hosťovaného používateľa zodpovedá lokálnemu používateľovi s iným e-"
@@ -1042,6 +1105,9 @@ msgstr ""
 "Najväčší server Weblate celosvetovo je domovom stoviek slobodných a "
 "súkromných projektov. Vrátane Weblate! Máte radi slobodný softvér? Vaše "
 "možnosti prispievania sú tu neobmedzené!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "Nedostatočný príspevok na vybranú odmenu!"
@@ -1437,6 +1503,11 @@ msgstr "Služba je ukončená"
 msgid "Expired dedicated service"
 msgstr "Vypršaná služba"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "Aktivovať príspevok"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Dátum a čas, kedy je potrebné sa o tohto zákazníka starať."
 
@@ -1445,6 +1516,9 @@ msgstr "Stručný popis ďalšej akcie."
 
 msgid "Follow-up type"
 msgstr "Typ nadväzujúcej akcie"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr ""
@@ -1726,9 +1800,6 @@ msgstr "Česko"
 
 msgid "Business ID"
 msgstr "IČO"
-
-msgid "VAT ID"
-msgstr "IČ DPH"
 
 msgid "D-U-N-S Number"
 msgstr "Číslo D-U-N-S"
@@ -4065,9 +4136,6 @@ msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
 
 #~ msgid "Payment was added."
 #~ msgstr "Platba bola pridaná."
-
-#~ msgid "Activate donation"
-#~ msgstr "Aktivovať príspevok"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate 1.2\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-05 05:51+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -124,6 +124,14 @@ msgstr "Tidak"
 msgid "not set"
 msgstr "belum diatur"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "Notifikasi"
 
@@ -160,11 +168,32 @@ msgstr "ID lampiran"
 msgid "Automated"
 msgstr "Otomatis"
 
+msgid "VAT ID"
+msgstr "ID PPN"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "Jendela sebelumnya"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "belum divalidasi"
+
 msgid "Error code"
 msgstr "Kode galat"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "Pesan galat"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "Diterbitkan"
 
 msgid "Amount"
 msgstr "Jumlah"
@@ -645,6 +674,22 @@ msgstr "Tindakan berikutnya"
 msgid "Next follow-up: %(date)s"
 msgstr "Tindak lanjut berikutnya: %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "Hapus tindak lanjut"
 
@@ -924,6 +969,20 @@ msgstr "Pemeliharaan"
 msgid "No services match the current filters."
 msgstr "Tidak ada layanan yang sesuai dengan filter saat ini."
 
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr ""
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Nama pengguna dihos cocok dengan pengguna lokal yang memiliki surel berbeda."
@@ -1047,6 +1106,9 @@ msgstr ""
 "proyek bebas dan privat. Dan juga Weblate itu sendiri! Anda menyukai "
 "perangkat lunak bebas? Kemungkinan Anda untuk berkontribusi tidak terbatas "
 "di sini!"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "Donasi kurang untuk imbalan yang dipilih!"
@@ -1436,6 +1498,11 @@ msgstr "Layanan dihentikan"
 msgid "Expired dedicated service"
 msgstr "Layanan kedaluwarsa"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "Aktifkan donasi"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Tanggal dan waktu saat pelanggan ini memerlukan perhatian."
 
@@ -1444,6 +1511,9 @@ msgstr "Deskripsi singkat tindakan berikutnya."
 
 msgid "Follow-up type"
 msgstr "Jenis tindak lanjut"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr ""
@@ -1729,9 +1799,6 @@ msgstr "Republik Ceko"
 
 msgid "Business ID"
 msgstr "ID Bisnis"
-
-msgid "VAT ID"
-msgstr "ID PPN"
 
 msgid "D-U-N-S Number"
 msgstr "Nomor D-U-N-S"
@@ -4077,9 +4144,6 @@ msgstr "Harap konfirmasikan peningkatan dari halaman akun Anda."
 
 #~ msgid "Payment was added."
 #~ msgstr "Pembayaran telah ditambahkan."
-
-#~ msgid "Activate donation"
-#~ msgstr "Aktifkan donasi"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"

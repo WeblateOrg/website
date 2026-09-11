@@ -33,7 +33,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: French (Weblate)\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-04 00:15-0500\n"
+"POT-Creation-Date: 2026-09-11 03:21-0500\n"
 "PO-Revision-Date: 2026-09-05 05:51+0000\n"
 "Last-Translator: Mickaël Binos <mickaelbinos@outlook.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/weblate/website/"
@@ -132,6 +132,14 @@ msgstr "Non"
 msgid "not set"
 msgstr "non défini"
 
+msgid "Invoice issued during VIES outage"
+msgstr ""
+
+msgid ""
+"VIES was temporarily unavailable; the invoice was issued using a recent "
+"successful VAT validation."
+msgstr ""
+
 msgid "Notification"
 msgstr "Notification"
 
@@ -168,11 +176,32 @@ msgstr "ID de la pièce jointe"
 msgid "Automated"
 msgstr "Automatique"
 
+msgid "VAT ID"
+msgstr "Code TVA"
+
+#, fuzzy
+#| msgid "Previous window"
+msgid "Previous validation"
+msgstr "Fenêtre précédente"
+
+#, fuzzy
+#| msgid "not validated"
+msgid "Stale validation used"
+msgstr "non validé"
+
 msgid "Error code"
 msgstr "Code d'erreur"
 
+msgid "VIES was temporarily unavailable."
+msgstr ""
+
 msgid "Error message"
 msgstr "Message d’erreur"
+
+#, fuzzy
+#| msgid "Issued"
+msgid "Issued by"
+msgstr "Émis"
 
 msgid "Amount"
 msgstr "Montant"
@@ -657,6 +686,22 @@ msgstr "Prochaine action"
 msgid "Next follow-up: %(date)s"
 msgstr "Prochain suivi : %(date)s"
 
+#, python-format
+msgid "Baseline: %(average)s changes per month."
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes"
+msgstr ""
+
+#, python-format
+msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
+msgstr ""
+
+#, python-format
+msgid "Latest activity (%(month)s): %(changes)s changes"
+msgstr ""
+
 msgid "Clear follow-up"
 msgstr "Effacer le suivi"
 
@@ -931,6 +976,26 @@ msgstr "Maintenance"
 msgid "No services match the current filters."
 msgstr "Aucun service ne correspond à vos filtres."
 
+#, fuzzy
+#| msgid ""
+#| "The VAT ID could not be validated, so the recurring payment was not "
+#| "attempted."
+msgid ""
+"The customer's VAT ID could not be validated, so the invoice was not issued. "
+"Update the customer data or try again later."
+msgstr ""
+"Le numéro de TVA n'a pas pu être validé ; le paiement récurrent n'a donc pas "
+"été effectué."
+
+msgid "an earlier successful check"
+msgstr ""
+
+#, python-format
+msgid ""
+"VIES is temporarily unavailable. The invoice was issued using the VAT "
+"validation from %(validated)s."
+msgstr ""
+
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 "Le nom d'utilisateur hébergé correspond à un utilisateur local dont "
@@ -1048,6 +1113,9 @@ msgstr ""
 "Le plus gros serveur Weblate au monde abrite des centaines de projets libres "
 "et privés dont Weblate lui-même ! Vous aimez les logiciels libres ? Ici, vos "
 "possibilités de contribution sont illimitées !"
+
+msgid "Invalid monthly activity data."
+msgstr ""
 
 msgid "Insufficient donation for selected reward!"
 msgstr "Don insuffisant pour la récompense sélectionnée !"
@@ -1450,6 +1518,11 @@ msgstr "Service hors limites"
 msgid "Expired dedicated service"
 msgstr "Service dédié expiré"
 
+#, fuzzy
+#| msgid "Activate donation"
+msgid "Activity drop"
+msgstr "Activer le don"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Date et heure à laquelle ce client requiert de l'attention."
 
@@ -1458,6 +1531,9 @@ msgstr "Brève description de la prochaine action."
 
 msgid "Follow-up type"
 msgstr "Type de suivi"
+
+msgid "Contact the customer to understand the activity decrease."
+msgstr ""
 
 msgid "Review usage and upgrade the dedicated instance."
 msgstr "Vérifiez l'utilisation et mettez à niveau l'instance dédiée."
@@ -1750,9 +1826,6 @@ msgstr "République tchèque"
 
 msgid "Business ID"
 msgstr "Code entreprise"
-
-msgid "VAT ID"
-msgstr "Code TVA"
 
 msgid "D-U-N-S Number"
 msgstr "Numéro D-U-N-S"
@@ -4121,9 +4194,6 @@ msgstr "Veuillez confirmer la mise à niveau depuis la page de votre compte."
 
 #~ msgid "Payment was added."
 #~ msgstr "Mode de paiement ajouté."
-
-#~ msgid "Activate donation"
-#~ msgstr "Activer le don"
 
 #~ msgid "Bitcoin"
 #~ msgstr "Bitcoin"
