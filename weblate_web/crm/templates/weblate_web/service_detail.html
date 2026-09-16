@@ -61,6 +61,19 @@
           {% endif %}
         </dd>
       </div>
+      {% with subscriptions=object.subscription_set.all %}
+        {% if subscriptions %}
+          <div>
+            <dt>{% translate "Packages" %}</dt>
+            <dd>
+              {% for subscription in subscriptions %}
+                {{ subscription.package }}
+                {% if not forloop.last %}<br>{% endif %}
+              {% endfor %}
+            </dd>
+          </div>
+        {% endif %}
+      {% endwith %}
       {% if object.secret %}
         <div class="crm-detail-grid__wide">
           <dt class="crm-detail-heading">
@@ -92,7 +105,7 @@
         </div>
       {% endif %}
       {% if object.backup_repository %}
-        <div>
+        <div class="crm-detail-grid__wide">
           <dt class="crm-detail-heading">
             <span>{% translate "Backup" %}</span>
             <button class="crm-icon-button crm-copy-button"
@@ -125,7 +138,7 @@
         </div>
       {% endif %}
       {% if object.discoverable %}
-        <div>
+        <div class="crm-detail-grid__wide">
           <dt>{% translate "Discoverable" %}</dt>
           <dd>
             {{ object.discover_text }}
