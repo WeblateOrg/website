@@ -135,7 +135,7 @@ if TYPE_CHECKING:
 ON_EACH_SIDE = 3
 ON_ENDS = 2
 DOT = "."
-USER_AGENT_RE = re.compile(r"Weblate/([0-9.]{3,9})")
+USER_AGENT_RE = re.compile(r"Weblate/([0-9.]{3,32})")
 
 
 def get_page_range(page_obj: Page) -> list[int | str]:

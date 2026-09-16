@@ -3186,9 +3186,12 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
                     salt="weblate.hosted",
                 )
             },
-            headers={"user-agent": "Weblate/1.2.3"},
+            headers={"user-agent": "Weblate/2026.10.1"},
         )
         self.assertEqual(response.status_code, 200)
+        report = Report.objects.get()
+        self.assertEqual(report.version, "2026.10.1")
+        self.assertEqual(report.service.site_version, "2026.10.1")
 
     def test_hosted_links_payments_idempotently(self) -> None:
         Package.objects.create(name="community", verbose="Community support", price=0)
@@ -3348,6 +3351,27 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
     def test_support(self) -> None:
         self.perform_support()
+
+    def test_support_report_version(self) -> None:
+        service = self.perform_support()
+        for version in (
+            "1.2.3",
+            "2026.10",
+            "2026.10.1",
+            "2026.10.123",
+            "2026.10." + "1" * 24,
+            "2026.10." + "1" * 25,
+        ):
+            with self.subTest(version=version):
+                response = self.client.post(
+                    "/api/support/",
+                    {"secret": service.secret},
+                    headers={"user-agent": f"Weblate/{version}"},
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(service.report_set.latest("pk").version, version[:32])
+                service.refresh_from_db()
+                self.assertEqual(service.site_version, version[:32])
 
     def test_support_report_payload(self) -> None:
         service = self.perform_support()
