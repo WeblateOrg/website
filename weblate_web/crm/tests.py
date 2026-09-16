@@ -3862,6 +3862,45 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(upgrade_invoice.extra["subscription_upgrade"], subscription.pk)
         self.assertEqual(upgrade_invoice.extra["package"], target.name)
 
+    def test_service_detail_activity_chart(self):
+        service = Service.objects.create(customer=self.customer)
+        url = reverse("crm:service-detail", kwargs={"pk": service.pk})
+        response = self.client.get(url)
+        self.assertNotContains(response, "Instance activity")
+
+        service.activity.create(month=date(2025, 3, 1), changes=0)
+        service.activity.create(month=date(2025, 1, 1), changes=120)
+        response = self.client.get(url)
+        self.assertContains(response, "Instance activity")
+        self.assertContains(response, "120 changes")
+        self.assertContains(response, "0 changes")
+        rows = response.context["activity_chart_rows"]
+        self.assertEqual(
+            [row["month"] for row in rows], [date(2025, 1, 1), date(2025, 3, 1)]
+        )
+        self.assertEqual([row["height"] for row in rows], [200, 0])
+
+        service.activity.update(changes=0)
+        response = self.client.get(url)
+        self.assertContains(response, "Instance activity")
+        self.assertEqual(
+            [row["height"] for row in response.context["activity_chart_rows"]],
+            [0, 0],
+        )
+
+    def test_service_detail_activity_chart_latest_months(self):
+        service = Service.objects.create(customer=self.customer)
+        for year in (2023, 2024, 2025):
+            for month in range(1, 13):
+                service.activity.create(month=date(year, month, 1), changes=month)
+        response = self.client.get(
+            reverse("crm:service-detail", kwargs={"pk": service.pk})
+        )
+        rows = response.context["activity_chart_rows"]
+        self.assertEqual(len(rows), 24)
+        self.assertEqual(rows[0]["month"], date(2024, 1, 1))
+        self.assertEqual(rows[-1]["month"], date(2025, 12, 1))
+
     def test_service_detail_shows_dedicated_limit_usage(self):
         Package.objects.create(name="community", price=0)
         package = Package.objects.create(

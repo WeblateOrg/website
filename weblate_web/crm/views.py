@@ -297,6 +297,21 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
         context["invoice_kind_quote"] = int(InvoiceKind.QUOTE)
         context["invoice_kind_invoice"] = int(InvoiceKind.INVOICE)
         context["invoice_confirm_dialog"] = True
+        activity = list(self.object.activity.order_by("-month")[:24])
+        activity.reverse()
+        maximum = max((item.changes for item in activity), default=0) or 1
+        context["activity_chart_width"] = max(800, len(activity) * 70)
+        context["activity_chart_rows"] = [
+            {
+                "month": item.month,
+                "changes": item.changes,
+                "x": 20 + index * 70,
+                "label_x": 40 + index * 70,
+                "y": 230 - item.changes / maximum * 200,
+                "height": item.changes / maximum * 200,
+            }
+            for index, item in enumerate(activity)
+        ]
         if self.object.has_active_extended_support:
             context["maintenance_window_form"] = ServiceMaintenanceWindowForm(
                 instance=self.object

@@ -1,6 +1,6 @@
 {% extends "crm/base.html" %}
 
-{% load i18n site_url %}
+{% load i18n l10n site_url %}
 
 {% block breadcrum_list %}
   <span aria-hidden="true">›</span>
@@ -139,6 +139,35 @@
       </div>
     {% endif %}
   </section>
+
+  {% if activity_chart_rows %}
+    <section class="crm-section content">
+      {% translate "Instance activity" as section_title %}
+      {% include "crm/snippets/section_header.html" %}
+      <p class="crm-muted">{% translate "Monthly changes, for up to 24 latest reported months." %}</p>
+      <div class="crm-table-wrap"
+           tabindex="0"
+           role="region"
+           aria-label="{{ section_title }}">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="{{ activity_chart_width|unlocalize }}"
+             height="280"
+             role="img"
+             aria-label="{{ section_title }}">
+          <title>{{ section_title }}</title>
+          <line x1="10" y1="230" x2="{{ activity_chart_width|unlocalize }}" y2="230" stroke="currentColor" />
+          {% for row in activity_chart_rows %}
+            <g>
+            <title>{{ row.month|date:"YEAR_MONTH_FORMAT" }}: {% blocktranslate with changes=row.changes %}{{ changes }} changes{% endblocktranslate %}</title>
+            <rect x="{{ row.x|unlocalize }}" y="{{ row.y|unlocalize }}" width="40" height="{{ row.height|unlocalize }}" fill="#417690" />
+            <text x="{{ row.label_x|unlocalize }}" y="{{ row.y|add:"-8"|unlocalize }}" text-anchor="middle" font-size="11" fill="currentColor">{{ row.changes }}</text>
+            <text x="{{ row.label_x|unlocalize }}" y="250" text-anchor="middle" font-size="11" fill="currentColor">{{ row.month|date:"Y-m" }}</text>
+            </g>
+          {% endfor %}
+        </svg>
+      </div>
+    </section>
+  {% endif %}
 
   {% if object.status == "hosted" and object.limit_usage %}
     <section class="crm-section content">
