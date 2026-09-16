@@ -9,6 +9,8 @@ from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext
 
+from weblate_web.payments.models import Payment
+
 from .models import Invoice, InvoiceKind
 
 if TYPE_CHECKING:
@@ -54,10 +56,27 @@ def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
             return redirect("home")
 
         raise Http404("Cannot be paid")
+    recurring = None
+    subscription_id = invoice.extra.get("subscription")
+    if (
+        isinstance(subscription_id, int)
+        and not isinstance(subscription_id, bool)
+        and "subscription_upgrade" not in invoice.extra
+        and (package := invoice.get_package()) is not None
+    ):
+        recurring = package.get_repeat()
     if invoice.draft_payment_set.exists():
         payment = invoice.draft_payment_set.all()[0]
+        if (
+            recurring is not None
+            and payment.state == Payment.NEW
+            and payment.paid_invoice_id is None
+            and payment.recurring != recurring
+        ):
+            payment.recurring = recurring
+            payment.save(update_fields=["recurring"])
     else:
-        payment = invoice.create_payment()
+        payment = invoice.create_payment(recurring=recurring or "")
         payment.extra["exclude_backends"] = ["fio-bank"]
         payment.save(update_fields=["extra"])
     return redirect(payment)
