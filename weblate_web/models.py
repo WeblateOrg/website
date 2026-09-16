@@ -49,6 +49,7 @@ from weblate_web.invoices.models import (
     Currency,
     Invoice,
     InvoiceCategory,
+    InvoiceKind,
     round_decimal,
     round_money,
 )
@@ -75,7 +76,6 @@ if TYPE_CHECKING:
     from collections.abc import Collection, Generator
     from datetime import date
 
-    from weblate_web.invoices.models import InvoiceKind
 
 ServiceSuggestion = tuple[str, str, str, str, str, str, int | None]
 
@@ -1541,8 +1541,81 @@ class Subscription(models.Model):
             return Payment.objects.none()
         return Payment.objects.filter(query).distinct()
 
+    def get_outstanding_renewal_invoice(self) -> Invoice | None:
+        return next(self.get_outstanding_renewal_invoices(), None)
+
+    def get_renewal_invoices(self) -> Generator[Invoice]:
+        """Find invoices for the current renewal period regardless of payment state."""
+        yield from self._get_renewal_invoices(accepted=None)
+
+    def get_outstanding_renewal_invoices(self) -> Generator[Invoice]:
+        yield from self._get_renewal_invoices(accepted=False)
+
+    def has_accepted_renewal_payment(self) -> bool:
+        """Check for an invoice payment awaiting subscription processing."""
+        return next(self._get_renewal_invoices(accepted=True), None) is not None
+
+    def _get_renewal_invoices(self, *, accepted: bool | None) -> Generator[Invoice]:
+        start_date = self.expires + timedelta(days=1)
+        payment_filter = Q()
+        if accepted is True:
+            payment_filter = Q(paid_payment_set__state=Payment.ACCEPTED)
+        elif accepted is False:
+            payment_filter = Q(paid_payment_set__isnull=True, prepaid=False)
+        invoices = (
+            Invoice.objects.filter(
+                payment_filter,
+                customer=self.service.customer,
+                extra__subscription=self.pk,
+                kind=InvoiceKind.INVOICE,
+                invoiceitem__package=self.package,
+                invoiceitem__start_date=start_date.date(),
+                invoiceitem__end_date=(
+                    start_date
+                    + get_period_delta(self.package.get_repeat())
+                    - timedelta(days=1)
+                ).date(),
+            )
+            .exclude(extra__has_key="subscription_upgrade")
+            .order_by("issue_date", "number")
+            .distinct()
+        )
+        # The current payment already renewed this subscription. Excluding its
+        # invoice by identity keeps the guard independent of payment transitions.
+        if self.payment_id is not None:
+            invoices = invoices.exclude(paid_payment_set__pk=self.payment_id)
+        # MariaDB JSON comparisons also match numeric strings, which identify
+        # new subscription purchases rather than renewals.
+        for invoice in invoices.iterator():
+            subscription_id = invoice.extra.get("subscription")
+            if isinstance(subscription_id, int) and not isinstance(
+                subscription_id, bool
+            ):
+                yield invoice
+
     def send_notification(self, notification: str) -> None:
         context = self.get_notification_context()
+        if not self.service.is_donation and notification in {
+            "payment_missing",
+            "payment_expired",
+            "payment_upcoming",
+        }:
+            invoices = list(self.get_renewal_invoices())
+            if any(not invoice.can_be_paid() for invoice in invoices):
+                return
+            if invoices:
+                invoice = invoices[0]
+                context.update(
+                    invoice=invoice,
+                    outstanding_invoice=invoice,
+                )
+                if notification == "payment_upcoming":
+                    renewal_invoice_ids = {item.pk for item in invoices}
+                    context["upcoming_payment_invoices"] = [
+                        upcoming
+                        for upcoming in self.service.customer.get_upcoming_payment_invoices()
+                        if upcoming.pk not in renewal_invoice_ids
+                    ]
         self.service.customer.send_notification(notification, **context)
         with override("en"):
             send_notification(

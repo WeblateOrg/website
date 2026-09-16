@@ -99,6 +99,7 @@ from .utils import FOSDEM_ORIGIN, HOSTED_ORIGIN, PAYMENTS_ORIGIN
 from .views import CustomerView, PostView, server_error
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from uuid import UUID
 
     from django.core.mail.message import EmailMultiAlternatives
@@ -2596,9 +2597,11 @@ class PaymentTest(FakturaceTestCase):
 
         # Ensure no payment is made
         subscription = Subscription.objects.all().get()
-        subscription.expires -= timedelta(days=365)
-        subscription.save(update_fields=["expires"])
-        RecurringPaymentsCommand.handle_subscriptions()
+        with patch(
+            "weblate_web.management.commands.recurring_payments.timezone.now",
+            return_value=subscription.expires,
+        ):
+            RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications("Your expired payment on weblate.org")
 
     def test_donation_workflow_invalid_reward(self) -> None:
@@ -5246,6 +5249,324 @@ class ExpiryTest(FakturaceTestCase):
     PAYMENT_DEBUG=True,
 )
 class ServiceTest(FakturaceTestCase):
+    @override("en")
+    @responses.activate
+    def test_renewal_reuses_outstanding_invoice(self) -> None:
+        cnb_mock_rates()
+        self.login()
+        service = self.create_service(recurring="", package="test:test-1-m")
+        subscription = service.subscription_set.get()
+        expires = subscription.expires
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        invoice_count = Invoice.objects.count()
+        url = reverse("subscription-pay", kwargs={"pk": subscription.pk})
+
+        for data in ({}, {}, {"switch_yearly": 1}):
+            response = self.client.post(url, data, follow=True)
+            self.assertContains(response, invoice.number)
+            self.assertEqual(invoice.draft_payment_set.count(), 1)
+            self.assertEqual(Invoice.objects.count(), invoice_count)
+        self.assertContains(response, "before switching to annual billing")
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package.name, "test:test-1-m")
+        self.assertEqual(subscription.expires, expires)
+
+        owner = service.customer.owners.get()
+        service.customer.owners.remove(owner)
+        self.assertEqual(self.client.post(url).status_code, 404)
+        service.customer.owners.add(owner)
+
+        payment = invoice.draft_payment_set.get()
+        self.assertEqual(payment.recurring, "m")
+        self.client.post(payment.get_payment_url(), {"method": "pay"}, follow=True)
+        subscription.refresh_from_db()
+        payment.refresh_from_db()
+        self.assertEqual(payment.paid_invoice, invoice)
+        self.assertEqual(payment.state, Payment.PROCESSED)
+        self.assertEqual(subscription.payment_id, payment.pk)
+        self.assertEqual(payment.recurring, "m")
+        self.assertEqual(subscription.expires, expires + relativedelta(months=1))
+        self.assertEqual(Invoice.objects.count(), invoice_count)
+        self.assertIsNone(subscription.get_outstanding_renewal_invoice())
+
+    @responses.activate
+    def test_outstanding_renewal_invoice_selection(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service()
+        subscription = service.subscription_set.get()
+        first = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        second = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        self.assertEqual(subscription.get_outstanding_renewal_invoice(), first)
+        Invoice.objects.filter(pk=second.pk).update(
+            issue_date=timezone.localdate() - timedelta(days=90)
+        )
+        self.assertEqual(subscription.get_outstanding_renewal_invoice(), second)
+
+        for changes in (
+            {"kind": InvoiceKind.QUOTE},
+            {"kind": InvoiceKind.DRAFT},
+            {"kind": InvoiceKind.PROFORMA},
+            {"prepaid": True},
+            {"extra": {"subscription": subscription.pk + 1}},
+            {"extra": {"subscription": str(subscription.pk)}},
+            {"extra": {"subscription_upgrade": subscription.pk}},
+            {"customer": Customer.objects.create(name="Other customer", user_id=-1)},
+        ):
+            with self.subTest(changes=changes):
+                Invoice.objects.filter(pk=second.pk).update(**changes)
+                self.assertEqual(subscription.get_outstanding_renewal_invoice(), first)
+                Invoice.objects.filter(pk=second.pk).update(
+                    kind=InvoiceKind.INVOICE,
+                    prepaid=False,
+                    extra={"subscription": subscription.pk},
+                    customer=service.customer,
+                )
+        Payment.objects.create(
+            customer=service.customer, amount=second.total_amount, paid_invoice=second
+        )
+        self.assertEqual(subscription.get_outstanding_renewal_invoice(), first)
+
+    @responses.activate
+    def test_outstanding_invoice_matches_current_renewal(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service()
+        subscription = service.subscription_set.get()
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        original_package = subscription.package
+        subscription.package = Package.objects.get(name="premium")
+        self.assertIsNone(subscription.get_outstanding_renewal_invoice())
+        subscription.package = original_package
+        subscription.expires += relativedelta(years=1)
+        self.assertIsNone(subscription.get_outstanding_renewal_invoice())
+        subscription.expires -= relativedelta(years=1)
+        self.assertEqual(subscription.get_outstanding_renewal_invoice(), invoice)
+        item = invoice.invoiceitem_set.get()
+        assert item.end_date is not None
+        item.end_date += timedelta(days=1)
+        item.save()
+        self.assertIsNone(subscription.get_outstanding_renewal_invoice())
+
+    @responses.activate
+    def test_outstanding_invoice_pauses_automatic_renewal(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        invoice_count = Invoice.objects.count()
+        payment_count = Payment.objects.count()
+        with patch.object(RecurringPaymentsCommand, "peform_payment") as perform:
+            RecurringPaymentsCommand.handle_subscriptions()
+        perform.assert_not_called()
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.payment_obj.recurring, "y")
+        self.assertEqual(Invoice.objects.count(), invoice_count)
+        self.assertEqual(Payment.objects.count(), payment_count)
+        self.assertEqual(len(mail.outbox), 2)
+        for message in mail.outbox:
+            self.assertIn(invoice.number, message.body)
+
+    @override("en")
+    @responses.activate
+    def test_accepted_invoice_waits_for_renewal_processing(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        expires = subscription.expires
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment = invoice.create_payment(recurring="y")
+        payment.state = Payment.ACCEPTED
+        payment.paid_invoice = invoice
+        payment.save(update_fields=["state", "paid_invoice"])
+        invoice_count = Invoice.objects.count()
+        payment_count = Payment.objects.count()
+
+        self.assertTrue(subscription.has_accepted_renewal_payment())
+        self.assertIsNone(subscription.get_outstanding_renewal_invoice())
+        self.assertIsNone(invoice.get_payment_url())
+        with patch.object(RecurringPaymentsCommand, "peform_payment") as perform:
+            RecurringPaymentsCommand.handle_subscriptions()
+        perform.assert_not_called()
+        self.assertEqual(mail.outbox, [])
+        self.assertEqual(Invoice.objects.count(), invoice_count)
+        self.assertEqual(Payment.objects.count(), payment_count)
+
+        # Both phases of the recurring command must wait for processing.
+        with patch.object(Subscription, "should_notify", return_value=True):
+            for recurring in ("", "y"):
+                subscription.payment_obj.recurring = recurring
+                subscription.payment_obj.save(update_fields=["recurring"])
+                RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        self.assertEqual(mail.outbox, [])
+
+        process_payment(payment)
+        subscription.refresh_from_db()
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PROCESSED)
+        self.assertEqual(subscription.expires, expires + relativedelta(years=1))
+        self.assertFalse(subscription.has_accepted_renewal_payment())
+
+        # At the next renewal, the old processed invoice must not block charging.
+        with (
+            patch(
+                "weblate_web.management.commands.recurring_payments.timezone.now",
+                return_value=subscription.expires,
+            ),
+            patch.object(RecurringPaymentsCommand, "peform_payment") as perform,
+        ):
+            RecurringPaymentsCommand.handle_subscriptions()
+        perform.assert_called_once()
+
+    @override("en")
+    @responses.activate
+    def test_invoice_acceptance_during_recurring_lookup(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service(years=0, days=-2)
+        subscription = service.subscription_set.get()
+        expires = subscription.expires
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment = invoice.create_payment()
+        get_invoices = Subscription.get_renewal_invoices
+
+        def accept_after_lookup(current: Subscription) -> Iterator[Invoice]:
+            invoices = list(get_invoices(current))
+            payment.paid_invoice = invoice
+            payment.state = Payment.ACCEPTED
+            payment.save(update_fields=["paid_invoice", "state"])
+            return iter(invoices)
+
+        with (
+            patch.object(
+                Subscription,
+                "get_renewal_invoices",
+                autospec=True,
+                side_effect=accept_after_lookup,
+            ),
+            patch.object(RecurringPaymentsCommand, "peform_payment") as perform,
+        ):
+            RecurringPaymentsCommand.handle_subscriptions()
+        perform.assert_not_called()
+        self.assertEqual(mail.outbox, [])
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.expires, expires)
+
+    @override("en")
+    @responses.activate
+    def test_accepted_invoice_blocks_manual_renewal(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service(package="test:test-1-m")
+        self.client.force_login(service.customer.owners.get())
+        subscription = service.subscription_set.get()
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment = invoice.create_payment()
+        payment.paid_invoice = invoice
+        payment.state = Payment.ACCEPTED
+        payment.save(update_fields=["paid_invoice", "state"])
+        invoice_count = Invoice.objects.count()
+        payment_count = Payment.objects.count()
+        for data in ({}, {"switch_yearly": 1}):
+            with self.subTest(data=data):
+                response = self.client.post(
+                    reverse("subscription-pay", kwargs={"pk": subscription.pk}),
+                    data,
+                    follow=True,
+                )
+                self.assertContains(response, "awaiting processing")
+                subscription.refresh_from_db()
+                self.assertEqual(subscription.package.name, "test:test-1-m")
+                self.assertEqual(Invoice.objects.count(), invoice_count)
+                self.assertEqual(Payment.objects.count(), payment_count)
+
+    @override("en")
+    @responses.activate
+    def test_reused_invoice_payment_restores_recurrence(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service(recurring="", package="test:test-1-m")
+        subscription = service.subscription_set.get()
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment = invoice.create_payment()
+        url = reverse("invoice-pay", kwargs={"pk": invoice.pk})
+        for state in (Payment.NEW, Payment.PENDING, Payment.REJECTED):
+            with self.subTest(state=state):
+                payment.state = state
+                payment.recurring = ""
+                payment.save(update_fields=["state", "recurring"])
+                response = self.client.get(url)
+                self.assertRedirects(
+                    response, payment.get_absolute_url(), fetch_redirect_response=False
+                )
+                payment.refresh_from_db()
+                self.assertEqual(payment.recurring, "m" if state == Payment.NEW else "")
+                self.assertEqual(payment.state, state)
+                self.assertEqual(invoice.draft_payment_set.count(), 1)
+
+        # Invoice payments for a new purchase must keep their existing settings.
+        invoice.extra = {"subscription": subscription.package.name}
+        invoice.save(update_fields=["extra"])
+        payment.recurring = ""
+        payment.state = Payment.NEW
+        payment.save(update_fields=["recurring", "state"])
+        self.client.get(url)
+        payment.refresh_from_db()
+        self.assertEqual(payment.recurring, "")
+
+    @responses.activate
+    def test_renewal_invoice_reminders(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service(years=0, days=-3, recurring="")
+        subscription = service.subscription_set.get()
+        # This UUID used to wrap at a hyphen in plain-text payment links.
+        with patch.object(
+            Invoice._meta.get_field("uuid"),  # pylint: disable=protected-access
+            "get_default",
+            return_value="348f4586-18ff-4dfe-afa8-f98ca8e0dde2",
+        ):
+            invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        later_invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        other_subscription = service.subscription_set.create(
+            package=subscription.package,
+            expires=subscription.expires,
+            payment=subscription.payment,
+        )
+        unrelated_invoice = other_subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        unrelated_proforma = other_subscription.create_invoice(
+            kind=InvoiceKind.PROFORMA
+        )
+        invoice_count = Invoice.objects.count()
+        payment_count = Payment.objects.count()
+        for notification in ("payment_missing", "payment_expired", "payment_upcoming"):
+            with self.subTest(notification=notification):
+                mail.outbox = []
+                subscription.send_notification(notification)
+                self.assertEqual(len(mail.outbox), 2)
+                for message in cast("list[EmailMultiAlternatives]", mail.outbox):
+                    if notification in {"payment_missing", "payment_expired"}:
+                        self.assertEqual(
+                            message.subject, "Your expired payment on weblate.org"
+                        )
+                    html = cast("str", message.alternatives[0][0])
+                    for body in (html, message.body):
+                        self.assertIn(invoice.number, body)
+                        self.assertIn(invoice.display_total_amount, body)
+                        self.assertIn(invoice.get_payment_url(), body)
+                        self.assertNotIn(later_invoice.number, body)
+                        self.assertNotIn(later_invoice.get_payment_url(), body)
+                        if notification == "payment_upcoming":
+                            self.assertIn(unrelated_invoice.number, body)
+                            self.assertIn(unrelated_proforma.number, body)
+                            self.assertEqual(body.count(invoice.number), 1)
+                            self.assertNotIn("automatically charged soon", body)
+                    self.assertIn("Due date:", html)
+                    attachments = [
+                        attachment
+                        for attachment in message.attachments
+                        if attachment.mimetype == "application/pdf"
+                    ]
+                    self.assertEqual(len(attachments), 1)
+                    self.assertEqual(attachments[0].filename, invoice.filename)
+                    self.assertEqual(attachments[0].content, invoice.path.read_bytes())
+                self.assertEqual(Invoice.objects.count(), invoice_count)
+                self.assertEqual(Payment.objects.count(), payment_count)
+
     @staticmethod
     def set_customer_vat(
         service: Service,
@@ -5445,15 +5766,18 @@ class ServiceTest(FakturaceTestCase):
         validate.assert_called_once()
         self.assertEqual(payment.payment_set.filter(state=Payment.PROCESSED).count(), 1)
 
-        subscription.expires = timezone.now() - timedelta(days=2)
-        subscription.save(update_fields=["expires"])
-        self.set_customer_vat(
-            service,
-            state=Customer.VatValidationState.INVALID,
-            error=invalid_vat,
-        )
-        for _attempt in range(2):
-            RecurringPaymentsCommand.handle_subscriptions()
+        subscription.refresh_from_db()
+        with patch(
+            "weblate_web.management.commands.recurring_payments.timezone.now",
+            return_value=subscription.expires,
+        ):
+            self.set_customer_vat(
+                service,
+                state=Customer.VatValidationState.INVALID,
+                error=invalid_vat,
+            )
+            for _attempt in range(2):
+                RecurringPaymentsCommand.handle_subscriptions()
 
         payment.refresh_from_db()
         self.assertEqual(payment.recurring, "y")

@@ -1282,6 +1282,25 @@ def subscription_pay(request, pk):
     subscription = get_object_or_404(
         Subscription, pk=pk, service__customer__owners=request.user
     )
+    renewal_invoices = list(subscription.get_renewal_invoices())
+    if any(not invoice.can_be_paid() for invoice in renewal_invoices):
+        messages.info(
+            request,
+            gettext(
+                "Your renewal payment has been received and is awaiting processing."
+            ),
+        )
+        return redirect("user")
+    if renewal_invoices:
+        invoice = renewal_invoices[0]
+        if "switch_yearly" in request.POST:
+            message = gettext(
+                "Please pay outstanding invoice %(invoice)s before switching to annual billing."
+            )
+        else:
+            message = gettext("Please pay outstanding invoice %(invoice)s to renew.")
+        messages.info(request, message % {"invoice": invoice.number})
+        return redirect("invoice-pay", pk=invoice.pk)
     if "switch_yearly" in request.POST and subscription.yearly_package:
         subscription.package = subscription.yearly_package
         subscription.save(update_fields=["package"])

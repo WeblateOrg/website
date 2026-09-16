@@ -103,6 +103,7 @@ def send_notification(
 ) -> EmailMultiAlternatives:
     # HTML to text conversion
     html2text = HTML2Text(bodywidth=78)
+    html2text.wrap_links = False
     html2text.unicode_snob = True
     html2text.ignore_images = True
     html2text.pad_tables = True

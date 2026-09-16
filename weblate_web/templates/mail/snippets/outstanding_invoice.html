@@ -1,0 +1,7 @@
+{% load i18n %}
+
+<p>{% translate "An invoice has already been issued for this renewal. Please pay this invoice to renew your subscription." %}</p>
+<p>
+  {% blocktranslate with number=outstanding_invoice.number amount=outstanding_invoice.display_total_amount due_date=outstanding_invoice.due_date %}Invoice {{ number }}: {{ amount }}. Due date: {{ due_date }}.{% endblocktranslate %}
+</p>
+<a class="button" href="{{ outstanding_invoice.get_payment_url }}">{% translate "Pay invoice" %}</a>

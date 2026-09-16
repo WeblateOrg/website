@@ -93,6 +93,11 @@ class Command(BaseCommand):
         for subscription in subscriptions:
             if not subscription.uses_payment_lifecycle():
                 continue
+            if (
+                not subscription.service.is_donation
+                and subscription.has_accepted_renewal_payment()
+            ):
+                continue
             try:
                 payment = subscription.payment_obj
             except Payment.DoesNotExist:
@@ -242,6 +247,15 @@ class Command(BaseCommand):
             # Skip this in case there is another subscription, for example on service
             # upgrade on downgrade
             if subscription.could_be_obsolete():
+                continue
+
+            # Match the renewal period independently of payment state so payment
+            # acceptance cannot open a gap between unpaid and accepted checks.
+            if (
+                not subscription.service.is_donation
+                and next(subscription.get_renewal_invoices(), None) is not None
+            ):
+                subscription.send_notification("payment_expired")
                 continue
 
             # Check recurring payment

@@ -5,7 +5,11 @@
 {% block content %}
 
   {% if subscription %}
-    <p>{% translate "Your subscription on weblate.org is expiring soon. Please sign in on the website to renew it." %}</p>
+    {% if outstanding_invoice %}
+      {% include "mail/snippets/outstanding_invoice.html" %}
+    {% else %}
+      <p>{% translate "Your subscription on weblate.org is expiring soon. Please sign in on the website to renew it." %}</p>
+    {% endif %}
 
     {% include "mail/snippets/subscription_info.html" %}
   {% endif %}

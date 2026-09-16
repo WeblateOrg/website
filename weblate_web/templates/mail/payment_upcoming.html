@@ -7,14 +7,21 @@
   {% if subscription %}
     <p>
       {% translate "Your subscription on weblate.org will renew soon." %}
-      {% translate "The payment will be automatically charged soon." %}
-      {% translate "In case your card has expired or you want to use different payment method, please perform the payment now." %}
-      {% if upcoming_payment_invoices %}
-        {% translate "There might already be an invoice for this renewal and only the payment might still be missing." %}
+      {% if outstanding_invoice %}
+        {% translate "Automatic payment is paused while the issued renewal invoice is awaiting payment." %}
+      {% else %}
+        {% translate "The payment will be automatically charged soon." %}
+        {% translate "In case your card has expired or you want to use different payment method, please perform the payment now." %}
+        {% if upcoming_payment_invoices %}
+          {% translate "There might already be an invoice for this renewal and only the payment might still be missing." %}
+        {% endif %}
       {% endif %}
     </p>
 
     {% include "mail/snippets/subscription_info.html" %}
+    {% if outstanding_invoice %}
+      {% include "mail/snippets/outstanding_invoice.html" %}
+    {% endif %}
   {% endif %}
 
   {% if donation %}
