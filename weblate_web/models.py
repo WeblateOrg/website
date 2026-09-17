@@ -1568,6 +1568,8 @@ class Subscription(models.Model):
                 customer=self.service.customer,
                 extra__subscription=self.pk,
                 kind=InvoiceKind.INVOICE,
+                fully_credited=False,
+                correction_of=None,
                 invoiceitem__package=self.package,
                 invoiceitem__start_date=start_date.date(),
                 invoiceitem__end_date=(
@@ -1601,9 +1603,14 @@ class Subscription(models.Model):
             "payment_upcoming",
         }:
             invoices = list(self.get_renewal_invoices())
-            if any(not invoice.can_be_paid() for invoice in invoices):
-                return
             if invoices:
+                invoices = [
+                    invoice for invoice in invoices if not invoice.uncollectible
+                ]
+                if not invoices or any(
+                    not invoice.can_be_paid() for invoice in invoices
+                ):
+                    return
                 invoice = invoices[0]
                 context.update(
                     invoice=invoice,

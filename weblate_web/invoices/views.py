@@ -44,7 +44,9 @@ def download_invoice(request: AuthenticatedHttpRequest, pk: str):
 
 @transaction.atomic
 def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
-    invoice = get_object_or_404(Invoice, pk=pk, kind=InvoiceKind.INVOICE)
+    invoice = get_object_or_404(
+        Invoice.objects.select_for_update(), pk=pk, kind=InvoiceKind.INVOICE
+    )
     if not invoice.can_be_paid():
         if invoice.paid_payment_set.exists():
             messages.info(
@@ -65,8 +67,11 @@ def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
         and (package := invoice.get_package()) is not None
     ):
         recurring = package.get_repeat()
-    if invoice.draft_payment_set.exists():
-        payment = invoice.draft_payment_set.all()[0]
+    payments = invoice.draft_payment_set.filter(
+        state__in=[Payment.NEW, Payment.PENDING, Payment.REJECTED]
+    )
+    if existing := payments.first():
+        payment = existing
         if (
             recurring is not None
             and payment.state == Payment.NEW

@@ -22,6 +22,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, cast
 
 from django.contrib import admin, messages
+from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.utils.translation import gettext
 
@@ -70,6 +71,8 @@ class InvoiceAdmin(admin.ModelAdmin):
         if invoice.kind != InvoiceKind.DRAFT:
             # Negative amounts (refunds are automatically prepaid)
             if invoice.total_amount < 0:
+                if not request.user.has_perm("invoices.manage_invoice_corrections"):
+                    raise PermissionDenied
                 invoice.prepaid = True
                 invoice.save(update_fields=["prepaid"])
             invoice.generate_files()

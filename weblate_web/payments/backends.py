@@ -787,13 +787,142 @@ class FioBank(Backend):
             print(f"{invoice.number}: skipping, already paid (duplicate noted)")
 
     @classmethod
-    @method_decorator(sensitive_variables("tokens", "token"))
-    def fetch_payments(cls, from_date: str | None = None) -> None:
+    def record_credited_invoice_bank_payment(
+        cls, invoice: Invoice, entry: dict[str, Any], amount: Decimal, currency: str
+    ) -> None:
+        """Keep the whole transfer for manual reconciliation after a correction."""
+        Backend.record_duplicate_payment(
+            invoice,
+            DuplicatePaymentRecord(
+                duplicate_key=cls.get_duplicate_bank_payment_key(
+                    invoice, entry, amount, currency
+                ),
+                summary=f"Bank transfer for fully credited invoice {invoice.number}",
+                content=(
+                    "The transfer has not been applied because the invoice is fully "
+                    "credited. Reconcile the received amount manually."
+                ),
+                details={
+                    "amount": str(amount),
+                    "currency": currency,
+                    "remaining_amount": "0.00",
+                    "excess_amount": str(amount),
+                    "transaction": entry,
+                },
+            ),
+        )
+
+    @staticmethod
+    def matches_bank_payment(
+        invoice: Invoice, entry: dict[str, Any], currency: str
+    ) -> bool:
+        expected_currency = invoice.get_currency_display()
+        if expected_currency != currency:
+            print(
+                f"{invoice.number}: skipping, currency mismatch, {currency} instead of {expected_currency}"
+            )
+            return False
+        # Only bank staff can edit this comment, unlike the sender's message.
+        comment = entry.get("comment") or ""
+        amount = entry["amount"]
+        if (
+            not invoice.is_credited
+            and amount < invoice.total_amount
+            and "[underpaid]" not in comment
+        ):
+            print(
+                f"{invoice.number}: skipping, underpaid, {amount} instead of {invoice.total_amount}"
+            )
+            return False
+        return True
+
+    @classmethod
+    @transaction.atomic
+    def reconcile_bank_transfer(cls, entry: dict[str, Any], currency: str) -> None:
+        """Lock matched invoices before checking and applying an incoming transfer."""
         from weblate_web.invoices.models import (  # ruff:ignore[import-outside-top-level]
             Invoice,
             InvoiceKind,
         )
 
+        amount: Decimal = entry["amount"]
+        # Extract possible invoice IDs
+        matches: list[str] = []
+        for field in EXTRACTABLE_FIELDS:
+            if value := entry.get(field):
+                matches.extend(
+                    match.replace(" ", "") for match in INVOICE_MATCH_RE.findall(value)
+                )
+
+        processed = False
+        duplicate_matches: list[Invoice] = []
+
+        # Process all matches
+        for invoice in (
+            Invoice.objects.select_for_update()
+            .filter(
+                number__in=matches,
+                correction_of=None,
+                kind__in=(InvoiceKind.PROFORMA, InvoiceKind.INVOICE),
+            )
+            .order_by("pk")
+        ):
+            if not cls.matches_bank_payment(invoice, entry, currency):
+                continue
+            if (
+                invoice.paid_payment_set.exists()
+                or invoice.draft_payment_set.filter(paid_invoice__isnull=False).exists()
+            ):
+                duplicate_matches.append(invoice)
+                continue
+
+            if invoice.is_credited:
+                cls.record_credited_invoice_bank_payment(
+                    invoice, entry, amount, currency
+                )
+                processed = True
+                break
+
+            # Fetch payment(s)
+            payment = cls.get_invoice_payment(invoice)
+
+            print(f"{invoice.number}: received payment")
+
+            # Instantionate backend (does SELECT FOR UPDATE)
+            backend = payment.get_payment_backend()
+
+            # Sync payment date with the actual payment
+            if backend.payment.created.date() != entry["date"]:
+                # Make timezone aware datetime out of date object
+                backend.payment.created = make_aware(
+                    datetime.datetime.combine(entry["date"], datetime.time.min)
+                )
+                # Saved later via backend.success()
+
+            # Store transaction details
+            backend.payment.details["transaction"] = entry
+            backend.payment.details["transaction_currency"] = currency
+            # Saved later via backend.success()
+
+            # Complete processing and save updated payment
+            backend.success()
+            processed = True
+            break
+
+        if not processed and duplicate_matches:
+            for invoice in duplicate_matches:
+                cls.record_duplicate_bank_payment(invoice, entry, amount, currency)
+            processed = True
+
+        # Warn about not processed payment
+        if not processed and entry["account_number"] not in SKIP_ACCOUNTS:
+            print(
+                f"Unprocessed incoming payment {amount} {currency}  {entry['account_name']}"
+            )
+
+    @classmethod
+    @method_decorator(sensitive_variables("tokens", "token"))
+    def fetch_payments(cls, from_date: str | None = None) -> None:
         tokens: list[str]
         if isinstance(settings.FIO_TOKEN, str):
             tokens = [settings.FIO_TOKEN]
@@ -816,84 +945,7 @@ class FioBank(Backend):
                 if amount < 0:
                     continue
 
-                # Extract possible invoice IDs
-                matches: list[str] = []
-                for field in EXTRACTABLE_FIELDS:
-                    if value := entry.get(field, None):
-                        matches.extend(
-                            match.replace(" ", "")
-                            for match in INVOICE_MATCH_RE.findall(value)
-                        )
-
-                processed = False
-                duplicate_matches: list[Invoice] = []
-
-                # Process all matches
-                for invoice in Invoice.objects.filter(
-                    number__in=matches,
-                    kind__in=(InvoiceKind.PROFORMA, InvoiceKind.INVOICE),
-                ):
-                    # Match validation
-                    expected_currency = invoice.get_currency_display()
-                    if expected_currency != currency:
-                        print(
-                            f"{invoice.number}: skipping, currency mismatch, {currency} instead of {expected_currency}"
-                        )
-                        continue
-                    # The comment is not coming from the transaction, but can be only edited in the bank application
-                    comment = entry.get("comment") or ""
-                    if amount < invoice.total_amount and "[underpaid]" not in comment:
-                        print(
-                            f"{invoice.number}: skipping, underpaid, {amount} instead of {invoice.total_amount}"
-                        )
-                        continue
-                    if (
-                        invoice.paid_payment_set.exists()
-                        or invoice.draft_payment_set.filter(
-                            paid_invoice__isnull=False
-                        ).exists()
-                    ):
-                        duplicate_matches.append(invoice)
-                        continue
-
-                    # Fetch payment(s)
-                    payment = cls.get_invoice_payment(invoice)
-
-                    print(f"{invoice.number}: received payment")
-
-                    # Instantionate backend (does SELECT FOR UPDATE)
-                    backend = payment.get_payment_backend()
-
-                    # Sync payment date with the actual payment
-                    if backend.payment.created.date() != entry["date"]:
-                        # Make timezone aware datetime out of date object
-                        backend.payment.created = make_aware(
-                            datetime.datetime.combine(entry["date"], datetime.time.min)
-                        )
-                        # Saved later via backend.success()
-
-                    # Store transaction details
-                    backend.payment.details["transaction"] = entry
-                    backend.payment.details["transaction_currency"] = currency
-                    # Saved later via backend.success()
-
-                    # Complete processing and save updated payment
-                    backend.success()
-                    processed = True
-                    break
-
-                if not processed and duplicate_matches:
-                    for invoice in duplicate_matches:
-                        cls.record_duplicate_bank_payment(
-                            invoice, entry, amount, currency
-                        )
-                    processed = True
-
-                # Warn about not processed payment
-                if not processed and entry["account_number"] not in SKIP_ACCOUNTS:
-                    print(
-                        f"Unprocessed incoming payment {amount} {currency}  {entry['account_name']}"
-                    )
+                cls.reconcile_bank_transfer(entry, currency)
 
 
 @register_backend

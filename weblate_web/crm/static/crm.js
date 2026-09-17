@@ -91,6 +91,7 @@ const initInvoiceConfirmation = () => {
   });
 
   forms.forEach((form) => {
+    getConfirmationField(form).value = "";
     form.addEventListener("submit", (event) => {
       if (!isInvoiceSubmission(form)) {
         return;

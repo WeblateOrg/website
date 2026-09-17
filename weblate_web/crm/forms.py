@@ -19,16 +19,21 @@
 
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import cast
+from uuid import uuid4
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy
 
+from weblate_web.invoices.corrections import is_settled
 from weblate_web.invoices.forms import CustomerReferenceForm
-from weblate_web.invoices.models import InvoiceKind, QuoteStatus
+from weblate_web.invoices.models import Invoice, InvoiceKind, QuoteStatus
 from weblate_web.models import Package, Service, Subscription
-from weblate_web.payments.models import Customer, CustomerFollowUp
+from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 
 FINAL_INVOICE_CONFIRMATION_ERROR = gettext_lazy(
     "Please confirm that you want to issue a final invoice."
@@ -226,3 +231,102 @@ class ServiceMaintenanceWindowForm(forms.ModelForm):
     class Meta:
         model = Service
         fields = ("maintenance_window",)
+
+
+class BaseInvoiceCorrectionForm(forms.Form):
+    token = forms.UUIDField(widget=forms.HiddenInput, initial=uuid4)
+    issue_date = forms.DateField(
+        label=gettext_lazy("Issue date"),
+        initial=timezone.localdate,
+        widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
+    )
+    tax_date = forms.DateField(
+        label=gettext_lazy("Correction date"),
+        initial=timezone.localdate,
+        widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
+    )
+    confirm_invoice = forms.BooleanField(
+        widget=forms.HiddenInput,
+        error_messages={
+            "required": gettext_lazy(
+                "Please confirm that you want to issue a credit note."
+            )
+        },
+    )
+
+    def __init__(self, *args, invoice: Invoice, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.invoice = invoice
+
+
+class InvoiceCorrectionForm(BaseInvoiceCorrectionForm):
+    note = forms.CharField(
+        label=gettext_lazy("Explanation for the customer"),
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )
+    amount = forms.DecimalField(
+        label=gettext_lazy("Amount including VAT"),
+        min_value=Decimal("0.01"),
+        max_digits=14,
+        decimal_places=2,
+    )
+
+    def __init__(self, *args, invoice: Invoice, **kwargs):
+        super().__init__(*args, invoice=invoice, **kwargs)
+        self.fields["amount"].initial = invoice.remaining_amount
+
+    def clean(self):
+        super().clean()
+        data = self.cleaned_data
+        if not is_settled(self.invoice):
+            raise ValidationError(gettext_lazy("Only paid invoices can be refunded."))
+        data["reason"] = "price"
+        return data
+
+
+class DuplicateInvoiceForm(BaseInvoiceCorrectionForm):
+    duplicate = forms.ModelChoiceField(
+        label=gettext_lazy("Correct paid invoice"),
+        queryset=Invoice.objects.none(),
+    )
+    note = forms.CharField(
+        label=gettext_lazy("Explanation for the customer"),
+        widget=forms.Textarea(attrs={"rows": 3}),
+        required=False,
+    )
+
+    def __init__(self, *args, invoice: Invoice, **kwargs):
+        super().__init__(*args, invoice=invoice, **kwargs)
+        field = cast("forms.ModelChoiceField", self.fields["duplicate"])
+        candidates = (
+            Invoice.objects.filter(
+                Q(prepaid=True)
+                | Q(paid_payment_set__state__in=[Payment.ACCEPTED, Payment.PROCESSED]),
+                customer=invoice.customer,
+                kind=InvoiceKind.INVOICE,
+                correction_of=None,
+                fully_credited=False,
+            )
+            .exclude(pk=invoice.pk)
+            .distinct()
+        )
+
+        field.queryset = candidates.filter(
+            pk__in=[
+                candidate.pk for candidate in candidates if candidate.total_amount > 0
+            ]
+        )
+
+    def clean(self):
+        super().clean()
+        data = self.cleaned_data
+        data["reason"] = "duplicate"
+        data["amount"] = self.invoice.remaining_amount
+        return data
+
+
+class UncollectibleInvoiceForm(forms.Form):
+    note = forms.CharField(
+        label=gettext_lazy("Internal explanation"),
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )

@@ -875,14 +875,9 @@ class EN16931Validator:
         for tax in trade_tax_totals:
             self._validate_vat_category_brco15_cii(transaction, tax)
 
-        # BR-CO-16: Amount due for payment must not be negative
-        if due_payable_amount < 0:
-            self.errors.append(
-                ValidationError(
-                    "BR-CO-16",
-                    f"Amount due for payment (BT-115) = {due_payable_amount:.2f} must not be negative",
-                )
-            )
+        # Negative invoices can have a negative payable amount. BR-CO-16 checks
+        # the arithmetic (above), not its sign:
+        # https://docs.peppol.eu/poacc/billing/3.0/rules/ubl-tc434/BR-CO-16/
 
         # Validate invoice line calculations (BR-CO-03, BR-CO-04)
         for idx, line in enumerate(lines, 1):

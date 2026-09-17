@@ -35,8 +35,10 @@ def mock_external_apis():
     """Mock external API calls and VIES validation for e2e tests."""
     secret_field = Service._meta.get_field("secret")  # pylint: disable=protected-access
     original_secret_default = secret_field.default
+    original_secret_cache = secret_field.__dict__.pop("_get_default", None)
     issue_date_field = Invoice._meta.get_field("issue_date")  # pylint: disable=protected-access
     original_issue_date_default = issue_date_field.default
+    original_issue_date_cache = issue_date_field.__dict__.pop("_get_default", None)
     fixed_secret = "e2e-fixed-service-secret-token-0123456789abcdef0123456789abcd"  # ruff:ignore[hardcoded-password-string]
     fixed_issue_date = date(2026, 1, 15)
     fixed_now = datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC)
@@ -67,6 +69,13 @@ def mock_external_apis():
         finally:
             secret_field.default = original_secret_default
             issue_date_field.default = original_issue_date_default
+            for field, cached_default in (
+                (secret_field, original_secret_cache),
+                (issue_date_field, original_issue_date_cache),
+            ):
+                field.__dict__.pop("_get_default", None)
+                if cached_default is not None:
+                    field.__dict__["_get_default"] = cached_default
 
 
 @pytest.fixture

@@ -80,7 +80,10 @@ def sort_datetime(value: date | datetime) -> datetime:
 
 def get_unpaid_invoice_queryset() -> QuerySet[Invoice]:
     return (
-        Invoice.objects.exclude(paid_payment_set__state=Payment.PROCESSED)
+        Invoice.objects.filter(
+            correction_of=None, fully_credited=False, uncollectible=False
+        )
+        .exclude(paid_payment_set__state=Payment.PROCESSED)
         .filter(
             Q(paid_payment_set__state__in={Payment.NEW, Payment.PENDING})
             | Q(paid_payment_set=None),

@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <link href="invoices:invoice.css" media="print" rel="stylesheet">
     {# djlint:off #}
-    <title>Weblate {% if is_receipt %}Receipt{% else %}{{ invoice.get_kind_display }}{% endif %} {{ invoice.number }}</title>
+    <title>Weblate {% if is_receipt %}Receipt{% else %}{{ invoice.document_title }}{% endif %} {{ invoice.number }}</title>
     {# djlint:on #}
     <meta name="description"
-          content="Weblate {% if is_receipt %}Receipt{% else %}{{ invoice.get_kind_display }}{% endif %} {{ invoice.number }} for {{ invoice.customer.name }}">
+          content="Weblate {% if is_receipt %}Receipt{% else %}{{ invoice.document_title }}{% endif %} {{ invoice.number }} for {{ invoice.customer.name }}">
     <meta name="dcterms.created" content="{{ invoice.issue_date.isoformat }}">
     <meta name="author" content="{{ company_name }}">
   </head>
@@ -21,7 +21,7 @@
             {% if is_receipt %}
               Receipt for invoice number
             {% else %}
-              {{ invoice.get_kind_display }} number
+              {{ invoice.document_title }} number
             {% endif %}
             {{ invoice.number }}
           </h1>
@@ -79,6 +79,12 @@
           </address>
         </div>
 
+        {% if invoice.correction_of %}
+          <p>Correction of invoice {{ invoice.correction_of.number }} issued {{ invoice.correction_of.issue_date|date }}.</p>
+          <p>Correction date: {{ invoice.tax_date|date }}</p>
+          <p>{{ invoice.correction_note|linebreaksbr }}</p>
+          {% if invoice.duplicate_of %}<p>Correct invoice: {{ invoice.duplicate_of.number }}</p>{% endif %}
+        {% endif %}
         {% if invoice.customer_reference %}
           <p>Customer reference: {{ invoice.customer_reference }}</p>
         {% endif %}
@@ -136,6 +142,14 @@
                 <td>{{ invoice.total_vat_czk }} Kč</td>
                 <td>{{ invoice.display_total_vat }}</td>
               </tr>
+              {% if invoice.correction_rounding %}
+                <tr>
+                  <td>Rounding</td>
+                  <td></td>
+                  <td></td>
+                  <td>{{ invoice.correction_rounding }} {{ invoice.get_currency_display }}</td>
+                </tr>
+              {% endif %}
               <tr class="subtotal">
                 <td>Total including VAT</td>
                 <td></td>
@@ -148,7 +162,9 @@
                   VAT {{ invoice.vat_rate }}%
                   {% if not invoice.vat_rate %}
                     –
-                    {% if invoice.customer.is_eu %}
+                    {% if invoice.correction_of %}
+                      {{ invoice.get_tax_details.exemption_reason }}
+                    {% elif invoice.customer.is_eu %}
                       Reverse charge
                     {% else %}
                       Place of supply outside EU
@@ -159,6 +175,14 @@
                 <td></td>
                 <td>{{ invoice.display_total_vat }}</td>
               </tr>
+              {% if invoice.correction_rounding %}
+                <tr>
+                  <td>Rounding</td>
+                  <td></td>
+                  <td></td>
+                  <td>{{ invoice.correction_rounding }} {{ invoice.get_currency_display }}</td>
+                </tr>
+              {% endif %}
               <tr>
                 <td>Grand total</td>
                 <td></td>
@@ -211,6 +235,8 @@
               <td>
                 {% if invoice.is_draft %}
                   Bank transfer or card payments are available
+                {% elif invoice.correction_of and not is_receipt %}
+                  {% if invoice.prepaid %}Applied to the original invoice. No payment required.{% else %}Refund to be paid separately.{% endif %}
                 {% elif invoice.prepaid or is_receipt %}
                   {% if not is_receipt %}Do not pay, already paid{% endif %}
                   <div class="method">
@@ -242,7 +268,9 @@
           {% endif %}
         {% endwith %}
         <p>
-          {% if is_receipt %}
+          {% if is_receipt and invoice.correction_of %}
+            We confirm that the refund for credit note {{ invoice.number }} was completed on {{ invoice.get_payment.created|date }}.
+          {% elif is_receipt %}
             {% with payment=invoice.get_payment %}
               {% if payment.backend == "fio-bank" %}
                 We confirm that the bank transfer payment of the invoice {{ invoice.number }} was received on {{ payment.created|date }}.
@@ -255,7 +283,9 @@
               Should you have any questions concerning this quotation, please contact us at <a href="{{ company_sales_email_mailto }}">{{ company_sales_email }}</a>.
             {% endif %}
             {% if invoice.vat_rate == 0 %}
-              {% if invoice.customer.is_eu %}
+              {% if invoice.correction_of %}
+                {{ invoice.get_tax_details.exemption_reason }}
+              {% elif invoice.customer.is_eu %}
 
                 VAT exempt under reverse charge mechanism pursuant to Article 196 of Directive 2006/112/EC.
 

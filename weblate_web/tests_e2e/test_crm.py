@@ -586,6 +586,51 @@ def assert_work_queue_items(page: Page) -> None:
     assert page.get_by_text("CRM Closed Work Queue Quote").count() == 0
 
 
+def correct_duplicate_invoice(page: Page, invoice: Invoice) -> None:
+    """Check the correction panels and confirm cancelling an unpaid duplicate."""
+    paid_invoice = invoice.duplicate(kind=InvoiceKind.INVOICE, prepaid=True)
+    page.reload()
+    invoice_url = page.url
+    correction_form = page.locator("form[data-crm-invoice-confirm]")
+    correction_form.locator('select[name="duplicate"]').select_option(
+        str(paid_invoice.pk)
+    )
+    assert not page.locator('button[name="issue_correction"]').count()
+    duplicate_heading = correction_form.get_by_role("heading").bounding_box()
+    collection_form = page.locator("form.crm-form-panel--danger")
+    collection_heading = collection_form.get_by_role("heading").bounding_box()
+    assert duplicate_heading is not None and collection_heading is not None
+    assert abs(duplicate_heading["y"] - collection_heading["y"]) < 1
+    assert abs(duplicate_heading["height"] - collection_heading["height"]) < 1
+    assert (
+        collection_form.get_by_role("button").evaluate(
+            "button => getComputedStyle(button).backgroundColor"
+        )
+        == "rgb(179, 38, 30)"
+    )
+    capture(page, "duplicate-invoice-form")
+    correction_form.get_by_role("button", name="Cancel duplicate invoice").click()
+    dialog = page.locator("#crm-invoice-confirm-dialog")
+    assert dialog.get_by_role("heading", name="Issue credit note?").is_visible()
+    capture(page, "credit-note-confirmation")
+    dialog.get_by_role("button", name="Cancel", exact=True).click()
+    assert not dialog.is_visible()
+    assert not invoice.corrections.exists()
+    with patch.object(Invoice, "generate_files"):
+        correction_form.get_by_role("button", name="Cancel duplicate invoice").click()
+        dialog.get_by_role("button", name="Issue credit note", exact=True).click()
+        page.wait_for_url(lambda url: url != invoice_url)
+        page.wait_for_load_state("networkidle")
+    assert_no_server_error(page)
+    assert invoice.corrections.count() == 1
+    assert_text_visible(page, "Applied to invoice")
+    page.goto(invoice_url)
+    assert_text_visible(page, "Credited")
+    assert not page.locator('button[name="issue_correction"]').count()
+    assert page.get_by_role("link", name=invoice.corrections.get().number).is_visible()
+    capture(page, "cancelled-duplicate-invoice")
+
+
 def capture_quote_status_actions(page: Page, live_server, stale_quote: Invoice) -> None:
     """Close and reopen a quote while capturing the CRM quote status UI."""
     response = page.goto(
@@ -1168,6 +1213,8 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         assert_no_server_error(page)
         assert_text_visible(page, "Generated from", exact=False)
         capture(page, "quote-converted-invoice")
+
+        correct_duplicate_invoice(page, Invoice.objects.get(parent=crm_data.quote))
 
         response = page.goto(
             absolute_url(

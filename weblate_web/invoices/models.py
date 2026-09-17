@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import datetime
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from shutil import copyfile
@@ -48,6 +48,7 @@ from pycheval import (
     DocumentAllowance,
     EN16931Invoice,
     EN16931LineItem,
+    IncludedNote,
     Money,
     PaymentMeans,
     PaymentTerms,
@@ -444,6 +445,41 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         help_text="Invoices paid in advance (card payment, invoices issued after paying pro forma)",
     )
 
+    correction_of = models.ForeignKey(
+        "self",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="corrections",
+        editable=False,
+    )
+    correction_token = models.UUIDField(null=True, unique=True, editable=False)
+    correction_reason = models.CharField(max_length=20, blank=True, editable=False)
+    correction_note = models.TextField(blank=True, editable=False)
+    duplicate_of = models.ForeignKey(
+        "self",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="duplicate_corrections",
+        editable=False,
+    )
+    correction_net = models.DecimalField(
+        max_digits=14, decimal_places=2, default=0, editable=False
+    )
+    correction_vat = models.DecimalField(
+        max_digits=14, decimal_places=2, default=0, editable=False
+    )
+    correction_rounding = models.DecimalField(
+        max_digits=14, decimal_places=2, default=0, editable=False
+    )
+    credited_amount = models.DecimalField(
+        max_digits=14, decimal_places=2, default=0, editable=False
+    )
+    fully_credited = models.BooleanField(default=False, editable=False)
+    uncollectible = models.BooleanField(default=False, editable=False)
+    uncollectible_note = models.TextField(blank=True, editable=False)
+
     # Passed to payment
     extra = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
 
@@ -461,6 +497,10 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         ordering = ["-issue_date"]
         permissions = [
             ("view_income", "Can view income tracking"),
+            (
+                "manage_invoice_corrections",
+                "Can manage invoice corrections and refunds",
+            ),
         ]
 
     def __str__(self) -> str:
@@ -523,10 +563,15 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             InvoiceKind.PROFORMA,
             InvoiceKind.QUOTE,
         }:
-            self._get_en_16931_tax_details()
+            self.get_tax_details()
 
     def _derive_initial_vat_rate(self) -> bool:
-        if not self._state.adding or self.parent_id or not self.customer_id:
+        if (
+            not self._state.adding
+            or self.parent_id
+            or self.correction_of_id
+            or not self.customer_id
+        ):
             return False
         if (
             self.customer.is_eu
@@ -548,7 +593,21 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                 return True
         return False
 
+    @property
+    def remaining_amount(self) -> Decimal:
+        return self.total_amount - self.credited_amount
+
+    @property
+    def is_credited(self) -> bool:
+        return self.fully_credited
+
+    @property
+    def document_title(self) -> str:
+        return "Credit note" if self.correction_of_id else self.get_kind_display()
+
     def is_editable(self) -> bool:
+        if self.correction_of_id or self.credited_amount:
+            return False
         if self.kind == InvoiceKind.INVOICE:
             return self.issue_date.month == now().month
         return not self.invoice_set.exists()
@@ -577,6 +636,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
     @cached_property
     def exchange_rate_czk(self) -> Decimal:
         """Exchange rate from currency to CZK."""
+        if self.correction_of_id:
+            return Decimal(self.extra["correction"]["exchange_rate_czk"])
         return ExchangeRates.get(self.get_currency_display(), self.tax_date)
 
     @cached_property
@@ -664,6 +725,15 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
     @cached_property
     def _amounts(self) -> _InvoiceAmounts:
+        if self.correction_of_id:
+            return replace(
+                self._get_en_16931_amounts(),
+                tax_basis=self.correction_net,
+                vat=self.correction_vat,
+                grand_total=self.correction_net
+                + self.correction_vat
+                + self.correction_rounding,
+            )
         if self.calculation_version == InvoiceCalculationVersion.LEGACY:
             return self._get_legacy_amounts()
         return self._get_en_16931_amounts()
@@ -749,8 +819,27 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                 self.get_quote_status_display(),
                 QUOTE_STATUS_BADGE_CLASS[quote_status],
             )
-        if self.is_paid:
-            return InvoiceStatusBadge(gettext("Paid"), "success")
+        return self.invoice_status_badge
+
+    @property
+    def invoice_status_badge(self) -> InvoiceStatusBadge:
+        for condition, label, css_class in (
+            (self.is_credited, gettext("Credited"), "muted"),
+            (
+                self.is_paid,
+                gettext("Refunded") if self.correction_of_id else gettext("Paid"),
+                "success",
+            ),
+            (self.uncollectible, gettext("Uncollectible"), "muted"),
+            (
+                self.correction_of_id and self.prepaid,
+                gettext("Applied to invoice"),
+                "success",
+            ),
+            (self.correction_of_id, gettext("Awaiting refund"), "warning"),
+        ):
+            if condition:
+                return InvoiceStatusBadge(label, css_class)
         if self.is_payable:
             if self.due_date > now().date():
                 return InvoiceStatusBadge(gettext("Unpaid"), "warning", True)
@@ -838,7 +927,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
     def generate_files(self) -> None:
         # Validate accounting data before any document is written.
-        self._get_en_16931_tax_details()
+        self.get_tax_details()
         self.generate_money_s3_xml()
         self.generate_en_16931_xml()
         self.generate_pdf()
@@ -860,7 +949,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
     def get_money_s3_xml_tree(self, invoices: etree._Element) -> None:  # ruff:ignore[too-many-statements, complex-structure]
         """Create XML tree for Money S3 invoice XML."""
-        tax_details = self._get_en_16931_tax_details()
+        tax_details = self.get_tax_details()
 
         def add_element(root, name: str, text: str | Decimal | int | None = None):
             added = etree.SubElement(root, name)
@@ -902,7 +991,11 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         output = etree.SubElement(invoices, "FaktVyd")
         add_element(output, "Doklad", self.number)
         add_element(output, "CisRada", self.kind)
-        add_element(output, "Popis", self.get_description())
+        description = self.get_description()
+        if self.correction_of:
+            description = f"Correction of invoice {self.correction_of.number}"
+            add_element(output, "Poznamka", self.correction_note)
+        add_element(output, "Popis", description)
         add_element(output, "Vystaveno", self.issue_date.isoformat())
         add_element(output, "DatUcPr", self.tax_date.isoformat())
         add_element(output, "PlnenoDPH", self.tax_date.isoformat())
@@ -947,14 +1040,14 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         add_element(prijemce, "FaktNazev", self.customer.name)
         if self.customer.tax and self.customer.country == "CZ":
             add_element(prijemce, "ICO", self.customer.tax)
-        if self.customer.vat:
-            add_element(prijemce, "DIC", self.customer.vat.replace(" ", ""))
+        if buyer_vat := self.customer.vat:
+            add_element(prijemce, "DIC", buyer_vat.replace(" ", ""))
         adresa = add_element(prijemce, "FaktAdresa")
         add_element(adresa, "Ulice", self.customer.address)
         add_element(adresa, "Misto", self.customer.city)
         add_element(adresa, "PSC", self.customer.postcode)
         add_element(adresa, "Stat", self.customer.country.code)
-        if self.customer.vat:
+        if buyer_vat:
             add_element(prijemce, "PlatceDPH", "1")
             add_element(prijemce, "FyzOsoba", "0")
 
@@ -998,7 +1091,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             email=self.customer.email or None,
         )
 
-    def _get_en_16931_tax_details(self) -> _EN16931TaxDetails:
+    def get_tax_details(self) -> _EN16931TaxDetails:
         if self.vat_rate:
             return _EN16931TaxDetails(
                 category=TaxCategoryCode.STANDARD_RATE,
@@ -1035,7 +1128,9 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         )
 
     def get_en_16931_xml(self) -> EN16931Invoice:  # ruff:ignore[too-many-locals]
-        if self.kind == InvoiceKind.INVOICE:
+        if self.correction_of_id:
+            type_code = DocumentTypeCode.CREDIT_NOTE
+        elif self.kind == InvoiceKind.INVOICE:
             type_code = DocumentTypeCode.INVOICE
         elif self.kind == InvoiceKind.PROFORMA:
             type_code = DocumentTypeCode.PRO_FORMA_INVOICE
@@ -1051,15 +1146,23 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         tax_amount = Money(tax_value, self.get_currency_display())
         tax_basis_amount = Money(self.total_amount_no_vat, self.get_currency_display())
 
-        tax_details = self._get_en_16931_tax_details()
+        tax_details = self.get_tax_details()
         tax = Tax(
             category_code=tax_details.category,
-            calculated_amount=tax_amount,
+            calculated_amount=(tax_basis_amount * tax_details.rate / Decimal(100))
+            if self.correction_of_id and tax_details.rate is not None
+            else tax_amount,
             basis_amount=tax_basis_amount,
             rate_percent=tax_details.rate,
             exemption_reason=tax_details.exemption_reason,
             tax_point_date=self.tax_date if self.is_final else None,
         )
+
+        if self.correction_of_id:
+            # Allocate the original VAT cumulatively across partial corrections.
+            # pycheval's constructor requires exact per-document rounding, while
+            # EN 16931 tolerates the historical/allocation rounding difference.
+            tax.calculated_amount = tax_amount
 
         line_items: list[EN16931LineItem] = []
         allowances: list[DocumentAllowance] = []
@@ -1161,12 +1264,25 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             ]
             payment_terms = PaymentTerms(due_date=self.due_date)
 
+        legal_id = self.customer.tax
         return EN16931Invoice(  # pylint: disable=E1123
+            preceding_invoices=[
+                (self.correction_of.number, self.correction_of.issue_date)
+            ]
+            if self.correction_of
+            else [],
+            notes=[IncludedNote(self.correction_note)] if self.correction_of_id else [],
+            rounding_amount=Money(self.correction_rounding, self.get_currency_display())
+            if self.correction_rounding
+            else None,
             invoice_number=self.number,
             allowances=allowances,
             invoice_date=self.issue_date,
             currency_code=self.get_currency_display(),
-            grand_total_amount=total_amount,
+            grand_total_amount=Money(
+                self.total_amount - self.correction_rounding,
+                self.get_currency_display(),
+            ),
             tax_basis_total_amount=tax_basis_amount,
             tax_total_amounts=[tax_amount] if self.vat_rate else [],
             due_payable_amount=due_payable_amount,
@@ -1213,6 +1329,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                     if tax_details.category == TaxCategoryCode.OUT_OF_SCOPE
                     else self.customer.vat or None
                 ),
+                legal_id=(legal_id, None) if legal_id else None,
                 email=self.customer.email or None,
                 contact=self.get_buyer_trade_contact(),
             ),
@@ -1349,6 +1466,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         return (
             self.kind in {InvoiceKind.INVOICE, *state}
             and not self.prepaid
+            and not self.correction_of_id
+            and not self.is_credited
             and not self.is_paid
         )
 
@@ -1366,6 +1485,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
         return None
 
     def get_upcoming_payment_url(self) -> str | None:
+        if self.correction_of_id or self.is_credited or self.uncollectible:
+            return None
         # ruff:ignore[import-outside-top-level]
         from weblate_web.payments.models import Payment
 

@@ -1039,6 +1039,26 @@ class BackendTest(BackendBaseTestCase):
     @override_settings(
         FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )
+    def test_fully_credited_invoice_bank_transfer_needs_reconciliation(self) -> None:
+        invoice = self.create_invoice()
+        invoice.credited_amount = invoice.total_amount
+        invoice.fully_credited = True
+        invoice.save(update_fields=["credited_amount", "fully_credited"])
+        self.mock_fio_payment(invoice)
+        FioBank.fetch_payments()
+        self.assertFalse(invoice.paid_payment_set.exists())
+        self.assertFalse(invoice.draft_payment_set.exists())
+        followup = invoice.customer.followups.get(
+            type=CustomerFollowUp.Type.DUPLICATE_PAYMENT
+        )
+        self.assertEqual(
+            Decimal(followup.details["excess_amount"]), invoice.total_amount
+        )
+
+    @responses.activate
+    @override_settings(
+        FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
+    )
     def test_invoice_in_text(self) -> None:
         # Czech bank notation
         self.test_invoice_bank(format_string="PROFORMA{}PAYMENT")
