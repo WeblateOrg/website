@@ -27,7 +27,7 @@ from django.core.signing import dumps
 from django.db import IntegrityError, transaction
 from django.db.models.deletion import RestrictedError
 from django.template.loader import render_to_string
-from django.test import RequestFactory, SimpleTestCase, TestCase
+from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -3186,11 +3186,44 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
     @override_settings(PAYMENT_SECRET="")
     def test_empty_payment_secret_does_not_disable_csrf(self) -> None:
         request = RequestFactory().post("/", {"secret": ""})
+        request.resolver_match = cast("Any", SimpleNamespace(view_name="payment"))
         middleware = CSRFSecurityMiddleware(lambda _request: None)
 
-        middleware(request)
+        middleware.process_view(request, None, (), {})
 
         self.assertFalse(hasattr(request, "_dont_enforce_csrf_checks"))
+
+    def test_payment_secret_csrf_scope(self) -> None:
+        user = self.create_user()
+        with override("en"):
+            payment, payment_url, _customer_url = create_payment(user=user)
+        csrf_client = Client(enforce_csrf_checks=True)
+
+        response = csrf_client.post(payment_url, {"method": "pay"})
+        self.assertEqual(response.status_code, 403)
+
+        response = csrf_client.post(
+            payment_url, {"method": "pay", "secret": "incorrect"}
+        )
+        self.assertEqual(response.status_code, 403)
+
+        response = csrf_client.post(
+            payment_url, {"method": "pay", "secret": settings.PAYMENT_SECRET}
+        )
+        self.assertEqual(response.status_code, 302)
+
+        customer = payment.customer
+        service = Service.objects.create(customer=customer)
+        original_service_secret = service.secret
+        csrf_client.force_login(user)
+        with override("en"):
+            response = csrf_client.post(
+                reverse("service-token", kwargs={"pk": service.pk}),
+                {"secret": settings.PAYMENT_SECRET},
+            )
+        self.assertEqual(response.status_code, 403)
+        service.refresh_from_db()
+        self.assertEqual(service.secret, original_service_secret)
 
     def test_hosted(self) -> None:
         Package.objects.create(name="community", verbose="Community support", price=0)

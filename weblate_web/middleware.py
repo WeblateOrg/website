@@ -18,6 +18,7 @@
 #
 
 from base64 import b64encode
+from hmac import compare_digest
 from secrets import token_bytes
 
 from django.conf import settings
@@ -127,21 +128,23 @@ class SecurityMiddleware:
 
 
 class CSRFSecurityMiddleware:
-    """Middleware that disables CSRF when payment secret is provided."""
+    """Middleware that disables CSRF for automated payment processing."""
 
     def __init__(self, get_response=None) -> None:
         self.get_response = get_response
 
     def __call__(self, request):
-        # Skip CSRF validation for requests with valid secret
-        # This is used to process automatic payments
-        if (
-            settings.PAYMENT_SECRET
-            and request.POST.get("secret") == settings.PAYMENT_SECRET
-        ):
-            request._dont_enforce_csrf_checks = True
-
         return self.get_response(request)
+
+    def process_view(self, request, _view_func, _view_args, _view_kwargs) -> None:
+        """Skip CSRF validation for automatic payment requests."""
+        if (
+            request.method == "POST"
+            and request.resolver_match.view_name == "payment"
+            and settings.PAYMENT_SECRET
+            and compare_digest(request.POST.get("secret", ""), settings.PAYMENT_SECRET)
+        ):
+            request._dont_enforce_csrf_checks = True  # pylint: disable=protected-access
 
 
 class LocalizedDocumentationMiddleware:
