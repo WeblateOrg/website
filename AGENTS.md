@@ -29,7 +29,9 @@ This file captures agent-specific guidance for working in the Weblate website co
 - Write commit messages using the Conventional Commits format
   `<type>(<optional scope>): <description>`. Common types include `feat`,
   `fix`, `docs`, `refactor`, `test`, `ci`, and `chore`. Example:
-  `fix(translations): handle empty component slug`.
+  `fix(translations): handle empty component slug`. Include a concise commit
+  body describing the motivation. When the commit resolves an issue, add a
+  `Fixes #123` clause.
 - Include the GPL-3.0-or-later license header in new Python files.
 
 ## Testing and linting instructions
