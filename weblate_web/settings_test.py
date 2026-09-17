@@ -19,4 +19,11 @@
 
 from weblate_web.settings import *  # ruff: ignore[undefined-local-with-import-star]  # pylint: disable=wildcard-import,unused-wildcard-import
 
+# Keep test fixtures and cache.clear() away from the running website's cache.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    },
+}
+
 PAYMENT_SECRET = "secret used for tests only"  # ruff:ignore[hardcoded-password-string]

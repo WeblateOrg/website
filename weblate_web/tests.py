@@ -35,6 +35,7 @@ from django.utils.translation import override
 from PIL import Image as PILImage
 from requests.exceptions import HTTPError
 from wlc import WeblateException
+from wlc.models import Statistics
 
 from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
@@ -6488,46 +6489,33 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         self.assertEqual(len(result), 1)
 
     def test_get_changes(self) -> None:
-        mock_stat_data = {
+        mock_stat_data: dict[str, Any] = {
             "last_change": "2024-06-01T00:00:00Z",
             "name": "Project A",
+            "recent_changes": 12,
+            "url": "https://hosted.weblate.org/engage/project-a/",
             "translated_percent": 50.0,
         }
-        mock_stat_old_data = {
+        mock_stat_old_data: dict[str, Any] = {
             "last_change": "2024-01-01T00:00:00Z",
             "name": "Project B",
+            "recent_changes": 5,
+            "url": "https://hosted.weblate.org/engage/project-b/",
             "translated_percent": 30.0,
         }
-        mock_stat_none_data = {
+        mock_stat_none_data: dict[str, Any] = {
             "last_change": None,
             "name": "Project C",
+            "recent_changes": 0,
+            "url": "https://hosted.weblate.org/engage/project-c/",
             "translated_percent": 10.0,
         }
         with patch("weblate_web.remote.Weblate") as mock_weblate:
-            mock_stat_a = type(
-                "MockStat",
-                (),
-                {
-                    "__getitem__": lambda _self, key: mock_stat_data[key],
-                    "get_data": lambda _self: mock_stat_data,
-                },
-            )()
-            mock_stat_old = type(
-                "MockStat",
-                (),
-                {
-                    "__getitem__": lambda _self, key: mock_stat_old_data[key],
-                    "get_data": lambda _self: mock_stat_old_data,
-                },
-            )()
-            mock_stat_none = type(
-                "MockStat",
-                (),
-                {
-                    "__getitem__": lambda _self, key: mock_stat_none_data[key],
-                    "get_data": lambda _self: mock_stat_none_data,
-                },
-            )()
+            mock_stat_a = Statistics(mock_weblate.return_value, **mock_stat_data)
+            mock_stat_old = Statistics(mock_weblate.return_value, **mock_stat_old_data)
+            mock_stat_none = Statistics(
+                mock_weblate.return_value, **mock_stat_none_data
+            )
             mock_project_a = type(
                 "MockProject", (), {"statistics": lambda _self: mock_stat_a}
             )()
@@ -6557,20 +6545,16 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         self.assertEqual(result, [])
 
     def test_get_changes_caching(self) -> None:
-        mock_stat_data = {
+        fake_remote()
+        mock_stat_data: dict[str, Any] = {
             "last_change": "2024-06-01T00:00:00Z",
             "name": "Project A",
+            "recent_changes": 12,
+            "url": "https://hosted.weblate.org/engage/project-a/",
             "translated_percent": 50.0,
         }
         with patch("weblate_web.remote.Weblate") as mock_weblate:
-            mock_stat = type(
-                "MockStat",
-                (),
-                {
-                    "__getitem__": lambda _self, key: mock_stat_data[key],
-                    "get_data": lambda _self: mock_stat_data,
-                },
-            )()
+            mock_stat = Statistics(mock_weblate.return_value, **mock_stat_data)
             mock_project = type(
                 "MockProject", (), {"statistics": lambda _self: mock_stat}
             )()
@@ -6583,6 +6567,12 @@ class BackgroundFetchTestCase(FakturaceTestCase):
             )
             result = get_changes(force=False)
             self.assertEqual(len(result), 1)
+
+        self.assertIsInstance(result[0]["last_change"], datetime)
+        self.assertEqual(result[0]["recent_changes"], 12)
+        response = self.client.get("/cs/")
+        self.assertContains(response, "Project A")
+        self.assertContains(response, "12 překladů")
 
     @patch("weblate_web.management.commands.background_fetch.get_release")
     @patch("weblate_web.management.commands.background_fetch.get_changes")
