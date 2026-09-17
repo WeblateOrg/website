@@ -95,6 +95,7 @@ from .saml import (
 from .templatetags.downloads import downloadlink, filesizeformat
 from .templatetags.prices import price_format
 from .templatetags.site_url import safe_site_url
+from .templatetags.timestamps import recently
 from .utils import FOSDEM_ORIGIN, HOSTED_ORIGIN, PAYMENTS_ORIGIN
 from .views import CustomerView, PostView, server_error
 
@@ -779,6 +780,23 @@ class ViewTestCase(PostTestCase):
         response = self.client.get("/en/")
         self.assertContains(response, "yearly")
 
+    def test_index_missing_timestamp(self) -> None:
+        changes = cache.get("wlweb-changes-list")
+        del changes[0]["last_change"]
+        cache.set("wlweb-changes-list", changes)
+
+        response = self.client.get("/en/")
+
+        for text in (
+            "2,401 translations",
+            "3,652 translations recently",
+            "2,864 translations today",
+            "7,080 translations yesterday",
+            "535 translations this week",
+            "3,633 translations this month",
+        ):
+            self.assertContains(response, text)
+
     def test_index_link_headers(self) -> None:
         response = self.client.get("/en/")
         links = response["Link"]
@@ -971,6 +989,11 @@ class ViewTestCase(PostTestCase):
 
 class UtilTestCase(TestCase):
     """Helper code testing."""
+
+    def test_recently_missing_timestamp(self) -> None:
+        for value in (None, ""):
+            with self.subTest(value=value):
+                self.assertEqual(recently(value), "")
 
     def test_format(self) -> None:
         self.assertEqual(filesizeformat(0), "0 bytes")

@@ -16,6 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+from __future__ import annotations
+
+from datetime import datetime
+
 from django.template import Library
 from django.utils import formats, timezone
 from django.utils.html import escape, format_html
@@ -25,7 +29,10 @@ register = Library()
 
 
 @register.filter
-def recently(value):
+def recently(value: datetime | str | None) -> str:
+    # Django resolves missing template variables to an empty string.
+    if not isinstance(value, datetime):
+        return ""
     now = timezone.now()
     delta = now - value
     if delta.days > 12:
@@ -36,9 +43,11 @@ def recently(value):
         return pgettext("123 translations ...", "yesterday")
     if delta.seconds > 10000:
         return pgettext("123 translations ...", "today")
-    if delta.seconds > 2000:
-        return pgettext("123 translations ...", "recently")
-    return pgettext("123 translations ...", "just now")
+    return (
+        pgettext("123 translations ...", "recently")
+        if delta.seconds > 2000
+        else pgettext("123 translations ...", "just now")
+    )
 
 
 @register.filter
