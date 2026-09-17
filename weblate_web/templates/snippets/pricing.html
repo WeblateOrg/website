@@ -2,13 +2,12 @@
 
 <section class="pricing">
   <div class="row">
-    <h2 class="section-title">
-      {% translate "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you" %}
-    </h2>
+    <h2 class="section-title">{% translate "Choose the hosting and support that fit your team" %}</h2>
+    <p class="service-intro">{% translate "Let us run Weblate for you, or get expert support for your own installation. When something breaks, get help from a real person on the Weblate team. Your hosting and support purchases help fund Weblate's continued development." %}</p>
     <div class="flex">
       <div class="box box-tabs">
         <h3>{% translate "Premium Cloud" %}</h3>
-        <p>{% translate "for ease and comfort" %}</p>
+        <p>{% translate "managed hosting for your team" %}</p>
         <ul class="pricing-tabs">
           {% for package in hosting_packages %}
             <li {% if forloop.first %}class="current"{% endif %}
@@ -82,7 +81,7 @@
         <div class="box-price">
           {% url 'support' as url %}<strong>{% translate "Gratis" %}</strong>
           <br />
-          {% blocktranslate %}with paid <a href="{{ url }}">support</a>{% endblocktranslate %}
+          {% blocktranslate %}with optional paid <a href="{{ url }}">support</a>{% endblocktranslate %}
         </div>
       </div>
       <div class="box">
@@ -115,6 +114,6 @@
       </div>
     </div>
     <div class="clear"></div>
-    <a href="{% url 'hosting' %}" class="button">{% translate "Compare all plans" %}</a>
+    <a href="{% url 'hosting' %}" class="button">{% translate "Compare hosting and support" %}</a>
   </div>
 </section>

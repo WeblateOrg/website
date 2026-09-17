@@ -8,6 +8,7 @@ Tests cover:
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
@@ -102,3 +103,34 @@ class TestWebsiteNavigation:
 
         # Verify no server error is displayed
         assert not page.locator("text=Server Error").is_visible()
+
+
+@pytest.mark.parametrize("locale", ["en", "ar"])
+@pytest.mark.parametrize("page_name", ["", "features/"])
+@pytest.mark.parametrize("width", [1440, 390])
+def test_localization_pages(page: Page, live_server, locale, page_name, width):
+    """Check the responsive customer journey and capture stable visual evidence."""
+    page.set_viewport_size({"width": width, "height": 900})
+    response = page.goto(f"{live_server.url}/{locale}/{page_name}")
+    assert response is not None and response.ok
+    page.wait_for_load_state("networkidle")
+    page.evaluate("document.fonts.ready")
+    assert page.locator("h1").count() == 1
+    assert page.locator("html").get_attribute("dir") == (
+        "rtl" if locale == "ar" else "ltr"
+    )
+    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    screenshot_dir = Path("test-results")
+    screenshot_dir.mkdir(exist_ok=True)
+    name = "features" if page_name else "home"
+    page.screenshot(
+        path=str(screenshot_dir / f"marketing-{name}-{locale}-{width}.png"),
+        full_page=True,
+    )
+    if not page_name:
+        page.locator(".features .f-box a").first.click()
+        page.wait_for_url(f"**/{locale}/features/#development")
+        assert page.locator("#development").is_visible()
+    services = page.locator(f'section a.button[href="/{locale}/hosting/"]').first
+    services.click()
+    page.wait_for_url(f"**/{locale}/hosting/")
