@@ -5,9 +5,5 @@ set -eu
 WEBLATE=~/weblate/weblate/docs/screenshots/
 SCREENSHOTS=weblate_web/static/img/
 
-# Crop complete cards from the current 1200px-wide documentation screenshots.
-# Reset the canvas after cropping so the PNGs have no source-image offsets.
-convert "$WEBLATE/screenshot-context.webp" "$SCREENSHOTS/BigScreenshot.png"
-convert "$WEBLATE/checks.webp" -crop 274x436+911+298 +repage "$SCREENSHOTS/dialog-checks.png"
-convert "$WEBLATE/source-information.webp" -crop 274x370+911+698 +repage "$SCREENSHOTS/source-info.png"
-convert "$WEBLATE/checks.webp" -crop 872x439+15+1051 +repage "$SCREENSHOTS/comment-new.png"
+# Keep the full translation quality screenshot, removing only its 108px footer.
+convert "$WEBLATE/translation-quality.webp" -gravity South -chop 0x108 +repage "$SCREENSHOTS/BigScreenshot.png"

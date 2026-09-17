@@ -1,29 +1,29 @@
 {% load i18n static %}
 
 <div class="f-box">
-  <a href="https://docs.weblate.org/en/latest/admin/continuous.html#continuous-translation">
+  <a href="{% url 'features' %}#development">
     <div class="icon">
-      <img src="{% static "img/icon-localization.svg" %}" />
+      <img src="{% static 'img/icon-localization.svg' %}" alt="" />
     </div>
-    <h3>{% translate "Continuous Localization" %}</h3>
-    <p>{% translate "Automated localization workflow follows your project development closely." %}</p>
+    <h3>{% translate "Keep pace with development" %}</h3>
+    <p>{% translate "Bring new strings to translators and translations back to your repository. Keep localization evolving alongside your code." %}</p>
   </a>
 </div>
 <div class="f-box">
-  <a href="https://docs.weblate.org/en/latest/user/checks.html">
+  <a href="{% url 'features' %}#quality">
     <div class="icon">
-      <img src="{% static "img/icon-checks.svg" %}" />
+      <img src="{% static 'img/icon-checks.svg' %}" alt="" />
     </div>
-    <h3>{% translate "Quality Checks" %}</h3>
-    <p>{% translate "Customizable quality checks helps improve translation quality." %}</p>
+    <h3>{% translate "Help people get the meaning right" %}</h3>
+    <p>{% translate "Give translators context, shared terminology, and quality checks so your users get a clearer, more consistent experience." %}</p>
   </a>
 </div>
 <div class="f-box">
-  <a href="https://docs.weblate.org/en/latest/faq.html#how-does-weblate-credit-translators">
+  <a href="{% url 'features' %}#workflows">
     <div class="icon">
-      <img src="{% static "img/icon-attribution.svg" %}" />
+      <img src="{% static 'img/icon-languages.svg' %}" alt="" />
     </div>
-    <h3>{% translate "Attribution" %}</h3>
-    <p>{% translate "All translators are properly credited in the version control system." %}</p>
+    <h3>{% translate "Translate with or without AI" %}</h3>
+    <p>{% translate "Work exclusively with people, or include AI and machine translation where they help. Choose when people edit, accept, and approve the results." %}</p>
   </a>
 </div>

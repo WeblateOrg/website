@@ -1,29 +1,29 @@
 {% load i18n static %}
 
 <div class="f-box">
-  <a href="{% url 'hosting' %}">
+  <a href="{% url 'features' %}#privacy">
     <div class="icon">
-      <img src="{% static "img/icon-hosting.svg" %}" />
+      <img src="{% static 'img/icon-control.svg' %}" alt="" />
     </div>
-    <h3>{% translate "Hosting Plans" %}</h3>
-    <p>{% translate "Use Weblate as a service starting at 19 EUR." %}</p>
+    <h3>{% translate "Choose how your content is handled" %}</h3>
+    <p>{% translate "Decide where Weblate runs, who has access, and which external translation services, if any, your team uses." %}</p>
   </a>
 </div>
 <div class="f-box">
-  <a href="{% url 'download' %}">
+  <a href="{% url 'features' %}#collaboration">
     <div class="icon">
-      <img src="{% static "img/icon-cloud.svg" %}" />
+      <img src="{% static 'img/icon-attribution.svg' %}" alt="" />
     </div>
-    <h3>{% translate "Cloud Ready" %}</h3>
-    <p>{% translate "Comes with appliances, ready to deploy in your cloud." %}</p>
+    <h3>{% translate "Bring everyone into the conversation" %}</h3>
+    <p>{% translate "Give colleagues and community contributors a shared place to translate, discuss wording, and review each other’s work." %}</p>
   </a>
 </div>
 <div class="f-box">
-  <a href="https://github.com/WeblateOrg/weblate">
+  <a href="{% url 'features' %}#open-source">
     <div class="icon">
-      <img src="{% static "img/icon-software.svg" %}" />
+      <img src="{% static 'img/icon-software.svg' %}" alt="" />
     </div>
-    <h3>{% translate "Libre Software" %}</h3>
-    <p>{% translate "Copylefted; use, see, modify and share at will, and with everyone." %}</p>
+    <h3>{% translate "Build on software you can trust" %}</h3>
+    <p>{% translate "Use, inspect, modify, and share copylefted libre software. Purchase hosting or support to help sustain its development." %}</p>
   </a>
 </div>

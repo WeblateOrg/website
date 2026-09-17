@@ -4,139 +4,133 @@
 
 {% block body_class %}page pfeatures light{% endblock %}
 
+{% block title %}
+  {% translate "Weblate features — quality translations, your control" %}
+{% endblock title %}
+
 {% block content %}
   <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title min-m">
-          {% block title %}
-            {% translate "Weblate features" %}
-          {% endblock title %}
-
-        </h1>
+        <h1 class="section-title min-m">{% translate "Bring your project to more people" %}</h1>
         <div class="page-desc">
           <p>
             {% block description %}
-              {% blocktranslate %}As a feature rich computer aided translation tool, Weblate saves both developers and translators time. Make your users happier!{% endblocktranslate %}
+              {% translate "Give people a great experience in their own language. Weblate brings your team, community, and development workflow together to deliver quality translations—with or without AI." %}
             {% endblock description %}
-
-            {% blocktranslate %}Browse the <a href="https://docs.weblate.org/">documentation</a> to learn more.{% endblocktranslate %}
           </p>
+          <p>{% translate "Open source and privacy-respecting, with the freedom to choose how you translate and where you run it." %}</p>
+          <a href="{% url 'hosting' %}" class="button inline">{% translate "Compare hosting and support" %}</a>
+          <a href="https://hosted.weblate.org/trial/" class="button inline border rev">{% translate "Try Weblate" %}</a>
         </div>
-        <div class="wrap features">{% include "snippets/features-1.html" %}</div>
       </div>
     </div>
   </section>
-  <section class="interface">
+  <section class="content feature-story" id="development">
     <div class="row">
-      <div class="inter-title">{% translate "Easy to use interface" %}</div>
-      <img src="{% static "img/BigScreenshot.png" %}"
-           class="photo"
-           alt="{% translate "Weblate screenshot" %}" />
-      <div class="inter-checks">
-        <div class="title">{% translate "Customizable quality checks" %}</div>
-        <img src="{% static "img/dialog-checks.png" %}"
-             alt="{% translate "Weblate screenshot" %}" />
-      </div>
-      <div class="inter-context">
-        <div class="title">{% translate "Detailed context" %}</div>
-        <p>
-          {% translate "Translators are provided detailed translation context, from translation files, or data enriched within Weblate." %}
-        </p>
-        <img src="{% static "img/source-info.png" %}"
-             alt="{% translate "Weblate screenshot" %}" />
-      </div>
-      <div class="inter-fluent">
-        <div class="title">{% translate "Fluent communication" %}</div>
-        <p>{% translate "All translations are tracked and can be commented." %}</p>
-        <img src="{% static "img/comment-new.png" %}"
-             alt="{% translate "Weblate screenshot" %}" />
-      </div>
+      <h2>{% translate "Keep translations in step with development" %}</h2>
+      <p>{% translate "Connect your repository and let new strings reach translators as your project evolves. Weblate brings translations back into version control, so developers and translators can work together without passing files back and forth." %}</p>
+      <p>{% translate "Work with your existing branches and code hosting service. Translation changes are tracked alongside your code, with credit for the people who contribute." %}</p>
+      <a href="https://docs.weblate.org/en/latest/admin/continuous.html"
+         class="button inline border rev">{% translate "Explore continuous localization" %}</a>
     </div>
   </section>
-  <section class="content no-mar">
+  <section class="content feature-story" id="quality">
     <div class="row">
-      <div class="wrap features">
-        {% include "snippets/features-2.html" %}
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/access.html">
-            <div class="icon">
-              <img src="{% static "img/icon-control.svg" %}" />
-            </div>
-            <h3>{% translate "Access Control" %}</h3>
-            <p>{% translate "Fine-tune access rights to fit your environment." %}</p>
-          </a>
+      <h2>{% translate "Give every translation the context it needs" %}</h2>
+      <p>{% translate "Help translators understand what your users will see. Screenshots, nearby strings, and source references make meaning clearer. Shared glossaries keep terminology consistent, while translation memory helps your team reuse previous work." %}</p>
+      <p>{% translate "Catch problems with customizable quality checks, discuss unclear wording, and review contributions before considering them finished. Your team can improve the source text as well as its translations." %}</p>
+      <figure>
+        <img src="{% static 'img/BigScreenshot.png' %}"
+             alt="{% translate 'Weblate translation editor showing a French translation, a missing-placeholder warning, glossary terminology, and a screenshot of the source text in context' %}"
+             loading="lazy" />
+        <figcaption>{% translate "Give your translators the tools to make informed choices." %}</figcaption>
+      </figure>
+      <a href="https://docs.weblate.org/en/latest/user/checks.html"
+         class="button inline border rev">{% translate "Explore translation quality checks" %}</a>
+    </div>
+  </section>
+  <section class="content feature-story" id="workflows">
+    <div class="row">
+      <h2>{% translate "Choose how you translate—with or without AI" %}</h2>
+      <p>{% translate "Translate entirely with people, or bring in machine translation and AI where they help. Your team chooses the tools, the review process, and what reaches your repository." %}</p>
+      <div class="workflow-options">
+        <div>
+          <h3>{% translate "Translate without AI" %}</h3>
+          <p>{% translate "Let people write and review translations with context, glossaries, translation memory, and quality checks. None of these require an AI or machine translation service." %}</p>
         </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/user/profile.html#subscriptions">
-            <div class="icon">
-              <img src="{% static "img/icon-notifications.svg" %}" />
-            </div>
-            <h3>{% translate "Smart Notifications" %}</h3>
-            <p>{% translate "Translators can be notified of new strings to translate or other events." %}</p>
-          </a>
+        <div>
+          <h3>{% translate "Assist your translators" %}</h3>
+          <p>{% translate "Offer optional machine translation or large language model (LLM) results in the editor. Translators choose what to use, edit it, and decide what to save." %}</p>
         </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/api.html">
-            <div class="icon">
-              <img src="{% static "img/icon-api.svg" %}" />
-            </div>
-            <h3>{% translate "Integration API" %}</h3>
-            <p>{% translate "Integrate Weblate with third-party services." %}</p>
-          </a>
+        <div>
+          <h3>{% translate "Start with machine translations" %}</h3>
+          <p>{% translate "Generate translations for people to improve, or mark them as unfinished drafts. Choose whether drafts can reach your repository while editing is still in progress." %}</p>
         </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/formats.html">
-            <div class="icon">
-              <img src="{% static "img/icon-formats.svg" %}" />
-            </div>
-            <h3>{% translate "Multiple File Formats" %}</h3>
-            <p>{% translate "Use any common file localization format, like gettext, JSON, XLIFF or resource strings, etc." %}</p>
-          </a>
+        <div>
+          <h3>{% translate "Accept suggestions before use" %}</h3>
+          <p>{% translate "Keep generated text as suggestions for people to check. With automatic acceptance disabled, suggestions only become translations when a person accepts or edits them." %}</p>
         </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/faq.html#how-do-i-translate-several-branches-at-once">
-            <div class="icon">
-              <img src="{% static "img/icon-branches.svg" %}" />
-            </div>
-            <h3>{% translate "Branch Support" %}</h3>
-            <p>{% translate "Handle different translation versions by pushing them automatically to different branches." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/translating.html#additional">
-            <div class="icon">
-              <img src="{% static "img/icon-context.svg" %}" />
-            </div>
-            <h3>{% translate "Translation Context" %}</h3>
-            <p>
-              {% translate "Description, nearby strings, images, related source code and glossary entries—for every string." %}
-            </p>
-          </a>
+        <div>
+          <h3>{% translate "Approve before committing" %}</h3>
+          <p>{% translate "Combine translation review with an approved-only commit policy. People can edit generated translations in Weblate, while only reviewer-approved translations reach your repository." %}</p>
         </div>
       </div>
+      <a href="https://docs.weblate.org/en/latest/workflows.html#machine-translation-and-llm-workflows"
+         class="button inline border rev">{% translate "Explore AI translation workflows" %}</a>
+    </div>
+  </section>
+  <section class="content feature-story" id="privacy">
+    <div class="row">
+      <h2>{% translate "Choose how your content is handled" %}</h2>
+      <p>{% translate "Use managed hosting or run Weblate on your own infrastructure. Set access permissions to decide who can see, translate, and review your content." %}</p>
+      <p>{% translate "Choose which external translation services to enable, or work without them. When you use an external service, it can receive source strings, translations, and related context to generate results. Choose services that fit your requirements for handling that content." %}</p>
+      <a href="{% url 'hosting' %}" class="button inline border rev">{% translate "Find the right hosting option" %}</a>
+    </div>
+  </section>
+  <section class="content feature-story" id="collaboration">
+    <div class="row">
+      <h2>{% translate "Bring your team and community together" %}</h2>
+      <p>{% translate "Give your colleagues, professional translators, and community contributors a shared place to work. Assign roles, discuss wording where it matters, and recognize each person's contribution." %}</p>
+      <p>{% translate "Keep contributors informed with notifications and see where work is needed through progress and activity reports. Whether you coordinate a product team or welcome volunteers, everyone can help improve the result." %}</p>
+      <h3>{% translate "The everyday tools your localization needs" %}</h3>
+      <p>{% translate "Import and export translations, connect other tools through the API, and automate recurring tasks with add-ons. Manage languages, organize translation files, and keep your workflow moving as your project grows." %}</p>
+      <a href="https://docs.weblate.org/"
+         class="button inline border rev">{% translate "Explore the documentation" %}</a>
     </div>
   </section>
   <section class="formats">
     <div class="row">
+      <h2 class="section-title" id="formats">{% translate "Keep working with your existing formats" %}</h2>
+      <p class="format-intro">{% translate "Localize your app, website, documentation, and more without leaving the formats your project uses. Explore the supported formats below for details and format-specific capabilities." %}</p>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/resx.html">{% translate ".NET resource files (RESX, RESW)" %} <span lang="en" dir="ltr">.resx, .resw</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/android.html">{% translate "Android string resources" %} <span lang="en" dir="ltr">strings.xml</span></a>
       <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/apple.html">{% translate "Apple iOS strings" %} <span lang="en" dir="ltr">.strings</span></a>
-      <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/appstore.html">{% translate "App store metadata files" %} <span lang="en" dir="ltr">.txt</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/apple.html">{% translate "Apple iOS strings" %} <span lang="en" dir="ltr">.strings</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/arb.html">{% translate "ARB file" %} <span lang="en" dir="ltr">.arb</span></a>
       <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/asciidoc.html">{% translate "AsciiDoc files" %} <span lang="en" dir="ltr">.adoc</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/compose-multiplatform-resources.html">{% translate "Compose Multiplatform resources" %} <span lang="en" dir="ltr">.xml</span></a>
+      <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/csv.html">{% translate "CSV files" %} <span lang="en" dir="ltr">.csv</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/txt.html">{% translate "DokuWiki text files" %} <span lang="en" dir="ltr">.dw</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/dtd.html">{% translate "DTD files" %} <span lang="en" dir="ltr">.dtd</span></a>
       <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/excel.html">{% translate "Excel Open XML" %} <span lang="en" dir="ltr">.xslx</span></a>
+         href="https://docs.weblate.org/en/latest/formats/excel.html">{% translate "Excel Open XML" %} <span lang="en" dir="ltr">.xlsx</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/flatxml.html">{% translate "Flat XML files" %} <span lang="en" dir="ltr">.xml</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/fluent.html">{% translate "Fluent format" %} <span lang="en" dir="ltr">.ftl</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/formatjs.html">{% translate "Format.JS / React Intl" %} <span lang="en" dir="ltr">.json</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/gettext.html">{% translate "GNU gettext" %} <span lang="en" dir="ltr">.po, .pot, .mo</span></a>
       <a class="format-item"
@@ -145,6 +139,8 @@
          href="https://docs.weblate.org/en/latest/formats/gotext.html">{% translate "gotext JSON files" %} <span lang="en" dir="ltr">.json</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/gwt.html">{% translate "GWT properties" %} <span lang="en" dir="ltr">.properties</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/catkeys.html">{% translate "Haiku Catkeys" %} <span lang="en" dir="ltr">.catkeys</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/html.html">{% translate "HTML files" %} <span lang="en" dir="ltr">.html</span></a>
       <a class="format-item"
@@ -158,21 +154,25 @@
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/java.html">{% translate "Java properties" %} <span lang="en" dir="ltr">.properties</span></a>
       <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/resjson.html">{% translate "JavaScript resource files" %} <span lang="en" dir="ltr">.resjson</span></a>
+      <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/joomla.html">{% translate "Joomla translations" %} <span lang="en" dir="ltr">.ini</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/json.html">{% translate "JSON files" %} <span lang="en" dir="ltr">.json</span></a>
-      <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/json.html">{% translate "React Intl" %} <span lang="en" dir="ltr">.json</span></a>
-      <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/json.html">{% translate "Vue I18n" %} <span lang="en" dir="ltr">.json</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/laravel.html">{% translate "Laravel PHP strings" %} <span lang="en" dir="ltr">.php</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/markdown.html">{% translate "Markdown files" %} <span lang="en" dir="ltr">.md</span></a>
       <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/mi18n.html">{% translate "mi18n lang files" %} <span lang="en" dir="ltr">.lang</span></a>
+         href="https://docs.weblate.org/en/latest/formats/mdx.html">{% translate "MDX files" %} <span lang="en" dir="ltr">.mdx</span></a>
       <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/moko.html">{% translate "Mobile Kotlin resources" %} <span lang="en" dir="ltr">.xml</span></a>
+         href="https://docs.weblate.org/en/latest/formats/txt.html">{% translate "MediaWiki text files" %} <span lang="en" dir="ltr">.mw</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/mi18n.html">{% translate "@draggable/i18n lang files" %} <span lang="en" dir="ltr">.lang</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/moko-resources.html">{% translate "Mobile Kotlin resources" %} <span lang="en" dir="ltr">.xml</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/nextcloud-json.html">{% translate "Nextcloud JSON" %} <span lang="en" dir="ltr">.json</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/odf.html">{% translate "OpenDocument Format" %} <span lang="en" dir="ltr">.odt, .ods, .odp</span></a>
       <a class="format-item"
@@ -182,223 +182,45 @@
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/resourcedict.html">{% translate "ResourceDictionary files" %} <span lang="en" dir="ltr">.xaml</span></a>
       <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/resx.html">{% translate ".NET resource files (RESX, RESW)" %} <span lang="en" dir="ltr">.resx, .resw</span></a>
-      <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/ruby.html">{% translate "Ruby YAML files" %} <span lang="en" dir="ltr">.yaml</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/stringsdict.html">{% translate "Stringsdict format" %} <span lang="en" dir="ltr">.stringsdict</span></a>
       <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/subtitles.html">{% translate "Subtitle files" %} <span lang="en" dir="ltr">.srt</span></a>
+         href="https://docs.weblate.org/en/latest/formats/subtitles.html">{% translate "Subtitle files" %} <span lang="en" dir="ltr">.srt, .sub, .ass, .ssa</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/tbx.html">{% translate "TermBase eXchange format" %} <span lang="en" dir="ltr">.tbx</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/txt.html">{% translate "Text files" %} <span lang="en" dir="ltr">.txt</span></a>
       <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/toml.html">{% translate "TOML and go-i18n TOML" %} <span lang="en" dir="ltr">.toml</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/json.html">{% translate "Vue I18n" %} <span lang="en" dir="ltr">.json</span></a>
+      <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/webextension.html">{% translate "WebExtension JSON" %} <span lang="en" dir="ltr">.json</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/winrc.html">{% translate "Windows RC files" %} <span lang="en" dir="ltr">.rc</span></a>
       <a class="format-item"
-         href="https://docs.weblate.org/en/latest/formats/xliff.html">{% translate "XLIFF" %} <span lang="en" dir="ltr">.xliff</span></a>
+         href="https://docs.weblate.org/en/latest/formats/wxl.html">{% translate "WiX localization files" %} <span lang="en" dir="ltr">.wxl</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/xliff.html">{% translate "XLIFF 1.1 and 1.2" %} <span lang="en" dir="ltr">.xliff</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/xliff2.html">{% translate "XLIFF 2.0" %} <span lang="en" dir="ltr">.xliff</span></a>
+      <a class="format-item"
+         href="https://docs.weblate.org/en/latest/formats/xwiki.html">{% translate "XWiki formats" %} <span lang="en" dir="ltr">.properties, .xml</span></a>
       <a class="format-item"
          href="https://docs.weblate.org/en/latest/formats/yaml.html">{% translate "YAML files" %} <span lang="en" dir="ltr">.yaml</span></a>
-
+      <p class="format-intro">{% blocktranslate with url="https://docs.weblate.org/en/latest/formats.html" %}See the <a href="{{ url }}">format documentation</a> for supported variants and limitations.{% endblocktranslate %}</p>
     </div>
   </section>
-  <section class="content no-mar">
+  <section class="content feature-story" id="open-source">
     <div class="row">
-      <div class="wrap features">
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/user/translating.html#glossary">
-            <div class="icon">
-              <img src="{% static "img/icon-glossary.svg" %}" />
-            </div>
-            <h3>{% translate "Glossaries" %}</h3>
-            <p>{% translate "Define frequently used terminology for consistency." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/user/translating.html#user-comments">
-            <div class="icon">
-              <img src="{% static "img/icon-feedback.svg" %}" />
-            </div>
-            <h3>{% translate "Feedback Acquisition" %}</h3>
-            <p>{% translate "Use Weblate to acquire feedback on source strings to improve them." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/user/files.html">
-            <div class="icon">
-              <img src="{% static "img/icon-export.svg" %}" />
-            </div>
-            <h3>{% translate "Export and Import" %}</h3>
-            <p>{% translate "Translations can be downloaded for offline translation and merged back." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/contributing/about.html#project-goals">
-            <div class="icon">
-              <img src="{% static "img/icon-integrated.svg" %}" />
-            </div>
-            <h3>{% translate "Fully Integrated" %}</h3>
-            <p>{% translate "Translations are managed within the same version control system as your code." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/">
-            <div class="icon">
-              <img src="{% static "img/icon-documentation.svg" %}" />
-            </div>
-            <h3>{% translate "Documentation" %}</h3>
-            <p>{% translate "Comprehensive documentation covering both setup and use." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/workflows.html">
-            <div class="icon">
-              <img src="{% static "img/icon-reviews.svg" %}" />
-            </div>
-            <h3>{% translate "Easy Reviews" %}</h3>
-            <p>{% translate "Several options for translators to review contributions made by peers." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/languages.html">
-            <div class="icon">
-              <img src="{% static "img/icon-languages.svg" %}" />
-            </div>
-            <h3>{% translate "Language support" %}</h3>
-            <p>{% translate "Support for over 500 languages out of the box. Others can be added too." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/devel/share.html">
-            <div class="icon">
-              <img src="{% static "img/icon-promotion.svg" %}" />
-            </div>
-            <h3>{% translate "Promotion" %}</h3>
-            <p>{% translate "Built-in features to attract a wider audience for your translation project." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/devel/reporting.html">
-            <div class="icon">
-              <img src="{% static "img/icon-reporting.svg" %}" />
-            </div>
-            <h3>{% translate "Reporting" %}</h3>
-            <p>{% translate "Reports are generated to provide info on project activity." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/vcs.html">
-            <div class="icon">
-              <img src="{% static "img/icon-versioncontrol.svg" %}" />
-            </div>
-            <h3>{% translate "Version Control" %}</h3>
-            <p>{% translate "Talks directly with your version control system, currently Git and Mercurial are supported." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/vcs.html">
-            <div class="icon">
-              <img src="{% static "img/icon-collaboration.svg" %}" />
-            </div>
-            <h3>{% translate "Collaboration Sites" %}</h3>
-            <p>
-              {% translate "Native support for software development sites such as GitLab, GitHub, Pagure, Azure, Gitea, or Bitbucket." %}
-            </p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://hosted.weblate.org/">
-            <div class="icon">
-              <img src="{% static "img/icon-responsiveui.svg" %}" />
-            </div>
-            <h3>{% translate "Responsive UI" %}</h3>
-            <p>{% translate "User interface that works nicely on desktop, tablets and phones in both light and dark mode." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/memory.html">
-            <div class="icon">
-              <img src="{% static "img/icon-memory.svg" %}" />
-            </div>
-            <h3>{% translate "Translation memory" %}</h3>
-            <p>{% translate "Reuse existing translations to save time and costs." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/addons.html">
-            <div class="icon">
-              <img src="{% static "img/icon-addon.svg" %}" />
-            </div>
-            <h3>{% translate "Translation add-ons" %}</h3>
-            <p>{% translate "Customize localization workflow with various add-ons." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/backup.html">
-            <div class="icon">
-              <img src="{% static "img/icon-backup.svg" %}" />
-            </div>
-            <h3>{% translate "Backups" %}</h3>
-            <p>{% translate "Built-in remote backups to prevent data loss." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/translating.html#screenshots">
-            <div class="icon">
-              <img src="{% static "img/icon-screenshot.svg" %}" />
-            </div>
-            <h3>{% translate "Screenshots" %}</h3>
-            <p>{% translate "Provide visual context for the translations." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/user/translating.html#variants">
-            <div class="icon">
-              <img src="{% static "img/icon-magnet.svg" %}" />
-            </div>
-            <h3>{% translate "Variants" %}</h3>
-            <p>{% translate "Group variants of strings for easier translating." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/workflows.html#source-quality-gateway">
-            <div class="icon">
-              <img src="{% static "img/icon-layers.svg" %}" />
-            </div>
-            <h3>{% translate "Intermediate language" %}</h3>
-            <p>{% translate "Proofread strings from developers before translating them." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/machine.html">
-            <div class="icon">
-              <img src="{% static "img/icon-translate-variant.svg" %}" />
-            </div>
-            <h3>{% translate "Automatic translation" %}</h3>
-            <p>{% translate "Translations or suggestions can be done by machine translation services or AI." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/admin/projects.html">
-            <div class="icon">
-              <img src="{% static "img/icon-file-tree-outline.svg" %}" />
-            </div>
-            <h3>{% translate "Organize translations" %}</h3>
-            <p>{% translate "Categorize the translation files to ease navigation." %}</p>
-          </a>
-        </div>
-        <div class="f-box">
-          <a href="https://docs.weblate.org/en/latest/user/translating.html#keyboard-shortcuts">
-            <div class="icon">
-              <img src="{% static "img/icon-keyboard-outline.svg" %}" />
-            </div>
-            <h3>{% translate "Keyboard operation" %}</h3>
-            <p>{% translate "Use keyboard to effectively navigate while translating." %}</p>
-          </a>
-        </div>
-      </div>
+      <h2>{% translate "Open source, backed by sustainable services" %}</h2>
+      <p>{% translate "Weblate is copylefted libre software: you are free to use, inspect, modify, and share it. Those freedoms belong to everyone, from volunteer communities to global organizations." %}</p>
+      <p>{% translate "Choose managed hosting to let our team run Weblate for you, or purchase expert support for your own installation. When something breaks, talk to a real person on the team behind Weblate and get help moving forward. Your hosting and support purchases help fund Weblate's continued development." %}</p>
+      <p>{% translate "You can also host Weblate yourself without a subscription. Eligible libre projects can apply for gratis hosting." %}</p>
+      <a href="{% url 'download' %}" class="button inline border rev">{% translate "Explore self-hosting" %}</a>
+      <a href="{% url 'hosting' %}#libre"
+         class="button inline border rev">{% translate "Hosting for libre projects" %}</a>
     </div>
   </section>
   {% include "snippets/pricing.html" %}
