@@ -1,9 +1,13 @@
 #!/bin/sh
 
+set -eu
+
 WEBLATE=~/weblate/weblate/docs/screenshots/
 SCREENSHOTS=weblate_web/static/img/
 
-convert $WEBLATE/screenshot-context.webp $SCREENSHOTS/BigScreenshot.png
-convert $WEBLATE/checks.webp -crop 268x414+916+310 $SCREENSHOTS/dialog-checks.png
-convert $WEBLATE/checks.webp -crop 268x704+916+929 $SCREENSHOTS/source-info.png
-convert $WEBLATE/checks.webp -crop 800x435+20+1029 $SCREENSHOTS/comment-new.png
+# Crop complete cards from the current 1200px-wide documentation screenshots.
+# Reset the canvas after cropping so the PNGs have no source-image offsets.
+convert "$WEBLATE/screenshot-context.webp" "$SCREENSHOTS/BigScreenshot.png"
+convert "$WEBLATE/checks.webp" -crop 274x436+911+298 +repage "$SCREENSHOTS/dialog-checks.png"
+convert "$WEBLATE/source-information.webp" -crop 274x370+911+698 +repage "$SCREENSHOTS/source-info.png"
+convert "$WEBLATE/checks.webp" -crop 872x439+15+1051 +repage "$SCREENSHOTS/comment-new.png"
