@@ -5275,6 +5275,27 @@ class ExpiryTest(FakturaceTestCase):
 class ServiceTest(FakturaceTestCase):
     @override("en")
     @responses.activate
+    def test_fully_credited_invoice_does_not_block_renewal(self) -> None:
+        cnb_mock_rates()
+        self.login()
+        service = self.create_service(recurring="", package="test:test-1-m")
+        subscription = service.subscription_set.get()
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        invoice.credited_amount = invoice.total_amount
+        invoice.fully_credited = True
+        invoice.save(update_fields=["credited_amount", "fully_credited"])
+        self.assertEqual(list(subscription.get_renewal_invoices()), [])
+        self.assertIsNone(subscription.get_outstanding_renewal_invoice())
+        self.assertFalse(subscription.has_accepted_renewal_payment())
+        response = self.client.post(
+            reverse("subscription-pay", kwargs={"pk": subscription.pk}), follow=True
+        )
+        self.assertNotContains(response, "awaiting processing")
+        self.assertFalse(invoice.draft_payment_set.exists())
+        self.assertIn("payment", response.context)
+
+    @override("en")
+    @responses.activate
     def test_renewal_reuses_outstanding_invoice(self) -> None:
         cnb_mock_rates()
         self.login()
@@ -5532,6 +5553,40 @@ class ServiceTest(FakturaceTestCase):
         self.client.get(url)
         payment.refresh_from_db()
         self.assertEqual(payment.recurring, "")
+
+    @responses.activate
+    def test_uncollectible_renewal_suppresses_reminders(self) -> None:
+        cnb_mock_rates()
+        service = self.create_service(years=0, days=-3, recurring="")
+        subscription = service.subscription_set.get()
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        invoice.uncollectible = True
+        invoice.save(update_fields=["uncollectible"])
+        for notification in ("payment_missing", "payment_expired", "payment_upcoming"):
+            with self.subTest(notification=notification):
+                subscription.send_notification(notification)
+                self.assertEqual(mail.outbox, [])
+        self.assertEqual(subscription.get_outstanding_renewal_invoice(), invoice)
+        self.assertTrue(invoice.can_be_paid())
+
+        collectible = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        for notification in ("payment_missing", "payment_expired", "payment_upcoming"):
+            with self.subTest(notification=notification, collectible=True):
+                mail.outbox = []
+                subscription.send_notification(notification)
+                self.assertEqual(len(mail.outbox), 2)
+                for message in cast("list[EmailMultiAlternatives]", mail.outbox):
+                    for body in (message.body, cast("str", message.alternatives[0][0])):
+                        self.assertIn(collectible.number, body)
+                        self.assertIn(collectible.get_payment_url(), body)
+                        self.assertNotIn(invoice.number, body)
+                    attachments = [
+                        attachment
+                        for attachment in message.attachments
+                        if attachment.mimetype == "application/pdf"
+                    ]
+                    self.assertEqual(len(attachments), 1)
+                    self.assertEqual(attachments[0].filename, collectible.filename)
 
     @responses.activate
     def test_renewal_invoice_reminders(self) -> None:

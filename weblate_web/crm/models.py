@@ -46,6 +46,7 @@ class Interaction(models.Model):
         MANUAL_NOTE = 7, "Manual note"
         QUOTE_STATUS = 8, "Quote status"
         CUSTOMER_OWNER = 9, "Customer ownership"
+        INVOICE_CORRECTION = 10, _("Invoice correction")
 
     timestamp = models.DateTimeField(default=timezone.now, verbose_name="Timestamp")
     origin = models.IntegerField(choices=Origin, verbose_name="Origin")
@@ -107,6 +108,15 @@ class Interaction(models.Model):
 
     @property
     def display_summary(self) -> str:
+        if self.origin == self.Origin.INVOICE_CORRECTION:
+            if self.details.get("correction"):
+                return str(
+                    _("Credit note %(correction)s for invoice %(invoice)s")
+                    % self.details
+                )
+            if self.details.get("uncollectible"):
+                return str(_("Invoice %(invoice)s marked uncollectible") % self.details)
+            return str(_("Collection resumed for invoice %(invoice)s") % self.details)
         if (
             self.origin == self.Origin.VIES
             and self.summary == self.VIES_OUTAGE_INVOICE_ISSUED

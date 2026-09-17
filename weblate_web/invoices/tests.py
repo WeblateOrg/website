@@ -8,11 +8,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import cast
 from unittest.mock import patch
+from uuid import uuid4
 
 import requests
 import responses
 from django.apps import apps
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.forms import modelform_factory
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -20,12 +22,13 @@ from django.utils.translation import override
 from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
 from pycheval.quantities import QuantityCode
-from pycheval.type_codes import TaxCategoryCode
+from pycheval.type_codes import DocumentTypeCode, TaxCategoryCode
 
 from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.tests import UserTestCase, cnb_mock_rates, mock_vies
 
+from .corrections import issue_correction, set_uncollectible
 from .models import (
     Currency,
     Discount,
@@ -44,6 +47,342 @@ S3_SCHEMA = etree.XMLSchema(etree.parse(S3_SCHEMA_PATH))
 
 
 class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
+    def setUp(self):
+        super().setUp()
+        directory = self.enterContext(TemporaryDirectory())  # pylint: disable=consider-using-with
+        self.enterContext(override_settings(INVOICES_PATH=Path(directory)))
+
+    def correction(self, invoice, amount, **kwargs):
+        user, _ = User.objects.get_or_create(
+            username="corrections", defaults={"is_superuser": True, "is_staff": True}
+        )
+        data = {
+            "invoice": invoice,
+            "user": user,
+            "amount": Decimal(amount),
+            "reason": "price",
+            "note": "Service cancelled",
+            "issue_date": invoice.issue_date,
+            "tax_date": invoice.tax_date,
+            "token": uuid4(),
+        }
+        data.update(kwargs)
+        return issue_correction(**data)
+
+    @responses.activate
+    def test_partial_corrections_and_xml(self):
+        self.mock_requests()
+        invoice = self.create_invoice(
+            vat_rate=21, prepaid=True, country="CZ", vat="CZ21668027"
+        )
+        invoice.customer.tax = "21668027"
+        invoice.customer.save(update_fields=["tax"])
+        expected_rate = invoice.exchange_rate_czk
+        # Corrections must not depend on the original XML files.
+        for path in (invoice.xml_path, invoice.en_16931_xml_path):
+            path.write_text("Not XML", encoding="utf-8")
+        first = self.correction(invoice, "30.00")
+        second = self.correction(invoice, "91.00")
+        self.assertEqual(first.total_amount, Decimal("-30.00"))
+        self.assertEqual(second.total_amount, Decimal("-91.00"))
+        self.assertEqual(
+            first.total_amount_no_vat + second.total_amount_no_vat,
+            -invoice.total_amount_no_vat,
+        )
+        self.assertEqual(first.total_vat + second.total_vat, -invoice.total_vat)
+        self.assertFalse(first.prepaid)
+        self.assertFalse(first.is_paid)
+        self.validate_invoice(first)
+        self.validate_invoice(second)
+        first.refresh_from_db()
+        self.assertEqual(first.exchange_rate_czk, expected_rate)
+        self.assertEqual(first.vat_rate, invoice.vat_rate)
+        buyer = first.get_en_16931_xml().buyer
+        self.assertEqual(buyer.vat_id, invoice.customer.vat)
+        self.assertEqual(buyer.legal_id, ("21668027", None))
+        self.assertIn("21668027", first.render_html())
+        self.assertEqual(
+            first.get_en_16931_xml().type_code, DocumentTypeCode.CREDIT_NOTE
+        )
+        self.assertEqual(
+            second.get_en_16931_xml().type_code, DocumentTypeCode.CREDIT_NOTE
+        )
+        self.assertEqual(invoice.get_en_16931_xml().type_code, DocumentTypeCode.INVOICE)
+        self.assertEqual(
+            first.get_en_16931_xml().preceding_invoices,
+            [(invoice.number, invoice.issue_date)],
+        )
+        self.assertIn("Credit note", first.render_html())
+        self.assertIn(invoice.number, first.render_html())
+        invoice.refresh_from_db()
+        self.assertTrue(invoice.is_credited)
+        self.assertFalse(invoice.is_editable())
+        self.assertFalse(first.is_editable())
+        with self.assertRaises(ValidationError):
+            self.correction(invoice, "0.01")
+
+    @responses.activate
+    def test_correction_idempotent(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21, prepaid=True)
+        token = uuid4()
+        first = self.correction(invoice, "121", token=token)
+        repeated = self.correction(invoice, "121", token=token)
+        self.assertEqual(first.pk, repeated.pk)
+        self.assertEqual(invoice.corrections.count(), 1)
+        self.assertFalse(first.prepaid)
+        self.assertFalse(first.can_be_paid())
+        self.assertFalse(Payment.objects.exists())
+        invoice.refresh_from_db()
+        self.assertFalse(invoice.can_be_paid())
+        self.assertEqual(invoice.get_payment_qrcode(), "")
+        self.assertIsNone(invoice.get_upcoming_payment_url())
+        self.validate_invoice(first)
+
+    @responses.activate
+    def test_correction_pending_payment_and_permissions(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21)
+        retained = self.create_invoice(vat_rate=21, prepaid=True)
+        retained.customer = invoice.customer
+        retained.save(update_fields=["customer"])
+        data = {"reason": "duplicate", "duplicate": retained}
+        user = User.objects.create_user(username="without-corrections")
+        with self.assertRaises(PermissionDenied):
+            self.correction(invoice, "121", user=user, **data)
+        payment = invoice.create_payment()
+        for state in (Payment.NEW, Payment.PENDING, Payment.REJECTED):
+            with self.subTest(state=state):
+                payment.state = state
+                payment.save(update_fields=["state"])
+                with self.assertRaisesMessage(ValidationError, "pending payment"):
+                    self.correction(invoice, "121", **data)
+        self.assertFalse(invoice.corrections.exists())
+
+    @responses.activate
+    def test_correction_of_accepted_payment_requires_refund(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21)
+        payment = invoice.create_payment()
+        payment.paid_invoice = invoice
+        payment.state = Payment.ACCEPTED
+        payment.save()
+        correction = self.correction(invoice, "21")
+        self.assertFalse(correction.prepaid)
+        self.assertFalse(correction.is_paid)
+
+    @responses.activate
+    def test_correction_pdf_uses_consistent_zero_vat_reason(self):
+        self.mock_requests()
+        for country, category in [("DE", "AE"), ("US", "O")]:
+            with self.subTest(category=category):
+                invoice = self.create_invoice(country=country, prepaid=True)
+                correction = self.correction(invoice, "10")
+                tax = correction.get_tax_details()
+                self.assertEqual(tax.category.value, category)
+                html = correction.render_html()
+                self.assertEqual(html.count(tax.exemption_reason), 2)
+                if category == "AE":
+                    self.assertNotIn("place of supply is outside the EU", html)
+                else:
+                    self.assertNotIn("Reverse charge applies", html)
+
+    @responses.activate
+    def test_unpaid_invoice_rejects_price_corrections(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21)
+        for amount in ("21", "121"):
+            with (
+                self.subTest(amount=amount),
+                patch.object(Invoice, "generate_files") as generate_files,
+                self.assertRaisesMessage(ValidationError, "Only paid invoices"),
+            ):
+                self.correction(invoice, amount)
+            generate_files.assert_not_called()
+        self.assertFalse(invoice.corrections.exists())
+        self.assertFalse(invoice.customer.interaction_set.exists())
+        invoice.refresh_from_db()
+        self.assertEqual(invoice.credited_amount, 0)
+
+    @responses.activate
+    def test_correction_item_amount_limit(self):
+        self.mock_requests()
+        for amount in ("99999.99", "100000.00"):
+            with self.subTest(amount=amount):
+                invoice = self.create_invoice(unit_price=Decimal(50000), prepaid=True)
+                item = invoice.invoiceitem_set.get()
+                item.quantity = 2
+                item.save()
+                if amount == "99999.99":
+                    correction = self.correction(invoice, amount)
+                    self.assertEqual(correction.invoiceitem_set.count(), 1)
+                    self.assertEqual(correction.total_amount, -Decimal(amount))
+                    self.validate_invoice(correction)
+                else:
+                    with (
+                        patch.object(Invoice, "generate_files") as generate_files,
+                        self.assertRaisesMessage(ValidationError, "cannot exceed"),
+                    ):
+                        self.correction(invoice, amount)
+                    generate_files.assert_not_called()
+                    self.assertFalse(invoice.corrections.exists())
+                    self.assertFalse(invoice.customer.interaction_set.exists())
+                    invoice.refresh_from_db()
+                    self.assertEqual(invoice.credited_amount, 0)
+
+    @responses.activate
+    def test_duplicate_correction(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21)
+        paid = self.create_invoice(vat_rate=21, prepaid=True)
+        with self.assertRaises(ValidationError):
+            self.correction(invoice, "121", reason="duplicate", duplicate=paid)
+        paid.customer = invoice.customer
+        paid.save()
+        for unit_price in (0, -100):
+            with self.subTest(unit_price=unit_price):
+                invalid = self.create_invoice(
+                    vat_rate=21, prepaid=True, unit_price=unit_price
+                )
+                invalid.customer = invoice.customer
+                invalid.save(update_fields=["customer"])
+                with self.assertRaises(ValidationError):
+                    self.correction(
+                        invoice, "121", reason="duplicate", duplicate=invalid
+                    )
+                self.assertFalse(invoice.corrections.exists())
+        correction = self.correction(invoice, "121", reason="duplicate", duplicate=paid)
+        self.assertEqual(correction.duplicate_of, paid)
+        self.assertTrue(correction.prepaid)
+        self.assertFalse(Payment.objects.exists())
+
+    @responses.activate
+    def test_duplicate_correction_reloads_retained_invoice(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21)
+        retained = self.create_invoice(vat_rate=21, prepaid=True)
+        retained.customer = invoice.customer
+        retained.save()
+        self.correction(retained, "121")
+        self.assertFalse(retained.fully_credited)
+        with self.assertRaises(ValidationError):
+            self.correction(invoice, "121", reason="duplicate", duplicate=retained)
+        self.assertFalse(invoice.corrections.exists())
+
+    @responses.activate
+    def test_uncollectible_is_not_a_credit_or_payment(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21)
+        user = User.objects.create_user(username="collector", is_superuser=True)
+        set_uncollectible(
+            invoice=invoice, user=user, note="Customer cannot pay", value=True
+        )
+        invoice.refresh_from_db()
+        self.assertTrue(invoice.uncollectible)
+        self.assertEqual(invoice.total_amount, Decimal(121))
+        self.assertFalse(invoice.corrections.exists())
+        self.assertFalse(Payment.objects.exists())
+        self.assertTrue(invoice.can_be_paid())
+        self.assertIsNone(invoice.get_upcoming_payment_url())
+        self.assertFalse(invoice.customer.get_upcoming_payment_invoices().exists())
+        set_uncollectible(
+            invoice=invoice, user=user, note="Customer replied", value=False
+        )
+        invoice.refresh_from_db()
+        self.assertFalse(invoice.uncollectible)
+
+    @responses.activate
+    def test_legacy_discount_correction_balances(self):
+        self.mock_requests()
+        discount = Discount.objects.create(description="Discount", percents=15)
+        invoice = self.create_invoice(vat_rate=21, discount=discount, prepaid=True)
+        invoice.calculation_version = InvoiceCalculationVersion.LEGACY
+        invoice.save()
+        first = self.correction(invoice, "10")
+        invoice.refresh_from_db()
+        final = self.correction(invoice, invoice.remaining_amount)
+        self.assertEqual(
+            first.total_amount_no_vat + final.total_amount_no_vat,
+            -invoice.total_amount_no_vat,
+        )
+        self.assertEqual(first.total_vat + final.total_vat, -invoice.total_vat)
+        self.validate_invoice(first)
+        self.validate_invoice(final)
+
+    @responses.activate
+    def test_legacy_correction_rejects_incompatible_rounding(self):
+        self.mock_requests()
+        for unit_price, vat_rate, amount, rate in (
+            ("1", 0, "1", "25.225"),
+            ("2", 0, "1", "25.225"),
+            ("1", 21, "1.21", "0.5"),
+            ("0.01", 21, "0.01", "1"),
+        ):
+            with self.subTest(unit_price=unit_price, vat_rate=vat_rate, amount=amount):
+                invoice = self.create_invoice(
+                    unit_price=Decimal(unit_price), vat_rate=vat_rate, prepaid=True
+                )
+                invoice.calculation_version = InvoiceCalculationVersion.LEGACY
+                invoice.save(update_fields=["calculation_version"])
+                with (
+                    patch(
+                        "weblate_web.invoices.models.ExchangeRates.get",
+                        return_value=Decimal(rate),
+                    ),
+                    patch.object(Invoice, "generate_files") as generate_files,
+                    self.assertRaisesMessage(ValidationError, "rounding differs"),
+                ):
+                    self.correction(invoice, amount)
+                generate_files.assert_not_called()
+                self.assertFalse(invoice.corrections.exists())
+                self.assertFalse(invoice.customer.interaction_set.exists())
+                invoice.refresh_from_db()
+                self.assertEqual(invoice.credited_amount, 0)
+
+    @responses.activate
+    def test_legacy_correction_allows_compatible_rounding(self):
+        self.mock_requests()
+        invoice = self.create_invoice(unit_price=Decimal(1), prepaid=True)
+        invoice.calculation_version = InvoiceCalculationVersion.LEGACY
+        invoice.save(update_fields=["calculation_version"])
+        with patch(
+            "weblate_web.invoices.models.ExchangeRates.get",
+            return_value=Decimal("25.235"),
+        ):
+            correction = self.correction(invoice, "1")
+            self.assertEqual(
+                correction.calculation_version, InvoiceCalculationVersion.EN_16931
+            )
+            self.assertEqual(correction.total_amount_czk, -invoice.total_amount_czk)
+            self.assertEqual(
+                correction.total_amount_no_vat_czk, -invoice.total_amount_no_vat_czk
+            )
+            self.assertEqual(correction.total_vat_czk, -invoice.total_vat_czk)
+            self.validate_invoice(correction)
+
+    @responses.activate
+    def test_correction_rounding_and_invalid_amounts(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21, prepaid=True)
+        for amount in ["0", "-1", "121.01", "0.001"]:
+            with self.subTest(amount=amount), self.assertRaises(ValidationError):
+                self.correction(invoice, amount)
+        correction = self.correction(
+            invoice, "21", note="Service cancellation and refund. " * 10
+        )
+        payment = Payment.objects.create(
+            customer=invoice.customer,
+            paid_invoice=correction,
+            amount=Decimal(-21),
+            amount_fixed=True,
+            state=Payment.PROCESSED,
+        )
+        self.assertEqual(payment.amount_without_vat, correction.total_amount_no_vat)
+        self.assertEqual(correction.total_amount, Decimal(-21))
+        self.validate_invoice(correction)
+        with self.assertRaises(ValidationError):
+            self.correction(correction, "1")
+
     def create_customer(
         self,
         *,

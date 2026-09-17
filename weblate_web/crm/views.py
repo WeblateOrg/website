@@ -49,12 +49,15 @@ from weblate_web.crm.forms import (
     CustomerFollowUpForm,
     CustomerMergeForm,
     CustomerOwnerForm,
+    DuplicateInvoiceForm,
     InvoiceConfirmationForm,
+    InvoiceCorrectionForm,
     ManualInteractionForm,
     QuoteStatusForm,
     RefundConfirmationForm,
     ServiceMaintenanceWindowForm,
     ServiceSubscriptionActionForm,
+    UncollectibleInvoiceForm,
 )
 from weblate_web.crm.hosted import HostedUserEnsureError, ensure_hosted_user
 from weblate_web.crm.workqueue import (
@@ -66,6 +69,12 @@ from weblate_web.crm.workqueue import (
 )
 from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.forms import NewSubscriptionForm
+from weblate_web.invoices.corrections import (
+    CORRECTION_PERMISSION,
+    is_settled,
+    issue_correction,
+    set_uncollectible,
+)
 from weblate_web.invoices.forms import CustomerReferenceForm
 from weblate_web.invoices.models import (
     CURRENCY_MAP,
@@ -513,12 +522,17 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     convert_permission = "invoices.add_invoice"
-    refund_permission = "payments.add_payment"
+    refund_permission = CORRECTION_PERMISSION
     quote_status_permission = "invoices.change_invoice"
     title = "Invoice detail"
 
     def get_title(self) -> str:
-        return f"{self.object.get_kind_display()} {self.object.number}"
+        title = (
+            gettext("Credit note")
+            if self.object.correction_of_id
+            else self.object.get_kind_display()
+        )
+        return f"{title} {self.object.number}"
 
     def is_unconverted_quote(self) -> bool:
         return (
@@ -554,6 +568,7 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
         return (
             self.object.kind == InvoiceKind.INVOICE
             and self.object.total_amount <= 0
+            and not (self.object.correction_of_id and self.object.prepaid)
             and not self.object.is_paid
         )
 
@@ -587,6 +602,36 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
                 else None
             )
         context["can_reopen_quote"] = self.can_reopen_quote()
+        if (
+            self.can_confirm_refund_permission()
+            and self.object.is_final
+            and not self.object.correction_of_id
+            and self.object.total_amount > 0
+        ):
+            paid = is_settled(self.object)
+            if not self.object.is_credited:
+                context["invoice_confirm_dialog"] = True
+                context["invoice_correction_dialog"] = True
+                if paid:
+                    context["correction_form"] = InvoiceCorrectionForm(
+                        self.request.POST
+                        if "issue_correction" in self.request.POST
+                        else None,
+                        invoice=self.object,
+                    )
+                else:
+                    context["duplicate_form"] = DuplicateInvoiceForm(
+                        self.request.POST
+                        if "correct_duplicate" in self.request.POST
+                        else None,
+                        invoice=self.object,
+                        auto_id="id_duplicate_%s",
+                    )
+            if not paid and not self.object.is_credited:
+                context["uncollectible_form"] = UncollectibleInvoiceForm(
+                    self.request.POST if "uncollectible" in self.request.POST else None,
+                    auto_id="id_uncollectible_%s",
+                )
         return context
 
     def create_quote_status_interaction(
@@ -703,6 +748,45 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
 
         return payment
 
+    def handle_correction_post(self, request):
+        if not self.can_confirm_refund_permission():
+            raise PermissionDenied
+        form: InvoiceCorrectionForm | DuplicateInvoiceForm | UncollectibleInvoiceForm
+        if "issue_correction" in request.POST or "correct_duplicate" in request.POST:
+            form_class = (
+                DuplicateInvoiceForm
+                if "correct_duplicate" in request.POST
+                else InvoiceCorrectionForm
+            )
+            form = form_class(request.POST, invoice=self.object)
+            if form.is_valid():
+                data = form.cleaned_data.copy()
+                data.pop("confirm_invoice")
+                try:
+                    correction = issue_correction(
+                        invoice=self.object, user=request.user, **data
+                    )
+                except ValidationError as error:
+                    form.add_error(None, error)
+                else:
+                    return redirect(correction)
+        else:
+            form = UncollectibleInvoiceForm(request.POST)
+            if form.is_valid():
+                try:
+                    set_uncollectible(
+                        invoice=self.object,
+                        user=request.user,
+                        note=form.cleaned_data["note"],
+                        value=request.POST["uncollectible"] == "mark",
+                    )
+                except ValidationError as error:
+                    form.add_error(None, error)
+                else:
+                    return redirect(self.object)
+        show_form_errors(request, form)
+        return self.get(request)
+
     def handle_quote_status_post(self, request, *args, **kwargs):
         if "close_quote" in request.POST:
             return self.close_quote(request, *args, **kwargs)
@@ -730,24 +814,33 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
             _record_vat_issuance_warning(request, quote.customer, invoice, vat_warning)
         return redirect(invoice)
 
+    def handle_refund_post(self, request, *args, **kwargs):
+        if not self.can_confirm_refund_permission():
+            raise PermissionDenied
+        if not self.can_confirm_refund():
+            return redirect(self.object)
+        refund_form = RefundConfirmationForm(request.POST)
+        if refund_form.is_valid():
+            self.confirm_refund(refund_form.cleaned_data["description"])
+            return redirect(self.object)
+        show_form_errors(self.request, refund_form)
+        return self.get(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if {
+            "issue_correction",
+            "correct_duplicate",
+            "uncollectible",
+        } & request.POST.keys():
+            return self.handle_correction_post(request)
         if quote_status_response := self.handle_quote_status_post(
             request, *args, **kwargs
         ):
             return quote_status_response
 
         if "confirm_refund" in request.POST:
-            if not self.can_confirm_refund_permission():
-                raise PermissionDenied
-            if not self.can_confirm_refund():
-                return redirect(self.object)
-            refund_form = RefundConfirmationForm(request.POST)
-            if refund_form.is_valid():
-                self.confirm_refund(refund_form.cleaned_data["description"])
-                return redirect(self.object)
-            show_form_errors(self.request, refund_form)
-            return self.get(request, *args, **kwargs)
+            return self.handle_refund_post(request, *args, **kwargs)
 
         if not self.can_convert_permission():
             raise PermissionDenied

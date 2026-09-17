@@ -30,11 +30,21 @@
 
 {% block content %}
   <section class="crm-section content">
-    {% translate "Invoice" as section_title %}
+    {% if object.correction_of_id %}
+      {% translate "Credit note" as section_title %}
+    {% else %}
+      {% translate "Invoice" as section_title %}
+    {% endif %}
     {% include "crm/snippets/section_header.html" %}
     <p class="crm-summary-line">
       <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
-      <span>{{ object.get_kind_display }}</span>
+      <span>
+        {% if object.correction_of_id %}
+          {% translate "Credit note" %}
+        {% else %}
+          {{ object.get_kind_display }}
+        {% endif %}
+      </span>
       {% with status_badge_label=object.status_badge_label status_badge_class=object.status_badge_class %}
         {% if status_badge_label %}
           <span class="crm-badge crm-badge--{{ status_badge_class }}">{{ status_badge_label }}</span>
@@ -67,6 +77,34 @@
           {{ object.display_total_amount }}
         </dd>
       </div>
+      {% if object.credited_amount %}
+        <div><dt>{% translate "Credited amount" %}</dt><dd>{{ object.credited_amount }} {{ object.get_currency_display }}</dd></div>
+        <div><dt>{% translate "Remaining amount" %}</dt><dd>{{ object.remaining_amount }} {{ object.get_currency_display }}</dd></div>
+      {% endif %}
+      {% if object.correction_of %}
+        <div><dt>{% translate "Correction of" %}</dt><dd><a href="{{ object.correction_of.get_absolute_url }}">{{ object.correction_of.number }}</a></dd></div>
+        <div><dt>{% translate "Reason" %}</dt><dd>{{ object.correction_note|linebreaksbr }}</dd></div>
+      {% endif %}
+      {% if object.duplicate_of %}
+        <div><dt>{% translate "Correct paid invoice" %}</dt><dd><a href="{{ object.duplicate_of.get_absolute_url }}">{{ object.duplicate_of.number }}</a></dd></div>
+      {% endif %}
+      {% for correction in object.corrections.all %}
+        <div><dt>{% translate "Credit note" %}</dt><dd><a href="{{ correction.get_absolute_url }}">{{ correction.number }}</a> {{ correction.display_total_amount }}</dd></div>
+      {% endfor %}
+      {% for correction in object.duplicate_corrections.all %}
+        <div>
+          <dt>{% translate "Cancelled duplicate" %}</dt>
+          <dd>
+            <a href="{{ correction.correction_of.get_absolute_url }}">{{ correction.correction_of.number }}</a>
+            — {% translate "Credit note" %}
+            <a href="{{ correction.get_absolute_url }}">{{ correction.number }}</a>
+            {{ correction.display_total_amount }}
+          </dd>
+        </div>
+      {% endfor %}
+      {% if object.uncollectible_note %}
+        <div><dt>{% translate "Collection note" %}</dt><dd>{{ object.uncollectible_note|linebreaksbr }}</dd></div>
+      {% endif %}
       {% if object.discount %}
         <div>
           <dt>{% translate "Discount" %}</dt>
@@ -218,6 +256,79 @@
                      type="submit"
                      name="reopen_quote"
                      value="{{ reopen_quote_label }}">
+            </div>
+          </form>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if correction_form or duplicate_form or uncollectible_form %}
+    <section class="crm-section content">
+      <h2>{% translate "Invoice corrections" %}</h2>
+      <div class="crm-form-grid">
+        {% translate "This issues a credit note that cannot be edited. It does not transfer money." as correction_message %}
+        {% if correction_form %}
+          <form class="crm-form-panel crm-form-panel--balanced"
+                method="post"
+                data-crm-invoice-confirm
+                data-crm-invoice-always
+                data-crm-invoice-confirm-message="{{ correction_message }}">
+            {% csrf_token %}
+            <h3>{% translate "Refund" %}</h3>
+            <div class="crm-form-panel__body">
+              <p>{% translate "Issue a credit note for a full or partial refund. Transfer the money separately, then confirm the refund on the credit note." %}</p>
+              {{ correction_form }}
+            </div>
+            <div class="crm-form-panel__actions">
+              <button class="crm-button"
+                      type="submit"
+                      name="issue_correction"
+                      value="1">{% translate "Issue credit note" %}</button>
+            </div>
+          </form>
+        {% endif %}
+        {% if duplicate_form %}
+          <form class="crm-form-panel crm-form-panel--balanced"
+                method="post"
+                data-crm-invoice-confirm
+                data-crm-invoice-always
+                data-crm-invoice-confirm-message="{{ correction_message }}">
+            {% csrf_token %}
+            <h3>{% translate "Duplicate invoice" %}</h3>
+            <div class="crm-form-panel__body">
+              <p>{% translate "Cancel this unpaid duplicate in full with a credit note. Select the correct paid invoice to keep." %}</p>
+              {{ duplicate_form }}
+            </div>
+            <div class="crm-form-panel__actions">
+              <button class="crm-button"
+                      type="submit"
+                      name="correct_duplicate"
+                      value="1">{% translate "Cancel duplicate invoice" %}</button>
+            </div>
+          </form>
+        {% endif %}
+        {% if uncollectible_form %}
+          <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--danger"
+                method="post">
+            {% csrf_token %}
+            <h3>{% translate "Collection status" %}</h3>
+            <div class="crm-form-panel__body">
+              <p>{% translate "Marking an invoice uncollectible stops reminders without changing its amount or VAT." %}</p>
+              {{ uncollectible_form }}
+            </div>
+            <div class="crm-form-panel__actions">
+              {% if object.uncollectible %}
+                <button class="crm-button"
+                        type="submit"
+                        name="uncollectible"
+                        value="resume">{% translate "Resume collection" %}</button>
+              {% else %}
+                <button class="crm-button crm-button--danger"
+                        type="submit"
+                        name="uncollectible"
+                        value="mark">{% translate "Mark uncollectible" %}</button>
+              {% endif %}
             </div>
           </form>
         {% endif %}

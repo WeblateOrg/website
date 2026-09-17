@@ -31,8 +31,10 @@ from typing import cast
 from uuid import UUID
 
 import pytest
+from django.contrib.auth.models import User
 from PIL import Image as PILImage
 
+from weblate_web.invoices.corrections import issue_correction
 from weblate_web.invoices.models import (
     Currency,
     Discount,
@@ -339,3 +341,57 @@ def test_invoice_pdf_screenshots(settings, tmp_path):
         invoice = create_invoice(case, sequence)
         pdf_path = invoice.receipt_path if case.receipt else invoice.path
         convert_pdf_to_screenshots(pdf_path, case.slug)
+
+
+def test_credit_note_pdf_screenshots(settings, tmp_path):
+    """Keep correction dates and numbers stable for visual comparisons."""
+    settings.INVOICES_PATH = tmp_path / "invoices"
+    settings.SITE_URL = "https://weblate.test"
+    user = User.objects.create_superuser(username="credit-notes")
+    for sequence, paid in ((20, False), (30, True)):
+        invoice = create_invoice(
+            InvoiceData(
+                slug="credit-note-customer",
+                kind=InvoiceKind.INVOICE,
+                country="CZ",
+                currency=Currency.CZK,
+                vat_rate=21,
+                prepaid=paid,
+                items=(
+                    InvoiceItemData(
+                        description="Hosted Weblate service", unit_price=Decimal(100)
+                    ),
+                ),
+            ),
+            sequence,
+        )
+        duplicate = None
+        if not paid:
+            duplicate = Invoice.objects.create(
+                customer=invoice.customer,
+                kind=InvoiceKind.INVOICE,
+                category=invoice.category,
+                currency=invoice.currency,
+                vat_rate=invoice.vat_rate,
+                issue_date=ISSUE_DATE,
+                tax_date=ISSUE_DATE,
+                sequence=sequence + 1,
+                prepaid=True,
+            )
+            duplicate.invoiceitem_set.create(
+                description="Hosted Weblate service", unit_price=Decimal(100)
+            )
+        correction = issue_correction(
+            invoice=invoice,
+            user=user,
+            amount=Decimal("60.50") if paid else invoice.total_amount,
+            reason="price" if paid else "duplicate",
+            duplicate=duplicate,
+            note="Cancellation of the unused service period." if paid else "",
+            issue_date=date(2026, 2, 1),
+            tax_date=date(2026, 2, 1),
+            token=UUID(int=sequence),
+        )
+        convert_pdf_to_screenshots(
+            correction.path, "credit-note-refund" if paid else "credit-note-unpaid"
+        )

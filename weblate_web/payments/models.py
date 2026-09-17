@@ -530,6 +530,9 @@ class Customer(models.Model):
         return (
             self.invoice_set.filter(
                 prepaid=False,
+                correction_of=None,
+                fully_credited=False,
+                uncollectible=False,
             )
             .prefetch_related(
                 "invoiceitem_set", "draft_payment_set", "paid_payment_set"
@@ -1166,6 +1169,8 @@ class Payment(models.Model):
 
     @property
     def amount_without_vat(self) -> Decimal:
+        if self.paid_invoice and self.paid_invoice.correction_of_id:
+            return self.paid_invoice.total_amount_no_vat
         if self.customer.needs_vat and self.amount_fixed:
             tax_basis, _gross = get_compliant_fixed_amount(
                 self.amount, self.customer.vat_rate

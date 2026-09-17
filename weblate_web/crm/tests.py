@@ -2,6 +2,8 @@ from collections import UserList
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from io import StringIO
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs
 from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
@@ -25,6 +27,7 @@ from django.utils import timezone
 from weblate_web.crm.hosted import USER_ENSURE_RESPONSE_SALT, USER_ENSURE_SALT
 from weblate_web.crm.models import Interaction, ZammadSyncLog
 from weblate_web.crm.views import IncomeView
+from weblate_web.crm.workqueue import get_unpaid_invoice_queryset
 from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.invoices.models import (
     Currency,
@@ -2472,7 +2475,7 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertContains(response, description)
 
     @patch.object(Invoice, "generate_receipt")
-    def test_confirm_negative_invoice_refund_requires_add_payment(
+    def test_confirm_negative_invoice_refund_requires_correction_permission(
         self, mock_generate_receipt
     ):
         invoice = self.create_invoice(Decimal(-100))
@@ -4899,3 +4902,245 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
 
         self.assertEqual(Interaction.objects.filter(customer=customer).count(), 3)
         self.assertEqual(ZammadSyncLog.objects.count(), 3)
+
+
+class CRMCorrectionTestCase(BaseCRMTestCase):
+    def setUp(self):
+        directory = self.enterContext(TemporaryDirectory())  # pylint: disable=consider-using-with
+        self.enterContext(override_settings(INVOICES_PATH=Path(directory)))
+        self.user = User.objects.create_superuser(username="corrections")
+        self.client.force_login(self.user)
+
+    def create_invoice(
+        self, amount: Decimal, kind: InvoiceKind = InvoiceKind.INVOICE
+    ) -> Invoice:
+        invoice = Invoice.objects.create(
+            kind=kind,
+            category=InvoiceCategory.HOSTING,
+            customer=self.create_customer(),
+            currency=Currency.EUR,
+        )
+        invoice.invoiceitem_set.create(description="Refund", unit_price=amount)
+        return invoice
+
+    @patch.object(Invoice, "generate_files")
+    @patch("weblate_web.invoices.models.ExchangeRates.get", return_value=Decimal(25))
+    def test_issue_correction_and_confirm_refund(self, _rates, _files):
+        invoice = self.create_invoice(Decimal(100))
+        invoice.prepaid = True
+        invoice.save()
+        response = self.client.get(invoice.get_absolute_url())
+        token = response.context["correction_form"]["token"].value()
+        data = {
+            "issue_correction": "1",
+            "token": token,
+            "note": "Cancelled unused service",
+            "amount": "25.00",
+            "issue_date": invoice.issue_date,
+            "tax_date": invoice.tax_date,
+            "confirm_invoice": "1",
+        }
+        self.assertContains(response, 'id="crm-invoice-confirm-dialog"')
+        self.assertContains(response, 'name="confirm_invoice"')
+        self.assertNotContains(response, "Issue this correction permanently")
+        unconfirmed = data.copy()
+        unconfirmed.pop("confirm_invoice")
+        response = self.client.post(invoice.get_absolute_url(), unconfirmed)
+        self.assertContains(
+            response, "Please confirm that you want to issue a credit note."
+        )
+        self.assertFalse(invoice.corrections.exists())
+        response = self.client.post(invoice.get_absolute_url(), data)
+        correction = invoice.corrections.get()
+        self.assertRedirects(response, correction.get_absolute_url())
+        self.assertEqual(correction.total_amount, Decimal(-25))
+        self.client.post(invoice.get_absolute_url(), data)
+        self.assertEqual(invoice.corrections.count(), 1)
+        with patch.object(Invoice, "generate_receipt"):
+            self.client.post(correction.get_absolute_url(), {"confirm_refund": "1"})
+            self.client.post(correction.get_absolute_url(), {"confirm_refund": "1"})
+        self.assertEqual(Payment.objects.filter(paid_invoice=correction).count(), 1)
+
+    @patch.object(Invoice, "generate_files")
+    @patch("weblate_web.invoices.models.ExchangeRates.get", return_value=Decimal(25))
+    def test_unpaid_invoice_cannot_be_refunded(self, _rates, _files):
+        invoice = self.create_invoice(Decimal(100))
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertNotIn("correction_form", response.context)
+        self.assertContains(response, 'name="correct_duplicate"')
+        self.assertNotContains(response, 'name="issue_correction"')
+        response = self.client.post(
+            invoice.get_absolute_url(),
+            {
+                "issue_correction": "1",
+                "token": response.context["duplicate_form"]["token"].value(),
+                "note": "Service cancelled",
+                "amount": "100.00",
+                "issue_date": invoice.issue_date,
+                "tax_date": invoice.tax_date,
+                "confirm_invoice": "1",
+            },
+        )
+        self.assertContains(response, "Only paid invoices can be refunded.")
+        self.assertFalse(invoice.corrections.exists())
+        self.assertFalse(Payment.objects.exists())
+
+    @patch.object(Invoice, "generate_files")
+    @patch("weblate_web.invoices.models.ExchangeRates.get", return_value=Decimal(25))
+    def test_duplicate_choices_and_unpaid_correction(self, _rates, _files):
+        invoice = self.create_invoice(Decimal(100))
+        candidates = {}
+        for state in (
+            "unpaid",
+            "prepaid",
+            "accepted",
+            "processed",
+            "credited",
+            "other",
+            "zero",
+            "negative",
+        ):
+            amount = {"zero": 0, "negative": -100}.get(state, 100)
+            candidate = self.create_invoice(Decimal(amount))
+            if state != "other":
+                candidate.customer = invoice.customer
+            candidate.prepaid = state in {
+                "prepaid",
+                "credited",
+                "other",
+                "zero",
+                "negative",
+            }
+            candidate.fully_credited = state == "credited"
+            candidate.save()
+            if state in {"accepted", "processed"}:
+                Payment.objects.create(
+                    customer=invoice.customer,
+                    paid_invoice=candidate,
+                    amount=100,
+                    state=Payment.ACCEPTED
+                    if state == "accepted"
+                    else Payment.PROCESSED,
+                )
+            candidates[state] = candidate
+        response = self.client.get(invoice.get_absolute_url())
+        form = response.context["duplicate_form"]
+        self.assertQuerySetEqual(
+            form.fields["duplicate"].queryset,
+            [candidates[state] for state in ("prepaid", "accepted", "processed")],
+            ordered=False,
+        )
+        data = {
+            "correct_duplicate": "1",
+            "token": form["token"].value(),
+            "issue_date": invoice.issue_date,
+            "tax_date": invoice.tax_date,
+            "confirm_invoice": "1",
+            "amount": "1.00",
+        }
+        response = self.client.post(invoice.get_absolute_url(), data)
+        self.assertFormError(
+            response.context["duplicate_form"], "duplicate", "This field is required."
+        )
+        self.assertFalse(invoice.corrections.exists())
+        data["duplicate"] = candidates["accepted"].pk
+        response = self.client.post(invoice.get_absolute_url(), data)
+        correction = invoice.corrections.get()
+        self.assertEqual(correction.total_amount, Decimal(-100))
+        self.assertEqual(
+            correction.correction_note,
+            f"Duplicate of invoice {candidates['accepted'].number}.",
+        )
+        self.assertRedirects(response, correction.get_absolute_url())
+        self.assertTrue(correction.prepaid)
+        self.assertEqual(correction.duplicate_of, candidates["accepted"])
+
+        response = self.client.get(correction.get_absolute_url())
+        self.assertNotContains(response, "Confirm refund done")
+        self.client.post(correction.get_absolute_url(), {"confirm_refund": "1"})
+        self.assertFalse(correction.paid_payment_set.exists())
+        self.assertNotIn(invoice, get_unpaid_invoice_queryset())
+        invoice.refresh_from_db()
+        self.assertFalse(invoice.is_paid)
+        self.assertTrue(invoice.is_credited)
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertContains(response, "Credited")
+        self.assertContains(response, f'href="{correction.get_absolute_url()}"')
+        self.assertNotContains(response, 'name="issue_correction"')
+        self.assertNotContains(response, 'name="correct_duplicate"')
+        self.assertNotContains(response, 'name="confirm_refund"')
+        self.assertEqual(correction.status_badge_label, "Applied to invoice")
+        response = self.client.post(
+            invoice.get_absolute_url(),
+            {
+                "issue_correction": "1",
+                "token": form["token"].value(),
+                "note": "Refund",
+                "amount": "100.00",
+                "issue_date": invoice.issue_date,
+                "tax_date": invoice.tax_date,
+                "confirm_invoice": "1",
+            },
+        )
+        self.assertContains(response, "Only paid invoices can be refunded.")
+        self.assertEqual(invoice.corrections.count(), 1)
+
+        response = self.client.get(candidates["accepted"].get_absolute_url())
+        self.assertContains(response, "Cancelled duplicate")
+        self.assertContains(response, f'href="{invoice.get_absolute_url()}"')
+        self.assertContains(response, f'href="{correction.get_absolute_url()}"')
+        self.assertContains(response, 'name="issue_correction"')
+
+    def test_corrections_require_dedicated_permission(self):
+        invoice = self.create_invoice(Decimal(100))
+        negative = self.create_invoice(Decimal(-100))
+        user = User.objects.create_user(username="billing-staff", is_staff=True)
+        user.user_permissions.add(
+            *Permission.objects.filter(
+                codename__in=[
+                    "view_invoice",
+                    "add_invoice",
+                    "change_invoice",
+                    "add_payment",
+                ]
+            )
+        )
+        self.client.force_login(user)
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertNotContains(response, "Issue credit note")
+        for obj, data in [
+            (invoice, {"issue_correction": "1"}),
+            (invoice, {"correct_duplicate": "1"}),
+            (invoice, {"uncollectible": "mark", "note": "Unpaid"}),
+            (negative, {"confirm_refund": "1"}),
+        ]:
+            self.assertEqual(
+                self.client.post(obj.get_absolute_url(), data).status_code, 403
+            )
+        user.user_permissions.add(
+            Permission.objects.get(codename="manage_invoice_corrections")
+        )
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertContains(response, "Issue credit note")
+        self.assertContains(
+            self.client.get(negative.get_absolute_url()), "Confirm refund done"
+        )
+
+    def test_uncollectible_and_resume(self):
+        invoice = self.create_invoice(Decimal(100))
+        self.client.post(
+            invoice.get_absolute_url(),
+            {"uncollectible": "mark", "note": "Company closed"},
+        )
+        invoice.refresh_from_db()
+        self.assertTrue(invoice.uncollectible)
+        self.assertNotIn(invoice, get_unpaid_invoice_queryset())
+        self.assertFalse(Payment.objects.exists())
+        self.client.post(
+            invoice.get_absolute_url(),
+            {"uncollectible": "resume", "note": "Customer replied"},
+        )
+        invoice.refresh_from_db()
+        self.assertFalse(invoice.uncollectible)
+        self.assertIn(invoice, get_unpaid_invoice_queryset())
+        self.assertEqual(invoice.customer.interaction_set.count(), 2)
