@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kabyle (Weblate)\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
 "PO-Revision-Date: 2026-09-05 05:52+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
@@ -104,11 +104,50 @@ msgstr "Imayl"
 msgid "Full name"
 msgstr "Isem inek ummid"
 
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue date"
+msgstr "Awi tallelt"
+
+#, fuzzy
+#| msgid "Creation date"
+msgid "Correction date"
+msgstr "Azemz n tmerna"
+
+msgid "Please confirm that you want to issue a credit note."
+msgstr ""
+
+msgid "Explanation for the customer"
+msgstr ""
+
+#, fuzzy
+#| msgid "(including VAT)"
+msgid "Amount including VAT"
+msgstr "(VAT tedda)"
+
+msgid "Only paid invoices can be refunded."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Correct paid invoice"
+msgstr "Sader tafaturt"
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Internal explanation"
+msgstr "API n uslaq"
+
 msgid "Invalid hosted user response"
 msgstr ""
 
 msgid "Hosted user synchronization is disabled."
 msgstr ""
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice correction"
+msgstr "API n uslaq"
 
 msgid "Yes"
 msgstr ""
@@ -119,6 +158,18 @@ msgid "No"
 msgstr "Tamawt"
 
 msgid "not set"
+msgstr ""
+
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr ""
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr ""
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
 msgstr ""
 
 msgid "Invoice issued during VIES outage"
@@ -547,14 +598,28 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Get support"
+msgid "Issue credit note?"
+msgstr "Awi tallelt"
+
+#, fuzzy
+#| msgid "Get support"
 msgid "Issue final invoice?"
 msgstr "Awi tallelt"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr ""
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
 
 msgid "Cancel"
 msgstr ""
+
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue credit note"
+msgstr "Awi tallelt"
 
 msgid "Issue invoice"
 msgstr ""
@@ -583,6 +648,9 @@ msgstr ""
 msgid "Edit in admin"
 msgstr ""
 
+msgid "Credit note"
+msgstr ""
+
 msgid "Number"
 msgstr ""
 
@@ -591,6 +659,35 @@ msgstr ""
 
 msgid "Due"
 msgstr ""
+
+#, fuzzy
+#| msgid "Payment amount"
+msgid "Credited amount"
+msgstr "Tallayt n lexlaṣ"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Remaining amount"
+msgstr "Lexlaṣ yettraǧun"
+
+#, fuzzy
+#| msgid "Creation date"
+msgid "Correction of"
+msgstr "Azemz n tmerna"
+
+msgid "Reason"
+msgstr ""
+
+#, fuzzy
+#| msgid "and dedicated"
+msgid "Cancelled duplicate"
+msgstr "yettuḥerr"
+
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Collection note"
+msgstr "Ismal n uttekki"
 
 #, fuzzy
 #| msgid "Discover"
@@ -657,6 +754,50 @@ msgstr ""
 msgid "Reopen quote"
 msgstr "Awi tallelt"
 
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice corrections"
+msgstr "API n uslaq"
+
+msgid "Refund"
+msgstr ""
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Duplicate invoice"
+msgstr "Sader tafaturt"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Cancel duplicate invoice"
+msgstr "Sader tafaturt"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Collection status"
+msgstr "Addad n tsuqqilt"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+
+msgid "Resume collection"
+msgstr ""
+
+msgid "Mark uncollectible"
+msgstr ""
+
 msgid "Confirm refund done"
 msgstr ""
 
@@ -685,6 +826,9 @@ msgstr "Sagen tabdart"
 
 msgid "Overview"
 msgstr "Agzul"
+
+msgid "Owners"
+msgstr ""
 
 #, fuzzy
 #| msgid "Integration API"
@@ -802,16 +946,6 @@ msgstr "Seqdec Weblate"
 msgid "Review merge"
 msgstr ""
 
-#, fuzzy
-#| msgid "Use Weblate"
-msgid "Add owner to customer"
-msgstr "Seqdec Weblate"
-
-#, fuzzy
-#| msgid "Add a user"
-msgid "Add owner"
-msgstr "Rnu aseqdac"
-
 msgid "Add note"
 msgstr ""
 
@@ -893,6 +1027,49 @@ msgstr "Ẓreg"
 #| msgid "Documentation"
 msgid "No donations recorded."
 msgstr "Tasemlit"
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer owners"
+msgstr "Udmawan"
+
+#, fuzzy
+#| msgid "User"
+msgid "Username"
+msgstr "Aseqdac"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "No customer owners."
+msgstr "Rnu aseqdac"
+
+msgid "Pending owner invitations"
+msgstr ""
+
+msgid "Invited by"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unlimited"
+msgid "Invited"
+msgstr "War talast"
+
+msgid "Expires"
+msgstr "Ad yemmet deg"
+
+msgid "No pending owner invitations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add customer owner"
+msgstr "Rnu aseqdac"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add owner"
+msgstr "Rnu aseqdac"
 
 msgid "Invoice history"
 msgstr ""
@@ -1009,6 +1186,18 @@ msgid "Discoverable"
 msgstr "Snirem"
 
 #, fuzzy
+#| msgid "Translation context"
+msgid "Instance activity"
+msgstr "Asatal n tsuqilt"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr ""
+
+#, python-format
+msgid "%(changes)s changes"
+msgstr ""
+
+#, fuzzy
 #| msgid "Service"
 msgid "Service limits"
 msgstr "Ameẓlu"
@@ -1040,9 +1229,6 @@ msgstr "Urmid"
 #| msgid "Service Status"
 msgid "Service is terminated"
 msgstr "Addad n umeẓlu"
-
-msgid "Expires"
-msgstr "Ad yemmet deg"
 
 msgid "Edit subscription in admin"
 msgstr ""
@@ -1161,7 +1347,13 @@ msgstr ""
 
 #, fuzzy, python-format
 #| msgid "Add a user"
-msgid "Added %(email)s to customer owners."
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr "Rnu aseqdac"
+
+#, fuzzy, python-format
+#| msgid "Add a user"
+msgid "Added %(email)s to customer owners and notified them."
 msgstr "Rnu aseqdac"
 
 #, python-format
@@ -1270,6 +1462,48 @@ msgstr "URL n uqeddac"
 msgid "Server URL must use HTTPS."
 msgstr ""
 
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr ""
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+
+msgid "This request has already been used."
+msgstr ""
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr ""
+
+msgid "A correction reason and explanation are required."
+msgstr ""
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr ""
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr ""
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr ""
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr ""
+
+msgid "This invoice has already been settled."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translation context"
+msgid "An internal explanation is required."
+msgstr "Asatal n tsuqilt"
+
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -1317,8 +1551,28 @@ msgstr ""
 msgid "Converted"
 msgstr ""
 
+msgid "Credited"
+msgstr ""
+
+msgid "Refunded"
+msgstr ""
+
 msgid "Paid"
 msgstr "Yettwaxleṣ"
+
+msgid "Uncollectible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Applied to invoice"
+msgstr "Sader tafaturt"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Awaiting refund"
+msgstr "Lexlaṣ yettraǧun"
 
 msgid "Unpaid"
 msgstr ""
@@ -1721,6 +1975,21 @@ msgstr "Yal aggur"
 
 msgid "One-time"
 msgstr "Tikkelt kan"
+
+msgid "Pending"
+msgstr ""
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Revoked"
+msgstr ""
+
+msgid "Delivery failed"
+msgstr ""
+
+msgid "Fulfilled by staff"
+msgstr ""
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -2238,6 +2507,30 @@ msgstr "Bdu tasuqqilt"
 msgid "Translation status"
 msgstr "Addad n tsuqqilt"
 
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer owner invitation"
+msgstr "Sagen tabdart"
+
+msgid "Review access"
+msgstr ""
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer account"
+msgstr "Udmawan"
+
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation token"
+msgid "Accept invitation"
+msgstr "Tiddest n urmad"
+
 msgid "Discover Weblate"
 msgstr "Issin Weblate"
 
@@ -2626,121 +2919,232 @@ msgstr ""
 "Tzemreḍ ad tesferkeḍ Weblate s wudem anmeggag s useqdec n <a "
 "href=\"%(url)s\">wlc</a>, ayen izemren ad yebded s Python pip:"
 
-msgid "Weblate features"
-msgstr "Timahilin n Weblate"
+msgid "Weblate features — quality translations, your control"
+msgstr ""
+
+msgid "Bring your project to more people"
+msgstr ""
 
 msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
 msgstr ""
-"Am ufecku n tsuqqilt s tallelt n uselkim s tmahilin n ubaɣur, Weblate "
-"iḥerrez akud i yineflayen akked yimsuqqal. Sefreḥ iseqdacen-ik!"
 
 msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
 msgstr ""
-"Snirem <a href=\"https://docs.weblate.org/\">tasemlit</a> akken ad tissineḍ "
-"ugar."
-
-msgid "Easy to use interface"
-msgstr "Agrudem fessusen i useqdec"
-
-msgid "Weblate screenshot"
-msgstr "Tuṭṭfa n ugdil n Weblate"
-
-msgid "Customizable quality checks"
-msgstr "Asenqed n tɣara tudmawant"
-
-msgid "Detailed context"
-msgstr "Asatal lqayen"
-
-msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
-msgstr ""
-"Imsuqal ttmuddun-d asatal n tsuqilt, seg yifuyla n tsuqilt, neɣ isefka s "
-"ubaɣur deg Weblate."
-
-msgid "Fluent communication"
-msgstr "Taywalt ifazen"
-
-msgid "All translations are tracked and can be commented."
-msgstr "Meṛṛa tisuqilin ad ttwaḍfarent daɣen ad izmirent ad ttuwenntent."
-
-msgid "Access Control"
-msgstr "Tarrayt n uneckum"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "Seggem izerfan n unekcum akken ad ddun d twennaḍt-ik/im."
-
-msgid "Smart Notifications"
-msgstr "Ilɣa uḥricen"
-
-msgid ""
-"Translators can be notified of new strings to translate or other events."
-msgstr ""
-"Imsuqal zemren ad ttwalqun ɣef yizriren imaynuten ara ttwasuqlen neɣ "
-"ineḍruyen-nniḍen."
-
-msgid "Integration API"
-msgstr "API n uslaq"
-
-msgid "Integrate Weblate with third-party services."
-msgstr "Sleɣ Weblate d yimeẓla-nniḍen."
-
-msgid "Multiple File Formats"
-msgstr "Ddeqs n yimasalen n ufaylu"
 
 #, fuzzy
-#| msgid ""
-#| "All widely used file formats for localization are supported, gettext, "
-#| "JSON, XLIFF or resource strings, etc."
-msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
-msgstr ""
-"Imasalen n yifuyla yettwaseqdacen s waṭas i usideg ttwasefraken, gettext, "
-"JSON, XLIFF neɣ izriren iɣbula, atg."
+#| msgid "Join existing users and supporters"
+msgid "Compare hosting and support"
+msgstr "Rzu ɣer yiseqdacen d yiwiziwen yallan"
 
-msgid "Branch Support"
-msgstr "Tallelt ɣef tseṭṭa"
+msgid "Try Weblate"
+msgstr "Ɛreḍ Weblate"
+
+msgid "Keep translations in step with development"
+msgstr ""
 
 msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
 msgstr ""
-"Sefrek ddeqs n tsuqqilin s udegger-nsent s wudem awurman ɣer tseḍwa "
-"yemgaraden."
 
-msgid "Translation Context"
-msgstr "Asatal n tsuqqilt"
+msgid ""
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
+msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "Context, comments, nearby translations, images and corresponding source "
-#| "code for every string."
-msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
+#| msgid "Continuous localization"
+msgid "Explore continuous localization"
+msgstr "Asideg i ttkemmilen"
+
+msgid "Give every translation the context it needs"
 msgstr ""
-"Asatal, iwenniten, tisuqqilin iqerben, tugniwin akked tengalt aɣbalu "
-"yemsaḍan i yal azrir."
+
+msgid ""
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
+msgstr ""
+
+msgid ""
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
+msgstr ""
+
+msgid ""
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
+msgstr ""
+
+msgid "Give your translators the tools to make informed choices."
+msgstr ""
+
+msgid "Explore translation quality checks"
+msgstr ""
+
+msgid "Choose how you translate—with or without AI"
+msgstr ""
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translate the app"
+msgid "Translate without AI"
+msgstr "Suqqel asnas"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Automatic translation"
+msgid "Assist your translators"
+msgstr "Tasuqilt tawurmant"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+
+#, fuzzy
+#| msgid "Start translating"
+msgid "Start with machine translations"
+msgstr "Bdu tasuqqilt"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+
+msgid "Accept suggestions before use"
+msgstr ""
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+
+msgid "Approve before committing"
+msgstr ""
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+
+msgid "Explore AI translation workflows"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose your amount in EUR"
+msgid "Choose how your content is handled"
+msgstr "Fren tallayt-ik s Euro"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+
+msgid "Find the right hosting option"
+msgstr ""
+
+msgid "Bring your team and community together"
+msgstr ""
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+
+msgid "The everyday tools your localization needs"
+msgstr ""
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+
+#, fuzzy
+#| msgid "Read more in the documentation."
+msgid "Explore the documentation"
+msgstr "I wugar n yisallen, wali tasemlit."
+
+msgid "Keep working with your existing formats"
+msgstr ""
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+
+#, fuzzy
+#| msgid ".NET resource files"
+msgid ".NET resource files (RESX, RESW)"
+msgstr "Ifuyla iɣbula .Net"
 
 msgid "Android string resources"
-msgstr ""
-
-msgid "Apple iOS strings"
 msgstr ""
 
 msgid "App store metadata files"
 msgstr "Ifuyla n iɣefisefka n App Store"
 
+msgid "Apple iOS strings"
+msgstr ""
+
 msgid "ARB file"
 msgstr "Afaylu ARB"
 
+#, fuzzy
+#| msgid "DTD files"
+msgid "AsciiDoc files"
+msgstr "Ifuyla DTD"
+
+msgid "Compose Multiplatform resources"
+msgstr ""
+
 msgid "CSV files"
 msgstr "Ifuyla CSV"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "DokuWiki text files"
+msgstr "Ifuyla n uḍris"
 
 msgid "DTD files"
 msgstr "Ifuyla DTD"
@@ -2756,6 +3160,11 @@ msgstr ""
 msgid "Fluent format"
 msgstr "Taywalt ifazen"
 
+#, fuzzy
+#| msgid "React Intl"
+msgid "Format.JS / React Intl"
+msgstr "React Intl"
+
 msgid "GNU gettext"
 msgstr "GNU gettext"
 
@@ -2766,6 +3175,9 @@ msgid "gotext JSON files"
 msgstr "Ifuyla gotext JSON"
 
 msgid "GWT properties"
+msgstr ""
+
+msgid "Haiku Catkeys"
 msgstr ""
 
 msgid "HTML files"
@@ -2786,17 +3198,14 @@ msgstr "Tisuqilin n Inno Setup INI"
 msgid "Java properties"
 msgstr ""
 
+msgid "JavaScript resource files"
+msgstr ""
+
 msgid "Joomla translations"
 msgstr "Tisuqilin n Joomla"
 
 msgid "JSON files"
 msgstr "Ifuyla JSON"
-
-msgid "React Intl"
-msgstr "React Intl"
-
-msgid "Vue I18n"
-msgstr "Vue I18n"
 
 msgid "Laravel PHP strings"
 msgstr "Izriren n Laravel PHP"
@@ -2804,10 +3213,25 @@ msgstr "Izriren n Laravel PHP"
 msgid "Markdown files"
 msgstr "Ifuyla Markdown"
 
-msgid "mi18n lang files"
+#, fuzzy
+#| msgid "DTD files"
+msgid "MDX files"
+msgstr "Ifuyla DTD"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "MediaWiki text files"
+msgstr "Ifuyla n uḍris"
+
+#, fuzzy
+#| msgid "mi18n lang files"
+msgid "@draggable/i18n lang files"
 msgstr "Ifuyla mi18n lang"
 
 msgid "Mobile Kotlin resources"
+msgstr ""
+
+msgid "Nextcloud JSON"
 msgstr ""
 
 #, fuzzy
@@ -2824,11 +3248,6 @@ msgstr "Qt Linguist .ts"
 #, fuzzy
 #| msgid ".NET resource files"
 msgid "ResourceDictionary files"
-msgstr "Ifuyla iɣbula .Net"
-
-#, fuzzy
-#| msgid ".NET resource files"
-msgid ".NET resource files (RESX, RESW)"
 msgstr "Ifuyla iɣbula .Net"
 
 msgid "Ruby YAML files"
@@ -2848,6 +3267,12 @@ msgstr ""
 msgid "Text files"
 msgstr "Ifuyla n uḍris"
 
+msgid "TOML and go-i18n TOML"
+msgstr ""
+
+msgid "Vue I18n"
+msgstr "Vue I18n"
+
 #, fuzzy
 #| msgid "WebExtension"
 msgid "WebExtension JSON"
@@ -2856,181 +3281,74 @@ msgstr "WebExtension"
 msgid "Windows RC files"
 msgstr "Ifuyla Windows RC"
 
-msgid "XLIFF"
+#, fuzzy
+#| msgid "Localization"
+msgid "WiX localization files"
+msgstr "Asideg"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr ""
+
+#, fuzzy
+#| msgid "XLIFF"
+msgid "XLIFF 2.0"
 msgstr "XLIFF"
+
+msgid "XWiki formats"
+msgstr ""
 
 msgid "YAML files"
 msgstr "Ifuyla YAML"
 
-msgid "Glossaries"
-msgstr "Imawalen"
-
-msgid "Define frequently used terminology for consistency."
-msgstr "Sbadu awalen i yettwaseqdacen s waṭas i wugar n tseddi."
-
-msgid "Feedback Acquisition"
-msgstr "Awway n tikta"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
-msgstr ""
-"Seqdec Weblate akken ad tawiḍ tikti ɣef izriren iɣbula akken ad ten-"
-"tesnerniḍ.."
-
-msgid "Export and Import"
-msgstr "Aktar akked usifeḍ"
-
-msgid "Translations can be downloaded for offline translation and merged back."
-msgstr "Tasuqilt tezmer ad tettwasader i tsuqilt deg uselkim sakin ad tezdi."
-
-msgid "Fully Integrated"
-msgstr "Isleɣ meṛṛa"
-
-msgid ""
-"Translations are managed within the same version control system as your code."
-msgstr ""
-"Tisuqilin ttwasefrakent deg yiwen n unagraw n usefrek n yileqman am tengalt-"
-"ik."
-
-msgid "Documentation"
-msgstr "Tasemlit"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr "Tasemlit yemmden i yessegzayen asbeddi akked useqdec."
-
-msgid "Easy Reviews"
-msgstr "Acegger fesssuen"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr "Ddeqs n yisefran i yimsuqqal akken ad sneqdec atteki i xedmen wiyaḍ."
-
-msgid "Language support"
-msgstr "Asefrek n tutlayt"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr "Tallelt i wugar n 500 n tutlayin i yellan. Tiyaḍ zemrent ad ttwarnunt."
-
-msgid "Promotion"
-msgstr "Asnerni"
-
-msgid ""
-"Built-in features to attract a wider audience for your translation project."
-msgstr ""
-"Timahilin tusliɣin akken ad d-nejbed ugar n yiseqdacen i usenfar-ik/im n "
-"tsuqqilt."
-
-msgid "Reporting"
-msgstr "Aneqqis"
-
-msgid "Reports are generated to provide info on project activity."
-msgstr "Ineqqisen ttwarnan akken ad mudden talɣut ɣef urmud n usenfar."
-
-msgid "Version Control"
-msgstr "Asefrek n lqem"
-
-msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
-msgstr ""
-"Mmeslay srid d unagraw-ik /im n usefrek n yileqman, akka tura Git d "
-"Mercurial ttwasefraken."
-
-msgid "Collaboration Sites"
-msgstr "Ismal n uttekki"
-
-#, fuzzy
+#, fuzzy, python-format
 #| msgid ""
-#| "Native support for software development sites such as GitLab, GitHub, "
-#| "Pagure, or Bitbucket."
+#| "Please consult the <a href=\"%(url)s\">contributor documentation</a> to "
+#| "find the most common topics."
 msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
 msgstr ""
-"Tallelt tagamant i yismal n tneflit n useɣzan am GitLab, GitHub, Pagure, neɣ "
-"Bitbucket."
+"Ttxil wali <a href=\"%(url)s\">tasemlit n uttekki</a> akken ad tafeḍ isental "
+"yettwassnen aṭas."
 
-msgid "Responsive UI"
-msgstr "Agrudem Ui amyigaw"
+msgid "Open source, backed by sustainable services"
+msgstr ""
+
+msgid ""
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
+msgstr ""
+
+msgid ""
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
+
+msgid ""
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
+msgstr ""
+
+msgid "Explore self-hosting"
+msgstr ""
 
 #, fuzzy
-#| msgid "User interface that works nicely on desktop, tablets and phones."
-msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
-msgstr ""
-"Agrudem n useqdac itteddu allen iwata deg uselkim, tifelwiyin n uselkem "
-"akked tiliɣriyin."
-
-msgid "Translation memory"
-msgstr "Takatut n tsuqqilt"
-
-msgid "Reuse existing translations to save time and costs."
-msgstr "Ales aseqdec n tsuqqilin i yellan yakan akken ad trebḥeḍ akud d udrim."
-
-msgid "Translation add-ons"
-msgstr "Izegrar n tsuqqilt"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "Sagen amahil n usideg s waṭas n yizegrar."
-
-msgid "Backups"
-msgstr "Aḥraz"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr "Aḥraz anmeggag usliɣ i usewḥel n trewla n yisefka."
-
-msgid "Screenshots"
-msgstr "Tuṭṭfiwin n ugdil"
-
-msgid "Provide visual context for the translations."
-msgstr "Yettak-d asatal s tmeẓri i tsuqilin."
-
-msgid "Variants"
-msgstr "Tantaliyin"
-
-#, fuzzy
-#| msgid "Group variants of a strings for easier translating."
-msgid "Group variants of strings for easier translating."
-msgstr "Isdukkul tataliyin n uzrir i usifses n tsuqilt."
-
-msgid "Intermediate language"
-msgstr "Afaylu n tutlayt n laɛḍil"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "Ales taɣuri n yizriren n yineflayen send tasuqilt."
-
-msgid "Automatic translation"
-msgstr "Tasuqilt tawurmant"
-
-#, fuzzy
-#| msgid ""
-#| "Translations can be downloaded for offline translation and merged back."
-msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr "Tasuqilt tezmer ad tettwasader i tsuqilt deg uselkim sakin ad tezdi."
-
-msgid "Organize translations"
-msgstr "Ssuddes tisuqilin-ik·im"
-
-msgid "Categorize the translation files to ease navigation."
-msgstr ""
-
-msgid "Keyboard operation"
-msgstr ""
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr ""
+#| msgid "for libre projects"
+msgid "Hosting for libre projects"
+msgstr "i yisenfaren ilelliyen"
 
 msgid "Weblate Pricing"
 msgstr "Tasqamt n Weblate"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"Seqdec Weblate am umeẓlu, sbadu ayla-k/m, neɣ <a href=\"%(url)s\">awi "
-"tallelt</a> i tnezduɣt ɣur-neɣ - meṛṛa akked tallelt premium."
 
 #, fuzzy
 #| msgid "Our team is ready to help you make Weblate run smoothly."
@@ -3204,25 +3522,27 @@ msgstr ""
 msgid "Join existing users and supporters"
 msgstr "Rzu ɣer yiseqdacen d yiwiziwen yallan"
 
-msgid "Weblate - web-based localization"
-msgstr "Weblate - anagraw n usideg yebnan ɣef web"
-
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr "Asideg <strong>yettkemmilen</strong> i yebnan ɣef Web"
-
-#, python-format
-msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+msgid "Weblate — quality translations, your control"
 msgstr ""
-"Aseɣzan ilelli s turagt yeldin, yettwaseqdac deg wugar n %(projects)s n "
-"yisenfaṛen ilelliyen akked tkebbaniyin deg %(countries)s n tmura."
 
-msgid "Try Weblate"
-msgstr "Ɛreḍ Weblate"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr ""
 
-msgid "Explore all features"
-msgstr "Snirem meṛṛa timahilin"
+msgid ""
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
+msgstr ""
+
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr ""
+
+#, fuzzy
+#| msgid "Get more Weblate"
+msgid "Explore Weblate"
+msgstr "Awi-d ugar sɣur Weblate"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -3232,13 +3552,11 @@ msgid "Weblate localizes the world"
 msgstr "Weblate isidig amaḍal"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"Ameẓlu n tnezduɣt akked ufecku n uselkim s uslaɣ n usefrek n lqem. D afessas "
-"s ugrudem n useqdac zeddigen, azuzer n tsuqilin deg yisuddisen, asenqed n "
-"tɣara akked wassaɣ awurman ɣer yifuyla iɣbula."
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -3258,11 +3576,8 @@ msgstr[1] "%(count)s n tsuqilin"
 msgid "in the last 7 days"
 msgstr "di 7 n wussan ineggura"
 
-msgid "Robust feature set"
-msgstr "Asbeddi n tmahilt iǧehden"
-
-msgid "Go to pricing"
-msgstr "Ddu ɣer tesqamt"
+msgid "Make localization work for your team"
+msgstr ""
 
 msgid "Users and Supporters"
 msgstr "ISeqdacen d yiwiziwen"
@@ -3276,6 +3591,49 @@ msgstr "Sefrek lexlaṣ-ik"
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "Yettwarna deg %(timestamp)s."
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr ""
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr ""
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Review invitation"
+msgstr "Beddel tunigin"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr ""
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3401,6 +3759,11 @@ msgstr "Lexlaṣ-ik yettraǧu deg weblate.org"
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "Ajerred-ik deg weblate.org ad yales imalas i d-iteddun."
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr ""
+
 msgid "The payment will be automatically charged soon."
 msgstr ""
 
@@ -3456,6 +3819,20 @@ msgstr ""
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr ""
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Pay invoice"
+msgstr "Sader tafaturt"
 
 #, fuzzy, python-format
 #| msgid "upon <a href=\"%(url)s\">request</a>"
@@ -3640,12 +4017,13 @@ msgstr "Sken lqem s teglizit"
 msgid "Download as PDF"
 msgstr "Sader am PDF"
 
-msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+msgid "Find your way to get started"
 msgstr ""
-"Ger iman-ik daxel, neqɣ awi tiwezza akked termit seg terbaɛt-nneɣ n "
-"yimussnawen, awi awelleh ufrin n wayen tesriḍ kan."
+
+msgid ""
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
+msgstr ""
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>Mudd tawsa</strong>—Akken amaḍal ad yuɣal d amḍiq yelhan"
@@ -3682,9 +4060,6 @@ msgid ""
 "grow."
 msgstr ""
 
-msgid "Owners"
-msgstr ""
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3704,42 +4079,65 @@ msgstr "Kkes aseqdac"
 msgid "Remove"
 msgstr "Kkes"
 
-msgid "Continuous Localization"
-msgstr "Asideg i ttkemmilen"
+#, fuzzy
+#| msgid "Documentation"
+msgid "Pending invitation"
+msgstr "Tasemlit"
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Revoke invitation"
+msgstr "Beddel tunigin"
+
+#, fuzzy
+#| msgid "Remove user"
+msgid "Invite owner"
+msgstr "Kkes aseqdac"
+
+msgid "Keep pace with development"
+msgstr ""
 
 msgid ""
-"Automated localization workflow follows your project development closely."
-msgstr "Akala n umahil n usideg yeṭṭafaṛ s lqerban taleflit n usenfaṛ-ik."
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
+msgstr ""
 
-msgid "Quality Checks"
-msgstr "Asenqed n tɣara"
+msgid "Help people get the meaning right"
+msgstr ""
 
-msgid "Customizable quality checks helps improve translation quality."
-msgstr "Asenqed n taɣara udmawan yettmuddu afus ad isnerni taɣara n tsuqilt."
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
+msgstr ""
 
-msgid "Attribution"
-msgstr "Tikci"
+msgid "Translate with or without AI"
+msgstr ""
 
-msgid "All translators are properly credited in the version control system."
-msgstr "Meṛṛa imsuqal ad sen-yettunefk usmad deg unagraw n usefrek n yileman."
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
 
-msgid "Hosting Plans"
-msgstr "Iɣawasen n tnezduɣt"
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
 
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "Seqdec Weblate d ameẓul ara yebdun seg 19 EUR."
+msgid "Bring everyone into the conversation"
+msgstr ""
 
-msgid "Cloud Ready"
-msgstr "Asigna ihegga"
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
 
-msgid "Comes with appliances, ready to deploy in your cloud."
-msgstr "Yewjed deg ileqman s yesnasen iheggan i usebded deg usigna-ik."
+msgid "Build on software you can trust"
+msgstr ""
 
-msgid "Libre Software"
-msgstr "Aseɣzan ilelli"
-
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
-msgstr "D ilelli; seqdec, wali, beddel daɣen bḍu melmi tebɣiḍ, d yal yiwen."
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
 
 msgid "Help translate"
 msgstr "Ɛiwen deg tsuqilt"
@@ -3784,14 +4182,20 @@ msgstr "Sader tangalt taɣbalut"
 msgid "Pay now"
 msgstr "Snes tura"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
-msgstr "<strong>Baṭel</strong> neɣ <strong>Premium</strong>—ɣur-k kan i teqqim"
+msgid "Choose the hosting and support that fit your team"
+msgstr ""
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid "Premium Cloud"
 msgstr "Premium Cloud"
 
-msgid "for ease and comfort"
-msgstr "i tifses d rrkad"
+msgid "managed hosting for your team"
+msgstr ""
 
 #, fuzzy
 #| msgid "Source strings"
@@ -3821,8 +4225,9 @@ msgstr "Ḥrez %(percent)s%%"
 msgid "for complete control"
 msgstr "i usefrek ummid"
 
-#, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
+#, fuzzy, python-format
+#| msgid "with paid <a href=\"%(url)s\">support</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
 msgstr "S <a href=\"%(url)s\">tallelt</a> s yidrimen"
 
 msgid "Gratis Weblate"
@@ -3834,9 +4239,6 @@ msgstr "i yisenfaren ilelliyen"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "azen <a href=\"%(url)s\">asuter</a>"
-
-msgid "Compare all plans"
-msgstr "Serwes meṛra iɣawasen"
 
 msgid "Expired"
 msgstr "Yemmut"
@@ -3855,6 +4257,9 @@ msgstr ""
 
 msgid "Backup repository"
 msgstr "Akufi n uḥraz"
+
+msgid "Documentation"
+msgstr "Tasemlit"
 
 #, python-format
 msgid ""
@@ -4002,14 +4407,16 @@ msgstr "Seqdec Weblate"
 msgid "Weblate support"
 msgstr "Tallalt n Weblate"
 
-msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+msgid "Expert help for your localization"
 msgstr ""
-"Weblate d aseɣzan ilelli s tallelt sɣur tarbaɛt yedlin. Imjerrden ad d-"
-"remsen tallelt yezwaren war lexlaṣ s zyada. Tallelt yettwaxelṣen seg tazwara "
-"tewjed i yal yiwen."
+
+msgid ""
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
+msgstr ""
 
 msgid "Report issue"
 msgstr "Azen ugur"
@@ -4036,8 +4443,8 @@ msgstr ""
 "Ma tufiḍ-d ugur n tɣellist, azen-it-id ɣer %(report)s. Ugar n yisallen ad "
 "ten-tafeḍ deg <a href=\"%(url)s\">tasemlit</a>."
 
-msgid "Reliable support"
-msgstr "Tallelt inefɛen"
+msgid "Living humans, ready to help"
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4344,25 +4751,418 @@ msgid ""
 "token shown below."
 msgstr ""
 
-msgid "User not found!"
-msgstr "Ur yettwaf ara useqdac!"
-
 #, fuzzy
 #| msgid "You can not remove yourself"
 msgid "You can not remove yourself."
 msgstr "Ur tezmireḍ ara ad tekkseḍ iman-ik·im"
 
 #, fuzzy
-#| msgid "Add a user"
-msgid "Removed customer owner"
-msgstr "Rnu aseqdac"
+#| msgid ""
+#| "VAT ID validation service unavailable for {}, please try again later."
+msgid "Too many owner invitations. Please try again later."
+msgstr "Ameẓlu n usenqed n usulay n VAT ulac-it i {}, ttxil-k ɛreḍ ticki."
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr ""
+
+msgid "This customer owner invitation is invalid."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unavailable for your amount"
+msgid "This invitation is not available for your account."
+msgstr "Ulac i tallayt-ik"
+
+msgid "Customer owner invitation accepted."
+msgstr ""
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr ""
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr ""
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
 msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#, fuzzy
+#~| msgid "Use Weblate"
+#~ msgid "Add owner to customer"
+#~ msgstr "Seqdec Weblate"
+
+#~ msgid "Weblate features"
+#~ msgstr "Timahilin n Weblate"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "Am ufecku n tsuqqilt s tallelt n uselkim s tmahilin n ubaɣur, Weblate "
+#~ "iḥerrez akud i yineflayen akked yimsuqqal. Sefreḥ iseqdacen-ik!"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr ""
+#~ "Snirem <a href=\"https://docs.weblate.org/\">tasemlit</a> akken ad "
+#~ "tissineḍ ugar."
+
+#~ msgid "Easy to use interface"
+#~ msgstr "Agrudem fessusen i useqdec"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "Tuṭṭfa n ugdil n Weblate"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "Asenqed n tɣara tudmawant"
+
+#~ msgid "Detailed context"
+#~ msgstr "Asatal lqayen"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "Imsuqal ttmuddun-d asatal n tsuqilt, seg yifuyla n tsuqilt, neɣ isefka s "
+#~ "ubaɣur deg Weblate."
+
+#~ msgid "Fluent communication"
+#~ msgstr "Taywalt ifazen"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr "Meṛṛa tisuqilin ad ttwaḍfarent daɣen ad izmirent ad ttuwenntent."
+
+#~ msgid "Access Control"
+#~ msgstr "Tarrayt n uneckum"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "Seggem izerfan n unekcum akken ad ddun d twennaḍt-ik/im."
+
+#~ msgid "Smart Notifications"
+#~ msgstr "Ilɣa uḥricen"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr ""
+#~ "Imsuqal zemren ad ttwalqun ɣef yizriren imaynuten ara ttwasuqlen neɣ "
+#~ "ineḍruyen-nniḍen."
+
+#~ msgid "Integration API"
+#~ msgstr "API n uslaq"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "Sleɣ Weblate d yimeẓla-nniḍen."
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "Ddeqs n yimasalen n ufaylu"
+
+#, fuzzy
+#~| msgid ""
+#~| "All widely used file formats for localization are supported, gettext, "
+#~| "JSON, XLIFF or resource strings, etc."
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "Imasalen n yifuyla yettwaseqdacen s waṭas i usideg ttwasefraken, gettext, "
+#~ "JSON, XLIFF neɣ izriren iɣbula, atg."
+
+#~ msgid "Branch Support"
+#~ msgstr "Tallelt ɣef tseṭṭa"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr ""
+#~ "Sefrek ddeqs n tsuqqilin s udegger-nsent s wudem awurman ɣer tseḍwa "
+#~ "yemgaraden."
+
+#~ msgid "Translation Context"
+#~ msgstr "Asatal n tsuqqilt"
+
+#, fuzzy
+#~| msgid ""
+#~| "Context, comments, nearby translations, images and corresponding source "
+#~| "code for every string."
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr ""
+#~ "Asatal, iwenniten, tisuqqilin iqerben, tugniwin akked tengalt aɣbalu "
+#~ "yemsaḍan i yal azrir."
+
+#~ msgid "Glossaries"
+#~ msgstr "Imawalen"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr "Sbadu awalen i yettwaseqdacen s waṭas i wugar n tseddi."
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "Awway n tikta"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr ""
+#~ "Seqdec Weblate akken ad tawiḍ tikti ɣef izriren iɣbula akken ad ten-"
+#~ "tesnerniḍ.."
+
+#~ msgid "Export and Import"
+#~ msgstr "Aktar akked usifeḍ"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr ""
+#~ "Tasuqilt tezmer ad tettwasader i tsuqilt deg uselkim sakin ad tezdi."
+
+#~ msgid "Fully Integrated"
+#~ msgstr "Isleɣ meṛṛa"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr ""
+#~ "Tisuqilin ttwasefrakent deg yiwen n unagraw n usefrek n yileqman am "
+#~ "tengalt-ik."
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr "Tasemlit yemmden i yessegzayen asbeddi akked useqdec."
+
+#~ msgid "Easy Reviews"
+#~ msgstr "Acegger fesssuen"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr ""
+#~ "Ddeqs n yisefran i yimsuqqal akken ad sneqdec atteki i xedmen wiyaḍ."
+
+#~ msgid "Language support"
+#~ msgstr "Asefrek n tutlayt"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr ""
+#~ "Tallelt i wugar n 500 n tutlayin i yellan. Tiyaḍ zemrent ad ttwarnunt."
+
+#~ msgid "Promotion"
+#~ msgstr "Asnerni"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr ""
+#~ "Timahilin tusliɣin akken ad d-nejbed ugar n yiseqdacen i usenfar-ik/im n "
+#~ "tsuqqilt."
+
+#~ msgid "Reporting"
+#~ msgstr "Aneqqis"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr "Ineqqisen ttwarnan akken ad mudden talɣut ɣef urmud n usenfar."
+
+#~ msgid "Version Control"
+#~ msgstr "Asefrek n lqem"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr ""
+#~ "Mmeslay srid d unagraw-ik /im n usefrek n yileqman, akka tura Git d "
+#~ "Mercurial ttwasefraken."
+
+#, fuzzy
+#~| msgid ""
+#~| "Native support for software development sites such as GitLab, GitHub, "
+#~| "Pagure, or Bitbucket."
+#~ msgid ""
+#~ "Native support for software development sites such as GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, or Bitbucket."
+#~ msgstr ""
+#~ "Tallelt tagamant i yismal n tneflit n useɣzan am GitLab, GitHub, Pagure, "
+#~ "neɣ Bitbucket."
+
+#~ msgid "Responsive UI"
+#~ msgstr "Agrudem Ui amyigaw"
+
+#, fuzzy
+#~| msgid "User interface that works nicely on desktop, tablets and phones."
+#~ msgid ""
+#~ "User interface that works nicely on desktop, tablets and phones in both "
+#~ "light and dark mode."
+#~ msgstr ""
+#~ "Agrudem n useqdac itteddu allen iwata deg uselkim, tifelwiyin n uselkem "
+#~ "akked tiliɣriyin."
+
+#~ msgid "Translation memory"
+#~ msgstr "Takatut n tsuqqilt"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr ""
+#~ "Ales aseqdec n tsuqqilin i yellan yakan akken ad trebḥeḍ akud d udrim."
+
+#~ msgid "Translation add-ons"
+#~ msgstr "Izegrar n tsuqqilt"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "Sagen amahil n usideg s waṭas n yizegrar."
+
+#~ msgid "Backups"
+#~ msgstr "Aḥraz"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr "Aḥraz anmeggag usliɣ i usewḥel n trewla n yisefka."
+
+#~ msgid "Screenshots"
+#~ msgstr "Tuṭṭfiwin n ugdil"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "Yettak-d asatal s tmeẓri i tsuqilin."
+
+#~ msgid "Variants"
+#~ msgstr "Tantaliyin"
+
+#, fuzzy
+#~| msgid "Group variants of a strings for easier translating."
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr "Isdukkul tataliyin n uzrir i usifses n tsuqilt."
+
+#~ msgid "Intermediate language"
+#~ msgstr "Afaylu n tutlayt n laɛḍil"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr "Ales taɣuri n yizriren n yineflayen send tasuqilt."
+
+#~ msgid "Automatic translation"
+#~ msgstr "Tasuqilt tawurmant"
+
+#, fuzzy
+#~| msgid ""
+#~| "Translations can be downloaded for offline translation and merged back."
+#~ msgid ""
+#~ "Translations or suggestions can be done by machine translation services "
+#~ "or AI."
+#~ msgstr ""
+#~ "Tasuqilt tezmer ad tettwasader i tsuqilt deg uselkim sakin ad tezdi."
+
+#~ msgid "Organize translations"
+#~ msgstr "Ssuddes tisuqilin-ik·im"
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "Seqdec Weblate am umeẓlu, sbadu ayla-k/m, neɣ <a href=\"%(url)s\">awi "
+#~ "tallelt</a> i tnezduɣt ɣur-neɣ - meṛṛa akked tallelt premium."
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr "Weblate - anagraw n usideg yebnan ɣef web"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr "Asideg <strong>yettkemmilen</strong> i yebnan ɣef Web"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "Aseɣzan ilelli s turagt yeldin, yettwaseqdac deg wugar n %(projects)s n "
+#~ "yisenfaṛen ilelliyen akked tkebbaniyin deg %(countries)s n tmura."
+
+#~ msgid "Explore all features"
+#~ msgstr "Snirem meṛṛa timahilin"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "Ameẓlu n tnezduɣt akked ufecku n uselkim s uslaɣ n usefrek n lqem. D "
+#~ "afessas s ugrudem n useqdac zeddigen, azuzer n tsuqilin deg yisuddisen, "
+#~ "asenqed n tɣara akked wassaɣ awurman ɣer yifuyla iɣbula."
+
+#~ msgid "Robust feature set"
+#~ msgstr "Asbeddi n tmahilt iǧehden"
+
+#~ msgid "Go to pricing"
+#~ msgstr "Ddu ɣer tesqamt"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "Ger iman-ik daxel, neqɣ awi tiwezza akked termit seg terbaɛt-nneɣ n "
+#~ "yimussnawen, awi awelleh ufrin n wayen tesriḍ kan."
+
+#~ msgid "Continuous Localization"
+#~ msgstr "Asideg i ttkemmilen"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr "Akala n umahil n usideg yeṭṭafaṛ s lqerban taleflit n usenfaṛ-ik."
+
+#~ msgid "Quality Checks"
+#~ msgstr "Asenqed n tɣara"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr ""
+#~ "Asenqed n taɣara udmawan yettmuddu afus ad isnerni taɣara n tsuqilt."
+
+#~ msgid "Attribution"
+#~ msgstr "Tikci"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr ""
+#~ "Meṛṛa imsuqal ad sen-yettunefk usmad deg unagraw n usefrek n yileman."
+
+#~ msgid "Hosting Plans"
+#~ msgstr "Iɣawasen n tnezduɣt"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "Seqdec Weblate d ameẓul ara yebdun seg 19 EUR."
+
+#~ msgid "Cloud Ready"
+#~ msgstr "Asigna ihegga"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr "Yewjed deg ileqman s yesnasen iheggan i usebded deg usigna-ik."
+
+#~ msgid "Libre Software"
+#~ msgstr "Aseɣzan ilelli"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr "D ilelli; seqdec, wali, beddel daɣen bḍu melmi tebɣiḍ, d yal yiwen."
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr ""
+#~ "<strong>Baṭel</strong> neɣ <strong>Premium</strong>—ɣur-k kan i teqqim"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "i tifses d rrkad"
+
+#~ msgid "Compare all plans"
+#~ msgstr "Serwes meṛra iɣawasen"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "Weblate d aseɣzan ilelli s tallelt sɣur tarbaɛt yedlin. Imjerrden ad d-"
+#~ "remsen tallelt yezwaren war lexlaṣ s zyada. Tallelt yettwaxelṣen seg "
+#~ "tazwara tewjed i yal yiwen."
+
+#~ msgid "Reliable support"
+#~ msgstr "Tallelt inefɛen"
+
+#~ msgid "User not found!"
+#~ msgstr "Ur yettwaf ara useqdac!"
 
 #~ msgid "Add a user"
 #~ msgstr "Rnu aseqdac"
@@ -4377,16 +5177,6 @@ msgstr ""
 
 #~ msgid "Year"
 #~ msgstr "Aseggas"
-
-#, fuzzy
-#~| msgid "Get support"
-#~ msgid "Issue upgrade quote"
-#~ msgstr "Awi tallelt"
-
-#, fuzzy
-#~| msgid "Download invoice"
-#~ msgid "Create invoice"
-#~ msgstr "Sader tafaturt"
 
 #~ msgid "Company or individual name"
 #~ msgstr "Isem n tkebbanit neɣ isem-ik"
@@ -4447,10 +5237,6 @@ msgstr ""
 #~ msgstr "D aseɣzan ilelli, meṛṛa uguren ldin i uzayez."
 
 #~ msgid ""
-#~ "VAT ID validation service unavailable for {}, please try again later."
-#~ msgstr "Ameẓlu n usenqed n usulay n VAT ulac-it i {}, ttxil-k ɛreḍ ticki."
-
-#~ msgid ""
 #~ "Additionally, Bitnami Weblate stack is available for many platforms and "
 #~ "works with most cloud providers."
 #~ msgstr ""
@@ -4487,9 +5273,6 @@ msgstr ""
 #~ msgctxt "Hosting plan"
 #~ msgid "Enterprise"
 #~ msgstr "Takebbanit"
-
-#~ msgid "and dedicated"
-#~ msgstr "yettuḥerr"
 
 #, python-format
 #~ msgid "over <strong>%(count)s</strong>"
@@ -4633,9 +5416,6 @@ msgstr ""
 
 #~ msgid "See documentation on subscription management."
 #~ msgstr "Wali tasemlit ɣef usefrek n ujzrred."
-
-#~ msgid "Creation date"
-#~ msgstr "Azemz n tmerna"
 
 #~ msgid "Switch to yearly"
 #~ msgstr "Uɣal s useggas"
@@ -4804,11 +5584,6 @@ msgstr ""
 #~ "Weblate does not require payment and welcomes donations. There are many "
 #~ "ways to contribute. Discuss it with your associates."
 #~ msgstr "Weblate baṭel acu kan nesra tawasa-nwen."
-
-#, fuzzy
-#~| msgid "Automatic translation"
-#~ msgid "Attribution to translator"
-#~ msgstr "Tasuqilt tawurmant"
 
 #, fuzzy
 #~| msgid "Hosting Weblate"
