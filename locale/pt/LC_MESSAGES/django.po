@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
 "PO-Revision-Date: 2026-09-05 05:51+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -107,11 +107,52 @@ msgstr "E-mail"
 msgid "Full name"
 msgstr "Nome completo"
 
+#, fuzzy
+#| msgid "Issued"
+msgid "Issue date"
+msgstr "Emitido"
+
+#, fuzzy
+#| msgid "Creation date"
+msgid "Correction date"
+msgstr "Data de criação"
+
+#, fuzzy
+#| msgid "Please confirm that you want to issue a final invoice."
+msgid "Please confirm that you want to issue a credit note."
+msgstr "Por favor, confirme que pretende emitir uma fatura final."
+
+msgid "Explanation for the customer"
+msgstr ""
+
+#, fuzzy
+#| msgid "(including VAT)"
+msgid "Amount including VAT"
+msgstr "(incluindo IVA)"
+
+msgid "Only paid invoices can be refunded."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Correct paid invoice"
+msgstr "Fatura por pagar"
+
+#, fuzzy
+#| msgid "Interaction"
+msgid "Internal explanation"
+msgstr "Interação"
+
 msgid "Invalid hosted user response"
 msgstr "Resposta inválida do utilizador hospedado"
 
 msgid "Hosted user synchronization is disabled."
 msgstr "A sincronização do utilizador hospedado está desativada."
+
+#, fuzzy
+#| msgid "Interaction"
+msgid "Invoice correction"
+msgstr "Interação"
 
 msgid "Yes"
 msgstr "Sim"
@@ -121,6 +162,18 @@ msgstr "Não"
 
 msgid "not set"
 msgstr "não definido"
+
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr ""
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr ""
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
+msgstr ""
 
 msgid "Invoice issued during VIES outage"
 msgstr ""
@@ -485,8 +538,17 @@ msgstr "Última"
 msgid "No records found."
 msgstr "Nenhum registo encontrado."
 
+#, fuzzy
+#| msgid "Issue renewal quote"
+msgid "Issue credit note?"
+msgstr "Obter orçamento para renovação"
+
 msgid "Issue final invoice?"
 msgstr "Emitir fatura final?"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr ""
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
@@ -495,6 +557,11 @@ msgstr ""
 
 msgid "Cancel"
 msgstr "Cancelar"
+
+#, fuzzy
+#| msgid "Issue invoice"
+msgid "Issue credit note"
+msgstr "Emitir fatura"
 
 msgid "Issue invoice"
 msgstr "Emitir fatura"
@@ -523,6 +590,11 @@ msgstr "Recibo"
 msgid "Edit in admin"
 msgstr "Editar em administrador"
 
+#, fuzzy
+#| msgid "Add note"
+msgid "Credit note"
+msgstr "Adicionar anotação"
+
 msgid "Number"
 msgstr "Número"
 
@@ -531,6 +603,35 @@ msgstr "Emitido"
 
 msgid "Due"
 msgstr "Pendente de Pagamento"
+
+#, fuzzy
+#| msgid "Payment amount"
+msgid "Credited amount"
+msgstr "Valor do pagamento"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Remaining amount"
+msgstr "A aguardar pagamento"
+
+#, fuzzy
+#| msgid "Creation date"
+msgid "Correction of"
+msgstr "Data de criação"
+
+msgid "Reason"
+msgstr ""
+
+#, fuzzy
+#| msgid "and dedicated"
+msgid "Cancelled duplicate"
+msgstr "e dedicada"
+
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Collection note"
+msgstr "Sites de Colaboração"
 
 msgid "Discount"
 msgstr "Descontar"
@@ -584,6 +685,50 @@ msgstr "Esta citação é fechada e escondida de sugestões antigas de citaçõe
 msgid "Reopen quote"
 msgstr "Reabrir citação"
 
+#, fuzzy
+#| msgid "Invoice list"
+msgid "Invoice corrections"
+msgstr "Lista de faturas"
+
+msgid "Refund"
+msgstr ""
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+
+#, fuzzy
+#| msgid "Create invoice"
+msgid "Duplicate invoice"
+msgstr "Emitir fatura"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+
+#, fuzzy
+#| msgid "Create invoice"
+msgid "Cancel duplicate invoice"
+msgstr "Emitir fatura"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Collection status"
+msgstr "Estado da tradução"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+
+msgid "Resume collection"
+msgstr ""
+
+msgid "Mark uncollectible"
+msgstr ""
+
 msgid "Confirm refund done"
 msgstr "Confirmar reembolso efetuado"
 
@@ -610,6 +755,9 @@ msgstr "Secções de clientes"
 
 msgid "Overview"
 msgstr "Sinopse"
+
+msgid "Owners"
+msgstr "Proprietários"
 
 msgid "Interactions"
 msgstr "Interações"
@@ -707,12 +855,6 @@ msgstr "Unir cliente"
 msgid "Review merge"
 msgstr "União de revisões"
 
-msgid "Add owner to customer"
-msgstr "Adicionar proprietário ao cliente"
-
-msgid "Add owner"
-msgstr "Adicionar proprietário"
-
 msgid "Add note"
 msgstr "Adicionar anotação"
 
@@ -773,6 +915,48 @@ msgstr "Editar"
 
 msgid "No donations recorded."
 msgstr "Nenhum registo de donativos."
+
+#, fuzzy
+#| msgid "Customer note"
+msgid "Customer owners"
+msgstr "Nota do cliente"
+
+#, fuzzy
+#| msgid "User"
+msgid "Username"
+msgstr "Utilizador"
+
+#, fuzzy
+#| msgid "Removed customer owner"
+msgid "No customer owners."
+msgstr "Remover proprietário cliente"
+
+msgid "Pending owner invitations"
+msgstr ""
+
+#, fuzzy
+#| msgid "Confirmed by"
+msgid "Invited by"
+msgstr "Confirmado por"
+
+#, fuzzy
+#| msgid "Unlimited"
+msgid "Invited"
+msgstr "Ilimitado"
+
+msgid "Expires"
+msgstr "Expira em"
+
+msgid "No pending owner invitations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Added customer owner"
+msgid "Add customer owner"
+msgstr "Adicionar proprietário cliente"
+
+msgid "Add owner"
+msgstr "Adicionar proprietário"
 
 msgid "Invoice history"
 msgstr "Histórico de faturas"
@@ -872,6 +1056,18 @@ msgid "Discoverable"
 msgstr "Detetável"
 
 #, fuzzy
+#| msgid "Interaction history"
+msgid "Instance activity"
+msgstr "Histórico de interação"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr ""
+
+#, python-format
+msgid "%(changes)s changes"
+msgstr ""
+
+#, fuzzy
 #| msgid "Services"
 msgid "Service limits"
 msgstr "Serviços"
@@ -899,9 +1095,6 @@ msgstr "Ativo"
 
 msgid "Service is terminated"
 msgstr "O serviço foi terminado"
-
-msgid "Expires"
-msgstr "Expira em"
 
 msgid "Edit subscription in admin"
 msgstr "Editar subscrição em administrador"
@@ -1014,8 +1207,17 @@ msgstr ""
 msgid "Could not add customer owner: %(error)s"
 msgstr "Não foi possível adicionar o proprietário cliente: %(error)s"
 
-#, python-format
-msgid "Added %(email)s to customer owners."
+#, fuzzy, python-format
+#| msgid "Added %(email)s to customer owners. Hosted user was %(state)s."
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr ""
+"Adicionado %(email)s a proprietários cliente. O utilizador alojado era "
+"%(state)s."
+
+#, fuzzy, python-format
+#| msgid "Added %(email)s to customer owners."
+msgid "Added %(email)s to customer owners and notified them."
 msgstr "Adicionado %(email)s aos proprietários clientes."
 
 #, python-format
@@ -1111,6 +1313,52 @@ msgstr "URL de servidor inválido."
 msgid "Server URL must use HTTPS."
 msgstr "O URL do servidor tem que usar HTTPS."
 
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr ""
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation code has already been used."
+msgid "This request has already been used."
+msgstr "O código de ativação já foi usado."
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr ""
+
+msgid "A correction reason and explanation are required."
+msgstr ""
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr ""
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr ""
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr ""
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation code has already been used."
+msgid "This invoice has already been settled."
+msgstr "O código de ativação já foi usado."
+
+#, fuzzy
+#| msgid "No interactions recorded."
+msgid "An internal explanation is required."
+msgstr "Nenhuma interação registada."
+
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -1158,8 +1406,28 @@ msgstr ""
 msgid "Converted"
 msgstr "Convertido"
 
+msgid "Credited"
+msgstr ""
+
+msgid "Refunded"
+msgstr ""
+
 msgid "Paid"
 msgstr "Pago"
+
+msgid "Uncollectible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Applied to invoice"
+msgstr "Fatura por pagar"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Awaiting refund"
+msgstr "A aguardar pagamento"
 
 msgid "Unpaid"
 msgstr "Não pago"
@@ -1535,6 +1803,28 @@ msgstr "Mensalmente"
 
 msgid "One-time"
 msgstr "Uma vez"
+
+#, fuzzy
+#| msgid "Window ending"
+msgid "Pending"
+msgstr "Fim da janela"
+
+#, fuzzy
+#| msgctxt "Quote status"
+#| msgid "Accepted elsewhere"
+msgid "Accepted"
+msgstr "Aceite em outro sítio"
+
+msgid "Revoked"
+msgstr ""
+
+#, fuzzy
+#| msgid "Copy failed"
+msgid "Delivery failed"
+msgstr "Falha ao copiar"
+
+msgid "Fulfilled by staff"
+msgstr ""
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -2039,6 +2329,37 @@ msgstr "Começar a Traduzir"
 msgid "Translation status"
 msgstr "Estado da tradução"
 
+#, fuzzy
+#| msgid "Customer sections"
+msgid "Customer owner invitation"
+msgstr "Secções de clientes"
+
+#, fuzzy
+#| msgid "Review merge"
+msgid "Review access"
+msgstr "União de revisões"
+
+#, fuzzy
+#| msgid "Customer note"
+msgid "Customer account"
+msgstr "Nota do cliente"
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over the customer account, including billing, "
+#| "services, and other owners."
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr ""
+"Proprietários têm controlo completo sobre a conta de cliente, incluindo "
+"faturação, serviços, e outros proprietários."
+
+#, fuzzy
+#| msgid "Activation key"
+msgid "Accept invitation"
+msgstr "Chave de ativação"
+
 msgid "Discover Weblate"
 msgstr "Descobrir Weblate"
 
@@ -2414,114 +2735,234 @@ msgstr ""
 "Pode controlar o Weblate remotamente, utilizando <a href=\"%(url)s\">wlc</a> "
 "(Cliente do Weblate), que pode ser instalado através de \"pip\" do Python:"
 
-msgid "Weblate features"
-msgstr "Funcionalidades do Weblate"
+msgid "Weblate features — quality translations, your control"
+msgstr ""
+
+msgid "Bring your project to more people"
+msgstr ""
 
 msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
 msgstr ""
-"Como uma ferramenta de tradução assistida por computador e rica em "
-"funcionalidades, o Weblate poupa tempo aos programadores e tradutores. Torne "
-"os seus utilizadores mais felizes!"
 
 msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
 msgstr ""
-"Explore a <a href=\"https://docs.weblate.org/\">documentação</a> para saber "
-"mais."
 
-msgid "Easy to use interface"
-msgstr "Interface fácil de utilizar"
+#, fuzzy
+#| msgid "Join existing users and supporters"
+msgid "Compare hosting and support"
+msgstr "Junte-se aos patrocinadores e utilizadores existentes"
 
-msgid "Weblate screenshot"
-msgstr "Captura de ecrã do Weblate"
+msgid "Try Weblate"
+msgstr "Experimentar Weblate"
 
-msgid "Customizable quality checks"
-msgstr "Verificações de qualidade personalizáveis"
-
-msgid "Detailed context"
-msgstr "Contexto detalhado"
+#, fuzzy
+#| msgid "Bring translators closer to development"
+msgid "Keep translations in step with development"
+msgstr "Aproximar os tradutores ao desenvolvimento"
 
 msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
 msgstr ""
-"É fornecido um contexto detalhado da tradução aos tradutores, a partir de "
-"ficheiros de tradução, ou de dados enriquecidos dentro do Weblate."
-
-msgid "Fluent communication"
-msgstr "Comunicação fluida"
-
-msgid "All translations are tracked and can be commented."
-msgstr "Todas as traduções são monitorizadas e podem ser comentadas."
-
-msgid "Access Control"
-msgstr "Controlo de Acesso"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "Ajuste os direitos de acesso para os adaptar ao seu ambiente."
-
-msgid "Smart Notifications"
-msgstr "Notificações Inteligentes"
 
 msgid ""
-"Translators can be notified of new strings to translate or other events."
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
 msgstr ""
-"Os tradutores podem ser notificados sobre as novas cadeias de carateres a "
-"traduzir ou outros eventos."
 
-msgid "Integration API"
-msgstr "API de Integração"
+#, fuzzy
+#| msgid "Continuous localization"
+msgid "Explore continuous localization"
+msgstr "Tradução contínua"
 
-msgid "Integrate Weblate with third-party services."
-msgstr "Integre o Weblate com os serviços de terceiros."
-
-msgid "Multiple File Formats"
-msgstr "Múltiplos Formatos de Ficheiro"
+msgid "Give every translation the context it needs"
+msgstr ""
 
 msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
 msgstr ""
-"Utilize qualquer formato de ficheiro de tradução comum, tais como gettext, "
-"JSON, XLIFF ou cadeias de carateres de recursos, etc."
-
-msgid "Branch Support"
-msgstr "Suporte para Ramos (Branch)"
 
 msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
 msgstr ""
-"Controle diferentes versões de tradução, enviando-as automaticamente para os "
-"diferentes ramos."
-
-msgid "Translation Context"
-msgstr "Contexto da Tradução"
 
 msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
 msgstr ""
-"Descrição, cadeias de carateres vizinhas, imagens, código fonte relacionado "
-"e entradas de glossário - para cada cadeia de carateres."
+
+msgid "Give your translators the tools to make informed choices."
+msgstr ""
+
+msgid "Explore translation quality checks"
+msgstr ""
+
+msgid "Choose how you translate—with or without AI"
+msgstr ""
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translate the app"
+msgid "Translate without AI"
+msgstr "Traduzir a aplicação"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Contributors & translators united"
+msgid "Assist your translators"
+msgstr "Colaboradores e tradutores unidos"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+
+#, fuzzy
+#| msgid "Start translating"
+msgid "Start with machine translations"
+msgstr "Começar a Traduzir"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+
+msgid "Accept suggestions before use"
+msgstr ""
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+
+msgid "Approve before committing"
+msgstr ""
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translation workflow"
+msgid "Explore AI translation workflows"
+msgstr "Fluxo de trabalho da tradução"
+
+#, fuzzy
+#| msgid "Choose your own donation amount"
+msgid "Choose how your content is handled"
+msgstr "Escolha o seu próprio valor de doação"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+
+msgid "Find the right hosting option"
+msgstr ""
+
+msgid "Bring your team and community together"
+msgstr ""
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+
+msgid "The everyday tools your localization needs"
+msgstr ""
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+
+#, fuzzy
+#| msgid "Read more in the documentation."
+msgid "Explore the documentation"
+msgstr "Leia mais na documentação."
+
+msgid "Keep working with your existing formats"
+msgstr ""
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+
+msgid ".NET resource files (RESX, RESW)"
+msgstr "Ficheiros de recursos .NET (RESX, RESW)"
 
 msgid "Android string resources"
 msgstr "Recursos de cadeias de carateres para Android"
 
-msgid "Apple iOS strings"
-msgstr "Cadeias de carateres para Apple iOS"
-
 msgid "App store metadata files"
 msgstr "Ficheiros de metadados da App Store"
+
+msgid "Apple iOS strings"
+msgstr "Cadeias de carateres para Apple iOS"
 
 msgid "ARB file"
 msgstr "Ficheiro ARB"
 
+#, fuzzy
+#| msgid "DTD files"
+msgid "AsciiDoc files"
+msgstr "Ficheiros DTD"
+
+msgid "Compose Multiplatform resources"
+msgstr ""
+
 msgid "CSV files"
 msgstr "Ficheiros CSV"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "DokuWiki text files"
+msgstr "Ficheiros de texto"
 
 msgid "DTD files"
 msgstr "Ficheiros DTD"
@@ -2535,6 +2976,11 @@ msgstr "Ficheiro XML simples"
 msgid "Fluent format"
 msgstr "Formato Fluent"
 
+#, fuzzy
+#| msgid "React Intl"
+msgid "Format.JS / React Intl"
+msgstr "React Intl"
+
 msgid "GNU gettext"
 msgstr "GNU gettext"
 
@@ -2546,6 +2992,9 @@ msgstr "Ficheiros gotext JSON"
 
 msgid "GWT properties"
 msgstr "Propriedades GWT"
+
+msgid "Haiku Catkeys"
+msgstr ""
 
 msgid "HTML files"
 msgstr "Ficheiro HTML"
@@ -2565,17 +3014,14 @@ msgstr "Traduções Inno Setup INI"
 msgid "Java properties"
 msgstr "Propriedades Java"
 
+msgid "JavaScript resource files"
+msgstr ""
+
 msgid "Joomla translations"
 msgstr "Traduções Joomla"
 
 msgid "JSON files"
 msgstr "Ficheiros JSON"
-
-msgid "React Intl"
-msgstr "React Intl"
-
-msgid "Vue I18n"
-msgstr "Vue I18n"
 
 msgid "Laravel PHP strings"
 msgstr "Cadeias de carateres de PHP Laravel"
@@ -2583,11 +3029,26 @@ msgstr "Cadeias de carateres de PHP Laravel"
 msgid "Markdown files"
 msgstr "Ficheiros de Marcação"
 
-msgid "mi18n lang files"
+#, fuzzy
+#| msgid "DTD files"
+msgid "MDX files"
+msgstr "Ficheiros DTD"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "MediaWiki text files"
+msgstr "Ficheiros de texto"
+
+#, fuzzy
+#| msgid "mi18n lang files"
+msgid "@draggable/i18n lang files"
 msgstr "Ficheiros lang mi18n"
 
 msgid "Mobile Kotlin resources"
 msgstr "Recursos de Mobile Kotlin"
+
+msgid "Nextcloud JSON"
+msgstr ""
 
 msgid "OpenDocument Format"
 msgstr "Formato OpenDocument"
@@ -2600,9 +3061,6 @@ msgstr "Qt Linguist - .ts"
 
 msgid "ResourceDictionary files"
 msgstr "Ficheiros de ResourceDictionary"
-
-msgid ".NET resource files (RESX, RESW)"
-msgstr "Ficheiros de recursos .NET (RESX, RESW)"
 
 msgid "Ruby YAML files"
 msgstr "Ficheiros Ruby YAML"
@@ -2619,188 +3077,88 @@ msgstr "Formato TermBase eXchange"
 msgid "Text files"
 msgstr "Ficheiros de texto"
 
+msgid "TOML and go-i18n TOML"
+msgstr ""
+
+msgid "Vue I18n"
+msgstr "Vue I18n"
+
 msgid "WebExtension JSON"
 msgstr "JSON WebExtension"
 
 msgid "Windows RC files"
 msgstr "Ficheiros RC do Windows"
 
-msgid "XLIFF"
+#, fuzzy
+#| msgid "Localization"
+msgid "WiX localization files"
+msgstr "Tradução"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr ""
+
+#, fuzzy
+#| msgid "XLIFF"
+msgid "XLIFF 2.0"
 msgstr "XLIFF"
+
+msgid "XWiki formats"
+msgstr ""
 
 msgid "YAML files"
 msgstr "Ficheiros YAML"
 
-msgid "Glossaries"
-msgstr "Glossários"
-
-msgid "Define frequently used terminology for consistency."
-msgstr "Defina a terminologia utilizada frequentemente para mais consistência."
-
-msgid "Feedback Acquisition"
-msgstr "Aquisição de Comentários"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
+#, fuzzy, python-format
+#| msgid ""
+#| "Please consult the <a href=\"%(url)s\">contributor documentation</a> to "
+#| "find the most common topics."
+msgid ""
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
 msgstr ""
-"Utilize o Weblate para obter comentários sobre as cadeias de carateres "
-"fonte, para as melhorar."
+"Por favor, consulte a <a href=\"%(url)s\">documentação do colaborador</a> "
+"para encontrar os tópicos mais comuns."
 
-msgid "Export and Import"
-msgstr "Exportação e Importação"
-
-msgid "Translations can be downloaded for offline translation and merged back."
+msgid "Open source, backed by sustainable services"
 msgstr ""
-"As traduções podem ser transferidas para tradução local e depois unidas "
-"novamente."
-
-msgid "Fully Integrated"
-msgstr "Integração Completa"
 
 msgid ""
-"Translations are managed within the same version control system as your code."
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
 msgstr ""
-"As traduções são geridas no mesmo sistema de controlo de versões que o seu "
-"código."
-
-msgid "Documentation"
-msgstr "Documentação"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr ""
-"Documentação completa que abrange tanto a configuração como a utilização."
-
-msgid "Easy Reviews"
-msgstr "Revisões Fáceis"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr ""
-"Várias opções para os tradutores reverem as contribuições efetuadas pelos "
-"outros."
-
-msgid "Language support"
-msgstr "Suporte de Idiomas"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr ""
-"Integrado suporte para mais de 500 idiomas. Também podem ser adicionados "
-"outros."
-
-msgid "Promotion"
-msgstr "Promoção"
 
 msgid ""
-"Built-in features to attract a wider audience for your translation project."
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
 msgstr ""
-"Funcionalidades integradas para atrair uma audiência mais ampla para o seu "
-"projeto de tradução."
-
-msgid "Reporting"
-msgstr "Relatórios"
-
-msgid "Reports are generated to provide info on project activity."
-msgstr ""
-"Os relatórios são gerados para fornecer informação sobre a atividade do "
-"projeto."
-
-msgid "Version Control"
-msgstr "Controlo de Versões"
 
 msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
 msgstr ""
-"Comunica diretamente com o sistema de controlo de versões, atualmente são "
-"suportados Git e Mercurial."
 
-msgid "Collaboration Sites"
-msgstr "Sites de Colaboração"
+#, fuzzy
+#| msgid "Order hosting"
+msgid "Explore self-hosting"
+msgstr "Encomendar hospedagem"
 
-msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
-msgstr ""
-"Suporte nativo para vários ''sites'' de desenvolvimento de programas, tais "
-"como Gitlab, GitHub, Pagure, Azure, Gitea ou Bitbucket."
-
-msgid "Responsive UI"
-msgstr "IU Adaptável"
-
-msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
-msgstr ""
-"Interface do utilizador que funciona bem no PC, ''tablets'' e telefones em "
-"ambos os modos claro e escuro."
-
-msgid "Translation memory"
-msgstr "Memória de tradução"
-
-msgid "Reuse existing translations to save time and costs."
-msgstr "Reutilize as traduções existentes para poupar tempo e custos."
-
-msgid "Translation add-ons"
-msgstr "Extras de Tradução"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "Personalize o fluxo de trabalho da tradução com vários extras."
-
-msgid "Backups"
-msgstr "Cópias de Segurança"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr "Cópias de segurança remotas integradas para evitar a perda de dados."
-
-msgid "Screenshots"
-msgstr "Capturas de Ecrã"
-
-msgid "Provide visual context for the translations."
-msgstr "Forneça contexto visual para as traduções."
-
-msgid "Variants"
-msgstr "Variantes"
-
-msgid "Group variants of strings for easier translating."
-msgstr "Agrupar variantes de cadeias de carateres para facilitar a tradução."
-
-msgid "Intermediate language"
-msgstr "Idioma Intermediário"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "Rever as cadeias de carateres dos programadores antes de as traduzir."
-
-msgid "Automatic translation"
-msgstr "Tradução Automática"
-
-msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr ""
-"As traduções ou sugestões podem ser realizadas pelos serviços de tradução "
-"automática ou pela IA."
-
-msgid "Organize translations"
-msgstr "Organizar as Traduções"
-
-msgid "Categorize the translation files to ease navigation."
-msgstr "Categorizar os ficheiros de tradução para facilitar a navegação."
-
-msgid "Keyboard operation"
-msgstr "Operação de Teclado"
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr "Utilizar o teclado para navegar com eficiência enquanto traduz."
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Hosting for libre projects"
+msgstr "para projetos livres"
 
 msgid "Weblate Pricing"
 msgstr "Preços do Weblate"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"Utilize o Weblate como um serviço, configure o seu próprio ou <a "
-"href=\"%(url)s\">obtenha ajuda</a> para o alojamento local — tudo com a "
-"possibilidade de apoio profissional."
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr ""
@@ -2965,25 +3323,27 @@ msgstr ""
 msgid "Join existing users and supporters"
 msgstr "Junte-se aos patrocinadores e utilizadores existentes"
 
-msgid "Weblate - web-based localization"
-msgstr "Weblate - tradução baseada na Web"
-
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr "Tradução <strong>contínua</strong> baseada na Web"
-
-#, python-format
-msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+msgid "Weblate — quality translations, your control"
 msgstr ""
-"Programa livre Copyleft, utilizado por mais de %(projects)s projetos de "
-"programas livres e empresas em mais de %(countries)s países."
 
-msgid "Try Weblate"
-msgstr "Experimentar Weblate"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr ""
 
-msgid "Explore all features"
-msgstr "Explorar todas as funcionalidades"
+msgid ""
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
+msgstr ""
+
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr ""
+
+#, fuzzy
+#| msgid "Get more Weblate"
+msgid "Explore Weblate"
+msgstr "Obtenha mais Weblate"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -2993,14 +3353,11 @@ msgid "Weblate localizes the world"
 msgstr "Weblate traduz o mundo"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"Serviço hospedado e ferramenta independente com forte integração nos "
-"sistemas de controlo de versões. Interface do utilizador fácil e simples, "
-"com propagação de traduções através de componentes, verificações de "
-"qualidade e interligação automática com os ficheiros fonte."
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -3020,11 +3377,8 @@ msgstr[1] "%(count)s traduções"
 msgid "in the last 7 days"
 msgstr "nos últimos 7 dias"
 
-msgid "Robust feature set"
-msgstr "Conjunto de funcionalidades robusto"
-
-msgid "Go to pricing"
-msgstr "Ir para Preços"
+msgid "Make localization work for your team"
+msgstr ""
 
 msgid "Users and Supporters"
 msgstr "Utilizadores e Patrocinadores"
@@ -3038,6 +3392,62 @@ msgstr "Gerir os seus pagamentos"
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "Gerado em %(timestamp)s."
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over this customer account, including billing, "
+#| "services, secrets, and other owners. Only add people you trust."
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+"Proprietários têm controlo completo sobre esta conta do cliente, incluindo "
+"faturação, serviços, segredos, e outros proprietários. Apenas adicione "
+"pessoas nas quais confia."
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr ""
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over the customer account, including billing, "
+#| "services, and other owners."
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr ""
+"Proprietários têm controlo completo sobre a conta de cliente, incluindo "
+"faturação, serviços, e outros proprietários."
+
+#, fuzzy
+#| msgid "CRM navigation"
+msgid "Review invitation"
+msgstr "Navegação CRM"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr ""
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3146,6 +3556,11 @@ msgstr "O seu pagamento pendente em weblate.org"
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "A sua subscrição em weblate.org será renovada brevemente."
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr ""
+
 msgid "The payment will be automatically charged soon."
 msgstr "O pagamento será cobrado automaticamente em breve."
 
@@ -3190,6 +3605,20 @@ msgstr "Cartão guardado: %(card_number)s"
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr "A subscrição expira: %(expiry)s"
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Pay invoice"
+msgstr "Fatura por pagar"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3353,13 +3782,13 @@ msgstr "Ver versão em inglês"
 msgid "Download as PDF"
 msgstr "Transferir como PDF"
 
-msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+msgid "Find your way to get started"
 msgstr ""
-"Mergulhe ou aproveite as amplas competências e experiência da nossa equipa "
-"de profissionais, dando conselhos focados e atentos às suas necessidades "
-"exatas."
+
+msgid ""
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
+msgstr ""
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>Doe</strong> - para tornar o mundo num lugar melhor"
@@ -3401,9 +3830,6 @@ msgstr ""
 "Nós somos uma empresa pequena de programa livre onde todos têm muito espaço "
 "para crescer."
 
-msgid "Owners"
-msgstr "Proprietários"
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3424,49 +3850,65 @@ msgstr "Remover proprietário"
 msgid "Remove"
 msgstr "Remover"
 
-msgid "Continuous Localization"
-msgstr "Tradução Contínua"
+#, fuzzy
+#| msgid "Pagination"
+msgid "Pending invitation"
+msgstr "Paginação"
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Revoke invitation"
+msgstr "Alternar navegação"
+
+#, fuzzy
+#| msgid "Remove owner"
+msgid "Invite owner"
+msgstr "Remover proprietário"
+
+msgid "Keep pace with development"
+msgstr ""
 
 msgid ""
-"Automated localization workflow follows your project development closely."
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
 msgstr ""
-"O fluxo de trabalho da tradução automatizada segue de perto o "
-"desenvolvimento do seu projeto."
 
-msgid "Quality Checks"
-msgstr "Verificações de Qualidade"
-
-msgid "Customizable quality checks helps improve translation quality."
+msgid "Help people get the meaning right"
 msgstr ""
-"As verificações de qualidade personalizáveis ajudam a melhorar a qualidade "
-"da tradução."
 
-msgid "Attribution"
-msgstr "Atribuição"
-
-msgid "All translators are properly credited in the version control system."
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
 msgstr ""
-"Todos os tradutores são devidamente creditados no sistema de controlo de "
-"versões."
 
-msgid "Hosting Plans"
-msgstr "Planos de Hospedagem"
-
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "Utilize o Weblate como um serviço, a partir de 19 €."
-
-msgid "Cloud Ready"
-msgstr "Pronto para a Nuvem"
-
-msgid "Comes with appliances, ready to deploy in your cloud."
-msgstr "Vem com aplicações, prontas para implementar na sua nuvem."
-
-msgid "Libre Software"
-msgstr "Programa Livre"
-
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
+msgid "Translate with or without AI"
 msgstr ""
-"Copyleft; utilize, veja, modifique e partilhe à vontade, e com toda a gente."
+
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
+
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
+
+msgid "Bring everyone into the conversation"
+msgstr ""
+
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
+
+msgid "Build on software you can trust"
+msgstr ""
+
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
 
 msgid "Help translate"
 msgstr "Ajude a traduzir"
@@ -3507,14 +3949,20 @@ msgstr "Transferir recibo"
 msgid "Pay now"
 msgstr "Pagar agora"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
-msgstr "<strong>Grátis</strong> ou <strong>Profissional</strong> — é consigo"
+msgid "Choose the hosting and support that fit your team"
+msgstr ""
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid "Premium Cloud"
 msgstr "Nuvem Profissional"
 
-msgid "for ease and comfort"
-msgstr "para facilidade e conforto"
+msgid "managed hosting for your team"
+msgstr ""
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3542,8 +3990,9 @@ msgstr "Poupe %(percent)s%%"
 msgid "for complete control"
 msgstr "para controlo total"
 
-#, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
+#, fuzzy, python-format
+#| msgid "with paid <a href=\"%(url)s\">support</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
 msgstr "com <a href=\"%(url)s\">apoio</a> pago"
 
 msgid "Gratis Weblate"
@@ -3555,9 +4004,6 @@ msgstr "para projetos livres"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "sob <a href=\"%(url)s\">pedido</a>"
-
-msgid "Compare all plans"
-msgstr "Comparar Todos os Planos"
 
 msgid "Expired"
 msgstr "Expirado"
@@ -3576,6 +4022,9 @@ msgstr "Atualizar código"
 
 msgid "Backup repository"
 msgstr "Repositório de cópias de segurança"
+
+msgid "Documentation"
+msgstr "Documentação"
 
 #, python-format
 msgid ""
@@ -3723,14 +4172,16 @@ msgstr "Personalizar a listagem do Descobrir Weblate"
 msgid "Weblate support"
 msgstr "Apoio do Weblate"
 
-msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+msgid "Expert help for your localization"
 msgstr ""
-"Weblate é um programa livre protegido por Copyleft com o apoio da "
-"comunidade. Os subscritores recebem apoio prioritário sem nenhum custo "
-"adicional. Estão disponíveis pacotes de ajuda pré-pagos para todos."
+
+msgid ""
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
+msgstr ""
 
 msgid "Report issue"
 msgstr "Reportar Problema"
@@ -3757,8 +4208,8 @@ msgstr ""
 "Se encontrar uma vulnerabilidade, por favor, comunique-a em %(report)s. Mais "
 "informação na <a href=\"%(url)s\">documentação</a>."
 
-msgid "Reliable support"
-msgstr "Apoio confiável"
+msgid "Living humans, ready to help"
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4058,21 +4509,432 @@ msgstr ""
 "Ative a listagem a partir da sua página de gestão Weblate usando o token de "
 "ativação mostrado abaixo."
 
-msgid "User not found!"
-msgstr "Utilizador não encontrado!"
-
 msgid "You can not remove yourself."
 msgstr "Não pode remover-se a si mesmo."
 
-msgid "Removed customer owner"
-msgstr "Remover proprietário cliente"
+#, fuzzy
+#| msgid ""
+#| "VAT ID validation service unavailable for {}, please try again later."
+msgid "Too many owner invitations. Please try again later."
+msgstr ""
+"O serviço de validação de ID de IVA não está disponível para {}, tente "
+"novamente mais tarde."
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr ""
+
+#, fuzzy
+#| msgid "Hosted user synchronization is disabled."
+msgid "This customer owner invitation is invalid."
+msgstr "A sincronização do utilizador hospedado está desativada."
+
+#, fuzzy
+#| msgid "Unavailable for your amount"
+msgid "This invitation is not available for your account."
+msgstr "Indisponível para o seu valor"
+
+msgid "Customer owner invitation accepted."
+msgstr ""
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr ""
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
-msgstr "Removido %(email)s de proprietários clientes."
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr ""
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
+msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Por favor, confirme a atualização a partir da sua página de conta."
+
+#~ msgid "Add owner to customer"
+#~ msgstr "Adicionar proprietário ao cliente"
+
+#~ msgid "Weblate features"
+#~ msgstr "Funcionalidades do Weblate"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "Como uma ferramenta de tradução assistida por computador e rica em "
+#~ "funcionalidades, o Weblate poupa tempo aos programadores e tradutores. "
+#~ "Torne os seus utilizadores mais felizes!"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr ""
+#~ "Explore a <a href=\"https://docs.weblate.org/\">documentação</a> para "
+#~ "saber mais."
+
+#~ msgid "Easy to use interface"
+#~ msgstr "Interface fácil de utilizar"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "Captura de ecrã do Weblate"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "Verificações de qualidade personalizáveis"
+
+#~ msgid "Detailed context"
+#~ msgstr "Contexto detalhado"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "É fornecido um contexto detalhado da tradução aos tradutores, a partir de "
+#~ "ficheiros de tradução, ou de dados enriquecidos dentro do Weblate."
+
+#~ msgid "Fluent communication"
+#~ msgstr "Comunicação fluida"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr "Todas as traduções são monitorizadas e podem ser comentadas."
+
+#~ msgid "Access Control"
+#~ msgstr "Controlo de Acesso"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "Ajuste os direitos de acesso para os adaptar ao seu ambiente."
+
+#~ msgid "Smart Notifications"
+#~ msgstr "Notificações Inteligentes"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr ""
+#~ "Os tradutores podem ser notificados sobre as novas cadeias de carateres a "
+#~ "traduzir ou outros eventos."
+
+#~ msgid "Integration API"
+#~ msgstr "API de Integração"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "Integre o Weblate com os serviços de terceiros."
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "Múltiplos Formatos de Ficheiro"
+
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "Utilize qualquer formato de ficheiro de tradução comum, tais como "
+#~ "gettext, JSON, XLIFF ou cadeias de carateres de recursos, etc."
+
+#~ msgid "Branch Support"
+#~ msgstr "Suporte para Ramos (Branch)"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr ""
+#~ "Controle diferentes versões de tradução, enviando-as automaticamente para "
+#~ "os diferentes ramos."
+
+#~ msgid "Translation Context"
+#~ msgstr "Contexto da Tradução"
+
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr ""
+#~ "Descrição, cadeias de carateres vizinhas, imagens, código fonte "
+#~ "relacionado e entradas de glossário - para cada cadeia de carateres."
+
+#~ msgid "Glossaries"
+#~ msgstr "Glossários"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr ""
+#~ "Defina a terminologia utilizada frequentemente para mais consistência."
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "Aquisição de Comentários"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr ""
+#~ "Utilize o Weblate para obter comentários sobre as cadeias de carateres "
+#~ "fonte, para as melhorar."
+
+#~ msgid "Export and Import"
+#~ msgstr "Exportação e Importação"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr ""
+#~ "As traduções podem ser transferidas para tradução local e depois unidas "
+#~ "novamente."
+
+#~ msgid "Fully Integrated"
+#~ msgstr "Integração Completa"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr ""
+#~ "As traduções são geridas no mesmo sistema de controlo de versões que o "
+#~ "seu código."
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr ""
+#~ "Documentação completa que abrange tanto a configuração como a utilização."
+
+#~ msgid "Easy Reviews"
+#~ msgstr "Revisões Fáceis"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr ""
+#~ "Várias opções para os tradutores reverem as contribuições efetuadas pelos "
+#~ "outros."
+
+#~ msgid "Language support"
+#~ msgstr "Suporte de Idiomas"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr ""
+#~ "Integrado suporte para mais de 500 idiomas. Também podem ser adicionados "
+#~ "outros."
+
+#~ msgid "Promotion"
+#~ msgstr "Promoção"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr ""
+#~ "Funcionalidades integradas para atrair uma audiência mais ampla para o "
+#~ "seu projeto de tradução."
+
+#~ msgid "Reporting"
+#~ msgstr "Relatórios"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr ""
+#~ "Os relatórios são gerados para fornecer informação sobre a atividade do "
+#~ "projeto."
+
+#~ msgid "Version Control"
+#~ msgstr "Controlo de Versões"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr ""
+#~ "Comunica diretamente com o sistema de controlo de versões, atualmente são "
+#~ "suportados Git e Mercurial."
+
+#~ msgid ""
+#~ "Native support for software development sites such as GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, or Bitbucket."
+#~ msgstr ""
+#~ "Suporte nativo para vários ''sites'' de desenvolvimento de programas, "
+#~ "tais como Gitlab, GitHub, Pagure, Azure, Gitea ou Bitbucket."
+
+#~ msgid "Responsive UI"
+#~ msgstr "IU Adaptável"
+
+#~ msgid ""
+#~ "User interface that works nicely on desktop, tablets and phones in both "
+#~ "light and dark mode."
+#~ msgstr ""
+#~ "Interface do utilizador que funciona bem no PC, ''tablets'' e telefones "
+#~ "em ambos os modos claro e escuro."
+
+#~ msgid "Translation memory"
+#~ msgstr "Memória de tradução"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr "Reutilize as traduções existentes para poupar tempo e custos."
+
+#~ msgid "Translation add-ons"
+#~ msgstr "Extras de Tradução"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "Personalize o fluxo de trabalho da tradução com vários extras."
+
+#~ msgid "Backups"
+#~ msgstr "Cópias de Segurança"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr ""
+#~ "Cópias de segurança remotas integradas para evitar a perda de dados."
+
+#~ msgid "Screenshots"
+#~ msgstr "Capturas de Ecrã"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "Forneça contexto visual para as traduções."
+
+#~ msgid "Variants"
+#~ msgstr "Variantes"
+
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr ""
+#~ "Agrupar variantes de cadeias de carateres para facilitar a tradução."
+
+#~ msgid "Intermediate language"
+#~ msgstr "Idioma Intermediário"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr ""
+#~ "Rever as cadeias de carateres dos programadores antes de as traduzir."
+
+#~ msgid "Automatic translation"
+#~ msgstr "Tradução Automática"
+
+#~ msgid ""
+#~ "Translations or suggestions can be done by machine translation services "
+#~ "or AI."
+#~ msgstr ""
+#~ "As traduções ou sugestões podem ser realizadas pelos serviços de tradução "
+#~ "automática ou pela IA."
+
+#~ msgid "Organize translations"
+#~ msgstr "Organizar as Traduções"
+
+#~ msgid "Categorize the translation files to ease navigation."
+#~ msgstr "Categorizar os ficheiros de tradução para facilitar a navegação."
+
+#~ msgid "Keyboard operation"
+#~ msgstr "Operação de Teclado"
+
+#~ msgid "Use keyboard to effectively navigate while translating."
+#~ msgstr "Utilizar o teclado para navegar com eficiência enquanto traduz."
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "Utilize o Weblate como um serviço, configure o seu próprio ou <a "
+#~ "href=\"%(url)s\">obtenha ajuda</a> para o alojamento local — tudo com a "
+#~ "possibilidade de apoio profissional."
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr "Weblate - tradução baseada na Web"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr "Tradução <strong>contínua</strong> baseada na Web"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "Programa livre Copyleft, utilizado por mais de %(projects)s projetos de "
+#~ "programas livres e empresas em mais de %(countries)s países."
+
+#~ msgid "Explore all features"
+#~ msgstr "Explorar todas as funcionalidades"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "Serviço hospedado e ferramenta independente com forte integração nos "
+#~ "sistemas de controlo de versões. Interface do utilizador fácil e simples, "
+#~ "com propagação de traduções através de componentes, verificações de "
+#~ "qualidade e interligação automática com os ficheiros fonte."
+
+#~ msgid "Robust feature set"
+#~ msgstr "Conjunto de funcionalidades robusto"
+
+#~ msgid "Go to pricing"
+#~ msgstr "Ir para Preços"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "Mergulhe ou aproveite as amplas competências e experiência da nossa "
+#~ "equipa de profissionais, dando conselhos focados e atentos às suas "
+#~ "necessidades exatas."
+
+#~ msgid "Continuous Localization"
+#~ msgstr "Tradução Contínua"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr ""
+#~ "O fluxo de trabalho da tradução automatizada segue de perto o "
+#~ "desenvolvimento do seu projeto."
+
+#~ msgid "Quality Checks"
+#~ msgstr "Verificações de Qualidade"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr ""
+#~ "As verificações de qualidade personalizáveis ajudam a melhorar a "
+#~ "qualidade da tradução."
+
+#~ msgid "Attribution"
+#~ msgstr "Atribuição"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr ""
+#~ "Todos os tradutores são devidamente creditados no sistema de controlo de "
+#~ "versões."
+
+#~ msgid "Hosting Plans"
+#~ msgstr "Planos de Hospedagem"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "Utilize o Weblate como um serviço, a partir de 19 €."
+
+#~ msgid "Cloud Ready"
+#~ msgstr "Pronto para a Nuvem"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr "Vem com aplicações, prontas para implementar na sua nuvem."
+
+#~ msgid "Libre Software"
+#~ msgstr "Programa Livre"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr ""
+#~ "Copyleft; utilize, veja, modifique e partilhe à vontade, e com toda a "
+#~ "gente."
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr ""
+#~ "<strong>Grátis</strong> ou <strong>Profissional</strong> — é consigo"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "para facilidade e conforto"
+
+#~ msgid "Compare all plans"
+#~ msgstr "Comparar Todos os Planos"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "Weblate é um programa livre protegido por Copyleft com o apoio da "
+#~ "comunidade. Os subscritores recebem apoio prioritário sem nenhum custo "
+#~ "adicional. Estão disponíveis pacotes de ajuda pré-pagos para todos."
+
+#~ msgid "Reliable support"
+#~ msgstr "Apoio confiável"
+
+#~ msgid "User not found!"
+#~ msgstr "Utilizador não encontrado!"
+
+#, python-format
+#~ msgid "Removed %(email)s from customer owners."
+#~ msgstr "Removido %(email)s de proprietários clientes."
 
 #~ msgid "Add a user"
 #~ msgstr "Adicionar um utilizador"
@@ -4112,9 +4974,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 #~ msgid "I confirm that I want to issue a final invoice."
 #~ msgstr "Eu confirmo que eu quero emitir uma fatura final."
 
-#~ msgid "Issue renewal quote"
-#~ msgstr "Obter orçamento para renovação"
-
 #, python-format
 #~ msgid ""
 #~ "Upgrade to %(package)s without extending the current subscription period."
@@ -4126,9 +4985,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 
 #~ msgid "Issue upgrade invoice"
 #~ msgstr "Emitir fatura de atualização"
-
-#~ msgid "Create invoice"
-#~ msgstr "Emitir fatura"
 
 #~ msgid "Company or individual name"
 #~ msgstr "Nome da empresa ou indivíduo"
@@ -4252,12 +5108,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 #~ "comunidade ou melhorar a nossa documentação."
 
 #~ msgid ""
-#~ "VAT ID validation service unavailable for {}, please try again later."
-#~ msgstr ""
-#~ "O serviço de validação de ID de IVA não está disponível para {}, tente "
-#~ "novamente mais tarde."
-
-#~ msgid ""
 #~ "Additionally, Bitnami Weblate stack is available for many platforms and "
 #~ "works with most cloud providers."
 #~ msgstr ""
@@ -4299,9 +5149,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 #~ msgctxt "Hosting plan"
 #~ msgid "Enterprise"
 #~ msgstr "Empresarial"
-
-#~ msgid "and dedicated"
-#~ msgstr "e dedicada"
 
 #, python-format
 #~ msgid "over <strong>%(count)s</strong>"
@@ -4451,9 +5298,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 
 #~ msgid "See documentation on subscription management."
 #~ msgstr "Consulte a documentação sobre a gestão de subscrições."
-
-#~ msgid "Creation date"
-#~ msgstr "Data de criação"
 
 #~ msgid "Switch to yearly"
 #~ msgstr "Mudar para anualmente"
@@ -4763,11 +5607,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 #~ "fazer é falar sobre o Weblate com os seus amigos."
 
 #, fuzzy
-#~| msgid "Contributors & translators united"
-#~ msgid "Attribution to translator"
-#~ msgstr "Colaboradores e tradutores unidos"
-
-#, fuzzy
 #~| msgid "Hosting Weblate"
 #~ msgid "Being a Weblate user"
 #~ msgstr "Alojamento do Weblate"
@@ -5005,9 +5844,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 #~ "\"Basic\" - ainda terá os limites do software gratuito mas obterá "
 #~ "capacidades de gestão de utilizador alargadas."
 
-#~ msgid "Translation workflow"
-#~ msgstr "Fluxo de trabalho da tradução"
-
 #, fuzzy
 #~| msgid ""
 #~| "All translated repositories are available using https protocol with "
@@ -5156,9 +5992,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 #~ msgid "Select"
 #~ msgstr "Selecionar"
 
-#~ msgid "Choose your own donation amount"
-#~ msgstr "Escolha o seu próprio valor de doação"
-
 #, fuzzy
 #~| msgid "Self hosted"
 #~ msgid "Self Hosted"
@@ -5241,9 +6074,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 
 #~ msgid "Free hosting on Weblate"
 #~ msgstr "Alojamento grátis no Weblate"
-
-#~ msgid "Order hosting"
-#~ msgstr "Encomendar hospedagem"
 
 #~ msgid ""
 #~ "Hosted Weblate allows you to use Weblate without any effort and with "
@@ -5372,9 +6202,6 @@ msgstr "Por favor, confirme a atualização a partir da sua página de conta."
 
 #~ msgid "%(position)s / %(total)s"
 #~ msgstr "%(position)s / %(total)s"
-
-#~ msgid "Bring translators closer to development"
-#~ msgstr "Aproximar os tradutores ao desenvolvimento"
 
 #~ msgid "Weblate is a free software with community support."
 #~ msgstr "O Weblate é um programa gratuito com suporte da comunidade."

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
 "PO-Revision-Date: 2026-09-05 05:52+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
@@ -104,11 +104,48 @@ msgstr "மின்னஞ்சல்"
 msgid "Full name"
 msgstr "முழுப்பெயர்"
 
+#, fuzzy
+#| msgid "Get a quote"
+msgid "Issue date"
+msgstr "ஒரு மேற்கோளைப் பெறுங்கள்"
+
+msgid "Correction date"
+msgstr ""
+
+msgid "Please confirm that you want to issue a credit note."
+msgstr ""
+
+msgid "Explanation for the customer"
+msgstr ""
+
+#, fuzzy
+#| msgid "(including VAT)"
+msgid "Amount including VAT"
+msgstr "(மதிப்புகூடுதல்வரி உட்பட)"
+
+msgid "Only paid invoices can be refunded."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Correct paid invoice"
+msgstr "விலைப்பட்டியல் பதிவிறக்கவும்"
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Internal explanation"
+msgstr "ஒருங்கிணைப்பு பநிஇ"
+
 msgid "Invalid hosted user response"
 msgstr ""
 
 msgid "Hosted user synchronization is disabled."
 msgstr ""
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice correction"
+msgstr "ஒருங்கிணைப்பு பநிஇ"
 
 msgid "Yes"
 msgstr ""
@@ -119,6 +156,18 @@ msgid "No"
 msgstr "குறிப்பு"
 
 msgid "not set"
+msgstr ""
+
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr ""
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr ""
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
 msgstr ""
 
 msgid "Invoice issued during VIES outage"
@@ -549,15 +598,29 @@ msgid "No records found."
 msgstr ""
 
 #, fuzzy
+#| msgid "Get a quote"
+msgid "Issue credit note?"
+msgstr "ஒரு மேற்கோளைப் பெறுங்கள்"
+
+#, fuzzy
 #| msgid "Issue new invoice"
 msgid "Issue final invoice?"
 msgstr "புதிய விலைப்பட்டியல் வெளியிடவும்"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr ""
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
 
 msgid "Cancel"
 msgstr ""
+
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Issue credit note"
+msgstr "புதிய விலைப்பட்டியல் வெளியிடவும்"
 
 #, fuzzy
 #| msgid "Issue new invoice"
@@ -588,6 +651,9 @@ msgstr ""
 msgid "Edit in admin"
 msgstr ""
 
+msgid "Credit note"
+msgstr ""
+
 #, fuzzy
 #| msgid "D-U-N-S Number"
 msgid "Number"
@@ -598,6 +664,35 @@ msgstr ""
 
 msgid "Due"
 msgstr ""
+
+#, fuzzy
+#| msgid "Payment amount"
+msgid "Credited amount"
+msgstr "கட்டண தொகை"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Remaining amount"
+msgstr "கட்டணம் காத்திருக்கிறது"
+
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Correction of"
+msgstr "பட்டியலைத் தனிப்பயனாக்குங்கள்"
+
+msgid "Reason"
+msgstr ""
+
+#, fuzzy
+#| msgid "and dedicated"
+msgid "Cancelled duplicate"
+msgstr "மற்றும் தனிப்பயனாக்கப்பட்ட"
+
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Collection note"
+msgstr "ஒத்துழைப்பு தளங்கள்"
 
 #, fuzzy
 #| msgid "Discover"
@@ -662,6 +757,50 @@ msgstr ""
 msgid "Reopen quote"
 msgstr "ஒரு மேற்கோளைப் பெறுங்கள்"
 
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice corrections"
+msgstr "ஒருங்கிணைப்பு பநிஇ"
+
+msgid "Refund"
+msgstr ""
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Duplicate invoice"
+msgstr "புதிய விலைப்பட்டியல் வெளியிடவும்"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Cancel duplicate invoice"
+msgstr "புதிய விலைப்பட்டியல் வெளியிடவும்"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Collection status"
+msgstr "மொழிபெயர்ப்பு நிலை"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+
+msgid "Resume collection"
+msgstr ""
+
+msgid "Mark uncollectible"
+msgstr ""
+
 msgid "Confirm refund done"
 msgstr ""
 
@@ -690,6 +829,9 @@ msgstr "பட்டியலைத் தனிப்பயனாக்கு�
 
 msgid "Overview"
 msgstr "கண்ணோட்டம்"
+
+msgid "Owners"
+msgstr ""
 
 #, fuzzy
 #| msgid "Integration API"
@@ -805,16 +947,6 @@ msgstr "வலைபெயர்ப்பைக் கண்டறிய சே�
 msgid "Review merge"
 msgstr "மதிப்பாய்வு ஒன்றிணைப்பு"
 
-#, fuzzy
-#| msgid "Add server to Discover Weblate"
-msgid "Add owner to customer"
-msgstr "வலைபெயர்ப்பைக் கண்டறிய சேவையகத்தைச் சேர்க்கவும்"
-
-#, fuzzy
-#| msgid "Add a user"
-msgid "Add owner"
-msgstr "ஒரு பயனரைச் சேர்க்கவும்"
-
 msgid "Add note"
 msgstr ""
 
@@ -889,6 +1021,49 @@ msgstr "தொகு"
 
 msgid "No donations recorded."
 msgstr ""
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer owners"
+msgstr "தனிப்பயன்"
+
+#, fuzzy
+#| msgid "User"
+msgid "Username"
+msgstr "பயனர்"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "No customer owners."
+msgstr "ஒரு பயனரைச் சேர்க்கவும்"
+
+msgid "Pending owner invitations"
+msgstr ""
+
+msgid "Invited by"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unlimited"
+msgid "Invited"
+msgstr "வரம்பற்றது"
+
+msgid "Expires"
+msgstr "காலாவதியாகிறது"
+
+msgid "No pending owner invitations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add customer owner"
+msgstr "ஒரு பயனரைச் சேர்க்கவும்"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add owner"
+msgstr "ஒரு பயனரைச் சேர்க்கவும்"
 
 msgid "Invoice history"
 msgstr ""
@@ -1007,6 +1182,18 @@ msgid "Discoverable"
 msgstr "கண்டுபிடி"
 
 #, fuzzy
+#| msgid "Integration API"
+msgid "Instance activity"
+msgstr "ஒருங்கிணைப்பு பநிஇ"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr ""
+
+#, python-format
+msgid "%(changes)s changes"
+msgstr ""
+
+#, fuzzy
 #| msgid "Service"
 msgid "Service limits"
 msgstr "பணி"
@@ -1038,9 +1225,6 @@ msgstr "செயலில்"
 #| msgid "Service Status"
 msgid "Service is terminated"
 msgstr "பணி நிலை"
-
-msgid "Expires"
-msgstr "காலாவதியாகிறது"
 
 msgid "Edit subscription in admin"
 msgstr ""
@@ -1157,7 +1341,13 @@ msgstr ""
 
 #, fuzzy, python-format
 #| msgid "Add a user"
-msgid "Added %(email)s to customer owners."
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr "ஒரு பயனரைச் சேர்க்கவும்"
+
+#, fuzzy, python-format
+#| msgid "Add a user"
+msgid "Added %(email)s to customer owners and notified them."
 msgstr "ஒரு பயனரைச் சேர்க்கவும்"
 
 #, python-format
@@ -1267,6 +1457,50 @@ msgstr "சேவையக முகவரி"
 msgid "Server URL must use HTTPS."
 msgstr ""
 
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr ""
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+
+msgid "This request has already been used."
+msgstr ""
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr ""
+
+msgid "A correction reason and explanation are required."
+msgstr ""
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr ""
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr ""
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr ""
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr ""
+
+#, fuzzy
+#| msgid "This invoice has already been paid. Please sign in to view details."
+msgid "This invoice has already been settled."
+msgstr "இந்த விலைப்பட்டியல் ஏற்கனவே செலுத்தப்பட்டுள்ளது. விவரங்களைப் பார்க்க உள்நுழையவும்."
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "An internal explanation is required."
+msgstr "ஒருங்கிணைப்பு பநிஇ"
+
 msgid "IBAN"
 msgstr "இபான்"
 
@@ -1314,8 +1548,28 @@ msgstr ""
 msgid "Converted"
 msgstr ""
 
+msgid "Credited"
+msgstr ""
+
+msgid "Refunded"
+msgstr ""
+
 msgid "Paid"
 msgstr "பணம்"
+
+msgid "Uncollectible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Applied to invoice"
+msgstr "விலைப்பட்டியல் பதிவிறக்கவும்"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Awaiting refund"
+msgstr "கட்டணம் காத்திருக்கிறது"
 
 msgid "Unpaid"
 msgstr ""
@@ -1699,6 +1953,21 @@ msgstr "மாதாந்திர"
 
 msgid "One-time"
 msgstr "ஒரு முறை"
+
+msgid "Pending"
+msgstr ""
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Revoked"
+msgstr ""
+
+msgid "Delivery failed"
+msgstr ""
+
+msgid "Fulfilled by staff"
+msgstr ""
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -2201,6 +2470,32 @@ msgstr "மொழிபெயர்க்கத் தொடங்குங்�
 msgid "Translation status"
 msgstr "மொழிபெயர்ப்பு நிலை"
 
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer owner invitation"
+msgstr "பட்டியலைத் தனிப்பயனாக்குங்கள்"
+
+#, fuzzy
+#| msgid "Review merge"
+msgid "Review access"
+msgstr "மதிப்பாய்வு ஒன்றிணைப்பு"
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer account"
+msgstr "தனிப்பயன்"
+
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation token"
+msgid "Accept invitation"
+msgstr "செயல்படுத்தல் குறிஅடையாளம்"
+
 msgid "Discover Weblate"
 msgstr "வலைபெயர்ப்பைக் கண்டறியவும்"
 
@@ -2582,112 +2877,230 @@ msgstr ""
 "பைதான் பைப்பிலிருந்து நிறுவக்கூடிய <a href=\"%(url)s\">wlc</a> ஐப் பயன்படுத்தி நீங்கள் "
 "வலைபெயர்ப்பைக் கட்டுப்படுத்தலாம்:"
 
-msgid "Weblate features"
-msgstr "வலைபெயர்ப்பு நற்பொருத்தங்கள்"
+msgid "Weblate features — quality translations, your control"
+msgstr ""
+
+msgid "Bring your project to more people"
+msgstr ""
 
 msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
 msgstr ""
-"நற்பொருத்தம் நிறைந்த கணினி உதவி மொழிபெயர்ப்பு கருவியாக, வலைபெயர்ப்பு உருவாக்குபவர்கள் "
-"மற்றும் மொழிபெயர்ப்பாளர்கள் இருவரையும் சேமிக்கிறது. உங்கள் பயனர்களை மகிழ்ச்சியாக ஆக்குங்கள்!"
 
 msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
 msgstr ""
-"மேலும் அறிய <a href=\"https://docs.wellate.org/\"> ஆவணங்கள் </a> ஐ உலாவுக."
 
-msgid "Easy to use interface"
-msgstr "இடைமுகத்தைப் பயன்படுத்த எளிதானது"
+#, fuzzy
+#| msgid "Join existing users and supporters"
+msgid "Compare hosting and support"
+msgstr "தற்போதுள்ள பயனர்கள் மற்றும் ஆதரவாளர்களுடன் சேரவும்"
 
-msgid "Weblate screenshot"
-msgstr "வலைபெயர்ப்பு திரைக்காட்சி"
+msgid "Try Weblate"
+msgstr "வலைபெயர்ப்பு முயற்சிக்கவும்"
 
-msgid "Customizable quality checks"
-msgstr "தனிப்பயனாக்கக்கூடிய தர சோதனைகள்"
-
-msgid "Detailed context"
-msgstr "விரிவான சூழல்"
+msgid "Keep translations in step with development"
+msgstr ""
 
 msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
 msgstr ""
-"மொழிபெயர்ப்பாளர்களுக்கு விரிவான மொழிபெயர்ப்பு சூழல், மொழிபெயர்ப்பு கோப்புகளிலிருந்து "
-"அல்லது வலைபெயர்ப்புக்குள் செறிவூட்டப்பட்ட தரவு வழங்கப்படுகிறது."
-
-msgid "Fluent communication"
-msgstr "சரளமான தொடர்பு"
-
-msgid "All translations are tracked and can be commented."
-msgstr "அனைத்து மொழிபெயர்ப்புகளும் கண்காணிக்கப்பட்டு கருத்து தெரிவிக்கலாம்."
-
-msgid "Access Control"
-msgstr "நுழைவு கட்டுப்பாடு"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "உங்கள் சூழலுக்கு ஏற்றவாறு அணுகல் உரிமைகள்."
-
-msgid "Smart Notifications"
-msgstr "அறிவுள்ள அறிவிப்புகள்"
 
 msgid ""
-"Translators can be notified of new strings to translate or other events."
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
 msgstr ""
-"மொழிபெயர்ப்பாளர்களுக்கு மொழிபெயர்க்க புதிய சரங்கள் அல்லது பிற நிகழ்வுகள் குறித்து "
-"அறிவிக்கப்படலாம்."
 
-msgid "Integration API"
-msgstr "ஒருங்கிணைப்பு பநிஇ"
+#, fuzzy
+#| msgid "Continuous localization"
+msgid "Explore continuous localization"
+msgstr "தொடர்ச்சியான உள்ளூராக்கல்"
 
-msgid "Integrate Weblate with third-party services."
-msgstr "மூன்றாம் தரப்பு சேவைகளுடன் வலைபெயர்ப்பை ஒருங்கிணைக்கவும்."
-
-msgid "Multiple File Formats"
-msgstr "பல கோப்பு வடிவங்கள்"
+msgid "Give every translation the context it needs"
+msgstr ""
 
 msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
 msgstr ""
-"gettext, சேசன், ஃலிப்ப் அல்லது வள சரங்கள் போன்ற எந்தவொரு பொதுவான கோப்பு உள்ளூர்மயமாக்கல் "
-"வடிவமைப்பையும் பயன்படுத்தவும்."
-
-msgid "Branch Support"
-msgstr "கிளை உதவி"
 
 msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
 msgstr ""
-"வெவ்வேறு மொழிபெயர்ப்பு பதிப்புகளை தானாகவே வெவ்வேறு கிளைகளுக்கு தள்ளுவதன் மூலம் "
-"கையாளவும்."
-
-msgid "Translation Context"
-msgstr "மொழிபெயர்ப்பு சூழல்"
 
 msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
 msgstr ""
-"விளக்கம், அருகிலுள்ள சரங்கள், படங்கள், தொடர்புடைய மூலக் குறியீடு மற்றும் சொற்களஞ்சிய "
-"உள்ளீடுகள் -ஒவ்வொரு சரத்திற்கும்."
+
+msgid "Give your translators the tools to make informed choices."
+msgstr ""
+
+msgid "Explore translation quality checks"
+msgstr ""
+
+msgid "Choose how you translate—with or without AI"
+msgstr ""
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translate the app"
+msgid "Translate without AI"
+msgstr "பயன்பாட்டை மொழிபெயர்க்கவும்"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Number of translators"
+msgid "Assist your translators"
+msgstr "மொழிபெயர்ப்பாளர்களின் எண்ணிக்கை"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+
+#, fuzzy
+#| msgid "Start translating"
+msgid "Start with machine translations"
+msgstr "மொழிபெயர்க்கத் தொடங்குங்கள்"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+
+msgid "Accept suggestions before use"
+msgstr ""
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+
+msgid "Approve before committing"
+msgstr ""
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+
+msgid "Explore AI translation workflows"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose your amount in EUR"
+msgid "Choose how your content is handled"
+msgstr "யூரோவில் உங்கள் தொகையைத் தேர்வுசெய்க"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+
+msgid "Find the right hosting option"
+msgstr ""
+
+msgid "Bring your team and community together"
+msgstr ""
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+
+msgid "The everyday tools your localization needs"
+msgstr ""
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+
+#, fuzzy
+#| msgid "Read more in the documentation."
+msgid "Explore the documentation"
+msgstr "ஆவணத்தில் மேலும் வாசிக்க."
+
+msgid "Keep working with your existing formats"
+msgstr ""
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+
+msgid ".NET resource files (RESX, RESW)"
+msgstr "நெட் வள கோப்புகள் (resx, resw)"
 
 msgid "Android string resources"
 msgstr "ஆண்ட்ராய்டு string resources"
 
-msgid "Apple iOS strings"
-msgstr "apple ஐஇமு strings"
-
 msgid "App store metadata files"
 msgstr "ஆப் கடை மேனிலை தரவு கோப்புகள்"
+
+msgid "Apple iOS strings"
+msgstr "apple ஐஇமு strings"
 
 msgid "ARB file"
 msgstr "arb கோப்பு"
 
+#, fuzzy
+#| msgid "DTD files"
+msgid "AsciiDoc files"
+msgstr "டி.டி.டி கோப்புகள்"
+
+msgid "Compose Multiplatform resources"
+msgstr ""
+
 msgid "CSV files"
 msgstr "காபிம கோப்புகள்"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "DokuWiki text files"
+msgstr "உரை கோப்புகள்"
 
 msgid "DTD files"
 msgstr "டி.டி.டி கோப்புகள்"
@@ -2701,6 +3114,11 @@ msgstr "பிளாட் எக்ச்எம்எல் கோப்பு�
 msgid "Fluent format"
 msgstr "சரளமான வடிவமைப்பு"
 
+#, fuzzy
+#| msgid "React Intl"
+msgid "Format.JS / React Intl"
+msgstr "எதிர்வினை பன்னாட்டு"
+
 msgid "GNU gettext"
 msgstr "குனு உரைபெறு"
 
@@ -2712,6 +3130,9 @@ msgstr "gotext சாதொபொகு கோப்புகள்"
 
 msgid "GWT properties"
 msgstr "gwt பண்புகள்"
+
+msgid "Haiku Catkeys"
+msgstr ""
 
 msgid "HTML files"
 msgstr "html கோப்புகள்"
@@ -2731,17 +3152,14 @@ msgstr "inno setup இனி மொழிபெயர்ப்புகள்"
 msgid "Java properties"
 msgstr "சாவா பண்புகள்"
 
+msgid "JavaScript resource files"
+msgstr ""
+
 msgid "Joomla translations"
 msgstr "சூம்லா மொழிபெயர்ப்புகள்"
 
 msgid "JSON files"
 msgstr "சேஎச்ஓஎன் கோப்புகள்"
-
-msgid "React Intl"
-msgstr "எதிர்வினை பன்னாட்டு"
-
-msgid "Vue I18n"
-msgstr "உவே ப18ல்"
 
 msgid "Laravel PHP strings"
 msgstr "லாரவெல் php strings"
@@ -2749,11 +3167,26 @@ msgstr "லாரவெல் php strings"
 msgid "Markdown files"
 msgstr "மார்க்டவுன் கோப்புகள்"
 
-msgid "mi18n lang files"
+#, fuzzy
+#| msgid "DTD files"
+msgid "MDX files"
+msgstr "டி.டி.டி கோப்புகள்"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "MediaWiki text files"
+msgstr "உரை கோப்புகள்"
+
+#, fuzzy
+#| msgid "mi18n lang files"
+msgid "@draggable/i18n lang files"
 msgstr "எம்ப18ல் மொழி கோப்புகள்"
 
 msgid "Mobile Kotlin resources"
 msgstr "மொபைல் கோட்லின் வளங்கள்"
+
+msgid "Nextcloud JSON"
+msgstr ""
 
 msgid "OpenDocument Format"
 msgstr "opendocument format"
@@ -2766,9 +3199,6 @@ msgstr "கியுடி linguist .ts"
 
 msgid "ResourceDictionary files"
 msgstr "ஆதார கோப்புகள்"
-
-msgid ".NET resource files (RESX, RESW)"
-msgstr "நெட் வள கோப்புகள் (resx, resw)"
 
 msgid "Ruby YAML files"
 msgstr "ரூபி யாம் கோப்புகள்"
@@ -2785,180 +3215,86 @@ msgstr "டெர்ம்பேச் பரிமாற்ற வடிவம�
 msgid "Text files"
 msgstr "உரை கோப்புகள்"
 
+msgid "TOML and go-i18n TOML"
+msgstr ""
+
+msgid "Vue I18n"
+msgstr "உவே ப18ல்"
+
 msgid "WebExtension JSON"
 msgstr "weblextension சாதொபொகு"
 
 msgid "Windows RC files"
 msgstr "சாளரங்கள் ஆர்.சி கோப்புகள்"
 
-msgid "XLIFF"
+#, fuzzy
+#| msgid "Localization"
+msgid "WiX localization files"
+msgstr "உள்ளகமாக்கல்"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr ""
+
+#, fuzzy
+#| msgid "XLIFF"
+msgid "XLIFF 2.0"
 msgstr "ஃலிப்ப்"
+
+msgid "XWiki formats"
+msgstr ""
 
 msgid "YAML files"
 msgstr "yaml கோப்புகள்"
 
-msgid "Glossaries"
-msgstr "சொற்களஞ்சியங்கள்"
-
-msgid "Define frequently used terminology for consistency."
-msgstr "நிலைத்தன்மைக்கு அடிக்கடி பயன்படுத்தப்படும் சொற்களை வரையறுக்கவும்."
-
-msgid "Feedback Acquisition"
-msgstr "கருத்து கையகப்படுத்தல்"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
-msgstr "மூல சரங்களை மேம்படுத்த அவற்றை மேம்படுத்த வலைபெயர்ப்பைப் பயன்படுத்தவும்."
-
-msgid "Export and Import"
-msgstr "ஏற்றுமதி மற்றும் இறக்குமதி"
-
-msgid "Translations can be downloaded for offline translation and merged back."
+#, fuzzy, python-format
+#| msgid ""
+#| "Please consult the <a href=\"%(url)s\">contributor documentation</a> to "
+#| "find the most common topics."
+msgid ""
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
 msgstr ""
-"இணைப்பில்லாத மொழிபெயர்ப்புக்காக மொழிபெயர்ப்புகளை பதிவிறக்கம் செய்து மீண்டும் இணைக்க "
-"முடியும்."
+"மிகவும் பொதுவான தலைப்புகளைக் கண்டறிய <a href=\"%(url)s\"> பங்களிப்பாளர் ஆவணங்களை </"
+"a> ஐ அணுகவும்."
 
-msgid "Fully Integrated"
-msgstr "முழுமையாக ஒருங்கிணைந்த"
+msgid "Open source, backed by sustainable services"
+msgstr ""
 
 msgid ""
-"Translations are managed within the same version control system as your code."
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
 msgstr ""
-"உங்கள் குறியீட்டின் அதே பதிப்பு கட்டுப்பாட்டு அமைப்பில் மொழிபெயர்ப்புகள் நிர்வகிக்கப்படுகின்றன."
-
-msgid "Documentation"
-msgstr "ஆவணப்படுத்துதல்"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr "அமைப்பு மற்றும் பயன்பாடு இரண்டையும் உள்ளடக்கிய விரிவான ஆவணங்கள்."
-
-msgid "Easy Reviews"
-msgstr "எளிதான மதிப்புரைகள்"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr ""
-"மொழிபெயர்ப்பாளர்களுக்கு உடனுழைப்பவர்கள் செய்த பங்களிப்புகளை மதிப்பாய்வு செய்ய பல "
-"விருப்பங்கள்."
-
-msgid "Language support"
-msgstr "மொழி உதவி"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr "பெட்டியிலிருந்து 500 க்கும் மேற்பட்ட மொழிகளுக்கு ஆதரவு. மற்றவர்களைச் சேர்க்கலாம்."
-
-msgid "Promotion"
-msgstr "பதவி உயர்வு"
 
 msgid ""
-"Built-in features to attract a wider audience for your translation project."
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
 msgstr ""
-"உங்கள் மொழிபெயர்ப்பு திட்டத்திற்கு பரந்த பார்வையாளர்களை ஈர்க்க உள்ளமைக்கப்பட்ட நற்பொருத்தங்கள்."
-
-msgid "Reporting"
-msgstr "அறிக்கை"
-
-msgid "Reports are generated to provide info on project activity."
-msgstr "திட்ட செயல்பாடு குறித்த செய்திகளை வழங்க அறிக்கைகள் உருவாக்கப்படுகின்றன."
-
-msgid "Version Control"
-msgstr "பதிப்பு கட்டுப்பாடு"
 
 msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
 msgstr ""
-"உங்கள் பதிப்பு கட்டுப்பாட்டு அமைப்புடன் நேரடியாக பேசுகிறது, தற்போது அறிவிலி மற்றும் "
-"மெர்குரியல் ஆகியவை ஆதரிக்கப்படுகின்றன."
 
-msgid "Collaboration Sites"
-msgstr "ஒத்துழைப்பு தளங்கள்"
-
-msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
+msgid "Explore self-hosting"
 msgstr ""
-"மென்பொருள் மேம்பாட்டு தளங்களான அறிவிலிஆய்வு, அறிவிலிமையம், பேசுரே, அசூர், "
-"அறிவிலிதேநீர் அல்லது இருமவாலி போன்றவற்றிற்கான சொந்த ஆதரவு."
 
-msgid "Responsive UI"
-msgstr "பதிலளிக்கக்கூடிய இடைமுகம்"
-
-msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
-msgstr ""
-"ஒளி மற்றும் இருண்ட பயன்முறையில் கணினி, மடிக்கணினிகள் மற்றும் தொலைபேசிகளில் நன்றாக வேலை "
-"செய்யும் பயனர் இடைமுகம்."
-
-msgid "Translation memory"
-msgstr "மொழிபெயர்ப்பு நினைவகம்"
-
-msgid "Reuse existing translations to save time and costs."
-msgstr ""
-"நேரம் மற்றும் செலவுகளைச் சேமிக்க ஏற்கனவே உள்ள மொழிபெயர்ப்புகளை மீண்டும் பயன்படுத்தவும்."
-
-msgid "Translation add-ons"
-msgstr "மொழிபெயர்ப்பு துணை நிரல்கள்"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "பல்வேறு துணை நிரல்களுடன் உள்ளூர்மயமாக்கல் பணிப்பாய்வுகளைத் தனிப்பயனாக்கவும்."
-
-msgid "Backups"
-msgstr "காப்புப்பிரதிகள்"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr "தரவு இழப்பைத் தடுக்க உள்ளமைக்கப்பட்ட தொலைநிலை காப்புப்பிரதிகள்."
-
-msgid "Screenshots"
-msgstr "திரைக்காட்சிகள்"
-
-msgid "Provide visual context for the translations."
-msgstr "மொழிபெயர்ப்புகளுக்கு காட்சி சூழலை வழங்கவும்."
-
-msgid "Variants"
-msgstr "மாறுபாடுகள்"
-
-msgid "Group variants of strings for easier translating."
-msgstr "எளிதாக மொழிபெயர்ப்பதற்கான சரங்களின் குழு மாறுபாடுகள்."
-
-msgid "Intermediate language"
-msgstr "இடைநிலை மொழி"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "உருவாக்குபவர்களிடமிருந்து சரங்களை மொழிபெயர்ப்பதற்கு முன் சரிபார்த்தல்."
-
-msgid "Automatic translation"
-msgstr "தானியங்கி மொழிபெயர்ப்பு"
-
-msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr ""
-"மொழிபெயர்ப்பு அல்லது பரிந்துரைகளை இயந்திர மொழிபெயர்ப்பு சேவைகள் அல்லது செஅ மூலம் செய்ய "
-"முடியும்."
-
-msgid "Organize translations"
-msgstr "மொழிபெயர்ப்புகளை ஒழுங்கமைக்கவும்"
-
-msgid "Categorize the translation files to ease navigation."
-msgstr "வழிசெலுத்தலை எளிதாக்க மொழிபெயர்ப்பு கோப்புகளை வகைப்படுத்தவும்."
-
-msgid "Keyboard operation"
-msgstr "விசைப்பலகை செயல்பாடு"
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr "மொழிபெயர்க்கும்போது திறம்பட செல்ல விசைப்பலகை பயன்படுத்தவும்."
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Hosting for libre projects"
+msgstr "விடுதலை திட்டங்களுக்கு"
 
 msgid "Weblate Pricing"
 msgstr "வலைபெயர்ப்பு விலை"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"ஒரு சேவையாக வலைபெயர்ப்பைப் பயன்படுத்தவும், உங்கள் சொந்தமானதை அமைக்கவும், அல்லது <a "
-"href=\"%(url)s\"> உதவியைப் பெறுங்கள் </a> வளாகத்தில் புரவலத்திற்கு-அனைத்தும் காப்பீடு "
-"ஆதரவின் வசதியுடன்."
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr "வலைபெயர்ப்பு சீராக இயங்க உங்களுக்கு உதவ எங்கள் குழு தயாராக உள்ளது."
@@ -3120,25 +3456,27 @@ msgstr ""
 msgid "Join existing users and supporters"
 msgstr "தற்போதுள்ள பயனர்கள் மற்றும் ஆதரவாளர்களுடன் சேரவும்"
 
-msgid "Weblate - web-based localization"
-msgstr "வலைபெயர்ப்பு - இணைய அடிப்படையிலான உள்ளூர்மயமாக்கல்"
-
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr "இணைய அடிப்படையிலான <strong> தொடர்ச்சியான </strong> உள்ளூர்மயமாக்கல்"
-
-#, python-format
-msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+msgid "Weblate — quality translations, your control"
 msgstr ""
-"%(projects)s விடுதலை மென்பொருள் திட்டங்கள் மற்றும் நிறுவனங்கள் %(countries)s நாடுகளில் "
-"பயன்படுத்தப்படுகின்றன."
 
-msgid "Try Weblate"
-msgstr "வலைபெயர்ப்பு முயற்சிக்கவும்"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr ""
 
-msgid "Explore all features"
-msgstr "அனைத்து நற்பொருத்தங்களையும் ஆராயுங்கள்"
+msgid ""
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
+msgstr ""
+
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr ""
+
+#, fuzzy
+#| msgid "Get more Weblate"
+msgid "Explore Weblate"
+msgstr "மேலும் வலைபெயர்ப்பு செய்யுங்கள்"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -3148,13 +3486,11 @@ msgid "Weblate localizes the world"
 msgstr "வலைபெயர்ப்பு உலகை உள்ளூர்மயமாக்குகிறது"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"இறுக்கமான பதிப்பு கட்டுப்பாட்டு ஒருங்கிணைப்புடன் புரவலன் செய்யப்பட்ட பணி மற்றும் முழுமையான "
-"கருவி. எளிய மற்றும் தூய்மையான பயனர் இடைமுகம், கூறுகள் முழுவதும் மொழிபெயர்ப்புகளின் "
-"பரப்புதல், தர சோதனைகள் மற்றும் மூல கோப்புகளுடன் தானியங்கி இணைத்தல்."
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -3174,11 +3510,8 @@ msgstr[1] "%(count)s மொழிபெயர்ப்புகள்"
 msgid "in the last 7 days"
 msgstr "கடந்த 7 நாட்களில்"
 
-msgid "Robust feature set"
-msgstr "வலுவான நற்பொருத்தம் தொகுப்பு"
-
-msgid "Go to pricing"
-msgstr "விலைக்கு செல்லுங்கள்"
+msgid "Make localization work for your team"
+msgstr ""
 
 msgid "Users and Supporters"
 msgstr "பயனர்கள் மற்றும் ஆதரவாளர்கள்"
@@ -3192,6 +3525,49 @@ msgstr "உங்கள் கட்டணங்களை நிர்வகி�
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "%(timestamp)s பொழுதில் உருவானது."
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr ""
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr ""
+
+#, fuzzy
+#| msgid "My donations"
+msgid "Review invitation"
+msgstr "எனது நன்கொடைகள்"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr ""
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3301,6 +3677,11 @@ msgstr "வலைபெயர்ப்பு.நிறுவனத்தில�
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "weblate.org இல் உங்கள் சந்தா விரைவில் புதுப்பிக்கப்படும்."
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr ""
+
 msgid "The payment will be automatically charged soon."
 msgstr "கட்டணம் தானாகவே விரைவில் வசூலிக்கப்படும்."
 
@@ -3347,6 +3728,20 @@ msgstr "சேமிக்கப்பட்ட அட்டை: %(card_number)s
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr "சந்தா காலாவதி: %(expiry)s"
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Pay invoice"
+msgstr "விலைப்பட்டியல் பதிவிறக்கவும்"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3510,12 +3905,13 @@ msgstr "ஆங்கில பதிப்பைக் காண்க"
 msgid "Download as PDF"
 msgstr "PDF ஆக பதிவிறக்கவும்"
 
-msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+msgid "Find your way to get started"
 msgstr ""
-"எங்கள் தொழில் வல்லுநர்கள் குழுவிலிருந்து விரிவான திறன்களையும் அனுபவத்தையும் செலுத்துங்கள், "
-"உங்கள் சரியான தேவைகளுக்கு கவனம் செலுத்தும் ஆலோசனைகளை வழங்குதல்."
+
+msgid ""
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
+msgstr ""
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong> நன்கொடை </strong> - உலகை ஒரு சிறந்த இடமாக மாற்ற"
@@ -3555,9 +3951,6 @@ msgstr ""
 "நாங்கள் ஒரு சிறிய விடுதலை மென்பொருள் நிறுவனம், அங்கு அனைவருக்கும் வளர நிறைய இடம் "
 "உள்ளது."
 
-msgid "Owners"
-msgstr ""
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3579,47 +3972,65 @@ msgstr "பயனரை அகற்று"
 msgid "Remove"
 msgstr "அகற்று"
 
-msgid "Continuous Localization"
-msgstr "தொடர்ச்சியான உள்ளூர்மயமாக்கல்"
+#, fuzzy
+#| msgid "Documentation"
+msgid "Pending invitation"
+msgstr "ஆவணப்படுத்துதல்"
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Revoke invitation"
+msgstr "வழிசெலுத்தலை மாற்றவும்"
+
+#, fuzzy
+#| msgid "Remove user"
+msgid "Invite owner"
+msgstr "பயனரை அகற்று"
+
+msgid "Keep pace with development"
+msgstr ""
 
 msgid ""
-"Automated localization workflow follows your project development closely."
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
 msgstr ""
-"தானியங்கு உள்ளூர்மயமாக்கல் பணிப்பாய்வு உங்கள் திட்ட வளர்ச்சியை நெருக்கமாகப் பின்பற்றுகிறது."
 
-msgid "Quality Checks"
-msgstr "தர சோதனைகள்"
-
-msgid "Customizable quality checks helps improve translation quality."
-msgstr "தனிப்பயனாக்கக்கூடிய தர சோதனைகள் மொழிபெயர்ப்பு தரத்தை மேம்படுத்த உதவுகின்றன."
-
-msgid "Attribution"
-msgstr "பண்புக்கூறு"
-
-msgid "All translators are properly credited in the version control system."
+msgid "Help people get the meaning right"
 msgstr ""
-"அனைத்து மொழிபெயர்ப்பாளர்களும் பதிப்பு கட்டுப்பாட்டு அமைப்பில் சரியாக வரவு "
-"வைக்கப்படுகிறார்கள்."
 
-msgid "Hosting Plans"
-msgstr "புரவலதிற்கு திட்டங்கள்"
-
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "19 யூரோவில் தொடங்கி ஒரு சேவையாக வலைபெயர்ப்பைப் பயன்படுத்தவும்."
-
-msgid "Cloud Ready"
-msgstr "முகில் தயாராக உள்ளது"
-
-msgid "Comes with appliances, ready to deploy in your cloud."
-msgstr "உபகரணங்களுடன் வருகிறது, உங்கள் முகிலில் வரிசைப்படுத்த தயாராக உள்ளது."
-
-msgid "Libre Software"
-msgstr "விடுதலை மென்பொருள்"
-
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
 msgstr ""
-"நகலெடுக்கப்பட்டது; விருப்பத்திலும், அனைவரிடமும் பயன்படுத்தவும், பார்க்கவும், மாற்றவும், "
-"பகிரவும்."
+
+msgid "Translate with or without AI"
+msgstr ""
+
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
+
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
+
+msgid "Bring everyone into the conversation"
+msgstr ""
+
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
+
+msgid "Build on software you can trust"
+msgstr ""
+
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
 
 msgid "Help translate"
 msgstr "மொழிபெயர்க்க உதவுங்கள்"
@@ -3664,15 +4075,20 @@ msgstr "மூலக் குறியீட்டைப் பதிவிற�
 msgid "Pay now"
 msgstr "இப்பொழுது இடு"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+msgid "Choose the hosting and support that fit your team"
 msgstr ""
-"<strong> இலவசம் </strong> அல்லது <strong> காப்பீடு </strong> - இது உங்களுடையது"
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid "Premium Cloud"
 msgstr "காப்பீடு முகில்"
 
-msgid "for ease and comfort"
-msgstr "எளிதாகவும் ஆறுதலுக்காகவும்"
+msgid "managed hosting for your team"
+msgstr ""
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3700,8 +4116,9 @@ msgstr "%(percent)s%% சேமி"
 msgid "for complete control"
 msgstr "முழுமையான கட்டுப்பாட்டுக்கு"
 
-#, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
+#, fuzzy, python-format
+#| msgid "with paid <a href=\"%(url)s\">support</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
 msgstr "பணம் செலுத்திய <a href=\"%(url)s\">ஆதரவு </a>"
 
 msgid "Gratis Weblate"
@@ -3713,9 +4130,6 @@ msgstr "விடுதலை திட்டங்களுக்கு"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "<a href=\"%(url)s\">கோரிக்கை</a> மீது"
-
-msgid "Compare all plans"
-msgstr "எல்லா திட்டங்களையும் ஒப்பிடுக"
 
 msgid "Expired"
 msgstr "காலாவதியான"
@@ -3734,6 +4148,9 @@ msgstr "கிள்ளாக்கைப் புதுப்பி"
 
 msgid "Backup repository"
 msgstr "காப்புப்பிரதி களஞ்சியம்"
+
+msgid "Documentation"
+msgstr "ஆவணப்படுத்துதல்"
 
 #, python-format
 msgid ""
@@ -3881,14 +4298,16 @@ msgstr "வலைபெயர்ப்பு பட்டியலைக் க�
 msgid "Weblate support"
 msgstr "வலைபெயர்ப்பு உதவி"
 
-msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+msgid "Expert help for your localization"
 msgstr ""
-"வலைபெயர்ப்பு என்பது சமூக ஆதரவுடன் நகலெடுக்கும் விடுதலை மென்பொருளாகும். சந்தாதாரர்கள் "
-"கூடுதல் கட்டணம் இல்லாமல் முன்னுரிமை ஆதரவைப் பெறுகிறார்கள். முன்பணம் செலுத்தப்பட்ட உதவி "
-"தொகுப்புகள் அனைவருக்கும் கிடைக்கின்றன."
+
+msgid ""
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
+msgstr ""
 
 msgid "Report issue"
 msgstr "சிக்கல் அறிக்கை"
@@ -3915,8 +4334,8 @@ msgstr ""
 "நீங்கள் ஒரு பாதிப்பைக் கண்டால், தயவுசெய்து அதை %(report)s என்று புகாரளிக்கவும். <a "
 "href=\"%(url)s\">ஆவணங்களில்</a> கூடுதல் செய்தி."
 
-msgid "Reliable support"
-msgstr "நம்பகமான உதவி"
+msgid "Living humans, ready to help"
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4210,25 +4629,416 @@ msgid ""
 "token shown below."
 msgstr ""
 
-msgid "User not found!"
-msgstr "பயனர் கண்டுபிடிக்கப்படவில்லை!"
-
 #, fuzzy
 #| msgid "You can not remove yourself"
 msgid "You can not remove yourself."
 msgstr "உங்களை நீங்களே அகற்ற முடியாது"
 
 #, fuzzy
-#| msgid "Add a user"
-msgid "Removed customer owner"
-msgstr "ஒரு பயனரைச் சேர்க்கவும்"
+#| msgid ""
+#| "VAT ID validation service unavailable for {}, please try again later."
+msgid "Too many owner invitations. Please try again later."
+msgstr ""
+"{}க்கு மதிப்புகூடுதல்வரி அடையாளம் சரிபார்ப்பு பணி கிடைக்கவில்லை, தயவுசெய்து பின்னர் "
+"முயற்சிக்கவும்."
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr ""
+
+msgid "This customer owner invitation is invalid."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unavailable for your amount"
+msgid "This invitation is not available for your account."
+msgstr "உங்கள் தொகைக்கு கிடைக்கவில்லை"
+
+msgid "Customer owner invitation accepted."
+msgstr ""
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr ""
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr ""
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
 msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#, fuzzy
+#~| msgid "Add server to Discover Weblate"
+#~ msgid "Add owner to customer"
+#~ msgstr "வலைபெயர்ப்பைக் கண்டறிய சேவையகத்தைச் சேர்க்கவும்"
+
+#~ msgid "Weblate features"
+#~ msgstr "வலைபெயர்ப்பு நற்பொருத்தங்கள்"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "நற்பொருத்தம் நிறைந்த கணினி உதவி மொழிபெயர்ப்பு கருவியாக, வலைபெயர்ப்பு "
+#~ "உருவாக்குபவர்கள் மற்றும் மொழிபெயர்ப்பாளர்கள் இருவரையும் சேமிக்கிறது. உங்கள் பயனர்களை "
+#~ "மகிழ்ச்சியாக ஆக்குங்கள்!"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr ""
+#~ "மேலும் அறிய <a href=\"https://docs.wellate.org/\"> ஆவணங்கள் </a> ஐ உலாவுக."
+
+#~ msgid "Easy to use interface"
+#~ msgstr "இடைமுகத்தைப் பயன்படுத்த எளிதானது"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "வலைபெயர்ப்பு திரைக்காட்சி"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "தனிப்பயனாக்கக்கூடிய தர சோதனைகள்"
+
+#~ msgid "Detailed context"
+#~ msgstr "விரிவான சூழல்"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "மொழிபெயர்ப்பாளர்களுக்கு விரிவான மொழிபெயர்ப்பு சூழல், மொழிபெயர்ப்பு கோப்புகளிலிருந்து "
+#~ "அல்லது வலைபெயர்ப்புக்குள் செறிவூட்டப்பட்ட தரவு வழங்கப்படுகிறது."
+
+#~ msgid "Fluent communication"
+#~ msgstr "சரளமான தொடர்பு"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr "அனைத்து மொழிபெயர்ப்புகளும் கண்காணிக்கப்பட்டு கருத்து தெரிவிக்கலாம்."
+
+#~ msgid "Access Control"
+#~ msgstr "நுழைவு கட்டுப்பாடு"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "உங்கள் சூழலுக்கு ஏற்றவாறு அணுகல் உரிமைகள்."
+
+#~ msgid "Smart Notifications"
+#~ msgstr "அறிவுள்ள அறிவிப்புகள்"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr ""
+#~ "மொழிபெயர்ப்பாளர்களுக்கு மொழிபெயர்க்க புதிய சரங்கள் அல்லது பிற நிகழ்வுகள் குறித்து "
+#~ "அறிவிக்கப்படலாம்."
+
+#~ msgid "Integration API"
+#~ msgstr "ஒருங்கிணைப்பு பநிஇ"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "மூன்றாம் தரப்பு சேவைகளுடன் வலைபெயர்ப்பை ஒருங்கிணைக்கவும்."
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "பல கோப்பு வடிவங்கள்"
+
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "gettext, சேசன், ஃலிப்ப் அல்லது வள சரங்கள் போன்ற எந்தவொரு பொதுவான கோப்பு "
+#~ "உள்ளூர்மயமாக்கல் வடிவமைப்பையும் பயன்படுத்தவும்."
+
+#~ msgid "Branch Support"
+#~ msgstr "கிளை உதவி"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr ""
+#~ "வெவ்வேறு மொழிபெயர்ப்பு பதிப்புகளை தானாகவே வெவ்வேறு கிளைகளுக்கு தள்ளுவதன் மூலம் "
+#~ "கையாளவும்."
+
+#~ msgid "Translation Context"
+#~ msgstr "மொழிபெயர்ப்பு சூழல்"
+
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr ""
+#~ "விளக்கம், அருகிலுள்ள சரங்கள், படங்கள், தொடர்புடைய மூலக் குறியீடு மற்றும் சொற்களஞ்சிய "
+#~ "உள்ளீடுகள் -ஒவ்வொரு சரத்திற்கும்."
+
+#~ msgid "Glossaries"
+#~ msgstr "சொற்களஞ்சியங்கள்"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr "நிலைத்தன்மைக்கு அடிக்கடி பயன்படுத்தப்படும் சொற்களை வரையறுக்கவும்."
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "கருத்து கையகப்படுத்தல்"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr "மூல சரங்களை மேம்படுத்த அவற்றை மேம்படுத்த வலைபெயர்ப்பைப் பயன்படுத்தவும்."
+
+#~ msgid "Export and Import"
+#~ msgstr "ஏற்றுமதி மற்றும் இறக்குமதி"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr ""
+#~ "இணைப்பில்லாத மொழிபெயர்ப்புக்காக மொழிபெயர்ப்புகளை பதிவிறக்கம் செய்து மீண்டும் இணைக்க "
+#~ "முடியும்."
+
+#~ msgid "Fully Integrated"
+#~ msgstr "முழுமையாக ஒருங்கிணைந்த"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr ""
+#~ "உங்கள் குறியீட்டின் அதே பதிப்பு கட்டுப்பாட்டு அமைப்பில் மொழிபெயர்ப்புகள் "
+#~ "நிர்வகிக்கப்படுகின்றன."
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr "அமைப்பு மற்றும் பயன்பாடு இரண்டையும் உள்ளடக்கிய விரிவான ஆவணங்கள்."
+
+#~ msgid "Easy Reviews"
+#~ msgstr "எளிதான மதிப்புரைகள்"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr ""
+#~ "மொழிபெயர்ப்பாளர்களுக்கு உடனுழைப்பவர்கள் செய்த பங்களிப்புகளை மதிப்பாய்வு செய்ய பல "
+#~ "விருப்பங்கள்."
+
+#~ msgid "Language support"
+#~ msgstr "மொழி உதவி"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr ""
+#~ "பெட்டியிலிருந்து 500 க்கும் மேற்பட்ட மொழிகளுக்கு ஆதரவு. மற்றவர்களைச் சேர்க்கலாம்."
+
+#~ msgid "Promotion"
+#~ msgstr "பதவி உயர்வு"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr ""
+#~ "உங்கள் மொழிபெயர்ப்பு திட்டத்திற்கு பரந்த பார்வையாளர்களை ஈர்க்க உள்ளமைக்கப்பட்ட "
+#~ "நற்பொருத்தங்கள்."
+
+#~ msgid "Reporting"
+#~ msgstr "அறிக்கை"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr "திட்ட செயல்பாடு குறித்த செய்திகளை வழங்க அறிக்கைகள் உருவாக்கப்படுகின்றன."
+
+#~ msgid "Version Control"
+#~ msgstr "பதிப்பு கட்டுப்பாடு"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr ""
+#~ "உங்கள் பதிப்பு கட்டுப்பாட்டு அமைப்புடன் நேரடியாக பேசுகிறது, தற்போது அறிவிலி மற்றும் "
+#~ "மெர்குரியல் ஆகியவை ஆதரிக்கப்படுகின்றன."
+
+#~ msgid ""
+#~ "Native support for software development sites such as GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, or Bitbucket."
+#~ msgstr ""
+#~ "மென்பொருள் மேம்பாட்டு தளங்களான அறிவிலிஆய்வு, அறிவிலிமையம், பேசுரே, அசூர், "
+#~ "அறிவிலிதேநீர் அல்லது இருமவாலி போன்றவற்றிற்கான சொந்த ஆதரவு."
+
+#~ msgid "Responsive UI"
+#~ msgstr "பதிலளிக்கக்கூடிய இடைமுகம்"
+
+#~ msgid ""
+#~ "User interface that works nicely on desktop, tablets and phones in both "
+#~ "light and dark mode."
+#~ msgstr ""
+#~ "ஒளி மற்றும் இருண்ட பயன்முறையில் கணினி, மடிக்கணினிகள் மற்றும் தொலைபேசிகளில் நன்றாக "
+#~ "வேலை செய்யும் பயனர் இடைமுகம்."
+
+#~ msgid "Translation memory"
+#~ msgstr "மொழிபெயர்ப்பு நினைவகம்"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr ""
+#~ "நேரம் மற்றும் செலவுகளைச் சேமிக்க ஏற்கனவே உள்ள மொழிபெயர்ப்புகளை மீண்டும் பயன்படுத்தவும்."
+
+#~ msgid "Translation add-ons"
+#~ msgstr "மொழிபெயர்ப்பு துணை நிரல்கள்"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "பல்வேறு துணை நிரல்களுடன் உள்ளூர்மயமாக்கல் பணிப்பாய்வுகளைத் தனிப்பயனாக்கவும்."
+
+#~ msgid "Backups"
+#~ msgstr "காப்புப்பிரதிகள்"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr "தரவு இழப்பைத் தடுக்க உள்ளமைக்கப்பட்ட தொலைநிலை காப்புப்பிரதிகள்."
+
+#~ msgid "Screenshots"
+#~ msgstr "திரைக்காட்சிகள்"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "மொழிபெயர்ப்புகளுக்கு காட்சி சூழலை வழங்கவும்."
+
+#~ msgid "Variants"
+#~ msgstr "மாறுபாடுகள்"
+
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr "எளிதாக மொழிபெயர்ப்பதற்கான சரங்களின் குழு மாறுபாடுகள்."
+
+#~ msgid "Intermediate language"
+#~ msgstr "இடைநிலை மொழி"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr "உருவாக்குபவர்களிடமிருந்து சரங்களை மொழிபெயர்ப்பதற்கு முன் சரிபார்த்தல்."
+
+#~ msgid "Automatic translation"
+#~ msgstr "தானியங்கி மொழிபெயர்ப்பு"
+
+#~ msgid ""
+#~ "Translations or suggestions can be done by machine translation services "
+#~ "or AI."
+#~ msgstr ""
+#~ "மொழிபெயர்ப்பு அல்லது பரிந்துரைகளை இயந்திர மொழிபெயர்ப்பு சேவைகள் அல்லது செஅ மூலம் "
+#~ "செய்ய முடியும்."
+
+#~ msgid "Organize translations"
+#~ msgstr "மொழிபெயர்ப்புகளை ஒழுங்கமைக்கவும்"
+
+#~ msgid "Categorize the translation files to ease navigation."
+#~ msgstr "வழிசெலுத்தலை எளிதாக்க மொழிபெயர்ப்பு கோப்புகளை வகைப்படுத்தவும்."
+
+#~ msgid "Keyboard operation"
+#~ msgstr "விசைப்பலகை செயல்பாடு"
+
+#~ msgid "Use keyboard to effectively navigate while translating."
+#~ msgstr "மொழிபெயர்க்கும்போது திறம்பட செல்ல விசைப்பலகை பயன்படுத்தவும்."
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "ஒரு சேவையாக வலைபெயர்ப்பைப் பயன்படுத்தவும், உங்கள் சொந்தமானதை அமைக்கவும், அல்லது <a "
+#~ "href=\"%(url)s\"> உதவியைப் பெறுங்கள் </a> வளாகத்தில் புரவலத்திற்கு-அனைத்தும் "
+#~ "காப்பீடு ஆதரவின் வசதியுடன்."
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr "வலைபெயர்ப்பு - இணைய அடிப்படையிலான உள்ளூர்மயமாக்கல்"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr "இணைய அடிப்படையிலான <strong> தொடர்ச்சியான </strong> உள்ளூர்மயமாக்கல்"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "%(projects)s விடுதலை மென்பொருள் திட்டங்கள் மற்றும் நிறுவனங்கள் %(countries)s "
+#~ "நாடுகளில் பயன்படுத்தப்படுகின்றன."
+
+#~ msgid "Explore all features"
+#~ msgstr "அனைத்து நற்பொருத்தங்களையும் ஆராயுங்கள்"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "இறுக்கமான பதிப்பு கட்டுப்பாட்டு ஒருங்கிணைப்புடன் புரவலன் செய்யப்பட்ட பணி மற்றும் "
+#~ "முழுமையான கருவி. எளிய மற்றும் தூய்மையான பயனர் இடைமுகம், கூறுகள் முழுவதும் "
+#~ "மொழிபெயர்ப்புகளின் பரப்புதல், தர சோதனைகள் மற்றும் மூல கோப்புகளுடன் தானியங்கி இணைத்தல்."
+
+#~ msgid "Robust feature set"
+#~ msgstr "வலுவான நற்பொருத்தம் தொகுப்பு"
+
+#~ msgid "Go to pricing"
+#~ msgstr "விலைக்கு செல்லுங்கள்"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "எங்கள் தொழில் வல்லுநர்கள் குழுவிலிருந்து விரிவான திறன்களையும் அனுபவத்தையும் "
+#~ "செலுத்துங்கள், உங்கள் சரியான தேவைகளுக்கு கவனம் செலுத்தும் ஆலோசனைகளை வழங்குதல்."
+
+#~ msgid "Continuous Localization"
+#~ msgstr "தொடர்ச்சியான உள்ளூர்மயமாக்கல்"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr ""
+#~ "தானியங்கு உள்ளூர்மயமாக்கல் பணிப்பாய்வு உங்கள் திட்ட வளர்ச்சியை நெருக்கமாகப் "
+#~ "பின்பற்றுகிறது."
+
+#~ msgid "Quality Checks"
+#~ msgstr "தர சோதனைகள்"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr "தனிப்பயனாக்கக்கூடிய தர சோதனைகள் மொழிபெயர்ப்பு தரத்தை மேம்படுத்த உதவுகின்றன."
+
+#~ msgid "Attribution"
+#~ msgstr "பண்புக்கூறு"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr ""
+#~ "அனைத்து மொழிபெயர்ப்பாளர்களும் பதிப்பு கட்டுப்பாட்டு அமைப்பில் சரியாக வரவு "
+#~ "வைக்கப்படுகிறார்கள்."
+
+#~ msgid "Hosting Plans"
+#~ msgstr "புரவலதிற்கு திட்டங்கள்"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "19 யூரோவில் தொடங்கி ஒரு சேவையாக வலைபெயர்ப்பைப் பயன்படுத்தவும்."
+
+#~ msgid "Cloud Ready"
+#~ msgstr "முகில் தயாராக உள்ளது"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr "உபகரணங்களுடன் வருகிறது, உங்கள் முகிலில் வரிசைப்படுத்த தயாராக உள்ளது."
+
+#~ msgid "Libre Software"
+#~ msgstr "விடுதலை மென்பொருள்"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr ""
+#~ "நகலெடுக்கப்பட்டது; விருப்பத்திலும், அனைவரிடமும் பயன்படுத்தவும், பார்க்கவும், மாற்றவும், "
+#~ "பகிரவும்."
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr ""
+#~ "<strong> இலவசம் </strong> அல்லது <strong> காப்பீடு </strong> - இது உங்களுடையது"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "எளிதாகவும் ஆறுதலுக்காகவும்"
+
+#~ msgid "Compare all plans"
+#~ msgstr "எல்லா திட்டங்களையும் ஒப்பிடுக"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "வலைபெயர்ப்பு என்பது சமூக ஆதரவுடன் நகலெடுக்கும் விடுதலை மென்பொருளாகும். சந்தாதாரர்கள் "
+#~ "கூடுதல் கட்டணம் இல்லாமல் முன்னுரிமை ஆதரவைப் பெறுகிறார்கள். முன்பணம் செலுத்தப்பட்ட உதவி "
+#~ "தொகுப்புகள் அனைவருக்கும் கிடைக்கின்றன."
+
+#~ msgid "Reliable support"
+#~ msgstr "நம்பகமான உதவி"
+
+#~ msgid "User not found!"
+#~ msgstr "பயனர் கண்டுபிடிக்கப்படவில்லை!"
 
 #~ msgid "Add a user"
 #~ msgstr "ஒரு பயனரைச் சேர்க்கவும்"
@@ -4252,18 +5062,8 @@ msgstr ""
 
 #, fuzzy
 #~| msgid "Get a quote"
-#~ msgid "Issue renewal quote"
-#~ msgstr "ஒரு மேற்கோளைப் பெறுங்கள்"
-
-#, fuzzy
-#~| msgid "Get a quote"
 #~ msgid "Issue upgrade quote"
 #~ msgstr "ஒரு மேற்கோளைப் பெறுங்கள்"
-
-#, fuzzy
-#~| msgid "Issue new invoice"
-#~ msgid "Issue upgrade invoice"
-#~ msgstr "புதிய விலைப்பட்டியல் வெளியிடவும்"
 
 #~ msgid "Company or individual name"
 #~ msgstr "நிறுவனம் அல்லது தனிப்பட்ட பெயர்"
@@ -4387,12 +5187,6 @@ msgstr ""
 #~ "விவாதிக்கவும் அல்லது எங்கள் ஆவணங்களை மேம்படுத்தவும்."
 
 #~ msgid ""
-#~ "VAT ID validation service unavailable for {}, please try again later."
-#~ msgstr ""
-#~ "{}க்கு மதிப்புகூடுதல்வரி அடையாளம் சரிபார்ப்பு பணி கிடைக்கவில்லை, தயவுசெய்து பின்னர் "
-#~ "முயற்சிக்கவும்."
-
-#~ msgid ""
 #~ "Additionally, Bitnami Weblate stack is available for many platforms and "
 #~ "works with most cloud providers."
 #~ msgstr ""
@@ -4433,9 +5227,6 @@ msgstr ""
 #~ msgctxt "Hosting plan"
 #~ msgid "Enterprise"
 #~ msgstr "நிறுவனம்"
-
-#~ msgid "and dedicated"
-#~ msgstr "மற்றும் தனிப்பயனாக்கப்பட்ட"
 
 #, python-format
 #~ msgid "over <strong>%(count)s</strong>"

@@ -10,17 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
 "PO-Revision-Date: 2026-09-13 11:51+0000\n"
 "Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
-"Language-Team: Irish <https://hosted.weblate.org/projects/weblate/website/"
-"ga/>\n"
+"Language-Team: Irish <https://hosted.weblate.org/projects/weblate/website/ga/"
+">\n"
 "Language: ga\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :(n>"
-"6 && n<11) ? 3 : 4;\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :"
+"(n>6 && n<11) ? 3 : 4;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
 msgid "Please confirm that you want to issue a final invoice."
@@ -94,11 +94,50 @@ msgstr "R-phost"
 msgid "Full name"
 msgstr "Ainm iomlán"
 
+#, fuzzy
+#| msgid "Issued"
+msgid "Issue date"
+msgstr "Eisithe"
+
+msgid "Correction date"
+msgstr ""
+
+#, fuzzy
+#| msgid "Please confirm that you want to issue a final invoice."
+msgid "Please confirm that you want to issue a credit note."
+msgstr "Deimhnigh le do thoil gur mian leat sonrasc deiridh a eisiúint."
+
+msgid "Explanation for the customer"
+msgstr ""
+
+#, fuzzy
+#| msgid "(including VAT)"
+msgid "Amount including VAT"
+msgstr "(CBL san áireamh)"
+
+msgid "Only paid invoices can be refunded."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Correct paid invoice"
+msgstr "Sonrasc neamhíoctha"
+
+#, fuzzy
+#| msgid "Interaction"
+msgid "Internal explanation"
+msgstr "Idirghníomhaíocht"
+
 msgid "Invalid hosted user response"
 msgstr "Freagra úsáideora óstáilte neamhbhailí"
 
 msgid "Hosted user synchronization is disabled."
 msgstr "Tá sioncrónú úsáideoirí óstáilte díchumasaithe."
+
+#, fuzzy
+#| msgid "Interaction"
+msgid "Invoice correction"
+msgstr "Idirghníomhaíocht"
 
 msgid "Yes"
 msgstr "Tá"
@@ -108,6 +147,18 @@ msgstr "Níl"
 
 msgid "not set"
 msgstr "gan socrú"
+
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr ""
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr ""
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
+msgstr ""
 
 msgid "Invoice issued during VIES outage"
 msgstr "Sonrasc eisithe le linn briseadh seirbhíse VIES"
@@ -474,8 +525,17 @@ msgstr "seo caite"
 msgid "No records found."
 msgstr "Níor aimsíodh aon taifid."
 
+#, fuzzy
+#| msgid "Issue renewal quote"
+msgid "Issue credit note?"
+msgstr "Luachan athnuachana a eisiúint"
+
 msgid "Issue final invoice?"
 msgstr "An bhfuil sonrasc deiridh á eisiúint?"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr ""
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
@@ -484,6 +544,11 @@ msgstr ""
 
 msgid "Cancel"
 msgstr "Cealaigh"
+
+#, fuzzy
+#| msgid "Issue invoice"
+msgid "Issue credit note"
+msgstr "Sonrasc a eisiúint"
 
 msgid "Issue invoice"
 msgstr "Sonrasc a eisiúint"
@@ -512,6 +577,11 @@ msgstr "Admháil"
 msgid "Edit in admin"
 msgstr "Cuir in eagar sa riarthóir"
 
+#, fuzzy
+#| msgid "Add note"
+msgid "Credit note"
+msgstr "Cuir nóta leis"
+
 msgid "Number"
 msgstr "Uimhir"
 
@@ -520,6 +590,33 @@ msgstr "Eisithe"
 
 msgid "Due"
 msgstr "Dlite"
+
+#, fuzzy
+#| msgid "Payment amount"
+msgid "Credited amount"
+msgstr "Méid íocaíochta"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Remaining amount"
+msgstr "Ag feitheamh ar íocaíocht"
+
+#, fuzzy
+#| msgid "Customer sections"
+msgid "Correction of"
+msgstr "Rannóga custaiméirí"
+
+msgid "Reason"
+msgstr ""
+
+msgid "Cancelled duplicate"
+msgstr ""
+
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Collection note"
+msgstr "Láithreáin Chomhoibrithe"
 
 msgid "Discount"
 msgstr "Lascaine"
@@ -574,6 +671,50 @@ msgstr ""
 msgid "Reopen quote"
 msgstr "Athoscail an luachan"
 
+#, fuzzy
+#| msgid "Invoice list"
+msgid "Invoice corrections"
+msgstr "Liosta sonraisc"
+
+msgid "Refund"
+msgstr ""
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+
+#, fuzzy
+#| msgid "Create invoice"
+msgid "Duplicate invoice"
+msgstr "Cruthaigh sonrasc"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+
+#, fuzzy
+#| msgid "Create invoice"
+msgid "Cancel duplicate invoice"
+msgstr "Cruthaigh sonrasc"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Collection status"
+msgstr "Stádas an aistriúcháin"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+
+msgid "Resume collection"
+msgstr ""
+
+msgid "Mark uncollectible"
+msgstr ""
+
 msgid "Confirm refund done"
 msgstr "Deimhnigh go ndearnadh an aisíocaíocht"
 
@@ -602,6 +743,9 @@ msgstr "Rannóga custaiméirí"
 
 msgid "Overview"
 msgstr "Forbhreathnú"
+
+msgid "Owners"
+msgstr "Úinéirí"
 
 msgid "Interactions"
 msgstr "Idirghníomhaíochtaí"
@@ -702,12 +846,6 @@ msgstr "Custaiméir a chumasc"
 msgid "Review merge"
 msgstr "Athbhreithniú ar chumasc"
 
-msgid "Add owner to customer"
-msgstr "Cuir úinéir leis an gcustaiméir"
-
-msgid "Add owner"
-msgstr "Cuir úinéir leis"
-
 msgid "Add note"
 msgstr "Cuir nóta leis"
 
@@ -768,6 +906,48 @@ msgstr "Cuir in eagar"
 
 msgid "No donations recorded."
 msgstr "Níor taifeadadh aon síntiúis."
+
+#, fuzzy
+#| msgid "Customer note"
+msgid "Customer owners"
+msgstr "Nóta do chustaiméirí"
+
+#, fuzzy
+#| msgid "User"
+msgid "Username"
+msgstr "Úsáideoir"
+
+#, fuzzy
+#| msgid "Removed customer owner"
+msgid "No customer owners."
+msgstr "Baineadh úinéir an chustaiméara"
+
+msgid "Pending owner invitations"
+msgstr ""
+
+#, fuzzy
+#| msgid "Confirmed by"
+msgid "Invited by"
+msgstr "Deimhnithe ag"
+
+#, fuzzy
+#| msgid "Unlimited"
+msgid "Invited"
+msgstr "Neamhtheoranta"
+
+msgid "Expires"
+msgstr "Téigh in éag"
+
+msgid "No pending owner invitations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Added customer owner"
+msgid "Add customer owner"
+msgstr "Úinéir custaiméara curtha leis"
+
+msgid "Add owner"
+msgstr "Cuir úinéir leis"
 
 msgid "Invoice history"
 msgstr "Stair na sonraisc"
@@ -866,6 +1046,19 @@ msgstr "%(size)s i %(directory)s"
 msgid "Discoverable"
 msgstr "Infhaighte"
 
+#, fuzzy
+#| msgid "Interaction history"
+msgid "Instance activity"
+msgstr "Stair idirghníomhaíochta"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr ""
+
+#, fuzzy, python-format
+#| msgid "%(month)s: %(changes)s changes"
+msgid "%(changes)s changes"
+msgstr "%(month)s: %(changes)s athrú"
+
 msgid "Service limits"
 msgstr "Teorainneacha seirbhíse"
 
@@ -892,9 +1085,6 @@ msgstr "Gníomhach"
 
 msgid "Service is terminated"
 msgstr "Tá deireadh leis an tseirbhís"
-
-msgid "Expires"
-msgstr "Téigh in éag"
 
 msgid "Edit subscription in admin"
 msgstr "Cuir an síntiús in eagar sa riarthóir"
@@ -1012,8 +1202,17 @@ msgstr "Úsáideann roinnt úsáideoirí áitiúla an seoladh ríomhphoist seo"
 msgid "Could not add customer owner: %(error)s"
 msgstr "Níorbh fhéidir úinéir an chustaiméara a chur leis: %(error)s"
 
-#, python-format
-msgid "Added %(email)s to customer owners."
+#, fuzzy, python-format
+#| msgid "Added %(email)s to customer owners. Hosted user was %(state)s."
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr ""
+"Cuireadh %(email)s leis na húinéirí custaiméirí. Ba é %(state)s an t-"
+"úsáideoir óstáilte."
+
+#, fuzzy, python-format
+#| msgid "Added %(email)s to customer owners."
+msgid "Added %(email)s to customer owners and notified them."
 msgstr "Cuir %(email)s le húinéirí custaiméirí."
 
 #, python-format
@@ -1108,6 +1307,52 @@ msgstr "URL freastalaí neamhbhailí."
 msgid "Server URL must use HTTPS."
 msgstr "Ní mór URL an fhreastalaí HTTPS a úsáid."
 
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr ""
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation code has already been used."
+msgid "This request has already been used."
+msgstr "Tá an cód gníomhachtaithe úsáidte cheana féin."
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr ""
+
+msgid "A correction reason and explanation are required."
+msgstr ""
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr ""
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr ""
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr ""
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation code has already been used."
+msgid "This invoice has already been settled."
+msgstr "Tá an cód gníomhachtaithe úsáidte cheana féin."
+
+#, fuzzy
+#| msgid "No interactions recorded."
+msgid "An internal explanation is required."
+msgstr "Níor taifeadadh aon idirghníomhaíochtaí."
+
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -1155,8 +1400,28 @@ msgstr "Éilíonn sonraisc aismhuirir AE aitheantas CBL bailí ceannaitheora."
 msgid "Converted"
 msgstr "Tiontaithe"
 
+msgid "Credited"
+msgstr ""
+
+msgid "Refunded"
+msgstr ""
+
 msgid "Paid"
 msgstr "Íoctha"
+
+msgid "Uncollectible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Applied to invoice"
+msgstr "Sonrasc neamhíoctha"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Awaiting refund"
+msgstr "Ag feitheamh ar íocaíocht"
 
 msgid "Unpaid"
 msgstr "Gan Íoc"
@@ -1534,6 +1799,28 @@ msgstr "Míosúil"
 
 msgid "One-time"
 msgstr "Aon uaire"
+
+#, fuzzy
+#| msgid "Window ending"
+msgid "Pending"
+msgstr "Deireadh na fuinneoige"
+
+#, fuzzy
+#| msgctxt "Quote status"
+#| msgid "Accepted elsewhere"
+msgid "Accepted"
+msgstr "Glactar leis in áit eile"
+
+msgid "Revoked"
+msgstr ""
+
+#, fuzzy
+#| msgid "Copy failed"
+msgid "Delivery failed"
+msgstr "Theip ar chóipeáil"
+
+msgid "Fulfilled by staff"
+msgstr ""
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -2046,6 +2333,37 @@ msgstr "Tosaigh ag aistriú"
 msgid "Translation status"
 msgstr "Stádas an aistriúcháin"
 
+#, fuzzy
+#| msgid "Customer sections"
+msgid "Customer owner invitation"
+msgstr "Rannóga custaiméirí"
+
+#, fuzzy
+#| msgid "Review merge"
+msgid "Review access"
+msgstr "Athbhreithniú ar chumasc"
+
+#, fuzzy
+#| msgid "Customer note"
+msgid "Customer account"
+msgstr "Nóta do chustaiméirí"
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over the customer account, including billing, "
+#| "services, and other owners."
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr ""
+"Tá smacht iomlán ag úinéirí ar chuntas an chustaiméara, lena n-áirítear "
+"billeáil, seirbhísí, agus úinéirí eile."
+
+#, fuzzy
+#| msgid "Activation key"
+msgid "Accept invitation"
+msgstr "Eochair ghníomhachtaithe"
+
 msgid "Discover Weblate"
 msgstr "Faigh amach faoi Weblate"
 
@@ -2429,114 +2747,231 @@ msgstr ""
 "Is féidir leat Weblate a rialú go cianda trí úsáid a bhaint as <a "
 "href=\"%(url)s\">wlc</a>, ar féidir é a shuiteáil ó Python pip:"
 
-msgid "Weblate features"
-msgstr "Gnéithe Weblate"
+msgid "Weblate features — quality translations, your control"
+msgstr ""
+
+msgid "Bring your project to more people"
+msgstr ""
 
 msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
 msgstr ""
-"Mar uirlis aistriúcháin ríomhchuidithe saibhir, sábhálann Weblate am "
-"forbróirí agus aistritheoirí araon. Déan do chuid úsáideoirí níos sona!"
 
 msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
 msgstr ""
-"Brabhsáil an <a href=\"https://docs.weblate.org/\">doiciméadúchán</a> chun "
-"tuilleadh a fhoghlaim."
 
-msgid "Easy to use interface"
-msgstr "Éasca le húsáid comhéadan"
+#, fuzzy
+#| msgid "Join existing users and supporters"
+msgid "Compare hosting and support"
+msgstr ""
+"Bí páirteach le húsáideoirí agus le lucht tacaíochta atá ann cheana féin"
 
-msgid "Weblate screenshot"
-msgstr "Gabháil scáileáin ó Weblate"
+msgid "Try Weblate"
+msgstr "Bain triail as Weblate"
 
-msgid "Customizable quality checks"
-msgstr "Seiceálacha cáilíochta customizable"
-
-msgid "Detailed context"
-msgstr "Comhthéacs mionsonraithe"
+msgid "Keep translations in step with development"
+msgstr ""
 
 msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
 msgstr ""
-"Cuirtear comhthéacs aistriúcháin mionsonraithe ar fáil d’aistritheoirí, ó "
-"chomhaid aistriúcháin, nó sonraí saibhrithe laistigh de Weblate."
-
-msgid "Fluent communication"
-msgstr "Cumarsáid líofa"
-
-msgid "All translations are tracked and can be commented."
-msgstr ""
-"Déantar gach aistriúchán a rianú agus is féidir trácht a dhéanamh orthu."
-
-msgid "Access Control"
-msgstr "Rialú Rochtana"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "Cearta rochtana mionchoigeartaithe a oireann do thimpeallacht."
-
-msgid "Smart Notifications"
-msgstr "Fógraí cliste"
 
 msgid ""
-"Translators can be notified of new strings to translate or other events."
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
 msgstr ""
-"Is féidir aistritheoirí a chur ar an eolas faoi teaghráin nua le haistriú nó "
-"imeachtaí eile."
 
-msgid "Integration API"
-msgstr "Comhtháthú API"
+#, fuzzy
+#| msgid "Continuous localization"
+msgid "Explore continuous localization"
+msgstr "Logánú leanúnach"
 
-msgid "Integrate Weblate with third-party services."
-msgstr "Comhtháthaigh Weblate le seirbhísí tríú páirtí."
-
-msgid "Multiple File Formats"
-msgstr "Formáidí Comhad Il"
+msgid "Give every translation the context it needs"
+msgstr ""
 
 msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
 msgstr ""
-"Bain úsáid as aon fhormáid logánaithe comhad coitianta, amhail gettext, "
-"JSON, XLIFF nó teaghráin acmhainne, etc."
-
-msgid "Branch Support"
-msgstr "Tacaíocht Brainse"
 
 msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
 msgstr ""
-"Láimhseáil leaganacha éagsúla aistriúcháin trí iad a bhrú go huathoibríoch "
-"chuig brainsí éagsúla."
-
-msgid "Translation Context"
-msgstr "Comhthéacs Aistriúcháin"
 
 msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
 msgstr ""
-"Cur síos, teaghráin in aice láimhe, íomhánna, cód foinse gaolmhar agus "
-"iontrálacha gluais-do gach teaghrán...."
+
+msgid "Give your translators the tools to make informed choices."
+msgstr ""
+
+msgid "Explore translation quality checks"
+msgstr ""
+
+msgid "Choose how you translate—with or without AI"
+msgstr ""
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translate the app"
+msgid "Translate without AI"
+msgstr "Aistrigh an aip"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Number of translators"
+msgid "Assist your translators"
+msgstr "Líon aistritheoirí"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+
+#, fuzzy
+#| msgid "Start translating"
+msgid "Start with machine translations"
+msgstr "Tosaigh ag aistriú"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+
+msgid "Accept suggestions before use"
+msgstr ""
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+
+msgid "Approve before committing"
+msgstr ""
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+
+msgid "Explore AI translation workflows"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose your amount in EUR"
+msgid "Choose how your content is handled"
+msgstr "Roghnaigh do mhéid in EUR"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+
+msgid "Find the right hosting option"
+msgstr ""
+
+msgid "Bring your team and community together"
+msgstr ""
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+
+msgid "The everyday tools your localization needs"
+msgstr ""
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+
+#, fuzzy
+#| msgid "Read more in the documentation."
+msgid "Explore the documentation"
+msgstr "Léigh tuilleadh sa doiciméadú."
+
+msgid "Keep working with your existing formats"
+msgstr ""
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+
+msgid ".NET resource files (RESX, RESW)"
+msgstr "Comhaid acmhainne .NET (RESX, RESW)"
 
 msgid "Android string resources"
 msgstr "Acmhainní sreang Android"
 
-msgid "Apple iOS strings"
-msgstr "Teaghráin Apple iOS"
-
 msgid "App store metadata files"
 msgstr "Comhaid meiteashonraí ó App Store"
+
+msgid "Apple iOS strings"
+msgstr "Teaghráin Apple iOS"
 
 msgid "ARB file"
 msgstr "Comhad ARB"
 
+#, fuzzy
+#| msgid "DTD files"
+msgid "AsciiDoc files"
+msgstr "Comhaid DTD"
+
+msgid "Compose Multiplatform resources"
+msgstr ""
+
 msgid "CSV files"
 msgstr "Comhaid CSV"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "DokuWiki text files"
+msgstr "Comhaid téacs"
 
 msgid "DTD files"
 msgstr "Comhaid DTD"
@@ -2550,6 +2985,11 @@ msgstr "Comhaid XML cothrom"
 msgid "Fluent format"
 msgstr "Formáid líofa"
 
+#, fuzzy
+#| msgid "React Intl"
+msgid "Format.JS / React Intl"
+msgstr "Imoibríonn Intl"
+
 msgid "GNU gettext"
 msgstr "GNU gettext"
 
@@ -2561,6 +3001,9 @@ msgstr "comhaid JSON gotext"
 
 msgid "GWT properties"
 msgstr "airíonna GWT"
+
+msgid "Haiku Catkeys"
+msgstr ""
 
 msgid "HTML files"
 msgstr "Comhaid HTML"
@@ -2580,17 +3023,14 @@ msgstr "Aistriúcháin INI Inno Setup"
 msgid "Java properties"
 msgstr "Java airíonna"
 
+msgid "JavaScript resource files"
+msgstr ""
+
 msgid "Joomla translations"
 msgstr "Aistriúcháin do Joomla"
 
 msgid "JSON files"
 msgstr "Comhaid JSON"
-
-msgid "React Intl"
-msgstr "Imoibríonn Intl"
-
-msgid "Vue I18n"
-msgstr "Vue I18n"
 
 msgid "Laravel PHP strings"
 msgstr "Teaghráin php Laravel"
@@ -2598,11 +3038,26 @@ msgstr "Teaghráin php Laravel"
 msgid "Markdown files"
 msgstr "Comhaid marcáilte"
 
-msgid "mi18n lang files"
+#, fuzzy
+#| msgid "DTD files"
+msgid "MDX files"
+msgstr "Comhaid DTD"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "MediaWiki text files"
+msgstr "Comhaid téacs"
+
+#, fuzzy
+#| msgid "mi18n lang files"
+msgid "@draggable/i18n lang files"
 msgstr "mi18n comhaid lang"
 
 msgid "Mobile Kotlin resources"
 msgstr "Soghluaiste acmhainní Kotlin"
+
+msgid "Nextcloud JSON"
+msgstr ""
 
 msgid "OpenDocument Format"
 msgstr "Formáid OpenDocument"
@@ -2615,9 +3070,6 @@ msgstr "Qt Teangeolaí .ts"
 
 msgid "ResourceDictionary files"
 msgstr "Comhaid ResourceDictionary"
-
-msgid ".NET resource files (RESX, RESW)"
-msgstr "Comhaid acmhainne .NET (RESX, RESW)"
 
 msgid "Ruby YAML files"
 msgstr "Comhaid YAML Ruby"
@@ -2634,189 +3086,86 @@ msgstr "Formáid eXchange TermBase"
 msgid "Text files"
 msgstr "Comhaid téacs"
 
+msgid "TOML and go-i18n TOML"
+msgstr ""
+
+msgid "Vue I18n"
+msgstr "Vue I18n"
+
 msgid "WebExtension JSON"
 msgstr "Síneadh Gréasáin JSON"
 
 msgid "Windows RC files"
 msgstr "Comhaid RC Windows"
 
-msgid "XLIFF"
+#, fuzzy
+#| msgid "Localization"
+msgid "WiX localization files"
+msgstr "Aistriúchán"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr ""
+
+#, fuzzy
+#| msgid "XLIFF"
+msgid "XLIFF 2.0"
 msgstr "XLIFF"
+
+msgid "XWiki formats"
+msgstr ""
 
 msgid "YAML files"
 msgstr "Comhaid YAML"
 
-msgid "Glossaries"
-msgstr "Gluaiseanna"
-
-msgid "Define frequently used terminology for consistency."
+#, fuzzy, python-format
+#| msgid ""
+#| "Please consult the <a href=\"%(url)s\">contributor documentation</a> to "
+#| "find the most common topics."
+msgid ""
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
 msgstr ""
-"Sainmhínigh téarmaíocht a úsáidtear go minic le haghaidh comhsheasmhachta."
+"Amharc ar <a href=\"%(url)s\">cháipéisíocht na ndeontóirí</a> chun na "
+"hábhair is comónta a aimsiú."
 
-msgid "Feedback Acquisition"
-msgstr "Fáil Aiseolais"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
+msgid "Open source, backed by sustainable services"
 msgstr ""
-"Úsáid Weblate chun aiseolas a fháil ar theaghráin foinse chun iad a fheabhsú."
-
-msgid "Export and Import"
-msgstr "Easpórtáil agus Iompórtáil"
-
-msgid "Translations can be downloaded for offline translation and merged back."
-msgstr ""
-"Is féidir aistriúcháin a íoslódáil le haghaidh aistriúcháin as líne agus iad "
-"a chumasc ar ais."
-
-msgid "Fully Integrated"
-msgstr "Comhtháite go hiomlán"
 
 msgid ""
-"Translations are managed within the same version control system as your code."
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
 msgstr ""
-"Déantar aistriúcháin a bhainistiú laistigh den chóras rialaithe leaganacha "
-"céanna le do chód."
-
-msgid "Documentation"
-msgstr "Cáipéisíocht"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr "Doiciméadúchán cuimsitheach a chlúdaíonn an socrú agus an úsáid."
-
-msgid "Easy Reviews"
-msgstr "Léirmheasanna Éasca"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr ""
-"Roinnt roghanna le go bhféadfaidh aistritheoirí athbhreithniú a dhéanamh ar "
-"an méid a rinne piaraí."
-
-msgid "Language support"
-msgstr "Tacaíocht teanga"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr ""
-"Tacaíocht do bhreis is 500 teanga as an mbosca. Is féidir daoine eile a chur "
-"leis freisin."
-
-msgid "Promotion"
-msgstr "Cur chun cinn"
 
 msgid ""
-"Built-in features to attract a wider audience for your translation project."
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
 msgstr ""
-"Gnéithe ionsuite chun lucht féachana níos leithne a mhealladh le haghaidh do "
-"thionscadal aistriúcháin."
-
-msgid "Reporting"
-msgstr "Tuairiscí"
-
-msgid "Reports are generated to provide info on project activity."
-msgstr ""
-"Gintear tuarascálacha chun faisnéis a sholáthar ar ghníomhaíocht tionscadail."
-
-msgid "Version Control"
-msgstr "Rialú Leagan"
 
 msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
 msgstr ""
-"Tacaítear le cainteanna go díreach le do chóras rialaithe leaganacha, Git "
-"agus Mercurial faoi láthair."
 
-msgid "Collaboration Sites"
-msgstr "Láithreáin Chomhoibrithe"
-
-msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
+msgid "Explore self-hosting"
 msgstr ""
-"Tacaíocht dhúchasach do shuímh forbartha bogearraí mar GitLab, GitHub, "
-"Pagure, Azure, Gitea, nó Bitbucket."
 
-msgid "Responsive UI"
-msgstr "Chomhéadain Sofhreagrach"
-
-msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
-msgstr ""
-"Comhéadan úsáideora a oibríonn go deas ar dheasc, táibléad agus fóin i mód "
-"éadrom agus dorcha."
-
-msgid "Translation memory"
-msgstr "Cuimhne aistriúcháin"
-
-msgid "Reuse existing translations to save time and costs."
-msgstr ""
-"Athúsáid aistriúcháin atá ann cheana féin chun am agus costais a shábháil."
-
-msgid "Translation add-ons"
-msgstr "Breiseáin aistriúcháin"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "Saincheap sreabhadh oibre logánaithe le breiseáin éagsúla."
-
-msgid "Backups"
-msgstr "Cúltacaí"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr "Cúltacaí iargúlta ionsuite chun caillteanas sonraí a chosc."
-
-msgid "Screenshots"
-msgstr "Gabhálacha scáileáin"
-
-msgid "Provide visual context for the translations."
-msgstr "Cuir comhthéacs amhairc ar fáil do na haistriúcháin."
-
-msgid "Variants"
-msgstr "Leaganacha"
-
-msgid "Group variants of strings for easier translating."
-msgstr "Leaganacha teaghráin a ghrúpáil chun iad a aistriú níos éasca."
-
-msgid "Intermediate language"
-msgstr "Teanga idirmheánach"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "Teaghráin léamh profaí ó fhorbróirí roimh iad a aistriú."
-
-msgid "Automatic translation"
-msgstr "Aistriúchán uathoibríoch"
-
-msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr ""
-"Is féidir aistriúcháin nó moltaí a dhéanamh trí sheirbhísí aistriúcháin "
-"meaisín nó AI."
-
-msgid "Organize translations"
-msgstr "Eagraigh aistriúcháin"
-
-msgid "Categorize the translation files to ease navigation."
-msgstr "Déan na comhaid aistriúcháin a chatagóiriú chun nascleanúint a éascú."
-
-msgid "Keyboard operation"
-msgstr "Oibriú méarchláir"
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr ""
-"Bain úsáid as méarchlár chun nascleanúint a dhéanamh go héifeachtach agus tú "
-"ag aistriú."
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Hosting for libre projects"
+msgstr "le haghaidh tionscadal saor in aisce,"
 
 msgid "Weblate Pricing"
 msgstr "Praghsáil Ghréasán"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"Bain úsáid as Weblate mar sheirbhís, socraigh do chuid féin, nó <a "
-"href=\"%(url)s\">faigh cabhair</a> le hóstáil ar an áitreabh - agus é chomh "
-"háisiúlacht don tacaíocht phréimhe."
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr "Tá ár bhfoireann réidh chun cabhrú leat Weblate a rith go réidh."
@@ -2976,26 +3325,27 @@ msgid "Join existing users and supporters"
 msgstr ""
 "Bí páirteach le húsáideoirí agus le lucht tacaíochta atá ann cheana féin"
 
-msgid "Weblate - web-based localization"
-msgstr "Weblate - logánú gréasán-bhunaithe"
-
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr "Logánú <strong>leanúnach</strong> bunaithe ar an ngréasán"
-
-#, python-format
-msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+msgid "Weblate — quality translations, your control"
 msgstr ""
-"Bogearraí saora cóipchleite, arna n-úsáid ag níos mó ná %(projects)s, "
-"tionscadal bogearraí libre agus cuideachtaí i níos mó ná %(countries)s "
-"tíortha."
 
-msgid "Try Weblate"
-msgstr "Bain triail as Weblate"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr ""
 
-msgid "Explore all features"
-msgstr "Déan iniúchadh ar na gnéithe go léir"
+msgid ""
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
+msgstr ""
+
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr ""
+
+#, fuzzy
+#| msgid "Get more Weblate"
+msgid "Explore Weblate"
+msgstr "Faigh níos mó Weblate"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -3005,14 +3355,11 @@ msgid "Weblate localizes the world"
 msgstr "Déanann Weblate an domhan a logánú"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"Seirbhís óstáilte agus uirlis neamhspleách le comhtháthú rialaithe leagan "
-"daingean. Comhéadan úsáideora simplí agus glan, iomadú aistriúcháin trasna "
-"comhpháirteanna, seiceálacha cáilíochta agus nascadh uathoibríoch le comhaid "
-"foinse."
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -3038,11 +3385,8 @@ msgstr[4] "%(count)s n-aistriúchán"
 msgid "in the last 7 days"
 msgstr "le 7 lá anuas"
 
-msgid "Robust feature set"
-msgstr "Sraith gné láidir"
-
-msgid "Go to pricing"
-msgstr "Téigh go dtí an phraghsáil"
+msgid "Make localization work for your team"
+msgstr ""
 
 msgid "Users and Supporters"
 msgstr "Úsáideoirí agus Tacadóirí"
@@ -3056,6 +3400,62 @@ msgstr "Bainistigh d'íocaíochtaí"
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "Ginte ar %(timestamp)s."
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over this customer account, including billing, "
+#| "services, secrets, and other owners. Only add people you trust."
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+"Tá smacht iomlán ag úinéirí ar an gcuntas custaiméara seo, lena n-áirítear "
+"billeáil, seirbhísí, rúin agus úinéirí eile. Ná cuir leis ach daoine a "
+"bhfuil muinín agat astu."
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr ""
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over the customer account, including billing, "
+#| "services, and other owners."
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr ""
+"Tá smacht iomlán ag úinéirí ar chuntas an chustaiméara, lena n-áirítear "
+"billeáil, seirbhísí, agus úinéirí eile."
+
+#, fuzzy
+#| msgid "CRM navigation"
+msgid "Review invitation"
+msgstr "Nascleanúint CRM"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr ""
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3164,6 +3564,11 @@ msgstr "D’íocaíocht ar feitheamh ar weblate.org"
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "Déanfar d’ainm síntiús ar weblate.org a athnuachan go luath."
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr ""
+
 msgid "The payment will be automatically charged soon."
 msgstr "Gearrfar an íocaíocht go huathoibríoch go luath."
 
@@ -3208,6 +3613,20 @@ msgstr "Cárta sábháilte: %(card_number)s"
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr "Dáta éaga an tsíntiúis: %(expiry)s"
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Pay invoice"
+msgstr "Sonrasc neamhíoctha"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3371,13 +3790,13 @@ msgstr "Féach leagan Béarla"
 msgid "Download as PDF"
 msgstr "Íoslódáil mar PDF"
 
-msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+msgid "Find your way to get started"
 msgstr ""
-"Léim isteach, nó bain leas as scileanna agus taithí fhairsing ónár "
-"bhfoireann gairmithe, ag tabhairt comhairle dhírithe a thugann aird ar do "
-"chuid riachtanas."
+
+msgid ""
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
+msgstr ""
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>Tabhair</strong>—chun an domhan a dhéanamh níos fearr"
@@ -3417,9 +3836,6 @@ msgstr ""
 "Is cuideachta bheag bogearraí saor sinn ina bhfuil go leor spáis ag gach "
 "duine le fás."
 
-msgid "Owners"
-msgstr "Úinéirí"
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3440,49 +3856,65 @@ msgstr "Bain úinéir"
 msgid "Remove"
 msgstr "Bain"
 
-msgid "Continuous Localization"
-msgstr "Logánú Leanúnach"
+#, fuzzy
+#| msgid "Pagination"
+msgid "Pending invitation"
+msgstr "Leathanachú"
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Revoke invitation"
+msgstr "Scoránaigh an nascleanúint"
+
+#, fuzzy
+#| msgid "Remove owner"
+msgid "Invite owner"
+msgstr "Bain úinéir"
+
+msgid "Keep pace with development"
+msgstr ""
 
 msgid ""
-"Automated localization workflow follows your project development closely."
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
 msgstr ""
-"Leanann sreabhadh oibre logánaithe uathoibrithe go dlúth le forbairt do "
-"thionscadal."
 
-msgid "Quality Checks"
-msgstr "Seiceálacha Cáilíochta"
-
-msgid "Customizable quality checks helps improve translation quality."
+msgid "Help people get the meaning right"
 msgstr ""
-"Cuidíonn seiceálacha cáilíochta inoiriúnaithe le cáilíocht an aistriúcháin a "
-"fheabhsú."
 
-msgid "Attribution"
-msgstr "Leithdháileadh"
-
-msgid "All translators are properly credited in the version control system."
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
 msgstr ""
-"Tugtar creidiúint cheart do gach aistritheoir sa chóras rialaithe leagan."
 
-msgid "Hosting Plans"
-msgstr "Pleananna Óstála"
-
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "Úsáid Weblate mar sheirbhís ag tosú ag 19 EUR."
-
-msgid "Cloud Ready"
-msgstr "Scamall Réidh"
-
-msgid "Comes with appliances, ready to deploy in your cloud."
-msgstr "Tagann sé le fearais, réidh le imscaradh i do scamall."
-
-msgid "Libre Software"
-msgstr "Bogearraí a saor in aisce"
-
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
+msgid "Translate with or without AI"
 msgstr ""
-"Cóipcheart; úsáid, féach, modhnaigh agus comhroinn le toil, agus le gach "
-"duine."
+
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
+
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
+
+msgid "Bring everyone into the conversation"
+msgstr ""
+
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
+
+msgid "Build on software you can trust"
+msgstr ""
+
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
 
 msgid "Help translate"
 msgstr "Cabhraigh le haistriú"
@@ -3523,15 +3955,20 @@ msgstr "Íoslódáil admháil"
 msgid "Pay now"
 msgstr "Íoc anois"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+msgid "Choose the hosting and support that fit your team"
 msgstr ""
-"<strong>Saor in Aisce</strong> nó <strong>Préimh</strong> - fút féin atá sé"
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid "Premium Cloud"
 msgstr "Scamall Préimh"
 
-msgid "for ease and comfort"
-msgstr "ar mhaithe le suaimhneas agus compord"
+msgid "managed hosting for your team"
+msgstr ""
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3559,8 +3996,9 @@ msgstr "Sábháil %(percent)s%%"
 msgid "for complete control"
 msgstr "le haghaidh rialú iomlán"
 
-#, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
+#, fuzzy, python-format
+#| msgid "with paid <a href=\"%(url)s\">support</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
 msgstr "le <a href=\"%(url)s\">tacaíocht</a> íoctha"
 
 msgid "Gratis Weblate"
@@ -3572,9 +4010,6 @@ msgstr "le haghaidh tionscadal saor in aisce,"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "ar <a href=\"%(url)s\">iarratas</a>"
-
-msgid "Compare all plans"
-msgstr "Déan comparáid idir na pleananna go léir"
 
 msgid "Expired"
 msgstr "In éag"
@@ -3593,6 +4028,9 @@ msgstr "Comhartha athnuachana"
 
 msgid "Backup repository"
 msgstr "Stór cúltaca"
+
+msgid "Documentation"
+msgstr "Cáipéisíocht"
 
 #, python-format
 msgid ""
@@ -3745,14 +4183,16 @@ msgstr "Saincheap liostú Discover Weblate"
 msgid "Weblate support"
 msgstr "Tacaíocht láithreán gréasáin"
 
-msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+msgid "Expert help for your localization"
 msgstr ""
-"Is bogearraí saora cóipleite é Weblate le tacaíocht pobail. Faigheann "
-"síntiúsóirí tacaíocht tosaíochta gan aon táille bhreise. Tá pacáistí "
-"cabhrach réamhíoctha ar fáil do gach duine."
+
+msgid ""
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
+msgstr ""
 
 msgid "Report issue"
 msgstr "Eisiúint tuairisce"
@@ -3779,8 +4219,8 @@ msgstr ""
 "Má fhaigheann tú leochaileacht, cuir in iúl do %(report)s é le do thoil. "
 "Tuilleadh eolais sa <a href=\"%(url)s\">doiciméadúchán</a>."
 
-msgid "Reliable support"
-msgstr "Tacaíocht iontaofa"
+msgid "Living humans, ready to help"
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4084,21 +4524,428 @@ msgstr ""
 "Gníomhachtaigh an liostú ó do leathanach bainistíochta Weblate ag baint "
 "úsáide as an gcomhartha gníomhachtaithe a thaispeántar thíos."
 
-msgid "User not found!"
-msgstr "Úsáideoir gan aimsiú!"
-
 msgid "You can not remove yourself."
 msgstr "Ní féidir leat tú féin a bhaint."
 
-msgid "Removed customer owner"
-msgstr "Baineadh úinéir an chustaiméara"
+msgid "Too many owner invitations. Please try again later."
+msgstr ""
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr ""
+
+#, fuzzy
+#| msgid "Hosted user synchronization is disabled."
+msgid "This customer owner invitation is invalid."
+msgstr "Tá sioncrónú úsáideoirí óstáilte díchumasaithe."
+
+#, fuzzy
+#| msgid "Unavailable for your amount"
+msgid "This invitation is not available for your account."
+msgstr "Níl fáil ar do mhéid"
+
+msgid "Customer owner invitation accepted."
+msgstr ""
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr ""
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
-msgstr "Baineadh %(email)s ó úinéirí custaiméirí."
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr ""
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
+msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Deimhnigh an uasghrádú ó leathanach do chuntais le do thoil."
+
+#~ msgid "Add owner to customer"
+#~ msgstr "Cuir úinéir leis an gcustaiméir"
+
+#~ msgid "Weblate features"
+#~ msgstr "Gnéithe Weblate"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "Mar uirlis aistriúcháin ríomhchuidithe saibhir, sábhálann Weblate am "
+#~ "forbróirí agus aistritheoirí araon. Déan do chuid úsáideoirí níos sona!"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr ""
+#~ "Brabhsáil an <a href=\"https://docs.weblate.org/\">doiciméadúchán</a> "
+#~ "chun tuilleadh a fhoghlaim."
+
+#~ msgid "Easy to use interface"
+#~ msgstr "Éasca le húsáid comhéadan"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "Gabháil scáileáin ó Weblate"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "Seiceálacha cáilíochta customizable"
+
+#~ msgid "Detailed context"
+#~ msgstr "Comhthéacs mionsonraithe"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "Cuirtear comhthéacs aistriúcháin mionsonraithe ar fáil d’aistritheoirí, ó "
+#~ "chomhaid aistriúcháin, nó sonraí saibhrithe laistigh de Weblate."
+
+#~ msgid "Fluent communication"
+#~ msgstr "Cumarsáid líofa"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr ""
+#~ "Déantar gach aistriúchán a rianú agus is féidir trácht a dhéanamh orthu."
+
+#~ msgid "Access Control"
+#~ msgstr "Rialú Rochtana"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "Cearta rochtana mionchoigeartaithe a oireann do thimpeallacht."
+
+#~ msgid "Smart Notifications"
+#~ msgstr "Fógraí cliste"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr ""
+#~ "Is féidir aistritheoirí a chur ar an eolas faoi teaghráin nua le haistriú "
+#~ "nó imeachtaí eile."
+
+#~ msgid "Integration API"
+#~ msgstr "Comhtháthú API"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "Comhtháthaigh Weblate le seirbhísí tríú páirtí."
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "Formáidí Comhad Il"
+
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "Bain úsáid as aon fhormáid logánaithe comhad coitianta, amhail gettext, "
+#~ "JSON, XLIFF nó teaghráin acmhainne, etc."
+
+#~ msgid "Branch Support"
+#~ msgstr "Tacaíocht Brainse"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr ""
+#~ "Láimhseáil leaganacha éagsúla aistriúcháin trí iad a bhrú go "
+#~ "huathoibríoch chuig brainsí éagsúla."
+
+#~ msgid "Translation Context"
+#~ msgstr "Comhthéacs Aistriúcháin"
+
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr ""
+#~ "Cur síos, teaghráin in aice láimhe, íomhánna, cód foinse gaolmhar agus "
+#~ "iontrálacha gluais-do gach teaghrán...."
+
+#~ msgid "Glossaries"
+#~ msgstr "Gluaiseanna"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr ""
+#~ "Sainmhínigh téarmaíocht a úsáidtear go minic le haghaidh comhsheasmhachta."
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "Fáil Aiseolais"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr ""
+#~ "Úsáid Weblate chun aiseolas a fháil ar theaghráin foinse chun iad a "
+#~ "fheabhsú."
+
+#~ msgid "Export and Import"
+#~ msgstr "Easpórtáil agus Iompórtáil"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr ""
+#~ "Is féidir aistriúcháin a íoslódáil le haghaidh aistriúcháin as líne agus "
+#~ "iad a chumasc ar ais."
+
+#~ msgid "Fully Integrated"
+#~ msgstr "Comhtháite go hiomlán"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr ""
+#~ "Déantar aistriúcháin a bhainistiú laistigh den chóras rialaithe "
+#~ "leaganacha céanna le do chód."
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr "Doiciméadúchán cuimsitheach a chlúdaíonn an socrú agus an úsáid."
+
+#~ msgid "Easy Reviews"
+#~ msgstr "Léirmheasanna Éasca"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr ""
+#~ "Roinnt roghanna le go bhféadfaidh aistritheoirí athbhreithniú a dhéanamh "
+#~ "ar an méid a rinne piaraí."
+
+#~ msgid "Language support"
+#~ msgstr "Tacaíocht teanga"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr ""
+#~ "Tacaíocht do bhreis is 500 teanga as an mbosca. Is féidir daoine eile a "
+#~ "chur leis freisin."
+
+#~ msgid "Promotion"
+#~ msgstr "Cur chun cinn"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr ""
+#~ "Gnéithe ionsuite chun lucht féachana níos leithne a mhealladh le haghaidh "
+#~ "do thionscadal aistriúcháin."
+
+#~ msgid "Reporting"
+#~ msgstr "Tuairiscí"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr ""
+#~ "Gintear tuarascálacha chun faisnéis a sholáthar ar ghníomhaíocht "
+#~ "tionscadail."
+
+#~ msgid "Version Control"
+#~ msgstr "Rialú Leagan"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr ""
+#~ "Tacaítear le cainteanna go díreach le do chóras rialaithe leaganacha, Git "
+#~ "agus Mercurial faoi láthair."
+
+#~ msgid ""
+#~ "Native support for software development sites such as GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, or Bitbucket."
+#~ msgstr ""
+#~ "Tacaíocht dhúchasach do shuímh forbartha bogearraí mar GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, nó Bitbucket."
+
+#~ msgid "Responsive UI"
+#~ msgstr "Chomhéadain Sofhreagrach"
+
+#~ msgid ""
+#~ "User interface that works nicely on desktop, tablets and phones in both "
+#~ "light and dark mode."
+#~ msgstr ""
+#~ "Comhéadan úsáideora a oibríonn go deas ar dheasc, táibléad agus fóin i "
+#~ "mód éadrom agus dorcha."
+
+#~ msgid "Translation memory"
+#~ msgstr "Cuimhne aistriúcháin"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr ""
+#~ "Athúsáid aistriúcháin atá ann cheana féin chun am agus costais a shábháil."
+
+#~ msgid "Translation add-ons"
+#~ msgstr "Breiseáin aistriúcháin"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "Saincheap sreabhadh oibre logánaithe le breiseáin éagsúla."
+
+#~ msgid "Backups"
+#~ msgstr "Cúltacaí"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr "Cúltacaí iargúlta ionsuite chun caillteanas sonraí a chosc."
+
+#~ msgid "Screenshots"
+#~ msgstr "Gabhálacha scáileáin"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "Cuir comhthéacs amhairc ar fáil do na haistriúcháin."
+
+#~ msgid "Variants"
+#~ msgstr "Leaganacha"
+
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr "Leaganacha teaghráin a ghrúpáil chun iad a aistriú níos éasca."
+
+#~ msgid "Intermediate language"
+#~ msgstr "Teanga idirmheánach"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr "Teaghráin léamh profaí ó fhorbróirí roimh iad a aistriú."
+
+#~ msgid "Automatic translation"
+#~ msgstr "Aistriúchán uathoibríoch"
+
+#~ msgid ""
+#~ "Translations or suggestions can be done by machine translation services "
+#~ "or AI."
+#~ msgstr ""
+#~ "Is féidir aistriúcháin nó moltaí a dhéanamh trí sheirbhísí aistriúcháin "
+#~ "meaisín nó AI."
+
+#~ msgid "Organize translations"
+#~ msgstr "Eagraigh aistriúcháin"
+
+#~ msgid "Categorize the translation files to ease navigation."
+#~ msgstr ""
+#~ "Déan na comhaid aistriúcháin a chatagóiriú chun nascleanúint a éascú."
+
+#~ msgid "Keyboard operation"
+#~ msgstr "Oibriú méarchláir"
+
+#~ msgid "Use keyboard to effectively navigate while translating."
+#~ msgstr ""
+#~ "Bain úsáid as méarchlár chun nascleanúint a dhéanamh go héifeachtach agus "
+#~ "tú ag aistriú."
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "Bain úsáid as Weblate mar sheirbhís, socraigh do chuid féin, nó <a "
+#~ "href=\"%(url)s\">faigh cabhair</a> le hóstáil ar an áitreabh - agus é "
+#~ "chomh háisiúlacht don tacaíocht phréimhe."
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr "Weblate - logánú gréasán-bhunaithe"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr "Logánú <strong>leanúnach</strong> bunaithe ar an ngréasán"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "Bogearraí saora cóipchleite, arna n-úsáid ag níos mó ná %(projects)s, "
+#~ "tionscadal bogearraí libre agus cuideachtaí i níos mó ná %(countries)s "
+#~ "tíortha."
+
+#~ msgid "Explore all features"
+#~ msgstr "Déan iniúchadh ar na gnéithe go léir"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "Seirbhís óstáilte agus uirlis neamhspleách le comhtháthú rialaithe leagan "
+#~ "daingean. Comhéadan úsáideora simplí agus glan, iomadú aistriúcháin "
+#~ "trasna comhpháirteanna, seiceálacha cáilíochta agus nascadh uathoibríoch "
+#~ "le comhaid foinse."
+
+#~ msgid "Robust feature set"
+#~ msgstr "Sraith gné láidir"
+
+#~ msgid "Go to pricing"
+#~ msgstr "Téigh go dtí an phraghsáil"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "Léim isteach, nó bain leas as scileanna agus taithí fhairsing ónár "
+#~ "bhfoireann gairmithe, ag tabhairt comhairle dhírithe a thugann aird ar do "
+#~ "chuid riachtanas."
+
+#~ msgid "Continuous Localization"
+#~ msgstr "Logánú Leanúnach"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr ""
+#~ "Leanann sreabhadh oibre logánaithe uathoibrithe go dlúth le forbairt do "
+#~ "thionscadal."
+
+#~ msgid "Quality Checks"
+#~ msgstr "Seiceálacha Cáilíochta"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr ""
+#~ "Cuidíonn seiceálacha cáilíochta inoiriúnaithe le cáilíocht an "
+#~ "aistriúcháin a fheabhsú."
+
+#~ msgid "Attribution"
+#~ msgstr "Leithdháileadh"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr ""
+#~ "Tugtar creidiúint cheart do gach aistritheoir sa chóras rialaithe leagan."
+
+#~ msgid "Hosting Plans"
+#~ msgstr "Pleananna Óstála"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "Úsáid Weblate mar sheirbhís ag tosú ag 19 EUR."
+
+#~ msgid "Cloud Ready"
+#~ msgstr "Scamall Réidh"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr "Tagann sé le fearais, réidh le imscaradh i do scamall."
+
+#~ msgid "Libre Software"
+#~ msgstr "Bogearraí a saor in aisce"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr ""
+#~ "Cóipcheart; úsáid, féach, modhnaigh agus comhroinn le toil, agus le gach "
+#~ "duine."
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr ""
+#~ "<strong>Saor in Aisce</strong> nó <strong>Préimh</strong> - fút féin atá "
+#~ "sé"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "ar mhaithe le suaimhneas agus compord"
+
+#~ msgid "Compare all plans"
+#~ msgstr "Déan comparáid idir na pleananna go léir"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "Is bogearraí saora cóipleite é Weblate le tacaíocht pobail. Faigheann "
+#~ "síntiúsóirí tacaíocht tosaíochta gan aon táille bhreise. Tá pacáistí "
+#~ "cabhrach réamhíoctha ar fáil do gach duine."
+
+#~ msgid "Reliable support"
+#~ msgstr "Tacaíocht iontaofa"
+
+#~ msgid "User not found!"
+#~ msgstr "Úsáideoir gan aimsiú!"
+
+#, python-format
+#~ msgid "Removed %(email)s from customer owners."
+#~ msgstr "Baineadh %(email)s ó úinéirí custaiméirí."
 
 #~ msgid "Add a user"
 #~ msgstr "Cuir úsáideoir leis"
@@ -4138,9 +4985,6 @@ msgstr "Deimhnigh an uasghrádú ó leathanach do chuntais le do thoil."
 #~ msgid "I confirm that I want to issue a final invoice."
 #~ msgstr "Deimhním gur mian liom sonrasc deiridh a eisiúint."
 
-#~ msgid "Issue renewal quote"
-#~ msgstr "Luachan athnuachana a eisiúint"
-
 #, python-format
 #~ msgid ""
 #~ "Upgrade to %(package)s without extending the current subscription period."
@@ -4152,9 +4996,6 @@ msgstr "Deimhnigh an uasghrádú ó leathanach do chuntais le do thoil."
 
 #~ msgid "Issue upgrade invoice"
 #~ msgstr "Sonrasc uasghrádaithe a eisiúint"
-
-#~ msgid "Create invoice"
-#~ msgstr "Cruthaigh sonrasc"
 
 #~ msgid "Company or individual name"
 #~ msgstr "Ainm an duine nó an chomhlachta"
