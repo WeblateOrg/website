@@ -38,9 +38,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
-"PO-Revision-Date: 2026-09-09 09:51+0000\n"
-"Last-Translator: Tony Ng <tonyngkh@gmail.com>\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"PO-Revision-Date: 2026-09-18 05:30+0000\n"
+"Last-Translator: Automatic translation add-on <noreply-addon-"
+"autotranslate@weblate.org>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/weblate/website/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -48,7 +49,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 msgid "Please confirm that you want to issue a final invoice."
 msgstr "請確認您要開立正式發票。"
@@ -118,11 +119,52 @@ msgstr "電子郵件"
 msgid "Full name"
 msgstr "全名"
 
+#, fuzzy
+#| msgid "Issued"
+msgid "Issue date"
+msgstr "已開立"
+
+#, fuzzy
+#| msgid "Creation date"
+msgid "Correction date"
+msgstr "建立日期"
+
+#, fuzzy
+#| msgid "Please confirm that you want to issue a final invoice."
+msgid "Please confirm that you want to issue a credit note."
+msgstr "請確認您要開立正式發票。"
+
+msgid "Explanation for the customer"
+msgstr ""
+
+#, fuzzy
+#| msgid "(including VAT)"
+msgid "Amount including VAT"
+msgstr "(含 VAT)"
+
+msgid "Only paid invoices can be refunded."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Correct paid invoice"
+msgstr "未付款發票"
+
+#, fuzzy
+#| msgid "Interaction"
+msgid "Internal explanation"
+msgstr "互動"
+
 msgid "Invalid hosted user response"
 msgstr "無效的託管使用者回應"
 
 msgid "Hosted user synchronization is disabled."
 msgstr "已停用託管使用者同步。"
+
+#, fuzzy
+#| msgid "Interaction"
+msgid "Invoice correction"
+msgstr "互動"
 
 msgid "Yes"
 msgstr "是"
@@ -132,6 +174,18 @@ msgstr "否"
 
 msgid "not set"
 msgstr "未設定"
+
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr ""
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr ""
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
+msgstr ""
 
 msgid "Invoice issued during VIES outage"
 msgstr ""
@@ -494,14 +548,28 @@ msgstr "最末頁"
 msgid "No records found."
 msgstr "找不到任何記錄。"
 
+#, fuzzy
+#| msgid "Issue upgrade quote"
+msgid "Issue credit note?"
+msgstr "開立升級報價單"
+
 msgid "Issue final invoice?"
 msgstr "是否開立正式發票？"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr ""
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr "這會開立正式發票。如果您只需要報價，請使用 [報價單]。"
 
 msgid "Cancel"
 msgstr "取消"
+
+#, fuzzy
+#| msgid "Issue invoice"
+msgid "Issue credit note"
+msgstr "開立發票"
 
 msgid "Issue invoice"
 msgstr "開立發票"
@@ -530,6 +598,11 @@ msgstr "收據"
 msgid "Edit in admin"
 msgstr "在管理介面中編輯"
 
+#, fuzzy
+#| msgid "Add note"
+msgid "Credit note"
+msgstr "新增備註"
+
 msgid "Number"
 msgstr "編號"
 
@@ -538,6 +611,35 @@ msgstr "已開立"
 
 msgid "Due"
 msgstr "到期日"
+
+#, fuzzy
+#| msgid "Payment amount"
+msgid "Credited amount"
+msgstr "付款金額"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Remaining amount"
+msgstr "等候付款"
+
+#, fuzzy
+#| msgid "Creation date"
+msgid "Correction of"
+msgstr "建立日期"
+
+msgid "Reason"
+msgstr "原因"
+
+#, fuzzy
+#| msgid "and dedicated"
+msgid "Cancelled duplicate"
+msgstr "且獨立的"
+
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Collection note"
+msgstr "協作網站"
 
 msgid "Discount"
 msgstr "折扣"
@@ -588,6 +690,50 @@ msgstr "此報價單已關閉，且不會顯示於久未處理報價單的建議
 msgid "Reopen quote"
 msgstr "重新開啟報價單"
 
+#, fuzzy
+#| msgid "Invoice list"
+msgid "Invoice corrections"
+msgstr "發票清單"
+
+msgid "Refund"
+msgstr ""
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Duplicate invoice"
+msgstr "開立新發票"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+
+#, fuzzy
+#| msgid "Issue new invoice"
+msgid "Cancel duplicate invoice"
+msgstr "開立新發票"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Collection status"
+msgstr "翻譯狀態"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+
+msgid "Resume collection"
+msgstr ""
+
+msgid "Mark uncollectible"
+msgstr ""
+
 msgid "Confirm refund done"
 msgstr "確認退款完成"
 
@@ -614,6 +760,9 @@ msgstr "客戶區段"
 
 msgid "Overview"
 msgstr "概覽"
+
+msgid "Owners"
+msgstr "擁有者"
 
 msgid "Interactions"
 msgstr "互動"
@@ -710,12 +859,6 @@ msgstr "合併客戶"
 msgid "Review merge"
 msgstr "檢閱合併"
 
-msgid "Add owner to customer"
-msgstr "為客戶新增擁有者"
-
-msgid "Add owner"
-msgstr "新增擁有者"
-
 msgid "Add note"
 msgstr "新增備註"
 
@@ -774,6 +917,46 @@ msgstr "編輯"
 
 msgid "No donations recorded."
 msgstr "沒有捐款記錄。"
+
+#, fuzzy
+#| msgid "Customer note"
+msgid "Customer owners"
+msgstr "客戶備註"
+
+msgid "Username"
+msgstr "使用者名稱"
+
+#, fuzzy
+#| msgid "Removed customer owner"
+msgid "No customer owners."
+msgstr "已移除客戶擁有者"
+
+msgid "Pending owner invitations"
+msgstr ""
+
+#, fuzzy
+#| msgid "Confirmed by"
+msgid "Invited by"
+msgstr "確認者"
+
+#, fuzzy
+#| msgid "Unlimited"
+msgid "Invited"
+msgstr "無限制"
+
+msgid "Expires"
+msgstr "到期"
+
+msgid "No pending owner invitations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Added customer owner"
+msgid "Add customer owner"
+msgstr "已新增客戶擁有者"
+
+msgid "Add owner"
+msgstr "新增擁有者"
 
 msgid "Invoice history"
 msgstr "發票記錄"
@@ -872,6 +1055,18 @@ msgid "Discoverable"
 msgstr "可供探索"
 
 #, fuzzy
+#| msgid "Interaction history"
+msgid "Instance activity"
+msgstr "互動記錄"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr ""
+
+#, python-format
+msgid "%(changes)s changes"
+msgstr ""
+
+#, fuzzy
 #| msgid "Services"
 msgid "Service limits"
 msgstr "服務"
@@ -899,9 +1094,6 @@ msgstr "使用中"
 
 msgid "Service is terminated"
 msgstr "服務已終止"
-
-msgid "Expires"
-msgstr "到期"
 
 msgid "Edit subscription in admin"
 msgstr "在管理後台編輯訂閱"
@@ -1008,8 +1200,16 @@ msgstr "有多位本機使用者使用這個電子郵件地址"
 msgid "Could not add customer owner: %(error)s"
 msgstr "無法新增客戶擁有者: %(error)s"
 
-#, python-format
-msgid "Added %(email)s to customer owners."
+#, fuzzy, python-format
+#| msgid "Added %(email)s to customer owners. Hosted user was %(state)s."
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr ""
+"已將 %(email)s 新增為客戶擁有者。託管服務的使用者處理結果為 %(state)s。"
+
+#, fuzzy, python-format
+#| msgid "Added %(email)s to customer owners."
+msgid "Added %(email)s to customer owners and notified them."
 msgstr "已將 %(email)s 新增為客戶擁有者。"
 
 #, python-format
@@ -1102,6 +1302,52 @@ msgstr "無效的伺服器 URL。"
 msgid "Server URL must use HTTPS."
 msgstr "伺服器 URL 必須使用 HTTPS。"
 
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr ""
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation code has already been used."
+msgid "This request has already been used."
+msgstr "啟用碼已使用過。"
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr ""
+
+msgid "A correction reason and explanation are required."
+msgstr ""
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr ""
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr ""
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr ""
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activation code has already been used."
+msgid "This invoice has already been settled."
+msgstr "啟用碼已使用過。"
+
+#, fuzzy
+#| msgid "No interactions recorded."
+msgid "An internal explanation is required."
+msgstr "沒有互動記錄。"
+
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -1149,8 +1395,28 @@ msgstr "歐盟反向課稅發票需要有效的買方 VAT ID。"
 msgid "Converted"
 msgstr "已轉換"
 
+msgid "Credited"
+msgstr ""
+
+msgid "Refunded"
+msgstr ""
+
 msgid "Paid"
 msgstr "已付款"
+
+msgid "Uncollectible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Applied to invoice"
+msgstr "未付款發票"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Awaiting refund"
+msgstr "等候付款"
 
 msgid "Unpaid"
 msgstr "未付款"
@@ -1514,6 +1780,26 @@ msgstr "每月"
 
 msgid "One-time"
 msgstr "單次"
+
+msgid "Pending"
+msgstr "未決"
+
+#, fuzzy
+#| msgctxt "Quote status"
+#| msgid "Accepted elsewhere"
+msgid "Accepted"
+msgstr "已接受其他報價"
+
+msgid "Revoked"
+msgstr ""
+
+#, fuzzy
+#| msgid "Copy failed"
+msgid "Delivery failed"
+msgstr "複製失敗"
+
+msgid "Fulfilled by staff"
+msgstr ""
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -1973,6 +2259,33 @@ msgstr "開始翻譯"
 msgid "Translation status"
 msgstr "翻譯狀態"
 
+#, fuzzy
+#| msgid "Customer sections"
+msgid "Customer owner invitation"
+msgstr "客戶區段"
+
+#, fuzzy
+#| msgid "Review merge"
+msgid "Review access"
+msgstr "檢閱合併"
+
+#, fuzzy
+#| msgid "Customer note"
+msgid "Customer account"
+msgstr "客戶備註"
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over the customer account, including billing, "
+#| "services, and other owners."
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr "擁有者對客戶帳戶擁有完整控制權，包括帳務、服務及其他擁有者。"
+
+msgid "Accept invitation"
+msgstr "接受邀請"
+
 msgid "Discover Weblate"
 msgstr "探索 Weblate"
 
@@ -2324,103 +2637,232 @@ msgstr ""
 "您可以使用 <a href=\"%(url)s\">wlc</a> 以遠端控制 Weblate，其可透過 Python "
 "pip 安裝："
 
-msgid "Weblate features"
-msgstr "Weblate 功能"
-
-msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+msgid "Weblate features — quality translations, your control"
 msgstr ""
-"Weblate 是一套功能豐富的電腦輔助翻譯工具，能為開發人員與翻譯人員省下寶貴時"
-"間。讓您的使用者擁有更棒的體驗！"
 
-msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
-msgstr "瀏覽<a href=\"https://docs.weblate.org/\">說明文件</a>以深入瞭解。"
-
-msgid "Easy to use interface"
-msgstr "易於使用的介面"
-
-msgid "Weblate screenshot"
-msgstr "Weblate 螢幕擷圖"
-
-msgid "Customizable quality checks"
-msgstr "可自訂品質檢查"
-
-msgid "Detailed context"
-msgstr "詳細情境"
-
-msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
+msgid "Bring your project to more people"
 msgstr ""
-"翻譯者可以取得詳細的翻譯情境，包括翻譯檔案提供的資訊，以及在 Weblate 中補充的"
-"資料。"
-
-msgid "Fluent communication"
-msgstr "溝通流暢"
-
-msgid "All translations are tracked and can be commented."
-msgstr "所有譯文都有歷程記錄，並可加上留言。"
-
-msgid "Access Control"
-msgstr "存取控制"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "精細調整存取權限，以符合您的環境需求。"
-
-msgid "Smart Notifications"
-msgstr "智慧通知"
 
 msgid ""
-"Translators can be notified of new strings to translate or other events."
-msgstr "有新的待翻譯字串或其他事件時，系統可以通知翻譯者。"
-
-msgid "Integration API"
-msgstr "整合 API"
-
-msgid "Integrate Weblate with third-party services."
-msgstr "將 Weblate 與第三方服務整合。"
-
-msgid "Multiple File Formats"
-msgstr "多種檔案格式"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
+msgstr ""
 
 msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
-msgstr "使用任何常見的檔案在地化格式，如 gettext、JSON、XLIFF 或資源字串等。"
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
+msgstr ""
 
-msgid "Branch Support"
-msgstr "分支支援"
+#, fuzzy
+#| msgid "Join existing users and supporters"
+msgid "Compare hosting and support"
+msgstr "加入現有使用者與支持者的行列"
+
+msgid "Try Weblate"
+msgstr "試用 Weblate"
+
+#, fuzzy
+#| msgid "Bring translators closer to development"
+msgid "Keep translations in step with development"
+msgstr "讓翻譯者更貼近開發程序"
 
 msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
-msgstr "自動將不同翻譯版本推送至不同分支，方便管理。"
-
-msgid "Translation Context"
-msgstr "翻譯情境"
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
+msgstr ""
 
 msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
-msgstr "每個字串都提供描述、相鄰字串、影像、相關原始碼及詞彙表項目。"
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
+msgstr ""
+
+#, fuzzy
+#| msgid "Continuous localization"
+msgid "Explore continuous localization"
+msgstr "持續在地化"
+
+msgid "Give every translation the context it needs"
+msgstr ""
+
+msgid ""
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
+msgstr ""
+
+msgid ""
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
+msgstr ""
+
+msgid ""
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
+msgstr ""
+
+msgid "Give your translators the tools to make informed choices."
+msgstr ""
+
+msgid "Explore translation quality checks"
+msgstr ""
+
+msgid "Choose how you translate—with or without AI"
+msgstr ""
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translate the app"
+msgid "Translate without AI"
+msgstr "翻譯應用程式"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Contributors & translators united"
+msgid "Assist your translators"
+msgstr "貢獻者與翻譯者統合"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+
+#, fuzzy
+#| msgid "Start translating"
+msgid "Start with machine translations"
+msgstr "開始翻譯"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+
+msgid "Accept suggestions before use"
+msgstr ""
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+
+msgid "Approve before committing"
+msgstr ""
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translation workflow"
+msgid "Explore AI translation workflows"
+msgstr "翻譯的工作流程"
+
+#, fuzzy
+#| msgid "Choose your own donation amount"
+msgid "Choose how your content is handled"
+msgstr "選擇您自訂的贊助金額"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+
+msgid "Find the right hosting option"
+msgstr ""
+
+msgid "Bring your team and community together"
+msgstr ""
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+
+msgid "The everyday tools your localization needs"
+msgstr ""
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+
+#, fuzzy
+#| msgid "Read more in the documentation."
+msgid "Explore the documentation"
+msgstr "在說明文件中閱讀更多資訊。"
+
+msgid "Keep working with your existing formats"
+msgstr ""
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+
+msgid ".NET resource files (RESX, RESW)"
+msgstr ".NET 資源檔案 (RESX, RESW)"
 
 msgid "Android string resources"
 msgstr "Android 字串資源"
 
-msgid "Apple iOS strings"
-msgstr "Apple iOS 字串"
-
 msgid "App store metadata files"
 msgstr "App Store 詮釋資料檔案"
+
+msgid "Apple iOS strings"
+msgstr "Apple iOS 字串"
 
 msgid "ARB file"
 msgstr "ARB 檔案"
 
+msgid "AsciiDoc files"
+msgstr "AsciiDoc 檔案"
+
+msgid "Compose Multiplatform resources"
+msgstr "Compose Multiplatform 資源"
+
 msgid "CSV files"
 msgstr "CSV 檔案"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "DokuWiki text files"
+msgstr "文字檔案"
 
 msgid "DTD files"
 msgstr "DTD 檔案"
@@ -2434,6 +2876,11 @@ msgstr "Flat XML 檔案"
 msgid "Fluent format"
 msgstr "Fluent 格式"
 
+#, fuzzy
+#| msgid "React Intl"
+msgid "Format.JS / React Intl"
+msgstr "React Intl"
+
 msgid "GNU gettext"
 msgstr "GNU gettext"
 
@@ -2445,6 +2892,9 @@ msgstr "gotext JSON 檔案"
 
 msgid "GWT properties"
 msgstr "GWT 屬性"
+
+msgid "Haiku Catkeys"
+msgstr ""
 
 msgid "HTML files"
 msgstr "HTML 檔案"
@@ -2464,17 +2914,14 @@ msgstr "Inno Setup INI 翻譯"
 msgid "Java properties"
 msgstr "Java properties"
 
+msgid "JavaScript resource files"
+msgstr ""
+
 msgid "Joomla translations"
 msgstr "Joomla 翻譯"
 
 msgid "JSON files"
 msgstr "JSON 檔案"
-
-msgid "React Intl"
-msgstr "React Intl"
-
-msgid "Vue I18n"
-msgstr "Vue I18n"
 
 msgid "Laravel PHP strings"
 msgstr "Laravel PHP 字串"
@@ -2482,11 +2929,24 @@ msgstr "Laravel PHP 字串"
 msgid "Markdown files"
 msgstr "Markdown 檔案"
 
-msgid "mi18n lang files"
+msgid "MDX files"
+msgstr "MDX 檔案"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "MediaWiki text files"
+msgstr "文字檔案"
+
+#, fuzzy
+#| msgid "mi18n lang files"
+msgid "@draggable/i18n lang files"
 msgstr "mi18n lang 檔案"
 
 msgid "Mobile Kotlin resources"
 msgstr "Mobile Kotlin 資源"
+
+msgid "Nextcloud JSON"
+msgstr ""
 
 msgid "OpenDocument Format"
 msgstr "OpenDocument 格式"
@@ -2499,9 +2959,6 @@ msgstr "Qt Linguist .ts"
 
 msgid "ResourceDictionary files"
 msgstr "ResourceDictionary 檔案"
-
-msgid ".NET resource files (RESX, RESW)"
-msgstr ".NET 資源檔案 (RESX, RESW)"
 
 msgid "Ruby YAML files"
 msgstr "Ruby YAML 檔案"
@@ -2518,166 +2975,84 @@ msgstr "TermBase eXchange 格式"
 msgid "Text files"
 msgstr "文字檔案"
 
+msgid "TOML and go-i18n TOML"
+msgstr ""
+
+msgid "Vue I18n"
+msgstr "Vue I18n"
+
 msgid "WebExtension JSON"
 msgstr "WebExtension JSON"
 
 msgid "Windows RC files"
 msgstr "Windows RC 檔案"
 
-msgid "XLIFF"
-msgstr "XLIFF"
+#, fuzzy
+#| msgid "Localization"
+msgid "WiX localization files"
+msgstr "在地化"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr "XLIFF 1.1 與 1.2"
+
+msgid "XLIFF 2.0"
+msgstr "XLIFF 2.0"
+
+msgid "XWiki formats"
+msgstr "XWiki 格式"
 
 msgid "YAML files"
 msgstr "YAML 檔案"
 
-msgid "Glossaries"
-msgstr "詞彙表"
-
-msgid "Define frequently used terminology for consistency."
-msgstr "定義常用術語以確保前後一致。"
-
-msgid "Feedback Acquisition"
-msgstr "意見回饋收集"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
-msgstr "使用 Weblate 收集來源字串的意見回饋，以改善這些字串。"
-
-msgid "Export and Import"
-msgstr "匯出與匯入"
-
-msgid "Translations can be downloaded for offline translation and merged back."
-msgstr "可下載翻譯以離線作業，並且在完成後合併回去。"
-
-msgid "Fully Integrated"
-msgstr "完全整合"
-
+#, fuzzy, python-format
+#| msgid ""
+#| "Please consult the <a href=\"%(url)s\">contributor documentation</a> to "
+#| "find the most common topics."
 msgid ""
-"Translations are managed within the same version control system as your code."
-msgstr "在您程式碼所使用的相同版本控制系統中管理翻譯。"
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
+msgstr "請參考<a href=\"%(url)s\">貢獻者說明文件</a>來瞭解最常見的主題。"
 
-msgid "Documentation"
-msgstr "說明文件"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr "涵蓋設定與使用的詳盡說明文件。"
-
-msgid "Easy Reviews"
-msgstr "輕鬆檢閱"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr "翻譯者可透過多種方式檢閱同儕的貢獻。"
-
-msgid "Language support"
-msgstr "語言支援"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr "開箱即支援 500 多種語言，也可以新增其他語言。"
-
-msgid "Promotion"
-msgstr "宣傳"
-
-msgid ""
-"Built-in features to attract a wider audience for your translation project."
-msgstr "內建功能可為您的翻譯專案吸引更多受眾。"
-
-msgid "Reporting"
-msgstr "報告"
-
-msgid "Reports are generated to provide info on project activity."
-msgstr "系統會產生報告，呈現專案活動資訊。"
-
-msgid "Version Control"
-msgstr "版本控制"
-
-msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
-msgstr "可以直接與您的版本控制系統溝通，目前支援 Git 及 Mercurial。"
-
-msgid "Collaboration Sites"
-msgstr "協作網站"
-
-msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
+msgid "Open source, backed by sustainable services"
 msgstr ""
-"原生支援許多軟體開發網站，例如 GitLab、GitHub、Pagure、Azure、Gitea 和 "
-"Bitbucket 等。"
-
-msgid "Responsive UI"
-msgstr "回應式 UI"
 
 msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
-msgstr "使用者介面在淺色和深色模式下在電腦、平板電腦和手機上都能順暢地操作。"
-
-msgid "Translation memory"
-msgstr "翻譯記憶"
-
-msgid "Reuse existing translations to save time and costs."
-msgstr "重複使用現有譯文，節省時間與成本。"
-
-msgid "Translation add-ons"
-msgstr "翻譯附加元件"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "使用各種附加元件自訂在地化工作流程。"
-
-msgid "Backups"
-msgstr "備份"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr "使用內建遠端備份功能，來防止資料遺失。"
-
-msgid "Screenshots"
-msgstr "螢幕擷圖"
-
-msgid "Provide visual context for the translations."
-msgstr "為翻譯提供視覺情境。"
-
-msgid "Variants"
-msgstr "變體"
-
-msgid "Group variants of strings for easier translating."
-msgstr "將字串的變體分組，以便翻譯。"
-
-msgid "Intermediate language"
-msgstr "中間語言"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "翻譯前，先校對開發人員提供的字串。"
-
-msgid "Automatic translation"
-msgstr "自動翻譯"
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
+msgstr ""
 
 msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr "翻譯或建議可以透過機器翻譯服務或人工智慧來完成。"
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
-msgid "Organize translations"
-msgstr "整理翻譯"
+msgid ""
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
+msgstr ""
 
-msgid "Categorize the translation files to ease navigation."
-msgstr "將翻譯檔案分類以便瀏覽。"
+#, fuzzy
+#| msgid "Order hosting"
+msgid "Explore self-hosting"
+msgstr "訂購託管服務"
 
-msgid "Keyboard operation"
-msgstr "鍵盤操作"
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr "翻譯時使用鍵盤即可有效率地瀏覽。"
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Hosting for libre projects"
+msgstr "適用於自由軟體專案"
 
 msgid "Weblate Pricing"
 msgstr "Weblate 價格"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"您可以使用 Weblate 託管服務、自行託管，或<a href=\"%(url)s\">取得協助</a>進行"
-"內部部署，並享有 Premium 支援帶來的便利。"
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr "我們的團隊隨時準備幫助您順利使用 Weblate。"
@@ -2829,25 +3204,27 @@ msgstr "它的限制與<strong>160k 方案</strong>相同，並且僅適用於�
 msgid "Join existing users and supporters"
 msgstr "加入現有使用者與支持者的行列"
 
-msgid "Weblate - web-based localization"
-msgstr "Weblate - 網頁式在地化"
-
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr "基於 Web 的<strong>持續</strong>在地化平臺"
-
-#, python-format
-msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+msgid "Weblate — quality translations, your control"
 msgstr ""
-"採 Copyleft 授權的自由軟體，已獲超過 %(countries)s 個國家的逾 %(projects)s 個"
-"自由軟體專案與公司採用。"
 
-msgid "Try Weblate"
-msgstr "試用 Weblate"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr ""
 
-msgid "Explore all features"
-msgstr "探索所有功能"
+msgid ""
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
+msgstr ""
+
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr ""
+
+#, fuzzy
+#| msgid "Get more Weblate"
+msgid "Explore Weblate"
+msgstr "更多 Weblate"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -2857,12 +3234,11 @@ msgid "Weblate localizes the world"
 msgstr "Weblate 讓世界走向在地化"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"託管服務與獨立工具，並與版本控制緊密整合。提供簡潔的使用者介面、跨組件沿用譯"
-"文、品質檢查，以及自動連結來源檔案等功能。"
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -2880,11 +3256,8 @@ msgstr[0] "%(count)s 個翻譯"
 msgid "in the last 7 days"
 msgstr "最近 7 日"
 
-msgid "Robust feature set"
-msgstr "穩健的功能集"
-
-msgid "Go to pricing"
-msgstr "前往查看價格"
+msgid "Make localization work for your team"
+msgstr ""
 
 msgid "Users and Supporters"
 msgstr "使用者與支持者"
@@ -2898,6 +3271,59 @@ msgstr "管理您的付款"
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "產生於 %(timestamp)s。"
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over this customer account, including billing, "
+#| "services, secrets, and other owners. Only add people you trust."
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+"擁有者對這個客戶帳戶擁有完整控制權，包括帳務、服務、機密資料及其他擁有者。請"
+"只新增您信任的人。"
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr ""
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "Owners have full control over the customer account, including billing, "
+#| "services, and other owners."
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr "擁有者對客戶帳戶擁有完整控制權，包括帳務、服務及其他擁有者。"
+
+#, fuzzy
+#| msgid "CRM navigation"
+msgid "Review invitation"
+msgstr "CRM 導覽"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr ""
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -2986,6 +3412,11 @@ msgstr "您在 weblate.org 的待付款"
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "您在 weblate.org 的訂閱即將續訂。"
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr ""
+
 msgid "The payment will be automatically charged soon."
 msgstr "款項即將自動扣款。"
 
@@ -3026,6 +3457,20 @@ msgstr "儲存的卡片：%(card_number)s"
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr "訂閱到期日：%(expiry)s"
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unpaid invoice"
+msgid "Pay invoice"
+msgstr "未付款發票"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3182,12 +3627,13 @@ msgstr "檢視英文版本"
 msgid "Download as PDF"
 msgstr "下載為 PDF"
 
-msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+msgid "Find your way to get started"
 msgstr ""
-"您可以立即開始，或由我們的專業團隊憑藉豐富經驗，依據您的精準需求提供專屬建"
-"議。"
+
+msgid ""
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
+msgstr ""
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>捐款</strong>——讓世界變得更好"
@@ -3224,9 +3670,6 @@ msgid ""
 "grow."
 msgstr "我們是小型的自由軟體公司，每個人都有廣大的發展空間。"
 
-msgid "Owners"
-msgstr "擁有者"
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3246,42 +3689,63 @@ msgstr "移除擁有者"
 msgid "Remove"
 msgstr "移除"
 
-msgid "Continuous Localization"
-msgstr "持續在地化"
+msgid "Pending invitation"
+msgstr "待回應的邀請函"
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Revoke invitation"
+msgstr "切換導覽選單"
+
+#, fuzzy
+#| msgid "Remove owner"
+msgid "Invite owner"
+msgstr "移除擁有者"
+
+msgid "Keep pace with development"
+msgstr ""
 
 msgid ""
-"Automated localization workflow follows your project development closely."
-msgstr "自動化的在地化作業流程，能緊密貼合您的專案開發。"
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
+msgstr ""
 
-msgid "Quality Checks"
-msgstr "品質檢查"
+msgid "Help people get the meaning right"
+msgstr ""
 
-msgid "Customizable quality checks helps improve translation quality."
-msgstr "可自訂的翻譯品質檢查，協助您改善翻譯品質。"
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
+msgstr ""
 
-msgid "Attribution"
-msgstr "記名標示"
+msgid "Translate with or without AI"
+msgstr ""
 
-msgid "All translators are properly credited in the version control system."
-msgstr "所有翻譯者的貢獻都妥善記錄在版本控制系統裡。"
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
 
-msgid "Hosting Plans"
-msgstr "託管方案"
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
 
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "使用 Weblate 的託管服務，從 19 歐元起。"
+msgid "Bring everyone into the conversation"
+msgstr ""
 
-msgid "Cloud Ready"
-msgstr "雲端就緒"
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
 
-msgid "Comes with appliances, ready to deploy in your cloud."
-msgstr "提供可直接部署至雲端的應用裝置映像。"
+msgid "Build on software you can trust"
+msgstr ""
 
-msgid "Libre Software"
-msgstr "自由軟體"
-
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
-msgstr "採 Copyleft 授權；可自由使用、檢視、修改並與任何人分享。"
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
 
 msgid "Help translate"
 msgstr "協助翻譯"
@@ -3322,14 +3786,20 @@ msgstr "下載收據"
 msgid "Pay now"
 msgstr "立即付款"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
-msgstr "選擇<strong>免費</strong>或 <strong>Premium</strong>，由您決定"
+msgid "Choose the hosting and support that fit your team"
+msgstr ""
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid "Premium Cloud"
 msgstr "Premium 雲端"
 
-msgid "for ease and comfort"
-msgstr "輕鬆、舒適"
+msgid "managed hosting for your team"
+msgstr ""
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3357,8 +3827,9 @@ msgstr "現省 %(percent)s%%"
 msgid "for complete control"
 msgstr "擁有完整控制權"
 
-#, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
+#, fuzzy, python-format
+#| msgid "with paid <a href=\"%(url)s\">support</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
 msgstr "可加購付費<a href=\"%(url)s\">支援</a>"
 
 msgid "Gratis Weblate"
@@ -3370,9 +3841,6 @@ msgstr "適用於自由軟體專案"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "請提出<a href=\"%(url)s\">申請</a>"
-
-msgid "Compare all plans"
-msgstr "比較所有方案"
 
 msgid "Expired"
 msgstr "已過期"
@@ -3391,6 +3859,9 @@ msgstr "重新整理權杖"
 
 msgid "Backup repository"
 msgstr "備份儲存庫"
+
+msgid "Documentation"
+msgstr "說明文件"
 
 #, python-format
 msgid ""
@@ -3526,13 +3997,16 @@ msgstr "自訂 Discover Weblate 清單項目"
 msgid "Weblate support"
 msgstr "Weblate 技術支援"
 
-msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+msgid "Expert help for your localization"
 msgstr ""
-"Weblate 是採 Copyleft 授權、由社群支援的自由軟體。訂閱者無須額外付費即可獲得"
-"優先支援，所有人也都可以購買預付支援方案。"
+
+msgid ""
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
+msgstr ""
 
 msgid "Report issue"
 msgstr "報告問題"
@@ -3557,8 +4031,8 @@ msgstr ""
 "如果發現安全性弱點，請回報至 %(report)s。更多資訊請參閱<a href=\"%(url)s\">說"
 "明文件</a>。"
 
-msgid "Reliable support"
-msgstr "可靠支援"
+msgid "Living humans, ready to help"
+msgstr ""
 
 #, python-format
 msgid ""
@@ -3843,21 +4317,382 @@ msgid ""
 "token shown below."
 msgstr "請使用下方顯示的啟用權杖，在 Weblate 管理頁面中啟用清單項目。"
 
-msgid "User not found!"
-msgstr "找不到使用者！"
-
 msgid "You can not remove yourself."
 msgstr "您無法移除自己。"
 
-msgid "Removed customer owner"
-msgstr "已移除客戶擁有者"
+#, fuzzy
+#| msgid ""
+#| "VAT ID validation service unavailable for {}, please try again later."
+msgid "Too many owner invitations. Please try again later."
+msgstr "{} 的 VAT ID 驗證服務無法使用，請稍後再試。"
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr ""
+
+#, fuzzy
+#| msgid "Hosted user synchronization is disabled."
+msgid "This customer owner invitation is invalid."
+msgstr "已停用託管使用者同步。"
+
+#, fuzzy
+#| msgid "Unavailable for your amount"
+msgid "This invitation is not available for your account."
+msgstr "您的捐款金額無法選擇此回饋"
+
+msgid "Customer owner invitation accepted."
+msgstr ""
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr ""
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
-msgstr "已從客戶擁有者清單移除 %(email)s。"
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr ""
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
+msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "請在帳號頁面確認升級。"
+
+#~ msgid "Add owner to customer"
+#~ msgstr "為客戶新增擁有者"
+
+#~ msgid "Weblate features"
+#~ msgstr "Weblate 功能"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "Weblate 是一套功能豐富的電腦輔助翻譯工具，能為開發人員與翻譯人員省下寶貴時"
+#~ "間。讓您的使用者擁有更棒的體驗！"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr "瀏覽<a href=\"https://docs.weblate.org/\">說明文件</a>以深入瞭解。"
+
+#~ msgid "Easy to use interface"
+#~ msgstr "易於使用的介面"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "Weblate 螢幕擷圖"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "可自訂品質檢查"
+
+#~ msgid "Detailed context"
+#~ msgstr "詳細情境"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "翻譯者可以取得詳細的翻譯情境，包括翻譯檔案提供的資訊，以及在 Weblate 中補"
+#~ "充的資料。"
+
+#~ msgid "Fluent communication"
+#~ msgstr "溝通流暢"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr "所有譯文都有歷程記錄，並可加上留言。"
+
+#~ msgid "Access Control"
+#~ msgstr "存取控制"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "精細調整存取權限，以符合您的環境需求。"
+
+#~ msgid "Smart Notifications"
+#~ msgstr "智慧通知"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr "有新的待翻譯字串或其他事件時，系統可以通知翻譯者。"
+
+#~ msgid "Integration API"
+#~ msgstr "整合 API"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "將 Weblate 與第三方服務整合。"
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "多種檔案格式"
+
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "使用任何常見的檔案在地化格式，如 gettext、JSON、XLIFF 或資源字串等。"
+
+#~ msgid "Branch Support"
+#~ msgstr "分支支援"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr "自動將不同翻譯版本推送至不同分支，方便管理。"
+
+#~ msgid "Translation Context"
+#~ msgstr "翻譯情境"
+
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr "每個字串都提供描述、相鄰字串、影像、相關原始碼及詞彙表項目。"
+
+#~ msgid "Glossaries"
+#~ msgstr "詞彙表"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr "定義常用術語以確保前後一致。"
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "意見回饋收集"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr "使用 Weblate 收集來源字串的意見回饋，以改善這些字串。"
+
+#~ msgid "Export and Import"
+#~ msgstr "匯出與匯入"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr "可下載翻譯以離線作業，並且在完成後合併回去。"
+
+#~ msgid "Fully Integrated"
+#~ msgstr "完全整合"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr "在您程式碼所使用的相同版本控制系統中管理翻譯。"
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr "涵蓋設定與使用的詳盡說明文件。"
+
+#~ msgid "Easy Reviews"
+#~ msgstr "輕鬆檢閱"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr "翻譯者可透過多種方式檢閱同儕的貢獻。"
+
+#~ msgid "Language support"
+#~ msgstr "語言支援"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr "開箱即支援 500 多種語言，也可以新增其他語言。"
+
+#~ msgid "Promotion"
+#~ msgstr "宣傳"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr "內建功能可為您的翻譯專案吸引更多受眾。"
+
+#~ msgid "Reporting"
+#~ msgstr "報告"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr "系統會產生報告，呈現專案活動資訊。"
+
+#~ msgid "Version Control"
+#~ msgstr "版本控制"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr "可以直接與您的版本控制系統溝通，目前支援 Git 及 Mercurial。"
+
+#~ msgid ""
+#~ "Native support for software development sites such as GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, or Bitbucket."
+#~ msgstr ""
+#~ "原生支援許多軟體開發網站，例如 GitLab、GitHub、Pagure、Azure、Gitea 和 "
+#~ "Bitbucket 等。"
+
+#~ msgid "Responsive UI"
+#~ msgstr "回應式 UI"
+
+#~ msgid ""
+#~ "User interface that works nicely on desktop, tablets and phones in both "
+#~ "light and dark mode."
+#~ msgstr ""
+#~ "使用者介面在淺色和深色模式下在電腦、平板電腦和手機上都能順暢地操作。"
+
+#~ msgid "Translation memory"
+#~ msgstr "翻譯記憶"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr "重複使用現有譯文，節省時間與成本。"
+
+#~ msgid "Translation add-ons"
+#~ msgstr "翻譯附加元件"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "使用各種附加元件自訂在地化工作流程。"
+
+#~ msgid "Backups"
+#~ msgstr "備份"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr "使用內建遠端備份功能，來防止資料遺失。"
+
+#~ msgid "Screenshots"
+#~ msgstr "螢幕擷圖"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "為翻譯提供視覺情境。"
+
+#~ msgid "Variants"
+#~ msgstr "變體"
+
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr "將字串的變體分組，以便翻譯。"
+
+#~ msgid "Intermediate language"
+#~ msgstr "中間語言"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr "翻譯前，先校對開發人員提供的字串。"
+
+#~ msgid "Automatic translation"
+#~ msgstr "自動翻譯"
+
+#~ msgid ""
+#~ "Translations or suggestions can be done by machine translation services "
+#~ "or AI."
+#~ msgstr "翻譯或建議可以透過機器翻譯服務或人工智慧來完成。"
+
+#~ msgid "Organize translations"
+#~ msgstr "整理翻譯"
+
+#~ msgid "Categorize the translation files to ease navigation."
+#~ msgstr "將翻譯檔案分類以便瀏覽。"
+
+#~ msgid "Keyboard operation"
+#~ msgstr "鍵盤操作"
+
+#~ msgid "Use keyboard to effectively navigate while translating."
+#~ msgstr "翻譯時使用鍵盤即可有效率地瀏覽。"
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "您可以使用 Weblate 託管服務、自行託管，或<a href=\"%(url)s\">取得協助</a>"
+#~ "進行內部部署，並享有 Premium 支援帶來的便利。"
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr "Weblate - 網頁式在地化"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr "基於 Web 的<strong>持續</strong>在地化平臺"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "採 Copyleft 授權的自由軟體，已獲超過 %(countries)s 個國家的逾 "
+#~ "%(projects)s 個自由軟體專案與公司採用。"
+
+#~ msgid "Explore all features"
+#~ msgstr "探索所有功能"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "託管服務與獨立工具，並與版本控制緊密整合。提供簡潔的使用者介面、跨組件沿用"
+#~ "譯文、品質檢查，以及自動連結來源檔案等功能。"
+
+#~ msgid "Robust feature set"
+#~ msgstr "穩健的功能集"
+
+#~ msgid "Go to pricing"
+#~ msgstr "前往查看價格"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "您可以立即開始，或由我們的專業團隊憑藉豐富經驗，依據您的精準需求提供專屬建"
+#~ "議。"
+
+#~ msgid "Continuous Localization"
+#~ msgstr "持續在地化"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr "自動化的在地化作業流程，能緊密貼合您的專案開發。"
+
+#~ msgid "Quality Checks"
+#~ msgstr "品質檢查"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr "可自訂的翻譯品質檢查，協助您改善翻譯品質。"
+
+#~ msgid "Attribution"
+#~ msgstr "記名標示"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr "所有翻譯者的貢獻都妥善記錄在版本控制系統裡。"
+
+#~ msgid "Hosting Plans"
+#~ msgstr "託管方案"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "使用 Weblate 的託管服務，從 19 歐元起。"
+
+#~ msgid "Cloud Ready"
+#~ msgstr "雲端就緒"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr "提供可直接部署至雲端的應用裝置映像。"
+
+#~ msgid "Libre Software"
+#~ msgstr "自由軟體"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr "採 Copyleft 授權；可自由使用、檢視、修改並與任何人分享。"
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr "選擇<strong>免費</strong>或 <strong>Premium</strong>，由您決定"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "輕鬆、舒適"
+
+#~ msgid "Compare all plans"
+#~ msgstr "比較所有方案"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "Weblate 是採 Copyleft 授權、由社群支援的自由軟體。訂閱者無須額外付費即可獲"
+#~ "得優先支援，所有人也都可以購買預付支援方案。"
+
+#~ msgid "Reliable support"
+#~ msgstr "可靠支援"
+
+#~ msgid "User not found!"
+#~ msgstr "找不到使用者！"
+
+#, python-format
+#~ msgid "Removed %(email)s from customer owners."
+#~ msgstr "已從客戶擁有者清單移除 %(email)s。"
 
 #~ msgid "Add a user"
 #~ msgstr "新增使用者"
@@ -3878,11 +4713,6 @@ msgstr "請在帳號頁面確認升級。"
 #~ msgid "Monthly Breakdown"
 #~ msgstr "每月明細"
 
-#, fuzzy
-#~| msgid "Issue upgrade quote"
-#~ msgid "Issue renewal quote"
-#~ msgstr "開立升級報價單"
-
 #, python-format
 #~ msgid ""
 #~ "Upgrade to %(package)s without extending the current subscription period."
@@ -3893,11 +4723,6 @@ msgstr "請在帳號頁面確認升級。"
 
 #~ msgid "Issue upgrade invoice"
 #~ msgstr "開立升級發票"
-
-#, fuzzy
-#~| msgid "Issue new invoice"
-#~ msgid "Create invoice"
-#~ msgstr "開立新發票"
 
 #~ msgid "Company or individual name"
 #~ msgstr "公司或個體名稱"
@@ -4085,10 +4910,6 @@ msgstr "請在帳號頁面確認升級。"
 #~ "群討論，或改善文件。"
 
 #~ msgid ""
-#~ "VAT ID validation service unavailable for {}, please try again later."
-#~ msgstr "{} 的 VAT ID 驗證服務無法使用，請稍後再試。"
-
-#~ msgid ""
 #~ "Additionally, Bitnami Weblate stack is available for many platforms and "
 #~ "works with most cloud providers."
 #~ msgstr ""
@@ -4129,9 +4950,6 @@ msgstr "請在帳號頁面確認升級。"
 #~ msgctxt "Hosting plan"
 #~ msgid "Enterprise"
 #~ msgstr "企業"
-
-#~ msgid "and dedicated"
-#~ msgstr "且獨立的"
 
 #, python-format
 #~ msgid "over <strong>%(count)s</strong>"
@@ -4259,9 +5077,6 @@ msgstr "請在帳號頁面確認升級。"
 
 #~ msgid "Regenerate"
 #~ msgstr "重新生成"
-
-#~ msgid "Creation date"
-#~ msgstr "建立日期"
 
 #~ msgid "Switch to yearly"
 #~ msgstr "切換成每年"
@@ -4540,11 +5355,6 @@ msgstr "請在帳號頁面確認升級。"
 #~ "簡單，你可以考慮和朋友聊聊 Weblate。"
 
 #, fuzzy
-#~| msgid "Contributors & translators united"
-#~ msgid "Attribution to translator"
-#~ msgstr "貢獻者與翻譯者統合"
-
-#, fuzzy
 #~| msgid "Hosting Weblate"
 #~ msgid "Being a Weblate user"
 #~ msgstr "Weblate 託管服務"
@@ -4760,9 +5570,6 @@ msgstr "請在帳號頁面確認升級。"
 #~ "這個限制可以藉由購買「基本」託管方案移除——您依舊有自由軟體的限制，但能夠擴"
 #~ "充管理使用者的能力。"
 
-#~ msgid "Translation workflow"
-#~ msgstr "翻譯的工作流程"
-
 #, fuzzy
 #~| msgid ""
 #~| "All translated repositories are available using https protocol with "
@@ -4899,9 +5706,6 @@ msgstr "請在帳號頁面確認升級。"
 #~ msgid "Select"
 #~ msgstr "選取"
 
-#~ msgid "Choose your own donation amount"
-#~ msgstr "選擇您自訂的贊助金額"
-
 #, fuzzy
 #~| msgid "Self hosted"
 #~ msgid "Self Hosted"
@@ -4977,9 +5781,6 @@ msgstr "請在帳號頁面確認升級。"
 
 #~ msgid "Free hosting on Weblate"
 #~ msgstr "Weblate 上的免費託管服務"
-
-#~ msgid "Order hosting"
-#~ msgstr "訂購託管服務"
 
 #~ msgid ""
 #~ "Hosted Weblate allows you to use Weblate without any effort and with "
@@ -5099,9 +5900,6 @@ msgstr "請在帳號頁面確認升級。"
 
 #~ msgid "%(position)s / %(total)s"
 #~ msgstr "%(position)s / %(total)s"
-
-#~ msgid "Bring translators closer to development"
-#~ msgstr "讓翻譯者更貼近開發程序"
 
 #~ msgid "Weblate is a free software with community support."
 #~ msgstr "Weblate 是款由社群支援的自由軟體。"

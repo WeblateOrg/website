@@ -30,9 +30,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
-"PO-Revision-Date: 2026-09-09 09:51+0000\n"
-"Last-Translator: Yoshi <yyyyyoshihoko@gmail.com>\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"PO-Revision-Date: 2026-09-19 06:15+0000\n"
+"Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
 "ja/>\n"
 "Language: ja\n"
@@ -40,7 +40,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 msgid "Please confirm that you want to issue a final invoice."
 msgstr "最終請求書を発行するかどうかご確認してください。"
@@ -110,11 +110,38 @@ msgstr "メールアドレス"
 msgid "Full name"
 msgstr "フルネーム"
 
+msgid "Issue date"
+msgstr "発行日"
+
+msgid "Correction date"
+msgstr "訂正日"
+
+msgid "Please confirm that you want to issue a credit note."
+msgstr "訂正ノートを発行するかどうか、ご確認してください。"
+
+msgid "Explanation for the customer"
+msgstr "お客様への説明"
+
+msgid "Amount including VAT"
+msgstr "VAT 込み金額"
+
+msgid "Only paid invoices can be refunded."
+msgstr "支払い済みの請求書のみ返金できます。"
+
+msgid "Correct paid invoice"
+msgstr "支払済み請求書の訂正"
+
+msgid "Internal explanation"
+msgstr "内部向け説明"
+
 msgid "Invalid hosted user response"
 msgstr "ホストユーザーからの応答が無効です"
 
 msgid "Hosted user synchronization is disabled."
 msgstr "ホストユーザーの同期は無効化されています。"
+
+msgid "Invoice correction"
+msgstr "請求書の訂正"
 
 msgid "Yes"
 msgstr "YES"
@@ -125,13 +152,27 @@ msgstr "NO"
 msgid "not set"
 msgstr "未設定"
 
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr "請求書 %(invoice)s に関する訂正ノート %(correction)s"
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr "請求書 %(invoice)s は回収不能としてマークされました"
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
+msgstr "請求書 %(invoice)s の回収が再開されました"
+
 msgid "Invoice issued during VIES outage"
-msgstr ""
+msgstr "VIES 障害発生中に発行された請求書"
 
 msgid ""
 "VIES was temporarily unavailable; the invoice was issued using a recent "
 "successful VAT validation."
 msgstr ""
+"VIES が一時的に利用できなかったため、直近の成功した VAT 検証結果で有効と判定"
+"された情報に基づいて請求書が発行されました。"
 
 msgid "Notification"
 msgstr "通知"
@@ -172,29 +213,23 @@ msgstr "自動"
 msgid "VAT ID"
 msgstr "VAT ID"
 
-#, fuzzy
-#| msgid "Previous window"
 msgid "Previous validation"
-msgstr "前の集計期間"
+msgstr "前回の検証"
 
-#, fuzzy
-#| msgid "not validated"
 msgid "Stale validation used"
-msgstr "未検証"
+msgstr "古い検証結果が使用されました"
 
 msgid "Error code"
 msgstr "エラーコード"
 
 msgid "VIES was temporarily unavailable."
-msgstr ""
+msgstr "VIES は一時的に利用できませんでした。"
 
 msgid "Error message"
 msgstr "エラーメッセージ"
 
-#, fuzzy
-#| msgid "Issued"
 msgid "Issued by"
-msgstr "発行済み"
+msgstr "発行者"
 
 msgid "Amount"
 msgstr "金額"
@@ -486,8 +521,15 @@ msgstr "末尾"
 msgid "No records found."
 msgstr "該当する記録はありません。"
 
+msgid "Issue credit note?"
+msgstr "訂正ノートを発行しますか？"
+
 msgid "Issue final invoice?"
 msgstr "最終請求書を発行しますか？"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr "編集不可の訂正ノートを発行します。なお、金銭の移動は発生しません。"
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
@@ -496,6 +538,9 @@ msgstr ""
 
 msgid "Cancel"
 msgstr "キャンセル"
+
+msgid "Issue credit note"
+msgstr "訂正ノートを発行"
 
 msgid "Issue invoice"
 msgstr "請求書の発行"
@@ -524,6 +569,9 @@ msgstr "領収書"
 msgid "Edit in admin"
 msgstr "管理画面で編集"
 
+msgid "Credit note"
+msgstr "訂正ノート"
+
 msgid "Number"
 msgstr "番号"
 
@@ -532,6 +580,24 @@ msgstr "発行済み"
 
 msgid "Due"
 msgstr "期限"
+
+msgid "Credited amount"
+msgstr "クレジット適用額"
+
+msgid "Remaining amount"
+msgstr "残額"
+
+msgid "Correction of"
+msgstr "訂正対象"
+
+msgid "Reason"
+msgstr "理由"
+
+msgid "Cancelled duplicate"
+msgstr "重複分をキャンセル済み"
+
+msgid "Collection note"
+msgstr "回収メモ"
 
 msgid "Discount"
 msgstr "割引"
@@ -583,6 +649,48 @@ msgstr "この見積書はクローズ済みで、古い見積書の提案一覧
 msgid "Reopen quote"
 msgstr "見積書を再オープン"
 
+msgid "Invoice corrections"
+msgstr "請求書の訂正"
+
+msgid "Refund"
+msgstr "返金"
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+"全額または一部返金のために訂正ノートを発行します。金銭の移動は別途行い、その"
+"後、訂正ノート上で返金を確認します。"
+
+msgid "Duplicate invoice"
+msgstr "重複した請求書"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+"未払いの重複請求を、訂正ノートで全額キャンセルします。保持すべき正しい支払い"
+"済みの請求書を選択してください。"
+
+msgid "Cancel duplicate invoice"
+msgstr "重複請求書のキャンセル"
+
+msgid "Collection status"
+msgstr "回収状況"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+"請求書を回収不能としてマークしても、金額や VAT は変更されず、リマインダーのみ"
+"停止されます。"
+
+msgid "Resume collection"
+msgstr "回収を再開"
+
+msgid "Mark uncollectible"
+msgstr "回収不能としてマーク"
+
 msgid "Confirm refund done"
 msgstr "返金完了の確認"
 
@@ -609,6 +717,9 @@ msgstr "顧客情報区分"
 
 msgid "Overview"
 msgstr "概要"
+
+msgid "Owners"
+msgstr "担当者"
 
 msgid "Interactions"
 msgstr "応対"
@@ -673,19 +784,19 @@ msgstr "次のフォローアップ予定：%(date)s"
 
 #, python-format
 msgid "Baseline: %(average)s changes per month."
-msgstr ""
+msgstr "基準値：月あたり平均 %(average)s 件の変更。"
 
 #, python-format
 msgid "%(month)s: %(changes)s changes"
-msgstr ""
+msgstr "%(month)s：%(changes)s 件の変更"
 
 #, python-format
 msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
-msgstr ""
+msgstr "%(month)s：%(changes)s 件の変更（%(decrease)s%% 減少）"
 
 #, python-format
 msgid "Latest activity (%(month)s): %(changes)s changes"
-msgstr ""
+msgstr "最新の作業（%(month)s）：%(changes)s 件の変更"
 
 msgid "Clear follow-up"
 msgstr "フォローアップ設定を削除"
@@ -704,12 +815,6 @@ msgstr "顧客の統合"
 
 msgid "Review merge"
 msgstr "マージを確認する"
-
-msgid "Add owner to customer"
-msgstr "顧客に担当者を追加"
-
-msgid "Add owner"
-msgstr "担当者を追加"
 
 msgid "Add note"
 msgstr "メモの追加"
@@ -771,6 +876,36 @@ msgstr "編集"
 
 msgid "No donations recorded."
 msgstr "寄付は記録されていません。"
+
+msgid "Customer owners"
+msgstr "顧客オーナー"
+
+msgid "Username"
+msgstr "ユーザー名"
+
+msgid "No customer owners."
+msgstr "顧客オーナーはいません。"
+
+msgid "Pending owner invitations"
+msgstr "保留中のオーナー招待"
+
+msgid "Invited by"
+msgstr "招待者"
+
+msgid "Invited"
+msgstr "招待済み"
+
+msgid "Expires"
+msgstr "有効期限"
+
+msgid "No pending owner invitations."
+msgstr "保留中のオーナー招待はありません。"
+
+msgid "Add customer owner"
+msgstr "顧客オーナーの追加"
+
+msgid "Add owner"
+msgstr "担当者を追加"
 
 msgid "Invoice history"
 msgstr "請求書履歴"
@@ -842,7 +977,7 @@ msgid "Support status"
 msgstr "サポート状況"
 
 msgid "Over limits"
-msgstr ""
+msgstr "上限超過"
 
 msgid "Activation key"
 msgstr "有効化キー"
@@ -869,25 +1004,33 @@ msgstr "%(directory)s のサイズ：%(size)s"
 msgid "Discoverable"
 msgstr "検出可能（公開中）"
 
-#, fuzzy
-#| msgid "Services"
+msgid "Instance activity"
+msgstr "インスタンスのアクティビティ"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr "月次変更数（最新 24 か月分まで）。"
+
+#, python-format
+msgid "%(changes)s changes"
+msgstr "%(changes)s 件の変更"
+
 msgid "Service limits"
-msgstr "サービス"
+msgstr "サービス利用上限"
 
 msgid "Metric"
-msgstr ""
+msgstr "指標"
 
 msgid "Usage"
 msgstr "使用方法"
 
 msgid "Limit"
-msgstr ""
+msgstr "上限"
 
 msgid "Over limit"
-msgstr ""
+msgstr "上限超過"
 
 msgid "Within limit"
-msgstr ""
+msgstr "上限内"
 
 msgid "Update maintenance window"
 msgstr "メンテナンス期間の更新"
@@ -897,9 +1040,6 @@ msgstr "有効"
 
 msgid "Service is terminated"
 msgstr "サービスは終了しました"
-
-msgid "Expires"
-msgstr "有効期限"
 
 msgid "Edit subscription in admin"
 msgstr "管理画面でサブスクリプションを編集"
@@ -967,15 +1107,19 @@ msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
 msgstr ""
+"お客様の VAT ID の有効性が確認できなかったため、請求書は発行されませんでした"
+"。顧客情報を更新するか、後でもう一度お試しください。"
 
 msgid "an earlier successful check"
-msgstr ""
+msgstr "以前に成功した検証"
 
 #, python-format
 msgid ""
 "VIES is temporarily unavailable. The invoice was issued using the VAT "
 "validation from %(validated)s."
 msgstr ""
+"VIES が一時的に利用できません。請求書は %(validated)s の VAT 検証結果を用いて"
+"発行されました。"
 
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
@@ -1010,8 +1154,13 @@ msgid "Could not add customer owner: %(error)s"
 msgstr "顧客担当者を追加できませんでした：%(error)s"
 
 #, python-format
-msgid "Added %(email)s to customer owners."
-msgstr "%(email)s を顧客担当者に追加しました。"
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr "顧客オーナーに %(email)s を追加しましたが、通知を送信できませんでした。"
+
+#, python-format
+msgid "Added %(email)s to customer owners and notified them."
+msgstr "顧客オーナーに %(email)s を追加し、通知しました。"
 
 #, python-format
 msgid "%(email)s is already a customer owner."
@@ -1093,7 +1242,7 @@ msgstr ""
 "アは好きですか？あなたの貢献の可能性は無制限に広がります！"
 
 msgid "Invalid monthly activity data."
-msgstr ""
+msgstr "月次作業データが無効です。"
 
 msgid "Insufficient donation for selected reward!"
 msgstr "選択した報酬の寄付金としては不十分です！"
@@ -1103,6 +1252,48 @@ msgstr "サーバー URL が無効です。"
 
 msgid "Server URL must use HTTPS."
 msgstr "サーバー URL は必ず HTTPS を使用してください。"
+
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr "同一顧客の支払い済み請求書を選択し、残額全額を正しく修正してください。"
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+"この旧形式の請求書は、現在の請求書計算方式と丸め処理が異なるため、修正できま"
+"せん。"
+
+msgid "This request has already been used."
+msgstr "このリクエストはすでに使用されています。"
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr "請求書の残額の範囲内で、正の金額を選択してください。"
+
+msgid "A correction reason and explanation are required."
+msgstr "訂正理由と説明が必要です。"
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr "訂正日は、元の請求書の日付より前にすることはできません。"
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr "訂正を発行する前に、保留中の支払いを解決してください。"
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr "置換請求書を参照できるのは、重複による訂正のみです。"
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr "VAT を除く訂正額は 99,999.99 を超えることはできません。"
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr "正の最終請求書のみ、回収不能としてマークできます。"
+
+msgid "This invoice has already been settled."
+msgstr "この請求書はすでに精算済みです。"
+
+msgid "An internal explanation is required."
+msgstr "内部向け説明が必要です。"
 
 msgid "IBAN"
 msgstr "IBAN"
@@ -1146,13 +1337,28 @@ msgid "Internal note explaining why the quote was closed."
 msgstr "見積をクローズした理由を記録する内部メモ。"
 
 msgid "EU reverse-charge invoices require a valid buyer VAT ID."
-msgstr ""
+msgstr "EU の逆課税請求書には、有効な購入者の VAT 番号が必要です。"
 
 msgid "Converted"
 msgstr "変換済み"
 
+msgid "Credited"
+msgstr "クレジット処理済み"
+
+msgid "Refunded"
+msgstr "返金済み"
+
 msgid "Paid"
 msgstr "支払い済み"
+
+msgid "Uncollectible"
+msgstr "回収不能"
+
+msgid "Applied to invoice"
+msgstr "請求書に適用しました"
+
+msgid "Awaiting refund"
+msgstr "返金待ち"
 
 msgid "Unpaid"
 msgstr "未払い"
@@ -1161,7 +1367,7 @@ msgid "Overdue"
 msgstr "延滞"
 
 msgid "Czech invoices cannot use a zero VAT rate."
-msgstr ""
+msgstr "チェコの請求書では、VAT をゼロ税率で適用することはできません。"
 
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
@@ -1476,15 +1682,11 @@ msgstr "ロックされたサイト URL"
 msgid "Service over limits"
 msgstr "サービスが上限に達しました"
 
-#, fuzzy
-#| msgid "Expired service"
 msgid "Expired dedicated service"
-msgstr "有効期限切れのサービス"
+msgstr "有効期限切れの専用サービス"
 
-#, fuzzy
-#| msgid "Activate donation"
 msgid "Activity drop"
-msgstr "寄付の開始"
+msgstr "作業量低下"
 
 msgid "Date and time when this customer needs attention."
 msgstr "この顧客への対応が必要となる日時。"
@@ -1496,15 +1698,17 @@ msgid "Follow-up type"
 msgstr "フォローアップ種別"
 
 msgid "Contact the customer to understand the activity decrease."
-msgstr ""
+msgstr "作業量低下の理由を把握するため、顧客に連絡してください。"
 
 msgid "Review usage and upgrade the dedicated instance."
-msgstr ""
+msgstr "使用状況を確認し、専用インスタンスをアップグレードしてください。"
 
 msgid ""
 "Stop the dedicated instance because its support contract expired over two "
 "months ago."
 msgstr ""
+"サポート契約が 2 か月以上前に失効しているため、専用インスタンスを停止してくだ"
+"さい。"
 
 msgid "Annual"
 msgstr "年間"
@@ -1520,6 +1724,21 @@ msgstr "毎月"
 
 msgid "One-time"
 msgstr "１回限り"
+
+msgid "Pending"
+msgstr "保留中"
+
+msgid "Accepted"
+msgstr "承認済み"
+
+msgid "Revoked"
+msgstr "取り消し済み"
+
+msgid "Delivery failed"
+msgstr "配信に失敗しました"
+
+msgid "Fulfilled by staff"
+msgstr "スタッフ対応済み"
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -1545,11 +1764,13 @@ msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted. Validation service response: {}"
 msgstr ""
+"VAT ID を検証できなかったため、定期支払いは実行されませんでした。検証サービス"
+"の応答：{}"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted."
-msgstr ""
+msgstr "VAT ID を検証できなかったため、定期支払いは実行されませんでした。"
 
 msgid "Enter a valid e-mail address."
 msgstr "正確なメールアドレスを入力してください。"
@@ -2020,6 +2241,25 @@ msgstr "翻訳開始"
 msgid "Translation status"
 msgstr "翻訳状況"
 
+msgid "Customer owner invitation"
+msgstr "顧客オーナー招待"
+
+msgid "Review access"
+msgstr "アクセスを査読"
+
+msgid "Customer account"
+msgstr "顧客アカウント"
+
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr ""
+"承認すると、請求、サービス、シークレット、他のオーナー管理を含め、この顧客"
+"アカウントを全面的に操作できるようになります。"
+
+msgid "Accept invitation"
+msgstr "招待の承諾"
+
 msgid "Discover Weblate"
 msgstr "Weblate プロジェクトの探索"
 
@@ -2381,110 +2621,265 @@ msgstr ""
 "Python pip からインストールできる <a href=\"%(url)s\">wlc</a> を使用して、"
 "Weblate をリモートで制御できます。"
 
-msgid "Weblate features"
-msgstr "Weblate の機能"
+msgid "Weblate features — quality translations, your control"
+msgstr "Weblate の特長 — 高品質な翻訳、ユーザーによる完全なコントロール"
+
+msgid "Bring your project to more people"
+msgstr "あなたのプロジェクトをもっと多くの人へ"
 
 msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
 msgstr ""
-"機能豊富なコンピュータ支援翻訳ツールである Weblate は、開発者と翻訳者の双方の"
-"時間を節約します。ユーザーをより幸せに！"
+"人々が自分の言語で素晴らしい体験を得られるようにしましょう。Weblate は、あな"
+"たのチーム、コミュニティ、そして開発ワークフローを結びつけ、AI の有無にかかわ"
+"らず高品質な翻訳を届けます。"
 
 msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
+msgstr "オープンソースでプライバシーを尊重し、翻訳方法と運用場所を自由に選べます。"
+
+msgid "Compare hosting and support"
+msgstr "ホスティングとサポートの比較"
+
+msgid "Try Weblate"
+msgstr "Weblate の試用"
+
+msgid "Keep translations in step with development"
+msgstr "翻訳を開発のペースに合わせて更新し続けられます"
+
+msgid ""
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
 msgstr ""
-"詳細については <a href=\"https://docs.weblate.org/\">ドキュメント</a> を参照"
-"してください。"
-
-msgid "Easy to use interface"
-msgstr "使いやすいインターフェイス"
-
-msgid "Weblate screenshot"
-msgstr "Weblate のスクリーンショット"
-
-msgid "Customizable quality checks"
-msgstr "カスタマイズできる品質検査"
-
-msgid "Detailed context"
-msgstr "詳細なコンテキスト"
+"リポジトリを連携させると、プロジェクトの進行に合わせて新しい文字列が翻訳者へ"
+"届くようになります。Weblate は翻訳を再びバージョン管理に統合し、ファイルの受"
+"け渡しを行わなくても、開発者と翻訳者が協力して作業できるようにします。"
 
 msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
 msgstr ""
-"翻訳者には、翻訳ファイルまたは Weblate 内で拡張したデータから、詳細な翻訳情報"
-"を提供します。"
+"既存のブランチやコード ホスティング サービスとそのまま連携して作業できます。"
+"翻訳の変更はコードと並んで記録され、貢献した人々の功績が明記されます。"
 
-msgid "Fluent communication"
-msgstr "円滑なコミュニケーション"
+msgid "Explore continuous localization"
+msgstr "開発に合わせて翻訳を最新に保つシステム"
 
-msgid "All translations are tracked and can be commented."
-msgstr "すべての翻訳を記録してコメントできます。"
-
-msgid "Access Control"
-msgstr "アクセス制御"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "お客様の環境に合わせてアクセス権を細かく設定できます。"
-
-msgid "Smart Notifications"
-msgstr "スマート通知"
+msgid "Give every translation the context it needs"
+msgstr "すべての翻訳に、必要なコンテキストを与えます"
 
 msgid ""
-"Translators can be notified of new strings to translate or other events."
-msgstr "翻訳者には、「原文の追加」やその他のイベントを通知できます。"
-
-msgid "Integration API"
-msgstr "連携 API"
-
-msgid "Integrate Weblate with third-party services."
-msgstr "Weblate をサードパーティのサービスと連携できます。"
-
-msgid "Multiple File Formats"
-msgstr "複数のファイル形式"
-
-msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
 msgstr ""
-"gettext、JSON、XLIFF やリソース文字列などの、一般的な現地語化に用いるファイル"
-"形式を使用してください。"
-
-msgid "Branch Support"
-msgstr "ブランチに対応"
-
-msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
-msgstr ""
-"別々のブランチに自動的にプッシュして、違うバージョンの翻訳を処理できます。"
-
-msgid "Translation Context"
-msgstr "翻訳情報"
+"翻訳者が、あなたのユーザーに何が表示されるのかを理解できるよう支援します。"
+"スクリーンショット、近接する文字列、ソース参照によって意味がより明確になりま"
+"す。共有用語集は用語の一貫性を保ち、翻訳メモリは過去の成果を再利用することで"
+"チームの作業効率を高めます。"
 
 msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
 msgstr ""
-"各文字列ごとに、説明、前後の文字列、画像、関連するソースコード、用語集の項目"
-"が含まれます。"
+"カスタマイズ可能な品質検査機能を使って問題点を洗い出し、曖昧な表現について話"
+"し合い、翻訳を「完成」とみなす前に査読を行ってください。チームで原文だけでな"
+"く、その翻訳も改善できます。"
+
+msgid ""
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
+msgstr ""
+"Weblate 翻訳エディター（フランス語訳、プレースホルダー欠落の警告、用語集の用"
+"語、コンテキスト付きソーステキストのスクリーンショットを表示）"
+
+msgid "Give your translators the tools to make informed choices."
+msgstr "翻訳者が十分な情報に基づいて訳を選べるよう、必要なツールを提供します。"
+
+msgid "Explore translation quality checks"
+msgstr "翻訳の品質検査について詳しく見る"
+
+msgid "Choose how you translate—with or without AI"
+msgstr "AI を使うかどうか、翻訳方法を自由に選択できます"
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+"翻訳をすべて人の手で行うことも、必要に応じて機械翻訳や AI を取り入れることも"
+"できます。チームは使用するツール、査読の流れ、そしてリポジトリへ反映する内容"
+"を自由に選択できます。"
+
+msgid "Translate without AI"
+msgstr "AI を使わずに翻訳できます"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+"翻訳者が文脈、用語集、翻訳メモリ、品質検査を使って翻訳を書き、査読できるよう"
+"にします。これらの機能はいずれも AI や機械翻訳サービスを必要としません。"
+
+msgid "Assist your translators"
+msgstr "翻訳者を支援します"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+"エディター内で、必要に応じて機械翻訳や大規模言語モデル（LLM）の結果を提供でき"
+"ます。翻訳者は使うかどうかを選び、内容を編集し、保存するかどうかを自分で決め"
+"られます。"
+
+msgid "Start with machine translations"
+msgstr "まずは機械翻訳から始めてみましょう"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+"機械翻訳を生成して翻訳者が改善できるようにしたり、未完成の下書きとして扱うこ"
+"ともできます。編集中の下書きをリポジトリへ反映させるかどうかも、チームが自由"
+"に選択できます。"
+
+msgid "Accept suggestions before use"
+msgstr "使用前に提案を承認できます"
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+"生成したテキストは、ユーザーが検討できる「提案」として保持できます。自動承認"
+"を無効にしている場合、提案はユーザーが採用または編集して初めて翻訳として確定"
+"します。"
+
+msgid "Approve before committing"
+msgstr "コミット前に承認できます"
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+"翻訳の査読を承認必須のコミット方針と組み合わせることで、より厳密な"
+"ワークフローを構築できます。生成された翻訳は Weblate 上でユーザーが編集でき、"
+"査読担当者が承認したものだけがリポジトリへ反映されます。"
+
+msgid "Explore AI translation workflows"
+msgstr "AI を利用した翻訳ワークフローを確認する"
+
+msgid "Choose how your content is handled"
+msgstr "コンテンツの取り扱い方法を選択できます"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+"マネージドホスティングを利用するか、独自のインフラ上でWeblateを運用してくださ"
+"い。アクセス権を設定して、コンテンツの閲覧、翻訳、査読ができるユーザーを指定"
+"します。"
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+"利用する外部翻訳サービスを選択することも、まったく使わずに運用することもでき"
+"ます。外部サービスを利用する場合、結果を生成するために原文、翻訳内容、関連す"
+"る文脈が送信されることがあります。その扱い方の要件に合ったサービスを選択して"
+"ください。"
+
+msgid "Find the right hosting option"
+msgstr "最適なホスティングを選択してください"
+
+msgid "Bring your team and community together"
+msgstr "チームとコミュニティをひとつに"
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+"同僚、プロの翻訳者、コミュニティの貢献者が、共通の作業場所で協力できる環境を"
+"提供します。ロールを割り当て、必要な箇所では表現について議論し、各メンバーの"
+"貢献を正当に評価できます。"
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+"通知で貢献者に進捗を知らせ、進行状況や活動レポートから作業が必要な箇所を把握"
+"できます。製品チームを調整する場合でも、ボランティアを迎える場合でも、誰もが"
+"結果の向上に貢献できます。"
+
+msgid "The everyday tools your localization needs"
+msgstr "現地語化に必要な日常的なツール"
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+"翻訳のインポートやエクスポート、API を介した他ツールとの連携、アドオンによる"
+"定期作業の自動化が行えます。言語の管理や翻訳ファイルの整理も柔軟に行え、"
+"プロジェクトの成長に合わせてワークフローを途切れさせずに進められます。"
+
+msgid "Explore the documentation"
+msgstr "ドキュメントを確認する"
+
+msgid "Keep working with your existing formats"
+msgstr "従来のフォーマットを引き続きご利用できます"
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+"プロジェクトで使用しているフォーマットを変更することなく、アプリ、"
+"ウェブサイト、ドキュメントなどを現地語化できます。対応している形式の詳細や形"
+"式固有の機能については、以下の一覧をご確認ください。"
+
+msgid ".NET resource files (RESX, RESW)"
+msgstr ".NET リソース ファイル (RESX、RESW)"
 
 msgid "Android string resources"
 msgstr "Android 文字列リソース"
 
-msgid "Apple iOS strings"
-msgstr "Apple iOS 文字列"
-
 msgid "App store metadata files"
 msgstr "アプリ ストアのメタデータ ファイル"
+
+msgid "Apple iOS strings"
+msgstr "Apple iOS 文字列"
 
 msgid "ARB file"
 msgstr "ARB ファイル"
 
+msgid "AsciiDoc files"
+msgstr "AsciiDoc ファイル"
+
+msgid "Compose Multiplatform resources"
+msgstr "Compose Multiplatform のリソース"
+
 msgid "CSV files"
 msgstr "CSV ファイル"
+
+msgid "DokuWiki text files"
+msgstr "DokuWiki テキストファイル"
 
 msgid "DTD files"
 msgstr "DTD ファイル"
@@ -2498,6 +2893,9 @@ msgstr "フラット化した XML ファイル"
 msgid "Fluent format"
 msgstr "Fluent 形式"
 
+msgid "Format.JS / React Intl"
+msgstr "Format.JS / React Intl"
+
 msgid "GNU gettext"
 msgstr "GNU gettext"
 
@@ -2509,6 +2907,9 @@ msgstr "gotext JSON ファイル"
 
 msgid "GWT properties"
 msgstr "GWT プロパティ"
+
+msgid "Haiku Catkeys"
+msgstr "Haiku Catkeys"
 
 msgid "HTML files"
 msgstr "HTML ファイル"
@@ -2528,17 +2929,14 @@ msgstr "Inno Setup INI の翻訳"
 msgid "Java properties"
 msgstr "Java プロパティ"
 
+msgid "JavaScript resource files"
+msgstr "JavaScript リソースファイル"
+
 msgid "Joomla translations"
 msgstr "Joomla の翻訳"
 
 msgid "JSON files"
 msgstr "JSON ファイル"
-
-msgid "React Intl"
-msgstr "React Intl"
-
-msgid "Vue I18n"
-msgstr "Vue I18n"
 
 msgid "Laravel PHP strings"
 msgstr "Laravel PHP 文字列"
@@ -2546,11 +2944,20 @@ msgstr "Laravel PHP 文字列"
 msgid "Markdown files"
 msgstr "Markdown ファイル"
 
-msgid "mi18n lang files"
-msgstr "mi18n 言語ファイル"
+msgid "MDX files"
+msgstr "MDX ファイル"
+
+msgid "MediaWiki text files"
+msgstr "MediaWiki テキスト ファイル"
+
+msgid "@draggable/i18n lang files"
+msgstr "@draggable / i18n 言語ファイル"
 
 msgid "Mobile Kotlin resources"
 msgstr "モバイル Kotlin リソース"
+
+msgid "Nextcloud JSON"
+msgstr "Nextcloud JSON"
 
 msgid "OpenDocument Format"
 msgstr "OpenDocument 形式"
@@ -2563,9 +2970,6 @@ msgstr "Qt Linguist .ts"
 
 msgid "ResourceDictionary files"
 msgstr "ResourceDictionary ファイル"
-
-msgid ".NET resource files (RESX, RESW)"
-msgstr ".NET リソース ファイル (RESX、RESW)"
 
 msgid "Ruby YAML files"
 msgstr "Ruby YAML ファイル"
@@ -2582,172 +2986,90 @@ msgstr "TermBase eXchange 形式"
 msgid "Text files"
 msgstr "テキスト ファイル"
 
+msgid "TOML and go-i18n TOML"
+msgstr "TOML および go-i18n TOML"
+
+msgid "Vue I18n"
+msgstr "Vue I18n"
+
 msgid "WebExtension JSON"
 msgstr "WebExtension JSON"
 
 msgid "Windows RC files"
 msgstr "Windows RC ファイル"
 
-msgid "XLIFF"
-msgstr "XLIFF"
+msgid "WiX localization files"
+msgstr "WiX 現地語化ファイル"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr "XLIFF 1.1 および 1.2"
+
+msgid "XLIFF 2.0"
+msgstr "XLIFF 2.0"
+
+msgid "XWiki formats"
+msgstr "XWiki 形式"
 
 msgid "YAML files"
 msgstr "YAML ファイル"
 
-msgid "Glossaries"
-msgstr "用語集"
-
-msgid "Define frequently used terminology for consistency."
-msgstr "一貫性を保つために、頻繁に使用する用語を登録できます。"
-
-msgid "Feedback Acquisition"
-msgstr "フィードバックの取得"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
-msgstr "Weblate を使用して、原文の改善点を取得しブラッシュアップできます。"
-
-msgid "Export and Import"
-msgstr "エクスポートとインポート"
-
-msgid "Translations can be downloaded for offline translation and merged back."
-msgstr "訳文をダウンロードしてオフラインで翻訳し、マージできます。"
-
-msgid "Fully Integrated"
-msgstr "完全に連携"
-
+#, python-format
 msgid ""
-"Translations are managed within the same version control system as your code."
-msgstr "翻訳は、コードと同じバージョン管理システム内で管理します。"
-
-msgid "Documentation"
-msgstr "ドキュメント"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr "セットアップと使用方法の両方を含む総合的なドキュメント。"
-
-msgid "Easy Reviews"
-msgstr "簡単に査読"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr "翻訳者が、仲間からの投稿を査読するための選択肢が複数あります。"
-
-msgid "Language support"
-msgstr "対応言語"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr "500 以上の言語に対応してます。その他の言語も追加できます。"
-
-msgid "Promotion"
-msgstr "宣伝"
-
-msgid ""
-"Built-in features to attract a wider audience for your translation project."
-msgstr "翻訳プロジェクトの参加者を広げるための機能を標準搭載しています。"
-
-msgid "Reporting"
-msgstr "レポート"
-
-msgid "Reports are generated to provide info on project activity."
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
 msgstr ""
-"レポートは、プロジェクト活動に関する情報を提供するために自動生成されます。"
+"対応している派生形式や制限については、<a href=\"%(url)s\">形式ドキュメント</"
+"a>をご確認ください。"
 
-msgid "Version Control"
-msgstr "バージョン管理"
+msgid "Open source, backed by sustainable services"
+msgstr "オープンソース、持続可能なサービスによる支援"
 
 msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
 msgstr ""
-"バージョン管理システムと直接連携します。現在は、Git と Mercurial に対応してい"
-"ます。"
-
-msgid "Collaboration Sites"
-msgstr "コラボレーション サイト"
+"Weblate はコピーレフトの Libre ソフトウェアです。利用、検証、改変、および共有"
+"を自由に行うことができます。これらの自由は、ボランティア コミュニティから世界"
+"的な組織に至るまで、すべての人に保障されています。"
 
 msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
 msgstr ""
-"GitLab、GitHub、Pagure、Azure、Gitea、Bitbucket などのソフトウェア開発サイト"
-"に対応。"
-
-msgid "Responsive UI"
-msgstr "操作性の高い UI"
+"マネージドホスティングをお選びいただければ、当社のチームが Weblate を運用いた"
+"します。また、ご自身でインストールされた場合は、専門家によるサポートをご購入"
+"いただけます。問題が発生した際は、Weblate を支えるチームの実在する担当者に直"
+"接ご相談いただき、解決に向けた支援を受けられます。ホスティングやサポートのご"
+"購入は、Weblate の継続的な開発を支える資金にもなります。"
 
 msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
 msgstr ""
-"デスクトップ、タブレット、スマートフォンで、ライトモードでもダークモードでも"
-"きれいに動作するユーザーインターフェイス。"
+"また、サブスクリプションなしで Weblate を独自にホストすることも可能です。条件"
+"を満たす Libre プロジェクトは、無料ホスティングを申請してください。"
 
-msgid "Translation memory"
-msgstr "翻訳メモリ"
+msgid "Explore self-hosting"
+msgstr "独自のホストの詳細"
 
-msgid "Reuse existing translations to save time and costs."
-msgstr "時間とコストを節約するために既存の翻訳を再利用します。"
-
-msgid "Translation add-ons"
-msgstr "翻訳アドオン"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "複数のアドオンで現地語化の作業をカスタマイズします。"
-
-msgid "Backups"
-msgstr "バックアップ"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr "データの損失を防ぐためのリモート バックアップを標準搭載。"
-
-msgid "Screenshots"
-msgstr "スクリーンショット"
-
-msgid "Provide visual context for the translations."
-msgstr "翻訳に画像情報を提供します。"
-
-msgid "Variants"
-msgstr "別表記"
-
-msgid "Group variants of strings for easier translating."
-msgstr "翻訳しやすくするために、文字列の別表記をグループ化します。"
-
-msgid "Intermediate language"
-msgstr "中間言語"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "翻訳する前に、開発者が提供した原文を校正します。"
-
-msgid "Automatic translation"
-msgstr "自動翻訳"
-
-msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr "機械翻訳サービスや AI を使って翻訳、提案ができます。"
-
-msgid "Organize translations"
-msgstr "翻訳の整理"
-
-msgid "Categorize the translation files to ease navigation."
-msgstr "翻訳ファイルを整理して、目的の項目を見つけやすくします。"
-
-msgid "Keyboard operation"
-msgstr "キーボード操作"
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr "翻訳中にショートカット キーを使用して効率的に操作できます。"
+msgid "Hosting for libre projects"
+msgstr "Libre （自由）ソフトウェア向けホスティングの詳細"
 
 msgid "Weblate Pricing"
 msgstr "Weblate の価格"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"Weblate をサービスとして利用する、自分でセットアップする、またはオンプレミス"
-"ホスティングの<a href=\"%(url)s\">ヘルプを得る</a>など、すべてプレミアムサ"
-"ポートの利便性とともに利用することが可能です。"
+"Weblate の運用は当社チームに任せることも、ご自身の環境向けに <a href=\"%(url)"
+"s\">専門サポート</a> を選ぶこともできます。これらの購入は、組織やコミュニティ"
+"が依存するオープンソース基盤を持続させるための支えにもなります。"
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr "私たちのチームは、安定して Weblate を運用する支援ができます。"
@@ -2908,29 +3230,29 @@ msgstr ""
 msgid "Join existing users and supporters"
 msgstr "現在の利用者と支援者に参加する"
 
-msgid "Weblate - web-based localization"
-msgstr ""
-"Weblate - Web を基盤として動作する、開発に合わせて翻訳を最新に保つ翻訳システ"
-"ム"
+msgid "Weblate — quality translations, your control"
+msgstr "Weblate — 高品質な翻訳、あなた自身で管理"
 
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr ""
-"Web ベースの <strong>開発に合わせて翻訳を最新に保つ</strong> 翻訳システム"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr "高品質な翻訳。あなたのワークフロー。 <strong>お客様自身で管理。</strong>"
 
-#, python-format
 msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
 msgstr ""
-"%(projects)s 件以上の Libre ソフトウェア（自由ソフトウェア）のプロジェクト"
-"や、%(countries)s か国以上の企業で使用されている、コピーレフトの Libre ソフト"
-"ウェア（自由ソフトウェア）です。"
+"Weblate は、プライバシーを尊重するオープンソースの現地語化プラットフォームと"
+"して、あなたのソフトウェアをより多くの人々へ届ける力になります。リポジトリを"
+"接続するだけで、高品質な翻訳を提供できます。AI を統合しても、しなくても使用で"
+"きます。"
 
-msgid "Try Weblate"
-msgstr "Weblate の試用"
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr "組織にもコミュニティにも。自由に使用、検証、改変、共有できます。"
 
-msgid "Explore all features"
-msgstr "すべての機能"
+msgid "Explore Weblate"
+msgstr "Weblate の詳細"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -2940,13 +3262,14 @@ msgid "Weblate localizes the world"
 msgstr "Weblate は、世界中を翻訳します"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"堅牢なバージョン管理を備えた、ホスティング サービスとスタンドアローンのツー"
-"ル。シンプルで分かりやすいユーザー インターフェイス、コンポーネント間の翻訳の"
-"連携、品質検査、ソースファイルへの自動リンクが特徴です。"
+"コミュニティのプロジェクトから商用プロダクトまで、Weblate は言語の壁を越えて"
+"人々が協力できるよう支援します。翻訳者を開発ワークフローに密接に組み込み、"
+"ユーザーが信頼できる翻訳を作成するためのコンテキストを提供できます。"
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -2964,11 +3287,8 @@ msgstr[0] "%(count)s 件の翻訳"
 msgid "in the last 7 days"
 msgstr "過去 7 日間"
 
-msgid "Robust feature set"
-msgstr "健全な機能セット"
-
-msgid "Go to pricing"
-msgstr "価格へ"
+msgid "Make localization work for your team"
+msgstr "現地語化を、チームの強みに"
 
 msgid "Users and Supporters"
 msgstr "利用者と支援者"
@@ -2984,6 +3304,57 @@ msgstr "支払いの管理"
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "%(timestamp)s に生成。"
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+"Weblate のスタッフが、あなたを顧客アカウント <strong>%(customer_name)s</"
+"strong> のオーナーとして追加しました。"
+
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+"その顧客アカウントの請求、サービス、シークレット、他のオーナー管理を、あなた"
+"が全面的に操作できるようになりました。特に行うべき操作はありません。"
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr "この変更に心当たりがない場合は、Weblate サポートまでご連絡ください。"
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr "%(customer_name)s のオーナーとして追加されました"
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+"Weblate の顧客アカウント <strong>%(customer_name)s</strong> を管理するための"
+"招待が届いています。"
+
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr ""
+"承認すると、請求、サービス、シークレット、他のオーナー管理を含め、この顧客"
+"アカウントを全面的に操作できるようになります。"
+
+msgid "Review invitation"
+msgstr "招待を確認"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+"この招待の有効期限は 7 日間です。心当たりがない場合は、このメッセージを無視し"
+"てください。"
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr "%(customer_name)s のオーナー招待"
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3086,6 +3457,11 @@ msgstr "weblate.org への未払い"
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "weblate.org のサブスクリプションが間もなく更新されます。"
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr "発行済みの更新請求書の支払いが完了するまで、自動支払いは一時停止されます。"
+
 msgid "The payment will be automatically charged soon."
 msgstr "間もなく、支払いが自動的に決済されます。"
 
@@ -3128,6 +3504,20 @@ msgstr "保存済みのカード: %(card_number)s"
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr "サブスクリプションの有効期限: %(expiry)s"
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+"この更新については、すでに請求書が発行されています。ご契約を更新するには、そ"
+"の請求書をお支払いください。"
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr "請求書 %(number)s：%(amount)s　支払期限：%(due_date)s。"
+
+msgid "Pay invoice"
+msgstr "請求書を支払う"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3207,6 +3597,8 @@ msgid ""
 "The requested donation of %(requested)s was adjusted down to %(charged)s so "
 "that VAT can be calculated correctly."
 msgstr ""
+"要求された寄付額 %(requested)s は、VAT を正しく計算できるように、%(charged)s "
+"に調整されました。"
 
 msgid "Payment description"
 msgstr "支払いの説明"
@@ -3289,12 +3681,15 @@ msgstr "英語版の表示"
 msgid "Download as PDF"
 msgstr "PDFとしてダウンロード"
 
+msgid "Find your way to get started"
+msgstr "開始方法を確認する"
+
 msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
 msgstr ""
-"プロフェッショナル チームの豊富なスキルと経験を活用して、お客様のニーズを的確"
-"に捉えた適切なアドバイスを提供します。"
+"Weblate チームによるホスティングまたは支援を選ぶか、決める前に翻訳"
+"ワークフローを試すこともできます。"
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>寄付</strong> — 世界をより良くするために"
@@ -3334,9 +3729,6 @@ msgstr ""
 "当社は、誰もが成長できる機会がある、小さな Libre ソフトウェア（自由ソフトウェ"
 "ア）の開発会社です。"
 
-msgid "Owners"
-msgstr "担当者"
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3356,46 +3748,72 @@ msgstr "担当者の削除"
 msgid "Remove"
 msgstr "削除"
 
-msgid "Continuous Localization"
-msgstr "開発に合わせて翻訳を最新に保つシステム"
+msgid "Pending invitation"
+msgstr "保留中の招待"
+
+msgid "Revoke invitation"
+msgstr "招待を取り消す"
+
+msgid "Invite owner"
+msgstr "オーナーを招待"
+
+msgid "Keep pace with development"
+msgstr "開発の進行に合わせて翻訳を維持"
 
 msgid ""
-"Automated localization workflow follows your project development closely."
-msgstr "翻訳作業工程の自動化により、プロジェクトの開発側と密接に連携します。"
-
-msgid "Quality Checks"
-msgstr "翻訳の品質検査"
-
-msgid "Customizable quality checks helps improve translation quality."
-msgstr "品質検査をカスタマイズして、翻訳品質を効率的に改善できます。"
-
-msgid "Attribution"
-msgstr "翻訳者情報"
-
-msgid "All translators are properly credited in the version control system."
-msgstr "すべての翻訳者は、バージョン管理システムで適切にクレジットされます。"
-
-msgid "Hosting Plans"
-msgstr "ホスティング プラン"
-
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "Weblate は、19 ユーロから開始できます。"
-
-msgid "Cloud Ready"
-msgstr "クラウド対応"
-
-msgid "Comes with appliances, ready to deploy in your cloud."
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
 msgstr ""
-"アプライアンス（専用パッケージ）が付属しているので、すぐに使用中のクラウドに"
-"導入できます。"
+"新しい文字列を翻訳者へ届け、翻訳結果をリポジトリへ戻します。現地語化をコード"
+"とともに進化させ続けましょう。"
 
-msgid "Libre Software"
+msgid "Help people get the meaning right"
+msgstr "意味を正しく伝えられるよう支援する"
+
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
 msgstr ""
-"Libre ソフトウェア\n"
-"（自由ソフトウェア）"
+"翻訳者に文脈、共有用語、品質検査を提供し、ユーザーへより明確で一貫した体験を"
+"届けましょう。"
 
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
-msgstr "コピーレフト：誰でも自由に利用、参照、変更、共有できます。"
+msgid "Translate with or without AI"
+msgstr "AIを使用するかしないかを選択して翻訳する"
+
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
+"人だけで作業することも、必要な場面で AI や機械翻訳を取り入れることもできます"
+"。どの段階で人が編集し、承認し、最終決定するかを選択できます。"
+
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
+"Weblate をどこで運用するか、誰がアクセスできるか、そして必要に応じてどの外部"
+"翻訳サービスを利用するかを決められます。"
+
+msgid "Bring everyone into the conversation"
+msgstr "全員を会話に参加させる"
+
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
+"同僚やコミュニティの貢献者たちが、翻訳を行い、表現について議論し、互いの成果"
+"物を査読できる共有の場を提供します。"
+
+msgid "Build on software you can trust"
+msgstr "信頼できるソフトウェアを基盤に構築する"
+
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
+"コピーレフト付きのLibreソフトウェアを利用、確認、修正、共有してください。その"
+"開発を継続的に支えるために、ホスティングサービスやサポートを購入してください"
+"。"
 
 msgid "Help translate"
 msgstr "翻訳支援"
@@ -3436,14 +3854,24 @@ msgstr "領収書のダウンロード"
 msgid "Pay now"
 msgstr "今すぐ支払う"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
-msgstr "<strong>無料</strong> または <strong>プレミアム</strong> — 自由に選択"
+msgid "Choose the hosting and support that fit your team"
+msgstr "チームに合ったホスティングとサポートをお選びください"
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
+"Weblate の運用を当社に任せることも、ご自身の環境向けに専門サポートを受けるこ"
+"ともできます。問題が発生した際には、Weblate チームの担当者が直接対応します。"
+"ホスティングやサポートの購入は、Weblate の継続的な開発を支える資金にもなりま"
+"す。"
 
 msgid "Premium Cloud"
 msgstr "プレミアム クラウド"
 
-msgid "for ease and comfort"
-msgstr "安心・快適"
+msgid "managed hosting for your team"
+msgstr "チーム向けマネージド ホスティング"
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3472,8 +3900,8 @@ msgid "for complete control"
 msgstr "全機能自己管理"
 
 #, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
-msgstr "有料の <a href=\"%(url)s\">サポート依頼</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
+msgstr "有償の <a href=\"%(url)s\">サポート</a> を追加可能"
 
 msgid "Gratis Weblate"
 msgstr "無料の Weblate"
@@ -3484,9 +3912,6 @@ msgstr "Libre （自由）プロジェクト用"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "<a href=\"%(url)s\">申請</a> する"
-
-msgid "Compare all plans"
-msgstr "すべてのプランの比較"
 
 msgid "Expired"
 msgstr "期限切れ"
@@ -3505,6 +3930,9 @@ msgstr "トークンの更新"
 
 msgid "Backup repository"
 msgstr "バックアップ リポジトリ"
+
+msgid "Documentation"
+msgstr "ドキュメント"
 
 #, python-format
 msgid ""
@@ -3638,6 +4066,8 @@ msgid ""
 "and has not been verified. Continue only if you initiated registration from "
 "this server."
 msgstr ""
+"登録要求で送信されたサーバーアドレス %(server_url)s は未検証です。この"
+"サーバーから登録を開始した場合にのみ続行してください。"
 
 msgid "Register"
 msgstr "登録"
@@ -3648,15 +4078,21 @@ msgstr "「Weblate プロジェクトの探索」のリストの変更"
 msgid "Weblate support"
 msgstr "Weblate の対応"
 
+msgid "Expert help for your localization"
+msgstr "現地語化向け専門家サポート"
+
 msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
 msgstr ""
-"Weblate はコミュニティによる支援がある、コピーレフトな Libre ソフトウェア（自"
-"由ソフトウェア）です。プレミアム クラウドの加入者は、追加料金なしで優先的なサ"
-"ポートを受けられます。案件ごとのサポート パッケージは、どなたでも申し込めま"
-"す。"
+"問題が発生したときは、Weblate チームの担当者（人間）に相談できます。私たちは"
+"原因の理解を助け、現地語化を再び前に進められるよう支援します。自前"
+"インストール向けのサポート、または特定の作業に対するプリペイド支援を選択でき"
+"ます。購入は Weblate の継続的な開発を支える一方で、コミュニティによる支援も引"
+"き続き利用できます。"
 
 msgid "Report issue"
 msgstr "問題の報告"
@@ -3683,8 +4119,8 @@ msgstr ""
 "脆弱性を発見した場合は、%(report)s まで報告してください。詳細については、<a "
 "href=\"%(url)s\">ドキュメント</a> をご覧ください。"
 
-msgid "Reliable support"
-msgstr "信頼性の高いサポート"
+msgid "Living humans, ready to help"
+msgstr "支援するのは、生身の人間です"
 
 #, python-format
 msgid ""
@@ -3983,21 +4419,400 @@ msgstr ""
 "下に表示されるアクティベーション トークンを使用して、Weblate の管理ページから"
 "この一覧を有効化してください。"
 
-msgid "User not found!"
-msgstr "利用者が見つかりません！"
-
 msgid "You can not remove yourself."
 msgstr "自分自身のアカウントは削除できません。"
 
-msgid "Removed customer owner"
-msgstr "顧客担当者を削除しました"
+msgid "Too many owner invitations. Please try again later."
+msgstr "オーナー招待が多すぎます。しばらくしてからもう一度お試しください。"
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr "メールアドレスが有効であれば、顧客オーナー招待は送信済みです。"
+
+msgid "This customer owner invitation is invalid."
+msgstr "この顧客オーナー招待は無効です。"
+
+msgid "This invitation is not available for your account."
+msgstr "この招待は、お客様のアカウントでは利用できません。"
+
+msgid "Customer owner invitation accepted."
+msgstr "顧客オーナー招待が承認されました。"
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr "更新のお支払いは確認済みで、現在処理待ちの状態です。"
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
-msgstr "%(email)s を顧客担当者から削除しました。"
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr "年払いへ切り替える前に、未払いの請求書 %(invoice)s をお支払いください。"
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
+msgstr "更新するには、未払いの請求書 %(invoice)s をお支払いください。"
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "アップグレードを、アカウントページで確認してください。"
+
+#~ msgid "Add owner to customer"
+#~ msgstr "顧客に担当者を追加"
+
+#~ msgid "Weblate features"
+#~ msgstr "Weblate の機能"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "機能豊富なコンピュータ支援翻訳ツールである Weblate は、開発者と翻訳者の双"
+#~ "方の時間を節約します。ユーザーをより幸せに！"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr ""
+#~ "詳細については <a href=\"https://docs.weblate.org/\">ドキュメント</a> を参"
+#~ "照してください。"
+
+#~ msgid "Easy to use interface"
+#~ msgstr "使いやすいインターフェイス"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "Weblate のスクリーンショット"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "カスタマイズできる品質検査"
+
+#~ msgid "Detailed context"
+#~ msgstr "詳細なコンテキスト"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "翻訳者には、翻訳ファイルまたは Weblate 内で拡張したデータから、詳細な翻訳"
+#~ "情報を提供します。"
+
+#~ msgid "Fluent communication"
+#~ msgstr "円滑なコミュニケーション"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr "すべての翻訳を記録してコメントできます。"
+
+#~ msgid "Access Control"
+#~ msgstr "アクセス制御"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "お客様の環境に合わせてアクセス権を細かく設定できます。"
+
+#~ msgid "Smart Notifications"
+#~ msgstr "スマート通知"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr "翻訳者には、「原文の追加」やその他のイベントを通知できます。"
+
+#~ msgid "Integration API"
+#~ msgstr "連携 API"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "Weblate をサードパーティのサービスと連携できます。"
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "複数のファイル形式"
+
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "gettext、JSON、XLIFF やリソース文字列などの、一般的な現地語化に用いるファ"
+#~ "イル形式を使用してください。"
+
+#~ msgid "Branch Support"
+#~ msgstr "ブランチに対応"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr ""
+#~ "別々のブランチに自動的にプッシュして、違うバージョンの翻訳を処理できます。"
+
+#~ msgid "Translation Context"
+#~ msgstr "翻訳情報"
+
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr ""
+#~ "各文字列ごとに、説明、前後の文字列、画像、関連するソースコード、用語集の項"
+#~ "目が含まれます。"
+
+#~ msgid "Glossaries"
+#~ msgstr "用語集"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr "一貫性を保つために、頻繁に使用する用語を登録できます。"
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "フィードバックの取得"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr "Weblate を使用して、原文の改善点を取得しブラッシュアップできます。"
+
+#~ msgid "Export and Import"
+#~ msgstr "エクスポートとインポート"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr "訳文をダウンロードしてオフラインで翻訳し、マージできます。"
+
+#~ msgid "Fully Integrated"
+#~ msgstr "完全に連携"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr "翻訳は、コードと同じバージョン管理システム内で管理します。"
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr "セットアップと使用方法の両方を含む総合的なドキュメント。"
+
+#~ msgid "Easy Reviews"
+#~ msgstr "簡単に査読"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr "翻訳者が、仲間からの投稿を査読するための選択肢が複数あります。"
+
+#~ msgid "Language support"
+#~ msgstr "対応言語"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr "500 以上の言語に対応してます。その他の言語も追加できます。"
+
+#~ msgid "Promotion"
+#~ msgstr "宣伝"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr "翻訳プロジェクトの参加者を広げるための機能を標準搭載しています。"
+
+#~ msgid "Reporting"
+#~ msgstr "レポート"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr ""
+#~ "レポートは、プロジェクト活動に関する情報を提供するために自動生成されます。"
+
+#~ msgid "Version Control"
+#~ msgstr "バージョン管理"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr ""
+#~ "バージョン管理システムと直接連携します。現在は、Git と Mercurial に対応し"
+#~ "ています。"
+
+#~ msgid ""
+#~ "Native support for software development sites such as GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, or Bitbucket."
+#~ msgstr ""
+#~ "GitLab、GitHub、Pagure、Azure、Gitea、Bitbucket などのソフトウェア開発サイ"
+#~ "トに対応。"
+
+#~ msgid "Responsive UI"
+#~ msgstr "操作性の高い UI"
+
+#~ msgid ""
+#~ "User interface that works nicely on desktop, tablets and phones in both "
+#~ "light and dark mode."
+#~ msgstr ""
+#~ "デスクトップ、タブレット、スマートフォンで、ライトモードでもダークモードで"
+#~ "もきれいに動作するユーザーインターフェイス。"
+
+#~ msgid "Translation memory"
+#~ msgstr "翻訳メモリ"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr "時間とコストを節約するために既存の翻訳を再利用します。"
+
+#~ msgid "Translation add-ons"
+#~ msgstr "翻訳アドオン"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "複数のアドオンで現地語化の作業をカスタマイズします。"
+
+#~ msgid "Backups"
+#~ msgstr "バックアップ"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr "データの損失を防ぐためのリモート バックアップを標準搭載。"
+
+#~ msgid "Screenshots"
+#~ msgstr "スクリーンショット"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "翻訳に画像情報を提供します。"
+
+#~ msgid "Variants"
+#~ msgstr "別表記"
+
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr "翻訳しやすくするために、文字列の別表記をグループ化します。"
+
+#~ msgid "Intermediate language"
+#~ msgstr "中間言語"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr "翻訳する前に、開発者が提供した原文を校正します。"
+
+#~ msgid "Automatic translation"
+#~ msgstr "自動翻訳"
+
+#~ msgid ""
+#~ "Translations or suggestions can be done by machine translation services "
+#~ "or AI."
+#~ msgstr "機械翻訳サービスや AI を使って翻訳、提案ができます。"
+
+#~ msgid "Organize translations"
+#~ msgstr "翻訳の整理"
+
+#~ msgid "Categorize the translation files to ease navigation."
+#~ msgstr "翻訳ファイルを整理して、目的の項目を見つけやすくします。"
+
+#~ msgid "Keyboard operation"
+#~ msgstr "キーボード操作"
+
+#~ msgid "Use keyboard to effectively navigate while translating."
+#~ msgstr "翻訳中にショートカット キーを使用して効率的に操作できます。"
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "Weblate をサービスとして利用する、自分でセットアップする、またはオンプレミ"
+#~ "スホスティングの<a href=\"%(url)s\">ヘルプを得る</a>など、すべてプレミアム"
+#~ "サポートの利便性とともに利用することが可能です。"
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr ""
+#~ "Weblate - Web を基盤として動作する、開発に合わせて翻訳を最新に保つ翻訳シス"
+#~ "テム"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr ""
+#~ "Web ベースの <strong>開発に合わせて翻訳を最新に保つ</strong> 翻訳システム"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "%(projects)s 件以上の Libre ソフトウェア（自由ソフトウェア）のプロジェクト"
+#~ "や、%(countries)s か国以上の企業で使用されている、コピーレフトの Libre ソ"
+#~ "フトウェア（自由ソフトウェア）です。"
+
+#~ msgid "Explore all features"
+#~ msgstr "すべての機能"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "堅牢なバージョン管理を備えた、ホスティング サービスとスタンドアローンの"
+#~ "ツール。シンプルで分かりやすいユーザー インターフェイス、コンポーネント間"
+#~ "の翻訳の連携、品質検査、ソースファイルへの自動リンクが特徴です。"
+
+#~ msgid "Robust feature set"
+#~ msgstr "健全な機能セット"
+
+#~ msgid "Go to pricing"
+#~ msgstr "価格へ"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "プロフェッショナル チームの豊富なスキルと経験を活用して、お客様のニーズを"
+#~ "的確に捉えた適切なアドバイスを提供します。"
+
+#~ msgid "Continuous Localization"
+#~ msgstr "開発に合わせて翻訳を最新に保つシステム"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr ""
+#~ "翻訳作業工程の自動化により、プロジェクトの開発側と密接に連携します。"
+
+#~ msgid "Quality Checks"
+#~ msgstr "翻訳の品質検査"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr "品質検査をカスタマイズして、翻訳品質を効率的に改善できます。"
+
+#~ msgid "Attribution"
+#~ msgstr "翻訳者情報"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr ""
+#~ "すべての翻訳者は、バージョン管理システムで適切にクレジットされます。"
+
+#~ msgid "Hosting Plans"
+#~ msgstr "ホスティング プラン"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "Weblate は、19 ユーロから開始できます。"
+
+#~ msgid "Cloud Ready"
+#~ msgstr "クラウド対応"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr ""
+#~ "アプライアンス（専用パッケージ）が付属しているので、すぐに使用中のクラウド"
+#~ "に導入できます。"
+
+#~ msgid "Libre Software"
+#~ msgstr ""
+#~ "Libre ソフトウェア\n"
+#~ "（自由ソフトウェア）"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr "コピーレフト：誰でも自由に利用、参照、変更、共有できます。"
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr ""
+#~ "<strong>無料</strong> または <strong>プレミアム</strong> — 自由に選択"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "安心・快適"
+
+#~ msgid "Compare all plans"
+#~ msgstr "すべてのプランの比較"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "Weblate はコミュニティによる支援がある、コピーレフトな Libre ソフトウェア"
+#~ "（自由ソフトウェア）です。プレミアム クラウドの加入者は、追加料金なしで優"
+#~ "先的なサポートを受けられます。案件ごとのサポート パッケージは、どなたでも"
+#~ "申し込めます。"
+
+#~ msgid "Reliable support"
+#~ msgstr "信頼性の高いサポート"
+
+#~ msgid "User not found!"
+#~ msgstr "利用者が見つかりません！"
+
+#, python-format
+#~ msgid "Removed %(email)s from customer owners."
+#~ msgstr "%(email)s を顧客担当者から削除しました。"
 
 #~ msgid "Add a user"
 #~ msgstr "ユーザーの追加"
@@ -4018,11 +4833,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 #~ msgid "Monthly Breakdown"
 #~ msgstr "月次内訳"
 
-#, fuzzy
-#~| msgid "Issue upgrade quote"
-#~ msgid "Issue renewal quote"
-#~ msgstr "アップグレード見積書の発行"
-
 #, python-format
 #~ msgid ""
 #~ "Upgrade to %(package)s without extending the current subscription period."
@@ -4033,11 +4843,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 
 #~ msgid "Issue upgrade invoice"
 #~ msgstr "アップグレード請求書の発行"
-
-#, fuzzy
-#~| msgid "Issue new invoice"
-#~ msgid "Create invoice"
-#~ msgstr "新規請求書を発行"
 
 #~ msgid "Company or individual name"
 #~ msgstr "会社名または個人名"
@@ -4244,11 +5049,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 #~ "改善したりできます。"
 
 #~ msgid ""
-#~ "VAT ID validation service unavailable for {}, please try again later."
-#~ msgstr ""
-#~ "{} の VAT ID 検証サービスは利用できません。時間をおいて実行してください。"
-
-#~ msgid ""
 #~ "Additionally, Bitnami Weblate stack is available for many platforms and "
 #~ "works with most cloud providers."
 #~ msgstr ""
@@ -4289,9 +5089,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 #~ msgctxt "Hosting plan"
 #~ msgid "Enterprise"
 #~ msgstr "エンタープライズ"
-
-#~ msgid "and dedicated"
-#~ msgstr "専用サーバー"
 
 #, python-format
 #~ msgid "over <strong>%(count)s</strong>"
@@ -4447,9 +5244,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 
 #~ msgid "See documentation on subscription management."
 #~ msgstr "サブスクリプションの管理についてドキュメントを参照してください。"
-
-#~ msgid "Creation date"
-#~ msgstr "作成日"
 
 #~ msgid "Switch to yearly"
 #~ msgstr "年払いに変更"
@@ -4775,9 +5569,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 #~ "Weblate は無償で提供され、寄付を歓迎しています。Weblate の開発を支援する方"
 #~ "法はたくさんあります。友人と Weblate について相談してください。"
 
-#~ msgid "Attribution to translator"
-#~ msgstr "翻訳者の作業履歴"
-
 #~ msgid "GNU GPLv3+ licensed"
 #~ msgstr "GNU GPLv3+ ライセンス"
 
@@ -5029,9 +5820,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 #~ "料ソフトウェア プランの制限はありますが、拡張したユーザ管理機能を使用でき"
 #~ "ます。"
 
-#~ msgid "Translation workflow"
-#~ msgstr "翻訳のワークフロー"
-
 #, fuzzy
 #~| msgid ""
 #~| "All translated repositories are available using https protocol with "
@@ -5176,9 +5964,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 #~ msgid "Select"
 #~ msgstr "選択"
 
-#~ msgid "Choose your own donation amount"
-#~ msgstr "ご自身の寄付額を選択"
-
 #, fuzzy
 #~| msgid "Self hosted"
 #~ msgid "Self Hosted"
@@ -5262,9 +6047,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 
 #~ msgid "Free hosting on Weblate"
 #~ msgstr "Weblate の無料ホスティング"
-
-#~ msgid "Order hosting"
-#~ msgstr "ホスティングを依頼する"
 
 #~ msgid ""
 #~ "Hosted Weblate allows you to use Weblate without any effort and with "
@@ -5393,9 +6175,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 
 #~ msgid "%(position)s / %(total)s"
 #~ msgstr "%(position)s / %(total)s"
-
-#~ msgid "Bring translators closer to development"
-#~ msgstr "翻訳者を開発側へと近づける"
 
 #~ msgid "Weblate is a free software with community support."
 #~ msgstr "Weblate は、コミュニティに支えられているフリー ソフトウェアです。"
