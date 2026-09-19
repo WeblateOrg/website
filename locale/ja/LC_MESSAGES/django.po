@@ -31,9 +31,8 @@ msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-09-18 00:18-0500\n"
-"PO-Revision-Date: 2026-09-18 05:29+0000\n"
-"Last-Translator: Automatic translation add-on <noreply-addon-"
-"autotranslate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-19 00:38+0000\n"
+"Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
 "ja/>\n"
 "Language: ja\n"
@@ -127,7 +126,7 @@ msgid "Please confirm that you want to issue a credit note."
 msgstr "最終請求書を発行するかどうかご確認してください。"
 
 msgid "Explanation for the customer"
-msgstr ""
+msgstr "お客様への説明"
 
 #, fuzzy
 #| msgid "(including VAT)"
@@ -135,7 +134,7 @@ msgid "Amount including VAT"
 msgstr "（付加価値税を含む）"
 
 msgid "Only paid invoices can be refunded."
-msgstr ""
+msgstr "支払い済みの請求書のみ返金できます。"
 
 #, fuzzy
 #| msgid "Unpaid invoice"
@@ -169,23 +168,25 @@ msgstr "未設定"
 
 #, python-format
 msgid "Credit note %(correction)s for invoice %(invoice)s"
-msgstr ""
+msgstr "請求書 %(invoice)s に関する訂正ノート %(correction)s"
 
 #, python-format
 msgid "Invoice %(invoice)s marked uncollectible"
-msgstr ""
+msgstr "請求書 %(invoice)s は回収不能としてマークされました"
 
 #, python-format
 msgid "Collection resumed for invoice %(invoice)s"
-msgstr ""
+msgstr "請求書 %(invoice)s の回収が再開されました"
 
 msgid "Invoice issued during VIES outage"
-msgstr ""
+msgstr "VIES 障害発生中に発行された請求書"
 
 msgid ""
 "VIES was temporarily unavailable; the invoice was issued using a recent "
 "successful VAT validation."
 msgstr ""
+"VIES が一時的に利用できなかったため、直近の成功した VAT 検証結果で有効と判定"
+"された情報に基づいて請求書が発行されました。"
 
 msgid "Notification"
 msgstr "通知"
@@ -240,7 +241,7 @@ msgid "Error code"
 msgstr "エラーコード"
 
 msgid "VIES was temporarily unavailable."
-msgstr ""
+msgstr "VIES は一時的に利用できませんでした。"
 
 msgid "Error message"
 msgstr "エラーメッセージ"
@@ -550,7 +551,7 @@ msgstr "最終請求書を発行しますか？"
 
 msgid ""
 "This issues a credit note that cannot be edited. It does not transfer money."
-msgstr ""
+msgstr "編集不可の訂正ノートを発行します。なお、金銭の移動は発生しません。"
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
@@ -691,12 +692,14 @@ msgid "Invoice corrections"
 msgstr "請求書リスト"
 
 msgid "Refund"
-msgstr ""
+msgstr "返金"
 
 msgid ""
 "Issue a credit note for a full or partial refund. Transfer the money "
 "separately, then confirm the refund on the credit note."
 msgstr ""
+"全額または一部返金のために訂正ノートを発行します。金銭の移動は別途行い、その"
+"後、訂正ノート上で返金を確認します。"
 
 #, fuzzy
 #| msgid "Issue new invoice"
@@ -707,6 +710,8 @@ msgid ""
 "Cancel this unpaid duplicate in full with a credit note. Select the correct "
 "paid invoice to keep."
 msgstr ""
+"未払いの重複請求を、訂正ノートで全額キャンセルします。保持すべき正しい支払い"
+"済みの請求書を選択してください。"
 
 #, fuzzy
 #| msgid "Issue new invoice"
@@ -722,12 +727,14 @@ msgid ""
 "Marking an invoice uncollectible stops reminders without changing its amount "
 "or VAT."
 msgstr ""
+"請求書を回収不能としてマークしても、金額や VAT は変更されず、リマインダーのみ"
+"停止されます。"
 
 msgid "Resume collection"
-msgstr ""
+msgstr "回収を再開"
 
 msgid "Mark uncollectible"
-msgstr ""
+msgstr "回収不能としてマーク"
 
 msgid "Confirm refund done"
 msgstr "返金完了の確認"
@@ -822,19 +829,19 @@ msgstr "次のフォローアップ予定：%(date)s"
 
 #, python-format
 msgid "Baseline: %(average)s changes per month."
-msgstr ""
+msgstr "基準値：月あたり平均 %(average)s 件の変更。"
 
 #, python-format
 msgid "%(month)s: %(changes)s changes"
-msgstr ""
+msgstr "%(month)s：%(changes)s 件の変更"
 
 #, python-format
 msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
-msgstr ""
+msgstr "%(month)s：%(changes)s 件の変更（%(decrease)s%% 減少）"
 
 #, python-format
 msgid "Latest activity (%(month)s): %(changes)s changes"
-msgstr ""
+msgstr "最新の作業（%(month)s）：%(changes)s 件の変更"
 
 msgid "Clear follow-up"
 msgstr "フォローアップ設定を削除"
@@ -929,7 +936,7 @@ msgid "No customer owners."
 msgstr "顧客担当者を削除しました"
 
 msgid "Pending owner invitations"
-msgstr ""
+msgstr "保留中のオーナー招待"
 
 #, fuzzy
 #| msgid "Confirmed by"
@@ -945,7 +952,7 @@ msgid "Expires"
 msgstr "有効期限"
 
 msgid "No pending owner invitations."
-msgstr ""
+msgstr "保留中のオーナー招待はありません。"
 
 #, fuzzy
 #| msgid "Added customer owner"
@@ -1025,7 +1032,7 @@ msgid "Support status"
 msgstr "サポート状況"
 
 msgid "Over limits"
-msgstr ""
+msgstr "上限超過"
 
 msgid "Activation key"
 msgstr "有効化キー"
@@ -1058,11 +1065,11 @@ msgid "Instance activity"
 msgstr "応対履歴"
 
 msgid "Monthly changes, for up to 24 latest reported months."
-msgstr ""
+msgstr "月次変更数（最新 24 か月分まで）。"
 
 #, python-format
 msgid "%(changes)s changes"
-msgstr ""
+msgstr "%(changes)s 件の変更"
 
 #, fuzzy
 #| msgid "Services"
@@ -1070,7 +1077,7 @@ msgid "Service limits"
 msgstr "サービス"
 
 msgid "Metric"
-msgstr ""
+msgstr "指標"
 
 msgid "Usage"
 msgstr "使用方法"
