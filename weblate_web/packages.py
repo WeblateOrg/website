@@ -31,8 +31,6 @@ def package_name(number: int) -> str:
         return f"{number // 1000}k"
     if number < 10_000_000:
         return f"{(number // 100_000) / 10}M"
-    if number < 100_000_000:
-        return f"{number // 1_000_000}M"
     return f"{(number // 10_000_000) * 10}M"
 
 
