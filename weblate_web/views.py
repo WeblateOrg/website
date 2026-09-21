@@ -93,6 +93,12 @@ from weblate_web.models import (
     process_donation,
     process_subscription,
 )
+from weblate_web.packages import (
+    DEDICATED_LIMIT,
+    DEDICATED_PREFIX,
+    PACKAGE_NAMES,
+    PACKAGES,
+)
 from weblate_web.payments.backends import (
     PaymentError,
     get_backend,
@@ -112,6 +118,7 @@ from weblate_web.payments.validators import cache_vies_data
 from weblate_web.remote import get_activity
 from weblate_web.saml import sync_saml_payload
 from weblate_web.schema import get_blog_post_schema
+from weblate_web.templatetags.prices import price_format
 from weblate_web.utils import (
     AUTO_ORIGIN,
     FOSDEM_ORIGIN,
@@ -1528,6 +1535,22 @@ class HostingView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data["calculator_packages"] = {
+            "dedicated_minimum": DEDICATED_LIMIT,
+            "plans": [
+                {
+                    "limit": limit,
+                    "name": PACKAGE_NAMES[limit],
+                    "yearly_price": price_format(price),
+                    "monthly_price": price_format(price // 10),
+                    "dedicated_url": (
+                        f"{reverse('subscription-new')}?plan="
+                        f"{DEDICATED_PREFIX}{PACKAGE_NAMES[limit].lower()}"
+                    ),
+                }
+                for limit, price in sorted(PACKAGES.items())
+            ],
+        }
 
         data["hosted_package"] = (
             Package.objects.filter(category=PackageCategory.PACKAGE_SHARED)

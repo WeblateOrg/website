@@ -29,6 +29,58 @@ function tabToggle(targets, removal) {
 }
 
 ready(() => {
+  const calculator = document.getElementById("price-calculator");
+  if (calculator) {
+    const catalog = JSON.parse(
+      document.getElementById("calculator-packages").textContent,
+    );
+    const field = (name) => document.getElementById(`calculator-${name}`);
+    const strings = field("strings");
+    const languages = field("languages");
+    const dedicated = field("dedicated");
+    const numbers = new Intl.NumberFormat(document.documentElement.lang);
+    const update = () => {
+      const sourceCount = strings.valueAsNumber;
+      const languageCount = languages.valueAsNumber;
+      const total = sourceCount * (languageCount + 1);
+      const empty = strings.value === "" || languages.value === "";
+      const valid =
+        strings.validity.valid &&
+        languages.validity.valid &&
+        Number.isSafeInteger(sourceCount) &&
+        Number.isSafeInteger(languageCount) &&
+        Number.isSafeInteger(total);
+      field("prompt").hidden = !empty;
+      field("error").hidden = empty || valid;
+      field("result").hidden = !valid;
+      if (!valid) return;
+
+      field("total").textContent =
+        `${numbers.format(sourceCount)} × (${numbers.format(languageCount)} + 1) = ${numbers.format(total)}`;
+      const minimum = dedicated.checked ? catalog.dedicated_minimum : 0;
+      const plan = catalog.plans.find(
+        (candidate) => candidate.limit >= Math.max(total, minimum),
+      );
+      field("plan").hidden = !plan;
+      field("custom").hidden = Boolean(plan);
+      if (!plan) return;
+
+      field("name").textContent = plan.name;
+      field("capacity").textContent = numbers.format(plan.limit);
+      field("monthly").textContent = plan.monthly_price;
+      field("yearly").textContent = plan.yearly_price;
+      field("monthly-row").hidden = dedicated.checked;
+      field("trial").hidden = dedicated.checked;
+      field("buy").hidden = !dedicated.checked;
+      field("buy").href = plan.dedicated_url;
+    };
+    strings.addEventListener("input", update);
+    languages.addEventListener("input", update);
+    dedicated.addEventListener("change", update);
+    update();
+    calculator.hidden = false;
+  }
+
   /* Mobile menu display */
   document.querySelector(".menu-show").addEventListener("click", (e) => {
     document.querySelector("body").classList.toggle("open-mobile");

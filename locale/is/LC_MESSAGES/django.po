@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
-"PO-Revision-Date: 2026-09-05 05:52+0000\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"PO-Revision-Date: 2026-09-18 05:31+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
 "Language-Team: Icelandic <https://hosted.weblate.org/projects/weblate/"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n % 10 != 1 || n % 100 == 11;\n"
-"X-Generator: Weblate 2026.9.1.dev0\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 msgid "Please confirm that you want to issue a final invoice."
 msgstr ""
@@ -103,11 +103,48 @@ msgstr "Tölvupóstfang"
 msgid "Full name"
 msgstr "Fullt nafn"
 
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue date"
+msgstr "Fá aðstoð"
+
+msgid "Correction date"
+msgstr ""
+
+msgid "Please confirm that you want to issue a credit note."
+msgstr ""
+
+msgid "Explanation for the customer"
+msgstr ""
+
+#, fuzzy
+#| msgid "(including VAT)"
+msgid "Amount including VAT"
+msgstr "(með VSK)"
+
+msgid "Only paid invoices can be refunded."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Correct paid invoice"
+msgstr "Sækja reikning"
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Internal explanation"
+msgstr "Forritunarviðmót fyrir samþættingu (API)"
+
 msgid "Invalid hosted user response"
 msgstr ""
 
 msgid "Hosted user synchronization is disabled."
 msgstr ""
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice correction"
+msgstr "Forritunarviðmót fyrir samþættingu (API)"
 
 msgid "Yes"
 msgstr ""
@@ -118,6 +155,18 @@ msgid "No"
 msgstr "Minnispunktur"
 
 msgid "not set"
+msgstr ""
+
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr ""
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr ""
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
 msgstr ""
 
 msgid "Invoice issued during VIES outage"
@@ -548,14 +597,28 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Get support"
+msgid "Issue credit note?"
+msgstr "Fá aðstoð"
+
+#, fuzzy
+#| msgid "Get support"
 msgid "Issue final invoice?"
 msgstr "Fá aðstoð"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr ""
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
 
 msgid "Cancel"
 msgstr ""
+
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue credit note"
+msgstr "Fá aðstoð"
 
 msgid "Issue invoice"
 msgstr ""
@@ -584,6 +647,9 @@ msgstr ""
 msgid "Edit in admin"
 msgstr ""
 
+msgid "Credit note"
+msgstr ""
+
 #, fuzzy
 #| msgid "D-U-N-S Number"
 msgid "Number"
@@ -594,6 +660,35 @@ msgstr ""
 
 msgid "Due"
 msgstr ""
+
+#, fuzzy
+#| msgid "Payment amount"
+msgid "Credited amount"
+msgstr "Upphæð greiðslu"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Remaining amount"
+msgstr "Bíður greiðslu"
+
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Correction of"
+msgstr "Sérsníddu listann"
+
+msgid "Reason"
+msgstr "Ástæða"
+
+#, fuzzy
+#| msgid "and dedicated"
+msgid "Cancelled duplicate"
+msgstr "og frátekið"
+
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Collection note"
+msgstr "Samstarfsvefsvæði"
 
 #, fuzzy
 #| msgid "Discover"
@@ -660,6 +755,50 @@ msgstr ""
 msgid "Reopen quote"
 msgstr "Fá aðstoð"
 
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice corrections"
+msgstr "Forritunarviðmót fyrir samþættingu (API)"
+
+msgid "Refund"
+msgstr ""
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Duplicate invoice"
+msgstr "Sækja reikning"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Cancel duplicate invoice"
+msgstr "Sækja reikning"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Collection status"
+msgstr "Staða þýðingar"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+
+msgid "Resume collection"
+msgstr ""
+
+msgid "Mark uncollectible"
+msgstr ""
+
 msgid "Confirm refund done"
 msgstr ""
 
@@ -688,6 +827,9 @@ msgstr "Sérsníddu listann"
 
 msgid "Overview"
 msgstr "Yfirlit"
+
+msgid "Owners"
+msgstr ""
 
 #, fuzzy
 #| msgid "Integration API"
@@ -803,16 +945,6 @@ msgstr "Bæta netþjóni við lista hjá Weblate"
 msgid "Review merge"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add server to Discover Weblate"
-msgid "Add owner to customer"
-msgstr "Bæta netþjóni við lista hjá Weblate"
-
-#, fuzzy
-#| msgid "Add a user"
-msgid "Add owner"
-msgstr "Bæta við notanda"
-
 msgid "Add note"
 msgstr ""
 
@@ -892,6 +1024,49 @@ msgstr "Breyta"
 
 msgid "No donations recorded."
 msgstr ""
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer owners"
+msgstr "Sérsniðið"
+
+msgid "Username"
+msgstr "Notandanafn"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "No customer owners."
+msgstr "Bæta við notanda"
+
+msgid "Pending owner invitations"
+msgstr ""
+
+#, fuzzy
+#| msgid "Invite e-mail"
+msgid "Invited by"
+msgstr "Boðspóstur"
+
+#, fuzzy
+#| msgid "Unlimited"
+msgid "Invited"
+msgstr "Ótakmarkað"
+
+msgid "Expires"
+msgstr "Rennur út"
+
+msgid "No pending owner invitations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add customer owner"
+msgstr "Bæta við notanda"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add owner"
+msgstr "Bæta við notanda"
 
 msgid "Invoice history"
 msgstr ""
@@ -1010,6 +1185,18 @@ msgid "Discoverable"
 msgstr "Kynnast Weblate"
 
 #, fuzzy
+#| msgid "Integration API"
+msgid "Instance activity"
+msgstr "Forritunarviðmót fyrir samþættingu (API)"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr ""
+
+#, python-format
+msgid "%(changes)s changes"
+msgstr ""
+
+#, fuzzy
 #| msgid "Service"
 msgid "Service limits"
 msgstr "Þjónusta"
@@ -1041,9 +1228,6 @@ msgstr "Virkt"
 #| msgid "Service Status"
 msgid "Service is terminated"
 msgstr "Þjónustustaða"
-
-msgid "Expires"
-msgstr "Rennur út"
 
 msgid "Edit subscription in admin"
 msgstr ""
@@ -1160,7 +1344,13 @@ msgstr ""
 
 #, fuzzy, python-format
 #| msgid "Add a user"
-msgid "Added %(email)s to customer owners."
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr "Bæta við notanda"
+
+#, fuzzy, python-format
+#| msgid "Add a user"
+msgid "Added %(email)s to customer owners and notified them."
 msgstr "Bæta við notanda"
 
 #, python-format
@@ -1270,6 +1460,48 @@ msgstr "Vefslóð netþjóns"
 msgid "Server URL must use HTTPS."
 msgstr ""
 
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr ""
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+
+msgid "This request has already been used."
+msgstr ""
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr ""
+
+msgid "A correction reason and explanation are required."
+msgstr ""
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr ""
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr ""
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr ""
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr ""
+
+msgid "This invoice has already been settled."
+msgstr ""
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "An internal explanation is required."
+msgstr "Forritunarviðmót fyrir samþættingu (API)"
+
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -1317,8 +1549,28 @@ msgstr ""
 msgid "Converted"
 msgstr ""
 
+msgid "Credited"
+msgstr ""
+
+msgid "Refunded"
+msgstr ""
+
 msgid "Paid"
 msgstr "Greitt"
+
+msgid "Uncollectible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Applied to invoice"
+msgstr "Sækja reikning"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Awaiting refund"
+msgstr "Bíður greiðslu"
 
 msgid "Unpaid"
 msgstr ""
@@ -1712,6 +1964,21 @@ msgstr "Mánaðarlega"
 
 msgid "One-time"
 msgstr "Eitt skipti"
+
+msgid "Pending"
+msgstr "í bið"
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Revoked"
+msgstr ""
+
+msgid "Delivery failed"
+msgstr ""
+
+msgid "Fulfilled by staff"
+msgstr ""
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -2229,6 +2496,28 @@ msgstr "Byrja að þýða"
 msgid "Translation status"
 msgstr "Staða þýðingar"
 
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer owner invitation"
+msgstr "Sérsníddu listann"
+
+msgid "Review access"
+msgstr ""
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer account"
+msgstr "Sérsniðið"
+
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr ""
+
+msgid "Accept invitation"
+msgstr "Samþykkja boðið"
+
 msgid "Discover Weblate"
 msgstr "Kynnast Weblate"
 
@@ -2618,115 +2907,230 @@ msgstr ""
 "Þú getur fjarstýrt Weblate með <a href=\"%(url)s\">wlc</a>, en hægt er að "
 "setja það upp með 'pip' í Python:"
 
-msgid "Weblate features"
-msgstr "Eiginleikar Weblate"
+msgid "Weblate features — quality translations, your control"
+msgstr ""
+
+msgid "Bring your project to more people"
+msgstr ""
 
 msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
 msgstr ""
-"Sem tölvustutt þýðingatól með margvíslega eiginleika, sparar Weblate bæði "
-"hugbúnaðarþróendum og þýðendum mikinn tíma. Gerðu notendur þína "
-"hamingjusamari!"
 
 msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
 msgstr ""
-"Flettu í gegnum <a href=\"https://docs.weblate.org/\">skjalasafnið</a> til "
-"þess að fræðast betur um þetta."
 
-msgid "Easy to use interface"
-msgstr "Viðmót sem er auðvelt í notkun"
+#, fuzzy
+#| msgid "Join existing users and supporters"
+msgid "Compare hosting and support"
+msgstr "Gakktu til liðs við núverandi notendur og stuðningsaðila"
 
-msgid "Weblate screenshot"
-msgstr "Skjáskot af Weblate"
+msgid "Try Weblate"
+msgstr "Prófa Weblate"
 
-msgid "Customizable quality checks"
-msgstr "Stillanlegar gæðaprófanir"
-
-msgid "Detailed context"
-msgstr "Nákvæmt samhengi"
+msgid "Keep translations in step with development"
+msgstr ""
 
 msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
 msgstr ""
-"Þýðendur fá nákvæmt samhengi þýðinga, úr þýðingaskrám eða gögnum sem myndast "
-"innan Weblate."
-
-msgid "Fluent communication"
-msgstr "Lipur samskipti"
-
-msgid "All translations are tracked and can be commented."
-msgstr ""
-"Allar þýðingar eru raktar og hægt er að setja inn athugasemdir við þær."
-
-msgid "Access Control"
-msgstr "Aðgangsstýring"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "Fínstilltu aðgangsheimildir eftir því sem hentar þínu umhverfi."
-
-msgid "Smart Notifications"
-msgstr "Snjallar tilkynningar"
 
 msgid ""
-"Translators can be notified of new strings to translate or other events."
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
 msgstr ""
-"Hægt er að senda tilkynningar til þýðenda um nýja strengi til þess að þýða "
-"eða aðra atburði."
 
-msgid "Integration API"
-msgstr "Forritunarviðmót fyrir samþættingu (API)"
+#, fuzzy
+#| msgid "Continuous localization"
+msgid "Explore continuous localization"
+msgstr "Samfelld staðfærsla"
 
-msgid "Integrate Weblate with third-party services."
-msgstr "Samþættu Weblate við þjónustur frá þriðja aðila."
-
-msgid "Multiple File Formats"
-msgstr "Margvísleg skráasnið"
+msgid "Give every translation the context it needs"
+msgstr ""
 
 msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
 msgstr ""
-"Notaðu öll algeng skráasnið sem notuð eru við staðfærslu, á borð við "
-"gettext, JSON, XLIFF eða tilfangastrengi, o.s.frv."
-
-msgid "Branch Support"
-msgstr "Stuðningur við greinar"
 
 msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
 msgstr ""
-"Meðhöndla mismunandi útgáfur þýðinga með því að ýta þeim sjálfkrafa í "
-"mismunandi greinar."
-
-msgid "Translation Context"
-msgstr "Þýðingarsamhengi"
 
 msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
 msgstr ""
-"Lýsing nálægar þýðingar, myndir, færslur í orðasafni og samsvörun í "
-"grunnkóða fyrir hvern streng."
+
+msgid "Give your translators the tools to make informed choices."
+msgstr ""
+
+msgid "Explore translation quality checks"
+msgstr ""
+
+msgid "Choose how you translate—with or without AI"
+msgstr ""
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translate the app"
+msgid "Translate without AI"
+msgstr "Þýddu forritið"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Number of translators"
+msgid "Assist your translators"
+msgstr "Fjöldi þýðenda"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+
+#, fuzzy
+#| msgid "Start translating"
+msgid "Start with machine translations"
+msgstr "Byrja að þýða"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+
+msgid "Accept suggestions before use"
+msgstr ""
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+
+msgid "Approve before committing"
+msgstr ""
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+
+msgid "Explore AI translation workflows"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose your amount in EUR"
+msgid "Choose how your content is handled"
+msgstr "Veldu upphæð í EUR (evrum)"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+
+msgid "Find the right hosting option"
+msgstr ""
+
+msgid "Bring your team and community together"
+msgstr ""
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+
+msgid "The everyday tools your localization needs"
+msgstr ""
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+
+#, fuzzy
+#| msgid "Read more in the documentation."
+msgid "Explore the documentation"
+msgstr "Lestu meira í leiðbeiningasafninu."
+
+msgid "Keep working with your existing formats"
+msgstr ""
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+
+msgid ".NET resource files (RESX, RESW)"
+msgstr ".NET-tilfangaskrár (RESX, RESW)"
 
 msgid "Android string resources"
 msgstr "Android strengjatilföng"
 
-msgid "Apple iOS strings"
-msgstr "Apple iOS-strengir"
-
 msgid "App store metadata files"
 msgstr "Lýsigagnaskrá App Store forritaverslunar"
+
+msgid "Apple iOS strings"
+msgstr "Apple iOS-strengir"
 
 msgid "ARB file"
 msgstr "ARB-skrá"
 
+#, fuzzy
+#| msgid "DTD files"
+msgid "AsciiDoc files"
+msgstr "DTD-skrár"
+
+msgid "Compose Multiplatform resources"
+msgstr ""
+
 msgid "CSV files"
 msgstr "CVS-skrár"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "DokuWiki text files"
+msgstr "Textaskrár"
 
 msgid "DTD files"
 msgstr "DTD-skrár"
@@ -2740,6 +3144,11 @@ msgstr "Flatar XML-skrár"
 msgid "Fluent format"
 msgstr "Fluent-snið"
 
+#, fuzzy
+#| msgid "React Intl"
+msgid "Format.JS / React Intl"
+msgstr "React Intl"
+
 msgid "GNU gettext"
 msgstr "GNU gettext"
 
@@ -2751,6 +3160,9 @@ msgstr "gotext JSON-skrár"
 
 msgid "GWT properties"
 msgstr "GWT-eiginleikar"
+
+msgid "Haiku Catkeys"
+msgstr ""
 
 msgid "HTML files"
 msgstr "HTML-skrár"
@@ -2770,17 +3182,14 @@ msgstr "Þýðing á Inno INI-uppsetningarskrá"
 msgid "Java properties"
 msgstr "Java properties-skrár"
 
+msgid "JavaScript resource files"
+msgstr ""
+
 msgid "Joomla translations"
 msgstr "Joomla!-þýðingar"
 
 msgid "JSON files"
 msgstr "JSON-skrár"
-
-msgid "React Intl"
-msgstr "React Intl"
-
-msgid "Vue I18n"
-msgstr "Vue I18n"
 
 msgid "Laravel PHP strings"
 msgstr "Laravel PHP-strengir"
@@ -2788,11 +3197,26 @@ msgstr "Laravel PHP-strengir"
 msgid "Markdown files"
 msgstr "Markdown-skrár"
 
-msgid "mi18n lang files"
+#, fuzzy
+#| msgid "DTD files"
+msgid "MDX files"
+msgstr "DTD-skrár"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "MediaWiki text files"
+msgstr "Textaskrár"
+
+#, fuzzy
+#| msgid "mi18n lang files"
+msgid "@draggable/i18n lang files"
 msgstr "mi18n-tungumálsskrár"
 
 msgid "Mobile Kotlin resources"
 msgstr "Mobile Kotlin tilföng"
+
+msgid "Nextcloud JSON"
+msgstr ""
 
 msgid "OpenDocument Format"
 msgstr "OpenDocument-snið"
@@ -2805,9 +3229,6 @@ msgstr "Qt Linguist .ts"
 
 msgid "ResourceDictionary files"
 msgstr "ResourceDictionary-skrár"
-
-msgid ".NET resource files (RESX, RESW)"
-msgstr ".NET-tilfangaskrár (RESX, RESW)"
 
 msgid "Ruby YAML files"
 msgstr "Ruby YAML-skrár"
@@ -2824,183 +3245,86 @@ msgstr "TermBase eXchange-snið"
 msgid "Text files"
 msgstr "Textaskrár"
 
+msgid "TOML and go-i18n TOML"
+msgstr ""
+
+msgid "Vue I18n"
+msgstr "Vue I18n"
+
 msgid "WebExtension JSON"
 msgstr "WebExtension JSON"
 
 msgid "Windows RC files"
 msgstr "Windows RC-skrár"
 
-msgid "XLIFF"
+#, fuzzy
+#| msgid "Localization"
+msgid "WiX localization files"
+msgstr "Staðfærsla"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr ""
+
+#, fuzzy
+#| msgid "XLIFF"
+msgid "XLIFF 2.0"
 msgstr "XLIFF"
+
+msgid "XWiki formats"
+msgstr ""
 
 msgid "YAML files"
 msgstr "YAML-skrár"
 
-msgid "Glossaries"
-msgstr "Atriðisorðaskrár"
-
-msgid "Define frequently used terminology for consistency."
-msgstr "Skilgreina mikið notaðan orðaforða til að auka samræmi þýðinga."
-
-msgid "Feedback Acquisition"
-msgstr "Gerð umsagna"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
+#, fuzzy, python-format
+#| msgid ""
+#| "Please consult the <a href=\"%(url)s\">contributor documentation</a> to "
+#| "find the most common topics."
+msgid ""
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
 msgstr ""
-"Notaðu Weblate til að fá umsagnir og athugasemdir við texta til þess að bæta "
-"hann."
+"Skoðaðu <a href=\"%(url)s\">skjalasafn þátttakenda</a> til að finna "
+"algengustu umfjöllunarefnin."
 
-msgid "Export and Import"
-msgstr "Úflutningur og innflutningur"
-
-msgid "Translations can be downloaded for offline translation and merged back."
+msgid "Open source, backed by sustainable services"
 msgstr ""
-"Hægt er að sækja þýðingaskrár til að þýða ótengt á sinni tölvu og sameina "
-"þær svo aftur inn í verkefnið."
-
-msgid "Fully Integrated"
-msgstr "Innbyggt að fullu"
 
 msgid ""
-"Translations are managed within the same version control system as your code."
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
 msgstr ""
-"Þýðingar eru meðhöndlaðar með sama útgáfustýringarkerfi og kóðinn þinn."
-
-msgid "Documentation"
-msgstr "Leiðbeiningar"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr "Ítarlegar leiðbeiningar sem ná jafnt um uppsetningu sem notkun."
-
-msgid "Easy Reviews"
-msgstr "Einföld yfirferð/prófarkalestur"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr "Ýmsir valkostir fyrir þýðendur til að yfirfara framlög frá jafningjum."
-
-msgid "Language support"
-msgstr "Tungumálastuðningur"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
-msgstr ""
-"Styður meira en 500 tungumál beint úr kassanum. Hægt er að bæta við fleirum."
-
-msgid "Promotion"
-msgstr "Kynningastarf"
 
 msgid ""
-"Built-in features to attract a wider audience for your translation project."
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
 msgstr ""
-"Innbyggðir eiginleikar til að kynna þýðingarverkefni fyrir víðari hóp "
-"mögulegra þátttakenda."
-
-msgid "Reporting"
-msgstr "Skýrslugerð"
-
-msgid "Reports are generated to provide info on project activity."
-msgstr ""
-"Skýrslur eru útbúnar til að gefa nánari upplýsingar um virkni í verkefnum."
-
-msgid "Version Control"
-msgstr "Útgáfustjórnun"
 
 msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
 msgstr ""
-"Talar beint við útgáfustýringarkerfið þitt, núna er stuðningur við bæði Git "
-"og Mercurial."
 
-msgid "Collaboration Sites"
-msgstr "Samstarfsvefsvæði"
-
-msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
+msgid "Explore self-hosting"
 msgstr ""
-"Innbyggður stuðningur við forritunarvefsvæði á borð við GitLab, GitHub, "
-"Pagure, Azure, Gitea eða Bitbucket."
 
-msgid "Responsive UI"
-msgstr "Skalanlegt notandaviðmót"
-
-msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
-msgstr ""
-"Notandaviðmót sem virkar vel á borðtölvum, spjaldtölvum og símum, bæði í "
-"ljósum og dökkum ham."
-
-msgid "Translation memory"
-msgstr "Þýðingaminni"
-
-msgid "Reuse existing translations to save time and costs."
-msgstr "Endurnýttu fyrirliggjandi þýðingar til að spara tíma og peninga."
-
-msgid "Translation add-ons"
-msgstr "Þýðingarviðbætur"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "Hægt er að sérsníða vinnuferli staðfærslu með ýmsum viðbótum."
-
-msgid "Backups"
-msgstr "Öryggisafrit"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr "Innbyggð fjartengd öryggisafrit til að fyrirbyggja tap á gögnum."
-
-msgid "Screenshots"
-msgstr "Skjámyndir"
-
-msgid "Provide visual context for the translations."
-msgstr "Gefðu þýðingunum sjónrænt samhengi."
-
-msgid "Variants"
-msgstr "Tilbrigði"
-
-msgid "Group variants of strings for easier translating."
-msgstr "Hópaðu tilbrigði við strengi til að auðvelda þýðingar."
-
-msgid "Intermediate language"
-msgstr "Millistigs-tungumál"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "Prófarkalestu strengi frá forriturum áður en þeir eru þýddir."
-
-msgid "Automatic translation"
-msgstr "Sjálfvirk þýðing"
-
-msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr ""
-"Hægt er að gera þýðingar eða tillögur með vélþýðingaþjónustum eða AI-vitlíki."
-
-msgid "Organize translations"
-msgstr "Skipuleggja þýðingar"
-
-msgid "Categorize the translation files to ease navigation."
-msgstr "Flokkaðu þýðingaskrár til að einfalda rötun um gögnin."
-
-msgid "Keyboard operation"
-msgstr "Lyklaborðsaðgerð"
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr ""
-"Notaðu lyklaborðið til að flakka skilmerkilega um viðmótið á meðan þú ert að "
-"þýða."
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Hosting for libre projects"
+msgstr "fyrir frjáls verkefni"
 
 msgid "Weblate Pricing"
 msgstr "Verðskrá Weblate"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"Notaðu Weblate sem þjónustu, settu upp þitt eigið kerfi, eða <a "
-"href=\"%(url)s\">fáðu aðstoð</a> við að koma upp kerfi á staðnum — allt í "
-"boði með þægindum forgangsstuðnings."
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr ""
@@ -3164,25 +3488,27 @@ msgstr ""
 msgid "Join existing users and supporters"
 msgstr "Gakktu til liðs við núverandi notendur og stuðningsaðila"
 
-msgid "Weblate - web-based localization"
-msgstr "Weblate - vefhýst staðfærslukerfi"
-
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr "<strong>Samfelld</strong> staðfærsla í vefumhverfi"
-
-#, python-format
-msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+msgid "Weblate — quality translations, your control"
 msgstr ""
-"Frjáls hugbúnaður með opnum notkunarleyfum, notaður af meira en %(projects)s "
-"frjálsum hugbúnaðarverkefnum og fyrirtækjum í yfir %(countries)s löndum."
 
-msgid "Try Weblate"
-msgstr "Prófa Weblate"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr ""
 
-msgid "Explore all features"
-msgstr "Skoða alla eiginleika"
+msgid ""
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
+msgstr ""
+
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr ""
+
+#, fuzzy
+#| msgid "Get more Weblate"
+msgid "Explore Weblate"
+msgstr "Náðu í meira Weblate"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -3192,13 +3518,11 @@ msgid "Weblate localizes the world"
 msgstr "Weblate tengir heiminn saman"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"Hýsingarþjónusta og sjálfstætt verkfæri með náinni samþættingu við "
-"útgáfustýringarkerfi. Einfalt og hreinlegt notandaviðmót, flæði þýðinga á "
-"milli þýðingarhluta, gæðaprófanir og sjálfvirkar vísanir í grunnkóðaskrár."
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -3218,11 +3542,8 @@ msgstr[1] "%(count)s þýðingar"
 msgid "in the last 7 days"
 msgstr "síðustu 7 daga"
 
-msgid "Robust feature set"
-msgstr "Þróað safn eiginleika"
-
-msgid "Go to pricing"
-msgstr "Fara í verðlista"
+msgid "Make localization work for your team"
+msgstr ""
 
 msgid "Users and Supporters"
 msgstr "Notendur og stuðningsaðilar"
@@ -3238,6 +3559,49 @@ msgstr "Sýsla með greiðslurnar þínar"
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "Útbúið %(timestamp)s."
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr ""
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr ""
+
+#, fuzzy
+#| msgid "My donations"
+msgid "Review invitation"
+msgstr "Styrkirnir mínir"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr ""
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3367,6 +3731,11 @@ msgstr "Greiðsla þín í bið á weblate.org"
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "Áskriftin þín á weblate.org verður endurnýjuð í næstu viku."
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr ""
+
 msgid "The payment will be automatically charged soon."
 msgstr ""
 
@@ -3421,6 +3790,20 @@ msgstr ""
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr ""
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Pay invoice"
+msgstr "Sækja reikning"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3601,12 +3984,13 @@ msgstr "Skoða enska útgáfu textans"
 msgid "Download as PDF"
 msgstr "Sækja"
 
-msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+msgid "Find your way to get started"
 msgstr ""
-"Skelltu þér í djúpu laugina, eða nýttu þér þekkingu og reynslu frá "
-"atvinnumönnunum okkar, sem gefa sértækum þörfum þínum þá athygli sem við á."
+
+msgid ""
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
+msgstr ""
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>Styrktu okkur</strong>—til að gera heiminn örlítið betri"
@@ -3647,9 +4031,6 @@ msgstr ""
 "Við erum lítið fyrirtæki byggt á frjálsum hugbúnaði þar sem allir hafa "
 "tækifæri til að dafna."
 
-msgid "Owners"
-msgstr ""
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3671,44 +4052,63 @@ msgstr "Fjarlægja notanda"
 msgid "Remove"
 msgstr "Fjarlægja"
 
-msgid "Continuous Localization"
-msgstr "Samfelld staðfærsla"
+msgid "Pending invitation"
+msgstr "Boð í bið"
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Revoke invitation"
+msgstr "Víxla stýringu af/á"
+
+#, fuzzy
+#| msgid "Remove user"
+msgid "Invite owner"
+msgstr "Fjarlægja notanda"
+
+msgid "Keep pace with development"
+msgstr ""
 
 msgid ""
-"Automated localization workflow follows your project development closely."
-msgstr "Sjálfvirkt vinnuferli í staðfærslu fylgir þróun verkefnis þíns náið."
-
-msgid "Quality Checks"
-msgstr "Gæðaprófanir"
-
-msgid "Customizable quality checks helps improve translation quality."
-msgstr "Stillanlegar gæðaprófanir hjálpa til við að bæta gæði þýðinga."
-
-msgid "Attribution"
-msgstr "Tileinkun"
-
-msgid "All translators are properly credited in the version control system."
-msgstr "Allra þýðenda er skilmerkilega getið í útgáfustjórnunarkerfinu."
-
-msgid "Hosting Plans"
-msgstr "Hýsingarleiðir"
-
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "Notaðu Weblate sem þjónustu, verð frá 19 EUR (evrum)."
-
-msgid "Cloud Ready"
-msgstr "Tilbúið fyrir ský"
-
-msgid "Comes with appliances, ready to deploy in your cloud."
-msgstr "Kemur með tilbúnum verkfærum til að vinna með í skýinu þínu."
-
-msgid "Libre Software"
-msgstr "Frjáls hugbúnaður"
-
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
 msgstr ""
-"Með frjálsum höfundarrétti; notaðu, skoðaðu, breyttu og deildu að vild með "
-"hverjum sem þú vilt."
+
+msgid "Help people get the meaning right"
+msgstr ""
+
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
+msgstr ""
+
+msgid "Translate with or without AI"
+msgstr ""
+
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
+
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
+
+msgid "Bring everyone into the conversation"
+msgstr ""
+
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
+
+msgid "Build on software you can trust"
+msgstr ""
+
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
 
 msgid "Help translate"
 msgstr "Hjálpa við þýðingu"
@@ -3753,16 +4153,20 @@ msgstr "Sækja grunnkóða"
 msgid "Pay now"
 msgstr "Sæktu um núna"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+msgid "Choose the hosting and support that fit your team"
 msgstr ""
-"<strong>Ókeypis áskrift</strong> eða <strong>Forgangsáskrift</strong> — þú "
-"ræður"
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid "Premium Cloud"
 msgstr "Forgangsskýjaþjónusta"
 
-msgid "for ease and comfort"
-msgstr "fyrir auðveldleika og þægindi"
+msgid "managed hosting for your team"
+msgstr ""
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3790,8 +4194,9 @@ msgstr "Sparaðu %(percent)s%%"
 msgid "for complete control"
 msgstr "fyrir fulla stjórn"
 
-#, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
+#, fuzzy, python-format
+#| msgid "with paid <a href=\"%(url)s\">support</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
 msgstr "með greiddum <a href=\"%(url)s\">stuðningi</a>"
 
 msgid "Gratis Weblate"
@@ -3803,9 +4208,6 @@ msgstr "fyrir frjáls verkefni"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "samkvæmt <a href=\"%(url)s\">beiðni</a>"
-
-msgid "Compare all plans"
-msgstr "Berðu saman allar áskriftarleiðir"
 
 msgid "Expired"
 msgstr "Útrunnið"
@@ -3824,6 +4226,9 @@ msgstr "Endurlesa teikn"
 
 msgid "Backup repository"
 msgstr "Öryggisafritasafn"
+
+msgid "Documentation"
+msgstr "Leiðbeiningar"
 
 #, python-format
 msgid ""
@@ -3970,14 +4375,16 @@ msgstr "Sérsníða skráningu tilviks á lista hjá Weblate"
 msgid "Weblate support"
 msgstr "Weblate-aðstoð"
 
-msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+msgid "Expert help for your localization"
 msgstr ""
-"Weblate er frjáls hugbúnaður með samfélagsstuðningi. Þeir sem eru í áskrift "
-"fá forgangsaðstoð án aukagjalds. Hægt er að kaupa fyrirframgreidda "
-"aðstoðarpakka."
+
+msgid ""
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
+msgstr ""
 
 msgid "Report issue"
 msgstr "Tilkynna vandamál"
@@ -4005,8 +4412,8 @@ msgstr ""
 "er að finna frekari upplýsingar í <a href=\"%(url)s\">leiðbeiningasafninu</"
 "a>."
 
-msgid "Reliable support"
-msgstr "Áreiðanleg aðstoð"
+msgid "Living humans, ready to help"
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4302,25 +4709,421 @@ msgid ""
 "token shown below."
 msgstr ""
 
-msgid "User not found!"
-msgstr "Notandi fannst ekki!"
-
 #, fuzzy
 #| msgid "You can not remove yourself"
 msgid "You can not remove yourself."
 msgstr "Þú getur ekki fjarlægt sjáfa/n þig"
 
 #, fuzzy
-#| msgid "Add a user"
-msgid "Removed customer owner"
-msgstr "Bæta við notanda"
+#| msgid ""
+#| "VAT ID validation service unavailable for {}, please try again later."
+msgid "Too many owner invitations. Please try again later."
+msgstr ""
+"Staðfestingarþjónusta virðisaukaskattsnúmera fyrir {} er óvirk í "
+"augnablikinu, reyndu aftur síðar."
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr ""
+
+msgid "This customer owner invitation is invalid."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unavailable for your amount"
+msgid "This invitation is not available for your account."
+msgstr "Ekki í boði fyrir þessa upphæð"
+
+msgid "Customer owner invitation accepted."
+msgstr ""
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr ""
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr ""
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
 msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#, fuzzy
+#~| msgid "Add server to Discover Weblate"
+#~ msgid "Add owner to customer"
+#~ msgstr "Bæta netþjóni við lista hjá Weblate"
+
+#~ msgid "Weblate features"
+#~ msgstr "Eiginleikar Weblate"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "Sem tölvustutt þýðingatól með margvíslega eiginleika, sparar Weblate bæði "
+#~ "hugbúnaðarþróendum og þýðendum mikinn tíma. Gerðu notendur þína "
+#~ "hamingjusamari!"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr ""
+#~ "Flettu í gegnum <a href=\"https://docs.weblate.org/\">skjalasafnið</a> "
+#~ "til þess að fræðast betur um þetta."
+
+#~ msgid "Easy to use interface"
+#~ msgstr "Viðmót sem er auðvelt í notkun"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "Skjáskot af Weblate"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "Stillanlegar gæðaprófanir"
+
+#~ msgid "Detailed context"
+#~ msgstr "Nákvæmt samhengi"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "Þýðendur fá nákvæmt samhengi þýðinga, úr þýðingaskrám eða gögnum sem "
+#~ "myndast innan Weblate."
+
+#~ msgid "Fluent communication"
+#~ msgstr "Lipur samskipti"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr ""
+#~ "Allar þýðingar eru raktar og hægt er að setja inn athugasemdir við þær."
+
+#~ msgid "Access Control"
+#~ msgstr "Aðgangsstýring"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "Fínstilltu aðgangsheimildir eftir því sem hentar þínu umhverfi."
+
+#~ msgid "Smart Notifications"
+#~ msgstr "Snjallar tilkynningar"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr ""
+#~ "Hægt er að senda tilkynningar til þýðenda um nýja strengi til þess að "
+#~ "þýða eða aðra atburði."
+
+#~ msgid "Integration API"
+#~ msgstr "Forritunarviðmót fyrir samþættingu (API)"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "Samþættu Weblate við þjónustur frá þriðja aðila."
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "Margvísleg skráasnið"
+
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "Notaðu öll algeng skráasnið sem notuð eru við staðfærslu, á borð við "
+#~ "gettext, JSON, XLIFF eða tilfangastrengi, o.s.frv."
+
+#~ msgid "Branch Support"
+#~ msgstr "Stuðningur við greinar"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr ""
+#~ "Meðhöndla mismunandi útgáfur þýðinga með því að ýta þeim sjálfkrafa í "
+#~ "mismunandi greinar."
+
+#~ msgid "Translation Context"
+#~ msgstr "Þýðingarsamhengi"
+
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr ""
+#~ "Lýsing nálægar þýðingar, myndir, færslur í orðasafni og samsvörun í "
+#~ "grunnkóða fyrir hvern streng."
+
+#~ msgid "Glossaries"
+#~ msgstr "Atriðisorðaskrár"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr "Skilgreina mikið notaðan orðaforða til að auka samræmi þýðinga."
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "Gerð umsagna"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr ""
+#~ "Notaðu Weblate til að fá umsagnir og athugasemdir við texta til þess að "
+#~ "bæta hann."
+
+#~ msgid "Export and Import"
+#~ msgstr "Úflutningur og innflutningur"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr ""
+#~ "Hægt er að sækja þýðingaskrár til að þýða ótengt á sinni tölvu og sameina "
+#~ "þær svo aftur inn í verkefnið."
+
+#~ msgid "Fully Integrated"
+#~ msgstr "Innbyggt að fullu"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr ""
+#~ "Þýðingar eru meðhöndlaðar með sama útgáfustýringarkerfi og kóðinn þinn."
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr "Ítarlegar leiðbeiningar sem ná jafnt um uppsetningu sem notkun."
+
+#~ msgid "Easy Reviews"
+#~ msgstr "Einföld yfirferð/prófarkalestur"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr ""
+#~ "Ýmsir valkostir fyrir þýðendur til að yfirfara framlög frá jafningjum."
+
+#~ msgid "Language support"
+#~ msgstr "Tungumálastuðningur"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr ""
+#~ "Styður meira en 500 tungumál beint úr kassanum. Hægt er að bæta við "
+#~ "fleirum."
+
+#~ msgid "Promotion"
+#~ msgstr "Kynningastarf"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr ""
+#~ "Innbyggðir eiginleikar til að kynna þýðingarverkefni fyrir víðari hóp "
+#~ "mögulegra þátttakenda."
+
+#~ msgid "Reporting"
+#~ msgstr "Skýrslugerð"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr ""
+#~ "Skýrslur eru útbúnar til að gefa nánari upplýsingar um virkni í verkefnum."
+
+#~ msgid "Version Control"
+#~ msgstr "Útgáfustjórnun"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr ""
+#~ "Talar beint við útgáfustýringarkerfið þitt, núna er stuðningur við bæði "
+#~ "Git og Mercurial."
+
+#~ msgid ""
+#~ "Native support for software development sites such as GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea, or Bitbucket."
+#~ msgstr ""
+#~ "Innbyggður stuðningur við forritunarvefsvæði á borð við GitLab, GitHub, "
+#~ "Pagure, Azure, Gitea eða Bitbucket."
+
+#~ msgid "Responsive UI"
+#~ msgstr "Skalanlegt notandaviðmót"
+
+#~ msgid ""
+#~ "User interface that works nicely on desktop, tablets and phones in both "
+#~ "light and dark mode."
+#~ msgstr ""
+#~ "Notandaviðmót sem virkar vel á borðtölvum, spjaldtölvum og símum, bæði í "
+#~ "ljósum og dökkum ham."
+
+#~ msgid "Translation memory"
+#~ msgstr "Þýðingaminni"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr "Endurnýttu fyrirliggjandi þýðingar til að spara tíma og peninga."
+
+#~ msgid "Translation add-ons"
+#~ msgstr "Þýðingarviðbætur"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "Hægt er að sérsníða vinnuferli staðfærslu með ýmsum viðbótum."
+
+#~ msgid "Backups"
+#~ msgstr "Öryggisafrit"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr "Innbyggð fjartengd öryggisafrit til að fyrirbyggja tap á gögnum."
+
+#~ msgid "Screenshots"
+#~ msgstr "Skjámyndir"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "Gefðu þýðingunum sjónrænt samhengi."
+
+#~ msgid "Variants"
+#~ msgstr "Tilbrigði"
+
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr "Hópaðu tilbrigði við strengi til að auðvelda þýðingar."
+
+#~ msgid "Intermediate language"
+#~ msgstr "Millistigs-tungumál"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr "Prófarkalestu strengi frá forriturum áður en þeir eru þýddir."
+
+#~ msgid "Automatic translation"
+#~ msgstr "Sjálfvirk þýðing"
+
+#~ msgid ""
+#~ "Translations or suggestions can be done by machine translation services "
+#~ "or AI."
+#~ msgstr ""
+#~ "Hægt er að gera þýðingar eða tillögur með vélþýðingaþjónustum eða AI-"
+#~ "vitlíki."
+
+#~ msgid "Organize translations"
+#~ msgstr "Skipuleggja þýðingar"
+
+#~ msgid "Categorize the translation files to ease navigation."
+#~ msgstr "Flokkaðu þýðingaskrár til að einfalda rötun um gögnin."
+
+#~ msgid "Keyboard operation"
+#~ msgstr "Lyklaborðsaðgerð"
+
+#~ msgid "Use keyboard to effectively navigate while translating."
+#~ msgstr ""
+#~ "Notaðu lyklaborðið til að flakka skilmerkilega um viðmótið á meðan þú ert "
+#~ "að þýða."
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "Notaðu Weblate sem þjónustu, settu upp þitt eigið kerfi, eða <a "
+#~ "href=\"%(url)s\">fáðu aðstoð</a> við að koma upp kerfi á staðnum — allt í "
+#~ "boði með þægindum forgangsstuðnings."
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr "Weblate - vefhýst staðfærslukerfi"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr "<strong>Samfelld</strong> staðfærsla í vefumhverfi"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "Frjáls hugbúnaður með opnum notkunarleyfum, notaður af meira en "
+#~ "%(projects)s frjálsum hugbúnaðarverkefnum og fyrirtækjum í yfir "
+#~ "%(countries)s löndum."
+
+#~ msgid "Explore all features"
+#~ msgstr "Skoða alla eiginleika"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "Hýsingarþjónusta og sjálfstætt verkfæri með náinni samþættingu við "
+#~ "útgáfustýringarkerfi. Einfalt og hreinlegt notandaviðmót, flæði þýðinga á "
+#~ "milli þýðingarhluta, gæðaprófanir og sjálfvirkar vísanir í grunnkóðaskrár."
+
+#~ msgid "Robust feature set"
+#~ msgstr "Þróað safn eiginleika"
+
+#~ msgid "Go to pricing"
+#~ msgstr "Fara í verðlista"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "Skelltu þér í djúpu laugina, eða nýttu þér þekkingu og reynslu frá "
+#~ "atvinnumönnunum okkar, sem gefa sértækum þörfum þínum þá athygli sem við "
+#~ "á."
+
+#~ msgid "Continuous Localization"
+#~ msgstr "Samfelld staðfærsla"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr ""
+#~ "Sjálfvirkt vinnuferli í staðfærslu fylgir þróun verkefnis þíns náið."
+
+#~ msgid "Quality Checks"
+#~ msgstr "Gæðaprófanir"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr "Stillanlegar gæðaprófanir hjálpa til við að bæta gæði þýðinga."
+
+#~ msgid "Attribution"
+#~ msgstr "Tileinkun"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr "Allra þýðenda er skilmerkilega getið í útgáfustjórnunarkerfinu."
+
+#~ msgid "Hosting Plans"
+#~ msgstr "Hýsingarleiðir"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "Notaðu Weblate sem þjónustu, verð frá 19 EUR (evrum)."
+
+#~ msgid "Cloud Ready"
+#~ msgstr "Tilbúið fyrir ský"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr "Kemur með tilbúnum verkfærum til að vinna með í skýinu þínu."
+
+#~ msgid "Libre Software"
+#~ msgstr "Frjáls hugbúnaður"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr ""
+#~ "Með frjálsum höfundarrétti; notaðu, skoðaðu, breyttu og deildu að vild "
+#~ "með hverjum sem þú vilt."
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr ""
+#~ "<strong>Ókeypis áskrift</strong> eða <strong>Forgangsáskrift</strong> — "
+#~ "þú ræður"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "fyrir auðveldleika og þægindi"
+
+#~ msgid "Compare all plans"
+#~ msgstr "Berðu saman allar áskriftarleiðir"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "Weblate er frjáls hugbúnaður með samfélagsstuðningi. Þeir sem eru í "
+#~ "áskrift fá forgangsaðstoð án aukagjalds. Hægt er að kaupa "
+#~ "fyrirframgreidda aðstoðarpakka."
+
+#~ msgid "Reliable support"
+#~ msgstr "Áreiðanleg aðstoð"
+
+#~ msgid "User not found!"
+#~ msgstr "Notandi fannst ekki!"
 
 #~ msgid "Add a user"
 #~ msgstr "Bæta við notanda"
@@ -4345,16 +5148,6 @@ msgstr ""
 #~| msgid "Yearly"
 #~ msgid "Year"
 #~ msgstr "Árlega"
-
-#, fuzzy
-#~| msgid "Get support"
-#~ msgid "Issue upgrade quote"
-#~ msgstr "Fá aðstoð"
-
-#, fuzzy
-#~| msgid "Download invoice"
-#~ msgid "Create invoice"
-#~ msgstr "Sækja reikning"
 
 #~ msgid "Company or individual name"
 #~ msgstr "Nafn fyrirtækis eða einstaklings"
@@ -4479,12 +5272,6 @@ msgstr ""
 #~ "meðlimi samfélagsins okkar eða bætt hjálparskjölin okkar."
 
 #~ msgid ""
-#~ "VAT ID validation service unavailable for {}, please try again later."
-#~ msgstr ""
-#~ "Staðfestingarþjónusta virðisaukaskattsnúmera fyrir {} er óvirk í "
-#~ "augnablikinu, reyndu aftur síðar."
-
-#~ msgid ""
 #~ "Additionally, Bitnami Weblate stack is available for many platforms and "
 #~ "works with most cloud providers."
 #~ msgstr ""
@@ -4526,9 +5313,6 @@ msgstr ""
 #~ msgctxt "Hosting plan"
 #~ msgid "Enterprise"
 #~ msgstr "Fyrirtæki"
-
-#~ msgid "and dedicated"
-#~ msgstr "og frátekið"
 
 #, python-format
 #~ msgid "over <strong>%(count)s</strong>"
@@ -4634,9 +5418,6 @@ msgstr ""
 #~| msgid "Manage your subscriptions"
 #~ msgid "Manage your services"
 #~ msgstr "Hafðu umsjón með styrkjunum þínum"
-
-#~ msgid "Invite e-mail"
-#~ msgstr "Boðspóstur"
 
 #~ msgid "and"
 #~ msgstr "og"

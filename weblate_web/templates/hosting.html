@@ -306,46 +306,135 @@
           </p>
         </div>
 
-        <div class="pricing-table-top">
-          {% blocktranslate %}<b>14-day gratis trial</b> included in all cloud plans{% endblocktranslate %}
-        </div>
-        <div class="pricing-table">
-          <div class="pricing-table-left">
-            <div class="col">
-              <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% translate "Continuous localization" %}</a></span>
+        <div id="price-calculator"
+             role="region"
+             class="price-calculator"
+             aria-labelledby="calculator-title"
+             hidden>
+          <h3 id="calculator-title">{% translate "Calculate your hosting price" %}</h3>
+          <div class="calculator-layout">
+            <div class="calculator-fields">
+              <div class="calculator-inputs">
+                <div>
+                  <label for="calculator-strings">{% translate "Source strings" %}</label>
+                  <input id="calculator-strings"
+                         type="number"
+                         min="1"
+                         step="1"
+                         aria-describedby="calculator-help"
+                         required>
+                </div>
+                <div>
+                  <label for="calculator-languages">{% translate "Translation languages" %}</label>
+                  <input id="calculator-languages"
+                         type="number"
+                         min="0"
+                         step="1"
+                         aria-describedby="calculator-help"
+                         required>
+                </div>
               </div>
-              <div class="line">
-                <span class="middle"><a href="#strings">{% translate "Hosted strings" %}</a></span>
+              <p id="calculator-help">{% translate "Hosted strings = source strings × (translation languages + 1 source language). The source language counts toward your plan." %}</p>
+              <div class="calculator-dedicated-option">
+                <input id="calculator-dedicated"
+                       type="checkbox"
+                       aria-describedby="calculator-dedicated-help">
+                <label for="calculator-dedicated">
+                  {% translate "Dedicated instance" %}
+                  <span id="calculator-dedicated-help">{% translate "SSO and custom domain" %}</span>
+                </label>
               </div>
-              <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#project-configuration">{% translate "Translation projects" %}</a></span>
-              </div>
-              <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#component-configuration">{% translate "Translation components" %}</a></span>
-              </div>
-              <div class="line">
-                <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/access.html#manage-users">{% translate "Number of translators" %}</a></span>
-              </div>
-              <div class="line">
-                <span class="middle"><a href="#which">{% translate "Dedicated instance" %}</a></span>
+            </div>
+            <div class="calculator-summary" aria-live="polite" aria-atomic="true">
+              <p class="calculator-caption">{% translate "Recommended plan" %}</p>
+              <p id="calculator-prompt">{% translate "Enter source strings and translation languages to find your plan." %}</p>
+              <p id="calculator-error" hidden>{% translate "Enter valid whole numbers: at least one source string and zero or more translation languages." %}</p>
+              <div id="calculator-result" hidden>
+                <p class="calculator-total">{% translate "Hosted strings" %}<strong id="calculator-total"></strong></p>
+                <div id="calculator-plan">
+                  <strong id="calculator-name"></strong>
+                  <p class="calculator-capacity"><span id="calculator-capacity"></span> {% translate "Hosted strings" %}</p>
+                  <div class="calculator-prices">
+                    <p id="calculator-monthly-row"><strong id="calculator-monthly"></strong><span>{% translate "Monthly" %}</span></p>
+                    <p><strong id="calculator-yearly"></strong><span>{% translate "Yearly" %}</span></p>
+                  </div>
+                  <a id="calculator-trial"
+                     href="https://hosted.weblate.org/trial/"
+                     class="button">{% translate "Gratis trial" %}</a>
+                  <a id="calculator-buy" class="button" hidden>{% translate "Buy now" %}</a>
+                </div>
+                <div id="calculator-custom" hidden>
+                  <p>{% translate "Your project exceeds our largest standard plan. Contact us for a custom hosting plan." %}</p>
+                  <a href="{{ company_sales_email_mailto }}" class="button">{% translate "Contact us" %}</a>
+                </div>
               </div>
             </div>
           </div>
-          <div class="pricing-table-right pricing-table-right-2">
-            <div class="pricing-table-right-inner pricing-table-right-inner-2">
-              {% for package in hosting_packages %}
+        </div>
+        {{ calculator_packages|json_script:"calculator-packages" }}
+
+        <div class="cloud-pricing-table">
+          <div class="pricing-table-top">
+            {% blocktranslate %}<b>14-day gratis trial</b> included in all cloud plans{% endblocktranslate %}
+          </div>
+          <div class="pricing-table">
+            <div class="pricing-table-left">
+              <div class="col">
+                <div class="line">
+                  <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/continuous.html">{% translate "Continuous localization" %}</a></span>
+                </div>
+                <div class="line">
+                  <span class="middle"><a href="#strings">{% translate "Hosted strings" %}</a></span>
+                </div>
+                <div class="line">
+                  <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#project-configuration">{% translate "Translation projects" %}</a></span>
+                </div>
+                <div class="line">
+                  <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/projects.html#component-configuration">{% translate "Translation components" %}</a></span>
+                </div>
+                <div class="line">
+                  <span class="middle"><a href="https://docs.weblate.org/en/latest/admin/access.html#manage-users">{% translate "Number of translators" %}</a></span>
+                </div>
+                <div class="line">
+                  <span class="middle"><a href="#which">{% translate "Dedicated instance" %}</a></span>
+                </div>
+              </div>
+            </div>
+            <div class="pricing-table-right pricing-table-right-2">
+              <div class="pricing-table-right-inner pricing-table-right-inner-2">
+                {% for package in hosting_packages %}
+                  <div class="col">
+                    <div class="head line blue">
+                      <strong>{{ package.short_name }}</strong>
+                    </div>
+                    <div class="line">
+                      <span class="check"></span>
+                    </div>
+                    <div class="line">
+                      <strong>{{ package.limit_hosted_strings|intcomma }}</strong>
+                    </div>
+                    <div class="line">
+                      <span class="green">∞</span>
+                    </div>
+                    <div class="line">
+                      <span class="green">∞</span>
+                    </div>
+                    <div class="line">
+                      <span class="green">∞</span>
+                    </div>
+                    <div class="line">
+                      {% if package.can_be_dedicated %}<span class="check"></span>{% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
                 <div class="col">
-                  <div class="head line blue">
-                    <strong>{{ package.short_name }}</strong>
+                  <div class="head line">
+                    <strong>{% translate "Custom" context "Hosting plan" %}</strong>
                   </div>
                   <div class="line">
                     <span class="check"></span>
                   </div>
                   <div class="line">
-                    <strong>{{ package.limit_hosted_strings|intcomma }}</strong>
-                  </div>
-                  <div class="line">
                     <span class="green">∞</span>
                   </div>
                   <div class="line">
@@ -355,134 +444,115 @@
                     <span class="green">∞</span>
                   </div>
                   <div class="line">
-                    {% if package.can_be_dedicated %}<span class="check"></span>{% endif %}
+                    <span class="green">∞</span>
+                  </div>
+                  <div class="line">
+                    <span class="check"></span>
                   </div>
                 </div>
-              {% endfor %}
-              <div class="col">
-                <div class="head line">
-                  <strong>{% translate "Custom" context "Hosting plan" %}</strong>
+                <div class="clear"></div>
+                <div class="pricing-table-tabs-menu">
+                  <ul>
+                    <li class="current" data-tab="monthly">{% translate "Monthly" %}</li>
+                    <li data-tab="yearly" id="yearly-pricing">{% translate "Yearly" %}</li>
+                  </ul>
+                  <div class="tabs-checkbox">
+                    <input type="checkbox" name="dedicated" id="dedicated-checkbox">
+                    <label for="dedicated-checkbox">{% translate "Dedicated instance" %}</label>
+                  </div>
+                  <div class="tabs-info">
+                    {% translate "<strong>Save 20%</strong> with annual subscription!" %}
+                  </div>
                 </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="green">∞</span>
-                </div>
-                <div class="line">
-                  <span class="check"></span>
-                </div>
-              </div>
-              <div class="clear"></div>
-              <div class="pricing-table-tabs-menu">
-                <ul>
-                  <li class="current" data-tab="monthly">{% translate "Monthly" %}</li>
-                  <li data-tab="yearly" id="yearly-pricing">{% translate "Yearly" %}</li>
-                </ul>
-                <div class="tabs-checkbox">
-                  <input type="checkbox" name="dedicated" id="dedicated-checkbox">
-                  <label for="dedicated-checkbox">{% translate "Dedicated instance" %}</label>
-                </div>
-                <div class="tabs-info">
-                  {% translate "<strong>Save 20%</strong> with annual subscription!" %}
-                </div>
-              </div>
-              <div class="pricing-table-tabs">
-                <div id="monthly" class="tab-content current">
-                  {% for package in hosting_packages %}
-                    <div class="col">
-                      <div class="line price">
-                        <strong>{{ package.monthly_price|price_format }}</strong>
-                        {% filter upper %}
+                <div class="pricing-table-tabs">
+                  <div id="monthly" class="tab-content current">
+                    {% for package in hosting_packages %}
+                      <div class="col">
+                        <div class="line price">
+                          <strong>{{ package.monthly_price|price_format }}</strong>
+                          {% filter upper %}
                           {% translate "Monthly" %}
                         {% endfilter %}
-                      </div>
-                      <div class="line">
-                        <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                      </div>
-                      <div class="line last"></div>
-                    </div>
-                  {% endfor %}
-                  <div class="col">
-                    <div class="line price small">
-                      {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
-                    </div>
-                    <div class="line">
-                      <a href="{{ company_sales_email_mailto }}" class="button">{% translate "Contact us" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                </div>
-                <div id="yearly" class="tab-content">
-                  {% for package in hosting_packages %}
-                    <div class="col">
-                      <div class="line price">
-                        <strong>{{ package.price|price_format }}</strong>
-                        {% filter upper %}
-                          {% translate "Yearly" %}
-                        {% endfilter %}
-                      </div>
-                      <div class="line">
-                        <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
-                      </div>
-                      <div class="line last"></div>
-                    </div>
-                  {% endfor %}
-                  <div class="col">
-                    <div class="line price small">
-                      {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
-                    </div>
-                    <div class="line">
-                      <a href="{{ company_sales_email_mailto }}" class="button">{% translate "Contact us" %}</a>
-                    </div>
-                    <div class="line last"></div>
-                  </div>
-                </div>
-                <div id="dedicated" class="tab-content">
-                  {% for package in hosting_packages %}
-                    {% if not package.can_be_dedicated %}
-                      <div class="col">
-                        <div class="line price small"></div>
+                        </div>
+                        <div class="line">
+                          <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
+                        </div>
                         <div class="line last"></div>
                       </div>
-                    {% else %}
+                    {% endfor %}
+                    <div class="col">
+                      <div class="line price small">
+                        {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
+                      </div>
+                      <div class="line">
+                        <a href="{{ company_sales_email_mailto }}" class="button">{% translate "Contact us" %}</a>
+                      </div>
+                      <div class="line last"></div>
+                    </div>
+                  </div>
+                  <div id="yearly" class="tab-content">
+                    {% for package in hosting_packages %}
                       <div class="col">
                         <div class="line price">
                           <strong>{{ package.price|price_format }}</strong>
                           {% filter upper %}
-                            {% translate "Yearly" %}
-                          {% endfilter %}
+                          {% translate "Yearly" %}
+                        {% endfilter %}
                         </div>
                         <div class="line">
-                          <a href="{% url 'subscription-new' %}?plan=dedicated{{ package.name|cut:"hosted" }}"
-                             class="button">{% translate "Buy now" %}</a>
+                          <a href="https://hosted.weblate.org/trial/" class="button">{% translate "Gratis trial" %}</a>
                         </div>
                         <div class="line last"></div>
                       </div>
-                    {% endif %}
-                  {% endfor %}
-                  <div class="col">
-                    <div class="line price small">
-                      {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
+                    {% endfor %}
+                    <div class="col">
+                      <div class="line price small">
+                        {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
+                      </div>
+                      <div class="line">
+                        <a href="{{ company_sales_email_mailto }}" class="button">{% translate "Contact us" %}</a>
+                      </div>
+                      <div class="line last"></div>
                     </div>
-                    <div class="line">
-                      <a href="{{ company_sales_email_mailto }}" class="button">{% translate "Contact us" %}</a>
+                  </div>
+                  <div id="dedicated" class="tab-content">
+                    {% for package in hosting_packages %}
+                      {% if not package.can_be_dedicated %}
+                        <div class="col">
+                          <div class="line price small"></div>
+                          <div class="line last"></div>
+                        </div>
+                      {% else %}
+                        <div class="col">
+                          <div class="line price">
+                            <strong>{{ package.price|price_format }}</strong>
+                            {% filter upper %}
+                            {% translate "Yearly" %}
+                          {% endfilter %}
+                          </div>
+                          <div class="line">
+                            <a href="{% url 'subscription-new' %}?plan=dedicated{{ package.name|cut:"hosted" }}"
+                               class="button">{% translate "Buy now" %}</a>
+                          </div>
+                          <div class="line last"></div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                    <div class="col">
+                      <div class="line price small">
+                        {% blocktranslate %}<b>Ask</b> for options{% endblocktranslate %}
+                      </div>
+                      <div class="line">
+                        <a href="{{ company_sales_email_mailto }}" class="button">{% translate "Contact us" %}</a>
+                      </div>
+                      <div class="line last"></div>
                     </div>
-                    <div class="line last"></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
 
         <h2 class="section-title crypto payment-conditions">{% translate "Payment" %}</h2>

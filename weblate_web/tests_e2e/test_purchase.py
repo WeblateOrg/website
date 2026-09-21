@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from playwright.sync_api import expect
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -23,6 +24,97 @@ pytestmark = [
 
 class TestServicePurchase:  # pylint: disable=redefined-outer-name
     """Test suite for purchasing services."""
+
+    def test_price_calculator(self, page: Page, live_server):
+        page.goto(f"{live_server.url}/en/hosting/")
+        strings = page.locator("#calculator-strings")
+        languages = page.locator("#calculator-languages")
+        dedicated = page.locator("#calculator-dedicated")
+        name = page.locator("#calculator-name")
+        expect(page.locator("#calculator-prompt")).to_be_visible()
+        strings.fill("1000")
+        languages.fill("9")
+        expect(page.locator("#calculator-total")).to_have_text(
+            "1,000 × (9 + 1) = 10,000"
+        )
+        expect(name).to_have_text("10k")
+        expect(page.locator("#calculator-monthly")).to_have_text("€47")
+        expect(page.locator("#calculator-yearly")).to_have_text("€470")
+        expect(page.locator("#calculator-trial")).to_have_attribute(
+            "href", "https://hosted.weblate.org/trial/"
+        )
+        strings.fill("1001")
+        expect(name).to_have_text("40k")
+        dedicated.check()
+        expect(name).to_have_text("160k")
+        expect(page.locator("#calculator-monthly-row")).to_be_hidden()
+        expect(page.locator("#calculator-yearly")).to_have_text("€1,140")
+        expect(page.locator("#calculator-buy")).to_have_attribute(
+            "href", "/en/subscription/new/?plan=dedicated:160k"
+        )
+        dedicated.uncheck()
+        expect(name).to_have_text("40k")
+        expect(page.locator("#calculator-trial")).to_be_visible()
+        languages.fill("0")
+        strings.fill("160000")
+        dedicated.check()
+        expect(name).to_have_text("160k")
+        strings.fill("160001")
+        expect(name).to_have_text("640k")
+        strings.fill("20480000")
+        expect(name).to_have_text("20M")
+        strings.fill("655360000")
+        expect(name).to_have_text("650M")
+        strings.fill("655360001")
+        expect(page.locator("#calculator-custom")).to_be_visible()
+        expect(page.locator("#calculator-plan")).to_be_hidden()
+        expect(page.locator("#calculator-custom a")).to_have_attribute(
+            "href", "mailto:sales@weblate.org"
+        )
+        for invalid in ("0", "-1", "1.5", "9007199254740992"):
+            strings.fill(invalid)
+            expect(page.locator("#calculator-error")).to_be_visible()
+            expect(page.locator("#calculator-result")).to_be_hidden()
+        strings.fill("1000")
+        for invalid in ("-1", "1.5", "9007199254740991"):
+            languages.fill(invalid)
+            expect(page.locator("#calculator-error")).to_be_visible()
+            expect(page.locator("#calculator-result")).to_be_hidden()
+        languages.fill("")
+        expect(page.locator("#calculator-prompt")).to_be_visible()
+        expect(page.locator("#calculator-result")).to_be_hidden()
+
+    @pytest.mark.parametrize("width", [375, 1280])
+    @pytest.mark.parametrize("locale", ["en", "ar"])
+    def test_price_calculator_layout(self, page: Page, live_server, width, locale):
+        page.set_viewport_size({"width": width, "height": 900})
+        page.goto(f"{live_server.url}/{locale}/hosting/")
+        strings = page.locator("#calculator-strings")
+        strings.fill("2000")
+        strings.press("Tab")
+        expect(page.locator("#calculator-languages")).to_be_focused()
+        page.keyboard.type("4")
+        page.keyboard.press("Tab")
+        expect(page.locator("#calculator-dedicated")).to_be_focused()
+        page.keyboard.press("Space")
+        expect(page.locator("#calculator-name")).to_have_text("160k")
+        calculator = page.locator("#price-calculator")
+        bounds = calculator.bounding_box()
+        assert bounds is not None
+        assert bounds["x"] >= 0
+        assert bounds["x"] + bounds["width"] <= width
+        table = page.locator(".cloud-pricing-table").bounding_box()
+        payment = page.locator(".cloud-pricing-table + h2").bounding_box()
+        assert table is not None
+        assert payment is not None
+        assert table["y"] >= bounds["y"] + bounds["height"]
+        assert payment["y"] >= table["y"] + table["height"]
+        calculator.screenshot(
+            path=f"test-results/price-calculator-{locale}-{width}.png"
+        )
+        page.screenshot(
+            path=f"test-results/hosting-calculator-{locale}-{width}.png", full_page=True
+        )
 
     def test_view_hosting_packages(self, page: Page, live_server):
         """Test that users can view available hosting packages."""

@@ -75,6 +75,7 @@ from .models import (
     sync_packages,
     validate_bitmap,
 )
+from .packages import DEDICATED_LIMIT, PACKAGE_NAMES, PACKAGES
 from .payments.models import PaymentConf
 from .payments.validators import VAT_VALIDITY_DAYS
 from .remote import (
@@ -780,6 +781,22 @@ class ViewTestCase(PostTestCase):
     def test_index_en(self) -> None:
         response = self.client.get("/en/")
         self.assertContains(response, "yearly")
+
+    def test_hosting_calculator_catalog(self) -> None:
+        response = self.client.get("/en/hosting/")
+        self.assertContains(response, 'id="calculator-packages"')
+        catalog = response.context["calculator_packages"]
+        self.assertEqual(catalog["dedicated_minimum"], DEDICATED_LIMIT)
+        self.assertEqual([plan["limit"] for plan in catalog["plans"]], sorted(PACKAGES))
+        for plan in catalog["plans"]:
+            limit = plan["limit"]
+            self.assertEqual(plan["name"], PACKAGE_NAMES[limit])
+            self.assertEqual(plan["yearly_price"], price_format(PACKAGES[limit]))
+            self.assertEqual(plan["monthly_price"], price_format(PACKAGES[limit] // 10))
+            self.assertEqual(
+                plan["dedicated_url"],
+                f"{reverse('subscription-new')}?plan=dedicated:{PACKAGE_NAMES[limit].lower()}",
+            )
 
     def test_index_missing_timestamp(self) -> None:
         changes = cache.get("wlweb-changes-list")
