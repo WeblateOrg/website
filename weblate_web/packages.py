@@ -5,8 +5,11 @@ PACKAGES: dict[int, int] = {
     640000: 1930,
     2560000: 3420,
     10240000: 6160,
+    20480000: 8300,
     40960000: 11220,
+    81920000: 15190,
     163840000: 20590,
+    327680000: 27940,
     655360000: 37930,
 }
 DEDICATED_LIMIT = 160000
@@ -28,8 +31,6 @@ def package_name(number: int) -> str:
         return f"{number // 1000}k"
     if number < 10_000_000:
         return f"{(number // 100_000) / 10}M"
-    if number < 100_000_000:
-        return f"{number // 1_000_000}M"
     return f"{(number // 10_000_000) * 10}M"
 
 
