@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-11 03:21-0500\n"
-"PO-Revision-Date: 2026-09-05 05:52+0000\n"
+"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"PO-Revision-Date: 2026-09-18 05:30+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/weblate/"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.9.1.dev0\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 msgid "Please confirm that you want to issue a final invoice."
 msgstr ""
@@ -113,11 +113,50 @@ msgstr "Адрас электроннай пошты"
 msgid "Full name"
 msgstr "Поўнае імя"
 
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue date"
+msgstr "Падтрымка"
+
+#, fuzzy
+#| msgid "Production test"
+msgid "Correction date"
+msgstr "Вытворчы тэст"
+
+msgid "Please confirm that you want to issue a credit note."
+msgstr ""
+
+msgid "Explanation for the customer"
+msgstr ""
+
+#, fuzzy
+#| msgid "(including VAT)"
+msgid "Amount including VAT"
+msgstr "(уключаючы ПДВ)"
+
+msgid "Only paid invoices can be refunded."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Correct paid invoice"
+msgstr "Спампаваць рахунак"
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Internal explanation"
+msgstr "API для інтэграцыі"
+
 msgid "Invalid hosted user response"
 msgstr ""
 
 msgid "Hosted user synchronization is disabled."
 msgstr ""
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice correction"
+msgstr "API для інтэграцыі"
 
 msgid "Yes"
 msgstr ""
@@ -128,6 +167,18 @@ msgid "No"
 msgstr "Нататка"
 
 msgid "not set"
+msgstr ""
+
+#, python-format
+msgid "Credit note %(correction)s for invoice %(invoice)s"
+msgstr ""
+
+#, python-format
+msgid "Invoice %(invoice)s marked uncollectible"
+msgstr ""
+
+#, python-format
+msgid "Collection resumed for invoice %(invoice)s"
 msgstr ""
 
 msgid "Invoice issued during VIES outage"
@@ -563,14 +614,28 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Get support"
+msgid "Issue credit note?"
+msgstr "Падтрымка"
+
+#, fuzzy
+#| msgid "Get support"
 msgid "Issue final invoice?"
 msgstr "Падтрымка"
+
+msgid ""
+"This issues a credit note that cannot be edited. It does not transfer money."
+msgstr ""
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
 
 msgid "Cancel"
 msgstr "Скасаваць"
+
+#, fuzzy
+#| msgid "Get support"
+msgid "Issue credit note"
+msgstr "Падтрымка"
 
 msgid "Issue invoice"
 msgstr ""
@@ -599,6 +664,9 @@ msgstr ""
 msgid "Edit in admin"
 msgstr ""
 
+msgid "Credit note"
+msgstr ""
+
 #, fuzzy
 #| msgid "D-U-N-S Number"
 msgid "Number"
@@ -609,6 +677,35 @@ msgstr ""
 
 msgid "Due"
 msgstr ""
+
+#, fuzzy
+#| msgid "Payment amount"
+msgid "Credited amount"
+msgstr "Сума аплаты"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Remaining amount"
+msgstr "Плацеж у чаканні"
+
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Correction of"
+msgstr "Наладзіць спіс"
+
+msgid "Reason"
+msgstr ""
+
+#, fuzzy
+#| msgid "and dedicated"
+msgid "Cancelled duplicate"
+msgstr "і адведзены"
+
+#, fuzzy
+#| msgid "Collaboration Sites"
+msgid "Collection note"
+msgstr "Сайты для сумеснай працы"
 
 #, fuzzy
 #| msgid "Discover"
@@ -675,6 +772,50 @@ msgstr ""
 msgid "Reopen quote"
 msgstr "Падтрымка"
 
+#, fuzzy
+#| msgid "Integration API"
+msgid "Invoice corrections"
+msgstr "API для інтэграцыі"
+
+msgid "Refund"
+msgstr ""
+
+msgid ""
+"Issue a credit note for a full or partial refund. Transfer the money "
+"separately, then confirm the refund on the credit note."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Duplicate invoice"
+msgstr "Спампаваць рахунак"
+
+msgid ""
+"Cancel this unpaid duplicate in full with a credit note. Select the correct "
+"paid invoice to keep."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Cancel duplicate invoice"
+msgstr "Спампаваць рахунак"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Collection status"
+msgstr "Стан перакладу"
+
+msgid ""
+"Marking an invoice uncollectible stops reminders without changing its amount "
+"or VAT."
+msgstr ""
+
+msgid "Resume collection"
+msgstr ""
+
+msgid "Mark uncollectible"
+msgstr ""
+
 msgid "Confirm refund done"
 msgstr ""
 
@@ -703,6 +844,9 @@ msgstr "Наладзіць спіс"
 
 msgid "Overview"
 msgstr "Агляд"
+
+msgid "Owners"
+msgstr ""
 
 #, fuzzy
 #| msgid "Integration API"
@@ -821,16 +965,6 @@ msgstr "Дадаць сервер у Сусвет Weblate"
 msgid "Review merge"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add server to Discover Weblate"
-msgid "Add owner to customer"
-msgstr "Дадаць сервер у Сусвет Weblate"
-
-#, fuzzy
-#| msgid "Add a user"
-msgid "Add owner"
-msgstr "Дадаць карыстальніка"
-
 msgid "Add note"
 msgstr ""
 
@@ -910,6 +1044,47 @@ msgstr "Рэдагаванне"
 #| msgid "Documentation"
 msgid "No donations recorded."
 msgstr "Дакументацыя"
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer owners"
+msgstr "Адвольны"
+
+msgid "Username"
+msgstr "Імя карыстальніка"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "No customer owners."
+msgstr "Дадаць карыстальніка"
+
+msgid "Pending owner invitations"
+msgstr ""
+
+msgid "Invited by"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unlimited"
+msgid "Invited"
+msgstr "Неабмежавана"
+
+msgid "Expires"
+msgstr "Тэрмін"
+
+msgid "No pending owner invitations."
+msgstr ""
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add customer owner"
+msgstr "Дадаць карыстальніка"
+
+#, fuzzy
+#| msgid "Add a user"
+msgid "Add owner"
+msgstr "Дадаць карыстальніка"
 
 msgid "Invoice history"
 msgstr ""
@@ -1030,6 +1205,18 @@ msgid "Discoverable"
 msgstr "Сусвет Weblate"
 
 #, fuzzy
+#| msgid "Translation context"
+msgid "Instance activity"
+msgstr "Кантэкст перакладу"
+
+msgid "Monthly changes, for up to 24 latest reported months."
+msgstr ""
+
+#, python-format
+msgid "%(changes)s changes"
+msgstr ""
+
+#, fuzzy
 #| msgid "Service"
 msgid "Service limits"
 msgstr "Сэрвіс"
@@ -1061,9 +1248,6 @@ msgstr "Актыўны"
 #| msgid "Service Status"
 msgid "Service is terminated"
 msgstr "Стан службы"
-
-msgid "Expires"
-msgstr "Тэрмін"
 
 msgid "Edit subscription in admin"
 msgstr ""
@@ -1180,7 +1364,13 @@ msgstr ""
 
 #, fuzzy, python-format
 #| msgid "Add a user"
-msgid "Added %(email)s to customer owners."
+msgid ""
+"Added %(email)s to customer owners, but the notification could not be sent."
+msgstr "Дадаць карыстальніка"
+
+#, fuzzy, python-format
+#| msgid "Add a user"
+msgid "Added %(email)s to customer owners and notified them."
 msgstr "Дадаць карыстальніка"
 
 #, python-format
@@ -1292,6 +1482,48 @@ msgstr "URL сервера"
 msgid "Server URL must use HTTPS."
 msgstr ""
 
+msgid ""
+"Select the paid invoice for the same customer and correct the full remaining "
+"amount."
+msgstr ""
+
+msgid ""
+"This legacy invoice cannot be corrected because its rounding differs from "
+"current invoice calculations."
+msgstr ""
+
+msgid "This request has already been used."
+msgstr ""
+
+msgid "Choose a positive amount within the remaining invoice amount."
+msgstr ""
+
+msgid "A correction reason and explanation are required."
+msgstr ""
+
+msgid "Correction dates cannot precede the original invoice dates."
+msgstr ""
+
+msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid "Only duplicate corrections can reference a replacement invoice."
+msgstr ""
+
+msgid "The correction amount excluding VAT cannot exceed 99,999.99."
+msgstr ""
+
+msgid "Only positive final invoices can be marked uncollectible."
+msgstr ""
+
+msgid "This invoice has already been settled."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translation context"
+msgid "An internal explanation is required."
+msgstr "Кантэкст перакладу"
+
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -1339,8 +1571,28 @@ msgstr ""
 msgid "Converted"
 msgstr ""
 
+msgid "Credited"
+msgstr ""
+
+msgid "Refunded"
+msgstr ""
+
 msgid "Paid"
 msgstr "Аплачаны"
+
+msgid "Uncollectible"
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Applied to invoice"
+msgstr "Спампаваць рахунак"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Awaiting refund"
+msgstr "Плацеж у чаканні"
 
 msgid "Unpaid"
 msgstr ""
@@ -1735,6 +1987,21 @@ msgstr "Штомесяц"
 
 msgid "One-time"
 msgstr "Аднаразова"
+
+msgid "Pending"
+msgstr ""
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Revoked"
+msgstr ""
+
+msgid "Delivery failed"
+msgstr ""
+
+msgid "Fulfilled by staff"
+msgstr ""
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -2243,6 +2510,28 @@ msgstr "Дапамагчы з перакладам"
 msgid "Translation status"
 msgstr "Стан перакладу"
 
+#, fuzzy
+#| msgid "Customize listing"
+msgid "Customer owner invitation"
+msgstr "Наладзіць спіс"
+
+msgid "Review access"
+msgstr ""
+
+#, fuzzy
+#| msgctxt "Hosting plan"
+#| msgid "Custom"
+msgid "Customer account"
+msgstr "Адвольны"
+
+msgid ""
+"Accepting gives you full control over this customer account, including "
+"billing, services, secrets, and other owners."
+msgstr ""
+
+msgid "Accept invitation"
+msgstr "Прыняць запрашэнне"
+
 msgid "Discover Weblate"
 msgstr "Сусвет Weblate"
 
@@ -2630,114 +2919,234 @@ msgstr ""
 "Вы можаце кіраваць Weblate адлегла, выкарыстоўваючы <a href=\"%(url)s\">wlc</"
 "a>, які можна ўсталяваць праз Python pip:"
 
-msgid "Weblate features"
-msgstr "Магчымасці Weblate"
+msgid "Weblate features — quality translations, your control"
+msgstr ""
+
+msgid "Bring your project to more people"
+msgstr ""
 
 msgid ""
-"As a feature rich computer aided translation tool, Weblate saves both "
-"developers and translators time. Make your users happier!"
+"Give people a great experience in their own language. Weblate brings your "
+"team, community, and development workflow together to deliver quality "
+"translations—with or without AI."
 msgstr ""
-"Як шматфункцыянальны інструмент аўтаматызаванага перакладу Weblate эканоміць "
-"час распрацоўнікаў і перакладчыкаў. Зрабіце сваіх карыстальнікаў больш "
-"шчаслівымі!"
 
 msgid ""
-"Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to learn "
-"more."
+"Open source and privacy-respecting, with the freedom to choose how you "
+"translate and where you run it."
 msgstr ""
-"Праглядзіце <a href=\"https://docs.weblate.org/\"> дакументацыю </a>, каб "
-"даведацца больш."
 
-msgid "Easy to use interface"
-msgstr "Просты ў выкарыстанні інтэрфейс"
+#, fuzzy
+#| msgid "Join existing users and supporters"
+msgid "Compare hosting and support"
+msgstr "Далучайцеся да нашых карыстальнікаў і фундадатараў"
 
-msgid "Weblate screenshot"
-msgstr "Здымак экрана Weblate"
+msgid "Try Weblate"
+msgstr "Паспрабаваць Weblate"
 
-msgid "Customizable quality checks"
-msgstr "Наладжвальная праверка якасці"
-
-msgid "Detailed context"
-msgstr "Падрабязны кантэкст"
+#, fuzzy
+#| msgid "Consulting services or custom development"
+msgid "Keep translations in step with development"
+msgstr "Паслугі кансультавання ці дапрацоўка кода"
 
 msgid ""
-"Translators are provided detailed translation context, from translation "
-"files, or data enriched within Weblate."
+"Connect your repository and let new strings reach translators as your "
+"project evolves. Weblate brings translations back into version control, so "
+"developers and translators can work together without passing files back and "
+"forth."
 msgstr ""
-"Перакладчыкам даецца падрабязны кантэкст з файлаў перакладу альбо дадатковых "
-"звестак на Weblate."
-
-msgid "Fluent communication"
-msgstr "Свабодная камунікацыя"
-
-msgid "All translations are tracked and can be commented."
-msgstr "Усе пераклады адсочваюцца і могуць каментавацца."
-
-msgid "Access Control"
-msgstr "Кіраванне доступам"
-
-msgid "Fine-tune access rights to fit your environment."
-msgstr "Наладжванне правоў доступу ў адпаведнасці з вашым асяроддзем."
-
-msgid "Smart Notifications"
-msgstr "Разумныя апавяшчэнні"
 
 msgid ""
-"Translators can be notified of new strings to translate or other events."
+"Work with your existing branches and code hosting service. Translation "
+"changes are tracked alongside your code, with credit for the people who "
+"contribute."
 msgstr ""
-"Перакладчыкі могуць атрымліваць апавяшчэнні пра новыя радкі на пераклад і "
-"іншыя падзеі."
 
-msgid "Integration API"
-msgstr "API для інтэграцыі"
+#, fuzzy
+#| msgid "Continuous localization"
+msgid "Explore continuous localization"
+msgstr "Бесперапынная лакалізацыя"
 
-msgid "Integrate Weblate with third-party services."
-msgstr "Інтэграцыя Weblate з іншымі службамі."
-
-msgid "Multiple File Formats"
-msgstr "Некалькі фарматаў файлаў"
+msgid "Give every translation the context it needs"
+msgstr ""
 
 msgid ""
-"Use any common file localization format, like gettext, JSON, XLIFF or "
-"resource strings, etc."
+"Help translators understand what your users will see. Screenshots, nearby "
+"strings, and source references make meaning clearer. Shared glossaries keep "
+"terminology consistent, while translation memory helps your team reuse "
+"previous work."
 msgstr ""
-"Выкарыстанне любога тыповага фармату лакалізацыі, у тым ліку gettext, JSON, "
-"XLIFF і радкоў рэсурсаў."
-
-msgid "Branch Support"
-msgstr "Падтрымка галінаў"
 
 msgid ""
-"Handle different translation versions by pushing them automatically to "
-"different branches."
+"Catch problems with customizable quality checks, discuss unclear wording, "
+"and review contributions before considering them finished. Your team can "
+"improve the source text as well as its translations."
 msgstr ""
-"Апрацоўвайце розныя версіі перакладу, аўтаматычна адпраўляючы іх у розныя "
-"галіны."
-
-msgid "Translation Context"
-msgstr "Кантэкст перакладу"
 
 msgid ""
-"Description, nearby strings, images, related source code and glossary entries"
-"—for every string."
+"Weblate translation editor showing a French translation, a missing-"
+"placeholder warning, glossary terminology, and a screenshot of the source "
+"text in context"
 msgstr ""
-"Апісанне, суседнія радкі, выявы, які адпавядае зыходны код і запісы гласарыя "
-"для кожнага радка."
+
+msgid "Give your translators the tools to make informed choices."
+msgstr ""
+
+msgid "Explore translation quality checks"
+msgstr ""
+
+msgid "Choose how you translate—with or without AI"
+msgstr ""
+
+msgid ""
+"Translate entirely with people, or bring in machine translation and AI where "
+"they help. Your team chooses the tools, the review process, and what reaches "
+"your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translate the app"
+msgid "Translate without AI"
+msgstr "Пераклад праграмы"
+
+msgid ""
+"Let people write and review translations with context, glossaries, "
+"translation memory, and quality checks. None of these require an AI or "
+"machine translation service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Automatic translation"
+msgid "Assist your translators"
+msgstr "Аўтаматычны пераклад"
+
+msgid ""
+"Offer optional machine translation or large language model (LLM) results in "
+"the editor. Translators choose what to use, edit it, and decide what to save."
+msgstr ""
+
+#, fuzzy
+#| msgid "Start translating"
+msgid "Start with machine translations"
+msgstr "Дапамагчы з перакладам"
+
+msgid ""
+"Generate translations for people to improve, or mark them as unfinished "
+"drafts. Choose whether drafts can reach your repository while editing is "
+"still in progress."
+msgstr ""
+
+msgid "Accept suggestions before use"
+msgstr ""
+
+msgid ""
+"Keep generated text as suggestions for people to check. With automatic "
+"acceptance disabled, suggestions only become translations when a person "
+"accepts or edits them."
+msgstr ""
+
+msgid "Approve before committing"
+msgstr ""
+
+msgid ""
+"Combine translation review with an approved-only commit policy. People can "
+"edit generated translations in Weblate, while only reviewer-approved "
+"translations reach your repository."
+msgstr ""
+
+#, fuzzy
+#| msgid "Translation workflow"
+msgid "Explore AI translation workflows"
+msgstr "Працэс перакладу"
+
+#, fuzzy
+#| msgid "Choose your amount in EUR"
+msgid "Choose how your content is handled"
+msgstr "Абярыце суму ў Еўра"
+
+msgid ""
+"Use managed hosting or run Weblate on your own infrastructure. Set access "
+"permissions to decide who can see, translate, and review your content."
+msgstr ""
+
+msgid ""
+"Choose which external translation services to enable, or work without them. "
+"When you use an external service, it can receive source strings, "
+"translations, and related context to generate results. Choose services that "
+"fit your requirements for handling that content."
+msgstr ""
+
+msgid "Find the right hosting option"
+msgstr ""
+
+msgid "Bring your team and community together"
+msgstr ""
+
+msgid ""
+"Give your colleagues, professional translators, and community contributors a "
+"shared place to work. Assign roles, discuss wording where it matters, and "
+"recognize each person's contribution."
+msgstr ""
+
+msgid ""
+"Keep contributors informed with notifications and see where work is needed "
+"through progress and activity reports. Whether you coordinate a product team "
+"or welcome volunteers, everyone can help improve the result."
+msgstr ""
+
+msgid "The everyday tools your localization needs"
+msgstr ""
+
+msgid ""
+"Import and export translations, connect other tools through the API, and "
+"automate recurring tasks with add-ons. Manage languages, organize "
+"translation files, and keep your workflow moving as your project grows."
+msgstr ""
+
+#, fuzzy
+#| msgid "Read more in the documentation."
+msgid "Explore the documentation"
+msgstr "Глядзіце падрабязней у дакументацыі."
+
+msgid "Keep working with your existing formats"
+msgstr ""
+
+msgid ""
+"Localize your app, website, documentation, and more without leaving the "
+"formats your project uses. Explore the supported formats below for details "
+"and format-specific capabilities."
+msgstr ""
+
+msgid ".NET resource files (RESX, RESW)"
+msgstr ""
 
 msgid "Android string resources"
 msgstr ""
 
-msgid "Apple iOS strings"
-msgstr "Радкі Apple iOS"
-
 msgid "App store metadata files"
 msgstr "Файлы метаданых крамы праграм"
+
+msgid "Apple iOS strings"
+msgstr "Радкі Apple iOS"
 
 msgid "ARB file"
 msgstr "Файл ARB"
 
+#, fuzzy
+#| msgid "DTD files"
+msgid "AsciiDoc files"
+msgstr "Файлы DTD"
+
+msgid "Compose Multiplatform resources"
+msgstr ""
+
 msgid "CSV files"
 msgstr ""
+
+#, fuzzy
+#| msgid "Text files"
+msgid "DokuWiki text files"
+msgstr "Тэкставыя файлы"
 
 msgid "DTD files"
 msgstr "Файлы DTD"
@@ -2751,6 +3160,11 @@ msgstr ""
 msgid "Fluent format"
 msgstr "Фармат Fluent"
 
+#, fuzzy
+#| msgid "React Intl"
+msgid "Format.JS / React Intl"
+msgstr "React Intl"
+
 msgid "GNU gettext"
 msgstr "GNU gettext"
 
@@ -2761,6 +3175,9 @@ msgid "gotext JSON files"
 msgstr ""
 
 msgid "GWT properties"
+msgstr ""
+
+msgid "Haiku Catkeys"
 msgstr ""
 
 msgid "HTML files"
@@ -2781,19 +3198,14 @@ msgstr ""
 msgid "Java properties"
 msgstr ""
 
+msgid "JavaScript resource files"
+msgstr ""
+
 msgid "Joomla translations"
 msgstr ""
 
 msgid "JSON files"
 msgstr ""
-
-msgid "React Intl"
-msgstr "React Intl"
-
-#, fuzzy
-#| msgid "Vue I18n"
-msgid "Vue I18n"
-msgstr "Vue I18n"
 
 msgid "Laravel PHP strings"
 msgstr "Радкі Laravel PHP"
@@ -2801,10 +3213,23 @@ msgstr "Радкі Laravel PHP"
 msgid "Markdown files"
 msgstr "Файлы Markdown"
 
-msgid "mi18n lang files"
+#, fuzzy
+#| msgid "DTD files"
+msgid "MDX files"
+msgstr "Файлы DTD"
+
+#, fuzzy
+#| msgid "Text files"
+msgid "MediaWiki text files"
+msgstr "Тэкставыя файлы"
+
+msgid "@draggable/i18n lang files"
 msgstr ""
 
 msgid "Mobile Kotlin resources"
+msgstr ""
+
+msgid "Nextcloud JSON"
 msgstr ""
 
 msgid "OpenDocument Format"
@@ -2817,9 +3242,6 @@ msgid "Qt Linguist .ts"
 msgstr ""
 
 msgid "ResourceDictionary files"
-msgstr ""
-
-msgid ".NET resource files (RESX, RESW)"
 msgstr ""
 
 msgid "Ruby YAML files"
@@ -2839,6 +3261,14 @@ msgstr "Фармат TermBase eXchange"
 msgid "Text files"
 msgstr "Тэкставыя файлы"
 
+msgid "TOML and go-i18n TOML"
+msgstr ""
+
+#, fuzzy
+#| msgid "Vue I18n"
+msgid "Vue I18n"
+msgstr "Vue I18n"
+
 #, fuzzy
 #| msgid "WebExtension"
 msgid "WebExtension JSON"
@@ -2849,169 +3279,76 @@ msgstr "WebExtension"
 msgid "Windows RC files"
 msgstr "Windows"
 
-msgid "XLIFF"
+#, fuzzy
+#| msgid "Localization"
+msgid "WiX localization files"
+msgstr "Лакалізацыя"
+
+msgid "XLIFF 1.1 and 1.2"
+msgstr ""
+
+#, fuzzy
+#| msgid "XLIFF"
+msgid "XLIFF 2.0"
 msgstr "XLIFF"
+
+msgid "XWiki formats"
+msgstr ""
 
 msgid "YAML files"
 msgstr "Файлы YAML"
 
-msgid "Glossaries"
-msgstr "Гласарыі"
-
-msgid "Define frequently used terminology for consistency."
-msgstr "Вызначце тэрміналогію, якая часта выкарыстоўваецца."
-
-msgid "Feedback Acquisition"
-msgstr "Атрыманне зваротнай сувязі"
-
-msgid "Use Weblate to acquire feedback on source strings to improve them."
+#, fuzzy, python-format
+#| msgid ""
+#| "Please consult the <a href=\"%(url)s\">contributor documentation</a> to "
+#| "find the most common topics."
+msgid ""
+"See the <a href=\"%(url)s\">format documentation</a> for supported variants "
+"and limitations."
 msgstr ""
-"Выкарыстоўвайце Weblate для атрымання зваротнай сувязі па зыходных радках, "
-"каб палепшыць іх."
+"Звярніцеся да <a href=\"%(url)s\">суправаджальнай дакументацыі</a>, каб "
+"знайсці найбольш частыя тэмы."
 
-msgid "Export and Import"
-msgstr "Экспарт і імпарт"
-
-msgid "Translations can be downloaded for offline translation and merged back."
+msgid "Open source, backed by sustainable services"
 msgstr ""
-"Пераклады можна спампаваць для пазасеціўнага перакладу, а пасля запампаваць "
-"назад."
-
-msgid "Fully Integrated"
-msgstr "Поўная інтэграцыя"
 
 msgid ""
-"Translations are managed within the same version control system as your code."
-msgstr "Кіраванне перакладамі адбываецца ў той жа сістэме, што і ваш код."
-
-msgid "Documentation"
-msgstr "Дакументацыя"
-
-msgid "Comprehensive documentation covering both setup and use."
-msgstr "Поўная дакументацыя па ўсталяванні і выкарыстанні."
-
-msgid "Easy Reviews"
-msgstr "Зручны перагляд"
-
-msgid "Several options for translators to review contributions made by peers."
-msgstr "Некалькі варыянтаў перагляду матэрыялаў, перакладзеных іншымі."
-
-msgid "Language support"
-msgstr "Падтрымка моваў"
-
-msgid "Support for over 500 languages out of the box. Others can be added too."
+"Weblate is copylefted libre software: you are free to use, inspect, modify, "
+"and share it. Those freedoms belong to everyone, from volunteer communities "
+"to global organizations."
 msgstr ""
-"Прадвызначана падтрымліваецца больш за 300 моваў, таксама можна дадаць іншыя."
-
-msgid "Promotion"
-msgstr "Прасоўванне"
 
 msgid ""
-"Built-in features to attract a wider audience for your translation project."
-msgstr "Убудаваныя функцыі па папулярызацыі вашага праекта перакладу."
-
-msgid "Reporting"
-msgstr "Справаздачы"
-
-msgid "Reports are generated to provide info on project activity."
-msgstr "Стварэнне справаздач па актыўнасці праекта."
-
-msgid "Version Control"
-msgstr "Кіраванне версіямі"
+"Choose managed hosting to let our team run Weblate for you, or purchase "
+"expert support for your own installation. When something breaks, talk to a "
+"real person on the team behind Weblate and get help moving forward. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid ""
-"Talks directly with your version control system, currently Git and Mercurial "
-"are supported."
-msgstr ""
-"Непасрэднае ўзаемадзеянне з сістэмай кіравання версіямі. На дадзены момант "
-"падтрымліваюцца Git і Mercurial."
-
-msgid "Collaboration Sites"
-msgstr "Сайты для сумеснай працы"
-
-msgid ""
-"Native support for software development sites such as GitLab, GitHub, "
-"Pagure, Azure, Gitea, or Bitbucket."
+"You can also host Weblate yourself without a subscription. Eligible libre "
+"projects can apply for gratis hosting."
 msgstr ""
 
-msgid "Responsive UI"
-msgstr "Зразумелы інтэрфейс"
+#, fuzzy
+#| msgid "Order hosting"
+msgid "Explore self-hosting"
+msgstr "Замовіць размяшчэнне"
 
-msgid ""
-"User interface that works nicely on desktop, tablets and phones in both "
-"light and dark mode."
-msgstr ""
-
-msgid "Translation memory"
-msgstr "Памяць перакладаў"
-
-msgid "Reuse existing translations to save time and costs."
-msgstr ""
-"Паўторнае выкарыстанне наяўных перакладаў для эканоміі часу і скарачэння "
-"выдаткаў."
-
-msgid "Translation add-ons"
-msgstr "Дапаўненні для перакладу"
-
-msgid "Customize localization workflow with various add-ons."
-msgstr "Наладжвальны працэс лакалізацыі з разнастайнымі дапаўненнямі."
-
-msgid "Backups"
-msgstr "Рэзервовае капіяванне"
-
-msgid "Built-in remote backups to prevent data loss."
-msgstr ""
-"Убудаванае адлеглае рэзервовае капіяванне для прадухілення страты даных."
-
-msgid "Screenshots"
-msgstr "Здымкі экрана"
-
-msgid "Provide visual context for the translations."
-msgstr "Размяшчайце візуальны кантэкст да перакладаў."
-
-msgid "Variants"
-msgstr "Варыянты"
-
-msgid "Group variants of strings for easier translating."
-msgstr "Групуйце варыянты радкоў для спрашчэння перакладу."
-
-msgid "Intermediate language"
-msgstr "Прамежкавая мова"
-
-msgid "Proofread strings from developers before translating them."
-msgstr "Спачатку правярайце радкі, напісаныя распрацоўнікамі."
-
-msgid "Automatic translation"
-msgstr "Аўтаматычны пераклад"
-
-msgid ""
-"Translations or suggestions can be done by machine translation services or "
-"AI."
-msgstr ""
-
-msgid "Organize translations"
-msgstr ""
-
-msgid "Categorize the translation files to ease navigation."
-msgstr ""
-
-msgid "Keyboard operation"
-msgstr ""
-
-msgid "Use keyboard to effectively navigate while translating."
-msgstr ""
+#, fuzzy
+#| msgid "for libre projects"
+msgid "Hosting for libre projects"
+msgstr "для вольных праектаў"
 
 msgid "Weblate Pricing"
 msgstr "Тарыфы Weblate"
 
 #, python-format
 msgid ""
-"Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get help</"
-"a> for on-premise hosting — all with the convenience of the premium support."
+"Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
+"support</a> for your own installation. Your purchases help sustain the open "
+"source platform that organizations and communities rely on."
 msgstr ""
-"Выкарыстоўвайце Weblatе як службу, ўсталюйце ўласную версію альбо <a "
-"href=\"%(url)s\"> атрымайце дапамогу</a> па размяшчэнні на ўласным серверы - "
-"усё з магчымасцю прэміумнай падтрымкі."
 
 #, fuzzy
 #| msgid "Our team is ready to help you make Weblate run smoothly."
@@ -3176,25 +3513,27 @@ msgstr ""
 msgid "Join existing users and supporters"
 msgstr "Далучайцеся да нашых карыстальнікаў і фундадатараў"
 
-msgid "Weblate - web-based localization"
-msgstr "Weblate — сеціўная лакалізацыя"
-
-msgid "Web-based <strong>continuous</strong> localization"
-msgstr "Сеціўная <strong>бесперапынная</strong> лакалізацыя"
-
-#, python-format
-msgid ""
-"Copylefted libre software, used by over %(projects)s libre software projects "
-"and companies in over %(countries)s countries."
+msgid "Weblate — quality translations, your control"
 msgstr ""
-"Вольнае ПЗ, якое выкарыстоўвае больш за %(projects)s вольных праектаў і "
-"кампаній з прынамсі %(countries)s краін."
 
-msgid "Try Weblate"
-msgstr "Паспрабаваць Weblate"
+msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
+msgstr ""
 
-msgid "Explore all features"
-msgstr "Паглядзець магчымасці"
+msgid ""
+"Bring your software to more people with Weblate, the privacy-respecting, "
+"open source localization platform. Connect your repository and deliver "
+"quality translations—with or without AI integration."
+msgstr ""
+
+msgid ""
+"Built for organizations and communities. Free to use, inspect, modify, and "
+"share."
+msgstr ""
+
+#, fuzzy
+#| msgid "Get more Weblate"
+msgid "Explore Weblate"
+msgstr "Атрымаць больш Weblate"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -3204,14 +3543,11 @@ msgid "Weblate localizes the world"
 msgstr "Weblate лакалізуе свет"
 
 msgid ""
-"Hosted service and standalone tool with tight version control integration. "
-"Simple and clean user interface, propagation of translations across "
-"components, quality checks and automatic linking to source files."
+"From community projects to commercial products, Weblate helps people work "
+"together across languages. Keep translators close to your development "
+"workflow and give them the context to create translations your users can "
+"rely on."
 msgstr ""
-"Служба і бясплатны інструмент для перакладаў са шчыльнай інтэграцыяй з "
-"сістэмай кіравання версіямі. Адметны простым і зразумелым карыстальніцкім "
-"інтэрфейсам, размеркаваннем перакладаў па кампанентах, праверкай якасці і "
-"аўтаматычным прывязваннем да зыходных файлаў."
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -3233,11 +3569,8 @@ msgstr[2] "%(count)s перакладаў"
 msgid "in the last 7 days"
 msgstr "за апошнія 7 дзён"
 
-msgid "Robust feature set"
-msgstr "Надзейны набор функцый"
-
-msgid "Go to pricing"
-msgstr "Перайсці да тарыфаў"
+msgid "Make localization work for your team"
+msgstr ""
 
 msgid "Users and Supporters"
 msgstr "Карыстальнікі і фундадатары"
@@ -3252,6 +3585,49 @@ msgstr "Кіраванне вашымі плацяжамі"
 #, python-format
 msgid "Generated on %(timestamp)s."
 msgstr "Згенеравана за %(timestamp)s."
+
+#, python-format
+msgid ""
+"Weblate staff added you as an owner of the customer account "
+"<strong>%(customer_name)s</strong>."
+msgstr ""
+
+msgid ""
+"You now have full control over its billing, services, secrets, and other "
+"owners. No action is required."
+msgstr ""
+
+msgid "If you did not expect this change, please contact Weblate support."
+msgstr ""
+
+#, python-format
+msgid "You were added as an owner of %(customer_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been invited to manage the customer account "
+"<strong>%(customer_name)s</strong> on Weblate."
+msgstr ""
+
+msgid ""
+"Accepting gives you full control over its billing, services, secrets, and "
+"other owners."
+msgstr ""
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Review invitation"
+msgstr "Пераключыць накірунак руху"
+
+msgid ""
+"This invitation expires in seven days. If you did not expect it, you can "
+"ignore this message."
+msgstr ""
+
+#, python-format
+msgid "Customer owner invitation for %(customer_name)s"
+msgstr ""
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3376,6 +3752,11 @@ msgstr "Ваш плацеж у чаканні на weblate.org"
 msgid "Your subscription on weblate.org will renew soon."
 msgstr "Ваша падпіска на weblate.org адновіцца на наступным тыдні."
 
+msgid ""
+"Automatic payment is paused while the issued renewal invoice is awaiting "
+"payment."
+msgstr ""
+
 msgid "The payment will be automatically charged soon."
 msgstr ""
 
@@ -3431,6 +3812,20 @@ msgstr ""
 #, python-format
 msgid "Subscription expiry: %(expiry)s"
 msgstr ""
+
+msgid ""
+"An invoice has already been issued for this renewal. Please pay this invoice "
+"to renew your subscription."
+msgstr ""
+
+#, python-format
+msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Download invoice"
+msgid "Pay invoice"
+msgstr "Спампаваць рахунак"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3608,13 +4003,13 @@ msgstr "Праглядзець англійскую версію"
 msgid "Download as PDF"
 msgstr "Спампаваць"
 
-msgid ""
-"Dive in, or leverage extensive skills and experience from our team of "
-"professionals, giving focused advice attentive to your exact needs."
+msgid "Find your way to get started"
 msgstr ""
-"Акуніцеся і карыстайцеся шырокімі навыкамі і досведам нашай каманды "
-"прафесіяналаў, якія дадуць мэтанакіраваныя парады і будуць уважлівымі да "
-"вашых канкрэтных патрэбаў."
+
+msgid ""
+"Choose hosting or support from the team behind Weblate, or try the "
+"translation workflow before deciding."
+msgstr ""
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>Ахвяраваць</strong>—зрабіць свет лепшым"
@@ -3654,9 +4049,6 @@ msgstr ""
 "Мы невялікая кампанія, што займаецца свабодным праграмным забеспячэннем, і "
 "дзе кожны мае шмат магчымасцей для развіцця."
 
-msgid "Owners"
-msgstr ""
-
 msgid ""
 "Owners have full control over this customer account, including billing, "
 "services, secrets, and other owners. Only add people you trust."
@@ -3678,43 +4070,63 @@ msgstr "Выдаліць карыстальніка"
 msgid "Remove"
 msgstr "Выдаліць"
 
-msgid "Continuous Localization"
-msgstr "Бесперапынная лакалізацыя"
+msgid "Pending invitation"
+msgstr "Запрашэнне ў чаканні"
+
+#, fuzzy
+#| msgid "Toggle navigation"
+msgid "Revoke invitation"
+msgstr "Пераключыць накірунак руху"
+
+#, fuzzy
+#| msgid "Remove user"
+msgid "Invite owner"
+msgstr "Выдаліць карыстальніка"
+
+msgid "Keep pace with development"
+msgstr ""
 
 msgid ""
-"Automated localization workflow follows your project development closely."
+"Bring new strings to translators and translations back to your repository. "
+"Keep localization evolving alongside your code."
 msgstr ""
-"Аўтаматызаваны працэс лакалізацыі шчыльна звязаны з распрацоўваннем праекта."
 
-msgid "Quality Checks"
-msgstr "Праверка якасці"
+msgid "Help people get the meaning right"
+msgstr ""
 
-msgid "Customizable quality checks helps improve translation quality."
-msgstr "Наладжвальная праверка якасці дапаможа палепшыць якасць перакладу."
+msgid ""
+"Give translators context, shared terminology, and quality checks so your "
+"users get a clearer, more consistent experience."
+msgstr ""
 
-msgid "Attribution"
-msgstr "Пазначэнне аўтарства"
+msgid "Translate with or without AI"
+msgstr ""
 
-msgid "All translators are properly credited in the version control system."
-msgstr "Усе перакладчыкі належным чынам уносяцца ў сістэму кіравання версіямі."
+msgid ""
+"Work exclusively with people, or include AI and machine translation where "
+"they help. Choose when people edit, accept, and approve the results."
+msgstr ""
 
-msgid "Hosting Plans"
-msgstr "Планы хостынгу"
+msgid ""
+"Decide where Weblate runs, who has access, and which external translation "
+"services, if any, your team uses."
+msgstr ""
 
-msgid "Use Weblate as a service starting at 19 EUR."
-msgstr "Варыянты з выкарыстаннем Weblate як службы пачынаюцца ад 19 EUR."
+msgid "Bring everyone into the conversation"
+msgstr ""
 
-msgid "Cloud Ready"
-msgstr "Можна выкарыстоўваць у воблаку"
+msgid ""
+"Give colleagues and community contributors a shared place to translate, "
+"discuss wording, and review each other’s work."
+msgstr ""
 
-msgid "Comes with appliances, ready to deploy in your cloud."
-msgstr "Пастаўляецца з вобразам для разгортвання ў вашым воблаку."
+msgid "Build on software you can trust"
+msgstr ""
 
-msgid "Libre Software"
-msgstr "Вольнае праграмнае забеспячэнне"
-
-msgid "Copylefted; use, see, modify and share at will, and with everyone."
-msgstr "Можна выкарыстоўваць, праглядаць, змяняць і дзяліцца з усімі."
+msgid ""
+"Use, inspect, modify, and share copylefted libre software. Purchase hosting "
+"or support to help sustain its development."
+msgstr ""
 
 msgid "Help translate"
 msgstr "Дапамагчы перакласці"
@@ -3759,15 +4171,20 @@ msgstr "Спампаваць зыходны код"
 msgid "Pay now"
 msgstr "Падаць заяўку"
 
-msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+msgid "Choose the hosting and support that fit your team"
 msgstr ""
-"<strong>Бясплатна</strong> або <strong>Прэміум</strong> - залежыць ад вас"
+
+msgid ""
+"Let us run Weblate for you, or get expert support for your own installation. "
+"When something breaks, get help from a real person on the Weblate team. Your "
+"hosting and support purchases help fund Weblate's continued development."
+msgstr ""
 
 msgid "Premium Cloud"
 msgstr "Прэміумнае воблака"
 
-msgid "for ease and comfort"
-msgstr "для зручнасці і камфорту"
+msgid "managed hosting for your team"
+msgstr ""
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3795,8 +4212,9 @@ msgstr "Эканомія %(percent)s%%"
 msgid "for complete control"
 msgstr "для поўнага кантролю"
 
-#, python-format
-msgid "with paid <a href=\"%(url)s\">support</a>"
+#, fuzzy, python-format
+#| msgid "with paid <a href=\"%(url)s\">support</a>"
+msgid "with optional paid <a href=\"%(url)s\">support</a>"
 msgstr "з платнай <a href=\"%(url)s\"> падтрымкай </a>"
 
 msgid "Gratis Weblate"
@@ -3808,9 +4226,6 @@ msgstr "для вольных праектаў"
 #, python-format
 msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr "па <a href=\"%(url)s\">запыце</a>"
-
-msgid "Compare all plans"
-msgstr "Параўнаць усе тарыфныя планы"
 
 msgid "Expired"
 msgstr "Пратэрмінавана"
@@ -3829,6 +4244,9 @@ msgstr "Абнавіць токен"
 
 msgid "Backup repository"
 msgstr "Рэпазіторый рэзервовых копій"
+
+msgid "Documentation"
+msgstr "Дакументацыя"
 
 #, python-format
 msgid ""
@@ -3971,14 +4389,16 @@ msgstr "Наладзіць сервер Сусвету Weblate"
 msgid "Weblate support"
 msgstr "Падтрымка Weblate"
 
-msgid ""
-"Weblate is copylefted libre software with community support. Subscribers "
-"receive priority support at no extra charge. Prepaid help packages are "
-"available for everyone."
+msgid "Expert help for your localization"
 msgstr ""
-"Weblate - гэта бясплатнае праграмнае забеспячэнне з падтрымкай супольнасці. "
-"Абаненты атрымліваюць першачарговую падтрымку без дадатковай аплаты. "
-"Папярэдне аплачаныя матэрыялы даступныя для ўсіх."
+
+msgid ""
+"When something breaks, talk to a human on the team behind Weblate. We help "
+"you understand the problem and get your localization moving again. Choose "
+"support for your own installation or prepaid help for a specific task. Your "
+"purchases help fund continued development, while community support remains "
+"available."
+msgstr ""
 
 msgid "Report issue"
 msgstr "Паведаміць пра праблему"
@@ -4005,8 +4425,8 @@ msgstr ""
 "Калі вы выявіце ўразлівасць, паведаміце пра гэта %(report)s. Больш "
 "інфармацыі можна знайсці ў <a href=\"%(url)s\"> дакументацыі </a>."
 
-msgid "Reliable support"
-msgstr "Надзейная падтрымка"
+msgid "Living humans, ready to help"
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4306,25 +4726,382 @@ msgid ""
 "token shown below."
 msgstr ""
 
-msgid "User not found!"
-msgstr "Карыстальнік не знойдзены!"
-
 #, fuzzy
 #| msgid "You can not remove yourself"
 msgid "You can not remove yourself."
 msgstr "Вы не можаце выдаліць самога сябе"
 
 #, fuzzy
-#| msgid "Add a user"
-msgid "Removed customer owner"
-msgstr "Дадаць карыстальніка"
+#| msgid ""
+#| "VAT ID validation service unavailable for {}, please try again later."
+msgid "Too many owner invitations. Please try again later."
+msgstr ""
+"Паслуга праверкі ідэнтыфікатара ПДВ недаступная для {}, паспрабуйце яшчэ раз "
+"пазней."
+
+msgid "If the address is valid, a customer owner invitation has been sent."
+msgstr ""
+
+msgid "This customer owner invitation is invalid."
+msgstr ""
+
+#, fuzzy
+#| msgid "Unavailable for your amount"
+msgid "This invitation is not available for your account."
+msgstr "Недаступна для вашай сумы"
+
+msgid "Customer owner invitation accepted."
+msgstr ""
+
+msgid "Your renewal payment has been received and is awaiting processing."
+msgstr ""
 
 #, python-format
-msgid "Removed %(email)s from customer owners."
+msgid ""
+"Please pay outstanding invoice %(invoice)s before switching to annual "
+"billing."
+msgstr ""
+
+#, python-format
+msgid "Please pay outstanding invoice %(invoice)s to renew."
 msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#, fuzzy
+#~| msgid "Add server to Discover Weblate"
+#~ msgid "Add owner to customer"
+#~ msgstr "Дадаць сервер у Сусвет Weblate"
+
+#~ msgid "Weblate features"
+#~ msgstr "Магчымасці Weblate"
+
+#~ msgid ""
+#~ "As a feature rich computer aided translation tool, Weblate saves both "
+#~ "developers and translators time. Make your users happier!"
+#~ msgstr ""
+#~ "Як шматфункцыянальны інструмент аўтаматызаванага перакладу Weblate "
+#~ "эканоміць час распрацоўнікаў і перакладчыкаў. Зрабіце сваіх "
+#~ "карыстальнікаў больш шчаслівымі!"
+
+#~ msgid ""
+#~ "Browse the <a href=\"https://docs.weblate.org/\">documentation</a> to "
+#~ "learn more."
+#~ msgstr ""
+#~ "Праглядзіце <a href=\"https://docs.weblate.org/\"> дакументацыю </a>, каб "
+#~ "даведацца больш."
+
+#~ msgid "Easy to use interface"
+#~ msgstr "Просты ў выкарыстанні інтэрфейс"
+
+#~ msgid "Weblate screenshot"
+#~ msgstr "Здымак экрана Weblate"
+
+#~ msgid "Customizable quality checks"
+#~ msgstr "Наладжвальная праверка якасці"
+
+#~ msgid "Detailed context"
+#~ msgstr "Падрабязны кантэкст"
+
+#~ msgid ""
+#~ "Translators are provided detailed translation context, from translation "
+#~ "files, or data enriched within Weblate."
+#~ msgstr ""
+#~ "Перакладчыкам даецца падрабязны кантэкст з файлаў перакладу альбо "
+#~ "дадатковых звестак на Weblate."
+
+#~ msgid "Fluent communication"
+#~ msgstr "Свабодная камунікацыя"
+
+#~ msgid "All translations are tracked and can be commented."
+#~ msgstr "Усе пераклады адсочваюцца і могуць каментавацца."
+
+#~ msgid "Access Control"
+#~ msgstr "Кіраванне доступам"
+
+#~ msgid "Fine-tune access rights to fit your environment."
+#~ msgstr "Наладжванне правоў доступу ў адпаведнасці з вашым асяроддзем."
+
+#~ msgid "Smart Notifications"
+#~ msgstr "Разумныя апавяшчэнні"
+
+#~ msgid ""
+#~ "Translators can be notified of new strings to translate or other events."
+#~ msgstr ""
+#~ "Перакладчыкі могуць атрымліваць апавяшчэнні пра новыя радкі на пераклад і "
+#~ "іншыя падзеі."
+
+#~ msgid "Integration API"
+#~ msgstr "API для інтэграцыі"
+
+#~ msgid "Integrate Weblate with third-party services."
+#~ msgstr "Інтэграцыя Weblate з іншымі службамі."
+
+#~ msgid "Multiple File Formats"
+#~ msgstr "Некалькі фарматаў файлаў"
+
+#~ msgid ""
+#~ "Use any common file localization format, like gettext, JSON, XLIFF or "
+#~ "resource strings, etc."
+#~ msgstr ""
+#~ "Выкарыстанне любога тыповага фармату лакалізацыі, у тым ліку gettext, "
+#~ "JSON, XLIFF і радкоў рэсурсаў."
+
+#~ msgid "Branch Support"
+#~ msgstr "Падтрымка галінаў"
+
+#~ msgid ""
+#~ "Handle different translation versions by pushing them automatically to "
+#~ "different branches."
+#~ msgstr ""
+#~ "Апрацоўвайце розныя версіі перакладу, аўтаматычна адпраўляючы іх у розныя "
+#~ "галіны."
+
+#~ msgid "Translation Context"
+#~ msgstr "Кантэкст перакладу"
+
+#~ msgid ""
+#~ "Description, nearby strings, images, related source code and glossary "
+#~ "entries—for every string."
+#~ msgstr ""
+#~ "Апісанне, суседнія радкі, выявы, які адпавядае зыходны код і запісы "
+#~ "гласарыя для кожнага радка."
+
+#~ msgid "Glossaries"
+#~ msgstr "Гласарыі"
+
+#~ msgid "Define frequently used terminology for consistency."
+#~ msgstr "Вызначце тэрміналогію, якая часта выкарыстоўваецца."
+
+#~ msgid "Feedback Acquisition"
+#~ msgstr "Атрыманне зваротнай сувязі"
+
+#~ msgid "Use Weblate to acquire feedback on source strings to improve them."
+#~ msgstr ""
+#~ "Выкарыстоўвайце Weblate для атрымання зваротнай сувязі па зыходных "
+#~ "радках, каб палепшыць іх."
+
+#~ msgid "Export and Import"
+#~ msgstr "Экспарт і імпарт"
+
+#~ msgid ""
+#~ "Translations can be downloaded for offline translation and merged back."
+#~ msgstr ""
+#~ "Пераклады можна спампаваць для пазасеціўнага перакладу, а пасля "
+#~ "запампаваць назад."
+
+#~ msgid "Fully Integrated"
+#~ msgstr "Поўная інтэграцыя"
+
+#~ msgid ""
+#~ "Translations are managed within the same version control system as your "
+#~ "code."
+#~ msgstr "Кіраванне перакладамі адбываецца ў той жа сістэме, што і ваш код."
+
+#~ msgid "Comprehensive documentation covering both setup and use."
+#~ msgstr "Поўная дакументацыя па ўсталяванні і выкарыстанні."
+
+#~ msgid "Easy Reviews"
+#~ msgstr "Зручны перагляд"
+
+#~ msgid ""
+#~ "Several options for translators to review contributions made by peers."
+#~ msgstr "Некалькі варыянтаў перагляду матэрыялаў, перакладзеных іншымі."
+
+#~ msgid "Language support"
+#~ msgstr "Падтрымка моваў"
+
+#~ msgid ""
+#~ "Support for over 500 languages out of the box. Others can be added too."
+#~ msgstr ""
+#~ "Прадвызначана падтрымліваецца больш за 300 моваў, таксама можна дадаць "
+#~ "іншыя."
+
+#~ msgid "Promotion"
+#~ msgstr "Прасоўванне"
+
+#~ msgid ""
+#~ "Built-in features to attract a wider audience for your translation "
+#~ "project."
+#~ msgstr "Убудаваныя функцыі па папулярызацыі вашага праекта перакладу."
+
+#~ msgid "Reporting"
+#~ msgstr "Справаздачы"
+
+#~ msgid "Reports are generated to provide info on project activity."
+#~ msgstr "Стварэнне справаздач па актыўнасці праекта."
+
+#~ msgid "Version Control"
+#~ msgstr "Кіраванне версіямі"
+
+#~ msgid ""
+#~ "Talks directly with your version control system, currently Git and "
+#~ "Mercurial are supported."
+#~ msgstr ""
+#~ "Непасрэднае ўзаемадзеянне з сістэмай кіравання версіямі. На дадзены "
+#~ "момант падтрымліваюцца Git і Mercurial."
+
+#~ msgid "Responsive UI"
+#~ msgstr "Зразумелы інтэрфейс"
+
+#~ msgid "Translation memory"
+#~ msgstr "Памяць перакладаў"
+
+#~ msgid "Reuse existing translations to save time and costs."
+#~ msgstr ""
+#~ "Паўторнае выкарыстанне наяўных перакладаў для эканоміі часу і скарачэння "
+#~ "выдаткаў."
+
+#~ msgid "Translation add-ons"
+#~ msgstr "Дапаўненні для перакладу"
+
+#~ msgid "Customize localization workflow with various add-ons."
+#~ msgstr "Наладжвальны працэс лакалізацыі з разнастайнымі дапаўненнямі."
+
+#~ msgid "Backups"
+#~ msgstr "Рэзервовае капіяванне"
+
+#~ msgid "Built-in remote backups to prevent data loss."
+#~ msgstr ""
+#~ "Убудаванае адлеглае рэзервовае капіяванне для прадухілення страты даных."
+
+#~ msgid "Screenshots"
+#~ msgstr "Здымкі экрана"
+
+#~ msgid "Provide visual context for the translations."
+#~ msgstr "Размяшчайце візуальны кантэкст да перакладаў."
+
+#~ msgid "Variants"
+#~ msgstr "Варыянты"
+
+#~ msgid "Group variants of strings for easier translating."
+#~ msgstr "Групуйце варыянты радкоў для спрашчэння перакладу."
+
+#~ msgid "Intermediate language"
+#~ msgstr "Прамежкавая мова"
+
+#~ msgid "Proofread strings from developers before translating them."
+#~ msgstr "Спачатку правярайце радкі, напісаныя распрацоўнікамі."
+
+#~ msgid "Automatic translation"
+#~ msgstr "Аўтаматычны пераклад"
+
+#, python-format
+#~ msgid ""
+#~ "Use Weblate as a service, set up your own, or <a href=\"%(url)s\">get "
+#~ "help</a> for on-premise hosting — all with the convenience of the premium "
+#~ "support."
+#~ msgstr ""
+#~ "Выкарыстоўвайце Weblatе як службу, ўсталюйце ўласную версію альбо <a "
+#~ "href=\"%(url)s\"> атрымайце дапамогу</a> па размяшчэнні на ўласным "
+#~ "серверы - усё з магчымасцю прэміумнай падтрымкі."
+
+#~ msgid "Weblate - web-based localization"
+#~ msgstr "Weblate — сеціўная лакалізацыя"
+
+#~ msgid "Web-based <strong>continuous</strong> localization"
+#~ msgstr "Сеціўная <strong>бесперапынная</strong> лакалізацыя"
+
+#, python-format
+#~ msgid ""
+#~ "Copylefted libre software, used by over %(projects)s libre software "
+#~ "projects and companies in over %(countries)s countries."
+#~ msgstr ""
+#~ "Вольнае ПЗ, якое выкарыстоўвае больш за %(projects)s вольных праектаў і "
+#~ "кампаній з прынамсі %(countries)s краін."
+
+#~ msgid "Explore all features"
+#~ msgstr "Паглядзець магчымасці"
+
+#~ msgid ""
+#~ "Hosted service and standalone tool with tight version control "
+#~ "integration. Simple and clean user interface, propagation of translations "
+#~ "across components, quality checks and automatic linking to source files."
+#~ msgstr ""
+#~ "Служба і бясплатны інструмент для перакладаў са шчыльнай інтэграцыяй з "
+#~ "сістэмай кіравання версіямі. Адметны простым і зразумелым карыстальніцкім "
+#~ "інтэрфейсам, размеркаваннем перакладаў па кампанентах, праверкай якасці і "
+#~ "аўтаматычным прывязваннем да зыходных файлаў."
+
+#~ msgid "Robust feature set"
+#~ msgstr "Надзейны набор функцый"
+
+#~ msgid "Go to pricing"
+#~ msgstr "Перайсці да тарыфаў"
+
+#~ msgid ""
+#~ "Dive in, or leverage extensive skills and experience from our team of "
+#~ "professionals, giving focused advice attentive to your exact needs."
+#~ msgstr ""
+#~ "Акуніцеся і карыстайцеся шырокімі навыкамі і досведам нашай каманды "
+#~ "прафесіяналаў, якія дадуць мэтанакіраваныя парады і будуць уважлівымі да "
+#~ "вашых канкрэтных патрэбаў."
+
+#~ msgid "Continuous Localization"
+#~ msgstr "Бесперапынная лакалізацыя"
+
+#~ msgid ""
+#~ "Automated localization workflow follows your project development closely."
+#~ msgstr ""
+#~ "Аўтаматызаваны працэс лакалізацыі шчыльна звязаны з распрацоўваннем "
+#~ "праекта."
+
+#~ msgid "Quality Checks"
+#~ msgstr "Праверка якасці"
+
+#~ msgid "Customizable quality checks helps improve translation quality."
+#~ msgstr "Наладжвальная праверка якасці дапаможа палепшыць якасць перакладу."
+
+#~ msgid "Attribution"
+#~ msgstr "Пазначэнне аўтарства"
+
+#~ msgid "All translators are properly credited in the version control system."
+#~ msgstr ""
+#~ "Усе перакладчыкі належным чынам уносяцца ў сістэму кіравання версіямі."
+
+#~ msgid "Hosting Plans"
+#~ msgstr "Планы хостынгу"
+
+#~ msgid "Use Weblate as a service starting at 19 EUR."
+#~ msgstr "Варыянты з выкарыстаннем Weblate як службы пачынаюцца ад 19 EUR."
+
+#~ msgid "Cloud Ready"
+#~ msgstr "Можна выкарыстоўваць у воблаку"
+
+#~ msgid "Comes with appliances, ready to deploy in your cloud."
+#~ msgstr "Пастаўляецца з вобразам для разгортвання ў вашым воблаку."
+
+#~ msgid "Libre Software"
+#~ msgstr "Вольнае праграмнае забеспячэнне"
+
+#~ msgid "Copylefted; use, see, modify and share at will, and with everyone."
+#~ msgstr "Можна выкарыстоўваць, праглядаць, змяняць і дзяліцца з усімі."
+
+#~ msgid "<strong>Gratis</strong> or <strong>Premium</strong>—it’s up to you"
+#~ msgstr ""
+#~ "<strong>Бясплатна</strong> або <strong>Прэміум</strong> - залежыць ад вас"
+
+#~ msgid "for ease and comfort"
+#~ msgstr "для зручнасці і камфорту"
+
+#~ msgid "Compare all plans"
+#~ msgstr "Параўнаць усе тарыфныя планы"
+
+#~ msgid ""
+#~ "Weblate is copylefted libre software with community support. Subscribers "
+#~ "receive priority support at no extra charge. Prepaid help packages are "
+#~ "available for everyone."
+#~ msgstr ""
+#~ "Weblate - гэта бясплатнае праграмнае забеспячэнне з падтрымкай "
+#~ "супольнасці. Абаненты атрымліваюць першачарговую падтрымку без дадатковай "
+#~ "аплаты. Папярэдне аплачаныя матэрыялы даступныя для ўсіх."
+
+#~ msgid "Reliable support"
+#~ msgstr "Надзейная падтрымка"
+
+#~ msgid "User not found!"
+#~ msgstr "Карыстальнік не знойдзены!"
 
 #~ msgid "Add a user"
 #~ msgstr "Дадаць карыстальніка"
@@ -4347,16 +5124,6 @@ msgstr ""
 #~| msgid "Yearly"
 #~ msgid "Year"
 #~ msgstr "Штогод"
-
-#, fuzzy
-#~| msgid "Get support"
-#~ msgid "Issue upgrade quote"
-#~ msgstr "Падтрымка"
-
-#, fuzzy
-#~| msgid "Download invoice"
-#~ msgid "Create invoice"
-#~ msgstr "Спампаваць рахунак"
 
 #~ msgid "Company or individual name"
 #~ msgstr "Назва кампаніі або імя прыватнай асобы"
@@ -4473,12 +5240,6 @@ msgstr ""
 #~ "супольнасцю або паляпшаць нашу дакументацыю."
 
 #~ msgid ""
-#~ "VAT ID validation service unavailable for {}, please try again later."
-#~ msgstr ""
-#~ "Паслуга праверкі ідэнтыфікатара ПДВ недаступная для {}, паспрабуйце яшчэ "
-#~ "раз пазней."
-
-#~ msgid ""
 #~ "Additionally, Bitnami Weblate stack is available for many platforms and "
 #~ "works with most cloud providers."
 #~ msgstr ""
@@ -4520,9 +5281,6 @@ msgstr ""
 #~ msgctxt "Hosting plan"
 #~ msgid "Enterprise"
 #~ msgstr "Карпаратыўны"
-
-#~ msgid "and dedicated"
-#~ msgstr "і адведзены"
 
 #, python-format
 #~ msgid "over <strong>%(count)s</strong>"
@@ -4738,9 +5496,6 @@ msgstr ""
 #~ "<a href=\"%(contact)s\"> Звяжыцеся з намі </a>, калі вы ўсё яшчэ не "
 #~ "ведаеце, ці падыходзіць для вас Weblate."
 
-#~ msgid "Production test"
-#~ msgstr "Вытворчы тэст"
-
 #~ msgid "Demo"
 #~ msgstr "Дэма"
 
@@ -4913,11 +5668,6 @@ msgstr ""
 #~ "Weblate does not require payment and welcomes donations. There are many "
 #~ "ways to contribute. Discuss it with your associates."
 #~ msgstr "Weblate прапануецца дармавым, але ахвяраванні вітаюцца."
-
-#, fuzzy
-#~| msgid "Automatic translation"
-#~ msgid "Attribution to translator"
-#~ msgstr "Аўтаматычны пераклад"
 
 #, fuzzy
 #~| msgid "Hosting Weblate"
@@ -5141,9 +5891,6 @@ msgstr ""
 #~ "вас усё роўна будуць абмежаванні бясплатнага плану, але вы атрымаеце "
 #~ "пашыраныя магчымасці кіравання карыстальнікамі."
 
-#~ msgid "Translation workflow"
-#~ msgstr "Працэс перакладу"
-
 #, fuzzy
 #~| msgid ""
 #~| "All translated repositories are available using https protocol with "
@@ -5342,9 +6089,6 @@ msgstr ""
 #~ msgid "Free hosting on Weblate"
 #~ msgstr "Дармовае размяшчэнне на Weblate"
 
-#~ msgid "Order hosting"
-#~ msgstr "Замовіць размяшчэнне"
-
 #~ msgid ""
 #~ "Hosted Weblate allows you to use Weblate without any effort and with "
 #~ "premium support backed by it's core developers."
@@ -5466,11 +6210,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Каб праверыць працэс рэцэнзавання, увайдзіце пад карыстальнікам "
 #~ "<code>review</code> з паролем <code>review</code>."
-
-#, fuzzy
-#~| msgid "Consulting services or custom development"
-#~ msgid "Bring translators closer to development"
-#~ msgstr "Паслугі кансультавання ці дапрацоўка кода"
 
 #~ msgid "Weblate is a free software with community support."
 #~ msgstr ""
