@@ -142,7 +142,7 @@ if TYPE_CHECKING:
 ON_EACH_SIDE = 3
 ON_ENDS = 2
 DOT = "."
-USER_AGENT_RE = re.compile(r"Weblate/([0-9.]{3,32})")
+USER_AGENT_RE = re.compile(r"Weblate/([0-9.]{3,32}(?:dev[0-9]{1,32})?)")
 
 
 def get_page_range(page_obj: Page) -> list[int | str]:
@@ -265,7 +265,7 @@ def extract_weblate_version(request: HttpRequest) -> str:
     user_agent = request.headers.get("User-Agent", "")
     match = USER_AGENT_RE.match(user_agent)
     if match:
-        return match[1]
+        return match[1][:32]
     raise BadRequest("Invalid User-Agent")
 
 

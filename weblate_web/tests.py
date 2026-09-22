@@ -3263,12 +3263,12 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
                     salt="weblate.hosted",
                 )
             },
-            headers={"user-agent": "Weblate/2026.10.1"},
+            headers={"user-agent": "Weblate/2026.10.dev0"},
         )
         self.assertEqual(response.status_code, 200)
         report = Report.objects.get()
-        self.assertEqual(report.version, "2026.10.1")
-        self.assertEqual(report.service.site_version, "2026.10.1")
+        self.assertEqual(report.version, "2026.10.dev0")
+        self.assertEqual(report.service.site_version, "2026.10.dev0")
 
     def test_hosted_links_payments_idempotently(self) -> None:
         Package.objects.create(name="community", verbose="Community support", price=0)
@@ -3436,6 +3436,11 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             "2026.10",
             "2026.10.1",
             "2026.10.123",
+            "2026.10.dev0",
+            "2026.10.dev123",
+            "2026.10.dev" + "1" * 21,
+            "2026.10.dev" + "1" * 22,
+            "2026.10.dev" + "1" * 23,
             "2026.10." + "1" * 24,
             "2026.10." + "1" * 25,
         ):
