@@ -75,4 +75,34 @@
       {% include "crm/snippets/empty.html" %}
     </section>
   {% endif %}
+  {% if kind == "all" %}
+    <section class="crm-section">
+      {% translate "Discoverable services" as discoverable_title %}
+      {% include "crm/snippets/section_header.html" with section_title=discoverable_title only %}
+      {% if discoverable_services %}
+        <div class="crm-table-wrap">
+          <table class="crm-table">
+            {% include "crm/snippets/table_caption.html" with table_title=discoverable_title only %}
+            <thead>
+              <tr>
+                <th scope="col">{% translate "Service" %}</th>
+                <th scope="col">{% translate "Customer" %}</th>
+                <th scope="col">{% translate "URL" %}</th>
+                <th scope="col">{% translate "Version" %}</th>
+                <th scope="col">{% translate "Status" %}</th>
+                <th scope="col">{% translate "Packages" %}</th>
+                <th scope="col">{% translate "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% include "weblate_web/service_list_content.html" with object_list=discoverable_services %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {% translate "No discoverable services." as empty_message %}
+        {% include "crm/snippets/empty.html" %}
+      {% endif %}
+    </section>
+  {% endif %}
 {% endblock content %}

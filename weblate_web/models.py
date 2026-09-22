@@ -951,17 +951,21 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     def package_kind(self) -> str:
         if self.is_donation:
             return "Donation"
-        if self.hosted_subscriptions:
+        packages = [subscription.package for subscription in self.listed_subscriptions]
+        if any(
+            package.category == PackageCategory.PACKAGE_DEDICATED
+            for package in packages
+        ):
             return "Dedicated service"
-        if self.shared_subscriptions:
+        if any(
+            package.category == PackageCategory.PACKAGE_SHARED for package in packages
+        ):
             return "Hosted service"
-        if (
-            self.basic_subscriptions
-            or self.extended_subscriptions
-            or self.premium_subscriptions
+        if any(
+            package.name in {"basic", "extended", "premium"} for package in packages
         ):
             return "Support"
-        if self.backup_subscriptions:
+        if any(package.name == "backup" for package in packages):
             return "Backup"
         return "Community support"
 
@@ -1068,6 +1072,16 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
         ):
             return None
         return self.latest_subscription
+
+    @cached_property
+    def listed_subscriptions(self) -> list[Subscription]:
+        """Return packages with ongoing renewals or remaining paid entitlement."""
+        prefetched: list[Subscription] | None = getattr(
+            self, "prefetched_listed_subscriptions", None
+        )
+        if prefetched is not None:
+            return prefetched
+        return list(self.subscription_set.for_service_listing())
 
     @cached_property
     def enabled_subscriptions(self) -> models.QuerySet[Subscription]:
@@ -1364,6 +1378,13 @@ class SubscriptionQuerySet(models.QuerySet["Subscription"]):
 
     def donations(self) -> SubscriptionQuerySet:
         return self.filter(service__kind=ServiceKind.DONATION)
+
+    def for_service_listing(self) -> SubscriptionQuerySet:
+        return (
+            self.filter(Q(enabled=True) | Q(expires__gt=timezone.now()))
+            .select_related("package")
+            .order_by("-expires")
+        )
 
     def payment_lifecycle(self) -> SubscriptionQuerySet:
         return self.filter(enabled=True).exclude(payment=None)

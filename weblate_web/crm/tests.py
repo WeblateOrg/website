@@ -19,14 +19,15 @@ from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
 from django.core.signing import dumps, loads
-from django.test import TestCase
+from django.template.loader import render_to_string
+from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 
 from weblate_web.crm.hosted import USER_ENSURE_RESPONSE_SALT, USER_ENSURE_SALT
 from weblate_web.crm.models import Interaction, ZammadSyncLog
-from weblate_web.crm.views import IncomeView
+from weblate_web.crm.views import IncomeView, ServiceListView
 from weblate_web.crm.workqueue import get_unpaid_invoice_queryset
 from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.invoices.models import (
@@ -3763,6 +3764,176 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertContains(response, "Dedicated 160k")
         self.assertNotContains(response, "Hosted 10k")
         self.assertNotContains(response, "Basic Support")
+
+    def test_service_list_uses_enabled_packages(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        basic = Package.objects.create(name="basic", verbose="Basic Support", price=100)
+        backup = Package.objects.create(name="backup", verbose="Backup", price=100)
+        community = Service.objects.create(customer=customer, site_title="Community")
+        services = []
+        for title, basic_enabled, backup_enabled in (
+            ("Support only", True, False),
+            ("Backup only", False, True),
+            ("Terminated", False, False),
+            ("Both enabled", True, True),
+        ):
+            service = Service.objects.create(customer=customer, site_title=title)
+            for package, enabled in ((basic, basic_enabled), (backup, backup_enabled)):
+                service.subscription_set.create(
+                    package=package,
+                    enabled=enabled,
+                    expires=timezone.now() - timedelta(days=1),
+                    payment=payment,
+                )
+            services.append(service)
+
+        response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
+
+        self.assertEqual(
+            {
+                service.pk: service.package_kind
+                for service in response.context["object_list"]
+            },
+            {
+                community.pk: "Community support",
+                services[0].pk: "Support",
+                services[1].pk: "Backup",
+                services[3].pk: "Support",
+            },
+        )
+        self.assertEqual(len(response.context["object_list"]), 4)
+        self.assertNotContains(response, "Terminated")
+        self.assertContains(
+            response,
+            '<span class="crm-badge crm-badge--warning">Community supported</span>',
+            html=True,
+        )
+        self.assertContains(response, "No discoverable services.")
+        response = self.client.get(
+            reverse("crm:service-list", kwargs={"kind": "expired"})
+        )
+        self.assertIn(services[0], response.context["object_list"])
+        self.assertNotIn(services[2], response.context["object_list"])
+
+    def test_service_list_keeps_disabled_unexpired_packages(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        backup = Package.objects.create(name="backup", verbose="Backup", price=100)
+        service = Service.objects.create(customer=customer, site_title="Paid backup")
+        subscription = service.subscription_set.create(
+            package=backup,
+            enabled=False,
+            expires=timezone.now() + timedelta(days=1),
+            payment=payment,
+        )
+        self.assertEqual(service.package_kind, "Backup")
+        self.assertEqual(service.listed_subscriptions, [subscription])
+        response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
+        self.assertEqual(list(response.context["object_list"]), [service])
+        self.assertEqual(response.context["object_list"][0].package_kind, "Backup")
+        self.assertContains(
+            response, '<span class="crm-token">Backup</span>', html=True
+        )
+
+        subscription.expires = timezone.now() - timedelta(days=1)
+        subscription.save(update_fields=["expires"])
+        response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
+        self.assertEqual(list(response.context["object_list"]), [])
+        self.assertNotContains(response, "Paid backup")
+
+    def test_service_list_prefetches_rendered_packages(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        basic = Package.objects.create(name="basic", verbose="Basic Support", price=100)
+        backup = Package.objects.create(name="backup", verbose="Backup", price=100)
+        for index in range(3):
+            service = Service.objects.create(
+                customer=customer, site_title=f"Discoverable {index}", discoverable=True
+            )
+            for package, enabled, days in (
+                (basic, False, -1),
+                (backup, False, 1),
+                (backup, True, -1),
+            ):
+                service.subscription_set.create(
+                    package=package,
+                    enabled=enabled,
+                    expires=timezone.now() + timedelta(days=days),
+                    payment=payment,
+                )
+
+        view = ServiceListView()
+        view.setup(RequestFactory().get("/crm/services/all/"), kind="all")
+        with self.assertNumQueries(2):
+            view.object_list = view.get_queryset()
+        with self.assertNumQueries(2):
+            context = view.get_context_data()
+            discoverable = list(context["discoverable_services"])
+        for services in (view.object_list, discoverable):
+            with self.assertNumQueries(0):
+                self.assertEqual(
+                    [service.package_kind for service in services], ["Backup"] * 3
+                )
+                rendered = render_to_string(
+                    "weblate_web/service_list_content.html", {"object_list": services}
+                )
+            self.assertEqual(rendered.count('<span class="crm-token">Backup</span>'), 6)
+            self.assertNotIn("Basic Support", rendered)
+
+    def test_discoverable_service_list(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        payment = Payment.objects.create(customer=customer, amount=100)
+        backup = Package.objects.create(name="backup", verbose="Backup", price=100)
+        terminated = Service.objects.create(
+            customer=customer, site_title="Terminated discoverable", discoverable=True
+        )
+        terminated.subscription_set.create(
+            package=backup,
+            enabled=False,
+            expires=timezone.now() - timedelta(days=1),
+            payment=payment,
+        )
+        Service.objects.create(
+            customer=customer, kind=ServiceKind.DONATION, discoverable=True
+        )
+        response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
+        self.assertEqual(list(response.context["object_list"]), [])
+        self.assertEqual(list(response.context["discoverable_services"]), [terminated])
+        self.assertContains(response, "Terminated discoverable")
+        self.assertContains(response, "Discoverable services")
+
+        community = Service.objects.create(
+            customer=customer, site_title="A community", discoverable=True
+        )
+        active = Service.objects.create(
+            customer=customer, site_title="B active", discoverable=True
+        )
+        active.subscription_set.create(
+            package=backup,
+            expires=timezone.now() + timedelta(days=30),
+            payment=payment,
+        )
+        Service.objects.create(customer=customer, site_title="Not discoverable")
+        response = self.client.get(reverse("crm:service-list", kwargs={"kind": "all"}))
+        self.assertEqual(
+            list(response.context["discoverable_services"]),
+            [community, active, terminated],
+        )
+        self.assertIn(active, response.context["object_list"])
+        self.assertContains(response, ">B active</a>", count=2)
+        self.assertContains(
+            response, '<span class="crm-badge">Community supported</span>', count=0
+        )
+        response = self.client.get(
+            reverse("crm:service-list", kwargs={"kind": "expired"})
+        )
+        self.assertNotIn("discoverable_services", response.context)
+        self.assertNotContains(response, "Discoverable services")
 
     def test_service_detail_upgrade_invoice(self):
         Package.objects.create(name="community", price=0)
