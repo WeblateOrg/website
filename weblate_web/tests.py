@@ -5324,6 +5324,78 @@ class ExpiryTest(FakturaceTestCase):
 )
 class ServiceTest(FakturaceTestCase):
     @override("en")
+    def test_backup_setup_guidance(self) -> None:
+        self.login()
+        Package.objects.create(
+            name="backup", verbose="Weblate backup service (yearly)", price=300
+        )
+        service = self.create_service(package="backup")
+        connection_text = "Connect your Weblate installation using the activation token to provision your backup storage."
+        for connected, provisioned in ((False, False), (True, False), (True, True)):
+            with self.subTest(connected=connected, provisioned=provisioned):
+                if connected and not service.report_set.exists():
+                    service.report_set.create(site_url="https://example.com")
+                if provisioned:
+                    service.backup_repository = "ssh://backup.example.com/./backups"
+                    service.save(update_fields=["backup_repository"])
+                response = self.client.get(reverse("user"))
+                self.assertContains(response, "Set up your backups")
+                self.assertContains(response, "installation’s Backups tab")
+                self.assertContains(
+                    response, "encryption passphrase and private SSH key"
+                )
+                self.assertNotContains(response, "For increased comfort")
+                if connected:
+                    self.assertNotContains(response, connection_text)
+                else:
+                    self.assertContains(response, connection_text)
+                if provisioned:
+                    self.assertContains(response, service.backup_repository)
+
+    @override("en")
+    def test_expired_backup_has_no_setup_guidance(self) -> None:
+        self.login()
+        Package.objects.create(
+            name="backup", verbose="Weblate backup service (yearly)", price=300
+        )
+        service = self.create_service(package="backup", years=0, days=-1)
+        self.assertTrue(service.backup_subscriptions.exists())
+        self.assertFalse(service.has_paid_backup())
+        for repository in ("", "ssh://backup.example.com/./backups"):
+            with self.subTest(repository=repository):
+                service.backup_repository = repository
+                service.save(update_fields=["backup_repository"])
+                response = self.client.get(reverse("user"))
+                self.assertNotContains(response, "Set up your backups")
+                self.assertNotContains(response, "provision your backup storage")
+                if repository:
+                    self.assertContains(response, repository)
+
+    @override("en")
+    def test_support_keeps_optional_connection_guidance(self) -> None:
+        self.login()
+        self.create_service()
+        response = self.client.get(reverse("user"))
+        self.assertContains(response, "For increased comfort")
+        self.assertNotContains(response, "Set up your backups")
+
+    @override("en")
+    @responses.activate
+    def test_backup_checkout_without_other_subscription(self) -> None:
+        cnb_mock_rates()
+        self.login()
+        package = Package.objects.create(
+            name="backup", verbose="Weblate backup service (yearly)", price=300
+        )
+        self.assertFalse(Subscription.objects.exists())
+        response = self.client.get(reverse("subscription-new"), {"plan": "backup"})
+        payment = Payment.objects.get()
+        self.assertRedirects(
+            response, payment.get_payment_url(), fetch_redirect_response=False
+        )
+        self.assertEqual(payment.extra["subscription"], package.name)
+
+    @override("en")
     @responses.activate
     def test_fully_credited_invoice_does_not_block_renewal(self) -> None:
         cnb_mock_rates()

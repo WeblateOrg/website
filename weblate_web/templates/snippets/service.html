@@ -51,6 +51,23 @@
       <div class="clear"></div>
     </div>
   {% endif %}
+  {% if service.backup_subscriptions and service.has_paid_backup %}
+    <div class="form-line service-text-formatting bdr-btm">
+      <div class="line-left p-top">{% translate "Set up your backups" %}</div>
+      <div class="line-right">
+        <ol>
+          <li>{% translate "Connect your Weblate installation using the activation token above." %}</li>
+          <li>{% translate "Enable the supplied backup configuration in your installation’s Backups tab." %}</li>
+          <li>{% translate "Securely save your backup encryption passphrase and private SSH key so you can restore your backups." %}</li>
+        </ol>
+        <p>
+          <a class="link"
+             href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% translate "Read more in the documentation." %}</a>
+        </p>
+      </div>
+      <div class="clear"></div>
+    </div>
+  {% endif %}
   {% if service.backup_repository %}
     <div class="form-line service-text-formatting bdr-btm">
       <div class="line-left p-top">{% translate "Backup repository" %}</div>
@@ -71,6 +88,10 @@
       {% if service.last_report %}
         <a class="link"
            href="{{ service.last_report.site_url|safe_site_url }}">{{ service.last_report.site_title|default:"Weblate" }}</a>
+      {% elif service.backup_subscriptions and service.has_paid_backup %}
+        <p class="text-muted">
+          {% translate "Connect your Weblate installation using the activation token to provision your backup storage." %}
+        </p>
       {% else %}
         <p class="text-muted">
           {% blocktranslate with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html" class="link">' link_end='</a>' %}You can use support services on our website. For increased comfort, use the activation token to connect your Weblate installation to the support portal. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktranslate %}
