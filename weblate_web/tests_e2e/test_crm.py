@@ -589,6 +589,14 @@ def assert_work_queue_items(page: Page) -> None:
 def correct_duplicate_invoice(page: Page, invoice: Invoice) -> None:
     """Check the correction panels and confirm cancelling an unpaid duplicate."""
     paid_invoice = invoice.duplicate(kind=InvoiceKind.INVOICE, prepaid=True)
+    payment = Payment.objects.create(
+        uuid="00000000-0000-0000-0000-000000000123",
+        customer=invoice.customer,
+        draft_invoice=invoice,
+        amount=invoice.total_amount,
+        state=Payment.PENDING,
+        backend="fio-bank",
+    )
     page.reload()
     invoice_url = page.url
     correction_form = page.locator("form[data-crm-invoice-confirm]")
@@ -608,6 +616,12 @@ def correct_duplicate_invoice(page: Page, invoice: Invoice) -> None:
         )
         == "rgb(179, 38, 30)"
     )
+    assert_text_visible(page, str(payment.pk))
+    cancel_payments = correction_form.get_by_role(
+        "checkbox", name="Mark related unresolved payments as cancelled."
+    )
+    assert not cancel_payments.is_checked()
+    cancel_payments.check()
     capture(page, "duplicate-invoice-form")
     correction_form.get_by_role("button", name="Cancel duplicate invoice").click()
     dialog = page.locator("#crm-invoice-confirm-dialog")
@@ -623,6 +637,8 @@ def correct_duplicate_invoice(page: Page, invoice: Invoice) -> None:
         page.wait_for_load_state("networkidle")
     assert_no_server_error(page)
     assert invoice.corrections.count() == 1
+    payment.refresh_from_db()
+    assert payment.state == Payment.CANCELLED
     assert_text_visible(page, "Applied to invoice")
     page.goto(invoice_url)
     assert_text_visible(page, "Credited")

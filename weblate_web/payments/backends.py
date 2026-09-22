@@ -300,9 +300,19 @@ class Backend:
     verbose: StrOrPromise = ""
     description: str = ""
     recurring: bool = False
+    verifies_cancelled_payments: bool = False
     supported_currencies: set[str] = {"EUR", "CZK", "USD", "GBP"}
 
     def __init__(self, payment: Payment) -> None:
+        from weblate_web.invoices.models import Invoice  # ruff:ignore[import-outside-top-level]
+
+        # Match correction and bank reconciliation lock order: invoices, then payment.
+        related = Payment.objects.get(pk=payment.pk)
+        list(
+            Invoice.objects.select_for_update()
+            .filter(pk__in=[related.draft_invoice_id, related.paid_invoice_id])
+            .order_by("pk")
+        )
         select = Payment.objects.filter(pk=payment.pk).select_for_update()
         self.payment: Payment = select[0]
         self.invoice: Invoice | None = None
@@ -368,6 +378,13 @@ class Backend:
             InvalidState: In case the payment can not be completed.
 
         """
+        if self.payment.state == Payment.CANCELLED:
+            if self.verifies_cancelled_payments:
+                status = self.collect(request)
+                self.payment.save(update_fields=["details", "card_info"])
+                if status:
+                    self.success()
+            return False
         if self.payment.state not in {Payment.PENDING, Payment.REJECTED}:
             raise InvalidState(self.payment.get_state_display())
 
@@ -573,6 +590,31 @@ class Backend:
         return self.payment.draft_invoice, paid_payment
 
     def success(self) -> bool:
+        invoice = self.payment.draft_invoice or self.payment.paid_invoice
+        if self.payment.state == Payment.CANCELLED or (
+            invoice is not None and invoice.is_credited
+        ):
+            if invoice is not None:
+                self.record_duplicate_payment(
+                    invoice,
+                    DuplicatePaymentRecord(
+                        duplicate_key=f"cancelled-payment:{self.payment.pk}",
+                        summary=f"Payment received for cancelled invoice payment {self.payment.pk}",
+                        content=(
+                            "The payment has not been applied. Reconcile the received amount manually."
+                        ),
+                        details={
+                            "payment_id": str(self.payment.pk),
+                            "backend": self.payment.backend,
+                            "amount": str(self.payment.vat_amount),
+                            "currency": self.payment.get_currency_display(),
+                            "response": self.payment.details,
+                        },
+                    ),
+                )
+            self.payment.state = Payment.CANCELLED
+            self.payment.save(update_fields=["state", "details", "card_info"])
+            return False
         if duplicate_invoice_payment := self.get_duplicate_invoice_payment():
             invoice, paid_payment = duplicate_invoice_payment
             self.reject_duplicate_payment(invoice, paid_payment)
@@ -950,6 +992,7 @@ class FioBank(Backend):
 
 @register_backend
 class ThePay2Card(Backend):
+    verifies_cancelled_payments = True
     name = "thepay2-card"
     verbose = gettext_lazy("Payment card")
     description = "Payment Card (The Pay)"

@@ -472,7 +472,13 @@ class PaymentView(FormView, PaymentObjectMixin):
     template_name = "payment/payment.html"
     check_customer = True
 
+    def redirect_cancelled_payment(self) -> HttpResponse:
+        messages.info(self.request, gettext("This payment has been cancelled."))
+        return redirect("home")
+
     def redirect_origin(self) -> HttpResponse:
+        if self.object.state == Payment.CANCELLED:
+            return self.redirect_cancelled_payment()
         if self.object.customer.origin in {PAYMENTS_ORIGIN, AUTO_ORIGIN}:
             return HttpResponseRedirect(
                 f"{reverse('donate-process')}?payment={self.object.pk}"
@@ -554,6 +560,8 @@ class PaymentView(FormView, PaymentObjectMixin):
             self.object = self.get_object()
             if self.object.state == Payment.NEW and self.is_draft_invoice_paid():
                 return self.redirect_paid_draft_invoice()
+            if self.object.state == Payment.CANCELLED:
+                return self.redirect_cancelled_payment()
             customer = self.object.customer
             customer_locked = is_payment_customer_locked(self.object)
             self.can_pay = customer_locked or not customer.is_empty
@@ -721,10 +729,16 @@ class CompleteView(PaymentView):
             self.object = self.get_object()
 
             # User should choose method for new payment
-            if self.object.state == Payment.NEW:
-                if self.is_draft_invoice_paid():
+            if self.object.state == Payment.NEW or (
+                self.object.state == Payment.CANCELLED and not self.object.backend
+            ):
+                if self.object.state == Payment.NEW and self.is_draft_invoice_paid():
                     return self.redirect_paid_draft_invoice()
-                return redirect("payment", pk=self.object.pk)
+                return (
+                    self.redirect_cancelled_payment()
+                    if self.object.state == Payment.CANCELLED
+                    else redirect("payment", pk=self.object.pk)
+                )
 
             # Get backend and refetch payment from the database
             try:
@@ -738,7 +752,11 @@ class CompleteView(PaymentView):
             # Allow reprocessing of rejected payments. User might choose
             # to retry in the payment gateway and previously rejected payment
             # can be now completed.
-            if backend.payment.state not in {Payment.PENDING, Payment.REJECTED}:
+            if backend.payment.state not in {
+                Payment.PENDING,
+                Payment.REJECTED,
+                Payment.CANCELLED,
+            }:
                 return self.redirect_origin()
 
             backend.complete(self.request)
@@ -810,6 +828,8 @@ def process_payment(request):
     # Create donation
     if payment.state in {Payment.NEW, Payment.PENDING}:
         messages.error(request, gettext("Payment not yet processed, please retry."))
+    elif payment.state == Payment.CANCELLED:
+        messages.info(request, gettext("This payment has been cancelled."))
     elif payment.state == Payment.REJECTED:
         messages.error(
             request,
