@@ -39,6 +39,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
+from django.urls import reverse
 from django.utils import timezone
 from vies.types import VATIN
 
@@ -1481,6 +1482,47 @@ class ThePay2Test(BackendBaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.backend = self.payment.get_payment_backend()
+
+    @responses.activate
+    def test_cancelled_payment_late_success(self) -> None:
+        invoice = Invoice.objects.create(
+            customer=self.customer,
+            kind=InvoiceKind.INVOICE,
+            category=InvoiceCategory.HOSTING,
+            fully_credited=True,
+        )
+        self.payment.draft_invoice = invoice
+        self.payment.state = Payment.CANCELLED
+        self.payment.save()
+        thepay_mock_payment(self.payment.pk)
+        backend = self.payment.get_payment_backend()
+        with self.assertRaises(InvalidState):
+            backend.initiate(None, "", "")
+        for _ in range(2):
+            self.assertFalse(backend.complete(None))
+        payment = self.check_payment(Payment.CANCELLED)
+        self.assertIsNone(payment.paid_invoice_id)
+        self.assertEqual(self.customer.followups.count(), 1)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertIn("response", payment.details)
+
+    def test_cancelled_payment_incomplete(self) -> None:
+        self.payment.state = Payment.CANCELLED
+        self.payment.save()
+        backend = self.payment.get_payment_backend()
+        for status in (False, None):
+            with patch.object(backend, "collect", return_value=status):
+                self.assertFalse(backend.complete(None))
+            self.check_payment(Payment.CANCELLED)
+        self.assertFalse(self.customer.followups.exists())
+        response = self.client.get(self.payment.get_absolute_url())
+        self.assertRedirects(response, reverse("home"))
+        for backend_name in ("", "fio-bank", "manual"):
+            self.payment.backend = backend_name
+            self.payment.save()
+            response = self.client.get(self.payment.get_complete_url())
+            self.assertRedirects(response, reverse("home"))
+            self.check_payment(Payment.CANCELLED)
 
     @responses.activate
     def test_pay(self) -> None:

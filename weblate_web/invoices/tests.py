@@ -155,9 +155,63 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
             with self.subTest(state=state):
                 payment.state = state
                 payment.save(update_fields=["state"])
-                with self.assertRaisesMessage(ValidationError, "pending payment"):
+                with self.assertRaisesMessage(
+                    ValidationError, "Review the related payments"
+                ):
                     self.correction(invoice, "121", **data)
         self.assertFalse(invoice.corrections.exists())
+
+    @responses.activate
+    def test_duplicate_cancels_payments_atomically(self):
+        self.mock_requests()
+        invoice = self.create_invoice(vat_rate=21)
+        retained = self.create_invoice(vat_rate=21, prepaid=True)
+        retained.customer = invoice.customer
+        retained.save(update_fields=["customer"])
+        payments = []
+        for state in (Payment.NEW, Payment.PENDING, Payment.REJECTED):
+            payment = invoice.create_payment()
+            payment.state = state
+            payment.save(update_fields=["state"])
+            payments.append(payment)
+        retained_payment = Payment.objects.create(
+            customer=retained.customer,
+            draft_invoice=retained,
+            amount=100,
+        )
+        data = {
+            "reason": "duplicate",
+            "duplicate": retained,
+            "cancel_payments": True,
+            "token": uuid4(),
+        }
+        with (
+            patch(
+                "weblate_web.invoices.corrections.validate_legacy_rounding",
+                side_effect=ValidationError("Invalid rounding"),
+            ),
+            self.assertRaises(ValidationError),
+        ):
+            self.correction(invoice, "121", **data)
+        for payment in payments:
+            previous = payment.state
+            payment.refresh_from_db()
+            self.assertEqual(payment.state, previous)
+        correction = self.correction(invoice, "121", **data)
+        self.assertEqual(self.correction(invoice, "121", **data), correction)
+        for payment in payments:
+            payment.refresh_from_db()
+            self.assertEqual(payment.state, Payment.CANCELLED)
+            self.assertEqual(payment.draft_invoice, invoice)
+        retained_payment.refresh_from_db()
+        self.assertEqual(retained_payment.state, Payment.NEW)
+        interaction = invoice.customer.interaction_set.get(
+            details__correction=correction.number
+        )
+        self.assertEqual(
+            {item["id"] for item in interaction.details["cancelled_payments"]},
+            {str(payment.pk) for payment in payments},
+        )
 
     @responses.activate
     def test_correction_of_accepted_payment_requires_refund(self):

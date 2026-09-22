@@ -984,6 +984,7 @@ class Payment(models.Model):
     REJECTED = 3
     ACCEPTED = 4
     PROCESSED = 5
+    CANCELLED = 6
 
     VAT_VALIDATION_FAILURE = "vat_validation"
 
@@ -1020,6 +1021,7 @@ class Payment(models.Model):
             (REJECTED, pgettext_lazy("Payment state", "Payment rejected")),
             (ACCEPTED, pgettext_lazy("Payment state", "Payment accepted")),
             (PROCESSED, pgettext_lazy("Payment state", "Payment processed")),
+            (CANCELLED, pgettext_lazy("Payment state", "Cancelled")),
         ],
         db_index=True,
         default=NEW,
@@ -1223,6 +1225,8 @@ class Payment(models.Model):
         extra: dict[str, int] | None = None,
         **kwargs,
     ):
+        if self.state == self.CANCELLED:
+            return False
         # Check if backend is still valid
         try:
             self.get_payment_backend_class()

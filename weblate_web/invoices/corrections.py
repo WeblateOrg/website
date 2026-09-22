@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING
 
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
+from django.db.models import Q
 from django.utils.translation import gettext
 
 from weblate_web.crm.models import Interaction
@@ -101,6 +102,15 @@ def validate_legacy_rounding(
         )
 
 
+def cancel_related_payments(payments: list[Payment]) -> list[dict[str, str | int]]:
+    cancelled: list[dict[str, str | int]] = []
+    for payment in payments:
+        cancelled.append({"id": str(payment.pk), "previous_state": payment.state})
+        payment.state = Payment.CANCELLED
+        payment.save(update_fields=["state"])
+    return cancelled
+
+
 @transaction.atomic
 def issue_correction(  # ruff:ignore[too-many-arguments]
     *,
@@ -113,6 +123,7 @@ def issue_correction(  # ruff:ignore[too-many-arguments]
     tax_date: date,
     token: UUID,
     duplicate: Invoice | None = None,
+    cancel_payments: bool = False,
 ) -> Invoice:
     """Issue one immutable correction, serializing all corrections of a source."""
     if not user.has_perm(CORRECTION_PERMISSION):
@@ -148,16 +159,27 @@ def issue_correction(  # ruff:ignore[too-many-arguments]
         raise ValidationError(
             gettext("Correction dates cannot precede the original invoice dates.")
         )
-    if (
-        invoice.draft_payment_set.filter(
-            state__in=[Payment.NEW, Payment.PENDING, Payment.REJECTED]
-        ).exists()
-        or invoice.paid_payment_set.filter(
-            state__in=[Payment.NEW, Payment.PENDING, Payment.REJECTED]
-        ).exists()
-    ):
+    if cancel_payments and reason != "duplicate":
+        raise ValidationError(
+            gettext("Payments can only be cancelled for duplicate invoices.")
+        )
+    payments = list(
+        Payment.objects.select_for_update()
+        .filter(Q(draft_invoice=invoice) | Q(paid_invoice=invoice))
+        .order_by("pk")
+    )
+    unresolved = [
+        payment
+        for payment in payments
+        if payment.state in {Payment.NEW, Payment.PENDING, Payment.REJECTED}
+    ]
+    if unresolved and not cancel_payments:
         raise ValidationError(
             gettext("Resolve the pending payment before issuing a correction.")
+            if reason != "duplicate"
+            else gettext(
+                "Review the related payments and select the checkbox to mark them as cancelled."
+            )
         )
     paid = is_settled(invoice)
     if reason == "duplicate":
@@ -170,6 +192,8 @@ def issue_correction(  # ruff:ignore[too-many-arguments]
         raise ValidationError(
             gettext("Only duplicate corrections can reference a replacement invoice.")
         )
+
+    cancelled_payments = cancel_related_payments(unresolved)
 
     previous = list(invoice.corrections.all())
     # Allocate cumulatively so many small refunds cannot accumulate tax drift.
@@ -231,6 +255,7 @@ def issue_correction(  # ruff:ignore[too-many-arguments]
             "reason": reason,
             "amount": str(amount),
             "duplicate_of": duplicate.number if duplicate else None,
+            "cancelled_payments": cancelled_payments,
         },
     )
     correction.generate_files()

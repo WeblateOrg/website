@@ -263,6 +263,39 @@
     </section>
   {% endif %}
 
+  <section class="crm-section content">
+    <h2>{% translate "Related payments" %}</h2>
+    {% if related_payments %}
+      <div class="crm-table-wrap">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th scope="col">{% translate "Reference" %}</th>
+              <th scope="col">{% translate "Created" %}</th>
+              <th scope="col">{% translate "Payment method" %}</th>
+              <th scope="col">{% translate "Amount" %}</th>
+              <th scope="col">{% translate "State" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in related_payments %}
+              <tr>
+                <td>{{ payment.pk }}</td>
+                <td>{{ payment.created }}</td>
+                <td>{{ payment.get_payment_description }}</td>
+                <td>{{ payment.get_amount_display }} {{ payment.get_currency_display }}</td>
+                <td>{{ payment.get_state_display }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      {% translate "No payments recorded." as empty_message %}
+      {% include "crm/snippets/empty.html" %}
+    {% endif %}
+  </section>
+
   {% if correction_form or duplicate_form or uncollectible_form %}
     <section class="crm-section content">
       <h2>{% translate "Invoice corrections" %}</h2>

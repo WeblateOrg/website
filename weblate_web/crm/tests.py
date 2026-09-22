@@ -4911,6 +4911,44 @@ class CRMCorrectionTestCase(BaseCRMTestCase):
         self.user = User.objects.create_superuser(username="corrections")
         self.client.force_login(self.user)
 
+    @patch.object(Invoice, "generate_files")
+    @patch("weblate_web.invoices.models.ExchangeRates.get", return_value=Decimal(25))
+    def test_duplicate_cancel_payments_form(self, _rates, _files):
+        invoice = self.create_invoice(Decimal(100))
+        retained = self.create_invoice(Decimal(100))
+        retained.customer = invoice.customer
+        retained.prepaid = True
+        retained.save()
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertNotIn("cancel_payments", response.context["duplicate_form"].fields)
+        payment = invoice.create_payment()
+        payment.paid_invoice = invoice
+        payment.save()
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertEqual(list(response.context["related_payments"]), [payment])
+        self.assertContains(response, str(payment.pk), count=1)
+        form = response.context["duplicate_form"]
+        self.assertFalse(form["cancel_payments"].value())
+        data = {
+            "correct_duplicate": "1",
+            "duplicate": retained.pk,
+            "token": form["token"].value(),
+            "issue_date": invoice.issue_date,
+            "tax_date": invoice.tax_date,
+            "confirm_invoice": "1",
+        }
+        self.client.post(invoice.get_absolute_url(), data)
+        self.assertFalse(invoice.corrections.exists())
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.NEW)
+        data["cancel_payments"] = "on"
+        response = self.client.post(invoice.get_absolute_url(), data)
+        self.assertRedirects(response, invoice.corrections.get().get_absolute_url())
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.CANCELLED)
+        response = self.client.get(invoice.get_absolute_url())
+        self.assertContains(response, "Cancelled")
+
     def create_invoice(
         self, amount: Decimal, kind: InvoiceKind = InvoiceKind.INVOICE
     ) -> Invoice:

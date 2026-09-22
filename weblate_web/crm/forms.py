@@ -285,6 +285,15 @@ class InvoiceCorrectionForm(BaseInvoiceCorrectionForm):
 
 
 class DuplicateInvoiceForm(BaseInvoiceCorrectionForm):
+    cancel_payments = forms.BooleanField(
+        label=gettext_lazy("Mark related unresolved payments as cancelled."),
+        help_text=gettext_lazy(
+            "This only cancels payments in Weblate. Cancel any active payment with "
+            "the payment provider separately. Money received later will require "
+            "manual reconciliation."
+        ),
+        required=False,
+    )
     duplicate = forms.ModelChoiceField(
         label=gettext_lazy("Correct paid invoice"),
         queryset=Invoice.objects.none(),
@@ -297,6 +306,11 @@ class DuplicateInvoiceForm(BaseInvoiceCorrectionForm):
 
     def __init__(self, *args, invoice: Invoice, **kwargs):
         super().__init__(*args, invoice=invoice, **kwargs)
+        if not Payment.objects.filter(
+            Q(draft_invoice=invoice) | Q(paid_invoice=invoice),
+            state__in=[Payment.NEW, Payment.PENDING, Payment.REJECTED],
+        ).exists():
+            del self.fields["cancel_payments"]
         field = cast("forms.ModelChoiceField", self.fields["duplicate"])
         candidates = (
             Invoice.objects.filter(

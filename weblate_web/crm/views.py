@@ -577,6 +577,9 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
+        context["related_payments"] = Payment.objects.filter(
+            Q(draft_invoice=self.object) | Q(paid_invoice=self.object)
+        ).order_by("-created", "pk")
         context["invoice_kind_quote"] = int(InvoiceKind.QUOTE)
         context["invoice_kind_invoice"] = int(InvoiceKind.INVOICE)
         if self.can_convert() and self.can_convert_permission():
