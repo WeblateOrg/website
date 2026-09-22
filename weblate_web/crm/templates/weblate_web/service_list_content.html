@@ -13,11 +13,11 @@
     </td>
     <td>{{ object.site_version|default:"-" }}</td>
     <td>
-      <span class="crm-badge">{{ object.get_status_display }}</span>
+      <span class="crm-badge{% if object.status == "community" %} crm-badge--warning{% endif %}">{{ object.get_status_display }}</span>
     </td>
     {% if kind == "extended" %}<td>{{ object.maintenance_window|default:"-" }}</td>{% endif %}
     <td>
-      {% for subscription in object.enabled_subscriptions %}
+      {% for subscription in object.listed_subscriptions %}
         <span class="crm-token">{{ subscription.package }}</span>
       {% empty %}
         <span class="crm-muted">-</span>

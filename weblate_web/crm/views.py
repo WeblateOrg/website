@@ -261,10 +261,40 @@ class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
         context["kind"] = self.kwargs["kind"]
+        if self.kwargs["kind"] == "all":
+            context["discoverable_services"] = (
+                Service.objects.customer_services()
+                .filter(discoverable=True)
+                .select_related("customer")
+                .prefetch_related(
+                    Prefetch(
+                        "subscription_set",
+                        queryset=Subscription.objects.for_service_listing(),
+                        to_attr="prefetched_listed_subscriptions",
+                    )
+                )
+                .order()
+            )
         return context
 
     def get_queryset(self):
-        qs = Service.objects.customer_services().prefetch_related("subscription_set")
+        qs = (
+            Service.objects.customer_services()
+            .filter(
+                Q(subscription__enabled=True)
+                | Q(subscription__expires__gt=timezone.now())
+                | Q(subscription__isnull=True)
+            )
+            .distinct()
+            .select_related("customer")
+            .prefetch_related(
+                Prefetch(
+                    "subscription_set",
+                    queryset=Subscription.objects.for_service_listing(),
+                    to_attr="prefetched_listed_subscriptions",
+                )
+            )
+        )
         match self.kwargs["kind"]:
             case "all":
                 return sorted(qs, key=attrgetter("package_kind"))
