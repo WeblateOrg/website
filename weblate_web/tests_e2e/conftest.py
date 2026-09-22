@@ -5,7 +5,9 @@ from __future__ import annotations
 import os
 from datetime import UTC, date, datetime
 from decimal import Decimal
+from itertools import count
 from unittest.mock import patch
+from uuid import UUID
 
 import pytest
 import responses
@@ -13,6 +15,7 @@ from django.contrib.auth.models import User
 
 from weblate_web.invoices.models import Invoice
 from weblate_web.models import Package, Service, sync_packages
+from weblate_web.payments.models import Payment
 from weblate_web.tests import mock_vies
 
 # Allow Django operations in async context for Playwright tests
@@ -39,11 +42,17 @@ def mock_external_apis():
     issue_date_field = Invoice._meta.get_field("issue_date")  # pylint: disable=protected-access
     original_issue_date_default = issue_date_field.default
     original_issue_date_cache = issue_date_field.__dict__.pop("_get_default", None)
+    payment_uuid_field = Payment._meta.get_field("uuid")  # pylint: disable=protected-access
+    original_payment_uuid_default = payment_uuid_field.default
+    original_payment_uuid_cache = payment_uuid_field.__dict__.pop("_get_default", None)
     fixed_secret = "e2e-fixed-service-secret-token-0123456789abcdef0123456789abcd"  # ruff:ignore[hardcoded-password-string]
     fixed_issue_date = date(2026, 1, 15)
     fixed_now = datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC)
     secret_field.default = fixed_secret
     issue_date_field.default = fixed_issue_date
+    # Reset for each test, including payments created by live-server requests.
+    payment_uuid_sequence = count(1000)
+    payment_uuid_field.default = lambda: UUID(int=next(payment_uuid_sequence))
     with (
         patch("django.utils.timezone.now", return_value=fixed_now),
         patch("weblate_web.remote.get_changes", return_value=[]),
@@ -69,9 +78,11 @@ def mock_external_apis():
         finally:
             secret_field.default = original_secret_default
             issue_date_field.default = original_issue_date_default
+            payment_uuid_field.default = original_payment_uuid_default
             for field, cached_default in (
                 (secret_field, original_secret_cache),
                 (issue_date_field, original_issue_date_cache),
+                (payment_uuid_field, original_payment_uuid_cache),
             ):
                 field.__dict__.pop("_get_default", None)
                 if cached_default is not None:
