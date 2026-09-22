@@ -1154,8 +1154,8 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
                     (
                         "backup",
                         _("Backup service"),
-                        _("Easily put your backups in a safe place."),
-                        _("Encrypted and automatic, always available."),
+                        _("Cloud backups for self-hosted Weblate."),
+                        _("No other subscription required."),
                         "img/Support-Backup.svg",
                         _("Back up daily"),
                         None,
