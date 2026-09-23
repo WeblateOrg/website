@@ -27,7 +27,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
 "POT-Creation-Date: 2026-09-18 00:18-0500\n"
-"PO-Revision-Date: 2026-09-23 20:11+0000\n"
+"PO-Revision-Date: 2026-09-24 16:06+0000\n"
 "Last-Translator: Peter Vančo <petervanco347@gmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/weblate/website/"
 "sk/>\n"
@@ -39,7 +39,7 @@ msgstr ""
 "X-Generator: Weblate 2026.10.dev0\n"
 
 msgid "Please confirm that you want to issue a final invoice."
-msgstr "Prosím, potvrďte, že chcete vystaviť konečnú faktúru."
+msgstr "Potvrďte, prosím, že chcete vystaviť konečnú faktúru."
 
 msgid "This subscription can not be upgraded to the selected package."
 msgstr "Toto predplatné nie je možné prepnúť na vybraný balík."
@@ -109,28 +109,28 @@ msgid "Full name"
 msgstr "Celé meno"
 
 msgid "Issue date"
-msgstr ""
+msgstr "Dátum vystavenia"
 
 msgid "Correction date"
-msgstr ""
+msgstr "Dátum opravy"
 
 msgid "Please confirm that you want to issue a credit note."
-msgstr ""
+msgstr "Potvrďte, prosím, že chcete vystaviť dobropis."
 
 msgid "Explanation for the customer"
-msgstr ""
+msgstr "Vysvetlenie pre zákazníka"
 
 msgid "Amount including VAT"
-msgstr ""
+msgstr "Suma vrátane DPH"
 
 msgid "Only paid invoices can be refunded."
-msgstr ""
+msgstr "Vrátiť peniaze je možné iba za zaplatené faktúry."
 
 msgid "Correct paid invoice"
-msgstr ""
+msgstr "Opraviť zaplatenú faktúru"
 
 msgid "Internal explanation"
-msgstr ""
+msgstr "Interné vysvetlenie"
 
 msgid "Invalid hosted user response"
 msgstr "Neplatná odpoveď hosťovaného používateľa"
@@ -139,7 +139,7 @@ msgid "Hosted user synchronization is disabled."
 msgstr "Synchronizácia hosťovaného používateľa je vypnutá."
 
 msgid "Invoice correction"
-msgstr ""
+msgstr "Oprava faktúry"
 
 msgid "Yes"
 msgstr "Áno"
@@ -152,23 +152,25 @@ msgstr "nenastavené"
 
 #, python-format
 msgid "Credit note %(correction)s for invoice %(invoice)s"
-msgstr ""
+msgstr "Dobropis %(correction)s k faktúre %(invoice)s"
 
 #, python-format
 msgid "Invoice %(invoice)s marked uncollectible"
-msgstr ""
+msgstr "Faktúra %(invoice)s bola označená ako nevymáhateľná"
 
 #, python-format
 msgid "Collection resumed for invoice %(invoice)s"
-msgstr ""
+msgstr "Vymáhanie faktúry %(invoice)s bolo obnovené"
 
 msgid "Invoice issued during VIES outage"
-msgstr ""
+msgstr "Faktúra vystavená počas výpadku systému VIES"
 
 msgid ""
 "VIES was temporarily unavailable; the invoice was issued using a recent "
 "successful VAT validation."
 msgstr ""
+"Systém VIES bol dočasne nedostupný; faktúra bola vystavená na základe "
+"nedávnej úspešnej kontroly DPH."
 
 msgid "Notification"
 msgstr "Notifikácia"
@@ -210,22 +212,22 @@ msgid "VAT ID"
 msgstr "IČ DPH"
 
 msgid "Previous validation"
-msgstr ""
+msgstr "Predchádzajúca kontrola"
 
 msgid "Stale validation used"
-msgstr ""
+msgstr "Použitá neaktuálna kontrola"
 
 msgid "Error code"
 msgstr "Kód chyby"
 
 msgid "VIES was temporarily unavailable."
-msgstr ""
+msgstr "Systém VIES bol dočasne nedostupný."
 
 msgid "Error message"
 msgstr "Chybová správa"
 
 msgid "Issued by"
-msgstr ""
+msgstr "Vystavovateľ"
 
 msgid "Amount"
 msgstr "Suma"
@@ -522,7 +524,7 @@ msgid "No records found."
 msgstr "Nenašli sa žiadne záznamy."
 
 msgid "Issue credit note?"
-msgstr ""
+msgstr "Vystaviť dobropis?"
 
 msgid "Issue final invoice?"
 msgstr "Vystaviť konečnú faktúru?"
@@ -530,6 +532,8 @@ msgstr "Vystaviť konečnú faktúru?"
 msgid ""
 "This issues a credit note that cannot be edited. It does not transfer money."
 msgstr ""
+"Týmto sa vystaví dobropis, ktorý nemožno upravovať. Neprevádzajú sa ním "
+"peniaze."
 
 msgid "This creates a final invoice. Use Quote if you only need an offer."
 msgstr ""
@@ -540,7 +544,7 @@ msgid "Cancel"
 msgstr "Zrušiť"
 
 msgid "Issue credit note"
-msgstr ""
+msgstr "Vystaviť dobropis"
 
 msgid "Issue invoice"
 msgstr "Vystaviť faktúru"
@@ -570,7 +574,7 @@ msgid "Edit in admin"
 msgstr "Upraviť v správcovskom rozhraní"
 
 msgid "Credit note"
-msgstr ""
+msgstr "Dobropis"
 
 msgid "Number"
 msgstr "Číslo"
@@ -582,22 +586,22 @@ msgid "Due"
 msgstr "Splatné"
 
 msgid "Credited amount"
-msgstr ""
+msgstr "Pripísaná suma"
 
 msgid "Remaining amount"
-msgstr ""
+msgstr "Zostávajúca suma"
 
 msgid "Correction of"
-msgstr ""
+msgstr "Oprava"
 
 msgid "Reason"
 msgstr "Dôvod"
 
 msgid "Cancelled duplicate"
-msgstr ""
+msgstr "Zrušený duplikát"
 
 msgid "Collection note"
-msgstr ""
+msgstr "Poznámka k vymáhaniu"
 
 msgid "Discount"
 msgstr "Zľava"
@@ -653,40 +657,46 @@ msgid "Reopen quote"
 msgstr "Znovu otvoriť cenovú ponuku"
 
 msgid "Invoice corrections"
-msgstr ""
+msgstr "Opravy faktúr"
 
 msgid "Refund"
-msgstr ""
+msgstr "Vrátenie peňazí"
 
 msgid ""
 "Issue a credit note for a full or partial refund. Transfer the money "
 "separately, then confirm the refund on the credit note."
 msgstr ""
+"Vystavte dobropis na plnú alebo čiastočnú refundáciu. Peniaze preveďte "
+"samostatne a následne potvrďte refundáciu na dobropise."
 
 msgid "Duplicate invoice"
-msgstr ""
+msgstr "Duplicitná faktúra"
 
 msgid ""
 "Cancel this unpaid duplicate in full with a credit note. Select the correct "
 "paid invoice to keep."
 msgstr ""
+"Zrušte túto nezaplatenú duplicitnú faktúru v plnom rozsahu pomocou "
+"dobropisu. Vyberte správnu zaplatenú faktúru, ktorá má zostať."
 
 msgid "Cancel duplicate invoice"
-msgstr ""
+msgstr "Zrušiť duplicitnú faktúru"
 
 msgid "Collection status"
-msgstr ""
+msgstr "Stav vymáhania"
 
 msgid ""
 "Marking an invoice uncollectible stops reminders without changing its amount "
 "or VAT."
 msgstr ""
+"Označenie faktúry ako nevymáhateľnej zastaví upomienky bez zmeny jej sumy "
+"alebo DPH."
 
 msgid "Resume collection"
-msgstr ""
+msgstr "Obnoviť vymáhanie"
 
 msgid "Mark uncollectible"
-msgstr ""
+msgstr "Označiť ako nevymáhateľnú"
 
 msgid "Confirm refund done"
 msgstr "Potvrdiť vrátenie peňazí"
@@ -783,19 +793,19 @@ msgstr "Ďalšia nadväzujúca akcia: %(date)s"
 
 #, python-format
 msgid "Baseline: %(average)s changes per month."
-msgstr ""
+msgstr "Základná línia: %(average)s zmien mesačne."
 
 #, python-format
 msgid "%(month)s: %(changes)s changes"
-msgstr ""
+msgstr "%(month)s: %(changes)s zmien"
 
 #, python-format
 msgid "%(month)s: %(changes)s changes (%(decrease)s%% decrease)"
-msgstr ""
+msgstr "%(month)s: %(changes)s zmien (%(decrease)s%% pokles)"
 
 #, python-format
 msgid "Latest activity (%(month)s): %(changes)s changes"
-msgstr ""
+msgstr "Najnovšia aktivita (%(month)s): %(changes)s zmien"
 
 msgid "Clear follow-up"
 msgstr "Vymazať nadväzujúcu akciu"
@@ -877,31 +887,31 @@ msgid "No donations recorded."
 msgstr "Neboli zaznamenané žiadne príspevky."
 
 msgid "Customer owners"
-msgstr ""
+msgstr "Vlastníci zákazníka"
 
 msgid "Username"
 msgstr "Používateľské meno"
 
 msgid "No customer owners."
-msgstr ""
+msgstr "Žiadni vlastníci zákazníka."
 
 msgid "Pending owner invitations"
-msgstr ""
+msgstr "Čakajúce pozvánky pre vlastníkov"
 
 msgid "Invited by"
-msgstr ""
+msgstr "Autor pozvánky"
 
 msgid "Invited"
-msgstr ""
+msgstr "Pozvaný"
 
 msgid "Expires"
 msgstr "Vyprší"
 
 msgid "No pending owner invitations."
-msgstr ""
+msgstr "Žiadne čakajúce pozvánky pre vlastníkov."
 
 msgid "Add customer owner"
-msgstr ""
+msgstr "Pridať vlastníka zákazníka"
 
 msgid "Add owner"
 msgstr "Pridať vlastníka"
@@ -976,7 +986,7 @@ msgid "Support status"
 msgstr "Stav podpory"
 
 msgid "Over limits"
-msgstr ""
+msgstr "Prekročené limity"
 
 msgid "Activation key"
 msgstr "Aktivačný kľúč"
@@ -1004,32 +1014,32 @@ msgid "Discoverable"
 msgstr "Objaviteľné"
 
 msgid "Instance activity"
-msgstr ""
+msgstr "Aktivita inštancie"
 
 msgid "Monthly changes, for up to 24 latest reported months."
-msgstr ""
+msgstr "Mesačné zmeny za až 24 najnovších nahlásených mesiacov."
 
 #, python-format
 msgid "%(changes)s changes"
-msgstr ""
+msgstr "%(changes)s zmien"
 
 msgid "Service limits"
-msgstr ""
+msgstr "Limity služby"
 
 msgid "Metric"
-msgstr ""
+msgstr "Metrika"
 
 msgid "Usage"
 msgstr "Použitie"
 
 msgid "Limit"
-msgstr ""
+msgstr "Limit"
 
 msgid "Over limit"
-msgstr ""
+msgstr "Prekročený limit"
 
 msgid "Within limit"
-msgstr ""
+msgstr "V limite"
 
 msgid "Update maintenance window"
 msgstr "Aktualizovať okno údržby"
@@ -1105,15 +1115,19 @@ msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
 msgstr ""
+"IČ DPH zákazníka sa nepodarilo overiť, preto faktúra nebola vystavená. "
+"Aktualizujte údaje zákazníka alebo to skúste znova neskôr."
 
 msgid "an earlier successful check"
-msgstr ""
+msgstr "skoršia úspešná kontrola"
 
 #, python-format
 msgid ""
 "VIES is temporarily unavailable. The invoice was issued using the VAT "
 "validation from %(validated)s."
 msgstr ""
+"Systém VIES je dočasne nedostupný. Faktúra bola vystavená na základe "
+"overenia DPH z %(validated)s."
 
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
@@ -1152,10 +1166,13 @@ msgstr "Nepodarilo sa pridať vlastníka zákazníka: %(error)s"
 msgid ""
 "Added %(email)s to customer owners, but the notification could not be sent."
 msgstr ""
+"Používateľ %(email)s bol pridaný medzi vlastníkov zákazníka, ale upozornenie "
+"sa nepodarilo odoslať."
 
 #, python-format
 msgid "Added %(email)s to customer owners and notified them."
 msgstr ""
+"Používateľ %(email)s bol pridaný medzi vlastníkov zákazníka a bol upozornený."
 
 #, python-format
 msgid "%(email)s is already a customer owner."
@@ -1208,7 +1225,7 @@ msgid "Locked URL"
 msgstr "Uzamknutá URL"
 
 msgid "Stop server"
-msgstr ""
+msgstr "Zastaviť server"
 
 msgid "Unpaid invoice"
 msgstr "Nezaplatená faktúra"
@@ -1237,7 +1254,7 @@ msgstr ""
 "možnosti prispievania sú tu neobmedzené!"
 
 msgid "Invalid monthly activity data."
-msgstr ""
+msgstr "Neplatné údaje o mesačnej aktivite."
 
 msgid "Insufficient donation for selected reward!"
 msgstr "Nedostatočný príspevok na vybranú odmenu!"
@@ -1252,41 +1269,45 @@ msgid ""
 "Select the paid invoice for the same customer and correct the full remaining "
 "amount."
 msgstr ""
+"Vyberte zaplatenú faktúru pre rovnakého zákazníka a opravte celú zostávajúcu "
+"sumu."
 
 msgid ""
 "This legacy invoice cannot be corrected because its rounding differs from "
 "current invoice calculations."
 msgstr ""
+"Túto staršiu faktúru nemožno opraviť, pretože jej zaokrúhlenie sa odlišuje "
+"od aktuálnych výpočtov faktúr."
 
 msgid "This request has already been used."
-msgstr ""
+msgstr "Táto požiadavka už bola použitá."
 
 msgid "Choose a positive amount within the remaining invoice amount."
-msgstr ""
+msgstr "Zvoľte kladnú sumu v rámci zostávajúcej sumy faktúry."
 
 msgid "A correction reason and explanation are required."
-msgstr ""
+msgstr "Vyžaduje sa dôvod opravy a vysvetlenie."
 
 msgid "Correction dates cannot precede the original invoice dates."
-msgstr ""
+msgstr "Dátumy opravy nemôžu predchádzať dátumom pôvodnej faktúry."
 
 msgid "Resolve the pending payment before issuing a correction."
-msgstr ""
+msgstr "Pred vystavením opravy vyriešte čakajúcu platbu."
 
 msgid "Only duplicate corrections can reference a replacement invoice."
-msgstr ""
+msgstr "Len opravy duplikátov môžu odkazovať na náhradnú faktúru."
 
 msgid "The correction amount excluding VAT cannot exceed 99,999.99."
-msgstr ""
+msgstr "Suma opravy bez DPH nesmie presiahnuť 99 999,99."
 
 msgid "Only positive final invoices can be marked uncollectible."
-msgstr ""
+msgstr "Označiť ako nevymáhateľné je možné iba kladné konečné faktúry."
 
 msgid "This invoice has already been settled."
-msgstr ""
+msgstr "Táto faktúra už bola vysporiadaná."
 
 msgid "An internal explanation is required."
-msgstr ""
+msgstr "Vyžaduje sa interné vysvetlenie."
 
 msgid "IBAN"
 msgstr "IBAN"
@@ -1338,22 +1359,22 @@ msgid "Converted"
 msgstr "Konvertovaná"
 
 msgid "Credited"
-msgstr ""
+msgstr "Pripísané"
 
 msgid "Refunded"
-msgstr ""
+msgstr "Vrátené"
 
 msgid "Paid"
 msgstr "Zaplatené"
 
 msgid "Uncollectible"
-msgstr ""
+msgstr "Nevymáhateľná"
 
 msgid "Applied to invoice"
-msgstr ""
+msgstr "Aplikované na faktúru"
 
 msgid "Awaiting refund"
-msgstr ""
+msgstr "Čaká sa na vrátenie peňazí"
 
 msgid "Unpaid"
 msgstr "Nezaplatené"
@@ -1679,13 +1700,13 @@ msgid "Locked site URL"
 msgstr "Uzamknutá URL stránky"
 
 msgid "Service over limits"
-msgstr ""
+msgstr "Služba nad limity"
 
 msgid "Expired dedicated service"
-msgstr ""
+msgstr "Vypršaná vyhradená služba"
 
 msgid "Activity drop"
-msgstr ""
+msgstr "Pokles aktivity"
 
 msgid "Date and time when this customer needs attention."
 msgstr "Dátum a čas, kedy je potrebné sa o tohto zákazníka starať."
@@ -1697,15 +1718,17 @@ msgid "Follow-up type"
 msgstr "Typ nadväzujúcej akcie"
 
 msgid "Contact the customer to understand the activity decrease."
-msgstr ""
+msgstr "Kontaktujte zákazníka, aby ste pochopili pokles aktivity."
 
 msgid "Review usage and upgrade the dedicated instance."
-msgstr ""
+msgstr "Skontrolujte využitie a rozšírte vyhradenú inštanciu."
 
 msgid ""
 "Stop the dedicated instance because its support contract expired over two "
 "months ago."
 msgstr ""
+"Zastavte vyhradenú inštanciu, pretože jej zmluva o podpore vypršala pred "
+"viac ako dvoma mesiacmi."
 
 msgid "Annual"
 msgstr "Ročne"
@@ -1726,16 +1749,16 @@ msgid "Pending"
 msgstr "Čakajúce"
 
 msgid "Accepted"
-msgstr ""
+msgstr "Prijaté"
 
 msgid "Revoked"
-msgstr ""
+msgstr "Zrušené"
 
 msgid "Delivery failed"
-msgstr ""
+msgstr "Doručenie zlyhalo"
 
 msgid "Fulfilled by staff"
-msgstr ""
+msgstr "Splnené pracovníkom"
 
 msgctxt "Payment state"
 msgid "New payment"
@@ -2236,18 +2259,20 @@ msgid "Translation status"
 msgstr "Stav prekladu"
 
 msgid "Customer owner invitation"
-msgstr ""
+msgstr "Pozvánka pre vlastníka zákazníka"
 
 msgid "Review access"
-msgstr ""
+msgstr "Skontrolovať prístup"
 
 msgid "Customer account"
-msgstr ""
+msgstr "Zákaznícky účet"
 
 msgid ""
 "Accepting gives you full control over this customer account, including "
 "billing, services, secrets, and other owners."
 msgstr ""
+"Prijetím získate plnú kontrolu nad týmto zákazníckym účtom, vrátane "
+"fakturácie, služieb, tajomstiev a ďalších vlastníkov."
 
 msgid "Accept invitation"
 msgstr "Prijať pozvánku"
@@ -2629,30 +2654,35 @@ msgstr ""
 "a>, ktorý si môžete nainštalovať zo súboru pip Pythonu:"
 
 msgid "Weblate features — quality translations, your control"
-msgstr ""
+msgstr "Funkcie Weblate — kvalitné preklady, vaša kontrola"
 
 msgid "Bring your project to more people"
-msgstr ""
+msgstr "Oslovte vašim projektom viac ľudí"
 
 msgid ""
 "Give people a great experience in their own language. Weblate brings your "
 "team, community, and development workflow together to deliver quality "
 "translations—with or without AI."
 msgstr ""
+"Poskytnite ľuďom skvelý zážitok v ich vlastnom jazyku. Weblate spája váš "
+"tím, komunitu a vývojový pracovný postup, aby priniesol kvalitné preklady – "
+"s AI alebo bez nej."
 
 msgid ""
 "Open source and privacy-respecting, with the freedom to choose how you "
 "translate and where you run it."
 msgstr ""
+"Open source a rešpektujúci súkromie, sloboda voľby, ako prekladať a kde ho "
+"prevádzkovať."
 
 msgid "Compare hosting and support"
-msgstr ""
+msgstr "Porovnajte hosting a podporu"
 
 msgid "Try Weblate"
 msgstr "Vyskúšajte Weblate"
 
 msgid "Keep translations in step with development"
-msgstr ""
+msgstr "Udržujte preklady v súlade s vývojom"
 
 msgid ""
 "Connect your repository and let new strings reach translators as your "
@@ -2660,18 +2690,25 @@ msgid ""
 "developers and translators can work together without passing files back and "
 "forth."
 msgstr ""
+"Pripojte svoj repozitár a nechajte nové reťazce dosiahnuť prekladateľov, ako "
+"sa váš projekt vyvíja. Weblate vracia preklady späť do správy verzií, aby "
+"vývojári a prekladatelia mohli spolupracovať bez neustáleho posielania "
+"súborov tam a späť."
 
 msgid ""
 "Work with your existing branches and code hosting service. Translation "
 "changes are tracked alongside your code, with credit for the people who "
 "contribute."
 msgstr ""
+"Pracujte so svojimi existujúcimi vetvami a službou hostovania kódu. Zmeny "
+"prekladov sa sledujú spolu s vaším kódom s uznaním pre ľudí, ktorí "
+"prispievajú."
 
 msgid "Explore continuous localization"
-msgstr ""
+msgstr "Preskúmajte priebežnú lokalizáciu"
 
 msgid "Give every translation the context it needs"
-msgstr ""
+msgstr "Poskytnite každému prekladu potrebný kontext"
 
 msgid ""
 "Help translators understand what your users will see. Screenshots, nearby "
@@ -2679,88 +2716,119 @@ msgid ""
 "terminology consistent, while translation memory helps your team reuse "
 "previous work."
 msgstr ""
+"Pomôžte prekladateľom pochopiť, čo uvidia vaši používatelia. Snímky "
+"obrazovky, okolité reťazce a odkazy na zdrojový kód objasňujú význam. "
+"Zdieľané glosáre udržiavajú terminológiu konzistentnú a prekladová pamäť "
+"pomáha vášmu tímu znova využívať predchádzajúcu prácu."
 
 msgid ""
 "Catch problems with customizable quality checks, discuss unclear wording, "
 "and review contributions before considering them finished. Your team can "
 "improve the source text as well as its translations."
 msgstr ""
+"Odhaľujte problémy pomocou prispôsobiteľných kontrol kvality, diskutujte o "
+"nejasných formuláciách a kontrolujte príspevky pred ich dokončením. Váš tím "
+"môže zlepšovať zdrojový text aj jeho preklady."
 
 msgid ""
 "Weblate translation editor showing a French translation, a missing-"
 "placeholder warning, glossary terminology, and a screenshot of the source "
 "text in context"
 msgstr ""
+"Prekladový editor Weblate zobrazujúci francúzsky preklad, upozornenie na "
+"chýbajúci zástupný symbol, terminológiu z glosára a snímku obrazovky "
+"zdrojového textu v kontexte"
 
 msgid "Give your translators the tools to make informed choices."
-msgstr ""
+msgstr "Poskytnite svojim prekladateľom nástroje na informované rozhodovanie."
 
 msgid "Explore translation quality checks"
-msgstr ""
+msgstr "Preskúmajte kontroly kvality prekladu"
 
 msgid "Choose how you translate—with or without AI"
-msgstr ""
+msgstr "Vyberte si, ako budete prekladať – s AI alebo bez nej"
 
 msgid ""
 "Translate entirely with people, or bring in machine translation and AI where "
 "they help. Your team chooses the tools, the review process, and what reaches "
 "your repository."
 msgstr ""
+"Prekladajte výhradne s ľuďmi, alebo zapojte strojový preklad a AI tam, kde "
+"pomôžu. Váš tím si vyberá nástroje, proces kontroly a čo sa dostane do vášho "
+"repozitára."
 
 msgid "Translate without AI"
-msgstr ""
+msgstr "Preklad bez AI"
 
 msgid ""
 "Let people write and review translations with context, glossaries, "
 "translation memory, and quality checks. None of these require an AI or "
 "machine translation service."
 msgstr ""
+"Nechajte ľudí písať a kontrolovať preklady s kontextom, glosármi, "
+"prekladovou pamäťou a kontrolami kvality. Žiadne z týchto nástrojov "
+"nevyžaduje AI ani službu strojového prekladu."
 
 msgid "Assist your translators"
-msgstr ""
+msgstr "Asistujte svojim prekladateľom"
 
 msgid ""
 "Offer optional machine translation or large language model (LLM) results in "
 "the editor. Translators choose what to use, edit it, and decide what to save."
 msgstr ""
+"Ponúknite voliteľný strojový preklad alebo výsledky z veľkého jazykového "
+"modelu (LLM) v editore. Prekladatelia si vyberú, čo použijú, upravia to a "
+"rozhodnú, čo uložia."
 
 msgid "Start with machine translations"
-msgstr ""
+msgstr "Začnite so strojovým prekladom"
 
 msgid ""
 "Generate translations for people to improve, or mark them as unfinished "
 "drafts. Choose whether drafts can reach your repository while editing is "
 "still in progress."
 msgstr ""
+"Vygenerujte preklady, ktoré ľudia vylepšia, alebo ich označte ako "
+"nedokončené koncepty. Vyberte si, či sa koncepty môžu dostať do vášho "
+"repozitára, kým prebieha úprava."
 
 msgid "Accept suggestions before use"
-msgstr ""
+msgstr "Prijímajte návrhy pred použitím"
 
 msgid ""
 "Keep generated text as suggestions for people to check. With automatic "
 "acceptance disabled, suggestions only become translations when a person "
 "accepts or edits them."
 msgstr ""
+"Ponechajte vygenerovaný text ako návrhy na kontrolu ľuďmi. Pri vypnutom "
+"automatickom prijímaní sa návrhy stanú prekladmi až vtedy, keď ich osoba "
+"prijme alebo upraví."
 
 msgid "Approve before committing"
-msgstr ""
+msgstr "Schvaľujte pred začlenením"
 
 msgid ""
 "Combine translation review with an approved-only commit policy. People can "
 "edit generated translations in Weblate, while only reviewer-approved "
 "translations reach your repository."
 msgstr ""
+"Spojte kontrolu prekladu s politikou začleňovania iba schválených prekladov. "
+"Ľudia môžu upravovať vygenerované preklady vo Weblate, zatiaľ čo do vášho "
+"repozitára sa dostanú len preklady schválené recenzentom."
 
 msgid "Explore AI translation workflows"
-msgstr ""
+msgstr "Preskúmajte pracovné postupy prekladu s AI"
 
 msgid "Choose how your content is handled"
-msgstr ""
+msgstr "Vyberte si, ako sa bude zaobchádzať s vaším obsahom"
 
 msgid ""
 "Use managed hosting or run Weblate on your own infrastructure. Set access "
 "permissions to decide who can see, translate, and review your content."
 msgstr ""
+"Použite spravovaný hosting alebo spustite Weblate na vlastnej "
+"infraštruktúre. Nastavte prístupové oprávnenia a rozhodnite, kto môže "
+"zobrazovať, prekladať a kontrolovať váš obsah."
 
 msgid ""
 "Choose which external translation services to enable, or work without them. "
@@ -2768,45 +2836,64 @@ msgid ""
 "translations, and related context to generate results. Choose services that "
 "fit your requirements for handling that content."
 msgstr ""
+"Vyberte si, ktoré externé prekladateľské služby povoliť, alebo pracujte bez "
+"nich. Ak používate externú službu, môže prijímať zdrojové reťazce, preklady "
+"a súvisiaci kontext na generovanie výsledkov. Vyberte si služby, ktoré "
+"vyhovujú vašim požiadavkám na zaobchádzanie s týmto obsahom."
 
 msgid "Find the right hosting option"
-msgstr ""
+msgstr "Nájdite správnu možnosť hostingu"
 
 msgid "Bring your team and community together"
-msgstr ""
+msgstr "Spojte svoj tím a komunitu"
 
 msgid ""
 "Give your colleagues, professional translators, and community contributors a "
 "shared place to work. Assign roles, discuss wording where it matters, and "
 "recognize each person's contribution."
 msgstr ""
+"Poskytnite kolegom, profesionálnym prekladateľom a komunitným prispievateľom "
+"zdieľaný priestor na prácu. Priraďujte role, diskutujte o formuláciách tam, "
+"kde na tom záleží, a uznávajte príspevky každej osoby."
 
 msgid ""
 "Keep contributors informed with notifications and see where work is needed "
 "through progress and activity reports. Whether you coordinate a product team "
 "or welcome volunteers, everyone can help improve the result."
 msgstr ""
+"Udržujte prispievateľov informovaných pomocou upozornení a zistite, kde je "
+"potrebná práca, prostredníctvom prehľadov o postupe a aktivite. Či "
+"koordinujete produktový tím, alebo vítate dobrovoľníkov, každý môže pomôcť "
+"zlepšiť výsledok."
 
 msgid "The everyday tools your localization needs"
-msgstr ""
+msgstr "Každodenné nástroje, ktoré vaša lokalizácia potrebuje"
 
 msgid ""
 "Import and export translations, connect other tools through the API, and "
 "automate recurring tasks with add-ons. Manage languages, organize "
 "translation files, and keep your workflow moving as your project grows."
 msgstr ""
+"Importujte a exportujte preklady, pripojte ďalšie nástroje cez API a "
+"automatizujte opakujúce sa úlohy pomocou doplnkov. Spravujte jazyky, "
+"organizujte prekladové súbory a udržiavajte svoj pracovný postup v pohybe, "
+"ako váš projekt rastie."
 
 msgid "Explore the documentation"
-msgstr ""
+msgstr "Preskúmajte dokumentáciu"
 
 msgid "Keep working with your existing formats"
-msgstr ""
+msgstr "Pokračujte v práci so svojimi existujúcimi formátmi"
 
 msgid ""
 "Localize your app, website, documentation, and more without leaving the "
 "formats your project uses. Explore the supported formats below for details "
 "and format-specific capabilities."
 msgstr ""
+"Lokalizujte svoju aplikáciu, webovú stránku, dokumentáciu a ďalšie bez toho, "
+"aby ste opustili formáty, ktoré váš projekt používa. Preskúmajte podporované "
+"formáty nižšie, kde nájdete podrobnosti a možnosti špecifické pre daný "
+"formát."
 
 msgid ".NET resource files (RESX, RESW)"
 msgstr "Zdrojové súbory .NET (RESX, RESW)"
@@ -2833,7 +2920,7 @@ msgid "CSV files"
 msgstr "Súbory CSV"
 
 msgid "DokuWiki text files"
-msgstr ""
+msgstr "Textové súbory DokuWiki"
 
 msgid "DTD files"
 msgstr "Súbory DTD"
@@ -2848,7 +2935,7 @@ msgid "Fluent format"
 msgstr "Formát Fluent"
 
 msgid "Format.JS / React Intl"
-msgstr ""
+msgstr "Format.JS / React Intl"
 
 msgid "GNU gettext"
 msgstr "GNU gettext"
@@ -2863,7 +2950,7 @@ msgid "GWT properties"
 msgstr "Vlastnosti GWT"
 
 msgid "Haiku Catkeys"
-msgstr ""
+msgstr "Haiku Catkeys"
 
 msgid "HTML files"
 msgstr "Súbory HTML"
@@ -2884,7 +2971,7 @@ msgid "Java properties"
 msgstr "Vlastnosti Java"
 
 msgid "JavaScript resource files"
-msgstr ""
+msgstr "Zdrojové súbory JavaScript"
 
 msgid "Joomla translations"
 msgstr "Preklady Joomla"
@@ -2902,16 +2989,16 @@ msgid "MDX files"
 msgstr "Súbory MDX"
 
 msgid "MediaWiki text files"
-msgstr ""
+msgstr "Textové súbory MediaWiki"
 
 msgid "@draggable/i18n lang files"
-msgstr ""
+msgstr "Jazykové súbory @draggable/i18n"
 
 msgid "Mobile Kotlin resources"
 msgstr "Zdroje Mobile Kotlin"
 
 msgid "Nextcloud JSON"
-msgstr ""
+msgstr "Nextcloud JSON"
 
 msgid "OpenDocument Format"
 msgstr "Formát OpenDocument"
@@ -2941,7 +3028,7 @@ msgid "Text files"
 msgstr "Textové súbory"
 
 msgid "TOML and go-i18n TOML"
-msgstr ""
+msgstr "TOML a go-i18n TOML"
 
 msgid "Vue I18n"
 msgstr "Vue I18n"
@@ -2953,7 +3040,7 @@ msgid "Windows RC files"
 msgstr "Súbory Windows RC"
 
 msgid "WiX localization files"
-msgstr ""
+msgstr "Lokalizačné súbory WiX"
 
 msgid "XLIFF 1.1 and 1.2"
 msgstr "XLIFF 1.1 a 1.2"
@@ -2972,15 +3059,20 @@ msgid ""
 "See the <a href=\"%(url)s\">format documentation</a> for supported variants "
 "and limitations."
 msgstr ""
+"Podporované varianty a obmedzenia nájdete v <a href=\"%(url)s\">dokumentácii "
+"formátu</a>."
 
 msgid "Open source, backed by sustainable services"
-msgstr ""
+msgstr "Open source, podporovaný udržateľnými službami"
 
 msgid ""
 "Weblate is copylefted libre software: you are free to use, inspect, modify, "
 "and share it. Those freedoms belong to everyone, from volunteer communities "
 "to global organizations."
 msgstr ""
+"Weblate je slobodný softvér s copyleft licenciou: môžete ho slobodne "
+"používať, kontrolovať, upravovať a zdieľať. Tieto slobody patria každému, od "
+"dobrovoľníckych komunít až po globálne organizácie."
 
 msgid ""
 "Choose managed hosting to let our team run Weblate for you, or purchase "
@@ -2988,17 +3080,24 @@ msgid ""
 "real person on the team behind Weblate and get help moving forward. Your "
 "hosting and support purchases help fund Weblate's continued development."
 msgstr ""
+"Vyberte si spravovaný hosting, aby náš tím prevádzkoval Weblate za vás, "
+"alebo si zakúpte odbornú podporu pre vlastnú inštaláciu. Keď sa niečo "
+"pokazí, porozprávajte sa so skutočným človekom z tímu za Weblate a získajte "
+"pomoc pri riešení problému. Vaše nákupy hostingu a podpory pomáhajú "
+"financovať ďalší vývoj Weblate."
 
 msgid ""
 "You can also host Weblate yourself without a subscription. Eligible libre "
 "projects can apply for gratis hosting."
 msgstr ""
+"Weblate si môžete hostovať aj sami bez predplatného. Oprávnené slobodné "
+"projekty môžu požiadať o bezplatný hosting."
 
 msgid "Explore self-hosting"
-msgstr ""
+msgstr "Preskúmajte vlastný hosting"
 
 msgid "Hosting for libre projects"
-msgstr ""
+msgstr "Hosting pre slobodné projekty"
 
 msgid "Weblate Pricing"
 msgstr "Cenník Weblate"
@@ -3009,6 +3108,10 @@ msgid ""
 "support</a> for your own installation. Your purchases help sustain the open "
 "source platform that organizations and communities rely on."
 msgstr ""
+"Nechajte náš tím prevádzkovať Weblate za vás, alebo si vyberte <a href=\"%"
+"(url)s\">odbornú podporu</a> pre vlastnú inštaláciu. Vaše nákupy pomáhajú "
+"udržiavať open source platformu, na ktorú sa organizácie a komunity "
+"spoliehajú."
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr "Náš tím je pripravený pomôcť vám zabezpečiť hladký chod Weblate."
@@ -3170,24 +3273,29 @@ msgid "Join existing users and supporters"
 msgstr "Pridajte sa k existujúcim používateľom a podporovateľom"
 
 msgid "Weblate — quality translations, your control"
-msgstr ""
+msgstr "Weblate — kvalitné preklady, vaša kontrola"
 
 msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
-msgstr ""
+msgstr "Kvalitné preklady. Váš pracovný postup. <strong>Vaša kontrola.</strong>"
 
 msgid ""
 "Bring your software to more people with Weblate, the privacy-respecting, "
 "open source localization platform. Connect your repository and deliver "
 "quality translations—with or without AI integration."
 msgstr ""
+"Dostaňte svoj softvér k viacerým ľuďom s Weblate, open source lokalizačnou "
+"platformou, ktorá rešpektuje súkromie. Pripojte svoj repozitár a dodávajte "
+"kvalitné preklady – s integráciou AI alebo bez nej."
 
 msgid ""
 "Built for organizations and communities. Free to use, inspect, modify, and "
 "share."
 msgstr ""
+"Vytvorené pre organizácie a komunity. Slobodne použiteľné, kontrolovateľné, "
+"upravovateľné a zdieľateľné."
 
 msgid "Explore Weblate"
-msgstr ""
+msgstr "Preskúmajte Weblate"
 
 #, python-format
 msgid "%(countries)s+ Countries"
@@ -3202,6 +3310,10 @@ msgid ""
 "workflow and give them the context to create translations your users can "
 "rely on."
 msgstr ""
+"Od komunitných projektov až po komerčné produkty, Weblate pomáha ľuďom "
+"spolupracovať naprieč jazykmi. Udržujte prekladateľov blízko vášho "
+"vývojového pracovného postupu a poskytnite im kontext na vytváranie "
+"prekladov, na ktoré sa vaši používatelia môžu spoľahnúť."
 
 #, python-format
 msgid "%(count)s translation %(when)s"
@@ -3224,7 +3336,7 @@ msgid "in the last 7 days"
 msgstr "za posledných 7 dní"
 
 msgid "Make localization work for your team"
-msgstr ""
+msgstr "Prispôsobte lokalizáciu svojmu tímu"
 
 msgid "Users and Supporters"
 msgstr "Používatelia a podporovatelia"
@@ -3244,41 +3356,51 @@ msgid ""
 "Weblate staff added you as an owner of the customer account "
 "<strong>%(customer_name)s</strong>."
 msgstr ""
+"Tím Weblate vás pridal ako vlastníka zákazníckeho účtu <strong>%"
+"(customer_name)s</strong>."
 
 msgid ""
 "You now have full control over its billing, services, secrets, and other "
 "owners. No action is required."
 msgstr ""
+"Teraz máte plnú kontrolu nad fakturáciou, službami, tajomstvami a ďalšími "
+"vlastníkmi. Nie je potrebná žiadna akcia."
 
 msgid "If you did not expect this change, please contact Weblate support."
-msgstr ""
+msgstr "Ak ste túto zmenu neočakávali, kontaktujte prosím podporu Weblate."
 
 #, python-format
 msgid "You were added as an owner of %(customer_name)s"
-msgstr ""
+msgstr "Boli ste pridaní ako vlastník %(customer_name)s"
 
 #, python-format
 msgid ""
 "You have been invited to manage the customer account "
 "<strong>%(customer_name)s</strong> on Weblate."
 msgstr ""
+"Boli ste pozvaní spravovať zákaznícky účet <strong>%(customer_name)s</"
+"strong> vo Weblate."
 
 msgid ""
 "Accepting gives you full control over its billing, services, secrets, and "
 "other owners."
 msgstr ""
+"Prijatie vám dáva plnú kontrolu nad fakturáciou, službami, tajomstvami a "
+"ďalšími vlastníkmi."
 
 msgid "Review invitation"
-msgstr ""
+msgstr "Skontrolujte pozvánku"
 
 msgid ""
 "This invitation expires in seven days. If you did not expect it, you can "
 "ignore this message."
 msgstr ""
+"Platnosť tejto pozvánky vyprší o sedem dní. Ak ste ju neočakávali, môžete "
+"túto správu ignorovať."
 
 #, python-format
 msgid "Customer owner invitation for %(customer_name)s"
-msgstr ""
+msgstr "Pozvánka na vlastníctvo zákazníka pre %(customer_name)s"
 
 #. Translators: This is shown in an email after a successful donation. You can use a culturally natural, poetic compliment instead of translating this literally; keep it short and use original or public-domain wording.
 #. Translators: This is shown after a successful donation. You can use
@@ -3384,6 +3506,8 @@ msgid ""
 "Automatic payment is paused while the issued renewal invoice is awaiting "
 "payment."
 msgstr ""
+"Automatická platba je pozastavená, kým sa vystavená faktúra na obnovenie "
+"čaká na zaplatenie."
 
 msgid "The payment will be automatically charged soon."
 msgstr "Platba bude čoskoro automaticky zaúčtovaná."
@@ -3432,13 +3556,15 @@ msgid ""
 "An invoice has already been issued for this renewal. Please pay this invoice "
 "to renew your subscription."
 msgstr ""
+"Pre toto obnovenie už bola vystavená faktúra. Zaplaťte prosím túto faktúru "
+"na obnovenie predplatného."
 
 #, python-format
 msgid "Invoice %(number)s: %(amount)s. Due date: %(due_date)s."
-msgstr ""
+msgstr "Faktúra %(number)s: %(amount)s. Dátum splatnosti: %(due_date)s."
 
 msgid "Pay invoice"
-msgstr ""
+msgstr "Zaplatiť faktúru"
 
 #, python-format
 msgid "Subscription is for <a href=\"%(url)s\">%(url)s</a>."
@@ -3604,12 +3730,14 @@ msgid "Download as PDF"
 msgstr "Stiahnuť ako PDF"
 
 msgid "Find your way to get started"
-msgstr ""
+msgstr "Nájdite spôsob, ako začať"
 
 msgid ""
 "Choose hosting or support from the team behind Weblate, or try the "
 "translation workflow before deciding."
 msgstr ""
+"Vyberte si hosting alebo podporu od tímu za Weblate, alebo si pred "
+"rozhodnutím vyskúšajte pracovný postup prekladu."
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>Darujte</strong> a urobte tak svet lepším miestom"
@@ -3636,7 +3764,7 @@ msgid "Contribute with us"
 msgstr "Prispejte s nami"
 
 msgid "Good written and spoken English language skills are required."
-msgstr "Vyžadujú sa dobré znalosti písaného a hovoreného Anglického jazyka."
+msgstr "Vyžadujú sa dobré znalosti písaného a hovoreného anglického jazyka."
 
 msgid "This is a remote contractor position."
 msgstr "Toto je pozícia práce na diaľku."
@@ -3672,55 +3800,68 @@ msgid "Pending invitation"
 msgstr "Čakajúca pozvánka"
 
 msgid "Revoke invitation"
-msgstr ""
+msgstr "Zrušte pozvánku"
 
 msgid "Invite owner"
-msgstr ""
+msgstr "Pozvite vlastníka"
 
 msgid "Keep pace with development"
-msgstr ""
+msgstr "Držte krok s vývojom"
 
 msgid ""
 "Bring new strings to translators and translations back to your repository. "
 "Keep localization evolving alongside your code."
 msgstr ""
+"Dostaňte nové reťazce k prekladateľom a preklady späť do vášho repozitára. "
+"Udržujte lokalizáciu v súlade s vaším kódom."
 
 msgid "Help people get the meaning right"
-msgstr ""
+msgstr "Pomôžte ľuďom správne pochopiť význam"
 
 msgid ""
 "Give translators context, shared terminology, and quality checks so your "
 "users get a clearer, more consistent experience."
 msgstr ""
+"Poskytnite prekladateľom kontext, zdieľanú terminológiu a kontroly kvality, "
+"aby vaši používatelia získali jasnejší a konzistentnejší zážitok."
 
 msgid "Translate with or without AI"
-msgstr ""
+msgstr "Prekladajte s AI alebo bez nej"
 
 msgid ""
 "Work exclusively with people, or include AI and machine translation where "
 "they help. Choose when people edit, accept, and approve the results."
 msgstr ""
+"Pracujte výhradne s ľuďmi, alebo zahrňte AI a strojový preklad tam, kde "
+"pomôžu. Vyberte si, kedy ľudia výsledky upravujú, prijímajú a schvaľujú."
 
 msgid ""
 "Decide where Weblate runs, who has access, and which external translation "
 "services, if any, your team uses."
 msgstr ""
+"Rozhodnite, kde sa Weblate spúšťa, kto má prístup a ktoré externé "
+"prekladateľské služby, ak vôbec, váš tím používa."
 
 msgid "Bring everyone into the conversation"
-msgstr ""
+msgstr "Zapojte všetkých do konverzácie"
 
 msgid ""
 "Give colleagues and community contributors a shared place to translate, "
 "discuss wording, and review each other’s work."
 msgstr ""
+"Poskytnite kolegom a komunitným prispievateľom zdieľaný priestor na "
+"prekladanie, diskusiu o formuláciách a vzájomnú kontrolu práce."
 
 msgid "Build on software you can trust"
-msgstr ""
+msgstr "Stavte na softvér, ktorému môžete dôverovať"
 
 msgid ""
 "Use, inspect, modify, and share copylefted libre software. Purchase hosting "
 "or support to help sustain its development."
 msgstr ""
+"Používajte, kontrolujte, upravujte a zdieľajte slobodný softvér s copyleft "
+"licenciou. Zakúpte si hosting alebo podporu, aby ste pomohli udržať jeho "
+"vývoj."
 
 msgid "Help translate"
 msgstr "Pomôžte s prekladom"
@@ -3762,19 +3903,23 @@ msgid "Pay now"
 msgstr "Zaplatiť teraz"
 
 msgid "Choose the hosting and support that fit your team"
-msgstr ""
+msgstr "Vyberte si hosting a podporu, ktorá vyhovuje vášmu tímu"
 
 msgid ""
 "Let us run Weblate for you, or get expert support for your own installation. "
 "When something breaks, get help from a real person on the Weblate team. Your "
 "hosting and support purchases help fund Weblate's continued development."
 msgstr ""
+"Nechajte nás prevádzkovať Weblate za vás, alebo získajte odbornú podporu pre "
+"vlastnú inštaláciu. Keď sa niečo pokazí, získajte pomoc od skutočného "
+"človeka z tímu Weblate. Vaše nákupy hostingu a podpory pomáhajú financovať "
+"ďalší vývoj Weblate."
 
 msgid "Premium Cloud"
 msgstr "Prémiový cloud"
 
 msgid "managed hosting for your team"
-msgstr ""
+msgstr "spravovaný hosting pre váš tím"
 
 msgctxt "Hosting plan parameter"
 msgid "Hosted strings"
@@ -3804,7 +3949,7 @@ msgstr "pre úplnú kontrolu"
 
 #, python-format
 msgid "with optional paid <a href=\"%(url)s\">support</a>"
-msgstr ""
+msgstr "s voliteľnou platenou <a href=\"%(url)s\">podporou</a>"
 
 msgid "Gratis Weblate"
 msgstr "Weblate zadarmo"
@@ -3986,7 +4131,7 @@ msgid "Weblate support"
 msgstr "Podpora Weblate"
 
 msgid "Expert help for your localization"
-msgstr ""
+msgstr "Odborná pomoc pre vašu lokalizáciu"
 
 msgid ""
 "When something breaks, talk to a human on the team behind Weblate. We help "
@@ -3995,6 +4140,11 @@ msgid ""
 "purchases help fund continued development, while community support remains "
 "available."
 msgstr ""
+"Keď sa niečo pokazí, porozprávajte sa s človekom z tímu za Weblate. Pomôžeme "
+"vám pochopiť problém a znova rozbehnúť vašu lokalizáciu. Vyberte si podporu "
+"pre vlastnú inštaláciu alebo predplatenú pomoc pre konkrétnu úlohu. Vaše "
+"nákupy pomáhajú financovať ďalší vývoj, zatiaľ čo komunitná podpora zostáva "
+"k dispozícii."
 
 msgid "Report issue"
 msgstr "Nahlásiť chybu"
@@ -4022,7 +4172,7 @@ msgstr ""
 "Viac informácií v <a href=\"%(url)s\">dokumentácii</a>."
 
 msgid "Living humans, ready to help"
-msgstr ""
+msgstr "Živí ľudia, pripravení pomôcť"
 
 #, python-format
 msgid ""
@@ -4056,7 +4206,7 @@ msgid "Next business day support response guaranteed."
 msgstr "Odpoveď podpory zaručená nasledujúci pracovný deň."
 
 msgid "Installation on your Linux server"
-msgstr "Inštalácia na Váš Linux server"
+msgstr "Inštalácia na váš Linux server"
 
 msgid "One-time installation of Weblate"
 msgstr "Jednorazová inštalácia Weblate"
@@ -4326,32 +4476,34 @@ msgid "You can not remove yourself."
 msgstr "Nemôžete sa odstrániť."
 
 msgid "Too many owner invitations. Please try again later."
-msgstr ""
+msgstr "Príliš mnoho pozvánok pre vlastníkov. Skúste to prosím neskôr."
 
 msgid "If the address is valid, a customer owner invitation has been sent."
-msgstr ""
+msgstr "Ak je adresa platná, pozvánka na vlastníctvo zákazníka bola odoslaná."
 
 msgid "This customer owner invitation is invalid."
-msgstr ""
+msgstr "Táto pozvánka na vlastníctvo zákazníka je neplatná."
 
 msgid "This invitation is not available for your account."
-msgstr ""
+msgstr "Táto pozvánka nie je dostupná pre váš účet."
 
 msgid "Customer owner invitation accepted."
-msgstr ""
+msgstr "Pozvánka na vlastníctvo zákazníka bola prijatá."
 
 msgid "Your renewal payment has been received and is awaiting processing."
-msgstr ""
+msgstr "Vaša platba za obnovenie bola prijatá a čaká na spracovanie."
 
 #, python-format
 msgid ""
 "Please pay outstanding invoice %(invoice)s before switching to annual "
 "billing."
 msgstr ""
+"Pred prepnutím na ročnú fakturáciu zaplaťte prosím nezaplatenú faktúru %"
+"(invoice)s."
 
 #, python-format
 msgid "Please pay outstanding invoice %(invoice)s to renew."
-msgstr ""
+msgstr "Na obnovenie zaplaťte prosím nezaplatenú faktúru %(invoice)s."
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
