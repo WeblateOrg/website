@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate v. 2017.09.28\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-18 05:28+0000\n"
 "Last-Translator: Automatic translation add-on <noreply-addon-"
 "autotranslate@weblate.org>\n"
@@ -137,6 +137,15 @@ msgid "Amount including VAT"
 msgstr "(IVA inclusa)"
 
 msgid "Only paid invoices can be refunded."
+msgstr ""
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
 msgstr ""
 
 #, fuzzy
@@ -694,6 +703,28 @@ msgid "Reopen quote"
 msgstr "Richiedi un preventivo"
 
 #, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Pagamenti Weblate"
+
+msgid "Reference"
+msgstr "Riferimento"
+
+msgid "Created"
+msgstr "Creato"
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "Errore nel pagamento"
+
+msgid "State"
+msgstr "Stato"
+
+msgid "No payments recorded."
+msgstr "Nessun pagamento registrato."
+
+#, fuzzy
 #| msgid "Invoice list"
 msgid "Invoice corrections"
 msgstr "Fattura"
@@ -913,9 +944,6 @@ msgstr "Documentazione"
 msgid "Donation history"
 msgstr "Documentazione"
 
-msgid "Created"
-msgstr "Creato"
-
 msgid "Reward"
 msgstr "Ricompensa"
 
@@ -985,12 +1013,6 @@ msgstr "Nessuna interazione registrata."
 
 msgid "Payment history"
 msgstr "Errore nel pagamento"
-
-msgid "State"
-msgstr "Stato"
-
-msgid "No payments recorded."
-msgstr "Nessun pagamento registrato."
 
 msgid "Customer list"
 msgstr "Personalizza annuncio"
@@ -1165,6 +1187,16 @@ msgstr "Finestre di manutenzione"
 
 msgid "No services match the current filters."
 msgstr "Nessun server corrisponde alla tua ricerca."
+
+#, fuzzy
+#| msgid "Discoverable"
+msgid "Discoverable services"
+msgstr "Scopri"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "Servizi disponibili"
 
 #, fuzzy
 #| msgid ""
@@ -1348,7 +1380,15 @@ msgstr ""
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
 msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
@@ -1610,11 +1650,15 @@ msgstr "Rimani aggiornato"
 msgid "Backup service"
 msgstr "Servizio backup"
 
-msgid "Easily put your backups in a safe place."
-msgstr "Salva facilmente i tuoi backup in un luogo sicuro."
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "Supporto base sull'installazione locale di Weblate"
 
-msgid "Encrypted and automatic, always available."
-msgstr "Backup crittografati e automatici, sempre disponibili."
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required."
+msgstr "Impossibile elaborare la richiesta di iscrizione."
 
 msgid "Back up daily"
 msgstr "Backup giornaliero"
@@ -1649,9 +1693,6 @@ msgstr "Pagamento manuale"
 
 msgid "IBAN bank transfer"
 msgstr "Bonifico bancario con IBAN"
-
-msgid "Reference"
-msgstr "Riferimento"
 
 msgid "Payment card"
 msgstr "Carta di pagamento"
@@ -1857,6 +1898,12 @@ msgstr "Pagamento accettato"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Pagamento elaborato"
+
+#, fuzzy
+#| msgid "Cancel"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "Cancella"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3262,6 +3309,49 @@ msgstr ""
 "I prezzi del servizio in cloud si basano esclusivamente sul numero di "
 "stringhe. Ogni piano include tutte le funzionalità Weblate."
 
+#, fuzzy
+#| msgid "Dedicated hosting services"
+msgid "Calculate your hosting price"
+msgstr "Servizio in hosting dedicato"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "Stato traduzione"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "Istanza dedicata"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "Annuale"
+
+msgid "Gratis trial"
+msgstr "Prova gratuita"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr "<b>prova gratuita di 14 giorni</b> inclusa in tutti i piani cloud"
 
@@ -3277,22 +3367,13 @@ msgstr "Componenti della traduzione"
 msgid "Number of translators"
 msgstr "Numero di traduttori"
 
-msgid "Dedicated instance"
-msgstr "Istanza dedicata"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "Personalizza"
 
-msgid "Yearly"
-msgstr "Annuale"
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "<strong>Risparmia il 20%%</strong> con l'abbonamento annuale!"
-
-msgid "Gratis trial"
-msgstr "Prova gratuita"
 
 msgid "<b>Ask</b> for options"
 msgstr "<b>Chiedi</b> per opzioni"
@@ -4022,11 +4103,42 @@ msgstr "Copia"
 msgid "Refresh token"
 msgstr "Aggiorna token"
 
+#, fuzzy
+#| msgid "Regular backups"
+msgid "Set up your backups"
+msgstr "Backup regolari"
+
+#, fuzzy
+#| msgid ""
+#| "Activate the listing from your Weblate management page using the "
+#| "activation token shown below."
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+"Attiva l'inserzione dalla tua pagina di gestione Weblate utilizzando il "
+"token di attivazione mostrato di seguito."
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "Maggiori info nella documentazione."
+
 msgid "Backup repository"
 msgstr "Repository backup"
 
 msgid "Documentation"
 msgstr "Documentazione"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4267,8 +4379,15 @@ msgstr "Configurazione e personalizzazione"
 msgid "installation"
 msgstr "Installazione"
 
-msgid "Cloud backups of your data"
-msgstr "Backup cloud dei tuoi dati"
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate"
+msgstr "Supporto base sull'installazione locale di Weblate"
+
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required"
+msgstr "Impossibile elaborare la richiesta di iscrizione."
 
 msgid "Securely encrypted with your passphrase"
 msgstr "Criptato in modo sicuro con la tua password"
@@ -4278,9 +4397,6 @@ msgstr "Backup incrementali giornalieri"
 
 msgid "Stores up to 100 GB of backups"
 msgstr "Memorizza fino a 100GB di backup"
-
-msgid "Read more in the documentation."
-msgstr "Maggiori info nella documentazione."
 
 msgid "Consulting services and/or custom development"
 msgstr "Servizi di consulenza e/o di sviluppo personalizzato"
@@ -4447,6 +4563,11 @@ msgstr[1] "rimangono %d giorni"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Errore nel parametro %(field)s: %(error)s"
 
+#, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "Pagamento annullato"
+
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Grazie per la tua donazione e buon FOSDEM."
 
@@ -4556,6 +4677,15 @@ msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Conferma l'aggiornamento dalla pagina del tuo account."
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "Salva facilmente i tuoi backup in un luogo sicuro."
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "Backup crittografati e automatici, sempre disponibili."
+
+#~ msgid "Cloud backups of your data"
+#~ msgstr "Backup cloud dei tuoi dati"
 
 #~ msgid "Add owner to customer"
 #~ msgstr "Aggiungi utente ai clienti"
@@ -5409,9 +5539,6 @@ msgstr "Conferma l'aggiornamento dalla pagina del tuo account."
 #~ msgid "Subscription requested, all you have to do is confirm the email."
 #~ msgstr "Iscrizione richiesta. Tutto ciò che devi fare è confermare l'email."
 
-#~ msgid "Could not process subscription request."
-#~ msgstr "Impossibile elaborare la richiesta di iscrizione."
-
 #~ msgid "Helm chart for Kubernetes"
 #~ msgstr "Pacchetto preconfigurato Helm per Kubernetes"
 
@@ -5472,9 +5599,6 @@ msgstr "Conferma l'aggiornamento dalla pagina del tuo account."
 
 #~ msgid "Glossary"
 #~ msgstr "Glossario"
-
-#~ msgid "Regular backups"
-#~ msgstr "Backup regolari"
 
 #~ msgid "All"
 #~ msgstr "Tutto"
@@ -5641,9 +5765,6 @@ msgstr "Conferma l'aggiornamento dalla pagina del tuo account."
 
 #~ msgid "Installation using Docker on your Linux server"
 #~ msgstr "Installazione nel tuo server Linux usando Docker"
-
-#~ msgid "Basic support for self hosted Weblate"
-#~ msgstr "Supporto base sull'installazione locale di Weblate"
 
 #~ msgid "We will fix issues that occur in your environment."
 #~ msgstr "Correggeremo i problemi che si verificano nella tua configurazione."

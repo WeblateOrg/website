@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-18 05:28+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -124,6 +124,15 @@ msgid "Amount including VAT"
 msgstr "(including VAT)"
 
 msgid "Only paid invoices can be refunded."
+msgstr ""
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
 msgstr ""
 
 #, fuzzy
@@ -759,6 +768,31 @@ msgid "Reopen quote"
 msgstr "Get a quote"
 
 #, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Weblate payment"
+
+msgid "Reference"
+msgstr "Reference"
+
+msgid "Created"
+msgstr "Created"
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "Payment error"
+
+msgid "State"
+msgstr "State"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Payment rejected"
+
+#, fuzzy
 #| msgid "Integration API"
 msgid "Invoice corrections"
 msgstr "Integration API"
@@ -1015,9 +1049,6 @@ msgstr "Documentation"
 msgid "Donation history"
 msgstr "Documentation"
 
-msgid "Created"
-msgstr "Created"
-
 #, fuzzy
 #| msgid "No reward"
 msgid "Reward"
@@ -1100,15 +1131,6 @@ msgstr "Translation context"
 #| msgid "Payment error"
 msgid "Payment history"
 msgstr "Payment error"
-
-msgid "State"
-msgstr "State"
-
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "Payment rejected"
-msgid "No payments recorded."
-msgstr "Payment rejected"
 
 #, fuzzy
 #| msgid "Customize listing"
@@ -1303,6 +1325,16 @@ msgstr "System maintenance"
 msgid "No services match the current filters."
 msgstr "No servers matched your search."
 
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable services"
+msgstr "Discover"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "Available services"
+
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
@@ -1490,7 +1522,15 @@ msgstr ""
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
 msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
@@ -1753,11 +1793,15 @@ msgstr "Stay updated"
 msgid "Backup service"
 msgstr "Backup service"
 
-msgid "Easily put your backups in a safe place."
-msgstr "Easily put your backups in a safe place."
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "Basic support for self hosted Weblate"
 
-msgid "Encrypted and automatic, always available."
-msgstr "Encrypted and automatic, always available."
+#, fuzzy
+#| msgid "Translation context"
+msgid "No other subscription required."
+msgstr "Translation context"
 
 msgid "Back up daily"
 msgstr "Back up daily"
@@ -1794,9 +1838,6 @@ msgstr "Single payment"
 
 msgid "IBAN bank transfer"
 msgstr "IBAN bank transfer"
-
-msgid "Reference"
-msgstr "Reference"
 
 msgid "Payment card"
 msgstr "Payment card"
@@ -1996,6 +2037,12 @@ msgstr "Payment accepted"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Payment processed"
+
+#, fuzzy
+#| msgid "Cancel"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "Cancel"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3382,6 +3429,49 @@ msgstr ""
 "Cloud hosting prices are based purely on number of strings. All plans "
 "include all Weblate features."
 
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Calculate your hosting price"
+msgstr "Dedicated hosted service"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "Translation status"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "Dedicated instance"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "Yearly"
+
+msgid "Gratis trial"
+msgstr "Gratis trial"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr "<b>14-day gratis trial</b> included in all cloud plans"
 
@@ -3397,22 +3487,13 @@ msgstr "Translation components"
 msgid "Number of translators"
 msgstr "Number of translators"
 
-msgid "Dedicated instance"
-msgstr "Dedicated instance"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "Custom"
 
-msgid "Yearly"
-msgstr "Yearly"
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "<strong>Save 20%%</strong> with annual subscription!"
-
-msgid "Gratis trial"
-msgstr "Gratis trial"
 
 msgid "<b>Ask</b> for options"
 msgstr "<b>Ask</b> for options"
@@ -4132,11 +4213,36 @@ msgstr "Copy"
 msgid "Refresh token"
 msgstr "Refresh token"
 
+#, fuzzy
+#| msgid "Stores up to 100 GB of backups"
+msgid "Set up your backups"
+msgstr "Stores up to 100 GB of backups"
+
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "Read more in the documentation."
+
 msgid "Backup repository"
 msgstr "Backup repository"
 
 msgid "Documentation"
 msgstr "Documentation"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4367,8 +4473,15 @@ msgstr "Setup customisation"
 msgid "installation"
 msgstr "installation"
 
-msgid "Cloud backups of your data"
-msgstr "Cloud backups of your data"
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate"
+msgstr "Basic support for self hosted Weblate"
+
+#, fuzzy
+#| msgid "Translation context"
+msgid "No other subscription required"
+msgstr "Translation context"
 
 msgid "Securely encrypted with your passphrase"
 msgstr "Securely encrypted with your passphrase"
@@ -4378,9 +4491,6 @@ msgstr "Daily incremental backups"
 
 msgid "Stores up to 100 GB of backups"
 msgstr "Stores up to 100 GB of backups"
-
-msgid "Read more in the documentation."
-msgstr "Read more in the documentation."
 
 msgid "Consulting services and/or custom development"
 msgstr "Consulting services and/or&nbsp;custom development"
@@ -4547,6 +4657,11 @@ msgstr[1] "%d days remaining"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Error in parameter %(field)s: %(error)s"
 
+#, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "Payment cancelled"
+
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Thank you for your donation and enjoy FOSDEM."
 
@@ -4651,6 +4766,15 @@ msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "Easily put your backups in a safe place."
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "Encrypted and automatic, always available."
+
+#~ msgid "Cloud backups of your data"
+#~ msgstr "Cloud backups of your data"
 
 #, fuzzy
 #~| msgid "Add server to Discover Weblate"
@@ -5598,9 +5722,6 @@ msgstr ""
 #~| msgid "Installation on your Linux server"
 #~ msgid "Installation using Docker on your Linux server"
 #~ msgstr "Installation on your Linux server"
-
-#~ msgid "Basic support for self hosted Weblate"
-#~ msgstr "Basic support for self hosted Weblate"
 
 #~ msgid "We will fix issues that occur in your environment."
 #~ msgstr "We will fix issues that occur in your environment."
