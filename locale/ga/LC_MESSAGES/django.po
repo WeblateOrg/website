@@ -10,17 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-25 16:51+0000\n"
 "Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
-"Language-Team: Irish <https://hosted.weblate.org/projects/weblate/website/"
-"ga/>\n"
+"Language-Team: Irish <https://hosted.weblate.org/projects/weblate/website/ga/"
+">\n"
 "Language: ga\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :(n>"
-"6 && n<11) ? 3 : 4;\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :"
+"(n>6 && n<11) ? 3 : 4;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
 msgid "Please confirm that you want to issue a final invoice."
@@ -111,6 +111,15 @@ msgstr "Méid lena n-áirítear CBL"
 
 msgid "Only paid invoices can be refunded."
 msgstr "Ní féidir aisíocaíocht a dhéanamh ach ar shonraisc atá íoctha."
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
+msgstr ""
 
 msgid "Correct paid invoice"
 msgstr "Sonrasc íoctha a cheartú"
@@ -646,6 +655,28 @@ msgstr ""
 msgid "Reopen quote"
 msgstr "Athoscail an luachan"
 
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Íocaíocht gréasáin"
+
+msgid "Reference"
+msgstr "Tagairt"
+
+msgid "Created"
+msgstr "Cruthaithe"
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "Tharla earráid leis an íocaíocht"
+
+msgid "State"
+msgstr "Stát"
+
+msgid "No payments recorded."
+msgstr "Gan aon íocaíochtaí taifeadta."
+
 msgid "Invoice corrections"
 msgstr "Ceartúcháin ar shonraisc"
 
@@ -869,9 +900,6 @@ msgstr "Tabhartais"
 msgid "Donation history"
 msgstr "Stair na síntiús"
 
-msgid "Created"
-msgstr "Cruthaithe"
-
 msgid "Reward"
 msgstr "Luach saothair"
 
@@ -931,12 +959,6 @@ msgstr "Níor taifeadadh aon idirghníomhaíochtaí."
 
 msgid "Payment history"
 msgstr "Stair íocaíochta"
-
-msgid "State"
-msgstr "Stát"
-
-msgid "No payments recorded."
-msgstr "Gan aon íocaíochtaí taifeadta."
 
 msgid "Customer list"
 msgstr "Liosta custaiméirí"
@@ -1106,6 +1128,16 @@ msgstr "Cothabháil"
 
 msgid "No services match the current filters."
 msgstr "Níl aon seirbhísí a mheaitseálann na scagairí reatha."
+
+#, fuzzy
+#| msgid "Discoverable"
+msgid "Discoverable services"
+msgstr "Infhaighte"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "Seirbhísí atá ar fáil"
 
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
@@ -1292,8 +1324,16 @@ msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 "Ní féidir le dátaí ceartúcháin a bheith roimh dhátaí na sonraisce bunaidh."
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
 msgstr "Socraigh an íocaíocht atá ar feitheamh sula n-eiseofar ceartúchán."
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
+msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
 msgstr ""
@@ -1549,11 +1589,15 @@ msgstr "Fan suas chun dáta"
 msgid "Backup service"
 msgstr "Seirbhís cúltaca"
 
-msgid "Easily put your backups in a safe place."
-msgstr "Cuir do chúltacaí in áit shábháilte go héasca."
+#, fuzzy
+#| msgid "Cloud backups of your data"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "Cúltacaí scamall de do shonraí"
 
-msgid "Encrypted and automatic, always available."
-msgstr "Criptithe agus uathoibríoch, ar fáil i gcónaí."
+#, fuzzy
+#| msgid "No interactions recorded."
+msgid "No other subscription required."
+msgstr "Níor taifeadadh aon idirghníomhaíochtaí."
 
 msgid "Back up daily"
 msgstr "Cúltaca go laethúil"
@@ -1588,9 +1632,6 @@ msgstr "Íocaíocht de láimh"
 
 msgid "IBAN bank transfer"
 msgstr "Aistriú bainc IBAN"
-
-msgid "Reference"
-msgstr "Tagairt"
 
 msgid "Payment card"
 msgstr "Cárta íocaíochta"
@@ -1792,6 +1833,12 @@ msgstr "Glacadh an íocaíocht"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Próiseáladh an íocaíocht"
+
+#, fuzzy
+#| msgid "Cancel"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "Cealaigh"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3152,10 +3199,10 @@ msgid ""
 "support</a> for your own installation. Your purchases help sustain the open "
 "source platform that organizations and communities rely on."
 msgstr ""
-"Lig dár bhfoireann Weblate a reáchtáil duit, nó roghnaigh <a href=\"%(url)"
-"s\">tacaíocht shaineolach</a> chun do shuiteáil féin. Cabhraíonn do "
-"cheannacháin leis an ardán foinse oscailte a chothú — ardán a mbíonn "
-"eagraíochtaí agus pobail ag brath air."
+"Lig dár bhfoireann Weblate a reáchtáil duit, nó roghnaigh <a "
+"href=\"%(url)s\">tacaíocht shaineolach</a> chun do shuiteáil féin. "
+"Cabhraíonn do cheannacháin leis an ardán foinse oscailte a chothú — ardán a "
+"mbíonn eagraíochtaí agus pobail ag brath air."
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr "Tá ár bhfoireann réidh chun cabhrú leat Weblate a rith go réidh."
@@ -3247,6 +3294,49 @@ msgstr ""
 "Tá praghsanna óstála scamall bunaithe ar líon na teaghráin amháin. Áirítear "
 "ar na pleananna go léir gnéithe Weblate."
 
+#, fuzzy
+#| msgid "Dedicated hosting services"
+msgid "Calculate your hosting price"
+msgstr "Seirbhísí óstála tiomnaithe"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "Stádas an aistriúcháin"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "Sampla tiomnaithe"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "Bliantúil"
+
+msgid "Gratis trial"
+msgstr "Tástáil saor in aisce"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr "<b>triail saor in aisce 14 lá</b> san áireamh i ngach néalphlean"
 
@@ -3262,22 +3352,13 @@ msgstr "Comhpháirteanna aistriúcháin"
 msgid "Number of translators"
 msgstr "Líon aistritheoirí"
 
-msgid "Dedicated instance"
-msgstr "Sampla tiomnaithe"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "Saincheaptha"
 
-msgid "Yearly"
-msgstr "Bliantúil"
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "<strong>Sábháil 20%%</strong> le síntiús bliantúil!"
-
-msgid "Gratis trial"
-msgstr "Tástáil saor in aisce"
 
 msgid "<b>Ask</b> for options"
 msgstr "<b>Iarr</b> roghanna"
@@ -3406,8 +3487,8 @@ msgid ""
 "Weblate staff added you as an owner of the customer account "
 "<strong>%(customer_name)s</strong>."
 msgstr ""
-"Chuir foireann Weblate tú leis mar úinéir ar chuntas an chustaiméara <strong>"
-"%(customer_name)s</strong>."
+"Chuir foireann Weblate tú leis mar úinéir ar chuntas an chustaiméara "
+"<strong>%(customer_name)s</strong>."
 
 msgid ""
 "You now have full control over its billing, services, secrets, and other "
@@ -3430,8 +3511,8 @@ msgid ""
 "You have been invited to manage the customer account "
 "<strong>%(customer_name)s</strong> on Weblate."
 msgstr ""
-"Tá cuireadh faighte agat chun cuntas an chustaiméara <strong>%(customer_name)"
-"s</strong> a bhainistiú ar Weblate."
+"Tá cuireadh faighte agat chun cuntas an chustaiméara "
+"<strong>%(customer_name)s</strong> a bhainistiú ar Weblate."
 
 msgid ""
 "Accepting gives you full control over its billing, services, secrets, and "
@@ -4043,11 +4124,42 @@ msgstr "Cóipeáil"
 msgid "Refresh token"
 msgstr "Comhartha athnuachana"
 
+#, fuzzy
+#| msgid "Stores up to 100 GB of backups"
+msgid "Set up your backups"
+msgstr "Stóráiltear suas le 100 GB de chúltacaí"
+
+#, fuzzy
+#| msgid ""
+#| "Activate the listing from your Weblate management page using the "
+#| "activation token shown below."
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+"Gníomhachtaigh an liostú ó do leathanach bainistíochta Weblate ag baint "
+"úsáide as an gcomhartha gníomhachtaithe a thaispeántar thíos."
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "Léigh tuilleadh sa doiciméadú."
+
 msgid "Backup repository"
 msgstr "Stór cúltaca"
 
 msgid "Documentation"
 msgstr "Cáipéisíocht"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4294,8 +4406,15 @@ msgstr "Socrú saincheaptha"
 msgid "installation"
 msgstr "Suiteáil"
 
-msgid "Cloud backups of your data"
+#, fuzzy
+#| msgid "Cloud backups of your data"
+msgid "Cloud backups for self-hosted Weblate"
 msgstr "Cúltacaí scamall de do shonraí"
+
+#, fuzzy
+#| msgid "No interactions recorded."
+msgid "No other subscription required"
+msgstr "Níor taifeadadh aon idirghníomhaíochtaí."
 
 msgid "Securely encrypted with your passphrase"
 msgstr "Criptithe go slán le do phasfhrása"
@@ -4305,9 +4424,6 @@ msgstr "Cúltacaí incriminteacha laethúla"
 
 msgid "Stores up to 100 GB of backups"
 msgstr "Stóráiltear suas le 100 GB de chúltacaí"
-
-msgid "Read more in the documentation."
-msgstr "Léigh tuilleadh sa doiciméadú."
 
 msgid "Consulting services and/or custom development"
 msgstr "Seirbhísí comhairliúcháin agus/nó forbairt custaiméara"
@@ -4480,6 +4596,11 @@ msgstr[4] "%d laethanta fágtha"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Earráid i bparaiméadar %(field)s: %(error)s"
 
+#, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "Cuireadh an íocaíocht ar ceal"
+
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Go raibh maith agat as do shíntiús agus bain sult as FOSDEM."
 
@@ -4584,6 +4705,12 @@ msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Deimhnigh an uasghrádú ó leathanach do chuntais le do thoil."
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "Cuir do chúltacaí in áit shábháilte go héasca."
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "Criptithe agus uathoibríoch, ar fáil i gcónaí."
 
 #~ msgid "Add owner to customer"
 #~ msgstr "Cuir úinéir leis an gcustaiméir"

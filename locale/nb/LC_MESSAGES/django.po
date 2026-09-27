@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-18 05:30+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -130,6 +130,15 @@ msgid "Amount including VAT"
 msgstr "(med moms)"
 
 msgid "Only paid invoices can be refunded."
+msgstr ""
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
 msgstr ""
 
 #, fuzzy
@@ -752,6 +761,31 @@ msgid "Reopen quote"
 msgstr "Støtte"
 
 #, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Weblate-betaling"
+
+msgid "Reference"
+msgstr "Referanse"
+
+msgid "Created"
+msgstr "Opprettet"
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "Betalingsfeil"
+
+msgid "State"
+msgstr "Tilstand"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Betaling avslått"
+
+#, fuzzy
 #| msgid "Invoice"
 msgid "Invoice corrections"
 msgstr "Faktura"
@@ -1013,9 +1047,6 @@ msgstr "Dokumentasjon"
 msgid "Donation history"
 msgstr "Dokumentasjon"
 
-msgid "Created"
-msgstr "Opprettet"
-
 msgid "Reward"
 msgstr "Påskjønnelse"
 
@@ -1100,15 +1131,6 @@ msgstr "Oversettelsesbindeleddsinfo"
 #| msgid "Payment error"
 msgid "Payment history"
 msgstr "Betalingsfeil"
-
-msgid "State"
-msgstr "Tilstand"
-
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "Payment rejected"
-msgid "No payments recorded."
-msgstr "Betaling avslått"
 
 #, fuzzy
 #| msgid "Customize listing"
@@ -1307,6 +1329,16 @@ msgstr "Vedlikeholdsvindu"
 msgid "No services match the current filters."
 msgstr "Ingen tjenere stemmer med ditt søk."
 
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable services"
+msgstr "Oppdag"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "Tilgjengelige tjenester"
+
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
@@ -1496,7 +1528,15 @@ msgstr ""
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
 msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
@@ -1763,11 +1803,15 @@ msgstr "Hold deg oppdatert"
 msgid "Backup service"
 msgstr "Sikkerhetskopieringstjeneste"
 
-msgid "Easily put your backups in a safe place."
-msgstr "Sikkerhetskopier lagret på en trygg plass."
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "Grunnleggende støtte for selvtjent Weblate"
 
-msgid "Encrypted and automatic, always available."
-msgstr "Kryptert og automatisk, alltid tilgjengelig."
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required."
+msgstr "Klarte ikke å behandle abonnementsforespørsel."
 
 msgid "Back up daily"
 msgstr "Daglig sikkerhetskopi"
@@ -1806,9 +1850,6 @@ msgstr "Éngangsbetaling"
 
 msgid "IBAN bank transfer"
 msgstr "IBAN-bankoverføring"
-
-msgid "Reference"
-msgstr "Referanse"
 
 msgid "Payment card"
 msgstr "Betalingskort"
@@ -2018,6 +2059,12 @@ msgstr "Betaling godtatt"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Betaling behandlet"
+
+#, fuzzy
+#| msgid "and dedicated"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "og avsatt"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3479,6 +3526,49 @@ msgstr ""
 "Skyvertstjeningspriser er kun basert på antallet strenger. Alle planer "
 "inkluderer alle Weblate-funksjoner."
 
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Calculate your hosting price"
+msgstr "Reservert vertlagringstjeneste"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "Oversettelsesstatus"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "Reservert utgave"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "Årlig"
+
+msgid "Gratis trial"
+msgstr "Gratis prøveperiode"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr "<b>14-dagers gratis prøveperiode</b> inkludert i alle skyplaner"
 
@@ -3494,22 +3584,13 @@ msgstr "Oversettelseskomponenter"
 msgid "Number of translators"
 msgstr "Antall Oversettere"
 
-msgid "Dedicated instance"
-msgstr "Reservert utgave"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "Egendefinert"
 
-msgid "Yearly"
-msgstr "Årlig"
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "<strong>Spar 20%%</strong> med årlig abonnement!"
-
-msgid "Gratis trial"
-msgstr "Gratis prøveperiode"
 
 msgid "<b>Ask</b> for options"
 msgstr "<b>Spør</b> om alternativer"
@@ -4283,11 +4364,36 @@ msgstr "Kopier"
 msgid "Refresh token"
 msgstr "Gjenoppfrisk symbol"
 
+#, fuzzy
+#| msgid "Regular backups"
+msgid "Set up your backups"
+msgstr "Regelmessige sikkerhetskopier"
+
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "Les mer i dokumentasjonen."
+
 msgid "Backup repository"
 msgstr "Sikkerhetskopieringslager"
 
 msgid "Documentation"
 msgstr "Dokumentasjon"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4521,8 +4627,15 @@ msgstr "Oppsettstilpasning"
 msgid "installation"
 msgstr "installasjon"
 
-msgid "Cloud backups of your data"
-msgstr "Sky-sikkerhetskopier av din data"
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate"
+msgstr "Grunnleggende støtte for selvtjent Weblate"
+
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required"
+msgstr "Klarte ikke å behandle abonnementsforespørsel."
 
 msgid "Securely encrypted with your passphrase"
 msgstr "Sikkert kryptert med ditt passord"
@@ -4532,9 +4645,6 @@ msgstr "Daglig påfølgende sikkerhetskopi"
 
 msgid "Stores up to 100 GB of backups"
 msgstr "Lagrer opptil 100 GB med sikkerhetskopier"
-
-msgid "Read more in the documentation."
-msgstr "Les mer i dokumentasjonen."
 
 msgid "Consulting services and/or custom development"
 msgstr "Konsultasjonstjenester og/eller tilpasset utvikling"
@@ -4709,6 +4819,11 @@ msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Feil i parameter %(field)s: %(error)s"
 
 #, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "Betaling avbrutt"
+
+#, fuzzy
 #| msgid "Thank you for your donation."
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Takk for din donasjon."
@@ -4812,6 +4927,15 @@ msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "Sikkerhetskopier lagret på en trygg plass."
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "Kryptert og automatisk, alltid tilgjengelig."
+
+#~ msgid "Cloud backups of your data"
+#~ msgstr "Sky-sikkerhetskopier av din data"
 
 #, fuzzy
 #~| msgid "Add server to Discover Weblate"
@@ -5607,9 +5731,6 @@ msgstr ""
 #~ msgid "Subscription requested, all you have to do is confirm the email."
 #~ msgstr "Abonnement forespurt, alt du må gjøre er å bekrefte e-posten."
 
-#~ msgid "Could not process subscription request."
-#~ msgstr "Klarte ikke å behandle abonnementsforespørsel."
-
 #~ msgid "Helm chart for Kubernetes"
 #~ msgstr "Helm chart for Kubernetes"
 
@@ -5673,9 +5794,6 @@ msgstr ""
 
 #~ msgid "Glossary"
 #~ msgstr "Ordliste"
-
-#~ msgid "Regular backups"
-#~ msgstr "Regelmessige sikkerhetskopier"
 
 #~ msgid "All"
 #~ msgstr "Alle"
@@ -5845,9 +5963,6 @@ msgstr ""
 
 #~ msgid "Installation using Docker on your Linux server"
 #~ msgstr "Installasjon ved bruk av Docker på din Linux-tjener"
-
-#~ msgid "Basic support for self hosted Weblate"
-#~ msgstr "Grunnleggende støtte for selvtjent Weblate"
 
 #~ msgid "We will fix issues that occur in your environment."
 #~ msgstr "Vi ordner opp i feil som oppstår i ditt miljø."

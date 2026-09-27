@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Swedish (Weblate)\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-18 06:17+0000\n"
 "Last-Translator: Daniel Nylander <yeagersthlm@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/weblate/website/"
@@ -120,6 +120,15 @@ msgstr "Belopp inklusive moms"
 
 msgid "Only paid invoices can be refunded."
 msgstr "Endast betalda fakturor kan återbetalas."
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
+msgstr ""
 
 msgid "Correct paid invoice"
 msgstr "Korrigera betald faktura"
@@ -648,6 +657,28 @@ msgstr "Den här offerten är stängd och dold från föråldrade offertförslag
 msgid "Reopen quote"
 msgstr "Öppna offerten igen"
 
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Weblate-betalning"
+
+msgid "Reference"
+msgstr "Referens"
+
+msgid "Created"
+msgstr "Skapad"
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "Betalningsfel"
+
+msgid "State"
+msgstr "Tillstånd"
+
+msgid "No payments recorded."
+msgstr "Inga betalningar har registrerats."
+
 msgid "Invoice corrections"
 msgstr "Fakturakorrigeringar"
 
@@ -865,9 +896,6 @@ msgstr "Donationer"
 msgid "Donation history"
 msgstr "Donationshistorik"
 
-msgid "Created"
-msgstr "Skapad"
-
 msgid "Reward"
 msgstr "Belöning"
 
@@ -927,12 +955,6 @@ msgstr "Inga interaktioner har registrerats."
 
 msgid "Payment history"
 msgstr "Betalningshistorik"
-
-msgid "State"
-msgstr "Tillstånd"
-
-msgid "No payments recorded."
-msgstr "Inga betalningar har registrerats."
 
 msgid "Customer list"
 msgstr "Kundlista"
@@ -1102,6 +1124,16 @@ msgstr "Underhåll"
 
 msgid "No services match the current filters."
 msgstr "Inga tjänster matchar de aktuella filtren."
+
+#, fuzzy
+#| msgid "Discoverable"
+msgid "Discoverable services"
+msgstr "Upptäckbar"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "Tillgängliga tjänster"
 
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
@@ -1283,8 +1315,16 @@ msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 "Korrigeringsdatum kan inte infalla före de ursprungliga fakturadatumens."
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
 msgstr "Lös den väntande betalningen innan du utfärdar en korrigering."
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
+msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
 msgstr "Endast dubblettkorrigeringar får hänvisa till en ersättningsfaktura."
@@ -1533,11 +1573,15 @@ msgstr "Håll dig uppdaterad"
 msgid "Backup service"
 msgstr "Säkerhetskopieringstjänst"
 
-msgid "Easily put your backups in a safe place."
-msgstr "Du kan enkelt placera dina säkerhetskopior på ett säkert ställe."
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "Grundläggande stöd för självhostad Weblate"
 
-msgid "Encrypted and automatic, always available."
-msgstr "Krypterad och automatisk, alltid tillgänglig."
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required."
+msgstr "Det gick inte att behandla prenumerationsbegäran."
 
 msgid "Back up daily"
 msgstr "Säkerhetskopiera dagligen"
@@ -1572,9 +1616,6 @@ msgstr "Manuell betalning"
 
 msgid "IBAN bank transfer"
 msgstr "IBAN banköverföring"
-
-msgid "Reference"
-msgstr "Referens"
 
 msgid "Payment card"
 msgstr "Betalkort"
@@ -1766,6 +1807,12 @@ msgstr "Betalning accepterad"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Betalning har behandlats"
+
+#, fuzzy
+#| msgid "Cancel"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "Avbryt"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3093,10 +3140,10 @@ msgid ""
 "support</a> for your own installation. Your purchases help sustain the open "
 "source platform that organizations and communities rely on."
 msgstr ""
-"Låt vårt team köra Weblate åt dig, eller välj <a href=\"%(url)s\">"
-"expertsupport</a> för din egen installation. Dina köp hjälper till att "
-"finansiera den plattform med öppen källkod som organisationer och "
-"gemenskaper förlitar sig på."
+"Låt vårt team köra Weblate åt dig, eller välj <a "
+"href=\"%(url)s\">expertsupport</a> för din egen installation. Dina köp "
+"hjälper till att finansiera den plattform med öppen källkod som "
+"organisationer och gemenskaper förlitar sig på."
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr ""
@@ -3189,6 +3236,49 @@ msgstr ""
 "Molnhostingpriserna baseras enbart på antalet strängar. Alla planer "
 "inkluderar alla Weblate-funktioner."
 
+#, fuzzy
+#| msgid "Dedicated hosting services"
+msgid "Calculate your hosting price"
+msgstr "Dedikerade värdtjänster"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "Översättningsstatus"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "Dedikerad instans"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "Årligen"
+
+msgid "Gratis trial"
+msgstr "Gratis provperiod"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr "<b>14 dagars gratis provperiod</b> ingår i alla molnabonnemang"
 
@@ -3204,22 +3294,13 @@ msgstr "Översättningskomponenter"
 msgid "Number of translators"
 msgstr "Antal översättare"
 
-msgid "Dedicated instance"
-msgstr "Dedikerad instans"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "Anpassad"
 
-msgid "Yearly"
-msgstr "Årligen"
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "<strong>Spara 20%%</strong> med årligt abonnemang!"
-
-msgid "Gratis trial"
-msgstr "Gratis provperiod"
 
 msgid "<b>Ask</b> for options"
 msgstr "<b>Fråga</b> om alternativ"
@@ -3339,8 +3420,8 @@ msgid ""
 "Weblate staff added you as an owner of the customer account "
 "<strong>%(customer_name)s</strong>."
 msgstr ""
-"Weblate-teamet har lagt till dig som ansvarig för kundkontot <strong>%"
-"(customer_name)s</strong>."
+"Weblate-teamet har lagt till dig som ansvarig för kundkontot "
+"<strong>%(customer_name)s</strong>."
 
 msgid ""
 "You now have full control over its billing, services, secrets, and other "
@@ -3965,11 +4046,42 @@ msgstr "Kopiera"
 msgid "Refresh token"
 msgstr "Uppdatera token"
 
+#, fuzzy
+#| msgid "Regular backups"
+msgid "Set up your backups"
+msgstr "Regelbunden säkerhetskopiering"
+
+#, fuzzy
+#| msgid ""
+#| "Activate the listing from your Weblate management page using the "
+#| "activation token shown below."
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+"Aktivera listningen från Weblates hanteringssida med aktiveringstoken som "
+"visas nedan."
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "Läs mer i dokumentationen."
+
 msgid "Backup repository"
 msgstr "Säkerhetskopieringsarkiv"
 
 msgid "Documentation"
 msgstr "Dokumentation"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4210,8 +4322,15 @@ msgstr "Anpassning av installationen"
 msgid "installation"
 msgstr "installation"
 
-msgid "Cloud backups of your data"
-msgstr "Molnbackup av din data"
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate"
+msgstr "Grundläggande stöd för självhostad Weblate"
+
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required"
+msgstr "Det gick inte att behandla prenumerationsbegäran."
 
 msgid "Securely encrypted with your passphrase"
 msgstr "Säkert krypterat med din lösenfras"
@@ -4221,9 +4340,6 @@ msgstr "Dagliga inkrementella säkerhetskopior"
 
 msgid "Stores up to 100 GB of backups"
 msgstr "Lagrar upp till 100 GB säkerhetskopior"
-
-msgid "Read more in the documentation."
-msgstr "Läs mer i dokumentationen."
 
 msgid "Consulting services and/or custom development"
 msgstr "Konsulttjänster och/eller anpassad utveckling"
@@ -4391,6 +4507,11 @@ msgstr[1] "%d dagar kvar"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Fel i parameter %(field)s: %(error)s"
 
+#, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "Betalning avbruten"
+
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Tack för din donation och njut av FOSDEM."
 
@@ -4494,6 +4615,15 @@ msgstr "Betala utestående faktura %(invoice)s för att förnya."
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Bekräfta uppgraderingen från din kontosida."
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "Du kan enkelt placera dina säkerhetskopior på ett säkert ställe."
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "Krypterad och automatisk, alltid tillgänglig."
+
+#~ msgid "Cloud backups of your data"
+#~ msgstr "Molnbackup av din data"
 
 #~ msgid "Add owner to customer"
 #~ msgstr "Lägg till ägare för kund"
@@ -5250,9 +5380,6 @@ msgstr "Bekräfta uppgraderingen från din kontosida."
 #~ "Prenumeration begärd, allt du behöver göra är att bekräfta e-"
 #~ "postmeddelandet."
 
-#~ msgid "Could not process subscription request."
-#~ msgstr "Det gick inte att behandla prenumerationsbegäran."
-
 #~ msgid "Helm chart for Kubernetes"
 #~ msgstr "Helm-diagram för Kubernetes"
 
@@ -5312,9 +5439,6 @@ msgstr "Bekräfta uppgraderingen från din kontosida."
 
 #~ msgid "Glossary"
 #~ msgstr "Ordlista"
-
-#~ msgid "Regular backups"
-#~ msgstr "Regelbunden säkerhetskopiering"
 
 #~ msgid "All"
 #~ msgstr "Alla"
@@ -5463,9 +5587,6 @@ msgstr "Bekräfta uppgraderingen från din kontosida."
 
 #~ msgid "Installation using Docker on your Linux server"
 #~ msgstr "Installera via Docker på din Linux-server"
-
-#~ msgid "Basic support for self hosted Weblate"
-#~ msgstr "Grundläggande stöd för självhostad Weblate"
 
 #~ msgid "We will fix issues that occur in your environment."
 #~ msgstr "Vi kommer att fixa problem som uppstår i din miljö."

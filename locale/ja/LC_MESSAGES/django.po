@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-19 06:15+0000\n"
 "Last-Translator: Kyotaro Iijima <kyotaro.eyes@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/weblate/website/"
@@ -127,6 +127,15 @@ msgstr "VAT 込み金額"
 
 msgid "Only paid invoices can be refunded."
 msgstr "支払い済みの請求書のみ返金できます。"
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
+msgstr ""
 
 msgid "Correct paid invoice"
 msgstr "支払済み請求書の訂正"
@@ -649,6 +658,28 @@ msgstr "この見積書はクローズ済みで、古い見積書の提案一覧
 msgid "Reopen quote"
 msgstr "見積書を再オープン"
 
+#, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Weblate の支払い"
+
+msgid "Reference"
+msgstr "参照"
+
+msgid "Created"
+msgstr "作成日時"
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "決済エラー"
+
+msgid "State"
+msgstr "状態"
+
+msgid "No payments recorded."
+msgstr "支払いは記録されていません。"
+
 msgid "Invoice corrections"
 msgstr "請求書の訂正"
 
@@ -865,9 +896,6 @@ msgstr "寄付"
 msgid "Donation history"
 msgstr "寄付履歴"
 
-msgid "Created"
-msgstr "作成日時"
-
 msgid "Reward"
 msgstr "報酬"
 
@@ -927,12 +955,6 @@ msgstr "応対は記録されていません。"
 
 msgid "Payment history"
 msgstr "決済履歴"
-
-msgid "State"
-msgstr "状態"
-
-msgid "No payments recorded."
-msgstr "支払いは記録されていません。"
 
 msgid "Customer list"
 msgstr "顧客リスト"
@@ -1103,12 +1125,22 @@ msgstr "メンテナンス"
 msgid "No services match the current filters."
 msgstr "検索条件と一致するサービスはありません。"
 
+#, fuzzy
+#| msgid "Discoverable"
+msgid "Discoverable services"
+msgstr "検出可能（公開中）"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "利用可能なサービス"
+
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
 msgstr ""
-"お客様の VAT ID の有効性が確認できなかったため、請求書は発行されませんでした"
-"。顧客情報を更新するか、後でもう一度お試しください。"
+"お客様の VAT ID の有効性が確認できなかったため、請求書は発行されませんでし"
+"た。顧客情報を更新するか、後でもう一度お試しください。"
 
 msgid "an earlier successful check"
 msgstr "以前に成功した検証"
@@ -1156,7 +1188,8 @@ msgstr "顧客担当者を追加できませんでした：%(error)s"
 #, python-format
 msgid ""
 "Added %(email)s to customer owners, but the notification could not be sent."
-msgstr "顧客オーナーに %(email)s を追加しましたが、通知を送信できませんでした。"
+msgstr ""
+"顧客オーナーに %(email)s を追加しましたが、通知を送信できませんでした。"
 
 #, python-format
 msgid "Added %(email)s to customer owners and notified them."
@@ -1277,8 +1310,16 @@ msgstr "訂正理由と説明が必要です。"
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr "訂正日は、元の請求書の日付より前にすることはできません。"
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
 msgstr "訂正を発行する前に、保留中の支払いを解決してください。"
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
+msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
 msgstr "置換請求書を参照できるのは、重複による訂正のみです。"
@@ -1526,11 +1567,15 @@ msgstr "常に最新状態に"
 msgid "Backup service"
 msgstr "バックアップ サービス"
 
-msgid "Easily put your backups in a safe place."
-msgstr "バックアップを安全な場所に簡単に保存します。"
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "自分サーバに設置した Weblate への基本サポート"
 
-msgid "Encrypted and automatic, always available."
-msgstr "暗号化、自動、常に利用可能。"
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required."
+msgstr "サブスクリプションの処理に失敗しました。"
 
 msgid "Back up daily"
 msgstr "毎日のバックアップ"
@@ -1565,9 +1610,6 @@ msgstr "手動での支払い"
 
 msgid "IBAN bank transfer"
 msgstr "IBAN 銀行振込"
-
-msgid "Reference"
-msgstr "参照"
 
 msgid "Payment card"
 msgstr "カード払い"
@@ -1759,6 +1801,12 @@ msgstr "支払い承認"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "支払処理完了"
+
+#, fuzzy
+#| msgid "Cancel"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "キャンセル"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -2254,8 +2302,8 @@ msgid ""
 "Accepting gives you full control over this customer account, including "
 "billing, services, secrets, and other owners."
 msgstr ""
-"承認すると、請求、サービス、シークレット、他のオーナー管理を含め、この顧客"
-"アカウントを全面的に操作できるようになります。"
+"承認すると、請求、サービス、シークレット、他のオーナー管理を含め、この顧客ア"
+"カウントを全面的に操作できるようになります。"
 
 msgid "Accept invitation"
 msgstr "招待の承諾"
@@ -2639,7 +2687,8 @@ msgstr ""
 msgid ""
 "Open source and privacy-respecting, with the freedom to choose how you "
 "translate and where you run it."
-msgstr "オープンソースでプライバシーを尊重し、翻訳方法と運用場所を自由に選べます。"
+msgstr ""
+"オープンソースでプライバシーを尊重し、翻訳方法と運用場所を自由に選べます。"
 
 msgid "Compare hosting and support"
 msgstr "ホスティングとサポートの比較"
@@ -2680,8 +2729,8 @@ msgid ""
 "terminology consistent, while translation memory helps your team reuse "
 "previous work."
 msgstr ""
-"翻訳者が、あなたのユーザーに何が表示されるのかを理解できるよう支援します。"
-"スクリーンショット、近接する文字列、ソース参照によって意味がより明確になりま"
+"翻訳者が、あなたのユーザーに何が表示されるのかを理解できるよう支援します。ス"
+"クリーンショット、近接する文字列、ソース参照によって意味がより明確になりま"
 "す。共有用語集は用語の一貫性を保ち、翻訳メモリは過去の成果を再利用することで"
 "チームの作業効率を高めます。"
 
@@ -2774,9 +2823,9 @@ msgid ""
 "edit generated translations in Weblate, while only reviewer-approved "
 "translations reach your repository."
 msgstr ""
-"翻訳の査読を承認必須のコミット方針と組み合わせることで、より厳密な"
-"ワークフローを構築できます。生成された翻訳は Weblate 上でユーザーが編集でき、"
-"査読担当者が承認したものだけがリポジトリへ反映されます。"
+"翻訳の査読を承認必須のコミット方針と組み合わせることで、より厳密なワークフ"
+"ローを構築できます。生成された翻訳は Weblate 上でユーザーが編集でき、査読担当"
+"者が承認したものだけがリポジトリへ反映されます。"
 
 msgid "Explore AI translation workflows"
 msgstr "AI を利用した翻訳ワークフローを確認する"
@@ -2836,8 +2885,8 @@ msgid ""
 "translation files, and keep your workflow moving as your project grows."
 msgstr ""
 "翻訳のインポートやエクスポート、API を介した他ツールとの連携、アドオンによる"
-"定期作業の自動化が行えます。言語の管理や翻訳ファイルの整理も柔軟に行え、"
-"プロジェクトの成長に合わせてワークフローを途切れさせずに進められます。"
+"定期作業の自動化が行えます。言語の管理や翻訳ファイルの整理も柔軟に行え、プロ"
+"ジェクトの成長に合わせてワークフローを途切れさせずに進められます。"
 
 msgid "Explore the documentation"
 msgstr "ドキュメントを確認する"
@@ -2850,9 +2899,9 @@ msgid ""
 "formats your project uses. Explore the supported formats below for details "
 "and format-specific capabilities."
 msgstr ""
-"プロジェクトで使用しているフォーマットを変更することなく、アプリ、"
-"ウェブサイト、ドキュメントなどを現地語化できます。対応している形式の詳細や形"
-"式固有の機能については、以下の一覧をご確認ください。"
+"プロジェクトで使用しているフォーマットを変更することなく、アプリ、ウェブサイ"
+"ト、ドキュメントなどを現地語化できます。対応している形式の詳細や形式固有の機"
+"能については、以下の一覧をご確認ください。"
 
 msgid ".NET resource files (RESX, RESW)"
 msgstr ".NET リソース ファイル (RESX、RESW)"
@@ -3067,9 +3116,10 @@ msgid ""
 "support</a> for your own installation. Your purchases help sustain the open "
 "source platform that organizations and communities rely on."
 msgstr ""
-"Weblate の運用は当社チームに任せることも、ご自身の環境向けに <a href=\"%(url)"
-"s\">専門サポート</a> を選ぶこともできます。これらの購入は、組織やコミュニティ"
-"が依存するオープンソース基盤を持続させるための支えにもなります。"
+"Weblate の運用は当社チームに任せることも、ご自身の環境向けに <a "
+"href=\"%(url)s\">専門サポート</a> を選ぶこともできます。これらの購入は、組織"
+"やコミュニティが依存するオープンソース基盤を持続させるための支えにもなりま"
+"す。"
 
 msgid "Our team is ready to help you run Weblate smoothly."
 msgstr "私たちのチームは、安定して Weblate を運用する支援ができます。"
@@ -3161,6 +3211,49 @@ msgstr ""
 "クラウド ホスティングの価格は、文字列の数のみに基づいて決定されます。すべての"
 "プランに Weblate のすべての機能が含まれています。"
 
+#, fuzzy
+#| msgid "Dedicated hosting services"
+msgid "Calculate your hosting price"
+msgstr "専用のホスティング サービス"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "翻訳状況"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "専用インスタンス"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "年払い"
+
+msgid "Gratis trial"
+msgstr "無料体験"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr ""
 "<b>14 日間の無料トライアル</b>は、すべてのクラウド プランに含まれています"
@@ -3177,22 +3270,13 @@ msgstr "翻訳のコンポーネント数"
 msgid "Number of translators"
 msgstr "翻訳者数"
 
-msgid "Dedicated instance"
-msgstr "専用インスタンス"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "カスタム"
 
-msgid "Yearly"
-msgstr "年払い"
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "年間サブスクリプションだと <strong>20%% 割引</strong>！"
-
-msgid "Gratis trial"
-msgstr "無料体験"
 
 msgid "<b>Ask</b> for options"
 msgstr "オプションの<b>お問い合わせ</b>"
@@ -3234,7 +3318,8 @@ msgid "Weblate — quality translations, your control"
 msgstr "Weblate — 高品質な翻訳、あなた自身で管理"
 
 msgid "Quality translations. Your workflow. <strong>Your control.</strong>"
-msgstr "高品質な翻訳。あなたのワークフロー。 <strong>お客様自身で管理。</strong>"
+msgstr ""
+"高品質な翻訳。あなたのワークフロー。 <strong>お客様自身で管理。</strong>"
 
 msgid ""
 "Bring your software to more people with Weblate, the privacy-respecting, "
@@ -3339,8 +3424,8 @@ msgid ""
 "Accepting gives you full control over its billing, services, secrets, and "
 "other owners."
 msgstr ""
-"承認すると、請求、サービス、シークレット、他のオーナー管理を含め、この顧客"
-"アカウントを全面的に操作できるようになります。"
+"承認すると、請求、サービス、シークレット、他のオーナー管理を含め、この顧客ア"
+"カウントを全面的に操作できるようになります。"
 
 msgid "Review invitation"
 msgstr "招待を確認"
@@ -3460,7 +3545,8 @@ msgstr "weblate.org のサブスクリプションが間もなく更新されま
 msgid ""
 "Automatic payment is paused while the issued renewal invoice is awaiting "
 "payment."
-msgstr "発行済みの更新請求書の支払いが完了するまで、自動支払いは一時停止されます。"
+msgstr ""
+"発行済みの更新請求書の支払いが完了するまで、自動支払いは一時停止されます。"
 
 msgid "The payment will be automatically charged soon."
 msgstr "間もなく、支払いが自動的に決済されます。"
@@ -3688,8 +3774,8 @@ msgid ""
 "Choose hosting or support from the team behind Weblate, or try the "
 "translation workflow before deciding."
 msgstr ""
-"Weblate チームによるホスティングまたは支援を選ぶか、決める前に翻訳"
-"ワークフローを試すこともできます。"
+"Weblate チームによるホスティングまたは支援を選ぶか、決める前に翻訳ワークフ"
+"ローを試すこともできます。"
 
 msgid "<strong>Donate</strong>—to make the world a better place"
 msgstr "<strong>寄付</strong> — 世界をより良くするために"
@@ -3784,8 +3870,8 @@ msgid ""
 "Work exclusively with people, or include AI and machine translation where "
 "they help. Choose when people edit, accept, and approve the results."
 msgstr ""
-"人だけで作業することも、必要な場面で AI や機械翻訳を取り入れることもできます"
-"。どの段階で人が編集し、承認し、最終決定するかを選択できます。"
+"人だけで作業することも、必要な場面で AI や機械翻訳を取り入れることもできま"
+"す。どの段階で人が編集し、承認し、最終決定するかを選択できます。"
 
 msgid ""
 "Decide where Weblate runs, who has access, and which external translation "
@@ -3812,8 +3898,8 @@ msgid ""
 "or support to help sustain its development."
 msgstr ""
 "コピーレフト付きのLibreソフトウェアを利用、確認、修正、共有してください。その"
-"開発を継続的に支えるために、ホスティングサービスやサポートを購入してください"
-"。"
+"開発を継続的に支えるために、ホスティングサービスやサポートを購入してくださ"
+"い。"
 
 msgid "Help translate"
 msgstr "翻訳支援"
@@ -3928,11 +4014,42 @@ msgstr "コピー"
 msgid "Refresh token"
 msgstr "トークンの更新"
 
+#, fuzzy
+#| msgid "Regular backups"
+msgid "Set up your backups"
+msgstr "定期的なバックアップ"
+
+#, fuzzy
+#| msgid ""
+#| "Activate the listing from your Weblate management page using the "
+#| "activation token shown below."
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+"下に表示されるアクティベーション トークンを使用して、Weblate の管理ページから"
+"この一覧を有効化してください。"
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "詳しくは、ドキュメントをご覧ください。"
+
 msgid "Backup repository"
 msgstr "バックアップ リポジトリ"
 
 msgid "Documentation"
 msgstr "ドキュメント"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4066,8 +4183,8 @@ msgid ""
 "and has not been verified. Continue only if you initiated registration from "
 "this server."
 msgstr ""
-"登録要求で送信されたサーバーアドレス %(server_url)s は未検証です。この"
-"サーバーから登録を開始した場合にのみ続行してください。"
+"登録要求で送信されたサーバーアドレス %(server_url)s は未検証です。このサー"
+"バーから登録を開始した場合にのみ続行してください。"
 
 msgid "Register"
 msgstr "登録"
@@ -4089,10 +4206,10 @@ msgid ""
 "available."
 msgstr ""
 "問題が発生したときは、Weblate チームの担当者（人間）に相談できます。私たちは"
-"原因の理解を助け、現地語化を再び前に進められるよう支援します。自前"
-"インストール向けのサポート、または特定の作業に対するプリペイド支援を選択でき"
-"ます。購入は Weblate の継続的な開発を支える一方で、コミュニティによる支援も引"
-"き続き利用できます。"
+"原因の理解を助け、現地語化を再び前に進められるよう支援します。自前インストー"
+"ル向けのサポート、または特定の作業に対するプリペイド支援を選択できます。購入"
+"は Weblate の継続的な開発を支える一方で、コミュニティによる支援も引き続き利用"
+"できます。"
 
 msgid "Report issue"
 msgstr "問題の報告"
@@ -4172,8 +4289,15 @@ msgstr "設定のカスタマイズ"
 msgid "installation"
 msgstr "インストール"
 
-msgid "Cloud backups of your data"
-msgstr "データのクラウド バックアップ"
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate"
+msgstr "自分サーバに設置した Weblate への基本サポート"
+
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required"
+msgstr "サブスクリプションの処理に失敗しました。"
 
 msgid "Securely encrypted with your passphrase"
 msgstr "パスフレーズを用いて安全に暗号化"
@@ -4183,9 +4307,6 @@ msgstr "毎日の増分バックアップ"
 
 msgid "Stores up to 100 GB of backups"
 msgstr "最大 100 GB のバックアップを保存"
-
-msgid "Read more in the documentation."
-msgstr "詳しくは、ドキュメントをご覧ください。"
 
 msgid "Consulting services and/or custom development"
 msgstr "コンサルティング サービス、およびカスタム開発"
@@ -4350,6 +4471,11 @@ msgstr[0] "残り %d 日"
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr "パラメータ %(field)s 内でエラー: %(error)s"
 
+#, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "支払いの解約"
+
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "ご寄付ありがとうございます。FOSDEM をお楽しみください。"
 
@@ -4444,7 +4570,8 @@ msgstr "更新のお支払いは確認済みで、現在処理待ちの状態で
 msgid ""
 "Please pay outstanding invoice %(invoice)s before switching to annual "
 "billing."
-msgstr "年払いへ切り替える前に、未払いの請求書 %(invoice)s をお支払いください。"
+msgstr ""
+"年払いへ切り替える前に、未払いの請求書 %(invoice)s をお支払いください。"
 
 #, python-format
 msgid "Please pay outstanding invoice %(invoice)s to renew."
@@ -4452,6 +4579,15 @@ msgstr "更新するには、未払いの請求書 %(invoice)s をお支払い�
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "アップグレードを、アカウントページで確認してください。"
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "バックアップを安全な場所に簡単に保存します。"
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "暗号化、自動、常に利用可能。"
+
+#~ msgid "Cloud backups of your data"
+#~ msgstr "データのクラウド バックアップ"
 
 #~ msgid "Add owner to customer"
 #~ msgstr "顧客に担当者を追加"
@@ -5287,9 +5423,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 #~ "サブスクリプション（定期購入）を選択しました。メールを確認する必要がありま"
 #~ "す。"
 
-#~ msgid "Could not process subscription request."
-#~ msgstr "サブスクリプションの処理に失敗しました。"
-
 #~ msgid "Helm chart for Kubernetes"
 #~ msgstr "Kubernetes の Helm チャート"
 
@@ -5350,9 +5483,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 
 #~ msgid "Glossary"
 #~ msgstr "用語集"
-
-#~ msgid "Regular backups"
-#~ msgstr "定期的なバックアップ"
 
 #~ msgid "All"
 #~ msgstr "すべて"
@@ -5513,9 +5643,6 @@ msgstr "アップグレードを、アカウントページで確認してくだ
 
 #~ msgid "Installation using Docker on your Linux server"
 #~ msgstr "自分の Linux サーバへの Docker を使用したインストール"
-
-#~ msgid "Basic support for self hosted Weblate"
-#~ msgstr "自分サーバに設置した Weblate への基本サポート"
 
 #~ msgid "We will fix issues that occur in your environment."
 #~ msgstr "お客様の環境で発生する問題を解決します。"

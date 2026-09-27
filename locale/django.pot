@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate / Website\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,9 +20,9 @@ msgstr ""
 msgid "Please confirm that you want to issue a final invoice."
 msgstr ""
 
-#: weblate_web/crm/forms.py:42 weblate_web/crm/views.py:371
-#: weblate_web/crm/views.py:423 weblate_web/views.py:1326
-#: weblate_web/views.py:1337 weblate_web/views.py:1349
+#: weblate_web/crm/forms.py:42 weblate_web/crm/views.py:401
+#: weblate_web/crm/views.py:453 weblate_web/views.py:1353
+#: weblate_web/views.py:1364 weblate_web/views.py:1376
 msgid "This subscription can not be upgraded to the selected package."
 msgstr ""
 
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Renewal"
 msgstr ""
 
-#: weblate_web/crm/forms.py:104 weblate_web/models.py:1162
+#: weblate_web/crm/forms.py:104 weblate_web/models.py:1176
 msgid "Upgrade"
 msgstr ""
 
@@ -103,7 +103,7 @@ msgid ""
 "invoice."
 msgstr ""
 
-#: weblate_web/crm/forms.py:188 weblate_web/templates/snippets/service.html:121
+#: weblate_web/crm/forms.py:188 weblate_web/templates/snippets/service.html:142
 msgid "Note"
 msgstr ""
 
@@ -141,7 +141,7 @@ msgstr ""
 msgid "Please confirm that you want to issue a credit note."
 msgstr ""
 
-#: weblate_web/crm/forms.py:264 weblate_web/crm/forms.py:293
+#: weblate_web/crm/forms.py:264 weblate_web/crm/forms.py:302
 msgid "Explanation for the customer"
 msgstr ""
 
@@ -149,16 +149,27 @@ msgstr ""
 msgid "Amount including VAT"
 msgstr ""
 
-#: weblate_web/crm/forms.py:282 weblate_web/invoices/corrections.py:168
+#: weblate_web/crm/forms.py:282 weblate_web/invoices/corrections.py:190
 msgid "Only paid invoices can be refunded."
 msgstr ""
 
 #: weblate_web/crm/forms.py:289
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+#: weblate_web/crm/forms.py:291
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
+msgstr ""
+
+#: weblate_web/crm/forms.py:298
 #: weblate_web/crm/templates/invoices/invoice_detail.html:89
 msgid "Correct paid invoice"
 msgstr ""
 
-#: weblate_web/crm/forms.py:330
+#: weblate_web/crm/forms.py:344
 msgid "Internal explanation"
 msgstr ""
 
@@ -291,6 +302,7 @@ msgstr ""
 
 #: weblate_web/crm/models.py:248
 #: weblate_web/crm/templates/invoices/invoice_detail.html:75
+#: weblate_web/crm/templates/invoices/invoice_detail.html:276
 #: weblate_web/crm/templates/invoices/invoice_list.html:20
 #: weblate_web/crm/templates/payments/customer_detail.html:377
 #: weblate_web/crm/templates/payments/customer_detail.html:502
@@ -298,7 +310,7 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: weblate_web/crm/models.py:251 weblate_web/templates/hosting.html:488
+#: weblate_web/crm/models.py:251 weblate_web/templates/hosting.html:558
 #: weblate_web/templates/support.html:175
 msgid "Payment"
 msgstr ""
@@ -324,6 +336,7 @@ msgstr ""
 #: weblate_web/crm/templates/weblate_web/service_detail.html:19
 #: weblate_web/crm/templates/weblate_web/service_list.html:26
 #: weblate_web/crm/templates/weblate_web/service_list.html:51
+#: weblate_web/crm/templates/weblate_web/service_list.html:88
 #: weblate_web/templates/service.html:6 weblate_web/templates/service.html:13
 msgid "Service"
 msgstr ""
@@ -488,7 +501,7 @@ msgstr ""
 msgid "Change"
 msgstr ""
 
-#: weblate_web/crm/templates/crm/income.html:84 weblate_web/crm/views.py:1656
+#: weblate_web/crm/templates/crm/income.html:84 weblate_web/crm/views.py:1689
 msgid "Annual income trend"
 msgstr ""
 
@@ -554,6 +567,7 @@ msgstr ""
 #: weblate_web/crm/templates/payments/customer_list.html:28
 #: weblate_web/crm/templates/weblate_web/service_list.html:32
 #: weblate_web/crm/templates/weblate_web/service_list.html:60
+#: weblate_web/crm/templates/weblate_web/service_list.html:94
 msgid "Actions"
 msgstr ""
 
@@ -707,6 +721,7 @@ msgstr ""
 #: weblate_web/crm/templates/weblate_web/service_detail.html:23
 #: weblate_web/crm/templates/weblate_web/service_list.html:27
 #: weblate_web/crm/templates/weblate_web/service_list.html:52
+#: weblate_web/crm/templates/weblate_web/service_list.html:89
 msgid "Customer"
 msgstr ""
 
@@ -774,7 +789,7 @@ msgid "Issue final invoice?"
 msgstr ""
 
 #: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:14
-#: weblate_web/crm/templates/invoices/invoice_detail.html:270
+#: weblate_web/crm/templates/invoices/invoice_detail.html:303
 msgid ""
 "This issues a credit note that cannot be edited. It does not transfer money."
 msgstr ""
@@ -789,7 +804,7 @@ msgid "Cancel"
 msgstr ""
 
 #: weblate_web/crm/templates/crm/snippets/invoice_confirm_dialog.html:23
-#: weblate_web/crm/templates/invoices/invoice_detail.html:287
+#: weblate_web/crm/templates/invoices/invoice_detail.html:320
 msgid "Issue credit note"
 msgstr ""
 
@@ -848,7 +863,7 @@ msgstr ""
 #: weblate_web/crm/templates/invoices/invoice_detail.html:43
 #: weblate_web/crm/templates/invoices/invoice_detail.html:92
 #: weblate_web/crm/templates/invoices/invoice_detail.html:99
-#: weblate_web/crm/views.py:531
+#: weblate_web/crm/views.py:561
 msgid "Credit note"
 msgstr ""
 
@@ -954,58 +969,87 @@ msgstr ""
 msgid "Reopen quote"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:268
+#: weblate_web/crm/templates/invoices/invoice_detail.html:267
+msgid "Related payments"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:273
+#: weblate_web/payments/backends.py:735
+msgid "Reference"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:274
+#: weblate_web/crm/templates/payments/customer_detail.html:375
+#: weblate_web/crm/templates/payments/customer_detail.html:590
+msgid "Created"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:275
+msgid "Payment method"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:277
+#: weblate_web/crm/templates/payments/customer_detail.html:591
+msgid "State"
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:294
+#: weblate_web/crm/templates/payments/customer_detail.html:615
+msgid "No payments recorded."
+msgstr ""
+
+#: weblate_web/crm/templates/invoices/invoice_detail.html:301
 msgid "Invoice corrections"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:278
+#: weblate_web/crm/templates/invoices/invoice_detail.html:311
 msgid "Refund"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:280
+#: weblate_web/crm/templates/invoices/invoice_detail.html:313
 msgid ""
 "Issue a credit note for a full or partial refund. Transfer the money "
 "separately, then confirm the refund on the credit note."
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:298
+#: weblate_web/crm/templates/invoices/invoice_detail.html:331
 msgid "Duplicate invoice"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:300
+#: weblate_web/crm/templates/invoices/invoice_detail.html:333
 msgid ""
 "Cancel this unpaid duplicate in full with a credit note. Select the correct "
 "paid invoice to keep."
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:307
+#: weblate_web/crm/templates/invoices/invoice_detail.html:340
 msgid "Cancel duplicate invoice"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:315
+#: weblate_web/crm/templates/invoices/invoice_detail.html:348
 msgid "Collection status"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:317
+#: weblate_web/crm/templates/invoices/invoice_detail.html:350
 msgid ""
 "Marking an invoice uncollectible stops reminders without changing its amount "
 "or VAT."
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:325
+#: weblate_web/crm/templates/invoices/invoice_detail.html:358
 msgid "Resume collection"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:330
+#: weblate_web/crm/templates/invoices/invoice_detail.html:363
 msgid "Mark uncollectible"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:341
-#: weblate_web/crm/templates/invoices/invoice_detail.html:348
+#: weblate_web/crm/templates/invoices/invoice_detail.html:374
+#: weblate_web/crm/templates/invoices/invoice_detail.html:381
 msgid "Confirm refund done"
 msgstr ""
 
-#: weblate_web/crm/templates/invoices/invoice_detail.html:343
+#: weblate_web/crm/templates/invoices/invoice_detail.html:376
 msgid "Use this after the refund or chargeback has been completed."
 msgstr ""
 
@@ -1020,6 +1064,7 @@ msgstr ""
 #: weblate_web/crm/templates/weblate_web/service_detail.html:244
 #: weblate_web/crm/templates/weblate_web/service_list.html:30
 #: weblate_web/crm/templates/weblate_web/service_list.html:55
+#: weblate_web/crm/templates/weblate_web/service_list.html:92
 msgid "Status"
 msgstr ""
 
@@ -1054,7 +1099,7 @@ msgid "Interactions"
 msgstr ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:37
-#: weblate_web/templates/snippets/service.html:174
+#: weblate_web/templates/snippets/service.html:195
 #: weblate_web/templates/user.html:126
 msgid "Payments"
 msgstr ""
@@ -1203,12 +1248,14 @@ msgstr ""
 #: weblate_web/crm/templates/weblate_web/service_detail.html:29
 #: weblate_web/crm/templates/weblate_web/service_list.html:28
 #: weblate_web/crm/templates/weblate_web/service_list.html:53
+#: weblate_web/crm/templates/weblate_web/service_list.html:90
 msgid "URL"
 msgstr ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:266
 #: weblate_web/crm/templates/weblate_web/service_list.html:29
 #: weblate_web/crm/templates/weblate_web/service_list.html:54
+#: weblate_web/crm/templates/weblate_web/service_list.html:91
 msgid "Version"
 msgstr ""
 
@@ -1216,6 +1263,7 @@ msgstr ""
 #: weblate_web/crm/templates/weblate_web/service_detail.html:67
 #: weblate_web/crm/templates/weblate_web/service_list.html:31
 #: weblate_web/crm/templates/weblate_web/service_list.html:59
+#: weblate_web/crm/templates/weblate_web/service_list.html:93
 msgid "Packages"
 msgstr ""
 
@@ -1261,11 +1309,6 @@ msgstr ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:371
 msgid "Donation history"
-msgstr ""
-
-#: weblate_web/crm/templates/payments/customer_detail.html:375
-#: weblate_web/crm/templates/payments/customer_detail.html:590
-msgid "Created"
 msgstr ""
 
 #: weblate_web/crm/templates/payments/customer_detail.html:376
@@ -1353,14 +1396,6 @@ msgstr ""
 msgid "Payment history"
 msgstr ""
 
-#: weblate_web/crm/templates/payments/customer_detail.html:591
-msgid "State"
-msgstr ""
-
-#: weblate_web/crm/templates/payments/customer_detail.html:615
-msgid "No payments recorded."
-msgstr ""
-
 #: weblate_web/crm/templates/payments/customer_list.html:9
 msgid "Customer list"
 msgstr ""
@@ -1409,7 +1444,7 @@ msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:50
 #: weblate_web/crm/templates/weblate_web/service_detail.html:361
-#: weblate_web/models.py:1285
+#: weblate_web/models.py:1299
 msgid "Projects"
 msgstr ""
 
@@ -1569,8 +1604,10 @@ msgid "Weblate version"
 msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_detail.html:362
-#: weblate_web/models.py:1283 weblate_web/templates/hosting.html:319
-#: weblate_web/templates/hosting.html:490
+#: weblate_web/models.py:1297 weblate_web/templates/hosting.html:353
+#: weblate_web/templates/hosting.html:356
+#: weblate_web/templates/hosting.html:387
+#: weblate_web/templates/hosting.html:560
 msgid "Hosted strings"
 msgstr ""
 
@@ -1580,6 +1617,14 @@ msgstr ""
 
 #: weblate_web/crm/templates/weblate_web/service_list.html:74
 msgid "No services match the current filters."
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:80
+msgid "Discoverable services"
+msgstr ""
+
+#: weblate_web/crm/templates/weblate_web/service_list.html:103
+msgid "No discoverable services."
 msgstr ""
 
 #: weblate_web/crm/views.py:127 weblate_web/invoices/forms.py:67
@@ -1599,86 +1644,86 @@ msgid ""
 "validation from %(validated)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:1064
+#: weblate_web/crm/views.py:1097
 msgid "Hosted username matches a local user with a different e-mail."
 msgstr ""
 
-#: weblate_web/crm/views.py:1078
+#: weblate_web/crm/views.py:1111
 msgid "Hosted user was not linked."
 msgstr ""
 
-#: weblate_web/crm/views.py:1081
+#: weblate_web/crm/views.py:1114
 msgid "Hosted user is already linked to a different local user."
 msgstr ""
 
-#: weblate_web/crm/views.py:1094
+#: weblate_web/crm/views.py:1127
 msgid "Added customer owner"
 msgstr ""
 
-#: weblate_web/crm/views.py:1096
+#: weblate_web/crm/views.py:1129
 #, python-format
 msgid "Added %(email)s to customer owners. Hosted user was %(state)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:1100
+#: weblate_web/crm/views.py:1133
 msgid "created"
 msgstr ""
 
-#: weblate_web/crm/views.py:1102
+#: weblate_web/crm/views.py:1135
 msgid "linked"
 msgstr ""
 
-#: weblate_web/crm/views.py:1130
+#: weblate_web/crm/views.py:1163
 msgid "Multiple local users use this e-mail address"
 msgstr ""
 
-#: weblate_web/crm/views.py:1158
+#: weblate_web/crm/views.py:1191
 #, python-format
 msgid "Could not add customer owner: %(error)s"
 msgstr ""
 
-#: weblate_web/crm/views.py:1174
+#: weblate_web/crm/views.py:1207
 #, python-format
 msgid ""
 "Added %(email)s to customer owners, but the notification could not be sent."
 msgstr ""
 
-#: weblate_web/crm/views.py:1182
+#: weblate_web/crm/views.py:1215
 #, python-format
 msgid "Added %(email)s to customer owners and notified them."
 msgstr ""
 
-#: weblate_web/crm/views.py:1188
+#: weblate_web/crm/views.py:1221
 #, python-format
 msgid "%(email)s is already a customer owner."
 msgstr ""
 
-#: weblate_web/crm/views.py:1222
+#: weblate_web/crm/views.py:1255
 #, python-format
 msgid "Follow-up scheduled for %(date)s."
 msgstr ""
 
-#: weblate_web/crm/views.py:1230
+#: weblate_web/crm/views.py:1263
 msgid "Follow-up set"
 msgstr ""
 
-#: weblate_web/crm/views.py:1233
+#: weblate_web/crm/views.py:1266
 msgid "Follow-up added."
 msgstr ""
 
-#: weblate_web/crm/views.py:1244
+#: weblate_web/crm/views.py:1277
 msgid "Follow-up cleared"
 msgstr ""
 
-#: weblate_web/crm/views.py:1245 weblate_web/crm/views.py:1248
+#: weblate_web/crm/views.py:1278 weblate_web/crm/views.py:1281
 msgid "Follow-up cleared."
 msgstr ""
 
-#: weblate_web/crm/views.py:1419
+#: weblate_web/crm/views.py:1452
 msgid "Uncategorized"
 msgstr ""
 
-#: weblate_web/crm/views.py:1657
+#: weblate_web/crm/views.py:1690
 msgid "YTD"
 msgstr ""
 
@@ -1687,7 +1732,7 @@ msgid "Follow-ups"
 msgstr ""
 
 #: weblate_web/crm/workqueue.py:155
-#: weblate_web/templates/snippets/service.html:136
+#: weblate_web/templates/snippets/service.html:157
 msgid "Billing"
 msgstr ""
 
@@ -1764,55 +1809,65 @@ msgstr ""
 msgid "Server URL must use HTTPS."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:56
+#: weblate_web/invoices/corrections.py:57
 msgid ""
 "Select the paid invoice for the same customer and correct the full remaining "
 "amount."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:98
+#: weblate_web/invoices/corrections.py:99
 msgid ""
 "This legacy invoice cannot be corrected because its rounding differs from "
 "current invoice calculations."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:131
+#: weblate_web/invoices/corrections.py:142
 msgid "This request has already been used."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:141
+#: weblate_web/invoices/corrections.py:152
 msgid "Choose a positive amount within the remaining invoice amount."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:145
+#: weblate_web/invoices/corrections.py:156
 msgid "A correction reason and explanation are required."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:149
+#: weblate_web/invoices/corrections.py:160
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:160
+#: weblate_web/invoices/corrections.py:164
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
+#: weblate_web/invoices/corrections.py:178
 msgid "Resolve the pending payment before issuing a correction."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:171
+#: weblate_web/invoices/corrections.py:181
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
+msgstr ""
+
+#: weblate_web/invoices/corrections.py:193
 msgid "Only duplicate corrections can reference a replacement invoice."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:189
+#: weblate_web/invoices/corrections.py:213
 msgid "The correction amount excluding VAT cannot exceed 99,999.99."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:251
+#: weblate_web/invoices/corrections.py:276
 msgid "Only positive final invoices can be marked uncollectible."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:254
+#: weblate_web/invoices/corrections.py:279
 msgid "This invoice has already been settled."
 msgstr ""
 
-#: weblate_web/invoices/corrections.py:256
+#: weblate_web/invoices/corrections.py:281
 msgid "An internal explanation is required."
 msgstr ""
 
@@ -1913,7 +1968,7 @@ msgstr ""
 msgid "Czech invoices cannot use a zero VAT rate."
 msgstr ""
 
-#: weblate_web/invoices/views.py:55 weblate_web/views.py:493
+#: weblate_web/invoices/views.py:55 weblate_web/views.py:506
 msgid "This invoice has already been paid. Please sign in to view details."
 msgstr ""
 
@@ -2039,7 +2094,7 @@ msgstr ""
 msgid "Premium self-hosted support"
 msgstr ""
 
-#: weblate_web/models.py:772 weblate_web/templates/snippets/service.html:69
+#: weblate_web/models.py:772 weblate_web/templates/snippets/service.html:86
 msgid "Server URL"
 msgstr ""
 
@@ -2067,142 +2122,138 @@ msgstr ""
 msgid "Link image"
 msgstr ""
 
-#: weblate_web/models.py:1094 weblate_web/templates/hosting.html:168
+#: weblate_web/models.py:1108 weblate_web/templates/hosting.html:168
 msgid "Basic support"
 msgstr ""
 
-#: weblate_web/models.py:1095
+#: weblate_web/models.py:1109
 msgid "Never get held back by a problem."
 msgstr ""
 
-#: weblate_web/models.py:1096
+#: weblate_web/models.py:1110
 msgid "Set priority for all your questions and reported bugs."
 msgstr ""
 
-#: weblate_web/models.py:1098 weblate_web/templates/user.html:30
+#: weblate_web/models.py:1112 weblate_web/templates/user.html:30
 msgid "Get support"
 msgstr ""
 
-#: weblate_web/models.py:1110 weblate_web/models.py:1127
-#: weblate_web/models.py:1158 weblate_web/models.py:1845
+#: weblate_web/models.py:1124 weblate_web/models.py:1141
+#: weblate_web/models.py:1172 weblate_web/models.py:1866
 #, python-format
 msgid "Upgrade to %s"
 msgstr ""
 
-#: weblate_web/models.py:1112
+#: weblate_web/models.py:1126
 msgid "Premium support"
 msgstr ""
 
-#: weblate_web/models.py:1113
+#: weblate_web/models.py:1127
 msgid "Don’t wait with your work on hold."
 msgstr ""
 
-#: weblate_web/models.py:1114
+#: weblate_web/models.py:1128
 msgid "This guarantees you answers the NBD at the latest."
 msgstr ""
 
-#: weblate_web/models.py:1116
+#: weblate_web/models.py:1130
 msgid "Be premium"
 msgstr ""
 
-#: weblate_web/models.py:1129 weblate_web/templates/hosting.html:134
+#: weblate_web/models.py:1143 weblate_web/templates/hosting.html:134
 msgid "Extended support"
 msgstr ""
 
-#: weblate_web/models.py:1130
+#: weblate_web/models.py:1144
 msgid "Don’t settle with Basic, get a worry-free package."
 msgstr ""
 
-#: weblate_web/models.py:1131
+#: weblate_web/models.py:1145
 msgid "We will manage upgrades for you."
 msgstr ""
 
-#: weblate_web/models.py:1133
+#: weblate_web/models.py:1147
 msgid "Stay updated"
 msgstr ""
 
-#: weblate_web/models.py:1142 weblate_web/templates/support.html:144
+#: weblate_web/models.py:1156
 msgid "Backup service"
 msgstr ""
 
-#: weblate_web/models.py:1143
-msgid "Easily put your backups in a safe place."
+#: weblate_web/models.py:1157
+msgid "Cloud backups for self-hosted Weblate."
 msgstr ""
 
-#: weblate_web/models.py:1144
-msgid "Encrypted and automatic, always available."
+#: weblate_web/models.py:1158
+msgid "No other subscription required."
 msgstr ""
 
-#: weblate_web/models.py:1146
+#: weblate_web/models.py:1160
 msgid "Back up daily"
 msgstr ""
 
-#: weblate_web/models.py:1159
+#: weblate_web/models.py:1173
 msgid "Increase service limits to translate more content."
 msgstr ""
 
-#: weblate_web/models.py:1282
+#: weblate_web/models.py:1296
 msgid "Hosted words"
 msgstr ""
 
-#: weblate_web/models.py:1284
+#: weblate_web/models.py:1298 weblate_web/templates/hosting.html:319
 msgid "Source strings"
 msgstr ""
 
-#: weblate_web/models.py:1286
+#: weblate_web/models.py:1300
 msgid "Languages"
 msgstr ""
 
-#: weblate_web/models.py:1353
+#: weblate_web/models.py:1367
 msgid "Activation code has already been used."
 msgstr ""
 
-#: weblate_web/models.py:1355
+#: weblate_web/models.py:1369
 msgid "Activation code has expired."
 msgstr ""
 
-#: weblate_web/models.py:1992
+#: weblate_web/models.py:2013
 #, python-format
 msgid "Locked URL mismatch: %(url)s"
 msgstr ""
 
-#: weblate_web/payments/backends.py:540
+#: weblate_web/payments/backends.py:557
 msgid "Invoice already paid"
 msgstr ""
 
-#: weblate_web/payments/backends.py:654
+#: weblate_web/payments/backends.py:696
 msgid "Manual payment"
 msgstr ""
 
-#: weblate_web/payments/backends.py:671
+#: weblate_web/payments/backends.py:713
 msgid "IBAN bank transfer"
 msgstr ""
 
-#: weblate_web/payments/backends.py:693
-msgid "Reference"
-msgstr ""
-
-#: weblate_web/payments/backends.py:954
+#: weblate_web/payments/backends.py:997
 msgid "Payment card"
 msgstr ""
 
-#: weblate_web/payments/backends.py:1129
+#: weblate_web/payments/backends.py:1172
 msgid "Payment error"
 msgstr ""
 
-#: weblate_web/payments/backends.py:1131
+#: weblate_web/payments/backends.py:1174
 msgid "Payment cancelled"
 msgstr ""
 
-#: weblate_web/payments/backends.py:1146
+#: weblate_web/payments/backends.py:1189
 msgid "Crypto payment"
 msgstr ""
 
-#: weblate_web/payments/backends.py:1156
+#: weblate_web/payments/backends.py:1199
 msgid "Google Pay"
 msgstr ""
 
-#: weblate_web/payments/backends.py:1164
+#: weblate_web/payments/backends.py:1207
 msgid "Apple Pay"
 msgstr ""
 
@@ -2364,8 +2415,9 @@ msgid "Quarterly"
 msgstr ""
 
 #: weblate_web/payments/models.py:931 weblate_web/templates/donate/form.html:50
-#: weblate_web/templates/hosting.html:388
-#: weblate_web/templates/hosting.html:406
+#: weblate_web/templates/hosting.html:358
+#: weblate_web/templates/hosting.html:456
+#: weblate_web/templates/hosting.html:474
 #: weblate_web/templates/snippets/pricing.html:42
 msgid "Monthly"
 msgstr ""
@@ -2394,38 +2446,43 @@ msgstr ""
 msgid "Fulfilled by staff"
 msgstr ""
 
-#: weblate_web/payments/models.py:1018
+#: weblate_web/payments/models.py:1019
 msgctxt "Payment state"
 msgid "New payment"
 msgstr ""
 
-#: weblate_web/payments/models.py:1019
+#: weblate_web/payments/models.py:1020
 msgctxt "Payment state"
 msgid "Awaiting payment"
 msgstr ""
 
-#: weblate_web/payments/models.py:1020
+#: weblate_web/payments/models.py:1021
 msgctxt "Payment state"
 msgid "Payment rejected"
 msgstr ""
 
-#: weblate_web/payments/models.py:1021
+#: weblate_web/payments/models.py:1022
 msgctxt "Payment state"
 msgid "Payment accepted"
 msgstr ""
 
-#: weblate_web/payments/models.py:1022
+#: weblate_web/payments/models.py:1023
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr ""
 
-#: weblate_web/payments/models.py:1115
+#: weblate_web/payments/models.py:1024
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr ""
+
+#: weblate_web/payments/models.py:1117
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted. Validation service response: {}"
 msgstr ""
 
-#: weblate_web/payments/models.py:1119
+#: weblate_web/payments/models.py:1121
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
 "attempted."
@@ -2701,9 +2758,10 @@ msgid "Bank account"
 msgstr ""
 
 #: weblate_web/templates/about.html:225 weblate_web/templates/careers.html:25
-#: weblate_web/templates/hosting.html:420
-#: weblate_web/templates/hosting.html:445
-#: weblate_web/templates/hosting.html:478
+#: weblate_web/templates/hosting.html:368
+#: weblate_web/templates/hosting.html:488
+#: weblate_web/templates/hosting.html:513
+#: weblate_web/templates/hosting.html:546
 msgid "Contact us"
 msgstr ""
 
@@ -2977,7 +3035,7 @@ msgid "Accept invitation"
 msgstr ""
 
 #: weblate_web/templates/discover.html:13
-#: weblate_web/templates/snippets/service.html:83
+#: weblate_web/templates/snippets/service.html:104
 #: weblate_web/templates/snippets/users.html:19
 #: weblate_web/templates/subscription/discovery-add.html:6
 #: weblate_web/templates/subscription/discovery-add.html:16
@@ -3025,7 +3083,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: weblate_web/templates/discover.html:96
-#: weblate_web/templates/snippets/service.html:88
+#: weblate_web/templates/snippets/service.html:109
 msgid "Customize listing"
 msgstr ""
 
@@ -4012,7 +4070,8 @@ msgstr ""
 
 #: weblate_web/templates/hosting.html:267
 #: weblate_web/templates/hosting.html:279
-#: weblate_web/templates/hosting.html:467 weblate_web/templates/support.html:85
+#: weblate_web/templates/hosting.html:364
+#: weblate_web/templates/hosting.html:535 weblate_web/templates/support.html:85
 #: weblate_web/templates/support.html:102
 #: weblate_web/templates/support.html:120
 #: weblate_web/templates/support.html:136
@@ -4040,71 +4099,112 @@ msgid ""
 "include all Weblate features."
 msgstr ""
 
-#: weblate_web/templates/hosting.html:310
-msgid "<b>14-day gratis trial</b> included in all cloud plans"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:316
-msgid "Continuous localization"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:322
-msgid "Translation projects"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:325
-msgid "Translation components"
+#: weblate_web/templates/hosting.html:314
+msgid "Calculate your hosting price"
 msgstr ""
 
 #: weblate_web/templates/hosting.html:328
-msgid "Number of translators"
+msgid "Translation languages"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:331
-#: weblate_web/templates/hosting.html:393
+#: weblate_web/templates/hosting.html:337
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:343
+#: weblate_web/templates/hosting.html:399
+#: weblate_web/templates/hosting.html:461
 msgid "Dedicated instance"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:364
-msgctxt "Hosting plan"
-msgid "Custom"
+#: weblate_web/templates/hosting.html:344
+msgid "SSO and custom domain"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:389
-#: weblate_web/templates/hosting.html:431
-#: weblate_web/templates/hosting.html:462
+#: weblate_web/templates/hosting.html:349
+msgid "Recommended plan"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:350
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:351
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:359
+#: weblate_web/templates/hosting.html:457
+#: weblate_web/templates/hosting.html:499
+#: weblate_web/templates/hosting.html:530
 #: weblate_web/templates/snippets/pricing.html:51
 msgid "Yearly"
 msgstr ""
 
+#: weblate_web/templates/hosting.html:363
+#: weblate_web/templates/hosting.html:478
+#: weblate_web/templates/hosting.html:503
+msgid "Gratis trial"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:367
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
+#: weblate_web/templates/hosting.html:378
+msgid "<b>14-day gratis trial</b> included in all cloud plans"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:384
+msgid "Continuous localization"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:390
+msgid "Translation projects"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:393
+msgid "Translation components"
+msgstr ""
+
 #: weblate_web/templates/hosting.html:396
+msgid "Number of translators"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:432
+msgctxt "Hosting plan"
+msgid "Custom"
+msgstr ""
+
+#: weblate_web/templates/hosting.html:464
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:410
-#: weblate_web/templates/hosting.html:435
-msgid "Gratis trial"
-msgstr ""
-
-#: weblate_web/templates/hosting.html:417
-#: weblate_web/templates/hosting.html:442
-#: weblate_web/templates/hosting.html:475
+#: weblate_web/templates/hosting.html:485
+#: weblate_web/templates/hosting.html:510
+#: weblate_web/templates/hosting.html:543
 msgid "<b>Ask</b> for options"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:493
+#: weblate_web/templates/hosting.html:563
 msgid ""
 "Pricing is based on the number of strings in all used languages. A string is "
 "a text unit defined in a translation format. It can be a word, sentence, or "
 "paragraph."
 msgstr ""
 
-#: weblate_web/templates/hosting.html:498
+#: weblate_web/templates/hosting.html:568
 msgid "Weblate proudly supports libre projects"
 msgstr ""
 
-#: weblate_web/templates/hosting.html:500
+#: weblate_web/templates/hosting.html:570
 #, python-format
 msgid ""
 "If you feel that being supported by Weblate will help your libre project, <a "
@@ -4112,13 +4212,13 @@ msgid ""
 "gratis."
 msgstr ""
 
-#: weblate_web/templates/hosting.html:501
+#: weblate_web/templates/hosting.html:571
 msgid ""
 "It has the same limits as the <strong>160k plan</strong>, and is only for "
 "public projects."
 msgstr ""
 
-#: weblate_web/templates/hosting.html:506
+#: weblate_web/templates/hosting.html:576
 msgid "Join existing users and supporters"
 msgstr ""
 
@@ -4267,7 +4367,7 @@ msgstr ""
 #. Translators: This is shown after a successful donation. You can use
 #. a culturally natural, poetic compliment instead of translating this
 #. literally; keep it short and use original or public-domain wording.
-#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:834
+#: weblate_web/templates/mail/payment_completed.html:9 weblate_web/views.py:861
 msgid "You are the heart of Weblate. Thank you for your donation."
 msgstr ""
 
@@ -4599,7 +4699,7 @@ msgid ""
 msgstr ""
 
 #: weblate_web/templates/payment/payment.html:66
-#: weblate_web/templates/snippets/service.html:241
+#: weblate_web/templates/snippets/service.html:262
 msgid "Personal data"
 msgstr ""
 
@@ -4944,7 +5044,7 @@ msgid "upon <a href=\"%(url)s\">request</a>"
 msgstr ""
 
 #: weblate_web/templates/snippets/service.html:15
-#: weblate_web/templates/snippets/service.html:147
+#: weblate_web/templates/snippets/service.html:168
 #: weblate_web/templates/user.html:69 weblate_web/templates/user.html:83
 #: weblate_web/templates/user.html:101
 msgid "Expired"
@@ -4959,7 +5059,7 @@ msgid "Activate"
 msgstr ""
 
 #: weblate_web/templates/snippets/service.html:41
-#: weblate_web/templates/snippets/service.html:61
+#: weblate_web/templates/snippets/service.html:78
 msgid "Copy"
 msgstr ""
 
@@ -4968,14 +5068,44 @@ msgid "Refresh token"
 msgstr ""
 
 #: weblate_web/templates/snippets/service.html:56
+msgid "Set up your backups"
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:59
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:60
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:61
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:65
+#: weblate_web/templates/support.html:151
+msgid "Read more in the documentation."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:73
 msgid "Backup repository"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:63
+#: weblate_web/templates/snippets/service.html:80
 msgid "Documentation"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:76
+#: weblate_web/templates/snippets/service.html:93
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
+
+#: weblate_web/templates/snippets/service.html:97
 #, python-format
 msgid ""
 "You can use support services on our website. For increased comfort, use the "
@@ -4983,71 +5113,71 @@ msgid ""
 "Read about how it works in the %(link_start)sdocumentation%(link_end)s."
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:86
+#: weblate_web/templates/snippets/service.html:107
 msgid "View your listing"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:91
+#: weblate_web/templates/snippets/service.html:112
 #, python-format
 msgid ""
 "Let other users discover your Weblate server. Read about how it works in the "
 "%(link_start)sdocumentation%(link_end)s."
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:99
+#: weblate_web/templates/snippets/service.html:120
 msgid "Subscription"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:128
+#: weblate_web/templates/snippets/service.html:149
 msgid "Change plan"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:143
+#: weblate_web/templates/snippets/service.html:164
 #: weblate_web/templates/user.html:97
 msgid "Turn off renewal"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:149
+#: weblate_web/templates/snippets/service.html:170
 #: weblate_web/templates/user.html:85 weblate_web/templates/user.html:103
 msgid "Automatic renewal"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:151
+#: weblate_web/templates/snippets/service.html:172
 #: weblate_web/templates/user.html:87 weblate_web/templates/user.html:105
 msgid "No renewal"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:158
+#: weblate_web/templates/snippets/service.html:179
 #: weblate_web/templates/user.html:114
 msgid "Renew now"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:162
+#: weblate_web/templates/snippets/service.html:183
 msgid "Upgrade to annual"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:164
+#: weblate_web/templates/snippets/service.html:185
 #, python-format
 msgid "and <strong>save 20%%</strong>."
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:192
+#: weblate_web/templates/snippets/service.html:213
 msgid "Get more Weblate"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:194
+#: weblate_web/templates/snippets/service.html:215
 msgid "Available services"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:226
+#: weblate_web/templates/snippets/service.html:247
 msgid "Congratulations, you are fully covered!"
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:243
+#: weblate_web/templates/snippets/service.html:264
 msgid "Data processing agreements for your Weblate service."
 msgstr ""
 
-#: weblate_web/templates/snippets/service.html:247
+#: weblate_web/templates/snippets/service.html:268
 msgid "Manage"
 msgstr ""
 
@@ -5243,8 +5373,12 @@ msgstr ""
 msgid "installation"
 msgstr ""
 
+#: weblate_web/templates/support.html:144
+msgid "Cloud backups for self-hosted Weblate"
+msgstr ""
+
 #: weblate_web/templates/support.html:146
-msgid "Cloud backups of your data"
+msgid "No other subscription required"
 msgstr ""
 
 #: weblate_web/templates/support.html:147
@@ -5257,10 +5391,6 @@ msgstr ""
 
 #: weblate_web/templates/support.html:149
 msgid "Stores up to 100 GB of backups"
-msgstr ""
-
-#: weblate_web/templates/support.html:151
-msgid "Read more in the documentation."
 msgstr ""
 
 #: weblate_web/templates/support.html:163
@@ -5351,7 +5481,7 @@ msgid "Other topics"
 msgstr ""
 
 #: weblate_web/templates/weblate_web/post_detail.html:64
-#: weblate_web/views.py:1096
+#: weblate_web/views.py:1123
 msgid "Milestones"
 msgstr ""
 
@@ -5472,121 +5602,125 @@ msgstr[1] ""
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
 
-#: weblate_web/views.py:478
+#: weblate_web/views.py:476 weblate_web/views.py:832
+msgid "This payment has been cancelled."
+msgstr ""
+
+#: weblate_web/views.py:491
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr ""
 
-#: weblate_web/views.py:521
+#: weblate_web/views.py:534
 msgid ""
 "Please provide your name to complete the payment. Include other billing "
 "information if you need it on the receipt."
 msgstr ""
 
-#: weblate_web/views.py:528 weblate_web/views.py:620
+#: weblate_web/views.py:541 weblate_web/views.py:635
 msgid "Please provide your billing information to complete the payment."
 msgstr ""
 
-#: weblate_web/views.py:540
+#: weblate_web/views.py:553
 msgid "The VAT ID is no longer valid, please update it."
 msgstr ""
 
-#: weblate_web/views.py:559
+#: weblate_web/views.py:574
 msgid "Please choose a payment method."
 msgstr ""
 
-#: weblate_web/views.py:585
+#: weblate_web/views.py:600
 #, python-format
 msgid "Could not perform payment: %s"
 msgstr ""
 
-#: weblate_web/views.py:595
+#: weblate_web/views.py:610
 #, python-format
 msgid "Could not complete payment: %s"
 msgstr ""
 
-#: weblate_web/views.py:683
+#: weblate_web/views.py:698
 msgid ""
 "Please use already generated agreement, you can generate new one after 30 "
 "days."
 msgstr ""
 
-#: weblate_web/views.py:690
+#: weblate_web/views.py:705
 msgid "New agreement created, you can download it below."
 msgstr ""
 
-#: weblate_web/views.py:746
+#: weblate_web/views.py:771
 msgid ""
 "New company, new bank details! Pay with attention to the current invoice."
 msgstr ""
 
-#: weblate_web/views.py:805
+#: weblate_web/views.py:830
 msgid "Payment not yet processed, please retry."
 msgstr ""
 
-#: weblate_web/views.py:809
+#: weblate_web/views.py:836
 msgid "The payment was rejected: {}"
 msgstr ""
 
-#: weblate_web/views.py:810
+#: weblate_web/views.py:837
 msgid "Unknown reason"
 msgstr ""
 
-#: weblate_web/views.py:822
+#: weblate_web/views.py:849
 msgid ""
 "Payment was processed, but the subscription could not be updated. Please "
 "contact us."
 msgstr ""
 
-#: weblate_web/views.py:827
+#: weblate_web/views.py:854
 msgid "Thank you for your subscription."
 msgstr ""
 
-#: weblate_web/views.py:1015
+#: weblate_web/views.py:1042
 msgid ""
 "Activate the listing from your Weblate management page using the activation "
 "token shown below."
 msgstr ""
 
-#: weblate_web/views.py:1202
+#: weblate_web/views.py:1229
 msgid "You can not remove yourself."
 msgstr ""
 
-#: weblate_web/views.py:1230
+#: weblate_web/views.py:1257
 msgid "Too many owner invitations. Please try again later."
 msgstr ""
 
-#: weblate_web/views.py:1237
+#: weblate_web/views.py:1264
 msgid "If the address is valid, a customer owner invitation has been sent."
 msgstr ""
 
-#: weblate_web/views.py:1253
+#: weblate_web/views.py:1280
 msgid "This customer owner invitation is invalid."
 msgstr ""
 
-#: weblate_web/views.py:1259
+#: weblate_web/views.py:1286
 msgid "This invitation is not available for your account."
 msgstr ""
 
-#: weblate_web/views.py:1262
+#: weblate_web/views.py:1289
 msgid "Customer owner invitation accepted."
 msgstr ""
 
-#: weblate_web/views.py:1290
+#: weblate_web/views.py:1317
 msgid "Your renewal payment has been received and is awaiting processing."
 msgstr ""
 
-#: weblate_web/views.py:1298
+#: weblate_web/views.py:1325
 #, python-format
 msgid ""
 "Please pay outstanding invoice %(invoice)s before switching to annual "
 "billing."
 msgstr ""
 
-#: weblate_web/views.py:1301
+#: weblate_web/views.py:1328
 #, python-format
 msgid "Please pay outstanding invoice %(invoice)s to renew."
 msgstr ""
 
-#: weblate_web/views.py:1405
+#: weblate_web/views.py:1432
 msgid "Please confirm the upgrade from your account page."
 msgstr ""

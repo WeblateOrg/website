@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-18 05:30+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -135,6 +135,15 @@ msgid "Amount including VAT"
 msgstr "(уключаючы ПДВ)"
 
 msgid "Only paid invoices can be refunded."
+msgstr ""
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
 msgstr ""
 
 #, fuzzy
@@ -773,6 +782,31 @@ msgid "Reopen quote"
 msgstr "Падтрымка"
 
 #, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Аплата Weblate"
+
+msgid "Reference"
+msgstr "Рэкамендацыя"
+
+msgid "Created"
+msgstr "Створана"
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "Не атрымалася аплаціць"
+
+msgid "State"
+msgstr "Стан"
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Плацеж адхілены"
+
+#, fuzzy
 #| msgid "Integration API"
 msgid "Invoice corrections"
 msgstr "API для інтэграцыі"
@@ -1031,9 +1065,6 @@ msgstr "Дакументацыя"
 msgid "Donation history"
 msgstr "Дакументацыя"
 
-msgid "Created"
-msgstr "Створана"
-
 msgid "Reward"
 msgstr "Узнагарода"
 
@@ -1112,15 +1143,6 @@ msgstr "Кантэкст перакладу"
 #| msgid "Payment error"
 msgid "Payment history"
 msgstr "Не атрымалася аплаціць"
-
-msgid "State"
-msgstr "Стан"
-
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "Payment rejected"
-msgid "No payments recorded."
-msgstr "Плацеж адхілены"
 
 #, fuzzy
 #| msgid "Customize listing"
@@ -1317,6 +1339,16 @@ msgstr "Абслугоўванне сістэмы"
 msgid "No services match the current filters."
 msgstr "Адпаведнага сервера не знойдзена."
 
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable services"
+msgstr "Сусвет Weblate"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "Даступныя паслугі"
+
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
@@ -1504,7 +1536,15 @@ msgstr ""
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
 msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
@@ -1765,11 +1805,15 @@ msgstr "Заўсёды карыстайцеся найноўшай версія�
 msgid "Backup service"
 msgstr "Служба рэзервовага капіявання"
 
-msgid "Easily put your backups in a safe place."
-msgstr "Лёгка адпраўляйце свае рэзервовыя копіі ў бяспечнае месца."
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "Асноўная падтрымка для ўласнага хостынга Weblate"
 
-msgid "Encrypted and automatic, always available."
-msgstr "Зашыфраваныя і аўтаматычныя, заўсёды даступныя."
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required."
+msgstr "Не атрымалася апрацаваць запыт на падпіску."
 
 msgid "Back up daily"
 msgstr "Выконвайце штодня рэзервовае капіяванне"
@@ -1806,9 +1850,6 @@ msgstr "Аднаразовы плацеж"
 
 msgid "IBAN bank transfer"
 msgstr "Банкаўскі перавод IBAN"
-
-msgid "Reference"
-msgstr "Рэкамендацыя"
 
 msgid "Payment card"
 msgstr "Плацежная картка"
@@ -2022,6 +2063,12 @@ msgstr "Плацеж прыняты"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Плацеж апрацаваны"
+
+#, fuzzy
+#| msgid "Cancel"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "Скасаваць"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3442,6 +3489,49 @@ msgid ""
 "include all Weblate features."
 msgstr ""
 
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Calculate your hosting price"
+msgstr "Хостынг на адведзеным серверы"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "Стан перакладу"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "Адведзены асобнік сервера"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "Штогод"
+
+msgid "Gratis trial"
+msgstr "Бясплатнае выпрабаванне"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr ""
 "<b>14-дзённая пробная версія</b>, якая ўваходзіць ва ўсе воблачныя тарыфныя "
@@ -3459,23 +3549,14 @@ msgstr "Кампаненты перакладу"
 msgid "Number of translators"
 msgstr "Колькасць перакладчыкаў"
 
-msgid "Dedicated instance"
-msgstr "Адведзены асобнік сервера"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "Адвольны"
-
-msgid "Yearly"
-msgstr "Штогод"
 
 #, fuzzy, python-format
 #| msgid "<strong>Save more</strong> with longer pre-payment!"
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "<strong>Ашчадзіце больш</strong> перадаплатай на доўгі тэрмін!"
-
-msgid "Gratis trial"
-msgstr "Бясплатнае выпрабаванне"
 
 msgid "<b>Ask</b> for options"
 msgstr "<b>Спытаць</b> пра варыянты"
@@ -4242,11 +4323,36 @@ msgstr "Капіяваць"
 msgid "Refresh token"
 msgstr "Абнавіць токен"
 
+#, fuzzy
+#| msgid "Stores up to 100 GB of backups"
+msgid "Set up your backups"
+msgstr "Захоўвае да 100 ГБ рэзервовых копій"
+
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "Глядзіце падрабязней у дакументацыі."
+
 msgid "Backup repository"
 msgstr "Рэпазіторый рэзервовых копій"
 
 msgid "Documentation"
 msgstr "Дакументацыя"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4479,8 +4585,15 @@ msgstr "Наладжвальнае ўсталяванне"
 msgid "installation"
 msgstr "усталяванне"
 
-msgid "Cloud backups of your data"
-msgstr "Воблачнае рэзервовае капіяванне вашых даных"
+#, fuzzy
+#| msgid "Basic support for self hosted Weblate"
+msgid "Cloud backups for self-hosted Weblate"
+msgstr "Асноўная падтрымка для ўласнага хостынга Weblate"
+
+#, fuzzy
+#| msgid "Could not process subscription request."
+msgid "No other subscription required"
+msgstr "Не атрымалася апрацаваць запыт на падпіску."
 
 msgid "Securely encrypted with your passphrase"
 msgstr "Надзейна зашыфравана вашай парольнай фразай"
@@ -4490,9 +4603,6 @@ msgstr "Штодзённыя дадатковыя рэзервовыя копі�
 
 msgid "Stores up to 100 GB of backups"
 msgstr "Захоўвае да 100 ГБ рэзервовых копій"
-
-msgid "Read more in the documentation."
-msgstr "Глядзіце падрабязней у дакументацыі."
 
 msgid "Consulting services and/or custom development"
 msgstr "Кансультацыі і дапамога ў распрацоўванні"
@@ -4664,6 +4774,11 @@ msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Памылка ў параметры %(field)s: %(error)s"
 
 #, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "Плацеж скасаваны"
+
+#, fuzzy
 #| msgid "Thank you for your donation."
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Дзякуй за ахвяраванне."
@@ -4768,6 +4883,15 @@ msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "Лёгка адпраўляйце свае рэзервовыя копіі ў бяспечнае месца."
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "Зашыфраваныя і аўтаматычныя, заўсёды даступныя."
+
+#~ msgid "Cloud backups of your data"
+#~ msgstr "Воблачнае рэзервовае капіяванне вашых даных"
 
 #, fuzzy
 #~| msgid "Add server to Discover Weblate"
@@ -5476,9 +5600,6 @@ msgstr ""
 #~ "Патрабуецца падпіска. Усё, што вам трэба зрабіць, гэта пацвердзіць адрас "
 #~ "электроннай пошты."
 
-#~ msgid "Could not process subscription request."
-#~ msgstr "Не атрымалася апрацаваць запыт на падпіску."
-
 #~ msgid "Helm chart for Kubernetes"
 #~ msgstr "Helm chart для Kubernetes"
 
@@ -5647,9 +5768,6 @@ msgstr ""
 
 #~ msgid "Installation using Docker on your Linux server"
 #~ msgstr "Усталёўка на ваш Linux-сервер, выкарыстоўваючы Docker"
-
-#~ msgid "Basic support for self hosted Weblate"
-#~ msgstr "Асноўная падтрымка для ўласнага хостынга Weblate"
 
 #~ msgid "We will fix issues that occur in your environment."
 #~ msgstr "Мы выправім хібы, якія ўзнікаюць у вашым асяроддзі."

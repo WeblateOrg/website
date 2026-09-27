@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-05 05:53+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -107,6 +107,15 @@ msgid "Amount including VAT"
 msgstr ""
 
 msgid "Only paid invoices can be refunded."
+msgstr ""
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
 msgstr ""
 
 msgid "Correct paid invoice"
@@ -667,6 +676,32 @@ msgid "Reopen quote"
 msgstr ""
 
 #, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Awaiting payment"
+msgid "Related payments"
+msgstr "تانگھ وچ"
+
+msgid "Reference"
+msgstr "حوالہ"
+
+msgid "Created"
+msgstr ""
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "ادائیگی خرابی"
+
+msgid "State"
+msgstr ""
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "ادائیگی مسترد تھی ڳئی"
+
+#, fuzzy
 #| msgid "Localization"
 msgid "Invoice corrections"
 msgstr "مقامیت کاری"
@@ -905,9 +940,6 @@ msgstr "مقامیت کاری"
 msgid "Donation history"
 msgstr "مقامیت کاری"
 
-msgid "Created"
-msgstr ""
-
 msgid "Reward"
 msgstr ""
 
@@ -975,15 +1007,6 @@ msgstr ""
 #| msgid "Payment error"
 msgid "Payment history"
 msgstr "ادائیگی خرابی"
-
-msgid "State"
-msgstr ""
-
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "Payment rejected"
-msgid "No payments recorded."
-msgstr "ادائیگی مسترد تھی ڳئی"
 
 msgid "Customer list"
 msgstr ""
@@ -1155,6 +1178,14 @@ msgid "Maintenance"
 msgstr ""
 
 msgid "No services match the current filters."
+msgstr ""
+
+#, fuzzy
+#| msgid "View service status."
+msgid "Discoverable services"
+msgstr "خدمت سٹیٹس ݙیکھو۔"
+
+msgid "No discoverable services."
 msgstr ""
 
 msgid ""
@@ -1329,7 +1360,15 @@ msgstr ""
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
 msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
@@ -1584,10 +1623,10 @@ msgstr ""
 msgid "Backup service"
 msgstr ""
 
-msgid "Easily put your backups in a safe place."
+msgid "Cloud backups for self-hosted Weblate."
 msgstr ""
 
-msgid "Encrypted and automatic, always available."
+msgid "No other subscription required."
 msgstr ""
 
 msgid "Back up daily"
@@ -1626,9 +1665,6 @@ msgstr "تانگھ وچ"
 
 msgid "IBAN bank transfer"
 msgstr "آئی بی اے این بینک ٹرانسفر"
-
-msgid "Reference"
-msgstr "حوالہ"
 
 msgid "Payment card"
 msgstr "ادائیگی کارڈ"
@@ -1840,6 +1876,12 @@ msgstr "ادائیگی قبول تھی ڳئی"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "ادائیگی دی کاروائی تھی ڳئی"
+
+#, fuzzy
+#| msgid "Payment cancelled"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "ادائیگی منسوخ تھی ڳئی"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3079,6 +3121,45 @@ msgid ""
 "include all Weblate features."
 msgstr ""
 
+msgid "Calculate your hosting price"
+msgstr ""
+
+msgid "Translation languages"
+msgstr ""
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr ""
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr ""
+
+msgid "Gratis trial"
+msgstr ""
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr ""
 
@@ -3094,21 +3175,12 @@ msgstr ""
 msgid "Number of translators"
 msgstr ""
 
-msgid "Dedicated instance"
-msgstr ""
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr ""
 
-msgid "Yearly"
-msgstr ""
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
-msgstr ""
-
-msgid "Gratis trial"
 msgstr ""
 
 msgid "<b>Ask</b> for options"
@@ -3789,10 +3861,33 @@ msgstr "نقل کرو"
 msgid "Refresh token"
 msgstr ""
 
+msgid "Set up your backups"
+msgstr ""
+
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr ""
+
 msgid "Backup repository"
 msgstr ""
 
 msgid "Documentation"
+msgstr ""
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
 msgstr ""
 
 #, python-format
@@ -4005,7 +4100,10 @@ msgstr ""
 msgid "installation"
 msgstr ""
 
-msgid "Cloud backups of your data"
+msgid "Cloud backups for self-hosted Weblate"
+msgstr ""
+
+msgid "No other subscription required"
 msgstr ""
 
 msgid "Securely encrypted with your passphrase"
@@ -4015,9 +4113,6 @@ msgid "Daily incremental backups"
 msgstr ""
 
 msgid "Stores up to 100 GB of backups"
-msgstr ""
-
-msgid "Read more in the documentation."
 msgstr ""
 
 msgid "Consulting services and/or custom development"
@@ -4182,6 +4277,11 @@ msgstr[1] ""
 #, python-format
 msgid "Error in parameter %(field)s: %(error)s"
 msgstr ""
+
+#, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "ادائیگی منسوخ تھی ڳئی"
 
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr ""

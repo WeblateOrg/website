@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-09-18 00:18-0500\n"
+"POT-Creation-Date: 2026-09-27 02:08-0500\n"
 "PO-Revision-Date: 2026-09-18 05:32+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -123,6 +123,15 @@ msgid "Amount including VAT"
 msgstr "(inkl. moms)"
 
 msgid "Only paid invoices can be refunded."
+msgstr ""
+
+msgid "Mark related unresolved payments as cancelled."
+msgstr ""
+
+msgid ""
+"This only cancels payments in Weblate. Cancel any active payment with the "
+"payment provider separately. Money received later will require manual "
+"reconciliation."
 msgstr ""
 
 #, fuzzy
@@ -773,6 +782,31 @@ msgid "Reopen quote"
 msgstr "Få støtte"
 
 #, fuzzy
+#| msgid "Weblate payment"
+msgid "Related payments"
+msgstr "Weblate-betaling"
+
+msgid "Reference"
+msgstr "Referanse"
+
+msgid "Created"
+msgstr ""
+
+#, fuzzy
+#| msgid "Payment error"
+msgid "Payment method"
+msgstr "Betalingsfeil"
+
+msgid "State"
+msgstr ""
+
+#, fuzzy
+#| msgctxt "Payment state"
+#| msgid "Payment rejected"
+msgid "No payments recorded."
+msgstr "Betaling avvist"
+
+#, fuzzy
 #| msgid "Integration API"
 msgid "Invoice corrections"
 msgstr "Integrasjons-API"
@@ -1034,9 +1068,6 @@ msgstr "Dokumentasjon"
 msgid "Donation history"
 msgstr "Dokumentasjon"
 
-msgid "Created"
-msgstr ""
-
 #, fuzzy
 #| msgid "No reward"
 msgid "Reward"
@@ -1117,15 +1148,6 @@ msgstr "Integrasjons-API"
 #| msgid "Payment error"
 msgid "Payment history"
 msgstr "Betalingsfeil"
-
-msgid "State"
-msgstr ""
-
-#, fuzzy
-#| msgctxt "Payment state"
-#| msgid "Payment rejected"
-msgid "No payments recorded."
-msgstr "Betaling avvist"
 
 #, fuzzy
 #| msgid "Customize listing"
@@ -1326,6 +1348,16 @@ msgstr "Systemvedlikehald"
 msgid "No services match the current filters."
 msgstr "Ingen tenarar stemte med søket ditt."
 
+#, fuzzy
+#| msgid "Discover"
+msgid "Discoverable services"
+msgstr "Oppdag"
+
+#, fuzzy
+#| msgid "Available services"
+msgid "No discoverable services."
+msgstr "Tilgjengelege tenester"
+
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
@@ -1510,7 +1542,15 @@ msgstr ""
 msgid "Correction dates cannot precede the original invoice dates."
 msgstr ""
 
+msgid "Payments can only be cancelled for duplicate invoices."
+msgstr ""
+
 msgid "Resolve the pending payment before issuing a correction."
+msgstr ""
+
+msgid ""
+"Review the related payments and select the checkbox to mark them as "
+"cancelled."
 msgstr ""
 
 msgid "Only duplicate corrections can reference a replacement invoice."
@@ -1775,11 +1815,15 @@ msgstr "Hald deg oppdatert"
 msgid "Backup service"
 msgstr "Tryggleikskopieringteneste"
 
-msgid "Easily put your backups in a safe place."
-msgstr "Tryggleikskopiar lagra på ein trygg plass."
+#, fuzzy
+#| msgid "Cloud backups of your data"
+msgid "Cloud backups for self-hosted Weblate."
+msgstr "Sky-tryggleikskopiar av dataa dine"
 
-msgid "Encrypted and automatic, always available."
-msgstr "Kryptert og automatisk, alltid tilgjengeleg."
+#, fuzzy
+#| msgid "Integration API"
+msgid "No other subscription required."
+msgstr "Integrasjons-API"
 
 msgid "Back up daily"
 msgstr "Dagleg tryggleikskopi"
@@ -1820,9 +1864,6 @@ msgstr "Einskildsbetaling"
 
 msgid "IBAN bank transfer"
 msgstr "IBAN-bankoverføring"
-
-msgid "Reference"
-msgstr "Referanse"
 
 msgid "Payment card"
 msgstr "Betalingskort"
@@ -2036,6 +2077,12 @@ msgstr "Betaling akseptert"
 msgctxt "Payment state"
 msgid "Payment processed"
 msgstr "Betaling handsama"
+
+#, fuzzy
+#| msgid "Payment cancelled"
+msgctxt "Payment state"
+msgid "Cancelled"
+msgstr "Avbraut betalinga"
 
 msgid ""
 "The VAT ID could not be validated, so the recurring payment was not "
@@ -3453,6 +3500,49 @@ msgstr ""
 "Skyvertsteningsprisar er kun basert på talet på strengar. Alle planar "
 "inkluderer alle Weblate-funksjonane."
 
+#, fuzzy
+#| msgid "Dedicated hosted service"
+msgid "Calculate your hosting price"
+msgstr "Dedikert vertslagringsteneste"
+
+#, fuzzy
+#| msgid "Translation status"
+msgid "Translation languages"
+msgstr "Omsetjingsstatus"
+
+msgid ""
+"Hosted strings = source strings × (translation languages + 1 source "
+"language). The source language counts toward your plan."
+msgstr ""
+
+msgid "Dedicated instance"
+msgstr "Dedikert instans"
+
+msgid "SSO and custom domain"
+msgstr ""
+
+msgid "Recommended plan"
+msgstr ""
+
+msgid "Enter source strings and translation languages to find your plan."
+msgstr ""
+
+msgid ""
+"Enter valid whole numbers: at least one source string and zero or more "
+"translation languages."
+msgstr ""
+
+msgid "Yearly"
+msgstr "Årleg"
+
+msgid "Gratis trial"
+msgstr "Gratis prøveperiode"
+
+msgid ""
+"Your project exceeds our largest standard plan. Contact us for a custom "
+"hosting plan."
+msgstr ""
+
 msgid "<b>14-day gratis trial</b> included in all cloud plans"
 msgstr "<b>14-dagars gratis prøveperiode</b> inkludert i alle skyplanar"
 
@@ -3468,22 +3558,13 @@ msgstr "Omsetjingskomponentar"
 msgid "Number of translators"
 msgstr "Tal på omsetjarar"
 
-msgid "Dedicated instance"
-msgstr "Dedikert instans"
-
 msgctxt "Hosting plan"
 msgid "Custom"
 msgstr "Eigendefinert"
 
-msgid "Yearly"
-msgstr "Årleg"
-
 #, python-format
 msgid "<strong>Save 20%%</strong> with annual subscription!"
 msgstr "<strong>Spar 20%%</strong> med årleg medlemskap!"
-
-msgid "Gratis trial"
-msgstr "Gratis prøveperiode"
 
 msgid "<b>Ask</b> for options"
 msgstr "<b>Spør</b> om alternativ"
@@ -4251,11 +4332,36 @@ msgstr "Kopier"
 msgid "Refresh token"
 msgstr "Attoppfrisk token"
 
+#, fuzzy
+#| msgid "Stores up to 100 GB of backups"
+msgid "Set up your backups"
+msgstr "Lagrar opptil 100 GB av tryggleikskopiar"
+
+msgid "Connect your Weblate installation using the activation token above."
+msgstr ""
+
+msgid ""
+"Enable the supplied backup configuration in your installation’s Backups tab."
+msgstr ""
+
+msgid ""
+"Securely save your backup encryption passphrase and private SSH key so you "
+"can restore your backups."
+msgstr ""
+
+msgid "Read more in the documentation."
+msgstr "Les meir i dokumentasjonen."
+
 msgid "Backup repository"
 msgstr "Tryggleikskopilager"
 
 msgid "Documentation"
 msgstr "Dokumentasjon"
+
+msgid ""
+"Connect your Weblate installation using the activation token to provision "
+"your backup storage."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -4491,8 +4597,15 @@ msgstr "Oppsettstilpassing"
 msgid "installation"
 msgstr "installasjon"
 
-msgid "Cloud backups of your data"
+#, fuzzy
+#| msgid "Cloud backups of your data"
+msgid "Cloud backups for self-hosted Weblate"
 msgstr "Sky-tryggleikskopiar av dataa dine"
+
+#, fuzzy
+#| msgid "Integration API"
+msgid "No other subscription required"
+msgstr "Integrasjons-API"
 
 msgid "Securely encrypted with your passphrase"
 msgstr "Sikkert kryptert med passfrasa di"
@@ -4503,9 +4616,6 @@ msgstr "Daglege påfylgjande tryggleikskopiar"
 
 msgid "Stores up to 100 GB of backups"
 msgstr "Lagrar opptil 100 GB av tryggleikskopiar"
-
-msgid "Read more in the documentation."
-msgstr "Les meir i dokumentasjonen."
 
 msgid "Consulting services and/or custom development"
 msgstr "Konsultasjonstenester og/eller tilpassa utvikling"
@@ -4678,6 +4788,11 @@ msgid "Error in parameter %(field)s: %(error)s"
 msgstr "Feil i parameter %(field)s: %(error)s"
 
 #, fuzzy
+#| msgid "Payment cancelled"
+msgid "This payment has been cancelled."
+msgstr "Avbraut betalinga"
+
+#, fuzzy
 #| msgid "Thank you for your donation."
 msgid "Thank you for your donation and enjoy FOSDEM."
 msgstr "Takk for donasjonen din."
@@ -4775,6 +4890,12 @@ msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr ""
+
+#~ msgid "Easily put your backups in a safe place."
+#~ msgstr "Tryggleikskopiar lagra på ein trygg plass."
+
+#~ msgid "Encrypted and automatic, always available."
+#~ msgstr "Kryptert og automatisk, alltid tilgjengeleg."
 
 #, fuzzy
 #~| msgid "Add server to Discover Weblate"
