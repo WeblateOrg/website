@@ -48,7 +48,7 @@ rm -- "$release/upload.tar"
 
 # Verify trust, validity, hostname, and that the private key matches the leaf.
 openssl verify -purpose sslserver -verify_hostname md.weblate.org \
-    -untrusted "$release/fullchain.pem" "$release/fullchain.pem"
+    -untrusted "$release/fullchain.pem" "$release/fullchain.pem" > /dev/null
 openssl x509 -in "$release/fullchain.pem" -pubkey -noout > "$release/cert.pub"
 openssl pkey -in "$release/privkey.pem" -passin pass: -pubout > "$release/key.pub"
 cmp "$release/cert.pub" "$release/key.pub"
