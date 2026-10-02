@@ -42,7 +42,7 @@ SYNC_KEY = "hosted-users"
 USER_SYNC_SALT = "weblate.user-sync"
 USER_SYNC_RESPONSE_SALT = "weblate.user-sync-response"
 INVALID_SYNC_RESPONSE = "Invalid hosted user sync response"
-DEFAULT_PROGRESS_EVERY = 10000
+DEFAULT_PROGRESS_EVERY = 0
 
 
 @dataclass(frozen=True)
@@ -61,6 +61,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser) -> None:
         parser.add_argument("--since", help="override the stored hosted sync cursor")
+        parser.add_argument(
+            "--verbose",
+            action="store_true",
+            help="print hosted user sync summary messages",
+        )
         parser.add_argument(
             "--no-preload",
             action="store_true",
@@ -86,7 +91,9 @@ class Command(BaseCommand):
         cursor = options["since"] or state.cursor
         payload = self.fetch_sync_payload(cursor)
         user_payloads = self.get_user_payloads(payload)
-        context = self.get_sync_context(user_payloads, options["no_preload"])
+        context = self.get_sync_context(
+            user_payloads, options["no_preload"], verbose=options["verbose"]
+        )
         result = self.sync_user_payloads(
             user_payloads,
             context,
@@ -98,6 +105,7 @@ class Command(BaseCommand):
             payload,
             result,
             only_missing=options["only_missing"],
+            verbose=options["verbose"],
         )
 
     def fetch_sync_payload(self, cursor: str) -> dict:
@@ -143,13 +151,15 @@ class Command(BaseCommand):
         return user_payloads
 
     def get_sync_context(
-        self, user_payloads: list, no_preload: bool
+        self, user_payloads: list, no_preload: bool, *, verbose: bool
     ) -> SamlSyncContext | None:
         total = len(user_payloads)
-        self.stdout.write(f"Received {total} hosted users")
+        if verbose:
+            self.stdout.write(f"Received {total} hosted users")
         if no_preload:
             return None
-        self.stdout.write("Preloading hosted user sync lookups")
+        if verbose:
+            self.stdout.write("Preloading hosted user sync lookups")
         return SamlSyncContext.preload(user_payloads)
 
     def sync_user_payloads(
@@ -206,9 +216,13 @@ class Command(BaseCommand):
         result: SyncResult,
         *,
         only_missing: bool,
+        verbose: bool,
     ) -> None:
         if only_missing:
-            self.stdout.write(f"Skipped {result.linked} already linked hosted users")
+            if verbose:
+                self.stdout.write(
+                    f"Skipped {result.linked} already linked hosted users"
+                )
             self.stderr.write(
                 "Not advancing hosted user sync cursor in --only-missing mode"
             )
@@ -218,7 +232,8 @@ class Command(BaseCommand):
             state.cursor = cursor
             state.save(update_fields=("cursor", "updated"))
 
-        self.stdout.write(f"Synchronized {result.count} hosted users")
+        if verbose:
+            self.stdout.write(f"Synchronized {result.count} hosted users")
 
     def write_progress(self, processed: int, total: int, progress_every: int) -> None:
         if progress_every > 0 and processed % progress_every == 0:
