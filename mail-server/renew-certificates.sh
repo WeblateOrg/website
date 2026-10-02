@@ -58,11 +58,11 @@ tar --create --dereference --file "$bundle" --directory "$lineage" \
 
 result=0
 for host in "$@"; do
-    echo "Deploying certificate to $host"
-    if ! timeout 120 ssh -T \
+    #echo "Deploying certificate to $host"
+    if ! timeout 120 ssh -i ~/.ssh/id_ed25519_restricted -T \
         -o BatchMode=yes -o StrictHostKeyChecking=yes \
         -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
-        -- "$host" 'sudo -n /srv/website/mail-server/install-mail-certificate.sh' < "$bundle"; then
+        -- "$host" '/srv/website/mail-server/install-mail-certificate.sh' < "$bundle"; then
         echo "Deployment failed on $host; other nodes will still be attempted." >&2
         result=1
     fi

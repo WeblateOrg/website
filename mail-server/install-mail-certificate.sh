@@ -56,7 +56,7 @@ rm -- "$release/cert.pub" "$release/key.pub"
 
 if cmp -s "$release/fullchain.pem" "$base/current/fullchain.pem" &&
     cmp -s "$release/privkey.pem" "$base/current/privkey.pem"; then
-    echo "Certificate unchanged; no reload needed."
+    #echo "Certificate unchanged; no reload needed."
     exit 0
 fi
 
@@ -67,4 +67,4 @@ switched=1
 nginx -t
 systemctl reload nginx
 complete=1
-echo "Certificate installed and nginx reloaded."
+#echo "Certificate installed and nginx reloaded."
