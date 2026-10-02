@@ -23,6 +23,7 @@ import logging
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
+import sentry_sdk
 from django.core.management.base import BaseCommand
 
 from weblate_web.remote import fetch_vat_info
@@ -67,5 +68,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options) -> None:
-        with silence_vat_loggers():
-            fetch_vat_info(fetch_all=options["all"], delay=options["delay"])
+        try:
+            with silence_vat_loggers():
+                fetch_vat_info(fetch_all=options["all"], delay=options["delay"])
+        finally:
+            sentry_sdk.flush(timeout=10)
