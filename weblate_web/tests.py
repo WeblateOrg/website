@@ -4623,7 +4623,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         output = StringIO()
         error = StringIO()
 
-        call_command("sync_hosted_users", stdout=output, stderr=error)
+        call_command("sync_hosted_users", "--verbose", stdout=output, stderr=error)
 
         self.assertIn("Synchronized 1 hosted users", output.getvalue())
         self.assertIn("Skipping hosted user payload", error.getvalue())
@@ -4684,7 +4684,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         output = StringIO()
         error = StringIO()
 
-        call_command("sync_hosted_users", stdout=output, stderr=error)
+        call_command("sync_hosted_users", "--verbose", stdout=output, stderr=error)
 
         self.assertIn("Synchronized 0 hosted users", output.getvalue())
         self.assertIn("Skipping hosted user payload", error.getvalue())
@@ -4736,6 +4736,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
         call_command(
             "sync_hosted_users",
+            "--verbose",
             "--only-missing",
             stdout=output,
             stderr=error,
@@ -4777,7 +4778,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         output = StringIO()
         error = StringIO()
 
-        call_command("sync_hosted_users", stdout=output, stderr=error)
+        call_command("sync_hosted_users", "--verbose", stdout=output, stderr=error)
 
         self.assertIn("Synchronized 1 hosted users", output.getvalue())
         self.assertEqual(error.getvalue(), "")
@@ -4844,7 +4845,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         )
         output = StringIO()
 
-        call_command("sync_hosted_users", stdout=output)
+        call_command("sync_hosted_users", "--verbose", stdout=output)
 
         self.assertIn("Synchronized 0 hosted users", output.getvalue())
         self.assertEqual(ExternalSyncState.objects.get(key="hosted-users").cursor, "")
