@@ -53,7 +53,7 @@ from weblate_web.payments.models import (
 from weblate_web.saml import get_default_saml_provider
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Generator, Iterator
 
     from playwright.sync_api import Page
 
@@ -183,7 +183,7 @@ def create_invoice(customer: Customer, data: InvoiceFixture) -> Invoice:
 
 
 @contextmanager
-def fixed_interaction_timestamp(timestamp: datetime) -> Iterator[None]:
+def fixed_interaction_timestamp(timestamp: datetime) -> Generator[None, None, None]:
     """Pin action-created interaction timestamps before visual captures."""
     field = Interaction._meta.get_field("timestamp")  # pylint: disable=protected-access
     original_default = field.default
