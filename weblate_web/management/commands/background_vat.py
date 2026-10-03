@@ -29,11 +29,11 @@ from django.core.management.base import BaseCommand
 from weblate_web.remote import fetch_vat_info
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Generator
 
 
 @contextmanager
-def silence_vat_loggers() -> Iterator[None]:
+def silence_vat_loggers() -> Generator[None, None, None]:
     """Suppress noisy VIES and Zeep output for this background command."""
     loggers = [logging.getLogger(name) for name in ("vies", "zeep")]
     original_configuration = [
