@@ -58,7 +58,7 @@ def mock_external_apis():
         patch("weblate_web.remote.get_changes", return_value=[]),
         patch("weblate_web.remote.get_contributors", return_value=[]),
         patch("weblate_web.remote.get_activity", return_value=[]),
-        patch("weblate_web.remote.get_release", return_value=None),
+        patch("weblate_web.remote.get_release", return_value=[]),
         patch("weblate_web.models.generate_secret", return_value=fixed_secret),
         patch(
             "weblate_web.exchange_rates.ExchangeRates.download",
