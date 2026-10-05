@@ -38,14 +38,14 @@ Find Weblate at https://github.com/WeblateOrg/weblate.
 Running locally
 ---------------
 
-Create virtual env and install dependencies:
+Create a virtual environment and install dependencies:
 
 .. code-block:: sh
 
    uv sync --dev
    source .venv/bin/activate
 
-Create ``weblate_web/settings_local.py`` which adjust your settings:
+Create ``weblate_web/settings_local.py`` to adjust your settings:
 
 .. code-block:: py
 
