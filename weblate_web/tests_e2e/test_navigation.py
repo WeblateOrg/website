@@ -106,7 +106,7 @@ class TestWebsiteNavigation:
 
 
 @pytest.mark.parametrize("locale", ["en", "ar"])
-@pytest.mark.parametrize("page_name", ["", "features/"])
+@pytest.mark.parametrize("page_name", ["", "features/", "hosting/"])
 @pytest.mark.parametrize("width", [1440, 390])
 def test_localization_pages(page: Page, live_server, locale, page_name, width):
     """Check the responsive customer journey and capture stable visual evidence."""
@@ -119,13 +119,27 @@ def test_localization_pages(page: Page, live_server, locale, page_name, width):
     assert page.locator("html").get_attribute("dir") == (
         "rtl" if locale == "ar" else "ltr"
     )
-    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
-    screenshot_dir = Path("test-results")
-    screenshot_dir.mkdir(exist_ok=True)
-    name = "features" if page_name else "home"
-    page.screenshot(
-        path=str(screenshot_dir / f"marketing-{name}-{locale}-{width}.png"),
-        full_page=True,
+    # Four representative captures; keep layout and RTL coverage independent.
+    if locale == "en" and page_name in {"", "features/"}:
+        screenshot_dir = Path("test-results")
+        screenshot_dir.mkdir(exist_ok=True)
+        name = page_name.rstrip("/") or "home"
+        page.screenshot(
+            path=str(screenshot_dir / f"marketing-{name}-{locale}-{width}.png"),
+            full_page=True,
+        )
+    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (
+        page.evaluate(
+            """() => Array.from(document.querySelectorAll('body *'))
+        .filter(element => !element.closest('.pricing-table-right'))
+        .map(element => ({tag: element.tagName, class: element.className,
+          left: element.getBoundingClientRect().left,
+          right: element.getBoundingClientRect().right,
+          width: element.getBoundingClientRect().width}))
+        .filter(element => element.width > 0 &&
+          (element.right > window.innerWidth || element.left < 0))
+        .slice(0, 10)"""
+        )
     )
     if not page_name:
         page.locator(".features .f-box a").first.click()
@@ -134,3 +148,28 @@ def test_localization_pages(page: Page, live_server, locale, page_name, width):
     services = page.locator(f'section a.button[href="/{locale}/hosting/"]').first
     services.click()
     page.wait_for_url(f"**/{locale}/hosting/")
+
+
+@pytest.mark.parametrize("locale", ["en", "ar"])
+def test_existing_project_evaluation(page: Page, live_server, locale):
+    """Reach migration guidance and deployment choices from the pricing page."""
+    page.goto(f"{live_server.url}/{locale}/hosting/")
+    page.locator(f'a[href="/{locale}/features/#migration"]').first.click()
+    page.wait_for_url(f"**/{locale}/features/#migration")
+    migration = page.locator("#migration")
+    assert migration.is_visible()
+    assert migration.locator(
+        'a[href="https://docs.weblate.org/en/latest/devel/migration.html"]'
+    ).is_visible()
+    assert migration.locator(
+        'a[href^="mailto:"][href$="Weblate%20migration"]'
+    ).is_visible()
+    assert page.locator(
+        '#open-source a[href="https://docs.weblate.org/en/latest/admin/backup.html"]'
+    ).is_visible()
+    assert page.locator('section a[href="https://hosted.weblate.org/trial/"]').count()
+    page.locator(f'#open-source a[href="/{locale}/download/"]').click()
+    page.wait_for_url(f"**/{locale}/download/")
+    assert page.locator(
+        'a[href="https://docs.weblate.org/en/latest/admin/install.html"]'
+    ).count()
