@@ -1,13 +1,5 @@
-.. image:: https://s.weblate.org/cdn/Logo-Darktext-borders.png
-   :alt: Weblate
-   :target: https://weblate.org/
-   :height: 80px
-
-**Weblate is libre software web-based continuous localization system,
-used by over 2500 libre projects and companies in more than 165 countries.**
-
-
-Django based website for Weblate, running at <https://weblate.org/>.
+Weblate website
+===============
 
 .. image:: https://img.shields.io/badge/website-weblate.org-blue.svg
     :alt: Website
@@ -28,6 +20,15 @@ Django based website for Weblate, running at <https://weblate.org/>.
 .. image:: https://argos-ci.com/badge.svg
     :alt: Covered by Argos Visual Testing
     :target: https://app.argos-ci.com/weblate/website/reference?utm_source=weblate&utm_campaign=oss
+
+Website and supporting services for `Weblate <https://weblate.org/>`_, built with Django.
+
+.. image:: https://s.weblate.org/cdn/Logo-Darktext-borders.png
+   :target: https://weblate.org/
+   :alt: Weblate
+   :height: 55px
+
+Part of `Weblate <https://weblate.org/>`_ — a privacy-respecting localization platform built on open-source foundations.
 
 Weblate
 -------
