@@ -158,13 +158,11 @@
       {% translate "Instance activity" as section_title %}
       {% include "crm/snippets/section_header.html" %}
       <p class="crm-muted">{% translate "Monthly changes, for up to 24 latest reported months." %}</p>
-      <div class="crm-table-wrap"
-           tabindex="0"
-           role="region"
-           aria-label="{{ section_title }}">
+      <div class="crm-chart">
         <svg xmlns="http://www.w3.org/2000/svg"
              width="{{ activity_chart_width|unlocalize }}"
              height="280"
+             viewBox="0 0 {{ activity_chart_width|unlocalize }} 280"
              role="img"
              aria-label="{{ section_title }}">
           <title>{{ section_title }}</title>
