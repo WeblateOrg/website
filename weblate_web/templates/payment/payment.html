@@ -40,23 +40,39 @@
               <div class="line-right" lang="en" dir="ltr">{{ object.description }}</div>
               <div class="clear"></div>
             </div>
-            {% if object.recurring %}
+            {% if object.recurring or object.extra.subscription_upgrade %}
               <div class="form-line">
                 <div class="line-left">{% translate "Payment frequency" %}</div>
                 <div class="line-right">
-                  {% if object.recurring == "y" %}
-                    {% translate "Payment will be issued yearly till you cancel the subscription." %}
-                  {% elif object.recurring == "b" %}
-                    {% translate "Payment will be issued every six months till you cancel the subscription." %}
-                  {% elif object.recurring == "q" %}
-                    {% translate "Payment will be issued every quarter till you cancel the subscription." %}
-                  {% elif object.recurring == "m" %}
-                    {% translate "Payment will be issued monthly till you cancel the subscription." %}
-                  {% else %}
-                    {{ object.recurring }}
+                  {% if object.extra.subscription_upgrade %}
+                    {% translate "This upgrade charge is a one-time payment." %}
+                    {% if object.recurring %}<br>{% endif %}
                   {% endif %}
-                  <br>
-                  <span class="text-muted">{% translate "Note: This is unavailable for some payment methods, you will have to manually complete the next payment in those cases." %}</span>
+                  {% if object.recurring %}
+                    {% if object.extra.subscription_upgrade %}
+                      {% if object.recurring == "y" %}
+                        {% translate "Future subscription payments are due yearly until you cancel the subscription." %}
+                      {% elif object.recurring == "b" %}
+                        {% translate "Future subscription payments are due every six months until you cancel the subscription." %}
+                      {% elif object.recurring == "q" %}
+                        {% translate "Future subscription payments are due every quarter until you cancel the subscription." %}
+                      {% elif object.recurring == "m" %}
+                        {% translate "Future subscription payments are due monthly until you cancel the subscription." %}
+                      {% endif %}
+                    {% elif object.recurring == "y" %}
+                      {% translate "Payment will be issued yearly till you cancel the subscription." %}
+                    {% elif object.recurring == "b" %}
+                      {% translate "Payment will be issued every six months till you cancel the subscription." %}
+                    {% elif object.recurring == "q" %}
+                      {% translate "Payment will be issued every quarter till you cancel the subscription." %}
+                    {% elif object.recurring == "m" %}
+                      {% translate "Payment will be issued monthly till you cancel the subscription." %}
+                    {% else %}
+                      {{ object.recurring }}
+                    {% endif %}
+                    <br>
+                    <span class="text-muted">{% translate "Note: This is unavailable for some payment methods, you will have to manually complete the next payment in those cases." %}</span>
+                  {% endif %}
                 </div>
                 <div class="clear"></div>
               </div>

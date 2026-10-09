@@ -56,5 +56,8 @@ for name in PACKAGE_NAMES.values():
             f"{DEDICATED_PREFIX}{name}",
         )
         PACKAGE_UPGRADES[f"{HOSTED_PREFIX}{previous}"] = (f"{HOSTED_PREFIX}{name}",)
+        PACKAGE_UPGRADES[f"{HOSTED_PREFIX}{previous}{MONTHLY_SUFFIX}"] = (
+            f"{HOSTED_PREFIX}{name}{MONTHLY_SUFFIX}",
+        )
     previous = name
 del previous

@@ -48,7 +48,9 @@ pytestmark = [
 ]
 
 
-def create_active_subscription(user: User, package_name: str) -> Subscription:
+def create_active_subscription(
+    user: User, package_name: str, *, hosted_billing: int | None = None
+) -> Subscription:
     """Create an active subscription visible on the user profile page."""
     customer = Customer.objects.create(
         user_id=user.pk,
@@ -68,7 +70,7 @@ def create_active_subscription(user: User, package_name: str) -> Subscription:
         recurring=package.get_repeat(),
         state=Payment.PROCESSED,
     )
-    service = Service.objects.create(customer=customer)
+    service = Service.objects.create(customer=customer, hosted_billing=hosted_billing)
     return service.subscription_set.create(
         package=package,
         payment=payment,
@@ -123,7 +125,9 @@ class TestSubscriptionUpgradeFlow:  # pylint: disable=redefined-outer-name
         self, page: Page, live_server, authenticated_user: User
     ) -> None:
         """Test upgrading a hosted subscription to the next hosted plan."""
-        subscription = create_active_subscription(authenticated_user, "hosted:10k")
+        subscription = create_active_subscription(
+            authenticated_user, "hosted:10k", hosted_billing=42
+        )
         original_expires = subscription.expires
 
         log_in(page, live_server)
@@ -132,6 +136,9 @@ class TestSubscriptionUpgradeFlow:  # pylint: disable=redefined-outer-name
         assert response.ok, f"User page returned status {response.status}"
         assert_no_server_error(page)
         page.screenshot(path="test-results/upgrade-hosted-options.png", full_page=True)
+        assert page.get_by_role("link", name="Change plan").get_attribute("href") == (
+            "https://hosted.weblate.org/create/billing/?billing=42&upgrade=1"
+        )
         assert page.locator("text=Upgrade to Weblate hosting (40k strings").is_visible()
 
         submit_upgrade(page, "hosted:40k")

@@ -4,7 +4,7 @@ import json
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -24,10 +24,17 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.signing import dumps
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError, connection, transaction
+from django.db.migrations.executor import MigrationExecutor
 from django.db.models.deletion import RestrictedError
 from django.template.loader import render_to_string
-from django.test import Client, RequestFactory, SimpleTestCase, TestCase
+from django.test import (
+    Client,
+    RequestFactory,
+    SimpleTestCase,
+    TestCase,
+    TransactionTestCase,
+)
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -1867,6 +1874,505 @@ class FakturaceTestCase(UserTestCase):
         )[0]
         subscription.save(update_fields=["payment"])
         return service
+
+
+class HostedBillingMigrationTest(TransactionTestCase):
+    def test_existing_zero_billing_ids_become_null_before_uniqueness(self) -> None:
+        previous = ("weblate_web", "0053_service_activity_drop_state_serviceactivity")
+        current = ("weblate_web", "0054_unique_hosted_billing_service")
+        executor = MigrationExecutor(connection)
+        executor.migrate([previous])
+        try:
+            historical = executor.loader.project_state([previous]).apps.get_model(
+                "weblate_web", "Service"
+            )
+            customer = Customer.objects.create(origin=PAYMENTS_ORIGIN, user_id=-1)
+            first = historical.objects.create(customer_id=customer.pk, hosted_billing=0)
+            second = historical.objects.create(
+                customer_id=customer.pk, hosted_billing=0
+            )
+            assigned = historical.objects.create(
+                customer_id=customer.pk, hosted_billing=42
+            )
+        finally:
+            MigrationExecutor(connection).migrate([current])
+        self.assertIsNone(Service.objects.get(pk=first.pk).hosted_billing)
+        self.assertIsNone(Service.objects.get(pk=second.pk).hosted_billing)
+        self.assertEqual(Service.objects.get(pk=assigned.pk).hosted_billing, 42)
+
+
+class HostedSubscriptionTest(FakturaceTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        Package.objects.create(name="community", verbose="Community support", price=0)
+        for name, price in (
+            ("hosted:10k-m", 47),
+            ("hosted:10k", 470),
+            ("hosted:40k-m", 70),
+            ("hosted:40k", 700),
+        ):
+            Package.objects.create(
+                name=name,
+                verbose=name,
+                price=price,
+                category=PackageCategory.PACKAGE_SHARED,
+                limit_hosted_strings=10_000 if "10k" in name else 40_000,
+            )
+        self.owner = self.create_user()
+        self.customer = Customer.objects.create(
+            origin=PAYMENTS_ORIGIN,
+            user_id=self.owner.pk,
+            email=self.owner.email,
+            name=TEST_CUSTOMER["name"],
+            address=TEST_CUSTOMER["address"],
+            city=TEST_CUSTOMER["city"],
+            postcode=TEST_CUSTOMER["postcode"],
+            country=TEST_CUSTOMER["country"],
+        )
+        self.customer.owners.add(self.owner)
+        self.service = Service.objects.create(customer=self.customer, hosted_billing=42)
+
+    def pay(
+        self,
+        package_name: str,
+        *,
+        service: Service | None = None,
+        recurring: str | None = None,
+    ) -> Payment:
+        package = Package.objects.get(name=package_name)
+        payment = Payment.objects.create(
+            customer=self.customer,
+            amount=package.price,
+            description="Hosted subscription",
+            recurring=package.get_repeat() if recurring is None else recurring,
+            extra={
+                "subscription": package.name,
+                "service": (service or self.service).pk,
+            },
+            state=Payment.ACCEPTED,
+        )
+        process_payment(payment)
+        payment.refresh_from_db()
+        return payment
+
+    def test_unique_billing_association_and_existing_customer(self) -> None:
+        self.assertEqual(self.service.customer, self.customer)
+        self.assertEqual(list(self.customer.owners.all()), [self.owner])
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Service.objects.create(customer=self.customer, hosted_billing=42)
+        Service.objects.create(customer=self.customer)
+        Service.objects.create(customer=self.customer)
+        self.assertEqual(Service.objects.filter(hosted_billing=42).count(), 1)
+        self.assertEqual(Service.objects.filter(hosted_billing=None).count(), 2)
+
+    def test_legacy_hosted_payment_stays_on_existing_path(self) -> None:
+        payment = Payment.objects.create(
+            customer=self.customer,
+            amount=47,
+            description="Hosted payment",
+            extra={"billing": 42},
+            state=Payment.ACCEPTED,
+        )
+        call_command("process_payments")
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.ACCEPTED)
+        self.assertFalse(self.service.subscription_set.exists())
+
+    def test_new_monthly_and_yearly_subscriptions(self) -> None:
+        for name, period in (("hosted:10k-m", "m"), ("hosted:10k", "y")):
+            with self.subTest(name=name):
+                service = Service.objects.create(customer=self.customer)
+                payment = self.pay(name, service=service)
+                subscription = service.subscription_set.get()
+                self.assertEqual(subscription.package.name, name)
+                self.assertEqual(subscription.payment, payment)
+                self.assertEqual(
+                    subscription.expires.date(),
+                    cast("date", payment.start)
+                    + (
+                        relativedelta(months=1)
+                        if period == "m"
+                        else relativedelta(years=1)
+                    ),
+                )
+                service.refresh_from_db()
+                self.assertEqual(service.status, "shared")
+                self.assertEqual(service.limit_hosted_strings, 10_000)
+                with self.assertRaises(ValueError):
+                    process_payment(payment)
+                self.assertEqual(service.subscription_set.count(), 1)
+
+    def test_renewal_upgrade_downgrade_and_cancellation(self) -> None:
+        first = self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        first_expiry = subscription.expires
+
+        upgrade = Payment.objects.create(
+            customer=self.customer,
+            amount=23,
+            description="Upgrade",
+            recurring="m",
+            extra={"subscription_upgrade": subscription.pk, "package": "hosted:40k-m"},
+            state=Payment.ACCEPTED,
+        )
+        process_payment(upgrade)
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package.name, "hosted:40k-m")
+        self.assertEqual(subscription.expires, first_expiry)
+        self.assertEqual(subscription.payment, upgrade)
+        self.assertIn(first, subscription.past_payments.all())
+
+        renewal = Payment.objects.create(
+            customer=self.customer,
+            amount=70,
+            description="Renewal",
+            recurring="m",
+            repeat=upgrade,
+            extra={"subscription": subscription.pk},
+            state=Payment.ACCEPTED,
+        )
+        process_payment(renewal)
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.expires, first_expiry + relativedelta(months=1))
+
+        downgrade = self.pay("hosted:10k-m")
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package.name, "hosted:10k-m")
+        self.assertEqual(subscription.payment, downgrade)
+        self.assertEqual(subscription.expires, first_expiry + relativedelta(months=2))
+        self.assertEqual(self.service.subscription_set.count(), 1)
+
+        self.client.force_login(self.owner)
+        self.assertTrue(
+            Subscription.objects.filter(
+                pk=subscription.pk, service__customer__owners=self.owner
+            ).exists()
+        )
+        with override("en"):
+            response = self.client.post(
+                reverse("subscription-disable", kwargs={"pk": subscription.pk})
+            )
+            self.assertRedirects(response, reverse("user"))
+        downgrade.refresh_from_db()
+        self.assertEqual(downgrade.recurring, "")
+        subscription.expires = timezone.now() - timedelta(days=1)
+        subscription.save(update_fields=["expires"])
+        self.service.refresh_from_db()
+        self.assertEqual(self.service.status, "community")
+
+    def test_nonrecurring_upgrade_replaces_recurring_payment(self) -> None:
+        first = self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        upgrade = Payment.objects.create(
+            customer=self.customer,
+            amount=23,
+            description="One-time upgrade",
+            recurring="",
+            extra={"subscription_upgrade": subscription.pk, "package": "hosted:40k-m"},
+            state=Payment.ACCEPTED,
+        )
+        process_payment(upgrade)
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.payment, upgrade)
+        self.assertEqual(subscription.payment_obj.recurring, "")
+        self.assertIn(first, subscription.past_payments.all())
+
+    @override("en")
+    def test_upgrade_payment_summary_distinguishes_charge_from_renewal(self) -> None:
+        self.pay("hosted:10k")
+        subscription = self.service.subscription_set.get()
+        invoice = subscription.create_upgrade_invoice(
+            kind=InvoiceKind.DRAFT,
+            package=Package.objects.get(name="hosted:40k"),
+        )
+        payment = invoice.create_payment(recurring="y")
+        self.client.force_login(self.owner)
+        response = self.client.get(payment.get_payment_url())
+        self.assertContains(response, "This upgrade charge is a one-time payment.")
+        self.assertContains(
+            response,
+            "Future subscription payments are due yearly until you cancel the subscription.",
+        )
+        self.assertNotContains(
+            response, "Payment will be issued yearly till you cancel the subscription."
+        )
+
+    def test_expired_subscription_continues_from_old_expiry(self) -> None:
+        for category, name in (
+            (PackageCategory.PACKAGE_SHARED, "hosted:10k-m"),
+            (PackageCategory.PACKAGE_DEDICATED, "dedicated:test-m"),
+        ):
+            with self.subTest(category=category):
+                if category == PackageCategory.PACKAGE_DEDICATED:
+                    Package.objects.create(
+                        name=name,
+                        verbose=name,
+                        price=47,
+                        category=category,
+                    )
+                service = Service.objects.create(customer=self.customer)
+                self.pay(name, service=service)
+                subscription = service.subscription_set.get()
+                previous_expiry = timezone.now() - timedelta(days=2)
+                subscription.expires = previous_expiry
+                subscription.save(update_fields=["expires"])
+                self.pay(name, service=service)
+                subscription.refresh_from_db()
+                self.assertEqual(
+                    subscription.expires, previous_expiry + relativedelta(months=1)
+                )
+                self.assertEqual(service.subscription_set.count(), 1)
+
+    def test_shared_purchase_invoice_matches_chained_period(self) -> None:
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        subscription.expires = datetime(2028, 1, 30, 12, tzinfo=UTC)
+        subscription.save(update_fields=["expires"])
+        original_expiry = subscription.expires
+        invoice = Subscription.new_subscription_invoice(
+            kind=InvoiceKind.DRAFT,
+            customer=self.customer,
+            package=Package.objects.get(name="hosted:40k-m"),
+            service=self.service,
+        )
+        item = invoice.invoiceitem_set.get()
+        self.assertEqual(item.start_date, (original_expiry + timedelta(days=1)).date())
+        self.assertEqual(
+            item.end_date,
+            (original_expiry + relativedelta(months=1)).date(),
+        )
+        payment = invoice.create_payment(recurring="m")
+        payment.state = Payment.ACCEPTED
+        payment.save(update_fields=["state"])
+        process_payment(payment)
+        subscription.refresh_from_db()
+        payment.refresh_from_db()
+        self.assertEqual(payment.start, original_expiry.date())
+        self.assertEqual(
+            subscription.expires, original_expiry + relativedelta(months=1)
+        )
+
+    def test_terminated_renewal_invoice_matches_granted_period(self) -> None:
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        subscription.enabled = False
+        subscription.expires = timezone.now() - timedelta(days=20)
+        subscription.save(update_fields=["enabled", "expires"])
+        invoice = subscription.create_invoice(kind=InvoiceKind.DRAFT)
+        invoice.refresh_from_db()
+        item = invoice.invoiceitem_set.get()
+        start = datetime.fromisoformat(invoice.extra["start_date"])
+        self.assertEqual(item.start_date, start.date())
+        self.assertEqual(
+            item.end_date,
+            (start + relativedelta(months=1) - timedelta(days=1)).date(),
+        )
+        payment = invoice.create_payment(recurring="m")
+        payment.state = Payment.ACCEPTED
+        payment.save(update_fields=["state"])
+        with patch(
+            "weblate_web.models.timezone.now", return_value=start + timedelta(days=2)
+        ):
+            process_payment(payment)
+        subscription.refresh_from_db()
+        payment.refresh_from_db()
+        self.assertEqual(payment.start, start.date())
+        self.assertEqual(subscription.expires, start + relativedelta(months=1))
+
+    @override("en")
+    @responses.activate
+    def test_terminated_renewal_does_not_reuse_stale_invoice(self) -> None:
+        cnb_mock_rates()
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        subscription.enabled = False
+        subscription.expires = timezone.now() - timedelta(days=20)
+        subscription.save(update_fields=["enabled", "expires"])
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        self.assertEqual(list(subscription.get_renewal_invoices()), [invoice])
+        with patch(
+            "weblate_web.models.timezone.now",
+            return_value=timezone.now() + timedelta(days=2),
+        ):
+            self.assertEqual(list(subscription.get_renewal_invoices()), [])
+            self.client.force_login(self.owner)
+            response = self.client.post(
+                reverse("subscription-pay", kwargs={"pk": subscription.pk})
+            )
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(invoice.draft_payment_set.exists())
+        self.assertEqual(Payment.objects.filter(state=Payment.NEW).count(), 1)
+
+    @override("en")
+    @responses.activate
+    def test_terminated_renewal_waits_for_accepted_old_invoice(self) -> None:
+        cnb_mock_rates()
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        subscription.enabled = False
+        subscription.expires = timezone.now() - timedelta(days=20)
+        subscription.save(update_fields=["enabled", "expires"])
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        payment = invoice.create_payment(recurring="m")
+        payment.paid_invoice = invoice
+        payment.state = Payment.ACCEPTED
+        payment.save(update_fields=["paid_invoice", "state"])
+        with patch(
+            "weblate_web.models.timezone.now",
+            return_value=timezone.now() + timedelta(days=2),
+        ):
+            self.assertTrue(subscription.has_accepted_renewal_payment())
+
+    @override("en")
+    @responses.activate
+    def test_legacy_month_end_renewal_invoice_is_reused(self) -> None:
+        cnb_mock_rates()
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        subscription.expires = datetime(2028, 1, 31, 12, tzinfo=UTC)
+        subscription.save(update_fields=["expires"])
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        item = invoice.invoiceitem_set.get()
+        item.end_date = (
+            subscription.expires + timedelta(days=1) + relativedelta(months=1)
+        ).date()
+        item.save(update_fields=["end_date"])
+        self.assertEqual(list(subscription.get_renewal_invoices()), [invoice])
+        self.client.force_login(self.owner)
+        response = self.client.post(
+            reverse("subscription-pay", kwargs={"pk": subscription.pk})
+        )
+        self.assertRedirects(
+            response,
+            reverse("invoice-pay", kwargs={"pk": invoice.pk}),
+            fetch_redirect_response=False,
+        )
+        self.assertFalse(invoice.draft_payment_set.exists())
+
+    @override("en")
+    def test_unassociated_shared_service_has_no_legacy_plan_link(self) -> None:
+        self.pay("hosted:10k-m")
+        self.client.force_login(self.owner)
+        url = reverse("user")
+        self.assertContains(self.client.get(url), "billing=42")
+        self.service.hosted_billing = None
+        self.service.save(update_fields=["hosted_billing"])
+        response = self.client.get(url)
+        self.assertNotContains(response, "Change plan")
+        self.assertNotContains(response, "create/billing/?billing=")
+
+    def test_terminated_renewal_starts_new_period(self) -> None:
+        for category, name in (
+            (PackageCategory.PACKAGE_SHARED, "hosted:10k-m"),
+            (PackageCategory.PACKAGE_DEDICATED, "dedicated:test-m"),
+        ):
+            with self.subTest(category=category):
+                if category == PackageCategory.PACKAGE_DEDICATED:
+                    Package.objects.create(
+                        name=name,
+                        verbose=name,
+                        price=47,
+                        category=category,
+                    )
+                service = Service.objects.create(customer=self.customer)
+                self.pay(name, service=service)
+                subscription = service.subscription_set.get()
+                subscription.enabled = False
+                subscription.expires = timezone.now() - timedelta(days=20)
+                subscription.save(update_fields=["enabled", "expires"])
+                renewal = Payment.objects.create(
+                    customer=self.customer,
+                    amount=47,
+                    description="Renewal after termination",
+                    recurring="m",
+                    extra={"subscription": subscription.pk},
+                    state=Payment.ACCEPTED,
+                )
+                process_payment(renewal)
+                renewal.refresh_from_db()
+                subscription.refresh_from_db()
+                self.assertTrue(subscription.enabled)
+                self.assertEqual(renewal.start, timezone.localdate())
+                self.assertEqual(
+                    subscription.expires.date(),
+                    timezone.localdate() + relativedelta(months=1),
+                )
+
+    def test_terminated_purchase_starts_new_period(self) -> None:
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        subscription.enabled = False
+        subscription.expires = timezone.now() - timedelta(days=20)
+        subscription.save(update_fields=["enabled", "expires"])
+        purchase = self.pay("hosted:10k-m")
+        subscription.refresh_from_db()
+        self.assertTrue(subscription.enabled)
+        self.assertEqual(purchase.start, timezone.localdate())
+        self.assertEqual(
+            subscription.expires.date(),
+            timezone.localdate() + relativedelta(months=1),
+        )
+
+    def test_yearly_switch_applies_only_after_payment(self) -> None:
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        initial_expiry = subscription.expires
+        yearly = Package.objects.get(name="hosted:10k")
+        self.client.force_login(self.owner)
+        with override("en"):
+            response = self.client.post(
+                reverse("subscription-pay", kwargs={"pk": subscription.pk}),
+                {"switch_yearly": 1},
+            )
+        self.assertEqual(response.status_code, 302)
+        payment = Payment.objects.get(state=Payment.NEW)
+        self.assertEqual(cast("Invoice", payment.draft_invoice).get_package(), yearly)
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package.name, "hosted:10k-m")
+        self.assertEqual(subscription.expires, initial_expiry)
+        payment.state = Payment.ACCEPTED
+        payment.save(update_fields=["state"])
+        process_payment(payment)
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package, yearly)
+        self.assertEqual(subscription.expires, initial_expiry + relativedelta(years=1))
+        self.assertEqual(payment.recurring, "y")
+
+    @override("en")
+    @responses.activate
+    def test_accepted_yearly_switch_blocks_duplicate_renewal(self) -> None:
+        cnb_mock_rates()
+        self.pay("hosted:10k-m")
+        subscription = self.service.subscription_set.get()
+        yearly = Package.objects.get(name="hosted:10k")
+        invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE, package=yearly)
+        payment = invoice.create_payment(recurring="y")
+        payment.paid_invoice = invoice
+        payment.state = Payment.ACCEPTED
+        payment.save(update_fields=["paid_invoice", "state"])
+        self.assertTrue(subscription.has_accepted_renewal_payment())
+        self.client.force_login(self.owner)
+        response = self.client.post(
+            reverse("subscription-pay", kwargs={"pk": subscription.pk}),
+            {"switch_yearly": 1},
+            follow=True,
+        )
+        self.assertContains(response, "awaiting processing")
+        self.assertEqual(Invoice.objects.count(), 1)
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.package.name, "hosted:10k-m")
+
+    def test_monthly_package_without_yearly_variant(self) -> None:
+        Package.objects.create(
+            name="hosted:legacy-m",
+            verbose="Legacy monthly package",
+            price=47,
+            category=PackageCategory.PACKAGE_SHARED,
+        )
+        self.pay("hosted:legacy-m")
+        subscription = self.service.subscription_set.get()
+        self.assertIsNone(subscription.yearly_package)
+        self.assertEqual(list(subscription.get_renewal_invoices()), [])
 
 
 class PaymentsTest(FakturaceTestCase):
@@ -5515,7 +6021,7 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(subscription.get_outstanding_renewal_invoice(), invoice)
         item = invoice.invoiceitem_set.get()
         assert item.end_date is not None
-        item.end_date += timedelta(days=1)
+        item.end_date += timedelta(days=2)
         item.save()
         self.assertIsNone(subscription.get_outstanding_renewal_invoice())
 
@@ -6157,6 +6663,8 @@ class ServiceTest(FakturaceTestCase):
             )
             payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
             self.assertTrue(payment_url.startswith("/en/payment/"))
+            subscription.refresh_from_db()
+            self.assertEqual(subscription.package.name, "test:test-1-m")
             response = self.client.post(payment_url, {"method": "pay"}, follow=True)
             self.assertRedirects(response, reverse("user"))
             self.assertContains(response, "Weblate hosting (basic)")
@@ -6265,11 +6773,16 @@ class ServiceTest(FakturaceTestCase):
             )
             payment_url = response.redirect_chain[0][0].split("localhost:1234")[-1]
             self.assertTrue(payment_url.startswith("/en/payment/"))
+            self.assertContains(response, "This upgrade charge is a one-time payment.")
+            self.assertContains(
+                response,
+                "Future subscription payments are due yearly until you cancel the subscription.",
+            )
             payment = Payment.objects.get(state=Payment.NEW)
             draft_invoice = payment.draft_invoice
             self.assertIsNotNone(draft_invoice)
             draft_invoice = cast("Invoice", draft_invoice)
-            self.assertEqual(payment.recurring, "")
+            self.assertEqual(payment.recurring, "y")
             self.assertEqual(payment.amount, int(upgrade_price))
             self.assertEqual(draft_invoice.total_amount, upgrade_price)
             self.assertEqual(
@@ -6534,7 +7047,7 @@ class ServiceTest(FakturaceTestCase):
         upgrade_payment.refresh_from_db()
         self.assertEqual(subscription.package.name, "premium")
         self.assertEqual(subscription.payment, upgrade_payment)
-        self.assertEqual(upgrade_payment.recurring, "")
+        self.assertEqual(upgrade_payment.recurring, "y")
         self.assertIn(recurring_payment, subscription.past_payments.all())
         self.assertEqual(upgrade_payment.state, Payment.PROCESSED)
 
@@ -6545,7 +7058,7 @@ class ServiceTest(FakturaceTestCase):
         ) as perform_payment:
             RecurringPaymentsCommand.handle_subscriptions()
 
-        perform_payment.assert_not_called()
+        perform_payment.assert_called_once()
 
 
 class CommandsTestCase(FakturaceTestCase):
