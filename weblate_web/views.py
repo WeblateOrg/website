@@ -1328,12 +1328,17 @@ def subscription_pay(request, pk):
             message = gettext("Please pay outstanding invoice %(invoice)s to renew.")
         messages.info(request, message % {"invoice": invoice.number})
         return redirect("invoice-pay", pk=invoice.pk)
-    if "switch_yearly" in request.POST and subscription.yearly_package:
-        subscription.package = subscription.yearly_package
-        subscription.save(update_fields=["package"])
+    yearly_package = (
+        subscription.yearly_package if "switch_yearly" in request.POST else None
+    )
     with override("en"):
-        invoice = subscription.create_invoice(kind=InvoiceKind.DRAFT)
-        payment = invoice.create_payment(recurring=subscription.package.get_repeat())
+        invoice = subscription.create_invoice(
+            kind=InvoiceKind.DRAFT,
+            package=yearly_package,
+        )
+        payment = invoice.create_payment(
+            recurring=(yearly_package or subscription.package).get_repeat()
+        )
     return redirect(payment.get_payment_url())
 
 
@@ -1377,7 +1382,7 @@ def subscription_upgrade(request, pk):
                 ),
             )
             return redirect("user")
-        payment = invoice.create_payment()
+        payment = invoice.create_payment(recurring=subscription.package.get_repeat())
     return redirect(payment.get_payment_url())
 
 
@@ -1436,7 +1441,7 @@ def subscription_new(request):
                     invoice = subscription.create_upgrade_invoice(
                         kind=InvoiceKind.DRAFT, package=package
                     )
-                    recurring = ""
+                    recurring = subscription.package.get_repeat()
                     break
             else:
                 invoice = Subscription.new_subscription_invoice(

@@ -144,7 +144,7 @@
             </v>
           {% endif %}
 
-          {% if service.status == "shared" %}
+          {% if service.status == "shared" and service.hosted_billing %}
             <a class="button small inline"
                href="https://hosted.weblate.org/create/billing/?billing={{ service.hosted_billing }}&amp;upgrade=1">{% translate "Change plan" %}</a>
           {% endif %}

@@ -390,24 +390,66 @@ def get_service(payment: Payment, customer: Customer):
     return Service.objects.get(pk=payment.extra["service"], customer=customer)
 
 
+def get_subscription_start(
+    subscription: Subscription, payment: Payment | None = None
+) -> datetime:
+    """Chain paid periods unless the subscription was explicitly disabled."""
+    if subscription.enabled:
+        return subscription.expires
+    if (
+        payment
+        and (payment.draft_invoice_id or payment.paid_invoice_id)
+        and (start_date := payment.extra.get("start_date"))
+    ):
+        return datetime.fromisoformat(start_date)
+    return timezone.now()
+
+
+def get_subscription_invoice_start(subscription: Subscription) -> datetime:
+    start = get_subscription_start(subscription)
+    return start + timedelta(days=1) if subscription.enabled else start
+
+
 def process_repeated_payment(payment: Payment, repeated: Payment) -> Subscription:
     subscription = Subscription.objects.get(payment=repeated)
-    payment.start = subscription.expires
-    subscription.expires += get_period_delta(repeated.recurring)
+    start = get_subscription_start(subscription, payment)
+    payment.start = start
+    subscription.expires = start + get_period_delta(repeated.recurring)
     payment.end = subscription.expires
+    subscription.enabled = True
     subscription.save()
     return subscription
 
 
+def get_renewal_package(subscription: Subscription, payment: Payment) -> Package:
+    package = None
+    if payment.paid_invoice:
+        package = payment.paid_invoice.get_package()
+    elif payment.draft_invoice:
+        package = payment.draft_invoice.get_package()
+    if package is None or package.pk == subscription.package_id:
+        return subscription.package
+    if subscription.yearly_package == package:
+        return package
+    raise UnprocessablePaymentError
+
+
 def process_renewal_payment(payment: Payment) -> Subscription:
-    subscription = Subscription.objects.get(pk=payment.extra["subscription"])
+    subscription = Subscription.objects.select_for_update().get(
+        pk=payment.extra["subscription"], service__customer=payment.customer
+    )
+    package = get_renewal_package(subscription, payment)
     if subscription.payment:
         add_subscription_past_payments(subscription, subscription.payment)
-    payment.start = subscription.expires
-    subscription.expires += get_period_delta(subscription.package.get_repeat())
+    start = get_subscription_start(subscription, payment)
+    payment.start = start
+    subscription.expires = start + get_period_delta(package.get_repeat())
     payment.end = subscription.expires
+    subscription.package = package
     subscription.payment = payment
-    subscription.save()
+    subscription.enabled = True
+    update_fields = ["package", "payment", "expires", "enabled"]
+    subscription.save(update_fields=update_fields)
     return subscription
 
 
@@ -445,17 +487,25 @@ def process_new_payment(payment: Payment) -> Subscription:
     else:
         package = Package.objects.get(name=payment.extra["subscription"])
     repeat = package.get_repeat()
-    if (
-        package.category == PackageCategory.PACKAGE_DEDICATED
-        and service.hosted_subscriptions
-    ):
+    existing = (
+        service.hosted_subscriptions
+        if package.category == PackageCategory.PACKAGE_DEDICATED
+        else service.shared_subscriptions
+        if package.category == PackageCategory.PACKAGE_SHARED
+        else None
+    )
+    if existing:
         # Package upgrade / downgrade
-        subscription = service.hosted_subscriptions[0]
+        subscription = existing[0]
         if subscription.payment:
             add_subscription_past_payments(subscription, subscription.payment)
+        start = get_subscription_start(subscription, payment)
+        payment.start = start
         subscription.package = package
-        subscription.expires += get_period_delta(repeat)
+        subscription.expires = start + get_period_delta(repeat)
+        payment.end = subscription.expires
         subscription.payment = payment
+        subscription.enabled = True
         subscription.save()
     else:
         if start_date := payment.extra.get("start_date"):
@@ -766,7 +816,7 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     maintenance_window = models.CharField(
         verbose_name=gettext_lazy("Maintenance window"), max_length=200, blank=True
     )
-    hosted_billing = models.IntegerField(default=0, db_index=True)
+    hosted_billing = models.PositiveIntegerField(blank=True, null=True, unique=True)
     discoverable = models.BooleanField(default=False, blank=True)
     site_url = models.URLField(
         verbose_name=gettext_lazy("Server URL"), default="", blank=True
@@ -1406,6 +1456,7 @@ class Subscription(models.Model):
     package = models.ForeignKey(Package, on_delete=models.deletion.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
+    # For services, False marks termination and a new paid period starts fresh.
     # For donations, this tracks whether renewal is enabled. Current activity is
     # determined by the expiration date, not this flag alone.
     enabled = models.BooleanField(default=True, blank=True)
@@ -1441,7 +1492,7 @@ class Subscription(models.Model):
     @cached_property
     def yearly_package(self):
         if self.package.name.endswith("-m"):
-            return Package.objects.get(name=self.package.name[:-2])
+            return Package.objects.filter(name=self.package.name[:-2]).first()
         return None
 
     def active(self) -> bool:
@@ -1577,28 +1628,58 @@ class Subscription(models.Model):
         return next(self._get_renewal_invoices(accepted=True), None) is not None
 
     def _get_renewal_invoices(self, *, accepted: bool | None) -> Generator[Invoice]:
-        start_date = self.expires + timedelta(days=1)
+        start_date = get_subscription_invoice_start(self)
+        package_ids = {self.package_id}
+        package_filter = Q(invoiceitem__package=self.package)
+        if self.enabled:
+            package_filter &= Q(
+                invoiceitem__end_date__in={
+                    (self.expires + get_period_delta(self.package.get_repeat())).date(),
+                    (
+                        start_date
+                        + get_period_delta(self.package.get_repeat())
+                        - timedelta(days=1)
+                    ).date(),
+                    (start_date + get_period_delta(self.package.get_repeat())).date(),
+                }
+            )
+        if yearly_package := self.yearly_package:
+            package_ids.add(yearly_package.pk)
+            yearly_filter = Q(invoiceitem__package=yearly_package)
+            if self.enabled:
+                yearly_filter &= Q(
+                    invoiceitem__end_date__in={
+                        (
+                            self.expires + get_period_delta(yearly_package.get_repeat())
+                        ).date(),
+                        (
+                            start_date
+                            + get_period_delta(yearly_package.get_repeat())
+                            - timedelta(days=1)
+                        ).date(),
+                        (
+                            start_date + get_period_delta(yearly_package.get_repeat())
+                        ).date(),
+                    }
+                )
+            package_filter |= yearly_filter
         payment_filter = Q()
         if accepted is True:
             payment_filter = Q(paid_payment_set__state=Payment.ACCEPTED)
         elif accepted is False:
             payment_filter = Q(paid_payment_set__isnull=True, prepaid=False)
+        invoices = Invoice.objects.filter(
+            payment_filter,
+            customer=self.service.customer,
+            extra__subscription=self.pk,
+            kind=InvoiceKind.INVOICE,
+            fully_credited=False,
+            correction_of=None,
+        )
+        if self.enabled:
+            invoices = invoices.filter(invoiceitem__start_date=start_date.date())
         invoices = (
-            Invoice.objects.filter(
-                payment_filter,
-                customer=self.service.customer,
-                extra__subscription=self.pk,
-                kind=InvoiceKind.INVOICE,
-                fully_credited=False,
-                correction_of=None,
-                invoiceitem__package=self.package,
-                invoiceitem__start_date=start_date.date(),
-                invoiceitem__end_date=(
-                    start_date
-                    + get_period_delta(self.package.get_repeat())
-                    - timedelta(days=1)
-                ).date(),
-            )
+            invoices.filter(package_filter)
             .exclude(extra__has_key="subscription_upgrade")
             .order_by("issue_date", "number")
             .distinct()
@@ -1614,6 +1695,28 @@ class Subscription(models.Model):
             if isinstance(subscription_id, int) and not isinstance(
                 subscription_id, bool
             ):
+                if not self.enabled:
+                    if invoice.paid_payment_set.filter(
+                        state=Payment.PROCESSED
+                    ).exists():
+                        continue
+                    # A received payment must still block another renewal even
+                    # when its invoice period is now in the past.
+                    if invoice.paid_payment_set.filter(state=Payment.ACCEPTED).exists():
+                        yield invoice
+                        continue
+                    if not any(
+                        item.package_id in package_ids
+                        and item.package is not None
+                        and item.start_date is not None
+                        and item.start_date == start_date.date()
+                        and item.end_date
+                        == item.start_date
+                        + get_period_delta(item.package.get_repeat())
+                        - timedelta(days=1)
+                        for item in invoice.all_items
+                    ):
+                        continue
                 yield invoice
 
     def send_notification(self, notification: str) -> None:
@@ -1792,13 +1895,26 @@ class Subscription(models.Model):
         skip_intro: bool = False,
     ) -> Invoice:
         start_date = timezone.now()
-        if (
-            service
-            and package.category == PackageCategory.PACKAGE_DEDICATED
-            and service.hosted_subscriptions
-        ):
-            # Chain start date for service upgrades
-            start_date = service.expires + timedelta(days=1)
+        end_date = None
+        if service:
+            existing = (
+                service.hosted_subscriptions
+                if package.category == PackageCategory.PACKAGE_DEDICATED
+                else service.shared_subscriptions
+                if package.category == PackageCategory.PACKAGE_SHARED
+                else None
+            )
+            if existing:
+                subscription = existing[0]
+                start_date = get_subscription_invoice_start(subscription)
+                if repeat := package.get_repeat():
+                    end_date = (
+                        subscription.expires + get_period_delta(repeat)
+                        if subscription.enabled
+                        else start_date + get_period_delta(repeat) - timedelta(days=1)
+                    )
+        if end_date is None and (repeat := package.get_repeat()):
+            end_date = start_date + get_period_delta(repeat) - timedelta(days=1)
         return cls._create_invoice(
             kind=kind,
             customer=customer,
@@ -1812,29 +1928,43 @@ class Subscription(models.Model):
             },
             customer_reference=customer_reference,
             customer_note=customer_note,
+            description=package.verbose,
+            start_date=start_date if end_date is not None else None,
+            end_date=end_date,
         )
 
     def create_invoice(
         self,
         *,
         kind: InvoiceKind,
+        package: Package | None = None,
         customer_reference: str = "",
         customer_note: str = "",
     ) -> Invoice:
-        start_date = self.expires + timedelta(days=1)
+        if package is None:
+            package = self.package
+        elif package not in {self.package, self.yearly_package}:
+            raise ValueError("Invalid renewal package")
+        start_date = get_subscription_invoice_start(self)
+        end_date = (
+            self.expires + get_period_delta(package.get_repeat())
+            if self.enabled
+            else start_date + get_period_delta(package.get_repeat()) - timedelta(days=1)
+        )
         return self._create_invoice(
             kind=kind,
             customer=self.service.customer,
-            package=self.package,
+            package=package,
             currency=CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency],
             extra={
                 "subscription": self.pk,
-                "start_date": self.expires + timedelta(days=1),
+                "start_date": start_date,
             },
             customer_reference=customer_reference,
             customer_note=customer_note,
+            description=package.verbose,
             start_date=start_date,
-            end_date=start_date + get_period_delta(self.package.get_repeat()),
+            end_date=end_date,
         )
 
     def create_upgrade_invoice(
