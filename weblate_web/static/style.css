@@ -1812,12 +1812,16 @@ html[dir="rtl"] .entry blockquote {
   margin-bottom: 5px;
 }
 
-.page-desc p a {
+.page-desc p a,
+.feature-story p a,
+section.about p a {
   text-decoration: underline;
   color: #2eccaa;
 }
 
-.page-desc a:hover {
+.page-desc a:hover,
+.feature-story p a:hover,
+section.about p a:hover {
   text-decoration: none;
 }
 
@@ -1960,6 +1964,13 @@ body.pfeatures section h2.section-title {
 
 .workflow-options p {
   margin-bottom: 0;
+}
+
+.workflow-example {
+  padding-inline-start: 28px;
+  margin-bottom: 24px;
+  font-size: 20px;
+  line-height: 1.6;
 }
 
 .format-intro,
@@ -4733,7 +4744,8 @@ html[dir="rtl"] .half-img.rotate img {
 }
 
 @media (max-width: 1100px) {
-  .libre-hosting {
+  .libre-hosting,
+  html[dir="rtl"] .libre-hosting {
     background-image: none;
     background-color: #d5f5ee;
     padding: 0 30px 30px 30px;
