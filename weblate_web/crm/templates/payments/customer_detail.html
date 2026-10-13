@@ -144,7 +144,12 @@
                     {{ followup.display_note|default:"-" }}
                     {% if followup.is_activity_drop %}
                       <p><a href="{{ followup.service.get_absolute_url }}">{{ followup.service.site_title }}</a></p>
-                      <p>{% blocktranslate with average=followup.details.baseline_average|floatformat:1 %}Baseline: {{ average }} changes per month.{% endblocktranslate %}</p>
+                      {% if followup.details.detector_version == 2 %}
+                        <p>{% blocktranslate with median=followup.details.baseline_median|floatformat:1 %}Median baseline: {{ median }} changes per month.{% endblocktranslate %}</p>
+                        <p>{% blocktranslate with threshold=followup.details.threshold|floatformat:1 %}Alert threshold: {{ threshold }} changes per month.{% endblocktranslate %}</p>
+                      {% else %}
+                        <p>{% blocktranslate with average=followup.details.baseline_average|floatformat:1 %}Baseline: {{ average }} changes per month.{% endblocktranslate %}</p>
+                      {% endif %}
                       <ul>
                         {% for month in followup.details.baseline_months %}
                           <li>{% blocktranslate with month=month.month changes=month.changes %}{{ month }}: {{ changes }} changes{% endblocktranslate %}</li>

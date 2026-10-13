@@ -64,7 +64,10 @@ class ActivityTest(TestCase):
         self.subscription = self.service.subscription_set.create(
             package=self.package, expires=self.now + timedelta(days=365)
         )
-        self.months = [date(2026, month, 1) for month in range(4, 9)]
+        self.months = [
+            date(2026, 8, 1) - relativedelta(months=offset)
+            for offset in range(11, -1, -1)
+        ]
 
     def post_activity(self, activity, **extra):
         return self.client.post(
@@ -90,6 +93,14 @@ class ActivityTest(TestCase):
         )
         record_activity(report, dict(zip(self.months, counts, strict=True)))
         return report
+
+    def record_history(self, counts):
+        latest = timezone.localdate().replace(day=1) - relativedelta(months=1)
+        self.months = [
+            latest - relativedelta(months=offset)
+            for offset in range(len(counts) - 1, -1, -1)
+        ]
+        return self.record(counts)
 
     def test_storage_and_corrections(self) -> None:
         months = [
@@ -152,7 +163,7 @@ class ActivityTest(TestCase):
         self.service.site_url_lock = True
         self.service.save(update_fields=["site_url_lock"])
         response = self.post_activity(
-            self.payload([100, 100, 100, 0, 0]), site_url="https://wrong.example.com"
+            self.payload([100] * 9 + [0, 0, 0]), site_url="https://wrong.example.com"
         )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(self.service.activity.exists())
@@ -164,12 +175,14 @@ class ActivityTest(TestCase):
 
     def test_drop_boundaries(self) -> None:
         for counts, expected in (
-            ([100, 100, 100, 50, 50], True),
-            ([99, 99, 99, 0, 0], False),
-            ([100, 100, 100, 51, 0], False),
-            ([100, 100, 100, 0, 51], False),
-            ([0, 0, 0, 0, 0], False),
-            ([100, 100, 101, 50, 50], True),
+            ([100] * 9 + [50, 50, 50], True),
+            ([99] * 9 + [0, 0, 0], False),
+            ([100] * 9 + [51, 0, 0], False),
+            ([100] * 9 + [0, 0, 51], False),
+            ([100] * 9 + [0, 51, 0], False),
+            ([100] * 10 + [0, 0], False),
+            ([0] * 12, False),
+            ([100] * 8 + [101, 50, 50, 50], True),
         ):
             with self.subTest(counts=counts):
                 self.service.followups.all().delete()
@@ -179,41 +192,247 @@ class ActivityTest(TestCase):
                 self.record(counts)
                 self.assertEqual(self.service.followups.exists(), expected)
 
-    def test_missing_month_is_not_zero(self) -> None:
-        payload = self.payload([100, 100, 100, 0, 0])
-        self.assertEqual(self.post_activity(payload[:3] + payload[4:]).status_code, 200)
+    def test_baseline_history_limits(self) -> None:
+        self.record_history([100] * 8 + [0, 0, 0])
         self.assertFalse(self.service.followups.exists())
-        self.assertEqual(self.post_activity(payload[3:4]).status_code, 200)
+        self.record_history([100] * 9 + [0, 0, 0])
+        self.assertTrue(self.service.followups.exists())
+
+    def test_baseline_uses_latest_twelve_months(self) -> None:
+        self.record_history([10000] * 9 + [100] * 12 + [50] * 3)
+        details = self.service.followups.get().details
+        self.assertEqual(len(details["baseline_months"]), 12)
+        self.assertEqual(details["baseline_median"], 100)
+        self.assertEqual(details["threshold"], 50)
+        self.assertEqual(
+            details["baseline_months"][0]["month"], self.months[9].isoformat()
+        )
+
+    def test_missing_baseline_month_stops_history(self) -> None:
+        counts = [100] * 15 + [0, 0, 0]
+        latest = self.months[-1]
+        self.months = [latest - relativedelta(months=i) for i in range(17, -1, -1)]
+        payload = self.payload(counts)
+        # Five contiguous baseline months remain; older months cannot fill the gap.
+        self.assertEqual(
+            self.post_activity(payload[:9] + payload[10:]).status_code, 200
+        )
+        self.assertFalse(self.service.followups.exists())
+        self.assertEqual(self.post_activity(payload[9:10]).status_code, 200)
+        self.assertTrue(self.service.followups.exists())
+
+    def test_startup_spikes_are_excluded(self) -> None:
+        self.record_history([0] * 4 + [1, 20000, 30000] + [100] * 6 + [51] * 3)
+        self.assertFalse(self.service.followups.exists())
+        self.record_history([0] * 4 + [1, 20000, 30000] + [100] * 6 + [50] * 3)
+        details = self.service.followups.get().details
+        self.assertEqual(details["baseline_median"], 100)
+        self.assertEqual(len(details["baseline_months"]), 6)
+
+    def test_setup_spike_does_not_inflate_threshold(self) -> None:
+        self.record_history([100] * 8 + [1000000] + [51] * 3)
+        self.assertFalse(self.service.followups.exists())
+        self.record_history([100] * 8 + [1000000] + [50] * 3)
+        details = self.service.followups.get().details
+        self.assertEqual(details["baseline_median"], 100)
+        self.assertEqual(details["lower_quartile"], 100)
+        self.assertEqual(details["threshold"], 50)
+        self.assertEqual(details["low_months"][0]["decrease_percent"], 50)
+
+    def test_lower_quartile_accounts_for_usual_quiet_months(self) -> None:
+        baseline = [100] * 3 + [20, 20, 100, 100, 100, 100]
+        self.record_history(baseline + [21] * 3)
+        self.assertFalse(self.service.followups.exists())
+        self.record_history(baseline + [20] * 3)
+        details = self.service.followups.get().details
+        self.assertEqual(details["baseline_median"], 100)
+        self.assertEqual(details["lower_quartile"], 40)
+        self.assertEqual(details["threshold"], 20)
+
+    def test_usually_inactive_history(self) -> None:
+        self.record_history([100] * 3 + [0, 0, 0, 200, 200, 200] + [0] * 3)
+        self.assertFalse(self.service.followups.exists())
+
+    def test_chart_regressions(self) -> None:
+        histories = (
+            [
+                2925,
+                66015,
+                5385,
+                6659,
+                6016,
+                6043,
+                1338,
+                516,
+                691,
+                4028,
+                31106,
+                2070,
+                594,
+                20382,
+                16532,
+                5867,
+                22199,
+                46088,
+                7270,
+                23305,
+                15523,
+                2748,
+                1544,
+                2191,
+            ],
+            [
+                216,
+                2,
+                0,
+                2,
+                10262,
+                7576,
+                535,
+                0,
+                1,
+                231,
+                0,
+                52118,
+                52,
+                2262,
+                2291,
+                1120,
+                146,
+                368,
+                439,
+                36,
+                249,
+                309,
+                85,
+                93,
+            ],
+            [0] * 19 + [7, 20226, 2056, 1701, 437],
+            [0] * 16 + [3915718, 2569, 53279, 352444, 1331201, 431907, 105216, 250730],
+            [
+                366,
+                264,
+                214,
+                96,
+                83,
+                184,
+                339,
+                138,
+                171,
+                662,
+                376,
+                312,
+                300,
+                275,
+                61,
+                154,
+                145,
+                247,
+                225,
+                618,
+                369,
+                145,
+                93,
+                142,
+            ],
+            [0] * 6
+            + [
+                4,
+                17703,
+                111,
+                256,
+                230,
+                1234,
+                215,
+                258,
+                47,
+                734,
+                420,
+                1332,
+                374,
+                503,
+                1607,
+                2671,
+                222,
+                515,
+            ],
+            [
+                64,
+                2,
+                39,
+                95,
+                66,
+                3188,
+                31,
+                484,
+                117817,
+                6517,
+                279,
+                2345,
+                428,
+                48,
+                459,
+                19,
+                49,
+                56,
+                18,
+                468,
+                402,
+                344,
+                19,
+                129,
+            ],
+        )
+        for chart, counts in enumerate(histories, start=1):
+            self.service.activity.all().delete()
+            for index in range(len(counts)):
+                with self.subTest(chart=chart, month=index):
+                    self.mock_now.return_value = datetime(
+                        2024, 11, 10, tzinfo=UTC
+                    ) + relativedelta(months=index)
+                    self.record_history(counts[: index + 1])
+                    self.assertFalse(self.service.followups.exists())
+                    self.service.refresh_from_db()
+                    self.assertEqual(self.service.activity_drop_state, {})
+
+    def test_missing_month_is_not_zero(self) -> None:
+        payload = self.payload([100] * 9 + [0, 0, 0])
+        self.assertEqual(
+            self.post_activity(payload[:10] + payload[11:]).status_code, 200
+        )
+        self.assertFalse(self.service.followups.exists())
+        self.assertEqual(self.post_activity(payload[10:11]).status_code, 200)
         self.assertTrue(self.service.followups.exists())
 
     def test_episode_lifecycle(self) -> None:
-        self.record([100, 100, 100, 50, 0])
+        self.record([100] * 9 + [50, 0, 0])
         followup = self.service.followups.get()
         followup.note = "Call next week"
         followup.follow_up_at = self.now + timedelta(days=7)
         followup.save()
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         followup.refresh_from_db()
         self.assertEqual(followup.note, "Call next week")
         self.assertEqual(followup.follow_up_at, self.now + timedelta(days=7))
         # Corrected historical counts do not count as recovery.
-        self.record([100, 100, 100, 0, 100])
+        self.record([100] * 9 + [0, 0, 100])
         self.assertEqual(self.service.followups.get().pk, followup.pk)
         followup.delete()
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.assertFalse(self.service.followups.exists())
         # A shrinking rolling baseline must not rearm the episode.
         self.mock_now.return_value = self.now + relativedelta(months=3)
         self.months = [month + relativedelta(months=3) for month in self.months]
-        self.record([0, 0, 0, 0, 0])
+        self.record([0] * 12)
         self.service.refresh_from_db()
         self.assertIn("baseline_sum", self.service.activity_drop_state)
-        self.record([0, 0, 0, 0, 51])
+        self.assertEqual(self.service.activity_drop_state["threshold"], 50)
+        self.record([0] * 11 + [51])
         self.service.refresh_from_db()
         self.assertIn("recovered_month", self.service.activity_drop_state)
         self.mock_now.return_value += relativedelta(months=5)
         self.months = [month + relativedelta(months=5) for month in self.months]
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.assertTrue(self.service.followups.exists())
 
     def test_backup_removal_preserves_episode(self) -> None:
@@ -278,11 +497,12 @@ class ActivityTest(TestCase):
                     activity_drop_state={}
                 )
                 self.months = [
-                    latest - relativedelta(months=offset) for offset in range(4, -1, -1)
+                    latest - relativedelta(months=offset)
+                    for offset in range(11, -1, -1)
                 ]
                 self.assertEqual(
                     self.post_activity(
-                        self.payload([100, 100, 100, 50, 50]), discoverable="1"
+                        self.payload([100] * 9 + [50, 50, 50]), discoverable="1"
                     ).status_code,
                     200,
                 )
@@ -315,21 +535,91 @@ class ActivityTest(TestCase):
                 competitor.delete()
 
     def test_recovery_clears_open_followup(self) -> None:
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.mock_now.return_value += relativedelta(months=1)
         self.months = [month + relativedelta(months=1) for month in self.months]
-        self.record([100, 100, 0, 0, 50])
+        self.record([100] * 8 + [0, 0, 0, 50])
         self.assertTrue(self.service.followups.exists())
-        self.record([100, 100, 0, 0, 51])
+        self.record([100] * 8 + [0, 0, 0, 51])
         self.assertFalse(self.service.followups.exists())
 
+    def test_legacy_episode_preserves_recovery_rule(self) -> None:
+        state = {
+            "service_id": self.service.pk,
+            "detected_month": "2026-08-01",
+            "baseline_sum": 300,
+            "baseline_average": 100,
+            "baseline_months": [
+                {"month": f"2026-{month:02d}-01", "changes": 100}
+                for month in range(4, 7)
+            ],
+            "low_months": [
+                {"month": f"2026-{month:02d}-01", "changes": 0, "decrease_percent": 100}
+                for month in range(7, 9)
+            ],
+            "latest_month": "2026-08-01",
+            "latest_changes": 0,
+        }
+        for cleared in (False, True):
+            with self.subTest(cleared=cleared):
+                Service.objects.filter(pk=self.service.pk).update(
+                    activity_drop_state=state
+                )
+                if not cleared:
+                    followup = self.service.followups.create(
+                        customer=self.customer,
+                        type=CustomerFollowUp.Type.ACTIVITY_DROP,
+                        follow_up_at=self.now + timedelta(days=7),
+                        note="Already reviewed",
+                        details=state,
+                    )
+                self.record([100] * 9 + [0] * 3)
+                self.service.refresh_from_db()
+                self.assertEqual(self.service.activity_drop_state, state)
+                self.assertEqual(self.service.followups.exists(), not cleared)
+                if not cleared:
+                    followup.refresh_from_db()
+                    self.assertEqual(followup.note, "Already reviewed")
+                    self.assertEqual(
+                        followup.follow_up_at, self.now + timedelta(days=7)
+                    )
+                    self.assertNotIn("detector_version", followup.details)
+                self.mock_now.return_value = self.now + relativedelta(months=1)
+                self.record_history([100] * 8 + [0, 0, 0, 50])
+                self.assertEqual(self.service.followups.exists(), not cleared)
+                self.record_history([100] * 8 + [0, 0, 0, 51])
+                self.assertFalse(self.service.followups.exists())
+                self.service.refresh_from_db()
+                self.assertEqual(
+                    self.service.activity_drop_state, {"recovered_month": "2026-09-01"}
+                )
+                self.mock_now.return_value = self.now
+                self.months = [month - relativedelta(months=1) for month in self.months]
+
+    def test_legacy_crm_baseline(self) -> None:
+        self.record([100] * 9 + [0] * 3)
+        followup = self.service.followups.get()
+        followup.details.pop("detector_version")
+        followup.details.pop("baseline_median")
+        followup.details.pop("lower_quartile")
+        followup.details.pop("threshold")
+        followup.save(update_fields=["details"])
+        user = User.objects.create_superuser(
+            "legacy-admin", "admin@example.com", "test-password"
+        )
+        self.client.force_login(user)
+        response = self.client.get(self.customer.get_absolute_url())
+        self.assertContains(response, "Baseline: 100.0 changes per month.")
+        self.assertNotContains(response, "Median baseline:")
+        self.assertNotContains(response, "Alert threshold:")
+
     def test_status_update_preserves_episode(self) -> None:
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.service.followups.all().delete()
         # Simulate a concurrent report holding a service loaded before the drop.
         self.service.status = "community"
         self.service.update_status()
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.assertFalse(self.service.followups.exists())
         self.service.refresh_from_db()
         self.assertIn("baseline_sum", self.service.activity_drop_state)
@@ -406,7 +696,7 @@ class ActivityTest(TestCase):
                 self.package.category = category
                 self.package.name = name
                 self.package.save()
-                self.record([100, 100, 100, 0, 0])
+                self.record([100] * 9 + [0, 0, 0])
                 self.assertEqual(
                     self.service.followups.filter(
                         type=CustomerFollowUp.Type.ACTIVITY_DROP
@@ -414,7 +704,7 @@ class ActivityTest(TestCase):
                     expected,
                 )
         self.subscription.delete()
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.assertFalse(
             self.service.followups.filter(
                 type=CustomerFollowUp.Type.ACTIVITY_DROP
@@ -422,12 +712,12 @@ class ActivityTest(TestCase):
         )
 
     def test_recovery_during_reporting_gap(self) -> None:
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         original = self.service.followups.get()
         self.mock_now.return_value += relativedelta(months=5)
         self.months = [month + relativedelta(months=5) for month in self.months]
         # The next report contains recovery followed by another sustained drop.
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.assertNotEqual(self.service.followups.get().pk, original.pk)
 
     def test_storage_is_atomic(self) -> None:
@@ -440,7 +730,7 @@ class ActivityTest(TestCase):
             self.assertRaises(RuntimeError),
         ):
             record_activity(
-                report, dict(zip(self.months, [100, 100, 100, 0, 0], strict=True))
+                report, dict(zip(self.months, [100] * 9 + [0, 0, 0], strict=True))
             )
         self.assertFalse(self.service.activity.exists())
         self.assertFalse(self.service.followups.exists())
@@ -466,7 +756,7 @@ class ActivityTest(TestCase):
     @skipUnlessDBFeature("supports_partial_indexes")
     def test_followup_constraint(self) -> None:
         # Automatic report deduplication is tested on every locking backend below.
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         with self.assertRaises(IntegrityError), transaction.atomic():
             CustomerFollowUp.objects.create(
                 service=self.service,
@@ -476,7 +766,7 @@ class ActivityTest(TestCase):
             )
 
     def test_crm_and_clearing(self) -> None:
-        self.record([100, 100, 100, 50, 0])
+        self.record([100] * 9 + [50, 0, 0])
         followup = self.service.followups.get()
         user = User.objects.create_superuser(
             "activity-admin", "admin@example.com", "test-password"
@@ -486,7 +776,8 @@ class ActivityTest(TestCase):
         self.assertContains(
             response, "Contact the customer to understand the activity decrease."
         )
-        self.assertContains(response, "Baseline: 100.0 changes per month.")
+        self.assertContains(response, "Median baseline: 100.0 changes per month.")
+        self.assertContains(response, "Alert threshold: 50.0 changes per month.")
         self.assertContains(response, "50.0% decrease")
         self.assertContains(response, self.service.get_absolute_url())
         # Template loops render no text nodes: the activity list contains only li.
@@ -494,7 +785,7 @@ class ActivityTest(TestCase):
         activity_lists = document.xpath("//ul[li[contains(., 'changes')]]")
         self.assertEqual(len(activity_lists), 1)
         activity_list = activity_lists[0]
-        self.assertEqual([child.tag for child in activity_list], ["li"] * 5)
+        self.assertEqual([child.tag for child in activity_list], ["li"] * 9)
         self.assertFalse((activity_list.text or "").strip())
         self.assertTrue(all(not (child.tail or "").strip() for child in activity_list))
         response = self.client.post(
@@ -502,7 +793,7 @@ class ActivityTest(TestCase):
             {"clear_follow_up": "1", "follow_up": followup.pk},
         )
         self.assertEqual(response.status_code, 302)
-        self.record([100, 100, 100, 0, 0])
+        self.record([100] * 9 + [0, 0, 0])
         self.assertFalse(self.service.followups.exists())
 
 
@@ -523,8 +814,8 @@ class ActivityConcurrencyTest(TransactionTestCase):
         )
         report = Report.objects.create(service=service)
         latest = timezone.localdate().replace(day=1) - relativedelta(months=1)
-        months = [latest - relativedelta(months=offset) for offset in range(4, -1, -1)]
-        activity = dict(zip(months, [100, 100, 100, 0, 0], strict=True))
+        months = [latest - relativedelta(months=offset) for offset in range(11, -1, -1)]
+        activity = dict(zip(months, [100] * 9 + [0, 0, 0], strict=True))
         barrier = Barrier(2)
 
         def submit(_index: int) -> None:
@@ -537,7 +828,7 @@ class ActivityConcurrencyTest(TransactionTestCase):
 
         with ThreadPoolExecutor(max_workers=2) as executor:
             list(executor.map(submit, range(2)))
-        self.assertEqual(service.activity.count(), 5)
+        self.assertEqual(service.activity.count(), 12)
         self.assertEqual(service.followups.count(), 1)
 
 

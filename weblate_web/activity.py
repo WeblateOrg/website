@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+from statistics import median, quantiles
 from typing import TYPE_CHECKING
 
 from dateutil.relativedelta import relativedelta
@@ -68,7 +69,7 @@ def reconcile_activity_drop(report: Report) -> None:
     service = report.service
     latest_month = timezone.localdate().replace(day=1) - relativedelta(months=1)
     months = [
-        latest_month - relativedelta(months=offset) for offset in range(4, -1, -1)
+        latest_month - relativedelta(months=offset) for offset in range(14, -1, -1)
     ]
     counts = dict(
         service.activity.filter(month__in=months).values_list("month", "changes")
@@ -83,7 +84,11 @@ def reconcile_activity_drop(report: Report) -> None:
             service.activity.filter(
                 month__gt=state["detected_month"],
                 month__lte=latest_month,
-                changes__gt=state["baseline_sum"] // 6,
+                changes__gt=(
+                    state["threshold"]
+                    if state.get("detector_version") == 2
+                    else state["baseline_sum"] // 6
+                ),
             )
             .order_by("-month")
             .values_list("month", flat=True)
@@ -105,11 +110,35 @@ def reconcile_activity_drop(report: Report) -> None:
                 }
             )
             return
-    if latest_month.isoformat() <= state.get("recovered_month", "") or len(counts) != 5:
+    if latest_month.isoformat() <= state.get("recovered_month", "") or any(
+        month not in counts for month in months[-3:]
+    ):
         return
-    baseline_sum = sum(counts[month] for month in months[:3])
-    if baseline_sum < 300 or any(
-        counts[month] * 6 > baseline_sum for month in months[-2:]
+    first_active_month = (
+        service.activity.filter(changes__gt=0, month__lte=latest_month)
+        .order_by("month")
+        .values_list("month", flat=True)
+        .first()
+    )
+    if first_active_month is None:
+        return
+    baseline_start = first_active_month + relativedelta(months=3)
+    baseline_months = []
+    for month in reversed(months[:-3]):
+        if month < baseline_start or month not in counts:
+            break
+        baseline_months.append(month)
+    baseline_months.reverse()
+    if len(baseline_months) < 6:
+        return
+    baseline_counts = [counts[month] for month in baseline_months]
+    baseline_median = median(baseline_counts)
+    lower_quartile = quantiles(baseline_counts, n=4, method="inclusive")[0]
+    threshold = lower_quartile / 2
+    if (
+        baseline_median < 100
+        or lower_quartile <= 0
+        or any(counts[month] > threshold for month in months[-3:])
     ):
         return
     details = {
@@ -117,21 +146,25 @@ def reconcile_activity_drop(report: Report) -> None:
         "report_id": report.pk,
         "site_url": report.site_url,
         "detected_month": latest_month.isoformat(),
-        "baseline_sum": baseline_sum,
-        "baseline_average": baseline_sum / 3,
+        "baseline_sum": sum(baseline_counts),
+        "detector_version": 2,
+        "baseline_average": sum(baseline_counts) / len(baseline_counts),
+        "baseline_median": baseline_median,
+        "lower_quartile": lower_quartile,
+        "threshold": threshold,
         "baseline_months": [
             {"month": month.isoformat(), "changes": counts[month]}
-            for month in months[:3]
+            for month in baseline_months
         ],
         "low_months": [
             {
                 "month": month.isoformat(),
                 "changes": counts[month],
                 "decrease_percent": 100
-                * (baseline_sum - 3 * counts[month])
-                / baseline_sum,
+                * (baseline_median - counts[month])
+                / baseline_median,
             }
-            for month in months[-2:]
+            for month in months[-3:]
         ],
         "latest_month": latest_month.isoformat(),
         "latest_changes": counts[latest_month],
