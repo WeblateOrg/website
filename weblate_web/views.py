@@ -67,10 +67,12 @@ from weblate_web.forms import (
     EditImageForm,
     EditLinkForm,
     EditNameForm,
+    InvoiceRequestForm,
     MethodForm,
     SupportReportForm,
     get_discovery_callback_url,
 )
+from weblate_web.invoice_requests import submit_invoice_request
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.legal.models import Agreement, AgreementKind
 from weblate_web.models import (
@@ -83,6 +85,7 @@ from weblate_web.models import (
     Project,
     Service,
     ServiceActivity,
+    ServiceKind,
     Subscription,
     UnprocessablePaymentError,
     add_subscription_past_payments,
@@ -1301,6 +1304,66 @@ def subscription_view(request, pk):
     service = get_object_or_404(Service, pk=pk)
     prepare_service_for_render(service)
     return render(request, "service.html", {"service": service})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def subscription_invoice_request(request: AuthenticatedHttpRequest, pk: int):
+    subscription = get_object_or_404(
+        Subscription.objects.select_related("service__customer", "package"),
+        pk=pk,
+        service__customer__owners=request.user,
+    )
+    if (
+        not subscription.package.get_repeat()
+        or subscription.service.kind == ServiceKind.DONATION
+    ):
+        raise Http404
+    form = InvoiceRequestForm(request.POST if request.method == "POST" else None)
+    if request.method == "POST" and form.is_valid():
+        if not request.user.email:
+            form.add_error(
+                None, gettext("An email address is required to request an invoice.")
+            )
+        else:
+            try:
+                status = submit_invoice_request(
+                    subscription, request.user, form.cleaned_data["customer_reference"]
+                )
+            except Exception:  # pylint: disable=broad-exception-caught
+                sentry_sdk.capture_exception()
+                form.add_error(
+                    None,
+                    gettext(
+                        "Could not send your invoice request. Please try again or contact customer care."
+                    ),
+                )
+            else:
+                if status in {"submitted", "existing"}:
+                    messages.success(
+                        request,
+                        gettext(
+                            "Customer care has received your invoice request. Please allow 24 hours before requesting again."
+                        ),
+                    )
+                    return redirect("user")
+                form.add_error(
+                    None,
+                    gettext(
+                        "Your invoice request is being processed. Please contact customer care if you need assistance."
+                    ),
+                )
+    return render(
+        request,
+        "invoice-request.html",
+        {
+            "form": form,
+            "subscription": subscription,
+            "billing_interval": gettext("Monthly")
+            if subscription.package.get_repeat() == "m"
+            else gettext("Annual"),
+        },
+    )
 
 
 @require_POST

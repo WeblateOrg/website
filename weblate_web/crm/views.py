@@ -330,6 +330,21 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["reference_form"] = CustomerReferenceForm()
+        prefill_form = CustomerReferenceForm(initial={})
+        reference = self.request.GET.get("customer_reference", "")
+        if len(reference) <= 100:
+            prefill_form = CustomerReferenceForm(
+                initial={"customer_reference": reference}
+            )
+        context["renewal_subscriptions"] = [
+            (
+                subscription,
+                prefill_form
+                if self.request.GET.get("subscription") == str(subscription.pk)
+                else CustomerReferenceForm(),
+            )
+            for subscription in self.object.subscription_set.select_related("package")
+        ]
         context["subscription_action_form"] = ServiceSubscriptionActionForm(
             service=self.object
         )

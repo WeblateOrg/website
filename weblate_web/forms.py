@@ -73,6 +73,15 @@ class NewSubscriptionForm(forms.Form):
         return self.cleaned_data
 
 
+class InvoiceRequestForm(forms.Form):
+    customer_reference = forms.CharField(
+        required=False,
+        max_length=100,
+        label=gettext_lazy("Customer reference"),
+        help_text=gettext_lazy("For example, a purchase order number."),
+    )
+
+
 class MethodForm(forms.Form):
     method = forms.ChoiceField(
         choices=[],
