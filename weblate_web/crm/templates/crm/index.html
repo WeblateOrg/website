@@ -32,6 +32,14 @@
               <span>{% translate "Customers with current services or payments." %}</span>
             </a>
           </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:customer-list" kind="followups" %}"
+               aria-label="{% translate "Customer follow-ups" %}">
+              <strong>{% translate "Customer follow-ups" %}</strong>
+              <span>{% translate "Scheduled customer actions and follow-ups." %}</span>
+            </a>
+          </div>
         </div>
       </section>
     {% endif %}
@@ -99,6 +107,22 @@
                aria-label="{% translate "Unpaid invoices" %}">
               <strong>{% translate "Unpaid invoices" %}</strong>
               <span>{% translate "Invoices that still need payment follow-up." %}</span>
+            </a>
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:invoice-list" kind="stale" %}"
+               aria-label="{% translate "Stale quotes" %}">
+              <strong>{% translate "Stale quotes" %}</strong>
+              <span>{% translate "Open quotes issued at least 14 days ago that need follow-up." %}</span>
+            </a>
+          </div>
+          <div class="crm-dashboard-item">
+            <a class="crm-dashboard-link"
+               href="{% url "crm:invoice-list" kind="all" %}"
+               aria-label="{% translate "All invoice records" %}">
+              <strong>{% translate "All invoice records" %}</strong>
+              <span>{% translate "Drafts, pro forma invoices, issued invoices, and quotes." %}</span>
             </a>
           </div>
         </div>

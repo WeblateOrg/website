@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<nav class="crm-tab-list" aria-label="{% translate "List filters" %}">
+  {% for tab in filter_tabs %}
+    <a href="{{ tab.url }}"
+       class="{% if tab.active %}is-active{% endif %}"
+       {% if tab.active %}aria-current="page"{% endif %}>{{ tab.label }}</a>
+  {% endfor %}
+</nav>

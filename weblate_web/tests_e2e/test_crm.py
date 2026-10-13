@@ -418,6 +418,21 @@ def capture(page: Page, name: str) -> None:
     )
 
 
+def capture_mobile_filter_tabs(page: Page) -> None:
+    """Verify the filter tabs fit a mobile viewport and capture their layout."""
+    original_viewport = page.viewport_size
+    page.set_viewport_size({"width": 375, "height": 812})
+    tabs = page.get_by_label("List filters")
+    assert tabs.evaluate(
+        "element => [...element.querySelectorAll('a')].every(link => {"
+        "const rect = link.getBoundingClientRect();"
+        "return rect.left >= 0 && rect.right <= window.innerWidth; })"
+    )
+    capture(page, "invoice-tabs-mobile")
+    if original_viewport:
+        page.set_viewport_size(original_viewport)
+
+
 def assert_text_visible(page: Page, text: str, *, exact: bool = True) -> None:
     """Assert at least one matching text node is visible."""
     assert page.get_by_text(text, exact=exact).first.is_visible()
@@ -700,6 +715,16 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             == "rgb(255, 255, 255)"
         )
         capture(page, "dashboard")
+        for label, group, kind in (
+            ("Customer follow-ups", "customer", "followups"),
+            ("Stale quotes", "invoice", "stale"),
+        ):
+            page.locator(".crm-dashboard-link").filter(has_text=label).click()
+            page.wait_for_load_state("networkidle")
+            assert page.url == absolute_url(
+                live_server, reverse(f"crm:{group}-list", kwargs={"kind": kind})
+            )
+            page.goto(absolute_url(live_server, reverse("crm:index")))
 
         page.locator(".crm-dashboard-item").filter(has_text="Active customers").click()
         page.wait_for_load_state("networkidle")
@@ -707,14 +732,20 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             live_server, reverse("crm:customer-list", kwargs={"kind": "active"})
         )
 
-        for kind in ("all", "active"):
+        for kind in ("all", "active", "followups"):
             response = page.goto(
                 absolute_url(
                     live_server, reverse("crm:customer-list", kwargs={"kind": kind})
                 )
             )
             assert_loaded(page, response, f"Customer list {kind}")
-            assert_text_visible(page, "CRM Primary Customer")
+            if kind != "followups":
+                assert_text_visible(page, "CRM Primary Customer")
+            assert (
+                page.get_by_label("List filters")
+                .get_by_role("link", name="Customer follow-ups")
+                .is_visible()
+            )
             capture(page, f"customers-{kind}")
 
         response = page.goto(
@@ -742,7 +773,21 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             live_server, reverse("crm:invoice-list", kwargs={"kind": "invoice"})
         )
 
-        for kind in ("all", "invoice", "quote", "unpaid"):
+        page.get_by_label("List filters").get_by_role(
+            "link", name="Unpaid invoices", exact=True
+        ).click()
+        page.wait_for_load_state("networkidle")
+        assert page.url == absolute_url(
+            live_server, reverse("crm:invoice-list", kwargs={"kind": "unpaid"})
+        )
+        assert (
+            page.get_by_label("List filters")
+            .locator('[aria-current="page"]')
+            .inner_text()
+            == "Unpaid invoices"
+        )
+
+        for kind in ("all", "invoice", "quote", "unpaid", "stale"):
             response = page.goto(
                 absolute_url(
                     live_server, reverse("crm:invoice-list", kwargs={"kind": kind})
@@ -750,6 +795,8 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
             )
             assert_loaded(page, response, f"Invoice list {kind}")
             capture(page, f"invoices-{kind}")
+
+        capture_mobile_filter_tabs(page)
 
         response = page.goto(absolute_url(live_server, reverse("crm:income")))
         assert_loaded(page, response, "Income yearly report")

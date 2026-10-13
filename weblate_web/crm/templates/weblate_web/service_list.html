@@ -11,6 +11,7 @@
 {% endblock page_header %}
 
 {% block content %}
+  {% include "crm/snippets/filter_tabs.html" %}
   {% if object_list %}
     {% if kind == "expired" or kind == "all" %}
       {% regroup object_list by package_kind as service_list %}
