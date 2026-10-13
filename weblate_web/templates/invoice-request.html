@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Request invoice" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title min-m">{% translate "Request invoice" %}</h1>
+        <div class="page-desc">
+          <p>{% translate "Need an invoice before paying? Request it from customer care. We will review your request and issue the invoice." %}</p>
+        </div>
+        <form class="payment-form" method="post">
+          {% csrf_token %}
+          <div class="form-line">
+            <div class="line-left">{% translate "Service" %}</div>
+            <div class="line-right">{{ subscription.service.site_title|default:subscription.service.site_url|default:subscription.service.get_status_display }}</div>
+            <div class="clear"></div>
+          </div>
+          <div class="form-line">
+            <div class="line-left">{% translate "Subscription" %}</div>
+            <div class="line-right">{{ subscription.package }}</div>
+            <div class="clear"></div>
+          </div>
+          <div class="form-line">
+            <div class="line-left">{% translate "Billing interval" %}</div>
+            <div class="line-right">{{ billing_interval }}</div>
+            <div class="clear"></div>
+          </div>
+          <div class="form-line">
+            <div class="line-left">{% translate "Expires" %}</div>
+            <div class="line-right">{{ subscription.expires }}</div>
+            <div class="clear"></div>
+          </div>
+          <div class="form-line">
+            <div class="line-left">{% translate "Billing details" %}</div>
+            <div class="line-right">
+              {% include "snippets/customer_address.html" with customer=subscription.service.customer %}
+            </div>
+            <div class="clear"></div>
+          </div>
+          {{ form.non_field_errors }}
+          {% for field in form %}
+            <div class="form-line">
+              <div class="line-left">{{ field.label_tag }}</div>
+              <div class="line-right">
+                {{ field.errors }}
+                {{ field }}
+                {% if field.help_text %}
+                  <p class="help" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>
+                {% endif %}
+              </div>
+              <div class="clear"></div>
+            </div>
+          {% endfor %}
+          <div class="payment-pick"></div>
+          <input class="button center make-payment"
+                 type="submit"
+                 value="{% translate "Send invoice request" %}">
+        </form>
+        <div class="page-desc">
+          <a class="button small inline border rev" href="{% url "user" %}">{% translate "Back to my services" %}</a>
+          <a class="button small inline border rev"
+             href="https://care.weblate.org/">{% translate "Contact customer care" %}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

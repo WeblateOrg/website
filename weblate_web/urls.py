@@ -71,6 +71,7 @@ from weblate_web.views import (
     server_error,
     service_token,
     subscription_disable_repeat,
+    subscription_invoice_request,
     subscription_new,
     subscription_pay,
     subscription_upgrade,
@@ -200,6 +201,11 @@ urlpatterns = [
             "subscription/discovery/",
             AddDiscoveryView.as_view(),
             name="service-discovery-add",
+        ),
+        path(
+            "subscription/invoice-request/<int:pk>/",
+            subscription_invoice_request,
+            name="subscription-invoice-request",
         ),
         path("subscription/pay/<int:pk>/", subscription_pay, name="subscription-pay"),
         path(

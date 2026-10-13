@@ -47,6 +47,7 @@ class Interaction(models.Model):
         QUOTE_STATUS = 8, "Quote status"
         CUSTOMER_OWNER = 9, "Customer ownership"
         INVOICE_CORRECTION = 10, _("Invoice correction")
+        INVOICE_REQUEST = 11, _("Invoice request")
 
     timestamp = models.DateTimeField(default=timezone.now, verbose_name="Timestamp")
     origin = models.IntegerField(choices=Origin, verbose_name="Origin")
@@ -108,6 +109,8 @@ class Interaction(models.Model):
 
     @property
     def display_summary(self) -> str:
+        if self.origin == self.Origin.INVOICE_REQUEST:
+            return str(_("Requested renewal invoice"))
         if self.origin == self.Origin.INVOICE_CORRECTION:
             if self.details.get("correction"):
                 return str(
@@ -161,6 +164,7 @@ class Interaction(models.Model):
     def detail_rows(self) -> list[InteractionDetailRow]:
         renderers: dict[int, Callable[[], list[InteractionDetailRow]]] = {
             int(self.Origin.EMAIL): self._email_detail_rows,
+            int(self.Origin.INVOICE_REQUEST): self._invoice_request_detail_rows,
             int(self.Origin.MERGE): self._merge_detail_rows,
             int(self.Origin.ZAMMAD_ATTACHMENT): self._zammad_attachment_detail_rows,
             int(self.Origin.VIES): self._vies_detail_rows,
@@ -169,6 +173,43 @@ class Interaction(models.Model):
         }
         rows = renderers.get(self.origin, self._generic_detail_rows)()
         return rows or self._generic_detail_rows()
+
+    def _invoice_request_detail_rows(self) -> list[InteractionDetailRow]:
+        rows: list[InteractionDetailRow] = []
+        details = self.details
+        self._add_row(
+            rows,
+            _("Service"),
+            details.get("service_id"),
+            self._make_url("crm:service-detail", pk=details["service_id"]),
+        )
+        self._add_row(rows, _("Subscription"), details.get("subscription_id"))
+        self._add_row(rows, _("Plan"), details.get("package"))
+        self._add_row(
+            rows,
+            _("Customer reference"),
+            details.get("customer_reference"),
+            include_empty=True,
+        )
+        statuses = {
+            "pending": _("Processing"),
+            "submitted": _("Submitted"),
+            "failed": _("Failed"),
+            "uncertain": _("Needs customer care review"),
+        }
+        self._add_row(
+            rows,
+            _("Status"),
+            statuses.get(details.get("status"), _("Needs customer care review")),
+        )
+        if self.remote_id:
+            self._add_row(
+                rows,
+                _("Care ticket"),
+                details.get("ticket_number") or self.remote_id,
+                f"https://care.weblate.org/#ticket/zoom/{self.remote_id}",
+            )
+        return rows
 
     def _email_detail_rows(self) -> list[InteractionDetailRow]:
         rows: list[InteractionDetailRow] = []

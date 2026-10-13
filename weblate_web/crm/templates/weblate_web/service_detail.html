@@ -233,8 +233,8 @@
     </section>
   {% endif %}
 
-  {% for subscription in object.subscription_set.all %}
-    <section class="crm-section content">
+  {% for subscription, renewal_reference_form in renewal_subscriptions %}
+    <section class="crm-section content" id="subscription-{{ subscription.pk }}">
       {% include "crm/snippets/section_header.html" with section_title=subscription.package %}
       <div class="crm-subscription-summary">
         <dl class="crm-detail-grid crm-detail-grid--compact">
@@ -272,7 +272,7 @@
             <h3>{% translate "Renewal" %}</h3>
             {% csrf_token %}
             <div class="crm-form-panel__body">
-              {{ reference_form }}
+              {{ renewal_reference_form }}
               {% include "crm/snippets/invoice_kind_field.html" with form=subscription_action_form %}
               <input type="hidden" name="subscription" value="{{ subscription.pk }}">
               <input type="hidden"

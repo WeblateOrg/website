@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+from urllib.parse import urlencode
 
 from django.conf import settings
 from zammad_py import ZammadAPI
 
+from weblate_web.utils import get_site_url
+
 if TYPE_CHECKING:
+    from weblate_web.crm.models import Interaction
     from weblate_web.models import Subscription
 
 
@@ -59,3 +63,60 @@ Kind regards from Weblate
             },
         }
     )
+
+
+def create_invoice_request_ticket(interaction: Interaction) -> dict[str, Any]:
+    client = get_zammad_client()
+    details = interaction.details
+    crm_url = get_site_url("crm:service-detail", pk=details["service_id"])
+    query = urlencode(
+        {
+            "subscription": details["subscription_id"],
+            "customer_reference": details["customer_reference"],
+        }
+    )
+    return _create_invoice_request_resource(
+        client,
+        "tickets",
+        {
+            "title": f"Renewal invoice request: {details['package']} ({details['subscription_id']})",
+            "customer_id": f"guess:{details['requester_email']}",
+            "group": "Users",
+            "article": {
+                "subject": "Invoice request processing",
+                "body": f"CRM: {crm_url}?{query}#subscription-{details['subscription_id']}",
+                "content_type": "text/plain",
+                "type": "note",
+                "sender": "Agent",
+                "internal": True,
+            },
+        },
+    )
+
+
+def create_invoice_request_article(interaction: Interaction) -> None:
+    client = get_zammad_client()
+    _create_invoice_request_resource(
+        client,
+        "ticket_articles",
+        {
+            "ticket_id": interaction.remote_id,
+            "subject": "Renewal invoice request",
+            "body": interaction.content,
+            "from": interaction.details["requester_email"],
+            "content_type": "text/plain",
+            "type": "web",
+            "sender": "Customer",
+            "internal": False,
+        },
+    )
+
+
+def _create_invoice_request_resource(
+    client: ZammadAPI, resource: str, params: dict[str, Any]
+) -> dict[str, Any]:
+    # The library discards HTTPError.response; preserve it to distinguish rejections
+    # from ambiguous failures, and bound the request duration.
+    response = client.session.post(f"{client.url}{resource}", json=params, timeout=30)
+    response.raise_for_status()
+    return response.json()

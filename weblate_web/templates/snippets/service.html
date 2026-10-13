@@ -185,6 +185,13 @@
                 <span>{% blocktranslate %}and <strong>save 20%</strong>.{% endblocktranslate %}</span>
               {% endif %}
             </form>
+            <form class="form-inline"
+                  method="get"
+                  action="{% url "subscription-invoice-request" pk=subscription.pk %}">
+              <input type="submit"
+                     class="button small inline"
+                     value="{% translate "Request invoice" %}">
+            </form>
           </div>
           <div class="clear"></div>
         </div>
