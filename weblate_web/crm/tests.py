@@ -5,7 +5,7 @@ from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import MagicMock, patch
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlsplit
 from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
 
 import requests
@@ -141,6 +141,104 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
         )
         invoice.refresh_from_db()
         return invoice
+
+    def test_list_filter_tabs(self):
+        groups = {
+            "customer": ("all", "active", "followups"),
+            "invoice": ("invoice", "unpaid", "quote", "stale", "all"),
+            "service": ("all", "expired", "dedicated", "extended", "premium"),
+        }
+        for group, kinds in groups.items():
+            for kind in kinds:
+                with self.subTest(group=group, kind=kind):
+                    response = self.client.get(
+                        reverse(f"crm:{group}-list", kwargs={"kind": kind})
+                    )
+                    tabs = response.context["filter_tabs"]
+                    self.assertEqual(len(tabs), len(kinds))
+                    self.assertEqual(sum(tab["active"] for tab in tabs), 1)
+                    self.assertContains(response, 'aria-current="page"', count=1)
+                    for tab, target in zip(tabs, kinds, strict=True):
+                        self.assertEqual(
+                            tab["url"],
+                            reverse(f"crm:{group}-list", kwargs={"kind": target}),
+                        )
+                        self.assertEqual(tab["active"], target == kind)
+
+    def test_filter_tabs_preserve_search_and_reset_page(self):
+        query = "Acme & partners + / café"
+        for group in ("customer", "invoice"):
+            with self.subTest(group=group):
+                response = self.client.get(
+                    reverse(f"crm:{group}-list", kwargs={"kind": "all"}),
+                    {"q": query, "page": "1"},
+                )
+                for tab in response.context["filter_tabs"]:
+                    self.assertEqual(
+                        parse_qs(urlsplit(tab["url"]).query), {"q": [query]}
+                    )
+                    target = self.client.get(tab["url"])
+                    self.assertEqual(target.context["query"], query)
+                    self.assertEqual(list(target.context["object_list"]), [])
+
+    def test_dashboard_filter_shortcuts_and_permissions(self):
+        shortcuts = (
+            ("customer", "followups"),
+            ("invoice", "stale"),
+            ("invoice", "all"),
+        )
+        response = self.client.get(reverse("crm:index"))
+        for group, kind in shortcuts:
+            self.assertContains(
+                response, reverse(f"crm:{group}-list", kwargs={"kind": kind})
+            )
+        self.client.force_login(self.create_readonly_customer_user())
+        response = self.client.get(reverse("crm:index"))
+        self.assertContains(
+            response, reverse("crm:customer-list", kwargs={"kind": "followups"})
+        )
+        for kind in ("stale", "all"):
+            url = reverse("crm:invoice-list", kwargs={"kind": kind})
+            self.assertNotContains(response, url)
+            self.assertEqual(self.client.get(url).status_code, 403)
+
+    def test_stale_quote_list(self):
+        cutoff = timezone.localdate() - timedelta(days=14)
+        quotes = []
+        for days, status, converted in (
+            (0, QuoteStatus.OPEN, False),
+            (-1, QuoteStatus.OPEN, False),
+            (1, QuoteStatus.OPEN, False),
+            (0, QuoteStatus.ARCHIVED, False),
+            (0, QuoteStatus.OPEN, True),
+        ):
+            quote = self.create_search_invoice(
+                customer_name="Stale quote customer",
+                description="Renewal offer",
+                kind=InvoiceKind.QUOTE,
+            )
+            Invoice.objects.filter(pk=quote.pk).update(
+                issue_date=cutoff + timedelta(days=days), quote_status=status
+            )
+            if converted:
+                Invoice.objects.create(
+                    customer=quote.customer,
+                    parent=quote,
+                    kind=InvoiceKind.INVOICE,
+                    category=InvoiceCategory.HOSTING,
+                    currency=Currency.EUR,
+                )
+            quotes.append(quote)
+        url = reverse("crm:invoice-list", kwargs={"kind": "stale"})
+        response = self.client.get(url, {"q": "Renewal offer"})
+        self.assertEqual(set(response.context["object_list"]), set(quotes[:2]))
+        self.assertTrue(
+            all(
+                not quote.has_child_invoice for quote in response.context["object_list"]
+            )
+        )
+        response = self.client.get(url, {"q": "unrelated"})
+        self.assertEqual(list(response.context["object_list"]), [])
 
     def test_invoice_search(self):
         invoice = self.create_search_invoice(

@@ -7,6 +7,7 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from operator import attrgetter
 from typing import TYPE_CHECKING, ClassVar, Literal, TypeAlias, TypedDict, cast
+from urllib.parse import urlencode
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -41,7 +42,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape, format_html, format_html_join
-from django.utils.translation import gettext, override
+from django.utils.translation import gettext, gettext_noop, override
 from django.views.generic import DetailView, ListView, TemplateView
 
 from weblate_web.crm.forms import (
@@ -65,6 +66,7 @@ from weblate_web.crm.workqueue import (
     get_crm_work_items,
     get_crm_work_queue_sections,
     get_expired_service_ids,
+    get_stale_quote_queryset,
     get_unpaid_invoice_queryset,
 )
 from weblate_web.exchange_rates import ExchangeRates
@@ -238,11 +240,40 @@ class WorkQueueView(CRMMixin, TemplateView):  # type: ignore[misc]
         return context
 
 
-class ServiceListView(CRMMixin, ListView[Service]):  # type: ignore[misc]
+class CRMFilterTabsMixin(CRMMixin):
+    kwargs: dict[str, str]
+    filter_tabs: ClassVar[tuple[tuple[str, str], ...]]
+    filter_url_name: str
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # type: ignore[misc]
+        context["kind"] = self.kwargs["kind"]
+        query = self.request.GET.get("q", "")
+        suffix = f"?{urlencode({'q': query})}" if query else ""
+        context["filter_tabs"] = [
+            {
+                "label": gettext(label),
+                "url": reverse(self.filter_url_name, kwargs={"kind": kind}) + suffix,
+                "active": kind == self.kwargs["kind"],
+            }
+            for kind, label in self.filter_tabs
+        ]
+        return context
+
+
+class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[misc]
     model = Service
     permission = "weblate_web.view_service"
     title = "Services"
     template_name = "weblate_web/service_list.html"
+    filter_url_name = "crm:service-list"
+    filter_tabs = (
+        ("all", gettext_noop("All services")),
+        ("expired", gettext_noop("Expired services")),
+        ("dedicated", gettext_noop("Dedicated hosting")),
+        ("extended", gettext_noop("Extended support")),
+        ("premium", gettext_noop("Premium support")),
+    )
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -488,12 +519,20 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
         raise ValueError("Missing action!")
 
 
-class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
+class InvoiceListView(CRMFilterTabsMixin, ListView[Invoice]):  # type: ignore[misc]
     model = Invoice
     permission = "invoices.view_invoice"
     title = "Invoices"
     paginate_by = 100
     _search_form: CRMSearchForm | None = None
+    filter_url_name = "crm:invoice-list"
+    filter_tabs = (
+        ("invoice", gettext_noop("Invoices")),
+        ("unpaid", gettext_noop("Unpaid invoices")),
+        ("quote", gettext_noop("Quotes")),
+        ("stale", gettext_noop("Stale quotes")),
+        ("all", gettext_noop("All invoice records")),
+    )
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -501,6 +540,8 @@ class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
                 return "Unpaid invoices"
             case "quote":
                 return "Quotes"
+            case "stale":
+                return "Stale quotes"
             case "invoice":
                 return "Invoices"
             case "all":
@@ -521,21 +562,24 @@ class InvoiceListView(CRMMixin, ListView[Invoice]):  # type: ignore[misc]
 
     def get_queryset(self):
         qs = super().get_queryset().order_by("-number")
-        if self.kwargs["kind"] in {"all", "quote"}:
-            qs = qs.annotate(
-                has_child_invoice=Exists(Invoice.objects.filter(parent=OuterRef("pk")))
-            )
         match self.kwargs["kind"]:
             case "unpaid":
                 qs = get_unpaid_invoice_queryset().order_by("-number")
             case "quote":
                 qs = qs.filter(kind=InvoiceKind.QUOTE)
+            case "stale":
+                qs = get_stale_quote_queryset().order_by("-number")
             case "invoice":
                 qs = qs.filter(kind=InvoiceKind.INVOICE)
             case "all":
                 pass
             case _:
                 raise ValueError(self.kwargs["kind"])
+
+        if self.kwargs["kind"] in {"all", "quote", "stale"}:
+            qs = qs.annotate(
+                has_child_invoice=Exists(Invoice.objects.filter(parent=OuterRef("pk")))
+            )
 
         search_form = self.get_search_form()
         if search_form.is_valid() and (query := search_form.cleaned_data["q"]):
@@ -889,13 +933,19 @@ class InvoiceDetailView(CRMMixin, DetailView[Invoice]):  # type: ignore[misc]
         return self.get(request, *args, **kwargs)
 
 
-class CustomerListView(CRMMixin, ListView):  # type: ignore[misc]
+class CustomerListView(CRMFilterTabsMixin, ListView):  # type: ignore[misc]
     model = Customer
     permission = "payments.view_customer"
     title = "Customers"
     template_name = "payments/customer_list.html"
     paginate_by = 100
     _search_form: CRMSearchForm | None = None
+    filter_url_name = "crm:customer-list"
+    filter_tabs = (
+        ("all", gettext_noop("All customers")),
+        ("active", gettext_noop("Active customers")),
+        ("followups", gettext_noop("Customer follow-ups")),
+    )
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
