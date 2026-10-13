@@ -26,6 +26,7 @@ from pycheval.type_codes import DocumentTypeCode, TaxCategoryCode
 
 from weblate_web.models import Package, PackageCategory
 from weblate_web.payments.models import Customer, Payment
+from weblate_web.pdf import render_pdf_document
 from weblate_web.tests import UserTestCase, cnb_mock_rates, mock_vies
 
 from .corrections import issue_correction, set_uncollectible
@@ -1124,6 +1125,57 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         html = invoice.render_html()
 
         self.assertIn("Contact: Finance approvals", html)
+
+    def test_pdf_addresses_wrap_without_overflow(self) -> None:
+        invoice = self.create_invoice(kind=InvoiceKind.QUOTE, vat="DE123456789")
+        cases = (
+            ("name", "Example GmbH"),
+            ("name", "International localization services " * 5),
+            ("name", "W" * 200),
+            ("address", "W" * 200),
+            ("tax", "W" * 200),
+        )
+        for field, value in cases:
+            with self.subTest(field=field, value=value):
+                invoice.customer.name = "Example GmbH"
+                invoice.customer.address = "Example street 42"
+                invoice.customer.postcode = "424242"
+                invoice.customer.city = "Example City"
+                invoice.customer.tax = "HRB 123456"
+                setattr(invoice.customer, field, value)
+
+                document = render_pdf_document(html=invoice.render_html())
+
+                self.assertEqual(len(document.pages), 1)
+                contacts = next(
+                    box
+                    for box in document.pages[0]._page_box.descendants()  # pylint: disable=protected-access
+                    if type(box).__name__ == "FlexBox"
+                    and box.element.get("id") == "contacts"
+                )
+                customer, issuer = contacts.children
+                self.assertLess(customer.position_x + customer.width, issuer.position_x)
+                issuer_lines = [
+                    box
+                    for box in issuer.descendants()
+                    if type(box).__name__ == "LineBox"
+                ]
+                self.assertEqual(len(issuer_lines), 6)
+                self.assertIn(
+                    "VAT ID: CZ21668027",
+                    "".join(
+                        getattr(box, "text", "")
+                        for box in issuer_lines[-1].descendants()
+                    ),
+                )
+                for address in (customer, issuer):
+                    for box in address.descendants():
+                        if type(box).__name__ == "LineBox":
+                            self.assertGreaterEqual(box.position_x, address.position_x)
+                            self.assertLessEqual(
+                                box.position_x + box.width,
+                                address.position_x + address.width + 0.1,
+                            )
 
     @responses.activate
     def test_pdf_page_marker_is_added_only_for_multi_page_invoice(self) -> None:
