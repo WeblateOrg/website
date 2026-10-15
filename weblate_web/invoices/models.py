@@ -62,6 +62,7 @@ from pycheval.quantities import QuantityCode
 from pycheval.type_codes import DocumentTypeCode, PaymentMeansCode, TaxCategoryCode
 from weasyprint import Attachment
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.const import (
     COMPANY_ADDRESS,
     COMPANY_CITY,
@@ -287,13 +288,6 @@ class InvoiceCalculationVersion(models.IntegerChoices):
     EN_16931 = 1, "EN 16931"
 
 
-class InvoiceCategory(models.IntegerChoices):
-    HOSTING = 1, "Hosting"
-    SUPPORT = 2, "Support"
-    DEVEL = 3, "Development / Consultations"
-    DONATE = 4, "Donation"
-
-
 class QuoteStatus(models.IntegerChoices):
     OPEN = 0, pgettext_lazy("Quote status", "Open")
     LOST = 10, pgettext_lazy("Quote status", "Lost")
@@ -387,7 +381,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
 
     kind = models.IntegerField(choices=InvoiceKind)
     category = models.IntegerField(
-        choices=InvoiceCategory, help_text="Helps to categorize income"
+        choices=ServiceCategory, help_text="Helps to categorize income"
     )
     customer = models.ForeignKey("payments.Customer", on_delete=models.deletion.PROTECT)
     customer_reference = models.CharField(

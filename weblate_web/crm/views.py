@@ -45,6 +45,7 @@ from django.utils.html import escape, format_html, format_html_join
 from django.utils.translation import gettext, gettext_noop, override
 from django.views.generic import DetailView, ListView, TemplateView
 
+from weblate_web.categories import ServiceCategory, category_from_metadata
 from weblate_web.crm.forms import (
     CRMSearchForm,
     CustomerFollowUpForm,
@@ -84,13 +85,11 @@ from weblate_web.invoices.models import (
     Currency,
     Invoice,
     InvoiceCalculationVersion,
-    InvoiceCategory,
     InvoiceKind,
     QuoteStatus,
 )
 from weblate_web.models import (
     Package,
-    PackageCategory,
     SamlIdentity,
     Service,
     ServiceKind,
@@ -159,7 +158,7 @@ def _record_vat_issuance_warning(
     )
 
 
-IncomeCategory: TypeAlias = InvoiceCategory | None
+IncomeCategory: TypeAlias = ServiceCategory | None
 IncomePeriod: TypeAlias = Literal["day", "month", "month_start"]
 
 
@@ -340,7 +339,7 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
                 ).distinct()
             case "dedicated":
                 return qs.filter(
-                    subscription__package__category=PackageCategory.PACKAGE_DEDICATED,
+                    subscription__package__category=ServiceCategory.DEDICATED,
                     subscription__expires__gte=timezone.now(),
                     subscription__enabled=True,
                 ).distinct()
@@ -1471,7 +1470,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     MAX_MONTH_INDEX = date.max.year * 12 - 1
     INVOICE_DATA_START = date(2024, 11, 1)
     SATOSHIS_PER_BTC = Decimal(100_000_000)
-    ANNUAL_TREND_CACHE_VERSION = 1
+    ANNUAL_TREND_CACHE_VERSION = 2
     ANNUAL_TREND_COMPLETE_CACHE_TIMEOUT = 24 * 60 * 60
     ANNUAL_TREND_YTD_CACHE_TIMEOUT = 15 * 60
 
@@ -1489,13 +1488,19 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     # Category colors shared across all charts (keyed by category enum)
     CATEGORY_COLORS = {
-        InvoiceCategory.HOSTING: "#417690",
-        InvoiceCategory.SUPPORT: "#79aec8",
-        InvoiceCategory.DEVEL: "#5b80b2",
-        InvoiceCategory.DONATE: "#9fc5e8",
+        ServiceCategory.UNCATEGORIZED: "#b0b8bf",
+        ServiceCategory.HOSTING: "#417690",
+        ServiceCategory.DEDICATED: "#264653",
+        ServiceCategory.SHARED: "#2a9d8f",
+        ServiceCategory.SUPPORT: "#79aec8",
+        ServiceCategory.DEVEL: "#5b80b2",
+        ServiceCategory.DONATE: "#9fc5e8",
         None: "#7f8c8d",
     }
-    INCOME_CATEGORIES: tuple[IncomeCategory, ...] = (*InvoiceCategory, None)
+    INCOME_CATEGORIES: tuple[IncomeCategory, ...] = (
+        *(category for category in ServiceCategory if category),
+        None,
+    )
 
     def get_year(self) -> int:
         """Get the year from URL kwargs or default to current year."""
@@ -1515,7 +1520,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     def _get_category_label(self, category: IncomeCategory) -> str:
         if category is None:
             return gettext("Uncategorized")
-        return category.label
+        return str(category.label)
 
     def generate_svg_pie_chart(self, data: dict[IncomeCategory, Decimal]) -> str:  # ruff:ignore[too-many-locals]
         """Generate a simple SVG pie chart for category distribution with legend."""
@@ -1989,10 +1994,14 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return payment_date.month
         return payment_date.replace(day=1)
 
-    def _get_subscription_category(self, subscription: Subscription) -> InvoiceCategory:
+    def _get_subscription_category(self, subscription: Subscription) -> IncomeCategory:
         if subscription.service.kind == ServiceKind.DONATION:
-            return InvoiceCategory.DONATE
-        return subscription.package.get_invoice_category()
+            return ServiceCategory.DONATE
+        return (
+            ServiceCategory(subscription.package.category)
+            if subscription.package.category
+            else None
+        )
 
     def _get_payment_metadata_category(
         self,
@@ -2002,25 +2011,42 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     ) -> IncomeCategory:
         category: IncomeCategory = None
         if payment.paid_invoice:
-            category = InvoiceCategory(payment.paid_invoice.category)
+            category = (
+                ServiceCategory(payment.paid_invoice.category)
+                if payment.paid_invoice.category
+                else None
+            )
         elif payment.draft_invoice:
-            category = InvoiceCategory(payment.draft_invoice.category)
-        elif payment.extra.get("category") == "donate" or any(
-            key in payment.extra for key in ("donation", "donation_service", "reward")
-        ):
-            category = InvoiceCategory.DONATE
-        elif "plan" in payment.extra:
-            category = InvoiceCategory.HOSTING
-
-        subscription_value = payment.extra.get("subscription")
-        if category is None and isinstance(subscription_value, str):
-            package = packages.get(subscription_value)
-            if package is not None:
-                category = package.get_invoice_category()
-        elif category is None and isinstance(subscription_value, int):
-            subscription = subscriptions.get(subscription_value)
-            if subscription is not None:
-                category = self._get_subscription_category(subscription)
+            category = (
+                ServiceCategory(payment.draft_invoice.category)
+                if payment.draft_invoice.category
+                else None
+            )
+        else:
+            subscription_value = payment.extra.get("subscription")
+            subscription = (
+                subscriptions.get(subscription_value)
+                if isinstance(subscription_value, int)
+                else None
+            )
+            category = category_from_metadata(
+                payment.extra,
+                {
+                    name: packages[name].category
+                    for key in ("package", "subscription", "plan")
+                    if isinstance(name := payment.extra.get(key), str)
+                    and name in packages
+                },
+                {
+                    subscription.pk: int(
+                        self._get_subscription_category(subscription) or 0
+                    )
+                }
+                if subscription is not None
+                else {},
+            )
+            if category is None and "plan" in payment.extra:
+                category = ServiceCategory.HOSTING
 
         return category
 
@@ -2115,6 +2141,10 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             for category_source in (payment, payment.repeat):
                 if category_source is None:
                     continue
+                for key in ("package", "plan"):
+                    value = category_source.extra.get(key)
+                    if isinstance(value, str):
+                        package_names.add(value)
                 subscription_value = category_source.extra.get("subscription")
                 if isinstance(subscription_value, str):
                     package_names.add(subscription_value)
@@ -2326,9 +2356,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 else str(cast("int", row["period"]))
             )
             raw_category = row["category"]
-            category = (
-                InvoiceCategory(raw_category) if raw_category is not None else None
-            )
+            category = ServiceCategory(raw_category) if raw_category else None
             total = cast("Decimal", row["total_no_vat"])
             period_totals[key] += total
             period_category_data[key][category] += total
@@ -2557,9 +2585,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         category_data = self._get_empty_category_totals()
         for row in summary_rows:
             raw_category = row["category"]
-            category = (
-                InvoiceCategory(raw_category) if raw_category is not None else None
-            )
+            category = ServiceCategory(raw_category) if raw_category else None
             category_data[category] += cast("Decimal", row["total_no_vat"])
 
         return category_data

@@ -31,11 +31,11 @@ from django.utils import timezone
 from lxml import html
 
 from weblate_web.activity import record_activity
+from weblate_web.categories import ServiceCategory
 from weblate_web.forms import SupportReportForm
 from weblate_web.management.commands.backups_sync import Command as BackupsSyncCommand
 from weblate_web.models import (
     Package,
-    PackageCategory,
     Report,
     Service,
     ServiceKind,
@@ -55,7 +55,7 @@ class ActivityTest(TestCase):
             name="extended",
             verbose="Extended support",
             price=42,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         Package.objects.create(name="community", verbose="Community support", price=0)
         self.service = Service.objects.create(
@@ -629,7 +629,7 @@ class ActivityTest(TestCase):
             (
                 True,
                 False,
-                PackageCategory.PACKAGE_DEDICATED,
+                ServiceCategory.DEDICATED,
                 "hosted:test",
                 ServiceKind.SERVICE,
                 True,
@@ -637,7 +637,7 @@ class ActivityTest(TestCase):
             (
                 True,
                 False,
-                PackageCategory.PACKAGE_SHARED,
+                ServiceCategory.SHARED,
                 "shared:test",
                 ServiceKind.SERVICE,
                 True,
@@ -645,7 +645,7 @@ class ActivityTest(TestCase):
             (
                 True,
                 False,
-                PackageCategory.PACKAGE_NONE,
+                ServiceCategory.UNCATEGORIZED,
                 "backup",
                 ServiceKind.SERVICE,
                 True,
@@ -653,7 +653,7 @@ class ActivityTest(TestCase):
             (
                 False,
                 False,
-                PackageCategory.PACKAGE_SUPPORT,
+                ServiceCategory.SUPPORT,
                 "extended",
                 ServiceKind.SERVICE,
                 False,
@@ -661,7 +661,7 @@ class ActivityTest(TestCase):
             (
                 True,
                 True,
-                PackageCategory.PACKAGE_SUPPORT,
+                ServiceCategory.SUPPORT,
                 "extended",
                 ServiceKind.SERVICE,
                 False,
@@ -669,7 +669,7 @@ class ActivityTest(TestCase):
             (
                 True,
                 False,
-                PackageCategory.PACKAGE_DONATION,
+                ServiceCategory.DONATE,
                 "donation",
                 ServiceKind.DONATION,
                 False,
@@ -677,7 +677,7 @@ class ActivityTest(TestCase):
             (
                 True,
                 False,
-                PackageCategory.PACKAGE_NONE,
+                ServiceCategory.UNCATEGORIZED,
                 "community-test",
                 ServiceKind.SERVICE,
                 False,
@@ -805,7 +805,7 @@ class ActivityConcurrencyTest(TransactionTestCase):
             name="extended",
             verbose="Support",
             price=42,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         Package.objects.create(name="community", verbose="Community support", price=0)
         service = Service.objects.create(customer=customer)

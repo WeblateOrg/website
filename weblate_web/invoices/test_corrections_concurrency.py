@@ -30,11 +30,12 @@ from django.core.exceptions import ValidationError
 from django.db import connection, connections, transaction
 from django.test import TransactionTestCase, override_settings, skipUnlessDBFeature
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.payments.backends import FioBank, ThePay2Card
 from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
 
 from .corrections import issue_correction
-from .models import Currency, Invoice, InvoiceCategory, InvoiceKind
+from .models import Currency, Invoice, InvoiceKind
 
 
 @skipUnlessDBFeature("has_select_for_update")
@@ -45,7 +46,7 @@ class CorrectionConcurrencyTest(TransactionTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             currency=Currency.CZK,
             vat_rate=21,
             prepaid=True,
@@ -98,7 +99,7 @@ class CorrectionConcurrencyTest(TransactionTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             currency=Currency.CZK,
             vat_rate=21,
         )
@@ -151,14 +152,14 @@ class CorrectionConcurrencyTest(TransactionTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             currency=Currency.CZK,
         )
         invoice.invoiceitem_set.create(description="Service", unit_price=100)
         retained = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             currency=Currency.CZK,
             prepaid=True,
         )

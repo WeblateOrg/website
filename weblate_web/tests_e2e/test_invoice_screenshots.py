@@ -34,12 +34,12 @@ import pytest
 from django.contrib.auth.models import User
 from PIL import Image as PILImage
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.invoices.corrections import issue_correction
 from weblate_web.invoices.models import (
     Currency,
     Discount,
     Invoice,
-    InvoiceCategory,
     InvoiceKind,
     QuantityUnit,
 )
@@ -122,7 +122,7 @@ def create_invoice(case: InvoiceData, sequence: int) -> Invoice:
         due_date=DUE_DATE,
         tax_date=ISSUE_DATE,
         kind=case.kind,
-        category=InvoiceCategory.HOSTING,
+        category=ServiceCategory.HOSTING,
         customer=create_customer(case),
         customer_reference=case.customer_reference,
         customer_note=case.customer_note,

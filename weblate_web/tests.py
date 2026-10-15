@@ -44,8 +44,9 @@ from requests.exceptions import HTTPError
 from wlc import WeblateException
 from wlc.models import Statistics
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
-from weblate_web.invoices.models import Discount, Invoice, InvoiceCategory, InvoiceKind
+from weblate_web.invoices.models import Discount, Invoice, InvoiceKind
 from weblate_web.payments.invitations import create_invitation, get_invitation_token
 from weblate_web.payments.models import (
     Customer,
@@ -65,7 +66,6 @@ from .models import (
     DiscoveryActivation,
     ExternalSyncState,
     Package,
-    PackageCategory,
     Post,
     Report,
     SamlIdentity,
@@ -1264,7 +1264,7 @@ class PaymentCustomerAccessTest(UserTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.DRAFT,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=customer.vat_rate,
         )
         invoice.invoiceitem_set.create(description="Test service", unit_price=100)
@@ -1386,7 +1386,7 @@ class PaymentCustomerAccessTest(UserTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.PROFORMA,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         invoice.invoiceitem_set.create(description="Test service", unit_price=100)
@@ -1806,37 +1806,37 @@ class FakturaceTestCase(UserTestCase):
                     name="basic",
                     verbose="Basic support",
                     price=21,
-                    category=PackageCategory.PACKAGE_SUPPORT,
+                    category=ServiceCategory.SUPPORT,
                 ),
                 Package(
                     name="extended",
                     verbose="Extended support",
                     price=42,
-                    category=PackageCategory.PACKAGE_SUPPORT,
+                    category=ServiceCategory.SUPPORT,
                 ),
                 Package(
                     name="premium",
                     verbose="Premium support",
                     price=84,
-                    category=PackageCategory.PACKAGE_SUPPORT,
+                    category=ServiceCategory.SUPPORT,
                 ),
                 Package(
                     name="test:test-1-m",
                     verbose="Weblate hosting (basic)",
                     price=42,
-                    category=PackageCategory.PACKAGE_DEDICATED,
+                    category=ServiceCategory.DEDICATED,
                 ),
                 Package(
                     name="test:test-1",
                     verbose="Weblate hosting (basic)",
                     price=420,
-                    category=PackageCategory.PACKAGE_DEDICATED,
+                    category=ServiceCategory.DEDICATED,
                 ),
                 Package(
                     name="test:test-2",
                     verbose="Weblate hosting (upgraded)",
                     price=840,
-                    category=PackageCategory.PACKAGE_DEDICATED,
+                    category=ServiceCategory.DEDICATED,
                 ),
             ]
         )
@@ -1879,8 +1879,8 @@ class FakturaceTestCase(UserTestCase):
 class HostedBillingMigrationTest(TransactionTestCase):
     def test_existing_zero_billing_ids_become_null_before_uniqueness(self) -> None:
         previous = ("weblate_web", "0053_service_activity_drop_state_serviceactivity")
-        current = ("weblate_web", "0054_unique_hosted_billing_service")
         executor = MigrationExecutor(connection)
+        leaves = executor.loader.graph.leaf_nodes()
         executor.migrate([previous])
         try:
             historical = executor.loader.project_state([previous]).apps.get_model(
@@ -1895,7 +1895,7 @@ class HostedBillingMigrationTest(TransactionTestCase):
                 customer_id=customer.pk, hosted_billing=42
             )
         finally:
-            MigrationExecutor(connection).migrate([current])
+            MigrationExecutor(connection).migrate(leaves)
         self.assertIsNone(Service.objects.get(pk=first.pk).hosted_billing)
         self.assertIsNone(Service.objects.get(pk=second.pk).hosted_billing)
         self.assertEqual(Service.objects.get(pk=assigned.pk).hosted_billing, 42)
@@ -1915,7 +1915,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
                 name=name,
                 verbose=name,
                 price=price,
-                category=PackageCategory.PACKAGE_SHARED,
+                category=ServiceCategory.SHARED,
                 limit_hosted_strings=10_000 if "10k" in name else 40_000,
             )
         self.owner = self.create_user()
@@ -2099,11 +2099,11 @@ class HostedSubscriptionTest(FakturaceTestCase):
 
     def test_expired_subscription_continues_from_old_expiry(self) -> None:
         for category, name in (
-            (PackageCategory.PACKAGE_SHARED, "hosted:10k-m"),
-            (PackageCategory.PACKAGE_DEDICATED, "dedicated:test-m"),
+            (ServiceCategory.SHARED, "hosted:10k-m"),
+            (ServiceCategory.DEDICATED, "dedicated:test-m"),
         ):
             with self.subTest(category=category):
-                if category == PackageCategory.PACKAGE_DEDICATED:
+                if category == ServiceCategory.DEDICATED:
                     Package.objects.create(
                         name=name,
                         verbose=name,
@@ -2263,11 +2263,11 @@ class HostedSubscriptionTest(FakturaceTestCase):
 
     def test_terminated_renewal_starts_new_period(self) -> None:
         for category, name in (
-            (PackageCategory.PACKAGE_SHARED, "hosted:10k-m"),
-            (PackageCategory.PACKAGE_DEDICATED, "dedicated:test-m"),
+            (ServiceCategory.SHARED, "hosted:10k-m"),
+            (ServiceCategory.DEDICATED, "dedicated:test-m"),
         ):
             with self.subTest(category=category):
-                if category == PackageCategory.PACKAGE_DEDICATED:
+                if category == ServiceCategory.DEDICATED:
                     Package.objects.create(
                         name=name,
                         verbose=name,
@@ -2367,7 +2367,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
             name="hosted:legacy-m",
             verbose="Legacy monthly package",
             price=47,
-            category=PackageCategory.PACKAGE_SHARED,
+            category=ServiceCategory.SHARED,
         )
         self.pay("hosted:legacy-m")
         subscription = self.service.subscription_set.get()
@@ -2461,7 +2461,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         payment = Payment.objects.create(
@@ -2498,7 +2498,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.PROFORMA,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         payment = Payment.objects.create(
@@ -2533,7 +2533,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
 
@@ -2560,7 +2560,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         Payment.objects.create(
@@ -2597,7 +2597,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         Payment.objects.create(
@@ -2637,7 +2637,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         invoice.invoiceitem_set.create(description="Test item", unit_price=100)
@@ -2677,7 +2677,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         payment = Payment.objects.create(
@@ -2715,7 +2715,7 @@ class PaymentsTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         payment = Payment.objects.create(
@@ -3165,7 +3165,7 @@ class PaymentTest(FakturaceTestCase):
             package = get_donation_package(reward)
             self.assertEqual(package.name, get_donation_reward_package_name(reward))
             self.assertEqual(package.price, REWARD_LEVELS[reward])
-            self.assertEqual(package.category, PackageCategory.PACKAGE_DONATION)
+            self.assertEqual(package.category, ServiceCategory.DONATE)
             self.assertEqual(package.donation_reward, reward)
 
         self.assertEqual(
@@ -4002,7 +4002,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             name="dedicated:test",
             verbose="Dedicated test",
             price=100,
-            category=PackageCategory.PACKAGE_DEDICATED,
+            category=ServiceCategory.DEDICATED,
             limit_projects=10,
             limit_languages=20,
             limit_source_strings=1_000,
@@ -4071,7 +4071,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             name="shared:test",
             verbose="Shared test",
             price=100,
-            category=PackageCategory.PACKAGE_SHARED,
+            category=ServiceCategory.SHARED,
             limit_projects=10,
         )
         customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
@@ -4102,7 +4102,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             name="dedicated:expired",
             verbose="Expired dedicated",
             price=100,
-            category=PackageCategory.PACKAGE_DEDICATED,
+            category=ServiceCategory.DEDICATED,
         )
         customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
         service = Service.objects.create(
@@ -4153,7 +4153,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             name="dedicated:grace",
             verbose="Dedicated in grace period",
             price=100,
-            category=PackageCategory.PACKAGE_DEDICATED,
+            category=ServiceCategory.DEDICATED,
         )
         customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
         service = Service.objects.create(customer=customer)
@@ -4176,7 +4176,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             name="shared:expired",
             verbose="Expired shared hosting",
             price=100,
-            category=PackageCategory.PACKAGE_SHARED,
+            category=ServiceCategory.SHARED,
         )
         customer = Customer.objects.create(user_id=-1, origin=PAYMENTS_ORIGIN)
         service = Service.objects.create(customer=customer)
@@ -5440,7 +5440,7 @@ class ExpiryTest(FakturaceTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=kind,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
             issue_date=timezone.now().date() + timedelta(days=issue_days),
         )
@@ -5580,7 +5580,7 @@ class ExpiryTest(FakturaceTestCase):
         payment = subscription.payment_obj
         payment.paid_invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.DONATE,
+            category=ServiceCategory.DONATE,
             customer=payment.customer,
         )
         payment.save(update_fields=["paid_invoice"])
@@ -5590,7 +5590,7 @@ class ExpiryTest(FakturaceTestCase):
         self.assert_notifications("Your payment on weblate.org")
         repeated = Payment.objects.get(repeat=payment)
         repeated_invoice = cast("Invoice", repeated.paid_invoice)
-        self.assertEqual(repeated_invoice.category, InvoiceCategory.DONATE)
+        self.assertEqual(repeated_invoice.category, ServiceCategory.DONATE)
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
 
@@ -7078,7 +7078,7 @@ class CommandsTestCase(FakturaceTestCase):
             self.assertNotEqual(buffer.getvalue(), "")
         for reward in range(4):
             package = Package.objects.get(name=get_donation_reward_package_name(reward))
-            self.assertEqual(package.category, PackageCategory.PACKAGE_DONATION)
+            self.assertEqual(package.category, ServiceCategory.DONATE)
             self.assertEqual(package.price, REWARD_LEVELS[reward])
 
         with StringIO() as buffer:

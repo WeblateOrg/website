@@ -57,6 +57,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from weblate_web.activity import record_activity
+from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
 from weblate_web.forms import (
     AddDiscoveryForm,
@@ -80,7 +81,6 @@ from weblate_web.models import (
     TOPIC_DICT,
     DiscoveryActivation,
     Package,
-    PackageCategory,
     Post,
     Project,
     Service,
@@ -1641,12 +1641,12 @@ class HostingView(TemplateView):
         }
 
         data["hosted_package"] = (
-            Package.objects.filter(category=PackageCategory.PACKAGE_SHARED)
+            Package.objects.filter(category=ServiceCategory.SHARED)
             .filter(name__regex="^hosted:[0-9.]+[km]$")
             .order_by("price")[0]
         )
         data["dedicated_package"] = (
-            Package.objects.filter(category=PackageCategory.PACKAGE_DEDICATED)
+            Package.objects.filter(category=ServiceCategory.DEDICATED)
             .filter(name__regex="^dedicated:[0-9.]+[km]$")
             .order_by("price")[0]
         )
@@ -1661,7 +1661,7 @@ class SupportView(TemplateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         for package in Package.objects.filter(
-            Q(category=PackageCategory.PACKAGE_SUPPORT) | Q(name="install:linux")
+            Q(category=ServiceCategory.SUPPORT) | Q(name="install:linux")
         ):
             if package.name == "install:linux":
                 data["install_package"] = package

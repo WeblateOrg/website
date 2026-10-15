@@ -38,6 +38,8 @@ from django.utils.timezone import make_aware, now
 from django.utils.translation import get_language, gettext, gettext_lazy
 from django.views.decorators.debug import sensitive_variables
 
+from weblate_web.categories import ServiceCategory, category_from_metadata
+
 from .models import CustomerFollowUp, Payment
 
 if TYPE_CHECKING:
@@ -404,7 +406,6 @@ class Backend:
         from weblate_web.invoices.models import (  # ruff:ignore[import-outside-top-level]
             Currency,
             Invoice,
-            InvoiceCategory,
             InvoiceKind,
         )
 
@@ -431,12 +432,29 @@ class Backend:
                     tax_date=self.payment.created.date(),
                 )
         else:
-            category = InvoiceCategory.HOSTING
-            if (
-                self.payment.extra.get("category") == "donate"
-                or "donation_service" in self.payment.extra
-            ):
-                category = InvoiceCategory.DONATE
+            from weblate_web.models import (  # ruff:ignore[import-outside-top-level]
+                Package,
+                Subscription,
+            )
+
+            subscription_id = self.payment.extra.get("subscription")
+            subscriptions = (
+                dict(
+                    Subscription.objects.filter(pk=subscription_id).values_list(
+                        "pk", "package__category"
+                    )
+                )
+                if isinstance(subscription_id, int)
+                and not isinstance(subscription_id, bool)
+                else {}
+            )
+            category = category_from_metadata(
+                self.payment.extra,
+                dict(Package.objects.values_list("name", "category")),
+                subscriptions,
+            )
+            if category is None:
+                category = ServiceCategory.HOSTING
             # Generate manually if no draft is present (hosted integration)
             invoice = Invoice.objects.create(
                 kind=invoice_kind,

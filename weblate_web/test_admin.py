@@ -17,12 +17,12 @@ from weblate_web.admin import (
 )
 from weblate_web.admin_app import CustomAdminConfig
 from weblate_web.admin_site import UserAutocompleteJsonView
+from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
 from weblate_web.invoices.admin import InvoiceAdmin
 from weblate_web.invoices.forms import InvoiceAdminForm
 from weblate_web.invoices.models import (
     Invoice,
-    InvoiceCategory,
     InvoiceKind,
 )
 from weblate_web.models import Post, Subscription, SubscriptionPastPayment
@@ -171,7 +171,7 @@ class InvoiceAdminTestCase(TestCase):
         return Invoice.objects.create(
             customer=self.create_customer(),
             kind=kind,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             **kwargs,
         )
 
@@ -186,7 +186,7 @@ class InvoiceAdminTestCase(TestCase):
         return {
             "issue_date": timezone.localdate(),
             "kind": InvoiceKind.INVOICE,
-            "category": InvoiceCategory.HOSTING,
+            "category": ServiceCategory.HOSTING,
             "customer": customer.pk,
             "quote_status": 0,
             "vat_rate": 21,

@@ -35,11 +35,11 @@ from django.core.files.base import ContentFile
 from django.urls import reverse
 from django.utils import timezone
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import CRM_STORAGE, Interaction
 from weblate_web.invoices.models import (
     Currency,
     Invoice,
-    InvoiceCategory,
     InvoiceKind,
     QuoteStatus,
 )
@@ -94,7 +94,7 @@ class ServiceFixture:
 @dataclass(frozen=True)
 class InvoiceFixture:
     kind: InvoiceKind
-    category: InvoiceCategory
+    category: ServiceCategory
     amount: Decimal
     issue_date: date
     description: str
@@ -297,7 +297,7 @@ def crm_data(  # pylint: disable=redefined-outer-name
             customer,
             InvoiceFixture(
                 InvoiceKind.QUOTE,
-                InvoiceCategory.SUPPORT,
+                ServiceCategory.SUPPORT,
                 Decimal(420),
                 date(2026, 1, 15),
                 "CRM quote for support renewal",
@@ -307,7 +307,7 @@ def crm_data(  # pylint: disable=redefined-outer-name
             customer,
             InvoiceFixture(
                 InvoiceKind.INVOICE,
-                InvoiceCategory.HOSTING,
+                ServiceCategory.SHARED,
                 Decimal(1200),
                 date(2026, 1, 15),
                 "CRM hosted service invoice",
@@ -317,7 +317,7 @@ def crm_data(  # pylint: disable=redefined-outer-name
             customer,
             InvoiceFixture(
                 InvoiceKind.INVOICE,
-                InvoiceCategory.DEVEL,
+                ServiceCategory.DEVEL,
                 Decimal(900),
                 date(2026, 2, 15),
                 "CRM consultation invoice",
@@ -327,17 +327,27 @@ def crm_data(  # pylint: disable=redefined-outer-name
             customer,
             InvoiceFixture(
                 InvoiceKind.INVOICE,
-                InvoiceCategory.DONATE,
+                ServiceCategory.DONATE,
                 Decimal(150),
                 date(2026, 3, 15),
                 "CRM donation invoice",
+            ),
+        )
+        create_invoice(
+            customer,
+            InvoiceFixture(
+                InvoiceKind.INVOICE,
+                ServiceCategory.DEDICATED,
+                Decimal(1800),
+                date(2026, 3, 15),
+                "CRM dedicated hosting invoice",
             ),
         )
         refund_invoice = create_invoice(
             customer,
             InvoiceFixture(
                 InvoiceKind.INVOICE,
-                InvoiceCategory.SUPPORT,
+                ServiceCategory.SUPPORT,
                 Decimal(-75),
                 date(2026, 3, 20),
                 "CRM refund invoice",
@@ -531,7 +541,7 @@ def create_work_queue_visual_data(data: CrmData) -> Invoice:
         old_invoice_customer,
         InvoiceFixture(
             InvoiceKind.INVOICE,
-            InvoiceCategory.HOSTING,
+            ServiceCategory.HOSTING,
             Decimal(640),
             date(2025, 12, 30),
             "CRM old unpaid invoice",
@@ -544,7 +554,7 @@ def create_work_queue_visual_data(data: CrmData) -> Invoice:
         stale_quote_customer,
         InvoiceFixture(
             InvoiceKind.QUOTE,
-            InvoiceCategory.SUPPORT,
+            ServiceCategory.SUPPORT,
             Decimal(360),
             date(2025, 12, 20),
             "CRM stale quote",
@@ -557,7 +567,7 @@ def create_work_queue_visual_data(data: CrmData) -> Invoice:
         closed_quote_customer,
         InvoiceFixture(
             InvoiceKind.QUOTE,
-            InvoiceCategory.SUPPORT,
+            ServiceCategory.SUPPORT,
             Decimal(280),
             date(2025, 12, 18),
             "CRM closed stale quote",
@@ -800,6 +810,8 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
 
         response = page.goto(absolute_url(live_server, reverse("crm:income")))
         assert_loaded(page, response, "Income yearly report")
+        assert_text_visible(page, "Shared hosting")
+        assert_text_visible(page, "Dedicated hosting")
         assert page.get_by_role("heading", name="Total Income - 2026").is_visible()
         capture(page, "income-year")
 

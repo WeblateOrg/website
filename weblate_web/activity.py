@@ -25,7 +25,8 @@ from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 
-from weblate_web.models import PackageCategory, Service, ServiceActivity, ServiceKind
+from weblate_web.categories import ServiceCategory
+from weblate_web.models import Service, ServiceActivity, ServiceKind
 from weblate_web.payments.models import CustomerFollowUp
 
 if TYPE_CHECKING:
@@ -50,9 +51,9 @@ def record_activity(report: Report, activity: dict[date, int]) -> None:
         or not service.subscription_set.filter(
             Q(
                 package__category__in=[
-                    PackageCategory.PACKAGE_DEDICATED,
-                    PackageCategory.PACKAGE_SHARED,
-                    PackageCategory.PACKAGE_SUPPORT,
+                    ServiceCategory.DEDICATED,
+                    ServiceCategory.SHARED,
+                    ServiceCategory.SUPPORT,
                 ]
             )
             | Q(package__name="backup"),
