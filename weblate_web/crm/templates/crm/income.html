@@ -77,6 +77,45 @@
         </div>
       </dl>
     </section>
+
+    <section class="crm-section content">
+      {% translate "Rolling trends by category" as table_title %}
+      {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+      <div class="crm-table-wrap"
+           tabindex="0"
+           role="region"
+           aria-label="{{ table_title }}">
+        <table class="crm-table">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+          <thead>
+            <tr>
+              <th scope="col">{% translate "Category" %}</th>
+              <th scope="col" class="crm-number">{% translate "Current window (EUR)" %}</th>
+              <th scope="col" class="crm-number">{% translate "Previous window (EUR)" %}</th>
+              <th scope="col" class="crm-number">{% translate "Change (EUR)" %}</th>
+              <th scope="col" class="crm-number">{% translate "Change (%)" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in category_rolling_rows %}
+              <tr>
+                <th scope="row">{{ row.label }}</th>
+                <td class="crm-number">€{{ row.rolling_total|floatformat:0 }}</td>
+                <td class="crm-number">€{{ row.previous_total|floatformat:0 }}</td>
+                <td class="crm-number">{% if row.change_amount > 0 %}+{% endif %}€{{ row.change_amount|floatformat:0 }}</td>
+                <td class="crm-number">
+                  {% if row.has_change_percent %}
+                    {% if row.change_percent > 0 %}+{% endif %}{{ row.change_percent|floatformat:1 }}%
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
   {% endif %}
 
   {% if annual_trend_chart_svg %}
@@ -84,6 +123,53 @@
       {% translate "Annual income trend" as section_title %}
       {% include "crm/snippets/section_header.html" with section_title=section_title only %}
       <div class="crm-chart">{{ annual_trend_chart_svg|safe }}</div>
+    </section>
+  {% endif %}
+
+  {% if annual_category_chart_svg %}
+    <section class="crm-section content">
+      {% translate "Annual category trends" as table_title %}
+      {% include "crm/snippets/section_header.html" with section_title=table_title only %}
+      <div class="crm-chart">{{ annual_category_chart_svg|safe }}</div>
+      <ul class="crm-chart-legend" aria-label="{% translate "Chart categories" %}">
+        {% for row in annual_category_rows %}
+          {% if row.active %}
+            <li>
+              <svg class="crm-category-color" viewBox="0 0 12 12" aria-hidden="true">
+                <circle cx="6" cy="6" r="6" fill="{{ row.color }}" />
+              </svg>
+              {{ row.label }}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+      <div class="crm-table-wrap"
+           tabindex="0"
+           role="region"
+           aria-label="{{ table_title }}">
+        <table class="crm-table">
+          {% include "crm/snippets/table_caption.html" with table_title=table_title only %}
+          <thead>
+            <tr>
+              <th scope="col">{% translate "Category" %}</th>
+              {% for row in annual_trend_rows %}
+                <th scope="col"
+                    class="crm-number">{{ row.year }}{% if row.is_ytd %} ({% translate "YTD" %}){% endif %}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in annual_category_rows %}
+              <tr>
+                <th scope="row">{{ row.label }}</th>
+                {% for amount in row.amounts %}
+                  <td class="crm-number">€{{ amount|floatformat:0 }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </section>
   {% endif %}
 
