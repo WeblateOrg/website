@@ -343,6 +343,32 @@ def crm_data(  # pylint: disable=redefined-outer-name
                 "CRM dedicated hosting invoice",
             ),
         )
+        for category, amount, issue_date in (
+            (ServiceCategory.SUPPORT, 200, date(2024, 11, 15)),
+            (ServiceCategory.SHARED, 800, date(2025, 1, 15)),
+            (ServiceCategory.SUPPORT, -50, date(2025, 4, 15)),
+            (ServiceCategory.DEDICATED, 1500, date(2025, 11, 15)),
+        ):
+            historical_invoice = create_invoice(
+                customer,
+                InvoiceFixture(
+                    InvoiceKind.INVOICE,
+                    category,
+                    Decimal(amount),
+                    issue_date,
+                    "CRM historical income",
+                ),
+            )
+            historical_invoice.prepaid = True
+            historical_invoice.save(update_fields=["prepaid"])
+            payment = Payment.objects.create(
+                customer=customer,
+                amount=amount,
+                description="CRM historical income",
+                paid_invoice=historical_invoice,
+                state=Payment.PROCESSED,
+            )
+            Payment.objects.filter(pk=payment.pk).update(created=FIXED_TIMESTAMP)
         refund_invoice = create_invoice(
             customer,
             InvoiceFixture(
@@ -810,8 +836,15 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
 
         response = page.goto(absolute_url(live_server, reverse("crm:income")))
         assert_loaded(page, response, "Income yearly report")
-        assert_text_visible(page, "Shared hosting")
-        assert_text_visible(page, "Dedicated hosting")
+        assert page.get_by_role(
+            "heading", name="Annual category trends", exact=True
+        ).is_visible()
+        assert page.get_by_role(
+            "rowheader", name="Shared hosting", exact=True
+        ).first.is_visible()
+        assert page.get_by_role(
+            "rowheader", name="Dedicated hosting", exact=True
+        ).first.is_visible()
         assert page.get_by_role("heading", name="Total Income - 2026").is_visible()
         capture(page, "income-year")
 
@@ -898,6 +931,40 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         )
         capture(page, "customers-search-mobile")
 
+    def test_category_trend_comparisons(
+        self, page: Page, live_server, crm_data: CrmData
+    ) -> None:
+        """Compare category trends on completed periods at both viewport sizes."""
+        log_in(page, live_server, crm_data.staff)
+        for width, suffix in ((1280, "desktop"), (390, "mobile")):
+            page.set_viewport_size({"width": width, "height": 900})
+            for name, kwargs, period in (
+                ("crm:income-year", {"year": 2025}, "year"),
+                ("crm:income-month", {"year": 2025, "month": 11}, "month"),
+            ):
+                response = page.goto(
+                    absolute_url(live_server, reverse(name, kwargs=kwargs))
+                )
+                assert_loaded(page, response, "Category income comparison")
+                table = page.get_by_role(
+                    "region", name="Rolling trends by category", exact=True
+                )
+                assert table.is_visible()
+                assert (
+                    "€1500"
+                    in table.get_by_role("row")
+                    .filter(has_text="Dedicated hosting")
+                    .inner_text()
+                )
+                assert "Shared hosting" in table.inner_text()
+                assert_no_horizontal_overflow(page)
+                if period == "year":
+                    assert_income_charts_fit(page, 4)
+                    assert page.get_by_role(
+                        "region", name="Annual category trends", exact=True
+                    ).is_visible()
+                capture(page, f"income-category-{period}-{suffix}")
+
     def test_income_reports_mobile_layout(
         self, page: Page, live_server, crm_data: CrmData
     ) -> None:
@@ -908,7 +975,10 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         response = page.goto(absolute_url(live_server, reverse("crm:income")))
         assert_loaded(page, response, "Mobile income yearly report")
         assert_no_horizontal_overflow(page)
-        assert_income_charts_fit(page, 3)
+        assert_income_charts_fit(page, 4)
+        assert page.get_by_role(
+            "region", name="Annual category trends", exact=True
+        ).is_visible()
         assert_section_table_does_not_scroll(page, "Yearly category income")
         capture(page, "income-year-mobile")
 

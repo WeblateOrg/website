@@ -2926,6 +2926,163 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.status_code, 403)
 
     @responses.activate
+    def test_annual_categories_reconcile_across_income_sources(self):
+        self.create_historical_payment(date(2023, 6, 1), 100, extra={"plan": 1})
+        self.create_test_invoice(2024, 10, ServiceCategory.DEDICATED, Decimal(200))
+        invoice = self.create_test_invoice(
+            2024, 11, ServiceCategory.SUPPORT, Decimal(300)
+        )
+        self.create_historical_payment(date(2024, 10, 1), 999, paid_invoice=invoice)
+        original = self.create_test_invoice(
+            2025, 5, ServiceCategory.SHARED, Decimal(100)
+        )
+        correction = self.create_test_invoice(
+            2025, 6, ServiceCategory.SHARED, Decimal(-40)
+        )
+        correction.correction_of = original
+        correction.save(update_fields=["correction_of"])
+        self.create_test_invoice(2025, 12, ServiceCategory.SHARED, Decimal(900))
+
+        rows = IncomeView().get_annual_trend_rows(
+            [2023, 2024, 2025, 2026], date(2025, 6, 30)
+        )
+
+        self.assertEqual([row["year"] for row in rows], [2023, 2024, 2025])
+        self.assertEqual(rows[0]["categories"][ServiceCategory.SHARED], 100)
+        self.assertEqual(rows[1]["categories"][ServiceCategory.DEDICATED], 200)
+        self.assertEqual(rows[1]["categories"][ServiceCategory.SUPPORT], 300)
+        self.assertEqual(rows[2]["categories"][ServiceCategory.SHARED], 60)
+        self.assertTrue(rows[2]["is_ytd"])
+        for row, expected in zip(rows, (100, 500, 60), strict=True):
+            self.assertEqual(row["amount"], expected)
+            self.assertEqual(sum(row["categories"].values()), expected)
+
+    @responses.activate
+    def test_annual_category_chart_preserves_offsetting_and_negative_income(self):
+        self.create_test_invoice(2024, 11, ServiceCategory.SUPPORT, Decimal(-100))
+        self.create_test_invoice(2024, 12, ServiceCategory.DONATE, Decimal(100))
+        self.create_test_invoice(2025, 5, ServiceCategory.SHARED, Decimal(50))
+        view = IncomeView()
+        rows = view.get_annual_trend_rows([2023, 2024, 2025], date(2025, 6, 30))
+        self.assertEqual([row["year"] for row in rows], [2024, 2025])
+        self.assertEqual(rows[0]["amount"], 0)
+
+        chart = ElementTree.fromstring(  # ruff:ignore[suspicious-xml-element-tree-usage]
+            view.generate_svg_annual_category_chart(rows)
+        )
+        namespace = {"svg": "http://www.w3.org/2000/svg"}
+        zero_y = float(chart.findall("svg:line", namespace)[-1].attrib["y1"])
+        circles = chart.findall("svg:circle", namespace)
+        self.assertEqual(len(circles), 6)
+        negative = next(
+            circle for circle in circles if "€-100" in "".join(circle.itertext())
+        )
+        self.assertGreater(float(negative.attrib["cy"]), zero_y)
+        self.assertTrue(
+            all(60 <= float(circle.attrib["cy"]) <= 340 for circle in circles)
+        )
+        self.assertIn("YTD", "".join(chart.itertext()))
+        self.assertNotIn("Dedicated hosting", "".join(chart.itertext()))
+        self.assertEqual(view.generate_svg_annual_category_chart([]), "")
+
+    @responses.activate
+    def test_annual_categories_share_queries_and_cache(self):
+        for category in IncomeView.INCOME_CATEGORIES:
+            self.create_test_invoice(2025, 1, category or 0, Decimal(100))
+        view = IncomeView()
+        with self.assertNumQueries(1):
+            rows = view.get_annual_trend_rows([2025], date(2025, 6, 30))
+        with self.assertNumQueries(0):
+            cached_rows = view.get_annual_trend_rows([2025], date(2025, 6, 30))
+        self.assertEqual(rows, cached_rows)
+        self.assertEqual(rows[0]["amount"], 700)
+        self.assertTrue(all(amount == 100 for amount in rows[0]["categories"].values()))
+
+    @responses.activate
+    def test_annual_category_chart_handles_single_negative_year(self):
+        self.create_test_invoice(2025, 5, ServiceCategory.SUPPORT, Decimal(-100))
+        view = IncomeView()
+        rows = view.get_annual_trend_rows([2025], date(2025, 6, 30))
+        chart = ElementTree.fromstring(  # ruff:ignore[suspicious-xml-element-tree-usage]
+            view.generate_svg_annual_category_chart(rows)
+        )
+        circle = chart.find("{http://www.w3.org/2000/svg}circle")
+        assert circle is not None
+        self.assertEqual(float(circle.attrib["cx"]), 400)
+        self.assertGreater(float(circle.attrib["cy"]), 60)
+
+    @responses.activate
+    def test_category_rolling_trends_share_windows_and_reconcile(self):
+        for year, month, category, amount in (
+            (2024, 1, ServiceCategory.SHARED, 100),
+            (2024, 6, ServiceCategory.DEDICATED, 200),
+            (2024, 12, ServiceCategory.SUPPORT, -50),
+            (2025, 1, ServiceCategory.SHARED, 150),
+            (2025, 2, ServiceCategory.DEDICATED, 300),
+            (2025, 3, ServiceCategory.SHARED, -150),
+            (2025, 6, ServiceCategory.SUPPORT, -20),
+            (2025, 11, ServiceCategory.DONATE, 30),
+            (2025, 12, ServiceCategory.UNCATEGORIZED, 40),
+        ):
+            self.create_test_invoice(year, month, category, Decimal(amount))
+
+        for name, kwargs in (
+            ("crm:income-year", {"year": 2025}),
+            ("crm:income-month", {"year": 2025, "month": 12}),
+        ):
+            with (
+                self.subTest(view=name),
+                patch.object(
+                    IncomeView, "_get_current_date", return_value=date(2026, 4, 15)
+                ),
+            ):
+                response = self.client.get(reverse(name, kwargs=kwargs))
+            trend = response.context["rolling_trend"]
+            self.assertEqual(trend["window_months"], 12)
+            self.assertEqual(trend["period_month"], 12)
+            categories = {
+                row["category"]: row
+                for row in response.context["category_rolling_rows"]
+            }
+            self.assertEqual(categories[ServiceCategory.SHARED]["rolling_total"], 0)
+            self.assertEqual(categories[ServiceCategory.SHARED]["change_percent"], -100)
+            self.assertEqual(
+                categories[ServiceCategory.DEDICATED]["change_percent"], 50
+            )
+            self.assertEqual(categories[ServiceCategory.SUPPORT]["previous_total"], -50)
+            self.assertFalse(categories[ServiceCategory.SUPPORT]["has_change_percent"])
+            self.assertFalse(categories[ServiceCategory.DONATE]["has_change_percent"])
+            self.assertEqual(categories[None]["rolling_total"], 40)
+            for key in ("rolling_total", "previous_total", "change_amount"):
+                self.assertEqual(
+                    sum(row[key] for row in categories.values()), trend[key]
+                )
+            self.assertContains(response, "Rolling trends by category")
+
+    @responses.activate
+    def test_category_rolling_trends_use_common_partial_windows_without_extra_queries(
+        self,
+    ):
+        self.create_test_invoice(2025, 1, ServiceCategory.SUPPORT, Decimal(100))
+        self.create_test_invoice(2025, 6, ServiceCategory.DEDICATED, Decimal(200))
+        view = IncomeView()
+        with (
+            self.assertNumQueries(2),
+            patch.object(
+                IncomeView, "_get_current_date", return_value=date(2026, 1, 15)
+            ),
+        ):
+            trend = view.get_rolling_window_summary(2025, 6)
+        assert trend is not None
+        self.assertEqual(trend["window_months"], 3)
+        categories = {row["category"]: row for row in trend["categories"]}
+        self.assertEqual(categories[ServiceCategory.DEDICATED]["previous_total"], 0)
+        self.assertEqual(categories[ServiceCategory.DEDICATED]["rolling_total"], 200)
+        self.assertEqual(categories[ServiceCategory.SUPPORT]["previous_total"], 100)
+        self.assertEqual(categories[ServiceCategory.SUPPORT]["rolling_total"], 0)
+        self.assertEqual(categories[ServiceCategory.HOSTING]["change_amount"], 0)
+
+    @responses.activate
     def test_income_yearly_view(self):
         """Test yearly income view."""
         cnb_mock_rates()
@@ -2980,7 +3137,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         years = [2023, 2024, 2025]
         current_date = date(2025, 6, 30)
 
-        with self.assertNumQueries(2):
+        with self.assertNumQueries(4):
             rows = view.get_annual_trend_rows(years, current_date)
         with self.assertNumQueries(0):
             cached_rows = view.get_annual_trend_rows(years, current_date)
@@ -3178,6 +3335,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
 
         self.assertEqual(response.context["total_income"], Decimal(204))
+        rows = {row["year"]: row for row in response.context["annual_trend_rows"]}
+        self.assertEqual(rows[2023]["categories"][None], Decimal(204))
 
     def test_income_converts_non_eur_invoice_to_eur(self):
         invoice_date = date(2025, 2, 1)
@@ -3201,6 +3360,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         response = self.client.get(reverse("crm:income-year", kwargs={"year": 2025}))
 
         self.assertEqual(response.context["total_income"], Decimal(80))
+        rows = {row["year"]: row for row in response.context["annual_trend_rows"]}
+        self.assertEqual(rows[2025]["categories"][ServiceCategory.HOSTING], Decimal(80))
 
     def test_income_converts_historical_btc_payments_to_eur(self):
         payment_date = date(2023, 3, 1)
@@ -3813,6 +3974,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             context = view.get_context_data()
 
         self.assertIsNone(context["rolling_trend"])
+        self.assertEqual(context["category_rolling_rows"], [])
         self.assertTrue(
             all(not row["trend_available"] for row in context["monthly_breakdown_rows"])
         )

@@ -178,6 +178,29 @@ class AnnualIncomeTrendRow(TypedDict):
     year: int
     amount: Decimal
     is_ytd: bool
+    categories: dict[IncomeCategory, Decimal]
+
+
+class IncomeChange(TypedDict):
+    rolling_total: Decimal
+    previous_total: Decimal
+    change_amount: Decimal
+    change_percent: Decimal
+    has_change_percent: bool
+
+
+class CategoryIncomeChange(IncomeChange):
+    category: IncomeCategory
+
+
+class RollingIncomeTrend(IncomeChange):
+    period_year: int
+    period_month: int
+    window_months: int
+    categories: list[CategoryIncomeChange]
+
+
+BreakdownValue: TypeAlias = str | int | Decimal | bool | list[CategoryIncomeChange]
 
 
 def has_invoice_confirmation(request: HttpRequest) -> bool:
@@ -1470,7 +1493,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
     MAX_MONTH_INDEX = date.max.year * 12 - 1
     INVOICE_DATA_START = date(2024, 11, 1)
     SATOSHIS_PER_BTC = Decimal(100_000_000)
-    ANNUAL_TREND_CACHE_VERSION = 2
+    ANNUAL_TREND_CACHE_VERSION = 3
     ANNUAL_TREND_COMPLETE_CACHE_TIMEOUT = 24 * 60 * 60
     ANNUAL_TREND_YTD_CACHE_TIMEOUT = 15 * 60
 
@@ -1809,6 +1832,98 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 + "</text>"
             )
 
+        svg_parts.append("</svg>")
+        return "".join(svg_parts)
+
+    def generate_svg_annual_category_chart(  # ruff:ignore[too-many-locals]
+        self, rows: list[AnnualIncomeTrendRow]
+    ) -> str:
+        if not rows:
+            return ""
+        categories = [
+            category
+            for category in self.INCOME_CATEGORIES
+            if any(row["categories"][category] != 0 for row in rows)
+        ]
+        if not categories:
+            return ""
+        width = self.CHART_WIDTH
+        height = self.CHART_HEIGHT
+        padding = self.CHART_PADDING
+        values = [
+            row["categories"][category] for row in rows for category in categories
+        ]
+        minimum = min(Decimal(0), *values)
+        maximum = max(self.MIN_CHART_VALUE, *values)
+        chart_height = height - 2 * padding
+        chart_width = width - 2 * padding
+        chart_label = escape(gettext("Annual category trends"))
+        ytd_label = escape(gettext("YTD"))
+        svg_parts = [
+            (
+                f'<svg viewBox="0 0 {width} {height}" width="{width}" height="{height}" '
+                'xmlns="http://www.w3.org/2000/svg" class="annual-category-chart" '
+                f'role="img" aria-label="{chart_label}"><title>{chart_label}</title>'
+            ),
+        ]
+        for tick in range(5):
+            value = minimum + (maximum - minimum) * Decimal(tick) / 4
+            y = height - padding - chart_height * tick / 4
+            svg_parts.append(
+                f'<line x1="{padding}" y1="{y}" x2="{width - padding}" '
+                f'y2="{y}" stroke="#d7ddd9" stroke-width="1" />'
+                f'<text x="{padding - 8}" y="{y + 4}" text-anchor="end" '
+                f'font-size="10" fill="#666">€{value:,.0f}</text>'
+            )
+        zero_y = height - padding - float(-minimum / (maximum - minimum)) * chart_height
+        svg_parts.append(
+            f'<line x1="{padding}" y1="{zero_y}" x2="{width - padding}" '
+            f'y2="{zero_y}" stroke="#666" stroke-width="1" />'
+        )
+        positions = [
+            padding + chart_width * index / (len(rows) - 1)
+            if len(rows) > 1
+            else width / 2
+            for index in range(len(rows))
+        ]
+        for row, x in zip(rows, positions, strict=True):
+            svg_parts.append(
+                f'<text x="{x}" y="{height - padding + 18}" text-anchor="middle" '
+                f'font-size="10" fill="#666">{row["year"]}'
+                + (f" ({ytd_label})" if row["is_ytd"] else "")
+                + "</text>"
+            )
+        for category in categories:
+            color = self.CATEGORY_COLORS[category]
+            label = escape(self._get_category_label(category))
+            points = [
+                (
+                    x,
+                    height
+                    - padding
+                    - float(
+                        (row["categories"][category] - minimum) / (maximum - minimum)
+                    )
+                    * chart_height,
+                )
+                for row, x in zip(rows, positions, strict=True)
+            ]
+            coordinates = " ".join(f"{x},{y}" for x, y in points)
+            svg_parts.append(
+                f'<polyline points="{coordinates}" fill="none" '
+                f'stroke="{color}" stroke-width="2"><title>{label}</title></polyline>'
+            )
+            for row, (x, y) in zip(rows, points, strict=True):
+                period = (
+                    f"{row['year']} ({ytd_label})"
+                    if row["is_ytd"]
+                    else str(row["year"])
+                )
+                amount = row["categories"][category]
+                svg_parts.append(
+                    f'<circle cx="{x}" cy="{y}" r="4" fill="{color}">'
+                    f"<title>{label} - {period}: €{amount:,.0f}</title></circle>"
+                )
         svg_parts.append("</svg>")
         return "".join(svg_parts)
 
@@ -2226,54 +2341,18 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             )
         return rows
 
-    def _get_annual_payment_totals(
-        self, start_date: date, end_date: date
-    ) -> dict[int, Decimal]:
-        query = (
-            Payment.objects.filter(
-                state=Payment.PROCESSED,
-                created__gte=timezone.make_aware(
-                    datetime.combine(start_date, time.min),
-                    timezone.get_current_timezone(),
-                ),
-                created__lt=timezone.make_aware(
-                    datetime.combine(end_date, time.min),
-                    timezone.get_current_timezone(),
-                ),
-            )
-            .filter(created__lt=self._get_payment_cutoff())
-            .exclude(paid_invoice__issue_date__gte=self.INVOICE_DATA_START)
-            .select_related("customer")
-        )
-
-        totals: dict[int, Decimal] = {}
-        for payment in query.iterator():
-            payment_date = timezone.localtime(payment.created).date()
-            totals[payment_date.year] = totals.get(
-                payment_date.year, Decimal(0)
-            ) + self._get_payment_total_eur(payment, payment_date)
-        return totals
-
     def _calculate_annual_income_totals(
         self, start_date: date, end_date: date
-    ) -> dict[int, Decimal]:
-        totals: dict[int, Decimal] = {}
-        if start_date < self.INVOICE_DATA_START:
-            payment_end = min(end_date, self.INVOICE_DATA_START)
-            if start_date < payment_end:
-                totals.update(self._get_annual_payment_totals(start_date, payment_end))
-
-        invoice_start = max(start_date, self.INVOICE_DATA_START)
-        if invoice_start < end_date:
-            for row in self._get_invoice_summary_rows(
-                start_date=invoice_start,
-                end_date=end_date,
-                period="month_start",
-            ):
-                invoice_period = cast("date", row["period"])
-                totals[invoice_period.year] = totals.get(
-                    invoice_period.year, Decimal(0)
-                ) + cast("Decimal", row["total_no_vat"])
+    ) -> dict[int, dict[IncomeCategory, Decimal]]:
+        totals: dict[int, dict[IncomeCategory, Decimal]] = {}
+        for row in self._get_income_summary_rows(
+            start_date=start_date, end_date=end_date, period="month_start"
+        ):
+            year = cast("date", row["period"]).year
+            if year not in totals:
+                totals[year] = self._get_empty_category_totals()
+            category = ServiceCategory(row["category"]) if row["category"] else None
+            totals[year][category] += row["total_no_vat"]
         return totals
 
     def _get_annual_trend_cache_key(self, year: int) -> str:
@@ -2291,7 +2370,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         }
         cached_totals = cache.get_many(cache_keys.values())
         totals = {
-            year: cast("Decimal", cached_totals[key])
+            year: cast("dict[IncomeCategory, Decimal]", cached_totals[key])
             for year, key in cache_keys.items()
             if key in cached_totals
         }
@@ -2309,7 +2388,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 range_start, range_end
             )
             for year in missing_years:
-                total = calculated_totals.get(year, Decimal(0))
+                total = calculated_totals.get(year, self._get_empty_category_totals())
                 totals[year] = total
                 cache.set(
                     cache_keys[year],
@@ -2324,13 +2403,18 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         rows: list[AnnualIncomeTrendRow] = [
             {
                 "year": year,
-                "amount": totals[year],
+                "amount": sum(totals[year].values(), Decimal(0)),
+                "categories": totals[year],
                 "is_ytd": year == current_date.year,
             }
             for year in trend_years
         ]
         first_nonzero = next(
-            (index for index, row in enumerate(rows) if row["amount"] != 0),
+            (
+                index
+                for index, row in enumerate(rows)
+                if any(row["categories"].values())
+            ),
             None,
         )
         return rows[first_nonzero:] if first_nonzero is not None else []
@@ -2373,9 +2457,11 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def _get_month_totals_in_range(
         self, start_month: date | None, end_month: date
-    ) -> tuple[dict[date, Decimal], date | None]:
+    ) -> tuple[
+        dict[date, Decimal], date | None, dict[IncomeCategory, dict[date, Decimal]]
+    ]:
         if start_month is None or start_month > end_month:
-            return {}, None
+            return {}, None, {}
 
         month_totals = {
             month_start: Decimal(0)
@@ -2394,13 +2480,21 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 period="month_start",
             )
 
+        category_totals: dict[IncomeCategory, dict[date, Decimal]] = {
+            category: {} for category in self.INCOME_CATEGORIES
+        }
         earliest_month: date | None = None
         for row in rows:
             month_start = cast("date", row["period"])
             if earliest_month is None or month_start < earliest_month:
                 earliest_month = month_start
-            month_totals[month_start] += cast("Decimal", row["total_no_vat"])
-        return month_totals, earliest_month
+            amount = row["total_no_vat"]
+            category = ServiceCategory(row["category"]) if row["category"] else None
+            month_totals[month_start] += amount
+            category_totals[category][month_start] = (
+                category_totals[category].get(month_start, Decimal(0)) + amount
+            )
+        return month_totals, earliest_month, category_totals
 
     def _sum_month_totals(
         self,
@@ -2432,7 +2526,8 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         month_totals: dict[date, Decimal],
         period_start: date,
         earliest_month: date | None,
-    ) -> dict[str, int | Decimal | bool] | None:
+        category_totals: dict[IncomeCategory, dict[date, Decimal]],
+    ) -> RollingIncomeTrend | None:
         if earliest_month is None or earliest_month > period_start:
             return None
 
@@ -2450,22 +2545,45 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if previous_start is None or previous_end is None:
             return None
 
-        rolling_total = self._sum_month_totals(
-            month_totals,
-            rolling_start,
-            period_start,
-        )
-        previous_total = self._sum_month_totals(
-            month_totals,
-            previous_start,
-            previous_end,
-        )
-        change_amount = rolling_total - previous_total
-        has_change_percent = previous_total > 0
         return {
             "period_year": period_start.year,
             "period_month": period_start.month,
             "window_months": window_months,
+            **self._get_window_change(
+                month_totals, rolling_start, period_start, previous_start, previous_end
+            ),
+            "categories": [
+                {
+                    "category": category,
+                    **self._get_window_change(
+                        category_totals[category],
+                        rolling_start,
+                        period_start,
+                        previous_start,
+                        previous_end,
+                    ),
+                }
+                for category in self.INCOME_CATEGORIES
+            ],
+        }
+
+    def _get_window_change(
+        self,
+        month_totals: dict[date, Decimal],
+        rolling_start: date,
+        period_start: date,
+        previous_start: date,
+        previous_end: date,
+    ) -> IncomeChange:
+        rolling_total = self._sum_month_totals(
+            month_totals, rolling_start, period_start
+        )
+        previous_total = self._sum_month_totals(
+            month_totals, previous_start, previous_end
+        )
+        change_amount = rolling_total - previous_total
+        has_change_percent = previous_total > 0
+        return {
             "rolling_total": rolling_total,
             "previous_total": previous_total,
             "change_amount": change_amount,
@@ -2479,7 +2597,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
 
     def get_rolling_window_summary(
         self, year: int, month: int
-    ) -> dict[str, int | Decimal | bool] | None:
+    ) -> RollingIncomeTrend | None:
         try:
             period_start = self._get_month_start(year, month)
         except ValueError:
@@ -2487,17 +2605,17 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
         if period_start >= self._get_current_month_start():
             return None
         lookback_start = self._shift_month(period_start, -23)
-        month_totals, earliest_month = self._get_month_totals_in_range(
+        month_totals, earliest_month, category_totals = self._get_month_totals_in_range(
             lookback_start, period_start
         )
         return self._build_rolling_window_summary(
-            month_totals, period_start, earliest_month
+            month_totals, period_start, earliest_month, category_totals
         )
 
     def get_yearly_breakdown_rows(
         self, year: int, monthly_data: dict[str, Decimal]
-    ) -> list[dict[str, str | int | Decimal | bool]]:
-        rows: list[dict[str, str | int | Decimal | bool]] = [
+    ) -> list[dict[str, BreakdownValue]]:
+        rows: list[dict[str, BreakdownValue]] = [
             {
                 "month": f"{month:02d}",
                 "month_number": month,
@@ -2518,7 +2636,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return rows
 
         trend_end_month = min(last_month, last_complete_month)
-        month_totals, earliest_month = self._get_month_totals_in_range(
+        month_totals, earliest_month, category_totals = self._get_month_totals_in_range(
             self._shift_month(first_month, -23),
             trend_end_month,
         )
@@ -2528,21 +2646,21 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 continue
 
             rolling_summary = self._build_rolling_window_summary(
-                month_totals, period_start, earliest_month
+                month_totals, period_start, earliest_month, category_totals
             )
             if rolling_summary is None:
                 continue
 
             row["trend_available"] = True
-            row.update(rolling_summary)
+            row.update(cast("dict[str, BreakdownValue]", rolling_summary))
         return rows
 
     def get_yearly_rolling_summary(
         self,
         year: int,
-        monthly_breakdown_rows: list[dict[str, str | int | Decimal | bool]],
+        monthly_breakdown_rows: list[dict[str, BreakdownValue]],
         current_year: int,
-    ) -> dict[str, int | Decimal | bool] | None:
+    ) -> RollingIncomeTrend | None:
         if year < current_year:
             trend_month = 12
         elif year > current_year:
@@ -2561,6 +2679,7 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             return None
 
         return {
+            "categories": cast("list[CategoryIncomeChange]", trend_row["categories"]),
             "period_year": cast("int", trend_row["period_year"]),
             "period_month": cast("int", trend_row["period_month"]),
             "window_months": cast("int", trend_row["window_months"]),
@@ -2676,6 +2795,24 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
             context["annual_trend_chart_svg"] = self.generate_svg_annual_income_chart(
                 context["annual_trend_rows"]
             )
+            context["annual_category_chart_svg"] = (
+                self.generate_svg_annual_category_chart(context["annual_trend_rows"])
+            )
+            context["annual_category_rows"] = [
+                {
+                    "label": self._get_category_label(category),
+                    "color": self.CATEGORY_COLORS[category],
+                    "amounts": [
+                        row["categories"][category]
+                        for row in context["annual_trend_rows"]
+                    ],
+                    "active": any(
+                        row["categories"][category]
+                        for row in context["annual_trend_rows"]
+                    ),
+                }
+                for category in self.INCOME_CATEGORIES
+            ]
             monthly_data, monthly_category_data = self._aggregate_period_totals(
                 summary_rows,
                 [f"{month_number:02d}" for month_number in range(1, 13)],
@@ -2692,5 +2829,15 @@ class IncomeView(CRMMixin, TemplateView):  # type: ignore[misc]
                 year, context["monthly_breakdown_rows"], current_year
             )
             context["is_monthly"] = False
+
+        trend = context["rolling_trend"]
+        context["category_rolling_rows"] = (
+            [
+                {**row, "label": self._get_category_label(row["category"])}
+                for row in trend["categories"]
+            ]
+            if trend
+            else []
+        )
 
         return context
