@@ -25,10 +25,10 @@ from django.utils import timezone
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import get_language, override
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.invoices.models import BANK_ACCOUNTS, Currency
 from weblate_web.models import (
     Package,
-    PackageCategory,
     Service,
     get_donation_reward_package_name,
 )
@@ -98,9 +98,7 @@ def weblate_web(request):
         "changes": SimpleLazyObject(get_changes),
         "bank_account": BANK_ACCOUNTS[Currency.EUR],
         "today": timezone.now(),
-        "hosting_packages": Package.objects.filter(
-            category=PackageCategory.PACKAGE_SHARED
-        )
+        "hosting_packages": Package.objects.filter(category=ServiceCategory.SHARED)
         .filter(name__regex="^hosted:[0-9.]+[km]$")
         .order_by("price")[:6],
         "language_columns": [

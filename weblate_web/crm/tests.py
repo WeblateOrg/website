@@ -25,6 +25,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.crm.hosted import USER_ENSURE_RESPONSE_SALT, USER_ENSURE_SALT
 from weblate_web.crm.models import Interaction, ZammadSyncLog
 from weblate_web.crm.views import IncomeView, ServiceListView
@@ -34,7 +35,6 @@ from weblate_web.invoices.models import (
     Currency,
     Discount,
     Invoice,
-    InvoiceCategory,
     InvoiceKind,
     QuoteStatus,
 )
@@ -42,7 +42,6 @@ from weblate_web.management.commands.zammad_sync import Command as ZammadSyncCom
 from weblate_web.management.commands.zammad_sync import InvalidSubscriptionError
 from weblate_web.models import (
     Package,
-    PackageCategory,
     SamlIdentity,
     Service,
     ServiceKind,
@@ -132,7 +131,7 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
             customer.save(update_fields=["email"])
         invoice = Invoice.objects.create(
             kind=kind,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=customer,
             currency=Currency.EUR,
         )
@@ -225,7 +224,7 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
                     customer=quote.customer,
                     parent=quote,
                     kind=InvoiceKind.INVOICE,
-                    category=InvoiceCategory.HOSTING,
+                    category=ServiceCategory.HOSTING,
                     currency=Currency.EUR,
                 )
             quotes.append(quote)
@@ -337,7 +336,7 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
         )
         converted_invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=converted_quote.customer,
             currency=Currency.EUR,
             parent=converted_quote,
@@ -659,7 +658,7 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
         customer = self.create_customer(customer_name)
         invoice = Invoice.objects.create(
             kind=kind,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=customer,
             currency=Currency.EUR,
             issue_date=issue_date,
@@ -681,7 +680,7 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
         if converted:
             child_invoice = Invoice.objects.create(
                 kind=InvoiceKind.INVOICE,
-                category=InvoiceCategory.HOSTING,
+                category=ServiceCategory.HOSTING,
                 customer=customer,
                 currency=Currency.EUR,
                 parent=invoice,
@@ -700,7 +699,7 @@ class CRMWorkQueueTestCase(BaseCRMTestCase):
             defaults={
                 "verbose": "Basic support",
                 "price": 300,
-                "category": PackageCategory.PACKAGE_SUPPORT,
+                "category": ServiceCategory.SUPPORT,
             },
         )
         customer = self.create_customer(customer_name)
@@ -994,7 +993,7 @@ class CRMQuoteStatusTestCase(BaseCRMTestCase):
     ) -> Invoice:
         invoice = Invoice.objects.create(
             kind=kind,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.create_customer(),
             currency=Currency.EUR,
         )
@@ -1181,7 +1180,7 @@ class CRMQuoteStatusTestCase(BaseCRMTestCase):
         quote = self.create_invoice(Decimal(42), kind=InvoiceKind.QUOTE)
         invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=quote.customer,
             currency=Currency.EUR,
             parent=quote,
@@ -1414,7 +1413,7 @@ class CRMTestCase(BaseCRMTestCase):
             defaults={
                 "verbose": "Extended support",
                 "price": 600,
-                "category": PackageCategory.PACKAGE_SUPPORT,
+                "category": ServiceCategory.SUPPORT,
             },
         )
         customer = self.create_customer()
@@ -2136,7 +2135,7 @@ class CRMTestCase(BaseCRMTestCase):
                 name="x1",
                 verbose="pkg1",
                 price=42,
-                category=PackageCategory.PACKAGE_SHARED,
+                category=ServiceCategory.SHARED,
             ),
             expires=expires,
             payment=payment,
@@ -2146,7 +2145,7 @@ class CRMTestCase(BaseCRMTestCase):
                 name="x2",
                 verbose="pkg2",
                 price=99,
-                category=PackageCategory.PACKAGE_SHARED,
+                category=ServiceCategory.SHARED,
             ),
             expires=expires,
             payment=payment,
@@ -2328,7 +2327,7 @@ class CRMTestCase(BaseCRMTestCase):
             name="basic",
             verbose="Basic support",
             price=300,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=1)
@@ -2476,7 +2475,7 @@ class CRMTestCase(BaseCRMTestCase):
                 name="x1",
                 verbose="pkg1",
                 price=42,
-                category=PackageCategory.PACKAGE_SHARED,
+                category=ServiceCategory.SHARED,
             ),
             expires=expires,
             payment=payment,
@@ -2502,7 +2501,7 @@ class CRMTestCase(BaseCRMTestCase):
     ) -> Invoice:
         invoice = Invoice.objects.create(
             kind=kind,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.create_customer(),
             currency=Currency.EUR,
         )
@@ -2793,7 +2792,7 @@ class CRMVATIssuanceTestCase(BaseCRMTestCase):
             name="x1",
             verbose="pkg1",
             price=42,
-            category=PackageCategory.PACKAGE_SHARED,
+            category=ServiceCategory.SHARED,
         )
         customer = self.create_customer()
         Customer.objects.filter(pk=customer.pk).update(
@@ -2934,13 +2933,13 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         # Create test invoices
         self.create_test_invoice(
-            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
+            current_year, 1, ServiceCategory.HOSTING, Decimal(1000)
         )
         self.create_test_invoice(
-            current_year, 2, InvoiceCategory.SUPPORT, Decimal(2000)
+            current_year, 2, ServiceCategory.SUPPORT, Decimal(2000)
         )
         self.create_test_invoice(
-            current_year, 3, InvoiceCategory.HOSTING, Decimal(1500)
+            current_year, 3, ServiceCategory.HOSTING, Decimal(1500)
         )
 
         response = self.client.get(reverse("crm:income"))
@@ -2951,8 +2950,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     @responses.activate
     def test_income_yearly_view_shows_annual_trend_with_ytd(self):
         self.create_historical_payment(date(2023, 6, 1), 100)
-        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(300))
-        self.create_test_invoice(2025, 12, InvoiceCategory.HOSTING, Decimal(900))
+        self.create_test_invoice(2025, 5, ServiceCategory.HOSTING, Decimal(300))
+        self.create_test_invoice(2025, 12, ServiceCategory.HOSTING, Decimal(900))
 
         with patch.object(
             IncomeView, "_get_current_date", return_value=date(2025, 6, 30)
@@ -2976,7 +2975,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     @responses.activate
     def test_annual_income_trend_uses_bounded_queries_and_cache(self):
         self.create_historical_payment(date(2023, 6, 1), 100)
-        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(300))
+        self.create_test_invoice(2025, 5, ServiceCategory.HOSTING, Decimal(300))
         view = IncomeView()
         years = [2023, 2024, 2025]
         current_date = date(2025, 6, 30)
@@ -2992,7 +2991,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
     def test_income_uses_hybrid_cutoff_without_duplicates(self):
         historical_invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.customer,
             issue_date=date(2024, 10, 31),
             currency=Currency.EUR,
@@ -3010,7 +3009,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         cutoff_invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.SUPPORT,
+            category=ServiceCategory.SUPPORT,
             customer=self.customer,
             issue_date=IncomeView.INVOICE_DATA_START,
             currency=Currency.EUR,
@@ -3037,7 +3036,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         discount = Discount.objects.create(description="Half price", percents=50)
         rounded_line = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.customer,
             issue_date=issue_date,
             currency=Currency.EUR,
@@ -3047,7 +3046,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         )
         discounted = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.customer,
             issue_date=issue_date,
             currency=Currency.EUR,
@@ -3100,12 +3099,32 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         self.assertEqual(response.context["total_income"], Decimal(100))
 
+    @responses.activate
+    def test_income_separates_hosting_types_and_combines_uncategorized(self):
+        cnb_mock_rates()
+        for category, amount in (
+            (ServiceCategory.SHARED, 100),
+            (ServiceCategory.DEDICATED, 200),
+            (ServiceCategory.HOSTING, 300),
+            (ServiceCategory.UNCATEGORIZED, 400),
+        ):
+            self.create_test_invoice(2025, 1, category, Decimal(amount))
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2025}))
+        income = response.context["income_data"]
+        self.assertEqual(income["Shared hosting"], Decimal(100))
+        self.assertEqual(income["Dedicated hosting"], Decimal(200))
+        self.assertEqual(income["Hosting"], Decimal(300))
+        self.assertEqual(income["Uncategorized"], Decimal(400))
+        self.assertEqual(response.context["total_income"], Decimal(1000))
+        self.assertIn("Shared hosting", response.context["pie_chart_svg"])
+        self.assertIn("Dedicated hosting", response.context["pie_chart_svg"])
+
     def test_income_infers_historical_categories_and_keeps_unknown(self):
         support_package = Package.objects.create(
             name="historical-support",
             verbose="Historical support",
             price=100,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         self.create_historical_payment(
             date(2023, 1, 1),
@@ -3127,7 +3146,9 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
 
         self.assertEqual(response.context["income_data"]["Donation"], Decimal(100))
-        self.assertEqual(response.context["income_data"]["Hosting"], Decimal(200))
+        self.assertEqual(
+            response.context["income_data"]["Shared hosting"], Decimal(200)
+        )
         self.assertEqual(response.context["income_data"]["Support"], Decimal(300))
         self.assertEqual(response.context["income_data"]["Uncategorized"], Decimal(400))
 
@@ -3166,7 +3187,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         }
         invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.customer,
             issue_date=invoice_date,
             currency=Currency.USD,
@@ -3205,12 +3226,12 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         # Create test invoices for different categories
         self.create_test_invoice(
-            current_year, 3, InvoiceCategory.HOSTING, Decimal(1000)
+            current_year, 3, ServiceCategory.HOSTING, Decimal(1000)
         )
         self.create_test_invoice(
-            current_year, 3, InvoiceCategory.SUPPORT, Decimal(2000)
+            current_year, 3, ServiceCategory.SUPPORT, Decimal(2000)
         )
-        self.create_test_invoice(current_year, 3, InvoiceCategory.DEVEL, Decimal(3000))
+        self.create_test_invoice(current_year, 3, ServiceCategory.DEVEL, Decimal(3000))
 
         response = self.client.get(
             reverse("crm:income-month", kwargs={"year": current_year, "month": 3})
@@ -3228,16 +3249,16 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         selected_year = timezone.localdate().year - 1
 
         self.create_test_invoice(
-            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(100)
+            selected_year - 1, 1, ServiceCategory.HOSTING, Decimal(100)
         )
         self.create_test_invoice(
-            selected_year - 1, 6, InvoiceCategory.HOSTING, Decimal(400)
+            selected_year - 1, 6, ServiceCategory.HOSTING, Decimal(400)
         )
         self.create_test_invoice(
-            selected_year, 4, InvoiceCategory.HOSTING, Decimal(500)
+            selected_year, 4, ServiceCategory.HOSTING, Decimal(500)
         )
         self.create_test_invoice(
-            selected_year, 12, InvoiceCategory.HOSTING, Decimal(600)
+            selected_year, 12, ServiceCategory.HOSTING, Decimal(600)
         )
 
         response = self.client.get(
@@ -3262,34 +3283,34 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         selected_year = timezone.localdate().year - 1
 
         self.create_test_invoice(
-            selected_year - 1, 6, InvoiceCategory.HOSTING, Decimal(100)
+            selected_year - 1, 6, ServiceCategory.HOSTING, Decimal(100)
         )
         self.create_test_invoice(
-            selected_year - 1, 7, InvoiceCategory.HOSTING, Decimal(200)
+            selected_year - 1, 7, ServiceCategory.HOSTING, Decimal(200)
         )
         self.create_test_invoice(
-            selected_year - 1, 8, InvoiceCategory.HOSTING, Decimal(300)
+            selected_year - 1, 8, ServiceCategory.HOSTING, Decimal(300)
         )
         self.create_test_invoice(
-            selected_year - 1, 9, InvoiceCategory.HOSTING, Decimal(400)
+            selected_year - 1, 9, ServiceCategory.HOSTING, Decimal(400)
         )
         self.create_test_invoice(
-            selected_year - 1, 10, InvoiceCategory.HOSTING, Decimal(500)
+            selected_year - 1, 10, ServiceCategory.HOSTING, Decimal(500)
         )
         self.create_test_invoice(
-            selected_year - 1, 11, InvoiceCategory.HOSTING, Decimal(600)
+            selected_year - 1, 11, ServiceCategory.HOSTING, Decimal(600)
         )
         self.create_test_invoice(
-            selected_year - 1, 12, InvoiceCategory.HOSTING, Decimal(700)
+            selected_year - 1, 12, ServiceCategory.HOSTING, Decimal(700)
         )
         self.create_test_invoice(
-            selected_year, 1, InvoiceCategory.HOSTING, Decimal(800)
+            selected_year, 1, ServiceCategory.HOSTING, Decimal(800)
         )
         self.create_test_invoice(
-            selected_year, 2, InvoiceCategory.HOSTING, Decimal(900)
+            selected_year, 2, ServiceCategory.HOSTING, Decimal(900)
         )
         self.create_test_invoice(
-            selected_year, 3, InvoiceCategory.HOSTING, Decimal(1000)
+            selected_year, 3, ServiceCategory.HOSTING, Decimal(1000)
         )
 
         response = self.client.get(
@@ -3318,11 +3339,11 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         cnb_mock_rates()
         selected_year = 2026
 
-        self.create_test_invoice(2024, 4, InvoiceCategory.HOSTING, Decimal(100))
-        self.create_test_invoice(2024, 9, InvoiceCategory.HOSTING, Decimal(400))
-        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(500))
+        self.create_test_invoice(2024, 4, ServiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(2024, 9, ServiceCategory.HOSTING, Decimal(400))
+        self.create_test_invoice(2025, 5, ServiceCategory.HOSTING, Decimal(500))
         self.create_test_invoice(
-            selected_year, 4, InvoiceCategory.HOSTING, Decimal(600)
+            selected_year, 4, ServiceCategory.HOSTING, Decimal(600)
         )
 
         with patch.object(
@@ -3345,7 +3366,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         # Create invoice
         invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.customer,
             issue_date=date(current_year, 1, 15),
             currency=Currency.EUR,
@@ -3357,7 +3378,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         # Create quote (should not be counted)
         quote = Invoice.objects.create(
             kind=InvoiceKind.QUOTE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.customer,
             issue_date=date(current_year, 1, 15),
             currency=Currency.EUR,
@@ -3386,7 +3407,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         invoice = Invoice.objects.create(
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=customer,
             issue_date=date(current_year, 1, 15),
             currency=Currency.EUR,
@@ -3410,8 +3431,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         cnb_mock_rates()
         current_year = timezone.localdate().year
 
-        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
-        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(current_year, 1, ServiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(current_year, 1, ServiceCategory.HOSTING, Decimal(100))
 
         response = self.client.get(
             reverse("crm:income-year", kwargs={"year": current_year})
@@ -3427,15 +3448,15 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         cnb_mock_rates()
         current_year = timezone.localdate().year
 
-        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
-        self.create_test_invoice(current_year, 1, InvoiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(current_year, 1, ServiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(current_year, 1, ServiceCategory.HOSTING, Decimal(100))
 
         monthly_data, monthly_category_data = IncomeView().get_monthly_data(
             current_year
         )
         self.assertEqual(monthly_data["01"], Decimal(200))
         self.assertEqual(
-            monthly_category_data["01"][InvoiceCategory.HOSTING], Decimal(200)
+            monthly_category_data["01"][ServiceCategory.HOSTING], Decimal(200)
         )
 
     def test_income_year_navigation(self):
@@ -3473,7 +3494,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         current_year = timezone.localdate().year
 
         self.create_test_invoice(
-            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
+            current_year, 1, ServiceCategory.HOSTING, Decimal(1000)
         )
 
         response = self.client.get(
@@ -3492,7 +3513,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             for day in days
         }
         daily_data["31"] = Decimal(100)
-        daily_category_data["31"][InvoiceCategory.HOSTING] = Decimal(100)
+        daily_category_data["31"][ServiceCategory.HOSTING] = Decimal(100)
 
         svg = IncomeView().generate_svg_stacked_bar_chart(
             daily_data, daily_category_data, 2026, 1
@@ -3516,7 +3537,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             for month in month_keys
         }
         monthly_data["12"] = Decimal(100)
-        monthly_category_data["12"][InvoiceCategory.HOSTING] = Decimal(100)
+        monthly_category_data["12"][ServiceCategory.HOSTING] = Decimal(100)
 
         svg = IncomeView().generate_svg_stacked_bar_chart(
             monthly_data, monthly_category_data, 2026
@@ -3534,10 +3555,10 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         view = IncomeView()
         svg = view.generate_svg_pie_chart(
             {
-                InvoiceCategory.HOSTING: Decimal(100),
-                InvoiceCategory.SUPPORT: Decimal(200),
-                InvoiceCategory.DEVEL: Decimal(300),
-                InvoiceCategory.DONATE: Decimal(400),
+                ServiceCategory.HOSTING: Decimal(100),
+                ServiceCategory.SUPPORT: Decimal(200),
+                ServiceCategory.DEVEL: Decimal(300),
+                ServiceCategory.DONATE: Decimal(400),
             }
         )
         tree = ElementTree.fromstring(svg)  # ruff:ignore[suspicious-xml-element-tree-usage]
@@ -3568,13 +3589,13 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
 
         # Create invoices in different categories
         self.create_test_invoice(
-            current_year, 1, InvoiceCategory.HOSTING, Decimal(1000)
+            current_year, 1, ServiceCategory.HOSTING, Decimal(1000)
         )
         self.create_test_invoice(
-            current_year, 2, InvoiceCategory.SUPPORT, Decimal(2000)
+            current_year, 2, ServiceCategory.SUPPORT, Decimal(2000)
         )
-        self.create_test_invoice(current_year, 3, InvoiceCategory.DEVEL, Decimal(3000))
-        self.create_test_invoice(current_year, 4, InvoiceCategory.DONATE, Decimal(500))
+        self.create_test_invoice(current_year, 3, ServiceCategory.DEVEL, Decimal(3000))
+        self.create_test_invoice(current_year, 4, ServiceCategory.DONATE, Decimal(500))
 
         response = self.client.get(
             reverse("crm:income-year", kwargs={"year": current_year})
@@ -3594,16 +3615,16 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         selected_year = timezone.localdate().year - 1
 
         self.create_test_invoice(
-            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(100)
+            selected_year - 1, 1, ServiceCategory.HOSTING, Decimal(100)
         )
         self.create_test_invoice(
-            selected_year - 1, 6, InvoiceCategory.HOSTING, Decimal(400)
+            selected_year - 1, 6, ServiceCategory.HOSTING, Decimal(400)
         )
         self.create_test_invoice(
-            selected_year, 4, InvoiceCategory.HOSTING, Decimal(500)
+            selected_year, 4, ServiceCategory.HOSTING, Decimal(500)
         )
         self.create_test_invoice(
-            selected_year, 12, InvoiceCategory.HOSTING, Decimal(600)
+            selected_year, 12, ServiceCategory.HOSTING, Decimal(600)
         )
 
         response = self.client.get(
@@ -3636,25 +3657,25 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         selected_year = timezone.localdate().year - 1
 
         self.create_test_invoice(
-            selected_year - 2, 2, InvoiceCategory.HOSTING, Decimal(50)
+            selected_year - 2, 2, ServiceCategory.HOSTING, Decimal(50)
         )
         self.create_test_invoice(
-            selected_year - 2, 3, InvoiceCategory.HOSTING, Decimal(250)
+            selected_year - 2, 3, ServiceCategory.HOSTING, Decimal(250)
         )
         self.create_test_invoice(
-            selected_year - 2, 12, InvoiceCategory.HOSTING, Decimal(150)
+            selected_year - 2, 12, ServiceCategory.HOSTING, Decimal(150)
         )
         self.create_test_invoice(
-            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(200)
+            selected_year - 1, 1, ServiceCategory.HOSTING, Decimal(200)
         )
         self.create_test_invoice(
-            selected_year - 1, 2, InvoiceCategory.HOSTING, Decimal(100)
+            selected_year - 1, 2, ServiceCategory.HOSTING, Decimal(100)
         )
         self.create_test_invoice(
-            selected_year - 1, 12, InvoiceCategory.HOSTING, Decimal(400)
+            selected_year - 1, 12, ServiceCategory.HOSTING, Decimal(400)
         )
         self.create_test_invoice(
-            selected_year, 1, InvoiceCategory.HOSTING, Decimal(300)
+            selected_year, 1, ServiceCategory.HOSTING, Decimal(300)
         )
 
         response = self.client.get(
@@ -3677,16 +3698,16 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         selected_year = 2025
 
         self.create_test_invoice(
-            selected_year - 1, 1, InvoiceCategory.HOSTING, Decimal(100)
+            selected_year - 1, 1, ServiceCategory.HOSTING, Decimal(100)
         )
         self.create_test_invoice(
-            selected_year - 1, 6, InvoiceCategory.HOSTING, Decimal(400)
+            selected_year - 1, 6, ServiceCategory.HOSTING, Decimal(400)
         )
         self.create_test_invoice(
-            selected_year, 4, InvoiceCategory.HOSTING, Decimal(500)
+            selected_year, 4, ServiceCategory.HOSTING, Decimal(500)
         )
         self.create_test_invoice(
-            selected_year, 12, InvoiceCategory.HOSTING, Decimal(600)
+            selected_year, 12, ServiceCategory.HOSTING, Decimal(600)
         )
 
         with patch.object(
@@ -3705,14 +3726,14 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         cnb_mock_rates()
         selected_year = 2026
 
-        self.create_test_invoice(2024, 4, InvoiceCategory.HOSTING, Decimal(100))
-        self.create_test_invoice(2024, 9, InvoiceCategory.HOSTING, Decimal(400))
-        self.create_test_invoice(2025, 5, InvoiceCategory.HOSTING, Decimal(500))
+        self.create_test_invoice(2024, 4, ServiceCategory.HOSTING, Decimal(100))
+        self.create_test_invoice(2024, 9, ServiceCategory.HOSTING, Decimal(400))
+        self.create_test_invoice(2025, 5, ServiceCategory.HOSTING, Decimal(500))
         self.create_test_invoice(
-            selected_year, 3, InvoiceCategory.HOSTING, Decimal(600)
+            selected_year, 3, ServiceCategory.HOSTING, Decimal(600)
         )
         self.create_test_invoice(
-            selected_year, 4, InvoiceCategory.HOSTING, Decimal(700)
+            selected_year, 4, ServiceCategory.HOSTING, Decimal(700)
         )
 
         with patch.object(
@@ -3746,10 +3767,10 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         selected_year = timezone.localdate().year - 1
 
         self.create_test_invoice(
-            selected_year - 1, 12, InvoiceCategory.HOSTING, Decimal(100)
+            selected_year - 1, 12, ServiceCategory.HOSTING, Decimal(100)
         )
         self.create_test_invoice(
-            selected_year, 12, InvoiceCategory.HOSTING, Decimal(200)
+            selected_year, 12, ServiceCategory.HOSTING, Decimal(200)
         )
 
         view = IncomeView()
@@ -3768,10 +3789,10 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         selected_year = timezone.localdate().year - 1
 
         self.create_test_invoice(
-            selected_year - 1, 12, InvoiceCategory.HOSTING, Decimal(100)
+            selected_year - 1, 12, ServiceCategory.HOSTING, Decimal(100)
         )
         self.create_test_invoice(
-            selected_year, 12, InvoiceCategory.HOSTING, Decimal(200)
+            selected_year, 12, ServiceCategory.HOSTING, Decimal(200)
         )
 
         view = IncomeView()
@@ -3810,7 +3831,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 name="dedicated:160k",
                 verbose="Dedicated 160k",
                 price=100,
-                category=PackageCategory.PACKAGE_DEDICATED,
+                category=ServiceCategory.DEDICATED,
             ),
             expires=timezone.now() + timedelta(days=30),
             payment=payment,
@@ -3822,7 +3843,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 name="hosted:10k",
                 verbose="Hosted 10k",
                 price=50,
-                category=PackageCategory.PACKAGE_SHARED,
+                category=ServiceCategory.SHARED,
             ),
             expires=timezone.now() + timedelta(days=30),
             payment=payment,
@@ -3834,7 +3855,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 name="basic",
                 verbose="Basic Support",
                 price=600,
-                category=PackageCategory.PACKAGE_SUPPORT,
+                category=ServiceCategory.SUPPORT,
             ),
             expires=timezone.now() + timedelta(days=30),
             payment=payment,
@@ -4039,13 +4060,13 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             name="dedicated:160k",
             verbose="Dedicated 160k",
             price=100,
-            category=PackageCategory.PACKAGE_DEDICATED,
+            category=ServiceCategory.DEDICATED,
         )
         target = Package.objects.create(
             name="dedicated:640k",
             verbose="Dedicated 640k",
             price=220,
-            category=PackageCategory.PACKAGE_DEDICATED,
+            category=ServiceCategory.DEDICATED,
         )
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=100)
@@ -4179,7 +4200,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             name="dedicated:limits",
             verbose="Dedicated limits",
             price=100,
-            category=PackageCategory.PACKAGE_DEDICATED,
+            category=ServiceCategory.DEDICATED,
             limit_projects=10,
             limit_hosted_strings=1_000,
         )
@@ -4216,19 +4237,19 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             name="basic",
             verbose="Basic support",
             price=100,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         Package.objects.create(
             name="extended",
             verbose="Extended support",
             price=200,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         target = Package.objects.create(
             name="premium",
             verbose="Premium support",
             price=400,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=100)
@@ -4271,13 +4292,13 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             name="basic",
             verbose="Basic support",
             price=100,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         target = Package.objects.create(
             name="extended",
             verbose="Extended support",
             price=105,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=100)
@@ -4342,7 +4363,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             name="basic",
             verbose="Basic support",
             price=100,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=100)
@@ -4378,13 +4399,13 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             name="premium",
             verbose="Premium support",
             price=400,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         target = Package.objects.create(
             name="basic",
             verbose="Basic support",
             price=100,
-            category=PackageCategory.PACKAGE_SUPPORT,
+            category=ServiceCategory.SUPPORT,
         )
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=100)
@@ -4424,7 +4445,7 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 name="extended",
                 verbose="Extended Support",
                 price=600,
-                category=PackageCategory.PACKAGE_SUPPORT,
+                category=ServiceCategory.SUPPORT,
             ),
             expires=timezone.now() + timedelta(days=30),
             payment=payment,
@@ -4539,7 +4560,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
             defaults={
                 "verbose": f"{package_name.capitalize()} support",
                 "price": 42,
-                "category": PackageCategory.PACKAGE_SUPPORT,
+                "category": ServiceCategory.SUPPORT,
             },
         )
         service = Service.objects.create(customer=customer)
@@ -4724,7 +4745,7 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
             defaults={
                 "verbose": "Extended support",
                 "price": 42,
-                "category": PackageCategory.PACKAGE_SUPPORT,
+                "category": ServiceCategory.SUPPORT,
             },
         )
         service = Service.objects.create(customer=customer)
@@ -5223,7 +5244,7 @@ class CRMCorrectionTestCase(BaseCRMTestCase):
     ) -> Invoice:
         invoice = Invoice.objects.create(
             kind=kind,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer=self.create_customer(),
             currency=Currency.EUR,
         )

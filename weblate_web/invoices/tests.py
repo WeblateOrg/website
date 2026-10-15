@@ -24,7 +24,8 @@ from lxml import etree
 from pycheval.quantities import QuantityCode
 from pycheval.type_codes import DocumentTypeCode, TaxCategoryCode
 
-from weblate_web.models import Package, PackageCategory
+from weblate_web.categories import ServiceCategory
+from weblate_web.models import Package
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.pdf import render_pdf_document
 from weblate_web.tests import UserTestCase, cnb_mock_rates, mock_vies
@@ -35,7 +36,6 @@ from .models import (
     Discount,
     Invoice,
     InvoiceCalculationVersion,
-    InvoiceCategory,
     InvoiceKind,
     QuantityUnit,
 )
@@ -497,7 +497,7 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
             vat_rate=vat_rate,
             kind=kind,
             customer_note=customer_note,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             customer_reference=customer_reference,
             currency=currency,
             tax_date=cast("date", tax_date),
@@ -516,7 +516,7 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
             name="hosting",
             verbose="Weblate hosting",
             price=100,
-            category=PackageCategory.PACKAGE_DEDICATED,
+            category=ServiceCategory.DEDICATED,
         )
         invoice.invoiceitem_set.create(package=package)
         return invoice
@@ -649,7 +649,7 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
                 invoice = Invoice.objects.create(
                     customer=customer,
                     kind=InvoiceKind.DRAFT,
-                    category=InvoiceCategory.HOSTING,
+                    category=ServiceCategory.HOSTING,
                 )
 
                 self.assertEqual(invoice.vat_rate, expected_rate)
@@ -671,14 +671,14 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
                     Invoice.objects.create(
                         customer=customer,
                         kind=InvoiceKind.DRAFT,
-                        category=InvoiceCategory.HOSTING,
+                        category=ServiceCategory.HOSTING,
                     )
 
     def test_initial_positive_vat_rate_is_preserved(self) -> None:
         invoice = Invoice.objects.create(
             customer=self.create_customer(country="DE"),
             kind=InvoiceKind.DRAFT,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=19,
         )
 
@@ -700,7 +700,7 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         form = invoice_form(
             data={
                 "kind": InvoiceKind.INVOICE,
-                "category": InvoiceCategory.HOSTING,
+                "category": ServiceCategory.HOSTING,
                 "customer": customer.pk,
                 "vat_rate": 0,
                 "currency": Currency.EUR,
@@ -904,7 +904,7 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         form = invoice_form(
             data={
                 "kind": InvoiceKind.INVOICE,
-                "category": InvoiceCategory.HOSTING,
+                "category": ServiceCategory.HOSTING,
                 "customer": "",
                 "vat_rate": 0,
                 "currency": Currency.EUR,

@@ -43,12 +43,12 @@ from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy, override, pgettext_lazy
 from PIL import Image as PILImage
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.const import DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS
 from weblate_web.invoices.models import (
     CURRENCY_MAP_FROM_PAYMENT,
     Currency,
     Invoice,
-    InvoiceCategory,
     InvoiceKind,
     round_decimal,
     round_money,
@@ -303,7 +303,7 @@ def get_donation_package(reward: int = 0) -> Package:
     package, _created = Package.objects.get_or_create(
         name=name,
         defaults={
-            "category": PackageCategory.PACKAGE_DONATION,
+            "category": ServiceCategory.DONATE,
             "verbose": get_donation_package_verbose(reward),
             "price": REWARD_LEVELS[reward],
         },
@@ -489,9 +489,9 @@ def process_new_payment(payment: Payment) -> Subscription:
     repeat = package.get_repeat()
     existing = (
         service.hosted_subscriptions
-        if package.category == PackageCategory.PACKAGE_DEDICATED
+        if package.category == ServiceCategory.DEDICATED
         else service.shared_subscriptions
-        if package.category == PackageCategory.PACKAGE_SHARED
+        if package.category == ServiceCategory.SHARED
         else None
     )
     if existing:
@@ -535,7 +535,7 @@ def process_new_payment(payment: Payment) -> Subscription:
         if service.needs_token:
             subscription.send_notification("subscription_intro")
 
-        if subscription.package.category == PackageCategory.PACKAGE_DEDICATED:
+        if subscription.package.category == ServiceCategory.DEDICATED:
             create_dedicated_hosting_ticket(subscription)
     return subscription
 
@@ -681,14 +681,6 @@ class ServiceKind(IntegerChoices):
     DONATION = 10, pgettext_lazy("Service kind", "Donation")
 
 
-class PackageCategory(IntegerChoices):
-    PACKAGE_NONE = 0, pgettext_lazy("Package category", "None")
-    PACKAGE_DEDICATED = 10, pgettext_lazy("Package category", "Dedicated hosting")
-    PACKAGE_SHARED = 20, pgettext_lazy("Package category", "Shared hosting")
-    PACKAGE_SUPPORT = 30, pgettext_lazy("Package category", "Self-hosted support")
-    PACKAGE_DONATION = 40, pgettext_lazy("Package category", "Donation")
-
-
 class Package(models.Model):
     name = models.CharField(max_length=150, unique=True)
     verbose = models.CharField(max_length=400)
@@ -699,7 +691,7 @@ class Package(models.Model):
     limit_hosted_words = models.IntegerField(default=0)
     limit_hosted_strings = models.IntegerField(default=0)
     category = models.IntegerField(
-        default=PackageCategory.PACKAGE_NONE, choices=PackageCategory
+        default=ServiceCategory.UNCATEGORIZED, choices=ServiceCategory
     )
     hidden = models.BooleanField(blank=True, db_index=True, default=False)
 
@@ -740,24 +732,17 @@ class Package(models.Model):
         if self.name in {"basic", "extended", "premium", "backup"}:
             return "y"
         if self.category in {
-            PackageCategory.PACKAGE_DEDICATED,
-            PackageCategory.PACKAGE_SHARED,
+            ServiceCategory.DEDICATED,
+            ServiceCategory.SHARED,
         }:
             if self.name.endswith("-m"):
                 return "m"
             return "y"
         return ""
 
-    def get_invoice_category(self) -> InvoiceCategory:
-        if self.category == PackageCategory.PACKAGE_DONATION:
-            return InvoiceCategory.DONATE
-        if self.category == PackageCategory.PACKAGE_SUPPORT:
-            return InvoiceCategory.SUPPORT
-        return InvoiceCategory.HOSTING
-
     @property
     def donation_reward(self) -> int:
-        if self.category != PackageCategory.PACKAGE_DONATION:
+        if self.category != ServiceCategory.DONATE:
             raise ValueError("Donation reward is only available for donation packages")
         return get_donation_reward_from_package_name(self.name)
 
@@ -1002,14 +987,9 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
         if self.is_donation:
             return "Donation"
         packages = [subscription.package for subscription in self.listed_subscriptions]
-        if any(
-            package.category == PackageCategory.PACKAGE_DEDICATED
-            for package in packages
-        ):
+        if any(package.category == ServiceCategory.DEDICATED for package in packages):
             return "Dedicated service"
-        if any(
-            package.category == PackageCategory.PACKAGE_SHARED for package in packages
-        ):
+        if any(package.category == ServiceCategory.SHARED for package in packages):
             return "Hosted service"
         if any(
             package.name in {"basic", "extended", "premium"} for package in packages
@@ -1022,13 +1002,13 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     @cached_property
     def hosted_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(
-            package__category=PackageCategory.PACKAGE_DEDICATED
+            package__category=ServiceCategory.DEDICATED
         ).order_by("-expires")
 
     @cached_property
     def shared_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(
-            package__category=PackageCategory.PACKAGE_SHARED
+            package__category=ServiceCategory.SHARED
         ).order_by("-expires")
 
     @cached_property
@@ -1072,7 +1052,7 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     @cached_property
     def donation_subscriptions(self) -> models.QuerySet[Subscription]:
         return self.subscription_set.filter(
-            package__category=PackageCategory.PACKAGE_DONATION
+            package__category=ServiceCategory.DONATE
         ).order_by("-expires")
 
     @cached_property
@@ -1866,7 +1846,7 @@ class Subscription(models.Model):
             customer_note=customer_note,
             kind=kind,
             currency=currency,
-            category=package.get_invoice_category(),
+            category=package.category,
         )
         item: dict[str, Any] = {
             "package": package,
@@ -1899,9 +1879,9 @@ class Subscription(models.Model):
         if service:
             existing = (
                 service.hosted_subscriptions
-                if package.category == PackageCategory.PACKAGE_DEDICATED
+                if package.category == ServiceCategory.DEDICATED
                 else service.shared_subscriptions
-                if package.category == PackageCategory.PACKAGE_SHARED
+                if package.category == ServiceCategory.SHARED
                 else None
             )
             if existing:
@@ -2220,26 +2200,26 @@ class Project(models.Model):
         return f"{self.service.site_title}: {self.name}"
 
 
-def get_packages() -> Generator[tuple[PackageCategory, str, str, int, int]]:
+def get_packages() -> Generator[tuple[ServiceCategory, str, str, int, int]]:
     for limit, price in PACKAGES.items():
         name = PACKAGE_NAMES[limit]
         if limit >= DEDICATED_LIMIT:
             yield (
-                PackageCategory.PACKAGE_DEDICATED,
+                ServiceCategory.DEDICATED,
                 f"Weblate hosting ({name} strings, dedicated, yearly)",
                 f"{DEDICATED_PREFIX}{name.lower()}",
                 limit,
                 price,
             )
         yield (
-            PackageCategory.PACKAGE_SHARED,
+            ServiceCategory.SHARED,
             f"Weblate hosting ({name} strings, yearly)",
             f"{HOSTED_PREFIX}{name.lower()}",
             limit,
             price,
         )
         yield (
-            PackageCategory.PACKAGE_SHARED,
+            ServiceCategory.SHARED,
             f"Weblate hosting ({name} strings, monthly)",
             f"{HOSTED_PREFIX}{name.lower()}{MONTHLY_SUFFIX}",
             limit,
@@ -2247,9 +2227,7 @@ def get_packages() -> Generator[tuple[PackageCategory, str, str, int, int]]:
         )
     for verbose, name, price in SUPPORT_PACKAGES:
         yield (
-            PackageCategory.PACKAGE_NONE
-            if name.startswith("install:")
-            else PackageCategory.PACKAGE_SUPPORT,
+            ServiceCategory.SUPPORT,
             verbose,
             name,
             0,
@@ -2257,7 +2235,7 @@ def get_packages() -> Generator[tuple[PackageCategory, str, str, int, int]]:
         )
     for reward, name in DONATION_REWARD_PACKAGE_NAMES.items():
         yield (
-            PackageCategory.PACKAGE_DONATION,
+            ServiceCategory.DONATE,
             get_donation_package_verbose(reward),
             name,
             0,

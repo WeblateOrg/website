@@ -43,8 +43,9 @@ from django.urls import reverse
 from django.utils import timezone
 from vies.types import VATIN
 
+from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
-from weblate_web.invoices.models import Invoice, InvoiceCategory, InvoiceKind
+from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.tests import (
     THEPAY2_MOCK_SETTINGS,
     cnb_mock_rates,
@@ -724,7 +725,7 @@ class BackendTest(BackendBaseTestCase):
         invoice = Invoice.objects.create(
             customer=self.customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         invoice.invoiceitem_set.create(
@@ -857,7 +858,7 @@ class BackendTest(BackendBaseTestCase):
         invoice = Invoice.objects.create(
             customer=self.customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
         )
         invoice.invoiceitem_set.create(description="Fixed invoice", unit_price=4)
 
@@ -966,7 +967,7 @@ class BackendTest(BackendBaseTestCase):
         invoice = Invoice.objects.create(
             customer=customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         invoice.invoiceitem_set.create(
@@ -1021,7 +1022,7 @@ class BackendTest(BackendBaseTestCase):
         invoice = Invoice.objects.create(
             customer=self.customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             vat_rate=21,
         )
         invoice.invoiceitem_set.create(
@@ -1488,7 +1489,7 @@ class ThePay2Test(BackendBaseTestCase):
         invoice = Invoice.objects.create(
             customer=self.customer,
             kind=InvoiceKind.INVOICE,
-            category=InvoiceCategory.HOSTING,
+            category=ServiceCategory.HOSTING,
             fully_credited=True,
         )
         self.payment.draft_invoice = invoice
