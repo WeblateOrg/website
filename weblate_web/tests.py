@@ -7062,6 +7062,35 @@ class ServiceTest(FakturaceTestCase):
 
 
 class CommandsTestCase(FakturaceTestCase):
+    def test_sync_packages_corrects_existing_categories(self) -> None:
+        sync_packages()
+        expected = {
+            "hosted:10k": ServiceCategory.SHARED,
+            "hosted:10k-m": ServiceCategory.SHARED,
+            "dedicated:160k": ServiceCategory.DEDICATED,
+            "basic": ServiceCategory.SUPPORT,
+            "install:linux": ServiceCategory.SUPPORT,
+            get_donation_reward_package_name(1): ServiceCategory.DONATE,
+        }
+        packages = list(Package.objects.filter(name__in=expected))
+        count = Package.objects.count()
+        Package.objects.filter(name__in=expected).update(
+            category=ServiceCategory.UNCATEGORIZED
+        )
+
+        with StringIO() as buffer:
+            call_command("sync_packages", stdout=buffer)
+            self.assertNotEqual(buffer.getvalue(), "")
+        self.assertEqual(Package.objects.count(), count)
+        for package in packages:
+            with self.subTest(name=package.name):
+                package.refresh_from_db()
+                self.assertEqual(package.category, expected[package.name])
+
+        with StringIO() as buffer:
+            call_command("sync_packages", stdout=buffer)
+            self.assertEqual(buffer.getvalue(), "")
+
     def test_list_contacts(self) -> None:
         with StringIO() as buffer:
             call_command("list_contacts", stdout=buffer)

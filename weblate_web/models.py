@@ -2285,6 +2285,12 @@ def sync_packages() -> list[str]:
                 output.append(f"Updating {verbose}: {package.name!r} -> {name!r}")
                 package.name = name
                 modified = True
+            if package.category != category:
+                output.append(
+                    f"Updating {verbose} category: {package.category} -> {category.value}"
+                )
+                package.category = category
+                modified = True
             if package.price != price:
                 output.append(f"Updating {verbose}: {package.price!r} -> {price!r}")
                 package.price = price
