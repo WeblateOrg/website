@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Authentication failed" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title">{% translate "Authentication failed" %}</h1>
+        <p>{% translate "We could not sign you in. Please try again or contact support if the problem persists." %}</p>
+        <a class="button" href="{% url "social:login" %}">{% translate "Sign in" %}</a>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

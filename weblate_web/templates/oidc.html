@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Sign in" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title">{% translate "Sign in" %}</h1>
+        <form method="post" action="{% url "social:begin" "weblate" %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.GET.next }}">
+          <button type="submit" class="button">{% translate "Sign in with Hosted Weblate" %}</button>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
