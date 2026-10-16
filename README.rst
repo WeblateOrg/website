@@ -89,3 +89,58 @@ Run the development server:
 .. code-block:: sh
 
    ./manage.py runserver
+
+Testing Hosted Weblate OIDC login
+--------------------------------
+
+OIDC is available at ``/oidc/`` for manual testing. The normal login links and
+admin login continue to use SAML. Visiting this page displays a button which
+starts authentication using a CSRF-protected POST.
+
+Install the released python-social-auth dependencies from the committed lockfile
+and run the OIDC integration tests:
+
+.. code-block:: sh
+
+   uv sync --dev
+   uv run pytest weblate_web/test_oidc.py
+
+Both staging and production websites authenticate against Hosted Weblate.
+Keep the committed ``SOCIAL_AUTH_WEBLATE_OIDC_ENDPOINT`` and
+``HOSTED_SAML_PROVIDER`` defaults. SAML NameID, OIDC ``sub``, and account-sync
+``external_id`` all contain the same Hosted Weblate user primary key.
+
+On Hosted Weblate, enable the provider as described in Weblate's OIDC provider
+documentation and register separate confidential clients for the staging and
+production websites. Use authorization code flow and RSA with SHA-256. Register
+each website's exact HTTPS callback URL ending in ``/oidc/complete/weblate/``;
+the production callback is ``https://weblate.org/oidc/complete/weblate/``.
+The Weblate social-auth backend enables S256 PKCE and requests the scopes
+``openid profile email``.
+
+Configure credentials in ``settings_local.py`` without committing secrets:
+
+.. code-block:: py
+
+   SOCIAL_AUTH_WEBLATE_KEY = os.environ["WEBLATE_OIDC_CLIENT_ID"]
+   SOCIAL_AUTH_WEBLATE_SECRET = os.environ["WEBLATE_OIDC_CLIENT_SECRET"]
+
+Run ``uv run ./manage.py migrate`` before starting the application to
+create python-social-auth's tables. Existing ``SamlIdentity`` records remain
+intact; each first successful OIDC login adds a social-auth association to the
+same local user. New OIDC users receive both identity records atomically.
+Email addresses and usernames never establish account associations. A conflict
+rejects login without reassigning either identity.
+
+The hosted account-sync payload already uses this stable identity, so push
+updates, ``sync_hosted_users``, and CRM account linking retain their existing
+format. OIDC users remain available to all three paths and SAML authentication.
+
+Validate in staging first, then production: sign in with SAML, record the local
+user ID and customer ownership, sign out, use ``/oidc/``, and confirm both are
+unchanged. Repeat after hosted username/email changes and account synchronization,
+and verify SAML login still reaches the same account. Also test a new OIDC user,
+inactive users, and logout. Watch authentication errors for association conflicts;
+investigate them rather than deleting or reassigning identities. If testing
+fails, continue using SAML while retaining the OIDC tables and associations.
+Switching the default login and removing SAML are separate follow-up changes.
