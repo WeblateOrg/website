@@ -379,6 +379,7 @@ urlpatterns = [
     ),
     # SAML
     path("saml2/", include("djangosaml2.urls")),
+    path("oidc/", include("weblate_web.oidc_urls", namespace="social")),
     # Admin
     path(
         "admin/login/"
