@@ -220,6 +220,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "weblate_web.middleware.LocalizedDocumentationMiddleware",
     "djangosaml2.middleware.SamlSessionMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 ROOT_URLCONF = "weblate_web.urls"
@@ -243,12 +244,14 @@ INSTALLED_APPS = (
     "django_countries",
     "macros",
     "djangosaml2",
+    "social_django",
     "compressor",
 )
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "weblate_web.saml.HostedSaml2Backend",
+    "social_core.backends.weblate.WeblateOpenIdConnect",
 )
 
 # Some security headers
@@ -370,6 +373,20 @@ SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
 HOSTED_SAML_PROVIDER = "https://hosted.weblate.org/idp/metadata"
 HOSTED_USER_SYNC_API = "https://hosted.weblate.org/hosted/api/users/"
 HOSTED_USER_CREATE_API = "https://hosted.weblate.org/hosted/api/users/ensure/"
+
+# OIDC is available only through the manual /oidc/ entry point for now.
+# The SAML provider identifies the same hosted user IDs as OIDC's sub claim.
+SOCIAL_AUTH_WEBLATE_OIDC_ENDPOINT = "https://hosted.weblate.org/oidc"
+SOCIAL_AUTH_WEBLATE_KEY = ""
+SOCIAL_AUTH_WEBLATE_SECRET = ""
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+SOCIAL_AUTH_WEBLATE_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.auth_allowed",
+    "weblate_web.oidc.sync_hosted_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+)
 
 SAML_CONFIG = {
     # full path to the xmlsec1 binary program
