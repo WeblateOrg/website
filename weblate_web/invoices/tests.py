@@ -1127,9 +1127,11 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertIn("Contact: Finance approvals", html)
 
     def test_pdf_addresses_wrap_without_overflow(self) -> None:
+        """Keep issuer lines intact with both older and newer Pango versions."""
         invoice = self.create_invoice(kind=InvoiceKind.QUOTE, vat="DE123456789")
         cases = (
             ("name", "Example GmbH"),
+            ("address", "42 Fictional Innovation Park, Example Road"),
             ("name", "International localization services " * 5),
             ("name", "W" * 200),
             ("address", "W" * 200),
