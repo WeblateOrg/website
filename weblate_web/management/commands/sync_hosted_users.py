@@ -29,14 +29,14 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.signing import BadSignature, SignatureExpired, dumps, loads
 from django.db import DataError, IntegrityError
 
-from weblate_web.models import ExternalSyncState, SamlIdentity
-from weblate_web.saml import (
-    SamlSyncContext,
+from weblate_web.hosted_users import (
+    HostedSyncContext,
     extract_profile,
-    get_default_saml_provider,
+    get_default_hosted_provider,
     normalize_external_id,
-    sync_saml_payload,
+    sync_hosted_payload,
 )
+from weblate_web.models import ExternalSyncState, HostedIdentity
 
 SYNC_KEY = "hosted-users"
 USER_SYNC_SALT = "weblate.user-sync"
@@ -57,7 +57,7 @@ def raise_invalid_sync_response() -> NoReturn:
 
 
 class Command(BaseCommand):
-    help = "synchronizes hosted.weblate.org users with local SAML identities"
+    help = "synchronizes hosted.weblate.org users with local Hosted identities"
 
     def add_arguments(self, parser) -> None:
         parser.add_argument("--since", help="override the stored hosted sync cursor")
@@ -74,7 +74,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--only-missing",
             action="store_true",
-            help="only process hosted users without an existing local SAML identity",
+            help="only process hosted users without an existing local Hosted identity",
         )
         parser.add_argument(
             "--progress-every",
@@ -152,7 +152,7 @@ class Command(BaseCommand):
 
     def get_sync_context(
         self, user_payloads: list, no_preload: bool, *, verbose: bool
-    ) -> SamlSyncContext | None:
+    ) -> HostedSyncContext | None:
         total = len(user_payloads)
         if verbose:
             self.stdout.write(f"Received {total} hosted users")
@@ -160,12 +160,12 @@ class Command(BaseCommand):
             return None
         if verbose:
             self.stdout.write("Preloading hosted user sync lookups")
-        return SamlSyncContext.preload(user_payloads)
+        return HostedSyncContext.preload(user_payloads)
 
     def sync_user_payloads(
         self,
         user_payloads: list,
-        context: SamlSyncContext | None,
+        context: HostedSyncContext | None,
         *,
         only_missing: bool,
         progress_every: int,
@@ -187,7 +187,7 @@ class Command(BaseCommand):
                 self.write_progress(processed, total, progress_every)
                 continue
             try:
-                user, _created = sync_saml_payload(user_payload, context)
+                user, _created = sync_hosted_payload(user_payload, context)
             except (
                 AttributeError,
                 DataError,
@@ -264,18 +264,18 @@ class Command(BaseCommand):
         ]
 
     def get_existing_identity(
-        self, user_payload: object, context: SamlSyncContext | None
-    ) -> SamlIdentity | None:
+        self, user_payload: object, context: HostedSyncContext | None
+    ) -> HostedIdentity | None:
         if not isinstance(user_payload, dict):
             return None
         external_id = normalize_external_id(user_payload.get("external_id"))
         if not external_id:
             return None
-        provider = str(user_payload.get("provider", get_default_saml_provider()))
+        provider = str(user_payload.get("provider", get_default_hosted_provider()))
         if context is not None:
             return context.get_identity(provider, external_id)
         return (
-            SamlIdentity.objects.filter(provider=provider, external_id=external_id)
+            HostedIdentity.objects.filter(provider=provider, external_id=external_id)
             .select_related("user")
             .first()
         )

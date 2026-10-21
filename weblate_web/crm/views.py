@@ -72,6 +72,11 @@ from weblate_web.crm.workqueue import (
 )
 from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.forms import NewSubscriptionForm
+from weblate_web.hosted_users import (
+    get_default_hosted_provider,
+    normalize_external_id,
+    sync_hosted_payload,
+)
 from weblate_web.invoices.corrections import (
     CORRECTION_PERMISSION,
     is_settled,
@@ -89,19 +94,14 @@ from weblate_web.invoices.models import (
     QuoteStatus,
 )
 from weblate_web.models import (
+    HostedIdentity,
     Package,
-    SamlIdentity,
     Service,
     ServiceKind,
     Subscription,
 )
 from weblate_web.payments.invitations import fulfill_pending_invitations_by_staff
 from weblate_web.payments.models import Customer, CustomerFollowUp, Payment
-from weblate_web.saml import (
-    get_default_saml_provider,
-    normalize_external_id,
-    sync_saml_payload,
-)
 from weblate_web.utils import show_form_errors
 
 from .models import Interaction
@@ -1148,11 +1148,11 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
 
     @staticmethod
     def has_hosted_identity(hosted_payload) -> bool:
-        provider = str(hosted_payload.get("provider", get_default_saml_provider()))
+        provider = str(hosted_payload.get("provider", get_default_hosted_provider()))
         external_id = normalize_external_id(hosted_payload.get("external_id"))
         if not external_id:
             return False
-        return SamlIdentity.objects.filter(
+        return HostedIdentity.objects.filter(
             provider=provider, external_id=external_id
         ).exists()
 
@@ -1193,7 +1193,7 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
     ) -> User | None:
         self.reject_username_only_hosted_match(hosted_payload, context)
         with transaction.atomic():
-            user, created = sync_saml_payload(hosted_payload)
+            user, created = sync_hosted_payload(hosted_payload)
             if user is None:
                 raise HostedUserEnsureError(gettext("Hosted user was not linked."))
             if context["email_users"] and user.pk != context["email_users"][0].pk:

@@ -37,6 +37,7 @@ from django.utils import timezone
 
 from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import CRM_STORAGE, Interaction
+from weblate_web.hosted_users import get_default_hosted_provider
 from weblate_web.invoices.models import (
     Currency,
     Invoice,
@@ -50,7 +51,6 @@ from weblate_web.payments.models import (
     CustomerOwnerInvitation,
     Payment,
 )
-from weblate_web.saml import get_default_saml_provider
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterator
@@ -1143,7 +1143,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         page.wait_for_load_state("networkidle")
 
         hosted_payload = {
-            "provider": get_default_saml_provider(),
+            "provider": get_default_hosted_provider(),
             "external_id": "crm-linked-user",
             "profile": {
                 "username": "crm-linked-user",

@@ -10,12 +10,18 @@
   <section class="content">
     <div class="row">
       <div class="wrap">
-        <h1 class="section-title">{% translate "Sign in" %}</h1>
-        <form method="post" action="{% url "social:begin" "weblate" %}">
-          {% csrf_token %}
-          <input type="hidden" name="next" value="{{ request.GET.next }}">
-          <button type="submit" class="button">{% translate "Sign in with Hosted Weblate" %}</button>
-        </form>
+        <h1 class="section-title min-m">{% translate "Sign in" %}</h1>
+        <div class="page-desc">
+          <p role="status">{% translate "You're being redirected to a SSO sign-in page." %}</p>
+          <p class="small">
+            {% translate "Please click the button below if you're not redirected automatically within a few seconds." %}
+          </p>
+          <form method="post" action="{% url "social:begin" "weblate" %}" id="SSO_Login">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <input type="submit" class="button center" value="{% translate "Sign in" %}">
+          </form>
+        </div>
       </div>
     </div>
   </section>

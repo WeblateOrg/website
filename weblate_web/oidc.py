@@ -6,22 +6,35 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from django.conf import settings
+from django.contrib import admin
 from django.db import DataError, IntegrityError, transaction
+from django.views.decorators.cache import never_cache
+from django.views.generic import RedirectView
 from social_core.exceptions import AuthAssociationError
 from social_django.models import UserSocialAuth
 
-from weblate_web.models import ExternalSyncState, SamlIdentity
-from weblate_web.saml import (
+from weblate_web.hosted_users import (
     EMAIL_ALLOCATION_LOCK_KEY,
     PROFILE_FIELDS,
-    get_default_saml_provider,
+    get_default_hosted_provider,
     normalize_external_id,
-    sync_saml_identity,
+    sync_hosted_identity,
 )
+from weblate_web.models import ExternalSyncState, HostedIdentity
 
 if TYPE_CHECKING:
     from django.contrib.auth.models import User
+    from django.http import HttpRequest, HttpResponseBase
     from social_core.backends.weblate import WeblateOpenIdConnect
+
+
+@never_cache
+def admin_login(request: HttpRequest) -> HttpResponseBase:
+    """Use Hosted login unless local password login is explicitly selected."""
+    if settings.LOGIN_URL == "/admin/login/":
+        return admin.site.login(request)
+    return RedirectView.as_view(url=settings.LOGIN_URL, query_string=True)(request)
 
 
 @transaction.atomic
@@ -33,9 +46,7 @@ def sync_hosted_user(
     id_key: str = "",
     **kwargs: Any,
 ) -> dict[str, Any]:
-    """Bind OIDC to the persistent hosted identity used by SAML and user sync."""
-    # Both deployments explicitly use hosted user.pk as their SAML NameID.
-    # Only the configured Weblate issuer may bridge to this identity namespace.
+    """Bind OIDC to the persistent Hosted identity used by account sync."""
     if backend.name != "weblate" or id_key != "sub" or not uid:
         raise AuthAssociationError(backend, code="identifier_migration_conflict")
     if normalize_external_id(uid) != uid:
@@ -45,8 +56,8 @@ def sync_hosted_user(
     ExternalSyncState.objects.select_for_update().get_or_create(
         key=EMAIL_ALLOCATION_LOCK_KEY
     )
-    identity = SamlIdentity.objects.filter(
-        provider=get_default_saml_provider(), external_id=uid
+    identity = HostedIdentity.objects.filter(
+        provider=get_default_hosted_provider(), external_id=uid
     ).first()
     social = UserSocialAuth.get_social_auth(backend.name, uid)
     if social is not None and (
@@ -66,8 +77,8 @@ def sync_hosted_user(
         if key in PROFILE_FIELDS and value is not None
     }
     try:
-        synced_user, created = sync_saml_identity(
-            provider=get_default_saml_provider(),
+        synced_user, created = sync_hosted_identity(
+            provider=get_default_hosted_provider(),
             external_id=uid,
             profile=profile,
             raw_attrs={"sub": uid, **profile},

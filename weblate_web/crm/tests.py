@@ -41,8 +41,8 @@ from weblate_web.invoices.models import (
 from weblate_web.management.commands.zammad_sync import Command as ZammadSyncCommand
 from weblate_web.management.commands.zammad_sync import InvalidSubscriptionError
 from weblate_web.models import (
+    HostedIdentity,
     Package,
-    SamlIdentity,
     Service,
     ServiceKind,
     get_donation_package,
@@ -1700,7 +1700,7 @@ class CRMTestCase(BaseCRMTestCase):
                     {
                         "created": True,
                         "user": {
-                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "provider": settings.HOSTED_IDENTITY_PROVIDER,
                             "external_id": "42",
                             "profile": {
                                 "username": "new-user",
@@ -1728,7 +1728,7 @@ class CRMTestCase(BaseCRMTestCase):
         user = User.objects.get(email="new@example.com")
         self.assertEqual(user.last_name, "New User")
         self.assertTrue(
-            SamlIdentity.objects.filter(user=user, external_id="42").exists()
+            HostedIdentity.objects.filter(user=user, external_id="42").exists()
         )
         self.assertIn(user, customer.owners.all())
         interaction = Interaction.objects.get(
@@ -1768,8 +1768,8 @@ class CRMTestCase(BaseCRMTestCase):
         existing = User.objects.create_user(
             username="existing", email="existing@example.com"
         )
-        SamlIdentity.objects.create(
-            provider=settings.HOSTED_SAML_PROVIDER,
+        HostedIdentity.objects.create(
+            provider=settings.HOSTED_IDENTITY_PROVIDER,
             external_id="43",
             user=existing,
         )
@@ -1787,7 +1787,7 @@ class CRMTestCase(BaseCRMTestCase):
                     {
                         "created": False,
                         "user": {
-                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "provider": settings.HOSTED_IDENTITY_PROVIDER,
                             "external_id": "43",
                             "profile": {
                                 "username": "hosted-existing",
@@ -1814,7 +1814,7 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, f"{customer.get_absolute_url()}?tab=owners")
         self.assertIn(existing, customer.owners.all())
         self.assertTrue(
-            SamlIdentity.objects.filter(user=existing, external_id="43").exists()
+            HostedIdentity.objects.filter(user=existing, external_id="43").exists()
         )
         self.assertFalse(
             Interaction.objects.get(
@@ -1842,8 +1842,8 @@ class CRMTestCase(BaseCRMTestCase):
         existing = User.objects.create_user(
             username="existing", email="existing@example.com"
         )
-        SamlIdentity.objects.create(
-            provider=settings.HOSTED_SAML_PROVIDER,
+        HostedIdentity.objects.create(
+            provider=settings.HOSTED_IDENTITY_PROVIDER,
             external_id="43",
             user=existing,
         )
@@ -1856,7 +1856,7 @@ class CRMTestCase(BaseCRMTestCase):
                     {
                         "created": False,
                         "user": {
-                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "provider": settings.HOSTED_IDENTITY_PROVIDER,
                             "external_id": "43",
                             "profile": {
                                 "username": "hosted-existing",
@@ -1883,7 +1883,7 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertRedirects(response, f"{customer.get_absolute_url()}?tab=owners")
         self.assertEqual(customer.owners.count(), 1)
         self.assertTrue(
-            SamlIdentity.objects.filter(user=existing, external_id="43").exists()
+            HostedIdentity.objects.filter(user=existing, external_id="43").exists()
         )
         self.assertFalse(Interaction.objects.filter(customer=customer).exists())
 
@@ -1935,7 +1935,7 @@ class CRMTestCase(BaseCRMTestCase):
                     {
                         "created": False,
                         "user": {
-                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "provider": settings.HOSTED_IDENTITY_PROVIDER,
                             "external_id": "44",
                             "profile": {
                                 "username": "collision",
@@ -1961,7 +1961,7 @@ class CRMTestCase(BaseCRMTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(customer.owners.exists())
-        self.assertFalse(SamlIdentity.objects.filter(external_id="44").exists())
+        self.assertFalse(HostedIdentity.objects.filter(external_id="44").exists())
         existing.refresh_from_db()
         self.assertEqual(existing.email, "other@example.com")
         self.assertContains(
@@ -1986,7 +1986,7 @@ class CRMTestCase(BaseCRMTestCase):
                     {
                         "created": False,
                         "user": {
-                            "provider": settings.HOSTED_SAML_PROVIDER,
+                            "provider": settings.HOSTED_IDENTITY_PROVIDER,
                             "external_id": "45",
                             "profile": {
                                 "username": "collision",
@@ -2012,7 +2012,7 @@ class CRMTestCase(BaseCRMTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(customer.owners.exists())
-        self.assertFalse(SamlIdentity.objects.filter(external_id="45").exists())
+        self.assertFalse(HostedIdentity.objects.filter(external_id="45").exists())
         existing.refresh_from_db()
         self.assertEqual(existing.email, "other@example.com")
         self.assertContains(
@@ -2029,8 +2029,8 @@ class CRMTestCase(BaseCRMTestCase):
         existing = User.objects.create_user(
             username="collision", email="other@example.com"
         )
-        SamlIdentity.objects.create(
-            provider=settings.HOSTED_SAML_PROVIDER,
+        HostedIdentity.objects.create(
+            provider=settings.HOSTED_IDENTITY_PROVIDER,
             external_id="46",
             user=existing,
         )

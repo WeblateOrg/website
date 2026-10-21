@@ -26,10 +26,10 @@ from jwt.utils import base64url_encode
 from requests.exceptions import Timeout
 from social_django.models import UserSocialAuth
 
+from weblate_web.hosted_users import sync_hosted_identity, sync_hosted_payload
 from weblate_web.management.commands.sync_hosted_users import USER_SYNC_RESPONSE_SALT
-from weblate_web.models import SamlIdentity
+from weblate_web.models import HostedIdentity
 from weblate_web.payments.models import Customer
-from weblate_web.saml import sync_saml_identity, sync_saml_payload
 
 if TYPE_CHECKING:
     from typing import ClassVar
@@ -145,17 +145,17 @@ class HostedOIDCTest(TestCase):
         user = User.objects.create_user(
             username="original", email="original@example.com", **fields
         )
-        SamlIdentity.objects.create(
-            provider=settings.HOSTED_SAML_PROVIDER, external_id="42", user=user
+        HostedIdentity.objects.create(
+            provider=settings.HOSTED_IDENTITY_PROVIDER, external_id="42", user=user
         )
         return user
 
     def assert_no_identity(self) -> None:
         self.assertFalse(UserSocialAuth.objects.exists())
-        self.assertFalse(SamlIdentity.objects.exists())
+        self.assertFalse(HostedIdentity.objects.exists())
         self.assertNotIn("_auth_user_id", self.client.session)
 
-    def test_manual_page_and_csrf(self) -> None:
+    def test_login_page_and_csrf(self) -> None:
         client = Client(enforce_csrf_checks=True)
         response = client.get(reverse("social:login"))
         self.assertContains(response, reverse("social:begin", args=["weblate"]))
@@ -171,7 +171,48 @@ class HostedOIDCTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
 
-    def test_saml_oidc_saml_preserves_account(self) -> None:
+    @override_settings(LOGIN_URL="/oidc/")
+    def test_website_login_uses_oidc(self) -> None:
+        response = self.client.get(reverse("user"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"].split("?", 1)[0], "/oidc/")
+        self.assertEqual(
+            parse_qs(urlsplit(response["Location"]).query)["next"], [reverse("user")]
+        )
+
+    @override_settings(LOGIN_URL="/oidc/")
+    def test_admin_login_uses_oidc(self) -> None:
+        self.assertRedirects(
+            self.client.get("/admin/login/?next=/admin/"),
+            "/oidc/?next=/admin/",
+            fetch_redirect_response=False,
+        )
+
+    @override_settings(LOGIN_URL="/admin/login/")
+    def test_local_login_override(self) -> None:
+        self.assertTemplateUsed(self.client.get("/admin/login/"), "admin/login.html")
+        user = User.objects.create_user(
+            username="developer",
+            password="developer-test-password",  # ruff:ignore[hardcoded-password-func-arg]
+            is_staff=True,
+        )
+        response = self.client.post(
+            "/admin/login/",
+            {
+                "username": user.username,
+                "password": "developer-test-password",
+                "next": "/admin/",
+            },
+        )
+        self.assertRedirects(response, "/admin/", fetch_redirect_response=False)
+        self.assertEqual(self.client.session["_auth_user_id"], str(user.pk))
+
+    def test_saml_routes_are_removed(self) -> None:
+        for path in ("/saml2/login/", "/saml2/metadata/", "/saml2/acs/"):
+            with self.subTest(path=path):
+                self.assertEqual(self.client.get(path).status_code, 404)
+
+    def test_existing_identity_oidc_and_sync_preserve_account(self) -> None:
         user = self.create_identity(password="local-password", is_staff=True)  # ruff:ignore[hardcoded-password-func-arg]
         customer = Customer.objects.create(name="Test", user_id=user.pk)
         customer.owners.add(user)
@@ -199,15 +240,15 @@ class HostedOIDCTest(TestCase):
         self.assertEqual(user.password, original_password)
         self.assertTrue(user.is_staff)
         self.assertTrue(customer.owners.filter(pk=user.pk).exists())
-        synced, created = sync_saml_identity(
-            provider=settings.HOSTED_SAML_PROVIDER,
+        synced, created = sync_hosted_identity(
+            provider=settings.HOSTED_IDENTITY_PROVIDER,
             external_id="42",
             profile={"username": "renamed"},
         )
         self.assertFalse(created)
         self.assertEqual(synced, user)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(SamlIdentity.objects.count(), 1)
+        self.assertEqual(HostedIdentity.objects.count(), 1)
 
     def test_oidc_sync_and_repeated_login(self) -> None:
         self.begin()
@@ -215,7 +256,7 @@ class HostedOIDCTest(TestCase):
         user = UserSocialAuth.objects.get().user
         self.assertFalse(user.has_usable_password())
         password = user.password
-        synced, created = sync_saml_payload(
+        synced, created = sync_hosted_payload(
             {
                 "external_id": "42",
                 "profile": {"username": "synced", "email": "new@example.com"},
@@ -233,7 +274,7 @@ class HostedOIDCTest(TestCase):
         self.assertEqual(UserSocialAuth.objects.count(), 1)
 
     def test_sync_before_oidc(self) -> None:
-        user, _created = sync_saml_payload(
+        user, _created = sync_hosted_payload(
             {"external_id": "42", "profile": {"username": "synced"}}
         )
         self.begin()
@@ -349,7 +390,7 @@ class HostedOIDCTest(TestCase):
         self.client.force_login(other)
         self.begin()
         self.assertEqual(self.complete().status_code, 409)
-        self.assertFalse(SamlIdentity.objects.exists())
+        self.assertFalse(HostedIdentity.objects.exists())
         self.assertFalse(UserSocialAuth.objects.exists())
 
     def test_conflicting_social_association(self) -> None:
@@ -392,7 +433,7 @@ class HostedOIDCTest(TestCase):
         social.refresh_from_db()
         self.assertEqual(user.username, "original")
         self.assertEqual(social.user, other)
-        self.assertEqual(SamlIdentity.objects.get().user, user)
+        self.assertEqual(HostedIdentity.objects.get().user, user)
         self.assertNotIn("_auth_user_id", self.client.session)
 
     def test_failed_pipeline_rolls_back_both_associations(self) -> None:

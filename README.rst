@@ -49,7 +49,7 @@ Create ``weblate_web/settings_local.py`` to adjust your settings:
 
 .. code-block:: py
 
-   # Disable SAML login, use local
+   # Use local password login instead of Hosted Weblate OIDC
    LOGIN_URL = "/admin/login/"
 
    # Required signing key shared with the hosted infrastructure
@@ -90,12 +90,14 @@ Run the development server:
 
    ./manage.py runserver
 
-Testing Hosted Weblate OIDC login
---------------------------------
+Hosted Weblate OIDC login
+------------------------
 
-OIDC is available at ``/oidc/`` for manual testing. The normal login links and
-admin login continue to use SAML. Visiting this page displays a button which
-starts authentication using a CSRF-protected POST.
+The website and admin use Hosted Weblate OIDC for authentication. The ``/oidc/``
+page automatically starts authentication using a CSRF-protected POST. It displays
+a sign-in button as a fallback when JavaScript is unavailable or forwarding
+does not complete. The development override ``LOGIN_URL = "/admin/login/"``
+keeps Django's local password login available.
 
 Install the released python-social-auth dependencies from the committed lockfile
 and run the OIDC integration tests:
@@ -107,8 +109,11 @@ and run the OIDC integration tests:
 
 Both staging and production websites authenticate against Hosted Weblate.
 Keep the committed ``SOCIAL_AUTH_WEBLATE_OIDC_ENDPOINT`` and
-``HOSTED_SAML_PROVIDER`` defaults. SAML NameID, OIDC ``sub``, and account-sync
-``external_id`` all contain the same Hosted Weblate user primary key.
+``HOSTED_IDENTITY_PROVIDER`` defaults. OIDC ``sub`` and account-sync
+``external_id`` contain the same Hosted Weblate user primary key. The identity
+provider value ``https://hosted.weblate.org/idp/metadata`` is the stable namespace
+stored in existing identity records and sync payloads; it does not enable SAML
+or fetch its metadata.
 
 On Hosted Weblate, enable the provider as described in Weblate's OIDC provider
 documentation and register separate confidential clients for the staging and
@@ -125,22 +130,22 @@ Configure credentials in ``settings_local.py`` without committing secrets:
    SOCIAL_AUTH_WEBLATE_KEY = os.environ["WEBLATE_OIDC_CLIENT_ID"]
    SOCIAL_AUTH_WEBLATE_SECRET = os.environ["WEBLATE_OIDC_CLIENT_SECRET"]
 
-Run ``uv run ./manage.py migrate`` before starting the application to
-create python-social-auth's tables. Existing ``SamlIdentity`` records remain
-intact; each first successful OIDC login adds a social-auth association to the
-same local user. New OIDC users receive both identity records atomically.
+Stop the old application processes, run ``uv run ./manage.py migrate``, and then
+start the updated application. The migration renames ``SamlIdentity`` to
+``HostedIdentity`` while preserving identity records, user associations, and
+permissions. Each first successful OIDC login adds a social-auth association to
+the same local user. New OIDC users receive both identity records atomically.
 Email addresses and usernames never establish account associations. A conflict
 rejects login without reassigning either identity.
 
 The hosted account-sync payload already uses this stable identity, so push
 updates, ``sync_hosted_users``, and CRM account linking retain their existing
-format. OIDC users remain available to all three paths and SAML authentication.
+format. OIDC users remain available to all three paths. No identity backfill or
+cleanup of legacy unlinked accounts is needed for the switch.
 
-Validate in staging first, then production: sign in with SAML, record the local
-user ID and customer ownership, sign out, use ``/oidc/``, and confirm both are
-unchanged. Repeat after hosted username/email changes and account synchronization,
-and verify SAML login still reaches the same account. Also test a new OIDC user,
-inactive users, and logout. Watch authentication errors for association conflicts;
-investigate them rather than deleting or reassigning identities. If testing
-fails, continue using SAML while retaining the OIDC tables and associations.
-Switching the default login and removing SAML are separate follow-up changes.
+Existing OIDC and local login sessions continue working. Existing SAML sessions
+require one OIDC sign-in after the switch. The local user ID, customer ownership,
+and permissions remain unchanged. Verify these after deployment and after hosted
+username/email changes and account synchronization. Also check new-user login,
+inactive users, logout, automatic forwarding, and the manual fallback. Investigate
+association conflicts rather than deleting or reassigning identities.

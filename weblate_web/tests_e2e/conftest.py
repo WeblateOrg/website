@@ -25,7 +25,7 @@ os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 @pytest.fixture
 def configure_test_settings(settings, live_server):  # pylint: disable=redefined-outer-name
     """Configure Django settings for E2E tests."""
-    # Use local login instead of SAML for tests
+    # Use local login instead of OIDC for tests
     settings.LOGIN_URL = "/admin/login/"
     # Enable payment debug mode to use mock payment backends
     settings.PAYMENT_DEBUG = True

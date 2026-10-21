@@ -57,6 +57,11 @@ from weblate_web.payments.models import (
 
 from .exchange_rates import BTC_RATE_URL, ExchangeRates, UncachedExchangeRates
 from .hetzner import generate_random_password
+from .hosted_users import (
+    EMAIL_ALLOCATION_LOCK_KEY,
+    get_username_max_length,
+    sync_hosted_identity,
+)
 from .management.commands.backups_sync import Command as BackupsSyncCommand
 from .management.commands.recurring_payments import Command as RecurringPaymentsCommand
 from .management.commands.sync_hosted_users import USER_SYNC_RESPONSE_SALT
@@ -65,10 +70,10 @@ from .models import (
     REWARD_LEVELS,
     DiscoveryActivation,
     ExternalSyncState,
+    HostedIdentity,
     Package,
     Post,
     Report,
-    SamlIdentity,
     Service,
     ServiceKind,
     Subscription,
@@ -94,12 +99,6 @@ from .remote import (
     get_changes,
     get_contributors,
     get_release,
-)
-from .saml import (
-    EMAIL_ALLOCATION_LOCK_KEY,
-    extract_user_identifier_params,
-    get_username_max_length,
-    sync_saml_identity,
 )
 from .templatetags.downloads import downloadlink, filesizeformat
 from .templatetags.prices import price_format
@@ -4514,8 +4513,8 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
     def test_user(self) -> None:
         user = self.create_user()
-        SamlIdentity.objects.create(
-            provider=settings.HOSTED_SAML_PROVIDER,
+        HostedIdentity.objects.create(
+            provider=settings.HOSTED_IDENTITY_PROVIDER,
             external_id="42",
             user=user,
         )
@@ -4602,8 +4601,8 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
     def test_user_rename(self) -> None:
         user = self.create_user()
-        SamlIdentity.objects.create(
-            provider=settings.HOSTED_SAML_PROVIDER,
+        HostedIdentity.objects.create(
+            provider=settings.HOSTED_IDENTITY_PROVIDER,
             external_id="42",
             user=user,
         )
@@ -4644,7 +4643,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         user = User.objects.get(username="remote")
         self.assertEqual(user.email, "remote@example.com")
         self.assertEqual(
-            user.saml_identities.get().external_id,
+            user.hosted_identities.get().external_id,
             "42",
         )
         old_password = user.password
@@ -4870,18 +4869,18 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.get(username="remote").is_active)
 
-    def test_saml_login_does_not_cycle_unusable_password(self) -> None:
+    def test_hosted_identity_update_does_not_cycle_unusable_password(self) -> None:
         user = self.create_user()
         user.set_unusable_password()
         user.save(update_fields=["password"])
-        SamlIdentity.objects.create(
+        HostedIdentity.objects.create(
             provider="https://hosted.weblate.org/idp/metadata",
             external_id="42",
             user=user,
         )
         old_password = user.password
 
-        sync_saml_identity(
+        sync_hosted_identity(
             provider="https://hosted.weblate.org/idp/metadata",
             external_id="42",
             profile={"email": "renamed@example.com"},
@@ -4891,20 +4890,20 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(user.email, "renamed@example.com")
         self.assertEqual(user.password, old_password)
 
-    def test_linked_saml_user_retains_duplicate_email(self) -> None:
+    def test_linked_hosted_user_retains_duplicate_email(self) -> None:
         user = User.objects.create_user(
             username="linked-user", email="duplicate@example.com"
         )
         User.objects.create_user(
             username="historical-duplicate", email="DUPLICATE@example.com"
         )
-        SamlIdentity.objects.create(
+        HostedIdentity.objects.create(
             provider="https://hosted.weblate.org/idp/metadata",
             external_id="42",
             user=user,
         )
 
-        synced_user, created = sync_saml_identity(
+        synced_user, created = sync_hosted_identity(
             provider="https://hosted.weblate.org/idp/metadata",
             external_id="42",
             profile={"email": "duplicate@example.com"},
@@ -4915,8 +4914,8 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         user.refresh_from_db()
         self.assertEqual(user.email, "duplicate@example.com")
 
-    def test_saml_sync_serializes_email_allocation(self) -> None:
-        sync_saml_identity(
+    def test_hosted_sync_serializes_email_allocation(self) -> None:
+        sync_hosted_identity(
             provider="https://hosted.weblate.org/idp/metadata",
             external_id="email-lock",
             profile={"email": "serialized@example.com"},
@@ -4924,22 +4923,6 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
         self.assertTrue(
             ExternalSyncState.objects.filter(key=EMAIL_ALLOCATION_LOCK_KEY).exists()
-        )
-
-    def test_saml_backend_rejects_empty_nameid(self) -> None:
-        self.assertEqual(
-            extract_user_identifier_params({"name_id": SimpleNamespace(text=None)}),
-            ("external_id", None),
-        )
-        self.assertEqual(
-            extract_user_identifier_params({"name_id": SimpleNamespace(text=" ")}),
-            ("external_id", None),
-        )
-        self.assertEqual(
-            extract_user_identifier_params(
-                {"name_id": SimpleNamespace(text="hosted-user-42")}
-            ),
-            ("external_id", "hosted-user-42"),
         )
 
     def test_user_external_id_does_not_link_existing_username(self) -> None:
@@ -4967,26 +4950,26 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         created = User.objects.get(email="new@example.com")
         self.assertEqual(created.username, f"{user.username}-1")
         self.assertEqual(
-            SamlIdentity.objects.get(external_id="42").user,
+            HostedIdentity.objects.get(external_id="42").user,
             created,
         )
 
     def test_user_external_id_unique_per_provider_user(self) -> None:
         user = self.create_user()
-        SamlIdentity.objects.create(
+        HostedIdentity.objects.create(
             provider="https://hosted.weblate.org/idp/metadata",
             external_id="old",
             user=user,
         )
 
         with self.assertRaises(IntegrityError), transaction.atomic():
-            SamlIdentity.objects.create(
+            HostedIdentity.objects.create(
                 provider="https://hosted.weblate.org/idp/metadata",
                 external_id="new",
                 user=user,
             )
 
-        SamlIdentity.objects.create(
+        HostedIdentity.objects.create(
             provider="https://other.example/idp/metadata",
             external_id="new",
             user=user,
@@ -4995,11 +4978,11 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
     def test_user_external_id_deletes_losing_race_user(self) -> None:
         def create_existing_identity(
             *_args: object, **_kwargs: object
-        ) -> tuple[SamlIdentity, bool]:
+        ) -> tuple[HostedIdentity, bool]:
             user = User.objects.create_user(
                 username="winner", email="winner@example.com"
             )
-            identity = SamlIdentity.objects.create(
+            identity = HostedIdentity.objects.create(
                 provider="https://hosted.weblate.org/idp/metadata",
                 external_id="42",
                 user=user,
@@ -5007,10 +4990,10 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             return identity, False
 
         with patch(
-            "weblate_web.saml.SamlIdentity.objects.get_or_create",
+            "weblate_web.hosted_users.HostedIdentity.objects.get_or_create",
             side_effect=create_existing_identity,
         ):
-            user, created = sync_saml_identity(
+            user, created = sync_hosted_identity(
                 provider="https://hosted.weblate.org/idp/metadata",
                 external_id="42",
                 profile={"email": "remote@example.com"},
@@ -5044,11 +5027,11 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(
             User.objects.filter(email__iexact="dup@example.com").count(), 2
         )
-        self.assertFalse(SamlIdentity.objects.filter(external_id="42").exists())
+        self.assertFalse(HostedIdentity.objects.filter(external_id="42").exists())
 
     def test_user_database_error(self) -> None:
         with patch(
-            "weblate_web.views.sync_saml_payload",
+            "weblate_web.views.sync_hosted_payload",
             side_effect=IntegrityError("broken"),
         ):
             response = self.client.post(
@@ -5097,7 +5080,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(SamlIdentity.objects.exists())
+        self.assertFalse(HostedIdentity.objects.exists())
 
     @override_settings(HOSTED_USER_SYNC_API="https://hosted.example/users/")
     @responses.activate
@@ -5203,7 +5186,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         existing = User.objects.create_user(
             username="existing", email="existing@example.com"
         )
-        SamlIdentity.objects.create(
+        HostedIdentity.objects.create(
             provider="https://hosted.weblate.org/idp/metadata",
             external_id="42",
             user=existing,

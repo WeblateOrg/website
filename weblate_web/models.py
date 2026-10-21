@@ -100,26 +100,26 @@ PILLOW_VALIDATION_ERRORS = (
 MINIMUM_UPGRADE_PAYMENT = Decimal(5)
 
 
-class SamlIdentity(models.Model):
+class HostedIdentity(models.Model):
     provider = models.CharField(max_length=255)
     external_id = models.CharField(max_length=255)
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="saml_identities"
+        User, on_delete=models.CASCADE, related_name="hosted_identities"
     )
     last_seen = models.DateTimeField(default=timezone.now)
     raw_attrs = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
 
     class Meta:
-        verbose_name = "SAML identity"
-        verbose_name_plural = "SAML identities"
+        verbose_name = gettext_lazy("Hosted identity")
+        verbose_name_plural = gettext_lazy("Hosted identities")
         constraints = [
             models.UniqueConstraint(
                 fields=("provider", "external_id"),
-                name="weblate_web_saml_identity_unique",
+                name="weblate_web_hosted_identity_unique",
             ),
             models.UniqueConstraint(
                 fields=("provider", "user"),
-                name="weblate_web_saml_identity_user_unique",
+                name="weblate_web_hosted_identity_user_unique",
             ),
         ]
 

@@ -156,7 +156,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
             "subscription" in current_url
             or "payment" in current_url
             or "login" in current_url
-            or "saml" in current_url
+            or "oidc" in current_url
         )
 
     def test_authenticated_user_purchase_flow(
