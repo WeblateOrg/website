@@ -1,6 +1,6 @@
 {% extends "crm/base.html" %}
 
-{% load i18n timestamps %}
+{% load humanize i18n timestamps %}
 
 {% block breadcrum_list %}
   <span aria-hidden="true">›</span>
@@ -388,7 +388,7 @@
                 <tr>
                   <td>{{ donation.created }}</td>
                   <td>{{ donation.donation_subscription.package.donation_reward_display }}</td>
-                  <td>{{ donation.get_donation_amount }} EUR</td>
+                  <td>{{ donation.get_donation_amount|intcomma }} EUR</td>
                   <td>
                     <div class="crm-row-actions">
                       <a href="{% url "admin:weblate_web_service_change" object_id=donation.pk %}">{% translate "Edit" %}</a>
@@ -604,7 +604,7 @@
                 <tr>
                   <td>{{ payment.created }}</td>
                   <td>{{ payment.get_state_display }}</td>
-                  <td>{{ payment.get_amount_display }} {{ payment.get_currency_display }}</td>
+                  <td>{{ payment.get_amount_display|intcomma }} {{ payment.get_currency_display }}</td>
                   <td>{{ payment.description }}</td>
                   <td>
                     <div class="crm-row-actions">

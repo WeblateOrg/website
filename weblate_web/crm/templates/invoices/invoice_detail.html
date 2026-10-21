@@ -1,6 +1,6 @@
 {% extends "crm/base.html" %}
 
-{% load i18n %}
+{% load humanize i18n prices %}
 
 {% block breadcrum_list %}
   <span aria-hidden="true">›</span>
@@ -74,12 +74,12 @@
       <div>
         <dt>{% translate "Amount" %}</dt>
         <dd>
-          {{ object.display_total_amount }}
+          {{ object.total_amount|price_format:object.get_currency_display }}
         </dd>
       </div>
       {% if object.credited_amount %}
-        <div><dt>{% translate "Credited amount" %}</dt><dd>{{ object.credited_amount }} {{ object.get_currency_display }}</dd></div>
-        <div><dt>{% translate "Remaining amount" %}</dt><dd>{{ object.remaining_amount }} {{ object.get_currency_display }}</dd></div>
+        <div><dt>{% translate "Credited amount" %}</dt><dd>{{ object.credited_amount|intcomma }} {{ object.get_currency_display }}</dd></div>
+        <div><dt>{% translate "Remaining amount" %}</dt><dd>{{ object.remaining_amount|intcomma }} {{ object.get_currency_display }}</dd></div>
       {% endif %}
       {% if object.correction_of %}
         <div><dt>{% translate "Correction of" %}</dt><dd><a href="{{ object.correction_of.get_absolute_url }}">{{ object.correction_of.number }}</a></dd></div>
@@ -89,7 +89,7 @@
         <div><dt>{% translate "Correct paid invoice" %}</dt><dd><a href="{{ object.duplicate_of.get_absolute_url }}">{{ object.duplicate_of.number }}</a></dd></div>
       {% endif %}
       {% for correction in object.corrections.all %}
-        <div><dt>{% translate "Credit note" %}</dt><dd><a href="{{ correction.get_absolute_url }}">{{ correction.number }}</a> {{ correction.display_total_amount }}</dd></div>
+        <div><dt>{% translate "Credit note" %}</dt><dd><a href="{{ correction.get_absolute_url }}">{{ correction.number }}</a> {{ correction.total_amount|price_format:correction.get_currency_display }}</dd></div>
       {% endfor %}
       {% for correction in object.duplicate_corrections.all %}
         <div>
@@ -98,7 +98,7 @@
             <a href="{{ correction.correction_of.get_absolute_url }}">{{ correction.correction_of.number }}</a>
             — {% translate "Credit note" %}
             <a href="{{ correction.get_absolute_url }}">{{ correction.number }}</a>
-            {{ correction.display_total_amount }}
+            {{ correction.total_amount|price_format:correction.get_currency_display }}
           </dd>
         </div>
       {% endfor %}
@@ -188,8 +188,8 @@
                 {% endif %}
               </th>
               <td class="crm-number">{{ item.display_quantity }}</td>
-              <td class="crm-number">{{ item.display_price }}</td>
-              <td class="crm-number">{{ item.display_total_price }}</td>
+              <td class="crm-number">{{ item.unit_price|default_if_none:0|round_decimal|price_format:object.get_currency_display }}</td>
+              <td class="crm-number">{{ item.total_price|price_format:object.get_currency_display }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -283,7 +283,7 @@
                 <td>{{ payment.pk }}</td>
                 <td>{{ payment.created }}</td>
                 <td>{{ payment.get_payment_description }}</td>
-                <td>{{ payment.get_amount_display }} {{ payment.get_currency_display }}</td>
+                <td>{{ payment.get_amount_display|intcomma }} {{ payment.get_currency_display }}</td>
                 <td>{{ payment.get_state_display }}</td>
               </tr>
             {% endfor %}

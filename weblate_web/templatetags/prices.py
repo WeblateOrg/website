@@ -27,11 +27,13 @@ from django.utils.html import format_html
 from django.utils.translation import pgettext
 
 from weblate_web.exchange_rates import ExchangeRates
+from weblate_web.invoices.models import round_decimal
 
 if TYPE_CHECKING:
     from decimal import Decimal
 
 register = Library()
+register.filter("round_decimal", round_decimal)
 
 
 @register.filter
