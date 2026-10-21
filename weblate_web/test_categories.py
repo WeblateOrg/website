@@ -52,6 +52,9 @@ class CategoryMetadataTest(SimpleTestCase):
             ),
             ({"package": "install:linux"}, ServiceCategory.SUPPORT),
             ({"plan": 1}, ServiceCategory.SHARED),
+            ({"plan": None, "period": "y", "billing": 9730}, ServiceCategory.SHARED),
+            ({"billing": 9730}, ServiceCategory.SHARED),
+            ({"billing": 9730, "plan": "dedicated:160k"}, ServiceCategory.SHARED),
             ({"plan": "dedicated:160k"}, ServiceCategory.DEDICATED),
             ({"reward": 1}, ServiceCategory.DONATE),
             ({"category": "donate"}, ServiceCategory.DONATE),
@@ -61,6 +64,15 @@ class CategoryMetadataTest(SimpleTestCase):
             ({"subscription": True}, None),
             ({"plan": "unknown"}, None),
             ({"plan": True}, None),
+            ({"billing": None}, None),
+            ({"billing": True}, None),
+            ({"billing": 0}, None),
+            ({"billing": -1}, None),
+            ({"billing": "9730"}, None),
+            ({"billing": 9730, "subscription": 42}, ServiceCategory.SHARED),
+            ({"billing": 9730, "package": "install:linux"}, ServiceCategory.SUPPORT),
+            ({"billing": 9730, "reward": 1}, ServiceCategory.DONATE),
+            ({"billing": 9730, "package": "missing"}, None),
             ({}, None),
             ([], None),
         ):
@@ -71,6 +83,112 @@ class CategoryMetadataTest(SimpleTestCase):
 
 
 class CategoryMigrationTest(TransactionTestCase):
+    def test_hosted_billing_backfill(self) -> None:  # ruff:ignore[too-many-locals]
+        executor = MigrationExecutor(connection)
+        leaves = executor.loader.graph.leaf_nodes()
+        previous = [("invoices", "0005_service_category")]
+        executor.migrate(previous)
+        try:
+            apps = executor.loader.project_state(previous).apps
+            Invoice = apps.get_model("invoices", "Invoice")
+            InvoiceItem = apps.get_model("invoices", "InvoiceItem")
+            Payment = apps.get_model("payments", "Payment")
+            Package = apps.get_model("weblate_web", "Package")
+            customer = apps.get_model("payments", "Customer").objects.create(
+                origin="test", user_id=-1
+            )
+            packages = {
+                name: Package.objects.create(name=name, price=100, category=category)
+                for name, category in (
+                    ("shared", 20),
+                    ("dedicated", 10),
+                    ("unknown", 0),
+                )
+            }
+            billing = {"plan": None, "period": "y", "billing": 9730}
+            cases: tuple[
+                tuple[Any, list[str | None], list[dict[str, Any]], int, int], ...
+            ] = (
+                (billing, [], [], 1, 20),
+                ({}, [None], [billing], 1, 20),
+                ({}, [], [{}, billing], 1, 20),
+                ({"billing": 9730}, [], [], 1, 20),
+                ({"billing": 9730, "plan": "dedicated"}, [], [], 1, 20),
+                ({}, [], [{"billing": 9730, "plan": 1}], 1, 20),
+                (billing, [], [], 2, 2),
+                (billing, [], [], 0, 0),
+                (billing, ["dedicated"], [], 1, 10),
+                (billing, ["shared", "dedicated"], [], 1, 1),
+                (billing, ["dedicated", None], [], 1, 1),
+                (billing, ["unknown"], [], 1, 1),
+                ({"package": "dedicated"}, [], [billing], 1, 10),
+                ({"package": "missing"}, [], [billing], 1, 1),
+                ({}, [], [billing, {"package": "dedicated"}], 1, 10),
+                ({}, [], [billing, {"reward": 1}], 1, 1),
+                ({}, [], [{"billing": True}], 1, 1),
+                ({}, [], [{"billing": None}], 1, 1),
+                ({}, [], [{"billing": "9730"}], 1, 1),
+                ({}, [], [], 1, 1),
+            )
+            expected = {}
+            for index, (extra, items, payments, initial, category) in enumerate(cases):
+                invoice = Invoice.objects.create(
+                    customer=customer,
+                    sequence=index * 2 + 1,
+                    kind=10,
+                    category=initial,
+                    due_date=date(2025, 1, 1),
+                    tax_date=date(2025, 1, 1),
+                    extra=extra,
+                )
+                expected[invoice.pk] = category
+                for name in items:
+                    InvoiceItem.objects.create(
+                        invoice=invoice,
+                        package=packages[name] if name is not None else None,
+                        unit_price=100,
+                    )
+                for payment_index, metadata in enumerate(payments):
+                    Payment.objects.create(
+                        customer=customer,
+                        amount=100,
+                        description="Hosted payment",
+                        extra=metadata,
+                        **{
+                            "paid_invoice"
+                            if payment_index == 0
+                            else "draft_invoice": invoice
+                        },
+                    )
+                correction = Invoice.objects.create(
+                    customer=customer,
+                    sequence=index * 2 + 2,
+                    kind=10,
+                    category=1,
+                    due_date=date(2025, 1, 1),
+                    tax_date=date(2025, 1, 1),
+                    correction_of=invoice,
+                    correction_net=-40,
+                )
+                expected[correction.pk] = category
+            preserved = Invoice.objects.create(
+                customer=customer,
+                sequence=len(cases) * 2 + 1,
+                kind=10,
+                category=2,
+                due_date=date(2025, 1, 1),
+                tax_date=date(2025, 1, 1),
+                correction_of=invoice,
+                correction_net=-100,
+            )
+            expected[preserved.pk] = 2
+        finally:
+            MigrationExecutor(connection).migrate(leaves)
+
+        self.assertEqual(
+            dict(CurrentInvoice.objects.values_list("pk", "category")), expected
+        )
+
     def test_credit_notes_follow_backfilled_invoice_categories(self) -> None:
         executor = MigrationExecutor(connection)
         leaves = executor.loader.graph.leaf_nodes()
@@ -289,6 +407,9 @@ class CategoryInvoiceTest(TestCase):
         CurrentPackage.objects.create(name="dedicated:160k", price=100, category=10)
         for extra, category in (
             ({"plan": 1}, ServiceCategory.SHARED),
+            ({"plan": None, "period": "y", "billing": 9730}, ServiceCategory.SHARED),
+            ({"billing": 9730}, ServiceCategory.SHARED),
+            ({"billing": 9730, "plan": "dedicated:160k"}, ServiceCategory.SHARED),
             ({"package": "dedicated:160k"}, ServiceCategory.DEDICATED),
             ({"category": "donate"}, ServiceCategory.DONATE),
             ({}, ServiceCategory.HOSTING),

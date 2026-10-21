@@ -3309,6 +3309,20 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(response.context["income_data"]["Support"], Decimal(300))
         self.assertEqual(response.context["income_data"]["Uncategorized"], Decimal(400))
 
+    def test_income_identifies_hosted_billing_with_unchanged_plan(self):
+        self.create_historical_payment(
+            date(2023, 1, 1),
+            200,
+            extra={"plan": None, "period": "y", "billing": 9730},
+        )
+
+        response = self.client.get(reverse("crm:income-year", kwargs={"year": 2023}))
+
+        self.assertEqual(
+            response.context["income_data"]["Shared hosting"], Decimal(200)
+        )
+        self.assertEqual(response.context["income_data"]["Hosting"], Decimal(0))
+
     def test_income_converts_historical_fiat_payments_to_eur(self):
         payment_date = date(2023, 2, 1)
         ExchangeRates.datacache[payment_date.isoformat()] = {

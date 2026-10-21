@@ -48,6 +48,7 @@ def category_from_metadata(
         return None
     package_name = extra.get("package", extra.get("subscription"))
     plan = extra.get("plan")
+    billing = extra.get("billing")
     subscription = extra.get("subscription")
     category = None
     if isinstance(package_name, str):
@@ -58,6 +59,9 @@ def category_from_metadata(
         key in extra for key in ("donation", "donation_service", "reward")
     ):
         category = ServiceCategory.DONATE
+    elif isinstance(billing, int) and not isinstance(billing, bool) and billing > 0:
+        # A null plan leaves the plan unchanged; billing identifies hosted payments.
+        category = ServiceCategory.SHARED
     elif isinstance(plan, int) and not isinstance(plan, bool) and plan > 0:
         category = ServiceCategory.SHARED
     elif isinstance(plan, str):
