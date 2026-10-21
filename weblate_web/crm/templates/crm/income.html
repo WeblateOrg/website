@@ -1,6 +1,6 @@
 {% extends "crm/base.html" %}
 
-{% load i18n %}
+{% load humanize i18n %}
 
 {% block bodyclass %}dashboard{% endblock %}
 
@@ -31,7 +31,7 @@
       {% blocktranslate asvar section_title %}Total Income - {{ current_year }}{% endblocktranslate %}
     {% endif %}
     {% include "crm/snippets/section_header.html" with section_title=section_title only %}
-    <p class="crm-metric">€{{ total_income|floatformat:0 }}</p>
+    <p class="crm-metric">€{{ total_income|floatformat:0|intcomma }}</p>
   </section>
 
   {% if rolling_trend %}
@@ -54,20 +54,20 @@
         <div>
           <dt>{% translate "Current window" %}</dt>
           <dd>
-            €{{ rolling_trend.rolling_total|floatformat:0 }}
+            €{{ rolling_trend.rolling_total|floatformat:0|intcomma }}
           </dd>
         </div>
         <div>
           <dt>{% translate "Previous window" %}</dt>
           <dd>
-            €{{ rolling_trend.previous_total|floatformat:0 }}
+            €{{ rolling_trend.previous_total|floatformat:0|intcomma }}
           </dd>
         </div>
         <div>
           <dt>{% translate "Change" %}</dt>
           <dd>
             {% if rolling_trend.change_amount > 0 %}+{% endif %}
-            €{{ rolling_trend.change_amount|floatformat:0 }}
+            €{{ rolling_trend.change_amount|floatformat:0|intcomma }}
             {% if rolling_trend.has_change_percent %}
               (
               {% if rolling_trend.change_percent > 0 %}+{% endif %}
@@ -100,9 +100,9 @@
             {% for row in category_rolling_rows %}
               <tr>
                 <th scope="row">{{ row.label }}</th>
-                <td class="crm-number">€{{ row.rolling_total|floatformat:0 }}</td>
-                <td class="crm-number">€{{ row.previous_total|floatformat:0 }}</td>
-                <td class="crm-number">{% if row.change_amount > 0 %}+{% endif %}€{{ row.change_amount|floatformat:0 }}</td>
+                <td class="crm-number">€{{ row.rolling_total|floatformat:0|intcomma }}</td>
+                <td class="crm-number">€{{ row.previous_total|floatformat:0|intcomma }}</td>
+                <td class="crm-number">{% if row.change_amount > 0 %}+{% endif %}€{{ row.change_amount|floatformat:0|intcomma }}</td>
                 <td class="crm-number">
                   {% if row.has_change_percent %}
                     {% if row.change_percent > 0 %}+{% endif %}{{ row.change_percent|floatformat:1 }}%
@@ -163,7 +163,7 @@
               <tr>
                 <th scope="row">{{ row.label }}</th>
                 {% for amount in row.amounts %}
-                  <td class="crm-number">€{{ amount|floatformat:0 }}</td>
+                  <td class="crm-number">€{{ amount|floatformat:0|intcomma }}</td>
                 {% endfor %}
               </tr>
             {% endfor %}
@@ -214,12 +214,12 @@
             {% for category, amount in income_data.items %}
               <tr>
                 <th scope="row">{{ category }}</th>
-                <td class="crm-number">€{{ amount|floatformat:0 }}</td>
+                <td class="crm-number">€{{ amount|floatformat:0|intcomma }}</td>
               </tr>
             {% endfor %}
             <tr class="crm-total-row">
               <th scope="row">{% translate "Total" %}</th>
-              <td class="crm-number">€{{ total_income|floatformat:0 }}</td>
+              <td class="crm-number">€{{ total_income|floatformat:0|intcomma }}</td>
             </tr>
           </tbody>
         </table>
@@ -245,10 +245,10 @@
             {% for row in monthly_breakdown_rows %}
               <tr>
                 <th scope="row">{{ current_year }}/{{ row.month }}</th>
-                <td class="crm-number">€{{ row.amount|floatformat:0 }}</td>
+                <td class="crm-number">€{{ row.amount|floatformat:0|intcomma }}</td>
                 <td class="crm-number">
                   {% if row.trend_available %}
-                    €{{ row.rolling_total|floatformat:0 }}
+                    €{{ row.rolling_total|floatformat:0|intcomma }}
                     (
                     {% blocktranslate count months=row.window_months %}{{ months }} month{% plural %}{{ months }} months{% endblocktranslate %}
                     )
@@ -259,7 +259,7 @@
                 <td class="crm-number">
                   {% if row.trend_available %}
                     {% if row.change_amount > 0 %}+{% endif %}
-                    €{{ row.change_amount|floatformat:0 }}
+                    €{{ row.change_amount|floatformat:0|intcomma }}
                     {% if row.has_change_percent %}
                       (
                       {% if row.change_percent > 0 %}+{% endif %}
@@ -278,7 +278,7 @@
             {% endfor %}
             <tr class="crm-total-row">
               <th scope="row">{% translate "Total" %}</th>
-              <td class="crm-number">€{{ total_income|floatformat:0 }}</td>
+              <td class="crm-number">€{{ total_income|floatformat:0|intcomma }}</td>
               <td></td>
               <td></td>
               <td></td>
@@ -304,7 +304,7 @@
             {% for category, amount in income_data.items %}
               <tr>
                 <th scope="row">{{ category }}</th>
-                <td class="crm-number">€{{ amount|floatformat:0 }}</td>
+                <td class="crm-number">€{{ amount|floatformat:0|intcomma }}</td>
               </tr>
             {% endfor %}
           </tbody>

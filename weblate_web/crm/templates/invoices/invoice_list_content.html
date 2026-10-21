@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n prices %}
 
 {% for invoice in object_list %}
   <tr>
@@ -16,7 +16,7 @@
       {% endwith %}
     </td>
     <td>{{ invoice.get_kind_display }}</td>
-    <td class="crm-number">{{ invoice.display_total_amount }}</td>
+    <td class="crm-number">{{ invoice.total_amount|price_format:invoice.get_currency_display }}</td>
     <td>{{ invoice.get_description }}</td>
     <td>
       <a href="{{ invoice.customer.get_absolute_url }}">{{ invoice.customer.verbose_name }}</a>

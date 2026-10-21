@@ -951,7 +951,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
                 )
                 assert table.is_visible()
                 assert (
-                    "€1500"
+                    "€1,500"
                     in table.get_by_role("row")
                     .filter(has_text="Dedicated hosting")
                     .inner_text()
