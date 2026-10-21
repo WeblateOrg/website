@@ -28,7 +28,6 @@ from logging.handlers import SysLogHandler
 from pathlib import Path
 
 import django_stubs_ext
-import saml2.saml
 
 django_stubs_ext.monkeypatch()
 
@@ -219,7 +218,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "weblate_web.middleware.LocalizedDocumentationMiddleware",
-    "djangosaml2.middleware.SamlSessionMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
@@ -243,14 +241,12 @@ INSTALLED_APPS = (
     "wllegal",
     "django_countries",
     "macros",
-    "djangosaml2",
     "social_django",
     "compressor",
 )
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
-    "weblate_web.saml.HostedSaml2Backend",
     "social_core.backends.weblate.WeblateOpenIdConnect",
 )
 
@@ -304,14 +300,6 @@ LOGGING = {
             "level": "ERROR",
             "propagate": True,
         },
-        "djangosaml2": {
-            "handlers": [DEFAULT_LOG],
-            "level": "DEBUG",
-        },
-        "saml2": {
-            "handlers": [DEFAULT_LOG],
-            "level": "DEBUG",
-        },
     },
 }
 
@@ -337,7 +325,7 @@ AGREEMENTS_PATH = Path(BASE_DIR) / "agreements"
 AGREEMENTS_COPY_PATH: Path | None = None
 AGREEMENTS_SIGNATURE_PATH: Path | None = None
 
-LOGIN_URL = "/saml2/login/"
+LOGIN_URL = "/oidc/"
 if ci_database:
     LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/user/"
@@ -363,19 +351,12 @@ COMPRESS_OFFLINE_CONTEXT = [
     {"LANGUAGE_BIDI": False},
 ]
 
-SAML_CSP_HANDLER = ""
-SAML_ATTRIBUTE_MAPPING = {
-    "username": ("username",),
-    "email": ("email",),
-    "last_name": ("last_name",),
-}
-SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
-HOSTED_SAML_PROVIDER = "https://hosted.weblate.org/idp/metadata"
+# Keep the persistent sync namespace used by existing Hosted identities.
+HOSTED_IDENTITY_PROVIDER = "https://hosted.weblate.org/idp/metadata"
 HOSTED_USER_SYNC_API = "https://hosted.weblate.org/hosted/api/users/"
 HOSTED_USER_CREATE_API = "https://hosted.weblate.org/hosted/api/users/ensure/"
 
-# OIDC is available only through the manual /oidc/ entry point for now.
-# The SAML provider identifies the same hosted user IDs as OIDC's sub claim.
+# Hosted user IDs are shared by OIDC and account synchronization.
 SOCIAL_AUTH_WEBLATE_OIDC_ENDPOINT = "https://hosted.weblate.org/oidc"
 SOCIAL_AUTH_WEBLATE_KEY = ""
 SOCIAL_AUTH_WEBLATE_SECRET = ""
@@ -387,92 +368,6 @@ SOCIAL_AUTH_WEBLATE_PIPELINE = (
     "weblate_web.oidc.sync_hosted_user",
     "social_core.pipeline.social_auth.load_extra_data",
 )
-
-SAML_CONFIG = {
-    # full path to the xmlsec1 binary program
-    "xmlsec_binary": "/usr/bin/xmlsec1",
-    # your entity id, usually your subdomain plus the url to the metadata view
-    "entityid": "http://localhost:1234/saml2/metadata/",
-    # this block states what services we provide
-    "service": {
-        # we are just a lonely SP
-        "sp": {
-            "name": "Weblate.org",
-            "name_id_format": saml2.saml.NAMEID_FORMAT_PERSISTENT,
-            # For Okta add signed logout requests. Enable this:
-            "endpoints": {
-                # url and binding to the assetion consumer service view
-                # do not change the binding or service name
-                "assertion_consumer_service": [
-                    ("http://localhost:1234/saml2/acs/", saml2.BINDING_HTTP_POST),
-                ],
-                # url and binding to the single logout service view
-                # do not change the binding or service name
-                "single_logout_service": [
-                    # Disable next two lines for HTTP_REDIRECT for IDP's that only support HTTP_POST. Ex. Okta:
-                    ("http://localhost:1234/saml2/ls/", saml2.BINDING_HTTP_REDIRECT),
-                    ("http://localhost:1234/saml2/ls/post", saml2.BINDING_HTTP_POST),
-                ],
-            },
-            # Mandates that the identity provider MUST authenticate the
-            # presenter directly rather than rely on a previous security context.
-            "force_authn": False,
-            # Require signing
-            "want_assertions_signed": True,
-            "want_response_signed": True,
-            "want_assertions_or_response_signed": True,
-            "logout_requests_signed": True,
-            # Enable AllowCreate in NameIDPolicy.
-            "name_id_format_allow_create": False,
-            # attributes that this project need to identify a user
-            "required_attributes": ["email", "username", "last_name"],
-        },
-    },
-    # where the remote metadata is stored, local, remote or mdq server.
-    # One metadatastore or many ...
-    "metadata": {
-        # Needs periodic updates of the file, for example:
-        # curl -sSf  https://hosted.weblate.org/idp/metadata/ > .../saml/remote_metadata.xml
-        "local": [os.path.join(BASE_DIR, "saml", "remote_metadata.xml")],
-        "remote": [{"url": "https://hosted.weblate.org/idp/metadata/"}],
-    },
-    # set to 1 to output debugging information
-    "debug": 0,
-    # Signing
-    "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
-    "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
-    "attribute_map_dir": os.path.join(BASE_DIR, "saml", "attribute-maps"),
-    # Encryption
-    "encryption_keypairs": [
-        {
-            "key_file": os.path.join(BASE_DIR, "saml", "saml.key"),  # private part
-            "cert_file": os.path.join(BASE_DIR, "saml", "saml.crt"),  # public part
-        }
-    ],
-    # own metadata settings
-    "contact_person": [
-        {
-            "given_name": "Michal",
-            "sur_name": "Čihař",
-            "company": "Weblate",
-            "email_address": "michal@weblate.org",
-            "contact_type": "technical",
-        },
-        {
-            "given_name": "Michal",
-            "sur_name": "Čihař",
-            "company": "Weblate",
-            "email_address": "michal@weblate.org",
-            "contact_type": "administrative",
-        },
-    ],
-    # you can set multilanguage information here
-    "organization": {
-        "name": [("Weblate", "en")],
-        "display_name": [("Weblate", "es")],
-        "url": [("https://weblate.org/", "en")],
-    },
-}
 
 # Legacy The Pay
 PAYMENT_THEPAY_MERCHANTID: str

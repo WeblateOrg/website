@@ -33,6 +33,7 @@ from django.views.generic import RedirectView, TemplateView
 import weblate_web.crm.urls
 from weblate_web.invoices.views import download_invoice, pay_invoice
 from weblate_web.models import Post
+from weblate_web.oidc import admin_login
 from weblate_web.views import (
     AddDiscoveryView,
     CompleteView,
@@ -377,18 +378,10 @@ urlpatterns = [
         ".well-known/keybase.txt",
         TemplateView.as_view(template_name="keybase.txt", content_type="text/plain"),
     ),
-    # SAML
-    path("saml2/", include("djangosaml2.urls")),
+    # Authentication
     path("oidc/", include("weblate_web.oidc_urls", namespace="social")),
     # Admin
-    path(
-        "admin/login/"
-        if settings.LOGIN_URL == "/saml2/login/"
-        else "admin/login/saml2/",
-        RedirectView.as_view(
-            pattern_name="saml2_login", permanent=True, query_string=True
-        ),
-    ),
+    path("admin/login/", admin_login),
     path("admin/", admin.site.urls),
     path("crm/", include((weblate_web.crm.urls, "weblate_web.crm"), namespace="crm")),
     # Media files on devel server

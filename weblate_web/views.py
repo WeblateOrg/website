@@ -73,6 +73,7 @@ from weblate_web.forms import (
     SupportReportForm,
     get_discovery_callback_url,
 )
+from weblate_web.hosted_users import sync_hosted_payload
 from weblate_web.invoice_requests import submit_invoice_request
 from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.legal.models import Agreement, AgreementKind
@@ -119,7 +120,6 @@ from weblate_web.payments.invitations import (
 from weblate_web.payments.models import Customer, CustomerOwnerInvitation, Payment
 from weblate_web.payments.validators import cache_vies_data
 from weblate_web.remote import get_activity
-from weblate_web.saml import sync_saml_payload
 from weblate_web.schema import get_blog_post_schema
 from weblate_web.templatetags.prices import price_format
 from weblate_web.utils import (
@@ -248,7 +248,7 @@ def api_user(request: HttpRequest) -> JsonResponse:
         raise BadRequest("Invalid user payload")
 
     try:
-        user, created = sync_saml_payload(payload)
+        user, created = sync_hosted_payload(payload)
     except (
         KeyError,
         TypeError,

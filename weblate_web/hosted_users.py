@@ -19,7 +19,6 @@
 
 from __future__ import annotations
 
-import logging
 import re
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
@@ -28,14 +27,11 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import IntegrityError, transaction
 from django.utils import timezone
-from djangosaml2.backends import Saml2Backend  # type: ignore[import-untyped]
 
-from weblate_web.models import ExternalSyncState, SamlIdentity
+from weblate_web.models import ExternalSyncState, HostedIdentity
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
-
-LOGGER = logging.getLogger(__name__)
 
 PROFILE_FIELDS = {"username", "email", "last_name"}
 ACTIVE_FIELDS = ("is_active", "active")
@@ -47,11 +43,12 @@ USERNAME_INTEGRITY_MARKERS = (
     "user_username",
 )
 CREATE_USER_RETRIES = 5
+# Preserve the lock namespace used by existing account synchronization workers.
 EMAIL_ALLOCATION_LOCK_KEY = "saml-email-allocation"
 
 
-def get_default_saml_provider() -> str:
-    return settings.HOSTED_SAML_PROVIDER
+def get_default_hosted_provider() -> str:
+    return settings.HOSTED_IDENTITY_PROVIDER
 
 
 def normalize_external_id(external_id: object) -> str:
@@ -104,23 +101,23 @@ def extract_profile(payload: dict[str, Any]) -> dict[str, Any]:
     return profile
 
 
-class SamlSyncContext:
+class HostedSyncContext:
     """Batch lookup cache for hosted user synchronization."""
 
     def __init__(self) -> None:
-        self.identities: dict[tuple[str, str], SamlIdentity] = {}
+        self.identities: dict[tuple[str, str], HostedIdentity] = {}
         self.username_owner: dict[str, int] = {}
         self.email_owners: dict[str, set[int]] = defaultdict(set)
 
     @classmethod
-    def preload(cls, payloads: Iterable[object]) -> SamlSyncContext:
+    def preload(cls, payloads: Iterable[object]) -> HostedSyncContext:
         context = cls()
         providers_external_ids: dict[str, set[str]] = defaultdict(set)
 
         for payload in payloads:
             if not isinstance(payload, dict):
                 continue
-            provider = payload.get("provider", get_default_saml_provider())
+            provider = payload.get("provider", get_default_hosted_provider())
             provider = str(provider)
             if external_id := normalize_external_id(payload.get("external_id")):
                 providers_external_ids[provider].add(external_id)
@@ -141,16 +138,16 @@ class SamlSyncContext:
         for provider, external_ids in providers_external_ids.items():
             for chunk in iter_chunks(external_ids):
                 for identity in (
-                    SamlIdentity.objects.select_related("user")
+                    HostedIdentity.objects.select_related("user")
                     .filter(provider=provider, external_id__in=chunk)
                     .iterator()
                 ):
                     self.add_identity(identity)
 
-    def add_identity(self, identity: SamlIdentity) -> None:
+    def add_identity(self, identity: HostedIdentity) -> None:
         self.identities[identity.provider, identity.external_id] = identity
 
-    def get_identity(self, provider: str, external_id: str) -> SamlIdentity | None:
+    def get_identity(self, provider: str, external_id: str) -> HostedIdentity | None:
         return self.identities.get((provider, external_id))
 
     def username_exists(self, username: str, user: User | None = None) -> bool:
@@ -176,22 +173,8 @@ class SamlSyncContext:
             self.email_owners[user.email.casefold()].add(user.pk)
 
 
-def profile_from_saml_attributes(
-    attributes: dict[str, list[Any]], attribute_mapping: dict[str, tuple[str, ...]]
-) -> dict[str, Any]:
-    profile: dict[str, Any] = {}
-    for saml_attr, django_attrs in attribute_mapping.items():
-        values = attributes.get(saml_attr)
-        if not values:
-            continue
-        for django_attr in django_attrs:
-            if django_attr in PROFILE_FIELDS:
-                profile[django_attr] = values[0]
-    return profile
-
-
 def username_exists(
-    username: str, user: User | None = None, context: SamlSyncContext | None = None
+    username: str, user: User | None = None, context: HostedSyncContext | None = None
 ) -> bool:
     if context is not None:
         return context.username_exists(username, user)
@@ -204,7 +187,7 @@ def username_exists(
 def validate_email_available(
     email: object,
     user: User | None = None,
-    context: SamlSyncContext | None = None,
+    context: HostedSyncContext | None = None,
 ) -> str:
     normalized = str(email or "").strip()
     if not normalized:
@@ -223,7 +206,7 @@ def validate_email_available(
 def make_unique_username(
     username: str,
     user: User | None = None,
-    context: SamlSyncContext | None = None,
+    context: HostedSyncContext | None = None,
     excluded_usernames: set[str] | None = None,
 ) -> str:
     username = normalize_username(username)
@@ -253,7 +236,7 @@ def apply_profile(
     profile: dict[str, Any],
     *,
     cycle_unusable_password: bool = False,
-    context: SamlSyncContext | None = None,
+    context: HostedSyncContext | None = None,
 ) -> None:
     changed_fields: set[str] = set()
     old_username = user.username
@@ -294,7 +277,7 @@ def apply_profile(
 
 
 def create_user(
-    profile: dict[str, Any], external_id: str, context: SamlSyncContext | None = None
+    profile: dict[str, Any], external_id: str, context: HostedSyncContext | None = None
 ) -> User:
     username = profile.get("username") or f"hosted-{external_id}"
     base_username = str(username)
@@ -332,7 +315,7 @@ def create_user(
 
 
 @transaction.atomic
-def sync_saml_identity(  # ruff:ignore[too-many-arguments]
+def sync_hosted_identity(  # ruff:ignore[too-many-arguments]
     *,
     provider: str,
     external_id: str,
@@ -340,7 +323,7 @@ def sync_saml_identity(  # ruff:ignore[too-many-arguments]
     raw_attrs: dict[str, Any] | None = None,
     create_unknown_user: bool = True,
     cycle_unusable_password: bool = False,
-    context: SamlSyncContext | None = None,
+    context: HostedSyncContext | None = None,
 ) -> tuple[User | None, bool]:
     external_id = normalize_external_id(external_id)
     if not external_id:
@@ -353,7 +336,7 @@ def sync_saml_identity(  # ruff:ignore[too-many-arguments]
 
     if context is None:
         identity = (
-            SamlIdentity.objects.select_related("user")
+            HostedIdentity.objects.select_related("user")
             .filter(provider=provider, external_id=external_id)
             .first()
         )
@@ -376,7 +359,7 @@ def sync_saml_identity(  # ruff:ignore[too-many-arguments]
         defaults: dict[str, Any] = {"user": user, "last_seen": now}
         if raw_attrs is not None:
             defaults["raw_attrs"] = raw_attrs
-        identity, identity_created = SamlIdentity.objects.get_or_create(
+        identity, identity_created = HostedIdentity.objects.get_or_create(
             provider=provider,
             external_id=external_id,
             defaults=defaults,
@@ -407,59 +390,17 @@ def sync_saml_identity(  # ruff:ignore[too-many-arguments]
     return user, created_user
 
 
-def sync_saml_payload(
-    payload: dict[str, Any], context: SamlSyncContext | None = None
+def sync_hosted_payload(
+    payload: dict[str, Any], context: HostedSyncContext | None = None
 ) -> tuple[User | None, bool]:
     external_id = payload.get("external_id")
     if external_id is None:
         return None, False
-    return sync_saml_identity(
-        provider=str(payload.get("provider", get_default_saml_provider())),
+    return sync_hosted_identity(
+        provider=str(payload.get("provider", get_default_hosted_provider())),
         external_id=normalize_external_id(external_id),
         profile=extract_profile(payload),
         raw_attrs=payload,
         cycle_unusable_password=bool(payload.get("changes")),
         context=context,
     )
-
-
-def extract_user_identifier_params(session_info: dict) -> tuple[str, str | None]:
-    name_id = session_info.get("name_id")
-    if name_id is None:
-        LOGGER.error("The nameid is not available.")
-        return "external_id", None
-    external_id = normalize_external_id(name_id.text)
-    if not external_id:
-        LOGGER.error("The nameid text is not available.")
-        return "external_id", None
-    return "external_id", external_id
-
-
-class HostedSaml2Backend(Saml2Backend):
-    def _extract_user_identifier_params(
-        self, session_info: dict, attributes: dict, attribute_mapping: dict
-    ) -> tuple[str, str | None]:
-        return extract_user_identifier_params(session_info)
-
-    def get_or_create_user(  # ruff:ignore[too-many-arguments, too-many-positional-arguments]
-        self,
-        user_lookup_key: str,
-        user_lookup_value: Any,
-        create_unknown_user: bool,
-        idp_entityid: str,
-        attributes: dict,
-        attribute_mapping: dict,
-        request,
-    ):
-        return sync_saml_identity(
-            provider=idp_entityid,
-            external_id=user_lookup_value,
-            profile=profile_from_saml_attributes(attributes, attribute_mapping),
-            raw_attrs=attributes,
-            create_unknown_user=create_unknown_user,
-        )
-
-    def _update_user(
-        self, user, attributes: dict, attribute_mapping: dict, force_save: bool = False
-    ):
-        return user
