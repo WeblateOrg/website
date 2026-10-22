@@ -133,9 +133,12 @@ ready(() => {
   }
   for (const element of document.querySelectorAll(".dedicated-toggle")) {
     element.addEventListener("click", (_e) => {
-      const target = document.getElementById("dedicated-checkbox");
-      target.checked = element.classList.contains("dedicated-enable");
-      target.dispatchEvent(new Event("change"));
+      for (const target of document.querySelectorAll(
+        "#dedicated-checkbox, #calculator-dedicated",
+      )) {
+        target.checked = element.classList.contains("dedicated-enable");
+        target.dispatchEvent(new Event("change"));
+      }
     });
   }
 

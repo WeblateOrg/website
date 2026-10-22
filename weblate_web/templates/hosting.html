@@ -14,25 +14,63 @@
           {% endblock title %}
 
         </h1>
-        <div class="page-desc">
+        <div class="page-desc hosting-intro">
           {% url 'support' as url %}
           <p>
             {% block description %}
-              {% blocktranslate %}Let our team run Weblate for you, or choose <a href="{{ url }}">expert support</a> for your own installation. Your purchases help sustain the open source platform that organizations and communities rely on.{% endblocktranslate %}
-              {% blocktranslate %}Our team is ready to help you run Weblate smoothly.{% endblocktranslate %}
+              {% blocktranslate %}Let our team run Weblate for you, or choose <a href="{{ url }}">expert support</a> for your own installation.{% endblocktranslate %}
             {% endblock description %}
 
           </p>
         </div>
-        <div class="page-desc">
+        <div class="page-desc hosting-intro">
           <h2>{% translate "Same platform. A deployment choice you can change." %}</h2>
-          <p>{% translate "Start hosted or run Weblate yourself. Move between deployments if your infrastructure needs a change, while staying with the same localization platform and keeping workflows." %}</p>
+          <p>{% translate "Change your infrastructure while keeping Weblate and your localization workflows. Professional services remain available as your deployment needs evolve." %}</p>
           <p>{% blocktranslate with url="https://docs.weblate.org/en/latest/admin/backup.html" %}Built-in backups support project transfers and full-installation migration. Review the destination configuration and integrations when <a href="{{ url }}">planning your move</a>.{% endblocktranslate %}</p>
-          <p>{% blocktranslate with url="https://docs.weblate.org/en/latest/security/data-residency.html" %}Hosted Weblate stores and processes customer data and backups in the EU. Integrations you configure can send data elsewhere. Read our <a href="{{ url }}">data residency documentation</a>.{% endblocktranslate %}</p>
-          <p><a href="{% url 'features' %}#migration">{% translate "Move an existing project" %}</a></p>
+          <a href="{% url 'features' %}#migration"
+             class="button inline border rev">{% translate "Move an existing project" %}</a>
         </div>
+        <section id="setup-guide" aria-labelledby="setup-guide-title">
+          <h2 id="setup-guide-title"
+              class="section-title payment-conditions">{% translate "Find the right Weblate setup for your organization" %}</h2>
+          <div class="page-desc small">
+            <p>{% translate "Choose where Weblate runs and who helps you operate it. Weblate is libre software: self-hosting requires no paid license or support subscription." %}</p>
+          </div>
+          <div class="features setup-choices">
+            <div class="f-box">
+              <h3>{% translate "Hosted Weblate" %}</h3>
+              <p>{% translate "Want localization without managing infrastructure? Our team runs Weblate so you can focus on localization." %}</p>
+              <a href="#hosted"
+                 class="button inline border rev dedicated-toggle">{% translate "Explore Hosted Weblate" %}</a>
+            </div>
+            <div class="f-box">
+              <h3>{% translate "Dedicated Weblate" %}</h3>
+              <p>{% translate "Need a separate environment without managing it yourself? Our team runs your dedicated Weblate, with options such as SSO and a custom domain." %}</p>
+              <a href="#hosted"
+                 class="button inline border rev dedicated-toggle dedicated-enable">{% translate "Explore Dedicated Hosting" %}</a>
+            </div>
+            <div class="f-box">
+              <h3>{% translate "Self-hosted Weblate" %}</h3>
+              <p>{% translate "Need your own infrastructure? Get expert support from Weblate’s developers to reduce your team’s maintenance burden." %}</p>
+              <a href="{% url 'support' %}"
+                 class="button inline border rev">{% translate "Explore self-hosted support" %}</a>
+            </div>
+          </div>
+          <div id="hosting-support" class="page-desc small">
+            <h2>{% translate "Professional hosting and support, directly from the team building Weblate." %}</h2>
+            <p>{% translate "Reduce reliance on internal expertise with professional assistance for production Weblate. Extended self-hosted support includes ongoing upgrade maintenance and requires the installation package. Your purchases also fund Weblate’s continued maintenance and development." %}</p>
+            <a href="{% url 'support' %}"
+               class="button inline border rev">{% translate "Explore maintenance and support" %}</a>
+          </div>
+          <div class="page-desc small">
+            <p>{% blocktranslate with install_url="https://docs.weblate.org/en/latest/admin/install.html" %}Prefer to operate independently? <a href="{{ install_url }}">Self-host Weblate freely</a>, with responsibility for deployment, maintenance, upgrades, and troubleshooting. Commercial support is optional. Eligible public libre projects can also apply for <a href="#libre">gratis hosting</a>.{% endblocktranslate %}</p>
+          </div>
+        </section>
         <h2 id="which"
             class="section-title payment-conditions">{% translate "Compare hosting and operational control" %}</h2>
+        <div class="page-desc small">
+          <p>{% translate "The comparison below shows services included with each option. You can install and upgrade Weblate freely; commercial maintenance and assistance depend on the service you choose." %}</p>
+        </div>
         <div class="pricing-table">
           <div class="pricing-table-left">
             <div class="col">
@@ -303,6 +341,7 @@
         <div class="clear"></div>
         <h2 id="hosted" class="section-title payment-conditions">{% translate "Cloud-hosted Price Options" %}</h2>
         <div class="page-desc small">
+          <p>{% blocktranslate with url="https://docs.weblate.org/en/latest/security/data-residency.html" %}Hosted Weblate stores and processes customer data and backups in the EU. Integrations you configure can send data elsewhere. Read our <a href="{{ url }}">data residency documentation</a>.{% endblocktranslate %}</p>
           <p class="small">
             {% blocktranslate with contact=company_sales_email_mailto %}Hosted Weblate allows localization without any extra effort, and <strong>premium support</strong> backed by core developers and professional translators. Ask about hosting of larger projects, or let us answer your questions by <a href="{{ contact }}">getting in touch</a>—we are ready to find the perfect solution.{% endblocktranslate %}
           </p>
