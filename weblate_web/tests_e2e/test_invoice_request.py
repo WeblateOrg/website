@@ -21,11 +21,13 @@
 
 from __future__ import annotations
 
+from datetime import timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 import pytest
+from django.utils import timezone
 
 from weblate_web.crm.models import Interaction
 from weblate_web.tests_e2e.test_donation import log_in
@@ -40,6 +42,8 @@ pytestmark = [pytest.mark.django_db, pytest.mark.usefixtures("e2e_setup")]
 
 def test_invoice_request(page: Page, live_server, authenticated_user: User) -> None:
     subscription = create_active_subscription(authenticated_user, "basic")
+    subscription.expires = timezone.now() + timedelta(days=30)
+    subscription.save(update_fields=["expires"])
     log_in(page, live_server)
     page.goto(f"{live_server.url}/en/user/")
     request_button = page.get_by_role("button", name="Request invoice", exact=True)

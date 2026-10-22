@@ -86,7 +86,6 @@ from weblate_web.models import (
     Project,
     Service,
     ServiceActivity,
-    ServiceKind,
     Subscription,
     UnprocessablePaymentError,
     add_subscription_past_payments,
@@ -1314,10 +1313,7 @@ def subscription_invoice_request(request: AuthenticatedHttpRequest, pk: int):
         pk=pk,
         service__customer__owners=request.user,
     )
-    if (
-        not subscription.package.get_repeat()
-        or subscription.service.kind == ServiceKind.DONATION
-    ):
+    if not subscription.can_request_invoice():
         raise Http404
     form = InvoiceRequestForm(request.POST if request.method == "POST" else None)
     if request.method == "POST" and form.is_valid():
