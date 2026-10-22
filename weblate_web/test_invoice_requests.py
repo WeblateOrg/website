@@ -20,7 +20,7 @@
 from __future__ import annotations
 
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from threading import Barrier, Event
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
@@ -34,8 +34,8 @@ from requests import HTTPError, Response, Timeout
 
 from weblate_web.crm.models import Interaction
 from weblate_web.invoice_requests import submit_invoice_request
-from weblate_web.invoices.models import Invoice
-from weblate_web.models import Package, Service, Subscription
+from weblate_web.invoices.models import Invoice, InvoiceKind
+from weblate_web.models import Package, Service, ServiceKind, Subscription
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.zammad import (
     create_invoice_request_article,
@@ -70,6 +70,85 @@ class InvoiceRequestTest(TestCase):
             "subscription-invoice-request", kwargs={"pk": self.subscription.pk}
         )
         self.client.force_login(self.user)
+
+    def assert_request_eligibility(self, *, allowed: bool) -> None:
+        self.assertEqual(self.subscription.can_request_invoice(), allowed)
+        with patch("weblate_web.context_processors.get_activity", return_value=[]):
+            response = self.client.get(reverse("user"))
+        if allowed:
+            self.assertContains(response, self.url)
+        else:
+            self.assertNotContains(response, self.url)
+        self.assertEqual(self.client.get(self.url).status_code, 200 if allowed else 404)
+        if not allowed:
+            with patch(
+                "weblate_web.invoice_requests.create_invoice_request_ticket"
+            ) as ticket:
+                self.assertEqual(self.client.post(self.url, {}).status_code, 404)
+            ticket.assert_not_called()
+            self.assertFalse(Interaction.objects.exists())
+
+    def test_renewal_window(self) -> None:
+        now = datetime(2026, 10, 1, 12, tzinfo=UTC)
+        with patch("django.utils.timezone.now", return_value=now):
+            for delta, allowed in (
+                (timedelta(days=60, seconds=1), False),
+                (timedelta(days=60), True),
+                (timedelta(days=59), True),
+                (timedelta(), True),
+                (timedelta(days=-2), True),
+                (timedelta(days=-365), True),
+            ):
+                with self.subTest(delta=delta):
+                    self.subscription.expires = now + delta
+                    self.subscription.save(update_fields=["expires"])
+                    self.assert_request_eligibility(allowed=allowed)
+            self.subscription.enabled = False
+            self.subscription.save(update_fields=["enabled"])
+            self.assert_request_eligibility(allowed=True)
+
+    def test_existing_renewal_invoice(self) -> None:
+        with patch.object(Invoice, "generate_files"):
+            invoice = self.subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        self.assert_request_eligibility(allowed=False)
+        Payment.objects.create(
+            customer=self.customer,
+            amount=100,
+            state=Payment.ACCEPTED,
+            paid_invoice=invoice,
+        )
+        self.assertIsNone(self.subscription.get_outstanding_renewal_invoice())
+        self.assert_request_eligibility(allowed=False)
+
+    def test_nonblocking_invoices(self) -> None:
+        with patch.object(Invoice, "generate_files"):
+            invoice = self.subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        for changes in (
+            {"kind": InvoiceKind.QUOTE},
+            {"fully_credited": True},
+            {"extra": {"subscription": self.subscription.pk + 1}},
+        ):
+            with self.subTest(changes=changes):
+                Invoice.objects.filter(pk=invoice.pk).update(**changes)
+                self.assert_request_eligibility(allowed=True)
+                Invoice.objects.filter(pk=invoice.pk).update(
+                    kind=InvoiceKind.INVOICE,
+                    fully_credited=False,
+                    extra={"subscription": self.subscription.pk},
+                )
+
+    def test_nonrecurring_and_donation_excluded(self) -> None:
+        self.package.name = "nonrecurring"
+        self.package.save(update_fields=["name"])
+        self.assert_request_eligibility(allowed=False)
+        self.package.name = "basic"
+        self.package.save(update_fields=["name"])
+        self.service.kind = ServiceKind.DONATION
+        self.service.save(update_fields=["kind"])
+        self.assertFalse(self.subscription.can_request_invoice())
+        self.assertEqual(self.client.get(self.url).status_code, 404)
+        self.assertEqual(self.client.post(self.url, {}).status_code, 404)
+        self.assertFalse(Interaction.objects.exists())
 
     @patch("weblate_web.invoice_requests.create_invoice_request_article")
     @patch(

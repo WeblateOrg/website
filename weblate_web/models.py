@@ -1420,7 +1420,7 @@ class SubscriptionQuerySet(models.QuerySet["Subscription"]):
         return self.filter(enabled=True).exclude(payment=None)
 
 
-class Subscription(models.Model):
+class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
     service = models.ForeignKey(Service, on_delete=models.deletion.PROTECT)
     payment = models.ForeignKey(
         Payment, on_delete=models.deletion.RESTRICT, blank=True, null=True
@@ -1592,6 +1592,16 @@ class Subscription(models.Model):
         if not query.children:
             return Payment.objects.none()
         return Payment.objects.filter(query).distinct()
+
+    def can_request_invoice(self) -> bool:
+        """Allow invoice requests when renewal is due and not already invoiced."""
+        return (
+            bool(self.package.get_repeat())
+            and not self.service.is_donation
+            and self.expires <= timezone.now() + timedelta(days=60)
+            and self.get_outstanding_renewal_invoice() is None
+            and not self.has_accepted_renewal_payment()
+        )
 
     def get_outstanding_renewal_invoice(self) -> Invoice | None:
         return next(self.get_outstanding_renewal_invoices(), None)
