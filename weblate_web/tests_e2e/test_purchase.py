@@ -49,8 +49,10 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         expect(name).to_have_text("160k")
         expect(page.locator("#calculator-monthly-row")).to_be_hidden()
         expect(page.locator("#calculator-yearly")).to_have_text("€1,140")
-        expect(page.locator("#calculator-buy")).to_have_attribute(
-            "href", "/en/subscription/new/?plan=dedicated:160k"
+        expect(page.locator("#calculator-buy-plan")).to_have_value("dedicated:160k")
+        expect(page.locator("#calculator-buy").locator("..")).to_have_attribute(
+            "action",
+            f"{live_server.url}/en/subscription/new/?plan=dedicated%3A160k",
         )
         dedicated.uncheck()
         expect(name).to_have_text("40k")
@@ -206,21 +208,15 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         assert not page.locator("text=Server Error").is_visible()
         assert not page.locator("text=Internal Server Error").is_visible()
 
-        # Verify authenticated user can see subscription options
-        buy_link = page.locator('a[href*="subscription"]').first
-        assert buy_link.is_visible(), (
-            "Subscription links should be visible to authenticated users"
-        )
+        # Verify authenticated user can see a subscription purchase form.
+        buy_form = page.locator('form[action*="/subscription/new/"]:visible').first
+        expect(buy_form.locator('input[type="submit"]')).to_be_visible()
+        expect(buy_form).to_have_attribute("method", "post")
+        expect(buy_form.locator('input[name="csrfmiddlewaretoken"]')).to_have_count(1)
+        assert buy_form.locator('input[name="plan"]').input_value()
 
-        # Take screenshot showing subscription link is available
+        # Take screenshot showing the purchase option is available.
         page.screenshot(path="test-results/payment-selection.png", full_page=True)
-
-        # Verify the link has the expected structure
-        href = buy_link.get_attribute("href")
-        assert href is not None
-        assert "subscription" in href or "hosting" in href, (
-            f"Subscription link should contain 'subscription' or 'hosting': {href}"
-        )
 
     def test_hosting_page_displays_packages(self, page: Page, live_server):
         """Test that the hosting page displays available packages."""
@@ -241,7 +237,7 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         has_pricing = (
             page.locator("text=Buy now").count() > 0
             or page.locator("text=Get started").count() > 0
-            or page.locator('a[href*="subscription-new"]').count() > 0
+            or page.locator('form[action*="subscription/new/"]').count() > 0
         )
 
         assert has_pricing, "Hosting page should display package purchase options"
@@ -281,9 +277,9 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
         page.click('input[type="submit"]')
         page.wait_for_load_state("networkidle")
 
-        # Step 2: Start purchase flow - navigate to subscription/new
-        # This redirects to payment page, then to billing info form
+        # Step 2: Confirm the selected plan before creating a payment.
         response = page.goto(f"{live_server.url}/en/subscription/new/?plan=basic")
+        page.locator('input[value="Continue to payment"]').click()
         page.wait_for_load_state("networkidle")
 
         assert response is not None

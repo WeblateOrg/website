@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Confirm your purchase" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title min-m">{% translate "Confirm your purchase" %}</h1>
+        <div class="payment-form">
+          <p>{{ package.verbose }}</p>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="plan" value="{{ package.name }}">
+            {% if service %}<input type="hidden" name="service" value="{{ service.pk }}">{% endif %}
+            <input type="submit"
+                   class="button center make-payment"
+                   value="{% translate "Continue to payment" %}">
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

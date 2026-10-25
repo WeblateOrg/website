@@ -1468,20 +1468,29 @@ def donate_pay(request, pk):
     return redirect(payment.get_payment_url())
 
 
+@require_http_methods(["GET", "POST"])
 @login_required
 def subscription_new(request):
-    plan = request.GET.get("plan")
+    data = request.POST if request.method == "POST" else request.GET
+    plan = data.get("plan")
     try:
         package = Package.objects.get(name=plan)
     except Package.DoesNotExist:
         return redirect("support")
     service: Service | None
-    if "service" in request.GET:
+    if "service" in data:
         service = get_object_or_404(
-            Service, pk=request.GET["service"], customer__owners=request.user
+            Service, pk=data["service"], customer__owners=request.user
         )
     else:
         service = None
+
+    if request.method == "GET":
+        return render(
+            request,
+            "subscription/confirm.html",
+            {"package": package, "service": service},
+        )
 
     customer = get_customer(request, service)
     recurring = package.get_repeat()
@@ -1627,8 +1636,7 @@ class HostingView(TemplateView):
                     "name": PACKAGE_NAMES[limit],
                     "yearly_price": price_format(price),
                     "monthly_price": price_format(price // 10),
-                    "dedicated_url": (
-                        f"{reverse('subscription-new')}?plan="
+                    "dedicated_plan": (
                         f"{DEDICATED_PREFIX}{PACKAGE_NAMES[limit].lower()}"
                     ),
                 }
@@ -1666,9 +1674,14 @@ class SupportView(TemplateView):
         return data
 
 
+@require_http_methods(["GET", "POST"])
 def fosdem_donation(request):
     # Validate and parse the amount parameter
-    amount_str = request.GET.get("amount", "30")
+    amount_str = (
+        request.POST.get("amount")
+        if request.method == "POST"
+        else request.GET.get("amount", "30")
+    )
 
     try:
         amount = int(amount_str)
@@ -1678,6 +1691,9 @@ def fosdem_donation(request):
     # Validate amount is within reasonable bounds
     if amount < 5 or amount > 100:
         raise BadRequest("Invalid amount parameter")
+
+    if request.method == "GET":
+        return render(request, "donate/fosdem-confirm.html", {"amount": amount})
 
     # Create customer (or use existing for authenticated users)
     if request.user.is_authenticated:

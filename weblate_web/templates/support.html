@@ -79,10 +79,15 @@
               <li>{% translate "Issues in your environment fixed immediately." %}</li>
               <li>{% translate "Priority e-mail support." %}</li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=basic"
-               class="format-item bottom-left">{{ basic_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
-            <a href="{% url 'subscription-new' %}?plan=basic"
-               class="button black right bottom-right">{% translate "Buy now" %}</a>
+            <form method="post" action="{% url 'subscription-new' %}?plan=basic">
+              {% csrf_token %}
+              <input type="hidden" name="plan" value="basic">
+              <button type="submit"
+                      class="format-item bottom-left">{{ basic_support_package.price|price_format }}<span>{% translate "annually" %}</span></button>
+              <input type="submit"
+                     class="button black right bottom-right"
+                     value="{% translate "Buy now" %}">
+            </form>
           </div>
           <div class="box">
             <div class="icon">
@@ -96,10 +101,15 @@
               <li>{% translate "Only available with the installation package" %}</li>
               <li>{% translate "Be prepared with security notifications prior to the fix publication." %}</li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=extended"
-               class="format-item bottom-left">{{ extended_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
-            <a href="{% url 'subscription-new' %}?plan=extended"
-               class="button black right bottom-right">{% translate "Buy now" %}</a>
+            <form method="post" action="{% url 'subscription-new' %}?plan=extended">
+              {% csrf_token %}
+              <input type="hidden" name="plan" value="extended">
+              <button type="submit"
+                      class="format-item bottom-left">{{ extended_support_package.price|price_format }}<span>{% translate "annually" %}</span></button>
+              <input type="submit"
+                     class="button black right bottom-right"
+                     value="{% translate "Buy now" %}">
+            </form>
           </div>
         </div>
         <div class="flex">
@@ -114,10 +124,15 @@
               <li>{% translate "Next business day support response guaranteed." %}</li>
               <li>{% translate "Be prepared with security notifications prior to the fix publication." %}</li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=premium"
-               class="format-item bottom-left">{{ premium_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
-            <a href="{% url 'subscription-new' %}?plan=premium"
-               class="button black right bottom-right">{% translate "Buy now" %}</a>
+            <form method="post" action="{% url 'subscription-new' %}?plan=premium">
+              {% csrf_token %}
+              <input type="hidden" name="plan" value="premium">
+              <button type="submit"
+                      class="format-item bottom-left">{{ premium_support_package.price|price_format }}<span>{% translate "annually" %}</span></button>
+              <input type="submit"
+                     class="button black right bottom-right"
+                     value="{% translate "Buy now" %}">
+            </form>
           </div>
           <div class="box" id="install">
             <div class="icon">
@@ -130,10 +145,15 @@
               <li>{% translate "Requires root access or close cooperation of your admins" %}</li>
               <li>{% translate "Setup customization" %}</li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=install:linux"
-               class="format-item bottom-left">{{ install_package.price|price_format }}<span>{% translate "installation" %}</span></a>
-            <a href="{% url 'subscription-new' %}?plan=install:linux"
-               class="button black right bottom-right">{% translate "Buy now" %}</a>
+            <form method="post" action="{% url 'subscription-new' %}?plan=install:linux">
+              {% csrf_token %}
+              <input type="hidden" name="plan" value="install:linux">
+              <button type="submit"
+                      class="format-item bottom-left">{{ install_package.price|price_format }}<span>{% translate "installation" %}</span></button>
+              <input type="submit"
+                     class="button black right bottom-right"
+                     value="{% translate "Buy now" %}">
+            </form>
           </div>
         </div>
         <div class="flex">
@@ -151,10 +171,15 @@
                 <a href="https://docs.weblate.org/en/latest/admin/backup.html#cloudbackup">{% translate "Read more in the documentation." %}</a>
               </li>
             </ul>
-            <a href="{% url 'subscription-new' %}?plan=backup"
-               class="format-item bottom-left">{{ backup_support_package.price|price_format }}<span>{% translate "annually" %}</span></a>
-            <a href="{% url 'subscription-new' %}?plan=backup"
-               class="button black right bottom-right">{% translate "Buy now" %}</a>
+            <form method="post" action="{% url 'subscription-new' %}?plan=backup">
+              {% csrf_token %}
+              <input type="hidden" name="plan" value="backup">
+              <button type="submit"
+                      class="format-item bottom-left">{{ backup_support_package.price|price_format }}<span>{% translate "annually" %}</span></button>
+              <input type="submit"
+                     class="button black right bottom-right"
+                     value="{% translate "Buy now" %}">
+            </form>
           </div>
           <div class="box">
             <div class="icon">
