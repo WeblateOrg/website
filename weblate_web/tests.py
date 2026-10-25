@@ -1472,6 +1472,45 @@ class PaymentCustomerAccessTest(UserTestCase):
         payment = Payment.objects.get()
         self.assertTrue(payment.customer.owners.filter(pk=user.pk).exists())
 
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_fosdem_donation_with_only_hosted_customer_returns_locally(self) -> None:
+        user = self.login()
+        hosted_customer = self.create_customer(user, origin=HOSTED_ORIGIN)
+
+        response = self.client.post("/en/fosdem/donate/", {"amount": 30})
+
+        self.assertEqual(response.status_code, 302)
+        payment = Payment.objects.get()
+        customer = payment.customer
+        self.assertNotEqual(customer.pk, hosted_customer.pk)
+        self.assertEqual(customer.origin, PAYMENTS_ORIGIN)
+        self.assertTrue(customer.owners.filter(pk=user.pk).exists())
+
+        customer.name = "FOSDEM donor"
+        customer.address = "Example street"
+        customer.city = "Prague"
+        customer.postcode = "11000"
+        customer.country = "CZ"
+        customer.save(update_fields=["name", "address", "city", "postcode", "country"])
+        response = self.client.post(f"/en/payment/{payment.pk}/", {"method": "reject"})
+        self.assertRedirects(
+            response,
+            f"/en/donate/process/?payment={payment.pk}",
+            fetch_redirect_response=False,
+        )
+
+    def test_fosdem_donation_prefers_website_customer(self) -> None:
+        user = self.login()
+        hosted_customer = self.create_customer(user, origin=HOSTED_ORIGIN)
+        website_customer = self.create_customer(user)
+
+        response = self.client.post("/en/fosdem/donate/", {"amount": 30})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Payment.objects.get().customer, website_customer)
+        hosted_customer.refresh_from_db()
+        self.assertEqual(hosted_customer.user_id, user.pk)
+
 
 class CustomerOwnerAccessTest(UserTestCase):
     def setUp(self) -> None:
@@ -1699,12 +1738,78 @@ class CustomerOwnerAccessTest(UserTestCase):
 
         self.assertRedirects(response, self.user_url)
         self.assertNotIn(self.owner, self.customer.owners.all())
+        self.customer.refresh_from_db()
+        self.assertEqual(self.customer.user_id, self.owner.pk)
         interaction = Interaction.objects.get(customer=self.customer)
         self.assertEqual(interaction.origin, Interaction.Origin.CUSTOMER_OWNER)
         self.assertEqual(interaction.summary, "Removed customer owner")
         self.assertEqual(interaction.user, peer_owner)
         self.assertEqual(interaction.details["action"], "remove")
         self.assertEqual(interaction.details["owner"], self.owner.pk)
+
+    def test_removed_creator_cannot_regain_access_through_donations(self) -> None:
+        peer_owner = User.objects.create_user(
+            username="peer-owner", email="peer-owner@example.com"
+        )
+        self.customer.owners.add(peer_owner)
+        payment = Payment.objects.create(
+            customer=self.customer, amount=30, description="Existing payment"
+        )
+        self.client.force_login(peer_owner)
+        self.client.post(self.url, {"owner": self.owner.pk, "remove": "1"})
+        self.client.force_login(self.owner)
+
+        customer_url = reverse("edit-customer", kwargs={"pk": self.customer.pk})
+        self.assertEqual(self.client.get(customer_url).status_code, 404)
+        self.assertEqual(
+            self.client.get(
+                reverse("user-invoice", kwargs={"pk": payment.pk})
+            ).status_code,
+            404,
+        )
+
+        fosdem_url = reverse("fosdem-donate")
+        self.assertEqual(self.client.get(fosdem_url, {"amount": 30}).status_code, 200)
+        self.assertFalse(self.customer.owners.filter(pk=self.owner.pk).exists())
+        response = self.client.post(fosdem_url, {"amount": 30})
+        self.assertEqual(response.status_code, 302)
+        fosdem_payment = Payment.objects.exclude(pk=payment.pk).get()
+        self.assertNotEqual(fosdem_payment.customer_id, self.customer.pk)
+
+        response = self.client.post(
+            reverse("donate-new"), {"amount": 30, "reward": "0"}
+        )
+        self.assertEqual(response.status_code, 302)
+        donation_payment = Payment.objects.exclude(
+            pk__in=[payment.pk, fosdem_payment.pk]
+        ).get()
+        self.assertEqual(donation_payment.customer_id, fosdem_payment.customer_id)
+        self.assertFalse(self.customer.owners.filter(pk=self.owner.pk).exists())
+        self.assertEqual(self.client.get(customer_url).status_code, 404)
+        self.assertEqual(
+            self.client.post(
+                self.url, {"owner": peer_owner.pk, "remove": "1"}
+            ).status_code,
+            404,
+        )
+        self.assertTrue(self.customer.owners.filter(pk=peer_owner.pk).exists())
+        self.customer.refresh_from_db()
+        self.assertEqual(self.customer.user_id, self.owner.pk)
+
+    def test_removing_hosted_customer_owner_preserves_purchaser_id(self) -> None:
+        self.customer.origin = HOSTED_ORIGIN
+        self.customer.save(update_fields=["origin"])
+        peer_owner = User.objects.create_user(
+            username="peer-owner", email="peer-owner@example.com"
+        )
+        self.customer.owners.add(peer_owner)
+        self.client.force_login(peer_owner)
+
+        self.client.post(self.url, {"owner": self.owner.pk, "remove": "1"})
+
+        self.customer.refresh_from_db()
+        self.assertEqual(self.customer.user_id, self.owner.pk)
+        self.assertFalse(self.customer.owners.filter(pk=self.owner.pk).exists())
 
     def test_owner_can_not_remove_self(self) -> None:
         response = self.client.post(
