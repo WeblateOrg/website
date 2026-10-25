@@ -183,7 +183,10 @@ def get_page_range(page_obj: Page) -> list[int | str]:
 
 
 def get_customer(
-    request: AuthenticatedHttpRequest, obj: Service | None = None
+    request: AuthenticatedHttpRequest,
+    obj: Service | None = None,
+    *,
+    origin: str | None = None,
 ) -> Customer:
     # Get from service objects
     if obj and obj.pk and obj.customer:
@@ -191,15 +194,19 @@ def get_customer(
 
     # Use existing customer for user
     customers = Customer.objects.for_owner(request.user)
+    if origin is not None:
+        customers = customers.filter(origin=origin)
     if len(customers) == 1:
         return customers[0]
 
-    # Create new customer object for an user
-    customer = Customer.objects.get_or_create(
-        origin=PAYMENTS_ORIGIN,
-        user_id=request.user.id,
-        defaults={"email": request.user.email},
-    )[0]
+    # When the user owns several customers, prefer the one they originally created.
+    customer = customers.filter(origin=PAYMENTS_ORIGIN, user_id=request.user.id).first()
+    if customer is not None:
+        return customer
+
+    customer = Customer.objects.create(
+        origin=PAYMENTS_ORIGIN, user_id=request.user.id, email=request.user.email
+    )
     customer.owners.add(request.user)
     return customer
 
@@ -875,12 +882,6 @@ def can_download_payment_invoice(
 ) -> bool:
     user = request.user
     if payment.customer.owners.filter(pk=user.pk).exists():
-        return True
-
-    if (
-        payment.customer.origin == PAYMENTS_ORIGIN
-        and payment.customer.user_id == user.id
-    ):
         return True
 
     return Service.objects.filter(
@@ -1697,12 +1698,7 @@ def fosdem_donation(request):
 
     # Create customer (or use existing for authenticated users)
     if request.user.is_authenticated:
-        customer = Customer.objects.get_or_create(
-            origin=PAYMENTS_ORIGIN,
-            user_id=request.user.id,
-            defaults={"email": request.user.email},
-        )[0]
-        customer.owners.add(request.user)
+        customer = get_customer(request, origin=PAYMENTS_ORIGIN)
     else:
         customer = Customer.objects.create(
             origin=FOSDEM_ORIGIN, user_id=-1, country="BE"
