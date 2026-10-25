@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load i18n prices %}
+
+{% block title %}
+  {% translate "Confirm your FOSDEM donation" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title min-m">{% translate "Confirm your FOSDEM donation" %}</h1>
+        <div class="payment-form">
+          <p>{{ amount|price_format }}</p>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="amount" value="{{ amount }}">
+            <input type="submit"
+                   class="button center make-payment"
+                   value="{% translate "Continue to payment" %}">
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

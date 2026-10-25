@@ -11,6 +11,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
+from urllib.parse import parse_qs, urlsplit
 from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
 from zlib import crc32
 
@@ -800,8 +801,8 @@ class ViewTestCase(PostTestCase):
             self.assertEqual(plan["yearly_price"], price_format(PACKAGES[limit]))
             self.assertEqual(plan["monthly_price"], price_format(PACKAGES[limit] // 10))
             self.assertEqual(
-                plan["dedicated_url"],
-                f"{reverse('subscription-new')}?plan=dedicated:{PACKAGE_NAMES[limit].lower()}",
+                plan["dedicated_plan"],
+                f"dedicated:{PACKAGE_NAMES[limit].lower()}",
             )
 
     def test_index_missing_timestamp(self) -> None:
@@ -1465,7 +1466,7 @@ class PaymentCustomerAccessTest(UserTestCase):
     def test_authenticated_fosdem_customer_is_linked_to_user(self) -> None:
         user = self.login()
 
-        response = self.client.get("/fosdem/donate/", follow=True)
+        response = self.client.post("/en/fosdem/donate/", {"amount": 30}, follow=True)
 
         self.assertEqual(response.status_code, 200)
         payment = Payment.objects.get()
@@ -3016,6 +3017,127 @@ class PaymentTest(FakturaceTestCase):
         self.assertContains(response, 'data-reward-input="reward-1"')
         self.assertNotContains(response, 'class="close"')
 
+    @responses.activate
+    def test_subscription_creation_requires_confirmed_post(self) -> None:
+        cnb_mock_rates()
+        user = self.create_user()
+        package = Package.objects.create(
+            name="backup", verbose="Weblate backup service (yearly)", price=300
+        )
+        url = reverse("subscription-new")
+        csrf_client = Client(enforce_csrf_checks=True)
+        csrf_client.force_login(user)
+
+        response = csrf_client.get(url, {"plan": package.name})
+        self.assertContains(response, "Continue to payment")
+        self.assertContains(response, 'name="plan" value="backup"')
+        self.assertFalse(Customer.objects.exists())
+        self.assertFalse(Invoice.objects.exists())
+        self.assertFalse(Payment.objects.exists())
+
+        response = csrf_client.post(url, {"plan": package.name})
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Customer.objects.exists())
+        self.assertFalse(Invoice.objects.exists())
+        self.assertFalse(Payment.objects.exists())
+
+        response = csrf_client.post(
+            f"{url}?plan=basic",
+            {"plan": package.name},
+            HTTP_X_CSRFTOKEN=csrf_client.cookies["csrftoken"].value,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Invoice.objects.count(), 1)
+        self.assertEqual(Payment.objects.count(), 1)
+        self.assertEqual(Payment.objects.get().extra["subscription"], package.name)
+
+    @responses.activate
+    def test_subscription_post_preserves_plan_through_login(self) -> None:
+        cnb_mock_rates()
+        self.create_packages()
+        user = self.create_user()
+        csrf_client = Client(enforce_csrf_checks=True)
+
+        response = csrf_client.get("/en/support/")
+        self.assertContains(response, 'action="/en/subscription/new/?plan=basic"')
+        url = "/en/subscription/new/?plan=basic"
+        token = csrf_client.cookies["csrftoken"].value
+        response = csrf_client.post(url, {"plan": "basic"}, HTTP_X_CSRFTOKEN=token)
+        self.assertEqual(response.status_code, 302)
+        next_url = parse_qs(urlsplit(response.headers["Location"]).query)["next"][0]
+        self.assertEqual(next_url, url)
+        self.assertFalse(Payment.objects.exists())
+
+        csrf_client.force_login(user)
+        response = csrf_client.get(next_url)
+        self.assertContains(response, "Confirm your purchase")
+        self.assertContains(response, 'name="plan" value="basic"')
+        self.assertFalse(Payment.objects.exists())
+
+        response = csrf_client.post(next_url, {"plan": "basic"}, HTTP_X_CSRFTOKEN=token)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Payment.objects.count(), 1)
+
+    def test_fosdem_creation_requires_confirmed_post(self) -> None:
+        url = reverse("fosdem-donate")
+        csrf_client = Client(enforce_csrf_checks=True)
+
+        response = csrf_client.get(url, {"amount": 50})
+        self.assertContains(response, "Confirm your FOSDEM donation")
+        self.assertContains(response, 'name="amount" value="50"')
+        self.assertFalse(Customer.objects.exists())
+        self.assertFalse(Payment.objects.exists())
+
+        response = csrf_client.post(url, {"amount": 50})
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Customer.objects.exists())
+        self.assertFalse(Payment.objects.exists())
+
+        response = csrf_client.post(
+            url,
+            {"amount": 50},
+            HTTP_X_CSRFTOKEN=csrf_client.cookies["csrftoken"].value,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Payment.objects.count(), 1)
+        self.assertEqual(Payment.objects.get().amount, 50)
+
+    def test_creation_inputs_and_ownership(self) -> None:
+        subscription_url = "/en/subscription/new/"
+        fosdem_url = "/en/fosdem/donate/"
+        package = Package.objects.create(name="backup", verbose="Backup", price=300)
+
+        response = self.client.get(subscription_url, {"plan": package.name})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.headers["Location"].startswith(settings.LOGIN_URL))
+        self.assertIn("plan%3Dbackup", response.headers["Location"])
+        self.login()
+        self.assertRedirects(
+            self.client.get(subscription_url, {"plan": "missing"}),
+            "/en/support/",
+        )
+        self.assertEqual(
+            self.client.get(
+                subscription_url, {"plan": package.name, "service": "9999"}
+            ).status_code,
+            404,
+        )
+        for amount in ("invalid", "4", "101"):
+            with self.subTest(amount=amount):
+                self.assertEqual(
+                    self.client.get(fosdem_url, {"amount": amount}).status_code,
+                    400,
+                )
+                self.assertEqual(
+                    self.client.post(fosdem_url, {"amount": amount}).status_code,
+                    400,
+                )
+        self.assertFalse(Customer.objects.exists())
+        self.assertFalse(Invoice.objects.exists())
+        self.assertFalse(Payment.objects.exists())
+
     def test_manual_backend_not_offered(self) -> None:
         customer = Customer.objects.create(
             name="Test Customer",
@@ -3046,7 +3168,9 @@ class PaymentTest(FakturaceTestCase):
         thepay_mock_create_payment()
         Package.objects.create(name="community", verbose="Community support", price=0)
         Package.objects.create(name="extended", verbose="Extended support", price=42)
-        response = self.client.get("/en/subscription/new/?plan=extended", follow=True)
+        response = self.client.post(
+            "/en/subscription/new/", {"plan": "extended"}, follow=True
+        )
         self.assertContains(response, "Please provide your billing")
         payment = Payment.objects.all().get()
         self.assertEqual(payment.state, Payment.NEW)
@@ -3080,6 +3204,15 @@ class PaymentTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
         self.assertEqual(cast("Invoice", payment.paid_invoice).vat_rate, 21)
+
+        subscription_count = Subscription.objects.count()
+        response = self.client.get(
+            reverse("donate-process"), {"payment": str(payment.pk)}
+        )
+        self.assertRedirects(response, reverse("user"))
+        self.assertEqual(Subscription.objects.count(), subscription_count)
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PROCESSED)
 
         # Edit customer info
         customer = Customer.objects.get()
@@ -3476,7 +3609,7 @@ class PaymentTest(FakturaceTestCase):
     def test_fosdem_donation(self) -> None:
         thepay_mock_create_payment()
 
-        response = self.client.get("/fosdem/donate/", follow=True)
+        response = self.client.post("/en/fosdem/donate/", {"amount": 30}, follow=True)
         self.assertContains(response, "Please provide your name")
         payment = Payment.objects.all().get()
         self.assertEqual(payment.amount, 30)
@@ -5884,6 +6017,9 @@ class ServiceTest(FakturaceTestCase):
         )
         self.assertFalse(Subscription.objects.exists())
         response = self.client.get(reverse("subscription-new"), {"plan": "backup"})
+        self.assertContains(response, "Continue to payment")
+        self.assertFalse(Payment.objects.exists())
+        response = self.client.post(reverse("subscription-new"), {"plan": "backup"})
         payment = Payment.objects.get()
         self.assertRedirects(
             response, payment.get_payment_url(), fetch_redirect_response=False
@@ -6211,12 +6347,14 @@ class ServiceTest(FakturaceTestCase):
         service = self.create_service(years=0, days=-3, recurring="")
         subscription = service.subscription_set.get()
         # This UUID used to wrap at a hyphen in plain-text payment links.
+        # pylint: disable=protected-access
         with patch.object(
-            Invoice._meta.get_field("uuid"),  # pylint: disable=protected-access
+            Invoice._meta.get_field("uuid"),
             "get_default",
             return_value="348f4586-18ff-4dfe-afa8-f98ca8e0dde2",
         ):
             invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        # pylint: enable=protected-access
         later_invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
         other_subscription = service.subscription_set.create(
             package=subscription.package,
@@ -6716,7 +6854,7 @@ class ServiceTest(FakturaceTestCase):
 
         with override("en"):
             self.login()
-            response = self.client.get(
+            response = self.client.post(
                 reverse("subscription-new"),
                 {"plan": "test:test-1"},
                 follow=True,
@@ -6969,7 +7107,7 @@ class ServiceTest(FakturaceTestCase):
             target = Package.objects.get(name="premium")
             self.assertLess(subscription.get_upgrade_price(target), Decimal(5))
 
-            response = self.client.get(
+            response = self.client.post(
                 reverse("subscription-new"),
                 {"plan": "premium", "service": str(service.pk)},
                 follow=True,

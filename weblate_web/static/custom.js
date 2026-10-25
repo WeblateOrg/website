@@ -38,6 +38,8 @@ ready(() => {
     const strings = field("strings");
     const languages = field("languages");
     const dedicated = field("dedicated");
+    const buyForm = field("buy").form;
+    const buyAction = buyForm.action;
     const numbers = new Intl.NumberFormat(document.documentElement.lang);
     const update = () => {
       const sourceCount = strings.valueAsNumber;
@@ -72,7 +74,8 @@ ready(() => {
       field("monthly-row").hidden = dedicated.checked;
       field("trial").hidden = dedicated.checked;
       field("buy").hidden = !dedicated.checked;
-      field("buy").href = plan.dedicated_url;
+      field("buy-plan").value = plan.dedicated_plan;
+      buyForm.action = `${buyAction}?plan=${encodeURIComponent(plan.dedicated_plan)}`;
     };
     strings.addEventListener("input", update);
     languages.addEventListener("input", update);

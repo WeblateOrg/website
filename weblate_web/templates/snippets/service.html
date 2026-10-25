@@ -248,8 +248,14 @@
                   <input type="submit" class="button med inline" value="{{ text }}">
                 </form>
               {% else %}
-                <a class="button med inline"
-                   href="{% url 'subscription-new' %}?plan={{ package }}&amp;service={{ service.pk }}">{{ text }}</a>
+                <form class="form-inline"
+                      method="post"
+                      action="{% url 'subscription-new' %}?plan={{ package|urlencode }}&amp;service={{ service.pk }}">
+                  {% csrf_token %}
+                  <input type="hidden" name="plan" value="{{ package }}">
+                  <input type="hidden" name="service" value="{{ service.pk }}">
+                  <input type="submit" class="button med inline" value="{{ text }}">
+                </form>
               {% endif %}
             </div>
           {% empty %}

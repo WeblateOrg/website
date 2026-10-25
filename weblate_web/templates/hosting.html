@@ -271,7 +271,11 @@
                     {% endfilter %}
                   </div>
                   <div class="line">
-                    <a href="{% url 'subscription-new' %}?plan=extended" class="button">{% translate "Buy now" %}</a>
+                    <form method="post" action="{% url 'subscription-new' %}?plan=extended">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="extended">
+                      <input type="submit" class="button" value="{% translate "Buy now" %}">
+                    </form>
                   </div>
                 </div>
                 <div class="col">
@@ -283,7 +287,11 @@
                     {% endfilter %}
                   </div>
                   <div class="line">
-                    <a href="{% url 'subscription-new' %}?plan=basic" class="button">{% translate "Buy now" %}</a>
+                    <form method="post" action="{% url 'subscription-new' %}?plan=basic">
+                      {% csrf_token %}
+                      <input type="hidden" name="plan" value="basic">
+                      <input type="submit" class="button" value="{% translate "Buy now" %}">
+                    </form>
                   </div>
                 </div>
                 <div class="col">
@@ -370,7 +378,15 @@
                   <a id="calculator-trial"
                      href="https://hosted.weblate.org/trial/"
                      class="button">{% translate "Gratis trial" %}</a>
-                  <a id="calculator-buy" class="button" hidden>{% translate "Buy now" %}</a>
+                  <form method="post" action="{% url 'subscription-new' %}">
+                    {% csrf_token %}
+                    <input id="calculator-buy-plan" type="hidden" name="plan" value="">
+                    <input id="calculator-buy"
+                           type="submit"
+                           class="button"
+                           value="{% translate "Buy now" %}"
+                           hidden>
+                  </form>
                 </div>
                 <div id="calculator-custom" hidden>
                   <p>{% translate "Your project exceeds our largest standard plan. Contact us for a custom hosting plan." %}</p>
@@ -540,8 +556,12 @@
                           {% endfilter %}
                           </div>
                           <div class="line">
-                            <a href="{% url 'subscription-new' %}?plan=dedicated{{ package.name|cut:"hosted" }}"
-                               class="button">{% translate "Buy now" %}</a>
+                            <form method="post"
+                                  action="{% url 'subscription-new' %}?plan=dedicated{{ package.name|cut:"hosted" }}">
+                              {% csrf_token %}
+                              <input type="hidden" name="plan" value="dedicated{{ package.name|cut:"hosted" }}">
+                              <input type="submit" class="button" value="{% translate "Buy now" %}">
+                            </form>
                           </div>
                           <div class="line last"></div>
                         </div>
