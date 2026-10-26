@@ -17,6 +17,7 @@
   "linter": {
     "enabled": true,
     "rules": {
+      "preset": "recommended",
       "style": {
         "noParameterAssign": "error",
         "useAsConstAssertion": "error",
@@ -30,19 +31,25 @@
         "noDescendingSpecificity": "warn",
         "noUselessElse": "error"
       },
+      "suspicious": {
+        "noVar": "error",
+        "useGuardForIn": "error"
+      },
       "correctness": {
         "noUnknownTypeSelector": "warn"
       }
     }
   },
   "formatter": {
-    "enabled": true,
+    "enabled": false,
     "indentStyle": "space"
   },
-  "json": {
-    "linter": {
-      "enabled": false
-    },
+  "javascript": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "css": {
     "formatter": {
       "enabled": false
     }
