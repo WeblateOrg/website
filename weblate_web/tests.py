@@ -510,12 +510,15 @@ def cnb_mock_rates() -> None:
         str(item["currencyCode"]): Decimal(str(item["rate"]))
         for item in RATES_JSON["rates"]
     }
-    ExchangeRates.datacache[timezone.now().date().isoformat()] = rates.copy()
+    # Payments can carry a UTC tax date while invoice dates use local time.
+    days = {timezone.now().date(), timezone.localdate()}
+    for day in days:
+        ExchangeRates.datacache[day.isoformat()] = rates.copy()
+        responses.get(
+            f"https://api.cnb.cz/cnbapi/exrates/daily?date={day.isoformat()}",
+            json=RATES_JSON,
+        )
     ExchangeRates.datacache["2016-07-29"] = rates.copy()
-    responses.get(
-        f"https://api.cnb.cz/cnbapi/exrates/daily?date={timezone.now().date().isoformat()}",
-        json=RATES_JSON,
-    )
     # Matches Fio payments mock
     responses.get(
         "https://api.cnb.cz/cnbapi/exrates/daily?date=2016-07-29",
@@ -2060,6 +2063,56 @@ class HostedSubscriptionTest(FakturaceTestCase):
         payment.refresh_from_db()
         return payment
 
+    @override_settings(TIME_ZONE="Europe/Prague")
+    @responses.activate
+    def test_billing_dates_near_midnight(self) -> None:
+        for month, hour in ((1, 23), (7, 22)):
+            for enabled in (True, False):
+                with (
+                    self.subTest(month=month, enabled=enabled),
+                    patch(
+                        "django.utils.timezone.now",
+                        return_value=datetime(2026, month, 2, hour, 30, tzinfo=UTC),
+                    ),
+                ):
+                    cnb_mock_rates()
+                    service = Service.objects.create(customer=self.customer)
+                    purchase_invoice = Subscription.new_subscription_invoice(
+                        kind=InvoiceKind.DRAFT,
+                        customer=self.customer,
+                        package=Package.objects.get(name="hosted:10k-m"),
+                        service=service,
+                    )
+                    purchase_item = purchase_invoice.invoiceitem_set.get()
+                    self.assertEqual(purchase_item.start_date, date(2026, month, 3))
+                    self.assertEqual(purchase_item.end_date, date(2026, month + 1, 2))
+                    payment = self.pay("hosted:10k-m", service=service)
+                    self.assertEqual(payment.start, date(2026, month, 3))
+                    self.assertEqual(payment.end, date(2026, month + 1, 3))
+                    subscription = service.subscription_set.get()
+                    subscription.enabled = enabled
+                    subscription.save(update_fields=["enabled"])
+                    invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+                    item = invoice.invoiceitem_set.get()
+                    self.assertEqual(
+                        item.start_date,
+                        date(2026, month + 1, 4) if enabled else date(2026, month, 3),
+                    )
+                    self.assertEqual(
+                        item.end_date,
+                        date(2026, month + 2, 3)
+                        if enabled
+                        else date(2026, month + 1, 2),
+                    )
+                    self.assertEqual(
+                        subscription.get_outstanding_renewal_invoice(), invoice
+                    )
+                    renewal = invoice.create_payment(recurring="m")
+                    renewal.paid_invoice = invoice
+                    renewal.state = Payment.ACCEPTED
+                    renewal.save(update_fields=["paid_invoice", "state"])
+                    self.assertTrue(subscription.has_accepted_renewal_payment())
+
     def test_unique_billing_association_and_existing_customer(self) -> None:
         self.assertEqual(self.service.customer, self.customer)
         self.assertEqual(list(self.customer.owners.all()), [self.owner])
@@ -2092,7 +2145,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
                 self.assertEqual(subscription.package.name, name)
                 self.assertEqual(subscription.payment, payment)
                 self.assertEqual(
-                    subscription.expires.date(),
+                    timezone.localdate(subscription.expires),
                     cast("date", payment.start)
                     + (
                         relativedelta(months=1)
@@ -2241,10 +2294,12 @@ class HostedSubscriptionTest(FakturaceTestCase):
             service=self.service,
         )
         item = invoice.invoiceitem_set.get()
-        self.assertEqual(item.start_date, (original_expiry + timedelta(days=1)).date())
+        self.assertEqual(
+            item.start_date, timezone.localdate(original_expiry + timedelta(days=1))
+        )
         self.assertEqual(
             item.end_date,
-            (original_expiry + relativedelta(months=1)).date(),
+            timezone.localdate(original_expiry + relativedelta(months=1)),
         )
         payment = invoice.create_payment(recurring="m")
         payment.state = Payment.ACCEPTED
@@ -2252,7 +2307,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
         process_payment(payment)
         subscription.refresh_from_db()
         payment.refresh_from_db()
-        self.assertEqual(payment.start, original_expiry.date())
+        self.assertEqual(payment.start, timezone.localdate(original_expiry))
         self.assertEqual(
             subscription.expires, original_expiry + relativedelta(months=1)
         )
@@ -2267,10 +2322,10 @@ class HostedSubscriptionTest(FakturaceTestCase):
         invoice.refresh_from_db()
         item = invoice.invoiceitem_set.get()
         start = datetime.fromisoformat(invoice.extra["start_date"])
-        self.assertEqual(item.start_date, start.date())
+        self.assertEqual(item.start_date, timezone.localdate(start))
         self.assertEqual(
             item.end_date,
-            (start + relativedelta(months=1) - timedelta(days=1)).date(),
+            timezone.localdate(start + relativedelta(months=1) - timedelta(days=1)),
         )
         payment = invoice.create_payment(recurring="m")
         payment.state = Payment.ACCEPTED
@@ -2281,7 +2336,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
             process_payment(payment)
         subscription.refresh_from_db()
         payment.refresh_from_db()
-        self.assertEqual(payment.start, start.date())
+        self.assertEqual(payment.start, timezone.localdate(start))
         self.assertEqual(subscription.expires, start + relativedelta(months=1))
 
     @override("en")
@@ -2338,9 +2393,9 @@ class HostedSubscriptionTest(FakturaceTestCase):
         subscription.save(update_fields=["expires"])
         invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
         item = invoice.invoiceitem_set.get()
-        item.end_date = (
+        item.end_date = timezone.localdate(
             subscription.expires + timedelta(days=1) + relativedelta(months=1)
-        ).date()
+        )
         item.save(update_fields=["end_date"])
         self.assertEqual(list(subscription.get_renewal_invoices()), [invoice])
         self.client.force_login(self.owner)
@@ -2399,7 +2454,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
                 self.assertTrue(subscription.enabled)
                 self.assertEqual(renewal.start, timezone.localdate())
                 self.assertEqual(
-                    subscription.expires.date(),
+                    timezone.localdate(subscription.expires),
                     timezone.localdate() + relativedelta(months=1),
                 )
 
@@ -2414,7 +2469,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
         self.assertTrue(subscription.enabled)
         self.assertEqual(purchase.start, timezone.localdate())
         self.assertEqual(
-            subscription.expires.date(),
+            timezone.localdate(subscription.expires),
             timezone.localdate() + relativedelta(months=1),
         )
 
@@ -4083,7 +4138,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         subscription = Service.objects.get(hosted_billing=42).subscription_set.get()
         self.assertEqual(subscription.package, package)
         self.assertEqual(subscription.payment, current_payment)
-        self.assertEqual(subscription.expires.date(), current_payment.end)
+        self.assertEqual(timezone.localdate(subscription.expires), current_payment.end)
         self.assertEqual(
             set(subscription.past_payments.values_list("pk", flat=True)),
             {initial_payment.pk},
@@ -5663,7 +5718,7 @@ class ExpiryTest(FakturaceTestCase):
             kind=kind,
             category=ServiceCategory.HOSTING,
             vat_rate=21,
-            issue_date=timezone.now().date() + timedelta(days=issue_days),
+            issue_date=timezone.localdate() + timedelta(days=issue_days),
         )
         invoice.invoiceitem_set.create(description=description, unit_price=100)
 
@@ -6837,8 +6892,8 @@ class ServiceTest(FakturaceTestCase):
             )
             hosted = service.hosted_subscriptions
             self.assertEqual(
-                hosted[0].expires.date(),
-                timezone.now().date() + timedelta(days=3),
+                timezone.localdate(hosted[0].expires),
+                timezone.localdate() + timedelta(days=3),
             )
 
             # Trigger customer editing
@@ -6868,8 +6923,8 @@ class ServiceTest(FakturaceTestCase):
         payment = hosted[0].payment_obj
         self.assertEqual(payment.amount, Decimal("50.82"))
         self.assertEqual(
-            hosted[0].expires.date(),
-            timezone.now().date() + timedelta(days=3) + relativedelta(months=1),
+            timezone.localdate(hosted[0].expires),
+            timezone.localdate() + timedelta(days=3) + relativedelta(months=1),
         )
 
     @responses.activate
@@ -6901,8 +6956,8 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(hosted[0].package.name, "test:test-1")
         self.assertEqual(hosted[0].payment_obj.amount, Decimal("508.20"))
         self.assertEqual(
-            hosted[0].expires.date(),
-            timezone.now().date() + timedelta(days=3) + relativedelta(years=1),
+            timezone.localdate(hosted[0].expires),
+            timezone.localdate() + timedelta(days=3) + relativedelta(years=1),
         )
 
     @override_settings(ZAMMAD_TOKEN="test")  # ruff:ignore[hardcoded-password-func-arg]
@@ -7032,7 +7087,7 @@ class ServiceTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
         self.assertEqual(payment.start, timezone.localdate())
-        self.assertEqual(payment.end, expires.date())
+        self.assertEqual(payment.end, timezone.localdate(expires))
         self.assertFalse(hosted[0].upgrade_package)
 
     def test_hosted_upgrade_below_invoice_minimum(self) -> None:

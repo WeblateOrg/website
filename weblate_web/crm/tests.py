@@ -2170,7 +2170,8 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(invoice.kind, InvoiceKind.QUOTE)
         self.assertEqual(invoice.total_amount, 42)
         self.assertEqual(
-            invoice.all_items[0].start_date, expires.date() + timedelta(days=1)
+            invoice.all_items[0].start_date,
+            timezone.localdate(expires) + timedelta(days=1),
         )
         self.assertRedirects(response, invoice.get_absolute_url())
         self.assertContains(response, f"Quote {invoice.number}")
@@ -2189,7 +2190,8 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(child.kind, InvoiceKind.INVOICE)
         self.assertEqual(child.total_amount, 42)
         self.assertEqual(
-            child.all_items[0].start_date, expires.date() + timedelta(days=1)
+            child.all_items[0].start_date,
+            timezone.localdate(expires) + timedelta(days=1),
         )
         self.assertContains(response, f"Invoice {child.number}")
         self.assertNotContains(response, "Issue invoice")
@@ -2221,7 +2223,8 @@ class CRMTestCase(BaseCRMTestCase):
         self.assertEqual(invoice.kind, InvoiceKind.INVOICE)
         self.assertEqual(invoice.total_amount, 99)
         self.assertEqual(
-            invoice.all_items[0].start_date, expires.date() + timedelta(days=1)
+            invoice.all_items[0].start_date,
+            timezone.localdate(expires) + timedelta(days=1),
         )
         self.assertRedirects(response, invoice.get_absolute_url())
         self.assertContains(response, f"Invoice {invoice.number}")

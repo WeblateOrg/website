@@ -40,7 +40,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
-from django.utils.timezone import now
+from django.utils.timezone import localdate, now
 from django.utils.translation import gettext, gettext_lazy, override, pgettext_lazy
 from lxml import etree
 from pycheval import (
@@ -1629,8 +1629,8 @@ class InvoiceItem(models.Model):
                         + get_period_delta(repeat)
                         - datetime.timedelta(days=1)
                     )
-                    self.start_date = start_date.date()
-                    self.end_date = end_date.date()
+                    self.start_date = localdate(start_date)
+                    self.end_date = localdate(end_date)
                     extra_fields.extend(("start_date", "end_date"))
 
         if extra_fields and update_fields is not None:
