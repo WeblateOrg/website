@@ -23,7 +23,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from weblate_web.models import Service
-from weblate_web.remote import get_activity, get_changes, get_contributors, get_release
+from weblate_web.remote import get_contributors, get_hosted_activity, get_release
 
 
 class Command(BaseCommand):
@@ -40,6 +40,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options) -> None:
         self.disable_stale_services()
         get_contributors(force=True)
-        get_activity(force=True)
-        get_changes(force=True)
+        get_hosted_activity(force=True)
         get_release(force=True)

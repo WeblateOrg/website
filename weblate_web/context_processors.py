@@ -79,6 +79,7 @@ def weblate_web(request):
                 }
             )
 
+    activity = get_activity()
     language_col = ceil(len(settings.LANGUAGES) / 3)
 
     return {
@@ -93,7 +94,7 @@ def weblate_web(request):
             subscription__expires__gte=timezone.now(),
         )
         .distinct(),
-        "activity_sum": sum(get_activity()[-7:]),
+        "activity_sum": sum(activity[-7:]) if activity else None,
         "contributors": SimpleLazyObject(get_contributors),
         "changes": SimpleLazyObject(get_changes),
         "bank_account": BANK_ACCOUNTS[Currency.EUR],
