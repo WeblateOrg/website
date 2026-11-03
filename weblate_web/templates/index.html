@@ -53,12 +53,14 @@
               </div>
             </div>
           {% endfor %}
-          <div class="trans-bottom">
-            <div class="trans-number">
-              {% blocktranslate count intcount=activity_sum with count=activity_sum|intcomma %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktranslate %}
+          {% if activity_sum is not None %}
+            <div class="trans-bottom">
+              <div class="trans-number">
+                {% blocktranslate count intcount=activity_sum with count=activity_sum|intcomma %}{{ count }} translation{% plural %}{{ count }} translations{% endblocktranslate %}
+              </div>
+              <div class="trans-days">{% translate "on Hosted Weblate in the last 7 days" %}</div>
             </div>
-            <div class="trans-days">{% translate "on Hosted Weblate in the last 7 days" %}</div>
-          </div>
+          {% endif %}
         </div>
       </div>
       <div class="clear"></div>
