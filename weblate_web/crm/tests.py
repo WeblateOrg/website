@@ -14,8 +14,9 @@ from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.core import mail
 from django.core.cache import cache
-from django.core.exceptions import ValidationError
+from django.core.exceptions import SuspiciousFileOperation, ValidationError
 from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
 from django.core.management import call_command
 from django.core.management.base import OutputWrapper
 from django.core.signing import dumps, loads
@@ -5098,6 +5099,180 @@ class ZammadSyncCommandTestCase(BaseCRMTestCase):
 class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
     """Tests for zammad_attachments management command."""
 
+    def setUp(self):
+        directory = self.enterContext(TemporaryDirectory())  # pylint: disable=consider-using-with
+        self.storage = FileSystemStorage(location=directory)
+        self.enterContext(
+            patch.object(Interaction().attachment.field, "storage", self.storage)
+        )
+
+    def setup_sync(self, mock_get_client, filenames):
+        customer = self.create_customer()
+        customer.zammad_id = 10
+        customer.save(update_fields=["zammad_id"])
+        client = mock_get_client.return_value
+        client.ticket.search.return_value = MockPaginatedResults(
+            [{"id": 1, "article_ids": [100]}]
+        )
+        client.ticket_article.find.return_value = {
+            "created_at": "2024-01-15T10:30:00Z",
+            "attachments": [
+                {"id": 500 + index, "filename": filename}
+                for index, filename in enumerate(filenames)
+            ],
+        }
+        client.ticket_article_attachment.download.return_value = b"PDF content"
+        return customer, client
+
+    @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
+    def test_normalize_attachment_paths(self, mock_get_client):
+        filenames = ["../../x.pdf", r"..\..\win.pdf", "/abs.pdf", "../doc.docx"]
+        customer, client = self.setup_sync(mock_get_client, filenames)
+
+        call_command("zammad_attachments", stdout=StringIO())
+
+        for index, filename in enumerate(filenames):
+            interaction = customer.interaction_set.get(remote_id=500 + index)
+            self.assertEqual(interaction.summary, filename)
+            self.assertEqual(interaction.content, filename)
+            self.assertEqual(interaction.details["filename"], filename)
+            expected = filename.replace("\\", "/").split("/")[-1]
+            self.assertEqual(interaction.attachment.name, f"attachments/{expected}")
+            with interaction.attachment.open() as attachment:
+                self.assertEqual(attachment.read(), b"PDF content")
+        self.assertEqual(client.ticket_article_attachment.download.call_count, 4)
+        self.assertEqual(len(list(Path(self.storage.location).rglob("*.pdf"))), 3)
+
+    @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
+    def test_rejected_attachment_continues_sync(self, mock_get_client):
+        customer, client = self.setup_sync(mock_get_client, ["bad.pdf", "good.pdf"])
+        later = self.create_customer(name="Later customer")
+        later.zammad_id = 20
+        later.save(update_fields=["zammad_id"])
+        client.ticket.search.side_effect = [
+            MockPaginatedResults([{"id": 1, "article_ids": [100]}]),
+            MockPaginatedResults([{"id": 2, "article_ids": [200]}]),
+        ]
+        article = client.ticket_article.find.return_value
+        client.ticket_article.find.side_effect = [
+            article,
+            {**article, "attachments": [{"id": 600, "filename": "later.pdf"}]},
+        ]
+        original_save = self.storage.save
+
+        def save(name, content, **kwargs):
+            if name.endswith("bad.pdf"):
+                raise SuspiciousFileOperation("Rejected filename")
+            return original_save(name, content, **kwargs)
+
+        stderr = StringIO()
+        with patch.object(self.storage, "save", side_effect=save):
+            call_command("zammad_attachments", stdout=StringIO(), stderr=stderr)
+
+        self.assertEqual(
+            list(customer.interaction_set.values_list("remote_id", flat=True)), [501]
+        )
+        self.assertEqual(later.interaction_set.get().remote_id, 600)
+        self.assertFalse(Interaction.objects.filter(attachment="").exists())
+        self.assertEqual(ZammadSyncLog.objects.count(), 2)
+        for value in [
+            f"customer {customer.pk}",
+            "ticket 1",
+            "article 100",
+            "attachment 500",
+        ]:
+            self.assertIn(value, stderr.getvalue())
+
+    @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
+    def test_storage_failure_retries_only_missing_attachment(self, mock_get_client):
+        customer, client = self.setup_sync(
+            mock_get_client, ["first.pdf", "bad.pdf", "last.pdf"]
+        )
+        original_save = self.storage.save
+
+        def save(name, content, **kwargs):
+            if name.endswith("bad.pdf"):
+                raise OSError("Storage unavailable")
+            return original_save(name, content, **kwargs)
+
+        with patch.object(self.storage, "save", side_effect=save):
+            call_command("zammad_attachments", stdout=StringIO(), stderr=StringIO())
+        self.assertEqual(customer.interaction_set.count(), 2)
+        self.assertFalse(customer.interaction_set.filter(attachment="").exists())
+        self.assertFalse(ZammadSyncLog.objects.exists())
+        client.ticket_article_attachment.download.reset_mock()
+
+        call_command("zammad_attachments", stdout=StringIO())
+        client.ticket_article_attachment.download.assert_called_once_with(501, 100, 1)
+        self.assertEqual(customer.interaction_set.count(), 3)
+        self.assertEqual(ZammadSyncLog.objects.count(), 1)
+        call_command("zammad_attachments", stdout=StringIO())
+        call_command("zammad_attachments", "--force", stdout=StringIO())
+        self.assertEqual(customer.interaction_set.count(), 3)
+        self.assertEqual(client.ticket_article_attachment.download.call_count, 1)
+
+    @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
+    def test_force_storage_failure_reopens_article(self, mock_get_client):
+        customer, client = self.setup_sync(mock_get_client, ["contract.pdf"])
+        ZammadSyncLog.objects.create(customer=customer, article_id=100)
+        with patch.object(
+            self.storage, "save", side_effect=OSError("Storage unavailable")
+        ):
+            call_command(
+                "zammad_attachments", "--force", stdout=StringIO(), stderr=StringIO()
+            )
+        self.assertFalse(ZammadSyncLog.objects.exists())
+        self.assertFalse(customer.interaction_set.exists())
+
+        call_command("zammad_attachments", stdout=StringIO())
+        self.assertEqual(customer.interaction_set.get().remote_id, 500)
+        self.assertEqual(client.ticket_article_attachment.download.call_count, 2)
+        self.assertEqual(ZammadSyncLog.objects.count(), 1)
+
+    @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
+    def test_progress_survives_later_article_failure(self, mock_get_client):
+        customer, client = self.setup_sync(mock_get_client, ["first.pdf"])
+        client.ticket.search.return_value = MockPaginatedResults(
+            [{"id": 1, "article_ids": [100, 101]}]
+        )
+        client.ticket_article.find.side_effect = [
+            client.ticket_article.find.return_value,
+            RuntimeError("API unavailable"),
+        ]
+        with self.assertRaisesMessage(RuntimeError, "API unavailable"):
+            call_command("zammad_attachments", stdout=StringIO())
+        self.assertEqual(customer.interaction_set.count(), 1)
+        self.assertEqual(
+            list(ZammadSyncLog.objects.values_list("article_id", flat=True)), [100]
+        )
+
+    @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
+    def test_repeated_results_do_not_duplicate_attachments(self, mock_get_client):
+        customer, client = self.setup_sync(
+            mock_get_client, ["contract.pdf", "contract.pdf"]
+        )
+        article = client.ticket_article.find.return_value
+        article["attachments"][1]["id"] = 500
+        client.ticket.search.return_value = MockPaginatedResults(
+            [{"id": 1, "article_ids": [100, 100]}]
+        )
+        call_command("zammad_attachments", "--force", stdout=StringIO())
+        self.assertEqual(customer.interaction_set.count(), 1)
+        client.ticket_article_attachment.download.assert_called_once_with(500, 100, 1)
+        self.assertEqual(ZammadSyncLog.objects.count(), 1)
+
+    @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
+    def test_fileless_interaction_does_not_suppress_import(self, mock_get_client):
+        customer, client = self.setup_sync(mock_get_client, ["contract.pdf"])
+        customer.interaction_set.create(
+            origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
+            summary="contract.pdf",
+            remote_id=500,
+        )
+        call_command("zammad_attachments", "--force", stdout=StringIO())
+        client.ticket_article_attachment.download.assert_called_once_with(500, 100, 1)
+        self.assertEqual(customer.interaction_set.exclude(attachment="").count(), 1)
+
     @override_settings(ZAMMAD_TOKEN=TEST_ZAMMAD_TOKEN)
     @patch("weblate_web.management.commands.zammad_attachments.get_zammad_client")
     def test_no_customers_with_zammad_id(self, mock_get_client):
@@ -5281,6 +5456,7 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
             origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
             summary="contract.pdf",
             remote_id=500,
+            attachment="attachments/contract.pdf",
         )
 
         mock_client = MagicMock()
