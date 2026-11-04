@@ -19,11 +19,14 @@
 
 from __future__ import annotations
 
+from pathlib import PurePosixPath
 from typing import TYPE_CHECKING
 
 from dateutil.parser import isoparse
+from django.core.exceptions import SuspiciousFileOperation
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
+from django.db import transaction
 
 from weblate_web.crm.models import Interaction, ZammadSyncLog
 from weblate_web.payments.models import Customer
@@ -53,15 +56,18 @@ class Command(BaseCommand):
         article_id: int,
         customer: Customer,
         known_attachments: set[int],
-    ) -> None:
+    ) -> bool:
+        """Import attachments, returning whether the article can be marked complete."""
+        complete = True
         self.stdout.write(f"Processing article {article_id}")
         article = self.client.ticket_article.find(article_id)
         for attachment in article["attachments"]:
             # Skip already imported attachments
             if attachment["id"] in known_attachments:
                 continue
+            filename = PurePosixPath(attachment["filename"].replace("\\", "/")).name
             # Check file extension
-            if attachment["filename"].lower().endswith(EXTENSIONS):
+            if filename.lower().endswith(EXTENSIONS):
                 self.stdout.write(
                     f"Downloading {attachment['filename']} {attachment['id']}"
                 )
@@ -70,25 +76,34 @@ class Command(BaseCommand):
                     attachment["id"], article_id, ticket_id
                 )
                 timestamp = isoparse(article["created_at"])
-                # Create interaction
-                interaction = customer.interaction_set.create(
-                    timestamp=timestamp,
-                    origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
-                    summary=attachment["filename"],
-                    content=attachment["filename"],
-                    remote_id=attachment["id"],
-                    details={
-                        "ticket_id": ticket_id,
-                        "article_id": article_id,
-                        "attachment_id": attachment["id"],
-                        "filename": attachment["filename"],
-                        "created_at": timestamp.isoformat(),
-                    },
-                )
-                # Store file
-                interaction.attachment.save(
-                    attachment["filename"], ContentFile(content)
-                )
+                try:
+                    with transaction.atomic():
+                        interaction = customer.interaction_set.create(
+                            timestamp=timestamp,
+                            origin=Interaction.Origin.ZAMMAD_ATTACHMENT,
+                            summary=attachment["filename"],
+                            content=attachment["filename"],
+                            remote_id=attachment["id"],
+                            details={
+                                "ticket_id": ticket_id,
+                                "article_id": article_id,
+                                "attachment_id": attachment["id"],
+                                "filename": attachment["filename"],
+                                "created_at": timestamp.isoformat(),
+                            },
+                        )
+                        interaction.attachment.save(filename, ContentFile(content))
+                except (SuspiciousFileOperation, OSError) as error:
+                    self.stderr.write(
+                        f"Could not store attachment {attachment['id']} "
+                        f"(customer {customer.pk}, ticket {ticket_id}, "
+                        f"article {article_id}): {error}"
+                    )
+                    if isinstance(error, OSError):
+                        complete = False
+                else:
+                    known_attachments.add(attachment["id"])
+        return complete
 
     def handle(self, *args, **options) -> None:
         self.client = get_zammad_client()
@@ -101,19 +116,15 @@ class Command(BaseCommand):
         for customer in customers:
             # Search for tickets with attachments from this customer
             results = self.client.ticket.search(f"organization.id:{customer.zammad_id}")
-            # List of known attachments is only needed in force mode, otherwise we do not
-            # visit processed articles otherwise
-            known_attachments: set[int] = set()
-            if options["force"]:
-                known_attachments = set(
-                    customer.interaction_set.filter(
-                        origin=Interaction.Origin.ZAMMAD_ATTACHMENT
-                    )
-                    .exclude(remote_id=0)
-                    .values_list("remote_id", flat=True)
+            # Partial articles can be retried in both normal and force mode.
+            known_attachments = set(
+                customer.interaction_set.filter(
+                    origin=Interaction.Origin.ZAMMAD_ATTACHMENT
                 )
-
-            logs: list[ZammadSyncLog] = []
+                .exclude(remote_id=0)
+                .exclude(attachment="")
+                .values_list("remote_id", flat=True)
+            )
 
             # Process tickets and articles
             while len(results):
@@ -121,14 +132,16 @@ class Command(BaseCommand):
                     for article_id in ticket["article_ids"]:
                         if article_id in processed_articles and not options["force"]:
                             continue
-                        self.process_article(
+                        if self.process_article(
                             ticket["id"], article_id, customer, known_attachments
-                        )
-                        logs.append(
-                            ZammadSyncLog(customer=customer, article_id=article_id)
-                        )
+                        ):
+                            ZammadSyncLog.objects.get_or_create(
+                                article_id=article_id, defaults={"customer": customer}
+                            )
+                            processed_articles.add(article_id)
+                        elif article_id in processed_articles:
+                            # A forced retry must not retain a stale success marker.
+                            ZammadSyncLog.objects.filter(article_id=article_id).delete()
+                            processed_articles.discard(article_id)
 
                 results = results.next_page()
-
-            if logs:
-                ZammadSyncLog.objects.bulk_create(logs, ignore_conflicts=True)
