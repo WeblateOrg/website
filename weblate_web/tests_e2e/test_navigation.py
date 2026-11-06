@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from playwright.sync_api import expect
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -119,8 +120,8 @@ def test_localization_pages(page: Page, live_server, locale, page_name, width):
     assert page.locator("html").get_attribute("dir") == (
         "rtl" if locale == "ar" else "ltr"
     )
-    # Four representative captures; keep layout and RTL coverage independent.
-    if locale == "en" and page_name in {"", "features/"}:
+    # Include hosting in both writing directions for the setup guide.
+    if locale == "en" or page_name == "hosting/":
         screenshot_dir = Path("test-results")
         screenshot_dir.mkdir(exist_ok=True)
         name = page_name.rstrip("/") or "home"
@@ -128,6 +129,10 @@ def test_localization_pages(page: Page, live_server, locale, page_name, width):
             path=str(screenshot_dir / f"marketing-{name}-{locale}-{width}.png"),
             full_page=True,
         )
+        if page_name == "hosting/":
+            page.locator("#setup-guide").screenshot(
+                path=str(screenshot_dir / f"hosting-guide-{locale}-{width}.png"),
+            )
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (
         page.evaluate(
             """() => Array.from(document.querySelectorAll('body *'))
@@ -148,6 +153,85 @@ def test_localization_pages(page: Page, live_server, locale, page_name, width):
     services = page.locator(f'section a.button[href="/{locale}/hosting/"]').first
     services.click()
     page.wait_for_url(f"**/{locale}/hosting/")
+
+
+@pytest.mark.parametrize("locale", ["en", "ar"])
+@pytest.mark.parametrize("width", [1440, 1024, 768, 390])
+def test_hosting_setup_choices(page: Page, live_server, locale, width):
+    """Follow setup recommendations without losing pricing functionality."""
+    page.set_viewport_size({"width": width, "height": 900})
+    page.goto(f"{live_server.url}/{locale}/hosting/")
+    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    guide = page.locator("#setup-guide")
+    page.locator("#calculator-strings").fill("1000")
+    page.locator("#calculator-languages").fill("2")
+    guide.locator("a.dedicated-enable").focus()
+    page.keyboard.press("Enter")
+    assert page.locator("#dedicated-checkbox").is_checked()
+    assert page.locator("#calculator-dedicated").is_checked()
+    assert page.locator("#calculator-buy").is_visible()
+    assert page.locator("#calculator-trial").is_hidden()
+    expect(page.locator("#calculator-buy-plan")).to_have_value("dedicated:160k")
+    assert page.locator("#dedicated").is_visible()
+    dedicated_form = page.locator("#dedicated form").first
+    expect(dedicated_form).to_have_attribute("method", "post")
+    expect(dedicated_form).to_have_attribute(
+        "action", f"/{locale}/subscription/new/?plan=dedicated:160k"
+    )
+    expect(dedicated_form.locator('input[name="plan"]')).to_have_value("dedicated:160k")
+    expect(dedicated_form.locator('input[type="submit"]')).to_be_visible()
+    guide.locator("a.dedicated-toggle:not(.dedicated-enable)").click()
+    assert not page.locator("#dedicated-checkbox").is_checked()
+    assert not page.locator("#calculator-dedicated").is_checked()
+    assert page.locator("#calculator-buy").is_hidden()
+    assert page.locator("#yearly").is_visible()
+
+    assert page.locator("#calculator-plan").is_visible()
+    assert page.locator("#calculator-trial").is_visible()
+    page.locator("#calculator-dedicated").check()
+    assert page.locator("#calculator-buy").is_visible()
+    buy_form = page.locator("#calculator-buy").locator("..")
+    expect(buy_form).to_have_attribute("method", "post")
+    expect(buy_form).to_have_attribute(
+        "action", f"{live_server.url}/{locale}/subscription/new/?plan=dedicated%3A160k"
+    )
+    expect(buy_form.locator('input[name="plan"]')).to_have_value("dedicated:160k")
+
+    guide.locator('a[href="#libre"]').click()
+    assert page.url.endswith("#libre")
+    assert page.locator("#libre").is_visible()
+    guide.locator(f'.f-box a[href="/{locale}/support/"]').click()
+    page.wait_for_url(f"**/{locale}/support/")
+    support_form = page.locator(
+        f'form[action="/{locale}/subscription/new/?plan=extended"]'
+    )
+    expect(support_form).to_have_attribute("method", "post")
+    expect(support_form.locator('input[name="plan"]')).to_have_value("extended")
+    expect(support_form.locator('input[type="submit"]')).to_be_visible()
+
+
+@pytest.mark.browser_context_args(java_script_enabled=False)
+@pytest.mark.parametrize("locale", ["en", "ar"])
+def test_hosting_setup_without_javascript(page: Page, live_server, locale):
+    """Recommendations and free self-hosting remain available without scripts."""
+    response = page.goto(f"{live_server.url}/{locale}/hosting/")
+    assert response is not None and response.ok
+    guide = page.locator("#setup-guide")
+    assert guide.is_visible()
+    assert guide.locator("h3").count() == 3
+    assert guide.locator(".setup-choices a.button").count() == 3
+    support = guide.locator("#hosting-support")
+    assert support.is_visible()
+    assert support.locator(f'a.button[href="/{locale}/support/"]').is_visible()
+    assert guide.locator('.page-desc a[href="#libre"]').is_visible()
+    assert guide.locator(f'.f-box a[href="/{locale}/support/"]').is_visible()
+    assert guide.locator(
+        'a[href="https://docs.weblate.org/en/latest/admin/install.html"]'
+    ).is_visible()
+    assert page.locator(f'a[href="/{locale}/download/"]').count()
+    guide.locator('a[href="#hosted"]').first.click()
+    assert page.url.endswith("#hosted")
+    assert page.locator("#hosted").is_visible()
 
 
 @pytest.mark.parametrize("locale", ["en", "ar"])
