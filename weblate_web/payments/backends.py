@@ -649,10 +649,11 @@ class Backend:
         return True
 
     def failure(self, *, notify: bool = True) -> None:
+        already_rejected = self.payment.state == Payment.REJECTED
         self.payment.state = Payment.REJECTED
         self.payment.save()
 
-        if notify:
+        if notify and not already_rejected:
             self.send_notification("payment_failed")
 
 

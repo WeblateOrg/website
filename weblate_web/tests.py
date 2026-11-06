@@ -42,7 +42,7 @@ from django.utils import timezone
 from django.utils.translation import override
 from PIL import Image as PILImage
 from requests.exceptions import HTTPError
-from wlc import WeblateException
+from wlc import Activity, WeblateException
 from wlc.models import Statistics
 
 from weblate_web.categories import ServiceCategory
@@ -92,13 +92,14 @@ from .packages import DEDICATED_LIMIT, PACKAGE_NAMES, PACKAGES
 from .payments.models import PaymentConf
 from .payments.validators import VAT_VALIDITY_DAYS
 from .remote import (
-    ACTIVITY_URL,
+    ACTIVITY_CACHE_KEY,
     PYPI_URL,
     WEBLATE_CONTRIBUTORS_URL,
     fetch_vat_info,
     get_activity,
     get_changes,
     get_contributors,
+    get_hosted_activity,
     get_release,
 )
 from .templatetags.downloads import downloadlink, filesizeformat
@@ -510,12 +511,15 @@ def cnb_mock_rates() -> None:
         str(item["currencyCode"]): Decimal(str(item["rate"]))
         for item in RATES_JSON["rates"]
     }
-    ExchangeRates.datacache[timezone.now().date().isoformat()] = rates.copy()
+    # Payments can carry a UTC tax date while invoice dates use local time.
+    days = {timezone.now().date(), timezone.localdate()}
+    for day in days:
+        ExchangeRates.datacache[day.isoformat()] = rates.copy()
+        responses.get(
+            f"https://api.cnb.cz/cnbapi/exrates/daily?date={day.isoformat()}",
+            json=RATES_JSON,
+        )
     ExchangeRates.datacache["2016-07-29"] = rates.copy()
-    responses.get(
-        f"https://api.cnb.cz/cnbapi/exrates/daily?date={timezone.now().date().isoformat()}",
-        json=RATES_JSON,
-    )
     # Matches Fio payments mock
     responses.get(
         "https://api.cnb.cz/cnbapi/exrates/daily?date=2016-07-29",
@@ -634,108 +638,105 @@ def fake_remote() -> None:
         },
     )
     cache.set("wlweb-contributors", [])
-    cache.set("wlweb-activity-stats", [])
-    cache.set(
-        "wlweb-changes-list",
-        [
-            {
-                "failing_percent": 0.4,
-                "translated_percent": 20.3,
-                "total_words": 12385202,
-                "failing": 3708,
-                "translated_words": 1773069,
-                "url_translate": "https://hosted.weblate.org/projects/godot-engine/",
-                "fuzzy_percent": 3.9,
-                "recent_changes": 2401,
-                "translated": 160302,
-                "fuzzy": 31342,
-                "total": 787070,
-                "last_change": timezone.now(),
-                "name": "Godot Engine",
-                "url": "https://hosted.weblate.org/engage/godot-engine/",
-            },
-            {
-                "failing_percent": 1.4,
-                "translated_percent": 46.0,
-                "total_words": 7482588,
-                "failing": 14319,
-                "translated_words": 2917305,
-                "url_translate": "https://hosted.weblate.org/projects/phpmyadmin/",
-                "fuzzy_percent": 12.3,
-                "recent_changes": 3652,
-                "translated": 465082,
-                "fuzzy": 124794,
-                "total": 1009956,
-                "last_change": timezone.now() - timedelta(seconds=3600),
-                "name": "phpMyAdmin",
-                "url": "https://hosted.weblate.org/engage/phpmyadmin/",
-            },
-            {
-                "failing_percent": 0.4,
-                "translated_percent": 48.8,
-                "total_words": 1386375,
-                "failing": 1121,
-                "translated_words": 586192,
-                "url_translate": "https://hosted.weblate.org/projects/weblate/",
-                "fuzzy_percent": 9.5,
-                "recent_changes": 2864,
-                "translated": 125298,
-                "fuzzy": 24461,
-                "total": 256275,
-                "last_change": timezone.now() - timedelta(seconds=14400),
-                "name": "Weblate",
-                "url": "https://hosted.weblate.org/engage/weblate/",
-            },
-            {
-                "failing_percent": 0.8,
-                "translated_percent": 20.1,
-                "total_words": 7707495,
-                "failing": 4459,
-                "translated_words": 1066440,
-                "url_translate": "https://hosted.weblate.org/projects/f-droid/",
-                "fuzzy_percent": 0.7,
-                "recent_changes": 7080,
-                "translated": 104941,
-                "fuzzy": 4011,
-                "total": 520867,
-                "last_change": timezone.now() - timedelta(days=1),
-                "name": "F-Droid",
-                "url": "https://hosted.weblate.org/engage/f-droid/",
-            },
-            {
-                "failing_percent": 1.0,
-                "translated_percent": 72.9,
-                "total_words": 324480,
-                "failing": 883,
-                "translated_words": 231003,
-                "url_translate": "https://hosted.weblate.org/projects/freeplane/",
-                "fuzzy_percent": 2.1,
-                "recent_changes": 535,
-                "translated": 61980,
-                "fuzzy": 1787,
-                "total": 84920,
-                "last_change": timezone.now() - timedelta(days=4),
-                "name": "Freeplane",
-                "url": "https://hosted.weblate.org/engage/freeplane/",
-            },
-            {
-                "failing_percent": 4.4,
-                "translated_percent": 57.8,
-                "total_words": 2016830,
-                "failing": 25211,
-                "translated_words": 1036249,
-                "url_translate": "https://hosted.weblate.org/projects/osmand/",
-                "fuzzy_percent": 3.0,
-                "recent_changes": 3633,
-                "translated": 325725,
-                "fuzzy": 16981,
-                "total": 562798,
-                "last_change": timezone.now() - timedelta(days=30),
-                "name": "OsmAnd",
-                "url": "https://hosted.weblate.org/engage/osmand/",
-            },
-        ],
-    )
+    projects = [
+        {
+            "failing_percent": 0.4,
+            "translated_percent": 20.3,
+            "total_words": 12385202,
+            "failing": 3708,
+            "translated_words": 1773069,
+            "url_translate": "https://hosted.weblate.org/projects/godot-engine/",
+            "fuzzy_percent": 3.9,
+            "recent_changes": 2401,
+            "translated": 160302,
+            "fuzzy": 31342,
+            "total": 787070,
+            "last_change": timezone.now(),
+            "name": "Godot Engine",
+            "url": "https://hosted.weblate.org/engage/godot-engine/",
+        },
+        {
+            "failing_percent": 1.4,
+            "translated_percent": 46.0,
+            "total_words": 7482588,
+            "failing": 14319,
+            "translated_words": 2917305,
+            "url_translate": "https://hosted.weblate.org/projects/phpmyadmin/",
+            "fuzzy_percent": 12.3,
+            "recent_changes": 3652,
+            "translated": 465082,
+            "fuzzy": 124794,
+            "total": 1009956,
+            "last_change": timezone.now() - timedelta(seconds=3600),
+            "name": "phpMyAdmin",
+            "url": "https://hosted.weblate.org/engage/phpmyadmin/",
+        },
+        {
+            "failing_percent": 0.4,
+            "translated_percent": 48.8,
+            "total_words": 1386375,
+            "failing": 1121,
+            "translated_words": 586192,
+            "url_translate": "https://hosted.weblate.org/projects/weblate/",
+            "fuzzy_percent": 9.5,
+            "recent_changes": 2864,
+            "translated": 125298,
+            "fuzzy": 24461,
+            "total": 256275,
+            "last_change": timezone.now() - timedelta(seconds=14400),
+            "name": "Weblate",
+            "url": "https://hosted.weblate.org/engage/weblate/",
+        },
+        {
+            "failing_percent": 0.8,
+            "translated_percent": 20.1,
+            "total_words": 7707495,
+            "failing": 4459,
+            "translated_words": 1066440,
+            "url_translate": "https://hosted.weblate.org/projects/f-droid/",
+            "fuzzy_percent": 0.7,
+            "recent_changes": 7080,
+            "translated": 104941,
+            "fuzzy": 4011,
+            "total": 520867,
+            "last_change": timezone.now() - timedelta(days=1),
+            "name": "F-Droid",
+            "url": "https://hosted.weblate.org/engage/f-droid/",
+        },
+        {
+            "failing_percent": 1.0,
+            "translated_percent": 72.9,
+            "total_words": 324480,
+            "failing": 883,
+            "translated_words": 231003,
+            "url_translate": "https://hosted.weblate.org/projects/freeplane/",
+            "fuzzy_percent": 2.1,
+            "recent_changes": 535,
+            "translated": 61980,
+            "fuzzy": 1787,
+            "total": 84920,
+            "last_change": timezone.now() - timedelta(days=4),
+            "name": "Freeplane",
+            "url": "https://hosted.weblate.org/engage/freeplane/",
+        },
+        {
+            "failing_percent": 4.4,
+            "translated_percent": 57.8,
+            "total_words": 2016830,
+            "failing": 25211,
+            "translated_words": 1036249,
+            "url_translate": "https://hosted.weblate.org/projects/osmand/",
+            "fuzzy_percent": 3.0,
+            "recent_changes": 3633,
+            "translated": 325725,
+            "fuzzy": 16981,
+            "total": 562798,
+            "last_change": timezone.now() - timedelta(days=30),
+            "name": "OsmAnd",
+            "url": "https://hosted.weblate.org/engage/osmand/",
+        },
+    ]
+    cache.set(ACTIVITY_CACHE_KEY, {"daily_activity": [0] * 25, "projects": projects})
 
 
 class UserTestCase(TestCase):
@@ -806,9 +807,10 @@ class ViewTestCase(PostTestCase):
             )
 
     def test_index_missing_timestamp(self) -> None:
-        changes = cache.get("wlweb-changes-list")
+        snapshot = cache.get(ACTIVITY_CACHE_KEY)
+        changes = snapshot["projects"]
         del changes[0]["last_change"]
-        cache.set("wlweb-changes-list", changes)
+        cache.set(ACTIVITY_CACHE_KEY, snapshot)
 
         response = self.client.get("/en/")
 
@@ -970,12 +972,21 @@ class ViewTestCase(PostTestCase):
 
     @responses.activate
     def test_activity(self) -> None:
-        responses.add(responses.GET, ACTIVITY_URL, body=TEST_ACTIVITY.read_text())
+        responses.add(
+            responses.GET,
+            "https://hosted.weblate.org/api/activity/",
+            json={
+                "daily_activity": json.loads(TEST_ACTIVITY.read_text()),
+                "projects": [],
+            },
+        )
         get_activity(force=True)
         response = self.client.get("/img/activity.svg")
         self.assertContains(response, "<svg")
         # Test error handling, cached content should stay there
-        responses.replace(responses.GET, ACTIVITY_URL, status=500)
+        responses.replace(
+            responses.GET, "https://hosted.weblate.org/api/activity/", status=500
+        )
         get_activity(force=True)
         response = self.client.get("/img/activity.svg")
         self.assertContains(response, "<svg")
@@ -2060,6 +2071,56 @@ class HostedSubscriptionTest(FakturaceTestCase):
         payment.refresh_from_db()
         return payment
 
+    @override_settings(TIME_ZONE="Europe/Prague")
+    @responses.activate
+    def test_billing_dates_near_midnight(self) -> None:
+        for month, hour in ((1, 23), (7, 22)):
+            for enabled in (True, False):
+                with (
+                    self.subTest(month=month, enabled=enabled),
+                    patch(
+                        "django.utils.timezone.now",
+                        return_value=datetime(2026, month, 2, hour, 30, tzinfo=UTC),
+                    ),
+                ):
+                    cnb_mock_rates()
+                    service = Service.objects.create(customer=self.customer)
+                    purchase_invoice = Subscription.new_subscription_invoice(
+                        kind=InvoiceKind.DRAFT,
+                        customer=self.customer,
+                        package=Package.objects.get(name="hosted:10k-m"),
+                        service=service,
+                    )
+                    purchase_item = purchase_invoice.invoiceitem_set.get()
+                    self.assertEqual(purchase_item.start_date, date(2026, month, 3))
+                    self.assertEqual(purchase_item.end_date, date(2026, month + 1, 2))
+                    payment = self.pay("hosted:10k-m", service=service)
+                    self.assertEqual(payment.start, date(2026, month, 3))
+                    self.assertEqual(payment.end, date(2026, month + 1, 3))
+                    subscription = service.subscription_set.get()
+                    subscription.enabled = enabled
+                    subscription.save(update_fields=["enabled"])
+                    invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
+                    item = invoice.invoiceitem_set.get()
+                    self.assertEqual(
+                        item.start_date,
+                        date(2026, month + 1, 4) if enabled else date(2026, month, 3),
+                    )
+                    self.assertEqual(
+                        item.end_date,
+                        date(2026, month + 2, 3)
+                        if enabled
+                        else date(2026, month + 1, 2),
+                    )
+                    self.assertEqual(
+                        subscription.get_outstanding_renewal_invoice(), invoice
+                    )
+                    renewal = invoice.create_payment(recurring="m")
+                    renewal.paid_invoice = invoice
+                    renewal.state = Payment.ACCEPTED
+                    renewal.save(update_fields=["paid_invoice", "state"])
+                    self.assertTrue(subscription.has_accepted_renewal_payment())
+
     def test_unique_billing_association_and_existing_customer(self) -> None:
         self.assertEqual(self.service.customer, self.customer)
         self.assertEqual(list(self.customer.owners.all()), [self.owner])
@@ -2092,7 +2153,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
                 self.assertEqual(subscription.package.name, name)
                 self.assertEqual(subscription.payment, payment)
                 self.assertEqual(
-                    subscription.expires.date(),
+                    timezone.localdate(subscription.expires),
                     cast("date", payment.start)
                     + (
                         relativedelta(months=1)
@@ -2241,10 +2302,12 @@ class HostedSubscriptionTest(FakturaceTestCase):
             service=self.service,
         )
         item = invoice.invoiceitem_set.get()
-        self.assertEqual(item.start_date, (original_expiry + timedelta(days=1)).date())
+        self.assertEqual(
+            item.start_date, timezone.localdate(original_expiry + timedelta(days=1))
+        )
         self.assertEqual(
             item.end_date,
-            (original_expiry + relativedelta(months=1)).date(),
+            timezone.localdate(original_expiry + relativedelta(months=1)),
         )
         payment = invoice.create_payment(recurring="m")
         payment.state = Payment.ACCEPTED
@@ -2252,7 +2315,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
         process_payment(payment)
         subscription.refresh_from_db()
         payment.refresh_from_db()
-        self.assertEqual(payment.start, original_expiry.date())
+        self.assertEqual(payment.start, timezone.localdate(original_expiry))
         self.assertEqual(
             subscription.expires, original_expiry + relativedelta(months=1)
         )
@@ -2267,10 +2330,10 @@ class HostedSubscriptionTest(FakturaceTestCase):
         invoice.refresh_from_db()
         item = invoice.invoiceitem_set.get()
         start = datetime.fromisoformat(invoice.extra["start_date"])
-        self.assertEqual(item.start_date, start.date())
+        self.assertEqual(item.start_date, timezone.localdate(start))
         self.assertEqual(
             item.end_date,
-            (start + relativedelta(months=1) - timedelta(days=1)).date(),
+            timezone.localdate(start + relativedelta(months=1) - timedelta(days=1)),
         )
         payment = invoice.create_payment(recurring="m")
         payment.state = Payment.ACCEPTED
@@ -2281,7 +2344,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
             process_payment(payment)
         subscription.refresh_from_db()
         payment.refresh_from_db()
-        self.assertEqual(payment.start, start.date())
+        self.assertEqual(payment.start, timezone.localdate(start))
         self.assertEqual(subscription.expires, start + relativedelta(months=1))
 
     @override("en")
@@ -2338,9 +2401,9 @@ class HostedSubscriptionTest(FakturaceTestCase):
         subscription.save(update_fields=["expires"])
         invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
         item = invoice.invoiceitem_set.get()
-        item.end_date = (
+        item.end_date = timezone.localdate(
             subscription.expires + timedelta(days=1) + relativedelta(months=1)
-        ).date()
+        )
         item.save(update_fields=["end_date"])
         self.assertEqual(list(subscription.get_renewal_invoices()), [invoice])
         self.client.force_login(self.owner)
@@ -2399,7 +2462,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
                 self.assertTrue(subscription.enabled)
                 self.assertEqual(renewal.start, timezone.localdate())
                 self.assertEqual(
-                    subscription.expires.date(),
+                    timezone.localdate(subscription.expires),
                     timezone.localdate() + relativedelta(months=1),
                 )
 
@@ -2414,7 +2477,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
         self.assertTrue(subscription.enabled)
         self.assertEqual(purchase.start, timezone.localdate())
         self.assertEqual(
-            subscription.expires.date(),
+            timezone.localdate(subscription.expires),
             timezone.localdate() + relativedelta(months=1),
         )
 
@@ -4083,7 +4146,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         subscription = Service.objects.get(hosted_billing=42).subscription_set.get()
         self.assertEqual(subscription.package, package)
         self.assertEqual(subscription.payment, current_payment)
-        self.assertEqual(subscription.expires.date(), current_payment.end)
+        self.assertEqual(timezone.localdate(subscription.expires), current_payment.end)
         self.assertEqual(
             set(subscription.past_payments.values_list("pk", flat=True)),
             {initial_payment.pk},
@@ -5663,7 +5726,7 @@ class ExpiryTest(FakturaceTestCase):
             kind=kind,
             category=ServiceCategory.HOSTING,
             vat_rate=21,
-            issue_date=timezone.now().date() + timedelta(days=issue_days),
+            issue_date=timezone.localdate() + timedelta(days=issue_days),
         )
         invoice.invoiceitem_set.create(description=description, unit_price=100)
 
@@ -6837,8 +6900,8 @@ class ServiceTest(FakturaceTestCase):
             )
             hosted = service.hosted_subscriptions
             self.assertEqual(
-                hosted[0].expires.date(),
-                timezone.now().date() + timedelta(days=3),
+                timezone.localdate(hosted[0].expires),
+                timezone.localdate() + timedelta(days=3),
             )
 
             # Trigger customer editing
@@ -6868,8 +6931,8 @@ class ServiceTest(FakturaceTestCase):
         payment = hosted[0].payment_obj
         self.assertEqual(payment.amount, Decimal("50.82"))
         self.assertEqual(
-            hosted[0].expires.date(),
-            timezone.now().date() + timedelta(days=3) + relativedelta(months=1),
+            timezone.localdate(hosted[0].expires),
+            timezone.localdate() + timedelta(days=3) + relativedelta(months=1),
         )
 
     @responses.activate
@@ -6901,8 +6964,8 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(hosted[0].package.name, "test:test-1")
         self.assertEqual(hosted[0].payment_obj.amount, Decimal("508.20"))
         self.assertEqual(
-            hosted[0].expires.date(),
-            timezone.now().date() + timedelta(days=3) + relativedelta(years=1),
+            timezone.localdate(hosted[0].expires),
+            timezone.localdate() + timedelta(days=3) + relativedelta(years=1),
         )
 
     @override_settings(ZAMMAD_TOKEN="test")  # ruff:ignore[hardcoded-password-func-arg]
@@ -7032,7 +7095,7 @@ class ServiceTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PROCESSED)
         self.assertEqual(payment.start, timezone.localdate())
-        self.assertEqual(payment.end, expires.date())
+        self.assertEqual(payment.end, timezone.localdate(expires))
         self.assertFalse(hosted[0].upgrade_package)
 
     def test_hosted_upgrade_below_invoice_minimum(self) -> None:
@@ -7439,6 +7502,45 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         result = get_release(force=False)
         self.assertEqual(len(result), 1)
 
+    @responses.activate
+    @override_settings(
+        CHANGES_API="https://activity.example/api/", CHANGES_KEY="test-token"
+    )
+    def test_activity_snapshot_shared_and_weekly_sum(self) -> None:
+        cache.delete(ACTIVITY_CACHE_KEY)
+        responses.get(
+            "https://activity.example/api/activity/",
+            json={
+                "daily_activity": list(range(1, 53)),
+                "projects": [],
+            },
+        )
+        self.assertEqual(get_activity(), list(range(28, 53)))
+        self.assertEqual(get_changes(), [])
+        self.assertEqual(len(responses.calls), 1)
+        self.assertEqual(
+            responses.calls[0].request.headers["Authorization"], "Token test-token"
+        )
+        response = self.client.get("/en/")
+        self.assertEqual(response.context["activity_sum"], sum(range(46, 53)))
+
+    def test_activity_refresh_failure_preserves_cache(self) -> None:
+        snapshot = {"daily_activity": [1, 2], "projects": []}
+        cache.set(ACTIVITY_CACHE_KEY, snapshot)
+        with patch("weblate_web.remote.Weblate") as client:
+            client.return_value.get_activity.side_effect = WeblateException("403")
+            self.assertEqual(get_hosted_activity(force=True), snapshot)
+        self.assertEqual(cache.get(ACTIVITY_CACHE_KEY), snapshot)
+
+    def test_activity_unavailable_and_zero(self) -> None:
+        for daily, available in (([], False), ([0] * 25, True)):
+            with self.subTest(daily=daily):
+                cache.set(ACTIVITY_CACHE_KEY, {"daily_activity": daily, "projects": []})
+                response = self.client.get("/en/")
+                self.assertEqual(b"trans-bottom" in response.content, available)
+                response = self.client.get("/img/activity.svg")
+                self.assertContains(response, "<svg")
+
     def test_get_changes(self) -> None:
         mock_stat_data: dict[str, Any] = {
             "last_change": "2024-06-01T00:00:00Z",
@@ -7454,33 +7556,12 @@ class BackgroundFetchTestCase(FakturaceTestCase):
             "url": "https://hosted.weblate.org/engage/project-b/",
             "translated_percent": 30.0,
         }
-        mock_stat_none_data: dict[str, Any] = {
-            "last_change": None,
-            "name": "Project C",
-            "recent_changes": 0,
-            "url": "https://hosted.weblate.org/engage/project-c/",
-            "translated_percent": 10.0,
-        }
         with patch("weblate_web.remote.Weblate") as mock_weblate:
             mock_stat_a = Statistics(mock_weblate.return_value, **mock_stat_data)
             mock_stat_old = Statistics(mock_weblate.return_value, **mock_stat_old_data)
-            mock_stat_none = Statistics(
-                mock_weblate.return_value, **mock_stat_none_data
+            mock_weblate.return_value.get_activity.return_value = Activity(
+                [1], [mock_stat_a, mock_stat_old]
             )
-            mock_project_a = type(
-                "MockProject", (), {"statistics": lambda _self: mock_stat_a}
-            )()
-            mock_project_b = type(
-                "MockProject", (), {"statistics": lambda _self: mock_stat_old}
-            )()
-            mock_project_c = type(
-                "MockProject", (), {"statistics": lambda _self: mock_stat_none}
-            )()
-            mock_weblate.return_value.list_projects.return_value = [
-                mock_project_a,
-                mock_project_b,
-                mock_project_c,
-            ]
             result = get_changes(force=True)
         self.assertEqual(len(result), 2)
         # Should be sorted by last_change descending, Project C excluded (None)
@@ -7488,8 +7569,9 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         self.assertEqual(result[1]["name"], "Project B")
 
     def test_get_changes_error(self) -> None:
+        cache.delete(ACTIVITY_CACHE_KEY)
         with patch("weblate_web.remote.Weblate") as mock_weblate:
-            mock_weblate.return_value.list_projects.side_effect = WeblateException(
+            mock_weblate.return_value.get_activity.side_effect = WeblateException(
                 "Connection failed"
             )
             result = get_changes(force=True)
@@ -7506,14 +7588,13 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         }
         with patch("weblate_web.remote.Weblate") as mock_weblate:
             mock_stat = Statistics(mock_weblate.return_value, **mock_stat_data)
-            mock_project = type(
-                "MockProject", (), {"statistics": lambda _self: mock_stat}
-            )()
-            mock_weblate.return_value.list_projects.return_value = [mock_project]
+            mock_weblate.return_value.get_activity.return_value = Activity(
+                [1], [mock_stat]
+            )
             result = get_changes(force=True)
             self.assertEqual(len(result), 1)
             # Cached result returned without force
-            mock_weblate.return_value.list_projects.side_effect = Exception(
+            mock_weblate.return_value.get_activity.side_effect = Exception(
                 "Should not be called"
             )
             result = get_changes(force=False)
@@ -7526,8 +7607,7 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         self.assertContains(response, "12 překladů")
 
     @patch("weblate_web.management.commands.background_fetch.get_release")
-    @patch("weblate_web.management.commands.background_fetch.get_changes")
-    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_hosted_activity")
     @patch("weblate_web.management.commands.background_fetch.get_contributors")
     def test_disable_stale_services_no_report(self, *mocks: object) -> None:
         """Service with discoverable=True but no report should not be disabled."""
@@ -7539,8 +7619,7 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         self.assertTrue(service.discoverable)
 
     @patch("weblate_web.management.commands.background_fetch.get_release")
-    @patch("weblate_web.management.commands.background_fetch.get_changes")
-    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_hosted_activity")
     @patch("weblate_web.management.commands.background_fetch.get_contributors")
     def test_disable_stale_services_fresh(self, *mocks: object) -> None:
         """Service with a recent report should not be disabled."""
@@ -7555,8 +7634,7 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         self.assertTrue(service.discoverable)
 
     @patch("weblate_web.management.commands.background_fetch.get_release")
-    @patch("weblate_web.management.commands.background_fetch.get_changes")
-    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_hosted_activity")
     @patch("weblate_web.management.commands.background_fetch.get_contributors")
     def test_disable_stale_services_stale(self, *mocks: object) -> None:
         """Service with a stale report (>3 days old) should be disabled."""
@@ -7575,8 +7653,7 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         self.assertFalse(service.discoverable)
 
     @patch("weblate_web.management.commands.background_fetch.get_release")
-    @patch("weblate_web.management.commands.background_fetch.get_changes")
-    @patch("weblate_web.management.commands.background_fetch.get_activity")
+    @patch("weblate_web.management.commands.background_fetch.get_hosted_activity")
     @patch("weblate_web.management.commands.background_fetch.get_contributors")
     def test_disable_stale_services_not_discoverable(self, *mocks: object) -> None:
         """Service that is not discoverable should not be affected."""
@@ -7597,7 +7674,14 @@ class BackgroundFetchTestCase(FakturaceTestCase):
             WEBLATE_CONTRIBUTORS_URL,
             body=TEST_CONTRIBUTORS.read_text(),
         )
-        responses.add(responses.GET, ACTIVITY_URL, body=TEST_ACTIVITY.read_text())
+        responses.add(
+            responses.GET,
+            "https://hosted.weblate.org/api/activity/",
+            json={
+                "daily_activity": json.loads(TEST_ACTIVITY.read_text()),
+                "projects": [],
+            },
+        )
         responses.add(
             responses.GET,
             PYPI_URL,
@@ -7626,12 +7710,11 @@ class BackgroundFetchTestCase(FakturaceTestCase):
             },
         )
         with patch("weblate_web.remote.Weblate") as mock_weblate:
-            mock_weblate.return_value.list_projects.return_value = []
+            mock_weblate.return_value.get_activity.return_value = Activity([1], [])
             call_command("background_fetch")
         # Verify all remote functions populated the cache
         self.assertIsNotNone(cache.get("wlweb-contributors"))
-        self.assertIsNotNone(cache.get("wlweb-activity-stats"))
-        self.assertIsNotNone(cache.get("wlweb-changes-list"))
+        self.assertIsNotNone(cache.get(ACTIVITY_CACHE_KEY))
         self.assertIsNotNone(cache.get("wlweb-release-x"))
 
 

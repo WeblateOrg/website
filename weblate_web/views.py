@@ -1174,7 +1174,7 @@ def activity_svg(request):
     data = get_activity()
     top_count = max(data) if data else 0
     for i, count in enumerate(data):
-        height = int(76 * count / top_count)
+        height = int(76 * count / top_count) if top_count else 0
         item = {
             "rx": 2,
             "width": 6,

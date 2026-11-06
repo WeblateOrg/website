@@ -37,6 +37,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.core.files.storage import FileSystemStorage
 from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -53,6 +54,7 @@ from weblate_web.tests import (
     thepay_mock_create_payment,
     thepay_mock_payment,
 )
+from weblate_web.utils import PAYMENTS_ORIGIN
 
 from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
 from .models import (
@@ -1476,6 +1478,111 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(len(mail.outbox), 0)
 
 
+@override_settings(
+    **THEPAY2_MOCK_SETTINGS,
+    LANGUAGE_CODE="en",
+    STATIC_ROOT=Path(__file__).resolve().parents[1] / "static",
+)
+class ThePayFailureNotificationTest(BackendBaseTestCase):
+    backend_name = "thepay2-card"
+
+    def setUp(self) -> None:
+        super().setUp()
+        directory = self.enterContext(TemporaryDirectory())  # pylint: disable=consider-using-with
+        self.attachment_directory = Path(directory)
+        self.enterContext(
+            patch.object(
+                Interaction._meta.get_field("attachment"),  # pylint: disable=protected-access
+                "storage",
+                FileSystemStorage(location=directory),
+            )
+        )
+        self.customer.origin = PAYMENTS_ORIGIN
+        self.customer.save(update_fields=["origin"])
+        self.payment.state = Payment.PENDING
+        self.payment.save(update_fields=["state"])
+
+    def mock_failure(self, reason: str = "error") -> None:
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}"
+            "?merchant_id=00000000-0000-0000-0000-000000000000",
+            json={"uid": str(self.payment.pk), "state": reason},
+        )
+
+    def assert_single_failure_notification(self) -> None:
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
+        interaction = self.customer.interaction_set.get()
+        self.assertEqual(interaction.details["notification"], "payment_failed")
+        self.assertTrue(
+            interaction.attachment.storage.exists(interaction.attachment.name)
+        )
+        self.assertEqual(len(list(self.attachment_directory.rglob("*.eml"))), 1)
+
+    @responses.activate
+    def test_repeated_failed_completion(self) -> None:
+        self.mock_failure()
+        for _ in range(5):
+            backend = self.payment.get_payment_backend()
+            self.assertFalse(backend.complete(None))
+        self.check_payment(Payment.REJECTED)
+        self.assertEqual(len(responses.calls), 5)
+        self.assert_single_failure_notification()
+
+    @responses.activate
+    def test_anonymous_completion_replays(self) -> None:
+        self.mock_failure()
+        for _ in range(5):
+            response = self.client.get(
+                reverse("payment-complete", kwargs={"pk": self.payment.pk})
+            )
+            self.assertRedirects(
+                response,
+                f"{reverse('donate-process')}?payment={self.payment.pk}",
+                fetch_redirect_response=False,
+            )
+        self.check_payment(Payment.REJECTED)
+        self.assert_single_failure_notification()
+
+    @responses.activate
+    def test_already_rejected_updates_details_without_notification(self) -> None:
+        self.payment.state = Payment.REJECTED
+        self.payment.save(update_fields=["state"])
+        for reason in ("error", "cancelled"):
+            self.mock_failure(reason)
+            backend = self.payment.get_payment_backend()
+            self.assertFalse(backend.complete(None))
+            payment = self.check_payment(Payment.REJECTED)
+            self.assertEqual(payment.details["response"]["state"], reason)
+            self.assertEqual(payment.details["reject_reason"], reason)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertFalse(self.customer.interaction_set.exists())
+
+    @responses.activate
+    def test_rejected_payment_later_succeeds(self) -> None:
+        self.mock_failure()
+        self.assertFalse(self.payment.get_payment_backend().complete(None))
+        thepay_mock_payment(self.payment.pk)
+        self.assertTrue(self.payment.get_payment_backend().complete(None))
+        payment = self.check_payment(Payment.ACCEPTED)
+        self.assertIsNotNone(payment.paid_invoice_id)
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(
+            self.customer.interaction_set.filter(
+                details__notification="payment_completed"
+            ).count(),
+            1,
+        )
+
+    def test_silent_failure_remains_silent_on_retry(self) -> None:
+        self.payment.get_payment_backend().failure(notify=False)
+        self.check_payment(Payment.REJECTED)
+        self.payment.get_payment_backend().failure()
+        self.check_payment(Payment.REJECTED)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertFalse(self.customer.interaction_set.exists())
+
+
 @override_settings(**THEPAY2_MOCK_SETTINGS)
 class ThePay2Test(BackendBaseTestCase):
     backend_name = "thepay2-card"
@@ -1507,6 +1614,7 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(len(mail.outbox), 0)
         self.assertIn("response", payment.details)
 
+    @override_settings(LANGUAGE_CODE="en")
     def test_cancelled_payment_incomplete(self) -> None:
         self.payment.state = Payment.CANCELLED
         self.payment.save()

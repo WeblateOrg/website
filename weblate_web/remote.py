@@ -20,7 +20,6 @@
 
 from __future__ import annotations
 
-import operator
 from datetime import timedelta
 from time import sleep
 from typing import TYPE_CHECKING, Literal, TypedDict
@@ -52,7 +51,7 @@ EXCLUDE_USERS = {
     "dependabot-preview[bot]",
     "pre-commit-ci[bot]",
 }
-ACTIVITY_URL = "https://hosted.weblate.org/activity/month.json"
+ACTIVITY_CACHE_KEY = "wlweb-hosted-activity"
 CACHE_TIMEOUT = 72 * 3600
 
 
@@ -109,49 +108,33 @@ def get_contributors(force: bool = False) -> list:
     return data
 
 
-def get_activity(force: bool = False) -> list:
-    key = "wlweb-activity-stats"
-    results = cache.get(key)
+def get_hosted_activity(force: bool = False) -> dict:
+    """Fetch a shared snapshot of daily activity and recent projects."""
+    results = cache.get(ACTIVITY_CACHE_KEY)
     if not force and results is not None:
         return results
-    # Perform request
     try:
-        response = requests.get(ACTIVITY_URL, timeout=10)
-    except OSError as error:
+        client = Weblate(key=settings.CHANGES_KEY, url=settings.CHANGES_API)
+        activity = client.get_activity()
+    except (WeblateException, OSError) as error:
         sentry_sdk.capture_exception(error)
-        response = None
-    # Stats are not yet calculated
-    if response is None or response.status_code != 200:
-        return []
-
-    stats = response.json()
-    data = stats[-25:]
-    cache.set(key, data, timeout=CACHE_TIMEOUT)
+        return (
+            results if results is not None else {"daily_activity": [], "projects": []}
+        )
+    data = {
+        "daily_activity": activity.daily_activity[-25:],
+        "projects": [project.get_data() for project in activity.projects],
+    }
+    cache.set(ACTIVITY_CACHE_KEY, data, timeout=CACHE_TIMEOUT)
     return data
 
 
+def get_activity(force: bool = False) -> list[int]:
+    return get_hosted_activity(force)["daily_activity"]
+
+
 def get_changes(force: bool = False) -> list:
-    key = "wlweb-changes-list"
-    results = cache.get(key)
-    if not force and results is not None:
-        return results
-    try:
-        wlc = Weblate(key=settings.CHANGES_KEY, url=settings.CHANGES_API)
-
-        project_stats = [project.statistics() for project in wlc.list_projects()]
-        stats = [
-            project.get_data()
-            for project in project_stats
-            if project["last_change"] is not None
-        ]
-    except WeblateException as error:
-        sentry_sdk.capture_exception(error)
-        return []
-
-    stats.sort(key=operator.itemgetter("last_change"), reverse=True)
-
-    cache.set(key, stats[:10], timeout=CACHE_TIMEOUT)
-    return stats[:10]
+    return get_hosted_activity(force)["projects"]
 
 
 def get_release(force: bool = False) -> list[PYPIInfo]:

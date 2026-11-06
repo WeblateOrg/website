@@ -466,7 +466,7 @@ def process_upgrade_payment(payment: Payment) -> Subscription:
         raise UnprocessablePaymentError
 
     payment.start = timezone.localdate()
-    payment.end = subscription.expires.date()
+    payment.end = timezone.localdate(subscription.expires)
     subscription.package = package
     if subscription.payment:
         add_subscription_past_payments(subscription, subscription.payment)
@@ -1510,7 +1510,9 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
         if not repeat:
             return 0
         start = self.expires - get_period_delta(repeat)
-        return max((self.expires.date() - start.date()).days, 1)
+        return max(
+            (timezone.localdate(self.expires) - timezone.localdate(start)).days, 1
+        )
 
     def can_upgrade_to(self, package: Package | None) -> bool:
         if package is None:
@@ -1619,18 +1621,23 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
 
     def _get_renewal_invoices(self, *, accepted: bool | None) -> Generator[Invoice]:
         start_date = get_subscription_invoice_start(self)
+        # Match the local dates Django stores when assigning datetimes to DateField.
         package_ids = {self.package_id}
         package_filter = Q(invoiceitem__package=self.package)
         if self.enabled:
             package_filter &= Q(
                 invoiceitem__end_date__in={
-                    (self.expires + get_period_delta(self.package.get_repeat())).date(),
-                    (
+                    timezone.localdate(
+                        self.expires + get_period_delta(self.package.get_repeat())
+                    ),
+                    timezone.localdate(
                         start_date
                         + get_period_delta(self.package.get_repeat())
                         - timedelta(days=1)
-                    ).date(),
-                    (start_date + get_period_delta(self.package.get_repeat())).date(),
+                    ),
+                    timezone.localdate(
+                        start_date + get_period_delta(self.package.get_repeat())
+                    ),
                 }
             )
         if yearly_package := self.yearly_package:
@@ -1639,17 +1646,17 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
             if self.enabled:
                 yearly_filter &= Q(
                     invoiceitem__end_date__in={
-                        (
+                        timezone.localdate(
                             self.expires + get_period_delta(yearly_package.get_repeat())
-                        ).date(),
-                        (
+                        ),
+                        timezone.localdate(
                             start_date
                             + get_period_delta(yearly_package.get_repeat())
                             - timedelta(days=1)
-                        ).date(),
-                        (
+                        ),
+                        timezone.localdate(
                             start_date + get_period_delta(yearly_package.get_repeat())
-                        ).date(),
+                        ),
                     }
                 )
             package_filter |= yearly_filter
@@ -1667,7 +1674,9 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
             correction_of=None,
         )
         if self.enabled:
-            invoices = invoices.filter(invoiceitem__start_date=start_date.date())
+            invoices = invoices.filter(
+                invoiceitem__start_date=timezone.localdate(start_date)
+            )
         invoices = (
             invoices.filter(package_filter)
             .exclude(extra__has_key="subscription_upgrade")
@@ -1699,7 +1708,7 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
                         item.package_id in package_ids
                         and item.package is not None
                         and item.start_date is not None
-                        and item.start_date == start_date.date()
+                        and item.start_date == timezone.localdate(start_date)
                         and item.end_date
                         == item.start_date
                         + get_period_delta(item.package.get_repeat())
@@ -1982,7 +1991,7 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
             customer_reference=customer_reference,
             customer_note=customer_note,
             start_date=start_date,
-            end_date=self.expires.date(),
+            end_date=timezone.localdate(self.expires),
             description=_("Upgrade to %s") % package,
             unit_price=self.get_upgrade_unit_price(package, currency),
         )
