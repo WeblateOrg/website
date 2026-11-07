@@ -18,7 +18,9 @@
         </h1>
         <div class="articles blog">
           {% for object in object_list %}
-            <div class="article{% if forloop.counter == 1 %} big{% endif %}">{% include "snippets/article.html" %}</div>
+            <div class="article{% if forloop.counter == 1 %} big{% endif %}">
+              {% include "snippets/article.html" %}
+            </div>
           {% endfor %}
         </div>
         <a href="{% url 'news-archive' %}" class="button center">{% translate "View older articles" %}</a>
