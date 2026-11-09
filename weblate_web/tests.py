@@ -18,7 +18,7 @@ from zlib import crc32
 import responses
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.core import mail
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ValidationError
@@ -48,6 +48,7 @@ from wlc.models import Statistics
 from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Discount, Invoice, InvoiceKind
+from weblate_web.legal.models import Agreement
 from weblate_web.payments.invitations import create_invitation, get_invitation_token
 from weblate_web.payments.models import (
     Customer,
@@ -114,6 +115,7 @@ if TYPE_CHECKING:
     from uuid import UUID
 
     from django.core.mail.message import EmailMultiAlternatives
+    from django.http import FileResponse
 
 TEST_DATA = Path(__file__).parent / "test-data"
 TEST_ROBOTS = Path(__file__).parent / "static" / "robots.txt"
@@ -2719,10 +2721,69 @@ class PaymentsTest(FakturaceTestCase):
         response = self.client.get(reverse("user-invoice", kwargs={"pk": payment.pk}))
         self.assertEqual(response.status_code, 404)
 
+    def test_staff_invoice_requires_permission(self) -> None:
+        user = self.login()
+        user.is_staff = True
+        user.save(update_fields=["is_staff"])
+        invoice = Invoice.objects.create(
+            customer=self.create_vat_customer(),
+            kind=InvoiceKind.INVOICE,
+            category=ServiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        url = reverse("invoice-pdf", kwargs={"pk": invoice.pk})
+
+        for suffix in ("", "?receipt=1"):
+            with self.subTest(suffix=suffix):
+                self.assertEqual(self.client.get(url + suffix).status_code, 403)
+
+        user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="invoices", codename="view_invoice"
+            )
+        )
+        with patch("pathlib.Path.open", return_value=BytesIO(b"%PDF-invoice")):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(b"".join(cast("FileResponse", response)), b"%PDF-invoice")
+
+    def test_staff_agreement_requires_permission_or_ownership(self) -> None:
+        user = self.login()
+        user.is_staff = True
+        user.save(update_fields=["is_staff"])
+        customer = self.create_vat_customer()
+        with patch.object(Agreement, "generate_files"):
+            agreement = Agreement.objects.create(customer=customer)
+        url = reverse("agreement-download", kwargs={"pk": agreement.pk})
+
+        self.assertEqual(self.client.get(url).status_code, 404)
+
+        customer.owners.add(user)
+        with patch("pathlib.Path.open", return_value=BytesIO(b"%PDF-agreement")):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(b"".join(cast("FileResponse", response)), b"%PDF-agreement")
+
+        customer.owners.clear()
+        user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="invoices", codename="view_invoice"
+            )
+        )
+        with patch("pathlib.Path.open", return_value=BytesIO(b"%PDF-agreement")):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(b"".join(cast("FileResponse", response)), b"%PDF-agreement")
+
     def test_staff_receipt_unpaid_invoice_404(self) -> None:
         user = self.create_user()
         user.is_staff = True
         user.save(update_fields=["is_staff"])
+        user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="invoices", codename="view_invoice"
+            )
+        )
         self.client.force_login(user)
         customer = Customer.objects.create(
             email="weblate@example.com",
@@ -2750,6 +2811,11 @@ class PaymentsTest(FakturaceTestCase):
         user = self.create_user()
         user.is_staff = True
         user.save(update_fields=["is_staff"])
+        user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="invoices", codename="view_invoice"
+            )
+        )
         self.client.force_login(user)
         customer = Customer.objects.create(
             email="weblate@example.com",
@@ -2787,6 +2853,11 @@ class PaymentsTest(FakturaceTestCase):
         user = self.create_user()
         user.is_staff = True
         user.save(update_fields=["is_staff"])
+        user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="invoices", codename="view_invoice"
+            )
+        )
         self.client.force_login(user)
         customer = Customer.objects.create(
             email="weblate@example.com",
