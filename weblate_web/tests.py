@@ -2202,8 +2202,10 @@ class HostedSubscriptionTest(FakturaceTestCase):
                 service.refresh_from_db()
                 self.assertEqual(service.status, "shared")
                 self.assertEqual(service.limit_hosted_strings, 10_000)
-                with self.assertRaises(ValueError):
-                    process_payment(payment)
+                expires = subscription.expires
+                process_payment(payment)
+                subscription.refresh_from_db()
+                self.assertEqual(subscription.expires, expires)
                 self.assertEqual(service.subscription_set.count(), 1)
 
     def test_renewal_upgrade_downgrade_and_cancellation(self) -> None:

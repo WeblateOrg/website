@@ -324,6 +324,7 @@ def get_donation_service(payment: Payment) -> Service:
 
 
 def process_donation(payment: Payment) -> Service:
+    """Apply a donation while the caller holds the payment row lock."""
     if payment.state != Payment.ACCEPTED:
         raise ValueError("Cannot process non-accepted payment")
     if payment.repeat:
@@ -542,6 +543,7 @@ def process_new_payment(payment: Payment) -> Subscription:
 
 @transaction.atomic
 def process_subscription(payment: Payment) -> Subscription:
+    """Apply a subscription while the caller holds the payment row lock."""
     if payment.state != Payment.ACCEPTED:
         raise ValueError("Can not process not accepted payment")
     if "subscription_upgrade" in payment.extra:
@@ -570,8 +572,11 @@ def is_subscription_payment(payment: Payment) -> bool:
     )
 
 
+@transaction.atomic
 def process_payment(payment: Payment) -> None:
     payment = Payment.objects.filter(pk=payment.pk).select_for_update()[0]
+    if payment.state == Payment.PROCESSED:
+        return
     if not payment.extra or set(payment.extra.keys()) == {"exclude_backends"}:
         raise UnprocessablePaymentError
     if is_subscription_payment(payment):
