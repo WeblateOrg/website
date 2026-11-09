@@ -718,7 +718,7 @@ class CustomerDPAView(CustomerBaseView, FormView):
 
 @login_required
 def agreement_download_view(request: AuthenticatedHttpRequest, pk: int):
-    if request.user.is_staff:
+    if request.user.is_staff and request.user.has_perm("invoices.view_invoice"):
         agreement = get_object_or_404(Agreement, pk=pk)
     else:
         agreement = get_object_or_404(
