@@ -28,7 +28,7 @@ jobs:
       run: uv run --no-sync playwright install --with-deps chromium
 
     - name: Install PDF screenshot tools
-      run: sudo apt-get update && sudo apt-get install --no-install-recommends --yes ghostscript
+      run: sudo apt-get update && sudo apt-get install --no-install-recommends --yes ghostscript libharfbuzz-subset0
 
     - name: Create database
       run: uv run --no-sync ./manage.py migrate

@@ -51,7 +51,7 @@ jobs:
       # gettext is needed as Django uses msgfmt to compile MO files
       run: |
         sudo apt update
-        sudo apt install gettext
+        sudo apt install gettext libharfbuzz-subset0
     - name: Start validation service
       env:
         # renovate: datasource=github-releases depName=gflohr/e-invoice-eu-validator versioning=loose
