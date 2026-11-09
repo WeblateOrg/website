@@ -392,6 +392,7 @@ class Backend:
 
         status = self.collect(request)
         if status is None:
+            self.payment.save(update_fields=["state", "details", "card_info"])
             return False
         if status:
             return self.success()
@@ -1140,24 +1141,16 @@ class ThePay2Card(Backend):
 
     def collect(self, request: HttpRequest | None) -> bool | None:
         # Handle repeated payments
-        if self.payment.repeat:
+        if self.payment.repeat and not self.payment.draft_invoice_id:
             if "repeat_response" not in self.payment.details:
                 raise ValueError("Recurring payment without a recurring response")
 
             response = self.payment.details["repeat_response"]
-            if response["state"] == "paid":
-                return True
-            self.payment.details["reject_reason"] = response.get("message")
-            if not self.payment.details["reject_reason"]:
-                if not response.get("parent", {}).get(
-                    "recurring_payments_available", True
-                ):
-                    self.payment.details["reject_reason"] = (
-                        "Recurring payment is no longer available"
-                    )
-                else:
-                    self.payment.details["reject_reason"] = "Recurring payment failed"
-            return False
+            if response["state"] != "paid":
+                self.payment.details["reject_reason"] = self.recurring_failure_reason(
+                    response
+                )
+            return response["state"] == "paid"
 
         # Get payment state
         response = self.request("get", f"payments/{self.payment.pk}")
@@ -1169,14 +1162,27 @@ class ThePay2Card(Backend):
 
         # Payment completed
         if state == "paid":
+            if not self.validate_settlement(response):
+                return None
             # Store card info
             if card_info := response.get("card"):
                 self.payment.card_info = card_info
             return True
 
-        # Pending payment, expired link
-        if state in {"waiting_for_payment", "waiting_for_confirmation", "expired"}:
+        # Once money was reported received, keep the review open until a paid
+        # response passes validation instead of inviting another payment.
+        if self.payment.is_under_settlement_review or state in {
+            "waiting_for_payment",
+            "waiting_for_confirmation",
+            "expired",
+        }:
             return None
+
+        if self.payment.repeat:
+            self.payment.details["reject_reason"] = self.recurring_failure_reason(
+                response
+            )
+            return False
 
         # All other states are assumed to be an error
 
@@ -1200,6 +1206,95 @@ class ThePay2Card(Backend):
             self.payment.details["reject_reason"] = state
 
         return False
+
+    @staticmethod
+    def recurring_failure_reason(response: dict[str, Any]) -> str:
+        if message := response.get("message"):
+            return str(message)
+        if not (response.get("parent") or {}).get("recurring_payments_available", True):
+            return "Recurring payment is no longer available"
+        return "Recurring payment failed"
+
+    def validate_settlement(self, response: dict[str, Any]) -> bool:
+        """Check received money against the invoice, independently of live VAT data."""
+        invoice = self.payment.draft_invoice
+        if invoice is None:
+            return True
+
+        expected_amount = int(invoice.total_amount * 100)
+        expected_currency = invoice.get_currency_display()
+        paid_amount = response.get("paid_amount")
+        currency = response.get("currency")
+        reason = ""
+        if (
+            not isinstance(paid_amount, int)
+            or isinstance(paid_amount, bool)
+            or paid_amount < 0
+        ):
+            reason = "invalid_paid_amount"
+        elif not isinstance(currency, str):
+            reason = "invalid_currency"
+        elif currency != expected_currency:
+            reason = "currency_mismatch"
+        elif paid_amount < expected_amount:
+            reason = "underpayment"
+
+        if reason:
+            self.hold_settlement(
+                {
+                    "reason": reason,
+                    "expected_amount": expected_amount,
+                    "expected_currency": expected_currency,
+                    "paid_amount": paid_amount,
+                    "currency": currency,
+                }
+            )
+            return False
+
+        if self.payment.is_under_settlement_review:
+            del self.payment.details["settlement_review"]
+            self.payment.customer.followups.filter(
+                type=CustomerFollowUp.Type.MANUAL,
+                details__settlement_review_payment=str(self.payment.pk),
+            ).delete()
+        return True
+
+    def hold_settlement(self, review: dict[str, Any]) -> None:
+        # ruff:ignore[import-outside-top-level]
+        from weblate_web.crm.models import Interaction
+
+        self.payment.details["settlement_review"] = review
+        if self.payment.state != Payment.CANCELLED:
+            self.payment.state = Payment.PENDING
+        details = {
+            "settlement_review_payment": str(self.payment.pk),
+            "invoice_id": str(self.payment.draft_invoice_id),
+            "backend": self.name,
+            **review,
+        }
+        summary = f"Payment {self.payment.pk} requires settlement review"
+        # Backend initialization locks the payment, serializing repeat callbacks.
+        interactions = self.payment.customer.interaction_set.filter(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            details__settlement_review_payment=str(self.payment.pk),
+        )
+        if not interactions.exists():
+            self.payment.customer.interaction_set.create(
+                origin=Interaction.Origin.MANUAL_NOTE,
+                summary=summary,
+                content="The received amount or currency could not be matched to the invoice. Review the provider response before applying the payment.",
+                details=details,
+            )
+        self.payment.customer.followups.update_or_create(
+            type=CustomerFollowUp.Type.MANUAL,
+            details__settlement_review_payment=str(self.payment.pk),
+            defaults={"note": summary, "details": details},
+            create_defaults={
+                "note": summary,
+                "details": details,
+                "follow_up_at": now(),
+            },
+        )
 
 
 @register_backend
