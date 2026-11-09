@@ -11,7 +11,11 @@
     <div class="row">
       <div class="wrap">
         <div class="alert info" role="alert">
-          {% translate "Please follow the provided instructions to complete the payment." %}
+          {% if object.is_under_settlement_review %}
+            {% translate "Your payment requires review. Please do not pay again." %}
+          {% else %}
+            {% translate "Please follow the provided instructions to complete the payment." %}
+          {% endif %}
         </div>
       </div>
     </div>
@@ -20,7 +24,7 @@
   <section class="content">
     <div class="row">
       {% with instructions=backend.get_instructions %}
-        {% if instructions %}
+        {% if instructions and not object.is_under_settlement_review %}
           <div class="wrap">
             <h1 class="section-title min-m">{% translate "Payment Instructions" %}</h1>
             <div class="payment-form">
@@ -54,9 +58,16 @@
               <div class="form-line">
                 <div class="line-left">{% translate "Payment amount" %}</div>
                 <div class="line-right">
-                  {{ object.vat_amount|price_format:object.get_currency_display }}
-                  {% if object.customer.needs_vat %}
-                    {% translate "(including VAT)" %}
+                  {% if object.is_under_settlement_review %}
+                    {{ object.draft_invoice.total_amount|price_format:object.draft_invoice.get_currency_display }}
+                    {% if object.draft_invoice.vat_rate %}
+                      {% translate "(including VAT)" %}
+                    {% endif %}
+                  {% else %}
+                    {{ object.vat_amount|price_format:object.get_currency_display }}
+                    {% if object.customer.needs_vat %}
+                      {% translate "(including VAT)" %}
+                    {% endif %}
                   {% endif %}
                 </div>
                 <div class="clear"></div>
@@ -68,10 +79,16 @@
               </div>
               <div class="form-line">
                 <div class="line-left">{% translate "Payment status" %}</div>
-                <div class="line-right">{% translate "Waiting for payment to be completed." %}</div>
+                <div class="line-right">
+                  {% if object.is_under_settlement_review %}
+                    {% translate "Payment requires review." %}
+                  {% else %}
+                    {% translate "Waiting for payment to be completed." %}
+                  {% endif %}
+                </div>
                 <div class="clear"></div>
               </div>
-              {% if object.details.pay_url %}
+              {% if object.details.pay_url and not object.is_under_settlement_review %}
                 <div class="form-line">
                   <div class="line-left">{% translate "Payment link" %}</div>
                   <div class="line-right">

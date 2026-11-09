@@ -1123,9 +1123,16 @@ class Payment(models.Model):
         return str(self.details.get("reject_reason") or "")
 
     @property
+    def is_under_settlement_review(self) -> bool:
+        return bool(self.details.get("settlement_review"))
+
+    @property
     def is_waiting_for_user(self):
         """Whether payment is waiting for user action."""
-        return self.state in {self.NEW, self.PENDING}
+        return (
+            self.state in {self.NEW, self.PENDING}
+            and not self.is_under_settlement_review
+        )
 
     @cached_property
     def invoice_filename(self) -> str:
@@ -1291,6 +1298,9 @@ class Payment(models.Model):
 
         # Refresh from the database as initial/complete fetch a copy for select_for_update
         self.refresh_from_db()
+
+        if self.state != self.ACCEPTED:
+            return
 
         # Process payment
         with transaction.atomic():

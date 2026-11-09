@@ -494,6 +494,29 @@ def thepay_mock_create_payment() -> None:
 
 
 def thepay_mock_repeated_payment() -> None:
+    def payment_detail(request):
+        payment_id = urlsplit(request.url).path.rsplit("/", 1)[-1]
+        payment = Payment.objects.get(pk=payment_id)
+        invoice = payment.draft_invoice
+        amount = invoice.total_amount if invoice else payment.vat_amount
+        currency = (
+            invoice.get_currency_display()
+            if invoice
+            else payment.get_currency_display()
+        )
+        return (
+            200,
+            {"Content-Type": "application/json"},
+            json.dumps(
+                {
+                    "state": "paid",
+                    "currency": currency,
+                    "amount": int(amount * 100),
+                    "paid_amount": int(amount * 100),
+                }
+            ),
+        )
+
     responses.post(
         re.compile(
             r"https://demo.api.thepay.cz/v2/projects/42/payments/[a-f0-9-]{36}/savedauthorization"
@@ -503,6 +526,11 @@ def thepay_mock_repeated_payment() -> None:
             "message": "Ok",
             "parent": {"recurring_payments_available": True},
         },
+    )
+    responses.add_callback(
+        responses.GET,
+        re.compile(r"https://demo.api.thepay.cz/v1/projects/42/payments/[a-f0-9-]{36}"),
+        callback=payment_detail,
     )
 
 
@@ -528,6 +556,14 @@ def cnb_mock_rates() -> None:
 
 
 def thepay_mock_payment(payment: str | UUID) -> None:
+    payment_object = Payment.objects.get(pk=payment)
+    invoice = payment_object.draft_invoice
+    amount = invoice.total_amount if invoice else payment_object.vat_amount
+    currency = (
+        invoice.get_currency_display()
+        if invoice
+        else payment_object.get_currency_display()
+    )
     responses.get(
         f"https://demo.api.thepay.cz/v1/projects/42/payments/{payment}?merchant_id=00000000-0000-0000-0000-000000000000",
         json={
@@ -535,9 +571,9 @@ def thepay_mock_payment(payment: str | UUID) -> None:
             "project_id": 1,
             "order_id": "CZ12131415",
             "state": "paid",
-            "currency": "CZK",
-            "amount": 87654,
-            "paid_amount": 87654,
+            "currency": currency,
+            "amount": int(amount * 100),
+            "paid_amount": int(amount * 100),
             "created_at": "2019-01-01T12:00:00+00:00",
             "finished_at": "2019-01-01T12:00:00+00:00",
             "valid_to": "2019-01-01T12:00:00+00:00",

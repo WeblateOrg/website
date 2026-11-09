@@ -56,7 +56,14 @@ from weblate_web.tests import (
 )
 from weblate_web.utils import PAYMENTS_ORIGIN
 
-from .backends import FioBank, InvalidState, PaymentError, get_backend, list_backends
+from .backends import (
+    FioBank,
+    InvalidState,
+    PaymentError,
+    ThePay2Card,
+    get_backend,
+    list_backends,
+)
 from .models import (
     VAT_ISSUANCE_GRACE_DAYS,
     Customer,
@@ -1957,6 +1964,268 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(payment.details["reject_reason"], "Recurring payment failed")
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
+
+
+@override_settings(**THEPAY2_MOCK_SETTINGS, LANGUAGE_CODE="en")
+class ThePaySettlementTest(BackendBaseTestCase):
+    backend_name = "thepay2-card"
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.invoice = Invoice.objects.create(
+            customer=self.customer,
+            kind=InvoiceKind.DRAFT,
+            category=ServiceCategory.HOSTING,
+            vat_rate=21,
+        )
+        self.invoice.invoiceitem_set.create(description="Hosting", unit_price=100)
+        self.payment.draft_invoice = self.invoice
+        self.payment.amount = self.invoice.total_amount
+        self.payment.amount_fixed = True
+        self.payment.state = Payment.PENDING
+        self.payment.save()
+        self.generate_files = self.enterContext(patch.object(Invoice, "generate_files"))
+        self.generate_receipt = self.enterContext(
+            patch.object(Invoice, "generate_receipt")
+        )
+        self.notify = self.enterContext(patch.object(ThePay2Card, "send_notification"))
+
+    def complete_payment(self, **overrides: Any) -> bool:
+        response = {
+            "state": "paid",
+            "amount": 12100,
+            "paid_amount": 12100,
+            "currency": "EUR",
+            **overrides,
+        }
+        with patch.object(ThePay2Card, "request", return_value=response):
+            return self.payment.get_payment_backend().complete(None)
+
+    def assert_held(self) -> Payment:
+        payment = self.check_payment(Payment.PENDING)
+        self.assertTrue(payment.is_under_settlement_review)
+        self.assertFalse(payment.is_waiting_for_user)
+        self.assertIsNone(payment.paid_invoice_id)
+        self.assertEqual(Invoice.objects.count(), 1)
+        self.generate_files.assert_not_called()
+        self.generate_receipt.assert_not_called()
+        self.notify.assert_not_called()
+        self.assertEqual(self.customer.interaction_set.count(), 1)
+        self.assertEqual(self.customer.followups.count(), 1)
+        return payment
+
+    def test_exact_payment(self) -> None:
+        self.assertTrue(self.complete_payment())
+        payment = self.check_payment(Payment.ACCEPTED)
+        self.assertIsNotNone(payment.paid_invoice_id)
+        self.assertFalse(payment.is_under_settlement_review)
+        self.assertFalse(self.customer.followups.exists())
+        self.generate_files.assert_called_once()
+        self.generate_receipt.assert_called_once()
+        self.notify.assert_called_once_with("payment_completed")
+
+    def test_overpayment(self) -> None:
+        self.assertTrue(self.complete_payment(paid_amount=13000))
+        payment = self.check_payment(Payment.ACCEPTED)
+        self.assertEqual(payment.details["response"]["paid_amount"], 13000)
+        assert payment.paid_invoice is not None
+        self.assertEqual(payment.paid_invoice.total_amount, Decimal(121))
+        self.assertFalse(self.customer.followups.exists())
+
+    def test_invalid_settlement(self) -> None:
+        cases: list[tuple[dict[str, Any], str]] = [
+            ({"paid_amount": 12099}, "underpayment"),
+            ({"paid_amount": 0}, "underpayment"),
+            ({"currency": "CZK"}, "currency_mismatch"),
+            ({"currency": ""}, "currency_mismatch"),
+            ({"currency": None}, "invalid_currency"),
+            ({"currency": 123}, "invalid_currency"),
+            ({"paid_amount": None}, "invalid_paid_amount"),
+            ({"paid_amount": "12100"}, "invalid_paid_amount"),
+            ({"paid_amount": 12100.0}, "invalid_paid_amount"),
+            ({"paid_amount": True}, "invalid_paid_amount"),
+            ({"paid_amount": -1}, "invalid_paid_amount"),
+        ]
+        for fields, reason in cases:
+            with self.subTest(fields=fields):
+                self.assertFalse(self.complete_payment(**fields))
+                payment = self.assert_held()
+                self.assertEqual(payment.details["settlement_review"]["reason"], reason)
+                followup = self.customer.followups.get()
+                self.assertEqual(followup.details["reason"], reason)
+
+    def test_missing_settlement_fields(self) -> None:
+        for field in ("currency", "paid_amount"):
+            with self.subTest(field=field):
+                response = {"state": "paid", "amount": 12100}
+                response.update({"paid_amount": 12100, "currency": "EUR"})
+                del response[field]
+                with patch.object(ThePay2Card, "request", return_value=response):
+                    self.assertFalse(self.payment.get_payment_backend().complete(None))
+                self.assert_held()
+
+    def test_invoice_is_authoritative_after_customer_change(self) -> None:
+        self.customer.country = "US"
+        self.customer.vat = ""
+        self.customer.save()
+        self.payment.amount = 100
+        self.payment.save(update_fields=["amount"])
+        self.assertFalse(self.complete_payment(paid_amount=10000))
+        payment = self.assert_held()
+        self.assertEqual(payment.details["settlement_review"]["expected_amount"], 12100)
+        self.assertTrue(self.complete_payment())
+        payment = self.check_payment(Payment.ACCEPTED)
+        assert payment.paid_invoice is not None
+        self.assertEqual(payment.paid_invoice.vat_rate, 21)
+        self.assertEqual(payment.paid_invoice.total_amount, Decimal(121))
+
+    def test_repeated_hold_and_recovery(self) -> None:
+        unrelated = self.customer.followups.create(
+            note="Unrelated", follow_up_at=timezone.now()
+        )
+        for _ in range(3):
+            self.assertFalse(self.complete_payment(currency="CZK"))
+        self.assertEqual(self.customer.followups.count(), 2)
+        self.assertEqual(self.customer.interaction_set.count(), 1)
+        self.assertTrue(self.complete_payment())
+        payment = self.check_payment(Payment.ACCEPTED)
+        self.assertFalse(payment.is_under_settlement_review)
+        self.assertEqual(list(self.customer.followups.all()), [unrelated])
+        self.assertEqual(self.customer.interaction_set.count(), 1)
+        self.generate_receipt.assert_called_once()
+        self.notify.assert_called_once_with("payment_completed")
+        self.client.get(payment.get_complete_url())
+        self.generate_receipt.assert_called_once()
+        self.notify.assert_called_once()
+
+    def test_failed_response_keeps_hold(self) -> None:
+        self.assertFalse(self.complete_payment(currency="CZK"))
+        self.assertFalse(self.complete_payment(state="error"))
+        payment = self.assert_held()
+        self.assertEqual(payment.details["response"]["state"], "error")
+
+    def test_rejected_payment_can_be_held(self) -> None:
+        self.payment.state = Payment.REJECTED
+        self.payment.save(update_fields=["state"])
+        self.assertFalse(self.complete_payment(paid_amount=10000))
+        self.assert_held()
+
+    def test_no_draft_keeps_legacy_behavior(self) -> None:
+        self.payment.draft_invoice = None
+        self.payment.save(update_fields=["draft_invoice"])
+        self.assertTrue(self.complete_payment(paid_amount=0, currency="CZK"))
+        self.check_payment(Payment.ACCEPTED)
+        self.assertFalse(self.customer.followups.exists())
+
+    def test_cancelled_payment_stays_cancelled(self) -> None:
+        self.payment.state = Payment.CANCELLED
+        self.payment.save(update_fields=["state"])
+        self.assertFalse(self.complete_payment(paid_amount=10000))
+        payment = self.check_payment(Payment.CANCELLED)
+        self.assertTrue(payment.is_under_settlement_review)
+        self.assertFalse(self.complete_payment())
+        payment = self.check_payment(Payment.CANCELLED)
+        self.assertFalse(payment.is_under_settlement_review)
+        self.assertIsNone(payment.paid_invoice_id)
+        self.generate_files.assert_not_called()
+        self.generate_receipt.assert_not_called()
+        self.notify.assert_not_called()
+
+    def test_already_paid_invoice_keeps_duplicate_handling(self) -> None:
+        other = self.invoice.create_payment(backend=self.backend_name)
+        other.get_payment_backend().success()
+        self.generate_receipt.reset_mock()
+        self.notify.reset_mock()
+        self.assertFalse(self.complete_payment())
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertEqual(payment.details["reject_reason"], "Invoice already paid")
+        self.assertIsNone(payment.paid_invoice_id)
+        self.generate_receipt.assert_not_called()
+        self.notify.assert_not_called()
+
+    def test_inherited_methods_validate_settlement(self) -> None:
+        for name in ("thepay2-gpay", "thepay2-apay", "thepay2-bitcoin"):
+            with self.subTest(backend=name):
+                self.payment.backend = name
+                self.payment.save(update_fields=["backend"])
+                self.assertFalse(self.complete_payment(paid_amount=10000))
+                self.assert_held()
+
+    def test_review_page(self) -> None:
+        self.payment.amount = 100
+        self.payment.details["pay_url"] = "https://gate.thepay.cz/12345/pay"
+        self.payment.save(update_fields=["amount", "details"])
+        with patch.object(
+            ThePay2Card,
+            "request",
+            return_value={"state": "paid", "paid_amount": 10000, "currency": "EUR"},
+        ):
+            response = self.client.get(self.payment.get_complete_url())
+        self.assertContains(
+            response, "Your payment requires review. Please do not pay again."
+        )
+        self.assertContains(response, "€121")
+        self.assertNotContains(response, "Waiting for payment to be completed.")
+        self.assertNotContains(response, "https://gate.thepay.cz/12345/pay")
+        self.assertNotContains(response, "Please follow the provided instructions")
+        self.assert_held()
+
+    def prepare_recurring(self) -> None:
+        self.payment.repeat = Payment.objects.create(
+            customer=self.customer, amount=100, backend=self.backend_name
+        )
+        self.payment.details["repeat_response"] = {"state": "paid"}
+        self.payment.save()
+
+    def test_recurring_fetches_child_payment_detail(self) -> None:
+        self.prepare_recurring()
+        with patch.object(
+            ThePay2Card,
+            "request",
+            return_value={"state": "paid", "paid_amount": 10000, "currency": "EUR"},
+        ) as request:
+            self.assertFalse(self.payment.get_payment_backend().complete(None))
+        request.assert_called_once_with("get", f"payments/{self.payment.pk}")
+        self.assert_held()
+        self.assertTrue(self.complete_payment())
+        self.check_payment(Payment.ACCEPTED)
+
+    def test_recurring_pending_does_not_process_payment(self) -> None:
+        self.prepare_recurring()
+        self.payment.state = Payment.NEW
+        self.payment.save(update_fields=["state"])
+        with (
+            patch.object(
+                ThePay2Card,
+                "request",
+                return_value={"state": "waiting_for_confirmation"},
+            ),
+            patch("weblate_web.models.process_payment") as process,
+        ):
+            self.payment.trigger_recurring()
+        process.assert_not_called()
+        payment = self.check_payment(Payment.PENDING)
+        self.assertEqual(
+            payment.details["response"]["state"], "waiting_for_confirmation"
+        )
+        self.assertFalse(payment.is_under_settlement_review)
+        self.assertTrue(self.complete_payment())
+
+    def test_recurring_hold_does_not_process_payment(self) -> None:
+        self.prepare_recurring()
+        self.payment.state = Payment.NEW
+        self.payment.save(update_fields=["state"])
+        with (
+            patch.object(
+                ThePay2Card,
+                "request",
+                return_value={"state": "paid", "paid_amount": 10000, "currency": "EUR"},
+            ),
+            patch("weblate_web.models.process_payment") as process,
+        ):
+            self.payment.trigger_recurring()
+        process.assert_not_called()
+        self.assert_held()
 
 
 class VATTest(SimpleTestCase):
