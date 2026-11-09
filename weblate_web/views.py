@@ -824,12 +824,14 @@ class DonateView(FormView):
 
 
 @login_required
+@transaction.atomic
 def process_payment(request):
     try:
-        payment = Payment.objects.get(
+        payment = Payment.objects.select_for_update().get(
             pk=request.GET["payment"],
-            customer__origin=PAYMENTS_ORIGIN,
-            customer__owners=request.user,
+            customer__in=Customer.objects.filter(
+                origin=PAYMENTS_ORIGIN, owners=request.user
+            ),
         )
     except (KeyError, Payment.DoesNotExist):
         return redirect(reverse("user"))
