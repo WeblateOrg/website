@@ -35,7 +35,7 @@
               </h2>
               <ul>
                 <li>
-                  {% blocktranslate with url="https://docs.weblate.org/en/latest/security/issues.html" report='<a href="https://hackerone.com/weblate">HackerOne</a>' %}In case it is sensitive or a <strong>security issue</strong>, please report it to {{ report }}. Other ways of reporting security issue can be found in the <a href="{{ url }}">documentation</a>.{% endblocktranslate %}
+                  {% blocktranslate with issues_url="https://github.com/WeblateOrg/weblate/issues" report_url="https://hackerone.com/weblate" url="https://docs.weblate.org/en/latest/security/issues.html" %}Report low and medium severity security issues publicly on <a href="{{ issues_url }}">GitHub</a>. Report high and critical severity vulnerabilities privately through <a href="{{ report_url }}">HackerOne</a>. If you are unsure of the severity, you may start privately. See the <a href="{{ url }}">documentation</a> for the full reporting policy and other private reporting channels.{% endblocktranslate %}
                 </li>
                 <li>
                   {% blocktranslate with url='https://github.com/WeblateOrg/weblate/issues' %}<strong>Ensure the bug is not already reported</strong>, by searching through the <a href="{{ url }}">GitHub issues</a>.{% endblocktranslate %}
