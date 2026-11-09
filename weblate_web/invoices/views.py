@@ -3,7 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import (
+    login_required,
+    permission_required,
+    user_passes_test,
+)
 from django.db import transaction
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -19,6 +23,7 @@ if TYPE_CHECKING:
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
+@permission_required("invoices.view_invoice", raise_exception=True)
 def download_invoice(request: AuthenticatedHttpRequest, pk: str):
     invoice = get_object_or_404(Invoice, pk=pk)
     if "receipt" in request.GET:
