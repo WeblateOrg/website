@@ -5149,15 +5149,19 @@ class ZammadAttachmentsCommandTestCase(BaseCRMTestCase):
         later = self.create_customer(name="Later customer")
         later.zammad_id = 20
         later.save(update_fields=["zammad_id"])
-        client.ticket.search.side_effect = [
-            MockPaginatedResults([{"id": 1, "article_ids": [100]}]),
-            MockPaginatedResults([{"id": 2, "article_ids": [200]}]),
-        ]
+        tickets = {
+            "organization.id:10": [{"id": 1, "article_ids": [100]}],
+            "organization.id:20": [{"id": 2, "article_ids": [200]}],
+        }
+        client.ticket.search.side_effect = lambda query: MockPaginatedResults(
+            tickets[query]
+        )
         article = client.ticket_article.find.return_value
-        client.ticket_article.find.side_effect = [
-            article,
-            {**article, "attachments": [{"id": 600, "filename": "later.pdf"}]},
-        ]
+        articles = {
+            100: article,
+            200: {**article, "attachments": [{"id": 600, "filename": "later.pdf"}]},
+        }
+        client.ticket_article.find.side_effect = articles.__getitem__
         original_save = self.storage.save
 
         def save(name, content, **kwargs):
