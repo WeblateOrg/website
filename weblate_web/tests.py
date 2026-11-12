@@ -469,8 +469,7 @@ TEST_CUSTOMER = {
     "city": "Praha 4",
     "postcode": "149 00",
     "country": "CZ",
-    "vat_0": "CZ",
-    "vat_1": "8003280318",
+    "vat": "CZ8003280318",
 }
 
 THEPAY2_MOCK_SETTINGS: dict[str, str | bool] = {
@@ -2598,7 +2597,7 @@ class PaymentsTest(FakturaceTestCase):
             city=TEST_CUSTOMER["city"],
             postcode=TEST_CUSTOMER["postcode"],
             country=TEST_CUSTOMER["country"],
-            vat=f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}",
+            vat=TEST_CUSTOMER["vat"],
         )
 
     def prepare_payment(self):
@@ -6686,7 +6685,7 @@ class ServiceTest(FakturaceTestCase):
         validated: datetime | None = None,
         error: dict[str, str] | None = None,
     ) -> None:
-        vat = f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}"
+        vat = TEST_CUSTOMER["vat"]
         Customer.objects.filter(pk=service.customer_id).update(
             vat=vat,
             vat_validated=validated or timezone.now(),
@@ -6829,7 +6828,7 @@ class ServiceTest(FakturaceTestCase):
         payment = subscription.payment_obj
         payment.paid_invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
         payment.save(update_fields=["paid_invoice"])
-        vat = f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}"
+        vat = TEST_CUSTOMER["vat"]
         self.set_customer_vat(
             service,
             state=Customer.VatValidationState.INVALID,
@@ -6856,7 +6855,7 @@ class ServiceTest(FakturaceTestCase):
         payment = subscription.payment_obj
         payment.paid_invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
         payment.save(update_fields=["paid_invoice"])
-        vat = f"{TEST_CUSTOMER['vat_0']}{TEST_CUSTOMER['vat_1']}"
+        vat = TEST_CUSTOMER["vat"]
         invalid_vat = {
             "vat": vat,
             "code": "INVALID_INPUT",

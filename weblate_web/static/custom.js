@@ -227,61 +227,79 @@ ready(() => {
   }
 
   /* VAT form */
-  const vatInput = document.getElementById("id_vat_0");
+  const vatInput = document.getElementById("id_vat");
   if (vatInput) {
-    vatInput.addEventListener("change", (e) => {
-      const value = e.target.value;
-      if (value !== "") {
-        document.querySelector(
-          `#id_country option[value="${value}"]`,
-        ).selected = true;
-      }
-    });
-    for (const element of document.querySelectorAll("#id_vat_0,#id_vat_1")) {
-      element.addEventListener("focusout", (_e) => {
-        const country = document.getElementById("id_vat_0").value;
-        const code = document.getElementById("id_vat_1").value;
-        if (country && code) {
-          const payload = new FormData();
-          payload.append("vat", country + code);
-          payload.append(
-            "csrfmiddlewaretoken",
-            document.querySelector('input[name="csrfmiddlewaretoken"]').value,
-          );
-          fetch("/js/vat/", {
-            method: "POST",
-            body: payload,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.valid && data.name !== "---") {
-                document.querySelector('input[name="name"]').value = data.name;
-                const parts = data.address.trim().split("\n");
-                document.querySelector('input[name="address"]').value =
-                  parts[0];
-                if (parts.length > 2) {
-                  document.querySelector('input[name="address_2"]').value =
-                    parts[1];
-                }
-                const cityParts = parts[parts.length - 1].split("  ");
-                if (cityParts.length > 1) {
-                  document.querySelector('input[name="postcode"]').value =
-                    cityParts[0];
-                  document.querySelector('input[name="city"]').value = cityParts
-                    .slice(1)
-                    .join(" ");
-                } else {
-                  document.querySelector('input[name="city"]').value =
-                    cityParts[0];
-                }
+    const country = document.getElementById("id_country");
+    const euCountries = vatInput.dataset.euCountries.split(",");
+    const euVatPatterns = JSON.parse(vatInput.dataset.euVatPatterns);
+    let lookupTimer;
+    let requestedCode;
+    const lookupVat = () => {
+      clearTimeout(lookupTimer);
+      const code = vatInput.value.toUpperCase().replaceAll(" ", "");
+      const prefix = code.slice(0, 2);
+      const billingCountry = prefix === "EL" ? "GR" : prefix;
+      const pattern = euVatPatterns[prefix];
+      if (
+        (!country.value || euCountries.includes(country.value)) &&
+        pattern &&
+        new RegExp(pattern).test(code)
+      ) {
+        country.value = billingCountry;
+        if (requestedCode === code) return;
+        requestedCode = code;
+        const payload = new FormData();
+        payload.append("vat", code);
+        payload.append(
+          "csrfmiddlewaretoken",
+          document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+        );
+        fetch("/js/vat/", {
+          method: "POST",
+          body: payload,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (
+              vatInput.value.toUpperCase().replaceAll(" ", "") !== code ||
+              country.value !== billingCountry
+            ) {
+              return;
+            }
+            if (data.valid && data.name !== "---") {
+              document.querySelector('input[name="name"]').value = data.name;
+              const parts = data.address.trim().split("\n");
+              document.querySelector('input[name="address"]').value = parts[0];
+              if (parts.length > 2) {
+                document.querySelector('input[name="address_2"]').value =
+                  parts[1];
               }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-            });
-        }
-      });
-    }
+              const cityParts = parts[parts.length - 1].split("  ");
+              if (cityParts.length > 1) {
+                document.querySelector('input[name="postcode"]').value =
+                  cityParts[0];
+                document.querySelector('input[name="city"]').value = cityParts
+                  .slice(1)
+                  .join(" ");
+              } else {
+                document.querySelector('input[name="city"]').value =
+                  cityParts[0];
+              }
+            }
+          })
+          .catch((error) => {
+            if (requestedCode === code) requestedCode = undefined;
+            console.error("Error:", error);
+          });
+      } else {
+        requestedCode = undefined;
+      }
+    };
+    vatInput.addEventListener("input", () => {
+      clearTimeout(lookupTimer);
+      lookupTimer = setTimeout(lookupVat, 300);
+    });
+    vatInput.addEventListener("focusout", lookupVat);
   }
 
   const sso = document.getElementById("SSO_Login");

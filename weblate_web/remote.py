@@ -34,7 +34,7 @@ from django.db.models import Q
 from django.utils import timezone
 from wlc import Weblate, WeblateException
 
-from weblate_web.payments.models import Customer
+from weblate_web.payments.models import EU_VAT_RATES, Customer
 from weblate_web.payments.validators import VAT_VALIDITY_DAYS
 
 if TYPE_CHECKING:
@@ -167,7 +167,11 @@ def get_release(force: bool = False) -> list[PYPIInfo]:
 
 
 def fetch_vat_info(*, fetch_all: bool = False, delay: int = 30) -> None:
-    customers = Customer.objects.exclude(vat="").exclude(vat=None)
+    customers = (
+        Customer.objects.filter(country__in=EU_VAT_RATES)
+        .exclude(vat="")
+        .exclude(vat=None)
+    )
     if not fetch_all:
         # Run hourly:
         # - entries without validation retry every run

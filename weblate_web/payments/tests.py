@@ -64,6 +64,7 @@ from .backends import (
     get_backend,
     list_backends,
 )
+from .forms import CustomerForm
 from .models import (
     VAT_ISSUANCE_GRACE_DAYS,
     Customer,
@@ -338,6 +339,7 @@ class ModelTest(SimpleTestCase):
         self.assertTrue(customer.needs_vat)
         self.assertEqual(customer.vat_rate, 21)
         # EU company does not need VAT
+        customer.country = "IE"
         customer.vat = "IE6388047V"
         self.assertFalse(customer.has_valid_vat)
         self.assertTrue(customer.needs_vat)
@@ -397,6 +399,7 @@ class ModelTest(SimpleTestCase):
         self.assertEqual(payment.vat_amount, Decimal(100))
         self.assertAlmostEqual(payment.amount_without_vat, Decimal("82.64"), places=2)
 
+        customer.country = "IE"
         customer.vat = "IE6388047V"
         customer.vat_validation_state = Customer.VatValidationState.VALID
         payment = Payment(customer=customer, amount=100)
@@ -435,6 +438,39 @@ class ModelTest(SimpleTestCase):
 
 
 class ModelObjectsTestCase(TestCase):
+    def test_non_eu_vat_save_and_country_change(self) -> None:
+        vat = "CHE-102.321.467 MWST"
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            customer = Customer.objects.create(
+                **{**CUSTOMER, "country": "CH", "vat": vat}
+            )
+            customer.refresh_from_db()
+            self.assertEqual(customer.vat, vat)
+            self.assertEqual(
+                customer.vat_validation_state, Customer.VatValidationState.UNKNOWN
+            )
+            customer.prepayment_validation(force=True, automated=True)
+        validate.assert_not_called()
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            customer.country = "DE"
+            customer.vat = "DE136695976"
+            customer.save(update_fields={"country", "vat"})
+        validate.assert_called_once()
+        self.assertTrue(customer.has_valid_vat)
+
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            customer.country = "CH"
+            customer.save(update_fields={"country"})
+        validate.assert_not_called()
+        customer.refresh_from_db()
+        self.assertEqual(
+            customer.vat_validation_state, Customer.VatValidationState.UNKNOWN
+        )
+        self.assertIsNone(customer.vat_validated)
+        self.assertEqual(customer.vat_validation_error, {})
+        self.assertFalse(customer.needs_vat)
+
     def create_customer_for_vat_validation(self) -> Customer:
         customer = Customer.objects.create(
             user_id=-1,
@@ -2229,6 +2265,58 @@ class ThePaySettlementTest(BackendBaseTestCase):
 
 
 class VATTest(SimpleTestCase):
+    def test_non_eu_vat_form(self) -> None:
+        for country, vat in (
+            ("CH", "CHE-102.321.467 MWST"),
+            ("CH", "CHE-102.321.467 TVA"),
+            ("US", "local tax number 123"),
+            ("GB", "GB123456789"),
+            ("CH", "CZ12345678"),
+        ):
+            with self.subTest(country=country, vat=vat):
+                form = CustomerForm(data={**CUSTOMER, "country": country, "vat": vat})
+                with patch("weblate_web.payments.models.validate_vatin") as validate:
+                    self.assertTrue(form.is_valid(), form.errors)
+                    form.instance.prepayment_validation(force=True)
+                validate.assert_not_called()
+                self.assertEqual(form.instance.vat, vat)
+                self.assertFalse(form.instance.has_valid_vat)
+                self.assertFalse(form.instance.needs_vat)
+
+    def test_eu_vat_form(self) -> None:
+        form = CustomerForm(data={**CUSTOMER, "vat": "cz 8003280318"})
+        with patch("weblate_web.payments.models.validate_vatin") as validate:
+            self.assertTrue(form.is_valid(), form.errors)
+        validate.assert_called_once_with("CZ8003280318")
+        self.assertEqual(form.instance.vat, "CZ8003280318")
+
+    @responses.activate
+    def test_eu_vat_form_rejects_invalid(self) -> None:
+        mock_vies(valid=False)
+        for vat in ("not a VAT ID", "CZ123456", "CZ8003280317", "CHE102321467"):
+            with self.subTest(vat=vat):
+                form = CustomerForm(data={**CUSTOMER, "vat": vat})
+                self.assertFalse(form.is_valid())
+                self.assertIn("vat", form.errors)
+
+    def test_eu_vat_country_must_match(self) -> None:
+        form = CustomerForm(data={**CUSTOMER, "country": "DE"})
+        with patch("weblate_web.payments.models.validate_vatin"):
+            self.assertFalse(form.is_valid())
+        self.assertIn("country", form.errors)
+
+    def test_non_eu_validation_state_is_ignored(self) -> None:
+        customer = Customer(
+            **{**CUSTOMER, "country": "CH"},
+            vat_validation_state=Customer.VatValidationState.INVALID,
+            vat_validated=timezone.now(),
+            vat_validation_error={"vat": CUSTOMER["vat"]},
+        )
+        self.assertFalse(customer.vat_recently_invalid)
+        customer.vat_validation_state = Customer.VatValidationState.VALID
+        self.assertFalse(customer.vat_recently_validated)
+        self.assertFalse(customer.has_valid_vat)
+
     @responses.activate
     def test_validation_invalid(self) -> None:
         mock_vies(valid=False)

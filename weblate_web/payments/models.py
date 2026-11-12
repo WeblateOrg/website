@@ -44,7 +44,6 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext, gettext_lazy, pgettext_lazy
 from django_countries.fields import CountryField
 from unidecode import unidecode
-from vies.models import VATINField
 
 from weblate_web.const import (
     DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
@@ -61,7 +60,7 @@ from .validators import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Collection, Sequence
 
     from django_countries.fields import Country
 
@@ -184,14 +183,15 @@ class Customer(models.Model):
         VALID = 1, gettext_lazy("Valid")
         INVALID = 2, gettext_lazy("Invalid")
 
-    vat = VATINField(
-        validators=[validate_vatin],
+    vat = models.CharField(
+        max_length=200,
         blank=True,
         null=True,
         default="",
-        verbose_name=gettext_lazy("European VAT ID"),
+        verbose_name=gettext_lazy("VAT ID"),
         help_text=gettext_lazy(
-            "Please fill in European Union VAT ID, leave blank if not applicable."
+            "Include the country prefix for European Union VAT IDs. "
+            "Leave blank if not applicable."
         ),
     )
     vat_validated = models.DateTimeField(blank=True, null=True, db_index=True)
@@ -324,9 +324,11 @@ class Customer(models.Model):
 
     def save(self, **kwargs) -> None:
         update_fields = kwargs.get("update_fields")
-        validate_vat = update_fields is None or "vat" in update_fields
+        validate_vat = update_fields is None or bool(
+            {"vat", "country"} & set(update_fields)
+        )
 
-        if validate_vat and self.vat:
+        if validate_vat and self.is_eu and self.vat:
             try:
                 # This should be cached due to UI validation
                 validate_vatin(self.vat, force=self.vat_recently_invalid)
@@ -418,6 +420,18 @@ class Customer(models.Model):
             return self.vat[:2].upper()
         return None
 
+    def clean_fields(self, exclude: Collection[str] | None = None) -> None:
+        super().clean_fields(exclude=exclude)
+        if exclude and "vat" in exclude:
+            return
+        if self.is_eu and self.vat:
+            # Use the same normalization as django-vies for EU identifiers.
+            self.vat = str(self.vat).upper().replace(" ", "")
+            try:
+                validate_vatin(self.vat)
+            except ValidationError as error:
+                raise ValidationError({"vat": error}) from error
+
     def clean(self) -> None:
         vat_country_code = self.vat_country_code
         country_code = self.country_code
@@ -425,7 +439,7 @@ class Customer(models.Model):
             vat_country_code = VAT_COUNTRY_CODE_ALIASES.get(
                 vat_country_code, vat_country_code
             )
-        if self.vat and vat_country_code != country_code:
+        if self.is_eu and self.vat and vat_country_code != country_code:
             raise ValidationError(
                 {"country": gettext_lazy("The country has to match your VAT code")}
             )
@@ -487,14 +501,16 @@ class Customer(models.Model):
     @property
     def has_valid_vat(self) -> bool:
         return bool(
-            self.vat and self.vat_validation_state == self.VatValidationState.VALID
+            self.is_eu
+            and self.vat
+            and self.vat_validation_state == self.VatValidationState.VALID
         )
 
     @property
     def needs_vat(self) -> bool:
         return (
             not self.country_code
-            or self.vat_country_code == "CZ"
+            or self.country_code == "CZ"
             or (self.is_eu and not self.has_valid_vat)
         )
 
@@ -727,7 +743,8 @@ class Customer(models.Model):
     @property
     def vat_recently_validated(self) -> bool:
         return (
-            self.vat_validation_state == self.VatValidationState.VALID
+            self.is_eu
+            and self.vat_validation_state == self.VatValidationState.VALID
             and self.vat_validated is not None
             and self.vat_validated > timezone.now() - timedelta(days=VAT_VALIDITY_DAYS)
         )
@@ -735,7 +752,8 @@ class Customer(models.Model):
     @property
     def vat_recently_invalid(self) -> bool:
         return (
-            self.vat_validation_state == self.VatValidationState.INVALID
+            self.is_eu
+            and self.vat_validation_state == self.VatValidationState.INVALID
             and self.vat_validated is not None
             and self.vat_validated > timezone.now() - timedelta(days=VAT_VALIDITY_DAYS)
             and self.vat_validation_error.get("vat") == str(self.vat)
@@ -746,6 +764,9 @@ class Customer(models.Model):
     ) -> None:
         # ruff:ignore[import-outside-top-level]
         from weblate_web.crm.models import Interaction
+
+        if not self.is_eu or not self.vat:
+            return
 
         # Skip payment originated validation if we have validated recently
         if not force and not automated and self.vat_recently_validated:
