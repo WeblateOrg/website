@@ -17,43 +17,22 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
+import json
+from typing import cast
+
 from django import forms
 from django.utils.translation import gettext, gettext_lazy
-from vies.forms.fields import VATINField
-from vies.forms.widgets import VATINWidget
-from vies.types import VIES_COUNTRY_CHOICES
+from vies.types import VIES_OPTIONS
 
 from weblate_web.utils import FOSDEM_ORIGIN
 
-from .models import Customer
+from .models import EU_VAT_RATES, VAT_COUNTRY_CODE_ALIASES, Customer
 
 
 class CustomerOwnerInvitationForm(forms.Form):
     email = forms.EmailField(label=gettext_lazy("E-mail"))
-
-
-class BootstrapVATINWidget(VATINWidget):
-    template_name = "widgets/vatin.html"
-
-    def __init__(self, choices=VIES_COUNTRY_CHOICES, attrs=None) -> None:
-        select_attrs = {"class": "form-control custom-select"}
-        input_attrs = {"class": "form-control"}
-        if attrs is not None:
-            select_attrs.update(attrs)
-            input_attrs.update(attrs)
-        widgets = (
-            forms.Select(choices=choices, attrs=select_attrs),
-            forms.TextInput(attrs=input_attrs),
-        )
-        # We intentionally skip VATINWidget constructor
-        # pylint: disable=E1003
-        super(VATINWidget, self).__init__(widgets, attrs)
-
-
-class BootstrapVATINField(VATINField):
-    # This serves as workaround for
-    # https://github.com/codingjoe/django-vies/pull/157
-    widget = BootstrapVATINWidget
 
 
 class CustomerForm(forms.ModelForm):
@@ -72,7 +51,6 @@ class CustomerForm(forms.ModelForm):
             "contact_point",
             "accounting_reference",
         )
-        field_classes = {"vat": BootstrapVATINField}
         widgets = {"country": forms.Select(attrs={"class": "custom-select"})}
 
     @property
@@ -81,6 +59,19 @@ class CustomerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        country_field = cast("forms.ChoiceField", self.fields["country"])
+        country_field.choices = [
+            ("", gettext_lazy("Select a country")),
+            *Customer._meta.get_field("country").get_choices(include_blank=False),
+        ]
+        self.fields["vat"].widget.attrs["data-eu-countries"] = ",".join(EU_VAT_RATES)
+        self.fields["vat"].widget.attrs["data-eu-vat-patterns"] = json.dumps(
+            {
+                prefix: options[1].pattern
+                for prefix, options in VIES_OPTIONS.items()
+                if VAT_COUNTRY_CODE_ALIASES.get(prefix, prefix) in EU_VAT_RATES
+            }
+        )
         if self.is_fosdem:
             self.fields["address"].required = False
             self.fields["postcode"].required = False
