@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-11-07 19:06-0600\n"
+"POT-Creation-Date: 2026-11-14 21:39-0600\n"
 "PO-Revision-Date: 2026-11-12 05:51+0000\n"
 "Last-Translator: Peter Vančo <peva@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/weblate/website/"
@@ -1739,6 +1739,9 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
+msgid "Select a country"
+msgstr ""
+
 msgid "You will receive a receipt here."
 msgstr "Tu dostanete potvrdenku."
 
@@ -1754,10 +1757,11 @@ msgstr "Platné"
 msgid "Invalid"
 msgstr "Neplatné"
 
-msgid "European VAT ID"
-msgstr "Európske IČ DPH"
-
-msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+#, fuzzy
+#| msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgid ""
+"Include the country prefix for European Union VAT IDs. Leave blank if not "
+"applicable."
 msgstr ""
 "Vyplňte, prosím, IČ DPH EÚ alebo nechajte prázdne, ak nie je použiteľné."
 
@@ -2262,13 +2266,13 @@ msgstr "Našli ste vo Weblate <strong>chybu</strong>?"
 
 #, python-format
 msgid ""
-"In case it is sensitive or a <strong>security issue</strong>, please report "
-"it to %(report)s. Other ways of reporting security issue can be found in the "
-"<a href=\"%(url)s\">documentation</a>."
+"Report low and medium severity security issues publicly on <a "
+"href=\"%(issues_url)s\">GitHub</a>. Report high and critical severity "
+"vulnerabilities privately through <a href=\"%(report_url)s\">HackerOne</a>. "
+"If you are unsure of the severity, you may start privately. See the <a "
+"href=\"%(url)s\">documentation</a> for the full reporting policy and other "
+"private reporting channels."
 msgstr ""
-"V prípade, že ide o citlivý alebo <strong>bezpečnostný problém</strong>, "
-"nahláste ho, prosím, na %(report)s. Ďalšie spôsoby hlásenia bezpečnostných "
-"problémov je možné nájsť v <a href=\"%(url)s\">dokumentácii</a>."
 
 #, python-format
 msgid ""
@@ -3341,8 +3345,8 @@ msgid ""
 "Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
 "support</a> for your own installation."
 msgstr ""
-"Nechajte náš tím prevádzkovať Weblate za vás alebo si vyberte <a href=\"%"
-"(url)s\">odbornú podporu</a> pre vlastnú inštaláciu."
+"Nechajte náš tím prevádzkovať Weblate za vás alebo si vyberte <a "
+"href=\"%(url)s\">odbornú podporu</a> pre vlastnú inštaláciu."
 
 msgid "Same platform. A deployment choice you can change."
 msgstr "Rovnaká platforma. Spôsob nasadenia, ktorý môžete zmeniť."
@@ -4164,6 +4168,9 @@ msgstr "Zvoľte, prosím, spôsob platby"
 msgid "Make Payment"
 msgstr "Uskutočniť platbu"
 
+msgid "Your payment requires review. Please do not pay again."
+msgstr ""
+
 msgid "Please follow the provided instructions to complete the payment."
 msgstr "Pre dokončenie platby postupujte, prosím, podľa zobrazených pokynov."
 
@@ -4175,6 +4182,11 @@ msgstr "Stiahnuť pro forma faktúru"
 
 msgid "Payment status"
 msgstr "Stav platby"
+
+#, fuzzy
+#| msgid "Payment reminder"
+msgid "Payment requires review."
+msgstr "Upomienka platby"
 
 msgid "Waiting for payment to be completed."
 msgstr "Čaká sa na dokončenie platby."
@@ -4667,14 +4679,6 @@ msgstr ""
 msgid "Security issues"
 msgstr "Bezpečnostné chyby"
 
-#, python-format
-msgid ""
-"Should you find a vulnerability, please report it to %(report)s. More info "
-"in the <a href=\"%(url)s\">documentation</a>."
-msgstr ""
-"Ak objavíte chybu zabezpečenia, nahláste ju, prosím, v sekcii %(report)s. "
-"Viac informácií v <a href=\"%(url)s\">dokumentácii</a>."
-
 msgid "Living humans, ready to help"
 msgstr "Živí ľudia, pripravení pomôcť"
 
@@ -5038,6 +5042,28 @@ msgstr "Na obnovenie zaplaťte prosím nezaplatenú faktúru %(invoice)s."
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
+
+#~ msgid "European VAT ID"
+#~ msgstr "Európske IČ DPH"
+
+#, python-format
+#~ msgid ""
+#~ "In case it is sensitive or a <strong>security issue</strong>, please "
+#~ "report it to %(report)s. Other ways of reporting security issue can be "
+#~ "found in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "V prípade, že ide o citlivý alebo <strong>bezpečnostný problém</strong>, "
+#~ "nahláste ho, prosím, na %(report)s. Ďalšie spôsoby hlásenia "
+#~ "bezpečnostných problémov je možné nájsť v <a "
+#~ "href=\"%(url)s\">dokumentácii</a>."
+
+#, python-format
+#~ msgid ""
+#~ "Should you find a vulnerability, please report it to %(report)s. More "
+#~ "info in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "Ak objavíte chybu zabezpečenia, nahláste ju, prosím, v sekcii %(report)s. "
+#~ "Viac informácií v <a href=\"%(url)s\">dokumentácii</a>."
 
 #~ msgid "Our team is ready to help you run Weblate smoothly."
 #~ msgstr "Náš tím je pripravený pomôcť vám zabezpečiť hladký chod Weblate."

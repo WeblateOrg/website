@@ -9,12 +9,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weblate / Website\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-11-07 19:06-0600\n"
+"POT-Creation-Date: 2026-11-14 21:39-0600\n"
 "PO-Revision-Date: 2026-11-08 17:52+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
-"Language-Team: Lao <https://hosted.weblate.org/projects/weblate/website/lo/>"
-"\n"
+"Language-Team: Lao <https://hosted.weblate.org/projects/weblate/website/lo/"
+">\n"
 "Language: lo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1800,6 +1800,9 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
+msgid "Select a country"
+msgstr ""
+
 msgid "You will receive a receipt here."
 msgstr "ທ່ານຈະໄດ້ຮັບໃບຮັບເງິນທີ່ນີ້."
 
@@ -1815,10 +1818,11 @@ msgstr "ຖືກຕ້ອງ"
 msgid "Invalid"
 msgstr "ບໍ່ຖືກຕ້ອງ"
 
-msgid "European VAT ID"
-msgstr "VAT ID ຢູໂຣບ"
-
-msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+#, fuzzy
+#| msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgid ""
+"Include the country prefix for European Union VAT IDs. Leave blank if not "
+"applicable."
 msgstr "ກະລຸນາໃສ່ VAT ID ຂອງສະຫະພາບເອີຣົບ, ປະໄວ້ຫວ່າງຖ້າບໍ່ກ່ຽວຂ້ອງ."
 
 msgid "Company identification number"
@@ -2315,13 +2319,13 @@ msgstr "ພົບ <strong>ບັກ</strong> ໃນ Weblate ບໍ?"
 
 #, python-format
 msgid ""
-"In case it is sensitive or a <strong>security issue</strong>, please report "
-"it to %(report)s. Other ways of reporting security issue can be found in the "
-"<a href=\"%(url)s\">documentation</a>."
+"Report low and medium severity security issues publicly on <a "
+"href=\"%(issues_url)s\">GitHub</a>. Report high and critical severity "
+"vulnerabilities privately through <a href=\"%(report_url)s\">HackerOne</a>. "
+"If you are unsure of the severity, you may start privately. See the <a "
+"href=\"%(url)s\">documentation</a> for the full reporting policy and other "
+"private reporting channels."
 msgstr ""
-"ຖ້າມັນເປັນເລື່ອງລະອຽດອ່ອນ ຫຼື <strong>ບັນຫາດ້ານຄວາມປອດໄພ</strong>, ກະລຸນາລາຍງານໄປທີ່ "
-"%(report)s. ວິທີອື່ນໃນການລາຍງານບັນຫາຄວາມປອດໄພສາມາດພົບໄດ້ໃນ <a "
-"href=\"%(url)s\">ເອກະສານ</a>."
 
 #, python-format
 msgid ""
@@ -4104,6 +4108,9 @@ msgstr "ກະລຸນາເລືອກວິທີການຊຳລະເງ
 msgid "Make Payment"
 msgstr "ຊຳລະເງິນ"
 
+msgid "Your payment requires review. Please do not pay again."
+msgstr ""
+
 msgid "Please follow the provided instructions to complete the payment."
 msgstr "ກະລຸນາປະຕິບັດຕາມຄຳແນະນຳທີ່ໃຫ້ໄວ້ເພື່ອໃຫ້ການຊຳລະເງິນສຳເລັດ."
 
@@ -4115,6 +4122,11 @@ msgstr "ດາວໂຫຼດໃບກຳກັບພາສີ pro forma"
 
 msgid "Payment status"
 msgstr "ສະຖານະການຊຳລະເງິນ"
+
+#, fuzzy
+#| msgid "Payment reminder"
+msgid "Payment requires review."
+msgstr "ເຕືອນການຊຳລະເງິນ"
 
 msgid "Waiting for payment to be completed."
 msgstr "ລໍຖ້າໃຫ້ການຊຳລະເງິນສຳເລັດ."
@@ -4579,14 +4591,6 @@ msgstr ""
 msgid "Security issues"
 msgstr "ບັນຫາຄວາມປອດໄພ"
 
-#, python-format
-msgid ""
-"Should you find a vulnerability, please report it to %(report)s. More info "
-"in the <a href=\"%(url)s\">documentation</a>."
-msgstr ""
-"ຖ້າເຈົ້າພົບຊ່ອງໂຫວ່, ກະລຸນາລາຍງານມັນໄປທີ່ %(report)s. ຂໍ້ມູນເພີ່ມເຕີມໃນ <a "
-"href=\"%(url)s\">ເອກະສານ</a>."
-
 msgid "Living humans, ready to help"
 msgstr ""
 
@@ -4941,6 +4945,27 @@ msgstr ""
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "ກະລຸນາຢືນຢັນການອັບເກຣດຈາກໜ້າບັນຊີຂອງເຈົ້າ."
+
+#~ msgid "European VAT ID"
+#~ msgstr "VAT ID ຢູໂຣບ"
+
+#, python-format
+#~ msgid ""
+#~ "In case it is sensitive or a <strong>security issue</strong>, please "
+#~ "report it to %(report)s. Other ways of reporting security issue can be "
+#~ "found in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "ຖ້າມັນເປັນເລື່ອງລະອຽດອ່ອນ ຫຼື <strong>ບັນຫາດ້ານຄວາມປອດໄພ</strong>, ກະລຸນາລາຍງານໄປທີ່ "
+#~ "%(report)s. ວິທີອື່ນໃນການລາຍງານບັນຫາຄວາມປອດໄພສາມາດພົບໄດ້ໃນ <a "
+#~ "href=\"%(url)s\">ເອກະສານ</a>."
+
+#, python-format
+#~ msgid ""
+#~ "Should you find a vulnerability, please report it to %(report)s. More "
+#~ "info in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "ຖ້າເຈົ້າພົບຊ່ອງໂຫວ່, ກະລຸນາລາຍງານມັນໄປທີ່ %(report)s. ຂໍ້ມູນເພີ່ມເຕີມໃນ <a "
+#~ "href=\"%(url)s\">ເອກະສານ</a>."
 
 #~ msgid "Our team is ready to help you run Weblate smoothly."
 #~ msgstr "ທີມງານຂອງພວກເຮົາພ້ອມທີ່ຈະຊ່ວຍເຈົ້າແລ່ນ Weblate ຢ່າງລ່ຽນໄຫຼ."

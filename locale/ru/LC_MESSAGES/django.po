@@ -47,7 +47,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-web\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-11-07 19:06-0600\n"
+"POT-Creation-Date: 2026-11-14 21:39-0600\n"
 "PO-Revision-Date: 2026-11-08 17:51+0000\n"
 "Last-Translator: Andrei Stepanov <adem@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/weblate/website/"
@@ -1766,6 +1766,9 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
+msgid "Select a country"
+msgstr ""
+
 msgid "You will receive a receipt here."
 msgstr "Вы получите квитанцию здесь."
 
@@ -1781,10 +1784,11 @@ msgstr "Действителен"
 msgid "Invalid"
 msgstr "Недействителен"
 
-msgid "European VAT ID"
-msgstr "Европейский номер плательщика НДС"
-
-msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+#, fuzzy
+#| msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgid ""
+"Include the country prefix for European Union VAT IDs. Leave blank if not "
+"applicable."
 msgstr ""
 "Заполните номер плательщика НДС Европейского Союза, оставьте пустым, если не "
 "применимо."
@@ -2305,14 +2309,13 @@ msgstr "Нашли <strong>ошибку</strong> в Weblate?"
 
 #, python-format
 msgid ""
-"In case it is sensitive or a <strong>security issue</strong>, please report "
-"it to %(report)s. Other ways of reporting security issue can be found in the "
-"<a href=\"%(url)s\">documentation</a>."
+"Report low and medium severity security issues publicly on <a "
+"href=\"%(issues_url)s\">GitHub</a>. Report high and critical severity "
+"vulnerabilities privately through <a href=\"%(report_url)s\">HackerOne</a>. "
+"If you are unsure of the severity, you may start privately. See the <a "
+"href=\"%(url)s\">documentation</a> for the full reporting policy and other "
+"private reporting channels."
 msgstr ""
-"В случае, если эта проблема связана с важной информацией или касается "
-"<strong>безопасности</strong>, то пожалуйста, сообщите об этом на "
-"%(report)s. Другие способы сообщить о проблемах безопасности можно найти в "
-"<a href=\"%(url)s\">документации</a>."
 
 #, python-format
 msgid ""
@@ -3386,8 +3389,8 @@ msgid ""
 "Let our team run Weblate for you, or choose <a href=\"%(url)s\">expert "
 "support</a> for your own installation."
 msgstr ""
-"Позвольте нашей команде запускать Weblate для вас или выберите <a href=\"%"
-"(url)s\">экспертную поддержку</a> для собственной установки."
+"Позвольте нашей команде запускать Weblate для вас или выберите <a "
+"href=\"%(url)s\">экспертную поддержку</a> для собственной установки."
 
 msgid "Same platform. A deployment choice you can change."
 msgstr "Одна платформа. Выбор развёртывания, который можно изменить."
@@ -3488,11 +3491,11 @@ msgid ""
 "upgrades, and troubleshooting. Paid support is optional. Public libre "
 "projects can also apply for <a href=\"#libre\">gratis hosting</a>."
 msgstr ""
-"Предпочитаете работать самостоятельно? <a href=\"%(install_url)s\">"
-"Разверните Weblate самостоятельно</a> и возьмите на себя ответственность за "
-"развёртывание, обслуживание, обновления и устранение неполадок. Платная "
-"поддержка необязательна. Публичные свободные проекты также могут подать "
-"заявку на <a href=\"#libre\">бесплатный хостинг</a>."
+"Предпочитаете работать самостоятельно? <a "
+"href=\"%(install_url)s\">Разверните Weblate самостоятельно</a> и возьмите на "
+"себя ответственность за развёртывание, обслуживание, обновления и устранение "
+"неполадок. Платная поддержка необязательна. Публичные свободные проекты "
+"также могут подать заявку на <a href=\"#libre\">бесплатный хостинг</a>."
 
 msgid "Compare hosting and operational control"
 msgstr "Сравните хостинг и операционный контроль"
@@ -4229,6 +4232,9 @@ msgstr "Пожалуйста, выберите способ оплаты"
 msgid "Make Payment"
 msgstr "Произвести оплату"
 
+msgid "Your payment requires review. Please do not pay again."
+msgstr ""
+
 msgid "Please follow the provided instructions to complete the payment."
 msgstr "Пожалуйста, следуйте руководству приведённому для завершения оплаты."
 
@@ -4240,6 +4246,11 @@ msgstr "Скачать счет-проформу"
 
 msgid "Payment status"
 msgstr "Состояние платежа"
+
+#, fuzzy
+#| msgid "Payment reminder"
+msgid "Payment requires review."
+msgstr "Напоминание об оплате"
 
 msgid "Waiting for payment to be completed."
 msgstr "Ожидание завершения платежа."
@@ -4738,15 +4749,6 @@ msgstr ""
 msgid "Security issues"
 msgstr "Проблемы безопасности"
 
-#, python-format
-msgid ""
-"Should you find a vulnerability, please report it to %(report)s. More info "
-"in the <a href=\"%(url)s\">documentation</a>."
-msgstr ""
-"Если вы обнаружили уязвимость в безопасности, пожалуйста, сообщите об этом "
-"на %(report)s. Дополнительные сведения доступны в <a "
-"href=\"%(url)s\">документации</a>."
-
 msgid "Living humans, ready to help"
 msgstr "Живые люди, готовые помочь"
 
@@ -5117,6 +5119,29 @@ msgstr "Пожалуйста, оплатите непогашенный счёт
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Пожалуйста, подтвердите апгрейд на странице вашей учётной записи."
+
+#~ msgid "European VAT ID"
+#~ msgstr "Европейский номер плательщика НДС"
+
+#, python-format
+#~ msgid ""
+#~ "In case it is sensitive or a <strong>security issue</strong>, please "
+#~ "report it to %(report)s. Other ways of reporting security issue can be "
+#~ "found in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "В случае, если эта проблема связана с важной информацией или касается "
+#~ "<strong>безопасности</strong>, то пожалуйста, сообщите об этом на "
+#~ "%(report)s. Другие способы сообщить о проблемах безопасности можно найти "
+#~ "в <a href=\"%(url)s\">документации</a>."
+
+#, python-format
+#~ msgid ""
+#~ "Should you find a vulnerability, please report it to %(report)s. More "
+#~ "info in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "Если вы обнаружили уязвимость в безопасности, пожалуйста, сообщите об "
+#~ "этом на %(report)s. Дополнительные сведения доступны в <a "
+#~ "href=\"%(url)s\">документации</a>."
 
 #~ msgid "Our team is ready to help you run Weblate smoothly."
 #~ msgstr ""

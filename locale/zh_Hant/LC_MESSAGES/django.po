@@ -39,7 +39,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-11-07 19:06-0600\n"
+"POT-Creation-Date: 2026-11-14 21:39-0600\n"
 "PO-Revision-Date: 2026-11-12 05:51+0000\n"
 "Last-Translator: Lee Vincent <leevincent@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -1698,6 +1698,9 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
+msgid "Select a country"
+msgstr ""
+
 msgid "You will receive a receipt here."
 msgstr "您將在這裡收到收據。"
 
@@ -1713,10 +1716,11 @@ msgstr "有效"
 msgid "Invalid"
 msgstr "無效"
 
-msgid "European VAT ID"
-msgstr "歐盟 VAT ID"
-
-msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+#, fuzzy
+#| msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgid ""
+"Include the country prefix for European Union VAT IDs. Leave blank if not "
+"applicable."
 msgstr "請填入歐盟 VAT ID，如果不適用請留空。"
 
 msgid "Company identification number"
@@ -2188,12 +2192,13 @@ msgstr "在 Weblate 中發現<strong>錯誤</strong>嗎？"
 
 #, python-format
 msgid ""
-"In case it is sensitive or a <strong>security issue</strong>, please report "
-"it to %(report)s. Other ways of reporting security issue can be found in the "
-"<a href=\"%(url)s\">documentation</a>."
+"Report low and medium severity security issues publicly on <a "
+"href=\"%(issues_url)s\">GitHub</a>. Report high and critical severity "
+"vulnerabilities privately through <a href=\"%(report_url)s\">HackerOne</a>. "
+"If you are unsure of the severity, you may start privately. See the <a "
+"href=\"%(url)s\">documentation</a> for the full reporting policy and other "
+"private reporting channels."
 msgstr ""
-"若問題涉及敏感資訊或<strong>安全性問題</strong>，請回報至 %(report)s。其他安"
-"全性問題的回報方式請參閱<a href=\"%(url)s\">說明文件</a>。"
 
 #, python-format
 msgid ""
@@ -3246,7 +3251,8 @@ msgstr "自行託管的 Weblate"
 msgid ""
 "Prefer your own infrastructure? Get expert support from Weblate developers "
 "to reduce your team’s maintenance responsibilities."
-msgstr "想使用自己的基礎設施嗎？透過 Weblate 開發者的專業支援，減輕團隊的維護負擔。"
+msgstr ""
+"想使用自己的基礎設施嗎？透過 Weblate 開發者的專業支援，減輕團隊的維護負擔。"
 
 msgid "Explore self-hosted support"
 msgstr "了解自行託管支援"
@@ -3931,6 +3937,9 @@ msgstr "請選擇付款方式"
 msgid "Make Payment"
 msgstr "付款"
 
+msgid "Your payment requires review. Please do not pay again."
+msgstr ""
+
 msgid "Please follow the provided instructions to complete the payment."
 msgstr "請遵照所提供的指示完成付款。"
 
@@ -3942,6 +3951,11 @@ msgstr "下載形式發票"
 
 msgid "Payment status"
 msgstr "付款狀態"
+
+#, fuzzy
+#| msgid "Payment reminder"
+msgid "Payment requires review."
+msgstr "付款提醒"
 
 msgid "Waiting for payment to be completed."
 msgstr "正在等待付款完成。"
@@ -4398,14 +4412,6 @@ msgstr "問題與改進想法皆可以報告到<a href=\"%(url)s\">議題追蹤�
 msgid "Security issues"
 msgstr "安全問題"
 
-#, python-format
-msgid ""
-"Should you find a vulnerability, please report it to %(report)s. More info "
-"in the <a href=\"%(url)s\">documentation</a>."
-msgstr ""
-"如果發現安全性弱點，請回報至 %(report)s。更多資訊請參閱<a href=\"%(url)s\">說"
-"明文件</a>。"
-
 msgid "Living humans, ready to help"
 msgstr "真人專家，隨時提供協助"
 
@@ -4746,6 +4752,26 @@ msgstr "請支付未結清的發票 %(invoice)s，以完成續訂。"
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "請在帳號頁面確認升級。"
+
+#~ msgid "European VAT ID"
+#~ msgstr "歐盟 VAT ID"
+
+#, python-format
+#~ msgid ""
+#~ "In case it is sensitive or a <strong>security issue</strong>, please "
+#~ "report it to %(report)s. Other ways of reporting security issue can be "
+#~ "found in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "若問題涉及敏感資訊或<strong>安全性問題</strong>，請回報至 %(report)s。其他"
+#~ "安全性問題的回報方式請參閱<a href=\"%(url)s\">說明文件</a>。"
+
+#, python-format
+#~ msgid ""
+#~ "Should you find a vulnerability, please report it to %(report)s. More "
+#~ "info in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "如果發現安全性弱點，請回報至 %(report)s。更多資訊請參閱<a "
+#~ "href=\"%(url)s\">說明文件</a>。"
 
 #~ msgid "Our team is ready to help you run Weblate smoothly."
 #~ msgstr "我們的團隊隨時準備幫助您順利使用 Weblate。"

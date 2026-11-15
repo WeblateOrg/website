@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weblate-website-ja\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-11-07 19:06-0600\n"
+"POT-Creation-Date: 2026-11-14 21:39-0600\n"
 "PO-Revision-Date: 2026-11-08 17:51+0000\n"
 "Last-Translator: GitHub webhook <noreply-webhook-github-"
 "integration@weblate.org>\n"
@@ -1767,6 +1767,9 @@ msgstr "Google Pay"
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
+msgid "Select a country"
+msgstr ""
+
 msgid "You will receive a receipt here."
 msgstr "領収書はこちらに届きます。"
 
@@ -1782,10 +1785,11 @@ msgstr "有効"
 msgid "Invalid"
 msgstr "無効"
 
-msgid "European VAT ID"
-msgstr "欧州 VAT ID"
-
-msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+#, fuzzy
+#| msgid "Please fill in European Union VAT ID, leave blank if not applicable."
+msgid ""
+"Include the country prefix for European Union VAT IDs. Leave blank if not "
+"applicable."
 msgstr ""
 "欧州連合（EU）の VAT ID を記入してください。適用外の場合は空欄にしてくださ"
 "い。"
@@ -2293,13 +2297,13 @@ msgstr "Weblate の <strong>バグ</strong> を発見しましたか？"
 
 #, python-format
 msgid ""
-"In case it is sensitive or a <strong>security issue</strong>, please report "
-"it to %(report)s. Other ways of reporting security issue can be found in the "
-"<a href=\"%(url)s\">documentation</a>."
+"Report low and medium severity security issues publicly on <a "
+"href=\"%(issues_url)s\">GitHub</a>. Report high and critical severity "
+"vulnerabilities privately through <a href=\"%(report_url)s\">HackerOne</a>. "
+"If you are unsure of the severity, you may start privately. See the <a "
+"href=\"%(url)s\">documentation</a> for the full reporting policy and other "
+"private reporting channels."
 msgstr ""
-"機密事項、または<strong>セキュリティの問題</strong>である場合は、%(report)s "
-"に報告してください。セキュリティの問題を報告するその他の方法については、<a "
-"href=\"%(url)s\">ドキュメント</a>を参照してください。"
 
 #, python-format
 msgid ""
@@ -4138,6 +4142,9 @@ msgstr "支払い方法を選択してください"
 msgid "Make Payment"
 msgstr "支払う"
 
+msgid "Your payment requires review. Please do not pay again."
+msgstr ""
+
 msgid "Please follow the provided instructions to complete the payment."
 msgstr "指示に従ってお支払いください。"
 
@@ -4149,6 +4156,11 @@ msgstr "見積請求書のダウンロード"
 
 msgid "Payment status"
 msgstr "支払い状況"
+
+#, fuzzy
+#| msgid "Payment reminder"
+msgid "Payment requires review."
+msgstr "支払いの催促"
 
 msgid "Waiting for payment to be completed."
 msgstr "支払いが完了するのを待っています。"
@@ -4636,14 +4648,6 @@ msgstr ""
 msgid "Security issues"
 msgstr "セキュリティの問題"
 
-#, python-format
-msgid ""
-"Should you find a vulnerability, please report it to %(report)s. More info "
-"in the <a href=\"%(url)s\">documentation</a>."
-msgstr ""
-"脆弱性を発見した場合は、%(report)s まで報告してください。詳細については、<a "
-"href=\"%(url)s\">ドキュメント</a> をご覧ください。"
-
 msgid "Living humans, ready to help"
 msgstr "支援するのは、生身の人間です"
 
@@ -4999,6 +5003,27 @@ msgstr "更新するには、未払いの請求書 %(invoice)s をお支払い�
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "アップグレードを、アカウントページで確認してください。"
+
+#~ msgid "European VAT ID"
+#~ msgstr "欧州 VAT ID"
+
+#, python-format
+#~ msgid ""
+#~ "In case it is sensitive or a <strong>security issue</strong>, please "
+#~ "report it to %(report)s. Other ways of reporting security issue can be "
+#~ "found in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "機密事項、または<strong>セキュリティの問題</strong>である場合は、"
+#~ "%(report)s に報告してください。セキュリティの問題を報告するその他の方法に"
+#~ "ついては、<a href=\"%(url)s\">ドキュメント</a>を参照してください。"
+
+#, python-format
+#~ msgid ""
+#~ "Should you find a vulnerability, please report it to %(report)s. More "
+#~ "info in the <a href=\"%(url)s\">documentation</a>."
+#~ msgstr ""
+#~ "脆弱性を発見した場合は、%(report)s まで報告してください。詳細については、"
+#~ "<a href=\"%(url)s\">ドキュメント</a> をご覧ください。"
 
 #~ msgid "Our team is ready to help you run Weblate smoothly."
 #~ msgstr "私たちのチームは、安定して Weblate を運用する支援ができます。"
