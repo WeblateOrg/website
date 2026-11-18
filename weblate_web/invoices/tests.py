@@ -6,7 +6,7 @@ from decimal import Decimal
 from importlib import import_module
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import cast
+from typing import TYPE_CHECKING, cast
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -21,8 +21,10 @@ from django.urls import reverse
 from django.utils.translation import override
 from drafthorse.utils import validate_xml  # type: ignore[import-untyped]
 from lxml import etree
+from pycheval import EN16931Invoice, parse_xml
 from pycheval.quantities import QuantityCode
-from pycheval.type_codes import DocumentTypeCode, TaxCategoryCode
+from pycheval.type_codes import DocumentTypeCode, PaymentMeansCode, TaxCategoryCode
+from pypdf import PdfReader
 
 from weblate_web.categories import ServiceCategory
 from weblate_web.models import Package
@@ -40,6 +42,9 @@ from .models import (
     QuantityUnit,
 )
 from .validation import EN16931Validator
+
+if TYPE_CHECKING:
+    from pypdf.generic import StreamObject
 
 S3_SCHEMA_PATH = (
     Path(__file__).parent.parent.parent / "schemas" / "money-s3" / "_Document.xsd"
@@ -934,6 +939,280 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(
             proforma_root.xpath(".//ram:TaxPointDate", namespaces=namespaces), []
         )
+
+    def test_prepaid_card_payment_means(self) -> None:
+        for backend in ("thepay2-card", "thepay2-gpay", "thepay2-apay"):
+            for state in (Payment.ACCEPTED, Payment.PROCESSED):
+                with self.subTest(backend=backend, state=state):
+                    invoice = self.create_invoice(prepaid=True)
+                    Payment.objects.create(
+                        customer=invoice.customer,
+                        amount=invoice.total_amount,
+                        paid_invoice=invoice,
+                        backend=backend,
+                        state=state,
+                    )
+
+                    einvoice = invoice.get_en_16931_xml()
+                    self.assertEqual(
+                        [means.type_code for means in einvoice.payment_means],
+                        [PaymentMeansCode.BANK_CARD],
+                    )
+                    self.assertIsNone(einvoice.payment_means[0].card)
+                    self.assertIsNone(einvoice.payment_means[0].payee_account)
+                    self.assertEqual(
+                        einvoice.prepaid_amount, einvoice.grand_total_amount
+                    )
+                    self.assertEqual(einvoice.due_payable_amount.amount, 0)
+                    self.assertIsNone(einvoice.payment_reference)
+                    self.assertIsNone(einvoice.payment_terms)
+                    xml = invoice.get_en_16931_xml_string().encode()
+                    validate_xml(xml, "FACTUR-X_EN16931")
+                    valid, errors, warnings = EN16931Validator().validate_bytes(xml)
+                    self.assertTrue(valid, errors)
+                    self.assertEqual(warnings, [])
+                    root = etree.fromstring(xml)
+                    self.assertEqual(
+                        root.xpath(
+                            ".//ram:SpecifiedTradeSettlementPaymentMeans/ram:TypeCode/text()",
+                            namespaces=EN16931Validator().namespaces,
+                        ),
+                        ["48"],
+                    )
+
+    def test_prepaid_payment_means_requires_consistent_successful_cards(self) -> None:
+        cases: tuple[tuple[str, list[tuple[str, int]]], ...] = (
+            ("no payment", []),
+            ("bank payment", [("fio-bank", Payment.PROCESSED)]),
+            ("manual payment", [("manual", Payment.PROCESSED)]),
+            ("unknown payment", [("unknown", Payment.ACCEPTED)]),
+            ("crypto payment", [("thepay2-bitcoin", Payment.PROCESSED)]),
+            ("pending card", [("thepay2-card", Payment.PENDING)]),
+            ("rejected card", [("thepay2-card", Payment.REJECTED)]),
+            ("cancelled card", [("thepay2-card", Payment.CANCELLED)]),
+            (
+                "mixed methods",
+                [("thepay2-card", Payment.PROCESSED), ("fio-bank", Payment.PROCESSED)],
+            ),
+            (
+                "failed card and successful bank",
+                [("thepay2-card", Payment.REJECTED), ("fio-bank", Payment.PROCESSED)],
+            ),
+        )
+        for name, payments in cases:
+            with self.subTest(name):
+                invoice = self.create_invoice(prepaid=True)
+                for backend, state in payments:
+                    Payment.objects.create(
+                        customer=invoice.customer,
+                        amount=invoice.total_amount,
+                        paid_invoice=invoice,
+                        backend=backend,
+                        state=state,
+                    )
+                self.assertEqual(invoice.get_en_16931_xml().payment_means, [])
+
+    def test_failed_attempt_does_not_override_successful_card(self) -> None:
+        invoice = self.create_invoice(prepaid=True)
+        for backend, state in (
+            ("unknown", Payment.REJECTED),
+            ("thepay2-card", Payment.ACCEPTED),
+            ("thepay2-gpay", Payment.PROCESSED),
+        ):
+            Payment.objects.create(
+                customer=invoice.customer,
+                amount=invoice.total_amount,
+                paid_invoice=invoice,
+                backend=backend,
+                state=state,
+            )
+        self.assertEqual(
+            [means.type_code for means in invoice.get_en_16931_xml().payment_means],
+            [PaymentMeansCode.BANK_CARD],
+        )
+
+    def test_card_attempt_keeps_unpaid_bank_instructions(self) -> None:
+        for kind in (InvoiceKind.INVOICE, InvoiceKind.PROFORMA):
+            with self.subTest(kind=kind):
+                invoice = self.create_invoice(kind=kind)
+                Payment.objects.create(
+                    customer=invoice.customer,
+                    amount=invoice.total_amount,
+                    draft_invoice=invoice,
+                    backend="thepay2-card",
+                )
+                einvoice = invoice.get_en_16931_xml()
+                self.assertEqual(
+                    [means.type_code for means in einvoice.payment_means],
+                    [PaymentMeansCode.BANK_PAYMENT],
+                )
+                self.assertIsNotNone(einvoice.payment_means[0].payee_account)
+                self.assertEqual(
+                    einvoice.due_payable_amount, einvoice.grand_total_amount
+                )
+                self.assertEqual(einvoice.payment_reference, invoice.number)
+                self.assertIsNotNone(einvoice.payment_terms)
+
+    @responses.activate
+    def test_export_round_trip_preserves_dates_and_allowances(self) -> None:
+        self.mock_requests()
+        invoice = self.create_invoice(
+            vat_rate=21,
+            tax_date=date(2016, 7, 29),
+            discount=Discount.objects.create(description="Discount", percents=10),
+            prepaid=True,
+        )
+        invoice.invoiceitem_set.create(description="Credit", unit_price=-10)
+        parsed = parse_xml(invoice.get_en_16931_xml_string())
+        self.assertIsInstance(parsed, EN16931Invoice)
+        assert isinstance(parsed, EN16931Invoice)
+        self.assertEqual(parsed.tax[0].tax_point_date, date(2016, 7, 29))
+        self.assertEqual(
+            [
+                (allowance.reason, allowance.actual_amount.amount)
+                for allowance in parsed.allowances
+            ],
+            [("Credit", Decimal(10)), ("Discount", Decimal(10))],
+        )
+        # Use an exact VAT allocation to isolate the preceding-date parser.
+        correction = self.correction(invoice, "12.10")
+        parsed_correction = parse_xml(correction.get_en_16931_xml_string())
+        assert isinstance(parsed_correction, EN16931Invoice)
+        self.assertEqual(
+            parsed_correction.preceding_invoices, [(invoice.number, invoice.issue_date)]
+        )
+        self.assertEqual(parsed_correction.tax[0].tax_point_date, correction.tax_date)
+        self.assertEqual(
+            parsed_correction.payment_means[0].type_code, PaymentMeansCode.BANK_PAYMENT
+        )
+        # A completed refund must not be annotated as a new card payment.
+        correction.prepaid = True
+        Payment.objects.create(
+            customer=correction.customer,
+            amount=correction.total_amount,
+            paid_invoice=correction,
+            backend="thepay2-card",
+            state=Payment.PROCESSED,
+        )
+        self.assertEqual(correction.get_en_16931_xml().payment_means, [])
+
+    def test_export_email_addresses_have_one_mailto_prefix(self) -> None:
+        for prefix in ("", "mailto:"):
+            with (
+                self.subTest(prefix=prefix),
+                patch(
+                    "weblate_web.invoices.models.COMPANY_SALES_EMAIL",
+                    f"{prefix}sales@example.test",
+                ),
+            ):
+                invoice = self.create_invoice(
+                    customer_email=f"{prefix}billing@example.test"
+                )
+                root = self.get_einvoice_xml_tree(invoice)
+                namespaces = EN16931Validator().namespaces
+                for party, expected in (
+                    ("SellerTradeParty", "mailto:sales@example.test"),
+                    ("BuyerTradeParty", "mailto:billing@example.test"),
+                ):
+                    self.assertEqual(
+                        root.xpath(
+                            f".//ram:{party}/ram:URIUniversalCommunication/ram:URIID/text()",
+                            namespaces=namespaces,
+                        ),
+                        [expected],
+                    )
+                self.assertEqual(
+                    root.xpath(
+                        ".//ram:DefinedTradeContact/ram:EmailURIUniversalCommunication/ram:URIID/text()",
+                        namespaces=namespaces,
+                    ),
+                    ["mailto:billing@example.test"],
+                )
+                parsed = parse_xml(invoice.get_en_16931_xml_string())
+                self.assertEqual(parsed.seller.email, "sales@example.test")
+                self.assertEqual(parsed.buyer.email, "billing@example.test")
+
+    @responses.activate
+    def test_card_payment_is_linked_before_initial_invoice_export(self) -> None:
+        self.mock_requests()
+        proforma = self.create_invoice(kind=InvoiceKind.PROFORMA)
+        payment = Payment.objects.create(
+            customer=proforma.customer,
+            amount=proforma.total_amount,
+            draft_invoice=proforma,
+            backend="thepay2-card",
+            state=Payment.ACCEPTED,
+        )
+        exports: list[EN16931Invoice] = []
+
+        def capture_export(invoice: Invoice) -> None:
+            exports.append(invoice.get_en_16931_xml())
+
+        with (
+            patch.object(
+                Invoice, "generate_files", autospec=True, side_effect=capture_export
+            ),
+            patch.object(Invoice, "generate_receipt"),
+        ):
+            payment.get_payment_backend().generate_invoice()
+
+        self.assertEqual(len(exports), 1)
+        self.assertEqual(
+            [means.type_code for means in exports[0].payment_means],
+            [PaymentMeansCode.BANK_CARD],
+        )
+
+    @responses.activate
+    def test_facturx_pdf_metadata_and_attachment(self) -> None:
+        self.mock_requests()
+        invoice = self.create_invoice(prepaid=True)
+        Payment.objects.create(
+            customer=invoice.customer,
+            amount=invoice.total_amount,
+            paid_invoice=invoice,
+            backend="thepay2-card",
+            state=Payment.ACCEPTED,
+        )
+        invoice.generate_en_16931_xml()
+        invoice.generate_pdf()
+        reader = PdfReader(invoice.path)
+        self.assertEqual(
+            reader.attachments["factur-x.xml"], [invoice.en_16931_xml_path.read_bytes()]
+        )
+        metadata_stream = cast("StreamObject", reader.root_object["/Metadata"])
+        metadata = etree.fromstring(metadata_stream.get_data())
+        namespaces = {
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "pdfaid": "http://www.aiim.org/pdfa/ns/id/",
+            "pdfaExtension": "http://www.aiim.org/pdfa/ns/extension/",
+            "pdfaSchema": "http://www.aiim.org/pdfa/ns/schema#",
+            "fx": "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#",
+        }
+        self.assertEqual(
+            len(
+                metadata.xpath(
+                    ".//rdf:Description[@rdf:about='']/pdfaExtension:schemas",
+                    namespaces=namespaces,
+                )
+            ),
+            1,
+        )
+        self.assertEqual(
+            metadata.xpath(".//pdfaSchema:namespaceURI/text()", namespaces=namespaces),
+            [namespaces["fx"]],
+        )
+        for xpath, expected in (
+            (".//rdf:Description/@pdfaid:part", "3"),
+            (".//rdf:Description/@pdfaid:conformance", "B"),
+            (".//fx:DocumentFileName/text()", "factur-x.xml"),
+            (".//fx:DocumentType/text()", "INVOICE"),
+            (".//fx:Version/text()", "1.0"),
+            (".//fx:ConformanceLevel/text()", "EN 16931"),
+        ):
+            with self.subTest(xpath=xpath):
+                self.assertEqual(
+                    metadata.xpath(xpath, namespaces=namespaces), [expected]
+                )
 
     def test_validator_rejects_three_decimal_monetary_amounts(self) -> None:
         root = self.get_einvoice_xml_tree(self.create_invoice(vat_rate=21))
