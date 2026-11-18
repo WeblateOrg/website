@@ -18,9 +18,16 @@
 #
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+from uuid import UUID
+
 from django.contrib import admin
 
 from .models import Customer, CustomerFollowUp, Payment
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
+    from django.http import HttpRequest
 
 
 @admin.register(Customer)
@@ -94,4 +101,13 @@ class PaymentAdmin(admin.ModelAdmin):
     readonly_fields = ("created",)
     date_hierarchy = "created"
     ordering = ("-created",)
-    autocomplete_fields = ("customer", "draft_invoice", "paid_invoice")
+    autocomplete_fields = ("customer", "draft_invoice", "paid_invoice", "repeat")
+
+    def get_search_results(
+        self, request: HttpRequest, queryset: QuerySet[Payment], search_term: str
+    ) -> tuple[QuerySet[Payment], bool]:
+        try:
+            payment_uuid = UUID(search_term.strip())
+        except ValueError:
+            return super().get_search_results(request, queryset, search_term)
+        return queryset.filter(uuid=payment_uuid), False

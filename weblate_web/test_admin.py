@@ -7,6 +7,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import RequestFactory, TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from weblate_web.admin import (
@@ -26,7 +27,7 @@ from weblate_web.invoices.models import (
     InvoiceKind,
 )
 from weblate_web.models import Post, Subscription, SubscriptionPastPayment
-from weblate_web.payments.models import Customer
+from weblate_web.payments.models import Customer, Payment
 
 
 class AdminSiteTestCase(TestCase):
@@ -94,6 +95,58 @@ class AdminSiteTestCase(TestCase):
             past_payment_admin.autocomplete_fields,
             ("subscription", "payment"),
         )
+
+
+class PaymentAdminTestCase(TestCase):
+    def setUp(self) -> None:
+        self.client.force_login(User.objects.create_superuser(username="admin"))
+        customer = Customer.objects.create(
+            name="Test Customer",
+            address="Street 1",
+            city="City",
+            postcode="12345",
+            country="cz",
+            user_id=-1,
+        )
+        self.previous = Payment.objects.create(
+            customer=customer, description="Original payment", amount=10
+        )
+        self.payment = Payment.objects.create(
+            customer=customer,
+            description="Recurring payment",
+            amount=10,
+            repeat=self.previous,
+        )
+
+    def test_change_form_renders_only_selected_repeat(self) -> None:
+        response = self.client.get(
+            reverse("admin:payments_payment_change", args=[self.payment.pk])
+        )
+        self.assertContains(response, 'data-field-name="repeat"')
+        self.assertContains(
+            response,
+            f'<option value="{self.previous.pk}" selected>{self.previous}</option>',
+            html=True,
+        )
+        self.assertNotContains(response, f'<option value="{self.payment.pk}"')
+
+    def test_repeat_autocomplete_search(self) -> None:
+        for term in (str(self.previous.pk), self.previous.description):
+            with self.subTest(term=term):
+                response = self.client.get(
+                    reverse("admin:autocomplete"),
+                    {
+                        "app_label": "payments",
+                        "model_name": "payment",
+                        "field_name": "repeat",
+                        "term": term,
+                    },
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(
+                    response.json()["results"],
+                    [{"id": str(self.previous.pk), "text": str(self.previous)}],
+                )
 
 
 class PostAdminTestCase(TestCase):
