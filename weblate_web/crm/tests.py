@@ -1316,6 +1316,28 @@ class CRMQuoteStatusTestCase(BaseCRMTestCase):
         self.assertNotContains(response, "Close quote")
         self.assertNotContains(response, "Reopen quote")
 
+    def test_invoice_detail_lists_discount_as_an_item(self):
+        invoice = self.create_invoice(Decimal(101))
+        invoice.discount = Discount.objects.create(
+            description="Hosting discount", percents=50
+        )
+        invoice.save(update_fields=["discount"])
+
+        response = self.client.get(invoice.get_absolute_url())
+
+        self.assertContains(
+            response,
+            """
+            <tr>
+              <th scope="row">Hosting discount</th>
+              <td></td>
+              <td class="crm-number">50%</td>
+              <td class="crm-number">€-50.50</td>
+            </tr>
+            """,
+            html=True,
+        )
+
 
 class CustomerMergeInvitationTestCase(BaseCRMTestCase):
     def test_customer_merge_carries_owner_invitations(self):

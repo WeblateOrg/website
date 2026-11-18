@@ -105,14 +105,6 @@
       {% if object.uncollectible_note %}
         <div><dt>{% translate "Collection note" %}</dt><dd>{{ object.uncollectible_note|linebreaksbr }}</dd></div>
       {% endif %}
-      {% if object.discount %}
-        <div>
-          <dt>{% translate "Discount" %}</dt>
-          <dd>
-            {{ object.discount }}
-          </dd>
-        </div>
-      {% endif %}
       {% if object.parent %}
         <div>
           <dt>{% translate "Generated from" %}</dt>
@@ -192,6 +184,14 @@
               <td class="crm-number">{{ item.total_price|price_format:object.get_currency_display }}</td>
             </tr>
           {% endfor %}
+          {% if object.discount %}
+            <tr>
+              <th scope="row">{{ object.discount.description }}</th>
+              <td></td>
+              <td class="crm-number">{{ object.discount.display_percents }}</td>
+              <td class="crm-number">{{ object.total_discount|price_format:object.get_currency_display }}</td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
