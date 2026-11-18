@@ -25,7 +25,6 @@ from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Literal, cast
-from xml.etree import ElementTree  # ruff:ignore[suspicious-xml-etree-import]
 
 import qrcode
 import qrcode.image.svg
@@ -56,7 +55,7 @@ from pycheval import (
     Tax,
     TradeContact,
     TradeParty,
-    generate_et,
+    generate_xml,
 )
 from pycheval.quantities import QuantityCode
 from pycheval.type_codes import DocumentTypeCode, PaymentMeansCode, TaxCategoryCode
@@ -1121,6 +1120,27 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             money_s3_code="19Ř26",
         )
 
+    def get_prepaid_payment_means(self) -> list[PaymentMeans]:
+        """Annotate settled card payments without inferring a method from prepayment."""
+        if not self.is_final or self.correction_of_id:
+            return []
+
+        from weblate_web.payments.models import Payment  # ruff:ignore[import-outside-top-level]
+
+        # Payment is ACCEPTED when the invoice is first generated.
+        backends = set(
+            self.paid_payment_set.filter(
+                state__in=(Payment.ACCEPTED, Payment.PROCESSED)
+            ).values_list("backend", flat=True)
+        )
+        if backends and backends <= {
+            "thepay2-card",
+            "thepay2-gpay",
+            "thepay2-apay",
+        }:
+            return [PaymentMeans(type_code=PaymentMeansCode.BANK_CARD)]
+        return []
+
     def get_en_16931_xml(self) -> EN16931Invoice:  # ruff:ignore[too-many-locals]
         if self.correction_of_id:
             type_code = DocumentTypeCode.CREDIT_NOTE
@@ -1241,6 +1261,7 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             due_payable_amount = Money(Decimal(0), self.get_currency_display())
             payment_reference = None
             payment_terms = None
+            payment_means = self.get_prepaid_payment_means()
         else:
             prepaid_amount = None
             due_payable_amount = total_amount
@@ -1330,23 +1351,8 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
             tax=[tax],
         )
 
-    def get_en_16931_xml_tree(self) -> ElementTree.Element[str]:
-        """Generate schema-compatible EN 16931 XML."""
-        xml_tree = generate_et(self.get_en_16931_xml())
-        # pycheval 0.3.3 emits DateTimeString here, but the CII schema uses
-        # DateString for ApplicableTradeTax/TaxPointDate.
-        # Reported at https://github.com/zfutura/pycheval/issues/64
-        # TODO: Use pycheval.generate_xml once this is fixed
-        for tax_point in xml_tree.iter("ram:TaxPointDate"):
-            date_element = tax_point.find("udt:DateTimeString")
-            if date_element is not None:
-                date_element.tag = "udt:DateString"
-        return xml_tree
-
     def get_en_16931_xml_string(self) -> str:
-        xml_tree = self.get_en_16931_xml_tree()
-        ElementTree.indent(xml_tree)
-        return ElementTree.tostring(xml_tree, encoding="unicode", xml_declaration=True)
+        return generate_xml(self.get_en_16931_xml(), indent=True)
 
     def generate_en_16931_xml(self) -> None:
         if self.supports_en_16931:
