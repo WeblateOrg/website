@@ -38,7 +38,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator
 from django.db import models, transaction
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import formats, timezone
 from django.utils.functional import cached_property
 from django.utils.text import format_lazy
 from django.utils.translation import gettext, gettext_lazy, pgettext_lazy
@@ -48,6 +48,7 @@ from unidecode import unidecode
 from weblate_web.const import (
     DEFAULT_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
     MAX_UPCOMING_PAYMENT_NOTIFICATION_DAYS,
+    SERVICE_RENEWAL_FOLLOW_UP_DAYS,
 )
 from weblate_web.utils import FOSDEM_ORIGIN, get_site_url
 
@@ -61,6 +62,7 @@ from .validators import (
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Sequence
+    from datetime import datetime
 
     from django_countries.fields import Country
 
@@ -166,9 +168,9 @@ class CustomerQuerySet(models.QuerySet["Customer", "Customer"]):
 
 class CustomerFollowUpQuerySet(models.QuerySet["CustomerFollowUp", "CustomerFollowUp"]):
     def order(self) -> CustomerFollowUpQuerySet:
-        return self.select_related("customer", "service").order_by(
-            "follow_up_at", "customer__name", "customer__email", "pk"
-        )
+        return self.select_related(
+            "customer", "service", "subscription__package"
+        ).order_by("follow_up_at", "customer__name", "customer__email", "pk")
 
     def due(self) -> CustomerFollowUpQuerySet:
         return self.order().filter(follow_up_at__lte=timezone.now())
@@ -863,6 +865,7 @@ class CustomerFollowUp(models.Model):
         OVER_LIMIT = 4, gettext_lazy("Service over limits")
         EXPIRED_DEDICATED = 5, gettext_lazy("Expired dedicated service")
         ACTIVITY_DROP = 6, gettext_lazy("Activity drop")
+        SERVICE_RENEWAL = 7, gettext_lazy("Service renewal")
 
     customer = models.ForeignKey(
         Customer, related_name="followups", on_delete=models.deletion.CASCADE
@@ -870,6 +873,13 @@ class CustomerFollowUp(models.Model):
     service = models.ForeignKey(
         "weblate_web.Service",
         related_name="followups",
+        on_delete=models.deletion.CASCADE,
+        blank=True,
+        null=True,
+    )
+    subscription = models.OneToOneField(
+        "weblate_web.Subscription",
+        related_name="renewal_follow_up",
         on_delete=models.deletion.CASCADE,
         blank=True,
         null=True,
@@ -930,6 +940,10 @@ class CustomerFollowUp(models.Model):
         return self.type == self.Type.ACTIVITY_DROP
 
     @property
+    def renewal_expires_at(self) -> datetime:
+        return self.follow_up_at + timedelta(days=SERVICE_RENEWAL_FOLLOW_UP_DAYS)
+
+    @property
     def display_note(self) -> str:
         if self.note:
             return self.note
@@ -942,6 +956,23 @@ class CustomerFollowUp(models.Model):
                 "Stop the dedicated instance because its support contract expired "
                 "over two months ago."
             )
+        if (
+            self.type == self.Type.SERVICE_RENEWAL
+            and self.subscription
+            and self.service
+        ):
+            return gettext(
+                "Contact the customer about renewing %(package)s for %(service)s "
+                "before it expires on %(date)s."
+            ) % {
+                "package": self.subscription.package,
+                "service": self.service.site_title
+                or self.service.site_domain
+                or f"#{self.service_id}",
+                "date": formats.date_format(
+                    timezone.localdate(self.renewal_expires_at)
+                ),
+            }
         return ""
 
 

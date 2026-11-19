@@ -29,6 +29,7 @@ from django.utils import formats, timezone
 from weblate_web.categories import ServiceCategory
 from weblate_web.crm.hosted import USER_ENSURE_RESPONSE_SALT, USER_ENSURE_SALT
 from weblate_web.crm.models import Interaction, ZammadSyncLog
+from weblate_web.crm.renewals import reconcile_renewal_follow_ups
 from weblate_web.crm.views import IncomeView, ServiceListView
 from weblate_web.crm.workqueue import get_unpaid_invoice_queryset
 from weblate_web.exchange_rates import ExchangeRates
@@ -623,6 +624,135 @@ class CRMFollowUpTestCase(BaseCRMTestCase):
         self.assertEqual(interaction.origin, Interaction.Origin.MANUAL_NOTE)
         self.assertEqual(interaction.summary, "Follow-up cleared")
         self.assertEqual(interaction.details["follow_up_note"], "Send renewal quote")
+
+
+class CRMRenewalFollowUpTestCase(BaseCRMTestCase):
+    now = datetime(2026, 7, 15, 12, tzinfo=UTC)
+
+    def setUp(self) -> None:
+        self.enterContext(patch.object(timezone, "now", return_value=self.now))
+        Package.objects.get_or_create(name="community", defaults={"price": 0})
+        self.package = Package.objects.create(
+            name="basic", verbose="Basic support", price=300
+        )
+        self.customer = self.create_customer()
+        self.service = Service.objects.create(
+            customer=self.customer, site_title="Translation service"
+        )
+
+    def test_command_creates_follow_up_at_boundary_and_catches_up(self) -> None:
+        subscription = self.service.subscription_set.create(
+            package=self.package,
+            expires=self.now + timedelta(days=31, seconds=1),
+        )
+        call_command("recurring_payments")
+        self.assertFalse(self.customer.followups.exists())
+
+        due = self.now + timedelta(seconds=1)
+        with patch.object(timezone, "now", return_value=due):
+            call_command("recurring_payments")
+            followup = self.customer.followups.get()
+            self.assertEqual(followup.type, CustomerFollowUp.Type.SERVICE_RENEWAL)
+            self.assertEqual(followup.subscription, subscription)
+            self.assertEqual(followup.service, self.service)
+            self.assertEqual(followup.follow_up_at, due)
+            call_command("recurring_payments")
+            self.assertEqual(self.customer.followups.get().pk, followup.pk)
+
+        backup = Package.objects.create(name="backup", verbose="Backup", price=100)
+        payment = Payment.objects.create(
+            customer=self.customer, amount=100, backend="thepay2-card"
+        )
+        second = self.service.subscription_set.create(
+            package=backup, expires=self.now + timedelta(days=29), payment=payment
+        )
+        with patch.object(timezone, "now", return_value=due):
+            reconcile_renewal_follow_ups()
+        self.assertEqual(self.customer.followups.count(), 2)
+        self.assertEqual(
+            second.renewal_follow_up.follow_up_at, self.now - timedelta(days=2)
+        )
+
+    def test_skips_ineligible_subscriptions(self) -> None:
+        expiry = self.now + timedelta(days=30)
+        monthly = Package.objects.create(
+            name="hosted-test-m", price=100, category=ServiceCategory.SHARED
+        )
+        automatic = Payment.objects.create(
+            customer=self.customer, amount=100, recurring="y"
+        )
+        for values in (
+            {"package": monthly},
+            {"enabled": False},
+            {"expires": self.now},
+            {"payment": automatic},
+        ):
+            service = Service.objects.create(customer=self.customer)
+            service.subscription_set.create(
+                **({"package": self.package, "expires": expiry} | values)
+            )
+        donation = Service.objects.create(
+            customer=self.customer, kind=ServiceKind.DONATION
+        )
+        donation.subscription_set.create(
+            package=get_donation_package(0), expires=expiry
+        )
+        self.service.subscription_set.create(package=self.package, expires=expiry)
+        self.service.subscription_set.create(
+            package=self.package, expires=self.now + timedelta(days=90)
+        )
+
+        reconcile_renewal_follow_ups()
+
+        self.assertFalse(self.customer.followups.exists())
+
+    def test_hands_off_existing_renewal_to_invoice_workflow(self) -> None:
+        payment = Payment.objects.create(customer=self.customer, amount=300)
+        subscription = self.service.subscription_set.create(
+            package=self.package, expires=self.now + timedelta(days=30), payment=payment
+        )
+        reconcile_renewal_follow_ups()
+        self.assertTrue(self.customer.followups.exists())
+
+        with patch.object(ExchangeRates, "get", return_value=Decimal(25)):
+            subscription.create_invoice(kind=InvoiceKind.INVOICE)
+        reconcile_renewal_follow_ups()
+        self.assertFalse(self.customer.followups.exists())
+        reconcile_renewal_follow_ups()
+        self.assertFalse(self.customer.followups.exists())
+
+    def test_clear_keeps_current_cycle_dismissed_and_allows_next_cycle(self) -> None:
+        self.client.force_login(
+            User.objects.create_superuser(username="admin", email="admin@example.com")
+        )
+        subscription = self.service.subscription_set.create(
+            package=self.package, expires=self.now + timedelta(days=30)
+        )
+        reconcile_renewal_follow_ups()
+        followup = self.customer.followups.get()
+        url = self.customer.get_absolute_url()
+        for page in (url, reverse("crm:work-queue")):
+            response = self.client.get(page)
+            self.assertContains(response, "Service renewal")
+            self.assertContains(response, followup.display_note)
+
+        response = self.client.post(
+            url, {"clear_follow_up": "1", "follow_up": followup.pk}
+        )
+        self.assertRedirects(response, url)
+        reconcile_renewal_follow_ups()
+        self.assertFalse(self.customer.followups.exists())
+
+        subscription.expires += timedelta(days=365)
+        subscription.save(update_fields=["expires"])
+        with patch.object(timezone, "now", return_value=self.now + timedelta(days=365)):
+            reconcile_renewal_follow_ups()
+        self.assertEqual(
+            self.customer.followups.get().renewal_expires_at, subscription.expires
+        )
+
+        reconcile_renewal_follow_ups()
+        self.assertFalse(self.customer.followups.exists())
 
 
 class CRMWorkQueueTestCase(BaseCRMTestCase):

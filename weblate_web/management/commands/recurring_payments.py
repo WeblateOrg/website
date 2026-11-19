@@ -29,6 +29,7 @@ from django.db.models import Max
 from django.utils import timezone
 from django.utils.html import strip_tags
 
+from weblate_web.crm.renewals import reconcile_renewal_follow_ups
 from weblate_web.invoices.models import InvoiceKind
 from weblate_web.models import Service, ServiceKind, Subscription, get_period_delta
 from weblate_web.payments.models import Customer, Payment
@@ -50,6 +51,7 @@ class Command(BaseCommand):
         )
         # Update services status
         self.handle_services()
+        reconcile_renewal_follow_ups()
         # Notify about upcoming expiry
         self.notify_expiry(disable_one_time_donations=disable_donations)
 

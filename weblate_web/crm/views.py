@@ -1359,11 +1359,24 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
         messages.success(request, gettext("Follow-up added."))
         return redirect(customer)
 
+    @transaction.atomic
     def clear_follow_up(self, request, customer: Customer):
         self.check_change_customer_permission(request)
         followup = get_object_or_404(
             CustomerFollowUp, customer=customer, pk=request.POST.get("follow_up")
         )
+        if (
+            followup.type == CustomerFollowUp.Type.SERVICE_RENEWAL
+            and followup.subscription_id is not None
+        ):
+            subscriptions = Subscription.objects.filter(pk=followup.subscription_id)
+            get_object_or_404(subscriptions.select_for_update())
+            followup = get_object_or_404(
+                CustomerFollowUp, customer=customer, pk=followup.pk
+            )
+            subscriptions.update(
+                renewal_follow_up_dismissed_for=followup.renewal_expires_at
+            )
         self.create_follow_up_interaction(
             customer,
             followup=followup,

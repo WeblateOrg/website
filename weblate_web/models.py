@@ -1441,6 +1441,7 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
     package = models.ForeignKey(Package, on_delete=models.deletion.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     expires = models.DateTimeField()
+    renewal_follow_up_dismissed_for = models.DateTimeField(blank=True, null=True)
     # For services, False marks termination and a new paid period starts fresh.
     # For donations, this tracks whether renewal is enabled. Current activity is
     # determined by the expiration date, not this flag alone.

@@ -23,6 +23,16 @@ class HostedIdentityMigrationTest(TransactionTestCase):
     previous = ("weblate_web", "0055_service_category")
     current = ("weblate_web", "0056_hosted_identity")
 
+    def setUp(self) -> None:
+        super().setUp()
+        self.addCleanup(self.restore_latest_migrations)
+
+    @staticmethod
+    def restore_latest_migrations() -> None:
+        executor = MigrationExecutor(connection)
+        executor.migrate(executor.loader.graph.leaf_nodes())
+        ContentType.objects.clear_cache()
+
     def migrate(self, target: tuple[str, str]):
         executor = MigrationExecutor(connection)
         executor.migrate([target])
@@ -31,7 +41,6 @@ class HostedIdentityMigrationTest(TransactionTestCase):
 
     def test_preserves_identity_and_permissions_in_both_directions(self) -> None:
         historical = self.migrate(self.previous)
-        self.addCleanup(self.migrate, self.current)
 
         user = User.objects.create_user(username="existing-owner", is_staff=True)
         other = User.objects.create_user(username="other")
@@ -128,7 +137,6 @@ class HostedIdentityMigrationTest(TransactionTestCase):
 
     def test_migrate_command_preserves_content_type_and_grants(self) -> None:
         self.migrate(self.previous)
-        self.addCleanup(lambda: self.migrate(self.current))
         content_type, _created = ContentType.objects.get_or_create(
             app_label="weblate_web", model="samlidentity"
         )
