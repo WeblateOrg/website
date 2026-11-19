@@ -21,10 +21,12 @@ from django.db.models import (
     Exists,
     ExpressionWrapper,
     F,
+    Max,
     Min,
     OuterRef,
     Prefetch,
     Q,
+    Subquery,
     Sum,
     Value,
     When,
@@ -41,6 +43,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 from django.utils.html import escape, format_html, format_html_join
 from django.utils.translation import gettext, gettext_noop, override
 from django.views.generic import DetailView, ListView, TemplateView
@@ -113,6 +116,7 @@ if TYPE_CHECKING:
 
     from django.http import HttpRequest
 
+    from weblate_web.models import ServiceQuerySet
     from weblate_web.views import AuthenticatedHttpRequest
 
 
@@ -283,6 +287,28 @@ class CRMFilterTabsMixin(CRMMixin):
         return context
 
 
+def prepare_service_rows(services: ServiceQuerySet) -> ServiceQuerySet:
+    support_expiry = (
+        Subscription.objects.providing_support()
+        .filter(service=OuterRef("pk"))
+        .order_by()
+        .values("service")
+        .annotate(latest_expiry=Max("expires"))
+        .values("latest_expiry")
+    )
+    return (
+        services.annotate(support_expires_at=Subquery(support_expiry))
+        .select_related("customer")
+        .prefetch_related(
+            Prefetch(
+                "subscription_set",
+                queryset=Subscription.objects.for_service_listing(),
+                to_attr="prefetched_listed_subscriptions",
+            )
+        )
+    )
+
+
 class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[misc]
     model = Service
     permission = "weblate_web.view_service"
@@ -297,6 +323,10 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
         ("extended", gettext_noop("Extended support")),
         ("premium", gettext_noop("Premium support")),
     )
+
+    @cached_property
+    def support_status_at(self) -> datetime:
+        return timezone.now()
 
     def get_title(self) -> str:
         match self.kwargs["kind"]:
@@ -317,58 +347,34 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
         context["kind"] = self.kwargs["kind"]
+        context["support_status_at"] = self.support_status_at
         if self.kwargs["kind"] == "all":
-            context["discoverable_services"] = (
-                Service.objects.customer_services()
-                .filter(discoverable=True)
-                .select_related("customer")
-                .prefetch_related(
-                    Prefetch(
-                        "subscription_set",
-                        queryset=Subscription.objects.for_service_listing(),
-                        to_attr="prefetched_listed_subscriptions",
-                    )
-                )
-                .order()
+            context["discoverable_services"] = prepare_service_rows(
+                Service.objects.customer_services().filter(discoverable=True).order()
             )
         return context
 
     def get_queryset(self):
-        qs = (
-            Service.objects.customer_services()
-            .filter(
-                Q(subscription__enabled=True)
-                | Q(subscription__expires__gt=timezone.now())
-                | Q(subscription__isnull=True)
+        subscriptions = Subscription.objects.filter(service=OuterRef("pk"))
+        qs = prepare_service_rows(Service.objects.customer_services())
+        visible = Exists(
+            subscriptions.filter(
+                Q(enabled=True) | Q(expires__gt=self.support_status_at)
             )
-            .distinct()
-            .select_related("customer")
-            .prefetch_related(
-                Prefetch(
-                    "subscription_set",
-                    queryset=Subscription.objects.for_service_listing(),
-                    to_attr="prefetched_listed_subscriptions",
-                )
-            )
-        )
+        ) | ~Exists(subscriptions)
+        active = subscriptions.filter(enabled=True, expires__gte=self.support_status_at)
         match self.kwargs["kind"]:
             case "all":
-                return sorted(qs, key=attrgetter("package_kind"))
+                return sorted(qs.filter(visible), key=attrgetter("package_kind"))
             case "expired":
-                expired = qs.filter(pk__in=get_expired_service_ids()).distinct()
+                expired = qs.filter(visible, pk__in=get_expired_service_ids())
                 return sorted(expired, key=attrgetter("package_kind"))
             case ("basic" | "extended" | "premium") as package_name:
-                return qs.filter(
-                    subscription__expires__gte=timezone.now(),
-                    subscription__package__name=package_name,
-                    subscription__enabled=True,
-                ).distinct()
+                return qs.filter(Exists(active.filter(package__name=package_name)))
             case "dedicated":
                 return qs.filter(
-                    subscription__package__category=ServiceCategory.DEDICATED,
-                    subscription__expires__gte=timezone.now(),
-                    subscription__enabled=True,
-                ).distinct()
+                    Exists(active.filter(package__category=ServiceCategory.DEDICATED))
+                )
         raise ValueError(self.kwargs["kind"])
 
 
@@ -1101,8 +1107,11 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
             self.change_customer_permission
         )
         context["merge_form"] = CustomerMergeForm(customer=self.object)
-        services = self.object.service_set.customer_services().order()
+        services = prepare_service_rows(
+            self.object.service_set.customer_services().order()
+        )
         context["services"] = services
+        context["support_status_at"] = timezone.now()
         context["invoice_confirm_dialog"] = active_tab == "overview" and not services
         context["donations"] = self.object.service_set.donations().order()
         context["customer_owners"] = self.object.ordered_owners

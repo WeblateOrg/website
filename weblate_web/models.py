@@ -1042,13 +1042,7 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
 
     @cached_property
     def support_subscriptions(self) -> models.QuerySet[Subscription]:
-        return (
-            self.hosted_subscriptions
-            | self.shared_subscriptions
-            | self.basic_subscriptions
-            | self.extended_subscriptions
-            | self.premium_subscriptions
-        ).order_by("-expires")
+        return self.subscription_set.providing_support().order_by("-expires")
 
     @cached_property
     def backup_subscriptions(self) -> models.QuerySet[Subscription]:
@@ -1413,6 +1407,12 @@ class SubscriptionQuerySet(models.QuerySet["Subscription"]):
 
     def donations(self) -> SubscriptionQuerySet:
         return self.filter(service__kind=ServiceKind.DONATION)
+
+    def providing_support(self) -> SubscriptionQuerySet:
+        return self.filter(
+            Q(package__category__in=(ServiceCategory.DEDICATED, ServiceCategory.SHARED))
+            | Q(package__name__in=("basic", "extended", "premium"))
+        )
 
     def for_service_listing(self) -> SubscriptionQuerySet:
         return (

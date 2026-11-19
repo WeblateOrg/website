@@ -33,7 +33,7 @@ import pytest
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import formats, timezone
 
 from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import CRM_STORAGE, Interaction
@@ -230,9 +230,10 @@ def crm_staff_user(db) -> User:
 
 @pytest.fixture
 def crm_data(  # pylint: disable=redefined-outer-name
-    e2e_setup, crm_staff_user: User, tmp_path
+    e2e_setup, crm_staff_user: User, tmp_path, monkeypatch: pytest.MonkeyPatch
 ) -> Iterator[CrmData]:
     """Create representative CRM data for list, detail, and action views."""
+    monkeypatch.setattr(timezone, "now", lambda: FIXED_TIMESTAMP)
     original_storage_location = cast(
         "str | None", getattr(CRM_STORAGE, "_location", None)
     )
@@ -452,6 +453,24 @@ def capture(page: Page, name: str) -> None:
     page.screenshot(
         path=(SCREENSHOT_DIR / f"crm-{name}.png").as_posix(), full_page=True
     )
+
+
+def capture_service_lists(page: Page, live_server) -> None:
+    """Capture the service tabs and check the support dates."""
+    for kind in ("all", "expired", "extended", "dedicated", "premium"):
+        response = page.goto(
+            absolute_url(
+                live_server, reverse("crm:service-list", kwargs={"kind": kind})
+            )
+        )
+        assert_loaded(page, response, f"Service list {kind}")
+        if kind == "extended":
+            expiry = formats.date_format(date(2026, 4, 15), "DATE_FORMAT")
+            assert_text_visible(page, f"Active until {expiry}")
+        elif kind == "expired":
+            expiry = formats.date_format(date(2025, 12, 16), "DATE_FORMAT")
+            assert_text_visible(page, f"Expired since {expiry}")
+        capture(page, f"services-{kind}")
 
 
 def capture_mobile_filter_tabs(page: Page) -> None:
@@ -794,14 +813,7 @@ class TestCrmVisualCoverage:  # pylint: disable=redefined-outer-name
         assert_text_visible(page, "CRM Prospect")
         capture(page, "customers-search")
 
-        for kind in ("all", "expired", "extended", "dedicated", "premium"):
-            response = page.goto(
-                absolute_url(
-                    live_server, reverse("crm:service-list", kwargs={"kind": kind})
-                )
-            )
-            assert_loaded(page, response, f"Service list {kind}")
-            capture(page, f"services-{kind}")
+        capture_service_lists(page, live_server)
 
         page.get_by_label("CRM navigation").get_by_role("link", name="Invoices").click()
         page.wait_for_load_state("networkidle")

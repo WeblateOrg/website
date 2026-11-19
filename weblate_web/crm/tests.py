@@ -1,5 +1,5 @@
 from collections import UserList
-from datetime import date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from io import StringIO
 from pathlib import Path
@@ -24,7 +24,7 @@ from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import formats, timezone
 
 from weblate_web.categories import ServiceCategory
 from weblate_web.crm.hosted import USER_ENSURE_RESPONSE_SALT, USER_ENSURE_SALT
@@ -4163,7 +4163,8 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertNotContains(response, "Terminated")
         self.assertContains(
             response,
-            '<span class="crm-badge crm-badge--warning">Community supported</span>',
+            '<span class="crm-badge crm-badge--muted">Community</span>',
+            count=1,
             html=True,
         )
         self.assertContains(response, "No discoverable services.")
@@ -4200,25 +4201,70 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertEqual(list(response.context["object_list"]), [])
         self.assertNotContains(response, "Paid backup")
 
-    def test_service_list_prefetches_rendered_packages(self):
+    def test_service_list_support_dates(self):
+        Package.objects.create(name="community", price=0)
+        basic = Package.objects.create(name="basic", price=100)
+        hosted = Package.objects.create(
+            name="hosted:10k", category=ServiceCategory.SHARED, price=100
+        )
+        backup = Package.objects.create(name="backup", price=100)
+        customer = self.create_customer()
+        now = datetime(2026, 1, 15, 23, 30, tzinfo=UTC)
+        tomorrow = now + timedelta(days=1)
+
+        for title, subscriptions in (
+            ("Expires now", [(basic, True, now)]),
+            ("Disabled support", [(basic, False, tomorrow)]),
+            (
+                "Support and hosting",
+                [
+                    (basic, True, now - timedelta(days=1)),
+                    (hosted, True, now + timedelta(days=2)),
+                    (backup, True, now + timedelta(days=3)),
+                ],
+            ),
+        ):
+            service = Service.objects.create(customer=customer, site_title=title)
+            for package, enabled, expires in subscriptions:
+                service.subscription_set.create(
+                    package=package, enabled=enabled, expires=expires
+                )
+
+        for url in (
+            reverse("crm:service-list", kwargs={"kind": "all"}),
+            customer.get_absolute_url(),
+        ):
+            with (
+                self.subTest(url=url),
+                timezone.override("Europe/Prague"),
+                patch.object(timezone, "now", return_value=now),
+            ):
+                response = self.client.get(url)
+                for day in (16, 17, 18):
+                    expiry = formats.date_format(date(2026, 1, day), "DATE_FORMAT")
+                    self.assertContains(response, f"Active until {expiry}", count=1)
+                self.assertNotContains(response, "Expired since")
+
+    def test_service_list_prefetches_rendered_packages_and_support_dates(self):
         Package.objects.create(name="community", price=0)
         customer = self.create_customer()
         payment = Payment.objects.create(customer=customer, amount=100)
         basic = Package.objects.create(name="basic", verbose="Basic Support", price=100)
         backup = Package.objects.create(name="backup", verbose="Backup", price=100)
+        expired = timezone.now() - timedelta(days=1)
         for index in range(3):
             service = Service.objects.create(
                 customer=customer, site_title=f"Discoverable {index}", discoverable=True
             )
-            for package, enabled, days in (
-                (basic, False, -1),
-                (backup, False, 1),
-                (backup, True, -1),
+            for package, enabled, expires in (
+                (basic, False, expired),
+                (backup, False, expired + timedelta(days=2)),
+                (backup, True, expired),
             ):
                 service.subscription_set.create(
                     package=package,
                     enabled=enabled,
-                    expires=timezone.now() + timedelta(days=days),
+                    expires=expires,
                     payment=payment,
                 )
 
@@ -4229,16 +4275,24 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         with self.assertNumQueries(2):
             context = view.get_context_data()
             discoverable = list(context["discoverable_services"])
-        for services in (view.object_list, discoverable):
+        customer_response = self.client.get(customer.get_absolute_url())
+        for services in (
+            view.object_list,
+            discoverable,
+            customer_response.context["services"],
+        ):
             with self.assertNumQueries(0):
                 self.assertEqual(
                     [service.package_kind for service in services], ["Backup"] * 3
                 )
                 rendered = render_to_string(
-                    "weblate_web/service_list_content.html", {"object_list": services}
+                    "weblate_web/service_list_content.html",
+                    {**context, "object_list": services},
                 )
             self.assertEqual(rendered.count('<span class="crm-token">Backup</span>'), 6)
             self.assertNotIn("Basic Support", rendered)
+            expiry = formats.date_format(timezone.localtime(expired), "DATE_FORMAT")
+            self.assertEqual(rendered.count(f"Expired since {expiry}"), 3)
 
     def test_discoverable_service_list(self):
         Package.objects.create(name="community", price=0)
@@ -4283,7 +4337,10 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertIn(active, response.context["object_list"])
         self.assertContains(response, ">B active</a>", count=2)
         self.assertContains(
-            response, '<span class="crm-badge">Community supported</span>', count=0
+            response,
+            '<span class="crm-badge crm-badge--muted">Community</span>',
+            count=6,
+            html=True,
         )
         response = self.client.get(
             reverse("crm:service-list", kwargs={"kind": "expired"})

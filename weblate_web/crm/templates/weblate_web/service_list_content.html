@@ -13,7 +13,13 @@
     </td>
     <td>{{ object.site_version|default:"-" }}</td>
     <td>
-      <span class="crm-badge{% if object.status == "community" %} crm-badge--warning{% endif %}">{{ object.get_status_display }}</span>
+      {% if not object.support_expires_at %}
+        <span class="crm-badge crm-badge--muted">{% translate "Community" %}</span>
+      {% elif object.support_expires_at >= support_status_at %}
+        <span class="crm-badge crm-badge--success">{% blocktranslate with expiry=object.support_expires_at|date:"DATE_FORMAT" %}Active until {{ expiry }}{% endblocktranslate %}</span>
+      {% else %}
+        <span class="crm-badge crm-badge--warning">{% blocktranslate with expiry=object.support_expires_at|date:"DATE_FORMAT" %}Expired since {{ expiry }}{% endblocktranslate %}</span>
+      {% endif %}
     </td>
     {% if kind == "extended" %}<td>{{ object.maintenance_window|default:"-" }}</td>{% endif %}
     <td>
