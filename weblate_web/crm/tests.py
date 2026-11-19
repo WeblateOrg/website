@@ -146,7 +146,7 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
         groups = {
             "customer": ("all", "active", "followups"),
             "invoice": ("invoice", "unpaid", "quote", "stale", "all"),
-            "service": ("all", "expired", "dedicated", "extended", "premium"),
+            "service": ("all", "expired", "dedicated", "basic", "extended", "premium"),
         }
         for group, kinds in groups.items():
             for kind in kinds:
@@ -4085,6 +4085,41 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         self.assertContains(response, "Dedicated 160k")
         self.assertNotContains(response, "Hosted 10k")
         self.assertNotContains(response, "Basic Support")
+
+    def test_basic_service_list(self):
+        Package.objects.create(name="community", price=0)
+        basic = Package.objects.create(name="basic", verbose="Basic support", price=100)
+        extended = Package.objects.create(name="extended", price=200)
+        now = timezone.now()
+        active_service = Service.objects.create(
+            customer=self.customer, site_title="Basic support customer"
+        )
+        for days in (1, 2):
+            active_service.subscription_set.create(
+                package=basic, expires=now + timedelta(days=days)
+            )
+
+        for package, days, enabled in (
+            (basic, -1, True),
+            (basic, 1, False),
+            (extended, 1, True),
+        ):
+            service = Service.objects.create(customer=self.customer)
+            service.subscription_set.create(
+                package=package, expires=now + timedelta(days=days), enabled=enabled
+            )
+
+        basic_url = reverse("crm:service-list", kwargs={"kind": "basic"})
+        response = self.client.get(basic_url)
+        self.assertContains(response, "Basic support services")
+        self.assertContains(
+            response,
+            f'<a href="{basic_url}" class="is-active" aria-current="page">'
+            "Basic support</a>",
+            html=True,
+        )
+        self.assertContains(response, "Basic support customer", count=1)
+        self.assertEqual(list(response.context["object_list"]), [active_service])
 
     def test_service_list_uses_enabled_packages(self):
         Package.objects.create(name="community", price=0)

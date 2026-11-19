@@ -293,6 +293,7 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
         ("all", gettext_noop("All services")),
         ("expired", gettext_noop("Expired services")),
         ("dedicated", gettext_noop("Dedicated hosting")),
+        ("basic", gettext_noop("Basic support")),
         ("extended", gettext_noop("Extended support")),
         ("premium", gettext_noop("Premium support")),
     )
@@ -303,6 +304,8 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
                 return "All services"
             case "expired":
                 return "Expired services"
+            case "basic":
+                return gettext("Basic support services")
             case "extended":
                 return "Extended support services"
             case "dedicated":
@@ -354,21 +357,15 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
             case "expired":
                 expired = qs.filter(pk__in=get_expired_service_ids()).distinct()
                 return sorted(expired, key=attrgetter("package_kind"))
-            case "extended":
+            case ("basic" | "extended" | "premium") as package_name:
                 return qs.filter(
                     subscription__expires__gte=timezone.now(),
-                    subscription__package__name="extended",
+                    subscription__package__name=package_name,
                     subscription__enabled=True,
                 ).distinct()
             case "dedicated":
                 return qs.filter(
                     subscription__package__category=ServiceCategory.DEDICATED,
-                    subscription__expires__gte=timezone.now(),
-                    subscription__enabled=True,
-                ).distinct()
-            case "premium":
-                return qs.filter(
-                    subscription__package__name="premium",
                     subscription__expires__gte=timezone.now(),
                     subscription__enabled=True,
                 ).distinct()
