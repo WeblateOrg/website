@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-11-14 21:39-0600\n"
+"POT-Creation-Date: 2026-11-21 20:17-0600\n"
 "PO-Revision-Date: 2026-11-15 12:51+0000\n"
 "Last-Translator: Peter Vančo <peva@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/weblate/website/"
@@ -725,9 +725,6 @@ msgstr "Zrušený duplikát"
 msgid "Collection note"
 msgstr "Poznámka k vymáhaniu"
 
-msgid "Discount"
-msgstr "Zľava"
-
 msgid "Generated from"
 msgstr "Vygenerované z"
 
@@ -1247,6 +1244,21 @@ msgstr "Objaviteľné služby"
 msgid "No discoverable services."
 msgstr "Žiadne objaviteľné služby."
 
+#, fuzzy
+#| msgid "Community supported"
+msgid "Community"
+msgstr "Podporované komunitou"
+
+#, fuzzy, python-format
+#| msgid "Active customers"
+msgid "Active until %(expiry)s"
+msgstr "Aktívni zákazníci"
+
+#, fuzzy, python-format
+#| msgid "Expired services"
+msgid "Expired since %(expiry)s"
+msgstr "Vypršané služby"
+
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
@@ -1268,11 +1280,19 @@ msgstr ""
 msgid "Dedicated hosting"
 msgstr "Vyhradený hosting"
 
+msgid "Basic support"
+msgstr "Základná podpora"
+
 msgid "Extended support"
 msgstr "Rozšírená podpora"
 
 msgid "Premium support"
 msgstr "Prémiová podpora"
+
+#, fuzzy
+#| msgid "Premium support services"
+msgid "Basic support services"
+msgstr "Služby prémiovej podpory"
 
 msgid "All customers"
 msgstr "Všetci zákazníci"
@@ -1644,9 +1664,6 @@ msgstr "URL odkazu"
 msgid "Link image"
 msgstr "Obrázok odkazu"
 
-msgid "Basic support"
-msgstr "Základná podpora"
-
 msgid "Never get held back by a problem."
 msgstr "Nikdy sa nenechajte zdržať problémom."
 
@@ -1845,6 +1862,11 @@ msgstr "Vypršaná vyhradená služba"
 msgid "Activity drop"
 msgstr "Pokles aktivity"
 
+#, fuzzy
+#| msgid "No renewal"
+msgid "Service renewal"
+msgstr "Žiadne obnovenie"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Dátum a čas, kedy je potrebné sa o tohto zákazníka starať."
 
@@ -1866,6 +1888,12 @@ msgid ""
 msgstr ""
 "Zastavte vyhradenú inštanciu, pretože jej zmluva o podpore vypršala pred "
 "viac ako dvoma mesiacmi."
+
+#, python-format
+msgid ""
+"Contact the customer about renewing %(package)s for %(service)s before it "
+"expires on %(date)s."
+msgstr ""
 
 msgid "Annual"
 msgstr "Ročne"
@@ -2274,10 +2302,10 @@ msgid ""
 msgstr ""
 "Bezpečnostné chyby s nízkou a strednou závažnosťou nahláste verejne na <a "
 "href=\"%(issues_url)s\">GitHube</a>. Zraniteľnosti s vysokou a kritickou "
-"závažnosťou nahláste súkromne prostredníctvom <a href=\"%(report_url)s\">"
-"HackerOne</a>. Ak si nie ste istí závažnosťou, môžete začať súkromne. Úplné "
-"zásady nahlasovania a ďalšie súkromné kanály nájdete v <a href=\"%(url)s\">"
-"dokumentácii</a>."
+"závažnosťou nahláste súkromne prostredníctvom <a "
+"href=\"%(report_url)s\">HackerOne</a>. Ak si nie ste istí závažnosťou, "
+"môžete začať súkromne. Úplné zásady nahlasovania a ďalšie súkromné kanály "
+"nájdete v <a href=\"%(url)s\">dokumentácii</a>."
 
 #, python-format
 msgid ""
@@ -5045,6 +5073,9 @@ msgstr "Na obnovenie zaplaťte prosím nezaplatenú faktúru %(invoice)s."
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Prosím, potvrďte rozšírenie na stránke vášho účtu."
+
+#~ msgid "Discount"
+#~ msgstr "Zľava"
 
 #~ msgid "European VAT ID"
 #~ msgstr "Európske IČ DPH"

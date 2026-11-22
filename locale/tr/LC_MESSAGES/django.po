@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/weblate/website/\n"
-"POT-Creation-Date: 2026-11-14 21:39-0600\n"
+"POT-Creation-Date: 2026-11-21 20:17-0600\n"
 "PO-Revision-Date: 2026-11-19 06:51+0000\n"
 "Last-Translator: Kaya Zeren <kayazeren@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/weblate/website/"
@@ -721,9 +721,6 @@ msgstr "İptal edilmiş çift"
 msgid "Collection note"
 msgstr "Tahsilat notu"
 
-msgid "Discount"
-msgstr "İndirim"
-
 msgid "Generated from"
 msgstr "Şuradan oluşturuldu"
 
@@ -1084,8 +1081,8 @@ msgid ""
 "All content from %(source)s (%(source_pk)s) will be moved to %(target)s "
 "(%(target_pk)s)"
 msgstr ""
-"%(source)s (%(source_pk)s) üzerinden gelen tüm içerik %(target)s (%"
-"(target_pk)s) üzerine taşınacak"
+"%(source)s (%(source_pk)s) üzerinden gelen tüm içerik %(target)s "
+"(%(target_pk)s) üzerine taşınacak"
 
 #, python-format
 msgid "%(source)s (%(source_pk)s) will be removed"
@@ -1241,6 +1238,21 @@ msgstr "Keşfedilebilecek hizmetler"
 msgid "No discoverable services."
 msgstr "Keşfedilebilecek bir hizmet yok."
 
+#, fuzzy
+#| msgid "Community supported"
+msgid "Community"
+msgstr "Topluluk destekli"
+
+#, fuzzy, python-format
+#| msgid "Active customers"
+msgid "Active until %(expiry)s"
+msgstr "Etkin müşteriler"
+
+#, fuzzy, python-format
+#| msgid "Expired services"
+msgid "Expired since %(expiry)s"
+msgstr "Süresi dolmuş hizmetler"
+
 msgid ""
 "The customer's VAT ID could not be validated, so the invoice was not issued. "
 "Update the customer data or try again later."
@@ -1262,11 +1274,19 @@ msgstr ""
 msgid "Dedicated hosting"
 msgstr "Müşteriye özel barındırma"
 
+msgid "Basic support"
+msgstr "Temel destek"
+
 msgid "Extended support"
 msgstr "Genişletilmiş destek"
 
 msgid "Premium support"
 msgstr "Ücretli destek"
+
+#, fuzzy
+#| msgid "Premium support services"
+msgid "Basic support services"
+msgstr "Ücretli destek hizmetleri"
 
 msgid "All customers"
 msgstr "Tüm müşteriler"
@@ -1634,9 +1654,6 @@ msgstr "Bağlantı adresi"
 msgid "Link image"
 msgstr "Bağlantı görseli"
 
-msgid "Basic support"
-msgstr "Temel destek"
-
 msgid "Never get held back by a problem."
 msgstr "Asla bir sorun yüzünden geri kalmayın."
 
@@ -1835,6 +1852,11 @@ msgstr "Müşteriye özel hizmetin süresi dolmuş"
 msgid "Activity drop"
 msgstr "Etkinlik düşüşü"
 
+#, fuzzy
+#| msgid "No renewal"
+msgid "Service renewal"
+msgstr "Yenileme yok"
+
 msgid "Date and time when this customer needs attention."
 msgstr "Bu müşterinin ilgiye gerek duyduğu tarih ve saat."
 
@@ -1856,6 +1878,12 @@ msgid ""
 msgstr ""
 "Destek sözleşmesi iki aydan uzun bir süre önce sona erdiği için müşteriye "
 "özel kopyayı durdurun."
+
+#, python-format
+msgid ""
+"Contact the customer about renewing %(package)s for %(service)s before it "
+"expires on %(date)s."
+msgstr ""
 
 msgid "Annual"
 msgstr "Yıllık"
@@ -2269,12 +2297,13 @@ msgid ""
 "href=\"%(url)s\">documentation</a> for the full reporting policy and other "
 "private reporting channels."
 msgstr ""
-"Düşük ve orta önemdeki güvenlik sorunlarını <a href=\"%(issues_url)s\">"
-"GitHub</a> üzerinden herkese açık olarak bildirin. Yüksek ve kritik önemdeki "
-"güvenlik açıklarını <a href=\"%(report_url)s\">HackerOne</a> üzerinden özel "
-"olarak bildirin. Önem düzeyinden emin değilseniz, özel olarak "
-"başlayabilirsiniz. Tam bildirim ilkesi ve diğer özel bildirim kanalları için "
-"<a href=\"%(url)s\">belgeler</a> bölümüne bakabilirsiniz."
+"Düşük ve orta önemdeki güvenlik sorunlarını <a "
+"href=\"%(issues_url)s\">GitHub</a> üzerinden herkese açık olarak bildirin. "
+"Yüksek ve kritik önemdeki güvenlik açıklarını <a "
+"href=\"%(report_url)s\">HackerOne</a> üzerinden özel olarak bildirin. Önem "
+"düzeyinden emin değilseniz, özel olarak başlayabilirsiniz. Tam bildirim "
+"ilkesi ve diğer özel bildirim kanalları için <a href=\"%(url)s\">belgeler</"
+"a> bölümüne bakabilirsiniz."
 
 #, python-format
 msgid ""
@@ -3304,8 +3333,8 @@ msgid ""
 "migration</a> as your infrastructure needs change."
 msgstr ""
 "Hosted veya özel barındırılan, aynı Weblate ürününü kullanıyorsunuz. "
-"Yerleşik yedeklemeler, altyapı gereksinimleriniz değiştikçe <a href=\"%(url)"
-"s\">proje aktarımlarını ve tam kurulum aktarımını</a> destekler."
+"Yerleşik yedeklemeler, altyapı gereksinimleriniz değiştikçe <a "
+"href=\"%(url)s\">proje aktarımlarını ve tam kurulum aktarımını</a> destekler."
 
 msgid ""
 "Choose managed hosting to let our team run Weblate for you, or purchase "
@@ -4089,8 +4118,8 @@ msgid ""
 "The requested donation of %(requested)s was adjusted down to %(charged)s so "
 "that VAT can be calculated correctly."
 msgstr ""
-"İstenilen %(requested)s bağışı, KDV tutarının doğru hesaplanabilmesi için %"
-"(charged)s olarak ayarlandı."
+"İstenilen %(requested)s bağışı, KDV tutarının doğru hesaplanabilmesi için "
+"%(charged)s olarak ayarlandı."
 
 msgid "Payment description"
 msgstr "Ödeme açıklaması"
@@ -4170,7 +4199,8 @@ msgid "Make Payment"
 msgstr "Öde"
 
 msgid "Your payment requires review. Please do not pay again."
-msgstr "Ödemenizin gözden geçirilmesi gerekiyor. Lütfen yeniden ödeme yapmayın."
+msgstr ""
+"Ödemenizin gözden geçirilmesi gerekiyor. Lütfen yeniden ödeme yapmayın."
 
 msgid "Please follow the provided instructions to complete the payment."
 msgstr "Lütfen ödemeyi tamamlamak için size iletilen yönergeyi uygulayın."
@@ -5044,6 +5074,9 @@ msgstr "Lütfen yenilemek için ödenmemiş %(invoice)s faturayı ödeyin."
 
 msgid "Please confirm the upgrade from your account page."
 msgstr "Lütfen hesap sayfanızdan yükseltmeyi onaylayın."
+
+#~ msgid "Discount"
+#~ msgstr "İndirim"
 
 #~ msgid "European VAT ID"
 #~ msgstr "Avrupa KDV kimliği"
