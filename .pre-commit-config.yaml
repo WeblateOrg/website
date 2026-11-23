@@ -76,11 +76,11 @@ repos:
   hooks:
   - id: zizmor
 - repo: https://github.com/mongodb/kingfisher
-  rev: v2.19.1
+  rev: v2.20.0
   hooks:
-  - id: kingfisher-auto
+  - id: kingfisher-auto-files
     env:
-      KINGFISHER_VERSION: v2.19.1
+      KINGFISHER_VERSION: v2.20.0
 - repo: https://github.com/shellcheck-py/shellcheck-py
   rev: v0.11.0.1
   hooks:
@@ -113,4 +113,4 @@ ci:
   autoupdate_schedule: quarterly
   skip:
   - check-jsonschema
-  - kingfisher-auto
+  - kingfisher-auto-files
