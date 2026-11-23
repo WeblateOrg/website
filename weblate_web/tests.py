@@ -3904,10 +3904,30 @@ class PaymentTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.state, Payment.PENDING)
 
-        # Perform the payment
+        gateway_url = (
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{payment.pk}"
+            "?merchant_id=00000000-0000-0000-0000-000000000000"
+        )
+        responses.get(gateway_url, json={"state": "waiting_for_payment"})
+        responses.get(gateway_url, json={"state": "payment_cancelled"})
         thepay_mock_payment(payment.pk)
 
-        # Back to our web
+        response = self.client.get(payment.get_complete_url())
+        self.assertTemplateUsed(response, "payment/pending.html")
+        self.assertNotContains(response, "Thank you for your donation")
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.PENDING)
+
+        response = self.client.get(payment.get_complete_url())
+        self.assertRedirects(response, FOSDEM_ORIGIN, fetch_redirect_response=False)
+        response = self.client.get("/en/about/")
+        self.assertContains(response, "The payment was rejected")
+        self.assertNotContains(response, "Thank you for your donation")
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.REJECTED)
+        self.assertIsNone(payment.paid_invoice_id)
+
+        # The donor retries and the provider confirms payment.
         response = self.client.get(payment.get_complete_url())
         # This redirects to an article we don't have in tests
         self.assertRedirects(response, FOSDEM_ORIGIN, fetch_redirect_response=False)
@@ -3922,6 +3942,31 @@ class PaymentTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.paid_invoice.total_amount, 30)  # type: ignore[union-attr]
         self.assertEqual(payment.state, Payment.PROCESSED)
+
+        paid_invoice_id = payment.paid_invoice_id
+        response = self.client.get(payment.get_complete_url())
+        self.assertRedirects(response, FOSDEM_ORIGIN, fetch_redirect_response=False)
+        self.assertContains(
+            self.client.get("/en/about/"), "Thank you for your donation"
+        )
+        payment.refresh_from_db()
+        self.assertEqual(payment.paid_invoice_id, paid_invoice_id)
+        self.assertEqual(payment.state, Payment.PROCESSED)
+
+    @override_settings(PAYMENT_DEBUG=True)
+    def test_fosdem_immediate_rejection(self) -> None:
+        self.client.post("/en/fosdem/donate/", {"amount": 30})
+        payment = Payment.objects.get()
+        payment.customer.name = "FOSDEM Visitor"
+        payment.customer.save(update_fields=["name"])
+
+        response = self.client.post(payment.get_payment_url(), {"method": "reject"})
+        self.assertRedirects(response, FOSDEM_ORIGIN, fetch_redirect_response=False)
+        response = self.client.get("/en/about/")
+        self.assertContains(response, "The payment was rejected: Debug reject")
+        self.assertNotContains(response, "Thank you for your donation")
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, Payment.REJECTED)
 
 
 class PostTest(PostTestCase):
