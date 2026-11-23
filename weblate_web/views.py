@@ -493,12 +493,23 @@ class PaymentView(FormView, PaymentObjectMixin):
                 f"{reverse('donate-process')}?payment={self.object.pk}"
             )
         if self.object.customer.origin == FOSDEM_ORIGIN:
-            self.object.state = Payment.PROCESSED
-            self.object.save(update_fields=["state"])
-            messages.info(
-                self.request,
-                gettext("Thank you for your donation and enjoy FOSDEM."),
-            )
+            if self.object.state == Payment.ACCEPTED:
+                self.object.state = Payment.PROCESSED
+                self.object.save(update_fields=["state"])
+            if self.object.state == Payment.PROCESSED:
+                messages.info(
+                    self.request,
+                    gettext("Thank you for your donation and enjoy FOSDEM."),
+                )
+            elif self.object.state == Payment.REJECTED:
+                messages.error(
+                    self.request,
+                    gettext("The payment was rejected: {}").format(
+                        self.object.get_reject_reason() or gettext("Unknown reason")
+                    ),
+                )
+            else:
+                return redirect(self.object.get_complete_url())
             return HttpResponseRedirect(FOSDEM_ORIGIN)
         return HttpResponseRedirect(
             f"{self.object.customer.origin}?payment={self.object.pk}"
@@ -594,8 +605,9 @@ class PaymentView(FormView, PaymentObjectMixin):
         # Actually call the payment backend
         method = form.cleaned_data["method"]
         backend = get_backend(method)(self.object)
-        # Use backend payment here because it is selected again for update
-        if backend.payment.state != Payment.NEW:
+        # Use the payment the backend locked and will update during completion.
+        self.object = backend.payment
+        if self.object.state != Payment.NEW:
             return redirect(self.object.get_complete_url())
         try:
             result = backend.initiate(
