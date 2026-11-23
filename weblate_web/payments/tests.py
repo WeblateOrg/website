@@ -948,6 +948,26 @@ class BackendTest(BackendBaseTestCase):
         self.assertGreater(len(backends), 0)
         self.assertNotIn("manual", {backend.name for backend in backends})
 
+    def test_rejected_bank_transfer_completion(self) -> None:
+        invoice = Invoice.objects.create(
+            customer=self.customer,
+            kind=InvoiceKind.PROFORMA,
+            category=ServiceCategory.HOSTING,
+        )
+        self.payment.draft_invoice = invoice
+        self.payment.backend = "fio-bank"
+        self.payment.state = Payment.REJECTED
+        self.payment.save()
+
+        response = self.client.get(reverse("payment-complete", args=[self.payment.pk]))
+
+        self.assertEqual(response.status_code, 302)
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertIsNone(payment.paid_invoice_id)
+        invoice.refresh_from_db()
+        self.assertFalse(invoice.is_paid)
+        self.assertEqual(len(mail.outbox), 0)
+
     def test_manual_backend(self) -> None:
         backend_class = get_backend("manual")
         self.assertEqual(str(backend_class.verbose), "Manual payment")

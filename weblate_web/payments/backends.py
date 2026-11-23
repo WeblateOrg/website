@@ -734,11 +734,9 @@ class FioBank(Backend):
     description = "Bank transfer"
     recurring = False
 
-    def collect(self, request: HttpRequest | None) -> bool | None:
-        # We do not actually collect here, it is done in background
-        if self.payment.state == Payment.PENDING:
-            return None
-        return True
+    def collect(self, request: HttpRequest | None) -> None:
+        # Only bank statement reconciliation can confirm a transfer.
+        return None
 
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
