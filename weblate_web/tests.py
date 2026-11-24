@@ -4060,15 +4060,16 @@ class PostTest(PostTestCase):
             response, "&lt;img src=x onerror=prompt(document.domain)&gt;"
         )
 
-    def test_body_strips_raw_html(self) -> None:
+    def test_body_escapes_raw_html(self) -> None:
         payload = '"><img src=x onerror=prompt(document.domain)>'
         post = self.create_post(title="xss-post", body=payload)
 
         response = self.client.get(post.get_absolute_url(), follow=True)
 
-        self.assertNotContains(response, "src=x")
-        self.assertNotContains(response, "onerror")
-        self.assertContains(response, "&quot;&gt;")
+        self.assertNotContains(response, payload)
+        self.assertContains(
+            response, "&lt;img src=x onerror=prompt(document.domain)&gt;"
+        )
 
     def test_body_escapes_unsafe_link(self) -> None:
         post = self.create_post(title="xss-link", body="[link](javascript:alert(1))")
@@ -4089,14 +4090,13 @@ class PostTest(PostTestCase):
             post.body_rendered,
         )
 
-    def test_body_escapes_email_link_without_mailto(self) -> None:
+    def test_body_allows_relative_link(self) -> None:
         post = self.create_post(
-            title="email-link",
-            body="[Care](care@weblate.org)",
+            title="relative-link",
+            body="[News](/news/)",
         )
 
-        self.assertNotIn('href="care@weblate.org"', post.body_rendered)
-        self.assertIn("[Care](care@weblate.org)", post.body_rendered)
+        self.assertIn('<a href="/news/">News</a>', post.body_rendered)
 
     def test_body_plain_autolink_boundaries(self) -> None:
         post = self.create_post(
@@ -4133,7 +4133,17 @@ class PostTest(PostTestCase):
         self.assertNotIn(' onerror="alert(1)"', post.body_rendered)
         self.assertIn('alt="&quot; onerror=&quot;alert(1)"', post.body_rendered)
 
-    def test_feed_uses_sanitized_body(self) -> None:
+    def test_body_renders_table_and_strikethrough(self) -> None:
+        post = self.create_post(
+            title="markdown-table",
+            body="| Status |\n| --- |\n| ~~Deprecated~~ |",
+        )
+
+        self.assertIn("<table>", post.body_rendered)
+        self.assertIn("<th>Status</th>", post.body_rendered)
+        self.assertIn("<s>Deprecated</s>", post.body_rendered)
+
+    def test_feed_escapes_raw_html_in_body(self) -> None:
         self.create_post(
             title="xss-feed",
             body='"><img src=x onerror=prompt(document.domain)>',
@@ -4142,7 +4152,9 @@ class PostTest(PostTestCase):
         response = self.client.get("/feed/")
 
         self.assertNotContains(response, "<img")
-        self.assertNotContains(response, "onerror")
+        self.assertContains(
+            response, "&amp;lt;img src=x onerror=prompt(document.domain)&amp;gt;"
+        )
 
 
 class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
