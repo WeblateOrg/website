@@ -14,7 +14,22 @@
     {% endif %}
   {% endwith %}
 
-  <p>{% translate "If concerning a recurring payment, it is retried three times, and if still failing, cancelled." %}</p>
+  {% if payment.details.recurring_attempt %}
+    {% blocktranslate asvar attempt_message with attempt=payment.details.recurring_attempt limit=payment.RECURRING_ATTEMPT_LIMIT %}This was automatic renewal attempt {{ attempt }} of {{ limit }}.{% endblocktranslate %}
+    <p>{{ attempt_message }}</p>
+  {% endif %}
+
+  {% if payment.is_final_recurring_attempt %}
+    <p>{% translate "This was the last automatic renewal attempt." %}</p>
+  {% elif payment.details.recurring_attempt %}
+    <p>{% translate "We will retry automatic renewal." %}</p>
+  {% endif %}
+
+  {% if payment.has_unavailable_recurring_authorization %}
+    <p>{% translate "Automatic renewal has stopped because the saved payment authorization is no longer available. Please make a new payment and authorize future renewals." %}</p>
+  {% elif payment.is_final_recurring_attempt %}
+    <p>{% translate "Please make a new payment to renew." %}</p>
+  {% endif %}
 
   {% if payment.customer.origin == "https://hosted.weblate.org/create/billing/" %}
     <a class="button" href="https://hosted.weblate.org/billing/">{% translate "Manage your payments" %}</a>

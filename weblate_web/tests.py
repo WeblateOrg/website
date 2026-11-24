@@ -6043,6 +6043,48 @@ class ExpiryTest(FakturaceTestCase):
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
 
+    def test_expired_thepay_authorization_stops_donation_retries(self) -> None:
+        donation = self.create_donation(years=0, days=-2)
+        subscription = cast("Subscription", donation.donation_subscription)
+        expires = subscription.expires
+        parent = subscription.payment_obj
+        parent.backend = "thepay2-card"
+        parent.save(update_fields=["backend"])
+        with patch(
+            "weblate_web.payments.backends.ThePay2Card.request",
+            return_value={
+                "state": "error",
+                "message": "Parent payment expired.",
+                "parent": {"recurring_payments_available": False},
+            },
+        ) as request:
+            RecurringPaymentsCommand.handle_donations()
+            mails = self.assert_notifications("Your payment on weblate.org failed")
+            self.assertIn("Automatic renewal has stopped", mails[0].body)
+            self.assertIn("Parent payment expired.", mails[0].body)
+            self.assertIn("automatic renewal attempt 1 of 3", mails[0].body)
+            self.assertIn("This was the last automatic renewal attempt.", mails[0].body)
+            self.assertNotIn("We will retry automatic renewal.", mails[0].body)
+            attempt = Payment.objects.get(repeat=parent)
+            self.assertEqual(attempt.state, Payment.REJECTED)
+            self.assertTrue(attempt.has_unavailable_recurring_authorization)
+            parent.refresh_from_db()
+            self.assertEqual(parent.state, Payment.PROCESSED)
+            self.assertEqual(parent.recurring, "")
+            subscription.refresh_from_db()
+            self.assertEqual(subscription.expires, expires)
+            RecurringPaymentsCommand.handle_donations()
+        request.assert_called_once()
+        interaction = parent.customer.interaction_set.get(
+            details__reason=Payment.RECURRING_AUTHORIZATION_FAILURE
+        )
+        self.assertEqual(interaction.details["payment_id"], str(parent.pk))
+        self.assertEqual(interaction.details["failed_payment_id"], str(attempt.pk))
+        self.assert_notifications(
+            "Your expired payment on weblate.org",
+            "Your expired payment on weblate.org",
+        )
+
     def test_expiring_donate_notify_user(self) -> None:
         self.create_donation(years=0, days=7, recurring="")
         RecurringPaymentsCommand.notify_expiry(force_summary=True)
@@ -6820,6 +6862,7 @@ class ServiceTest(FakturaceTestCase):
             {
                 "failure_code": Payment.VAT_VALIDATION_FAILURE,
                 "failure_detail": "The VIES service rejected the VAT ID",
+                "recurring_attempt": 1,
             },
         )
         self.assertEqual(
@@ -6904,7 +6947,22 @@ class ServiceTest(FakturaceTestCase):
         payment.refresh_from_db()
         self.assertEqual(payment.recurring, "")
         self.assertEqual(payment.payment_set.filter(state=Payment.REJECTED).count(), 3)
-        self.assert_notifications(*["Your payment on weblate.org failed"] * 3)
+        interaction = service.customer.interaction_set.get(
+            details__reason=Payment.RECURRING_ATTEMPTS_EXHAUSTED
+        )
+        self.assertEqual(interaction.details["payment_id"], str(payment.pk))
+        final_failure = payment.payment_set.latest("created")
+        self.assertEqual(
+            interaction.details["failed_payment_id"], str(final_failure.pk)
+        )
+        mails = self.assert_notifications(*["Your payment on weblate.org failed"] * 3)
+        for attempt, message in enumerate(mails, start=1):
+            with self.subTest(attempt=attempt):
+                self.assertIn(f"automatic renewal attempt {attempt} of 3", message.body)
+        for message in mails[:2]:
+            self.assertIn("We will retry automatic renewal.", message.body)
+        self.assertIn("This was the last automatic renewal attempt.", mails[2].body)
+        self.assertNotIn("We will retry automatic renewal.", mails[2].body)
 
     def test_recurring_invoice_success_resets_vat_failure_count(self) -> None:
         service = self.create_service(years=0, days=-2)

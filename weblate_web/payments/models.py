@@ -1039,6 +1039,9 @@ class Payment(models.Model):
     CANCELLED = 6
 
     VAT_VALIDATION_FAILURE = "vat_validation"
+    RECURRING_AUTHORIZATION_FAILURE = "recurring_authorization_unavailable"
+    RECURRING_ATTEMPT_LIMIT = 3
+    RECURRING_ATTEMPTS_EXHAUSTED = "recurring_attempts_exhausted"
 
     CURRENCY_EUR = 0
     CURRENCY_BTC = 1
@@ -1175,6 +1178,45 @@ class Payment(models.Model):
         return str(self.details.get("reject_reason") or "")
 
     @property
+    def has_unavailable_recurring_authorization(self) -> bool:
+        return self.details.get("failure_code") == self.RECURRING_AUTHORIZATION_FAILURE
+
+    @property
+    def is_final_recurring_attempt(self) -> bool:
+        return (
+            self.has_unavailable_recurring_authorization
+            or self.details.get("recurring_attempt", 0) >= self.RECURRING_ATTEMPT_LIMIT
+        )
+
+    @transaction.atomic
+    def disable_recurring_after_failure(
+        self, failed_payment: Payment, *, reason: str
+    ) -> None:
+        from weblate_web.crm.models import Interaction  # ruff:ignore[import-outside-top-level]
+
+        if (
+            not Payment.objects.filter(pk=self.pk)
+            .exclude(recurring="")
+            .update(recurring="")
+        ):
+            return
+        self.recurring = ""
+        if reason == self.RECURRING_AUTHORIZATION_FAILURE:
+            content = "The payment provider reported that the saved authorization is no longer available."
+        else:
+            content = f"Automatic renewal reached its limit of {self.RECURRING_ATTEMPT_LIMIT} failed attempts."
+        self.customer.interaction_set.create(
+            origin=Interaction.Origin.MANUAL_NOTE,
+            summary="Automatic renewal disabled",
+            content=content,
+            details={
+                "reason": reason,
+                "payment_id": str(self.pk),
+                "failed_payment_id": str(failed_payment.pk),
+            },
+        )
+
+    @property
     def is_under_settlement_review(self) -> bool:
         return bool(self.details.get("settlement_review"))
 
@@ -1305,7 +1347,7 @@ class Payment(models.Model):
                     pass
                 else:
                     failures = failures.filter(created__gt=last_good.created)
-                if failures.count() >= 3:
+                if failures.count() >= self.RECURRING_ATTEMPT_LIMIT:
                     return False
 
             # Create new payment object

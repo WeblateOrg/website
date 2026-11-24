@@ -1950,6 +1950,7 @@ class ThePay2Test(BackendBaseTestCase):
             customer=self.customer,
             amount=100,
             description="Test Item",
+            recurring="y",
             backend=self.backend_name,
         )
         self.backend.payment.save()
@@ -1966,6 +1967,9 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertFalse(self.backend.complete(None))
         payment = self.check_payment(Payment.REJECTED)
         self.assertEqual(payment.details["reject_reason"], "Failed card")
+        self.assertFalse(payment.has_unavailable_recurring_authorization)
+        assert payment.repeat is not None
+        self.assertEqual(payment.repeat.recurring, "y")
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
@@ -1976,6 +1980,7 @@ class ThePay2Test(BackendBaseTestCase):
             customer=self.customer,
             amount=100,
             description="Test Item",
+            recurring="y",
             backend=self.backend_name,
         )
         self.backend.payment.save()
@@ -1994,6 +1999,9 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertEqual(
             payment.details["reject_reason"], "Recurring payment is no longer available"
         )
+        self.assertTrue(payment.has_unavailable_recurring_authorization)
+        assert payment.repeat is not None
+        self.assertEqual(payment.repeat.recurring, "")
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
@@ -2004,6 +2012,7 @@ class ThePay2Test(BackendBaseTestCase):
             customer=self.customer,
             amount=100,
             description="Test Item",
+            recurring="y",
             backend=self.backend_name,
         )
         self.backend.payment.save()
@@ -2018,6 +2027,9 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertFalse(self.backend.complete(None))
         payment = self.check_payment(Payment.REJECTED)
         self.assertEqual(payment.details["reject_reason"], "Recurring payment failed")
+        self.assertFalse(payment.has_unavailable_recurring_authorization)
+        assert payment.repeat is not None
+        self.assertEqual(payment.repeat.recurring, "y")
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Your payment on weblate.org failed")
 
@@ -2330,6 +2342,40 @@ class ThePaySettlementTest(BackendBaseTestCase):
         self.assert_held()
         self.assertTrue(self.complete_payment())
         self.check_payment(Payment.ACCEPTED)
+
+    def test_recurring_callback_rejects_unavailable_authorization_once(self) -> None:
+        self.prepare_recurring()
+        assert self.payment.repeat is not None
+        self.payment.repeat.recurring = "y"
+        self.payment.repeat.save(update_fields=["recurring"])
+        with patch(
+            "weblate_web.payments.backends.ThePay2Card.request",
+            side_effect=[
+                {"state": "waiting_for_confirmation"},
+                {
+                    "state": "error",
+                    "parent": {"recurring_payments_available": False},
+                },
+            ],
+        ) as request:
+            self.payment.trigger_recurring()
+            payment = self.check_payment(Payment.PENDING)
+            self.client.get(payment.get_complete_url())
+            payment = self.check_payment(Payment.REJECTED)
+            self.client.get(payment.get_complete_url())
+        self.assertEqual(
+            [call.args[0] for call in request.call_args_list], ["post", "get"]
+        )
+        self.assertTrue(payment.has_unavailable_recurring_authorization)
+        assert payment.repeat is not None
+        self.assertEqual(payment.repeat.recurring, "")
+        self.notify.assert_called_once_with("payment_failed")
+        self.assertEqual(
+            self.customer.interaction_set.filter(
+                details__reason=Payment.RECURRING_AUTHORIZATION_FAILURE
+            ).count(),
+            1,
+        )
 
 
 class VATTest(SimpleTestCase):

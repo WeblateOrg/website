@@ -1148,8 +1148,14 @@ class ThePay2Card(Backend):
         # The inline completion uses the result of charging the requested value.
         if (
             self.payment.repeat
-            and request is None
             and not self.payment.is_under_settlement_review
+            and (
+                request is None
+                or (
+                    self.payment.state == Payment.REJECTED
+                    and self.payment.has_unavailable_recurring_authorization
+                )
+            )
         ):
             return self.collect_recurring_result()
 
@@ -1180,9 +1186,7 @@ class ThePay2Card(Backend):
             return None
 
         if self.payment.repeat:
-            self.payment.details["reject_reason"] = self.recurring_failure_reason(
-                response
-            )
+            self.record_recurring_failure(response)
             return False
 
         # All other states are assumed to be an error
@@ -1209,18 +1213,34 @@ class ThePay2Card(Backend):
         return False
 
     def collect_recurring_result(self) -> bool | None:
+        if self.payment.has_unavailable_recurring_authorization:
+            return False
         response = self.payment.details.get("repeat_response", {})
         state = response.get("state")
         if state == "paid":
             return True
         if state == "error":
-            self.payment.details["reject_reason"] = self.recurring_failure_reason(
-                response
-            )
+            self.record_recurring_failure(response)
             return False
         if state != "waiting_for_confirmation":
             sentry_sdk.capture_message("Unexpected ThePay recurring payment state")
         return None
+
+    def record_recurring_failure(self, response: dict[str, Any]) -> None:
+        self.payment.details["reject_reason"] = self.recurring_failure_reason(response)
+        parent = response.get("parent") or {}
+        if (
+            response.get("state") == "error"
+            and self.payment.state != Payment.CANCELLED
+            and parent.get("recurring_payments_available") is False
+            and (parent_payment := self.payment.repeat) is not None
+        ):
+            self.payment.details["failure_code"] = (
+                Payment.RECURRING_AUTHORIZATION_FAILURE
+            )
+            parent_payment.disable_recurring_after_failure(
+                self.payment, reason=Payment.RECURRING_AUTHORIZATION_FAILURE
+            )
 
     @staticmethod
     def recurring_failure_reason(response: dict[str, Any]) -> str:
