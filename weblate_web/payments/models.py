@@ -1346,7 +1346,9 @@ class Payment(models.Model):
             raise ValueError(f"Recurring backend did not complete: {result}")
         # Collect payment information
         with transaction.atomic():
-            backend.complete(None)
+            backend = self.get_payment_backend()
+            if backend.payment.state == self.PENDING:
+                backend.complete(None)
 
         # Refresh from the database as initial/complete fetch a copy for select_for_update
         self.refresh_from_db()

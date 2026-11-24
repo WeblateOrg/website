@@ -1082,11 +1082,18 @@ class ThePay2Card(Backend):
         payload: dict[str, str | dict[str, str | dict[str, str]] | int | bool]
         if self.payment.repeat:
             # Handle recurring payments
+            amount = self.payment.vat_amount_minor
+            currency = self.payment.get_currency_display()
+            if (invoice := self.payment.draft_invoice) is not None and (
+                amount != int(invoice.total_amount * 100)
+                or currency != invoice.get_currency_display()
+            ):
+                raise PaymentError("Recurring charge does not match the invoice")
             payload = {
                 "uid": str(self.payment.pk),
                 "value": {
-                    "amount": str(self.payment.vat_amount_minor),
-                    "currency": self.payment.get_currency_display(),
+                    "amount": str(amount),
+                    "currency": currency,
                 },
                 "notif_url": complete_url,
             }
@@ -1138,17 +1145,13 @@ class ThePay2Card(Backend):
         return redirect(pay_url)
 
     def collect(self, request: HttpRequest | None) -> bool | None:
-        # Handle repeated payments
-        if self.payment.repeat and not self.payment.draft_invoice_id:
-            if "repeat_response" not in self.payment.details:
-                raise ValueError("Recurring payment without a recurring response")
-
-            response = self.payment.details["repeat_response"]
-            if response["state"] != "paid":
-                self.payment.details["reject_reason"] = self.recurring_failure_reason(
-                    response
-                )
-            return response["state"] == "paid"
+        # The inline completion uses the result of charging the requested value.
+        if (
+            self.payment.repeat
+            and request is None
+            and not self.payment.is_under_settlement_review
+        ):
+            return self.collect_recurring_result()
 
         # Get payment state
         response = self.request("get", f"payments/{self.payment.pk}")
@@ -1204,6 +1207,20 @@ class ThePay2Card(Backend):
             self.payment.details["reject_reason"] = state
 
         return False
+
+    def collect_recurring_result(self) -> bool | None:
+        response = self.payment.details.get("repeat_response", {})
+        state = response.get("state")
+        if state == "paid":
+            return True
+        if state == "error":
+            self.payment.details["reject_reason"] = self.recurring_failure_reason(
+                response
+            )
+            return False
+        if state != "waiting_for_confirmation":
+            sentry_sdk.capture_message("Unexpected ThePay recurring payment state")
+        return None
 
     @staticmethod
     def recurring_failure_reason(response: dict[str, Any]) -> str:

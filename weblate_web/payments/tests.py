@@ -2230,58 +2230,106 @@ class ThePaySettlementTest(BackendBaseTestCase):
         self.payment.repeat = Payment.objects.create(
             customer=self.customer, amount=100, backend=self.backend_name
         )
-        self.payment.details["repeat_response"] = {"state": "paid"}
+        self.payment.state = Payment.NEW
         self.payment.save()
 
-    def test_recurring_fetches_child_payment_detail(self) -> None:
+    def test_recurring_uses_synchronous_result(self) -> None:
+        self.prepare_recurring()
+        with (
+            patch.object(
+                ThePay2Card, "request", return_value={"state": "paid"}
+            ) as request,
+            patch("weblate_web.models.process_payment") as process,
+        ):
+            self.payment.trigger_recurring()
+        request.assert_called_once()
+        self.assertEqual(request.call_args.args[0], "post")
+        self.assertEqual(
+            request.call_args.kwargs["json"]["value"],
+            {"amount": "12100", "currency": "EUR"},
+        )
+        process.assert_called_once()
+        self.check_payment(Payment.ACCEPTED)
+
+    def test_recurring_rejection_uses_synchronous_result(self) -> None:
         self.prepare_recurring()
         with patch.object(
             ThePay2Card,
             "request",
-            return_value={"state": "paid", "paid_amount": 10000, "currency": "EUR"},
+            return_value={"state": "error", "message": "Failed card"},
         ) as request:
-            self.assertFalse(self.payment.get_payment_backend().complete(None))
-        request.assert_called_once_with("get", f"payments/{self.payment.pk}")
-        self.assert_held()
-        self.assertTrue(self.complete_payment())
-        self.check_payment(Payment.ACCEPTED)
+            self.payment.trigger_recurring()
+        request.assert_called_once()
+        self.assertEqual(request.call_args.args[0], "post")
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertEqual(payment.details["reject_reason"], "Failed card")
 
-    def test_recurring_pending_does_not_process_payment(self) -> None:
+    def test_recurring_charge_must_match_invoice(self) -> None:
         self.prepare_recurring()
-        self.payment.state = Payment.NEW
-        self.payment.save(update_fields=["state"])
+        for amount, currency in (
+            (Decimal(100), Payment.CURRENCY_EUR),
+            (self.invoice.total_amount, Payment.CURRENCY_CZK),
+        ):
+            with self.subTest(amount=amount, currency=currency):
+                Payment.objects.filter(pk=self.payment.pk).update(
+                    amount=amount, currency=currency
+                )
+                with (
+                    patch.object(ThePay2Card, "request") as request,
+                    self.assertRaisesMessage(
+                        PaymentError, "Recurring charge does not match the invoice"
+                    ),
+                ):
+                    self.payment.trigger_recurring()
+                request.assert_not_called()
+                self.check_payment(Payment.NEW)
+
+    def test_recurring_skips_completion_if_callback_already_accepted(self) -> None:
+        self.prepare_recurring()
+        initiate = ThePay2Card.initiate
+
+        def initiate_and_accept(backend, *args):
+            result = initiate(backend, *args)
+            Payment.objects.filter(pk=self.payment.pk).update(state=Payment.ACCEPTED)
+            return result
+
+        with (
+            patch.object(ThePay2Card, "request", return_value={"state": "paid"}),
+            patch.object(ThePay2Card, "initiate", new=initiate_and_accept),
+            patch.object(ThePay2Card, "complete") as complete,
+            patch("weblate_web.models.process_payment") as process,
+        ):
+            self.payment.trigger_recurring()
+        complete.assert_not_called()
+        process.assert_called_once()
+
+    def test_recurring_pending_checks_settlement_on_callback(self) -> None:
+        self.prepare_recurring()
         with (
             patch.object(
                 ThePay2Card,
                 "request",
                 return_value={"state": "waiting_for_confirmation"},
-            ),
+            ) as request,
             patch("weblate_web.models.process_payment") as process,
         ):
             self.payment.trigger_recurring()
+        request.assert_called_once()
+        self.assertEqual(request.call_args.args[0], "post")
         process.assert_not_called()
         payment = self.check_payment(Payment.PENDING)
-        self.assertEqual(
-            payment.details["response"]["state"], "waiting_for_confirmation"
-        )
         self.assertFalse(payment.is_under_settlement_review)
-        self.assertTrue(self.complete_payment())
 
-    def test_recurring_hold_does_not_process_payment(self) -> None:
-        self.prepare_recurring()
-        self.payment.state = Payment.NEW
-        self.payment.save(update_fields=["state"])
-        with (
-            patch.object(
-                ThePay2Card,
-                "request",
-                return_value={"state": "paid", "paid_amount": 10000, "currency": "EUR"},
-            ),
-            patch("weblate_web.models.process_payment") as process,
-        ):
-            self.payment.trigger_recurring()
-        process.assert_not_called()
+        with patch.object(
+            ThePay2Card,
+            "request",
+            return_value={"state": "paid", "paid_amount": 10000, "currency": "EUR"},
+        ) as request:
+            self.client.get(payment.get_complete_url())
+        request.assert_called_once_with("get", f"payments/{payment.pk}")
         self.assert_held()
+        self.assertTrue(self.complete_payment())
+        self.check_payment(Payment.ACCEPTED)
 
 
 class VATTest(SimpleTestCase):
