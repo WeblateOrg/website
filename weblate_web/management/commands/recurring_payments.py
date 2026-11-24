@@ -166,9 +166,12 @@ class Command(BaseCommand):
             rejected_payments = rejected_payments.filter(
                 created__gt=last_processed.created
             )
-        if rejected_payments.count() >= 3:
-            payment.recurring = ""
-            payment.save()
+        attempt = rejected_payments.count() + 1
+        if attempt > Payment.RECURRING_ATTEMPT_LIMIT:
+            if last_failure := rejected_payments.order_by("-created").first():
+                payment.disable_recurring_after_failure(
+                    last_failure, reason=Payment.RECURRING_ATTEMPTS_EXHAUSTED
+                )
             return
 
         if payment.customer.vat:
@@ -193,6 +196,7 @@ class Command(BaseCommand):
                     payment.save()
                     return
                 repeated.state = Payment.REJECTED
+                repeated.details["recurring_attempt"] = attempt
                 repeated.details["failure_code"] = Payment.VAT_VALIDATION_FAILURE
                 if validation_detail:
                     repeated.details["failure_detail"] = validation_detail
@@ -226,6 +230,8 @@ class Command(BaseCommand):
             return
 
         # Trigger of the payment
+        repeated.details["recurring_attempt"] = attempt
+        repeated.save(update_fields=["details"])
         repeated.trigger_recurring()
 
     @classmethod
