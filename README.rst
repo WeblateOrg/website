@@ -60,6 +60,16 @@ Create ``weblate_web/settings_local.py`` to adjust your settings:
    # Do not send real e-mails, log them to the console
    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+To enable the Python Sentry integration, set ``SENTRY_DSN`` in
+``weblate_web/settings_local.py`` to the deployment DSN, for example
+``SENTRY_DSN = os.environ["SENTRY_DSN"]``. When upgrading an existing deployment
+to SDK 3.x, replace its local ``sentry_sdk.init()`` call with this setting as part
+of the same deploy. Trace sampling is enabled when ``DEBUG`` is false and
+``SENTRY_ENVIRONMENT`` is ``production`` (the default). Sampled traces start
+profiling, which captures Python stacks across the process. Set the
+``SENTRY_ENVIRONMENT`` process environment variable for non-production deployments
+that report errors.
+
 Create admin:
 
 .. code-block:: sh

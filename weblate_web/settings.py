@@ -32,6 +32,7 @@ import django_stubs_ext
 django_stubs_ext.monkeypatch()
 
 DEBUG = True
+SENTRY_DSN: str | None = None
 
 ADMINS = ()
 

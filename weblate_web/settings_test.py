@@ -27,3 +27,4 @@ CACHES = {
 }
 
 PAYMENT_SECRET = "secret used for tests only"  # ruff:ignore[hardcoded-password-string]
+SENTRY_DSN = None
