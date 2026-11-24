@@ -181,13 +181,13 @@ def handle_error_response(response: requests.Response) -> None:
             sentry_sdk.add_breadcrumb(
                 category="hetzner.api",
                 level="info",
-                data={"text": response.text},
+                data={"status_code": response.status_code, "text": response.text},
             )
         else:
             sentry_sdk.add_breadcrumb(
                 category="hetzner.api",
                 level="info",
-                data={"response": payload},
+                data={"status_code": response.status_code, "response": payload},
             )
             messages = [payload["error"]["message"]]
             details = payload["error"].get("details")
