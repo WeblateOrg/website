@@ -49,3 +49,17 @@ This file captures agent-specific guidance for working in the Weblate website co
 - Use `pylint` to lint the Python code: `uv run pylint weblate_web/`
 - Use `mypy` to type check the code: `uv run mypy weblate_web/`
 - All mentioned linting tools MUST pass.
+
+## Argos visual coverage
+
+- Add important new visual states to
+  [the Argos upload allowlist](.github/argos-screenshots.txt) when they cover a
+  regression existing captures would miss. Prioritize critical user flows,
+  distinct layouts (including mobile and RTL), and document pagination.
+- Aim for about 40 uploads per website build because the screenshot allowance is
+  shared with the main Weblate project. Prefer replacing a redundant or
+  lower-value capture when adding one. If the list grows, explain the new
+  coverage and the per-build increase in the pull request.
+- Capture representative combinations of viewports, locales, and states. Keep
+  broader coverage in Playwright assertions and use GitHub Actions artifacts
+  for additional screenshots needed for debugging.

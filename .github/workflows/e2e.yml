@@ -46,7 +46,14 @@ jobs:
       env:
         ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }} # zizmor: ignore[secrets-outside-env]
       run: |
-        npx --package=@argos-ci/cli -- argos upload ./test-results/
+        argos_dir="$(mktemp -d)"
+        while IFS= read -r screenshot; do
+          case "$screenshot" in
+            ''|'#'*) continue ;;
+          esac
+          cp -- "test-results/$screenshot" "$argos_dir/"
+        done < .github/argos-screenshots.txt
+        npx --package=@argos-ci/cli -- argos upload "$argos_dir"
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
