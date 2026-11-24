@@ -4597,6 +4597,10 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         )
         self.assertEqual([row["height"] for row in rows], [200, 0])
 
+        service.activity.update(changes=1)
+        response = self.client.get(url)
+        self.assertContains(response, ": 1 change</title>", count=2)
+
         service.activity.update(changes=0)
         response = self.client.get(url)
         self.assertContains(response, "Instance activity")

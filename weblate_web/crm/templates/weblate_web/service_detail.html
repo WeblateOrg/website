@@ -169,7 +169,7 @@
           <line x1="10" y1="230" x2="{{ activity_chart_width|unlocalize }}" y2="230" stroke="currentColor" />
           {% for row in activity_chart_rows %}
             <g>
-            <title>{{ row.month|date:"YEAR_MONTH_FORMAT" }}: {% blocktranslate with changes=row.changes %}{{ changes }} changes{% endblocktranslate %}</title>
+            <title>{% blocktranslate count changes=row.changes with month=row.month|date:"YEAR_MONTH_FORMAT" %}{{ month }}: {{ changes }} change{% plural %}{{ month }}: {{ changes }} changes{% endblocktranslate %}</title>
             <rect x="{{ row.x|unlocalize }}" y="{{ row.y|unlocalize }}" width="40" height="{{ row.height|unlocalize }}" fill="#417690" />
             <text x="{{ row.label_x|unlocalize }}" y="{{ row.y|add:"-8"|unlocalize }}" text-anchor="middle" font-size="11" fill="currentColor">{{ row.changes }}</text>
             <text x="{{ row.label_x|unlocalize }}" y="250" text-anchor="middle" font-size="11" fill="currentColor">{{ row.month|date:"Y-m" }}</text>

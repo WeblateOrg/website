@@ -597,7 +597,7 @@ class ActivityTest(TestCase):
                 self.months = [month - relativedelta(months=1) for month in self.months]
 
     def test_legacy_crm_baseline(self) -> None:
-        self.record([100] * 9 + [0] * 3)
+        self.record([100] * 3 + [101] * 3 + [102] * 3 + [0] * 3)
         followup = self.service.followups.get()
         followup.details.pop("detector_version")
         followup.details.pop("baseline_median")
@@ -609,9 +609,9 @@ class ActivityTest(TestCase):
         )
         self.client.force_login(user)
         response = self.client.get(self.customer.get_absolute_url())
-        self.assertContains(response, "Baseline: 100.0 changes per month.")
-        self.assertNotContains(response, "Median baseline:")
-        self.assertNotContains(response, "Alert threshold:")
+        self.assertContains(response, "Baseline (changes per month): 101.5")
+        self.assertNotContains(response, "Median baseline (changes per month)")
+        self.assertNotContains(response, "Alert threshold (changes per month)")
 
     def test_status_update_preserves_episode(self) -> None:
         self.record([100] * 9 + [0, 0, 0])
@@ -766,7 +766,7 @@ class ActivityTest(TestCase):
             )
 
     def test_crm_and_clearing(self) -> None:
-        self.record([100] * 9 + [50, 0, 0])
+        self.record([100] * 3 + [101] * 3 + [102] * 3 + [50, 0, 1])
         followup = self.service.followups.get()
         user = User.objects.create_superuser(
             "activity-admin", "admin@example.com", "test-password"
@@ -776,9 +776,14 @@ class ActivityTest(TestCase):
         self.assertContains(
             response, "Contact the customer to understand the activity decrease."
         )
-        self.assertContains(response, "Median baseline: 100.0 changes per month.")
-        self.assertContains(response, "Alert threshold: 50.0 changes per month.")
-        self.assertContains(response, "50.0% decrease")
+        self.assertContains(response, "Median baseline (changes per month): 101.5")
+        self.assertContains(response, "Alert threshold (changes per month): 50.5")
+        self.assertContains(response, "50 changes (50.7% decrease)")
+        self.assertContains(response, "0 changes (100.0% decrease)")
+        self.assertContains(response, "1 change (99.0% decrease)")
+        self.assertContains(
+            response, f"Latest activity ({followup.details['latest_month']}): 1 change<"
+        )
         self.assertContains(response, self.service.get_absolute_url())
         # Template loops render no text nodes: the activity list contains only li.
         document = html.fromstring(response.content)
