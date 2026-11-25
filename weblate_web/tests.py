@@ -47,7 +47,7 @@ from wlc.models import Statistics
 
 from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
-from weblate_web.invoices.models import Discount, Invoice, InvoiceKind
+from weblate_web.invoices.models import Currency, Discount, Invoice, InvoiceKind
 from weblate_web.legal.models import Agreement
 from weblate_web.payments.invitations import create_invitation, get_invitation_token
 from weblate_web.payments.models import (
@@ -58,6 +58,7 @@ from weblate_web.payments.models import (
 )
 
 from .exchange_rates import BTC_RATE_URL, ExchangeRates, UncachedExchangeRates
+from .forms import NewSubscriptionForm
 from .hetzner import generate_random_password
 from .hosted_users import (
     EMAIL_ALLOCATION_LOCK_KEY,
@@ -89,7 +90,15 @@ from .models import (
     sync_packages,
     validate_bitmap,
 )
-from .packages import DEDICATED_LIMIT, PACKAGE_NAMES, PACKAGES
+from .packages import (
+    DEDICATED_LIMIT,
+    HOSTED_NONPROFIT_PLANS,
+    PACKAGE_NAMES,
+    PACKAGES,
+    hosted_plan_requires_nonprofit_discount,
+    hosted_plan_to_package,
+    package_to_hosted_plan,
+)
 from .payments.models import PaymentConf
 from .payments.validators import VAT_VALIDITY_DAYS
 from .remote import (
@@ -3302,6 +3311,7 @@ class PaymentTest(FakturaceTestCase):
         self.assertContains(response, 'data-reward-input="reward-1"')
         self.assertNotContains(response, 'class="close"')
 
+    @override("en")
     @responses.activate
     def test_subscription_creation_requires_confirmed_post(self) -> None:
         cnb_mock_rates()
@@ -7609,7 +7619,151 @@ class ServiceTest(FakturaceTestCase):
         perform_payment.assert_called_once()
 
 
+class HostedPackageMappingTest(SimpleTestCase):
+    def test_commercial_plans(self) -> None:
+        for slug, name in (
+            ("10k", "10k"),
+            ("40k", "40k"),
+            ("160k", "160k"),
+            ("640k", "640k"),
+            ("2-5m", "2.5m"),
+            ("10m", "10m"),
+            ("basic", "basic"),
+            ("medium", "medium"),
+            ("advanced", "advanced"),
+            ("advanced-20000", "advanced-20000"),
+            ("enterprise", "enterprise"),
+        ):
+            for period, suffix in (("m", "-m"), ("y", "")):
+                with self.subTest(slug=slug, period=period):
+                    package = f"hosted:{name}{suffix}"
+                    self.assertEqual(hosted_plan_to_package(slug, period), package)
+                    self.assertEqual(package_to_hosted_plan(package), slug)
+                    self.assertFalse(hosted_plan_requires_nonprofit_discount(slug))
+
+    def test_nonprofit_aliases(self) -> None:
+        for alias, slug in HOSTED_NONPROFIT_PLANS.items():
+            for period in ("m", "y"):
+                with self.subTest(alias=alias, period=period):
+                    package = hosted_plan_to_package(alias, period)
+                    self.assertEqual(package, hosted_plan_to_package(slug, period))
+                    self.assertEqual(package_to_hosted_plan(package), slug)
+                    self.assertTrue(hosted_plan_requires_nonprofit_discount(alias))
+
+    def test_unsupported_mappings(self) -> None:
+        for slug, message in (
+            ("libre", "Noncommercial"),
+            ("libre-2-5m", "Noncommercial"),
+            ("weblate-unlimited", "Noncommercial"),
+            ("enterprise-collabora", "Retired"),
+            ("enterprise-for-non-profit-200-languages", "Retired"),
+            ("custom", "Unsupported Hosted plan"),
+        ):
+            with self.subTest(slug=slug), self.assertRaisesRegex(ValueError, message):
+                hosted_plan_to_package(slug, "y")
+        with self.assertRaisesRegex(ValueError, "Unsupported Hosted billing period"):
+            hosted_plan_to_package("10k", "monthly")
+        for name in ("basic", "dedicated:160k", "hosted:20m", "hosted:10k-y"):
+            with (
+                self.subTest(name=name),
+                self.assertRaisesRegex(ValueError, "no supported Hosted plan"),
+            ):
+                package_to_hosted_plan(name)
+
+
 class CommandsTestCase(FakturaceTestCase):
+    def test_sync_legacy_hosted_packages(self) -> None:
+        existing = Package.objects.create(name="hosted:medium", price=1)
+        sync_packages()
+        existing.refresh_from_db()
+        self.assertEqual(existing.price, 680)
+        self.assertTrue(existing.hidden)
+        for slug, monthly_price, strings, languages, projects in (
+            ("basic", 26, 1000, 15, 1),
+            ("medium", 68, 3000, 30, 2),
+            ("advanced", 136, 10000, 60, 0),
+            ("advanced-20000", 136, 20000, 30, 0),
+            ("enterprise", 411, 50000, 100, 0),
+        ):
+            for period, multiplier in (("m", 1), ("y", 10)):
+                with self.subTest(slug=slug, period=period):
+                    package = Package.objects.get(
+                        name=hosted_plan_to_package(slug, period)
+                    )
+                    self.assertEqual(package.category, ServiceCategory.SHARED)
+                    self.assertEqual(package.price, monthly_price * multiplier)
+                    self.assertEqual(package.limit_source_strings, strings)
+                    self.assertEqual(package.limit_languages, languages)
+                    self.assertEqual(package.limit_projects, projects)
+                    self.assertTrue(package.hidden)
+                    self.assertEqual(package.get_repeat(), period)
+        self.assertEqual(sync_packages(), [])
+
+    @override("en")
+    def test_hidden_package_is_unavailable_for_new_purchases(self) -> None:
+        sync_packages()
+        self.login()
+        url = reverse("subscription-new")
+        package = Package.objects.create(name="hidden-example", price=15, hidden=True)
+        data = {"plan": package.name}
+        self.assertRedirects(self.client.get(url, data), reverse("support"))
+        self.assertRedirects(self.client.post(url, data), reverse("support"))
+
+        customer = Customer.objects.create(user_id=-1, origin=HOSTED_ORIGIN)
+        customer.owners.add(self.create_user())
+        service = Service.objects.create(customer=customer, hosted_billing=123)
+        data["service"] = str(service.pk)
+        self.assertRedirects(self.client.post(url, data), reverse("support"))
+        form = NewSubscriptionForm(
+            {"package": package.pk, "kind": InvoiceKind.QUOTE, "currency": Currency.EUR}
+        )
+        self.assertIn("package", form.errors)
+        self.assertNotIn("kind", form.errors)
+        self.assertNotIn("currency", form.errors)
+        with self.assertRaisesRegex(ValueError, "unavailable for new subscriptions"):
+            Subscription.new_subscription_invoice(
+                kind=InvoiceKind.DRAFT, customer=customer, package=package
+            )
+
+        self.assertFalse(Invoice.objects.exists())
+        self.assertFalse(Payment.objects.exists())
+        data["plan"] = "hosted:10k"
+        self.assertRedirects(
+            self.client.post(url, data),
+            "https://hosted.weblate.org/billing/123/",
+            fetch_redirect_response=False,
+        )
+
+    def test_legacy_hosted_package_upgrade_targets(self) -> None:
+        sync_packages()
+        customer = Customer.objects.create(user_id=-1)
+        service = Service.objects.create(customer=customer)
+        for legacy, successor in (
+            ("basic", "10k"),
+            ("medium", "40k"),
+            ("advanced", "640k"),
+            ("advanced-20000", "640k"),
+            ("enterprise", "10m"),
+        ):
+            for period in ("m", "y"):
+                with self.subTest(legacy=legacy, period=period):
+                    package = Package.objects.get(
+                        name=hosted_plan_to_package(legacy, period)
+                    )
+                    subscription = Subscription(
+                        service=service,
+                        package=package,
+                        expires=timezone.now() + timedelta(days=20),
+                    )
+                    target = subscription.upgrade_package
+                    assert target is not None
+                    self.assertEqual(
+                        target.name, hosted_plan_to_package(successor, period)
+                    )
+                    self.assertFalse(target.hidden)
+                    target.hidden = True
+                    self.assertFalse(subscription.can_upgrade_to(target))
+
     def test_sync_packages_corrects_existing_categories(self) -> None:
         sync_packages()
         expected = {

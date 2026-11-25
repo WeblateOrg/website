@@ -14,7 +14,7 @@ All fields shown here are required.
   "workspace_id": "a8171a76-f3fa-48aa-8082-89e010185d82",
   "workspace_name": "Example Workspace",
   "customer_name": "Example Customer",
-  "plan": "hosted-10k",
+  "plan": "10k",
   "administrators": ["123"],
   "state": "active",
   "payment_mode": "local",
@@ -172,3 +172,40 @@ applicable. Hosted upgrades stay on Hosted until CRM package mapping is availabl
 
 Historical subscription reconstruction and entitlement publishing remain
 separate rollout steps.
+
+## Hosted plan and package mapping
+
+Run `manage.py sync_packages` before historical subscription reconstruction.
+It provisions hidden shared packages for Basic, Medium, Advanced, Advanced 20k
+and Enterprise at their Hosted prices. Advanced 20k has 20,000 source strings
+and 30 languages.
+
+Use `hosted_plan_to_package(slug, period)` with the plan slug from the
+historical purchase or invoice and its period (`m` or `y`). Supported string
+tiers are `10k`, `40k`, `160k`, `640k`, `2-5m` and `10m`. The `2-5m`
+slug maps to `hosted:2.5m`. Monthly names end in `-m`. The snapshot example
+uses `10k` as the Hosted slug.
+
+Non-profit slugs resolve to their regular packages. Use
+`hosted_plan_requires_nonprofit_discount` to identify those purchases.
+Reconstruction must check for existing discounts and mixed discounted and
+undiscounted services before applying a customer-wide discount. Some Hosted
+prices round down from exactly half the regular price. Flag differences for
+review and preserve recorded payment amounts.
+
+For future entitlement synchronization, `package_to_hosted_plan(name)`
+returns the canonical regular Hosted slug. Use the subscription period and
+customer discount separately.
+
+Libre (`libre`, `libre-2-5m`) and internal unlimited
+(`weblate-unlimited`) have no paid package. The retired
+`enterprise-collabora` and `enterprise-for-non-profit-200-languages` plans,
+other custom or unknown slugs, and website packages without a confirmed
+Hosted equivalent require explicit handling if encountered during migration.
+
+Hidden packages are unavailable for new website purchases and as upgrade
+targets. They remain usable for historical reconstruction and existing
+subscriptions. Website upgrade suggestions for legacy Hosted packages use
+the next tier by price and preserve the billing period. Basic moves to
+10k, Medium to 40k, Advanced and Advanced 20k to 640k, and Enterprise to 10M.
+Usage-aware suggestions are a follow-up.

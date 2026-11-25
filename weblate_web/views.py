@@ -1520,6 +1520,9 @@ def subscription_new(request):
         package = Package.objects.get(name=plan)
     except Package.DoesNotExist:
         return redirect("support")
+    if package.hidden:
+        return redirect("support")
+
     service: Service | None
     if "service" in data:
         service = get_object_or_404(

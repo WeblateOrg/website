@@ -64,11 +64,13 @@ from .packages import (
     DEDICATED_LIMIT,
     DEDICATED_PREFIX,
     HOSTED_PREFIX,
+    LEGACY_HOSTED_PACKAGES,
     MONTHLY_SUFFIX,
     PACKAGE_NAMES,
     PACKAGE_UPGRADES,
     PACKAGES,
     SUPPORT_PACKAGES,
+    hosted_plan_to_package,
 )
 from .url_utils import normalize_site_url, normalize_site_url_for_lock
 from .utils import HOSTED_ORIGIN
@@ -1546,7 +1548,7 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
         )
 
     def can_upgrade_to(self, package: Package | None) -> bool:
-        if package is None:
+        if package is None or package.hidden:
             return False
         repeat = self.package.get_repeat()
         return (
@@ -1926,6 +1928,9 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
         customer_note: str = "",
         skip_intro: bool = False,
     ) -> Invoice:
+        if package.hidden:
+            msg = "Hidden packages are unavailable for new subscriptions."
+            raise ValueError(msg)
         start_date = timezone.now()
         end_date = None
         if service:
@@ -2386,4 +2391,39 @@ def sync_packages() -> list[str]:
                 modified = True
             if modified:
                 package.save()
+    for slug, (
+        label,
+        monthly_price,
+        strings,
+        languages,
+        projects,
+    ) in LEGACY_HOSTED_PACKAGES.items():
+        for period, interval, price in (
+            ("y", "yearly", monthly_price * 10),
+            ("m", "monthly", monthly_price),
+        ):
+            name = hosted_plan_to_package(slug, period)
+            defaults = {
+                "category": ServiceCategory.SHARED,
+                "verbose": f"Weblate hosting ({label}, {interval})",
+                "price": price,
+                "limit_source_strings": strings,
+                "limit_languages": languages,
+                "limit_projects": projects,
+                "hidden": True,
+            }
+            package, created = Package.objects.get_or_create(
+                name=name, defaults=defaults
+            )
+            if created:
+                output.append(f"Created {package.verbose}")
+                continue
+            changes = {
+                field: value
+                for field, value in defaults.items()
+                if getattr(package, field) != value
+            }
+            if changes:
+                Package.objects.filter(pk=package.pk).update(**changes)
+                output.append(f"Updating {name}: {', '.join(changes)}")
     return output
