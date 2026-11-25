@@ -22,7 +22,8 @@ from __future__ import annotations
 import json
 import random
 import re
-from datetime import datetime, time, timedelta
+from datetime import UTC, datetime, time, timedelta
+from http import HTTPStatus
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
@@ -47,6 +48,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.formats import date_format
+from django.utils.http import parse_http_date_safe
 from django.utils.translation import gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
@@ -599,6 +602,33 @@ class PaymentView(FormView, PaymentObjectMixin):
             return redirect(self.object.get_complete_url())
         return super().get(request, *args, **kwargs)
 
+    @staticmethod
+    def payment_error_message(error: PaymentError, fallback: str) -> str:
+        match error.status_code:
+            case HTTPStatus.CONFLICT:
+                return gettext(
+                    "A payment may already have been started. Contact us before trying again."
+                )
+            case HTTPStatus.TOO_MANY_REQUESTS:
+                return gettext(
+                    "The payment service is busy. Please try again in a few minutes."
+                )
+            case HTTPStatus.SERVICE_UNAVAILABLE:
+                retry_at = parse_http_date_safe(error.unavailable_until or "")
+                if retry_at is not None and retry_at > timezone.now().timestamp():
+                    return gettext(
+                        "The payment service is temporarily unavailable. Please try again after %(time)s UTC."
+                    ) % {
+                        "time": date_format(
+                            datetime.fromtimestamp(retry_at, tz=UTC), "DATETIME_FORMAT"
+                        )
+                    }
+                return gettext(
+                    "The payment service is temporarily unavailable. Please try again later."
+                )
+            case _:
+                return fallback
+
     def form_valid(self, form):
         if not self.can_pay:
             return redirect("payment", pk=self.object.pk)
@@ -616,9 +646,12 @@ class PaymentView(FormView, PaymentObjectMixin):
                 self.object.get_complete_url(),
             )
         except PaymentError as error:
-            sentry_sdk.capture_exception()
+            sentry_sdk.capture_exception(error)
             messages.error(
-                self.request, gettext("Could not perform payment: %s") % error
+                self.request,
+                self.payment_error_message(
+                    error, gettext("Could not start your payment.")
+                ),
             )
             return super().form_invalid(form)
         if result is not None:
@@ -626,9 +659,12 @@ class PaymentView(FormView, PaymentObjectMixin):
         try:
             backend.complete(self.request)
         except PaymentError as error:
-            sentry_sdk.capture_exception()
+            sentry_sdk.capture_exception(error)
             messages.error(
-                self.request, gettext("Could not complete payment: %s") % error
+                self.request,
+                self.payment_error_message(
+                    error, gettext("Could not check your payment status.")
+                ),
             )
             return super().form_invalid(form)
         return self.redirect_origin()

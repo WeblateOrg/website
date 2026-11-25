@@ -30,6 +30,8 @@ import fiobank
 import requests
 import sentry_sdk
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -288,7 +290,24 @@ class InvalidState(ValueError):
 
 
 class PaymentError(Exception):
-    pass
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int | None = None,
+        provider_message: str | None = None,
+        unavailable_until: str | None = None,
+    ) -> None:
+        self.status_code = status_code
+        self.provider_message = provider_message
+        self.unavailable_until = unavailable_until
+        if status_code is not None:
+            message = f"{message} (HTTP {status_code})"
+        if provider_message:
+            message = f"{message}: {provider_message}"
+        if unavailable_until:
+            message = f"{message} (Unavailable-Until: {unavailable_until})"
+        super().__init__(message)
 
 
 def register_backend(backend: type[Backend]) -> type[Backend]:
@@ -1017,6 +1036,20 @@ class ThePay2Card(Backend):
     recurring = True
     thepay_method_code = "card"
     supported_currencies: set[str] = {"EUR", "CZK", "GBP", "USD"}
+    recurring_states = frozenset({"paid", "error", "waiting_for_confirmation"})
+    payment_states = recurring_states | {
+        # Also accept the cancellation values used by existing checkout flows.
+        "cancelled",
+        "payment_cancelled",
+        "expired",
+        "partially_refunded",
+        "preauth_cancelled",
+        "preauth_expired",
+        "preauthorized",
+        "refunded",
+        "waiting_for_payment",
+    }
+    validate_pay_url = URLValidator(schemes=["http", "https"])
 
     @staticmethod
     def get_headers() -> dict[str, str]:
@@ -1033,42 +1066,121 @@ class ThePay2Card(Backend):
         params: dict | None = None,
         json: dict | None = None,
         api_version: str = "v1",
-    ) -> dict:
-        if params is None:
-            params = {}
-        params["merchant_id"] = settings.THEPAY_MERCHANT_ID
-
-        headers = cls.get_headers()
-
+    ) -> dict[str, Any]:
         base_url = f"https://{settings.THEPAY_SERVER}/{api_version}/projects/{settings.THEPAY_PROJECT_ID}"
 
-        response = requests.request(
-            method,
-            f"{base_url}/{url}",
-            params=params,
-            json=json,
-            headers=headers,
-            timeout=60,
-        )
-
-        # Use service specific error message if available
-        if 500 > response.status_code >= 400:
-            try:
-                payload = response.json()
-            except requests.RequestException:
-                pass
-            else:
-                if message := payload.get("message"):
-                    raise PaymentError(message)
-
-        # Fallback to standardad requests handing
+        transport_error: requests.RequestException | None = None
         try:
-            response.raise_for_status()
-        except requests.HTTPError as error:
-            sentry_sdk.capture_exception()
-            raise PaymentError(str(error)) from error
+            response = requests.request(
+                method,
+                f"{base_url}/{url}",
+                params={**(params or {}), "merchant_id": settings.THEPAY_MERCHANT_ID},
+                json=json,
+                headers=cls.get_headers(),
+                timeout=60,
+            )
+        except requests.RequestException as error:
+            if error.response is None:
+                raise PaymentError("Could not reach ThePay") from error
+            response = error.response
+            transport_error = error
 
-        return response.json()
+        decode_error: ValueError | None = None
+        try:
+            payload = response.json()
+        except ValueError as error:
+            payload = None
+            decode_error = error
+
+        status_code = response.status_code
+        if transport_error is not None:
+            diagnostic = "ThePay request failed"
+        elif not 200 <= status_code < 300:
+            diagnostic = "ThePay returned an unexpected HTTP status"
+        elif decode_error is not None:
+            diagnostic = "ThePay returned invalid JSON"
+        elif not isinstance(payload, dict):
+            diagnostic = "ThePay response must be a JSON object"
+        elif field := cls.invalid_response_field(method.lower(), url, payload):
+            diagnostic = f"Invalid or missing ThePay response field: {field}"
+        else:
+            return payload
+
+        message = payload.get("message") if isinstance(payload, dict) else None
+        raise PaymentError(
+            diagnostic,
+            status_code=status_code,
+            provider_message=message
+            if isinstance(message, str) and message.strip()
+            else None,
+            unavailable_until=response.headers.get("Unavailable-Until"),
+        ) from (transport_error or decode_error)
+
+    @classmethod
+    def invalid_response_field(
+        cls, method: str, url: str, payload: dict[str, Any]
+    ) -> str | None:
+        if method == "post" and url == "payments":
+            pay_url = payload.get("pay_url")
+            if not isinstance(pay_url, str):
+                return "pay_url"
+            try:
+                cls.validate_pay_url(pay_url)
+            except ValidationError:
+                return "pay_url"
+        elif method == "post" and url.endswith("/savedauthorization"):
+            return cls.invalid_recurring_result_field(payload)
+        elif method == "get" and url.startswith("payments/"):
+            return cls.invalid_payment_detail_field(payload)
+        return None
+
+    @classmethod
+    def invalid_payment_detail_field(cls, payload: dict[str, Any]) -> str | None:
+        state = payload.get("state")
+        if not isinstance(state, str) or state not in cls.payment_states:
+            return "state"
+        if state == "paid":
+            card = payload.get("card")
+            if card is not None and (
+                not isinstance(card, dict)
+                or not isinstance(number := card.get("number"), str)
+                or not re.fullmatch(r"[0-9*]{1,19}", number)
+            ):
+                return "card.number"
+        events = payload.get("events", [])
+        if not isinstance(events, list) or any(
+            not isinstance(event, dict)
+            or not isinstance(event.get("type"), str)
+            or not event["type"].strip()
+            or (event.get("data") is not None and not isinstance(event["data"], str))
+            for event in events
+        ):
+            return "events"
+        return cls.invalid_recurring_metadata_field(payload, allow_null_parent=True)
+
+    @classmethod
+    def invalid_recurring_result_field(cls, payload: dict[str, Any]) -> str | None:
+        state = payload.get("state")
+        if not isinstance(state, str) or state not in cls.recurring_states:
+            return "state"
+        return cls.invalid_recurring_metadata_field(payload)
+
+    @staticmethod
+    def invalid_recurring_metadata_field(
+        payload: dict[str, Any], *, allow_null_parent: bool = False
+    ) -> str | None:
+        message = payload.get("message")
+        if message is not None and not isinstance(message, str):
+            return "message"
+        if "parent" in payload:
+            parent = payload["parent"]
+            if parent is None and allow_null_parent:
+                return None
+            if not isinstance(parent, dict) or not isinstance(
+                parent.get("recurring_payments_available"), bool
+            ):
+                return "parent.recurring_payments_available"
+        return None
 
     def get_language(self) -> str:
         language = get_language().lower().replace("_", "-").split("-")[0]
@@ -1216,14 +1328,19 @@ class ThePay2Card(Backend):
         if self.payment.has_unavailable_recurring_authorization:
             return False
         response = self.payment.details.get("repeat_response", {})
-        state = response.get("state")
+        if not isinstance(response, dict) or self.invalid_recurring_result_field(
+            response
+        ):
+            sentry_sdk.capture_message(
+                "Malformed stored ThePay recurring payment response"
+            )
+            return None
+        state = response["state"]
         if state == "paid":
             return True
         if state == "error":
             self.record_recurring_failure(response)
             return False
-        if state != "waiting_for_confirmation":
-            sentry_sdk.capture_message("Unexpected ThePay recurring payment state")
         return None
 
     def record_recurring_failure(self, response: dict[str, Any]) -> None:
