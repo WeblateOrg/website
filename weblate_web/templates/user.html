@@ -26,6 +26,21 @@
             {% include "snippets/service.html" %}
           {% endfor %}
         {% endif %}
+        {% if hosted_invoice_customers %}
+          <h1>{% translate "Hosted invoices" %}</h1>
+          {% for customer in hosted_invoice_customers %}
+            {% if customer.invoice_payments %}
+              <div class="payment-form">
+                <h2>{{ customer.verbose_name }}</h2>
+                <table class="payments-table">
+                  {% for payment in customer.invoice_payments %}
+                    {% include "snippets/payment.html" %}
+                  {% endfor %}
+                </table>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
         <div class="page-desc">
           <a class="button inline" href="{% url "support" %}">{% translate "Get support" %}</a>
           <a class="button inline border rev"

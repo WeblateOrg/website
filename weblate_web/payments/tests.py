@@ -1370,6 +1370,36 @@ class BackendTest(BackendBaseTestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     @responses.activate
+    @override_settings(FIO_TOKEN="test-token")  # ruff: ignore[hardcoded-password-func-arg]
+    def test_invalid_hosted_renewal_bank_match_is_recorded_only_if_unapplied(
+        self,
+    ) -> None:
+        invalid = self.create_invoice()
+        invalid.extra = {"hosted_renewal": True, "billing": 42, "period": "y"}
+        invalid.save(update_fields=["extra"])
+        valid = self.create_invoice()
+        self.mock_fio_payment(valid, payment_message=f"{invalid.number} {valid.number}")
+        FioBank.fetch_payments()
+        self.assertTrue(valid.paid_payment_set.exists())
+        self.assertFalse(invalid.draft_payment_set.exists())
+        self.assertFalse(
+            self.customer.interaction_set.filter(
+                summary__startswith="Unapplied bank transfer"
+            ).exists()
+        )
+
+        self.mock_fio_payment(invalid, transaction_id=12210832098, replace=True)
+        for _attempt in range(2):
+            FioBank.fetch_payments()
+        note = self.customer.interaction_set.get(
+            summary__startswith="Unapplied bank transfer"
+        )
+        self.assertEqual(
+            note.details["rejected_invoices"][0]["invoice_id"], str(invalid.pk)
+        )
+        self.assertFalse(invalid.draft_payment_set.exists())
+
+    @responses.activate
     @override_settings(
         FIO_TOKEN="test-token",  # ruff:ignore[hardcoded-password-func-arg]
     )

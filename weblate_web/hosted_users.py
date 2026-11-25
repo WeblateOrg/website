@@ -324,6 +324,7 @@ def sync_hosted_identity(  # ruff:ignore[too-many-arguments]
     create_unknown_user: bool = True,
     cycle_unusable_password: bool = False,
     context: HostedSyncContext | None = None,
+    defer_pending_owners: bool = False,
 ) -> tuple[User | None, bool]:
     external_id = normalize_external_id(external_id)
     if not external_id:
@@ -387,11 +388,22 @@ def sync_hosted_identity(  # ruff:ignore[too-many-arguments]
         if raw_attrs is not None:
             identity.raw_attrs = raw_attrs
         identity.save(update_fields=("last_seen", "raw_attrs"))
+    if (
+        not defer_pending_owners
+        and provider == get_default_hosted_provider()
+        and user.is_active
+    ):
+        from weblate_web.hosted_services import apply_pending_hosted_owners  # ruff: ignore[import-outside-top-level]
+
+        transaction.on_commit(lambda: apply_pending_hosted_owners({external_id}))
     return user, created_user
 
 
 def sync_hosted_payload(
-    payload: dict[str, Any], context: HostedSyncContext | None = None
+    payload: dict[str, Any],
+    context: HostedSyncContext | None = None,
+    *,
+    defer_pending_owners: bool = False,
 ) -> tuple[User | None, bool]:
     external_id = payload.get("external_id")
     if external_id is None:
@@ -403,4 +415,5 @@ def sync_hosted_payload(
         raw_attrs=payload,
         cycle_unusable_password=bool(payload.get("changes")),
         context=context,
+        defer_pending_owners=defer_pending_owners,
     )

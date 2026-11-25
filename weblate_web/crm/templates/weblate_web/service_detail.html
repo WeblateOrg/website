@@ -61,6 +61,70 @@
           {% endif %}
         </dd>
       </div>
+      {% if object.is_hosted_workspace %}
+        <div>
+          <dt>{% translate "Hosted billing" %}</dt>
+          <dd>
+            {{ object.hosted_billing }}
+          </dd>
+        </div>
+      {% endif %}
+      {% if object.is_hosted_workspace or object.hosted_snapshot_at %}
+        <div>
+          <dt>{% translate "Last Hosted synchronization" %}</dt>
+          <dd>
+            {% if object.hosted_synced_at %}
+              {{ object.hosted_synced_at|date:"DATETIME_FORMAT" }}
+            {% elif object.hosted_snapshot_at %}
+              {% translate "Time unavailable" %}
+            {% else %}
+              {% translate "Never synchronized" %}
+            {% endif %}
+          </dd>
+        </div>
+      {% endif %}
+      {% if object.hosted_snapshot_at %}
+        <div>
+          <dt>{% translate "Hosted workspace" %}</dt>
+          <dd>
+            <a href="{{ object.hosted_workspace_url }}">{{ object.hosted_snapshot.workspace_name }}</a>
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Hosted plan and status" %}</dt>
+          <dd>
+            {{ object.hosted_snapshot.plan }} ·
+            {% if object.hosted_snapshot.state == "active" %}
+              {% translate "Active" %}
+            {% elif object.hosted_snapshot.state == "trial" %}
+              {% translate "Trial" %}
+            {% elif object.hosted_snapshot.state == "terminated" %}
+              {% translate "Terminated" %}
+            {% else %}
+              {% translate "Unknown billing state" %}
+            {% endif %}
+            ·
+            {% if object.hosted_snapshot.payment_mode == "local" %}
+              {% translate "Local" %}
+            {% elif object.hosted_snapshot.payment_mode == "external" %}
+              {% translate "External" %}
+            {% else %}
+              {% translate "Unknown payment mode" %}
+            {% endif %}
+            {% if object.hosted_snapshot.paid %}
+              · {% translate "Paid" %}
+            {% else %}
+              · {% translate "Unpaid" %}
+            {% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>{% translate "Hosted customer name" %}</dt>
+          <dd>
+            {{ object.hosted_snapshot.customer_name }}
+          </dd>
+        </div>
+      {% endif %}
       {% with subscriptions=object.subscription_set.all %}
         {% if subscriptions %}
           <div>
@@ -285,33 +349,35 @@
             </div>
           </form>
 
-          {% for package in subscription.upgrade_packages %}
-            {% blocktranslate asvar upgrade_title %}Upgrade to {{ package }}{% endblocktranslate %}
-            {% translate "For the rest of the current period." as upgrade_period_message %}
-            {% translate "This creates a final invoice for the upgrade. Use Quote if you only need an offer." as upgrade_invoice_message %}
-            <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--purchase"
-                  method="post"
-                  data-crm-invoice-confirm
-                  data-crm-invoice-kind="{{ invoice_kind_invoice }}"
-                  data-crm-invoice-confirm-message="{{ upgrade_invoice_message }}">
-              <h3>{{ upgrade_title }}</h3>
-              {% csrf_token %}
-              <div class="crm-form-panel__body">
-                <p class="crm-muted">{{ upgrade_period_message }}</p>
-                {{ reference_form }}
-                {% include "crm/snippets/invoice_kind_field.html" with form=subscription_action_form %}
-                <input type="hidden" name="subscription" value="{{ subscription.pk }}">
-                <input type="hidden" name="package" value="{{ package.name }}">
-                <input type="hidden"
-                       name="action"
-                       value="{{ subscription_action_form.ACTION_UPGRADE }}">
-                <input type="hidden" name="confirm_invoice" value="">
-              </div>
-              <div class="crm-form-panel__actions">
-                <input class="crm-button" type="submit" value="{% translate "Create" %}">
-              </div>
-            </form>
-          {% endfor %}
+          {% if not object.is_hosted_workspace %}
+            {% for package in subscription.upgrade_packages %}
+              {% blocktranslate asvar upgrade_title %}Upgrade to {{ package }}{% endblocktranslate %}
+              {% translate "For the rest of the current period." as upgrade_period_message %}
+              {% translate "This creates a final invoice for the upgrade. Use Quote if you only need an offer." as upgrade_invoice_message %}
+              <form class="crm-form-panel crm-form-panel--balanced crm-form-panel--purchase"
+                    method="post"
+                    data-crm-invoice-confirm
+                    data-crm-invoice-kind="{{ invoice_kind_invoice }}"
+                    data-crm-invoice-confirm-message="{{ upgrade_invoice_message }}">
+                <h3>{{ upgrade_title }}</h3>
+                {% csrf_token %}
+                <div class="crm-form-panel__body">
+                  <p class="crm-muted">{{ upgrade_period_message }}</p>
+                  {{ reference_form }}
+                  {% include "crm/snippets/invoice_kind_field.html" with form=subscription_action_form %}
+                  <input type="hidden" name="subscription" value="{{ subscription.pk }}">
+                  <input type="hidden" name="package" value="{{ package.name }}">
+                  <input type="hidden"
+                         name="action"
+                         value="{{ subscription_action_form.ACTION_UPGRADE }}">
+                  <input type="hidden" name="confirm_invoice" value="">
+                </div>
+                <div class="crm-form-panel__actions">
+                  <input class="crm-button" type="submit" value="{% translate "Create" %}">
+                </div>
+              </form>
+            {% endfor %}
+          {% endif %}
         </div>
       </div>
 

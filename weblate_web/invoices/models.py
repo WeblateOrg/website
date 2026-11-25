@@ -75,7 +75,7 @@ from weblate_web.const import (
 )
 from weblate_web.exchange_rates import ExchangeRates
 from weblate_web.pdf import count_pdf_pages, render_pdf
-from weblate_web.utils import get_site_url
+from weblate_web.utils import HOSTED_ORIGIN, get_site_url
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -136,6 +136,10 @@ def url_fetcher(url: str) -> dict[str, str | bytes]:
 class QuantityUnit(models.IntegerChoices):
     BLANK = 0, ""
     HOURS = 1, "hours"
+
+
+class HostedRenewalValidationError(ValueError):
+    """The invoice or payment does not match the Hosted renewal."""
 
 
 class Currency(models.IntegerChoices):
@@ -1444,11 +1448,58 @@ class Invoice(models.Model):  # ruff:ignore[too-many-public-methods]
                 )
         return invoice
 
+    def get_hosted_renewal_period(self) -> str:
+        from weblate_web.models import Service  # ruff: ignore[import-outside-top-level]
+
+        service_id = self.extra.get("service")
+        billing_id = self.extra.get("billing")
+        period = self.extra.get("period")
+        if (
+            any(
+                not isinstance(value, int) or isinstance(value, bool)
+                for value in (service_id, billing_id)
+            )
+            or billing_id <= 0
+            or not isinstance(period, str)
+            or period not in {"m", "y"}
+        ):
+            raise HostedRenewalValidationError("Invalid Hosted renewal metadata")
+        if (
+            self.currency != Currency.EUR
+            or self.category != ServiceCategory.SHARED
+            or self.customer.origin != HOSTED_ORIGIN
+            or {"subscription", "subscription_upgrade"} & self.extra.keys()
+            or not Service.objects.filter(
+                pk=service_id, hosted_billing=billing_id, customer_id=self.customer_id
+            ).exists()
+        ):
+            raise HostedRenewalValidationError("Invalid Hosted renewal invoice")
+        return period
+
+    def validate_hosted_renewal_payment(self, payment: Payment) -> None:
+        if self.extra.get("hosted_renewal") is not True:
+            return
+        self.get_hosted_renewal_period()
+        if (
+            payment.customer_id != self.customer_id
+            or payment.currency != CURRENCY_MAP[Currency.EUR]
+            or any(
+                payment.extra.get(key) != self.extra[key]
+                for key in ("hosted_renewal", "billing", "service", "period")
+            )
+            or {"subscription", "subscription_upgrade"} & payment.extra.keys()
+        ):
+            raise HostedRenewalValidationError(
+                "Payment does not match Hosted renewal invoice"
+            )
+
     def create_payment(
         self, *, recurring: str = "", backend: str = "", repeat: Payment | None = None
     ) -> Payment:
         if not self.can_be_paid(InvoiceKind.DRAFT):
             raise ValueError("Payment already exists for this invoice!")
+        if self.extra.get("hosted_renewal") is True:
+            recurring = self.get_hosted_renewal_period()
         return self.draft_payment_set.create(
             amount=self.total_amount,
             requested_amount=self.total_amount,

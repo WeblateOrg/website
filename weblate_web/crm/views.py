@@ -318,6 +318,7 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
     filter_tabs = (
         ("all", gettext_noop("All services")),
         ("expired", gettext_noop("Expired services")),
+        ("hosted", gettext_noop("Hosted Weblate")),
         ("dedicated", gettext_noop("Dedicated hosting")),
         ("basic", gettext_noop("Basic support")),
         ("extended", gettext_noop("Extended support")),
@@ -329,20 +330,16 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
         return timezone.now()
 
     def get_title(self) -> str:
-        match self.kwargs["kind"]:
-            case "all":
-                return "All services"
-            case "expired":
-                return "Expired services"
-            case "basic":
-                return gettext("Basic support services")
-            case "extended":
-                return "Extended support services"
-            case "dedicated":
-                return "Dedicated hosting services"
-            case "premium":
-                return "Premium support services"
-        raise ValueError(self.kwargs["kind"])
+        titles = {
+            "all": gettext_noop("All services"),
+            "expired": gettext_noop("Expired services"),
+            "basic": gettext_noop("Basic support services"),
+            "extended": gettext_noop("Extended support services"),
+            "hosted": gettext_noop("Hosted Weblate services"),
+            "dedicated": gettext_noop("Dedicated hosting services"),
+            "premium": gettext_noop("Premium support services"),
+        }
+        return gettext(titles[self.kwargs["kind"]])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # type:ignore[misc]
@@ -371,6 +368,8 @@ class ServiceListView(CRMFilterTabsMixin, ListView[Service]):  # type: ignore[mi
                 return sorted(expired, key=attrgetter("package_kind"))
             case ("basic" | "extended" | "premium") as package_name:
                 return qs.filter(Exists(active.filter(package__name=package_name)))
+            case "hosted":
+                return qs.filter(hosted_billing__gt=0).order()
             case "dedicated":
                 return qs.filter(
                     Exists(active.filter(package__category=ServiceCategory.DEDICATED))
@@ -486,6 +485,11 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
     ):
         subscription = form.cleaned_data["subscription"]
         kind = form.cleaned_data["kind"]
+        if upgrade and service.is_hosted_workspace:
+            messages.error(
+                request, gettext("Upgrade this subscription on Hosted Weblate.")
+            )
+            return redirect(service)
         if upgrade:
             create_invoice = subscription.create_upgrade_invoice
         else:
@@ -507,24 +511,30 @@ class ServiceDetailView(CRMMixin, DetailView[Service]):  # type: ignore[misc]
             if not vat_valid:
                 return redirect(service)
 
-        with override("en"):
-            kwargs = {
-                "kind": kind,
-                "customer_reference": form.cleaned_data["customer_reference"],
-                "customer_note": form.cleaned_data["customer_note"],
-            }
-            if package is not None:
-                kwargs["package"] = package
-            try:
+        kwargs = {
+            "kind": kind,
+            "customer_reference": form.cleaned_data["customer_reference"],
+            "customer_note": form.cleaned_data["customer_note"],
+        }
+        if service.is_hosted_workspace:
+            kwargs["hosted_renewal"] = True
+        if package is not None:
+            kwargs["package"] = package
+        try:
+            with override("en"):
                 invoice = create_invoice(**kwargs)
-            except ValueError:
-                messages.error(
-                    request,
-                    gettext(
-                        "This subscription can not be upgraded to the selected package."
-                    ),
+        except (ValueError, Payment.DoesNotExist):
+            messages.error(
+                request,
+                gettext(
+                    "A Hosted renewal requires a Hosted customer, an existing EUR payment, and a monthly or yearly package."
                 )
-                return redirect(service)
+                if service.is_hosted_workspace
+                else gettext(
+                    "This subscription can not be upgraded to the selected package."
+                ),
+            )
+            return redirect(service)
         if vat_warning is not None:
             _record_vat_issuance_warning(
                 request, service.customer, invoice, vat_warning

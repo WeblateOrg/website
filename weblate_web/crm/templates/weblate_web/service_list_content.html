@@ -4,6 +4,9 @@
   <tr>
     <th scope="row">
       <a href="{{ object.get_absolute_url }}">{{ object.site_title }}</a>
+      {% if object.is_hosted_workspace %}
+        <span class="crm-token">{% blocktranslate with billing=object.hosted_billing %}Hosted billing #{{ billing }}{% endblocktranslate %}</span>
+      {% endif %}
     </th>
     <td>
       <a href="{% url "crm:customer-detail" pk=object.customer.pk %}">{{ object.customer.verbose_name }}</a>
@@ -13,7 +16,9 @@
     </td>
     <td>{{ object.site_version|default:"-" }}</td>
     <td>
-      {% if not object.support_expires_at %}
+      {% if object.is_hosted_workspace and not object.support_expires_at %}
+        <span class="crm-badge crm-badge--muted">{% translate "No support subscription" %}</span>
+      {% elif not object.support_expires_at %}
         <span class="crm-badge crm-badge--muted">{% translate "Community" %}</span>
       {% elif object.support_expires_at >= support_status_at %}
         <span class="crm-badge crm-badge--success">{% blocktranslate with expiry=object.support_expires_at|date:"DATE_FORMAT" %}Active until {{ expiry }}{% endblocktranslate %}</span>

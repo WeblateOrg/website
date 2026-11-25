@@ -124,11 +124,8 @@ class TestSubscriptionUpgradeFlow:  # pylint: disable=redefined-outer-name
     def test_hosted_upgrade(
         self, page: Page, live_server, authenticated_user: User
     ) -> None:
-        """Test upgrading a hosted subscription to the next hosted plan."""
-        subscription = create_active_subscription(
-            authenticated_user, "hosted:10k", hosted_billing=42
-        )
-        original_expires = subscription.expires
+        """Verify Hosted manages its own subscription upgrades."""
+        create_active_subscription(authenticated_user, "hosted:10k", hosted_billing=42)
 
         log_in(page, live_server)
         response = page.goto(f"{live_server.url}/en/user/")
@@ -139,18 +136,10 @@ class TestSubscriptionUpgradeFlow:  # pylint: disable=redefined-outer-name
         assert page.get_by_role("link", name="Change plan").get_attribute("href") == (
             "https://hosted.weblate.org/create/billing/?billing=42&upgrade=1"
         )
-        assert page.locator("text=Upgrade to Weblate hosting (40k strings").is_visible()
-
-        submit_upgrade(page, "hosted:40k")
-        page.screenshot(path="test-results/upgrade-hosted-payment.png", full_page=True)
-        assert page.locator("text=Payment Summary").is_visible()
-        complete_debug_payment(page)
-        page.screenshot(path="test-results/upgrade-hosted-user.png", full_page=True)
-
-        subscription.refresh_from_db()
-        assert subscription.package.name == "hosted:40k"
-        assert subscription.expires == original_expires
-        assert "/user/" in page.url, f"Expected user page, got: {page.url}"
-        assert page.get_by_text(
-            "Weblate hosting (40k strings, yearly)", exact=True
-        ).is_visible()
+        assert (
+            page.get_by_role("link", name="Manage Hosted payments").get_attribute(
+                "href"
+            )
+            == "https://hosted.weblate.org/billing/42/"
+        )
+        assert page.locator('form[action*="/subscription/upgrade/"]').count() == 0

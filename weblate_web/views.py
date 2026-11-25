@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 import random
 import re
-from datetime import UTC, datetime, time, timedelta
+from datetime import UTC, datetime, timedelta
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
@@ -32,12 +32,11 @@ import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import AnonymousUser, User
 from django.core.exceptions import BadRequest, SuspiciousOperation, ValidationError
 from django.core.mail import mail_admins
 from django.core.signing import BadSignature, SignatureExpired, loads
 from django.db import DataError, IntegrityError, connection, transaction
-from django.db.models import F, OuterRef, Q, Subquery
+from django.db.models import Exists, F, OuterRef, Prefetch, Q, Subquery
 from django.http import (
     FileResponse,
     Http404,
@@ -76,6 +75,11 @@ from weblate_web.forms import (
     SupportReportForm,
     get_discovery_callback_url,
 )
+from weblate_web.hosted_association import HostedAssociationConflict
+from weblate_web.hosted_services import (
+    synchronize_hosted_service,
+    validate_hosted_snapshot,
+)
 from weblate_web.hosted_users import sync_hosted_payload
 from weblate_web.invoice_requests import submit_invoice_request
 from weblate_web.invoices.models import Invoice, InvoiceKind
@@ -91,7 +95,6 @@ from weblate_web.models import (
     ServiceActivity,
     Subscription,
     UnprocessablePaymentError,
-    add_subscription_past_payments,
     get_donation_package_verbose,
     get_donation_reward_package_names,
     is_pending_discovery_activation,
@@ -138,6 +141,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from django import forms
+    from django.contrib.auth.models import AnonymousUser, User
     from django.core.paginator import Page
     from django.http import HttpRequest, HttpResponse
 
@@ -196,7 +200,9 @@ def get_customer(
         return obj.customer
 
     # Use existing customer for user
-    customers = Customer.objects.for_owner(request.user)
+    customers = Customer.objects.for_owner(request.user).exclude(
+        service__hosted_billing__gt=0
+    )
     if origin is not None:
         customers = customers.filter(origin=origin)
     if len(customers) == 1:
@@ -295,81 +301,20 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
         sentry_sdk.capture_exception()
         raise BadRequest("Invalid signature") from error
 
-    billing_id: int = payload["billing"]
-
-    # TODO: This is temporary hack for payments migration period
-    payments = [
-        payment
-        for payment in Payment.objects.order_by("end").iterator()
-        if payment.extra.get("billing", -1) == billing_id
-    ]
-
-    # Get/create service for this billing
     try:
-        service = Service.objects.get(hosted_billing=billing_id)
-    except Service.DoesNotExist:
-        if payments:
-            customer = payments[0].customer
-        else:
-            # TODO: It has to be existing, verify
-            customer = Customer.objects.create(user_id=-1)
-        service = Service.objects.create(customer=customer, hosted_billing=billing_id)
+        snapshot = validate_hosted_snapshot(payload)
+    except (KeyError, TypeError, ValueError) as error:
+        raise BadRequest("Invalid Hosted snapshot") from error
 
-    if payments:
-        package = Package.objects.get(name=payload["package"])
-        expires = (
-            timezone.make_aware(datetime.combine(payments[-1].end, time.max))
-            if payments[-1].end
-            else timezone.now()
-        )
-        # Create/update subscription
-        subscription = service.subscription_set.get_or_create(
-            defaults={
-                "payment": payments[-1],
-                "package": package,
-                "expires": expires,
-            }
-        )[0]
-        if subscription.package_id != package.pk:
-            subscription.package = package
-            subscription.save(update_fields=["package"])
-        if subscription.payment_id and subscription.payment_id != payments[-1].pk:
-            # Include current payment in past payments
-            add_subscription_past_payments(subscription, subscription.payment_obj)
-
-            # Update current subscription payment
-            subscription.payment = payments[-1]
-            subscription.expires = expires
-            subscription.save(update_fields=["payment", "expires"])
-
-        # Link past payments
-        add_subscription_past_payments(subscription, *payments[:-1])
-
-    # Hosted service users are customer owners with full account access.
-    for user in payload["users"]:
-        service.customer.owners.add(User.objects.get_or_create(username=user)[0])
-
-    service.update_status()
-
-    # Collect stats
-    report = service.report_set.create(
-        site_url="https://hosted.weblate.org/",
-        site_title="Hosted Weblate",
-        projects=payload["projects"],
-        components=payload["components"],
-        languages=payload["languages"],
-        source_strings=payload["source_strings"],
-        hosted_words=payload["words"],
-        hosted_strings=payload.get("strings", 0),
-        version=extract_weblate_version(request),
-    )
+    try:
+        service_id, customer_id, snapshot_at = synchronize_hosted_service(snapshot)
+    except HostedAssociationConflict as error:
+        return JsonResponse({"billing": snapshot.billing, **error.details}, status=409)
     return JsonResponse(
-        data={
-            "name": service.status,
-            "expiry": service.expires,
-            "backup_repository": service.backup_repository,
-            "in_limits": report.is_valid_site_url() and service.check_in_limits(),
-            "limits": service.get_limits(),
+        {
+            "service_id": service_id,
+            "customer_id": customer_id,
+            "snapshot_at": snapshot_at.isoformat(),
         }
     )
 
@@ -491,6 +436,19 @@ class PaymentView(FormView, PaymentObjectMixin):
     def redirect_origin(self) -> HttpResponse:
         if self.object.state == Payment.CANCELLED:
             return self.redirect_cancelled_payment()
+        if (
+            self.object.customer.origin == HOSTED_ORIGIN
+            and self.object.extra.get("hosted_renewal") is True
+            and self.object.state in {Payment.ACCEPTED, Payment.PROCESSED}
+        ):
+            if self.object.state == Payment.ACCEPTED:
+                messages.info(
+                    self.request,
+                    gettext(
+                        "Payment received. Hosted Weblate is processing your renewal."
+                    ),
+                )
+            return redirect("user")
         if self.object.customer.origin in {PAYMENTS_ORIGIN, AUTO_ORIGIN}:
             return HttpResponseRedirect(
                 f"{reverse('donate-process')}?payment={self.object.pk}"
@@ -722,7 +680,11 @@ class CustomerBaseView(DetailView):
     request: AuthenticatedHttpRequest
 
     def get_queryset(self):
-        return super().get_queryset().for_owner(self.request.user)  # type: ignore[attr-defined]
+        return (
+            super()
+            .get_queryset()
+            .filter(pk__in=Customer.objects.for_owner(self.request.user))
+        )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -951,32 +913,25 @@ def download_payment_invoice(request: AuthenticatedHttpRequest, pk):
         raise Http404("Invoice not accessible to current user!")
 
     # New invoice model
-    if payment.paid_invoice:
-        if "receipt" in request.GET:
-            if not payment.paid_invoice.is_paid:
-                raise Http404("Receipt not available")
-            try:
+    if invoice := payment.paid_invoice or payment.draft_invoice:
+        try:
+            if payment.paid_invoice and "receipt" in request.GET:
+                if not invoice.is_paid:
+                    raise Http404("Receipt not available")
                 return FileResponse(
-                    payment.paid_invoice.receipt_path.open("rb"),
+                    invoice.receipt_path.open("rb"),
                     as_attachment=True,
-                    filename=payment.paid_invoice.receipt_filename,
+                    filename=invoice.receipt_filename,
                     content_type="application/pdf",
                 )
-            except (OSError, ValueError) as error:
-                raise Http404("Receipt not available") from error
-        return FileResponse(
-            payment.paid_invoice.path.open("rb"),
-            as_attachment=True,
-            filename=payment.paid_invoice.filename,
-            content_type="application/pdf",
-        )
-    if payment.draft_invoice:
-        return FileResponse(
-            payment.draft_invoice.path.open("rb"),
-            as_attachment=True,
-            filename=payment.draft_invoice.filename,
-            content_type="application/pdf",
-        )
+            return FileResponse(
+                invoice.path.open("rb"),
+                as_attachment=True,
+                filename=invoice.filename,
+                content_type="application/pdf",
+            )
+        except (OSError, ValueError) as error:
+            raise Http404("Invoice document not available") from error
 
     # Legacy payments storage
     if not payment.invoice_filename_valid:
@@ -1258,6 +1213,10 @@ def subscription_disable_repeat(request, pk):
     subscription = get_object_or_404(
         Subscription, pk=pk, service__customer__owners=request.user
     )
+    if subscription.service.is_hosted_workspace:
+        return redirect(
+            f"https://hosted.weblate.org/billing/{subscription.service.hosted_billing}/"
+        )
     payment = subscription.payment_obj
     payment.recurring = ""
     payment.save()
@@ -1274,8 +1233,13 @@ def service_token(request, pk):
 
 @require_POST
 @login_required
+@transaction.atomic
 def customer_owner(request, pk):
-    customer = get_object_or_404(Customer, pk=pk, owners=request.user)
+    customer = get_object_or_404(
+        Customer.objects.select_for_update(), pk=pk, owners=request.user
+    )
+    if customer.hosted_workspaces:
+        raise Http404
     if "remove" in request.POST:
         owner = get_object_or_404(customer.owners, pk=request.POST.get("owner"))
         if owner == request.user:
@@ -1326,6 +1290,7 @@ def customer_owner_invitation(request, token):
     invitation = resolve_invitation(token)
     if (
         invitation is None
+        or bool(invitation.customer.hosted_workspaces)
         or invitation.status != CustomerOwnerInvitation.Status.PENDING
         or invitation.expires_at <= timezone.now()
         or invitation.email != normalize_email(request.user.email)
@@ -1364,6 +1329,10 @@ def subscription_invoice_request(request: AuthenticatedHttpRequest, pk: int):
         pk=pk,
         service__customer__owners=request.user,
     )
+    if subscription.service.is_hosted_workspace:
+        return redirect(
+            f"https://hosted.weblate.org/billing/{subscription.service.hosted_billing}/"
+        )
     if not subscription.can_request_invoice():
         raise Http404
     form = InvoiceRequestForm(request.POST if request.method == "POST" else None)
@@ -1419,6 +1388,10 @@ def subscription_pay(request, pk):
     subscription = get_object_or_404(
         Subscription, pk=pk, service__customer__owners=request.user
     )
+    if subscription.service.is_hosted_workspace:
+        return redirect(
+            f"https://hosted.weblate.org/billing/{subscription.service.hosted_billing}/"
+        )
     renewal_invoices = list(subscription.get_renewal_invoices())
     if any(not invoice.can_be_paid() for invoice in renewal_invoices):
         messages.info(
@@ -1458,6 +1431,10 @@ def subscription_upgrade(request, pk):
     subscription = get_object_or_404(
         Subscription, pk=pk, service__customer__owners=request.user
     )
+    if subscription.service.is_hosted_workspace:
+        return redirect(
+            f"https://hosted.weblate.org/billing/{subscription.service.hosted_billing}/"
+        )
     package = None
     if package_name := request.POST.get("package"):
         package = Package.objects.filter(name=package_name).first()
@@ -1535,6 +1512,9 @@ def subscription_new(request):
         )
     else:
         service = None
+
+    if service is not None and service.is_hosted_workspace:
+        return redirect(f"https://hosted.weblate.org/billing/{service.hosted_billing}/")
 
     if request.method == "GET":
         return render(
@@ -1668,6 +1648,27 @@ class UserView(TemplateView):
                 customer__owners=self.request.user,
             )
         ]
+        invoice_payments = Payment.objects.filter(
+            Q(draft_invoice__isnull=False)
+            | Q(paid_invoice__isnull=False)
+            | ~Q(invoice="")
+        )
+        data["hosted_invoice_customers"] = (
+            Customer.objects.for_owner(self.request.user)
+            .filter(
+                Exists(invoice_payments.filter(customer_id=OuterRef("pk"))),
+                service__hosted_billing__gt=0,
+            )
+            .prefetch_related(
+                Prefetch(
+                    "payment_set",
+                    queryset=invoice_payments.select_related(
+                        "draft_invoice", "paid_invoice"
+                    ),
+                    to_attr="invoice_payments",
+                )
+            )
+        )
         data["user_donations"] = Service.objects.donations().filter(
             customer__owners=self.request.user,
         )
