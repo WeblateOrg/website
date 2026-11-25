@@ -1227,46 +1227,44 @@ class ThePay2Card(Backend):
             return "en"
         return language
 
+    def saved_authorization_payload(self) -> dict[str, Any]:
+        amount = self.payment.vat_amount_minor
+        currency = self.payment.get_currency_display()
+        if (invoice := self.payment.draft_invoice) is not None and (
+            amount != int(invoice.total_amount * 100)
+            or currency != invoice.get_currency_display()
+        ):
+            raise PaymentError("Recurring charge does not match the invoice")
+        return {
+            "uid": str(self.payment.pk),
+            "value": {"amount": str(amount), "currency": currency},
+            "notif_url": get_site_url("thepay-notification", pk=self.payment.pk),
+        }
+
+    def charge_saved_authorization(self, payload: dict[str, Any]) -> None:
+        response = self.request(
+            "post",
+            f"payments/{self.payment.repeat_id}/savedauthorization",
+            json=payload,
+            api_version="v2",
+        )
+        self.payment.details["repeat_response"] = response
+        self.record_recurring_availability(
+            response, failed=response["state"] == "error"
+        )
+
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
     ) -> HttpResponseRedirect | None:
-        notification_url = get_site_url("thepay-notification", pk=self.payment.pk)
         self.payment.details["thepay_language"] = (
             get_language() or settings.LANGUAGE_CODE
         )
-        payload: dict[str, str | dict[str, str | dict[str, str]] | int | bool]
         if self.payment.repeat:
-            # Handle recurring payments
-            amount = self.payment.vat_amount_minor
-            currency = self.payment.get_currency_display()
-            if (invoice := self.payment.draft_invoice) is not None and (
-                amount != int(invoice.total_amount * 100)
-                or currency != invoice.get_currency_display()
-            ):
-                raise PaymentError("Recurring charge does not match the invoice")
-            payload = {
-                "uid": str(self.payment.pk),
-                "value": {
-                    "amount": str(amount),
-                    "currency": currency,
-                },
-                "notif_url": notification_url,
-            }
-            response = self.request(
-                "post",
-                f"payments/{self.payment.repeat.pk}/savedauthorization",
-                json=payload,
-                api_version="v2",
-            )
-            # This is processed in the collect() method
-            self.payment.details["repeat_response"] = response
-            self.record_recurring_availability(
-                response, failed=response["state"] == "error"
-            )
+            self.charge_saved_authorization(self.saved_authorization_payload())
             return None
 
         # Payment payload
-        payload = {
+        payload: dict[str, str | dict[str, str | dict[str, str]] | int | bool] = {
             "can_customer_change_method": False,
             "is_customer_notification_enabled": False,
             "payment_method_code": self.thepay_method_code,
@@ -1275,7 +1273,7 @@ class ThePay2Card(Backend):
             "uid": str(self.payment.pk),
             "description_for_customer": self.payment.description,
             "return_url": complete_url,
-            "notif_url": notification_url,
+            "notif_url": get_site_url("thepay-notification", pk=self.payment.pk),
             "save_authorization": bool(self.payment.recurring and self.recurring),
             "language_code": self.get_language(),
             "customer": {

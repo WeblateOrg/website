@@ -3,11 +3,13 @@ from __future__ import annotations
 import json
 import logging
 import re
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
+from threading import Barrier, Event
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Literal, cast
 from unittest.mock import PropertyMock, patch
@@ -25,7 +27,7 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.signing import dumps
-from django.db import IntegrityError, connection, transaction
+from django.db import IntegrityError, connection, connections, transaction
 from django.db.migrations.executor import MigrationExecutor
 from django.db.models.deletion import RestrictedError
 from django.template.loader import render_to_string
@@ -35,6 +37,7 @@ from django.test import (
     SimpleTestCase,
     TestCase,
     TransactionTestCase,
+    skipUnlessDBFeature,
 )
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -49,6 +52,7 @@ from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
 from weblate_web.invoices.models import Currency, Discount, Invoice, InvoiceKind
 from weblate_web.legal.models import Agreement
+from weblate_web.payments.backends import PaymentError, ThePay2Card
 from weblate_web.payments.invitations import create_invitation, get_invitation_token
 from weblate_web.payments.models import (
     Customer,
@@ -2036,6 +2040,106 @@ class FakturaceTestCase(UserTestCase):
         )[0]
         subscription.save(update_fields=["payment"])
         return service
+
+
+class ThePayRenewalTransactionTest(TransactionTestCase):
+    @staticmethod
+    def create_renewal(kind: ServiceKind) -> Payment:
+        Package.objects.get_or_create(name="community", defaults={"price": 0})
+        customer = Customer.objects.create(name="Renewal customer", user_id=-1)
+        service = Service.objects.create(customer=customer, kind=kind)
+        package = (
+            get_donation_package(3)
+            if kind == ServiceKind.DONATION
+            else Package.objects.create(name="extended", price=42)
+        )
+        parent = Payment.objects.create(
+            customer=customer,
+            backend="thepay2-card",
+            amount=package.price,
+            recurring="y",
+            state=Payment.PROCESSED,
+        )
+        service.subscription_set.create(
+            package=package, payment=parent, expires=timezone.now() - timedelta(days=2)
+        )
+        return parent
+
+    @skipUnlessDBFeature("has_select_for_update")
+    def test_concurrent_runs_submit_one_committed_child_per_renewal(self) -> None:
+        for kind in (ServiceKind.SERVICE, ServiceKind.DONATION):
+            with self.subTest(kind=kind):
+                self.check_concurrent_renewal(kind)
+
+    def check_concurrent_renewal(self, kind: ServiceKind) -> None:
+        parent = self.create_renewal(kind)
+        ready_to_prepare = Barrier(2)
+        request_started = Event()
+        request_can_finish = Event()
+        prepare = RecurringPaymentsCommand.prepare_renewal
+
+        def prepare_together(*args):
+            ready_to_prepare.wait(timeout=10)
+            return prepare(*args)
+
+        def charge(method, url, **kwargs):
+            self.assertEqual(method, "post")
+            self.assertEqual(url, f"payments/{parent.pk}/savedauthorization")
+            request_started.set()
+            self.assertTrue(request_can_finish.wait(timeout=10))
+            return {"state": "waiting_for_confirmation"}
+
+        def run():
+            try:
+                RecurringPaymentsCommand.handle_recurring_payments(kind)
+            finally:
+                connections.close_all()
+
+        with (
+            patch.object(
+                RecurringPaymentsCommand,
+                "prepare_renewal",
+                side_effect=prepare_together,
+            ),
+            patch.object(ThePay2Card, "request", side_effect=charge) as provider,
+            ThreadPoolExecutor(max_workers=2) as executor,
+        ):
+            workers = [executor.submit(run) for _ in range(2)]
+            try:
+                self.assertTrue(request_started.wait(timeout=10))
+                child = Payment.objects.get(repeat=parent)
+                self.assertEqual(child.state, Payment.PENDING)
+                self.assertEqual(
+                    provider.call_args.kwargs["json"]["uid"], str(child.pk)
+                )
+            finally:
+                request_can_finish.set()
+            for worker in workers:
+                worker.result(timeout=20)
+        self.assertEqual(Payment.objects.filter(repeat=parent).count(), 1)
+        provider.assert_called_once()
+
+    def test_reservation_rollback_prevents_submission(self) -> None:
+        parent = self.create_renewal(ServiceKind.DONATION)
+        prepare = RecurringPaymentsCommand.peform_payment
+
+        def rollback(*args, **kwargs):
+            prepared = prepare(*args, **kwargs)
+            self.assertIsNotNone(prepared)
+            self.assertTrue(
+                Payment.objects.filter(repeat=parent, state=Payment.PENDING).exists()
+            )
+            raise PaymentError("Rollback before committing the charge")
+
+        with (
+            patch.object(
+                RecurringPaymentsCommand, "peform_payment", side_effect=rollback
+            ),
+            patch.object(ThePay2Card, "request") as provider,
+        ):
+            RecurringPaymentsCommand.handle_donations()
+        provider.assert_not_called()
+        self.assertFalse(Payment.objects.filter(repeat=parent).exists())
 
 
 class HostedBillingMigrationTest(TransactionTestCase):
@@ -5960,45 +6064,116 @@ class ExpiryTest(FakturaceTestCase):
 
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
-    def test_thepay_renewal_timeout_continues_batch_and_retries_next_day(self) -> None:
-        parents = []
-        for _ in range(2):
-            donation = self.create_donation(years=0, days=-2)
-            parent = cast("Subscription", donation.donation_subscription).payment_obj
-            parent.backend = "thepay2-card"
-            parent.save(update_fields=["backend"])
-            parents.append(parent)
-
+    def test_lost_thepay_renewal_response_is_reconciled_by_uid(self) -> None:
         endpoint = re.compile(
             r"https://demo.api.thepay.cz/v2/projects/42/payments/[a-f0-9-]{36}/savedauthorization"
         )
-        responses.post(endpoint, body=Timeout("ThePay timed out"))
-        responses.post(
-            endpoint,
-            json={"state": "paid", "parent": {"recurring_payments_available": True}},
+        subscriptions = [
+            self.create_service(years=0, days=-2).subscription_set.get(),
+            self.create_donation(years=0, days=-2).subscription_set.get(),
+            self.create_donation(years=0, days=-2).subscription_set.get(),
+        ]
+        parents = [subscription.payment_obj for subscription in subscriptions]
+        Payment.objects.filter(pk__in=[parent.pk for parent in parents]).update(
+            backend="thepay2-card"
+        )
+        expiries = [subscription.expires for subscription in subscriptions]
+        lost_parents = {str(parent.pk) for parent in parents[:2]}
+        provider_payments = {}
+        submitted = []
+
+        def charge(request):
+            payload = json.loads(request.body)
+            submitted.append(payload["uid"])
+            provider_payments[payload["uid"]] = payload["value"]
+            if request.url.split("/")[-2] in lost_parents:
+                raise Timeout("ThePay accepted the charge but the response was lost")
+            return 200, {}, json.dumps({"state": "paid"})
+
+        responses.add_callback(responses.POST, endpoint, callback=charge)
+        RecurringPaymentsCommand.handle_recurring_payments()
+        self.assert_notifications("Your payment on weblate.org")
+
+        lookups = []
+        for parent in parents[:2]:
+            child = Payment.objects.get(repeat=parent)
+            self.assertEqual(child.state, Payment.PENDING)
+            self.assertEqual(child.details["recurring_attempt"], 1)
+            value = provider_payments[str(child.pk)]
+            self.assertEqual(
+                value,
+                {
+                    "amount": str(child.vat_amount_minor),
+                    "currency": child.get_currency_display(),
+                },
+            )
+            lookups.append(
+                responses.get(
+                    f"https://demo.api.thepay.cz/v1/projects/42/payments/{child.pk}",
+                    json={
+                        "state": "paid",
+                        "paid_amount": int(value["amount"]),
+                        "currency": value["currency"],
+                    },
+                )
+            )
+
+        RecurringPaymentsCommand.handle_recurring_payments()
+        RecurringPaymentsCommand.handle_recurring_payments()
+        self.assertEqual(len(submitted), 3)
+        self.assertEqual([lookup.call_count for lookup in lookups], [1, 1])
+        for subscription, expiry, parent in zip(
+            subscriptions, expiries, parents, strict=True
+        ):
+            subscription.refresh_from_db()
+            self.assertEqual(subscription.expires, expiry + relativedelta(years=1))
+            self.assertEqual(
+                Payment.objects.get(repeat=parent).state, Payment.PROCESSED
+            )
+        self.assert_notifications(
+            "Your payment on weblate.org", "Your payment on weblate.org"
         )
 
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    @responses.activate
+    def test_missing_thepay_renewal_is_held_until_confirmed_failed(self) -> None:
+        donation = self.create_donation(years=0, days=-2)
+        parent = donation.subscription_set.get().payment_obj
+        parent.backend = "thepay2-card"
+        parent.save(update_fields=["backend"])
+        endpoint = f"https://demo.api.thepay.cz/v2/projects/42/payments/{parent.pk}/savedauthorization"
+        charge = responses.post(endpoint, body=Timeout())
         RecurringPaymentsCommand.handle_donations()
-
-        first_attempts = Payment.objects.filter(repeat__in=parents)
-        failed = first_attempts.get(state=Payment.NEW)
-        succeeded = first_attempts.get(state=Payment.PROCESSED)
-        self.assertEqual(failed.details["recurring_attempt"], 1)
-        assert failed.repeat is not None
-        self.assertEqual(failed.repeat.recurring, "y")
-        self.assert_notifications("Your payment on weblate.org")
-
-        with patch(
-            "weblate_web.management.commands.recurring_payments.timezone.now",
-            return_value=timezone.now() + timedelta(days=1),
-        ):
+        child = Payment.objects.get(repeat=parent)
+        # Simulate a child left behind by an older worker.
+        Payment.objects.filter(pk=child.pk).update(state=Payment.NEW)
+        detail = f"https://demo.api.thepay.cz/v1/projects/42/payments/{child.pk}"
+        missing = responses.get(
+            detail, status=404, json={"message": "Payment not found"}
+        )
+        with patch("sentry_sdk.capture_message") as capture:
             RecurringPaymentsCommand.handle_donations()
+            RecurringPaymentsCommand.handle_donations()
+        self.assertEqual(missing.call_count, 2)
+        capture.assert_called_once()
+        child.refresh_from_db()
+        self.assertEqual(child.state, Payment.PENDING)
+        self.assertTrue(child.details["thepay_renewal_not_found"])
+        self.assert_notifications()
 
-        retry = first_attempts.exclude(pk__in=[failed.pk, succeeded.pk]).get()
-        self.assertEqual(retry.repeat_id, failed.repeat_id)
-        self.assertEqual(retry.state, Payment.PROCESSED)
-        self.assertEqual(retry.details["recurring_attempt"], 1)
-        self.assert_notifications("Your payment on weblate.org")
+        failure = responses.get(detail, json={"state": "error"})
+        RecurringPaymentsCommand.handle_donations()
+        self.assertEqual(charge.call_count, 1)
+        self.assertEqual(failure.call_count, 1)
+        child.refresh_from_db()
+        self.assertEqual(child.state, Payment.REJECTED)
+        self.assert_notifications("Your payment on weblate.org failed")
+
+        retry = responses.post(endpoint, json={"state": "paid"})
+        RecurringPaymentsCommand.handle_donations()
+        self.assertEqual(retry.call_count, 1)
+        replacement = Payment.objects.get(repeat=parent, state=Payment.PROCESSED)
+        self.assertEqual(replacement.details["recurring_attempt"], 2)
 
     def test_expired_thepay_authorization_stops_donation_retries(self) -> None:
         donation = self.create_donation(years=0, days=-2)
@@ -6045,6 +6220,7 @@ class ExpiryTest(FakturaceTestCase):
     @override_settings(**THEPAY2_MOCK_SETTINGS)
     @responses.activate
     def test_paid_thepay_renewal_applies_term_when_authorization_ends(self) -> None:
+        cnb_mock_rates()
         for is_donation in (True, False):
             with self.subTest(is_donation=is_donation):
                 if is_donation:
@@ -6057,12 +6233,19 @@ class ExpiryTest(FakturaceTestCase):
                 expires = subscription.expires
                 parent = subscription.payment_obj
                 parent.backend = "thepay2-card"
-                parent.save(update_fields=["backend"])
+                if not is_donation:
+                    parent.paid_invoice = Invoice.objects.create(
+                        customer=parent.customer,
+                        category=subscription.package.category,
+                        kind=InvoiceKind.INVOICE,
+                        prepaid=True,
+                    )
+                parent.save(update_fields=["backend", "paid_invoice"])
                 charge = responses.post(
                     f"https://demo.api.thepay.cz/v2/projects/42/payments/{parent.pk}/savedauthorization",
-                    status=200 if is_donation else 202,
+                    status=202,
                     json={
-                        "state": "paid" if is_donation else "waiting_for_confirmation",
+                        "state": "waiting_for_confirmation",
                         "parent": {"recurring_payments_available": False},
                     },
                 )
@@ -6070,24 +6253,35 @@ class ExpiryTest(FakturaceTestCase):
                 run_renewals()
 
                 child = Payment.objects.get(repeat=parent)
-                if not is_donation:
-                    self.assertEqual(child.state, Payment.PENDING)
-                    self.assert_notifications()
-                    parent.refresh_from_db()
-                    self.assertEqual(parent.recurring, "")
-                    responses.get(
-                        f"https://demo.api.thepay.cz/v1/projects/42/payments/{child.pk}",
-                        json={
-                            "state": "paid",
-                            "paid_amount": child.vat_amount_minor,
-                            "currency": child.get_currency_display(),
-                        },
-                    )
-                    self.client.get(child.get_complete_url())
-                    child.refresh_from_db()
-                    self.assertEqual(child.state, Payment.ACCEPTED)
-                    process_payment(child)
-                    child.refresh_from_db()
+                self.assertEqual(child.draft_invoice_id is None, is_donation)
+                self.assertEqual(child.state, Payment.PENDING)
+                self.assert_notifications()
+                parent.refresh_from_db()
+                self.assertEqual(parent.recurring, "")
+                detail = (
+                    f"https://demo.api.thepay.cz/v1/projects/42/payments/{child.pk}"
+                )
+                pending = responses.get(
+                    detail, json={"state": "waiting_for_confirmation"}
+                )
+                run_renewals()
+                self.assertEqual(pending.call_count, 1)
+                child.refresh_from_db()
+                self.assertEqual(child.state, Payment.PENDING)
+                responses.get(
+                    detail,
+                    json={
+                        "state": "paid",
+                        "paid_amount": child.vat_amount_minor,
+                        "currency": child.get_currency_display(),
+                    },
+                )
+                with patch(
+                    "weblate_web.management.commands.recurring_payments.timezone.now",
+                    return_value=timezone.now() + timedelta(days=15),
+                ):
+                    run_renewals()
+                child.refresh_from_db()
                 self.assertEqual(child.state, Payment.PROCESSED)
                 self.assertFalse(child.has_unavailable_recurring_authorization)
                 parent.refresh_from_db()
@@ -6101,9 +6295,6 @@ class ExpiryTest(FakturaceTestCase):
                 )
                 self.assertEqual(interaction.details["child_payment_id"], str(child.pk))
 
-                self.client.get(child.get_complete_url())
-                subscription.refresh_from_db()
-                self.assertEqual(subscription.expires, expires + relativedelta(years=1))
                 with patch(
                     "weblate_web.management.commands.recurring_payments.timezone.now",
                     return_value=subscription.expires,
@@ -6630,7 +6821,9 @@ class ServiceTest(FakturaceTestCase):
                 "weblate_web.management.commands.recurring_payments.timezone.now",
                 return_value=subscription.expires,
             ),
-            patch.object(RecurringPaymentsCommand, "peform_payment") as perform,
+            patch.object(
+                RecurringPaymentsCommand, "peform_payment", return_value=None
+            ) as perform,
         ):
             RecurringPaymentsCommand.handle_subscriptions()
         perform.assert_called_once()
@@ -7091,7 +7284,7 @@ class ServiceTest(FakturaceTestCase):
         )
 
         with patch.object(
-            RecurringPaymentsCommand, "peform_payment"
+            RecurringPaymentsCommand, "peform_payment", return_value=None
         ) as perform_payment:
             RecurringPaymentsCommand.handle_donations()
 
@@ -7143,7 +7336,7 @@ class ServiceTest(FakturaceTestCase):
         subscription = service.subscription_set.get()
 
         with patch.object(
-            RecurringPaymentsCommand, "peform_payment"
+            RecurringPaymentsCommand, "peform_payment", return_value=None
         ) as perform_payment:
             RecurringPaymentsCommand.handle_subscriptions()
 
@@ -7612,7 +7805,7 @@ class ServiceTest(FakturaceTestCase):
         subscription.expires = timezone.now() - timedelta(days=2)
         subscription.save(update_fields=["expires"])
         with patch.object(
-            RecurringPaymentsCommand, "peform_payment"
+            RecurringPaymentsCommand, "peform_payment", return_value=None
         ) as perform_payment:
             RecurringPaymentsCommand.handle_subscriptions()
 

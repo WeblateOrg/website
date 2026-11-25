@@ -1,0 +1,4476 @@
+openapi: 3.0.0
+info:
+  title: ThePay API
+  x-logo:
+    url: "https://admin.thepay.eu/images/thepay-logo.svg"
+    altText: "ThePay"
+  version: ""
+  description: >-
+    This is the online documentation for [ThePay](https://www.thepay.eu/) API
+    for merchants.
+
+    This API allows handling payments and provides all neccessary information related.
+
+
+    ### Environments
+
+
+    ThePay provides a demo and a production environment.
+
+    The demo environment is intended for testing purposes for developers.
+
+    The production environment is the live system.
+
+
+    | Environment  | URL |
+
+    |---|---|
+
+    | Production  | `https://api.thepay.cz/`  |
+
+    | Demo  | `https://demo.api.thepay.cz/` |
+
+
+    For both environments, be it production or testing, an account in merchant administration is needed.
+
+    The merchant administration is a place where you manage your project, accounts and everything related.
+
+
+    If you are a developer, please create an account in the demo merchant administration as your first step.
+
+    The merchant administration provides you with the neccessary credentials and setup to connect to our system.
+
+
+    | Merchant administration  | Administration URL |
+
+    |---|---|
+
+    | Production  | `https://admin.thepay.eu/`  |
+
+    | Demo  | `https://demo.admin.thepay.eu/` |
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - There are two environments, production and demo
+
+
+    - Both environments require registration in the merchant administration
+
+
+    # Support & Contributions
+
+
+    We use Github repository for managing our PHP SDK and we use Github issues for **technical support**.
+
+
+    If you find any bug 🐞, please submit the [issue](https://github.com/ThePay/api-client/issues/new/choose) directly to Github .
+
+
+    Feel free to contribute via Github [issues](https://github.com/ThePay/api-client/issues),
+
+    take a look there if you have any problems with implementation or whenever you think than the API needs some improvement.
+
+    We will respond as soon as possible.
+
+
+    # Authentication
+
+
+    All communication with ThePay system is secured by appropriate headers and IP address whitelist [🔗](#section/Authentication/IP-limitation).
+
+    The requests you send have to to contain the following headers:
+
+
+    `Signature` [🔗](#section/Authentication/Signature)
+
+
+    `SignatureDate` [🔗](#section/Authentication/SignatureDate)
+
+
+    Additionally, each request requires an unique merchant ID (`merchant_id`) as part of query string [🔗](#section/Authentication/Merchant-ID).
+
+
+    ```bash
+
+    curl --include \
+        -H 'Signature: calculated_hash' \
+        -H 'SignatureDate: Mon, 23 Sep 2019 06:07:08 GMT'
+        -H 'Content-Type: application/json' \
+       'https://api.thepay.cz/v1/payments?merchant_id=6cdf1b24-0479-4a64-b076-b0ece482453f'
+    ```
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - All communication is secured with the `Signature` and `SignatureDate` headers
+
+
+    ## Password for API
+
+
+    A secret password is needed for accessing the API. This password is used in the process of calculating the signature header.
+
+    This password is generated in the Implementation section of the merchant administration.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - Setup in the Implementation section of the merchant administration
+
+
+    - The value is used in the calculation of `Signature` header
+
+
+    ## SignatureDate
+
+
+    The current datetime, in the RFC7231 format, is used as one of the inputs when calculating the signature header.
+
+    The datetime has to be also sent in the request headers as `SignatureDate`.
+
+
+    The `SignatureDate` will be accepted only if the time difference is no bigger than 20 seconds.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - The current datetime is sent as `SignatureDate` in the RFC7231 format
+
+
+    - The value is used in the calculation of `Signature` header
+
+
+    - The time difference must not exceed 20 seconds
+
+
+    ## Merchant ID
+
+
+    Each merchants has an unique ID, which can be found in the Implementation section of the merchant administration portal.
+
+
+    The merchant ID is used as one of the inputs when calculating the signature header.
+
+
+    The merchant ID is also a **required** part of the query string for all requests to the API:
+
+
+    | key | value |
+
+    | --- | --- |
+
+    | `merchant_id` | the actual ID from [admin panel](https://www.thepay.eu) |
+
+
+    E.g. - `?merchant_id=6cdf1b24-0479-4a64-b076-b0ece482453f`
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - Can be found in the Implementation section of the merchant administration
+
+
+    - The value is used in the calculation of `Signature` header
+
+
+    - The value is a required part of the query string for all requests
+
+
+    ## Signature
+
+
+    The `Signature` header is calculated as a hash of the 3 following variables appended together:
+
+
+    - `merchant_id`[🔗](#section/Authentication/Merchant-ID)
+
+
+    - `password`[🔗](#section/Authentication/Password-for-API)
+
+
+    - current `dateTime`[🔗](#section/Authentication/SignatureDate).
+
+
+    `hash256( merchant_id + password + DateTime )`
+
+
+    1. Prepare the string for hashing in format: `merchant_idPasswordDatetime`, for example `1passwordMon, 23 Sep 2019 06:07:08 GMT`
+
+
+    2. Hash the string with sha256 hash function, example result may be `e8e3e040f5772cd70111454fde0639c701cf1ce86929b0a5a9f0a15cb5634138`
+
+
+    3. Add resulting value to headers as `Signature`
+
+
+    ## IP limitation
+
+
+    The access to the API is limited by whitelist of IP addresses.
+
+    Allowed IP adresses are managed in the merchant administration in the Implementation section.
+
+
+    You can specify a subnet with the * notation, in case the IP address might change in time.
+
+
+    It is also possible to allow communication from anywhere, by supplying * only.
+
+    This is ok for development purposes, but we don't recommend such practice in the production environment.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - Every merchant must configure allowed IP addresses
+
+
+    - Setup in the Implementation section of the merchant administration
+
+
+    - Usage of subnets is allowed
+
+
+    ## Number of requests limitation (throttling)
+
+
+    For security or to prevent overloading, the API is limited to handle 60 <b>failed</b> requests per minute.
+
+    These limits are applied to a particular IP address.
+
+
+    A failed request is considered any which is not in the 2xx Success code range.
+
+
+    After request processing if response status code is success the request counter will be reset to zero, and all following successful requests will pass through.
+
+
+    You can get a throttling error if you send requests faster than our API can handle.
+
+    For example, if your first request waiting for processing and meanwhile you send more requests than the limit some of them can fail, because we are not capable of finishing the first one.
+
+
+    If this limit is exceeded, a response code of 429 will be returned.
+
+
+    ```
+
+    429 Too Many Requests
+
+
+    {
+        "message": "Too Many Requests"
+    }
+
+    ```
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - You are limited to 60 failed request per minute
+
+
+    - A 429 response will be returned upon exceeding the limit
+
+
+    - You should periodically scheduled API calls run synchronously
+
+
+    ## Underlying protocol
+
+
+    Support of at least TLS1.2 is required, as it is used for securing the communication channel. No older protocol versions are supported.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - The minimum supported version of TLS is 1.2
+
+
+    # Enums
+
+    ## Notification types
+
+
+    | Value | Description |
+
+    | --- | --- |
+
+    | `state_changed` | Payment state has been changed. |
+
+    | `offset_account_obtained` | Obtained the customer's bank account number and owners name |
+
+
+    # Maintenance
+
+
+    In rare occurences, it may happen that we have to temporarily shut down our system for maitenance.
+
+
+    This would cause all API endpoints to return `503` error response, without executing any logic.
+
+
+    ```http
+
+    503 Service Unavailable
+
+    Unavailable-Until: Sat, 01 Jun 2024 13:00:00 GMT
+
+
+    {
+        "message": "Service Unavailable"
+    }
+
+    ```
+
+
+    API response can contains custom header `Unavailable-Until` with datetime in RFC7231 format,
+
+    suggesting the time when our API should be available again.
+
+
+    In case of planned maintenance, we will inform our clients about the situation.
+
+    It would be however appropriate to implement logic on your side, which will handle the maintenance response,
+
+    to inform the customer about the situation properly.
+
+
+    We strongly recommend disabling any functionality which requires our API during a maintenance,
+
+    by detecting `503` response.
+
+
+    After you detect success response by calling
+
+    [ThePay API ping](#tag/API-Status/paths/~1v1~1ping/get)
+
+    endpoint in reasonable interval, you can safely reactivate your functionality.
+
+    If we provide `Unavailable-Until` header, you can delay start of calling ping,
+
+    because in unavailable time API will response only 503 response
+
+    and nothing interesting will happened in the meanwhile.
+
+
+    # Versioning
+
+
+    All API endpoints has own version specify in URL path example: `/v1/payments` where `/v1/` is version number.
+
+
+    Bigger version number means more recent endpoint implementation.
+
+
+    Different endpoint versions can combine, for example you can create payment using endpoint with version v1
+
+    and read payment detail using endpoint version v2.
+
+
+    If you developing new integration or making some integration changes, **you should use newest version** of endpoint available.
+
+
+    Old versions are kept only for backward compatibility and you should avoid using it,
+
+    and we mark old implementation as deprecated, in documentation here by some label
+
+    and also in our implementation by `Deprecated` custom HTTP header.
+
+
+    ```http
+
+    200 OK
+
+    Deprecated: Use new endpoint version specify in API doc: https://docs.thepay.eu/#tag/Payments/paths/~1v1~1payments/get
+
+    ```
+
+
+    You should detect deprecated header in HTTP communication from our system and when it appears you should record this information.
+
+    Mechanism like this can keep integration of our API up to date.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - Log deprecated message into your log monitoring
+
+
+    - Show some alert in merchant administration and describe that they need contact some developer for integration changes
+
+
+    # Projects
+
+
+    A project represents one aplication accepting payments through ThePay payment gateway, for example one particular e-shop.
+
+    Any payment is always processed in relation to its project.
+
+
+    The merchant can create any number of projects under their merchant account, according to his or her needs.
+
+    The projects are managed in the merchant administration through a simple project request process.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - You should request a project for each separate e-shop website
+
+
+    - A merchant can have any number of projects
+
+
+    - The projects are created and managed in the merchant administration
+
+
+    # Pagination
+
+
+    Some endpoints have pagination to prevent heavy requests (for example Get Payments and Get Account Transaction History).
+
+
+    Endpoints with pagination can be recognized by having optional parameters "limit" and "page" in the URL.
+
+    These parameters are optional and have default values.
+
+
+    Endpoints using pagination will respond with two special headers:
+
+
+    - "X-Total-Count" - Determines the total count of entries.
+
+
+    - "Link" - Contains a link to next page in [HTTP format](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link). This value may be empty if there is no next page.
+
+
+    # Notifications
+
+
+    Notifications alert you about updates on payments.
+
+    The mechanism works by us calling your chosen endpoint through a GET request.
+
+
+    ### When do we send notifications
+
+
+    The notification url gets called in the following cases:
+
+
+    - Change in payments state
+
+
+    - Upon supplementation of the customer's bank account number and owner name
+
+
+    ### Setting the notification url
+
+
+    The url of your endpoint which should be called can be set on payment creation, as an optional parameter.
+
+    It is also possible to set up a default notification url in project settings section in merchant administration.
+
+    If the notification url is neither sent as a parameter nor set as the default in project settings, notifications will be sent to the return url of the particular payment (the `return_url` parameter or the default return url of the project).
+
+    Notifications are not sent only if the payment has no return url either.
+
+
+    #### Setting the notification url on payment creation
+
+
+    The notification url is set by parameter <b>notif_url</b> on payment creation, which can be done through calling the Create New Payment API endpoint or redirection with Create Payment Query.
+
+    If this parameter is not set, the default url for notification will be used instead if available.
+
+
+    #### Default url for notifications
+
+
+    The default url for notifications can be set in your project settings in merchant administration.
+
+    This default value will be used only in case the `notif_url` is not used as a parameter when creating the payment.
+
+
+    ### Recognizing the payment
+
+
+    Each notification contains the <b>project_id</b> and <b>payment_uid</b> in the query parameter.
+
+    Note that if these attributes are already set on your side, they will be overwritten.
+
+
+    ### Notification type
+
+
+    We also pass a <b>notification type</b> as `type` in the query, see [list of available types](#section/Enums/Notification-types).
+
+    You can filter the notifications using the `type` GET parameter.
+
+
+    It is possible to forbid the `offset_account_obtained` notification type in the merchant administration.
+
+    In that case, notification regarding obtaining the customer's bank account number and name won't be sent to you.
+
+
+    <b>Notifications don't necessarily mean the payment has been paid. They just inform you about a change.
+
+    You should follow up with checking the payment detail upon receiving the notification.</b>
+
+
+    ### Example notification
+
+
+    Example notification for payment with the following parameters may look like this:
+
+
+    - project id: 1212
+
+
+    - payment uid: 30de400
+
+
+    - event: payment state change (e.g. the payment was paid)
+
+
+    - notification url: chosen by you
+
+
+    `GET <notification_url>?project_id=1212&payment_uid=30de400&type=state_changed`
+
+
+    ### Expected response to notifications
+
+
+    Your notification endpoint should return http status code **200** in a **10 second time window** after receiving the request.
+
+    Otherwise the notification will be considered as failed and new notification try will be scheduled with some delay, with a limited number of tries.
+
+
+    This means it is possible to get the same notification multiple times.
+
+
+    The notifications can also be sent manually from merchant administration in the payment detail.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - Notification alert you about updates on a particular payment.
+
+
+    - You should check the payment details upon receiving the notification.
+
+
+    - Notifications are sent until we receive a 200 response, or the number of tries runs out.
+
+
+    - The notification_type specifies what parameter has changed on the payment.
+
+
+    # Subscription payments
+
+
+    It is possible to create long term subscription for your customers.
+
+    This gives you the option to repeatedly charge the customer, without the need for the customer to authorize each payment individually.
+
+
+    Each subscription consist of one parent payment and any number of child payments.
+
+
+    #### Parent payment
+
+
+    The parent payments created through the same endpoint as regular payments, but with the subscription properties set.
+
+
+    #### Child payments
+
+
+    Subsequent child payments are realized through dedicated endpoints, depending on the subscription type.
+
+
+    Each child payment must reference a parent payment.
+
+
+    #### Types of subscriptions
+
+
+    There are three different use cases with different endpoints for subscription payments.
+
+    These depend on payment intervals and the amount paid:
+
+    |Subscription type|Time interval|Payment amount|Example usage|
+
+    |---|---|---|---|
+
+    |<b>Regular</b>|Fixed|Fixed|Monthly payment for a newsletter subscription|
+
+    |<b>Usage-based</b>|Fixed|Variable|Monthly invoice for service usage|
+
+    |<b>Irregular</b>|Variable|Fixed|Credit recharge upon |
+
+
+    The variables with fixed type are always set on the parent payment.
+
+    It is your responsibility to adhere to the values set in the parent payment!
+
+
+    If you encounter a situation where you need to change the fixed payment amount or time period, a new parent payment with different parameters must be used.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - Subscription allow seamless process of repeating payments, without the need of authorizing each individual payment.
+
+
+    - Subscriptions consist of one parent payment and any number of child payments
+
+
+    - There are three subscription types: Regular, Usage-based, Irregular
+
+
+    - If you would need to change any of the fixed subscription parameters, you should create a new subscription instead. This allows the customer to review and authorize the new subscription conditions.
+
+
+    ### Testing subscription payments on the Demo enviroment
+
+
+    The demo allows you to test specific subscription payment states. Follow these steps:
+
+
+    1. **Create a Parent (Master) Payment:**
+       Begin by creating a standard parent payment. Simulate this payment as `paid` to proceed with further testing.
+
+    2. **Create a Child Payment:**
+       Use the API to create a child payment. To test specific states, include a special value in the `description_for_merchant` field. The supported values and their purposes are:
+
+       | `description_for_merchant`             | Purpose                                                                                                           |
+       |----------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+       | **error_parent_invalid**               | Changes the state of the parent payment to `expired`. No further child payments can be created. Expired state is returned.                   |
+       | **error_technical**                    | Simulates a technical error, setting the current child payment's state to `error`. Creating child payments remain possible. |
+       | **waiting_for_confirmation_error**     | Initially sets the payment state to `waiting_for_confirmation` and returns this state in the response. After 5 seconds, the state automatically transitions to `error`. **Note:** In V1 deprecated endpoints, the `waiting_for_confirmation` state is not supported - this scenario will behave as `error_technical` instead.               |
+       | **waiting_for_confirmation_paid**      | Initially sets the payment state to `waiting_for_confirmation` and returns this state in the response. After 5 seconds, the state automatically transitions to `paid`. **Note:** In V1 deprecated endpoints, the `waiting_for_confirmation` state is not supported - this scenario will behave as `error_technical` instead.                    |
+
+    3. **State Change Notifications:**
+       All state changes trigger a [notification](#section/Notifications).
+       **Note:** Notifications are delayed by at least 60 seconds by default.
+
+    # Saving card authorization
+
+
+    It is possible to save customer card information by using the `save_authorization` parameter upon payment creation.
+
+
+    This allow easier and seamless payment creation, through following child payments, without additional customer card authorization.
+
+    The customer should still authorize the payment itself.
+
+
+    <b>💡 Quick hint:</b>
+
+
+    - Saving card authorization allows easier payment process, through remembering customer card information.
+
+
+    - While the customer doesn't need to authorize the payment card, the customer should still authorize the payment itself.
+
+
+    - Saving card authorization shoudn't be confused with (and used for) subscription payments.
+servers:
+  - url: https://demo.api.thepay.cz
+x-tagGroups: # https://redocly.com/docs/realm/content/api-docs/openapi-extensions/x-tag-groups
+  - name: System Status
+    tags:
+      - API Status
+  - name: Data Retrieval
+    tags:
+      - Project Info
+      - Payments
+      - Transactions
+  - name: Payment Creation
+    tags:
+      - Payment Creation
+      - Subscriptions
+      - Saved Card Authorization
+  - name: Payment Management
+    tags:
+      - General Payment Management
+      - Preauthorized Payments
+      - Refunds
+  - name: Outgoing Payments
+    tags:
+      - Outgoing Payment Creation
+      - Outgoing Payment Data Retrieval
+  - name: Maintenance
+    tags:
+      - Changelog
+tags:
+  - name: API Status
+  - name: Project Info
+  - name: Payments
+  - name: Transactions
+  - name: Payment Creation
+  - name: Subscriptions
+  - name: Saved Card Authorization
+  - name: General Payment Management
+  - name: Preauthorized Payments
+    description: |-
+      You can realize or cancel payment in state: `preauthorized`.
+      Preauthorized payment has **7 days expiration**, after successful payment preauthorization.
+
+      In the expiration payment state changes into: `preauth_expired`
+      and endpoints for managing preauthorized payments will return error response.
+
+      💡 **Quick hint:**
+      - You can use [notifications](#section/Notifications) for detection when payment state change from `preauthorized` into another one and synchronize this update into your system preventing API calls from failing.
+      - Or you should check current payment state (call [payment detail](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get)), if the state is still `preauthorized` before you call realization or cancel preauthorized payment.
+  - name: Refunds
+  - name: Outgoing Payment Creation
+    description: |-
+      Outgoing payments allow sending money to valid IBAN using bank transactions.
+
+      Outgoing payments must be enabled by ThePay individually per project. If you are interested in this feature, please contact our operators.
+
+      #### Testing outgoing payments on the Demo environment
+
+      The demo allows you to test specific outgoing payment states by including  a special value in the `description_for_merchant` field. The supported values and their purposes are:
+
+      | `description_for_merchant`     | Purpose            |
+      |--------------------------------|--------------------|
+      | **cancelled**                  | Simulates a cancellation 1 minute after creation. This only triggers if the payment is in the waiting_for_sending state. (Note: To test this, the payment amount must exceed the merchant's account balance, since the payment would get automatically sent outherwise if there are sufficient funds.).    |
+      | **undeliverable**              | Sets the payment state to undeliverable 1 minute after creation. This only triggers if the payment is in the sent state. If the payment is still in a waiting state (e.g., due to insufficient funds), nothing will happen.   |
+      | **returned**                   | Sets the payment state to returned 1 minute after creation. This only triggers if the payment is in the sent state. If the payment is still in a waiting state (e.g., due to insufficient funds), nothing will happen.  |
+
+      **State Change Notifications:**
+      All state changes trigger a [notification](#section/Notifications).
+      **Note:** Notifications are delayed by at least 60 seconds by default.
+  - name: Outgoing Payment Data Retrieval
+  - name: Changelog
+    description: |-
+      ## Release 2026-02
+
+      ### Enhanced IBAN Validation
+
+      IBAN validation has been strengthened to comply with both ISO 13616 international standards and country-specific national requirements. All outgoing payment endpoints now validate:
+      - ISO 13616 format compliance
+      - National checksum validation specific to each country
+      - For Czech IBANs (CZ): Additional modulo-11 validation for account prefix and account number
+
+      See the endpoint documentation for `offset_iban` property for country-specific requirements.
+
+      ## Release 2025-04
+
+      ### New endpoint - Get Outgoing Payment Confirmation
+
+      [Returns a pdf confirmation of outgoing payment.](#tag/Outgoing-Payment-Data-Retrieval/paths/~1v1~1projects~1{project_id}~1outgoing_payments~1{payment_uid}~1generate_confirmation/get)
+
+
+      ## Release 2024-08
+
+      ### New endpoint version - V2 Realize Regular Subscription Paymen
+
+      [Will create request for realization of new subscription payment.](#tag/Subscriptions/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1subscription~1regular/post)
+
+      ### New endpoint version - V2 Realize Usage Based Subscription Payment
+
+      [Will create request for realization of new usage based subscription payment.](#tag/Subscriptions/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1subscription~1usagebased/post)
+
+      ### New endpoint version - V2 Realize Irregular Subscription Payment
+
+      [Will create request for realization of new irregular subscription payment.](#tag/Subscriptions/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1subscription~1irregular/post)
+
+      ### New endpoint version - V2 Realize Payment By Saved Authorization
+
+      [Will create request for realization of new payment by saved authorization.](#tag/Saved-Card-Authorization/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1savedauthorization/post)
+
+      ### New endpoint version - V2 Realize Preauthorized Payment
+
+      [Will create request for realization of preauthorized payment.](#tag/Preauthorized-Payments/paths/~1v2~1projects~1{project_id}~1payments~1{payment_uid}~1preauthorized/post)
+
+      Between v1 endpoints and v2 is break change, if you using v1 of listed endpoints, check differencies in interface and update your integration.
+      Do not worry we keep old version running for backward compatibility.
+
+
+      ## Release 2023-06
+
+      ### New endpoint - Generate Confirmation of Payment
+
+      [Returns a pdf confirmation of payment.](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}~1generate_confirmation/get)
+
+      ### New endpoint - Get Balance History
+
+      [Returns the account balance to a particular date and time.](#tag/Transactions/paths/~1v1~1balances/get)
+
+
+      ## Release 2023-09
+
+      ### New error code - 503 Service Unavailable
+
+      [Maintenance section describe how our API behave while is planned shutdown](#section/Maintenance)
+paths:
+  /v1/ping:
+    get:
+      summary: ThePay API ping
+      description: |-
+        If you want to detect the availability of our API or just to test [authentication](#section/Authentication),
+        you can use this ping endpoint with any HTTP method.
+
+        This endpoint only returns `200` response with the same body body as in request.
+      tags:
+        - API Status
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestData"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestData"
+        "503":
+          $ref: "#/components/responses/503"
+  /v1/projects:
+    get:
+      summary: Get Projects
+      description: |-
+        Returns an array of project instances for your merchant account.
+      tags:
+        - Project Info
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/methods":
+    get:
+      summary: Get Payment Methods
+      description: |-
+        Returns a list of all available payment methods for your project.
+
+        Allowed methods settings can be changed in merchant administration under the project gate settings section.
+      tags:
+        - Project Info
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - $ref: "#/components/parameters/LanguageQuery"
+        - $ref: "#/components/parameters/CountryCodesQuery"
+        - $ref: "#/components/parameters/CurrencyCodesQuery"
+        - $ref: "#/components/parameters/RequiredTagsQuery"
+        - $ref: "#/components/parameters/ForbiddenTagsQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentMethod"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "429":
+          $ref: "#/components/responses/429"
+  /v1/payments:
+    get:
+      summary: Merchant - Get Payments
+      description: |-
+        Returns a list of payments belonging to a particular merchant account.
+      tags:
+        - Payments
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - $ref: "#/components/parameters/ProjectIdQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/PageQuery"
+        - $ref: "#/components/parameters/StateQuery_Payment"
+        - $ref: "#/components/parameters/CurrencyQuery"
+        - $ref: "#/components/parameters/AmountFromQuery"
+        - $ref: "#/components/parameters/AmountToQuery"
+        - $ref: "#/components/parameters/CreatedFromQuery"
+        - $ref: "#/components/parameters/CreatedToQuery"
+        - $ref: "#/components/parameters/FinishedFromQuery"
+        - $ref: "#/components/parameters/FinishedToQuery"
+        - $ref: "#/components/parameters/PaymentMethodQuery"
+        - $ref: "#/components/parameters/OrderIdQuery"
+      responses:
+        "200":
+          description: OK
+          headers:
+            Link:
+              schema:
+                type: string
+            X-Total-Count:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments":
+    get:
+      summary: Project - Get Payments
+      description: Returns a list of payments belonging to a particular project.
+      tags:
+        - Payments
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/PageQuery"
+        - $ref: "#/components/parameters/StateQuery_Payment"
+        - $ref: "#/components/parameters/CurrencyQuery"
+        - $ref: "#/components/parameters/AmountFromQuery"
+        - $ref: "#/components/parameters/AmountToQuery"
+        - $ref: "#/components/parameters/CreatedFromQuery"
+        - $ref: "#/components/parameters/CreatedToQuery"
+        - $ref: "#/components/parameters/FinishedFromQuery"
+        - $ref: "#/components/parameters/FinishedToQuery"
+        - $ref: "#/components/parameters/PaymentMethodQuery"
+        - $ref: "#/components/parameters/OrderIdQuery"
+      responses:
+        "200":
+          description: OK
+          headers:
+            Link:
+              schema:
+                type: string
+            X-Total-Count:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+    post:
+      summary: Create New Payment
+      description: |-
+        Creates new payment instance and returns URL to the payment process and
+        URL to the payment detail page.
+
+        In case a matching payment already exists, returns the urls of the same payment.
+
+        Once the payment is created, the parameters of the payment cannot be changed (this includes `order_id`, `currency_code` and `amount`).
+
+        Upon calling this endpoint with a combination of `uid`, `currency_code` and `amount` of an already existing payment, the urls of the existing payment will be returned. No new payment will be created in this case.
+
+        If you want to change any of the payment parameters you must create a new payment with the updated values.
+
+        If you intend to display the payment method buttons on your side and send the customer directly to the particular payment method, you will need the appropriate payment method codes.
+
+        Do NOT use these codes as static values in your code. The payment methods are regularly updated, new methods are added and old ones removed. Instead retrieve the current payment methods dynamically from the
+         [Get Payment Methods endpoint](#tag/Project-Info/paths/~1v1~1projects~1{project_id}~1methods/get).
+
+        The customer contact is required and might be passed either as email or phone attribute under the customer object. Therefore both or at least one of those attributes must be passed when creating the payment.
+      tags:
+        - Payment Creation
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_deposit:
+                  type: boolean
+                  default: true
+                  description: |-
+                    If set to false the payment will be created as "pre-authorization" and can be realised later using the "Realize Preauthorized Payment" endpoint. After preauthorizing the payment, a period of 7 days to realise the pre-authorized payment starts.
+                can_customer_change_method:
+                  type: boolean
+                  default: true
+                  description: |-
+                    If set to false the customer is not allowed to change the payment method.
+                payment_method_code:
+                  type: string
+                  description: |-
+                    The code of payment method. It is **required if** `can_customer_change_method` **is set to false**, otherwise optional.
+                    If not provided, the customer selects the payment method at the payment gateway page.
+                amount:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_MoneyAmount"
+                    - type: string
+                      format: integer
+                      minimum: 1
+                currency_code:
+                  $ref: "#/components/schemas/Type_MoneyCurrency"
+                uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_customer:
+                  $ref: "#/components/schemas/Type_DescriptionForCustomer"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                return_url:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_Url"
+                    - maxLength: 4000
+                      description: |-
+                        After a successful payment, the customer is redirected to the return URL with **payment_uid** and **project_id** query parameters.
+                        You have to call the payment status API to check if the payment was paid.
+                        If not present the project default return url defined in your ThePay account will be used.
+                        **If the default return url is not defined, this attribute is required.**
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+                is_customer_notification_enabled:
+                  type: boolean
+                  nullable: true
+                  description: |-
+                    Allows enabling or disabling of all e-mail notifications for customer about payment.
+                    Overrides project settings configured in ThePay administration.
+                valid_to:
+                  type: string
+                  format: date-time
+                  description: |-
+                    Date and time in RFC 3339 / ISO 8601 format until which the payment is valid, i.e. the deadline by which the customer can pay it.
+                    After this time the payment expires and can no longer be paid.
+
+                    **Min 5 minutes after datetime of payment creation.**
+                    **Max 5 years after datetime of payment creation.**
+                    **Default 14 days after datetime of payment creation.**
+                save_authorization:
+                  type: boolean
+                  default: false
+                  description: |-
+                    After customer authentication, authorization will be save to payment and it enables [Realize payment by saved authorization](#tag/Saved-Card-Authorization/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1savedauthorization/post) endpoint for future payment realization.
+                language_code:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_LanguageCode"
+                    - description: |-
+                        Language of the customer
+                customer:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      maxLength: 255
+                    surname:
+                      type: string
+                      maxLength: 100
+                    email:
+                      type: string
+                      format: e-mail address
+                      description: |-
+                        **required** if phone is not present, The domain contained in the e-mail address must have a valid mx record.
+                        If supplied by customer, we recommend checking the email, eg. with some sort of online DSN validation, for preventing typos.
+                      example: jane.doe@example.com
+                    phone:
+                      type: string
+                      format: msisdn
+                      maxLength: 15
+                      description: |-
+                        **required** if email is not present, https://en.wikipedia.org/wiki/MSISDN
+                      example: 420589687963
+                    billing_address:
+                      $ref: "#/components/schemas/Address"
+                    shipping_address:
+                      $ref: "#/components/schemas/Address"
+                  required:
+                    - name
+                    - surname
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                subscription:
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - regular
+                        - usagebased
+                        - irregular
+                      description: |-
+                        Type describing subscription behavior, define which endpoint is enabled for future payment realization.
+                    period:
+                      type: integer
+                      minimum: 1
+                      nullable: true
+                      description: |-
+                        **required if type is `regular` or `usagebased`**
+
+                        Minimum days between payments realization, how often should be subscription paid.
+                  required:
+                    - type
+                  description: |-
+                    Information about long time subscription, repeatedly paid by customer.
+                  nullable: true
+                  type: object
+              required:
+                - amount
+                - currency_code
+                - uid
+                - language_code
+                - customer
+              example:
+                is_deposit: true
+                can_customer_change_method: true
+                payment_method_code: card
+                amount: "10000"
+                currency_code: CZK
+                uid: 30de400
+                order_id: "2019000001"
+                description_for_customer: Thanks for your order
+                description_for_merchant: This is very important
+                return_url: https://example.com?return=30de400
+                notif_url: https://example.com?notif=30de400
+                is_customer_notification_enabled: false
+                valid_to: 2019-09-23T09:49:54+02:00
+                save_authorization: false
+                language_code: cs
+                customer:
+                  name: Jane
+                  surname: Doe
+                  email: jane.doe@gmail.com
+                  phone: "420589687963"
+                  billing_address:
+                    country_code: GB
+                    city: London
+                    zip: NW1
+                    street: Baker Street 221B
+                  shipping_address:
+                    country_code: GB
+                    city: London
+                    zip: NW1
+                    street: Baker Street 221B
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                subscription:
+                  type: regular
+                  period: 30
+      responses:
+        "200":
+          description: |-
+            A payment was created with same `uid`, `amount`, `currency_code` in the past,
+            urls for existing payment is returned and nothing is updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment_Creation"
+        "201":
+          description: Payment created in current api call.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment_Creation"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "409":
+          description: |-
+            Tried to insert a duplicate record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: Payment with this UID was already created with different request body data.
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments/{payment_uid}":
+    get:
+      summary: Get Payment Detail
+      description: |-
+        This resource represents one particular payment identified by its *payment_uid*.
+      tags:
+        - Payments
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments/{payment_uid}/generate_confirmation":
+    get:
+      summary: Get Payment Confirmation
+      description: |-
+        This endpoint will generate a PDF confirmation of **paid** payment
+        specified by *payment_uid*. If payment was not paid yet, you will get
+        error 400. Response content-type is application/pdf which means that
+        response contains binary data.
+      tags:
+        - Payments
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - $ref: "#/components/parameters/LanguageQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+              example: ""
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  /v1/accounts:
+    get:
+      summary: Get Accounts
+      description: |-
+        Returns an array of accounts belonging to a particular merchant in ThePay system.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - name: project_id
+          in: query
+          description: |-
+            ID of the project, if set returns only accounts related with selected project
+          required: false
+          schema:
+            $ref: "#/components/schemas/Type_ProjectId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Account"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  /v1/balances:
+    get:
+      summary: Get Balance History
+      tags:
+        - Transactions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - name: project_id
+          in: query
+          description: |-
+            ID of the project, if set returns only balances related with selected project
+          required: false
+          schema:
+            $ref: "#/components/schemas/Type_ProjectId"
+        - name: account_iban
+          in: query
+          description: |-
+            The IBAN of account,
+            check the [endpoint get accounts](#tag/Transactions/paths/~1v1~1accounts/get),
+            if set returns only balances related with selected account.
+          required: false
+          schema:
+            $ref: "#/components/schemas/Type_Iban_Internal"
+        - $ref: "#/components/parameters/BalanceAtQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountBalance"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+  "/v1/transactions/{account_iban}/":
+    get:
+      summary: Get Account Transaction History
+      tags:
+        - Transactions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - name: account_iban
+          in: path
+          description: |-
+            The IBAN of account for which you want to retrieve the transaction history.
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_Iban_Internal"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - name: date_from
+          in: query
+          description: |-
+            Datetime in ISO 8601 format, keep in mind that you need to encode "+" symbol in the URL to "%2B"
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_DateTime"
+        - name: date_to
+          in: query
+          description: |-
+            Datetime in ISO 8601 format, keep in mind that you need to encode "+" symbol in the URL to "%2B"
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_DateTime"
+        - $ref: "#/components/parameters/CurrencyCodeQuery"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 100
+            example: 100
+            maximum: 1000
+        - $ref: "#/components/parameters/PageQuery"
+      responses:
+        "200":
+          description: OK
+          headers:
+            Link:
+              schema:
+                type: string
+            X-Total-Count:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/transactions/{account_iban}/account_statement/gpc":
+    get:
+      summary: Get Account Statement - GPC
+      description: |-
+        Returns an account statement for the specified account and time period in GPC format.
+
+        The export includes all transactions for the specified date range (and currency if specified). The **Variable Symbol (VS)** field in the export is determined by the `payment_identifier` parameter:
+
+        * `order_number` (default): Uses the order ID from the [payment](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get). If the order_number contains non-digit characters or exceeds 10 characters in length, a string of 10 zeros will be used.
+        * `uid`: Uses the [payment](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get) UID. If the UID contains non-digit characters or exceeds 10 characters in length, a string of 10 zeros will be used.
+        * `id`: Uses the ThePay [payment](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get) ID
+
+        **Important:** For outgoing transactions, the real variable symbol from the transaction is always used, regardless of the `payment_identifier` setting.
+
+        If `currency_code` is specified, the export will be filtered to only include transactions in that currency, and a summary section will be added to the header containing:
+        * Initial balance
+        * Final balance
+        * Total debit (outgoing transactions)
+        * Total credit (incoming transactions)
+
+        The response is a binary file stream in windows-1250 encoding that should be saved with a `.gpc` extension.
+
+        **Rate limit** is 2 exports per minute. Maximum period is 90 days.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - name: account_iban
+          in: path
+          description: |-
+            The IBAN of account for which you want to retrieve the account statement.
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_Iban_Internal"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - name: date_from
+          in: query
+          required: true
+          description: |-
+            Start date of the period for which to generate the statement (inclusive).
+            Format: YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+          example: 2024-01-01
+        - name: date_to
+          in: query
+          required: true
+          description: |-
+            End date of the period for which to generate the statement (inclusive). Must be after or equal to date_from and not more than 90 days after date_from.
+            Format: YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+          example: 2024-01-31
+        - name: currency_code
+          in: query
+          required: false
+          description: |-
+            Optional currency code to filter transactions. If specified, only transactions in this currency will be included,
+            and a summary section with balances and totals will be added to the GPC header.
+          schema:
+            $ref: "#/components/schemas/Type_MoneyCurrency"
+        - name: payment_identifier
+          in: query
+          required: false
+          description: |-
+            Determines what value will be used in the Variable Symbol (VS) field of the GPC export:
+            * `order_number` (default): Uses the order ID from the payment
+            * `uid`: Uses the payment UID
+            * `id`: Uses the ThePay payment ID
+
+            **Note:** For outgoing transactions, the real variable symbol from the transaction is always used, regardless of this setting.
+          schema:
+            type: string
+            enum:
+              - order_number
+              - uid
+              - id
+            default: order_number
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+              example: |
+                0740001070000000107Účet #1             13052000000000000000+00000000000000+00000000000000+00000000000000+001261125              
+                0750000000000000000000107000000010700000000335420000004660702000000000000000000000000000000261125payment             00348261125
+                0750000000000000000000107000000010700000000335400000017036352000000000000000000000000000000261125payment             00978261125
+                0750000000000000000000107000000010700000000335380000012410902000000000000000000000000000000261125payment             00978261125
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: 'attachment; filename="gpc_export_TP7811112150822790787055_1234567890.gpc"'
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v2/projects/{project_id}/payments/{parent_payment_uid}/subscription/regular":
+    post:
+      summary: V2 Realize Regular Subscription Payment
+      description: |-
+        This endpoint will realize new payment for the same subscription as its
+        parent payment.
+        Through this endpoint, realization of subscription payment can be only done **once per given period** and payment **amount can't be changed**.
+
+        * Fixed payment period
+        * Fixed payment amount
+
+        If the realization return `parent.recurring_payments_available` as `false` the subscription should end, because the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend to inform the customer to create a new order for his favorite subscription.
+
+        If you receive an HTTP status **202**, the payment state changes to `waiting_for_confirmation`.
+        You will be notified [notification](#section/Notifications) about the result of the realization and any future changes in the payment state. The payment can change to the `paid` state (if the realization succeeds) or to the `error` state (if the realization fails).
+
+        In case of an `error` state, you should check the `parent.recurring_payments_available` property in the [payment detail](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get) response to determine if the subscription should end.
+      tags:
+        - Subscriptions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment which initialized this subscription.
+            It is the first payment created with `subscription.type` **regular** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  description: |-
+                    UID of the new payment which will be realized.
+                    Payment identification in your system, must be unique per project.
+                  allOf:
+                    - $ref: "#/components/schemas/Type_PaymentUid"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                  nullable: true
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment.
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+              required:
+                - uid
+              example:
+                uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                order_id: order-123
+                description_for_merchant: description that will be shown in admin
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SynchRecurringPaymentResult"
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaitingConfirmationRecurringPaymentResult"
+        "404":
+          $ref: "#/components/responses/404"
+  "/v2/projects/{project_id}/payments/{parent_payment_uid}/subscription/usagebased":
+    post:
+      summary: V2 Realize Usage Based Subscription Payment
+      description: |-
+        This endpoint will realize new payment for the same subscription as its
+        parent payment with changeable price for different amount of shipped
+        products or provided services.
+
+        Through this endpoint, realization of subscription payment can be only done **once per given period**.
+
+        * Fixed payment period
+        * Variable payment amount
+
+        If the realization return `parent.recurring_payments_available` as `false` the subscription should end, because the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend to inform the customer to create a new order for his favorite subscription.
+
+        If you receive an HTTP status **202**, the payment state changes to `waiting_for_confirmation`.
+        You will be notified [notification](#section/Notifications) about the result of the realization and any future changes in the payment state. The payment can change to the `paid` state (if the realization succeeds) or to the `error` state (if the realization fails).
+
+        In case of an `error` state, you should check the `parent.recurring_payments_available` property in the [payment detail](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get) response to determine if the subscription should end.
+      tags:
+        - Subscriptions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment which initialized this subscription.
+            It is the first payment created with `subscription.type` **usagebased** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                amount:
+                  description: |-
+                    The amount in atomic unit of currency (cents), same currency as parent payment.
+                  allOf:
+                    - $ref: "#/components/schemas/Type_MoneyAmount"
+                    - type: string
+                      format: integer
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment.
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+              required:
+                - uid
+                - amount
+              example:
+                uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                amount: "10000"
+                order_id: order-123
+                description_for_merchant: description that will be shown in admin
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SynchRecurringPaymentResult"
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaitingConfirmationRecurringPaymentResult"
+        "404":
+          $ref: "#/components/responses/404"
+  "/v2/projects/{project_id}/payments/{parent_payment_uid}/subscription/irregular":
+    post:
+      summary: V2 Realize Irregular Subscription Payment
+      description: |-
+        This endpoint will realize new payment for the same subscription as its
+        parent payment. This endpoint should be used in case the payment
+        intervals are not known beforehand and will be thus irregular.
+
+        When using this endpoint, the payment **amount can't be changed**.
+
+        * Fixed payment amount
+        * Variable payment period
+
+        If the realization return `parent.recurring_payments_available` as `false` the subscription should end, because the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend to inform the customer to create a new order for his favorite subscription.
+
+        If you receive an HTTP status **202**, the payment state changes to `waiting_for_confirmation`.
+        You will be notified [notification](#section/Notifications) about the result of the realization and any future changes in the payment state. The payment can change to the `paid` state (if the realization succeeds) or to the `error` state (if the realization fails).
+
+        In case of an `error` state, you should check the `parent.recurring_payments_available` property in the [payment detail](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get) response to determine if the subscription should end.
+      tags:
+        - Subscriptions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment which initialized this subscription.
+            It is the first payment created with `subscription.type` **irregular** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment.
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+              required:
+                - payment_uid
+              example:
+                uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                order_id: order-123
+                description_for_merchant: description that will be shown in admin
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SynchRecurringPaymentResult"
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaitingConfirmationRecurringPaymentResult"
+        "404":
+          $ref: "#/components/responses/404"
+  "/v1/projects/{project_id}/payments/{parent_payment_uid}/subscription/regular":
+    post:
+      summary: Realize Regular Subscription Payment
+      description: |-
+        **!!! Deprecated use new endpoint version [V2 Realize Regular Subscription Payment](#tag/Subscriptions/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1subscription~1regular/post) instead!!!**
+
+        This endpoint will realize new paid payment for the same subscription as its parent payment.
+        Through this endpoint, realization of subscription payment can be only done **once per given period** and payment **amount can't be changed**.
+
+        * Fixed payment period
+        * Fixed payment amount
+
+        If the realization return state is `expired` the subscription should end, because the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend to inform the customer to create a new order for his favorite subscription.
+      tags:
+        - Subscriptions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment which initialized this subscription.
+            It is the first payment created with `subscription.type` **regular** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                  nullable: true
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment.
+                notif_url:
+                  type: string
+                  format: url
+                  maxLength: 4000
+                  description: |-
+                    Valid HTTPS URL that will be used for notifications.
+                    It is optional, if provided URL is empty, one of these URLs will be used, the last has lowest priority.
+
+                    - Project default notif URL
+                    - Parent payment notif URL
+                    - Parent payment return URL
+                    - Project default return URL
+
+                    If all URLs are empty notifications are not used for the payment.
+
+                    Learn more about [Notifications](#section/Notifications)
+              required:
+                - payment_uid
+              example:
+                payment_uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                order_id: order-123
+                description_for_merchant: description that will be shown in admin
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          headers:
+            Deprecated:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentResult"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments/{parent_payment_uid}/subscription/usagebased":
+    post:
+      summary: Realize Usage Based Subscription Payment
+      description: |-
+        **!!! Deprecated use new endpoint version [V2 Realize Usage Based Subscription Payment](#tag/Subscriptions/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1subscription~1usagebased/post) instead!!!**
+
+        This endpoint will realize new paid payment for the same subscription as its parent payment with changeable price for different amount of shipped products or provided services.
+        Through this endpoint, realization of subscription payment can be only done **once per given period**.
+
+        * Fixed payment period
+        * Variable payment amount
+
+        If the realization return state is `expired` the subscription should end, because the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend to inform the customer to create a new order for his favorite subscription.
+      tags:
+        - Subscriptions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment which initialized this subscription.
+            It is the first payment created with `subscription.type` **usagebased** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                amount:
+                  description: |-
+                    The amount in atomic unit of currency (cents), same currency as parent payment.
+                  allOf:
+                    - $ref: "#/components/schemas/Type_MoneyAmount"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment.
+                notif_url:
+                  type: string
+                  format: url
+                  maxLength: 4000
+                  description: |-
+                    Valid HTTPS URL that will be used for notifications.
+                    It is optional, if provided URL is empty, one of these URLs will be used, the last has lowest priority.
+
+                    - Project default notif URL
+                    - Parent payment notif URL
+                    - Parent payment return URL
+                    - Project default return URL
+
+                    If all URLs are empty notifications are not used for the payment.
+
+                    Learn more about [Notifications](#section/Notifications)
+              required:
+                - payment_uid
+                - amount
+              example:
+                payment_uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                amount: 10000
+                order_id: order-123
+                description_for_merchant: description that will be shown in admin
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          headers:
+            Deprecated:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentResult"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments/{parent_payment_uid}/subscription/irregular":
+    post:
+      summary: Realize Irregular Subscription Payment
+      description: |-
+        **!!! Deprecated use new endpoint version [V2 Realize Irregular Subscription Payment](#tag/Subscriptions/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1subscription~1irregular/post) instead!!!**
+
+        This endpoint will realize new paid payment for the same subscription as its parent payment. This endpoint should be used in case the payment intervals are not known beforehand and will be thus irregular.
+        When using this endpoint, the payment **amount can't be changed**.
+
+        * Fixed payment amount
+        * Variable payment period
+
+        If the realization return state is `expired` the subscription should end, because the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend to inform the customer to create a new order for his favorite subscription.
+      tags:
+        - Subscriptions
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment which initialized this subscription.
+            It is the first payment created with `subscription.type` **irregular** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment."
+                notif_url:
+                  type: string
+                  format: url
+                  maxLength: 4000
+                  description: |-
+                    Valid HTTPS URL that will be used for notifications.
+                    It is optional, if provided URL is empty, one of these URLs will be used, the last has lowest priority.
+
+                    - Project default notif URL
+                    - Parent payment notif URL
+                    - Parent payment return URL
+                    - Project default return URL
+
+                    If all URLs are empty notifications are not used for the payment.
+
+                    Learn more about [Notifications](#section/Notifications)
+              required:
+                - payment_uid
+              example:
+                payment_uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                order_id: order-123
+                description_for_merchant: description that will be shown in admin
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          headers:
+            Deprecated:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentResult"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v2/projects/{project_id}/payments/{parent_payment_uid}/savedauthorization":
+    post:
+      summary: V2 Realize Payment By Saved Authorization
+      description: |-
+        This endpoint will realize a new payment by the same authorization which is saved in the parent payment.
+
+        * Variable payment amount
+        * Variable payment period
+
+        If the realization returns `parent.recurring_payments_available` as `false`, the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend informing the customer to save new authorization by paying a new ordinary order.
+
+        If you receive an HTTP status **202**, the payment state changes to `waiting_for_confirmation`.
+        You will be notified [notification](#section/Notifications) about the result of the realization and any future changes in the payment state. The payment can change to the `paid` state (if the realization succeeds) or to the `error` state (if the realization fails).
+
+        In case of an `error` state, you should check the `parent.recurring_payments_available` property in the [payment detail](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get) response to determine if the subscription should end.
+      tags:
+        - Saved Card Authorization
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment with saved authorization.
+            It is the first payment created with `save_authorization` **true** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                value:
+                  $ref: "#/components/schemas/MoneyLegacy"
+                items:
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment.
+                  nullable: true
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+              required:
+                - uid
+                - value
+              example:
+                uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                value:
+                  amount: "10000"
+                  currency: CZK
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                order_id: order-123
+                description_for_merchant: description that will be shown in admin
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SynchRecurringPaymentResult"
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaitingConfirmationRecurringPaymentResult"
+        "404":
+          $ref: "#/components/responses/404"
+  "/v1/projects/{project_id}/payments/{parent_payment_uid}/savedauthorization":
+    post:
+      summary: Realize Payment By Saved Authorization
+      description: |-
+        **!!! Deprecated use new endpoint version [V2 Realize Payment By Saved Authorization](#tag/Saved-Card-Authorization/paths/~1v2~1projects~1{project_id}~1payments~1{parent_payment_uid}~1savedauthorization/post) instead!!!**
+
+        This endpoint will realize new paid payment by same authorization which is save in parent payment.
+
+        * Variable payment amount
+        * Variable payment period
+
+        If the realization return state is `expired`, the realization of new payments through the parent payment is no longer available.
+        In this case, we recommend to inform the customer to save new authorization by paying new ordinary order.
+      tags:
+        - Saved Card Authorization
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - name: parent_payment_uid
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            UID of payment with saved authorization.
+            It is the first payment created with `save_authorization` **true** through endpoint [Create new payment](#tag/Payment-Creation/paths/~1v1~1projects~1{project_id}~1payments/post).
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  $ref: "#/components/schemas/Type_PaymentUid"
+                value:
+                  allOf:
+                    - $ref: "#/components/schemas/Money"
+                    - description: |-
+                        If this is null, paid value is same as value of parent payment.
+                      nullable: true
+                items:
+                  description: |-
+                    If this attribute is set to null, items will be copied from the parent payment.
+                  nullable: true
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PaymentItem"
+                orderId:
+                  $ref: "#/components/schemas/Type_OrderId"
+                descriptionForMerchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                notif_url:
+                  type: string
+                  format: url
+                  maxLength: 4000
+                  description: |-
+                    Valid HTTPS URL that will be used for notifications.
+                    It is optional, if provided URL is empty, one of these URLs will be used, the last has lowest priority.
+
+                    - Project default notif URL
+                    - Parent payment notif URL
+                    - Parent payment return URL
+                    - Project default return URL
+
+                    If all URLs are empty notifications are not used for the payment.
+
+                    Learn more about [Notifications](#section/Notifications)
+              required:
+                - uid
+              example:
+                uid: efd7d8e6-asd5-3c46-b475-51762331b979
+                value:
+                  amount: 10000
+                  currency: CZK
+                items:
+                  - type: item
+                    name: Some item
+                    count: 2
+                    total_price: "10000"
+                    ean: "978020137962"
+                orderId: order-123
+                descriptionForMerchant: description that will be shown in admin
+                notif_url: https://thepay.eu/notify
+      responses:
+        "200":
+          description: OK
+          headers:
+            Deprecated:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentResult"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments/{payment_uid}/payment_urls":
+    get:
+      summary: Get Available Payment Methods
+      description: |-
+        Returns an array of available payment methods with pay URLs for certain payment.
+      tags:
+        - General Payment Management
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - $ref: "#/components/parameters/LanguageQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment_Url"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments/{payment_uid}/method":
+    put:
+      summary: Change Method For Payment
+      description: |-
+        This endpoint will change the current payment method, with which the payment can be paid.
+      tags:
+        - General Payment Management
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_method_code:
+                  $ref: "#/components/schemas/PaymentMethodCode"
+              required:
+                - payment_method_code
+        description: |-
+          Payment method change is available only for payments with state `waiting_for_payment`.
+          The current payment state can be verified by calling the endpoint [get payment detail](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get).
+      responses:
+        "204":
+          description: No Content
+          content:
+            "*/*":
+              example: ""
+        "400":
+          $ref: "#/components/responses/400"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+  "/v1/projects/{project_id}/payments/{payment_uid}/invalidate":
+    put:
+      summary: Invalidate Payment
+      description: |-
+        This endpoint will invalidate a payment if it is in waiting_for_payment state. Otherwise, a bad request exception will be returned.
+      tags:
+        - General Payment Management
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              example: ""
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v2/projects/{project_id}/payments/{payment_uid}/preauthorized":
+    post:
+      summary: V2 Realize Preauthorized Payment
+      description: |-
+        This endpoint will create request for realization of preauthorized payment.
+
+        If you receive response with HTTP status **200** payment is `paid` and realization is **success**.
+
+        If you receive an HTTP status **202**, the payment state changes to `waiting_for_confirmation`.
+
+        You will be notified [notification](#section/Notifications) about the result of the realization and any future changes in the payment state. The payment can change to the `paid` state (if the realization succeeds) or to the `preauth_cancelled` state (if the realization fails).
+      tags:
+        - Preauthorized Payments
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        $ref: "#/components/requestBodies/Realize_Preauthorized_PaymentBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    type: string
+                    description: |-
+                      New payment state changed by endpoint call
+                    example: paid
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    type: string
+                    description: |-
+                      New payment state changed by endpoint call
+                    example: waiting_for_confirmation
+        "404":
+          $ref: "#/components/responses/404"
+        "422":
+          description: Unprocessable entity, Payment is not in required state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: |-
+                  Payment with specified UID: 'efd7d8e6-2fa3-3c46-b475-51762331bf56' is not in required state: 'preauthorized' (current state: 'waiting_for_confirmation')
+  "/v1/projects/{project_id}/payments/{payment_uid}/preauthorized":
+    post:
+      summary: Realize Preauthorized Payment
+      description: |-
+        **!!! Deprecated use new endpoint version [V2 Realize Preauthorized Payment](#tag/Preauthorized-Payments/paths/~1v2~1projects~1{project_id}~1payments~1{payment_uid}~1preauthorized/post) instead!!!**
+
+        This endpoint will realize a preauthorized payment.
+      tags:
+        - Preauthorized Payments
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        $ref: "#/components/requestBodies/Realize_Preauthorized_PaymentBody"
+      responses:
+        "204":
+          description: No Content
+          headers:
+            Deprecated:
+              schema:
+                type: string
+              example: |-
+                Use new endpoint version specify in API doc: https://docs.thepay.cz/#tag/Preauthorized-Payments/paths/~1v2~1projects~1{project_id}~1payments~1{payment_uid}~1preauthorized/post
+          content:
+            "*/*":
+              example: ""
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "422":
+          description: Unprocessable entity, Payment is not in required state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: |-
+                  Payment with specified UID: 'efd7d8e6-2fa3-3c46-b475-51762331bf56' is not in required state: 'preauthorized' (current state: 'paid')
+        "429":
+          $ref: "#/components/responses/429"
+    delete:
+      summary: Cancel Preauthorized Payment
+      description: |-
+        This endpoint will cancel preauthorized payment.
+
+        The time limit for cancellation of preauthorized payments may be shorter for some banks. In such case, you won't be able to cancel the preauthorization. The customer will receive his money back after the bank releases the blocked amount. In such cases, we will return the 422 response
+      tags:
+        - Preauthorized Payments
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      responses:
+        "204":
+          description: No Content
+          content:
+            "*/*":
+              example: ""
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "422":
+          description: Unprocessable entity, Payment is not in required state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: |-
+                  Payment with specified UID: 'efd7d8e6-2fa3-3c46-b475-51762331bf56' is not in required state: 'preauthorized' (current state: 'paid')
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/payments/{payment_uid}/refund":
+    get:
+      summary: Payment Refund Info
+      description: |-
+        Returns information about payment refund.
+      tags:
+        - Refunds
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - available_amount
+                  - currency
+                  - partial_refunds
+                properties:
+                  available_amount:
+                    description: |-
+                      Represents how much money can be refunded to
+                      customer, in atomic unit of currency (cents). If the value is zero, the payment
+                      refund can not be created (the reason might typically be
+                      that the payment was not paid or fully refunded, the
+                      payment method might not support automatic refund, or
+                      other cases).
+                    allOf:
+                      - $ref: "#/components/schemas/Type_MoneyAmount"
+                  currency:
+                    $ref: "#/components/schemas/Type_MoneyCurrency"
+                  partial_refunds:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PaymentRefund"
+                example:
+                  available_amount: 1000
+                  currency: CZK
+                  partial_refunds:
+                    - amount: 9000
+                      reason: Returned order, with broken goods
+                      state: returned
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+    post:
+      summary: Payment Refund Request
+      description: |-
+        This endpoint will create a request for automatic refund of a payment.
+      tags:
+        - Refunds
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  description: |-
+                    Amount which should be refunded, in atomic unit of currency (cents), currency used for refunding is the same as payment currency.
+                    **Min 1, max not refunded amount, the actual value can be detected in [refund info](#tag/Refunds/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}~1refund/get)**
+                  allOf:
+                    - $ref: "#/components/schemas/Type_MoneyAmount"
+                reason:
+                  type: string
+                  description: The description of reason of refund.
+              required:
+                - amount
+                - reason
+              example:
+                amount: 1000
+                reason: Returned order, with broken goods
+      responses:
+        "201":
+          description: Created
+          content:
+            "*/*":
+              example: ""
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/outgoing_payments/czk_domestic":
+    post:
+      summary: Creation of CZK Domestic Payment
+      description: |-
+        Endpoint for creating new outgoing payment to an account in Czech Republic (IBAN starting CZ). Only **CZK** currency is supported on this endpoint.
+      tags:
+        - Outgoing Payment Creation
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  $ref: "#/components/schemas/Type_OutgoingPaymentUid"
+                offset_iban:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_Iban"
+                    - description: |-
+                        IBAN from Czech Republic, which will receive this bank transaction.
+                        The IBAN must start with CZ!
+
+                        The IBAN must comply with the ISO 13616 standard and Czech national requirements, including modulo-11 validation for both the account prefix and account number. For more information, see the [CNB IBAN specifications](https://www.cnb.cz/export/sites/cnb/en/legislation/.galleries/decrees/decree_169_2011.pdf) and [CNB IBAN overview](https://www.cnb.cz/en/payments/iban/iban-international-bank-account-number-basic-information/).
+                amount:
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  description: |-
+                    amount in atomic unit of currency
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                variable_symbol:
+                  $ref: "#/components/schemas/Type_VariableSymbol"
+                specific_symbol:
+                  $ref: "#/components/schemas/Type_SpecificSymbol"
+                constant_symbol:
+                  $ref: "#/components/schemas/Type_ConstantSymbol"
+                description_for_customer:
+                  $ref: "#/components/schemas/Type_DescriptionForCustomer"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+                customer_email:
+                  description: |-
+                    The e-mail for sending customer notification from ThePay system about outgoing payment.
+                    The domain contained in the e-mail address must have a valid mx record.
+                    If supplied by customer, we recommend checking the email, eg. with some sort of online DSN validation, for preventing typos.
+                  allOf:
+                    - $ref: "#/components/schemas/Type_EmailAddress"
+                language_code:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_LanguageCode"
+                    - description: |-
+                        Preferred language for payment related customer notification e-mail.
+              required:
+                - uid
+                - offset_iban
+                - amount
+              example:
+                uid: sad545g5ertwqaf
+                offset_iban: CZ7650511122536259855711
+                amount: 50000
+                order_id: 2000111AAA
+                variable_symbol: "459786"
+                specific_symbol: "987934"
+                constant_symbol: "1457"
+                description_for_customer: "We're sending you 500.00 CZK ;-)."
+                description_for_merchant: "Order 2000111AAA: The account CZ7650511122536259855711 was sent 500.00 CZK."
+                notif_url: https://example.com/api/outgoing-payment/sad545g5ertwqaf/notification-callback
+                customer_email: test@gmail.com
+                language_code: cs
+      responses:
+        "201":
+          $ref: "#/components/responses/201_OutgoingPayment"
+  "/v1/projects/{project_id}/outgoing_payments/sepa":
+    post:
+      summary: Creation of EUR SEPA Payment
+      description: |-
+        Endpoint for creating new outgoing payment to account in a country supporting SEPA transactions. Only **EUR** currency is supported on this endpoint.
+      tags:
+        - Outgoing Payment Creation
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  $ref: "#/components/schemas/Type_OutgoingPaymentUid"
+                offset_iban:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_Iban"
+                    - description: |-
+                        IBAN from a country supporting SEPA transactions, which will receive this bank transaction.
+
+                        The IBAN must comply with both the ISO 13616 international standard and the specific national requirements of the country whose ISO code is contained in the IBAN. This includes validation of the IBAN length, structure, and national checksum rules specific to each country.
+                customer_name:
+                  type: string
+                  maxLength: 70
+                  description: |-
+                    Full name of person or company who will receive
+                    bank transaction. If the name does not match the receiving
+                    account holder, outgoing payment may be returned or
+                    undeliverable!
+                amount:
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  description: |-
+                    amount in atomic unit of currency
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                variable_symbol:
+                  $ref: "#/components/schemas/Type_VariableSymbol"
+                specific_symbol:
+                  $ref: "#/components/schemas/Type_SpecificSymbol"
+                constant_symbol:
+                  $ref: "#/components/schemas/Type_ConstantSymbol"
+                description_for_customer:
+                  $ref: "#/components/schemas/Type_DescriptionForCustomer"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+                customer_email:
+                  description: |-
+                    The e-mail for sending customer notification from ThePay system about outgoing payment.
+                    The domain contained in the e-mail address must have a valid mx record.
+                    If supplied by customer, we recommend checking the email, eg. with some sort of online DSN validation, for preventing typos.
+                  allOf:
+                    - $ref: "#/components/schemas/Type_EmailAddress"
+                language_code:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_LanguageCode"
+                    - description: |-
+                        Preferred language for payment related customer notification e-mail.
+              required:
+                - uid
+                - offset_iban
+                - customer_name
+                - amount
+              example:
+                uid: sepajsasidoiadj
+                offset_iban: SK6265282357628658372191
+                customer_name: Some Name
+                amount: 20000
+                order_id: 2000111AAA
+                variable_symbol: "459786"
+                specific_symbol: "987934"
+                constant_symbol: "1457"
+                description_for_customer: "We're sending you 200.00 EUR ;-)."
+                description_for_merchant: "Order 2000111AAA: The account SK6265282357628658372191 was sent 200.00 EUR."
+                notif_url: https://example.com/api/outgoing-payment/sepajsasidoiadj/notification-callback
+                customer_email: test@gmail.com
+                language_code: cs
+      responses:
+        "201":
+          $ref: "#/components/responses/201_OutgoingPayment"
+  "/v1/projects/{project_id}/outgoing_payments/international":
+    post:
+      summary: Creation of International Payment
+      description: |-
+        Endpoint for creating new outgoing payment to account in any country and
+        currency.
+
+        **Currency code is permitted on agreed terms.**
+      tags:
+        - Outgoing Payment Creation
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  $ref: "#/components/schemas/Type_OutgoingPaymentUid"
+                offset_iban:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_Iban"
+                    - description: |-
+                        IBAN of the recipient account in any country and currency.
+
+                        The IBAN must comply with both the ISO 13616 international standard and the specific national requirements of the country whose ISO code is contained in the IBAN. This includes validation of the IBAN length, structure, and national checksum rules specific to each country.
+                customer_name:
+                  type: string
+                  maxLength: 70
+                  description: |-
+                    Full name of person or company who will receive
+                    bank transaction. If the name does not match the receiving
+                    account holder, outgoing payment may be returned or
+                    undeliverable!
+                amount:
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  description: |-
+                    amount in atomic unit of currency
+                currency:
+                  $ref: "#/components/schemas/Type_MoneyCurrency"
+                order_id:
+                  $ref: "#/components/schemas/Type_OrderId"
+                description_for_customer:
+                  $ref: "#/components/schemas/Type_DescriptionForCustomer"
+                description_for_merchant:
+                  $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                notif_url:
+                  $ref: "#/components/schemas/NotifUrl"
+                customer_email:
+                  description: |-
+                    The e-mail for sending customer notification from ThePay system about outgoing payment.
+                    The domain contained in the e-mail address must have a valid mx record.
+                    If supplied by customer, we recommend checking the email, eg. with some sort of online DSN validation, for preventing typos.
+                  allOf:
+                    - $ref: "#/components/schemas/Type_EmailAddress"
+                language_code:
+                  allOf:
+                    - $ref: "#/components/schemas/Type_LanguageCode"
+                    - description: |-
+                        Preferred language for payment related customer notification e-mail.
+              required:
+                - uid
+                - offset_iban
+                - customer_name
+                - amount
+                - currency
+              example:
+                uid: interjsasidoiadj
+                offset_iban: SK6265282357628658372191
+                customer_name: Some Name
+                amount: 20000
+                currency: USD
+                order_id: 2000111AAA
+                description_for_customer: "We're sending you 200.00 USD ;-)."
+                description_for_merchant: "Order 2000111AAA: The account SK6265282357628658372191 sent 200 USD."
+                notif_url: https://example.com/api/outgoing-payment/international/notification-callback
+                customer_email: test@gmail.com
+                language_code: cs
+      responses:
+        "201":
+          $ref: "#/components/responses/201_OutgoingPayment"
+        "403":
+          $ref: "#/components/responses/403"
+        "409":
+          description: |-
+            Tried to insert a duplicate record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: "Outgoing payment with uid: 'interjsasidoiadj' already exists for the project: 1"
+  "/v1/projects/{project_id}/outgoing_payments":
+    get:
+      summary: Get Outgoing Payments List
+      description: |-
+        This endpoint will list Outgoing Payments under given project (if any).
+      tags:
+        - Outgoing Payment Data Retrieval
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/PageQuery"
+        - $ref: "#/components/parameters/StateQuery_OutgoingPayment"
+        - $ref: "#/components/parameters/TypeQuery_OutgoingPayment"
+        - $ref: "#/components/parameters/AmountFromQuery"
+        - $ref: "#/components/parameters/AmountToQuery"
+        - $ref: "#/components/parameters/CurrencyQuery"
+        - $ref: "#/components/parameters/CreatedFromQuery"
+        - $ref: "#/components/parameters/CreatedToQuery"
+        - $ref: "#/components/parameters/SentFromQuery"
+        - $ref: "#/components/parameters/SentToQuery"
+        - $ref: "#/components/parameters/OrderIdQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OutgoingPayment"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/outgoing_payments/{payment_uid}":
+    get:
+      summary: Get Outgoing Payment Detail
+      description: |-
+        This endpoint will fetch a single Outgoing Payment by its UID and displays all relevant data.
+      tags:
+        - Outgoing Payment Data Retrieval
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OutgoingPayment"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+  "/v1/projects/{project_id}/outgoing_payments/{payment_uid}/generate_confirmation":
+    get:
+      summary: Get Outgoing Payment Confirmation
+      description: |-
+        This endpoint will generate a PDF confirmation of **sent** outgoing
+        payment specified by *payment_uid*. If payment was not sent yet, you
+        will get error 400. Response content-type is application/pdf which means
+        that response contains binary data.
+      tags:
+        - Outgoing Payment Data Retrieval
+      parameters:
+        - $ref: "#/components/parameters/SignatureHeader"
+        - $ref: "#/components/parameters/SignatureDateHeader"
+        - $ref: "#/components/parameters/ProjectIdPath"
+        - $ref: "#/components/parameters/PaymentUidPath"
+        - $ref: "#/components/parameters/MerchantIdQuery"
+        - $ref: "#/components/parameters/LanguageQuery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+              example: ""
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "429":
+          $ref: "#/components/responses/429"
+components:
+  parameters:
+    AmountFromQuery:
+      name: amount_from
+      in: query
+      required: false
+      schema:
+        type: number
+        description: |-
+          WARNING decimal value, it is not Type_MoneyAmount
+        example: 99.5
+    AmountToQuery:
+      name: amount_to
+      in: query
+      required: false
+      schema:
+        type: number
+        description: |-
+          WARNING decimal value, it is not Type_MoneyAmount
+        example: 99.5
+    BalanceAtQuery:
+      name: balance_at
+      in: query
+      description: |-
+        Datetime in ISO 8601 format,
+        keep in mind that you need to encode "+" symbol in the URL to "%2B",
+        if not present current time is used.
+      required: false
+      schema:
+        type: string
+        format: date-time
+        example: 2023-03-14T15:08:44+00:00
+    CreatedFromQuery:
+      name: created_from
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+        example: 2019-01-01
+    CreatedToQuery:
+      name: created_to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+        example: 2019-12-31
+    FinishedFromQuery:
+      name: finished_from
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+        example: 2019-01-01
+    FinishedToQuery:
+      name: finished_to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+        example: 2019-12-31
+    LimitQuery:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        example: 100
+        maximum: 1000
+    PageQuery:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1
+        example: 1
+    PaymentMethodQuery:
+      name: payment_method
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/PaymentMethodCode"
+    PaymentUidPath:
+      name: payment_uid
+      in: path
+      description: UID of the payment
+      required: true
+      schema:
+        $ref: "#/components/schemas/Type_PaymentUid"
+    ProjectIdQuery:
+      name: project_id
+      in: query
+      description: ID of the project
+      required: false
+      schema:
+        $ref: "#/components/schemas/Type_ProjectId"
+    ProjectIdPath:
+      name: project_id
+      in: path
+      description: ID of the project
+      required: true
+      schema:
+        $ref: "#/components/schemas/Type_ProjectId"
+    OrderIdQuery:
+      name: order_id
+      in: query
+      description: |-
+          ID of the purchase order
+      required: false
+      schema:
+        $ref: "#/components/schemas/Type_OrderId"
+    LanguageQuery:
+      name: language
+      in: query
+      description: |-
+          Currently supported translations are cs (for cs and sk), de, en (for other languages).
+      required: false
+      schema:
+        allOf:
+          - $ref: "#/components/schemas/Type_LanguageCode"
+          - default: cs
+    CountryCodesQuery:
+      name: country_codes[]
+      in: query
+      description: |-
+        filters payment methods by countries, if null only filter from administration setting will apply
+      required: false
+      schema:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/components/schemas/Type_CountryCode"
+    CurrencyQuery:
+      name: currency
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Type_MoneyCurrency"
+    CurrencyCodeQuery:
+      name: currency_code
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Type_MoneyCurrency"
+    CurrencyCodesQuery:
+      name: currency_codes[]
+      in: query
+      description: |-
+        filters payment methods by currencies, if null payment methods with all curencies available are returned
+      required: false
+      schema:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/components/schemas/Type_MoneyCurrency"
+    ForbiddenTagsQuery:
+      name: forbidden_tags[]
+      in: query
+      description: |-
+        removes all payment methods with specified tags from response
+        if not present only the administration settings filter will apply
+      required: false
+      schema:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/components/schemas/Enum_MethodTag"
+    MerchantIdQuery:
+      name: merchant_id
+      required: true
+      in: query
+      description: |-
+        ID of the merchant
+      schema:
+        type: string
+        format: uuid
+        example: 6cdf1b24-0479-4a64-b076-b0ece482453f
+    RequiredTagsQuery:
+      name: required_tags[]
+      in: query
+      description: |-
+        allows only payment methods with specified tags in response
+        if not present only the administration settings filter will apply
+      required: false
+      schema:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/components/schemas/Enum_MethodTag"
+    SentFromQuery:
+      name: sent_from
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+        example: 2019-01-01
+    SentToQuery:
+      name: sent_to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+        example: 2019-12-31
+    StateQuery_OutgoingPayment:
+      name: state
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Enum_OutgoingPaymentState"
+    StateQuery_Payment:
+      name: state
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Enum_PaymentState"
+    SignatureHeader:
+      name: Signature
+      required: true
+      in: header
+      schema:
+        type: string
+        format: hexadecimal
+        example: 8b5f48702995c1598c573db1e21866a9b825d4a794d169d7060a03605796360b
+    SignatureDateHeader:
+      name: SignatureDate
+      required: true
+      in: header
+      schema:
+        type: string
+        format: rfc7231
+        example: Mon, 23 Sep 2019 06:07:08 GMT
+    TypeQuery_OutgoingPayment:
+      name: type
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Enum_OutgoingPaymentType"
+  requestBodies:
+    Realize_Preauthorized_PaymentBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              amount:
+                description: |-
+                  The amount which should be charged, in atomic unit of currency (cents). This value can't exceed the original payment amount.
+                allOf:
+                  - $ref: "#/components/schemas/Type_MoneyAmount"
+            required:
+              - amount
+            example:
+              amount: 9945
+  responses:
+    "201_OutgoingPayment":
+      description: |-
+        Outgoing payment was created
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - outgoing_payment_id
+            properties:
+              outgoing_payment_id:
+                $ref: "#/components/schemas/Type_OutgoingPaymentId"
+    "400":
+      description: |-
+        Bad request, stands for validation errors
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: Description of validation error message
+    "401":
+      description: |-
+        Unauthorized, the signature is invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: Description of error message, e.g. Invalid signature!
+    "403":
+      description: |-
+        Forbidden, missing merchant_id, Signature, SignatureDate or the request was made from an IP address not allowed in the whitelist
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: Description of error message, e.g. Not allowed IP detected
+    "404":
+      description: |-
+        Not found, some identifier is incorrect
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    "409":
+      description: |-
+        Tried to insert a duplicate record
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    "422":
+      description: |-
+        Unprocessable entity
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    "429":
+      description: |-
+        Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: Description of error message, e.g. You have exceeded your rate limit
+    "503":
+      description: |-
+        Service unavailable due to maintenance,
+        detail information are in [maintenance section](#section/Maintenance)
+      headers:
+        Unavailable-Until:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: Service Unavailable
+  schemas:
+    Address:
+      type: object
+      required:
+        - country_code
+        - city
+        - zip
+        - street
+      properties:
+        country_code:
+          $ref: "#/components/schemas/Type_CountryCode"
+        city:
+          type: string
+          maxLength: 100
+          description: |-
+            city name
+          example: London
+        zip:
+          type: string
+          maxLength: 20
+          description: |-
+            zip code
+          example: NW1
+        street:
+          type: string
+          maxLength: 100
+          description: street name with house number
+          example: Baker Street 221B
+    Customer:
+      type: object
+      required:
+        - name
+        - surname
+      properties:
+        name:
+          type: string
+          example: Jane
+        surname:
+          type: string
+          example: Doe
+        email:
+          allOf:
+            - $ref: "#/components/schemas/Type_EmailAddress"
+            - description: |-
+                **required** if phone is not present
+        phone:
+          type: string
+          format: msisdn
+          maxLength: 15
+          example: 420589687963
+          description: |-
+            **required** if email is not present
+        billing_address:
+          allOf:
+            - $ref: "#/components/schemas/Address"
+            - nullable: true
+        shipping_address:
+          allOf:
+            - $ref: "#/components/schemas/Address"
+            - nullable: true
+    NotifUrl:
+      allOf:
+        - $ref: "#/components/schemas/Type_Url"
+        - maxLength: 4000
+          description: |-
+            Valid HTTPS URL that will be used for notifications.
+            It is optional, default project notif URL will be used if provided URL is empty.
+            If project has also empty notification URL, it is **required**!
+
+            Learn more about [Notifications](#section/Notifications)
+    PaymentItem:
+      type: object
+      required:
+        - type
+        - name
+        - count
+        - total_price
+      properties:
+        type:
+          type: string
+          enum:
+            - item
+            - delivery
+            - discount
+          description: item, delivery or discount
+        name:
+          type: string
+          example: Some item
+        count:
+          type: integer
+          example: 2
+        total_price:
+          allOf:
+            - $ref: "#/components/schemas/Type_MoneyAmount"
+            - type: string
+        ean:
+          type: string
+          format: ean13
+          minLength: 1
+          maxLength: 13
+          example: 9781565924796
+    Currency:
+      type: object
+      properties:
+        code:
+          $ref: "#/components/schemas/Type_MoneyCurrency"
+        numeric_code:
+          type: string
+          format: iso4217
+          description: |-
+            ISO 4217 numeric code of currency
+          example: "203"
+    Project:
+      type: object
+      required:
+        - project_id
+        - project_url
+        - account_iban
+      properties:
+        project_id:
+          $ref: "#/components/schemas/Type_ProjectId"
+        project_url:
+          allOf:
+            - $ref: "#/components/schemas/Type_Url"
+            - maxLength: 255
+              description: |-
+                url where the project is available online
+        account_iban:
+          $ref: "#/components/schemas/Type_Iban_Internal"
+      example:
+        project_id: 5
+        project_url: https://some-url.cz
+        account_iban: TP7811112150822790787055
+    Account:
+      type: object
+      required:
+        - iban
+        - name
+      properties:
+        iban:
+          $ref: "#/components/schemas/Type_Iban_Internal"
+        name:
+          type: string
+          description: |-
+            Name of account that was set by merchant.
+          example: "Account #1"
+    Method:
+      type: object
+      required:
+        - code
+        - title
+      properties:
+        code:
+          type: string
+          example: card
+        title:
+          type: string
+          example: Card Payment
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Enum_MethodTag"
+        available_currencies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Currency"
+        image:
+          type: object
+          properties:
+            src:
+              allOf:
+                - $ref: "#/components/schemas/Type_Url"
+                - description: |-
+                    The image source address
+    Payment:
+      type: object
+      required:
+        - uid
+        - state
+        - currency
+        - amount
+        - paid_amount
+        - created_at
+        - valid_to
+        - pay_url
+        - detail_url
+        - customer
+        - offset_account_status
+        - events
+      properties:
+        uid:
+          $ref: "#/components/schemas/Type_PaymentUid"
+        project_id:
+          $ref: "#/components/schemas/Type_ProjectId"
+        order_id:
+          allOf:
+            - $ref: "#/components/schemas/Type_OrderId"
+            - nullable: true
+        state:
+          $ref: "#/components/schemas/Enum_PaymentState"
+        currency:
+          $ref: "#/components/schemas/Type_MoneyCurrency"
+        amount:
+          $ref: "#/components/schemas/Type_MoneyAmount"
+        paid_amount:
+          $ref: "#/components/schemas/Type_MoneyAmount"
+        created_at:
+          $ref: "#/components/schemas/Type_DateTime"
+        finished_at:
+          allOf:
+            - $ref: "#/components/schemas/Type_DateTime"
+            - nullable: true
+        valid_to:
+          description: |-
+            Date and time until which the payment is valid, i.e. the deadline by which the customer can pay it.
+            After this time the payment expires and can no longer be paid.
+          allOf:
+            - $ref: "#/components/schemas/Type_DateTime"
+        fee:
+          $ref: "#/components/schemas/Type_MoneyAmount"
+        description:
+          type: string
+          nullable: true
+          description: |-
+            Value provided under description_for_customer when payment was created.
+        description_for_merchant:
+          allOf:
+            - $ref: "#/components/schemas/Type_DescriptionForMerchant"
+            - nullable: true
+        payment_method:
+          type: string
+          nullable: true
+        pay_url:
+          allOf:
+            - $ref: "#/components/schemas/Type_Url"
+            - description: |-
+                When the payment method is chosen redirects to the payment process with the particular payment method.
+                Otherwise the customer will be presented with list of payment methods to choose from.
+                In case the payment is already paid, the customer will be redirected to payment detail page.
+        detail_url:
+          allOf:
+            - $ref: "#/components/schemas/Type_Url"
+        customer:
+          type: object
+          properties:
+            name:
+              type: string
+            ip:
+              type: string
+              format: ip address
+              nullable: true
+            email:
+              allOf:
+                - $ref: "#/components/schemas/Type_EmailAddress"
+                - nullable: true
+        offset_account:
+          type: object
+          nullable: true
+          properties:
+            iban:
+              allOf:
+                - $ref: "#/components/schemas/Type_Iban"
+                - nullable: true
+                  description: |-
+                    IBAN of bank account in international format, from where payment was received
+            owner_name:
+              type: string
+              maxLength: 100
+              nullable: true
+              description: |-
+                account owner of bank account, from where payment was received
+        offset_account_status:
+          $ref: "#/components/schemas/Enum_OffsetAccountState"
+        offset_account_determined_at:
+          $ref: "#/components/schemas/Type_DateTime"
+        card:
+          type: object
+          nullable: true
+          required:
+            - number
+          properties:
+            number:
+              type: string
+              maxLength: 19
+              description: |-
+                **contains only digits and star characters**,
+                masked payment card number,
+                number and position of stars can change for each payment
+            expiration_date:
+              type: string
+              format: iso8601 as 'Y-m'
+              nullable: true
+              description: |-
+                payment card expiration date
+            brand:
+              type: string
+              maxLength: 255
+              nullable: true
+              description: |-
+                brand of payment card
+            type:
+              type: string
+              enum:
+                - credit
+                - debit
+                - prepaid
+                - unknown
+              description: |-
+                Type of card that was used
+          description: |-
+            information about payment card used to pay the payment,
+            if payment is **not paid by payment method with tag: `card`**, this property **is null!**
+        variable_symbol:
+          description: |-
+            Variable symbol of payment.
+          allOf:
+            - $ref: "#/components/schemas/Type_VariableSymbol"
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentEvent"
+        parent:
+          type: object
+          nullable: true
+          required:
+            - recurring_payments_available
+          properties:
+            recurring_payments_available:
+              type: boolean
+              description: |-
+                Detection if is possible realization of new payments by [subscription](#tag/Subscriptions)
+                or [saved card authorization](#tag/Saved-Card-Authorization)
+          description: |-
+            Short detail of parent payment, property contains object only if payment was created by realizating [subscription](#tag/Subscriptions)
+            or [saved card authorization](#tag/Saved-Card-Authorization)
+      example:
+        uid: efd7d8e6-2fa3-3c46-b475-51762331bf56
+        project_id: 1
+        order_id: CZ12131415
+        state: paid
+        currency: CZK
+        amount: 87654
+        paid_amount: 87654
+        created_at: 2019-01-01T12:00:00+00:00
+        finished_at: 2019-01-01T12:00:00+00:00
+        valid_to: 2019-01-01T12:00:00+00:00
+        fee: 121
+        description: Some description of the payment purpose.
+        description_for_merchant: Some description for merchant.
+        payment_method: transfer
+        pay_url: https://gate.thepay.cz/12345/pay
+        detail_url: https://gate.thepay.cz/12345/state
+        customer:
+          name: Joe Doe
+          ip: 192.168.0.1
+          email: joe.doe@gmail.com
+        offset_account:
+          iban: CZ6508000000192000145399
+          owner_name: Joe Doe
+        offset_account_status: not_available
+        offset_account_determined_at: 2019-01-01T12:00:00+00:00
+        card:
+          number: 515735******2654
+          expiration_date: 2022-05
+          brand: MASTERCARD
+          type: debit
+        variable_symbol: "1234567890"
+        events:
+          - occured_at: 2021-04-20T11:05:49.000000Z
+            type: state_change
+            data: expired
+        parent:
+          recurring_payments_available: true
+    OutgoingPayment:
+      allOf:
+        - type: object
+          required:
+            - uid
+            - project_id
+            - state
+            - type
+            - amount
+            - currency_code
+            - created_at
+          properties:
+            uid:
+              $ref: "#/components/schemas/Type_OutgoingPaymentUid"
+            project_id:
+              $ref: "#/components/schemas/Type_ProjectId"
+            order_id:
+              allOf:
+                - $ref: "#/components/schemas/Type_OrderId"
+                - nullable: true
+            state:
+              $ref: "#/components/schemas/Enum_OutgoingPaymentState"
+            type:
+              $ref: "#/components/schemas/Enum_OutgoingPaymentType"
+            amount:
+              $ref: "#/components/schemas/Type_MoneyAmount"
+            currency_code:
+              $ref: "#/components/schemas/Type_MoneyCurrency"
+            offset_iban:
+              allOf:
+                - $ref: "#/components/schemas/Type_Iban"
+                - nullable: true
+            vs:
+              description: |-
+                Variable symbol of outgoing payment.
+                Only numerically positive symbols are allowed,
+                for example "00001", "000" or "0" are invalid!
+              allOf:
+                - $ref: "#/components/schemas/Type_VariableSymbol"
+                - nullable: true
+            ss:
+              description: |-
+                Specific symbol of outgoing payment.
+                Only numerically positive symbols are allowed,
+                for example "00001", "000" or "0" are invalid!
+              allOf:
+                - $ref: "#/components/schemas/Type_SpecificSymbol"
+                - nullable: true
+            ks:
+              description: |-
+                Constant symbol of outgoing payment.
+                Only numerically positive symbols are allowed,
+                for example "00001", "000" or "0" are invalid!
+                Send the symbol without leading zeros, for example "308" instead of "0308".
+              allOf:
+                - $ref: "#/components/schemas/Type_ConstantSymbol"
+                - nullable: true
+            description_for_merchant:
+              allOf:
+                - $ref: "#/components/schemas/Type_DescriptionForMerchant"
+                - nullable: true
+            description_for_customer:
+              allOf:
+                - $ref: "#/components/schemas/Type_DescriptionForCustomer"
+                - nullable: true
+            notif_url:
+              allOf:
+                - $ref: "#/components/schemas/NotifUrl"
+                - nullable: true
+            customer_email:
+              allOf:
+                - $ref: "#/components/schemas/Type_EmailAddress"
+                - nullable: true
+            customer_name:
+              nullable: true
+              type: string
+            created_at:
+              $ref: "#/components/schemas/Type_DateTime"
+            sent_at:
+              allOf:
+                - $ref: "#/components/schemas/Type_DateTime"
+                - nullable: true
+          example:
+            uid: sad545g5ertwqaf
+            project_id: 1
+            order_id: 2000111AAA
+            state: sent
+            type: domestic_czk
+            amount: 50000
+            currency_code: CZK
+            offset_iban: CZ7650511122536259855711
+            vs: "459786"
+            ss: "987934"
+            ks: "1457"
+            description_for_merchant: "Order 2000111AAA: The account CZ7650511122536259855711 was sent 500.00 CZK."
+            description_for_customer: "We're sending you 500.00 CZK."
+            notif_url: https://example.com/api/outgoing-payment/sad545g5ertwqaf/notification-callback
+            customer_email: test@gmail.com
+            customer_name: John Doe
+            created_at: 2019-01-01T12:00:00+00:00
+            sent_at: 2019-01-01T12:00:00+00:00
+    PaymentEvent:
+      type: object
+      required:
+        - occured_at
+        - type
+      properties:
+        occured_at:
+          type: string
+          example: 2021-04-20T11:05:49.000000Z
+        type:
+          type: string
+          enum:
+            - method_selection
+            - state_change
+            - unavailable_method
+            - payment_cancelled
+            - payment_error
+          example: state_change
+        data:
+          type: string
+          nullable: true
+          example: expired
+    RecurringPaymentResult:
+      type: object
+      required:
+        - state
+      properties:
+        state:
+          type: string
+          enum:
+            - success
+            - failed
+            - expired
+          description: Result how new payment realization finish.
+        message:
+          type: string
+          nullable: true
+          description: |-
+            Description of state what was happens, if is available.
+          example: Ok
+    SynchRecurringPaymentResult:
+      type: object
+      required:
+        - state
+        - parent
+      properties:
+        state:
+          type: string
+          enum:
+            - paid
+            - error
+          description: |-
+            Result how new payment realization finish.
+        message:
+          type: string
+          nullable: true
+          description: |-
+            Description of state what was happens, if is available.
+          example: Ok
+        parent:
+          type: object
+          required:
+            - recurring_payments_available
+          properties:
+            recurring_payments_available:
+              type: boolean
+              description: |-
+                Detection if is possible realization of new payments by [subscription](#tag/Subscriptions)
+                or [saved card authorization](#tag/Saved-Card-Authorization)
+              example: true
+    WaitingConfirmationRecurringPaymentResult:
+      type: object
+      required:
+        - state
+        - parent
+      properties:
+        state:
+          type: string
+          enum:
+            - waiting_for_confirmation
+          description: Result how new payment realization finish.
+        message:
+          type: string
+          nullable: true
+          description: |-
+            Description of state what was happens, if is available.
+          example: Waiting for confirmation from external system
+        parent:
+          type: object
+          required:
+            - recurring_payments_available
+          properties:
+            recurring_payments_available:
+              type: boolean
+              description: |-
+                Detection if is possible realization of new payment by [subscription](#tag/Subscriptions)
+                or [saved card authorization](#tag/Saved-Card-Authorization)
+              example: true
+    PaymentRefund:
+      type: object
+      required:
+        - amount
+        - reason
+        - state
+      properties:
+        amount:
+          $ref: "#/components/schemas/Type_MoneyAmount"
+        reason:
+          type: string
+          maxLength: 16777215
+          description: |-
+            The description why the refund is needed.
+          example: Returned order, with broken goods
+        state:
+          type: string
+          enum:
+            - waiting
+            - returned
+            - declined
+          description: State of refunding
+    State:
+      type: object
+      required:
+        - state
+      properties:
+        state:
+          type: number
+          example: 1
+          description: ID of the payment state (1-9)
+    PaymentMethod:
+      type: object
+      required:
+        - code
+        - title
+      properties:
+        code:
+          $ref: "#/components/schemas/PaymentMethodCode"
+        title:
+          type: string
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Enum_MethodTag"
+        available_currencies:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                $ref: "#/components/schemas/Type_MoneyCurrency"
+              numeric_code:
+                type: string
+                format: integer
+                description: |-
+                    ISO 4217 numeric code of currency
+        image:
+          type: object
+          properties:
+            src:
+              $ref: "#/components/schemas/Type_Url"
+      example:
+        code: card
+        title: Card Payment
+        tags:
+          - online
+          - returnable
+        available_currencies:
+          - code: CZK
+            numeric_code: "203"
+        image:
+          src: https://neco.cz
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: |-
+            Description of error message
+          example: Project was not found
+    Transaction:
+      type: object
+      required:
+        - transaction_id
+        - amount
+        - currency_code
+        - transaction_type
+        - note
+        - realized_at
+      properties:
+        transaction_id:
+          type: number
+          description: |-
+            ID of the transaction
+          example: 10
+        amount:
+          $ref: "#/components/schemas/Type_MoneyAmount"
+        currency_code:
+          $ref: "#/components/schemas/Type_MoneyCurrency"
+        transaction_type:
+          $ref: "#/components/schemas/Enum_TransactionType"
+        note:
+          type: string
+          description: |-
+            Transaction's description
+          example: Some description of the payment purpose.
+        offset_account:
+          type: object
+          nullable: true
+          required:
+            - iban
+            - owner_name
+          properties:
+            iban:
+              $ref: "#/components/schemas/Type_Iban"
+            owner_name:
+              type: string
+              example: Joe Doe
+              description: Name of account owner
+          description: |-
+            Offset account of transaction
+        payment_identificator:
+          type: object
+          nullable: true
+          required:
+            - project_id
+            - uid
+          properties:
+            project_id:
+              description: |-
+                ID of the project under which was payment made
+              allOf:
+                - $ref: "#/components/schemas/Type_ProjectId"
+            uid:
+              $ref: "#/components/schemas/Type_PaymentUid"
+          description: |-
+            Identificator of relevant payment. For incoming payments it refers to the
+            [payment](#tag/Payments/paths/~1v1~1projects~1{project_id}~1payments~1{payment_uid}/get),
+            for `sent_payment` transactions and transactions linked to a sent payment
+            (fees, payment returned by bank) it refers to the
+            [outgoing payment](#tag/Outgoing-Payment-Data-Retrieval/paths/~1v1~1projects~1{project_id}~1outgoing_payments~1{payment_uid}/get).
+        realized_at:
+          $ref: "#/components/schemas/Type_DateTime"
+        vs:
+          allOf:
+            - $ref: "#/components/schemas/Type_VariableSymbol"
+            - nullable: true
+        ss:
+          allOf:
+            - $ref: "#/components/schemas/Type_SpecificSymbol"
+            - nullable: true
+        ks:
+          allOf:
+            - $ref: "#/components/schemas/Type_ConstantSymbol"
+            - nullable: true
+      example:
+        transaction_id: 10
+        amount: 87654
+        currency_code: CZK
+        transaction_type: payment
+        note: Some description of the payment purpose.
+        offset_account:
+          iban: CZ6508000000192000145399
+          owner_name: Joe Doe
+        payment_identificator:
+          project_id: 2
+          uid: efd7d8e6-2fa3-3c46-b475-51762331bf56
+        realized_at: 2019-01-01T12:00:00+00:00
+        vs: "12345678"
+        ss: "1801076"
+        ks: "301"
+    AccountBalance:
+      type: object
+      required:
+        - iban
+        - name
+        - balance
+      properties:
+        iban:
+          $ref: "#/components/schemas/Type_Iban_Internal"
+        name:
+          type: string
+          description: Name of account that was set by merchant.
+        balance:
+          type: object
+          properties:
+            CZK:
+              allOf:
+                - $ref: "#/components/schemas/Type_MoneyAmount"
+                - type: string
+                  format: integer
+            EUR:
+              allOf:
+                - $ref: "#/components/schemas/Type_MoneyAmount"
+                - type: string
+                  format: integer
+            USD:
+              allOf:
+                - $ref: "#/components/schemas/Type_MoneyAmount"
+                - type: string
+                  format: integer
+          description: |-
+            Object contains balances for used currencies on account.
+      example:
+        iban: TP7811112150822790787055
+        name: "Account #1"
+        balance:
+          CZK: "1256"
+          EUR: "231"
+          USD: "0"
+    Money:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Type_MoneyAmount"
+        currency:
+          $ref: "#/components/schemas/Type_MoneyCurrency"
+      required:
+        - amount
+        - currency
+    MoneyLegacy:
+      type: object
+      properties:
+        amount:
+          allOf:
+            - $ref: "#/components/schemas/Type_MoneyAmount"
+            - type: string
+              format: integer
+        currency:
+          $ref: "#/components/schemas/Type_MoneyCurrency"
+      required:
+        - amount
+        - currency
+    PaymentMethodCode:
+      type: string
+      description: |-
+        Payment method code
+      example:
+        transfer
+    Payment_Creation:
+      type: object
+      required:
+        - pay_url
+        - detail_url
+      properties:
+        pay_url:
+          allOf:
+            - $ref: "#/components/schemas/Type_Url"
+            - description: |-
+                When the payment method is chosen redirects to the payment process with the particular payment method.
+                Otherwise the customer will be presented with list of payment methods to choose from.
+                In case the payment is already paid, the customer will be redirected to payment detail page.
+        detail_url:
+          allOf:
+            - $ref: "#/components/schemas/Type_Url"
+            - description: |-
+                Url to payment detail page displaying the current payment state.
+      example:
+        pay_url: https://gate.thepay.cz/12345/pay
+        detail_url: https://gate.thepay.cz/12345/state
+    Payment_Url:
+      type: object
+      required:
+        - code
+        - title
+        - url
+      properties:
+        code:
+          $ref: "#/components/schemas/PaymentMethodCode"
+        title:
+          type: string
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Enum_MethodTag"
+        image:
+          type: object
+          properties:
+            src:
+              $ref: "#/components/schemas/Type_Url"
+        url:
+          $ref: "#/components/schemas/Type_Url"
+      example:
+        code: card
+        title: Card Payment
+        tags:
+          - online
+          - returnable
+        image:
+          src: https://gate.thepay.cz/img/payment_methods/card.svg
+        url: https://gate.thepay.cz/1/update?payment_method_code=card_six
+    TestData:
+      type: object
+      properties:
+        testData:
+          nullable: true
+          type: string
+          example: test
+    # enums
+    Enum_MethodTag:
+      type: string
+      enum:
+        - returnable
+        - pre_authorization
+        - recurring_payments
+        - access_account_owner
+        - online
+        - card
+        - bank_transfer
+        - alternative_method
+      description: |-
+        | Value | Description |
+        | --- | --- |
+        | `returnable` | This payment can be returned to the customer after it is paid |
+        | `pre_authorization` | Preauthorization is available |
+        | `recurring_payments` | [Subscription payments](#introduction/subscription-payments) and [saving authorization](#introduction/saving-card-authorization) are available |
+        | `access_account_owner` | The owner of account which the payment was paid from is accessible |
+        | `online` | Online payment |
+        | `card` | Payment by card |
+        | `bank_transfer` | Payments by bank transfer |
+        | `alternative_method` | Alternative methods of payment, e.g. bitcoin |
+      example: bank_transfer
+    Enum_OffsetAccountState:
+      type: string
+      enum:
+        - not_available
+        - waiting
+        - loaded
+      description: |-
+        | Value | Description |
+        | --- | --- |
+        | `not_available` | The account information is not available for selected payment method or we weren't able to acquire it. |
+        | `waiting` | We're waiting to get info about offset account at the moment. |
+        | `loaded` | The information about offset account is available. |
+      example: loaded
+    Enum_OutgoingPaymentState:
+      type: string
+      enum:
+        - waiting
+        - sent
+        - cancelled
+        - undeliverable
+        - returned
+      description: |-
+        | Value | Description |
+        |---|---|
+        | `waiting` | The payment was created and its waiting to be processed |
+        | `sent` | The payment was successfully sent |
+        | `cancelled` | The payment was cancelled |
+        | `undeliverable` | It was not possible to deliver the payment |
+        | `returned` | The payment was returned|
+      example: sent
+    Enum_OutgoingPaymentType:
+      type: string
+      enum:
+        - domestic_czk
+        - sepa
+        - international
+      description: |-
+        | Value | Description |
+        |---|---|
+        | `domestic_czk` | Domestic payment in CZK currency |
+        | `sepa` | SEPA payment |
+        | `international` | International payment |
+      example: domestic_czk
+    Enum_PaymentState:
+      type: string
+      enum:
+        - expired
+        - paid
+        - partially_refunded
+        - refunded
+        - preauthorized
+        - preauth_cancelled
+        - preauth_expired
+        - waiting_for_payment
+        - waiting_for_confirmation
+        - error
+      description: |-
+        | Value | Description |
+        |---|---|
+        | `expired` | The payment is expired - in case it was not paid in time limit |
+        | `paid` | The payment was paid |
+        | `partially_refunded` | Part of the payment was sent back to the customer, the payment was already paid |
+        | `refunded` | The payment was returned to the customer fully |
+        | `preauthorized` | The payment was preauthorized |
+        | `preauth_cancelled` | Preuthorization was cancelled |
+        | `preauth_expired` | Preauthorized payment has expired |
+        | `waiting_for_payment` | Initial state |
+        | `waiting_for_confirmation` | Waiting for confirmation from bank |
+        | `error` | Child payment failed. Used for subscriptions and saved card authorization. |
+      example: paid
+    Enum_TransactionType:
+      type: string
+      enum:
+        - payment
+        - refund
+        - fee
+        - payoff
+        - sent_payment
+        - interest
+        - payoff
+        - incoming
+      example: payment
+    # types (atomic and 3rd party)
+    Type_ConstantSymbol:
+      type: string
+      format: integer
+      maxLength: 10
+      description: |-
+        Only numerically positive symbols are allowed,
+        for example "00001", "000" or "0" are invalid!
+        Send the symbol without leading zeros, for example "308" instead of "0308".
+      example: 308
+    Type_CountryCode:
+      type: string
+      format: iso3166-1-alpha-2
+      example: CZ
+    Type_DateTime:
+      type: string
+      format: date-time
+      description: |-
+        Datetime in RFC 3339 / ISO 8601 format, keep in mind that you need to encode "+" symbol in the URL to "%2B"
+      example: 2019-09-23T09:49:54+02:00
+    Type_DescriptionForCustomer:
+      type: string
+      maxLength: 255
+      description: |-
+        The payment description shown to the customer.
+      example: Duis quis libero tempor, tincidunt ligula sit amet, mattis erat.
+    Type_DescriptionForMerchant:
+      type: string
+      maxLength: 255
+      description: |-
+        The payment description visible only to the merchant.
+      example: Cras a urna sed est ornare rutrum in eget justo.
+    Type_EmailAddress:
+      type: string
+      format: e-mail address
+      description: |-
+        The domain contained in the e-mail address must have a valid mx record.
+        If supplied by customer, we recommend checking the email, eg. with some sort of online DSN validation, for preventing typos.
+      example: jane.doe@example.com
+    Type_Iban:
+      type: string
+      format: iso13616
+      maxLength: 34
+      example: CZ6508000000192000145399
+    Type_Iban_Internal:
+      allOf:
+        - $ref: "#/components/schemas/Type_Iban"
+        - description: |-
+            ThePay special IBAN format.
+            Number of a virtual ThePay account, where customer payments are settled.
+            IBAN format is based on [CZ IBAN](https://www.cnb.cz/export/sites/cnb/cs/platebni-styk/.galleries/pravni_predpisy/download/vyhl_169_2011.pdf), first 2 chars are replaced by TP and chars from fifth to eight position must be ignored because they are invalid.
+
+            Internal IBAN, which can be *USED ONLY IN OUR SYSTEM*, for example getting account transaction history.
+            Using it outside of ThePay systems is prohibited and results in error/losing money.
+          example: TP7811112150822790787055
+    Type_LanguageCode:
+      type: string
+      format: iso639
+      example: cs
+    Type_MoneyAmount:
+      type: integer
+      format: int32
+      description: |-
+        amount in atomic unit of currency
+      example: 9950
+    Type_MoneyCurrency:
+      type: string
+      format: iso4217
+      minLength: 3
+      maxLength: 3
+      description: |-
+        ISO 4217 code of currency
+      example: CZK
+    Type_OrderId:
+      type: string
+      minLength: 1
+      maxLength: 100
+      description: |-
+        An order identifier used as a custom reference for payment. It's not necessarily unique.
+      example: CZ12131415
+    Type_OutgoingPaymentId:
+      type: integer
+      minimum: 1
+      description: |-
+        Unique identifier assigned by ThePay system.
+      example: 6554
+    Type_OutgoingPaymentUid:
+      type: string
+      maxLength: 100
+      description: |-
+        Outgoing payment identification in your system,
+        must be unique per project.
+      example: 78107c25-2d01-414e-8c53-bb9a3cf3c10b
+    Type_PaymentUid:
+      type: string
+      maxLength: 100
+      description: |-
+        Payment identification in your system,
+        must be unique per project.
+      example: efd7d8e6-2fa3-3c46-b475-51762331bf56
+    Type_PhoneNumber:
+      type: string
+      format: msisdn
+      maxLength: 15
+      description: |-
+        https://en.wikipedia.org/wiki/MSISDN
+      example: 420589687963
+    Type_ProjectId:
+      type: integer
+      format: int32
+      minimum: 1
+      example: 1
+      description: |-
+        ID of the project
+    Type_SpecificSymbol:
+      type: string
+      format: integer
+      maxLength: 10
+      description: |-
+        Only numerically positive symbols are allowed,
+        for example "00001", "000" or "0" are invalid!
+      example: 23214
+    Type_Url:
+      type: string
+      format: url
+      example: https://example.com/
+    Type_VariableSymbol:
+      type: string
+      format: integer
+      maxLength: 10
+      description: |-
+        Only numerically positive symbols are allowed,
+        for example "00001", "000" or "0" are invalid!
+      example: 76643
