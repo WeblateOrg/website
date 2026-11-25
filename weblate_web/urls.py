@@ -34,6 +34,7 @@ import weblate_web.crm.urls
 from weblate_web.invoices.views import download_invoice, pay_invoice
 from weblate_web.models import Post
 from weblate_web.oidc import admin_login
+from weblate_web.payments.notifications import thepay_notification
 from weblate_web.views import (
     AddDiscoveryView,
     CompleteView,
@@ -317,6 +318,9 @@ urlpatterns = [
     path("api/support/activation/", api_support_activation),
     path("api/user/", api_user),
     path("api/hosted/", api_hosted),
+    path(
+        "api/thepay/notify/<uuid:pk>/", thepay_notification, name="thepay-notification"
+    ),
     path(
         "subscription/discovery/register/",
         DiscoveryRegistrationView.as_view(),

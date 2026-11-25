@@ -1409,6 +1409,18 @@ class Payment(models.Model):
             process_payment(self)
 
 
+class ThePayNotification(models.Model):
+    # An independent row lets notification writes commit while the worker holds
+    # the payment lock during settlement.
+    payment_id = models.UUIDField(primary_key=True)
+    revision = models.UUIDField(default=uuid.uuid4)
+    ready_at = models.DateTimeField(db_index=True)
+    legacy_language = models.CharField(max_length=32, blank=True)
+
+    def __str__(self) -> str:
+        return str(self.payment_id)
+
+
 class PaymentConf(AppConf):
     DEBUG = False
     SECRET = None
