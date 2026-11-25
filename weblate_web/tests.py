@@ -41,7 +41,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import override
 from PIL import Image as PILImage
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, Timeout
 from wlc import Activity, WeblateException
 from wlc.models import Statistics
 
@@ -6042,6 +6042,48 @@ class ExpiryTest(FakturaceTestCase):
         self.assertEqual(repeated_invoice.category, ServiceCategory.DONATE)
         RecurringPaymentsCommand.handle_donations()
         self.assert_notifications()
+
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    @responses.activate
+    def test_thepay_renewal_timeout_continues_batch_and_retries_next_day(self) -> None:
+        parents = []
+        for _ in range(2):
+            donation = self.create_donation(years=0, days=-2)
+            parent = cast("Subscription", donation.donation_subscription).payment_obj
+            parent.backend = "thepay2-card"
+            parent.save(update_fields=["backend"])
+            parents.append(parent)
+
+        endpoint = re.compile(
+            r"https://demo.api.thepay.cz/v2/projects/42/payments/[a-f0-9-]{36}/savedauthorization"
+        )
+        responses.post(endpoint, body=Timeout("ThePay timed out"))
+        responses.post(
+            endpoint,
+            json={"state": "paid", "parent": {"recurring_payments_available": True}},
+        )
+
+        RecurringPaymentsCommand.handle_donations()
+
+        first_attempts = Payment.objects.filter(repeat__in=parents)
+        failed = first_attempts.get(state=Payment.NEW)
+        succeeded = first_attempts.get(state=Payment.PROCESSED)
+        self.assertEqual(failed.details["recurring_attempt"], 1)
+        assert failed.repeat is not None
+        self.assertEqual(failed.repeat.recurring, "y")
+        self.assert_notifications("Your payment on weblate.org")
+
+        with patch(
+            "weblate_web.management.commands.recurring_payments.timezone.now",
+            return_value=timezone.now() + timedelta(days=1),
+        ):
+            RecurringPaymentsCommand.handle_donations()
+
+        retry = first_attempts.exclude(pk__in=[failed.pk, succeeded.pk]).get()
+        self.assertEqual(retry.repeat_id, failed.repeat_id)
+        self.assertEqual(retry.state, Payment.PROCESSED)
+        self.assertEqual(retry.details["recurring_attempt"], 1)
+        self.assert_notifications("Your payment on weblate.org")
 
     def test_expired_thepay_authorization_stops_donation_retries(self) -> None:
         donation = self.create_donation(years=0, days=-2)

@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from email import policy
 from email.parser import BytesParser
@@ -42,6 +42,8 @@ from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
+from requests.exceptions import ConnectionError as RequestsConnectionError
+from requests.exceptions import JSONDecodeError, Timeout
 from vies.types import VATIN
 
 from weblate_web.categories import ServiceCategory
@@ -1647,12 +1649,234 @@ class ThePayFailureNotificationTest(BackendBaseTestCase):
 
 
 @override_settings(**THEPAY2_MOCK_SETTINGS)
+class ThePayRequestTest(SimpleTestCase):
+    base_url = "https://demo.api.thepay.cz"
+
+    def test_transport_errors(self) -> None:
+        for error in (Timeout("timed out"), RequestsConnectionError("disconnected")):
+            with self.subTest(error=error), responses.RequestsMock() as http:
+                http.post(f"{self.base_url}/v1/projects/42/payments", body=error)
+                with self.assertRaises(PaymentError) as context:
+                    ThePay2Card.request("post", "payments")
+                self.assertIs(context.exception.__cause__, error)
+                self.assertIsNone(context.exception.status_code)
+                self.assertIsNone(context.exception.provider_message)
+
+    def test_http_errors_preserve_provider_details(self) -> None:
+        cases = (
+            (401, "Invalid signature", "get", "payments/test"),
+            (403, "IP address is not allowed", "get", "payments/test"),
+            (404, "Payment was not found", "get", "payments/test"),
+            (409, "Duplicate payment UID", "post", "payments"),
+            (429, "Too Many Requests", "get", "payments/test"),
+            (503, "Service Unavailable", "post", "payments"),
+        )
+        for status, message, method, path in cases:
+            with self.subTest(status=status), responses.RequestsMock() as http:
+                until = "Sat, 01 Jun 2024 13:00:00 GMT" if status == 503 else None
+                http.add(
+                    method.upper(),
+                    f"{self.base_url}/v1/projects/42/{path}",
+                    status=status,
+                    json={"message": message},
+                    headers={"Unavailable-Until": until} if until else {},
+                )
+                with self.assertRaises(PaymentError) as context:
+                    ThePay2Card.request(method, path)
+                self.assertEqual(context.exception.status_code, status)
+                self.assertEqual(context.exception.provider_message, message)
+                self.assertEqual(context.exception.unavailable_until, until)
+
+    def test_invalid_json(self) -> None:
+        for status in (200, 503):
+            with self.subTest(status=status), responses.RequestsMock() as http:
+                http.get(
+                    f"{self.base_url}/v1/projects/42/payments/test",
+                    status=status,
+                    body="<html>Service error</html>",
+                    headers={"Unavailable-Until": "Sat, 01 Jun 2024 13:00:00 GMT"},
+                )
+                with self.assertRaises(PaymentError) as context:
+                    ThePay2Card.request("get", "payments/test")
+                self.assertEqual(context.exception.status_code, status)
+                self.assertEqual(
+                    context.exception.unavailable_until, "Sat, 01 Jun 2024 13:00:00 GMT"
+                )
+                self.assertIsNone(context.exception.provider_message)
+                self.assertIsInstance(context.exception.__cause__, JSONDecodeError)
+
+    def test_http_error_with_malformed_message(self) -> None:
+        payloads: tuple[list[Any] | dict[str, Any], ...] = (
+            [],
+            {},
+            {"message": ["not a string"]},
+            {"message": "  "},
+        )
+        for payload in payloads:
+            with self.subTest(payload=payload), responses.RequestsMock() as http:
+                http.get(
+                    f"{self.base_url}/v1/projects/42/payments/test",
+                    status=403,
+                    json=payload,
+                )
+                with self.assertRaisesMessage(PaymentError, "HTTP 403") as context:
+                    ThePay2Card.request("get", "payments/test")
+                self.assertIsNone(context.exception.provider_message)
+
+    def test_invalid_success_payload(self) -> None:
+        cases: tuple[tuple[str, str, str, list[Any] | dict[str, Any], str], ...] = (
+            ("post", "payments", "v1", [], "JSON object"),
+            ("post", "payments", "v1", {}, "pay_url"),
+            ("post", "payments", "v1", {"pay_url": 123}, "pay_url"),
+            ("post", "payments", "v1", {"pay_url": "//example.com/pay"}, "pay_url"),
+            ("get", "payments/test", "v1", {}, "state"),
+            ("get", "payments/test", "v1", {"state": []}, "state"),
+            ("get", "payments/test", "v1", {"state": "unknown"}, "state"),
+            (
+                "get",
+                "payments/test",
+                "v1",
+                {"state": "error", "events": [42]},
+                "events",
+            ),
+            (
+                "get",
+                "payments/test",
+                "v1",
+                {"state": "paid", "card": {}},
+                "card.number",
+            ),
+            ("post", "payments/test/savedauthorization", "v2", {}, "state"),
+            (
+                "post",
+                "payments/test/savedauthorization",
+                "v2",
+                {"state": "error", "parent": {"recurring_payments_available": "false"}},
+                "parent.recurring_payments_available",
+            ),
+            (
+                "post",
+                "payments/test/savedauthorization",
+                "v2",
+                {"state": "error", "message": {}},
+                "message",
+            ),
+        )
+        for method, path, version, payload, diagnostic in cases:
+            with (
+                self.subTest(path=path, payload=payload),
+                responses.RequestsMock() as http,
+            ):
+                http.add(
+                    method.upper(),
+                    f"{self.base_url}/{version}/projects/42/{path}",
+                    json=payload,
+                )
+                with self.assertRaisesMessage(PaymentError, diagnostic) as context:
+                    ThePay2Card.request(method, path, api_version=version)
+                self.assertEqual(context.exception.status_code, 200)
+
+    @responses.activate
+    def test_payment_detail_accepts_nullable_fields(self) -> None:
+        payload: dict[str, Any] = {
+            "state": "paid",
+            "card": None,
+            "parent": None,
+            "events": [],
+        }
+        responses.get(f"{self.base_url}/v1/projects/42/payments/test", json=payload)
+        self.assertEqual(ThePay2Card.request("get", "payments/test"), payload)
+
+
+@override_settings(**THEPAY2_MOCK_SETTINGS)
 class ThePay2Test(BackendBaseTestCase):
     backend_name = "thepay2-card"
 
     def setUp(self) -> None:
         super().setUp()
         self.backend = self.payment.get_payment_backend()
+
+    @override_settings(LANGUAGE_CODE="en")
+    @responses.activate
+    def test_checkout_hides_provider_message(self) -> None:
+        mock_vies()
+        responses.post(
+            "https://demo.api.thepay.cz/v1/projects/42/payments",
+            status=403,
+            json={"message": "Merchant IP address is not allowed"},
+        )
+        response = self.client.post(
+            reverse("payment", kwargs={"pk": self.payment.pk}),
+            {"method": self.backend_name},
+        )
+        self.assertContains(response, "Could not start your payment.")
+        self.assertNotContains(response, "Merchant IP address is not allowed")
+        self.check_payment(Payment.NEW)
+
+    @override_settings(LANGUAGE_CODE="en")
+    def test_checkout_shows_actionable_provider_errors(self) -> None:
+        self.customer.vat = ""
+        self.customer.save(update_fields=["vat"])
+        payment_url = reverse("payment", kwargs={"pk": self.payment.pk})
+        cases = (
+            (409, "", "Contact us before trying again."),
+            (429, "", "Please try again in a few minutes."),
+            (
+                503,
+                "Tue, 01 Jun 2027 13:00:00 GMT",
+                "Please try again after June 1, 2027, 1 p.m. UTC.",
+            ),
+            (503, "Sat, 01 Jun 2024 13:00:00 GMT", "Please try again later."),
+            (503, "invalid maintenance time", "Please try again later."),
+            (503, "", "Please try again later."),
+        )
+        with patch(
+            "weblate_web.views.timezone.now",
+            return_value=datetime(2026, 11, 25, tzinfo=UTC),
+        ):
+            for status, until, message in cases:
+                with (
+                    self.subTest(status=status, until=until),
+                    responses.RequestsMock() as http,
+                ):
+                    http.post(
+                        "https://demo.api.thepay.cz/v1/projects/42/payments",
+                        status=status,
+                        json={"message": "Internal provider details"},
+                        headers={"Unavailable-Until": until} if until else {},
+                    )
+                    response = self.client.post(
+                        payment_url, {"method": self.backend_name}
+                    )
+                    self.assertContains(response, message)
+                    self.assertNotContains(response, "Internal provider details")
+                    if until:
+                        self.assertNotContains(response, until)
+        self.check_payment(Payment.NEW)
+
+    @override_settings(LANGUAGE_CODE="en")
+    @responses.activate
+    def test_checkout_hides_inline_completion_error(self) -> None:
+        parent = Payment.objects.create(customer=self.customer, amount=100)
+        self.payment.repeat = parent
+        self.payment.save(update_fields=["repeat"])
+        responses.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{parent.pk}/savedauthorization",
+            json={"state": "waiting_for_confirmation"},
+            status=202,
+        )
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}",
+            status=404,
+            json={"message": "Payment UID was not found"},
+        )
+        response = self.client.post(
+            reverse("payment", kwargs={"pk": self.payment.pk}),
+            {"method": self.backend_name},
+        )
+        self.assertContains(response, "Could not check your payment status.")
+        self.assertNotContains(response, "Payment UID was not found")
+        self.check_payment(Payment.PENDING)
 
     @responses.activate
     def test_cancelled_payment_late_success(self) -> None:

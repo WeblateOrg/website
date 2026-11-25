@@ -22,6 +22,7 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
+import sentry_sdk
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
@@ -32,6 +33,7 @@ from django.utils.html import strip_tags
 from weblate_web.crm.renewals import reconcile_renewal_follow_ups
 from weblate_web.invoices.models import InvoiceKind
 from weblate_web.models import Service, ServiceKind, Subscription, get_period_delta
+from weblate_web.payments.backends import PaymentError
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 
@@ -232,7 +234,10 @@ class Command(BaseCommand):
         # Trigger of the payment
         repeated.details["recurring_attempt"] = attempt
         repeated.save(update_fields=["details"])
-        repeated.trigger_recurring()
+        try:
+            repeated.trigger_recurring()
+        except PaymentError as error:
+            sentry_sdk.capture_exception(error)
 
     @classmethod
     def handle_recurring_payments(
