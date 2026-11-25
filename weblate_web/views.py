@@ -50,7 +50,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.formats import date_format
 from django.utils.http import parse_http_date_safe
-from django.utils.translation import gettext, override
+from django.utils.translation import get_language, gettext, override
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods, require_POST
@@ -120,6 +120,10 @@ from weblate_web.payments.invitations import (
     revoke_invitation,
 )
 from weblate_web.payments.models import Customer, CustomerOwnerInvitation, Payment
+from weblate_web.payments.notifications import (
+    enqueue_thepay_notification,
+    is_thepay_payment,
+)
 from weblate_web.payments.validators import cache_vies_data
 from weblate_web.remote import get_activity
 from weblate_web.schema import get_blog_post_schema
@@ -782,6 +786,17 @@ def agreement_download_view(request: AuthenticatedHttpRequest, pk: int):
 
 class CompleteView(PaymentView):
     def dispatch(self, request, *args, **kwargs):
+        if (
+            request.method == "GET"
+            and "type" in request.GET
+            and is_thepay_payment(kwargs["pk"])
+        ):
+            return enqueue_thepay_notification(
+                request, kwargs["pk"], legacy_language=get_language() or ""
+            )
+        return self._browser_return(request)
+
+    def _browser_return(self, request: HttpRequest) -> HttpResponse:
         with transaction.atomic():
             self.object = self.get_object()
 

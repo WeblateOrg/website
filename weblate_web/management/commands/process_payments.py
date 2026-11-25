@@ -24,6 +24,8 @@ from django.db import transaction
 from weblate_web.models import UnprocessablePaymentError, process_payment
 from weblate_web.payments.backends import FioBank
 from weblate_web.payments.models import Payment
+from weblate_web.payments.notifications import process_thepay_notifications
+from weblate_web.utils import FOSDEM_ORIGIN
 
 
 class Command(BaseCommand):
@@ -37,6 +39,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options) -> None:
+        process_thepay_notifications()
         if settings.FIO_TOKEN:
             with transaction.atomic():
                 FioBank.fetch_payments(from_date=options["from_date"])
@@ -49,6 +52,10 @@ class Command(BaseCommand):
         for payment in payments:
             if payment.extra and "billing" in payment.extra:
                 # hosted.weblate.org, currently handled externally
+                continue
+            if payment.customer.origin == FOSDEM_ORIGIN:
+                payment.state = Payment.PROCESSED
+                payment.save(update_fields=["state"])
                 continue
             try:
                 process_payment(payment)

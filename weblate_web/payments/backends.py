@@ -41,10 +41,13 @@ from django.utils.translation import get_language, gettext, gettext_lazy
 from django.views.decorators.debug import sensitive_variables
 
 from weblate_web.categories import ServiceCategory, category_from_metadata
+from weblate_web.utils import get_site_url
 
 from .models import CustomerFollowUp, Payment
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from django.http import HttpRequest, HttpResponseRedirect
     from django_stubs_ext import StrOrPromise
 
@@ -399,9 +402,12 @@ class Backend:
             InvalidState: In case the payment can not be completed.
 
         """
+        return self._complete(lambda: self.collect(request))
+
+    def _complete(self, collect: Callable[[], bool | None]) -> bool:
         if self.payment.state == Payment.CANCELLED:
             if self.verifies_cancelled_payments:
-                status = self.collect(request)
+                status = collect()
                 self.payment.save(update_fields=["details", "card_info"])
                 if status:
                     self.success()
@@ -409,7 +415,7 @@ class Backend:
         if self.payment.state not in {Payment.PENDING, Payment.REJECTED}:
             raise InvalidState(self.payment.get_state_display())
 
-        status = self.collect(request)
+        status = collect()
         if status is None:
             self.payment.save(update_fields=["state", "details", "card_info"])
             return False
@@ -1191,6 +1197,10 @@ class ThePay2Card(Backend):
     def perform(
         self, request: HttpRequest | None, back_url: str, complete_url: str
     ) -> HttpResponseRedirect | None:
+        notification_url = get_site_url("thepay-notification", pk=self.payment.pk)
+        self.payment.details["thepay_language"] = (
+            get_language() or settings.LANGUAGE_CODE
+        )
         payload: dict[str, str | dict[str, str | dict[str, str]] | int | bool]
         if self.payment.repeat:
             # Handle recurring payments
@@ -1207,7 +1217,7 @@ class ThePay2Card(Backend):
                     "amount": str(amount),
                     "currency": currency,
                 },
-                "notif_url": complete_url,
+                "notif_url": notification_url,
             }
             response = self.request(
                 "post",
@@ -1229,7 +1239,7 @@ class ThePay2Card(Backend):
             "uid": str(self.payment.pk),
             "description_for_customer": self.payment.description,
             "return_url": complete_url,
-            "notif_url": complete_url,
+            "notif_url": notification_url,
             "save_authorization": bool(self.payment.recurring and self.recurring),
             "language_code": self.get_language(),
             "customer": {
@@ -1271,7 +1281,12 @@ class ThePay2Card(Backend):
         ):
             return self.collect_recurring_result()
 
-        # Get payment state
+        return self._collect_payment_detail()
+
+    def complete_notification(self) -> bool:
+        return self._complete(self._collect_payment_detail)
+
+    def _collect_payment_detail(self) -> bool | None:
         response = self.request("get", f"payments/{self.payment.pk}")
 
         self.payment.details["response"] = response
