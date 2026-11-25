@@ -20,20 +20,29 @@
 from __future__ import annotations
 
 from datetime import timedelta
+from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 import sentry_sdk
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
-from django.db.models import Max
+from django.db import transaction
+from django.db.models import Max, Q
 from django.utils import timezone
 from django.utils.html import strip_tags
+from django.utils.translation import get_language, override
 
 from weblate_web.crm.renewals import reconcile_renewal_follow_ups
 from weblate_web.invoices.models import InvoiceKind
-from weblate_web.models import Service, ServiceKind, Subscription, get_period_delta
-from weblate_web.payments.backends import PaymentError
+from weblate_web.models import (
+    Service,
+    ServiceKind,
+    Subscription,
+    get_period_delta,
+    process_payment,
+)
+from weblate_web.payments.backends import PaymentError, ThePay2Card
 from weblate_web.payments.models import Customer, Payment
 from weblate_web.payments.utils import send_notification
 
@@ -41,6 +50,95 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
     from datetime import datetime
     from decimal import Decimal
+    from typing import Any
+
+    from weblate_web.payments.models import PaymentQuerySet
+
+
+def thepay_renewals() -> PaymentQuerySet:
+    return Payment.objects.filter(
+        backend__startswith="thepay2-",
+        repeat__isnull=False,
+        details__has_key="recurring_attempt",
+    )
+
+
+def unresolved_thepay_renewals() -> PaymentQuerySet:
+    return thepay_renewals().filter(
+        Q(state__in=(Payment.NEW, Payment.PENDING, Payment.ACCEPTED))
+        | (
+            Q(state=Payment.CANCELLED)
+            & (
+                Q(details__response__state__isnull=True)
+                | ~Q(
+                    details__response__state__in=(
+                        ThePay2Card.failed_payment_states
+                        | ThePay2Card.closed_preauthorization_states
+                    )
+                )
+            )
+        )
+    )
+
+
+@transaction.atomic
+def process_accepted_renewal(payment: Payment) -> None:
+    if (
+        accepted := Payment.objects.select_for_update()
+        .filter(pk=payment.pk, state=Payment.ACCEPTED)
+        .first()
+    ) is not None:
+        process_payment(accepted)
+
+
+@transaction.atomic
+def reconcile_thepay_renewal(payment: Payment) -> None:
+    backend = payment.get_payment_backend()
+    current = backend.payment
+    # Older runs left the child NEW when the POST raised a payment error.
+    if current.state == Payment.NEW:
+        current.state = Payment.PENDING
+        current.save(update_fields=["state"])
+    if current.state not in {Payment.PENDING, Payment.CANCELLED}:
+        return
+    try:
+        with override(current.details.get("thepay_language") or settings.LANGUAGE_CODE):
+            backend.complete_notification()
+    except PaymentError as error:
+        if error.status_code != HTTPStatus.NOT_FOUND:
+            sentry_sdk.capture_exception(error)
+        elif not current.details.get("thepay_renewal_not_found"):
+            current.details["thepay_renewal_not_found"] = True
+            current.save(update_fields=["details"])
+            sentry_sdk.capture_message(
+                "ThePay renewal requires review: payment detail returned 404",
+                level="warning",
+                extras={"payment_id": str(current.pk)},
+            )
+
+
+def submit_renewal(payment: Payment, payload: dict[str, Any] | None) -> None:
+    if payload is None:
+        payment.trigger_recurring()
+        return
+    with transaction.atomic():
+        backend = payment.get_payment_backend()
+        if backend.payment.state == Payment.PENDING:
+            backend.charge_saved_authorization(payload)
+            backend.complete(None)
+    process_accepted_renewal(payment)
+
+
+def reserve_thepay_charge(backend: ThePay2Card, attempt: int) -> dict[str, Any]:
+    child = backend.payment
+    if child.amount_fixed and not child.draft_invoice_id and not child.paid_invoice_id:
+        child.normalize_fixed_amount()
+    payload = backend.saved_authorization_payload()
+    child.details["recurring_attempt"] = attempt
+    child.details["thepay_language"] = get_language() or settings.LANGUAGE_CODE
+    child.state = Payment.PENDING
+    child.save(update_fields=["amount", "requested_amount", "state", "details"])
+    return payload
 
 
 class Command(BaseCommand):
@@ -148,14 +246,14 @@ class Command(BaseCommand):
 
     @staticmethod
     def peform_payment(  # ruff:ignore[too-many-arguments]
-        payment,
-        past_payments,
+        payment: Payment,
+        past_payments: PaymentQuerySet,
         *,
         recurring: str,
         end_date: datetime,
         amount: Decimal | int | None = None,
         extra: dict[str, int],
-    ) -> None:
+    ) -> tuple[Payment, dict[str, Any] | None] | None:
         # Allow at most three failures of current payment method
         repeated_payments = past_payments.filter(repeat=payment.repeat or payment)
         rejected_payments = repeated_payments.filter(state=Payment.REJECTED)
@@ -176,7 +274,7 @@ class Command(BaseCommand):
                     reason=Payment.RECURRING_ATTEMPTS_EXHAUSTED,
                     failed=True,
                 )
-            return
+            return None
 
         if payment.customer.vat:
             validation_failed = False
@@ -198,7 +296,7 @@ class Command(BaseCommand):
                 if not repeated:
                     payment.recurring = ""
                     payment.save()
-                    return
+                    return None
                 repeated.state = Payment.REJECTED
                 repeated.details["recurring_attempt"] = attempt
                 repeated.details["failure_code"] = Payment.VAT_VALIDATION_FAILURE
@@ -206,7 +304,7 @@ class Command(BaseCommand):
                     repeated.details["failure_detail"] = validation_detail
                 repeated.save(update_fields=["state", "details"])
                 repeated.customer.send_notification("payment_failed", payment=repeated)
-                return
+                return None
 
         # Create repeated payment
         if payment.paid_invoice and "donation_service" not in extra:
@@ -231,15 +329,79 @@ class Command(BaseCommand):
             # Remove recurring flag
             payment.recurring = ""
             payment.save()
-            return
+            return None
 
-        # Trigger of the payment
+        backend_class = repeated.get_payment_backend_class()
+        if issubclass(backend_class, ThePay2Card):
+            backend = backend_class(repeated)
+            return backend.payment, reserve_thepay_charge(backend, attempt)
+
         repeated.details["recurring_attempt"] = attempt
         repeated.save(update_fields=["details"])
-        try:
-            repeated.trigger_recurring()
-        except PaymentError as error:
-            sentry_sdk.capture_exception(error)
+        return repeated, None
+
+    @classmethod
+    @transaction.atomic(durable=True)
+    def prepare_renewal(
+        cls,
+        candidate: Subscription,
+        timestamp: datetime,
+        disable_donations: list[tuple[Subscription, Payment | None]] | None,
+    ) -> tuple[Payment, dict[str, Any] | None] | None:
+        # Recheck the renewal under the lock, and require the UID to commit
+        # before the caller is allowed to submit the charge.
+        subscription = (
+            Subscription.objects.payment_lifecycle()
+            .select_for_update()
+            .filter(pk=candidate.pk, expires=candidate.expires)
+            .first()
+        )
+        if (
+            subscription is None
+            or subscription.payment_id != candidate.payment_id
+            or not subscription.uses_payment_lifecycle()
+            or subscription.could_be_obsolete()
+        ):
+            return None
+
+        extra = subscription.get_renewal_extra()
+        target = {f"extra__{key}": value for key, value in extra.items()}
+        if (
+            unresolved_thepay_renewals().filter(**target).exists()
+            or thepay_renewals().filter(created__gte=timestamp, **target).exists()
+        ):
+            return None
+
+        # Match the renewal period independently of payment state.
+        if (
+            not subscription.service.is_donation
+            and next(subscription.get_renewal_invoices(), None) is not None
+        ):
+            subscription.send_notification("payment_expired")
+            return None
+
+        payment = subscription.payment_obj
+        if not payment.recurring or not (
+            recurring := subscription.get_recurring_payment_period()
+        ):
+            subscription.send_notification("payment_expired")
+            if subscription.service.is_donation:
+                if disable_donations is None:
+                    cls.disable_expired_one_time_donation(
+                        subscription, payment, timestamp
+                    )
+                else:
+                    disable_donations.append((subscription, payment))
+            return None
+
+        return cls.peform_payment(
+            payment,
+            subscription.list_payments(),
+            amount=subscription.get_renewal_amount(),
+            recurring=recurring,
+            end_date=subscription.expires,
+            extra=extra,
+        )
 
     @classmethod
     def handle_recurring_payments(
@@ -250,63 +412,52 @@ class Command(BaseCommand):
     ) -> list[tuple[Subscription, Payment | None]]:
         now = timezone.now()
         disable_donations: list[tuple[Subscription, Payment | None]] = []
+        unresolved = unresolved_thepay_renewals()
+        if service_kind == ServiceKind.DONATION:
+            unresolved = unresolved.filter(extra__has_key="donation_service")
+        elif service_kind == ServiceKind.SERVICE:
+            unresolved = unresolved.filter(extra__has_key="subscription")
+        else:
+            unresolved = unresolved.filter(
+                extra__has_any_keys=["subscription", "donation_service"]
+            )
+        reconciled_targets = set()
+        for payment in list(unresolved):
+            target_key = (
+                "donation_service"
+                if "donation_service" in payment.extra
+                else "subscription"
+            )
+            reconciled_targets.add((target_key, payment.extra[target_key]))
+            try:
+                if payment.state != Payment.ACCEPTED:
+                    reconcile_thepay_renewal(payment)
+                process_accepted_renewal(payment)
+            except Exception as error:  # pylint: disable=broad-exception-caught
+                # A failed settlement keeps this renewal on hold without
+                # preventing the rest of the batch from running.
+                sentry_sdk.capture_exception(error)
+
         subscriptions = Subscription.objects.payment_lifecycle().filter(
             expires__range=(now - timedelta(days=10), now + timedelta(days=3)),
         )
         if service_kind is not None:
             subscriptions = subscriptions.filter(service__kind=service_kind)
         for subscription in subscriptions:
-            if not subscription.uses_payment_lifecycle():
-                continue
-
-            # Skip this in case there is another subscription, for example on service
-            # upgrade on downgrade
-            if subscription.could_be_obsolete():
-                continue
-
-            # Match the renewal period independently of payment state so payment
-            # acceptance cannot open a gap between unpaid and accepted checks.
-            if (
-                not subscription.service.is_donation
-                and next(subscription.get_renewal_invoices(), None) is not None
+            if reconciled_targets.intersection(
+                subscription.get_renewal_extra().items()
             ):
-                subscription.send_notification("payment_expired")
                 continue
-
-            # Check recurring payment
-            payment = subscription.payment_obj
-            if not payment.recurring:
-                subscription.send_notification("payment_expired")
-                if subscription.service.is_donation:
-                    if defer_one_time_donation_disable:
-                        disable_donations.append((subscription, payment))
-                    else:
-                        cls.disable_expired_one_time_donation(
-                            subscription, payment, now
-                        )
-                continue
-
-            recurring = subscription.get_recurring_payment_period()
-            if not recurring:
-                subscription.send_notification("payment_expired")
-                if subscription.service.is_donation:
-                    if defer_one_time_donation_disable:
-                        disable_donations.append((subscription, payment))
-                    else:
-                        cls.disable_expired_one_time_donation(
-                            subscription, payment, now
-                        )
-                continue
-
-            # Trigger recurring payment
-            cls.peform_payment(
-                payment,
-                subscription.list_payments(),
-                amount=subscription.get_renewal_amount(),
-                recurring=recurring,
-                end_date=subscription.expires,
-                extra=subscription.get_renewal_extra(),
-            )
+            try:
+                prepared = cls.prepare_renewal(
+                    subscription,
+                    now,
+                    disable_donations if defer_one_time_donation_disable else None,
+                )
+                if prepared is not None:
+                    submit_renewal(*prepared)
+            except PaymentError as error:
+                sentry_sdk.capture_exception(error)
         return disable_donations
 
     @classmethod
