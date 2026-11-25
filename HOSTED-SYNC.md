@@ -175,14 +175,14 @@ separate rollout steps.
 
 ## Hosted plan and package mapping
 
-Run `manage.py sync_packages` before historical subscription reconstruction.
+Run `./manage.py sync_packages` before historical subscription reconstruction.
 It provisions hidden shared packages for Basic, Medium, Advanced, Advanced 20k
 and Enterprise at their Hosted prices. Advanced 20k has 20,000 source strings
 and 30 languages.
 
 Use `hosted_plan_to_package(slug, period)` with the plan slug from the
 historical purchase or invoice and its period (`m` or `y`). Supported string
-tiers are `10k`, `40k`, `160k`, `640k`, `2-5m` and `10m`. The `2-5m`
+tiers are `10k`, `40k`, `160k`, `640k`, `2-5m` and `10m`; legacy slugs `basic`, `medium`, `advanced`, `advanced-20000` and `enterprise` also map to the corresponding `hosted:*` packages. The `2-5m`
 slug maps to `hosted:2.5m`. Monthly names end in `-m`. The snapshot example
 uses `10k` as the Hosted slug.
 
