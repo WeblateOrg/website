@@ -1074,18 +1074,20 @@ class ThePay2Card(Backend):
     thepay_method_code = "card"
     supported_currencies: set[str] = {"EUR", "CZK", "GBP", "USD"}
     recurring_states = frozenset({"paid", "error", "waiting_for_confirmation"})
-    payment_states = recurring_states | {
-        # Also accept the cancellation values used by existing checkout flows.
-        "cancelled",
-        "payment_cancelled",
-        "expired",
-        "partially_refunded",
-        "preauth_cancelled",
-        "preauth_expired",
-        "preauthorized",
-        "refunded",
-        "waiting_for_payment",
-    }
+    pending_payment_states = frozenset(
+        {"waiting_for_payment", "waiting_for_confirmation", "preauthorized"}
+    )
+    failed_payment_states = frozenset(
+        {
+            "error",
+            "expired",
+            # Older checkout flows can report these cancellation states.
+            "cancelled",
+            "payment_cancelled",
+        }
+    )
+    closed_preauthorization_states = frozenset({"preauth_cancelled", "preauth_expired"})
+    refund_states = frozenset({"partially_refunded", "refunded"})
     validate_pay_url = URLValidator(schemes=["http", "https"])
 
     @staticmethod
@@ -1174,7 +1176,7 @@ class ThePay2Card(Backend):
     @classmethod
     def invalid_payment_detail_field(cls, payload: dict[str, Any]) -> str | None:
         state = payload.get("state")
-        if not isinstance(state, str) or state not in cls.payment_states:
+        if not isinstance(state, str) or not state.strip():
             return "state"
         if state == "paid":
             card = payload.get("card")
@@ -1258,6 +1260,9 @@ class ThePay2Card(Backend):
             )
             # This is processed in the collect() method
             self.payment.details["repeat_response"] = response
+            self.record_recurring_availability(
+                response, failed=response["state"] == "error"
+            )
             return None
 
         # Payment payload
@@ -1319,13 +1324,18 @@ class ThePay2Card(Backend):
 
     def _collect_payment_detail(self) -> bool | None:
         response = self.request("get", f"payments/{self.payment.pk}")
-
+        previous_response = self.payment.details.get("response")
         self.payment.details["response"] = response
-
-        # Extract state
         state: str = response["state"]
+        self.record_recurring_availability(
+            response,
+            failed=(
+                state in self.failed_payment_states
+                and not self.payment.is_under_settlement_review
+                and self.payment.state != Payment.CANCELLED
+            ),
+        )
 
-        # Payment completed
         if state == "paid":
             if not self.validate_settlement(response):
                 return None
@@ -1334,41 +1344,55 @@ class ThePay2Card(Backend):
                 self.payment.card_info = card_info
             return True
 
-        # Once money was reported received, keep the review open until a paid
-        # response passes validation instead of inviting another payment.
-        if self.payment.is_under_settlement_review or state in {
-            "waiting_for_payment",
-            "waiting_for_confirmation",
-            "expired",
-        }:
-            return None
+        if state in self.refund_states:
+            if not self.payment.is_under_settlement_review:
+                self.hold_settlement(
+                    {"reason": state},
+                    content="The payment provider reported a refund. Reconcile the payment and refund before applying the payment.",
+                )
+        elif state in self.closed_preauthorization_states:
+            if (
+                not self.payment.is_under_settlement_review
+                and self.payment.state != Payment.CANCELLED
+            ):
+                self.payment.details["reject_reason"] = state
+                self.payment.state = Payment.REJECTED
+        elif state in self.failed_payment_states:
+            if not self.payment.is_under_settlement_review:
+                if self.payment.repeat:
+                    self.record_recurring_failure(response)
+                else:
+                    self.payment.details["reject_reason"] = self.payment_failure_reason(
+                        response
+                    )
+                return False
+        elif state not in self.pending_payment_states and (
+            not isinstance(previous_response, dict)
+            or previous_response.get("state") != state
+        ):
+            sentry_sdk.capture_message(
+                "Unrecognized ThePay payment-detail state",
+                level="warning",
+                extras={"state": state, "payment_id": str(self.payment.pk)},
+            )
+        return None
 
-        if self.payment.repeat:
-            self.record_recurring_failure(response)
-            return False
-
-        # All other states are assumed to be an error
-
-        # Get error detail
-        reason = ""
+    @staticmethod
+    def payment_failure_reason(response: dict[str, Any]) -> str:
+        if response["state"] == "expired":
+            return "expired"
         if events := response.get("events"):
             last_event = events[-1]
             if event_data := last_event.get("data"):
-                reason = event_data
-            elif event_type := last_event.get("type"):
-                if event_type == "payment_error":
-                    reason = gettext("Payment error")
-                elif event_type == "payment_cancelled":
-                    reason = gettext("Payment cancelled")
-                else:
-                    # Not user friendly, but gives some clue
-                    reason = event_type
-        if reason:
-            self.payment.details["reject_reason"] = reason
-        else:
-            self.payment.details["reject_reason"] = state
-
-        return False
+                return event_data
+            match last_event["type"]:
+                case "payment_error":
+                    return "Payment error"
+                case "payment_cancelled":
+                    return "Payment cancelled"
+                case event_type:
+                    return event_type
+        return response["state"]
 
     def collect_recurring_result(self) -> bool | None:
         if self.payment.has_unavailable_recurring_authorization:
@@ -1382,6 +1406,7 @@ class ThePay2Card(Backend):
             )
             return None
         state = response["state"]
+        self.record_recurring_availability(response, failed=state == "error")
         if state == "paid":
             return True
         if state == "error":
@@ -1389,29 +1414,37 @@ class ThePay2Card(Backend):
             return False
         return None
 
-    def record_recurring_failure(self, response: dict[str, Any]) -> None:
-        self.payment.details["reject_reason"] = self.recurring_failure_reason(response)
+    def record_recurring_availability(
+        self, response: dict[str, Any], *, failed: bool
+    ) -> None:
         parent = response.get("parent") or {}
         if (
-            response.get("state") == "error"
-            and self.payment.state != Payment.CANCELLED
-            and parent.get("recurring_payments_available") is False
+            parent.get("recurring_payments_available") is False
             and (parent_payment := self.payment.repeat) is not None
         ):
+            self.payment.details[Payment.RECURRING_AUTHORIZATION_FAILURE] = True
+            parent_payment.disable_recurring(
+                self.payment,
+                reason=Payment.RECURRING_AUTHORIZATION_FAILURE,
+                failed=failed,
+            )
+
+    def record_recurring_failure(self, response: dict[str, Any]) -> None:
+        unavailable = self.payment.details.get(Payment.RECURRING_AUTHORIZATION_FAILURE)
+        if unavailable and self.payment.state != Payment.CANCELLED:
             self.payment.details["failure_code"] = (
                 Payment.RECURRING_AUTHORIZATION_FAILURE
             )
-            parent_payment.disable_recurring_after_failure(
-                self.payment, reason=Payment.RECURRING_AUTHORIZATION_FAILURE
-            )
 
-    @staticmethod
-    def recurring_failure_reason(response: dict[str, Any]) -> str:
-        if message := response.get("message"):
-            return str(message)
-        if not (response.get("parent") or {}).get("recurring_payments_available", True):
-            return "Recurring payment is no longer available"
-        return "Recurring payment failed"
+        if response["state"] == "expired":
+            reason = "expired"
+        elif message := response.get("message"):
+            reason = message
+        elif unavailable:
+            reason = "Recurring payment is no longer available"
+        else:
+            reason = "Recurring payment failed"
+        self.payment.details["reject_reason"] = reason
 
     def validate_settlement(self, response: dict[str, Any]) -> bool:
         """Check received money against the invoice, independently of live VAT data."""
@@ -1457,7 +1490,12 @@ class ThePay2Card(Backend):
             ).delete()
         return True
 
-    def hold_settlement(self, review: dict[str, Any]) -> None:
+    def hold_settlement(
+        self,
+        review: dict[str, Any],
+        *,
+        content: str = "The received amount or currency could not be matched to the invoice. Review the provider response before applying the payment.",
+    ) -> None:
         # ruff:ignore[import-outside-top-level]
         from weblate_web.crm.models import Interaction
 
@@ -1480,7 +1518,7 @@ class ThePay2Card(Backend):
             self.payment.customer.interaction_set.create(
                 origin=Interaction.Origin.MANUAL_NOTE,
                 summary=summary,
-                content="The received amount or currency could not be matched to the invoice. Review the provider response before applying the payment.",
+                content=content,
                 details=details,
             )
         self.payment.customer.followups.update_or_create(

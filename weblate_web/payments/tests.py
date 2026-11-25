@@ -1761,7 +1761,7 @@ class ThePayRequestTest(SimpleTestCase):
             ("post", "payments", "v1", {"pay_url": "//example.com/pay"}, "pay_url"),
             ("get", "payments/test", "v1", {}, "state"),
             ("get", "payments/test", "v1", {"state": []}, "state"),
-            ("get", "payments/test", "v1", {"state": "unknown"}, "state"),
+            ("get", "payments/test", "v1", {"state": "  "}, "state"),
             (
                 "get",
                 "payments/test",
@@ -2323,6 +2323,12 @@ class ThePaySettlementTest(BackendBaseTestCase):
         with patch.object(ThePay2Card, "request", return_value=response):
             return self.payment.get_payment_backend().complete(None)
 
+    def mock_payment_detail(self, state: str, **fields: Any) -> None:
+        responses.get(
+            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}",
+            json={"state": state, **fields},
+        )
+
     def assert_held(self) -> Payment:
         payment = self.check_payment(Payment.PENDING)
         self.assertTrue(payment.is_under_settlement_review)
@@ -2426,6 +2432,90 @@ class ThePaySettlementTest(BackendBaseTestCase):
         payment = self.assert_held()
         self.assertEqual(payment.details["response"]["state"], "error")
 
+    @responses.activate
+    def test_terminal_payment_details(self) -> None:
+        cases = (
+            ("expired", "The payment expired.", True),
+            ("error", "error", True),
+            ("cancelled", "cancelled", True),
+            ("payment_cancelled", "payment_cancelled", True),
+            ("preauth_cancelled", "The payment preauthorization was cancelled.", False),
+            ("preauth_expired", "The payment preauthorization expired.", False),
+        )
+        for state, reason, notify in cases:
+            with self.subTest(state=state):
+                self.payment.save(update_fields=["state", "details"])
+                self.notify.reset_mock()
+                self.mock_payment_detail(state)
+                for _ in range(2):
+                    self.assertFalse(self.payment.get_payment_backend().complete(None))
+                    payment = self.check_payment(Payment.REJECTED)
+                    self.assertEqual(payment.details["response"]["state"], state)
+                    self.assertEqual(payment.get_reject_reason(), reason)
+                    self.assertIsNone(payment.paid_invoice_id)
+                if notify:
+                    self.notify.assert_called_once_with("payment_failed")
+                else:
+                    self.notify.assert_not_called()
+
+    @responses.activate
+    def test_pending_and_unrecognized_states_can_settle(self) -> None:
+        with patch("sentry_sdk.capture_message") as report:
+            for state in (
+                "waiting_for_payment",
+                "waiting_for_confirmation",
+                "preauthorized",
+                "new_provider_state",
+                "new_provider_state",
+            ):
+                with self.subTest(state=state):
+                    self.mock_payment_detail(state)
+                    self.assertFalse(self.payment.get_payment_backend().complete(None))
+                    payment = self.check_payment(Payment.PENDING)
+                    self.assertEqual(payment.details["response"]["state"], state)
+                    self.assertNotIn("reject_reason", payment.details)
+                    self.assertIsNone(payment.paid_invoice_id)
+            report.assert_called_once()
+        self.notify.assert_not_called()
+        self.mock_payment_detail("paid", paid_amount=12100, currency="EUR")
+        self.assertTrue(self.payment.get_payment_backend().complete(None))
+        self.check_payment(Payment.ACCEPTED)
+        self.notify.assert_called_once_with("payment_completed")
+
+    @responses.activate
+    def test_refunds_open_one_review_each(self) -> None:
+        for state in ("partially_refunded", "refunded"):
+            with self.subTest(state=state):
+                self.mock_payment_detail(state)
+                for _ in range(2):
+                    self.assertFalse(self.payment.get_payment_backend().complete(None))
+                    payment = self.assert_held()
+                    self.assertEqual(
+                        payment.details["settlement_review"]["reason"], state
+                    )
+                    self.assertEqual(payment.details["response"]["state"], state)
+                    self.assertNotIn("reject_reason", payment.details)
+                self.customer.interaction_set.all().delete()
+                self.customer.followups.all().delete()
+                self.payment.save(update_fields=["details"])
+
+    @responses.activate
+    def test_non_paid_detail_preserves_existing_review(self) -> None:
+        self.assertFalse(self.complete_payment(paid_amount=12099))
+        for state in ("expired", "preauth_expired", "refunded", "new_provider_state"):
+            with self.subTest(state=state):
+                self.mock_payment_detail(state)
+                self.assertFalse(self.payment.get_payment_backend().complete(None))
+                payment = self.assert_held()
+                self.assertEqual(
+                    payment.details["settlement_review"]["reason"], "underpayment"
+                )
+                self.assertEqual(payment.details["response"]["state"], state)
+        self.assertTrue(self.complete_payment())
+        self.assertFalse(
+            self.check_payment(Payment.ACCEPTED).is_under_settlement_review
+        )
+
     def test_rejected_payment_can_be_held(self) -> None:
         self.payment.state = Payment.REJECTED
         self.payment.save(update_fields=["state"])
@@ -2494,7 +2584,7 @@ class ThePaySettlementTest(BackendBaseTestCase):
 
     def prepare_recurring(self) -> None:
         self.payment.repeat = Payment.objects.create(
-            customer=self.customer, amount=100, backend=self.backend_name
+            customer=self.customer, amount=100, recurring="y", backend=self.backend_name
         )
         self.payment.state = Payment.NEW
         self.payment.save()
@@ -2560,7 +2650,14 @@ class ThePaySettlementTest(BackendBaseTestCase):
             return result
 
         with (
-            patch.object(ThePay2Card, "request", return_value={"state": "paid"}),
+            patch.object(
+                ThePay2Card,
+                "request",
+                return_value={
+                    "state": "paid",
+                    "parent": {"recurring_payments_available": False},
+                },
+            ),
             patch.object(ThePay2Card, "initiate", new=initiate_and_accept),
             patch.object(ThePay2Card, "complete") as complete,
             patch("weblate_web.models.process_payment") as process,
@@ -2568,6 +2665,9 @@ class ThePaySettlementTest(BackendBaseTestCase):
             self.payment.trigger_recurring()
         complete.assert_not_called()
         process.assert_called_once()
+        payment = self.check_payment(Payment.ACCEPTED)
+        assert payment.repeat is not None
+        self.assertEqual(payment.repeat.recurring, "")
 
     def test_recurring_pending_checks_settlement_on_callback(self) -> None:
         self.prepare_recurring()
@@ -2589,19 +2689,33 @@ class ThePaySettlementTest(BackendBaseTestCase):
         with patch.object(
             ThePay2Card,
             "request",
-            return_value={"state": "paid", "paid_amount": 10000, "currency": "EUR"},
+            return_value={
+                "state": "paid",
+                "paid_amount": 10000,
+                "currency": "EUR",
+                "parent": {"recurring_payments_available": False},
+            },
         ) as request:
             self.client.get(payment.get_complete_url())
         request.assert_called_once_with("get", f"payments/{payment.pk}")
-        self.assert_held()
-        self.assertTrue(self.complete_payment())
+        payment = self.check_payment(Payment.PENDING)
+        self.assertTrue(payment.is_under_settlement_review)
+        self.assertEqual(self.customer.followups.count(), 1)
+        self.notify.assert_not_called()
+        assert payment.repeat is not None
+        self.assertEqual(payment.repeat.recurring, "")
+        self.assertFalse(payment.has_unavailable_recurring_authorization)
+        with patch.object(
+            ThePay2Card,
+            "request",
+            return_value={"state": "paid", "paid_amount": 12100, "currency": "EUR"},
+        ):
+            self.client.get(payment.get_complete_url())
         self.check_payment(Payment.ACCEPTED)
+        self.notify.assert_called_once_with("payment_completed")
 
     def test_recurring_callback_rejects_unavailable_authorization_once(self) -> None:
         self.prepare_recurring()
-        assert self.payment.repeat is not None
-        self.payment.repeat.recurring = "y"
-        self.payment.repeat.save(update_fields=["recurring"])
         with patch(
             "weblate_web.payments.backends.ThePay2Card.request",
             side_effect=[
@@ -2630,6 +2744,33 @@ class ThePaySettlementTest(BackendBaseTestCase):
             ).count(),
             1,
         )
+
+    @responses.activate
+    def test_pending_response_disables_renewals_before_child_fails(self) -> None:
+        self.prepare_recurring()
+        assert self.payment.repeat_id is not None
+        responses.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{self.payment.repeat_id}/savedauthorization",
+            status=202,
+            json={
+                "state": "waiting_for_confirmation",
+                "parent": {"recurring_payments_available": False},
+            },
+        )
+        self.payment.trigger_recurring()
+        payment = self.check_payment(Payment.PENDING)
+        assert payment.repeat is not None
+        self.assertEqual(payment.repeat.recurring, "")
+        self.assertFalse(payment.has_unavailable_recurring_authorization)
+        self.notify.assert_not_called()
+
+        self.mock_payment_detail("error")
+        self.client.get(payment.get_complete_url())
+        self.client.get(payment.get_complete_url())
+        payment = self.check_payment(Payment.REJECTED)
+        self.assertTrue(payment.has_unavailable_recurring_authorization)
+        self.notify.assert_called_once_with("payment_failed")
+        self.assertEqual(self.customer.interaction_set.count(), 1)
 
 
 class VATTest(SimpleTestCase):
