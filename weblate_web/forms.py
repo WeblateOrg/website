@@ -51,7 +51,7 @@ class NewSubscriptionForm(forms.Form):
         coerce=InvoiceKind.from_str,
         widget=forms.RadioSelect,
     )
-    package = forms.ModelChoiceField(Package.objects.all())
+    package = forms.ModelChoiceField(Package.objects.filter(hidden=False))
     currency = forms.TypedChoiceField(
         choices=Currency, initial=Currency.EUR, coerce=Currency.from_str
     )
