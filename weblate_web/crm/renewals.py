@@ -55,6 +55,7 @@ def needs_renewal_follow_up(subscription: Subscription) -> bool:
     has_automatic_payment = payment is not None and bool(payment.recurring)
     return (
         subscription.service.kind == ServiceKind.SERVICE
+        and subscription.uses_payment_lifecycle()
         and subscription.package.get_repeat() == "y"
         and not has_automatic_payment
         and not subscription.could_be_obsolete()

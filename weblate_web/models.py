@@ -71,6 +71,7 @@ from .packages import (
     SUPPORT_PACKAGES,
 )
 from .url_utils import normalize_site_url, normalize_site_url_for_lock
+from .utils import HOSTED_ORIGIN
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Generator
@@ -579,6 +580,8 @@ def process_payment(payment: Payment) -> None:
         return
     if not payment.extra or set(payment.extra.keys()) == {"exclude_backends"}:
         raise UnprocessablePaymentError
+    if payment.extra.get("hosted_renewal") is True:
+        raise UnprocessablePaymentError
     if is_subscription_payment(payment):
         process_subscription(payment)
     elif "billing" in payment.extra:
@@ -807,6 +810,10 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
         verbose_name=gettext_lazy("Maintenance window"), max_length=200, blank=True
     )
     hosted_billing = models.PositiveIntegerField(blank=True, null=True, unique=True)
+    hosted_snapshot_at = models.DateTimeField(null=True, blank=True, editable=False)
+    hosted_synced_at = models.DateTimeField(null=True, blank=True, editable=False)
+    hosted_snapshot = models.JSONField(default=dict, blank=True, editable=False)
+
     discoverable = models.BooleanField(default=False, blank=True)
     site_url = models.URLField(
         verbose_name=gettext_lazy("Server URL"), default="", blank=True
@@ -902,6 +909,16 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
             raise ValidationError({"site_url": error}) from error
 
     @property
+    def is_hosted_workspace(self) -> bool:
+        return bool(self.hosted_billing and self.hosted_billing > 0)
+
+    @property
+    def hosted_workspace_url(self) -> str:
+        if workspace_id := self.hosted_snapshot.get("workspace_id"):
+            return f"https://hosted.weblate.org/workspaces/{workspace_id}/"
+        return ""
+
+    @property
     def is_donation(self) -> bool:
         return self.kind == ServiceKind.DONATION
 
@@ -992,9 +1009,13 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
         if self.is_donation:
             return "Donation"
         packages = [subscription.package for subscription in self.listed_subscriptions]
-        if any(package.category == ServiceCategory.DEDICATED for package in packages):
+        if not self.is_hosted_workspace and any(
+            package.category == ServiceCategory.DEDICATED for package in packages
+        ):
             return "Dedicated service"
-        if any(package.category == ServiceCategory.SHARED for package in packages):
+        if self.is_hosted_workspace or any(
+            package.category == ServiceCategory.SHARED for package in packages
+        ):
             return "Hosted service"
         if any(
             package.name in {"basic", "extended", "premium"} for package in packages
@@ -1803,7 +1824,9 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
         return delta.days > 0 and delta.days % 7 == 0
 
     def uses_payment_lifecycle(self) -> bool:
-        return self.service.is_donation or bool(self.package.get_repeat())
+        return not self.service.is_hosted_workspace and (
+            self.service.is_donation or bool(self.package.get_repeat())
+        )
 
     def get_recurring_payment_period(self) -> str:
         if self.service.is_donation:
@@ -1945,26 +1968,42 @@ class Subscription(models.Model):  # ruff:ignore[too-many-public-methods]
         package: Package | None = None,
         customer_reference: str = "",
         customer_note: str = "",
+        hosted_renewal: bool = False,
     ) -> Invoice:
         if package is None:
             package = self.package
         elif package not in {self.package, self.yearly_package}:
             raise ValueError("Invalid renewal package")
+        period = package.get_repeat()
+        currency = CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency]
+        extra: dict[str, Any] = {"subscription": self.pk}
+        if hosted_renewal:
+            if (
+                not self.service.is_hosted_workspace
+                or self.service.customer.origin != HOSTED_ORIGIN
+                or currency != Currency.EUR
+                or package.category != ServiceCategory.SHARED
+                or period not in {"m", "y"}
+            ):
+                raise ValueError("Invalid Hosted renewal")
+            extra = {
+                "hosted_renewal": True,
+                "billing": self.service.hosted_billing,
+                "service": self.service_id,
+                "period": period,
+            }
         start_date = get_subscription_invoice_start(self)
         end_date = (
-            self.expires + get_period_delta(package.get_repeat())
+            self.expires + get_period_delta(period)
             if self.enabled
-            else start_date + get_period_delta(package.get_repeat()) - timedelta(days=1)
+            else start_date + get_period_delta(period) - timedelta(days=1)
         )
         return self._create_invoice(
             kind=kind,
             customer=self.service.customer,
             package=package,
-            currency=CURRENCY_MAP_FROM_PAYMENT[self.payment_obj.currency],
-            extra={
-                "subscription": self.pk,
-                "start_date": start_date,
-            },
+            currency=currency,
+            extra={**extra, "start_date": start_date},
             customer_reference=customer_reference,
             customer_note=customer_note,
             description=package.verbose,
@@ -2069,6 +2108,25 @@ class ServiceActivity(models.Model):
         return f"{self.service_id}: {self.month}: {self.changes}"
 
 
+class HostedBillingAdministrator(models.Model):
+    service = models.ForeignKey(
+        Service, on_delete=models.CASCADE, related_name="hosted_administrators"
+    )
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    external_id = models.CharField(max_length=255)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=("service", "external_id"),
+                name="unique_hosted_service_administrator",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.service_id}: {self.external_id}"
+
+
 class Report(models.Model):
     service = models.ForeignKey(Service, on_delete=models.deletion.CASCADE)
     site_url = models.URLField(default="")
@@ -2082,7 +2140,7 @@ class Report(models.Model):
     source_strings = models.IntegerField(default=0)
     hosted_strings = models.IntegerField(default=0)
     hosted_words = models.IntegerField(default=0)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now, editable=False)
     discoverable = models.BooleanField(default=False)
 
     class Meta:
@@ -2100,6 +2158,8 @@ class Report(models.Model):
         using=None,
         update_fields=None,
     ) -> None:
+        if self._state.adding:
+            self.timestamp = timezone.now()
         self.site_url = normalize_site_url(self.site_url, allow_empty=True)
         super().save(
             force_insert=force_insert,

@@ -11,12 +11,18 @@
   <td></td>
   <td>{{ payment.get_amount_display|price_format:payment.get_currency_display }}</td>
   <td>
-    {% if payment.invoice %}
+    {% if payment.paid_invoice or payment.draft_invoice or payment.invoice %}
       <a href="{% url 'user-invoice' pk=payment.pk %}" class="link invoice-link">
-        {{ payment.invoice_filename }}
+        {% if payment.paid_invoice %}
+          {{ payment.paid_invoice.filename }}
+        {% elif payment.draft_invoice %}
+          {{ payment.draft_invoice.filename }}
+        {% else %}
+          {{ payment.invoice_filename }}
+        {% endif %}
         <img src="{% static "img/Download.png" %}" alt="{% translate "Download invoice" %}" />
       </a>
-      {% if payment.paid_invoice %}
+      {% if payment.paid_invoice.is_paid %}
         <a href="{% url 'user-invoice' pk=payment.pk %}?receipt=1"
            class="link invoice-link">
           {{ payment.paid_invoice.receipt_filename }}

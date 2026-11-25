@@ -89,6 +89,8 @@ def create_invitation(
     now = timezone.now()
     with transaction.atomic():
         customer = Customer.objects.select_for_update().get(pk=customer.pk)
+        if customer.hosted_workspaces:
+            return None
         if customer.owners.filter(email__iexact=normalized_email).exists():
             pending = customer.owner_invitations.filter(
                 email__iexact=normalized_email,
@@ -186,6 +188,9 @@ def accept_invitation(
 
     now = timezone.now()
     with transaction.atomic():
+        customer = Customer.objects.select_for_update().get(pk=invitation.customer_id)
+        if customer.hosted_workspaces:
+            return None
         invitation = CustomerOwnerInvitation.objects.select_for_update().get(
             pk=invitation.pk
         )

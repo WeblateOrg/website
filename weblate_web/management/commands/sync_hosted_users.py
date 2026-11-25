@@ -29,6 +29,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.signing import BadSignature, SignatureExpired, dumps, loads
 from django.db import DataError, IntegrityError
 
+from weblate_web.hosted_services import apply_pending_hosted_owners
 from weblate_web.hosted_users import (
     HostedSyncContext,
     extract_profile,
@@ -74,7 +75,10 @@ class Command(BaseCommand):
         parser.add_argument(
             "--only-missing",
             action="store_true",
-            help="only process hosted users without an existing local Hosted identity",
+            help=(
+                "only update profiles for users without a local Hosted identity; "
+                "also reconcile pending owner grants for existing identities"
+            ),
         )
         parser.add_argument(
             "--progress-every",
@@ -175,6 +179,8 @@ class Command(BaseCommand):
         processed = 0
         skipped = False
         total = len(user_payloads)
+        owner_ids: set[str] = set()
+        default_provider = get_default_hosted_provider()
         for user_payload in user_payloads:
             processed += 1
             if not isinstance(user_payload, dict):
@@ -182,12 +188,18 @@ class Command(BaseCommand):
                 self.write_skip("payload is not a mapping", user_payload)
                 self.write_progress(processed, total, progress_every)
                 continue
-            if only_missing and self.get_existing_identity(user_payload, context):
+            if only_missing and (
+                identity := self.get_existing_identity(user_payload, context)
+            ):
+                if identity.provider == default_provider and identity.user.is_active:
+                    owner_ids.add(identity.external_id)
                 linked += 1
                 self.write_progress(processed, total, progress_every)
                 continue
             try:
-                user, _created = sync_hosted_payload(user_payload, context)
+                user, _created = sync_hosted_payload(
+                    user_payload, context, defer_pending_owners=True
+                )
             except (
                 AttributeError,
                 DataError,
@@ -206,7 +218,14 @@ class Command(BaseCommand):
                 self.write_progress(processed, total, progress_every)
                 continue
             count += 1
+            if (
+                user.is_active
+                and str(user_payload.get("provider", default_provider))
+                == default_provider
+            ):
+                owner_ids.add(normalize_external_id(user_payload["external_id"]))
             self.write_progress(processed, total, progress_every)
+        apply_pending_hosted_owners(owner_ids)
         return SyncResult(count=count, linked=linked, skipped=skipped)
 
     def finish_sync(

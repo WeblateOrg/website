@@ -784,6 +784,7 @@ class FioBank(Backend):
             .first()
         )
         if payment is not None:
+            invoice.validate_hosted_renewal_payment(payment)
             return payment
         return invoice.create_payment(backend=cls.name)
 
@@ -920,6 +921,7 @@ class FioBank(Backend):
     def reconcile_bank_transfer(cls, entry: dict[str, Any], currency: str) -> None:
         """Lock matched invoices before checking and applying an incoming transfer."""
         from weblate_web.invoices.models import (  # ruff:ignore[import-outside-top-level]
+            HostedRenewalValidationError,
             Invoice,
             InvoiceKind,
         )
@@ -935,6 +937,7 @@ class FioBank(Backend):
 
         processed = False
         duplicate_matches: list[Invoice] = []
+        invalid_renewals: list[tuple[Invoice, str]] = []
 
         # Process all matches
         for invoice in (
@@ -963,7 +966,12 @@ class FioBank(Backend):
                 break
 
             # Fetch payment(s)
-            payment = cls.get_invoice_payment(invoice)
+            try:
+                payment = cls.get_invoice_payment(invoice)
+            except HostedRenewalValidationError as error:
+                invalid_renewals.append((invoice, str(error)))
+                print(f"{invoice.number}: skipping, {error}")
+                continue
 
             print(f"{invoice.number}: received payment")
 
@@ -991,6 +999,29 @@ class FioBank(Backend):
         if not processed and duplicate_matches:
             for invoice in duplicate_matches:
                 cls.record_duplicate_bank_payment(invoice, entry, amount, currency)
+            processed = True
+
+        if not processed and invalid_renewals:
+            invoice = invalid_renewals[0][0]
+            Backend.record_duplicate_payment(
+                invoice,
+                DuplicatePaymentRecord(
+                    duplicate_key=cls.get_duplicate_bank_payment_key(
+                        invoice, entry, amount, currency
+                    ),
+                    summary=f"Unapplied bank transfer for Hosted renewal invoice {invoice.number}",
+                    content="Review the Hosted renewal details before applying this transfer.",
+                    details={
+                        "transaction": entry,
+                        "amount": str(amount),
+                        "currency": currency,
+                        "rejected_invoices": [
+                            {"invoice_id": str(rejected.pk), "reason": reason}
+                            for rejected, reason in invalid_renewals
+                        ],
+                    },
+                ),
+            )
             processed = True
 
         # Warn about not processed payment

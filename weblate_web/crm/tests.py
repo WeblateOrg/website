@@ -56,6 +56,7 @@ from weblate_web.payments.models import (
     Payment,
 )
 from weblate_web.tests import TEST_CUSTOMER, cnb_mock_rates
+from weblate_web.utils import HOSTED_ORIGIN
 from weblate_web.zammad import create_dedicated_hosting_ticket, get_zammad_client
 
 TEST_PAYMENT_SECRET = "secret"  # ruff:ignore[hardcoded-password-string]
@@ -147,7 +148,15 @@ class CRMInvoiceSearchTestCase(BaseCRMTestCase):
         groups = {
             "customer": ("all", "active", "followups"),
             "invoice": ("invoice", "unpaid", "quote", "stale", "all"),
-            "service": ("all", "expired", "dedicated", "basic", "extended", "premium"),
+            "service": (
+                "all",
+                "expired",
+                "hosted",
+                "dedicated",
+                "basic",
+                "extended",
+                "premium",
+            ),
         }
         for group, kinds in groups.items():
             for kind in kinds:
@@ -639,6 +648,19 @@ class CRMRenewalFollowUpTestCase(BaseCRMTestCase):
         self.service = Service.objects.create(
             customer=self.customer, site_title="Translation service"
         )
+
+    def test_hosted_link_removes_existing_renewal_follow_up(self) -> None:
+        self.service.subscription_set.create(
+            package=self.package, expires=self.now + timedelta(days=10)
+        )
+        reconcile_renewal_follow_ups()
+        self.assertTrue(self.customer.followups.exists())
+        self.service.hosted_billing = 42
+        self.service.save(update_fields=["hosted_billing"])
+
+        for _attempt in range(2):
+            reconcile_renewal_follow_ups()
+            self.assertFalse(self.customer.followups.exists())
 
     def test_command_creates_follow_up_at_boundary_and_catches_up(self) -> None:
         subscription = self.service.subscription_set.create(
@@ -4149,6 +4171,51 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
             all(not row["trend_available"] for row in context["monthly_breakdown_rows"])
         )
 
+    def test_hosted_snapshot_labels(self):
+        service = Service.objects.create(
+            customer=self.create_customer(),
+            hosted_billing=42,
+            hosted_snapshot_at=timezone.now(),
+        )
+        for metadata, labels in (
+            ({"state": "active", "payment_mode": "local"}, ("Active", "Local")),
+            ({"state": "trial", "payment_mode": "external"}, ("Trial", "External")),
+            (
+                {"state": "terminated", "payment_mode": "invalid-mode"},
+                ("Terminated", "Unknown payment mode"),
+            ),
+            (
+                {"state": "invalid-state"},
+                ("Unknown billing state", "Unknown payment mode"),
+            ),
+            ({}, ("Unknown billing state", "Unknown payment mode")),
+        ):
+            with self.subTest(metadata=metadata):
+                service.hosted_snapshot = metadata
+                service.save(update_fields=["hosted_snapshot"])
+                response = self.client.get(service.get_absolute_url())
+                for label in labels:
+                    self.assertContains(response, label)
+                self.assertNotContains(response, "invalid-mode")
+                self.assertNotContains(response, "invalid-state")
+                service.refresh_from_db()
+                self.assertEqual(service.hosted_snapshot, metadata)
+
+    def test_hosted_service_without_subscription(self):
+        customer = self.create_customer()
+        service = Service.objects.create(customer=customer, hosted_billing=42)
+        Service.objects.create(customer=customer)
+        for kind in ("all", "hosted"):
+            response = self.client.get(
+                reverse("crm:service-list", kwargs={"kind": kind})
+            )
+            self.assertContains(response, "Hosted billing #42")
+            self.assertContains(response, "No support subscription")
+        self.assertEqual(list(response.context["object_list"]), [service])
+        response = self.client.get(service.get_absolute_url())
+        self.assertContains(response, "Last Hosted synchronization")
+        self.assertContains(response, "Never synchronized")
+
     def test_service_list_views(self):
         """Test various service list views."""
         # Community package is required by the Service.update_status() method
@@ -4477,6 +4544,73 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
         )
         self.assertNotIn("discoverable_services", response.context)
         self.assertNotContains(response, "Discoverable services")
+
+    def test_hosted_renewal_invoice_and_upgrade_rejection(self):
+        Package.objects.create(name="community", price=0)
+        customer = self.create_customer()
+        customer.origin = HOSTED_ORIGIN
+        customer.save(update_fields=["origin"])
+        service = Service.objects.create(customer=customer, hosted_billing=42)
+        original = Payment.objects.create(customer=customer, amount=100)
+        for name, period in (("hosted:10k-m", "m"), ("hosted:10k", "y")):
+            with self.subTest(period=period):
+                package = Package.objects.create(
+                    name=name, verbose=name, price=100, category=ServiceCategory.SHARED
+                )
+                subscription = service.subscription_set.create(
+                    package=package,
+                    expires=timezone.now() + timedelta(days=30),
+                    payment=original,
+                )
+                data = {
+                    "subscription": subscription.pk,
+                    "action": "renewal",
+                    "kind": InvoiceKind.INVOICE,
+                    "confirm_invoice": "1",
+                }
+                with patch.object(Invoice, "generate_files"):
+                    response = self.client.post(service.get_absolute_url(), data)
+                invoice = Invoice.objects.get(extra__period=period)
+                self.assertRedirects(
+                    response, invoice.get_absolute_url(), fetch_redirect_response=False
+                )
+                self.assertEqual(invoice.extra["billing"], 42)
+                self.assertEqual(invoice.extra["period"], period)
+                self.assertTrue(invoice.extra["hosted_renewal"])
+                self.assertNotIn("subscription", invoice.extra)
+                self.assertNotIn("plan", invoice.extra)
+                pay_url = reverse("invoice-pay", args=[invoice.pk])
+                for _request in range(2):
+                    response = self.client.get(pay_url)
+                    payment = invoice.draft_payment_set.get()
+                    self.assertRedirects(
+                        response,
+                        payment.get_absolute_url(),
+                        fetch_redirect_response=False,
+                    )
+                    self.assertEqual(payment.recurring, period)
+                    self.assertEqual(payment.extra["billing"], 42)
+                payment.state = Payment.ACCEPTED
+                payment.save(update_fields=["state"])
+                call_command("process_payments")
+                payment.refresh_from_db()
+                self.assertEqual(payment.state, Payment.ACCEPTED)
+
+                invoice_count = Invoice.objects.count()
+                response = self.client.post(
+                    service.get_absolute_url(),
+                    {**data, "action": "upgrade"},
+                    follow=True,
+                )
+                self.assertRedirects(
+                    response, service.get_absolute_url(), fetch_redirect_response=False
+                )
+                self.assertContains(
+                    response, "Upgrade this subscription on Hosted Weblate."
+                )
+                self.assertEqual(Invoice.objects.count(), invoice_count)
+                subscription.refresh_from_db()
+                self.assertEqual(subscription.package, package)
 
     def test_service_detail_upgrade_invoice(self):
         Package.objects.create(name="community", price=0)

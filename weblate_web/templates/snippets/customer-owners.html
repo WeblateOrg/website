@@ -2,64 +2,77 @@
 
 <div class="line-left">{% translate "Owners" %}</div>
 <div class="line-right">
-  <p>
-    {% translate "Owners have full control over this customer account, including billing, services, secrets, and other owners. Only add people you trust." %}
-  </p>
-  {% for owner in customer_owners|default:customer.ordered_owners %}
-    <form id="server_owner_{{ owner.id }}_form"
-          method="post"
-          action="{% url 'customer-owner' pk=customer.pk %}">
-      <div class="user-slot">
-        <div class="user-slot-content">
-          <p>{{ owner.last_name }}</p>
-          <t>{{ owner.email }}</t>
-        </div>
-        {% if owner == user %}
-          <div class="user-img">
-            <img src="{% static "img/Shield.png" %}"
-                 title="{% translate "You can not remove yourself" %}"
-                 alt="{% translate "Protected owner" %}">
-          </div>
+  {% if customer.hosted_workspaces %}
+    <p>{% translate "Manage billing access on Hosted Weblate." %}</p>
+    {% for workspace in customer.hosted_workspaces %}
+      <p>
+        {% if workspace.hosted_workspace_url %}
+          <a href="{{ workspace.hosted_workspace_url }}access/">{{ workspace.site_title }}</a>
         {% else %}
-          {% csrf_token %}
-          <button type="submit" class="user-img">
-            <img src="{% static "img/delete.png" %}" alt="{% translate "Remove owner" %}">
-          </button>
+          <a href="https://hosted.weblate.org/billing/{{ workspace.hosted_billing }}/">{% blocktranslate with billing=workspace.hosted_billing %}Hosted billing #{{ billing }}{% endblocktranslate %}</a>
         {% endif %}
-      </div>
-      {% csrf_token %}
-      {% if owner != user %}
-        <input type="hidden" name="owner" value="{{ owner.pk }}" />
-        <input type="hidden" name="remove" value="{% translate "Remove" %}" />
-      {% endif %}
-    </form>
-  {% endfor %}
-  {% for invitation in customer.pending_owner_invitations %}
+      </p>
+    {% endfor %}
+  {% else %}
+    <p>
+      {% translate "Owners have full control over this customer account, including billing, services, secrets, and other owners. Only add people you trust." %}
+    </p>
+    {% for owner in customer_owners|default:customer.ordered_owners %}
+      <form id="server_owner_{{ owner.id }}_form"
+            method="post"
+            action="{% url 'customer-owner' pk=customer.pk %}">
+        <div class="user-slot">
+          <div class="user-slot-content">
+            <p>{{ owner.last_name }}</p>
+            <t>{{ owner.email }}</t>
+          </div>
+          {% if owner == user %}
+            <div class="user-img">
+              <img src="{% static "img/Shield.png" %}"
+                   title="{% translate "You can not remove yourself" %}"
+                   alt="{% translate "Protected owner" %}">
+            </div>
+          {% else %}
+            {% csrf_token %}
+            <button type="submit" class="user-img">
+              <img src="{% static "img/delete.png" %}" alt="{% translate "Remove owner" %}">
+            </button>
+          {% endif %}
+        </div>
+        {% csrf_token %}
+        {% if owner != user %}
+          <input type="hidden" name="owner" value="{{ owner.pk }}" />
+          <input type="hidden" name="remove" value="{% translate "Remove" %}" />
+        {% endif %}
+      </form>
+    {% endfor %}
+    {% for invitation in customer.pending_owner_invitations %}
+      <form method="post" action="{% url 'customer-owner' pk=customer.pk %}">
+        {% csrf_token %}
+        <div class="user-slot">
+          <div class="user-slot-content">
+            <p>{% translate "Pending invitation" %}</p>
+            <t>{{ invitation.email }}</t>
+          </div>
+          <button type="submit" class="user-img">
+            <img src="{% static "img/delete.png" %}" alt="{% translate "Revoke invitation" %}">
+          </button>
+        </div>
+        <input type="hidden" name="invitation" value="{{ invitation.pk }}" />
+        <input type="hidden" name="revoke" value="1" />
+      </form>
+    {% endfor %}
     <form method="post" action="{% url 'customer-owner' pk=customer.pk %}">
       {% csrf_token %}
-      <div class="user-slot">
-        <div class="user-slot-content">
-          <p>{% translate "Pending invitation" %}</p>
-          <t>{{ invitation.email }}</t>
-        </div>
-        <button type="submit" class="user-img">
-          <img src="{% static "img/delete.png" %}" alt="{% translate "Revoke invitation" %}">
-        </button>
-      </div>
-      <input type="hidden" name="invitation" value="{{ invitation.pk }}" />
-      <input type="hidden" name="revoke" value="1" />
+      <input type="email"
+             class="grey-input"
+             placeholder="{% translate "E-mail" %}"
+             name="email"
+             aria-label="{% translate "E-mail" %}" />
+      <input type="submit"
+             class="button button-med-120 inline border rev"
+             value="{% translate "Invite owner" %}" />
     </form>
-  {% endfor %}
-  <form method="post" action="{% url 'customer-owner' pk=customer.pk %}">
-    {% csrf_token %}
-    <input type="email"
-           class="grey-input"
-           placeholder="{% translate "E-mail" %}"
-           name="email"
-           aria-label="{% translate "E-mail" %}" />
-    <input type="submit"
-           class="button button-med-120 inline border rev"
-           value="{% translate "Invite owner" %}" />
-  </form>
+  {% endif %}
 </div>
 <div class="clear"></div>

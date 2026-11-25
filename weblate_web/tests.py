@@ -2085,6 +2085,10 @@ class HostedSubscriptionTest(FakturaceTestCase):
         self.customer.owners.add(self.owner)
         self.service = Service.objects.create(customer=self.customer, hosted_billing=42)
 
+    def use_website_billing(self) -> None:
+        self.service.hosted_billing = None
+        self.service.save(update_fields=["hosted_billing"])
+
     def pay(
         self,
         package_name: str,
@@ -2208,6 +2212,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
                 self.assertEqual(service.subscription_set.count(), 1)
 
     def test_renewal_upgrade_downgrade_and_cancellation(self) -> None:
+        self.use_website_billing()
         first = self.pay("hosted:10k-m")
         subscription = self.service.subscription_set.get()
         first_expiry = subscription.expires
@@ -2389,6 +2394,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
     @override("en")
     @responses.activate
     def test_terminated_renewal_does_not_reuse_stale_invoice(self) -> None:
+        self.use_website_billing()
         cnb_mock_rates()
         self.pay("hosted:10k-m")
         subscription = self.service.subscription_set.get()
@@ -2433,6 +2439,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
     @override("en")
     @responses.activate
     def test_legacy_month_end_renewal_invoice_is_reused(self) -> None:
+        self.use_website_billing()
         cnb_mock_rates()
         self.pay("hosted:10k-m")
         subscription = self.service.subscription_set.get()
@@ -2521,6 +2528,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
         )
 
     def test_yearly_switch_applies_only_after_payment(self) -> None:
+        self.use_website_billing()
         self.pay("hosted:10k-m")
         subscription = self.service.subscription_set.get()
         initial_expiry = subscription.expires
@@ -2548,6 +2556,7 @@ class HostedSubscriptionTest(FakturaceTestCase):
     @override("en")
     @responses.activate
     def test_accepted_yearly_switch_blocks_duplicate_renewal(self) -> None:
+        self.use_website_billing()
         cnb_mock_rates()
         self.pay("hosted:10k-m")
         subscription = self.service.subscription_set.get()
@@ -4212,110 +4221,6 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         self.assertEqual(response.status_code, 403)
         service.refresh_from_db()
         self.assertEqual(service.secret, original_service_secret)
-
-    def test_hosted(self) -> None:
-        Package.objects.create(name="community", verbose="Community support", price=0)
-        Package.objects.create(name="shared:test", verbose="Test package", price=0)
-        response = self.client.post(
-            "/api/hosted/",
-            {
-                "payload": dumps(
-                    {
-                        "billing": 42,
-                        "package": "shared:test",
-                        "projects": 1,
-                        "languages": 1,
-                        "source_strings": 1,
-                        "words": 10,
-                        "components": 1,
-                        "users": [666],
-                    },
-                    key=settings.PAYMENT_SECRET,
-                    salt="weblate.hosted",
-                )
-            },
-            headers={"user-agent": "Weblate/2026.10.dev0"},
-        )
-        self.assertEqual(response.status_code, 200)
-        report = Report.objects.get()
-        self.assertEqual(report.version, "2026.10.dev0")
-        self.assertEqual(report.service.site_version, "2026.10.dev0")
-
-    def test_hosted_links_payments_idempotently(self) -> None:
-        Package.objects.create(name="community", verbose="Community support", price=0)
-        package = Package.objects.create(
-            name="shared:test", verbose="Test package", price=42
-        )
-        customer = Customer.objects.create(
-            user_id=-1,
-            origin=PAYMENTS_ORIGIN,
-            name=TEST_CUSTOMER["name"],
-            address=TEST_CUSTOMER["address"],
-            city=TEST_CUSTOMER["city"],
-            postcode=TEST_CUSTOMER["postcode"],
-            country=TEST_CUSTOMER["country"],
-        )
-        initial_payment = Payment.objects.create(
-            customer=customer,
-            amount=100,
-            description="Initial hosted payment",
-            extra={"billing": 42},
-            end=date(2025, 1, 1),
-        )
-        payload = {
-            "billing": 42,
-            "package": "shared:test",
-            "projects": 1,
-            "languages": 1,
-            "source_strings": 1,
-            "words": 10,
-            "components": 1,
-            "users": ["hosted-user"],
-        }
-
-        response = self.client.post(
-            "/api/hosted/",
-            {
-                "payload": dumps(
-                    payload,
-                    key=settings.PAYMENT_SECRET,
-                    salt="weblate.hosted",
-                )
-            },
-            headers={"user-agent": "Weblate/1.2.3"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        current_payment = Payment.objects.create(
-            customer=customer,
-            amount=200,
-            description="Current hosted payment",
-            extra={"billing": 42},
-            end=date(2026, 1, 1),
-        )
-
-        for _unused in range(2):
-            response = self.client.post(
-                "/api/hosted/",
-                {
-                    "payload": dumps(
-                        payload,
-                        key=settings.PAYMENT_SECRET,
-                        salt="weblate.hosted",
-                    )
-                },
-                headers={"user-agent": "Weblate/1.2.3"},
-            )
-            self.assertEqual(response.status_code, 200)
-
-        subscription = Service.objects.get(hosted_billing=42).subscription_set.get()
-        self.assertEqual(subscription.package, package)
-        self.assertEqual(subscription.payment, current_payment)
-        self.assertEqual(timezone.localdate(subscription.expires), current_payment.end)
-        self.assertEqual(
-            set(subscription.past_payments.values_list("pk", flat=True)),
-            {initial_payment.pk},
-        )
 
     def test_hosted_invalid(self) -> None:
         response = self.client.post("/api/hosted/", {"payload": dumps({}, key="dummy")})
@@ -6230,6 +6135,20 @@ class ExpiryTest(FakturaceTestCase):
         self.assert_notifications("Your payment on weblate.org")
         RecurringPaymentsCommand.handle_subscriptions()
         self.assert_notifications()
+
+    def test_hosted_linked_subscription_skips_website_renewal(self) -> None:
+        service = self.create_service(years=0, days=-2)
+        service.hosted_billing = 42
+        service.save(update_fields=["hosted_billing"])
+        subscription = service.subscription_set.get()
+        self.assertTrue(subscription.payment_obj.recurring)
+        payments_before = Payment.objects.count()
+
+        RecurringPaymentsCommand.notify_expiry(force_summary=True)
+        RecurringPaymentsCommand.handle_subscriptions()
+
+        self.assert_notifications()
+        self.assertEqual(Payment.objects.count(), payments_before)
 
     def test_expiring_subscription_notify_user(self) -> None:
         self.create_service(years=0, days=7, recurring="")

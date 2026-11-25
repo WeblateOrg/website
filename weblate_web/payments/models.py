@@ -536,6 +536,12 @@ class Customer(models.Model):
             expires_at__gt=timezone.now(),
         ).order_by("email", "created")
 
+    @cached_property
+    def hosted_workspaces(self):
+        return list(
+            self.service_set.customer_services().filter(hosted_billing__gt=0).order()
+        )
+
     @property
     def ordered_owners(self) -> models.QuerySet[User, User]:
         return self.owners.order_by("email", "username", "pk")
