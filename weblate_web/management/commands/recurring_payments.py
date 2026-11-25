@@ -171,8 +171,10 @@ class Command(BaseCommand):
         attempt = rejected_payments.count() + 1
         if attempt > Payment.RECURRING_ATTEMPT_LIMIT:
             if last_failure := rejected_payments.order_by("-created").first():
-                payment.disable_recurring_after_failure(
-                    last_failure, reason=Payment.RECURRING_ATTEMPTS_EXHAUSTED
+                payment.disable_recurring(
+                    last_failure,
+                    reason=Payment.RECURRING_ATTEMPTS_EXHAUSTED,
+                    failed=True,
                 )
             return
 

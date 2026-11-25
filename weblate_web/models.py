@@ -334,7 +334,9 @@ def process_donation(payment: Payment) -> Service:
             payment=payment.repeat,
         )
         payment.start = subscription.expires
-        subscription.expires += get_period_delta(payment.repeat.recurring)
+        subscription.expires += get_period_delta(
+            payment.repeat.recurring_period_for_settlement
+        )
         payment.end = subscription.expires
         subscription.enabled = True
         subscription.save()
@@ -416,7 +418,9 @@ def process_repeated_payment(payment: Payment, repeated: Payment) -> Subscriptio
     subscription = Subscription.objects.get(payment=repeated)
     start = get_subscription_start(subscription, payment)
     payment.start = start
-    subscription.expires = start + get_period_delta(repeated.recurring)
+    subscription.expires = start + get_period_delta(
+        repeated.recurring_period_for_settlement
+    )
     payment.end = subscription.expires
     subscription.enabled = True
     subscription.save()

@@ -6032,6 +6032,81 @@ class ExpiryTest(FakturaceTestCase):
             "Your expired payment on weblate.org",
         )
 
+    @override_settings(**THEPAY2_MOCK_SETTINGS)
+    @responses.activate
+    def test_paid_thepay_renewal_applies_term_when_authorization_ends(self) -> None:
+        for is_donation in (True, False):
+            with self.subTest(is_donation=is_donation):
+                if is_donation:
+                    service = self.create_donation(years=0, days=-2)
+                    run_renewals = RecurringPaymentsCommand.handle_donations
+                else:
+                    service = self.create_service(years=0, days=-2)
+                    run_renewals = RecurringPaymentsCommand.handle_subscriptions
+                subscription = service.subscription_set.get()
+                expires = subscription.expires
+                parent = subscription.payment_obj
+                parent.backend = "thepay2-card"
+                parent.save(update_fields=["backend"])
+                charge = responses.post(
+                    f"https://demo.api.thepay.cz/v2/projects/42/payments/{parent.pk}/savedauthorization",
+                    status=200 if is_donation else 202,
+                    json={
+                        "state": "paid" if is_donation else "waiting_for_confirmation",
+                        "parent": {"recurring_payments_available": False},
+                    },
+                )
+
+                run_renewals()
+
+                child = Payment.objects.get(repeat=parent)
+                if not is_donation:
+                    self.assertEqual(child.state, Payment.PENDING)
+                    self.assert_notifications()
+                    parent.refresh_from_db()
+                    self.assertEqual(parent.recurring, "")
+                    responses.get(
+                        f"https://demo.api.thepay.cz/v1/projects/42/payments/{child.pk}",
+                        json={
+                            "state": "paid",
+                            "paid_amount": child.vat_amount_minor,
+                            "currency": child.get_currency_display(),
+                        },
+                    )
+                    self.client.get(child.get_complete_url())
+                    child.refresh_from_db()
+                    self.assertEqual(child.state, Payment.ACCEPTED)
+                    process_payment(child)
+                    child.refresh_from_db()
+                self.assertEqual(child.state, Payment.PROCESSED)
+                self.assertFalse(child.has_unavailable_recurring_authorization)
+                parent.refresh_from_db()
+                self.assertEqual(parent.recurring, "")
+                subscription.refresh_from_db()
+                self.assertEqual(subscription.expires, expires + relativedelta(years=1))
+                self.assertTrue(subscription.enabled)
+                self.assert_notifications("Your payment on weblate.org")
+                interaction = parent.customer.interaction_set.get(
+                    details__reason=Payment.RECURRING_AUTHORIZATION_FAILURE
+                )
+                self.assertEqual(interaction.details["child_payment_id"], str(child.pk))
+
+                self.client.get(child.get_complete_url())
+                subscription.refresh_from_db()
+                self.assertEqual(subscription.expires, expires + relativedelta(years=1))
+                with patch(
+                    "weblate_web.management.commands.recurring_payments.timezone.now",
+                    return_value=subscription.expires,
+                ):
+                    run_renewals()
+                self.assertEqual(charge.call_count, 1)
+                self.assertEqual(Payment.objects.filter(repeat=parent).count(), 1)
+                self.assertNotIn(
+                    "Your payment on weblate.org failed",
+                    [m.subject for m in mail.outbox],
+                )
+                mail.outbox.clear()
+
     def test_expiring_donate_notify_user(self) -> None:
         self.create_donation(years=0, days=7, recurring="")
         RecurringPaymentsCommand.notify_expiry(force_summary=True)

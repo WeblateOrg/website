@@ -71,6 +71,17 @@ if TYPE_CHECKING:
 SHORT_NAME_DISCARD = re.compile(r"[^a-zA-Z0-9_\s-]")
 SHORT_NAME_SPACE = re.compile(r"[\s_-]+")
 SHORT_NAME_SPLIT = re.compile(r"[,(-]")
+THEPAY_REJECTION_REASONS = {
+    "expired": gettext_lazy("The payment expired."),
+    "preauth_cancelled": gettext_lazy("The payment preauthorization was cancelled."),
+    "preauth_expired": gettext_lazy("The payment preauthorization expired."),
+    "Payment error": gettext_lazy("Payment error"),
+    "Payment cancelled": gettext_lazy("Payment cancelled"),
+    "Recurring payment is no longer available": gettext_lazy(
+        "Recurring payment is no longer available"
+    ),
+    "Recurring payment failed": gettext_lazy("Recurring payment failed"),
+}
 
 EU_VAT_RATES = {
     "BE": 21,
@@ -1181,7 +1192,10 @@ class Payment(models.Model):
             return gettext(
                 "The VAT ID could not be validated, so the recurring payment was not attempted."
             )
-        return str(self.details.get("reject_reason") or "")
+        reason = str(self.details.get("reject_reason") or "")
+        if self.backend.startswith("thepay2-"):
+            return str(THEPAY_REJECTION_REASONS.get(reason, reason))
+        return reason
 
     @property
     def has_unavailable_recurring_authorization(self) -> bool:
@@ -1195,18 +1209,19 @@ class Payment(models.Model):
         )
 
     @transaction.atomic
-    def disable_recurring_after_failure(
-        self, failed_payment: Payment, *, reason: str
-    ) -> None:
+    def disable_recurring(self, child: Payment, *, reason: str, failed: bool) -> None:
         from weblate_web.crm.models import Interaction  # ruff:ignore[import-outside-top-level]
 
-        if (
-            not Payment.objects.filter(pk=self.pk)
-            .exclude(recurring="")
-            .update(recurring="")
-        ):
+        recurring, details = (
+            Payment.objects.select_for_update()
+            .values_list("recurring", "details")
+            .get(pk=self.pk)
+        )
+        if not recurring:
             return
+        self.details = {**details, "disabled_recurring_period": recurring}
         self.recurring = ""
+        self.save(update_fields=["recurring", "details"])
         if reason == self.RECURRING_AUTHORIZATION_FAILURE:
             content = "The payment provider reported that the saved authorization is no longer available."
         else:
@@ -1218,9 +1233,13 @@ class Payment(models.Model):
             details={
                 "reason": reason,
                 "payment_id": str(self.pk),
-                "failed_payment_id": str(failed_payment.pk),
+                "failed_payment_id" if failed else "child_payment_id": str(child.pk),
             },
         )
+
+    @property
+    def recurring_period_for_settlement(self) -> str:
+        return self.recurring or str(self.details.get("disabled_recurring_period", ""))
 
     @property
     def is_under_settlement_review(self) -> bool:
