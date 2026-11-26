@@ -1616,6 +1616,59 @@ class CustomerOwnerAccessTest(UserTestCase):
         self.assertIn(new_owner, self.customer.owners.all())
         self.assertIn(new_owner.email, self.customer.get_notify_emails())
 
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend")
+    def test_invitation_preserves_address_through_smtp_and_acceptance(self) -> None:
+        submitted = "Invitee@straße.example"
+        envelope = "Invitee@xn--strae-oqa.example"
+        recipient = User.objects.create_user(username="recipient", email=envelope)
+        with patch(
+            "django.core.mail.backends.smtp.EmailBackend.connection_class",
+            new_callable=PropertyMock,
+        ) as connection_class:
+            response = self.client.post(self.url, {"email": submitted})
+        self.assertRedirects(response, self.user_url)
+        smtp = connection_class.return_value.return_value
+        smtp.sendmail.assert_called_once()
+        self.assertEqual(smtp.sendmail.call_args.args[1], [envelope])
+        invitation = self.customer.owner_invitations.get()
+        self.assertEqual(invitation.email, submitted)
+
+        accept_url = reverse(
+            "customer-owner-invitation",
+            kwargs={"token": get_invitation_token(invitation)},
+        )
+        for username, email in (
+            ("different-domain", "Invitee@strasse.example"),
+            ("different-local", "invitee@xn--strae-oqa.example"),
+        ):
+            with self.subTest(email=email):
+                other = User.objects.create_user(username=username, email=email)
+                self.client.force_login(other)
+                self.assertRedirects(self.client.get(accept_url), self.user_url)
+                self.assertRedirects(self.client.post(accept_url), self.user_url)
+                self.assertNotIn(other, self.customer.owners.all())
+
+        self.client.force_login(recipient)
+        self.assertEqual(self.client.get(accept_url).status_code, 200)
+        self.assertRedirects(self.client.post(accept_url), self.user_url)
+        invitation.refresh_from_db()
+        self.assertEqual(invitation.acted_by, recipient)
+        self.assertIn(recipient, self.customer.owners.all())
+
+    def test_invitation_rejects_unsupported_addresses(self) -> None:
+        for address in (
+            "user@K.example",
+            "user@xn--a.example",
+            "uſer@example.com",
+        ):
+            with self.subTest(address=address):
+                response = self.client.post(self.url, {"email": address}, follow=True)
+                self.assertContains(
+                    response, "Enter an e-mail address supported for invitations."
+                )
+        self.assertFalse(self.customer.owner_invitations.exists())
+        self.assertEqual(len(mail.outbox), 0)
+
     def test_invitation_response_does_not_disclose_account_existence(self) -> None:
         User.objects.create_user(username="existing", email="existing@example.com")
 
@@ -1642,7 +1695,7 @@ class CustomerOwnerAccessTest(UserTestCase):
 
         with patch("weblate_web.payments.invitations.timezone.now") as now:
             now.return_value = original_expiry - timedelta(days=6)
-            self.client.post(self.url, {"email": "INVITEE@example.com"})
+            self.client.post(self.url, {"email": "invitee@EXAMPLE.COM"})
 
         invitation.refresh_from_db()
         self.assertEqual(self.customer.owner_invitations.count(), 1)
@@ -1727,7 +1780,8 @@ class CustomerOwnerAccessTest(UserTestCase):
         invitee = User.objects.create_user(
             username="invitee", email="duplicate@example.com"
         )
-        User.objects.create_user(username="duplicate", email="DUPLICATE@example.com")
+        duplicate = User.objects.create_user(username="duplicate")
+        User.objects.filter(pk=duplicate.pk).update(email="duplicate@EXAMPLE.COM")
         invitation = CustomerOwnerInvitation.objects.create(
             customer=self.customer,
             email="duplicate@example.com",

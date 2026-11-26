@@ -118,7 +118,7 @@ from weblate_web.payments.invitations import (
     accept_invitation,
     check_invitation_rate_limit,
     create_invitation,
-    normalize_email,
+    invitation_matches_user,
     resolve_invitation,
     revoke_invitation,
 )
@@ -1308,7 +1308,7 @@ def customer_owner_invitation(request, token):
         or bool(invitation.customer.hosted_workspaces)
         or invitation.status != CustomerOwnerInvitation.Status.PENDING
         or invitation.expires_at <= timezone.now()
-        or invitation.email != normalize_email(request.user.email)
+        or not invitation_matches_user(invitation, request.user)
     ):
         messages.error(request, gettext("This customer owner invitation is invalid."))
         return redirect("user")
