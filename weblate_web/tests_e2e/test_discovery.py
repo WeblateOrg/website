@@ -100,18 +100,14 @@ class TestDiscoveryRegistration:
         assert response.ok, f"Discovery page returned status {response.status}"
         capture(page, "registration-form")
 
-        page.fill('input[name="site_url"]', "https://evil.example")
-        page.fill('textarea[name="discover_text"]', "Discover evil")
-        page.click('input[type="submit"]')
-        page.wait_for_load_state("networkidle")
+        page.fill('input[name="site_url"]', "https://instance.example/translations")
+        page.get_by_role("button", name="Check server URL").click()
 
-        assert "/user/" in page.url, f"Not on user page. URL: {page.url}"
-        assert "evil.example" not in page.url
-        assert "activation=" not in page.url
-        assert not page.locator("text=Server Error").is_visible()
-        assert page.get_by_text("Activation token", exact=True).is_visible()
-        assert page.locator(
-            'input[value="e2e-fixed-service-secret-token-0123456789abcdef0123456789abcd"]'
-        ).is_visible()
-        assert page.locator('a[href*="activation="]').count() == 0
-        capture(page, "activation-token")
+        assert "/subscription/discovery/" in page.url
+        link = page.get_by_role("link", name="Continue to your Weblate")
+        assert link.is_visible()
+        assert (
+            link.get_attribute("href")
+            == "https://instance.example/translations/manage/"
+        )
+        capture(page, "instance-handoff")

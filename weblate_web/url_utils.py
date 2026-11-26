@@ -92,8 +92,8 @@ def normalize_site_url(
         or not parts.netloc
         or not parts.hostname
     )
-    has_delimiter = "?" in url or "#" in url
-    has_extra_parts = any((parts.username, parts.password, parts.query, parts.fragment))
+    has_delimiter = any(delimiter in url for delimiter in ("?", "#", "\\"))
+    has_extra_parts = parts.username is not None or parts.password is not None
     if (
         invalid_url
         or has_delimiter
@@ -104,3 +104,22 @@ def normalize_site_url(
         raise ValidationError(str(message))
 
     return normalize_site_url_for_lock(url)
+
+
+def get_discovery_project_url(site_url: str, project_path: str) -> str:
+    if (
+        not isinstance(project_path, str)
+        or not project_path.startswith("/")
+        or project_path.startswith("//")
+        or "\\" in project_path
+        or any(ord(char) < 32 or ord(char) == 127 for char in project_path)
+    ):
+        return ""
+    try:
+        site = urlsplit(normalize_site_url(site_url))
+        project = urlsplit(project_path)
+    except (ValidationError, ValueError):
+        return ""
+    return urlunsplit(
+        (site.scheme, site.netloc, project.path, project.query, project.fragment)
+    )

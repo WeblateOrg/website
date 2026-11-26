@@ -12,39 +12,26 @@
       <div class="wrap">
         <h1 class="section-title min-m">{% translate "Add Discover Weblate listing" %}</h1>
         <div class="payment-form">
-          <div class="form-line">
-            <div class="line-left">{% translate "Discover Weblate" %}</div>
-            <div class="line-right">
-              <p>{% translate "Weblate 4.5.2 or newer is needed to participate in Discover Weblate." %}</p>
-              <p class="text-muted">
-                {% blocktranslate with link_start='<a href="https://docs.weblate.org/en/latest/admin/support.html#discover-weblate" class="link">' link_end='</a>' %}Let other users discover your Weblate. Read about how it works in the {{ link_start }}documentation{{ link_end }}.{% endblocktranslate %}
-              </p>
-            </div>
-            <div class="clear"></div>
-          </div>
-          <form method="post" enctype="multipart/form-data">
+          <p>{% translate "Use the latest Weblate release and sign in to your instance as an administrator to enable discovery." %}</p>
+          {% if management_url %}
+            <p>
+              {% blocktranslate with destination=management_url %}You will continue to {{ destination }}.{% endblocktranslate %}
+            </p>
+            <a class="button inline black" href="{{ management_url }}">{% translate "Continue to your Weblate" %}</a>
+          {% endif %}
+          <form method="post">
             {% csrf_token %}
-            <input type="hidden" name="payment" value="{{ payment.pk }}">
-            {% for field in form %}
-              <div class="form-line">
-                <div class="line-left">{{ field.label }}</div>
-                <div class="line-right">
-                  {{ field.errors }}
-                  {{ field }}
-                  {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
-                </div>
-                <div class="clear"></div>
-              </div>
-            {% endfor %}
             <div class="form-line">
-              <div class="line-left">{% translate "Next step" %}</div>
+              <div class="line-left">{{ form.site_url.label_tag }}</div>
               <div class="line-right">
-                <p class="help">{% translate "Activate the listing from your Weblate management page using the activation token shown after saving." %}</p>
+                {{ form.site_url.errors }}
+                {{ form.site_url }}
               </div>
               <div class="clear"></div>
             </div>
-            <div class="payment-pick"></div>
-            <input type="submit" class="button center make-payment" value="{% translate "Save" %}" />
+            <input type="submit"
+                   class="button center make-payment"
+                   value="{% translate "Check server URL" %}" />
           </form>
         </div>
       </div>

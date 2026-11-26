@@ -159,3 +159,22 @@ and permissions remain unchanged. Verify these after deployment and after hosted
 username/email changes and account synchronization. Also check new-user login,
 inactive users, logout, automatic forwarding, and the manual fallback. Investigate
 association conflicts rather than deleting or reassigning identities.
+
+Discover verification worker
+----------------------------
+
+Deploy the Weblate release with the discovery proof endpoint before enabling
+the website publication gate. Run the website migration with the old
+application processes stopped so that it records the URLs of the existing
+public listings before the updated application accepts reports.
+
+Schedule ``uv run ./manage.py verify_discovery`` every minute. Run it in a
+separate worker configured to query trusted DNS servers directly and with
+HTTPS limited to public addresses. Deny routes to private, link-local,
+metadata, and other internal networks at the network boundary. The worker uses
+the system TLS trust store and processes up to 25 due reports per run. DNS and
+HTTPS share a five-second deadline per report. Skip a scheduled run if the
+previous batch is still processing. Reports beyond the batch limit wait for the
+next run.
+Failed checks retry every five minutes until the report is one hour old. The
+worker prints a summary after each batch.

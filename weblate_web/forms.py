@@ -38,7 +38,11 @@ from weblate_web.models import (
 )
 from weblate_web.payments.backends import list_backends
 from weblate_web.payments.models import RECURRENCE_CHOICES
-from weblate_web.url_utils import SITE_URL_MAX_LENGTH, normalize_site_url
+from weblate_web.url_utils import (
+    SITE_URL_MAX_LENGTH,
+    get_discovery_project_url,
+    normalize_site_url,
+)
 
 
 class NewSubscriptionForm(forms.Form):
@@ -111,6 +115,8 @@ class SupportReportForm(forms.ModelForm):
     words = forms.IntegerField(required=False)
     strings = forms.IntegerField(required=False)
     activity = forms.JSONField(required=False)
+    public_projects = forms.JSONField(required=False)
+    discovery_verification = forms.BooleanField(required=False)
 
     class Meta:
         model = Report
@@ -166,6 +172,25 @@ class SupportReportForm(forms.ModelForm):
                 raise ValidationError(error)
             result[month] = item["changes"]
         return dict(sorted(result.items()))
+
+    def clean_public_projects(self) -> list[dict[str, str]] | None:
+        projects = self.cleaned_data["public_projects"]
+        if projects is None:
+            return None
+        if not isinstance(projects, list):
+            raise ValidationError(gettext("Invalid public project data."))
+        site_url = self.cleaned_data.get("site_url", "")
+        return [
+            project
+            for project in projects
+            if isinstance(project, dict)
+            and set(project) == {"name", "web", "url"}
+            and all(
+                isinstance(project[field], str) and len(project[field]) <= max_length
+                for field, max_length in (("name", 60), ("web", 200), ("url", 120))
+            )
+            and get_discovery_project_url(site_url, project["url"])
+        ]
 
     def clean(self):
         cleaned_data = super().clean()
@@ -237,7 +262,21 @@ class EditDiscoveryForm(forms.ModelForm):
         widgets = {"discover_text": forms.Textarea}
 
 
-class AddDiscoveryForm(forms.ModelForm):
+class DiscoveryStartForm(forms.Form):
+    site_url = forms.CharField(
+        label=gettext_lazy("Server URL"), max_length=SITE_URL_MAX_LENGTH
+    )
+
+    def clean_site_url(self) -> str:
+        site_url = normalize_site_url(self.cleaned_data["site_url"])
+        if urlsplit(site_url).scheme != "https":
+            raise ValidationError(gettext("Server URL must use HTTPS."))
+        return site_url
+
+
+class DiscoveryRegistrationForm(forms.ModelForm):
+    state = forms.CharField(max_length=400, widget=forms.HiddenInput)
+
     class Meta:
         model = Service
         fields = ("site_url", "discover_text", "discover_image")
@@ -247,20 +286,6 @@ class AddDiscoveryForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["site_url"].required = True
         self.fields["discover_text"].required = True
-
-
-DISCOVERY_CALLBACK_PATH = "/manage/discovery/callback/"
-
-
-def get_discovery_callback_url(site_url: str) -> str:
-    return f"{site_url}{DISCOVERY_CALLBACK_PATH}"
-
-
-class DiscoveryRegistrationForm(AddDiscoveryForm):
-    state = forms.CharField(max_length=400, widget=forms.HiddenInput)
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
         self.fields["site_url"].widget.attrs["readonly"] = "readonly"
 
     @property
@@ -302,6 +327,10 @@ class DiscoveryRegistrationForm(AddDiscoveryForm):
             raise ValidationError(gettext("Server URL must use HTTPS."))
 
         return cleaned_data
+
+
+def get_discovery_callback_url(site_url: str) -> str:
+    return f"{site_url}/manage/discovery/callback/"
 
 
 class AgreementForm(forms.Form):

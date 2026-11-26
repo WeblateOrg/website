@@ -19,7 +19,6 @@
 
 from __future__ import annotations
 
-import json
 import random
 import re
 from datetime import UTC, datetime, timedelta
@@ -56,15 +55,15 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.dates import ArchiveIndexView
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView
 
 from weblate_web.activity import record_activity
 from weblate_web.categories import ServiceCategory
 from weblate_web.crm.models import Interaction
 from weblate_web.forms import (
-    AddDiscoveryForm,
     AgreementForm,
     DiscoveryRegistrationForm,
+    DiscoveryStartForm,
     DonateForm,
     EditDiscoveryForm,
     EditImageForm,
@@ -88,6 +87,7 @@ from weblate_web.models import (
     REWARD_LEVELS,
     TOPIC_DICT,
     DiscoveryActivation,
+    DiscoveryVerification,
     Package,
     Post,
     Project,
@@ -97,7 +97,6 @@ from weblate_web.models import (
     UnprocessablePaymentError,
     get_donation_package_verbose,
     get_donation_reward_package_names,
-    is_pending_discovery_activation,
     normalize_site_url_for_lock,
     process_donation,
     process_subscription,
@@ -224,11 +223,6 @@ def get_customer(
     return customer
 
 
-def prepare_service_for_render(service: Service) -> Service:
-    service.is_pending_discovery_activation = is_pending_discovery_activation(service)
-    return service
-
-
 def get_api_signing_key() -> str:
     key = settings.PAYMENT_SECRET
     if not isinstance(key, str) or not key.strip():
@@ -325,8 +319,11 @@ def api_hosted(request: HttpRequest) -> JsonResponse:
 
 @require_POST
 @csrf_exempt
+@transaction.atomic
 def api_support(request: HttpRequest) -> JsonResponse:
-    service = get_object_or_404(Service, secret=request.POST.get("secret", ""))
+    service = get_object_or_404(
+        Service.objects.select_for_update(), secret=request.POST.get("secret", "")
+    )
     version = extract_weblate_version(request)
     form = SupportReportForm(request.POST)
     if not form.is_valid():
@@ -343,25 +340,47 @@ def api_support(request: HttpRequest) -> JsonResponse:
     service.update_status()
     report.save()
     is_valid_site_url = report.is_valid_site_url()
+    if is_valid_site_url:
+        if (
+            report.discoverable
+            and not service.discoverable
+            and form.cleaned_data["discovery_verification"]
+            and report.site_url.startswith("https://")
+            and not service.is_donation
+        ):
+            DiscoveryVerification.objects.update_or_create(
+                service=service, defaults={"report": report}
+            )
+        else:
+            DiscoveryVerification.objects.filter(service=service).delete()
     if is_valid_site_url and form.cleaned_data["activity"]:
         record_activity(report, form.cleaned_data["activity"])
     service.create_backup()
-    if is_valid_site_url and "public_projects" in request.POST:
-        current_projects = set(service.project_set.values_list("name", "url", "web"))
-        for project in json.loads(request.POST["public_projects"]):
-            # Skip unexpected data
-            if set(project) != {"name", "web", "url"}:
-                continue
-            item = (project["name"], project["url"], project["web"])
-            # Non-changed project
-            if item in current_projects:
-                current_projects.remove(item)
-                continue
-            # New project
-            service.project_set.create(**project)
-        # Remove stale projects
-        for name, url, web in current_projects:
-            service.project_set.filter(name=name, url=url, web=web).delete()
+    if (
+        is_valid_site_url
+        and (projects := form.cleaned_data["public_projects"]) is not None
+    ):
+        remaining_projects = {
+            (project["name"], project["url"], project["web"]): project
+            for project in projects
+        }
+        existing_projects = service.project_set.order_by("pk").values_list(
+            "pk", "name", "url", "web"
+        )
+        stale_projects = [
+            pk
+            for pk, name, url, web in existing_projects
+            if remaining_projects.pop((name, url, web), None) is None
+        ]
+        if stale_projects:
+            service.project_set.filter(pk__in=stale_projects).delete()
+        if remaining_projects:
+            service.project_set.bulk_create(
+                [
+                    Project(service=service, **project)
+                    for project in remaining_projects.values()
+                ]
+            )
 
     return JsonResponse(
         data=get_support_payload(
@@ -1038,35 +1057,16 @@ class EditDiscoveryView(UpdateView):
         return super().form_valid(form)
 
 
-@method_decorator(login_required, name="dispatch")
-class AddDiscoveryView(CreateView):
+class AddDiscoveryView(FormView):
     template_name = "subscription/discovery-add.html"
-    success_url = "/user/"
-    form_class = AddDiscoveryForm
-    request: AuthenticatedHttpRequest
+    form_class = DiscoveryStartForm
 
     def form_valid(self, form):
-        """If the form is valid, save the associated model."""
-        instance = form.instance
-        instance.customer = get_customer(self.request, instance)
-        instance.site_url = instance.site_url.rstrip("/")
-        instance.site_url_lock = True
-        discover_url = instance.site_url
-        discover_text = form.cleaned_data.get("discover_text", "N/A")
-        mail_admins(
-            "Weblate: discovery registered",
-            f"Service link: {discover_url}\nNew text: {discover_text}\n",
+        return self.render_to_response(
+            self.get_context_data(
+                form=form, management_url=f"{form.cleaned_data['site_url']}/manage/"
+            )
         )
-        result = super().form_valid(form)
-        instance.customer.owners.add(self.request.user)
-        messages.info(
-            self.request,
-            gettext(
-                "Activate the listing from your Weblate management page using the "
-                "activation token shown below."
-            ),
-        )
-        return result
 
 
 @method_decorator(login_required, name="dispatch")
@@ -1332,7 +1332,6 @@ def customer_owner_invitation(request, token):
 @user_passes_test(lambda u: u.is_superuser)
 def subscription_view(request, pk):
     service = get_object_or_404(Service, pk=pk)
-    prepare_service_for_render(service)
     return render(request, "service.html", {"service": service})
 
 
@@ -1591,7 +1590,8 @@ class DiscoverView(TemplateView):
         )
         discoverable_services = (
             Service.objects.customer_services()
-            .filter(discoverable=True)
+            .filter(discoverable=True, discovery_verified_url=F("site_url"))
+            .exclude(discovery_verified_url="")
             .annotate(
                 monthly_changes=Subquery(
                     ServiceActivity.objects.filter(
@@ -1660,12 +1660,9 @@ class UserView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data["user_services"] = [
-            prepare_service_for_render(service)
-            for service in Service.objects.customer_services().filter(
-                customer__owners=self.request.user,
-            )
-        ]
+        data["user_services"] = Service.objects.customer_services().filter(
+            customer__owners=self.request.user,
+        )
         invoice_payments = Payment.objects.filter(
             Q(draft_invoice__isnull=False)
             | Q(paid_invoice__isnull=False)

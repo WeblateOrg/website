@@ -88,7 +88,6 @@ from .models import (
     add_subscription_past_payments,
     get_donation_package,
     get_donation_reward_package_name,
-    is_pending_discovery_activation,
     normalize_site_url_for_lock,
     process_payment,
     sync_packages,
@@ -4760,22 +4759,22 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
     def test_support_discovery(self) -> None:
         service = self.perform_support()
-        service = Service.objects.get(pk=service.pk)
+        site_url = "https://example.com"
+        self._post_support_report(service, site_url)
+        service.refresh_from_db()
         self.assertFalse(service.discoverable)
-        self.client.post(
-            "/api/support/",
-            {"secret": service.secret, "discoverable": "1"},
-            headers={"user-agent": "Weblate/1.2.3"},
-        )
-        service = Service.objects.get(pk=service.pk)
+
+        # Previously listed installations can continue using older clients.
+        service.discovery_verified_url = site_url
+        service.save(update_fields=["discovery_verified_url"])
+        self._post_support_report(service, site_url)
+        service.refresh_from_db()
         self.assertTrue(service.discoverable)
-        self.client.post(
-            "/api/support/",
-            {"secret": service.secret},
-            headers={"user-agent": "Weblate/1.2.3"},
-        )
-        service = Service.objects.get(pk=service.pk)
+
+        self._post_support_report(service, "https://example.com/new-location")
+        service.refresh_from_db()
         self.assertFalse(service.discoverable)
+        self.assertEqual(service.discovery_verified_url, "")
 
     def test_support_rejects_invalid_site_url(self) -> None:
         service = self.perform_support()
@@ -4788,6 +4787,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             "https://user:password@example.com",
             "https://example.com?query",
             "https://example.com#fragment",
+            r"https://example.com/a\b",
             "https://example.com/a/../b",
             "https://example.com/a/%2e%2e/b",
             "https://example.com:0",
@@ -4855,6 +4855,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         payload = "javascript:alert(document.domain)"
         Service.objects.filter(pk=service.pk).update(
             site_url=payload,
+            discovery_verified_url=payload,
             site_title="Unsafe service",
             site_projects=2,
             discoverable=True,
@@ -4864,7 +4865,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         response = self.client.get("/en/discover/")
         self.assertNotContains(response, 'href="javascript:')
         self.assertContains(response, 'href="#"')
-        self.assertContains(response, 'href="#/projects/test/"')
+        self.assertContains(response, '<span class="project">Test project</span>')
         self.assertContains(response, 'href="#/projects/"')
 
         user = self.login()
@@ -4891,6 +4892,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             "/api/support/",
             {
                 "secret": service.secret,
+                "site_url": "https://example.com",
                 "discoverable": "1",
                 "public_projects": json.dumps(
                     [
@@ -4913,6 +4915,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             "/api/support/",
             {
                 "secret": service.secret,
+                "site_url": "https://example.com",
                 "discoverable": "1",
                 "public_projects": json.dumps(
                     [
@@ -4935,6 +4938,7 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
             "/api/support/",
             {
                 "secret": service.secret,
+                "site_url": "https://example.com",
                 "discoverable": "1",
                 "public_projects": json.dumps(
                     [
@@ -4966,7 +4970,10 @@ class APITest(UserTestCase):  # ruff:ignore[too-many-public-methods]
         service = self.perform_support()
         service.site_url = "https://allowed.example.com"
         service.site_url_lock = True
-        service.save(update_fields=["site_url", "site_url_lock"])
+        service.discovery_verified_url = service.site_url
+        service.save(
+            update_fields=["site_url", "site_url_lock", "discovery_verified_url"]
+        )
 
         response = self._post_support_report(service, "https://wrong.example.com")
         self.assertFalse(response.json()["in_limits"])
@@ -8285,7 +8292,11 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         """Service with a recent report should not be disabled."""
         service = self.create_service()
         service.discoverable = True
-        service.save(update_fields=["discoverable"])
+        service.site_url = "https://example.com"
+        service.discovery_verified_url = service.site_url
+        service.save(
+            update_fields=["discoverable", "site_url", "discovery_verified_url"]
+        )
         Report.objects.create(
             service=service, site_url="https://example.com", discoverable=True
         )
@@ -8300,7 +8311,11 @@ class BackgroundFetchTestCase(FakturaceTestCase):
         """Service with a stale report (>3 days old) should be disabled."""
         service = self.create_service()
         service.discoverable = True
-        service.save(update_fields=["discoverable"])
+        service.site_url = "https://example.com"
+        service.discovery_verified_url = service.site_url
+        service.save(
+            update_fields=["discoverable", "site_url", "discovery_verified_url"]
+        )
         report = Report.objects.create(
             service=service, site_url="https://example.com", discoverable=True
         )
@@ -8703,100 +8718,22 @@ class DiscoveryTestCase(UserTestCase):
         self.assertContains(response, "Invalid server URL.")
         self.assertFalse(Service.objects.exists())
 
-    def test_create(self):
-        # This requires login
+    def test_website_starts_on_the_instance(self) -> None:
         response = self.client.get("/subscription/discovery/")
-        self.assertRedirects(
-            response,
-            "/en/subscription/discovery/",
-            fetch_redirect_response=False,
-        )
-        response = self.client.get("/en/subscription/discovery/")
-        self.assertRedirects(
-            response,
-            f"{settings.LOGIN_URL}?next=/en/subscription/discovery/",
-            fetch_redirect_response=False,
-        )
-        self.login()
-        # Test exact URL because that is used from Weblate
-        response = self.client.get("/subscription/discovery/", follow=True)
         self.assertRedirects(response, "/en/subscription/discovery/")
-
-        # Missing required fields
-        response = self.client.post("/en/subscription/discovery/", {}, follow=True)
-        self.assertContains(response, "This field is required.")
-
-        # Valid activation
         response = self.client.post(
             "/en/subscription/discovery/",
-            {"site_url": "http://localhost", "discover_text": "Discover localhost"},
+            {
+                "site_url": "https://instance.example/translations/",
+                "discover_text": "Old registration form",
+            },
         )
-        service = Service.objects.get()
-        self.assertEqual(service.site_url, "http://localhost")
-        self.assertTrue(service.site_url_lock)
-        self.assertNotEqual(service.secret, "")
-        self.assertFalse(service.needs_token)
-        self.assertTrue(is_pending_discovery_activation(service))
-        self.assertRedirects(
-            response,
-            "/user/",
-            fetch_redirect_response=False,
-        )
-        self.assertNotIn("activation=", response["Location"])
-        self.assertNotIn("http://localhost", response["Location"])
-
-        regular_service = Service.objects.create(
-            customer=service.customer,
-            status="basic",
-            site_url="https://support.example.com",
-        )
-        self.assertTrue(regular_service.needs_token)
-        self.assertFalse(is_pending_discovery_activation(regular_service))
-        response = self.client.get("/en/user/")
+        self.assertContains(response, "Continue to your Weblate")
         self.assertContains(
-            response,
-            f'href="https://support.example.com/manage/?activation={regular_service.secret}"',
+            response, 'href="https://instance.example/translations/manage/"'
         )
-
-    def test_create_does_not_redirect_to_site_url(self) -> None:
-        self.login()
-        response = self.client.post(
-            "/en/subscription/discovery/",
-            {
-                "site_url": "https://evil.example/",
-                "discover_text": "Discover evil",
-            },
-            follow=True,
-        )
-        service = Service.objects.get()
-        self.assertEqual(service.site_url, "https://evil.example")
-        self.assertTrue(service.site_url_lock)
-        self.assertNotEqual(service.secret, "")
-        self.assertTrue(is_pending_discovery_activation(service))
-        self.assertRedirects(
-            response,
-            "/en/user/",
-        )
-        self.assertContains(response, "Activation token")
-        self.assertContains(response, service.secret)
-        self.assertContains(response, "data-clipboard-text")
-        self.assertNotContains(response, "activation=")
-        self.assertNotContains(response, "evil.example/manage/")
-
-        Package.objects.create(name="community", verbose="Community support", price=0)
-        api_response = self.client.post(
-            "/api/support/",
-            {
-                "secret": service.secret,
-                "site_url": "https://evil.example/",
-                "discoverable": "1",
-            },
-            headers={"user-agent": "Weblate/1.2.3"},
-        )
-        self.assertEqual(api_response.status_code, 200)
-        service = Service.objects.get(pk=service.pk)
-        self.assertFalse(is_pending_discovery_activation(service))
-        self.assertTrue(service.discoverable)
+        self.assertFalse(Service.objects.exists())
+        self.assertFalse(DiscoveryActivation.objects.exists())
 
     def test_registration_handoff(self) -> None:
         self.login()
@@ -8821,6 +8758,7 @@ class DiscoveryTestCase(UserTestCase):
             fetch_redirect_response=False,
         )
         self.assertNotIn(service.secret, response["Location"])
+        self.assertNotContains(self.client.get("/en/user/"), service.secret)
 
         response = self.client.post(
             "/api/support/activation/", {"code": activation.code}
