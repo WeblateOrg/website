@@ -472,6 +472,8 @@ class ActivityTest(TestCase):
                 self.service.backup_subaccount = 123
 
     def test_local_month_boundaries(self) -> None:
+        self.service.discovery_verified_url = self.service.site_url
+        self.service.save(update_fields=["discovery_verified_url"])
         for zone, now, latest in (
             (
                 "Europe/Prague",
@@ -518,7 +520,10 @@ class ActivityTest(TestCase):
                     400,
                 )
                 competitor = Service.objects.create(
-                    customer=self.customer, discoverable=True
+                    customer=self.customer,
+                    discoverable=True,
+                    site_url="https://competitor.example.com",
+                    discovery_verified_url="https://competitor.example.com",
                 )
                 competitor.activity.create(month=latest, changes=10)
                 competitor.activity.create(
@@ -851,7 +856,11 @@ class ActivityDiscoveryTest(TransactionTestCase):
             ("Most active", 100),
         ):
             service = Service.objects.create(
-                customer=customer, discoverable=True, site_title=title
+                customer=customer,
+                discoverable=True,
+                site_title=title,
+                site_url="https://example.com",
+                discovery_verified_url="https://example.com",
             )
             service.project_set.create(
                 name="Matching project",

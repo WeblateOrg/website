@@ -80,10 +80,13 @@
                 {% endif %}
                 <p lang="en" dir="ltr" class="projects">
                   {% for project in service.matched_projects %}
-                    <a class="project"
-                       href="{{ service.site_url|safe_site_url }}{{ project.url }}"
-                       target="_blank"
-                       rel="ugc">{{ project.name }}</a>
+                    {% with url=service.site_url|discovery_project_url:project.url %}
+                      {% if url %}
+                        <a class="project" href="{{ url }}" target="_blank" rel="ugc">{{ project.name }}</a>
+                      {% else %}
+                        <span class="project">{{ project.name }}</span>
+                      {% endif %}
+                    {% endwith %}
                   {% endfor %}
                   {% if service.non_matched_projects_count %}
                     <a href="{{ service.site_url|safe_site_url }}/projects/" target="_blank" rel="ugc">

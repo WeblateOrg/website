@@ -821,6 +821,7 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     hosted_snapshot = models.JSONField(default=dict, blank=True, editable=False)
 
     discoverable = models.BooleanField(default=False, blank=True)
+    discovery_verified_url = models.URLField(default="", blank=True, editable=False)
     site_url = models.URLField(
         verbose_name=gettext_lazy("Server URL"), default="", blank=True
     )
@@ -865,7 +866,6 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     # Discover integration
     matched_projects: list[Project]
     non_matched_projects_count: int
-    is_pending_discovery_activation: bool
 
     objects = ServiceQuerySet.as_manager()
 
@@ -893,6 +893,23 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
     ) -> None:
         if update_fields is None or "site_url" in update_fields:
             self.site_url = normalize_site_url(self.site_url, allow_empty=True)
+            if (
+                self.discovery_verified_url
+                and self.discovery_verified_url != self.site_url
+            ):
+                if self.site_url == normalize_site_url_for_lock(
+                    self.discovery_verified_url
+                ):
+                    self.discovery_verified_url = self.site_url
+                else:
+                    self.discovery_verified_url = ""
+                    self.discoverable = False
+                if update_fields is not None:
+                    update_fields = {
+                        *update_fields,
+                        "discoverable",
+                        "discovery_verified_url",
+                    }
         super().save(
             force_insert=force_insert,
             force_update=force_update,
@@ -1377,15 +1394,6 @@ class Service(models.Model):  # ruff:ignore[too-many-public-methods]
         if self.site_url_lock:
             reports = reports.filter(site_url=self.site_url)
         return reports.order_by("-timestamp")[:10]
-
-
-def is_pending_discovery_activation(service: Service) -> bool:
-    return (
-        not service.is_donation
-        and service.site_url_lock
-        and bool(service.site_url)
-        and service.last_report is None
-    )
 
 
 DISCOVERY_ACTIVATION_CODE_AGE = timedelta(minutes=10)
@@ -2187,7 +2195,12 @@ class Report(models.Model):
         ):
             self.create_over_limit_followup(exceeded_limits)
 
-        self.service.discoverable = self.discoverable
+        self.service.discoverable = bool(
+            self.discoverable
+            and self.site_url
+            and self.site_url
+            == normalize_site_url_for_lock(self.service.discovery_verified_url)
+        )
         self.service.site_url = (
             normalize_site_url_for_lock(self.site_url)
             if self.service.site_url_lock
@@ -2277,6 +2290,15 @@ class Report(models.Model):
                 },
             },
         )
+
+
+class DiscoveryVerification(models.Model):
+    service = models.OneToOneField(Service, on_delete=models.CASCADE, primary_key=True)
+    report = models.OneToOneField(Report, on_delete=models.CASCADE)
+    next_attempt = models.DateTimeField(default=timezone.now, db_index=True)
+
+    def __str__(self) -> str:
+        return str(self.report)
 
 
 class Project(models.Model):

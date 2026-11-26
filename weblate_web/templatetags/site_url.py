@@ -25,7 +25,7 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from lxml import etree
 
-from weblate_web.url_utils import normalize_site_url
+from weblate_web.url_utils import get_discovery_project_url, normalize_site_url
 
 register = template.Library()
 
@@ -39,6 +39,11 @@ def safe_site_url(url: object) -> str:
         return normalize_site_url(url)
     except ValidationError:
         return "#"
+
+
+@register.filter
+def discovery_project_url(site_url: str, project_path: str) -> str:
+    return get_discovery_project_url(site_url, project_path)
 
 
 @register.filter
