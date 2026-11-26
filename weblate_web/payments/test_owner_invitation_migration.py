@@ -11,6 +11,7 @@ from django.db.migrations.executor import MigrationExecutor
 from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import override
 
 from .invitations import get_invitation_token
 from .models import Customer, CustomerOwnerInvitation
@@ -66,8 +67,9 @@ class OwnerInvitationMigrationTest(TransactionTestCase):
         self.assertEqual(accepted.acted_at, now)
         self.assertEqual(accepted.acted_by_id, owner.pk)
         self.client.force_login(recipient)
-        response = self.client.post(
-            reverse("customer-owner-invitation", kwargs={"token": token})
-        )
-        self.assertRedirects(response, reverse("user"))
+        with override("en"):
+            response = self.client.post(
+                reverse("customer-owner-invitation", kwargs={"token": token})
+            )
+            self.assertRedirects(response, reverse("user"))
         self.assertFalse(customer.owners.filter(pk=recipient.pk).exists())
