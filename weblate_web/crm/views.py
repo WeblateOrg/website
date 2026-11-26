@@ -1217,14 +1217,10 @@ class CustomerDetailView(CRMMixin, DetailView[Customer]):  # type: ignore[misc]
                     gettext("Hosted user is already linked to a different local user.")
                 )
             if customer.owners.filter(pk=user.pk).exists():
-                fulfill_pending_invitations_by_staff(
-                    customer, context["email"], request.user
-                )
+                fulfill_pending_invitations_by_staff(customer, user.email, request.user)
                 return None
             customer.owners.add(user)
-            fulfill_pending_invitations_by_staff(
-                customer, context["email"], request.user
-            )
+            fulfill_pending_invitations_by_staff(customer, user.email, request.user)
             customer.interaction_set.create(
                 origin=Interaction.Origin.CUSTOMER_OWNER,
                 summary=gettext("Added customer owner"),

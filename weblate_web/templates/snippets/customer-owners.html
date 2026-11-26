@@ -64,7 +64,9 @@
     {% endfor %}
     <form method="post" action="{% url 'customer-owner' pk=customer.pk %}">
       {% csrf_token %}
-      <input type="email"
+      <input type="text"
+             inputmode="email"
+             required
              class="grey-input"
              placeholder="{% translate "E-mail" %}"
              name="email"

@@ -1521,7 +1521,7 @@ class CustomerMergeInvitationTestCase(BaseCRMTestCase):
         target.owners.add(owner)
         invitation = CustomerOwnerInvitation.objects.create(
             customer=source,
-            email="OWNER@example.com",
+            email="owner@EXAMPLE.COM",
             invited_by=user,
             expires_at=timezone.now() + timedelta(days=7),
         )
@@ -1552,6 +1552,13 @@ class CustomerMergeInvitationTestCase(BaseCRMTestCase):
         )
         retained = CustomerOwnerInvitation.objects.create(
             customer=source,
+            email="invitee@EXAMPLE.COM",
+            invited_by=user,
+            expires_at=timezone.now() + timedelta(days=7),
+        )
+
+        separate = CustomerOwnerInvitation.objects.create(
+            customer=source,
             email="INVITEE@example.com",
             invited_by=user,
             expires_at=timezone.now() + timedelta(days=7),
@@ -1559,6 +1566,8 @@ class CustomerMergeInvitationTestCase(BaseCRMTestCase):
 
         target.merge(source, user=user)
 
+        separate.refresh_from_db()
+        self.assertEqual(separate.status, CustomerOwnerInvitation.Status.PENDING)
         superseded.refresh_from_db()
         retained.refresh_from_db()
         self.assertEqual(superseded.status, CustomerOwnerInvitation.Status.REVOKED)
@@ -1950,9 +1959,15 @@ class CRMTestCase(BaseCRMTestCase):
         )
         invitation = CustomerOwnerInvitation.objects.create(
             customer=customer,
-            email=existing.email,
+            email="existing@EXAMPLE.COM",
             invited_by=self.user,
             expires_at=timezone.now() + timedelta(days=7),
+        )
+        other_invitation = CustomerOwnerInvitation.objects.create(
+            customer=customer,
+            email="EXISTING@example.com",
+            invited_by=self.user,
+            expires_at=invitation.expires_at,
         )
         responses.add(
             responses.POST,
@@ -2005,6 +2020,10 @@ class CRMTestCase(BaseCRMTestCase):
         invitation.refresh_from_db()
         self.assertEqual(
             invitation.status, CustomerOwnerInvitation.Status.FULFILLED_BY_STAFF
+        )
+        other_invitation.refresh_from_db()
+        self.assertEqual(
+            other_invitation.status, CustomerOwnerInvitation.Status.PENDING
         )
 
     @override_settings(

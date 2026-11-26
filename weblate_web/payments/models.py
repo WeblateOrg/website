@@ -52,6 +52,7 @@ from weblate_web.const import (
 )
 from weblate_web.utils import FOSDEM_ORIGIN, get_site_url
 
+from .mailboxes import mailbox_address
 from .utils import send_notification, validate_email
 from .validators import (
     VAT_VALIDITY_DAYS,
@@ -675,8 +676,9 @@ class Customer(models.Model):
 
         now = timezone.now()
         owner_emails = {
-            email.casefold()
+            address
             for email in self.owners.exclude(email="").values_list("email", flat=True)
+            if (address := mailbox_address(email)) is not None
         }
         retained_emails: set[str] = set()
         fulfilled: list[str] = []
@@ -687,15 +689,19 @@ class Customer(models.Model):
             .order_by("-expires_at", "-created", "pk")
         )
         for invitation in invitations:
-            normalized_email = invitation.email.casefold()
-            if normalized_email in owner_emails:
+            address = mailbox_address(invitation.email)
+            if address in owner_emails:
                 invitation.status = CustomerOwnerInvitation.Status.FULFILLED_BY_STAFF
                 fulfilled.append(str(invitation.pk))
-            elif invitation.expires_at <= now or normalized_email in retained_emails:
+            elif (
+                address is None
+                or invitation.expires_at <= now
+                or address in retained_emails
+            ):
                 invitation.status = CustomerOwnerInvitation.Status.REVOKED
                 revoked.append(str(invitation.pk))
             else:
-                retained_emails.add(normalized_email)
+                retained_emails.add(address)
                 continue
             invitation.acted_at = now
             invitation.acted_by = user

@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
+from itertools import islice
+from typing import TYPE_CHECKING, TypeVar
 
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -28,10 +30,17 @@ from django.utils import timezone
 
 from weblate_web.utils import get_site_url
 
+from .mailboxes import mailbox_address
 from .models import Customer, CustomerOwnerInvitation
 from .utils import send_notification
 
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from django.db.models import Model, QuerySet
+
 LOGGER = logging.getLogger(__name__)
+ModelT = TypeVar("ModelT", bound="Model")
 
 INVITATION_MAX_AGE = timedelta(days=7)
 INVITATION_SIGNING_SALT = "weblate.customer-owner-invitation"
@@ -39,8 +48,34 @@ INVITATION_RATE_LIMIT = 10
 INVITATION_RATE_PERIOD = 3600
 
 
-def normalize_email(email: str) -> str:
-    return email.strip().casefold()
+def mailbox_candidates(objects: QuerySet[ModelT], address: str) -> QuerySet[ModelT]:
+    # A case-insensitive collation can return extra rows. Compare the full
+    # canonical address in Python before using any candidate.
+    local, _, _ = address.rpartition("@")
+    return objects.filter(email__startswith=f"{local}@")
+
+
+def matching_users(users: QuerySet[User], address: str) -> Iterator[User]:
+    return (
+        user
+        for user in mailbox_candidates(users.only("pk", "email"), address).iterator()
+        if mailbox_address(user.email) == address
+    )
+
+
+def matching_invitations(
+    invitations: QuerySet[CustomerOwnerInvitation], address: str
+) -> Iterator[CustomerOwnerInvitation]:
+    return (
+        invitation
+        for invitation in mailbox_candidates(invitations, address).iterator()
+        if mailbox_address(invitation.email) == address
+    )
+
+
+def invitation_matches_user(invitation: CustomerOwnerInvitation, user: User) -> bool:
+    address = mailbox_address(invitation.email)
+    return address is not None and mailbox_address(user.email) == address
 
 
 def check_invitation_rate_limit(user: User) -> bool:
@@ -85,19 +120,23 @@ def create_invitation(
     # Avoid a model-level import cycle.
     from weblate_web.crm.models import Interaction  # ruff: ignore[import-outside-top-level]
 
-    normalized_email = normalize_email(email)
+    email = email.strip()
+    address = mailbox_address(email)
+    if address is None:
+        return None
     now = timezone.now()
     with transaction.atomic():
         customer = Customer.objects.select_for_update().get(pk=customer.pk)
         if customer.hosted_workspaces:
             return None
-        if customer.owners.filter(email__iexact=normalized_email).exists():
-            pending = customer.owner_invitations.filter(
-                email__iexact=normalized_email,
-                status=CustomerOwnerInvitation.Status.PENDING,
-            )
-            invitation_ids = [str(pk) for pk in pending.values_list("pk", flat=True)]
-            pending.update(
+        pending = customer.owner_invitations.filter(
+            status=CustomerOwnerInvitation.Status.PENDING
+        )
+        if next(matching_users(customer.owners.all(), address), None) is not None:
+            invitation_ids = [
+                invitation.pk for invitation in matching_invitations(pending, address)
+            ]
+            pending.filter(pk__in=invitation_ids).update(
                 status=CustomerOwnerInvitation.Status.REVOKED,
                 acted_at=now,
                 acted_by=invited_by,
@@ -105,38 +144,32 @@ def create_invitation(
             customer.interaction_set.create(
                 origin=Interaction.Origin.CUSTOMER_OWNER,
                 summary="Skipped customer owner invitation",
-                content=f"Did not invite existing customer owner {normalized_email}.",
+                content=f"Did not invite existing customer owner {email}.",
                 details={
                     "action": "skip_existing_owner",
-                    "invitations": invitation_ids,
-                    "email": normalized_email,
+                    "invitations": [str(pk) for pk in invitation_ids],
+                    "email": email,
                 },
                 user=invited_by,
             )
             return None
-        invitation = (
-            customer.owner_invitations.filter(
-                email=normalized_email,
-                status=CustomerOwnerInvitation.Status.PENDING,
-                expires_at__gt=now,
-            )
-            .order_by("-created")
-            .first()
+        invitation = next(
+            matching_invitations(pending.filter(expires_at__gt=now), address), None
         )
         if invitation is not None:
             invitation.expires_at = now + INVITATION_MAX_AGE
             invitation.save(update_fields=("expires_at",))
             summary = "Resent customer owner invitation"
-            content = f"Resent the customer owner invitation to {normalized_email}."
+            content = f"Resent the customer owner invitation to {email}."
             action = "resend_invitation"
         else:
             invitation = customer.owner_invitations.create(
-                email=normalized_email,
+                email=email,
                 invited_by=invited_by,
                 expires_at=now + INVITATION_MAX_AGE,
             )
             summary = "Invited customer owner"
-            content = f"Invited {normalized_email} to become a customer owner."
+            content = f"Invited {email} to become a customer owner."
             action = "invite"
         customer.interaction_set.create(
             origin=Interaction.Origin.CUSTOMER_OWNER,
@@ -145,7 +178,7 @@ def create_invitation(
             details={
                 "action": action,
                 "invitation": str(invitation.pk),
-                "email": normalized_email,
+                "email": email,
             },
             user=invited_by,
         )
@@ -154,7 +187,7 @@ def create_invitation(
     try:
         send_notification(
             "customer_owner_invitation",
-            [normalized_email],
+            [address],
             customer=customer,
             invitation=invitation,
             invitation_url=get_site_url(
@@ -197,10 +230,10 @@ def accept_invitation(
         if (
             invitation.status != CustomerOwnerInvitation.Status.PENDING
             or invitation.expires_at <= now
-            or normalize_email(user.email) != invitation.email
+            or (address := mailbox_address(invitation.email)) is None
         ):
             return None
-        users = list(User.objects.filter(email__iexact=invitation.email)[:2])
+        users = list(islice(matching_users(User.objects.all(), address), 2))
         if len(users) != 1 or users[0].pk != user.pk:
             return None
         invitation.customer.owners.add(user)
@@ -265,15 +298,18 @@ def fulfill_pending_invitations_by_staff(
     # Avoid a model-level import cycle.
     from weblate_web.crm.models import Interaction  # ruff: ignore[import-outside-top-level]
 
-    now = timezone.now()
+    address = mailbox_address(email)
+    if address is None:
+        return
     invitations = customer.owner_invitations.filter(
-        email=normalize_email(email),
-        status=CustomerOwnerInvitation.Status.PENDING,
+        status=CustomerOwnerInvitation.Status.PENDING
     )
-    invitation_ids = [str(pk) for pk in invitations.values_list("pk", flat=True)]
-    invitations.update(
+    invitation_ids = [
+        invitation.pk for invitation in matching_invitations(invitations, address)
+    ]
+    invitations.filter(pk__in=invitation_ids).update(
         status=CustomerOwnerInvitation.Status.FULFILLED_BY_STAFF,
-        acted_at=now,
+        acted_at=timezone.now(),
         acted_by=staff,
     )
     if invitation_ids:
@@ -283,8 +319,8 @@ def fulfill_pending_invitations_by_staff(
             content=f"Staff fulfilled the customer owner invitation for {email}.",
             details={
                 "action": "fulfill_invitation_by_staff",
-                "invitations": invitation_ids,
-                "email": normalize_email(email),
+                "invitations": [str(pk) for pk in invitation_ids],
+                "email": email,
             },
             user=staff,
         )

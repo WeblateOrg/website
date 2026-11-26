@@ -28,11 +28,23 @@ from vies.types import VIES_OPTIONS
 
 from weblate_web.utils import FOSDEM_ORIGIN
 
+from .mailboxes import MAX_ADDRESS_LENGTH, mailbox_address
 from .models import EU_VAT_RATES, VAT_COUNTRY_CODE_ALIASES, Customer
 
 
 class CustomerOwnerInvitationForm(forms.Form):
-    email = forms.EmailField(label=gettext_lazy("E-mail"))
+    email = forms.EmailField(
+        label=gettext_lazy("E-mail"), max_length=MAX_ADDRESS_LENGTH
+    )
+
+    def clean_email(self) -> str:
+        email = self.cleaned_data["email"]
+        if mailbox_address(email) is None:
+            raise forms.ValidationError(
+                gettext("Enter an e-mail address supported for invitations."),
+                code="invalid_invitation_address",
+            )
+        return email
 
 
 class CustomerForm(forms.ModelForm):
