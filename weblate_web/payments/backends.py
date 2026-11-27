@@ -24,6 +24,7 @@ import re
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from hashlib import sha256
+from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
 import fiobank
@@ -311,6 +312,10 @@ class PaymentError(Exception):
         if unavailable_until:
             message = f"{message} (Unavailable-Until: {unavailable_until})"
         super().__init__(message)
+
+
+class PaymentMethodUnavailable(PaymentError):
+    pass
 
 
 def register_backend(backend: type[Backend]) -> type[Backend]:
@@ -1146,7 +1151,18 @@ class ThePay2Card(Backend):
             return payload
 
         message = payload.get("message") if isinstance(payload, dict) else None
-        raise PaymentError(
+        method_code = json.get("payment_method_code") if json is not None else None
+        error_type = PaymentError
+        if (
+            status_code == HTTPStatus.FORBIDDEN
+            and method.lower() == "post"
+            and url == "payments"
+            and isinstance(method_code, str)
+            and message
+            == f"Payment method `{method_code}` is not available for this payment."
+        ):
+            error_type = PaymentMethodUnavailable
+        raise error_type(
             diagnostic,
             status_code=status_code,
             provider_message=message
@@ -1538,7 +1554,7 @@ class ThePay2Bitcoin(ThePay2Card):
     description = "Bitcoin (The Pay)"
     recurring = False
     thepay_method_code = "bitcoin"
-    supported_currencies: set[str] = {"EUR", "CZK"}
+    supported_currencies: set[str] = set()
 
 
 @register_backend
@@ -1546,6 +1562,7 @@ class ThePay2GooglePay(ThePay2Card):
     name = "thepay2-gpay"
     verbose = gettext_lazy("Google Pay")
     description = "Google Pay (The Pay)"
+    recurring = False
     thepay_method_code = "google_pay"
 
 
@@ -1554,4 +1571,5 @@ class ThePay2ApplePay(ThePay2Card):
     name = "thepay2-apay"
     verbose = gettext_lazy("Apple Pay")
     description = "Apple Pay (The Pay)"
+    recurring = False
     thepay_method_code = "apple_pay"

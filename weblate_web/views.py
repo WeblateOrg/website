@@ -109,6 +109,7 @@ from weblate_web.packages import (
 )
 from weblate_web.payments.backends import (
     PaymentError,
+    PaymentMethodUnavailable,
     get_backend,
     list_backends,
 )
@@ -585,6 +586,10 @@ class PaymentView(FormView, PaymentObjectMixin):
 
     @staticmethod
     def payment_error_message(error: PaymentError, fallback: str) -> str:
+        if isinstance(error, PaymentMethodUnavailable):
+            return gettext(
+                "This payment method is unavailable. Please choose another payment method."
+            )
         match error.status_code:
             case HTTPStatus.CONFLICT:
                 return gettext(

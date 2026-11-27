@@ -60,18 +60,16 @@
                         {% translate "Future subscription payments are due monthly until you cancel the subscription." %}
                       {% endif %}
                     {% elif object.recurring == "y" %}
-                      {% translate "Payment will be issued yearly till you cancel the subscription." %}
+                      {% translate "With automatic renewal, payments are charged yearly until you cancel the subscription." %}
                     {% elif object.recurring == "b" %}
-                      {% translate "Payment will be issued every six months till you cancel the subscription." %}
+                      {% translate "With automatic renewal, payments are charged every six months until you cancel the subscription." %}
                     {% elif object.recurring == "q" %}
-                      {% translate "Payment will be issued every quarter till you cancel the subscription." %}
+                      {% translate "With automatic renewal, payments are charged every quarter until you cancel the subscription." %}
                     {% elif object.recurring == "m" %}
-                      {% translate "Payment will be issued monthly till you cancel the subscription." %}
+                      {% translate "With automatic renewal, payments are charged monthly until you cancel the subscription." %}
                     {% else %}
                       {{ object.recurring }}
                     {% endif %}
-                    <br>
-                    <span class="text-muted">{% translate "Note: This is unavailable for some payment methods, you will have to manually complete the next payment in those cases." %}</span>
                   {% endif %}
                 </div>
                 <div class="clear"></div>
@@ -111,8 +109,19 @@
                          name="method"
                          type="radio"
                          value="{{ backend.name }}" />
-                  <label class="pay-{{ backend.name }} biglabel"
-                         for="pay-{{ backend.name }}">{{ backend.verbose }}</label>
+                  <label class="pay-{{ backend.name }} biglabel{% if object.recurring and not object.repeat_id %} payment-renewal-option{% endif %}"
+                         for="pay-{{ backend.name }}">
+                    {{ backend.verbose }}
+                    {% if object.recurring and not object.repeat_id %}
+                      <small>
+                        {% if backend.recurring %}
+                          {% translate "Automatic renewal" %}
+                        {% else %}
+                          {% translate "One-time payment" %}
+                        {% endif %}
+                      </small>
+                    {% endif %}
+                  </label>
                 {% endfor %}
               </div>
 

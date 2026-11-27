@@ -340,10 +340,37 @@ class TestServicePurchase:  # pylint: disable=redefined-outer-name
 
         assert not page.locator("text=Server Error").is_visible()
 
-        # Step 4: Select debug payment method on the payment page
+        # Step 4: Check the payment options before using the debug method.
+        expect(page.locator("label[for='pay-thepay2-card'] small")).to_have_text(
+            "Automatic renewal"
+        )
+        expect(page.locator("label[for='pay-thepay2-gpay'] small")).to_have_text(
+            "One-time payment"
+        )
+        expect(page.locator("#pay-thepay2-bitcoin")).to_have_count(0)
         page.screenshot(
             path="test-results/purchase-flow-03-payment-methods.png", full_page=True
         )
+
+        checkout_url = page.url
+        viewport = page.viewport_size
+        assert viewport is not None
+        page.set_viewport_size({"width": 390, "height": 900})
+        for direction, url in (
+            ("ltr", checkout_url),
+            ("rtl", checkout_url.replace("/en/", "/ar/", 1)),
+        ):
+            page.goto(url)
+            expect(page.locator("html")).to_have_attribute("dir", direction)
+            options = page.locator(".payment-renewal-option")
+            expect(options.first).to_be_visible()
+            assert options.evaluate_all(
+                "options => options.every(option => "
+                "option.scrollHeight <= option.clientHeight && "
+                "option.scrollWidth <= option.clientWidth)"
+            )
+        page.set_viewport_size(viewport)
+        page.goto(checkout_url)
 
         # Verify we're on the payment page with method selection
         assert page.locator("text=Payment Summary").is_visible()

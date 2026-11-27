@@ -62,6 +62,7 @@ from .backends import (
     FioBank,
     InvalidState,
     PaymentError,
+    PaymentMethodUnavailable,
     ThePay2Card,
     get_backend,
     list_backends,
@@ -1824,26 +1825,133 @@ class ThePayRequestTest(SimpleTestCase):
 class ThePay2Test(BackendBaseTestCase):
     backend_name = "thepay2-card"
 
+    @responses.activate
     def setUp(self) -> None:
+        mock_vies()
         super().setUp()
         self.backend = self.payment.get_payment_backend()
 
     @override_settings(LANGUAGE_CODE="en")
     @responses.activate
-    def test_checkout_hides_provider_message(self) -> None:
+    def test_checkout_can_retry_with_another_method(self) -> None:
         mock_vies()
+        diagnostic = "Payment method `google_pay` is not available for this payment."
         responses.post(
             "https://demo.api.thepay.cz/v1/projects/42/payments",
             status=403,
-            json={"message": "Merchant IP address is not allowed"},
+            json={"message": diagnostic},
         )
-        response = self.client.post(
-            reverse("payment", kwargs={"pk": self.payment.pk}),
-            {"method": self.backend_name},
+        payment_url = reverse("payment", kwargs={"pk": self.payment.pk})
+        with patch("weblate_web.views.sentry_sdk") as sentry:
+            response = self.client.post(payment_url, {"method": "thepay2-gpay"})
+        self.assertContains(
+            response,
+            "This payment method is unavailable. Please choose another payment method.",
         )
-        self.assertContains(response, "Could not start your payment.")
-        self.assertNotContains(response, "Merchant IP address is not allowed")
+        self.assertNotContains(response, diagnostic)
+        self.assertContains(response, 'id="pay-thepay2-card"')
+        sentry.capture_exception.assert_called_once()
+        error = sentry.capture_exception.call_args.args[0]
+        self.assertIsInstance(error, PaymentMethodUnavailable)
+        self.assertEqual(error.provider_message, diagnostic)
+        self.assertEqual(error.status_code, 403)
         self.check_payment(Payment.NEW)
+
+        thepay_mock_create_payment()
+        response = self.client.post(payment_url, {"method": "thepay2-card"})
+        self.assertRedirects(
+            response, "https://gate.thepay.cz/12345/pay", fetch_redirect_response=False
+        )
+        self.assertEqual(self.check_payment(Payment.PENDING).backend, "thepay2-card")
+
+    @override_settings(LANGUAGE_CODE="en")
+    def test_checkout_keeps_unrelated_forbidden_errors_generic(self) -> None:
+        self.customer.vat = ""
+        self.customer.save(update_fields=["vat"])
+        for diagnostic in (
+            "Merchant IP address is not allowed",
+            "Payment method `apple_pay` is not available for this payment.",
+        ):
+            with (
+                self.subTest(diagnostic=diagnostic),
+                responses.RequestsMock() as http,
+                patch("weblate_web.views.sentry_sdk") as sentry,
+            ):
+                http.post(
+                    "https://demo.api.thepay.cz/v1/projects/42/payments",
+                    status=403,
+                    json={"message": diagnostic},
+                )
+                response = self.client.post(
+                    reverse("payment", args=[self.payment.pk]),
+                    {"method": "thepay2-gpay"},
+                )
+                self.assertContains(response, "Could not start your payment.")
+                self.assertNotContains(response, diagnostic)
+                sentry.capture_exception.assert_called_once()
+                error = sentry.capture_exception.call_args.args[0]
+                self.assertIs(type(error), PaymentError)
+                self.assertEqual(error.provider_message, diagnostic)
+                self.assertEqual(error.status_code, 403)
+                self.check_payment(Payment.NEW)
+
+    @override_settings(LANGUAGE_CODE="en")
+    @responses.activate
+    def test_bitcoin_is_disabled_for_new_checkout(self) -> None:
+        self.customer.vat = ""
+        self.customer.save(update_fields=["vat"])
+        for currency in (Payment.CURRENCY_EUR, Payment.CURRENCY_CZK):
+            with self.subTest(currency=currency):
+                self.payment.currency = currency
+                self.payment.save(update_fields=["currency"])
+                payment_url = reverse("payment", args=[self.payment.pk])
+                response = self.client.get(payment_url)
+                self.assertNotContains(response, 'id="pay-thepay2-bitcoin"')
+                response = self.client.post(payment_url, {"method": "thepay2-bitcoin"})
+                self.assertContains(response, "Please choose a payment method.")
+                self.check_payment(Payment.NEW)
+        self.assertFalse(
+            any(
+                settings.THEPAY_SERVER in (call.request.url or "")
+                for call in responses.calls
+            )
+        )
+
+    @override_settings(LANGUAGE_CODE="en")
+    @responses.activate
+    def test_pending_bitcoin_payment_can_complete(self) -> None:
+        self.payment.backend = "thepay2-bitcoin"
+        self.payment.state = Payment.PENDING
+        self.payment.save(update_fields=["backend", "state"])
+        thepay_mock_payment(self.payment.pk)
+        response = self.client.get(reverse("payment-complete", args=[self.payment.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.check_payment(Payment.ACCEPTED)
+
+    @override_settings(LANGUAGE_CODE="en", PAYMENT_DEBUG=False)
+    def test_checkout_labels_recurrence_only_when_requested(self) -> None:
+        self.customer.vat = ""
+        self.customer.save(update_fields=["vat"])
+        payment_url = reverse("payment", args=[self.payment.pk])
+        response = self.client.get(payment_url)
+        self.assertNotContains(response, "payment-renewal-option")
+
+        self.payment.recurring = "y"
+        self.payment.save(update_fields=["recurring"])
+        response = self.client.get(payment_url)
+        for name, label, renewal in (
+            ("thepay2-card", "Payment card", "Automatic renewal"),
+            ("thepay2-gpay", "Google Pay", "One-time payment"),
+            ("thepay2-apay", "Apple Pay", "One-time payment"),
+            ("fio-bank", "IBAN bank transfer", "One-time payment"),
+        ):
+            with self.subTest(name=name):
+                self.assertContains(
+                    response,
+                    f'<label class="pay-{name} biglabel payment-renewal-option" '
+                    f'for="pay-{name}">{label} <small>{renewal}</small></label>',
+                    html=True,
+                )
 
     @override_settings(LANGUAGE_CODE="en")
     def test_checkout_shows_actionable_provider_errors(self) -> None:
@@ -1994,18 +2102,27 @@ class ThePay2Test(BackendBaseTestCase):
         self.assertIs(payload["save_authorization"], True)
 
     @responses.activate
-    def test_nonrecurring_method_does_not_save_authorization(self) -> None:
-        self.payment.backend = "thepay2-bitcoin"
-        self.payment.recurring = "y"
-        self.payment.save(update_fields=["backend", "recurring"])
-        backend = self.payment.get_payment_backend()
-        thepay_mock_create_payment()
+    def test_wallet_checkout_does_not_save_authorization(self) -> None:
+        for name, method_code in (
+            ("thepay2-gpay", "google_pay"),
+            ("thepay2-apay", "apple_pay"),
+        ):
+            with self.subTest(name=name):
+                payment = Payment.objects.create(
+                    backend=name, customer=self.customer, amount=100, recurring="y"
+                )
+                backend = payment.get_payment_backend()
+                thepay_mock_create_payment()
+                thepay_mock_payment(payment.pk)
+                backend.initiate(None, "", "")
 
-        backend.initiate(None, "", "")
-
-        payload = json.loads(cast("bytes", responses.calls[0].request.body))
-        self.assertEqual(payload["payment_method_code"], "bitcoin")
-        self.assertIs(payload["save_authorization"], False)
+                payload = json.loads(cast("bytes", responses.calls[-1].request.body))
+                self.assertEqual(payload["payment_method_code"], method_code)
+                self.assertIs(payload["save_authorization"], False)
+                self.assertTrue(backend.complete(None))
+                payment.refresh_from_db()
+                self.assertEqual(payment.state, Payment.ACCEPTED)
+                self.assertEqual(payment.recurring, "")
 
     @responses.activate
     def test_fixed_amount_is_renormalized_before_initiation(self) -> None:
