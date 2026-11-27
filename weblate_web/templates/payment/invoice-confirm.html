@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load i18n prices %}
+
+{% block title %}
+  {% translate "Confirm invoice payment" %}
+{% endblock title %}
+
+{% block content %}
+  <section class="content">
+    <div class="row">
+      <div class="wrap">
+        <h1 class="section-title min-m">{% translate "Confirm invoice payment" %}</h1>
+        <div class="payment-form">
+          <p>
+            {% blocktranslate with number=invoice.number %}Invoice {{ number }}{% endblocktranslate %}
+          </p>
+          <p>
+            {{ invoice.total_amount|price_format:invoice.get_currency_display }}
+            {% if invoice.vat_rate %}
+              {% translate "(including VAT)" %}
+            {% endif %}
+          </p>
+          <form method="post">
+            {% csrf_token %}
+            <input type="submit"
+                   class="button center make-payment"
+                   value="{% translate "Continue to payment" %}">
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

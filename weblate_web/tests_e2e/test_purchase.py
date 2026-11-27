@@ -13,6 +13,10 @@ from typing import TYPE_CHECKING
 import pytest
 from playwright.sync_api import expect
 
+from weblate_web.categories import ServiceCategory
+from weblate_web.invoices.models import Invoice, InvoiceKind
+from weblate_web.payments.models import Customer
+
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
@@ -24,6 +28,35 @@ pytestmark = [
 
 class TestServicePurchase:  # pylint: disable=redefined-outer-name
     """Test suite for purchasing services."""
+
+    def test_anonymous_invoice_payment(self, page: Page) -> None:
+        invoice = Invoice.objects.create(
+            customer=Customer.objects.create(user_id=-1),
+            kind=InvoiceKind.INVOICE,
+            category=ServiceCategory.HOSTING,
+        )
+        invoice.invoiceitem_set.create(description="Weblate hosting", unit_price=100)
+        url = invoice.get_payment_url()
+        assert url is not None
+
+        page.set_viewport_size({"width": 390, "height": 844})
+        page.goto(url)
+        expect(
+            page.get_by_role("heading", name="Confirm invoice payment")
+        ).to_be_visible()
+        expect(
+            page.get_by_text(f"Invoice {invoice.number}", exact=True)
+        ).to_be_visible()
+        button = page.get_by_role("button", name="Continue to payment")
+        expect(button).to_be_visible()
+        assert not invoice.draft_payment_set.exists()
+        page.screenshot(
+            path="test-results/invoice-payment-confirmation.png", full_page=True
+        )
+
+        button.click()
+        expect(page.get_by_role("heading", name="Payment Summary")).to_be_visible()
+        assert invoice.draft_payment_set.count() == 1
 
     def test_price_calculator(self, page: Page, live_server):
         page.goto(f"{live_server.url}/en/hosting/")
