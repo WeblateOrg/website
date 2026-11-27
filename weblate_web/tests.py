@@ -6731,11 +6731,13 @@ class ServiceTest(FakturaceTestCase):
         invoice = subscription.create_invoice(kind=InvoiceKind.INVOICE)
         invoice_count = Invoice.objects.count()
         url = reverse("subscription-pay", kwargs={"pk": subscription.pk})
+        invoice_url = reverse("invoice-pay", kwargs={"pk": invoice.pk})
 
         for data in ({}, {}, {"switch_yearly": 1}):
             response = self.client.post(url, data, follow=True)
             self.assertContains(response, invoice.number)
-            self.assertEqual(invoice.draft_payment_set.count(), 1)
+            self.assertContains(response, "Continue to payment")
+            self.assertFalse(invoice.draft_payment_set.exists())
             self.assertEqual(Invoice.objects.count(), invoice_count)
         self.assertContains(response, "before switching to annual billing")
         subscription.refresh_from_db()
@@ -6747,7 +6749,11 @@ class ServiceTest(FakturaceTestCase):
         self.assertEqual(self.client.post(url).status_code, 404)
         service.customer.owners.add(owner)
 
+        response = self.client.post(invoice_url)
         payment = invoice.draft_payment_set.get()
+        self.assertRedirects(
+            response, payment.get_absolute_url(), fetch_redirect_response=False
+        )
         self.assertEqual(payment.recurring, "m")
         self.client.post(payment.get_payment_url(), {"method": "pay"}, follow=True)
         subscription.refresh_from_db()
@@ -6963,7 +6969,10 @@ class ServiceTest(FakturaceTestCase):
                 payment.state = state
                 payment.recurring = ""
                 payment.save(update_fields=["state", "recurring"])
-                response = self.client.get(url)
+                self.assertContains(self.client.get(url), "Continue to payment")
+                payment.refresh_from_db()
+                self.assertEqual(payment.recurring, "")
+                response = self.client.post(url)
                 self.assertRedirects(
                     response, payment.get_absolute_url(), fetch_redirect_response=False
                 )
@@ -6978,7 +6987,7 @@ class ServiceTest(FakturaceTestCase):
         payment.recurring = ""
         payment.state = Payment.NEW
         payment.save(update_fields=["recurring", "state"])
-        self.client.get(url)
+        self.client.post(url)
         payment.refresh_from_db()
         self.assertEqual(payment.recurring, "")
 

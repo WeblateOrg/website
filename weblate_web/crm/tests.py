@@ -4599,8 +4599,10 @@ class IncomeTrackingTestCase(BaseCRMTestCase):
                 self.assertNotIn("subscription", invoice.extra)
                 self.assertNotIn("plan", invoice.extra)
                 pay_url = reverse("invoice-pay", args=[invoice.pk])
+                self.assertContains(self.client.get(pay_url), "Continue to payment")
+                self.assertFalse(invoice.draft_payment_set.exists())
                 for _request in range(2):
-                    response = self.client.get(pay_url)
+                    response = self.client.post(pay_url)
                     payment = invoice.draft_payment_set.get()
                     self.assertRedirects(
                         response,

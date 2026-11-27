@@ -11,8 +11,9 @@ from django.contrib.auth.decorators import (
 from django.db import transaction
 from django.db.models import Q
 from django.http import FileResponse, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext
+from django.views.decorators.http import require_http_methods
 
 from weblate_web.models import Service
 from weblate_web.payments.models import Payment
@@ -20,6 +21,8 @@ from weblate_web.payments.models import Payment
 from .models import HostedRenewalValidationError, Invoice, InvoiceKind
 
 if TYPE_CHECKING:
+    from django.http import HttpRequest
+
     from weblate_web.views import AuthenticatedHttpRequest
 
 
@@ -70,10 +73,14 @@ def get_linked_hosted_billing(invoice: Invoice) -> int | None:
     )
 
 
+@require_http_methods(["GET", "HEAD", "POST"])
 @transaction.atomic
-def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
+def pay_invoice(request: HttpRequest, pk: str):
+    confirmed = request.method == "POST"
     invoice = get_object_or_404(
-        Invoice.objects.select_for_update(), pk=pk, kind=InvoiceKind.INVOICE
+        Invoice.objects.select_for_update() if confirmed else Invoice.objects.all(),
+        pk=pk,
+        kind=InvoiceKind.INVOICE,
     )
     subscription_id = invoice.extra.get("subscription")
     hosted_renewal = invoice.extra.get("hosted_renewal") is True
@@ -96,6 +103,17 @@ def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
             return redirect("home")
 
         raise Http404("Cannot be paid")
+    payment = invoice.draft_payment_set.filter(
+        state__in=[Payment.NEW, Payment.PENDING, Payment.REJECTED]
+    ).first()
+    if payment is not None:
+        try:
+            invoice.validate_hosted_renewal_payment(payment)
+        except HostedRenewalValidationError as error:
+            raise Http404("Payment does not match Hosted renewal invoice") from error
+    if not confirmed:
+        return render(request, "payment/invoice-confirm.html", {"invoice": invoice})
+
     if (
         recurring is None
         and isinstance(subscription_id, int)
@@ -104,25 +122,16 @@ def pay_invoice(request: AuthenticatedHttpRequest, pk: str):
         and (package := invoice.get_package()) is not None
     ):
         recurring = package.get_repeat()
-    payments = invoice.draft_payment_set.filter(
-        state__in=[Payment.NEW, Payment.PENDING, Payment.REJECTED]
-    )
-    if existing := payments.first():
-        try:
-            invoice.validate_hosted_renewal_payment(existing)
-        except HostedRenewalValidationError as error:
-            raise Http404("Payment does not match Hosted renewal invoice") from error
-        payment = existing
-        if (
-            recurring is not None
-            and payment.state == Payment.NEW
-            and payment.paid_invoice_id is None
-            and payment.recurring != recurring
-        ):
-            payment.recurring = recurring
-            payment.save(update_fields=["recurring"])
-    else:
+    if payment is None:
         payment = invoice.create_payment(recurring=recurring or "")
         payment.extra["exclude_backends"] = ["fio-bank"]
         payment.save(update_fields=["extra"])
+    elif (
+        recurring is not None
+        and payment.state == Payment.NEW
+        and payment.paid_invoice_id is None
+        and payment.recurring != recurring
+    ):
+        payment.recurring = recurring
+        payment.save(update_fields=["recurring"])
     return redirect(payment)

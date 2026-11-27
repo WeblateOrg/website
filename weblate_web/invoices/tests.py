@@ -16,6 +16,7 @@ from django.apps import apps
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.forms import modelform_factory
+from django.test import Client
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.translation import override
@@ -1747,8 +1748,11 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
             invoice = self.create_invoice(kind=InvoiceKind(kind))
             self.validate_invoice(invoice)
 
+    @override("en")
     @override_settings(PAYMENT_DEBUG=True)
+    @responses.activate
     def test_final_invoice_payment_skips_customer_revalidation(self) -> None:
+        self.mock_requests()
         invoice = self.create_invoice_package()
 
         with patch.object(
@@ -1756,25 +1760,45 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
             "prepayment_validation",
             side_effect=ValidationError("VIES unavailable"),
         ) as prepayment_validation:
-            response = self.client.get(
-                cast("str", invoice.get_payment_url()), follow=True
-            )
+            url = reverse("invoice-pay", kwargs={"pk": invoice.pk})
+            response = self.client.post(url, follow=True)
 
         self.assertContains(response, "Payment Summary")
         self.assertContains(response, 'name="method"')
         prepayment_validation.assert_not_called()
 
+    @override("en")
     @override_settings(PAYMENT_DEBUG=True)
     @responses.activate
     def test_pay_link(self) -> None:
         self.mock_requests()
-        invoice = self.create_invoice_package()
-        self.validate_invoice(invoice)
-        url = cast("str", invoice.get_payment_url())
-        self.assertIsNotNone(url)
+        invoice = self.create_invoice(vat_rate=21)
+        invoice.generate_files()
+        link = invoice.get_payment_url()
+        assert link is not None
+        self.assertIn(f'href="{link}"', invoice.render_html())
+        url = reverse("invoice-pay", kwargs={"pk": invoice.pk})
 
-        # Unauthenticated users can open a manually issued invoice payment.
-        response = self.client.get(url, follow=True)
+        client = Client(enforce_csrf_checks=True)
+        response = client.get(link, follow=True)
+        self.assertContains(response, "Continue to payment")
+        self.assertContains(response, invoice.number)
+        self.assertContains(response, "(including VAT)")
+        self.assertContains(response, 'name="csrfmiddlewaretoken"')
+        self.assertNotContains(response, "Billing information")
+        self.assertFalse(invoice.draft_payment_set.exists())
+
+        response = client.head(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b"")
+        self.assertEqual(client.options(url).status_code, 405)
+        self.assertEqual(client.post(url).status_code, 403)
+        self.assertFalse(invoice.draft_payment_set.exists())
+
+        # Unauthenticated users can confirm and open a manually issued invoice payment.
+        response = client.post(
+            url, follow=True, HTTP_X_CSRFTOKEN=client.cookies["csrftoken"].value
+        )
         self.assertContains(response, "Payment Summary")
         # Unauthenticated user should see note about terms
         self.assertContains(response, "By performing the payment, you accept our")
@@ -1783,6 +1807,14 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
         # The invoice payment capability does not permit editing its customer.
         payment = invoice.draft_payment_set.get()
+        self.assertEqual(payment.state, Payment.NEW)
+        self.assertEqual(payment.amount, invoice.total_amount)
+        self.assertEqual(payment.extra["exclude_backends"], ["fio-bank"])
+        self.assertRedirects(
+            client.post(url, HTTP_X_CSRFTOKEN=client.cookies["csrftoken"].value),
+            payment.get_absolute_url(),
+            fetch_redirect_response=False,
+        )
         with override("en"):
             customer_url = reverse("payment-customer", kwargs={"pk": payment.pk})
         original_name = invoice.customer.name
@@ -1803,9 +1835,9 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
         invoice.customer.refresh_from_db()
         self.assertEqual(invoice.customer.name, original_name)
 
-        # Repeated access should reuse existing payment
+        # Signed-in payers can use the same payment.
         self.login()
-        response = self.client.get(url, follow=True)
+        response = self.client.post(url, follow=True)
         self.assertContains(response, "Payment Summary")
         # Logged-in user should not see this
         self.assertNotContains(response, "By performing the payment, you accept our")
@@ -1818,3 +1850,21 @@ class InvoiceTestCase(UserTestCase):  # ruff:ignore[too-many-public-methods]
 
         # Ensure there is only a single invoice object now
         self.assertEqual(Invoice.objects.count(), 1)
+
+    @override("en")
+    @responses.activate
+    def test_invoice_paid_after_opening_confirmation(self) -> None:
+        self.mock_requests()
+        invoice = self.create_invoice_package()
+        url = reverse("invoice-pay", kwargs={"pk": invoice.pk})
+        self.assertContains(self.client.get(url), "Continue to payment")
+
+        payment = invoice.create_payment()
+        payment.paid_invoice = invoice
+        payment.state = Payment.ACCEPTED
+        payment.save(update_fields=["paid_invoice", "state"])
+
+        response = self.client.post(url, follow=True)
+        self.assertRedirects(response, reverse("home"))
+        self.assertContains(response, "This invoice has already been paid.")
+        self.assertEqual(invoice.draft_payment_set.get().pk, payment.pk)

@@ -1139,11 +1139,13 @@ class BackendTest(BackendBaseTestCase):
     def test_invoice_url(self) -> None:
         invoice = self.create_invoice()
 
-        url = cast("str", invoice.get_payment_url())
-        self.assertIsNotNone(url)
+        link = invoice.get_payment_url()
+        assert link is not None
 
-        # Trigger payment what creates an empty payment object
-        self.client.get(url, follow=True)
+        response = self.client.get(link, follow=True)
+        self.assertContains(response, "Continue to payment")
+        self.assertFalse(invoice.draft_payment_set.exists())
+        self.client.post(response.request["PATH_INFO"])
         placeholder = invoice.draft_payment_set.get()
         self.assertEqual(placeholder.backend, "")
         self.assertEqual(placeholder.state, Payment.NEW)

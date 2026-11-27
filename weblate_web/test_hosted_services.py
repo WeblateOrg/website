@@ -645,6 +645,7 @@ class HostedServiceTest(TestCase):
         self.assertNotContains(response, "Invite owner")
         self.assertNotContains(response, "/access/")
 
+    @override("en")
     def test_hosted_upgrade_invoice_redirect(self) -> None:
         customer = Customer.objects.create(user_id=-1)
         service = Service.objects.create(customer=customer, hosted_billing=42)
