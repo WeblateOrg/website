@@ -638,7 +638,7 @@ class PaymentView(FormView, PaymentObjectMixin):
         if result is not None:
             return result
         try:
-            backend.complete(self.request)
+            backend.complete_initiation(self.request)
         except PaymentError as error:
             sentry_sdk.capture_exception(error)
             messages.error(

@@ -43,7 +43,7 @@ from django.views.decorators.debug import sensitive_variables
 from weblate_web.categories import ServiceCategory, category_from_metadata
 from weblate_web.utils import get_site_url
 
-from .models import CustomerFollowUp, Payment
+from .models import CustomerFollowUp, Payment, ThePayNotification
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -392,6 +392,10 @@ class Backend:
         self.payment.save()
 
         return result
+
+    def complete_initiation(self, request: HttpRequest) -> bool:
+        """Complete a payment immediately after initiation."""
+        return self.complete(request)
 
     def complete(self, request: HttpRequest | None) -> bool:
         """
@@ -1301,6 +1305,9 @@ class ThePay2Card(Backend):
         return redirect(pay_url)
 
     def collect(self, request: HttpRequest | None) -> bool | None:
+        if self.awaiting_checkout_verification:
+            return None
+
         # The inline completion uses the result of charging the requested value.
         if (
             self.payment.repeat
@@ -1317,8 +1324,33 @@ class ThePay2Card(Backend):
 
         return self._collect_payment_detail()
 
+    def complete_initiation(self, request: HttpRequest) -> bool:
+        if self.payment.repeat and not self.payment.is_under_settlement_review:
+            # Initiation has saved the validated charge response and the pending state.
+            state = self.payment.details["repeat_response"]["state"]
+            if state == "error" or (state == "paid" and self.payment.draft_invoice_id):
+                self.payment.details["thepay_checkout_verification"] = True
+                self.payment.save(update_fields=["details"])
+                ThePayNotification.enqueue(self.payment.pk)
+                return False
+            return self._complete(self.collect_recurring_result)
+        return super().complete_initiation(request)
+
+    @property
+    def awaiting_checkout_verification(self) -> bool:
+        return (
+            self.payment.state == Payment.PENDING
+            and not self.payment.is_under_settlement_review
+            and bool(self.payment.details.get("thepay_checkout_verification"))
+        )
+
     def complete_notification(self) -> bool:
-        return self._complete(self._collect_payment_detail)
+        result = self._complete(self._collect_payment_detail)
+        if not self.awaiting_checkout_verification and self.payment.details.pop(
+            "thepay_checkout_verification", None
+        ):
+            self.payment.save(update_fields=["details"])
+        return result
 
     def _collect_payment_detail(self) -> bool | None:
         response = self.request("get", f"payments/{self.payment.pk}")
@@ -1340,6 +1372,8 @@ class ThePay2Card(Backend):
             # Store card info
             if card_info := response.get("card"):
                 self.payment.card_info = card_info
+            else:
+                self.copy_saved_card_number()
             return True
 
         if state in self.refund_states:
@@ -1358,6 +1392,15 @@ class ThePay2Card(Backend):
         elif state in self.failed_payment_states:
             if not self.payment.is_under_settlement_review:
                 if self.payment.repeat:
+                    if (
+                        state == "error"
+                        and self.awaiting_checkout_verification
+                        and response.get("parent") is None
+                        and not self.payment.details.get(
+                            Payment.RECURRING_AUTHORIZATION_FAILURE
+                        )
+                    ):
+                        return None
                     self.record_recurring_failure(response)
                 else:
                     self.payment.details["reject_reason"] = self.payment_failure_reason(
@@ -1406,11 +1449,24 @@ class ThePay2Card(Backend):
         state = response["state"]
         self.record_recurring_availability(response, failed=state == "error")
         if state == "paid":
+            self.copy_saved_card_number()
             return True
         if state == "error":
             self.record_recurring_failure(response)
             return False
         return None
+
+    def copy_saved_card_number(self) -> None:
+        parent = self.payment.repeat
+        card = parent.card_info if parent is not None else None
+        if (
+            not self.payment.card_info
+            and isinstance(card, dict)
+            and isinstance(number := card.get("number"), str)
+            and "*" in number
+            and re.fullmatch(r"[0-9*]{1,19}", number)
+        ):
+            self.payment.card_info = {"number": number}
 
     def record_recurring_availability(
         self, response: dict[str, Any], *, failed: bool

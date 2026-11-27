@@ -1884,30 +1884,6 @@ class ThePay2Test(BackendBaseTestCase):
                         self.assertNotContains(response, until)
         self.check_payment(Payment.NEW)
 
-    @override_settings(LANGUAGE_CODE="en")
-    @responses.activate
-    def test_checkout_hides_inline_completion_error(self) -> None:
-        parent = Payment.objects.create(customer=self.customer, amount=100)
-        self.payment.repeat = parent
-        self.payment.save(update_fields=["repeat"])
-        responses.post(
-            f"https://demo.api.thepay.cz/v2/projects/42/payments/{parent.pk}/savedauthorization",
-            json={"state": "waiting_for_confirmation"},
-            status=202,
-        )
-        responses.get(
-            f"https://demo.api.thepay.cz/v1/projects/42/payments/{self.payment.pk}",
-            status=404,
-            json={"message": "Payment UID was not found"},
-        )
-        response = self.client.post(
-            reverse("payment", kwargs={"pk": self.payment.pk}),
-            {"method": self.backend_name},
-        )
-        self.assertContains(response, "Could not check your payment status.")
-        self.assertNotContains(response, "Payment UID was not found")
-        self.check_payment(Payment.PENDING)
-
     @responses.activate
     def test_cancelled_payment_late_success(self) -> None:
         invoice = Invoice.objects.create(

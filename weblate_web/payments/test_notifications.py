@@ -42,7 +42,10 @@ from django.test import (
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import get_language, override
+from pypdf import PdfReader
 
+from weblate_web.categories import ServiceCategory
+from weblate_web.invoices.models import Invoice, InvoiceKind
 from weblate_web.models import Subscription
 from weblate_web.tests import (
     THEPAY2_MOCK_SETTINGS,
@@ -77,6 +80,14 @@ def create_payment() -> Payment:
 
 def notification_query(payment: Payment) -> dict[str, str]:
     return {"project_id": "42", "payment_uid": str(payment.pk), "type": "state_changed"}
+
+
+def thepay_calls(http: responses.RequestsMock) -> list[responses.Call]:
+    return [
+        call
+        for call in http.calls
+        if (call.request.url or "").startswith("https://demo.api.thepay.cz/")
+    ]
 
 
 @override_settings(**THEPAY2_MOCK_SETTINGS, LANGUAGE_CODE="en", FIO_TOKEN=[])
@@ -198,6 +209,234 @@ class ThePayNotificationTest(TestCase):
         self.assertEqual(work.pk, self.payment.pk)
         self.assertGreater(work.ready_at, timezone.now())
         fetch_bank_payments.assert_called_once_with(from_date=None)
+
+    def prepare_saved_authorization_checkout(self) -> Payment:
+        customer = self.payment.customer
+        customer.address = "Test Street 1"
+        customer.city = "Brussels"
+        customer.postcode = "1000"
+        customer.save(update_fields=["address", "city", "postcode"])
+        return Payment.objects.create(
+            customer=customer,
+            amount=100,
+            recurring="y",
+            card_info={"number": "515735******2654", "expiration_date": "2030-05"},
+        )
+
+    def assert_saved_card_documents(self, payment: Payment) -> None:
+        self.assertEqual(payment.state, Payment.ACCEPTED)
+        self.assertEqual(payment.card_info, {"number": "515735******2654"})
+        invoice = payment.paid_invoice
+        assert invoice is not None
+        for path in (invoice.path, invoice.receipt_path):
+            pdf_text = " ".join(page.extract_text() for page in PdfReader(path).pages)
+            self.assertIn("5157 35** **** 2654", " ".join(pdf_text.split()))
+
+    def checkout_saved_card(
+        self,
+        http: responses.RequestsMock,
+        payment: Payment,
+        charge_response: dict[str, str | dict[str, bool]],
+    ) -> None:
+        http.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{payment.repeat_id}/savedauthorization",
+            json=charge_response,
+        )
+        response = self.client.post(
+            reverse("payment", kwargs={"pk": payment.pk}),
+            {"method": self.payment.backend},
+        )
+        self.assertRedirects(
+            response,
+            f"{reverse('donate-process')}?payment={payment.pk}",
+            fetch_redirect_response=False,
+        )
+        payment.refresh_from_db()
+        self.assertEqual([call.request.method for call in thepay_calls(http)], ["POST"])
+
+    def test_checkout_uses_synchronous_saved_authorization_result(self) -> None:
+        parent = self.prepare_saved_authorization_checkout()
+        payment = Payment.objects.create(
+            customer=parent.customer, amount=100, repeat=parent
+        )
+        with responses.RequestsMock() as http:
+            self.checkout_saved_card(http, payment, {"state": "paid"})
+        self.assert_saved_card_documents(payment)
+        self.assertFalse(ThePayNotification.objects.exists())
+
+    def test_checkout_verifies_draft_invoice_settlement(self) -> None:
+        parent = self.prepare_saved_authorization_checkout()
+        for currency, adjustment, reason in (
+            ("EUR", 0, None),
+            ("EUR", -1, "underpayment"),
+            ("CZK", 0, "currency_mismatch"),
+        ):
+            with self.subTest(reason=reason), responses.RequestsMock() as http:
+                invoice = Invoice.objects.create(
+                    customer=parent.customer,
+                    kind=InvoiceKind.DRAFT,
+                    category=ServiceCategory.HOSTING,
+                    vat_rate=21,
+                )
+                invoice.invoiceitem_set.create(description="Hosting", unit_price=100)
+                payment = invoice.create_payment(repeat=parent)
+                self.checkout_saved_card(http, payment, {"state": "paid"})
+                self.assertEqual(payment.state, Payment.PENDING)
+                self.assertIsNone(payment.paid_invoice_id)
+                self.assertFalse(invoice.is_paid)
+
+                checkout = self.client.post(
+                    reverse("payment", args=[payment.pk]),
+                    {"method": payment.backend},
+                )
+                self.assertRedirects(
+                    checkout, payment.get_complete_url(), fetch_redirect_response=False
+                )
+                self.assertTemplateUsed(
+                    self.client.get(payment.get_complete_url()), "payment/pending.html"
+                )
+                self.assertEqual(len(thepay_calls(http)), 1)
+                detail_url = (
+                    f"https://demo.api.thepay.cz/v1/projects/42/payments/{payment.pk}"
+                )
+
+                if reason is None:
+                    http.get(detail_url, status=404)
+                    process_thepay_notifications()
+                    payment.refresh_from_db()
+                    self.assertEqual(payment.state, Payment.PENDING)
+                    self.assertIsNone(payment.paid_invoice_id)
+                    self.make_notification_ready(payment)
+
+                    http.get(detail_url, json={"state": "waiting_for_confirmation"})
+                    process_thepay_notifications()
+                    payment.refresh_from_db()
+                    self.assertEqual(payment.state, Payment.PENDING)
+                    self.make_notification_ready(payment)
+
+                http.get(
+                    detail_url,
+                    json={
+                        "state": "paid",
+                        "paid_amount": int(invoice.total_amount * 100) + adjustment,
+                        "currency": currency,
+                    },
+                )
+                process_thepay_notifications()
+                payment.refresh_from_db()
+                self.assertFalse(
+                    ThePayNotification.objects.filter(pk=payment.pk).exists()
+                )
+                self.assertNotIn("thepay_checkout_verification", payment.details)
+                detail_request = thepay_calls(http)[-1].request
+                self.assertEqual(detail_request.method, "GET")
+                self.assertTrue(detail_request.headers["Signature"])
+                if reason is None:
+                    self.assert_saved_card_documents(payment)
+                else:
+                    self.assertEqual(payment.state, Payment.PENDING)
+                    self.assertIsNone(payment.paid_invoice_id)
+                    self.assertEqual(
+                        payment.details["settlement_review"]["reason"], reason
+                    )
+
+    def make_notification_ready(self, payment: Payment) -> None:
+        work = ThePayNotification.objects.get(pk=payment.pk)
+        self.assertGreater(work.ready_at, timezone.now())
+        ThePayNotification.objects.filter(pk=payment.pk).update(ready_at=timezone.now())
+
+    def test_checkout_defers_failure_notice_until_authorization_is_verified(
+        self,
+    ) -> None:
+        for available in (False, True):
+            with self.subTest(available=available), responses.RequestsMock() as http:
+                mail.outbox.clear()
+                parent = self.prepare_saved_authorization_checkout()
+                payment = Payment.objects.create(
+                    customer=parent.customer, amount=100, repeat=parent
+                )
+                self.checkout_saved_card(
+                    http,
+                    payment,
+                    {
+                        "state": "error",
+                        "parent": {"recurring_payments_available": True},
+                    },
+                )
+                self.assertEqual(payment.state, Payment.PENDING)
+                self.assertEqual(len(mail.outbox), 0)
+
+                detail_url = (
+                    f"https://demo.api.thepay.cz/v1/projects/42/payments/{payment.pk}"
+                )
+                http.get(detail_url, json={"state": "error", "parent": None})
+                process_thepay_notifications()
+                payment.refresh_from_db()
+                self.assertEqual(payment.state, Payment.PENDING)
+                self.assertEqual(len(mail.outbox), 0)
+                self.make_notification_ready(payment)
+
+                http.get(
+                    detail_url,
+                    json={
+                        "state": "error",
+                        "parent": {"recurring_payments_available": available},
+                    },
+                )
+                process_thepay_notifications()
+                payment.refresh_from_db()
+                parent.refresh_from_db()
+                self.assertEqual(payment.state, Payment.REJECTED)
+                self.assertEqual(
+                    payment.has_unavailable_recurring_authorization, not available
+                )
+                self.assertEqual(parent.recurring, "y" if available else "")
+                self.assertEqual(len(mail.outbox), 1)
+                self.assertEqual(
+                    "Automatic renewal has stopped" in mail.outbox[0].body,
+                    not available,
+                )
+                self.assertFalse(
+                    ThePayNotification.objects.filter(pk=payment.pk).exists()
+                )
+
+    @responses.activate
+    def test_pending_saved_authorization_checkout_settles_on_notification(self) -> None:
+        parent = self.prepare_saved_authorization_checkout()
+        self.payment.repeat = parent
+        self.payment.state = Payment.NEW
+        self.payment.save(update_fields=["repeat", "state"])
+        responses.post(
+            f"https://demo.api.thepay.cz/v2/projects/42/payments/{parent.pk}/savedauthorization",
+            json={"state": "waiting_for_confirmation"},
+            status=202,
+        )
+        checkout_url = reverse("payment", kwargs={"pk": self.payment.pk})
+        method = {"method": self.payment.backend}
+        response = self.client.post(checkout_url, method)
+        self.assertRedirects(
+            response,
+            f"{reverse('donate-process')}?payment={self.payment.pk}",
+            fetch_redirect_response=False,
+        )
+        self.payment.refresh_from_db()
+        self.assertEqual(self.payment.state, Payment.PENDING)
+        response = self.client.post(checkout_url, method)
+        self.assertRedirects(
+            response, self.payment.get_complete_url(), fetch_redirect_response=False
+        )
+        self.assertEqual(len(responses.calls), 1)
+        self.assertEqual(responses.calls[0].request.method, "POST")
+
+        thepay_mock_payment(self.payment.pk)
+        self.assertEqual(self.client.get(self.url, self.query).status_code, 200)
+        process_thepay_notifications()
+        self.payment.refresh_from_db()
+        self.assertEqual(self.payment.state, Payment.ACCEPTED)
+        self.assertEqual(len(responses.calls), 2)
+        detail_request = responses.calls[1].request
+        self.assertEqual(detail_request.method, "GET")
+        self.assertTrue(detail_request.headers["Signature"])
 
     @responses.activate
     def test_recurring_notification_looks_up_latest_state(self) -> None:
