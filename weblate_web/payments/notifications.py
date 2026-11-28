@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 from typing import TYPE_CHECKING
-from uuid import UUID, uuid4
+from uuid import UUID
 
 import sentry_sdk
 from django.conf import settings
@@ -76,14 +76,7 @@ def enqueue_thepay_notification(
 
     try:
         with transaction.atomic(durable=True):
-            ThePayNotification.objects.update_or_create(
-                payment_id=pk,
-                defaults={
-                    "revision": uuid4(),
-                    "ready_at": timezone.now(),
-                    "legacy_language": legacy_language,
-                },
-            )
+            ThePayNotification.enqueue(pk, legacy_language=legacy_language)
     except DatabaseError as error:
         sentry_sdk.capture_exception(error)
         return HttpResponse(status=503)
@@ -126,6 +119,9 @@ def _process_thepay_notification(notification: ThePayNotification) -> None:
         )
         with override(language):
             backend.complete_notification()
+        if backend.awaiting_checkout_verification:
+            work.update(ready_at=timezone.now() + timedelta(minutes=1))
+            return
 
     work.delete()
 

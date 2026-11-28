@@ -1445,6 +1445,17 @@ class ThePayNotification(models.Model):
     def __str__(self) -> str:
         return str(self.payment_id)
 
+    @classmethod
+    def enqueue(cls, payment_id: uuid.UUID, *, legacy_language: str = "") -> None:
+        cls.objects.update_or_create(
+            payment_id=payment_id,
+            defaults={
+                "revision": uuid.uuid4(),
+                "ready_at": timezone.now(),
+                "legacy_language": legacy_language,
+            },
+        )
+
 
 class PaymentConf(AppConf):
     DEBUG = False
